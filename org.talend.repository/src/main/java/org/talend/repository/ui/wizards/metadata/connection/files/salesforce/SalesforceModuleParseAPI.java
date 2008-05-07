@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.connection.files.salesforce;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +30,6 @@ import com.sforce.soap.enterprise.QueryResult;
 import com.sforce.soap.enterprise.SessionHeader;
 import com.sforce.soap.enterprise.SforceServiceLocator;
 import com.sforce.soap.enterprise.SoapBindingStub;
-import com.sforce.soap.enterprise.fault.LoginFault;
 import com.sforce.soap.enterprise.fault.UnexpectedErrorFault;
 import com.sforce.soap.enterprise.sobject.Account;
 import com.sforce.soap.enterprise.sobject.SObject;
@@ -40,6 +41,8 @@ import com.sforce.soap.enterprise.sobject.SObject;
  * 
  */
 public class SalesforceModuleParseAPI {
+
+    private String url = null;
 
     private String name = null;
 
@@ -60,44 +63,39 @@ public class SalesforceModuleParseAPI {
     /**
      * DOC YeXiaowei Comment method "login".
      */
-    public void login(String username, String password) throws Exception {
-
+    public void login(String endPoint, String username, String password) throws Exception {
+        if (endPoint == null) {
+            throw new RemoteException("The URL is invalid.");
+        }
         if (username == null || password == null) {
             throw new Exception("Lost username or password");
         }
 
-        if (name != null && pwd != null) {
-            if (!name.equals(username) || !pwd.equals(password)) {
-                doLogin(username, password);
+        if (name != null && pwd != null && url != null) {
+            if (!url.equals(endPoint) || !name.equals(username) || !pwd.equals(password)) {
+                doLogin(endPoint, username, password);
             } else {
                 if (isLogin()) {
                     return;
                 }
             }
         } else {
-            doLogin(username, password);
+            doLogin(endPoint, username, password);
         }
 
         this.name = username;
         this.pwd = password;
+        this.url = endPoint;
     }
 
-    private void doLogin(String userName, String pwd) throws RemoteException, ServiceException {
-        try {
-            binding = (SoapBindingStub) new SforceServiceLocator().getSoap();
-        } catch (ServiceException ex1) {
-            throw ex1;
-        }
-        try {
-            loginResult = binding.login(userName, pwd);
-            setLogin(true);
-        } catch (UnexpectedErrorFault ex2) {
-            throw ex2;
-        } catch (LoginFault ex2) {
-            throw ex2;
-        } catch (RemoteException ex2) {
-            throw ex2;
-        }
+    private void doLogin(String endPoint, String userName, String pwd) throws RemoteException, ServiceException,
+            MalformedURLException {
+
+        URL soapAddress = new java.net.URL(endPoint);
+        binding = (SoapBindingStub) new SforceServiceLocator().getSoap(soapAddress);
+
+        loginResult = binding.login(userName, pwd);
+        setLogin(true);
 
         // System.out.println("Login was successfull.");
         // System.out.print("The returned session id is: ");

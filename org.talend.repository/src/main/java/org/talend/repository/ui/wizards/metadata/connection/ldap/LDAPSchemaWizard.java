@@ -28,6 +28,7 @@ import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
@@ -37,13 +38,16 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
+import org.talend.repository.ui.utils.ConnectionContextHelper;
 import org.talend.repository.ui.wizards.PropertiesWizardPage;
 import org.talend.repository.ui.wizards.RepositoryWizard;
+import org.talend.repository.ui.wizards.metadata.MetadataContextModeManager;
 import org.talend.repository.ui.wizards.metadata.connection.Step0WizardPage;
 
 /**
@@ -77,6 +81,8 @@ public class LDAPSchemaWizard extends RepositoryWizard implements INewWizard {
     private static final String ALL_STEPS = "5";
 
     private Map<String, String> oldTableMap;
+
+    private IMetadataContextModeManager contextModeManager;
 
     /**
      * LDAPSchemaWizard constructor comment.
@@ -154,6 +160,7 @@ public class LDAPSchemaWizard extends RepositoryWizard implements INewWizard {
             break;
         }
         initTable();
+        initConnection();
     }
 
     public LDAPSchemaWizard(IWorkbench workbench, boolean creation, RepositoryNode node, String[] existingNames,
@@ -206,11 +213,22 @@ public class LDAPSchemaWizard extends RepositoryWizard implements INewWizard {
             break;
         }
         initTable();
+        initConnection();
     }
 
     private void initTable() {
         if (connectionItem != null) {
             oldTableMap = RepositoryUpdateManager.getTableIdAndNameMap(connectionItem);
+        }
+    }
+
+    private void initConnection() {
+        ConnectionContextHelper.checkContextMode(connectionItem);
+        contextModeManager = new MetadataContextModeManager();
+        if (connectionItem.getConnection().isContextMode()) {
+            ContextType contextTypeForContextMode = ConnectionContextHelper.getContextTypeForContextMode(connectionItem
+                    .getConnection(), true);
+            contextModeManager.setSelectedContextType(contextTypeForContextMode);
         }
     }
 
@@ -236,25 +254,29 @@ public class LDAPSchemaWizard extends RepositoryWizard implements INewWizard {
             ldapSchemaWizardPage0.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep0")); //$NON-NLS-1$
             addPage(ldapSchemaWizardPage0);
 
-            ldapSchemaWizardPage1 = new LDAPSchemaWizardPage(1, connectionItem, isRepositoryObjectEditable(), null);
+            ldapSchemaWizardPage1 = new LDAPSchemaWizardPage(1, connectionItem, isRepositoryObjectEditable(), null,
+                    contextModeManager);
             ldapSchemaWizardPage1.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 2 " //$NON-NLS-1$ //$NON-NLS-2$
                     + Messages.getString("FileWizardPage.of") + " " + ALL_STEPS); //$NON-NLS-1$ //$NON-NLS-2$
             ldapSchemaWizardPage1.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep1")); //$NON-NLS-1$
             addPage(ldapSchemaWizardPage1);
 
-            ldapSchemaWizardPage2 = new LDAPSchemaWizardPage(2, connectionItem, isRepositoryObjectEditable(), null);
+            ldapSchemaWizardPage2 = new LDAPSchemaWizardPage(2, connectionItem, isRepositoryObjectEditable(), null,
+                    contextModeManager);
             ldapSchemaWizardPage2.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 3 " //$NON-NLS-1$ //$NON-NLS-2$
                     + Messages.getString("FileWizardPage.of") + " " + ALL_STEPS); //$NON-NLS-1$ //$NON-NLS-2$
             ldapSchemaWizardPage2.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep2")); //$NON-NLS-1$
             addPage(ldapSchemaWizardPage2);
 
-            ldapSchemaWizardPage3 = new LDAPSchemaWizardPage(3, connectionItem, isRepositoryObjectEditable(), null);
+            ldapSchemaWizardPage3 = new LDAPSchemaWizardPage(3, connectionItem, isRepositoryObjectEditable(), null,
+                    contextModeManager);
             ldapSchemaWizardPage3.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 4 " //$NON-NLS-1$ //$NON-NLS-2$
                     + Messages.getString("FileWizardPage.of") + " " + ALL_STEPS); //$NON-NLS-1$ //$NON-NLS-2$
             ldapSchemaWizardPage3.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep2")); //$NON-NLS-1$
             addPage(ldapSchemaWizardPage3);
 
-            ldapSchemaWizardPage4 = new LDAPSchemaWizardPage(4, connectionItem, isRepositoryObjectEditable(), null);
+            ldapSchemaWizardPage4 = new LDAPSchemaWizardPage(4, connectionItem, isRepositoryObjectEditable(), null,
+                    contextModeManager);
             ldapSchemaWizardPage4.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 5 " //$NON-NLS-1$ //$NON-NLS-2$
                     + Messages.getString("FileWizardPage.of") + " " + ALL_STEPS); //$NON-NLS-1$ //$NON-NLS-2$
             ldapSchemaWizardPage4.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep2")); //$NON-NLS-1$
@@ -280,19 +302,22 @@ public class LDAPSchemaWizard extends RepositoryWizard implements INewWizard {
             ldapSchemaWizardPage0.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep0")); //$NON-NLS-1$
             addPage(ldapSchemaWizardPage0);
 
-            ldapSchemaWizardPage1 = new LDAPSchemaWizardPage(1, connectionItem, isRepositoryObjectEditable(), null);
+            ldapSchemaWizardPage1 = new LDAPSchemaWizardPage(1, connectionItem, isRepositoryObjectEditable(), null,
+                    contextModeManager);
             ldapSchemaWizardPage1.setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 2 " //$NON-NLS-1$ //$NON-NLS-2$
                     + Messages.getString("FileWizardPage.of") + " 5"); //$NON-NLS-1$ //$NON-NLS-2$
             ldapSchemaWizardPage1.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep0")); //$NON-NLS-1$
             addPage(ldapSchemaWizardPage1);
 
-            ldapSchemaWizardPage2 = new LDAPSchemaWizardPage(2, connectionItem, isRepositoryObjectEditable(), null);
+            ldapSchemaWizardPage2 = new LDAPSchemaWizardPage(2, connectionItem, isRepositoryObjectEditable(), null,
+                    contextModeManager);
             ldapSchemaWizardPage2.setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 3 " //$NON-NLS-1$ //$NON-NLS-2$
                     + Messages.getString("FileWizardPage.of") + " 5"); //$NON-NLS-1$ //$NON-NLS-2$
             ldapSchemaWizardPage2.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep0")); //$NON-NLS-1$
             addPage(ldapSchemaWizardPage2);
 
-            ldapSchemaWizardPage3 = new LDAPSchemaWizardPage(3, connectionItem, isRepositoryObjectEditable(), null);
+            ldapSchemaWizardPage3 = new LDAPSchemaWizardPage(3, connectionItem, isRepositoryObjectEditable(), null,
+                    contextModeManager);
             ldapSchemaWizardPage3.setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 4 " //$NON-NLS-1$ //$NON-NLS-2$
                     + Messages.getString("FileWizardPage.of") + " 5"); //$NON-NLS-1$ //$NON-NLS-2$
             ldapSchemaWizardPage3.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep0")); //$NON-NLS-1$

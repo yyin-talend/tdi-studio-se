@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -59,7 +60,7 @@ public class ContextSetsSelectionDialog extends SelectionDialog {
         setDefaultImage(ImageProvider.getImage(ECoreImage.CONTEXT_ICON));
         setHelpAvailable(false);
         setTitle(TITLE);
-        setMessage(Messages.getString("ContextSetsSelectionDialog.Messages", contextItem.getProperty().getLabel())); //$NON-NLS-1$
+        setMessage(Messages.getString("ContextSetsSelectionDialog.Messages")); //$NON-NLS-1$
         initSets();
     }
 
@@ -85,10 +86,30 @@ public class ContextSetsSelectionDialog extends SelectionDialog {
     protected Control createDialogArea(Composite parent) {
         Composite composite = (Composite) super.createDialogArea(parent);
         createMessageArea(composite);
+
+        createSourceArea(composite);
+
         Label titleBarSeparator = new Label(composite, SWT.HORIZONTAL | SWT.SEPARATOR);
         titleBarSeparator.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         createSelectionArea(composite);
         return composite;
+    }
+
+    private void createSourceArea(Composite parent) {
+        if (contextItem != null) {
+            Composite inner = new Composite(parent, SWT.NONE);
+            GridLayout gridLayout = new GridLayout(2, false);
+            gridLayout.marginHeight = 0;
+            inner.setLayout(gridLayout);
+            inner.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+            Label label = new Label(inner, SWT.NONE);
+            label.setText(Messages.getString("ContextSetsSelectionDialog.Source")); //$NON-NLS-1$
+
+            Label source = new Label(inner, SWT.NONE);
+            source.setText(contextItem.getProperty().getLabel() + " " + contextItem.getProperty().getVersion()); //$NON-NLS-1$
+            source.setForeground(new Color(null, 255, 0, 0));
+        }
     }
 
     private Control createSelectionArea(Composite parent) {

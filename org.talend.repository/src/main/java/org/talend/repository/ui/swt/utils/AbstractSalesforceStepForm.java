@@ -23,6 +23,7 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.SalesforceSchemaConnection;
@@ -52,6 +53,8 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
     private final String tSalesforceUniqueName = "tSalesforceInput";
 
     private SalesforceModuleParseAPI salesforceAPI = null;
+
+    private IMetadataContextModeManager contextModeManager;
 
     public AbstractSalesforceStepForm(Composite parent, ConnectionItem connectionItem, String[] existingNames,
             SalesforceModuleParseAPI salesforceAPI) {
@@ -115,7 +118,7 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
 
     }
 
-    private IMetadataTable getMetadataTableBySalesforceServerAPI(String endPoint, final String user, final String pass,
+    private IMetadataTable getMetadataTableBySalesforceServerAPI(final String endPoint, final String user, final String pass,
             final String moduleName) {
         IMetadataTable metadataTable = new org.talend.core.model.metadata.MetadataTable();
 
@@ -133,7 +136,7 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
                             IProgressMonitor.UNKNOWN);
 
                     try {
-                        salesforceAPI.login(user, pass);
+                        salesforceAPI.login(endPoint, user, pass);
                     } catch (Throwable e) {
                         ExceptionHandler.process(e);
                     }
@@ -155,7 +158,7 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
         return metadataTable;
     }
 
-    protected boolean checkSalesfoceLogin(final String username, final String password) {
+    protected boolean checkSalesfoceLogin(final String endPoint, final String username, final String password) {
 
         salesforceAPI.setLogin(false);
 
@@ -176,7 +179,7 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
                     }
 
                     try {
-                        salesforceAPI.login(username, password);
+                        salesforceAPI.login(endPoint, username, password);
                         salesforceAPI.setLogin(true);
                     } catch (Throwable e) {
                         ExceptionHandler.process(e);
@@ -299,4 +302,11 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
         this.salesforceAPI = salesforceAPI;
     }
 
+    public IMetadataContextModeManager getContextModeManager() {
+        return this.contextModeManager;
+    }
+
+    public void setContextModeManager(IMetadataContextModeManager contextModeManager) {
+        this.contextModeManager = contextModeManager;
+    }
 }

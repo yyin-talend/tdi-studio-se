@@ -40,11 +40,13 @@ import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.IMetadataColumn;
+import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.core.model.metadata.builder.connection.SalesforceSchemaConnection;
 import org.talend.core.model.metadata.editor.MetadataEmfTableEditor;
 import org.talend.core.model.metadata.types.JavaDataTypeHelper;
 import org.talend.core.model.metadata.types.JavaTypesManager;
@@ -59,6 +61,7 @@ import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.preview.ProcessDescription;
 import org.talend.repository.preview.SalesforceSchemaBean;
 import org.talend.repository.ui.swt.utils.AbstractSalesforceStepForm;
+import org.talend.repository.ui.utils.OtherConnectionContextUtils;
 import org.talend.repository.ui.utils.ShadowProcessHelper;
 
 /**
@@ -96,9 +99,16 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
      */
     public SalesforceStep3Form(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable,
             String[] existingNames, SalesforceModuleParseAPI salesforceAPI) {
+        this(parent, connectionItem, metadataTable, existingNames, salesforceAPI, null);
+    }
+
+    public SalesforceStep3Form(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable,
+            String[] existingNames, SalesforceModuleParseAPI salesforceAPI, IMetadataContextModeManager contextModeManager) {
         super(parent, connectionItem, metadataTable, existingNames, salesforceAPI);
         this.connectionItem = connectionItem;
         this.metadataTable = metadataTable;
+        setConnectionItem(connectionItem);
+        setContextModeManager(contextModeManager);
         setupForm();
     }
 
@@ -130,6 +140,11 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
         metadataNameText.setReadOnly(isReadOnly());
         metadataCommentText.setReadOnly(isReadOnly());
         tableEditorView.setReadOnly(isReadOnly());
+
+        if (getParent().getChildren().length == 1) { // open the table
+            guessButton.setEnabled(false);
+            informationLabel.setVisible(false);
+        }
     }
 
     @Override
@@ -268,17 +283,17 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
      * 
      * @return processDescription
      */
-    private ProcessDescription getProcessDescription() {
+    private ProcessDescription getProcessDescription(SalesforceSchemaConnection originalValueConnection) {
 
-        ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(getConnection());
+        ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(originalValueConnection);
 
         SalesforceSchemaBean bean = new SalesforceSchemaBean();
 
-        bean.setWebServerUrl(getConnection().getWebServiceUrl());
-        bean.setUserName(getConnection().getUserName());
-        bean.setPassword(getConnection().getPassword());
-        bean.setModuleName(getConnection().getModuleName());
-        bean.setQueryCondition(getConnection().getQueryCondition());
+        bean.setWebServerUrl(originalValueConnection.getWebServiceUrl());
+        bean.setUserName(originalValueConnection.getUserName());
+        bean.setPassword(originalValueConnection.getPassword());
+        bean.setModuleName(originalValueConnection.getModuleName());
+        bean.setQueryCondition(originalValueConnection.getQueryCondition());
 
         processDescription.setSalesforceSchemaBean(bean);
 
@@ -308,8 +323,9 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
      */
     protected void runShadowProcess() {
 
+        SalesforceSchemaConnection originalValueConnection = getOriginalValueConnection();
         // if no file, the process don't be executed
-        if (getConnection().getWebServiceUrl() == null || getConnection().getWebServiceUrl().equals("")) { //$NON-NLS-1$
+        if (originalValueConnection.getWebServiceUrl() == null || originalValueConnection.getWebServiceUrl().equals("")) { //$NON-NLS-1$
             informationLabel.setText("Salesforce endpoint lost" //$NON-NLS-1$ //$NON-NLS-2$
                     + "                                                                              "); //$NON-NLS-1$
             return;
@@ -319,12 +335,14 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
             informationLabel.setText("   " + Messages.getString("FileStep3.guessProgress")); //$NON-NLS-1$ //$NON-NLS-2$
 
             // get the XmlArray width an adapt ProcessDescription
-            CsvArray csvArray = ShadowProcessHelper.getCsvArray(getProcessDescription(), "SALESFORCE_SCHEMA", true); //$NON-NLS-1$
+            ProcessDescription processDescription = getProcessDescription(originalValueConnection);
+
+            CsvArray csvArray = ShadowProcessHelper.getCsvArray(processDescription, "SALESFORCE_SCHEMA", true); //$NON-NLS-1$
 
             if (csvArray == null) {
                 informationLabel.setText("   " + Messages.getString("FileStep3.guessFailure")); //$NON-NLS-1$ //$NON-NLS-2$
             } else {
-                refreshMetaDataTable(csvArray, getProcessDescription());
+                refreshMetaDataTable(csvArray, processDescription);
             }
 
         } catch (CoreException e) {
@@ -530,7 +548,8 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         if (super.isVisible()) {
-            if (getConnection().getWebServiceUrl() != null && (!getConnection().getWebServiceUrl().equals("")) //$NON-NLS-1$
+            SalesforceSchemaConnection originalValueConnection = getOriginalValueConnection();
+            if (originalValueConnection.getWebServiceUrl() != null && (!originalValueConnection.getWebServiceUrl().equals("")) //$NON-NLS-1$
                     && (tableEditorView.getMetadataEditor().getBeanCount() <= 0)) {
                 runShadowProcess();
             }
@@ -541,4 +560,12 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
         checkFieldsValue();
     }
 
+    private SalesforceSchemaConnection getOriginalValueConnection() {
+        if (isContextMode() && getContextModeManager() != null) {
+            return (SalesforceSchemaConnection) OtherConnectionContextUtils.cloneOriginalValueSalesforceConnection(
+                    getConnection(), getContextModeManager().getSelectedContextType());
+        }
+        return getConnection();
+
+    }
 }

@@ -41,6 +41,7 @@ import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
@@ -57,7 +58,7 @@ import org.talend.core.utils.CsvArray;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.preview.ProcessDescription;
-import org.talend.repository.ui.swt.utils.AbstractForm;
+import org.talend.repository.ui.swt.utils.AbstractWSDLSchemaStepForm;
 import org.talend.repository.ui.utils.ShadowProcessHelper;
 
 /**
@@ -66,7 +67,7 @@ import org.talend.repository.ui.utils.ShadowProcessHelper;
  * @author qwei, 11/01/2008
  * 
  */
-public class WSDLSchemaStep2Form extends AbstractForm {
+public class WSDLSchemaStep2Form extends AbstractWSDLSchemaStepForm {
 
     private static Logger log = Logger.getLogger(WSDLSchemaStep2Form.class);
 
@@ -82,15 +83,11 @@ public class WSDLSchemaStep2Form extends AbstractForm {
 
     private Label informationLabel;
 
-    private MetadataTable metadataTable;
-
     private LabelledText metadataNameText;
 
     private LabelledText metadataCommentText;
 
     private boolean readOnly;
-
-    private ConnectionItem connectionItem;
 
     private int maximumRowsToPreview = CorePlugin.getDefault().getPreferenceStore()
             .getInt(ITalendCorePrefConstants.PREVIEW_LIMIT);
@@ -101,9 +98,14 @@ public class WSDLSchemaStep2Form extends AbstractForm {
      * @param Composite
      */
     public WSDLSchemaStep2Form(Composite parent, ConnectionItem connectionItem) {
-        super(parent, SWT.NONE, null);
-        this.connectionItem = connectionItem;
-        this.metadataTable = (MetadataTable) ((WSDLSchemaConnection) connectionItem.getConnection()).getTables().get(0);
+        this(parent, connectionItem, null);
+    }
+
+    public WSDLSchemaStep2Form(Composite parent, ConnectionItem connectionItem, IMetadataContextModeManager contextModeManager) {
+        super(parent, connectionItem, (MetadataTable) ((WSDLSchemaConnection) connectionItem.getConnection()).getTables().get(0),
+                null);
+        setConnectionItem(connectionItem);
+        setContextModeManager(contextModeManager);
         setupForm();
     }
 
@@ -212,15 +214,6 @@ public class WSDLSchemaStep2Form extends AbstractForm {
     }
 
     /**
-     * Comment method "getConnection".
-     * 
-     * @return
-     */
-    protected WSDLSchemaConnection getConnection() {
-        return (WSDLSchemaConnection) connectionItem.getConnection();
-    }
-
-    /**
      * run a ShadowProcess to determined the Metadata.
      */
     protected void runShadowProcess() {
@@ -228,12 +221,13 @@ public class WSDLSchemaStep2Form extends AbstractForm {
             informationLabel.setText("   " + Messages.getString("FileStep3.guessProgress")); //$NON-NLS-1$ //$NON-NLS-2$
 
             // get the XmlArray width an adapt ProcessDescription
-            CsvArray csvArray = ShadowProcessHelper.getCsvArray(getProcessDescription(), "WSDL_SCHEMA"); //$NON-NLS-1$
+            ProcessDescription processDescription = getProcessDescription();
+            CsvArray csvArray = ShadowProcessHelper.getCsvArray(processDescription, "WSDL_SCHEMA"); //$NON-NLS-1$
             if (csvArray == null) {
                 informationLabel.setText("   " + Messages.getString("FileStep3.guessFailure")); //$NON-NLS-1$ //$NON-NLS-2$
 
             } else {
-                refreshMetaDataTable(csvArray, getProcessDescription());
+                refreshMetaDataTable(csvArray, processDescription);
             }
 
         } catch (CoreException e) {
@@ -325,7 +319,7 @@ public class WSDLSchemaStep2Form extends AbstractForm {
      */
     private ProcessDescription getProcessDescription() {
 
-        ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(getConnection());
+        ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(getOriginalValueConnection());
         return processDescription;
     }
 
@@ -517,4 +511,5 @@ public class WSDLSchemaStep2Form extends AbstractForm {
             }
         }
     }
+
 }

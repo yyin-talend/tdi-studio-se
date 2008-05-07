@@ -25,6 +25,7 @@ import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.SalesforceSchemaConnection;
@@ -33,13 +34,16 @@ import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
+import org.talend.repository.ui.utils.ConnectionContextHelper;
 import org.talend.repository.ui.wizards.PropertiesWizardPage;
 import org.talend.repository.ui.wizards.RepositoryWizard;
+import org.talend.repository.ui.wizards.metadata.MetadataContextModeManager;
 import org.talend.repository.ui.wizards.metadata.connection.Step0WizardPage;
 
 /**
@@ -69,6 +73,8 @@ public class SalesforceSchemaWizard extends RepositoryWizard implements INewWiza
     private boolean isSinglePageOnly = false;
 
     private static final String ALL_STEPS = " 4";
+
+    private IMetadataContextModeManager contextModeManager;
 
     /**
      * DOC YeXiaowei SalesforceSchemaWizard constructor comment.
@@ -142,7 +148,7 @@ public class SalesforceSchemaWizard extends RepositoryWizard implements INewWiza
             initLockStrategy();
             break;
         }
-
+        initConnection();
     }
 
     public SalesforceSchemaWizard(IWorkbench workbench, boolean creation, RepositoryNode node, String[] existingNames,
@@ -194,6 +200,17 @@ public class SalesforceSchemaWizard extends RepositoryWizard implements INewWiza
             initLockStrategy();
             break;
         }
+        initConnection();
+    }
+
+    private void initConnection() {
+        ConnectionContextHelper.checkContextMode(connectionItem);
+        contextModeManager = new MetadataContextModeManager();
+        if (connectionItem.getConnection().isContextMode()) {
+            ContextType contextTypeForContextMode = ConnectionContextHelper.getContextTypeForContextMode(connectionItem
+                    .getConnection());
+            contextModeManager.setSelectedContextType(contextTypeForContextMode);
+        }
     }
 
     @Override
@@ -213,7 +230,8 @@ public class SalesforceSchemaWizard extends RepositoryWizard implements INewWiza
             setWindowTitle(Messages.getString("SalesforceSchemaWizard.windowTitleUpdate")); //$NON-NLS-1$
         }
 
-        page1 = new SalesforceWizardPage(1, connectionItem, isRepositoryObjectEditable(), existingNames, salesforceAPI);
+        page1 = new SalesforceWizardPage(1, connectionItem, isRepositoryObjectEditable(), existingNames, salesforceAPI,
+                contextModeManager);
 
         page1.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 2 " //$NON-NLS-1$ //$NON-NLS-2$
                 + Messages.getString("FileWizardPage.of") + ALL_STEPS); //$NON-NLS-1$ //$NON-NLS-2$
@@ -221,7 +239,8 @@ public class SalesforceSchemaWizard extends RepositoryWizard implements INewWiza
 
         addPage(page1);
 
-        page2 = new SalesforceWizardPage(2, connectionItem, isRepositoryObjectEditable(), existingNames, salesforceAPI);
+        page2 = new SalesforceWizardPage(2, connectionItem, isRepositoryObjectEditable(), existingNames, salesforceAPI,
+                contextModeManager);
 
         page2.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 3 " //$NON-NLS-1$ //$NON-NLS-2$
                 + Messages.getString("FileWizardPage.of") + ALL_STEPS); //$NON-NLS-1$ //$NON-NLS-2$
@@ -229,17 +248,19 @@ public class SalesforceSchemaWizard extends RepositoryWizard implements INewWiza
 
         addPage(page2);
 
-        page3 = new SalesforceWizardPage(3, connectionItem, isRepositoryObjectEditable(), existingNames, salesforceAPI);
+        if (creation) {
+            page3 = new SalesforceWizardPage(3, connectionItem, isRepositoryObjectEditable(), existingNames, salesforceAPI,
+                    contextModeManager);
 
-        page3.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 4 " //$NON-NLS-1$ //$NON-NLS-2$
-                + Messages.getString("FileWizardPage.of") + ALL_STEPS); //$NON-NLS-1$ //$NON-NLS-2$
-        page3.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep3")); //$NON-NLS-1$
+            page3.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 4 " //$NON-NLS-1$ //$NON-NLS-2$
+                    + Messages.getString("FileWizardPage.of") + ALL_STEPS); //$NON-NLS-1$ //$NON-NLS-2$
+            page3.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep3")); //$NON-NLS-1$
 
-        addPage(page3);
-
+            addPage(page3);
+            page3.setPageComplete(false);
+        }
         page1.setPageComplete(false);
         page2.setPageComplete(false);
-        page3.setPageComplete(false);
     }
 
     @Override

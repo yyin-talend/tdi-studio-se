@@ -17,6 +17,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.builder.connection.FileExcelConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.ConnectionItem;
@@ -34,6 +35,8 @@ public abstract class AbstractExcelFileStepForm extends AbstractForm {
     protected ConnectionItem connectionItem;
 
     protected FileExcelConnection connection;
+
+    private IMetadataContextModeManager contextModeManager;
 
     public AbstractExcelFileStepForm(Composite parent, ConnectionItem connectionItem, String[] existingNames) {
         super(parent, SWT.NONE, existingNames);
@@ -61,4 +64,13 @@ public abstract class AbstractExcelFileStepForm extends AbstractForm {
         ECodeLanguage codeLanguage = LanguageManager.getCurrentLanguage();
         return (codeLanguage == ECodeLanguage.PERL);
     }
+
+    public IMetadataContextModeManager getContextModeManager() {
+        return this.contextModeManager;
+    }
+
+    public void setContextModeManager(IMetadataContextModeManager contextModeManager) {
+        this.contextModeManager = contextModeManager;
+    }
+
 }

@@ -47,7 +47,7 @@ public class CreateWSDLSchemaAction extends AbstractCreateAction {
 
     protected static final int WIZARD_WIDTH = 800;
 
-    protected static final int WIZARD_HEIGHT = 475;
+    protected static final int WIZARD_HEIGHT = 540;
 
     public CreateWSDLSchemaAction() {
         super();

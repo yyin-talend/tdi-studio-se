@@ -46,7 +46,7 @@ public class CreateFileDelimitedAction extends AbstractCreateAction {
 
     protected static final int WIZARD_WIDTH = 920;
 
-    protected static final int WIZARD_HEIGHT = 510;
+    protected static final int WIZARD_HEIGHT = 560;
 
     private boolean creation = false;
 

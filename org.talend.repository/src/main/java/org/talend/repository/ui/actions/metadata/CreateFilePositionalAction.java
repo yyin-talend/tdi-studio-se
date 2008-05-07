@@ -46,7 +46,7 @@ public class CreateFilePositionalAction extends AbstractCreateAction {
 
     protected static final int WIZARD_WIDTH = 920;
 
-    protected static final int WIZARD_HEIGHT = 520;
+    protected static final int WIZARD_HEIGHT = 540;
 
     private boolean creation = false;
 

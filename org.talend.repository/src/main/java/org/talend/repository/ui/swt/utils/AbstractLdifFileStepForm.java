@@ -15,6 +15,7 @@ package org.talend.repository.ui.swt.utils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.builder.connection.LdifFileConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.ConnectionItem;
@@ -28,12 +29,14 @@ import org.talend.core.prefs.ITalendCorePrefConstants;
  */
 public abstract class AbstractLdifFileStepForm extends AbstractForm {
 
-    protected  int maximumRowsToPreview = CorePlugin.getDefault().getPreferenceStore().getInt(
+    protected int maximumRowsToPreview = CorePlugin.getDefault().getPreferenceStore().getInt(
             ITalendCorePrefConstants.PREVIEW_LIMIT);
 
     protected ConnectionItem connectionItem;
 
     protected LdifFileConnection connection;
+
+    private IMetadataContextModeManager contextModeManager;
 
     /**
      * DOC cantoine AbstractLdifFileStepForm constructor comment. Use to step1
@@ -64,5 +67,13 @@ public abstract class AbstractLdifFileStepForm extends AbstractForm {
 
     protected LdifFileConnection getConnection() {
         return (LdifFileConnection) connectionItem.getConnection();
+    }
+
+    public IMetadataContextModeManager getContextModeManager() {
+        return this.contextModeManager;
+    }
+
+    public void setContextModeManager(IMetadataContextModeManager contextModeManager) {
+        this.contextModeManager = contextModeManager;
     }
 }

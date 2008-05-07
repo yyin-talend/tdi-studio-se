@@ -15,6 +15,7 @@ package org.talend.repository.ui.wizards.metadata.connection.files.ldif;
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
+import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.builder.connection.LdifFileConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
@@ -37,6 +38,8 @@ public class LdifFileWizardPage extends WizardPage {
 
     private boolean isRepositoryObjectEditable;
 
+    private IMetadataContextModeManager contextModeManager;
+
     /**
      * DOC ocarbone LdifFileWizardPage constructor comment.
      * 
@@ -46,12 +49,13 @@ public class LdifFileWizardPage extends WizardPage {
      * @param existingNames
      */
     public LdifFileWizardPage(int step, ConnectionItem connectionItem, boolean isRepositoryObjectEditable,
-            String[] existingNames) {
+            String[] existingNames, IMetadataContextModeManager contextModeManager) {
         super("wizardPage"); //$NON-NLS-1$
         this.step = step;
         this.connectionItem = connectionItem;
         this.existingNames = existingNames;
         this.isRepositoryObjectEditable = isRepositoryObjectEditable;
+        this.contextModeManager = contextModeManager;
     }
 
     /**
@@ -62,14 +66,14 @@ public class LdifFileWizardPage extends WizardPage {
         currentComposite = null;
 
         if (step == 1) {
-            currentComposite = new LdifFileStep1Form(parent, connectionItem, existingNames);
+            currentComposite = new LdifFileStep1Form(parent, connectionItem, existingNames, contextModeManager);
         } else if (step == 2) {
-            currentComposite = new LdifFileStep2Form(parent, connectionItem);
+            currentComposite = new LdifFileStep2Form(parent, connectionItem, contextModeManager);
         } else if (step == 3) {
             MetadataTable metadataTable = (MetadataTable) ((LdifFileConnection) connectionItem.getConnection()).getTables()
                     .get(0);
             currentComposite = new LdifFileStep3Form(parent, connectionItem, metadataTable, TableHelper.getTableNames(
-                    ((LdifFileConnection) connectionItem.getConnection()), metadataTable.getLabel()));
+                    ((LdifFileConnection) connectionItem.getConnection()), metadataTable.getLabel()), contextModeManager);
         }
 
         currentComposite.setReadOnly(!isRepositoryObjectEditable);

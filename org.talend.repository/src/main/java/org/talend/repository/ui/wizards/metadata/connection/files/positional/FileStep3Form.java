@@ -39,10 +39,12 @@ import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.core.model.metadata.builder.connection.PositionalFileConnection;
 import org.talend.core.model.metadata.editor.MetadataEmfTableEditor;
 import org.talend.core.model.metadata.types.JavaDataTypeHelper;
 import org.talend.core.model.metadata.types.JavaTypesManager;
@@ -56,6 +58,7 @@ import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.preview.ProcessDescription;
 import org.talend.repository.ui.swt.utils.AbstractPositionalFileStepForm;
 import org.talend.repository.ui.utils.ColumnNameValidator;
+import org.talend.repository.ui.utils.FileConnectionContextUtils;
 import org.talend.repository.ui.utils.ShadowProcessHelper;
 
 /**
@@ -94,10 +97,16 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
      * @param Style
      */
     public FileStep3Form(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable, String[] existingNames) {
+        this(parent, connectionItem, metadataTable, existingNames, null);
+    }
+
+    public FileStep3Form(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable, String[] existingNames,
+            IMetadataContextModeManager contextModeManager) {
         super(parent, connectionItem, metadataTable, existingNames);
         this.connectionItem = connectionItem;
-
         this.metadataTable = metadataTable;
+        setConnectionItem(connectionItem);
+        setContextModeManager(contextModeManager);
         setupForm();
     }
 
@@ -105,9 +114,9 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
      * run a ShadowProcess to determined the Metadata.
      */
     protected void runShadowProcess() {
-
+        PositionalFileConnection originalValueConnection = getOriginalValueConnection();
         // if no file, the process don't be executed
-        if (getConnection().getFilePath() == null || getConnection().getFilePath().equals("")) { //$NON-NLS-1$
+        if (originalValueConnection.getFilePath() == null || originalValueConnection.getFilePath().equals("")) { //$NON-NLS-1$
             informationLabel.setText("   " + Messages.getString("FileStep3.filepathAlert") //$NON-NLS-1$ //$NON-NLS-2$
                     + "                                                                              "); //$NON-NLS-1$
             return;
@@ -117,7 +126,8 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
             informationLabel.setText("   " + Messages.getString("FileStep3.guessProgress")); //$NON-NLS-1$ //$NON-NLS-2$
 
             // get the XmlArray width an adapt ProcessDescription
-            CsvArray csvArray = ShadowProcessHelper.getCsvArray(getProcessDescription(), "FILE_POSITIONAL"); //$NON-NLS-1$
+            CsvArray csvArray = ShadowProcessHelper
+                    .getCsvArray(getProcessDescription(originalValueConnection), "FILE_POSITIONAL"); //$NON-NLS-1$
 
             if (csvArray == null) {
                 informationLabel.setText("   " + Messages.getString("FileStep3.guessFailure")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -162,6 +172,10 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
         metadataNameText.setReadOnly(isReadOnly());
         metadataCommentText.setReadOnly(isReadOnly());
         tableEditorView.setReadOnly(isReadOnly());
+        if (getParent().getChildren().length == 1) { // open the table
+            guessButton.setEnabled(false);
+            informationLabel.setVisible(false);
+        }
     }
 
     @Override
@@ -305,20 +319,20 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
      * 
      * @return processDescription
      */
-    private ProcessDescription getProcessDescription() {
+    private ProcessDescription getProcessDescription(PositionalFileConnection originalValueConnection) {
 
-        ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(getConnection());
+        ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(originalValueConnection);
 
         // Adapt Header width firstRowIsCaption to preview the first line on caption or not
-        if (getConnection().isFirstLineCaption()) {
-            processDescription.setHeaderRow(getConnection().getHeaderValue() - 1);
+        if (originalValueConnection.isFirstLineCaption()) {
+            processDescription.setHeaderRow(originalValueConnection.getHeaderValue() - 1);
         }
 
         // adapt the limit to the extract sames rows of preview
         processDescription.setLimitRows(maximumRowsToPreview);
-        if (getConnection().isUseLimit()) {
-            Integer i = getConnection().getLimitValue();
-            if (getConnection().isFirstLineCaption()) {
+        if (originalValueConnection.isUseLimit()) {
+            Integer i = originalValueConnection.getLimitValue();
+            if (originalValueConnection.isFirstLineCaption()) {
                 i++;
             }
             if (i < maximumRowsToPreview) {
@@ -344,7 +358,7 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
         List<MetadataColumn> columns = new ArrayList<MetadataColumn>();
 
         String[] fieldSeparatorValueArray = null;
-        String fieldSeparatorValues = this.getConnection().getFieldSeparatorValue();
+        String fieldSeparatorValues = getOriginalValueConnection().getFieldSeparatorValue();
 
         if (fieldSeparatorValues != null && fieldSeparatorValues.length() > 0) {
             fieldSeparatorValues = fieldSeparatorValues.substring(1, fieldSeparatorValues.length() - 1);
@@ -358,7 +372,7 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
 
         // define the label to the metadata width the content of the first row
         int firstRowToExtractMetadata = 0;
-        if (getConnection().isFirstLineCaption()) {
+        if (getOriginalValueConnection().isFirstLineCaption()) {
             firstRowToExtractMetadata = 1;
         }
 
@@ -517,7 +531,9 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         if (super.isVisible()) {
-            if (getConnection().getFilePath() != null && (!getConnection().getFilePath().equals("")) //$NON-NLS-1$
+            PositionalFileConnection originalValueConnection = getOriginalValueConnection();
+
+            if (originalValueConnection.getFilePath() != null && (!originalValueConnection.getFilePath().equals("")) //$NON-NLS-1$
                     && (tableEditorView.getMetadataEditor().getBeanCount() <= 0)) {
                 runShadowProcess();
             }
@@ -528,4 +544,12 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
         }
     }
 
+    private PositionalFileConnection getOriginalValueConnection() {
+        if (getConnection().isContextMode() && getContextModeManager() != null) {
+            return (PositionalFileConnection) FileConnectionContextUtils.cloneOriginalValueConnection(getConnection(),
+                    getContextModeManager().getSelectedContextType());
+        }
+        return getConnection();
+
+    }
 }

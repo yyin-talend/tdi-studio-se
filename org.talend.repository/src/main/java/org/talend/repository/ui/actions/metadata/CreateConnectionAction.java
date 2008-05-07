@@ -155,7 +155,7 @@ public class CreateConnectionAction extends AbstractCreateAction {
 
         // Open the Wizard
         WizardDialog wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), databaseWizard);
-        wizardDialog.setPageSize(600, 500);
+        wizardDialog.setPageSize(600, 510);
         wizardDialog.create();
         wizardDialog.open();
         if (isToolbar()) {

@@ -47,6 +47,7 @@ import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
 import org.talend.commons.ui.utils.PathUtils;
 import org.talend.commons.utils.encoding.CharsetToolkit;
+import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.builder.connection.FileFormat;
 import org.talend.core.model.metadata.builder.connection.RowSeparator;
 import org.talend.core.model.properties.ConnectionItem;
@@ -106,8 +107,11 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
      * @param Wizard
      * @param Style
      */
-    public FileStep1Form(Composite parent, ConnectionItem connectionItem, String[] existingNames) {
+    public FileStep1Form(Composite parent, ConnectionItem connectionItem, String[] existingNames,
+            IMetadataContextModeManager contextModeManager) {
         super(parent, connectionItem, existingNames);
+        setConnectionItem(connectionItem);
+        setContextModeManager(contextModeManager);
         setupForm();
     }
 
@@ -138,20 +142,29 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
         fileField.setText(getConnection().getFilePath());
 
         value = getConnection().getFieldSeparatorValue();
+        if (isContextMode() && getContextModeManager() != null) {
+            value = getContextModeManager().getOriginalValue(value);
+        }
 
         // remove quotes.
         if (!value.equals("*")) {
             value = value.substring(1, value.length() - 1);
         }
+
+        if (isContextMode()) {
+            fieldSeparatorText.setText(getConnection().getFieldSeparatorValue());
+        } else {
+            // update the field Separator
+            fieldSeparatorText.setText(value);
+        }
         checkFilePathAndManageIt(false);
-
-        // update the field Separator
-        fieldSeparatorText.setText(value);
-
         // update the positionalViewer
         filePositionalViewer.setSeparatorValue(value, true);
         // update the field Position
         fieldPositionText.setText(filePositionalViewer.calculatePositionX());
+        if (isContextMode()) {
+            adaptFormToEditable();
+        }
     }
 
     /**
@@ -305,8 +318,10 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
         fileField.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
-                getConnection().setFilePath(PathUtils.getPortablePath(fileField.getText()));
-                checkFilePathAndManageIt(true);
+                if (!isContextMode()) {
+                    getConnection().setFilePath(PathUtils.getPortablePath(fileField.getText()));
+                    checkFilePathAndManageIt(true);
+                }
             }
         });
 
@@ -332,27 +347,28 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
         filePositionalViewer.getFieldSeparatorValue().addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
-
-                String value = filePositionalViewer.getFieldSeparatorValue().getText();
-                String valueToField = value;
-                if (fieldSeparatorText.getText().contains("*")) { //$NON-NLS-1$
-                    if (value.equals("")) { //$NON-NLS-1$
-                        valueToField = "*"; //$NON-NLS-1$
-                    } else {
-                        valueToField = value + ",*"; //$NON-NLS-1$
+                if (!isContextMode()) {
+                    String value = filePositionalViewer.getFieldSeparatorValue().getText();
+                    String valueToField = value;
+                    if (fieldSeparatorText.getText().contains("*")) { //$NON-NLS-1$
+                        if (value.equals("")) { //$NON-NLS-1$
+                            valueToField = "*"; //$NON-NLS-1$
+                        } else {
+                            valueToField = value + ",*"; //$NON-NLS-1$
+                        }
                     }
-                }
 
-                if (!fieldSeparatorText.getText().equals(valueToField)) {
-                    // update the field separator Text
-                    fieldSeparatorText.setEditable(false);
-                    fieldSeparatorText.setText(valueToField);
-                    fieldSeparatorText.setEditable(true);
-                    // update the field position Text
-                    fieldPositionText.setEditable(false);
-                    fieldPositionText.setText(filePositionalViewer.calculatePositionX());
-                    fieldPositionText.setEditable(true);
-                    checkFieldsValue();
+                    if (!fieldSeparatorText.getText().equals(valueToField)) {
+                        // update the field separator Text
+                        fieldSeparatorText.setEditable(false);
+                        fieldSeparatorText.setText(valueToField);
+                        fieldSeparatorText.setEditable(true);
+                        // update the field position Text
+                        fieldPositionText.setEditable(false);
+                        fieldPositionText.setText(filePositionalViewer.calculatePositionX());
+                        fieldPositionText.setEditable(true);
+                        checkFieldsValue();
+                    }
                 }
             }
         });
@@ -361,48 +377,50 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
         fieldSeparatorText.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
-                // update the connection
-                getConnection().setFieldSeparatorValue(fieldSeparatorText.getText());
+                if (!isContextMode()) {
+                    // update the connection
+                    getConnection().setFieldSeparatorValue(fieldSeparatorText.getText());
 
-                if (fieldSeparatorText.getEditable()
-                        && getConnection().getFieldSeparatorValue().equals(fieldSeparatorText.getText())) {
+                    if (fieldSeparatorText.getEditable()
+                            && getConnection().getFieldSeparatorValue().equals(fieldSeparatorText.getText())) {
 
-                    // check the value and display the status Error is needed
-                    if (!checkFieldSeparatorValue()) {
-                        // the value isn't correct => clean markers of the positionalViewer
-                        fieldPositionText.setEditable(false);
-                        if (filePositionalViewer.getVisible()) {
-                            filePositionalViewer.cleanAllMarkers();
-                            filePositionalViewer.setEnabled(false);
-                            graphicRule.setEnabled(false);
-                        }
-                    } else {
-                        String value = getValidateFieldSeparator(fieldSeparatorText.getText());
-                        Point selection = fieldSeparatorText.getSelection();
-                        if ((!value.equals(getConnection().getFieldSeparatorValue()))) {
+                        // check the value and display the status Error is needed
+                        if (!checkFieldSeparatorValue()) {
                             // the value isn't correct => clean markers of the positionalViewer
                             fieldPositionText.setEditable(false);
                             if (filePositionalViewer.getVisible()) {
+                                filePositionalViewer.cleanAllMarkers();
                                 filePositionalViewer.setEnabled(false);
                                 graphicRule.setEnabled(false);
-                                filePositionalViewer.cleanAllMarkers();
                             }
                         } else {
-                            // the value is correct
-                            filePositionalViewer.setEnabled(true);
-                            graphicRule.setEnabled(true);
-
-                            // update the positionalViewer
-                            filePositionalViewer.setSeparatorValue(value, filePositionalViewer.getVisible());
-                            // update the field position Text
-                            String newPosition = filePositionalViewer.calculatePositionX();
-                            if (!fieldPositionText.getText().equals(newPosition)) {
+                            String value = getValidateFieldSeparator(fieldSeparatorText.getText());
+                            Point selection = fieldSeparatorText.getSelection();
+                            if ((!value.equals(getConnection().getFieldSeparatorValue()))) {
+                                // the value isn't correct => clean markers of the positionalViewer
                                 fieldPositionText.setEditable(false);
-                                fieldPositionText.setText(newPosition);
+                                if (filePositionalViewer.getVisible()) {
+                                    filePositionalViewer.setEnabled(false);
+                                    graphicRule.setEnabled(false);
+                                    filePositionalViewer.cleanAllMarkers();
+                                }
+                            } else {
+                                // the value is correct
+                                filePositionalViewer.setEnabled(true);
+                                graphicRule.setEnabled(true);
+
+                                // update the positionalViewer
+                                filePositionalViewer.setSeparatorValue(value, filePositionalViewer.getVisible());
+                                // update the field position Text
+                                String newPosition = filePositionalViewer.calculatePositionX();
+                                if (!fieldPositionText.getText().equals(newPosition)) {
+                                    fieldPositionText.setEditable(false);
+                                    fieldPositionText.setText(newPosition);
+                                }
+                                fieldPositionText.setEditable(true);
                             }
-                            fieldPositionText.setEditable(true);
+                            fieldSeparatorText.setSelection(selection.x);
                         }
-                        fieldSeparatorText.setSelection(selection.x);
                     }
                 }
             }
@@ -413,8 +431,12 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
 
             @Override
             public void keyPressed(KeyEvent e) {
-                e.doit = charIsAcceptedOnFieldSeparator(fieldSeparatorText.getText(), e.character, fieldSeparatorText
-                        .getSelection().x);
+                if (isContextMode()) {
+                    e.doit = false;
+                } else {
+                    e.doit = charIsAcceptedOnFieldSeparator(fieldSeparatorText.getText(), e.character, fieldSeparatorText
+                            .getSelection().x);
+                }
             }
         });
 
@@ -422,32 +444,34 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
         fieldPositionText.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
-                if (fieldPositionText.getEditable()) {
-                    if (!checkFieldPositionValue()) {
-                        // the value isn't correct => clean markers of the positionalViewer
-                        fieldSeparatorText.setEditable(false);
-                        if (filePositionalViewer.getVisible()) {
-                            filePositionalViewer.setEnabled(false);
-                            graphicRule.setEnabled(false);
-                            filePositionalViewer.cleanAllMarkers();
-                        }
-                    } else {
-                        filePositionalViewer.setEnabled(true);
-                        graphicRule.setEnabled(true);
-                        String value = getValidateFieldPosition(fieldPositionText.getText());
-                        Point selection = fieldPositionText.getSelection();
-                        // the value is correct
-                        filePositionalViewer.setPositionValue(value, filePositionalViewer.getVisible());
-                        fieldSeparatorText.setEditable(true);
-                        value = filePositionalViewer.getSeparatorValue();
-                        if (fieldSeparatorText.getText().equals("")) { //$NON-NLS-1$
-                            fieldSeparatorText.setText("*"); //$NON-NLS-1$
-                        } else if (fieldSeparatorText.getText().contains("*")) { //$NON-NLS-1$
-                            fieldSeparatorText.setText(value + ",*"); //$NON-NLS-1$
+                if (!isContextMode()) {
+                    if (fieldPositionText.getEditable()) {
+                        if (!checkFieldPositionValue()) {
+                            // the value isn't correct => clean markers of the positionalViewer
+                            fieldSeparatorText.setEditable(false);
+                            if (filePositionalViewer.getVisible()) {
+                                filePositionalViewer.setEnabled(false);
+                                graphicRule.setEnabled(false);
+                                filePositionalViewer.cleanAllMarkers();
+                            }
                         } else {
-                            fieldSeparatorText.setText(value);
+                            filePositionalViewer.setEnabled(true);
+                            graphicRule.setEnabled(true);
+                            String value = getValidateFieldPosition(fieldPositionText.getText());
+                            Point selection = fieldPositionText.getSelection();
+                            // the value is correct
+                            filePositionalViewer.setPositionValue(value, filePositionalViewer.getVisible());
+                            fieldSeparatorText.setEditable(true);
+                            value = filePositionalViewer.getSeparatorValue();
+                            if (fieldSeparatorText.getText().equals("")) { //$NON-NLS-1$
+                                fieldSeparatorText.setText("*"); //$NON-NLS-1$
+                            } else if (fieldSeparatorText.getText().contains("*")) { //$NON-NLS-1$
+                                fieldSeparatorText.setText(value + ",*"); //$NON-NLS-1$
+                            } else {
+                                fieldSeparatorText.setText(value);
+                            }
+                            fieldPositionText.setSelection(selection.x);
                         }
-                        fieldPositionText.setSelection(selection.x);
                     }
                 }
             }
@@ -458,8 +482,12 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
 
             @Override
             public void keyPressed(KeyEvent e) {
-                e.doit = charIsAcceptedOnFieldPosition(fieldPositionText.getText(), e.character,
-                        fieldPositionText.getSelection().x);
+                if (isContextMode()) {
+                    e.doit = false;
+                } else {
+                    e.doit = charIsAcceptedOnFieldPosition(fieldPositionText.getText(), e.character, fieldPositionText
+                            .getSelection().x);
+                }
             }
         });
 
@@ -471,7 +499,11 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
     private void checkFilePathAndManageIt(boolean isNewFile) {
 
         filePathIsDone = false;
-        if (fileField.getText() == "") { //$NON-NLS-1$
+        String fileStr = getConnection().getFilePath();
+        if (isContextMode() && getContextModeManager() != null) {
+            fileStr = getContextModeManager().getOriginalValue(fileStr);
+        }
+        if (fileStr == null || fileStr == "") { //$NON-NLS-1$
             filePositionalViewer.setText("\n" + Messages.getString("FileStep1.fileViewerTip1")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         } else {
@@ -482,7 +514,7 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
 
             try {
 
-                File file = new File(fileField.getText());
+                File file = new File(fileStr);
                 Charset guessedCharset = CharsetToolkit.guessEncoding(file, 4096);
                 if (getConnection().getEncoding() == null || getConnection().getEncoding().equals("")) {
                     getConnection().setEncoding(guessedCharset.displayName());
@@ -490,8 +522,7 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
                 String str;
                 int numberLine = 0;
                 // read the file
-                in = new BufferedReader(new InputStreamReader(new FileInputStream(fileField.getText()), guessedCharset
-                        .displayName()));
+                in = new BufferedReader(new InputStreamReader(new FileInputStream(fileStr), guessedCharset.displayName()));
 
                 previewRows.append("\n");
                 while (((str = in.readLine()) != null) && (numberLine <= maximumRowsToPreview)) {
@@ -503,14 +534,14 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
                 // show lines
                 filePositionalViewer.setText(new String(previewRows));
                 filePathIsDone = true;
-                if (isNewFile) {
+                if (isNewFile && !isContextMode()) {
                     fieldSeparatorText.setText("*"); //$NON-NLS-1$
                     filePositionalViewer.setSeparatorValue("*", true); //$NON-NLS-1$
                     getConnection().setFieldSeparatorValue("*"); //$NON-NLS-1$
                 }
 
             } catch (Exception e) {
-                String msgError = Messages.getString("FileStep1.filepath") + " \"" + fileField.getText().replace("\\\\", "\\") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                String msgError = Messages.getString("FileStep1.filepath") + " \"" + fileStr.replace("\\\\", "\\") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                         + "\"\n"; //$NON-NLS-1$
                 if (e instanceof FileNotFoundException) {
                     msgError = msgError + Messages.getString("FileStep1.fileNotFoundException"); //$NON-NLS-1$
@@ -519,14 +550,14 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
                 } else if (e instanceof IOException) {
                     msgError = msgError + Messages.getString("FileStep1.fileLocked"); //$NON-NLS-1$
                 } else {
-                    msgError = Messages.getString("FileStep1.filepath") + " \"" + fileField.getText().replace("\\\\", "\\") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                    msgError = Messages.getString("FileStep1.filepath") + " \"" + fileStr.replace("\\\\", "\\") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                             + "\" " + Messages.getString("FileStep1.noExist"); //$NON-NLS-1$ //$NON-NLS-2$
                 }
                 filePositionalViewer.setText("\n" + msgError); //$NON-NLS-1$
                 updateStatus(IStatus.ERROR, msgError);
                 log.error(msgError + " " + e.getMessage()); //$NON-NLS-1$
             } finally {
-                String msgError = Messages.getString("FileStep1.filepath") + " \"" + fileField.getText().replace("\\\\", "\\") + "\"\n"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+                String msgError = Messages.getString("FileStep1.filepath") + " \"" + fileStr.replace("\\\\", "\\") + "\"\n"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
                 try {
                     if (in != null) {
                         in.close();
@@ -569,7 +600,9 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
         // updateStatus(IStatus.ERROR, Messages.getString("FileStep1.serverAlert")); //$NON-NLS-1$
         // return false;
         // } else {
-        fileField.setEditable(true);
+        if (!isContextMode()) {
+            fileField.setEditable(true);
+        }
         fileFormatCombo.setEnabled(true);
         // }
 
@@ -601,6 +634,9 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
      * @return
      */
     protected boolean checkFieldSeparatorValue() {
+        if (isContextMode()) {
+            return true;
+        }
         if (fieldSeparatorText.getText().length() <= 1) {
             // fieldSeparatorText can't be empty
             if (fieldSeparatorText.getText().equals("") || fieldSeparatorText.getText().equals("0")) { //$NON-NLS-1$ //$NON-NLS-2$
@@ -632,6 +668,9 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
      * @return
      */
     protected boolean checkFieldPositionValue() {
+        if (isContextMode()) {
+            return true;
+        }
         if (fieldPositionText.getText().length() <= 1) {
             // fieldPositionText can't be empty
             if (fieldPositionText.getText().equals("")) { //$NON-NLS-1$
@@ -670,10 +709,17 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
         super.setVisible(visible);
 
         if (super.isVisible()) {
+
             // Adapt the UI fieldSeparator and Position to step1
             String value = getConnection().getFieldSeparatorValue();
+            if (isContextMode() && getContextModeManager() != null) {
+                value = getContextModeManager().getOriginalValue(value);
+            }
+
             value = TalendTextUtils.removeQuotes(value, TalendTextUtils.QUOTATION_MARK);
-            fieldSeparatorText.setText(value);
+            if (!isContextMode()) {
+                fieldSeparatorText.setText(value);
+            }
             if (value.endsWith("*")) {
                 value = value.substring(0, value.length() - 1);
             }
@@ -686,7 +732,20 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
             if (isReadOnly() != readOnly) {
                 adaptFormToReadOnly();
             }
+            if (isContextMode()) {
+                initialize();
+            }
         }
     }
 
+    @Override
+    protected void adaptFormToEditable() {
+        super.adaptFormToEditable();
+        fileField.setEditable(!isContextMode());
+        fieldSeparatorText.setEditable(!isContextMode());
+        fieldPositionText.setEditable(!isContextMode());
+
+        filePositionalViewer.setEnabled(!isContextMode());
+        fileFormatCombo.setReadOnly(isContextMode());
+    }
 }

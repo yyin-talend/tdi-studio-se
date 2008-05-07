@@ -39,6 +39,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
+import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.ConnectionItem;
@@ -46,7 +47,7 @@ import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.EAliasesDereference;
 import org.talend.repository.model.EAuthenticationMethod;
 import org.talend.repository.model.EReferrals;
-import org.talend.repository.ui.swt.utils.AbstractForm;
+import org.talend.repository.ui.swt.utils.AbstractLDAPSchemaStepForm;
 
 /**
  * The class is used for LDAP schema on Repository View. <br/>
@@ -54,7 +55,7 @@ import org.talend.repository.ui.swt.utils.AbstractForm;
  * @author ftang, 18/09/2007
  * 
  */
-public class LDAPSchemaStep2Form extends AbstractForm {
+public class LDAPSchemaStep2Form extends AbstractLDAPSchemaStepForm {
 
     /** The combo to select the authentication method */
     private Combo authenticationMethodCombo;
@@ -70,10 +71,6 @@ public class LDAPSchemaStep2Form extends AbstractForm {
 
     /** The button to check the authentication parameters */
     private Button checkPrincipalPasswordAuthButton;;
-
-    private ConnectionItem connectionItem;
-
-    private MetadataTable metadataTable;
 
     private Group authParamGroup;
 
@@ -114,12 +111,12 @@ public class LDAPSchemaStep2Form extends AbstractForm {
 
     private String alertForFetchBaseDNs = "Base DNs are required. Click the Fetch button to get them.";
 
-    public LDAPSchemaStep2Form(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable,
-            String[] tableNames) {
-        super(parent, SWT.NONE, tableNames);
-        this.connectionItem = connectionItem;
-        this.metadataTable = metadataTable;
-        setupForm();
+    public LDAPSchemaStep2Form(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable, String[] tableNames,
+            IMetadataContextModeManager contextModeManager) {
+        super(parent, connectionItem, metadataTable, tableNames);
+        setConnectionItem(connectionItem);
+        setContextModeManager(contextModeManager);
+        setupForm(true);
     }
 
     /*
@@ -156,7 +153,8 @@ public class LDAPSchemaStep2Form extends AbstractForm {
     private void addAuthParameterInput(Composite inputComposite) {
         Composite composite2 = BaseWidgetUtils.createColumnContainer(inputComposite, 1, 1);
         // composite2.setEnabled(false);
-        authParamGroup = BaseWidgetUtils.createGroup(composite2, Messages.getString("LDAPSchemaStep2Form.AuthenticationParameter"), 1); //$NON-NLS-1$
+        authParamGroup = BaseWidgetUtils.createGroup(composite2, Messages
+                .getString("LDAPSchemaStep2Form.AuthenticationParameter"), 1); //$NON-NLS-1$
         Composite composite = BaseWidgetUtils.createColumnContainer(authParamGroup, 3, 1);
 
         // composite.setEnabled(false);
@@ -169,7 +167,8 @@ public class LDAPSchemaStep2Form extends AbstractForm {
         bindPasswordText = BaseWidgetUtils.createPasswordText(composite, "", 2);
 
         BaseWidgetUtils.createSpacer(composite, 1);
-        saveBindPasswordButton = BaseWidgetUtils.createCheckbox(composite, Messages.getString("LDAPSchemaStep2Form.SavePassword"), 1); //$NON-NLS-1$
+        saveBindPasswordButton = BaseWidgetUtils.createCheckbox(composite,
+                Messages.getString("LDAPSchemaStep2Form.SavePassword"), 1); //$NON-NLS-1$
         saveBindPasswordButton.setSelection(true);
         saveBindPasswordButton.setEnabled(true);
 
@@ -190,8 +189,7 @@ public class LDAPSchemaStep2Form extends AbstractForm {
         Group group1 = BaseWidgetUtils.createGroup(composite1, Messages.getString("LDAPSchemaStep2Form.AuthenticationMethod"), 1); //$NON-NLS-1$
         Composite groupComposite = BaseWidgetUtils.createColumnContainer(group1, 1, 1);
 
-        String[] authMethods = new String[] { EAuthenticationMethod.ANONYMOUS.getName(),
-                EAuthenticationMethod.SIMPLE.getName() };
+        String[] authMethods = new String[] { EAuthenticationMethod.ANONYMOUS.getName(), EAuthenticationMethod.SIMPLE.getName() };
         // "DIGEST-MD5 (SASL)", "CRAM-MD5 (SASL)"
         authenticationMethodCombo = BaseWidgetUtils.createReadonlyCombo(groupComposite, authMethods, 1, 2);
     }
@@ -208,7 +206,8 @@ public class LDAPSchemaStep2Form extends AbstractForm {
         Composite groupComposite = BaseWidgetUtils.createColumnContainer(group, 3, 1);
         GridData gd;
 
-        autoFetchBaseDnsButton = BaseWidgetUtils.createCheckbox(groupComposite, Messages.getString("LDAPSchemaStep2Form.GetBaseDNS"), 2); //$NON-NLS-1$
+        autoFetchBaseDnsButton = BaseWidgetUtils.createCheckbox(groupComposite, Messages
+                .getString("LDAPSchemaStep2Form.GetBaseDNS"), 2); //$NON-NLS-1$
         autoFetchBaseDnsButton.setSelection(true);
 
         fetchBaseDnsButton = new Button(groupComposite, SWT.PUSH);
@@ -254,19 +253,23 @@ public class LDAPSchemaStep2Form extends AbstractForm {
         bindPrincipalCombo.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
-                checkFieldsValue();
-                connection.setBindPrincipal(bindPrincipalCombo.getText().trim());
+                if (!isContextMode()) {
+                    checkFieldsValue();
+                    connection.setBindPrincipal(bindPrincipalCombo.getText().trim());
+                }
             }
         });
 
         bindPasswordText.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent event) {
-                checkFieldsValue();
-                password = bindPasswordText.getText().trim();
-                if (saveBindPasswordButton.getSelection() == true) {
-                    connection.setSavePassword(true);
-                    connection.setBindPassword(password);
+                if (!isContextMode()) {
+                    checkFieldsValue();
+                    password = bindPasswordText.getText().trim();
+                    if (saveBindPasswordButton.getSelection() == true) {
+                        connection.setSavePassword(true);
+                        connection.setBindPassword(password);
+                    }
                 }
             }
         });
@@ -300,7 +303,7 @@ public class LDAPSchemaStep2Form extends AbstractForm {
                         public void run(IProgressMonitor monitor) {
 
                             connection.setUseAuthen(true);
-                            isOK = LDAPConnectionUtils.checkParam(connection);
+                            isOK = LDAPConnectionUtils.checkParam(getOriginalValueConnection());
 
                         }
                     };
@@ -317,10 +320,11 @@ public class LDAPSchemaStep2Form extends AbstractForm {
 
                 connection.setUseAuthen(true);
                 if (isOK) {
-
-                    saveDialogSettings();
-                    MessageDialog.openInformation(Display.getDefault().getActiveShell(),
-                            "Check Authentication Parameter", "The authentication check succeeded.");
+                    if (!isContextMode()) {
+                        saveDialogSettings();
+                    }
+                    MessageDialog.openInformation(Display.getDefault().getActiveShell(), "Check Authentication Parameter",
+                            "The authentication check succeeded.");
                     updateStatus(IStatus.ERROR, alertForFetchBaseDNs);
                 } else {
 
@@ -354,7 +358,7 @@ public class LDAPSchemaStep2Form extends AbstractForm {
 
                         public void run(IProgressMonitor monitor) {
 
-                            isOK = LDAPConnectionUtils.checkParam(connection);
+                            isOK = LDAPConnectionUtils.checkParam(getOriginalValueConnection());
 
                             if (isOK) {
                                 dnList = LDAPConnectionUtils.fetchBaseDNs();
@@ -381,7 +385,9 @@ public class LDAPSchemaStep2Form extends AbstractForm {
                 }
 
                 if (isOK) {
-                    saveDialogSettings();
+                    if (!isContextMode()) {
+                        saveDialogSettings();
+                    }
                     MessageDialog.openInformation(Display.getDefault().getActiveShell(), "Fetch base DNs",
                             "Base DNs was fetched successfully.");
                     updateStatus(IStatus.OK, null);
@@ -459,17 +465,21 @@ public class LDAPSchemaStep2Form extends AbstractForm {
         countLimitText.addVerifyListener(new VerifyListener() {
 
             public void verifyText(VerifyEvent e) {
-                if (!e.text.matches("[0-9]*")) {
-                    e.doit = false;
+                if (!isContextMode()) {
+                    if (!e.text.matches("[0-9]*")) {
+                        e.doit = false;
+                    }
                 }
             }
         });
         countLimitText.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
-                String countLimit = countLimitText.getText();
-                if (countLimit != null && countLimit.length() > 0) {
-                    connection.setCountLimit(countLimit);
+                if (!isContextMode()) {
+                    String countLimit = countLimitText.getText();
+                    if (countLimit != null && countLimit.length() > 0) {
+                        connection.setCountLimit(countLimit);
+                    }
                 }
             }
         });
@@ -477,17 +487,21 @@ public class LDAPSchemaStep2Form extends AbstractForm {
         timeLimitText.addVerifyListener(new VerifyListener() {
 
             public void verifyText(VerifyEvent e) {
-                if (!e.text.matches("[0-9]*")) {
-                    e.doit = false;
+                if (!isContextMode()) {
+                    if (!e.text.matches("[0-9]*")) {
+                        e.doit = false;
+                    }
                 }
             }
         });
         timeLimitText.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
-                String timeLimit = timeLimitText.getText();
-                if (timeLimit != null && timeLimit.length() > 0) {
-                    connection.setTimeOutLimit(timeLimit);
+                if (!isContextMode()) {
+                    String timeLimit = timeLimitText.getText();
+                    if (timeLimit != null && timeLimit.length() > 0) {
+                        connection.setTimeOutLimit(timeLimit);
+                    }
                 }
             }
         });
@@ -522,15 +536,15 @@ public class LDAPSchemaStep2Form extends AbstractForm {
             updateStatus(IStatus.ERROR, "Bind DN or user name must be specified"); //$NON-NLS-1$
             return false;
         }
-//        } else if (isSampleAuthMethod && (bindPasswordText.getText() == null || bindPasswordText.getText().equals(""))) {
-//            // bindPasswordText.forceFocus();
-//            this.checkPrincipalPasswordAuthButton.setEnabled(false);
-//            this.fetchBaseDnsButton.setEnabled(false);
-//            updateStatus(IStatus.ERROR, "Bind password must be specified"); //$NON-NLS-1$
-//            return false;
-//        } 
-            else if (isSampleAuthMethod
-                && (bindPasswordText.getText() == null || bindPasswordText.getText().length() > 0)) {
+        // } else if (isSampleAuthMethod && (bindPasswordText.getText() == null ||
+        // bindPasswordText.getText().equals(""))) {
+        // // bindPasswordText.forceFocus();
+        // this.checkPrincipalPasswordAuthButton.setEnabled(false);
+        // this.fetchBaseDnsButton.setEnabled(false);
+        // updateStatus(IStatus.ERROR, "Bind password must be specified"); //$NON-NLS-1$
+        // return false;
+        // }
+        else if (isSampleAuthMethod && (bindPasswordText.getText() == null || bindPasswordText.getText().length() > 0)) {
             updateStatus(IStatus.ERROR, "Please click \"Check Authentication\" button to verify Authentication.");
             checkPrincipalPasswordAuthButton.setEnabled(true);
             return false;
@@ -649,7 +663,7 @@ public class LDAPSchemaStep2Form extends AbstractForm {
         }
 
         checkFieldsValue();
-        
+
     }
 
     /**
@@ -669,16 +683,13 @@ public class LDAPSchemaStep2Form extends AbstractForm {
         Group aliasesDereferenceGroup = BaseWidgetUtils.createGroup(parent, "Aliases Dereferencing", 1);
         Composite groupComposite = BaseWidgetUtils.createColumnContainer(aliasesDereferenceGroup, 1, 1);
 
-        findingButton = BaseWidgetUtils.createRadiobutton(groupComposite, EAliasesDereference.FINDING.getDisplayName(),
-                1);
+        findingButton = BaseWidgetUtils.createRadiobutton(groupComposite, EAliasesDereference.FINDING.getDisplayName(), 1);
 
-        searchButton = BaseWidgetUtils.createRadiobutton(groupComposite,
-                EAliasesDereference.SEARCHING.getDisplayName(), 1);
+        searchButton = BaseWidgetUtils.createRadiobutton(groupComposite, EAliasesDereference.SEARCHING.getDisplayName(), 1);
 
         neverButton = BaseWidgetUtils.createRadiobutton(groupComposite, EAliasesDereference.NEVER.getDisplayName(), 1);
 
-        alwaysButton = BaseWidgetUtils
-                .createRadiobutton(groupComposite, EAliasesDereference.ALWAYS.getDisplayName(), 1);
+        alwaysButton = BaseWidgetUtils.createRadiobutton(groupComposite, EAliasesDereference.ALWAYS.getDisplayName(), 1);
 
         // Selected by default
         alwaysButton.setSelection(true);
@@ -728,8 +739,10 @@ public class LDAPSchemaStep2Form extends AbstractForm {
      */
     private void refreshAuthParamGroup(final LDAPSchemaConnection connection, boolean isEnabledAllowed) {
         authParamGroup.setEnabled(isEnabledAllowed);
-        bindPrincipalCombo.setEnabled(isEnabledAllowed);
-        bindPasswordText.setEnabled(isEnabledAllowed);
+        if (!isContextMode()) {
+            bindPrincipalCombo.setEnabled(isEnabledAllowed);
+            bindPasswordText.setEnabled(isEnabledAllowed);
+        }
         saveBindPasswordButton.setEnabled(isEnabledAllowed);
         checkPrincipalPasswordAuthButton.setEnabled(false);
         if (isEnabledAllowed) {
@@ -737,8 +750,7 @@ public class LDAPSchemaStep2Form extends AbstractForm {
 
             String principalText = bindPrincipalCombo.getText();
             String passwordText = bindPasswordText.getText();
-            if (principalText != null && principalText.length() > 0 && passwordText != null
-                    && passwordText.length() > 0) {
+            if (principalText != null && principalText.length() > 0 && passwordText != null && passwordText.length() > 0) {
                 checkPrincipalPasswordAuthButton.setEnabled(true);
                 fetchBaseDnsButton.setEnabled(true);
             } else {
@@ -747,6 +759,35 @@ public class LDAPSchemaStep2Form extends AbstractForm {
         } else {
             connection.setProtocol(EAuthenticationMethod.ANONYMOUS.getName());
             fetchBaseDnsButton.setEnabled(true);
+        }
+    }
+
+    @Override
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
+        if (isContextMode()) {
+            adaptFormToEditable();
+        }
+    }
+
+    @Override
+    protected void adaptFormToEditable() {
+        super.adaptFormToEditable();
+        bindPrincipalCombo.setEnabled(!isContextMode());
+        bindPasswordText.setEditable(!isContextMode());
+        countLimitText.setEditable(!isContextMode());
+        timeLimitText.setEditable(!isContextMode());
+
+        if (isContextMode()) { // clear the echo
+            bindPasswordText.setEchoChar('\0');
+        }
+    }
+
+    @Override
+    protected void exportAsContext() {
+        super.exportAsContext();
+        if (getContextModeManager() != null) {
+            getContextModeManager().setDefaultContextType(getConnection());
         }
     }
 

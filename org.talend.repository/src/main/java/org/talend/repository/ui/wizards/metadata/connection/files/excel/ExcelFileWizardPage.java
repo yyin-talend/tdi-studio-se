@@ -15,6 +15,7 @@ package org.talend.repository.ui.wizards.metadata.connection.files.excel;
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
+import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.builder.connection.FileExcelConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
@@ -37,6 +38,8 @@ public class ExcelFileWizardPage extends WizardPage {
 
     private boolean isRepositoryObjectEditable;
 
+    private IMetadataContextModeManager contextModeManager;
+
     /**
      * DOC ocarbone LdifFileWizardPage constructor comment.
      * 
@@ -45,12 +48,14 @@ public class ExcelFileWizardPage extends WizardPage {
      * @param isRepositoryObjectEditable
      * @param existingNames
      */
-    public ExcelFileWizardPage(int step, ConnectionItem connectionItem, boolean isRepositoryObjectEditable, String[] existingNames) {
+    public ExcelFileWizardPage(int step, ConnectionItem connectionItem, boolean isRepositoryObjectEditable,
+            String[] existingNames, IMetadataContextModeManager contextModeManager) {
         super("wizardPage"); //$NON-NLS-1$
         this.step = step;
         this.connectionItem = connectionItem;
         this.existingNames = existingNames;
         this.isRepositoryObjectEditable = isRepositoryObjectEditable;
+        this.contextModeManager = contextModeManager;
     }
 
     /**
@@ -61,14 +66,14 @@ public class ExcelFileWizardPage extends WizardPage {
         currentComposite = null;
 
         if (step == 1) {
-            currentComposite = new ExcelFileStep1Form(parent, connectionItem, existingNames);
+            currentComposite = new ExcelFileStep1Form(parent, connectionItem, existingNames, contextModeManager);
         } else if (step == 2) {
-            currentComposite = new ExcelFileStep2Form(parent, connectionItem);
+            currentComposite = new ExcelFileStep2Form(parent, connectionItem, contextModeManager);
         } else if (step == 3) {
             MetadataTable metadataTable = (MetadataTable) ((FileExcelConnection) connectionItem.getConnection()).getTables().get(
                     0);
             currentComposite = new ExcelFileStep3Form(parent, connectionItem, metadataTable, TableHelper.getTableNames(
-                    ((FileExcelConnection) connectionItem.getConnection()), metadataTable.getLabel()));
+                    ((FileExcelConnection) connectionItem.getConnection()), metadataTable.getLabel()), contextModeManager);
         }
 
         currentComposite.setReadOnly(!isRepositoryObjectEditable);

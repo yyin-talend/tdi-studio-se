@@ -49,14 +49,16 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.thread.SWTUIThreadProcessor;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
+import org.talend.core.model.metadata.IMetadataContextModeManager;
+import org.talend.core.model.metadata.builder.connection.LdifFileConnection;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.utils.CsvArray;
-import org.talend.core.utils.XmlArray;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.preview.ProcessDescription;
 import org.talend.repository.ui.swt.preview.ShadowProcessPreview;
 import org.talend.repository.ui.swt.utils.AbstractLdifFileStepForm;
 import org.talend.repository.ui.swt.utils.IRefreshable;
+import org.talend.repository.ui.utils.OtherConnectionContextUtils;
 import org.talend.repository.ui.utils.ShadowProcessHelper;
 
 /**
@@ -107,9 +109,11 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm implements IRefr
      * @param Wizard
      * @param Style
      */
-    public LdifFileStep2Form(Composite parent, ConnectionItem connectionItem) {
+    public LdifFileStep2Form(Composite parent, ConnectionItem connectionItem, IMetadataContextModeManager contextModeManager) {
         super(parent, connectionItem);
-        setupForm();
+        setConnectionItem(connectionItem);
+        setContextModeManager(contextModeManager);
+        setupForm(true);
     }
 
     /**
@@ -203,11 +207,15 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm implements IRefr
 
         itemTableName = new ArrayList<String>();
 
-        String filename = new String(getConnection().getFilePath());
+        String filePath = getConnection().getFilePath();
+        if (isContextMode() && getContextModeManager() != null) {
+            filePath = getContextModeManager().getOriginalValue(filePath);
+        }
+
         Attributes entry = null;
         BufferedReader bufReader = null;
 
-        bufReader = new BufferedReader(new FileReader(filename), 1024);
+        bufReader = new BufferedReader(new FileReader(filePath), 1024);
         LDIFReader ldif = new LDIFReader(bufReader);
         itemTableName = new ArrayList<String>();
 
@@ -331,9 +339,9 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm implements IRefr
      * 
      * @return processDescription
      */
-    private ProcessDescription getProcessDescription() {
+    private ProcessDescription getProcessDescription(LdifFileConnection originalValueConnection) {
 
-        ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(getConnection());
+        ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(originalValueConnection);
         return processDescription;
     }
 
@@ -361,8 +369,18 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm implements IRefr
 
             clearPreview();
 
+            String filePath = getConnection().getFilePath();
+            LdifFileConnection originalValueConnection = null;
+            if (isContextMode() && getContextModeManager() != null) {
+                filePath = getContextModeManager().getOriginalValue(getConnection().getFilePath());
+                originalValueConnection = (LdifFileConnection) OtherConnectionContextUtils.cloneOriginalValueLdifFileConnection(
+                        getConnection(), getContextModeManager().getSelectedContextType());
+            } else {
+                filePath = null;
+            }
+
             // if no file, the process don't be executed
-            if (getConnection().getFilePath() == null || getConnection().getFilePath().equals("")) { //$NON-NLS-1$
+            if (filePath == null || filePath.equals("")) { //$NON-NLS-1$
                 previewInformationLabel.setText("   " + Messages.getString("FileStep2.filePathIncomplete")); //$NON-NLS-1$ //$NON-NLS-2$
                 return false;
             }
@@ -374,7 +392,10 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm implements IRefr
             }
 
             previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewProgress")); //$NON-NLS-1$ //$NON-NLS-2$
-            processDescription = getProcessDescription();
+            if (originalValueConnection == null) {
+                originalValueConnection = getConnection();
+            }
+            processDescription = getProcessDescription(originalValueConnection);
             return true;
         }
 
@@ -597,15 +618,20 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm implements IRefr
 
             // Refresh the preview width the adapted rowSeparator
             // If metadata exist, refreshMetadata
-            if (getConnection().getFilePath() != null && !("").equals(getConnection().getFilePath()) //$NON-NLS-1$
-                    && getConnection().getValue() != null && !getConnection().getValue().isEmpty()) {
-                refreshPreview();
+            if (!isContextMode()) {
+                if (getConnection().getFilePath() != null && !("").equals(getConnection().getFilePath()) //$NON-NLS-1$
+                        && getConnection().getValue() != null && !getConnection().getValue().isEmpty()) {
+                    refreshPreview();
+                }
             }
             if (getConnection().getValue() != null && !getConnection().getValue().isEmpty()) {
                 checkTheRightAttributes(getConnection().getValue());
             }
             if (isReadOnly() != readOnly) {
                 adaptFormToReadOnly();
+            }
+            if (isContextMode()) {
+                adaptFormToEditable();
             }
         }
     }
@@ -618,5 +644,18 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm implements IRefr
     public void refresh() {
         refreshPreview();
 
+    }
+
+    @Override
+    protected void adaptFormToEditable() {
+        super.adaptFormToEditable();
+    }
+
+    @Override
+    protected void exportAsContext() {
+        super.exportAsContext();
+        if (getContextModeManager() != null) {
+            getContextModeManager().setDefaultContextType(getConnection());
+        }
     }
 }

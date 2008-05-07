@@ -25,6 +25,7 @@ import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.FileExcelConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
@@ -34,13 +35,16 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
+import org.talend.repository.ui.utils.ConnectionContextHelper;
 import org.talend.repository.ui.wizards.PropertiesWizardPage;
 import org.talend.repository.ui.wizards.RepositoryWizard;
+import org.talend.repository.ui.wizards.metadata.MetadataContextModeManager;
 import org.talend.repository.ui.wizards.metadata.connection.Step0WizardPage;
 
 /**
@@ -63,6 +67,8 @@ public class ExcelFileWizard extends RepositoryWizard implements INewWizard {
     private Property connectionProperty;
 
     private ConnectionItem connectionItem;
+
+    private IMetadataContextModeManager contextModeManager;
 
     public ExcelFileWizard(IWorkbench workbench, boolean creation, ISelection selection, String[] existingNames) {
         super(workbench, creation);
@@ -113,6 +119,7 @@ public class ExcelFileWizard extends RepositoryWizard implements INewWizard {
             initLockStrategy();
             break;
         }
+        initConnection();
     }
 
     public ExcelFileWizard(IWorkbench workbench, boolean creation, RepositoryNode node, String[] existingNames) {
@@ -160,6 +167,17 @@ public class ExcelFileWizard extends RepositoryWizard implements INewWizard {
             isRepositoryObjectEditable();
             initLockStrategy();
             break;
+        }
+        initConnection();
+    }
+
+    private void initConnection() {
+        ConnectionContextHelper.checkContextMode(connectionItem);
+        contextModeManager = new MetadataContextModeManager();
+        if (connectionItem.getConnection().isContextMode()) {
+            ContextType contextTypeForContextMode = ConnectionContextHelper.getContextTypeForContextMode(connectionItem
+                    .getConnection());
+            contextModeManager.setSelectedContextType(contextTypeForContextMode);
         }
     }
 
@@ -233,7 +251,7 @@ public class ExcelFileWizard extends RepositoryWizard implements INewWizard {
             setWindowTitle(Messages.getString("ExcelFileWizard.windowTitleUpdate")); //$NON-NLS-1$
         }
 
-        page1 = new ExcelFileWizardPage(1, connectionItem, isRepositoryObjectEditable(), existingNames);
+        page1 = new ExcelFileWizardPage(1, connectionItem, isRepositoryObjectEditable(), existingNames, contextModeManager);
 
         page1.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 2 " //$NON-NLS-1$ //$NON-NLS-2$
                 + Messages.getString("FileWizardPage.of") + " 4"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -241,7 +259,7 @@ public class ExcelFileWizard extends RepositoryWizard implements INewWizard {
 
         addPage(page1);
 
-        page2 = new ExcelFileWizardPage(2, connectionItem, isRepositoryObjectEditable(), existingNames);
+        page2 = new ExcelFileWizardPage(2, connectionItem, isRepositoryObjectEditable(), existingNames, contextModeManager);
 
         page2.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 3 " //$NON-NLS-1$ //$NON-NLS-2$
                 + Messages.getString("FileWizardPage.of") + " 4"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -249,17 +267,19 @@ public class ExcelFileWizard extends RepositoryWizard implements INewWizard {
 
         addPage(page2);
 
-        page3 = new ExcelFileWizardPage(3, connectionItem, isRepositoryObjectEditable(), existingNames);
+        if (creation) {
+            page3 = new ExcelFileWizardPage(3, connectionItem, isRepositoryObjectEditable(), existingNames, contextModeManager);
 
-        page3.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 4 " //$NON-NLS-1$ //$NON-NLS-2$
-                + Messages.getString("FileWizardPage.of") + " 4 "); //$NON-NLS-1$ //$NON-NLS-2$
-        page3.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep3")); //$NON-NLS-1$
+            page3.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 4 " //$NON-NLS-1$ //$NON-NLS-2$
+                    + Messages.getString("FileWizardPage.of") + " 4 "); //$NON-NLS-1$ //$NON-NLS-2$
+            page3.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep3")); //$NON-NLS-1$
 
-        addPage(page3);
+            addPage(page3);
+
+            page3.setPageComplete(false);
+        }
 
         page1.setPageComplete(false);
         page2.setPageComplete(false);
-        page3.setPageComplete(false);
-
     }
 }

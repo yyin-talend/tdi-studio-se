@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.repository.ui.utils;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,12 +30,18 @@ import org.talend.core.language.LanguageManager;
 import org.talend.core.model.context.ContextUtils;
 import org.talend.core.model.context.JobContextParameter;
 import org.talend.core.model.metadata.MetadataTalendType;
+import org.talend.core.model.metadata.builder.connection.AbstractMetadataObject;
 import org.talend.core.model.metadata.builder.connection.Connection;
+import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.FileConnection;
 import org.talend.core.model.metadata.builder.connection.GenericSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.LdifFileConnection;
+import org.talend.core.model.metadata.builder.connection.MetadataColumn;
+import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.core.model.metadata.builder.connection.QueriesConnection;
+import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.SalesforceSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
@@ -53,6 +60,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.utils.ContextParameterUtils;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.RepositoryPlugin;
@@ -155,17 +163,17 @@ public final class ConnectionContextHelper {
         if (conn instanceof DatabaseConnection) {
             varList = DBConnectionContextUtils.getDBVariables(label, (DatabaseConnection) conn);
         } else if (conn instanceof FileConnection) {
-            // varList = FileConnectionContextUtils.getDBVariables(label, (FileConnection) conn);
+            varList = FileConnectionContextUtils.getFileVariables(label, (FileConnection) conn);
         } else if (conn instanceof LdifFileConnection) {
-            //
+            varList = OtherConnectionContextUtils.getLdifFileVariables(label, (LdifFileConnection) conn);
         } else if (conn instanceof XmlFileConnection) {
-            //
+            varList = OtherConnectionContextUtils.getXmlFileVariables(label, (XmlFileConnection) conn);
         } else if (conn instanceof LDAPSchemaConnection) {
-            //
+            varList = OtherConnectionContextUtils.getLDAPSchemaVariables(label, (LDAPSchemaConnection) conn);
         } else if (conn instanceof WSDLSchemaConnection) {
-            //
+            varList = OtherConnectionContextUtils.getWSDLSchemaVariables(label, (WSDLSchemaConnection) conn);
         } else if (conn instanceof SalesforceSchemaConnection) {
-            //
+            varList = OtherConnectionContextUtils.getSalesforceVariables(label, (SalesforceSchemaConnection) conn);
         } else if (conn instanceof GenericSchemaConnection) {
             //
         }
@@ -183,17 +191,17 @@ public final class ConnectionContextHelper {
         if (conn instanceof DatabaseConnection) {
             DBConnectionContextUtils.setPropertiesForContextMode(label, (DatabaseConnection) conn);
         } else if (conn instanceof FileConnection) {
-            // FileConnectionContextUtils.setPropertiesForContextMode(label, (FileConnection) conn);
+            FileConnectionContextUtils.setPropertiesForContextMode(label, (FileConnection) conn);
         } else if (conn instanceof LdifFileConnection) {
-            //
+            OtherConnectionContextUtils.setLdifFilePropertiesForContextMode(label, (LdifFileConnection) conn);
         } else if (conn instanceof XmlFileConnection) {
-            //
+            OtherConnectionContextUtils.setXmlFilePropertiesForContextMode(label, (XmlFileConnection) conn);
         } else if (conn instanceof LDAPSchemaConnection) {
-            //
+            OtherConnectionContextUtils.setLDAPSchemaPropertiesForContextMode(label, (LDAPSchemaConnection) conn);
         } else if (conn instanceof WSDLSchemaConnection) {
-            //
+            OtherConnectionContextUtils.setWSDLSchemaPropertiesForContextMode(label, (WSDLSchemaConnection) conn);
         } else if (conn instanceof SalesforceSchemaConnection) {
-            //
+            OtherConnectionContextUtils.setSalesforcePropertiesForContextMode(label, (SalesforceSchemaConnection) conn);
         } else if (conn instanceof GenericSchemaConnection) {
             //
         }
@@ -455,13 +463,17 @@ public final class ConnectionContextHelper {
         return getContextTypeForContextMode(null, connection, null, defaultContext);
     }
 
+    public static ContextType getContextTypeForContextMode(Shell shell, Connection connection) {
+        return getContextTypeForContextMode(shell, connection, null, false);
+    }
+
     /**
      * 
      * ggu Comment method "getContextTypeForContextMode".
      * 
      * if connection is in context mode,choose the context. if return null, the connection is not in context mode
      */
-    private static ContextType getContextTypeForContextMode(Shell shell, Connection connection, String selectedContext,
+    public static ContextType getContextTypeForContextMode(Shell shell, Connection connection, String selectedContext,
             boolean defaultContext) {
         if (connection == null) {
             return null;
@@ -505,12 +517,105 @@ public final class ConnectionContextHelper {
                         break;
                     }
                 }
-                if (param != null && param.getValue() != null) {
-                    return param.getValue();
+                if (param != null) {
+                    String value2 = param.getValue();
+                    if (value2 != null) {
+                        return TalendTextUtils.removeQuotes(value2);
+                    }
                 }
                 return EMPTY;
             }
         }
         return value;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static void cloneConnectionProperties(Connection sourceConn, Connection targetConn) {
+        if (sourceConn == null || targetConn == null) {
+            return;
+        }
+        cloneConnectionProperties((AbstractMetadataObject) sourceConn, (AbstractMetadataObject) targetConn);
+
+        // not clone
+        // targetConn.setContextId(sourceConn.getContextId());
+        // targetConn.setContextMode(sourceConn.isContextMode());
+
+        targetConn.setVersion(sourceConn.getVersion());
+
+        QueriesConnection queryConnection = sourceConn.getQueries();
+        if (queryConnection != null) {
+            QueriesConnection cloneQueriesConnection = ConnectionFactory.eINSTANCE.createQueriesConnection();
+
+            cloneQueriesConnection.getQuery().clear();
+            List<Query> queries = (List<Query>) queryConnection.getQuery();
+            for (Query query : queries) {
+                Query cloneQuery = ConnectionFactory.eINSTANCE.createQuery();
+                cloneConnectionProperties(query, cloneQuery);
+                cloneQuery.setValue(query.getValue());
+
+                cloneQuery.setQueries(cloneQueriesConnection);
+                cloneQueriesConnection.getQuery().add(cloneQuery);
+            }
+
+            cloneQueriesConnection.setConnection(targetConn);
+            targetConn.setQueries(cloneQueriesConnection);
+
+        }
+        //
+        targetConn.getTables().clear();
+        List<MetadataTable> tables = (List<MetadataTable>) sourceConn.getTables();
+        for (MetadataTable table : tables) {
+            MetadataTable cloneTable = ConnectionFactory.eINSTANCE.createMetadataTable();
+
+            cloneConnectionProperties(table, cloneTable);
+
+            cloneTable.setActivatedCDC(table.isActivatedCDC());
+            cloneTable.setAttachedCDC(table.isAttachedCDC());
+            cloneTable.setTableType(table.getTableType());
+            cloneTable.setSourceName(table.getSourceName());
+
+            cloneTable.getColumns().clear();
+
+            List<MetadataColumn> columns = (List<MetadataColumn>) table.getColumns();
+            for (MetadataColumn column : columns) {
+                MetadataColumn cloneColumn = ConnectionFactory.eINSTANCE.createMetadataColumn();
+
+                cloneConnectionProperties(column, cloneColumn);
+
+                cloneColumn.setDefaultValue(column.getDefaultValue());
+                cloneColumn.setDisplayField(column.getDisplayField());
+                cloneColumn.setKey(column.isKey());
+                cloneColumn.setLength(column.getLength());
+                cloneColumn.setNullable(column.isNullable());
+                cloneColumn.setOriginalField(column.getOriginalField());
+                cloneColumn.setPattern(column.getPattern());
+                cloneColumn.setPrecision(column.getPrecision());
+                cloneColumn.setSourceType(column.getSourceType());
+                cloneColumn.setTalendType(column.getTalendType());
+
+                cloneColumn.setTable(cloneTable);
+                cloneTable.getColumns().add(cloneColumn);
+            }
+            cloneTable.setConnection(targetConn);
+            targetConn.getTables().add(cloneTable);
+        }
+
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void cloneConnectionProperties(AbstractMetadataObject sourceObj, AbstractMetadataObject targetObj) {
+        if (sourceObj == null || targetObj == null) {
+            return;
+        }
+        targetObj.setComment(sourceObj.getComment());
+        targetObj.setDivergency(sourceObj.isDivergency());
+        targetObj.setId(sourceObj.getId());
+        targetObj.setLabel(sourceObj.getLabel());
+        // targetObj.setReadOnly(sourceObj.isReadOnly()); //can't set
+        targetObj.setSynchronised(sourceObj.isSynchronised());
+        HashMap properties = sourceObj.getProperties();
+        if (properties != null) {
+            targetObj.setProperties((HashMap) properties.clone());
+        }
     }
 }

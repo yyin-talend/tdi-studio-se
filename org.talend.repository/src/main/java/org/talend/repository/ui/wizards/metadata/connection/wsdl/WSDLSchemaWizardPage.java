@@ -15,6 +15,7 @@ package org.talend.repository.ui.wizards.metadata.connection.wsdl;
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
+import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
@@ -41,6 +42,8 @@ public class WSDLSchemaWizardPage extends WizardPage {
 
     private MetadataTable metadataTable;
 
+    private IMetadataContextModeManager contextModeManager;
+
     /**
      * DelimitedFileWizardPage constructor comment.
      * 
@@ -50,12 +53,13 @@ public class WSDLSchemaWizardPage extends WizardPage {
      * @param existingNames
      */
     public WSDLSchemaWizardPage(int step, ConnectionItem connectionItem, boolean isRepositoryObjectEditable,
-            String[] existingNames) {
+            String[] existingNames, IMetadataContextModeManager contextModeManager) {
         super("wizardPage"); //$NON-NLS-1$
         this.step = step;
         this.connectionItem = connectionItem;
         this.existingNames = existingNames;
         this.isRepositoryObjectEditable = isRepositoryObjectEditable;
+        this.contextModeManager = contextModeManager;
     }
 
     /**
@@ -69,11 +73,11 @@ public class WSDLSchemaWizardPage extends WizardPage {
         case 1:
             metadataTable = (MetadataTable) ((WSDLSchemaConnection) connectionItem.getConnection()).getTables().get(0);
             currentComposite = new WSDLSchemaStep1Form(parent, connectionItem, metadataTable, TableHelper.getTableNames(
-                    ((WSDLSchemaConnection) connectionItem.getConnection()), metadataTable.getLabel()));
+                    ((WSDLSchemaConnection) connectionItem.getConnection()), metadataTable.getLabel()), contextModeManager);
             break;
         case 2:
             metadataTable = (MetadataTable) ((WSDLSchemaConnection) connectionItem.getConnection()).getTables().get(0);
-            currentComposite = new WSDLSchemaStep2Form(parent, connectionItem);
+            currentComposite = new WSDLSchemaStep2Form(parent, connectionItem, contextModeManager);
             break;
         default:
             System.out.println("error...");

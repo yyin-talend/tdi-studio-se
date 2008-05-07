@@ -39,17 +39,22 @@ import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
 import org.talend.commons.ui.swt.thread.SWTUIThreadProcessor;
 import org.talend.core.model.metadata.EMetadataEncoding;
+import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.builder.connection.FieldSeparator;
 import org.talend.core.model.metadata.builder.connection.FileFormat;
+import org.talend.core.model.metadata.builder.connection.RegexpFileConnection;
 import org.talend.core.model.metadata.builder.connection.RowSeparator;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.utils.CsvArray;
+import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.preview.ProcessDescription;
 import org.talend.repository.ui.swt.preview.ShadowProcessPreview;
 import org.talend.repository.ui.swt.utils.AbstractRegexpFileStepForm;
 import org.talend.repository.ui.swt.utils.IRefreshable;
+import org.talend.repository.ui.utils.ConnectionContextHelper;
+import org.talend.repository.ui.utils.FileConnectionContextUtils;
 import org.talend.repository.ui.utils.ShadowProcessHelper;
 
 /**
@@ -123,9 +128,11 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
      * @param Wizard
      * @param Style
      */
-    public RegexpFileStep2Form(Composite parent, ConnectionItem connectionItem) {
+    public RegexpFileStep2Form(Composite parent, ConnectionItem connectionItem, IMetadataContextModeManager contextModeManager) {
         super(parent, connectionItem);
-        setupForm();
+        setConnectionItem(connectionItem);
+        setContextModeManager(contextModeManager);
+        setupForm(true);
     }
 
     /**
@@ -149,15 +156,16 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
         } else {
             fieldSeparatorText.setText(REGEXP_DEFAULT);
         }
-        fieldSeparatorText.setEditable(true);
 
         rowSeparatorCombo.setText(getConnection().getRowSeparatorType().getLiteral());
         rowSeparatorText.setText(getConnection().getRowSeparatorValue());
-        rowSeparatorText.setEditable(true);
+        if (!isContextMode()) {
+            fieldSeparatorText.setEditable(true);
+            rowSeparatorText.setEditable(true);
 
-        // adpat Separator Combo and Text
-        rowSeparatorManager();
-
+            // adpat Separator Combo and Text
+            rowSeparatorManager();
+        }
         // Fields to the Group Rows To Skip
         int i = getConnection().getHeaderValue();
         if (i > 0) {
@@ -389,9 +397,9 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
      * 
      * @return processDescription
      */
-    private ProcessDescription getProcessDescription() {
+    private ProcessDescription getProcessDescription(RegexpFileConnection originalValueConnection) {
 
-        ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(getConnection());
+        ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(originalValueConnection);
 
         // Adapt Header width firstRowIsCaption to preview the first line on caption or not
         Integer i = 0;
@@ -441,9 +449,27 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
             previewButton.setText(Messages.getString("FileStep2.stop"));
 
             clearPreview();
+            String filePath = getConnection().getFilePath();
+            RegexpFileConnection originalValueConnection = null;
+            if (isContextMode()) {
+                boolean found = false;
+                ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(getShell(), getConnection());
+                if (contextType != null) {
+                    if (getContextModeManager() != null) {
+                        getContextModeManager().setSelectedContextType(contextType);
+                        filePath = getContextModeManager().getOriginalValue(getConnection().getFilePath());
+                        found = true;
+                    }
+                    originalValueConnection = (RegexpFileConnection) FileConnectionContextUtils.cloneOriginalValueConnection(
+                            getConnection(), contextType);
+                }
+                if (!found) {
+                    filePath = null;
+                }
+            }
 
             // if no file, the process don't be executed
-            if (getConnection().getFilePath() == null || getConnection().getFilePath().equals("")) { //$NON-NLS-1$
+            if (filePath == null || filePath.equals("")) { //$NON-NLS-1$
                 previewInformationLabel.setText("   " + Messages.getString("FileStep2.filePathIncomplete")); //$NON-NLS-1$ //$NON-NLS-2$
                 return false;
             }
@@ -455,7 +481,10 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
             }
 
             previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewProgress")); //$NON-NLS-1$ //$NON-NLS-2$
-            processDescription = getProcessDescription();
+            if (originalValueConnection == null) {
+                originalValueConnection = getConnection();
+            }
+            processDescription = getProcessDescription(originalValueConnection);
             return true;
         }
 
@@ -737,16 +766,20 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
         encodingCombo.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
-                getConnection().setEncoding(encodingCombo.getText());
-                checkFieldsValue();
+                if (!isContextMode()) {
+                    getConnection().setEncoding(encodingCombo.getText());
+                    checkFieldsValue();
+                }
             }
         });
 
         rowSeparatorCombo.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
-                // Label Custom of rowSeparatorText
-                rowSeparatorManager();
+                if (!isContextMode()) {
+                    // Label Custom of rowSeparatorText
+                    rowSeparatorManager();
+                }
             }
         });
 
@@ -754,8 +787,10 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
         fieldSeparatorText.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
-                getConnection().setFieldSeparatorValue(fieldSeparatorText.getText());
-                checkFieldsValue();
+                if (!isContextMode()) {
+                    getConnection().setFieldSeparatorValue(fieldSeparatorText.getText());
+                    checkFieldsValue();
+                }
             }
         });
         fieldSeparatorText.addKeyListener(new KeyAdapter() {
@@ -782,8 +817,10 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
         rowSeparatorText.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
-                getConnection().setRowSeparatorValue(rowSeparatorText.getText());
-                checkFieldsValue();
+                if (!isContextMode()) {
+                    getConnection().setRowSeparatorValue(rowSeparatorText.getText());
+                    checkFieldsValue();
+                }
             }
         });
         rowSeparatorText.addKeyListener(new KeyAdapter() {
@@ -812,6 +849,9 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
      * rowSeparator : Adapt Custom Label and set the field Text.
      */
     protected void rowSeparatorManager() {
+        if (isContextMode()) {
+            return;
+        }
         RowSeparator separator = RowSeparator.getByName(rowSeparatorCombo.getText());
         getConnection().setRowSeparatorType(separator);
 
@@ -847,24 +887,25 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
         previewInformationLabel.setText("   " + Messages.getString("FileStep2.settingsIncomplete")); //$NON-NLS-1$ //$NON-NLS-2$
         updateStatus(IStatus.OK, null);
         previewButton.setEnabled(false);
+        if (!isContextMode()) {
+            // Separator Combo (field and row)
+            if ("".equals(fieldSeparatorText.getText())) { //$NON-NLS-1$
+                updateStatus(IStatus.ERROR, Messages.getString("FileStep2.fieldSeparatorAlert")); //$NON-NLS-1$
+                return false;
+            }
+            if (fieldSeparatorText.getText().equals("\\") || fieldSeparatorText.getText().endsWith("\\")) { //$NON-NLS-1$ //$NON-NLS-2$
+                updateStatus(IStatus.ERROR, Messages.getString("FileStep2.fieldSeparatorIncomplete")); //$NON-NLS-1$
+                return false;
+            }
 
-        // Separator Combo (field and row)
-        if ("".equals(fieldSeparatorText.getText())) { //$NON-NLS-1$
-            updateStatus(IStatus.ERROR, Messages.getString("FileStep2.fieldSeparatorAlert")); //$NON-NLS-1$
-            return false;
-        }
-        if (fieldSeparatorText.getText().equals("\\") || fieldSeparatorText.getText().endsWith("\\")) { //$NON-NLS-1$ //$NON-NLS-2$
-            updateStatus(IStatus.ERROR, Messages.getString("FileStep2.fieldSeparatorIncomplete")); //$NON-NLS-1$
-            return false;
-        }
-
-        if ("".equals(rowSeparatorText.getText())) { //$NON-NLS-1$
-            updateStatus(IStatus.ERROR, Messages.getString("FileStep2.rowSeparatorAlert")); //$NON-NLS-1$
-            return false;
-        }
-        if (rowSeparatorText.getText().equals("\\") || rowSeparatorText.getText().endsWith("\\")) { //$NON-NLS-1$ //$NON-NLS-2$
-            updateStatus(IStatus.ERROR, Messages.getString("FileStep2.rowSeparatorIncomplete")); //$NON-NLS-1$
-            return false;
+            if ("".equals(rowSeparatorText.getText())) { //$NON-NLS-1$
+                updateStatus(IStatus.ERROR, Messages.getString("FileStep2.rowSeparatorAlert")); //$NON-NLS-1$
+                return false;
+            }
+            if (rowSeparatorText.getText().equals("\\") || rowSeparatorText.getText().endsWith("\\")) { //$NON-NLS-1$ //$NON-NLS-2$
+                updateStatus(IStatus.ERROR, Messages.getString("FileStep2.rowSeparatorIncomplete")); //$NON-NLS-1$
+                return false;
+            }
         }
 
         // Labelled Checkbox Combo (Row to Skip and Limit)
@@ -945,14 +986,20 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
 
             // Refresh the preview width the adapted rowSeparator
             // If metadata exist, refreshMetadata
-            if (getConnection().getFilePath() != null && !("").equals(getConnection().getFilePath())) { //$NON-NLS-1$
-                if (getConnection().getFieldSeparatorValue() == null) {
-                    fieldSeparatorText.setText(REGEXP_DEFAULT);
+            if (!isContextMode()) {
+                if (getConnection().getFilePath() != null && !("").equals(getConnection().getFilePath())) { //$NON-NLS-1$
+                    if (getConnection().getFieldSeparatorValue() == null) {
+                        fieldSeparatorText.setText(REGEXP_DEFAULT);
+                    }
+                    refreshPreview();
+
                 }
-                refreshPreview();
             }
             if (isReadOnly() != readOnly) {
                 adaptFormToReadOnly();
+            }
+            if (isContextMode()) {
+                adaptFormToEditable();
             }
         }
     }
@@ -965,4 +1012,23 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
     public void refresh() {
         refreshPreview();
     }
+
+    @Override
+    protected void adaptFormToEditable() {
+        super.adaptFormToEditable();
+        encodingCombo.setReadOnly(isContextMode());
+        rowSeparatorCombo.setReadOnly(isContextMode());
+
+        fieldSeparatorText.setEditable(!isContextMode());
+        rowSeparatorText.setEditable(!isContextMode());
+    }
+
+    @Override
+    protected void exportAsContext() {
+        super.exportAsContext();
+        if (getContextModeManager() != null) {
+            getContextModeManager().setDefaultContextType(getConnection());
+        }
+    }
+
 }

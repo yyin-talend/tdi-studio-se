@@ -15,6 +15,7 @@ package org.talend.repository.ui.wizards.metadata.connection.files.regexp;
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
+import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.RegexpFileConnection;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
@@ -37,6 +38,8 @@ public class RegexpFileWizardPage extends WizardPage {
 
     private boolean isRepositoryObjectEditable;
 
+    private IMetadataContextModeManager contextModeManager;
+
     /**
      * DOC ocarbone RegexpFileWizardPage constructor comment.
      * 
@@ -46,12 +49,13 @@ public class RegexpFileWizardPage extends WizardPage {
      * @param existingNames
      */
     public RegexpFileWizardPage(int step, ConnectionItem connectionItem, boolean isRepositoryObjectEditable,
-            String[] existingNames) {
+            String[] existingNames, IMetadataContextModeManager contextModeManager) {
         super("wizardPage"); //$NON-NLS-1$
         this.step = step;
         this.connectionItem = connectionItem;
         this.existingNames = existingNames;
         this.isRepositoryObjectEditable = isRepositoryObjectEditable;
+        this.contextModeManager = contextModeManager;
     }
 
     /**
@@ -62,14 +66,14 @@ public class RegexpFileWizardPage extends WizardPage {
         currentComposite = null;
 
         if (step == 1) {
-            currentComposite = new RegexpFileStep1Form(parent, connectionItem, existingNames);
+            currentComposite = new RegexpFileStep1Form(parent, connectionItem, existingNames, contextModeManager);
         } else if (step == 2) {
-            currentComposite = new RegexpFileStep2Form(parent, connectionItem);
+            currentComposite = new RegexpFileStep2Form(parent, connectionItem, contextModeManager);
         } else if (step == 3) {
             MetadataTable metadataTable = (MetadataTable) ((RegexpFileConnection) connectionItem.getConnection()).getTables()
                     .get(0);
             currentComposite = new RegexpFileStep3Form(parent, connectionItem, metadataTable, TableHelper.getTableNames(
-                    ((RegexpFileConnection) connectionItem.getConnection()), metadataTable.getLabel()));
+                    ((RegexpFileConnection) connectionItem.getConnection()), metadataTable.getLabel()), contextModeManager);
         }
 
         currentComposite.setReadOnly(!isRepositoryObjectEditable);

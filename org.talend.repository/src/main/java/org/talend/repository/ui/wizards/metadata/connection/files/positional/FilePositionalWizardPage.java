@@ -15,6 +15,7 @@ package org.talend.repository.ui.wizards.metadata.connection.files.positional;
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
+import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.PositionalFileConnection;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
@@ -38,6 +39,8 @@ public class FilePositionalWizardPage extends WizardPage {
 
     private boolean isRepositoryObjectEditable;
 
+    private IMetadataContextModeManager contextModeManager;
+
     /**
      * DOC ocarbone FilePositionalWizardPage constructor comment.
      * 
@@ -47,12 +50,13 @@ public class FilePositionalWizardPage extends WizardPage {
      * @param existingNames
      */
     public FilePositionalWizardPage(int step, ConnectionItem connectionItem, boolean isRepositoryObjectEditable,
-            String[] existingNames) {
+            String[] existingNames, IMetadataContextModeManager contextModeManager) {
         super("wizardPage"); //$NON-NLS-1$
         this.connectionItem = connectionItem;
         this.step = step;
         this.existingNames = existingNames;
         this.isRepositoryObjectEditable = isRepositoryObjectEditable;
+        this.contextModeManager = contextModeManager;
     }
 
     /**
@@ -64,14 +68,14 @@ public class FilePositionalWizardPage extends WizardPage {
         currentComposite = null;
 
         if (step == 1) {
-            currentComposite = new FileStep1Form(parent, connectionItem, existingNames);
+            currentComposite = new FileStep1Form(parent, connectionItem, existingNames, contextModeManager);
         } else if (step == 2) {
-            currentComposite = new FileStep2Form(parent, connectionItem);
+            currentComposite = new FileStep2Form(parent, connectionItem, contextModeManager);
         } else if (step == 3) {
             MetadataTable metadataTable = (MetadataTable) ((PositionalFileConnection) connectionItem.getConnection()).getTables()
                     .get(0);
             currentComposite = new FileStep3Form(parent, connectionItem, metadataTable, TableHelper.getTableNames(
-                    ((PositionalFileConnection) connectionItem.getConnection()), metadataTable.getLabel()));
+                    ((PositionalFileConnection) connectionItem.getConnection()), metadataTable.getLabel()), contextModeManager);
         }
         currentComposite.setReadOnly(!isRepositoryObjectEditable);
 

@@ -736,6 +736,7 @@ public class FilePositionalViewer extends Composite {
      */
     @Override
     public void setEnabled(boolean isEnabled) {
+        super.setEnabled(isEnabled);
         this.isEnabled = isEnabled;
     }
 

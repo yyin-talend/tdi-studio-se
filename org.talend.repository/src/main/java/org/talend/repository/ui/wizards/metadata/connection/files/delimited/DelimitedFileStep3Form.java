@@ -39,8 +39,10 @@ import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
+import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
 import org.talend.core.model.metadata.builder.connection.Escape;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
@@ -57,6 +59,7 @@ import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.preview.ProcessDescription;
 import org.talend.repository.ui.swt.utils.AbstractDelimitedFileStepForm;
 import org.talend.repository.ui.utils.ColumnNameValidator;
+import org.talend.repository.ui.utils.FileConnectionContextUtils;
 import org.talend.repository.ui.utils.ShadowProcessHelper;
 
 /**
@@ -94,9 +97,16 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
      */
     public DelimitedFileStep3Form(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable,
             String[] existingNames) {
+        this(parent, connectionItem, metadataTable, existingNames, null);
+    }
+
+    public DelimitedFileStep3Form(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable,
+            String[] existingNames, IMetadataContextModeManager contextModeManager) {
         super(parent, connectionItem, metadataTable, existingNames);
         this.connectionItem = connectionItem;
         this.metadataTable = metadataTable;
+        setConnectionItem(connectionItem);
+        setContextModeManager(contextModeManager);
         setupForm();
     }
 
@@ -131,6 +141,11 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
         metadataNameText.setReadOnly(isReadOnly());
         metadataCommentText.setReadOnly(isReadOnly());
         tableEditorView.setReadOnly(isReadOnly());
+
+        if (getParent().getChildren().length == 1) { // open the table
+            guessButton.setEnabled(false);
+            informationLabel.setVisible(false);
+        }
     }
 
     @Override
@@ -272,20 +287,20 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
      * 
      * @return processDescription
      */
-    private ProcessDescription getProcessDescription() {
+    private ProcessDescription getProcessDescription(DelimitedFileConnection originalValueConnection) {
 
-        ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(getConnection());
+        ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(originalValueConnection);
 
         // Adapt Header width firstRowIsCaption to preview the first line on caption or not
-        if (getConnection().isFirstLineCaption()) {
-            processDescription.setHeaderRow(getConnection().getHeaderValue() - 1);
+        if (originalValueConnection.isFirstLineCaption()) {
+            processDescription.setHeaderRow(originalValueConnection.getHeaderValue() - 1);
         }
 
         // adapt the limit to the extract sames rows of preview
         processDescription.setLimitRows(maximumRowsToPreview);
-        if (getConnection().isUseLimit()) {
-            Integer i = getConnection().getLimitValue();
-            if (getConnection().isFirstLineCaption()) {
+        if (originalValueConnection.isUseLimit()) {
+            Integer i = originalValueConnection.getLimitValue();
+            if (originalValueConnection.isFirstLineCaption()) {
                 i++;
             }
             if (i < maximumRowsToPreview) {
@@ -301,7 +316,8 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
     protected void runShadowProcess() {
 
         // if no file, the process don't be executed
-        if (getConnection().getFilePath() == null || getConnection().getFilePath().equals("")) { //$NON-NLS-1$
+        DelimitedFileConnection originalValueConnection = getOriginalValueConnection();
+        if (originalValueConnection.getFilePath() == null || originalValueConnection.getFilePath().equals("")) { //$NON-NLS-1$
             informationLabel.setText("   " + Messages.getString("FileStep3.filepathAlert") //$NON-NLS-1$ //$NON-NLS-2$
                     + "                                                                              "); //$NON-NLS-1$
             return;
@@ -311,8 +327,8 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
             informationLabel.setText("   " + Messages.getString("FileStep3.guessProgress")); //$NON-NLS-1$ //$NON-NLS-2$
 
             // get the XmlArray width an adapt ProcessDescription
-            if (Escape.CSV_LITERAL.equals(getConnection().getEscapeType())) {
-                CsvArray csvArray = ShadowProcessHelper.getCsvArray(getProcessDescription(), "FILE_CSV"); //$NON-NLS-1$
+            if (Escape.CSV_LITERAL.equals(originalValueConnection.getEscapeType())) {
+                CsvArray csvArray = ShadowProcessHelper.getCsvArray(getProcessDescription(originalValueConnection), "FILE_CSV"); //$NON-NLS-1$
                 if (csvArray == null) {
                     informationLabel.setText("   " + Messages.getString("FileStep3.guessFailure")); //$NON-NLS-1$ //$NON-NLS-2$
 
@@ -321,7 +337,8 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
                 }
 
             } else {
-                CsvArray csvArray = ShadowProcessHelper.getCsvArray(getProcessDescription(), "FILE_DELIMITED"); //$NON-NLS-1$
+                CsvArray csvArray = ShadowProcessHelper.getCsvArray(getProcessDescription(originalValueConnection),
+                        "FILE_DELIMITED"); //$NON-NLS-1$
                 if (csvArray == null) {
                     informationLabel.setText("   " + Messages.getString("FileStep3.guessFailure")); //$NON-NLS-1$ //$NON-NLS-2$
 
@@ -566,7 +583,8 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         if (super.isVisible()) {
-            if (getConnection().getFilePath() != null && (!getConnection().getFilePath().equals("")) //$NON-NLS-1$
+            DelimitedFileConnection originalValueConnection = getOriginalValueConnection();
+            if (originalValueConnection.getFilePath() != null && (!originalValueConnection.getFilePath().equals("")) //$NON-NLS-1$
                     && (tableEditorView.getMetadataEditor().getBeanCount() <= 0)) {
                 runShadowProcess();
             }
@@ -577,4 +595,12 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
         }
     }
 
+    private DelimitedFileConnection getOriginalValueConnection() {
+        if (isContextMode() && getContextModeManager() != null) {
+            return (DelimitedFileConnection) FileConnectionContextUtils.cloneOriginalValueConnection(getConnection(),
+                    getContextModeManager().getSelectedContextType());
+        }
+        return getConnection();
+
+    }
 }

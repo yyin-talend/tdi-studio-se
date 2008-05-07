@@ -1043,6 +1043,9 @@ public class DatabaseForm extends AbstractForm {
         sqlSyntaxCombo.setReadOnly(isContextMode());
         stringQuoteText.setEditable(!isContextMode());
         nullCharText.setEditable(!isContextMode());
+        if (isContextMode()) {
+            passwordText.getTextControl().setEchoChar('\0');
+        }
     }
 
 }

@@ -28,6 +28,7 @@ import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.commons.ui.swt.formtools.LabelledCombo;
 import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
+import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.ConnectionItem;
@@ -56,7 +57,7 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
 
     private boolean readOnly;
 
-    private final String defaultWebServiceURL = "https://www.salesforce.com/services/Soap/u/10.0";
+    private final String defaultWebServiceURL = "https://www.salesforce.com/services/Soap/u/8.0";
 
     private final char pwdEhcoChar = '*';
 
@@ -70,8 +71,10 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
      * @param existingNames
      */
     public SalesforceStep1Form(Composite parent, ConnectionItem connectionItem, String[] existingNames,
-            SalesforceModuleParseAPI salesforceAPI) {
+            SalesforceModuleParseAPI salesforceAPI, IMetadataContextModeManager contextModeManager) {
         super(parent, connectionItem, existingNames, salesforceAPI);
+        setConnectionItem(connectionItem);
+        setContextModeManager(contextModeManager);
         setupForm();
     }
 
@@ -149,10 +152,12 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
         webServiceUrlText.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
-                loginOk = false;
-                checkFieldsValue();
-                getConnection().setWebServiceUrl(webServiceUrlText.getText());
-                setCheckEnable();
+                if (!isContextMode()) {
+                    loginOk = false;
+                    checkFieldsValue();
+                    getConnection().setWebServiceUrl(webServiceUrlText.getText());
+                    setCheckEnable();
+                }
             }
 
         });
@@ -160,20 +165,24 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
         userNameText.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
-                loginOk = false;
-                checkFieldsValue();
-                getConnection().setUserName(userNameText.getText());
-                setCheckEnable();
+                if (!isContextMode()) {
+                    loginOk = false;
+                    checkFieldsValue();
+                    getConnection().setUserName(userNameText.getText());
+                    setCheckEnable();
+                }
             }
         });
 
         passwordText.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
-                loginOk = false;
-                checkFieldsValue();
-                getConnection().setPassword(passwordText.getText());
-                setCheckEnable();
+                if (!isContextMode()) {
+                    loginOk = false;
+                    checkFieldsValue();
+                    getConnection().setPassword(passwordText.getText());
+                    setCheckEnable();
+                }
             }
         });
 
@@ -194,7 +203,9 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
              */
             @Override
             public void widgetSelected(SelectionEvent e) {
-                checkFieldsValue();
+                if (!isContextMode()) {
+                    checkFieldsValue();
+                }
                 testSalesforceLogin();
                 checkFieldsValue();
             }
@@ -203,9 +214,15 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
     }
 
     private void testSalesforceLogin() {
+        String webUrl = webServiceUrlText.getText();
         String username = userNameText.getText();
-        String pasword = passwordText.getText();
-        loginOk = checkSalesfoceLogin(username, pasword);
+        String password = passwordText.getText();
+        if (isContextMode() && getContextModeManager() != null) {
+            webUrl = getContextModeManager().getOriginalValue(webUrl);
+            username = getContextModeManager().getOriginalValue(username);
+            password = getContextModeManager().getOriginalValue(password);
+        }
+        loginOk = checkSalesfoceLogin(webUrl, username, password);
     }
 
     public void setVisible(boolean visible) {
@@ -214,8 +231,14 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
         if (isReadOnly() != readOnly) {
             adaptFormToReadOnly();
         }
-        checkFieldsValue();
-        setCheckEnable();
+        if (!isContextMode()) {
+            checkFieldsValue();
+            setCheckEnable();
+        }
+        if (visible && isContextMode()) {
+            initialize();
+            adaptFormToEditable();
+        }
     }
 
     /*
@@ -265,7 +288,7 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
         }
 
         if (!loginOk) {
-            updateStatus(IStatus.ERROR, "You haven't check login or user name, password is not correct."); //$NON-NLS-1$
+            updateStatus(IStatus.ERROR, "You haven't check login or URL, username, password is not correct."); //$NON-NLS-1$
             return false;
         }
 
@@ -343,5 +366,17 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
         if (value != null && !value.equals("")) {
             control.setText(value);
         }
+    }
+
+    @Override
+    protected void adaptFormToEditable() {
+        super.adaptFormToEditable();
+        webServiceUrlText.setEditable(!isContextMode());
+        userNameText.setEditable(!isContextMode());
+        passwordText.setEditable(!isContextMode());
+        if (isContextMode()) {
+            passwordText.getTextControl().setEchoChar('\0');
+        }
+        checkButton.setEnabled(isContextMode());
     }
 }

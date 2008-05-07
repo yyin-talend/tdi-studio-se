@@ -1,0 +1,541 @@
+// ============================================================================
+//
+// Copyright (C) 2006-2007 Talend Inc. - www.talend.com
+//
+// This source code is available under agreement available at
+// %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
+//
+// You should have received a copy of the agreement
+// along with this program; if not, write to Talend SA
+// 9 rue Pages 92150 Suresnes, France
+//
+// ============================================================================
+package org.talend.repository.ui.utils;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.eclipse.emf.common.util.BasicEList;
+import org.eclipse.emf.common.util.EList;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
+import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
+import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
+import org.talend.core.model.metadata.builder.connection.LdifFileConnection;
+import org.talend.core.model.metadata.builder.connection.SalesforceSchemaConnection;
+import org.talend.core.model.metadata.builder.connection.SchemaTarget;
+import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
+import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
+import org.talend.core.model.metadata.builder.connection.XmlXPathLoopDescriptor;
+import org.talend.core.model.metadata.types.JavaTypesManager;
+import org.talend.core.model.process.IContextParameter;
+import org.talend.core.model.utils.ContextParameterUtils;
+import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
+
+/**
+ * ggu class global comment. Detailled comment
+ */
+public final class OtherConnectionContextUtils {
+
+    private static final ECodeLanguage LANGUAGE = LanguageManager.getCurrentLanguage();
+
+    /**
+     * 
+     */
+    enum EParamName {
+        FilePath,
+
+        // xml
+        // Encoding,
+        XmlFilePath,
+
+        // Salesforce
+        WebServiceUrl,
+        UserName,
+        Password,
+        QueryCondition,
+
+        // LDAP
+        Host,
+        Port,
+        BindPassword,
+        BindPrincipal,
+        Filter,
+        CountLimit,
+        TimeOutLimit,
+
+        // WSDL
+        WSDL,
+        ProxyHost,
+        ProxyPort,
+        ProxyUser,
+        ProxyPassword,
+        MethodName,
+        EndpointURI,
+        Encoding,
+
+    }
+
+    /*
+     * LdifFile
+     */
+    static List<IContextParameter> getLdifFileVariables(String prefixName, LdifFileConnection conn) {
+        if (conn == null || prefixName == null) {
+            return Collections.emptyList();
+        }
+        List<IContextParameter> varList = new ArrayList<IContextParameter>();
+        prefixName = prefixName + ConnectionContextHelper.LINE;
+        String paramName = null;
+        // TODO there is some problem for the DND
+        paramName = prefixName + EParamName.FilePath;
+        ConnectionContextHelper.createParameters(varList, paramName, conn.getFilePath(), JavaTypesManager.FILE);
+
+        return varList;
+    }
+
+    static void setLdifFilePropertiesForContextMode(String prefixName, LdifFileConnection conn) {
+        if (conn == null || prefixName == null) {
+            return;
+        }
+        prefixName = prefixName + ConnectionContextHelper.LINE;
+        String paramName = null;
+
+        paramName = prefixName + EParamName.FilePath;
+        conn.setFilePath(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+    }
+
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    public static LdifFileConnection cloneOriginalValueLdifFileConnection(LdifFileConnection fileConn, ContextType contextType) {
+        if (fileConn == null) {
+            return null;
+        }
+
+        LdifFileConnection cloneConn = ConnectionFactory.eINSTANCE.createLdifFileConnection();
+
+        String filePath = ConnectionContextHelper.getOriginalValue(contextType, fileConn.getFilePath());
+        cloneConn.setFilePath(filePath);
+
+        cloneConn.setLimitEntry(fileConn.getLimitEntry());
+        cloneConn.setServer(fileConn.getServer());
+        cloneConn.setUseLimit(fileConn.isUseLimit());
+
+        ConnectionContextHelper.cloneConnectionProperties(fileConn, cloneConn);
+
+        EList values = fileConn.getValue();
+        if (values != null && values instanceof BasicEList) {
+            cloneConn.getValue().addAll((EList) ((BasicEList) values).clone());
+        }
+        return cloneConn;
+    }
+
+    /*
+     * XmlFile
+     */
+    static List<IContextParameter> getXmlFileVariables(String prefixName, XmlFileConnection conn) {
+        if (conn == null || prefixName == null) {
+            return Collections.emptyList();
+        }
+        List<IContextParameter> varList = new ArrayList<IContextParameter>();
+        prefixName = prefixName + ConnectionContextHelper.LINE;
+        String paramName = null;
+
+        paramName = prefixName + EParamName.XmlFilePath;
+        ConnectionContextHelper.createParameters(varList, paramName, conn.getXmlFilePath(), JavaTypesManager.FILE);
+
+        // paramName = prefixName + EParamName.Encoding;
+        // ConnectionContextHelper.createParameters(varList, paramName, conn.getEncoding());
+        return varList;
+    }
+
+    static void setXmlFilePropertiesForContextMode(String prefixName, XmlFileConnection conn) {
+        if (conn == null || prefixName == null) {
+            return;
+        }
+        prefixName = prefixName + ConnectionContextHelper.LINE;
+        String paramName = null;
+
+        paramName = prefixName + EParamName.XmlFilePath;
+        conn.setXmlFilePath(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+
+        // paramName = prefixName + EParamName.Encoding;
+        // conn.setEncoding(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+    }
+
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    public static XmlFileConnection cloneOriginalValueXmlFileConnection(XmlFileConnection fileConn, ContextType contextType) {
+        if (fileConn == null) {
+            return null;
+        }
+
+        XmlFileConnection cloneConn = ConnectionFactory.eINSTANCE.createXmlFileConnection();
+
+        String filePath = ConnectionContextHelper.getOriginalValue(contextType, fileConn.getXmlFilePath());
+        // String encoding = ConnectionContextHelper.getOriginalValue(contextType, fileConn.getEncoding());
+
+        cloneConn.setXmlFilePath(filePath);
+        cloneConn.setEncoding(fileConn.getEncoding());
+        //
+        cloneConn.setMaskXPattern(fileConn.getMaskXPattern());
+        cloneConn.setXsdFilePath(fileConn.getXsdFilePath());
+        cloneConn.setGuess(fileConn.isGuess());
+
+        ConnectionContextHelper.cloneConnectionProperties(fileConn, cloneConn);
+
+        cloneConn.getSchema().clear();
+
+        List<XmlXPathLoopDescriptor> descs = (List<XmlXPathLoopDescriptor>) fileConn.getSchema();
+        for (XmlXPathLoopDescriptor desc : descs) {
+            XmlXPathLoopDescriptor cloneDesc = ConnectionFactory.eINSTANCE.createXmlXPathLoopDescriptor();
+            cloneDesc.setLimitBoucle(desc.getLimitBoucle().intValue());
+            cloneDesc.setAbsoluteXPathQuery(desc.getAbsoluteXPathQuery());
+
+            cloneDesc.getSchemaTargets().clear();
+            List<SchemaTarget> schemaTargets = (List<SchemaTarget>) desc.getSchemaTargets();
+            for (SchemaTarget schemaTarget : schemaTargets) {
+                SchemaTarget cloneSchemaTarget = ConnectionFactory.eINSTANCE.createSchemaTarget();
+                cloneSchemaTarget.setRelativeXPathQuery(schemaTarget.getRelativeXPathQuery());
+                cloneSchemaTarget.setTagName(schemaTarget.getTagName());
+
+                cloneSchemaTarget.setSchema(cloneDesc);
+                cloneDesc.getSchemaTargets().add(cloneSchemaTarget);
+            }
+
+            cloneDesc.setConnection(cloneConn);
+            cloneConn.getSchema().add(cloneDesc);
+        }
+
+        return cloneConn;
+    }
+
+    /*
+     * Salesforce schema
+     */
+    static List<IContextParameter> getSalesforceVariables(String prefixName, SalesforceSchemaConnection ssConn) {
+        if (ssConn == null || prefixName == null) {
+            return Collections.emptyList();
+        }
+        List<IContextParameter> varList = new ArrayList<IContextParameter>();
+        prefixName = prefixName + ConnectionContextHelper.LINE;
+        String paramName = null;
+
+        paramName = prefixName + EParamName.WebServiceUrl;
+        ConnectionContextHelper.createParameters(varList, paramName, ssConn.getWebServiceUrl());
+
+        paramName = prefixName + EParamName.UserName;
+        ConnectionContextHelper.createParameters(varList, paramName, ssConn.getUserName());
+
+        paramName = prefixName + EParamName.Password;
+        ConnectionContextHelper.createParameters(varList, paramName, ssConn.getPassword());
+
+        paramName = prefixName + EParamName.QueryCondition;
+        ConnectionContextHelper.createParameters(varList, paramName, ssConn.getQueryCondition());
+
+        return varList;
+    }
+
+    static void setSalesforcePropertiesForContextMode(String prefixName, SalesforceSchemaConnection ssConn) {
+        if (ssConn == null || prefixName == null) {
+            return;
+        }
+        prefixName = prefixName + ConnectionContextHelper.LINE;
+        String paramName = null;
+
+        paramName = prefixName + EParamName.WebServiceUrl;
+        ssConn.setWebServiceUrl(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+
+        paramName = prefixName + EParamName.UserName;
+        ssConn.setUserName(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+
+        paramName = prefixName + EParamName.Password;
+        ssConn.setPassword(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+
+        paramName = prefixName + EParamName.QueryCondition;
+        ssConn.setQueryCondition(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+    }
+
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    public static SalesforceSchemaConnection cloneOriginalValueSalesforceConnection(SalesforceSchemaConnection ssConn,
+            ContextType contextType) {
+        if (ssConn == null) {
+            return null;
+        }
+
+        SalesforceSchemaConnection cloneConn = ConnectionFactory.eINSTANCE.createSalesforceSchemaConnection();
+
+        String url = ConnectionContextHelper.getOriginalValue(contextType, ssConn.getWebServiceUrl());
+        String userName = ConnectionContextHelper.getOriginalValue(contextType, ssConn.getUserName());
+        String password = ConnectionContextHelper.getOriginalValue(contextType, ssConn.getPassword());
+
+        cloneConn.setWebServiceUrl(url);
+        cloneConn.setUserName(userName);
+        cloneConn.setPassword(password);
+        cloneConn.setQueryCondition(ssConn.getQueryCondition());
+
+        ConnectionContextHelper.cloneConnectionProperties(ssConn, cloneConn);
+
+        cloneConn.setModuleName(ssConn.getModuleName());
+
+        return cloneConn;
+    }
+
+    /*
+     * LDAP schema
+     */
+    static List<IContextParameter> getLDAPSchemaVariables(String prefixName, LDAPSchemaConnection ldapConn) {
+        if (ldapConn == null || prefixName == null) {
+            return Collections.emptyList();
+        }
+        List<IContextParameter> varList = new ArrayList<IContextParameter>();
+        prefixName = prefixName + ConnectionContextHelper.LINE;
+        String paramName = null;
+
+        paramName = prefixName + EParamName.Host;
+        ConnectionContextHelper.createParameters(varList, paramName, ldapConn.getHost());
+
+        paramName = prefixName + EParamName.Port;
+        ConnectionContextHelper.createParameters(varList, paramName, ldapConn.getPort(), JavaTypesManager.INTEGER);
+
+        paramName = prefixName + EParamName.BindPassword;
+        ConnectionContextHelper.createParameters(varList, paramName, ldapConn.getBindPassword());
+
+        paramName = prefixName + EParamName.BindPrincipal;
+        ConnectionContextHelper.createParameters(varList, paramName, ldapConn.getBindPrincipal());
+
+        paramName = prefixName + EParamName.Filter;
+        ConnectionContextHelper.createParameters(varList, paramName, ldapConn.getFilter());
+
+        paramName = prefixName + EParamName.TimeOutLimit;
+        ConnectionContextHelper.createParameters(varList, paramName, ldapConn.getTimeOutLimit(), JavaTypesManager.INTEGER);
+
+        paramName = prefixName + EParamName.CountLimit;
+        ConnectionContextHelper.createParameters(varList, paramName, ldapConn.getCountLimit(), JavaTypesManager.INTEGER);
+        return varList;
+    }
+
+    static void setLDAPSchemaPropertiesForContextMode(String prefixName, LDAPSchemaConnection ldapConn) {
+        if (ldapConn == null || prefixName == null) {
+            return;
+        }
+        prefixName = prefixName + ConnectionContextHelper.LINE;
+        String paramName = null;
+
+        paramName = prefixName + EParamName.Host;
+        ldapConn.setHost(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+
+        paramName = prefixName + EParamName.Port;
+        ldapConn.setPort(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+
+        paramName = prefixName + EParamName.BindPrincipal;
+        ldapConn.setBindPrincipal(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+
+        paramName = prefixName + EParamName.BindPassword;
+        ldapConn.setBindPassword(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+
+        paramName = prefixName + EParamName.CountLimit;
+        ldapConn.setCountLimit(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+
+        paramName = prefixName + EParamName.TimeOutLimit;
+        ldapConn.setTimeOutLimit(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+
+        paramName = prefixName + EParamName.Filter;
+        ldapConn.setFilter(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+    }
+
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    public static LDAPSchemaConnection cloneOriginalValueLDAPSchemaConnection(LDAPSchemaConnection ldapConn,
+            ContextType contextType) {
+        if (ldapConn == null) {
+            return null;
+        }
+
+        LDAPSchemaConnection cloneConn = ConnectionFactory.eINSTANCE.createLDAPSchemaConnection();
+
+        String host = ConnectionContextHelper.getOriginalValue(contextType, ldapConn.getHost());
+        String port = ConnectionContextHelper.getOriginalValue(contextType, ldapConn.getPort());
+        String bindPrincipal = ConnectionContextHelper.getOriginalValue(contextType, ldapConn.getBindPrincipal());
+        String bindPassword = ConnectionContextHelper.getOriginalValue(contextType, ldapConn.getBindPassword());
+        String filter = ConnectionContextHelper.getOriginalValue(contextType, ldapConn.getFilter());
+        String countLimit = ConnectionContextHelper.getOriginalValue(contextType, ldapConn.getCountLimit());
+        String timeOutLimit = ConnectionContextHelper.getOriginalValue(contextType, ldapConn.getTimeOutLimit());
+
+        cloneConn.setHost(host);
+        cloneConn.setPort(port);
+        cloneConn.setBindPrincipal(bindPrincipal);
+        cloneConn.setBindPassword(bindPassword);
+        cloneConn.setFilter(filter);
+        cloneConn.setCountLimit(countLimit);
+        cloneConn.setTimeOutLimit(timeOutLimit);
+
+        cloneConn.setSeparator(ldapConn.getSeparator());
+        cloneConn.setProtocol(ldapConn.getProtocol());
+        cloneConn.setSelectedDN(ldapConn.getSelectedDN());
+        cloneConn.setStorePath(ldapConn.getStorePath());
+
+        cloneConn.setAliases(ldapConn.getAliases());
+        cloneConn.setReferrals(ldapConn.getReferrals());
+        cloneConn.setEncryptionMethodName(ldapConn.getEncryptionMethodName());
+        cloneConn.setGetBaseDNsFromRoot(ldapConn.isGetBaseDNsFromRoot());
+        cloneConn.setLimitValue(ldapConn.getLimitValue());
+        cloneConn.setSavePassword(ldapConn.isSavePassword());
+        cloneConn.setUseAdvanced(ldapConn.isUseAdvanced());
+        cloneConn.setUseAuthen(ldapConn.isUseAuthen());
+        cloneConn.setUseLimit(ldapConn.isUseLimit());
+
+        ConnectionContextHelper.cloneConnectionProperties(ldapConn, cloneConn);
+
+        EList baseDNs = ldapConn.getBaseDNs();
+        if (baseDNs != null && baseDNs instanceof BasicEList) {
+            cloneConn.getBaseDNs().addAll((EList) ((BasicEList) baseDNs).clone());
+        }
+
+        EList values = ldapConn.getValue();
+        if (values != null && values instanceof BasicEList) {
+            cloneConn.getValue().addAll((EList) ((BasicEList) values).clone());
+        }
+        EList returnAttributes = ldapConn.getReturnAttributes();
+        if (returnAttributes != null && returnAttributes instanceof BasicEList) {
+            cloneConn.getReturnAttributes().addAll((EList) ((BasicEList) returnAttributes).clone());
+        }
+        return cloneConn;
+    }
+
+    /*
+     * WSDL Schema
+     */
+    static List<IContextParameter> getWSDLSchemaVariables(String prefixName, WSDLSchemaConnection wsdlConn) {
+        if (wsdlConn == null || prefixName == null) {
+            return Collections.emptyList();
+        }
+        List<IContextParameter> varList = new ArrayList<IContextParameter>();
+        prefixName = prefixName + ConnectionContextHelper.LINE;
+        String paramName = null;
+
+        paramName = prefixName + EParamName.WSDL;
+        ConnectionContextHelper.createParameters(varList, paramName, wsdlConn.getWSDL());
+
+        paramName = prefixName + EParamName.MethodName;
+        ConnectionContextHelper.createParameters(varList, paramName, wsdlConn.getMethodName());
+
+        switch (LanguageManager.getCurrentLanguage()) {
+        case JAVA:
+            paramName = prefixName + EParamName.UserName;
+            ConnectionContextHelper.createParameters(varList, paramName, wsdlConn.getUserName());
+
+            paramName = prefixName + EParamName.Password;
+            ConnectionContextHelper.createParameters(varList, paramName, wsdlConn.getPassword());
+
+            paramName = prefixName + EParamName.ProxyHost;
+            ConnectionContextHelper.createParameters(varList, paramName, wsdlConn.getProxyHost());
+
+            paramName = prefixName + EParamName.ProxyPort;
+            ConnectionContextHelper.createParameters(varList, paramName, wsdlConn.getProxyPort(), JavaTypesManager.INTEGER);
+
+            paramName = prefixName + EParamName.ProxyUser;
+            ConnectionContextHelper.createParameters(varList, paramName, wsdlConn.getProxyUser());
+
+            paramName = prefixName + EParamName.ProxyPassword;
+            ConnectionContextHelper.createParameters(varList, paramName, wsdlConn.getProxyPassword());
+            break;
+        case PERL:
+        default:
+            paramName = prefixName + EParamName.EndpointURI;
+            ConnectionContextHelper.createParameters(varList, paramName, wsdlConn.getEndpointURI());
+
+            paramName = prefixName + EParamName.Encoding;
+            ConnectionContextHelper.createParameters(varList, paramName, wsdlConn.getEncoding());
+            break;
+        }
+
+        return varList;
+    }
+
+    static void setWSDLSchemaPropertiesForContextMode(String prefixName, WSDLSchemaConnection wsdlConn) {
+        if (wsdlConn == null || prefixName == null) {
+            return;
+        }
+        prefixName = prefixName + ConnectionContextHelper.LINE;
+        String paramName = null;
+
+        paramName = prefixName + EParamName.WSDL;
+        wsdlConn.setWSDL(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+
+        paramName = prefixName + EParamName.MethodName;
+        wsdlConn.setMethodName(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+
+        switch (LanguageManager.getCurrentLanguage()) {
+        case JAVA:
+            paramName = prefixName + EParamName.UserName;
+            wsdlConn.setUserName(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+
+            paramName = prefixName + EParamName.Password;
+            wsdlConn.setPassword(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+
+            paramName = prefixName + EParamName.ProxyHost;
+            wsdlConn.setProxyHost(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+
+            paramName = prefixName + EParamName.ProxyPort;
+            wsdlConn.setProxyPort(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+
+            paramName = prefixName + EParamName.ProxyUser;
+            wsdlConn.setProxyUser(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+
+            paramName = prefixName + EParamName.ProxyPassword;
+            wsdlConn.setProxyPassword(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+            break;
+        case PERL:
+        default:
+            paramName = prefixName + EParamName.EndpointURI;
+            wsdlConn.setEndpointURI(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+
+            paramName = prefixName + EParamName.Encoding;
+            wsdlConn.setEncoding(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+            break;
+        }
+
+    }
+
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    public static WSDLSchemaConnection cloneOriginalValueWSDLSchemaConnection(WSDLSchemaConnection wsdlConn,
+            ContextType contextType) {
+        if (wsdlConn == null) {
+            return null;
+        }
+
+        WSDLSchemaConnection cloneConn = ConnectionFactory.eINSTANCE.createWSDLSchemaConnection();
+
+        String wsdl = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getWSDL());
+        String username = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getUserName());
+        String password = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getPassword());
+        String proxyHost = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getProxyHost());
+        String proxyPort = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getProxyPort());
+        String proxyUser = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getProxyUser());
+        String proxyPassword = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getProxyPassword());
+        String methodName = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getMethodName());
+        String encoding = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getEncoding());
+        String endpointURL = ConnectionContextHelper.getOriginalValue(contextType, wsdlConn.getEndpointURI());
+
+        cloneConn.setWSDL(wsdl);
+        cloneConn.setUserName(username);
+        cloneConn.setPassword(password);
+        cloneConn.setProxyHost(proxyHost);
+        cloneConn.setProxyPort(proxyPort);
+        cloneConn.setProxyUser(proxyUser);
+        cloneConn.setProxyPassword(proxyPassword);
+        cloneConn.setMethodName(methodName);
+        cloneConn.setEncoding(encoding);
+        cloneConn.setEndpointURI(endpointURL);
+
+        cloneConn.setNeedAuth(wsdlConn.isNeedAuth());
+        cloneConn.setUseProxy(wsdlConn.isUseProxy());
+
+        ConnectionContextHelper.cloneConnectionProperties(wsdlConn, cloneConn);
+
+        cloneConn.setParameters((ArrayList) wsdlConn.getParameters().clone());
+        EList values = wsdlConn.getValue();
+        if (values != null && values instanceof BasicEList) {
+            cloneConn.getValue().addAll((EList) ((BasicEList) values).clone());
+        }
+        return cloneConn;
+    }
+}

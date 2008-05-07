@@ -48,25 +48,23 @@ import org.talend.core.PluginChecker;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.EMetadataEncoding;
+import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
-import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.utils.CsvArray;
+import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.preview.ProcessDescription;
 import org.talend.repository.ui.swt.preview.ShadowProcessPreview;
-import org.talend.repository.ui.swt.utils.AbstractForm;
+import org.talend.repository.ui.swt.utils.AbstractWSDLSchemaStepForm;
+import org.talend.repository.ui.utils.ConnectionContextHelper;
 import org.talend.repository.ui.utils.ShadowProcessHelper;
 import org.talend.repository.ui.wizards.metadata.connection.ldap.BaseWidgetUtils;
 
 /**
  * DOC qwei class global comment. Detailled comment
  */
-public class WSDLSchemaStep1Form extends AbstractForm {
-
-    private ConnectionItem connectionItem;
-
-    private MetadataTable metadataTable;
+public class WSDLSchemaStep1Form extends AbstractWSDLSchemaStepForm {
 
     /** Endpoint URI */
     private Text endPointURI;
@@ -118,7 +116,7 @@ public class WSDLSchemaStep1Form extends AbstractForm {
 
     private Label hostLabel;
 
-    private Text proxyProt;
+    private Text proxyPort;
 
     private Label portLabel;
 
@@ -142,11 +140,12 @@ public class WSDLSchemaStep1Form extends AbstractForm {
      * @param metadataTable
      * @param tableNames
      */
-    public WSDLSchemaStep1Form(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable, String[] tableNames) {
-        super(parent, SWT.NONE, tableNames);
-        this.connectionItem = connectionItem;
-        this.metadataTable = metadataTable;
-        setupForm();
+    public WSDLSchemaStep1Form(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable, String[] tableNames,
+            IMetadataContextModeManager contextModeManager) {
+        super(parent, connectionItem, metadataTable, tableNames);
+        setConnectionItem(connectionItem);
+        setContextModeManager(contextModeManager);
+        setupForm(true);
     }
 
     /*
@@ -163,26 +162,26 @@ public class WSDLSchemaStep1Form extends AbstractForm {
         Composite groupComposite = BaseWidgetUtils.createColumnContainer(group, 4, 1);
         // ((GridData) group.getLayoutData()).heightHint = 260;
         BaseWidgetUtils.createLabel(groupComposite, Messages.getString("WSDLSchemaStep1Form.WSDLName"), 1); //$NON-NLS-1$
-        wsdlText = BaseWidgetUtils.createText(groupComposite, Messages.getString("WSDLSchemaStep1Form.WSDLURL"), 3);
+        wsdlText = BaseWidgetUtils.createText(groupComposite, Messages.getString("WSDLSchemaStep1Form.WSDLURL"), 3); //$NON-NLS-1$
         if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
-            needAuth = BaseWidgetUtils.createCheckbox(groupComposite, Messages.getString("WSDLSchemaStep1Form.NeedAuth"), 4);
-            useLabel = BaseWidgetUtils.createLabel(groupComposite, Messages.getString("WSDLSchemaStep1Form.UserName"), 1);
-            userNameText = BaseWidgetUtils.createText(groupComposite, "", 1);
-            password = BaseWidgetUtils.createLabel(groupComposite, Messages.getString("WSDLSchemaStep1Form.Password"), 1);
-            passWordText = BaseWidgetUtils.createText(groupComposite, "", 1);
-            useProxy = BaseWidgetUtils.createCheckbox(groupComposite, Messages.getString("WSDLSchemaStep1Form.UseProxy"), 4);
-            hostLabel = BaseWidgetUtils.createLabel(groupComposite, Messages.getString("WSDLSchemaStep1Form.ProxyHost"), 1);
-            proxyHost = BaseWidgetUtils.createText(groupComposite, "", 1);
-            portLabel = BaseWidgetUtils.createLabel(groupComposite, Messages.getString("WSDLSchemaStep1Form.ProxyPort"), 1);
-            proxyProt = BaseWidgetUtils.createText(groupComposite, "", 1);
-            userProLabel = BaseWidgetUtils.createLabel(groupComposite, Messages.getString("WSDLSchemaStep1Form.ProxyUser"), 1);
-            proxyUser = BaseWidgetUtils.createText(groupComposite, "", 1);
+            needAuth = BaseWidgetUtils.createCheckbox(groupComposite, Messages.getString("WSDLSchemaStep1Form.NeedAuth"), 4); //$NON-NLS-1$
+            useLabel = BaseWidgetUtils.createLabel(groupComposite, Messages.getString("WSDLSchemaStep1Form.UserName"), 1); //$NON-NLS-1$
+            userNameText = BaseWidgetUtils.createText(groupComposite, "", 1); //$NON-NLS-1$
+            password = BaseWidgetUtils.createLabel(groupComposite, Messages.getString("WSDLSchemaStep1Form.Password"), 1); //$NON-NLS-1$
+            passWordText = BaseWidgetUtils.createText(groupComposite, "", 1); //$NON-NLS-1$
+            useProxy = BaseWidgetUtils.createCheckbox(groupComposite, Messages.getString("WSDLSchemaStep1Form.UseProxy"), 4); //$NON-NLS-1$
+            hostLabel = BaseWidgetUtils.createLabel(groupComposite, Messages.getString("WSDLSchemaStep1Form.ProxyHost"), 1); //$NON-NLS-1$
+            proxyHost = BaseWidgetUtils.createText(groupComposite, "", 1); //$NON-NLS-1$
+            portLabel = BaseWidgetUtils.createLabel(groupComposite, Messages.getString("WSDLSchemaStep1Form.ProxyPort"), 1); //$NON-NLS-1$
+            proxyPort = BaseWidgetUtils.createText(groupComposite, "", 1); //$NON-NLS-1$
+            userProLabel = BaseWidgetUtils.createLabel(groupComposite, Messages.getString("WSDLSchemaStep1Form.ProxyUser"), 1); //$NON-NLS-1$
+            proxyUser = BaseWidgetUtils.createText(groupComposite, "", 1); //$NON-NLS-1$
             passwordProLabel = BaseWidgetUtils.createLabel(groupComposite, Messages
-                    .getString("WSDLSchemaStep1Form.ProxyPassword"), 1);
-            proxyPassword = BaseWidgetUtils.createText(groupComposite, "", 1);
+                    .getString("WSDLSchemaStep1Form.ProxyPassword"), 1); //$NON-NLS-1$
+            proxyPassword = BaseWidgetUtils.createText(groupComposite, "", 1); //$NON-NLS-1$
         } else if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.PERL)) {
             BaseWidgetUtils.createLabel(groupComposite, Messages.getString("WSDLSchemaStep1Form.ENDPOINTURI"), 1); //$NON-NLS-1$
-            endPointURI = BaseWidgetUtils.createText(groupComposite, "", 3);
+            endPointURI = BaseWidgetUtils.createText(groupComposite, "", 3); //$NON-NLS-1$
             EMetadataEncoding[] values = EMetadataEncoding.values();
             String[] encodingData = new String[values.length];
             for (int j = 0; j < values.length; j++) {
@@ -192,9 +191,9 @@ public class WSDLSchemaStep1Form extends AbstractForm {
             encodingCombo = new LabelledCombo(groupComposite, Messages.getString("FileStep2.encoding"), Messages //$NON-NLS-1$
                     .getString("FileStep2.encodingTip"), encodingData, 3, true, SWT.NONE); //$NON-NLS-1$
         }
-        BaseWidgetUtils.createLabel(groupComposite, Messages.getString("WSDLSchemaStep1Form.MethodName"), 1);
-        methodText = BaseWidgetUtils.createText(groupComposite, "", 3);
-        BaseWidgetUtils.createLabel(groupComposite, Messages.getString("WSDLSchemaStep1Form.Parameters"), 4);
+        BaseWidgetUtils.createLabel(groupComposite, Messages.getString("WSDLSchemaStep1Form.MethodName"), 1); //$NON-NLS-1$
+        methodText = BaseWidgetUtils.createText(groupComposite, "", 3); //$NON-NLS-1$
+        BaseWidgetUtils.createLabel(groupComposite, Messages.getString("WSDLSchemaStep1Form.Parameters"), 4); //$NON-NLS-1$
         valueTableViewer = new TableViewer(groupComposite, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
         TableViewerContentProvider provider = new TableViewerContentProvider();
         valueTableViewer.setContentProvider(provider);
@@ -277,7 +276,7 @@ public class WSDLSchemaStep1Form extends AbstractForm {
         }
 
         Button wsdlButton = new Button(parent, SWT.NONE);
-        wsdlButton.setText("Web Service Explorer");
+        wsdlButton.setText("Web Service Explorer"); //$NON-NLS-1$
         wsdlButton.setAlignment(SWT.RIGHT);
         wsdlButton.addSelectionListener(new SelectionAdapter() {
 
@@ -344,16 +343,20 @@ public class WSDLSchemaStep1Form extends AbstractForm {
         userNameText.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
-                checkFieldsValue();
-                getConnection().setUserName(userNameText.getText());
+                if (!isContextMode()) {
+                    checkFieldsValue();
+                    getConnection().setUserName(userNameText.getText());
+                }
             }
 
         });
         passWordText.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
-                checkFieldsValue();
-                getConnection().setPassword(passWordText.getText());
+                if (!isContextMode()) {
+                    checkFieldsValue();
+                    getConnection().setPassword(passWordText.getText());
+                }
             }
 
         });
@@ -369,17 +372,21 @@ public class WSDLSchemaStep1Form extends AbstractForm {
         proxyHost.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
-                checkFieldsValue();
-                getConnection().setProxyHost(proxyHost.getText());
+                if (!isContextMode()) {
+                    checkFieldsValue();
+                    getConnection().setProxyHost(proxyHost.getText());
+                }
 
             }
 
         });
-        proxyProt.addModifyListener(new ModifyListener() {
+        proxyPort.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
-                checkFieldsValue();
-                getConnection().setProxyPort(proxyProt.getText());
+                if (!isContextMode()) {
+                    checkFieldsValue();
+                    getConnection().setProxyPort(proxyPort.getText());
+                }
 
             }
 
@@ -387,16 +394,20 @@ public class WSDLSchemaStep1Form extends AbstractForm {
         proxyUser.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
-                checkFieldsValue();
-                getConnection().setProxyUser(proxyUser.getText());
+                if (!isContextMode()) {
+                    checkFieldsValue();
+                    getConnection().setProxyUser(proxyUser.getText());
+                }
             }
 
         });
         proxyPassword.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
-                checkFieldsValue();
-                getConnection().setProxyPassword(proxyPassword.getText());
+                if (!isContextMode()) {
+                    checkFieldsValue();
+                    getConnection().setProxyPassword(proxyPassword.getText());
+                }
             }
 
         });
@@ -406,11 +417,13 @@ public class WSDLSchemaStep1Form extends AbstractForm {
         endPointURI.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
-                checkFieldsValue();
-                getConnection().setEndpointURI(endPointURI.getText());
-                if (methodText.getText() != null && !methodText.getText().equals("") && wsdlText.getText() != null
-                        && !wsdlText.getText().equals("")) {
-                    updateStatus(IStatus.OK, null);
+                if (!isContextMode()) {
+                    checkFieldsValue();
+                    getConnection().setEndpointURI(endPointURI.getText());
+                    if (methodText.getText() != null && !methodText.getText().equals("") && wsdlText.getText() != null //$NON-NLS-1$
+                            && !wsdlText.getText().equals("")) { //$NON-NLS-1$
+                        updateStatus(IStatus.OK, null);
+                    }
                 }
             }
 
@@ -418,11 +431,13 @@ public class WSDLSchemaStep1Form extends AbstractForm {
         encodingCombo.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
-                getConnection().setEncoding(encodingCombo.getText());
-                checkFieldsValue();
-                if (methodText.getText() != null && !methodText.getText().equals("") && wsdlText.getText() != null
-                        && !wsdlText.getText().equals("")) {
-                    updateStatus(IStatus.OK, null);
+                if (!isContextMode()) {
+                    getConnection().setEncoding(encodingCombo.getText());
+                    checkFieldsValue();
+                    if (methodText.getText() != null && !methodText.getText().equals("") && wsdlText.getText() != null //$NON-NLS-1$
+                            && !wsdlText.getText().equals("")) { //$NON-NLS-1$
+                        updateStatus(IStatus.OK, null);
+                    }
                 }
             }
         });
@@ -445,10 +460,12 @@ public class WSDLSchemaStep1Form extends AbstractForm {
         wsdlText.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
-                checkFieldsValue();
-                getConnection().setWSDL(wsdlText.getText());
-                if (methodText.getText() != null && !methodText.getText().equals("")) {
-                    updateStatus(IStatus.OK, null);
+                if (!isContextMode()) {
+                    checkFieldsValue();
+                    getConnection().setWSDL(wsdlText.getText());
+                    if (methodText.getText() != null && !methodText.getText().equals("")) { //$NON-NLS-1$
+                        updateStatus(IStatus.OK, null);
+                    }
                 }
             }
 
@@ -456,10 +473,12 @@ public class WSDLSchemaStep1Form extends AbstractForm {
         methodText.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
-                checkFieldsValue();
-                getConnection().setMethodName(methodText.getText());
-                if (wsdlText.getText() != null && !wsdlText.getText().equals("")) {
-                    updateStatus(IStatus.OK, null);
+                if (!isContextMode()) {
+                    checkFieldsValue();
+                    getConnection().setMethodName(methodText.getText());
+                    if (wsdlText.getText() != null && !wsdlText.getText().equals("")) { //$NON-NLS-1$
+                        updateStatus(IStatus.OK, null);
+                    }
                 }
             }
 
@@ -473,7 +492,7 @@ public class WSDLSchemaStep1Form extends AbstractForm {
              */
             @Override
             public void mouseUp(MouseEvent e) {
-                String unName = "newLine_";
+                String unName = "newLine_"; //$NON-NLS-1$
                 ArrayList hashmap = getConnection().getParameters();
                 hashmap.add(unName + hashmap.size());
                 // for (ColumnValue columnValue : input) {
@@ -543,19 +562,29 @@ public class WSDLSchemaStep1Form extends AbstractForm {
     @Override
     protected void initialize() {
         String wsdlUrl = getConnection().getWSDL();
-        this.wsdlText.setText(wsdlUrl == null ? "" : wsdlUrl);
+        this.wsdlText.setText(wsdlUrl == null ? "" : wsdlUrl); //$NON-NLS-1$
         if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
             boolean needAuth2 = getConnection().isNeedAuth();
             String userName = getConnection().getUserName();
-            this.userNameText.setText(userName == null ? "" : userName);
+            this.userNameText.setText(userName == null ? "" : userName); //$NON-NLS-1$
             String password2 = getConnection().getPassword();
-            this.passWordText.setText(password2 == null ? "" : password2);
+            this.passWordText.setText(password2 == null ? "" : password2); //$NON-NLS-1$
             setNeedAuthEnable(needAuth2);
             boolean useproxy = getConnection().isUseProxy();
+
+            String proxyHost = getConnection().getProxyHost();
+            this.proxyHost.setText(proxyHost == null ? "" : proxyHost); //$NON-NLS-1$
+            String proxyPort = getConnection().getProxyPort();
+            this.proxyPort.setText(proxyPort == null ? "" : proxyPort); //$NON-NLS-1$
+            String proxyUser = getConnection().getProxyUser();
+            this.proxyUser.setText(proxyUser == null ? "" : proxyUser); //$NON-NLS-1$
+            String proxyPass = getConnection().getProxyPassword();
+            this.proxyPassword.setText(proxyPass == null ? "" : proxyPass); //$NON-NLS-1$
+
             setUseProxyEnable(useproxy);
         } else if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.PERL)) {
             String endPointURI = getConnection().getEndpointURI();
-            this.endPointURI.setText(endPointURI == null ? "" : endPointURI);
+            this.endPointURI.setText(endPointURI == null ? "" : endPointURI); //$NON-NLS-1$
             if (getConnection().getEncoding() != null && !getConnection().getEncoding().equals("")) { //$NON-NLS-1$
                 encodingCombo.setText(getConnection().getEncoding());
             } else {
@@ -564,7 +593,7 @@ public class WSDLSchemaStep1Form extends AbstractForm {
             encodingCombo.clearSelection();
         }
         String method = getConnection().getMethodName();
-        this.methodText.setText(method == null ? "" : method);
+        this.methodText.setText(method == null ? "" : method); //$NON-NLS-1$
         ArrayList hashparameter = getConnection().getParameters();
         // Object[] objs = hashparameter.values().toArray();
         // LinkedList<ColumnValue> list = new LinkedList<ColumnValue>();
@@ -578,23 +607,26 @@ public class WSDLSchemaStep1Form extends AbstractForm {
 
     private void setNeedAuthEnable(boolean b) {
         this.needAuth.setSelection(b);
-        this.userNameText.setEnabled(b);
         this.useLabel.setEnabled(b);
-        this.passWordText.setEnabled(b);
         this.password.setEnabled(b);
+        if (!isContextMode()) {
+            this.userNameText.setEnabled(b);
+            this.passWordText.setEnabled(b);
+        }
     }
 
     private void setUseProxyEnable(boolean b) {
         this.useProxy.setSelection(b);
-        this.useProxy.setSelection(b);
         this.hostLabel.setEnabled(b);
-        this.proxyHost.setEnabled(b);
         this.portLabel.setEnabled(b);
-        this.proxyProt.setEnabled(b);
-        this.proxyUser.setEnabled(b);
         this.userProLabel.setEnabled(b);
-        this.proxyPassword.setEnabled(b);
         this.passwordProLabel.setEnabled(b);
+        if (!isContextMode()) {
+            this.proxyHost.setEnabled(b);
+            this.proxyPort.setEnabled(b);
+            this.proxyUser.setEnabled(b);
+            this.proxyPassword.setEnabled(b);
+        }
     }
 
     /**
@@ -636,28 +668,28 @@ public class WSDLSchemaStep1Form extends AbstractForm {
     }
 
     private boolean checkJavaFieldsValue() {
-        if (wsdlText.getText() == null || wsdlText.getText().equals("")) {
+        if (wsdlText.getText() == null || wsdlText.getText().equals("")) { //$NON-NLS-1$
             updateStatus(IStatus.ERROR, "WSDL URL must be specified."); //$NON-NLS-1$
             return false;
-        } else if (methodText.getText() == null || methodText.getText().equals("")) {
+        } else if (methodText.getText() == null || methodText.getText().equals("")) { //$NON-NLS-1$
             updateStatus(IStatus.ERROR, "Method must be specified."); //$NON-NLS-1$
             return false;
-        } else if (needAuth.getSelection() && (userNameText.getText() == null || userNameText.getText().equals(""))) {
+        } else if (needAuth.getSelection() && (userNameText.getText() == null || userNameText.getText().equals(""))) { //$NON-NLS-1$
             updateStatus(IStatus.ERROR, "User Name must be specified."); //$NON-NLS-1$
             return false;
-        } else if (needAuth.getSelection() && (passWordText.getText() == null || passWordText.getText().equals(""))) {
+        } else if (needAuth.getSelection() && (passWordText.getText() == null || passWordText.getText().equals(""))) { //$NON-NLS-1$
             updateStatus(IStatus.ERROR, "Password must be specified."); //$NON-NLS-1$
             return false;
-        } else if (useProxy.getSelection() && (proxyHost.getText() == null || proxyHost.getText().equals(""))) {
+        } else if (useProxy.getSelection() && (proxyHost.getText() == null || proxyHost.getText().equals(""))) { //$NON-NLS-1$
             updateStatus(IStatus.ERROR, "Proxy host must be specified."); //$NON-NLS-1$
             return false;
-        } else if (useProxy.getSelection() && (proxyProt.getText() == null || proxyProt.getText().equals(""))) {
+        } else if (useProxy.getSelection() && (proxyPort.getText() == null || proxyPort.getText().equals(""))) { //$NON-NLS-1$
             updateStatus(IStatus.ERROR, "Proxy port must be specified."); //$NON-NLS-1$
             return false;
-        } else if (useProxy.getSelection() && (proxyUser.getText() == null || proxyUser.getText().equals(""))) {
+        } else if (useProxy.getSelection() && (proxyUser.getText() == null || proxyUser.getText().equals(""))) { //$NON-NLS-1$
             updateStatus(IStatus.ERROR, "Proxy user must be specified."); //$NON-NLS-1$
             return false;
-        } else if (useProxy.getSelection() && (proxyPassword.getText() == null || proxyPassword.getText().equals(""))) {
+        } else if (useProxy.getSelection() && (proxyPassword.getText() == null || proxyPassword.getText().equals(""))) { //$NON-NLS-1$
             updateStatus(IStatus.ERROR, "Proxy password must be specified."); //$NON-NLS-1$
             return false;
         } else {
@@ -668,13 +700,13 @@ public class WSDLSchemaStep1Form extends AbstractForm {
     }
 
     private boolean checkPerlFieldsValue() {
-        if (wsdlText.getText() == null || wsdlText.getText().equals("")) {
+        if (wsdlText.getText() == null || wsdlText.getText().equals("")) { //$NON-NLS-1$
             updateStatus(IStatus.ERROR, "WSDL URL must be specified."); //$NON-NLS-1$
             return false;
-        } else if (endPointURI.getText() == null || endPointURI.getText().equals("")) {
+        } else if (endPointURI.getText() == null || endPointURI.getText().equals("")) { //$NON-NLS-1$
             updateStatus(IStatus.ERROR, "Endpoint URI must be specified."); //$NON-NLS-1$
             return false;
-        } else if (methodText.getText() == null || methodText.getText().equals("")) {
+        } else if (methodText.getText() == null || methodText.getText().equals("")) { //$NON-NLS-1$
             updateStatus(IStatus.ERROR, "Method must be specified."); //$NON-NLS-1$
             return false;
         } else {
@@ -696,22 +728,22 @@ public class WSDLSchemaStep1Form extends AbstractForm {
         ProcessDescription processDescription = null;
 
         public boolean preProcessStart() {
-            previewButton.setText(Messages.getString("FileStep2.stop"));
+            previewButton.setText(Messages.getString("FileStep2.stop")); //$NON-NLS-1$
 
             clearPreview();
 
             // if incomplete settings, , the process don't be executed
             if (!checkFieldsValue()) {
-                previewInformationLabel.setText(" " + Messages.getString("FileStep2.settingsIncomplete")); //$NON-NLS-1$
+                previewInformationLabel.setText(" " + Messages.getString("FileStep2.settingsIncomplete")); //$NON-NLS-1$ //$NON-NLS-2$
                 //$NON-NLS-2$
                 if (!previewButton.isDisposed()) {
-                    previewButton.setText(Messages.getString("FileStep2.refreshPreview"));
+                    previewButton.setText(Messages.getString("FileStep2.refreshPreview")); //$NON-NLS-1$
                     previewButton.setEnabled(true);
                 }
                 return false;
             }
 
-            previewInformationLabel.setText(" " + Messages.getString("FileStep2.previewProgress")); //$NON-NLS-1$
+            previewInformationLabel.setText(" " + Messages.getString("FileStep2.previewProgress")); //$NON-NLS-1$ //$NON-NLS-2$
             //$NON-NLS-2$
             processDescription = getProcessDescription();
             return true;
@@ -733,7 +765,7 @@ public class WSDLSchemaStep1Form extends AbstractForm {
                 return;
             }
             if (getException() != null) {
-                previewInformationLabel.setText(" " + Messages.getString("FileStep2.previewFailure")); //$NON-NLS-1$
+                previewInformationLabel.setText(" " + Messages.getString("FileStep2.previewFailure")); //$NON-NLS-1$ //$NON-NLS-2$
                 //$NON-NLS-2$
                 new ErrorDialogWidthDetailArea(getShell(), PID,
                         Messages.getString("FileStep2.previewFailure"), getException().getMessage()); //$NON-NLS-1$
@@ -741,12 +773,12 @@ public class WSDLSchemaStep1Form extends AbstractForm {
             }
 
             if (csvArray == null || csvArray.getRows() == null || csvArray.getRows().size() == 0) {
-                previewInformationLabel.setText(" " + Messages.getString("FileStep2.previewFailure")); //$NON-NLS-1$
+                previewInformationLabel.setText(" " + Messages.getString("FileStep2.previewFailure")); //$NON-NLS-1$ //$NON-NLS-2$
                 //$NON-NLS-2$
                 // MessageDialog.openError(getShell(), "Error", "Preview refresh failed, please check attributes and
                 // filter.");
             } else {
-                previewInformationLabel.setText(" " + Messages.getString("FileStep2.previewIsDone")); //$NON-NLS-1$
+                previewInformationLabel.setText(" " + Messages.getString("FileStep2.previewIsDone")); //$NON-NLS-1$ //$NON-NLS-2$
                 //$NON-NLS-2$
 
                 // refresh TablePreview on this step
@@ -762,13 +794,13 @@ public class WSDLSchemaStep1Form extends AbstractForm {
 
         public void updateUIInThreadIfThreadIsCanceled() {
             if (!previewInformationLabel.isDisposed()) {
-                previewInformationLabel.setText("");
+                previewInformationLabel.setText(""); //$NON-NLS-1$
             }
         }
 
         public void updateUIInThreadIfThreadFinally() {
             if (!previewButton.isDisposed()) {
-                previewButton.setText(Messages.getString("FileStep2.refreshPreview"));
+                previewButton.setText(Messages.getString("FileStep2.refreshPreview")); //$NON-NLS-1$
                 previewButton.setEnabled(true);
             }
         }
@@ -786,18 +818,66 @@ public class WSDLSchemaStep1Form extends AbstractForm {
     }
 
     private ProcessDescription getProcessDescription() {
-
-        ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(getConnection());
+        if (isContextMode() && getContextModeManager() != null) {
+            ContextType contextTypeForContextMode = ConnectionContextHelper.getContextTypeForContextMode(getShell(),
+                    connectionItem.getConnection());
+            getContextModeManager().setSelectedContextType(contextTypeForContextMode);
+        }
+        ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(getOriginalValueConnection());
         return processDescription;
     }
 
-    /**
-     * Administrator Comment method "getConnection".
-     * 
-     * @return
-     */
-    private WSDLSchemaConnection getConnection() {
-        return (WSDLSchemaConnection) this.connectionItem.getConnection();
+    @Override
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
+        if (visible) {
+            adaptFormToEditable();
+        }
+    }
+
+    @Override
+    protected void adaptFormToEditable() {
+        super.adaptFormToEditable();
+        wsdlText.setEditable(!isContextMode());
+        methodText.setEditable(!isContextMode());
+        if (userNameText != null) {
+            userNameText.setEditable(!isContextMode());
+        }
+        if (passWordText != null) {
+            passWordText.setEditable(!isContextMode());
+            if (isContextMode()) {
+                passWordText.setEchoChar('\0');
+            }
+        }
+        if (proxyHost != null) {
+            proxyHost.setEditable(!isContextMode());
+        }
+        if (proxyPort != null) {
+            proxyPort.setEditable(!isContextMode());
+        }
+        if (proxyUser != null) {
+            proxyUser.setEditable(!isContextMode());
+        }
+        if (proxyPassword != null) {
+            proxyPassword.setEditable(!isContextMode());
+            if (isContextMode()) {
+                proxyPassword.setEchoChar('\0');
+            }
+        }
+        if (endPointURI != null) {
+            endPointURI.setEditable(!isContextMode());
+        }
+        if (encodingCombo != null) {
+            encodingCombo.setReadOnly(isContextMode());
+        }
+    }
+
+    @Override
+    protected void exportAsContext() {
+        super.exportAsContext();
+        if (getContextModeManager() != null) {
+            getContextModeManager().setDefaultContextType(getConnection());
+        }
     }
 
 }

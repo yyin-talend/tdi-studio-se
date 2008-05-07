@@ -28,6 +28,7 @@ import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
@@ -37,13 +38,16 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
+import org.talend.repository.ui.utils.ConnectionContextHelper;
 import org.talend.repository.ui.wizards.PropertiesWizardPage;
 import org.talend.repository.ui.wizards.RepositoryWizard;
+import org.talend.repository.ui.wizards.metadata.MetadataContextModeManager;
 import org.talend.repository.ui.wizards.metadata.connection.Step0WizardPage;
 
 /**
@@ -70,6 +74,8 @@ public class WSDLSchemaWizard extends RepositoryWizard implements INewWizard {
     private static final String ALL_STEPS = "3";
 
     private Map<String, String> oldTableMap;
+
+    private IMetadataContextModeManager contextModeManager;
 
     /**
      * WSDLSchemaWizard constructor comment.
@@ -147,6 +153,7 @@ public class WSDLSchemaWizard extends RepositoryWizard implements INewWizard {
             break;
         }
         initTable();
+        initConnection();
     }
 
     public WSDLSchemaWizard(IWorkbench workbench, boolean creation, RepositoryNode node, String[] existingNames,
@@ -199,11 +206,22 @@ public class WSDLSchemaWizard extends RepositoryWizard implements INewWizard {
             break;
         }
         initTable();
+        initConnection();
     }
 
     private void initTable() {
         if (connectionItem != null) {
             oldTableMap = RepositoryUpdateManager.getTableIdAndNameMap(connectionItem);
+        }
+    }
+
+    private void initConnection() {
+        ConnectionContextHelper.checkContextMode(connectionItem);
+        contextModeManager = new MetadataContextModeManager();
+        if (connectionItem.getConnection().isContextMode()) {
+            ContextType contextTypeForContextMode = ConnectionContextHelper.getContextTypeForContextMode(connectionItem
+                    .getConnection(), true);
+            contextModeManager.setSelectedContextType(contextTypeForContextMode);
         }
     }
 
@@ -224,12 +242,14 @@ public class WSDLSchemaWizard extends RepositoryWizard implements INewWizard {
                     + Messages.getString("FileWizardPage.of") + " " + ALL_STEPS); //$NON-NLS-1$ //$NON-NLS-2$
             wsdlSchemaWizardPage0.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep0")); //$NON-NLS-1$
             addPage(wsdlSchemaWizardPage0);
-            wsdlSchemaWizardPage1 = new WSDLSchemaWizardPage(1, connectionItem, isRepositoryObjectEditable(), null);
+            wsdlSchemaWizardPage1 = new WSDLSchemaWizardPage(1, connectionItem, isRepositoryObjectEditable(), null,
+                    contextModeManager);
             wsdlSchemaWizardPage1.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 2 " //$NON-NLS-1$ //$NON-NLS-2$
                     + Messages.getString("FileWizardPage.of") + " " + ALL_STEPS); //$NON-NLS-1$ //$NON-NLS-2$
             wsdlSchemaWizardPage1.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep1")); //$NON-NLS-1$
             addPage(wsdlSchemaWizardPage1);
-            wsdlSchemaWizardPage2 = new WSDLSchemaWizardPage(2, connectionItem, isRepositoryObjectEditable(), null);
+            wsdlSchemaWizardPage2 = new WSDLSchemaWizardPage(2, connectionItem, isRepositoryObjectEditable(), null,
+                    contextModeManager);
             wsdlSchemaWizardPage2.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 3 " //$NON-NLS-1$ //$NON-NLS-2$
                     + Messages.getString("FileWizardPage.of") + " " + ALL_STEPS); //$NON-NLS-1$ //$NON-NLS-2$
             wsdlSchemaWizardPage2.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep2")); //$NON-NLS-1$
@@ -251,13 +271,15 @@ public class WSDLSchemaWizard extends RepositoryWizard implements INewWizard {
                     + Messages.getString("FileWizardPage.of") + " " + ALL_STEPS); //$NON-NLS-1$ //$NON-NLS-2$
             wsdlSchemaWizardPage0.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep0")); //$NON-NLS-1$
             addPage(wsdlSchemaWizardPage0);
-            wsdlSchemaWizardPage1 = new WSDLSchemaWizardPage(1, connectionItem, isRepositoryObjectEditable(), null);
+            wsdlSchemaWizardPage1 = new WSDLSchemaWizardPage(1, connectionItem, isRepositoryObjectEditable(), null,
+                    contextModeManager);
             wsdlSchemaWizardPage1.setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 2 " //$NON-NLS-1$ //$NON-NLS-2$
                     + Messages.getString("FileWizardPage.of") + " " + ALL_STEPS); //$NON-NLS-1$ //$NON-NLS-2$
             wsdlSchemaWizardPage1.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep1")); //$NON-NLS-1$
             addPage(wsdlSchemaWizardPage1);
 
-            wsdlSchemaWizardPage2 = new WSDLSchemaWizardPage(2, connectionItem, isRepositoryObjectEditable(), null);
+            wsdlSchemaWizardPage2 = new WSDLSchemaWizardPage(2, connectionItem, isRepositoryObjectEditable(), null,
+                    contextModeManager);
             wsdlSchemaWizardPage2.setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 3 " //$NON-NLS-1$ //$NON-NLS-2$
                     + Messages.getString("FileWizardPage.of") + " " + ALL_STEPS); //$NON-NLS-1$ //$NON-NLS-2$
             wsdlSchemaWizardPage2.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep2")); //$NON-NLS-1$
@@ -274,13 +296,15 @@ public class WSDLSchemaWizard extends RepositoryWizard implements INewWizard {
             wsdlSchemaWizardPage0.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep0")); //$NON-NLS-1$
 
             addPage(wsdlSchemaWizardPage0);
-            wsdlSchemaWizardPage1 = new WSDLSchemaWizardPage(1, connectionItem, isRepositoryObjectEditable(), null);
+            wsdlSchemaWizardPage1 = new WSDLSchemaWizardPage(1, connectionItem, isRepositoryObjectEditable(), null,
+                    contextModeManager);
             wsdlSchemaWizardPage1.setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 2 " //$NON-NLS-1$ //$NON-NLS-2$
                     + Messages.getString("FileWizardPage.of") + " " + ALL_STEPS); //$NON-NLS-1$ //$NON-NLS-2$
             wsdlSchemaWizardPage1.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep1")); //$NON-NLS-1$
             addPage(wsdlSchemaWizardPage1);
 
-            wsdlSchemaWizardPage2 = new WSDLSchemaWizardPage(2, connectionItem, isRepositoryObjectEditable(), null);
+            wsdlSchemaWizardPage2 = new WSDLSchemaWizardPage(2, connectionItem, isRepositoryObjectEditable(), null,
+                    contextModeManager);
             wsdlSchemaWizardPage2.setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 3 " //$NON-NLS-1$ //$NON-NLS-2$
                     + Messages.getString("FileWizardPage.of") + " " + ALL_STEPS); //$NON-NLS-1$ //$NON-NLS-2$
             wsdlSchemaWizardPage2.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep2")); //$NON-NLS-1$

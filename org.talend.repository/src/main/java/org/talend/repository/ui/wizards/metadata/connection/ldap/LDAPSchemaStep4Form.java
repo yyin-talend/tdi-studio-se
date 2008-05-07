@@ -41,6 +41,7 @@ import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
@@ -57,7 +58,7 @@ import org.talend.core.utils.CsvArray;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.preview.ProcessDescription;
-import org.talend.repository.ui.swt.utils.AbstractForm;
+import org.talend.repository.ui.swt.utils.AbstractLDAPSchemaStepForm;
 import org.talend.repository.ui.utils.ShadowProcessHelper;
 
 /**
@@ -66,7 +67,7 @@ import org.talend.repository.ui.utils.ShadowProcessHelper;
  * @author ftang, 18/09/2007
  * 
  */
-public class LDAPSchemaStep4Form extends AbstractForm {
+public class LDAPSchemaStep4Form extends AbstractLDAPSchemaStepForm {
 
     private static Logger log = Logger.getLogger(LDAPSchemaStep4Form.class);
 
@@ -82,15 +83,11 @@ public class LDAPSchemaStep4Form extends AbstractForm {
 
     private Label informationLabel;
 
-    private MetadataTable metadataTable;
-
     private LabelledText metadataNameText;
 
     private LabelledText metadataCommentText;
 
     private boolean readOnly;
-
-    private ConnectionItem connectionItem;
 
     private int maximumRowsToPreview = CorePlugin.getDefault().getPreferenceStore()
             .getInt(ITalendCorePrefConstants.PREVIEW_LIMIT);
@@ -101,9 +98,14 @@ public class LDAPSchemaStep4Form extends AbstractForm {
      * @param Composite
      */
     public LDAPSchemaStep4Form(Composite parent, ConnectionItem connectionItem) {
-        super(parent, SWT.NONE, null);
-        this.connectionItem = connectionItem;
-        this.metadataTable = (MetadataTable) ((LDAPSchemaConnection) connectionItem.getConnection()).getTables().get(0);
+        this(parent, connectionItem, null);
+    }
+
+    public LDAPSchemaStep4Form(Composite parent, ConnectionItem connectionItem, IMetadataContextModeManager contextModeManager) {
+        super(parent, connectionItem, (MetadataTable) ((LDAPSchemaConnection) connectionItem.getConnection()).getTables().get(0),
+                null);
+        setConnectionItem(connectionItem);
+        setContextModeManager(contextModeManager);
         setupForm();
     }
 
@@ -212,15 +214,6 @@ public class LDAPSchemaStep4Form extends AbstractForm {
     }
 
     /**
-     * Comment method "getConnection".
-     * 
-     * @return
-     */
-    protected LDAPSchemaConnection getConnection() {
-        return (LDAPSchemaConnection) connectionItem.getConnection();
-    }
-
-    /**
      * run a ShadowProcess to determined the Metadata.
      */
     protected void runShadowProcess() {
@@ -228,12 +221,13 @@ public class LDAPSchemaStep4Form extends AbstractForm {
             informationLabel.setText("   " + Messages.getString("FileStep3.guessProgress")); //$NON-NLS-1$ //$NON-NLS-2$
 
             // get the XmlArray width an adapt ProcessDescription
-            CsvArray csvArray = ShadowProcessHelper.getCsvArray(getProcessDescription(), "LDAP_SCHEMA"); //$NON-NLS-1$
+            ProcessDescription processDescription = getProcessDescription();
+            CsvArray csvArray = ShadowProcessHelper.getCsvArray(processDescription, "LDAP_SCHEMA"); //$NON-NLS-1$
             if (csvArray == null) {
                 informationLabel.setText("   " + Messages.getString("FileStep3.guessFailure")); //$NON-NLS-1$ //$NON-NLS-2$
 
             } else {
-                refreshMetaDataTable(csvArray, getProcessDescription());
+                refreshMetaDataTable(csvArray, processDescription);
             }
 
         } catch (CoreException e) {
@@ -325,13 +319,14 @@ public class LDAPSchemaStep4Form extends AbstractForm {
      */
     private ProcessDescription getProcessDescription() {
 
-        ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(getConnection());
+        LDAPSchemaConnection originalValueConnection = getOriginalValueConnection();
+        ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(originalValueConnection);
 
         // adapt the limit to the extract sames rows of preview
         processDescription.setLimitRows(maximumRowsToPreview);
-        if (getConnection().isUseLimit()) {
+        if (originalValueConnection.isUseLimit()) {
             // Integer i = getConnection().getLimitEntry();
-            Integer i = Integer.valueOf(getConnection().getCountLimit());
+            Integer i = Integer.valueOf(originalValueConnection.getCountLimit());
             if (i < maximumRowsToPreview) {
                 processDescription.setLimitRows(i);
             }
@@ -352,6 +347,10 @@ public class LDAPSchemaStep4Form extends AbstractForm {
         metadataCommentText.setReadOnly(isReadOnly());
         tableEditorView.setReadOnly(isReadOnly());
 
+        if (getParent().getChildren().length == 1) { // open the table
+            guessButton.setEnabled(false);
+            informationLabel.setVisible(false);
+        }
     }
 
     /**

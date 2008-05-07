@@ -15,6 +15,7 @@ package org.talend.repository.ui.wizards.metadata.connection.ldap;
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
+import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
@@ -41,6 +42,8 @@ public class LDAPSchemaWizardPage extends WizardPage {
 
     private MetadataTable metadataTable;
 
+    private IMetadataContextModeManager contextModeManager;
+
     /**
      * DelimitedFileWizardPage constructor comment.
      * 
@@ -50,12 +53,13 @@ public class LDAPSchemaWizardPage extends WizardPage {
      * @param existingNames
      */
     public LDAPSchemaWizardPage(int step, ConnectionItem connectionItem, boolean isRepositoryObjectEditable,
-            String[] existingNames) {
+            String[] existingNames, IMetadataContextModeManager contextModeManager) {
         super("wizardPage"); //$NON-NLS-1$
         this.step = step;
         this.connectionItem = connectionItem;
         this.existingNames = existingNames;
         this.isRepositoryObjectEditable = isRepositoryObjectEditable;
+        this.contextModeManager = contextModeManager;
     }
 
     /**
@@ -68,21 +72,21 @@ public class LDAPSchemaWizardPage extends WizardPage {
         switch (step) {
         case 1:
             metadataTable = (MetadataTable) ((LDAPSchemaConnection) connectionItem.getConnection()).getTables().get(0);
-            currentComposite = new LDAPSchemaStep1Form(parent, connectionItem, metadataTable, TableHelper
-                    .getTableNames(((LDAPSchemaConnection) connectionItem.getConnection()), metadataTable.getLabel()));
+            currentComposite = new LDAPSchemaStep1Form(parent, connectionItem, metadataTable, TableHelper.getTableNames(
+                    ((LDAPSchemaConnection) connectionItem.getConnection()), metadataTable.getLabel()), contextModeManager);
             break;
         case 2:
             metadataTable = (MetadataTable) ((LDAPSchemaConnection) connectionItem.getConnection()).getTables().get(0);
-            currentComposite = new LDAPSchemaStep2Form(parent, connectionItem, metadataTable, TableHelper
-                    .getTableNames(((LDAPSchemaConnection) connectionItem.getConnection()), metadataTable.getLabel()));
+            currentComposite = new LDAPSchemaStep2Form(parent, connectionItem, metadataTable, TableHelper.getTableNames(
+                    ((LDAPSchemaConnection) connectionItem.getConnection()), metadataTable.getLabel()), contextModeManager);
             break;
         case 3:
             metadataTable = (MetadataTable) ((LDAPSchemaConnection) connectionItem.getConnection()).getTables().get(0);
-            currentComposite = new LDAPSchemaStep3Form(parent, connectionItem);
+            currentComposite = new LDAPSchemaStep3Form(parent, connectionItem, contextModeManager);
             break;
         case 4:
             metadataTable = (MetadataTable) ((LDAPSchemaConnection) connectionItem.getConnection()).getTables().get(0);
-            currentComposite = new LDAPSchemaStep4Form(parent, connectionItem);
+            currentComposite = new LDAPSchemaStep4Form(parent, connectionItem, contextModeManager);
             break;
         default:
             System.out.println("error...");

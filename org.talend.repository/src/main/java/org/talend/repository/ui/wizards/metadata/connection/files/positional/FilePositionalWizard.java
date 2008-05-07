@@ -26,6 +26,7 @@ import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.PositionalFileConnection;
@@ -35,13 +36,16 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
+import org.talend.repository.ui.utils.ConnectionContextHelper;
 import org.talend.repository.ui.wizards.PropertiesWizardPage;
 import org.talend.repository.ui.wizards.RepositoryWizard;
+import org.talend.repository.ui.wizards.metadata.MetadataContextModeManager;
 import org.talend.repository.ui.wizards.metadata.connection.Step0WizardPage;
 
 /**
@@ -65,6 +69,8 @@ public class FilePositionalWizard extends RepositoryWizard implements INewWizard
     private Property connectionProperty;
 
     private ConnectionItem connectionItem;
+
+    private IMetadataContextModeManager contextModeManager;
 
     /**
      * Constructor for FileWizard.
@@ -125,6 +131,7 @@ public class FilePositionalWizard extends RepositoryWizard implements INewWizard
             initLockStrategy();
             break;
         }
+        initConnection();
     }
 
     public FilePositionalWizard(IWorkbench workbench, boolean creation, RepositoryNode node, String[] existingNames) {
@@ -174,6 +181,17 @@ public class FilePositionalWizard extends RepositoryWizard implements INewWizard
             initLockStrategy();
             break;
         }
+        initConnection();
+    }
+
+    private void initConnection() {
+        ConnectionContextHelper.checkContextMode(connectionItem);
+        contextModeManager = new MetadataContextModeManager();
+        if (connectionItem.getConnection().isContextMode()) {
+            ContextType contextTypeForContextMode = ConnectionContextHelper.getContextTypeForContextMode(connectionItem
+                    .getConnection());
+            contextModeManager.setSelectedContextType(contextTypeForContextMode);
+        }
     }
 
     /**
@@ -182,8 +200,10 @@ public class FilePositionalWizard extends RepositoryWizard implements INewWizard
     public void addPages() {
         fileWizardPage0 = new Step0WizardPage(connectionProperty, pathToSave, ERepositoryObjectType.METADATA_FILE_POSITIONAL,
                 !isRepositoryObjectEditable(), creation);
-        fileWizardPage1 = new FilePositionalWizardPage(1, connectionItem, isRepositoryObjectEditable(), existingNames);
-        fileWizardPage2 = new FilePositionalWizardPage(2, connectionItem, isRepositoryObjectEditable(), existingNames);
+        fileWizardPage1 = new FilePositionalWizardPage(1, connectionItem, isRepositoryObjectEditable(), existingNames,
+                contextModeManager);
+        fileWizardPage2 = new FilePositionalWizardPage(2, connectionItem, isRepositoryObjectEditable(), existingNames,
+                contextModeManager);
 
         if (creation) {
             setWindowTitle(Messages.getString("FileWizard.windowTitleCreate")); //$NON-NLS-1$
@@ -203,7 +223,8 @@ public class FilePositionalWizard extends RepositoryWizard implements INewWizard
             fileWizardPage2.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep2")); //$NON-NLS-1$
             addPage(fileWizardPage2);
 
-            fileWizardPage3 = new FilePositionalWizardPage(3, connectionItem, isRepositoryObjectEditable(), null);
+            fileWizardPage3 = new FilePositionalWizardPage(3, connectionItem, isRepositoryObjectEditable(), null,
+                    contextModeManager);
             fileWizardPage3.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep3")); //$NON-NLS-1$
             fileWizardPage3.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 4 " //$NON-NLS-1$ //$NON-NLS-2$
                     + Messages.getString("FileWizardPage.of") + " 4"); //$NON-NLS-1$ //$NON-NLS-2$

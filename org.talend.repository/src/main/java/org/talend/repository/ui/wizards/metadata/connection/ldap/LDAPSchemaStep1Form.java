@@ -33,12 +33,15 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
+import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.EEncryptionMethod;
-import org.talend.repository.ui.swt.utils.AbstractForm;
+import org.talend.repository.ui.swt.utils.AbstractLDAPSchemaStepForm;
+import org.talend.repository.ui.utils.ConnectionContextHelper;
 
 /**
  * The class is used for LDAP schema on Repository View. <br/>
@@ -46,7 +49,7 @@ import org.talend.repository.ui.swt.utils.AbstractForm;
  * @author ftang, 18/09/2007
  * 
  */
-public class LDAPSchemaStep1Form extends AbstractForm {
+public class LDAPSchemaStep1Form extends AbstractLDAPSchemaStepForm {
 
     // /** The connection name text widget */
     // private Text nameText;
@@ -63,10 +66,6 @@ public class LDAPSchemaStep1Form extends AbstractForm {
     /** The button to check the connection parameters */
     private Button checkConnectionButton;
 
-    private ConnectionItem connectionItem;
-
-    private MetadataTable metadataTable;
-
     /**
      * LDAPSchemaStep2Form constructor comment.
      * 
@@ -75,11 +74,11 @@ public class LDAPSchemaStep1Form extends AbstractForm {
      * @param metadataTable
      * @param tableNames
      */
-    public LDAPSchemaStep1Form(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable,
-            String[] tableNames) {
-        super(parent, SWT.NONE, tableNames);
-        this.connectionItem = connectionItem;
-        this.metadataTable = metadataTable;
+    public LDAPSchemaStep1Form(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable, String[] tableNames,
+            IMetadataContextModeManager contextModeManager) {
+        super(parent, connectionItem, metadataTable, tableNames);
+        setConnectionItem(connectionItem);
+        setContextModeManager(contextModeManager);
         setupForm();
     }
 
@@ -111,8 +110,7 @@ public class LDAPSchemaStep1Form extends AbstractForm {
         portCombo = BaseWidgetUtils.createCombo(groupComposite, portHistory, -1, 2);
 
         String[] encMethods = new String[] { EEncryptionMethod.NO_ENCRYPTION_METHOD.getName(),
-                EEncryptionMethod.SSL_ENCRYPTION_METHOD.getName(),
-                EEncryptionMethod.STARTTSL_EXTENSION_METHOD.getName() };
+                EEncryptionMethod.SSL_ENCRYPTION_METHOD.getName(), EEncryptionMethod.STARTTSL_EXTENSION_METHOD.getName() };
         int index = 0;
         BaseWidgetUtils.createLabel(groupComposite, Messages.getString("LDAPSchemaStep1Form.EncryptionMethod"), 1); //$NON-NLS-1$
         encryptionMethodCombo = BaseWidgetUtils.createReadonlyCombo(groupComposite, encMethods, index, 2);
@@ -139,13 +137,13 @@ public class LDAPSchemaStep1Form extends AbstractForm {
     @Override
     protected void addFieldsListeners() {
 
-        final LDAPSchemaConnection connection = (LDAPSchemaConnection) connectionItem.getConnection();
-
         hostCombo.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent event) {
-                checkFieldsValue();
-                connection.setHost(hostCombo.getText().trim());
+                if (!isContextMode()) {
+                    checkFieldsValue();
+                    connection.setHost(hostCombo.getText().trim());
+                }
 
             }
         });
@@ -153,22 +151,26 @@ public class LDAPSchemaStep1Form extends AbstractForm {
         portCombo.addVerifyListener(new VerifyListener() {
 
             public void verifyText(VerifyEvent event) {
-                if (!event.text.matches("[0-9]*")) {
-                    event.doit = false;
-                }
-                if (portCombo.getText().length() > 6 && event.text.length() > 0) {
-                    event.doit = false;
-                } else {
-                    checkFieldsValue();
-                    connection.setPort(portCombo.getText().trim());
+                if (!isContextMode()) {
+                    if (!event.text.matches("[0-9]*")) {
+                        event.doit = false;
+                    }
+                    if (portCombo.getText().length() > 6 && event.text.length() > 0) {
+                        event.doit = false;
+                    } else {
+                        checkFieldsValue();
+                        connection.setPort(portCombo.getText().trim());
+                    }
                 }
             }
         });
         portCombo.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent event) {
-                checkFieldsValue();
-                connection.setPort(portCombo.getText().trim());
+                if (!isContextMode()) {
+                    checkFieldsValue();
+                    connection.setPort(portCombo.getText().trim());
+                }
             }
         });
 
@@ -187,12 +189,16 @@ public class LDAPSchemaStep1Form extends AbstractForm {
             boolean isOK = false;
 
             public void widgetSelected(SelectionEvent event) {
-
+                if (isContextMode() && getContextModeManager() != null) {
+                    ContextType contextTypeForContextMode = ConnectionContextHelper.getContextTypeForContextMode(getShell(),
+                            connectionItem.getConnection());
+                    getContextModeManager().setSelectedContextType(contextTypeForContextMode);
+                }
                 try {
                     IRunnableWithProgress op = new IRunnableWithProgress() {
 
                         public void run(IProgressMonitor monitor) {
-                            isOK = LDAPConnectionUtils.checkParam(connection);
+                            isOK = LDAPConnectionUtils.checkParam(getOriginalValueConnection());
                         }
                     };
                     new ProgressMonitorDialog(Display.getCurrent().getActiveShell()).run(true, false, op);
@@ -203,12 +209,16 @@ public class LDAPSchemaStep1Form extends AbstractForm {
                 }
 
                 if (isOK) {
-                    saveDialogSettings();
-                    MessageDialog.openInformation(Display.getDefault().getActiveShell(), Messages.getString("LDAPSchemaStep1Form.CheckNetWorkParameter"), //$NON-NLS-1$
+                    if (!isContextMode()) {
+                        saveDialogSettings();
+                    }
+                    MessageDialog.openInformation(Display.getDefault().getActiveShell(), Messages
+                            .getString("LDAPSchemaStep1Form.CheckNetWorkParameter"), //$NON-NLS-1$
                             "The connection succeeded.");
                     updateStatus(IStatus.OK, null);
                 } else {
-                    MessageDialog.openError(Display.getDefault().getActiveShell(), Messages.getString("LDAPSchemaStep1Form.CheckNetWorkParameter"), //$NON-NLS-1$
+                    MessageDialog.openError(Display.getDefault().getActiveShell(), Messages
+                            .getString("LDAPSchemaStep1Form.CheckNetWorkParameter"), //$NON-NLS-1$
                             "The connection failed.");
                     updateStatus(IStatus.ERROR, null);
                 }
@@ -223,7 +233,7 @@ public class LDAPSchemaStep1Form extends AbstractForm {
      */
     @Override
     protected void addUtilsButtonListeners() {
-        // TODO Auto-generated method stub
+        // 
 
     }
 
@@ -234,7 +244,6 @@ public class LDAPSchemaStep1Form extends AbstractForm {
      */
     @Override
     protected boolean checkFieldsValue() {
-
         if (hostCombo.getText() == null || hostCombo.getText().equals("")) {
             this.checkConnectionButton.setEnabled(false);
             updateStatus(IStatus.ERROR, "Host name must be specified."); //$NON-NLS-1$
@@ -285,7 +294,10 @@ public class LDAPSchemaStep1Form extends AbstractForm {
      */
     @Override
     protected void adaptFormToReadOnly() {
-        // TODO Auto-generated method stub
+        hostCombo.setEnabled(!isReadOnly());
+        portCombo.setEnabled(!isReadOnly());
+        encryptionMethodCombo.setEnabled(!isReadOnly());
+        updateStatus(IStatus.OK, ""); //$NON-NLS-1$
 
     }
 
@@ -296,4 +308,23 @@ public class LDAPSchemaStep1Form extends AbstractForm {
         HistoryUtils.save(ConnectionUIConstants.DIALOGSETTING_KEY_HOST_HISTORY, hostCombo.getText());
         HistoryUtils.save(ConnectionUIConstants.DIALOGSETTING_KEY_PORT_HISTORY, portCombo.getText());
     }
+
+    @Override
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
+        adaptFormToReadOnly();
+        if (visible && isContextMode()) {
+            initialize();
+            adaptFormToEditable();
+        }
+
+    }
+
+    @Override
+    protected void adaptFormToEditable() {
+        super.adaptFormToEditable();
+        hostCombo.setEnabled(!isContextMode());
+        portCombo.setEnabled(!isContextMode());
+    }
+
 }

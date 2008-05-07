@@ -39,8 +39,10 @@ import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
+import org.talend.core.model.metadata.builder.connection.FileExcelConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.editor.MetadataEmfTableEditor;
@@ -58,6 +60,7 @@ import org.talend.repository.preview.ExcelSchemaBean;
 import org.talend.repository.preview.ProcessDescription;
 import org.talend.repository.ui.swt.utils.AbstractExcelFileStepForm;
 import org.talend.repository.ui.utils.ColumnNameValidator;
+import org.talend.repository.ui.utils.FileConnectionContextUtils;
 import org.talend.repository.ui.utils.ShadowProcessHelper;
 
 /**
@@ -94,9 +97,16 @@ public class ExcelFileStep3Form extends AbstractExcelFileStepForm {
      * @param Composite
      */
     public ExcelFileStep3Form(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable, String[] existingNames) {
+        this(parent, connectionItem, metadataTable, existingNames, null);
+    }
+
+    public ExcelFileStep3Form(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable,
+            String[] existingNames, IMetadataContextModeManager contextModeManager) {
         super(parent, connectionItem, metadataTable, existingNames);
         this.connectionItem = connectionItem;
         this.metadataTable = metadataTable;
+        setConnectionItem(connectionItem);
+        setContextModeManager(contextModeManager);
         setupForm();
     }
 
@@ -127,6 +137,11 @@ public class ExcelFileStep3Form extends AbstractExcelFileStepForm {
         metadataNameText.setReadOnly(isReadOnly());
         metadataCommentText.setReadOnly(isReadOnly());
         tableEditorView.setReadOnly(isReadOnly());
+
+        if (getParent().getChildren().length == 1) { // open the table
+            guessButton.setEnabled(false);
+            informationLabel.setVisible(false);
+        }
     }
 
     @Override
@@ -265,9 +280,9 @@ public class ExcelFileStep3Form extends AbstractExcelFileStepForm {
      * 
      * @return processDescription
      */
-    private ProcessDescription getProcessDescription() {
+    private ProcessDescription getProcessDescription(FileExcelConnection originalValueConnection) {
 
-        ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(getConnection());
+        ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(originalValueConnection);
 
         // Adapt Header width firstRowIsCaption to preview the first line on caption or not
         // processDescription.setHeaderRow(getConnection().getHeaderValue());
@@ -275,13 +290,13 @@ public class ExcelFileStep3Form extends AbstractExcelFileStepForm {
         // processDescription.setLimitRows(getConnection().getLimitValue());
         // processDescription.setRemoveEmptyRow(getConnection().isRemoveEmptyRow());
 
-        processDescription.setEncoding(TalendTextUtils.addQuotes(getConnection().getEncoding()));
+        processDescription.setEncoding(TalendTextUtils.addQuotes(originalValueConnection.getEncoding()));
 
         ExcelSchemaBean bean = new ExcelSchemaBean();
 
-        bean.setSheetName(getConnection().getSheetName());
-        bean.setSelectAllSheets(getConnection().isSelectAllSheets());
-        bean.setSheetsList(getConnection().getSheetList());
+        bean.setSheetName(originalValueConnection.getSheetName());
+        bean.setSelectAllSheets(originalValueConnection.isSelectAllSheets());
+        bean.setSheetsList(originalValueConnection.getSheetList());
         // bean.setFirstColumn(getConnection().getFirstColumn());
         // bean.setLastColumn(getConnection().getLastColumn());
         //
@@ -301,7 +316,8 @@ public class ExcelFileStep3Form extends AbstractExcelFileStepForm {
     protected void runShadowProcess() {
 
         // if no file, the process don't be executed
-        if (getConnection().getFilePath() == null || getConnection().getFilePath().equals("")) { //$NON-NLS-1$
+        FileExcelConnection originalValueConnection = getOriginalValueConnection();
+        if (originalValueConnection.getFilePath() == null || originalValueConnection.getFilePath().equals("")) { //$NON-NLS-1$
             informationLabel.setText("   " + Messages.getString("FileStep3.filepathAlert") //$NON-NLS-1$ //$NON-NLS-2$
                     + "                                                                              "); //$NON-NLS-1$
             return;
@@ -311,12 +327,13 @@ public class ExcelFileStep3Form extends AbstractExcelFileStepForm {
             informationLabel.setText("   " + Messages.getString("FileStep3.guessProgress")); //$NON-NLS-1$ //$NON-NLS-2$
 
             // get the XmlArray width an adapt ProcessDescription
-            CsvArray csvArray = ShadowProcessHelper.getCsvArray(getProcessDescription(), "FILE_EXCEL"); //$NON-NLS-1$
+            ProcessDescription processDescription = getProcessDescription(originalValueConnection);
+            CsvArray csvArray = ShadowProcessHelper.getCsvArray(processDescription, "FILE_EXCEL"); //$NON-NLS-1$
 
             if (csvArray == null) {
                 informationLabel.setText("   " + Messages.getString("FileStep3.guessFailure")); //$NON-NLS-1$ //$NON-NLS-2$
             } else {
-                refreshMetaDataTable(csvArray, getProcessDescription());
+                refreshMetaDataTable(csvArray, processDescription);
             }
 
         } catch (CoreException e) {
@@ -553,7 +570,8 @@ public class ExcelFileStep3Form extends AbstractExcelFileStepForm {
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         if (super.isVisible()) {
-            if (getConnection().getFilePath() != null && (!getConnection().getFilePath().equals("")) //$NON-NLS-1$
+            FileExcelConnection originalValueConnection = getOriginalValueConnection();
+            if (originalValueConnection.getFilePath() != null && (!originalValueConnection.getFilePath().equals("")) //$NON-NLS-1$
                     && (tableEditorView.getMetadataEditor().getBeanCount() <= 0)) {
                 runShadowProcess();
             }
@@ -564,4 +582,12 @@ public class ExcelFileStep3Form extends AbstractExcelFileStepForm {
         checkFieldsValue();
     }
 
+    private FileExcelConnection getOriginalValueConnection() {
+        if (getConnection().isContextMode() && getContextModeManager() != null) {
+            return (FileExcelConnection) FileConnectionContextUtils.cloneOriginalValueConnection(getConnection(),
+                    getContextModeManager().getSelectedContextType());
+        }
+        return getConnection();
+
+    }
 }

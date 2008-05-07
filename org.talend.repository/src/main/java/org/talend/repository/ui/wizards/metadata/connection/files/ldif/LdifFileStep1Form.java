@@ -38,6 +38,7 @@ import org.talend.commons.ui.swt.formtools.LabelledFileField;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
 import org.talend.commons.ui.utils.PathUtils;
 import org.talend.commons.utils.encoding.CharsetToolkit;
+import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.swt.utils.AbstractLdifFileStepForm;
@@ -82,8 +83,11 @@ public class LdifFileStep1Form extends AbstractLdifFileStepForm {
      * @param Wizard
      * @param Style
      */
-    public LdifFileStep1Form(Composite parent, ConnectionItem connectionItem, String[] existingNames) {
+    public LdifFileStep1Form(Composite parent, ConnectionItem connectionItem, String[] existingNames,
+            IMetadataContextModeManager contextModeManager) {
         super(parent, connectionItem, existingNames);
+        setConnectionItem(connectionItem);
+        setContextModeManager(contextModeManager);
         setupForm();
     }
 
@@ -101,14 +105,16 @@ public class LdifFileStep1Form extends AbstractLdifFileStepForm {
             serverCombo.setText(getConnection().getServer());
         }
         serverCombo.clearSelection();
-        
-        //Just mask it.
+
+        // Just mask it.
         serverCombo.setReadOnly(true);
 
         if (getConnection().getFilePath() != null) {
             fileField.setText(getConnection().getFilePath().replace("\\\\", "\\")); //$NON-NLS-1$ //$NON-NLS-2$
         }
-
+        if (isContextMode()) {
+            adaptFormToEditable();
+        }
         // init the fileViewer
         checkFilePathAndManageIt();
 
@@ -120,7 +126,7 @@ public class LdifFileStep1Form extends AbstractLdifFileStepForm {
      */
     protected void adaptFormToReadOnly() {
         readOnly = isReadOnly();
-//        serverCombo.setReadOnly(isReadOnly());
+        // serverCombo.setReadOnly(isReadOnly());
         fileField.setReadOnly(isReadOnly());
         updateStatus(IStatus.OK, ""); //$NON-NLS-1$
 
@@ -198,9 +204,11 @@ public class LdifFileStep1Form extends AbstractLdifFileStepForm {
         fileField.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
-                getConnection().setFilePath(PathUtils.getPortablePath(fileField.getText()));
-                fileViewerText.setText(Messages.getString("FileStep1.fileViewerProgress")); //$NON-NLS-1$
-                checkFilePathAndManageIt();
+                if (!isContextMode()) {
+                    getConnection().setFilePath(PathUtils.getPortablePath(fileField.getText()));
+                    fileViewerText.setText(Messages.getString("FileStep1.fileViewerProgress")); //$NON-NLS-1$
+                    checkFilePathAndManageIt();
+                }
             }
         });
     }
@@ -211,7 +219,12 @@ public class LdifFileStep1Form extends AbstractLdifFileStepForm {
     private void checkFilePathAndManageIt() {
         updateStatus(IStatus.OK, null);
         filePathIsDone = false;
-        if (fileField.getText() == "") { //$NON-NLS-1$
+        String fileStr = fileField.getText();
+        if (isContextMode() && getContextModeManager() != null) {
+            fileStr = getContextModeManager().getOriginalValue(getConnection().getFilePath());
+        }
+
+        if (fileStr == null || fileStr == "") { //$NON-NLS-1$
             fileViewerText.setText(Messages.getString("FileStep1.fileViewerTip1") + " " + maximumRowsToPreview + " " //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                     + Messages.getString("FileStep1.fileViewerTip2")); //$NON-NLS-1$
         } else {
@@ -222,33 +235,32 @@ public class LdifFileStep1Form extends AbstractLdifFileStepForm {
 
             try {
 
-                File file = new File(fileField.getText());
+                File file = new File(fileStr);
                 Charset guessedCharset = CharsetToolkit.guessEncoding(file, 4096);
-                
+
                 String str;
                 int numberLine = 0;
                 // read the file width the limit : MAXIMUM_ROWS_TO_PREVIEW
-                in = 
-                    new BufferedReader(
-                        new InputStreamReader(new FileInputStream(fileField.getText()),
-                                guessedCharset.displayName()));
+                in = new BufferedReader(new InputStreamReader(new FileInputStream(fileStr), guessedCharset.displayName()));
 
                 while (((str = in.readLine()) != null) && (numberLine <= maximumRowsToPreview)) {
                     numberLine++;
                     previewRows.append(str + "\n"); //$NON-NLS-1$
                 }
-                
+
                 // show lines
                 fileViewerText.setText(new String(previewRows));
                 filePathIsDone = true;
-                
-                // init of List of attributes when you change the FilePath in input.
-                if(getConnection().getValue() != null && !getConnection().getValue().isEmpty()){
-                    getConnection().getValue().removeAll(getConnection().getValue());
+
+                if (!isContextMode()) {
+                    // init of List of attributes when you change the FilePath in input.
+                    if (getConnection().getValue() != null && !getConnection().getValue().isEmpty()) {
+                        getConnection().getValue().removeAll(getConnection().getValue());
+                    }
                 }
-                
+
             } catch (Exception e) {
-                String msgError = Messages.getString("FileStep1.filepath") + " \"" + fileField.getText().replace("\\\\", "\\") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                String msgError = Messages.getString("FileStep1.filepath") + " \"" + fileStr.replace("\\\\", "\\") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                         + "\"\n"; //$NON-NLS-1$
                 if (e instanceof FileNotFoundException) {
                     msgError = msgError + Messages.getString("FileStep1.fileNotFoundException"); //$NON-NLS-1$
@@ -285,15 +297,17 @@ public class LdifFileStep1Form extends AbstractLdifFileStepForm {
      */
     protected boolean checkFieldsValue() {
         // The fields
-//        serverCombo.setEnabled(true);
-//
-//        if (serverCombo.getText() == "") { //$NON-NLS-1$
-//            fileField.setEditable(false);
-//            updateStatus(IStatus.ERROR, Messages.getString("FileStep1.serverAlert")); //$NON-NLS-1$
-//            return false;
-//        } else {
+        // serverCombo.setEnabled(true);
+        //
+        // if (serverCombo.getText() == "") { //$NON-NLS-1$
+        // fileField.setEditable(false);
+        // updateStatus(IStatus.ERROR, Messages.getString("FileStep1.serverAlert")); //$NON-NLS-1$
+        // return false;
+        // } else {
+        if (!isContextMode()) {
             fileField.setEditable(true);
-//        }
+        }
+        // }
 
         if (fileField.getText() == "") { //$NON-NLS-1$
             updateStatus(IStatus.ERROR, Messages.getString("FileStep1.filepathAlert")); //$NON-NLS-1$
@@ -320,5 +334,14 @@ public class LdifFileStep1Form extends AbstractLdifFileStepForm {
         if (isReadOnly() != readOnly) {
             adaptFormToReadOnly();
         }
+        if (visible && isContextMode()) {
+            initialize();
+        }
+    }
+
+    @Override
+    protected void adaptFormToEditable() {
+        super.adaptFormToEditable();
+        fileField.setEditable(!isContextMode());
     }
 }

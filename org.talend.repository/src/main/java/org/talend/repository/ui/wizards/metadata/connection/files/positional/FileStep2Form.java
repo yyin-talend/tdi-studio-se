@@ -39,17 +39,22 @@ import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
 import org.talend.commons.ui.swt.thread.SWTUIThreadProcessor;
 import org.talend.core.model.metadata.EMetadataEncoding;
+import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.builder.connection.FileFormat;
+import org.talend.core.model.metadata.builder.connection.PositionalFileConnection;
 import org.talend.core.model.metadata.builder.connection.RowSeparator;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.utils.CsvArray;
+import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.preview.ProcessDescription;
 import org.talend.repository.ui.swt.preview.ShadowProcessPreview;
 import org.talend.repository.ui.swt.utils.AbstractPositionalFileStepForm;
 import org.talend.repository.ui.swt.utils.IRefreshable;
+import org.talend.repository.ui.utils.ConnectionContextHelper;
+import org.talend.repository.ui.utils.FileConnectionContextUtils;
 import org.talend.repository.ui.utils.ShadowProcessHelper;
 
 /**
@@ -127,9 +132,11 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
      * @param Wizard
      * @param Style
      */
-    public FileStep2Form(Composite parent, ConnectionItem connectionItem) {
+    public FileStep2Form(Composite parent, ConnectionItem connectionItem, IMetadataContextModeManager contextModeManager) {
         super(parent, connectionItem);
-        setupForm();
+        setConnectionItem(connectionItem);
+        setContextModeManager(contextModeManager);
+        setupForm(true);
     }
 
     /**
@@ -149,11 +156,12 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
         fieldSeparatorText.setText(getConnection().getFieldSeparatorValue());
         rowSeparatorCombo.setText(getConnection().getRowSeparatorType().getLiteral());
         rowSeparatorText.setText(getConnection().getRowSeparatorValue());
-        rowSeparatorText.setEditable(true);
+        if (!isContextMode()) {
+            rowSeparatorText.setEditable(true);
 
-        // adapt Separator Combo and Text
-        rowSeparatorManager();
-
+            // adapt Separator Combo and Text
+            rowSeparatorManager();
+        }
         // Fields to the Group Rows To Skip
         int i = getConnection().getHeaderValue();
         if (i > 0) {
@@ -406,9 +414,9 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
      * 
      * @return processDescription
      */
-    private ProcessDescription getProcessDescription() {
+    private ProcessDescription getProcessDescription(PositionalFileConnection originalValueConnection) {
 
-        ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(getConnection());
+        ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(originalValueConnection);
 
         // Adapt Header width firstRowIsCaption to preview the first line on caption or not
         Integer i = 0;
@@ -458,9 +466,27 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
             previewButton.setText(Messages.getString("FileStep2.stop"));
 
             clearPreview();
+            String filePath = getConnection().getFilePath();
+            PositionalFileConnection originalValueConnection = null;
+            if (isContextMode()) {
+                boolean found = false;
+                ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(getShell(), getConnection());
+                if (contextType != null) {
+                    if (getContextModeManager() != null) {
+                        getContextModeManager().setSelectedContextType(contextType);
+                        filePath = getContextModeManager().getOriginalValue(getConnection().getFilePath());
+                        found = true;
+                    }
+                    originalValueConnection = (PositionalFileConnection) FileConnectionContextUtils.cloneOriginalValueConnection(
+                            getConnection(), contextType);
+                }
+                if (!found) {
+                    filePath = null;
+                }
+            }
 
             // if no file, the process don't be executed
-            if (getConnection().getFilePath() == null || getConnection().getFilePath().equals("")) { //$NON-NLS-1$
+            if (filePath == null || filePath.equals("")) { //$NON-NLS-1$
                 previewInformationLabel.setText("   " + Messages.getString("FileStep2.filePathIncomplete")); //$NON-NLS-1$ //$NON-NLS-2$
                 return false;
             }
@@ -471,7 +497,10 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
                 return false;
             }
             previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewProgress")); //$NON-NLS-1$ //$NON-NLS-2$
-            processDescription = getProcessDescription();
+            if (originalValueConnection == null) {
+                originalValueConnection = getConnection();
+            }
+            processDescription = getProcessDescription(originalValueConnection);
             return true;
         }
 
@@ -776,16 +805,20 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
         encodingCombo.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
-                getConnection().setEncoding(encodingCombo.getText());
-                checkFieldsValue();
+                if (!isContextMode()) {
+                    getConnection().setEncoding(encodingCombo.getText());
+                    checkFieldsValue();
+                }
             }
         });
 
         rowSeparatorCombo.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
-                // Label Custom of rowSeparatorText
-                rowSeparatorManager();
+                if (!isContextMode()) {
+                    // Label Custom of rowSeparatorText
+                    rowSeparatorManager();
+                }
             }
         });
 
@@ -793,18 +826,20 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
         fieldSeparatorText.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
-                // get and clean the FieldSeparatorValue
-                String value = getValidateFieldSeparator(fieldSeparatorText.getText());
-                Point selection = fieldSeparatorText.getSelection();
-                String temp = TalendTextUtils.QUOTATION_MARK + value + TalendTextUtils.QUOTATION_MARK;
-                if (!(temp.equals(fieldSeparatorText.getText()))) {
-                    fieldSeparatorText.setText(temp);
-                }
+                if (!isContextMode()) {
+                    // get and clean the FieldSeparatorValue
+                    String value = getValidateFieldSeparator(fieldSeparatorText.getText());
+                    Point selection = fieldSeparatorText.getSelection();
+                    String temp = TalendTextUtils.QUOTATION_MARK + value + TalendTextUtils.QUOTATION_MARK;
+                    if (!(temp.equals(fieldSeparatorText.getText()))) {
+                        fieldSeparatorText.setText(temp);
+                    }
 
-                getConnection().setFieldSeparatorValue(temp);
-                fieldSeparatorText.forceFocus();
-                fieldSeparatorText.setSelection(selection.x);
-                checkFieldsValue();
+                    getConnection().setFieldSeparatorValue(temp);
+                    fieldSeparatorText.forceFocus();
+                    fieldSeparatorText.setSelection(selection.x);
+                    checkFieldsValue();
+                }
             }
         });
 
@@ -812,16 +847,22 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
 
             @Override
             public void keyPressed(KeyEvent e) {
-                e.doit = charIsAcceptedOnFieldSeparator(fieldSeparatorText.getText(), e.character, fieldSeparatorText
-                        .getSelection().x);
+                if (isContextMode()) {
+                    e.doit = false;
+                } else {
+                    e.doit = charIsAcceptedOnFieldSeparator(fieldSeparatorText.getText(), e.character, fieldSeparatorText
+                            .getSelection().x);
+                }
             }
         });
 
         rowSeparatorText.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
-                getConnection().setRowSeparatorValue(rowSeparatorText.getText());
-                checkFieldsValue();
+                if (!isContextMode()) {
+                    getConnection().setRowSeparatorValue(rowSeparatorText.getText());
+                    checkFieldsValue();
+                }
             }
         });
         rowSeparatorText.addKeyListener(new KeyAdapter() {
@@ -884,6 +925,9 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
      */
     @Override
     protected boolean checkFieldsValue() {
+        if (isContextMode()) {
+            return true;
+        }
         previewInformationLabel.setText("   " + Messages.getString("FileStep2.settingsIncomplete")); //$NON-NLS-1$ //$NON-NLS-2$
         updateStatus(IStatus.OK, null);
         previewButton.setEnabled(false);
@@ -989,11 +1033,13 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         if (super.isVisible()) {
-            // Adapt the UI fieldSeparator to step1
-            fieldSeparatorText.setText(TalendTextUtils.QUOTATION_MARK + getConnection().getFieldSeparatorValue()
-                    + TalendTextUtils.QUOTATION_MARK);
-            // Adapt the UI rowSeparator to the file format
-            rowSeparatorManager();
+            if (!isContextMode()) {
+                // Adapt the UI fieldSeparator to step1
+                fieldSeparatorText.setText(TalendTextUtils.QUOTATION_MARK + getConnection().getFieldSeparatorValue()
+                        + TalendTextUtils.QUOTATION_MARK);
+                // Adapt the UI rowSeparator to the file format
+                rowSeparatorManager();
+            }
 
             // Fields to the Group File Settings
             if (getConnection().getEncoding() != null && !getConnection().getEncoding().equals("")) { //$NON-NLS-1$
@@ -1001,13 +1047,18 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
             } else {
                 encodingCombo.select(0);
             }
-
-            // Refresh the preview width the adapted rowSeparator
-            refreshPreview();
+            if (!isContextMode()) {
+                // Refresh the preview width the adapted rowSeparator
+                refreshPreview();
+            }
 
             if (isReadOnly() != readOnly) {
                 adaptFormToReadOnly();
             }
+            if (isContextMode()) {
+                adaptFormToEditable();
+            }
+
         }
     }
 
@@ -1018,6 +1069,23 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
      */
     public void refresh() {
         refreshPreview();
+    }
+
+    @Override
+    protected void adaptFormToEditable() {
+        super.adaptFormToEditable();
+        encodingCombo.setReadOnly(isContextMode());
+        rowSeparatorCombo.setReadOnly(isContextMode());
+        fieldSeparatorText.setEditable(!isContextMode());
+        rowSeparatorText.setEditable(!isContextMode());
+    }
+
+    @Override
+    protected void exportAsContext() {
+        super.exportAsContext();
+        if (getContextModeManager() != null) {
+            getContextModeManager().setDefaultContextType(getConnection());
+        }
     }
 
 }

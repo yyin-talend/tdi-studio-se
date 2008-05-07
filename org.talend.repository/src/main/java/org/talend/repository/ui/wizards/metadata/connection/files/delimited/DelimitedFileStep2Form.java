@@ -39,6 +39,8 @@ import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
 import org.talend.commons.ui.swt.thread.SWTUIThreadProcessor;
 import org.talend.core.model.metadata.EMetadataEncoding;
+import org.talend.core.model.metadata.IMetadataContextModeManager;
+import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
 import org.talend.core.model.metadata.builder.connection.Escape;
 import org.talend.core.model.metadata.builder.connection.FieldSeparator;
 import org.talend.core.model.metadata.builder.connection.FileFormat;
@@ -46,11 +48,14 @@ import org.talend.core.model.metadata.builder.connection.RowSeparator;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.utils.CsvArray;
+import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.preview.ProcessDescription;
 import org.talend.repository.ui.swt.preview.ShadowProcessPreview;
 import org.talend.repository.ui.swt.utils.AbstractDelimitedFileStepForm;
 import org.talend.repository.ui.swt.utils.IRefreshable;
+import org.talend.repository.ui.utils.ConnectionContextHelper;
+import org.talend.repository.ui.utils.FileConnectionContextUtils;
 import org.talend.repository.ui.utils.ShadowProcessHelper;
 
 /**
@@ -136,9 +141,11 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
      * @param Wizard
      * @param Style
      */
-    public DelimitedFileStep2Form(Composite parent, ConnectionItem connectionItem) {
+    public DelimitedFileStep2Form(Composite parent, ConnectionItem connectionItem, IMetadataContextModeManager contextModeManager) {
         super(parent, connectionItem);
-        setupForm();
+        setConnectionItem(connectionItem);
+        setContextModeManager(contextModeManager);
+        setupForm(true);
     }
 
     /**
@@ -163,11 +170,11 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
         rowSeparatorCombo.setText(getConnection().getRowSeparatorType().getLiteral());
         rowSeparatorText.setText(getConnection().getRowSeparatorValue());
         rowSeparatorText.setEditable(false);
-
-        // adpat Separator Combo and Text
-        fieldSeparatorManager();
-        rowSeparatorManager();
-
+        if (!isContextMode()) {
+            // adpat Separator Combo and Text
+            fieldSeparatorManager();
+            rowSeparatorManager();
+        }
         // Fields to the Group Rows To Skip
         int i = getConnection().getHeaderValue();
         if (i > 0) {
@@ -221,6 +228,9 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
 
         emptyRowsToSkipCheckbox.setSelection(getConnection().isRemoveEmptyRow());
         checkFieldsValue();
+        if (isContextMode()) {
+            adaptFormToEditable();
+        }
     }
 
     /**
@@ -464,9 +474,9 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
      * 
      * @return processDescription
      */
-    private ProcessDescription getProcessDescription() {
+    private ProcessDescription getProcessDescription(DelimitedFileConnection delimitedConn) {
 
-        ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(getConnection());
+        ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(delimitedConn);
 
         // Adapt Header width firstRowIsCaption to preview the first line on caption or not
         Integer i = 0;
@@ -882,6 +892,9 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
      * rowSeparator : Adapt Custom Label and set the field Text.
      */
     protected void rowSeparatorManager() {
+        if (isContextMode()) {
+            return;
+        }
         RowSeparator separator = RowSeparator.getByName(rowSeparatorCombo.getText());
         getConnection().setRowSeparatorType(separator);
 
@@ -911,6 +924,9 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
      * fieldSeparator : Adapt Custom Label and set the field Text.
      */
     protected void fieldSeparatorManager() {
+        if (isContextMode()) {
+            return;
+        }
         FieldSeparator seperator = FieldSeparator.getByName(fieldSeparatorCombo.getText());
         getConnection().setFieldSeparatorType(seperator);
 
@@ -1039,9 +1055,26 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
             previewButton.setText(Messages.getString("FileStep2.stop"));
 
             clearPreview();
-
+            String filePath = getConnection().getFilePath();
+            DelimitedFileConnection originalValueConnection = null;
+            if (isContextMode()) {
+                boolean found = false;
+                ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(getShell(), getConnection());
+                if (contextType != null) {
+                    if (getContextModeManager() != null) {
+                        getContextModeManager().setSelectedContextType(contextType);
+                        filePath = getContextModeManager().getOriginalValue(getConnection().getFilePath());
+                        found = true;
+                    }
+                    originalValueConnection = (DelimitedFileConnection) FileConnectionContextUtils.cloneOriginalValueConnection(
+                            getConnection(), contextType);
+                }
+                if (!found) {
+                    filePath = null;
+                }
+            }
             // if no file, the process don't be executed
-            if (getConnection().getFilePath() == null || getConnection().getFilePath().equals("")) { //$NON-NLS-1$
+            if (filePath == null || filePath.equals("")) { //$NON-NLS-1$
                 previewInformationLabel.setText("   " + Messages.getString("FileStep2.filePathIncomplete")); //$NON-NLS-1$ //$NON-NLS-2$
                 return false;
             }
@@ -1054,7 +1087,10 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
 
             previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewProgress")); //$NON-NLS-1$ //$NON-NLS-2$
             firstRowIsCatption = firstRowIsCaptionCheckbox.getSelection();
-            processDescription = getProcessDescription();
+            if (originalValueConnection == null) {
+                originalValueConnection = getConnection();
+            }
+            processDescription = getProcessDescription(originalValueConnection);
             return true;
         }
 
@@ -1174,11 +1210,16 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
 
             // Refresh the preview width the adapted rowSeparator
             // If metadata exist, refreshMetadata
-            if ((!"".equals(getConnection().getFilePath())) && (getConnection().getFilePath() != null)) { //$NON-NLS-1$
-                refreshPreview();
+            if (!isContextMode()) {
+                if ((!"".equals(getConnection().getFilePath())) && (getConnection().getFilePath() != null)) { //$NON-NLS-1$
+                    refreshPreview();
+                }
             }
             if (isReadOnly() != readOnly) {
                 adaptFormToReadOnly();
+            }
+            if (isContextMode()) {
+                adaptFormToEditable();
             }
         }
     }
@@ -1191,4 +1232,25 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
     public void refresh() {
         refreshPreview();
     }
+
+    @Override
+    protected void adaptFormToEditable() {
+        super.adaptFormToEditable();
+        encodingCombo.setReadOnly(isContextMode());
+        fieldSeparatorCombo.setReadOnly(isContextMode());
+        rowSeparatorCombo.setReadOnly(isContextMode());
+
+        fieldSeparatorText.setEditable(!isContextMode());
+        rowSeparatorText.setEditable(!isContextMode());
+
+    }
+
+    @Override
+    protected void exportAsContext() {
+        super.exportAsContext();
+        if (getContextModeManager() != null) {
+            getContextModeManager().setDefaultContextType(getConnection());
+        }
+    }
+
 }

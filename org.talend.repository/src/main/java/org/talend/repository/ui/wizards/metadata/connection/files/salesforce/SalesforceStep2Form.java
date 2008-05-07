@@ -42,16 +42,21 @@ import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
 import org.talend.commons.ui.swt.thread.SWTUIThreadProcessor;
 import org.talend.core.model.metadata.IMetadataColumn;
+import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
+import org.talend.core.model.metadata.builder.connection.SalesforceSchemaConnection;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.utils.CsvArray;
+import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.preview.ProcessDescription;
 import org.talend.repository.preview.SalesforceSchemaBean;
 import org.talend.repository.ui.swt.preview.ShadowProcessPreview;
 import org.talend.repository.ui.swt.utils.AbstractSalesforceStepForm;
+import org.talend.repository.ui.utils.ConnectionContextHelper;
+import org.talend.repository.ui.utils.OtherConnectionContextUtils;
 import org.talend.repository.ui.utils.ShadowProcessHelper;
 
 /**
@@ -88,9 +93,12 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
      * @param parent
      * @param connectionItem
      */
-    public SalesforceStep2Form(Composite parent, ConnectionItem connectionItem, SalesforceModuleParseAPI salesforceAPI) {
+    public SalesforceStep2Form(Composite parent, ConnectionItem connectionItem, SalesforceModuleParseAPI salesforceAPI,
+            IMetadataContextModeManager contextModeManager) {
         super(parent, connectionItem, salesforceAPI);
-        setupForm();
+        setConnectionItem(connectionItem);
+        setContextModeManager(contextModeManager);
+        setupForm(true);
     }
 
     /*
@@ -173,8 +181,15 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
             return;
         }
 
-        IMetadataTable metadataTable = getMetadatasForSalesforce(getConnection().getWebServiceUrl(), getConnection()
-                .getUserName(), getConnection().getPassword(), moduleName, true);
+        String webServiceUrl = getConnection().getWebServiceUrl();
+        String userName = getConnection().getUserName();
+        String password = getConnection().getPassword();
+        if (isContextMode() && getContextModeManager() != null) {
+            webServiceUrl = getContextModeManager().getOriginalValue(webServiceUrl);
+            userName = getContextModeManager().getOriginalValue(userName);
+            password = getContextModeManager().getOriginalValue(password);
+        }
+        IMetadataTable metadataTable = getMetadatasForSalesforce(webServiceUrl, userName, password, moduleName, true);
 
         List<IMetadataColumn> columns = metadataTable.getListColumns();
 
@@ -191,8 +206,10 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
         queryConditionText.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
-                if (checkFieldsValue()) {
-                    getConnection().setQueryCondition(queryConditionText.getText());
+                if (!isContextMode()) {
+                    if (checkFieldsValue()) {
+                        getConnection().setQueryCondition(queryConditionText.getText());
+                    }
                 }
             }
 
@@ -267,15 +284,19 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
         super.setVisible(visible);
 
         if (super.isVisible()) {
-            if ((!"".equals(getConnection().getWebServiceUrl())) && (getConnection().getModuleName() != null)) { //$NON-NLS-1$
-                readAndSetModuleDetailContent();
-                refreshPreview();
+            if (!isContextMode()) {
+                if ((!"".equals(getConnection().getWebServiceUrl())) && (getConnection().getModuleName() != null)) { //$NON-NLS-1$
+                    readAndSetModuleDetailContent();
+                    refreshPreview();
+                }
             }
 
             if (isReadOnly() != readOnly) {
                 adaptFormToReadOnly();
             }
-
+            if (isContextMode()) {
+                adaptFormToEditable();
+            }
         }
     }
 
@@ -305,8 +326,26 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
             previewButton.setText(Messages.getString("FileStep2.stop"));
 
             clearPreview();
+            String webServiceUrl = getConnection().getWebServiceUrl();
+            SalesforceSchemaConnection originalValueConnection = null;
+            if (isContextMode()) {
+                boolean found = false;
+                ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(getShell(), getConnection());
+                if (contextType != null) {
+                    if (getContextModeManager() != null) {
+                        getContextModeManager().setSelectedContextType(contextType);
+                        webServiceUrl = getContextModeManager().getOriginalValue(getConnection().getWebServiceUrl());
+                        found = true;
+                    }
+                    originalValueConnection = (SalesforceSchemaConnection) OtherConnectionContextUtils
+                            .cloneOriginalValueSalesforceConnection(getConnection(), contextType);
+                }
+                if (!found) {
+                    webServiceUrl = null;
+                }
+            }
 
-            if (getConnection().getWebServiceUrl() == null || getConnection().getWebServiceUrl().equals("")) { //$NON-NLS-1$
+            if (webServiceUrl == null || webServiceUrl.equals("")) { //$NON-NLS-1$
                 previewInformationLabel.setText(" Please reset Salesforce URL"); //$NON-NLS-1$ //$NON-NLS-2$
                 return false;
             }
@@ -318,7 +357,10 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
 
             previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewProgress")); //$NON-NLS-1$ //$NON-NLS-2$
             firstRowIsCatption = false;
-            processDescription = getProcessDescription();
+            if (originalValueConnection == null) {
+                originalValueConnection = getConnection();
+            }
+            processDescription = getProcessDescription(originalValueConnection);
             return true;
         }
 
@@ -382,17 +424,18 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
      * 
      * @return
      */
-    private ProcessDescription getProcessDescription() {
+    private ProcessDescription getProcessDescription(SalesforceSchemaConnection originalValueConnection) {
 
-        ProcessDescription processDescription = (ProcessDescription) ShadowProcessHelper.getProcessDescription(getConnection());
+        ProcessDescription processDescription = (ProcessDescription) ShadowProcessHelper
+                .getProcessDescription(originalValueConnection);
 
         SalesforceSchemaBean bean = new SalesforceSchemaBean();
 
-        bean.setWebServerUrl(getConnection().getWebServiceUrl());
-        bean.setUserName(getConnection().getUserName());
-        bean.setPassword(getConnection().getPassword());
-        bean.setModuleName(getConnection().getModuleName());
-        bean.setQueryCondition(getConnection().getQueryCondition());
+        bean.setWebServerUrl(originalValueConnection.getWebServiceUrl());
+        bean.setUserName(originalValueConnection.getUserName());
+        bean.setPassword(originalValueConnection.getPassword());
+        bean.setModuleName(originalValueConnection.getModuleName());
+        bean.setQueryCondition(originalValueConnection.getQueryCondition());
 
         processDescription.setSalesforceSchemaBean(bean);
 
@@ -414,6 +457,11 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
         processDescription.setSchema(tableSchema);
 
         processDescription.setEncoding(TalendTextUtils.addQuotes("ISO-8859-15"));
+        if (tableGet != null) {
+            moduleViewer.getTable().clearAll();
+            moduleViewer.setInput(tableGet.getListColumns());
+            moduleViewer.refresh();
+        }
 
         return processDescription;
     }
@@ -544,6 +592,20 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
             column.setWidth(COLUMN_WIDTH);
         } else {
             column.setWidth(width);
+        }
+    }
+
+    @Override
+    protected void adaptFormToEditable() {
+        super.adaptFormToEditable();
+        queryConditionText.setEditable(!isContextMode());
+    }
+
+    @Override
+    protected void exportAsContext() {
+        super.exportAsContext();
+        if (getContextModeManager() != null) {
+            getContextModeManager().setDefaultContextType(getConnection());
         }
     }
 

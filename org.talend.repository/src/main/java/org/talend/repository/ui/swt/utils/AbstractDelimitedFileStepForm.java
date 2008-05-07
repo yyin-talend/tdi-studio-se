@@ -16,6 +16,7 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.ConnectionItem;
@@ -37,6 +38,8 @@ public abstract class AbstractDelimitedFileStepForm extends AbstractForm {
     protected DelimitedFileConnection connection;
 
     private WizardPage page = null;
+
+    private IMetadataContextModeManager contextModeManager;
 
     /**
      * DOC tguiu AbstractDelimitedFileStepForm constructor comment. Use to step1
@@ -85,6 +88,14 @@ public abstract class AbstractDelimitedFileStepForm extends AbstractForm {
      */
     public void setWizardPage(WizardPage page) {
         this.page = page;
+    }
+
+    public IMetadataContextModeManager getContextModeManager() {
+        return this.contextModeManager;
+    }
+
+    public void setContextModeManager(IMetadataContextModeManager contextModeManager) {
+        this.contextModeManager = contextModeManager;
     }
 
 }

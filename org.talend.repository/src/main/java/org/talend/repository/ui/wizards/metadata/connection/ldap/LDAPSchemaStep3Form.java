@@ -42,13 +42,13 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.thread.SWTUIThreadProcessor;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
-import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
+import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.utils.CsvArray;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.preview.ProcessDescription;
 import org.talend.repository.ui.swt.preview.ShadowProcessPreview;
-import org.talend.repository.ui.swt.utils.AbstractForm;
+import org.talend.repository.ui.swt.utils.AbstractLDAPSchemaStepForm;
 import org.talend.repository.ui.swt.utils.IRefreshable;
 import org.talend.repository.ui.utils.ShadowProcessHelper;
 
@@ -58,7 +58,7 @@ import org.talend.repository.ui.utils.ShadowProcessHelper;
  * @author ftang, 18/09/2007
  * 
  */
-public class LDAPSchemaStep3Form extends AbstractForm implements IRefreshable {
+public class LDAPSchemaStep3Form extends AbstractLDAPSchemaStepForm implements IRefreshable {
 
     private static Logger log = Logger.getLogger(LDAPSchemaStep3Form.class);
 
@@ -86,8 +86,6 @@ public class LDAPSchemaStep3Form extends AbstractForm implements IRefreshable {
 
     SWTUIThreadProcessor processor = new PreviewProcessor();
 
-    private ConnectionItem connectionItem;
-
     private Text filterText;
 
     /**
@@ -97,9 +95,10 @@ public class LDAPSchemaStep3Form extends AbstractForm implements IRefreshable {
      * @param Wizard
      * @param Style
      */
-    public LDAPSchemaStep3Form(Composite parent, ConnectionItem connectionItem) {
-        super(parent, SWT.NONE, null);
-        this.connectionItem = connectionItem;
+    public LDAPSchemaStep3Form(Composite parent, ConnectionItem connectionItem, IMetadataContextModeManager contextModeManager) {
+        super(parent, connectionItem, null, null);
+        setConnectionItem(connectionItem);
+        setContextModeManager(contextModeManager);
         setupForm();
     }
 
@@ -146,9 +145,11 @@ public class LDAPSchemaStep3Form extends AbstractForm implements IRefreshable {
         filterText.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
-                String filter = filterText.getText();
-                if (filter != null && filter.length() > 0)
-                    getConnection().setFilter(filterText.getText().trim());
+                if (!isContextMode()) {
+                    String filter = filterText.getText();
+                    if (filter != null && filter.length() > 0)
+                        getConnection().setFilter(filterText.getText().trim());
+                }
             }
         });
     }
@@ -227,15 +228,6 @@ public class LDAPSchemaStep3Form extends AbstractForm implements IRefreshable {
         checkFieldsValue();
     }
 
-    /**
-     * Administrator Comment method "getConnection".
-     * 
-     * @return
-     */
-    private LDAPSchemaConnection getConnection() {
-        return (LDAPSchemaConnection) this.connectionItem.getConnection();
-    }
-
     /*
      * (non-Javadoc)
      * 
@@ -296,7 +288,7 @@ public class LDAPSchemaStep3Form extends AbstractForm implements IRefreshable {
             if (previewInformationLabel.isDisposed()) {
                 return;
             }
-            LDAPSchemaConnection connection = (LDAPSchemaConnection) connectionItem.getConnection();
+            // LDAPSchemaConnection connection = (LDAPSchemaConnection) connectionItem.getConnection();
             if (getException() != null) {
                 previewInformationLabel.setText(" " + Messages.getString("FileStep2.previewFailure")); //$NON-NLS-1$
                 //$NON-NLS-2$
@@ -309,8 +301,10 @@ public class LDAPSchemaStep3Form extends AbstractForm implements IRefreshable {
                 previewInformationLabel.setText(" " + Messages.getString("FileStep2.previewFailure")); //$NON-NLS-1$
                 //$NON-NLS-2$
                 MessageDialog.openError(getShell(), "Error", "Preview refresh failed, please check attributes and filter.");
-                filterText.setText(ConnectionUIConstants.DEFAULT_FILTER);
-                connection.setFilter(ConnectionUIConstants.DEFAULT_FILTER);
+                if (!isContextMode()) {
+                    filterText.setText(ConnectionUIConstants.DEFAULT_FILTER);
+                    connection.setFilter(ConnectionUIConstants.DEFAULT_FILTER);
+                }
             } else {
                 previewInformationLabel.setText(" " + Messages.getString("FileStep2.previewIsDone")); //$NON-NLS-1$
                 //$NON-NLS-2$
@@ -320,8 +314,10 @@ public class LDAPSchemaStep3Form extends AbstractForm implements IRefreshable {
                     ldapSchemaPreview.refreshTablePreview(csvArray, false, processDescription);
                 } catch (Exception e) {
                     MessageDialog.openError(getShell(), "Error", "Preview refresh failed, please check attributes and filter.");
-                    filterText.setText(ConnectionUIConstants.DEFAULT_FILTER);
-                    connection.setFilter(ConnectionUIConstants.DEFAULT_FILTER);
+                    if (!isContextMode()) {
+                        filterText.setText(ConnectionUIConstants.DEFAULT_FILTER);
+                        connection.setFilter(ConnectionUIConstants.DEFAULT_FILTER);
+                    }
                 }
                 previewInformationLabel.setText(""); //$NON-NLS-1$
             }
@@ -457,7 +453,7 @@ public class LDAPSchemaStep3Form extends AbstractForm implements IRefreshable {
         // List<javax.naming.directory.Attribute> attributeList = LDAPConnectionUtils
         // .getAttributes((LDAPSchemaConnection) this.connectionItem.getConnection());
 
-        Object[] attributeList = LDAPConnectionUtils.getAttributes((LDAPSchemaConnection) this.connectionItem.getConnection());
+        Object[] attributeList = LDAPConnectionUtils.getAttributes(getOriginalValueConnection());
 
         // String[] attributes = LDAPConnectionUtils.getAttributes((LDAPSchemaConnection)
         // this.connectionItem.getConnection());
@@ -494,7 +490,7 @@ public class LDAPSchemaStep3Form extends AbstractForm implements IRefreshable {
      */
     private ProcessDescription getProcessDescription() {
 
-        ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(getConnection());
+        ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(getOriginalValueConnection());
         return processDescription;
     }
 
@@ -526,6 +522,10 @@ public class LDAPSchemaStep3Form extends AbstractForm implements IRefreshable {
             if (isReadOnly() != readOnly) {
                 adaptFormToReadOnly();
             }
+            if (isContextMode()) {
+                initialize();
+                adaptFormToEditable();
+            }
         }
     }
 
@@ -550,4 +550,11 @@ public class LDAPSchemaStep3Form extends AbstractForm implements IRefreshable {
             }
         }
     }
+
+    @Override
+    protected void adaptFormToEditable() {
+        super.adaptFormToEditable();
+        filterText.setEditable(!isContextMode());
+    }
+
 }

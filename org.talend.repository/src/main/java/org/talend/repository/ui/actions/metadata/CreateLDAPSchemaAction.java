@@ -19,6 +19,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.model.properties.LDAPSchemaConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.images.OverlayImageProvider;
@@ -151,7 +152,7 @@ public class CreateLDAPSchemaAction extends AbstractCreateAction {
     }
 
     public Class getClassForDoubleClick() {
-        return CreateLDAPSchemaAction.class;
+        return LDAPSchemaConnectionItem.class;
     }
 
 }

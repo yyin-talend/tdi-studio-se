@@ -39,8 +39,10 @@ import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
+import org.talend.core.model.metadata.builder.connection.LdifFileConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.editor.MetadataEmfTableEditor;
@@ -55,6 +57,7 @@ import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.preview.ProcessDescription;
 import org.talend.repository.ui.swt.utils.AbstractLdifFileStepForm;
+import org.talend.repository.ui.utils.OtherConnectionContextUtils;
 import org.talend.repository.ui.utils.ShadowProcessHelper;
 
 /**
@@ -91,9 +94,16 @@ public class LdifFileStep3Form extends AbstractLdifFileStepForm {
      * @param Composite
      */
     public LdifFileStep3Form(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable, String[] existingNames) {
+        this(parent, connectionItem, metadataTable, existingNames, null);
+    }
+
+    public LdifFileStep3Form(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable,
+            String[] existingNames, IMetadataContextModeManager contextModeManager) {
         super(parent, connectionItem, metadataTable, existingNames);
         this.connectionItem = connectionItem;
         this.metadataTable = metadataTable;
+        setConnectionItem(connectionItem);
+        setContextModeManager(contextModeManager);
         setupForm();
     }
 
@@ -128,6 +138,11 @@ public class LdifFileStep3Form extends AbstractLdifFileStepForm {
         metadataNameText.setReadOnly(isReadOnly());
         metadataCommentText.setReadOnly(isReadOnly());
         tableEditorView.setReadOnly(isReadOnly());
+
+        if (getParent().getChildren().length == 1) { // open the table
+            guessButton.setEnabled(false);
+            informationLabel.setVisible(false);
+        }
     }
 
     @Override
@@ -269,14 +284,14 @@ public class LdifFileStep3Form extends AbstractLdifFileStepForm {
      * 
      * @return processDescription
      */
-    private ProcessDescription getProcessDescription() {
+    private ProcessDescription getProcessDescription(LdifFileConnection originalValueConnection) {
 
-        ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(getConnection());
+        ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(originalValueConnection);
 
         // adapt the limit to the extract sames rows of preview
         processDescription.setLimitRows(maximumRowsToPreview);
-        if (getConnection().isUseLimit()) {
-            Integer i = getConnection().getLimitEntry();
+        if (originalValueConnection.isUseLimit()) {
+            Integer i = originalValueConnection.getLimitEntry();
             if (i < maximumRowsToPreview) {
                 processDescription.setLimitRows(i);
             }
@@ -288,9 +303,9 @@ public class LdifFileStep3Form extends AbstractLdifFileStepForm {
      * run a ShadowProcess to determined the Metadata.
      */
     protected void runShadowProcess() {
-
+        LdifFileConnection originalValueConnection = getOriginalValueConnection();
         // if no file, the process don't be executed
-        if (getConnection().getFilePath() == null || getConnection().getFilePath().equals("")) { //$NON-NLS-1$
+        if (originalValueConnection.getFilePath() == null || originalValueConnection.getFilePath().equals("")) { //$NON-NLS-1$
             informationLabel.setText("   " + Messages.getString("FileStep3.filepathAlert") //$NON-NLS-1$ //$NON-NLS-2$
                     + "                                                                              "); //$NON-NLS-1$
             return;
@@ -300,12 +315,13 @@ public class LdifFileStep3Form extends AbstractLdifFileStepForm {
             informationLabel.setText("   " + Messages.getString("FileStep3.guessProgress")); //$NON-NLS-1$ //$NON-NLS-2$
 
             // get the XmlArray width an adapt ProcessDescription
-            CsvArray csvArray = ShadowProcessHelper.getCsvArray(getProcessDescription(), "FILE_LDIF"); //$NON-NLS-1$
+            ProcessDescription processDescription = getProcessDescription(originalValueConnection);
+            CsvArray csvArray = ShadowProcessHelper.getCsvArray(processDescription, "FILE_LDIF"); //$NON-NLS-1$
             if (csvArray == null) {
                 informationLabel.setText("   " + Messages.getString("FileStep3.guessFailure")); //$NON-NLS-1$ //$NON-NLS-2$
 
             } else {
-                refreshMetaDataTable(csvArray, getProcessDescription());
+                refreshMetaDataTable(csvArray, processDescription);
             }
 
         } catch (CoreException e) {
@@ -514,7 +530,8 @@ public class LdifFileStep3Form extends AbstractLdifFileStepForm {
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         if (super.isVisible()) {
-            if (getConnection().getFilePath() != null && (!getConnection().getFilePath().equals("")) //$NON-NLS-1$
+            LdifFileConnection originalValueConnection = getOriginalValueConnection();
+            if (originalValueConnection.getFilePath() != null && (!originalValueConnection.getFilePath().equals("")) //$NON-NLS-1$
                     && (tableEditorView.getMetadataEditor().getBeanCount() <= 0)) {
                 runShadowProcess();
             }
@@ -524,4 +541,12 @@ public class LdifFileStep3Form extends AbstractLdifFileStepForm {
         }
     }
 
+    private LdifFileConnection getOriginalValueConnection() {
+        if (getConnection().isContextMode() && getContextModeManager() != null) {
+            return (LdifFileConnection) OtherConnectionContextUtils.cloneOriginalValueLdifFileConnection(getConnection(),
+                    getContextModeManager().getSelectedContextType());
+        }
+        return getConnection();
+
+    }
 }

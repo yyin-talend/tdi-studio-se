@@ -389,6 +389,7 @@ public class GraphicRule extends ScrolledComposite {
      * @param isEnabled the isEnabled to set
      */
     public void setEnabled(boolean isEnabled) {
+        super.setEnabled(isEnabled);
         this.isEnabled = isEnabled;
     }
 

@@ -17,11 +17,11 @@ import java.util.Arrays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.PositionalFileConnection;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.prefs.ITalendCorePrefConstants;
-import org.talend.repository.i18n.Messages;
 
 /**
  * DOC tguiu class global comment. Detailled comment <br/>
@@ -37,6 +37,8 @@ public abstract class AbstractPositionalFileStepForm extends AbstractForm {
     protected ConnectionItem connectionItem;
 
     protected static PositionalFileConnection connection;
+
+    private IMetadataContextModeManager contextModeManager;
 
     /**
      * DOC ocarbone AbstractPositionalFileStepForm constructor comment.
@@ -228,4 +230,13 @@ public abstract class AbstractPositionalFileStepForm extends AbstractForm {
     protected PositionalFileConnection getConnection() {
         return (PositionalFileConnection) connectionItem.getConnection();
     }
+
+    public IMetadataContextModeManager getContextModeManager() {
+        return this.contextModeManager;
+    }
+
+    public void setContextModeManager(IMetadataContextModeManager contextModeManager) {
+        this.contextModeManager = contextModeManager;
+    }
+
 }

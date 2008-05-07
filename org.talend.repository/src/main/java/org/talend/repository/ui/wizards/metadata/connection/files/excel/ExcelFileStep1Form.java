@@ -54,6 +54,7 @@ import org.talend.commons.ui.swt.formtools.LabelledCombo;
 import org.talend.commons.ui.swt.formtools.LabelledFileField;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
 import org.talend.commons.ui.utils.PathUtils;
+import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.swt.utils.AbstractExcelFileStepForm;
@@ -94,8 +95,11 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
      * @param connectionItem
      * @param existingNames
      */
-    public ExcelFileStep1Form(Composite parent, ConnectionItem connectionItem, String[] existingNames) {
+    public ExcelFileStep1Form(Composite parent, ConnectionItem connectionItem, String[] existingNames,
+            IMetadataContextModeManager contextModeManager) {
         super(parent, connectionItem, existingNames);
+        setConnectionItem(connectionItem);
+        setContextModeManager(contextModeManager);
         setupForm();
     }
 
@@ -400,12 +404,14 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
         fileField.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
-                readAndViewExcelFile();
-                getConnection().setSelectAllSheets(false);
-                if (getConnection().getSheetList() != null) {
-                    getConnection().getSheetList().clear();
+                if (!isContextMode()) {
+                    readAndViewExcelFile();
+                    getConnection().setSelectAllSheets(false);
+                    if (getConnection().getSheetList() != null) {
+                        getConnection().getSheetList().clear();
+                    }
+                    checkFieldsValue();
                 }
-                checkFieldsValue();
             }
 
         });
@@ -430,7 +436,14 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
 
         excelReader = null;
 
-        String filePath = PathUtils.getPortablePath(fileField.getText());
+        String fileStr = fileField.getText();
+        String filePath = null;
+        if (isContextMode() && getContextModeManager() != null) {
+            fileStr = getContextModeManager().getOriginalValue(getConnection().getFilePath());
+            filePath = PathUtils.getPortablePath(fileStr);
+        } else {
+            filePath = PathUtils.getPortablePath(fileStr);
+        }
 
         if (filePath == null || filePath.equals("")) {
             updateErrorMsgAndSetNotOK(Messages.getString("ExcelFileStep2.previewFailure"));
@@ -453,8 +466,9 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
             initSheetsCombo(sheets);
 
             viewExcel(sheetsCombo.getText());
-
-            getConnection().setFilePath(filePath);
+            if (!isContextMode()) {
+                getConnection().setFilePath(filePath);
+            }
             getConnection().setSheetName(sheetsCombo.getText());
 
             filePathOk = true;
@@ -612,9 +626,9 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
      */
     @Override
     protected boolean checkFieldsValue() {
-
-        fileField.setEditable(true);
-
+        if (!isContextMode()) {
+            fileField.setEditable(true);
+        }
         if (fileField.getText() == "") { //$NON-NLS-1$
             updateStatus(IStatus.ERROR, Messages.getString("FileStep1.filepathAlert")); //$NON-NLS-1$
             return false;
@@ -630,7 +644,7 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
             return false;
         }
 
-        if (!getConnection().isSelectAllSheets()) {
+        if (!getConnection().isSelectAllSheets() && !isContextMode()) {
             if (getConnection().getSheetList() == null || getConnection().getSheetList().size() <= 0) {
                 updateStatus(IStatus.ERROR, "At lease one sheet should be selected"); //$NON-NLS-1$
                 return false;
@@ -660,14 +674,20 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
         serverCombo.setReadOnly(true);
 
         if (getConnection().getFilePath() != null) {
-            fileField.setText(getConnection().getFilePath().replace("\\\\", "\\")); //$NON-NLS-1$ //$NON-NLS-2$
+            if (isContextMode()) {
+                fileField.setText(getConnection().getFilePath());
+            } else {
+                fileField.setText(getConnection().getFilePath().replace("\\\\", "\\")); //$NON-NLS-1$ //$NON-NLS-2$
+            }
         }
 
         String sheetName = getConnection().getSheetName();
         if (sheetName != null && !sheetName.equals("")) {
             sheetsCombo.setText(sheetName.replace("\\\\", "\\"));
         }
-
+        if (isContextMode()) {
+            adaptFormToEditable();
+        }
         readAndViewExcelFile();
     }
 
@@ -699,8 +719,18 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
             sheetViewer.expandAll();
             initTreeSelectStates();
         }
-
         checkFieldsValue();
+
+        if (visible && isContextMode()) {
+            initialize();
+        }
+    }
+
+    @Override
+    protected void adaptFormToEditable() {
+        super.adaptFormToEditable();
+        fileField.setEditable(!isContextMode());
+
     }
 
     private final SheetNode rootNode = new SheetNode(null, "All sheets/DSelect sheet");

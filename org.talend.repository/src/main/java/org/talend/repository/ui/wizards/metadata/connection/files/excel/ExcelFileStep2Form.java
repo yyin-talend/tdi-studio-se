@@ -12,9 +12,13 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.connection.files.excel;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+
+import jxl.read.biff.BiffException;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
@@ -38,16 +42,22 @@ import org.talend.commons.ui.swt.formtools.LabelledCombo;
 import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
 import org.talend.commons.ui.swt.thread.SWTUIThreadProcessor;
+import org.talend.commons.ui.utils.PathUtils;
 import org.talend.core.model.metadata.EMetadataEncoding;
+import org.talend.core.model.metadata.IMetadataContextModeManager;
+import org.talend.core.model.metadata.builder.connection.FileExcelConnection;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.utils.CsvArray;
+import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.preview.ExcelSchemaBean;
 import org.talend.repository.preview.ProcessDescription;
 import org.talend.repository.ui.swt.preview.ShadowProcessPreview;
 import org.talend.repository.ui.swt.utils.AbstractExcelFileStepForm;
 import org.talend.repository.ui.swt.utils.IRefreshable;
+import org.talend.repository.ui.utils.ConnectionContextHelper;
+import org.talend.repository.ui.utils.FileConnectionContextUtils;
 import org.talend.repository.ui.utils.ShadowProcessHelper;
 
 /**
@@ -62,9 +72,11 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
      * @param parent
      * @param connectionItem
      */
-    public ExcelFileStep2Form(Composite parent, ConnectionItem connectionItem) {
+    public ExcelFileStep2Form(Composite parent, ConnectionItem connectionItem, IMetadataContextModeManager contextModeManager) {
         super(parent, connectionItem);
-        setupForm();
+        setConnectionItem(connectionItem);
+        setContextModeManager(contextModeManager);
+        setupForm(true);
     }
 
     private static Logger log = Logger.getLogger(ExcelFileStep2Form.class);
@@ -158,28 +170,35 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
         firstRowIsCaptionCheckbox.setSelection(getConnection().isFirstLineCaption());
 
         emptyRowsToSkipCheckbox.setSelection(getConnection().isRemoveEmptyRow());
-
-        int firstColumn = stringToInteger(getConnection().getFirstColumn());
-        firstColumnText.setText(firstColumn < 0 ? "1" : getConnection().getFirstColumn());
-        getConnection().setFirstColumn(firstColumnText.getText());
-
-        int lastColumn = stringToInteger(getConnection().getLastColumn());
-        lastColumnText.setText(lastColumn < 0 ? "" : getConnection().getLastColumn());
-
         advanceSeparatorCheckbox.setSelection(getConnection().isAdvancedSpearator());
 
-        String ts = this.getConnection().getThousandSeparator();
-        if (ts == null || ts.equals("")) {
-            thousandSeparaotrText.setText("\',\'");
-        } else {
-            thousandSeparaotrText.setText(ts);
-        }
+        if (isContextMode()) {
+            firstColumnText.setText(getConnection().getFirstColumn());
+            lastColumnText.setText(getConnection().getLastColumn());
+            thousandSeparaotrText.setText(getConnection().getThousandSeparator());
+            decimalSeparatorText.setText(getConnection().getDecimalSeparator());
 
-        String ds = this.getConnection().getDecimalSeparator();
-        if (ds == null || ds.equals("")) {
-            decimalSeparatorText.setText("\'.\'");
         } else {
-            decimalSeparatorText.setText(ds);
+            int firstColumn = stringToInteger(getConnection().getFirstColumn());
+            firstColumnText.setText(firstColumn < 0 ? "1" : getConnection().getFirstColumn());
+            getConnection().setFirstColumn(firstColumnText.getText());
+
+            int lastColumn = stringToInteger(getConnection().getLastColumn());
+            lastColumnText.setText(lastColumn < 0 ? "" : getConnection().getLastColumn());
+
+            String ts = this.getConnection().getThousandSeparator();
+            if (ts == null || ts.equals("")) {
+                thousandSeparaotrText.setText("\',\'");
+            } else {
+                thousandSeparaotrText.setText(ts);
+            }
+
+            String ds = this.getConnection().getDecimalSeparator();
+            if (ds == null || ds.equals("")) {
+                decimalSeparatorText.setText("\'.\'");
+            } else {
+                decimalSeparatorText.setText(ds);
+            }
         }
 
         checkFieldsValue();
@@ -380,25 +399,30 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
      * 
      * @return
      */
-    private ProcessDescription getProcessDescription() {
+    private ProcessDescription getProcessDescription(FileExcelConnection originalValueConnection) {
 
-        ProcessDescription processDescription = (ProcessDescription) ShadowProcessHelper.getProcessDescription(getConnection());
+        ProcessDescription processDescription = (ProcessDescription) ShadowProcessHelper
+                .getProcessDescription(originalValueConnection);
 
         // Adapt Header width firstRowIsCaption to preview the first line on caption or not
         Integer i = 0;
-        if (rowsToSkipHeaderCheckboxCombo.isInteger()) {
-            i = new Integer(rowsToSkipHeaderCheckboxCombo.getText());
+        if (originalValueConnection.isUseHeader()) {
+            i = new Integer(originalValueConnection.getHeaderValue());
         }
-        if (firstRowIsCaptionCheckbox.getSelection()) {
+        if (originalValueConnection.isFirstLineCaption()) {
             i--;
         }
         processDescription.setHeaderRow(i);
 
+        if (originalValueConnection.isUseFooter()) {
+            processDescription.setFooterRow(originalValueConnection.getHeaderValue());
+        }
+
         // adapt the limit to the preview
         processDescription.setLimitRows(maximumRowsToPreview);
-        if (rowsToSkipLimitCheckboxCombo.isInteger()) {
-            i = new Integer(rowsToSkipLimitCheckboxCombo.getText());
-            if (firstRowIsCaptionCheckbox.getSelection()) {
+        if (originalValueConnection.isUseLimit()) {
+            i = new Integer(originalValueConnection.getLimitValue());
+            if (originalValueConnection.isFirstLineCaption()) {
                 i++;
             }
             if (i < maximumRowsToPreview) {
@@ -406,20 +430,20 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
             }
         }
 
-        processDescription.setEncoding(TalendTextUtils.addQuotes(encodingCombo.getText()));
+        processDescription.setEncoding(TalendTextUtils.addQuotes(originalValueConnection.getEncoding()));
 
         ExcelSchemaBean bean = new ExcelSchemaBean();
 
-        bean.setSheetName(getConnection().getSheetName());
-        bean.setFirstColumn(firstColumnText.getText());
-        bean.setLastColumn(lastColumnText.getText());
+        bean.setSheetName(originalValueConnection.getSheetName());
+        bean.setFirstColumn(originalValueConnection.getFirstColumn());
+        bean.setLastColumn(originalValueConnection.getLastColumn());
 
-        bean.setAdvancedSeparator(advanceSeparatorCheckbox.getSelection());
-        bean.setThousandSeparator(thousandSeparaotrText.getText());
-        bean.setDecimalSeparator(decimalSeparatorText.getText());
+        bean.setAdvancedSeparator(originalValueConnection.isAdvancedSpearator());
+        bean.setThousandSeparator(originalValueConnection.getThousandSeparator());
+        bean.setDecimalSeparator(originalValueConnection.getDecimalSeparator());
 
-        bean.setSelectAllSheets(getConnection().isSelectAllSheets());
-        bean.setSheetsList(getConnection().getSheetList());
+        bean.setSelectAllSheets(originalValueConnection.isSelectAllSheets());
+        bean.setSheetsList(originalValueConnection.getSheetList());
 
         processDescription.setExcelSchemaBean(bean);
 
@@ -501,8 +525,10 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
         firstColumnText.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
-                getConnection().setFirstColumn(firstColumnText.getText());
-                checkFieldsValue();
+                if (!isContextMode()) {
+                    getConnection().setFirstColumn(firstColumnText.getText());
+                    checkFieldsValue();
+                }
             }
 
         });
@@ -510,14 +536,25 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
         lastColumnText.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
-                getConnection().setLastColumn(lastColumnText.getText());
-                checkFieldsValue();
+                if (!isContextMode()) {
+                    getConnection().setLastColumn(lastColumnText.getText());
+                    checkFieldsValue();
+                }
             }
         });
     }
 
     private void chopSchemaColumn() {
-        int first = getIntFromString(firstColumnText.getText());
+        String text = firstColumnText.getText();
+        if (isContextMode() && getContextModeManager() != null) {
+            text = getContextModeManager().getOriginalValue(text);
+        }
+        int first = getIntFromString(text);
+
+        text = lastColumnText.getText();
+        if (isContextMode() && getContextModeManager() != null) {
+            text = getContextModeManager().getOriginalValue(text);
+        }
         int last = getIntFromString(lastColumnText.getText());
 
         if (last <= 0 || last > originSchemaColumns.size()) {
@@ -680,8 +717,10 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
         encodingCombo.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
-                getConnection().setEncoding(encodingCombo.getText());
-                checkFieldsValue();
+                if (!isContextMode()) {
+                    getConnection().setEncoding(encodingCombo.getText());
+                    checkFieldsValue();
+                }
             }
         });
 
@@ -694,21 +733,26 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
              */
             @Override
             public void widgetSelected(SelectionEvent e) {
+
                 boolean select = advanceSeparatorCheckbox.getSelection();
-                decimalSeparatorText.setEnabled(select);
-                thousandSeparaotrText.setEnabled(select);
                 getConnection().setAdvancedSpearator(select);
-                getConnection().setThousandSeparator(thousandSeparaotrText.getText());
-                getConnection().setDecimalSeparator(decimalSeparatorText.getText());
-                checkFieldsValue();
+                if (!isContextMode()) {
+                    decimalSeparatorText.setEnabled(select);
+                    thousandSeparaotrText.setEnabled(select);
+                    getConnection().setThousandSeparator(thousandSeparaotrText.getText());
+                    getConnection().setDecimalSeparator(decimalSeparatorText.getText());
+                    checkFieldsValue();
+                }
             }
         });
 
         decimalSeparatorText.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
-                getConnection().setDecimalSeparator(decimalSeparatorText.getText());
-                checkFieldsValue();
+                if (!isContextMode()) {
+                    getConnection().setDecimalSeparator(decimalSeparatorText.getText());
+                    checkFieldsValue();
+                }
             }
 
         });
@@ -716,8 +760,10 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
         thousandSeparaotrText.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
-                getConnection().setThousandSeparator(thousandSeparaotrText.getText());
-                checkFieldsValue();
+                if (!isContextMode()) {
+                    getConnection().setThousandSeparator(thousandSeparaotrText.getText());
+                    checkFieldsValue();
+                }
             }
 
         });
@@ -779,6 +825,9 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
     }
 
     private boolean checkFristAndLastColumn() {
+        if (isContextMode()) {
+            return true;
+        }
         int first = getIntFromString(firstColumnText.getText());
 
         int last = -1;
@@ -806,7 +855,9 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
      * DOC YeXiaowei Comment method "checkAdvancedSetting".
      */
     private boolean checkAdvancedSetting() {
-
+        if (isContextMode()) {
+            return true;
+        }
         String thouandsSeparator = thousandSeparaotrText.getText();
         if (thouandsSeparator == null) {
             updateStatus(IStatus.ERROR, "Thousand Separator" + " " + Messages.getString("FileStep2.mustBePrecised")); //$NON-NLS-1$
@@ -842,9 +893,27 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
             previewButton.setText(Messages.getString("FileStep2.stop"));
 
             clearPreview();
-
+            String filePath = getConnection().getFilePath();
+            FileExcelConnection originalValueConnection = null;
+            if (isContextMode()) {
+                boolean found = false;
+                ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(getShell(), getConnection());
+                if (contextType != null) {
+                    if (getContextModeManager() != null) {
+                        getContextModeManager().setSelectedContextType(contextType);
+                        filePath = getContextModeManager().getOriginalValue(getConnection().getFilePath());
+                        found = true;
+                    }
+                    setConnectionProperties();
+                    originalValueConnection = (FileExcelConnection) FileConnectionContextUtils.cloneOriginalValueConnection(
+                            getConnection(), contextType);
+                }
+                if (!found) {
+                    filePath = null;
+                }
+            }
             // if no file, the process don't be executed
-            if (getConnection().getFilePath() == null || getConnection().getFilePath().equals("")) { //$NON-NLS-1$
+            if (filePath == null || filePath.equals("")) { //$NON-NLS-1$
                 previewInformationLabel.setText("   " + Messages.getString("FileStep2.filePathIncomplete")); //$NON-NLS-1$ //$NON-NLS-2$
                 return false;
             }
@@ -857,7 +926,10 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
 
             previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewProgress")); //$NON-NLS-1$ //$NON-NLS-2$
             firstRowIsCatption = firstRowIsCaptionCheckbox.getSelection();
-            processDescription = getProcessDescription();
+            if (originalValueConnection == null) {
+                originalValueConnection = getConnection();
+            }
+            processDescription = getProcessDescription(originalValueConnection);
             return true;
         }
 
@@ -969,18 +1041,28 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
             }
 
             advanceSeparatorCheckbox.setSelection(getConnection().isAdvancedSpearator());
-            thousandSeparaotrText.setEnabled(advanceSeparatorCheckbox.getSelection());
-            decimalSeparatorText.setEnabled(advanceSeparatorCheckbox.getSelection());
-
+            if (!isContextMode()) {
+                thousandSeparaotrText.setEnabled(advanceSeparatorCheckbox.getSelection());
+                decimalSeparatorText.setEnabled(advanceSeparatorCheckbox.getSelection());
+            }
             // Refresh the preview width the adapted rowSeparator
             // If metadata exist, refreshMetadata
-            if ((!"".equals(getConnection().getFilePath())) && (getConnection().getFilePath() != null)) { //$NON-NLS-1$
+            String filePath = getConnection().getFilePath();
+            if (isContextMode() && getContextModeManager() != null) {
+                filePath = getContextModeManager().getOriginalValue(filePath);
+            }
+            if ((!"".equals(filePath)) && (filePath != null)) { //$NON-NLS-1$
                 saveOriginShcemaColumns();
                 chopSchemaColumn();
-                refreshPreview();
+                if (!isContextMode()) {
+                    refreshPreview();
+                }
             }
             if (isReadOnly() != readOnly) {
                 adaptFormToReadOnly();
+            }
+            if (isContextMode()) {
+                adaptFormToEditable();
             }
         }
     }
@@ -1001,5 +1083,69 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
      */
     public void refresh() {
         refreshPreview();
+    }
+
+    @Override
+    protected void adaptFormToEditable() {
+        super.adaptFormToEditable();
+        encodingCombo.setReadOnly(isContextMode());
+
+        thousandSeparaotrText.setEditable(!isContextMode());
+        decimalSeparatorText.setEditable(!isContextMode());
+        firstColumnText.setEditable(!isContextMode());
+        lastColumnText.setEditable(!isContextMode());
+    }
+
+    @Override
+    protected void exportAsContext() {
+        super.exportAsContext();
+        if (getContextModeManager() != null) {
+            getContextModeManager().setDefaultContextType(getConnection());
+            setConnectionProperties();
+        }
+    }
+
+    private void setConnectionProperties() {
+        String filePath = null;
+        if (isContextMode() && getContextModeManager() != null) {
+            filePath = getContextModeManager().getOriginalValue(getConnection().getFilePath());
+            filePath = PathUtils.getPortablePath(filePath);
+        } else {
+            filePath = PathUtils.getPortablePath(getConnection().getFilePath());
+        }
+        ExcelReader excelReader;
+        try {
+            excelReader = new ExcelReader(filePath);
+            String[] sheets = excelReader.getSheetNames();
+
+            String sheetOrigin = getConnection().getSheetName();
+            if (sheetOrigin == null || sheetOrigin.equals("") || !Arrays.asList(sheets).contains(sheetOrigin)) {
+                getConnection().setSheetName(sheets[0]);
+            }
+
+            final List<String[]> input = excelReader.readSheet(getConnection().getSheetName());
+            if (input == null) {
+                return;
+            }
+            int maxLength = 0;
+            for (int i = 0, z = input.size(); i < z; i++) {
+                int x = input.get(i).length;
+                if (x > maxLength) {
+                    maxLength = x;
+                }
+            }
+            String[] names = ExcelReader.getColumnsTitle(maxLength);
+            List columns = getConnection().getSheetColumns();
+            columns.clear();
+
+            for (String name : names) {
+                columns.add(name);
+            }
+        } catch (BiffException e) {
+            // 
+        } catch (IOException e) {
+            // 
+        }
+
     }
 }

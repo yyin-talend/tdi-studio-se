@@ -39,10 +39,12 @@ import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.core.model.metadata.builder.connection.RegexpFileConnection;
 import org.talend.core.model.metadata.editor.MetadataEmfTableEditor;
 import org.talend.core.model.metadata.types.JavaDataTypeHelper;
 import org.talend.core.model.metadata.types.JavaTypesManager;
@@ -56,6 +58,7 @@ import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.preview.ProcessDescription;
 import org.talend.repository.ui.swt.utils.AbstractRegexpFileStepForm;
 import org.talend.repository.ui.utils.ColumnNameValidator;
+import org.talend.repository.ui.utils.FileConnectionContextUtils;
 import org.talend.repository.ui.utils.ShadowProcessHelper;
 
 /**
@@ -93,9 +96,16 @@ public class RegexpFileStep3Form extends AbstractRegexpFileStepForm {
      */
     public RegexpFileStep3Form(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable,
             String[] existingNames) {
+        this(parent, connectionItem, metadataTable, existingNames, null);
+    }
+
+    public RegexpFileStep3Form(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable,
+            String[] existingNames, IMetadataContextModeManager contextModeManager) {
         super(parent, connectionItem, metadataTable, existingNames);
         this.connectionItem = connectionItem;
         this.metadataTable = metadataTable;
+        setConnectionItem(connectionItem);
+        setContextModeManager(contextModeManager);
         setupForm();
     }
 
@@ -130,6 +140,11 @@ public class RegexpFileStep3Form extends AbstractRegexpFileStepForm {
         metadataNameText.setReadOnly(isReadOnly());
         metadataCommentText.setReadOnly(isReadOnly());
         tableEditorView.setReadOnly(isReadOnly());
+
+        if (getParent().getChildren().length == 1) { // open the table
+            guessButton.setEnabled(false);
+            informationLabel.setVisible(false);
+        }
     }
 
     @Override
@@ -271,20 +286,20 @@ public class RegexpFileStep3Form extends AbstractRegexpFileStepForm {
      * 
      * @return processDescription
      */
-    private ProcessDescription getProcessDescription() {
+    private ProcessDescription getProcessDescription(RegexpFileConnection originalValueConnection) {
 
-        ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(getConnection());
+        ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(originalValueConnection);
 
         // Adapt Header width firstRowIsCaption to preview the first line on caption or not
-        if (getConnection().isFirstLineCaption()) {
-            processDescription.setHeaderRow(getConnection().getHeaderValue() - 1);
+        if (originalValueConnection.isFirstLineCaption()) {
+            processDescription.setHeaderRow(originalValueConnection.getHeaderValue() - 1);
         }
 
         // adapt the limit to the extract sames rows of preview
         processDescription.setLimitRows(maximumRowsToPreview);
-        if (getConnection().isUseLimit()) {
-            Integer i = getConnection().getLimitValue();
-            if (getConnection().isFirstLineCaption()) {
+        if (originalValueConnection.isUseLimit()) {
+            Integer i = originalValueConnection.getLimitValue();
+            if (originalValueConnection.isFirstLineCaption()) {
                 i++;
             }
             if (i < maximumRowsToPreview) {
@@ -298,9 +313,9 @@ public class RegexpFileStep3Form extends AbstractRegexpFileStepForm {
      * run a ShadowProcess to determined the Metadata.
      */
     protected void runShadowProcess() {
-
+        RegexpFileConnection originalValueConnection = getOriginalValueConnection();
         // if no file, the process don't be executed
-        if (getConnection().getFilePath() == null || getConnection().getFilePath().equals("")) { //$NON-NLS-1$
+        if (originalValueConnection.getFilePath() == null || originalValueConnection.getFilePath().equals("")) { //$NON-NLS-1$
             informationLabel.setText("   " + Messages.getString("FileStep3.filepathAlert") //$NON-NLS-1$ //$NON-NLS-2$
                     + "                                                                              "); //$NON-NLS-1$
             return;
@@ -309,7 +324,7 @@ public class RegexpFileStep3Form extends AbstractRegexpFileStepForm {
         try {
             informationLabel.setText("   " + Messages.getString("FileStep3.guessProgress")); //$NON-NLS-1$ //$NON-NLS-2$
 
-            CsvArray csvArray = ShadowProcessHelper.getCsvArray(getProcessDescription(), "FILE_REGEXP"); //$NON-NLS-1$
+            CsvArray csvArray = ShadowProcessHelper.getCsvArray(getProcessDescription(originalValueConnection), "FILE_REGEXP"); //$NON-NLS-1$
             if (csvArray == null) {
                 informationLabel.setText("   " + Messages.getString("FileStep3.guessFailure")); //$NON-NLS-1$ //$NON-NLS-2$
 
@@ -507,7 +522,8 @@ public class RegexpFileStep3Form extends AbstractRegexpFileStepForm {
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         if (super.isVisible()) {
-            if (getConnection().getFilePath() != null && (!getConnection().getFilePath().equals("")) //$NON-NLS-1$
+            RegexpFileConnection originalValueConnection = getOriginalValueConnection();
+            if (originalValueConnection.getFilePath() != null && (!originalValueConnection.getFilePath().equals("")) //$NON-NLS-1$
                     && (tableEditorView.getMetadataEditor().getBeanCount() <= 0)) {
                 runShadowProcess();
             }
@@ -518,4 +534,12 @@ public class RegexpFileStep3Form extends AbstractRegexpFileStepForm {
         }
     }
 
+    private RegexpFileConnection getOriginalValueConnection() {
+        if (getConnection().isContextMode() && getContextModeManager() != null) {
+            return (RegexpFileConnection) FileConnectionContextUtils.cloneOriginalValueConnection(getConnection(),
+                    getContextModeManager().getSelectedContextType());
+        }
+        return getConnection();
+
+    }
 }

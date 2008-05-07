@@ -15,6 +15,7 @@ package org.talend.repository.ui.wizards.metadata.connection.files.delimited;
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
+import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
@@ -37,6 +38,8 @@ public class DelimitedFileWizardPage extends WizardPage {
 
     private boolean isRepositoryObjectEditable;
 
+    private IMetadataContextModeManager contextModeManager;
+
     /**
      * DOC ocarbone DelimitedFileWizardPage constructor comment.
      * 
@@ -46,12 +49,13 @@ public class DelimitedFileWizardPage extends WizardPage {
      * @param existingNames
      */
     public DelimitedFileWizardPage(int step, ConnectionItem connectionItem, boolean isRepositoryObjectEditable,
-            String[] existingNames) {
+            String[] existingNames, IMetadataContextModeManager contextModeManager) {
         super("wizardPage"); //$NON-NLS-1$
         this.step = step;
         this.connectionItem = connectionItem;
         this.existingNames = existingNames;
         this.isRepositoryObjectEditable = isRepositoryObjectEditable;
+        this.contextModeManager = contextModeManager;
     }
 
     /**
@@ -62,17 +66,16 @@ public class DelimitedFileWizardPage extends WizardPage {
         currentComposite = null;
 
         if (step == 1) {
-            currentComposite = new DelimitedFileStep1Form(parent, connectionItem, existingNames);
+            currentComposite = new DelimitedFileStep1Form(parent, connectionItem, existingNames, contextModeManager);
         } else if (step == 2) {
-            currentComposite = new DelimitedFileStep2Form(parent, connectionItem);
+            currentComposite = new DelimitedFileStep2Form(parent, connectionItem, contextModeManager);
             currentComposite.setWizardPage(this);
         } else if (step == 3) {
             MetadataTable metadataTable = (MetadataTable) ((DelimitedFileConnection) connectionItem.getConnection()).getTables()
                     .get(0);
             currentComposite = new DelimitedFileStep3Form(parent, connectionItem, metadataTable, TableHelper.getTableNames(
-                    ((DelimitedFileConnection) connectionItem.getConnection()), metadataTable.getLabel()));
+                    ((DelimitedFileConnection) connectionItem.getConnection()), metadataTable.getLabel()), contextModeManager);
         }
-
         currentComposite.setReadOnly(!isRepositoryObjectEditable);
 
         AbstractForm.ICheckListener listener = new AbstractForm.ICheckListener() {

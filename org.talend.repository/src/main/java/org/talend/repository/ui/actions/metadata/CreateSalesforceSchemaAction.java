@@ -44,7 +44,7 @@ public class CreateSalesforceSchemaAction extends AbstractCreateAction {
 
     protected static final int WIZARD_WIDTH = 800;
 
-    protected static final int WIZARD_HEIGHT = 475;
+    protected static final int WIZARD_HEIGHT = 520;
 
     private boolean creation = false;
 

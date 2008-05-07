@@ -220,10 +220,20 @@ public final class DBConnectionContextUtils {
      * perhaps, if connection is in context mode, will open dialog to choose context sets.
      */
     public static DatabaseConnection cloneOriginalValueConnection(DatabaseConnection dbConn) {
+        return cloneOriginalValueConnection(dbConn, false);
+    }
+
+    /**
+     * 
+     * ggu Comment method "cloneOriginalValueConnection".
+     * 
+     * only clone the properties of connection.
+     */
+    public static DatabaseConnection cloneOriginalValueConnection(DatabaseConnection dbConn, boolean defaultContext) {
         if (dbConn == null) {
             return null;
         }
-        ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(dbConn);
+        ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(dbConn, defaultContext);
         DatabaseConnection cloneConn = ConnectionFactory.eINSTANCE.createDatabaseConnection();
         // get values
         String server = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getServerName());
@@ -263,12 +273,12 @@ public final class DBConnectionContextUtils {
         cloneConn.setSynchronised(dbConn.isSynchronised());
         cloneConn.setSystemSQL(dbConn.isSystemSQL());
         cloneConn.setVersion(dbConn.getVersion());
+        cloneConn.setReadOnly(dbConn.isReadOnly());
 
-        // cloneConn.setReadOnly(dbConn.isReadOnly());
         // cloneConn.setProperties(dbConn.getProperties());
-        // cloneConn.setCdcConns(value)
-        // cloneConn.setQueries(value)
-
+        // cloneConn.setCdcConns(dbConn.getCdcConns());
+        // cloneConn.setQueries(dbConn.getQueries());
+        // cloneConn.getTables().addAll(dbConn.getTables());
         /*
          * mustn't be set, is flag for method convert in class ConvertionHelper.
          * 
