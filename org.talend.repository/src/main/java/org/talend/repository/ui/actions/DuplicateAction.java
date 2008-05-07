@@ -218,9 +218,9 @@ public class DuplicateAction extends AContextualAction {
                 Item originalItem = ((RepositoryNode) currentSource).getObject().getProperty().getItem();
                 String version = originalItem.getProperty().getVersion();
                 String name = originalItem.getProperty().getLabel();
-                if (resetProcessVersion()) {
-                    originalItem.getProperty().setVersion(JOB_INIT_VERSION);
-                }
+                // if (resetProcessVersion()) {
+                originalItem.getProperty().setVersion(JOB_INIT_VERSION);
+                // }
                 originalItem.getProperty().setLabel(newJobName);
                 factory.copy(originalItem, path, false);
                 // restore originalItem

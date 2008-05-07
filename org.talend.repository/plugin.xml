@@ -254,11 +254,6 @@
              name="Generate Doc as HTML">
        </Action>
        <Action
-             class="org.talend.repository.ui.actions.TranscriptAction"
-             id="org.talend.repository.actions.transcriptJob"
-             level="49"
-             name="Transcript Job"/>
-       <Action
              class="org.talend.repository.ui.actions.DuplicateAction"
              id="org.talend.repository.actions.duplicate"
              level="50"
