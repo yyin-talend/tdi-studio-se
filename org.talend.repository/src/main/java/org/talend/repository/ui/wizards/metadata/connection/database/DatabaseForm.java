@@ -269,7 +269,6 @@ public class DatabaseForm extends AbstractForm {
             databasePerl.remove("HSQLDB Server"); //$NON-NLS-1$
             databasePerl.remove("HSQLDB WebServer"); //$NON-NLS-1$
             databasePerl.remove("HSQLDB In-Process"); //$NON-NLS-1$
-            databasePerl.remove("Mckoil"); //$NON-NLS-1$ 
 
             String[] dbPerl = databasePerl.toArray(new String[databasePerl.size()]);
             dbTypeCombo = new LabelledCombo(compositeDbSettings, Messages.getString("DatabaseForm.dbType"), Messages //$NON-NLS-1$
