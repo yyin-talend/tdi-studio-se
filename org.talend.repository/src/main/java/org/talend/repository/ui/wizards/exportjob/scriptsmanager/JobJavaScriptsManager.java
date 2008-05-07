@@ -72,6 +72,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * @see org.talend.repository.ui.wizards.exportjob.JobScriptsManager#getExportResources(org.talend.core.model.properties.ProcessItem[],
      * boolean, boolean, boolean, boolean, boolean, boolean, boolean, java.lang.String)
      */
+    @Override
     public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Boolean> exportChoice,
             String contextName, String launcher, int statisticPort, int tracePort, String... codeOptions) {
 
@@ -138,8 +139,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * @param boolean1
      */
     protected void addContextScripts(ExportFileResource resource, Boolean needContext) {
-        addContextScripts(escapeFileNameSpace((ProcessItem) resource.getItem()), resource.getItem().getProperty().getVersion(),
-                resource, needContext);
+        addContextScripts((ProcessItem) resource.getItem(), escapeFileNameSpace((ProcessItem) resource.getItem()), resource
+                .getItem().getProperty().getVersion(), resource, needContext);
     }
 
     /**
@@ -148,7 +149,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * @param resource
      * @param boolean1
      */
-    protected void addContextScripts(String jobName, String jobVersion, ExportFileResource resource, Boolean needContext) {
+    protected void addContextScripts(ProcessItem processItem, String jobName, String jobVersion, ExportFileResource resource,
+            Boolean needContext) {
         if (!needContext) {
             return;
         }
@@ -160,10 +162,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             classRoot = classRoot.append(projectName).append(folderName).append(JOB_CONTEXT_FOLDER);
             File contextDir = classRoot.toFile();
             if (contextDir.isDirectory()) {
-                for (File contextFile : classRoot.toFile().listFiles()) {
-                    // See bug 0003568: Three contexts file exported, while only two contexts in the job.
-                    list.addAll(getActiveContextFiles(classRoot.toFile().listFiles(), (ProcessItem) resource.getItem()));
-                }
+                // See bug 0003568: Three contexts file exported, while only two contexts in the job.
+                list.addAll(getActiveContextFiles(classRoot.toFile().listFiles(), processItem));
             }
 
             // list.add(classRoot.toFile().toURL());
@@ -184,6 +184,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * @return An url list of context files.
      * @throws MalformedURLException
      */
+    @SuppressWarnings("deprecation")
     private List<URL> getActiveContextFiles(File[] listFiles, ProcessItem processItem) throws MalformedURLException {
         List<URL> contextFileUrls = new ArrayList<URL>();
         try {
@@ -267,7 +268,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             JobInfo jobInfo = iter.next();
             allJobScripts.addAll(getJobScripts(jobInfo.getJobName(), jobInfo.getJobVersion(), exportChoice
                     .get(ExportChoice.needJob)));
-            addContextScripts(jobInfo.getJobName(), jobInfo.getJobVersion(), resource, exportChoice.get(ExportChoice.needContext));
+            addContextScripts(jobInfo.getProcessItem(), jobInfo.getJobName(), jobInfo.getJobVersion(), resource, exportChoice
+                    .get(ExportChoice.needContext));
         }
 
         return allJobScripts;
@@ -548,6 +550,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * @return a List of context names.
      * 
      */
+    @Override
     public List<String> getJobContexts(ProcessItem processItem) {
         List<String> contextNameList = new ArrayList<String>();
         for (Object o : processItem.getProcess().getContext()) {

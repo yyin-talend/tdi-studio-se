@@ -195,7 +195,7 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
         for (Iterator<JobInfo> iter = list.iterator(); iter.hasNext();) {
             JobInfo jobInfo = iter.next();
             libResource.addResources(getJobScripts(jobInfo.getJobName(), jobInfo.getJobVersion(), true));
-            addContextScripts(jobInfo.getJobName(), jobInfo.getJobVersion(), contextResource, true);
+            addContextScripts(jobInfo.getProcessItem(), jobInfo.getJobName(), jobInfo.getJobVersion(), contextResource, true);
         }
 
     }
@@ -216,7 +216,7 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
 
     protected void getContextScripts(ProcessItem processItem, Boolean needContext, ExportFileResource contextResource) {
         String jobName = processItem.getProperty().getLabel();
-        addContextScripts(jobName, processItem.getProperty().getVersion(), contextResource, needContext);
+        addContextScripts(processItem, jobName, processItem.getProperty().getVersion(), contextResource, needContext);
     }
 
     protected List<URL> getAxisLib(Boolean needAxisLib) {
@@ -403,7 +403,7 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
                 Node n = content.get(i);
                 if (n instanceof Element) {
                     if (n.getName().equals("transport")) { //$NON-NLS-1$
-                        content.add(i - 1, (Node) element);
+                        content.add(i - 1, element);
                         break;
                     }
                 }
@@ -512,6 +512,7 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
          * @see org.apache.axis.wsdl.Java2WSDL#generateServerSide(org.apache.axis.wsdl.fromJava.Emitter,
          * java.lang.String)
          */
+        @Override
         protected void generateServerSide(Emitter j2w, String wsdlFileName) throws Exception {
             org.apache.axis.wsdl.toJava.Emitter w2j = new org.apache.axis.wsdl.toJava.Emitter();
             File wsdlFile = new File(wsdlFileName);
