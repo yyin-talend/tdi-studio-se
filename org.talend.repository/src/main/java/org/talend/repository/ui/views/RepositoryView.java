@@ -25,8 +25,6 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -66,6 +64,7 @@ import org.eclipse.ui.commands.ActionHandler;
 import org.eclipse.ui.contexts.IContextActivation;
 import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.handlers.IHandlerService;
+import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
@@ -74,6 +73,7 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.actions.ITreeContextualAction;
+import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.commons.utils.Timer;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
@@ -461,38 +461,39 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
      * @see org.talend.core.ui.repository.views.IRepositoryView#refresh()
      */
     public void refresh() {
-        Timer timer = Timer.getTimer("repositoryView"); //$NON-NLS-1$
-        timer.start();
+        ProgressDialog progressDialog = new ProgressDialog(Display.getCurrent().getActiveShell(), 1000) {
+
+            private IProgressMonitor monitorWrap;
+
+            @Override
+            public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                Timer timer = Timer.getTimer("repositoryView"); //$NON-NLS-1$
+                timer.start();
+                monitorWrap = new EventLoopProgressMonitor(monitor);
+                try {
+                    ProxyRepositoryFactory.getInstance().initialize();
+                } catch (Exception e) {
+                    throw new InvocationTargetException(e);
+                }
+
+                root = new RepositoryNode(null, null, ENodeType.STABLE_SYSTEM_FOLDER);
+                viewer.refresh();
+                // unsetting the selection will prevent the propertyView from displaying dirty data
+                viewer.setSelection(new TreeSelection());
+                timer.stop();
+                // timer.print();
+            }
+        };
 
         try {
-            try {
-                IRunnableWithProgress op = new IRunnableWithProgress() {
-
-                    public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                        try {
-                            ProxyRepositoryFactory.getInstance().initialize();
-                        } catch (Exception e) {
-                            throw new InvocationTargetException(e);
-                        }
-                    }
-                };
-                new ProgressMonitorDialog(Display.getCurrent().getActiveShell()).run(true, false, op);
-            } catch (InvocationTargetException e) {
-                throw e.getTargetException();
-            } catch (InterruptedException e) {
-                //
-            }
-
-            root = new RepositoryNode(null, null, ENodeType.STABLE_SYSTEM_FOLDER);
-            viewer.refresh();
-            // unsetting the selection will prevent the propertyView from displaying dirty data
-            viewer.setSelection(new TreeSelection());
-        } catch (Throwable exception) {
-            MessageBoxExceptionHandler.process(exception);
+            progressDialog.executeProcess();
+        } catch (InvocationTargetException e) {
+            ExceptionHandler.process(e);
+            return;
+        } catch (Exception e) {
+            MessageBoxExceptionHandler.process(e);
+            return;
         }
-
-        timer.stop();
-        // timer.print();
     }
 
     /*
