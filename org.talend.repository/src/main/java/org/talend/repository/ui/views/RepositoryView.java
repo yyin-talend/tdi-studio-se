@@ -48,6 +48,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IActionBars;
@@ -461,7 +462,11 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
      * @see org.talend.core.ui.repository.views.IRepositoryView#refresh()
      */
     public void refresh() {
-        ProgressDialog progressDialog = new ProgressDialog(Display.getCurrent().getActiveShell(), 1000) {
+        Shell shell = Display.getCurrent().getActiveShell();
+        if (shell == null) {
+            return;
+        }
+        ProgressDialog progressDialog = new ProgressDialog(shell, 1000) {
 
             private IProgressMonitor monitorWrap;
 
