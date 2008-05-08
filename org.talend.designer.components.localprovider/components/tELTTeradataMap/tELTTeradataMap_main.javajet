@@ -13,6 +13,8 @@
 	org.talend.designer.dbmap.language.IDbLanguage
 	org.talend.designer.dbmap.language.teradata.TeradataGenerationManager
 	org.talend.designer.dbmap.DbMapComponent
+	org.talend.core.model.process.ElementParameterParser
+	
 
 	java.util.HashMap
 	java.util.Map
@@ -21,12 +23,25 @@
 		java.util.HashSet
 	" 
 %>
+
+
 <%
 
 
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	DbMapComponent node = (DbMapComponent) codeGenArgument.getArgument();
 	boolean stats = codeGenArgument.isStatistics(); 
+	
+	//test load sql pattern in jet.
+	List<Map<String, Object>> codes = (List<Map<String, Object>>) ElementParameterParser.getObjectValue(node,
+                        "SQLPATTERN_CODE");
+                       
+	%>
+		<%=codes%>
+	<%
+	//end of test.
+	
+	
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -77,4 +92,6 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 %>
+
+
 	
