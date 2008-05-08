@@ -39,6 +39,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.part.ViewPart;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
@@ -531,7 +532,9 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
         } else if (elem instanceof Node) {
             // if (isAdvancedType(elem)) {
             if (((Node) elem).isELTComponent()) {
-                return EElementType.ELT_NODE.getCategories();
+                if(CorePlugin.getDefault().useSQLPattern()){
+                    return EElementType.ELT_NODE.getCategories();
+                }
             }
             return EElementType.ADVANCED_NODE.getCategories();
             // } else {
