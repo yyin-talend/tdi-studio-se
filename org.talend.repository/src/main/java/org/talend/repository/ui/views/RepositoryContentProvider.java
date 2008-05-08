@@ -25,6 +25,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.RuntimeExceptionHandler;
 import org.talend.commons.utils.data.container.Container;
+import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.database.EDatabaseTypeName;
@@ -299,11 +300,13 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             codeNode.getChildren().add(snippetsNode);
         }
 
-        // 5. Sql patterns
-        sqlPatternNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
-        sqlPatternNode.setProperties(EProperties.LABEL, ERepositoryObjectType.SQLPATTERNS);
-        sqlPatternNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.SQLPATTERNS);
-        nodes.add(sqlPatternNode);
+        if(CorePlugin.getDefault().useSQLPattern()){
+            // 5. Sql patterns
+            sqlPatternNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
+            sqlPatternNode.setProperties(EProperties.LABEL, ERepositoryObjectType.SQLPATTERNS);
+            sqlPatternNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.SQLPATTERNS);
+            nodes.add(sqlPatternNode);
+        }
 
         // 6. Documentation
         docNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
@@ -1099,5 +1102,4 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
     public void setMetadataSalesforceSchemaNode(RepositoryNode metadataSalesforceSchemaNode) {
         this.metadataSalesforceSchemaNode = metadataSalesforceSchemaNode;
     }
-
 }
