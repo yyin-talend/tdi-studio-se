@@ -30,9 +30,14 @@ import java.util.Map;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
+import org.apache.axis.encoding.TypeMappingRegistryImpl;
+import org.apache.axis.utils.CLArgsParser;
+import org.apache.axis.utils.CLOption;
+import org.apache.axis.utils.Messages;
 import org.apache.axis.wsdl.Java2WSDL;
 import org.apache.axis.wsdl.fromJava.Emitter;
 import org.apache.commons.lang.BooleanUtils;
+import org.apache.log4j.Logger;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -61,6 +66,8 @@ import org.talend.repository.documentation.ExportFileResource;
  * 
  */
 public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
+
+    private static Logger log = Logger.getLogger(ExceptionHandler.class);
 
     public static final String EXPORT_METHOD = "runJob"; //$NON-NLS-1$
 
@@ -298,7 +305,7 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
                 return wsdl;
             }
 
-        } catch (Exception e) {
+        } catch (Throwable e) {
             ExceptionHandler.process(e);
         }
 
@@ -372,6 +379,7 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
 
         File deployFile = new File(deployFileName);
         if (!deployFile.exists()) {
+            log.error("JAVA2WSDL fail, the deploy.wsdd file don't exist. So, the server-config.wsdd file will be invalid");
             return;
         }
         // edit the server-config.wsdd file
@@ -501,10 +509,84 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
      */
     static class TalendJava2WSDL extends Java2WSDL {
 
-        public static void generateWSDL(String[] args) {
+        Throwable t = null;
+
+        public static void generateWSDL(String[] args) throws Throwable {
             TalendJava2WSDL java2WSDL = new TalendJava2WSDL();
             java2WSDL.run(args);
+            if (java2WSDL.t != null) {
+                throw new Throwable(java2WSDL.t);
+            }
         }
+
+        /**
+         * run checks the command-line arguments and runs the tool.
+         * 
+         * @param args String[] command-line arguments.
+         * @return
+         */
+        protected int run(String[] args) {
+
+            // Parse the arguments
+            CLArgsParser argsParser = new CLArgsParser(args, options);
+
+            // Print parser errors, if any
+            if (null != argsParser.getErrorString()) {
+                System.err.println(Messages.getMessage("j2werror00", argsParser.getErrorString()));
+                printUsage();
+
+                return (1);
+            }
+
+            // Get a list of parsed options
+            List clOptions = argsParser.getArguments();
+            int size = clOptions.size();
+
+            try {
+
+                // Parse the options and configure the emitter as appropriate.
+                for (int i = 0; i < size; i++) {
+                    if (!parseOption((CLOption) clOptions.get(i))) {
+                        return (1);
+                    }
+                }
+
+                // validate argument combinations
+                if (!validateOptions()) {
+                    return (1);
+                }
+
+                // Set the namespace map
+                if (!namespaceMap.isEmpty()) {
+                    emitter.setNamespaceMap(namespaceMap);
+                }
+
+                TypeMappingRegistryImpl tmr = new TypeMappingRegistryImpl();
+                tmr.doRegisterFromVersion(typeMappingVersion);
+                emitter.setTypeMappingRegistry(tmr);
+
+                // Find the class using the name
+                emitter.setCls(className);
+
+                // Generate a full wsdl, or interface & implementation wsdls
+                if (wsdlImplFilename == null) {
+                    emitter.emit(wsdlFilename, mode);
+                } else {
+                    emitter.emit(wsdlFilename, wsdlImplFilename);
+                }
+
+                if (isDeploy) {
+                    generateServerSide(emitter, (wsdlImplFilename != null) ? wsdlImplFilename : wsdlFilename);
+                }
+                // everything is good
+                return (0);
+            } catch (Throwable t) {
+
+                this.t = t;
+
+                return (1);
+            }
+        } // run
 
         /*
          * (non-Javadoc)
