@@ -34,6 +34,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.talend.commons.exception.BusinessException;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.system.EnvironmentUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
@@ -57,6 +58,7 @@ import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IConnectionProperty;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IElementParameterDefaultValue;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
@@ -405,6 +407,7 @@ public class EmfComponent implements IComponent {
         param.setRequired(false);
         param.setShow(false);
         listParam.add(param);
+        String eltNodeName = patterns.getDB();
 
         param = new ElementParameter(node);
         param.setName(EParameterName.SQLPATTERN_VALUE.getName());
@@ -430,6 +433,8 @@ public class EmfComponent implements IComponent {
             value.add(map);
         }
         param.setValue(value);
+
+        IElementParameter sqlPatternValue = param;
 
         String[] listRepositoryItem = new String[1];
         String[] listItemsDisplayValue = new String[1];
@@ -487,6 +492,62 @@ public class EmfComponent implements IComponent {
         param.setRequired(false);
         param.setShow(true);
         listParam.add(param);
+
+        IElementParameter codeParameter = param;
+
+        List<Map<String, Object>> tableContent = new ArrayList<Map<String, Object>>();
+        Map<String, Object> codeMap = new HashMap<String, Object>();
+
+        if (sqlPatternValue != null) {
+
+            List<Map> values = (List<Map>) sqlPatternValue.getValue();
+            List<String> names = new ArrayList<String>();
+            for (Map map : values) {
+                String patternName = (String) map.get(EmfComponent.SQLPATTERNLIST);
+
+                SQLPatternItem sqlPatternItem = getSQLPatternItem(patternName, eltNodeName);
+                if (sqlPatternItem == null) {
+                    values.remove(map);
+                    continue;
+                }
+                String content = new String(sqlPatternItem.getContent().getInnerContent());
+
+                names.add(patternName);
+                codeMap.put(patternName, content);
+            }
+            tableContent.add(codeMap);
+            codeParameter.setValue(tableContent);
+            codeParameter.setListItemsDisplayCodeName(names.toArray(new String[names.size()]));
+        }
+    }
+
+    /**
+     * yzhang Comment method "getSQLPatternItem".
+     * 
+     * @param sqlpatternName
+     * @param eltNodeName
+     * @return
+     */
+    private SQLPatternItem getSQLPatternItem(String sqlpatternName, String eltNodeName) {
+
+        SQLPatternItem sqlpatternItem = null;
+        try {
+            List<IRepositoryObject> list = DesignerPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().getAll(
+                    ERepositoryObjectType.SQLPATTERNS, false);
+
+            for (IRepositoryObject repositoryObject : list) {
+                SQLPatternItem item = (SQLPatternItem) repositoryObject.getProperty().getItem();
+                if (item.getEltName().equals(eltNodeName) && item.getProperty().getLabel().equals(sqlpatternName)) {
+                    sqlpatternItem = item;
+                    break;
+                }
+
+            }
+
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+        return sqlpatternItem;
     }
 
     /**
