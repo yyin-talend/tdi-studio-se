@@ -1,0 +1,140 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.process.IConnectionCategory
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.metadata.types.JavaTypesManager
+    org.talend.core.model.metadata.types.JavaType
+    java.util.List
+    java.util.ArrayList
+"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+String field = ElementParameterParser.getValue(node, "__FIELD__");
+
+IConnection inConn = null;
+List< ? extends IConnection> inConns = node.getIncomingConnections();
+if(inConns!=null){
+    for (IConnection conn : inConns) {
+    	if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+    		inConn = conn;
+    		break;
+    	}
+    }
+}
+
+IConnection outConn = null;
+List< ? extends IConnection> outConns = node.getOutgoingConnections();
+if(outConns!=null){
+    for (IConnection conn : outConns) {
+    	if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+    		outConn = conn;
+    		break;
+    	}
+    }
+}
+
+//get field column
+if(inConn!=null){
+	IMetadataTable inputMetadataTable = inConn.getMetadataTable();
+	IMetadataTable outputMetadataTable = outConn.getMetadataTable();
+	int outCols = outputMetadataTable.getListColumns().size();
+	for (IMetadataColumn inputCol : inputMetadataTable.getListColumns()) {
+		if(inputCol.getLabel().equals(field)){
+%>
+    java.util.regex.Matcher matcher_<%= cid %> = pattern_<%= cid %>.matcher(<%=inConn.getName()%>.<%=field%>);
+    int groupCount_<%=cid %> = matcher_<%= cid %>.groupCount();
+    boolean matches_<%=cid %> = matcher_<%= cid %>.matches();
+    
+<%
+		}
+	}
+}
+
+//set original columns
+List<IMetadataColumn> newColumnList = new ArrayList<IMetadataColumn>();
+if(outConn!=null && inConn!=null){
+	IMetadataTable outputMetadataTable = outConn.getMetadataTable();
+	IMetadataTable inputMetadataTable = inConn.getMetadataTable();
+	for (IMetadataColumn outputCol : outputMetadataTable.getListColumns()) {
+		if(outputCol.getLabel().equals(field)){
+			continue;
+		}
+		boolean isOirginalColumn = false;
+		for (IMetadataColumn inputCol : inputMetadataTable.getListColumns()) {
+			if( outputCol.getLabel().equals( inputCol.getLabel()) ){
+				isOirginalColumn = true;
+%>
+	<%=outConn.getName()%>.<%=outputCol.getLabel()%> = <%=inConn.getName()%>.<%=inputCol.getLabel()%>;
+<%
+				break;
+			}
+		}
+		if(!isOirginalColumn){
+			newColumnList.add(outputCol);
+		}
+	}
+}
+%>
+
+String temp_<%=cid%> = null;
+<%
+for(int i=0; i<newColumnList.size();i++){
+	IMetadataColumn column = newColumnList.get(i);
+	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+	JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+	String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();%><%
+	if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){
+%>
+	<%=outConn.getName()%>.<%=column.getLabel() %> = matches_<%=cid %> && groupCount_<%=cid %> <= <%=i %>? "" : matcher_<%= cid %>.group(<%=i + 1 %>);
+<%
+	}else{ 
+%>
+	temp_<%=cid%> = matches_<%=cid %> && groupCount_<%=cid %> <= <%=i %>? "" : matcher_<%= cid %>.group(<%=i %> + 1);
+	if(temp_<%=cid %>.length() > 0) {
+<%
+		if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
+		} else if(javaType == JavaTypesManager.BYTE_ARRAY){ 
+%>
+		<%=outConn.getName() %>.<%=column.getLabel() %> = temp_<%=cid %>.getBytes();
+<%
+		}else if(javaType == JavaTypesManager.DATE) { 
+%>
+		<%=outConn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_<%=cid %>, <%= patternValue %>);
+<%
+		} else {
+%>
+		<%=outConn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(temp_<%=cid %>);
+<%
+		}
+%>
+	} else {						
+<%
+		String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
+		if(defaultValue == null) {
+%>
+		throw new RuntimeException("Value is empty for column : '<%= column.getLabel() %>', value is invalid or this column should be nullable or have a default value.");
+<%
+		} else {
+%>
+		<%=outConn.getName() %>.<%=column.getLabel() %> = <%=defaultValue %>;
+<%
+		}
+%>
+	}
+<%
+	}
+}
+%>
+
+	
+	
