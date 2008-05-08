@@ -96,6 +96,19 @@ public class RepositoryNameSorter extends ViewerSorter {
         } else if (node.getType() == ENodeType.REFERENCED_PROJECT) {
             return 140;
         } else {
+            if (node.getType() == ENodeType.REPOSITORY_ELEMENT) {
+                ERepositoryObjectType contentType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+                if (contentType != null) {
+                    switch (contentType) {
+                    case METADATA_CON_CDC:
+                        return 120;
+                    case METADATA_CON_TABLE:
+                        return 125;
+                    default:
+                        return 130;
+                    }
+                }
+            }
             return 130;
         }
 

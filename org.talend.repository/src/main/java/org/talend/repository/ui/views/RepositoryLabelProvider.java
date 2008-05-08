@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.repository.ui.views;
 
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.IFontProvider;
@@ -30,6 +31,7 @@ import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.images.OverlayImageProvider;
+import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -102,6 +104,7 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
             case METADATA_CON_SYNONYM:
             case METADATA_CON_TABLE:
             case METADATA_CON_VIEW:
+            case METADATA_CON_CDC:
                 return object.getLabel();
             default:
                 break;
@@ -195,6 +198,10 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
             case JOB_DOC:
             case JOBLET_DOC:
                 return ImageProvider.getImage(node.getIcon());
+            case METADATA_CON_CDC:
+                ImageDescriptor idf = RepositoryPlugin.imageDescriptorFromPlugin(RepositoryPlugin.PLUGIN_ID,
+                        "icons/subscriber.jpg");
+                return idf.createImage();
             default:
                 break;
             }
