@@ -67,7 +67,10 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
     		boolean advancedSeparator = (advancedSeparatorStr!=null&&!advancedSeparatorStr.equals(""))?advancedSeparatorStr.equals("true"):false;
     		String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
     		String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER); 
-                
+            
+    		String fieldEndStr = ElementParameterParser.getValue(node, "__FIELD_END__");
+    		boolean fieldEnd = (fieldEndStr != null && !fieldEndStr.equals(""))?fieldEndStr.equals("true"):false;
+    		                
         	List< ? extends IConnection> conns = node.getIncomingConnections();
         	for (IConnection conn : conns) {
         		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
@@ -124,6 +127,10 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
     			            %>					
     			            sb_<%=cid %>.append(OUT_DELIM_<%=cid %>);
     			            <%
+    			        }else if(fieldEnd){
+    			        	%>
+    			        	sb_<%=cid %>.append(OUT_DELIM_<%=cid %>);
+    			        	<%
     			        }
     		        }
     		        %>
