@@ -89,7 +89,7 @@ public class ContextRepositoryComposite extends ContextComposite {
         // record the modified operation.
         setModifiedFlag(contextManager);
 
-        refresh();
+        // refresh();
     }
 
     // public void onJobRenameParameter(IContextManager contextManager, String oldName, String newName) {
