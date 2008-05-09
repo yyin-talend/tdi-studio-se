@@ -37,7 +37,7 @@
                         "SQLPATTERN_CODE");
                        
 	%>
-		<%=codes%>
+		/*(List<Map<String, Object>>) ElementParameterParser.getObjectValue(node,"SQLPATTERN_CODE")=<%=codes%>*/
 	<%
 	//end of test.
 	
