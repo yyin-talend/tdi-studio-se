@@ -52,6 +52,7 @@ import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.builder.connection.LdifFileConnection;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.utils.CsvArray;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.preview.ProcessDescription;
@@ -210,6 +211,7 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm implements IRefr
         String filePath = getConnection().getFilePath();
         if (isContextMode() && getContextModeManager() != null) {
             filePath = getContextModeManager().getOriginalValue(filePath);
+            filePath = TalendTextUtils.removeQuotes(filePath);
         }
 
         Attributes entry = null;
@@ -373,6 +375,7 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm implements IRefr
             LdifFileConnection originalValueConnection = null;
             if (isContextMode() && getContextModeManager() != null) {
                 filePath = getContextModeManager().getOriginalValue(getConnection().getFilePath());
+                filePath = TalendTextUtils.removeQuotes(filePath);
                 originalValueConnection = (LdifFileConnection) OtherConnectionContextUtils.cloneOriginalValueLdifFileConnection(
                         getConnection(), getContextModeManager().getSelectedContextType());
             } else {
@@ -630,9 +633,7 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm implements IRefr
             if (isReadOnly() != readOnly) {
                 adaptFormToReadOnly();
             }
-            if (isContextMode()) {
-                adaptFormToEditable();
-            }
+            adaptFormToEditable();
         }
     }
 

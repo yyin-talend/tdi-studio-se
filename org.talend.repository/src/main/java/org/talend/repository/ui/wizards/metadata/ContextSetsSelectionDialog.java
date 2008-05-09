@@ -54,9 +54,12 @@ public class ContextSetsSelectionDialog extends SelectionDialog {
 
     private String selectedContext = null;
 
-    public ContextSetsSelectionDialog(Shell parentShell, ContextItem contextItem) {
+    private boolean canCancel = false;
+
+    public ContextSetsSelectionDialog(Shell parentShell, ContextItem contextItem, boolean canCancel) {
         super(parentShell == null ? PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell() : parentShell);
         this.contextItem = contextItem;
+        this.canCancel = canCancel;
         setDefaultImage(ImageProvider.getImage(ECoreImage.CONTEXT_ICON));
         setHelpAvailable(false);
         setTitle(TITLE);
@@ -65,7 +68,7 @@ public class ContextSetsSelectionDialog extends SelectionDialog {
     }
 
     public ContextSetsSelectionDialog(ContextItem contextItem) {
-        this(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), contextItem);
+        this(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), contextItem, false);
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
@@ -137,6 +140,9 @@ public class ContextSetsSelectionDialog extends SelectionDialog {
     @Override
     protected void createButtonsForButtonBar(Composite parent) {
         createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
+        if (canCancel) {
+            createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
+        }
     }
 
     @Override
@@ -147,7 +153,9 @@ public class ContextSetsSelectionDialog extends SelectionDialog {
 
     public String getSelectedContext() {
         if (selectedContext == null) {
-            return this.defalutContext;
+            if (!canCancel) {
+                return this.defalutContext;
+            }
         } else {
             if (selectedContext.endsWith(DEFAULT_FLAG)) {
                 return this.defalutContext;
@@ -155,5 +163,6 @@ public class ContextSetsSelectionDialog extends SelectionDialog {
                 return selectedContext;
             }
         }
+        return null;
     }
 }

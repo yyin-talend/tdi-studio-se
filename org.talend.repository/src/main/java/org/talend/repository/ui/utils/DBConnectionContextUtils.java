@@ -25,6 +25,7 @@ import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.utils.ContextParameterUtils;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 
 /**
@@ -162,6 +163,8 @@ public final class DBConnectionContextUtils {
         String dbRootPath = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getDBRootPath());
         String additionParam = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getAdditionalParams());
 
+        filePath = TalendTextUtils.removeQuotes(filePath);
+        dbRootPath = TalendTextUtils.removeQuotes(dbRootPath);
         // url
         DataStringConnection dataStringConn = new DataStringConnection();
         dataStringConn.setSelectionIndex(dbTypeIndex);
@@ -205,6 +208,8 @@ public final class DBConnectionContextUtils {
         String dbRootPath = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getDBRootPath());
         String additionParam = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getAdditionalParams());
 
+        filePath = TalendTextUtils.removeQuotes(filePath);
+        dbRootPath = TalendTextUtils.removeQuotes(dbRootPath);
         DataStringConnection dataStringConn = new DataStringConnection();
         dataStringConn.setSelectionIndex(dbIndex);
         dataStringConn.getString(dbIndex, server, username, password, port, sidOrDatabase, filePath.toLowerCase(), datasource,
@@ -247,6 +252,8 @@ public final class DBConnectionContextUtils {
         String dbRootPath = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getDBRootPath());
         String additionParam = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getAdditionalParams());
 
+        filePath = TalendTextUtils.removeQuotes(filePath);
+        dbRootPath = TalendTextUtils.removeQuotes(dbRootPath);
         cloneConn.setAdditionalParams(additionParam);
         cloneConn.setDatasourceName(datasource);
         cloneConn.setDBRootPath(dbRootPath);
@@ -297,5 +304,35 @@ public final class DBConnectionContextUtils {
         cloneConn.setURL(dataStringConn.getUrlConnectionStr());
 
         return cloneConn;
+    }
+
+    static void revertPropertiesForContextMode(DatabaseConnection conn, ContextType contextType) {
+        if (conn == null || contextType == null) {
+            return;
+        }
+        String server = ConnectionContextHelper.getOriginalValue(contextType, conn.getServerName());
+        String username = ConnectionContextHelper.getOriginalValue(contextType, conn.getUsername());
+        String password = ConnectionContextHelper.getOriginalValue(contextType, conn.getPassword());
+        String port = ConnectionContextHelper.getOriginalValue(contextType, conn.getPort());
+        String sidOrDatabase = ConnectionContextHelper.getOriginalValue(contextType, conn.getSID());
+        String datasource = ConnectionContextHelper.getOriginalValue(contextType, conn.getDatasourceName());
+        String filePath = ConnectionContextHelper.getOriginalValue(contextType, conn.getFileFieldName());
+        String schemaOracle = ConnectionContextHelper.getOriginalValue(contextType, conn.getSchema());
+        String dbRootPath = ConnectionContextHelper.getOriginalValue(contextType, conn.getDBRootPath());
+        String additionParam = ConnectionContextHelper.getOriginalValue(contextType, conn.getAdditionalParams());
+
+        filePath = TalendTextUtils.removeQuotes(filePath);
+        dbRootPath = TalendTextUtils.removeQuotes(dbRootPath);
+        conn.setAdditionalParams(additionParam);
+        conn.setDatasourceName(datasource);
+        conn.setDBRootPath(dbRootPath);
+        conn.setFileFieldName(filePath);
+        conn.setPassword(password);
+        conn.setPort(port);
+        conn.setSchema(schemaOracle);
+        conn.setServerName(server);
+        conn.setSID(sidOrDatabase);
+        conn.setUsername(username);
+
     }
 }

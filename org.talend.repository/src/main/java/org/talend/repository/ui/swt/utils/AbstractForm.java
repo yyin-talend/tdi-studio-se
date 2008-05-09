@@ -25,6 +25,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
@@ -33,9 +34,12 @@ import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ContextItem;
+import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.utils.ConnectionContextHelper;
+import org.talend.repository.ui.views.IRepositoryView;
+import org.talend.repository.ui.views.RepositoryView;
 
 /**
  * DOC tguiu class global comment. Detailled comment <br/>
@@ -87,6 +91,8 @@ public abstract class AbstractForm extends Composite {
     private boolean hasContextBtn = false;
 
     protected UtilsButton exportContextBtn;
+
+    protected UtilsButton revertContextBtn;
 
     protected ConnectionItem connectionItem;
 
@@ -354,7 +360,7 @@ public abstract class AbstractForm extends Composite {
             gridData.heightHint = height;
             group.setLayoutData(gridData);
 
-            Composite exportComposite = Form.startNewGridLayout(group, 1, false, SWT.CENTER, SWT.CENTER);
+            Composite exportComposite = Form.startNewGridLayout(group, 2, true, SWT.CENTER, SWT.CENTER);
 
             exportContextBtn = new UtilsButton(exportComposite,
                     Messages.getString("AbstractForm.ExportAsContext"), 130, HEIGHT_BUTTON_PIXEL); //$NON-NLS-1$
@@ -365,6 +371,20 @@ public abstract class AbstractForm extends Composite {
                     exportAsContext();
                 }
             });
+
+            revertContextBtn = new UtilsButton(exportComposite,
+                    Messages.getString("AbstractForm.RevertContext"), 130, HEIGHT_BUTTON_PIXEL); //$NON-NLS-1$
+            revertContextBtn.addSelectionListener(new SelectionAdapter() {
+
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    revertContext();
+                }
+            });
+
+            RowLayout layout = (RowLayout) exportComposite.getLayout();
+            layout.spacing = 20;
+            exportComposite.setLayout(layout);
 
             refreshContextBtn();
         }
@@ -405,7 +425,26 @@ public abstract class AbstractForm extends Composite {
                     // refresh current UI.
                     initialize();
                     adaptFormToEditable();
+                    IRepositoryView view = RepositoryView.show();
+                    view.refresh();
                 }
+            }
+        }
+    }
+
+    protected void revertContext() {
+        if (hasContextBtn() && connectionItem != null) {
+            if (isContextMode()) {
+                ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(getShell(), connectionItem
+                        .getConnection(), true);
+                if (contextType != null) { // choose
+
+                    ConnectionContextHelper.revertPropertiesForContextMode(connectionItem, contextType);
+
+                    adaptContextModeToReversion();
+                }
+            } else {
+                ConnectionContextHelper.openOutConetxtModeDialog();
             }
         }
     }
@@ -414,10 +453,18 @@ public abstract class AbstractForm extends Composite {
         if (exportContextBtn != null) {
             exportContextBtn.setEnabled(!isContextMode());
         }
+        if (revertContextBtn != null) {
+            revertContextBtn.setEnabled(isContextMode());
+        }
     }
 
     protected void adaptFormToEditable() {
         refreshContextBtn();
     }
 
+    protected void adaptContextModeToReversion() {
+        initialize();
+        adaptFormToEditable();
+        checkFieldsValue();
+    }
 }

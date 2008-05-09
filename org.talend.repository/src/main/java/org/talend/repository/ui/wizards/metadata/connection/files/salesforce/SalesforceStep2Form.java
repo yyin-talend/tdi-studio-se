@@ -274,7 +274,10 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
         String queryCondition = getConnection().getQueryCondition();
         if (queryCondition != null && !queryCondition.equals("")) {
             queryConditionText.setText(queryCondition);
+        } else {
+            queryConditionText.setText("");
         }
+
         checkFieldsValue();
     }
 

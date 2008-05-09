@@ -58,6 +58,7 @@ import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.preview.ProcessDescription;
 import org.talend.repository.ui.swt.utils.AbstractPositionalFileStepForm;
 import org.talend.repository.ui.utils.ColumnNameValidator;
+import org.talend.repository.ui.utils.ConnectionContextHelper;
 import org.talend.repository.ui.utils.FileConnectionContextUtils;
 import org.talend.repository.ui.utils.ShadowProcessHelper;
 
@@ -325,13 +326,14 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
 
         // Adapt Header width firstRowIsCaption to preview the first line on caption or not
         if (originalValueConnection.isFirstLineCaption()) {
-            processDescription.setHeaderRow(originalValueConnection.getHeaderValue() - 1);
+            int i = ConnectionContextHelper.convertValue(originalValueConnection.getHeaderValue());
+            processDescription.setHeaderRow(i - 1);
         }
 
         // adapt the limit to the extract sames rows of preview
         processDescription.setLimitRows(maximumRowsToPreview);
         if (originalValueConnection.isUseLimit()) {
-            Integer i = originalValueConnection.getLimitValue();
+            int i = ConnectionContextHelper.convertValue(originalValueConnection.getLimitValue());
             if (originalValueConnection.isFirstLineCaption()) {
                 i++;
             }

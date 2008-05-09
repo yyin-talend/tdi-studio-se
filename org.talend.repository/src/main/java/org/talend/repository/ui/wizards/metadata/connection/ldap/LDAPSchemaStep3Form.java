@@ -522,10 +522,8 @@ public class LDAPSchemaStep3Form extends AbstractLDAPSchemaStepForm implements I
             if (isReadOnly() != readOnly) {
                 adaptFormToReadOnly();
             }
-            if (isContextMode()) {
-                initialize();
-                adaptFormToEditable();
-            }
+            initialize();
+            adaptFormToEditable();
         }
     }
 

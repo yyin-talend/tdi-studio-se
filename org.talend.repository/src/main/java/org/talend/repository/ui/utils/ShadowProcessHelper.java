@@ -86,9 +86,9 @@ public class ShadowProcessHelper {
             processDescription.setPattern(connection.getFieldSeparatorValue());
         }
 
-        processDescription.setHeaderRow(connection.getHeaderValue());
-        processDescription.setFooterRow(connection.getFooterValue());
-        processDescription.setLimitRows(connection.getLimitValue());
+        processDescription.setHeaderRow(getFilePropertyValue(connection.getHeaderValue()));
+        processDescription.setFooterRow(getFilePropertyValue(connection.getFooterValue()));
+        processDescription.setLimitRows(getFilePropertyValue(connection.getLimitValue()));
         if (connection.getEscapeChar() != null
                 && !connection.getEscapeChar().equals("") && !connection.getEscapeChar().equals("Empty")) { //$NON-NLS-1$
             processDescription.setEscapeCharacter(connection.getEscapeChar());
@@ -106,6 +106,19 @@ public class ShadowProcessHelper {
         processDescription.setEncoding(TalendTextUtils.addQuotes(connection.getEncoding()));
 
         return processDescription;
+    }
+
+    private static int getFilePropertyValue(String value) {
+        if (value == null) {
+            return 0;
+        }
+        int i = 0;
+        try {
+            i = Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            //
+        }
+        return i;
     }
 
     public static ProcessDescription getProcessDescription(final SalesforceSchemaConnection connection) {

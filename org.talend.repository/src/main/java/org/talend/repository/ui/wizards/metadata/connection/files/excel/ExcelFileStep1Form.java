@@ -56,6 +56,7 @@ import org.talend.commons.ui.swt.formtools.UtilsButton;
 import org.talend.commons.ui.utils.PathUtils;
 import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.swt.utils.AbstractExcelFileStepForm;
 
@@ -440,6 +441,7 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
         String filePath = null;
         if (isContextMode() && getContextModeManager() != null) {
             fileStr = getContextModeManager().getOriginalValue(getConnection().getFilePath());
+            fileStr = TalendTextUtils.removeQuotes(fileStr);
             filePath = PathUtils.getPortablePath(fileStr);
         } else {
             filePath = PathUtils.getPortablePath(fileStr);
@@ -685,9 +687,7 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
         if (sheetName != null && !sheetName.equals("")) {
             sheetsCombo.setText(sheetName.replace("\\\\", "\\"));
         }
-        if (isContextMode()) {
-            adaptFormToEditable();
-        }
+        adaptFormToEditable();
         readAndViewExcelFile();
     }
 
@@ -719,11 +719,12 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
             sheetViewer.expandAll();
             initTreeSelectStates();
         }
-        checkFieldsValue();
 
-        if (visible && isContextMode()) {
+        if (visible) {
             initialize();
+            fillSheetList();
         }
+        checkFieldsValue();
     }
 
     @Override

@@ -167,21 +167,16 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
             rowSeparatorManager();
         }
         // Fields to the Group Rows To Skip
-        int i = getConnection().getHeaderValue();
-        if (i > 0) {
-            rowsToSkipHeaderCheckboxCombo.setText("" + getConnection().getHeaderValue()); //$NON-NLS-1$
+        if (isContextMode()) {
+            rowsToSkipHeaderCheckboxCombo.setText(getConnection().getHeaderValue());
+            rowsToSkipFooterCheckboxCombo.setText(getConnection().getFooterValue());
+            rowsToSkipLimitCheckboxCombo.setText(getConnection().getLimitValue());
+
+        } else {
+            initRowsToSkip(rowsToSkipHeaderCheckboxCombo, getConnection().getHeaderValue());
+            initRowsToSkip(rowsToSkipFooterCheckboxCombo, getConnection().getFooterValue());
+            initRowsToSkip(rowsToSkipLimitCheckboxCombo, getConnection().getLimitValue());
         }
-        rowsToSkipHeaderCheckboxCombo.getCombo().setEnabled(i > 0);
-        i = getConnection().getFooterValue();
-        if (i > 0) {
-            rowsToSkipFooterCheckboxCombo.setText("" + getConnection().getFooterValue()); //$NON-NLS-1$
-        }
-        rowsToSkipFooterCheckboxCombo.getCombo().setEnabled(i > 0);
-        i = getConnection().getLimitValue();
-        if (i > 0) {
-            rowsToSkipLimitCheckboxCombo.setText("" + getConnection().getLimitValue()); //$NON-NLS-1$
-        }
-        rowsToSkipLimitCheckboxCombo.getCombo().setEnabled(i > 0);
 
         emptyRowsToSkipCheckbox.setSelection(getConnection().isRemoveEmptyRow());
         firstRowIsCaptionCheckbox.setSelection(getConnection().isFirstLineCaption());
@@ -193,6 +188,19 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
 
         emptyRowsToSkipCheckbox.setSelection(getConnection().isRemoveEmptyRow());
         checkFieldsValue();
+    }
+
+    private void initRowsToSkip(LabelledCheckboxCombo combo, String value) {
+        int i = ConnectionContextHelper.convertValue(value);
+        if (i > 0) {
+            combo.setText(value);
+            combo.select(i);
+        } else {
+            combo.setText("");
+            combo.getCombo().setEnabled(false);
+            combo.getCheckbox().setSelection(false);
+        }
+
     }
 
     /**
@@ -458,6 +466,7 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
                     if (getContextModeManager() != null) {
                         getContextModeManager().setSelectedContextType(contextType);
                         filePath = getContextModeManager().getOriginalValue(getConnection().getFilePath());
+                        filePath = TalendTextUtils.removeQuotes(filePath);
                         found = true;
                     }
                     originalValueConnection = (RegexpFileConnection) FileConnectionContextUtils.cloneOriginalValueConnection(
@@ -567,37 +576,38 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
             @Override
             public void widgetSelected(final SelectionEvent e) {
                 getConnection().setFirstLineCaption(firstRowIsCaptionCheckbox.getSelection());
-
-                if (firstRowIsCaptionCheckbox.getSelection()) {
-                    // when firstRowIsCaption is checked
-                    if (rowsToSkipHeaderCheckboxCombo.isEmpty()) {
-                        // at least, rowsToSkipHeader = 1
-                        rowsToSkipHeaderCheckboxCombo.setText("1"); //$NON-NLS-1$
-                        getConnection().setHeaderValue(1);
+                if (!isContextMode()) {
+                    if (firstRowIsCaptionCheckbox.getSelection()) {
+                        // when firstRowIsCaption is checked
+                        if (rowsToSkipHeaderCheckboxCombo.isEmpty()) {
+                            // at least, rowsToSkipHeader = 1
+                            rowsToSkipHeaderCheckboxCombo.setText("1"); //$NON-NLS-1$
+                            getConnection().setHeaderValue("" + 1);
+                        } else {
+                            // rowsToSkipHeader ++
+                            int value = new Integer(rowsToSkipHeaderCheckboxCombo.getText());
+                            value++;
+                            String newValue = new String("" + value); //$NON-NLS-1$
+                            rowsToSkipHeaderCheckboxCombo.setText(newValue);
+                            getConnection().setHeaderValue(rowsToSkipHeaderCheckboxCombo.getText());
+                        }
                     } else {
-                        // rowsToSkipHeader ++
-                        int value = new Integer(rowsToSkipHeaderCheckboxCombo.getText());
-                        value++;
-                        String newValue = new String("" + value); //$NON-NLS-1$
-                        rowsToSkipHeaderCheckboxCombo.setText(newValue);
-                        getConnection().setHeaderValue(new Integer(rowsToSkipHeaderCheckboxCombo.getText()));
+                        // when firstRowIsCaption isn't checked
+                        if (rowsToSkipHeaderCheckboxCombo.getText().equals("1")) { //$NON-NLS-1$
+                            // rowsToSkipHeader is unusable
+                            rowsToSkipHeaderCheckboxCombo.deselectAll();
+                            getConnection().setHeaderValue("" + 0);
+                        } else {
+                            // rowsToSkipHeader --
+                            int value = new Integer(rowsToSkipHeaderCheckboxCombo.getText());
+                            value--;
+                            String newValue = new String("" + value); //$NON-NLS-1$
+                            rowsToSkipHeaderCheckboxCombo.setText(newValue);
+                            getConnection().setHeaderValue(rowsToSkipHeaderCheckboxCombo.getText());
+                        }
                     }
-                } else {
-                    // when firstRowIsCaption isn't checked
-                    if (rowsToSkipHeaderCheckboxCombo.getText().equals("1")) { //$NON-NLS-1$
-                        // rowsToSkipHeader is unusable
-                        rowsToSkipHeaderCheckboxCombo.deselectAll();
-                        getConnection().setHeaderValue(0);
-                    } else {
-                        // rowsToSkipHeader --
-                        int value = new Integer(rowsToSkipHeaderCheckboxCombo.getText());
-                        value--;
-                        String newValue = new String("" + value); //$NON-NLS-1$
-                        rowsToSkipHeaderCheckboxCombo.setText(newValue);
-                        getConnection().setHeaderValue(new Integer(rowsToSkipHeaderCheckboxCombo.getText()));
-                    }
+                    checkFieldsValue();
                 }
-                checkFieldsValue();
             }
         });
     }
@@ -656,10 +666,12 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
 
                 @Override
                 public void keyPressed(KeyEvent e) {
-                    String string = String.valueOf(e.character);
-                    // Check if input is number, backspace key and delete key of keyboard.
-                    if (!(string.matches("[0-9]*")) && e.keyCode != 8 && e.keyCode != SWT.DEL) {
-                        e.doit = false;
+                    if (!isContextMode()) {
+                        String string = String.valueOf(e.character);
+                        // Check if input is number, backspace key and delete key of keyboard.
+                        if (!(string.matches("[0-9]*")) && e.keyCode != 8 && e.keyCode != SWT.DEL) {
+                            e.doit = false;
+                        }
                     }
                 }
             });
@@ -668,71 +680,78 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
         rowsToSkipHeaderCheckboxCombo.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
-                if (!rowsToSkipHeaderCheckboxCombo.isEmpty()) {
-                    if (!rowsToSkipHeaderCheckboxCombo.isInteger() || rowsToSkipHeaderCheckboxCombo.getText().equals("0")) { //$NON-NLS-1$
-                        rowsToSkipHeaderCheckboxCombo.deselectAll();
-                        getConnection().setUseHeader(rowsToSkipHeaderCheckboxCombo.isChecked());
-                        getConnection().setHeaderValue(0);
+                if (!isContextMode()) {
+                    if (!rowsToSkipHeaderCheckboxCombo.isEmpty()) {
+                        if (!rowsToSkipHeaderCheckboxCombo.isInteger() || rowsToSkipHeaderCheckboxCombo.getText().equals("0")) { //$NON-NLS-1$
+                            rowsToSkipHeaderCheckboxCombo.deselectAll();
+                            getConnection().setUseHeader(rowsToSkipHeaderCheckboxCombo.isChecked());
+                            getConnection().setHeaderValue("" + 0);
 
-                        updateStatus(IStatus.ERROR, "Number allowed only.");
-                        rowsToSkipHeaderCheckboxCombo.getCombo().setFocus();
-                        // if rowsHeaderToSkip isn't integer or is equals to 0, the firstRowIsCaptionCheckbox is
-                        // unusable.
-                        firstRowIsCaptionCheckbox.setSelection(false);
-                        getConnection().setFirstLineCaption(false);
+                            updateStatus(IStatus.ERROR, "Number allowed only.");
+                            rowsToSkipHeaderCheckboxCombo.getCombo().setFocus();
+                            // if rowsHeaderToSkip isn't integer or is equals to 0, the firstRowIsCaptionCheckbox is
+                            // unusable.
+                            firstRowIsCaptionCheckbox.setSelection(false);
+                            getConnection().setFirstLineCaption(false);
+                        } else {
+                            getConnection().setHeaderValue(rowsToSkipHeaderCheckboxCombo.getText());
+                            getConnection().setUseHeader(rowsToSkipHeaderCheckboxCombo.isChecked());
+                        }
                     } else {
-                        getConnection().setHeaderValue(new Integer(rowsToSkipHeaderCheckboxCombo.getText()));
                         getConnection().setUseHeader(rowsToSkipHeaderCheckboxCombo.isChecked());
+                        getConnection().setHeaderValue("" + 0);
                     }
-                } else {
-                    getConnection().setUseHeader(rowsToSkipHeaderCheckboxCombo.isChecked());
-                    getConnection().setHeaderValue(0);
+                    checkFieldsValue();
+
                 }
-                checkFieldsValue();
             }
         });
 
         rowsToSkipFooterCheckboxCombo.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
-                if (!rowsToSkipFooterCheckboxCombo.isEmpty()) {
-                    if (!rowsToSkipFooterCheckboxCombo.isInteger() || rowsToSkipFooterCheckboxCombo.getText().equals("0")) { //$NON-NLS-1$
-                        rowsToSkipFooterCheckboxCombo.deselectAll();
-                        getConnection().setUseFooter(rowsToSkipFooterCheckboxCombo.isChecked());
-                        getConnection().setFooterValue(0);
+                if (!isContextMode()) {
+                    if (!rowsToSkipFooterCheckboxCombo.isEmpty()) {
+                        if (!rowsToSkipFooterCheckboxCombo.isInteger() || rowsToSkipFooterCheckboxCombo.getText().equals("0")) { //$NON-NLS-1$
+                            rowsToSkipFooterCheckboxCombo.deselectAll();
+                            getConnection().setUseFooter(rowsToSkipFooterCheckboxCombo.isChecked());
+                            getConnection().setFooterValue("" + 0);
 
-                        updateStatus(IStatus.ERROR, "Number allowed only.");
-                        rowsToSkipFooterCheckboxCombo.getCombo().setFocus();
+                            updateStatus(IStatus.ERROR, "Number allowed only.");
+                            rowsToSkipFooterCheckboxCombo.getCombo().setFocus();
+                        } else {
+                            getConnection().setFooterValue(rowsToSkipFooterCheckboxCombo.getText());
+                        }
                     } else {
-                        getConnection().setFooterValue(new Integer(rowsToSkipFooterCheckboxCombo.getText()));
+                        getConnection().setUseFooter(rowsToSkipFooterCheckboxCombo.isChecked());
+                        getConnection().setFooterValue("" + 0);
                     }
-                } else {
-                    getConnection().setUseFooter(rowsToSkipFooterCheckboxCombo.isChecked());
-                    getConnection().setFooterValue(0);
+                    checkFieldsValue();
                 }
-                checkFieldsValue();
             }
         });
 
         rowsToSkipLimitCheckboxCombo.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
-                if (!rowsToSkipLimitCheckboxCombo.isEmpty()) {
-                    if (!rowsToSkipLimitCheckboxCombo.isInteger() || rowsToSkipLimitCheckboxCombo.getText().equals("0")) { //$NON-NLS-1$
-                        rowsToSkipLimitCheckboxCombo.deselectAll();
-                        getConnection().setUseLimit(rowsToSkipLimitCheckboxCombo.isChecked());
-                        getConnection().setLimitValue(0);
+                if (!isContextMode()) {
+                    if (!rowsToSkipLimitCheckboxCombo.isEmpty()) {
+                        if (!rowsToSkipLimitCheckboxCombo.isInteger() || rowsToSkipLimitCheckboxCombo.getText().equals("0")) { //$NON-NLS-1$
+                            rowsToSkipLimitCheckboxCombo.deselectAll();
+                            getConnection().setUseLimit(rowsToSkipLimitCheckboxCombo.isChecked());
+                            getConnection().setLimitValue("" + 0);
 
-                        updateStatus(IStatus.ERROR, "Number allowed only.");
-                        rowsToSkipLimitCheckboxCombo.getCombo().setFocus();
+                            updateStatus(IStatus.ERROR, "Number allowed only.");
+                            rowsToSkipLimitCheckboxCombo.getCombo().setFocus();
+                        } else {
+                            getConnection().setLimitValue(rowsToSkipLimitCheckboxCombo.getText());
+                        }
                     } else {
-                        getConnection().setLimitValue(new Integer(rowsToSkipLimitCheckboxCombo.getText()));
+                        getConnection().setUseLimit(rowsToSkipLimitCheckboxCombo.isChecked());
+                        getConnection().setLimitValue("" + 0);
                     }
-                } else {
-                    getConnection().setUseLimit(rowsToSkipLimitCheckboxCombo.isChecked());
-                    getConnection().setLimitValue(0);
+                    checkFieldsValue();
                 }
-                checkFieldsValue();
             }
         });
 
@@ -741,13 +760,34 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
 
             @Override
             public void widgetSelected(final SelectionEvent e) {
-                if ((!rowsToSkipHeaderCheckboxCombo.isChecked()) || rowsToSkipHeaderCheckboxCombo.getText().equals("0")) { //$NON-NLS-1$
+                String text = rowsToSkipHeaderCheckboxCombo.getText();
+                if (isContextMode() && getContextModeManager() != null) {
+                    text = getContextModeManager().getOriginalValue(text);
+                }
+                if ((!rowsToSkipHeaderCheckboxCombo.isChecked()) || text.equals("0")) { //$NON-NLS-1$
                     firstRowIsCaptionCheckbox.setSelection(false);
                     getConnection().setFirstLineCaption(false);
                 }
+                getConnection().setUseHeader(rowsToSkipHeaderCheckboxCombo.isChecked());
+                checkRowToSkip();
             }
         });
+        rowsToSkipFooterCheckboxCombo.addSelectionListener(new SelectionAdapter() {
 
+            @Override
+            public void widgetSelected(final SelectionEvent e) {
+                getConnection().setUseFooter(rowsToSkipFooterCheckboxCombo.isChecked());
+                checkRowToSkip();
+            }
+        });
+        rowsToSkipLimitCheckboxCombo.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(final SelectionEvent e) {
+                getConnection().setUseLimit(rowsToSkipLimitCheckboxCombo.isChecked());
+                checkRowToSkip();
+            }
+        });
         // empty Rows To Skip
         emptyRowsToSkipCheckbox.addSelectionListener(new SelectionAdapter() {
 
@@ -1021,6 +1061,16 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
 
         fieldSeparatorText.setEditable(!isContextMode());
         rowSeparatorText.setEditable(!isContextMode());
+
+        checkRowToSkip();
+    }
+
+    private void checkRowToSkip() {
+        if (isContextMode()) {
+            rowsToSkipHeaderCheckboxCombo.getCombo().setEnabled(!isContextMode());
+            rowsToSkipLimitCheckboxCombo.getCombo().setEnabled(!isContextMode());
+            rowsToSkipFooterCheckboxCombo.getCombo().setEnabled(!isContextMode());
+        }
     }
 
     @Override

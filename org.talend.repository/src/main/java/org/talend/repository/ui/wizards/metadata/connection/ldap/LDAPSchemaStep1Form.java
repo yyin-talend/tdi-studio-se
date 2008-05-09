@@ -313,9 +313,10 @@ public class LDAPSchemaStep1Form extends AbstractLDAPSchemaStepForm {
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         adaptFormToReadOnly();
-        if (visible && isContextMode()) {
+        if (visible) {
             initialize();
             adaptFormToEditable();
+            checkFieldsValue();
         }
 
     }

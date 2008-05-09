@@ -40,6 +40,7 @@ import org.talend.commons.ui.utils.PathUtils;
 import org.talend.commons.utils.encoding.CharsetToolkit;
 import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.swt.utils.AbstractLdifFileStepForm;
 
@@ -112,9 +113,7 @@ public class LdifFileStep1Form extends AbstractLdifFileStepForm {
         if (getConnection().getFilePath() != null) {
             fileField.setText(getConnection().getFilePath().replace("\\\\", "\\")); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        if (isContextMode()) {
-            adaptFormToEditable();
-        }
+        adaptFormToEditable();
         // init the fileViewer
         checkFilePathAndManageIt();
 
@@ -222,6 +221,7 @@ public class LdifFileStep1Form extends AbstractLdifFileStepForm {
         String fileStr = fileField.getText();
         if (isContextMode() && getContextModeManager() != null) {
             fileStr = getContextModeManager().getOriginalValue(getConnection().getFilePath());
+            fileStr = TalendTextUtils.removeQuotes(fileStr);
         }
 
         if (fileStr == null || fileStr == "") { //$NON-NLS-1$
@@ -334,7 +334,7 @@ public class LdifFileStep1Form extends AbstractLdifFileStepForm {
         if (isReadOnly() != readOnly) {
             adaptFormToReadOnly();
         }
-        if (visible && isContextMode()) {
+        if (visible) {
             initialize();
         }
     }

@@ -831,6 +831,7 @@ public class WSDLSchemaStep1Form extends AbstractWSDLSchemaStepForm {
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         if (visible) {
+            initialize();
             adaptFormToEditable();
         }
     }
@@ -847,6 +848,8 @@ public class WSDLSchemaStep1Form extends AbstractWSDLSchemaStepForm {
             passWordText.setEditable(!isContextMode());
             if (isContextMode()) {
                 passWordText.setEchoChar('\0');
+            } else {
+                passWordText.setEchoChar('*');
             }
         }
         if (proxyHost != null) {
@@ -862,6 +865,8 @@ public class WSDLSchemaStep1Form extends AbstractWSDLSchemaStepForm {
             proxyPassword.setEditable(!isContextMode());
             if (isContextMode()) {
                 proxyPassword.setEchoChar('\0');
+            } else {
+                proxyPassword.setEchoChar('*');
             }
         }
         if (endPointURI != null) {

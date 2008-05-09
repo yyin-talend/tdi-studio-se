@@ -572,9 +572,10 @@ public class LDAPSchemaStep2Form extends AbstractLDAPSchemaStepForm {
             refreshAuthParamGroup(connection, true);
         }
 
+        String bindPrincipal = connection.getBindPrincipal();
+
         this.bindPrincipalCombo.setItems(HistoryUtils.load(ConnectionUIConstants.DIALOGSETTING_KEY_PRINCIPAL_HISTORY));
 
-        String bindPrincipal = connection.getBindPrincipal();
         if (bindPrincipal != null && bindPrincipal.length() > 0) {
             this.bindPrincipalCombo.setText(bindPrincipal);
         }
@@ -773,13 +774,17 @@ public class LDAPSchemaStep2Form extends AbstractLDAPSchemaStepForm {
     @Override
     protected void adaptFormToEditable() {
         super.adaptFormToEditable();
-        bindPrincipalCombo.setEnabled(!isContextMode());
+
         bindPasswordText.setEditable(!isContextMode());
         countLimitText.setEditable(!isContextMode());
         timeLimitText.setEditable(!isContextMode());
 
-        if (isContextMode()) { // clear the echo
+        if (isContextMode()) {
+            bindPrincipalCombo.setEnabled(!isContextMode());
+            // clear the echo
             bindPasswordText.setEchoChar('\0');
+        } else {
+            bindPasswordText.setEchoChar('*');
         }
     }
 

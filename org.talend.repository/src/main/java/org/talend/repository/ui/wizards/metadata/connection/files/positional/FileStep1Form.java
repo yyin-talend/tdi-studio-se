@@ -145,7 +145,7 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
         if (isContextMode() && getContextModeManager() != null) {
             value = getContextModeManager().getOriginalValue(value);
         }
-
+        value = TalendTextUtils.removeQuotes(value);
         // remove quotes.
         if (!value.equals("*")) {
             value = value.substring(1, value.length() - 1);
@@ -162,9 +162,8 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
         filePositionalViewer.setSeparatorValue(value, true);
         // update the field Position
         fieldPositionText.setText(filePositionalViewer.calculatePositionX());
-        if (isContextMode()) {
-            adaptFormToEditable();
-        }
+
+        adaptFormToEditable();
     }
 
     /**
@@ -502,6 +501,7 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
         String fileStr = getConnection().getFilePath();
         if (isContextMode() && getContextModeManager() != null) {
             fileStr = getContextModeManager().getOriginalValue(fileStr);
+            fileStr = TalendTextUtils.removeQuotes(fileStr);
         }
         if (fileStr == null || fileStr == "") { //$NON-NLS-1$
             filePositionalViewer.setText("\n" + Messages.getString("FileStep1.fileViewerTip1")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -711,18 +711,23 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
         if (super.isVisible()) {
 
             // Adapt the UI fieldSeparator and Position to step1
-            String value = getConnection().getFieldSeparatorValue();
+            String oldValue = getConnection().getFieldSeparatorValue();
+            String value = oldValue;
             if (isContextMode() && getContextModeManager() != null) {
                 value = getContextModeManager().getOriginalValue(value);
             }
+            value = TalendTextUtils.removeQuotes(value);
 
-            value = TalendTextUtils.removeQuotes(value, TalendTextUtils.QUOTATION_MARK);
-            if (!isContextMode()) {
-                fieldSeparatorText.setText(value);
-            }
+            fileField.setText(getConnection().getFilePath());
+
+            getConnection().setFieldSeparatorValue(oldValue);
+            oldValue = TalendTextUtils.removeQuotes(oldValue);
+            fieldSeparatorText.setText(oldValue);
+
             if (value.endsWith("*")) {
                 value = value.substring(0, value.length() - 1);
             }
+
             filePositionalViewer.setSeparatorValue(value, true);
             String newPosition = filePositionalViewer.calculatePositionX();
             if (!fieldPositionText.getText().equals(newPosition)) {
@@ -732,9 +737,7 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
             if (isReadOnly() != readOnly) {
                 adaptFormToReadOnly();
             }
-            if (isContextMode()) {
-                initialize();
-            }
+            adaptFormToEditable();
         }
     }
 

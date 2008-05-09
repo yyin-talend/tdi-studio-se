@@ -231,14 +231,15 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
         if (isReadOnly() != readOnly) {
             adaptFormToReadOnly();
         }
+        if (visible) {
+            initialize();
+            adaptFormToEditable();
+        }
         if (!isContextMode()) {
             checkFieldsValue();
             setCheckEnable();
         }
-        if (visible && isContextMode()) {
-            initialize();
-            adaptFormToEditable();
-        }
+
     }
 
     /*
@@ -376,7 +377,9 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
         passwordText.setEditable(!isContextMode());
         if (isContextMode()) {
             passwordText.getTextControl().setEchoChar('\0');
+            checkButton.setEnabled(isContextMode());
+        } else {
+            passwordText.getTextControl().setEchoChar('*');
         }
-        checkButton.setEnabled(isContextMode());
     }
 }

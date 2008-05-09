@@ -60,7 +60,6 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.utils.ContextParameterUtils;
-import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.RepositoryPlugin;
@@ -121,8 +120,14 @@ public final class ConnectionContextHelper {
 
     public static void openInConetxtModeDialog() {
         MessageDialog.openWarning(PlatformUI.getWorkbench().getDisplay().getActiveShell(), Messages
-                .getString("ConnectionContextHelper.ExistedTitle"), //$NON-NLS-1$
-                Messages.getString("ConnectionContextHelper.ExistedMessages")); //$NON-NLS-1$
+                .getString("ConnectionContextHelper.ContextTitle"), //$NON-NLS-1$
+                Messages.getString("ConnectionContextHelper.InConextMessages")); //$NON-NLS-1$
+    }
+
+    public static void openOutConetxtModeDialog() {
+        MessageDialog.openWarning(PlatformUI.getWorkbench().getDisplay().getActiveShell(), Messages
+                .getString("ConnectionContextHelper.ContextTitle"), //$NON-NLS-1$
+                Messages.getString("ConnectionContextHelper.OutConextMessages")); //$NON-NLS-1$
     }
 
     /**
@@ -409,7 +414,7 @@ public final class ConnectionContextHelper {
         return addedVars;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     private static Set<String> addContextVarForJob(IContextManager contextManager, ContextItem contextItem, Set<String> neededVars) {
         if (contextManager == null || contextItem == null || neededVars == null || neededVars.isEmpty()) {
             return null;
@@ -457,9 +462,6 @@ public final class ConnectionContextHelper {
      * if defaultContext is true, will use the default context.
      */
     public static ContextType getContextTypeForContextMode(Connection connection, boolean defaultContext) {
-        if (connection == null) {
-            return null;
-        }
         return getContextTypeForContextMode(null, connection, null, defaultContext);
     }
 
@@ -467,14 +469,25 @@ public final class ConnectionContextHelper {
         return getContextTypeForContextMode(shell, connection, null, false);
     }
 
+    public static ContextType getContextTypeForContextMode(Shell shell, Connection connection, String selectedContext,
+            boolean defaultContext) {
+        return getContextTypeForContextMode(shell, connection, selectedContext, defaultContext, false);
+    }
+
+    public static ContextType getContextTypeForContextMode(Shell shell, Connection connection, boolean canCancel) {
+        return getContextTypeForContextMode(shell, connection, null, false, canCancel);
+    }
+
     /**
      * 
      * ggu Comment method "getContextTypeForContextMode".
      * 
-     * if connection is in context mode,choose the context. if return null, the connection is not in context mode
+     * if connection is in context mode,choose the context. if return null, the connection is not in context mode.
+     * 
+     * if canCancel is true, the selecting cotnext sets dialog will can be cancel.
      */
-    public static ContextType getContextTypeForContextMode(Shell shell, Connection connection, String selectedContext,
-            boolean defaultContext) {
+    private static ContextType getContextTypeForContextMode(Shell shell, Connection connection, String selectedContext,
+            boolean defaultContext, boolean canCancel) {
         if (connection == null) {
             return null;
         }
@@ -484,14 +497,15 @@ public final class ConnectionContextHelper {
                 selectedContext = contextItem.getDefaultContext();
             } else if (selectedContext == null) {
                 if (contextItem.getContext().size() > 1) {
-                    ContextSetsSelectionDialog setsDialog = new ContextSetsSelectionDialog(shell, contextItem);
+                    ContextSetsSelectionDialog setsDialog = new ContextSetsSelectionDialog(shell, contextItem, canCancel);
                     setsDialog.open();
                     selectedContext = setsDialog.getSelectedContext();
                 } else {
                     selectedContext = contextItem.getDefaultContext();
                 }
             }
-            return ContextUtils.getContextTypeByName(contextItem, selectedContext, true);
+            // if can cancel, can't return the default contex by auto.
+            return ContextUtils.getContextTypeByName(contextItem, selectedContext, !canCancel);
         }
         return null;
     }
@@ -502,7 +516,7 @@ public final class ConnectionContextHelper {
      * 
      * if value is context mode, return original value.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public static String getOriginalValue(ContextType contextType, final String value) {
         if (value == null) {
             return EMPTY;
@@ -520,7 +534,8 @@ public final class ConnectionContextHelper {
                 if (param != null) {
                     String value2 = param.getValue();
                     if (value2 != null) {
-                        return TalendTextUtils.removeQuotes(value2);
+                        // return TalendTextUtils.removeQuotes(value2); //some value can't be removed for quote
+                        return value2;
                     }
                 }
                 return EMPTY;
@@ -529,7 +544,7 @@ public final class ConnectionContextHelper {
         return value;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public static void cloneConnectionProperties(Connection sourceConn, Connection targetConn) {
         if (sourceConn == null || targetConn == null) {
             return;
@@ -602,7 +617,7 @@ public final class ConnectionContextHelper {
 
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     private static void cloneConnectionProperties(AbstractMetadataObject sourceObj, AbstractMetadataObject targetObj) {
         if (sourceObj == null || targetObj == null) {
             return;
@@ -617,5 +632,48 @@ public final class ConnectionContextHelper {
         if (properties != null) {
             targetObj.setProperties((HashMap) properties.clone());
         }
+    }
+
+    /*
+     * 
+     */
+    public static int convertValue(String value) {
+        if (value == null || value.equals(EMPTY)) {
+            return -1;
+        }
+        int i = -1;
+        try {
+            i = Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            //
+        }
+        return i;
+    }
+
+    public static void revertPropertiesForContextMode(ConnectionItem connItem, ContextType contextType) {
+        if (connItem == null || contextType == null) {
+            return;
+        }
+        Connection conn = connItem.getConnection();
+        if (conn instanceof DatabaseConnection) {
+            DBConnectionContextUtils.revertPropertiesForContextMode((DatabaseConnection) conn, contextType);
+        } else if (conn instanceof FileConnection) {
+            FileConnectionContextUtils.revertPropertiesForContextMode((FileConnection) conn, contextType);
+        } else if (conn instanceof LdifFileConnection) {
+            OtherConnectionContextUtils.revertLdifFilePropertiesForContextMode((LdifFileConnection) conn, contextType);
+        } else if (conn instanceof XmlFileConnection) {
+            OtherConnectionContextUtils.revertXmlFilePropertiesForContextMode((XmlFileConnection) conn, contextType);
+        } else if (conn instanceof LDAPSchemaConnection) {
+            OtherConnectionContextUtils.revertLDAPSchemaPropertiesForContextMode((LDAPSchemaConnection) conn, contextType);
+        } else if (conn instanceof WSDLSchemaConnection) {
+            OtherConnectionContextUtils.revertWSDLSchemaPropertiesForContextMode((WSDLSchemaConnection) conn, contextType);
+        } else if (conn instanceof SalesforceSchemaConnection) {
+            OtherConnectionContextUtils.revertSalesforcePropertiesForContextMode((SalesforceSchemaConnection) conn, contextType);
+        } else if (conn instanceof GenericSchemaConnection) {
+            //
+        }
+        // set connection for context mode
+        conn.setContextMode(false);
+        conn.setContextId(EMPTY);
     }
 }

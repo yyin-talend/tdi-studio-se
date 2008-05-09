@@ -42,6 +42,7 @@ import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.builder.connection.FileFormat;
 import org.talend.core.model.metadata.builder.connection.RowSeparator;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.swt.utils.AbstractDelimitedFileStepForm;
 
@@ -122,9 +123,7 @@ public class DelimitedFileStep1Form extends AbstractDelimitedFileStepForm {
                 fileField.setText(getConnection().getFilePath().replace("\\\\", "\\")); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
-        if (isContextMode()) {
-            adaptFormToEditable();
-        }
+        adaptFormToEditable();
         // init the fileViewer
         checkFilePathAndManageIt();
 
@@ -262,6 +261,7 @@ public class DelimitedFileStep1Form extends AbstractDelimitedFileStepForm {
         String fileStr = fileField.getText();
         if (isContextMode() && getContextModeManager() != null) {
             fileStr = getContextModeManager().getOriginalValue(getConnection().getFilePath());
+            fileStr = TalendTextUtils.removeQuotes(fileStr);
         }
         if (fileStr == "") { //$NON-NLS-1$
             fileViewerText.setText(Messages.getString("FileStep1.fileViewerTip1") + " " + maximumRowsToPreview + " " //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -370,7 +370,7 @@ public class DelimitedFileStep1Form extends AbstractDelimitedFileStepForm {
         if (isReadOnly() != readOnly) {
             adaptFormToReadOnly();
         }
-        if (visible && isContextMode()) {
+        if (visible) {
             initialize();
         }
     }

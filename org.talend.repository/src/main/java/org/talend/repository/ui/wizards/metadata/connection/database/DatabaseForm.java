@@ -784,25 +784,25 @@ public class DatabaseForm extends AbstractForm {
         });
 
         // urlConnectionStringText : Event modifyText
-        urlConnectionStringText.addModifyListener(new ModifyListener() {
-
-            public void modifyText(final ModifyEvent e) {
-                if (!isContextMode()) {
-                    getConnection().setURL(urlConnectionStringText.getText());
-                    getConnection().setServerName(serverText.getText());
-                    getConnection().setPort(portText.getText());
-                    getConnection().setUsername(usernameText.getText());
-                    getConnection().setPassword(passwordText.getText());
-                    getConnection().setSID(sidOrDatabaseText.getText());
-                    getConnection().setDatasourceName(datasourceText.getText());
-                    getConnection().setSchema(schemaText.getText());
-                    getConnection().setDatabaseType(dbTypeCombo.getText());
-                    getConnection().setFileFieldName(fileField.getText());
-                    getConnection().setDBRootPath(directoryField.getText());
-                    getConnection().setAdditionalParams(additionParamText.getText());
-                }
-            }
-        });
+        // urlConnectionStringText.addModifyListener(new ModifyListener() {
+        //
+        // public void modifyText(final ModifyEvent e) {
+        // if (!isContextMode()) {
+        // getConnection().setURL(urlConnectionStringText.getText());
+        // getConnection().setServerName(serverText.getText());
+        // getConnection().setPort(portText.getText());
+        // getConnection().setUsername(usernameText.getText());
+        // getConnection().setPassword(passwordText.getText());
+        // getConnection().setSID(sidOrDatabaseText.getText());
+        // getConnection().setDatasourceName(datasourceText.getText());
+        // getConnection().setSchema(schemaText.getText());
+        // getConnection().setDatabaseType(dbTypeCombo.getText());
+        // getConnection().setFileFieldName(fileField.getText());
+        // getConnection().setDBRootPath(directoryField.getText());
+        // getConnection().setAdditionalParams(additionParamText.getText());
+        // }
+        // }
+        // });
 
     }
 
@@ -1045,6 +1045,8 @@ public class DatabaseForm extends AbstractForm {
         nullCharText.setEditable(!isContextMode());
         if (isContextMode()) {
             passwordText.getTextControl().setEchoChar('\0');
+        } else {
+            passwordText.getTextControl().setEchoChar('*');
         }
     }
 

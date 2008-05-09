@@ -28,10 +28,10 @@ import org.talend.core.model.metadata.builder.connection.FileConnection;
 import org.talend.core.model.metadata.builder.connection.FileExcelConnection;
 import org.talend.core.model.metadata.builder.connection.PositionalFileConnection;
 import org.talend.core.model.metadata.builder.connection.RegexpFileConnection;
-import org.talend.core.model.metadata.builder.connection.RowSeparator;
 import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.utils.ContextParameterUtils;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 
 /**
@@ -82,6 +82,15 @@ public final class FileConnectionContextUtils {
         paramName = prefixName + EFileParamName.Encoding;
         ConnectionContextHelper.createParameters(varList, paramName, conn.getEncoding());
 
+        paramName = prefixName + EFileParamName.LimitValue;
+        ConnectionContextHelper.createParameters(varList, paramName, conn.getLimitValue(), JavaTypesManager.INTEGER);
+
+        paramName = prefixName + EFileParamName.HeaderValue;
+        ConnectionContextHelper.createParameters(varList, paramName, conn.getHeaderValue(), JavaTypesManager.INTEGER);
+
+        paramName = prefixName + EFileParamName.FooterValue;
+        ConnectionContextHelper.createParameters(varList, paramName, conn.getFooterValue(), JavaTypesManager.INTEGER);
+
         if (conn instanceof DelimitedFileConnection || conn instanceof PositionalFileConnection) {
             // paramName = prefixName + EFileParamName.EscapeChar;
             // ConnectionContextHelper.createParameters(varList, paramName, conn.getEscapeChar());
@@ -117,17 +126,7 @@ public final class FileConnectionContextUtils {
             paramName = prefixName + EFileParamName.LastColumn;
             ConnectionContextHelper.createParameters(varList, paramName, excelConn.getLastColumn(), JavaTypesManager.INTEGER);
         }
-        // paramName = prefixName + EFileParamName.LimitValue;
-        // ConnectionContextHelper.createParameters(varList, paramName,
-        // conn.getLimitValue(),JavaTypesManager.INTEGER);
 
-        // paramName = prefixName + EFileParamName.HeaderValue;
-        // ConnectionContextHelper.createParameters(varList, paramName,
-        // conn.getHeaderValue(),JavaTypesManager.INTEGER);
-
-        // paramName = prefixName + EFileParamName.FooterValue;
-        // ConnectionContextHelper.createParameters(varList, paramName,
-        // conn.getFooterValue(),JavaTypesManager.INTEGER);
         return varList;
     }
 
@@ -143,6 +142,15 @@ public final class FileConnectionContextUtils {
 
         paramName = prefixName + EFileParamName.Encoding;
         conn.setEncoding(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+
+        paramName = prefixName + EFileParamName.LimitValue;
+        conn.setLimitValue(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+
+        paramName = prefixName + EFileParamName.HeaderValue;
+        conn.setHeaderValue(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+
+        paramName = prefixName + EFileParamName.FooterValue;
+        conn.setFooterValue(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
 
         if (conn instanceof DelimitedFileConnection || conn instanceof PositionalFileConnection) {
             // paramName = prefixName + EFileParamName.EscapeChar;
@@ -160,7 +168,7 @@ public final class FileConnectionContextUtils {
             paramName = prefixName + EFileParamName.FieldSeparatorValue;
             conn.setFieldSeparatorValue(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
 
-            conn.setRowSeparatorType(RowSeparator.CUSTOM_STRING_LITERAL);
+            // conn.setRowSeparatorType(RowSeparator.CUSTOM_STRING_LITERAL);
 
             if (conn instanceof DelimitedFileConnection) {
                 ((DelimitedFileConnection) conn).setFieldSeparatorType(FieldSeparator.CUSTOM_UTF8_LITERAL);
@@ -183,14 +191,7 @@ public final class FileConnectionContextUtils {
             excelConn.setLastColumn(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
 
         }
-        // paramName = prefixName + EFileParamName.LimitValue;
-        // conn.setLimitValue(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
 
-        // paramName = prefixName + EFileParamName.HeaderValue;
-        // conn.setHeaderValue(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
-
-        // paramName = prefixName + EFileParamName.FooterValue;
-        // conn.setFooterValue(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
     }
 
     /**
@@ -238,9 +239,17 @@ public final class FileConnectionContextUtils {
         if (cloneConn != null) {
             String filePath = ConnectionContextHelper.getOriginalValue(contextType, fileConn.getFilePath());
             String encoding = ConnectionContextHelper.getOriginalValue(contextType, fileConn.getEncoding());
+            String headValue = ConnectionContextHelper.getOriginalValue(contextType, fileConn.getHeaderValue());
+            String footerValue = ConnectionContextHelper.getOriginalValue(contextType, fileConn.getFooterValue());
+            String limitValue = ConnectionContextHelper.getOriginalValue(contextType, fileConn.getLimitValue());
 
+            filePath = TalendTextUtils.removeQuotes(filePath);
             cloneConn.setFilePath(filePath);
             cloneConn.setEncoding(encoding);
+            cloneConn.setHeaderValue(headValue);
+            cloneConn.setFooterValue(footerValue);
+            cloneConn.setLimitValue(limitValue);
+
             //
             if (fileConn instanceof DelimitedFileConnection || fileConn instanceof PositionalFileConnection
                     || fileConn instanceof RegexpFileConnection) {
@@ -290,9 +299,6 @@ public final class FileConnectionContextUtils {
                 cloneConn.setRowSeparatorType(fileConn.getRowSeparatorType());
                 cloneConn.setRowSeparatorValue(fileConn.getRowSeparatorValue());
             }
-            cloneConn.setFooterValue(fileConn.getFooterValue());
-            cloneConn.setHeaderValue(fileConn.getHeaderValue());
-            cloneConn.setLimitValue(fileConn.getLimitValue());
 
             cloneConn.setRowSeparatorType(fileConn.getRowSeparatorType());
 
@@ -312,5 +318,50 @@ public final class FileConnectionContextUtils {
             ConnectionContextHelper.cloneConnectionProperties(fileConn, cloneConn);
         }
         return cloneConn;
+    }
+
+    static void revertPropertiesForContextMode(FileConnection fileConn, ContextType contextType) {
+        if (fileConn == null || contextType == null) {
+            return;
+        }
+        String filePath = ConnectionContextHelper.getOriginalValue(contextType, fileConn.getFilePath());
+        String encoding = ConnectionContextHelper.getOriginalValue(contextType, fileConn.getEncoding());
+        String headValue = ConnectionContextHelper.getOriginalValue(contextType, fileConn.getHeaderValue());
+        String footerValue = ConnectionContextHelper.getOriginalValue(contextType, fileConn.getFooterValue());
+        String limitValue = ConnectionContextHelper.getOriginalValue(contextType, fileConn.getLimitValue());
+
+        filePath = TalendTextUtils.removeQuotes(filePath);
+        fileConn.setFilePath(filePath);
+        fileConn.setEncoding(encoding);
+        fileConn.setHeaderValue(headValue);
+        fileConn.setFooterValue(footerValue);
+        fileConn.setLimitValue(limitValue);
+
+        //
+        if (fileConn instanceof DelimitedFileConnection || fileConn instanceof PositionalFileConnection
+                || fileConn instanceof RegexpFileConnection) {
+            String fieldSeparatorValue = ConnectionContextHelper.getOriginalValue(contextType, fileConn.getFieldSeparatorValue());
+            String rowSeparatorValue = ConnectionContextHelper.getOriginalValue(contextType, fileConn.getRowSeparatorValue());
+
+            fileConn.setFieldSeparatorValue(fieldSeparatorValue);
+            fileConn.setRowSeparatorValue(rowSeparatorValue);
+
+        }
+        // excel
+        if (fileConn instanceof FileExcelConnection) {
+            FileExcelConnection excelConnection = (FileExcelConnection) fileConn;
+
+            String thousandSeparator = ConnectionContextHelper.getOriginalValue(contextType, excelConnection
+                    .getThousandSeparator());
+            String decimalSeparator = ConnectionContextHelper
+                    .getOriginalValue(contextType, excelConnection.getDecimalSeparator());
+            String firstColumn = ConnectionContextHelper.getOriginalValue(contextType, excelConnection.getFirstColumn());
+            String lastColumn = ConnectionContextHelper.getOriginalValue(contextType, excelConnection.getLastColumn());
+
+            excelConnection.setThousandSeparator(thousandSeparator);
+            excelConnection.setDecimalSeparator(decimalSeparator);
+            excelConnection.setFirstColumn(firstColumn);
+            excelConnection.setLastColumn(lastColumn);
+        }
     }
 }
