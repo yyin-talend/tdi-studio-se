@@ -125,11 +125,25 @@ String outputAction  = ElementParameterParser.getValue(node, "__OUTPUT__");
 
 StringBuilder command_<%=cid %> =  new StringBuilder();
 command_<%=cid %>.append(<%=bcpUtility%> + " ");
-if(db_<%=cid%> != null && db_<%=cid%>.trim().length() > 0) {
-    command_<%=cid %>.append(db_<%=cid%> + ".." + tableName_<%=cid%>);
+<%
+if(dataAction.equals("UPDATE")) {
+    %>
+    if(db_<%=cid%> != null && db_<%=cid%>.trim().length() > 0) {
+        command_<%=cid %>.append(db_<%=cid%> + "..tmp_<%=cid%>");
+    } else {
+        command_<%=cid %>.append("tmp_<%=cid%>");
+    }    
+    <%
 } else {
-    command_<%=cid %>.append(tableName_<%=cid%>);
+    %>
+    if(db_<%=cid%> != null && db_<%=cid%>.trim().length() > 0) {
+        command_<%=cid %>.append(db_<%=cid%> + ".." + tableName_<%=cid%>);
+    } else {
+        command_<%=cid %>.append(tableName_<%=cid%>);
+    }    
+    <%
 }
+%>
 command_<%=cid %>.append(" in " + <%=dataFile%>);
 String headRow_<%=cid%> = <%=headRow%>;
 if(headRow_<%=cid%> != null && headRow_<%=cid%>.trim().length() > 0) {
