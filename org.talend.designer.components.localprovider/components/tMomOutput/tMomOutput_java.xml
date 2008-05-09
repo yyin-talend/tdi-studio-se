@@ -96,7 +96,11 @@
       NUM_ROW="40"
 	  READONLY="true"
     >
-      <TABLE>
+      <TABLE IF="(SERVER == 'WEBSPHERE') and (IS_USE_MESSAGE_ID == 'true')">
+        <COLUMN NAME="message" TYPE="id_String" LENGTH="255"/>
+        <COLUMN NAME="messageid" TYPE="id_String" LENGTH="255"/>
+      </TABLE>
+      <TABLE IF="(SERVER == 'JBOSS') or (IS_USE_MESSAGE_ID == 'false')">
         <COLUMN NAME="message" TYPE="id_String" LENGTH="255"/>
       </TABLE>
     </PARAMETER>
@@ -122,15 +126,6 @@
 	<PARAMETER NAME="IS_USE_MESSAGE_ID" FIELD="CHECK" REQUIRED="true" NUM_ROW="60" 
       SHOW_IF="(SERVER == 'WEBSPHERE')">
 	  <DEFAULT>false</DEFAULT>
-	</PARAMETER>
-
-	<PARAMETER
-      NAME="MSG_ID"
-      FIELD="TEXT"
-      NUM_ROW="70"
-      SHOW_IF="(SERVER == 'WEBSPHERE') and (IS_USE_MESSAGE_ID == 'true')"
-    > 
-    	<DEFAULT>""</DEFAULT>
 	</PARAMETER>
   </PARAMETERS>
 

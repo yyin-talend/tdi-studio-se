@@ -143,8 +143,17 @@ else{
 	if(useMsgId.equals("true")){
 %>
 	String msgId_<%=cid%> = <%=msgId%>;
-	if(msgId_<%=cid%>.length()>24){
-		msgId_<%=cid%> = msgId_<%=cid%>.substring(0,24);
+    if (msgId_<%=cid%> != null & !msgId_<%=cid%>.equals("")) {
+		String padding_<%=cid%> = new String();
+       	int padlen_<%=cid%> = 24;
+ 
+       	int len_<%=cid%> = Math.abs(padlen_<%=cid%>) - msgId_<%=cid%>.toString().length();
+       	if (len_<%=cid%> > 0) {
+        	for (int i = 0 ; i < len_<%=cid%> ; i++) {
+           		padding_<%=cid%> = padding_<%=cid%> + " ";
+         	}
+        	msgId_<%=cid%> = msgId_<%=cid%> + padding_<%=cid%>;
+        }
 	}
 <%
 	}
@@ -201,17 +210,22 @@ else{
 %>
 		String message<%=cid%>=inMessage<%=cid%>.readString(inMessage<%=cid%>.getMessageLength());
 <%
-List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
-List<IMetadataColumn> columnList = metadata.getListColumns();
-for(IConnection conn:conns){
-	if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
- 	String firstConnName = conn.getName();
+	List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
+	List<IMetadataColumn> columnList = metadata.getListColumns();
+	for(IConnection conn:conns){
+		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
+ 			String firstConnName = conn.getName();
 %>
 		<%=firstConnName%>.from=<%=queue%>;	
 		<%=firstConnName%>.message=message<%=cid%>;			
 <%
-}
-}
+			if(useMsgId.equals("true")){
+%>
+		<%=firstConnName%>.messageid=new String(inMessage<%=cid%>.messageId,"ISO-8859-15");	
+<%
+			}
+		}
+	}
 }
 %>
 
