@@ -126,6 +126,7 @@ public class DataProcess {
         dataNode.setStart(graphicalNode.isStart());
         dataNode.setMetadataList(graphicalNode.getMetadataList());
         dataNode.setPluginFullName(graphicalNode.getPluginFullName());
+        dataNode.setComponent(graphicalNode.getComponent());
         dataNode.setElementParameters(graphicalNode.getComponent().createElementParameters(dataNode));
         dataNode.setListConnector(graphicalNode.getListConnector());
         copyElementParametersValue(graphicalNode, dataNode);
@@ -139,7 +140,7 @@ public class DataProcess {
         dataNode.setHasConditionalOutputs(graphicalNode.hasConditionalOutputs());
         dataNode.setIsMultiplyingOutputs(graphicalNode.isMultiplyingOutputs());
         dataNode.setProcess(graphicalNode.getProcess());
-        dataNode.setComponent(graphicalNode.getComponent());
+    
 
         if (graphicalNode.isDummy() && !graphicalNode.isActivate()) {
             dataNode = new DataNode(ComponentsFactoryProvider.getInstance().get("tDummyRow"), uniqueName); //$NON-NLS-1$
