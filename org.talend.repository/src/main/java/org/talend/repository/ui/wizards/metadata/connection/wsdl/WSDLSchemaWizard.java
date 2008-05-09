@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.connection.wsdl;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -29,6 +30,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.metadata.IMetadataContextModeManager;
+import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
@@ -77,6 +79,8 @@ public class WSDLSchemaWizard extends RepositoryWizard implements INewWizard {
 
     private IMetadataContextModeManager contextModeManager;
 
+    private List<IMetadataTable> oldMetadataTable;
+
     /**
      * WSDLSchemaWizard constructor comment.
      * 
@@ -98,6 +102,11 @@ public class WSDLSchemaWizard extends RepositoryWizard implements INewWizard {
         setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.DEFAULT_WIZ));
 
         if (selection == null || existingNames == null) {
+            connection = ConnectionFactory.eINSTANCE.createWSDLSchemaConnection();
+            MetadataTable metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
+            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            metadataTable.setId(factory.getNextId());
+            connection.getTables().add(metadataTable);
             connectionProperty = PropertiesFactory.eINSTANCE.createProperty();
             connectionProperty
                     .setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
@@ -107,6 +116,8 @@ public class WSDLSchemaWizard extends RepositoryWizard implements INewWizard {
 
             connectionItem = PropertiesFactory.eINSTANCE.createWSDLSchemaConnectionItem();
             connectionItem.setProperty(connectionProperty);
+            connectionItem.setConnection(connection);
+            initTable();
             return;
         }
 
@@ -212,6 +223,7 @@ public class WSDLSchemaWizard extends RepositoryWizard implements INewWizard {
     private void initTable() {
         if (connectionItem != null) {
             oldTableMap = RepositoryUpdateManager.getTableIdAndNameMap(connectionItem);
+            oldMetadataTable = RepositoryUpdateManager.getConversionMetadataTables(connectionItem.getConnection());
         }
     }
 
@@ -358,8 +370,7 @@ public class WSDLSchemaWizard extends RepositoryWizard implements INewWizard {
                     factory.create(connectionItem, wsdlSchemaWizardPage0.getDestinationPath());
                 } else {
                     // update
-                    RepositoryUpdateManager.updateSchema((MetadataTable) ((WSDLSchemaConnection) connectionItem.getConnection())
-                            .getTables().get(0), connectionItem, oldTableMap);
+                    RepositoryUpdateManager.updateMultiSchema(connectionItem, oldMetadataTable, oldTableMap);
 
                     factory.save(connectionItem);
                     closeLockStrategy();

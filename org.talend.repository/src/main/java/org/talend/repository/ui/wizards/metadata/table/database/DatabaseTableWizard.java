@@ -25,6 +25,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.core.model.metadata.IMetadataConnection;
+import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.database.TableInfoParameters;
 import org.talend.core.model.properties.ConnectionItem;
@@ -64,6 +65,8 @@ public class DatabaseTableWizard extends RepositoryWizard implements INewWizard 
 
     private IMetadataConnection metadataConnection;
 
+    private List<IMetadataTable> oldMetadataTable;
+
     /**
      * DOC ocarbone DatabaseTableWizard constructor comment.
      * 
@@ -84,7 +87,8 @@ public class DatabaseTableWizard extends RepositoryWizard implements INewWizard 
         this.managerConnection = managerConnection;
         this.metadataConnection = metadataConnection;
         if (connectionItem != null) {
-            oldTableMap = RepositoryUpdateManager.getTableIdAndNameMap(connectionItem);
+            oldTableMap = RepositoryUpdateManager.getOldTableIdAndNameMap(connectionItem, metadataTable, creation);
+            oldMetadataTable = RepositoryUpdateManager.getConversionMetadataTables(connectionItem.getConnection());
         }
         setNeedsProgressMonitor(true);
 
@@ -154,8 +158,8 @@ public class DatabaseTableWizard extends RepositoryWizard implements INewWizard 
     @Override
     public boolean performFinish() {
         if (tableWizardpage.isPageComplete()) {
-            // update
-            RepositoryUpdateManager.updateSchema(metadataTable, connectionItem, oldTableMap);
+            //
+            RepositoryUpdateManager.updateMultiSchema(connectionItem, oldMetadataTable, oldTableMap);
 
             saveMetaData();
             closeLockStrategy();

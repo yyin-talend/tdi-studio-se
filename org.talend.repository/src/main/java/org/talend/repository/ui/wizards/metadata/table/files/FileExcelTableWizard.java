@@ -20,6 +20,8 @@ import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
+import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.update.RepositoryUpdateManager;
@@ -44,6 +46,8 @@ public class FileExcelTableWizard extends RepositoryWizard implements INewWizard
 
     private Map<String, String> oldTableMap;
 
+    private IMetadataTable oldMetadataTable;
+
     /**
      * 
      * DOC yexiaowei FileExcelTableWizard constructor comment.
@@ -60,7 +64,8 @@ public class FileExcelTableWizard extends RepositoryWizard implements INewWizard
         this.connectionItem = connectionItem;
         this.metadataTable = metadataTable;
         if (connectionItem != null) {
-            oldTableMap = RepositoryUpdateManager.getTableIdAndNameMap(connectionItem);
+            oldTableMap = RepositoryUpdateManager.getOldTableIdAndNameMap(connectionItem, metadataTable, creation);
+            oldMetadataTable = ConvertionHelper.convert(metadataTable);
         }
         setNeedsProgressMonitor(true);
 
@@ -93,7 +98,7 @@ public class FileExcelTableWizard extends RepositoryWizard implements INewWizard
     public boolean performFinish() {
         if (tableWizardpage.isPageComplete()) {
             // update
-            RepositoryUpdateManager.updateSchema(metadataTable, connectionItem, oldTableMap);
+            RepositoryUpdateManager.updateSingleSchema(connectionItem, metadataTable, oldMetadataTable, oldTableMap);
 
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             try {

@@ -21,6 +21,8 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
+import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.update.RepositoryUpdateManager;
@@ -46,6 +48,8 @@ public class GenericSchemaTableWizard extends RepositoryWizard implements INewWi
 
     private Map<String, String> oldTableMap;
 
+    private IMetadataTable oldMetadataTable;
+
     /**
      * Constructor for TableWizard.
      * 
@@ -58,7 +62,8 @@ public class GenericSchemaTableWizard extends RepositoryWizard implements INewWi
         this.connectionItem = connectionItem;
         this.metadataTable = metadataTable;
         if (connectionItem != null) {
-            oldTableMap = RepositoryUpdateManager.getTableIdAndNameMap(connectionItem);
+            oldTableMap = RepositoryUpdateManager.getOldTableIdAndNameMap(connectionItem, metadataTable, creation);
+            oldMetadataTable = ConvertionHelper.convert(metadataTable);
         }
         setNeedsProgressMonitor(true);
 
@@ -97,7 +102,7 @@ public class GenericSchemaTableWizard extends RepositoryWizard implements INewWi
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             try {
                 // update
-                RepositoryUpdateManager.updateSchema(metadataTable, connectionItem, oldTableMap);
+                RepositoryUpdateManager.updateSingleSchema(connectionItem, metadataTable, oldMetadataTable, oldTableMap);
 
                 factory.save(repositoryObject.getProperty().getItem());
                 closeLockStrategy();

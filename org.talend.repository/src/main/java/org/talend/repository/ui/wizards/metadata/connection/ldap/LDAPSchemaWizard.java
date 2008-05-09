@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.connection.ldap;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -29,6 +30,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.metadata.IMetadataContextModeManager;
+import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
@@ -84,6 +86,8 @@ public class LDAPSchemaWizard extends RepositoryWizard implements INewWizard {
 
     private IMetadataContextModeManager contextModeManager;
 
+    private List<IMetadataTable> oldMetadataTable;
+
     /**
      * LDAPSchemaWizard constructor comment.
      * 
@@ -105,6 +109,11 @@ public class LDAPSchemaWizard extends RepositoryWizard implements INewWizard {
         setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.DEFAULT_WIZ));
 
         if (selection == null || existingNames == null) {
+            connection = ConnectionFactory.eINSTANCE.createLDAPSchemaConnection();
+            MetadataTable metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
+            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            metadataTable.setId(factory.getNextId());
+            connection.getTables().add(metadataTable);
             connectionProperty = PropertiesFactory.eINSTANCE.createProperty();
             connectionProperty
                     .setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
@@ -114,6 +123,8 @@ public class LDAPSchemaWizard extends RepositoryWizard implements INewWizard {
 
             connectionItem = PropertiesFactory.eINSTANCE.createLDAPSchemaConnectionItem();
             connectionItem.setProperty(connectionProperty);
+            connectionItem.setConnection(connection);
+            initTable();
             return;
         }
 
@@ -219,6 +230,7 @@ public class LDAPSchemaWizard extends RepositoryWizard implements INewWizard {
     private void initTable() {
         if (connectionItem != null) {
             oldTableMap = RepositoryUpdateManager.getTableIdAndNameMap(connectionItem);
+            oldMetadataTable = RepositoryUpdateManager.getConversionMetadataTables(connectionItem.getConnection());
         }
     }
 
@@ -357,8 +369,7 @@ public class LDAPSchemaWizard extends RepositoryWizard implements INewWizard {
                     factory.create(connectionItem, ldapSchemaWizardPage0.getDestinationPath());
                 } else {
                     // update
-                    RepositoryUpdateManager.updateSchema((MetadataTable) ((LDAPSchemaConnection) connectionItem.getConnection())
-                            .getTables().get(0), connectionItem, oldTableMap);
+                    RepositoryUpdateManager.updateMultiSchema(connectionItem, oldMetadataTable, oldTableMap);
 
                     factory.save(connectionItem);
                     closeLockStrategy();

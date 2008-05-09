@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.connection.genericshema;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -29,6 +30,7 @@ import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.GenericSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
@@ -69,6 +71,8 @@ public class GenericSchemaWizard extends RepositoryWizard implements INewWizard 
 
     private Map<String, String> oldTableMap;
 
+    private List<IMetadataTable> oldMetadataTable;
+
     /**
      * Constructor for FileWizard.
      * 
@@ -87,6 +91,11 @@ public class GenericSchemaWizard extends RepositoryWizard implements INewWizard 
         setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.DEFAULT_WIZ));
 
         if (selection == null || existingNames == null) {
+            connection = ConnectionFactory.eINSTANCE.createGenericSchemaConnection();
+            MetadataTable metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
+            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            metadataTable.setId(factory.getNextId());
+            connection.getTables().add(metadataTable);
             connectionProperty = PropertiesFactory.eINSTANCE.createProperty();
             connectionProperty
                     .setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
@@ -96,6 +105,8 @@ public class GenericSchemaWizard extends RepositoryWizard implements INewWizard 
 
             connectionItem = PropertiesFactory.eINSTANCE.createGenericSchemaConnectionItem();
             connectionItem.setProperty(connectionProperty);
+            connectionItem.setConnection(connection);
+            initTable();
             return;
         }
 
@@ -197,6 +208,7 @@ public class GenericSchemaWizard extends RepositoryWizard implements INewWizard 
     private void initTable() {
         if (connectionItem != null) {
             oldTableMap = RepositoryUpdateManager.getTableIdAndNameMap(connectionItem);
+            oldMetadataTable = RepositoryUpdateManager.getConversionMetadataTables(connectionItem.getConnection());
         }
     }
 
@@ -293,8 +305,7 @@ public class GenericSchemaWizard extends RepositoryWizard implements INewWizard 
                     factory.create(connectionItem, genericSchemaWizardPage0.getDestinationPath());
                 } else {
                     // update
-                    RepositoryUpdateManager.updateSchema((MetadataTable) ((GenericSchemaConnection) connectionItem
-                            .getConnection()).getTables().get(0), connectionItem, oldTableMap);
+                    RepositoryUpdateManager.updateMultiSchema(connectionItem, oldMetadataTable, oldTableMap);
 
                     factory.save(connectionItem);
                     closeLockStrategy();
