@@ -90,6 +90,7 @@ public class DataProcess {
                 targetParam.setValue(sourceParam.getValue());
                 if (targetParam.getField() == EParameterFieldType.TABLE) {
                     targetParam.setListItemsValue(sourceParam.getListItemsValue());
+                    targetParam.setListItemsDisplayCodeName(sourceParam.getListItemsDisplayCodeName());
                 }
                 for (String name : targetParam.getChildParameters().keySet()) {
                     IElementParameter targetChildParam = targetParam.getChildParameters().get(name);
@@ -97,6 +98,7 @@ public class DataProcess {
                     targetChildParam.setValue(sourceChildParam.getValue());
                     if (targetChildParam.getField() == EParameterFieldType.TABLE) {
                         targetChildParam.setListItemsValue(sourceChildParam.getListItemsValue());
+                        targetChildParam.setListItemsDisplayCodeName(sourceChildParam.getListItemsDisplayCodeName());
                     }
                 }
             }
@@ -140,7 +142,6 @@ public class DataProcess {
         dataNode.setHasConditionalOutputs(graphicalNode.hasConditionalOutputs());
         dataNode.setIsMultiplyingOutputs(graphicalNode.isMultiplyingOutputs());
         dataNode.setProcess(graphicalNode.getProcess());
-    
 
         if (graphicalNode.isDummy() && !graphicalNode.isActivate()) {
             dataNode = new DataNode(ComponentsFactoryProvider.getInstance().get("tDummyRow"), uniqueName); //$NON-NLS-1$
