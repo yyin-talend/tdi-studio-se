@@ -18,120 +18,41 @@
 	String sftpoverwrite=ElementParameterParser.getValue(node, "__SFTPOVERWRITE__");
 	boolean sftp = ElementParameterParser.getValue(node, "__SFTP__").equals("true");
 	String remotedir = ElementParameterParser.getValue(node, "__REMOTEDIR__");
-	if(sftp){
-	//sftp support
+	if(!sftp){ // *** ftp *** //
+		if ("binary".equalsIgnoreCase(ElementParameterParser.getValue(node, "__MODE__"))) {
 %>	
-
-    for (java.util.Map<String, String> map<%=cid %> : list<%=cid %>) 
-    {
-       java.util.Set<String> keySet<%=cid %> = map<%=cid %>.keySet(); 
-       for (String key<%=cid %> : keySet<%=cid %>)
-       {     
-        	String filemask<%=cid %> = key<%=cid %>; 
-        	String dir<%=cid %> = null;
-        	String mask<%=cid %> = filemask<%=cid %>.replaceAll("\\\\", "/") ;
-        	int i<%=cid %> = mask<%=cid %>.lastIndexOf('/');
-    		if (i<%=cid %>!=-1)
-    		{
-    			dir<%=cid %> = mask<%=cid %>.substring(0, i<%=cid %>); 
-    			mask<%=cid %> = mask<%=cid %>.substring(i<%=cid %>+1); 
-        	}
-        	mask<%=cid %> = mask<%=cid %>.replaceAll("\\.", "\\\\.").replaceAll("\\*", ".*");
-    		java.util.Vector listings<%=cid %> = c<%=cid %>.ls(<%=remotedir %>);
-    		for (int m<%=cid %> = 0; m<%=cid %> < listings<%=cid %>.size(); m<%=cid %>++)
-    		{ 
-    			String filePath<%=cid%> =  ((com.jcraft.jsch.ChannelSftp.LsEntry) listings<%=cid %>.elementAt(m<%=cid %>)).getFilename() ;
-    			if ( filePath<%=cid%>.matches(mask<%=cid %>))
-    			{
-		<%if(sftpoverwrite.equals("overwrite")){%>    			
-    				 int mode<%=cid%> = com.jcraft.jsch.ChannelSftp.OVERWRITE;
-		<%}else if(sftpoverwrite.equals("append")){%>
-					 int mode<%=cid%> = com.jcraft.jsch.ChannelSftp.APPEND;
-		<%}else if(sftpoverwrite.equals("resume")){%>
-					 int mode<%=cid%> = com.jcraft.jsch.ChannelSftp.RESUME;
-		<%}%>
-    				 c<%=cid%>.get(filePath<%=cid%>, <%=localdir%>, monitor<%=cid%>, mode<%=cid%>);
-    				 nb_file_<%=cid%>++;
-    			}
-    		}	     
-       	}  
-     } 
-     
-<%}else{%> //normal ftp
-
-<% 
-	if ("binary".equalsIgnoreCase(ElementParameterParser.getValue(node, "__MODE__"))) {
-%>	
-	ftp<%=cid %>.setType(com.enterprisedt.net.ftp.FTPTransferType.BINARY);
+	ftp_<%=cid %>.setType(com.enterprisedt.net.ftp.FTPTransferType.BINARY);
 <%
-  }	else {  
+  		}else {  
 %>	
-	ftp<%=cid %>.setType(com.enterprisedt.net.ftp.FTPTransferType.ASCII);
+	ftp_<%=cid %>.setType(com.enterprisedt.net.ftp.FTPTransferType.ASCII);
 <%
- }
+ 		}
+ 	}
 %>
-	String localdir<%=cid %>  = <%=localdir%>;
-	String root<%=cid %> = ftp<%=cid %>.pwd();
-	for (java.util.Map<String, String> map<%=cid %> : list<%=cid %>) 
-	{
-	java.util.Set<String> keySet<%=cid %> = map<%=cid %>.keySet();
-   
-	for (String key<%=cid %> : keySet<%=cid %>)
-	{     
-	String filemask<%=cid %> = key<%=cid %>; 
-	String dir<%=cid %> = null;
-	String mask<%=cid %> = filemask<%=cid %>.replaceAll("\\\\", "/") ;  
-	int i<%=cid %> = mask<%=cid %>.lastIndexOf('/');   
-	if (i<%=cid %>!=-1)
-	{
-	dir<%=cid %> = mask<%=cid %>.substring(0, i<%=cid %>); 
-	mask<%=cid %> = mask<%=cid %>.substring(i<%=cid %>+1);  
-    }
-    if (dir<%=cid %>!=null && !"".equals(dir<%=cid %>)) ftp<%=cid %>.chdir(dir<%=cid %>);
-    
-  	mask<%=cid %> = mask<%=cid %>.replaceAll("\\.", "\\\\.").replaceAll("\\*", ".*");
-  
-	String[] listings<%=cid %> = ftp<%=cid %>.dir(".", false);
-	
-    for (int m<%=cid %> = 0; m<%=cid %> < listings<%=cid %>.length; m<%=cid %>++)
-     { 
-      if (listings<%=cid %>[m<%=cid %>].matches(mask<%=cid %>))
-      {
-        java.io.File localFile<%=cid%>=new java.io.File(localdir<%=cid %>+ "/" +listings<%=cid %>[m<%=cid %>]);
-        <%if(overwrite.equals("never")){
-        %>
-        	if(!localFile<%=cid%>.exists())
-        	{
-        	 	ftp<%=cid %>.get(localdir<%=cid %> + "/" + listings<%=cid %>[m<%=cid %>] ,listings<%=cid %>[m<%=cid %>]);
-        	}
-        <%}%>
-        <%else if(overwrite.equals("always")){
-        %>
-        	ftp<%=cid %>.get(localdir<%=cid %> + "/" + listings<%=cid %>[m<%=cid %>] ,listings<%=cid %>[m<%=cid %>]);
-        <%}%>
-        <%if(overwrite.equals("size_differ")){
-        %>
-        	if(localFile<%=cid%>.exists())
-        	{
-        		com.enterprisedt.net.ftp.FTPFile ftpfile<%=cid%>=ftp<%=cid%>.fileDetails(listings<%=cid %>[m<%=cid %>]);
-        		long ftpSize<%=cid%>=ftpfile<%=cid%>.size();
-        		long localSize<%=cid%>=localFile<%=cid%>.length();
-        		if(!(ftpSize<%=cid%>==localSize<%=cid%>))
-        		{
-        	 	ftp<%=cid %>.get(localdir<%=cid %> + "/" + listings<%=cid %>[m<%=cid %>] ,listings<%=cid %>[m<%=cid %>]);	
-        		}
-        	}else
-        	{
-        		ftp<%=cid %>.get(localdir<%=cid %> + "/" + listings<%=cid %>[m<%=cid %>] ,listings<%=cid %>[m<%=cid %>]);
-        	}
-        <%}%>
+	String localdir_<%=cid %>  = <%=localdir%>;
+	String root_<%=cid %> = getter_<%=cid %>.pwd();
+	for (String maskStr_<%=cid%> : maskList_<%=cid%>) {     
+    	String dir_<%=cid %> = root_<%=cid %>;
+    	String mask_<%=cid %> = maskStr_<%=cid%>.replaceAll("\\\\", "/") ;  
+    	int i_<%=cid %> = mask_<%=cid %>.lastIndexOf('/');   
+    	if (i_<%=cid %>!=-1)
+    	{
+        	dir_<%=cid %> = mask_<%=cid %>.substring(0, i_<%=cid %>); 
+        	mask_<%=cid %> = mask_<%=cid %>.substring(i_<%=cid %>+1);  
+        }
         
-        nb_file_<%=cid%>++;
-       }
-    }
-   }
-   ftp<%=cid %>.chdir(root<%=cid %>);
- }
+      	mask_<%=cid %> = mask_<%=cid %>.replaceAll("\\.", "\\\\.").replaceAll("\\*", ".*");
+
+		if (dir_<%=cid %>!=null && !"".equals(dir_<%=cid %>)){ 
+			if(mask_<%=cid %>.equals(".*")){
+        		getter_<%=cid %>.getAllFiles(dir_<%=cid %>, localdir_<%=cid %>);
+        	}else{
+        		getter_<%=cid %>.getFiles(dir_<%=cid %>, localdir_<%=cid %> ,mask_<%=cid %>);
+        	}
+        }
+   		getter_<%=cid %>.chdir(root_<%=cid %>);
+ 	}
  
- 
- <%}%>
+	nb_file_<%=cid%> = getter_<%=cid %>.count;
+

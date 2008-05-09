@@ -96,7 +96,7 @@ COMPATIBILITY="ALL"
   </PARAMETERS>
   <CODEGENERATION>
      <IMPORTS>
-       <IMPORT NAME="Java-FTP" MODULE="edtftpj-1.5.4.jar" REQUIRED="true" />
+       <IMPORT NAME="Java-FTP" MODULE="edtftpj.jar" REQUIRED="true" />
        <IMPORT NAME="Java-SFTP" MODULE="jsch-0.1.36.jar" REQUIRED="true" />
      </IMPORTS>
    </CODEGENERATION>

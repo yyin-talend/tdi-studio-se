@@ -16,6 +16,8 @@
 	String port = ElementParameterParser.getValue(node, "__PORT__");
 	String user = ElementParameterParser.getValue(node, "__USERNAME__");
 	String pass = ElementParameterParser.getValue(node, "__PASSWORD__");
+	String overwrite = ElementParameterParser.getValue(node, "__OVERWRITE__");
+	String sftpoverwrite=ElementParameterParser.getValue(node, "__SFTPOVERWRITE__");
 	String remotedir = ElementParameterParser.getValue(node, "__REMOTEDIR__");
 	String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
 	boolean sftp = ElementParameterParser.getValue(node, "__SFTP__").equals("true");
@@ -23,11 +25,9 @@
 	String cid = node.getUniqueName();
 %>
 	int nb_file_<%=cid%> = 0;
-<%	
-	if(sftp){
+<%
+	if(sftp){ // *** sftp *** //
 %>	
-
-    
     class MyUserInfo implements com.jcraft.jsch.UserInfo, com.jcraft.jsch.UIKeyboardInteractive {
         public String getPassphrase() { return null; } 
         
@@ -43,12 +43,12 @@
         
         public String[] promptKeyboardInteractive(String destination, String name, String instruction, String[] prompt,
                 boolean[] echo) {
-           String[] password<%=cid%> = {<%=pass%>};
-           return password<%=cid%>;
+           String[] password_<%=cid%> = {<%=pass%>};
+           return password_<%=cid%>;
         }
     }; 
     
-    final com.jcraft.jsch.UserInfo defaultUserInfo<%=cid%> = new MyUserInfo();
+    final com.jcraft.jsch.UserInfo defaultUserInfo_<%=cid%> = new MyUserInfo();
     
     class MyProgressMonitor implements com.jcraft.jsch.SftpProgressMonitor {
         
@@ -61,51 +61,211 @@
         public void end() {}
     } 
     
-    com.jcraft.jsch.JSch jsch<%=cid%>=new com.jcraft.jsch.JSch(); 
-    com.jcraft.jsch.Session session<%=cid%>=jsch<%=cid%>.getSession(<%=user%>, <%=host%>, <%=port%>); 
-	session<%=cid%>.setPassword(<%=pass%>); 
-    session<%=cid%>.setUserInfo(defaultUserInfo<%=cid%>); 
-    session<%=cid%>.connect(); 
-    
-    com.jcraft.jsch. Channel channel<%=cid%>=session<%=cid%>.openChannel("sftp"); 
-    channel<%=cid%>.connect(); 
-    com.jcraft.jsch.ChannelSftp c<%=cid%>=(com.jcraft.jsch.ChannelSftp)channel<%=cid%>; 
-    c<%=cid%>.setFilenameEncoding(<%=encoding%>);
-    
-    com.jcraft.jsch.SftpProgressMonitor monitor<%=cid%> = new MyProgressMonitor();
-    
-    java.util.List<java.util.Map<String,String>> list<%=cid %> = new java.util.ArrayList<java.util.Map<String,String>>();	
+    class SFTPGetter_<%=cid%> {
+
+        private com.jcraft.jsch.ChannelSftp cnlSFTP = null;
+
+        private com.jcraft.jsch.SftpProgressMonitor monitor = null;
+
+        private int count = 0;
+
+        public void getAllFiles(String remoteDirectory, String localDirectory) throws com.jcraft.jsch.SftpException {
+            cnlSFTP.cd(remoteDirectory);
+            java.util.Vector sftpFiles = cnlSFTP.ls(".");
+            for (Object sftpFile : sftpFiles) {
+                com.jcraft.jsch.ChannelSftp.LsEntry lsEntry = (com.jcraft.jsch.ChannelSftp.LsEntry) sftpFile;
+                com.jcraft.jsch.SftpATTRS attrs = lsEntry.getAttrs();
+                if (lsEntry.getFilename().equals(".") || lsEntry.getFilename().equals("..")) {
+                    continue;
+                }
+                if (attrs.isDir()) {
+                    java.io.File localFile = new java.io.File(localDirectory + "/" + lsEntry.getFilename());
+                    if (!localFile.exists()) {
+                        localFile.mkdir();
+                    }
+                    getAllFiles(remoteDirectory + "/" + lsEntry.getFilename(), localDirectory + "/"
+                            + lsEntry.getFilename());
+                    cnlSFTP.cd(remoteDirectory);
+                } else if (!attrs.isLink()) {
+                    downloadFile(localDirectory, lsEntry.getFilename());
+                }
+            }
+        }
+
+        public void getFiles(String remoteDirectory, String localDirectory, String maskStr)
+                throws com.jcraft.jsch.SftpException {
+            cnlSFTP.cd(remoteDirectory);
+            java.util.Vector sftpFiles = cnlSFTP.ls(".");
+            for (Object sftpFile : sftpFiles) {
+                com.jcraft.jsch.ChannelSftp.LsEntry lsEntry = (com.jcraft.jsch.ChannelSftp.LsEntry) sftpFile;
+                com.jcraft.jsch.SftpATTRS attrs = lsEntry.getAttrs();
+                if (lsEntry.getFilename().equals(".") || lsEntry.getFilename().equals("..")) {
+                    continue;
+                }
+                if (!attrs.isDir() && !attrs.isLink()) {
+                    if (lsEntry.getFilename().matches(maskStr)) {
+                        downloadFile(localDirectory, lsEntry.getFilename());
+                    }
+                }
+            }
+        }
+
+		public void chdir(String path) throws com.jcraft.jsch.SftpException{
+			cnlSFTP.cd(path);
+		}
+		
+		public String pwd() throws com.jcraft.jsch.SftpException{
+			return cnlSFTP.pwd();
+		}
+		
+        private void downloadFile(String localFileName, String remoteFileName) throws com.jcraft.jsch.SftpException {
+            cnlSFTP.get(remoteFileName, localFileName, monitor,
 <%
-    for (int i=0; i<files.size(); i++) {
-       Map<String, String> line = files.get(i);
-%>    
-	java.util.Map<String,String> map<%=cid %><%=i %> = new java.util.HashMap<String,String>();
-	map<%=cid %><%=i %>.put(<%= line.get("FILEMASK") %>,"");
- 	list<%=cid %>.add(map<%=cid %><%=i %>);       
+	if(sftpoverwrite.equals("overwrite")){
+%>    			
+				com.jcraft.jsch.ChannelSftp.OVERWRITE
 <%
-  }
+	}else if(sftpoverwrite.equals("append")){
+%>
+				com.jcraft.jsch.ChannelSftp.APPEND
+<%
+	}else if(sftpoverwrite.equals("resume")){
+%>
+				com.jcraft.jsch.ChannelSftp.RESUME
+<%
+	}
+%>
+            );
+            count++;
+        }
+    }
+    
+    com.jcraft.jsch.JSch jsch_<%=cid%>=new com.jcraft.jsch.JSch(); 
+    com.jcraft.jsch.Session session_<%=cid%>=jsch_<%=cid%>.getSession(<%=user%>, <%=host%>, <%=port%>); 
+	session_<%=cid%>.setPassword(<%=pass%>); 
+    session_<%=cid%>.setUserInfo(defaultUserInfo_<%=cid%>); 
+    session_<%=cid%>.connect(); 
+    
+    com.jcraft.jsch. Channel channel_<%=cid%>=session_<%=cid%>.openChannel("sftp"); 
+    channel_<%=cid%>.connect(); 
+    com.jcraft.jsch.ChannelSftp c_<%=cid%>=(com.jcraft.jsch.ChannelSftp)channel_<%=cid%>; 
+    c_<%=cid%>.setFilenameEncoding(<%=encoding%>);
+    
+    com.jcraft.jsch.SftpProgressMonitor monitor_<%=cid%> = new MyProgressMonitor();
+    SFTPGetter_<%=cid%> getter_<%=cid%> = new SFTPGetter_<%=cid%>();
+    getter_<%=cid%>.cnlSFTP = c_<%=cid%>;
+    getter_<%=cid%>.monitor = monitor_<%=cid%>;
+    
+	String remotedir_<%=cid %> = <%=remotedir%>;
+	c_<%=cid%>.cd(remotedir_<%=cid %>);
+    
+<%
+	}else{ // *** ftp *** //
 %>	
 
-<%}else{%>	
+	class FTPGetter_<%=cid%> {
 
-	com.enterprisedt.net.ftp.FTPClient ftp<%=cid %> = new com.enterprisedt.net.ftp.FTPClient();
-	ftp<%=cid %>.setRemoteHost(<%=host %>);
-	ftp<%=cid %>.setRemotePort(<%=port %>);
-	ftp<%=cid %>.connect();
-    ftp<%=cid %>.login(<%=user %>, <%=pass %>);    
-	java.util.List<java.util.Map<String,String>> list<%=cid %> = new java.util.ArrayList<java.util.Map<String,String>>();
-	
+        private com.enterprisedt.net.ftp.FTPClient ftpClient = null;
+
+        private int count = 0;
+
+        public void getAllFiles(String remoteDirectory, String localDirectory) throws java.io.IOException,
+                com.enterprisedt.net.ftp.FTPException, java.text.ParseException {
+            ftpClient.chdir(remoteDirectory);
+            com.enterprisedt.net.ftp.FTPFile[] ftpFiles = ftpClient.dirDetails(".");
+            for (com.enterprisedt.net.ftp.FTPFile ftpFile : ftpFiles) {
+                if (ftpFile.isDir()) {
+                	java.io.File localFile = new java.io.File(localDirectory + "/" + ftpFile.getName());
+                    if (!localFile.exists()) {
+                        localFile.mkdir();
+                    }
+                    getAllFiles(remoteDirectory + "/" + ftpFile.getName(), localDirectory + "/" + ftpFile.getName());
+                    ftpClient.chdir(remoteDirectory);
+                } else if (!ftpFile.isLink()) {
+					downloadFile(localDirectory + "/" + ftpFile.getName(),ftpFile.getName());
+                }
+            }
+        }
+
+        public void getFiles(String remoteDirectory, String localDirectory, String maskStr) throws java.io.IOException,
+                com.enterprisedt.net.ftp.FTPException, java.text.ParseException {
+            ftpClient.chdir(remoteDirectory);
+            com.enterprisedt.net.ftp.FTPFile[] ftpFiles = ftpClient.dirDetails(".");
+            for (com.enterprisedt.net.ftp.FTPFile ftpFile : ftpFiles) {
+                if (!ftpFile.isDir() && !ftpFile.isLink()) {
+                    if (ftpFile.getName().matches(maskStr)) {
+                        downloadFile(localDirectory + "/" + ftpFile.getName(),ftpFile.getName());
+                        count++;
+                    }
+                }
+            }
+        }
+        
+        public void chdir(String path) throws java.io.IOException, 
+        		com.enterprisedt.net.ftp.FTPException{
+			ftpClient.chdir(path);
+		}
+		
+		public String pwd() throws java.io.IOException, 
+				com.enterprisedt.net.ftp.FTPException{
+			return ftpClient.pwd();
+		}
+        
+        private void downloadFile(String localFileName, String remoteFileName) throws java.io.IOException,
+                com.enterprisedt.net.ftp.FTPException {
+        	java.io.File localFile = new java.io.File(localFileName);
 <%
-    for (int i=0; i<files.size(); i++) {
-       Map<String, String> line = files.get(i);
+	if(overwrite.equals("never")){
+%>
+			if (!localFile.exists()) {
+                ftpClient.get(localFileName, remoteFileName);
+            }
+<%
+	}else if(overwrite.equals("always")){
+%>
+			ftpClient.get(localFileName, remoteFileName);
+<%
+	}else if(overwrite.equals("size_differ")){
+%>
+			if(localFile.exists()){
+        		long ftpSize=ftpFile.size();
+        		long localSize=localFile.length();
+        		if(ftpSize!=localSize)
+        		{
+        	 		ftpClient.get(localFileName, remoteFileName);
+        		}
+        	}else{
+        		ftpClient.get(localFileName, remoteFileName);
+        	}
+<%
+	}
+%>
+            count++;
+        }
+    }
+    
+	com.enterprisedt.net.ftp.FTPClient ftp_<%=cid %> = new com.enterprisedt.net.ftp.FTPClient();
+	ftp_<%=cid %>.setRemoteHost(<%=host %>);
+	ftp_<%=cid %>.setRemotePort(<%=port %>);
+	ftp_<%=cid %>.connect();
+    ftp_<%=cid %>.login(<%=user %>, <%=pass %>);  
+    
+    FTPGetter_<%=cid%> getter_<%=cid%> = new FTPGetter_<%=cid%>();
+    getter_<%=cid%>.ftpClient = ftp_<%=cid %>;
+    String remotedir_<%=cid %> = <%=remotedir%>;
+	ftp_<%=cid %>.chdir(remotedir_<%=cid %>);
+<%
+}
+// *** share code *** //
+%>
+	java.util.List<String> maskList_<%=cid %> = new java.util.ArrayList<String>();
+<%
+for (int i=0; i<files.size(); i++) {
+   Map<String, String> line = files.get(i);
 %>    
-	java.util.Map<String,String> map<%=cid %><%=i %> = new java.util.HashMap<String,String>();	
-	map<%=cid %><%=i %>.put(<%= line.get("FILEMASK") %>,"");
-	list<%=cid %>.add(map<%=cid %><%=i %>);       
+	maskList_<%=cid %>.add(<%= line.get("FILEMASK") %>);       
 <%
-  }
+}
 %>	
-	String remotedir<%=cid %> = <%=remotedir%>;
-	ftp<%=cid %>.chdir(remotedir<%=cid %>);
+
 	
-<%}%>
