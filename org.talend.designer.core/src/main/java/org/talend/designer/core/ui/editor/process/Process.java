@@ -1591,7 +1591,7 @@ public class Process extends Element implements IProcess2 {
                  */
                 @Override
                 public void execute(Command command) {
-
+                    command.execute();
                 }
             };
         }
