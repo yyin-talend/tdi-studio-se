@@ -53,7 +53,7 @@
       FIELD="MEMO"
       NUM_ROW="20"
     >
-      <DEFAULT>"^\\[(\\w+)\\]([^\\[]+)\\[priority:\\s*(\\w+)\\]\\s*\\[place:\\s*(\\w+)\\]"</DEFAULT>
+      <DEFAULT>"^\\[(\\w+)\\]([^\\[]+)\\[priority:\\s*(\\w+)\\]\\s*\\[place:\\s*([^\\]]+)\\]"</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
