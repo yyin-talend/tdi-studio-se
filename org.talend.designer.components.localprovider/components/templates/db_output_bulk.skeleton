@@ -1116,6 +1116,40 @@ public class CLASS {
         }
         protected String getRProtectedChar() {
             return "";
+        }
+        public String getUpdateBulkSQL(List<IMetadataColumn> columnList) {
+            StringBuilder updateBulkSQL = new StringBuilder();
+            StringBuilder updateSetStmt = new StringBuilder();
+            StringBuilder updateWhereStmt = new StringBuilder();
+            updateBulkSQL.append("UPDATE " + getLProtectedChar() + "\" +  tableName_" + cid + " + \"" + getRProtectedChar() + " a");
+            boolean firstKeyColumn = true;
+            boolean firstUpdateColumn = true;
+            String keySeparator = null;
+            String updateSeparator = null;
+            for(IMetadataColumn column : columnList) {
+                if(column.isKey()) {
+                    if(firstKeyColumn) {
+                        keySeparator = "";
+                        firstKeyColumn = false;
+                        updateWhereStmt.append(" FROM " + getLProtectedChar() + "\" + tmpTableName_" + cid + " + \"" + getRProtectedChar() + " b WHERE ");
+                    } else {
+                        keySeparator = " AND ";
+                    }
+                    updateWhereStmt.append(keySeparator);                    
+                    updateWhereStmt.append("a." + getLProtectedChar() + column.getOriginalDbColumnName() + getRProtectedChar() + " = b." + getLProtectedChar() + column.getLabel() + getRProtectedChar());
+                } else {
+                    if(firstUpdateColumn) {
+                        updateSeparator = "";
+                        firstUpdateColumn = false;
+                        updateSetStmt.append(" SET ");
+                    } else {
+                        updateSeparator = ", ";
+                    }
+                    updateSetStmt.append(updateSeparator);
+                    updateSetStmt.append("a." + getLProtectedChar() + column.getLabel() + getRProtectedChar() + " = b." + getLProtectedChar() + column.getLabel() + getRProtectedChar());
+                }
+            }
+            return updateBulkSQL.toString() + updateSetStmt.toString() + updateWhereStmt.toString();            
         }        
     }
     

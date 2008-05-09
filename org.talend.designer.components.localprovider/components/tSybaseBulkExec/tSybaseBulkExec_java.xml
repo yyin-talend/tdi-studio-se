@@ -167,7 +167,18 @@
    </PARAMETERS>
    
    <ADVANCED_PARAMETERS>
-   	    <PARAMETER
+    <PARAMETER
+      NAME="DATA_ACTION"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="5"
+    >
+      <ITEMS DEFAULT="INSERT">
+        <ITEM NAME="INSERT" VALUE="INSERT"/>
+        <ITEM NAME="UPDATE" VALUE="UPDATE"/>
+      </ITEMS>
+    </PARAMETER>    
+    
+    <PARAMETER
       NAME="FIELDS_TERMINATOR"
       FIELD="TEXT"
       NUM_ROW="8"
