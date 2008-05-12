@@ -1121,7 +1121,7 @@ public class CLASS {
             StringBuilder updateBulkSQL = new StringBuilder();
             StringBuilder updateSetStmt = new StringBuilder();
             StringBuilder updateWhereStmt = new StringBuilder();
-            updateBulkSQL.append("UPDATE " + getLProtectedChar() + "\" +  tableName_" + cid + " + \"" + getRProtectedChar() + " a");
+            updateBulkSQL.append("UPDATE " + getLProtectedChar() + "\" +  tableName_" + cid + " + \"" + getRProtectedChar());
             boolean firstKeyColumn = true;
             boolean firstUpdateColumn = true;
             String keySeparator = null;
@@ -1131,22 +1131,22 @@ public class CLASS {
                     if(firstKeyColumn) {
                         keySeparator = "";
                         firstKeyColumn = false;
-                        updateWhereStmt.append(" FROM " + getLProtectedChar() + "\" + tmpTableName_" + cid + " + \"" + getRProtectedChar() + " b WHERE ");
+                        updateWhereStmt.append(" FROM " + getLProtectedChar() + "\" + tmpTableName_" + cid + " + \"" + getRProtectedChar() + " WHERE \" + \"");
                     } else {
                         keySeparator = " AND ";
                     }
                     updateWhereStmt.append(keySeparator);                    
-                    updateWhereStmt.append("a." + getLProtectedChar() + column.getOriginalDbColumnName() + getRProtectedChar() + " = b." + getLProtectedChar() + column.getLabel() + getRProtectedChar());
+                    updateWhereStmt.append(getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar() + "." + getLProtectedChar() + "\" + \"" + column.getLabel() + "\" + \"" + getRProtectedChar() + " = " + getLProtectedChar() + "\" + tmpTableName_" + cid + " + \"" + getRProtectedChar() + "." + getLProtectedChar() + "\" + \"" + column.getLabel() + "\" + \"" + getRProtectedChar());
                 } else {
                     if(firstUpdateColumn) {
                         updateSeparator = "";
                         firstUpdateColumn = false;
-                        updateSetStmt.append(" SET ");
+                        updateSetStmt.append(" SET \" + \"");
                     } else {
                         updateSeparator = ", ";
                     }
                     updateSetStmt.append(updateSeparator);
-                    updateSetStmt.append("a." + getLProtectedChar() + column.getLabel() + getRProtectedChar() + " = b." + getLProtectedChar() + column.getLabel() + getRProtectedChar());
+                    updateSetStmt.append(getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar() + "." + getLProtectedChar() + "\" + \"" + column.getLabel() + "\" + \"" + getRProtectedChar() + " = " + getLProtectedChar() + "\" + tmpTableName_" + cid + " + \"" + getRProtectedChar() + "." + getLProtectedChar() + "\" + \"" + column.getLabel() + "\" + \"" + getRProtectedChar());
                 }
             }
             return updateBulkSQL.toString() + updateSetStmt.toString() + updateWhereStmt.toString();            
