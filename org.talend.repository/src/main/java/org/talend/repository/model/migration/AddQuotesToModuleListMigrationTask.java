@@ -65,7 +65,7 @@ public class AddQuotesToModuleListMigrationTask extends AbstractJobMigrationTask
             EList elementParameterList = type.getElementParameter();
             for (Object object3 : elementParameterList) {
                 ElementParameterType elemType = (ElementParameterType) object3;
-                if (elemType.getField().equals("MODULE_LIST") && elemType.getName().equals("LIBRARY")) {
+                if (elemType.getField().equals("MODULE_LIST")) {
                     String value = elemType.getValue();
                     if (!isWithinQuote(value)) {
                         elemType.setValue(TalendTextUtils.addQuotes(value));

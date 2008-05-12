@@ -2505,7 +2505,8 @@ public class Process extends Element implements IProcess2 {
                 if (curParam.getField().equals(EParameterFieldType.MODULE_LIST)) {
                     if (!"".equals(curParam.getValue())) { // if the parameter
                         // is not empty.
-                        neededLibraries.add((String) curParam.getValue());
+                        neededLibraries.add(((String) curParam.getValue()).replaceAll(TalendTextUtils.QUOTATION_MARK, "")
+                                .replaceAll(TalendTextUtils.SINGLE_QUOTE, ""));
                     }
                 }
             }

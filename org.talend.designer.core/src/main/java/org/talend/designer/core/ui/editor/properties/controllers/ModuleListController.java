@@ -88,6 +88,13 @@ public class ModuleListController extends AbstractElementPropertySectionControll
                     } catch (Exception e) {
                         ExceptionHandler.process(e);
                     }
+
+                    // update the combo current value
+                    CCombo combo = (CCombo) hashCurControls.get(propertyName);
+                    if (combo != null && !combo.isDisposed()) {
+                        combo.setText(Path.fromOSString(file).lastSegment());
+                    }
+
                     return new PropertyChangeCommand(elem, propertyName, lastSegment);
                 }
             }
