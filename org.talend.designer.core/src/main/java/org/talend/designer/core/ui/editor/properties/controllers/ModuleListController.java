@@ -13,9 +13,9 @@
 package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.beans.PropertyChangeEvent;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.eclipse.core.runtime.Path;
 import org.eclipse.gef.commands.Command;
@@ -271,9 +271,10 @@ public class ModuleListController extends AbstractElementPropertySectionControll
 
     private void updateModuleList(Node node) {
         List<ModuleNeeded> moduleNeededList = ModulesNeededProvider.getModulesNeeded();
-        Set<String> moduleNameList = new HashSet<String>();
-        Set<String> moduleValueList = new HashSet<String>();
+        Set<String> moduleNameList = new TreeSet<String>();
+        Set<String> moduleValueList = new TreeSet<String>();
         for (ModuleNeeded module : moduleNeededList) {
+
             String moduleName = module.getModuleName();
             moduleNameList.add(moduleName);
             moduleValueList.add(TalendTextUtils.addQuotes(moduleName));
