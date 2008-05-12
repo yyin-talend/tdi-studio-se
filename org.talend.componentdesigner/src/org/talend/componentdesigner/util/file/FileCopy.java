@@ -94,4 +94,50 @@ public class FileCopy {
             }
         }
     }
+
+    /**
+     * DOC slanglois Comment method "copyComponentFolder".
+     * 
+     * @param sourceComponentFolder
+     * @param targetComponentFolder
+     */
+    public static void copyComponentFolder(String sourceComponentFolder, String targetComponentFolder) {
+        try {
+            File targetFolder = new File(targetComponentFolder);
+            if (!targetFolder.exists()) {
+                targetFolder.mkdirs();
+            }
+            File sourceFolder = new File(sourceComponentFolder);
+            String[] file = sourceFolder.list();
+            File temp = null;
+            for (int i = 0; i < file.length; i++) {
+                if (sourceComponentFolder.endsWith(File.separator)) {
+                    temp = new File(sourceComponentFolder + file[i]);
+                } else {
+                    temp = new File(sourceComponentFolder + File.separator + file[i]);
+                }
+
+                if (temp.isFile() && !file[i].startsWith(".")) { //$NON-NLS-1$
+                    FileInputStream input = new FileInputStream(temp);
+                    FileOutputStream output = new FileOutputStream(targetComponentFolder + File.separator
+                            + (temp.getName()).toString());
+                    byte[] b = new byte[1024];
+                    int len;
+                    while ((len = input.read(b)) != -1) {
+                        output.write(b, 0, len);
+                    }
+                    output.flush();
+                    output.close();
+                    input.close();
+                }
+                if (temp.isDirectory()) {// copy subfolder
+                    copyComponentFolder(sourceComponentFolder + File.separator + file[i], targetComponentFolder + File.separator
+                            + file[i]);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+    }
 }
