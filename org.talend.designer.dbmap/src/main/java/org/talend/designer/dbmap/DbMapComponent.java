@@ -333,8 +333,8 @@ public class DbMapComponent extends AbstractMapComponent {
         if (externalData != null) {
             List<ExternalDbMapTable> outputTables = externalData.getOutputTables();
             for (ExternalDbMapTable table : outputTables) {
-                if (table.getName().equals(oldName)) {
-                    table.setName(newName);
+                if (table.getTableName() != null && table.getTableName().equals(oldName)) {
+                    table.setTableName(newName);
                 }
             }
         }
@@ -388,8 +388,7 @@ public class DbMapComponent extends AbstractMapComponent {
         List<ExternalDbMapTable> tables = new ArrayList<ExternalDbMapTable>(externalData.getInputTables());
         tables.addAll(new ArrayList<ExternalDbMapTable>(externalData.getVarsTables()));
         tables.addAll(new ArrayList<ExternalDbMapTable>(externalData.getOutputTables()));
-        DataMapExpressionParser dataMapExpressionParser = new DataMapExpressionParser(getGenerationManager()
-                .getLanguage());
+        DataMapExpressionParser dataMapExpressionParser = new DataMapExpressionParser(getGenerationManager().getLanguage());
         // loop on all tables
         for (ExternalDbMapTable table : tables) {
             List<ExternalDbMapEntry> metadataTableEntries = table.getMetadataTableEntries();
@@ -407,8 +406,8 @@ public class DbMapComponent extends AbstractMapComponent {
         } // for (ExternalMapperTable table : tables) {
     }
 
-    public void replaceLocation(TableEntryLocation oldLocation, TableEntryLocation newLocation,
-            ExternalDbMapEntry entry, DataMapExpressionParser dataMapExpressionParser, boolean tableRenamed) {
+    public void replaceLocation(TableEntryLocation oldLocation, TableEntryLocation newLocation, ExternalDbMapEntry entry,
+            DataMapExpressionParser dataMapExpressionParser, boolean tableRenamed) {
         String currentExpression = entry.getExpression();
         if (currentExpression == null || currentExpression.length() == 0) {
             return;
@@ -422,8 +421,7 @@ public class DbMapComponent extends AbstractMapComponent {
                 newLocation.columnName = currentLocation.columnName;
             }
             if (currentLocation.equals(oldLocation)) {
-                currentExpression = dataMapExpressionParser.replaceLocation(currentExpression, currentLocation,
-                        newLocation);
+                currentExpression = dataMapExpressionParser.replaceLocation(currentExpression, currentLocation, newLocation);
             }
         } // for (int i = 0; i < tableEntryLocations.length; i++) {
         entry.setExpression(currentExpression);
@@ -455,7 +453,7 @@ public class DbMapComponent extends AbstractMapComponent {
         IElementParameter elementParameter = getElementParameter("COMPONENT_NAME");
         String value = (String) elementParameter.getValue();
         DbGenerationManager dbGenerationManager = null;
-        if("tELTTeradataMap".equals(value)) {
+        if ("tELTTeradataMap".equals(value)) {
             dbGenerationManager = new TeradataGenerationManager();
         } else {
             throw new IllegalArgumentException("Value of element parameter NAME is unknown :" + value);
@@ -463,7 +461,9 @@ public class DbMapComponent extends AbstractMapComponent {
         return dbGenerationManager;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.process.IExternalNode#getComponentDocumentation(java.lang.String, java.lang.String)
      */
     public IComponentDocumentation getComponentDocumentation(String componentName, String tempFolderPath) {
@@ -477,7 +477,6 @@ public class DbMapComponent extends AbstractMapComponent {
         return componentDocumentation;
     }
 
-    
     /**
      * 
      * DOC amaumont Comment method "hasOrRenameData".
@@ -491,7 +490,7 @@ public class DbMapComponent extends AbstractMapComponent {
         if (oldName == null || newName == null && renameAction) {
             throw new NullPointerException();
         }
-        
+
         PatternCompiler compiler = new Perl5Compiler();
         PatternMatcher matcher = new Perl5Matcher();
         ((Perl5Matcher) matcher).setMultiline(true);
@@ -513,16 +512,17 @@ public class DbMapComponent extends AbstractMapComponent {
 
                 List<ExternalDbMapEntry> metadataTableEntries = table.getMetadataTableEntries();
 
-//                if (table.getExpressionFilter() != null) {
-//                    if (renameAction) {
-//                        String expression = renameDataIntoExpression(pattern, matcher, substitution, table.getExpressionFilter());
-//                        table.setExpressionFilter(expression);
-//                    } else {
-//                        if (hasDataIntoExpression(pattern, matcher, table.getExpressionFilter())) {
-//                            return true;
-//                        }
-//                    }
-//                }
+                // if (table.getExpressionFilter() != null) {
+                // if (renameAction) {
+                // String expression = renameDataIntoExpression(pattern, matcher, substitution,
+                // table.getExpressionFilter());
+                // table.setExpressionFilter(expression);
+                // } else {
+                // if (hasDataIntoExpression(pattern, matcher, table.getExpressionFilter())) {
+                // return true;
+                // }
+                // }
+                // }
 
                 if (metadataTableEntries != null) {
                     // loop on all entries of current table
@@ -560,6 +560,5 @@ public class DbMapComponent extends AbstractMapComponent {
         }
         return false;
     }
-
 
 }
