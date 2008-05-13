@@ -3,7 +3,7 @@
   imports="
   org.talend.core.model.process.INode
   org.talend.core.model.temp.ECodePart  
-        org.talend.core.model.process.ElementParameterParser
+  org.talend.core.model.process.ElementParameterParser
   org.talend.core.model.process.IConnection 
   org.talend.core.model.metadata.IMetadataTable
   org.talend.core.model.metadata.IMetadataColumn 
@@ -11,6 +11,7 @@
   org.talend.core.model.process.IExternalNode
   org.talend.designer.codegen.config.CodeGeneratorArgument
   org.talend.designer.codegen.config.NodesSubTree
+  org.talend.core.model.process.IProcess
   java.util.List
   java.util.Set
   java.util.HashSet
@@ -21,6 +22,8 @@
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
+IProcess process = node.getProcess();
+ 
 NodesSubTree subTree = (NodesSubTree) codeGenArgument.getSubTree();
 ECodePart codePart = codeGenArgument.getCodePart();
 boolean trace = codeGenArgument.isTrace();
@@ -169,7 +172,7 @@ end_Hash.put("<%=node.getUniqueName() %>", System.currentTimeMillis());
 			@Override
 			public Object put(String key, Object value) {
 				myMap.put(key, value);
-				return tFileListParallel.globalMap.put(key, value);
+				return <%=process.getName()%>.globalMap.put(key, value);
 			}
 		}
 
