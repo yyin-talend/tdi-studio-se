@@ -351,7 +351,14 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
                 commandStack = (CommandStack) editor.getAdapter(CommandStack.class);
             }
         }
-        commandStack.execute(cmd);
+
+        if (commandStack != null) {
+            commandStack.execute(cmd);
+        } else {
+            // Execute self
+            cmd.execute();
+        }
+
     }
 
     /**

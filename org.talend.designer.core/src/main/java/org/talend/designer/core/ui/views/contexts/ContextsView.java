@@ -120,7 +120,7 @@ public class ContextsView extends ViewPart {
         contextComposite.refresh();
     }
 
-    public void updateContextView(boolean isBuildIn, boolean isDisposeAll) {
+    public void updateContextView(boolean isBuildIn, boolean isDisposeAll, boolean refreshView) {
         getPart();
         if (part != null) {
             boolean modified = updateContextFromRepository();
@@ -129,7 +129,15 @@ public class ContextsView extends ViewPart {
             }
         }
         contextComposite.setReadOnly(!isBuildIn);
-        contextComposite.refresh();
+
+        if (refreshView) {
+            contextComposite.refresh();
+        }
+
+    }
+
+    public void updateContextView(boolean isBuildIn, boolean isDisposeAll) {
+        updateContextView(isBuildIn, isDisposeAll, true);
     }
 
     public void refresh() {
