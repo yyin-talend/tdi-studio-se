@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.repository.ui.actions;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,6 +42,7 @@ import org.talend.expressionbuilder.ExpressionPersistance;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.JobletReferenceBean;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
@@ -50,6 +50,7 @@ import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.actions.metadata.DeleteTableAction;
+import org.talend.repository.ui.dialog.JobletReferenceDialog;
 
 /**
  * Action used to delete object from repository. This action manages logical and physical deletions.<br/>
@@ -133,9 +134,10 @@ public class DeleteAction extends AContextualAction {
      * @param currentJobNode
      * @return
      */
-    private List<String> checkRepositoryNodeFromProcess(IProxyRepositoryFactory factory, RepositoryNode currentJobNode) {
+    private List<JobletReferenceBean> checkRepositoryNodeFromProcess(IProxyRepositoryFactory factory,
+            RepositoryNode currentJobNode) {
         IRepositoryObject object = currentJobNode.getObject();
-        List<String> list = new ArrayList<String>();
+        List<JobletReferenceBean> list = new ArrayList<JobletReferenceBean>();
         if (object != null) {
             Property property = object.getProperty();
             if (property != null) {
@@ -149,19 +151,25 @@ public class DeleteAction extends AContextualAction {
                         repositoryObjects.addAll(all);
                         all = factory.getAll(ERepositoryObjectType.JOBLET, true);
                         repositoryObjects.addAll(all);
-                        String prefix = "";
+                        // String prefix = "";
                         for (IRepositoryObject repositoryObject : repositoryObjects) {
                             Property property2 = repositoryObject.getProperty();
                             EList node = null;
+
+                            boolean isDelete = factory.getStatus(repositoryObject) == ERepositoryStatus.DELETED;
+                            boolean isJob = true;
+
                             if (property2.getItem() instanceof ProcessItem) {
                                 ProcessItem item2 = (ProcessItem) property2.getItem();
                                 node = item2.getProcess().getNode();
-                                prefix = ERepositoryObjectType.PROCESS.toString();
+                                // prefix = ERepositoryObjectType.PROCESS.toString();
                             } else if (property2.getItem() instanceof JobletProcessItem) {
                                 JobletProcessItem item2 = (JobletProcessItem) property2.getItem();
                                 node = item2.getJobletProcess().getNode();
-                                prefix = ERepositoryObjectType.JOBLET.toString();
+                                // prefix = ERepositoryObjectType.JOBLET.toString();
+                                isJob = false;
                             }
+
                             if (node != null) {
                                 for (Object object2 : node) {
                                     if (object2 instanceof NodeType) {
@@ -171,11 +179,24 @@ public class DeleteAction extends AContextualAction {
                                                 && nodeType.getComponentVersion().equals(version);
                                         if (equals) {
                                             String path = property2.getItem().getState().getPath();
-                                            if (path.length() > 0) {
-                                                path = path + File.separator;
+                                            // if (path.length() > 0) {
+                                            // path = path + File.separator;
+                                            // }
+                                            boolean found = false;
+                                            JobletReferenceBean bean = new JobletReferenceBean(property2.getLabel(), property2
+                                                    .getVersion(), path);
+                                            bean.setJobFlag(isJob, isDelete);
+
+                                            for (JobletReferenceBean b : list) {
+                                                if (b.toString().equals(bean.toString())) {
+                                                    found = true;
+                                                    b.addNodeNum();
+                                                    break;
+                                                }
                                             }
-                                            list.add(prefix + " : " + path + property2.getLabel() + " " + property2.getVersion()
-                                                    + "\n");
+                                            if (!found) {
+                                                list.add(bean);
+                                            }
                                         }
                                     }
                                 }
@@ -239,15 +260,11 @@ public class DeleteAction extends AContextualAction {
         boolean needReturn = false;
         IRepositoryObject objToDelete = currentJobNode.getObject();
 
-        List<String> checkRepository = checkRepositoryNodeFromProcess(factory, currentJobNode);
+        List<JobletReferenceBean> checkRepository = checkRepositoryNodeFromProcess(factory, currentJobNode);
         if (checkRepository.size() > 0) {
-            StringBuffer buffer = new StringBuffer();
-            for (String string : checkRepository) {
-                buffer.append(string);
-            }
-            MessageDialog.openInformation(new Shell(), "Delete the node Failure", "Node : '"
-                    + objToDelete.getProperty().getLabel() + " " + objToDelete.getProperty().getVersion()
-                    + "' is referenced from:\n" + buffer.toString());
+            JobletReferenceDialog dialog = new JobletReferenceDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                    .getShell(), objToDelete, checkRepository);
+            dialog.open();
             return true;
         }
         // To manage case of we have a subitem. This is possible using 'DEL' shortcut:
