@@ -103,13 +103,13 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         @Override
         public void notifyChanged(Notification notification) {
             if (notification.getEventType() != Notification.REMOVING_ADAPTER) {
-//                propertyIsDirty = true;
+                // propertyIsDirty = true;
                 designerEditor.getProperty().eAdapters().remove(dirtyListener);
                 process.updateProperties();
                 designerEditor.getProperty().eAdapters().add(dirtyListener);
 
-                if(Display.getCurrent()!=null){
-                    propertyIsDirty=true;
+                if (Display.getCurrent() != null) {
+                    propertyIsDirty = true;
                     firePropertyChange(IEditorPart.PROP_DIRTY);
                 }
             }
@@ -362,7 +362,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
     /**
      * DOC bqian Comment method "generateCode".
      */
-    private void generateCode() {
+    protected void generateCode() {
         if (process.getGeneratingNodes().size() != 0) {
             Job job = new AccessingEmfJob("Generating code") {
 
