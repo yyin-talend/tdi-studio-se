@@ -120,6 +120,9 @@ public class DuplicateAction extends AContextualAction {
 
         final TreeSelection selectionInClipboard = (TreeSelection) selection;
 
+        // see feature 0001563: Display "Save job" prompt when "copy" action for a job is requested.
+        promptForSavingIfNecessary((RepositoryNode) selection.getFirstElement());
+
         String jobNameValue = null;
 
         try {

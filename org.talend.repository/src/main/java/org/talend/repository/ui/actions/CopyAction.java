@@ -50,6 +50,10 @@ public class CopyAction extends AContextualAction {
     @Override
     public void run() {
         IStructuredSelection selection = (IStructuredSelection) getSelection();
+
+        // see feature 0001563: Display "Save job" prompt when "copy" action for a job is requested.
+        promptForSavingIfNecessary((RepositoryNode) selection.getFirstElement());
+
         LocalSelectionTransfer.getTransfer().setSelection(selection);
         LocalSelectionTransfer.getTransfer().setSelectionSetTime(System.currentTimeMillis());
         refresh();
