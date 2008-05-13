@@ -134,6 +134,8 @@ public class Process extends Element implements IProcess2 {
 
     public static final String DEFAULT_TABLE_CONNECTION_NAME = "table"; //$NON-NLS-1$
 
+    public static final String DEFAULT_ITERATE_CONNECTION_NAME = "iterate"; //$NON-NLS-1$
+
     protected List<Node> nodes = new ArrayList<Node>();
 
     protected List<Element> elem = new ArrayList<Element>();
@@ -453,8 +455,9 @@ public class Process extends Element implements IProcess2 {
      */
     private List<Node> sortNodes(List<Node> nodes) {
 
-        if (nodes == null || nodes.size() <= 1)
+        if (nodes == null || nodes.size() <= 1) {
             return nodes;
+        }
 
         List<Node> res = new ArrayList<Node>();
 
@@ -595,7 +598,7 @@ public class Process extends Element implements IProcess2 {
         return false;
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     private void saveElementParameters(TalendFileFactory fileFact, List<? extends IElementParameter> paramList,
             EList listParamType, ProcessType process) {
         IElementParameter param;
@@ -670,7 +673,7 @@ public class Process extends Element implements IProcess2 {
         listParamType.add(pType);
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     private void loadElementParameters(Element elemParam, EList listParamType) {
         ElementParameterType pType;
 
@@ -907,8 +910,8 @@ public class Process extends Element implements IProcess2 {
             cType.setLabel(connec.getName());
             cType.setLineStyle(connec.getLineStyleId());
             cType.setConnectorName(connec.getConnectorName());
-            cType.setOffsetLabelX(connec.getConnectionLabel().getOffset().x); //$NON-NLS-1$
-            cType.setOffsetLabelY(connec.getConnectionLabel().getOffset().y); //$NON-NLS-1$
+            cType.setOffsetLabelX(connec.getConnectionLabel().getOffset().x);
+            cType.setOffsetLabelY(connec.getConnectionLabel().getOffset().y);
             cType.setMetaname(connec.getMetaName());
             int id = connec.getOutputId();
             if (id >= 0) {
@@ -1751,7 +1754,7 @@ public class Process extends Element implements IProcess2 {
         return readOnlyLocal;
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     public void setReadOnly(boolean readOnly) {
         this.readOnly = readOnly;
 
@@ -2034,7 +2037,7 @@ public class Process extends Element implements IProcess2 {
         }
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     private void setActivateSubjob(INode node, boolean active, INode activateNode, boolean oneComponent) {
         INode mainSubProcess = node.getSubProcessStartNode(false);
 
@@ -2378,7 +2381,7 @@ public class Process extends Element implements IProcess2 {
 
                     String regexp = componentName.substring("REGEXP:".length());
                     try {
-                        pattern = compiler.compile(regexp); //$NON-NLS-1$
+                        pattern = compiler.compile(regexp);
                         if (matcher.matches(node.getComponent().getName(), pattern)) {
                             matchingNodes.add(node);
                         }
@@ -2547,7 +2550,7 @@ public class Process extends Element implements IProcess2 {
      */
     public AbstractMultiPageTalendEditor getEditor() {
         if (this.editor instanceof AbstractMultiPageTalendEditor) {
-            return (AbstractMultiPageTalendEditor) this.editor;
+            return this.editor;
         }
         return null;
     }

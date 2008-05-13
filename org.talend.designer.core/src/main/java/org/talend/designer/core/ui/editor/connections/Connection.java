@@ -152,7 +152,7 @@ public class Connection extends Element implements IConnection, IPerformance {
             IElementParameter param = new ElementParameter(this);
             param.setField(EParameterFieldType.CHECK);
             param.setCategory(EComponentCategory.BASIC);
-            param.setValue(Boolean.FALSE); //$NON-NLS-1$
+            param.setValue(Boolean.FALSE);
             param.setName("ENABLE_PARALLEL");
             param.setDisplayName("Enable parallel execution");
             param.setShow(true);
@@ -441,6 +441,12 @@ public class Connection extends Element implements IConnection, IPerformance {
                 }
                 metaName = uniqueName;
                 // }
+            } else if (lineStyle.equals(EConnectionType.ITERATE)) {
+                // see 3680, the iterate link must have a unique name.
+                if (!uniqueName.startsWith(Process.DEFAULT_TABLE_CONNECTION_NAME)) {
+                    uniqueName = source.getProcess().generateUniqueConnectionName(Process.DEFAULT_ITERATE_CONNECTION_NAME);
+
+                }
             }
             if ((lineStyle.equals(EConnectionType.TABLE) && sourceNodeConnector.isBuiltIn())
                     || lineStyle.hasConnectionCategory(IConnectionCategory.UNIQUE_NAME)) {
