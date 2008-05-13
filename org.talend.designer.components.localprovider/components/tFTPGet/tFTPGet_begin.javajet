@@ -172,6 +172,7 @@
         public void getAllFiles(String remoteDirectory, String localDirectory) throws java.io.IOException,
                 com.enterprisedt.net.ftp.FTPException, java.text.ParseException {
             ftpClient.chdir(remoteDirectory);
+            String path = ftpClient.pwd();
             com.enterprisedt.net.ftp.FTPFile[] ftpFiles = ftpClient.dirDetails(".");
             for (com.enterprisedt.net.ftp.FTPFile ftpFile : ftpFiles) {
                 if (ftpFile.isDir()) {
@@ -179,8 +180,8 @@
                     if (!localFile.exists()) {
                         localFile.mkdir();
                     }
-                    getAllFiles(remoteDirectory + "/" + ftpFile.getName(), localDirectory + "/" + ftpFile.getName());
-                    ftpClient.chdir(remoteDirectory);
+                    getAllFiles(path + "/" + ftpFile.getName(), localDirectory + "/" + ftpFile.getName());
+                    ftpClient.chdir(path);
                 } else if (!ftpFile.isLink()) {
 					downloadFile(localDirectory + "/" + ftpFile.getName(),ftpFile.getName());
                 }
