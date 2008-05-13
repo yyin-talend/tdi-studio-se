@@ -33,11 +33,11 @@ public class ConnectionPerformance extends Element {
 
     public static final String LABEL_PROP = "label.prop";
 
-    private String label = "";
+    protected String label = "";
 
     private Point offset;
 
-    private Connection connection;
+    protected Connection connection;
 
     /**
      * Constructor.
@@ -99,10 +99,9 @@ public class ConnectionPerformance extends Element {
                     + "<b>{2,number,#.##} rows/s</b>" + "</font>"; //$NON-NLS-1$ //$NON-NLS-2$
             long lineCount = perf.getLineCount();
             long processingTime = perf.getProcessingTime();
-            double avg = processingTime > 0 ? (double) lineCount * 1000d / (double) processingTime : 0d;
+            double avg = processingTime > 0 ? lineCount * 1000d / processingTime : 0d;
             MessageFormat mf = new MessageFormat(perfPattern, Locale.US);
-            html.append(mf.format(new Object[] { new Long(lineCount), new Double((double) processingTime / 1000d),
-                    new Double(avg) }));
+            html.append(mf.format(new Object[] { new Long(lineCount), new Double(processingTime / 1000d), new Double(avg) }));
         } else if (IPerformanceData.ACTION_START.equals(perf.getAction())) {
             final String perfPattern = "<font color='#AA3322'>" + "<i>Starting</i>" + "</font>"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             html.append(perfPattern);
@@ -111,10 +110,9 @@ public class ConnectionPerformance extends Element {
                     + "<i>{2,number,#.##} rows/s</i>" + "</font>"; //$NON-NLS-1$ //$NON-NLS-2$
             long lineCount = perf.getLineCount();
             long processingTime = perf.getProcessingTime();
-            double avg = processingTime > 0 ? (double) lineCount * 1000d / (double) processingTime : 0d;
+            double avg = processingTime > 0 ? lineCount * 1000d / processingTime : 0d;
             MessageFormat mf = new MessageFormat(perfPattern);
-            html.append(mf.format(new Object[] { new Long(lineCount), new Double((double) processingTime / 1000d),
-                    new Double(avg) }));
+            html.append(mf.format(new Object[] { new Long(lineCount), new Double(processingTime / 1000d), new Double(avg) }));
         }
 
         return html.toString();
