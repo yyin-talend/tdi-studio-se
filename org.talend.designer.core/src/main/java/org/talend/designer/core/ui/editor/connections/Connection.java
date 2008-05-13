@@ -443,9 +443,8 @@ public class Connection extends Element implements IConnection, IPerformance {
                 // }
             } else if (lineStyle.equals(EConnectionType.ITERATE)) {
                 // see 3680, the iterate link must have a unique name.
-                if (!uniqueName.startsWith(Process.DEFAULT_TABLE_CONNECTION_NAME)) {
+                if (!uniqueName.startsWith(Process.DEFAULT_ITERATE_CONNECTION_NAME)) {
                     uniqueName = source.getProcess().generateUniqueConnectionName(Process.DEFAULT_ITERATE_CONNECTION_NAME);
-
                 }
             }
             if ((lineStyle.equals(EConnectionType.TABLE) && sourceNodeConnector.isBuiltIn())
@@ -475,7 +474,7 @@ public class Connection extends Element implements IConnection, IPerformance {
     public void disconnect() {
         if (isConnected) {
             if (!sourceNodeConnector.isBuiltIn()) {
-                if (lineStyle.hasConnectionCategory(IConnectionCategory.CUSTOM_NAME)) {
+                if (lineStyle.hasConnectionCategory(IConnectionCategory.CUSTOM_NAME) || lineStyle.equals(EConnectionType.ITERATE)) {
                     source.getProcess().removeUniqueConnectionName(uniqueName);
                 }
             }
