@@ -63,12 +63,35 @@
 	        int lstSizeInputs = inputTablesList.size();
 	        
 	        if(lstSizeInputs > 1) {
-	        	ExternalMapperTable nextLookup = inputTablesList.get(1);
-	        	if(nextLookup.isPersistent() && hNameToConnection.get(nextLookup.getName()) != null) {
+	        	String mainTableName = inputTablesList.get(0).getName();
+	    
+	    		String tmpJoinedTableNames = "";    	
+	    		String joinedTableNames = "";    	
+	    		int tmpIndexLastJoined = -1;
+	    		boolean hasPersistentLookup = false;
+		        for (int i = 0; i < lstSizeInputs; i++) {
+		            ExternalMapperTable inputTable = (ExternalMapperTable) inputTablesList.get(i);
+
+					if(hNameToConnection.get(inputTable.getName()) != null) {
+	        			if(inputTable.isPersistent() 
+		        			&& !"ALL_ROWS".equals(inputTable.getMatchingMode()) 
+	        			) {
+		        			tmpJoinedTableNames = joinedTableNames;
+	        				tmpIndexLastJoined = i;
+	        				hasPersistentLookup = true;
+	        			}
+
+	        			joinedTableNames += ((i > 0) ? "__" : "") + inputTable.getName();
+	        		}
+
+	        	}
+
+	        	if(hasPersistentLookup) {
 				%>
-					fsi_<%= inputTablesList.get(0).getName() %>.endGet();
+					fsi_<%= tmpJoinedTableNames %>.endGet();
 				<%
 	        	}
+	        	
 	        }
 	        
 	        for (int i = 1; i < lstSizeInputs; i++) {
