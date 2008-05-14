@@ -46,6 +46,7 @@ import org.talend.designer.core.ui.action.SaveJobBeforeRunAction;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.core.ui.editor.TalendEditorPaletteFactory;
+import org.talend.designer.core.ui.editor.process.JobTemplateViewsAndProcessUtil;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.GefEditorLabelProvider;
 import org.talend.designer.core.ui.editor.properties.RepositoryValueUtils;
@@ -359,5 +360,20 @@ public class DesignerCoreService implements IDesignerCoreService {
      */
     public boolean executeUpdatesManager(List<UpdateResult> results) {
         return UpdateManagerUtils.executeUpdates(results);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.IDesignerCoreService#getProcessForJobTemplate()
+     */
+    public List<IProcess> getProcessForJobTemplate() {
+        if (JobTemplateViewsAndProcessUtil.getInstance().getHelpProcess() != null) {
+            // Everytime return a new list
+            List<IProcess> result = new ArrayList<IProcess>();
+            result.add(JobTemplateViewsAndProcessUtil.getInstance().getHelpProcess());
+            return result;
+        }
+        return null;
     }
 }

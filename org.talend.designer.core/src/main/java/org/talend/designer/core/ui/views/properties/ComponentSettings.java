@@ -12,11 +12,14 @@
 // ============================================================================
 package org.talend.designer.core.ui.views.properties;
 
+import java.util.List;
+
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.process.Element;
+import org.talend.designer.core.ui.editor.process.JobTemplateViewsAndProcessUtil;
 
 /**
  * DOC ggu class global comment. Detailled comment
@@ -42,5 +45,21 @@ public class ComponentSettings {
             }
         }
 
+        List<ComponentSettingsView> otherViews = JobTemplateViewsAndProcessUtil.getInstance().getAllViews();
+
+        if (otherViews == null || otherViews.isEmpty()) {
+            return;
+        }
+
+        for (ComponentSettingsView v : otherViews) {
+            if (v.getParent() != null && !v.getParent().isDisposed()) {
+                Element elem = v.getElement();
+                if (elem != null) {
+                    v.cleanDisplay();
+                    v.setElement(elem);
+                }
+            }
+
+        }
     }
 }
