@@ -30,6 +30,8 @@
 	MapperComponent node = (MapperComponent) codeGenArgument.getArgument();
 	boolean stats = codeGenArgument.isStatistics();
 	
+	String componentName = node.getUniqueName();
+	
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         ExternalMapperData data = (ExternalMapperData) node.getExternalData();
@@ -173,6 +175,8 @@ class  <%=className%>  {
         }
 %>
 // ###############################
+
+
 <%
 
 HashMap<String, ExternalMapperTableEntry> hExternalInputTableEntries = new HashMap<String, ExternalMapperTableEntry>();
@@ -443,13 +447,11 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
     }
 
 		
-    public void readData(DataInputStream dis) {
+    public void readData(ObjectInputStream dis) {
 
         try {
             
 			int length = 0;
-			
-			ObjectInputStream ois = null;            
 			
 			this.is__rejectedInnerJoin = dis.readBoolean();
 			
@@ -480,9 +482,15 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
            				if (length == -1) {
            	    			this.<%= connection.getName() %>__<%= column.getLabel() %> = null;
            				} else {
-               				byte[] byteArray = new byte[length];
-               				dis.read(byteArray);
-               				this.<%= connection.getName() %>__<%= column.getLabel() %> = new String(byteArray);
+           					if(length > <%= currentTableName %>Struct.commonByteArray.length) {
+           						if(length < 1024 && <%= currentTableName %>Struct.commonByteArray.length == 0) {
+	               					<%= currentTableName %>Struct.commonByteArray = new byte[1024];
+           						} else {
+	               					<%= currentTableName %>Struct.commonByteArray = new byte[2 * length];
+	               				}
+           					}
+               				dis.readFully(<%= currentTableName %>Struct.commonByteArray, 0, length);
+               				this.<%= connection.getName() %>__<%= column.getLabel() %> = new String(<%= currentTableName %>Struct.commonByteArray, 0, length);
            				}
 					<%
 				} else if(typeToGenerate.equals("java.util.Date")) {
@@ -501,17 +509,14 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
            	    			this.<%= connection.getName() %>__<%= column.getLabel() %> = null;
            				} else {
                				byte[] byteArray = new byte[length];
-               				dis.read(byteArray);
+               				dis.readFully(byteArray);
                				this.<%= connection.getName() %>__<%= column.getLabel() %> = byteArray;
            				}
 					<%
-				} else if(typeToGenerate.equals("Object")) {
+				} else if(typeToGenerate.equals("Object") || typeToGenerate.equals("BigDecimal") || typeToGenerate.equals("List")) {
 			 		hasAtLeastOneObjectType = true;
 					%>
-						if(ois == null) {
-							ois = new ObjectInputStream(dis);
-						}
-						this.<%= connection.getName() %>__<%= column.getLabel() %> = ois.readObject();
+						this.<%= connection.getName() %>__<%= column.getLabel() %> = (<%= typeToGenerate %>) dis.readObject();
 					
 					<%
 				} else {
@@ -560,9 +565,15 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
            				if (length == -1) {
            	    			this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %> = null;
            				} else {
-               				byte[] byteArray = new byte[length];
-               				dis.read(byteArray);
-               				this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %> = new String(byteArray);
+           					if(length > <%= currentTableName %>Struct.commonByteArray.length) {
+           						if(length < 1024 && <%= currentTableName %>Struct.commonByteArray.length == 0) {
+	               					<%= currentTableName %>Struct.commonByteArray = new byte[1024];
+           						} else {
+	               					<%= currentTableName %>Struct.commonByteArray = new byte[2 * length];
+	               				}
+           					}
+               				dis.readFully(<%= currentTableName %>Struct.commonByteArray, 0, length);
+               				this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %> = new String(<%= currentTableName %>Struct.commonByteArray, 0, length);
            				}
 					<%
 				} else if(typeToGenerate.equals("byte[]")) {
@@ -572,17 +583,14 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
            	    			this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %> = null;
            				} else {
                				byte[] byteArray = new byte[length];
-               				dis.read(byteArray);
+               				dis.readFully(byteArray);
                				this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %> = byteArray;
            				}
 					<%
-				} else if(typeToGenerate.equals("Object")) {
+				} else if(typeToGenerate.equals("Object") || typeToGenerate.equals("BigDecimal") || typeToGenerate.equals("List")) {
 			 		hasAtLeastOneObjectType = true;
 					%>
-						if(ois == null) {
-							ois = new ObjectInputStream(dis);
-						}
-           				this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %> = ois.readObject();
+           				this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %> = (<%= typeToGenerate %>) dis.readObject();
 					
 					<%
 				} else {
@@ -626,10 +634,8 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
         }
     }
 
-    public void writeData(DataOutputStream dos) {
+    public void writeData(ObjectOutputStream dos) {
         try {
-
-            ObjectOutputStream oos = null;
 
            	dos.writeBoolean(this.is__rejectedInnerJoin);
 
@@ -664,8 +670,9 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
 				} else if(typeToGenerate.equals("java.util.Date")) {
 					%>
 						if(this.<%= connection.getName() %>__<%= column.getLabel() %> == null) {
-			                dos.writeInt(-1);
+			                dos.writeByte(-1);
 						} else {
+               				dos.writeByte(0);
            			    	dos.writeLong(this.<%= connection.getName() %>__<%= column.getLabel() %>.getTime());
 		            	}
 					<%
@@ -678,12 +685,9 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
                				dos.write(this.<%= connection.getName() %>__<%= column.getLabel() %>);
 		            	}
 					<%
-				} else if(typeToGenerate.equals("Object")) {
+				} else if(typeToGenerate.equals("Object") || typeToGenerate.equals("BigDecimal") || typeToGenerate.equals("List")) {
 					%>
-						if(oos == null) {
-	           				oos = new ObjectOutputStream(dos);
-						}
-       			    	oos.writeObject(this.<%= connection.getName() %>__<%= column.getLabel() %>);
+       			    	dos.writeObject(this.<%= connection.getName() %>__<%= column.getLabel() %>);
 					<%
 				} else {
 					typeToGenerate =JavaTypesManager.getTypeToGenerate(column.getTalendType(), false);
@@ -727,10 +731,24 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
 				} else if(typeToGenerate.equals("java.util.Date")) {
 					%>
 						if(this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %> == null) {
-			                dos.writeInt(-1);
+			                dos.writeByte(-1);
 						} else {
+               				dos.writeByte(0);
            			    	dos.writeLong(this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %>.getTime());
 		            	}
+					<%
+				} else if(typeToGenerate.equals("byte[]")) {
+					%>
+						if(this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %> == null) {
+			                dos.writeInt(-1);
+						} else {
+           			    	dos.writeInt(this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %>.length);
+               				dos.write(this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %>);
+		            	}
+					<%
+				} else if(typeToGenerate.equals("Object") || typeToGenerate.equals("BigDecimal") || typeToGenerate.equals("List")) {
+					%>
+       			    	dos.writeObject(this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %>);
 					<%
 				} else {
 					typeToGenerate =JavaTypesManager.getTypeToGenerate(column.getTalendType(), false);

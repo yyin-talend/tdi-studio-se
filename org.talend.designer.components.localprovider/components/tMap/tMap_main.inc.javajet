@@ -896,6 +896,7 @@
                 	
 					%>
 	    	        	} // G_TM_M_250 loop "<%= currentJoinedTableNames %>"
+
 	            	<%
 	            	} // T_TM_M_248
 	            	%>
@@ -914,6 +915,14 @@
 				} // T_TM_M_297
 
 				
+       		    if(!isLastTable && nextTableIsPersistentSorted) { // T_TM_M_299
+				%>				
+					//fsi_<%= currentJoinedTableNames %>.endGet();
+				<%
+				} // T_TM_M_299
+	    	        	
+				
+				
                 if(!isVirtualOut && !isLastTable && nextInputTable != null && nextInputTable.isPersistent()) { // T_TM_M_238
                 %> 
 	            	
@@ -931,7 +940,6 @@
 				if(isLastPersistentSortedTable) {
 					lastPersistentSortedTableIsAlreadyProcessed = true;
 				}
-				
 
 				currentJoinedTableNames = nextJoinedTableNames;
 				

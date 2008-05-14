@@ -98,7 +98,9 @@
 						
 %>
 
-private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines.system.<%= isLookup ? "IPersistableComparableLookupRow<"+conn.getName()+"Struct>" : "IPersistableRow<"+conn.getName()+"Struct"+ templateOrigin + ">" %> {
+static class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines.system.<%= isLookup ? "IPersistableComparableLookupRow<"+conn.getName()+"Struct>" : "IPersistableRow<"+conn.getName()+"Struct"+ templateOrigin + ">" %> {
+    
+    static byte[] commonByteArray = new byte[0];
 <%
 	if(hasAtLeastOneKey) {
 %>
@@ -106,6 +108,8 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines
     private static final int PRIME = 31;
     private int hashCode = DEFAULT_HASHCODE;
     public boolean hashCodeDirty = true;
+    
+    
 <%
 	}
 %>
@@ -225,11 +229,10 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines
 	} // T SH 001
 	%>
     
-    public void <%= isLookup ? "readKeys" : "read" %>Data(DataInputStream dis) {
+    public void <%= isLookup ? "readKeys" : "read" %>Data(ObjectInputStream dis) {
 
         try {
 
-			ObjectInputStream ois = null;            
 			int length = 0;
 		<%	
 		boolean hasAtLeastOneRead = false;
@@ -252,9 +255,15 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines
            				if (length == -1) {
            	    			this.<%=column.getLabel() %> = null;
            				} else {
-               				byte[] byteArray = new byte[length];
-               				dis.read(byteArray);
-               				this.<%=column.getLabel() %> = new String(byteArray);
+           					if(length > commonByteArray.length) {
+           						if(length < 1024 && commonByteArray.length == 0) {
+	               					commonByteArray = new byte[1024];
+           						} else {
+	               					commonByteArray = new byte[2 * length];
+	               				}
+           					}
+               				dis.readFully(commonByteArray, 0, length);
+               				this.<%=column.getLabel() %> = new String(commonByteArray, 0, length);
            				}
 					<%
 				} else if(typeToGenerate.equals("java.util.Date")) {
@@ -273,17 +282,14 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines
            	    			this.<%=column.getLabel() %> = null;
            				} else {
                				byte[] byteArray = new byte[length];
-               				dis.read(byteArray);
+               				dis.readFully(byteArray);
                				this.<%=column.getLabel() %> = byteArray;
            				}
 					<%
-				} else if(typeToGenerate.equals("Object")) {
+				} else if(typeToGenerate.equals("Object") || typeToGenerate.equals("BigDecimal") || typeToGenerate.equals("List")) {
 			 		hasAtLeastOneObjectType = true;
 					%>
-						if(ois == null) {
-							ois = new ObjectInputStream(dis);
-						}
-						this.<%=column.getLabel() %> = ois.readObject();
+						this.<%=column.getLabel() %> = (<%= typeToGenerate %>) dis.readObject();
 					
 					<%
 				} else {
@@ -332,10 +338,8 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines
         
     }
 
-    public void <%= isLookup ? "writeKeys" : "write" %>Data(DataOutputStream dos) {
+    public void <%= isLookup ? "writeKeys" : "write" %>Data(ObjectOutputStream dos) {
         try {
-
-            ObjectOutputStream oos = null;
 
 		<%	
 		boolean hasAtLeastOneWrite = false;
@@ -367,8 +371,9 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines
 				} else if(typeToGenerate.equals("java.util.Date")) {
 					%>
 						if(this.<%=column.getLabel() %> == null) {
-			                dos.writeInt(-1);
+			                dos.writeByte(-1);
 						} else {
+               				dos.writeByte(0);
            			    	dos.writeLong(this.<%=column.getLabel() %>.getTime());
 		            	}
 					<%
@@ -381,12 +386,9 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines
                				dos.write(this.<%=column.getLabel() %>);
 		            	}
 					<%
-				} else if(typeToGenerate.equals("Object")) {
+				} else if(typeToGenerate.equals("Object") || typeToGenerate.equals("BigDecimal") || typeToGenerate.equals("List")) {
 					%>
-						if(oos == null) {
-	           				oos = new ObjectOutputStream(dos);
-						}
-       			    	oos.writeObject(this.<%=column.getLabel() %>);
+       			    	dos.writeObject(this.<%=column.getLabel() %>);
 					<%
 				} else {
 					typeToGenerate =JavaTypesManager.getTypeToGenerate(column.getTalendType(), false);
@@ -429,12 +431,11 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines
 
 
     /** 
-     * Fill Values data by reading DataInputStream.
+     * Fill Values data by reading ObjectInputStream.
      */
-    public void readValuesData(DataInputStream dis) {
+    public void readValuesData(DataInputStream dis, ObjectInputStream ois) {
         try {
             
-            ObjectInputStream ois = null;
 			int length = 0;
 		<%	
 		hasAtLeastOneRead = false;
@@ -486,12 +487,9 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines
            			    	this.<%=column.getLabel() %> = new Date(dis.readLong());
            				}
 					<%
-				} else if(typeToGenerate.equals("Object")) {
+				} else if(typeToGenerate.equals("Object") || typeToGenerate.equals("BigDecimal") || typeToGenerate.equals("List")) {
 					%>
-						if(ois == null) {
-	           				ois = new ObjectInputStream(dis);
-						}
-       			    	this.<%=column.getLabel() %> = ois.readObject();
+       			    	this.<%=column.getLabel() %> = (<%= typeToGenerate %>) ois.readObject();
 					<%
 				} else {
 					typeToGenerate =JavaTypesManager.getTypeToGenerate(column.getTalendType(), false);
@@ -529,12 +527,9 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines
     /** 
      * Return a byte array which represents Values data.
      */
-    public int writeValuesData(DataOutputStream dos) {
-    	int previousSize = dos.size();
+    public void writeValuesData(DataOutputStream dos, ObjectOutputStream oos) {
         try {
         
-            ObjectOutputStream oos = null;
-        	
 		<%	
 		hasAtLeastOneWrite = false;
 		if (metadata !=null) {
@@ -570,16 +565,14 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines
 				} else if(typeToGenerate.equals("java.util.Date")) {
 					%>
 						if(this.<%=column.getLabel() %> == null) {
-			                dos.writeInt(-1);
+			                dos.writeByte(-1);
 						} else {
+               				dos.writeByte(0);
            			    	dos.writeLong(this.<%=column.getLabel() %>.getTime());
 		            	}
 					<%
-				} else if(typeToGenerate.equals("Object")) {
+				} else if(typeToGenerate.equals("Object") || typeToGenerate.equals("BigDecimal") || typeToGenerate.equals("List")) {
 					%>
-						if(oos == null) {
-	           				oos = new ObjectOutputStream(dos);
-						}
        			    	oos.writeObject(this.<%=column.getLabel() %>);
 					<%
 				} else {
@@ -605,7 +598,6 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines
         <%
         %>
         }
-        return dos.size() - previousSize;
     }
 
     <%
