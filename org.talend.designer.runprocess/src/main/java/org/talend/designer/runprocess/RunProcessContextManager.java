@@ -99,6 +99,9 @@ public class RunProcessContextManager {
      * @param activeContext the activeContext to set
      */
     public void setActiveProcess(IProcess activeProcess) {
+        setActiveProcess(activeProcess,true);
+    }
+    public void setActiveProcess(IProcess activeProcess,boolean refreshUI) {
         RunProcessContext tempActiveContext = findContext(activeProcess);
         if (tempActiveContext == null && activeProcess != null) {
             tempActiveContext = getRunProcessContext(activeProcess);
@@ -110,10 +113,12 @@ public class RunProcessContextManager {
         RunProcessContext oldContext = this.activeContext;
         if (tempActiveContext != oldContext) {
             this.activeContext = tempActiveContext;
-            firePropertyChange(PROP_ACTIVE, oldContext, activeContext);
+            
+            if(refreshUI){
+                firePropertyChange(PROP_ACTIVE, oldContext, activeContext);
+            }
         }
     }
-
     /**
      * DOC amaumont Comment method "getRunProcessContext".
      * 

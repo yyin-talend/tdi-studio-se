@@ -120,6 +120,10 @@ public class RunProcessService implements IRunProcessService {
         delegateService.setActiveProcess(activeProcess);
     }
 
+    public void setActiveProcess(IProcess activeProcess, boolean refreshUI) {
+        delegateService.setActiveProcess(activeProcess, refreshUI);
+    }
+
     /*
      * (non-Javadoc)
      * 

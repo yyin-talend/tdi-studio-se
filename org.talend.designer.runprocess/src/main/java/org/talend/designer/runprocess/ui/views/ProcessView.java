@@ -14,6 +14,7 @@ package org.talend.designer.runprocess.ui.views;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Date;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.IHandler;
@@ -256,9 +257,10 @@ public class ProcessView extends ViewPart {
             setPartName(Messages.getString("ProcessView.titleEmpty")); //$NON-NLS-1$
             processNameLab.setText(Messages.getString("ProcessView.subtitleEmpty")); //$NON-NLS-1$
         }
-        processNameLab.getParent().layout(true, true);
+        
+//        processNameLab.getParent().layout(true, true);
     }
-
+  
     /**
      * DOC smallet ProcessView class global comment. Detailled comment <br/>
      * 

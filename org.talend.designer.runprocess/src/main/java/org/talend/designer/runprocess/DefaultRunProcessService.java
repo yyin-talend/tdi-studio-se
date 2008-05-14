@@ -55,7 +55,9 @@ public class DefaultRunProcessService implements IRunProcessService {
     public void setActiveProcess(IProcess activeProcess) {
         RunProcessPlugin.getDefault().getRunProcessContextManager().setActiveProcess(activeProcess);
     }
-
+    public void setActiveProcess(IProcess activeProcess, boolean refreshUI) {
+        RunProcessPlugin.getDefault().getRunProcessContextManager().setActiveProcess(activeProcess, refreshUI);
+    }
     /**
      * DOC qian Removes IProcess.
      * 
