@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.sqlbuilder.ui;
 
-
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
@@ -35,11 +34,11 @@ import org.talend.sqlbuilder.actions.IResultDisplayer;
 import org.talend.sqlbuilder.sqlcontrol.AbstractSQLExecution;
 import org.talend.sqlbuilder.util.TextUtil;
 
-
 /**
  * DOC dev class global comment. Detailled comment <br/>
  * 
  * $Id: SQLResultComposite.java,v 1.18 2006/11/06 09:18:06 qiang.zhang Exp $
+ * 
  * @author qiang.zhang
  */
 public class SQLResultComposite extends Composite implements IResultDisplayer {
@@ -50,17 +49,18 @@ public class SQLResultComposite extends Composite implements IResultDisplayer {
 
     private CTabFolder tabFolder;
 
-    
     private AbstractSQLExecution sqlExecution;
+
     /**
      * 
      * DOC dev SQLResultComposite constructor comment.
+     * 
      * @param parent
      * @param style
      */
     public SQLResultComposite(Composite parent, int style) {
         super(parent, style);
-        
+
         GridLayout gLay = new GridLayout();
         gLay.marginLeft = 0;
         gLay.marginRight = 0;
@@ -74,11 +74,13 @@ public class SQLResultComposite extends Composite implements IResultDisplayer {
         setLayout(gLay);
         setDefaultMessage();
         instance = this;
-        
+
     }
+
     /**
      * 
      * DOC dev Comment method "addSQLExecution".
+     * 
      * @param sqlExe sql execution object
      * @throws Exception throw all exception
      */
@@ -89,16 +91,18 @@ public class SQLResultComposite extends Composite implements IResultDisplayer {
     }
 
     /**
-	 * Getter for instance.
-	 * @return the instance
-	 */
-	public static IResultDisplayer getInstance() {
-		return instance;
-	}
+     * Getter for instance.
+     * 
+     * @return the instance
+     */
+    public static IResultDisplayer getInstance() {
+        return instance;
+    }
+
     /**
      * 
      * DOC dev Comment method "createTabFolder".
-     *
+     * 
      */
     private void createTabFolder() {
 
@@ -112,8 +116,7 @@ public class SQLResultComposite extends Composite implements IResultDisplayer {
             tabFolder.setToolTipText(Messages.getString("SQLResultComposite.SQLResults.ToolTip")); //$NON-NLS-1$
             GridData gd = new GridData(GridData.FILL_BOTH);
             tabFolder.setLayoutData(gd);
-            
-            
+
             this.layout();
             this.redraw();
 
@@ -139,6 +142,7 @@ public class SQLResultComposite extends Composite implements IResultDisplayer {
     /**
      * 
      * DOC dev Comment method "createTabItem".
+     * 
      * @throws Exception throw all exception
      */
     private void createTabItem() throws Exception {
@@ -149,8 +153,7 @@ public class SQLResultComposite extends Composite implements IResultDisplayer {
         tabItem.setData("tabLabel", labelText); //$NON-NLS-1$
         tabItem.setToolTipText(TextUtil.getWrappedText(sqlExecution.getSqlStatement()));
         Composite composite = new Composite(tabFolder, SWT.NULL);
-       
-        
+
         GridLayout layout = new GridLayout();
         layout.numColumns = 1;
         layout.marginLeft = 0;
@@ -161,7 +164,7 @@ public class SQLResultComposite extends Composite implements IResultDisplayer {
         layout.verticalSpacing = 0;
         layout.marginWidth = 0;
         layout.marginHeight = 0;
-        
+
         composite.setLayout(layout);
         composite.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
 
@@ -169,8 +172,10 @@ public class SQLResultComposite extends Composite implements IResultDisplayer {
         tabItem.setData(sqlExecution);
 
         tabItem.addDisposeListener(new DisposeListener() {
+
             public void widgetDisposed(final DisposeEvent e) {
                 BusyIndicator.showWhile(Display.getCurrent(), new Runnable() {
+
                     public void run() {
                         CTabItem tabItem = (CTabItem) e.getSource();
                         AbstractSQLExecution sqlExe = (AbstractSQLExecution) tabItem.getData();
@@ -192,10 +197,9 @@ public class SQLResultComposite extends Composite implements IResultDisplayer {
                 });
             }
         });
-        
+
         createHeaderComposite(composite, tabItem);
-        
- 
+
         createDetailComposite(composite, tabItem);
 
         // refresh view
@@ -204,10 +208,8 @@ public class SQLResultComposite extends Composite implements IResultDisplayer {
         tabFolder.redraw();
     }
 
-
     /**
-     * Set a default message, this method is called when no results are
-     * available for viewing.
+     * Set a default message, this method is called when no results are available for viewing.
      */
     private void setDefaultMessage() {
 
@@ -222,16 +224,17 @@ public class SQLResultComposite extends Composite implements IResultDisplayer {
         this.layout();
         this.redraw();
     }
+
     /**
      * 
      * DOC dev Comment method "createHeaderComposite".
+     * 
      * @param parent a TabItem 's Control
      * @param tabItem a TabItem
      */
     private void createHeaderComposite(Composite parent, CTabItem tabItem) {
-        //add sql statement, first create temp label to calculate correct size
-        
-        
+        // add sql statement, first create temp label to calculate correct size
+
         int labelStyle = SWT.WRAP | SWT.MULTI;
 
         Text tmpLabel = new Text(parent, labelStyle);
@@ -254,7 +257,7 @@ public class SQLResultComposite extends Composite implements IResultDisplayer {
         GridLayout hLayout = new GridLayout();
         hLayout.numColumns = 2;
         hLayout.marginLeft = 0;
-        
+
         hLayout.horizontalSpacing = 0;
         hLayout.verticalSpacing = 0;
         hLayout.marginWidth = 0;
@@ -263,15 +266,15 @@ public class SQLResultComposite extends Composite implements IResultDisplayer {
         headerComposite.setLayout(hLayout);
 
         Text label = new Text(headerComposite, labelStyle);
-//        label.setEnabled(false);
+        // label.setEnabled(false);
         label.setEditable(false);
         label.setBackground(this.getBackground());
-        
+
         label.setText(TextUtil.removeLineBreaks(sqlExecution.getSqlStatement()));
         label.setToolTipText(TextUtil.getWrappedText(sqlExecution.getSqlStatement()));
 
         GridData labelGridData = new GridData(SWT.FILL, SWT.TOP, true, true);
-//        labelGridData.heightHint = labelHeight;
+        // labelGridData.heightHint = labelHeight;
         label.setLayoutData(labelGridData);
         label.setVisible(true);
         // add action bar
@@ -286,16 +289,18 @@ public class SQLResultComposite extends Composite implements IResultDisplayer {
         toolBarMgr.getControl().setLayoutData(gid);
 
     }
+
     /**
      * 
      * DOC dev Comment method "createDetailComposite".
+     * 
      * @param parent a CTabItem 's Control
      * @param tabItem a CTabItem
      */
     private void createDetailComposite(Composite parent, CTabItem tabItem) {
         // add sql execute result TableView composite to show progress bar and results
         Composite detailComposite = new Composite(parent, SWT.FILL);
-        detailComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        detailComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
         sqlExecution.setComposite(detailComposite);
         sqlExecution.setParentTab(tabItem);
         sqlExecution.startExecution();
