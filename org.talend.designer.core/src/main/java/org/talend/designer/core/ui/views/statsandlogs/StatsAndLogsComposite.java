@@ -62,7 +62,7 @@ public class StatsAndLogsComposite extends MultipleThreadDynamicComposite {
             Point initialSize = topComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT);
 
             addButtonListeners();
-
+            refresh();
             super.addComponents(true, false, initialSize.y + ITabbedPropertyConstants.VSPACE);
         }
     }

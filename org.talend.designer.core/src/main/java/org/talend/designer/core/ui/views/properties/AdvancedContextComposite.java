@@ -56,6 +56,7 @@ import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
@@ -314,6 +315,18 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
             }
         });
 
+        if (element != null && element instanceof INode) {
+            INode node = (INode) element;
+            if (buttonAdd != null && !buttonAdd.isDisposed()) {
+                buttonAdd.setEnabled(!node.isReadOnly());
+            }
+            if (buttonRemove != null && !buttonRemove.isDisposed()) {
+                buttonRemove.setEnabled(!node.isReadOnly());
+            }
+            if (table != null && !table.isDisposed()) {
+                table.setEnabled(!node.isReadOnly());
+            }
+        }
     }
 
     /**
