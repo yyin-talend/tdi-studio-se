@@ -142,9 +142,13 @@ if(dataAction.equals("UPDATE")) {
     }
 } else if(dataAction.equals("INSERT")) {
     %>
-    java.sql.Statement stmtBulk_<%=cid %> = conn_<%=cid %>.createStatement();
-    stmtBulk_<%=cid %>.execute("COPY " + <%=db%> + "." + <%=tableName%> + " FROM '" + <%=file%> + "' WITH DELIMITER '" + <%=field_separator%> + "' NULL '" + <%=null_string%> + "'"<%if(ros){%> + " DIRECT"<%}%>);
-    stmtBulk_<%=cid %>.close();    
+	String sql_<%=cid %> = "COPY " + tableName_<%=cid%> + " FROM STDIN DELIMITER '" + <%=field_separator%> + "' NULL '" + <%=null_string%> + "'"<%if(ros){%> + " DIRECT"<%}%>;
+    java.sql.Statement stmt_<%=cid %> = conn_<%=cid %>.createStatement();
+    java.io.FileInputStream fis_<%=cid %> = new java.io.FileInputStream(new java.io.File(<%=file%>));
+    ((com.vertica.PGStatement) stmt_<%=cid %>).startCopyIn(sql_<%=cid %>, fis_<%=cid %>);
+    ((com.vertica.PGStatement) stmt_<%=cid %>).addStreamToCopyIn(fis_<%=cid %>);
+    ((com.vertica.PGStatement) stmt_<%=cid %>).finishCopyIn();
+    stmt_<%=cid %>.close();
     <%
 }
 %>
