@@ -150,6 +150,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
         btn.addSelectionListener(listenerSelection);
         btn.setData(NAME, SCHEMA);
         btn.setData(PARAMETER_NAME, param.getName());
+        btn.setEnabled(!param.isReadOnly());
 
         lastControlUsed = btn;
 

@@ -153,6 +153,7 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
         lastControlUsed = combo;
 
         String propertyType = (String) propertyTypeParameter.getValue();
+        param.setReadOnly(propertyTypeParameter.isReadOnly());
         if (propertyType != null && propertyType.equals(EmfComponent.REPOSITORY)) {
             lastControlUsed = addRepositoryChoice(subComposite, lastControlUsed, numInRow, nbInRow, top, param);
         }
@@ -209,7 +210,7 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
         btn.addSelectionListener(listenerSelection);
         btn.setData(NAME, REPOSITORY_CHOICE);
         btn.setData(PARAMETER_NAME, param.getName());
-
+        btn.setEnabled(!param.isReadOnly());
         data = new FormData();
         data.left = new FormAttachment(cLayout, 0);
         data.right = new FormAttachment(cLayout, STANDARD_BUTTON_WIDTH, SWT.RIGHT);

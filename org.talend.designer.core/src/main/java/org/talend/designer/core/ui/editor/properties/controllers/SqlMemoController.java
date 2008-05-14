@@ -180,6 +180,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         openSQLEditorButton.setEnabled(true);
         openSQLEditorButton.setData(NAME, SQLEDITOR);
         openSQLEditorButton.setData(PARAMETER_NAME, param.getName());
+        openSQLEditorButton.setEnabled(!param.isReadOnly());
         openSQLEditorButton.addSelectionListener(listenerSelection);
 
         FormData data1 = new FormData();
@@ -225,7 +226,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         FormData data;
         queryText.getParent().setSize(subComposite.getSize().x, queryText.getLineHeight() * nbLines);
         cLayout.setBackground(subComposite.getBackground());
-        queryText.setEnabled(!param.isRepositoryValueUsed());
+        queryText.setEnabled(!param.isReadOnly());
         if (elem instanceof Node) {
             queryText.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
         }
@@ -290,7 +291,6 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         Point initialSize = dField.getLayoutControl().computeSize(SWT.DEFAULT, SWT.DEFAULT);
         // curRowSize = initialSize.y + ITabbedPropertyConstants.VSPACE;
         dynamicProperty.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
-
         return null;
     }
 
