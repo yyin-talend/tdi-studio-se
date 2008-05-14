@@ -35,8 +35,28 @@ String inputIntoTableClause = ElementParameterParser.getValue(node, "__INPUT_INT
 String useDatePattern = ElementParameterParser.getValue(node, "__USE_DATE_PATTERN__");
 boolean convertToUppercase = ElementParameterParser.getValue(node, "__CONVERT_COLUMN_TABLE_TO_UPPERCASE__").equals("true");
 String columns = "";//if schema is defined, use this option in clt file
-
+List<IMetadataColumn> columnList = getColumnList(node);
 %>
+
+<%
+if(data_action.equals("UPDATE")) {
+    if(columnList != null && columnList.size() > 0) {
+        int keyCount = 0;
+        for(IMetadataColumn column : columnList) {
+            if(column.isKey()) {
+                keyCount++;
+            }
+        }
+        %>
+        int keyCount_<%=cid%> = <%=keyCount%>;
+        if(keyCount_<%=cid%> == 0) {
+            throw new RuntimeException("For bulk update, Schema must have a key at least."); 
+        }
+        <%
+    }
+}
+%>
+
 java.sql.Connection conn_<%=cid %> = null;
 String serviceUrl_<%=cid %> = null;
 String host_<%=cid %> = null;
@@ -47,8 +67,7 @@ String username_<%=cid %> = null;
 String password_<%=cid %> = null;
 <%       
 String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
-if(useExistingConn.equals("true"))
-{
+if(useExistingConn.equals("true")) {
     String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
     String conn = "conn_" + connection;
     String existHost = "host_" + connection;
@@ -67,9 +86,7 @@ if(useExistingConn.equals("true"))
     serviceUrl_<%=cid%> = "(description=(address=(protocol=tcp)(host=" + host_<%=cid%> + ")(port=" + port_<%=cid%> + "))(connect_data=(service_name=" + dbname_<%=cid%> + ")))";
     conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
     <%
-}
-else
-{
+} else {
     %>
     String url_<%=cid%> = null;
     host_<%=cid%> = <%=host%>;
@@ -97,11 +114,10 @@ else
     %>
     java.lang.Class.forName("oracle.jdbc.driver.OracleDriver");
     conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>,username_<%=cid %>,password_<%=cid %>);
-<%
+    <%
 }
 
 //table action begin
-List<IMetadataColumn> columnList = getColumnList(node);
 %>
 String tableName_<%=cid%> = null;
 if(dbschema_<%=cid%> == null || dbschema_<%=cid%>.trim().length() == 0) {
@@ -110,8 +126,19 @@ if(dbschema_<%=cid%> == null || dbschema_<%=cid%>.trim().length() == 0) {
     tableName_<%=cid%> = dbschema_<%=cid%> + "." + <%=table%><%=convertToUppercase ? ".toUpperCase()" : ""%>;
 }
 <%
+if(data_action.equals("UPDATE")) {
+    %>
+    String tmpTableName_<%=cid%> = tableName_<%=cid%>;
+    tableName_<%=cid%> = "<%=cid%>";
+    <%
+}
+%>
+
+<%
 String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
 String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
+List<Column> stmtStructure = null;
+Manager manager = null;
 if(columnList != null && columnList.size() > 0) {
 	//init string value of field list for use in .clt file
 	MappingTypeRetriever mappingType = MetadataTalendType.getMappingTypeRetriever(dbmsId);
@@ -147,13 +174,13 @@ if(columnList != null && columnList.size() > 0) {
     	columns += ")\\r\\n";
     }
 	
-    List<Column> stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, null);
+    stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, null);
     if(convertToUppercase) {
         for(Column column : stmtStructure) {
             column.setColumnName(column.getColumnName().toUpperCase());
         }
     }
-    Manager manager = getManager(dbmsId, cid);
+    manager = getManager(dbmsId, cid);
     if(tableAction.equals("DROP_CREATE")) {
         %>
         java.sql.Statement stmtDrop_<%=cid%> = conn_<%=cid%>.createStatement();
@@ -190,24 +217,18 @@ if(columnList != null && columnList.size() > 0) {
         <%
     }    
 }
-%><%
-if(!useExistingConn.equals("true"))
-{
-    %>
-    conn_<%=cid%>.close();
-    <%
-}
+%>
+<%
 //table atction end
 
 //////////////////////////////////////////////////////////////////////////////////////////////
-if(use_existing_clt_file.equals("true")){
+if(use_existing_clt_file.equals("true")) {
 	String clt_file = ElementParameterParser.getValue(node, "__CLT_FILE__");
-%>
-String cltf_<%=cid %> = <%=clt_file %>;
-
-String logf_<%=cid %> = <%=clt_file %>+".log";
-<%
-}else{
+	%>
+	String cltf_<%=cid %> = <%=clt_file %>;
+	String logf_<%=cid %> = <%=clt_file %>+".log";
+	<%
+} else {
 	//options clause begin
 	List<Map<String, String>> options = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__OPTIONS__");
     java.util.Map<String, String> parametersMap = new java.util.HashMap<String, String>();
@@ -259,79 +280,84 @@ String logf_<%=cid %> = <%=clt_file %>+".log";
        //will be enhanced later, now default with utf-16
         encoding = "'AL16UTF16'";
     }
-    //encoding end
-    
+    //encoding end    
 	String dataFile = ElementParameterParser.getValue(node, "__DATA__");
-%>
-String dataf_<%=cid %> = <%=dataFile %>;
-
-String cltf_<%=cid %> = dataf_<%=cid %> + ".clt";
-
-String badf_<%=cid %> = dataf_<%=cid %> + ".bad";
-
-String dscf_<%=cid %> = dataf_<%=cid %> + ".dsc";
-
-String logf_<%=cid %> = dataf_<%=cid %> + ".log";
-
-java.io.File badFile_<%=cid %> = new java.io.File(badf_<%=cid %>);
-
-if(badFile_<%=cid %>.exists()){
-	
-    badFile_<%=cid %>.delete();
-	
-}
-java.io.BufferedWriter bw_<%=cid %> = new java.io.BufferedWriter(new java.io.FileWriter(cltf_<%=cid %>));
-bw_<%=cid %>.write("<%=optionClause.toString() %>\r\n");
-bw_<%=cid %>.write("LOAD DATA\r\nCHARACTERSET <%=encoding %>\r\nINFILE '" + dataf_<%=cid %> + "'");
-<%
+    %>
+    String dataf_<%=cid %> = <%=dataFile %>;
+    
+    String cltf_<%=cid %> = dataf_<%=cid %> + ".clt";
+    
+    String badf_<%=cid %> = dataf_<%=cid %> + ".bad";
+    
+    String dscf_<%=cid %> = dataf_<%=cid %> + ".dsc";
+    
+    String logf_<%=cid %> = dataf_<%=cid %> + ".log";
+    
+    java.io.File badFile_<%=cid %> = new java.io.File(badf_<%=cid %>);
+    
+    if(badFile_<%=cid %>.exists()){
+    	
+        badFile_<%=cid %>.delete();
+    	
+    }
+    java.io.BufferedWriter bw_<%=cid %> = new java.io.BufferedWriter(new java.io.FileWriter(cltf_<%=cid %>));
+    bw_<%=cid %>.write("<%=optionClause.toString() %>\r\n");
+    bw_<%=cid %>.write("LOAD DATA\r\nCHARACTERSET <%=encoding %>\r\nINFILE '" + dataf_<%=cid %> + "'");
+    <%
     //record format begin
     String recordFormat = ElementParameterParser.getValue(node, "__RECORD_FORMAT__");
     if(recordFormat.equals("STREAM")){
     	String streamTerminator = ElementParameterParser.getValue(node, "__TERMINATOR_STRING__");
-%>
-bw_<%=cid %>.write(" \"str '" + <%=streamTerminator %> + "'\"");
-<%
+        %>
+        bw_<%=cid %>.write(" \"str '" + <%=streamTerminator %> + "'\"");
+        <%
     }else if(recordFormat.equals("FIXED")){
     	String recordLength = ElementParameterParser.getValue(node, "__RECORD_LENGTH__");
-%>
-bw_<%=cid %>.write(" \"fix " + <%=recordLength %> + "\"");
-<%
+        %>
+        bw_<%=cid %>.write(" \"fix " + <%=recordLength %> + "\"");
+        <%
     }else if(recordFormat.equals("VARIABLE")){
     	String lengthFieldSize = ElementParameterParser.getValue(node, "__RECORD_LENGTH_FIELD_SIZE__");
-%>
-bw_<%=cid %>.write(" \"var " + <%=lengthFieldSize %> + "\"");
-<%
+        %>
+        bw_<%=cid %>.write(" \"var " + <%=lengthFieldSize %> + "\"");
+        <%
     }
     //record format end
-%>
-bw_<%=cid %>.write("\r\nBADFILE '" + badf_<%=cid %> + "'\r\nDISCARDFILE '" + dscf_<%=cid %> + "'\r\n");
-<%
+    %>
+    bw_<%=cid %>.write("\r\nBADFILE '" + badf_<%=cid %> + "'\r\nDISCARDFILE '" + dscf_<%=cid %> + "'\r\n");
+    <%
 	String preserveBlanks = ElementParameterParser.getValue(node, "__PRESERVE_BLANKS__");
 	if(preserveBlanks.equals("true")){
-%>
-bw_<%=cid %>.write("PRESERVE BLANKS\r\n");
-<%
+        %>
+        bw_<%=cid %>.write("PRESERVE BLANKS\r\n");
+        <%
 	}
 	
 	
 	String inputINTOTABLEClause = ElementParameterParser.getValue(node, "__INPUT_INTO_TABLE_CLAUSE__");
-	if(inputIntoTableClause.equals("true")){
+	if(inputIntoTableClause.equals("true")) {
 		String intoTableClause = ElementParameterParser.getValue(node, "__INTO_TABLE_CLAUSE__");
-%>
-bw_<%=cid %>.write(<%=intoTableClause %>);
-<%
-	}else{
-%>
-bw_<%=cid %>.write("INTO TABLE " + tableName_<%=cid %> + "\r\n<%=data_action %>\r\n");
-<%
+        %>
+        bw_<%=cid %>.write(<%=intoTableClause %>);
+        <%
+	} else {
+        if(data_action.equals("UPDATE")) {
+            %>
+            bw_<%=cid %>.write("INTO TABLE " + tableName_<%=cid %> + "\r\nINSERT\r\n");
+            <%
+        } else {
+            %>
+            bw_<%=cid %>.write("INTO TABLE " + tableName_<%=cid %> + "\r\n<%=data_action %>\r\n");
+            <%
+        }
 		//field condition
 		String useFieldCondition = ElementParameterParser.getValue(node, "__FIELD_CONDITION__");
 		if(useFieldCondition.equals("true")){
 			String fieldCondition = ElementParameterParser.getValue(node, "__FIELD_CONDITION_VALUE__");
 			if(!fieldCondition.equals("") && !fieldCondition.equals("\"\"")){
-%>
-bw_<%=cid %>.write("WHEN " + <%=fieldCondition %> + "\r\n");
-<%
+                %>
+                bw_<%=cid %>.write("WHEN " + <%=fieldCondition %> + "\r\n");
+                <%
 			}
 		}
 		
@@ -340,68 +366,81 @@ bw_<%=cid %>.write("WHEN " + <%=fieldCondition %> + "\r\n");
 		boolean hasFieldsTerminator = false;
 		if(fieldsTerminator.equals("EOF") || fieldsTerminator.equals("WHITESPACE")){
 			hasFieldsTerminator = true;
-%>
-bw_<%=cid %>.write("FIELDS TERMINATED BY <%=fieldsTerminator %>");
-<%
+            %>
+            bw_<%=cid %>.write("FIELDS TERMINATED BY <%=fieldsTerminator %>");
+            <%
 		}else if(fieldsTerminator.equals("OTHER")){
 			hasFieldsTerminator = true;
 			String terminatorValue = ElementParameterParser.getValue(node, "__TERMINATOR_VALUE__");
-%>
-bw_<%=cid %>.write("FIELDS TERMINATED BY \""+ <%=terminatorValue %> + "\"");
-<%
+            %>
+            bw_<%=cid %>.write("FIELDS TERMINATED BY \""+ <%=terminatorValue %> + "\"");
+            <%
 		}
 		
 		//field enclusure
 		String useFieldEnclosure = ElementParameterParser.getValue(node, "__USE_FIELDS_ENCLOSURE__");
 		if(useFieldEnclosure.equals("true")){
 			if(hasFieldsTerminator){
-%>
-bw_<%=cid %>.write(" OPTIONALLY ENCLOSED BY ");
-<%
+                %>
+                bw_<%=cid %>.write(" OPTIONALLY ENCLOSED BY ");
+                <%
 			}else{
-%>
-bw_<%=cid %>.write("FIELDS ENCLOSED BY ");
-<%
+                %>
+                bw_<%=cid %>.write("FIELDS ENCLOSED BY ");
+                <%
 			}
 			String left = ElementParameterParser.getValue(node, "__FIELDS_ENCLOSURE_LEFT__");
-%>
-bw_<%=cid %>.write("'" + <%=left %> + "'");
-<%
+            %>
+            bw_<%=cid %>.write("'" + <%=left %> + "'");
+            <%
 			String right = ElementParameterParser.getValue(node, "__FIELDS_ENCLOSURE_RIGHT__");
 			if(!left.trim().equals(right.trim())){
-%>
-bw_<%=cid %>.write(" AND '" + <%=right %> + "'");
-<%
+                %>
+                bw_<%=cid %>.write(" AND '" + <%=right %> + "'");
+                <%
 			}
-%>
-bw_<%=cid %>.write("\r\n");
-<%
+            %>
+            bw_<%=cid %>.write("\r\n");
+            <%
 		}else if(hasFieldsTerminator){
-%>
-bw_<%=cid %>.write("\r\n");
-<%
+            %>
+            bw_<%=cid %>.write("\r\n");
+            <%
 		}
 		
 		//trailing nullcols
 		String trailingNullcols = ElementParameterParser.getValue(node, "__TRAILING_NULLCOLS__");
 		if(trailingNullcols.equals("true")){
-%>
-bw_<%=cid %>.write("TRAILING NULLCOLS\r\n");
-<%
+            %>
+            bw_<%=cid %>.write("TRAILING NULLCOLS\r\n");
+            <%
 		}
-%>
-bw_<%=cid %>.write("<%=columns %>");
-<%
+        %>
+        bw_<%=cid %>.write("<%=columns %>");
+        <%
 	}
-%>
-bw_<%=cid %>.close();
-<%
+    %>
+    bw_<%=cid %>.close();
+    <%
 }
 %>
 
 String command_<%=cid %> = "sqlldr '" + username_<%=cid %> + "/" + password_<%=cid %> + "@" + serviceUrl_<%=cid %> + "' CONTROL='" + cltf_<%=cid %> + "' LOG='" + logf_<%=cid %> + "'";
 
-final Process process_<%=cid %> = Runtime.getRuntime().exec(command_<%=cid %>); 
+<%
+if(data_action.equals("UPDATE")) {
+    %>
+    java.sql.Statement stmtCreateTmp_<%=cid%> = conn_<%=cid%>.createStatement();
+    stmtCreateTmp_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
+    stmtCreateTmp_<%=cid%>.close();
+    final Process process_<%=cid %> = Runtime.getRuntime().exec(command_<%=cid %>);
+    <%
+} else {
+    %>
+    final Process process_<%=cid %> = Runtime.getRuntime().exec(command_<%=cid %>);
+    <%
+}
+%> 
 
 //System.out.println(command_<%=cid %>);
 

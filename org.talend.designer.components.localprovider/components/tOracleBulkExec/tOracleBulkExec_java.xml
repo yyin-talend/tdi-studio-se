@@ -182,6 +182,7 @@
     >
       <ITEMS DEFAULT="INSERT">
         <ITEM NAME="INSERT"           VALUE="INSERT" />
+        <ITEM NAME="UPDATE"           VALUE="UPDATE" />
         <ITEM NAME="APPEND"           VALUE="APPEND" />
         <ITEM NAME="REPLACE"          VALUE="REPLACE"/>
         <ITEM NAME="TRUNCATE"         VALUE="TRUNCATE"/>
@@ -203,7 +204,7 @@
 
    </PARAMETERS>
    
-   <ADVANCED_PARAMETERS>
+   <ADVANCED_PARAMETERS>   	
    	<PARAMETER
       NAME="USE_EXISTING_CLT_FILE"
       FIELD="CHECK"

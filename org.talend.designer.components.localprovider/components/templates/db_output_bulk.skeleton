@@ -988,6 +988,39 @@ public class CLASS {
         }
         protected String getRProtectedChar() {
             return "";
+        }
+        public String getUpdateBulkSQL(List<IMetadataColumn> columnList) {
+            StringBuilder updateSetStmt = new StringBuilder();
+            StringBuilder updateWhereStmt = new StringBuilder();            
+            StringBuilder updateBulkSQL = new StringBuilder();
+            updateBulkSQL.append("UPDATE " + getLProtectedChar() + "\" +  tableName_" + cid + " + \"" + getRProtectedChar());
+            boolean firstKeyColumn = true;
+            boolean firstUpdateColumn = true;            
+            String keySeparator = null;
+            String updateSeparator = null;
+            for(IMetadataColumn column : columnList) {
+                if(column.isKey()) {
+                    if(firstKeyColumn) {
+                        keySeparator = "";
+                        firstKeyColumn = false;
+                        updateWhereStmt.append(" FROM " + getLProtectedChar() + "\" + tmpTableName_" + cid + " + \"" + getRProtectedChar() + " WHERE \" + \"");
+                    } else {
+                        keySeparator = " AND ";
+                    }
+                    updateWhereStmt.append(keySeparator);
+                    updateWhereStmt.append(getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar() + "." + getLProtectedChar() + "\" + \"" + column.getLabel() + "\" + \"" + getRProtectedChar() + " = " + getLProtectedChar() + "\" + tmpTableName_" + cid + " + \"" + getRProtectedChar() + "." + getLProtectedChar() + "\" + \"" + column.getLabel() + "\" + \"" + getRProtectedChar());
+                } else {
+                    if(firstUpdateColumn) {
+                        updateSeparator = "";
+                        firstUpdateColumn = false;
+                    } else {
+                        updateSeparator = ", ";
+                    }
+                    updateSetStmt.append(updateSeparator);
+                    updateSetStmt.append(getLProtectedChar() + column.getLabel() + getRProtectedChar());
+                }
+            }
+            return updateBulkSQL.toString() + " SET(" + updateSetStmt.toString() + ") = (SELECT " + updateSetStmt.toString() + updateWhereStmt + ")";
         }        
     }
     
