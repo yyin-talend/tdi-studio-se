@@ -196,7 +196,6 @@
                 if (!ftpFile.isDir() && !ftpFile.isLink()) {
                     if (ftpFile.getName().matches(maskStr)) {
                         downloadFile(localDirectory + "/" + ftpFile.getName(),ftpFile.getName());
-                        count++;
                     }
                 }
             }
