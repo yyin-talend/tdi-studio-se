@@ -15,10 +15,16 @@ INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
 String range = ElementParameterParser.getValue(node,"__RANGE__").replaceAll("\n",",").replaceAll("\"","");
-
+boolean isVar = false;
+if(range.matches(".*[a-zA-Z]+.*")){
+isVar = true;
+}
 %>
+<%if(isVar){%>
+String[] range<%=cid%> = <%=range%>.split(",");
+<%}else{%>
 String[] range<%=cid%> = "<%=range%>".split(",");
-
+<%}%>
 java.util.Set rangeSet<%=cid%> = new java.util.HashSet();
 
 Integer nb_line_<%=cid%> = 0;
