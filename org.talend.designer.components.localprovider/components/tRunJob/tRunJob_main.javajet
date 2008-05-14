@@ -115,6 +115,8 @@ for (int i=0; i<contextParams.size(); i++) {
         }
     %>
     
+    globalMap.put("<%=cid %>_CHILDJOB_EXITCODE", <%=childJob %>.errorCode);
+    
     <% 
     	if (dieOnError) {
     %> 
