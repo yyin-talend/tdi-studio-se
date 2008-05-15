@@ -21,6 +21,7 @@ import java.util.Set;
 
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.CLabel;
@@ -30,22 +31,34 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.IMetadataColumn;
+import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.metadata.builder.ConvertionHelper;
+import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.builder.connection.TableHelper;
+import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.metadata.dialog.MetadataDialog;
 import org.talend.core.ui.metadata.dialog.MetadataDialogForMerge;
 import org.talend.designer.core.i18n.Messages;
@@ -57,8 +70,13 @@ import org.talend.designer.core.ui.editor.cmd.RepositoryChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
+import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.dialog.RepositoryReviewDialog;
+import org.talend.repository.ui.utils.ConnectionContextHelper;
+import org.talend.repository.ui.utils.ManagerConnection;
+import org.talend.repository.ui.wizards.metadata.table.database.DatabaseTableWizard;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
@@ -71,6 +89,10 @@ public class SchemaTypeController extends AbstractRepositoryController {
     private static final String RESET_COLUMNS = "RESET_COLUMNS"; //$NON-NLS-1$
 
     private static final String SCHEMA = "SCHEMA"; //$NON-NLS-1$
+
+    protected static final int WIZARD_WIDTH = 800;
+
+    protected static final int WIZARD_HEIGHT = 495;
 
     public SchemaTypeController(IDynamicProperty dp) {
         super(dp);
@@ -322,9 +344,129 @@ public class SchemaTypeController extends AbstractRepositoryController {
      * 
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
+    @Override
     public void propertyChange(PropertyChangeEvent arg0) {
         // TODO Auto-generated method stub
 
+    }
+
+    private void openDatabaseTableWizard(DatabaseConnectionItem item,
+            org.talend.core.model.metadata.builder.connection.MetadataTable metadataTable, IRepositoryObject node, int width,
+            int height) {
+
+        ManagerConnection managerConnection = new ManagerConnection();
+        String[] test = new String[0];
+        IMetadataConnection metadataConnection = ConvertionHelper.convert((DatabaseConnection) item.getConnection());
+
+        boolean skipStep = checkConnectStatus(managerConnection, metadataConnection);
+        DatabaseTableWizard databaseTableWizard = new DatabaseTableWizard(PlatformUI.getWorkbench(), false, item, metadataTable,
+                test, false, managerConnection, metadataConnection);
+        databaseTableWizard.setSkipStep(skipStep);
+        databaseTableWizard.setRepositoryObject(node);
+
+        WizardDialog wizardDialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                databaseTableWizard);
+        wizardDialog.setBlockOnOpen(true);
+        wizardDialog.setPageSize(width, height);
+        wizardDialog.create();
+        wizardDialog.open();
+
+    }
+
+    public boolean checkConnectStatus(ManagerConnection managerConnection, IMetadataConnection metadataConnection) {
+        boolean skipStep = false;
+
+        managerConnection.check(metadataConnection);
+        if (managerConnection.getIsValide()) {
+            List<String> itemTableName = ExtractMetaDataFromDataBase.returnTablesFormConnection(metadataConnection);
+            if (itemTableName == null || itemTableName.isEmpty()) {
+                skipStep = true;
+            }
+        } else {
+            skipStep = true;
+        }
+        return skipStep;
+    }
+
+    /**
+     * Find the IRepositoryObject of metadata connection thats contains current schema.
+     * 
+     * @param schemaId
+     * @return
+     */
+    private IRepositoryObject findRepositoryObject(String schemaId) {
+        try {
+            String[] names = schemaId.split(" - ");
+            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            IRepositoryObject node = factory.getLastVersion(names[0]);
+            return node;
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
+        }
+        return null;
+    }
+
+    /**
+     * Use the database table wizard to update the schema in the repository.
+     * 
+     * @param button
+     */
+    @SuppressWarnings("deprecation")
+    private void updateRepositorySchema(Button button) {
+        String paramName = (String) button.getData(PARAMETER_NAME);
+        String fullParamName = paramName + ":" + getRepositoryChoiceParamName();
+        IElementParameter schemaParam = elem.getElementParameter(fullParamName);
+        String schemaId = (String) schemaParam.getValue();
+        org.talend.core.model.metadata.builder.connection.Connection connection = MetadataTool
+                .getConnectionFromRepository(schemaId);
+        String[] names = schemaId.split(" - ");
+
+        if (connection == null || names == null || names.length != 2) {
+            // When no repository avaiable on "Repository" mode, open a MessageDialog.
+            MessageDialog.openError(composite.getShell(), Messages.getString("NoRepositoryDialog.Title"), Messages //$NON-NLS-1$
+                    .getString("NoRepositoryDialog.Text")); //$NON-NLS-1$
+            return;
+        }
+        // find IRepositoryObject from repository that contains current connection
+        IRepositoryObject node = findRepositoryObject(schemaId);
+        DatabaseConnectionItem item = (DatabaseConnectionItem) node.getProperty().getItem();
+
+        // repository node label for schema
+        String metadataTableLabel = names[1];
+        ConnectionContextHelper.checkContextMode(item);
+        org.talend.core.model.metadata.builder.connection.MetadataTable metadataTable = TableHelper.findByLabel(connection,
+                metadataTableLabel);
+        openDatabaseTableWizard(item, metadataTable, node, WIZARD_WIDTH, WIZARD_HEIGHT);
+
+    }
+
+    /**
+     * If schema type is repository, display a dialog to ask the user to change to built-in mode or update the schema in
+     * the repository. Return true to stop the process.
+     * 
+     * @param button
+     */
+    private boolean checkForRepositoryShema(Button button) {
+        boolean stop = false;
+        if (button.getData(NAME).equals(SCHEMA)) {
+            String type = (String) elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
+            if (type != null && type.equals(EmfComponent.REPOSITORY)) {
+                // use repository schema, pop up a dialog to ask the user for changing mode
+                ModelSelectionDialog modelSelect = new ModelSelectionDialog(button.getShell());
+                stop = true;
+                if (modelSelect.open() == ModelSelectionDialog.OK) {
+                    if (modelSelect.getOptionValue() == 1) {
+                        // update repository schema
+                        updateRepositorySchema(button);
+                    } else if (modelSelect.getOptionValue() == 0) {
+                        // change the schema type to built in, then continue the original process
+                        executeCommand(new RepositoryChangeSchemaBuiltinCommand(elem));
+                        stop = false;
+                    }
+                }
+            }
+        }
+        return stop;
     }
 
     /*
@@ -334,6 +476,11 @@ public class SchemaTypeController extends AbstractRepositoryController {
      */
     @Override
     protected Command createButtonCommand(Button button) {
+        // see 0003766: Problems with the read only mode of the properties on repository mode.
+        if (checkForRepositoryShema(button)) {
+            return null;
+        }
+
         Button inputButton = button;
         IElementParameter switchParam = elem.getElementParameter(EParameterName.REPOSITORY_ALLOW_AUTO_SWITCH.getName());
 
@@ -781,5 +928,45 @@ public class SchemaTypeController extends AbstractRepositoryController {
     //
     // return null;
     // }
+
+    /**
+     * Change the schema type to built in.
+     */
+    class RepositoryChangeSchemaBuiltinCommand extends Command {
+
+        private Element elem;
+
+        public RepositoryChangeSchemaBuiltinCommand(Element elem) { // , String propertyName) {
+            this.elem = elem;
+            setLabel(Messages.getString("PropertyChangeCommand.Label")); //$NON-NLS-1$
+        }
+
+        @Override
+        public void execute() {
+            // Force redraw of Commponents propoerties
+            elem.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), new Boolean(true));
+            for (IElementParameter param : elem.getElementParameters()) {
+                if (param.getField() == EParameterFieldType.SCHEMA_TYPE) {
+                    param.setRepositoryValueUsed(false);
+                    param.setReadOnly(false);
+                }
+            }
+            elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+        }
+
+        @Override
+        public void undo() {
+            // Force redraw of Commponents propoerties
+            elem.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), new Boolean(true));
+            for (IElementParameter param : elem.getElementParameters()) {
+                if (param.getField() == EParameterFieldType.SCHEMA_TYPE) {
+                    param.setRepositoryValueUsed(true);
+                    param.setReadOnly(true);
+                }
+            }
+            elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.REPOSITORY);
+        }
+
+    }
 
 }

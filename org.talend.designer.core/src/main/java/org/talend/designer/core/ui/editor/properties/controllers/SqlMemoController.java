@@ -19,6 +19,7 @@ import org.eclipse.jface.fieldassist.DecoratedField;
 import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.fieldassist.IControlCreator;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.KeyEvent;
@@ -36,7 +37,10 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
@@ -44,7 +48,11 @@ import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog;
 import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.properties.DatabaseConnectionItem;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.i18n.Messages;
@@ -53,7 +61,12 @@ import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.cmd.RepositoryChangeQueryCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
+import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
+import org.talend.sqlbuilder.ui.SQLBuilderDialog;
+import org.talend.sqlbuilder.util.ConnectionParameters;
+import org.talend.sqlbuilder.util.TextUtil;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -102,7 +115,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
 
     private Command createCommand() {
         initConnectionParameters();
-        String repositoryType = (String) elem.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
+        String repositoryType = (String) elem.getPropertyValue(EParameterName.QUERYSTORE_TYPE.getName());
         String propertyName = (String) openSQLEditorButton.getData(PARAMETER_NAME);
         String query = (String) elem.getPropertyValue(propertyName);
         String qoute = (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) ? TalendTextUtils.QUOTATION_MARK
@@ -365,18 +378,9 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
 
     MouseListener listenerClick = new MouseAdapter() {
 
+        @Override
         public void mouseDown(MouseEvent e) {
-
-            ModelSelectionDialog modelSelect = new ModelSelectionDialog(((Control) e.getSource()).getShell());
-
-            if (modelSelect.open() == ModelSelectionDialog.OK) {
-                if (modelSelect.getOptionValue() == 0) {
-                    executeCommand(changeToBuildInCommand());
-                }
-                if (modelSelect.getOptionValue() == 1) {
-                    executeCommand(refreshConnectionCommand());
-                }
-            }
+            promptForChangingMode(((Control) e.getSource()).getShell());
         }
     };
 
@@ -387,7 +391,68 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
     }
 
     private Command refreshConnectionCommand() {
+        // open sql builder in repository mode, just use query object, no need for connection information
+        ConnectionParameters connParameters = new ConnectionParameters();
+        String queryId = (String) elem.getPropertyValue(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName());
+        Query query = MetadataTool.getQueryFromRepository(queryId);
 
-        return createCommand();
+        connParameters.setRepositoryName(findRepositoryName(queryId));
+        connParameters.setQueryObject(query);
+        connParameters.setQuery(query.getValue());
+
+        TextUtil.setDialogTitle(TalendTextUtils.SQL_BUILDER_TITLE_REP);
+        SQLBuilderDialog sqlBuilder = new SQLBuilderDialog(composite.getShell());
+
+        connParameters.setNodeReadOnly(false);
+        connParameters.setFromRepository(true);
+        sqlBuilder.setConnParameters(connParameters);
+        String sql = null;
+        if (Window.OK == sqlBuilder.open()) {
+            sql = connParameters.getQuery();
+        }
+        if (sql != null && !queryText.isDisposed()) {
+            queryText.setText(sql);
+            String propertyName = (String) openSQLEditorButton.getData(PARAMETER_NAME);
+            return new PropertyChangeCommand(elem, propertyName, sql);
+        }
+        return null;
+    }
+
+    /**
+     * Find the label of DatabaseConnectionItem that contains current query.
+     * 
+     * @param queryId
+     * @return
+     */
+    private String findRepositoryName(String queryId) {
+        try {
+            String[] names = queryId.split(" - ");
+            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            IRepositoryObject node = factory.getLastVersion(names[0]);
+            DatabaseConnectionItem item = (DatabaseConnectionItem) node.getProperty().getItem();
+            return item.getProperty().getLabel();
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
+        }
+        return null;
+    }
+
+    /**
+     * Display a dialog to ask the user to update the query in the repository directly or change the query to built-in
+     * mode.
+     * 
+     * @param shell
+     */
+    private void promptForChangingMode(Shell shell) {
+        ModelSelectionDialog modelSelect = new ModelSelectionDialog(shell);
+
+        if (modelSelect.open() == ModelSelectionDialog.OK) {
+            if (modelSelect.getOptionValue() == 0) {
+                executeCommand(changeToBuildInCommand());
+            }
+            if (modelSelect.getOptionValue() == 1) {
+                executeCommand(refreshConnectionCommand());
+            }
+        }
     }
 }
