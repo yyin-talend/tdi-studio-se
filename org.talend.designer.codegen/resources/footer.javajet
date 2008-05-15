@@ -312,6 +312,19 @@
     		System.out.println((endUsedMemory - startUsedMemory) + " bytes memory increase when running : <%=process.getName() %>");
 	    }		  
 <%
+	for (INode statCatcherNode : process.getNodesOfType("tStatCatcher")) {
+%>
+		<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>.addMessage(status==""?"end":status, (end-startTime));
+		try {
+			<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>Process();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+<%
+    }	
+%>
+
+<%
 	if (stats) {
 %>
 	runStat.stopThreadStat();
@@ -323,17 +336,6 @@
 		runTrace.stopThreadTrace();
 <%
 	}	
-	
-	for (INode statCatcherNode : process.getNodesOfType("tStatCatcher")) {
-%>
-		<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>.addMessage(status==""?"end":status, (end-startTime));
-		try {
-			<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>Process();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-<%
-    }	
 %>
 	
 	reset();
