@@ -56,4 +56,6 @@ public class TalendDesignerPrefConstants {
     public static final String VIEW_OPTIONS = "viewOptions";
 
     public static final String DISPLAY_SUBJOBS = "displaySubjobs";
+
+    public static final String GENERATE_CODE_WHEN_OPEN_JOB = "generateCodeWhenOpenJob";
 }
