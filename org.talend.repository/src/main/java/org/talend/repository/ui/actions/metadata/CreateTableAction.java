@@ -16,17 +16,25 @@ import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.builder.connection.CDCConnection;
+import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.DatabaseConnectionItem;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.repository.ui.views.RepositoryContentProvider.MetadataTableRepositoryObject;
 
 /**
  * Action used to create table on metadata.<br/>
@@ -153,6 +161,23 @@ public class CreateTableAction extends AbstractCreateTableAction {
                 if (ERepositoryObjectType.METADATA_CON_TABLE.equals(nodeType)) {
                     setText(EDIT_LABEL);
                     collectSiblingNames(node);
+                    IRepositoryObject repositoryObject = node.getObject();
+                    if (repositoryObject != null) {
+                        Item item2 = repositoryObject.getProperty().getItem();
+                        if (item2 instanceof DatabaseConnectionItem) {
+                            DatabaseConnectionItem item = (DatabaseConnectionItem) repositoryObject.getProperty().getItem();
+                            DatabaseConnection connection = (DatabaseConnection) item.getConnection();
+                            CDCConnection cdcConns = connection.getCdcConns();
+                            if (cdcConns != null) {
+                                if (repositoryObject instanceof MetadataTableRepositoryObject) {
+                                    MetadataTable table = ((MetadataTableRepositoryObject) repositoryObject).getTable();
+                                    String tableType = table.getTableType();
+                                    setEnabled(RepositoryConstants.TABLE.equals(tableType));
+                                    return;
+                                }
+                            }
+                        }
+                    }
                     setEnabled(true);
                     return;
                 }

@@ -21,6 +21,10 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.model.metadata.builder.connection.CDCConnection;
+import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.DocumentationItem;
 import org.talend.core.model.properties.InformationLevel;
 import org.talend.core.model.properties.Item;
@@ -32,11 +36,13 @@ import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.repository.RepositoryPlugin;
+import org.talend.repository.model.ECDCStatus;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
+import org.talend.repository.ui.views.RepositoryContentProvider.MetadataTableRepositoryObject;
 
 /**
  * Label provider for the repository view. <code>DEBUG</code> boolean field specify if details (such as objects ids)
@@ -193,11 +199,33 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
             case METADATA_CON_QUERY:
             case SNIPPETS:
             case METADATA_CON_SYNONYM:
-            case METADATA_CON_TABLE:
             case METADATA_CON_VIEW:
             case JOB_DOC:
             case JOBLET_DOC:
                 return ImageProvider.getImage(node.getIcon());
+            case METADATA_CON_TABLE:
+                Image tableImage = ImageProvider.getImage(node.getIcon());
+                Item item = node.getObject().getProperty().getItem();
+                if (item != null && item instanceof DatabaseConnectionItem) {
+                    DatabaseConnection connection = (DatabaseConnection) ((DatabaseConnectionItem) item).getConnection();
+                    CDCConnection cdcConns = connection.getCdcConns();
+                    if (cdcConns != null) {
+                        if (node.getObject() instanceof MetadataTableRepositoryObject) {
+                            MetadataTable table = ((MetadataTableRepositoryObject) node.getObject()).getTable();
+                            String tableType = table.getTableType();
+                            if (tableType != null && "TABLE".equals(tableType)) {
+                                ECDCStatus status = ECDCStatus.NONE;
+                                if (table.isActivatedCDC()) {
+                                    status = ECDCStatus.ACTIVATED;
+                                } else if (table.isAttachedCDC()) {
+                                    status = ECDCStatus.ADDED;
+                                }
+                                return OverlayImageProvider.getImageWithCDCStatus(tableImage, status).createImage();
+                            }
+                        }
+                    }
+                }
+                return tableImage;
             case METADATA_CON_CDC:
                 ImageDescriptor idf = RepositoryPlugin.imageDescriptorFromPlugin(RepositoryPlugin.PLUGIN_ID,
                         "icons/subscriber.jpg");

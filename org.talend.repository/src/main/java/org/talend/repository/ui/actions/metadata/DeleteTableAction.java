@@ -24,19 +24,26 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.metadata.builder.connection.AbstractMetadataObject;
+import org.talend.core.model.metadata.builder.connection.CDCConnection;
 import org.talend.core.model.metadata.builder.connection.Connection;
+import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.SubItemHelper;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.DatabaseConnectionItem;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.repository.ui.views.RepositoryContentProvider.ISubRepositoryObject;
+import org.talend.repository.ui.views.RepositoryContentProvider.MetadataTableRepositoryObject;
 
 /**
  * DOC tguiu class global comment. Detailled comment <br/>
@@ -65,9 +72,9 @@ public class DeleteTableAction extends AContextualAction {
 
         Boolean confirm = null;
 
-        //used to store the database connection object that are used to notify the sqlBuilder.
+        // used to store the database connection object that are used to notify the sqlBuilder.
         List<IRepositoryObject> connections = new ArrayList<IRepositoryObject>();
-        
+
         for (Object obj : ((IStructuredSelection) selection).toArray()) {
             if (obj instanceof RepositoryNode) {
                 RepositoryNode node = (RepositoryNode) obj;
@@ -144,6 +151,25 @@ public class DeleteTableAction extends AContextualAction {
                     if (!nodeType.isSubItem()) {
                         canWork = false;
                         break;
+                    }
+                    if (node.getObjectType() == ERepositoryObjectType.METADATA_CON_TABLE) {
+                        IRepositoryObject repositoryObject = node.getObject();
+                        if (repositoryObject != null) {
+                            Item item2 = repositoryObject.getProperty().getItem();
+                            if (item2 instanceof DatabaseConnectionItem) {
+                                DatabaseConnectionItem item = (DatabaseConnectionItem) repositoryObject.getProperty().getItem();
+                                DatabaseConnection connection = (DatabaseConnection) item.getConnection();
+                                CDCConnection cdcConns = connection.getCdcConns();
+                                if (cdcConns != null) {
+                                    if (repositoryObject instanceof MetadataTableRepositoryObject) {
+                                        MetadataTable table = ((MetadataTableRepositoryObject) repositoryObject).getTable();
+                                        String tableType = table.getTableType();
+                                        boolean is = RepositoryConstants.TABLE.equals(tableType);
+                                        canWork = is && !table.isAttachedCDC();
+                                    }
+                                }
+                            }
+                        }
                     }
                     IProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
                     boolean isLocked = false;
