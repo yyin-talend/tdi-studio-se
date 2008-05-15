@@ -316,7 +316,7 @@ class XML_API_<%=cid%>{
 }
 
 org.dom4j.io.SAXReader reader_<%=cid%> = new org.dom4j.io.SAXReader();
-org.dom4j.Document doc_<%=cid%>= reader_<%=cid%>.read(new java.io.FileInputStream(<%=filename %>));
+org.dom4j.Document doc_<%=cid%>= reader_<%=cid%>.read(<%=filename %>);
 
 NameSpaceTool_<%=cid%> nsTool_<%=cid%> = new NameSpaceTool_<%=cid%>();
 nsTool_<%=cid%>.countNSMap(doc_<%=cid%>.getRootElement());
