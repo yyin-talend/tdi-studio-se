@@ -53,6 +53,14 @@
         <ITEM NAME="INPUT_COLUMN" FIELD="PREV_COLUMN_LIST" />
       </ITEMS>
     </PARAMETER>
+    <PARAMETER
+      NAME="NOTE"
+      FIELD="LABEL"
+      REQUIRED="false"
+      SHOW="true"
+      NUM_ROW="11"/>
+    
+
   </PARAMETERS>
   
   <ADVANCED_PARAMETERS>
