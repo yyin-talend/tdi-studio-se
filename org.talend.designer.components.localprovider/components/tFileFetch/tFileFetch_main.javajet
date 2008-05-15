@@ -14,59 +14,22 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
-boolean postOption = ElementParameterParser.getValue(node,"__POST__").equals("true");
+boolean printResponse = ElementParameterParser.getValue(node,"__PRINT__").equals("true");
 
-/* The following is download part */
-if(!postOption) {
+String uri = ElementParameterParser.getValue(node, "__URI__");
 
 String directory = ElementParameterParser.getValue(node, "__DIRECTORY__");
-String uri = ElementParameterParser.getValue(node, "__URI__");
 String filename = ElementParameterParser.getValue(node, "__FILENAME__");
 
+boolean needAuth = ElementParameterParser.getValue(node,"__NEED_AUTH__").equals("true");
+String username = ElementParameterParser.getValue(node,"__AUTH_USERNAME__");
+String password = ElementParameterParser.getValue(node,"__AUTH_PASSWORD__");
+
+String timeout = ElementParameterParser.getValue(node,"__TIMEOUT__");
 %>
-	String fileName<%=cid %> = <%=filename%>;
-	
-	//open directory
-	java.io.File dir<%=cid %> = new java.io.File(<%=directory %>);
-        		
-    // open url stream
-	java.net.URL url<%=cid %> = new java.net.URL(<%=uri %>);
-	java.net.URLConnection conn<%=cid %> = url<%=cid %>.openConnection();
-	
-	//open file dans la directory
-	if (fileName<%=cid %>.compareTo("")==0) {
-		fileName<%=cid %> = url<%=cid %>.getFile();
-		if (fileName<%=cid %>.compareTo("")==0) {
-			fileName<%=cid %> = "defaultfilename.txt";
-		}
-	}
-    final java.io.DataOutputStream out<%=cid%>= new java.io.DataOutputStream(new java.io.FileOutputStream(new java.io.File(
-            dir<%=cid %>, fileName<%=cid %>))); 
-	// copy file
-    final java.io.DataInputStream in<%=cid%> = new java.io.DataInputStream(conn<%=cid %>.getInputStream());
-	//close opened object
-    byte[] buffer<%=cid%> = new byte[1024];
-    int count<%=cid%> = 0;
-    while ((count<%=cid%> = in<%=cid%>.read(buffer<%=cid%>)) > 0) {
-        out<%=cid%>.write(buffer<%=cid%>, 0, count<%=cid%>);
-    }
-    // close opened object
-    in<%=cid%>.close();
-    out<%=cid%>.close();
-    
+
 <%
-	}else{
 	/* The following is post upload part */
-	
-    String posturl = ElementParameterParser.getValue(node,"__POSTURL__");
-    	
-    boolean needAuth = ElementParameterParser.getValue(node,"__NEED_AUTH__").equals("true");
-    String username = ElementParameterParser.getValue(node,"__AUTH_USERNAME__");
-    String password = ElementParameterParser.getValue(node,"__AUTH_PASSWORD__");
-    
-    String timeout = ElementParameterParser.getValue(node,"__TIMEOUT__");
-    
-    boolean printResponse = ElementParameterParser.getValue(node,"__PRINT__").equals("true");
     boolean uploadFile = ElementParameterParser.getValue(node,"__UPLOAD__").equals("true");
     
 	List<Map<String, String>> commonParams = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__COMMON_PARAMS__");
@@ -75,7 +38,7 @@ String filename = ElementParameterParser.getValue(node, "__FILENAME__");
 %>    
     org.apache.commons.httpclient.HttpClient client_<%=cid %> = new org.apache.commons.httpclient.HttpClient();
     client_<%=cid %>.getHttpConnectionManager().getParams().setConnectionTimeout(<%=timeout %>);
-    org.apache.commons.httpclient.methods.PostMethod post_<%=cid %> = new org.apache.commons.httpclient.methods.PostMethod(<%=posturl %>);		
+    org.apache.commons.httpclient.methods.PostMethod post_<%=cid %> = new org.apache.commons.httpclient.methods.PostMethod(<%=uri %>);		
 
 <%if(needAuth){%>
     org.apache.commons.httpclient.Credentials creds_<%=cid %> = new org.apache.commons.httpclient.UsernamePasswordCredentials(<%=username %>, <%=password %>);
@@ -114,28 +77,47 @@ String filename = ElementParameterParser.getValue(node, "__FILENAME__");
     			
     //here excute the post the method
     client_<%=cid %>.executeMethod(post_<%=cid %>);
-<%  if(printResponse){%>
-	String responseBody_<%=cid %> = "";
-	String responseLine_<%=cid %> = "";
-
-	java.io.BufferedReader br_<%=cid %> = 
-	new java.io.BufferedReader(new java.io.InputStreamReader(post_<%=cid %>.getResponseBodyAsStream()));
-	while ((responseLine_<%=cid %> = br_<%=cid %>.readLine()) != null) {
-    responseBody_<%=cid %> += responseLine_<%=cid %> + "\n";
-	}
-	br_<%=cid %>.close();
-
-	//write out the response headers
-	System.out.println("*** Response ***");
+        
+<%  if(printResponse){%>	
+	
 	System.out.println("Status Line: " + post_<%=cid %>.getStatusLine());
-	org.apache.commons.httpclient.Header[] responseHeaders_<%=cid %> = post_<%=cid %>.getResponseHeaders();
+	
+	//write out the response headers
+	System.out.println("*** Response Header Part ***");	
+	org.apache.commons.httpclient.Header[] responseHeaders_<%=cid %> = post_<%=cid %>.getResponseHeaders();	
 	for (int i=0; i<responseHeaders_<%=cid %>.length; i++){
-    System.out.print(responseHeaders_<%=cid %>[i]);
+    	System.out.print(responseHeaders_<%=cid %>[i]);
 	}
-
-	//write out the response body
-	System.out.println("*** Response Body ***");
-	System.out.println(responseBody_<%=cid %>);
 <%  }%>
+    
+	java.io.InputStream in_<%=cid %> = post_<%=cid %>.getResponseBodyAsStream();
+
+	String fileName_<%=cid %> = <%=filename%>;
+	
+	//open directory
+	java.io.File dir_<%=cid %> = new java.io.File(<%=directory %>);
+	
+	java.net.URL url_<%=cid %> = new java.net.URL(<%=uri %>);
+	
+	//open file dans la directory
+	if (fileName_<%=cid %>.compareTo("")==0) {
+		fileName_<%=cid %> = url_<%=cid %>.getFile();
+		if (fileName_<%=cid %>.compareTo("")==0) {
+			fileName_<%=cid %> = "defaultfilename.txt";
+		}
+	}
+	java.io.File file_<%=cid%> = new java.io.File(dir_<%=cid %>,fileName_<%=cid %>);
+	file_<%=cid%>.getParentFile().mkdirs();
+	java.io.FileOutputStream out_<%=cid %> = new java.io.FileOutputStream(file_<%=cid%>);
+
+    byte[] buffer_<%=cid %> = new byte[1024];
+    int count_<%=cid %> = 0;
+    while ((count_<%=cid %> = in_<%=cid %>.read(buffer_<%=cid %>)) > 0) {
+        out_<%=cid %>.write(buffer_<%=cid %>, 0, count_<%=cid %>);
+    }
+    
+    // close opened object
+    in_<%=cid %>.close();
+    out_<%=cid %>.close();
+
 	post_<%=cid %>.releaseConnection();
-<%}%>

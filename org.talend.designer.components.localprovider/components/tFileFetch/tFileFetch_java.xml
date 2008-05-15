@@ -27,29 +27,20 @@ COMPATIBILITY="ALL"
   </CONNECTORS>
 
   <PARAMETERS>
-
-    <PARAMETER
-      NAME="POST"
-      FIELD="CHECK"
-      NUM_ROW="10"
-    >
-      <DEFAULT>false</DEFAULT>
-    </PARAMETER> 
-    
-    <PARAMETER
+  <PARAMETER
     	NAME="PRINT"
     	FIELD="CHECK"
-    	NUM_ROW="10"
-    	SHOW_IF="POST == 'true'"
+    	NUM_ROW="5"
+    	SHOW="true"
     >
-    </PARAMETER> 
-
+    </PARAMETER>    
+    
     <PARAMETER
        NAME="URI"
        FIELD="TEXT"
        REQUIRED="true"
        NUM_ROW="20"
-       SHOW_IF="POST == 'false'"
+       SHOW="true"
     >
       <DEFAULT>"http://talendforge.org/file_fetch.txt"</DEFAULT>
     </PARAMETER>
@@ -58,8 +49,7 @@ COMPATIBILITY="ALL"
       NAME="DIRECTORY"
       FIELD="DIRECTORY"
       NUM_ROW="30"
-      REQUIRED="true"
-      SHOW_IF="POST == 'false'"
+      REQUIRED="true"     
     >
       <DEFAULT>"C:"</DEFAULT>
     </PARAMETER>
@@ -67,30 +57,18 @@ COMPATIBILITY="ALL"
     <PARAMETER
       NAME="FILENAME"
       FIELD="TEXT"
-      REQUIRED="false"
-      NUM_ROW="40"
-      SHOW_IF="POST == 'false'"
+      REQUIRED="true"
+      NUM_ROW="40"    
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
-   
-    <PARAMETER
-      NAME="POSTURL"
-      FIELD="TEXT"
-      REQUIRED="false"
-      NUM_ROW="50"
-      SHOW_IF="POST == 'true'"
-    >
-      <DEFAULT>"http://127.0.0.1:8080/test/upload.jsp"</DEFAULT>
-    </PARAMETER> 
               
 	<PARAMETER 
 		NAME="NEED_AUTH"
 		FIELD="CHECK" 
 		REQUIRED="true"
-		NUM_ROW="60"
-		SHOW_IF="POST == 'true'"
+		NUM_ROW="50"
+		SHOW="true"
 	 >
 		<DEFAULT>false</DEFAULT>
 	</PARAMETER>
@@ -99,8 +77,8 @@ COMPATIBILITY="ALL"
       NAME="AUTH_USERNAME"
       FIELD="TEXT"
       REQUIRED="false"
-      NUM_ROW="60"
-      SHOW_IF="(POST == 'true') AND (NEED_AUTH == 'true')"
+      NUM_ROW="50"
+      SHOW_IF="NEED_AUTH == 'true'"
     >
       <DEFAULT>"username"</DEFAULT>
     </PARAMETER>
@@ -109,8 +87,8 @@ COMPATIBILITY="ALL"
       NAME="AUTH_PASSWORD"
       FIELD="TEXT"
       REQUIRED="false"
-      NUM_ROW="60"
-      SHOW_IF="(POST == 'true') AND (NEED_AUTH == 'true')"
+      NUM_ROW="50"
+      SHOW_IF="NEED_AUTH == 'true'"
     >
       <DEFAULT>"password"</DEFAULT>
     </PARAMETER> 
@@ -120,7 +98,6 @@ COMPATIBILITY="ALL"
       FIELD="TEXT"
       REQUIRED="false"
       NUM_ROW="70"
-      SHOW_IF="POST == 'true'"
     >
       <DEFAULT>1000</DEFAULT>
     </PARAMETER>     
@@ -128,8 +105,7 @@ COMPATIBILITY="ALL"
     <PARAMETER 
       NAME="COMMON_PARAMS" 
       FIELD="TABLE" NUM_ROW="80" 
-      NB_LINES="8" 
-      SHOW_IF="POST == 'true'"
+      NB_LINES="10"
     >
       <ITEMS>
         <ITEM NAME="COMMON_PARAMS_NAME" />
@@ -142,11 +118,11 @@ COMPATIBILITY="ALL"
     
     <ADVANCED_PARAMETERS>
     
+    
     <PARAMETER
       NAME="UPLOAD"
       FIELD="CHECK"
       NUM_ROW="10"
-      SHOW_IF="POST == 'true'"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER> 
@@ -155,8 +131,8 @@ COMPATIBILITY="ALL"
       NAME="FILE_PARAMS" 
       FIELD="TABLE" 
       NUM_ROW="20" 
-      NB_LINES="8" 
-      SHOW_IF="(POST=='true') AND (UPLOAD == 'true')"
+      NB_LINES="8"
+	  SHOW_IF="UPLOAD == 'true'"
     >
       <ITEMS>
         <ITEM NAME="FILE_PARAMS_NAME" />
@@ -170,7 +146,7 @@ COMPATIBILITY="ALL"
    <IMPORTS>
        <IMPORT NAME="COMMONS-httpclient" MODULE="commons-httpclient-3.0.1.jar" REQUIRED="true" />
        <IMPORT NAME="COMMONS-Logging" MODULE="commons-logging-1.1.jar" REQUIRED="true" />
-  	  <IMPORT NAME="COMMONS-codec" MODULE="commons-codec-1.3.jar" REQUIRED="true" />
+  	   <IMPORT NAME="COMMONS-codec" MODULE="commons-codec-1.3.jar" REQUIRED="true" />
      </IMPORTS>
   </CODEGENERATION>
 
