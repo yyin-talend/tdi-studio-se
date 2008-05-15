@@ -76,7 +76,7 @@ public class SQLExecution extends AbstractSQLExecution {
                         statusMessage = statusMessage + "  " //$NON-NLS-1$
                                 + Messages.getString("SQLResultsView.Count.Prefix") + " " + resultCount; //$NON-NLS-1$ //$NON-NLS-2$
                     }
-                    new DataSetTable(composite, sqlResult.getDataSet(), statusMessage);
+                    new DataSetTable(composite, sqlResult.getDataSet(), statusMessage, true);
 
                     composite.setData("parenttab", parentTab);
 

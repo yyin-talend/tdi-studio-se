@@ -54,8 +54,9 @@ public class DataSetTable {
      * @param dataSet content of table
      * @param info text displayed in bottem left corner under table
      */
-    public DataSetTable(Composite parent, final DataSet dataSet, String info) throws Exception {
+    public DataSetTable(Composite parent, final DataSet dataSet, String info, boolean sqlExecution) throws Exception {
         Composite composite = new Composite(parent, SWT.FILL);
+
         GridLayout layout = new GridLayout();
         layout.numColumns = 2;
         layout.marginLeft = 0;
@@ -64,7 +65,10 @@ public class DataSetTable {
         layout.marginWidth = 0;
         layout.marginHeight = 0;
         composite.setLayout(layout);
-        composite.setLayoutData(new GridData(GridData.FILL_BOTH));
+        // commentted this line for minor 3754, its children control may change its layout through getParent method.
+        if (sqlExecution) {
+            composite.setLayoutData(new GridData(GridData.FILL_BOTH));
+        }
 
         // check column labels & types
         String[] columnLabels = dataSet.getColumnLabels();
