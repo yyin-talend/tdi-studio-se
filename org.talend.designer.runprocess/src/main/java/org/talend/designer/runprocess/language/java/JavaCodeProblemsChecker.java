@@ -124,12 +124,17 @@ public class JavaCodeProblemsChecker extends CodeProblemsChecker {
                 return null;
             }
 
+            String uniqueNodeName = null;
+
             boolean found = false;
             List<? extends INode> generatingNodes = process.getGeneratingNodes();
             int generatingNodesListSize = generatingNodes.size();
             for (int i = 0; i < generatingNodesListSize; i++) {
                 INode node = generatingNodes.get(i);
-                if (node.getUniqueName().equals(selectedNodeName)) {
+                if (selectedNodeName.startsWith(node.getUniqueName() + "_")) { // startsWith method used in case of
+                                                                                // virtual component such as
+                                                                                // 'tMap_1_TMAP_OUT'
+                    uniqueNodeName = node.getUniqueName();
                     found = true;
                     break;
                 }
@@ -139,7 +144,7 @@ public class JavaCodeProblemsChecker extends CodeProblemsChecker {
                 return null;
             }
 
-            final String code = retrieveCode(process, selectedNodeName, nodeConfigurer);
+            final String code = retrieveCode(process, uniqueNodeName, nodeConfigurer);
 
             // System.out.println(code);
 
