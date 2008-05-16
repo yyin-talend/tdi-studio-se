@@ -16,6 +16,7 @@ class="ComponentPartHeader"
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
 ECodePart codePart = codeGenArgument.getCodePart();
 boolean stat = codeGenArgument.isStatistics();
 
@@ -51,7 +52,7 @@ $_globals{<%=node.getUniqueName() %>}{start} = [gettimeofday];
 $count_<%=conn.getName() %> = 0;
 $last_stat_update_of_<%=conn.getName() %> = time();
 SendStat(
-    '<%=conn.getName() %>',
+    '<%=conn.getName() %>'.(defined $exec_number ? '.'.$exec_number : ''),
     $count_<%=conn.getName() %>,
     0,
     'start'
@@ -114,7 +115,7 @@ if ($now - $last_stat_update_of_<%=conn.getName() %> >= 2) {
         )
     );
     SendStat(
-        '<%=conn.getName() %>',
+        '<%=conn.getName() %>'.(defined $exec_number ? '.'.$exec_number : ''),
         $count_<%=conn.getName() %>,
         $duration
     );
@@ -157,7 +158,7 @@ if (codePart.equals(ECodePart.END)) {
         )
     );
 SendStat(
-    '<%=conn.getName() %>',
+    '<%=conn.getName() %>'.(defined $exec_number ? '.'.$exec_number : ''),
     $count_<%=conn.getName() %>,
     $duration,
     'stop'
@@ -174,6 +175,18 @@ SendStat(
             if (parallelIterate) {
 %>
         # end of the child process
+<%
+                    if (stat) {
+%>
+SendStat(
+    '<%=conn.getUniqueName() %>',
+    'exec'.$exec_number,
+    'stop'
+);
+<%
+                    }
+%>
+
         exit();
     }
 <%

@@ -20,7 +20,7 @@ INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 ECodePart codePart = codeGenArgument.getCodePart();
 boolean trace = codeGenArgument.isTrace();
-
+boolean stat = codeGenArgument.isStatistics();
 
 String componentName = node.getComponent().getName();
 %>
@@ -67,6 +67,8 @@ elsif (scalar @{ $desc_<%=node.getUniqueName() %>{schema} }) {
 %>
     wait_for_a_kid() if keys %running_pids_<%=cid%> >= <%=nbParallelIterate%>;
 
+    $exec_number++;
+
     if (my $pid = fork) {
         # parent does...
         $running_pids_<%=cid%>{$pid} = 1;
@@ -77,6 +79,17 @@ elsif (scalar @{ $desc_<%=node.getUniqueName() %>{schema} }) {
             getDate('CCYYMMDD hh:mm:ss'),
             scalar keys %running_pids_<%=cid%>
         );
+<%
+                    if (stat) {
+%>
+SendStat(
+    '<%=conn.getUniqueName() %>',
+    'exec'.$exec_number,
+    'start'
+);
+<%
+                    }
+%>
     }
     else {
 <%
@@ -184,6 +197,7 @@ $_globals{<%=node.getUniqueName() %>}{OK} = true;
                 if (parallelIterate) {
 %>
 1 while wait_for_a_kid();
+$exec_number = undef;
 <%
                 }
             }
