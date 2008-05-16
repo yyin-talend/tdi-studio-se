@@ -64,8 +64,6 @@ public class JavaCompilationParticipant extends CompilationParticipant {
 
             if (isRoutineFile(filePath)) {
                 updateProblems(ERepositoryObjectType.ROUTINES, filePath);
-            } else {
-                updateProblems(ERepositoryObjectType.PROCESS, filePath);
             }
 
             fileModified = true;
