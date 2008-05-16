@@ -28,7 +28,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -103,7 +102,7 @@ public class NodesPasteCommand extends Command {
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     private String createNewConnectionName(String oldName, String baseName) {
-        String newName;
+        String newName = null;
         if (baseName != null) {
             for (String uniqueConnectionName : createdNames) {
                 if (process.checkValidConnectionName(uniqueConnectionName, true)) {
@@ -118,7 +117,11 @@ public class NodesPasteCommand extends Command {
                 }
             }
         } else {
-            newName = checkExistingNames("copyOf" + oldName); //$NON-NLS-1$
+            if (process.checkValidConnectionName(oldName, true)) {
+                newName = oldName;
+            } else {
+                newName = checkExistingNames("copyOf" + oldName); //$NON-NLS-1$
+            }
             newName = checkNewNames(newName, baseName);
         }
         createdNames.add(newName);
@@ -218,8 +221,8 @@ public class NodesPasteCommand extends Command {
         for (Node node : (List<Node>) process.getGraphicalNodes()) {
             Rectangle currentRect = new Rectangle(node.getLocation(), node.getSize());
             if (currentRect.intersects(copiedRect)) {
-                newLocation.x += TalendEditor.GRID_SIZE;
-                newLocation.y += TalendEditor.GRID_SIZE;
+                newLocation.x += size.width;
+                newLocation.y += size.height;
                 return findLocationForNodeInProcess(newLocation, size);
             }
         }
@@ -230,15 +233,18 @@ public class NodesPasteCommand extends Command {
             NodePart copiedNodePart) {
         Rectangle copiedRect = new Rectangle(location, size);
         Point newLocation = new Point(location);
-        // for (NodeContainer nodeContainer : nodeContainerList) {
-        // Node node = nodeContainer.getNode();
-        // Rectangle currentRect = new Rectangle(node.getLocation(), node.getSize());
-        // if (currentRect.intersects(copiedRect)) {
-        // newLocation = computeTheDistance(index, firstIndex, newLocation);
-        // // return findLocationForNodeInContainerList(newLocation, size, index, firstIndex);
-        // }
-        // }
         if (getCursorLocation() == null) {
+            for (NodeContainer nodeContainer : nodeContainerList) {
+                Node node = nodeContainer.getNode();
+                Rectangle currentRect = new Rectangle(node.getLocation(), node.getSize());
+                if (currentRect.intersects(copiedRect)) {
+                    newLocation.x += size.width;
+                    newLocation.y += size.height;
+                    // newLocation = computeTheDistance(index, firstIndex, newLocation);
+                    Point tmpPoint = findLocationForNodeInProcess(newLocation, size);
+                    return findLocationForNodeInContainerList(tmpPoint, size, index, firstIndex, copiedNodePart);
+                }
+            }
             return newLocation;
         }
         if (!nodePart.equals(copiedNodePart)) {
@@ -546,7 +552,7 @@ public class NodesPasteCommand extends Command {
             if (processPart instanceof ProcessPart) { // can only be
                 // ProcessPart but still
                 // test
-                List<EditPart> sel=new ArrayList<EditPart>();
+                List<EditPart> sel = new ArrayList<EditPart>();
                 for (EditPart editPart : (List<EditPart>) processPart.getChildren()) {
                     if (editPart instanceof NodePart) {
                         Node currentNode = (Node) editPart.getModel();
@@ -555,7 +561,7 @@ public class NodesPasteCommand extends Command {
                         }
                     }
                 }
-                StructuredSelection s=new StructuredSelection(sel);
+                StructuredSelection s = new StructuredSelection(sel);
                 viewer.setSelection(s);
             }
         }
@@ -590,7 +596,7 @@ public class NodesPasteCommand extends Command {
 
         // set the old selection active
         if (!multipleCommand) {
-            StructuredSelection s=new StructuredSelection(oldSelection);
+            StructuredSelection s = new StructuredSelection(oldSelection);
             viewer.setSelection(s);
         }
         // check that the created connections are removed, remove them if not
