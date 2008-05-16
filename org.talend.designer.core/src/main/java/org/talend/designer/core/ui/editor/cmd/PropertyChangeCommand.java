@@ -206,7 +206,11 @@ public class PropertyChangeCommand extends Command {
             ((Node) elem).checkAndRefreshNode();
         }
     }
-
+    
+    public void setUpdate(boolean update){
+        toUpdate=update;
+    }
+    
     /**
      * Set the values to default if needed.
      * 
