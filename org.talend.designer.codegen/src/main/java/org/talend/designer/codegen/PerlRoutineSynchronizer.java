@@ -28,12 +28,14 @@ import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.utils.PerlResourcesHelper;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.ResourceModelUtils;
@@ -103,6 +105,21 @@ public class PerlRoutineSynchronizer extends AbstractRoutineSynchronizer {
         return tempfile;
     }
 
+    private IFile getProcessFile(ProcessItem processItem) throws SystemException {
+        IFile tempfile = null;
+        IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
+        try {
+            IProject perlProject = service.getProject(ECodeLanguage.PERL);
+            tempfile = perlProject.getFile(PerlResourcesHelper.getJobFileName(processItem.getProperty().getLabel(), processItem
+                    .getProperty().getVersion()));
+
+        } catch (CoreException e) {
+            throw new SystemException(e);
+        }
+
+        return tempfile;
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -112,7 +129,7 @@ public class PerlRoutineSynchronizer extends AbstractRoutineSynchronizer {
         if (item instanceof RoutineItem) {
             return getRoutineFile((RoutineItem) item);
         } else if (item instanceof ProcessItem) {
-            return null;
+            return getProcessFile((ProcessItem) item);
         }
         return null;
     }
