@@ -16,9 +16,17 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.FindReplaceDocumentAdapter;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.Region;
+import org.eclipse.swt.widgets.Display;
 import org.epic.perleditor.editors.PerlEditor;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.SystemException;
+import org.talend.core.CorePlugin;
+import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.properties.Property;
+import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.designer.core.ISyntaxCheckableEditor;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
+import org.talend.designer.core.ui.views.problems.Problems;
 
 /**
  * Perl editor with read only content. <br/>
@@ -32,11 +40,14 @@ public class TalendPerlEditor extends PerlEditor implements ISyntaxCheckableEdit
 
     private String currentSelection;
 
+    private IProcess2 process;
+
     /**
      * Constructs a new TalendPerlEditor.
      */
-    public TalendPerlEditor() {
+    public TalendPerlEditor(IProcess2 process) {
         super();
+        this.process = process;
     }
 
     /*
@@ -67,6 +78,23 @@ public class TalendPerlEditor extends PerlEditor implements ISyntaxCheckableEdit
     public void validateSyntax() {
         revalidateSyntax();
         placeCursorToSelection();
+
+        Property property = process.getProperty();
+        ITalendSynchronizer synchronizer = CorePlugin.getDefault().getCodeGeneratorService().createRoutineSynchronizer();
+
+        try {
+            Problems.addRoutineFile(synchronizer.getFile(property.getItem()), property);
+        } catch (SystemException e) {
+            ExceptionHandler.process(e);
+        }
+
+        Display.getDefault().asyncExec(new Runnable() {
+
+            public void run() {
+                Problems.refreshRepositoryView();
+                Problems.refreshProblemTreeView();
+            }
+        });
     }
 
     /*

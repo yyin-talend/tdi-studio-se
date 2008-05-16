@@ -14,6 +14,7 @@ package org.talend.designer.core.ui.editor;
 
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 import org.talend.core.language.ECodeLanguage;
+import org.talend.core.model.process.IProcess2;
 
 /**
  * DOC Administrator class global comment. Detailled comment <br/>
@@ -32,14 +33,14 @@ public final class CodeEditorFactory {
         return instance;
     }
 
-    public AbstractDecoratedTextEditor getCodeEditor(ECodeLanguage language) {
+    public AbstractDecoratedTextEditor getCodeEditor(ECodeLanguage language, IProcess2 process) {
         switch (language) {
         case PERL:
-            return new TalendPerlEditor();
+            return new TalendPerlEditor(process);
         case JAVA:
-            return new TalendJavaEditor();
+            return new TalendJavaEditor(process);
         default:
-            return new TalendPerlEditor();
+            return new TalendPerlEditor(process);
         }
     }
 }

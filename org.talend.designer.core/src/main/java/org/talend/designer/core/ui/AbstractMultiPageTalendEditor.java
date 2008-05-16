@@ -332,8 +332,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
      * Creates page 1 of the multi-page editor, which allows you to change the font used in page 2.
      */
     protected void createPage1() {
-        codeEditor = CodeEditorFactory.getInstance().getCodeEditor(getCurrentLang());
         process = designerEditor.getProcess();
+        codeEditor = CodeEditorFactory.getInstance().getCodeEditor(getCurrentLang(), process);
         ((Process) process).setEditor(this);
         processor = ProcessorUtilities.getProcessor(process, process.getContextManager().getDefaultContext());
 

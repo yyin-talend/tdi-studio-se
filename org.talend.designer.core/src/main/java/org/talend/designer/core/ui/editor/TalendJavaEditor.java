@@ -20,7 +20,15 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.SystemException;
+import org.talend.core.CorePlugin;
+import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.properties.Property;
+import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.designer.core.ISyntaxCheckableEditor;
+import org.talend.designer.core.ui.views.problems.Problems;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -36,11 +44,14 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
 
     private String currentSelection;
 
+    private IProcess2 process;
+
     /**
      * DOC amaumont TalendJavaEditor constructor comment.
      */
-    public TalendJavaEditor() {
+    public TalendJavaEditor(IProcess2 process) {
         super();
+        this.process = process;
     }
 
     /*
@@ -95,6 +106,23 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
                 }
             });
         }
+
+        Property property = process.getProperty();
+        ITalendSynchronizer synchronizer = CorePlugin.getDefault().getCodeGeneratorService().createRoutineSynchronizer();
+
+        try {
+            Problems.addRoutineFile(synchronizer.getFile(property.getItem()), property);
+        } catch (SystemException e) {
+            ExceptionHandler.process(e);
+        }
+
+        Display.getDefault().asyncExec(new Runnable() {
+
+            public void run() {
+                Problems.refreshRepositoryView();
+                Problems.refreshProblemTreeView();
+            }
+        });
     }
 
     private void placeCursorToSelection() {
