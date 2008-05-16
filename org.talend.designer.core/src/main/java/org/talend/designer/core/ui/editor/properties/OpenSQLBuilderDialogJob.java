@@ -135,7 +135,8 @@ public class OpenSQLBuilderDialogJob extends Job {
                                 } else {
                                     String sql = connectionParameters.getQuery();
                                     sql = TalendTextUtils.addSQLQuotes(sql);
-                                    Command cmd = new PropertyChangeCommand(elem, propertyName, sql);
+                                    PropertyChangeCommand cmd = new PropertyChangeCommand(elem, propertyName, sql);
+                                    cmd.setUpdate(true);
                                     commandStack.execute(cmd);
                                 }
                             }
