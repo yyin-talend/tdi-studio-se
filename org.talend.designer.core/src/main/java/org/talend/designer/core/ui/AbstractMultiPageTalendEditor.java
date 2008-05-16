@@ -338,11 +338,9 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         processor = ProcessorUtilities.getProcessor(process, process.getContextManager().getDefaultContext());
 
         process.setProcessor(processor);
-        if (processor.getProcessorType().equals("javaProcessor")) { //$NON-NLS-1$
-            processor.setProcessorStates(IProcessor.STATES_EDIT);
-            if (codeEditor instanceof ISyntaxCheckableEditor) {
-                processor.setSyntaxCheckableEditor((ISyntaxCheckableEditor) codeEditor);
-            }
+        processor.setProcessorStates(IProcessor.STATES_EDIT);
+        if (codeEditor instanceof ISyntaxCheckableEditor) {
+            processor.setSyntaxCheckableEditor((ISyntaxCheckableEditor) codeEditor);
         }
 
         try {
