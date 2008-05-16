@@ -253,26 +253,19 @@ public class MapperUI {
         mapperShell
                 .setText(Messages.getString("MapperMain.title", component.getComponent().getName(), component.getUniqueName())); //$NON-NLS-1$
         Rectangle boundsMapper = uiProperties.getBoundsMapper();
-
         if (uiProperties.isShellMaximized()) {
             mapperShell.setMaximized(uiProperties.isShellMaximized());
         } else {
-
-            if (WindowSystem.isGTK() && uiProperties.getBoundsMapper().equals(ExternalMapperUiProperties.DEFAULT_BOUNDS_MAPPER)) {
-                mapperShell.setMaximized(true);
-                boundsMapper = display.getBounds();
-            } else {
-                // // move shell at outer of display zone to avoid visual effect on loading
-                // Rectangle tmpBoundsMapper = new Rectangle(-boundsMapper.width, boundsMapper.y, boundsMapper.width,
-                // boundsMapper.height);
-                // shell.setBounds(tmpBoundsMapper);
-                boundsMapper = uiProperties.getBoundsMapper();
-                if (boundsMapper.x < 0) {
-                    boundsMapper.x = 0;
-                }
-                if (boundsMapper.y < 0) {
-                    boundsMapper.y = 0;
-                }
+            // // move shell at outer of display zone to avoid visual effect on loading
+            // Rectangle tmpBoundsMapper = new Rectangle(-boundsMapper.width, boundsMapper.y, boundsMapper.width,
+            // boundsMapper.height);
+            // shell.setBounds(tmpBoundsMapper);
+            boundsMapper = uiProperties.getBoundsMapper();
+            if (boundsMapper.x < 0) {
+                boundsMapper.x = 0;
+            }
+            if (boundsMapper.y < 0) {
+                boundsMapper.y = 0;
             }
             mapperShell.setBounds(boundsMapper);
         }
