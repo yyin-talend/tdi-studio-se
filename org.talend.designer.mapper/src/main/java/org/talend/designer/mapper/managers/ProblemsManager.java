@@ -104,12 +104,10 @@ public class ProblemsManager {
 
                     IODataComponentContainer dataComponents = mapperNode.getIODataComponents();
 
-                    List<IODataComponent> mapperInputsDataComponent = (List<IODataComponent>) dataComponents
-                            .getInputs();
+                    List<IODataComponent> mapperInputsDataComponent = (List<IODataComponent>) dataComponents.getInputs();
                     HashMap<String, IMetadataTable> connectionNameToInputMetadataTable = new HashMap<String, IMetadataTable>();
                     for (IODataComponent dataComponent : mapperInputsDataComponent) {
-                        connectionNameToInputMetadataTable.put(dataComponent.getConnection().getName(), dataComponent
-                                .getTable());
+                        connectionNameToInputMetadataTable.put(dataComponent.getConnection().getName(), dataComponent.getTable());
                     }
                     List<IConnection> processIncomingConnections = (List<IConnection>) processExternalNode
                             .getIncomingConnections();
@@ -122,19 +120,17 @@ public class ProblemsManager {
 
                     List<IMetadataTable> metadataListOut = new ArrayList<IMetadataTable>();
 
-                    List<IODataComponent> mapperOutputsDataComponent = (List<IODataComponent>) dataComponents
-                            .getOuputs();
+                    List<IODataComponent> mapperOutputsDataComponent = (List<IODataComponent>) dataComponents.getOuputs();
                     HashMap<String, IMetadataTable> connectionNameToOutputMetadataTable = new HashMap<String, IMetadataTable>();
                     for (IODataComponent dataComponent : mapperOutputsDataComponent) {
-                        connectionNameToOutputMetadataTable.put(dataComponent.getConnection().getName(), dataComponent
-                                .getTable());
+                        connectionNameToOutputMetadataTable
+                                .put(dataComponent.getConnection().getName(), dataComponent.getTable());
                     }
                     List<IConnection> processOutgoingConnections = (List<IConnection>) processExternalNode
                             .getOutgoingConnections();
                     for (IConnection connection : processOutgoingConnections) {
                         if (connection instanceof AbstractConnection) {
-                            IMetadataTable metadataTable = connectionNameToOutputMetadataTable
-                                    .get(connection.getName());
+                            IMetadataTable metadataTable = connectionNameToOutputMetadataTable.get(connection.getName());
                             ((AbstractConnection) connection).setMetadataTable(metadataTable);
                             metadataListOut.add(metadataTable);
                         }
@@ -142,7 +138,7 @@ public class ProblemsManager {
                     processExternalNode.setMetadataList(metadataListOut);
 
                 } else {
-//                    throw new IllegalArgumentException("Should be same instance..."); //$NON-NLS-1$
+                    // throw new IllegalArgumentException("Should be same instance..."); //$NON-NLS-1$
                 }
 
             }
@@ -156,10 +152,7 @@ public class ProblemsManager {
      */
     public void checkProblems() {
 
-        IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
-
-        if (codeLanguage == ECodeLanguage.JAVA
-                && preferenceStore.getBoolean(TalendDesignerPrefConstants.PROPERTY_CODE_CHECK)) {
+        if (codeLanguage == ECodeLanguage.JAVA && mapperManager.isCheckSyntaxEnabled()) {
             codeChecker.checkProblems(nodeConfigurer);
         }
     }
@@ -174,8 +167,8 @@ public class ProblemsManager {
      * @param forceGenerateJavaCode
      * @return
      */
-    private List<Problem> checkJavaProblemsForEntry(PROBLEM_KEY_FIELD problemKeyField, String tableName,
-            String entryName, boolean forceGenerateJavaCode) {
+    private List<Problem> checkJavaProblemsForEntry(PROBLEM_KEY_FIELD problemKeyField, String tableName, String entryName,
+            boolean forceGenerateJavaCode) {
         String key = mapperManager.buildProblemKey(problemKeyField, tableName, entryName);
         if (forceGenerateJavaCode) {
             return codeChecker.checkProblemsFromKey(key, nodeConfigurer);
@@ -192,8 +185,7 @@ public class ProblemsManager {
      * @param tableName
      * @param entryName
      */
-    public String buildProblemKey(String uniqueName, PROBLEM_KEY_FIELD problemKeyField, String tableName,
-            String entryName) {
+    public String buildProblemKey(String uniqueName, PROBLEM_KEY_FIELD problemKeyField, String tableName, String entryName) {
         return CodeGenerationUtils.buildProblemKey(uniqueName, problemKeyField.toString(), tableName, entryName);
     }
 
@@ -338,6 +330,10 @@ public class ProblemsManager {
      */
     public boolean checkProblemsForTableEntry(ITableEntry tableEntry, boolean forceRefreshData) {
 
+        if (!mapperManager.isCheckSyntaxEnabled()) {
+            return false;
+        }
+
         if (forceRefreshData) {
             mapperManager.getAbstractMapComponent().refreshMapperConnectorData();
             checkProblems();
@@ -387,7 +383,8 @@ public class ProblemsManager {
                 CellEditor[] cellEditors = tableViewer.getCellEditors();
                 for (int i = 0; i < cellEditors.length; i++) {
                     CellEditor cellEditor = cellEditors[i];
-                    if (cellEditor != null && cellEditor.isActivated() && cellEditor instanceof ExtendedTextCellEditorWithProposal) {
+                    if (cellEditor != null && cellEditor.isActivated()
+                            && cellEditor instanceof ExtendedTextCellEditorWithProposal) {
                         ((ExtendedTextCellEditorWithProposal) cellEditor).fireApplyEditorValue();
                     }
                 }

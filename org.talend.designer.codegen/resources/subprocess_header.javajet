@@ -125,7 +125,7 @@ static class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines.
     %>
     
     <%
-	if(hasAtLeastOneKey) { // T SH 001
+	if(hasAtLeastOneKey) { // T_SH_001
 	%>
     
 	@Override
@@ -226,7 +226,7 @@ static class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines.
     
     
     <%
-	} // T SH 001
+	} // T_SH_001
 	%>
     
     public void <%= isLookup ? "readKeys" : "read" %>Data(ObjectInputStream dis) {
@@ -506,10 +506,12 @@ static class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines.
 			  }
 			}
     	}
+    	if(hasAtLeastOneRead) {
 	    %>
         	} catch (IOException e) {
 	            throw new RuntimeException(e);
         <%
+        }
         %>
         
 		<%
@@ -520,8 +522,17 @@ static class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines.
 		<%
 		}
 		%>
-        
+
         }
+
+		<%
+    	if(!hasAtLeastOneRead) {
+	    %>
+        	finally {}
+        <%
+        }
+        %>
+        
     }
 
     /** 
@@ -592,12 +603,22 @@ static class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines.
 			}
     	}
 
+    	if(hasAtLeastOneRead) {
 	    %>
         	} catch (IOException e) {
 	            throw new RuntimeException(e);
         <%
-        %>
         }
+        %>
+        	}
+        <%
+    	if(!hasAtLeastOneRead) {
+	    %>
+        	finally {}
+        <%
+        }
+        %>
+        
     }
 
     <%

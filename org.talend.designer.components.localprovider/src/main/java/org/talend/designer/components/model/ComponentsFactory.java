@@ -23,6 +23,7 @@ import java.util.ResourceBundle;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.apache.log4j.Priority;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
@@ -62,6 +63,10 @@ public class ComponentsFactory implements IComponentsFactory {
     private static final String INCLUDEFILEINJET_SUFFIX = ".inc.javajet";
 
     public ComponentsFactory() {
+        if (!INCLUDEFILEINJET_SUFFIX.equals(".inc.javajet")) {
+            ExceptionHandler.process(new IllegalStateException("Warning: parents of *.inc.javajet are not recompiled !"),
+                    Priority.WARN);
+        }
     }
 
     public void init() {

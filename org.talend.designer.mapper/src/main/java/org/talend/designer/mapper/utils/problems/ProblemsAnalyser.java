@@ -60,7 +60,7 @@ public class ProblemsAnalyser {
 
         problems.clear();
 
-        if (externalData != null) {
+        if (externalData != null && mapperManager.isCheckSyntaxEnabled()) {
 
             List<ExternalMapperTable> extInputTables = new ArrayList<ExternalMapperTable>(externalData.getInputTables());
             List<ExternalMapperTable> extVarTables = new ArrayList<ExternalMapperTable>(externalData.getVarsTables());

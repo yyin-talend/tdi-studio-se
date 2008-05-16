@@ -21,6 +21,7 @@ import java.util.Set;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Control;
@@ -43,7 +44,9 @@ import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.abstractmap.ui.visualmap.link.IMapperLink;
 import org.talend.designer.abstractmap.ui.visualmap.link.LinkState;
+import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.mapper.Activator;
 import org.talend.designer.mapper.IAdvancedMap;
 import org.talend.designer.mapper.MapperComponent;
@@ -890,5 +893,12 @@ public class MapperManager extends AbstractMapperManager {
     public boolean isPersistentMap() {
         return LanguageProvider.getCurrentLanguage().getCodeLanguage() == ECodeLanguage.JAVA;
     }
+    
+    public boolean isCheckSyntaxEnabled() {
+        IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
+        return preferenceStore.getBoolean(TalendDesignerPrefConstants.PROPERTY_CODE_CHECK);
+    }
+    
+    
 
 }

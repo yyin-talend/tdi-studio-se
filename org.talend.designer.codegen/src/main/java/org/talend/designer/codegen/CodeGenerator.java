@@ -730,7 +730,6 @@ public class CodeGenerator implements ICodeGenerator {
         if (process == null) {
             throw new NullPointerException();
         } else {
-            List<? extends INode> allProcessNodes = process.getGeneratingNodes();
             INode nodeToConfigure = extractNodeFromProcess(nodeName);
             if (nodeToConfigure != null) {
 
