@@ -179,6 +179,9 @@ public class PerlProcessor extends Processor {
             updateContextCode(codeGen);
 
             service.createPerlRoutineSynchronizer().syncAllRoutines();
+            if (checkableEditor != null) {
+                checkableEditor.validateSyntax();
+            }
         } catch (CoreException e1) {
             if (e1.getStatus() != null && e1.getStatus().getException() != null) {
                 ExceptionHandler.process(e1.getStatus().getException());
@@ -427,9 +430,10 @@ public class PerlProcessor extends Processor {
 
     }
 
-    public void setSyntaxCheckableEditor(ISyntaxCheckableEditor editor) {
-        // do nothing for perl right now.
+    private ISyntaxCheckableEditor checkableEditor;
 
+    public void setSyntaxCheckableEditor(ISyntaxCheckableEditor editor) {
+        this.checkableEditor = editor;
     }
 
     public static int exec(StringBuffer out, StringBuffer err, IPath absCodePath, String contextName, Level level,
