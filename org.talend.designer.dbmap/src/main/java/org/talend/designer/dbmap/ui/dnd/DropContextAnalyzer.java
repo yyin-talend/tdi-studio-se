@@ -199,16 +199,17 @@ public class DropContextAnalyzer {
     private void analyzeCursorOverExpressionCell() {
         DataMapTableView dataMapTableView = mapperManager.retrieveDataMapTableView(currentTableTarget);
         TableViewerCreator tableViewerCreatorForColumns = dataMapTableView.getTableViewerCreatorForColumns();
-        Point pointCursor = currentTableTarget.toControl(event.x, event.y
-                + (WindowSystem.isGTK() ? tableViewerCreatorForColumns.getTable().getItemHeight() : 0));
+        Point pointCursor = currentTableTarget.toControl(event.x, event.y);
         if (tableViewerCreatorForColumns.getTable() != currentTableTarget) {
             isCursorOverExpressionCell = false;
             return;
         }
-        if (pointCursor.y < currentTableTarget.getHeaderHeight()
-                || pointCursor.y >= currentTableTarget.getHeaderHeight()
-                        + (currentTableTarget.getItemCount() + (WindowSystem.isGTK() ? 0.5 : 0))
-                        * currentTableTarget.getItemHeight()) {
+
+        int maxY = (currentTableTarget.getItemCount()
+        * (currentTableTarget.getItemHeight() + currentTableTarget.getBorderWidth() + (WindowSystem.isGTK() ? 2 : 0)));
+        
+        if (pointCursor.y < 0
+                || pointCursor.y >= maxY) {
             isCursorOverExpressionCell = false;
             return;
         }

@@ -207,8 +207,6 @@ public abstract class DataMapTableView extends Composite {
 
     private static int constraintCounter = 0;
 
-    private static final int MINIMUM_HEIGHT = WindowSystem.isGTK() ? 28 : 24;
-
     protected static final int TIME_BEFORE_NEW_REFRESH_BACKGROUND = 150;
 
     protected static final int OFFSET_HEIGHT_TRIGGER = 15;
@@ -252,6 +250,8 @@ public abstract class DataMapTableView extends Composite {
     private boolean previousStateCheckFilter;
 
     private IExpressionBuilderDialogController dialog;
+
+    private boolean customSized;
 
     /**
      * 
@@ -609,7 +609,9 @@ public abstract class DataMapTableView extends Composite {
 
                         public void handleEvent(ListenableListEvent<FilterTableEntry> event) {
 
-                            resizeAtExpandedSize();
+                            if(DataMapTableView.this.canBeResizedAtPreferedSize()) {
+                                resizeAtExpandedSize();
+                            }
 
                         }
 
@@ -668,12 +670,10 @@ public abstract class DataMapTableView extends Composite {
                     if (WindowSystem.isGTK() && toolTip == null && table.getToolTipText() != null) {
                         toolTip = defaultToolTip;
                     }
-//                    System.out.println("toolTip="+toolTip);
-//                    System.out.println("table.getToolTipText()="+table.getToolTipText());
+                    // System.out.println("toolTip="+toolTip);
+                    // System.out.println("table.getToolTipText()="+table.getToolTipText());
                     setTableToolTipText(table, tableColumn, tableEntry, toolTip);
 
-
-                    
                     break;
                 default:
                 }
@@ -827,14 +827,15 @@ public abstract class DataMapTableView extends Composite {
                         int newHeight = (currentMode == RESIZE_MODE.VERTICAL || currentMode == RESIZE_MODE.BOTH) ? rect.height
                                 + diff.y : rect.height;
 
-                        if (newHeight < MINIMUM_HEIGHT + OFFSET_HEIGHT_TRIGGER && diff.y < 0) {
+                        if (newHeight < getMinimumHeight() + OFFSET_HEIGHT_TRIGGER && diff.y < 0) {
                             changeMinimizeState(true);
-                            newHeight = MINIMUM_HEIGHT;
-                        } else if (newHeight > MINIMUM_HEIGHT + OFFSET_HEIGHT_TRIGGER && diff.y > 0) {
+                            newHeight = getMinimumHeight();
+                        } else if (newHeight > getMinimumHeight() + OFFSET_HEIGHT_TRIGGER && diff.y > 0) {
                             changeMinimizeState(false);
                         }
                         changeSize(new Point(newWidth, newHeight), false, true);
                         resizeHelper.setLastDragPoint(newPoint);
+                        customSized = true;
                     } else if (!resizeHelper.isDragging()) {
                         Cursor cursor = null;
                         if (mpa.isOnLeftBottomCorner(eventPoint)) {
@@ -985,8 +986,8 @@ public abstract class DataMapTableView extends Composite {
      * @param recalculateParentSize
      */
     public void changeSize(Point newSize, boolean refreshNow, boolean recalculateParentSize) {
-        if (newSize.y < MINIMUM_HEIGHT) {
-            newSize.y = MINIMUM_HEIGHT;
+        if (newSize.y < getMinimumHeight()) {
+            newSize.y = getMinimumHeight();
         }
         FormData formData = (FormData) DataMapTableView.this.getLayoutData();
         formData.width = newSize.x;
@@ -1257,6 +1258,10 @@ public abstract class DataMapTableView extends Composite {
         return getPreferredSize(false, false, false);
     }
 
+    public boolean canBeResizedAtPreferedSize() {
+        return !customSized;
+    }
+    
     /**
      * 
      * DOC amaumont Comment method "getPreferredSize".
@@ -1283,9 +1288,21 @@ public abstract class DataMapTableView extends Composite {
         }
 
         if (abstractDataMapTable.isMinimized() && !expandedSize) {
-            newHeight = MINIMUM_HEIGHT;
+            newHeight = getMinimumHeight();
         }
         return new Point(this.getSize().x, newHeight);
+    }
+
+    private int getMinimumHeight() {
+        if (WindowSystem.isGTK()) {
+            if (hasDropDownToolBarItem()) {
+                return 38;
+            } else {
+                return 28;
+            }
+        } else {
+            return 24;
+        }
     }
 
     public void registerStyledExpressionEditor(final StyledTextHandler styledTextHandler) {
@@ -1472,24 +1489,24 @@ public abstract class DataMapTableView extends Composite {
         final ExtendedTextCellEditorWithProposal cellEditor = new ExtendedTextCellEditorWithProposal(tableViewerCreator
                 .getTable(), SWT.MULTI | SWT.BORDER, column, behavior) {
 
-                    @Override
-                    public void activate() {
-                        
-                        UIManager uiManager = mapperManager.getUiManager();
+            @Override
+            public void activate() {
 
-                        ITableEntry currentModifiedBean = (ITableEntry) tableViewerCreator.getModifiedObjectInfo().getCurrentModifiedBean();
-                        
-                        ArrayList<ITableEntry> selectedTableEntry = new ArrayList<ITableEntry>(1);
-                        selectedTableEntry.add(currentModifiedBean);
-                        
-                        uiManager.selectLinks(DataMapTableView.this, selectedTableEntry, true, false);
-                        
-                        uiManager.applyActivatedCellEditorsForAllTables(tableViewerCreator);
-                        
-                        super.activate();
-                    }
-            
-            
+                UIManager uiManager = mapperManager.getUiManager();
+
+                ITableEntry currentModifiedBean = (ITableEntry) tableViewerCreator.getModifiedObjectInfo()
+                        .getCurrentModifiedBean();
+
+                ArrayList<ITableEntry> selectedTableEntry = new ArrayList<ITableEntry>(1);
+                selectedTableEntry.add(currentModifiedBean);
+
+                uiManager.selectLinks(DataMapTableView.this, selectedTableEntry, true, false);
+
+                uiManager.applyActivatedCellEditorsForAllTables(tableViewerCreator);
+
+                super.activate();
+            }
+
         };
 
         dialog = ((IExpressionBuilderDialogService) expressionBuilderDialogService).getExpressionBuilderInstance(
@@ -1510,7 +1527,7 @@ public abstract class DataMapTableView extends Composite {
             Text text = expressionTextEditor;
 
             public void applyEditorValue() {
-                //System.out.println("applyEditorValue:text='" + text.getText() + "'");
+                // System.out.println("applyEditorValue:text='" + text.getText() + "'");
                 ModifiedObjectInfo modifiedObjectInfo = tableViewerCreator.getModifiedObjectInfo();
                 mapperManager.getUiManager().parseNewExpression(text.getText(),
                         (ITableEntry) modifiedObjectInfo.getCurrentModifiedBean(), true);
@@ -1575,10 +1592,11 @@ public abstract class DataMapTableView extends Composite {
         expressionTextEditor.addFocusListener(new FocusListener() {
 
             public void focusGained(FocusEvent e) {
-                //System.out.println("expressionTextEditor focusGained:Text.getText()='"+((Text) e.widget).getText() + "'");
+                // System.out.println("expressionTextEditor focusGained:Text.getText()='"+((Text) e.widget).getText() +
+                // "'");
                 ITableEntry currentModifiedEntry = (ITableEntry) tableViewerCreator.getModifiedObjectInfo()
                         .getCurrentModifiedBean();
-                
+
                 if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
                     if (currentModifiedEntry instanceof AbstractInOutTableEntry) {
                         IMetadataColumn column = ((AbstractInOutTableEntry) currentModifiedEntry).getMetadataColumn();
@@ -1594,7 +1612,7 @@ public abstract class DataMapTableView extends Composite {
 
                 initExpressionProposals(cellEditor, zones, tableViewerCreator, currentModifiedEntry);
                 resizeTextEditor(expressionTextEditor, tableViewerCreator);
-                
+
                 StyledTextHandler styledTextHandler = mapperManager.getUiManager().getTabFolderEditors().getStyledTextHandler();
                 if (styledTextHandler.getCurrentEntry() != currentModifiedEntry) {
                     styledTextHandler.setCurrentEntry(currentModifiedEntry);
@@ -1604,7 +1622,7 @@ public abstract class DataMapTableView extends Composite {
             }
 
             public void focusLost(FocusEvent e) {
-                //System.out.println("focusLost:Text.getText()='"+((Text) e.widget).getText() + "'");
+                // System.out.println("focusLost:Text.getText()='"+((Text) e.widget).getText() + "'");
                 expressionEditorTextSelectionBeforeFocusLost = expressionTextEditor.getSelection();
                 lastExpressionEditorTextWhichLostFocus = expressionTextEditor;
                 checkChangementsAfterEntryModifiedOrAdded(false);
@@ -2333,7 +2351,9 @@ public abstract class DataMapTableView extends Composite {
         }
 
         // updateGridDataHeightForTableConstraints();
-        DataMapTableView.this.changeSize(DataMapTableView.this.getPreferredSize(false, true, false), true, true);
+        if (buttonPressed) {
+            DataMapTableView.this.changeSize(DataMapTableView.this.getPreferredSize(false, true, false), true, true);
+        }
         DataMapTableView.this.layout();
 
         mapperManager.getUiManager().refreshBackground(true, false);

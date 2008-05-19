@@ -283,9 +283,11 @@ public class UIManager extends AbstractUIManager {
                             }
                             refreshBackground(false, false);
                             if (event.index != null) {
-                                dataMapTableView.changeSize(view.getPreferredSize(true, false, false), true, true);
                                 dataMapTableViewer.refresh();
                                 dataMapTVCreator.getSelectionHelper().setSelection(event.index);
+                                if (dataMapTableView.canBeResizedAtPreferedSize()) {
+                                    dataMapTableView.changeSize(view.getPreferredSize(true, false, false), true, true);
+                                }
                             } else if (event.indicesTarget != null) {
                                 dataMapTableViewer.refresh();
                                 dataMapTableView.changeSize(view.getPreferredSize(false, true, false), true, true);
@@ -303,7 +305,9 @@ public class UIManager extends AbstractUIManager {
                                 mapperManager.removeTableEntry(metadataTableEntry);
                             }
                             dataMapTableViewer.refresh();
-                            dataMapTableView.resizeAtExpandedSize();
+                            if (dataMapTableView.canBeResizedAtPreferedSize()) {
+                                dataMapTableView.resizeAtExpandedSize();
+                            }
                             resizeTablesZoneViewAtComputedSize(dataMapTableView.getZone());
                             moveScrollBarZoneAtSelectedTable(dataMapTableView.getZone());
                             refreshBackground(true, false);
@@ -1991,7 +1995,8 @@ public class UIManager extends AbstractUIManager {
                 }
             }
             if (activatedCellEditor != null) {
-                tableViewer.refresh(true);
+                Object currentModifiedBean = tableViewerCreator.getModifiedObjectInfo().getCurrentModifiedBean();
+                tableViewer.refresh(currentModifiedBean, true);
             }
         }
 

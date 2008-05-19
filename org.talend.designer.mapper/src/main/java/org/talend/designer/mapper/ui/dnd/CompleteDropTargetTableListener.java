@@ -446,9 +446,8 @@ public class CompleteDropTargetTableListener extends DefaultDropTargetListener {
             for (int i = currentIndex; i < currentIndex + sourceEntriesOfEntriesBeingAdded.size(); i++) {
                 columnIndicesToSelect.add(i);
             }
-
         }
-        dataMapTableViewTarget.resizeAtExpandedSize();
+//        dataMapTableViewTarget.resizeAtExpandedSize();
 
         uiManager.unselectAllEntriesOfAllTables();
 

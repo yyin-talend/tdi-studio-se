@@ -370,10 +370,12 @@ public class VarsDataMapTableView extends DataMapTableView {
                 }
 
                 mapperManager.addNewVarEntry(VarsDataMapTableView.this, varName, indexInsert, type); //$NON-NLS-1$
-                VarsDataMapTableView.this.changeSize(VarsDataMapTableView.this.getPreferredSize(true, true, false),
-                        true, true);
-                changeMinimizeState(false);
                 tableViewerCreatorForColumns.getTableViewer().refresh();
+                if(canBeResizedAtPreferedSize()) {
+                    VarsDataMapTableView.this.changeSize(VarsDataMapTableView.this.getPreferredSize(true, true, false),
+                            true, true);
+                    changeMinimizeState(false);
+                }
                 mapperManager.getUiManager().refreshBackground(true, false);
                 table.setSelection(indexInsert);
                 removeEntryItem.setEnabled(true);
@@ -407,7 +409,9 @@ public class VarsDataMapTableView extends DataMapTableView {
                 if (selectedBeans.size() > 0) {
                     tableViewerCreatorForColumns.getTableViewer().refresh();
                     mapperManager.getUiManager().refreshBackground(true, false);
-                    resizeAtExpandedSize();
+                    if (canBeResizedAtPreferedSize()) {
+                        resizeAtExpandedSize();
+                    }
                 }
                 removeEntryItem.setEnabled(false);
             }

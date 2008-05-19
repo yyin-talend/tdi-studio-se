@@ -185,7 +185,7 @@ public class InsertionIndicator {
      */
     public void updatePosition(Table currentTable, int itemIndexTarget) {
 
-        // System.out.println(itemIndexTarget);
+//        System.out.println(itemIndexTarget);
 
         this.draggableTable = currentTable;
         removeTablePaintListener();
@@ -209,17 +209,22 @@ public class InsertionIndicator {
         FormData formDataLeftArrow = (FormData) leftArrowDraggingIndicator.getLayoutData();
         FormData formDataRightArrow = (FormData) rightArrowDraggingIndicator.getLayoutData();
         ScrollBar verticalBar = currentTable.getVerticalBar();
-        int offsetVerticalBar = -verticalBar.getSelection() * currentTable.getItemHeight();
+        // System.out.println("verticalBar.getSelection()="+verticalBar.getSelection() + "
+        // currentTable.getItemHeight()="+currentTable.getItemHeight());
         int indicYPositionRefZone = 0;
         if (WindowSystem.isGTK()) {
+            int offsetVerticalBar = -verticalBar.getSelection();
             if (itemIndexTarget == 0) {
                 indicYPositionRefTable = 0 + offsetVerticalBar;
             } else {
                 indicYPositionRefTable = itemIndexTarget * (currentTable.getItemHeight() + 2) + offsetVerticalBar;
             }
+            // System.out.println("indicYPositionRefTable="+indicYPositionRefTable);
             indicYPositionRefZone = indicYPositionRefTable + tablePositionRefZone.y + formLayout.marginTop - HEIGHT_INDICATOR / 2;
             indicYPositionRefZone -= currentTable.getItemHeight() + 1;
+            // System.out.println("indicYPositionRefZone="+indicYPositionRefZone);
         } else {
+            int offsetVerticalBar = -verticalBar.getSelection() * currentTable.getItemHeight();
             if (itemIndexTarget == 0) {
                 indicYPositionRefTable = 0 + offsetVerticalBar;
             } else {
