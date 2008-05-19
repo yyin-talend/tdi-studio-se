@@ -61,11 +61,13 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.context.UpdateRunJobComponentContextHelper;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.context.JobContextManager;
+import org.talend.core.model.metadata.builder.connection.Properties;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.properties.PropertiesPackage;
 import org.talend.core.ui.IUIRefresher;
 import org.talend.core.utils.AccessingEmfJob;
 import org.talend.designer.core.DesignerPlugin;
@@ -103,7 +105,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
         @Override
         public void notifyChanged(Notification notification) {
-            if (notification.getEventType() != Notification.REMOVING_ADAPTER) {
+            if (notification.getEventType() != Notification.REMOVING_ADAPTER
+                    && notification.getFeatureID(Properties.class) != PropertiesPackage.PROPERTY__MAX_INFORMATION_LEVEL) {
                 // propertyIsDirty = true;
                 designerEditor.getProperty().eAdapters().remove(dirtyListener);
                 process.updateProperties();
