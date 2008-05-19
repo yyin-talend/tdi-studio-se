@@ -87,7 +87,7 @@ public class CreateSalesforceSchemaAction extends AbstractCreateAction {
         if (isToolbar()) {
             init(salesforceSchema);
             wizardDialog = new WizardDialog(new Shell(), new SalesforceSchemaWizard(PlatformUI.getWorkbench(), creation,
-                    selection, getExistingNames(), false));// TODO send schema
+                    salesforceSchema, getExistingNames(), false));// TODO send schema
         } else {
             selection = getSelection();
             wizardDialog = new WizardDialog(new Shell(), new SalesforceSchemaWizard(PlatformUI.getWorkbench(), creation,
