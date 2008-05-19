@@ -1578,7 +1578,7 @@ public abstract class DataMapTableView extends Composite {
                 //System.out.println("expressionTextEditor focusGained:Text.getText()='"+((Text) e.widget).getText() + "'");
                 ITableEntry currentModifiedEntry = (ITableEntry) tableViewerCreator.getModifiedObjectInfo()
                         .getCurrentModifiedBean();
-
+                
                 if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
                     if (currentModifiedEntry instanceof AbstractInOutTableEntry) {
                         IMetadataColumn column = ((AbstractInOutTableEntry) currentModifiedEntry).getMetadataColumn();
@@ -1594,10 +1594,13 @@ public abstract class DataMapTableView extends Composite {
 
                 initExpressionProposals(cellEditor, zones, tableViewerCreator, currentModifiedEntry);
                 resizeTextEditor(expressionTextEditor, tableViewerCreator);
+                
                 StyledTextHandler styledTextHandler = mapperManager.getUiManager().getTabFolderEditors().getStyledTextHandler();
-                styledTextHandler.setCurrentEntry(currentModifiedEntry);
-                styledTextHandler
-                        .setTextWithoutNotifyListeners(currentModifiedEntry.getExpression() == null ? "" : currentModifiedEntry.getExpression()); //$NON-NLS-1$
+                if (styledTextHandler.getCurrentEntry() != currentModifiedEntry) {
+                    styledTextHandler.setCurrentEntry(currentModifiedEntry);
+                    styledTextHandler
+                            .setTextWithoutNotifyListeners(currentModifiedEntry.getExpression() == null ? "" : currentModifiedEntry.getExpression()); //$NON-NLS-1$
+                }
             }
 
             public void focusLost(FocusEvent e) {

@@ -1991,7 +1991,7 @@ public class UIManager extends AbstractUIManager {
                 }
             }
             if (activatedCellEditor != null) {
-                tableViewer.refresh(activatedCellEditor, true);
+                tableViewer.refresh(true);
             }
         }
 
