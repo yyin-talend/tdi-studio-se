@@ -277,7 +277,7 @@ public class ProcessComposite extends Composite {
         clearBeforeExec = new Button(execHeader, SWT.CHECK);
         clearBeforeExec.setText(Messages.getString("ProcessComposite.clearBefore")); //$NON-NLS-1$
         clearBeforeExec.setToolTipText(Messages.getString("ProcessComposite.clearBeforeHint")); //$NON-NLS-1$
-        clearBeforeExec.setEnabled(false);
+        // clearBeforeExec.setEnabled(false);
         clearBeforeExec.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
                 RunProcessPrefsConstants.ISCLEARBEFORERUN));
         data = new GridData();
@@ -477,6 +477,14 @@ public class ProcessComposite extends Composite {
                 processContext.setSaveBeforeRun(saveJobBeforeRunButton.getSelection());
             }
         });
+
+        clearBeforeExec.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                processContext.setClearBeforeExec(clearBeforeExec.getSelection());
+            }
+        });
     }
 
     protected boolean checkKillAllowed() {
@@ -570,36 +578,33 @@ public class ProcessComposite extends Composite {
             disableAll = processContext.getProcess().disableRunJobView();
         }
 
-        // perfBtn.setSelection(processContext != null &&
-        // processContext.isMonitorPerf());
-        // traceBtn.setSelection(processContext != null &&
-        // processContext.isMonitorTrace());
-        // watchBtn.setSelection(processContext != null &&
-        // processContext.isWatchAllowed());
-        perfBtn.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
-                RunProcessPrefsConstants.ISSTATISTICSRUN)
-                && !disableAll);
-        traceBtn.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(RunProcessPrefsConstants.ISTRACESRUN)
-                && !disableAll);
+        perfBtn.setSelection(processContext != null && processContext.isMonitorPerf());
+        traceBtn.setSelection(processContext != null && processContext.isMonitorTrace());
+        watchBtn.setSelection(processContext != null && processContext.isWatchAllowed());
+        // perfBtn.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
+        // RunProcessPrefsConstants.ISSTATISTICSRUN)
+        // && !disableAll);
+        // traceBtn.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(RunProcessPrefsConstants.ISTRACESRUN)
+        // && !disableAll);
         if (this.processContext != null) {
             this.processContext.setMonitorTrace(traceBtn.getSelection());
         }
 
-        watchBtn.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
-                RunProcessPrefsConstants.ISEXECTIMERUN)
-                && !disableAll);
-        saveJobBeforeRunButton.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
-                RunProcessPrefsConstants.ISSAVEBEFORERUN)
-                && !disableAll);
-        clearBeforeExec.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
-                RunProcessPrefsConstants.ISCLEARBEFORERUN)
-                && !disableAll);
+        // watchBtn.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
+        // RunProcessPrefsConstants.ISEXECTIMERUN)
+        // && !disableAll);
+        // saveJobBeforeRunButton.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
+        // RunProcessPrefsConstants.ISSAVEBEFORERUN)
+        // && !disableAll);
+        // clearBeforeExec.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
+        // RunProcessPrefsConstants.ISCLEARBEFORERUN)
+        // && !disableAll);
 
-        // saveJobBeforeRunButton.setSelection(processContext != null &&
-        // processContext.isSaveBeforeRun());
+        saveJobBeforeRunButton.setSelection(processContext != null && processContext.isSaveBeforeRun());
         setRunnable(processContext != null && !processContext.isRunning() && !disableAll);
         killBtn.setEnabled(processContext != null && processContext.isRunning() && !disableAll);
-        // clearLogBtn.setEnabled(processContext != null);
+        clearBeforeExec.setEnabled(processContext != null);
+        clearBeforeExec.setSelection(processContext != null && processContext.isClearBeforeExec());
         contextComposite.setProcess(((processContext != null) && !disableAll ? processContext.getProcess() : null));
         fillConsole(processContext != null ? processContext.getMessages() : new ArrayList<IProcessMessage>());
     }

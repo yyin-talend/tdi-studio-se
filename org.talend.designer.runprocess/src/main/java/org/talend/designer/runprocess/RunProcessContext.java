@@ -48,6 +48,7 @@ import org.talend.designer.runprocess.ProcessMessage.MsgType;
 import org.talend.designer.runprocess.data.PerformanceData;
 import org.talend.designer.runprocess.data.TraceData;
 import org.talend.designer.runprocess.i18n.Messages;
+import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
 import org.talend.designer.runprocess.ui.ProcessContextComposite;
 import org.talend.designer.runprocess.ui.actions.ClearPerformanceAction;
 import org.talend.designer.runprocess.ui.actions.ClearTraceAction;
@@ -121,6 +122,8 @@ public class RunProcessContext {
 
     private boolean saveBeforeRun;
 
+    private boolean clearBeforeExec = true;
+
     private boolean isTracPause = false;
 
     private boolean startingMessageWritten;
@@ -138,6 +141,13 @@ public class RunProcessContext {
 
         pcsDelegate = new PropertyChangeSupport(this);
         this.processMessageManager = new ProcessMessageManager();
+
+        setMonitorPerf(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(RunProcessPrefsConstants.ISSTATISTICSRUN));
+        setMonitorTrace(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(RunProcessPrefsConstants.ISTRACESRUN));
+        setWatchAllowed(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(RunProcessPrefsConstants.ISEXECTIMERUN));
+        setSaveBeforeRun(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(RunProcessPrefsConstants.ISSAVEBEFORERUN));
+        setClearBeforeExec(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
+                RunProcessPrefsConstants.ISCLEARBEFORERUN));
     }
 
     public synchronized void addPropertyChangeListener(PropertyChangeListener l) {
@@ -998,6 +1008,14 @@ public class RunProcessContext {
      */
     public boolean isSaveBeforeRun() {
         return this.saveBeforeRun;
+    }
+
+    public boolean isClearBeforeExec() {
+        return this.clearBeforeExec;
+    }
+
+    public void setClearBeforeExec(boolean clearBeforeExec) {
+        this.clearBeforeExec = clearBeforeExec;
     }
 
     /**
