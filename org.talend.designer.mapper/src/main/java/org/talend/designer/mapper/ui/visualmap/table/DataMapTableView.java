@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.mapper.ui.visualmap.table;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -1469,7 +1470,27 @@ public abstract class DataMapTableView extends Composite {
 
         CellEditorDialogBehavior behavior = new CellEditorDialogBehavior();
         final ExtendedTextCellEditorWithProposal cellEditor = new ExtendedTextCellEditorWithProposal(tableViewerCreator
-                .getTable(), SWT.MULTI | SWT.BORDER, column, behavior);
+                .getTable(), SWT.MULTI | SWT.BORDER, column, behavior) {
+
+                    @Override
+                    public void activate() {
+                        
+                        UIManager uiManager = mapperManager.getUiManager();
+
+                        ITableEntry currentModifiedBean = (ITableEntry) tableViewerCreator.getModifiedObjectInfo().getCurrentModifiedBean();
+                        
+                        ArrayList<ITableEntry> selectedTableEntry = new ArrayList<ITableEntry>(1);
+                        selectedTableEntry.add(currentModifiedBean);
+                        
+                        uiManager.selectLinks(DataMapTableView.this, selectedTableEntry, true, false);
+                        
+                        uiManager.applyActivatedCellEditorsForAllTables(tableViewerCreator);
+                        
+                        super.activate();
+                    }
+            
+            
+        };
 
         dialog = ((IExpressionBuilderDialogService) expressionBuilderDialogService).getExpressionBuilderInstance(
                 tableViewerCreator.getCompositeParent(), cellEditor);
@@ -1489,6 +1510,7 @@ public abstract class DataMapTableView extends Composite {
             Text text = expressionTextEditor;
 
             public void applyEditorValue() {
+                //System.out.println("applyEditorValue:text='" + text.getText() + "'");
                 ModifiedObjectInfo modifiedObjectInfo = tableViewerCreator.getModifiedObjectInfo();
                 mapperManager.getUiManager().parseNewExpression(text.getText(),
                         (ITableEntry) modifiedObjectInfo.getCurrentModifiedBean(), true);
@@ -1553,6 +1575,7 @@ public abstract class DataMapTableView extends Composite {
         expressionTextEditor.addFocusListener(new FocusListener() {
 
             public void focusGained(FocusEvent e) {
+                //System.out.println("expressionTextEditor focusGained:Text.getText()='"+((Text) e.widget).getText() + "'");
                 ITableEntry currentModifiedEntry = (ITableEntry) tableViewerCreator.getModifiedObjectInfo()
                         .getCurrentModifiedBean();
 
@@ -1578,6 +1601,7 @@ public abstract class DataMapTableView extends Composite {
             }
 
             public void focusLost(FocusEvent e) {
+                //System.out.println("focusLost:Text.getText()='"+((Text) e.widget).getText() + "'");
                 expressionEditorTextSelectionBeforeFocusLost = expressionTextEditor.getSelection();
                 lastExpressionEditorTextWhichLostFocus = expressionTextEditor;
                 checkChangementsAfterEntryModifiedOrAdded(false);

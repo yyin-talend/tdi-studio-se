@@ -39,7 +39,10 @@ public class ExternalMapperUiProperties implements Serializable, Cloneable {
 
     public static final int[] DEFAULT_WEIGHTS_DATAS_FLOW_SASH_FORM = new int[] { 33, 33, 34 };
 
-    private Rectangle boundsMapper = new Rectangle(50, 50, 800, 600);
+    public static final Rectangle DEFAULT_BOUNDS_MAPPER = new Rectangle(50, 50, 800, 600);
+
+    private Rectangle boundsMapper = new Rectangle(DEFAULT_BOUNDS_MAPPER.x, DEFAULT_BOUNDS_MAPPER.y, DEFAULT_BOUNDS_MAPPER.width,
+            DEFAULT_BOUNDS_MAPPER.height);
 
     private boolean shellMaximized = false;
 

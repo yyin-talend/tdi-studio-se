@@ -376,21 +376,7 @@ public class ProblemsManager {
 
         TableViewerCreator tableViewerCreator = mapperManager.retrieveTableViewerCreator(tableEntry);
         DataMapTableView retrieveDataMapTableView = mapperManager.retrieveDataMapTableView(tableEntry);
-        if (tableViewerCreator != null && tableViewerCreator.getTableViewer() != null
-                && !tableViewerCreator.getTableViewer().getTable().isDisposed()) {
-            TableViewer tableViewer = tableViewerCreator.getTableViewer();
-            if (tableViewer.isCellEditorActive()) {
-                CellEditor[] cellEditors = tableViewer.getCellEditors();
-                for (int i = 0; i < cellEditors.length; i++) {
-                    CellEditor cellEditor = cellEditors[i];
-                    if (cellEditor != null && cellEditor.isActivated()
-                            && cellEditor instanceof ExtendedTextCellEditorWithProposal) {
-                        ((ExtendedTextCellEditorWithProposal) cellEditor).fireApplyEditorValue();
-                    }
-                }
-            }
-            tableViewer.refresh(tableEntry, true);
-        }
+        mapperManager.getUiManager().applyActivatedCellEditors(tableViewerCreator);
 
         if (problems != null) {
             hasProblems = problems != null;

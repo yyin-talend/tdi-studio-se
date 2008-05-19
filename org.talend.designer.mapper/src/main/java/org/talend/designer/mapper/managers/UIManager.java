@@ -22,6 +22,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
@@ -47,6 +48,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.ToolItem;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.ui.swt.proposal.ExtendedTextCellEditorWithProposal;
 import org.talend.commons.ui.swt.tableviewer.IModifiedBeanListener;
 import org.talend.commons.ui.swt.tableviewer.ModifiedBeanEvent;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
@@ -1969,6 +1971,50 @@ public class UIManager extends AbstractUIManager {
      */
     public boolean isCloseWithoutPrompt() {
         return this.closeWithoutPrompt;
+    }
+
+    public void applyActivatedCellEditors(TableViewerCreator tableViewerCreator) {
+        if (tableViewerCreator != null && tableViewerCreator.getTableViewer() != null
+                && !tableViewerCreator.getTableViewer().getTable().isDisposed()) {
+            CellEditor activatedCellEditor = null;
+
+            TableViewer tableViewer = tableViewerCreator.getTableViewer();
+            if (tableViewer.isCellEditorActive()) {
+                CellEditor[] cellEditors = tableViewer.getCellEditors();
+                for (int i = 0; i < cellEditors.length; i++) {
+                    CellEditor cellEditor = cellEditors[i];
+                    if (cellEditor != null && cellEditor.isActivated()
+                            && cellEditor instanceof ExtendedTextCellEditorWithProposal) {
+                        ((ExtendedTextCellEditorWithProposal) cellEditor).fireApplyEditorValue();
+                        activatedCellEditor = cellEditor;
+                    }
+                }
+            }
+            if (activatedCellEditor != null) {
+                tableViewer.refresh(activatedCellEditor, true);
+            }
+        }
+
+    }
+
+    /**
+     * 
+     * "applyActivatedCellEditorsForAllTables".
+     * @param exceptThisTableViewerCreator
+     */
+    public void applyActivatedCellEditorsForAllTables(TableViewerCreator exceptThisTableViewerCreator) {
+
+        Collection<DataMapTableView> tablesView = mapperManager.getTablesView();
+
+        for (DataMapTableView dataMapTableView : tablesView) {
+
+            TableViewerCreator tableViewerCreatorForColumns = dataMapTableView.getTableViewerCreatorForColumns();
+            if (tableViewerCreatorForColumns != exceptThisTableViewerCreator) {
+                applyActivatedCellEditors(tableViewerCreatorForColumns);
+            }
+
+        }
+
     }
 
 }
