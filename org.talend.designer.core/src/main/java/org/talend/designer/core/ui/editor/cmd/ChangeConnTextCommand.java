@@ -13,10 +13,10 @@
 package org.talend.designer.core.ui.editor.cmd;
 
 import org.eclipse.gef.commands.Command;
-import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.process.Process;
 
@@ -53,6 +53,7 @@ public class ChangeConnTextCommand extends Command {
     public void execute() {
         oldName = connection.getName();
         connection.setName(newName);
+        connection.setPropertyValue(EParameterName.LABEL.getName(), newName);
 
         if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.UNIQUE_NAME)) {
             connection.getSource().getProcess().removeUniqueConnectionName(oldName);

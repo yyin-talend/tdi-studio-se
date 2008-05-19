@@ -454,12 +454,24 @@ public class NodesPasteCommand extends Command {
                         pastedConnection = new Connection(pastedSourceNode, pastedTargetNode, connection.getLineStyle(),
                                 connection.getConnectorName(), metaTableName, newConnectionName, metaTableName);
                     }
+
                     // pastedConnection.setActivate(pastedSourceNode.isActivate());
                     for (ElementParameter param : (List<ElementParameter>) connection.getElementParameters()) {
                         // pastedConnection.getElementParameter(param.getName())
                         // .setValue(param.getValue());
                         pastedConnection.setPropertyValue(param.getName(), param.getValue());
                     }
+
+                    // keep the label (bug 3778)
+                    if (pastedConnection != null) {
+                        if (!pastedConnection.getSourceNodeConnector().isBuiltIn()
+                                && pastedConnection.getLineStyle().hasConnectionCategory(EConnectionType.FLOW)) {
+                            pastedConnection.setPropertyValue(EParameterName.LABEL.getName(), connection.getName());
+                        } else {
+                            pastedConnection.setPropertyValue(EParameterName.LABEL.getName(), newConnectionName);
+                        }
+                    }
+
                     pastedConnection.getConnectionLabel().setOffset(new Point(connection.getConnectionLabel().getOffset()));
                     INodeConnector connector = pastedConnection.getSourceNodeConnector();
                     connector.setCurLinkNbOutput(connector.getCurLinkNbOutput() + 1);
@@ -471,15 +483,15 @@ public class NodesPasteCommand extends Command {
                     }
 
                     // (feature 2962)
-                    // for (IMetadataColumn column : pastedConnection.getMetadataTable().getListColumns()) {
-                    // String oldConnVar = connection.getName() + "." + column.getLabel(); //$NON-NLS-1$
-                    // String newConnVar = newConnectionName + "." + column.getLabel(); //$NON-NLS-1$
-                    String oldConnVar = connection.getName();
-                    String newConnVar = newConnectionName;
-                    if (!oldToNewConnVarMap.containsKey(oldConnVar)) {
-                        oldToNewConnVarMap.put(oldConnVar, newConnVar);
+                    for (IMetadataColumn column : pastedConnection.getMetadataTable().getListColumns()) {
+                        String oldConnVar = connection.getName() + "." + column.getLabel(); //$NON-NLS-1$
+                        String newConnVar = newConnectionName + "." + column.getLabel(); //$NON-NLS-1$
+                        // String oldConnVar = connection.getName();
+                        // String newConnVar = newConnectionName;
+                        if (!oldToNewConnVarMap.containsKey(oldConnVar)) {
+                            oldToNewConnVarMap.put(oldConnVar, newConnVar);
+                        }
                     }
-                    // }
                 }
             }
         }
