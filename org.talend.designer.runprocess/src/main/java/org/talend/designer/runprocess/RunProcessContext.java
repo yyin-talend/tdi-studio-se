@@ -26,7 +26,9 @@ import java.net.Socket;
 import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.DebugException;
@@ -766,6 +768,7 @@ public class RunProcessContext {
 
             if (processSocket != null && !stopThread) {
                 try {
+                    Set<IPerformance> performanceDataSet = new HashSet<IPerformance>();
                     InputStream in = processSocket.getInputStream();
                     LineNumberReader reader = new LineNumberReader(new InputStreamReader(in));
                     while (!stopThread) {
@@ -775,21 +778,26 @@ public class RunProcessContext {
                         } else {
                             PerformanceData perfData = new PerformanceData(data);
                             String connectionId = perfData.getConnectionId();
+                            // handle connectionId as row1.1 and row1
+                            connectionId = connectionId.split("\\.")[0];
                             final IConnection conn = findConnection(connectionId);
                             if (conn != null && conn instanceof IPerformance) {
                                 final IPerformance performance = (IPerformance) conn;
+                                performanceDataSet.add(performance);
                                 Display.getDefault().asyncExec(new Runnable() {
 
                                     public void run() {
                                         if (data != null) {
-
                                             performance.setPerformanceData(data);
-
                                         }
                                     }
                                 });
                             }
                         }
+                    }
+                    // clear status for running next time
+                    for (IPerformance performance : performanceDataSet) {
+                        performance.resetStatus();
                     }
                 } catch (IOException e) {
                     // Do nothing : process is ended
