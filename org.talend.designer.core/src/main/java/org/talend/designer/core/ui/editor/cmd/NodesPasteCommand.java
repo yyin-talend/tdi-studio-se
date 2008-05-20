@@ -34,7 +34,9 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnectionCategory;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalNode;
+import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -264,6 +266,21 @@ public class NodesPasteCommand extends Command {
         return location;
     }
 
+    private boolean containtNodeInProcess(Node copiedNode) {
+        if (copiedNode == null) {
+            return false;
+        }
+        if (process != null) {
+            for (INode node : process.getGraphicalNodes()) {
+                if (node == copiedNode) {
+                    return true;
+                }
+            }
+
+        }
+        return false;
+    }
+
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     private void createNodeContainerList() {
         int firstIndex = 0;
@@ -276,6 +293,9 @@ public class NodesPasteCommand extends Command {
         // create the nodes
         for (NodePart copiedNodePart : nodeParts) {
             Node copiedNode = (Node) copiedNodePart.getModel();
+            if (!containtNodeInProcess(copiedNode)) {
+                continue;
+            }
             IComponent component = ComponentsFactoryProvider.getInstance().get(copiedNode.getComponent().getName());
             if (component == null) {
                 component = copiedNode.getComponent();
@@ -424,7 +444,16 @@ public class NodesPasteCommand extends Command {
                         String newNameBuiltIn = oldMetaToNewMeta.get(pastedSourceNode.getUniqueName() + ":" //$NON-NLS-1$
                                 + connection.getMetaName());
                         if (newNameBuiltIn == null) {
-                            newConnectionName = createNewConnectionName(connection.getName(), Process.DEFAULT_ROW_CONNECTION_NAME);
+                            IElementParameter formatParam = pastedSourceNode.getElementParameter(EParameterName.CONNECTION_FORMAT
+                                    .getName());
+                            String baseName = Process.DEFAULT_ROW_CONNECTION_NAME;
+                            if (formatParam != null) {
+                                String value = (String) formatParam.getValue();
+                                if (value != null && !"".equals(value)) {
+                                    baseName = value;
+                                }
+                            }
+                            newConnectionName = createNewConnectionName(connection.getName(), baseName);
                         } else {
                             newConnectionName = newNameBuiltIn;
                         }
@@ -462,15 +491,15 @@ public class NodesPasteCommand extends Command {
                         pastedConnection.setPropertyValue(param.getName(), param.getValue());
                     }
 
-                    // keep the label (bug 3778)
-                    if (pastedConnection != null) {
-                        if (!pastedConnection.getSourceNodeConnector().isBuiltIn()
-                                && pastedConnection.getLineStyle().hasConnectionCategory(EConnectionType.FLOW)) {
-                            pastedConnection.setPropertyValue(EParameterName.LABEL.getName(), connection.getName());
-                        } else {
-                            pastedConnection.setPropertyValue(EParameterName.LABEL.getName(), newConnectionName);
-                        }
-                    }
+                    // // keep the label (bug 3778)
+                    // if (pastedConnection != null) {
+                    // if (pastedConnection.getSourceNodeConnector().isBuiltIn()
+                    // && pastedConnection.getLineStyle().hasConnectionCategory(EConnectionType.FLOW)) {
+                    // pastedConnection.setPropertyValue(EParameterName.LABEL.getName(), connection.getName());
+                    // } else {
+                    // pastedConnection.setPropertyValue(EParameterName.LABEL.getName(), newConnectionName);
+                    // }
+                    // }
 
                     pastedConnection.getConnectionLabel().setOffset(new Point(connection.getConnectionLabel().getOffset()));
                     INodeConnector connector = pastedConnection.getSourceNodeConnector();

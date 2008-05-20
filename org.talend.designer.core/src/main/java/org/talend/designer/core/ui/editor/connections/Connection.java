@@ -197,29 +197,16 @@ public class Connection extends Element implements IConnection, IPerformance {
         param.setShow(false);
         addElementParameter(param);
 
-        param = new ElementParameter(this);
-        param.setName(EParameterName.LABEL.getName());
-        param.setValue(name);
-        param.setDisplayName(EParameterName.LABEL.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
-        param.setCategory(EComponentCategory.BASIC);
-        param.setNumRow(6);
-        param.setRequired(false);
-        param.setShow(false);
-        addElementParameter(param);
-    }
-
-    private void createLabelParameter() {
-        IElementParameter param = new ElementParameter(this);
-        param.setName(EParameterName.LABEL.getName());
-        param.setValue(name);
-        param.setDisplayName(EParameterName.LABEL.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
-        param.setCategory(EComponentCategory.BASIC);
-        param.setNumRow(6);
-        param.setRequired(false);
-        param.setShow(false);
-        addElementParameter(param);
+        // param = new ElementParameter(this);
+        // param.setName(EParameterName.LABEL.getName());
+        // param.setValue(name);
+        // param.setDisplayName(EParameterName.LABEL.getDisplayName());
+        // param.setField(EParameterFieldType.TEXT);
+        // param.setCategory(EComponentCategory.BASIC);
+        // param.setNumRow(6);
+        // param.setRequired(false);
+        // param.setShow(false);
+        // addElementParameter(param);
     }
 
     private void createMeterParameters(Process process) {
@@ -331,14 +318,14 @@ public class Connection extends Element implements IConnection, IPerformance {
         if (source == null) {
             return;
         }
-        IElementParameter labelParam = getElementParameter(EParameterName.LABEL.getName());
+        // IElementParameter labelParam = getElementParameter(EParameterName.LABEL.getName());
         String labelText = name;
-        if (labelParam != null) {
-            String value = (String) labelParam.getValue();
-            if (!"".equals(value)) {
-                labelText = value;
-            }
-        }
+        // if (labelParam != null) {
+        // String value = (String) labelParam.getValue();
+        // if (!"".equals(value)) {
+        // labelText = value;
+        // }
+        // }
 
         int outputId = getOutputId();
 
