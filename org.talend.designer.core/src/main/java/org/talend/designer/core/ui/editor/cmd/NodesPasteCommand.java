@@ -266,7 +266,7 @@ public class NodesPasteCommand extends Command {
         return location;
     }
 
-    private boolean containtNodeInProcess(Node copiedNode) {
+    private boolean containNodeInProcess(Node copiedNode) {
         if (copiedNode == null) {
             return false;
         }
@@ -293,7 +293,7 @@ public class NodesPasteCommand extends Command {
         // create the nodes
         for (NodePart copiedNodePart : nodeParts) {
             Node copiedNode = (Node) copiedNodePart.getModel();
-            if (!containtNodeInProcess(copiedNode)) {
+            if (!containNodeInProcess(copiedNode)) {
                 continue;
             }
             IComponent component = ComponentsFactoryProvider.getInstance().get(copiedNode.getComponent().getName());
