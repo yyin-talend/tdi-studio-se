@@ -46,6 +46,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.SystemException;
 import org.talend.core.CorePlugin;
+import org.talend.core.PluginChecker;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
@@ -142,7 +143,9 @@ public class PerlProcessor extends Processor {
             String processCode = ""; //$NON-NLS-1$
             try {
                 processCode = codeGen.generateProcessCode();
-                processCode = replaceSnippet(processCode);
+                if (PluginChecker.isSnippetsPluginLoaded()) {
+                    processCode = replaceSnippet(processCode);
+                }
             } catch (SystemException e) {
                 throw new ProcessorException(Messages.getString("Processor.generationFailed"), e); //$NON-NLS-1$
             }

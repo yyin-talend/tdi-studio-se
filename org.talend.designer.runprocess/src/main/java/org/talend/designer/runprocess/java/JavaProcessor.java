@@ -77,6 +77,7 @@ import org.talend.commons.exception.SystemException;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.CorePlugin;
+import org.talend.core.PluginChecker;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.ModuleNeeded;
@@ -257,7 +258,9 @@ public class JavaProcessor extends Processor {
             String processCode = ""; //$NON-NLS-1$
             try {
                 processCode = codeGen.generateProcessCode();
-                processCode = replaceSnippet(processCode);
+                if (PluginChecker.isSnippetsPluginLoaded()) {
+                    processCode = replaceSnippet(processCode);
+                }
 
             } catch (SystemException e) {
                 throw new ProcessorException(Messages.getString("Processor.generationFailed"), e); //$NON-NLS-1$
