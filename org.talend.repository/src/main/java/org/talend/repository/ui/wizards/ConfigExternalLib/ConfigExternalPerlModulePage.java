@@ -45,6 +45,8 @@ import org.talend.repository.i18n.Messages;
  */
 public class ConfigExternalPerlModulePage extends ConfigExternalLibPage {
 
+    private LibraryField libField;
+
     /**
      * ConfigExternalPerlModulePage.
      * 
@@ -70,12 +72,11 @@ public class ConfigExternalPerlModulePage extends ConfigExternalLibPage {
         composite.setLayout(new GridLayout(3, false));
         composite.setFont(parent.getFont());
 
-        LibraryField libField = new EditPerlRoutineExternalModuleField(Messages
+         libField = new EditPerlRoutineExternalModuleField(Messages
                 .getString("ConfigExternalPerlModulePage.moduleFieldLabel"), composite); //$NON-NLS-1$
 
         RoutineItem routine = getSelectedRoutine();
         EList routines = routine.getImports();
-
         libField.setInput(routines);
 
         setErrorMessage(null); // should not initially have error message
@@ -102,6 +103,16 @@ public class ConfigExternalPerlModulePage extends ConfigExternalLibPage {
         });
 
         return true;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.wizards.ConfigExternalLib.ConfigExternalLibPage#cancel()
+     */
+    @Override
+    public void cancel() {
+        libField.revert();
     }
 
     /**

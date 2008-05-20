@@ -58,6 +58,10 @@ public abstract class ConfigExternalLibPage extends WizardPage {
         return true;
     }
 
+    public void cancel() {
+
+    }
+
     public RepositoryNode getSelectedRepositoryNode() {
         return (RepositoryNode) this.getSelection().getFirstElement();
     }

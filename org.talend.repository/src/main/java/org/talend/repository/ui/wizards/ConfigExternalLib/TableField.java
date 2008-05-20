@@ -78,6 +78,9 @@ public abstract class TableField {
      */
     private Button downButton;
 
+    // use this to store the original input
+    private List<Object> backupList = new ArrayList<Object>();
+
     /**
      * The selection listener.
      */
@@ -87,8 +90,10 @@ public abstract class TableField {
         createControl(name, parent);
     }
 
+    @SuppressWarnings("unchecked")
     public void setInput(List list) {
         this.list = list;
+        backupList.addAll(list);
         viewer.setInput(list);
     }
 
@@ -134,8 +139,8 @@ public abstract class TableField {
     private void createButtons(Composite box) {
         addButton = createPushButton(box, "ListEditor.add"); //$NON-NLS-1$
         removeButton = createPushButton(box, "ListEditor.remove"); //$NON-NLS-1$
-//        upButton = createPushButton(box, "ListEditor.up"); //$NON-NLS-1$
-//        downButton = createPushButton(box, "ListEditor.down"); //$NON-NLS-1$
+        // upButton = createPushButton(box, "ListEditor.up"); //$NON-NLS-1$
+        // downButton = createPushButton(box, "ListEditor.down"); //$NON-NLS-1$
     }
 
     /**
@@ -191,7 +196,7 @@ public abstract class TableField {
 
         viewer = getTableControl(parent);
         GridData gd = new GridData(GridData.FILL_BOTH);
-        gd.heightHint=150;
+        gd.heightHint = 150;
         viewer.getTable().setLayoutData(gd);
 
         buttonBox = getButtonBoxControl(parent);
@@ -349,8 +354,8 @@ public abstract class TableField {
         int size = viewer.getTable().getItemCount();
 
         removeButton.setEnabled(index >= 0);
-//        upButton.setEnabled(size > 1 && index > 0);
-//        downButton.setEnabled(size > 1 && index >= 0 && index < size - 1);
+        // upButton.setEnabled(size > 1 && index > 0);
+        // downButton.setEnabled(size > 1 && index >= 0 && index < size - 1);
     }
 
     /*
@@ -393,8 +398,8 @@ public abstract class TableField {
         getTableControl(parent).getTable().setEnabled(enabled);
         addButton.setEnabled(enabled);
         removeButton.setEnabled(enabled);
-//        upButton.setEnabled(enabled);
-//        downButton.setEnabled(enabled);
+        // upButton.setEnabled(enabled);
+        // downButton.setEnabled(enabled);
     }
 
     /**
@@ -404,6 +409,11 @@ public abstract class TableField {
      */
     public List getList() {
         return this.list;
+    }
+
+    public void revert() {
+        list.clear();
+        list.addAll(backupList);
     }
 
 }

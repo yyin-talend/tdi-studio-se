@@ -75,4 +75,16 @@ public class ConfigExternalLibWizard extends Wizard {
     public boolean performFinish() {
         return mainPage.finish();
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.wizard.Wizard#performCancel()
+     */
+    @Override
+    public boolean performCancel() {
+        mainPage.cancel();
+        return super.performCancel();
+    }
+
 }

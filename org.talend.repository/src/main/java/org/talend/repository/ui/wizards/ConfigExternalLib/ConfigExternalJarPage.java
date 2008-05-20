@@ -59,6 +59,8 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
 
     private Map<IMPORTType, File> newJarFiles = new HashMap<IMPORTType, File>();
 
+    private LibraryField libField;
+
     /**
      * ConfigExternalJarPage.
      * 
@@ -84,12 +86,11 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
         composite.setLayout(new GridLayout(3, false));
         composite.setFont(parent.getFont());
 
-        LibraryField libField = new EditJavaRoutineExternalJarField(Messages.getString("ImportExternalJarPage.fileField.label"), //$NON-NLS-1$
+        libField = new EditJavaRoutineExternalJarField(Messages.getString("ImportExternalJarPage.fileField.label"), //$NON-NLS-1$
                 composite);
 
         RoutineItem routine = getSelectedRoutine();
         EList routines = routine.getImports();
-
         libField.setInput(routines);
 
         setErrorMessage(null); // should not initially have error message
@@ -126,6 +127,16 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
         });
 
         return true;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.wizards.ConfigExternalLib.ConfigExternalLibPage#cancel()
+     */
+    @Override
+    public void cancel() {
+        libField.revert();
     }
 
     /**
