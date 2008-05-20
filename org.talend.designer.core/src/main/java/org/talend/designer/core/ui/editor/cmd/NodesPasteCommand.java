@@ -38,6 +38,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
+import org.talend.core.model.process.IProcess;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
@@ -270,13 +271,13 @@ public class NodesPasteCommand extends Command {
         if (copiedNode == null) {
             return false;
         }
-        if (process != null) {
-            for (INode node : process.getGraphicalNodes()) {
+        IProcess curNodeProcess = copiedNode.getProcess();
+        if (curNodeProcess != null) {
+            for (INode node : curNodeProcess.getGraphicalNodes()) {
                 if (node == copiedNode) {
                     return true;
                 }
             }
-
         }
         return false;
     }
