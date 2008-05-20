@@ -133,7 +133,8 @@ public class ShadowProcess<T extends IProcessDescription> {
                     description //$NON-NLS-1$ //$NON-NLS-2$
                             .getRowSeparator(), description.getFieldSeparator(), description.getLimitRows(), description
                             .getHeaderRow(), description.getFooterRow(), description.getEscapeCharacter(), description
-                            .getTextEnclosure(), description.getRemoveEmptyRowsToSkip(), description.getEncoding(), type);
+                            .getTextEnclosure(), description.getRemoveEmptyRowsToSkip(), description.isSplitRecord(), description
+                            .getEncoding(), type);
             ps = new FileinToDelimitedProcess<FileInputDelimitedNode>(inDelimitedNode, outNode);
             break;
 

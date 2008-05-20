@@ -33,8 +33,7 @@ import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.shadow.ShadowProcess.EShadowProcessType;
-import org.talend.fileprocess.delimited.DelimitedDataReader;
-import org.talend.fileprocess.delimited.DelimitedDataReaderFactory;
+import org.talend.fileprocess.FileInputDelimited;
 import org.talend.librariesmanager.prefs.PreferencesUtilities;
 
 import com.csvreader.CsvReader;
@@ -51,7 +50,8 @@ public class FileInputDelimitedNode extends FileInputNode {
      * Constructs a new FileInputNode.
      */
     public FileInputDelimitedNode(String filename, String rowSep, String fieldSep, int limitRows, int headerRows, int footerRows,
-            String escapeChar, String textEnclosure, boolean removeEmptyRow, String encoding, EShadowProcessType fileType) {
+            String escapeChar, String textEnclosure, boolean removeEmptyRow, boolean spitRecord, String encoding,
+            EShadowProcessType fileType) {
         super("tFileInputDelimited"); //$NON-NLS-1$
 
         boolean csvoption = false;
@@ -67,24 +67,21 @@ public class FileInputDelimitedNode extends FileInputNode {
                 this.setColumnNumber(max);
 
             } else {
-                DelimitedDataReader dr = null;
+
+                int max = 0;
                 try {
 
-                    dr = DelimitedDataReaderFactory.createDelimitedDataReader(trimParameter(filename), trimParameter(encoding),
+                    max = FileInputDelimited.getMaxColumnCount(trimParameter(filename), trimParameter(encoding),
                             trimParameter(StringUtils.loadConvert(fieldSep, languageName)), trimParameter(StringUtils
-                                    .loadConvert(rowSep, languageName)), true);
-                    dr.skipHeaders(headerRows);
-                    int max = dr.getMaxColumnCount(limitRows);
-                    if (max > 0) {
-                        this.setColumnNumber(max);
-                    }
+                                    .loadConvert(rowSep, languageName)), true, spitRecord, headerRows, limitRows);
+
                 } catch (IOException e) {
-                    // e.printStackTrace();
-                } finally {
-                    if (dr != null) {
-                        dr.close();
-                    }
+                    e.printStackTrace();
                 }
+                if (max > 0) {
+                    this.setColumnNumber(max);
+                }
+
             }
             break;
 
@@ -147,10 +144,10 @@ public class FileInputDelimitedNode extends FileInputNode {
         }
 
         String[] paramNames = new String[] { "FILENAME", "ROWSEPARATOR", "FIELDSEPARATOR", "LIMIT", "HEADER", "FOOTER", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
-                "ESCAPE_CHAR", "TEXT_ENCLOSURE", "REMOVE_EMPTY_ROW", "ENCODING", "CSV_OPTION" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                "ESCAPE_CHAR", "TEXT_ENCLOSURE", "REMOVE_EMPTY_ROW", "ENCODING", "CSV_OPTION", "SPLITRECORD" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         String[] paramValues = new String[] { filename, rowSep, fieldSep, Integer.toString(limitRows),
                 Integer.toString(headerRows), Integer.toString(footerRows), escapeChar, textEnclosure,
-                Boolean.toString(removeEmptyRow), encoding, Boolean.toString(csvoption) };
+                Boolean.toString(removeEmptyRow), encoding, Boolean.toString(csvoption), Boolean.toString(spitRecord) };
 
         for (int i = 0; i < paramNames.length; i++) {
             if (paramValues[i] != null) {

@@ -310,6 +310,9 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
                 processDescription.setLimitRows(i);
             }
         }
+
+        processDescription.setSplitRecord(getConnection().isSplitRecord());
+
         return processDescription;
     }
 

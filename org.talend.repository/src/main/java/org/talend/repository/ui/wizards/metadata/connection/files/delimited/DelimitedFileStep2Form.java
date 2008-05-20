@@ -38,6 +38,7 @@ import org.talend.commons.ui.swt.formtools.LabelledCombo;
 import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
 import org.talend.commons.ui.swt.thread.SWTUIThreadProcessor;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.EMetadataEncoding;
 import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
@@ -109,6 +110,10 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
     private Label escapeCharFlag;
 
     private Label textEnclosureFlag;
+
+    private Button splitwayRecordForJavaFID;
+
+    private Label splitwayRecordForJavaFIDFlag;
 
     /**
      * Fields use to preview.
@@ -193,16 +198,19 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
         // Fields to the Group Escape Char Settings
         textEnclosureCombo.select(0);
         escapeCharCombo.select(0);
+        splitwayRecordForJavaFID.setSelection(getConnection().isSplitRecord());
 
         if (Escape.DELIMITED_LITERAL.equals(getConnection().getEscapeType())) {
             csvRadio.setSelection(false);
             delimitedRadio.setSelection(true);
             textEnclosureCombo.setEnabled(false);
             escapeCharCombo.setEnabled(false);
+            splitwayRecordForJavaFID.setEnabled(true);
         }
         if (Escape.CSV_LITERAL.equals(getConnection().getEscapeType())) {
             csvRadio.setSelection(true);
             delimitedRadio.setSelection(false);
+            splitwayRecordForJavaFID.setEnabled(false);
         }
 
         String s = getConnection().getEscapeChar();
@@ -261,9 +269,11 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
         if (isReadOnly()) {
             escapeCharCombo.setReadOnly(true);
             textEnclosureCombo.setReadOnly(true);
+            splitwayRecordForJavaFID.setEnabled(!isReadOnly());
         } else {
             textEnclosureCombo.setEnabled(csvRadio.getSelection());
             escapeCharCombo.setEnabled(csvRadio.getSelection());
+            splitwayRecordForJavaFID.setEnabled(!csvRadio.getSelection());
         }
     }
 
@@ -365,6 +375,10 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
 
             public void widgetSelected(SelectionEvent e) {
                 getConnection().setCsvOption(csvRadio.getSelection());
+                if (csvRadio.getSelection()) {
+                    splitwayRecordForJavaFID.setSelection(false);
+                    getConnection().setSplitRecord(false);
+                }
             }
         });
         csvRadio.setText(Messages.getString("FileStep2.csv")); //$NON-NLS-1$
@@ -385,6 +399,25 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
                 .getString("FileStep2.textEnclosureTip"), TEXT_ENCLOSURE_DATA, 1, false, SWT.READ_ONLY); //$NON-NLS-1$
         textEnclosureFlag = new Label(compositeEscapeChar, SWT.NONE);
         textEnclosureFlag.setText("                            "); //$NON-NLS-1$
+
+        // split record
+        splitwayRecordForJavaFID = new Button(compositeEscapeChar, SWT.CHECK);
+        splitwayRecordForJavaFID.setText(Messages.getString("FileStep2.splitwayRecordForJavaFID")); //$NON-NLS-1$
+        splitwayRecordForJavaFID.setToolTipText(Messages.getString("FileStep2.splitwayRecordForJavaFIDTip"));
+        splitwayRecordForJavaFID.addSelectionListener(new SelectionAdapter() {
+
+            public void widgetSelected(SelectionEvent e) {
+                getConnection().setSplitRecord(splitwayRecordForJavaFID.getSelection());
+            }
+        });
+
+        String languageName = LanguageManager.getCurrentLanguage().getName();
+        if (languageName.equals("perl")) {
+            splitwayRecordForJavaFID.setVisible(false);
+        }
+
+        splitwayRecordForJavaFIDFlag = new Label(compositeEscapeChar, SWT.NONE);
+        splitwayRecordForJavaFIDFlag.setText("                            "); //$NON-NLS-1$
 
     }
 
@@ -458,11 +491,11 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
         // compositeFileDelimitor Main Fields
         Composite mainComposite = Form.startNewGridLayout(this, 2);
 
-        addGroupDelimitedFileSettings(mainComposite, 400, 110);
-        addGroupRowsToSkip(mainComposite, 300, 110);
-        addGroupEscapeChar(mainComposite, 400, 85);
-        addGroupLimit(mainComposite, 300, 85);
-        addGroupFileViewer(this, 700, 210);
+        addGroupDelimitedFileSettings(mainComposite, 400, 100);
+        addGroupRowsToSkip(mainComposite, 300, 100);
+        addGroupEscapeChar(mainComposite, 400, 105);
+        addGroupLimit(mainComposite, 300, 105);
+        addGroupFileViewer(this, 700, 200);
 
         if (!isInWizard()) {
             // Bottom Button
@@ -505,6 +538,8 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
                 processDescription.setLimitRows(i);
             }
         }
+
+        processDescription.setSplitRecord(getConnection().isSplitRecord());
 
         return processDescription;
     }
@@ -610,6 +645,7 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
                     getConnection().setEscapeType(b ? Escape.DELIMITED_LITERAL : Escape.CSV_LITERAL);
                     textEnclosureCombo.setEnabled(!b);
                     escapeCharCombo.setEnabled(!b);
+                    splitwayRecordForJavaFID.setEnabled(b);
                     if (b) {
                         escapeCharComboOldValue = escapeCharCombo.getText();
                         textEnclosureComboOldValue = textEnclosureCombo.getText();

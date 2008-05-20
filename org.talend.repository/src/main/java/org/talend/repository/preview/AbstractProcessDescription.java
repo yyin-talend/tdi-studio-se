@@ -65,6 +65,8 @@ public abstract class AbstractProcessDescription implements IProcessDescription 
 
     private List<Map<String, String>> mapping;
 
+    private boolean splitRecord;
+
     /**
      * Getter for escapeCharacter.
      * 
@@ -352,4 +354,23 @@ public abstract class AbstractProcessDescription implements IProcessDescription 
     public void setMapping(List<Map<String, String>> mapping) {
         this.mapping = mapping;
     }
+
+    /**
+     * Getter for splitRecord.
+     * 
+     * @return the splitRecord
+     */
+    public boolean isSplitRecord() {
+        return this.splitRecord;
+    }
+
+    /**
+     * Sets the splitRecord.
+     * 
+     * @param splitRecord the splitRecord to set
+     */
+    public void setSplitRecord(boolean splitRecord) {
+        this.splitRecord = splitRecord;
+    }
+
 }
