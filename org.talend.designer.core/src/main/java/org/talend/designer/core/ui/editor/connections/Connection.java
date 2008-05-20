@@ -111,8 +111,17 @@ public class Connection extends Element implements IConnection, IPerformance {
         addElementParameter(param);
     }
 
+    public void resetStatus() {
+        performance.resetStatus();
+    }
+
     private void init(Node source, Node target, EConnectionType lineStyle, String connectorName, String metaName, String linkName) {
-        performance = new ConnectionPerformance(this);
+        if (lineStyle.equals(EConnectionType.ITERATE)) {
+            performance = new IterateConnectionPerformance(this);
+        } else {
+            // if no parallel execution existed, just delegate to super class.
+            performance = new ParallelConnectionPerformance(this);
+        }
 
         sourceNodeConnector = source.getConnectorFromName(connectorName);
         this.connectorName = connectorName;

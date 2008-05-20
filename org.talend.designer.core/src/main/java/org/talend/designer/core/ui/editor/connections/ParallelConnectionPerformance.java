@@ -29,9 +29,12 @@ import org.talend.designer.runprocess.IRunProcessService;
  */
 public class ParallelConnectionPerformance extends ConnectionPerformance {
 
-    List<IPerformanceData> perfDataList = new ArrayList<IPerformanceData>();
+    private List<IPerformanceData> perfDataList = new ArrayList<IPerformanceData>();
 
-    Set<String> execIdSet = new TreeSet<String>();
+    /**
+     * store the ids of different exec for current row link.
+     */
+    private Set<String> execIdSet = new TreeSet<String>();
 
     /**
      * ParallelConnectionPerformance constructor.
@@ -40,6 +43,12 @@ public class ParallelConnectionPerformance extends ConnectionPerformance {
      */
     public ParallelConnectionPerformance(Connection conn) {
         super(conn);
+    }
+
+    @Override
+    public void resetStatus() {
+        perfDataList.clear();
+        execIdSet.clear();
     }
 
     @Override
@@ -60,12 +69,12 @@ public class ParallelConnectionPerformance extends ConnectionPerformance {
             perfDataList.add(data);
 
             // get 4 latest update performance data
-            int i = perfDataList.size() - 4;
-            if (i < 0) {
-                i = 0;
+            int start = perfDataList.size() - 4;
+            if (start < 0) {
+                start = 0;
             }
             StringBuilder builder = new StringBuilder(1024);
-            for (; i < perfDataList.size(); i++) {
+            for (int i = perfDataList.size() - 1; i >= start; i--) {
                 builder.append(process(perfDataList.get(i)));
             }
             // check if there are more than 4 process executing
@@ -74,7 +83,8 @@ public class ParallelConnectionPerformance extends ConnectionPerformance {
                 if (execIdSet.size() > 5) {
                     execString = "execs";
                 }
-                builder.append(String.format("<font color='#AA3322'>%1$s other %2$s</font>", execIdSet.size() - 4, execString));
+                builder.append(String.format("<font color='#AA3322'>          %1$s other %2$s   </font>", execIdSet.size() - 4,
+                        execString));
             }
 
             // update label
@@ -96,7 +106,7 @@ public class ParallelConnectionPerformance extends ConnectionPerformance {
         long processingTime = data.getProcessingTime();
         double avg = processingTime > 0 ? lineCount * 1000.0 / processingTime : 0.0;
         String color = "#AA3322";
-        String pattern = "<font color='%1$s'>exec %2$s : %3$s 5d rows, %4$s5.0f rows/second</font><br>";
+        String pattern = "<font color='%1$s'>exec %2$s : %3$5d rows, %4$5.0f rows/second</font><br>";
         if (data.getAction().equals(IPerformanceData.ACTION_STOP)) {
             color = "#229922";
         }

@@ -21,6 +21,16 @@ import org.talend.designer.runprocess.IPerformanceData;
 public class IterateConnectionPerformance extends ConnectionPerformance {
 
     /**
+     * 
+     */
+    private static final String COLOR_FINISHED = "#229922";
+
+    /**
+     * 
+     */
+    private static final String COLOR_RUNNING = "#AA3322";
+
+    /**
      * The number of process that is running.
      */
     private int runningProcess = 0;
@@ -40,19 +50,26 @@ public class IterateConnectionPerformance extends ConnectionPerformance {
     }
 
     @Override
+    public void resetStatus() {
+        runningProcess = 0;
+        finishedProcess = 0;
+    }
+
+    @Override
     public void setLabel(String msg) {
         if (StringUtils.isEmpty(msg)) {
             // handle by super class
             super.setLabel(msg);
             return;
         }
-        String[] part = msg.split("|");
+        String[] part = msg.split("\\|");
         if (part != null && part.length == 3) {
             // update process status
-            if (part.equals(IPerformanceData.ACTION_START)) {
+            if (part[2].equals(IPerformanceData.ACTION_START)) {
                 runningProcess++;
-            } else if (part.equals(IPerformanceData.ACTION_STOP)) {
+            } else if (part[2].equals(IPerformanceData.ACTION_STOP)) {
                 finishedProcess++;
+                runningProcess--;
             }
             // update label
             String oldLabel = label;
@@ -70,14 +87,14 @@ public class IterateConnectionPerformance extends ConnectionPerformance {
         StringBuilder html = new StringBuilder(150);
 
         String pattern = "<font color='%1$s'>%2$s %3$s</font><br>";
-        String color = "#AA3322";
+        String color = COLOR_RUNNING;
         String execString = "exec running";
         if (runningProcess > 1) {
             execString = "execs running";
         }
         html.append(String.format(pattern, color, runningProcess, execString));
 
-        color = "#229922";
+        color = COLOR_FINISHED;
         execString = "exec finished";
         if (finishedProcess > 1) {
             execString = "execs finished";

@@ -146,4 +146,8 @@ public class ConnectionPerformance extends Element {
         // do nothing.
     }
 
+    protected void resetStatus() {
+        // do nothing now
+    }
+
 }
