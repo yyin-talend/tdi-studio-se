@@ -36,6 +36,7 @@
       NUM_ROW="1"
       REPOSITORY_VALUE="DATABASE:TERADATA"
     />
+
     <PARAMETER
       NAME="EXECUTION"
       FIELD="CLOSED_LIST"
@@ -124,7 +125,6 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-	
 	<PARAMETER
       NAME="LOAD_FILE"
       FIELD="FILE"
