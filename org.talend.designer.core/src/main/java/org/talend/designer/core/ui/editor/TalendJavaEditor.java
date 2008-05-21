@@ -22,6 +22,7 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.SystemException;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.process.IProcess2;
@@ -29,6 +30,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.designer.core.ISyntaxCheckableEditor;
 import org.talend.designer.core.ui.views.problems.Problems;
+import org.talend.designer.runprocess.ProcessorException;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -85,6 +87,8 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
         return false;
     }
 
+    private static boolean codeSynchronized;
+
     /*
      * Check the syntax for java code.
      * 
@@ -108,6 +112,15 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
         }
 
         Property property = process.getProperty();
+        if (!codeSynchronized) {
+            try {
+                codeSynchronized = true;
+                process.getProcessor().generateCode(false, false, true);
+            } catch (ProcessorException e1) {
+                MessageBoxExceptionHandler.process(e1);
+            }
+        }
+
         ITalendSynchronizer synchronizer = CorePlugin.getDefault().getCodeGeneratorService().createRoutineSynchronizer();
 
         try {
@@ -123,6 +136,8 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
                 Problems.refreshProblemTreeView();
             }
         });
+
+        codeSynchronized = false;
     }
 
     private void placeCursorToSelection() {
