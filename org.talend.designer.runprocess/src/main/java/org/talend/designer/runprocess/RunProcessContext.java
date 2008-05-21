@@ -45,6 +45,7 @@ import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IPerformance;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.ITargetExecutionConfig;
 import org.talend.designer.runprocess.ProcessMessage.MsgType;
 import org.talend.designer.runprocess.data.PerformanceData;
@@ -208,6 +209,9 @@ public class RunProcessContext {
     public void setMonitorPerf(boolean monitorPerf) {
         if (this.monitorPerf != monitorPerf) {
             this.monitorPerf = monitorPerf;
+            if (process instanceof IProcess2) {
+                ((IProcess2) process).setNeedRegenerateCode(true);
+            }
             firePropertyChange(PROP_MONITOR, Boolean.valueOf(!monitorPerf), Boolean.valueOf(monitorPerf));
         }
     }
@@ -229,6 +233,10 @@ public class RunProcessContext {
     public void setMonitorTrace(boolean monitorTrace) {
         if (this.monitorTrace != monitorTrace) {
             this.monitorTrace = monitorTrace;
+            if (process instanceof IProcess2) {
+                ((IProcess2) process).setNeedRegenerateCode(true);
+            }
+
             firePropertyChange(TRACE_MONITOR, Boolean.valueOf(!monitorTrace), Boolean.valueOf(monitorTrace));
         }
     }

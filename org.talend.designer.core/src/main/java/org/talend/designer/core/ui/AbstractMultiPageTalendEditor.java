@@ -105,8 +105,11 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
         @Override
         public void notifyChanged(Notification notification) {
-            if (notification.getEventType() != Notification.REMOVING_ADAPTER
-                    && notification.getFeatureID(Properties.class) != PropertiesPackage.PROPERTY__MAX_INFORMATION_LEVEL) {
+            if (notification.getEventType() != Notification.REMOVING_ADAPTER) {
+                if (notification.getFeatureID(Properties.class) == PropertiesPackage.PROPERTY__MAX_INFORMATION_LEVEL) {
+                    updateTitleImage();
+                    return;
+                }
                 // propertyIsDirty = true;
                 designerEditor.getProperty().eAdapters().remove(dirtyListener);
                 process.updateProperties();
@@ -453,16 +456,15 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
     }
 
     public void codeSync() {
-        // force the code sync each time, need to add another feature to enhance this later.
 
-        // if (process.isProcessModified() && process.getGeneratingNodes().size() != 0) {
-        try {
-            processor.generateCode(false, false, true);
-
-        } catch (ProcessorException pe) {
-            MessageBoxExceptionHandler.process(pe);
+        // if some code has been generated already, for the editor we should need only the main job, not the childs.
+        if (processor.isCodeGenerated()) {
+            ProcessorUtilities.generateCode(process, process.getContextManager().getDefaultContext(), false, false, true,
+                    ProcessorUtilities.GENERATE_MAIN_ONLY);
+        } else {
+            ProcessorUtilities.generateCode(process, process.getContextManager().getDefaultContext(), false, false, true,
+                    ProcessorUtilities.GENERATE_WITH_FIRST_CHILD);
         }
-        // }
     }
 
     /**

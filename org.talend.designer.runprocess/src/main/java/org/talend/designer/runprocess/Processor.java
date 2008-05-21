@@ -35,7 +35,6 @@ import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.ITargetExecutionConfig;
 import org.talend.designer.codegen.ICodeGenerator;
-import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ISyntaxCheckableEditor;
 import org.talend.designer.runprocess.i18n.Messages;
 
@@ -354,11 +353,14 @@ public abstract class Processor implements IProcessor {
             throw new IllegalStateException("Context is empty, context must be set before call"); //$NON-NLS-1$
         }
 
-        try {
-            DesignerPlugin.getDefault().getCodeGeneratorService().createRoutineSynchronizer().syncAllRoutines();
-        } catch (SystemException e) {
-            throw new ProcessorException(e);
-        }
+        // Remove the synchronization of the routines when generate the code.
+        // This shouldn't be needed anymore.
+
+        // try {
+        // DesignerPlugin.getDefault().getCodeGeneratorService().createRoutineSynchronizer().syncAllRoutines();
+        // } catch (SystemException e) {
+        // throw new ProcessorException(e);
+        // }
 
         codeGenerated = true; // set the flag to true to tell the code has been generated at least once.
     }
@@ -530,5 +532,24 @@ public abstract class Processor implements IProcessor {
             systemFile.delete();
             codeFile.getParent().refreshLocal(IResource.DEPTH_INFINITE, null);
         }
+    }
+
+    /**
+     * Check if the code has been generated at least once. Will be false if the code has never been generated.
+     * 
+     * @return boolean to tell if any code has been generated already or not for this job.
+     */
+    public boolean isCodeGenerated() {
+        return this.codeGenerated;
+    }
+
+    /**
+     * Add the possibility to force the flag for the code generated. <br>
+     * This can be usefull to force to generate the code.
+     * 
+     * @param codeGenerated boolean to tell if any code has been generated already or not for this job.
+     */
+    public void setCodeGenerated(boolean codeGenerated) {
+        this.codeGenerated = codeGenerated;
     }
 }

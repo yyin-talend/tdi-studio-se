@@ -20,9 +20,7 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.SystemException;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.process.IProcess2;
@@ -30,7 +28,6 @@ import org.talend.core.model.properties.Property;
 import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.designer.core.ISyntaxCheckableEditor;
 import org.talend.designer.core.ui.views.problems.Problems;
-import org.talend.designer.runprocess.ProcessorException;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -87,8 +84,6 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
         return false;
     }
 
-    private static boolean codeSynchronized;
-
     /*
      * Check the syntax for java code.
      * 
@@ -107,37 +102,24 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
                     // }
                     // doSave(null);
                     placeCursorToSelection();
+
+                    Property property = process.getProperty();
+
+                    ITalendSynchronizer synchronizer = CorePlugin.getDefault().getCodeGeneratorService()
+                            .createRoutineSynchronizer();
+
+                    try {
+                        Problems.addRoutineFile(synchronizer.getFile(property.getItem()), property);
+                    } catch (SystemException e) {
+                        ExceptionHandler.process(e);
+                    }
+
+                    Problems.refreshRepositoryView();
+                    Problems.refreshProblemTreeView();
                 }
             });
         }
 
-        Property property = process.getProperty();
-        if (!codeSynchronized) {
-            try {
-                codeSynchronized = true;
-                process.getProcessor().generateCode(false, false, true);
-            } catch (ProcessorException e1) {
-                MessageBoxExceptionHandler.process(e1);
-            }
-        }
-
-        ITalendSynchronizer synchronizer = CorePlugin.getDefault().getCodeGeneratorService().createRoutineSynchronizer();
-
-        try {
-            Problems.addRoutineFile(synchronizer.getFile(property.getItem()), property);
-        } catch (SystemException e) {
-            ExceptionHandler.process(e);
-        }
-
-        Display.getDefault().asyncExec(new Runnable() {
-
-            public void run() {
-                Problems.refreshRepositoryView();
-                Problems.refreshProblemTreeView();
-            }
-        });
-
-        codeSynchronized = false;
     }
 
     private void placeCursorToSelection() {

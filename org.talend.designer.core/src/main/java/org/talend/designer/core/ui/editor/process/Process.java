@@ -2559,10 +2559,13 @@ public class Process extends Element implements IProcess2 {
 
         public void stackChanged(CommandStackEvent event) {
             processModified = true;
+            needRegenerateCode = true;
         }
     };
 
     private IContext lastRunContext;
+
+    private boolean needRegenerateCode;
 
     /**
      * Sets the editor.
@@ -2802,91 +2805,25 @@ public class Process extends Element implements IProcess2 {
         return this.updateManager;
     }
 
-    /**
+    /*
+     * (non-Javadoc)
      * 
-     * ggu Comment method "checkStartJobSettingsParameters".
-     * 
-     * have moved to UpdateManager(feature 3232).
+     * @see org.talend.core.model.process.IProcess2#isNeedRegenerateCode()
      */
-    // public void checkStartJobSettingsParameters() {
-    // checkStartJobSettingsParameters(EComponentCategory.EXTRA);
-    // checkStartJobSettingsParameters(EComponentCategory.STATSANDLOGS);
-    // }
-    //
-    // private void checkStartJobSettingsParameters(EComponentCategory category) {
-    // if (category != EComponentCategory.EXTRA && EComponentCategory.STATSANDLOGS != category) {
-    // return;
-    // }
-    // final IElementParameter propertyTypeParam = this
-    // .getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE, category);
-    //
-    // if (propertyTypeParam != null && propertyTypeParam.isShow(this.getElementParameters())) {
-    // final Map<String, IElementParameter> childParameters = propertyTypeParam.getChildParameters();
-    // if (childParameters == null) {
-    // return;
-    // }
-    // IElementParameter elementParameter = childParameters.get(EParameterName.PROPERTY_TYPE.getName());
-    // // is repository
-    // if (elementParameter != null && EmfComponent.REPOSITORY.equals(elementParameter.getValue())) {
-    // IElementParameter repositoryParam = childParameters.get(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
-    // if (repositoryParam != null) {
-    // String value = (String) repositoryParam.getValue();
-    // if (value == null || "".equals(value)) {
-    // return;
-    // }
-    // // get the connection
-    // DatabaseConnection repositoryConnection = null;
-    // IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
-    // try {
-    // IRepositoryObject lastVersion = factory.getLastVersion(value);
-    // if (lastVersion != null) {
-    // final Item item = lastVersion.getProperty().getItem();
-    // if (item != null && item instanceof DatabaseConnectionItem) {
-    // repositoryConnection = (DatabaseConnection) ((DatabaseConnectionItem) item).getConnection();
-    // }
-    // }
-    // } catch (PersistenceException e) {
-    // throw new RuntimeException(e);
-    // }
-    //
-    // if (repositoryConnection == null) {
-    // return;
-    // }
-    // for (IElementParameter param : this.getElementParameters()) {
-    // if (param.getCategory() == category) {
-    // String repositoryValue = param.getRepositoryValue();
-    // if (param.isShow(this.getElementParameters()) && (repositoryValue != null)
-    // && !param.getName().equals(EParameterName.PROPERTY_TYPE.getName())) {
-    // Object repValue = RepositoryToComponentProperty.getValue(repositoryConnection, repositoryValue);
-    // if (repValue == null) {
-    // continue;
-    // }
-    // if (repositoryValue.equals("TYPE")) { // datebase type
-    // String[] listRepositoryItems = param.getListRepositoryItems();
-    // if (listRepositoryItems != null) { // search the value
-    // int index = 0;
-    // for (String repItem : listRepositoryItems) {
-    // if (repItem.equals(repValue)) {
-    // break;
-    // }
-    // index++;
-    // }
-    // Object[] listItemsValue = param.getListItemsValue();
-    // if (listItemsValue != null) {
-    // param.setValue(listItemsValue[index]);
-    // }
-    // }
-    // } else {
-    // param.setValue(repValue);
-    // }
-    // param.setRepositoryValueUsed(true);
-    // param.setReadOnly(true);
-    // }
-    //
-    // }
-    // }
-    // }
-    // }
-    // }
-    // }
+    public boolean isNeedRegenerateCode() {
+        if (editor == null || needRegenerateCode) {
+            // if no editor linked, we just consider same as if there was all the time a modification
+            return true;
+        }
+        return editor.isDirty();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IProcess2#setNeedRegenerateCode(boolean)
+     */
+    public void setNeedRegenerateCode(boolean regenerateCode) {
+        this.needRegenerateCode = regenerateCode;
+    }
 }

@@ -19,7 +19,6 @@ import org.eclipse.jface.text.Region;
 import org.eclipse.swt.widgets.Display;
 import org.epic.perleditor.editors.PerlEditor;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.SystemException;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.process.IProcess2;
@@ -28,7 +27,6 @@ import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.designer.core.ISyntaxCheckableEditor;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.views.problems.Problems;
-import org.talend.designer.runprocess.ProcessorException;
 
 /**
  * Perl editor with read only content. <br/>
@@ -82,15 +80,6 @@ public class TalendPerlEditor extends PerlEditor implements ISyntaxCheckableEdit
     public void validateSyntax() {
         revalidateSyntax();
         placeCursorToSelection();
-
-        if (!codeSynchronized) {
-            try {
-                codeSynchronized = true;
-                process.getProcessor().generateCode(false, false, true);
-            } catch (ProcessorException e1) {
-                MessageBoxExceptionHandler.process(e1);
-            }
-        }
 
         Property property = process.getProperty();
         ITalendSynchronizer synchronizer = CorePlugin.getDefault().getCodeGeneratorService().createRoutineSynchronizer();

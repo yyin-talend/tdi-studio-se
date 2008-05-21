@@ -425,6 +425,9 @@ public class Problems {
                         type = ProblemType.ROUTINE;
                     } else if (property.getItem() instanceof ProcessItem) {
                         type = ProblemType.JOB;
+                        if (status != ProblemStatus.ERROR) {
+                            continue;
+                        }
                     }
                     add(status, marker, routineFileName, message, lineNr, start, end, type);
                 }
