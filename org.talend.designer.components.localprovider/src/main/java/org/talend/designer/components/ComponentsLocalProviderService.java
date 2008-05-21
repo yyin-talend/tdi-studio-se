@@ -13,6 +13,7 @@
 package org.talend.designer.components;
 
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.talend.designer.components.ui.ComponenttRunJobPreferencePage;
 
 /**
@@ -41,5 +42,15 @@ public class ComponentsLocalProviderService implements IComponentsLocalProviderS
     public IPreferenceStore getPreferenceStore() {
         return ComponentsLocalProviderPlugin.getDefault().getPreferenceStore();
     }
+
+    /* (non-Javadoc)
+     * @see org.talend.designer.components.IComponentsLocalProviderService#getPlugin()
+     */
+    public AbstractUIPlugin getPlugin() {
+        return ComponentsLocalProviderPlugin.getDefault();
+    }
+    
+    
+    
 
 }
