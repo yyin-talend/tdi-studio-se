@@ -282,6 +282,7 @@ public class JavaProcessor extends Processor {
             }
 
             processCode = null;
+
             updateContextCode(codeGen);
             syntaxCheck();
 
