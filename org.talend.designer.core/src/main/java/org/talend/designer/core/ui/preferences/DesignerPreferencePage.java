@@ -138,5 +138,10 @@ public class DesignerPreferencePage extends FieldEditorPreferencePage implements
         BooleanFieldEditor generateCodeWhenOpenJob = new BooleanFieldEditor(
                 TalendDesignerPrefConstants.GENERATE_CODE_WHEN_OPEN_JOB, "Generate Code when open job", getFieldEditorParent());
         addField(generateCodeWhenOpenJob);
+
+        // When updating jobs or joblets, check only the last version, and checked by default
+        BooleanFieldEditor checkOnlyLastVersion = new BooleanFieldEditor(TalendDesignerPrefConstants.CHECK_ONLY_LAST_VERSION,
+                "Check only the last version when updating jobs or joblets", getFieldEditorParent());
+        addField(checkOnlyLastVersion);
     }
 }

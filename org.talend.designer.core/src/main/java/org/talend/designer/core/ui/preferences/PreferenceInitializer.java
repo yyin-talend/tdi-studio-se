@@ -71,6 +71,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         store.setDefault(TalendDesignerPrefConstants.VIEW_OPTIONS, "default");
         store.setDefault(TalendDesignerPrefConstants.DISPLAY_SUBJOBS, true);
         store.setDefault(TalendDesignerPrefConstants.GENERATE_CODE_WHEN_OPEN_JOB, false);
+        // When updating jobs or joblets, check only the last version, and checked by default
+        store.setDefault(TalendDesignerPrefConstants.CHECK_ONLY_LAST_VERSION, true);
 
         // defaults for the stats preferences for java
         store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN);
