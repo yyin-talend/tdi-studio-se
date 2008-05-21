@@ -35,16 +35,24 @@ import org.talend.componentdesigner.i18n.internal.Messages;
  */
 public class ComponentProjectPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
+    /**
+     * DOC slanglois ComponentProjectPreferencePage constructor comment.
+     */
     public ComponentProjectPreferencePage() {
         super(GRID);
         setPreferenceStore(ComponentDesigenerPlugin.getDefault().getPreferenceStore());
     }
 
-    @Override
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.preference.PreferencePage#performApply()
+     */
     protected void performApply() {
         super.performApply();
     }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors()
+     */
     public void createFieldEditors() {
         Label l = new Label(getFieldEditorParent(), SWT.NONE);
         l.setText(Messages.getString("ComponentProjectPreferencePage.ChooseProject")); //$NON-NLS-1$
@@ -73,7 +81,20 @@ public class ComponentProjectPreferencePage extends FieldEditorPreferencePage im
 
     }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
+     */
     public void init(IWorkbench workbench) {
+    }
+
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.preference.FieldEditorPreferencePage#performOk()
+     */
+    public boolean performOk() {
+//        ComponentDesigenerPlugin.getDefault().getPreferenceStore().setValue(PluginConstant.PROJECT_URL,
+//                this.directoryText.getText());
+        ComponentDesigenerPlugin.getDefault().creatComponentProj();
+        return super.performOk();
     }
 
 }
