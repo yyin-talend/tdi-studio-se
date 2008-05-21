@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.draw2d.geometry.Point;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.runprocess.IPerformanceData;
@@ -28,6 +29,10 @@ import org.talend.designer.runprocess.IRunProcessService;
  * just delegate to super class.
  */
 public class ParallelConnectionPerformance extends ConnectionPerformance {
+
+    private static final String COLOR_FINISHED = "#229922";
+
+    private static final String COLOR_RUNNING = "#AA3322";
 
     private List<IPerformanceData> perfDataList = new ArrayList<IPerformanceData>();
 
@@ -62,6 +67,8 @@ public class ParallelConnectionPerformance extends ConnectionPerformance {
             super.setLabel(msg);
 
         } else {
+            // set the label location
+            offset = new Point(0, -70);
             // has format as row1.72, means have parallel execution
             String connectionId = data.getConnectionId();
             String execId = connectionId.substring(connectionId.indexOf('.') + 1);
@@ -83,8 +90,8 @@ public class ParallelConnectionPerformance extends ConnectionPerformance {
                 if (execIdSet.size() > 5) {
                     execString = "execs";
                 }
-                builder.append(String.format("<font color='#AA3322'>          %1$s other %2$s   </font>", execIdSet.size() - 4,
-                        execString));
+                builder.append(String.format("<font color='#AA3322'>             %1$s other %2$s   </font>",
+                        execIdSet.size() - 4, execString));
             }
 
             // update label
@@ -105,10 +112,10 @@ public class ParallelConnectionPerformance extends ConnectionPerformance {
         long lineCount = data.getLineCount();
         long processingTime = data.getProcessingTime();
         double avg = processingTime > 0 ? lineCount * 1000.0 / processingTime : 0.0;
-        String color = "#AA3322";
+        String color = COLOR_RUNNING;
         String pattern = "<font color='%1$s'>exec %2$s : %3$5d rows, %4$5.0f rows/second</font><br>";
         if (data.getAction().equals(IPerformanceData.ACTION_STOP)) {
-            color = "#229922";
+            color = COLOR_FINISHED;
         }
         return String.format(pattern, color, execId, lineCount, avg);
     }

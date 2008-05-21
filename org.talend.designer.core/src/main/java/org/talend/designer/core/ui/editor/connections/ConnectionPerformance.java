@@ -35,7 +35,7 @@ public class ConnectionPerformance extends Element {
 
     protected String label = "";
 
-    private Point offset;
+    protected Point offset;
 
     protected Connection connection;
 
