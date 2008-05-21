@@ -12,7 +12,11 @@
 // ============================================================================
 package org.talend.componentdesigner.ui.action.provider;
 
+import java.io.IOException;
+import java.net.URL;
+
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
@@ -68,8 +72,16 @@ public class CopyFromPaletteActionProvider extends CommonActionProvider {
          * (non-Javadoc) Method declared on IAction.
          */
         public void run() {
-            String path = CorePlugin.getDefault().getComponentsLocalProviderService().getPreferenceStore().getString(
-                    "USER_COMPONENTS_FOLDER"); //$NON-NLS-1$
+            URL url = CorePlugin.getDefault().getComponentsLocalProviderService().getPlugin().getBundle().getResource(
+                    "/components"); //$NON-NLS-1$
+            try {
+                url = FileLocator.toFileURL(url);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            String path = url.getFile();
+//            path = "";
+
             ImportComponentDialog dialog = new ImportComponentDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow()
                     .getShell(), Messages.getString("CopyFromPaletteActionProvider.Label2"), null, path, selectedProject); //$NON-NLS-1$
             dialog.open();

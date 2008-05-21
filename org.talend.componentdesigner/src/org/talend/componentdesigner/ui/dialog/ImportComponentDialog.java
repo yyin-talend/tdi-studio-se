@@ -145,11 +145,11 @@ public class ImportComponentDialog extends Dialog {
         createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
         // do this here because setting the text will set enablement on the ok
         // button
-        text.setFocus();
-        if (value != null) {
-            text.setText(value);
-            text.selectAll();
-        }
+        // text.setFocus();
+        // if (value != null) {
+        // text.setText(value);
+        // text.selectAll();
+        // }
     }
 
     /*
@@ -208,14 +208,44 @@ public class ImportComponentDialog extends Dialog {
         });
 
         label1 = new Label(composite, SWT.LEFT);
-        gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-        gd.horizontalSpan = 5;
+        gd = new GridData();
+        gd.horizontalSpan = 3;
         label1.setLayoutData(gd);
         label1.setText(Messages.getString("ImportComponentDialog.ChooseComponentsLabel")); //$NON-NLS-1$
+        
+        Button showPaletteComponents = new Button(composite, SWT.NONE);
+        gd = new GridData();
+        gd.horizontalSpan = 2;
+        showPaletteComponents.setLayoutData(gd);
+        showPaletteComponents.setText("Show Palette Components");
+        showPaletteComponents.addMouseListener(new MouseListener() {
 
+            /* (non-Javadoc)
+             * @see org.eclipse.swt.events.MouseListener#mouseDoubleClick(org.eclipse.swt.events.MouseEvent)
+             */
+            public void mouseDoubleClick(MouseEvent e) {
+
+            }
+
+            /* (non-Javadoc)
+             * @see org.eclipse.swt.events.MouseListener#mouseDown(org.eclipse.swt.events.MouseEvent)
+             */
+            public void mouseDown(MouseEvent e) {
+                text.setText(value);
+            }
+
+            /* (non-Javadoc)
+             * @see org.eclipse.swt.events.MouseListener#mouseUp(org.eclipse.swt.events.MouseEvent)
+             */
+            public void mouseUp(MouseEvent e) {
+
+            }
+
+        });
+        
         componentList = new List(composite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
         gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
-        gd.verticalSpan = 5;
+        // gd.verticalSpan = 5;
         gd.horizontalSpan = 5;
         componentList.setLayoutData(gd);
         componentList.addMouseListener(new MouseListener() {
@@ -239,7 +269,7 @@ public class ImportComponentDialog extends Dialog {
         errorMessageText.setLayoutData(gd);
         errorMessageText.setBackground(errorMessageText.getDisplay().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
         applyDialogFont(composite);
-        text.setText(value);
+        text.setText("");
         return composite;
     }
 
