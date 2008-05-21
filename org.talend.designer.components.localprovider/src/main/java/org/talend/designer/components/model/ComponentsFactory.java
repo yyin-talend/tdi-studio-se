@@ -60,7 +60,7 @@ public class ComponentsFactory implements IComponentsFactory {
 
     private static final String SKELETON_SUFFIX = ".skeleton";
 
-    private static final String INCLUDEFILEINJET_SUFFIX = ".inc.javajet";
+    private static final String INCLUDEFILEINJET_SUFFIX = ".inc2.javajet";
 
     public ComponentsFactory() {
         if (!INCLUDEFILEINJET_SUFFIX.equals(".inc.javajet")) {

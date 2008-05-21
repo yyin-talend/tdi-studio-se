@@ -25,14 +25,15 @@
         <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.thash.io{IMapHashFile.java"/>
         <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{DataContainer.java"/>
         <javaElement handleIdentifier="=org.talend.core/src\/main\/java&lt;org.talend.core.model.process{IMatchingMode.java"/>
-        <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{PersistentSortedLookupManager.java"/>
         <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{MemoryHelper.java"/>
+        <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{PersistentSortedLookupManager.java"/>
         <javaElement handleIdentifier="=org.talend.commons/src\/main\/java&lt;org.talend.commons.utils.time"/>
         <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{RowProvider.java"/>
         <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.thash.io.beans{KeyForMap.java"/>
-        <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{IPersistentLookupManager.java"/>
         <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{AbstractPersistentLookup.java"/>
+        <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{IPersistentLookupManager.java"/>
         <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.thash.io.hashimpl{DataContainer.java"/>
+        <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent.utils"/>
         <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.thash.io.hashimpl{FlowSorterIterator.java"/>
         <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{IRowProvider.java"/>
         <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{IPersistentRowManager.java"/>
