@@ -12,11 +12,10 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.connections;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
-import java.util.TreeSet;
 
+import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.draw2d.geometry.Point;
 import org.talend.core.model.process.EConnectionType;
@@ -34,12 +33,15 @@ public class ParallelConnectionPerformance extends ConnectionPerformance {
 
     private static final String COLOR_RUNNING = "#AA3322";
 
-    private List<IPerformanceData> perfDataList = new ArrayList<IPerformanceData>();
+    /**
+     * Fixed size map. Only store 4 latest performance data.
+     */
+    private LRUMap performanceDataMap = new LRUMap(4);
 
     /**
      * store the ids of different exec for current row link.
      */
-    private Set<String> execIdSet = new TreeSet<String>();
+    private Set<String> executionIdSet = new HashSet<String>();
 
     /**
      * ParallelConnectionPerformance constructor.
@@ -52,8 +54,8 @@ public class ParallelConnectionPerformance extends ConnectionPerformance {
 
     @Override
     public void resetStatus() {
-        perfDataList.clear();
-        execIdSet.clear();
+        performanceDataMap.clear();
+        executionIdSet.clear();
     }
 
     @Override
@@ -72,26 +74,22 @@ public class ParallelConnectionPerformance extends ConnectionPerformance {
             // has format as row1.72, means have parallel execution
             String connectionId = data.getConnectionId();
             String execId = connectionId.substring(connectionId.indexOf('.') + 1);
-            execIdSet.add(execId);
-            perfDataList.add(data);
+            executionIdSet.add(execId);
+            performanceDataMap.put(execId, data);
 
-            // get 4 latest update performance data
-            int start = perfDataList.size() - 4;
-            if (start < 0) {
-                start = 0;
-            }
             StringBuilder builder = new StringBuilder(1024);
-            for (int i = perfDataList.size() - 1; i >= start; i--) {
-                builder.append(process(perfDataList.get(i)));
+
+            for (Object perfData : performanceDataMap.values()) {
+                builder.append(process((IPerformanceData) perfData));
             }
             // check if there are more than 4 process executing
-            if (execIdSet.size() > 4) {
+            if (executionIdSet.size() > 4) {
                 String execString = "exec";
-                if (execIdSet.size() > 5) {
+                if (executionIdSet.size() > 5) {
                     execString = "execs";
                 }
                 builder.append(String.format("<font color='#AA3322'>             %1$s other %2$s   </font>",
-                        execIdSet.size() - 4, execString));
+                        executionIdSet.size() - 4, execString));
             }
 
             // update label
