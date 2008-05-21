@@ -57,6 +57,11 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
             ).equals("true");
     		String fileNewname = ElementParameterParser.getValue(node,"__FILENAME__");
     		
+    		boolean isInRowMode = ElementParameterParser.getValue(
+                node,
+                "__ROW_MODE__"
+            ).equals("true");
+    		
     		boolean split = ElementParameterParser.getValue(node, "__SPLIT__").equals("true");
             String splitEvery = ElementParameterParser.getValue(node, "__SPLIT_EVERY__");
             
@@ -143,7 +148,7 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
     		                splitedFileNo_<%=cid%>++;
     		                out<%=cid %>.close(); 
     		                //close original outputStream
-    		                out<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+    		                out<%=cid %> = new <%=isInRowMode?"routines.system.BufferedOutput":"java.io.BufferedWriter"%>(new java.io.OutputStreamWriter(
     		                        new java.io.FileOutputStream(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>, <%= isAppend%>),<%= encoding%>));
     		                file<%=cid%> = new java.io.File(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>);  					
     
@@ -254,6 +259,9 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
         	String textEnclosure = textEnclosure1.substring(1,textEnclosure1.length()-1);
         	if ("".equals(textEnclosure)) textEnclosure = "\0";
         	boolean split = ElementParameterParser.getValue(node, "__SPLIT__").equals("true");
+        	
+        	boolean isInRowMode = ElementParameterParser.getValue(node,"__ROW_MODE__").equals("true");
+        	
         	boolean flushOnRow = ElementParameterParser.getValue(node, "__FLUSHONROW__").equals("true");
         	String flushMod = ElementParameterParser.getValue(node, "__FLUSHONROW_NUM__");
         	
@@ -359,19 +367,34 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
             			        splitedFileNo_<%=cid%>++;
             			        CsvWriter<%=cid%>.close(); 
             			        //close original outputStream
-            	                CsvWriter<%=cid%> = new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(new java.io.FileOutputStream(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>, <%=isAppend%>), <%=encoding%>)), '<%=delim%>');
+            			        <%if(isInRowMode){%>
+            			        out<%=cid %> = new routines.system.BufferedOutput(new java.io.OutputStreamWriter(
+									new java.io.FileOutputStream(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>, <%=isAppend%>),<%=encoding%>));
+								strWriter<%=cid%> = new java.io.StringWriter();
+            	                CsvWriter<%=cid%> = new com.csvreader.CsvWriter(strWriter<%=cid%>, '<%=delim%>');
+            	                <%}else{%>
+            	                CsvWriter<%=cid%> = new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+									new java.io.FileOutputStream(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>, <%=isAppend%>),<%=encoding%>)), '<%=delim%>');
+            	                <%}%>
             			        //set header.
             			        <%
             			        if(isIncludeHeader && !isAppend){
             			            %>
-            			            CsvWriter<%=cid%>.writeRecord(headColu<%=cid%>);	
-            			            <%
+            			            CsvWriter<%=cid%>.writeRecord(headColu<%=cid%>);
+            			            <%if(isInRowMode){%>	
+            			            out<%=cid%>.write(strWriter<%=cid%>.getBuffer().toString());
+               						strWriter<%=cid%>.getBuffer().delete(0, strWriter<%=cid%>.getBuffer().length());
+            			            <%}
             			        }
             			        if(isIncludeHeader && isAppend){
             			            %>
                                     file_<%=cid%> = new java.io.File(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>);
                         		    if(file_<%=cid%>.length() == 0) {
                         		        CsvWriter<%=cid%>.writeRecord(headColu<%=cid%>); 
+                        		        <%if(isInRowMode){%>
+                        		        out<%=cid%>.write(strWriter<%=cid%>.getBuffer().toString());
+                						strWriter<%=cid%>.getBuffer().delete(0, strWriter<%=cid%>.getBuffer().length());
+                						<%}%>
                         		    }	  
                         		    <%
             			        }
@@ -400,11 +423,18 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
         						CsvWriter<%=cid %>.setTextQualifier('<%=textEnclosure %>'); 
           						CsvWriter<%=cid %>.setForceQualifier(true);            		
                         		CsvWriter<%=cid%>.writeRecord(row<%=cid%>);
-                        		<% 
+                        		<%if(isInRowMode){%>
+                        		out<%=cid%>.write(strWriter<%=cid%>.getBuffer().toString());
+                				strWriter<%=cid%>.getBuffer().delete(0, strWriter<%=cid%>.getBuffer().length());
+                        		<%}
                         		if(flushOnRow) { 
                         		    %>
             		                if(nb_line_<%=cid %>%<%=flushMod %> == 0) {
-            		                CsvWriter<%=cid%>.flush();
+            		                <%if(isInRowMode){%>
+            		                out<%=cid%>.flush();
+            		                <%}else{%>
+            		                CsvWriter<%=cid %>.flush();
+            		                <%}%>
             		                }
                         		    <%
                     			}
@@ -412,11 +442,18 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
          				
          					}else{
          					    CsvWriter<%=cid%>.writeRecord(row<%=cid%>);	
-         					    <% 
+         					    <%if(isInRowMode){%>
+         					    out<%=cid%>.write(strWriter<%=cid%>.getBuffer().toString());
+                				strWriter<%=cid%>.getBuffer().delete(0, strWriter<%=cid%>.getBuffer().length());
+         					    <%}
          					    if(flushOnRow) { 
          					        %>
             		                if(nb_line_<%=cid %>%<%=flushMod %> == 0) {
-            		                CsvWriter<%=cid%>.flush();
+            		                <%if(isInRowMode){%>
+            		                out<%=cid%>.flush();
+            		                <%}else{%>
+            		                CsvWriter<%=cid %>.flush();
+            		                <%}%>
             		                }
          					        <%
          					    }
@@ -428,11 +465,18 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
             			}else{
             			    %>
             			    CsvWriter<%=cid%>.writeRecord(row<%=cid%>);	
-            			    <% 
+            			    <%if(isInRowMode){%>
+            			    out<%=cid%>.write(strWriter<%=cid%>.getBuffer().toString());
+                			strWriter<%=cid%>.getBuffer().delete(0, strWriter<%=cid%>.getBuffer().length());
+            			    <%}
             			    if(flushOnRow) { 
             			        %>
             		                if(nb_line_<%=cid %>%<%=flushMod %> == 0) {
-            		                CsvWriter<%=cid%>.flush();
+            		                <%if(isInRowMode){%>
+            		                out<%=cid%>.flush();
+            		                <%}else{%>
+            		                CsvWriter<%=cid %>.flush();
+            		                <%}%>
             		                }
             			        <%
                 			}
