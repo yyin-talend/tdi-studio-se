@@ -14,6 +14,8 @@ package org.talend.repository.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.talend.core.model.repository.IRepositoryObject;
 
@@ -32,6 +34,11 @@ public class VersionList extends ArrayList<IRepositoryObject> {
     private static final long serialVersionUID = 6286880354826726354L;
 
     private boolean allVersion;
+
+    /**
+     * The key is IRepositoryObject.getId(), the value is index of IRepositoryObject in arraylist.
+     */
+    private Map<String, Integer> idToIndexMap = new HashMap<String, Integer>();
 
     /**
      * DEfault constructor.
@@ -64,30 +71,25 @@ public class VersionList extends ArrayList<IRepositoryObject> {
         if (allVersion) {
             return super.add(o);
         } else {
-            IRepositoryObject o2 = get(o);
-            if (o2 == null || o.getVersion().compareTo(o2.getVersion()) > 0) {
-                this.remove(o2);
+            Integer index = idToIndexMap.get(o.getId());
+            if (index == null) {
+                // no object with same id found, add the object to arrayList, add the index of new object to map.
+                idToIndexMap.put(o.getId(), super.size());
                 return super.add(o);
             } else {
-                return false;
+                IRepositoryObject another = super.get(index);
+                // compare version
+                if (o.getVersion().compareTo(another.getVersion()) > 0) {
+                    // version is newer than existing one , replace it
+                    super.set(index, o);
+                    return true;
+                } else {
+                    // version is older than existing one
+                    return false;
+                }
             }
+
         }
     }
 
-    /**
-     * 
-     * Returns the first object with the same id as parameter object or <code>null</code> if no object with this id
-     * can be found.
-     * 
-     * @param o
-     * @return
-     */
-    private IRepositoryObject get(IRepositoryObject o) {
-        for (IRepositoryObject current : this) {
-            if (current.getId().equals(o.getId())) {
-                return current;
-            }
-        }
-        return null;
-    }
 }
