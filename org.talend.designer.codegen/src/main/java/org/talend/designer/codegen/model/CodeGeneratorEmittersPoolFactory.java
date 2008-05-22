@@ -121,7 +121,7 @@ public final class CodeGeneratorEmittersPoolFactory {
                 @Override
                 protected IStatus doRun(IProgressMonitor monitor) {
                     try {
-                        saveComponentVisibilityStatus();
+                        ComponentsFactoryProvider.saveComponentVisibilityStatus();
 
                         jetFilesCompileFail.clear();
                         initInProgress = true;
@@ -539,29 +539,5 @@ public final class CodeGeneratorEmittersPoolFactory {
      */
     public static void setInitialized(boolean initialized) {
         CodeGeneratorEmittersPoolFactory.initialized = initialized;
-    }
-
-    private static void saveComponentVisibilityStatus() {
-        IComponentsFactory componentsFactory = ComponentsFactoryProvider.getInstance();
-        List<IComponent> components = componentsFactory.getComponents();
-
-        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
-                Context.REPOSITORY_CONTEXT_KEY);
-        EList list = repositoryContext.getProject().getEmfProject().getComponentsSettings();
-        if (list.isEmpty()) {
-            for (IComponent component : components) {
-                ComponentSetting setting = PropertiesFactory.eINSTANCE.createComponentSetting();
-                setting.setName(component.getName());
-                setting.setHidden(!component.isVisible());
-                list.add(setting);
-            }
-            IProxyRepositoryFactory prf = CorePlugin.getDefault().getProxyRepositoryFactory();
-
-            try {
-                prf.saveProject(repositoryContext.getProject());
-            } catch (Exception e) {
-                ExceptionHandler.process(e);
-            }
-        }
     }
 }
