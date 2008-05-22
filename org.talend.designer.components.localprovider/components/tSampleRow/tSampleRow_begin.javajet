@@ -14,10 +14,12 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
-String range = ElementParameterParser.getValue(node,"__RANGE__").replaceAll("\n",",").replaceAll("\"","");
+String range = ElementParameterParser.getValue(node,"__RANGE__");
 boolean isVar = false;
 if(range.matches(".*[a-zA-Z]+.*")){
 isVar = true;
+}else{
+range = range.replaceAll("\n",",").replaceAll("\"","");
 }
 %>
 <%if(isVar){%>
