@@ -12,10 +12,13 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.connections;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.draw2d.geometry.Point;
 import org.talend.core.model.process.EConnectionType;
@@ -29,19 +32,34 @@ import org.talend.designer.runprocess.IRunProcessService;
  */
 public class ParallelConnectionPerformance extends ConnectionPerformance {
 
+    /**
+     * only display 4 line of execution.
+     */
+    private static final int DISPLAY_LIMIT = 4;
+
     private static final String COLOR_FINISHED = "#229922";
 
     private static final String COLOR_RUNNING = "#AA3322";
 
     /**
-     * Fixed size map. Only store 4 latest performance data.
+     * store the ids of exec that will be displayed on current row link.
      */
-    private LRUMap performanceDataMap = new LRUMap(4);
+    private List<String> displayedExecutionId = new ArrayList<String>(DISPLAY_LIMIT);
 
     /**
-     * store the ids of different exec for current row link.
+     * store the ids of exec that have already stopped.
      */
-    private Set<String> executionIdSet = new HashSet<String>();
+    private Set<String> stoppeddExecutionId = new HashSet<String>();
+
+    /**
+     * store the ids of exec that are running now.
+     */
+    private Set<String> runningExecutionId = new HashSet<String>();
+
+    /**
+     * store entry of connetionId and IPerformanceData.
+     */
+    private Map<String, IPerformanceData> performanceDataMap = new HashMap<String, IPerformanceData>();
 
     /**
      * ParallelConnectionPerformance constructor.
@@ -54,8 +72,10 @@ public class ParallelConnectionPerformance extends ConnectionPerformance {
 
     @Override
     public void resetStatus() {
+        displayedExecutionId.clear();
+        stoppeddExecutionId.clear();
         performanceDataMap.clear();
-        executionIdSet.clear();
+        runningExecutionId.clear();
     }
 
     @Override
@@ -69,28 +89,30 @@ public class ParallelConnectionPerformance extends ConnectionPerformance {
             super.setLabel(msg);
 
         } else {
-            // set the label location
-            offset = new Point(0, -70);
             // has format as row1.72, means have parallel execution
             String connectionId = data.getConnectionId();
             String execId = connectionId.substring(connectionId.indexOf('.') + 1);
-            executionIdSet.add(execId);
+
             performanceDataMap.put(execId, data);
+            if (data.getAction().equals(IPerformanceData.ACTION_START)) {
+                runningExecutionId.add(execId);
+            } else if (data.getAction().equals(IPerformanceData.ACTION_STOP)) {
+                stoppeddExecutionId.add(execId);
+                runningExecutionId.remove(execId);
+            }
+
+            displayIfPossible(execId, data);
 
             StringBuilder builder = new StringBuilder(1024);
+            for (String id : displayedExecutionId) {
+                builder.append(constructLabel(performanceDataMap.get(id)));
+            }
 
-            for (Object perfData : performanceDataMap.values()) {
-                builder.append(process((IPerformanceData) perfData));
-            }
-            // check if there are more than 4 process executing
-            if (executionIdSet.size() > 4) {
-                String execString = "exec";
-                if (executionIdSet.size() > 5) {
-                    execString = "execs";
-                }
-                builder.append(String.format("<font color='#AA3322'>             %1$s other %2$s   </font>",
-                        executionIdSet.size() - 4, execString));
-            }
+            // check if there are other exec running that cannot display on row link.
+            checkOtherRunningExecution(builder);
+
+            // set the label location
+            offset = computeLabelOffset();
 
             // update label
             String oldLabel = label;
@@ -100,11 +122,67 @@ public class ParallelConnectionPerformance extends ConnectionPerformance {
     }
 
     /**
-     * DOC hcw Comment method "process".
+     * DOC hcw Comment method "checkOtherRunningExecution".
+     * 
+     * @param builder
+     */
+    private void checkOtherRunningExecution(StringBuilder builder) {
+        int otherExecution = runningExecutionId.size() - DISPLAY_LIMIT;
+        if (otherExecution > 0) {
+            String execString = "exec";
+            if (otherExecution > 1) {
+                execString = "execs";
+            }
+            builder.append(String.format("<font color='#AA3322'>             %1$s other %2$s   </font>", otherExecution,
+                    execString));
+        }
+    }
+
+    /**
+     * DOC hcw Comment method "computeLabelOffset".
+     * 
+     * @return
+     */
+    private Point computeLabelOffset() {
+        int size = performanceDataMap.keySet().size();
+        if (size > DISPLAY_LIMIT) {
+            size = DISPLAY_LIMIT;
+        }
+        if (runningExecutionId.size() > DISPLAY_LIMIT) {
+            size++;
+        }
+        return new Point(0, -14 * size);
+    }
+
+    private void displayIfPossible(String execId, IPerformanceData data) {
+        if (displayedExecutionId.contains(execId)) {
+            // if the execution has already been displayed, do nothing.
+            return;
+        }
+
+        if (displayedExecutionId.size() < DISPLAY_LIMIT) {
+            // will be displayed on label
+            displayedExecutionId.add(execId);
+        } else {
+            // If we can find a finished execution that is already displayed, replace it with this new data. Otherwise
+            // the new data will not be displayed.
+            for (int i = 0; i < displayedExecutionId.size(); i++) {
+                String id = displayedExecutionId.get(i);
+                if (stoppeddExecutionId.contains(id)) {
+                    // replace the finished execution with new data
+                    displayedExecutionId.set(i, execId);
+                    return;
+                }
+            }
+        }
+    }
+
+    /**
+     * Construct a label from IPerformanceData, which will be displayed on current link.
      * 
      * @param data
      */
-    private String process(IPerformanceData data) {
+    private String constructLabel(IPerformanceData data) {
         String connectionId = data.getConnectionId();
         String execId = connectionId.substring(connectionId.indexOf('.') + 1);
         long lineCount = data.getLineCount();

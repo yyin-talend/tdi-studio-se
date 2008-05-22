@@ -12,6 +12,9 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.connections;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.apache.commons.lang.StringUtils;
 import org.talend.designer.runprocess.IPerformanceData;
 
@@ -31,14 +34,14 @@ public class IterateConnectionPerformance extends ConnectionPerformance {
     private static final String COLOR_RUNNING = "#AA3322";
 
     /**
-     * The number of process that is running.
+     * store the ids of exec that have already stopped.
      */
-    private int runningProcess = 0;
+    private Set<String> stoppeddExecutionId = new HashSet<String>();
 
     /**
-     * The number of process that is finished.
+     * store the ids of exec that are running now.
      */
-    private int finishedProcess = 0;
+    private Set<String> runningExecutionId = new HashSet<String>();
 
     /**
      * DOC hcw IterateConnectionPerformance constructor comment.
@@ -51,8 +54,8 @@ public class IterateConnectionPerformance extends ConnectionPerformance {
 
     @Override
     public void resetStatus() {
-        runningProcess = 0;
-        finishedProcess = 0;
+        stoppeddExecutionId.clear();
+        runningExecutionId.clear();
     }
 
     @Override
@@ -66,10 +69,10 @@ public class IterateConnectionPerformance extends ConnectionPerformance {
         if (part != null && part.length == 3) {
             // update process status
             if (part[2].equals(IPerformanceData.ACTION_START)) {
-                runningProcess++;
+                runningExecutionId.add(part[1]);
             } else if (part[2].equals(IPerformanceData.ACTION_STOP)) {
-                finishedProcess++;
-                runningProcess--;
+                stoppeddExecutionId.add(part[1]);
+                runningExecutionId.remove(part[1]);
             }
             // update label
             String oldLabel = label;
@@ -89,17 +92,17 @@ public class IterateConnectionPerformance extends ConnectionPerformance {
         String pattern = "<font color='%1$s'>%2$s %3$s</font><br>";
         String color = COLOR_RUNNING;
         String execString = "exec running";
-        if (runningProcess > 1) {
+        if (runningExecutionId.size() > 1) {
             execString = "execs running";
         }
-        html.append(String.format(pattern, color, runningProcess, execString));
+        html.append(String.format(pattern, color, runningExecutionId.size(), execString));
 
         color = COLOR_FINISHED;
         execString = "exec finished";
-        if (finishedProcess > 1) {
+        if (stoppeddExecutionId.size() > 1) {
             execString = "execs finished";
         }
-        html.append(String.format(pattern, color, finishedProcess, execString));
+        html.append(String.format(pattern, color, stoppeddExecutionId.size(), execString));
         return html.toString();
     }
 
