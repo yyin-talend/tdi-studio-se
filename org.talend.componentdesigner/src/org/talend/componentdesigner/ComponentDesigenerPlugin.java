@@ -84,30 +84,35 @@ public class ComponentDesigenerPlugin extends AbstractUIPlugin {
      */
     public static ImageDescriptor getImageDescriptor(String path) {
         return imageDescriptorFromPlugin(PLUGIN_ID, path);
-    }   
-
+    }
 
     public void setUsed(boolean isUsed) {
-       this.getPreferenceStore().setValue(PluginConstant.PROJECTCREATED_FLAG, isUsed);
-		
-	}
+        this.getPreferenceStore().setValue(PluginConstant.PROJECTCREATED_FLAG, isUsed);
 
-	public boolean isUsed() {
-		return this.getPreferenceStore().getBoolean(PluginConstant.PROJECTCREATED_FLAG);
-	}
-	
-	public void checkProject() {
-		if (!ComponentDesigenerPlugin.getDefault().isUsed()) {
-			this.creatComponentProj();
-		}
-	}
-	
-	public void creatComponentProj() {
-		ComponentProjectManager manager = ComponentProjectManager.getInstance();
-		Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
-		manager.createNewProject(this.getPreferenceStore().getString(
-				PluginConstant.PROJECT_URL),
-				PluginConstant.COMPONENT_PROJECT, shell);
-		ComponentDesigenerPlugin.getDefault().setUsed(true);
-	}
+    }
+
+    public boolean isUsed() {
+        return this.getPreferenceStore().getBoolean(PluginConstant.PROJECTCREATED_FLAG);
+    }
+
+    public void checkProject() {
+        if (!ComponentDesigenerPlugin.getDefault().isUsed()) {
+            this.creatComponentProj();
+        }
+    }
+
+    public void creatComponentProj() {
+        ComponentProjectManager manager = ComponentProjectManager.getInstance();
+        Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
+        manager.createNewProject(this.getPreferenceStore().getString(PluginConstant.PROJECT_URL),
+                PluginConstant.COMPONENT_PROJECT, shell);
+        ComponentDesigenerPlugin.getDefault().setUsed(true);
+    }
+
+    public void creatComponentProj(String directory) {
+        ComponentProjectManager manager = ComponentProjectManager.getInstance();
+        Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
+        manager.createNewProject(directory, PluginConstant.COMPONENT_PROJECT, shell);
+        ComponentDesigenerPlugin.getDefault().setUsed(true);
+    }
 }

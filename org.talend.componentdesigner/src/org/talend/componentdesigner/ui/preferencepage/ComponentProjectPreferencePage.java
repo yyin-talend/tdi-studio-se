@@ -35,6 +35,8 @@ import org.talend.componentdesigner.i18n.internal.Messages;
  */
 public class ComponentProjectPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
+    private DirectoryFieldEditor filePathTemp;
+
     /**
      * DOC slanglois ComponentProjectPreferencePage constructor comment.
      */
@@ -43,14 +45,18 @@ public class ComponentProjectPreferencePage extends FieldEditorPreferencePage im
         setPreferenceStore(ComponentDesigenerPlugin.getDefault().getPreferenceStore());
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jface.preference.PreferencePage#performApply()
      */
     protected void performApply() {
         super.performApply();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors()
      */
     public void createFieldEditors() {
@@ -59,7 +65,7 @@ public class ComponentProjectPreferencePage extends FieldEditorPreferencePage im
         GridData gd = new GridData();
         gd.horizontalSpan = 3;
         l.setLayoutData(gd);
-        DirectoryFieldEditor filePathTemp = new DirectoryFieldEditor(PluginConstant.PROJECT_URL, Messages
+        filePathTemp = new DirectoryFieldEditor(PluginConstant.PROJECT_URL, Messages
                 .getString("ComponentProjectPreferencePage.ComponentProject"), //$NON-NLS-1$
                 getFieldEditorParent());
         addField(filePathTemp);
@@ -81,19 +87,21 @@ public class ComponentProjectPreferencePage extends FieldEditorPreferencePage im
 
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
      */
     public void init(IWorkbench workbench) {
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jface.preference.FieldEditorPreferencePage#performOk()
      */
     public boolean performOk() {
-//        ComponentDesigenerPlugin.getDefault().getPreferenceStore().setValue(PluginConstant.PROJECT_URL,
-//                this.directoryText.getText());
-        ComponentDesigenerPlugin.getDefault().creatComponentProj();
+        ComponentDesigenerPlugin.getDefault().creatComponentProj(filePathTemp.getStringValue());
         return super.performOk();
     }
 

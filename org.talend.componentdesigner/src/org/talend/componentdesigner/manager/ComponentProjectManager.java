@@ -19,6 +19,7 @@ import java.net.URI;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceStatus;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -81,6 +82,15 @@ public final class ComponentProjectManager {
 
         // get a project handle
         final IProject newProjectHandle = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
+        if (newProjectHandle.getRawLocation().equals(directroy)) {
+            return newProjectHandle;
+        } else {
+            try {
+                newProjectHandle.delete(false, true, null);
+            } catch (CoreException e) {
+                e.printStackTrace();
+            }
+        }
 
         // final IJavaProject javaProjHandle = JavaCore.create(newProjectHandle);
         // get a project descriptor
