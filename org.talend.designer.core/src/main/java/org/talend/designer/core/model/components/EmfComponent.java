@@ -1834,7 +1834,11 @@ public class EmfComponent implements IComponent {
         // return compType.getHEADER().isVISIBLE();
         return true;
     }
-
+    
+    public boolean isVisibleInComponentDefinition() {
+        return compType.getHEADER().isVISIBLE();
+    }
+    
     public String getVersion() {
         return String.valueOf(compType.getHEADER().getVERSION());
     }
@@ -2071,7 +2075,7 @@ public class EmfComponent implements IComponent {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final EmfComponent other = (EmfComponent) obj;
+        final IComponent other = (IComponent) obj;
         if (this.getName() == null) {
             if (other.getName() != null) {
                 return false;
@@ -2258,5 +2262,4 @@ public class EmfComponent implements IComponent {
     public boolean isTechnical() {
         return compType.getHEADER().isTECHNICAL();
     }
-
 }

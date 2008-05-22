@@ -446,4 +446,11 @@ public class JobContextLoadComponent implements IComponent {
     public boolean isTechnical() {
         return false;
     }
+
+    /* (non-Javadoc)
+     * @see org.talend.core.model.components.IComponent#isVisibleInComponentDefinition()
+     */
+    public boolean isVisibleInComponentDefinition() {
+        return false;
+    }
 }

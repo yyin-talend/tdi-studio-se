@@ -155,6 +155,15 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
         return false;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#isVisibleInComponentDefinition()
+     */
+    public boolean isVisibleInComponentDefinition() {
+        return false;
+    }
+
     // no use for virtual component
     public void setIcon16(ImageDescriptor icon16) {
     }
