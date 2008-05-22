@@ -68,15 +68,21 @@ div#footer2 a{text-decoration:none; color:#666666; }
 
 .doc-section{
 	padding-left: 50px;
-	min-height:56px;
+	height:56px;
     background: url(imgs/logo_doc.png);
     background-repeat:no-repeat;
 }
+html>body .doc-section {
+    min-height:56px;
+}
 .community-section{
     padding-left: 50px;
-    min-height:56px;
+    height:56px;
     background: url(imgs/logo_forum.png);
     background-repeat:no-repeat;
+}
+html>body .community-section{
+    min-height:56px;
 }
 
 A:link,A:visited {
