@@ -20,6 +20,11 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+import org.talend.core.CorePlugin;
+import org.talend.core.context.Context;
+import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.properties.User;
+import org.talend.core.model.properties.UserRole;
 import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.repository.ui.wizards.ProjectSettingsWizard;
 
@@ -82,11 +87,21 @@ public class ProjectSettingsAction extends AContextualAction implements IWorkben
      * org.eclipse.jface.viewers.ISelection)
      */
     public void selectionChanged(IAction action, ISelection selection) {
-        // TODO Auto-generated method stub
 
     }
 
     public void run() {
+        User user = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getUser();
+        UserRole role = user.getRole();
+
+        // TODO decide if the current user can execute this action, you can also use the method selectionChanged() to
+        // set the IAction enable or not
+
+        // if(isTIS && !isAdmin){
+        // tell the user he has no right to execute this;
+        // return;
+        // }
+
         ProjectSettingsWizard wizard = new ProjectSettingsWizard();
         WizardDialog dialog = new WizardDialog(Display.getCurrent().getActiveShell(), wizard);
         dialog.open();

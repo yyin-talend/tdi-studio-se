@@ -74,7 +74,7 @@ public class ProjectSettingsWizardPage extends WizardPage {
         descriptionLab.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
 
         descriptionText = new Text(container, SWT.BORDER | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
-        data = new GridData(GridData.FILL_HORIZONTAL);
+        data = new GridData(GridData.FILL_BOTH);
         data.heightHint = 120;
         descriptionText.setLayoutData(data);
 

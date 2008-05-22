@@ -85,6 +85,8 @@ public class PaletteSettingsDialog extends Dialog {
 
     protected PaletteSettingsDialog(Shell parentShell, Project pro) {
         super(parentShell);
+        setShellStyle(getShellStyle() | SWT.RESIZE);
+
         this.project = pro;
         List<ComponentSetting> c = getComponentsFromProject();
         for (ComponentSetting componentSetting : c) {
@@ -143,14 +145,12 @@ public class PaletteSettingsDialog extends Dialog {
      */
     private void addTreeViewer(ThreeCompositesSashForm parent) {
 
-        PaletteRoot input = getViewerInput();
-
         hiddenViewer = new TreeViewer(parent.getLeftComposite());
         hiddenViewer.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
         hiddenViewer.setContentProvider(new TalendPaletteTreeProvider());
         hiddenViewer.setLabelProvider(new TalendPaletteLabelProvider());
         hiddenViewer.addFilter(getFilterForComponent(false));
-        hiddenViewer.setInput(input);
+
         hiddenViewer.expandToLevel(2);
         hiddenViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
@@ -164,7 +164,7 @@ public class PaletteSettingsDialog extends Dialog {
         displayViewer.setContentProvider(new TalendPaletteTreeProvider());
         displayViewer.setLabelProvider(new TalendPaletteLabelProvider());
         displayViewer.addFilter(getFilterForComponent(true));
-        displayViewer.setInput(input);
+
         displayViewer.expandToLevel(2);
         displayViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
@@ -172,6 +172,10 @@ public class PaletteSettingsDialog extends Dialog {
                 leftButton.setEnabled(!event.getSelection().isEmpty());
             }
         });
+
+        PaletteRoot input = getViewerInput();
+        hiddenViewer.setInput(input);
+        displayViewer.setInput(input);
     }
 
     /**
@@ -390,7 +394,9 @@ public class PaletteSettingsDialog extends Dialog {
      */
     @Override
     protected void createButtonsForButtonBar(Composite parent) {
+        createButton(parent, IDialogConstants.YES_ID, "Restore &Defaults", false);
         super.createButtonsForButtonBar(parent);
+        getButton(IDialogConstants.OK_ID).setText("&Apply");
         getButton(IDialogConstants.OK_ID).setEnabled(false);
     }
 
@@ -410,6 +416,28 @@ public class PaletteSettingsDialog extends Dialog {
         } catch (Exception ex) {
             ExceptionHandler.process(ex);
         }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.dialogs.Dialog#buttonPressed(int)
+     */
+    @Override
+    protected void buttonPressed(int buttonId) {
+        super.buttonPressed(buttonId);
+        if (IDialogConstants.YES_ID == buttonId) {
+            retoreDefaultSettings();
+        }
+    }
+
+    /**
+     * bqian Comment method "retoreDefaultSettings".
+     */
+    private void retoreDefaultSettings() {
+        ComponentsFactoryProvider.restoreComponentVisibilityStatus();
+        refreshViewer();
+        getButton(IDialogConstants.OK_ID).setEnabled(true);
     }
 
     /*
