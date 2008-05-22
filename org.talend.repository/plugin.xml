@@ -847,6 +847,11 @@
             id="org.talend.repository.model.migration.RenameDbProductIdMigrationTask"
             name="Rename DB product ID">
       </projecttask>
+      <projecttask
+            class="org.talend.repository.model.migration.RenameDbMacroMigrationTask"
+            id="org.talend.repository.model.migration.RenameDbMacroMigrationTask"
+            name="Rename DB macro name DBTABLE to TABLE">
+      </projecttask>
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">
