@@ -484,6 +484,7 @@ public class EmfComponent implements IComponent {
         param.setName(EParameterName.SQLPATTERN_CODE.getName());
         param.setValue(""); //$NON-NLS-1$
         param.setDisplayName(EParameterName.SQLPATTERN_CODE.getDisplayName());
+        param.setListItemsValue(new String[0]);
         param.setField(EParameterFieldType.TABLE);
         param.setNbLines(10);
         param.setCategory(EComponentCategory.SQL_PATTERN);
@@ -1834,11 +1835,11 @@ public class EmfComponent implements IComponent {
         // return compType.getHEADER().isVISIBLE();
         return true;
     }
-    
+
     public boolean isVisibleInComponentDefinition() {
         return compType.getHEADER().isVISIBLE();
     }
-    
+
     public String getVersion() {
         return String.valueOf(compType.getHEADER().getVERSION());
     }
