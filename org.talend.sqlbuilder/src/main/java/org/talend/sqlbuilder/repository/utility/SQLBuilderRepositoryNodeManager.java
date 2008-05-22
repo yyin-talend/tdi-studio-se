@@ -602,15 +602,21 @@ public class SQLBuilderRepositoryNodeManager {
      * @return DatabaseConnection : connetion .
      */
     public DatabaseConnection createConnection(ConnectionParameters parameters) {
-        boolean isNeedSchema = EDatabaseTypeName.getTypeFromDbType(parameters.getDbType()).isNeedSchema();
-        if (isNeedSchema && (parameters.getSchema().equals("\'\'") || parameters.getSchema().equals(""))) { //$NON-NLS-1$
+        String dbType = parameters.getDbType();
+        boolean isNeedSchema = EDatabaseTypeName.getTypeFromDbType(dbType).isNeedSchema();
+        String productName = EDatabaseTypeName.getTypeFromDisplayName(dbType).getProduct();
+        boolean isOralceWithSid = productName.equals(EDatabaseTypeName.ORACLEFORSID.getProduct());
+        String schema = parameters.getSchema();
+        boolean isSchemaInValid = (schema == null) || (schema.equals("\'\'")) || (schema.equals("\"\""))
+                || (schema.trim().equals(""));
+        if (isNeedSchema && isSchemaInValid && !isOralceWithSid) { //$NON-NLS-1$
             parameters.setConnectionComment(Messages.getString("SQLBuilderRepositoryNodeManager.connectionComment")); //$NON-NLS-1$
             return null;
         }
 
         DatabaseConnection connection = ConnectionFactory.eINSTANCE.createDatabaseConnection();
         connection.setFileFieldName(parameters.getFilename());
-        connection.setDatabaseType(parameters.getDbType());
+        connection.setDatabaseType(dbType);
         connection.setUsername(parameters.getUserName());
         connection.setPort(parameters.getPort());
         connection.setPassword(parameters.getPassword());
@@ -622,12 +628,14 @@ public class SQLBuilderRepositoryNodeManager {
         final String mapping = MetadataTalendType.getDefaultDbmsFromProduct(product).getId();
         connection.setDbmsId(mapping);
 
-        if (parameters.getSchema() != null && isNeedSchema) {
-            connection.setSchema(parameters.getSchema().replaceAll("\'", "")); //$NON-NLS-1$ //$NON-NLS-2$
+        if (!isSchemaInValid && isNeedSchema) {
+            schema = schema.replaceAll("\'", "");
+            schema = schema.replaceAll("\"", "");
+            connection.setSchema(schema); //$NON-NLS-1$ //$NON-NLS-2$
         }
         connection.setServerName(parameters.getHost());
         connection.setAdditionalParams(parameters.getJdbcProperties());
-        String driverClassByDbType = ExtractMetaDataUtils.getDriverClassByDbType(parameters.getDbType());
+        String driverClassByDbType = ExtractMetaDataUtils.getDriverClassByDbType(dbType);
         connection.setDriverClass(driverClassByDbType);
         connection.setDBRootPath(parameters.getDirectory());
         connection.setURL(parameters.getURL());
