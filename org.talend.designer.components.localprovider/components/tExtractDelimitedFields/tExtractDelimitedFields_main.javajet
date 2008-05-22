@@ -129,7 +129,7 @@ for(int i=0; i<newColumnList.size();i++){
 		String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
 		if(defaultValue == null) {
 %>
-		throw new RuntimeException("Value is empty for column : '<%= column.getLabel() %>', value is invalid or this column should be nullable or have a default value.");
+		throw new RuntimeException("Value is empty for column : '<%= column.getLabel() %>' in '<%=outConn.getName() %>' connection, value is invalid or this column should be nullable or have a default value.");
 <%
 		} else {
 %>

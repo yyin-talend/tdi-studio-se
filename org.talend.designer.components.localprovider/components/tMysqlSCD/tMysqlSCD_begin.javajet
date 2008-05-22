@@ -24,6 +24,17 @@ INode node = (INode) codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 List<IMetadataColumn> inputSchema = getInputSchema(node);
 List<IMetadataColumn> outputSchema = getOutputSchema(node);
+
+String incomingConnName = null;
+List<? extends IConnection> incomingConnections = node.getIncomingConnections();
+if(incomingConnections != null && incomingConnections.size() > 0) {
+    for(IConnection incomingConnection : incomingConnections) {
+        if(incomingConnection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+            incomingConnName = incomingConnection.getName();
+        }
+    }
+}
+
 if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outputSchema.size() > 0) {
     String dbhost = ElementParameterParser.getValue(node, "__HOST__");
     String dbport = ElementParameterParser.getValue(node, "__PORT__");
@@ -144,7 +155,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
                             if(tmpValue_<%=cid%>.equals("")) {
                                 <%=struct%>.<%=searchColumn.getColumnName()%> = '\0';
                             } else {
-                                throw new RuntimeException("Value is empty for column : '<%=searchColumn.getColumnName()%>', value is invalid or this column should be nullable or have a default value.");
+                                throw new RuntimeException("Value is empty for column : '<%=searchColumn.getColumnName()%>' in '<%=incomingConnName%>' connection, value is invalid or this column should be nullable or have a default value.");
                             }
                             <%
                         }

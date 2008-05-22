@@ -346,7 +346,7 @@ if( !sameGroup_<%=cid %> ){
 %>} else {						
 <%								String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
 								if(defaultValue == null) {
-%>throw new RuntimeException("Value is empty for column : '<%= column.getLabel() %>', value is invalid or this column should be nullable or have a default value.");
+%>throw new RuntimeException("Value is empty for column : '<%= column.getLabel() %>' in '<%=conn.getName()%>' connection, value is invalid or this column should be nullable or have a default value.");
 <%								} else {
 %>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = <%=defaultValue %>;
 <%								}
@@ -461,7 +461,7 @@ if( !sameGroup_<%=cid %> ){
 %>} else {						
 <%								String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
 								if(defaultValue == null) {
-%>throw new RuntimeException("Value is empty for column : '<%= column.getLabel() %>', value is invalid or this column should be nullable or have a default value.");
+%>throw new RuntimeException("Value is empty for column : '<%= column.getLabel() %>' in '<%=conn.getName()%>' connection, value is invalid or this column should be nullable or have a default value.");
 <%								} else {
 %>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = <%=defaultValue %>;
 <%								}
@@ -599,7 +599,7 @@ if( currentRowIndex_<%=cid%>  == <%=rowCount %> ){
 %>} else {						
 <%								String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
 								if(defaultValue == null) {
-%>throw new RuntimeException("Value is empty for column : '<%= column.getLabel() %>', value is invalid or this column should be nullable or have a default value.");
+%>throw new RuntimeException("Value is empty for column : '<%= column.getLabel() %>' in '<%=conn.getName()%>' connection, value is invalid or this column should be nullable or have a default value.");
 <%								} else {
 %>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = <%=defaultValue %>;
 <%								}
@@ -646,7 +646,7 @@ if( currentRowIndex_<%=cid%>  == <%=rowCount %> ){
 %>} else {						
 <%										String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
 										if(defaultValue == null) {
-%>throw new RuntimeException("Value is empty for column : '<%= column.getLabel() %>', value is invalid or this column should be nullable or have a default value.");
+%>throw new RuntimeException("Value is empty for column : '<%= column.getLabel() %>' in '<%=conn.getName()%>' connection, value is invalid or this column should be nullable or have a default value.");
 <%										} else {
 %>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = <%=defaultValue %>;
 <%										}
@@ -714,7 +714,7 @@ if( currentRowIndex_<%=cid%>  == <%=rowCount %> ){
 %>} else {						
 <%								String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
 								if(defaultValue == null) {
-%>throw new RuntimeException("Value is empty for column : '<%= column.getLabel() %>', value is invalid or this column should be nullable or have a default value.");
+%>throw new RuntimeException("Value is empty for column : '<%= column.getLabel() %>' in '<%=conn.getName()%>' connection, value is invalid or this column should be nullable or have a default value.");
 <%								} else {
 %>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = <%=defaultValue %>;
 <%								}
