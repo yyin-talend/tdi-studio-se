@@ -120,7 +120,7 @@ public class FileController extends AbstractElementPropertySectionController {
         btnEdit.setLayoutData(data);
         btnEdit.setData(NAME, FILE);
         btnEdit.setData(PARAMETER_NAME, param.getName());
-        btnEdit.setEnabled(!param.isRepositoryValueUsed());
+        btnEdit.setEnabled(!param.isReadOnly());
         btnEdit.addSelectionListener(listenerSelection);
 
         DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new SelectAllTextControlCreator());
@@ -140,7 +140,7 @@ public class FileController extends AbstractElementPropertySectionController {
         Text filePathText = (Text) dField.getControl();
         filePathText.setData(PARAMETER_NAME, param.getName());
         cLayout.setBackground(subComposite.getBackground());
-        filePathText.setEditable(!param.isRepositoryValueUsed());
+        filePathText.setEditable(!param.isReadOnly());
 
         editionControlHelper.register(param.getName(), filePathText, true);
 

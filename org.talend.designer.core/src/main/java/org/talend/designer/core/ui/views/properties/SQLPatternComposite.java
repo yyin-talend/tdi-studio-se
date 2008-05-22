@@ -72,6 +72,7 @@ import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -328,7 +329,18 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
         });
 
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
-
+        if (element != null && element instanceof INode) {
+            INode node = (INode) element;
+            if (buttonAdd != null && !buttonAdd.isDisposed()) {
+                buttonAdd.setEnabled(!node.isReadOnly());
+            }
+            if (buttonRemove != null && !buttonRemove.isDisposed()) {
+                buttonRemove.setEnabled(!node.isReadOnly());
+            }
+            if (table != null && !table.isDisposed()) {
+                table.setEnabled(!node.isReadOnly());
+            }
+        }
     }
 
     /*

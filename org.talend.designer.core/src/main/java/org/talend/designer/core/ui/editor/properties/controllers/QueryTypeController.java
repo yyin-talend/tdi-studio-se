@@ -96,7 +96,7 @@ public class QueryTypeController extends AbstractRepositoryController {
         guessQueryButton = (Button) dField1.getControl();
         guessQueryButton.computeSize(SWT.DEFAULT, SWT.DEFAULT);
         buttonControl.setBackground(subComposite.getBackground());
-        guessQueryButton.setEnabled(true);
+        guessQueryButton.setEnabled(!param.isReadOnly());
         guessQueryButton.setData(NAME, GUESS_QUERY_NAME);
         guessQueryButton.setData(PARAMETER_NAME, param.getName());
         guessQueryButton.setText(GUESS_QUERY_NAME);
@@ -267,9 +267,9 @@ public class QueryTypeController extends AbstractRepositoryController {
                 if (repositoryQueryStoreMap.containsKey(querySelected)) {
                     repositoryQuery = repositoryQueryStoreMap.get(querySelected);
                 }/*
-                 * else if (dynamicProperty.getRepositoryQueryStoreMap().size() > 0) { repositoryQuery = (Query)
-                 * dynamicProperty.getRepositoryQueryStoreMap().values().toArray()[0]; }
-                 */
+                     * else if (dynamicProperty.getRepositoryQueryStoreMap().size() > 0) { repositoryQuery = (Query)
+                     * dynamicProperty.getRepositoryQueryStoreMap().values().toArray()[0]; }
+                     */
 
                 if (switchParam != null) {
                     switchParam.setValue(Boolean.FALSE);

@@ -300,7 +300,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
         openSQLEditorButton.computeSize(SWT.DEFAULT, SWT.DEFAULT);
         openSQLEditorButton.setImage(ImageProvider.getImage(ImageProvider.getImageDesc(EImage.READ_ICON)));
         buttonControl.setBackground(subComposite.getBackground());
-        openSQLEditorButton.setEnabled(true);
+        openSQLEditorButton.setEnabled(!param.isReadOnly());
         openSQLEditorButton.setData(NAME, SQLEDITOR);
         openSQLEditorButton.setData(PARAMETER_NAME, param.getName());
 

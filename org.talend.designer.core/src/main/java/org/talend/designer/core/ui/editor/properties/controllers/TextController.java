@@ -88,6 +88,7 @@ public class TextController extends AbstractElementPropertySectionController {
         labelText = (Text) dField.getControl();
 
         labelText.setData(PARAMETER_NAME, param.getName());
+        labelText.setEnabled(!param.isReadOnly());
 
         editionControlHelper.register(param.getName(), labelText, true);
 

@@ -146,7 +146,7 @@ public class ProcessController extends AbstractElementPropertySectionController 
 
         btn.addSelectionListener(listenerSelection);
         btn.setData(PARAMETER_NAME, param.getName() + ":" + processTypeParameter.getName()); //$NON-NLS-1$
-
+        btn.setEnabled(!param.isReadOnly());
         data = new FormData();
         data.left = new FormAttachment(cLayout, 0);
         data.right = new FormAttachment(cLayout, STANDARD_BUTTON_WIDTH, SWT.RIGHT);

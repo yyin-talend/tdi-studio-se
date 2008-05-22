@@ -75,6 +75,7 @@ public class GroupController extends AbstractElementPropertySectionController {
 
         Group group = (Group) dField.getControl();
         group.setLayout(new FormLayout());
+        group.setEnabled(!param.isReadOnly());
 
         hashCurControls.put(param.getGroup(), group);
 
