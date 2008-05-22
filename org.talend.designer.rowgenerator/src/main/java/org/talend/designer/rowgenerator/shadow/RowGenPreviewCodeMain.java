@@ -28,18 +28,14 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
-import org.talend.core.model.context.JobContextParameter;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
-import org.talend.core.model.process.IContext;
-import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.designer.rowgenerator.RowGeneratorComponent;
 import org.talend.designer.rowgenerator.RowGeneratorPlugin;
 import org.talend.designer.rowgenerator.data.FunctionManagerExt;
 import org.talend.designer.rowgenerator.i18n.Messages;
-import org.talend.designer.rowgenerator.managers.UIManager;
 import org.talend.designer.rowgenerator.ui.editor.MetadataColumnExt;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorUtilities;
@@ -108,18 +104,21 @@ public class RowGenPreviewCodeMain {
      */
     public Process runPreviewCode() {
         getProcess();
-        IContext context2 = new org.talend.core.model.context.JobContext(PREVIEW);
-        if (UIManager.isJavaProject()) {
-            List<IContextParameter> params = new ArrayList<IContextParameter>();
-            JobContextParameter contextParameter = new JobContextParameter();
-            contextParameter.setContext(context2);
-            contextParameter.setName(PREVIEW);
-            contextParameter.setValue(PREVIEW);
-            contextParameter.setType("String");
-            params.add(contextParameter);
-            context2.setContextParameterList(params);
-        }
-        IProcessor processor = ProcessorUtilities.getProcessor(proc, context2);
+        proc.getContextManager().setListContext(component.getProcess().getContextManager().getListContext());
+        proc.getContextManager().setDefaultContext(component.getProcess().getContextManager().getDefaultContext());
+
+        // IContext context2 = new org.talend.core.model.context.JobContext(PREVIEW);
+        // if (UIManager.isJavaProject()) {
+        // List<IContextParameter> params = new ArrayList<IContextParameter>();
+        // JobContextParameter contextParameter = new JobContextParameter();
+        // contextParameter.setContext(context2);
+        // contextParameter.setName(PREVIEW);
+        // contextParameter.setValue(PREVIEW);
+        // contextParameter.setType("String");
+        // params.add(contextParameter);
+        // context2.setContextParameterList(params);
+        // }
+        IProcessor processor = ProcessorUtilities.getProcessor(proc, proc.getContextManager().getDefaultContext());
         try {
             return processor.run(IProcessor.NO_STATISTICS, IProcessor.NO_TRACES, null);
         } catch (Exception e) {
