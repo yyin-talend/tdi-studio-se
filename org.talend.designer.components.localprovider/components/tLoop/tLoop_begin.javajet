@@ -37,6 +37,7 @@ if (step.equals("")) step = "1";
 for(int loop<%=cid%> =<%=from%>; loop<%=cid%><<%=to%>; loop<%=cid%>=loop<%=cid%>+<%=step%>){
 
 current_iteration_<%=cid%>++;
+globalMap.put("<%=cid%>_CURRENT_VALUE",loop<%=cid%>);
 globalMap.put("<%=cid%>_CURRENT_ITERATION",current_iteration_<%=cid%>);
 
 <%
