@@ -28,9 +28,8 @@
       FIELD="SCHEMA_TYPE"
       REQUIRED="true"
       NUM_ROW="1"
-      READONLY="true"
     >
-      <TABLE>
+      <TABLE  READONLY="true">
         <COLUMN NAME="key" TYPE="id_String" LENGTH="255"/>
         <COLUMN NAME="value" TYPE="id_String" LENGTH="255"/>
       </TABLE>

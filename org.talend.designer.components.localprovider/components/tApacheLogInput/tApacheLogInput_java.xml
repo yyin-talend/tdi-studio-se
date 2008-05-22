@@ -78,9 +78,9 @@
       FIELD="SCHEMA_TYPE"
       REQUIRED="true"
       NUM_ROW="10"
-      READONLY="true"
+      
 	>
-  		<TABLE>
+  		<TABLE READONLY="true">
    			   <COLUMN NAME="host"    TYPE="id_String" LENGTH="50"/>
    			   <COLUMN NAME="identity"    TYPE="id_String" LENGTH="10"/>
    			   <COLUMN NAME="user"    TYPE="id_String" LENGTH="20"/>

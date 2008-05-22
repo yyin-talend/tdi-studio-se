@@ -33,16 +33,16 @@
       FIELD="SCHEMA_TYPE"
       REQUIRED="true"
       NUM_ROW="1"
-      READONLY="true"
+     
     >
-      <TABLE>
+      <TABLE READONLY="true">
         <COLUMN NAME="dtdfile" TYPE="id_String" LENGTH="255"/>
         <COLUMN NAME="xmlfile" TYPE="id_String" LENGTH="255"/>
         <COLUMN NAME="moment" TYPE="id_Date" PATTERN='"yyyy-MM-dd HH:mm:ss"'/>
-        <COLUMN NAME="job" TYPE="id_String" LENGTH="50"/>
-        <COLUMN NAME="component" TYPE="id_String" LENGTH="255"/>
-        <COLUMN NAME="validate" TYPE="id_Integer" LENGTH="1"/>
-        <COLUMN NAME="message" TYPE="id_String" LENGTH="255"/>
+        <COLUMN NAME="job" TYPE="id_String" LENGTH="50" />
+        <COLUMN NAME="component" TYPE="id_String" LENGTH="255" />
+        <COLUMN NAME="validate" TYPE="id_Integer" LENGTH="1" />
+        <COLUMN NAME="message" TYPE="id_String" LENGTH="255" />
       </TABLE>
     </PARAMETER>
 

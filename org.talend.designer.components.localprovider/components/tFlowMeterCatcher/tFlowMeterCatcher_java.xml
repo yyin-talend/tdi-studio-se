@@ -33,9 +33,8 @@
       FIELD="SCHEMA_TYPE"
       REQUIRED="true"
       NUM_ROW="1"
-      READONLY="true"
     >
-      <TABLE>
+      <TABLE READONLY="true">
         <COLUMN NAME="moment" TYPE="id_Date" PATTERN='"yyyy-MM-dd HH:mm:ss"'/>
         <COLUMN NAME="pid" TYPE="id_String" LENGTH="20"/>
         <COLUMN NAME="father_pid" TYPE="id_String" LENGTH="20"/>

@@ -21,8 +21,8 @@
 
 	<PARAMETERS>
 		<PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true"
-			NUM_ROW="1" READONLY="true">
-			<TABLE>
+			NUM_ROW="1" >
+			<TABLE READONLY="true">
 				<COLUMN NAME="file" TYPE="id_String" LENGTH="255" />
 				<COLUMN NAME="file_ref" TYPE="id_String" LENGTH="255" />
 				<COLUMN NAME="moment" TYPE="id_Date"

@@ -94,13 +94,13 @@
       FIELD="SCHEMA_TYPE"
       REQUIRED="true"
       NUM_ROW="40"
-	  READONLY="true"
+	  
     >
-      <TABLE IF="(SERVER == 'WEBSPHERE') and (IS_USE_MESSAGE_ID == 'true')">
+      <TABLE IF="(SERVER == 'WEBSPHERE') and (IS_USE_MESSAGE_ID == 'true')" READONLY="true">
         <COLUMN NAME="message" TYPE="id_String" LENGTH="255"/>
         <COLUMN NAME="messageid" TYPE="id_String" LENGTH="255"/>
       </TABLE>
-      <TABLE IF="(SERVER == 'JBOSS') or (IS_USE_MESSAGE_ID == 'false')">
+      <TABLE IF="(SERVER == 'JBOSS') or (IS_USE_MESSAGE_ID == 'false')" READONLY="true">
         <COLUMN NAME="message" TYPE="id_String" LENGTH="255"/>
       </TABLE>
     </PARAMETER>

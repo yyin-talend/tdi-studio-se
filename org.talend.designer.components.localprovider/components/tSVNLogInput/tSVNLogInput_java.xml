@@ -97,9 +97,8 @@
       FIELD="SCHEMA_TYPE"
       REQUIRED="true"
       NUM_ROW="60"
-      READONLY="true"
     >
-      <TABLE>
+      <TABLE  READONLY="true">
         <COLUMN NAME="revision" TYPE="id_Integer"/>
         <COLUMN NAME="author" TYPE="id_String" LENGTH="50"/>
         <COLUMN NAME="date" TYPE="id_Date"/>
