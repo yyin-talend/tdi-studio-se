@@ -19,7 +19,7 @@ imports="
 	String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
 	String dbencoding= ElementParameterParser.getValue(node, "__ENCODING__");
     String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
-    String tableName = ElementParameterParser.getValue(node,"__DBTABLE__");
+    String tableName = ElementParameterParser.getValue(node,"__TABLE__");
     String identityInsert = ElementParameterParser.getValue(node, "__IDENTITY_INSERT__");
     boolean useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__").equals("true");
     if(useExistingConn){

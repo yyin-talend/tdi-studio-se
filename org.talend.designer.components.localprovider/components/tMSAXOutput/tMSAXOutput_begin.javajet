@@ -30,7 +30,7 @@ imports="
 	String axDomain = ElementParameterParser.getValue(node, "__DOMAIN__");
 	String axUser= ElementParameterParser.getValue(node, "__USER__");
 	String axPwd= ElementParameterParser.getValue(node, "__PASS__");
-	String axTable = ElementParameterParser.getValue(node,"__DBTABLE__");
+	String axTable = ElementParameterParser.getValue(node,"__TABLE__");
 	String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
 	
     List<IMetadataColumn> columnList = null;

@@ -79,7 +79,7 @@
     </PARAMETER>
 
     <PARAMETER	
-      NAME="DBTABLE"
+      NAME="TABLE"
       FIELD="TEXT"
       NUM_ROW="5"
     >

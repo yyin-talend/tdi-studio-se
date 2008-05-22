@@ -15,7 +15,7 @@ imports="
 	
 	boolean useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__").equals("true");
 
-    String tableName = ElementParameterParser.getValue(node,"__DBTABLE__");
+    String tableName = ElementParameterParser.getValue(node,"__TABLE__");
     String identityInsert = ElementParameterParser.getValue(node, "__IDENTITY_INSERT__");
     
 if(identityInsert.equals("true")){

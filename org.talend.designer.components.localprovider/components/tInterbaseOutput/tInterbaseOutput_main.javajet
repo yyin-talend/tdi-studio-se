@@ -25,7 +25,7 @@ skeleton="../templates/db_output_bulk.skeleton"
     String cid = node.getUniqueName();
     String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
     String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");    
-    String tableName = ElementParameterParser.getValue(node,"__DBTABLE__");
+    String tableName = ElementParameterParser.getValue(node,"__TABLE__");
     String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
     List<Map<String, String>> addCols =
             (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__ADD_COLS__");

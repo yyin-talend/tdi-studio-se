@@ -116,7 +116,7 @@
     </PARAMETER>
 
 	<PARAMETER
-      NAME="DBTABLE"
+      NAME="TABLE"
       FIELD="DBTABLE"
       NUM_ROW="7"
     >

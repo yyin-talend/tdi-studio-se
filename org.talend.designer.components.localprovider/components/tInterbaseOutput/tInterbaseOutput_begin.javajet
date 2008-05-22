@@ -34,7 +34,7 @@ skeleton="../templates/db_output_bulk.skeleton"
     
     String dbname= ElementParameterParser.getValue(node, "__DBNAME__");
     			
-	String tableName = ElementParameterParser.getValue(node,"__DBTABLE__");
+	String tableName = ElementParameterParser.getValue(node,"__TABLE__");
 	
 	String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
 	

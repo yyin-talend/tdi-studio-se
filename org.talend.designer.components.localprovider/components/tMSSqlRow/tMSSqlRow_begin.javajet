@@ -20,7 +20,7 @@ imports="
 	String dbencoding= ElementParameterParser.getValue(node, "__ENCODING__");
     String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
     String dbschema = ElementParameterParser.getValue(node, "__DB_SCHEMA__");
- 	String tableName = ElementParameterParser.getValue(node,"__DBTABLE__");
+ 	String tableName = ElementParameterParser.getValue(node,"__TABLE__");
     String identityInsert = ElementParameterParser.getValue(node, "__IDENTITY_INSERT__");
 	
 	String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
