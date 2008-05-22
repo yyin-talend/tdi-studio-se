@@ -66,6 +66,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
      * @param needContext
      * @return
      */
+    @Override
     public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Boolean> exportChoice,
             String contextName, String launcher, int statisticPort, int tracePort, String... codeOptions) {
 
@@ -172,7 +173,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             NodeType nType = (NodeType) iter.next();
             String componentName = nType.getComponentName();
             IComponent component = ComponentsFactoryProvider.getInstance().get(componentName);
-            List<URL> modules = getComponentModules(componentName); //$NON-NLS-1$
+            List<URL> modules = getComponentModules(componentName);
             resource.addResources(LIBRARY_FOLDER_NAME + PATH_SEPARATOR + componentName, modules);
 
             // get the modules that this component depends on.
@@ -327,7 +328,15 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             String jobScriptName = PerlResourcesHelper.getJobFileName(subjobInfo.getJobName(), subjobInfo.getJobVersion());
             String contextName = null;
             if (exportChoice.get(ExportChoice.applyToChildren)) {
-                contextName = fatherContext;
+                // see bug 0003862: Export job with the flag "Apply to children" if the child don't have the
+                // same context fails.
+                ProcessItem processItem = ProcessorUtilities.getProcessItem(subjobInfo.getJobId(), subjobInfo.getJobVersion());
+                if (ProcessorUtilities.checkIfContextExisted(processItem, fatherContext)) {
+                    contextName = fatherContext;
+                } else {
+                    // use the default context of subjob
+                    contextName = processItem.getProcess().getDefaultContext();
+                }
             } else {
                 contextName = escapeSpace(subjobInfo.getContextName());
             }
@@ -372,6 +381,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
      * @return a List of context names.
      * 
      */
+    @Override
     public List<String> getJobContexts(ProcessItem processItem) {
         List<String> contextNameList = new ArrayList<String>();
         for (Object o : processItem.getProcess().getContext()) {
