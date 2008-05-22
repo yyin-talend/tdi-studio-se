@@ -21,10 +21,14 @@ import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.QueryUtil;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.DatabaseConnectionItem;
+import org.talend.core.model.properties.Item;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.core.DesignerPlugin;
@@ -102,20 +106,39 @@ public class QueryGuessCommand extends Command {
         if (dbNameAndSchemaMap != null) {
             schema = this.dbNameAndSchemaMap.get(this.realTableId);
         }
-
-        if (schema == null) {
+        String propertyType = (String) node.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
+        if (!propertyType.equals(EmfComponent.REPOSITORY)) {
             for (IElementParameter param : this.node.getElementParameters()) {
                 if (param.getRepositoryValue() != null && param.getRepositoryValue().equals("SCHEMA")) {
                     schema = (String) param.getValue();
                     schema = schema.replace("\"", "");
                     schema = schema.replace("\'", "");
+                    break;
                 }
             }
+        } else if (schema == null) {
+            IElementParameter param = node.getElementParameter(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+            if (param != null) {
+                try {
+                    IRepositoryObject object = DesignerPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory()
+                            .getLastVersion((String) param.getValue());
+                    if (object != null) {
+                        Item item = object.getProperty().getItem();
+                        if (item != null && item instanceof DatabaseConnectionItem) {
+                            schema = (String) RepositoryToComponentProperty.getValue(((DatabaseConnectionItem) item)
+                                    .getConnection(), "SCHEMA");
+                            schema = TalendTextUtils.removeQuotes(schema);
+                        }
+                    }
+                } catch (PersistenceException e) {
+                    // 
+                }
+            }
+
         }
         // about AS400 generation sql query
         String newQuery = null;
         if (dbType.equals("AS400")) {
-            String propertyType = (String) node.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
             if (propertyType.equals(EmfComponent.REPOSITORY)) {
                 IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
                 List<ConnectionItem> metadataConnectionsItem = null;
