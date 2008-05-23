@@ -407,7 +407,6 @@ public class EmfComponent implements IComponent {
         param.setRequired(false);
         param.setShow(false);
         listParam.add(param);
-        String eltNodeName = patterns.getDB();
 
         param = new ElementParameter(node);
         param.setName(EParameterName.SQLPATTERN_VALUE.getName());
@@ -428,7 +427,9 @@ public class EmfComponent implements IComponent {
         for (Iterator iterator = patternList.iterator(); iterator.hasNext();) {
             SQLPATTERNType pattern = (SQLPATTERNType) iterator.next();
             Map map = new HashMap();
-            map.put(SQLPATTERNLIST, pattern.getNAME());
+            SQLPatternItem sqlItem = getSQLPatternItem(pattern.getNAME(), patterns.getDB());
+
+            map.put(SQLPATTERNLIST, sqlItem.getProperty().getId());
             patternNames.add(pattern.getNAME());
             value.add(map);
         }
@@ -480,46 +481,6 @@ public class EmfComponent implements IComponent {
         param.setListItemsNotShowIf(listItemsNotShowIf);
         listParam.add(param);
 
-        param = new ElementParameter(node);
-        param.setName(EParameterName.SQLPATTERN_CODE.getName());
-        param.setValue(""); //$NON-NLS-1$
-        param.setDisplayName(EParameterName.SQLPATTERN_CODE.getDisplayName());
-        param.setListItemsValue(new String[0]);
-        param.setField(EParameterFieldType.TABLE);
-        param.setNbLines(10);
-        param.setCategory(EComponentCategory.SQL_PATTERN);
-        param.setNumRow(3);
-        param.setReadOnly(true);
-        param.setRequired(false);
-        param.setShow(true);
-        listParam.add(param);
-
-        IElementParameter codeParameter = param;
-
-        List<Map<String, Object>> tableContent = new ArrayList<Map<String, Object>>();
-        Map<String, Object> codeMap = new HashMap<String, Object>();
-
-        if (sqlPatternValue != null) {
-
-            List<Map> values = (List<Map>) sqlPatternValue.getValue();
-            List<String> names = new ArrayList<String>();
-            for (Map map : values) {
-                String patternName = (String) map.get(EmfComponent.SQLPATTERNLIST);
-
-                SQLPatternItem sqlPatternItem = getSQLPatternItem(patternName, eltNodeName);
-                if (sqlPatternItem == null) {
-                    values.remove(map);
-                    continue;
-                }
-                String content = new String(sqlPatternItem.getContent().getInnerContent());
-
-                names.add(patternName);
-                codeMap.put(patternName, content);
-            }
-            tableContent.add(codeMap);
-            codeParameter.setValue(tableContent);
-            codeParameter.setListItemsDisplayCodeName(names.toArray(new String[names.size()]));
-        }
     }
 
     /**
