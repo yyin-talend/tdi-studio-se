@@ -883,7 +883,7 @@
             context="%libraryneeded.dbconnectionwizard"
             language="java"
             message="%libraryneeded.fororacleconnection"
-            name="ojdbc14.jar"
+            name="ojdbc5.jar"
             required="false"/>
       <libraryNeeded
             context="%libraryneeded.dbconnectionwizard"
