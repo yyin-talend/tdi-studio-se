@@ -13,7 +13,6 @@ imports="
 	
 	String dbServer = ElementParameterParser.getValue(node, "__SERVER__");
 	String dbhost = ElementParameterParser.getValue(node, "__HOST__");
-	String dbport = ElementParameterParser.getValue(node, "__PORT__");
 	String dbname= ElementParameterParser.getValue(node, "__DBNAME__");
 	String dbuser= ElementParameterParser.getValue(node, "__USER__");
 	String dbpwd= ElementParameterParser.getValue(node, "__PASS__");

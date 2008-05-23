@@ -58,15 +58,6 @@
     </PARAMETER>
 
     <PARAMETER
-      NAME="PORT"
-      FIELD="TEXT"
-      NUM_ROW="3"
-      REPOSITORY_VALUE="PORT"
-    >
-      <DEFAULT>"1025"</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
       NUM_ROW="3"

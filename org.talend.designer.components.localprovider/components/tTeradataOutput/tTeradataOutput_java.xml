@@ -56,14 +56,6 @@
     >
       <DEFAULT>Teradata</DEFAULT>
     </PARAMETER>
-   <PARAMETER
-      NAME="PORT"
-      FIELD="TEXT"
-      NUM_ROW="3"
-      REPOSITORY_VALUE="PORT"
-    >
-      <DEFAULT>""</DEFAULT>
-   </PARAMETER>
 
     <PARAMETER
       NAME="DBNAME"

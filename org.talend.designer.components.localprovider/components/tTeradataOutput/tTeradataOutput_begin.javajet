@@ -36,9 +36,7 @@ skeleton="../templates/db_output_bulk.skeleton"
     String dbname= ElementParameterParser.getValue(node, "__DBNAME__");
     
     String dbhost = ElementParameterParser.getValue(node, "__HOST__");
-    
-	String dbport = ElementParameterParser.getValue(node, "__PORT__");
-	
+    	
 	String dbuser= ElementParameterParser.getValue(node, "__USER__");
 	
 	String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
