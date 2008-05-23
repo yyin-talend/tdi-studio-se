@@ -70,6 +70,7 @@ public class UpdateViewerHelper {
             getViewer().expandAll();
         }
         refreshSelectButton();
+        checkUpdateStatus();
     }
 
     /**
@@ -94,6 +95,7 @@ public class UpdateViewerHelper {
         }
         getViewer().getTree().setRedraw(true);
         refreshSelectButton();
+        checkUpdateStatus();
     }
 
     public void updateCheckedState(Object obj, boolean state) {
@@ -110,6 +112,7 @@ public class UpdateViewerHelper {
 
         getViewer().getTree().setRedraw(true);
         refreshSelectButton();
+        checkUpdateStatus();
     }
 
     private void checkChildSate(Object obj, boolean state) {
@@ -199,11 +202,11 @@ public class UpdateViewerHelper {
             updateJobState(((Category) obj).getParent());
         } else if (obj instanceof Item) {
             updateJobState(((Item) obj).getParent().getParent());
-
         }
     }
 
     private void updateJobState(Job job) {
+        getViewer().refresh(job, true);
         switch (updateCategoriesState(job)) {
         case ALL:
             getViewer().setChecked(job, true);
@@ -263,8 +266,8 @@ public class UpdateViewerHelper {
             if (item.isChecked()) {
                 num++;
             }
-            getViewer().setChecked(item, item.isChecked());
             getViewer().refresh(item, true);
+            getViewer().setChecked(item, item.isChecked());
         }
         if (num == 0) {
             return StateType.NONE;
@@ -298,5 +301,18 @@ public class UpdateViewerHelper {
             updateDialog.setSelectButtonLabel(WorkbenchMessages.SelectionDialog_selectLabel);
         }
 
+    }
+
+    public void checkUpdateStatus() {
+        List<UpdateResult> inputElements = updateDialog.getInputElements();
+        if (inputElements != null) {
+            for (UpdateResult result : inputElements) {
+                if (result.getResultType() == EUpdateResult.UPDATE && !result.isChecked()) {
+                    updateDialog.updateWarnMessage();
+                    return;
+                }
+            }
+        }
+        updateDialog.updateNomarlMessage();
     }
 }

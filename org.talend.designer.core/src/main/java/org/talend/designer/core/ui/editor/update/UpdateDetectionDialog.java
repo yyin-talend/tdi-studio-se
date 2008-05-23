@@ -17,7 +17,6 @@ import java.util.List;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
-import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -27,6 +26,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
@@ -53,6 +53,8 @@ public class UpdateDetectionDialog extends SelectionDialog {
 
     private static final String DEFAULT_MESSAGE = Messages.getString("UpdateDetectionDialog.Messages"); //$NON-NLS-1$
 
+    private static final String WARNING_MESSAGE = Messages.getString("UpdateDetectionDialog.WarningMessage"); //$NON-NLS-1$
+
     // sizing constants
     private static final int SIZING_SELECTION_WIDGET_HEIGHT = 400;
 
@@ -67,6 +69,10 @@ public class UpdateDetectionDialog extends SelectionDialog {
     private UpdateViewerHelper helper;
 
     private Button selectButton;
+
+    private Label messLabel;
+
+    private Label imageLabe;
 
     private boolean canCancel = true;
 
@@ -213,14 +219,28 @@ public class UpdateDetectionDialog extends SelectionDialog {
         return composite;
     }
 
+    @Override
+    protected Label createMessageArea(Composite composite) {
+        Label label = new Label(composite, SWT.WRAP);
+        GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
+        gridData.verticalAlignment = GridData.VERTICAL_ALIGN_CENTER;
+        label.setLayoutData(gridData);
+        label.setFont(composite.getFont());
+        return label;
+    }
+
     private Composite createHeadMessage(Composite parent) {
         Composite composite = new Composite(parent, SWT.NONE);
-        composite.setLayout(new GridLayout());
+        composite.setLayout(new GridLayout(2, false));
         composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-        super.createMessageArea(composite);
+        imageLabe = new Label(composite, SWT.NONE);
+        imageLabe.setImage(Display.getDefault().getSystemImage(SWT.ICON_WARNING));
+        // imageLabe.setImage(ImageProvider.getImage(EImage.WARNING_ICON));
 
-        Label label = new Label(composite, SWT.HORIZONTAL | SWT.SEPARATOR | SWT.SHADOW_OUT);
+        messLabel = createMessageArea(composite);
+
+        Label label = new Label(parent, SWT.HORIZONTAL | SWT.SEPARATOR | SWT.SHADOW_OUT);
         label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         return composite;
@@ -299,33 +319,13 @@ public class UpdateDetectionDialog extends SelectionDialog {
 
     }
 
-    /**
-     * 
-     * ggu UpdateCellModifier class global comment. Detailled comment 5
-     */
-    class UpdateCellModifier implements ICellModifier {
+    public void updateWarnMessage() {
+        imageLabe.setVisible(true);
+        messLabel.setText("\n" + WARNING_MESSAGE); //$NON-NLS-1$
+    }
 
-        public boolean canModify(Object element, String property) {
-            // if (element instanceof Job) {
-            // return true;
-            // } else if (element instanceof Category) {
-            // return true;
-            // } else if (element instanceof Item) {
-            // UpdateResult result = ((Item) element).getResultObject();
-            // if (result != null && result.getResultType() == EUpdateResult.UPDATE) {
-            // return true;
-            // }
-            // }
-            return false;
-        }
-
-        public Object getValue(Object element, String property) {
-            return null;
-        }
-
-        public void modify(Object element, String property, Object value) {
-
-        }
-
+    public void updateNomarlMessage() {
+        imageLabe.setVisible(false);
+        messLabel.setText(DEFAULT_MESSAGE);
     }
 }

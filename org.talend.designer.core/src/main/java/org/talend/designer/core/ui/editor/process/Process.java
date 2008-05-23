@@ -2573,13 +2573,13 @@ public class Process extends Element implements IProcess2 {
      * @param editor the editor to set
      */
     public void setEditor(AbstractMultiPageTalendEditor editor) {
+        this.editor = editor;
         if (editor != null && !duplicate) {
             CommandStack commandStack = (CommandStack) editor.getTalendEditor().getAdapter(CommandStack.class);
             commandStack.addCommandStackEventListener(commandStackEventListener);
             getUpdateManager().updateAll();
 
         }
-        this.editor = editor;
     }
 
     public void dispose() {

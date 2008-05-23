@@ -15,7 +15,10 @@ package org.talend.designer.core.ui.editor.update;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
+import org.talend.commons.ui.image.EImage;
+import org.talend.commons.ui.image.IImage;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.commons.ui.image.OverlayImage.EPosition;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.update.EUpdateItemType;
 import org.talend.core.model.update.EUpdateResult;
@@ -23,6 +26,7 @@ import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.model.update.UpdatesConstants;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.designer.core.ui.editor.nodes.Node;
 
 /**
@@ -32,49 +36,67 @@ public class UpdateLabelProvider implements ITableLabelProvider {
 
     public Image getColumnImage(Object element, int columnIndex) {
         if (columnIndex == 0) {
+            ECoreImage warnOverlay = ECoreImage.WARN_OVERLAY;
+            EPosition position = EPosition.BOTTOM_RIGHT;
             if (element instanceof Job) {
+                IImage image;
                 Job job = (Job) element;
                 if (job.isJoblet()) {
-                    return ImageProvider.getImage(ECoreImage.JOBLET_ICON);
+                    image = ECoreImage.JOBLET_ICON;
                 } else {
-                    return ImageProvider.getImage(ECoreImage.PROCESS_ICON);
+                    image = ECoreImage.PROCESS_ICON;
                 }
+                if (checkElementForUpdate(element)) {
+                    return OverlayImageProvider.getImageForOverlay(image, warnOverlay, position);
+                }
+                return ImageProvider.getImage(image);
             } else if (element instanceof Category) {
                 Category category = (Category) element;
                 EUpdateItemType type = category.getType();
                 if (type != null) {
+                    Image image = null;
                     switch (type) {
                     case JOB_PROPERTY_EXTRA:
                     case JOB_PROPERTY_STATS_LOGS:
-                        return ImageProvider.getImage(ECoreImage.CONTEXT_ICON);
+                        image = ImageProvider.getImage(ECoreImage.CONTEXT_ICON);
+                        break;
                     case CONTEXT:
                     case JOBLET_CONTEXT:
-                        return ImageProvider.getImage(ECoreImage.CONTEXT_ICON);
+                        image = ImageProvider.getImage(ECoreImage.CONTEXT_ICON);
+                        break;
                     case NODE_PROPERTY:
                     case NODE_SCHEMA:
                     case NODE_QUERY:
                     case JOBLET_SCHEMA:
                     case JOBLET_RENAMED:
                     case RELOAD:
-                        return getImageFromNode(category.getNode());
+                        image = getImageFromNode(category.getNode());
+                        break;
                     default:
                         // return ImageProvider.getImage(ECoreImage.TALEND_PICTO);
                     }
+                    if (image != null && checkElementForUpdate(element)) {
+                        return OverlayImageProvider.getImageForOverlay(image, warnOverlay, position);
+                    }
+                    return image;
                 }
             } else if (element instanceof Item) {
                 Item item = (Item) element;
+                IImage image = EImage.EMPTY;
                 switch (item.getResultObject().getUpdateType()) {
                 case NODE_QUERY:
-                    return ImageProvider.getImage(ECoreImage.METADATA_QUERY_ICON);
+                    image = ECoreImage.METADATA_QUERY_ICON;
+                    break;
                 case NODE_SCHEMA:
                 case JOBLET_SCHEMA:
-                    return ImageProvider.getImage(ECoreImage.METADATA_TABLE_ICON);
+                    image = ECoreImage.METADATA_TABLE_ICON;
+                    break;
                 case NODE_PROPERTY:
                 case JOB_PROPERTY_EXTRA:
                 case JOB_PROPERTY_STATS_LOGS:
                     ERepositoryObjectType type = RepositoryUpdateManager.getTypeFromSource(item.getRemark());
                     if (type != null) {
-                        return CoreImageProvider.getImage(type);
+                        image = CoreImageProvider.getIcon(type);
                     }
                 case JOBLET_RENAMED:
                 case RELOAD:
@@ -84,6 +106,10 @@ public class UpdateLabelProvider implements ITableLabelProvider {
                     // return ImageProvider.getImage(ECoreImage.CONTEXT_ICON);
                 default:
                 }
+                if (checkElementForUpdate(element)) {
+                    return OverlayImageProvider.getImageForOverlay(image, warnOverlay, position);
+                }
+                return ImageProvider.getImage(image);
             }
 
         }
@@ -160,5 +186,38 @@ public class UpdateLabelProvider implements ITableLabelProvider {
             return ImageProvider.getImage(ECoreImage.TALEND_PICTO);
         }
         return node.getComponent().getIcon16().createImage();
+    }
+
+    /**
+     * 
+     * ggu Comment method "checkElementForUpdate".
+     * 
+     * if there is a update item which have changed to built-in mode, return true.
+     */
+    private boolean checkElementForUpdate(Object element) {
+
+        if (element == null) {
+            return false;
+        }
+        if (element instanceof Item) {
+            return isBuilInMode((Item) element);
+        } else if (element instanceof Category) {
+            Category category = (Category) element;
+            for (Item item : category.getItems()) {
+                boolean flag = checkElementForUpdate(item);
+                if (flag) {
+                    return true;
+                }
+            }
+        } else if (element instanceof Job) {
+            Job job = (Job) element;
+            for (Category category : job.getCategories()) {
+                boolean flag = checkElementForUpdate(category);
+                if (flag) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
