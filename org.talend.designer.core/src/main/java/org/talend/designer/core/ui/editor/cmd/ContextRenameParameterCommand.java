@@ -53,6 +53,7 @@ public class ContextRenameParameterCommand extends Command {
         }
     }
 
+    @Override
     public void execute() {
         boolean found;
         List<IContextParameter> listParams;
@@ -63,6 +64,14 @@ public class ContextRenameParameterCommand extends Command {
             for (int j = 0; j < listParams.size() && !found; j++) {
                 if (listParams.get(j).getName().equals(oldName)) {
                     listParams.get(j).setName(newName);
+                    // see 0003889: Context script code not refreshed.
+                    String scriptCode = listParams.get(j).getScriptCode().replaceAll(oldName, newName);
+                    listParams.get(j).setScriptCode(scriptCode);
+                    // if the user haven't modified prompt, change it
+                    if (listParams.get(j).getPrompt().equals(oldName + "?")) {
+                        listParams.get(j).setPrompt(newName + "?");
+                    }
+
                     found = true;
                 }
             }
@@ -87,6 +96,13 @@ public class ContextRenameParameterCommand extends Command {
             for (int j = 0; j < listParams.size() && !found; j++) {
                 if (listParams.get(j).getName().equals(newName)) {
                     listParams.get(j).setName(oldName);
+                    // see 0003889: Context script code not refreshed.
+                    String scriptCode = listParams.get(j).getScriptCode().replaceAll(newName, oldName);
+                    listParams.get(j).setScriptCode(scriptCode);
+                    // if the user haven't modified prompt, change it
+                    if (listParams.get(j).getPrompt().equals(newName + "?")) {
+                        listParams.get(j).setPrompt(oldName + "?");
+                    }
                     found = true;
                 }
             }
