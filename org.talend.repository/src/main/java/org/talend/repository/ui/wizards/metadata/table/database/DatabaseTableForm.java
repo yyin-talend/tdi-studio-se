@@ -58,6 +58,7 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
 import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.commons.utils.data.text.IndiceHelper;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
@@ -259,6 +260,8 @@ public class DatabaseTableForm extends AbstractForm {
         // init the metadata Table
 
         metadataEditor.setMetadataTable(metadataTable);
+        removeDoubleQuotes(metadataEditor.getMetadataColumnList());
+
         tableEditorView.setMetadataEditor(metadataEditor);
         tableEditorView.getTableViewerCreator().layout();
 
@@ -280,6 +283,60 @@ public class DatabaseTableForm extends AbstractForm {
         }
         tableCombo.setText(metadataTable.getSourceName());
         nameText.forceFocus();
+    }
+
+    /**
+     * DOC bqian Comment method "removeDoubleQuotes".
+     * 
+     * @param metadataColumnList see bug 3738
+     */
+    private void removeDoubleQuotes(List<MetadataColumn> metadataColumnList) {
+        for (MetadataColumn metadataColumn : metadataColumnList) {
+            handleDefaultValue(metadataColumn);
+        }
+
+    }
+
+    /**
+     * Adds double quotes if Talend type is Date or String.
+     * 
+     * @param bean
+     * @param value
+     * @return
+     */
+    private void handleDefaultValue(MetadataColumn bean) {
+        // Checks if Talend type is String or Date.
+        switch (LanguageManager.getCurrentLanguage()) {
+        case JAVA:
+            String returnValue = bean.getDefaultValue();
+            if (bean.getTalendType().equals("id_String") || bean.getTalendType().equals("id_Date")) {
+                if (returnValue == null || returnValue.length() == 0) {
+                    returnValue = null;
+                } else if (returnValue.equalsIgnoreCase("null")) {
+                    returnValue = "null";
+                } else {
+                    returnValue = returnValue.replaceAll("\"", "");
+                    returnValue = returnValue.replaceAll("\'", "");
+                    returnValue = "\"" + returnValue + "\"";
+                }
+                bean.setDefaultValue(returnValue);
+            }
+        default:
+            // if (bean.getTalendType() != null && bean.getTalendType().equals("string")
+            // || bean.getTalendType().equals("date")) {
+            // if (returnValue == null) {
+            // returnValue = "null";
+            // } else if (returnValue.length() == 0) {
+            // returnValue = "\"" + "\"";
+            // } else if (returnValue.equalsIgnoreCase("null")) {
+            // returnValue = "null";
+            // } else {
+            // returnValue = returnValue.replaceAll("\"", "");
+            // returnValue = returnValue.replaceAll("\'", "");
+            // returnValue = "\"" + returnValue + "\"";
+            // }
+            // }
+        }
     }
 
     protected void addFields() {
@@ -740,6 +797,8 @@ public class DatabaseTableForm extends AbstractForm {
                     metadataColumn.setLabel(tableEditorView.getMetadataEditor().getNextGeneratedColumnName(columnLabel));
                     metadataColumnsValid.add(metadataColumn);
                 }
+                // see bug 3738
+                removeDoubleQuotes(metadataColumnsValid);
                 tableEditorView.getMetadataEditor().addAll(metadataColumnsValid);
             }
         }
