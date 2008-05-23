@@ -37,10 +37,22 @@ my $pid = undef;
 
 <%
 List<String> subjobs = new ArrayList<String>();
+String prejob = null;
+String postjob = null;
 boolean isFirstSubjob = true;
 
 for (INode rootNode : rootNodes) {
     String componentName = (String) rootNode.getComponent().getName();
+
+    if (componentName.equals("tPrejob")) {
+        prejob = rootNode.getUniqueName() + "_subprocess()";
+        continue;
+    }
+
+    if (componentName.equals("tPostjob")) {
+        postjob = rootNode.getUniqueName() + "_subprocess()";
+        continue;
+    }
 
     if (!componentName.equals("tLogCatcher")
         && !componentName.equals("tFlowMeterCatcher")
@@ -49,6 +61,12 @@ for (INode rootNode : rootNodes) {
         && !componentName.equals("tLibraryLoad")) {
         subjobs.add(rootNode.getUniqueName() + "_subprocess()");
     }
+}
+
+if (prejob != null) {
+%>
+<%=prejob%>;
+<%
 }
 
 if (subjobs.size() == 1) {
@@ -82,6 +100,12 @@ else {
 if (isRunInMultiThread && subjobs.size() > 1) {
 %>
 1 while wait_for_a_kid();
+<%
+}
+
+if (postjob != null) {
+%>
+<%=postjob%>;
 <%
 }
 %>
