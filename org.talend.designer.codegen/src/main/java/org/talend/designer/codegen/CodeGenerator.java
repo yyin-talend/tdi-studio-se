@@ -346,15 +346,15 @@ public class CodeGenerator implements ICodeGenerator {
      * @param type the internal component template
      * @param argument the bean
      * @param part part of code to generate
-     * @param subProcess 
+     * @param subProcess
      * @return the genrated code
      * @throws CodeGeneratorException if an error occurs during Code Generation
      */
-    private StringBuffer generateTypedComponentCode(EInternalTemplate type, Object argument, ECodePart part, String incomingName, NodesSubTree subProcess)
-            throws CodeGeneratorException {
+    private StringBuffer generateTypedComponentCode(EInternalTemplate type, Object argument, ECodePart part, String incomingName,
+            NodesSubTree subProcess) throws CodeGeneratorException {
         CodeGeneratorArgument codeGenArgument = new CodeGeneratorArgument();
         codeGenArgument.setNode(argument);
-        if (subProcess!=null) {
+        if (subProcess != null) {
             codeGenArgument.setAllMainSubTreeConnections(subProcess.getAllMainSubTreeConnections());
             codeGenArgument.setSubTree(subProcess);
         }
@@ -595,7 +595,8 @@ public class CodeGenerator implements ICodeGenerator {
      * @return the generated code
      * @throws CodeGeneratorException if an error occurs during Code Generation
      */
-    public String generateComponentCode(NodesSubTree subProcess, INode node, ECodePart part, String incomingName) throws CodeGeneratorException {
+    public String generateComponentCode(NodesSubTree subProcess, INode node, ECodePart part, String incomingName)
+            throws CodeGeneratorException {
         CodeGeneratorArgument argument = new CodeGeneratorArgument();
         argument.setNode(node);
         argument.setAllMainSubTreeConnections(subProcess.getAllMainSubTreeConnections());
@@ -727,6 +728,7 @@ public class CodeGenerator implements ICodeGenerator {
      */
     public String generateComponentCodeWithRows(String nodeName, IAloneProcessNodeConfigurer nodeConfigurer) {
         StringBuffer componentsCode = new StringBuffer();
+
         if (process == null) {
             throw new NullPointerException();
         } else {
@@ -736,15 +738,6 @@ public class CodeGenerator implements ICodeGenerator {
                 if (nodeConfigurer != null) {
                     nodeConfigurer.configure(nodeToConfigure);
                 }
-
-                INode node = nodeToConfigure.getSubProcessStartNode(false);
-
-                List<INode> lightProcessNodes = new ArrayList<INode>();
-                lightProcessNodes.add(node);
-
-                NodesTree lightProcess = new NodesTree(process, lightProcessNodes, false);
-                lightProcess.addRootNode(node);
-                lightProcess.buildSubTrees(false);
 
                 Vector headerArgument = new Vector(2);
                 headerArgument.add(process);
@@ -756,19 +749,50 @@ public class CodeGenerator implements ICodeGenerator {
                 try {
                     componentsCode.append(generateTypedComponentCode(EInternalTemplate.HEADER, headerArgument));
                     for (NodesSubTree subTree : processTree.getSubTrees()) {
-                        INode subTreeNode = subTree.getNode(node.getUniqueName());
+                        INode subTreeNode = subTree.getNode(nodeName);
+
                         // if (subTreeNode != null && nodeConfigurer != null) {
                         // nodeConfigurer.configure(subTreeNode);
                         // }
                         componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_HEADER, subTree));
-                        if (subTreeNode != null && (lightProcess.getSubTrees().size() > 0)) {
-                            componentsCode.append(generateComponentsCode(lightProcess.getSubTrees().get(0), lightProcess
-                                    .getSubTrees().get(0).getRootNode(), ECodePart.BEGIN, null));
-                            componentsCode.append(generateComponentsCode(lightProcess.getSubTrees().get(0), lightProcess
-                                    .getSubTrees().get(0).getRootNode(), ECodePart.MAIN, null));
-                            componentsCode.append(generateTypedComponentCode(EInternalTemplate.PART_ENDMAIN, null));
-                            componentsCode.append(generateComponentsCode(lightProcess.getSubTrees().get(0), lightProcess
-                                    .getSubTrees().get(0).getRootNode(), ECodePart.END, null));
+                        if (subTreeNode != null) {
+
+                            if (!subTree.isMergeSubTree()) {
+                                // componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_HEADER,
+                                // subTree));
+                                componentsCode.append(generateComponentsCode(subTree, subTree.getRootNode(), ECodePart.BEGIN,
+                                        null));
+                                componentsCode
+                                        .append(generateComponentsCode(subTree, subTree.getRootNode(), ECodePart.MAIN, null));
+                                componentsCode.append(generateTypedComponentCode(EInternalTemplate.PART_ENDMAIN, subTree
+                                        .getRootNode()));
+                                componentsCode
+                                        .append(generateComponentsCode(subTree, subTree.getRootNode(), ECodePart.END, null));
+                                // componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_FOOTER,
+                                // subTree));
+                            } else {
+                                // componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_HEADER,
+                                // subTree));
+                                componentsCode.append(generateComponentsCode(subTree, subTree.getMergeNode(), ECodePart.BEGIN,
+                                        null));
+
+                                List<INode> sortedMergeBranchStarts = subTree.getSortedMergeBranchStarts();
+                                for (INode startNode : sortedMergeBranchStarts) {
+                                    componentsCode.append(generateComponentsCode(subTree, startNode, ECodePart.BEGIN, null));
+                                    componentsCode.append(generateComponentsCode(subTree, startNode, ECodePart.MAIN, null));
+
+                                    componentsCode.append(generateComponentsCode(subTree, startNode, ECodePart.END, null));
+                                }
+
+                                componentsCode.append(generateTypedComponentCode(EInternalTemplate.PART_ENDMAIN, subTree
+                                        .getRootNode()));
+
+                                componentsCode
+                                        .append(generateComponentsCode(subTree, subTree.getMergeNode(), ECodePart.END, null));
+
+                                // componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_FOOTER,
+                                // subTree));
+                            }
                         }
                         componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_FOOTER, subTree));
                     }
@@ -785,6 +809,7 @@ public class CodeGenerator implements ICodeGenerator {
                 throw new TypeNotPresentException(Messages.getString("CodeGenerator.Node.NotFound"), null); //$NON-NLS-1$
             }
         }
+
         return componentsCode.toString();
     }
 
