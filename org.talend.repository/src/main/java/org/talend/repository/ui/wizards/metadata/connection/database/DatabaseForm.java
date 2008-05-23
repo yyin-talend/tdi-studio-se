@@ -62,6 +62,11 @@ import org.talend.repository.ui.utils.ManagerConnection;
 public class DatabaseForm extends AbstractForm {
 
     /**
+     * The number of items that can be visible in database type combo.
+     */
+    private static final int VISIBLE_DATABASE_COUNT = 20;
+
+    /**
      * Composite.
      */
     private Composite compositeDbSettings;
@@ -121,6 +126,8 @@ public class DatabaseForm extends AbstractForm {
      * Anothers Fields.
      */
     private UtilsButton checkButton;
+
+    private Group databaseSettingGroup;
 
     /**
      * Constructor to use by a Wizard to create a new database connection.
@@ -228,9 +235,8 @@ public class DatabaseForm extends AbstractForm {
     protected void addFields() {
         int width = getSize().x;
         GridLayout layout2;
-        // Group Database Settings
-        Group group = Form.createGroup(this, 1, Messages.getString("DatabaseForm.groupDatabaseSettings"), 340); //$NON-NLS-1$
-        Composite compositeGroupDbSettings = Form.startNewGridLayout(group, 1);
+        databaseSettingGroup = Form.createGroup(this, 1, Messages.getString("DatabaseForm.groupDatabaseSettings"), 310);
+        Composite compositeGroupDbSettings = Form.startNewGridLayout(databaseSettingGroup, 1);
         layout2 = (GridLayout) compositeGroupDbSettings.getLayout();
         layout2.marginHeight = 0;
         layout2.marginTop = 0;
@@ -239,7 +245,7 @@ public class DatabaseForm extends AbstractForm {
         layout2.marginRight = 0;
         layout2.marginWidth = 0;
 
-        compositeDbSettings = Form.startNewDimensionnedGridLayout(compositeGroupDbSettings, 3, width, 275);
+        compositeDbSettings = Form.startNewDimensionnedGridLayout(compositeGroupDbSettings, 3, width, 240);
         layout2 = (GridLayout) compositeDbSettings.getLayout();
         layout2.marginHeight = 0;
         layout2.marginTop = 0;
@@ -277,6 +283,13 @@ public class DatabaseForm extends AbstractForm {
             dbTypeCombo = new LabelledCombo(compositeDbSettings, Messages.getString("DatabaseForm.dbType"), Messages //$NON-NLS-1$
                     .getString("DatabaseForm.dbTypeTip"), urlDataStringConnection.getItem(), 2, true); //$NON-NLS-1$
         }
+
+        // configure the visible item of database combo
+        int visibleItemCount = dbTypeCombo.getCombo().getItemCount();
+        if (visibleItemCount > VISIBLE_DATABASE_COUNT) {
+            visibleItemCount = VISIBLE_DATABASE_COUNT;
+        }
+        dbTypeCombo.getCombo().setVisibleItemCount(visibleItemCount);
 
         // Field connectionString
         urlDataStringConnection.setSelectionIndex(dbTypeCombo.getSelectionIndex());
@@ -413,7 +426,7 @@ public class DatabaseForm extends AbstractForm {
             String mainMsg = Messages.getString("DatabaseForm.checkFailure") + " " //$NON-NLS-1$ //$NON-NLS-2$
                     + Messages.getString("DatabaseForm.checkFailureTip"); //$NON-NLS-1$
             if (!isReadOnly()) {
-                updateStatus(IStatus.WARNING, mainMsg); //$NON-NLS-1$
+                updateStatus(IStatus.WARNING, mainMsg);
             }
             new ErrorDialogWidthDetailArea(getShell(), PID, mainMsg, managerConnection.getMessageException());
         }
@@ -650,6 +663,7 @@ public class DatabaseForm extends AbstractForm {
         // standardButton parameters: Event modifyText
         standardButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 if (!isContextMode()) {
                     getConnection().setStandardSQL(standardButton.getSelection());
@@ -661,6 +675,7 @@ public class DatabaseForm extends AbstractForm {
         // systemButton parameters: Event modifyText
         systemButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 if (!isContextMode()) {
                     getConnection().setStandardSQL(standardButton.getSelection());
@@ -958,6 +973,7 @@ public class DatabaseForm extends AbstractForm {
             }
             if (s.contains("<filename>")) { // && //$NON-NLS-1$
                 // urlDataStringConnection.getStringConnectionTemplate().contains("jdbc:sqlite")
+                fileField.show();
                 fileField.setEditable(visible);
                 if (EDatabaseTypeName.getTypeFromDisplayName(getConnection().getDatabaseType()).equals(EDatabaseTypeName.SQLITE)) {
                     usernameText.setEditable(false);
@@ -966,17 +982,27 @@ public class DatabaseForm extends AbstractForm {
                     usernameText.setEditable(true);
                     passwordText.setEditable(true);
                 }
+            } else {
+                fileField.hide();
             }
             // if (s.contains("<filename>")) { //$NON-NLS-1$
             // fileField.setEditable(visible);
             // }
             if (s.contains("<datasource>")) { //$NON-NLS-1$
+                datasourceText.show();
                 datasourceText.setEditable(visible);
+            } else {
+                datasourceText.hide();
             }
+
             if (s.contains("<dbRootPath>")) { //$NON-NLS-1$
+                directoryField.show();
                 directoryField.setEditable(visible);
                 sidOrDatabaseText.setEditable(visible);
+            } else {
+                directoryField.hide();
             }
+
             if (urlDataStringConnection.isSchemaNeeded()) {
                 schemaText.setEditable(visible);
             }
@@ -984,6 +1010,8 @@ public class DatabaseForm extends AbstractForm {
                 additionParamText.setEditable(visible);
             }
         }
+        compositeDbSettings.layout();
+        databaseSettingGroup.layout();
     }
 
     /*
