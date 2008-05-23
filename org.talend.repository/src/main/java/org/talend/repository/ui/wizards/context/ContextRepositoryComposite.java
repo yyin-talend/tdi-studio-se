@@ -79,6 +79,15 @@ public class ContextRepositoryComposite extends ContextComposite {
             for (int j = 0; j < listParams.size() && !found; j++) {
                 if (listParams.get(j).getName().equals(oldName)) {
                     listParams.get(j).setName(newName);
+                    // see 0003889: Context script code not refreshed.
+                    String scriptCode = listParams.get(j).getScriptCode().replaceAll(oldName, newName);
+                    listParams.get(j).setScriptCode(scriptCode);
+
+                    // if the user haven't modified prompt, change it
+                    if (listParams.get(j).getPrompt().equals(oldName + "?")) {
+                        listParams.get(j).setPrompt(newName + "?");
+                    }
+
                     found = true;
                 }
             }
