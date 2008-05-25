@@ -79,12 +79,12 @@ public class ComponentProjectPreferencePage extends FieldEditorPreferencePage im
     public void propertyChange(PropertyChangeEvent event) {
 
         super.propertyChange(event);
-
-        MessageDialog.openWarning(getFieldEditorParent().getShell(),
-                Messages.getString("ComponentProjectPreferencePage.Warning"), //$NON-NLS-1$
-                Messages.getString("ComponentProjectPreferencePage.WarningMSG") //$NON-NLS-1$
-                        + event.getOldValue());
-
+        
+        MessageDialog warningMessageDialog = new MessageDialog(getFieldEditorParent().getShell(), Messages
+                .getString("ComponentProjectPreferencePage.Warning"), null, //$NON-NLS-1$
+                Messages.getString("ComponentProjectPreferencePage.WarningMSG"), MessageDialog.WARNING, //$NON-NLS-1$
+                new String[] { Messages.getString("ComponentProjectPreferencePage.ButtonLabel0") }, 0); //$NON-NLS-1$
+        warningMessageDialog.open();
     }
 
     /*

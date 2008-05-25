@@ -82,13 +82,15 @@ public final class ComponentProjectManager {
 
         // get a project handle
         final IProject newProjectHandle = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
-        if (newProjectHandle.getRawLocation().equals(directroy)) {
-            return newProjectHandle;
-        } else {
-            try {
-                newProjectHandle.delete(false, true, null);
-            } catch (CoreException e) {
-                e.printStackTrace();
+        if (newProjectHandle.getRawLocation() != null) {
+            if (newProjectHandle.getRawLocation().equals(directroy)) {
+                return newProjectHandle;
+            } else {
+                try {
+                    newProjectHandle.delete(false, true, null);
+                } catch (CoreException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
