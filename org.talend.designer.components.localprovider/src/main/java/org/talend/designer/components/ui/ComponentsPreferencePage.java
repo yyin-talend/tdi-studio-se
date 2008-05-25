@@ -12,8 +12,10 @@
 // ============================================================================
 package org.talend.designer.components.ui;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.talend.designer.components.ComponentsLocalProviderPlugin;
@@ -43,9 +45,27 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
     }
 
     public void createFieldEditors() {
-        DirectoryFieldEditor filePathTemp = new DirectoryFieldEditor(USER_COMPONENTS_FOLDER, Messages.getString("ComponentsPreferencePage.directoryFieldLabel"), //$NON-NLS-1$
+        DirectoryFieldEditor filePathTemp = new DirectoryFieldEditor(USER_COMPONENTS_FOLDER, Messages
+                .getString("ComponentsPreferencePage.directoryFieldLabel"), //$NON-NLS-1$
                 getFieldEditorParent());
         addField(filePathTemp);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.preference.FieldEditorPreferencePage#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
+     */
+    public void propertyChange(PropertyChangeEvent event) {
+
+        super.propertyChange(event);
+
+        MessageDialog warningMessageDialog = new MessageDialog(getFieldEditorParent().getShell(), Messages
+                .getString("ComponentsPreferencePage.WarningTitle"), null, //$NON-NLS-1$
+                Messages.getString("ComponentsPreferencePage.WarningMsg"), MessageDialog.WARNING, //$NON-NLS-1$
+                new String[] { Messages.getString("ComponentsPreferencePage.ButtonLabel0") }, 0); //$NON-NLS-1$
+        warningMessageDialog.open();
+
     }
 
     public void init(IWorkbench workbench) {
