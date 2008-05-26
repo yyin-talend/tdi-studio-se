@@ -62,11 +62,19 @@
       <DEFAULT>true</DEFAULT>
     </PARAMETER>
 
+ 	<PARAMETER
+      NAME="INCLUDE_PRESENT"
+      FIELD="CHECK"
+      NUM_ROW="6"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
     <PARAMETER
       NAME="ACTION_ON"
       FIELD="CLOSED_LIST"
       REQUIRED="true"
-      NUM_ROW="6"
+      NUM_ROW="7"
     >
       <ITEMS DEFAULT="filecreated">
         <ITEM NAME="FILE_NEW" VALUE="filecreated" />
@@ -78,7 +86,7 @@
       NAME="THEN"
       FIELD="CLOSED_LIST"
       REQUIRED="true"
-      NUM_ROW="7"
+      NUM_ROW="8"
     >
       <ITEMS DEFAULT="continue">
         <ITEM NAME="CONTINUE" VALUE="continue" />
