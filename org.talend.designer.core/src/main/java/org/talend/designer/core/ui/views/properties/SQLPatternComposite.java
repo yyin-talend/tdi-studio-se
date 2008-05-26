@@ -92,15 +92,11 @@ import org.talend.repository.model.RepositoryConstants;
  */
 public class SQLPatternComposite extends ScrolledComposite implements IDynamicProperty, IResourceChangeListener {
 
-    private static final String SEPARATOR = ":";
-
-    // private static final String CODE_PROPERTY = "codeProperty";
+    public static final String ID_SEPARATOR = "--";
 
     private static final String NAME_PROPERTY = "nameProperty";
 
     private static final int ADD_COLUMN = 0;
-
-    private static final int CODE_COLUMN = 1;
 
     private List<SQLPatternInfor> comboContent;
 
@@ -164,12 +160,6 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
         columnName.setResizable(true);
         columnName.setMoveable(true);
 
-        // TableColumn columnCode = new TableColumn(table, SWT.NONE, CODE_COLUMN);
-        // columnCode.setText("Code");
-        // columnCode.setWidth(200);
-        // columnCode.setResizable(true);
-        // columnCode.setMoveable(true);
-
         Image addImage = ImageProvider.getImage(EImage.ADD_ICON);
         Image removeImage = ImageProvider.getImage(EImage.DELETE_ICON);
 
@@ -226,19 +216,20 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
                 if (property.equals(NAME_PROPERTY)) {
                     Map map = (Map) element;
                     String id = (String) map.get(EmfComponent.SQLPATTERNLIST);
+                    id = id.split(ID_SEPARATOR)[0];
                     List<IRepositoryObject> list = ProcessorUtilities.getAllVersionObjectById(id);
 
                     String label = ProcessorUtilities.getAllVersionObjectById(id).get(0).getLabel();
                     refreshComboContent(tableViewer);
                     SQLPatternInfor infor = null;
                     for (SQLPatternInfor sqlPatternInfor : comboContent) {
-                        if (sqlPatternInfor.getId().equals(id)) {
+                        if (sqlPatternInfor.getCompoundId().equals(id)) {
                             infor = sqlPatternInfor;
                             break;
                         }
                     }
                     if (infor == null) {
-                        infor = new SQLPatternInfor(id, label);
+                        infor = new SQLPatternInfor(id + ID_SEPARATOR + label, label);
                     }
                     comboContent.add(infor);
                     dynamicComboBoxCellEditor.refresh();
@@ -260,10 +251,10 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
                         Map map = (Map) item.getData();
 
                         SQLPatternInfor sqlPatternInfor = (SQLPatternInfor) value;
-                        if (map.get(EmfComponent.SQLPATTERNLIST).equals(sqlPatternInfor.getId())) {
+                        if (map.get(EmfComponent.SQLPATTERNLIST).equals(sqlPatternInfor.getCompoundId())) {
                             return;
                         }
-                        map.put(EmfComponent.SQLPATTERNLIST, sqlPatternInfor.getId());
+                        map.put(EmfComponent.SQLPATTERNLIST, sqlPatternInfor.getCompoundId());
                         executeCommand(new Command() {
                         });
                         refreshComboContent(tableViewer);
@@ -279,15 +270,11 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
         tableViewer.setInput(tableContent);
 
         refreshComboContent(tableViewer);
-        // dynamicComboBoxCellEditor = new DynamicComboBoxCellEditor(table, comboContent,
-        // comboboxCellEditorLabelProvider);
+
         dynamicComboBoxCellEditor = new DynamicComboBoxCellEditor(table, comboContent, comboboxCellEditorLabelProvider);
         tableViewer.setCellEditors(new CellEditor[] { dynamicComboBoxCellEditor });
         tableViewer.setColumnProperties(new String[] { NAME_PROPERTY });
         addSelectionChangeListener(tableViewer);
-        // if (tableContent.size() == legalParameters.size()) {
-        // buttonAdd.setEnabled(false);
-        // }
 
         buttonAdd.addSelectionListener(new SelectionAdapter() {
 
@@ -296,14 +283,11 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
                     List<Map> tableInput = (List<Map>) tableViewer.getInput();
                     SQLPatternInfor sqlPatternInfor = comboContent.get(0);
                     Map map = new HashMap();
-                    map.put(EmfComponent.SQLPATTERNLIST, sqlPatternInfor.getId());
+                    map.put(EmfComponent.SQLPATTERNLIST, sqlPatternInfor.getCompoundId());
                     tableInput.add(map);
 
                     refreshComboContent(tableViewer);
 
-                    // if (comboContent.size() == 0) {
-                    // buttonAdd.setEnabled(false);
-                    // }
                     tableViewer.refresh();
                     if (!buttonRemove.isEnabled()) {
                         buttonRemove.setEnabled(true);
@@ -315,9 +299,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
             }
 
         });
-        // if (tableContent.size() == 0) {
-        // buttonRemove.setEnabled(false);
-        // }
+
         buttonRemove.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent e) {
@@ -570,69 +552,6 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
 
         });
 
-        // codeText.addKeyListener(new KeyListener() {
-        //
-        // public void keyReleased(KeyEvent e) {
-        //
-        // TableItem item = tableViewer.getTable().getSelection()[0];
-        // if (item == null || item.getText() == null) {
-        // return;
-        // }
-        // String sqlpatternName = item.getText();
-        // SQLPatternItem patternItem = getSQLPatternItem(sqlpatternName);
-        // if (patternItem.isSystem()) {
-        // return;
-        // }
-        // boolean answer = MessageDialog.openQuestion(getShell(), "Talend Open Studio",
-        // "Do you want to modify this sql pattern? ");
-        //
-        // if (!answer) {
-        // return;
-        // }
-        //
-        // IRepositoryService repositoryService = (IRepositoryService) GlobalServiceRegister.getDefault().getService(
-        // IRepositoryService.class);
-        //
-        // repositoryService.openSQLPatternEditor(patternItem, false);
-        //
-        // }
-        //
-        // public void keyPressed(KeyEvent e) {
-        // // do nothing;
-        //
-        // }
-        //
-        // });
-
-        // codeText.addModifyListener(new ModifyListener() {
-        //
-        // public void modifyText(ModifyEvent e) {
-        //
-        // TableItem item = tableViewer.getTable().getSelection()[0];
-        // if (item == null || item.getText() == null) {
-        // return;
-        // }
-        // String sqlpatternName = item.getText();
-        // SQLPatternItem patternItem = getSQLPatternItem(sqlpatternName);
-        // if (patternItem.isSystem()) {
-        // return;
-        // }
-        // boolean answer = MessageDialog.openQuestion(getShell(), "Talend Open Studio",
-        // "Do you want to modify this sql pattern? ");
-        //
-        // if (!answer) {
-        // return;
-        // }
-        //
-        // IRepositoryService repositoryService = (IRepositoryService) GlobalServiceRegister.getDefault().getService(
-        // IRepositoryService.class);
-        //
-        // repositoryService.openSQLPatternEditor(patternItem, false);
-        //
-        // }
-        //
-        // });
-
     }
 
     /**
@@ -736,7 +655,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
                     String id = (String) map.get(EmfComponent.SQLPATTERNLIST);
                     SQLPatternInfor unusedSqlPatternInfor = null;
                     for (SQLPatternInfor patternInfor : content) {
-                        if (patternInfor.getId().equals(id)) {
+                        if (patternInfor.getCompoundId().equals(id)) {
                             unusedSqlPatternInfor = patternInfor;
                             break;
                         }
@@ -772,7 +691,8 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
             for (IRepositoryObject repositoryObject : list) {
                 SQLPatternItem item = (SQLPatternItem) repositoryObject.getProperty().getItem();
                 if (item.getEltName().equals(dbName)) {
-                    patternInfor.add(new SQLPatternInfor(item.getProperty().getId(), item.getProperty().getLabel()));
+                    patternInfor.add(new SQLPatternInfor(item.getProperty().getId() + ID_SEPARATOR
+                            + item.getProperty().getLabel(), item.getProperty().getLabel()));
                 }
             }
         } catch (Exception e) {
@@ -856,8 +776,18 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
         public String getText(Object element) {
             if (element instanceof Map) {
                 Map ep = (Map) element;
-                List<IRepositoryObject> repositoryObject = ProcessorUtilities.getAllVersionObjectById((String) ep
-                        .get(EmfComponent.SQLPATTERNLIST));
+                String compoundId = (String) ep.get(EmfComponent.SQLPATTERNLIST);
+                String id = compoundId.split(ID_SEPARATOR)[0];
+
+                List<IRepositoryObject> repositoryObject = ProcessorUtilities.getAllVersionObjectById(id);
+                String name = compoundId.split(ID_SEPARATOR)[1];
+                if (repositoryObject == null) {
+                    SQLPatternItem item = getSQLPatternItem(name);
+                    ep
+                            .put(EmfComponent.SQLPATTERNLIST, item.getProperty().getId() + ID_SEPARATOR
+                                    + item.getProperty().getLabel());
+                    return item.getProperty().getLabel();
+                }
                 return repositoryObject.get(0).getLabel();
             }
             return null;
@@ -1074,6 +1004,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
                 String id = null;
                 if (object instanceof String) {
                     id = (String) object;
+                    id = id.split(ID_SEPARATOR)[0];
                 } else {
                     TableItem item = tableViewer.getTable().getSelection()[0];
                     id = item.getText();
@@ -1107,11 +1038,13 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
 
         private String id;
 
+        private String compoundId;
+
         /**
          * yzhang SQLPatternComposite.SQLPatternInfor constructor comment.
          */
         public SQLPatternInfor(String id, String label) {
-            this.id = id;
+            this.compoundId = id;
             this.label = label;
         }
 
@@ -1134,21 +1067,21 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
         }
 
         /**
-         * Getter for id.
-         * 
-         * @return the id
-         */
-        public String getId() {
-            return this.id;
-        }
-
-        /**
          * Sets the id.
          * 
          * @param id the id to set
          */
         public void setId(String id) {
             this.id = id;
+        }
+
+        /**
+         * yzhang Comment method "getCompoundId".
+         * 
+         * @return
+         */
+        public String getCompoundId() {
+            return compoundId;
         }
 
     }

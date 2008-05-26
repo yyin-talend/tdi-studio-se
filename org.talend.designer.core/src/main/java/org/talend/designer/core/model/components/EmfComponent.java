@@ -94,6 +94,7 @@ import org.talend.designer.core.model.utils.emf.component.TEMPLATESType;
 import org.talend.designer.core.model.utils.emf.component.TEMPLATEType;
 import org.talend.designer.core.model.utils.emf.component.impl.PLUGINDEPENDENCYTypeImpl;
 import org.talend.designer.core.model.utils.emf.component.util.ComponentResourceFactoryImpl;
+import org.talend.designer.core.ui.views.properties.SQLPatternComposite;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ExternalNodesFactory;
@@ -428,8 +429,11 @@ public class EmfComponent implements IComponent {
             SQLPATTERNType pattern = (SQLPATTERNType) iterator.next();
             Map map = new HashMap();
             SQLPatternItem sqlItem = getSQLPatternItem(pattern.getNAME(), patterns.getDB());
-
-            map.put(SQLPATTERNLIST, sqlItem.getProperty().getId());
+            if (sqlItem == null) {
+                continue;
+            }
+            map.put(SQLPATTERNLIST, sqlItem.getProperty().getId() + SQLPatternComposite.ID_SEPARATOR
+                    + sqlItem.getProperty().getLabel());
             patternNames.add(pattern.getNAME());
             value.add(map);
         }
