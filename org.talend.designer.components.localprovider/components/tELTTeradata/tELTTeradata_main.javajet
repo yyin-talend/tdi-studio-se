@@ -17,7 +17,7 @@ INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
 List<Map<String, Object>> list = (List<Map<String, Object>>) ElementParameterParser.getObjectValue(node,
-                        "SQLPATTERN_CODE");
+                        "SQLPATTERN_VALUE");
 
 
 for(Map<String, Object> map : list){
