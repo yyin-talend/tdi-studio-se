@@ -178,19 +178,25 @@ public class DatabaseForm extends AbstractForm {
         stringQuoteText.setText(getConnection().getStringQuote());
         nullCharText.setText(getConnection().getNullChar());
         directoryField.setText(getConnection().getDBRootPath());
-        if (getConnection().isStandardSQL() == getConnection().isSystemSQL()) {
-            boolean b = CorePlugin.getDefault().getPreferenceStore().getBoolean(ITalendCorePrefConstants.AS400_SQL_SEG);
-            standardButton.setSelection(b);
-            systemButton.setSelection(!b);
-        } else {
-            standardButton.setSelection(getConnection().isStandardSQL());
-            systemButton.setSelection(getConnection().isSystemSQL());
-        }
 
+        checkAS400SpecificCase();
         // PTODO !StandBy! (use width SQL Editor): to define the values of SQL Syntax (need by SQL Editor)
         getConnection().setSqlSynthax(Messages.getString("DatabaseForm.sqlSyntax")); //$NON-NLS-1$
         sqlSyntaxCombo.select(getSqlSyntaxIndex(getConnection().getSqlSynthax()));
         updateStatus(IStatus.OK, ""); //$NON-NLS-1$
+    }
+
+    private void checkAS400SpecificCase() {
+        if (getConnection().isStandardSQL() == getConnection().isSystemSQL()) { // create connection
+            boolean b = CorePlugin.getDefault().getPreferenceStore().getBoolean(ITalendCorePrefConstants.AS400_SQL_SEG);
+            standardButton.setSelection(b);
+            systemButton.setSelection(!b);
+            getConnection().setStandardSQL(b);
+            getConnection().setSystemSQL(!b);
+        } else {
+            standardButton.setSelection(getConnection().isStandardSQL());
+            systemButton.setSelection(getConnection().isSystemSQL());
+        }
     }
 
     /**
@@ -706,6 +712,7 @@ public class DatabaseForm extends AbstractForm {
                     if (dbTypeCombo.getSelectionIndex() == 16) {
                         additionParamText.setText(DataStringConnection.as400DefaultValue);
                     }
+                    checkAS400SpecificCase();
                     checkFieldsValue();
                 }
             }
