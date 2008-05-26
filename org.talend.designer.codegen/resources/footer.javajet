@@ -247,10 +247,27 @@
 		<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>.addMessage("begin");			
 <%
     	}
+    	
+    INode prejob = null;
+    INode postjob = null; //it will be assign value in  isRunInMultiThread part    	
 
 	if(isRunInMultiThread){
 		for (INode rootNode : rootNodes) {
 			String componentName = (String) rootNode.getComponent().getName();
+			
+        if (componentName.equals("tPrejob")) {
+%>
+		<%=createCallProcess(rootNode, process.getName(), false) %>
+<%
+            continue;
+        }
+    
+    	//hold the tPostjob, process it at the last iterate
+        if (componentName.equals("tPostjob")) {        	
+            postjob = rootNode;
+            continue;
+        }
+			
             if (!componentName.equals("tLogCatcher") && !componentName.equals("tFlowMeterCatcher") && !componentName.equals("tAssertCatcher") && !componentName.equals("tStatCatcher")) {
 %>
 		runningThreadCount.add(1);
@@ -300,6 +317,14 @@
 <%	  }
 	}
 }// end if(isRunInMultiThread)
+%>
+
+<%
+ if(postjob != null){
+%>
+<%=createCallProcess(postjob, process.getName(), false) %>
+<% 
+ }
 %>	
 		end = System.currentTimeMillis();
 		
