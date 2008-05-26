@@ -98,8 +98,15 @@
 <%
  } 
 %>                
-
                 boolean found_<%=cid %> = false;
+                
+			if( count_<%=cid %> < originalFiles_<%=cid %>.size()){
+                java.io.File file_<%=cid %> = originalFiles_<%=cid %>.get(count_<%=cid %>);
+                globalMap.put("<%=cid %>_PRESENT_FILE", file_<%=cid %>.getAbsolutePath());
+                found_<%=cid %> = true;
+			}else{
+                
+                
                 java.util.List<java.io.File> fetchFilesOneTime_<%=cid %> = util_<%=cid %>.getFiles();
 <%
   if(ElementParameterParser.getValue(node, "__ACTION_ON__").equals("filedeleted")){
@@ -124,6 +131,7 @@
                         break;
                     }
                 }
+			}
 
                 count_<%=cid %>++;
                 
