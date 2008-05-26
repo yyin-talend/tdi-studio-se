@@ -563,7 +563,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
 
     public List<BlockCode> getBlocksCodeToClose() {
         if (generationManager == null) {
-            throw new IllegalStateException("generationManager is not initialized by the javajet !");
+            throw new IllegalStateException("generationManager is not initialized by the perljet/javajet!");
         }
         return this.generationManager.getBlocksCodeToClose();
     }
