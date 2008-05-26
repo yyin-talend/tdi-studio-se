@@ -84,6 +84,32 @@ for(Map<String, Object> map : list){
                 jetScriptStarted = true;
                 line = line.substring(2).trim();
             }
+            
+            // replace all "__XXX__" with real param value.
+            if (jetScriptStarted) {
+                StringBuilder lineBuilder = new StringBuilder(line);
+                position = 0;
+                position = lineBuilder.indexOf("__", position) + 2;
+                while (position > 0 && position < lineBuilder.length()) {
+                    int indexOfEnd__ = lineBuilder.indexOf("__", position);
+                    if ((indexOfEnd__ > 0) && ((indexOfEnd__ + 2) < lineBuilder.length())) {
+                        String paramName = lineBuilder.substring(position, indexOfEnd__);
+                        if (paramName.matches("[0-9A-Z\\-_]+")) { // all components' parameter name should match "[0-9A-Z\\-_]+"
+                            String realValue = ElementParameterParser.getValue(node, "__" + paramName + "__"); // get the param value
+                            int formerLength = paramName.length() + 4;
+                            int newLength = realValue.length();
+                            lineBuilder.replace(position - 2, indexOfEnd__ + 2, realValue);
+                            position = (indexOfEnd__ + 2) + (newLength - formerLength);
+                            position = lineBuilder.indexOf("__", position) + 2;
+                        } else {
+                            position = indexOfEnd__ + 2;
+                        }
+                    } else {
+                        break;
+                    }
+                }
+                line = lineBuilder.toString();
+            }
 
             if (jetScriptStarted) {
                 int endTag = -1;
@@ -143,7 +169,7 @@ for(Map<String, Object> map : list){
                     position = index + 2;
                 }
                 // System.out.println("4");
-                lineBuilder.toString();
+                //lineBuilder.toString();
 
                 // Caution: here, we assume all the assign script("< %=value % >") always doesn't span more than one
                 // lines; or it may generate error code.
@@ -156,6 +182,42 @@ for(Map<String, Object> map : list){
                         break;
                     }
                     if ((index > 0) && (lineBuilder.charAt(index - 1) == '<')) {
+                    
+                    // replace all "__XXX__" with real param value.
+                        int position2 = index + 2;
+
+                        if ((position2 > 0 && position2 < lineBuilder.length())) {
+                            position2 = lineBuilder.indexOf("__", position2) + 2;
+                            while (position2 > 0) {
+                                int end = lineBuilder.indexOf("%", position2);
+                                if ((end < 0 || (end + 1 >= lineBuilder.length()) || (lineBuilder.charAt(end + 1) != '>'))) {
+                                    break;
+                                }
+
+                                if (position2 >= end) {
+                                    break;
+                                }
+
+                                int indexOfEnd__ = lineBuilder.indexOf("__", position2);
+
+                                if ((indexOfEnd__ > 0) && ((indexOfEnd__ + 2) <= end)) {
+                                    String paramName = lineBuilder.substring(position2, indexOfEnd__);
+                                    if (paramName.matches("[0-9A-Z\\-_]+")) { // all components' parameter name should match "[0-9A-Z\\-_]+"
+                                        String realValue = ElementParameterParser.getValue(node, "__" + paramName + "__"); // get the param value
+                                        int formerLength = paramName.length() + 4;
+                                        int newLength = realValue.length();
+                                        lineBuilder.replace(position2 - 2, indexOfEnd__ + 2, realValue);
+                                        position2 = (indexOfEnd__ + 2) + (newLength - formerLength);
+                                        position2 = lineBuilder.indexOf("__", position2) + 2;
+                                    } else {
+                                        position2 = indexOfEnd__ + 2;
+                                    }
+                                } else {
+                                    break;
+                                }
+                            }
+                        }
+                    
                         // matchs
                         lineBuilder.replace(index - 1, index + 2, "\" + ");
                         position = index + 3;
