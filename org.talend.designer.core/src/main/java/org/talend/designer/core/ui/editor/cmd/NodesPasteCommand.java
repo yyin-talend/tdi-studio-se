@@ -513,6 +513,9 @@ public class NodesPasteCommand extends Command {
                     }
 
                     // (feature 2962)
+                    if(pastedConnection.getMetadataTable()==null){
+                        continue;
+                    }
                     for (IMetadataColumn column : pastedConnection.getMetadataTable().getListColumns()) {
                         String oldConnVar = connection.getName() + "." + column.getLabel(); //$NON-NLS-1$
                         String newConnVar = newConnectionName + "." + column.getLabel(); //$NON-NLS-1$
