@@ -95,7 +95,7 @@ if (metadata != null && inputRowName != null) {
     my $<%=cid%> = [ @$<%=inputRowName%> ];
 
     $<%=cid%>->[<%=outputColumnIndex%>] = $gi_<%=cid%>-><%=subName%>(
-        $<%=inputRowName%>->[inputColumnIndex]
+        $<%=inputRowName%>->[<%=inputColumnIndex%>]
     );
 
 <%
