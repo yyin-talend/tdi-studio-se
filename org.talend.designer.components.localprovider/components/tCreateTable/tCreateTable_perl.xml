@@ -95,7 +95,22 @@
     </PARAMETER>
   </PARAMETERS>
 
-  <CODEGENERATION/>
+  <CODEGENERATION>
+    <IMPORTS>
+      <IMPORT
+        NAME="MysqlOutput"
+        MODULE="tMysqlOutput::Mysql"
+        REQUIRED="true"
+      />
+
+      <IMPORT
+        NAME="PostgresqlOutput"
+        MODULE="tPostgresqlOutput::Postgresql"
+        REQUIRED="true"
+      />
+    </IMPORTS>
+  </CODEGENERATION>
+
    
   <RETURNS>
     <RETURN NAME="QUERY" TYPE="STRING" AVAILABILITY="AFTER"/>
