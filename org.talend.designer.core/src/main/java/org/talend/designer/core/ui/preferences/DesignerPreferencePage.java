@@ -105,7 +105,7 @@ public class DesignerPreferencePage extends FieldEditorPreferencePage implements
 
         BooleanFieldEditor antialiasing;
         antialiasing = new BooleanFieldEditor(TalendDesignerPrefConstants.EDITOR_ANTIALIASING,
-                "enhanced using antialiasing and interpolation in the Job Designer", getFieldEditorParent()); //$NON-NLS-1$
+                "Use antialiasing and interpolation in the Job Designer", getFieldEditorParent()); //$NON-NLS-1$
         addField(antialiasing);
 
         DirectoryFieldEditor compDefaultFileDir = new DirectoryFieldEditor(TalendDesignerPrefConstants.COMP_DEFAULT_FILE_DIR,
@@ -133,10 +133,11 @@ public class DesignerPreferencePage extends FieldEditorPreferencePage implements
         addField(viewOptions);
 
         BooleanFieldEditor viewSubjobs = new BooleanFieldEditor(TalendDesignerPrefConstants.DISPLAY_SUBJOBS,
-                "Display subjobs in the design of the jobs", getFieldEditorParent());
+                "Highlight subjobs in the job designs", getFieldEditorParent());
         addField(viewSubjobs);
         BooleanFieldEditor generateCodeWhenOpenJob = new BooleanFieldEditor(
-                TalendDesignerPrefConstants.GENERATE_CODE_WHEN_OPEN_JOB, "Generate Code when open job", getFieldEditorParent());
+                TalendDesignerPrefConstants.GENERATE_CODE_WHEN_OPEN_JOB, "Generate code when opening the job",
+                getFieldEditorParent());
         addField(generateCodeWhenOpenJob);
 
         // When updating jobs or joblets, check only the last version, and checked by default
