@@ -29,7 +29,6 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.core.language.ECodeLanguage;
-import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.editor.MetadataTableEditor;
@@ -48,7 +47,6 @@ import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.mapper.Activator;
-import org.talend.designer.mapper.IAdvancedMap;
 import org.talend.designer.mapper.MapperComponent;
 import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.language.LanguageProvider;
@@ -261,21 +259,18 @@ public class MapperManager extends AbstractMapperManager {
         } else if (currentLink.getPointLinkDescriptor2().getTableEntry() == entryCauseOfChange) {
             sourceIsCauseOfChange = false;
         } else {
-            throw new IllegalArgumentException(Messages
-                    .getString("MapperManager.exceptionMessage.mustBeSourceOrTarget")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("MapperManager.exceptionMessage.mustBeSourceOrTarget")); //$NON-NLS-1$
         }
 
         if (sourceIsCauseOfChange) {
             Set<IMapperLink> dependentLinks = linkManager.getLinksFromSource(entryCauseOfChange);
             for (IMapperLink dependentLink : dependentLinks) {
-                changeDependentEntriesState(currentLink, dependentLink.getPointLinkDescriptor2().getTableEntry(),
-                        removedLink);
+                changeDependentEntriesState(currentLink, dependentLink.getPointLinkDescriptor2().getTableEntry(), removedLink);
             }
         } else {
             Set<IMapperLink> dependentLinks = linkManager.getLinksFromTarget(entryCauseOfChange);
             for (IMapperLink dependentLink : dependentLinks) {
-                changeDependentEntriesState(currentLink, dependentLink.getPointLinkDescriptor1().getTableEntry(),
-                        removedLink);
+                changeDependentEntriesState(currentLink, dependentLink.getPointLinkDescriptor1().getTableEntry(), removedLink);
             }
         }
         changeDependentEntriesState(currentLink, entryCauseOfChange, removedLink);
@@ -424,8 +419,7 @@ public class MapperManager extends AbstractMapperManager {
      * @param metadataColumn, can be null if added in VarsTable
      * @param index
      */
-    public IColumnEntry addNewColumnEntry(DataMapTableView dataMapTableView, IMetadataColumn metadataColumn,
-            Integer index) {
+    public IColumnEntry addNewColumnEntry(DataMapTableView dataMapTableView, IMetadataColumn metadataColumn, Integer index) {
         IDataMapTable abstractDataMapTable = dataMapTableView.getDataMapTable();
         IColumnEntry dataMapTableEntry = null;
         if (dataMapTableView.getZone() == Zone.INPUTS) {
@@ -472,8 +466,8 @@ public class MapperManager extends AbstractMapperManager {
      * @param dataMapTableEntry
      * @param index
      */
-    public void addMetadataTableEditorEntry(MetadataTableEditorView metadataTableEditorView,
-            IMetadataColumn metadataColumn, Integer index) {
+    public void addMetadataTableEditorEntry(MetadataTableEditorView metadataTableEditorView, IMetadataColumn metadataColumn,
+            Integer index) {
         MetadataTableEditor metadataTableEditor = metadataTableEditorView.getMetadataTableEditor();
         metadataTableEditor.add(metadataColumn, index);
     }
@@ -656,13 +650,23 @@ public class MapperManager extends AbstractMapperManager {
         }
 
         List<? extends IElementParameter> elementParameters = getAbstractMapComponent().getElementParameters();
+        boolean needUpdateComponent = false;
         for (IElementParameter parameter : elementParameters) {
+
             if (hParametersToUpdate.contains(parameter.getName())) {
                 // set preview path to PREVIEW parameter
                 if (EParameterName.PREVIEW.getName().equals(parameter.getName())) {
                     String previewFileName = getPreviewFileName();
                     parameter.setValue(previewFileName == null ? "" : previewFileName); //$NON-NLS-1$
+                    needUpdateComponent = true;
                 }
+            }
+        }
+
+        // Updates the preview picture.
+        for (IElementParameter elementParameter : elementParameters) {
+            if (needUpdateComponent && EParameterName.UPDATE_COMPONENTS.getName().equals(elementParameter.getName())) {
+                elementParameter.setValue(new Boolean(true));
             }
         }
     }
@@ -673,14 +677,13 @@ public class MapperManager extends AbstractMapperManager {
     public void replacePreviousLocationInAllExpressions(final TableEntryLocation previousLocation,
             final TableEntryLocation newLocation) {
 
-        DataMapExpressionParser dataMapExpressionParser = new DataMapExpressionParser(LanguageProvider
-                .getCurrentLanguage());
+        DataMapExpressionParser dataMapExpressionParser = new DataMapExpressionParser(LanguageProvider.getCurrentLanguage());
         Collection<IDataMapTable> tablesData = getTablesData();
         for (IDataMapTable table : tablesData) {
             List<IColumnEntry> columnEntries = table.getColumnEntries();
             if (table instanceof AbstractInOutTable) {
-                replaceLocation(previousLocation, newLocation, dataMapExpressionParser, table,
-                        ((AbstractInOutTable) table).getExpressionFilter());
+                replaceLocation(previousLocation, newLocation, dataMapExpressionParser, table, ((AbstractInOutTable) table)
+                        .getExpressionFilter());
             }
             for (IColumnEntry entry : columnEntries) {
                 replaceLocation(previousLocation, newLocation, dataMapExpressionParser, table, entry);
@@ -719,8 +722,7 @@ public class MapperManager extends AbstractMapperManager {
         for (int i = 0; i < tableEntryLocations.length; i++) {
             TableEntryLocation currentLocation = tableEntryLocations[i];
             if (currentLocation.equals(previousLocation)) {
-                currentExpression = dataMapExpressionParser.replaceLocation(currentExpression, previousLocation,
-                        newLocation);
+                currentExpression = dataMapExpressionParser.replaceLocation(currentExpression, previousLocation, newLocation);
                 expressionHasChanged = true;
             }
         }
@@ -816,8 +818,7 @@ public class MapperManager extends AbstractMapperManager {
      * @return
      */
     public String buildProblemKey(PROBLEM_KEY_FIELD problemKeyField, String tableName, String entryName) {
-        return problemsManager.buildProblemKey(getAbstractMapComponent().getUniqueName(), problemKeyField, tableName,
-                entryName);
+        return problemsManager.buildProblemKey(getAbstractMapComponent().getUniqueName(), problemKeyField, tableName, entryName);
     }
 
     /**
@@ -893,12 +894,10 @@ public class MapperManager extends AbstractMapperManager {
     public boolean isPersistentMap() {
         return LanguageProvider.getCurrentLanguage().getCodeLanguage() == ECodeLanguage.JAVA;
     }
-    
+
     public boolean isCheckSyntaxEnabled() {
         IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
         return preferenceStore.getBoolean(TalendDesignerPrefConstants.PROPERTY_CODE_CHECK);
     }
-    
-    
 
 }
