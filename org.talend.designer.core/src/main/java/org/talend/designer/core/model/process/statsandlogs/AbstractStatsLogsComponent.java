@@ -416,4 +416,8 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
         return false;
     }
 
+    public boolean isSingleton() {
+        return false;
+    }
+
 }

@@ -453,4 +453,8 @@ public class JobContextLoadComponent implements IComponent {
     public boolean isVisibleInComponentDefinition() {
         return false;
     }
+    
+    public boolean isSingleton() {
+        return false;
+    }
 }

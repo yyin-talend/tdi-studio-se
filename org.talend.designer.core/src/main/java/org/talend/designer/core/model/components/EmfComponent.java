@@ -2228,4 +2228,13 @@ public class EmfComponent implements IComponent {
     public boolean isTechnical() {
         return compType.getHEADER().isTECHNICAL();
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#isSingleton()
+     */
+    public boolean isSingleton() {
+        return compType.getHEADER().isSINGLETON();
+    }
 }

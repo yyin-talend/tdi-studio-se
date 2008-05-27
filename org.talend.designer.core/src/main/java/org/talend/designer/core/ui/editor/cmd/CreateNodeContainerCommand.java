@@ -15,6 +15,7 @@ package org.talend.designer.core.ui.editor.cmd;
 import java.util.List;
 
 import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.update.EUpdateItemType;
 import org.talend.designer.core.i18n.Messages;
@@ -53,7 +54,14 @@ public class CreateNodeContainerCommand extends CreateCommand {
             if ((currentNode.getLocation().x == location.x) && (currentNode.getLocation().y == location.y)) {
                 return false;
             }
+            // check if the component is sigleton
+            // see bug 3903
+            if (currentNode.getComponent() == nodeContainer.getNode().getComponent()
+                    && nodeContainer.getNode().getComponent().isSingleton()) {
+                return false;
+            }
         }
+
         AbstractProcessProvider provider = AbstractProcessProvider.findProcessProviderFromPID(nodeContainer.getNode()
                 .getComponent().getPluginFullName());
         if (provider != null) {
