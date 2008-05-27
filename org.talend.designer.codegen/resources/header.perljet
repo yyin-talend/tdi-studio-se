@@ -241,6 +241,16 @@ sub global_die_catcher {
     }
 
 <%
+    // there should be 0 or 1 tPostJob
+    for (INode postjob : process.getNodesOfType("tPostjob")) {
+%>
+    <%=postjob.getUniqueName()%>_subprocess();
+<%
+    }
+%>
+
+
+<%
     for (INode statCatcher : process.getNodesOfType("tStatCatcher")) {
 %>
     $_globals{stop} = [gettimeofday];
