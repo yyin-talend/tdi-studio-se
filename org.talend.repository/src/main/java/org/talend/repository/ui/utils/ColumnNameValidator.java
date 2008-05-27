@@ -12,6 +12,10 @@
 // ============================================================================
 package org.talend.repository.ui.utils;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+
 import org.apache.oro.text.regex.MalformedPatternException;
 import org.apache.oro.text.regex.PatternCompiler;
 import org.apache.oro.text.regex.Perl5Compiler;
@@ -36,9 +40,18 @@ public class ColumnNameValidator {
     public static String validateColumnNameFormat(String columnName, int index) {
         org.apache.oro.text.regex.Pattern validPatternColumnNameRegexp = null;
         PatternCompiler compiler = new Perl5Compiler();
-
+        try {
+            Pattern regex = Pattern.compile("^[0-9]", Pattern.CANON_EQ);
+            Matcher regexMatcher = regex.matcher(columnName);
+            if (regexMatcher.find()) {
+                columnName = "_" + columnName;// TODO
+            }
+        } catch (PatternSyntaxException ex) {
+            throw new RuntimeException(ex);//  
+        }
         if (validPatternColumnNameRegexp == null) {
             try {
+
                 validPatternColumnNameRegexp = compiler.compile(VALIDATE_PATTERN_COLUMN_NAME);
             } catch (MalformedPatternException e) {
                 throw new RuntimeException(e);
