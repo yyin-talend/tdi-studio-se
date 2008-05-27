@@ -76,6 +76,7 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.utils.SQLPatternUtils;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -91,8 +92,6 @@ import org.talend.repository.model.RepositoryConstants;
  * bqian class global comment. Detailled comment
  */
 public class SQLPatternComposite extends ScrolledComposite implements IDynamicProperty, IResourceChangeListener {
-
-    public static final String ID_SEPARATOR = "--";
 
     private static final String NAME_PROPERTY = "nameProperty";
 
@@ -216,7 +215,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
                 if (property.equals(NAME_PROPERTY)) {
                     Map map = (Map) element;
                     String id = (String) map.get(EmfComponent.SQLPATTERNLIST);
-                    id = id.split(ID_SEPARATOR)[0];
+                    id = id.split(SQLPatternUtils.ID_SEPARATOR)[0];
                     List<IRepositoryObject> list = ProcessorUtilities.getAllVersionObjectById(id);
 
                     String label = ProcessorUtilities.getAllVersionObjectById(id).get(0).getLabel();
@@ -229,7 +228,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
                         }
                     }
                     if (infor == null) {
-                        infor = new SQLPatternInfor(id + ID_SEPARATOR + label, label);
+                        infor = new SQLPatternInfor(id + SQLPatternUtils.ID_SEPARATOR + label, label);
                     }
                     comboContent.add(infor);
                     dynamicComboBoxCellEditor.refresh();
@@ -596,10 +595,10 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
             List<Map> unusedValues = new ArrayList<Map>();
             for (Map map : values) {
                 String compoundId = (String) map.get(EmfComponent.SQLPATTERNLIST);
-                String id = compoundId.split(ID_SEPARATOR)[0];
+                String id = compoundId.split(SQLPatternUtils.ID_SEPARATOR)[0];
 
                 List<IRepositoryObject> repositoryObject = ProcessorUtilities.getAllVersionObjectById(id);
-                String name = compoundId.split(ID_SEPARATOR)[1];
+                String name = compoundId.split(SQLPatternUtils.ID_SEPARATOR)[1];
 
                 SQLPatternItem item = null;
                 if (repositoryObject == null && (item = getSQLPatternItem(name)) == null) {
@@ -713,7 +712,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
             for (IRepositoryObject repositoryObject : list) {
                 SQLPatternItem item = (SQLPatternItem) repositoryObject.getProperty().getItem();
                 if (item.getEltName().equals(dbName)) {
-                    patternInfor.add(new SQLPatternInfor(item.getProperty().getId() + ID_SEPARATOR
+                    patternInfor.add(new SQLPatternInfor(item.getProperty().getId() + SQLPatternUtils.ID_SEPARATOR
                             + item.getProperty().getLabel(), item.getProperty().getLabel()));
                 }
             }
@@ -799,15 +798,14 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
             if (element instanceof Map) {
                 Map ep = (Map) element;
                 String compoundId = (String) ep.get(EmfComponent.SQLPATTERNLIST);
-                String id = compoundId.split(ID_SEPARATOR)[0];
+                String id = compoundId.split(SQLPatternUtils.ID_SEPARATOR)[0];
 
                 List<IRepositoryObject> repositoryObject = ProcessorUtilities.getAllVersionObjectById(id);
-                String name = compoundId.split(ID_SEPARATOR)[1];
+                String name = compoundId.split(SQLPatternUtils.ID_SEPARATOR)[1];
                 SQLPatternItem item = null;
                 if (repositoryObject == null && (item = getSQLPatternItem(name)) != null) {
-                    ep
-                            .put(EmfComponent.SQLPATTERNLIST, item.getProperty().getId() + ID_SEPARATOR
-                                    + item.getProperty().getLabel());
+                    ep.put(EmfComponent.SQLPATTERNLIST, item.getProperty().getId() + SQLPatternUtils.ID_SEPARATOR
+                            + item.getProperty().getLabel());
                     return item.getProperty().getLabel();
                 }
                 if (repositoryObject != null) {
@@ -1029,7 +1027,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
                 String id = null;
                 if (object instanceof String) {
                     id = (String) object;
-                    id = id.split(ID_SEPARATOR)[0];
+                    id = id.split(SQLPatternUtils.ID_SEPARATOR)[0];
                 } else {
                     TableItem item = tableViewer.getTable().getSelection()[0];
                     id = item.getText();

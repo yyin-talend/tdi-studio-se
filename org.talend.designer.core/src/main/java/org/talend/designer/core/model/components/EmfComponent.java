@@ -67,6 +67,7 @@ import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.temp.ECodePart;
+import org.talend.core.model.utils.SQLPatternUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.components.IComponentsLocalProviderService;
@@ -94,7 +95,6 @@ import org.talend.designer.core.model.utils.emf.component.TEMPLATESType;
 import org.talend.designer.core.model.utils.emf.component.TEMPLATEType;
 import org.talend.designer.core.model.utils.emf.component.impl.PLUGINDEPENDENCYTypeImpl;
 import org.talend.designer.core.model.utils.emf.component.util.ComponentResourceFactoryImpl;
-import org.talend.designer.core.ui.views.properties.SQLPatternComposite;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ExternalNodesFactory;
@@ -432,7 +432,7 @@ public class EmfComponent implements IComponent {
             if (sqlItem == null) {
                 continue;
             }
-            map.put(SQLPATTERNLIST, sqlItem.getProperty().getId() + SQLPatternComposite.ID_SEPARATOR
+            map.put(SQLPATTERNLIST, sqlItem.getProperty().getId() + SQLPatternUtils.ID_SEPARATOR
                     + sqlItem.getProperty().getLabel());
             patternNames.add(pattern.getNAME());
             value.add(map);
