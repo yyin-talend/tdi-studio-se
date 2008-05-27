@@ -12,6 +12,7 @@
     SCHEMA_AUTO_PROPAGATE="false"
     DATA_AUTO_PROPAGATE="false"
     VISIBLE="false"
+    TECHNICAL="true"
   >
     <SIGNATURE></SIGNATURE>
   </HEADER>
