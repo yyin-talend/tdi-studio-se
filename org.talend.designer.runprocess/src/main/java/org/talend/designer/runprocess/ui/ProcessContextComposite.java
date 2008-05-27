@@ -13,9 +13,7 @@
 package org.talend.designer.runprocess.ui;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -40,6 +38,7 @@ import org.talend.core.model.process.IContextListener;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
 import org.talend.designer.runprocess.i18n.Messages;
 
 /**
@@ -65,7 +64,9 @@ public class ProcessContextComposite extends Composite {
 
     /** Context table viewer. */
     private static TableViewer contextTableViewer;
+
     private IProcess process;
+
     /**
      * Constructs a new ProcessContextComposite.
      * 
@@ -121,6 +122,10 @@ public class ProcessContextComposite extends Composite {
                     IContext selectedContext = (IContext) ((IStructuredSelection) event.getSelection()).getFirstElement();
                     input = selectedContext.getContextParameterList();
                     process.setLastRunContext(selectedContext);
+                    //see bug 0003924
+                    if (process instanceof IProcess2) {
+                        ((IProcess2) process).setNeedRegenerateCode(true);
+                    }
                 }
                 contextTableViewer.setInput(input);
             }
@@ -164,7 +169,7 @@ public class ProcessContextComposite extends Composite {
         // contextComboViewer.getSelection()).getFirstElement();
         // }
 
-        if ( process.getLastRunContext() != null) {
+        if (process.getLastRunContext() != null) {
             for (IContext context : contextManager.getListContext()) {
                 IContext copiedContext = context.clone();
                 internalContextList.add(copiedContext);
@@ -186,15 +191,11 @@ public class ProcessContextComposite extends Composite {
         contextComboViewer.setInput(internalContextList);
 
         if (newSelectedCopiedContext != null) {
-            contextComboViewer.setSelection(new StructuredSelection(
-                    newSelectedCopiedContext));
-            contextTableViewer.setInput(newSelectedCopiedContext
-                    .getContextParameterList());
+            contextComboViewer.setSelection(new StructuredSelection(newSelectedCopiedContext));
+            contextTableViewer.setInput(newSelectedCopiedContext.getContextParameterList());
         } else {
-            contextComboViewer.setSelection(new StructuredSelection(
-                    internalContextList.get(0)));
-            contextTableViewer.setInput(internalContextList.get(0)
-                    .getContextParameterList());
+            contextComboViewer.setSelection(new StructuredSelection(internalContextList.get(0)));
+            contextTableViewer.setInput(internalContextList.get(0).getContextParameterList());
         }
 
     }
