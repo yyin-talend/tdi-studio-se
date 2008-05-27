@@ -3,6 +3,7 @@
 	imports="
 		org.talend.designer.codegen.config.NodesSubTree
 		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.metadata.IMetadataTable
 		org.talend.core.model.process.INode
 		org.talend.core.model.process.IConnection
 		org.talend.core.model.process.EConnectionType
@@ -16,6 +17,11 @@
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	NodesSubTree subTree = (NodesSubTree) codeGenArgument.getArgument();
 	boolean isRunInMultiThread = codeGenArgument.getIsRunInMultiThread();
+	
+	for (INode node : subTree.getNodes()) {
+		List<IMetadataTable> metadatas = node.getMetadataList();
+		List< ? extends IConnection> conns = node.getOutgoingConnections();
+	}
 %>
 
 <%
@@ -129,6 +135,8 @@
 				System.gc();
 		}		
 	<%
-		}
+	}
 	%>
+	
+	globalMap.put("<%=subTree.getName() %>_SUBPROCESS_STATE", 1);
 }

@@ -99,7 +99,6 @@
 %>
 
 static class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines.system.<%= isLookup ? "IPersistableComparableLookupRow<"+conn.getName()+"Struct>" : "IPersistableRow<"+conn.getName()+"Struct"+ templateOrigin + ">" %> {
-    
     static byte[] commonByteArray = new byte[0];
 <%
 	if(hasAtLeastOneKey) {
@@ -713,6 +712,7 @@ static class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines.
 %>
 
 public void <%=subTree.getName() %>Process() throws TalendException {
+	globalMap.put("<%=subTree.getName() %>_SUBPROCESS_STATE", 0);
 <%
 	if(isRunInMultiThread){
 %>
