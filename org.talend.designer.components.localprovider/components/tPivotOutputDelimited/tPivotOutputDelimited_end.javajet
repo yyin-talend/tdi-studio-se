@@ -86,9 +86,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     
     
 
-    <%}else{%>  ////////////////////////////////   CSV    /////////
-    
-    int rowSize<%=cid%> = group_Keys<%=cid%>.split(<%=rowSeparator%>).length + <%=groupbys.size()%>;
+    <%}else{%>  ////////////////////////////////   CSV    /////////    
+
+    int rowSize<%=cid%> = pivot_Keys<%=cid%>.split(<%=fieldSeparator%>).length + <%=groupbys.size()%>;
     
     String[] finalStr<%=cid%> = new String[rowSize<%=cid%>];
 

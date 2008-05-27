@@ -226,14 +226,16 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 if (aggStrSplit<%=cid%>[pivotIndex<%=cid%>].equals("")){
                 	
                 	<%if(columnType.equals("BigDecimal")){%>
-						
-					  aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = "0";
+					
+					  sum<%=cid%> = <%=columnType%>.parse<%=columnTypeFunName%>(<%=inConnName%>.<%=aggColumn%> + "");
+                    
+                      aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = String.valueOf(sum<%=cid%>);  
 					  
 					<%}else{%>
 
-					  sum<%=cid%> = <%=columnType%>.parse<%=columnTypeFunName%>(aggStrSplit<%=cid%>[pivotIndex<%=cid%>]);
+					  sum<%=cid%> = <%=columnType%>.parse<%=columnTypeFunName%>(<%=inConnName%>.<%=aggColumn%> + "");
                     
-                      aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = String.valueOf(sum<%=cid%>);
+                      aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = String.valueOf(sum<%=cid%>);                      
                       
 					<%}%>
                     
