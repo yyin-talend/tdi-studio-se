@@ -114,23 +114,26 @@ public class ProcessContextComposite extends Composite {
         contextTableViewer.getControl().setLayoutData(data);
 
         // Add listeners
-        contextComboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
-            public void selectionChanged(final SelectionChangedEvent event) {
-                Object input = null;
-                if (!event.getSelection().isEmpty()) {
-                    IContext selectedContext = (IContext) ((IStructuredSelection) event.getSelection()).getFirstElement();
-                    input = selectedContext.getContextParameterList();
-                    process.setLastRunContext(selectedContext);
-                    //see bug 0003924
-                    if (process instanceof IProcess2) {
-                        ((IProcess2) process).setNeedRegenerateCode(true);
-                    }
-                }
-                contextTableViewer.setInput(input);
-            }
-        });
+        contextComboViewer.addSelectionChangedListener(contextComboListener);
     }
+
+    ISelectionChangedListener contextComboListener = new ISelectionChangedListener() {
+
+        public void selectionChanged(final SelectionChangedEvent event) {
+            Object input = null;
+            if (!event.getSelection().isEmpty()) {
+                IContext selectedContext = (IContext) ((IStructuredSelection) event.getSelection()).getFirstElement();
+                input = selectedContext.getContextParameterList();
+                process.setLastRunContext(selectedContext);
+                // see bug 0003924
+                if (process instanceof IProcess2) {
+                    ((IProcess2) process).setNeedRegenerateCode(true);
+                }
+            }
+            contextTableViewer.setInput(input);
+        }
+    };
 
     /**
      * Set the process on wich we are selecting context.
@@ -191,13 +194,19 @@ public class ProcessContextComposite extends Composite {
         contextComboViewer.setInput(internalContextList);
 
         if (newSelectedCopiedContext != null) {
-            contextComboViewer.setSelection(new StructuredSelection(newSelectedCopiedContext));
+            setContextComboSelection(new StructuredSelection(newSelectedCopiedContext));
             contextTableViewer.setInput(newSelectedCopiedContext.getContextParameterList());
         } else {
-            contextComboViewer.setSelection(new StructuredSelection(internalContextList.get(0)));
+            setContextComboSelection(new StructuredSelection(internalContextList.get(0)));
             contextTableViewer.setInput(internalContextList.get(0).getContextParameterList());
         }
 
+    }
+
+    public void setContextComboSelection(StructuredSelection selection) {
+        contextComboViewer.removeSelectionChangedListener(contextComboListener);
+        contextComboViewer.setSelection(selection);
+        contextComboViewer.addSelectionChangedListener(contextComboListener);
     }
 
     protected IContext getSelectedContext() {
