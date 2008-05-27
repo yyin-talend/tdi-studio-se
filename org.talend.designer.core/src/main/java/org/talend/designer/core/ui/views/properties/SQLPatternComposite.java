@@ -92,7 +92,7 @@ import org.talend.repository.model.RepositoryConstants;
  */
 public class SQLPatternComposite extends ScrolledComposite implements IDynamicProperty, IResourceChangeListener {
 
-    public static final String ID_SEPARATOR = "--";
+    public static final String ID_SEPARATOR = " - ";
 
     private static final String NAME_PROPERTY = "nameProperty";
 

@@ -96,6 +96,42 @@ public class NodeFigure extends Figure {
         }
     }
 
+    private ConnectionFigure updateSource(ConnectionFigure curConn) {
+        ConnectionFigure connection = sourceDummyMap.get(curConn);
+        if (curConn.getTargetAnchor() == null || curConn.getSourceAnchor() == null) {
+            connection.setVisible(false);
+            return curConn;
+        }
+        Point figCenter = fig.getBounds().getCenter();
+
+        curConn.getConnectionRouter().route(curConn);
+        Point endPoint = curConn.getStart();
+        if (!figCenter.equals(connection.getStart())) {
+            connection.setStart(figCenter);
+        }
+        if (!endPoint.equals(connection.getEnd())) {
+            connection.setEnd(endPoint);
+        }
+
+        return null;
+    }
+
+    private void updateTarget() {
+        Point figCenter = fig.getBounds().getCenter();
+        if (targetConnection.getTargetAnchor() == null) {
+            targetDummy.setVisible(false);
+        } else {
+            targetConnection.getConnectionRouter().route(targetConnection);
+            Point startPoint = targetConnection.getEnd();
+            if (!startPoint.equals(targetDummy.getStart())) {
+                targetDummy.setStart(startPoint);
+            }
+            if (!figCenter.equals(targetDummy.getEnd())) {
+                targetDummy.setEnd(figCenter);
+            }
+        }
+    }
+
     @Override
     public void setBounds(final Rectangle rect) {
         super.setBounds(rect);
@@ -108,57 +144,28 @@ public class NodeFigure extends Figure {
             if (sourceDummyMap != null) {
                 if (targetConnection != null && sourceDummyMap.keySet().size() != 0) {
                     for (final ConnectionFigure curConn : newSourceConnections) {
-                        AnchorListener listener = new AnchorListener() {
+                        AnchorListener sourceListener = new AnchorListener() {
 
                             public void anchorMoved(ConnectionAnchor anchor) {
                                 if (curConn != null) {
-                                    ConnectionFigure connection = sourceDummyMap.get(curConn);
-                                    curConn.getConnectionRouter().route(curConn);
-                                    Point endPoint = curConn.getStart();
-                                    if (!endPoint.equals(connection.getEnd())) {
-                                        connection.setEnd(endPoint);
-                                    }
+                                    updateSource(curConn);
                                 }
                             }
-
                         };
                         if (curConn.getTargetAnchor() != null) {
-                            curConn.getTargetAnchor().addAnchorListener(listener);
+                            curConn.getTargetAnchor().addAnchorListener(sourceListener);
                         }
                     }
 
                     newSourceConnections.clear();
 
-                    Point figCenter = fig.getBounds().getCenter();
-
-                    if (targetConnection.getTargetAnchor() == null) {
-                        targetDummy.setVisible(false);
-                    } else {
-                        targetConnection.getConnectionRouter().route(targetConnection);
-                        Point startPoint = targetConnection.getEnd();
-                        if (!startPoint.equals(targetDummy.getStart())) {
-                            targetDummy.setStart(startPoint);
-                        }
-                        if (!figCenter.equals(targetDummy.getEnd())) {
-                            targetDummy.setEnd(figCenter);
-                        }
-                    }
+                    updateTarget();
 
                     List<ConnectionFigure> toRemove = new ArrayList<ConnectionFigure>();
                     for (ConnectionFigure curConn : sourceDummyMap.keySet()) {
-                        ConnectionFigure connection = sourceDummyMap.get(curConn);
-                        if (curConn.getTargetAnchor() == null || curConn.getSourceAnchor() == null) {
-                            toRemove.add(curConn);
-                            connection.setVisible(false);
-                            continue;
-                        }
-                        curConn.getConnectionRouter().route(curConn);
-                        Point endPoint = curConn.getStart();
-                        if (!figCenter.equals(connection.getStart())) {
-                            connection.setStart(figCenter);
-                        }
-                        if (!endPoint.equals(connection.getEnd())) {
-                            connection.setEnd(endPoint);
+                        ConnectionFigure connToRemove = updateSource(curConn);
+                        if (connToRemove != null) {
+                            toRemove.add(connToRemove);
                         }
                     }
                     sourceDummyMap.keySet().removeAll(toRemove);
@@ -307,5 +314,17 @@ public class NodeFigure extends Figure {
             connection.setVisible(false);
         }
         targetDummy = connection;
+        
+        AnchorListener targetListener = new AnchorListener() {
+
+            public void anchorMoved(ConnectionAnchor anchor) {
+                    updateTarget();
+            }
+
+        };
+        if (targetConnection.getSourceAnchor() != null) {
+            targetConnection.getSourceAnchor().addAnchorListener(targetListener);
+        }
+
     }
 }

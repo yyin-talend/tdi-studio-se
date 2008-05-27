@@ -57,6 +57,7 @@ import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.core.ui.editor.TalendSelectionManager;
 import org.talend.designer.core.ui.editor.cmd.ExternalNodeChangeCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
+import org.talend.designer.core.ui.editor.connections.ConnectionFigure;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
 import org.talend.designer.core.ui.views.CodeView;
@@ -336,18 +337,18 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
      * @see org.eclipse.gef.NodeEditPart#getSourceConnectionAnchor(org.eclipse.gef.ConnectionEditPart)
      */
     public ConnectionAnchor getSourceConnectionAnchor(final ConnectionEditPart connection) {
-        return new ChopboxAnchor(getFigure());
-        // if (connection.getModel() instanceof Connection) {
-        // if (((Connection) connection.getModel()).getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
-        // ((NodeFigure) getFigure()).addSourceConnection((ConnectionFigure) connection.getFigure());
-        // }
-        // }
-        // Connection conn = (Connection) connection.getModel();
-        // // System.out.println("getSource=> connection:" + conn + " / source:" + conn.getSource() + " / target:" +
-        // // conn.getTarget());
-        // NodeAnchor anchor = new NodeAnchor((NodeFigure) getFigure(), conn.getSource(), conn.getTarget(), false);
-        // anchor.setConnection(conn);
-        // return anchor;
+        // return new ChopboxAnchor(getFigure());
+        if (connection.getModel() instanceof Connection) {
+            if (((Connection) connection.getModel()).getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
+                ((NodeFigure) getFigure()).addSourceConnection((ConnectionFigure) connection.getFigure());
+            }
+        }
+        Connection conn = (Connection) connection.getModel();
+        // System.out.println("getSource=> connection:" + conn + " / source:" + conn.getSource() + " / target:" +
+        // conn.getTarget());
+        NodeAnchor anchor = new NodeAnchor((NodeFigure) getFigure(), conn.getSource(), conn.getTarget(), false);
+        anchor.setConnection(conn);
+        return anchor;
     }
 
     /*
@@ -356,20 +357,20 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
      * @see org.eclipse.gef.NodeEditPart#getTargetConnectionAnchor(org.eclipse.gef.ConnectionEditPart)
      */
     public ConnectionAnchor getTargetConnectionAnchor(final ConnectionEditPart connection) {
-        return new ChopboxAnchor(getFigure());
+        // return new ChopboxAnchor(getFigure());
 
-        // if (connection.getModel() instanceof Connection) {
-        // if (((Connection) connection.getModel()).getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
-        // ((NodeFigure) getFigure()).setTargetConnection((ConnectionFigure) connection.getFigure());
-        // }
-        // }
-        // Connection conn = (Connection) connection.getModel();
-        // sourceAnchor = null;
-        // // System.out.println("getTarget=> connection:" + conn + " / source:" + conn.getSource() + " / target:" +
-        // // conn.getTarget());
-        // NodeAnchor anchor = new NodeAnchor((NodeFigure) getFigure(), conn.getSource(), conn.getTarget(), true);
-        // anchor.setConnection(conn);
-        // return anchor;
+        if (connection.getModel() instanceof Connection) {
+            if (((Connection) connection.getModel()).getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
+                ((NodeFigure) getFigure()).setTargetConnection((ConnectionFigure) connection.getFigure());
+            }
+        }
+        Connection conn = (Connection) connection.getModel();
+        sourceAnchor = null;
+        // System.out.println("getTarget=> connection:" + conn + " / source:" + conn.getSource() + " / target:" +
+        // conn.getTarget());
+        NodeAnchor anchor = new NodeAnchor((NodeFigure) getFigure(), conn.getSource(), conn.getTarget(), true);
+        anchor.setConnection(conn);
+        return anchor;
     }
 
     NodeAnchor sourceAnchor = null;
