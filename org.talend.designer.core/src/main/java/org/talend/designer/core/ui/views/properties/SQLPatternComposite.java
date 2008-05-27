@@ -580,6 +580,8 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
         return value;
     }
 
+    private boolean firstTimeLoad = true;
+
     /**
      * yzhang Comment method "refreshCode".
      * 
@@ -588,7 +590,27 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
      */
     private List<Map> refreshCode(Element element) {
         IElementParameter sqlPatternValue = element.getElementParameter(EParameterName.SQLPATTERN_VALUE.getName());
-        return (List<Map>) sqlPatternValue.getValue();
+        List<Map> values = (List<Map>) sqlPatternValue.getValue();
+
+        if (firstTimeLoad) {
+            List<Map> unusedValues = new ArrayList<Map>();
+            for (Map map : values) {
+                String compoundId = (String) map.get(EmfComponent.SQLPATTERNLIST);
+                String id = compoundId.split(ID_SEPARATOR)[0];
+
+                List<IRepositoryObject> repositoryObject = ProcessorUtilities.getAllVersionObjectById(id);
+                String name = compoundId.split(ID_SEPARATOR)[1];
+
+                SQLPatternItem item = null;
+                if (repositoryObject == null && (item = getSQLPatternItem(name)) == null) {
+                    unusedValues.add(map);
+                }
+            }
+            values.removeAll(unusedValues);
+            firstTimeLoad = false;
+        }
+
+        return values;
     }
 
     /**
@@ -781,14 +803,17 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
 
                 List<IRepositoryObject> repositoryObject = ProcessorUtilities.getAllVersionObjectById(id);
                 String name = compoundId.split(ID_SEPARATOR)[1];
-                if (repositoryObject == null) {
-                    SQLPatternItem item = getSQLPatternItem(name);
+                SQLPatternItem item = null;
+                if (repositoryObject == null && (item = getSQLPatternItem(name)) != null) {
                     ep
                             .put(EmfComponent.SQLPATTERNLIST, item.getProperty().getId() + ID_SEPARATOR
                                     + item.getProperty().getLabel());
                     return item.getProperty().getLabel();
                 }
-                return repositoryObject.get(0).getLabel();
+                if (repositoryObject != null) {
+                    return repositoryObject.get(0).getLabel();
+                }
+
             }
             return null;
         }
