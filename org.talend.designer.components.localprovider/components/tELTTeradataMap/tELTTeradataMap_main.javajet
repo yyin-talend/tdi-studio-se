@@ -34,7 +34,7 @@
 	
 	//test load sql pattern in jet.
 	List<Map<String, Object>> codes = (List<Map<String, Object>>) ElementParameterParser.getObjectValue(node,
-                        "SQLPATTERN_CODE");
+                        "SQLPATTERN_VALUE");
                        
 	%>
 		/*(List<Map<String, Object>>) ElementParameterParser.getObjectValue(node,"SQLPATTERN_CODE")=<%=codes%>*/
