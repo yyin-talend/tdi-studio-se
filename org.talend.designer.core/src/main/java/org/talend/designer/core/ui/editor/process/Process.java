@@ -2559,7 +2559,7 @@ public class Process extends Element implements IProcess2 {
 
         public void stackChanged(CommandStackEvent event) {
             processModified = true;
-            needRegenerateCode = true;
+            setNeedRegenerateCode(true);
         }
     };
 
