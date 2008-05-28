@@ -115,7 +115,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
 
     private Command createCommand() {
         initConnectionParameters();
-        String repositoryType = (String) elem.getPropertyValue(EParameterName.QUERYSTORE_TYPE.getName());
+        String repositoryType = (String) elem.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
         String propertyName = (String) openSQLEditorButton.getData(PARAMETER_NAME);
         String query = (String) elem.getPropertyValue(propertyName);
         String qoute = (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) ? TalendTextUtils.QUOTATION_MARK
