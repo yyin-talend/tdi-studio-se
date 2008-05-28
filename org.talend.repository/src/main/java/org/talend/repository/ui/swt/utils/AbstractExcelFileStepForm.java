@@ -12,35 +12,21 @@
 // ============================================================================
 package org.talend.repository.ui.swt.utils;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
-import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.builder.connection.FileExcelConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.ConnectionItem;
-import org.talend.core.prefs.ITalendCorePrefConstants;
 
 /**
  * 
  * DOC yexiaowei class global comment. Detailled comment
  */
-public abstract class AbstractExcelFileStepForm extends AbstractForm {
-
-    protected int maximumRowsToPreview = CorePlugin.getDefault().getPreferenceStore().getInt(
-            ITalendCorePrefConstants.PREVIEW_LIMIT);
-
-    protected ConnectionItem connectionItem;
-
-    protected FileExcelConnection connection;
-
-    private IMetadataContextModeManager contextModeManager;
+public abstract class AbstractExcelFileStepForm extends AbstractFileStepForm {
 
     public AbstractExcelFileStepForm(Composite parent, ConnectionItem connectionItem, String[] existingNames) {
-        super(parent, SWT.NONE, existingNames);
-        this.connectionItem = connectionItem;
+        super(parent, connectionItem, existingNames);
     }
 
     public AbstractExcelFileStepForm(Composite parent, ConnectionItem connectionItem) {
@@ -52,25 +38,16 @@ public abstract class AbstractExcelFileStepForm extends AbstractForm {
      */
     public AbstractExcelFileStepForm(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable,
             String[] existingNames) {
-        super(parent, SWT.NONE, existingNames);
-        this.connectionItem = connectionItem;
+        super(parent, connectionItem, existingNames);
     }
 
     protected FileExcelConnection getConnection() {
-        return (FileExcelConnection) connectionItem.getConnection();
+        return (FileExcelConnection) super.getConnection();
     }
 
     public boolean isPerlProject() {
         ECodeLanguage codeLanguage = LanguageManager.getCurrentLanguage();
         return (codeLanguage == ECodeLanguage.PERL);
-    }
-
-    public IMetadataContextModeManager getContextModeManager() {
-        return this.contextModeManager;
-    }
-
-    public void setContextModeManager(IMetadataContextModeManager contextModeManager) {
-        this.contextModeManager = contextModeManager;
     }
 
 }

@@ -14,14 +14,10 @@ package org.talend.repository.ui.swt.utils;
 
 import java.util.Arrays;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.talend.core.CorePlugin;
-import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.PositionalFileConnection;
 import org.talend.core.model.properties.ConnectionItem;
-import org.talend.core.prefs.ITalendCorePrefConstants;
 
 /**
  * DOC tguiu class global comment. Detailled comment <br/>
@@ -29,16 +25,7 @@ import org.talend.core.prefs.ITalendCorePrefConstants;
  * $Id$
  * 
  */
-public abstract class AbstractPositionalFileStepForm extends AbstractForm {
-
-    protected int maximumRowsToPreview = CorePlugin.getDefault().getPreferenceStore().getInt(
-            ITalendCorePrefConstants.PREVIEW_LIMIT);
-
-    protected ConnectionItem connectionItem;
-
-    protected static PositionalFileConnection connection;
-
-    private IMetadataContextModeManager contextModeManager;
+public abstract class AbstractPositionalFileStepForm extends AbstractFileStepForm {
 
     /**
      * DOC ocarbone AbstractPositionalFileStepForm constructor comment.
@@ -49,8 +36,7 @@ public abstract class AbstractPositionalFileStepForm extends AbstractForm {
      * @param originalName
      */
     public AbstractPositionalFileStepForm(Composite parent, ConnectionItem connectionItem, String[] existingNames) {
-        super(parent, SWT.NONE, existingNames);
-        this.connectionItem = connectionItem;
+        super(parent, connectionItem, existingNames);
     }
 
     /**
@@ -70,8 +56,7 @@ public abstract class AbstractPositionalFileStepForm extends AbstractForm {
      */
     public AbstractPositionalFileStepForm(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable,
             String[] existingNames) {
-        super(parent, SWT.NONE, existingNames);
-        this.connectionItem = connectionItem;
+        super(parent, connectionItem, existingNames);
     }
 
     /**
@@ -228,15 +213,7 @@ public abstract class AbstractPositionalFileStepForm extends AbstractForm {
     }
 
     protected PositionalFileConnection getConnection() {
-        return (PositionalFileConnection) connectionItem.getConnection();
-    }
-
-    public IMetadataContextModeManager getContextModeManager() {
-        return this.contextModeManager;
-    }
-
-    public void setContextModeManager(IMetadataContextModeManager contextModeManager) {
-        this.contextModeManager = contextModeManager;
+        return (PositionalFileConnection) super.getConnection();
     }
 
 }

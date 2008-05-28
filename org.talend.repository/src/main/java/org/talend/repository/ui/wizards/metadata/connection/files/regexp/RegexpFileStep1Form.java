@@ -91,7 +91,6 @@ public class RegexpFileStep1Form extends AbstractRegexpFileStepForm {
     public RegexpFileStep1Form(Composite parent, ConnectionItem connectionItem, String[] existingNames,
             IMetadataContextModeManager contextModeManager) {
         super(parent, connectionItem, existingNames);
-        setConnectionItem(connectionItem);
         setContextModeManager(contextModeManager);
         setupForm();
     }

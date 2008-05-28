@@ -99,7 +99,6 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
     public ExcelFileStep1Form(Composite parent, ConnectionItem connectionItem, String[] existingNames,
             IMetadataContextModeManager contextModeManager) {
         super(parent, connectionItem, existingNames);
-        setConnectionItem(connectionItem);
         setContextModeManager(contextModeManager);
         setupForm();
     }

@@ -43,6 +43,8 @@ import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
 import org.talend.commons.ui.swt.thread.SWTUIThreadProcessor;
 import org.talend.commons.ui.utils.PathUtils;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.EMetadataEncoding;
 import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.builder.connection.FileExcelConnection;
@@ -59,6 +61,7 @@ import org.talend.repository.ui.swt.utils.IRefreshable;
 import org.talend.repository.ui.utils.ConnectionContextHelper;
 import org.talend.repository.ui.utils.FileConnectionContextUtils;
 import org.talend.repository.ui.utils.ShadowProcessHelper;
+import org.talend.repository.ui.utils.FileConnectionContextUtils.EFileParamName;
 
 /**
  * @author xye
@@ -150,16 +153,13 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
         }
 
         // Fields to the Group Rows To Skip
-        if (isContextMode()) {
-            rowsToSkipHeaderCheckboxCombo.setText(getConnection().getHeaderValue());
-            rowsToSkipFooterCheckboxCombo.setText(getConnection().getFooterValue());
-            rowsToSkipLimitCheckboxCombo.setText(getConnection().getLimitValue());
-
-        } else {
-            initRowsToSkip(rowsToSkipHeaderCheckboxCombo, getConnection().getHeaderValue());
-            initRowsToSkip(rowsToSkipFooterCheckboxCombo, getConnection().getFooterValue());
-            initRowsToSkip(rowsToSkipLimitCheckboxCombo, getConnection().getLimitValue());
-        }
+        boolean flag = false;
+        flag = initRowsToSkip(rowsToSkipHeaderCheckboxCombo, getConnection().getHeaderValue());
+        getConnection().setUseHeader(flag);
+        flag = initRowsToSkip(rowsToSkipFooterCheckboxCombo, getConnection().getFooterValue());
+        getConnection().setUseFooter(flag);
+        flag = initRowsToSkip(rowsToSkipLimitCheckboxCombo, getConnection().getLimitValue());
+        getConnection().setUseLimit(flag);
 
         emptyRowsToSkipCheckbox.setSelection(getConnection().isRemoveEmptyRow());
         firstRowIsCaptionCheckbox.setSelection(getConnection().isFirstLineCaption());
@@ -184,6 +184,7 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
             String ts = this.getConnection().getThousandSeparator();
             if (ts == null || ts.equals("")) {
                 thousandSeparaotrText.setText("\',\'");
+                getConnection().setThousandSeparator(thousandSeparaotrText.getText());
             } else {
                 thousandSeparaotrText.setText(ts);
             }
@@ -191,25 +192,13 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
             String ds = this.getConnection().getDecimalSeparator();
             if (ds == null || ds.equals("")) {
                 decimalSeparatorText.setText("\'.\'");
+                getConnection().setDecimalSeparator(decimalSeparatorText.getText());
             } else {
                 decimalSeparatorText.setText(ds);
             }
         }
 
         checkFieldsValue();
-    }
-
-    private void initRowsToSkip(LabelledCheckboxCombo combo, String value) {
-        int i = ConnectionContextHelper.convertValue(value);
-        if (i > 0) {
-            combo.setText(value);
-            combo.select(i);
-        } else {
-            combo.setText("");
-            combo.getCombo().setEnabled(false);
-            combo.getCheckbox().setSelection(false);
-        }
-
     }
 
     /**
@@ -411,7 +400,7 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
         processDescription.setHeaderRow(i);
 
         if (originalValueConnection.isUseFooter()) {
-            processDescription.setFooterRow(ConnectionContextHelper.convertValue(originalValueConnection.getHeaderValue()));
+            processDescription.setFooterRow(ConnectionContextHelper.convertValue(originalValueConnection.getFooterValue()));
         }
 
         // adapt the limit to the preview
@@ -1135,15 +1124,10 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
             rowsToSkipLimitCheckboxCombo.getCombo().setEnabled(!isContextMode());
             rowsToSkipFooterCheckboxCombo.getCombo().setEnabled(!isContextMode());
         }
-    }
+        rowsToSkipHeaderCheckboxCombo.getCheckbox().setEnabled(!isContextMode());
+        rowsToSkipLimitCheckboxCombo.getCheckbox().setEnabled(!isContextMode());
+        rowsToSkipFooterCheckboxCombo.getCheckbox().setEnabled(!isContextMode());
 
-    @Override
-    protected void exportAsContext() {
-        super.exportAsContext();
-        if (getContextModeManager() != null) {
-            getContextModeManager().setDefaultContextType(getConnection());
-            setConnectionProperties();
-        }
     }
 
     private void setConnectionProperties() {
@@ -1190,4 +1174,18 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
         }
 
     }
+
+    protected void collectConnParams() {
+        super.collectConnParams();
+        addContextParams(EFileParamName.FirstColumn, true);
+        addContextParams(EFileParamName.LastColumn, true);
+        addContextParams(EFileParamName.Header, rowsToSkipHeaderCheckboxCombo.isChecked());
+        addContextParams(EFileParamName.Footer, rowsToSkipFooterCheckboxCombo.isChecked());
+        addContextParams(EFileParamName.Limit, rowsToSkipLimitCheckboxCombo.isChecked());
+
+        boolean isJava = LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA;
+        addContextParams(EFileParamName.ThousandSeparator, isJava);
+        addContextParams(EFileParamName.DecimalSeparator, isJava);
+    }
+
 }

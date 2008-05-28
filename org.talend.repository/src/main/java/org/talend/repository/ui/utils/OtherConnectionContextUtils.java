@@ -33,6 +33,7 @@ import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
+import org.talend.repository.model.IConnParamName;
 
 /**
  * ggu class global comment. Detailled comment
@@ -44,7 +45,7 @@ public final class OtherConnectionContextUtils {
     /**
      * 
      */
-    enum EParamName {
+    enum EParamName implements IConnParamName {
         FilePath,
 
         // xml

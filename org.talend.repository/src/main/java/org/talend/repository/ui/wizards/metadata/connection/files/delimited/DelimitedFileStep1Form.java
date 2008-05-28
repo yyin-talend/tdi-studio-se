@@ -91,7 +91,6 @@ public class DelimitedFileStep1Form extends AbstractDelimitedFileStepForm {
     public DelimitedFileStep1Form(Composite parent, ConnectionItem connectionItem, String[] existingNames,
             IMetadataContextModeManager contextModeManager) {
         super(parent, connectionItem, existingNames);
-        setConnectionItem(connectionItem);
         setContextModeManager(contextModeManager);
         setupForm();
     }

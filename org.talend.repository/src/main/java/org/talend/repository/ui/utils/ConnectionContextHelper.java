@@ -66,6 +66,7 @@ import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ERepositoryStatus;
+import org.talend.repository.model.IConnParamName;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
@@ -135,11 +136,11 @@ public final class ConnectionContextHelper {
      * ggu Comment method "exportAsContext".
      * 
      */
-    public static ContextItem exportAsContext(ConnectionItem connItem) {
+    public static ContextItem exportAsContext(ConnectionItem connItem, Set<IConnParamName> paramSet) {
         if (connItem == null) {
             return null;
         }
-        List<IContextParameter> varList = createContextParameters(connItem);
+        List<IContextParameter> varList = createContextParameters(connItem, paramSet);
         if (varList == null || varList.isEmpty()) {
             return null;
         }
@@ -157,7 +158,7 @@ public final class ConnectionContextHelper {
         return null;
     }
 
-    private static List<IContextParameter> createContextParameters(ConnectionItem connectionItem) {
+    private static List<IContextParameter> createContextParameters(ConnectionItem connectionItem, Set<IConnParamName> paramSet) {
         if (connectionItem == null) {
             return null;
         }
@@ -166,9 +167,9 @@ public final class ConnectionContextHelper {
 
         List<IContextParameter> varList = null;
         if (conn instanceof DatabaseConnection) {
-            varList = DBConnectionContextUtils.getDBVariables(label, (DatabaseConnection) conn);
+            varList = DBConnectionContextUtils.getDBVariables(label, (DatabaseConnection) conn, paramSet);
         } else if (conn instanceof FileConnection) {
-            varList = FileConnectionContextUtils.getFileVariables(label, (FileConnection) conn);
+            varList = FileConnectionContextUtils.getFileVariables(label, (FileConnection) conn, paramSet);
         } else if (conn instanceof LdifFileConnection) {
             varList = OtherConnectionContextUtils.getLdifFileVariables(label, (LdifFileConnection) conn);
         } else if (conn instanceof XmlFileConnection) {
@@ -186,7 +187,8 @@ public final class ConnectionContextHelper {
         return varList;
     }
 
-    public static void setPropertiesForContextMode(ConnectionItem connectionItem, ContextItem contextItem) {
+    public static void setPropertiesForContextMode(ConnectionItem connectionItem, ContextItem contextItem,
+            Set<IConnParamName> paramSet) {
         if (connectionItem == null || contextItem == null) {
             return;
         }
@@ -194,9 +196,9 @@ public final class ConnectionContextHelper {
         Connection conn = connectionItem.getConnection();
 
         if (conn instanceof DatabaseConnection) {
-            DBConnectionContextUtils.setPropertiesForContextMode(label, (DatabaseConnection) conn);
+            DBConnectionContextUtils.setPropertiesForContextMode(label, (DatabaseConnection) conn, paramSet);
         } else if (conn instanceof FileConnection) {
-            FileConnectionContextUtils.setPropertiesForContextMode(label, (FileConnection) conn);
+            FileConnectionContextUtils.setPropertiesForContextMode(label, (FileConnection) conn, paramSet);
         } else if (conn instanceof LdifFileConnection) {
             OtherConnectionContextUtils.setLdifFilePropertiesForContextMode(label, (LdifFileConnection) conn);
         } else if (conn instanceof XmlFileConnection) {

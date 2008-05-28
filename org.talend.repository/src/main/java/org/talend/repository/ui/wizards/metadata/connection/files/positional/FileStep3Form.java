@@ -104,9 +104,7 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
     public FileStep3Form(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable, String[] existingNames,
             IMetadataContextModeManager contextModeManager) {
         super(parent, connectionItem, metadataTable, existingNames);
-        this.connectionItem = connectionItem;
         this.metadataTable = metadataTable;
-        setConnectionItem(connectionItem);
         setContextModeManager(contextModeManager);
         setupForm();
     }

@@ -58,6 +58,7 @@ import org.talend.repository.ui.swt.utils.IRefreshable;
 import org.talend.repository.ui.utils.ConnectionContextHelper;
 import org.talend.repository.ui.utils.FileConnectionContextUtils;
 import org.talend.repository.ui.utils.ShadowProcessHelper;
+import org.talend.repository.ui.utils.FileConnectionContextUtils.EFileParamName;
 
 /**
  * @author ocarbone
@@ -148,7 +149,6 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
      */
     public DelimitedFileStep2Form(Composite parent, ConnectionItem connectionItem, IMetadataContextModeManager contextModeManager) {
         super(parent, connectionItem);
-        setConnectionItem(connectionItem);
         setContextModeManager(contextModeManager);
         setupForm(true);
     }
@@ -181,16 +181,13 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
             rowSeparatorManager();
         }
         // Fields to the Group Rows To Skip
-        if (isContextMode()) {
-            rowsToSkipHeaderCheckboxCombo.setText(getConnection().getHeaderValue());
-            rowsToSkipFooterCheckboxCombo.setText(getConnection().getFooterValue());
-            rowsToSkipLimitCheckboxCombo.setText(getConnection().getLimitValue());
-
-        } else {
-            initRowsToSkip(rowsToSkipHeaderCheckboxCombo, getConnection().getHeaderValue());
-            initRowsToSkip(rowsToSkipFooterCheckboxCombo, getConnection().getFooterValue());
-            initRowsToSkip(rowsToSkipLimitCheckboxCombo, getConnection().getLimitValue());
-        }
+        boolean flag = false;
+        flag = initRowsToSkip(rowsToSkipHeaderCheckboxCombo, getConnection().getHeaderValue());
+        getConnection().setUseHeader(flag);
+        flag = initRowsToSkip(rowsToSkipFooterCheckboxCombo, getConnection().getFooterValue());
+        getConnection().setUseFooter(flag);
+        flag = initRowsToSkip(rowsToSkipLimitCheckboxCombo, getConnection().getLimitValue());
+        getConnection().setUseLimit(flag);
 
         emptyRowsToSkipCheckbox.setSelection(getConnection().isRemoveEmptyRow());
         firstRowIsCaptionCheckbox.setSelection(getConnection().isFirstLineCaption());
@@ -234,19 +231,6 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
         if (isContextMode()) {
             adaptFormToEditable();
         }
-    }
-
-    private void initRowsToSkip(LabelledCheckboxCombo combo, String value) {
-        int i = ConnectionContextHelper.convertValue(value);
-        if (i > 0) {
-            combo.setText(value);
-            combo.select(i);
-        } else {
-            combo.setText("");
-            combo.getCombo().setEnabled(false);
-            combo.getCheckbox().setSelection(false);
-        }
-
     }
 
     /**
@@ -520,7 +504,10 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
         ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(delimitedConn);
 
         // Adapt Header width firstRowIsCaption to preview the first line on caption or not
-        int i = ConnectionContextHelper.convertValue(delimitedConn.getHeaderValue());
+        int i = -1;
+        if (delimitedConn.isUseHeader()) {
+            i = ConnectionContextHelper.convertValue(delimitedConn.getHeaderValue());
+        }
 
         if (i != -1 && firstRowIsCaptionCheckbox.getSelection()) {
             i--;
@@ -529,7 +516,10 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
 
         // adapt the limit to the preview
         processDescription.setLimitRows(maximumRowsToPreview);
-        i = ConnectionContextHelper.convertValue(delimitedConn.getLimitValue());
+        i = -1;
+        if (delimitedConn.isUseLimit()) {
+            i = ConnectionContextHelper.convertValue(delimitedConn.getLimitValue());
+        }
         if (i != -1) {
             if (firstRowIsCaptionCheckbox.getSelection()) {
                 i++;
@@ -1330,19 +1320,18 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
             rowsToSkipLimitCheckboxCombo.getCombo().setEnabled(!isContextMode());
             rowsToSkipFooterCheckboxCombo.getCombo().setEnabled(!isContextMode());
         }
+        rowsToSkipHeaderCheckboxCombo.getCheckbox().setEnabled(!isContextMode());
+        rowsToSkipLimitCheckboxCombo.getCheckbox().setEnabled(!isContextMode());
+        rowsToSkipFooterCheckboxCombo.getCheckbox().setEnabled(!isContextMode());
+
     }
 
-    @Override
-    protected void exportAsContext() {
-        super.exportAsContext();
-        if (getContextModeManager() != null) {
-            getContextModeManager().setDefaultContextType(getConnection());
-        }
+    protected void collectConnParams() {
+        super.collectConnParams();
+        addContextParams(EFileParamName.RowSeparator, true);
+        addContextParams(EFileParamName.FieldSeparator, true);
+        addContextParams(EFileParamName.Header, rowsToSkipHeaderCheckboxCombo.isChecked());
+        addContextParams(EFileParamName.Footer, rowsToSkipFooterCheckboxCombo.isChecked());
+        addContextParams(EFileParamName.Limit, rowsToSkipLimitCheckboxCombo.isChecked());
     }
-
-    @Override
-    protected void adaptContextModeToReversion() {
-        super.adaptContextModeToReversion();
-    }
-
 }

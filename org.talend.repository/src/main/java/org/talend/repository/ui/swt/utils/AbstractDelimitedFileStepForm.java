@@ -13,14 +13,10 @@
 package org.talend.repository.ui.swt.utils;
 
 import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.talend.core.CorePlugin;
-import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.ConnectionItem;
-import org.talend.core.prefs.ITalendCorePrefConstants;
 
 /**
  * DOC tguiu class global comment. Detailled comment <br/>
@@ -28,25 +24,15 @@ import org.talend.core.prefs.ITalendCorePrefConstants;
  * $Id$
  * 
  */
-public abstract class AbstractDelimitedFileStepForm extends AbstractForm {
-
-    protected int maximumRowsToPreview = CorePlugin.getDefault().getPreferenceStore().getInt(
-            ITalendCorePrefConstants.PREVIEW_LIMIT);
-
-    protected ConnectionItem connectionItem;
-
-    protected DelimitedFileConnection connection;
+public abstract class AbstractDelimitedFileStepForm extends AbstractFileStepForm {
 
     private WizardPage page = null;
-
-    private IMetadataContextModeManager contextModeManager;
 
     /**
      * DOC tguiu AbstractDelimitedFileStepForm constructor comment. Use to step1
      */
     public AbstractDelimitedFileStepForm(Composite parent, ConnectionItem connectionItem, String[] existingNames) {
-        super(parent, SWT.NONE, existingNames);
-        this.connectionItem = connectionItem;
+        super(parent, connectionItem, existingNames);
     }
 
     /**
@@ -64,12 +50,11 @@ public abstract class AbstractDelimitedFileStepForm extends AbstractForm {
      */
     public AbstractDelimitedFileStepForm(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable,
             String[] existingNames) {
-        super(parent, SWT.NONE, existingNames);
-        this.connectionItem = connectionItem;
+        super(parent, connectionItem, existingNames);
     }
 
     protected DelimitedFileConnection getConnection() {
-        return (DelimitedFileConnection) connectionItem.getConnection();
+        return (DelimitedFileConnection) super.getConnection();
     }
 
     /**
@@ -89,13 +74,4 @@ public abstract class AbstractDelimitedFileStepForm extends AbstractForm {
     public void setWizardPage(WizardPage page) {
         this.page = page;
     }
-
-    public IMetadataContextModeManager getContextModeManager() {
-        return this.contextModeManager;
-    }
-
-    public void setContextModeManager(IMetadataContextModeManager contextModeManager) {
-        this.contextModeManager = contextModeManager;
-    }
-
 }

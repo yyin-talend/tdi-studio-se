@@ -110,7 +110,6 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
     public FileStep1Form(Composite parent, ConnectionItem connectionItem, String[] existingNames,
             IMetadataContextModeManager contextModeManager) {
         super(parent, connectionItem, existingNames);
-        setConnectionItem(connectionItem);
         setContextModeManager(contextModeManager);
         setupForm();
     }

@@ -12,14 +12,10 @@
 // ============================================================================
 package org.talend.repository.ui.swt.utils;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.talend.core.CorePlugin;
-import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.RegexpFileConnection;
 import org.talend.core.model.properties.ConnectionItem;
-import org.talend.core.prefs.ITalendCorePrefConstants;
 
 /**
  * DOC tguiu class global comment. Detailled comment <br/>
@@ -27,23 +23,13 @@ import org.talend.core.prefs.ITalendCorePrefConstants;
  * $Id$
  * 
  */
-public abstract class AbstractRegexpFileStepForm extends AbstractForm {
-
-    protected int maximumRowsToPreview = CorePlugin.getDefault().getPreferenceStore().getInt(
-            ITalendCorePrefConstants.PREVIEW_LIMIT);
-
-    protected ConnectionItem connectionItem;
-
-    protected RegexpFileConnection connection;
-
-    private IMetadataContextModeManager contextModeManager;
+public abstract class AbstractRegexpFileStepForm extends AbstractFileStepForm {
 
     /**
      * DOC tguiu AbstractRegexpFileStepForm constructor comment. Use to step1
      */
     public AbstractRegexpFileStepForm(Composite parent, ConnectionItem connectionItem, String[] existingNames) {
-        super(parent, SWT.NONE, existingNames);
-        this.connectionItem = connectionItem;
+        super(parent, connectionItem, existingNames);
     }
 
     /**
@@ -61,19 +47,11 @@ public abstract class AbstractRegexpFileStepForm extends AbstractForm {
      */
     public AbstractRegexpFileStepForm(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable,
             String[] existingNames) {
-        super(parent, SWT.NONE, existingNames);
-        this.connectionItem = connectionItem;
+        super(parent, connectionItem, existingNames);
     }
 
     protected RegexpFileConnection getConnection() {
-        return (RegexpFileConnection) connectionItem.getConnection();
+        return (RegexpFileConnection) super.getConnection();
     }
 
-    public IMetadataContextModeManager getContextModeManager() {
-        return this.contextModeManager;
-    }
-
-    public void setContextModeManager(IMetadataContextModeManager contextModeManager) {
-        this.contextModeManager = contextModeManager;
-    }
 }

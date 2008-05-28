@@ -15,7 +15,9 @@ package org.talend.repository.ui.swt.utils;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EventListener;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.swt.SWT;
@@ -37,6 +39,7 @@ import org.talend.core.model.properties.ContextItem;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.IConnParamName;
 import org.talend.repository.ui.utils.ConnectionContextHelper;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryView;
@@ -95,6 +98,8 @@ public abstract class AbstractForm extends Composite {
     protected UtilsButton revertContextBtn;
 
     protected ConnectionItem connectionItem;
+
+    protected Set<IConnParamName> contextParamSet = new HashSet<IConnParamName>();
 
     /**
      * DOC ocarbone AbstractForm constructor comment.
@@ -417,10 +422,10 @@ public abstract class AbstractForm extends Composite {
             if (isContextMode()) {
                 ConnectionContextHelper.openInConetxtModeDialog();
             } else {
-                ContextItem contextItem = ConnectionContextHelper.exportAsContext(connectionItem);
+                ContextItem contextItem = ConnectionContextHelper.exportAsContext(connectionItem, getConetxtParams());
                 if (contextItem != null) { // create
                     // set properties for context mode
-                    ConnectionContextHelper.setPropertiesForContextMode(connectionItem, contextItem);
+                    ConnectionContextHelper.setPropertiesForContextMode(connectionItem, contextItem, getConetxtParams());
 
                     // refresh current UI.
                     initialize();
@@ -467,4 +472,23 @@ public abstract class AbstractForm extends Composite {
         adaptFormToEditable();
         checkFieldsValue();
     }
+
+    protected void clearContextParams() {
+        contextParamSet.clear();
+    }
+
+    protected Set<IConnParamName> getConetxtParams() {
+        return contextParamSet; // for db and file connection
+    }
+
+    protected void addContextParams(IConnParamName param, boolean added) {
+        if (added) {
+            contextParamSet.add(param);
+        } else {
+            if (contextParamSet.contains(param)) {
+                contextParamSet.remove(param);
+            }
+        }
+    }
+
 }

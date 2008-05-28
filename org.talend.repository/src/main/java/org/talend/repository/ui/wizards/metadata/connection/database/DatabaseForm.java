@@ -54,6 +54,7 @@ import org.talend.repository.ui.swt.utils.AbstractForm;
 import org.talend.repository.ui.utils.DBConnectionContextUtils;
 import org.talend.repository.ui.utils.DataStringConnection;
 import org.talend.repository.ui.utils.ManagerConnection;
+import org.talend.repository.ui.utils.DBConnectionContextUtils.EDBParamName;
 
 /**
  * @author ocarbone
@@ -932,18 +933,25 @@ public class DatabaseForm extends AbstractForm {
      * @param boolean
      */
     private void setPropertiesFormEditable(boolean visible) {
+        clearContextParams();
+        EDBParamName sidOrDatabase = null;
         // update the UI label
         if (urlDataStringConnection.isSchemaNeeded()) {
             if (urlDataStringConnection.getStringConnectionTemplate().contains("(description=(address=(protocol=tcp)")) { //$NON-NLS-1$
                 sidOrDatabaseText.setLabelText(Messages.getString("DatabaseForm.service_name")); //$NON-NLS-1$
                 sidOrDatabaseText.setLabelWidth(65);
+                sidOrDatabase = EDBParamName.ServiceName;
             } else {
                 sidOrDatabaseText.setLabelText(Messages.getString("DatabaseForm.sid")); //$NON-NLS-1$
+                sidOrDatabase = EDBParamName.Sid;
             }
         } else {
             sidOrDatabaseText.setLabelText(Messages.getString("DatabaseForm.database")); //$NON-NLS-1$
+            sidOrDatabase = EDBParamName.Database;
         }
 
+        addContextParams(EDBParamName.Login, visible);
+        addContextParams(EDBParamName.Password, visible);
         // update the UI Fields
         usernameText.setEditable(visible);
         passwordText.setEditable(visible);
@@ -964,6 +972,7 @@ public class DatabaseForm extends AbstractForm {
 
             if (s != null && s.startsWith("jdbc:jtds:sqlserver:")) { //$NON-NLS-1$
                 schemaText.setEditable(true);
+                addContextParams(EDBParamName.Schema, true);
                 if (schemaText.getText().equals("")) { //$NON-NLS-1$
                     schemaText.setText("dbo"); //$NON-NLS-1$
                 }
@@ -971,26 +980,34 @@ public class DatabaseForm extends AbstractForm {
 
             if (s.contains("<host>")) { //$NON-NLS-1$
                 serverText.setEditable(visible);
+                addContextParams(EDBParamName.Server, visible);
             }
             if (s.contains("<port>")) { //$NON-NLS-1$
                 portText.setEditable(visible);
+                addContextParams(EDBParamName.Port, visible);
             }
             if (s.contains("<sid>") || s.contains("<service_name>")) { //$NON-NLS-1$ //$NON-NLS-2$
                 sidOrDatabaseText.setEditable(visible);
+                addContextParams(sidOrDatabase, visible);
             }
             if (s.contains("<filename>")) { // && //$NON-NLS-1$
                 // urlDataStringConnection.getStringConnectionTemplate().contains("jdbc:sqlite")
                 fileField.show();
                 fileField.setEditable(visible);
+                addContextParams(EDBParamName.File, visible);
+                boolean isSqlLite = false;
                 if (EDatabaseTypeName.getTypeFromDisplayName(getConnection().getDatabaseType()).equals(EDatabaseTypeName.SQLITE)) {
-                    usernameText.setEditable(false);
-                    passwordText.setEditable(false);
+                    isSqlLite = true;
                 } else {
-                    usernameText.setEditable(true);
-                    passwordText.setEditable(true);
+                    isSqlLite = false;
                 }
+                usernameText.setEditable(!isSqlLite);
+                passwordText.setEditable(!isSqlLite);
+                addContextParams(EDBParamName.Login, !isSqlLite);
+                addContextParams(EDBParamName.Password, !isSqlLite);
             } else {
                 fileField.hide();
+                addContextParams(EDBParamName.File, false);
             }
             // if (s.contains("<filename>")) { //$NON-NLS-1$
             // fileField.setEditable(visible);
@@ -998,23 +1015,30 @@ public class DatabaseForm extends AbstractForm {
             if (s.contains("<datasource>")) { //$NON-NLS-1$
                 datasourceText.show();
                 datasourceText.setEditable(visible);
+                addContextParams(EDBParamName.Datasource, visible);
             } else {
                 datasourceText.hide();
+                addContextParams(EDBParamName.Datasource, false);
             }
 
             if (s.contains("<dbRootPath>")) { //$NON-NLS-1$
                 directoryField.show();
                 directoryField.setEditable(visible);
                 sidOrDatabaseText.setEditable(visible);
+                addContextParams(EDBParamName.DBRootPath, visible);
+                addContextParams(sidOrDatabase, visible);
             } else {
                 directoryField.hide();
+                addContextParams(EDBParamName.DBRootPath, false);
             }
 
             if (urlDataStringConnection.isSchemaNeeded()) {
                 schemaText.setEditable(visible);
+                addContextParams(EDBParamName.Schema, visible);
             }
             if (urlDataStringConnection.isAddtionParamsNeeded()) {
                 additionParamText.setEditable(visible);
+                addContextParams(EDBParamName.AdditionalParams, visible);
             }
         }
         compositeDbSettings.layout();

@@ -15,6 +15,7 @@ package org.talend.repository.ui.utils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.language.ECodeLanguage;
@@ -27,6 +28,7 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
+import org.talend.repository.model.IConnParamName;
 
 /**
  * ggu class global comment. Detailled comment
@@ -38,103 +40,130 @@ public final class DBConnectionContextUtils {
     /**
      * 
      */
-    enum EDBParamName {
-        AdditionalParams,
-        DatasourceName,
-        DBRootPath,
-        FileFieldName,
+    public enum EDBParamName implements IConnParamName {
+        Login,
         Password,
         Port,
+        Server,
         Schema,
-        ServerName,
-        SID,
-        Username;
+        AdditionalParams,
+        Datasource,
+        DBRootPath,
+        File,
+        //
+        Sid,
+        Database,
+        ServiceName,
     }
 
-    static List<IContextParameter> getDBVariables(String prefixName, DatabaseConnection conn) {
-        if (conn == null || prefixName == null) {
+    static List<IContextParameter> getDBVariables(String prefixName, DatabaseConnection conn, Set<IConnParamName> paramSet) {
+        if (conn == null || prefixName == null || paramSet == null || paramSet.isEmpty()) {
             return Collections.emptyList();
         }
 
         List<IContextParameter> varList = new ArrayList<IContextParameter>();
         prefixName = prefixName + ConnectionContextHelper.LINE;
         String paramName = null;
-
-        paramName = prefixName + EDBParamName.AdditionalParams;
-        ConnectionContextHelper.createParameters(varList, paramName, conn.getAdditionalParams());
-
-        paramName = prefixName + EDBParamName.DatasourceName;
-        ConnectionContextHelper.createParameters(varList, paramName, conn.getDatasourceName());
-
-        paramName = prefixName + EDBParamName.DBRootPath;
-        ConnectionContextHelper.createParameters(varList, paramName, conn.getDBRootPath(), JavaTypesManager.DIRECTORY);
-
-        paramName = prefixName + EDBParamName.FileFieldName;
-        ConnectionContextHelper.createParameters(varList, paramName, conn.getFileFieldName(), JavaTypesManager.FILE);
-
-        paramName = prefixName + EDBParamName.Password;
-        ConnectionContextHelper.createParameters(varList, paramName, conn.getPassword());
-
-        paramName = prefixName + EDBParamName.Port;
-        ConnectionContextHelper.createParameters(varList, paramName, conn.getPort(), JavaTypesManager.INTEGER);
-
-        paramName = prefixName + EDBParamName.Schema;
-        if (conn.getProductId().equals(EDatabaseTypeName.ORACLEFORSID.getProduct())) {
-            String schema = conn.getSchema();
-            if (schema != null) {
-                conn.setSchema(schema.toUpperCase());
+        for (IConnParamName param : paramSet) {
+            if (param instanceof EDBParamName) {
+                EDBParamName dbParam = (EDBParamName) param;
+                paramName = prefixName + dbParam;
+                switch (dbParam) {
+                case AdditionalParams:
+                    ConnectionContextHelper.createParameters(varList, paramName, conn.getAdditionalParams());
+                    break;
+                case Datasource:
+                    ConnectionContextHelper.createParameters(varList, paramName, conn.getDatasourceName());
+                    break;
+                case DBRootPath:
+                    ConnectionContextHelper
+                            .createParameters(varList, paramName, conn.getDBRootPath(), JavaTypesManager.DIRECTORY);
+                    break;
+                case File:
+                    ConnectionContextHelper.createParameters(varList, paramName, conn.getFileFieldName(), JavaTypesManager.FILE);
+                    break;
+                case Password:
+                    ConnectionContextHelper.createParameters(varList, paramName, conn.getPassword());
+                    break;
+                case Port:
+                    ConnectionContextHelper.createParameters(varList, paramName, conn.getPort(), JavaTypesManager.INTEGER);
+                    break;
+                case Schema:
+                    if (conn.getProductId().equals(EDatabaseTypeName.ORACLEFORSID.getProduct())) {
+                        String schema = conn.getSchema();
+                        if (schema != null) {
+                            conn.setSchema(schema.toUpperCase());
+                        }
+                    }
+                    ConnectionContextHelper.createParameters(varList, paramName, conn.getSchema());
+                    break;
+                case Server:
+                    ConnectionContextHelper.createParameters(varList, paramName, conn.getServerName());
+                    break;
+                case Sid:
+                case Database:
+                case ServiceName:
+                    ConnectionContextHelper.createParameters(varList, paramName, conn.getSID());
+                    break;
+                case Login:
+                    ConnectionContextHelper.createParameters(varList, paramName, conn.getUsername());
+                    break;
+                default:
+                }
             }
         }
-        ConnectionContextHelper.createParameters(varList, paramName, conn.getSchema());
-
-        paramName = prefixName + EDBParamName.ServerName;
-        ConnectionContextHelper.createParameters(varList, paramName, conn.getServerName());
-
-        paramName = prefixName + EDBParamName.SID;
-        ConnectionContextHelper.createParameters(varList, paramName, conn.getSID());
-
-        paramName = prefixName + EDBParamName.Username;
-        ConnectionContextHelper.createParameters(varList, paramName, conn.getUsername());
 
         return varList;
     }
 
-    static void setPropertiesForContextMode(String prefixName, DatabaseConnection conn) {
-        if (conn == null || prefixName == null) {
+    static void setPropertiesForContextMode(String prefixName, DatabaseConnection conn, Set<IConnParamName> paramSet) {
+        if (conn == null || prefixName == null || paramSet == null || paramSet.isEmpty()) {
             return;
         }
         prefixName = prefixName + ConnectionContextHelper.LINE;
         String paramName = null;
+        for (IConnParamName param : paramSet) {
+            if (param instanceof EDBParamName) {
+                EDBParamName dbParam = (EDBParamName) param;
+                paramName = prefixName + dbParam;
+                switch (dbParam) {
+                case AdditionalParams:
+                    conn.setAdditionalParams(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+                    break;
+                case Datasource:
+                    conn.setDatasourceName(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+                    break;
+                case DBRootPath:
+                    conn.setDBRootPath(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+                    break;
+                case File:
+                    conn.setFileFieldName(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+                    break;
+                case Password:
+                    conn.setPassword(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+                    break;
+                case Port:
+                    conn.setPort(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+                    break;
+                case Schema:
+                    conn.setSchema(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+                    break;
+                case Server:
+                    conn.setServerName(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+                    break;
+                case Sid:
+                case Database:
+                case ServiceName:
+                    conn.setSID(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+                    break;
+                case Login:
+                    conn.setUsername(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+                    break;
+                default:
+                }
+            }
+        }
 
-        paramName = prefixName + EDBParamName.AdditionalParams;
-        conn.setAdditionalParams(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
-
-        paramName = prefixName + EDBParamName.DatasourceName;
-        conn.setDatasourceName(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
-
-        paramName = prefixName + EDBParamName.DBRootPath;
-        conn.setDBRootPath(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
-
-        paramName = prefixName + EDBParamName.FileFieldName;
-        conn.setFileFieldName(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
-
-        paramName = prefixName + EDBParamName.Password;
-        conn.setPassword(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
-
-        paramName = prefixName + EDBParamName.Port;
-        conn.setPort(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
-
-        paramName = prefixName + EDBParamName.Schema;
-        conn.setSchema(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
-
-        paramName = prefixName + EDBParamName.ServerName;
-        conn.setServerName(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
-
-        paramName = prefixName + EDBParamName.SID;
-        conn.setSID(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
-
-        paramName = prefixName + EDBParamName.Username;
-        conn.setUsername(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
     }
 
     /**
