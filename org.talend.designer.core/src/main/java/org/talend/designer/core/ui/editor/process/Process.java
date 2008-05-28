@@ -2811,11 +2811,11 @@ public class Process extends Element implements IProcess2 {
      * @see org.talend.core.model.process.IProcess2#isNeedRegenerateCode()
      */
     public boolean isNeedRegenerateCode() {
-        if (editor == null || needRegenerateCode) {
+        if (editor == null) {
             // if no editor linked, we just consider same as if there was all the time a modification
             return true;
         }
-        return editor.isDirty();
+        return needRegenerateCode;
     }
 
     /*
