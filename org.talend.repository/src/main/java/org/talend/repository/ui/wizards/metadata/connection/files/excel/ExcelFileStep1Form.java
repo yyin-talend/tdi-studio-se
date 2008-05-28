@@ -741,7 +741,7 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
      * DOC YeXiaowei ExcelFileStep1Form class global comment. Detailled comment <br/>
      * 
      */
-    class SheetNode {
+    public static class SheetNode {
 
         private final String label;
 
