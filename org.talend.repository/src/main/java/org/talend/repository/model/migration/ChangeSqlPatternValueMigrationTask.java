@@ -12,14 +12,21 @@
 // ============================================================================
 package org.talend.repository.model.migration;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
+import org.eclipse.emf.common.util.EList;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.core.model.components.ComponentUtilities;
+import org.talend.core.model.components.ModifyComponentsAction;
+import org.talend.core.model.components.conversions.IComponentConversion;
+import org.talend.core.model.components.filters.IComponentFilter;
+import org.talend.core.model.components.filters.ParameterTypeFilter;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
 import org.talend.core.model.properties.ProcessItem;
-import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementValueType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -32,13 +39,19 @@ import org.talend.repository.model.ProxyRepositoryFactory;
  */
 public class ChangeSqlPatternValueMigrationTask extends AbstractJobMigrationTask {
 
+    private static final String SQLPATTERN_VALUE = "SQLPATTERN_VALUE";
+
+    private IComponentFilter filter = new ParameterTypeFilter(SQLPATTERN_VALUE);
+
+    private boolean modified;
+
     /*
      * (non-Javadoc)
      * 
      * @see org.talend.core.model.migration.IProjectMigrationTask#getOrder()
      */
     public Date getOrder() {
-        GregorianCalendar clendar = new GregorianCalendar(2008, 5, 27, 10, 0, 0);
+        GregorianCalendar clendar = new GregorianCalendar(2008, 5, 28, 16, 0, 0);
         return clendar.getTime();
     }
 
@@ -49,26 +62,15 @@ public class ChangeSqlPatternValueMigrationTask extends AbstractJobMigrationTask
      */
     @Override
     public ExecutionResult executeOnProcess(ProcessItem item) {
-
-        boolean modified = false;
-
-        for (Object objNode : item.getProcess().getNode()) {
-            NodeType type = (NodeType) objNode;
-            for (Object objElementParameter : type.getElementParameter()) {
-                ElementParameterType elementParameterType = (ElementParameterType) objElementParameter;
-                if (elementParameterType.getName().equals("SQLPATTERN_VALUE")) {
-                    for (Object objElementValue : elementParameterType.getElementValue()) {
-                        ElementValueType value = (ElementValueType) objElementValue;
-                        String oldValue = (String) value.getValue();
-                        if (!oldValue.contains("--")) {
-                            String newValue = "tempid--" + oldValue;
-                            value.setValue(newValue);
-                            modified = true;
-                        }
-                    }
-                }
-            }
+        List<IComponentConversion> list = new ArrayList<IComponentConversion>();
+        list.add(new PropertyConversion());
+        try {
+            ModifyComponentsAction.searchAndModify(item, filter, list);
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
+            return ExecutionResult.FAILURE;
         }
+
         if (modified) {
             ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             try {
@@ -82,4 +84,36 @@ public class ChangeSqlPatternValueMigrationTask extends AbstractJobMigrationTask
 
         return ExecutionResult.NOTHING_TO_DO;
     }
+
+    /**
+     * yzhang ChangeSqlPatternValueMigrationTask class global comment. Detailled comment <br/>
+     * 
+     * $Id: talend.epf 1 2006-09-29 17:06:40Z nrousseau $
+     * 
+     */
+    private class PropertyConversion implements IComponentConversion {
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.talend.core.model.components.conversions.IComponentConversion#transform(org.talend.designer.core.model.utils.emf.talendfile.NodeType)
+         */
+        public void transform(NodeType node) {
+
+            EList values = ComponentUtilities.getNodeProperty(node, SQLPATTERN_VALUE).getElementValue();
+
+            for (Object objElementValue : values) {
+                ElementValueType value = (ElementValueType) objElementValue;
+                String oldValue = (String) value.getValue();
+                if (!oldValue.contains("--")) {
+                    String newValue = "tempid--" + oldValue;
+                    value.setValue(newValue);
+                    modified = true;
+                }
+            }
+
+        }
+
+    }
+
 }
