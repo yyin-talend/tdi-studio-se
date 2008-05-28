@@ -4,6 +4,7 @@
 		org.talend.core.model.process.IContextParameter
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		java.util.List
+		org.talend.core.model.utils.TalendTextUtils
 	" 
 	class="Context" 
 %>
@@ -12,7 +13,7 @@
 	List<IContextParameter> parameterList = (List<IContextParameter>) codeGenArgument.getArgument();
 	for (IContextParameter parameter : parameterList) {
 %>
-$_context{<%=parameter.getName() %>} = <%=parameter.getValue() %>;<%="\n"%>
+$_context{<%=parameter.getName() %>} = <%=TalendTextUtils.trimParameter(parameter.getValue()) %>;<%="\n"%>
 <%
 	}
 %>

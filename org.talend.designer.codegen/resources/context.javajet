@@ -6,6 +6,7 @@
 		java.util.List
 		java.util.Properties
 		java.io.ByteArrayOutputStream
+		org.talend.core.model.utils.TalendTextUtils
 	" 
 	class="Context" 
 %>
@@ -14,7 +15,7 @@
 	List<IContextParameter> parameterList = (List<IContextParameter>) codeGenArgument.getArgument();
 	Properties context = new Properties();
 	for (IContextParameter parameter : parameterList) {
-		context.put(parameter.getName(), parameter.getValue());
+		context.put(parameter.getName(), TalendTextUtils.trimParameter(parameter.getValue()));
 	}
 
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
