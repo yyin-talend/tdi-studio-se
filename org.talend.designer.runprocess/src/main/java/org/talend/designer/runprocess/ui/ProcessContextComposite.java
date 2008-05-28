@@ -127,13 +127,21 @@ public class ProcessContextComposite extends Composite {
                 input = selectedContext.getContextParameterList();
                 process.setLastRunContext(selectedContext);
                 // see bug 0003924
-                if (process instanceof IProcess2) {
-                    ((IProcess2) process).setNeedRegenerateCode(true);
-                }
+                processNeedGenCode(process);
             }
             contextTableViewer.setInput(input);
         }
+
     };
+
+    /**
+     * bqian Comment method "processNeedGenCode".
+     */
+    private static void processNeedGenCode(IProcess process) {
+        if (process instanceof IProcess2) {
+            ((IProcess2) process).setNeedRegenerateCode(true);
+        }
+    }
 
     /**
      * Set the process on wich we are selecting context.
@@ -214,10 +222,10 @@ public class ProcessContextComposite extends Composite {
     }
 
     protected boolean promptConfirmLauch() {
-        return promptConfirmLauch(getShell(), getSelectedContext());
+        return promptConfirmLauch(getShell(), getSelectedContext(), process);
     }
 
-    public static boolean promptConfirmLauch(Shell shell, IContext context) {
+    public static boolean promptConfirmLauch(Shell shell, IContext context, IProcess process) {
         boolean continueLaunch = true;
 
         int nbValues = 0;
@@ -248,6 +256,7 @@ public class ProcessContextComposite extends Composite {
                 }
                 contextComboViewer.refresh();
                 contextTableViewer.refresh();
+                processNeedGenCode(process);
             } else {
                 continueLaunch = false;
             }

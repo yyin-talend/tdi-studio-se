@@ -323,7 +323,7 @@ public class RunProcessContext {
         }
         setRunning(true);
 
-        if (ProcessContextComposite.promptConfirmLauch(shell, getSelectedContext())) {
+        if (ProcessContextComposite.promptConfirmLauch(shell, getSelectedContext(), process)) {
 
             ClearPerformanceAction clearPerfAction = new ClearPerformanceAction();
             clearPerfAction.setProcess(process);
