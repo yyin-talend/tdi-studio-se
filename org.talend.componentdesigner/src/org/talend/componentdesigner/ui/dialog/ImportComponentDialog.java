@@ -15,6 +15,8 @@ package org.talend.componentdesigner.ui.dialog;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -67,6 +69,11 @@ public class ImportComponentDialog extends Dialog {
      * Input text widget.
      */
     private Text text;
+
+    /**
+     * Filter text widget.
+     */
+    private Text filterText;
 
     /**
      * Error message label widget.
@@ -207,34 +214,34 @@ public class ImportComponentDialog extends Dialog {
             }
         });
 
-        label1 = new Label(composite, SWT.LEFT);
-        gd = new GridData();
-        gd.horizontalSpan = 3;
-        label1.setLayoutData(gd);
-        label1.setText(Messages.getString("ImportComponentDialog.ChooseComponentsLabel")); //$NON-NLS-1$
-        
         Button showPaletteComponents = new Button(composite, SWT.NONE);
         gd = new GridData();
         gd.horizontalSpan = 2;
         showPaletteComponents.setLayoutData(gd);
-        showPaletteComponents.setText("Show Palette Components");
+        showPaletteComponents.setText(Messages.getString("ImportComponentDialog.ShowPaletteComponents")); //$NON-NLS-1$
         showPaletteComponents.addMouseListener(new MouseListener() {
 
-            /* (non-Javadoc)
+            /*
+             * (non-Javadoc)
+             * 
              * @see org.eclipse.swt.events.MouseListener#mouseDoubleClick(org.eclipse.swt.events.MouseEvent)
              */
             public void mouseDoubleClick(MouseEvent e) {
 
             }
 
-            /* (non-Javadoc)
+            /*
+             * (non-Javadoc)
+             * 
              * @see org.eclipse.swt.events.MouseListener#mouseDown(org.eclipse.swt.events.MouseEvent)
              */
             public void mouseDown(MouseEvent e) {
                 text.setText(value);
             }
 
-            /* (non-Javadoc)
+            /*
+             * (non-Javadoc)
+             * 
              * @see org.eclipse.swt.events.MouseListener#mouseUp(org.eclipse.swt.events.MouseEvent)
              */
             public void mouseUp(MouseEvent e) {
@@ -242,7 +249,32 @@ public class ImportComponentDialog extends Dialog {
             }
 
         });
-        
+
+        label1 = new Label(composite, SWT.LEFT);
+        gd = new GridData();
+        gd.horizontalSpan = 1;
+        label1.setLayoutData(gd);
+        label1.setText(Messages.getString("ImportComponentDialog.Filter")); //$NON-NLS-1$
+
+        filterText = new Text(composite, SWT.BORDER);
+        filterText.setEditable(true);
+        gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
+        gd.horizontalSpan = 2;
+        filterText.setLayoutData(gd);
+
+        filterText.addModifyListener(new ModifyListener() {
+
+            public void modifyText(ModifyEvent e) {
+                validateInput();
+            }
+        });
+
+        label1 = new Label(composite, SWT.LEFT);
+        gd = new GridData();
+        gd.horizontalSpan = 5;
+        label1.setLayoutData(gd);
+        label1.setText(Messages.getString("ImportComponentDialog.ChooseComponentsLabel")); //$NON-NLS-1$
+
         componentList = new List(composite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
         gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
         // gd.verticalSpan = 5;
@@ -269,7 +301,7 @@ public class ImportComponentDialog extends Dialog {
         errorMessageText.setLayoutData(gd);
         errorMessageText.setBackground(errorMessageText.getDisplay().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
         applyDialogFont(composite);
-        text.setText("");
+        text.setText(""); //$NON-NLS-1$
         return composite;
     }
 
@@ -281,27 +313,25 @@ public class ImportComponentDialog extends Dialog {
         String errorMessage = null;
 
         String value = text.getText();
+        String filter = filterText.getText();
+        if (value == null) {
+            value = ""; //$NON-NLS-1$
+        }
+        if (filter == null) {
+            filter = ""; //$NON-NLS-1$
+        }
+
         if (value.equals("")) { //$NON-NLS-1$
             errorMessage = Messages.getString("ImportComponentDialog.ErrorMSG1"); //$NON-NLS-1$
         } else {
             File file = new File(value);
-            components = new ArrayList<String>();
+
             if (!file.exists() || !file.isDirectory()) {
                 errorMessage = Messages.getString("ImportComponentDialog.ErrorMSG2"); //$NON-NLS-1$
             } else {
-                String[] list = null;
-                list = file.list();
-                // filter items that is not a folder.
-                for (String temp : list) {
-                    File subFile = new File(value + File.separator + temp);
-                    if (subFile.exists() && subFile.isDirectory() && !temp.startsWith(".")) { //$NON-NLS-1$
-                        components.add(temp);
-                    }
-                }
-                if (components.size() == 0) {
-                    errorMessage = Messages.getString("ImportComponentDialog.ErrorMSG3"); //$NON-NLS-1$
-                } else {
-                    Collections.sort(components);
+                // need to get all the available
+                if (this.getComponents(value, filter).size() == 0) {
+                    errorMessage = Messages.getString("ImportComponentDialog.NoComponentsAvailable"); //$NON-NLS-1$
                 }
             }
         }
@@ -415,8 +445,11 @@ public class ImportComponentDialog extends Dialog {
             String targetDirectory = selectedProject.getLocation().toFile().getAbsolutePath();
 
             for (String component : selectedComponents) {
+                String componentName = component.contains(File.separator) ? component.substring(component
+                        .lastIndexOf(File.separator)
+                        + File.separator.length()) : component;
                 FileCopy.copyComponentFolder(sourceDirectory + File.separator + component, targetDirectory + File.separator
-                        + component);
+                        + componentName);
             }
             // refresh workspace
             try {
@@ -443,7 +476,68 @@ public class ImportComponentDialog extends Dialog {
      * DOC slanglois Comment method "disableCompontsList".
      */
     private void disableCompontsList() {
-        componentList.setItems(new String[] { "", "", "", "", "" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+        componentList.setItems(new String[] { "", "", "", "", "", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+                "", "", "", "", "", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+                "", "", "", "", "", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+                "", "", "", "", "", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+                "", "", "", "", "", }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
         componentList.setEnabled(false);
+    }
+
+    private java.util.List<String> getComponents(String directory, String filter) {
+        String componentFilter = filter.toLowerCase();
+        java.util.List<String> result = new ArrayList<String>();
+        File file = new File(directory);
+        if (file.exists() && file.isDirectory()) {
+            Queue<String> queue = new LinkedList<String>();
+
+            String[] list = file.list();
+            for (String temp : list) {
+                File subFile = new File(directory + File.separator + temp);
+                if (subFile.exists() && subFile.isDirectory() && !temp.startsWith(".")) { //$NON-NLS-1$
+                    queue.offer(temp);
+                }
+            }
+
+            while (!queue.isEmpty()) {
+                String temp = queue.poll();
+                File tmpFile = new File(directory + File.separator + temp);
+                if (isValidComponentFolder(tmpFile, componentFilter)) {
+                    result.add(temp);
+                    continue;
+                }
+                list = tmpFile.list();
+                for (String tmp : list) {
+                    File subFile = new File(directory + File.separator + temp + File.separator + tmp);
+                    if (subFile.exists() && subFile.isDirectory() && !temp.startsWith(".")) { //$NON-NLS-1$
+                        queue.offer(temp + File.separator + tmp);
+                    }
+                }
+            }
+        }
+
+        Collections.sort(result);
+        components = result;
+        return result;
+    }
+
+    private boolean isValidComponentFolder(File path, String filterString) {
+        if (!path.getName().toLowerCase().contains(filterString)) {
+            return false;
+        }
+        if (path.exists() && path.isDirectory()) {
+            String[] list = path.list();
+            String pathString = path.getAbsolutePath();
+
+            for (String temp : list) {
+                if (temp.toLowerCase().matches("^t[a-z0-9-\\-]+_(java|perl).xml$")) { //$NON-NLS-1$
+                    File subFile = new File(pathString + File.separator + temp);
+                    if (subFile.exists() && subFile.isFile()) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }
