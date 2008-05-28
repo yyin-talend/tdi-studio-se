@@ -62,7 +62,6 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
-import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.GlobalServiceRegister;
@@ -79,12 +78,10 @@ import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.utils.SQLPatternUtils;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
-import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
-import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.RepositoryConstants;
 
@@ -214,11 +211,12 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
 
                 if (property.equals(NAME_PROPERTY)) {
                     Map map = (Map) element;
-                    String id = (String) map.get(EmfComponent.SQLPATTERNLIST);
+                    String id = (String) map.get(SQLPatternUtils.SQLPATTERNLIST);
                     id = id.split(SQLPatternUtils.ID_SEPARATOR)[0];
-                    List<IRepositoryObject> list = ProcessorUtilities.getAllVersionObjectById(id);
 
-                    String label = ProcessorUtilities.getAllVersionObjectById(id).get(0).getLabel();
+                    IRepositoryObject repositoryObject = SQLPatternUtils.getLastVersionRepositoryObjectById(id);
+                    String label = repositoryObject.getLabel();
+
                     refreshComboContent(tableViewer);
                     SQLPatternInfor infor = null;
                     for (SQLPatternInfor sqlPatternInfor : comboContent) {
@@ -250,10 +248,10 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
                         Map map = (Map) item.getData();
 
                         SQLPatternInfor sqlPatternInfor = (SQLPatternInfor) value;
-                        if (map.get(EmfComponent.SQLPATTERNLIST).equals(sqlPatternInfor.getCompoundId())) {
+                        if (map.get(SQLPatternUtils.SQLPATTERNLIST).equals(sqlPatternInfor.getCompoundId())) {
                             return;
                         }
-                        map.put(EmfComponent.SQLPATTERNLIST, sqlPatternInfor.getCompoundId());
+                        map.put(SQLPatternUtils.SQLPATTERNLIST, sqlPatternInfor.getCompoundId());
                         executeCommand(new Command() {
                         });
                         refreshComboContent(tableViewer);
@@ -282,7 +280,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
                     List<Map> tableInput = (List<Map>) tableViewer.getInput();
                     SQLPatternInfor sqlPatternInfor = comboContent.get(0);
                     Map map = new HashMap();
-                    map.put(EmfComponent.SQLPATTERNLIST, sqlPatternInfor.getCompoundId());
+                    map.put(SQLPatternUtils.SQLPATTERNLIST, sqlPatternInfor.getCompoundId());
                     tableInput.add(map);
 
                     refreshComboContent(tableViewer);
@@ -507,7 +505,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
                     return;
                 }
                 String sqlpatternName = item.getText();
-                SQLPatternItem patternItem = getSQLPatternItem(sqlpatternName);
+                SQLPatternItem patternItem = SQLPatternUtils.getSQLPatternItem(SQLPatternComposite.this.element, sqlpatternName);
                 if (patternItem.isSystem()) {
                     boolean answer = MessageDialog.openQuestion(getShell(), "Talend Open Studio",
                             "Forbid modification on system sql pattern, do you want to create a new  one? ");
@@ -594,14 +592,14 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
         if (firstTimeLoad) {
             List<Map> unusedValues = new ArrayList<Map>();
             for (Map map : values) {
-                String compoundId = (String) map.get(EmfComponent.SQLPATTERNLIST);
+                String compoundId = (String) map.get(SQLPatternUtils.SQLPATTERNLIST);
                 String id = compoundId.split(SQLPatternUtils.ID_SEPARATOR)[0];
 
-                List<IRepositoryObject> repositoryObject = ProcessorUtilities.getAllVersionObjectById(id);
+                IRepositoryObject repositoryObject = SQLPatternUtils.getLastVersionRepositoryObjectById(id);
                 String name = compoundId.split(SQLPatternUtils.ID_SEPARATOR)[1];
 
                 SQLPatternItem item = null;
-                if (repositoryObject == null && (item = getSQLPatternItem(name)) == null) {
+                if (repositoryObject == null && (item = SQLPatternUtils.getSQLPatternItem(element, name)) == null) {
                     unusedValues.add(map);
                 }
             }
@@ -673,7 +671,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
                 List<Map> tableInput = (List<Map>) tableViewer.getInput();
                 List<SQLPatternInfor> content = getAllSqlPatterns();
                 for (Map map : tableInput) {
-                    String id = (String) map.get(EmfComponent.SQLPATTERNLIST);
+                    String id = (String) map.get(SQLPatternUtils.SQLPATTERNLIST);
                     SQLPatternInfor unusedSqlPatternInfor = null;
                     for (SQLPatternInfor patternInfor : content) {
                         if (patternInfor.getCompoundId().equals(id)) {
@@ -797,19 +795,20 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
         public String getText(Object element) {
             if (element instanceof Map) {
                 Map ep = (Map) element;
-                String compoundId = (String) ep.get(EmfComponent.SQLPATTERNLIST);
+                String compoundId = (String) ep.get(SQLPatternUtils.SQLPATTERNLIST);
                 String id = compoundId.split(SQLPatternUtils.ID_SEPARATOR)[0];
 
-                List<IRepositoryObject> repositoryObject = ProcessorUtilities.getAllVersionObjectById(id);
+                IRepositoryObject repositoryObject = SQLPatternUtils.getLastVersionRepositoryObjectById(id);
                 String name = compoundId.split(SQLPatternUtils.ID_SEPARATOR)[1];
                 SQLPatternItem item = null;
-                if (repositoryObject == null && (item = getSQLPatternItem(name)) != null) {
-                    ep.put(EmfComponent.SQLPATTERNLIST, item.getProperty().getId() + SQLPatternUtils.ID_SEPARATOR
+                if (repositoryObject == null
+                        && (item = SQLPatternUtils.getSQLPatternItem(SQLPatternComposite.this.element, name)) != null) {
+                    ep.put(SQLPatternUtils.SQLPATTERNLIST, item.getProperty().getId() + SQLPatternUtils.ID_SEPARATOR
                             + item.getProperty().getLabel());
                     return item.getProperty().getLabel();
                 }
                 if (repositoryObject != null) {
-                    return repositoryObject.get(0).getLabel();
+                    return repositoryObject.getLabel();
                 }
 
             }
@@ -976,35 +975,6 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
     }
 
     /**
-     * ftang Comment method "getSQLPatternItem".
-     * 
-     * @param sqlpatternName
-     * @return
-     */
-    private SQLPatternItem getSQLPatternItem(String sqlpatternName) {
-        String eltNodeName = (String) element.getElementParameter(EParameterName.SQLPATTERN_DB_NAME.getName()).getValue();
-
-        SQLPatternItem sqlpatternItem = null;
-        try {
-            List<IRepositoryObject> list = DesignerPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().getAll(
-                    ERepositoryObjectType.SQLPATTERNS, false);
-
-            for (IRepositoryObject repositoryObject : list) {
-                SQLPatternItem item = (SQLPatternItem) repositoryObject.getProperty().getItem();
-                if (item.getEltName().equals(eltNodeName) && item.getProperty().getLabel().equals(sqlpatternName)) {
-                    sqlpatternItem = item;
-                    break;
-                }
-
-            }
-
-        } catch (Exception e) {
-            ExceptionHandler.process(e);
-        }
-        return sqlpatternItem;
-    }
-
-    /**
      * yzhang Comment method "updateCodeText".
      */
     private void updateCodeText() {
@@ -1023,7 +993,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
                     return;
                 }
                 Map map = (Map) o;
-                Object object = map.get(EmfComponent.SQLPATTERNLIST);
+                Object object = map.get(SQLPatternUtils.SQLPATTERNLIST);
                 String id = null;
                 if (object instanceof String) {
                     id = (String) object;
@@ -1032,8 +1002,8 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
                     TableItem item = tableViewer.getTable().getSelection()[0];
                     id = item.getText();
                 }
-                List<IRepositoryObject> list = ProcessorUtilities.getAllVersionObjectById(id);
-                byte[] code = ((SQLPatternItem) list.get(0).getProperty().getItem()).getContent().getInnerContent();
+                IRepositoryObject repositoryObject = SQLPatternUtils.getLastVersionRepositoryObjectById(id);
+                byte[] code = ((SQLPatternItem) repositoryObject.getProperty().getItem()).getContent().getInnerContent();
                 codeText.setText(new String(code));
 
             }

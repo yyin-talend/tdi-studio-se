@@ -106,11 +106,6 @@ import org.talend.repository.model.ExternalNodesFactory;
  */
 public class EmfComponent implements IComponent {
 
-    /**
-     * 
-     */
-    public static final String SQLPATTERNLIST = "SQLPATTERNLIST";
-
     private static Logger log = Logger.getLogger(EmfComponent.class);
 
     private static final String EQUALS = "=="; //$NON-NLS-1$
@@ -432,7 +427,7 @@ public class EmfComponent implements IComponent {
             if (sqlItem == null) {
                 continue;
             }
-            map.put(SQLPATTERNLIST, sqlItem.getProperty().getId() + SQLPatternUtils.ID_SEPARATOR
+            map.put(SQLPatternUtils.SQLPATTERNLIST, sqlItem.getProperty().getId() + SQLPatternUtils.ID_SEPARATOR
                     + sqlItem.getProperty().getLabel());
             patternNames.add(pattern.getNAME());
             value.add(map);
@@ -449,12 +444,12 @@ public class EmfComponent implements IComponent {
         String[] listItemsNotShowIf = new String[1];
         String[] listField = new String[1];
 
-        listItemsDisplayCodeValue[0] = SQLPATTERNLIST;
+        listItemsDisplayCodeValue[0] = SQLPatternUtils.SQLPATTERNLIST;
         listItemsDisplayValue[0] = "SQLPattern List";
 
         ElementParameter newParam = new ElementParameter(node);
         newParam = new ElementParameter(node);
-        newParam.setName(SQLPATTERNLIST);
+        newParam.setName(SQLPatternUtils.SQLPATTERNLIST);
         newParam.setFilter("");
         newParam.setDisplayName(""); //$NON-NLS-1$
         newParam.setField(EParameterFieldType.CLOSED_LIST);
