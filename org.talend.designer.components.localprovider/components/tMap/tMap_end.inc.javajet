@@ -13,6 +13,7 @@
 	java.util.HashMap
 	java.util.Map
 	" 
+	skeleton="tMap_commons.skeleton"
 %>
 
 <%
@@ -44,8 +45,10 @@
 
 
 		// Bug partially fixed, see bug:785	
-        List<? extends INode> nodesOfType = node.getProcess().getNodesOfType("tFileList");
-        boolean hasTFileList = nodesOfType.size() > 0;
+		// Bug partially fixed, see bug:3966	
+		
+		boolean hasIterate = hasIterateConnectionBefore(inputConnections);
+        
         
 %>
 // ###############################
@@ -107,11 +110,9 @@
 	            if(connection == null) {
 	            	continue;
 	            }
+				if(!hasIterate) {
 				%>
 					tHash_Lookup_<%=tableName%>.endGet();
-				<%
-				if(!hasTFileList) {
-				%>
 					globalMap.remove( "tHash_Lookup_<%=tableName%>" );
 				<%
 				}

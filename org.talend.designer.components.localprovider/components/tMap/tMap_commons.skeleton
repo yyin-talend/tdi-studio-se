@@ -1,0 +1,42 @@
+public class CLASS {
+
+	public boolean hasIterateConnectionBefore(List<IConnection> inputConnections) {
+
+		for(IConnection connection : inputConnections) {
+            EConnectionType connectionType = connection.getLineStyle();
+            if (connectionType == EConnectionType.FLOW_MAIN) {
+	            INode node = connection.getSource();
+				return recursiveSearchIterate(node);
+			}
+		}
+		return false;
+	
+	}
+	
+	public boolean recursiveSearchIterate(INode node) {
+	
+		//System.out.println(node);
+	
+		List<IConnection> connections = (List<IConnection>) node.getIncomingConnections();
+
+		for(IConnection connection : connections) {
+            EConnectionType connectionType = connection.getLineStyle();
+            if (connectionType == EConnectionType.FLOW_MAIN) {
+	            node = connection.getSource();
+				//System.out.println(connection.getName() + " connectionType=" + connectionType + " connection=" + String.valueOf(connection));
+    	        return recursiveSearchIterate(node);
+            } else if(connectionType == EConnectionType.ITERATE) {
+				//System.out.println("ITERATE return true");
+    	        return true;
+            }
+		}
+		
+		//System.out.println("return false");
+		return false;
+	
+	}
+
+    public String generate(Object argument) {
+
+    }
+}

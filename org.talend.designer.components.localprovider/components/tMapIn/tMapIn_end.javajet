@@ -12,11 +12,12 @@
 	org.talend.core.model.process.IConnection
 	java.util.HashMap
 	java.util.Map
+	org.talend.core.model.process.IConnection
+	org.talend.core.model.process.EConnectionType
 	" 
-	
+	skeleton="../tMap/tMap_commons.skeleton"
 %>
 
 
 <%@ include file="../tMap/tMap_end.inc.javajet" %>
-
 
