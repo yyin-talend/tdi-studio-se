@@ -29,7 +29,6 @@ import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.properties.Item;
-import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -203,10 +202,40 @@ public class DuplicateAction extends AContextualAction {
     }
 
     private Item createNewItem() {
+
+        ERepositoryObjectType repositoryType = sourceNode.getObjectType();
+
+        Item item = null;
+
+        if (repositoryType.equals(ERepositoryObjectType.METADATA_CONNECTIONS)) {
+            item = PropertiesFactory.eINSTANCE.createDatabaseConnectionItem();
+        } else if (repositoryType.equals(ERepositoryObjectType.METADATA_FILE_DELIMITED)) {
+            item = PropertiesFactory.eINSTANCE.createDelimitedFileConnectionItem();
+        } else if (repositoryType.equals(ERepositoryObjectType.METADATA_FILE_POSITIONAL)) {
+            item = PropertiesFactory.eINSTANCE.createPositionalFileConnectionItem();
+        } else if (repositoryType.equals(ERepositoryObjectType.METADATA_FILE_REGEXP)) {
+            item = PropertiesFactory.eINSTANCE.createRegExFileConnectionItem();
+        } else if (repositoryType.equals(ERepositoryObjectType.METADATA_FILE_XML)) {
+            item = PropertiesFactory.eINSTANCE.createXmlFileConnectionItem();
+        } else if (repositoryType.equals(ERepositoryObjectType.METADATA_FILE_EXCEL)) {
+            item = PropertiesFactory.eINSTANCE.createExcelFileConnectionItem();
+        } else if (repositoryType.equals(ERepositoryObjectType.METADATA_FILE_LDIF)) {
+            item = PropertiesFactory.eINSTANCE.createLdifFileConnectionItem();
+        } else if (repositoryType.equals(ERepositoryObjectType.METADATA_LDAP_SCHEMA)) {
+            item = PropertiesFactory.eINSTANCE.createLDAPSchemaConnectionItem();
+        } else if (repositoryType.equals(ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA)) {
+            item = PropertiesFactory.eINSTANCE.createSalesforceSchemaConnectionItem();
+        } else if (repositoryType.equals(ERepositoryObjectType.METADATA_GENERIC_SCHEMA)) {
+            item = PropertiesFactory.eINSTANCE.createGenericSchemaConnectionItem();
+        } else if (repositoryType.equals(ERepositoryObjectType.METADATA_WSDL_SCHEMA)) {
+            item = PropertiesFactory.eINSTANCE.createWSDLSchemaConnectionItem();
+        } else {
+            item = PropertiesFactory.eINSTANCE.createProcessItem();
+        }
+
         Property property = PropertiesFactory.eINSTANCE.createProperty();
-        ProcessItem processItem = PropertiesFactory.eINSTANCE.createProcessItem();
-        processItem.setProperty(property);
-        return processItem;
+        item.setProperty(property);
+        return item;
     }
 
     private void createOperation(String newJobName, RepositoryNode target, CopyObjectAction copyObjectAction,

@@ -300,7 +300,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             codeNode.getChildren().add(snippetsNode);
         }
 
-        if(CorePlugin.getDefault().useSQLPattern()){
+        if (CorePlugin.getDefault().useSQLPattern()) {
             // 5. Sql patterns
             sqlPatternNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
             sqlPatternNode.setProperties(EProperties.LABEL, ERepositoryObjectType.SQLPATTERNS);
@@ -1101,5 +1101,23 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
      */
     public void setMetadataSalesforceSchemaNode(RepositoryNode metadataSalesforceSchemaNode) {
         this.metadataSalesforceSchemaNode = metadataSalesforceSchemaNode;
+    }
+
+    public String[] gatherMetdataChildrens() {
+        if (metadataNode == null) {
+            return null;
+        }
+
+        List<RepositoryNode> nodes = metadataNode.getChildren();
+        if (nodes == null || nodes.isEmpty()) {
+            return null;
+        }
+
+        String[] res = new String[nodes.size()];
+        for (int i = 0, n = nodes.size(); i < n; i++) {
+            res[i] = nodes.get(i).getLabel();
+        }
+
+        return res;
     }
 }

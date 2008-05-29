@@ -34,6 +34,8 @@ import org.talend.repository.ui.views.RepositoryView;
  */
 public class RepositoryNodeUtilities {
 
+    private final static String[] METADATA_LABELS = new String[] {};
+
     public static IPath getPath(RepositoryNode node) {
         if (node == null) {
             return null;
@@ -62,12 +64,43 @@ public class RepositoryNodeUtilities {
                 return getPath(node.getParent()).append(label);
             }
         } else {
-            if (!label.equals(ERepositoryObjectType.PROCESS.toString()) && !label.equals(ERepositoryObjectType.JOBLET.toString())) {
+            if (!isMetadataLabel(label) && !label.equals(ERepositoryObjectType.PROCESS.toString())
+                    && !label.equals(ERepositoryObjectType.JOBLET.toString())) {
                 return getPath(node.getParent()).append(label);
             } else {
                 return getPath(node.getParent());
             }
         }
+
+    }
+
+    /**
+     * Gather all view's metadata children nodes dynamic and get their label.
+     * <p>
+     * DOC YeXiaowei Comment method "isMetadataLabel".
+     * 
+     * @param label
+     * @return
+     */
+    private static boolean isMetadataLabel(final String label) {
+
+        RepositoryView view = (RepositoryView) RepositoryView.show();
+        if (view == null) {
+            return false;
+        }
+
+        String[] metadataLabels = view.gatherMetadataChildenLabels();
+        if (metadataLabels == null || metadataLabels.length <= 0) {
+            return false;
+        }
+
+        for (String mlabel : metadataLabels) {
+            if (mlabel.equals(label)) {
+                return true;
+            }
+        }
+
+        return false;
 
     }
 

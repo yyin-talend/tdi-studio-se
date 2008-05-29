@@ -116,6 +116,8 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
     private RepositoryTreeViewer viewer;
 
+    private RepositoryContentProvider contentProvider = null;
+
     private static RepositoryNode root = new RepositoryNode(null, null, ENodeType.STABLE_SYSTEM_FOLDER);
 
     private List<ITreeContextualAction> contextualsActions;
@@ -168,7 +170,8 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         viewer = new RepositoryTreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
         viewer.addTreeListener(viewer);
         viewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
-        viewer.setContentProvider(new RepositoryContentProvider(this));
+        contentProvider = new RepositoryContentProvider(this);
+        viewer.setContentProvider(contentProvider);
         viewer.setLabelProvider(new RepositoryLabelProvider(this));
         viewer.setSorter(new RepositoryNameSorter());
         IViewSite viewSite = getViewSite();
@@ -611,6 +614,10 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
     public void repositoryChanged(RepositoryChangedEvent event) {
         refresh();
+    }
+
+    public String[] gatherMetadataChildenLabels() {
+        return contentProvider.gatherMetdataChildrens();
     }
 
 }
