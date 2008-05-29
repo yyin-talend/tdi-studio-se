@@ -267,8 +267,12 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
             isCleared = true;
         }
         for (Object obj : fromModel.getMembers()) {
-            IRepositoryObject repositoryObject = ((RepositoryObject) obj).cloneNewObject();
-            maps.put(((RepositoryObject) obj).getId(), (RepositoryObject) obj);
+            RepositoryObject obj2 = (RepositoryObject) obj;
+            if (!connectionParameters.getRepositoryId().equals(obj2.getProperty().getId())) {
+                continue;
+            }
+            IRepositoryObject repositoryObject = obj2.cloneNewObject();
+            maps.put((obj2).getId(), obj2);
             addNode(parent, repositoryObject, false, null);
         }
     }
@@ -637,7 +641,6 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
         return this.selectQuery;
     }
 
-    
     public List<Query> getDisplayQueries() {
         return this.displayQueries;
     }

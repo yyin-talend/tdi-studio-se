@@ -111,6 +111,8 @@ public class ConnectionParameters {
 
     private String repositoryName = "";
 
+    private String repositoryId = "";
+
     private String selectedComponentName = "";
 
     private Query queryObject;
@@ -692,6 +694,14 @@ public class ConnectionParameters {
         if (!isShowDialog) {
             isShowDialog = ContextParameterUtils.isContainContextParam(jdbcProperties);
         }
+    }
+
+    public String getRepositoryId() {
+        return this.repositoryId;
+    }
+
+    public void setRepositoryId(String repositoryId) {
+        this.repositoryId = repositoryId;
     }
 
 }

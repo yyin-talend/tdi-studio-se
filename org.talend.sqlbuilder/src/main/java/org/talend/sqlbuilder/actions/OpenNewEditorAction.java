@@ -15,12 +15,12 @@ package org.talend.sqlbuilder.actions;
 import java.util.List;
 
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.actions.SelectionProviderAction;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.sqlbuilder.Messages;
@@ -105,7 +105,9 @@ public class OpenNewEditorAction extends SelectionProviderAction {
             firstNode = repositoryNodeManager.getRepositoryNodebyName(connParam.getRepositoryName());
         }
         List<String> repositoryNames = repositoryNodeManager.getALLReposotoryNodeNames();
-        connParam.setRepositoryName(SQLBuilderRepositoryNodeManager.getRoot(firstNode).getObject().getLabel());
+        IRepositoryObject object = SQLBuilderRepositoryNodeManager.getRoot(firstNode).getObject();
+        connParam.setRepositoryName(object.getLabel());
+        connParam.setRepositoryId(object.getId());
         if (isQuery) {
             DBTreeProvider provider = (DBTreeProvider) selectionProvider.getContentProvider();
             selectReveal(provider.getSelectQuery());

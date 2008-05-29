@@ -54,11 +54,13 @@ public class EditQueriesAction extends AContextualAction {
         ConnectionParameters connParameters = new ConnectionParameters();
         if (node.getObjectType() == ERepositoryObjectType.METADATA_CONNECTIONS) {
             connParameters.setRepositoryName(node.getObject().getLabel());
+            connParameters.setRepositoryId(node.getObject().getId());
             connParameters.setQuery("");
         } else if (node.getObjectType() == ERepositoryObjectType.METADATA_CON_QUERY) {
             QueryRepositoryObject queryRepositoryObject = (QueryRepositoryObject) node.getObject();
             DatabaseConnectionItem parent = (DatabaseConnectionItem) queryRepositoryObject.getProperty().getItem();
             connParameters.setRepositoryName(parent.getProperty().getLabel());
+            connParameters.setRepositoryId(parent.getProperty().getId());
             connParameters.setQueryObject(queryRepositoryObject.getQuery());
             connParameters.setQuery(queryRepositoryObject.getQuery().getValue());
         }
@@ -66,7 +68,7 @@ public class EditQueriesAction extends AContextualAction {
         Shell parentShell = new Shell(getViewPart().getViewer().getControl().getDisplay());
         TextUtil.setDialogTitle(TalendTextUtils.SQL_BUILDER_TITLE_REP);
         SQLBuilderDialog dial = new SQLBuilderDialog(parentShell);
-        
+
         connParameters.setNodeReadOnly(false);
         connParameters.setFromRepository(true);
         dial.setConnParameters(connParameters);

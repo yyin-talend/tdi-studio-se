@@ -51,7 +51,6 @@ import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.repository.IRepositoryObject;
-import org.talend.core.model.repository.RepositoryObject;
 import org.talend.repository.RepositoryChangedEvent;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
@@ -225,6 +224,7 @@ public class DBStructureComposite extends Composite {
                 if (!originalConnection.getProperty().getLabel().equals(newConnection.getProperty().getLabel())) {
                     String newRepositoryName = newConnection.getProperty().getLabel();
                     this.builderDialog.getConnParameters().setRepositoryName(newRepositoryName);
+                    this.builderDialog.getConnParameters().setRepositoryId(newConnection.getProperty().getId());
                 }
             }
         }
@@ -515,10 +515,10 @@ public class DBStructureComposite extends Composite {
 
     private void refreshChildren(RepositoryNode root) {
         if (root == null) {
-           List<RepositoryNode> dnodes=  repositoryNodeManager.getAllDisplayedConnection();
-           for (RepositoryNode node : dnodes) {
-               doRefresh(repositoryNodeManager.getRepositoryNodeFromDB(node));
-        }
+            List<RepositoryNode> dnodes = repositoryNodeManager.getAllDisplayedConnection();
+            for (RepositoryNode node : dnodes) {
+                doRefresh(repositoryNodeManager.getRepositoryNodeFromDB(node));
+            }
         } else {
             List<RepositoryNode> repositoryNodes = root.getChildren();
             for (RepositoryNode node : repositoryNodes) {
@@ -659,7 +659,6 @@ public class DBStructureComposite extends Composite {
         return this.isShowAllConnections;
     }
 
-    
     public DBTreeProvider getTreeLabelProvider() {
         return this.treeLabelProvider;
     }

@@ -54,11 +54,13 @@ public class ReadQueriesAction extends AContextualAction {
         ConnectionParameters connParameters = new ConnectionParameters();
         if (node.getObjectType() == ERepositoryObjectType.METADATA_CONNECTIONS) {
             connParameters.setRepositoryName(node.getObject().getLabel());
+            connParameters.setRepositoryId(node.getObject().getId());
             connParameters.setQuery("");
         } else if (node.getObjectType() == ERepositoryObjectType.METADATA_CON_QUERY) {
             QueryRepositoryObject queryRepositoryObject = (QueryRepositoryObject) node.getObject();
             DatabaseConnectionItem parent = (DatabaseConnectionItem) queryRepositoryObject.getProperty().getItem();
             connParameters.setRepositoryName(parent.getProperty().getLabel());
+            connParameters.setRepositoryId(parent.getProperty().getId());
             connParameters.setQueryObject(queryRepositoryObject.getQuery());
             connParameters.setQuery(queryRepositoryObject.getQuery().getValue());
         }
@@ -67,7 +69,7 @@ public class ReadQueriesAction extends AContextualAction {
                 IRepositoryView.VIEW_ID).getSite().getShell().getDisplay());
         TextUtil.setDialogTitle(TalendTextUtils.SQL_BUILDER_TITLE_REP);
         SQLBuilderDialog dial = new SQLBuilderDialog(parentShell);
-        
+
         connParameters.setNodeReadOnly(true);
         connParameters.setFromRepository(true);
         dial.setConnParameters(connParameters);
@@ -80,7 +82,7 @@ public class ReadQueriesAction extends AContextualAction {
         if (canWork) {
             Object o = selection.getFirstElement();
             RepositoryNode node = (RepositoryNode) o;
-            
+
             switch (node.getType()) {
             case REPOSITORY_ELEMENT:
                 IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
