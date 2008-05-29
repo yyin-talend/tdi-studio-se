@@ -1157,6 +1157,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
         } else if (repositoryType.equals(EmfComponent.REPOSITORY)) {
             String repositoryName2 = ""; //$NON-NLS-1$
+            String repositoryId = null;
             IElementParameter memoParam = elem.getElementParameter(propertyName);
 
             IElementParameter repositoryParam = elem.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE, memoParam
@@ -1165,6 +1166,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 IElementParameter itemFromRepository = repositoryParam.getChildParameters().get(
                         EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
                 String value = (String) itemFromRepository.getValue();
+                repositoryId = value;
                 for (String key : this.dynamicProperty.getRepositoryConnectionItemMap().keySet()) {
 
                     if (key.equals(value)) {
@@ -1190,6 +1192,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 builderDialog.getShell().setActive();
             } else {
                 connParameters.setRepositoryName(repositoryName2);
+                if (repositoryId != null) {
+                    connParameters.setRepositoryId(repositoryId);
+                }
                 Shell parentShell = new Shell(composite.getShell().getDisplay());
                 TextUtil.setDialogTitle(((Node) elem).getProcess().getName(), (String) ((Node) elem).getElementParameter("LABEL")
                         .getValue(), elem.getElementName());

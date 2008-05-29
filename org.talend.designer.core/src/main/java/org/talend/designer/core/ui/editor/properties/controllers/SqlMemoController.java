@@ -395,8 +395,11 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         ConnectionParameters connParameters = new ConnectionParameters();
         String queryId = (String) elem.getPropertyValue(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName());
         Query query = MetadataTool.getQueryFromRepository(queryId);
-
-        connParameters.setRepositoryName(findRepositoryName(queryId));
+        DatabaseConnectionItem item = findRepositoryItem(queryId);
+        if (item != null) {
+            connParameters.setRepositoryName(item.getProperty().getLabel());
+            connParameters.setRepositoryId(item.getProperty().getId());
+        }
         connParameters.setQueryObject(query);
         connParameters.setQuery(query.getValue());
 
@@ -424,13 +427,13 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
      * @param queryId
      * @return
      */
-    private String findRepositoryName(String queryId) {
+    private DatabaseConnectionItem findRepositoryItem(String queryId) {
         try {
             String[] names = queryId.split(" - ");
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             IRepositoryObject node = factory.getLastVersion(names[0]);
             DatabaseConnectionItem item = (DatabaseConnectionItem) node.getProperty().getItem();
-            return item.getProperty().getLabel();
+            return item;
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);
         }
