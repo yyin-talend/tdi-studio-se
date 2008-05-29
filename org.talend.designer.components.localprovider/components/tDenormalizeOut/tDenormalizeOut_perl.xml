@@ -10,7 +10,6 @@
     STARTABLE="false"
     SCHEMA_AUTO_PROPAGATE="true"
     DATA_AUTO_PROPAGATE="true"
-    VISIBLE="false"
     TECHNICAL="true"
   >
     <SIGNATURE></SIGNATURE>
