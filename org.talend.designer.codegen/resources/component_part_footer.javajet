@@ -40,7 +40,8 @@ List<IConnection> allSubProcessConnection = codeGenArgument.getAllMainSubTreeCon
 if((codePart.equals(ECodePart.END))&&(stat)&&connSet.size()>0){
   for(IConnection con:connSet){
 %>
- runStat.updateStatOnConnection("<%=con.getUniqueName() %>",2, 0); 
+ runStat.updateStatOnConnection("<%=con.getUniqueName()%>"+(threadID==-1?"":("."+threadID)),2, 0); 
+
 <%
   }
 }
@@ -153,7 +154,7 @@ end_Hash.put("<%=node.getUniqueName() %>", System.currentTimeMillis());
 				}
 				rowList = rowList.substring(0, rowList.length()-1);
 %>
-	class <%=node.getUniqueName() %>Thread extends Thread {
+	class <%=node.getUniqueName() %>Thread extends Thread {//implements routines.system.TalendThreadPool.PropertySettable
 		class ThreadedMap extends java.util.HashMap<String, Object> {
 			java.util.Map<String, Object> myMap = new java.util.HashMap<String, Object>();
 			private static final long serialVersionUID = 0L;
@@ -178,7 +179,14 @@ end_Hash.put("<%=node.getUniqueName() %>", System.currentTimeMillis());
 
 		ThreadedMap globalMap = null;
 		boolean isRunning = false;
+		int threadID = -1;
 		
+//		public void set(String name, Object threadID){
+//			if(name.equals(routines.system.TalendThreadPool.PROPERTY_NAME_WORKER_ID)){
+//				this.threadID = ((Integer)threadID).intValue();
+//				System.out.println(this.threadID);
+//			}
+//		}
 		
 <%
 			if(!subTree.isMergeSubTree()) {
@@ -213,18 +221,24 @@ end_Hash.put("<%=node.getUniqueName() %>", System.currentTimeMillis());
 			}
 %>
 	
-		public <%=node.getUniqueName() %>Thread(java.util.Map<String, Object> globalMap<%=schemaInstanceDeclaration %>) {
+		public <%=node.getUniqueName() %>Thread(java.util.Map<String, Object> globalMap<%=schemaInstanceDeclaration %>, int threadID) {
 			super();
 			<% for (IConnection conn : allSubProcessConnection) { %>
 			this.<%=conn.getUniqueName() %> = <%=conn.getUniqueName() %>;
 			<% } %>
 			this.globalMap = new ThreadedMap(globalMap);
+			this.threadID = threadID;
 		}
 		
 		public void run() {
 			this.isRunning = true;
 			try {
 <%
+	        	if(stat){
+%>
+				runStat.updateStatOnConnection("<%=iterateConn.getUniqueName() %>",0,"exec"+threadID);
+<%
+				}
 			}
 			if (codePart.equals(ECodePart.END)) {
 %>
