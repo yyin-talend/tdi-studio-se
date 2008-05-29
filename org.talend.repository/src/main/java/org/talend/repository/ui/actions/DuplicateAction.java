@@ -207,7 +207,18 @@ public class DuplicateAction extends AContextualAction {
 
         Item item = null;
 
-        if (repositoryType.equals(ERepositoryObjectType.METADATA_CONNECTIONS)) {
+        if (repositoryType.equals(ERepositoryObjectType.BUSINESS_PROCESS)) {
+            item = PropertiesFactory.eINSTANCE.createBusinessProcessItem();
+        } else if (repositoryType.equals(ERepositoryObjectType.CONTEXT)) {
+            item = PropertiesFactory.eINSTANCE.createContextItem();
+        } else if (repositoryType.equals(ERepositoryObjectType.ROUTINES)) {
+            item = PropertiesFactory.eINSTANCE.createRoutineItem();
+        } else if (repositoryType.equals(ERepositoryObjectType.SQLPATTERNS)) {
+            item = PropertiesFactory.eINSTANCE.createSQLPatternItem();
+        } else if (repositoryType.equals(ERepositoryObjectType.DOCUMENTATION)) {
+            item = PropertiesFactory.eINSTANCE.createDocumentationItem();
+            // Condition below is metadata items
+        } else if (repositoryType.equals(ERepositoryObjectType.METADATA_CONNECTIONS)) {
             item = PropertiesFactory.eINSTANCE.createDatabaseConnectionItem();
         } else if (repositoryType.equals(ERepositoryObjectType.METADATA_FILE_DELIMITED)) {
             item = PropertiesFactory.eINSTANCE.createDelimitedFileConnectionItem();

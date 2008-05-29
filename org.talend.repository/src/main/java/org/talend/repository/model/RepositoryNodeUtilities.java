@@ -65,7 +65,12 @@ public class RepositoryNodeUtilities {
             }
         } else {
             if (!isMetadataLabel(label) && !label.equals(ERepositoryObjectType.PROCESS.toString())
-                    && !label.equals(ERepositoryObjectType.JOBLET.toString())) {
+                    && !label.equals(ERepositoryObjectType.JOBLET.toString())
+                    && !label.equals(ERepositoryObjectType.CONTEXT.toString())
+                    && !label.equals(ERepositoryObjectType.ROUTINES.toString())
+                    && !label.equals(ERepositoryObjectType.SQLPATTERNS.toString())
+                    && !label.equals(ERepositoryObjectType.DOCUMENTATION.toString())
+                    && !label.equals(ERepositoryObjectType.BUSINESS_PROCESS.toString())) {
                 return getPath(node.getParent()).append(label);
             } else {
                 return getPath(node.getParent());
