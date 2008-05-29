@@ -55,11 +55,14 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.ui.metadata.editor.MetadataEmfTableEditorView;
 import org.talend.core.utils.CsvArray;
+import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.preview.ProcessDescription;
 import org.talend.repository.ui.swt.utils.AbstractWSDLSchemaStepForm;
+import org.talend.repository.ui.utils.ConnectionContextHelper;
 import org.talend.repository.ui.utils.ShadowProcessHelper;
+import org.talend.repository.ui.wizards.metadata.MetadataContextModeManager;
 
 /**
  * The class is used for wsdL schema on Repository View. <br/>
@@ -217,6 +220,7 @@ public class WSDLSchemaStep2Form extends AbstractWSDLSchemaStepForm {
      * run a ShadowProcess to determined the Metadata.
      */
     protected void runShadowProcess() {
+        initGuessSchema();
         try {
             informationLabel.setText("   " + Messages.getString("FileStep3.guessProgress")); //$NON-NLS-1$ //$NON-NLS-2$
 
@@ -512,4 +516,18 @@ public class WSDLSchemaStep2Form extends AbstractWSDLSchemaStepForm {
         }
     }
 
+    protected void initGuessSchema() {
+        if (getParent().getChildren().length == 1) { // only open table
+            if (getContextModeManager() == null) { // first
+                setContextModeManager(new MetadataContextModeManager());
+                ConnectionContextHelper.checkContextMode(connectionItem);
+            }
+            if (connectionItem.getConnection().isContextMode()) {
+                ContextType contextTypeForContextMode = ConnectionContextHelper.getContextTypeForContextMode(getShell(),
+                        connectionItem.getConnection());
+                getContextModeManager().setSelectedContextType(contextTypeForContextMode);
+            }
+
+        }
+    }
 }

@@ -136,10 +136,10 @@ public class ExcelFileStep3Form extends AbstractExcelFileStepForm {
         metadataCommentText.setReadOnly(isReadOnly());
         tableEditorView.setReadOnly(isReadOnly());
 
-        if (getParent().getChildren().length == 1) { // open the table
-            guessButton.setEnabled(false);
-            informationLabel.setVisible(false);
-        }
+        // if (getParent().getChildren().length == 1) { // open the table
+        // guessButton.setEnabled(false);
+        // informationLabel.setVisible(false);
+        // }
     }
 
     @Override
@@ -312,7 +312,7 @@ public class ExcelFileStep3Form extends AbstractExcelFileStepForm {
      * run a ShadowProcess to determined the Metadata.
      */
     protected void runShadowProcess() {
-
+        initGuessSchema();
         // if no file, the process don't be executed
         FileExcelConnection originalValueConnection = getOriginalValueConnection();
         if (originalValueConnection.getFilePath() == null || originalValueConnection.getFilePath().equals("")) { //$NON-NLS-1$

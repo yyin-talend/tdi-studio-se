@@ -26,8 +26,6 @@ import org.talend.core.model.properties.ConnectionItem;
  */
 public abstract class AbstractXmlFileStepForm extends AbstractForm {
 
-    protected ConnectionItem connectionItem;
-
     protected XmlFileConnection connection;
 
     /**
@@ -35,7 +33,7 @@ public abstract class AbstractXmlFileStepForm extends AbstractForm {
      */
     public AbstractXmlFileStepForm(Composite parent, ConnectionItem connectionItem, String[] existingNames) {
         super(parent, SWT.NONE, existingNames);
-        this.connectionItem = connectionItem;
+        setConnectionItem(connectionItem);
     }
 
     /**
@@ -54,7 +52,7 @@ public abstract class AbstractXmlFileStepForm extends AbstractForm {
     public AbstractXmlFileStepForm(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable,
             String[] existingNames) {
         super(parent, SWT.NONE, existingNames);
-        this.connectionItem = connectionItem;
+        setConnectionItem(connectionItem);
     }
 
     protected XmlFileConnection getConnection() {

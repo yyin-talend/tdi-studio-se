@@ -56,13 +56,16 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.ui.metadata.editor.MetadataEmfTableEditorView;
 import org.talend.core.utils.CsvArray;
+import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.preview.ProcessDescription;
 import org.talend.repository.preview.SalesforceSchemaBean;
 import org.talend.repository.ui.swt.utils.AbstractSalesforceStepForm;
+import org.talend.repository.ui.utils.ConnectionContextHelper;
 import org.talend.repository.ui.utils.OtherConnectionContextUtils;
 import org.talend.repository.ui.utils.ShadowProcessHelper;
+import org.talend.repository.ui.wizards.metadata.MetadataContextModeManager;
 
 /**
  * 
@@ -141,10 +144,10 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
         metadataCommentText.setReadOnly(isReadOnly());
         tableEditorView.setReadOnly(isReadOnly());
 
-        if (getParent().getChildren().length == 1) { // open the table
-            guessButton.setEnabled(false);
-            informationLabel.setVisible(false);
-        }
+        // if (getParent().getChildren().length == 1) { // open the table
+        // guessButton.setEnabled(false);
+        // informationLabel.setVisible(false);
+        // }
     }
 
     @Override
@@ -322,7 +325,7 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
      * run a ShadowProcess to determined the Metadata.
      */
     protected void runShadowProcess() {
-
+        initGuessSchema();
         SalesforceSchemaConnection originalValueConnection = getOriginalValueConnection();
         // if no file, the process don't be executed
         if (originalValueConnection.getWebServiceUrl() == null || originalValueConnection.getWebServiceUrl().equals("")) { //$NON-NLS-1$
@@ -567,5 +570,20 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
         }
         return getConnection();
 
+    }
+
+    protected void initGuessSchema() {
+        if (getParent().getChildren().length == 1) { // only open table
+            if (getContextModeManager() == null) { // first
+                setContextModeManager(new MetadataContextModeManager());
+                ConnectionContextHelper.checkContextMode(connectionItem);
+            }
+            if (connectionItem.getConnection().isContextMode()) {
+                ContextType contextTypeForContextMode = ConnectionContextHelper.getContextTypeForContextMode(getShell(),
+                        connectionItem.getConnection());
+                getContextModeManager().setSelectedContextType(contextTypeForContextMode);
+            }
+
+        }
     }
 }

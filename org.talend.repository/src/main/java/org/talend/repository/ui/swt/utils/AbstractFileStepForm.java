@@ -21,8 +21,10 @@ import org.talend.core.model.metadata.builder.connection.FileConnection;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.ui.utils.ConnectionContextHelper;
 import org.talend.repository.ui.utils.FileConnectionContextUtils.EFileParamName;
+import org.talend.repository.ui.wizards.metadata.MetadataContextModeManager;
 
 /**
  * ggu class global comment. Detailled comment
@@ -32,15 +34,12 @@ public abstract class AbstractFileStepForm extends AbstractForm {
     protected int maximumRowsToPreview = CorePlugin.getDefault().getPreferenceStore().getInt(
             ITalendCorePrefConstants.PREVIEW_LIMIT);
 
-    protected ConnectionItem connectionItem;
-
     protected FileConnection connection;
 
     private IMetadataContextModeManager contextModeManager;
 
     public AbstractFileStepForm(Composite parent, ConnectionItem connectionItem, String[] existingNames) {
         super(parent, SWT.NONE, existingNames);
-        this.connectionItem = connectionItem;
         setConnectionItem(connectionItem);
     }
 
@@ -86,5 +85,20 @@ public abstract class AbstractFileStepForm extends AbstractForm {
     protected void collectConnParams() {
         addContextParams(EFileParamName.File, true);
         addContextParams(EFileParamName.Encoding, true);
+    }
+
+    protected void initGuessSchema() {
+        if (getParent().getChildren().length == 1) { // only open table
+            if (getContextModeManager() == null) { // first
+                setContextModeManager(new MetadataContextModeManager());
+                ConnectionContextHelper.checkContextMode(connectionItem);
+            }
+            if (connectionItem.getConnection().isContextMode()) {
+                ContextType contextTypeForContextMode = ConnectionContextHelper.getContextTypeForContextMode(getShell(),
+                        connectionItem.getConnection());
+                getContextModeManager().setSelectedContextType(contextTypeForContextMode);
+            }
+
+        }
     }
 }

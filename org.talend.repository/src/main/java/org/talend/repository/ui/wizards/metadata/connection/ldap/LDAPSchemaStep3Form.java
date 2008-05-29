@@ -97,7 +97,6 @@ public class LDAPSchemaStep3Form extends AbstractLDAPSchemaStepForm implements I
      */
     public LDAPSchemaStep3Form(Composite parent, ConnectionItem connectionItem, IMetadataContextModeManager contextModeManager) {
         super(parent, connectionItem, null, null);
-        setConnectionItem(connectionItem);
         setContextModeManager(contextModeManager);
         setupForm();
     }

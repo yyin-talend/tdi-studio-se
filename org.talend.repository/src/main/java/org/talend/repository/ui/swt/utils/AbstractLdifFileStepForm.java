@@ -32,8 +32,6 @@ public abstract class AbstractLdifFileStepForm extends AbstractForm {
     protected int maximumRowsToPreview = CorePlugin.getDefault().getPreferenceStore().getInt(
             ITalendCorePrefConstants.PREVIEW_LIMIT);
 
-    protected ConnectionItem connectionItem;
-
     protected LdifFileConnection connection;
 
     private IMetadataContextModeManager contextModeManager;
@@ -43,7 +41,7 @@ public abstract class AbstractLdifFileStepForm extends AbstractForm {
      */
     public AbstractLdifFileStepForm(Composite parent, ConnectionItem connectionItem, String[] existingNames) {
         super(parent, SWT.NONE, existingNames);
-        this.connectionItem = connectionItem;
+        setConnectionItem(connectionItem);
     }
 
     /**
@@ -62,7 +60,7 @@ public abstract class AbstractLdifFileStepForm extends AbstractForm {
     public AbstractLdifFileStepForm(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable,
             String[] existingNames) {
         super(parent, SWT.NONE, existingNames);
-        this.connectionItem = connectionItem;
+        setConnectionItem(connectionItem);
     }
 
     protected LdifFileConnection getConnection() {

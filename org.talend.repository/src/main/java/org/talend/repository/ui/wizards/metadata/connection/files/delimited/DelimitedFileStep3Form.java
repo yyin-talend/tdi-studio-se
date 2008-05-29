@@ -141,10 +141,10 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
         metadataCommentText.setReadOnly(isReadOnly());
         tableEditorView.setReadOnly(isReadOnly());
 
-        if (getParent().getChildren().length == 1) { // open the table
-            guessButton.setEnabled(false);
-            informationLabel.setVisible(false);
-        }
+        // if (getParent().getChildren().length == 1) { // open the table
+        // guessButton.setEnabled(false);
+        // informationLabel.setVisible(false);
+        // }
     }
 
     @Override
@@ -318,7 +318,7 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
      * run a ShadowProcess to determined the Metadata.
      */
     protected void runShadowProcess() {
-
+        initGuessSchema();
         // if no file, the process don't be executed
         DelimitedFileConnection originalValueConnection = getOriginalValueConnection();
         if (originalValueConnection.getFilePath() == null || originalValueConnection.getFilePath().equals("")) { //$NON-NLS-1$

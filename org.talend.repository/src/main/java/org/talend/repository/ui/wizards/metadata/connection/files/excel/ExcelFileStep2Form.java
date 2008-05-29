@@ -196,6 +196,8 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
             } else {
                 decimalSeparatorText.setText(ds);
             }
+            thousandSeparaotrText.setEnabled(advanceSeparatorCheckbox.getSelection());
+            decimalSeparatorText.setEnabled(advanceSeparatorCheckbox.getSelection());
         }
 
         checkFieldsValue();
@@ -1081,9 +1083,9 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
             if (isReadOnly() != readOnly) {
                 adaptFormToReadOnly();
             }
-            if (isContextMode()) {
-                adaptFormToEditable();
-            }
+
+            adaptFormToEditable();
+
         }
     }
 

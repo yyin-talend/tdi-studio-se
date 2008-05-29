@@ -26,8 +26,6 @@ import org.talend.repository.ui.utils.OtherConnectionContextUtils;
  */
 public abstract class AbstractWSDLSchemaStepForm extends AbstractForm {
 
-    protected ConnectionItem connectionItem;
-
     protected MetadataTable metadataTable;
 
     protected WSDLSchemaConnection connection;
@@ -39,7 +37,7 @@ public abstract class AbstractWSDLSchemaStepForm extends AbstractForm {
     public AbstractWSDLSchemaStepForm(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable,
             String[] existingNames) {
         super(parent, SWT.NONE, existingNames);
-        this.connectionItem = connectionItem;
+        setConnectionItem(connectionItem);
         this.connection = getConnection();
         this.metadataTable = metadataTable;
     }

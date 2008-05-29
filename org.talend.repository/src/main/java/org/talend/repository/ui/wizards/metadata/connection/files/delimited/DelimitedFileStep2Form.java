@@ -1008,19 +1008,19 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
             // { "Tabulation", "Semicolon", "Comma", "Space", "''(Alt 65, #A4)", "Custom ANSI", "Custom UTF8",
             switch (fieldSeparatorCombo.getSelectionIndex()) {
             case 0:
-                fieldSeparatorText.setText(TalendTextUtils.QUOTATION_MARK + ";" + TalendTextUtils.QUOTATION_MARK); //$NON-NLS-1$
+                fieldSeparatorText.setText(TalendTextUtils.addQuotes(";")); //$NON-NLS-1$
                 break;
             case 1:
-                fieldSeparatorText.setText(TalendTextUtils.QUOTATION_MARK + "," + TalendTextUtils.QUOTATION_MARK); //$NON-NLS-1$
+                fieldSeparatorText.setText(TalendTextUtils.addQuotes(",")); //$NON-NLS-1$
                 break;
             case 2:
-                fieldSeparatorText.setText(TalendTextUtils.QUOTATION_MARK + ("\\t") + TalendTextUtils.QUOTATION_MARK); //$NON-NLS-1$
+                fieldSeparatorText.setText(TalendTextUtils.addQuotes("\\t")); //$NON-NLS-1$
                 break;
             case 3:
-                fieldSeparatorText.setText(TalendTextUtils.QUOTATION_MARK + " " + TalendTextUtils.QUOTATION_MARK); //$NON-NLS-1$
+                fieldSeparatorText.setText(TalendTextUtils.addQuotes(" ")); //$NON-NLS-1$
                 break;
             case 4:
-                fieldSeparatorText.setText(TalendTextUtils.QUOTATION_MARK + "''" + TalendTextUtils.QUOTATION_MARK); //$NON-NLS-1$
+                fieldSeparatorText.setText(TalendTextUtils.addQuotes("''")); //$NON-NLS-1$
                 break;
             default:
                 break;

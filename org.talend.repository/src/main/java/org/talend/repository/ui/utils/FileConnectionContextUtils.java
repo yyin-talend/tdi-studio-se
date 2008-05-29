@@ -77,7 +77,11 @@ public final class FileConnectionContextUtils {
                 paramName = prefixName + fileParam;
                 switch (fileParam) {
                 case File:
-                    ConnectionContextHelper.createParameters(varList, paramName, conn.getFilePath(), JavaTypesManager.FILE);
+                    String filePath = conn.getFilePath();
+                    if (LANGUAGE == ECodeLanguage.PERL) {
+                        filePath = TalendTextUtils.addQuotes(filePath);
+                    }
+                    ConnectionContextHelper.createParameters(varList, paramName, filePath, JavaTypesManager.FILE);
                     break;
                 case Encoding:
                     ConnectionContextHelper.createParameters(varList, paramName, conn.getEncoding());
@@ -98,9 +102,12 @@ public final class FileConnectionContextUtils {
                     }
                     break;
                 case FieldSeparator:
+                    if (conn instanceof DelimitedFileConnection || conn instanceof PositionalFileConnection) {
+                        ConnectionContextHelper.createParameters(varList, paramName, conn.getFieldSeparatorValue());
+                    }
+                    break;
                 case RegExpression:
-                    if (conn instanceof DelimitedFileConnection || conn instanceof PositionalFileConnection
-                            || conn instanceof RegexpFileConnection) {
+                    if (conn instanceof RegexpFileConnection) {
                         ConnectionContextHelper.createParameters(varList, paramName, conn.getFieldSeparatorValue());
                     }
                     break;

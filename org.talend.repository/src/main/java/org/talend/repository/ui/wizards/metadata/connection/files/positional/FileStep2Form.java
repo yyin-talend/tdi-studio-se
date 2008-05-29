@@ -857,7 +857,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
                     // get and clean the FieldSeparatorValue
                     String value = getValidateFieldSeparator(fieldSeparatorText.getText());
                     Point selection = fieldSeparatorText.getSelection();
-                    String temp = TalendTextUtils.QUOTATION_MARK + value + TalendTextUtils.QUOTATION_MARK;
+                    String temp = TalendTextUtils.addQuotes(value);
                     if (!(temp.equals(fieldSeparatorText.getText()))) {
                         fieldSeparatorText.setText(temp);
                     }
@@ -966,8 +966,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
         }
 
         if (!fieldSeparatorText.getText().equals(
-                TalendTextUtils.QUOTATION_MARK + getValidateFieldSeparator(fieldSeparatorText.getText())
-                        + TalendTextUtils.QUOTATION_MARK)) {
+                TalendTextUtils.addQuotes(getValidateFieldSeparator(fieldSeparatorText.getText())))) {
             updateStatus(IStatus.ERROR, Messages.getString("FileStep2.fieldSeparatorAlert")); //$NON-NLS-1$
             return false;
         }

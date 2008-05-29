@@ -44,8 +44,6 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
     protected int maximumRowsToPreview = CorePlugin.getDefault().getPreferenceStore().getInt(
             ITalendCorePrefConstants.PREVIEW_LIMIT);
 
-    protected ConnectionItem connectionItem;
-
     protected SalesforceSchemaConnection connection;
 
     protected AbstractNode fakeSalesforceNode = null;
@@ -59,7 +57,7 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
     public AbstractSalesforceStepForm(Composite parent, ConnectionItem connectionItem, String[] existingNames,
             SalesforceModuleParseAPI salesforceAPI) {
         super(parent, SWT.NONE, existingNames);
-        this.connectionItem = connectionItem;
+        setConnectionItem(connectionItem);
         this.salesforceAPI = salesforceAPI;
     }
 
@@ -70,7 +68,7 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
     public AbstractSalesforceStepForm(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable,
             String[] existingNames, SalesforceModuleParseAPI salesforceAPI) {
         super(parent, SWT.NONE, existingNames);
-        this.connectionItem = connectionItem;
+        setConnectionItem(connectionItem);
         this.salesforceAPI = salesforceAPI;
     }
 

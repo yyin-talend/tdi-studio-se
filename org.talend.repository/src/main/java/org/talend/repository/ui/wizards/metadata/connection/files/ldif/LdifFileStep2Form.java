@@ -378,8 +378,6 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm implements IRefr
                 filePath = TalendTextUtils.removeQuotes(filePath);
                 originalValueConnection = (LdifFileConnection) OtherConnectionContextUtils.cloneOriginalValueLdifFileConnection(
                         getConnection(), getContextModeManager().getSelectedContextType());
-            } else {
-                filePath = null;
             }
 
             // if no file, the process don't be executed

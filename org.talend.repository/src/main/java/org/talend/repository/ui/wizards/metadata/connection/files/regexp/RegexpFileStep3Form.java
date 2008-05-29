@@ -140,10 +140,10 @@ public class RegexpFileStep3Form extends AbstractRegexpFileStepForm {
         metadataCommentText.setReadOnly(isReadOnly());
         tableEditorView.setReadOnly(isReadOnly());
 
-        if (getParent().getChildren().length == 1) { // open the table
-            guessButton.setEnabled(false);
-            informationLabel.setVisible(false);
-        }
+        // if (getParent().getChildren().length == 1) { // open the table
+        // guessButton.setEnabled(false);
+        // informationLabel.setVisible(false);
+        // }
     }
 
     @Override
@@ -313,6 +313,7 @@ public class RegexpFileStep3Form extends AbstractRegexpFileStepForm {
      * run a ShadowProcess to determined the Metadata.
      */
     protected void runShadowProcess() {
+        initGuessSchema();
         RegexpFileConnection originalValueConnection = getOriginalValueConnection();
         // if no file, the process don't be executed
         if (originalValueConnection.getFilePath() == null || originalValueConnection.getFilePath().equals("")) { //$NON-NLS-1$

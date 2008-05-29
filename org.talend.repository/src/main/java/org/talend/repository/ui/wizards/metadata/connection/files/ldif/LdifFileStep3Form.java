@@ -53,12 +53,15 @@ import org.talend.core.model.metadata.types.PerlTypesManager;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.ui.metadata.editor.MetadataEmfTableEditorView;
 import org.talend.core.utils.CsvArray;
+import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.preview.ProcessDescription;
 import org.talend.repository.ui.swt.utils.AbstractLdifFileStepForm;
+import org.talend.repository.ui.utils.ConnectionContextHelper;
 import org.talend.repository.ui.utils.OtherConnectionContextUtils;
 import org.talend.repository.ui.utils.ShadowProcessHelper;
+import org.talend.repository.ui.wizards.metadata.MetadataContextModeManager;
 
 /**
  * @author ocarbone
@@ -100,9 +103,7 @@ public class LdifFileStep3Form extends AbstractLdifFileStepForm {
     public LdifFileStep3Form(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable,
             String[] existingNames, IMetadataContextModeManager contextModeManager) {
         super(parent, connectionItem, metadataTable, existingNames);
-        this.connectionItem = connectionItem;
         this.metadataTable = metadataTable;
-        setConnectionItem(connectionItem);
         setContextModeManager(contextModeManager);
         setupForm();
     }
@@ -139,10 +140,10 @@ public class LdifFileStep3Form extends AbstractLdifFileStepForm {
         metadataCommentText.setReadOnly(isReadOnly());
         tableEditorView.setReadOnly(isReadOnly());
 
-        if (getParent().getChildren().length == 1) { // open the table
-            guessButton.setEnabled(false);
-            informationLabel.setVisible(false);
-        }
+        // if (getParent().getChildren().length == 1) { // open the table
+        // guessButton.setEnabled(false);
+        // informationLabel.setVisible(false);
+        // }
     }
 
     @Override
@@ -303,6 +304,7 @@ public class LdifFileStep3Form extends AbstractLdifFileStepForm {
      * run a ShadowProcess to determined the Metadata.
      */
     protected void runShadowProcess() {
+        initGuessSchema();
         LdifFileConnection originalValueConnection = getOriginalValueConnection();
         // if no file, the process don't be executed
         if (originalValueConnection.getFilePath() == null || originalValueConnection.getFilePath().equals("")) { //$NON-NLS-1$
@@ -548,5 +550,20 @@ public class LdifFileStep3Form extends AbstractLdifFileStepForm {
         }
         return getConnection();
 
+    }
+
+    protected void initGuessSchema() {
+        if (getParent().getChildren().length == 1) { // only open table
+            if (getContextModeManager() == null) { // first
+                setContextModeManager(new MetadataContextModeManager());
+                ConnectionContextHelper.checkContextMode(connectionItem);
+            }
+            if (connectionItem.getConnection().isContextMode()) {
+                ContextType contextTypeForContextMode = ConnectionContextHelper.getContextTypeForContextMode(getShell(),
+                        connectionItem.getConnection());
+                getContextModeManager().setSelectedContextType(contextTypeForContextMode);
+            }
+
+        }
     }
 }
