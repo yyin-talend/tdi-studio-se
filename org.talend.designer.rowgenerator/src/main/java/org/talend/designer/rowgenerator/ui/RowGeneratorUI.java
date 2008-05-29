@@ -261,7 +261,6 @@ public class RowGeneratorUI {
         rowGenUIParent.addDisposeListener(new DisposeListener() {
 
             public void widgetDisposed(DisposeEvent e) {
-                uiManager.closeRowGenerator(SWT.CANCEL);
                 release();
             }
         });
@@ -269,7 +268,7 @@ public class RowGeneratorUI {
 
             public void handleEvent(Event event) {
                 if (uiManager.getRowGenResponse() == SWT.NONE) {
-                    uiManager.setRowGenResponse(SWT.CANCEL);
+                    uiManager.closeRowGenerator(SWT.CANCEL);
                 }
             }
 

@@ -118,7 +118,12 @@ public class UIManager {
         saveCurrentUIProperties();
         MetadataTable table = (MetadataTable) rgManager.getRowGeneratorComponent().getMetadataList().get(0);
         boolean hasColumns = (table != null) && (table.getListColumns() != null && (table.getListColumns().size() != 0));
-        if (hasColumns && response == SWT.CANCEL) {
+        List<Map<String, Object>> originalColumnDataList = this.getRowGenManager().getRowGeneratorComponent().getMapList();
+        List<Map<String, Object>> currentColumnDataList = getCurrentColumnData();
+        boolean containsAll1 = originalColumnDataList.containsAll(currentColumnDataList);
+        boolean containsAll2 = currentColumnDataList.containsAll(originalColumnDataList);
+        boolean containsAll = containsAll1 && containsAll2;
+        if (hasColumns && !containsAll && response == SWT.CANCEL) {
             boolean isSaveSetting = MessageDialog.openQuestion(parent.getShell(), Messages
                     .getString("UIManager.MessageBox.title"), Messages.getString("UIManager.MessageBox.Content"));
             if (isSaveSetting) {
@@ -129,7 +134,7 @@ public class UIManager {
             }
         }
         if (response == SWT.OK) {
-            saveAllData();
+            saveAllData(currentColumnDataList);
         }
         if (parent instanceof Shell) {
             ((Shell) parent).close();
@@ -137,9 +142,17 @@ public class UIManager {
     }
 
     /**
-     * qzhang Comment method "saveAllData".
+     * ftang Comment method "saveAllData".
      */
-    private void saveAllData() {
+    private void saveAllData(List<Map<String, Object>> map) {
+        rgManager.getRowGeneratorComponent().setTableElementParameter(map);
+        rgManager.getRowGeneratorComponent().setNumber(generatorUI.getDataTableView().getExtendedToolbar().getNumRows());
+    }
+
+    /**
+     * ftang Comment method "saveAllData".
+     */
+    private List<Map<String, Object>> getCurrentColumnData() {
         List<Map<String, Object>> map = new ArrayList<Map<String, Object>>();
         MetadataTable table = (MetadataTable) rgManager.getRowGeneratorComponent().getMetadataList().get(0);
         for (IMetadataColumn col : table.getListColumns()) {
@@ -149,9 +162,7 @@ public class UIManager {
             value.put(RowGeneratorComponent.ARRAY, FunctionManagerExt.getOneColData(ext));
             map.add(value);
         }
-        rgManager.getRowGeneratorComponent().setTableElementParameter(map);
-        rgManager.getRowGeneratorComponent().setNumber(generatorUI.getDataTableView().getExtendedToolbar().getNumRows());
-
+        return map;
     }
 
     /**
