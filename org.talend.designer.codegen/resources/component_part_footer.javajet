@@ -116,7 +116,7 @@ end_Hash.put("<%=node.getUniqueName() %>", System.currentTimeMillis());
    for (INode statCatcherNode : node.getProcess().getNodesOfType("tStatCatcher")) {
 %>
 <%=statCatcherNode.getUniqueName() %>.addMessage("end","<%=node.getUniqueName() %>", end_Hash.get("<%=node.getUniqueName() %>")-start_Hash.get("<%=node.getUniqueName() %>"));
-<%=statCatcherNode.getUniqueName() %>Process();
+<%=statCatcherNode.getDesignSubjobStartNode().getUniqueName() %>Process();
 <%
    }
   }

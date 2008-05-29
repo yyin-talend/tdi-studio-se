@@ -59,7 +59,7 @@
 			for (INode metterCatcher : metterCatchers) {
 				
 %>
-	<%=metterCatcher.getUniqueName() %>Process();
+	<%=metterCatcher.getDesignSubjobStartNode().getUniqueName() %>Process();
 <%      
 
 			}

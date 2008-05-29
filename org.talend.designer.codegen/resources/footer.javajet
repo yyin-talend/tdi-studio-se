@@ -341,7 +341,7 @@
 %>
 		<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>.addMessage(status==""?"end":status, (end-startTime));
 		try {
-			<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>Process();
+			<%=process.getName() %>Class.<%=statCatcherNode.getDesignSubjobStartNode().getUniqueName() %>Process();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

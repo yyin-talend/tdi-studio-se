@@ -93,7 +93,7 @@ start_Hash.put("<%=node.getUniqueName() %>", System.currentTimeMillis());
 			for (INode statCatcherNode : node.getProcess().getNodesOfType("tStatCatcher")) {
 %>
 <%=statCatcherNode.getUniqueName() %>.addMessage("begin","<%=node.getUniqueName() %>");
-<%=statCatcherNode.getUniqueName() %>Process();
+<%=statCatcherNode.getDesignSubjobStartNode().getUniqueName() %>Process();
 <%
 			}
 		}

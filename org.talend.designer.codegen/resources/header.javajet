@@ -239,7 +239,7 @@ private class TalendException extends Exception {
 				if (ElementParameterParser.getValue(logCatcher, "__CATCH_JAVA_EXCEPTION__").equals("true")) {
 					// 2) launch logCatcher subProcess
 %>
-			<%=logCatcher.getUniqueName() %>Process();
+			<%=logCatcher.getDesignSubjobStartNode().getUniqueName() %>Process();
 <%
 				}
 			}
@@ -306,7 +306,7 @@ private class TalendException extends Exception {
                                 %>
                                 if(!(exception instanceof TDieException)){
                                     <%=assertCatcher.getUniqueName()%>.addMessage(pid, projectName, jobName, "java", null, "Failed", "Job execution error", exception.getMessage());
-                                    <%=assertCatcher.getUniqueName()%>Process();
+                                    <%=assertCatcher.getDesignSubjobStartNode().getUniqueName() %>Process();
                                 }
                                 <%
                             }
@@ -319,7 +319,7 @@ private class TalendException extends Exception {
                 		for (INode statCatcherNode : node.getProcess().getNodesOfType("tStatCatcher")) {
                 		    %>
                 		    <%=statCatcherNode.getUniqueName() %>.addMessage("failure","<%=node.getUniqueName() %>", end_Hash.get("<%=node.getUniqueName() %>")-start_Hash.get("<%=node.getUniqueName() %>"));
-                		    <%=statCatcherNode.getUniqueName() %>Process();
+                		    <%=statCatcherNode.getDesignSubjobStartNode().getUniqueName() %>Process();
                 		    <%
                 		}
                 	}
