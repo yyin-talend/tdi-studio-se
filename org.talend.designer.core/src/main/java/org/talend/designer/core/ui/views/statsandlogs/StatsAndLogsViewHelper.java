@@ -451,11 +451,12 @@ public class StatsAndLogsViewHelper {
                         item = UpdateRepositoryUtils.getConnectionItemByItemId(itemId);
                     }
                 }
-
-                PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.PROPERTY_TYPE.getName(), propertyType);
-                PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), itemId);
-                PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.REPOSITORY_PROPERTY_TYPE.getName()
-                        + StatsAndLogsPreferencePage.CONNECTION_ITEM_LABEL, item.getProperty().getLabel());
+                if (item != null) {
+                    PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.PROPERTY_TYPE.getName(), propertyType);
+                    PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), itemId);
+                    PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.REPOSITORY_PROPERTY_TYPE.getName()
+                            + StatsAndLogsPreferencePage.CONNECTION_ITEM_LABEL, item.getProperty().getLabel());
+                }
             }
         }
     }
