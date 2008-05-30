@@ -1152,8 +1152,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
             if (connParameters.isShowConfigParamDialog()) {
                 initConnectionParametersWithContext(elem, part.getTalendEditor().getProcess().getContextManager()
                         .getDefaultContext());
-                openSqlBuilderBuildIn(connParameters, propertyName);
             }
+            openSqlBuilderBuildIn(connParameters, propertyName);
 
         } else if (repositoryType.equals(EmfComponent.REPOSITORY)) {
             String repositoryName2 = ""; //$NON-NLS-1$
