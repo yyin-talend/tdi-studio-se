@@ -858,6 +858,11 @@
             id="org.talend.repository.model.migration.ChangeSqlPatternValueMigrationTask"
             name="Change sql pattern value">
       </projecttask>
+      <projecttask
+            class="org.talend.repository.model.migration.RenametForCurrentIterationMigrationTask"
+            id="org.talend.repository.model.migration.RenametForCurrentIterationMigrationTask"
+            name="rename tFor_ variable to tLoop_ variable">
+      </projecttask>
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">
