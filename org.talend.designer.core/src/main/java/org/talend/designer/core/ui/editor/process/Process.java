@@ -956,7 +956,9 @@ public class Process extends Element implements IProcess2 {
      * @param process
      */
     public void loadXmlFile() {
-        property = ProcessorUtilities.getProcessItem(property.getId(), property.getVersion()).getProperty();
+        if (property.getItem() instanceof ProcessItem) {
+            property = ProcessorUtilities.getProcessItem(property.getId(), property.getVersion()).getProperty();
+        }
         init();
         Hashtable<String, Node> nodesHashtable = new Hashtable<String, Node>();
 
