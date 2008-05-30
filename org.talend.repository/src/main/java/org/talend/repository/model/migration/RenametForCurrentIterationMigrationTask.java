@@ -53,7 +53,7 @@ public class RenametForCurrentIterationMigrationTask extends AbstractJobMigratio
                 ElementParameterType elemType = (ElementParameterType) elem;
                 if (!elemType.getField().equals("CHECK")) {
 
-                    if (elemType.getValue().contains("tFor_")) {
+                    if (!(elemType.getValue() == null) && elemType.getValue().contains("tFor_")) {
                         elemType.setValue(elemType.getValue().replaceAll("tFor_", "tLoop_"));
                         modified = true;
 
