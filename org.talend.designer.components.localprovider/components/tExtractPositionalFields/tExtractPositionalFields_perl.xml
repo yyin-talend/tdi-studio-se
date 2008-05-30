@@ -69,7 +69,11 @@
 
   </ADVANCED_PARAMETERS>
 
-  <CODEGENERATION/>
+  <CODEGENERATION>
+    <IMPORTS>
+      <IMPORT NAME="Text-Trim" MODULE="Text::Trim" REQUIRED="false" />
+    </IMPORTS>
+  </CODEGENERATION>
 
   <RETURNS/>
 
