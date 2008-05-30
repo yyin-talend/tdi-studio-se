@@ -71,7 +71,7 @@ public abstract class JobScriptsManager {
         exportChoiceMap.put(ExportChoice.needJob, true);
         exportChoiceMap.put(ExportChoice.needSource, true);
         exportChoiceMap.put(ExportChoice.needContext, true);
-        exportChoiceMap.put(ExportChoice.applyToChildren, true);
+        exportChoiceMap.put(ExportChoice.applyToChildren, false);
         exportChoiceMap.put(ExportChoice.doNotCompileCode, false);
         return exportChoiceMap;
     }
