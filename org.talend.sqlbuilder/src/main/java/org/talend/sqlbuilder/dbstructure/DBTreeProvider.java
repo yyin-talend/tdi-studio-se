@@ -222,9 +222,10 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
         if (!connectionParameters.isRepository()) {
             addNode(treeRoot, repositoryNodeManager.getRepositoryNodeByBuildIn(treeRoot, connectionParameters).getObject(), true,
                     null);
+        } else {
+            Container metadataConnection = getMetadataConnection();
+            convert(metadataConnection, treeRoot, ERepositoryObjectType.METADATA_CONNECTIONS);
         }
-        Container metadataConnection = getMetadataConnection();
-        convert(metadataConnection, treeRoot, ERepositoryObjectType.METADATA_CONNECTIONS);
     }
 
     /**

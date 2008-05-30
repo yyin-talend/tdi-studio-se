@@ -81,8 +81,7 @@ public class BuildInDBStructure extends SashForm {
     /**
      * qzhang BuildInDBStructure constructor comment.
      */
-    public BuildInDBStructure(Composite parent, int style, SQLBuilderDialog dialog,
-            ConnectionParameters connectionParameters) {
+    public BuildInDBStructure(Composite parent, int style, SQLBuilderDialog dialog, ConnectionParameters connectionParameters) {
         super(parent, style);
         this.dialog = dialog;
         this.metadataTable = connectionParameters.getMetadataTable();
@@ -99,9 +98,10 @@ public class BuildInDBStructure extends SashForm {
      * @return
      */
     private String getTableName(ConnectionParameters connectionParameters) {
-        String string = (connectionParameters.getSchemaName() != null && !connectionParameters.getSchemaName().equals(
-                "")) ? connectionParameters.getSchemaName() : schema;
-        int indexOf = string.indexOf(".");
+        String string = (connectionParameters.getSchemaName() != null && !connectionParameters.getSchemaName().equals("")) ? connectionParameters
+                .getSchemaName()
+                : schema;
+        int indexOf = string.lastIndexOf(".");
         if (indexOf > -1) {
             string = TalendTextUtils.removeQuotes(string.substring(indexOf + 1));
         }
@@ -249,14 +249,13 @@ public class BuildInDBStructure extends SashForm {
             String sql = "select ";
             String newschema = TalendTextUtils.addQuotesWithSpaceField(schema, connectionParameters.getDbType());
             for (IMetadataColumn column : selectedNodes) {
-                sql += TextUtil.addSqlQuots(connectionParameters.getDbType(), TalendTextUtils.addQuotesWithSpaceField(
-                        column.getOriginalDbColumnName(), connectionParameters.getDbType()), newschema)
+                sql += TextUtil.addSqlQuots(connectionParameters.getDbType(), TalendTextUtils.addQuotesWithSpaceField(column
+                        .getOriginalDbColumnName(), connectionParameters.getDbType()), newschema)
                         + ", ";
             }
             sql = sql.substring(0, sql.length() - 2);
             sql += "\nfrom "
-                    + TextUtil.addSqlQuots(connectionParameters.getDbType(), newschema, connectionParameters
-                            .getSchema());
+                    + TextUtil.addSqlQuots(connectionParameters.getDbType(), newschema, connectionParameters.getSchema());
             return sql;
         }
 
