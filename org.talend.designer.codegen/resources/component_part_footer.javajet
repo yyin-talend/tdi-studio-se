@@ -40,7 +40,8 @@ List<IConnection> allSubProcessConnection = codeGenArgument.getAllMainSubTreeCon
 if((codePart.equals(ECodePart.END))&&(stat)&&connSet.size()>0){
   for(IConnection con:connSet){
 %>
- runStat.updateStatOnConnection("<%=con.getUniqueName()%>"+(threadID==-1?"":("."+threadID)),2, 0); 
+ runStat.updateStatOnConnection("<%=con.getUniqueName()%>"
+ 	+(globalMap.get("PARALLEL_ITERATOR_THREAD_ID")!=null?("."+globalMap.get("PARALLEL_ITERATOR_THREAD_ID")):""),2, 0); 
 
 <%
   }
@@ -179,14 +180,6 @@ end_Hash.put("<%=node.getUniqueName() %>", System.currentTimeMillis());
 
 		ThreadedMap globalMap = null;
 		boolean isRunning = false;
-		int threadID = -1;
-		
-//		public void set(String name, Object threadID){
-//			if(name.equals(routines.system.TalendThreadPool.PROPERTY_NAME_WORKER_ID)){
-//				this.threadID = ((Integer)threadID).intValue();
-//				System.out.println(this.threadID);
-//			}
-//		}
 		
 <%
 			if(!subTree.isMergeSubTree()) {
@@ -227,8 +220,9 @@ end_Hash.put("<%=node.getUniqueName() %>", System.currentTimeMillis());
 			this.<%=conn.getUniqueName() %> = <%=conn.getUniqueName() %>;
 			<% } %>
 			this.globalMap = new ThreadedMap(globalMap);
-			this.threadID = threadID;
+			this.globalMap.myMap.put("PARALLEL_ITERATOR_THREAD_ID",Integer.toString(threadID));
 		}
+
 		
 		public void run() {
 			this.isRunning = true;
@@ -236,7 +230,7 @@ end_Hash.put("<%=node.getUniqueName() %>", System.currentTimeMillis());
 <%
 	        	if(stat){
 %>
-				runStat.updateStatOnConnection("<%=iterateConn.getUniqueName() %>",0,"exec"+threadID);
+				runStat.updateStatOnConnection("<%=iterateConn.getUniqueName() %>",0,"exec"+(String)globalMap.get("PARALLEL_ITERATOR_THREAD_ID"));
 <%
 				}
 			}
