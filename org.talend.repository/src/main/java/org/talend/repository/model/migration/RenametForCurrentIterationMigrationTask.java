@@ -21,6 +21,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
+import org.talend.designer.core.model.utils.emf.talendfile.ElementValueType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.repository.model.ProxyRepositoryFactory;
 
@@ -29,6 +30,10 @@ import org.talend.repository.model.ProxyRepositoryFactory;
  * 
  */
 public class RenametForCurrentIterationMigrationTask extends AbstractJobMigrationTask {
+
+    private final static String TFOR = "tFor_";
+
+    private final static String TLOOP = "tLoop_";
 
     public ExecutionResult executeOnProcess(ProcessItem item) {
         try {
@@ -53,11 +58,23 @@ public class RenametForCurrentIterationMigrationTask extends AbstractJobMigratio
                 ElementParameterType elemType = (ElementParameterType) elem;
                 if (!elemType.getField().equals("CHECK")) {
 
-                    if (!(elemType.getValue() == null) && elemType.getValue().contains("tFor_")) {
-                        elemType.setValue(elemType.getValue().replaceAll("tFor_", "tLoop_"));
+                    if (elemType.getValue() != null && elemType.getValue().contains(TFOR)) {
+
+                        elemType.setValue(elemType.getValue().replaceAll(TFOR, TLOOP));
                         modified = true;
 
                     }
+
+                    // for table
+                    EList elemValue = elemType.getElementValue();
+                    for (Object elemV : elemValue) {
+                        ElementValueType elemVal = (ElementValueType) elemV;
+                        if (elemVal.getValue() != null && elemVal.getValue().contains(TFOR)) {
+                            elemVal.setValue(elemVal.getValue().replaceAll(TFOR, TLOOP));
+                            modified = true;
+                        }
+                    }
+
                 }
             }
 
