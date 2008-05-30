@@ -114,8 +114,12 @@ for (int i=0; i<contextParams.size(); i++) {
     <%
         }
     %>
-    
-    globalMap.put("<%=cid %>_CHILD_RETURN_CODE", <%=childJob %>.errorCode);
+        
+	if(<%=childJob %>.errorCode == null){
+		globalMap.put("<%=cid %>_CHILD_RETURN_CODE", <%=childJob %>.status != null && <%=childJob %>.status.equals("failure") ? 1 : 0);
+	}else{
+		globalMap.put("<%=cid %>_CHILD_RETURN_CODE", <%=childJob %>.errorCode);
+	}
     
     <% 
     	if (dieOnError) {
