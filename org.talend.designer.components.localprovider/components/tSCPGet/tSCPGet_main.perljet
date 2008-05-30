@@ -29,16 +29,12 @@ for (Map<String, String> file : filelist) {
 my $source = <%=file.get("SOURCE")%>;
 my $destination = <%=file.get("DESTINATION")%>;
 
-printf("%10s: %s\n", 'before', $destination);
-
 if (-d $destination) {
     $destination = File::Spec->catfile(
         $destination,
         basename($source)
     );
 }
-
-printf("%10s: %s\n", 'after', $destination);
 
 if (-e $destination) {
 <%
