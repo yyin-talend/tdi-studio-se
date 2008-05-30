@@ -21,7 +21,6 @@ import java.util.Vector;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.codegen.jet.JETException;
-import org.talend.commons.CommonsPlugin;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
@@ -37,7 +36,6 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.temp.ECodePart;
-import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.codegen.config.CloseBlocksCodeArgument;
 import org.talend.designer.codegen.config.CodeGeneratorArgument;
 import org.talend.designer.codegen.config.EInternalTemplate;
@@ -397,7 +395,6 @@ public class CodeGenerator implements ICodeGenerator {
         boolean running = false;
         // check the mutli-thread parameter in Job Settings.
         if (process != null) {
-            // EParameterName.MULTI_THREAD_EXECATION.getName
             IElementParameter parameter = process.getElementParameter("MULTI_THREAD_EXECATION"); //$NON-NLS-1$
             if (parameter != null) {
                 Object obj = parameter.getValue();
@@ -406,17 +403,6 @@ public class CodeGenerator implements ICodeGenerator {
                 }
             }
         }
-
-        // when the job setting is false, check the preference settings
-        if (!running) {
-            // this preferencestore initialize epic preferencestore
-            // and the epic's preferencestore initializer instanciate swt objects !
-            // so in headless mode, we'll always use MultiThreading by default
-            if (!CommonsPlugin.isHeadless()) {
-                running = CorePlugin.getDefault().getPreferenceStore().getBoolean(ITalendCorePrefConstants.RUN_IN_MULTI_THREAD);
-            }
-        }
-
         return running;
     }
 
