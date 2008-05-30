@@ -200,7 +200,7 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
             schemaField.getTextControl(parent).setEditable(visible);
         }
 
-        if (url.isAddtionParamsNeeded()) {
+        if (url.isAddtionParamsNeeded() && additionParamField != null) {
             additionParamField.getTextControl(parent).setEditable(visible);
         }
 
@@ -253,15 +253,15 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         } else {
             dabasePathField.getTextControl(parent).setText("");
         }
-
-        if (additionParamField.getTextControl(parent).isEnabled()) {
-            additionParamField.getTextControl(parent).setText(
-                    conn.getAdditionalParams() == null ? "" : TalendTextUtils.addQuotes(conn.getAdditionalParams()));
-            additionParamField.getTextControl(parent).setEditable(false);
-        } else {
-            additionParamField.getTextControl(parent).setText("");
+        if (additionParamField != null) {
+            if (additionParamField.getTextControl(parent).isEnabled()) {
+                additionParamField.getTextControl(parent).setText(
+                        conn.getAdditionalParams() == null ? "" : TalendTextUtils.addQuotes(conn.getAdditionalParams()));
+                additionParamField.getTextControl(parent).setEditable(false);
+            } else {
+                additionParamField.getTextControl(parent).setText("");
+            }
         }
-
         if (stringConnection != null && stringConnection.startsWith("jdbc:jtds:sqlserver:")) {
             schemaField.getTextControl(parent).setEditable(true);
             if (schemaField.getTextControl(parent).getText().equals("")) {
@@ -302,8 +302,10 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         portField.getTextControl(parent).setEditable(f);
         dbNameField.setEnabled(f, parent);
         dbNameField.getTextControl(parent).setEditable(f);
-        additionParamField.setEnabled(f, parent);
-        additionParamField.getTextControl(parent).setEditable(f);
+        if (additionParamField != null) {
+            additionParamField.setEnabled(f, parent);
+            additionParamField.getTextControl(parent).setEditable(f);
+        }
         schemaField.setEnabled(f, parent);
         schemaField.getTextControl(parent).setEditable(f);
         userField.setEnabled(f, parent);
