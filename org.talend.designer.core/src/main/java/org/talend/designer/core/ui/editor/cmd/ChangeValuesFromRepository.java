@@ -231,9 +231,9 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                         param.setRepositoryValueUsed(true);
                     }
                     //
-                    // if (param.isRepositoryValueUsed()) {
-                    // param.setReadOnly(true);
-                    // }
+                    if (param.isRepositoryValueUsed()) {
+                        param.setReadOnly(true);
+                    }
                 }
             }
         }

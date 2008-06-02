@@ -88,18 +88,20 @@ public class TextController extends AbstractElementPropertySectionController {
         labelText = (Text) dField.getControl();
 
         labelText.setData(PARAMETER_NAME, param.getName());
-        labelText.setEnabled(!param.isReadOnly());
-
         editionControlHelper.register(param.getName(), labelText, true);
 
         cLayout.setBackground(subComposite.getBackground());
-        labelText.setEditable(!param.isRepositoryValueUsed());
+        // labelText.setEditable(!param.isRepositoryValueUsed());
         if (elem instanceof Node) {
             labelText.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
         }
-
-        if (param.isRepositoryValueUsed()) {
-            addRepositoryPropertyListener(labelText);
+        if (!elem.isReadOnly()) {
+            if (param.isRepositoryValueUsed()) {
+                addRepositoryPropertyListener(labelText);
+            }
+            labelText.setEditable(!param.isRepositoryValueUsed());
+        } else {
+            labelText.setEditable(false);
         }
 
         addDragAndDropTarget(labelText);

@@ -140,12 +140,16 @@ public class FileController extends AbstractElementPropertySectionController {
         Text filePathText = (Text) dField.getControl();
         filePathText.setData(PARAMETER_NAME, param.getName());
         cLayout.setBackground(subComposite.getBackground());
-        filePathText.setEditable(!param.isReadOnly());
+        // filePathText.setEditable(!param.isRepositoryValueUsed());
 
         editionControlHelper.register(param.getName(), filePathText, true);
-
-        if (param.isRepositoryValueUsed()) {
-            addRepositoryPropertyListener(filePathText);
+        if (!elem.isReadOnly()) {
+            if (param.isRepositoryValueUsed()) {
+                addRepositoryPropertyListener(filePathText);
+            }
+            filePathText.setEditable(!param.isRepositoryValueUsed());
+        } else {
+            filePathText.setEditable(false);
         }
         addDragAndDropTarget(filePathText);
         if (elem instanceof Node) {
