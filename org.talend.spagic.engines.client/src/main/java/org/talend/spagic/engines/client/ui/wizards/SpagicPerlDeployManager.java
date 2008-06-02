@@ -74,6 +74,7 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
      * @param needContext
      * @return
      */
+    @Override
     public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Boolean> exportChoice,
             String contextName, String launcher, int statisticPort, int tracePort, String... codeOptions) {
 
@@ -132,7 +133,7 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
             }
         }
 
-        IResource[] resources = this.getAllPerlFiles();
+        IResource[] resources = this.getAllPerlFiles(true);
         return getResourcesURL(resources, list);
     }
 
@@ -262,10 +263,11 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
     /**
      * Gets all the perl files in the project .Perl.
      * 
+     * @param refresh If it is true, reload files from project.
      * @return
      */
-    private IResource[] getAllPerlFiles() {
-        if (resouces == null) {
+    private IResource[] getAllPerlFiles(boolean refresh) {
+        if (resouces == null || refresh) {
             try {
                 IProject perlProject = RepositoryPlugin.getDefault().getRunProcessService().getProject(ECodeLanguage.PERL);
                 resouces = perlProject.members();
@@ -275,6 +277,10 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
             }
         }
         return resouces;
+    }
+
+    private IResource[] getAllPerlFiles() {
+        return getAllPerlFiles(false);
     }
 
     private void getChildrenJobAndContextName(String rootName, List<String> list, ProcessItem process, String projectName,
@@ -311,7 +317,7 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
             NodeType nType = (NodeType) iter.next();
             String componentName = nType.getComponentName();
             IComponent component = ComponentsFactoryProvider.getInstance().get(componentName);
-            List<URL> modules = getComponentModules(componentName); //$NON-NLS-1$
+            List<URL> modules = getComponentModules(componentName);
             resource.addResources(LIBRARY_FOLDER_NAME + PATH_SEPARATOR + componentName, modules);
 
             // get the modules that this component depends on.
