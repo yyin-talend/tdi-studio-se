@@ -742,8 +742,11 @@ public class SchemaTypeController extends AbstractRepositoryController {
 
             return new ChangeMetadataCommand(node, param, meta, metaCopy);
         } else if (button.getData(NAME).equals(REPOSITORY_CHOICE)) {
+            String paramName = (String) button.getData(PARAMETER_NAME);
+            IElementParameter schemaParam = elem.getElementParameter(paramName);
+
             RepositoryReviewDialog dialog = new RepositoryReviewDialog(button.getShell(),
-                    ERepositoryObjectType.METADATA_CON_TABLE, null);
+                    ERepositoryObjectType.METADATA_CON_TABLE, schemaParam.getFilter());
             if (dialog.open() == RepositoryReviewDialog.OK) {
                 RepositoryNode node = dialog.getResult();
                 while (node.getObject().getProperty().getItem() == null
@@ -751,7 +754,6 @@ public class SchemaTypeController extends AbstractRepositoryController {
                     node = node.getParent();
                 }
                 String id = dialog.getResult().getObject().getProperty().getId();
-                String paramName = (String) button.getData(PARAMETER_NAME);
                 String name = dialog.getResult().getObject().getLabel();
                 String value = id + " - " + name;
 

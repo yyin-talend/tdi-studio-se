@@ -30,11 +30,14 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PartInitException;
 import org.talend.core.CorePlugin;
+import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.Query;
 import org.talend.core.model.metadata.builder.connection.Connection;
+import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.FolderItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -44,6 +47,7 @@ import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryContentProvider;
 import org.talend.repository.ui.views.RepositoryView;
+import org.talend.repository.ui.views.RepositoryContentProvider.MetadataTableRepositoryObject;
 
 /**
  * bqian check the content of the repository view. <br/>
@@ -517,22 +521,25 @@ class SchemaTypeProcessor implements ITypeProcessor {
 
     public RepositoryNode getInputRoot(RepositoryContentProvider contentProvider) {
         List<RepositoryNode> container = new ArrayList<RepositoryNode>();
-        container.add(contentProvider.getMetadataFileNode());
-        container.add(contentProvider.getMetadataFilePositionalNode());
-        container.add(contentProvider.getMetadataFileRegexpNode());
-        container.add(contentProvider.getMetadataFileXmlNode());
-        container.add(contentProvider.getMetadataFileLdifNode());
-        container.add(contentProvider.getMetadataFileExcelNode());
-        container.add(contentProvider.getMetadataGenericSchemaNode());
-        container.add(contentProvider.getMetadataLDAPSchemaNode());
-        container.add(contentProvider.getMetadataWSDLSchemaNode());
+        if (repositoryType != null && repositoryType.startsWith("DATABASE")) {
+            container.add(contentProvider.getMetadataConNode());
+        } else {
+            container.add(contentProvider.getMetadataFileNode());
+            container.add(contentProvider.getMetadataFilePositionalNode());
+            container.add(contentProvider.getMetadataFileRegexpNode());
+            container.add(contentProvider.getMetadataFileXmlNode());
+            container.add(contentProvider.getMetadataFileLdifNode());
+            container.add(contentProvider.getMetadataFileExcelNode());
+            container.add(contentProvider.getMetadataGenericSchemaNode());
+            container.add(contentProvider.getMetadataLDAPSchemaNode());
+            container.add(contentProvider.getMetadataWSDLSchemaNode());
+            // Salesforce metadata node is not exist in Perl Project.
+            container.add(contentProvider.getMetadataSalesforceSchemaNode());
 
-        // Salesforce metadata node is not exist in Perl Project.
-        container.add(contentProvider.getMetadataSalesforceSchemaNode());
+            container.add(contentProvider.getMetadataConNode());
 
-        container.add(contentProvider.getMetadataConNode());
-
-        container.remove(null); // Not allow null element
+            container.remove(null); // Not allow null element
+        }
 
         RepositoryNode node = new RepositoryNode(null, null, null);
         node.getChildren().addAll(container);
@@ -551,10 +558,23 @@ class SchemaTypeProcessor implements ITypeProcessor {
 
             @Override
             public boolean select(Viewer viewer, Object parentElement, Object element) {
-                // if (repositoryType.startsWith("DATABASE") && repositoryType.contains(":")) {
+
                 RepositoryNode node = (RepositoryNode) element;
                 if (node.getObject() != null && (node.getObject() instanceof Query)) {
                     return false;
+                }
+
+                if ("DATABASE:CDC".equals(repositoryType) && (node.getObject() != null)) {
+                    if (node.getObject().getType() == ERepositoryObjectType.METADATA_CONNECTIONS) {
+                        DatabaseConnectionItem item = (DatabaseConnectionItem) node.getObject().getProperty().getItem();
+                        DatabaseConnection connection = (DatabaseConnection) item.getConnection();
+                        if (!connection.getProductId().equals(EDatabaseTypeName.ORACLEFORSID.getProduct())) {
+                            return false;
+                        }
+                    }
+                    if (node.getObject() instanceof MetadataTable) {
+                        return ((MetadataTableRepositoryObject) node.getObject()).getTable().isActivatedCDC();
+                    }
                 }
                 return true;
             }

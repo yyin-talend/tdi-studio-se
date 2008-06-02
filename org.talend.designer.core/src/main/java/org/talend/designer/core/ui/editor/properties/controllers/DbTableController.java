@@ -136,12 +136,15 @@ public class DbTableController extends AbstractElementPropertySectionController 
 
         this.paramFieldType = param.getField();
         this.curParameter = param;
-        Control lastDbControl;
-        Button openListTable = addListTablesButton(subComposite, param, top, numInRow, nbInRow);
-        lastDbControl = openListTable;
+        Control lastDbControl = null;
+        Button openListTable = null;
+        if (!"DATABASE:CDC".equals(param.getFilter())) {
+            openListTable = addListTablesButton(subComposite, param, top, numInRow, nbInRow);
+            lastDbControl = openListTable;
+        }
 
         Control openSqlBuilder = null;
-        if (!isContainSqlMemo()) {
+        if (!isContainSqlMemo() && !"DATABASE:CDC".equals(param.getFilter())) {
             openSqlBuilder = addOpenSqlBulderButton(subComposite, param, top, numInRow, nbInRow);
             FormData data1 = new FormData();
             data1.right = new FormAttachment(100, -ITabbedPropertyConstants.HSPACE);
@@ -162,11 +165,13 @@ public class DbTableController extends AbstractElementPropertySectionController 
         }
         data.top = new FormAttachment(0, top);
         data.height = STANDARD_HEIGHT - 2;
-        openListTable.setLayoutData(data);
-        openListTable.setData(PARAMETER_NAME, param.getName());
-        openListTable.setEnabled(!param.isReadOnly());
-        openListTable.addSelectionListener(openTablesListener);
-        openListTable.setToolTipText("Show the table list for the current conection");
+        if (openListTable != null) {
+            openListTable.setLayoutData(data);
+            openListTable.setData(PARAMETER_NAME, param.getName());
+            openListTable.setEnabled(!param.isReadOnly());
+            openListTable.addSelectionListener(openTablesListener);
+            openListTable.setToolTipText("Show the table list for the current conection");
+        }
         Text labelText;
 
         final DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new SelectAllTextControlCreator());
@@ -226,8 +231,12 @@ public class DbTableController extends AbstractElementPropertySectionController 
         } else {
             data.left = new FormAttachment(labelLabel, 0, SWT.RIGHT);
         }
-        data.right = new FormAttachment(openListTable, -5, SWT.LEFT);
-        // data.right = new FormAttachment((numInRow * MAX_PERCENT) / nbInRow, 0);
+        if (openListTable != null) {
+            data.right = new FormAttachment(openListTable, -5, SWT.LEFT);
+        } else {
+            data.right = new FormAttachment((numInRow * MAX_PERCENT) / nbInRow, 0);
+            lastDbControl = labelText;
+        }
         data.top = new FormAttachment(0, top);
         cLayout.setLayoutData(data);
         // **********************
