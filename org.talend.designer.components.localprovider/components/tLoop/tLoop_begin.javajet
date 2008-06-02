@@ -32,10 +32,14 @@ String to   = ElementParameterParser.getValue(node, "__TO__");
 if (to.equals("")) to = "1";
 String step   = ElementParameterParser.getValue(node, "__STEP__");
 if (step.equals("")) step = "1";
-%>
+boolean increase = ElementParameterParser.getValue(node, "__INCREASE__").equals("true");
+if(increase){%>
 
 for(int loop<%=cid%> =<%=from%>; loop<%=cid%><<%=to%>; loop<%=cid%>=loop<%=cid%>+<%=step%>){
-
+<%
+}else{%>
+for(int loop<%=cid%> =<%=from%>; loop<%=cid%>><%=to%>; loop<%=cid%>=loop<%=cid%>+<%=step%>){
+<%}%>
 current_iteration_<%=cid%>++;
 globalMap.put("<%=cid%>_CURRENT_VALUE",loop<%=cid%>);
 globalMap.put("<%=cid%>_CURRENT_ITERATION",current_iteration_<%=cid%>);
