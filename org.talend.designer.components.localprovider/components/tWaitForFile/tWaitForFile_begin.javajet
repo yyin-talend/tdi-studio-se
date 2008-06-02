@@ -11,6 +11,7 @@
     String cid = node.getUniqueName();
     boolean incldSubdir=ElementParameterParser.getValue(node, "__INCLUDE_SUBDIR__").equals("true");
     boolean present=ElementParameterParser.getValue(node, "__INCLUDE_PRESENT__").equals("true");
+    boolean checksum=ElementParameterParser.getValue(node, "__CHECK_SUM__").equals("true");
 %>
        
         class Util_<%=cid %> {
@@ -83,11 +84,62 @@
 
                 return list;
             }
+
+<%
+	if(checksum){
+%>
+            public String getFileChecksum(java.io.File file){
+            	String strMD5 = "";
+            	java.security.MessageDigest complete = null;
+            	java.io.InputStream fis = null;
+            	try{
+                    fis =  new java.io.FileInputStream(file);
+                    byte[] buffer = new byte[1024];
+                    complete= java.security.MessageDigest.getInstance("MD5");
+                    int numRead;
+                    while((numRead = fis.read(buffer))!= -1){
+                      	if (numRead > 0) {
+                        	complete.update(buffer, 0, numRead);
+                        }
+                    }
+                }catch(java.lang.Exception ex){
+
+                }finally{
+                	if(fis!=null){
+                		try{
+                			fis.close();
+                		}catch(Exception ex){
+                		}
+                	}
+                }
+               	
+               	if(complete !=null){
+        			byte[] b = complete.digest();
+         			for (int i=0; i < b.length; i++) {
+          				strMD5 += Integer.toString( ( b[i] & 0xff ) + 0x100, 16).substring( 1 );
+          			}
+      			}
+        		return strMD5;
+            }
+<%
+	}
+%>
         }
             
             Util_<%=cid %> util_<%=cid %> = new Util_<%=cid %>();
             java.util.List<java.io.File> originalFiles_<%=cid %> = util_<%=cid %>.getFiles();
             java.util.List<java.io.File> changeList_<%=cid %> = new java.util.ArrayList();
+            
+<%
+	if(checksum){
+%>
+            java.util.Map<String, java.io.File> originalMap_<%=cid%> = new java.util.HashMap<String, java.io.File>();
+            for(java.io.File file_<%=cid%>:originalFiles_<%=cid %>){
+            	originalMap_<%=cid%>.put(util_<%=cid %>.getFileChecksum(file_<%=cid%>),file_<%=cid%>);
+            }
+<%
+	}
+%>      
             int count_<%=cid %> = 0;
             while (true) {
 <%
@@ -116,20 +168,31 @@ if(present){
   if(ElementParameterParser.getValue(node, "__ACTION_ON__").equals("filedeleted")){
 %>
                 for (java.io.File file_<%=cid %> : originalFiles_<%=cid %>) {
-                    if (!changeList_<%=cid %>.contains(file_<%=cid %>) && !fetchFilesOneTime_<%=cid %>.contains(file_<%=cid %>)) {
+                    if (!changeList_<%=cid %>.contains(file_<%=cid %>) && !fetchFilesOneTime_<%=cid %>.contains(file_<%=cid %>)){
                         globalMap.put("<%=cid %>_DELETED_FILE", file_<%=cid %>.getAbsolutePath());
 
 <%
  }else if(ElementParameterParser.getValue(node, "__ACTION_ON__").equals("filecreated")){
 %>
                 for (java.io.File file_<%=cid %> : fetchFilesOneTime_<%=cid %>) {
-                    if (!changeList_<%=cid %>.contains(file_<%=cid %>) && !originalFiles_<%=cid %>.contains(file_<%=cid %>)) {
-                        globalMap.put("<%=cid %>_CREATED_FILE", file_<%=cid %>.getAbsolutePath()); 
 
+<%
+	if(checksum){
+%>
+                    if (null==originalMap_<%=cid%>.get(util_<%=cid %>.getFileChecksum(file_<%=cid%>))){
+                        originalMap_<%=cid%>.put(util_<%=cid %>.getFileChecksum(file_<%=cid%>),file_<%=cid%>);
+<%
+	}else{
+%>
+					if (!changeList_<%=cid %>.contains(file_<%=cid %>) && !originalFiles_<%=cid %>.contains(file_<%=cid %>)) {
+<%
+	}
+%>                
+                        globalMap.put("<%=cid %>_CREATED_FILE", file_<%=cid %>.getAbsolutePath()); 
 <%
  }
 %>
-                        changeList_<%=cid %>.add(file_<%=cid %>);
+                        changeList_<%=cid %>.add(file_<%=cid %>); 
                         found_<%=cid %> = true;
 
                         break;
