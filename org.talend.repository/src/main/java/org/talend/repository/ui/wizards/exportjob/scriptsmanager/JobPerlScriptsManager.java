@@ -224,10 +224,11 @@ public class JobPerlScriptsManager extends JobScriptsManager {
     /**
      * Gets all the perl files in the project .Perl.
      * 
+     * @param refresh If it is true, reload files from project.
      * @return
      */
-    private IResource[] getAllPerlFiles() {
-        if (resouces == null) {
+    private IResource[] getAllPerlFiles(boolean refresh) {
+        if (resouces == null || refresh) {
             try {
                 IProject perlProject = RepositoryPlugin.getDefault().getRunProcessService().getProject(ECodeLanguage.PERL);
                 resouces = perlProject.members();
@@ -237,6 +238,10 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             }
         }
         return resouces;
+    }
+
+    private IResource[] getAllPerlFiles() {
+        return getAllPerlFiles(false);
     }
 
     /**
@@ -276,7 +281,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
                 ExceptionHandler.process(e);
             }
         }
-        IResource[] resources = this.getAllPerlFiles();
+        IResource[] resources = this.getAllPerlFiles(true);
         return getResourcesURL(resources, list);
     }
 
