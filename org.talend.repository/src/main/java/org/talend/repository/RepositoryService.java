@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
@@ -49,6 +50,7 @@ import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.plugin.integration.BindingActions;
 import org.talend.repository.plugin.integration.SwitchProjectAction;
+import org.talend.repository.ui.actions.metadata.CreateTableAction;
 import org.talend.repository.ui.actions.sqlpattern.CreateSqlpatternAction;
 import org.talend.repository.ui.actions.sqlpattern.EditSqlpatternAction;
 import org.talend.repository.ui.login.LoginDialog;
@@ -334,7 +336,25 @@ public class RepositoryService implements IRepositoryService {
                 wizardDialog.open();
             }
         }
+    }
 
+    public void openEditSchemaWizard(String value) {
+        final RepositoryNode realNode = RepositoryNodeUtilities.getSchemeFromConnection(value);
+        if (realNode != null) {
+            CreateTableAction action = new CreateTableAction() {
+
+                /*
+                 * (non-Javadoc)
+                 * 
+                 * @see org.talend.repository.ui.actions.AContextualAction#getSelection()
+                 */
+                @Override
+                public ISelection getSelection() {
+                    return new StructuredSelection(realNode);
+                }
+            };
+            action.run();
+        }
     }
 
     public DatabaseConnection cloneOriginalValueConnection(DatabaseConnection dbConn) {

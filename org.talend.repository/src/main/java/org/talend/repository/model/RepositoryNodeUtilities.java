@@ -17,12 +17,17 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.repository.ui.actions.metadata.CreateTableAction;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryView;
 
@@ -281,6 +286,36 @@ public class RepositoryNodeUtilities {
             return true;
         }
         return false;
+    }
+
+    public static RepositoryNode getSchemeFromConnection(String schemaValue) {
+        String[] values = schemaValue.split(" - ");
+        String repositoryID = values[0];
+        String tableName = values[1];
+
+        try {
+            final RepositoryNode realNode = RepositoryNodeUtilities.getRepositoryNode(repositoryID);
+            return getSchemeFromConnection(realNode, tableName);
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+        return null;
+    }
+
+    private static RepositoryNode getSchemeFromConnection(RepositoryNode connection, String tableName) {
+        ERepositoryObjectType type = connection.getObject().getType();
+        if (type == ERepositoryObjectType.METADATA_CONNECTIONS) {
+            connection = connection.getChildren().get(0);
+        }
+        // if(connection.getObject().getProperty().getItem() instanceof ConnectionItem){
+        //            
+        // }
+        for (RepositoryNode node : connection.getChildren()) {
+            if (node.getObject().getLabel().equals(tableName)) {
+                return node;
+            }
+        }
+        return null;
     }
 
 }
