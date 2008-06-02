@@ -37,6 +37,7 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog;
+import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog.EEditSelection;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataConnection;
@@ -85,6 +86,11 @@ import org.talend.repository.ui.wizards.metadata.table.database.DatabaseTableWiz
  * 
  */
 public class SchemaTypeController extends AbstractRepositoryController {
+
+    /**
+     * 
+     */
+    private static final String FOUCE_READ_ONLY = "FOUCE_READ_ONLY";
 
     private static final String RESET_COLUMNS = "RESET_COLUMNS"; //$NON-NLS-1$
 
@@ -452,15 +458,25 @@ public class SchemaTypeController extends AbstractRepositoryController {
             String type = (String) elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
             if (type != null && type.equals(EmfComponent.REPOSITORY)) {
                 // use repository schema, pop up a dialog to ask the user for changing mode
-                ModelSelectionDialog modelSelect = new ModelSelectionDialog(button.getShell());
+                Node node;
+                if (elem instanceof Node) {
+                    node = (Node) elem;
+                } else { // else instanceof Connection
+                    node = ((Connection) elem).getSource();
+                }
+                boolean isReadOnly = node.getProcess().isReadOnly();
+                ModelSelectionDialog modelSelect = new ModelSelectionDialog(button.getShell(), isReadOnly);
                 stop = true;
                 if (modelSelect.open() == ModelSelectionDialog.OK) {
-                    if (modelSelect.getOptionValue() == 1) {
+                    if (modelSelect.getOptionValue() == EEditSelection.REPOSITORY) {
                         // update repository schema
                         updateRepositorySchema(button);
-                    } else if (modelSelect.getOptionValue() == 0) {
+                    } else if (modelSelect.getOptionValue() == EEditSelection.BUILDIN) {
                         // change the schema type to built in, then continue the original process
                         executeCommand(new RepositoryChangeSchemaBuiltinCommand(elem));
+                        stop = false;
+                    } else if (modelSelect.getOptionValue() == EEditSelection.SHOW_SCHEMA) {
+                        button.setData(FOUCE_READ_ONLY, true);
                         stop = false;
                     }
                 }
@@ -505,8 +521,13 @@ public class SchemaTypeController extends AbstractRepositoryController {
             if (connectionParam != null) {
                 connectionName = (String) connectionParam.getValue();
             }
+            Object obj = button.getData(FOUCE_READ_ONLY);
+            boolean forceReadOnly = false;
+            if (obj != null) {
+                forceReadOnly = (Boolean) obj;
+            }
+            boolean inputReadOnly = !forceReadOnly, outputReadOnly = !forceReadOnly, inputReadOnlyNode = !forceReadOnly, inputReadOnlyParam = !forceReadOnly;
 
-            boolean inputReadOnly = false, outputReadOnly = false, inputReadOnlyNode = false, inputReadOnlyParam = false;
             for (Connection connec : (List<Connection>) node.getIncomingConnections()) {
                 if (connec.isActivate()
                         && (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)
@@ -539,7 +560,11 @@ public class SchemaTypeController extends AbstractRepositoryController {
                             columnCopied.setReadOnly(column.isReadOnly());
                         }
                         inputMetaCopy.setReadOnly(inputMetadata.isReadOnly());
-                        inputReadOnly = prepareReadOnlyTable(inputMetaCopy, inputReadOnlyParam, inputReadOnlyNode);
+                        if (!forceReadOnly) {
+                            inputReadOnly = prepareReadOnlyTable(inputMetaCopy, inputReadOnlyParam, inputReadOnlyNode);
+                        } else {
+                            inputReadOnly = true;
+                        }
                     }
 
                     // store the value for Dialog
@@ -566,7 +591,11 @@ public class SchemaTypeController extends AbstractRepositoryController {
                 // setColumnLength(node, param, columnCopied);
             }
             outputMetaCopy.setReadOnly(originaleOutputTable.isReadOnly());
-            outputReadOnly = prepareReadOnlyTable(outputMetaCopy, param.isReadOnly(), node.isReadOnly());
+            if (!forceReadOnly) {
+                outputReadOnly = prepareReadOnlyTable(outputMetaCopy, param.isReadOnly(), node.isReadOnly());
+            } else {
+                outputReadOnly = true;
+            }
 
             // create the MetadataDialog
             MetadataDialog metaDialog = null;

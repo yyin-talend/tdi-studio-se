@@ -52,6 +52,7 @@ import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 import org.eclipse.ui.views.properties.PropertySheet;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog;
+import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog.EEditSelection;
 import org.talend.commons.ui.swt.proposal.ContentProposalAdapterExtended;
 import org.talend.commons.ui.utils.ControlUtils;
 import org.talend.commons.ui.utils.TypedTextCommandExecutor;
@@ -1245,12 +1246,12 @@ public abstract class AbstractElementPropertySectionController implements Proper
             ModelSelectionDialog modelSelect = new ModelSelectionDialog(((Control) e.getSource()).getShell());
 
             if (modelSelect.open() == ModelSelectionDialog.OK) {
-                if (modelSelect.getOptionValue() == 0) {
+                if (modelSelect.getOptionValue() == EEditSelection.BUILDIN) {
 
                     // getCommandStack().execute(changeToBuildInCommand((Control) e.getSource()));
                     executeCommand(changeToBuildInCommand((Control) e.getSource()));
                 }
-                if (modelSelect.getOptionValue() == 1) {
+                if (modelSelect.getOptionValue() == EEditSelection.REPOSITORY) {
 
                     // getCommandStack().execute(refreshConnectionCommand((Control) e.getSource()));
                     executeCommand(refreshConnectionCommand((Control) e.getSource()));

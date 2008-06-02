@@ -45,6 +45,7 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog;
+import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog.EEditSelection;
 import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
@@ -450,10 +451,10 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         ModelSelectionDialog modelSelect = new ModelSelectionDialog(shell);
 
         if (modelSelect.open() == ModelSelectionDialog.OK) {
-            if (modelSelect.getOptionValue() == 0) {
+            if (modelSelect.getOptionValue() == EEditSelection.BUILDIN) {
                 executeCommand(changeToBuildInCommand());
             }
-            if (modelSelect.getOptionValue() == 1) {
+            if (modelSelect.getOptionValue() == EEditSelection.REPOSITORY) {
                 executeCommand(refreshConnectionCommand());
             }
         }
