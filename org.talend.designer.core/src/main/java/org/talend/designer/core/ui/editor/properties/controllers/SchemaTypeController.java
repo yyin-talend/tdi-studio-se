@@ -46,7 +46,6 @@ import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
-import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
@@ -71,11 +70,11 @@ import org.talend.designer.core.ui.editor.cmd.RepositoryChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
+import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.dialog.RepositoryReviewDialog;
-import org.talend.repository.ui.utils.ConnectionContextHelper;
 import org.talend.repository.ui.utils.ManagerConnection;
 import org.talend.repository.ui.wizards.metadata.table.database.DatabaseTableWizard;
 
@@ -433,16 +432,18 @@ public class SchemaTypeController extends AbstractRepositoryController {
                     .getString("NoRepositoryDialog.Text")); //$NON-NLS-1$
             return;
         }
+        RepositoryPlugin.getDefault().getRepositoryService().openEditSchemaWizard(schemaId);
         // find IRepositoryObject from repository that contains current connection
-        IRepositoryObject node = findRepositoryObject(schemaId);
-        DatabaseConnectionItem item = (DatabaseConnectionItem) node.getProperty().getItem();
-
-        // repository node label for schema
-        String metadataTableLabel = names[1];
-        ConnectionContextHelper.checkContextMode(item);
-        org.talend.core.model.metadata.builder.connection.MetadataTable metadataTable = TableHelper.findByLabel(connection,
-                metadataTableLabel);
-        openDatabaseTableWizard(item, metadataTable, node, WIZARD_WIDTH, WIZARD_HEIGHT);
+        // IRepositoryObject node = findRepositoryObject(schemaId);
+        // DatabaseConnectionItem item = (DatabaseConnectionItem) node.getProperty().getItem();
+        //
+        // // repository node label for schema
+        // String metadataTableLabel = names[1];
+        // ConnectionContextHelper.checkContextMode(item);
+        // org.talend.core.model.metadata.builder.connection.MetadataTable metadataTable =
+        // TableHelper.findByLabel(connection,
+        //                metadataTableLabel);
+        //        openDatabaseTableWizard(item, metadataTable, node, WIZARD_WIDTH, WIZARD_HEIGHT);
 
     }
 
