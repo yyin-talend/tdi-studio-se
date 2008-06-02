@@ -5,6 +5,8 @@ public class CLASS {
         List<Map<String, Object>> list = (List<Map<String, Object>>) ElementParameterParser.getObjectValue(node,
                 "SQLPATTERN_VALUE");
 
+        Set<String> tableParamSet = new java.util.HashSet<String>();
+
         StringBuilder resultBuilder = new StringBuilder();
         for (Map<String, Object> map : list) {
             Set<String> keySet = map.keySet();
@@ -54,7 +56,7 @@ public class CLASS {
                 StringBuilder sqlQueryBuilder = new StringBuilder("\"");
                 int i = 0;
                 String line = null;
-                do {
+                LINES: do {
                     if (i >= lineList.size()) {
                         break;
                     }
@@ -67,8 +69,15 @@ public class CLASS {
                     }
 
                     if (line.length() >= 2 && line.charAt(0) == '<' && line.charAt(1) == '%') {
-                        jetScriptStarted = true;
-                        line = line.substring(2).trim();
+                        if(line.length() > 2){
+                            if(line.charAt(2) != '='){
+                                jetScriptStarted = true;
+                                line = line.substring(2).trim();
+                            }
+                        }else{
+                            jetScriptStarted = true;
+                            line = line.substring(2).trim();
+                        }
                     }
 
                     // replace all "__XXX__" with real param value.
@@ -79,13 +88,51 @@ public class CLASS {
                         while (position > 0 && position < lineBuilder.length()) {
                             int indexOfEnd__ = lineBuilder.indexOf("__", position);
                             if ((indexOfEnd__ > 0) && ((indexOfEnd__ + 2) < lineBuilder.length())) {
+                                /*
+                                 * all components' parameter name should match "[0-9A-Z\\-_]+"
+                                 */
                                 String paramName = lineBuilder.substring(position, indexOfEnd__);
-                                if (paramName.matches("[0-9A-Z\\-_]+")) { // all components' parameter name should
-                                    // match "[0-9A-Z\\-_]+"
-                                    String realValue = ElementParameterParser.getValue(node, "__" + paramName + "__"); // get
-                                    // the
-                                    // param
-                                    // value
+                                if (paramName.matches("[0-9A-Z\\-_]+")) {
+                                    // to see whether this is extract TABLE value sentence
+                                    /*
+                                     * The sentence for extract TABLE param must be in the scopce of "< %" and "% >".
+                                     * And the code is something like EXTRACT(__PARAM__);
+                                     */
+                                    int indexEXTRACTBegin = position - 10;
+                                    int indexEXTRACTEnd = indexOfEnd__ + 2;
+                                    if (indexEXTRACTBegin >= 0 && indexEXTRACTEnd < lineBuilder.length()) {
+                                        if (lineBuilder.substring(indexEXTRACTBegin, position).equals("EXTRACT(__")
+                                                && lineBuilder.charAt(indexEXTRACTEnd) == ')') {
+                                            if (!tableParamSet.contains(paramName)) {
+                                                resultBuilder.insert(0, extractTableValue(node, paramName));
+                                                tableParamSet.add(paramName);
+                                                line = null;
+                                                continue LINES;
+                                            }
+                                        }
+                                    }
+
+                                    // to see whether this is the extracted TABLE para;
+                                    boolean flag = false;
+                                    for (String param : tableParamSet) {
+                                        /*
+                                         * caution: do not use the identical PARAMETER names among the component's
+                                         * PARAMETERs.
+                                         */
+                                        if (paramName.startsWith(param)) {
+                                            flag = true;
+                                            break;
+                                        }
+                                    }
+
+                                    String realValue = null;
+
+                                    if (flag) {
+                                        realValue = paramName + "_" + cid;
+                                    } else {
+                                        realValue = ElementParameterParser.getValue(node, "__" + paramName + "__"); // get
+                                    }
+                                    // the param value
                                     int formerLength = paramName.length() + 4;
                                     int newLength = realValue.length();
                                     lineBuilder.replace(position - 2, indexOfEnd__ + 2, realValue);
@@ -161,9 +208,10 @@ public class CLASS {
                         // System.out.println("4");
                         // lineBuilder.toString();
 
-                        // Caution: here, we assume all the assign script("< %=value % >") always doesn't span more than
-                        // one
-                        // lines; or it may generate error code.
+                        /*
+                         * Caution: here, we assume all the assign script("< %=value % >") always doesn't span more
+                         * than one lines; or it may generate error code.
+                         */
                         // replace All "< %=" with "\" + "
                         position = 0;
                         index = 0;
@@ -193,13 +241,30 @@ public class CLASS {
 
                                         if ((indexOfEnd__ > 0) && ((indexOfEnd__ + 2) <= end)) {
                                             String paramName = lineBuilder.substring(position2, indexOfEnd__);
-                                            if (paramName.matches("[0-9A-Z\\-_]+")) { // all components' parameter
-                                                // name should match
-                                                // "[0-9A-Z\\-_]+"
-                                                String realValue = ElementParameterParser.getValue(node, "__" + paramName + "__"); // get
-                                                // the
-                                                // param
-                                                // value
+                                            /* caution: all components' parameter name should match "[0-9A-Z\\-_]+" */
+                                            if (paramName.matches("[0-9A-Z\\-_]+")) {
+
+                                                // to see whether this is the extracted TABLE para;
+                                                boolean flag = false;
+                                                for (String param : tableParamSet) {
+                                                    /*
+                                                     * caution: while designing the component, don't use the identical
+                                                     * PARAMETER names
+                                                     */
+                                                    if (paramName.startsWith(param)) {
+                                                        flag = true;
+                                                        break;
+                                                    }
+                                                }
+
+                                                String realValue = null;
+
+                                                if (flag) {
+                                                    realValue = paramName + "_" + cid;
+                                                } else {
+                                                    // get the param value
+                                                    realValue = ElementParameterParser.getValue(node, "__" + paramName + "__");
+                                                }
                                                 int formerLength = paramName.length() + 4;
                                                 int newLength = realValue.length();
                                                 lineBuilder.replace(position2 - 2, indexOfEnd__ + 2, realValue);
@@ -242,8 +307,10 @@ public class CLASS {
                         line = lineBuilder.toString();
 
                         sqlQueryBuilder.append(line);
-                        // Caution: here, we assume that all the SQL query are end with ";" which will follows a new
-                        // line("\n" or "\r\n").
+                        /*
+                         * Caution: here, we assume that all the SQL query are end with ";" which will follows a new
+                         * line("\n" or "\r\n").
+                         */
                         if (line.endsWith(";")) {// end of SQL QUERY found
                             sqlQueryBuilder.append("\"");
                             codeStringBuilder.append("stmt_").append(cid).append(".addBatch(").append(sqlQueryBuilder.toString())
@@ -263,6 +330,49 @@ public class CLASS {
         }
         return resultBuilder.toString();
 
+    }
+
+    private String extractTableValue(INode node, String param) {
+        String cid = node.getUniqueName();
+        StringBuilder resultBuilder = new StringBuilder();
+
+        // get the table param value
+        List<Map<String, String>> tableValue = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__"
+                + param + "__");
+        /* get table size value, use: __PARAM_length__ */
+        resultBuilder.append("int ").append(param).append("_LENGTH_").append(cid).append(" = ").append(tableValue.size()).append(
+                ";\n");
+        if (tableValue.size() > 0) {
+            Set<String> keySet = tableValue.get(0).keySet();
+            for (String key : keySet) {
+                /* get table item value, use: __PARAM_COLUMN__[i] */
+                resultBuilder.append("String[] ").append(param).append("_").append(key).append("_").append(cid).append(
+                        " = new String[").append(tableValue.size()).append("];\n");
+            }
+
+            for (int i = 0; i < tableValue.size(); i++) {
+                Map<String, String> map = tableValue.get(i);
+                Set<String> set = map.keySet();
+                for (String key : set) {
+                    resultBuilder.append(param).append("_").append(key).append("_").append(cid).append("[").append(i).append(
+                            "] = ");
+
+                    String value = map.get(key);
+                    /* Info: int values in TABLE will be generated as String too. */
+                    if (!value.startsWith("\"")) {
+                        resultBuilder.append("\"");
+                    }
+                    resultBuilder.append(value);
+                    if (!value.endsWith("\"")) {
+                        resultBuilder.append("\"");
+                    }
+                    resultBuilder.append(";\n");
+                }
+            }
+
+        }
+
+        return resultBuilder.toString();
     }
 
     public String generate(Object argument) {
