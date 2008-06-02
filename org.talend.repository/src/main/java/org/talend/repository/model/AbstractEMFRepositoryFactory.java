@@ -246,7 +246,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         if (type == ERepositoryObjectType.METADATA_CON_TABLE) {
             return false;
         }
-        List<IRepositoryObject> list = getAll(type, true);
+        List<IRepositoryObject> list = getAll(type, true, false);
 
         for (IRepositoryObject current : list) {
             if (name.equalsIgnoreCase(current.getProperty().getLabel())

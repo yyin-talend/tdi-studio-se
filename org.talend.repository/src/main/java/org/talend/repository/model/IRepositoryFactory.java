@@ -125,14 +125,15 @@ public interface IRepositoryFactory {
     /**
      * Returns all object of a given type.<br/>
      * 
-     * Only the most recent version of each object is returned.
-     * 
      * @param project - the current project
      * @param type - the type
+     * @param withDeleted - with deleted items
+     * @param allVersions - all versions for one item
      * @return a list of all objects of type <code>type</code> in the repository in the project
      * @throws PersistenceException
      */
-    public List<IRepositoryObject> getAll(ERepositoryObjectType type, boolean withDeleted) throws PersistenceException;
+    public List<IRepositoryObject> getAll(ERepositoryObjectType type, boolean withDeleted, boolean allVersions)
+            throws PersistenceException;
 
     /**
      * Deletes logically the given object. <code>isDeleted</code> on this object will now returned <code>true</code>.

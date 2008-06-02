@@ -703,7 +703,12 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     }
 
     public List<IRepositoryObject> getAll(ERepositoryObjectType type, boolean withDeleted) throws PersistenceException {
-        return this.repositoryFactoryFromProvider.getAll(type, withDeleted);
+        return this.repositoryFactoryFromProvider.getAll(type, withDeleted, false);
+    }
+
+    public List<IRepositoryObject> getAll(ERepositoryObjectType type, boolean withDeleted, boolean allVersions)
+            throws PersistenceException {
+        return this.repositoryFactoryFromProvider.getAll(type, withDeleted, allVersions);
     }
 
     public List<String> getFolders(ERepositoryObjectType type) throws PersistenceException {
