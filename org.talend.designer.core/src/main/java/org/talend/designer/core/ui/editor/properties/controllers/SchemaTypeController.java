@@ -46,7 +46,6 @@ import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
-import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
@@ -74,8 +73,10 @@ import org.talend.designer.core.ui.editor.properties.controllers.generator.IDyna
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryNodeUtilities;
+import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.repository.ui.actions.metadata.CreateTableAction;
 import org.talend.repository.ui.dialog.RepositoryReviewDialog;
-import org.talend.repository.ui.utils.ConnectionContextHelper;
 import org.talend.repository.ui.utils.ManagerConnection;
 import org.talend.repository.ui.wizards.metadata.table.database.DatabaseTableWizard;
 
@@ -435,14 +436,20 @@ public class SchemaTypeController extends AbstractRepositoryController {
         }
         // find IRepositoryObject from repository that contains current connection
         IRepositoryObject node = findRepositoryObject(schemaId);
-        DatabaseConnectionItem item = (DatabaseConnectionItem) node.getProperty().getItem();
 
-        // repository node label for schema
-        String metadataTableLabel = names[1];
-        ConnectionContextHelper.checkContextMode(item);
-        org.talend.core.model.metadata.builder.connection.MetadataTable metadataTable = TableHelper.findByLabel(connection,
-                metadataTableLabel);
-        openDatabaseTableWizard(item, metadataTable, node, WIZARD_WIDTH, WIZARD_HEIGHT);
+        RepositoryNode repositoryNode = RepositoryNodeUtilities.getRepositoryNode(node);
+        RepositoryNode metadataNode = null;
+        for (RepositoryNode childNode : repositoryNode.getChildren()) {
+            String label = (String) childNode.getProperties(EProperties.LABEL);
+            if (label.equals(names[1])) {
+                metadataNode = childNode;
+                break;
+            }
+        }
+        if (metadataNode != null) {
+            CreateTableAction action = new CreateTableAction(metadataNode);
+            action.run();
+        }
 
     }
 
