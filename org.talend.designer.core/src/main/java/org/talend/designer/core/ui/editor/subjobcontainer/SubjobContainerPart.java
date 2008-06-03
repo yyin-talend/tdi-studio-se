@@ -96,7 +96,10 @@ public class SubjobContainerPart extends AbstractGraphicalEditPart implements Pr
         }
         Rectangle rectangle = ((SubjobContainer) this.getModel()).getSubjobContainerRectangle();
         ((SubjobContainerFigure) getFigure()).initializeSubjobContainer(rectangle);
-        ((GraphicalEditPart) getParent()).setLayoutConstraint(this, getFigure(), rectangle);
+        // added for bug 4005
+        if (getFigure().getParent() != null) {
+            ((GraphicalEditPart) getParent()).setLayoutConstraint(this, getFigure(), rectangle);
+        }
     }
 
     /*
