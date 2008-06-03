@@ -52,6 +52,8 @@ public class CreateTableAction extends AbstractCreateTableAction {
 
     protected static final String EDIT_LABEL = Messages.getString("CreateTableAction.action.editTitle"); //$NON-NLS-1$
 
+    private RepositoryNode node;
+
     public CreateTableAction() {
         super();
 
@@ -60,15 +62,29 @@ public class CreateTableAction extends AbstractCreateTableAction {
         this.setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.METADATA_TABLE_ICON));
     }
 
-    public void run() {
-        // RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
-        RepositoryNode metadataNode = getMetadataNode(getCurrentRepositoryNode());
-        // Force focus to the repositoryView and open Metadata and DbConnection nodes
-        getViewPart().setFocus();
-        getViewPart().expand(metadataNode, true);
+    /**
+     * yzhang CreateTableAction constructor comment.
+     * 
+     * @param node
+     */
+    public CreateTableAction(RepositoryNode node) {
+        this();
+        this.node = node;
+    }
 
-        IStructuredSelection selection = (IStructuredSelection) getSelection();
-        RepositoryNode node = (RepositoryNode) selection.getFirstElement();
+    public void run() {
+        RepositoryNode metadataNode = null;
+        if (node == null) {
+            // RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
+            metadataNode = getMetadataNode(getCurrentRepositoryNode());
+            // Force focus to the repositoryView and open Metadata and DbConnection nodes
+            getViewPart().setFocus();
+            getViewPart().expand(metadataNode, true);
+            IStructuredSelection selection = (IStructuredSelection) getSelection();
+            node = (RepositoryNode) selection.getFirstElement();
+        } else {
+            metadataNode = getMetadataNode(node);
+        }
 
         // Init the content of the Wizard
         init(node);
@@ -82,43 +98,44 @@ public class CreateTableAction extends AbstractCreateTableAction {
 
         if (ERepositoryObjectType.METADATA_FILE_POSITIONAL.equals(nodeType)) {
             getViewPart().expand(metadataNode.getChildren().get(2), true);
-            createFilePositionalTableWizard(selection, false);
+            createFilePositionalTableWizard(node, false);
 
         } else if (ERepositoryObjectType.METADATA_FILE_DELIMITED.equals(nodeType)) {
             getViewPart().expand(metadataNode.getChildren().get(1), true);
-            createFileDelimitedTableWizard(selection, false);
+            createFileDelimitedTableWizard(node, false);
 
         } else if (ERepositoryObjectType.METADATA_CONNECTIONS.equals(nodeType)) {
             getViewPart().expand(metadataNode.getChildren().get(0), true);
-            createDatabaseTableWizard(selection, false);
+            createDatabaseTableWizard(node, false);
 
         } else if (ERepositoryObjectType.METADATA_FILE_REGEXP.equals(nodeType)) {
             getViewPart().expand(metadataNode.getChildren().get(0), true);
-            createFileRegexpTableWizard(selection, false);
+            createFileRegexpTableWizard(node, false);
 
         } else if (ERepositoryObjectType.METADATA_FILE_XML.equals(nodeType)) {
             getViewPart().expand(metadataNode.getChildren().get(0), true);
-            createFileXmlTableWizard(selection, false);
+            createFileXmlTableWizard(node, false);
 
         } else if (ERepositoryObjectType.METADATA_FILE_LDIF.equals(nodeType)) {
             getViewPart().expand(metadataNode.getChildren().get(0), true);
-            createFileLdifTableWizard(selection, false);
+            createFileLdifTableWizard(node, false);
         } else if (ERepositoryObjectType.METADATA_FILE_EXCEL.equals(nodeType)) {
             getViewPart().expand(metadataNode.getChildren().get(0), true);
-            createFileExcelTableWizard(selection, false);
+            createFileExcelTableWizard(node, false);
         } else if (ERepositoryObjectType.METADATA_GENERIC_SCHEMA.equals(nodeType)) {
             getViewPart().expand(metadataNode.getChildren().get(0), true);
-            createGenericSchemaWizard(selection, false);
+            createGenericSchemaWizard(node, false);
         } else if (ERepositoryObjectType.METADATA_LDAP_SCHEMA.equals(nodeType)) {
             getViewPart().expand(metadataNode.getChildren().get(0), true);
-            createLDAPSchemaWizard(selection, false);
+            createLDAPSchemaWizard(node, false);
         } else if (ERepositoryObjectType.METADATA_WSDL_SCHEMA.equals(nodeType)) {
             getViewPart().expand(metadataNode.getChildren().get(0), true);
-            createWSDLSchemaWizard(selection, false);
+            createWSDLSchemaWizard(node, false);
         } else if (ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA.equals(nodeType)) {
             getViewPart().expand(metadataNode.getChildren().get(0), true);
-            createSalesforceSchemaWizard(selection, false);
+            createSalesforceSchemaWizard(node, false);
         }
+        this.node = null;
     }
 
     /**
