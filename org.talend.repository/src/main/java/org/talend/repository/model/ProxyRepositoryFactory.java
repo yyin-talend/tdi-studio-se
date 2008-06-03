@@ -152,9 +152,9 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see org.talend.repository.model.IProxyRepositoryFactory#refreshJobPictureFolder()
      */
     public void refreshDocumentationFolder(String docFolder) {
+        IFolder folder = RepositoryPathProvider.getFolder(docFolder);
         try {
-            IProject project = ResourceModelUtils.getProject(getRepositoryContext().getProject());
-            project.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
+            folder.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
         } catch (Exception e) {
             e.printStackTrace();
         }
