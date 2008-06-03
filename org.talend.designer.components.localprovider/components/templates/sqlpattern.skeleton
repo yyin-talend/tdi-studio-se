@@ -1,3 +1,9 @@
+import org.talend.core.model.metadata.IMetadataColumn;
+import org.talend.core.model.metadata.IMetadataTable;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.ArrayList;
 public class CLASS {
 
     public String generateSQLPatternCode(INode node) {
@@ -69,12 +75,12 @@ public class CLASS {
                     }
 
                     if (line.length() >= 2 && line.charAt(0) == '<' && line.charAt(1) == '%') {
-                        if(line.length() > 2){
-                            if(line.charAt(2) != '='){
+                        if (line.length() > 2) {
+                            if (line.charAt(2) != '=') {
                                 jetScriptStarted = true;
                                 line = line.substring(2).trim();
                             }
-                        }else{
+                        } else {
                             jetScriptStarted = true;
                             line = line.substring(2).trim();
                         }
@@ -106,9 +112,28 @@ public class CLASS {
                                             if (!tableParamSet.contains(paramName)) {
                                                 resultBuilder.insert(0, extractTableValue(node, paramName));
                                                 tableParamSet.add(paramName);
-                                                line = null;
-                                                continue LINES;
                                             }
+                                            line = null;
+                                            continue LINES;
+                                        }
+                                    }
+
+                                    // to see whether this is extract SCHEMA value sentence
+                                    /*
+                                     * The sentence for extract SCHEMA property must be in the scopce of "< %" and "%
+                                     * >". And the code is something like EXTRACT(__SCHEMA__);
+                                     */
+                                    indexEXTRACTBegin = position - 9;
+                                    indexEXTRACTEnd = indexOfEnd__ + 2;
+                                    if (indexEXTRACTBegin >= 0 && indexEXTRACTEnd < lineBuilder.length()) {
+                                        if (lineBuilder.substring(indexEXTRACTBegin, position).equals("SCHEMA(__")
+                                                && lineBuilder.charAt(indexEXTRACTEnd) == ')') {
+                                            if (!tableParamSet.contains(paramName)) {
+                                                resultBuilder.insert(0, extractSchemaValue(node, paramName));
+                                                tableParamSet.add(paramName);
+                                            }
+                                            line = null;
+                                            continue LINES;
                                         }
                                     }
 
@@ -339,7 +364,7 @@ public class CLASS {
         // get the table param value
         List<Map<String, String>> tableValue = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__"
                 + param + "__");
-        /* get table size value, use: __PARAM_length__ */
+        /* get table size value, use: __PARAM_LENGTH__ */
         resultBuilder.append("int ").append(param).append("_LENGTH_").append(cid).append(" = ").append(tableValue.size()).append(
                 ";\n");
         if (tableValue.size() > 0) {
@@ -373,6 +398,53 @@ public class CLASS {
         }
 
         return resultBuilder.toString();
+    }
+
+    private String extractSchemaValue(INode node, String param) {
+        String cid = node.getUniqueName();
+        StringBuilder resultBuilder = new StringBuilder();
+
+        // get the SCHEMA value
+        List<IMetadataColumn> schemaValue = getColumnList(node);
+
+        resultBuilder.append("class ").append(param).append("_struct_").append(cid).append(
+                "{ \nString name;\nString dbType;\nboolean isKey;\nInteger length;\nboolean nullable;\n}\n");
+
+        int size = 0;
+        if (schemaValue != null) {
+            size = schemaValue.size();
+        }
+        resultBuilder.append(param).append("_struct_").append(cid).append("[] ").append(param).append("_").append(cid)
+                .append(" = new ").append(param).append("_struct_").append(cid).append(" [").append(size).append("];\n");
+        for (int i = 0; i < size; i++) {
+            IMetadataColumn column = schemaValue.get(i);
+            resultBuilder.append(param).append("_").append(cid).append("[").append(i).append("] = new ").append(param).append(
+                    "_struct_").append(cid).append("();\n");
+            resultBuilder.append(param).append("_").append(cid).append("[").append(i).append("].name = ").append("\"").append(
+                    column.getLabel()).append("\";\n");
+            resultBuilder.append(param).append("_").append(cid).append("[").append(i).append("].dbType = ").append("\"").append(
+                    column.getType()).append("\";\n");
+            resultBuilder.append(param).append("_").append(cid).append("[").append(i).append("].isKey = ").append(column.isKey())
+                    .append(";\n");
+            resultBuilder.append(param).append("_").append(cid).append("[").append(i).append("].length = ").append(
+                    column.getLength()).append(";\n");
+            resultBuilder.append(param).append("_").append(cid).append("[").append(i).append("].nullable = ").append(column.isNullable())
+            .append(";\n");
+        }
+
+        return resultBuilder.toString();
+    }
+
+    public List<IMetadataColumn> getColumnList(INode node) {
+        List<IMetadataColumn> columnList = null;
+        List<IMetadataTable> metadatas = node.getMetadataList();
+        if (metadatas != null && metadatas.size() > 0) {
+            IMetadataTable metadata = metadatas.get(0);
+            if (metadata != null) {
+                columnList = metadata.getListColumns();
+            }
+        }
+        return columnList;
     }
 
     public String generate(Object argument) {
