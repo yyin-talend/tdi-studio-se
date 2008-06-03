@@ -2012,6 +2012,7 @@ public class Node extends Element implements INode {
     }
 
     public void renameData(String oldName, String newName) {
+
         if (oldName.equals(newName)) {
             return;
         }
@@ -2021,6 +2022,9 @@ public class Node extends Element implements INode {
         }
 
         for (IElementParameter param : this.getElementParameters()) {
+            if (param.getName().equals(EParameterName.UNIQUE_NAME.getName())) {
+                continue;
+            }
             if (param.getValue() instanceof String) { // for TEXT / MEMO etc..
                 String value = (String) param.getValue();
                 if (value.contains(oldName)) {
@@ -2104,10 +2108,14 @@ public class Node extends Element implements INode {
     }
 
     public boolean useData(String name) {
+
         if (isExternalNode()) {
             return getExternalNode().useData(name);
         }
         for (IElementParameter param : this.getElementParameters()) {
+            if (param.getName().equals(EParameterName.UNIQUE_NAME.getName())) {
+                continue;
+            }
             if (param.getValue() instanceof String) { // for TEXT / MEMO etc..
                 String value = (String) param.getValue();
                 if (valueContains(value, name)) {

@@ -14,8 +14,10 @@ package org.talend.designer.core.ui.editor.cmd;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
@@ -513,7 +515,7 @@ public class NodesPasteCommand extends Command {
                     }
 
                     // (feature 2962)
-                    if(pastedConnection.getMetadataTable()==null){
+                    if (pastedConnection.getMetadataTable() == null) {
                         continue;
                     }
                     for (IMetadataColumn column : pastedConnection.getMetadataTable().getListColumns()) {
@@ -542,28 +544,33 @@ public class NodesPasteCommand extends Command {
         }
 
         // check if the new components use the old components name.
-        boolean useOldComponentsName = false;
+        Map<String, Set<String>> usedDataMap = new HashMap<String, Set<String>>();
         for (NodeContainer nodeContainer : nodeContainerList) {
             Node currentNode = nodeContainer.getNode();
+            String uniqueName = currentNode.getUniqueName();
             for (String oldName : oldNameTonewNameMap.keySet()) {
-                if ((!oldName.equals(oldNameTonewNameMap.get(oldName))) && currentNode.useData(oldName)) {
-                    useOldComponentsName = true;
-                    break;
+                if (!oldName.equals(oldNameTonewNameMap.get(oldName)) && currentNode.useData(oldName)) {
+                    Set<String> oldNameSet = usedDataMap.get(uniqueName);
+                    if (oldNameSet == null) {
+                        oldNameSet = new HashSet<String>();
+                        usedDataMap.put(uniqueName, oldNameSet);
+                    }
+                    oldNameSet.add(oldName);
                 }
             }
-            if (useOldComponentsName) {
-                break;
-            }
         }
-        if (useOldComponentsName) {
+        if (!usedDataMap.isEmpty()) {
             MessageBox msgBox = new MessageBox(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.YES | SWT.NO
                     | SWT.ICON_WARNING);
             msgBox.setMessage(Messages.getString("NodesPasteCommand.renameMessages")); //$NON-NLS-1$
             if (msgBox.open() == SWT.YES) {
                 for (NodeContainer nodeContainer : nodeContainerList) {
                     Node currentNode = nodeContainer.getNode();
-                    for (String oldName : oldNameTonewNameMap.keySet()) {
-                        currentNode.renameData(oldName, oldNameTonewNameMap.get(oldName));
+                    Set<String> oldNameSet = usedDataMap.get(currentNode.getUniqueName());
+                    if (oldNameSet != null && !oldNameSet.isEmpty()) {
+                        for (String oldName : oldNameSet) {
+                            currentNode.renameData(oldName, oldNameTonewNameMap.get(oldName));
+                        }
                     }
                 }
             }
