@@ -78,6 +78,14 @@ public class IterateConnectionPerformance extends ConnectionPerformance {
             String oldLabel = label;
             label = createHtmlText();
             firePropertyChange(LABEL_PROP, oldLabel, label);
+
+        } else if (part != null && part.length == 2) { // iterate1.0|exec0, it means running.
+            runningExecutionId.add(part[1]);
+
+            // update label
+            String oldLabel = label;
+            label = createHtmlText();
+            firePropertyChange(LABEL_PROP, oldLabel, label);
         }
     }
 
@@ -92,17 +100,18 @@ public class IterateConnectionPerformance extends ConnectionPerformance {
         String pattern = "<font color='%1$s'>%2$s %3$s</font><br>";
         String color = COLOR_RUNNING;
         String execString = "exec running";
-        if (runningExecutionId.size() > 1) {
+        if (runningExecutionId.size() > 0) {
             execString = "execs running";
+            html.append(String.format(pattern, color, runningExecutionId.size(), execString));
         }
-        html.append(String.format(pattern, color, runningExecutionId.size(), execString));
 
         color = COLOR_FINISHED;
         execString = "exec finished";
-        if (stoppeddExecutionId.size() > 1) {
+        if (stoppeddExecutionId.size() > 0) {
             execString = "execs finished";
+            html.append(String.format(pattern, color, stoppeddExecutionId.size(), execString));
         }
-        html.append(String.format(pattern, color, stoppeddExecutionId.size(), execString));
+
         return html.toString();
     }
 
