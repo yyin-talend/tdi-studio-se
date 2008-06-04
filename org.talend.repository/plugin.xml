@@ -863,6 +863,12 @@
             id="org.talend.repository.model.migration.RenametForCurrentIterationMigrationTask"
             name="rename tFor_ variable to tLoop_ variable">
       </projecttask>
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.RenametFileInputBasic"
+            id="org.talend.repository.model.migration.RenametFileInputBasic"
+            name="rename tFileInputBasic into tFileIntoFullRow">
+      </projecttask>
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">
