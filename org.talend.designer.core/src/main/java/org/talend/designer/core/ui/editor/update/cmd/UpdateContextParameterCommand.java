@@ -17,10 +17,12 @@ import java.util.Set;
 
 import org.eclipse.gef.commands.Command;
 import org.talend.core.model.context.ContextUtils;
+import org.talend.core.model.context.UpdateContextVariablesHelper;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ContextItem;
+import org.talend.core.model.update.EUpdateResult;
 import org.talend.core.model.update.UpdateResult;
 
 /**
@@ -76,6 +78,7 @@ public class UpdateContextParameterCommand extends Command {
                                     ContextUtils.updateParameterFromRepository(item, param, context.getName());
                                 }
                             }
+
                         }
                         break;
                     case BUIL_IN: // built-in
@@ -84,6 +87,15 @@ public class UpdateContextParameterCommand extends Command {
                         break;
                     }
 
+                }
+            }
+            // update parameters
+            if (result.getResultType() == EUpdateResult.RENAME) {
+                List<Object> parameter = (List<Object>) result.getParameter();
+                if (parameter.size() >= 3) {
+                    String oldName = (String) parameter.get(1);
+                    String newName = (String) parameter.get(2);
+                    UpdateContextVariablesHelper.updateProcessForRenamed(process, oldName, newName);
                 }
             }
         }
