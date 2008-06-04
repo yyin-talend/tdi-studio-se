@@ -82,6 +82,8 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
 
     private String language;
 
+    private ISourceViewer viewer;
+
     /*
      * (non-Javadoc)
      * 
@@ -110,7 +112,7 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
         Control cLayout;
         StyledText text;
         FormData data;
-        ISourceViewer viewer = null;
+        viewer = null;
         if (param.getNbLines() != 1) {
             if (language.equals("java")) {
                 String context = param.getContext();
@@ -143,8 +145,9 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
                         ContextParameterExtractor.installOn(text, process, param.getName(), elem);
                     }
                     text.setData(PARAMETER_NAME, param.getName());
-                    UndoRedoHelper helper = new UndoRedoHelper();
-                    helper.register(text);
+                    editionControlHelper.register(param.getName(), text, true);
+                    // UndoRedoHelper helper = new UndoRedoHelper();
+                    // helper.register(text);
                     cLayout = a;
                 } else {
                     Composite a = new Composite(subComposite, SWT.NO_FOCUS);
@@ -180,8 +183,9 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
                         ContextParameterExtractor.installOn(text, process, param.getName(), elem);
                     }
                     text.setData(PARAMETER_NAME, param.getName());
-                    UndoRedoHelper helper = new UndoRedoHelper();
-                    helper.register(text);
+                    editionControlHelper.register(param.getName(), text, true);
+                    // UndoRedoHelper helper = new UndoRedoHelper();
+                    // helper.register(text);
                     cLayout = a;
                 }
             } else {
@@ -210,8 +214,9 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
                     ContextParameterExtractor.installOn(text, process, param.getName(), elem);
                 }
                 text.setData(PARAMETER_NAME, param.getName());
-                UndoRedoHelper helper = new UndoRedoHelper();
-                helper.register(text);
+                editionControlHelper.register(param.getName(), text, true);
+                // UndoRedoHelper helper = new UndoRedoHelper();
+                // helper.register(text);
                 cLayout = a;
             }
         } else {
@@ -411,4 +416,5 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
             }
         }
     }
+
 }
