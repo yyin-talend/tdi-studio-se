@@ -65,7 +65,13 @@ public class ExcelReader {
     }
 
     public List<String[]> readSheet(String sheetName) {
+
         Sheet sheet = workbook.getSheet(sheetName);
+
+        if (sheet == null) {
+            return null;
+        }
+
         int rows = sheet.getRows();
 
         List<String[]> res = new ArrayList<String[]>();

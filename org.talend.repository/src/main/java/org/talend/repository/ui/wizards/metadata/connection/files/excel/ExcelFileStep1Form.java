@@ -508,11 +508,6 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
 
                     monitor.beginTask("Excel Preview...", IProgressMonitor.UNKNOWN);
 
-                    final List<String[]> input = excelReader.readSheet(sheetName);
-                    if (input == null) {
-                        return;
-                    }
-
                     getConnection().setSheetName(sheetName);
 
                     Display.getDefault().asyncExec(new Runnable() {
@@ -520,6 +515,12 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
                         public void run() {
 
                             disposeExistColumns();// Must clear before add
+
+                            final List<String[]> input = excelReader.readSheet(sheetName);
+                            if (input == null) {
+                                viewer.setInput(getEmptyInput());
+                                return;
+                            }
 
                             int maxLength = 0;
                             for (int i = 0, z = input.size(); i < z; i++) {
@@ -557,6 +558,12 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
             updateErrorMsgAndSetNotOK(e.getMessage());
         }
 
+    }
+
+    private List<String[]> getEmptyInput() {
+        List<String[]> res = new ArrayList<String[]>();
+        res.add(new String[0]);
+        return res;
     }
 
     /**
