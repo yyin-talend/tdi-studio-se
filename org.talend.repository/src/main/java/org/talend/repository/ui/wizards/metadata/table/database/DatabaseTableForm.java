@@ -525,16 +525,16 @@ public class DatabaseTableForm extends AbstractForm {
      * checkConnection and adapt the form.
      */
     private void adaptFormToCheckConnection() {
-        tableCombo.setEnabled(false);
-        retreiveSchemaButton.setEnabled(true);
-        checkConnectionButton.setVisible(true);
+        // tableCombo.setEnabled(false);
+        // checkConnectionButton.setVisible(true);
 
-        // if (isReadOnly()) {
-        if (1 == 1) {
-            tableSettingsInfoLabel.setText(""); //$NON-NLS-1$
-            tableCombo.setReadOnly(true);
+        retreiveSchemaButton.setEnabled(true);
+        tableSettingsInfoLabel.setText(""); //$NON-NLS-1$
+        tableCombo.setReadOnly(true);
+        checkConnectionButton.setVisible(false);
+
+        if (isReadOnly()) {
             retreiveSchemaButton.setEnabled(false);
-            checkConnectionButton.setVisible(false);
         } else if (!managerConnection.getIsValide()) {
             // Connection failure
             tableSettingsInfoLabel.setText(Messages.getString("DatabaseTableForm.connectionFailure")); //$NON-NLS-1$
@@ -542,13 +542,14 @@ public class DatabaseTableForm extends AbstractForm {
         } else if (tableCombo.getItemCount() <= 0) {
             // Connection is done but no table exist
             tableSettingsInfoLabel.setText(Messages.getString("DatabaseTableForm.tableNoExist")); //$NON-NLS-1$
-        } else {
-            // Connection is done and table(s) exist
-            tableSettingsInfoLabel.setText(""); //$NON-NLS-1$
-            tableCombo.setEnabled(true);
-            tableSettingsInfoLabel.setText(Messages.getString("DatabaseTableForm.retreiveButtonAlert")); //$NON-NLS-1$
-            checkConnectionButton.setVisible(false);
         }
+        // else {
+        // // Connection is done and table(s) exist
+        // tableSettingsInfoLabel.setText(""); //$NON-NLS-1$
+        // tableCombo.setEnabled(true);
+        // tableSettingsInfoLabel.setText(Messages.getString("DatabaseTableForm.retreiveButtonAlert")); //$NON-NLS-1$
+        // checkConnectionButton.setVisible(false);
+        // }
     }
 
     /**
