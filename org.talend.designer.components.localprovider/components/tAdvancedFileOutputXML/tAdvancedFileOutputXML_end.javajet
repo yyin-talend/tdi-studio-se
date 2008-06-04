@@ -233,20 +233,22 @@ if(currentRowCount_<%=cid %> > 0){
     output_<%=cid%>.close();
 <%
 	}else if(mode.equals("Null")){
-		String path = loopTable.get(0).get("PATH");
-		String[] endTabs = path.split("/");	
-		for(int i=endTabs.length-2;i>0;i--){
-			String tab = endTabs[i];
-			String emptyspace = "";
-			for(int len = 1; len<i;len++){
-				emptyspace += "  ";
-			}
-			if(tab!=null && tab.length()>0){
+		if(loopTable.size()>0){
+        	String path = loopTable.get(0).get("PATH");
+        	String[] endTabs = path.split("/");	
+        	for(int i=endTabs.length-2;i>0;i--){
+        		String tab = endTabs[i];
+        		String emptyspace = "";
+        		for(int len = 1; len<i;len++){
+        			emptyspace += "  ";
+        		}
+        		if(tab!=null && tab.length()>0){
 %>
 	out_<%=cid%>.newLine();
 	out_<%=cid%>.write("<%=emptyspace%></<%=tab%>>");
 <%
-			}
+    			}
+    		}
 		}
 %>
 	out_<%=cid%>.close();
