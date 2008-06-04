@@ -474,7 +474,7 @@
                tooltip="%exportProjectsAction.toolTip"/>
          <action
                class="org.talend.repository.ui.actions.toolbar.UpdateModificationsAction"
-               icon="icons/refresh.gif"
+               icon="icons/updateSettings.png"
                id="org.talend.repository.updateModifications"
                label="Upate modified jobs"
                style="push"
@@ -483,7 +483,7 @@
          </action>
          <action
                class="org.talend.repository.ui.actions.toolbar.ProjectSettingsAction"
-               icon="icons/newProject.png"
+               icon="icons/projectssettings.png"
                id="org.talend.repository.projectsettings"
                label="Project settings"
                style="push"
