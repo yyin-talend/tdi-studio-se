@@ -57,6 +57,11 @@ public class FOXManager {
         return this.foxComponent;
     }
 
+    public boolean isNoLoopInComponent() {
+        List<Map<String, String>> loopTable = (List<Map<String, String>>) foxComponent.getTableList(FileOutputXMLComponent.LOOP);
+        return loopTable.size() <= 0;
+    }
+
     /**
      * Sets the foxComponent.
      * 

@@ -67,6 +67,7 @@ import org.talend.designer.fileoutputxml.ui.edit.FOXTargetTreeViewerProvider;
 import org.talend.designer.fileoutputxml.ui.edit.Schema2XMLLinker;
 import org.talend.designer.fileoutputxml.ui.edit.SchemaTableViewerProvider;
 import org.talend.designer.fileoutputxml.ui.footer.FooterComposite;
+import org.talend.designer.fileoutputxml.ui.header.HeaderComposite;
 import org.talend.designer.fileoutputxml.util.StringUtil;
 
 /**
@@ -88,6 +89,8 @@ public class FOXUI {
     private TableViewer schemaViewer;
 
     private TreeViewer xmlViewer;
+
+    private HeaderComposite header;
 
     private Schema2XMLLinker linker;
 
@@ -136,6 +139,11 @@ public class FOXUI {
      * @param child
      */
     private void createContent(Composite mainComposite) {
+
+        header = new HeaderComposite(mainComposite, SWT.NONE);
+        if (this.foxManager.isNoLoopInComponent()) {
+            header.updateStatus(Messages.getString("FOXUI.NoLoop"));
+        }
         // Splitter
         xmlToSchemaSash = new SashForm(mainComposite, SWT.HORIZONTAL | SWT.SMOOTH);
         xmlToSchemaSash.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -149,7 +157,6 @@ public class FOXUI {
         linker.init(schemaViewer.getTable(), xmlViewer);
         initSchemaTable();
         new FooterComposite(mainComposite, SWT.NONE, foxManager);
-
         Tree xmlTree = xmlViewer.getTree();
 
         TreeItem root = xmlTree.getItem(0);
@@ -344,7 +351,7 @@ public class FOXUI {
         // importFromXMLAction
         // .setToolTipText("Discard the current tree and then import a hierachy tree from an existing xml file.");
         // guessLoopAction = new GuessLoopAction(xmlViewer, Messages.getString("FOXUI.15")); //$NON-NLS-1$
-        setLoopAction = new SetForLoopAction(xmlViewer, Messages.getString("FOXUI.16")); //$NON-NLS-1$
+        setLoopAction = new SetForLoopAction(xmlViewer, this, Messages.getString("FOXUI.16")); //$NON-NLS-1$
         setGroupAction = new SetGroupAction(xmlViewer, Messages.getString("FOXUI.17")); //$NON-NLS-1$
         removeGroupAction = new RemoveGroupAction(xmlViewer, Messages.getString("FOXUI.18")); //$NON-NLS-1$
 
@@ -460,5 +467,13 @@ public class FOXUI {
 
     public void setSelectedText(String label) {
         selectedText = label;
+    }
+
+    public void updateStatus(String message) {
+        if (message != null && message.trim().length() > 0) {
+            header.updateStatus(message);
+        } else {
+            header.clearStatus();
+        }
     }
 }

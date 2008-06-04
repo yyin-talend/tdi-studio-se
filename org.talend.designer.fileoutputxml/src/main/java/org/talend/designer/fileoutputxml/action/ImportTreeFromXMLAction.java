@@ -24,6 +24,7 @@ import org.eclipse.ui.actions.SelectionProviderAction;
 import org.talend.designer.fileoutputxml.data.Attribute;
 import org.talend.designer.fileoutputxml.data.Element;
 import org.talend.designer.fileoutputxml.data.FOXTreeNode;
+import org.talend.designer.fileoutputxml.i18n.Messages;
 import org.talend.designer.fileoutputxml.ui.FOXUI;
 
 /**
@@ -115,6 +116,7 @@ public class ImportTreeFromXMLAction extends SelectionProviderAction {
         // TreeUtil.guessAndSetLoopNode((FOXTreeNode) xmlViewer.getTree().getItem(0).getData());
         xmlViewer.refresh();
         xmlViewer.expandAll();
+        foxui.updateStatus(Messages.getString("FOXUI.NoLoop"));
         foxui.redrawLinkers();
     }
 

@@ -18,6 +18,7 @@ import org.eclipse.ui.actions.SelectionProviderAction;
 import org.talend.designer.fileoutputxml.data.Attribute;
 import org.talend.designer.fileoutputxml.data.FOXTreeNode;
 import org.talend.designer.fileoutputxml.data.NameSpaceNode;
+import org.talend.designer.fileoutputxml.ui.FOXUI;
 import org.talend.designer.fileoutputxml.util.TreeUtil;
 
 /**
@@ -31,8 +32,10 @@ public class SetForLoopAction extends SelectionProviderAction {
     // the xml viewer, see FOXUI.
     private TreeViewer xmlViewer;
 
+    private FOXUI foxui;
+
     /**
-     * CreateNode constructor comment.
+     * SetForLoopAction constructor comment.
      * 
      * @param provider
      * @param text
@@ -40,6 +43,20 @@ public class SetForLoopAction extends SelectionProviderAction {
     public SetForLoopAction(TreeViewer xmlViewer, String text) {
         super(xmlViewer, text);
         this.xmlViewer = xmlViewer;
+    }
+
+    /**
+     * 
+     * SetForLoopAction constructor comment.
+     * 
+     * @param xmlViewer
+     * @param text
+     * @param foxui
+     */
+    public SetForLoopAction(TreeViewer xmlViewer, FOXUI foxui, String text) {
+        super(xmlViewer, text);
+        this.xmlViewer = xmlViewer;
+        this.foxui = foxui;
     }
 
     /*
@@ -66,6 +83,7 @@ public class SetForLoopAction extends SelectionProviderAction {
             node.setGroup(false);
         }
         node.setLoop(true);
+        foxui.updateStatus(null);
         TreeUtil.upsetMainNode(node);
         xmlViewer.refresh();
     }
