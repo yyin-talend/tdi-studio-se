@@ -227,6 +227,7 @@ end_Hash.put("<%=node.getUniqueName() %>", System.currentTimeMillis());
 		public void run() {
 			this.isRunning = true;
 			try {
+			String currentComponent = "";
 <%
 	        	if(stat){
 %>
