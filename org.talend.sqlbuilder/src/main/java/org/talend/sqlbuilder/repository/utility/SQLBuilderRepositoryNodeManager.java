@@ -406,7 +406,9 @@ public class SQLBuilderRepositoryNodeManager {
             // /Get MetadataTable From DB
             List<MetadataTable> tablesFromDB = ExtractMetaDataFromDataBase.returnMetaTablesFormConnection(iMetadataConnection);
             // Get MetadataTable From EMF(Old RepositoryNode)
+
             List<MetadataTable> tablesFromEMF = connection.getTables();
+
             if (oldNode.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.DATABASE) {
                 modifyOldConnection(tablesFromEMF, iMetadataConnection, tablesFromDB);
                 restoreConnection(connection, tablesFromEMF);
@@ -885,8 +887,15 @@ public class SQLBuilderRepositoryNodeManager {
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     private void fixedTables(List<MetadataTable> metaFromDB, List<MetadataTable> metaFromEMF,
             IMetadataConnection iMetadataConnection) {
+        List<MetadataTable> removeEmfDB = new ArrayList<MetadataTable>();
         for (MetadataTable emf : metaFromEMF) {
-            modifyOldOneTableFromDB(metaFromDB, emf);
+            boolean flag = modifyOldOneTableFromDB(metaFromDB, emf);
+            if (flag) {
+                removeEmfDB.add(emf);
+            }
+        }
+        for (MetadataTable metadataTable : removeEmfDB) {
+            metaFromEMF.remove(metadataTable);
         }
         while (!metaFromDB.isEmpty()) {
             MetadataTable db = metaFromDB.remove(0);
@@ -935,7 +944,7 @@ public class SQLBuilderRepositoryNodeManager {
      * @param emf
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    private void modifyOldOneTableFromDB(List<MetadataTable> metaFromDB, MetadataTable emf) {
+    private boolean modifyOldOneTableFromDB(List<MetadataTable> metaFromDB, MetadataTable emf) {
         boolean flag = true;
         for (MetadataTable db : metaFromDB) {
             if (db.getSourceName().equals(emf.getSourceName())) {
@@ -956,6 +965,7 @@ public class SQLBuilderRepositoryNodeManager {
             emf.setDivergency(true);
             emf.setSynchronised(false);
         }
+        return flag;
     }
 
     /**
