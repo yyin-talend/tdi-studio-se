@@ -49,7 +49,7 @@
 				rowList = rowList.substring(0, rowList.length()-1);
 				if(stat){
 %>
-				runStat.updateStatOnConnection("<%=iterateConn.getUniqueName() %>",2,"exec"+globalMap.get("PARALLEL_ITERATOR_THREAD_ID"));
+				runStat.updateStatOnConnection("<%=iterateConn.getUniqueName() %>"+(globalMap.get("PARALLEL_ITERATOR_THREAD_ID")!=null?("."+globalMap.get("PARALLEL_ITERATOR_THREAD_ID")):""),2,"exec"+globalMap.get("PARALLEL_ITERATOR_THREAD_ID"));
 <%
 				}
 %>

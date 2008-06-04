@@ -231,7 +231,8 @@ end_Hash.put("<%=node.getUniqueName() %>", System.currentTimeMillis());
 <%
 	        	if(stat){
 %>
-				runStat.updateStatOnConnection("<%=iterateConn.getUniqueName() %>",0,"exec"+(String)globalMap.get("PARALLEL_ITERATOR_THREAD_ID"));
+				runStat.updateStatOnConnection("<%=iterateConn.getUniqueName() %>"+(globalMap.get("PARALLEL_ITERATOR_THREAD_ID")!=null?("."+globalMap.get("PARALLEL_ITERATOR_THREAD_ID")):""),0,"exec"+(String)globalMap.get("PARALLEL_ITERATOR_THREAD_ID"));
+				runStat.updateStatOnConnection("<%=iterateConn.getUniqueName() %>"+(globalMap.get("PARALLEL_ITERATOR_THREAD_ID")!=null?("."+globalMap.get("PARALLEL_ITERATOR_THREAD_ID")):""),1,"exec"+(String)globalMap.get("PARALLEL_ITERATOR_THREAD_ID"));
 <%
 				}
 			}
