@@ -792,7 +792,7 @@ public class RunProcessContext {
                             if (conn != null && conn instanceof IPerformance) {
                                 final IPerformance performance = (IPerformance) conn;
                                 performanceDataSet.add(performance);
-                                Display.getDefault().asyncExec(new Runnable() {
+                                Display.getDefault().syncExec(new Runnable() {
 
                                     public void run() {
                                         if (data != null) {
