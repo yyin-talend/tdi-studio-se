@@ -1427,6 +1427,15 @@ public class Node extends Element implements INode {
     private void checkParameters() {
         for (IElementParameter param : this.getElementParametersWithChildrens()) {
             // if the parameter is required but empty, an error will be added
+            if (param.isRequired() && !param.isShow(getElementParameters()) && this.externalNode != null) {
+                if (param.getField().equals(EParameterFieldType.TABLE)) {
+                    List<Map<String, String>> tableValues = (List<Map<String, String>>) param.getValue();
+                    if (tableValues.size() == 0) {
+                        String errorMessage = "Parameter (" + param.getDisplayName() + ") must have at least one value.";
+                        Problems.add(ProblemStatus.WARNING, this, errorMessage);
+                    }
+                }
+            }
             if (param.isRequired() && param.isShow(getElementParameters())) {
                 EParameterFieldType fieldType = param.getField();
                 String value;
@@ -1596,9 +1605,9 @@ public class Node extends Element implements INode {
         // not a sub process start
         if (!isSubProcessStart() || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
             if (/*
-             * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_AFTER) > 0) ||
-             * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_BEFORE) > 0)||
-             */
+                 * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_AFTER) > 0) ||
+                 * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_BEFORE) > 0)||
+                 */
             (getCurrentActiveLinksNbOutput(EConnectionType.ON_SUBJOB_OK) > 0)
                     || getCurrentActiveLinksNbOutput(EConnectionType.ON_SUBJOB_ERROR) > 0) {
                 String errorMessage = "A component that is not a sub process start can not have any link on sub job ok / on sub job error in input.";
@@ -1616,9 +1625,9 @@ public class Node extends Element implements INode {
         // not a sub process start
         if ((!isELTComponent() && !isSubProcessStart()) || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
             if (/*
-             * (getCurrentActiveLinksNbInput(EConnectionType.RUN_AFTER) > 0) ||
-             * (getCurrentActiveLinksNbInput(EConnectionType.RUN_BEFORE) > 0) ||
-             */(getCurrentActiveLinksNbInput(EConnectionType.ON_SUBJOB_OK) > 0)
+                 * (getCurrentActiveLinksNbInput(EConnectionType.RUN_AFTER) > 0) ||
+                 * (getCurrentActiveLinksNbInput(EConnectionType.RUN_BEFORE) > 0) ||
+                 */(getCurrentActiveLinksNbInput(EConnectionType.ON_SUBJOB_OK) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_OK) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_ERROR) > 0)) {
