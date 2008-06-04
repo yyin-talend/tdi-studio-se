@@ -13,13 +13,17 @@
 package org.talend.repository.ui.swt.utils;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
@@ -33,6 +37,7 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.repository.RepositoryPlugin;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.wizards.metadata.connection.files.salesforce.SalesforceModuleParseAPI;
 
 /**
@@ -167,6 +172,7 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
     }
 
     protected boolean checkSalesfoceLogin(final String endPoint, final String username, final String password) {
+        final List<String> errors = new ArrayList<String>();
 
         salesforceAPI.setLogin(false);
 
@@ -189,7 +195,9 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
                     try {
                         salesforceAPI.login(endPoint, username, password);
                         salesforceAPI.setLogin(true);
+
                     } catch (Throwable e) {
+                        errors.add(e.getMessage());
                         ExceptionHandler.process(e);
                     }
                     monitor.done();
@@ -201,6 +209,15 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
             ExceptionHandler.process(e2);
         }
 
+        if (salesforceAPI.isLogin()) {
+            MessageDialog.openInformation(getShell(), Messages.getString("SalesforceForm.checkConnectionTitle"), //$NON-NLS-1$ 
+                    Messages.getString("SalesforceForm.checkIsDone")); //$NON-NLS-1$ 
+        } else {
+            String mainMsg = Messages.getString("SalesforceForm.checkFailure") + " " //$NON-NLS-1$ //$NON-NLS-2$
+                    + Messages.getString("SalesforceForm.checkFailureTip"); //$NON-NLS-1$
+            String error = errors.size() > 0 ? errors.get(0) : "";
+            new ErrorDialogWidthDetailArea(getShell(), PID, mainMsg, error);
+        }
         return salesforceAPI.isLogin();
     }
 
