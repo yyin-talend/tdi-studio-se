@@ -189,6 +189,7 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
             userName = getContextModeManager().getOriginalValue(userName);
             password = getContextModeManager().getOriginalValue(password);
         }
+
         IMetadataTable metadataTable = getMetadatasForSalesforce(webServiceUrl, userName, password, moduleName, true);
 
         List<IMetadataColumn> columns = metadataTable.getListColumns();
@@ -325,6 +326,7 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
 
         boolean firstRowIsCatption = false;
 
+        @Override
         public boolean preProcessStart() {
             previewButton.setText(Messages.getString("FileStep2.stop"));
 
@@ -340,8 +342,8 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
                         webServiceUrl = getContextModeManager().getOriginalValue(getConnection().getWebServiceUrl());
                         found = true;
                     }
-                    originalValueConnection = (SalesforceSchemaConnection) OtherConnectionContextUtils
-                            .cloneOriginalValueSalesforceConnection(getConnection(), contextType);
+                    originalValueConnection = OtherConnectionContextUtils.cloneOriginalValueSalesforceConnection(getConnection(),
+                            contextType);
                 }
                 if (!found) {
                     webServiceUrl = null;
@@ -349,7 +351,7 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
             }
 
             if (webServiceUrl == null || webServiceUrl.equals("")) { //$NON-NLS-1$
-                previewInformationLabel.setText(" Please reset Salesforce URL"); //$NON-NLS-1$ //$NON-NLS-2$
+                previewInformationLabel.setText(" Please reset Salesforce URL"); //$NON-NLS-1$ 
                 return false;
             }
 
@@ -367,9 +369,13 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
             return true;
         }
 
+        @Override
         public void nonUIProcessInThread() {
             // get the XmlArray width an adapt ProcessDescription
             try {
+                // the web service url is used by tSalesforceInput, see 0004027: Studio crashes when clicking Next on
+                // Step 3 of SF wizard
+                processDescription.getSalesforceSchemaBean().setWebServerUrl(TSALESFORCE_INPUT_URL);
                 csvArray = ShadowProcessHelper.getCsvArray(processDescription, "SALESFORCE_SCHEMA", true); //$NON-NLS-1$
                 if (csvArray == null) {
                     previewInformationLabelMsg = "   " + Messages.getString("FileStep2.previewFailure"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -385,12 +391,14 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
             }
         }
 
+        @Override
         public void updateUIInThreadIfThreadIsCanceled() {
             if (!previewInformationLabel.isDisposed()) {
                 previewInformationLabel.setText("");
             }
         }
 
+        @Override
         public void updateUIInThreadIfThreadIsNotCanceled() {
             if (previewInformationLabel.isDisposed()) {
                 return;
@@ -405,6 +413,7 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
             }
         }
 
+        @Override
         public void updateUIInThreadIfThreadFinally() {
             if (!previewButton.isDisposed()) {
                 previewButton.setText(Messages.getString("FileStep2.refreshPreview"));
@@ -413,6 +422,7 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
             }
         }
 
+        @Override
         public void postProcessCancle() {
             previewButton.setEnabled(false);
         }
@@ -429,11 +439,9 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
      */
     private ProcessDescription getProcessDescription(SalesforceSchemaConnection originalValueConnection) {
 
-        ProcessDescription processDescription = (ProcessDescription) ShadowProcessHelper
-                .getProcessDescription(originalValueConnection);
+        ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(originalValueConnection);
 
         SalesforceSchemaBean bean = new SalesforceSchemaBean();
-
         bean.setWebServerUrl(originalValueConnection.getWebServiceUrl());
         bean.setUserName(originalValueConnection.getUserName());
         bean.setPassword(originalValueConnection.getPassword());

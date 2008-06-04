@@ -54,6 +54,12 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
 
     private IMetadataContextModeManager contextModeManager;
 
+    public static final String TSALESFORCE_INPUT_URL = "https://www.salesforce.com/services/Soap/u/10.0";
+
+    // note that tSalesforceInput use a different url, if the web service is called by wizard we should use
+    // DEFAULT_WEB_SERVICE_URL, if the web service is called by tSalesforceInput we should use TSALESFORCE_INPUT_URL
+    public static final String DEFAULT_WEB_SERVICE_URL = "https://www.salesforce.com/services/Soap/u/8.0";
+
     public AbstractSalesforceStepForm(Composite parent, ConnectionItem connectionItem, String[] existingNames,
             SalesforceModuleParseAPI salesforceAPI) {
         super(parent, SWT.NONE, existingNames);
@@ -92,6 +98,10 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
     }
 
     public IMetadataTable getMetadatasForSalesforce(String endPoint, String user, String pass, String moduleName, boolean update) {
+        // TSALESFORCE_INPUT_URL is only used by tSalesForceInput, the wizard doesn't work with this url
+        if (endPoint.equals(TSALESFORCE_INPUT_URL)) {
+            endPoint = DEFAULT_WEB_SERVICE_URL;
+        }
         IMetadataTable result = null;
 
         if (!moduleName.equals(salesforceAPI.getCurrentModuleName())) {

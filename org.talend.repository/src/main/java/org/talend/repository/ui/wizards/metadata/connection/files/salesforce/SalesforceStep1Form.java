@@ -57,8 +57,6 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
 
     private boolean readOnly;
 
-    private final String defaultWebServiceURL = "https://www.salesforce.com/services/Soap/u/8.0";
-
     private final char pwdEhcoChar = '*';
 
     private List<String> moduleNames = null;
@@ -222,9 +220,14 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
             username = getContextModeManager().getOriginalValue(username);
             password = getContextModeManager().getOriginalValue(password);
         }
+        // TSALESFORCE_INPUT_URL is only used by tSalesForceInput, the logic doesn't work with this url
+        if (webUrl.equals(TSALESFORCE_INPUT_URL)) {
+            webUrl = DEFAULT_WEB_SERVICE_URL;
+        }
         loginOk = checkSalesfoceLogin(webUrl, username, password);
     }
 
+    @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
 
@@ -252,6 +255,7 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
         if (!isInWizard()) {
             cancelButton.addSelectionListener(new SelectionAdapter() {
 
+                @Override
                 public void widgetSelected(final SelectionEvent e) {
                     getShell().close();
                 }
@@ -317,14 +321,12 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
             webServiceUrlText.setText(getConnection().getWebServiceUrl());
         }
 
-        setTextValue(getConnection().getWebServiceUrl(), webServiceUrlText);
-
         if (getConnection().getWebServiceUrl() == null || getConnection().getWebServiceUrl().equals("")) {
-            getConnection().setWebServiceUrl(defaultWebServiceURL);
+            getConnection().setWebServiceUrl(TSALESFORCE_INPUT_URL);
         } // Give a default value
 
-        if (webServiceUrlText.getText().equals("") || webServiceUrlText.getText() == null) {
-            webServiceUrlText.setText(defaultWebServiceURL); // Default
+        if (webServiceUrlText.getText() == null || webServiceUrlText.getText().equals("")) {
+            webServiceUrlText.setText(TSALESFORCE_INPUT_URL);
         }
 
         setTextValue(getConnection().getUserName(), userNameText);

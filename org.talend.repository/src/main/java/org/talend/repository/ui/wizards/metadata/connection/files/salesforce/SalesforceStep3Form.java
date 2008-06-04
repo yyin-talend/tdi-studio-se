@@ -329,7 +329,7 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
         SalesforceSchemaConnection originalValueConnection = getOriginalValueConnection();
         // if no file, the process don't be executed
         if (originalValueConnection.getWebServiceUrl() == null || originalValueConnection.getWebServiceUrl().equals("")) { //$NON-NLS-1$
-            informationLabel.setText("Salesforce endpoint lost" //$NON-NLS-1$ //$NON-NLS-2$
+            informationLabel.setText("Salesforce endpoint lost" //$NON-NLS-1$ 
                     + "                                                                              "); //$NON-NLS-1$
             return;
         }
@@ -339,7 +339,9 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
 
             // get the XmlArray width an adapt ProcessDescription
             ProcessDescription processDescription = getProcessDescription(originalValueConnection);
-
+            // the web service url is used by tSalesforceInput, see 0004027: Studio crashes when clicking Next on
+            // Step 3 of SF wizard
+            processDescription.getSalesforceSchemaBean().setWebServerUrl(TSALESFORCE_INPUT_URL);
             CsvArray csvArray = ShadowProcessHelper.getCsvArray(processDescription, "SALESFORCE_SCHEMA", true); //$NON-NLS-1$
 
             if (csvArray == null) {
@@ -384,7 +386,7 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
             // the first rows is used to define the label of any metadata
             String[] label = new String[numberOfCol.intValue()];
             for (int i = 0; i < numberOfCol; i++) {
-                label[i] = DEFAULT_LABEL + i; //$NON-NLS-1$
+                label[i] = DEFAULT_LABEL + i;
                 if (firstRowToExtractMetadata == 0) {
                     label[i] = "" + processDescription.getSchema().get(0).getListColumns().get(i); //$NON-NLS-1$
                 }
@@ -565,8 +567,8 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
 
     private SalesforceSchemaConnection getOriginalValueConnection() {
         if (isContextMode() && getContextModeManager() != null) {
-            return (SalesforceSchemaConnection) OtherConnectionContextUtils.cloneOriginalValueSalesforceConnection(
-                    getConnection(), getContextModeManager().getSelectedContextType());
+            return OtherConnectionContextUtils.cloneOriginalValueSalesforceConnection(getConnection(), getContextModeManager()
+                    .getSelectedContextType());
         }
         return getConnection();
 
