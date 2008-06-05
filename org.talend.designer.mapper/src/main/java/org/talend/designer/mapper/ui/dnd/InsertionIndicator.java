@@ -211,6 +211,9 @@ public class InsertionIndicator {
         ScrollBar verticalBar = currentTable.getVerticalBar();
         // System.out.println("verticalBar.getSelection()="+verticalBar.getSelection() + "
         // currentTable.getItemHeight()="+currentTable.getItemHeight());
+
+        DataMapTableView dataMapTableView = mapperManager.retrieveDataMapTableView(currentTable);
+
         int indicYPositionRefZone = 0;
         if (WindowSystem.isGTK()) {
             int offsetVerticalBar = -verticalBar.getSelection();
@@ -230,11 +233,13 @@ public class InsertionIndicator {
             } else {
                 indicYPositionRefTable = itemIndexTarget * currentTable.getItemHeight() - 1 + offsetVerticalBar;
             }
-            indicYPositionRefZone = indicYPositionRefTable + tablePositionRefZone.y + formLayout.marginTop - HEIGHT_INDICATOR / 2
-                    + 4;
+            
+            Point point = currentTable.getDisplay().map(currentTable, tablesZoneViewParent, new Point(0, indicYPositionRefTable));
+            
+            indicYPositionRefZone = point.y + 5;
+            
         }
 
-        DataMapTableView dataMapTableView = mapperManager.retrieveDataMapTableView(currentTable);
         Rectangle boundsTableView = dataMapTableView.getBounds();
 
         int testValue = boundsTableView.y + boundsTableView.height - formLayout.marginTop - HEIGHT_INDICATOR / 2 - 5;
@@ -246,6 +251,8 @@ public class InsertionIndicator {
         if (lastIndicYPositionRefZone != indicYPositionRefZone) {
             formDataLeftArrow.top.offset = indicYPositionRefZone;
             formDataRightArrow.top.offset = indicYPositionRefZone;
+
+            System.out.println("indicYPositionRefZone2 =" + indicYPositionRefZone);
 
             formDataRightArrow.left.offset = currentTable.getSize().x + 2;
             currentTable.redraw();
