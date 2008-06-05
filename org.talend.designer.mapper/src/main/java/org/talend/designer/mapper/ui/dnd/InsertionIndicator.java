@@ -251,9 +251,6 @@ public class InsertionIndicator {
         if (lastIndicYPositionRefZone != indicYPositionRefZone) {
             formDataLeftArrow.top.offset = indicYPositionRefZone;
             formDataRightArrow.top.offset = indicYPositionRefZone;
-
-            System.out.println("indicYPositionRefZone2 =" + indicYPositionRefZone);
-
             formDataRightArrow.left.offset = currentTable.getSize().x + 2;
             currentTable.redraw();
             tablesZoneViewParent.layout();
