@@ -609,7 +609,7 @@ public abstract class DataMapTableView extends Composite {
 
                         public void handleEvent(ListenableListEvent<FilterTableEntry> event) {
 
-                            if(DataMapTableView.this.canBeResizedAtPreferedSize()) {
+                            if (DataMapTableView.this.canBeResizedAtPreferedSize()) {
                                 resizeAtExpandedSize();
                             }
 
@@ -1261,7 +1261,7 @@ public abstract class DataMapTableView extends Composite {
     public boolean canBeResizedAtPreferedSize() {
         return !customSized;
     }
-    
+
     /**
      * 
      * DOC amaumont Comment method "getPreferredSize".
@@ -2294,21 +2294,23 @@ public abstract class DataMapTableView extends Composite {
      * DOC amaumont Comment method "correctAsynchStyledTextWrapBug".
      */
     private void correctAsynchStyledTextWrapBug() {
-        new AsynchronousThreading(100, false, expressionFilterText.getDisplay(), new Runnable() {
+        if (!expressionFilterText.isDisposed()) {
+            new AsynchronousThreading(100, false, expressionFilterText.getDisplay(), new Runnable() {
 
-            /*
-             * (non-Javadoc)
-             * 
-             * @see java.lang.Runnable#run()
-             */
-            public void run() {
-                // System.out.println("scrolledCompositeView.addControlListener(new
-                // ControlListener()"
-                // + System.currentTimeMillis());
-                redrawExpressionFilter();
-            }
+                /*
+                 * (non-Javadoc)
+                 * 
+                 * @see java.lang.Runnable#run()
+                 */
+                public void run() {
+                    // System.out.println("scrolledCompositeView.addControlListener(new
+                    // ControlListener()"
+                    // + System.currentTimeMillis());
+                    redrawExpressionFilter();
+                }
 
-        }).start();
+            }).start();
+        }
     }
 
     /**

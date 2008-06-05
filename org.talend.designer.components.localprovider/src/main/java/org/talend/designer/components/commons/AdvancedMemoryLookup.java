@@ -59,6 +59,8 @@ public class AdvancedMemoryLookup<V> implements IMemoryLookup<V, V> {
     int currentIndex = 0;
 
     private int sizeResultList;
+    
+    private boolean hasResult;
 
     /**
      * 
@@ -184,14 +186,17 @@ public class AdvancedMemoryLookup<V> implements IMemoryLookup<V, V> {
                     } else if (matchingMode == MATCHING_MODE.FIRST_MATCH) {
                         objectResult = localList.get(ZERO);
                     } else if (matchingMode == MATCHING_MODE.LAST_MATCH) {
+                        hasResult = false;
                         listResult = null;
                         objectResult = localList.get(localList.size() - ONE);
                     }
                 } else {
+                    hasResult = false;
                     objectResult = (V) v;
                     listResult = null;
                 }
             } else {
+                hasResult = false;
                 listResult = list;
                 currentIndex = 0;
                 sizeResultList = list.size();
@@ -211,10 +216,12 @@ public class AdvancedMemoryLookup<V> implements IMemoryLookup<V, V> {
 
     public V next() {
         if (objectResult != null) {
+            hasResult = true;
             V object = objectResult;
             objectResult = null;
             return object;
         } else if (listResult != null) {
+            hasResult = true;
             return listResult.get(currentIndex++);
         }
         throw new NoSuchElementException();
@@ -266,7 +273,7 @@ public class AdvancedMemoryLookup<V> implements IMemoryLookup<V, V> {
      * @return
      */
     public boolean hasResult() {
-        return resultIsObject() || resultIsList();
+        return hasResult;
     }
 
     /**
