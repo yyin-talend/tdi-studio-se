@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<COMPONENT xsi:noNamespaceSchemaLocation="component.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<COMPONENT>
 	<HEADER PLATEFORM="ALL" SERIAL="" VERSION="0.102" STATUS="ALPHA" COMPATIBILITY="ALL" AUTHOR="Talend" RELEASE_DATE="20080229A" STARTABLE="false" DATA_AUTO_PROPAGATE="false">
 		<SIGNATURE/>
 	</HEADER>
