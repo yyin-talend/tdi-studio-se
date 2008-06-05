@@ -124,13 +124,13 @@ public class UIManager {
         boolean containsAll2 = currentColumnDataList.containsAll(originalColumnDataList);
         boolean containsAll = containsAll1 && containsAll2;
         if (hasColumns && !containsAll && response == SWT.CANCEL) {
-            boolean isSaveSetting = MessageDialog.openQuestion(parent.getShell(), Messages
+            boolean isNotSaveSetting = MessageDialog.openQuestion(parent.getShell(), Messages
                     .getString("UIManager.MessageBox.title"), Messages.getString("UIManager.MessageBox.Content"));
-            if (isSaveSetting) {
+            if (isNotSaveSetting) {
+                reductAllData();
+            } else {
                 response = SWT.OK;
                 setRowGenResponse(response);
-            } else {
-                reductAllData();
             }
         }
         if (response == SWT.OK) {
