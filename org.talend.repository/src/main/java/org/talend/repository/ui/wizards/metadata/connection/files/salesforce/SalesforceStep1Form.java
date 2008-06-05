@@ -95,7 +95,7 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
     @Override
     protected void addFields() {
 
-        Group group = Form.createGroup(this, 2, "Salesforce paramters");
+        Group group = Form.createGroup(this, 2, "Salesforce parameters");
 
         GridData data = new GridData(GridData.FILL_HORIZONTAL);
         group.setLayoutData(data);
@@ -293,7 +293,7 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
         }
 
         if (!loginOk) {
-            updateStatus(IStatus.ERROR, "You haven't check login or URL, username, password is not correct."); //$NON-NLS-1$
+            updateStatus(IStatus.ERROR, "Click Check Login to make sure that URL, username, password are correct."); //$NON-NLS-1$
             return false;
         }
 
