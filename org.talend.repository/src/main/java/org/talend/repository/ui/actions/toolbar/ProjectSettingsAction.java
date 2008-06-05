@@ -35,7 +35,7 @@ public class ProjectSettingsAction extends AContextualAction implements IWorkben
 
     public ProjectSettingsAction() {
         super();
-        this.setText(""); //$NON-NLS-1$
+        this.setText("Edit Project properties"); //$NON-NLS-1$
         this.setToolTipText(""); //$NON-NLS-1$
     }
 
