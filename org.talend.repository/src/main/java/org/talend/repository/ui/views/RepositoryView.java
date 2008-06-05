@@ -44,7 +44,6 @@ import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
@@ -465,10 +464,16 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
      * @see org.talend.core.ui.repository.views.IRepositoryView#refresh()
      */
     public void refresh() {
-        Shell shell = Display.getCurrent().getActiveShell();
+        /*
+         * fix bug 4040. Sometimes Display.getCurrent.getActiveShell() get null result we not expect.
+         */
+        // Shell shell = Display.getCurrent().getActiveShell();
+        Shell shell = getSite().getShell();
+
         if (shell == null) {
             return;
         }
+
         ProgressDialog progressDialog = new ProgressDialog(shell, 1000) {
 
             private IProgressMonitor monitorWrap;
