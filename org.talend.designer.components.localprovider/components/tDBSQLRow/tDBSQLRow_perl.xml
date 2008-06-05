@@ -50,7 +50,7 @@
       NAME="DBNAME"
       FIELD="TEXT"
       NUM_ROW="3"
-      REPOSITORY_VALUE="SID"
+      REPOSITORY_VALUE="DATASOURCE"
     >
       <DEFAULT>''</DEFAULT>
     </PARAMETER>

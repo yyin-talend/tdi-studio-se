@@ -54,7 +54,7 @@
       NAME="DSN"
       FIELD="TEXT"
       NUM_ROW="3"
-      REPOSITORY_VALUE="SID"
+      REPOSITORY_VALUE="DATASOURCE"
       REQUIRED="true"
     >
       <DEFAULT>''</DEFAULT>

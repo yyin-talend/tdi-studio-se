@@ -77,7 +77,7 @@
       NAME="DBNAME"
       FIELD="TEXT"
       NUM_ROW="4"
-      REPOSITORY_VALUE="SID"
+      REPOSITORY_VALUE="DATASOURCE"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>

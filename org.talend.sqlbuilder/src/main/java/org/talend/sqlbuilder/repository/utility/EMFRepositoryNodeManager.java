@@ -30,7 +30,6 @@ import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.QueriesConnection;
 import org.talend.core.model.metadata.builder.connection.Query;
-import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.model.RepositoryNode;
@@ -166,10 +165,11 @@ public final class EMFRepositoryNodeManager {
         List<String[]> fks = new ArrayList<String[]>();
         String fk = ""; //$NON-NLS-1$
         String pk = ""; //$NON-NLS-1$
+        IMetadataConnection iMetadataConnection = null;
         if (root != null) {
             try {
-                IMetadataConnection iMetadataConnection = ConvertionHelper
-                        .convert((DatabaseConnection) SQLBuilderRepositoryNodeManager.getItem(root).getConnection());
+                iMetadataConnection = ConvertionHelper.convert((DatabaseConnection) SQLBuilderRepositoryNodeManager.getItem(root)
+                        .getConnection());
                 dbMetaData = rnmanager.getDatabaseMetaData(iMetadataConnection);
             } catch (Exception e) {
                 String mainMsg = Messages.getString("EMFRepositoryNodeManager.DBConnection.Text"); //$NON-NLS-1$
@@ -179,7 +179,12 @@ public final class EMFRepositoryNodeManager {
         for (MetadataTable table : tables) {
             try {
                 if (dbMetaData != null && table.getSourceName() != null) {
-                    ResultSet resultSet = dbMetaData.getExportedKeys("", ExtractMetaDataUtils.schema, table.getSourceName()); //$NON-NLS-1$
+                    ResultSet resultSet;
+                    if (dbMetaData.supportsSchemasInDataManipulation()) {
+                        resultSet = dbMetaData.getExportedKeys("", iMetadataConnection.getSchema(), table.getSourceName()); //$NON-NLS-1$
+                    } else {
+                        resultSet = dbMetaData.getExportedKeys("", null, table.getSourceName()); //$NON-NLS-1$
+                    }
                     ResultSetMetaData metadata = resultSet.getMetaData();
                     int[] relevantIndeces = new int[metadata.getColumnCount()];
                     for (int i = 1; i <= metadata.getColumnCount(); i++) {

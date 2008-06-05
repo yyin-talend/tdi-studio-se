@@ -43,6 +43,7 @@
       FIELD="CLOSED_LIST"
       NUM_ROW="2"
       REPOSITORY_VALUE="TYPE"
+      SHOW="false"
     >
       <ITEMS DEFAULT="undef;sun.jdbc.odbc.JdbcOdbcDriver">
         <ITEM
@@ -54,44 +55,11 @@
     </PARAMETER>
 
     <PARAMETER
-      NAME="HOST"
-      FIELD="TEXT"
-      NUM_ROW="3"
-      REPOSITORY_VALUE="SERVER_NAME"
-      NOT_SHOW_IF="(TYPE=='MSSQL_ODBC' or TYPE=='ODBC')"
-    >
-      <DEFAULT>""</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
-      NAME="PORT"
-      FIELD="TEXT"
-      NUM_ROW="3"
-      REPOSITORY_VALUE="PORT"
-      NOT_SHOW_IF="(TYPE=='MSSQL_ODBC' or TYPE=='ODBC')"
-    >
-      <DEFAULT>""</DEFAULT>
-      <DEFAULT IF="TYPE=='MYSQL'">"3306"</DEFAULT>
-      <DEFAULT IF="TYPE=='PGSQL'">"5432"</DEFAULT>
-      <DEFAULT IF="TYPE=='ORACLE'">"1521"</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
       NUM_ROW="3"
-      REPOSITORY_VALUE="SID"
+      REPOSITORY_VALUE="DATASOURCE"
       REQUIRED="true"
-    >
-      <DEFAULT>""</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER 
-      NAME="SCHEMA_DB"
-      FIELD="TEXT"
-      NUM_ROW="3"
-      REPOSITORY_VALUE="SCHEMA" 
-      NOT_SHOW_IF="(TYPE=='MSSQL_ODBC') or (TYPE=='ODBC') or (TYPE=='MYSQL')"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>

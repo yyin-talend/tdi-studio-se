@@ -625,6 +625,9 @@ public class SQLBuilderRepositoryNodeManager {
         connection.setSID(parameters.getDbName());
         connection.setLabel(parameters.getDbName());
         connection.setDatasourceName(parameters.getDatasource());
+        if ("".equals(connection.getLabel())) {
+            connection.setLabel(parameters.getDatasource());
+        }
         final String product = EDatabaseTypeName.getTypeFromDisplayName(connection.getDatabaseType()).getProduct();
         connection.setProductId(product);
         final String mapping = MetadataTalendType.getDefaultDbmsFromProduct(product).getId();

@@ -385,7 +385,11 @@ public class DbTableController extends AbstractElementPropertySectionController 
                                 public void run() {
                                     final DbTableSelectorObject object = new DbTableSelectorObject();
                                     DbTableSelectorObject connO = new DbTableSelectorObject();
-                                    connO.setLabel(connParameters.getDbName());
+                                    if ("".equals(connParameters.getDbName())) {
+                                        connO.setLabel(connParameters.getDatasource());
+                                    } else {
+                                        connO.setLabel(connParameters.getDbName());
+                                    }
                                     connO.setType(ObjectType.DB);
 
                                     if (monitor.isCanceled()) {

@@ -948,6 +948,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
         String port = setConnectionParameter(element, connParameters, EConnectionParameterName.PORT.getName());
         connParameters.setPort(port);
+
         String datasource = setConnectionParameter(element, connParameters, EConnectionParameterName.DATASOURCE.getName());
         connParameters.setDatasource(datasource);
 
@@ -996,7 +997,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
     private String getParameterValueWithContext(IElement elem, String key, IContext context) {
         if (elem == null || key == null)
             return "";
-        String actualKey = connKeyMap.get(key);
+
+        String actualKey = this.getParaNameFromRepositoryName(key); // connKeyMap.get(key);
         if (actualKey != null) {
             return fetchElementParameterValue(elem, context, actualKey);
         } else {
