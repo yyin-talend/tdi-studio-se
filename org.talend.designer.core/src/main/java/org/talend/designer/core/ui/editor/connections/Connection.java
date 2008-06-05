@@ -180,6 +180,7 @@ public class Connection extends Element implements IConnection, IPerformance {
             param.setShow(true);
             param.setShowIf("ENABLE_PARALLEL == 'true'");
             param.setNumRow(1);
+            param.setRequired(true);
             addElementParameter(param);
         }
 
@@ -395,9 +396,9 @@ public class Connection extends Element implements IConnection, IPerformance {
             }
             updateName = true;
         } /*
-         * else if (getLineStyle().equals(EConnectionType.LOOKUP)) { labelText += " (" + nodeConnector.getLinkName() +
-         * ")"; updateName = true; }
-         */
+             * else if (getLineStyle().equals(EConnectionType.LOOKUP)) { labelText += " (" + nodeConnector.getLinkName() +
+             * ")"; updateName = true; }
+             */
 
         if (updateName) {
 
@@ -676,7 +677,8 @@ public class Connection extends Element implements IConnection, IPerformance {
             String tableName = table.getTableName();
             for (IConnection connection : tmpList) {
                 if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)
-                        && connection.getMetadataTable() != null && connection.getMetadataTable().getTableName().equals(tableName)
+                        && connection.getMetadataTable() != null
+                        && connection.getMetadataTable().getTableName().equals(tableName)
                         && connection.getConnectorName().equals(table.getAttachedConnector())) {
                     connectionList.add(connection);
                 }
