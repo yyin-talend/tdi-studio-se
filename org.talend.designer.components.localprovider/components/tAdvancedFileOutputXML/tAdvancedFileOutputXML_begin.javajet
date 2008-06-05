@@ -68,6 +68,15 @@ class NestXMLTool_<%=cid%>{
         }
 	}
 	
+	public void setText(org.dom4j.Element element, String value){
+		if (value.startsWith("<![CDATA[") && value.endsWith("]]>")) {
+			String text = value.substring(9, value.length()-3);
+			element.addCDATA(text);
+		}else{
+			element.setText(value);
+		}
+	}
+	
 	public void replaceDefaultNameSpace(org.dom4j.Element nestRoot){
 		if (nestRoot!=null) {
 			for (org.dom4j.Element tmp: (java.util.List<org.dom4j.Element>) nestRoot.elements()) {

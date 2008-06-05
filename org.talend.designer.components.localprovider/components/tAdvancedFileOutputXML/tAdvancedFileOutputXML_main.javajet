@@ -258,7 +258,7 @@ class GenerateToolByDom4j{
 			}else{
 %>
 		if(<%tool.getValue(node);%>!=null){
-			<%=currEleName%>_<%=cid%>.setText(<%tool.getValue(node);%>);
+			nestXMLTool_<%=cid%> .setText(<%=currEleName%>_<%=cid%>,<%tool.getValue(node);%>);
 		}
 <%
 				if(outputAsXSD){
@@ -285,12 +285,12 @@ class GenerateToolByDom4j{
 		if(node.relatedColumn!=null){
 %>
 		if(<%tool.getValue(node);%>!=null){
-			<%=currEleName%>_<%=cid%>.addNamespace("<%=node.path%>",<%tool.getValue(node);%>);
+			<%=currEleName%>_<%=cid%>.addNamespace("<%=node.path%>",TalendString.replaceSpecialCharForXML(<%tool.getValue(node);%>));
 <%
 			if(node.path ==null || node.path.length()==0){
 %>
         	<%=currEleName%>_<%=cid%>.setQName(org.dom4j.DocumentHelper.createQName(<%=currEleName%>_<%=cid%>.getName(),
-        	org.dom4j.DocumentHelper.createNamespace("",<%tool.getValue(node);%>)));
+        	org.dom4j.DocumentHelper.createNamespace("",TalendString.replaceSpecialCharForXML(<%tool.getValue(node);%>))));
 <%
 			}
 %>
@@ -403,7 +403,7 @@ class GenerateToolByNull{
 			}else{
 %>
 		if(<%tool.getValue(node);%>!=null){
-			out_<%=cid%>.write(TalendString.replaceSpecialCharForXML(<%tool.getValue(node);%>));
+			out_<%=cid%>.write(TalendString.checkCDATAForXML(<%tool.getValue(node);%>));
 		}
 <%
 			}
