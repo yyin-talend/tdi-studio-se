@@ -78,6 +78,11 @@ public class MainConnectionComposite extends MultipleThreadDynamicComposite {
                 data.right = new FormAttachment(100, -ITabbedPropertyConstants.HSPACE);
                 data.top = new FormAttachment(0, curRowSize + ITabbedPropertyConstants.VSPACE);
                 data.width = 300; // to correct bug of table growing indefinitly
+                /*
+                 * On windows it will adjust automatically the size depends the number of columns. Seems this system
+                 * doesn't work on linux
+                 */
+                data.height = 160; // fix bug 3893.
 
                 IMetadataTable outputMetaTable = ((Connection) elem).getMetadataTable();
                 if (outputMetaTable != null) {
