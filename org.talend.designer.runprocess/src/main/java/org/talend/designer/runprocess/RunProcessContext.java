@@ -921,7 +921,7 @@ public class RunProcessContext {
                             String connectionId = traceData.getElementId();
                             final IConnection connection = findConnection(connectionId);
                             if (connection != null) {
-                                Display.getDefault().asyncExec(new Runnable() {
+                                Display.getDefault().syncExec(new Runnable() {
 
                                     public void run() {
                                         if (data != null) {
