@@ -59,9 +59,8 @@ List<Map<String, String>> files =
         $ftp->cwd($dir)
             or die "Cannot change remote working directory to $dir", $ftp->message;
      
-        my @raw_filelist = $ftp->ls()
-            or die "ls failed", $ftp->message;
-    
+        my @raw_filelist = $ftp->ls();
+
         my @filelist = grep(
             /$pattern/,
             @raw_filelist
