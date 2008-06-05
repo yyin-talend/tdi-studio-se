@@ -23,7 +23,6 @@ import java.util.Set;
 
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.ui.IEditorReference;
-import org.eclipse.ui.PlatformUI;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
@@ -51,6 +50,7 @@ import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.update.AbstractUpdateManager;
 import org.talend.core.model.update.EUpdateItemType;
 import org.talend.core.model.update.EUpdateResult;
+import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.update.UpdatesConstants;
 import org.talend.core.model.utils.TalendTextUtils;
@@ -246,7 +246,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
     }
 
     private static boolean isOpenedProcess(Process curProcess) {
-        IEditorReference[] reference = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getEditorReferences();
+        IEditorReference[] reference = RepositoryUpdateManager.getEditors();
         List<IProcess> openedProcessList = CorePlugin.getDefault().getDesignerCoreService().getOpenedProcess(reference);
         for (IProcess process : openedProcessList) {
             Property property = curProcess.getProperty();
@@ -727,7 +727,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         List<String> labelList = new ArrayList<String>();
         for (AbstractProcessProvider abstractProcessProvider : findAllProcessProviders) {
             if (abstractProcessProvider != null) {
-                List<String> tmpList = abstractProcessProvider.updateProcessContexts(getProcess());
+                List<String> tmpList = abstractProcessProvider.updateProcessContextsWithoutUI(getProcess());
                 if (tmpList != null && !tmpList.isEmpty()) {
                     labelList.addAll(tmpList);
                 }

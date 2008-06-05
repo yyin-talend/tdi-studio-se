@@ -148,6 +148,8 @@ public abstract class AbstractProcessProvider {
      */
     public abstract List<String> updateProcessContexts(Process process);
 
+    public abstract List<String> updateProcessContextsWithoutUI(Process process);
+
     /**
      * 
      * ggu Comment method "checkJobletNodeSchema".
