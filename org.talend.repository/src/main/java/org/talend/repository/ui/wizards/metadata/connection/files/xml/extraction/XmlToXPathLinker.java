@@ -62,6 +62,7 @@ import org.talend.commons.ui.swt.tableviewer.selection.ILineSelectionListener;
 import org.talend.commons.ui.swt.tableviewer.selection.LineSelectionEvent;
 import org.talend.commons.ui.swt.tableviewer.selection.SelectionHelper;
 import org.talend.commons.ui.utils.TableUtils;
+import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.commons.utils.data.list.ListenableListEvent.TYPE;
@@ -155,7 +156,10 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
         unselectedStyleLink.setDrawableLink(new BezierHorizontalLink(unselectedStyleLink));
         unselectedStyleLink.setForegroundColor(display.getSystemColor(SWT.COLOR_GRAY));
         unselectedStyleLink.setLineWidth(2);
-        unselectedStyleLink.setExtremity2(new ExtremityEastArrow(unselectedStyleLink, -ExtremityEastArrow.WIDTH_ARROW - 2, 0));
+        
+        int xOffset = WindowSystem.isGTK() ? 2 : -2;
+        int yOffset = WindowSystem.isGTK() ? -1 : 0;
+        unselectedStyleLink.setExtremity2(new ExtremityEastArrow(unselectedStyleLink, -ExtremityEastArrow.WIDTH_ARROW + xOffset, yOffset));
         setUnselectedStyleLink(unselectedStyleLink);
 
         getSelectedRelativeStyleLink();
@@ -399,22 +403,21 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
 
         Rectangle tableBounds = table.getDisplay().map(table, getBgDrawableComposite(), table.getBounds());
         // System.out.println(tableBounds);
-        int offset = 20;
+        
+//         System.out.println(getBgDrawableComposite());
+        
+        int offset = WindowSystem.isGTK() ? 0 : 20;
 
         clipBounds.width = tableBounds.x;
         clipBounds.height += offset - 4;
         clipBounds.x = 0;
         clipBounds.y = offset;
 
-        // if(!WindowSystem.isGTK()) {
         gc.setClipping(clipBounds);
-        // }
 
         super.drawBackground(gc);
 
-        // if(!WindowSystem.isGTK()) {
         gc.setClipping((Rectangle) null);
-        // }
     }
 
     private void handleListenableListBeforeTableViewerRefreshedEvent(ListenableListEvent<SchemaTarget> event) {
@@ -907,7 +910,9 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
             styleLink.setDrawableLink(new BezierHorizontalLink(styleLink));
             styleLink.setForegroundColor(selectedLoopLinkColor);
             styleLink.setLineWidth(2);
-            styleLink.setExtremity2(new ExtremityEastArrow(styleLink, -ExtremityEastArrow.WIDTH_ARROW - 2, 0));
+            int xOffset = WindowSystem.isGTK() ? 2 : -2;
+            int yOffset = WindowSystem.isGTK() ? -1 : 0;
+            styleLink.setExtremity2(new ExtremityEastArrow(styleLink, -ExtremityEastArrow.WIDTH_ARROW + xOffset, yOffset));
             this.selectedLoopStyleLink = styleLink;
         }
         return this.selectedLoopStyleLink;
@@ -923,7 +928,9 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
         selectedStyleLink.setDrawableLink(new BezierHorizontalLink(selectedStyleLink));
         selectedStyleLink.setForegroundColor(selectedRelativeLinkColor);
         selectedStyleLink.setLineWidth(2);
-        selectedStyleLink.setExtremity2(new ExtremityEastArrow(selectedStyleLink, -ExtremityEastArrow.WIDTH_ARROW - 2, 0));
+        int xOffset = WindowSystem.isGTK() ? 2 : -2;
+        int yOffset = WindowSystem.isGTK() ? -1 : 0;
+        selectedStyleLink.setExtremity2(new ExtremityEastArrow(selectedStyleLink, -ExtremityEastArrow.WIDTH_ARROW + xOffset, yOffset));
         setSelectedStyleLink(selectedStyleLink);
     }
     
