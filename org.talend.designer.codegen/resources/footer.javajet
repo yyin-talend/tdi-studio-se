@@ -242,31 +242,79 @@
 	startTime = System.currentTimeMillis();
 	final <%=process.getName() %> <%=process.getName() %>Class = new <%=process.getName() %>(); 
 <%
+		//1. send the begin msg
 		for (INode statCatcherNode : process.getNodesOfType("tStatCatcher")) {
 %>
 		<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>.addMessage("begin");			
 <%
     	}
-    	
-    INode prejob = null;
-    INode postjob = null; //it will be assign value in  isRunInMultiThread part    	
+	
+        INode prejob = null;
+        INode postjob = null;
+        INode implicit_Context = null;
+         
+		for (INode rootNode : rootNodes) {
+			String componentName = rootNode.getComponent().getName();
+			String uniqueName = rootNode.getUniqueName();
+			
+            if (componentName.equals("tPrejob")) {
+            	prejob = rootNode;
+                continue;
+            }        
 
+            if (componentName.equals("tPostjob")) {
+                postjob = rootNode;
+                continue;
+            }            
+
+            if (uniqueName.startsWith("Implicit_Context_")) {        	
+                implicit_Context = rootNode;
+                continue;
+            }
+        }
+%>
+
+<%
+//2. load implicit contextload
+ if(implicit_Context != null){
+%>
+<%=createCallProcess(implicit_Context, process.getName(), false) %>
+<% 
+ }
+%>
+
+<%
+//3. run pre-job
+ if(prejob != null){
+%>
+<%=createCallProcess(prejob, process.getName(), false) %>
+<% 
+ }
+%>
+
+    	
+<%
+		//4. flush the begin msg
+		for (INode statCatcherNode : process.getNodesOfType("tStatCatcher")) {
+%>
+		try {
+			<%=process.getName() %>Class.<%=statCatcherNode.getDesignSubjobStartNode().getUniqueName() %>Process();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}		
+<%
+    	}	
+
+	//5. all others sub-job (MultiThread mode)
 	if(isRunInMultiThread){
 		for (INode rootNode : rootNodes) {
-			String componentName = (String) rootNode.getComponent().getName();
+			String componentName = rootNode.getComponent().getName();
+			String uniqueName = rootNode.getUniqueName();
 			
-        if (componentName.equals("tPrejob")) {
-%>
-		<%=createCallProcess(rootNode, process.getName(), false) %>
-<%
-            continue;
-        }
-    
-    	//hold the tPostjob, process it at the last iterate
-        if (componentName.equals("tPostjob")) {        	
-            postjob = rootNode;
-            continue;
-        }
+			//filter the special subjob
+			if(prejob!=null && prejob.getComponent().getName().equals(componentName)) continue;
+			if(postjob!=null && postjob.getComponent().getName().equals(componentName)) continue;
+			if(implicit_Context!=null && implicit_Context.getUniqueName().equals(uniqueName)) continue;
 			
             if (!componentName.equals("tLogCatcher") && !componentName.equals("tFlowMeterCatcher") && !componentName.equals("tAssertCatcher") && !componentName.equals("tStatCatcher")) {
 %>
@@ -308,9 +356,16 @@
         }            
     }
 <%
-	}else{ // isRunInMultiThread
+	}else{ // isRunInMultiThread  //5. all others sub-job (SingleThread  mode)
 		for (INode rootNode : rootNodes) {
-			String componentName = (String) rootNode.getComponent().getName();
+			String componentName = rootNode.getComponent().getName();
+			String uniqueName = rootNode.getUniqueName();
+			
+			//filter the special subjob
+			if(prejob!=null && prejob.getComponent().getName().equals(componentName)) continue;
+			if(postjob!=null && postjob.getComponent().getName().equals(componentName)) continue;
+			if(implicit_Context!=null && implicit_Context.getUniqueName().equals(uniqueName)) continue;
+						
             if (!componentName.equals("tLogCatcher") && !componentName.equals("tFlowMeterCatcher") && !componentName.equals("tAssertCatcher") && !componentName.equals("tStatCatcher")) {
 %>
 <%=createCallProcess(rootNode, process.getName(), false) %>
@@ -320,6 +375,7 @@
 %>
 
 <%
+//6. run the post-job
  if(postjob != null){
 %>
 <%=createCallProcess(postjob, process.getName(), false) %>
@@ -337,6 +393,7 @@
     		System.out.println((endUsedMemory - startUsedMemory) + " bytes memory increase when running : <%=process.getName() %>");
 	    }		  
 <%
+	//7. send & flush the end msg to statcatcher
 	for (INode statCatcherNode : process.getNodesOfType("tStatCatcher")) {
 %>
 		<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>.addMessage(status==""?"end":status, (end-startTime));
