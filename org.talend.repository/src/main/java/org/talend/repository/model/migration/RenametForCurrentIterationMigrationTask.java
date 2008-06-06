@@ -18,6 +18,7 @@ import java.util.GregorianCalendar;
 import org.eclipse.emf.common.util.EList;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
@@ -26,14 +27,19 @@ import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
- * migration task rename tFor_ variable to tLoop variable
+ * migration task rename tFor_ variable to tLoop variable.
  * 
  */
+
 public class RenametForCurrentIterationMigrationTask extends AbstractJobMigrationTask {
 
-    private final static String TFOR = "tFor_";
+    private static final String TFOR = "tFor_";
 
-    private final static String TLOOP = "tLoop_";
+    private static final String TLOOP = "tLoop_";
+
+    private static final String CURRENT_ITER = "CURRENT_ITERATION";
+
+    private static final String CURRENT_VALUE = "CURRENT_VALUE";
 
     public ExecutionResult executeOnProcess(ProcessItem item) {
         try {
@@ -48,7 +54,7 @@ public class RenametForCurrentIterationMigrationTask extends AbstractJobMigratio
     private boolean convertItem(ProcessItem item) throws PersistenceException {
         ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         boolean modified = false;
-
+        ECodeLanguage language = getProject().getLanguage();
         EList node = item.getProcess().getNode();
         for (Object n : node) {
             NodeType type = (NodeType) n;
@@ -57,6 +63,12 @@ public class RenametForCurrentIterationMigrationTask extends AbstractJobMigratio
             for (Object elem : elementParameterList) {
                 ElementParameterType elemType = (ElementParameterType) elem;
                 if (!elemType.getField().equals("CHECK")) {
+                    if (language.equals(ECodeLanguage.JAVA)) {
+                        if (elemType.getValue() != null && elemType.getValue().contains(TFOR)
+                                && elemType.getValue().contains(CURRENT_ITER)) {
+                            elemType.setValue(elemType.getValue().replaceAll(CURRENT_ITER, CURRENT_VALUE));
+                        }
+                    }
 
                     if (elemType.getValue() != null && elemType.getValue().contains(TFOR)) {
 
@@ -66,9 +78,16 @@ public class RenametForCurrentIterationMigrationTask extends AbstractJobMigratio
                     }
 
                     // for table
+
                     EList elemValue = elemType.getElementValue();
                     for (Object elemV : elemValue) {
                         ElementValueType elemVal = (ElementValueType) elemV;
+                        if (language.equals(ECodeLanguage.JAVA)) {
+                            if (elemVal.getValue() != null && elemVal.getValue().contains(TFOR)
+                                    && elemVal.getValue().contains(CURRENT_ITER)) {
+                                elemVal.setValue(elemVal.getValue().replaceAll(CURRENT_ITER, CURRENT_VALUE));
+                            }
+                        }
                         if (elemVal.getValue() != null && elemVal.getValue().contains(TFOR)) {
                             elemVal.setValue(elemVal.getValue().replaceAll(TFOR, TLOOP));
                             modified = true;
@@ -83,7 +102,9 @@ public class RenametForCurrentIterationMigrationTask extends AbstractJobMigratio
         if (modified) {
             factory.save(item, true);
         }
+
         return modified;
+
     }
 
     public Date getOrder() {
