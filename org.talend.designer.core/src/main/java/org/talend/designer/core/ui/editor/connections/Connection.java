@@ -301,7 +301,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         if (canModify) {
 
             this.name = name;
-            if (!lineStyle.equals(EConnectionType.TABLE)) {
+            if (!lineStyle.equals(EConnectionType.TABLE) && !lineStyle.equals(EConnectionType.ITERATE)) {
                 uniqueName = name;
             }
 
@@ -396,9 +396,9 @@ public class Connection extends Element implements IConnection, IPerformance {
             }
             updateName = true;
         } /*
-             * else if (getLineStyle().equals(EConnectionType.LOOKUP)) { labelText += " (" + nodeConnector.getLinkName() +
-             * ")"; updateName = true; }
-             */
+         * else if (getLineStyle().equals(EConnectionType.LOOKUP)) { labelText += " (" + nodeConnector.getLinkName() +
+         * ")"; updateName = true; }
+         */
 
         if (updateName) {
 
