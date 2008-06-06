@@ -32,6 +32,7 @@ import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.actions.metadata.CopyToGenericSchemaHelper;
+import org.talend.repository.ui.views.RepositoryContentProvider.MetadataTableRepositoryObject;
 
 /**
  * DOC smallet class global comment. Detailed comment <br/>
@@ -113,7 +114,9 @@ public class MoveObjectAction {
         // IPath targetPath = RepositoryNodeUtilities.getTargetPath(targetNode);
         targetPath = RepositoryNodeUtilities.getPath(targetNode);
         if (sourceNode.getType() == ENodeType.REPOSITORY_ELEMENT) {
-            isGenericSchema = targetNode.getContentType() == ERepositoryObjectType.METADATA_GENERIC_SCHEMA;
+            isGenericSchema = targetNode.getContentType() == ERepositoryObjectType.METADATA_GENERIC_SCHEMA
+                    && sourceNode.getProperties(EProperties.CONTENT_TYPE) != ERepositoryObjectType.METADATA_GENERIC_SCHEMA
+                    && (sourceNode.getObject() instanceof MetadataTableRepositoryObject);
 
             if (!isGenericSchema && !ResourceUtils.isCorrectDestination(sourcePath, targetPath, false)) {
                 return false;
@@ -193,7 +196,7 @@ public class MoveObjectAction {
                 } else {
                     // Move :
                     if (isGenericSchema) {
-                        CopyToGenericSchemaHelper.copyToGenericSchema(factory, objectToMove);
+                        CopyToGenericSchemaHelper.copyToGenericSchema(factory, objectToMove, targetPath);
                     } else {
                         factory.moveObject(objectToMove, targetPath, sourcePath);
                     }

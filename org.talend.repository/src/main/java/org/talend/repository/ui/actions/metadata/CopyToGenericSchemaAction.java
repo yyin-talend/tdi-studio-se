@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.repository.ui.actions.metadata;
 
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.talend.commons.exception.PersistenceException;
@@ -23,6 +24,7 @@ import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.actions.AContextualAction;
+import org.talend.repository.ui.views.RepositoryContentProvider.MetadataTableRepositoryObject;
 
 /**
  * Administrator class global comment. Detailed comment <br/>
@@ -66,7 +68,7 @@ public class CopyToGenericSchemaAction extends AContextualAction {
     protected void init(RepositoryNode node) {
         ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
 
-        if (nodeType == null) {
+        if (nodeType == null || !(node.getObject() instanceof MetadataTableRepositoryObject)) {
             return;
         }
 
@@ -103,7 +105,8 @@ public class CopyToGenericSchemaAction extends AContextualAction {
         if (isAllowedRepositoryElement) {
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             try {
-                CopyToGenericSchemaHelper.copyToGenericSchema(factory, this.sourceNode.getObject());
+                CopyToGenericSchemaHelper.copyToGenericSchema(factory, (MetadataTableRepositoryObject) this.sourceNode
+                        .getObject(), new Path(""));
                 refresh();
             } catch (PersistenceException e) {
                 e.printStackTrace();

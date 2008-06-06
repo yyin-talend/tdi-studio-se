@@ -12,7 +12,7 @@
 // ============================================================================
 package org.talend.repository.ui.actions.metadata;
 
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.emf.common.util.EList;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.PersistenceException;
@@ -20,17 +20,20 @@ import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
+import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.GenericSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.impl.MetadataColumnImpl;
-import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.GenericSchemaConnectionItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.ui.views.RepositoryContentProvider.MetadataTableRepositoryObject;
 
 /**
  * Administrator class global comment. Detailed comment <br/>
@@ -39,23 +42,40 @@ import org.talend.repository.model.IProxyRepositoryFactory;
 public class CopyToGenericSchemaHelper {
 
     private static final String DEFAULT_TABLE_NAME = "metadata";
-    
-    private static IProxyRepositoryFactory repositoryFactory; 
+
+    private static IProxyRepositoryFactory repositoryFactory;
 
     /**
      * Administrator Comment method "moveToGenericSchema".
      * 
      * @param factory
+     * @param targetPath
      * @param ve
      * @param isConnectionTableSchema
      * @throws PersistenceException
      */
-    public static void copyToGenericSchema(IProxyRepositoryFactory factory, IRepositoryObject objectToMove)
+    public static void copyToGenericSchema(IProxyRepositoryFactory factory, IRepositoryObject tableToMove, IPath targetPath)
             throws PersistenceException {
-        
+
         repositoryFactory = factory;
-        
+        String connectionLabel;
+
         String dbmsId = null;
+
+        if (tableToMove.getProperty().getItem() instanceof DatabaseConnectionItem) {
+            Connection connection = ((DatabaseConnectionItem) tableToMove.getProperty().getItem()).getConnection();
+            DatabaseConnection dbConnection = (DatabaseConnection) connection;
+            dbmsId = dbConnection.getDbmsId();
+            connectionLabel = tableToMove.getLabel();
+        } else if (tableToMove.getProperty().getItem() instanceof GenericSchemaConnectionItem) {
+            Connection connection = ((GenericSchemaConnectionItem) tableToMove.getProperty().getItem()).getConnection();
+            GenericSchemaConnection dbConnection = (GenericSchemaConnection) connection;
+            dbmsId = dbConnection.getMappingTypeId();
+            connectionLabel = tableToMove.getProperty().getItem().getProperty().getLabel();
+        } else {
+            connectionLabel = tableToMove.getProperty().getItem().getProperty().getLabel();
+        }
+        connectionLabel = connectionLabel.replace(" ", "_");
 
         GenericSchemaConnectionItem connectionItem = PropertiesFactory.eINSTANCE.createGenericSchemaConnectionItem();
         GenericSchemaConnection connection = ConnectionFactory.eINSTANCE.createGenericSchemaConnection();
@@ -67,22 +87,20 @@ public class CopyToGenericSchemaHelper {
 
         MetadataTable metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
         metadataTable.setConnection(connection);
-
-        ConnectionItem itemToMove = (ConnectionItem) objectToMove.getProperty().getItem();
-        EList tables = itemToMove.getConnection().getTables();
-        EList listColumns = null;
-
-        MetadataTable table = null;
-        for (Object object : tables) {
-            table = (MetadataTable) object;
-            listColumns = table.getColumns();
+        EList listColumns;
+        if (tableToMove instanceof MetadataTableRepositoryObject) {
+            listColumns = ((MetadataTableRepositoryObject) tableToMove).getTable().getColumns();
+        } else {
+            Connection sourceConnection = ((GenericSchemaConnectionItem) tableToMove.getProperty().getItem()).getConnection();
+            GenericSchemaConnection dbConnection = (GenericSchemaConnection) sourceConnection;
+            listColumns = ((MetadataTable) dbConnection.getTables().get(0)).getColumns();
         }
 
-        boolean isConnectionTableSchema = checkIsConnectionTableSchema(objectToMove);
+        boolean isConnectionTableSchema = checkIsConnectionTableSchema(tableToMove);
         if (isConnectionTableSchema) {
             metadataTable.setLabel(DEFAULT_TABLE_NAME);
         } else {
-            metadataTable.setLabel(table.getLabel() == null ? DEFAULT_TABLE_NAME : table.getLabel());
+            metadataTable.setLabel(tableToMove.getLabel() == null ? DEFAULT_TABLE_NAME : tableToMove.getLabel());
         }
         for (Object temp : listColumns) {
             MetadataColumn column = (MetadataColumnImpl) temp;
@@ -98,7 +116,11 @@ public class CopyToGenericSchemaHelper {
 
             metadataColumn.setPattern(column.getPattern());
             metadataColumn.setNullable(column.isNullable());
-            metadataColumn.setOriginalField(column.getLabel());
+            String originalField = column.getOriginalField();
+            if (originalField == null || "".equals(originalField)) {
+                originalField = column.getLabel();
+            }
+            metadataColumn.setOriginalField(originalField);
             metadataColumn.setTalendType(column.getTalendType());
             metadataColumn.setSourceType(column.getSourceType());
 
@@ -106,25 +128,27 @@ public class CopyToGenericSchemaHelper {
         }
 
         Property connectionProperty = PropertiesFactory.eINSTANCE.createProperty();
-        connectionProperty.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(
-                Context.REPOSITORY_CONTEXT_KEY)).getUser());
+        connectionProperty.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                .getUser());
         connectionProperty.setVersion(VersionUtils.DEFAULT_VERSION);
         connectionProperty.setStatusCode(""); //$NON-NLS-1$
-        connectionProperty.setLabel(objectToMove.getLabel());
+        connectionProperty.setLabel(connectionLabel);
+        metadataTable.setId(factory.getNextId());
 
         connection.getTables().add(metadataTable);
         connectionItem.setConnection(connection);
         connectionProperty.setItem(connectionItem);
-        connectionProperty.setId(factory.getNextId());   
+        connectionProperty.setId(factory.getNextId());
 
-        if (!repositoryFactory.isNameAvailable(connectionItem, objectToMove.getLabel()))// name is existing in generic schema.
+        if (!repositoryFactory.isNameAvailable(connectionItem, connectionLabel))// name is existing in generic
+            // schema.
             try {
                 setPropNewName(connectionProperty);
             } catch (BusinessException e) {
                 e.printStackTrace();
             }
-            
-            repositoryFactory.create(connectionItem, new Path(""));
+
+        repositoryFactory.create(connectionItem, targetPath);
     }
 
     /**
