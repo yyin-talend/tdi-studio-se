@@ -742,6 +742,8 @@ public class RunProcessContext {
 
         private volatile boolean stopThread;
 
+        private Set<IPerformance> performanceDataSet = new HashSet<IPerformance>();
+
         public PerformanceMonitor() {
             super();
         }
@@ -776,7 +778,6 @@ public class RunProcessContext {
 
             if (processSocket != null && !stopThread) {
                 try {
-                    Set<IPerformance> performanceDataSet = new HashSet<IPerformance>();
                     InputStream in = processSocket.getInputStream();
                     LineNumberReader reader = new LineNumberReader(new InputStreamReader(in));
                     while (!stopThread) {
@@ -820,6 +821,9 @@ public class RunProcessContext {
         }
 
         public void stopThread() {
+            for (IPerformance performance : performanceDataSet) {
+                performance.resetStatus();
+            }
             stopThread = true;
             synchronized (this) {
                 notify();
