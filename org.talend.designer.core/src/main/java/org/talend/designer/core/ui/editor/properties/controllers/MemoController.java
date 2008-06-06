@@ -83,7 +83,7 @@ public class MemoController extends AbstractElementPropertySectionController {
         Control cLayout = dField.getLayoutControl();
         Text text = (Text) dField.getControl();
 
-        editionControlHelper.register(param.getName(), text, true);
+        editionControlHelper.register(param.getName(), text);
 
         FormData d = (FormData) text.getLayoutData();
         if (getAdditionalHeightSize() != 0) {

@@ -138,7 +138,7 @@ public class DirectoryController extends AbstractElementPropertySectionControlle
         labelText.setEditable(!param.isReadOnly());
         labelText.setData(PARAMETER_NAME, param.getName());
 
-        editionControlHelper.register(param.getName(), labelText, true);
+        editionControlHelper.register(param.getName(), labelText);
 
         addDragAndDropTarget(labelText);
         if (elem instanceof Node) {

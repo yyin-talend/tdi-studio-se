@@ -230,7 +230,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         Control cLayout = dField.getLayoutControl();
         queryText = (ColorStyledText) dField.getControl();
         queryText.setData(PARAMETER_NAME, param.getName());
-        editionControlHelper.register(param.getName(), queryText, true);
+        editionControlHelper.register(param.getName(), queryText);
 
         FormData d = (FormData) queryText.getLayoutData();
         if (getAdditionalHeightSize() != 0) {

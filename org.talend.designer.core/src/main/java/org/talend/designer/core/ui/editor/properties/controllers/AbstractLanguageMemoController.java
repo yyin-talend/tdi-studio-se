@@ -52,7 +52,6 @@ import org.talend.designer.core.ui.editor.TalendJavaEditor;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
-import org.talend.designer.core.ui.editor.properties.ContextParameterExtractor;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 
@@ -141,13 +140,8 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
                             | SWT.V_SCROLL | SWT.H_SCROLL | SWT.WRAP, javaEditor, null, elem.getElementName(), context);
                     text = viewer.getTextWidget();
 
-                    if (process != null) {
-                        ContextParameterExtractor.installOn(text, process, param.getName(), elem);
-                    }
                     text.setData(PARAMETER_NAME, param.getName());
-                    editionControlHelper.register(param.getName(), text, true);
-                    // UndoRedoHelper helper = new UndoRedoHelper();
-                    // helper.register(text);
+                    editionControlHelper.register(param.getName(), text);
                     cLayout = a;
                 } else {
                     Composite a = new Composite(subComposite, SWT.NO_FOCUS);
@@ -179,13 +173,8 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
 
                     text = viewer.getTextWidget();
 
-                    if (process != null) {
-                        ContextParameterExtractor.installOn(text, process, param.getName(), elem);
-                    }
                     text.setData(PARAMETER_NAME, param.getName());
-                    editionControlHelper.register(param.getName(), text, true);
-                    // UndoRedoHelper helper = new UndoRedoHelper();
-                    // helper.register(text);
+                    editionControlHelper.register(param.getName(), text);
                     cLayout = a;
                 }
             } else {
@@ -210,13 +199,8 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
                 } else if (elem instanceof Connection) {
                     process = (Process) ((Connection) elem).getSource().getProcess();
                 }
-                if (process != null) {
-                    ContextParameterExtractor.installOn(text, process, param.getName(), elem);
-                }
                 text.setData(PARAMETER_NAME, param.getName());
-                editionControlHelper.register(param.getName(), text, true);
-                // UndoRedoHelper helper = new UndoRedoHelper();
-                // helper.register(text);
+                editionControlHelper.register(param.getName(), text);
                 cLayout = a;
             }
         } else {
@@ -224,7 +208,7 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
             cLayout = dField.getLayoutControl();
             text = (StyledText) dField.getControl();
             data = (FormData) text.getLayoutData();
-            editionControlHelper.register(param.getName(), text, true);
+            editionControlHelper.register(param.getName(), text);
             if (param.isRequired()) {
                 FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
                         FieldDecorationRegistry.DEC_REQUIRED);

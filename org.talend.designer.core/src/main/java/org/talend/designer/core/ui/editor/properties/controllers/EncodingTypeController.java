@@ -253,7 +253,7 @@ public class EncodingTypeController extends AbstractElementPropertySectionContro
         labelText = (Text) dField.getControl();
         labelText.setData(PARAMETER_NAME, param.getName());
 
-        editionControlHelper.register(param.getName(), labelText, true);
+        editionControlHelper.register(param.getName(), labelText);
 
         if (param.isRepositoryValueUsed()) {
             addRepositoryPropertyListener(labelText);

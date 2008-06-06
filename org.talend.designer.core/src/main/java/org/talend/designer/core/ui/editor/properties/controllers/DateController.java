@@ -97,7 +97,7 @@ public class DateController extends AbstractElementPropertySectionController {
         cLayout.setBackground(subComposite.getBackground());
         dateText.setEditable(!param.isReadOnly());
 
-        editionControlHelper.register(param.getName(), dateText, true);
+        editionControlHelper.register(param.getName(), dateText);
 
         addDragAndDropTarget(dateText);
         if (elem instanceof Node) {

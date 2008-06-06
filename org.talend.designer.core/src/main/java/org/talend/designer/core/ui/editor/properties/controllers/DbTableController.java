@@ -191,7 +191,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
 
         labelText.setData(PARAMETER_NAME, param.getName());
 
-        editionControlHelper.register(param.getName(), labelText, true);
+        editionControlHelper.register(param.getName(), labelText);
 
         cLayout.setBackground(subComposite.getBackground());
         labelText.setEditable(!param.isReadOnly());

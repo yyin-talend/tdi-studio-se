@@ -137,7 +137,7 @@ public class CommandController extends AbstractElementPropertySectionController 
             }
         });
 
-        editionControlHelper.register(param.getName(), commandText, true);
+        editionControlHelper.register(param.getName(), commandText);
 
         addDragAndDropTarget(commandText);
         if (elem instanceof Node) {

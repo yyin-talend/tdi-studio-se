@@ -142,7 +142,7 @@ public class FileController extends AbstractElementPropertySectionController {
         cLayout.setBackground(subComposite.getBackground());
         // filePathText.setEditable(!param.isRepositoryValueUsed());
 
-        editionControlHelper.register(param.getName(), filePathText, true);
+        editionControlHelper.register(param.getName(), filePathText);
         if (!elem.isReadOnly()) {
             if (param.isRepositoryValueUsed()) {
                 addRepositoryPropertyListener(filePathText);

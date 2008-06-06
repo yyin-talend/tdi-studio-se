@@ -77,6 +77,7 @@ import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.ui.proposal.TalendProposalUtils;
+import org.talend.core.ui.viewer.ReconcilerStyledText;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -390,11 +391,11 @@ public abstract class AbstractElementPropertySectionController implements Proper
          * @param control
          * @param checkSyntax
          */
-        public void register(final String parameterName, final Control control, boolean checkSyntax) {
+        public void register(final String parameterName, final Control control) {
             if (parameterName == null || control == null) {
                 throw new NullPointerException();
             }
-            if (!elem.getElementParameter(parameterName).isReadOnly()) {
+            if (!elem.getElementParameter(parameterName).isReadOnly() && !(control instanceof ReconcilerStyledText)) {
 
                 IProcess process = getProcess(elem, part);
 
