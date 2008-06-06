@@ -12,18 +12,28 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.update.cmd;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.gef.commands.Command;
+import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.PlatformUI;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
+import org.talend.core.context.UpdateRunJobComponentContextHelper;
 import org.talend.core.model.context.ContextUtils;
 import org.talend.core.model.context.UpdateContextVariablesHelper;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextParameter;
+import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.update.EUpdateResult;
 import org.talend.core.model.update.UpdateResult;
+import org.talend.designer.core.DesignerPlugin;
+import org.talend.repository.RepositoryPlugin;
 
 /**
  * ggu class global comment. Detailled comment
@@ -96,6 +106,23 @@ public class UpdateContextParameterCommand extends Command {
                     String oldName = (String) parameter.get(1);
                     String newName = (String) parameter.get(2);
                     UpdateContextVariablesHelper.updateProcessForRenamed(process, oldName, newName);
+
+                    // tRunJob parameters rename
+                    IEditorReference[] reference = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                            .getEditorReferences();
+                    List<IProcess> processes = RepositoryPlugin.getDefault().getDesignerCoreService().getOpenedProcess(reference);
+                    Map<String, String> renamedMap = new HashMap<String, String>();
+                    renamedMap.put(newName, oldName);
+
+                    UpdateRunJobComponentContextHelper.updateOpenedJobRunJobComponentReference(processes, renamedMap, process
+                            .getId(), null);
+                    try {
+                        // perhaps, need optimize.
+                        UpdateRunJobComponentContextHelper.updateItemRunJobComponentReference(DesignerPlugin.getDefault()
+                                .getProxyRepositoryFactory(), renamedMap, process.getId(), null);
+                    } catch (PersistenceException e) {
+                        ExceptionHandler.process(e);
+                    }
                 }
             }
         }
