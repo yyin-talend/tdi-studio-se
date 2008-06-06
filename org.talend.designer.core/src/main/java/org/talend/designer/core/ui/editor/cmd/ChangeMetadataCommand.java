@@ -556,9 +556,8 @@ public class ChangeMetadataCommand extends Command {
             b = b || value != null && removeQuotes.toString().equals(olddbTableName);
 
             if (b) {
-                if (newdbTableName != null) {
-                    dbTableElementField.setValue(TalendTextUtils.addQuotes(newdbTableName));
-                }
+                newdbTableName = newdbTableName == null ? "" : newdbTableName;
+                dbTableElementField.setValue(TalendTextUtils.addQuotes(newdbTableName));
             }
         }
     }
