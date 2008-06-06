@@ -23,14 +23,8 @@ import org.talend.designer.runprocess.IPerformanceData;
  */
 public class IterateConnectionPerformance extends ConnectionPerformance {
 
-    /**
-     * 
-     */
     private static final String COLOR_FINISHED = "#229922";
 
-    /**
-     * 
-     */
     private static final String COLOR_RUNNING = "#AA3322";
 
     /**
@@ -98,18 +92,22 @@ public class IterateConnectionPerformance extends ConnectionPerformance {
         StringBuilder html = new StringBuilder(150);
 
         String pattern = "<font color='%1$s'>%2$s %3$s</font><br>";
-        String color = COLOR_RUNNING;
-        String execString = "exec running";
         if (runningExecutionId.size() > 0) {
-            execString = "execs running";
-            html.append(String.format(pattern, color, runningExecutionId.size(), execString));
+            if (runningExecutionId.size() == 1) {
+                html.append(String.format(pattern, COLOR_RUNNING, runningExecutionId.size(), "exec running"));
+            } else {
+                // plural forms
+                html.append(String.format(pattern, COLOR_RUNNING, runningExecutionId.size(), "execs running"));
+            }
         }
 
-        color = COLOR_FINISHED;
-        execString = "exec finished";
         if (stoppeddExecutionId.size() > 0) {
-            execString = "execs finished";
-            html.append(String.format(pattern, color, stoppeddExecutionId.size(), execString));
+            if (stoppeddExecutionId.size() == 1) {
+                html.append(String.format(pattern, COLOR_FINISHED, stoppeddExecutionId.size(), "exec finished"));
+            } else {
+                // plural forms
+                html.append(String.format(pattern, COLOR_FINISHED, stoppeddExecutionId.size(), "execs finished"));
+            }
         }
 
         return html.toString();
