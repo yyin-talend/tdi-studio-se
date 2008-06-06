@@ -303,7 +303,7 @@ public class LDAPSchemaStep2Form extends AbstractLDAPSchemaStepForm {
                         public void run(IProgressMonitor monitor) {
 
                             connection.setUseAuthen(true);
-                            isOK = LDAPConnectionUtils.checkParam(getOriginalValueConnection());
+                            isOK = LDAPConnectionUtils.checkParam(getOriginalValueConnection(), false);
 
                         }
                     };
@@ -358,7 +358,7 @@ public class LDAPSchemaStep2Form extends AbstractLDAPSchemaStepForm {
 
                         public void run(IProgressMonitor monitor) {
 
-                            isOK = LDAPConnectionUtils.checkParam(getOriginalValueConnection());
+                            isOK = LDAPConnectionUtils.checkParam(getOriginalValueConnection(), false);
 
                             if (isOK) {
                                 dnList = LDAPConnectionUtils.fetchBaseDNs();

@@ -198,7 +198,7 @@ public class LDAPSchemaStep1Form extends AbstractLDAPSchemaStepForm {
                     IRunnableWithProgress op = new IRunnableWithProgress() {
 
                         public void run(IProgressMonitor monitor) {
-                            isOK = LDAPConnectionUtils.checkParam(getOriginalValueConnection());
+                            isOK = LDAPConnectionUtils.checkParam(getOriginalValueConnection(), true);
                         }
                     };
                     new ProgressMonitorDialog(Display.getCurrent().getActiveShell()).run(true, false, op);

@@ -233,10 +233,14 @@ public class LDAPConnectionUtils {
      * @param connection
      * @return
      */
-    public static boolean checkParam(LDAPSchemaConnection connection) {
+    public static boolean checkParam(LDAPSchemaConnection connection, boolean isStep1Check) {
         String hostName = connection.getHost();
         String port = connection.getPort();
         String protocol = connection.getProtocol();
+
+        if (isStep1Check) {
+            protocol = EAuthenticationMethod.SIMPLE.getName();
+        }
 
         String encryptionMethod = connection.getEncryptionMethodName();
         String userOrBindId = connection.getBindPrincipal();
