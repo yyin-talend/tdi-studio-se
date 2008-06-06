@@ -27,7 +27,7 @@ public class LicenseWizard extends Wizard {
 
     /** Main page. */
     private LicenseWizardPage mainPage;
-    
+
     /**
      * Constructs a new LicenseWizard.
      * 

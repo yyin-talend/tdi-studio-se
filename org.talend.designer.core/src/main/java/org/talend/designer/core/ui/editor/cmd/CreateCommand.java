@@ -22,6 +22,7 @@ import org.talend.designer.core.ui.editor.process.Process;
 public abstract class CreateCommand extends Command {
 
     protected Process process;
+
     protected Point location;
 
     public CreateCommand(String label, Process process, Point location) {
@@ -36,6 +37,6 @@ public abstract class CreateCommand extends Command {
             tempVar = location.y / TalendEditor.GRID_SIZE;
             this.location.y = tempVar * TalendEditor.GRID_SIZE;
         }
-}
+    }
 
 }

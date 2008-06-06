@@ -18,11 +18,9 @@ import java.util.Set;
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.abstractmap.ui.visualmap.link.IMapperLink;
 
-
 /**
- * DOC amaumont  class global comment. Detailled comment
- * <br/>
- *
+ * DOC amaumont class global comment. Detailled comment <br/>
+ * 
  */
 public interface ILinkManager {
 

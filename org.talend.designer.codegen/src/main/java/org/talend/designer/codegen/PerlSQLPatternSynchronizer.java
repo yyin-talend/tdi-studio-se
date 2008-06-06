@@ -64,10 +64,9 @@ public class PerlSQLPatternSynchronizer extends AbstractSQLPatternSynchronizer {
             IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
             IProject javaProject = service.getProject(ECodeLanguage.PERL);
             initSQLPatternFolder(javaProject, item);
-            
-            
-            IFile file = javaProject.getFile(JavaUtils.JAVA_SQLPATTERNS_DIRECTORY + "/"
-                    + item.getEltName() + "/" + JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY + "/" + item.getProperty().getLabel()
+
+            IFile file = javaProject.getFile(JavaUtils.JAVA_SQLPATTERNS_DIRECTORY + "/" + item.getEltName() + "/"
+                    + JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY + "/" + item.getProperty().getLabel()
                     + JavaUtils.JAVA_SQLPATTERN_EXTENSION);
             return file;
         } catch (CoreException e) {

@@ -35,16 +35,14 @@ public abstract class AbstractMapComponent extends AbstractExternalNode {
         super();
     }
 
-    
-    
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.process.IExternalNode#initialize()
      */
     public void initialize() {
         initElementParameters();
     }
-
-
 
     /**
      * DOC amaumont Comment method "initElementParameters".
@@ -61,11 +59,11 @@ public abstract class AbstractMapComponent extends AbstractExternalNode {
      * DOC amaumont Comment method "refreshMapperConnectorData".
      */
     public void refreshMapperConnectorData() {
-        
+
     }
 
-
-    protected String renameDataIntoExpression(Pattern pattern, PatternMatcher matcher, Substitution substitution, String expression) {
+    protected String renameDataIntoExpression(Pattern pattern, PatternMatcher matcher, Substitution substitution,
+            String expression) {
         String replacedExpression = Util.substitute(matcher, pattern, substitution, expression, Util.SUBSTITUTE_ALL);
         return replacedExpression;
     }
@@ -107,8 +105,6 @@ public abstract class AbstractMapComponent extends AbstractExternalNode {
 
     }
 
-
     protected abstract boolean hasOrRenameData(String oldName, String newName, boolean renameAction);
 
-    
 }

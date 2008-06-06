@@ -74,12 +74,14 @@ public class DetecteViewImpactAction extends AContextualAction {
                         if (repositoryObject != null) {
                             Item item2 = repositoryObject.getProperty().getItem();
                             if (item2 instanceof DatabaseConnectionItem) {
-                                DatabaseConnectionItem item = (DatabaseConnectionItem) repositoryObject.getProperty().getItem();
+                                DatabaseConnectionItem item = (DatabaseConnectionItem) repositoryObject.getProperty()
+                                        .getItem();
                                 DatabaseConnection connection = (DatabaseConnection) item.getConnection();
                                 CDCConnection cdcConns = connection.getCdcConns();
                                 if (cdcConns != null) {
                                     if (repositoryObject instanceof MetadataTableRepositoryObject) {
-                                        MetadataTable table = ((MetadataTableRepositoryObject) repositoryObject).getTable();
+                                        MetadataTable table = ((MetadataTableRepositoryObject) repositoryObject)
+                                                .getTable();
                                         String tableType = table.getTableType();
                                         canWork = RepositoryConstants.TABLE.equals(tableType);
                                         break;

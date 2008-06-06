@@ -20,13 +20,11 @@ import org.eclipse.draw2d.ScalableFreeformLayeredPane;
 import org.eclipse.gef.editparts.GridLayer;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 
-
 /**
- *  qzhang  class global comment. Detailled comment
- * <br/>
- *
+ * qzhang class global comment. Detailled comment <br/>
+ * 
  * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ææäº, 29 ä¹æ 2006) nrousseau $
- *
+ * 
  */
 public class ErDiagramRootEditPart extends ScalableFreeformRootEditPart {
 
@@ -53,14 +51,14 @@ public class ErDiagramRootEditPart extends ScalableFreeformRootEditPart {
         layers.add(new FeedbackLayer(), SCALED_FEEDBACK_LAYER);
         return layers;
     }
+
     /**
-     *  admin ErDiagramRootEditPart class global comment. Detailled comment
-     * <br/>
-     *
+     * admin ErDiagramRootEditPart class global comment. Detailled comment <br/>
+     * 
      * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ææäº, 29 ä¹æ 2006) nrousseau $
-     *
+     * 
      */
-    class FeedbackLayer  extends FreeformLayer {
-        
+    class FeedbackLayer extends FreeformLayer {
+
     }
 }

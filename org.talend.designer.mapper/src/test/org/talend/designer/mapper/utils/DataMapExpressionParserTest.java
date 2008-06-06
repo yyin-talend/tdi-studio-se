@@ -92,11 +92,13 @@ public class DataMapExpressionParserTest {
 
         HashSet<TableEntryLocation> validLocations = new HashSet<TableEntryLocation>();
         validLocations.addAll(Arrays.asList(locations));
-        
-        String result = expressionParser.addTablePrefixToColumnName("UNIQUE_COMPONENT_NAME", "uc "
-                + gen.getTableColumnVariable("page", "content") + " + " + gen.getTableColumnVariable("book", "id_book")
-                + " - 2 * " + language.getPrefixTable() + " book " + language.getSuffixTable()
-                + language.getPrefixField() + "  id_book " + language.getSuffixField(), locations, true, validLocations);
+
+        String result = expressionParser
+                .addTablePrefixToColumnName("UNIQUE_COMPONENT_NAME", "uc "
+                        + gen.getTableColumnVariable("page", "content") + " + "
+                        + gen.getTableColumnVariable("book", "id_book") + " - 2 * " + language.getPrefixTable()
+                        + " book " + language.getSuffixTable() + language.getPrefixField() + "  id_book "
+                        + language.getSuffixField(), locations, true, validLocations);
         assertEquals("uc " + gen.getTableColumnVariable("page", "page__content") + " + "
                 + gen.getTableColumnVariable("book", "book__id_book") + " - 2 * "
                 + gen.getTableColumnVariable("book", "book__id_book"), result);

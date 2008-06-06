@@ -52,8 +52,7 @@ public class ConnTextEditPolicy extends DirectEditPolicy {
             return null;
         }
 
-        ChangeConnTextCommand command = new ChangeConnTextCommand((Connection) labelPart.getParent().getModel(),
-                labelText);
+        ChangeConnTextCommand command = new ChangeConnTextCommand((Connection) labelPart.getParent().getModel(), labelText);
         return command;
     }
 

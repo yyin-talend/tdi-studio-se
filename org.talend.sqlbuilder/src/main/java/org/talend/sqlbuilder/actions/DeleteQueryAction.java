@@ -58,7 +58,7 @@ public class DeleteQueryAction extends SelectionProviderAction {
             }
         }
         enabled = enabled && !dialog.getConnParameters().isNodeReadOnly();
-        setEnabled(enabled); 
+        setEnabled(enabled);
     }
 
     SQLBuilderRepositoryNodeManager repositoryNodeManager = new SQLBuilderRepositoryNodeManager();

@@ -16,11 +16,9 @@ import java.util.List;
 
 import org.talend.core.model.process.BlockCode;
 
-
 /**
- * DOC amaumont  class global comment. Detailled comment
- * <br/>
- *
+ * DOC amaumont class global comment. Detailled comment <br/>
+ * 
  */
 public class CloseBlocksCodeArgument {
 
@@ -28,17 +26,15 @@ public class CloseBlocksCodeArgument {
 
     /**
      * DOC amaumont Comment method "setCloseBlocksCount".
+     * 
      * @param closeBlocksCode
      */
     public void setBlocksCodeToClose(List<BlockCode> closeBlocksCode) {
         this.blocksCodeToClose = closeBlocksCode;
     }
 
-    
     public List<BlockCode> getBlocksCodeToClose() {
         return this.blocksCodeToClose;
     }
 
-    
-    
 }

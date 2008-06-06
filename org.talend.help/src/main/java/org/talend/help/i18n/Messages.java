@@ -16,11 +16,10 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 /**
- * External Message.
- * <br/>
- *
- * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40 +0000 (ÐÇÆÚÎå, 29 ¾ÅÔÂ 2006) nrousseau $
- *
+ * External Message. <br/>
+ * 
+ * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40 +0000 (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, 29 ï¿½ï¿½ï¿½ï¿½ 2006) nrousseau $
+ * 
  */
 public final class Messages {
 

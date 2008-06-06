@@ -61,7 +61,8 @@ public class DayOfMonthGroup extends Group implements IWidgetEnableListener {
     /**
      * 
      * Sets the changed listener.
-     * @param changeListener  IResultChangedListener
+     * 
+     * @param changeListener IResultChangedListener
      */
     public void setChangeListener(IResultChangedListener changeListener) {
         this.changeListener = changeListener;
@@ -70,6 +71,7 @@ public class DayOfMonthGroup extends Group implements IWidgetEnableListener {
     /**
      * 
      * Adds day.
+     * 
      * @param day String
      */
     private void addDays(String day) {
@@ -78,10 +80,11 @@ public class DayOfMonthGroup extends Group implements IWidgetEnableListener {
         }
         days.add(day);
     }
- 
+
     /**
      * 
      * Deletes day.
+     * 
      * @param day String
      */
     private void delDays(String day) {
@@ -95,7 +98,7 @@ public class DayOfMonthGroup extends Group implements IWidgetEnableListener {
     /**
      * Displays days.
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     private void displayDays() {
         Collections.sort(days, new Comparator() {
 
@@ -133,10 +136,10 @@ public class DayOfMonthGroup extends Group implements IWidgetEnableListener {
         super(parent, style);
         setText(Messages.getString("DayOfMonthGroup.dayMonthGroupTitle")); //$NON-NLS-1$
         final GridLayout gridLayout = new GridLayout();
-        
+
         gridLayout.numColumns = NUM_COLUMN;
         this.setLayout(gridLayout);
-        
+
         for (int i = 1; i < NUM_LABEL; i++) {
             createDayButton(String.valueOf(i));
         }
@@ -203,7 +206,7 @@ public class DayOfMonthGroup extends Group implements IWidgetEnableListener {
     }
 
     /**
-     *  An inner class.
+     * An inner class.
      */
     private SelectionAdapter listener = new SelectionAdapter() {
 
@@ -220,7 +223,7 @@ public class DayOfMonthGroup extends Group implements IWidgetEnableListener {
             } else {
                 if (days.size() == 1 && days.get(0).equals(ALL_DAYS)) {
                     days.clear();
-                    for (int i = 1; i <DAY_SIZE + 1; i++) {
+                    for (int i = 1; i < DAY_SIZE + 1; i++) {
                         days.add(String.valueOf(i));
                     }
                 }
@@ -235,6 +238,7 @@ public class DayOfMonthGroup extends Group implements IWidgetEnableListener {
     /**
      * 
      * Creates day buttons by input text.
+     * 
      * @param txt String
      */
     private void createDayButton(String txt) {
@@ -248,7 +252,7 @@ public class DayOfMonthGroup extends Group implements IWidgetEnableListener {
 
     /**
      * @Override
-     *  
+     * 
      */
     public void dispose() {
         super.dispose();
@@ -256,13 +260,14 @@ public class DayOfMonthGroup extends Group implements IWidgetEnableListener {
 
     /**
      * @Override
-     */   
+     */
     protected void checkSubclass() {
     }
 
     /**
      * 
      * Updates by input task.
+     * 
      * @param task ScheduleTask.
      */
     public void update(ScheduleTask task) {

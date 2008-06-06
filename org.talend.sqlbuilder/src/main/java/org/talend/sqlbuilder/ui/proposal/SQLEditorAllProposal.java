@@ -161,8 +161,8 @@ public class SQLEditorAllProposal implements IContentProposal {
 
         String newHasString = hasString.replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
         if (!"".equals(hasString) //$NON-NLS-1$
-                && (qualityName.toLowerCase().startsWith(hasString.toLowerCase()) || newQualityName.toLowerCase().startsWith(
-                        newHasString.toLowerCase()))) {
+                && (qualityName.toLowerCase().startsWith(hasString.toLowerCase()) || newQualityName.toLowerCase()
+                        .startsWith(newHasString.toLowerCase()))) {
             if (hasString.indexOf(".") > -1) { //$NON-NLS-1$
                 hasString = hasString.substring(index3 + 1);
             }

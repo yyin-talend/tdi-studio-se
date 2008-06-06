@@ -26,7 +26,7 @@ public class StatusPreferenceInitializer extends AbstractPreferenceInitializer {
     public StatusPreferenceInitializer() {
         super();
     }
-    
+
     @Override
     public void initializeDefaultPreferences() {
         RepositoryPreferenceStore preferenceStore = new RepositoryPreferenceStore(ProxyRepositoryFactory.getInstance());

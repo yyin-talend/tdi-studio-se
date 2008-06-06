@@ -76,8 +76,8 @@ public class UpdateDocumentationAction extends AContextualAction {
     public void run() {
         RepositoryNode node = (RepositoryNode) ((IStructuredSelection) getSelection()).getFirstElement();
 
-        DocumentationUpdateWizard docWizard = new DocumentationUpdateWizard(PlatformUI.getWorkbench(), node.getObject(),
-                getPath());
+        DocumentationUpdateWizard docWizard = new DocumentationUpdateWizard(PlatformUI.getWorkbench(),
+                node.getObject(), getPath());
         WizardDialog dlg = new WizardDialog(Display.getCurrent().getActiveShell(), docWizard);
         dlg.open();
 

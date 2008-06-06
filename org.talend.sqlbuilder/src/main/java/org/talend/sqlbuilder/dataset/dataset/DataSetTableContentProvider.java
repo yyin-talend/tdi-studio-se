@@ -15,35 +15,39 @@ package org.talend.sqlbuilder.dataset.dataset;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
-
 /**
  * Table Content Provider for DataSet.
  * 
  * @author Davy Vanherbergen
- *
+ * 
  */
 public class DataSetTableContentProvider implements IStructuredContentProvider {
-   
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
      */
     public Object[] getElements(Object inputElement) {
-        
+
         DataSet dataSet = (DataSet) inputElement;
         return dataSet.getRows();
     }
 
-
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jface.viewers.IContentProvider#dispose()
      */
     public void dispose() {
         // noop
     }
 
-
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object,
+     * java.lang.Object)
      */
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         // noop

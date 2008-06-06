@@ -33,7 +33,6 @@ public class CopyColumnNameAction extends AbstractDataSetTableContextAction {
 
     private static final ImageDescriptor IMAGE = ImageUtil.getDescriptor("Images.ExportToClipBoardIcon"); //$NON-NLS-1$
 
-
     /*
      * (non-Javadoc)
      * 
@@ -43,7 +42,6 @@ public class CopyColumnNameAction extends AbstractDataSetTableContextAction {
         return Messages.getString("DataSetTable.Actions.CopyColumnName"); //$NON-NLS-1$
     }
 
-
     /*
      * (non-Javadoc)
      * 
@@ -52,7 +50,6 @@ public class CopyColumnNameAction extends AbstractDataSetTableContextAction {
     public ImageDescriptor getImageDescriptor() {
         return IMAGE;
     }
-
 
     /*
      * (non-Javadoc)
@@ -65,33 +62,31 @@ public class CopyColumnNameAction extends AbstractDataSetTableContextAction {
 
             Clipboard clipBoard = new Clipboard(Display.getCurrent());
             TextTransfer textTransfer = TextTransfer.getInstance();
-            
+
             TableItem[] items = ptable.getSelection();
-            
+
             if (items == null || items.length == 0) {
                 return;
             }
-                       
-            int columnIndex = pcursor.getColumn();    
+
+            int columnIndex = pcursor.getColumn();
             TableColumn column = ptable.getColumn(columnIndex);
 
-            clipBoard.setContents(new Object[] {column.getText()}, new Transfer[] {textTransfer});
+            clipBoard.setContents(new Object[] { column.getText() }, new Transfer[] { textTransfer });
 
         } catch (Exception e) {
             SqlBuilderPlugin.log(org.talend.sqlbuilder.Messages.getString("CopyColumnNameAction.logMessage"), e); //$NON-NLS-1$
         }
     }
 
-
     /**
      * Only show action if something is selected.
+     * 
      * @see net.sourceforge.sqlexplorer.dataset.actions.AbstractDataSetTableContextAction#isAvailable()
      */
     public boolean isAvailable() {
- 
+
         return (ptable.getSelectionIndex() != -1);
     }
 
-    
-    
 }

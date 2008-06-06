@@ -72,7 +72,8 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
         this.salesforceAPI = salesforceAPI;
     }
 
-    public AbstractSalesforceStepForm(Composite parent, ConnectionItem connectionItem, SalesforceModuleParseAPI salesforceAPI) {
+    public AbstractSalesforceStepForm(Composite parent, ConnectionItem connectionItem,
+            SalesforceModuleParseAPI salesforceAPI) {
         this(parent, connectionItem, null, salesforceAPI);
     }
 
@@ -102,7 +103,8 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
         return RepositoryPlugin.getDefault().getDesignerCoreService().getRefrenceNode(tSalesforceUniqueName);
     }
 
-    public IMetadataTable getMetadatasForSalesforce(String endPoint, String user, String pass, String moduleName, boolean update) {
+    public IMetadataTable getMetadatasForSalesforce(String endPoint, String user, String pass, String moduleName,
+            boolean update) {
         // TSALESFORCE_INPUT_URL is only used by tSalesForceInput, the wizard doesn't work with this url
         if (endPoint.equals(TSALESFORCE_INPUT_URL)) {
             endPoint = DEFAULT_WEB_SERVICE_URL;
@@ -131,11 +133,12 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
 
     }
 
-    private IMetadataTable getMetadataTableBySalesforceServerAPI(final String endPoint, final String user, final String pass,
-            final String moduleName) {
+    private IMetadataTable getMetadataTableBySalesforceServerAPI(final String endPoint, final String user,
+            final String pass, final String moduleName) {
         IMetadataTable metadataTable = new org.talend.core.model.metadata.MetadataTable();
 
-        if (user == null || pass == null || user.equals("") || pass.equals("") || moduleName == null || moduleName.equals("")) {
+        if (user == null || pass == null || user.equals("") || pass.equals("") || moduleName == null
+                || moduleName.equals("")) {
             return null;
         }
 
@@ -145,8 +148,8 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
 
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 
-                    monitor.beginTask("Connection to Salesforce service to fetch module '" + moduleName + "'data column",
-                            IProgressMonitor.UNKNOWN);
+                    monitor.beginTask("Connection to Salesforce service to fetch module '" + moduleName
+                            + "'data column", IProgressMonitor.UNKNOWN);
 
                     try {
                         salesforceAPI.login(endPoint, user, pass);

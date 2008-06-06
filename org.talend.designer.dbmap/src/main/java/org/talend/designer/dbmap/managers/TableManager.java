@@ -122,7 +122,7 @@ public class TableManager {
     Object removeTable(IDataMapTable dataTable) {
         List<IColumnEntry> dataMapTableEntries = dataTable.getColumnEntries();
         TableEntriesManager tableEntriesManager = mapperManager.getTableEntriesManager();
-        
+
         tableEntriesManager.removeAll(dataMapTableEntries, isPhysicalInputTable(dataTable.getName()));
         if (dataTable instanceof OutputTable) {
             List<FilterTableEntry> constraintEntries = ((OutputTable) dataTable).getFilterEntries();
@@ -297,7 +297,7 @@ public class TableManager {
         ArrayList<String> names = new ArrayList<String>();
         for (IOConnection connection : inputConnections) {
             String name = connection.getName();
-            if(name != null) {
+            if (name != null) {
                 names.add(name);
             }
         }
@@ -307,13 +307,13 @@ public class TableManager {
     public boolean isPhysicalInputTable(String tableName) {
         String[] physicalInputTableNames = getPhysicalInputTableNames();
         for (String tableNameLoop : physicalInputTableNames) {
-            if(tableNameLoop.equals(tableName)) {
+            if (tableNameLoop.equals(tableName)) {
                 return true;
             }
         }
         return false;
     }
-    
+
     /**
      * DOC amaumont Comment method "getAliases".
      */
@@ -322,7 +322,7 @@ public class TableManager {
         ArrayList<String> names = new ArrayList<String>();
         for (InputTable table : inputTables) {
             String alias = table.getAlias();
-            if(alias != null) {
+            if (alias != null) {
                 names.add(alias);
             }
         }

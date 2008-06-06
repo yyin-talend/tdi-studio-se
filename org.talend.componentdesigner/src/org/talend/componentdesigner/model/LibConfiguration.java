@@ -13,15 +13,15 @@
 package org.talend.componentdesigner.model;
 
 /**
- * DOC rli  class global comment. Detailled comment
+ * DOC rli class global comment. Detailled comment
  */
 public class LibConfiguration extends IConfiguration {
 
-	/**
-	 * DOC rli LibConfiguration constructor comment.
-	 */
-	public LibConfiguration() {
-		// TODO Auto-generated constructor stub
-	}
+    /**
+     * DOC rli LibConfiguration constructor comment.
+     */
+    public LibConfiguration() {
+        // TODO Auto-generated constructor stub
+    }
 
 }

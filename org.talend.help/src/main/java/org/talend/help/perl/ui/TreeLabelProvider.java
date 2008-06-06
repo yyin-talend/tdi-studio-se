@@ -17,14 +17,14 @@ import org.talend.help.perl.model.Node;
 
 /**
  * TreeLabelProvider.java.
- *
+ * 
  */
 public class TreeLabelProvider extends org.eclipse.jface.viewers.LabelProvider {
 
-	@Override
-	public String getText(Object element) {
-		String text = ((Node) element).getProperties().get(EProperty.LABEL);
-		return text == null ? "" : text; //$NON-NLS-1$
-	}
+    @Override
+    public String getText(Object element) {
+        String text = ((Node) element).getProperties().get(EProperty.LABEL);
+        return text == null ? "" : text; //$NON-NLS-1$
+    }
 
 }

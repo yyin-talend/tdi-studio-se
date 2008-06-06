@@ -100,7 +100,9 @@ public abstract class TableEntry implements ITableEntry {
         this.problems = problems;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.abstractmap.model.tableentry.ITableEntry#isColumnEntry()
      */
     public boolean isColumnEntry() {
@@ -108,7 +110,9 @@ public abstract class TableEntry implements ITableEntry {
         return false;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.abstractmap.model.tableentry.ITableEntry#isTableEntry()
      */
     public boolean isTableEntry() {
@@ -116,6 +120,4 @@ public abstract class TableEntry implements ITableEntry {
         return false;
     }
 
-    
-    
 }

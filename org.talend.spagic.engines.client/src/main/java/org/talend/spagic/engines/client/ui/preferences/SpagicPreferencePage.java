@@ -83,7 +83,8 @@ public class SpagicPreferencePage extends FieldEditorPreferencePage implements I
 
             public void widgetSelected(SelectionEvent e) {
                 IPreferenceStore preferenceStore = getPreferenceStore();
-                preferenceStore.setValue(SpagicPreferenceInitializer.SPAGIC_STATUS, ((Button) e.getSource()).getSelection());
+                preferenceStore.setValue(SpagicPreferenceInitializer.SPAGIC_STATUS, ((Button) e.getSource())
+                        .getSelection());
                 updateEnableStateFromDisplay();
             }
         };

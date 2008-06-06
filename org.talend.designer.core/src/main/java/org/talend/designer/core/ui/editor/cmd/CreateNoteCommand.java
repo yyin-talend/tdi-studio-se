@@ -17,11 +17,10 @@ import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.notes.Note;
 import org.talend.designer.core.ui.editor.process.Process;
 
-
 /**
  */
 public class CreateNoteCommand extends CreateCommand {
-    
+
     private Note note;
 
     public CreateNoteCommand(Process process, Note note, Point location) {

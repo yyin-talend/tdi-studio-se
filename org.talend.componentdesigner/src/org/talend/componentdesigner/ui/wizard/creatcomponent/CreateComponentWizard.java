@@ -116,7 +116,8 @@ public class CreateComponentWizard extends BasicNewResourceWizard {
         if (currentPage.getName().equals(PERLWIZARD)) {
             return true;
         }
-        if (currentPage.getName().equals(JAVAWIZARD) && (componentPref.getLanguageType() == LanguageType.JAVALANGUAGETYPE)) {
+        if (currentPage.getName().equals(JAVAWIZARD)
+                && (componentPref.getLanguageType() == LanguageType.JAVALANGUAGETYPE)) {
             return true;
         }
         return false;

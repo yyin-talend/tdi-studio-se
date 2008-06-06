@@ -47,8 +47,8 @@ public final class CodeGeneratorRoutine {
 
     // PTODO mhelleboid
     public static List<String> getRoutineName() {
-        ECodeLanguage currentLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                .getProject().getLanguage();
+        ECodeLanguage currentLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(
+                Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage();
         List<String> toReturn = new ArrayList<String>();
 
         RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(

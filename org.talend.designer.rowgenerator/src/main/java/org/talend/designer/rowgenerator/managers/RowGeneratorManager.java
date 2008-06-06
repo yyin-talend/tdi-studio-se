@@ -28,75 +28,74 @@ import org.talend.designer.rowgenerator.RowGeneratorComponent;
  */
 public class RowGeneratorManager {
 
-	private static List<Map<String, Object>> orginEP = new ArrayList<Map<String, Object>>();
+    private static List<Map<String, Object>> orginEP = new ArrayList<Map<String, Object>>();
 
-	private static String orginNumber = "10"; //$NON-NLS-1$
+    private static String orginNumber = "10"; //$NON-NLS-1$
 
-	private RowGeneratorComponent rowGeneratorComponent;
+    private RowGeneratorComponent rowGeneratorComponent;
 
-	private UIManager uiManager;
+    private UIManager uiManager;
 
-	private CommandStack commandStack;
+    private CommandStack commandStack;
 
-	/**
-	 * qzhang RowGeneratorManager constructor comment.
-	 */
-	public RowGeneratorManager(RowGeneratorComponent rowGeneratorComponent) {
-		this.rowGeneratorComponent = rowGeneratorComponent;
-		this.uiManager = new UIManager(this);
-		orginEP.clear();
-		initOrginEP();
-	}
+    /**
+     * qzhang RowGeneratorManager constructor comment.
+     */
+    public RowGeneratorManager(RowGeneratorComponent rowGeneratorComponent) {
+        this.rowGeneratorComponent = rowGeneratorComponent;
+        this.uiManager = new UIManager(this);
+        orginEP.clear();
+        initOrginEP();
+    }
 
-	/**
-	 * qzhang Comment method "initOrginEP".
-	 */
-	@SuppressWarnings("unchecked") //$NON-NLS-1$
-	private void initOrginEP() {
-		List<Map<String, Object>> lines = rowGeneratorComponent.getMapList();
-		for (Map<String, Object> map : lines) {
-			Map<String, Object> newMap = new HashMap<String, Object>();
-			newMap.putAll(map);
-			orginEP.add(newMap);
-		}
-		orginNumber = rowGeneratorComponent.getNumber();
-	}
+    /**
+     * qzhang Comment method "initOrginEP".
+     */
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    private void initOrginEP() {
+        List<Map<String, Object>> lines = rowGeneratorComponent.getMapList();
+        for (Map<String, Object> map : lines) {
+            Map<String, Object> newMap = new HashMap<String, Object>();
+            newMap.putAll(map);
+            orginEP.add(newMap);
+        }
+        orginNumber = rowGeneratorComponent.getNumber();
+    }
 
-	public UIManager getUiManager() {
-		return this.uiManager;
-	}
+    public UIManager getUiManager() {
+        return this.uiManager;
+    }
 
-	public void setUiManager(UIManager uiManager) {
-		this.uiManager = uiManager;
-	}
+    public void setUiManager(UIManager uiManager) {
+        this.uiManager = uiManager;
+    }
 
-	public CommandStack getCommandStack() {
-		return this.commandStack;
-	}
+    public CommandStack getCommandStack() {
+        return this.commandStack;
+    }
 
-	public void setCommandStack(CommandStack commandStack) {
-		this.commandStack = commandStack;
-	}
+    public void setCommandStack(CommandStack commandStack) {
+        this.commandStack = commandStack;
+    }
 
-	public RowGeneratorComponent getRowGeneratorComponent() {
-		return this.rowGeneratorComponent;
-	}
+    public RowGeneratorComponent getRowGeneratorComponent() {
+        return this.rowGeneratorComponent;
+    }
 
-	public void setRowGeneratorComponent(
-			RowGeneratorComponent rowGeneratorComponent) {
-		this.rowGeneratorComponent = rowGeneratorComponent;
-	}
+    public void setRowGeneratorComponent(RowGeneratorComponent rowGeneratorComponent) {
+        this.rowGeneratorComponent = rowGeneratorComponent;
+    }
 
-	public List<Map<String, Object>> getOrginEP() {
-		return orginEP;
-	}
+    public List<Map<String, Object>> getOrginEP() {
+        return orginEP;
+    }
 
-	public String getOrginNumber() {
-		return orginNumber;
-	}
+    public String getOrginNumber() {
+        return orginNumber;
+    }
 
-	public void setOrginNumber(String orginNumber) {
-		RowGeneratorManager.orginNumber = orginNumber;
-	}
+    public void setOrginNumber(String orginNumber) {
+        RowGeneratorManager.orginNumber = orginNumber;
+    }
 
 }

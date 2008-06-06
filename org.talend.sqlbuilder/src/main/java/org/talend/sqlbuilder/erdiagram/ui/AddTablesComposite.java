@@ -95,7 +95,7 @@ public class AddTablesComposite extends Composite {
     /**
      * DOC admin Comment method "createTableList".
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     private Composite createTableList() {
         Composite div1 = new Composite(tabFolder, SWT.NONE);
         div1.setLayout(new GridLayout());
@@ -106,7 +106,7 @@ public class AddTablesComposite extends Composite {
         lgid.verticalIndent = 1;
         div1.setLayoutData(lgid);
         div1.setBackground(ColorConstants.white);
-        
+
         listTables = new org.eclipse.swt.widgets.List(div1, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
         listTables.setLayoutData(new GridData(GridData.FILL_BOTH));
         DatabaseConnectionItem item = SQLBuilderRepositoryNodeManager.getItem(getRootNode());

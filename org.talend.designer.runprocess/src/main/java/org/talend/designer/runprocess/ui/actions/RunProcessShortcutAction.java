@@ -45,8 +45,8 @@ public class RunProcessShortcutAction extends RunProcessAction {
         IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
         IEditorPart activeEditor = page.getActiveEditor();
         if (CorePlugin.getDefault().getDesignerCoreService().isTalendEditor(activeEditor)) {
-            getLaunchConfigurationManager().getLaunchShortcut(TalendDebugUIConstants.TALEND_JOB_LAUNCH_SHORTCUT_ID).launch(
-                    activeEditor, ILaunchManager.RUN_MODE);
+            getLaunchConfigurationManager().getLaunchShortcut(TalendDebugUIConstants.TALEND_JOB_LAUNCH_SHORTCUT_ID)
+                    .launch(activeEditor, ILaunchManager.RUN_MODE);
         } else {
             new RunProcessAction().run();
         }

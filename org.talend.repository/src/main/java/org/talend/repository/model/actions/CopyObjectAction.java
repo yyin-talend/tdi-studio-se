@@ -73,7 +73,7 @@ public class CopyObjectAction {
             RoutineItem item = (RoutineItem) property.getItem();
             return !item.isBuiltIn();
         }
-     // Cannot copy system sql pattern:
+        // Cannot copy system sql pattern:
         if (objectToCopy.getType() == ERepositoryObjectType.SQLPATTERNS) {
             Property property = objectToCopy.getProperty();
             SQLPatternItem item = (SQLPatternItem) property.getItem();
@@ -88,7 +88,8 @@ public class CopyObjectAction {
         switch (targetNode.getType()) {
         case SIMPLE_FOLDER:
         case SYSTEM_FOLDER:
-            return ((ERepositoryObjectType) targetNode.getProperties(EProperties.CONTENT_TYPE)) == objectToCopy.getType();
+            return ((ERepositoryObjectType) targetNode.getProperties(EProperties.CONTENT_TYPE)) == objectToCopy
+                    .getType();
         default:
             return false;
         }

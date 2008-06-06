@@ -14,6 +14,7 @@ package org.talend.repository.model;
 
 /**
  * This class is used for storing Encryption method for LDAP schema. <br/>
+ * 
  * @author ftang, 18/09/2007
  * 
  */
@@ -30,6 +31,7 @@ public enum EEncryptionMethod {
 
     /**
      * EEncryptionMethod constructor comment.
+     * 
      * @param methodName
      */
     private EEncryptionMethod(String methodName) {
@@ -37,7 +39,8 @@ public enum EEncryptionMethod {
     }
 
     /**
-     *Comment method "getName".
+     * Comment method "getName".
+     * 
      * @return
      */
     public String getName() {

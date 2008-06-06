@@ -22,152 +22,160 @@ import org.talend.componentdesigner.PluginConstant;
 import org.w3c.dom.Node;
 
 /**
- * DOC rli  class global comment. Detailled comment
+ * DOC rli class global comment. Detailled comment
  */
-public class TreeNodeData {	
+public class TreeNodeData {
 
-	private static final String TEXT_CONST = "#text"; //$NON-NLS-1$
-	
-	private String bodayText;
+    private static final String TEXT_CONST = "#text"; //$NON-NLS-1$
 
-	private Map<String, String> attrMap = new HashMap<String, String>();
-	
-	private Node xmlNode;
-	
-	private ATreeNode aTreeNode;
-	
-	private String treePath;
-	
-	public String putAttrValue(String attrName, String attr) {
-		return attrMap.put(attrName, attr);
-	}
-	
-	public String getAttrValue(String attrName) {
-		return attrMap.get(attrName);
-	}
-	
-	public String removeAttrValue(String attrName) {
-		return attrMap.remove(attrName);
-	}
-	
-	public Object[] getTreeAttrNames() {
-		Object[] childrenNode = this.aTreeNode.getChildren();
-		List<Object> treeNodeAttrList = new ArrayList<Object>();
-		for (Object child : childrenNode) {
-			if (((ATreeNode) child).getType() == ATreeNode.ATTRIBUTE_TYPE) {
-				treeNodeAttrList.add(((ATreeNode) child).getValue());
-			}
-		}
-		return treeNodeAttrList.toArray();
-	}
-	
-	public boolean isHasTreeAttr() {
-		return getTreeAttrNames().length != 0;
-	}
-	
-	public boolean isHasChildTreeNode() {
-		Object[] childrenNode = this.aTreeNode.getChildren();
-		for (Object child : childrenNode) {
-			if (((ATreeNode) child).getType() == ATreeNode.ELEMENT_TYPE) {
-				return true;
-			}
-		}
-		return false;
-		
-//		NodeList nodeList = this.xmlNode.getChildNodes();
-//		for (int i = 0; i < nodeList.getLength(); i++) {
-//			final Node subNode = nodeList.item(i);
-//			if (!subNode.getNodeName().equals(TEXT_CONST)) {
-//				return true;
-//			}
-//		}
-//		return false;
-	}
+    private String bodayText;
 
-	/**
-	 * Getter for bodayText.
-	 * @return the bodayText
-	 */
-	public String getBodayText() {
-		return bodayText == null ? PluginConstant.EMPTY_STRING : bodayText;
-	}
+    private Map<String, String> attrMap = new HashMap<String, String>();
 
-	/**
-	 * Sets the bodayText.
-	 * @param bodayText the bodayText to set
-	 */
-	public void setBodayText(String bodayText) {
-		this.bodayText = bodayText;
-	}
+    private Node xmlNode;
 
-	/**
-	 * Getter for node.
-	 * @return the node
-	 */
-	public Node getXMLNode() {
-		return xmlNode;
-	}
+    private ATreeNode aTreeNode;
 
-	/**
-	 * Sets the node.
-	 * @param node the node to set
-	 */
-	public void setXMLNode(Node node) {
-		this.xmlNode = node;
-	}
-	
-	public Object[] getChildNodeNames() {
-		Object[] nodeList = this.aTreeNode.getChildren();
-		List<Object> nameList = new ArrayList<Object>();
-		for (Object node : nodeList) {			
-			ATreeNode treeNode = (ATreeNode) node;
-			if (treeNode.getType() == treeNode.ELEMENT_TYPE) {
-				nameList.add(treeNode.getValue());
-			}
-		}
-//		for (int i = 0; i < nodeList.getLength(); i++) {
-//			final Node childNode = nodeList.item(i);
-//			if (nameList.contains(childNode.getNodeName())) {
-//				continue;
-//			}
-//			if (childNode.getNodeName().equals(TEXT_CONST)) {
-//				continue;
-//			} else {
-//				nameList.add(childNode.getNodeName());
-//			}
-//		}
-		return nameList.toArray();
-	}
+    private String treePath;
 
-	/**
-	 * Getter for treeNode.
-	 * @return the treeNode
-	 */
-	public ATreeNode getTreeNode() {
-		return aTreeNode;
-	}
+    public String putAttrValue(String attrName, String attr) {
+        return attrMap.put(attrName, attr);
+    }
 
-	/**
-	 * Sets the treeNode.
-	 * @param treeNode the treeNode to set
-	 */
-	public void setTreeNode(ATreeNode treeNode) {
-		this.aTreeNode = treeNode;
-	}
+    public String getAttrValue(String attrName) {
+        return attrMap.get(attrName);
+    }
 
-	/**
-	 * Getter for treePath.
-	 * @return the treePath
-	 */
-	public String getTreePath() {
-		return treePath;
-	}
+    public String removeAttrValue(String attrName) {
+        return attrMap.remove(attrName);
+    }
 
-	/**
-	 * Sets the treePath.
-	 * @param treePath the treePath to set
-	 */
-	public void setTreePath(String treePath) {
-		this.treePath = treePath;
-	}
+    public Object[] getTreeAttrNames() {
+        Object[] childrenNode = this.aTreeNode.getChildren();
+        List<Object> treeNodeAttrList = new ArrayList<Object>();
+        for (Object child : childrenNode) {
+            if (((ATreeNode) child).getType() == ATreeNode.ATTRIBUTE_TYPE) {
+                treeNodeAttrList.add(((ATreeNode) child).getValue());
+            }
+        }
+        return treeNodeAttrList.toArray();
+    }
+
+    public boolean isHasTreeAttr() {
+        return getTreeAttrNames().length != 0;
+    }
+
+    public boolean isHasChildTreeNode() {
+        Object[] childrenNode = this.aTreeNode.getChildren();
+        for (Object child : childrenNode) {
+            if (((ATreeNode) child).getType() == ATreeNode.ELEMENT_TYPE) {
+                return true;
+            }
+        }
+        return false;
+
+        // NodeList nodeList = this.xmlNode.getChildNodes();
+        // for (int i = 0; i < nodeList.getLength(); i++) {
+        // final Node subNode = nodeList.item(i);
+        // if (!subNode.getNodeName().equals(TEXT_CONST)) {
+        // return true;
+        // }
+        // }
+        // return false;
+    }
+
+    /**
+     * Getter for bodayText.
+     * 
+     * @return the bodayText
+     */
+    public String getBodayText() {
+        return bodayText == null ? PluginConstant.EMPTY_STRING : bodayText;
+    }
+
+    /**
+     * Sets the bodayText.
+     * 
+     * @param bodayText the bodayText to set
+     */
+    public void setBodayText(String bodayText) {
+        this.bodayText = bodayText;
+    }
+
+    /**
+     * Getter for node.
+     * 
+     * @return the node
+     */
+    public Node getXMLNode() {
+        return xmlNode;
+    }
+
+    /**
+     * Sets the node.
+     * 
+     * @param node the node to set
+     */
+    public void setXMLNode(Node node) {
+        this.xmlNode = node;
+    }
+
+    public Object[] getChildNodeNames() {
+        Object[] nodeList = this.aTreeNode.getChildren();
+        List<Object> nameList = new ArrayList<Object>();
+        for (Object node : nodeList) {
+            ATreeNode treeNode = (ATreeNode) node;
+            if (treeNode.getType() == treeNode.ELEMENT_TYPE) {
+                nameList.add(treeNode.getValue());
+            }
+        }
+        // for (int i = 0; i < nodeList.getLength(); i++) {
+        // final Node childNode = nodeList.item(i);
+        // if (nameList.contains(childNode.getNodeName())) {
+        // continue;
+        // }
+        // if (childNode.getNodeName().equals(TEXT_CONST)) {
+        // continue;
+        // } else {
+        // nameList.add(childNode.getNodeName());
+        // }
+        // }
+        return nameList.toArray();
+    }
+
+    /**
+     * Getter for treeNode.
+     * 
+     * @return the treeNode
+     */
+    public ATreeNode getTreeNode() {
+        return aTreeNode;
+    }
+
+    /**
+     * Sets the treeNode.
+     * 
+     * @param treeNode the treeNode to set
+     */
+    public void setTreeNode(ATreeNode treeNode) {
+        this.aTreeNode = treeNode;
+    }
+
+    /**
+     * Getter for treePath.
+     * 
+     * @return the treePath
+     */
+    public String getTreePath() {
+        return treePath;
+    }
+
+    /**
+     * Sets the treePath.
+     * 
+     * @param treePath the treePath to set
+     */
+    public void setTreePath(String treePath) {
+        this.treePath = treePath;
+    }
 }

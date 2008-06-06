@@ -24,6 +24,7 @@ import org.talend.designer.core.ui.editor.process.Process;
 public class DeleteNoteCommand extends Command {
 
     private List<Note> noteList;
+
     private Process process;
 
     public DeleteNoteCommand(Process process, List<Note> noteList) {
@@ -31,7 +32,7 @@ public class DeleteNoteCommand extends Command {
         this.noteList = noteList;
         setLabel(Messages.getString("DeleteNoteCommand.Name")); //$NON-NLS-1$
     }
-    
+
     @Override
     public void execute() {
         for (Note note : noteList) {

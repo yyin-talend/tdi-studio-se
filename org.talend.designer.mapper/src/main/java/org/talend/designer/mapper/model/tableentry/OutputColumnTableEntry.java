@@ -23,8 +23,7 @@ import org.talend.designer.abstractmap.model.table.IDataMapTable;
  */
 public class OutputColumnTableEntry extends AbstractInOutTableEntry {
 
-    public OutputColumnTableEntry(IDataMapTable abstractDataMapTable, IMetadataColumn metadataColumn,
-            String expression) {
+    public OutputColumnTableEntry(IDataMapTable abstractDataMapTable, IMetadataColumn metadataColumn, String expression) {
         super(abstractDataMapTable, metadataColumn, expression);
     }
 

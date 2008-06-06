@@ -71,7 +71,8 @@ public class DocumentationCreateWizard extends RepositoryWizard implements IDocu
         setNeedsProgressMonitor(true);
 
         property = PropertiesFactory.eINSTANCE.createProperty();
-        property.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getUser());
+        property.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                .getUser());
         property.setVersion(VersionUtils.DEFAULT_VERSION);
         property.setStatusCode(""); //$NON-NLS-1$        
     }

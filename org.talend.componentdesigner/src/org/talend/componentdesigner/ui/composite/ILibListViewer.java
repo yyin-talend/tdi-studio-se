@@ -12,6 +12,7 @@
 // ============================================================================
 
 package org.talend.componentdesigner.ui.composite;
+
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
@@ -22,73 +23,73 @@ import org.talend.componentdesigner.model.ILibEntry;
  */
 public interface ILibListViewer extends ISelectionProvider {
 
-	/**
-	 * Returns the entries in this viewer that are the children of the parent element.
-	 * associated with the selected item(s)
-	 * 
-	 * @return the entries in this viewer
-	 */
-	public ILibEntry[] getEntries();
+    /**
+     * Returns the entries in this viewer that are the children of the parent element. associated with the selected
+     * item(s)
+     * 
+     * @return the entries in this viewer
+     */
+    public ILibEntry[] getEntries();
 
-	/**
-	 * Sets the entries in this viewer to the given runtime classpath.
-	 * entries
-	 * 
-	 * @param entries runtime classpath entries
-	 */
-	public void setEntries(ILibEntry[] entries);
+    /**
+     * Sets the entries in this viewer to the given runtime classpath. entries
+     * 
+     * @param entries runtime classpath entries
+     */
+    public void setEntries(ILibEntry[] entries);
 
-	/**
-	 * Returns the shell associated with this viewer.
-	 * @return a shell
-	 */
-	public Shell getShell();
+    /**
+     * Returns the shell associated with this viewer.
+     * 
+     * @return a shell
+     */
+    public Shell getShell();
 
-	/**
-	 * Returns whether this viewer is enabled.
-	 * @return whether this viewer is enabled
-	 */
-	public boolean isEnabled();
+    /**
+     * Returns whether this viewer is enabled.
+     * 
+     * @return whether this viewer is enabled
+     */
+    public boolean isEnabled();
 
-	/**
-	 * Adds the given entries to the list. If there is no selection
-	 * in the list, the entries are added at the end of the list, 
-	 * otherwise the new entries are added before the (first) selected
-	 * entry. The new entries are selected.
-	 * 
-	 * @param entries additions
-	 */
-	public void addEntries(ILibEntry[] entries);
-	
-	public void removeEntries(ILibEntry[] entries);
+    /**
+     * Adds the given entries to the list. If there is no selection in the list, the entries are added at the end of the
+     * list, otherwise the new entries are added before the (first) selected entry. The new entries are selected.
+     * 
+     * @param entries additions
+     */
+    public void addEntries(ILibEntry[] entries);
 
-	/**
-	 * Refreshes this entry in the viewer.
-	 * @param entry the entry to be refreshed
-	 */
-	public void refresh(Object entry);
+    public void removeEntries(ILibEntry[] entries);
 
-	/**
-	 * The entries in a runtime classpath entry viewer have changed in some way.
-	 * Calling this method allows the viewer to adapt to those changes if necessary.
-	 */
-	public void notifyChanged();
+    /**
+     * Refreshes this entry in the viewer.
+     * 
+     * @param entry the entry to be refreshed
+     */
+    public void refresh(Object entry);
 
-	/**
-	 * Returns the index of an equivalent entry, or -1 if none.
-	 * 
-	 * @return the index of an equivalent entry, or -1 if none
-	 */
-	public int indexOf(ILibEntry entry);
+    /**
+     * The entries in a runtime classpath entry viewer have changed in some way. Calling this method allows the viewer
+     * to adapt to those changes if necessary.
+     */
+    public void notifyChanged();
 
-	/**
-	 * Returns whether an action of the supplied action type should be enabled based on the supplied selection.
-	 * 
-	 * @param actionType One of RuntimeClasspathAction constants defining the action type
-	 * @param selection The selection to use for the update
-	 * @return Whether the action of this type should be enabled based on the selection
-	 */
-	public boolean updateSelection(int actionType, IStructuredSelection selection);
+    /**
+     * Returns the index of an equivalent entry, or -1 if none.
+     * 
+     * @return the index of an equivalent entry, or -1 if none
+     */
+    public int indexOf(ILibEntry entry);
 
-	ILibEntry[] getSelectedEntries();
+    /**
+     * Returns whether an action of the supplied action type should be enabled based on the supplied selection.
+     * 
+     * @param actionType One of RuntimeClasspathAction constants defining the action type
+     * @param selection The selection to use for the update
+     * @return Whether the action of this type should be enabled based on the selection
+     */
+    public boolean updateSelection(int actionType, IStructuredSelection selection);
+
+    ILibEntry[] getSelectedEntries();
 }

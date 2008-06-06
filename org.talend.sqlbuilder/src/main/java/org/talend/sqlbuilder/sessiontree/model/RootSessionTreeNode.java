@@ -22,20 +22,20 @@ import org.talend.sqlbuilder.Messages;
 public class RootSessionTreeNode implements ISessionTreeNode {
 
     private static final int CAPACITY = 10;
-    
+
     private ArrayList ls = new ArrayList(CAPACITY);
 
     public RootSessionTreeNode() {
     }
-    
+
     /**
      * @return SessionTreeNode[]
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public SessionTreeNode[] getSessionTreeNodes() {
         return (SessionTreeNode[]) ls.toArray(new SessionTreeNode[0]);
     }
-    
+
     /**
      * @return Children.
      */
@@ -50,9 +50,10 @@ public class RootSessionTreeNode implements ISessionTreeNode {
     public Object getParent() {
         return null;
     }
-    
+
     /**
      * Override toString method.
+     * 
      * @return String.
      */
     public String toString() {
@@ -65,22 +66,22 @@ public class RootSessionTreeNode implements ISessionTreeNode {
             return "" + ls.size() + ""; //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
-    
+
     /**
      * @param node SessionTreeNode.
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public void add(ISessionTreeNode node) {
         ls.add(node);
     }
-    
+
     /**
      * @param nd SessionTreeNode.
      */
     public void remove(SessionTreeNode nd) {
         ls.remove(nd);
     }
-    
+
     /**
      * Close All Connections.
      */

@@ -35,9 +35,8 @@ public class NoteResizableEditPolicy extends ResizableEditPolicy {
             return null;
         }
 
-        return new ResizeNoteCommand(note, new Dimension(note.getSize().width + request.getSizeDelta().width, note
-                .getSize().height
-                + request.getSizeDelta().height));
+        return new ResizeNoteCommand(note, new Dimension(note.getSize().width + request.getSizeDelta().width,
+                note.getSize().height + request.getSizeDelta().height));
     }
 
 }

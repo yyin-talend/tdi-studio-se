@@ -31,6 +31,7 @@ public class PropertyTablePasteCommand<B> extends ExtendedTablePasteCommand {
 
     /**
      * DOC amaumont MetadataPasteCommand constructor comment.
+     * 
      * @param extendedTable
      * @param validAssignableType
      * @param indexStartAdd
@@ -41,6 +42,7 @@ public class PropertyTablePasteCommand<B> extends ExtendedTablePasteCommand {
 
     /**
      * DOC amaumont MetadataPasteCommand constructor comment.
+     * 
      * @param extendedTable
      * @param instanceOfType
      */
@@ -56,7 +58,7 @@ public class PropertyTablePasteCommand<B> extends ExtendedTablePasteCommand {
     @Override
     public List createPastableBeansList(ExtendedTableModel extendedTable, List copiedObjectsList) {
         ArrayList list = new ArrayList();
-        
+
         for (Object current : copiedObjectsList) {
             if (current instanceof HashMap) {
                 // create a new column as a copy of this column
@@ -67,5 +69,4 @@ public class PropertyTablePasteCommand<B> extends ExtendedTablePasteCommand {
         return list;
     }
 
-    
 }

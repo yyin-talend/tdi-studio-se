@@ -67,7 +67,8 @@ public class DeployOnSpagicAction extends AContextualAction {
     }
 
     public boolean isVisible() {
-        return isEnabled() && Activator.getDefault().getPreferenceStore().getBoolean(SpagicPreferenceInitializer.SPAGIC_STATUS);
+        return isEnabled()
+                && Activator.getDefault().getPreferenceStore().getBoolean(SpagicPreferenceInitializer.SPAGIC_STATUS);
     }
 
     public DeployOnSpagicAction() {

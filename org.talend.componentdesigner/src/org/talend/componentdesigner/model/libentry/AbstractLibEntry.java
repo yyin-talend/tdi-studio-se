@@ -22,69 +22,77 @@ import org.talend.componentdesigner.model.ILibEntry;
  */
 public abstract class AbstractLibEntry implements ILibEntry {
 
-	protected IResource resource;
+    protected IResource resource;
 
-	protected IPath path;
+    protected IPath path;
 
-	/* (non-Javadoc)
-	 * @see org.talend.componentdesigner.model.ILibEntry#getResource()
-	 */
-	public IResource getResource() {
-		return resource;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.componentdesigner.model.ILibEntry#getResource()
+     */
+    public IResource getResource() {
+        return resource;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.talend.componentdesigner.model.ILibEntry#getLocation()
-	 */
-	public String getLocation() {
-		if (resource != null) {
-			return resource.getProjectRelativePath().toString();
-		} else if (path != null) {
-			return path.toOSString();
-		} else {
-			return null;
-		}
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.componentdesigner.model.ILibEntry#getLocation()
+     */
+    public String getLocation() {
+        if (resource != null) {
+            return resource.getProjectRelativePath().toString();
+        } else if (path != null) {
+            return path.toOSString();
+        } else {
+            return null;
+        }
+    }
 
-	/* (non-Javadoc)
-	 * @see org.talend.componentdesigner.model.ILibEntry#getNameAndPath(java.lang.String)
-	 */
-	public String getNameAndPath(String jointMark) {
-		StringBuffer resultString = new StringBuffer();
-		if (resource != null) {
-			resultString.append(resource.getName());
-			resultString.append(jointMark);
-			resultString.append(resource.getProjectRelativePath());
-			return resultString.toString();
-		} else if (path != null) {
-			resultString.append(path.lastSegment());
-			resultString.append(jointMark);
-			resultString.append(path.toOSString());
-			return resultString.toString();
-		} else {
-			return resultString.toString();
-		}
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.componentdesigner.model.ILibEntry#getNameAndPath(java.lang.String)
+     */
+    public String getNameAndPath(String jointMark) {
+        StringBuffer resultString = new StringBuffer();
+        if (resource != null) {
+            resultString.append(resource.getName());
+            resultString.append(jointMark);
+            resultString.append(resource.getProjectRelativePath());
+            return resultString.toString();
+        } else if (path != null) {
+            resultString.append(path.lastSegment());
+            resultString.append(jointMark);
+            resultString.append(path.toOSString());
+            return resultString.toString();
+        } else {
+            return resultString.toString();
+        }
+    }
 
-	/* (non-Javadoc)
-	 * @see org.talend.componentdesigner.model.ILibEntry#getType()
-	 */
-	public int getType() {
-		return 0;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.componentdesigner.model.ILibEntry#getType()
+     */
+    public int getType() {
+        return 0;
+    }
 
-	public boolean isExternal() {
-		return this.resource == null;
-	}
+    public boolean isExternal() {
+        return this.resource == null;
+    }
 
-	public String getName() {
-		if (resource != null) {
-			return resource.getName();
-		} else if (path != null) {
-			return path.lastSegment();
-		} else {
-			return PluginConstant.EMPTY_STRING;
-		}
-	}
-	
+    public String getName() {
+        if (resource != null) {
+            return resource.getName();
+        } else if (path != null) {
+            return path.lastSegment();
+        } else {
+            return PluginConstant.EMPTY_STRING;
+        }
+    }
+
 }

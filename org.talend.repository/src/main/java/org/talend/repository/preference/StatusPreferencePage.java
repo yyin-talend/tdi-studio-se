@@ -63,10 +63,10 @@ public class StatusPreferencePage extends FieldEditorPreferencePage implements I
 
     @Override
     protected void createFieldEditors() {
-        addField(new StatusEditor(Status.TECHNICAL_STATUS,
-                Messages.getString("StatusPreferencePage.technicalStatusLabel"), getFieldEditorParent())); //$NON-NLS-1$
-        addField(new StatusEditor(Status.DOCUMENTATION_STATUS,
-                Messages.getString("StatusPreferencePage.docStatusLabel"), getFieldEditorParent())); //$NON-NLS-1$
+        addField(new StatusEditor(Status.TECHNICAL_STATUS, Messages
+                .getString("StatusPreferencePage.technicalStatusLabel"), getFieldEditorParent())); //$NON-NLS-1$
+        addField(new StatusEditor(Status.DOCUMENTATION_STATUS, Messages
+                .getString("StatusPreferencePage.docStatusLabel"), getFieldEditorParent())); //$NON-NLS-1$
     }
 
     @Override

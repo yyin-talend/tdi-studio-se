@@ -123,7 +123,7 @@ public class StyleLinkFactory {
                     style = unselectedZoneToZoneStyle;
                 }
             }
-        } else if ((pointLinkDescriptorSource.getZone() == Zone.INPUTS ||pointLinkDescriptorSource.getZone() == Zone.OUTPUTS) 
+        } else if ((pointLinkDescriptorSource.getZone() == Zone.INPUTS || pointLinkDescriptorSource.getZone() == Zone.OUTPUTS)
                 && pointLinkDescriptorSource.getZone() == pointLinkDescriptorTarget.getZone()) {
             if (linkState == LinkState.SELECTED) {
                 style = selectedSameInputZoneStyle;

@@ -12,11 +12,9 @@
 // ============================================================================
 package org.talend.designer.abstractmap.ui;
 
-
 /**
- * DOC amaumont  class global comment. Detailled comment
- * <br/>
- *
+ * DOC amaumont class global comment. Detailled comment <br/>
+ * 
  */
 public class AbstractMapUI {
 

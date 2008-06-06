@@ -19,9 +19,8 @@ import org.talend.designer.abstractmap.ui.properties.LINK_STYLE;
 
 /**
  * 
- * DOC amaumont  class global comment. Detailled comment
- * <br/>
- *
+ * DOC amaumont class global comment. Detailled comment <br/>
+ * 
  */
 public class MapPreferenceInitializer extends AbstractPreferenceInitializer {
 
@@ -33,11 +32,12 @@ public class MapPreferenceInitializer extends AbstractPreferenceInitializer {
     public void initializeDefaultPreferences() {
         IPreferenceStore prefs = getPluginPreferenceStore();
         prefs.putValue(MapPrefsConstants.LINK_STYLE, LINK_STYLE.AUTO.toString());
-        
+
     }
 
     /**
      * DOC amaumont Comment method "getPluginPreferenceStore".
+     * 
      * @return
      */
     public static IPreferenceStore getPluginPreferenceStore() {

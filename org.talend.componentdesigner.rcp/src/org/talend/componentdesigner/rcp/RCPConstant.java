@@ -14,8 +14,9 @@ package org.talend.componentdesigner.rcp;
 
 /**
  * @author rli
- *
+ * 
  */
 public class RCPConstant {
+
     public static final String FIRSTLOGIN_FLAG = "FIRSTLOGIN_FLAG";
 }

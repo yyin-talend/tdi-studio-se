@@ -38,7 +38,8 @@ public class ContextForm extends AbstractForm {
      * @param style
      * @param existingNames
      */
-    public ContextForm(Composite parent, int style, String[] existingNames, IContextManager contextManager, boolean readOnly) {
+    public ContextForm(Composite parent, int style, String[] existingNames, IContextManager contextManager,
+            boolean readOnly) {
         super(parent, style, existingNames);
         this.contextManager = contextManager;
         this.readOnly = readOnly;

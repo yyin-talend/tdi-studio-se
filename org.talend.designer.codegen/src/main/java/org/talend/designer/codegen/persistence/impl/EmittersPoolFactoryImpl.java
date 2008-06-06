@@ -62,7 +62,8 @@ public class EmittersPoolFactoryImpl extends EFactoryImpl implements EmittersPoo
         case EmittersPoolPackage.POOL_TYPE:
             return createPoolType();
         default:
-            throw new IllegalArgumentException(Messages.getString("EmittersPoolFactoryImpl.Class.IllegalArg", eClass.getName())); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString(
+                    "EmittersPoolFactoryImpl.Class.IllegalArg", eClass.getName())); //$NON-NLS-1$
         }
     }
 

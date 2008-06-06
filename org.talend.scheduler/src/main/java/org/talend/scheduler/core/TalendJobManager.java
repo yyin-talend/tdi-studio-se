@@ -171,7 +171,8 @@ public class TalendJobManager {
                 Item item = process.getProperty().getItem();
                 if (item instanceof ProcessItem) {
                     List<JobInfo> jobInfos = new ArrayList<JobInfo>();
-                    JobInfo mainJobInfo = new JobInfo((ProcessItem) item, ((ProcessItem) item).getProcess().getDefaultContext());
+                    JobInfo mainJobInfo = new JobInfo((ProcessItem) item, ((ProcessItem) item).getProcess()
+                            .getDefaultContext());
                     // jobInfos.add(mainJobInfo);
                     jobInfos.addAll(ProcessorUtilities.getChildrenJobInfo((ProcessItem) item));
                     mainJobInfoByName.put(process.getLabel(), mainJobInfo);

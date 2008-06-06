@@ -17,13 +17,11 @@ import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.designer.runprocess.language.java.JavaCodeProblemsChecker;
 import org.talend.designer.runprocess.language.perl.PerlCodeProblemsChecker;
 
-
 /**
- * DOC amaumont  class global comment. Detailled comment
- * <br/>
- *
+ * DOC amaumont class global comment. Detailled comment <br/>
+ * 
  * $Id$
- *
+ * 
  */
 public class SyntaxCheckerFactory {
 
@@ -35,7 +33,7 @@ public class SyntaxCheckerFactory {
         }
         return instance;
     }
-    
+
     public ICodeProblemsChecker getSyntaxChecker(ECodeLanguage codeLanguage) {
         if (codeLanguage == ECodeLanguage.PERL) {
             return (ICodeProblemsChecker) new PerlCodeProblemsChecker();
@@ -45,5 +43,5 @@ public class SyntaxCheckerFactory {
             throw new IllegalArgumentException("Syntax checker not found for this language: " + codeLanguage.getName()); //$NON-NLS-1$
         }
     }
-    
+
 }

@@ -14,7 +14,6 @@ package org.talend.sqlbuilder.erdiagram.ui.nodes;
 
 import org.eclipse.draw2d.geometry.Point;
 
-
 /**
  * DOC qzhang class global comment. Detailled comment <br/>
  * 
@@ -30,7 +29,7 @@ public class Relation extends Element {
     public static final String PROP_SOURCE = "source"; //$NON-NLS-1$
 
     public static final String PROP_TARGET = "target"; //$NON-NLS-1$
-    
+
     public static final String PROP_ENDPOINTS = "endPoints"; //$NON-NLS-1$
 
     private Column source;
@@ -38,8 +37,9 @@ public class Relation extends Element {
     private Column target;
 
     private Point start;
-    
+
     private Point end;
+
     /**
      * DOC qzhang Relation constructor comment.
      */
@@ -121,7 +121,7 @@ public class Relation extends Element {
             isConnected = true;
         }
     }
-    
+
     public Point getEnd() {
         return this.end;
     }
@@ -130,9 +130,10 @@ public class Relation extends Element {
         setStart(start);
         setEnd(end);
     }
-    
+
     /**
      * DOC qzhang Comment method "setEnd".
+     * 
      * @param end
      */
     private void setEnd(Point end) {
@@ -140,15 +141,13 @@ public class Relation extends Element {
         fireStructureChange(PROP_ENDPOINTS, this.end);
     }
 
-    
     public Point getStart() {
         return this.start;
     }
 
-    
     private void setStart(Point start) {
         this.start = start;
         fireStructureChange(PROP_ENDPOINTS, this.start);
     }
-    
+
 }

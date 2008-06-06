@@ -388,7 +388,8 @@ public class DbMapComponent extends AbstractMapComponent {
         List<ExternalDbMapTable> tables = new ArrayList<ExternalDbMapTable>(externalData.getInputTables());
         tables.addAll(new ArrayList<ExternalDbMapTable>(externalData.getVarsTables()));
         tables.addAll(new ArrayList<ExternalDbMapTable>(externalData.getOutputTables()));
-        DataMapExpressionParser dataMapExpressionParser = new DataMapExpressionParser(getGenerationManager().getLanguage());
+        DataMapExpressionParser dataMapExpressionParser = new DataMapExpressionParser(getGenerationManager()
+                .getLanguage());
         // loop on all tables
         for (ExternalDbMapTable table : tables) {
             List<ExternalDbMapEntry> metadataTableEntries = table.getMetadataTableEntries();
@@ -406,8 +407,8 @@ public class DbMapComponent extends AbstractMapComponent {
         } // for (ExternalMapperTable table : tables) {
     }
 
-    public void replaceLocation(TableEntryLocation oldLocation, TableEntryLocation newLocation, ExternalDbMapEntry entry,
-            DataMapExpressionParser dataMapExpressionParser, boolean tableRenamed) {
+    public void replaceLocation(TableEntryLocation oldLocation, TableEntryLocation newLocation,
+            ExternalDbMapEntry entry, DataMapExpressionParser dataMapExpressionParser, boolean tableRenamed) {
         String currentExpression = entry.getExpression();
         if (currentExpression == null || currentExpression.length() == 0) {
             return;
@@ -421,7 +422,8 @@ public class DbMapComponent extends AbstractMapComponent {
                 newLocation.columnName = currentLocation.columnName;
             }
             if (currentLocation.equals(oldLocation)) {
-                currentExpression = dataMapExpressionParser.replaceLocation(currentExpression, currentLocation, newLocation);
+                currentExpression = dataMapExpressionParser.replaceLocation(currentExpression, currentLocation,
+                        newLocation);
             }
         } // for (int i = 0; i < tableEntryLocations.length; i++) {
         entry.setExpression(currentExpression);

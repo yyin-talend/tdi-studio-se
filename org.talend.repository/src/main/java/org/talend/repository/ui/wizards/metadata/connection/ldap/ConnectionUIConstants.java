@@ -14,6 +14,7 @@ package org.talend.repository.ui.wizards.metadata.connection.ldap;
 
 /**
  * This class used for storing UI constances for LDAP schema.<br/>
+ * 
  * @author ftang, 18/09/2007
  * 
  */
@@ -24,7 +25,7 @@ public class ConnectionUIConstants {
     public static final String DIALOGSETTING_KEY_PORT_HISTORY = "portHistory";
 
     public static final String DIALOGSETTING_KEY_PRINCIPAL_HISTORY = "principalHistory";
-    
+
     public static final String DEFAULT_FILTER = "(&(objectClass=*))";
 
 }

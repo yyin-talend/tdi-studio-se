@@ -21,20 +21,20 @@ import org.talend.componentdesigner.i18n.internal.Messages;
 
 /**
  * @author rli
- *
+ * 
  */
 public class CopyComponentValidator implements IInputValidator {
-	public CopyComponentValidator() {
 
-	}
+    public CopyComponentValidator() {
 
-	public String isValid(String componentName) {
-		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(
-				PluginConstant.COMPONENT_PROJECT);
-		IFolder componentFolder = project.getFolder(componentName);
-		if (componentFolder.exists()) {
-			return Messages.getString("CopyComponentValidator.ComponentExist"); //$NON-NLS-1$
-		}
-		return null;
-	}
+    }
+
+    public String isValid(String componentName) {
+        IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(PluginConstant.COMPONENT_PROJECT);
+        IFolder componentFolder = project.getFolder(componentName);
+        if (componentFolder.exists()) {
+            return Messages.getString("CopyComponentValidator.ComponentExist"); //$NON-NLS-1$
+        }
+        return null;
+    }
 }

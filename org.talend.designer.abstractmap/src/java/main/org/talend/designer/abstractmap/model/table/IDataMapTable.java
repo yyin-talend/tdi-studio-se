@@ -18,27 +18,23 @@ import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.designer.abstractmap.managers.AbstractMapperManager;
 import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
 
-
 /**
- * DOC amaumont  class global comment. Detailled comment
- * <br/>
- *
+ * DOC amaumont class global comment. Detailled comment <br/>
+ * 
  */
 public interface IDataMapTable {
 
     /**
      * 
-     * DOC amaumont AbstractDataMapTable class global comment. Detailled comment
-     * <br/>
-     *
+     * DOC amaumont AbstractDataMapTable class global comment. Detailled comment <br/>
+     * 
      */
     public enum SIZE_STATE {
         MINIMIZED,
         INTERMEDIATE,
-        MAXIMIZED,
-        ;
+        MAXIMIZED, ;
     }
-    
+
     /**
      * 
      * @return a <code>List</code> of entries.
@@ -95,12 +91,14 @@ public interface IDataMapTable {
 
     /**
      * Getter for sizeState.
+     * 
      * @return the sizeState
      */
     public SIZE_STATE getSizeState();
 
     /**
      * Sets the sizeState.
+     * 
      * @param sizeState the sizeState to set
      */
     public void setSizeState(SIZE_STATE sizeState);

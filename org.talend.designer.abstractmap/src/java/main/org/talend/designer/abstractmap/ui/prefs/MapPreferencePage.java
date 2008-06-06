@@ -88,7 +88,7 @@ public class MapPreferencePage extends FieldEditorPreferencePage implements IWor
      */
     public MapPreferencePage() {
         super(GRID);
-//        setDescription(Messages.getString("prefs.configuration.title"));
+        // setDescription(Messages.getString("prefs.configuration.title"));
         setPreferenceStore(MapPlugin.getDefault().getPreferenceStore());
     }
 
@@ -122,7 +122,8 @@ public class MapPreferencePage extends FieldEditorPreferencePage implements IWor
             strComboValues[i][1] = linkStyles[i].getName();
         }
 
-        ComboFieldEditor dbTypeField = new ComboFieldEditor(MapPrefsConstants.LINK_STYLE, Messages.getString("prefs.configuration.LINK_STYLE") , strComboValues, getFieldEditorParent());
+        ComboFieldEditor dbTypeField = new ComboFieldEditor(MapPrefsConstants.LINK_STYLE, Messages
+                .getString("prefs.configuration.LINK_STYLE"), strComboValues, getFieldEditorParent());
 
         addField(dbTypeField);
 

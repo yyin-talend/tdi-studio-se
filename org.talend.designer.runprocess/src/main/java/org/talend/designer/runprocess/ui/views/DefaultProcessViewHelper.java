@@ -44,26 +44,24 @@ import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.ui.ProcessComposite;
 import org.talend.designer.runprocess.ui.actions.ClearPerformanceAction;
 
-
 /**
- * DOC amaumont  class global comment. Detailled comment
- * <br/>
- *
+ * DOC amaumont class global comment. Detailled comment <br/>
+ * 
  * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40Z nrousseau $
- *
+ * 
  */
 public class DefaultProcessViewHelper implements IProcessViewHelper {
 
     private static Logger log = Logger.getLogger(ProcessView.class);
-    
+
     /**
      * DOC amaumont Comment method "getProcessComposite".
+     * 
      * @param container
      * @return
      */
     public ProcessComposite getProcessComposite(final Composite container) {
         return new ProcessComposite(container, SWT.NONE);
     }
-
 
 }

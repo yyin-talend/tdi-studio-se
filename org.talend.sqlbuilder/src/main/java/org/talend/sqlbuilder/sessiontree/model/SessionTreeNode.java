@@ -37,6 +37,7 @@ import org.talend.sqlbuilder.dbstructure.DatabaseModel;
 import org.talend.sqlbuilder.dbstructure.nodes.DatabaseNode;
 import org.talend.sqlbuilder.dbstructure.nodes.INode;
 import org.talend.sqlbuilder.sessiontree.model.utility.Dictionary;
+
 /**
  * The SessionTreeNode represents one active database session.
  * 
@@ -89,7 +90,6 @@ public class SessionTreeNode implements ISessionTreeNode {
     private String newCatalog;
 
     private RepositoryNode repositoryNode;
-
 
     /**
      * 
@@ -155,7 +155,7 @@ public class SessionTreeNode implements ISessionTreeNode {
     /**
      * @param n SessionTreeNode.
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public void add(ISessionTreeNode n) {
         ls.add(n);
     }
@@ -217,7 +217,7 @@ public class SessionTreeNode implements ISessionTreeNode {
     /**
      * Commit.
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public synchronized void commit() {
         try {
 
@@ -357,7 +357,7 @@ public class SessionTreeNode implements ISessionTreeNode {
     /**
      * @return QueuedConnectionNumber
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public synchronized Integer getQueuedConnectionNumber() {
 
         Integer number = new Integer(nextConnectionNumber);
@@ -442,7 +442,7 @@ public class SessionTreeNode implements ISessionTreeNode {
     /**
      * rollback.
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public synchronized void rollback() {
         try {
 
@@ -465,7 +465,7 @@ public class SessionTreeNode implements ISessionTreeNode {
      * @param cat Catalog.
      * @exception SQLException SQLException.
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public synchronized void setCatalog(String cat) throws SQLException {
 
         interactiveConnection.setCatalog(cat);

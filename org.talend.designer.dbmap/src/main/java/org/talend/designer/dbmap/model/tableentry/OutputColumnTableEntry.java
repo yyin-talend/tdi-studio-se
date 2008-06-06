@@ -24,8 +24,7 @@ import org.talend.designer.dbmap.model.table.OutputTable;
  */
 public class OutputColumnTableEntry extends AbstractInOutTableEntry {
 
-    public OutputColumnTableEntry(IDataMapTable abstractDataMapTable, IMetadataColumn metadataColumn,
-            String expression) {
+    public OutputColumnTableEntry(IDataMapTable abstractDataMapTable, IMetadataColumn metadataColumn, String expression) {
         super(abstractDataMapTable, metadataColumn, expression);
     }
 
@@ -35,10 +34,7 @@ public class OutputColumnTableEntry extends AbstractInOutTableEntry {
 
     @Override
     public String getParentName() {
-       return ((OutputTable)getParent()).getUniqueName();
+        return ((OutputTable) getParent()).getUniqueName();
     }
 
-    
-    
-    
 }

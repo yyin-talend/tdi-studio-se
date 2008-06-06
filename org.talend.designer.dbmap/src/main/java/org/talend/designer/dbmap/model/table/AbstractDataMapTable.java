@@ -131,7 +131,9 @@ public abstract class AbstractDataMapTable implements IDataMapTable {
         return this.getName();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.abstractmap.model.table.IDataMapTable#getSizeState()
      */
     public SIZE_STATE getSizeState() {
@@ -139,7 +141,9 @@ public abstract class AbstractDataMapTable implements IDataMapTable {
         return null;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.abstractmap.model.table.IDataMapTable#isReadOnly()
      */
     public boolean isReadOnly() {
@@ -147,22 +151,24 @@ public abstract class AbstractDataMapTable implements IDataMapTable {
         return false;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.abstractmap.model.table.IDataMapTable#setReadOnly(boolean)
      */
     public void setReadOnly(boolean readOnly) {
         // TODO Auto-generated method stub
-        
+
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.abstractmap.model.table.IDataMapTable#setSizeState(org.talend.designer.abstractmap.model.table.IDataMapTable.SIZE_STATE)
      */
     public void setSizeState(SIZE_STATE sizeState) {
         // TODO Auto-generated method stub
-        
+
     }
 
-    
-    
 }

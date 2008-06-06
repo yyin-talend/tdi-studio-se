@@ -135,7 +135,8 @@ public class RowGenPreviewCodeMain {
             progressService.runInUI(PlatformUI.getWorkbench().getProgressService(), new IRunnableWithProgress() {
 
                 public void run(final IProgressMonitor monitor) {
-                    monitor.beginTask(Messages.getString("RowGenPreivewCodeMain.Process.Generate"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
+                    monitor.beginTask(
+                            Messages.getString("RowGenPreivewCodeMain.Process.Generate"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
                     try {
                         try {
                             process = runPreviewCode();

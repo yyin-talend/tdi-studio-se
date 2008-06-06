@@ -15,16 +15,14 @@ package org.talend.help.perl.model;
 import org.talend.commons.ui.image.IImage;
 import org.talend.help.Activator;
 
-
 /**
- * DOC Administrator  class global comment. Detailled comment
- * <br/>
- *
- * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40 +0000 (ÐÇÆÚÎå, 29 ¾ÅÔÂ 2006) nrousseau $
- *
+ * DOC Administrator class global comment. Detailled comment <br/>
+ * 
+ * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40 +0000 (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, 29 ï¿½ï¿½ï¿½ï¿½ 2006) nrousseau $
+ * 
  */
 public enum EImage implements IImage {
-    
+
     DEFAULT_IMAGE,
     ENTER_BACKIMAGE("/icons/e_back2.gif"), //$NON-NLS-1$
     OUT_BACKIMAGE("/icons/e_back.gif"), //$NON-NLS-1$
@@ -32,9 +30,9 @@ public enum EImage implements IImage {
     ENTER_FORWARDIMAGE("/icons/e_forward2.gif"), //$NON-NLS-1$
     OUT_FORWARDIMAGE("/icons/e_forward.gif"), //$NON-NLS-1$
     DISABLE_FORWARDIMAGE("/icons/forward.gif"), //$NON-NLS-1$
-    
+
     WARNING_ICON("/icons/warning.gif"); //$NON-NLS-1$
-    
+
     private String path;
 
     EImage() {
@@ -64,4 +62,3 @@ public enum EImage implements IImage {
     }
 
 }
-

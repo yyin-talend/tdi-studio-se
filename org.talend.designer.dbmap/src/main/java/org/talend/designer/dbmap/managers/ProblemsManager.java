@@ -132,7 +132,7 @@ public class ProblemsManager {
                     processExternalNode.setMetadataList(metadataListOut);
 
                 } else {
-//                    throw new IllegalArgumentException("Should be the same node..."); //$NON-NLS-1$
+                    // throw new IllegalArgumentException("Should be the same node..."); //$NON-NLS-1$
                 }
 
             }
@@ -251,13 +251,12 @@ public class ProblemsManager {
                 problem.setKey(key);
                 problems.add(problem);
             }
-            
-            
+
             Problem warningProblem = null;
-            if(inputEntry.isUnmatchingEntry()) {
+            if (inputEntry.isUnmatchingEntry()) {
                 InputTable inputTable = (InputTable) inputEntry.getParent();
                 String message = Messages.getString("ProblemsManager.entryDoesntMatch", //$NON-NLS-1$
-                    new Object[] { inputEntry.getParentName(), inputEntry.getName(), inputTable.getTableName() }); 
+                        new Object[] { inputEntry.getParentName(), inputEntry.getName(), inputTable.getTableName() });
                 warningProblem = new Problem(null, message, ProblemStatus.WARNING);
                 warningProblem.setKey(KEY_NO_MATCHING);
                 problems.add(warningProblem);
@@ -279,5 +278,5 @@ public class ProblemsManager {
         tableEntry.setProblems(problems.size() > 0 ? problems : null);
 
     }
-        
+
 }

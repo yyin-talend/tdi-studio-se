@@ -21,11 +21,10 @@ import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 
 /**
- * DOC dev  class global comment. Detailled comment
- * <br/>
- *
+ * DOC dev class global comment. Detailled comment <br/>
+ * 
  * $Id: ColumnFolderNode.java,v 1.4 2006/11/01 05:40:59 peiqin.hou Exp $
- *
+ * 
  */
 public class ColumnFolderNode extends AbstractFolderNode {
 
@@ -43,9 +42,9 @@ public class ColumnFolderNode extends AbstractFolderNode {
         pname = Messages.getString("DatabaseStructureView.node.Columns"); //$NON-NLS-1$
     }
 
-
     /**
      * Sort columns: PK - FK - Name..
+     * 
      * @return Comparator.
      */
     public Comparator getComparator() {
@@ -87,7 +86,6 @@ public class ColumnFolderNode extends AbstractFolderNode {
         return pname;
     }
 
-
     /**
      * @return Qualified table name
      */
@@ -96,9 +94,9 @@ public class ColumnFolderNode extends AbstractFolderNode {
         return getParent().getQualifiedName() + "." + getType(); //$NON-NLS-1$
     }
 
-
     /**
      * Returns the table info type as the type for this node.
+     * 
      * @return Type.
      * @see org.talend.sqlbuilder.dbstructure.nodes.INode#getType()
      */
@@ -106,7 +104,6 @@ public class ColumnFolderNode extends AbstractFolderNode {
 
         return "column_folder"; //$NON-NLS-1$
     }
-
 
     /**
      * 

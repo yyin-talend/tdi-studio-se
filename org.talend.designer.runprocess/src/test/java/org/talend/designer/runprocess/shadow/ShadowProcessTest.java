@@ -43,8 +43,8 @@ public class ShadowProcessTest extends TestCase {
         Project project = new Project("ShadowProcessTest"); //$NON-NLS-1$
         project.setLanguage(ECodeLanguage.PERL);
 
-        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext()
-                .getProperty(Context.REPOSITORY_CONTEXT_KEY);
+        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
+                Context.REPOSITORY_CONTEXT_KEY);
         repositoryContext.setProject(project);
         super.setUp();
     }
@@ -52,7 +52,7 @@ public class ShadowProcessTest extends TestCase {
     /**
      * Test method for {@link org.talend.designer.runprocess.shadow.ShadowProcess#run()}.
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public void testRun() {
 
         System.out.print("Waiting for JET to initialize."); //$NON-NLS-1$
@@ -71,16 +71,16 @@ public class ShadowProcessTest extends TestCase {
         System.out.println("\nJet is normally up."); //$NON-NLS-1$
 
         try {
-//            ProcessDescription desc = new ProcessDescription();
-//            desc.setFilepath("D:\\tlData\\data1.csv");
-//            desc.setRowSeparator("\"\\n\"");
-//            desc.setFieldSeparator("';'");
-//
-//            ShadowProcess shadowProcess = new ShadowProcess(desc, EShadowProcessType.FILE_DELIMITED);
-//            XmlArray array = shadowProcess.run();
-//            assertNotNull("No XML generated.", array);
-//            assertEquals("Wrong row count.", array.getRows().size(), ROW_COUNT);
-//            assertEquals("Wrong col count.", array.getRows().get(0).getFields().size(), FIELDS_COUNT);
+            // ProcessDescription desc = new ProcessDescription();
+            // desc.setFilepath("D:\\tlData\\data1.csv");
+            // desc.setRowSeparator("\"\\n\"");
+            // desc.setFieldSeparator("';'");
+            //
+            // ShadowProcess shadowProcess = new ShadowProcess(desc, EShadowProcessType.FILE_DELIMITED);
+            // XmlArray array = shadowProcess.run();
+            // assertNotNull("No XML generated.", array);
+            // assertEquals("Wrong row count.", array.getRows().size(), ROW_COUNT);
+            // assertEquals("Wrong col count.", array.getRows().get(0).getFields().size(), FIELDS_COUNT);
         } catch (Exception pe) {
             System.out.println("Be carefull of preferences : PERL interpreter."); //$NON-NLS-1$
 

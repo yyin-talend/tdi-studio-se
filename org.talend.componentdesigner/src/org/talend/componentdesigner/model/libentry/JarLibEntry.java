@@ -19,30 +19,30 @@ import org.eclipse.core.runtime.IPath;
  * DOC rli class global comment. Detailled comment
  */
 public class JarLibEntry extends AbstractLibEntry {
-	
-	public JarLibEntry(Object obj) {
-		if (obj instanceof IPath) {
-			this.path = (IPath) obj;
-		} else if (obj instanceof IResource) {
-			this.resource = (IResource) obj;
-		}
-	}
 
-	public JarLibEntry(IResource name) {
-		this.resource = name;
-	}
-	
-	public JarLibEntry(IPath path) {
-		this.path = path;
-	}
+    public JarLibEntry(Object obj) {
+        if (obj instanceof IPath) {
+            this.path = (IPath) obj;
+        } else if (obj instanceof IResource) {
+            this.resource = (IResource) obj;
+        }
+    }
 
-	@Override
-	public int getType() {
-		return JAR;
-	}
+    public JarLibEntry(IResource name) {
+        this.resource = name;
+    }
 
-	public String getNamePrefix() {
-		int index = this.getName().indexOf(".jar");		 //$NON-NLS-1$
-		return this.getName().substring(0, index);
-	}
+    public JarLibEntry(IPath path) {
+        this.path = path;
+    }
+
+    @Override
+    public int getType() {
+        return JAR;
+    }
+
+    public String getNamePrefix() {
+        int index = this.getName().indexOf(".jar"); //$NON-NLS-1$
+        return this.getName().substring(0, index);
+    }
 }

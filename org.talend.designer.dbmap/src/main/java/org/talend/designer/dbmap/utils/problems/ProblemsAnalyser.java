@@ -54,46 +54,45 @@ public class ProblemsAnalyser {
 
         if (externalData != null) {
 
-            List<IConnection> incomingConnections = new ArrayList<IConnection>(this.mapperManager
-                    .getComponent().getIncomingConnections());
-            List<IConnection> outgoingConnections = new ArrayList<IConnection>(this.mapperManager
-                    .getComponent().getOutgoingConnections());
+            List<IConnection> incomingConnections = new ArrayList<IConnection>(this.mapperManager.getComponent()
+                    .getIncomingConnections());
+            List<IConnection> outgoingConnections = new ArrayList<IConnection>(this.mapperManager.getComponent()
+                    .getOutgoingConnections());
             ExternalDataConverter converter = new ExternalDataConverter(mapperManager);
             MapperMain mapperMain = mapperManager.getComponent().getMapperMain();
             List<IOConnection> inputsIOConnections = mapperMain.createIOConnections(incomingConnections);
             ArrayList<InputTable> inputTables = converter.prepareInputTables(inputsIOConnections, externalData);
             List<IOConnection> outputsIOConnections = mapperMain.createIOConnections(outgoingConnections);
-            ArrayList<OutputTable> outputTables = converter.prepareOutputTables(outputsIOConnections, this.mapperManager
-                    .getComponent().getMetadataList(), externalData);
+            ArrayList<OutputTable> outputTables = converter.prepareOutputTables(outputsIOConnections,
+                    this.mapperManager.getComponent().getMetadataList(), externalData);
 
             List<? super AbstractInOutTable> tablesWriteMode = new ArrayList<AbstractInOutTable>();
             tablesWriteMode.addAll(inputTables);
             tablesWriteMode.addAll(outputTables);
-            
+
             List<? extends AbstractInOutTable> tablesReadMode = (List<? extends AbstractInOutTable>) tablesWriteMode;
-            
+
             ProblemsManager problemsManager = new ProblemsManager(mapperManager);
-            
+
             ArrayList<Problem> problemsLocal = new ArrayList<Problem>();
-            
+
             for (AbstractInOutTable table : tablesReadMode) {
                 List<IColumnEntry> columnEntries = table.getColumnEntries();
                 problemsManager.checkProblemsForAllEntries(columnEntries);
                 for (IColumnEntry entry : columnEntries) {
                     List<Problem> problemsOfEntry = entry.getProblems();
-                    if(problemsOfEntry != null) {
+                    if (problemsOfEntry != null) {
                         problemsLocal.addAll(problemsOfEntry);
                     }
                 }
-                
+
             }
             problems.addAll(problemsLocal);
-            
+
         }
 
         return getProblems();
     }
-
 
     /**
      * DOC amaumont Comment method "getProblems".

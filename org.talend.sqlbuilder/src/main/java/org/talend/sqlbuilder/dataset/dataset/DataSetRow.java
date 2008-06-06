@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.sqlbuilder.dataset.dataset;
 
-
 /**
  * DataSetRow, represents one row in a dataSet.
  * 
@@ -31,7 +30,6 @@ public class DataSetRow {
         pvalues = new Object[columnCount];
     }
 
-
     /**
      * Create initialized dataSetRow.
      * 
@@ -40,7 +38,6 @@ public class DataSetRow {
     public DataSetRow(String[] values) {
         pvalues = values;
     }
-
 
     /**
      * Returns value of given column.
@@ -55,7 +52,6 @@ public class DataSetRow {
         }
         return "<null>"; //$NON-NLS-1$
     }
-    
 
     /**
      * Set the value for a given column.
@@ -67,7 +63,6 @@ public class DataSetRow {
         pvalues[column] = value;
     }
 
-    
     /**
      * @return number of columns in this row
      */

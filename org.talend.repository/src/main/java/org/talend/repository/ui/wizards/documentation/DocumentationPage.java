@@ -179,7 +179,8 @@ public class DocumentationPage extends PropertiesWizardPage {
                 switchCheck(false);
                 filePath = new Path(filenameText.getText());
                 if (!LinkUtils.existedFile(filePath)) {
-                    filenameStatus = createStatus(IStatus.ERROR, Messages.getString("DocumentationPage.sourceDocDoNotExist")); //$NON-NLS-1$
+                    filenameStatus = createStatus(IStatus.ERROR, Messages
+                            .getString("DocumentationPage.sourceDocDoNotExist")); //$NON-NLS-1$
                     filePath = null;
                 } else {
                     filenameStatus = createOkStatus();
@@ -319,7 +320,8 @@ public class DocumentationPage extends PropertiesWizardPage {
             case FILE_NOT_FOUND:
             case URL_ERROR:
             case NET_ERROR:
-                filenameStatus = createStatus(IStatus.ERROR, Messages.getString("DocumentationPage.sourceDocDoNotExist")); //$NON-NLS-1$
+                filenameStatus = createStatus(IStatus.ERROR, Messages
+                        .getString("DocumentationPage.sourceDocDoNotExist")); //$NON-NLS-1$
                 break;
             case LINK_OK:
                 filenameStatus = createOkStatus();

@@ -20,33 +20,31 @@ import org.eclipse.ui.navigator.ICommonLabelProvider;
 
 /**
  * <p>
- * <strong>EXPERIMENTAL</strong>. This class or interface has been added as
- * part of a work in progress. There is a guarantee neither that this API will
- * work nor that it will remain the same. Please do not use this API without
+ * <strong>EXPERIMENTAL</strong>. This class or interface has been added as part of a work in progress. There is a
+ * guarantee neither that this API will work nor that it will remain the same. Please do not use this API without
  * consulting with the Platform/UI team.
  * </p>
+ * 
  * @since 3.2
  */
 public class ResourceExtensionLabelProvider extends WorkbenchLabelProvider implements ICommonLabelProvider {
- 
- 
-	public void init(ICommonContentExtensionSite aConfig) {
-		//init
-	}
 
- 
-	public String getDescription(Object anElement) {
+    public void init(ICommonContentExtensionSite aConfig) {
+        // init
+    }
 
-		if (anElement instanceof IResource) {
-			return ((IResource) anElement).getFullPath().makeRelative().toString();
-		}
-		return null;
-	}
+    public String getDescription(Object anElement) {
 
-	public void restoreState(IMemento aMemento) { 
-		
-	}
+        if (anElement instanceof IResource) {
+            return ((IResource) anElement).getFullPath().makeRelative().toString();
+        }
+        return null;
+    }
 
-	public void saveState(IMemento aMemento) { 
-	}
+    public void restoreState(IMemento aMemento) {
+
+    }
+
+    public void saveState(IMemento aMemento) {
+    }
 }

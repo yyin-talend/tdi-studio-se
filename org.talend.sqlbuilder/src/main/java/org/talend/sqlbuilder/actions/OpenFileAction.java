@@ -26,39 +26,43 @@ import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.util.ImageUtil;
 
 /**
- * This class is responsible for opening an existing file which in current OS.
- * <br/>
- *
+ * This class is responsible for opening an existing file which in current OS. <br/>
+ * 
  * @author ftang
- *
+ * 
  */
-public class OpenFileAction extends  AbstractEditorAction {
+public class OpenFileAction extends AbstractEditorAction {
 
     private ImageDescriptor img = ImageUtil.getDescriptor("Images.OpenFileIcon"); //$NON-NLS-1$
 
-
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.sqlbuilder.actions.AbstractEditorAction#getText()
      */
     public String getText() {
         return Messages.getString("Open_1"); //$NON-NLS-1$
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jface.action.Action#isEnabled()
      */
     public boolean isEnabled() {
         return true;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.sqlbuilder.actions.AbstractEditorAction#run()
      */
     public void run() {
 
-       FileDialog dlg = new FileDialog(editor.getShell(), SWT.OPEN | SWT.MULTI);
+        FileDialog dlg = new FileDialog(editor.getShell(), SWT.OPEN | SWT.MULTI);
 
-        dlg.setFilterExtensions(new String[] {"*.sql;*.txt;*.*"}); //$NON-NLS-1$
+        dlg.setFilterExtensions(new String[] { "*.sql;*.txt;*.*" }); //$NON-NLS-1$
 
         String path = dlg.open();
         if (path != null) {
@@ -67,7 +71,6 @@ public class OpenFileAction extends  AbstractEditorAction {
         }
 
     }
-
 
     /**
      * Load one or more files into the editor.
@@ -84,7 +87,7 @@ public class OpenFileAction extends  AbstractEditorAction {
             StringBuffer all = new StringBuffer();
             String str = null;
             Preferences prefs = SqlBuilderPlugin.getDefault().getPluginPreferences();
-            
+
             char delimiter = prefs.getString(IConstants.LINE_DELIMITER).charAt(0);
 
             for (int i = 0; i < files.length; i++) {
@@ -121,22 +124,28 @@ public class OpenFileAction extends  AbstractEditorAction {
         }
 
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.sqlbuilder.actions.AbstractEditorAction#getToolTipText()
      */
     public String getToolTipText() {
-        return Messages.getString("Open_2");  //$NON-NLS-1$
+        return Messages.getString("Open_2"); //$NON-NLS-1$
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jface.action.Action#getHoverImageDescriptor()
      */
     public ImageDescriptor getHoverImageDescriptor() {
         return img;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jface.action.Action#getImageDescriptor()
      */
     public ImageDescriptor getImageDescriptor() {

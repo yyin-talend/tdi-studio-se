@@ -55,9 +55,9 @@ public class JavaSQLPatternSynchronizer extends AbstractSQLPatternSynchronizer {
             Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
                     .getProject();
             initSQLPatternFolder(javaProject, item);
-            IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/" + JavaUtils.JAVA_SQLPATTERNS_DIRECTORY + "/"
-                    + item.getEltName() + "/" + JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY + "/" + item.getProperty().getLabel()
-                    + JavaUtils.JAVA_SQLPATTERN_EXTENSION);
+            IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/" + JavaUtils.JAVA_SQLPATTERNS_DIRECTORY
+                    + "/" + item.getEltName() + "/" + JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY + "/"
+                    + item.getProperty().getLabel() + JavaUtils.JAVA_SQLPATTERN_EXTENSION);
             return file;
         } catch (CoreException e) {
             throw new SystemException(e);

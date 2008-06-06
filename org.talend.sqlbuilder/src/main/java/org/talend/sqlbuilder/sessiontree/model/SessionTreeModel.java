@@ -22,11 +22,10 @@ import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 
 /**
- * Session Tree Model.
- * <br/>
- *
+ * Session Tree Model. <br/>
+ * 
  * $Id: SessionTreeModel.java,v 1.4 2006/11/01 06:45:49 peiqin.hou Exp $
- *
+ * 
  */
 public class SessionTreeModel implements ISessionTreeNode {
 
@@ -64,7 +63,7 @@ public class SessionTreeModel implements ISessionTreeNode {
      * @param conn Connection
      * @param alias SQLAlias.
      * @param monitor IProgressMonitor
-     * @param pswd String 
+     * @param pswd String
      * @param repositoryNode RepositoryNode
      * @return SessionTreeNode SessionTreeNode
      * @exception InterruptedException .
@@ -87,14 +86,14 @@ public class SessionTreeModel implements ISessionTreeNode {
     public void addListener(SessionTreeModelChangedListener listener) {
         listeners.add(listener);
     }
-    
+
     /**
      * @param listener SessionTreeModelChangedListener
      */
     public void removeListener(SessionTreeModelChangedListener listener) {
         listeners.remove(listener);
     }
-    
+
     /**
      * @param stn SessionTreeNode
      */

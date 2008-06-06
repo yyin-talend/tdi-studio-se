@@ -724,9 +724,8 @@ public class UIManager extends AbstractUIManager {
         // ////////////////////////////////////////////////////////////////////////
         // Unselect all links and tableEntries if Ctrl or Shift keys are not pressed or if zone different of last
         // selection
-        boolean zoneHasChanged = previousSelectedZone == Zone.INPUTS
-                && currentZone == Zone.OUTPUTS || currentZone == Zone.INPUTS
-                && previousSelectedZone == Zone.OUTPUTS;
+        boolean zoneHasChanged = previousSelectedZone == Zone.INPUTS && currentZone == Zone.OUTPUTS
+                || currentZone == Zone.INPUTS && previousSelectedZone == Zone.OUTPUTS;
         boolean tableTypeHasChanged = previousSelectedTableIsConstraint != isFilterTableSelected
                 && currentZone == Zone.OUTPUTS;
         boolean resetHighlightObjectsForOtherTables = !uiManager.isDragging()
@@ -1810,7 +1809,7 @@ public class UIManager extends AbstractUIManager {
     }
 
     public boolean checkSourceLocationIsValid(ITableEntry entrySource, ITableEntry entryTarget) {
-    
+
         if (entrySource instanceof InputColumnTableEntry && entryTarget instanceof InputColumnTableEntry
         // && entrySource.getParent() != entryTarget.getParent()
         ) {
@@ -1820,10 +1819,9 @@ public class UIManager extends AbstractUIManager {
             // if (indexTableSource < indexTableTarget) {
             return true;
             // }
-        } else if (entryTarget instanceof OutputColumnTableEntry
-                || entryTarget instanceof FilterTableEntry) {
-            if (entrySource instanceof InputColumnTableEntry
-                    || entrySource instanceof OutputColumnTableEntry && entrySource.getParent() == entryTarget.getParent()) {
+        } else if (entryTarget instanceof OutputColumnTableEntry || entryTarget instanceof FilterTableEntry) {
+            if (entrySource instanceof InputColumnTableEntry || entrySource instanceof OutputColumnTableEntry
+                    && entrySource.getParent() == entryTarget.getParent()) {
                 return true;
             }
         }

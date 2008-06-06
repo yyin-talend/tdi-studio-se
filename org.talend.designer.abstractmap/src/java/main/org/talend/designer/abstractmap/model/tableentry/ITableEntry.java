@@ -43,15 +43,17 @@ public interface ITableEntry {
 
     /**
      * Return true if this entry is displayed in a SWT Table.
+     * 
      * @return true if this entry is displayed in a SWT Table.
      */
-    public boolean isTableEntry(); 
+    public boolean isTableEntry();
 
     /**
      * 
      * Return true if this entry represents a column.
+     * 
      * @return true if this entry represents a column.
      */
-    public boolean isColumnEntry(); 
-    
+    public boolean isColumnEntry();
+
 }

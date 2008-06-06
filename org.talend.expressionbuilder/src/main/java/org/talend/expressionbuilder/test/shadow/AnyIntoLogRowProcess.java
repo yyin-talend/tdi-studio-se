@@ -174,7 +174,8 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
      */
     public List<? extends INode> getNodesOfType(String componentName) {
         List<INode> matchingNodes = new ArrayList<INode>();
-        if ((inNode != null) && (inNode.getComponentName() != null) && (inNode.getComponentName().compareTo(componentName) == 0)) {
+        if ((inNode != null) && (inNode.getComponentName() != null)
+                && (inNode.getComponentName().compareTo(componentName) == 0)) {
             matchingNodes.add(inNode);
         }
         if ((outNode != null) && (outNode.getComponentName() != null)
@@ -521,11 +522,13 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
         return null;
     }
 
-	public List<? extends IElementParameter> getElementParametersWithChildrens() {
-		return getElementParameters();
-	}
+    public List<? extends IElementParameter> getElementParametersWithChildrens() {
+        return getElementParameters();
+    }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.process.IProcess#getLastRunContext()
      */
     public IContext getLastRunContext() {
@@ -533,12 +536,14 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
         return null;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.process.IProcess#setLastRunContext(org.talend.core.model.process.IContext)
      */
     public void setLastRunContext(IContext context) {
         // TODO Auto-generated method stub
-        
+
     }
 
 }

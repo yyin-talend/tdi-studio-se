@@ -101,7 +101,8 @@ public class WSDLSchemaTableWizard extends RepositoryWizard implements INewWizar
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             try {
                 // update
-                RepositoryUpdateManager.updateSingleSchema(connectionItem, metadataTable, oldMetadataTable, oldTableMap);
+                RepositoryUpdateManager
+                        .updateSingleSchema(connectionItem, metadataTable, oldMetadataTable, oldTableMap);
 
                 factory.save(repositoryObject.getProperty().getItem());
                 closeLockStrategy();

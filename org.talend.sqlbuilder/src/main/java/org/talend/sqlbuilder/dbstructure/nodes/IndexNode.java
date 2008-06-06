@@ -15,7 +15,6 @@ package org.talend.sqlbuilder.dbstructure.nodes;
 import java.sql.ResultSet;
 import java.util.Comparator;
 
-
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
@@ -27,10 +26,12 @@ import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
 public class IndexNode extends AbstractNode {
 
     private static final int SORT_INDEX = 10;
-    private static final int COLUMN_NAME_INDEX = 9;
-    private static final int INDEX_NAME_INDEX = 6;
-    private TableNode pparentTable;
 
+    private static final int COLUMN_NAME_INDEX = 9;
+
+    private static final int INDEX_NAME_INDEX = 6;
+
+    private TableNode pparentTable;
 
     public IndexNode(INode node, String name, SessionTreeNode session, TableNode parentTable) throws Exception {
 
@@ -66,7 +67,6 @@ public class IndexNode extends AbstractNode {
         return "index"; //$NON-NLS-1$
     }
 
-
     /**
      * @return UniqueIdentifier.
      */
@@ -74,7 +74,6 @@ public class IndexNode extends AbstractNode {
 
         return pparent.getParent().getQualifiedName() + "." + pname; //$NON-NLS-1$
     }
-
 
     /**
      * LoadChildren.
@@ -88,7 +87,7 @@ public class IndexNode extends AbstractNode {
                 String indexName = resultSet.getString(INDEX_NAME_INDEX);
                 String columnName = resultSet.getString(COLUMN_NAME_INDEX);
                 String sort = resultSet.getString(SORT_INDEX);
-                                
+
                 if (indexName != null && indexName.equalsIgnoreCase(pname)) {
                     ColumnNode col = new ColumnNode(this, columnName, psessionNode, pparentTable, true);
                     if (sort == null || sort.equalsIgnoreCase("A")) { //$NON-NLS-1$

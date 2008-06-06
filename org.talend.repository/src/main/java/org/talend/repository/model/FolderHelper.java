@@ -44,6 +44,7 @@ import org.talend.repository.i18n.Messages;
 public abstract class FolderHelper {
 
     protected Project project;
+
     private User connectedUser;
 
     /**
@@ -93,7 +94,7 @@ public abstract class FolderHelper {
 
                 createItemState(child);
                 doCreateFolder(child);
-                
+
                 if (folder == null) {
                     project.getFolders().add(child);
                 } else {

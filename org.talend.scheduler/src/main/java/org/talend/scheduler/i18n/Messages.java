@@ -16,11 +16,10 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 /**
- * DOC dev  class global comment. Detailled comment
- * <br/>
- *
+ * DOC dev class global comment. Detailled comment <br/>
+ * 
  * $Id$
- *
+ * 
  */
 public final class Messages {
 

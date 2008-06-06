@@ -23,7 +23,6 @@ import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManag
 public class JobScriptsManagerFactory {
 
     private static JobScriptsManagerFactory instance;
-    
 
     public static JobScriptsManagerFactory getInstance() {
         if (instance == null) {
@@ -33,14 +32,14 @@ public class JobScriptsManagerFactory {
     }
 
     public JobScriptsManager createManagerInstance() {
-        
+
         JobScriptsManager manager = null;
         ECodeLanguage language = LanguageManager.getCurrentLanguage();
         if (language == ECodeLanguage.JAVA) {
             manager = new JobJavaScriptsManager();
         } else if (language == ECodeLanguage.PERL) {
             manager = new JobPerlScriptsManager();
-        }        
+        }
         return manager;
     }
 

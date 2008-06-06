@@ -32,14 +32,16 @@ public class RepositoryNodeExt extends RepositoryNode {
         super(object, parent, type);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.repository.model.RepositoryNode#hashCode()
      */
     @Override
     public int hashCode() {
         return super.hashCode();
     }
-    
+
     /*
      * (non-Javadoc)
      * 

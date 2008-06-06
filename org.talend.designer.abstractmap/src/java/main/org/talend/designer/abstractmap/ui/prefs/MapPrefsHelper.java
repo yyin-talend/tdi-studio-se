@@ -41,5 +41,4 @@ public final class MapPrefsHelper {
         return MapPlugin.getDefault().getPreferenceStore();
     }
 
-    
 }

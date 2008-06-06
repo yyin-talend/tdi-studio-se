@@ -17,13 +17,11 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
 
-
 /**
- *  qzhang  class global comment. Detailled comment
- * <br/>
- *
+ * qzhang class global comment. Detailled comment <br/>
+ * 
  * $Id: talend-code-templates.xml 1 2007-2-10 下午02:52:12 (星期五, 29 九月 2006) qzhang $
- *
+ * 
  */
 public class IOConnection {
 
@@ -34,7 +32,7 @@ public class IOConnection {
     private EConnectionType connectionType;
 
     /**
-     *  amaumont MapperConnection constructor comment.
+     * amaumont MapperConnection constructor comment.
      * 
      * @param connection
      * @param ioDataComponent
@@ -48,7 +46,7 @@ public class IOConnection {
     }
 
     /**
-     *  amaumont MapperConnection constructor comment.
+     * amaumont MapperConnection constructor comment.
      * 
      * @param connection
      * @param ioDataComponent

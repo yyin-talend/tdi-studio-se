@@ -39,8 +39,8 @@ public class SalesforceSchemaInputNode extends FileInputNode {
      */
     private void addParameters(SalesforceSchemaBean schemaBean) {
         String[] parameters = new String[] { "ENDPOINT", "USER", "PASS", "MODULENAME", "CONDITION" };
-        String[] values = new String[] { schemaBean.getWebServerUrl(), schemaBean.getUserName(), schemaBean.getPassword(),
-                schemaBean.getModuleName(), schemaBean.getQueryCondition() };
+        String[] values = new String[] { schemaBean.getWebServerUrl(), schemaBean.getUserName(),
+                schemaBean.getPassword(), schemaBean.getModuleName(), schemaBean.getQueryCondition() };
         for (int i = 0, n = values.length; i < n; i++) {
             if (values[i] == null || values[i].equals("")) {
                 continue;

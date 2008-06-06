@@ -25,7 +25,6 @@ import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
 /***/
-public abstract class AbstractSQLPatternSynchronizer implements
-		ISQLPatternSynchronizer {
+public abstract class AbstractSQLPatternSynchronizer implements ISQLPatternSynchronizer {
 
 }

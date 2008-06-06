@@ -68,7 +68,8 @@ public class PropertiesWizard extends Wizard {
     }
 
     private void lockObject() {
-        IProxyRepositoryFactory repositoryFactory = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();
+        IProxyRepositoryFactory repositoryFactory = CorePlugin.getDefault().getRepositoryService()
+                .getProxyRepositoryFactory();
         try {
             if (repositoryFactory.getStatus(object).equals(ERepositoryStatus.LOCK_BY_USER)) {
                 alreadyLockedByUser = true;
@@ -95,7 +96,8 @@ public class PropertiesWizard extends Wizard {
     }
 
     private boolean isReadOnly() {
-        IProxyRepositoryFactory repositoryFactory = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();
+        IProxyRepositoryFactory repositoryFactory = CorePlugin.getDefault().getRepositoryService()
+                .getProxyRepositoryFactory();
         return !repositoryFactory.getStatus(object).isEditable() || alreadyLockedByUser;
     }
 
@@ -141,7 +143,8 @@ public class PropertiesWizard extends Wizard {
             return false;
         }
 
-        IProxyRepositoryFactory repositoryFactory = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();
+        IProxyRepositoryFactory repositoryFactory = CorePlugin.getDefault().getRepositoryService()
+                .getProxyRepositoryFactory();
         try {
             repositoryFactory.save(object.getProperty(), this.originaleObjectLabel, this.originalVersion);
             // if (!object.getLabel().equals(originaleObjectLabel)) {
@@ -220,7 +223,8 @@ public class PropertiesWizard extends Wizard {
     }
 
     private void reloadProperty() throws PersistenceException {
-        IProxyRepositoryFactory repositoryFactory = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();
+        IProxyRepositoryFactory repositoryFactory = CorePlugin.getDefault().getRepositoryService()
+                .getProxyRepositoryFactory();
         Property property = repositoryFactory.reload(object.getProperty());
         object.setProperty(property);
     }

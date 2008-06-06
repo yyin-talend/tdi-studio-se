@@ -32,7 +32,7 @@ public class FileOutputXmlNode extends ShadowNode {
      */
     public FileOutputXmlNode(String filename, String encoding) {
         super("tFileOutputShadow"); //$NON-NLS-1$
-		List<Map<String, String>> rootTags = new ArrayList<Map<String, String>>();
+        List<Map<String, String>> rootTags = new ArrayList<Map<String, String>>();
         TextElementParameter param1 = new TextElementParameter("FILENAME", filename); //$NON-NLS-1$
         TextElementParameter param2 = new TextElementParameter("ENCODING", encoding); //$NON-NLS-1$
         ObjectElementParameter param3 = new ObjectElementParameter("ROOT_TAGS", rootTags); //$NON-NLS-1$

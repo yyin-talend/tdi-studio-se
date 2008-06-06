@@ -101,7 +101,7 @@ public class Node {
         this.searchMatchFlag = searchMatcher;
         setParentMatchFlag(this, searchMatcher);
     }
-   
+
     private void setParentMatchFlag(Node childNode, boolean flag) {
         if (childNode.hasParent()) {
             Node tempNode = childNode.parent;

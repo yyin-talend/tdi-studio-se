@@ -17,39 +17,38 @@ import org.eclipse.swt.widgets.Composite;
 import org.talend.componentdesigner.model.componentpref.ComponentPref;
 
 /**
- * DOC rli  class global comment. Detailled comment
+ * DOC rli class global comment. Detailled comment
  */
 public abstract class AbstractComponentPage extends WizardPage {
 
+    protected final ComponentPref componentPref;
 
-	protected final ComponentPref componentPref;
+    // protected PropertyChangeBean propertyChangeBean;
 
-//    protected PropertyChangeBean propertyChangeBean;
+    protected AbstractComponentPage(String pageName, ComponentPref componentPref) {
+        super(pageName);
+        this.componentPref = componentPref;
+        // propertyChangeBean = new PropertyChangeBean();
+    }
 
-	protected AbstractComponentPage(String pageName, ComponentPref componentPref) {
-		super(pageName);
-		this.componentPref = componentPref;
-//        propertyChangeBean = new PropertyChangeBean();
-	}
-	
+    // PropertyChangeBean getPropertyChangeBean() {
+    // return propertyChangeBean;
+    // }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
+     */
+    public void createControl(Composite parent) {
+        this.createPageContent(parent);
+        this.initialize();
+    }
 
-//    PropertyChangeBean getPropertyChangeBean() {
-//        return propertyChangeBean;
-//    }
+    protected abstract void createPageContent(Composite parent);
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
-	 */
-	public void createControl(Composite parent) {
-		this.createPageContent(parent);
-		this.initialize();
-	}
-	
-	protected abstract void createPageContent(Composite parent);
-	
-	protected abstract void initialize();
-	
-	protected abstract boolean validatePage();
+    protected abstract void initialize();
+
+    protected abstract boolean validatePage();
 
 }

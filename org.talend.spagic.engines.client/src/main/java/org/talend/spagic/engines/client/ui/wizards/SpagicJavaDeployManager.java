@@ -44,24 +44,28 @@ import org.talend.repository.documentation.ExportFileResource;
  * DOC qwei class global comment. Detailled comment <br/>
  * 
  */
-public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsManager {
+public class SpagicJavaDeployManager extends
+        org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsManager {
 
     @Override
-    public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Boolean> exportChoice,
-            String contextName, String launcher, int statisticPort, int tracePort, String... codeOptions) {
+    public List<ExportFileResource> getExportResources(ExportFileResource[] process,
+            Map<ExportChoice, Boolean> exportChoice, String contextName, String launcher, int statisticPort,
+            int tracePort, String... codeOptions) {
 
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = (ProcessItem) process[i].getItem();
 
             String libPath = calculateLibraryPathFromDirectory(process[i].getDirectoryName());
             // use character @ as temporary classpath separator, this one will be replaced during the export.
-            String standardJars = libPath + PATH_SEPARATOR + SYSTEMROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR
-                    + libPath + PATH_SEPARATOR + USERROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR + ".";
+            String standardJars = libPath + PATH_SEPARATOR + SYSTEMROUTINE_JAR
+                    + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR + libPath + PATH_SEPARATOR + USERROUTINE_JAR
+                    + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR + ".";
             ProcessorUtilities.setExportConfig("java", standardJars, libPath);
 
             if (!BooleanUtils.isTrue(exportChoice.get(ExportChoice.doNotCompileCode))) {
                 generateJobFiles(processItem, contextName, statisticPort != IProcessor.NO_STATISTICS,
-                        tracePort != IProcessor.NO_TRACES, BooleanUtils.isTrue(exportChoice.get(ExportChoice.applyToChildren)));
+                        tracePort != IProcessor.NO_TRACES, BooleanUtils.isTrue(exportChoice
+                                .get(ExportChoice.applyToChildren)));
             }
             List<URL> resources = new ArrayList<URL>();
             resources.addAll(getLauncher(BooleanUtils.isTrue(exportChoice.get(ExportChoice.needLauncher)), processItem,
@@ -96,15 +100,16 @@ public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.ex
 
         list.add(spagicResource);
         // Gets system routines
-        List<URL> systemRoutineList = getSystemRoutine(BooleanUtils.isTrue(exportChoice.get(ExportChoice.needSystemRoutine)));
+        List<URL> systemRoutineList = getSystemRoutine(BooleanUtils.isTrue(exportChoice
+                .get(ExportChoice.needSystemRoutine)));
         rootResource.addResources(systemRoutineList);
         // Gets user routines
         List<URL> userRoutineList = getUserRoutine(BooleanUtils.isTrue(exportChoice.get(ExportChoice.needUserRoutine)));
         rootResource.addResources(userRoutineList);
 
         // Gets talend libraries
-        List<URL> talendLibraries = getExternalLibraries(BooleanUtils.isTrue(exportChoice.get(ExportChoice.needTalendLibraries)),
-                process);
+        List<URL> talendLibraries = getExternalLibraries(BooleanUtils.isTrue(exportChoice
+                .get(ExportChoice.needTalendLibraries)), process);
         rootResource.addResources(talendLibraries);
 
         return list;
@@ -117,8 +122,8 @@ public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.ex
             String projectName = getCurrentProjectName();
             try {
                 List<ProcessItem> processedJob = new ArrayList<ProcessItem>();
-                getChildrenJobAndContextName(process.getProperty().getLabel(), list, process, projectName, processedJob,
-                        resource, exportChoice);
+                getChildrenJobAndContextName(process.getProperty().getLabel(), list, process, projectName,
+                        processedJob, resource, exportChoice);
             } catch (Exception e) {
                 ExceptionHandler.process(e);
             }
@@ -130,8 +135,8 @@ public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.ex
             JobInfo jobInfo = iter.next();
             allJobScripts.addAll(getJobScripts(jobInfo.getJobName(), jobInfo.getJobVersion(), exportChoice
                     .get(ExportChoice.needJob)));
-            addContextScripts(jobInfo.getProcessItem(), jobInfo.getJobName(), jobInfo.getJobVersion(), resource, exportChoice
-                    .get(ExportChoice.needContext));
+            addContextScripts(jobInfo.getProcessItem(), jobInfo.getJobName(), jobInfo.getJobVersion(), resource,
+                    exportChoice.get(ExportChoice.needContext));
         }
 
         return allJobScripts;
@@ -143,8 +148,8 @@ public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.ex
         FileOutputStream out = null;
         String projectName = getCurrentProjectName();
         String jobName = processItem.getProperty().getLabel();
-        String jobFolderName = JavaResourcesHelper.getJobFolderName(escapeFileNameSpace(processItem), processItem.getProperty()
-                .getVersion());
+        String jobFolderName = JavaResourcesHelper.getJobFolderName(escapeFileNameSpace(processItem), processItem
+                .getProperty().getVersion());
         try {
             // List<SpagoBiServer> listServerSapgo = null;
             // listServerSapgo = SpagicServerHelper.parse(new SpagicPreferencePage().getPreferenceStore().getString(
@@ -167,14 +172,15 @@ public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.ex
             PrintStream ps = new PrintStream(out);
             IDesignerCoreService service = CorePlugin.getDefault().getDesignerCoreService();
             IProcess process = service.getProcessFromProcessItem(processItem);
-            List<IContextParameter> ctxParams = process.getContextManager().getContext(contextName).getContextParameterList();
+            List<IContextParameter> ctxParams = process.getContextManager().getContext(contextName)
+                    .getContextParameterList();
             for (IContextParameter ctxParam : ctxParams) {
                 p.put(ctxParam.getName(), ctxParam.getValue());
             }
             p.put("JobClassName", getCurrentProjectName()
                     + "."
-                    + JavaResourcesHelper.getJobFolderName(processItem.getProperty().getLabel(), processItem.getProperty()
-                            .getVersion()) + "." + processItem.getProperty().getLabel());
+                    + JavaResourcesHelper.getJobFolderName(processItem.getProperty().getLabel(), processItem
+                            .getProperty().getVersion()) + "." + processItem.getProperty().getLabel());
             p.put("talendJobClassDescription", HTMLDocUtils.checkString(processItem.getProperty().getDescription()));
             p.put("rowNumber", Integer.toString(nbLine));
             p.put("host", "localhost");

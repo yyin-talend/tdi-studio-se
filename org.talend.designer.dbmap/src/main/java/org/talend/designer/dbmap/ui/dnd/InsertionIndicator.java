@@ -217,7 +217,8 @@ public class InsertionIndicator {
             } else {
                 indicYPositionRefTable = itemIndexTarget * (currentTable.getItemHeight() + 2) + offsetVerticalBar;
             }
-            indicYPositionRefZone = indicYPositionRefTable + tablePositionRefZone.y + formLayout.marginTop - HEIGHT_INDICATOR / 2;
+            indicYPositionRefZone = indicYPositionRefTable + tablePositionRefZone.y + formLayout.marginTop
+                    - HEIGHT_INDICATOR / 2;
             indicYPositionRefZone -= currentTable.getItemHeight() + 1;
         } else {
             if (itemIndexTarget == 0) {
@@ -225,8 +226,8 @@ public class InsertionIndicator {
             } else {
                 indicYPositionRefTable = itemIndexTarget * currentTable.getItemHeight() - 1 + offsetVerticalBar;
             }
-            indicYPositionRefZone = indicYPositionRefTable + tablePositionRefZone.y + formLayout.marginTop - HEIGHT_INDICATOR / 2
-                    + 4;
+            indicYPositionRefZone = indicYPositionRefTable + tablePositionRefZone.y + formLayout.marginTop
+                    - HEIGHT_INDICATOR / 2 + 4;
         }
 
         DataMapTableView dataMapTableView = mapperManager.retrieveDataMapTableView(currentTable);

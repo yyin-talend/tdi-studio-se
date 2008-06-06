@@ -52,7 +52,7 @@ public class IndexParser extends DefaultHandler {
         String value = new String(ch, start, length).trim();
         if (value.length() != 0) {
             // System.out.println(current.peek()+"\t"+value);
-            current.peek().getProperties().put(EProperty.VALUE, value);           
+            current.peek().getProperties().put(EProperty.VALUE, value);
         }
     }
 

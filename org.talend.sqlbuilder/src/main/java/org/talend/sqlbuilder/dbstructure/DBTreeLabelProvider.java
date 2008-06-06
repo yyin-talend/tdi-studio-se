@@ -36,7 +36,7 @@ public class DBTreeLabelProvider extends LabelProvider implements ITableLabelPro
     private Image pDefaultNodeImage = ImageUtil.getImage("Images.DefaultNodeIcon"); //$NON-NLS-1$
 
     private Image pDefaultParentNodeImage = ImageUtil.getImage("Images.DefaultParentNodeIcon"); //$NON-NLS-1$
-    
+
     /**
      * dispose.
      */
@@ -50,6 +50,7 @@ public class DBTreeLabelProvider extends LabelProvider implements ITableLabelPro
 
     /**
      * Return the image used for the given INode. If the INode does not have an image, default images are returned.
+     * 
      * @param element Node.
      * @return Image
      * @see org.eclipse.jface.viewers.ILabelProvider#getImage(java.lang.Object)
@@ -80,6 +81,7 @@ public class DBTreeLabelProvider extends LabelProvider implements ITableLabelPro
 
     /**
      * Return the text to display the INode.
+     * 
      * @param element Node.
      * @return Text.
      * @see org.eclipse.jface.viewers.ILabelProvider#getText(java.lang.Object)
@@ -100,7 +102,7 @@ public class DBTreeLabelProvider extends LabelProvider implements ITableLabelPro
 
         return text;
     }
-    
+
     /**
      * @param element Node
      * @param columnIndex Column Index
@@ -116,7 +118,7 @@ public class DBTreeLabelProvider extends LabelProvider implements ITableLabelPro
 
         return null;
     }
-    
+
     /**
      * @param element Node
      * @param columnIndex column index
@@ -141,6 +143,7 @@ public class DBTreeLabelProvider extends LabelProvider implements ITableLabelPro
 
     /**
      * Return all the children of an INode element.
+     * 
      * @param inputElement inputElement.
      * @return elements
      * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
@@ -152,6 +155,7 @@ public class DBTreeLabelProvider extends LabelProvider implements ITableLabelPro
 
     /**
      * Return the parent of an INode element.
+     * 
      * @param element element.
      * @return Parent.
      * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
@@ -164,6 +168,7 @@ public class DBTreeLabelProvider extends LabelProvider implements ITableLabelPro
 
     /**
      * Returns true if the INode has children.
+     * 
      * @param element element.
      * @return hasChildren.
      * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
@@ -175,6 +180,7 @@ public class DBTreeLabelProvider extends LabelProvider implements ITableLabelPro
 
     /**
      * We don't do anything here..
+     * 
      * @param viewer Viewer.
      * @param oldInput oldInput
      * @param newInput newInput
@@ -188,7 +194,7 @@ public class DBTreeLabelProvider extends LabelProvider implements ITableLabelPro
     Color red = Display.getDefault().getSystemColor(SWT.COLOR_RED);
 
     Color gray = Display.getDefault().getSystemColor(SWT.COLOR_GRAY);
-    
+
     /**
      * @param element element.
      * @param columnIndex column index.
@@ -197,7 +203,7 @@ public class DBTreeLabelProvider extends LabelProvider implements ITableLabelPro
     public Color getBackground(Object element, int columnIndex) {
         return ((INode) element).getBackground();
     }
-    
+
     /**
      * @param element element.
      * @param columnIndex column index.

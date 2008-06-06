@@ -192,8 +192,8 @@ public abstract class Processor implements IProcessor {
      * @param codeOptions
      * @return
      */
-    protected static String[] addCommmandLineAttch(String[] commandLine, String contextName, int statOption, int traceOption,
-            String... codeOptions) {
+    protected static String[] addCommmandLineAttch(String[] commandLine, String contextName, int statOption,
+            int traceOption, String... codeOptions) {
         String[] cmd = commandLine;
         if (codeOptions != null) {
             for (int i = 0; i < codeOptions.length; i++) {

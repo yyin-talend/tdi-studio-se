@@ -22,9 +22,9 @@ import junit.framework.TestSuite;
  * 
  */
 public final class AllTests {
+
     /**
-     * Default Constructor.
-     * Must not be used.
+     * Default Constructor. Must not be used.
      */
     private AllTests() {
     }

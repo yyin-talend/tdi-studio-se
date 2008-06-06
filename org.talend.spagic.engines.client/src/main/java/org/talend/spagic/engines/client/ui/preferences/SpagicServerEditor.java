@@ -136,8 +136,8 @@ public class SpagicServerEditor extends TableEditor {
         Shell shell = Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getShell();
         SpagicServerDialog dialog = new SpagicServerDialog(shell, computeCodeList());
         if (dialog.open() == Window.OK) {
-            return SpagicServerHelper.getString(dialog.getEngineName(), dialog.getShortDescription(), dialog.getHost(), dialog
-                    .getPort(), dialog.getLogin(), dialog.getPassword());
+            return SpagicServerHelper.getString(dialog.getEngineName(), dialog.getShortDescription(), dialog.getHost(),
+                    dialog.getPort(), dialog.getLogin(), dialog.getPassword());
         }
         return null;
     }
@@ -145,14 +145,14 @@ public class SpagicServerEditor extends TableEditor {
     @Override
     protected String getExistingInputObject(String obj) {
         Shell shell = Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getShell();
-        SpagicServerDialog dialog = new SpagicServerDialog(shell, computeCodeList(), SpagicServerHelper.getEngineName(obj),
-                SpagicServerHelper.getShortDescription(obj), SpagicServerHelper.getHost(obj), SpagicServerHelper.getPort(obj),
-                SpagicServerHelper.getLogin(obj), SpagicServerHelper.getPassword(obj), SpagicServerHelper
-                        .getApplicationContext(obj));
+        SpagicServerDialog dialog = new SpagicServerDialog(shell, computeCodeList(), SpagicServerHelper
+                .getEngineName(obj), SpagicServerHelper.getShortDescription(obj), SpagicServerHelper.getHost(obj),
+                SpagicServerHelper.getPort(obj), SpagicServerHelper.getLogin(obj), SpagicServerHelper.getPassword(obj),
+                SpagicServerHelper.getApplicationContext(obj));
 
         if (dialog.open() == Window.OK) {
-            return SpagicServerHelper.getString(dialog.getEngineName(), dialog.getShortDescription(), dialog.getHost(), dialog
-                    .getPort(), dialog.getLogin(), dialog.getPassword());
+            return SpagicServerHelper.getString(dialog.getEngineName(), dialog.getShortDescription(), dialog.getHost(),
+                    dialog.getPort(), dialog.getLogin(), dialog.getPassword());
         }
         return null;
     }

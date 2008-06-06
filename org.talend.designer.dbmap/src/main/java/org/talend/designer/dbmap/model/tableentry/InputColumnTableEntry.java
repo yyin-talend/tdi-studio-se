@@ -27,14 +27,13 @@ public class InputColumnTableEntry extends AbstractInOutTableEntry {
     private String operator;
 
     private boolean join;
-    
+
     /** unmatch entry with metadata entries */
     private boolean unmatchingEntry;
 
     private String originalExpression;
 
-    public InputColumnTableEntry(IDataMapTable abstractDataMapTable, IMetadataColumn metadataColumn,
-            String expression) {
+    public InputColumnTableEntry(IDataMapTable abstractDataMapTable, IMetadataColumn metadataColumn, String expression) {
         super(abstractDataMapTable, metadataColumn, expression);
     }
 
@@ -97,9 +96,8 @@ public class InputColumnTableEntry extends AbstractInOutTableEntry {
         this.originalExpression = originalExpression;
     }
 
-    
     public boolean isUnmatchingEntry() {
-        return ((MapperManager)getParent().getMapperManager()).isUnmatchingEntry(this);
+        return ((MapperManager) getParent().getMapperManager()).isUnmatchingEntry(this);
     }
-    
+
 }

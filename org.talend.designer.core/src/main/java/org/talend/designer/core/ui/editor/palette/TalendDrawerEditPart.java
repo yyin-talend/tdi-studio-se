@@ -25,7 +25,7 @@ import org.eclipse.gef.palette.PaletteDrawer;
 public class TalendDrawerEditPart extends DrawerEditPart {
 
     private int childLevel = 0;
-    
+
     public TalendDrawerEditPart(PaletteDrawer drawer) {
         super(drawer);
     }
@@ -36,6 +36,7 @@ public class TalendDrawerEditPart extends DrawerEditPart {
             childLevel = parent.childLevel + 1;
 
             TalendDrawerFigure fig = new TalendDrawerFigure(getViewer().getControl(), childLevel) {
+
                 IFigure buildTooltip() {
                     return createToolTip();
                 }
@@ -44,6 +45,7 @@ public class TalendDrawerEditPart extends DrawerEditPart {
             fig.setPinned(getDrawer().isInitiallyPinned());
 
             fig.getCollapseToggle().addFocusListener(new FocusListener.Stub() {
+
                 public void focusGained(FocusEvent fe) {
                     getViewer().select(TalendDrawerEditPart.this);
                 }

@@ -207,7 +207,8 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
                 Image tableImage = ImageProvider.getImage(node.getIcon());
                 Item item = node.getObject().getProperty().getItem();
                 if (item != null && item instanceof DatabaseConnectionItem) {
-                    DatabaseConnection connection = (DatabaseConnection) ((DatabaseConnectionItem) item).getConnection();
+                    DatabaseConnection connection = (DatabaseConnection) ((DatabaseConnectionItem) item)
+                            .getConnection();
                     CDCConnection cdcConns = connection.getCdcConns();
                     if (cdcConns != null) {
                         if (node.getObject() instanceof MetadataTableRepositoryObject) {

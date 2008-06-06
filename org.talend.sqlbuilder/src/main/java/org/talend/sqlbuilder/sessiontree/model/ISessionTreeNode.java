@@ -13,19 +13,18 @@
 package org.talend.sqlbuilder.sessiontree.model;
 
 /**
- * Tree Node.
- * <br/>
- *
+ * Tree Node. <br/>
+ * 
  * $Id: ISessionTreeNode.java,v 1.3 2006/11/01 06:45:49 peiqin.hou Exp $
- *
+ * 
  */
 public interface ISessionTreeNode {
-    
+
     /**
      * @return Children.
      */
     Object[] getChildren();
-    
+
     /**
      * @return Parent.
      */

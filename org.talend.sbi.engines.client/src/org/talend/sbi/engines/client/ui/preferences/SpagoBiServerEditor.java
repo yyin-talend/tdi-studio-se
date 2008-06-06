@@ -137,8 +137,8 @@ public class SpagoBiServerEditor extends TableEditor {
         Shell shell = Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getShell();
         SpagoBiServerDialog dialog = new SpagoBiServerDialog(shell, computeCodeList());
         if (dialog.open() == Window.OK) {
-            return SpagoBiServerHelper.getString(dialog.getEngineName(), dialog.getShortDescription(), dialog.getHost(), dialog
-                    .getPort(), dialog.getLogin(), dialog.getPassword());
+            return SpagoBiServerHelper.getString(dialog.getEngineName(), dialog.getShortDescription(),
+                    dialog.getHost(), dialog.getPort(), dialog.getLogin(), dialog.getPassword());
         }
         return null;
     }
@@ -152,13 +152,14 @@ public class SpagoBiServerEditor extends TableEditor {
         // SpagoBiServerHelper.getPort(obj),
         // SpagoBiServerHelper.getLogin(obj), SpagoBiServerHelper.getPassword(obj), SpagoBiServerHelper
         // .getApplicationContext(obj));
-        SpagoBiServerDialog dialog = new SpagoBiServerDialog(shell, computeCodeList(), SpagoBiServerHelper.getEngineName(obj),
-                SpagoBiServerHelper.getShortDescription(obj), SpagoBiServerHelper.getHost(obj), SpagoBiServerHelper.getPort(obj),
-                SpagoBiServerHelper.getLogin(obj), SpagoBiServerHelper.getPassword(obj));
+        SpagoBiServerDialog dialog = new SpagoBiServerDialog(shell, computeCodeList(), SpagoBiServerHelper
+                .getEngineName(obj), SpagoBiServerHelper.getShortDescription(obj), SpagoBiServerHelper.getHost(obj),
+                SpagoBiServerHelper.getPort(obj), SpagoBiServerHelper.getLogin(obj), SpagoBiServerHelper
+                        .getPassword(obj));
 
         if (dialog.open() == Window.OK) {
-            return SpagoBiServerHelper.getString(dialog.getEngineName(), dialog.getShortDescription(), dialog.getHost(), dialog
-                    .getPort(), dialog.getLogin(), dialog.getPassword());
+            return SpagoBiServerHelper.getString(dialog.getEngineName(), dialog.getShortDescription(),
+                    dialog.getHost(), dialog.getPort(), dialog.getLogin(), dialog.getPassword());
         }
         return null;
     }

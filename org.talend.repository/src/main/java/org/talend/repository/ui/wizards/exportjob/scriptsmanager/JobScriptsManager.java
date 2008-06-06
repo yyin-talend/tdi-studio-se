@@ -115,8 +115,8 @@ public abstract class JobScriptsManager {
      */
 
     public abstract List<ExportFileResource> getExportResources(ExportFileResource[] process,
-            Map<ExportChoice, Boolean> exportChoiceMap, String contextName, String launcher, int statisticPort, int tracePort,
-            String... codeOptions);
+            Map<ExportChoice, Boolean> exportChoiceMap, String contextName, String launcher, int statisticPort,
+            int tracePort, String... codeOptions);
 
     protected String getTmpFolder() {
         String tmpFold = getTmpFolderPath();
@@ -164,8 +164,10 @@ public abstract class JobScriptsManager {
         if (!needLauncher) {
             return list;
         }
-        String windowsCmd = getCommandByTalendJob(Platform.OS_WIN32, process, contextName, statisticPort, tracePort, codeOptions);
-        String unixCmd = getCommandByTalendJob(Platform.OS_LINUX, process, contextName, statisticPort, tracePort, codeOptions);
+        String windowsCmd = getCommandByTalendJob(Platform.OS_WIN32, process, contextName, statisticPort, tracePort,
+                codeOptions);
+        String unixCmd = getCommandByTalendJob(Platform.OS_LINUX, process, contextName, statisticPort, tracePort,
+                codeOptions);
         String tmpFold = getTmpFolder();
 
         if (environment.equals(ALL_ENVIRONMENTS)) {
@@ -180,12 +182,12 @@ public abstract class JobScriptsManager {
         return list;
     }
 
-    protected String getCommandByTalendJob(String targetPlatform, ProcessItem processItem, String context, int statisticPort,
-            int tracePort, String... codeOptions) {
+    protected String getCommandByTalendJob(String targetPlatform, ProcessItem processItem, String context,
+            int statisticPort, int tracePort, String... codeOptions) {
         String[] cmd = new String[] {};
         try {
-            cmd = ProcessorUtilities.getCommandLine(targetPlatform, true, processItem, context, statisticPort, tracePort,
-                    codeOptions);
+            cmd = ProcessorUtilities.getCommandLine(targetPlatform, true, processItem, context, statisticPort,
+                    tracePort, codeOptions);
         } catch (ProcessorException e) {
             ExceptionHandler.process(e);
         }
@@ -206,7 +208,8 @@ public abstract class JobScriptsManager {
      * @param cmdSecondary
      * @param tmpFold
      */
-    private void createLauncherFile(ProcessItem process, List<URL> list, String cmdPrimary, String fileName, String tmpFold) {
+    private void createLauncherFile(ProcessItem process, List<URL> list, String cmdPrimary, String fileName,
+            String tmpFold) {
         PrintWriter pw = null;
         try {
 

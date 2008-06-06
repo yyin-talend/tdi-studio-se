@@ -62,8 +62,8 @@ public class NodeLabelCellEditor extends TextCellEditor {
         text.setBackground(null);
         if (connection != null) {
             if (text.getText() != null) {
-                if (!ConnectionManager.canRename(connection.getSource(), connection.getTarget(), connection
-                        .getLineStyle(), text.getText())) {
+                if (!ConnectionManager.canRename(connection.getSource(), connection.getTarget(), connection.getLineStyle(), text
+                        .getText())) {
                     text.setBackground(ERROR_COLOR);
                 }
             }

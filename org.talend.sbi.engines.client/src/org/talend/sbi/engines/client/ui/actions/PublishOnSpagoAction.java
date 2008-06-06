@@ -67,7 +67,8 @@ public final class PublishOnSpagoAction extends AContextualAction {
     }
 
     public boolean isVisible() {
-        return isEnabled() && Activator.getDefault().getPreferenceStore().getBoolean(SpagoPreferenceInitializer.SPAGO_STATUS);
+        return isEnabled()
+                && Activator.getDefault().getPreferenceStore().getBoolean(SpagoPreferenceInitializer.SPAGO_STATUS);
     }
 
     public PublishOnSpagoAction() {

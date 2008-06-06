@@ -15,7 +15,7 @@ package org.talend.designer.core.ui.editor.notes;
 import org.eclipse.gef.requests.CreationFactory;
 
 /**
- *
+ * 
  */
 public class NoteCreationFactory implements CreationFactory {
 

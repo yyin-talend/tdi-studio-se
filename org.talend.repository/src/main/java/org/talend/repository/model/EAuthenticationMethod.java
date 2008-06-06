@@ -16,6 +16,7 @@ import org.talend.repository.i18n.Messages;
 
 /**
  * This class is used for storing Authentication method for LDAP schema. <br/>
+ * 
  * @author ftang, 18/09/2007
  * 
  */
@@ -30,6 +31,7 @@ public enum EAuthenticationMethod {
 
     /**
      * EAuthenticationMethod constructor comment.
+     * 
      * @param methodName
      */
     private EAuthenticationMethod(String methodName) {
@@ -37,7 +39,8 @@ public enum EAuthenticationMethod {
     }
 
     /**
-     *  Comment method "getName".
+     * Comment method "getName".
+     * 
      * @return
      */
     public String getName() {

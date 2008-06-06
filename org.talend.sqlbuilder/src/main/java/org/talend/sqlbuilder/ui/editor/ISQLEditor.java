@@ -104,13 +104,14 @@ public interface ISQLEditor {
      * @param node
      */
     void setRepositoryNode(RepositoryNode node);
-    
+
     MultiPageSqlBuilderEditor getMultiPageEditor();
 
     /**
      * Getter for dialog.
+     * 
      * @return the dialog
      */
     public ISQLBuilderDialog getDialog();
-    
+
 }

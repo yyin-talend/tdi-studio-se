@@ -32,7 +32,6 @@ public class CopyCellAction extends AbstractDataSetTableContextAction {
 
     private static final ImageDescriptor IMAGE = ImageUtil.getDescriptor("Images.ExportToClipBoardIcon"); //$NON-NLS-1$
 
-
     /*
      * (non-Javadoc)
      * 
@@ -42,7 +41,6 @@ public class CopyCellAction extends AbstractDataSetTableContextAction {
         return Messages.getString("DataSetTable.Actions.CopyCell"); //$NON-NLS-1$
     }
 
-
     /*
      * (non-Javadoc)
      * 
@@ -51,7 +49,6 @@ public class CopyCellAction extends AbstractDataSetTableContextAction {
     public ImageDescriptor getImageDescriptor() {
         return IMAGE;
     }
-
 
     /*
      * (non-Javadoc)
@@ -64,32 +61,30 @@ public class CopyCellAction extends AbstractDataSetTableContextAction {
 
             Clipboard clipBoard = new Clipboard(Display.getCurrent());
             TextTransfer textTransfer = TextTransfer.getInstance();
-            
+
             TableItem[] items = ptable.getSelection();
-            
+
             if (items == null || items.length == 0) {
                 return;
             }
-                       
-            int columnIndex = pcursor.getColumn();           
 
-            clipBoard.setContents(new Object[] {items[0].getText(columnIndex)}, new Transfer[] {textTransfer});
+            int columnIndex = pcursor.getColumn();
+
+            clipBoard.setContents(new Object[] { items[0].getText(columnIndex) }, new Transfer[] { textTransfer });
 
         } catch (Exception e) {
             SqlBuilderPlugin.log(org.talend.sqlbuilder.Messages.getString("CopyCellAction.logMessage"), e); //$NON-NLS-1$
         }
     }
 
-
     /**
      * Only show action if something is selected.
+     * 
      * @see net.sourceforge.sqlexplorer.dataset.actions.AbstractDataSetTableContextAction#isAvailable()
      */
     public boolean isAvailable() {
- 
+
         return (ptable.getSelectionIndex() != -1);
     }
 
-    
-    
 }

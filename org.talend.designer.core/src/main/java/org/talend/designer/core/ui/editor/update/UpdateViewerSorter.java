@@ -25,7 +25,7 @@ public class UpdateViewerSorter extends ViewerSorter {
         //
     }
 
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     @Override
     public int compare(Viewer viewer, Object e1, Object e2) {
         String name1 = null;

@@ -110,10 +110,10 @@ public class TeradataGenerationManager extends DbGenerationManager {
         if (outputTable != null) {
 
             IConnection connection = nameToOutputConnection.get(outputTable.getName());
-//            if (connection != null) {
-//                outputTable = removeUnmatchingEntriesWithColumnsOfMetadataTable(outputTable, connection
-//                        .getMetadataTable());
-//            }
+            // if (connection != null) {
+            // outputTable = removeUnmatchingEntriesWithColumnsOfMetadataTable(outputTable, connection
+            // .getMetadataTable());
+            // }
 
             sb.append("SELECT\n");
 

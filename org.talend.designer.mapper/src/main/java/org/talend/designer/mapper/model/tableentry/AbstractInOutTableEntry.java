@@ -26,8 +26,7 @@ public class AbstractInOutTableEntry extends DataMapTableEntry implements IColum
 
     private IMetadataColumn metadataColumn;
 
-    public AbstractInOutTableEntry(IDataMapTable abstractDataMapTable, IMetadataColumn metadataColumn,
-            String expression) {
+    public AbstractInOutTableEntry(IDataMapTable abstractDataMapTable, IMetadataColumn metadataColumn, String expression) {
         super(abstractDataMapTable, expression);
         this.metadataColumn = metadataColumn;
     }
@@ -53,20 +52,22 @@ public class AbstractInOutTableEntry extends DataMapTableEntry implements IColum
         this.metadataColumn.setLabel(name);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.mapper.model.tableentry.IDataMapTableEntry#isTableEntry()
      */
     public boolean isTableEntry() {
         return true;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.mapper.model.tableentry.IDataMapTableEntry#isColumnEntry()
      */
     public boolean isColumnEntry() {
         return true;
     }
 
-    
-    
 }

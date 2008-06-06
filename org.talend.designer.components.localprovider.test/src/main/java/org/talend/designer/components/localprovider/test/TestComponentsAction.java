@@ -121,13 +121,13 @@ public class TestComponentsAction extends Action {
                     ECodeLanguage codeLanguage = repositoryContext.getProject().getLanguage();
                     String path = getPath();
                     // TODO
-                    
+
                     int taskTotal = components.size();
                     for (IComponent component : components) {
                         String templateURI = path + File.separatorChar + component.getName() + File.separatorChar
-                                + TestParameter.GENERATE_TEST ;
+                                + TestParameter.GENERATE_TEST;
                         File templateFile = new File(templateURI);
-                        //System.out.println(templateFile + "   " + templateFile.exists());
+                        // System.out.println(templateFile + " " + templateFile.exists());
                         if (templateFile.exists()) {
                             File[] fileArray = getFile(templateFile, codeLanguage);
                             generateCode(fileArray, templateURI.replace("\\", "/"));
@@ -232,7 +232,8 @@ public class TestComponentsAction extends Action {
                 item.getProperty().setVersion(TestParameter.VERSION);
                 IProcess process = service.getProcessFromProcessItem(item);
                 setDefaultProperties(process, componentPath);
-                IProcessor processor = ProcessorUtilities.getProcessor(process, process.getContextManager().getDefaultContext());
+                IProcessor processor = ProcessorUtilities.getProcessor(process, process.getContextManager()
+                        .getDefaultContext());
                 try {
                     // generate
                     log.info(TestParameter.GENERATE_START + " : " + file.getName());
@@ -242,14 +243,15 @@ public class TestComponentsAction extends Action {
                     log.info(TestParameter.GENERATE_END + " : " + file.getName());
                     // run
                     log.info(TestParameter.RUN_START + " : " + file.getName());
-                    java.lang.Process runningProcess = processor.run(IProcessor.NO_STATISTICS, IProcessor.NO_TRACES, null);
-                    StringBuffer errBuff=new StringBuffer();
+                    java.lang.Process runningProcess = processor.run(IProcessor.NO_STATISTICS, IProcessor.NO_TRACES,
+                            null);
+                    StringBuffer errBuff = new StringBuffer();
                     if (isRunOK(runningProcess, errBuff)) {
                         log.info(TestParameter.RUN_SUCCESS + " : " + file.getName());
                     } else {
                         // 2 possibilities : OK not found / error stream
                         log.error(TestParameter.RUN_FAIL + " : " + file.getName(), new Exception(errBuff.toString()));
-                      
+
                     }
 
                 } catch (ProcessorException e) {
@@ -276,11 +278,10 @@ public class TestComponentsAction extends Action {
                 }
 
             }
-            if(!retValue)
-            {
-                errBuff.append(EXECUTION_OK + "not found").append("\n"); 
+            if (!retValue) {
+                errBuff.append(EXECUTION_OK + "not found").append("\n");
             }
-            
+
             while ((s = errIs.readLine()) != null) {
                 errBuff.append(s);
                 retValue = false;

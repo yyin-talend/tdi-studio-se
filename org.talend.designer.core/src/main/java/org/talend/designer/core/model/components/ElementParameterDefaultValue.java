@@ -28,8 +28,6 @@ public class ElementParameterDefaultValue implements IElementParameterDefaultVal
 
     String notIfCondition;
 
-    
-    
     /*
      * (non-Javadoc)
      * 

@@ -18,23 +18,22 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalData;
 import org.talend.designer.abstractmap.AbstractMapComponent;
 
-
 /**
- * DOC amaumont  class global comment. Detailled comment
- * <br/>
- *
+ * DOC amaumont class global comment. Detailled comment <br/>
+ * 
  */
 public abstract class AbstractMapperManager {
 
     private AbstractMapComponent mapperComponent;
-    private boolean mapperChanged;
-    
-    private IExternalData data;
 
+    private boolean mapperChanged;
+
+    private IExternalData data;
 
     /**
      * DOC amaumont AbstractMapperManager constructor comment.
-     * @param mapperComponent 
+     * 
+     * @param mapperComponent
      */
     public AbstractMapperManager(AbstractMapComponent mapperComponent) {
         super();
@@ -51,8 +50,6 @@ public abstract class AbstractMapperManager {
         return null;
     }
 
-
-   
     public AbstractMapComponent getAbstractMapComponent() {
         return this.mapperComponent;
     }
@@ -61,12 +58,14 @@ public abstract class AbstractMapperManager {
 
     /**
      * Getter for mapperChanged.
+     * 
      * @return the mapperChanged
      */
     public abstract boolean isDataChanged();
-    
+
     /**
      * DOC amaumont Comment method "setOriginalExternalData".
+     * 
      * @param data
      */
     public void setOriginalExternalData(IExternalData data) {
@@ -76,7 +75,5 @@ public abstract class AbstractMapperManager {
     public IExternalData getOriginalExternalData() {
         return this.data;
     }
-    
-    
-    
+
 }

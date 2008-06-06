@@ -47,8 +47,7 @@ public class ClearTraceAction extends Action {
     @Override
     public void run() {
         IConnection connection = null;
-        for (Iterator<? extends INode> i = process.getGraphicalNodes().iterator(); connection == null
-                && i.hasNext();) {
+        for (Iterator<? extends INode> i = process.getGraphicalNodes().iterator(); connection == null && i.hasNext();) {
             INode psNode = i.next();
             for (IConnection connec : psNode.getOutgoingConnections()) {
                 connec.setTraceData(null);

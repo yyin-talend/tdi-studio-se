@@ -75,7 +75,8 @@ public class ErdiagramDiagramEditor extends GraphicalEditor {
     protected KeyHandler getCommonKeyHandler() {
         if (sharedKeyHandler == null) {
             sharedKeyHandler = new KeyHandler();
-            sharedKeyHandler.put(KeyStroke.getPressed(SWT.DEL, 0), getActionRegistry().getAction(ActionFactory.DELETE.getId()));
+            sharedKeyHandler.put(KeyStroke.getPressed(SWT.DEL, 0), getActionRegistry().getAction(
+                    ActionFactory.DELETE.getId()));
         }
         return sharedKeyHandler;
     }
@@ -96,7 +97,8 @@ public class ErdiagramDiagramEditor extends GraphicalEditor {
         // set the factory to use for creating EditParts for elements in the
         // model
         getGraphicalViewer().setEditPartFactory(partFactory);
-        getGraphicalViewer().setKeyHandler(new GraphicalViewerKeyHandler(getGraphicalViewer()).setParent(getCommonKeyHandler()));
+        getGraphicalViewer().setKeyHandler(
+                new GraphicalViewerKeyHandler(getGraphicalViewer()).setParent(getCommonKeyHandler()));
         /** * Management of the context menu ** */
         ContextMenuProvider cmProvider = new ErDiagramMenuProvider(this, viewer, getActionRegistry());
         viewer.setContextMenu(cmProvider);
@@ -104,9 +106,11 @@ public class ErdiagramDiagramEditor extends GraphicalEditor {
         /** * Snap To Grid ** */
         // Grid properties
         getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_SPACING, new Dimension(GRID_SIZE, GRID_SIZE));
-        getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_ENABLED, new Boolean(true/* getProcess().isGridEnabled() */));
+        getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_ENABLED,
+                new Boolean(true/* getProcess().isGridEnabled() */));
         // We keep grid visibility and enablement in sync
-        getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_VISIBLE, new Boolean(true/* getProcess().isGridEnabled() */));
+        getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_VISIBLE,
+                new Boolean(true/* getProcess().isGridEnabled() */));
         IAction showGrid = new ToggleGridAction(getGraphicalViewer());
         getActionRegistry().registerAction(showGrid);
 
@@ -127,7 +131,6 @@ public class ErdiagramDiagramEditor extends GraphicalEditor {
         getSelectionSynchronizer().addViewer(getGraphicalViewer());
     }
 
-    
     /*
      * (non-Java)
      * 
@@ -149,7 +152,7 @@ public class ErdiagramDiagramEditor extends GraphicalEditor {
             erComposite.updateSql();
         }
     }
-    
+
     protected void createGraphicalViewer(final Composite parent) {
         rulerComp = new RulerComposite(parent, SWT.BORDER);
         super.createGraphicalViewer(rulerComp);

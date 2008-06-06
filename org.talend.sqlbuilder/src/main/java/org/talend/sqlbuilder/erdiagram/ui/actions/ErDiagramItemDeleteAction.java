@@ -24,19 +24,19 @@ import org.talend.sqlbuilder.erdiagram.ui.editor.ErdiagramDiagramEditor;
 import org.talend.sqlbuilder.erdiagram.ui.parts.RelationPart;
 import org.talend.sqlbuilder.erdiagram.ui.parts.TablePart;
 
-
 /**
- * DOC qzhang  class global comment. Detailled comment
- * <br/>
- *
+ * DOC qzhang class global comment. Detailled comment <br/>
+ * 
  * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ææäº, 29 ä¹æ 2006) nrousseau $
- *
+ * 
  */
 public class ErDiagramItemDeleteAction extends DeleteAction {
 
     private IWorkbenchPart part;
+
     /**
      * DOC admin TableDeleteAction constructor comment.
+     * 
      * @param part
      */
     public ErDiagramItemDeleteAction(IWorkbenchPart part) {
@@ -44,7 +44,9 @@ public class ErDiagramItemDeleteAction extends DeleteAction {
         this.part = part;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.gef.ui.actions.DeleteAction#calculateEnabled()
      */
     @Override
@@ -58,7 +60,7 @@ public class ErDiagramItemDeleteAction extends DeleteAction {
         }
         return true;
     }
-    
+
     public Command createDeleteCommand(List objects) {
         if (objects.isEmpty()) {
             return null;
@@ -72,10 +74,11 @@ public class ErDiagramItemDeleteAction extends DeleteAction {
         EditPart object = (EditPart) objects.get(0);
         Command cmd = object.getCommand(deleteReq);
         return cmd;
-        
+
     }
+
     public void update() {
         setSelection(((ErdiagramDiagramEditor) part).getViewer().getSelection());
     }
-    
+
 }

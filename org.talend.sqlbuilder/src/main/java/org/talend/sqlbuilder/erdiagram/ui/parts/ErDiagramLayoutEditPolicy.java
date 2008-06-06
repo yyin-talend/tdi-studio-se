@@ -77,7 +77,7 @@ public class ErDiagramLayoutEditPolicy extends XYLayoutEditPolicy {
         if (child instanceof TablePart) {
             EditTableCommand locationCommand = new EditTableCommand((Table) child.getModel(), ((Rectangle) constraint));
             return locationCommand;
-        } 
+        }
 
         return null;
     }
@@ -91,13 +91,13 @@ public class ErDiagramLayoutEditPolicy extends XYLayoutEditPolicy {
      * @see org.eclipse.gef.editpolicies.LayoutEditPolicy#getCreateCommand(org.eclipse.gef.requests.CreateRequest)
      */
     protected Command getCreateCommand(final CreateRequest request) {
-//        if (request.getNewObject() instanceof Table) {
-//            Rectangle rectangle = new Rectangle(0, 0, 100, 50);
-//            rectangle = (Rectangle) getConstraintFor(request);
-//            CreateTableCommand cmd = new CreateTableCommand((ErDiagram) this.getHost().getModel(),
-//                    (Table) request.getNewObject(), rectangle.getLocation());
-//            return cmd;
-//        }
+        // if (request.getNewObject() instanceof Table) {
+        // Rectangle rectangle = new Rectangle(0, 0, 100, 50);
+        // rectangle = (Rectangle) getConstraintFor(request);
+        // CreateTableCommand cmd = new CreateTableCommand((ErDiagram) this.getHost().getModel(),
+        // (Table) request.getNewObject(), rectangle.getLocation());
+        // return cmd;
+        // }
         return null;
     }
 

@@ -42,7 +42,7 @@ import org.talend.designer.mapper.ui.visualmap.table.DataMapTableView;
 public class TableEntriesManager {
 
     private static Logger log = Logger.getLogger(TableEntriesManager.class);
-    
+
     private Map<TableEntryLocation, ITableEntry> tableEntries;
 
     private Map<ITableEntry, TableEntryProperties> dataMapTableEntryToProperties;
@@ -238,11 +238,11 @@ public class TableEntriesManager {
      * @param newColumnName
      */
     public void renameEntryName(ITableEntry dataMapTableEntry, String previousColumnName, String newColumnName) {
-//        System.out.println(previousColumnName + " -> " + newColumnName);
-        
-//        ExceptionHandler.process(new RuntimeException("test : " + previousColumnName + " -> " + newColumnName));
-//        log.info(previousColumnName + " -> " + newColumnName); //$NON-NLS-1$
-        
+        // System.out.println(previousColumnName + " -> " + newColumnName);
+
+        // ExceptionHandler.process(new RuntimeException("test : " + previousColumnName + " -> " + newColumnName));
+        // log.info(previousColumnName + " -> " + newColumnName); //$NON-NLS-1$
+
         TableEntryLocation tableEntryLocationKey = new TableEntryLocation(dataMapTableEntry.getParentName(),
                 previousColumnName);
         // TableEntriesManager.buildLocation(dataMapTableEntry);

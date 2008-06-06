@@ -91,7 +91,6 @@ public class MetadataRefreshAction extends SelectionProviderAction {
         dialog.refreshNode(SQLBuilderRepositoryNodeManager.getRoot(repositorynodes.get(0)));
     }
 
-
     /**
      * DOC dev Comment method "init".
      */

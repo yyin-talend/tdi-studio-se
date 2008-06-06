@@ -16,11 +16,9 @@ import org.apache.log4j.Level;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.designer.abstractmap.ui.properties.LINK_STYLE;
 
-
 /**
- * DOC amaumont  class global comment. Detailled comment
- * <br/>
- *
+ * DOC amaumont class global comment. Detailled comment <br/>
+ * 
  */
 public abstract class AbstractUIManager {
 
@@ -39,10 +37,10 @@ public abstract class AbstractUIManager {
     public int getCountLinks() {
         return getAbstractMapperManager().getLinkManager().getCurrentNumberLinks();
     }
-    
+
     public LINK_STYLE getLinkStyle() {
         if (linkStyle == null) {
-            
+
             String elementParameterValue = (String) getAbstractMapperManager().getElementParameterValue("LINK_STYLE");
             if ("AUTO".equals(elementParameterValue)) {
                 if (getCountLinks() > 50) {

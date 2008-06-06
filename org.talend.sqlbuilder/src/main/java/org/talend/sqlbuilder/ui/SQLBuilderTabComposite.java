@@ -127,8 +127,8 @@ public class SQLBuilderTabComposite extends Composite {
         if (node != null) {
             CTabItem[] tabItems = tabFolder.getItems();
             for (int i = 0; i < tabItems.length; i++) {
-                SQLBuilderEditorComposite editorComposite = (SQLBuilderEditorComposite) (((CTabFolder) tabItems[i].getControl())
-                        .getItems()[0]).getControl();
+                SQLBuilderEditorComposite editorComposite = (SQLBuilderEditorComposite) (((CTabFolder) tabItems[i]
+                        .getControl()).getItems()[0]).getControl();
                 Query query2 = editorComposite.getConnParam().getQueryObject();
                 if ((RepositoryNodeType) node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.QUERY) {
                     Query query = ((QueryRepositoryObject) node.getObject()).getQuery();
@@ -179,12 +179,12 @@ public class SQLBuilderTabComposite extends Composite {
             try {
                 nodesSel = EMFRepositoryNodeManager.getInstance().parseSqlStatement(queryStr, node);
             } catch (Exception e) {
-                MessageDialog.openError(new Shell(), Messages.getString("SQLBuilderTabComposite.Notice.title"), Messages
-                        .getString("SQLBuilderTabComposite.Notice.Info"));
+                MessageDialog.openError(new Shell(), Messages.getString("SQLBuilderTabComposite.Notice.title"),
+                        Messages.getString("SQLBuilderTabComposite.Notice.Info"));
             }
         }
-        MultiPageSqlBuilderEditor builderEditor = new MultiPageSqlBuilderEditor(nodesSel, tabItem, isDefaultEditor, connParam,
-                node, dialog);
+        MultiPageSqlBuilderEditor builderEditor = new MultiPageSqlBuilderEditor(nodesSel, tabItem, isDefaultEditor,
+                connParam, node, dialog);
         builderEditor.createPartControl(tabFolder);
         tabItem.setControl(builderEditor.getContainer());
         tabItem.setData(TextUtil.KEY, builderEditor);

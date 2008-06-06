@@ -19,16 +19,14 @@ import org.talend.sqlbuilder.util.ImageUtil;
 import org.talend.sqlbuilder.util.TextUtil;
 
 /**
- * DOC dev  class global comment. Detailled comment
- * <br/>
- *
+ * DOC dev class global comment. Detailled comment <br/>
+ * 
  * $Id: AbstractFolderNode.java,v 1.3 2006/11/01 05:40:59 peiqin.hou Exp $
- *
+ * 
  */
 public abstract class AbstractFolderNode extends AbstractNode {
 
     private String[] pfilterExpressions;
-
 
     public AbstractFolderNode() {
 
@@ -36,10 +34,9 @@ public abstract class AbstractFolderNode extends AbstractNode {
         pexpandedImageKey = "Images.OpenFolder"; //$NON-NLS-1$
     }
 
-
     /**
-     * Override this method to change the image that is displayed for this node
-     * in the database structure outline.
+     * Override this method to change the image that is displayed for this node in the database structure outline.
+     * 
      * @return Image
      */
     public Image getImage() {
@@ -62,7 +59,6 @@ public abstract class AbstractFolderNode extends AbstractNode {
 
         return getParent().getName() + '.' + getType();
     }
-
 
     /**
      * Checks if a node name should be filtered.
@@ -99,7 +95,6 @@ public abstract class AbstractFolderNode extends AbstractNode {
         return false;
 
     }
-
 
     public abstract void loadChildren();
 }

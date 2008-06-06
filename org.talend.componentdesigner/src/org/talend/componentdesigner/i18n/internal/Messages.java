@@ -16,7 +16,6 @@ import java.util.ResourceBundle;
 
 import org.talend.componentdesigner.i18n.MessagesCore;
 
-
 /**
  * DOC rli class global comment. Detailled comment <br/>
  * 

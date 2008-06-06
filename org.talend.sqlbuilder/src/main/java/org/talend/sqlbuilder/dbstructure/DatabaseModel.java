@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.sqlbuilder.dbstructure;
 
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
@@ -24,8 +23,8 @@ import org.talend.sqlbuilder.dbstructure.nodes.INode;
 import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
 
 /**
- * DatabaseModel container for the database node and used to set as the input
- * for the treeViewer in the database structure outline.
+ * DatabaseModel container for the database node and used to set as the input for the treeViewer in the database
+ * structure outline.
  * 
  * @modified Davy Vanherbergen
  */
@@ -35,12 +34,10 @@ public class DatabaseModel implements INode {
 
     private SessionTreeNode pSessionNode;
 
-
     /*
      * Create new DatabaseModel for a database session
      * 
-     * @param sessionNode
-     * @param pm
+     * @param sessionNode @param pm
      */
     public DatabaseModel(SessionTreeNode sessionNode) {
 
@@ -55,7 +52,6 @@ public class DatabaseModel implements INode {
 
     }
 
-
     /**
      * Returns an array of all root nodes..
      * 
@@ -69,7 +65,6 @@ public class DatabaseModel implements INode {
 
         return rootNodes;
     }
-
 
     /**
      * @return Image.
@@ -87,7 +82,6 @@ public class DatabaseModel implements INode {
         return null;
     }
 
-
     /**
      * @return LabelDecoration.
      */
@@ -104,7 +98,6 @@ public class DatabaseModel implements INode {
         return null;
     }
 
-
     /**
      * @return Name.
      */
@@ -112,7 +105,6 @@ public class DatabaseModel implements INode {
 
         return getQualifiedName();
     }
-
 
     /**
      * Always returns null, since this is the root...
@@ -133,7 +125,6 @@ public class DatabaseModel implements INode {
         return "databaseModel";
     }
 
-
     /**
      * @return DatabaseNode.
      */
@@ -142,7 +133,6 @@ public class DatabaseModel implements INode {
         return (DatabaseNode) pRoot;
     }
 
-
     /**
      * @return SchemaOrCatalogName.
      */
@@ -150,7 +140,6 @@ public class DatabaseModel implements INode {
 
         return null;
     }
-
 
     /**
      * @return SessionTreeNode for this node.
@@ -163,10 +152,8 @@ public class DatabaseModel implements INode {
         return pSessionNode;
     }
 
-
     /**
-     * Returns "model" as the type for this node. This method is not used and
-     * only implemented for the interface.
+     * Returns "model" as the type for this node. This method is not used and only implemented for the interface.
      * 
      * @see org.talend.sqlbuilder.dbstructure.nodes.INode#getType()
      * @return Type.
@@ -191,7 +178,6 @@ public class DatabaseModel implements INode {
 
         return false;
     }
-
 
     /**
      * @param parent parent

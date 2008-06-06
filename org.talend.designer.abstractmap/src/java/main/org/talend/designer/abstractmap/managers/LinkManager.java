@@ -67,7 +67,7 @@ public abstract class LinkManager implements ILinkManager {
     private List<List<IMapperLink>> varLinksForLevels = new ArrayList<List<IMapperLink>>();
 
     private List<List<IMapperLink>> outputLinksForLevels = new ArrayList<List<IMapperLink>>();
-    
+
     public LinkManager() {
         super();
         currentNumberLinks = 0;
@@ -105,6 +105,7 @@ public abstract class LinkManager implements ILinkManager {
      * @param graphicalLinksFromTarget
      */
     protected abstract void registerLevelForNewLink(IMapperLink link, Set<IMapperLink> graphicalLinksFromTarget);
+
     /**
      * DOC amaumont Comment method "searchFirstFreeIndexLeveledList".
      * 
@@ -154,6 +155,7 @@ public abstract class LinkManager implements ILinkManager {
      * @param sourceGraphicalLinks
      */
     protected abstract void unregisterLevelForRemovedLink(IMapperLink link, Set<IMapperLink> sourceGraphicalLinks);
+
     /**
      * DOC amaumont Comment method "getGraphicalLinks".
      * 
@@ -266,34 +268,31 @@ public abstract class LinkManager implements ILinkManager {
         return this.inputLinksForLevels.size();
     }
 
-    
     /**
      * Getter for inputLinksForLevels.
+     * 
      * @return the inputLinksForLevels
      */
     protected List<List<IMapperLink>> getInputLinksForLevels() {
         return this.inputLinksForLevels;
     }
 
-    
     /**
      * Getter for varLinksForLevels.
+     * 
      * @return the varLinksForLevels
      */
     protected List<List<IMapperLink>> getVarLinksForLevels() {
         return this.varLinksForLevels;
     }
 
-    
     /**
      * Getter for outputLinksForLevels.
+     * 
      * @return the outputLinksForLevels
      */
     protected List<List<IMapperLink>> getOutputLinksForLevels() {
         return this.outputLinksForLevels;
     }
 
-    
-    
-    
 }

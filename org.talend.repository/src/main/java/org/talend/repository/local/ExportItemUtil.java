@@ -82,20 +82,20 @@ public class ExportItemUtil {
 
     private IPath itemPath;
 
-	private Project project;
-	
-	private Map<String, User> login2user = new HashMap<String, User>();
+    private Project project;
 
-	public ExportItemUtil() {
+    private Map<String, User> login2user = new HashMap<String, User>();
+
+    public ExportItemUtil() {
         Context ctx = CorePlugin.getContext();
         RepositoryContext repositoryContext = (RepositoryContext) ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
         project = repositoryContext.getProject().getEmfProject();
-	}
+    }
 
-	public ExportItemUtil(Project project) {
-		this.project = project;
-	}
-	
+    public ExportItemUtil(Project project) {
+        this.project = project;
+    }
+
     public void exportItems(File destination, Collection<Item> items) throws Exception {
         IFileExporterFullPath exporter = null;
         File tmpDirectory = null;
@@ -152,9 +152,8 @@ public class ExportItemUtil {
         }
     }
 
-	public Collection<Item> getAllVersions(Collection<Item> items)
-			throws PersistenceException {
-		Collection<Item> itemsVersions = new ArrayList<Item>();
+    public Collection<Item> getAllVersions(Collection<Item> items) throws PersistenceException {
+        Collection<Item> itemsVersions = new ArrayList<Item>();
         for (Item item : items) {
             List<IRepositoryObject> allVersion = ProxyRepositoryFactory.getInstance().getAllVersion(
                     item.getProperty().getId());
@@ -162,8 +161,8 @@ public class ExportItemUtil {
                 itemsVersions.add(repositoryObject.getProperty().getItem());
             }
         }
-		return itemsVersions;
-	}
+        return itemsVersions;
+    }
 
     public Set<File> createLocalResources(File destinationDirectory, Item item) throws Exception {
         List<Item> items = new ArrayList<Item>();
@@ -185,8 +184,9 @@ public class ExportItemUtil {
             for (Item item : items) {
                 if (ERepositoryObjectType.getItemType(item).isResourceItem()) {
                     Collection<EObject> copiedObjects = copyObjects(item);
-                    
-                    Item copiedItem = (Item) EcoreUtil.getObjectByType(copiedObjects, PropertiesPackage.eINSTANCE.getItem());
+
+                    Item copiedItem = (Item) EcoreUtil.getObjectByType(copiedObjects, PropertiesPackage.eINSTANCE
+                            .getItem());
                     fixItem(copiedItem);
                     computeItemFilesAndPaths(destinationDirectory, copiedItem, projectFolderStructure);
                     createItemResources(copiedItem, copiedObjects);
@@ -267,20 +267,20 @@ public class ExportItemUtil {
         EObject projectCopy = EcoreUtil.copy(project);
         projectResource.getContents().add(projectCopy);
 
-		Set<String> logins = new HashSet<String>();
-		logins.add(EXPORTUSER_TALEND_COM);
-		for (Item item : items) {
+        Set<String> logins = new HashSet<String>();
+        logins.add(EXPORTUSER_TALEND_COM);
+        for (Item item : items) {
             User author = item.getProperty().getAuthor();
             if (author != null) {
                 logins.add(author.getLogin());
             }
         }
-		
-		for (String login : logins) {
-	        User user = PropertiesFactory.eINSTANCE.createUser();
-	        user.setLogin(login);
-	        projectResource.getContents().add(user);
-	        login2user.put(login, user);
+
+        for (String login : logins) {
+            User user = PropertiesFactory.eINSTANCE.createUser();
+            user.setLogin(login);
+            projectResource.getContents().add(user);
+            login2user.put(login, user);
         }
     }
 
@@ -369,7 +369,7 @@ public class ExportItemUtil {
         String login = EXPORTUSER_TALEND_COM;
         if (author != null) {
             login = author.getLogin();
-        } 
+        }
         newItem.getProperty().setAuthor(login2user.get(login));
     }
 

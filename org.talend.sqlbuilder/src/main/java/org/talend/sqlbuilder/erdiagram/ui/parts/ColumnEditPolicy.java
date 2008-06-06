@@ -14,15 +14,12 @@ package org.talend.sqlbuilder.erdiagram.ui.parts;
 
 import org.eclipse.gef.editpolicies.ComponentEditPolicy;
 
-
 /**
- * DOC qzhang  class global comment. Detailled comment
- * <br/>
- *
+ * DOC qzhang class global comment. Detailled comment <br/>
+ * 
  * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ææäº, 29 ä¹æ 2006) nrousseau $
- *
+ * 
  */
 public class ColumnEditPolicy extends ComponentEditPolicy {
-
 
 }

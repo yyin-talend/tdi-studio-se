@@ -73,8 +73,8 @@ public class GenerateSpagoBIXML {
     private void createSpagoBIXML() {
         if (file != null) {
             try {
-                Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                        .getProject();
+                Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(
+                        Context.REPOSITORY_CONTEXT_KEY)).getProject();
                 final DocumentBuilderFactory fabrique = DocumentBuilderFactory.newInstance();
                 fabrique.setValidating(true);
                 final DocumentBuilder analyseur = fabrique.newDocumentBuilder();

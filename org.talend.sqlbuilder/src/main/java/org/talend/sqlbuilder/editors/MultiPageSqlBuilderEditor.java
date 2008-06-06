@@ -88,7 +88,8 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
     @Override
     protected void createPages() {
         try {
-            sqlEdit = new SQLBuilderEditorComposite(this.getContainer(), tabItem, isDefaultEditor, connParam, rootNode, dialog);
+            sqlEdit = new SQLBuilderEditorComposite(this.getContainer(), tabItem, isDefaultEditor, connParam, rootNode,
+                    dialog);
             sqlEdit.setEditorContent(connParam);
             sqlEdit.setRepositoryNode(rootNode);
             sqlEdit.setQueryObject(dialog.getConnParameters().getQueryObject());
@@ -98,8 +99,8 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
             int index = addPage(sqlEdit);
             setPageText(index, Messages.getString("MultiPageSqlBuilderEditor.EditTab.Text")); //$NON-NLS-1$
             EMFRepositoryNodeManager.getInstance().setPrompt(false);
-            sqlDesigner = new SQLBuilderDesignerComposite(this.getContainer(), tabItem, isDefaultEditor, connParam, rootNode,
-                    dialog, nodes);
+            sqlDesigner = new SQLBuilderDesignerComposite(this.getContainer(), tabItem, isDefaultEditor, connParam,
+                    rootNode, dialog, nodes);
             sqlDesigner.setSqlText(sqlEdit.getSQLToBeExecuted());
             sqlDesigner.setEditorContent(connParam);
 
@@ -114,8 +115,10 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
             setPageText(index, Messages.getString("MultiPageSqlBuilderEditor.DesignerTab.Text")); //$NON-NLS-1$
             attachListeners();
         } catch (Exception e) {
-            MessageDialog.openError(getContainer().getShell(), Messages.getString("MultiPageSqlBuilderEditor.ErrorTitle"),
-                    Messages.getString("MultiPageSqlBuilderEditor.ErrorInfo") + e.getMessage());
+            MessageDialog.openError(getContainer().getShell(), Messages
+                    .getString("MultiPageSqlBuilderEditor.ErrorTitle"), Messages
+                    .getString("MultiPageSqlBuilderEditor.ErrorInfo")
+                    + e.getMessage());
         }
 
     }
@@ -213,7 +216,8 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
             } else {
                 EMFRepositoryNodeManager.getInstance().setPrompt(false);
                 String orginSql = EMFRepositoryNodeManager.getInstance().initSqlStatement(sqlEdit.getSQLToBeExecuted());
-                String sqlText = EMFRepositoryNodeManager.getInstance().initSqlStatement(erDiagramComposite.getSqlText());
+                String sqlText = EMFRepositoryNodeManager.getInstance().initSqlStatement(
+                        erDiagramComposite.getSqlText());
                 EMFRepositoryNodeManager.getInstance().setPrompt(true);
                 if (sqlText == null) {
                     return orginSql != null;
@@ -291,10 +295,13 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
         if (newPageIndex == 1) {
             try {
                 String toSql = sqlEdit.getSQLToBeExecuted();
-                EMFRepositoryNodeManager.getInstance().updateErDiagram(isModified(), erDiagramComposite, toSql, rootNode);
+                EMFRepositoryNodeManager.getInstance().updateErDiagram(isModified(), erDiagramComposite, toSql,
+                        rootNode);
             } catch (Exception e) {
-                MessageDialog.openError(getContainer().getShell(), Messages.getString("MultiPageSqlBuilderEditor.ErrorTitle"),
-                        Messages.getString("MultiPageSqlBuilderEditor.ErrorInfo") + e.getMessage());
+                MessageDialog.openError(getContainer().getShell(), Messages
+                        .getString("MultiPageSqlBuilderEditor.ErrorTitle"), Messages
+                        .getString("MultiPageSqlBuilderEditor.ErrorInfo")
+                        + e.getMessage());
             }
         } else if (newPageIndex == 0) {
             if (isModified()) {

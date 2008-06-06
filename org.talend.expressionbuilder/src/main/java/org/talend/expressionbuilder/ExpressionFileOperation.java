@@ -69,8 +69,8 @@ public class ExpressionFileOperation {
      * @throws IOException
      * @throws ParserConfigurationException
      */
-    public boolean saveExpressionToFile(File file, List<Variable> variables, String expressionContent) throws IOException,
-            ParserConfigurationException {
+    public boolean saveExpressionToFile(File file, List<Variable> variables, String expressionContent)
+            throws IOException, ParserConfigurationException {
 
         final DocumentBuilderFactory fabrique = DocumentBuilderFactory.newInstance();
 
@@ -154,7 +154,8 @@ public class ExpressionFileOperation {
      * @throws SAXException
      * @throws ParserConfigurationException
      */
-    public List importExpressionFromFile(File file, Shell shell) throws IOException, ParserConfigurationException, SAXException {
+    public List importExpressionFromFile(File file, Shell shell) throws IOException, ParserConfigurationException,
+            SAXException {
         if (file != null) {
             List list = new ArrayList();
 
@@ -175,7 +176,8 @@ public class ExpressionFileOperation {
 
                     Node expressionNode = expressionNodes.item(0);
                     NamedNodeMap epxressionAttrs = expressionNode.getAttributes();
-                    Node contentNode = epxressionAttrs.getNamedItem(Messages.getString("ExpressionFileOperation.content")); //$NON-NLS-1$
+                    Node contentNode = epxressionAttrs.getNamedItem(Messages
+                            .getString("ExpressionFileOperation.content")); //$NON-NLS-1$
                     list.add(contentNode.getNodeValue());
 
                 }
@@ -189,7 +191,8 @@ public class ExpressionFileOperation {
 
                     Node nameNode = varAttrs.getNamedItem(Messages.getString("ExpressionFileOperation.name")); //$NON-NLS-1$
                     Node valueNode = varAttrs.getNamedItem(Messages.getString("ExpressionFileOperation.value")); //$NON-NLS-1$
-                    Node talendTypeNode = varAttrs.getNamedItem(Messages.getString("ExpressionFileOperation.talendType")); //$NON-NLS-1$
+                    Node talendTypeNode = varAttrs.getNamedItem(Messages
+                            .getString("ExpressionFileOperation.talendType")); //$NON-NLS-1$
                     Node nullableNode = varAttrs.getNamedItem(Messages.getString("ExpressionFileOperation.nullable")); //$NON-NLS-1$
 
                     Variable variable = new Variable();

@@ -24,49 +24,42 @@ import org.talend.sqlbuilder.erdiagram.ui.nodes.Relation;
 /**
  * DOC qzhang class global comment. Detailled comment <br/>
  * 
- * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ææäº, 29 ä¹æ 2006)
- * nrousseau $
+ * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ææäº, 29 ä¹æ 2006) nrousseau $
  * 
  */
 public class ColumnGraphicalEditPolicy extends GraphicalNodeEditPolicy {
 
-	@Override
-	protected Command getConnectionCompleteCommand(
-			CreateConnectionRequest request) {
-		RelationCreateCommand cmd = (RelationCreateCommand) request
-				.getStartCommand();
-		cmd.setTarget((Column) getHost().getModel());
-		return cmd;
-	}
+    @Override
+    protected Command getConnectionCompleteCommand(CreateConnectionRequest request) {
+        RelationCreateCommand cmd = (RelationCreateCommand) request.getStartCommand();
+        cmd.setTarget((Column) getHost().getModel());
+        return cmd;
+    }
 
-	@Override
-	protected Command getConnectionCreateCommand(CreateConnectionRequest request) {
-		Column source = (Column) getHost().getModel();
-		RelationCreateCommand command = new RelationCreateCommand(source);
-		request.setStartCommand(command);
-		return command;
-	}
+    @Override
+    protected Command getConnectionCreateCommand(CreateConnectionRequest request) {
+        Column source = (Column) getHost().getModel();
+        RelationCreateCommand command = new RelationCreateCommand(source);
+        request.setStartCommand(command);
+        return command;
+    }
 
-	@Override
-	protected Command getReconnectSourceCommand(ReconnectRequest request) {
-		Relation relation = (Relation) request.getConnectionEditPart()
-				.getModel();
-		Column newSource = (Column) getHost().getModel();
-		RelationReconnectionCommand command = new RelationReconnectionCommand(
-				relation);
-		command.setNewSource(newSource);
-		return command;
-	}
+    @Override
+    protected Command getReconnectSourceCommand(ReconnectRequest request) {
+        Relation relation = (Relation) request.getConnectionEditPart().getModel();
+        Column newSource = (Column) getHost().getModel();
+        RelationReconnectionCommand command = new RelationReconnectionCommand(relation);
+        command.setNewSource(newSource);
+        return command;
+    }
 
-	@Override
-	protected Command getReconnectTargetCommand(ReconnectRequest request) {
-		Relation relation = (Relation) request.getConnectionEditPart()
-				.getModel();
-		Column newTarget = (Column) getHost().getModel();
-		RelationReconnectionCommand command = new RelationReconnectionCommand(
-				relation);
-		command.setNewTarget(newTarget);
-		return command;
-	}
+    @Override
+    protected Command getReconnectTargetCommand(ReconnectRequest request) {
+        Relation relation = (Relation) request.getConnectionEditPart().getModel();
+        Column newTarget = (Column) getHost().getModel();
+        RelationReconnectionCommand command = new RelationReconnectionCommand(relation);
+        command.setNewTarget(newTarget);
+        return command;
+    }
 
 }

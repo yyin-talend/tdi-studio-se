@@ -23,22 +23,23 @@ import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 
 /**
- * DOC dev  class global comment. Detailled comment
- * <br/>
- *
+ * DOC dev class global comment. Detailled comment <br/>
+ * 
  * $Id: AbstractSQLFolderNode.java,v 1.4 2006/11/01 05:40:59 peiqin.hou Exp $
- *
+ * 
  */
 public abstract class AbstractSQLFolderNode extends AbstractFolderNode {
-    
+
     /**
      * Get childType.
+     * 
      * @return Child type.
      */
     public abstract String getChildType();
 
     /**
      * Get name.
+     * 
      * @return name.
      */
     public abstract String getName();
@@ -63,7 +64,7 @@ public abstract class AbstractSQLFolderNode extends AbstractFolderNode {
         Statement stmt = null;
         PreparedStatement pStmt = null;
         int timeOut = SqlBuilderPlugin.getDefault().getPluginPreferences().getInt(IConstants.INTERACTIVE_QUERY_TIMEOUT);
-        
+
         try {
 
             Object[] params = getSQLParameters();
@@ -79,7 +80,7 @@ public abstract class AbstractSQLFolderNode extends AbstractFolderNode {
                 // use prepared statement
                 pStmt = connection.prepareStatement(getSQL());
                 pStmt.setQueryTimeout(timeOut);
-                
+
                 for (int i = 0; i < params.length; i++) {
 
                     if (params[i] instanceof String) {

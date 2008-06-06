@@ -44,17 +44,17 @@ public final class RunProcessPrefsHelper {
     public int getClientStatsPortBound1() {
         return getPreferenceStore().getInt(RunProcessPrefsConstants.CLIENT_STATS_PORT_BOUND1);
     }
-    
+
     public int getClientStatsPortBound2() {
         return getPreferenceStore().getInt(RunProcessPrefsConstants.CLIENT_STATS_PORT_BOUND2);
     }
-    
+
     public int getClientTracePortBound1() {
         return getPreferenceStore().getInt(RunProcessPrefsConstants.CLIENT_TRACE_PORT_BOUND1);
     }
-    
+
     public int getClientTracePortBound2() {
         return getPreferenceStore().getInt(RunProcessPrefsConstants.CLIENT_TRACE_PORT_BOUND2);
     }
-    
+
 }

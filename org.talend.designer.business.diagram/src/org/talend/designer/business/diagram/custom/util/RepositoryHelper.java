@@ -57,7 +57,8 @@ public class RepositoryHelper {
             RepositoryNode repositoryNode = (RepositoryNode) object;
             if (repositoryNode.getType() == RepositoryNode.ENodeType.REPOSITORY_ELEMENT) {
                 IRepositoryObject repositoryObject = repositoryNode.getObject();
-                ERepositoryObjectType nodeType = (ERepositoryObjectType) repositoryNode.getProperties(EProperties.CONTENT_TYPE);
+                ERepositoryObjectType nodeType = (ERepositoryObjectType) repositoryNode
+                        .getProperties(EProperties.CONTENT_TYPE);
 
                 result = (TalendItem) BusinessFactory.eINSTANCE.create(getEClass(nodeType));
 

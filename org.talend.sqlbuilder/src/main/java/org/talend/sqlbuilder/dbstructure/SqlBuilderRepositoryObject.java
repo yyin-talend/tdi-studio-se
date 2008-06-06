@@ -17,88 +17,107 @@ import org.talend.core.model.repository.RepositoryObject;
 
 /**
  * SqlBuilderRepositoryObject.
- *
+ * 
  */
 public class SqlBuilderRepositoryObject extends RepositoryObject {
-	private String repositoryName;
-	private String sourceName;
-	private String image;
-	private String color;
-	private boolean isBuildIn;
-	private String diffColor;
-	private String diffImage;
-	private boolean isDiffDevergency;
-	private boolean isDiffSynchronised;
-	
-	public SqlBuilderRepositoryObject(Property property) {
-		super(property);
-	}
-	
-	public String getRepositoryName() {
-		return repositoryName;
-	}
-	public void setRepositoryName(String repositoryName) {
-		this.repositoryName = repositoryName;
-	}
-	public String getColor() {
-		return color;
-	}
-	public void setColor(String color) {
-		this.color = color;
-	}
-	public String getImage() {
-		return image;
-	}
-	public void setImage(String image) {
-		this.image = image;
-	}
-	public String getSourceName() {
-		return sourceName;
-	}
-	public void setSourceName(String sourceName) {
-		this.sourceName = sourceName;
-	}
-	public boolean isBuildIn() {
-		return isBuildIn;
-	}
-	public void setBuildIn(boolean buildInValue) {
-		this.isBuildIn = buildInValue;
-	}
-	@Override
-	public String getLabel() {
-		return repositoryName;
-	}
 
-	public String getDiffColor() {
-		return diffColor;
-	}
+    private String repositoryName;
 
-	public void setDiffColor(String diffColor) {
-		this.diffColor = diffColor;
-	}
+    private String sourceName;
 
-	public String getDiffImage() {
-		return diffImage;
-	}
+    private String image;
 
-	public void setDiffImage(String diffImage) {
-		this.diffImage = diffImage;
-	}
+    private String color;
 
-	public boolean isDiffDevergency() {
-		return isDiffDevergency;
-	}
+    private boolean isBuildIn;
 
-	public void setDiffDevergency(boolean judgeDiffDevergency) {
-		this.isDiffDevergency = judgeDiffDevergency;
-	}
+    private String diffColor;
 
-	public boolean isDiffSynchronised() {
-		return isDiffSynchronised;
-	}
+    private String diffImage;
 
-	public void setDiffSynchronised(boolean judgeDiffSynchronised) {
-		this.isDiffSynchronised = judgeDiffSynchronised;
-	}
-	
+    private boolean isDiffDevergency;
+
+    private boolean isDiffSynchronised;
+
+    public SqlBuilderRepositoryObject(Property property) {
+        super(property);
+    }
+
+    public String getRepositoryName() {
+        return repositoryName;
+    }
+
+    public void setRepositoryName(String repositoryName) {
+        this.repositoryName = repositoryName;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getSourceName() {
+        return sourceName;
+    }
+
+    public void setSourceName(String sourceName) {
+        this.sourceName = sourceName;
+    }
+
+    public boolean isBuildIn() {
+        return isBuildIn;
+    }
+
+    public void setBuildIn(boolean buildInValue) {
+        this.isBuildIn = buildInValue;
+    }
+
+    @Override
+    public String getLabel() {
+        return repositoryName;
+    }
+
+    public String getDiffColor() {
+        return diffColor;
+    }
+
+    public void setDiffColor(String diffColor) {
+        this.diffColor = diffColor;
+    }
+
+    public String getDiffImage() {
+        return diffImage;
+    }
+
+    public void setDiffImage(String diffImage) {
+        this.diffImage = diffImage;
+    }
+
+    public boolean isDiffDevergency() {
+        return isDiffDevergency;
+    }
+
+    public void setDiffDevergency(boolean judgeDiffDevergency) {
+        this.isDiffDevergency = judgeDiffDevergency;
+    }
+
+    public boolean isDiffSynchronised() {
+        return isDiffSynchronised;
+    }
+
+    public void setDiffSynchronised(boolean judgeDiffSynchronised) {
+        this.isDiffSynchronised = judgeDiffSynchronised;
+    }
+
 }

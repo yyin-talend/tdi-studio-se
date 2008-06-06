@@ -45,9 +45,13 @@ public class ExecSQLAction extends AbstractEditorAction {
     private Preferences prefs = SqlBuilderPlugin.getDefault().getPluginPreferences();
 
     private int max = Integer.parseInt(prefs.getString(IConstants.WARN_RESEULTS));
+
     private String queryDelimiter = prefs.getString(IConstants.QUERY_DELIMITER);
+
     private String alternateDelimiter = prefs.getString(IConstants.ALTERNATE_DELIMITER);
+
     private String commentDelimiter = prefs.getString(IConstants.COMMENT_DELIMITER);
+
     /**
      * ExecSQLAction constructor.
      * 
@@ -146,9 +150,9 @@ public class ExecSQLAction extends AbstractEditorAction {
             SqlBuilderPlugin.log(Messages.getString("ExecSQLAction.logMessageGetSessionTreeNodeFail"), e); //$NON-NLS-1$
             return;
         }
-        
-        QueryTokenizer qt = new QueryTokenizer(getSQLToBeExecuted(), queryDelimiter,
-        		alternateDelimiter, commentDelimiter);
+
+        QueryTokenizer qt = new QueryTokenizer(getSQLToBeExecuted(), queryDelimiter, alternateDelimiter,
+                commentDelimiter);
 
         List<String> queryStrings = new ArrayList<String>();
         while (qt.hasQuery()) {

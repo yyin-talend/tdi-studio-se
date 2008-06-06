@@ -19,18 +19,16 @@ import org.eclipse.swt.graphics.Image;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.sqlbuilder.util.ImageUtil;
 
-
 /**
- * DOC dev  class global comment. Detailled comment
- * <br/>
- *
+ * DOC dev class global comment. Detailled comment <br/>
+ * 
  * $Id: SQLEditorLabelProvider.java,v 1.3 2006/11/06 08:28:00 qiang.zhang Exp $
- *
+ * 
  */
 public class SQLEditorLabelProvider implements ILabelProvider {
 
-    private   ImageDescriptor sqlEditor = ImageUtil.getDescriptor("Images.SqlEditorIcon"); //$NON-NLS-1$
-    
+    private ImageDescriptor sqlEditor = ImageUtil.getDescriptor("Images.SqlEditorIcon"); //$NON-NLS-1$
+
     /**
      * DOC dev SQLEditorLabelProvider constructor comment.
      */
@@ -39,7 +37,9 @@ public class SQLEditorLabelProvider implements ILabelProvider {
         // TODO Auto-generated constructor stub
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jface.viewers.ILabelProvider#getImage(java.lang.Object)
      */
     public Image getImage(Object element) {
@@ -53,7 +53,9 @@ public class SQLEditorLabelProvider implements ILabelProvider {
         return ImageProvider.getImage(sqlEditor);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jface.viewers.ILabelProvider#getText(java.lang.Object)
      */
     public String getText(Object element) {
@@ -63,7 +65,9 @@ public class SQLEditorLabelProvider implements ILabelProvider {
         return ""; //$NON-NLS-1$
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jface.viewers.IBaseLabelProvider#addListener(org.eclipse.jface.viewers.ILabelProviderListener)
      */
     public void addListener(ILabelProviderListener listener) {
@@ -71,7 +75,9 @@ public class SQLEditorLabelProvider implements ILabelProvider {
 
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
      */
     public void dispose() {
@@ -79,7 +85,9 @@ public class SQLEditorLabelProvider implements ILabelProvider {
 
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jface.viewers.IBaseLabelProvider#isLabelProperty(java.lang.Object, java.lang.String)
      */
     public boolean isLabelProperty(Object element, String property) {
@@ -87,7 +95,9 @@ public class SQLEditorLabelProvider implements ILabelProvider {
         return false;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jface.viewers.IBaseLabelProvider#removeListener(org.eclipse.jface.viewers.ILabelProviderListener)
      */
     public void removeListener(ILabelProviderListener listener) {

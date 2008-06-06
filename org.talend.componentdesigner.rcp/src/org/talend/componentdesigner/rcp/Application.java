@@ -34,7 +34,7 @@ public class Application implements IApplication {
      * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)
      */
     public Object start(IApplicationContext context) {
-        Display display = PlatformUI.createDisplay();        
+        Display display = PlatformUI.createDisplay();
         try {
             int returnCode = PlatformUI.createAndRunWorkbench(display, new ApplicationWorkbenchAdvisor());
             if (returnCode == PlatformUI.RETURN_RESTART) {
@@ -46,7 +46,7 @@ public class Application implements IApplication {
         }
     }
 
-	/*
+    /*
      * (non-Javadoc)
      * 
      * @see org.eclipse.equinox.app.IApplication#stop()

@@ -50,10 +50,10 @@ public final class MessageBoxExceptionHandler {
             try {
                 shell = new Shell();
             } catch (Exception e) {
-                //ignore me
+                // ignore me
             }
         }
-        
+
         if (shell != null) {
             showMessage(ex, shell);
         }
@@ -69,7 +69,7 @@ public final class MessageBoxExceptionHandler {
             return;
         }
         lastShowedAction = ex;
-        
+
         // TODO smallet use ErrorDialogWidthDetailArea ?
         String title = Messages.getString("commons.error"); //$NON-NLS-1$
         String msg = Messages.getString("exception.errorOccured", ex.getMessage()); //$NON-NLS-1$

@@ -13,7 +13,7 @@
 package org.talend.componentdesigner.model;
 
 /**
- * DOC rli  class global comment. Detailled comment
+ * DOC rli class global comment. Detailled comment
  */
 public class IConfiguration {
 

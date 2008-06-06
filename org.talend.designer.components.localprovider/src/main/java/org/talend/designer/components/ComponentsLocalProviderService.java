@@ -30,8 +30,8 @@ public class ComponentsLocalProviderService implements IComponentsLocalProviderS
      * @see org.talend.designer.components.IComponentsLocalProviderService#isAvoidToShowJobAfterDoubleClick()
      */
     public boolean isAvoidToShowJobAfterDoubleClick() {
-        return ComponentsLocalProviderPlugin.getDefault().getPreferenceStore()
-                .getBoolean(ComponenttRunJobPreferencePage.IS_AVOID);
+        return ComponentsLocalProviderPlugin.getDefault().getPreferenceStore().getBoolean(
+                ComponenttRunJobPreferencePage.IS_AVOID);
     }
 
     /*
@@ -43,14 +43,13 @@ public class ComponentsLocalProviderService implements IComponentsLocalProviderS
         return ComponentsLocalProviderPlugin.getDefault().getPreferenceStore();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.components.IComponentsLocalProviderService#getPlugin()
      */
     public AbstractUIPlugin getPlugin() {
         return ComponentsLocalProviderPlugin.getDefault();
     }
-    
-    
-    
 
 }

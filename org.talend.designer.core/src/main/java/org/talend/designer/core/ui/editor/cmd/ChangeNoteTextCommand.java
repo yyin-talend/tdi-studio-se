@@ -19,9 +19,11 @@ import org.talend.designer.core.ui.editor.notes.Note;
 /**
  */
 public class ChangeNoteTextCommand extends Command {
-    
+
     private Note note;
+
     private String newText;
+
     private String oldText;
 
     public ChangeNoteTextCommand(Note note, String newText) {
@@ -29,13 +31,13 @@ public class ChangeNoteTextCommand extends Command {
         this.note = note;
         this.newText = newText;
     }
-    
+
     @Override
     public void execute() {
         oldText = note.getText();
         note.setText(newText);
     }
-    
+
     @Override
     public void undo() {
         note.setText(oldText);

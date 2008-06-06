@@ -44,7 +44,8 @@ public abstract class AbstractRoutineAction extends AContextualAction {
      * @throws SystemException
      * @throws PartInitException
      */
-    protected IEditorPart openRoutineEditor(RoutineItem routineItem, boolean readOnly) throws SystemException, PartInitException {
+    protected IEditorPart openRoutineEditor(RoutineItem routineItem, boolean readOnly) throws SystemException,
+            PartInitException {
         if (routineItem == null) {
             return null;
         }

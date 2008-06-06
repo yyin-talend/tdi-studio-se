@@ -44,8 +44,8 @@ public class WSDLSchemaInputNode extends FileInputNode {
      * @param schemaBean
      * @param string
      */
-    public WSDLSchemaInputNode(String fileName, String encoding, List<IMetadataTable> metadatas, WSDLSchemaBean schemaBean,
-            ArrayList parameters) {
+    public WSDLSchemaInputNode(String fileName, String encoding, List<IMetadataTable> metadatas,
+            WSDLSchemaBean schemaBean, ArrayList parameters) {
         super("tWebServiceInput"); //$NON-NLS-1$
         this.encoding = encoding;
         addParameters(schemaBean, parameters);

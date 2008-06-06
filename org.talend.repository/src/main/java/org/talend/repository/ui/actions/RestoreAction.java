@@ -59,7 +59,8 @@ public class RestoreAction extends AContextualAction {
             if (obj instanceof RepositoryNode) {
                 try {
                     RepositoryNode node = (RepositoryNode) obj;
-                    ERepositoryObjectType nodeType = (ERepositoryObjectType) (node).getProperties(EProperties.CONTENT_TYPE);
+                    ERepositoryObjectType nodeType = (ERepositoryObjectType) (node)
+                            .getProperties(EProperties.CONTENT_TYPE);
                     if (nodeType.isSubItem()) {
                         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
                         ConnectionItem item = (ConnectionItem) node.getObject().getProperty().getItem();

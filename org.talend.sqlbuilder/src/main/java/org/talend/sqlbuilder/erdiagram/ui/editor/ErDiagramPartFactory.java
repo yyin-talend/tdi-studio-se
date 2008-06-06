@@ -24,7 +24,8 @@ import org.talend.sqlbuilder.erdiagram.ui.parts.RelationPart;
 import org.talend.sqlbuilder.erdiagram.ui.parts.TablePart;
 
 /**
- * The qzhang  ErDiagramPartFactory will create an EditPart factory for each model object that is created in the diagram. <br/>
+ * The qzhang ErDiagramPartFactory will create an EditPart factory for each model object that is created in the diagram.
+ * <br/>
  * 
  * $Id: PartFactory.java 1 2006-09-29 17:06:40 +0000 (星期五, 29 九月 2006) nrousseau $
  * 

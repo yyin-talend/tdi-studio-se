@@ -62,8 +62,7 @@ import org.talend.spagic.engines.client.i18n.Messages;
 /**
  * Page of the Job Scripts Export Wizard. <br/>
  * 
- * @referto WizardArchiveFileResourceExportPage1 $Id: JobScriptsExportWizardPage.java 1 2006-12-13 涓嬪�?3:09:07
- * bqian
+ * @referto WizardArchiveFileResourceExportPage1 $Id: JobScriptsExportWizardPage.java 1 2006-12-13 涓嬪�?3:09:07 bqian
  * 
  */
 public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExportPage1 {
@@ -117,7 +116,8 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
                 IRepositoryObject repositoryObject = node.getObject();
                 if (repositoryObject.getProperty().getItem() instanceof ProcessItem) {
                     ProcessItem processItem = (ProcessItem) repositoryObject.getProperty().getItem();
-                    ExportFileResource resource = new ExportFileResource(processItem, processItem.getProperty().getLabel());
+                    ExportFileResource resource = new ExportFileResource(processItem, processItem.getProperty()
+                            .getLabel());
                     list.add(resource);
                 }
             }
@@ -433,8 +433,8 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
         JobResourceManager reManager = JobResourceManager.getInstance();
         for (JobResource r : jobResources) {
             if (reManager.isProtected(r)) {
-                ProcessorUtilities.generateCode(r.getJobInfo().getJobId(), r.getJobInfo().getContextName(), r.getJobInfo()
-                        .getJobVersion(), false, false);
+                ProcessorUtilities.generateCode(r.getJobInfo().getJobId(), r.getJobInfo().getContextName(), r
+                        .getJobInfo().getJobVersion(), false, false);
             } else {
                 reManager.deleteResource(r);
             }
@@ -452,8 +452,8 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
      * @return
      */
     protected ArchiveFileExportOperationFullPath getExporterOperation(List<ExportFileResource> resourcesToExport) {
-        ArchiveFileExportOperationFullPath exporterOperation = new ArchiveFileExportOperationFullPath(resourcesToExport,
-                getDestinationValue());
+        ArchiveFileExportOperationFullPath exporterOperation = new ArchiveFileExportOperationFullPath(
+                resourcesToExport, getDestinationValue());
         return exporterOperation;
     }
 

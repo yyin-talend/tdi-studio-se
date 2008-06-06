@@ -139,12 +139,12 @@ public abstract class AbstractSection extends AbstractPropertySection {
 
         if (!(input instanceof RepositoryNode)) {
             if (input instanceof IAdaptable) {
-                //see ProcessPart.getAdapter()
+                // see ProcessPart.getAdapter()
                 IAdaptable adaptable = (IAdaptable) input;
                 input = adaptable.getAdapter(RepositoryNode.class);
             }
         }
-        
+
         Assert.isTrue(input instanceof RepositoryNode);
         repositoryNode = (RepositoryNode) input;
         repositoryObject = repositoryNode.getObject();

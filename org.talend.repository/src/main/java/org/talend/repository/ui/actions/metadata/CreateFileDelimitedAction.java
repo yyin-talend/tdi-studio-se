@@ -77,7 +77,8 @@ public class CreateFileDelimitedAction extends AbstractCreateAction {
         RepositoryNode fileDelimitedNode = getCurrentRepositoryNode();
 
         if (isToolbar()) {
-            if (fileDelimitedNode != null && fileDelimitedNode.getContentType() != ERepositoryObjectType.METADATA_FILE_DELIMITED) {
+            if (fileDelimitedNode != null
+                    && fileDelimitedNode.getContentType() != ERepositoryObjectType.METADATA_FILE_DELIMITED) {
                 fileDelimitedNode = null;
             }
             if (fileDelimitedNode == null) {
@@ -93,8 +94,8 @@ public class CreateFileDelimitedAction extends AbstractCreateAction {
                     fileDelimitedNode, getExistingNames()));
         } else {
             selection = getSelection();
-            wizardDialog = new WizardDialog(new Shell(), new DelimitedFileWizard(PlatformUI.getWorkbench(), creation, selection,
-                    getExistingNames()));
+            wizardDialog = new WizardDialog(new Shell(), new DelimitedFileWizard(PlatformUI.getWorkbench(), creation,
+                    selection, getExistingNames()));
         }
 
         wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);

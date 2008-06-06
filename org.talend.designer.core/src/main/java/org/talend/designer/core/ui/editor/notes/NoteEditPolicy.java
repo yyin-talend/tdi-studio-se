@@ -24,6 +24,7 @@ import org.talend.designer.core.ui.editor.process.Process;
 /**
  */
 public class NoteEditPolicy extends ComponentEditPolicy {
+
     @Override
     protected Command createDeleteCommand(GroupRequest request) {
         Object parent = getHost().getParent().getModel();

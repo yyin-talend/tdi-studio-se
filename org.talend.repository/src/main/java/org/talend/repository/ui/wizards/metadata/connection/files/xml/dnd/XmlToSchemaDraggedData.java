@@ -15,13 +15,11 @@ package org.talend.repository.ui.wizards.metadata.connection.files.xml.dnd;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
- * DOC amaumont  class global comment. Detailled comment
- * <br/>
- *
+ * DOC amaumont class global comment. Detailled comment <br/>
+ * 
  * $Id$
- *
+ * 
  */
 public class XmlToSchemaDraggedData {
 
@@ -36,15 +34,13 @@ public class XmlToSchemaDraggedData {
         return this.transferableEntryList.add(o);
     }
 
-    
     /**
      * Getter for transferableEntryList.
+     * 
      * @return the transferableEntryList
      */
     public List<TransferableXPathEntry> getTransferableEntryList() {
         return this.transferableEntryList;
     }
 
-    
-    
 }

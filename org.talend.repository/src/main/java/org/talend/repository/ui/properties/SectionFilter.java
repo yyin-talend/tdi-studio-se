@@ -32,16 +32,16 @@ public class SectionFilter implements IFilter {
         if (object instanceof RepositoryNode) {
             return (RepositoryNode) object;
         }
-        
+
         if (object instanceof IAdaptable) {
-            //see ProcessPart.getAdapter()
+            // see ProcessPart.getAdapter()
             IAdaptable adaptable = (IAdaptable) object;
             Object adapter = adaptable.getAdapter(RepositoryNode.class);
             if (adapter != null) {
-                return  (RepositoryNode) adapter;
+                return (RepositoryNode) adapter;
             }
         }
-        
+
         return null;
     }
 

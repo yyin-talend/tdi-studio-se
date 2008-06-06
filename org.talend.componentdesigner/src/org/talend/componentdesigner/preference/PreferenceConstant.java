@@ -13,10 +13,10 @@
 package org.talend.componentdesigner.preference;
 
 /**
- * DOC rli  class global comment. Detailled comment
+ * DOC rli class global comment. Detailled comment
  */
 public class PreferenceConstant {
 
-	public static final String COMPONENTS_PROPERTY = "COMPONENTS_PROPERTY"; //$NON-NLS-1$
+    public static final String COMPONENTS_PROPERTY = "COMPONENTS_PROPERTY"; //$NON-NLS-1$
 
 }

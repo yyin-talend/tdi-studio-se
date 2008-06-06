@@ -200,7 +200,7 @@ public class JavaLanguage extends AbstractLanguage {
     public String getTemplateGeneratedCodeTableColumnVariableWithComponentNamePrefix() {
         return TEMPLATE_GENERATED_CODE_TABLE_COLUMN_VARIABLE;
     }
-    
+
     /*
      * (non-Javadoc)
      * 

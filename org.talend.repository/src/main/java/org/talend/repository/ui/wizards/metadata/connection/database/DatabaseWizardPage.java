@@ -26,7 +26,7 @@ import org.talend.repository.ui.swt.utils.AbstractForm;
 public class DatabaseWizardPage extends WizardPage {
 
     private ConnectionItem connectionItem;
-    
+
     private DatabaseForm databaseForm;
 
     private final String[] existingNames;

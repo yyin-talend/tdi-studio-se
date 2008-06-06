@@ -1,7 +1,5 @@
 package org.talend.designer.abstractmap.ui.visualmap.link;
 
-
-
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Rectangle;
 

@@ -48,8 +48,8 @@ public abstract class AbstractWSDLSchemaStepForm extends AbstractForm {
 
     protected WSDLSchemaConnection getOriginalValueConnection() {
         if (isContextMode() && getContextModeManager() != null) {
-            return (WSDLSchemaConnection) OtherConnectionContextUtils.cloneOriginalValueWSDLSchemaConnection(getConnection(),
-                    getContextModeManager().getSelectedContextType());
+            return (WSDLSchemaConnection) OtherConnectionContextUtils.cloneOriginalValueWSDLSchemaConnection(
+                    getConnection(), getContextModeManager().getSelectedContextType());
         }
         return getConnection();
 

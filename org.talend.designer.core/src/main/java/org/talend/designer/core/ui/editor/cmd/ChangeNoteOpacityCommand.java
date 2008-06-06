@@ -19,9 +19,11 @@ import org.talend.designer.core.ui.editor.notes.Note;
 /**
  */
 public class ChangeNoteOpacityCommand extends Command {
-    
+
     private Note note;
+
     private boolean oldState;
+
     private boolean newState;
 
     public ChangeNoteOpacityCommand(Note note, boolean newState) {
@@ -29,13 +31,13 @@ public class ChangeNoteOpacityCommand extends Command {
         this.note = note;
         this.newState = newState;
     }
-    
+
     @Override
     public void execute() {
         oldState = note.isOpaque();
         note.setOpaque(newState);
     }
-    
+
     @Override
     public void undo() {
         note.setOpaque(oldState);

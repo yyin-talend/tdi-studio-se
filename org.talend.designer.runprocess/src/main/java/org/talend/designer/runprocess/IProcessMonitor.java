@@ -12,14 +12,12 @@
 // ============================================================================
 package org.talend.designer.runprocess;
 
-
 /**
- * DOC amaumont  class global comment. Detailled comment
- * <br/>
- *
+ * DOC amaumont class global comment. Detailled comment <br/>
+ * 
  */
 public interface IProcessMonitor extends Runnable {
 
     public void stopThread();
-    
+
 }

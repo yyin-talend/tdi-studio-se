@@ -44,7 +44,8 @@ public class LightJetBean implements Serializable {
      * @param methodName
      * @param version
      */
-    public LightJetBean(String templateRelativeUri, String className, String methodName, String version, String language, long crc) {
+    public LightJetBean(String templateRelativeUri, String className, String methodName, String version,
+            String language, long crc) {
         this.templateRelativeUri = templateRelativeUri;
         this.className = className;
         this.methodName = methodName;

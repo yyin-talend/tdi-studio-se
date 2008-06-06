@@ -283,8 +283,7 @@ public class TableEntriesManager {
     }
 
     TableItem retrieveTableItem(ITableEntry dataMapTableEntry) {
-        DataMapTableView dataMapTableView = this.mapperManager.retrieveIDataMapTableView(dataMapTableEntry
-                .getParent());
+        DataMapTableView dataMapTableView = this.mapperManager.retrieveIDataMapTableView(dataMapTableEntry.getParent());
         TableItem[] tableItems = new TableItem[0];
         if (dataMapTableEntry instanceof IColumnEntry) {
             tableItems = dataMapTableView.getTableViewerCreatorForColumns().getTable().getItems();

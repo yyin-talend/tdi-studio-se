@@ -137,7 +137,7 @@ public class TableNode extends AbstractNode {
     /**
      * @return List of column names for this table.
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public List getColumnNames() {
 
         if (pcolumnNames == null) {
@@ -161,7 +161,7 @@ public class TableNode extends AbstractNode {
     /**
      * @return List of column names for this table.
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public List getForeignKeyNames() {
 
         if (pforeignKeyNames == null) {
@@ -185,7 +185,7 @@ public class TableNode extends AbstractNode {
     /**
      * @return List of column names for this table.
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public List getPrimaryKeyNames() {
 
         if (pprimaryKeyNames == null) {
@@ -411,7 +411,8 @@ public class TableNode extends AbstractNode {
         // Retrive metadataColumns from Database
         IMetadataConnection iMetadataConnection = ConvertionHelper.convert(connection);
         List<MetadataColumn> metadataColumns = new ArrayList<MetadataColumn>();
-        metadataColumns = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection, getLabelText());
+        metadataColumns = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection,
+                getLabelText());
         Iterator iterate = metadataColumns.iterator();
 
         while (iterate.hasNext()) {
@@ -508,7 +509,7 @@ public class TableNode extends AbstractNode {
      * @return columns
      * @exception
      */
-    @SuppressWarnings("deprecation") //$NON-NLS-1$
+    @SuppressWarnings("deprecation")//$NON-NLS-1$
     public static EList getColumns(RepositoryNode repositoryNode) {
         return getMetadataTable(repositoryNode).getColumns();
     }
@@ -520,7 +521,7 @@ public class TableNode extends AbstractNode {
      * @return columns
      * @exception
      */
-    @SuppressWarnings("deprecation") //$NON-NLS-1$
+    @SuppressWarnings("deprecation")//$NON-NLS-1$
     public static MetadataTable getMetadataTable(RepositoryNode repositoryNode) {
         RepositoryNodeType type = SQLBuilderRepositoryNodeManager.getRepositoryType(repositoryNode);
         if (type != RepositoryNodeType.TABLE) {

@@ -250,8 +250,8 @@ public class JavaProcessor extends Processor {
                 String currentJavaProject = project.getTechnicalLabel();
                 String javaContext = getContextPath().toOSString();
 
-                codeGen = service.createCodeGenerator(process, statistics, trace, javaInterpreter, javaLib, javaContext,
-                        currentJavaProject);
+                codeGen = service.createCodeGenerator(process, statistics, trace, javaInterpreter, javaLib,
+                        javaContext, currentJavaProject);
             } else {
                 codeGen = service.createCodeGenerator(process, statistics, trace);
             }
@@ -341,8 +341,8 @@ public class JavaProcessor extends Processor {
             final String rememberedContents = document.get();
 
             try {
-                final MultiPassContentFormatter formatter = new MultiPassContentFormatter(IJavaPartitions.JAVA_PARTITIONING,
-                        IDocument.DEFAULT_CONTENT_TYPE);
+                final MultiPassContentFormatter formatter = new MultiPassContentFormatter(
+                        IJavaPartitions.JAVA_PARTITIONING, IDocument.DEFAULT_CONTENT_TYPE);
 
                 formatter.setMasterStrategy(new JavaFormattingStrategy());
                 formatter.setSlaveStrategy(new CommentFormattingStrategy(), IJavaPartitions.JAVA_DOC);
@@ -559,8 +559,10 @@ public class JavaProcessor extends Processor {
         if (rootProject == null || javaProject == null) {
             initializeProject();
         }
-        IClasspathEntry jreClasspathEntry = JavaCore.newContainerEntry(new Path("org.eclipse.jdt.launching.JRE_CONTAINER")); //$NON-NLS-1$
-        IClasspathEntry classpathEntry = JavaCore.newSourceEntry(javaProject.getPath().append(JavaUtils.JAVA_SRC_DIRECTORY)); //$NON-NLS-1$
+        IClasspathEntry jreClasspathEntry = JavaCore.newContainerEntry(new Path(
+                "org.eclipse.jdt.launching.JRE_CONTAINER")); //$NON-NLS-1$
+        IClasspathEntry classpathEntry = JavaCore.newSourceEntry(javaProject.getPath().append(
+                JavaUtils.JAVA_SRC_DIRECTORY)); //$NON-NLS-1$
 
         List<IClasspathEntry> classpath = new ArrayList<IClasspathEntry>();
         classpath.add(jreClasspathEntry);
@@ -678,7 +680,8 @@ public class JavaProcessor extends Processor {
      * @return The required job package.
      * @throws JavaModelException
      */
-    private IPackageFragment getProjectPackage(IPackageFragment projectPackage, String jobName) throws JavaModelException {
+    private IPackageFragment getProjectPackage(IPackageFragment projectPackage, String jobName)
+            throws JavaModelException {
 
         IPackageFragmentRoot root = this.javaProject.getPackageFragmentRoot(projectPackage.getResource());
         IPackageFragment leave = root.getPackageFragment(jobName);
@@ -818,7 +821,8 @@ public class JavaProcessor extends Processor {
             for (File externalLib : externalLibDirectory.listFiles(FilesUtils.getAcceptJARFilesFilter())) {
                 if (externalLib.isFile() && neededLibraries.contains(externalLib.getName())) {
                     if (ProcessorUtilities.isExportConfig()) {
-                        libPath.append(new Path(this.getLibraryPath()).append(externalLib.getName()) + classPathSeparator);
+                        libPath.append(new Path(this.getLibraryPath()).append(externalLib.getName())
+                                + classPathSeparator);
                     } else {
                         libPath.append(new Path(externalLib.getAbsolutePath()).toPortableString() + classPathSeparator);
                     }
@@ -836,7 +840,8 @@ public class JavaProcessor extends Processor {
         } else {
             IFolder classesFolder = javaProject.getProject().getFolder(JavaUtils.JAVA_CLASSES_DIRECTORY); //$NON-NLS-1$
             IPath projectFolderPath = classesFolder.getFullPath().removeFirstSegments(1);
-            projectPath = Path.fromOSString(getCodeProject().getLocation().toOSString()).append(projectFolderPath).toOSString()
+            projectPath = Path.fromOSString(getCodeProject().getLocation().toOSString()).append(projectFolderPath)
+                    .toOSString()
                     + classPathSeparator;
         }
 
@@ -853,7 +858,8 @@ public class JavaProcessor extends Processor {
             }
 
             exportJar = classPathSeparator + process.getName().toLowerCase() + version + ".jar" + classPathSeparator;
-            Set<JobInfo> jobInfos = ProcessorUtilities.getChildrenJobInfo((ProcessItem) process.getProperty().getItem());
+            Set<JobInfo> jobInfos = ProcessorUtilities
+                    .getChildrenJobInfo((ProcessItem) process.getProperty().getItem());
             for (JobInfo jobInfo : jobInfos) {
                 if (jobInfo.getJobVersion() != null) {
                     version = "_" + jobInfo.getJobVersion();
@@ -875,7 +881,8 @@ public class JavaProcessor extends Processor {
     }
 
     private String[] addVMArguments(String[] strings) {
-        String string = RunProcessPlugin.getDefault().getPreferenceStore().getString(RunProcessPrefsConstants.VMARGUMENTS);
+        String string = RunProcessPlugin.getDefault().getPreferenceStore().getString(
+                RunProcessPrefsConstants.VMARGUMENTS);
         String replaceAll = string.trim();
         String[] vmargs = replaceAll.split(" ");
         String[] lines = new String[strings.length + vmargs.length];

@@ -250,7 +250,7 @@ public class InputDataMapTableView extends DataMapTableView {
 
         // DROP DOWN
         dropDownItem = new ToolItem(toolBarActions, SWT.DROP_DOWN | SWT.BORDER);
-        if(WindowSystem.isGTK()) {
+        if (WindowSystem.isGTK()) {
             refreshLabelForJoinDropDown();
         }
         dropDownItem.addSelectionListener(new DropDownSelectionListener());

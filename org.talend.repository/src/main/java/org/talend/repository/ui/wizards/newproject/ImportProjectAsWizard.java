@@ -114,8 +114,8 @@ public class ImportProjectAsWizard extends Wizard {
                                     new SubProgressMonitor(monitor, 1));
                         } else {
                             try {
-                                ImportProjectsUtilities.importArchiveProjectAs(getShell(), name, technicalName, sourcePath,
-                                        new SubProgressMonitor(monitor, 1));
+                                ImportProjectsUtilities.importArchiveProjectAs(getShell(), name, technicalName,
+                                        sourcePath, new SubProgressMonitor(monitor, 1));
                             } catch (TarException e) {
                                 throw new InvocationTargetException(e, "Encoutering problems opening archive file");
                             } catch (IOException e) {

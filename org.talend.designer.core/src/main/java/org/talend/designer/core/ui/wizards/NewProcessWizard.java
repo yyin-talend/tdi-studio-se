@@ -112,7 +112,6 @@ public class NewProcessWizard extends Wizard {
         return processItem != null;
     }
 
-
     /**
      * Getter for project.
      * 

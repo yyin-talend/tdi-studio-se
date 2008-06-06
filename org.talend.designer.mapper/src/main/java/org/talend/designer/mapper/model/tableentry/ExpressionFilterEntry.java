@@ -14,16 +14,15 @@ package org.talend.designer.mapper.model.tableentry;
 
 import org.talend.designer.abstractmap.model.table.IDataMapTable;
 
-
 /**
- * DOC amaumont  class global comment. Detailled comment
- * <br/>
- *
+ * DOC amaumont class global comment. Detailled comment <br/>
+ * 
  */
 public class ExpressionFilterEntry extends DataMapTableEntry {
 
     /**
      * DOC amaumont ExpressionFilterEntry constructor comment.
+     * 
      * @param abstractDataMapTable
      * @param name
      * @param expression
@@ -34,6 +33,7 @@ public class ExpressionFilterEntry extends DataMapTableEntry {
 
     /**
      * DOC amaumont ExpressionFilterEntry constructor comment.
+     * 
      * @param abstractDataMapTable
      * @param expression
      */
@@ -43,26 +43,29 @@ public class ExpressionFilterEntry extends DataMapTableEntry {
 
     /**
      * DOC amaumont ExpressionFilterEntry constructor comment.
+     * 
      * @param abstractDataMapTable
      */
     public ExpressionFilterEntry(IDataMapTable abstractDataMapTable) {
         super(abstractDataMapTable);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.mapper.model.tableentry.IDataMapTableEntry#isTableEntry()
      */
     public boolean isTableEntry() {
         return false;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.mapper.model.tableentry.IDataMapTableEntry#isColumnEntry()
      */
     public boolean isColumnEntry() {
         return false;
     }
-
-    
 
 }

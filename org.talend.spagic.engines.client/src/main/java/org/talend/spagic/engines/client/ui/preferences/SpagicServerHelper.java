@@ -75,8 +75,8 @@ public final class SpagicServerHelper {
     public static String flat(List<SpagoBiServer> list) {
         final List<String> strings = new ArrayList<String>(list.size());
         for (SpagoBiServer spagoBiServer : list) {
-            strings.add(getString(spagoBiServer.getEngineName(), spagoBiServer.getShortDescription(), spagoBiServer.getHost(),
-                    spagoBiServer.getPort(), spagoBiServer.getLogin(), spagoBiServer.getPassword()));
+            strings.add(getString(spagoBiServer.getEngineName(), spagoBiServer.getShortDescription(), spagoBiServer
+                    .getHost(), spagoBiServer.getPort(), spagoBiServer.getLogin(), spagoBiServer.getPassword()));
         }
         return writeString(strings);
     }
@@ -123,8 +123,8 @@ public final class SpagicServerHelper {
         return index[6];
     }
 
-    public static final String getString(String engineName, String shortDescription, String host, String port, String login,
-            String password) {
+    public static final String getString(String engineName, String shortDescription, String host, String port,
+            String login, String password) {
         check(engineName);
         check(shortDescription);
         check(host);
@@ -133,8 +133,8 @@ public final class SpagicServerHelper {
         check(password);
         // check(applicationContext);
         return engineName + ENGINE_DESCRIPTION_DELIMITER + shortDescription + ENGINE_DESCRIPTION_DELIMITER + host
-                + ENGINE_DESCRIPTION_DELIMITER + port + ENGINE_DESCRIPTION_DELIMITER + login + ENGINE_DESCRIPTION_DELIMITER
-                + password;
+                + ENGINE_DESCRIPTION_DELIMITER + port + ENGINE_DESCRIPTION_DELIMITER + login
+                + ENGINE_DESCRIPTION_DELIMITER + password;
         // + ENGINE_DESCRIPTION_DELIMITER + applicationContext;
     }
 

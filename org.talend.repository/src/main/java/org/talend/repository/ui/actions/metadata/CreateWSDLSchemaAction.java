@@ -58,7 +58,8 @@ public class CreateWSDLSchemaAction extends AbstractCreateAction {
         openLabel = "Open WSDL schema";
         // TODO: should change to another icon.
         defaultImage = ImageProvider.getImageDesc(ECoreImage.METADATA_WSDL_SCHEMA_ICON);
-        createImage = OverlayImageProvider.getImageWithNew(ImageProvider.getImage(ECoreImage.METADATA_WSDL_SCHEMA_ICON));
+        createImage = OverlayImageProvider
+                .getImageWithNew(ImageProvider.getImage(ECoreImage.METADATA_WSDL_SCHEMA_ICON));
 
         setText(createLabel);
         setToolTipText(createLabel);
@@ -137,8 +138,8 @@ public class CreateWSDLSchemaAction extends AbstractCreateAction {
                     wsdlSchemaNode, getExistingNames(), false));
         } else {
             selection = getSelection();
-            wizardDialog = new WizardDialog(new Shell(), new WSDLSchemaWizard(PlatformUI.getWorkbench(), creation, selection,
-                    getExistingNames(), false));
+            wizardDialog = new WizardDialog(new Shell(), new WSDLSchemaWizard(PlatformUI.getWorkbench(), creation,
+                    selection, getExistingNames(), false));
         }
 
         wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);

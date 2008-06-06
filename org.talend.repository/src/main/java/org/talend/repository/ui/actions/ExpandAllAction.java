@@ -74,7 +74,7 @@ public class ExpandAllAction extends AContextualAction {
                 case STABLE_SYSTEM_FOLDER:
                 case SYSTEM_FOLDER:
                 case SIMPLE_FOLDER:
-                	canWork = node.hasChildren();
+                    canWork = node.hasChildren();
                     break;
                 default:
                     canWork = false;

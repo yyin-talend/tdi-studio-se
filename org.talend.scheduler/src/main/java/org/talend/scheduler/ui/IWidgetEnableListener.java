@@ -11,15 +11,15 @@
 //
 // ============================================================================
 package org.talend.scheduler.ui;
+
 /**
  * 
- * DOC dev  class global comment. Detailled comment
- * <br/>
- *
+ * DOC dev class global comment. Detailled comment <br/>
+ * 
  * $Id$
- *
+ * 
  */
 public interface IWidgetEnableListener {
 
-	public void enableAll(boolean enable);
+    public void enableAll(boolean enable);
 }

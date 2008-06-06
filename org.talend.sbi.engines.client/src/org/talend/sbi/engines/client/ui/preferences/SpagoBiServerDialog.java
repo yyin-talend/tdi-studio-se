@@ -83,8 +83,9 @@ public class SpagoBiServerDialog extends Dialog {
     // public SpagoBiServerDialog(Shell parentShell, List existingServers, String initialEngine, String
     // initialDescription,
     // String initialHost, String initialLogin, String initialPassword, String initialPort, String initialContext) {
-    public SpagoBiServerDialog(Shell parentShell, List existingServers, String initialEngine, String initialDescription,
-            String initialHost, String initialLogin, String initialPassword, String initialPort) {
+    public SpagoBiServerDialog(Shell parentShell, List existingServers, String initialEngine,
+            String initialDescription, String initialHost, String initialLogin, String initialPassword,
+            String initialPort) {
         super(parentShell);
         this.existingServers = existingServers == null ? Collections.EMPTY_LIST : existingServers;
         engineName = initialEngine == null ? "" : initialEngine; //$NON-NLS-1$

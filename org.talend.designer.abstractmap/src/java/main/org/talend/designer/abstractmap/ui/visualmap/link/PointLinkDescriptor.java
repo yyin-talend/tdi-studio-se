@@ -1,6 +1,5 @@
 package org.talend.designer.abstractmap.ui.visualmap.link;
 
-
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.abstractmap.ui.visualmap.zone.IMapZone;
 

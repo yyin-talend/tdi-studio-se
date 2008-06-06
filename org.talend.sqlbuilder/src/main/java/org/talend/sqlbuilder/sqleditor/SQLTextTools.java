@@ -24,165 +24,156 @@ import org.talend.sqlbuilder.IConstants;
 import org.talend.sqlbuilder.sessiontree.model.utility.Dictionary;
 
 /**
- * Tools required to configure a Java text viewer. The color manager and all
- * scanner exist only one time, i.e. the same instances are returned to all
- * clients. Thus, clients share those tools.
+ * Tools required to configure a Java text viewer. The color manager and all scanner exist only one time, i.e. the same
+ * instances are returned to all clients. Thus, clients share those tools.
  * <p>
  * This class may be instantiated; it is not intended to be subclassed.
  * </p>
- *
+ * 
  * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40 +0000 (Fri, 29 Sep 2006) nrousseau $
+ * 
  * @author qiang.zhang
  */
 public class SQLTextTools {
 
-	/**
-	 * PreferenceListener.
-	 */
-	private class PreferenceListener implements IPropertyChangeListener {
-		public void propertyChange(PropertyChangeEvent event) {
-			adaptToPreferenceChange(event);
-		}
-	};
+    /**
+     * PreferenceListener.
+     */
+    private class PreferenceListener implements IPropertyChangeListener {
 
-	private SQLColorManager fColorManager;
+        public void propertyChange(PropertyChangeEvent event) {
+            adaptToPreferenceChange(event);
+        }
+    };
 
-	private SQLCodeScanner fCodeScanner;
+    private SQLColorManager fColorManager;
 
-	private SingleTokenSQLScanner fMultilineCommentScanner;
+    private SQLCodeScanner fCodeScanner;
 
-	private SingleTokenSQLScanner fSinglelineCommentScanner;
+    private SingleTokenSQLScanner fMultilineCommentScanner;
 
-	private SingleTokenSQLScanner fStringScanner;
+    private SingleTokenSQLScanner fSinglelineCommentScanner;
 
-	private SQLPartitionScanner fPartitionScanner;
+    private SingleTokenSQLScanner fStringScanner;
 
-	/* The preference store */
-	private IPreferenceStore fPreferenceStore;
+    private SQLPartitionScanner fPartitionScanner;
 
-	/* The preference change listener */
-	private PreferenceListener fPreferenceListener = new PreferenceListener();
+    /* The preference store */
+    private IPreferenceStore fPreferenceStore;
 
-	private Dictionary dictionary;
+    /* The preference change listener */
+    private PreferenceListener fPreferenceListener = new PreferenceListener();
 
-	/**
-	 * Creates a new Java text tools collection.
-	 */
-	public SQLTextTools(IPreferenceStore store, Dictionary dictionary) {
-		// public SQLTextTools(IPreferenceStore store) {
-		fPreferenceStore = store;
-		this.dictionary = dictionary;
-		fPreferenceStore.addPropertyChangeListener(fPreferenceListener);
+    private Dictionary dictionary;
 
-		fColorManager = new SQLColorManager();
-		fCodeScanner = new SQLCodeScanner(fColorManager, store, dictionary);
-		fMultilineCommentScanner = new SingleTokenSQLScanner(fColorManager,
-				store, IConstants.SQL_MULTILINE_COMMENT);
-		fSinglelineCommentScanner = new SingleTokenSQLScanner(fColorManager,
-				store, IConstants.SQL_SINGLE_LINE_COMMENT);
-		fStringScanner = new SingleTokenSQLScanner(fColorManager, store,
-				IConstants.SQL_STRING);
-		fPartitionScanner = new SQLPartitionScanner();
+    /**
+     * Creates a new Java text tools collection.
+     */
+    public SQLTextTools(IPreferenceStore store, Dictionary dictionary) {
+        // public SQLTextTools(IPreferenceStore store) {
+        fPreferenceStore = store;
+        this.dictionary = dictionary;
+        fPreferenceStore.addPropertyChangeListener(fPreferenceListener);
 
-	}
+        fColorManager = new SQLColorManager();
+        fCodeScanner = new SQLCodeScanner(fColorManager, store, dictionary);
+        fMultilineCommentScanner = new SingleTokenSQLScanner(fColorManager, store, IConstants.SQL_MULTILINE_COMMENT);
+        fSinglelineCommentScanner = new SingleTokenSQLScanner(fColorManager, store, IConstants.SQL_SINGLE_LINE_COMMENT);
+        fStringScanner = new SingleTokenSQLScanner(fColorManager, store, IConstants.SQL_STRING);
+        fPartitionScanner = new SQLPartitionScanner();
 
-	public void setNewDictionary(Dictionary newDictionary) {
-		dictionary = newDictionary;
-		fCodeScanner = new SQLCodeScanner(fColorManager, fPreferenceStore,
-				newDictionary);
-	}
+    }
 
-	public Dictionary getDictionary() {
-		return dictionary;
-	}
+    public void setNewDictionary(Dictionary newDictionary) {
+        dictionary = newDictionary;
+        fCodeScanner = new SQLCodeScanner(fColorManager, fPreferenceStore, newDictionary);
+    }
 
-	/**
-	 * Disposes all the individual tools of this tools collection.
-	 */
-	public void dispose() {
+    public Dictionary getDictionary() {
+        return dictionary;
+    }
 
-		fCodeScanner = null;
-		fMultilineCommentScanner = null;
-		fSinglelineCommentScanner = null;
-		fStringScanner = null;
-		fPartitionScanner = null;
+    /**
+     * Disposes all the individual tools of this tools collection.
+     */
+    public void dispose() {
 
-		if (fColorManager != null) {
-			fColorManager.dispose();
-			fColorManager = null;
-		}
+        fCodeScanner = null;
+        fMultilineCommentScanner = null;
+        fSinglelineCommentScanner = null;
+        fStringScanner = null;
+        fPartitionScanner = null;
 
-		if (fPreferenceStore != null) {
-			fPreferenceStore.removePropertyChangeListener(fPreferenceListener);
-			fPreferenceStore = null;
-			fPreferenceListener = null;
-		}
-	}
+        if (fColorManager != null) {
+            fColorManager.dispose();
+            fColorManager = null;
+        }
 
-	public RuleBasedScanner getCodeScanner() {
-		return fCodeScanner;
-	}
+        if (fPreferenceStore != null) {
+            fPreferenceStore.removePropertyChangeListener(fPreferenceListener);
+            fPreferenceStore = null;
+            fPreferenceListener = null;
+        }
+    }
 
-	public RuleBasedScanner getMultilineCommentScanner() {
-		return fMultilineCommentScanner;
-	}
+    public RuleBasedScanner getCodeScanner() {
+        return fCodeScanner;
+    }
 
-	public RuleBasedScanner getSinglelineCommentScanner() {
-		return fSinglelineCommentScanner;
-	}
+    public RuleBasedScanner getMultilineCommentScanner() {
+        return fMultilineCommentScanner;
+    }
 
-	public RuleBasedScanner getStringScanner() {
-		return fStringScanner;
-	}
+    public RuleBasedScanner getSinglelineCommentScanner() {
+        return fSinglelineCommentScanner;
+    }
 
-	public IPartitionTokenScanner getPartitionScanner() {
-		return fPartitionScanner;
-	}
+    public RuleBasedScanner getStringScanner() {
+        return fStringScanner;
+    }
 
-	public IDocumentPartitioner createDocumentPartitioner() {
+    public IPartitionTokenScanner getPartitionScanner() {
+        return fPartitionScanner;
+    }
 
-		String[] types = new String[] { IDocument.DEFAULT_CONTENT_TYPE,
-				IConstants.SQL_MULTILINE_COMMENT,
-				IConstants.SQL_SINGLE_LINE_COMMENT, IConstants.SQL_STRING };
+    public IDocumentPartitioner createDocumentPartitioner() {
 
-		return new FastPartitioner(getPartitionScanner(), types);
-	}
+        String[] types = new String[] { IDocument.DEFAULT_CONTENT_TYPE, IConstants.SQL_MULTILINE_COMMENT,
+                IConstants.SQL_SINGLE_LINE_COMMENT, IConstants.SQL_STRING };
 
-	/**
-	 * Determines whether the preference change encoded by the given event
-	 * changes the behavior of one its contained components.
-	 * 
-	 * @param event
-	 *            the event to be investigated
-	 * @return <code>true</code> if event causes a behavioral change
-	 */
-	public boolean affectsBehavior(PropertyChangeEvent event) {
-		return fCodeScanner.affectsBehavior(event)
-				|| fMultilineCommentScanner.affectsBehavior(event)
-				|| fSinglelineCommentScanner.affectsBehavior(event)
-				|| fStringScanner.affectsBehavior(event);
-	}
+        return new FastPartitioner(getPartitionScanner(), types);
+    }
 
-	/**
-	 * Adapts the behavior of the contained components to the change encoded in
-	 * the given event.
-	 * 
-	 * @param event
-	 *            the event to whch to adapt
-	 */
-	protected void adaptToPreferenceChange(PropertyChangeEvent event) {
-		if (fCodeScanner.affectsBehavior(event)) {
-			fCodeScanner.adaptToPreferenceChange(event);
-		}
-		if (fMultilineCommentScanner.affectsBehavior(event)) {
-			fMultilineCommentScanner.adaptToPreferenceChange(event);
-		}
-		if (fSinglelineCommentScanner.affectsBehavior(event)) {
-			fSinglelineCommentScanner.adaptToPreferenceChange(event);
-		}
-		if (fStringScanner.affectsBehavior(event)) {
-			fStringScanner.adaptToPreferenceChange(event);
-		}
-	}
+    /**
+     * Determines whether the preference change encoded by the given event changes the behavior of one its contained
+     * components.
+     * 
+     * @param event the event to be investigated
+     * @return <code>true</code> if event causes a behavioral change
+     */
+    public boolean affectsBehavior(PropertyChangeEvent event) {
+        return fCodeScanner.affectsBehavior(event) || fMultilineCommentScanner.affectsBehavior(event)
+                || fSinglelineCommentScanner.affectsBehavior(event) || fStringScanner.affectsBehavior(event);
+    }
+
+    /**
+     * Adapts the behavior of the contained components to the change encoded in the given event.
+     * 
+     * @param event the event to whch to adapt
+     */
+    protected void adaptToPreferenceChange(PropertyChangeEvent event) {
+        if (fCodeScanner.affectsBehavior(event)) {
+            fCodeScanner.adaptToPreferenceChange(event);
+        }
+        if (fMultilineCommentScanner.affectsBehavior(event)) {
+            fMultilineCommentScanner.adaptToPreferenceChange(event);
+        }
+        if (fSinglelineCommentScanner.affectsBehavior(event)) {
+            fSinglelineCommentScanner.adaptToPreferenceChange(event);
+        }
+        if (fStringScanner.affectsBehavior(event)) {
+            fStringScanner.adaptToPreferenceChange(event);
+        }
+    }
 
 }

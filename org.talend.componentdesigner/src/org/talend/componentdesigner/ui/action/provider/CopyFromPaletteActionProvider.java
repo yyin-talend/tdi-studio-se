@@ -80,10 +80,11 @@ public class CopyFromPaletteActionProvider extends CommonActionProvider {
                 e.printStackTrace();
             }
             String path = url.getFile();
-//            path = "";
+            // path = "";
 
-            ImportComponentDialog dialog = new ImportComponentDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-                    .getShell(), Messages.getString("CopyFromPaletteActionProvider.Label2"), null, path, selectedProject); //$NON-NLS-1$
+            ImportComponentDialog dialog = new ImportComponentDialog(PlatformUI.getWorkbench()
+                    .getActiveWorkbenchWindow().getShell(),
+                    Messages.getString("CopyFromPaletteActionProvider.Label2"), null, path, selectedProject); //$NON-NLS-1$
             dialog.open();
         }
     }

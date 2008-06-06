@@ -89,8 +89,8 @@ public class Link implements IMapperLink {
         IMapZone zone1 = pointLinkDescriptor1.getZone();
         IMapZone zone2 = pointLinkDescriptor2.getZone();
 
-        int yOffsetPoint1 = uiManager.getVerticalScrolledOffsetBar((Zone)zone1);
-        int yOffsetPoint2 = uiManager.getVerticalScrolledOffsetBar((Zone)zone2);
+        int yOffsetPoint1 = uiManager.getVerticalScrolledOffsetBar((Zone) zone1);
+        int yOffsetPoint2 = uiManager.getVerticalScrolledOffsetBar((Zone) zone2);
 
         boolean leftSidePosition = ((zone1 == Zone.INPUTS || zone1 == Zone.OUTPUTS) && zone1 == zone2);
 

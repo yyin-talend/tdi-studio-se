@@ -114,9 +114,9 @@ public class RepositoryValueUtils {
                 Connection connection = (Connection) connectionItem.getConnection();
                 if (!connection.isReadOnly()) {
                     repositoryConnectionItemMap.put(connectionItem.getProperty().getId() + "", connectionItem); //$NON-NLS-1$
-                    repositoryDBIdAndNameMap.put(connectionItem.getProperty().getId(),
-                            getRepositoryAliasName(connectionItem) + ":" //$NON-NLS-1$
-                                    + connectionItem.getProperty().getLabel());
+                    repositoryDBIdAndNameMap.put(connectionItem.getProperty().getId(), getRepositoryAliasName(connectionItem)
+                            + ":" //$NON-NLS-1$
+                            + connectionItem.getProperty().getLabel());
                     for (Object tableObj : connection.getTables()) {
                         org.talend.core.model.metadata.builder.connection.MetadataTable table;
 

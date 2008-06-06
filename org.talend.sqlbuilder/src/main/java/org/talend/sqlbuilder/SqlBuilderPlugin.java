@@ -69,7 +69,7 @@ public class SqlBuilderPlugin extends AbstractUIPlugin {
     public static void log(String msg, Throwable e) {
         ExceptionHandler.process(e);
     }
-    
+
     public IRepositoryService getRepositoryService() {
         return (IRepositoryService) GlobalServiceRegister.getDefault().getService(IRepositoryService.class);
     }

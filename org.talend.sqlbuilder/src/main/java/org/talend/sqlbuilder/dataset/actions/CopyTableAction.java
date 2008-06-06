@@ -33,7 +33,7 @@ import org.talend.sqlbuilder.util.ImageUtil;
 public class CopyTableAction extends AbstractDataSetTableContextAction {
 
     private static final ImageDescriptor IMAGE = ImageUtil.getDescriptor("Images.CopyIcon"); //$NON-NLS-1$
-    
+
     /*
      * (non-Javadoc)
      * 
@@ -42,7 +42,6 @@ public class CopyTableAction extends AbstractDataSetTableContextAction {
     public String getText() {
         return Messages.getString("DataSetTable.Actions.CopyToClipboard"); //$NON-NLS-1$
     }
-
 
     /*
      * (non-Javadoc)
@@ -53,9 +52,9 @@ public class CopyTableAction extends AbstractDataSetTableContextAction {
         return IMAGE;
     }
 
-
     /**
      * Copy all table data to clipboard.
+     * 
      * @see org.eclipse.jface.action.IAction#run()
      */
     public void run() {
@@ -70,24 +69,24 @@ public class CopyTableAction extends AbstractDataSetTableContextAction {
                     Clipboard clipBoard = new Clipboard(Display.getCurrent());
                     TextTransfer textTransfer = TextTransfer.getInstance();
                     StringBuffer buffer = new StringBuffer(""); //$NON-NLS-1$
-                    
+
                     // get preferences
                     String lineSeparator = System.getProperty("line.separator"); //$NON-NLS-1$
-                    String columnSeparator = SqlBuilderPlugin.getDefault().getPreferenceStore().getString(IConstants.CLIP_EXPORT_SEPARATOR);
+                    String columnSeparator = SqlBuilderPlugin.getDefault().getPreferenceStore().getString(
+                            IConstants.CLIP_EXPORT_SEPARATOR);
                     boolean includeColumnNames = SqlBuilderPlugin.getDefault().getPreferenceStore().getBoolean(
                             IConstants.CLIP_EXPORT_COLUMNS);
-                    
-                    
-                    TableItem[] items = ptable.getItems();                    
+
+                    TableItem[] items = ptable.getItems();
                     DataSet dataSet = (DataSet) ptable.getData();
-                    
+
                     if (items == null || dataSet == null) {
                         return;
                     }
-                    
+
                     // export column names
                     if (includeColumnNames) {
-                        
+
                         String[] columnNames = dataSet.getColumnLabels();
                         for (int i = 0; i < columnNames.length; i++) {
                             buffer.append(columnNames[i]);
@@ -99,7 +98,7 @@ public class CopyTableAction extends AbstractDataSetTableContextAction {
                     // export column data
                     int columnCount = ptable.getColumnCount();
                     for (int i = 0; i < items.length; i++) {
-                                               
+
                         for (int j = 0; j < columnCount; j++) {
                             buffer.append(items[i].getText(j));
                             buffer.append(columnSeparator);
@@ -108,7 +107,7 @@ public class CopyTableAction extends AbstractDataSetTableContextAction {
                     }
 
                     // put all on clipboard
-                    clipBoard.setContents(new Object[] {buffer.toString()}, new Transfer[] {textTransfer});
+                    clipBoard.setContents(new Object[] { buffer.toString() }, new Transfer[] { textTransfer });
 
                 } catch (Exception e) {
                     SqlBuilderPlugin.log(Messages.getString("CopyTableAction.logMessage"), e); //$NON-NLS-1$

@@ -34,21 +34,18 @@ import org.talend.sqlbuilder.SqlBuilderPlugin;
  */
 public class DataSetTableLabelProvider implements ITableLabelProvider {
 
-    private SimpleDateFormat pdateFormatter = new SimpleDateFormat(
-            SqlBuilderPlugin.getDefault().getPluginPreferences().getString(IConstants.DATASETRESULT_DATE_FORMAT));
+    private SimpleDateFormat pdateFormatter = new SimpleDateFormat(SqlBuilderPlugin.getDefault().getPluginPreferences()
+            .getString(IConstants.DATASETRESULT_DATE_FORMAT));
 
     private DecimalFormat pdecimalFormat = new DecimalFormat();
 
-    
     private boolean pformatDates = SqlBuilderPlugin.getDefault().getPluginPreferences().getBoolean(
             IConstants.DATASETRESULT_FORMAT_DATES);
-
 
     public DataSetTableLabelProvider() {
 
         pdecimalFormat.setGroupingUsed(false);
     }
-
 
     /*
      * (non-Javadoc)
@@ -59,7 +56,6 @@ public class DataSetTableLabelProvider implements ITableLabelProvider {
 
         // noop
     }
-
 
     /*
      * (non-Javadoc)
@@ -72,24 +68,20 @@ public class DataSetTableLabelProvider implements ITableLabelProvider {
 
     }
 
-
     /*
      * (non-Javadoc)
      * 
-     * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object,
-     *      int)
+     * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
      */
     public Image getColumnImage(Object element, int columnIndex) {
 
         return null;
     }
 
-
     /*
      * (non-Javadoc)
      * 
-     * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object,
-     *      int)
+     * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int)
      */
     public String getColumnText(Object element, int columnIndex) {
 
@@ -120,18 +112,15 @@ public class DataSetTableLabelProvider implements ITableLabelProvider {
 
     }
 
-
     /*
      * (non-Javadoc)
      * 
-     * @see org.eclipse.jface.viewers.IBaseLabelProvider#isLabelProperty(java.lang.Object,
-     *      java.lang.String)
+     * @see org.eclipse.jface.viewers.IBaseLabelProvider#isLabelProperty(java.lang.Object, java.lang.String)
      */
     public boolean isLabelProperty(Object element, String property) {
 
         return false;
     }
-
 
     /*
      * (non-Javadoc)

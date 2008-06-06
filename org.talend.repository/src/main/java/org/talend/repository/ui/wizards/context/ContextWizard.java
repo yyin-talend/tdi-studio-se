@@ -76,7 +76,8 @@ public class ContextWizard extends RepositoryWizard implements INewWizard {
      * 
      * this constructor only for context mode. (feature 2449)
      */
-    public ContextWizard(final String contextName, boolean creation, ISelection selection, final List<IContextParameter> paramList) {
+    public ContextWizard(final String contextName, boolean creation, ISelection selection,
+            final List<IContextParameter> paramList) {
         this(PlatformUI.getWorkbench(), creation, selection, false);
         initContextMode(contextName, paramList);
     }
@@ -125,8 +126,8 @@ public class ContextWizard extends RepositoryWizard implements INewWizard {
         if (creation) {
             contextItem = PropertiesFactory.eINSTANCE.createContextItem();
             contextProperty = PropertiesFactory.eINSTANCE.createProperty();
-            contextProperty.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                    .getUser());
+            contextProperty.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(
+                    Context.REPOSITORY_CONTEXT_KEY)).getUser());
             contextProperty.setVersion(VersionUtils.DEFAULT_VERSION);
             contextProperty.setStatusCode(""); //$NON-NLS-1$
 
@@ -222,7 +223,8 @@ public class ContextWizard extends RepositoryWizard implements INewWizard {
                 // TimeMeasure.end("performFinish");
             } catch (PersistenceException e) {
                 String detailError = e.toString();
-                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("CommonWizard.persistenceException"), //$NON-NLS-1$
+                new ErrorDialogWidthDetailArea(getShell(), PID,
+                        Messages.getString("CommonWizard.persistenceException"), //$NON-NLS-1$
                         detailError);
                 log.error(Messages.getString("CommonWizard.persistenceException") + "\n" + detailError); //$NON-NLS-1$ //$NON-NLS-2$
                 return false;
@@ -260,7 +262,8 @@ public class ContextWizard extends RepositoryWizard implements INewWizard {
             RepositoryNode node = (RepositoryNode) ((IStructuredSelection) selection).getFirstElement();
 
             IPath path;
-            if (node != null && (node.getType() == ENodeType.SIMPLE_FOLDER || node.getType() == ENodeType.SYSTEM_FOLDER)) {
+            if (node != null
+                    && (node.getType() == ENodeType.SIMPLE_FOLDER || node.getType() == ENodeType.SYSTEM_FOLDER)) {
                 path = RepositoryNodeUtilities.getPath(node);
                 return path;
             }

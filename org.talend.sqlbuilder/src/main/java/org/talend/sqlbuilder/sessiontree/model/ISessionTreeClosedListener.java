@@ -19,7 +19,7 @@ package org.talend.sqlbuilder.sessiontree.model;
  * Comments
  */
 public interface ISessionTreeClosedListener {
-    
+
     /**
      * Close SessionTreeNode.
      */

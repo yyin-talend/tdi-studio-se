@@ -22,36 +22,31 @@ import org.eclipse.ui.PlatformUI;
 
 /**
  * OpenPerlHelpAction.java.
- *
+ * 
  */
-public class OpenPerlHelpAction extends Action implements IWorkbenchWindowActionDelegate  {
+public class OpenPerlHelpAction extends Action implements IWorkbenchWindowActionDelegate {
 
-	public OpenPerlHelpAction() {
-		super();
-	}
+    public OpenPerlHelpAction() {
+        super();
+    }
 
+    public void run() {
+        Display workbenchDisplay = PlatformUI.getWorkbench().getDisplay();
+        PerlHelpDialog dialog = new PerlHelpDialog(workbenchDisplay.getActiveShell());
+        dialog.open();
+    }
 
-	public void run() {
-		Display workbenchDisplay = PlatformUI.getWorkbench().getDisplay();
-		PerlHelpDialog dialog = new PerlHelpDialog(workbenchDisplay.getActiveShell());
-		dialog.open();
-	}
+    public void selectionChanged(IAction action, ISelection selection) {
+    }
 
+    public void dispose() {
+    }
 
-	public void selectionChanged(IAction action, ISelection selection) {
-	}
+    public void run(IAction action) {
+        run();
+    }
 
+    public void init(IWorkbenchWindow window) {
+    }
 
-	public void dispose() {
-	}
-
-
-	public void run(IAction action) {
-		run();
-	}
-
-
-	public void init(IWorkbenchWindow window) {
-	}
-	
 }

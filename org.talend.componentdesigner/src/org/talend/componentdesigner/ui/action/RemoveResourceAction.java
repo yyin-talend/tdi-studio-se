@@ -17,26 +17,27 @@ import org.talend.componentdesigner.model.ILibEntry;
 import org.talend.componentdesigner.ui.composite.ILibListViewer;
 
 /**
- * DOC rli  class global comment. Detailled comment
+ * DOC rli class global comment. Detailled comment
  */
 public class RemoveResourceAction extends UseResourceAction {
 
-	public RemoveResourceAction(ILibListViewer viewer) {
-		super(Messages.getString("RemoveResourceAction.Remove"), viewer); //$NON-NLS-1$
-	}
-	
-	protected int getActionType() {
-		return REMOVE;
-	}
+    public RemoveResourceAction(ILibListViewer viewer) {
+        super(Messages.getString("RemoveResourceAction.Remove"), viewer); //$NON-NLS-1$
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.action.Action#run()
-	 */
-	@Override
-	public void run() {
-		ILibEntry[] libEntries = this.getViewer().getSelectedEntries();
-		this.getViewer().removeEntries(libEntries);
-	}
-	
+    protected int getActionType() {
+        return REMOVE;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.action.Action#run()
+     */
+    @Override
+    public void run() {
+        ILibEntry[] libEntries = this.getViewer().getSelectedEntries();
+        this.getViewer().removeEntries(libEntries);
+    }
 
 }

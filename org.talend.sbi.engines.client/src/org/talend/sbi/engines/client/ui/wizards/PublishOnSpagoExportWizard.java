@@ -58,14 +58,14 @@ public class PublishOnSpagoExportWizard extends Wizard implements IExportWizard 
             section.put(PerlPublishOnSpagoExportWizardPage.STORE_MODEL_ID, true);
             section.put(PerlPublishOnSpagoExportWizardPage.STORE_JOB_ID, true);
             section.put(PerlPublishOnSpagoExportWizardPage.STORE_CONTEXT_ID, true);
-            
+
             section.put(JavaPublishOnSpagoExportWizardPage.STORE_SHELL_LAUNCHER_ID, true);
             section.put(JavaPublishOnSpagoExportWizardPage.STORE_SYSTEM_ROUTINE_ID, true);
             section.put(JavaPublishOnSpagoExportWizardPage.STORE_USER_ROUTINE_ID, true);
             section.put(JavaPublishOnSpagoExportWizardPage.STORE_MODEL_ID, true);
             section.put(JavaPublishOnSpagoExportWizardPage.STORE_JOB_ID, true);
             section.put(JavaPublishOnSpagoExportWizardPage.STORE_CONTEXT_ID, true);
-            
+
         }
         setDialogSettings(section);
     }
@@ -75,7 +75,7 @@ public class PublishOnSpagoExportWizard extends Wizard implements IExportWizard 
      */
     public void addPages() {
         super.addPages();
-        
+
         switch (((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
                 .getLanguage()) {
         case JAVA:

@@ -78,18 +78,19 @@ public class AliasDialog {
         IInputValidator inputValidator = new IInputValidator() { //$NON-NLS-1$
 
             public String isValid(String newText) {
-                
+
                 String selectedPhysicalTable = aliasInternalDialog.getTableName();
 
-                if (newText.length() == 0 && isSameAsVisibleTableName(selectedPhysicalTable)) {// tableManager.getInputTableFromAlias(newText) != null) {
-//                    return Messages.getString("AliasDialog.aliasIsInvalid"); //$NON-NLS-1$
-                    return Messages.getString("AliasDialog.aliasAlreadyExists", new Object[] {selectedPhysicalTable}); //$NON-NLS-1$
+                if (newText.length() == 0 && isSameAsVisibleTableName(selectedPhysicalTable)) {// tableManager.getInputTableFromAlias(newText)
+                                                                                                // != null) {
+                // return Messages.getString("AliasDialog.aliasIsInvalid"); //$NON-NLS-1$
+                    return Messages.getString("AliasDialog.aliasAlreadyExists", new Object[] { selectedPhysicalTable }); //$NON-NLS-1$
                 }
                 if (selectedPhysicalTable == null || selectedPhysicalTable.length() == 0) {
                     return Messages.getString("AliasDialog.TableMustBeSelected"); //$NON-NLS-1$
                 }
                 if (isSameAsVisibleTableName(newText)) {
-                    return Messages.getString("AliasDialog.aliasAlreadyExists", new Object[] {newText}); //$NON-NLS-1$
+                    return Messages.getString("AliasDialog.aliasAlreadyExists", new Object[] { newText }); //$NON-NLS-1$
                 }
                 return null;
             }
@@ -261,7 +262,7 @@ public class AliasDialog {
             // create composite
             Composite composite = (Composite) super.createDialogArea(parent);
             // create message
-            
+
             Label label = new Label(composite, SWT.WRAP);
             label.setText(Messages.getString("AliasDialog.SelectTableToUse")); //$NON-NLS-1$
 
@@ -493,13 +494,14 @@ public class AliasDialog {
 
     /**
      * DOC amaumont Comment method "isNotAlreadyExist".
+     * 
      * @param tableName
      * @return
      */
     public boolean isSameAsVisibleTableName(String tableName) {
         boolean alreadyExists = false;
         for (String table : visibleTables) {
-            if(table.equalsIgnoreCase(tableName)) {
+            if (table.equalsIgnoreCase(tableName)) {
                 alreadyExists = true;
                 break;
             }
@@ -509,12 +511,13 @@ public class AliasDialog {
 
     /**
      * DOC amaumont Comment method "isSameAsPhysicalTable".
+     * 
      * @param name
      */
     public boolean isSameAsPhysicalTable(String name) {
         boolean newTextIsSameAsTable = false;
         for (String table : physicalTables) {
-            if(table.equals(name)) {
+            if (table.equals(name)) {
                 newTextIsSameAsTable = true;
                 break;
             }

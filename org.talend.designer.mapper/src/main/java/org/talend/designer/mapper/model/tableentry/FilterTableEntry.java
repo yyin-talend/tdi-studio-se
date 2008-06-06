@@ -26,20 +26,22 @@ public class FilterTableEntry extends DataMapTableEntry {
         super(abstractDataMapTable, name, expression);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.mapper.model.tableentry.IDataMapTableEntry#isTableEntry()
      */
     public boolean isTableEntry() {
         return true;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.mapper.model.tableentry.IDataMapTableEntry#isColumnEntry()
      */
     public boolean isColumnEntry() {
         return false;
     }
 
-    
-    
 }

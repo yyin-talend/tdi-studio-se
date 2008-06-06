@@ -26,7 +26,7 @@ import org.talend.help.Activator;
  * 
  */
 public class DocParser {
-    
+
     private static DocParser docParse = new DocParser();
 
     private static final String PATH = "guide/perl/perlfunc.html"; //$NON-NLS-1$
@@ -36,7 +36,7 @@ public class DocParser {
     public static DocParser getInstance() {
         return docParse;
     }
-    
+
     public String getDoc(String anchor) throws IOException {
         InputStream stream = FileLocator.openStream(Activator.getDefault().getBundle(), new Path(PATH), false);
         try {

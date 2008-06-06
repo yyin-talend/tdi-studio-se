@@ -11,44 +11,48 @@ import org.talend.designer.core.IDesignerCoreService;
  */
 public class TestComponentsPlugin extends AbstractUIPlugin {
 
-	// The plug-in ID
-	public static final String PLUGIN_ID = "org.talend.designer.components.localprovider.test";
-	public static final String PLUGINCOMPONENTID="org.talend.designer.components.localprovider";
-	// The shared instance
-	private static TestComponentsPlugin plugin;
-	
-	/**
-	 * The constructor
-	 */
-	public TestComponentsPlugin() {
-		plugin = this;
-	}
+    // The plug-in ID
+    public static final String PLUGIN_ID = "org.talend.designer.components.localprovider.test";
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
-	 */
-	public void start(BundleContext context) throws Exception {
-		super.start(context);
-	}
+    public static final String PLUGINCOMPONENTID = "org.talend.designer.components.localprovider";
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
-	 */
-	public void stop(BundleContext context) throws Exception {
-		plugin = null;
-		super.stop(context);
-	}
+    // The shared instance
+    private static TestComponentsPlugin plugin;
 
-	/**
-	 * Returns the shared instance
-	 *
-	 * @return the shared instance
-	 */
-	public static TestComponentsPlugin getDefault() {
-		return plugin;
-	}
+    /**
+     * The constructor
+     */
+    public TestComponentsPlugin() {
+        plugin = this;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
+     */
+    public void start(BundleContext context) throws Exception {
+        super.start(context);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
+     */
+    public void stop(BundleContext context) throws Exception {
+        plugin = null;
+        super.stop(context);
+    }
+
+    /**
+     * Returns the shared instance
+     * 
+     * @return the shared instance
+     */
+    public static TestComponentsPlugin getDefault() {
+        return plugin;
+    }
 
     public IDesignerCoreService getDesignerCoreService() {
         IService service = GlobalServiceRegister.getDefault().getService(IDesignerCoreService.class);

@@ -19,19 +19,20 @@ import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.erdiagram.ui.nodes.Relation;
 
 /**
- * DOC qzhang  class global comment. Detailled comment
- * <br/>
- *
+ * DOC qzhang class global comment. Detailled comment <br/>
+ * 
  * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ææäº, 29 ä¹æ 2006) nrousseau $
- *
+ * 
  */
 public class RelationDeleteCommand extends Command {
 
-	private List<Relation> relations;
-	public RelationDeleteCommand(List<Relation> relations) {
-		this.relations = relations;
+    private List<Relation> relations;
+
+    public RelationDeleteCommand(List<Relation> relations) {
+        this.relations = relations;
         setLabel(Messages.getString("RelationDeleteCommand.label")); //$NON-NLS-1$
-	}
+    }
+
     public void execute() {
         for (Relation rel : relations) {
             rel.disconnect();

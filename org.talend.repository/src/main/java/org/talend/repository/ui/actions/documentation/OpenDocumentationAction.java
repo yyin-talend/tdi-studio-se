@@ -89,7 +89,8 @@ public class OpenDocumentationAction extends AContextualAction {
             // if (documentationItem.getExtension() != null) {
             // extension = documentationItem.getExtension();
             // }
-            IFile file = LinkDocumentationHelper.getTempFile(documentationItem.getName(), documentationItem.getExtension());
+            IFile file = LinkDocumentationHelper.getTempFile(documentationItem.getName(), documentationItem
+                    .getExtension());
             try {
                 documentationItem.getContent().setInnerContentToFile(file.getLocation().toFile());
                 url = file.getLocationURI().toURL();

@@ -91,7 +91,7 @@ public class View extends ViewPart {
             public void run() {
                 // ExpressionBuilderDialog dialog = new ExpressionBuilderDialog(View.this.getViewSite().getShell());
                 // dialog.open();
-                //                dialog.setBlockOnOpen(true);
+                // dialog.setBlockOnOpen(true);
             }
         };
         action.setText("expression"); //$NON-NLS-1$

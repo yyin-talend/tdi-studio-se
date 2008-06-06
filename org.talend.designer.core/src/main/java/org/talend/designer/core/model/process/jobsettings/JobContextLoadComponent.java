@@ -447,13 +447,15 @@ public class JobContextLoadComponent implements IComponent {
         return false;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.components.IComponent#isVisibleInComponentDefinition()
      */
     public boolean isVisibleInComponentDefinition() {
         return false;
     }
-    
+
     public boolean isSingleton() {
         return false;
     }

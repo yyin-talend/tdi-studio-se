@@ -16,45 +16,46 @@ import org.talend.componentdesigner.PluginConstant;
 
 /**
  * @author rli
- *
+ * 
  */
 public enum ResourceLanguageType {
 
-	DEFAULTRESOURCETYPE(PluginConstant.DEFAULTLANG_RESOURCE, PluginConstant.RESOURCELANGUAGE_DEFAULT),
-	ZHRESOURCETYPE(PluginConstant.ZHLANG_RESOURCE, PluginConstant.RESOURCELANGUAGE_ZH), 
-	FRRESOURCETYPE(PluginConstant.FRLANG_RESOURCE, PluginConstant.RESOURCELANGUAGE_FR);
+    DEFAULTRESOURCETYPE(PluginConstant.DEFAULTLANG_RESOURCE, PluginConstant.RESOURCELANGUAGE_DEFAULT),
+    ZHRESOURCETYPE(PluginConstant.ZHLANG_RESOURCE, PluginConstant.RESOURCELANGUAGE_ZH),
+    FRRESOURCETYPE(PluginConstant.FRLANG_RESOURCE, PluginConstant.RESOURCELANGUAGE_FR);
 
-	private final String nameSuffix;
-	private final String lang;
+    private final String nameSuffix;
 
-	ResourceLanguageType(String lang, String nameSuffix) {
-		this.lang = lang;
-		this.nameSuffix = nameSuffix;
-	}
+    private final String lang;
 
-	public String getNameSuffix() {
-		return this.nameSuffix;
-	}
-	
-	public String getLang() {
-		return this.lang;
-	}
+    ResourceLanguageType(String lang, String nameSuffix) {
+        this.lang = lang;
+        this.nameSuffix = nameSuffix;
+    }
 
-	/**
-	 * Get the corresponding ResourceLanguageType enum by the specified lang string.
-	 * 
-	 * @param priority
-	 * @return
-	 */
-	public static final ResourceLanguageType find(String lang) {
-		ResourceLanguageType type = null;
-		if (lang.equals(PluginConstant.ZHLANG_RESOURCE)) {
-			type = ZHRESOURCETYPE;
-		} else if (lang.equals(PluginConstant.FRLANG_RESOURCE)) {
-			type = FRRESOURCETYPE;
-		} else {
-			type = DEFAULTRESOURCETYPE;
-		}
-		return type;
-	}
+    public String getNameSuffix() {
+        return this.nameSuffix;
+    }
+
+    public String getLang() {
+        return this.lang;
+    }
+
+    /**
+     * Get the corresponding ResourceLanguageType enum by the specified lang string.
+     * 
+     * @param priority
+     * @return
+     */
+    public static final ResourceLanguageType find(String lang) {
+        ResourceLanguageType type = null;
+        if (lang.equals(PluginConstant.ZHLANG_RESOURCE)) {
+            type = ZHRESOURCETYPE;
+        } else if (lang.equals(PluginConstant.FRLANG_RESOURCE)) {
+            type = FRRESOURCETYPE;
+        } else {
+            type = DEFAULTRESOURCETYPE;
+        }
+        return type;
+    }
 }

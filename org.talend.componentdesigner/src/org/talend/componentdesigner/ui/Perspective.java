@@ -11,6 +11,7 @@
 //
 // ============================================================================
 package org.talend.componentdesigner.ui;
+
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 
@@ -22,9 +23,8 @@ import org.eclipse.ui.IPerspectiveFactory;
  */
 public class Perspective implements IPerspectiveFactory {
 
-    
     public static final String ID = "org.talend.componentdesigner.perspective"; //$NON-NLS-1$
-    
+
     public void createInitialLayout(IPageLayout layout) {
         layout.setEditorAreaVisible(true);
     }

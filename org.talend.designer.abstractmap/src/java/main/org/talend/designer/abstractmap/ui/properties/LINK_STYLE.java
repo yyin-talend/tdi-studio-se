@@ -9,8 +9,7 @@ import org.talend.designer.abstractmap.i18n.Messages;
 public enum LINK_STYLE {
     AUTO(Messages.getString("prefs.configuration.LINK_STYLE.AUTO")),
     BEZIER_CURVE(Messages.getString("prefs.configuration.LINK_STYLE.BEZIER_CURVE")),
-    LINE(Messages.getString("prefs.configuration.LINK_STYLE.LINE")),
-    ;
+    LINE(Messages.getString("prefs.configuration.LINK_STYLE.LINE")), ;
 
     private String displayName;
 

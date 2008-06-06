@@ -18,50 +18,59 @@ import org.talend.sqlbuilder.util.ImageUtil;
 
 /**
  * 
- * This class is used for clearing the text in Text component.
- * <br/>
- *
+ * This class is used for clearing the text in Text component. <br/>
+ * 
  * @author ftang
- *
+ * 
  */
 public class ClearTextAction extends AbstractEditorAction {
 
     private ImageDescriptor img = ImageUtil.getDescriptor("Images.ClearTextIcon"); //$NON-NLS-1$
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.sqlbuilder.actions.AbstractEditorAction#getText()
      */
     public String getText() {
         return Messages.getString("Clear_1"); //$NON-NLS-1$
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.sqlbuilder.actions.AbstractEditorAction#run()
      */
     public void run() {
         editor.clearText();
     }
 
-    //Checks if enabled.
+    // Checks if enabled.
     public boolean isEnabled() {
         return true;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.sqlbuilder.actions.AbstractEditorAction#getToolTipText()
      */
     public String getToolTipText() {
         return Messages.getString("Clear_2"); //$NON-NLS-1$
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jface.action.Action#getHoverImageDescriptor()
      */
     public ImageDescriptor getHoverImageDescriptor() {
         return img;
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jface.action.Action#getImageDescriptor()
      */
     public ImageDescriptor getImageDescriptor() {

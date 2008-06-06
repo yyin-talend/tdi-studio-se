@@ -87,7 +87,8 @@ public class Schema2XMLDragAndDropHandler {
             dragSource.dispose();
         }
 
-        dragSource = new DragSource(linker.getSource(), DND.DROP_DEFAULT | DND.DROP_MOVE | DND.DROP_COPY | DND.DROP_LINK);
+        dragSource = new DragSource(linker.getSource(), DND.DROP_DEFAULT | DND.DROP_MOVE | DND.DROP_COPY
+                | DND.DROP_LINK);
         dragSource.setTransfer(new Transfer[] { LocalDataTransfer.getInstance() });
 
         DragSourceListener sourceListener = new TreeDragSourceListener();
@@ -103,7 +104,8 @@ public class Schema2XMLDragAndDropHandler {
         if (loopDropTarget != null) {
             loopDropTarget.dispose();
         }
-        loopDropTarget = new DropTarget(linker.getTarget(), DND.DROP_DEFAULT | DND.DROP_MOVE | DND.DROP_COPY | DND.DROP_LINK);
+        loopDropTarget = new DropTarget(linker.getTarget(), DND.DROP_DEFAULT | DND.DROP_MOVE | DND.DROP_COPY
+                | DND.DROP_LINK);
         loopDropTarget.setTransfer(new Transfer[] { LocalDataTransfer.getInstance() });
         DropTargetListener targetListener = new TableDropTargetListener();
         loopDropTarget.addDropListener(targetListener);
@@ -218,7 +220,8 @@ public class Schema2XMLDragAndDropHandler {
             Control control = dropTarget.getControl();
             TreeItem item = (TreeItem) event.item;
             Rectangle rec = display.map(control, null, item.getBounds(1));
-            if ((event.x >= rec.x) && (event.y >= rec.y) && ((event.x - rec.x) <= rec.width) && ((event.y - rec.y) <= rec.height)) {
+            if ((event.x >= rec.x) && (event.y >= rec.y) && ((event.x - rec.x) <= rec.width)
+                    && ((event.y - rec.y) <= rec.height)) {
                 return true;
             }
             return false;

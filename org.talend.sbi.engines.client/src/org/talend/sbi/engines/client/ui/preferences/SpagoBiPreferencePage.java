@@ -83,7 +83,8 @@ public class SpagoBiPreferencePage extends FieldEditorPreferencePage implements 
 
             public void widgetSelected(SelectionEvent e) {
                 IPreferenceStore preferenceStore = getPreferenceStore();
-                preferenceStore.setValue(SpagoPreferenceInitializer.SPAGO_STATUS, ((Button) e.getSource()).getSelection());
+                preferenceStore.setValue(SpagoPreferenceInitializer.SPAGO_STATUS, ((Button) e.getSource())
+                        .getSelection());
                 updateEnableStateFromDisplay();
             }
         };

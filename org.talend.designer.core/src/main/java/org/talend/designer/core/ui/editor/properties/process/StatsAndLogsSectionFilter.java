@@ -49,9 +49,9 @@ public class StatsAndLogsSectionFilter implements IFilter {
         return false;
     }
 
-    
     /**
      * Find out if the editor related to the node is open.
+     * 
      * @param node
      * @return
      */

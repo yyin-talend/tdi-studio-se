@@ -26,8 +26,9 @@ import org.eclipse.swt.graphics.Color;
  * 
  */
 public class ErDiagramGridLayer extends GridLayer {
+
     public static final Color GRID_COLOR = ColorConstants.black;
-    
+
     /**
      * DOC admin SqlBuilderGridLayer constructor comment.
      */
@@ -35,12 +36,14 @@ public class ErDiagramGridLayer extends GridLayer {
         super();
         setForegroundColor(GRID_COLOR);
     }
+
     @Override
     protected void paintGrid(Graphics g) {
         paintGrid(g, this, origin, gridX, gridY);
     }
 
-    protected void paintGrid(Graphics g, IFigure f, org.eclipse.draw2d.geometry.Point origin, int distanceX, int distanceY) {
+    protected void paintGrid(Graphics g, IFigure f, org.eclipse.draw2d.geometry.Point origin, int distanceX,
+            int distanceY) {
         Rectangle clip = g.getClip(Rectangle.SINGLETON);
 
         if (distanceX > 0 && distanceY > 0) {

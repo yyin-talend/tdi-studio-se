@@ -637,7 +637,9 @@ public class RowGenProcess extends Element implements IProcess {
         return null;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.process.IProcess#getLastRunContext()
      */
     public IContext getLastRunContext() {
@@ -645,11 +647,13 @@ public class RowGenProcess extends Element implements IProcess {
         return null;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.process.IProcess#setLastRunContext(org.talend.core.model.process.IContext)
      */
     public void setLastRunContext(IContext context) {
         // TODO Auto-generated method stub
-        
+
     }
 }

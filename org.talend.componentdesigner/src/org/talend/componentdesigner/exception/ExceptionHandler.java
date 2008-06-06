@@ -39,7 +39,7 @@ public final class ExceptionHandler {
      * @param ex - exception to log
      */
     public static void process(Throwable ex) {
-//        Priority priority = getPriority(ex);
+        // Priority priority = getPriority(ex);
         process(ex, Level.ERROR);
     }
 
@@ -59,19 +59,19 @@ public final class ExceptionHandler {
      * @param ex - the exception to evaluate priority
      * @return the priority corresponding to the exception implementation
      */
-//    protected static Priority getPriority(Throwable ex) {
-//        if (ex == null) {
-//            throw new IllegalArgumentException(Messages.getString("ExceptionHandler.Parameter.BeNull")); //$NON-NLS-1$
-//        }
-//
-//        if (ex instanceof BusinessException) {
-//            return Level.INFO;
-//        } else if (ex instanceof FatalException) {
-//            return Level.FATAL;
-//        } else if (ex instanceof SystemException) {
-//            return Level.WARN;
-//        } else {
-//            return Level.ERROR;
-//        }
-//    }
+    // protected static Priority getPriority(Throwable ex) {
+    // if (ex == null) {
+    // throw new IllegalArgumentException(Messages.getString("ExceptionHandler.Parameter.BeNull")); //$NON-NLS-1$
+    // }
+    //
+    // if (ex instanceof BusinessException) {
+    // return Level.INFO;
+    // } else if (ex instanceof FatalException) {
+    // return Level.FATAL;
+    // } else if (ex instanceof SystemException) {
+    // return Level.WARN;
+    // } else {
+    // return Level.ERROR;
+    // }
+    // }
 }

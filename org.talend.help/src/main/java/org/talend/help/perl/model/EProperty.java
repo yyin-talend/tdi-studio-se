@@ -14,10 +14,10 @@ package org.talend.help.perl.model;
 
 /**
  * EProperty.java.
- *
+ * 
  */
 public enum EProperty {
-	LABEL,
-	VALUE;
-	
+    LABEL,
+    VALUE;
+
 }

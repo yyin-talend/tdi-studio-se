@@ -30,7 +30,8 @@ public class ExpressionBuilderService implements IExpressionBuilderDialogService
      * @see org.talend.expressionbuilder.IExpressionBuilderDialogService#expressionBuilderFactory(org.eclipse.swt.widgets.Composite,
      * org.talend.expressionbuilder.IExpressionConsumer)
      */
-    public IExpressionBuilderDialogController getExpressionBuilderInstance(Composite parent, IExpressionDataBean dataBean) {
+    public IExpressionBuilderDialogController getExpressionBuilderInstance(Composite parent,
+            IExpressionDataBean dataBean) {
         return new ExpressionBuilderDialog(parent.getShell(), dataBean);
     }
 

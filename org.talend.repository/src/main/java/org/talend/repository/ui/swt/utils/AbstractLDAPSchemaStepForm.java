@@ -48,8 +48,8 @@ public abstract class AbstractLDAPSchemaStepForm extends AbstractForm {
 
     protected LDAPSchemaConnection getOriginalValueConnection() {
         if (isContextMode() && getContextModeManager() != null) {
-            return (LDAPSchemaConnection) OtherConnectionContextUtils.cloneOriginalValueLDAPSchemaConnection(getConnection(),
-                    getContextModeManager().getSelectedContextType());
+            return (LDAPSchemaConnection) OtherConnectionContextUtils.cloneOriginalValueLDAPSchemaConnection(
+                    getConnection(), getContextModeManager().getSelectedContextType());
         }
         return getConnection();
 

@@ -83,7 +83,8 @@ public class OutputDataMapTableView extends DataMapTableView {
         });
         column.setModifiable(true);
         column.setDefaultInternalValue(""); //$NON-NLS-1$
-        createExpressionCellEditor(tableViewerCreatorForColumns, column, new Zone[] { Zone.INPUTS, Zone.OUTPUTS }, false);
+        createExpressionCellEditor(tableViewerCreatorForColumns, column, new Zone[] { Zone.INPUTS, Zone.OUTPUTS },
+                false);
         column.setWeight(COLUMN_EXPRESSION_SIZE_WEIGHT);
 
         column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);

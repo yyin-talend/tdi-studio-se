@@ -183,8 +183,8 @@ public class DeleteAction extends AContextualAction {
                                             // path = path + File.separator;
                                             // }
                                             boolean found = false;
-                                            JobletReferenceBean bean = new JobletReferenceBean(property2.getLabel(), property2
-                                                    .getVersion(), path);
+                                            JobletReferenceBean bean = new JobletReferenceBean(property2.getLabel(),
+                                                    property2.getVersion(), path);
                                             bean.setJobFlag(isJob, isDelete);
 
                                             for (JobletReferenceBean b : list) {
@@ -254,16 +254,16 @@ public class DeleteAction extends AContextualAction {
      * @throws PersistenceException
      * @throws BusinessException
      */
-    private boolean deleteElements(IProxyRepositoryFactory factory, RepositoryNode currentJobNode) throws PersistenceException,
-            BusinessException {
+    private boolean deleteElements(IProxyRepositoryFactory factory, RepositoryNode currentJobNode)
+            throws PersistenceException, BusinessException {
         Boolean confirm = null;
         boolean needReturn = false;
         IRepositoryObject objToDelete = currentJobNode.getObject();
 
         List<JobletReferenceBean> checkRepository = checkRepositoryNodeFromProcess(factory, currentJobNode);
         if (checkRepository.size() > 0) {
-            JobletReferenceDialog dialog = new JobletReferenceDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-                    .getShell(), objToDelete, checkRepository);
+            JobletReferenceDialog dialog = new JobletReferenceDialog(PlatformUI.getWorkbench()
+                    .getActiveWorkbenchWindow().getShell(), objToDelete, checkRepository);
             dialog.open();
             return true;
         }
@@ -366,7 +366,8 @@ public class DeleteAction extends AContextualAction {
                     boolean isDeleted = repFactory.getStatus(repObj) == ERepositoryStatus.DELETED;
 
                     if (isDeleted) {
-                        ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+                        ERepositoryObjectType nodeType = (ERepositoryObjectType) node
+                                .getProperties(EProperties.CONTENT_TYPE);
                         if (ERepositoryObjectType.METADATA_CON_TABLE.equals(nodeType)) {
                             visible = false;
                             break;

@@ -92,7 +92,8 @@ public class TableAddAction extends SelectionAction {
         }
         if (Window.OK == dialog.open()) {
             List tables1 = dialog.getTables();
-            this.execute(createCreateCommand((ErDiagram) erdiagramDiagramEditor.getViewer().getContents().getModel(), tables1));
+            this.execute(createCreateCommand((ErDiagram) erdiagramDiagramEditor.getViewer().getContents().getModel(),
+                    tables1));
         }
     }
 

@@ -87,7 +87,7 @@ public class SchedulerPlugin extends AbstractUIPlugin {
     public static void log(Exception e) {
         ExceptionHandler.process(e);
     }
-    
+
     /**
      * DOC get a implement of RunProcessService.
      * 

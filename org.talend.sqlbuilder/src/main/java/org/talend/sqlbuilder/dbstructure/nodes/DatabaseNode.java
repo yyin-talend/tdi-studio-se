@@ -26,8 +26,7 @@ import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
 
 /**
- * Root node for a database. ChildNodes can be filtered based on expressions in
- * the alias.
+ * Root node for a database. ChildNodes can be filtered based on expressions in the alias.
  * 
  * @author Davy Vanherbergen
  */
@@ -57,11 +56,10 @@ public class DatabaseNode extends AbstractNode {
         pimageKey = "Images.DatabaseIcon"; //$NON-NLS-1$
     }
 
-
     /**
      * @return List of catalog nodes
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public List getCatalogs() {
 
         ArrayList catalogs = new ArrayList();
@@ -80,7 +78,7 @@ public class DatabaseNode extends AbstractNode {
     /**
      * @return ChildNames.
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public String[] getChildNames() {
 
         if (pchildNames.size() == 0) {
@@ -104,11 +102,10 @@ public class DatabaseNode extends AbstractNode {
         return palias.getName();
     }
 
-
     /**
      * @return List of all database schemas
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public List getSchemas() {
 
         ArrayList schemas = new ArrayList();
@@ -124,9 +121,9 @@ public class DatabaseNode extends AbstractNode {
         return schemas;
     }
 
-
     /**
      * Returns "database" as the type for this node.
+     * 
      * @return Type.
      * @see org.talend.sqlbuilder.dbstructure.nodes.INode#getType()
      */
@@ -143,56 +140,52 @@ public class DatabaseNode extends AbstractNode {
         return getQualifiedName();
     }
 
-
     /**
-     * Loads childnodes, filtered to a subset of schemas/databases depending on
-     * whether a comma separated list of regular expression filters has been
-     * set.
+     * Loads childnodes, filtered to a subset of schemas/databases depending on whether a comma separated list of
+     * regular expression filters has been set.
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public void loadChildren() {
 
         if (psessionNode.getInteractiveConnection() == null) {
             addChildNode(new CatalogNode(this, "", psessionNode)); //$NON-NLS-1$
             return;
         }
-        
+
         pchildNames = new ArrayList();
 
         try {
 
-//            if (metadata.supportsCatalogs()) {
-//
-//                final String[] catalogs = metadata.getCatalogs();
-//                for (int i = 0; i < catalogs.length; ++i) {
-//                    pchildNames.add(catalogs[i]);
-//                    if (!isExcludedByFilter(catalogs[i])) {
-//                        addChildNode(new CatalogNode(this, catalogs[i], psessionNode));
-//                    }
-//                }
-//
-//            } else if (metadata.supportsSchemas()) {
-//
-//                final String[] schemas = metadata.getSchemas();
-//                for (int i = 0; i < schemas.length; ++i) {
-//                    pchildNames.add(schemas[i]);
-//                    if (!isExcludedByFilter(schemas[i])) {
-//                        addChildNode(new SchemaNode(this, schemas[i], psessionNode));
-//                    }
-//                }
-//
-//            } else {
+            // if (metadata.supportsCatalogs()) {
+            //
+            // final String[] catalogs = metadata.getCatalogs();
+            // for (int i = 0; i < catalogs.length; ++i) {
+            // pchildNames.add(catalogs[i]);
+            // if (!isExcludedByFilter(catalogs[i])) {
+            // addChildNode(new CatalogNode(this, catalogs[i], psessionNode));
+            // }
+            // }
+            //
+            // } else if (metadata.supportsSchemas()) {
+            //
+            // final String[] schemas = metadata.getSchemas();
+            // for (int i = 0; i < schemas.length; ++i) {
+            // pchildNames.add(schemas[i]);
+            // if (!isExcludedByFilter(schemas[i])) {
+            // addChildNode(new SchemaNode(this, schemas[i], psessionNode));
+            // }
+            // }
+            //
+            // } else {
 
-                addChildNode(new CatalogNode(this, palias.getSchemaFilterExpression(), psessionNode));
-//            }
-            
+            addChildNode(new CatalogNode(this, palias.getSchemaFilterExpression(), psessionNode));
+            // }
 
         } catch (Exception e) {
             SqlBuilderPlugin.log(Messages.getString("DatabaseNode.logMessage"), e); //$NON-NLS-1$
         }
 
     }
-
 
     /**
      * @return true if this database supports catalogs
@@ -202,7 +195,6 @@ public class DatabaseNode extends AbstractNode {
         return psupportsCatalogs;
     }
 
-
     /**
      * @return true if this database supports schemas
      */
@@ -210,7 +202,7 @@ public class DatabaseNode extends AbstractNode {
 
         return psupportsSchemas;
     }
-    
+
     /**
      * @return Image.
      */
@@ -218,5 +210,4 @@ public class DatabaseNode extends AbstractNode {
         return CoreImageProvider.getImage(ERepositoryObjectType.METADATA_CONNECTIONS);
     }
 
-    
 }

@@ -68,8 +68,8 @@ public class SessionTreeNodeManager {
 
         if (EDatabaseTypeName.ACCESS.getDisplayName().equals(connection.getDatabaseType())) {
             if (connection.getURL().lastIndexOf("=") != connection.getURL().length() - 1) {
-                connection.setDatasourceName(connection.getURL().substring(connection.getURL().lastIndexOf(File.separator) + 1,
-                        connection.getURL().length()));
+                connection.setDatasourceName(connection.getURL().substring(
+                        connection.getURL().lastIndexOf(File.separator) + 1, connection.getURL().length()));
                 connection.setSID(connection.getURL().substring(connection.getURL().lastIndexOf(File.separator) + 1,
                         connection.getURL().length()));
             }

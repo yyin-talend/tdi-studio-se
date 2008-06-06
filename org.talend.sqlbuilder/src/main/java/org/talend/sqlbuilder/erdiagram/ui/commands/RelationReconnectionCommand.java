@@ -17,55 +17,54 @@ import org.talend.sqlbuilder.erdiagram.ui.nodes.Column;
 import org.talend.sqlbuilder.erdiagram.ui.nodes.Relation;
 
 /**
- * DOC qzhang  class global comment. Detailled comment
- * <br/>
- *
+ * DOC qzhang class global comment. Detailled comment <br/>
+ * 
  * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ææäº, 29 ä¹æ 2006) nrousseau $
- *
+ * 
  */
 public class RelationReconnectionCommand extends Command {
 
-	private Column newSource;
+    private Column newSource;
 
     private Column newTarget;
 
     private Column oldSource;
 
     private Column oldTarget;
-    
-	public RelationReconnectionCommand(Relation relation) {
-		
-	}
 
-	public Column getNewSource() {
-		return newSource;
-	}
+    public RelationReconnectionCommand(Relation relation) {
 
-	public void setNewSource(Column newSource) {
-		this.newSource = newSource;
-	}
+    }
 
-	public Column getNewTarget() {
-		return newTarget;
-	}
+    public Column getNewSource() {
+        return newSource;
+    }
 
-	public void setNewTarget(Column newTarget) {
-		this.newTarget = newTarget;
-	}
+    public void setNewSource(Column newSource) {
+        this.newSource = newSource;
+    }
 
-	public Column getOldSource() {
-		return oldSource;
-	}
+    public Column getNewTarget() {
+        return newTarget;
+    }
 
-	public void setOldSource(Column oldSource) {
-		this.oldSource = oldSource;
-	}
+    public void setNewTarget(Column newTarget) {
+        this.newTarget = newTarget;
+    }
 
-	public Column getOldTarget() {
-		return oldTarget;
-	}
+    public Column getOldSource() {
+        return oldSource;
+    }
 
-	public void setOldTarget(Column oldTarget) {
-		this.oldTarget = oldTarget;
-	}
+    public void setOldSource(Column oldSource) {
+        this.oldSource = oldSource;
+    }
+
+    public Column getOldTarget() {
+        return oldTarget;
+    }
+
+    public void setOldTarget(Column oldTarget) {
+        this.oldTarget = oldTarget;
+    }
 }

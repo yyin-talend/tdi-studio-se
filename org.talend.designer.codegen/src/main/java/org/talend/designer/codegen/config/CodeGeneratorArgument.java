@@ -27,7 +27,7 @@ import org.talend.core.model.temp.ECodePart;
 public class CodeGeneratorArgument {
 
     private Object argument;
-    
+
     private NodesSubTree subTree;
 
     private List<IConnection> allMainSubTreeConnections;
@@ -59,7 +59,7 @@ public class CodeGeneratorArgument {
     private boolean isRunInMultiThread;
 
     private int pauseTime;
-    
+
     private boolean subTreeContainsParallelIterate;
 
     /**
@@ -258,17 +258,19 @@ public class CodeGeneratorArgument {
     public void setAllMainSubTreeConnections(List<IConnection> allMainSubTreeConnections) {
         this.allMainSubTreeConnections = allMainSubTreeConnections;
     }
-    
+
     /**
      * Getter for subTree.
+     * 
      * @return the subTree
      */
     public NodesSubTree getSubTree() {
         return subTree;
     }
-    
+
     /**
      * Sets the subTree.
+     * 
      * @param subTree the subTree to set
      */
     public void setSubTree(NodesSubTree subTree) {
@@ -278,7 +280,7 @@ public class CodeGeneratorArgument {
     public boolean subTreeContainsParallelIterate() {
         return subTreeContainsParallelIterate;
     }
-    
+
     public void setSubTreeContainsParallelIterate(boolean subTreeContainsParallelIterate) {
         this.subTreeContainsParallelIterate = subTreeContainsParallelIterate;
     }

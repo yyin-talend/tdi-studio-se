@@ -28,11 +28,11 @@ public class TalendDrawerFigure extends DrawerFigure {
     private static final int X_OFFSET = 17;
 
     public TalendDrawerFigure(Control control, int childLevel) {
-        super(control); 
-        
+        super(control);
+
         Color baseColor = control.getBackground();
-        Color backgroundColor = new Color(Display.getCurrent(), getNewValue(baseColor.getRed(), childLevel),
-                getNewValue(baseColor.getGreen(), childLevel), getNewValue(baseColor.getBlue(), childLevel));
+        Color backgroundColor = new Color(Display.getCurrent(), getNewValue(baseColor.getRed(), childLevel), getNewValue(
+                baseColor.getGreen(), childLevel), getNewValue(baseColor.getBlue(), childLevel));
         getContentPane().setBackgroundColor(backgroundColor);
     }
 
@@ -40,7 +40,7 @@ public class TalendDrawerFigure extends DrawerFigure {
         int result = oldValue - childLevel * COLOR_INCREMENT;
         return (result > 0 ? result : 0);
     }
-    
+
     @Override
     public Rectangle getBounds() {
         return new Rectangle(bounds.x + X_OFFSET, bounds.y, bounds.width, bounds.height);

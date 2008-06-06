@@ -66,8 +66,9 @@ public class PasteAction extends AContextualAction {
                     if (copyObjectAction.validateAction((RepositoryNode) currentSource, target)) {
                         copyObjectAction.execute((RepositoryNode) currentSource, target);
                     } else {
-                        MessageDialog.openWarning(new Shell(), Messages.getString("PasteObjectAction.error.title"), Messages //$NON-NLS-1$
-                                .getString("PasteObjectAction.error.labelAlreadyExists")); //$NON-NLS-1$
+                        MessageDialog.openWarning(new Shell(),
+                                Messages.getString("PasteObjectAction.error.title"), Messages //$NON-NLS-1$
+                                        .getString("PasteObjectAction.error.labelAlreadyExists")); //$NON-NLS-1$
                     }
                 } catch (BusinessException e) {
                     MessageBoxExceptionHandler.process(e);
@@ -89,7 +90,8 @@ public class PasteAction extends AContextualAction {
         RepositoryNode target = (RepositoryNode) selection.getFirstElement();
         TreeSelection selectionInClipboard = (TreeSelection) LocalSelectionTransfer.getTransfer().getSelection();
 
-        if (target.getContentType() == ERepositoryObjectType.JOBS || target.getContentType() == ERepositoryObjectType.JOBLETS
+        if (target.getContentType() == ERepositoryObjectType.JOBS
+                || target.getContentType() == ERepositoryObjectType.JOBLETS
                 || target.getContentType() == ERepositoryObjectType.GENERATED
                 || target.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.JOB_DOC
                 || target.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.JOBLET_DOC) {

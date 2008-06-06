@@ -123,7 +123,7 @@ public class ExternalDataConverter {
                     outputTable.initFromExternalData(persistentTable);
                 }
             }
-            if(outputTable != null) {
+            if (outputTable != null) {
                 outputDataMapTables.add(outputTable);
             }
         }
@@ -165,13 +165,13 @@ public class ExternalDataConverter {
                     inputDataMapTables.add(inputTable);
                 }
             }
-//            if(externalData.getInputTables().size() > 0) {
-//                for (IOConnection connection : remainingConnections) {
-//                    InputTable inputTable = new InputTable(this.mapperManager, connection, connection.getName());
-//                    inputTable.initFromExternalData(null);
-//                    inputDataMapTables.add(inputTable);
-//                }
-//            }
+            // if(externalData.getInputTables().size() > 0) {
+            // for (IOConnection connection : remainingConnections) {
+            // InputTable inputTable = new InputTable(this.mapperManager, connection, connection.getName());
+            // inputTable.initFromExternalData(null);
+            // inputDataMapTables.add(inputTable);
+            // }
+            // }
 
         }
 

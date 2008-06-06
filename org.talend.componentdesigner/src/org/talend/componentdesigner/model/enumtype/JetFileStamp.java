@@ -49,14 +49,14 @@ public enum JetFileStamp {
         }
         return jetFileStamps;
     }
-    
+
     public static final JetFileStamp findFileStamp(String fileStamp) {
-		if (fileStamp.equals(PluginConstant.JETMAIN_STAMP)) {
-			return JETMAINSTAMP;
-		} else if (fileStamp.equals(PluginConstant.JETEND_STAMP)) {
-			return JETENDSTAMP;
-		} else {
-			return JETBEGINSTAMP;
-		}
-	}
+        if (fileStamp.equals(PluginConstant.JETMAIN_STAMP)) {
+            return JETMAINSTAMP;
+        } else if (fileStamp.equals(PluginConstant.JETEND_STAMP)) {
+            return JETENDSTAMP;
+        } else {
+            return JETBEGINSTAMP;
+        }
+    }
 }

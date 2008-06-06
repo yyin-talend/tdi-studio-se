@@ -454,8 +454,8 @@ public class ConnectionParameters {
         DataStringConnection urlDataStringConnection = new DataStringConnection();
         int dbIndex = urlDataStringConnection.getIndexOfLabel(dbType);
         urlDataStringConnection.setSelectionIndex(dbIndex);
-        String url = urlDataStringConnection.getString(dbIndex, getHost(), getUserName(), getPassword(), getPort(), getDbName(),
-                getFilename(), getDatasource(), getDirectory(), getJdbcProperties());
+        String url = urlDataStringConnection.getString(dbIndex, getHost(), getUserName(), getPassword(), getPort(),
+                getDbName(), getFilename(), getDatasource(), getDirectory(), getJdbcProperties());
         return url;
 
     }

@@ -20,7 +20,7 @@ import org.talend.designer.rowgenerator.external.data.ExternalRowGeneratorData;
 import org.talend.designer.rowgenerator.managers.RowGeneratorManager;
 
 /**
- *  qzhang class global comment. Detailled comment <br/>
+ * qzhang class global comment. Detailled comment <br/>
  * 
  * $Id: ProblemsAnalyser.java,v 1.5 2007/01/31 05:20:51 pub Exp $
  * 
@@ -32,7 +32,7 @@ public class ProblemsAnalyser {
     private List<Problem> problems = new ArrayList<Problem>();
 
     /**
-     *  qzhang ProblemsAnalyser constructor comment.
+     * qzhang ProblemsAnalyser constructor comment.
      */
     public ProblemsAnalyser(RowGeneratorManager generatorManager) {
         super();
@@ -46,7 +46,7 @@ public class ProblemsAnalyser {
     }
 
     /**
-     *  qzhang Comment method "getProblems".
+     * qzhang Comment method "getProblems".
      * 
      * @return
      */
@@ -55,7 +55,6 @@ public class ProblemsAnalyser {
         return new ArrayList<Problem>();
     }
 
-    
     public RowGeneratorManager getGeneratorManager() {
         return this.generatorManager;
     }

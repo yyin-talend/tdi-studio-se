@@ -32,7 +32,6 @@ public class EditTableCommand extends Command {
 
     private Rectangle oldPos = new Rectangle();
 
-    
     /**
      * Move the given node to another location.
      * 
@@ -45,14 +44,12 @@ public class EditTableCommand extends Command {
         setLabel("MoveNodeCommand.0"); //$NON-NLS-1$
     }
 
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     @Override
     public boolean canExecute() {
         for (Table currentNode : (List<Table>) node.getErDiagram().getTables()) {
-            if ((currentNode.getLocation().x == newPos.x) 
-                    && (currentNode.getLocation().y == newPos.y)
-                    && (currentNode.getSize().height == newPos.height)
-                    && (currentNode.getSize().width == newPos.width)) {
+            if ((currentNode.getLocation().x == newPos.x) && (currentNode.getLocation().y == newPos.y)
+                    && (currentNode.getSize().height == newPos.height) && (currentNode.getSize().width == newPos.width)) {
                 return false;
             }
         }

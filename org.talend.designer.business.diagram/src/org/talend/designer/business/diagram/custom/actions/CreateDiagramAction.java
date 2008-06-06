@@ -67,7 +67,8 @@ public class CreateDiagramAction extends AContextualAction {
         boolean enabled = false;
 
         if (repositoryNode != null) {
-            ERepositoryObjectType nodeType = (ERepositoryObjectType) repositoryNode.getProperties(EProperties.CONTENT_TYPE);
+            ERepositoryObjectType nodeType = (ERepositoryObjectType) repositoryNode
+                    .getProperties(EProperties.CONTENT_TYPE);
             if (repositoryNode.getType() == RepositoryNode.ENodeType.SYSTEM_FOLDER
                     || repositoryNode.getType() == RepositoryNode.ENodeType.SIMPLE_FOLDER) {
                 if (nodeType == ERepositoryObjectType.BUSINESS_PROCESS) {

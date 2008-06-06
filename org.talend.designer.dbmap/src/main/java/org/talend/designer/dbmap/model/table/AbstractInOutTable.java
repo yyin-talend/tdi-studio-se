@@ -50,11 +50,9 @@ public abstract class AbstractInOutTable extends AbstractDataMapTable {
     public IMetadataTable getMetadataTable() {
         return this.metadataTable;
     }
-    
+
     protected void setMetadataTable(IMetadataTable metadataTable) {
         this.metadataTable = metadataTable;
     }
 
-    
-    
 }

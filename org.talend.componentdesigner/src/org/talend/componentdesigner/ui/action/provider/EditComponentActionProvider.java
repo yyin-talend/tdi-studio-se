@@ -28,63 +28,61 @@ import org.talend.componentdesigner.model.componentpref.ComponentPrefCollection;
 import org.talend.componentdesigner.ui.wizard.creatcomponent.CreateComponentWizard;
 
 /**
- * DOC rli  class global comment. Detailled comment
+ * DOC rli class global comment. Detailled comment
  */
 public class EditComponentActionProvider extends CommonActionProvider {
 
-	/**
-	 * DOC rli EditComponentActionProvider constructor comment.
-	 */
-	public EditComponentActionProvider() {
-	}
-	
-	private IAction editComponentAction;
+    /**
+     * DOC rli EditComponentActionProvider constructor comment.
+     */
+    public EditComponentActionProvider() {
+    }
 
-	private String selectedFolderName;
+    private IAction editComponentAction;
 
-	public void init(ICommonActionExtensionSite anExtensionSite) {
+    private String selectedFolderName;
 
-		if (anExtensionSite.getViewSite() instanceof ICommonViewerWorkbenchSite) {
-			editComponentAction = new EditComponentAction();
-		}
-	}
+    public void init(ICommonActionExtensionSite anExtensionSite) {
 
-	/**
-	 * Adds a submenu to the given menu with the name "New Component".
-	 */
-	public void fillContextMenu(IMenuManager menu) {
-		menu.insertBefore(Messages.getString("EditComponentActionProvider.GroupEdit"), editComponentAction); //$NON-NLS-1$
-		Object obj = ((TreeSelection) this.getContext().getSelection())
-				.getFirstElement();
-		if (obj instanceof IFolder) {
-			selectedFolderName = ((IFolder) obj).getName();
-		}		
+        if (anExtensionSite.getViewSite() instanceof ICommonViewerWorkbenchSite) {
+            editComponentAction = new EditComponentAction();
+        }
+    }
 
-		editComponentAction.setEnabled(ComponentPrefCollection.getInstance()
-				.getComponentPref(selectedFolderName) != null);
-	}
+    /**
+     * Adds a submenu to the given menu with the name "New Component".
+     */
+    public void fillContextMenu(IMenuManager menu) {
+        menu.insertBefore(Messages.getString("EditComponentActionProvider.GroupEdit"), editComponentAction); //$NON-NLS-1$
+        Object obj = ((TreeSelection) this.getContext().getSelection()).getFirstElement();
+        if (obj instanceof IFolder) {
+            selectedFolderName = ((IFolder) obj).getName();
+        }
 
-	/**
-	 * @author rli
-	 * 
-	 */
-	class EditComponentAction extends Action {
+        editComponentAction
+                .setEnabled(ComponentPrefCollection.getInstance().getComponentPref(selectedFolderName) != null);
+    }
 
-		public EditComponentAction() {
-			super(Messages.getString("EditComponentActionProvider.Edit")); //$NON-NLS-1$
-			setImageDescriptor(ImageLib
-					.getImageDescriptor(ImageLib.EDITCOMPONENT_ACTION));
-		}
+    /**
+     * @author rli
+     * 
+     */
+    class EditComponentAction extends Action {
 
-		/*
-		 * (non-Javadoc) Method declared on IAction.
-		 */
-		public void run() {
-			CreateComponentWizard wizard = new CreateComponentWizard(selectedFolderName);
-			 wizard.init(PlatformUI.getWorkbench(), null);
-			WizardDialog dialog = new WizardDialog(null, wizard);
-			dialog.open();
-		}
-	}
+        public EditComponentAction() {
+            super(Messages.getString("EditComponentActionProvider.Edit")); //$NON-NLS-1$
+            setImageDescriptor(ImageLib.getImageDescriptor(ImageLib.EDITCOMPONENT_ACTION));
+        }
+
+        /*
+         * (non-Javadoc) Method declared on IAction.
+         */
+        public void run() {
+            CreateComponentWizard wizard = new CreateComponentWizard(selectedFolderName);
+            wizard.init(PlatformUI.getWorkbench(), null);
+            WizardDialog dialog = new WizardDialog(null, wizard);
+            dialog.open();
+        }
+    }
 
 }

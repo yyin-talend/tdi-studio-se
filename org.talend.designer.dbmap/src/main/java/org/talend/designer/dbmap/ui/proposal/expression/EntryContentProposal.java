@@ -99,8 +99,7 @@ public class EntryContentProposal implements IContentProposal {
                         .append(Messages.getString("EntryContentProposal.type")).append(format(metadataColumn.getTalendType())); //$NON-NLS-1$
             }
             sb.append(AbstractDbLanguage.CARRIAGE_RETURN);
-            sb
-                    .append(separator)
+            sb.append(separator)
                     .append(Messages.getString("EntryContentProposal.dbType")).append(format(metadataColumn.getType())); //$NON-NLS-1$
             sb.append(AbstractDbLanguage.CARRIAGE_RETURN);
             sb.append(separator).append(Messages.getString("EntryContentProposal.length")); //$NON-NLS-1$
@@ -151,7 +150,7 @@ public class EntryContentProposal implements IContentProposal {
      */
     public String getLabel() {
         String label = language.getLocation(entry.getParentName(), entry.getName());
-        if(entry instanceof OutputColumnTableEntry) {
+        if (entry instanceof OutputColumnTableEntry) {
             label += "            " + Messages.getString("EntryContentProposal.onlyAvailable");
         }
         return label;

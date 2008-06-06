@@ -30,11 +30,10 @@ import org.talend.sqlbuilder.util.ImageUtil;
 import org.talend.sqlbuilder.util.TextUtil;
 
 /**
- * DOC dev  class global comment. Detailled comment
- * <br/>
- *
+ * DOC dev class global comment. Detailled comment <br/>
+ * 
  * $Id: SchemaNode.java,v 1.4 2006/11/01 05:40:59 peiqin.hou Exp $
- *
+ * 
  */
 public class SchemaNode extends AbstractNode {
 
@@ -63,7 +62,7 @@ public class SchemaNode extends AbstractNode {
     /**
      * Add Extension nodes.
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     private void addExtensionNodes() {
 
         String databaseProductName = getSession().getRoot().getDatabaseProductName().toLowerCase().trim();
@@ -143,7 +142,6 @@ public class SchemaNode extends AbstractNode {
         }
 
     }
-
 
     /**
      * Location extenstion nodes for a given tableType.
@@ -228,7 +226,7 @@ public class SchemaNode extends AbstractNode {
     /**
      * @return ChildNames.
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public String[] getChildNames() {
 
         if (pchildNames.size() == 0) {
@@ -236,7 +234,6 @@ public class SchemaNode extends AbstractNode {
         }
         return (String[]) pchildNames.toArray(new String[] {});
     }
-
 
     /**
      * Returns "schema" as the type for this node.
@@ -249,7 +246,6 @@ public class SchemaNode extends AbstractNode {
         return "schema";
     }
 
-
     /**
      * @return UniqueIdentifier.
      */
@@ -257,7 +253,6 @@ public class SchemaNode extends AbstractNode {
 
         return getQualifiedName();
     }
-
 
     /**
      * Checks if a node name should be filtered.
@@ -291,11 +286,10 @@ public class SchemaNode extends AbstractNode {
 
     }
 
-
     /**
      * LoadChildren.
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public void loadChildren() {
 
         pchildNames = new ArrayList();

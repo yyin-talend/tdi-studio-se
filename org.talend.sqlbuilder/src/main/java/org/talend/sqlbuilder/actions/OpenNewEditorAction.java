@@ -71,8 +71,8 @@ public class OpenNewEditorAction extends SelectionProviderAction {
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public void init() {
-        RepositoryNode[] selectedNodes = (RepositoryNode[]) ((IStructuredSelection) selectionProvider.getSelection()).toList()
-                .toArray(new RepositoryNode[] {});
+        RepositoryNode[] selectedNodes = (RepositoryNode[]) ((IStructuredSelection) selectionProvider.getSelection())
+                .toList().toArray(new RepositoryNode[] {});
         if (selectedNodes.length == 0) {
             this.setEnabled(false);
             return;

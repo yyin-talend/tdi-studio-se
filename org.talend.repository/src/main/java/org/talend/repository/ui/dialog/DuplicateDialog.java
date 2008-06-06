@@ -33,12 +33,13 @@ public class DuplicateDialog extends InputDialog {
 
     private String keyName = null;
 
-    public DuplicateDialog(Shell parentShell, IStructuredSelection selection, String title, String label, String message,
-            IInputValidator validator) {
+    public DuplicateDialog(Shell parentShell, IStructuredSelection selection, String title, String label,
+            String message, IInputValidator validator) {
         super(parentShell, title, label, message, validator);
         this.selection = selection;
         this.copyNameMap = new HashMap<String, String>();
-        this.keyName = ((RepositoryNode) ((TreeSelection) this.selection).toList().get(0)).getObject().getProperty().getLabel();
+        this.keyName = ((RepositoryNode) ((TreeSelection) this.selection).toList().get(0)).getObject().getProperty()
+                .getLabel();
         copyNameMap.put(keyName, message);
     }
 

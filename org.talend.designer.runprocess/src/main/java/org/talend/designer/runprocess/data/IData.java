@@ -12,22 +12,20 @@
 // ============================================================================
 package org.talend.designer.runprocess.data;
 
-
 /**
- * DOC mhirt  class global comment. Detailled comment
- * <br/>
- *
+ * DOC mhirt class global comment. Detailled comment <br/>
+ * 
  * $Id$
- *
+ * 
  */
 public interface IData {
-    
+
     public String getElementId();
-    
+
     public long getLineCount();
-    
+
     public long getProcessingTime();
-    
+
     public String getAction();
 
 }

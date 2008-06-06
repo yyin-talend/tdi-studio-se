@@ -72,19 +72,22 @@ public class VarTableEntry extends DataMapTableEntry implements IColumnEntry {
         this.nullable = nullable;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.mapper.model.tableentry.IDataMapTableEntry#isTableEntry()
      */
     public boolean isTableEntry() {
         return true;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.mapper.model.tableentry.IDataMapTableEntry#isColumnEntry()
      */
     public boolean isColumnEntry() {
         return true;
     }
 
-    
 }

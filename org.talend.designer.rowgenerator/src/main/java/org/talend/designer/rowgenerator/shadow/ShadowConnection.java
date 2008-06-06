@@ -28,151 +28,149 @@ import org.talend.core.model.process.INode;
  */
 public class ShadowConnection implements IConnection {
 
-	private INode source;
+    private INode source;
 
-	private INode target;
+    private INode target;
 
-	/**
-	 * Constructs a new ShadowConnection.
-	 */
-	public ShadowConnection(INode source, INode target) {
-		super();
+    /**
+     * Constructs a new ShadowConnection.
+     */
+    public ShadowConnection(INode source, INode target) {
+        super();
 
-		this.source = source;
-		this.target = target;
-	}
+        this.source = source;
+        this.target = target;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.talend.core.model.process.IConnection#getLineStyle()
-	 */
-	public EConnectionType getLineStyle() {
-		return EConnectionType.FLOW_MAIN;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IConnection#getLineStyle()
+     */
+    public EConnectionType getLineStyle() {
+        return EConnectionType.FLOW_MAIN;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.talend.core.model.process.IConnection#getMetadataTable()
-	 */
-	public IMetadataTable getMetadataTable() {
-		if (source != null) {
-			List<IMetadataTable> metadataList = source.getMetadataList();
-			for (int i = 0; i < metadataList.size(); i++) {
-				if (metadataList.get(i).getTableName().equals(
-						source.getUniqueName())) {
-					return metadataList.get(i);
-				}
-			}
-		}
-		return null;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IConnection#getMetadataTable()
+     */
+    public IMetadataTable getMetadataTable() {
+        if (source != null) {
+            List<IMetadataTable> metadataList = source.getMetadataList();
+            for (int i = 0; i < metadataList.size(); i++) {
+                if (metadataList.get(i).getTableName().equals(source.getUniqueName())) {
+                    return metadataList.get(i);
+                }
+            }
+        }
+        return null;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.talend.core.model.process.IConnection#getName()
-	 */
-	public String getName() {
-		return "Row"; //$NON-NLS-1$
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IConnection#getName()
+     */
+    public String getName() {
+        return "Row"; //$NON-NLS-1$
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.talend.core.model.process.IConnection#getSource()
-	 */
-	public INode getSource() {
-		return source;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IConnection#getSource()
+     */
+    public INode getSource() {
+        return source;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.talend.core.model.process.IConnection#getTarget()
-	 */
-	public INode getTarget() {
-		return target;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IConnection#getTarget()
+     */
+    public INode getTarget() {
+        return target;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.talend.core.model.process.IConnection#isActivate()
-	 */
-	public boolean isActivate() {
-		return true;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IConnection#isActivate()
+     */
+    public boolean isActivate() {
+        return true;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.talend.core.model.process.IConnection#getCondition()
-	 */
-	public String getCondition() {
-		return null;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IConnection#getCondition()
+     */
+    public String getCondition() {
+        return null;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.talend.core.model.process.IElement#getElementParameters()
-	 */
-	public List<? extends IElementParameter> getElementParameters() {
-		return null;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElement#getElementParameters()
+     */
+    public List<? extends IElementParameter> getElementParameters() {
+        return null;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.talend.core.model.process.IElement#setElementParameters(java.util.List)
-	 */
-	public void setElementParameters(
-			List<? extends IElementParameter> elementsParameters) {
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElement#setElementParameters(java.util.List)
+     */
+    public void setElementParameters(List<? extends IElementParameter> elementsParameters) {
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.talend.core.model.process.IConnection#setTraceData(java.lang.String)
-	 */
-	public void setTraceData(String traceData) {
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IConnection#setTraceData(java.lang.String)
+     */
+    public void setTraceData(String traceData) {
+    }
 
-	public boolean isReadOnly() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    public boolean isReadOnly() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
-	public void setReadOnly(boolean readOnly) {
-		// TODO Auto-generated method stub
+    public void setReadOnly(boolean readOnly) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	public String getUniqueName() {
-		return getName();
-	}
+    public String getUniqueName() {
+        return getName();
+    }
 
-	public IElementParameter getElementParameter(String name) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public IElementParameter getElementParameter(String name) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	public String getConnectorName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public String getConnectorName() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	public int getInputId() {
-		return -1;
-	}
+    public int getInputId() {
+        return -1;
+    }
 
-	public boolean isUseByMetter() {
-		return false;
-	}
+    public boolean isUseByMetter() {
+        return false;
+    }
 
-	public List<? extends IElementParameter> getElementParametersWithChildrens() {
-		return getElementParameters();
-	}
+    public List<? extends IElementParameter> getElementParametersWithChildrens() {
+        return getElementParameters();
+    }
 }

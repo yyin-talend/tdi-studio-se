@@ -23,17 +23,16 @@ import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 
 /**
- * DOC dev  class global comment. Detailled comment
- * <br/>
- *
+ * DOC dev class global comment. Detailled comment <br/>
+ * 
  * $Id: IndexFolderNode.java,v 1.4 2006/11/01 05:40:59 peiqin.hou Exp $
- *
+ * 
  */
 public class IndexFolderNode extends AbstractFolderNode {
 
     private static final int COLUMN_INDEX = 6;
-    private ITableInfo ptableInfo;
 
+    private ITableInfo ptableInfo;
 
     /**
      * Create new database table node.
@@ -50,11 +49,10 @@ public class IndexFolderNode extends AbstractFolderNode {
         pname = Messages.getString("DatabaseStructureView.node.Indexes"); //$NON-NLS-1$
     }
 
-
     /**
      * @return List of column names for this table.
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public List getIndexNames() {
 
         List indexNames = new ArrayList();
@@ -82,7 +80,6 @@ public class IndexFolderNode extends AbstractFolderNode {
         return pname;
     }
 
-
     /**
      * @return Qualified table name
      */
@@ -91,9 +88,9 @@ public class IndexFolderNode extends AbstractFolderNode {
         return getParent().getQualifiedName() + "." + getType(); //$NON-NLS-1$
     }
 
-
     /**
      * Returns the table info type as the type for this node.
+     * 
      * @return Type.
      * @see org.talend.sqlbuilder.dbstructure.nodes.INode#getType()
      */
@@ -101,7 +98,6 @@ public class IndexFolderNode extends AbstractFolderNode {
 
         return "index_folder"; //$NON-NLS-1$
     }
-
 
     /**
      * 

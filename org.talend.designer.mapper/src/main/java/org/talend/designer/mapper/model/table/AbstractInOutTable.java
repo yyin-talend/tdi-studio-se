@@ -40,7 +40,7 @@ public abstract class AbstractInOutTable extends AbstractDataMapTable {
     private ExpressionFilterEntry expressionFilterEntry;
 
     private boolean activateExpressionFilter;
-    
+
     /**
      * 
      * DOC amaumont AbstractInOutTable constructor comment.
@@ -68,7 +68,7 @@ public abstract class AbstractInOutTable extends AbstractDataMapTable {
 
     protected void initFromExternalData(ExternalMapperTable externalMapperTable) {
         super.initFromExternalData(externalMapperTable);
-        expressionFilterEntry = new ExpressionFilterEntry(this); 
+        expressionFilterEntry = new ExpressionFilterEntry(this);
         if (externalMapperTable != null) {
             this.expressionFilterEntry.setExpression(externalMapperTable.getExpressionFilter());
             this.activateExpressionFilter = externalMapperTable.isActivateExpressionFilter();
@@ -110,9 +110,9 @@ public abstract class AbstractInOutTable extends AbstractDataMapTable {
         return this.connection;
     }
 
-    
     /**
      * Getter for expressionFilter.
+     * 
      * @return the expressionFilter
      */
     public ExpressionFilterEntry getExpressionFilter() {
@@ -121,21 +121,20 @@ public abstract class AbstractInOutTable extends AbstractDataMapTable {
 
     /**
      * Getter for activateExpressionFilter.
+     * 
      * @return the activateExpressionFilter
      */
     public boolean isActivateExpressionFilter() {
         return this.activateExpressionFilter;
     }
 
-    
     /**
      * Sets the activateExpressionFilter.
+     * 
      * @param activateExpressionFilter the activateExpressionFilter to set
      */
     public void setActivateExpressionFilter(boolean activateExpressionFilter) {
         this.activateExpressionFilter = activateExpressionFilter;
     }
 
-    
-    
 }

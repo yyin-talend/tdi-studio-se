@@ -25,7 +25,7 @@ public class DynamicFieldBean {
     private String name;
 
     private boolean required;
-    
+
     private boolean password;
 
     public DynamicFieldBean(String id, String name, boolean required, boolean password) {
@@ -60,12 +60,10 @@ public class DynamicFieldBean {
         this.required = required;
     }
 
-    
     public boolean isPassword() {
         return password;
     }
 
-    
     public void setPassword(boolean password) {
         this.password = password;
     }

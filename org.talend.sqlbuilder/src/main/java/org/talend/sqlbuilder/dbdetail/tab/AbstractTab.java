@@ -18,46 +18,44 @@ import org.eclipse.swt.widgets.Display;
 import org.talend.sqlbuilder.dbdetail.IDetailTab;
 import org.talend.sqlbuilder.dbstructure.nodes.INode;
 
-
 /**
  * @author Davy Vanherbergen
- *
+ * 
  */
 public abstract class AbstractTab implements IDetailTab {
 
     private INode pNode;
-    
+
     public final void setNode(INode node) {
         pNode = node;
     }
-   
+
     public final INode getNode() {
         return pNode;
     }
-    
+
     public abstract void fillDetailComposite(Composite composite);
-    
+
     public final void fillComposite(final Composite composite) {
-        
+
         BusyIndicator.showWhile(Display.getCurrent(), new Runnable() {
 
-            public void run() {                
-                fillDetailComposite(composite);                
+            public void run() {
+                fillDetailComposite(composite);
             }
         });
-        
+
     }
 
     public abstract String getLabelText();
 
-    
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see net.sourceforge.sqlexplorer.dbdetail.IDetailTab#getLabelToolTipText()
      */
-    public String getLabelToolTipText() {        
+    public String getLabelToolTipText() {
         return getLabelText();
     }
 
-    
-    
 }

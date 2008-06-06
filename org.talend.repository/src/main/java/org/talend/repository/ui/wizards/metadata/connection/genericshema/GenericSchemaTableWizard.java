@@ -102,7 +102,8 @@ public class GenericSchemaTableWizard extends RepositoryWizard implements INewWi
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             try {
                 // update
-                RepositoryUpdateManager.updateSingleSchema(connectionItem, metadataTable, oldMetadataTable, oldTableMap);
+                RepositoryUpdateManager
+                        .updateSingleSchema(connectionItem, metadataTable, oldMetadataTable, oldTableMap);
 
                 factory.save(repositoryObject.getProperty().getItem());
                 closeLockStrategy();

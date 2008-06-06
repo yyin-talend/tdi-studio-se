@@ -20,6 +20,7 @@ import org.talend.designer.core.ui.editor.process.Process;
  * Command that will change the schema in the property. <br/>
  * 
  * $Id$
+ * 
  * @deprecated
  */
 public class SchemaPropertyChangeCommand extends PropertyChangeCommand {
@@ -30,8 +31,7 @@ public class SchemaPropertyChangeCommand extends PropertyChangeCommand {
 
     Node node;
 
-    public SchemaPropertyChangeCommand(Node node, String propName, Object propValue,
-            IMetadataTable repositoryMetadataTable) {
+    public SchemaPropertyChangeCommand(Node node, String propName, Object propValue, IMetadataTable repositoryMetadataTable) {
         super(node, propName, propValue);
         this.node = node;
         this.repositoryMetadataTable = repositoryMetadataTable;

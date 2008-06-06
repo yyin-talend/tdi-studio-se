@@ -32,7 +32,7 @@ public class ColumnPaneFigure extends Figure {
         setBackgroundColor(ColorConstants.white);
         setForegroundColor(CustomTableFigure.BG_COLOR);
         setOpaque(true);
-//        setBorder(new ColumnFigureBorder());
+        // setBorder(new ColumnFigureBorder());
     }
-   
+
 }

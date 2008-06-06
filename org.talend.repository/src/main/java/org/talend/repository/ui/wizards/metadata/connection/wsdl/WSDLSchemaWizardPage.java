@@ -72,8 +72,9 @@ public class WSDLSchemaWizardPage extends WizardPage {
         switch (step) {
         case 1:
             metadataTable = (MetadataTable) ((WSDLSchemaConnection) connectionItem.getConnection()).getTables().get(0);
-            currentComposite = new WSDLSchemaStep1Form(parent, connectionItem, metadataTable, TableHelper.getTableNames(
-                    ((WSDLSchemaConnection) connectionItem.getConnection()), metadataTable.getLabel()), contextModeManager);
+            currentComposite = new WSDLSchemaStep1Form(parent, connectionItem, metadataTable, TableHelper
+                    .getTableNames(((WSDLSchemaConnection) connectionItem.getConnection()), metadataTable.getLabel()),
+                    contextModeManager);
             break;
         case 2:
             metadataTable = (MetadataTable) ((WSDLSchemaConnection) connectionItem.getConnection()).getTables().get(0);

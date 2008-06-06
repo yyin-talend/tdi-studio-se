@@ -12,13 +12,11 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.connection.files.xml.dnd;
 
-
 /**
- * DOC amaumont  class global comment. Detailled comment
- * <br/>
- *
+ * DOC amaumont class global comment. Detailled comment <br/>
+ * 
  * $Id$
- *
+ * 
  */
 public class TransferableXPathEntry {
 
@@ -26,30 +24,29 @@ public class TransferableXPathEntry {
 
     /**
      * DOC amaumont TransferableXPathEntry constructor comment.
+     * 
      * @param absoluteXPath
      */
     public TransferableXPathEntry(String absoluteXPath) {
         this.absoluteXPath = absoluteXPath;
     }
 
-    
     /**
      * Getter for absoluteXPath.
+     * 
      * @return the absoluteXPath
      */
     public String getAbsoluteXPath() {
         return this.absoluteXPath;
     }
 
-    
     /**
      * Sets the absoluteXPath.
+     * 
      * @param absoluteXPath the absoluteXPath to set
      */
     public void setAbsoluteXPath(String absoluteXPath) {
         this.absoluteXPath = absoluteXPath;
     }
 
-    
-    
 }

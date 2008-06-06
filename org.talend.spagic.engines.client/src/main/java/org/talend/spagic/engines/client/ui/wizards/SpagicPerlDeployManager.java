@@ -58,7 +58,8 @@ import org.talend.repository.model.ComponentsFactoryProvider;
  * DOC qwei class global comment. Detailled comment <br/>
  * 
  */
-public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobPerlScriptsManager {
+public class SpagicPerlDeployManager extends
+        org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobPerlScriptsManager {
 
     private static final String SYSTEM_ROUTINES_FOLDER_NAME = "system";
 
@@ -75,8 +76,9 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
      * @return
      */
     @Override
-    public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Boolean> exportChoice,
-            String contextName, String launcher, int statisticPort, int tracePort, String... codeOptions) {
+    public List<ExportFileResource> getExportResources(ExportFileResource[] process,
+            Map<ExportChoice, Boolean> exportChoice, String contextName, String launcher, int statisticPort,
+            int tracePort, String... codeOptions) {
 
         ProcessorUtilities.setExportConfig("perl", "", LIBRARY_FOLDER_NAME);
 
@@ -87,21 +89,23 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
                         statisticPort != IProcessor.NO_TRACES, exportChoice.get(ExportChoice.applyToChildren));
             }
             List<URL> resources = new ArrayList<URL>();
-            resources.addAll(getLauncher(exportChoice.get(ExportChoice.needLauncher), processItem, escapeSpace(contextName),
-                    escapeSpace(launcher), statisticPort, tracePort, codeOptions));
+            resources.addAll(getLauncher(exportChoice.get(ExportChoice.needLauncher), processItem,
+                    escapeSpace(contextName), escapeSpace(launcher), statisticPort, tracePort, codeOptions));
 
             // Gets system routines.
             List<URL> systemRoutineList = getSystemRoutine(exportChoice.get(ExportChoice.needSystemRoutine));
             if (systemRoutineList.size() > 0) {
-                process[i].addResources(LIBRARY_FOLDER_NAME + PATH_SEPARATOR + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER
-                        + PATH_SEPARATOR + SYSTEM_ROUTINES_FOLDER_NAME, systemRoutineList);
+                process[i].addResources(LIBRARY_FOLDER_NAME + PATH_SEPARATOR
+                        + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER + PATH_SEPARATOR + SYSTEM_ROUTINES_FOLDER_NAME,
+                        systemRoutineList);
             }
             // Gets user routines.
             try {
                 List<URL> userRoutineList = getUserRoutine(exportChoice.get(ExportChoice.needUserRoutine));
                 if (userRoutineList.size() > 0) {
-                    process[i].addResources(LIBRARY_FOLDER_NAME + PATH_SEPARATOR + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER
-                            + PATH_SEPARATOR + this.getCurrentProjectName(), userRoutineList);
+                    process[i].addResources(LIBRARY_FOLDER_NAME + PATH_SEPARATOR
+                            + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER + PATH_SEPARATOR
+                            + this.getCurrentProjectName(), userRoutineList);
                 }
             } catch (MalformedURLException e) {
                 ExceptionHandler.process(e);
@@ -125,8 +129,8 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
         List<String> list = new ArrayList<String>();
         if (needJob) {
             try {
-                String fileName = PerlResourcesHelper.getJobFileName(process.getProperty().getLabel(), process.getProperty()
-                        .getVersion());
+                String fileName = PerlResourcesHelper.getJobFileName(process.getProperty().getLabel(), process
+                        .getProperty().getVersion());
                 list.add(fileName);
             } catch (Exception e) {
                 ExceptionHandler.process(e);
@@ -149,8 +153,8 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
             return list;
         }
         ILibrariesService librariesService = CorePlugin.getDefault().getLibrariesService();
-        String path = librariesService.getLibrariesPath() + PATH_SEPARATOR + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER
-                + PATH_SEPARATOR + SYSTEM_ROUTINES_FOLDER_NAME;
+        String path = librariesService.getLibrariesPath() + PATH_SEPARATOR
+                + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER + PATH_SEPARATOR + SYSTEM_ROUTINES_FOLDER_NAME;
         File file = new File(path);
         File[] files = file.listFiles();
         for (int i = 0; i < files.length; i++) {
@@ -177,8 +181,8 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
             return list;
         }
         ILibrariesService librariesService = CorePlugin.getDefault().getLibrariesService();
-        String folderPath = librariesService.getLibrariesPath() + PATH_SEPARATOR + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER
-                + PATH_SEPARATOR + this.getCurrentProjectName();
+        String folderPath = librariesService.getLibrariesPath() + PATH_SEPARATOR
+                + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER + PATH_SEPARATOR + this.getCurrentProjectName();
         File file = new File(folderPath);
         File[] files = file.listFiles();
         if (files != null) {
@@ -231,8 +235,8 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
         if (needContext) {
             List<String> contexts = getJobContexts(process);
             for (String contextName : contexts) {
-                String contextFileName = PerlResourcesHelper.getContextFileName(process.getProperty().getLabel(), process
-                        .getProperty().getVersion(), contextName);
+                String contextFileName = PerlResourcesHelper.getContextFileName(process.getProperty().getLabel(),
+                        process.getProperty().getVersion(), contextName);
                 list.add(contextFileName);
             }
         }
@@ -248,8 +252,8 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
             String projectName = getCurrentProjectName();
             try {
                 List<ProcessItem> processedJob = new ArrayList<ProcessItem>();
-                getChildrenJobAndContextName(process.getProperty().getLabel(), list, process, projectName, processedJob,
-                        resource, exportChoice);
+                getChildrenJobAndContextName(process.getProperty().getLabel(), list, process, projectName,
+                        processedJob, resource, exportChoice);
             } catch (Exception e) {
                 ExceptionHandler.process(e);
             }
@@ -269,7 +273,8 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
     private IResource[] getAllPerlFiles(boolean refresh) {
         if (resouces == null || refresh) {
             try {
-                IProject perlProject = RepositoryPlugin.getDefault().getRunProcessService().getProject(ECodeLanguage.PERL);
+                IProject perlProject = RepositoryPlugin.getDefault().getRunProcessService().getProject(
+                        ECodeLanguage.PERL);
                 resouces = perlProject.members();
             } catch (Exception e) {
                 ExceptionHandler.process(e);
@@ -283,8 +288,9 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
         return getAllPerlFiles(false);
     }
 
-    private void getChildrenJobAndContextName(String rootName, List<String> list, ProcessItem process, String projectName,
-            List<ProcessItem> processedJob, ExportFileResource resource, Map<ExportChoice, Boolean> exportChoice) {
+    private void getChildrenJobAndContextName(String rootName, List<String> list, ProcessItem process,
+            String projectName, List<ProcessItem> processedJob, ExportFileResource resource,
+            Map<ExportChoice, Boolean> exportChoice) {
         if (processedJob.contains(process)) {
             // prevent circle
             return;
@@ -298,15 +304,16 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
             if (subjobInfo.getJobName().equals(rootName)) {
                 continue;
             }
-            String jobScriptName = PerlResourcesHelper.getJobFileName(subjobInfo.getJobName(), subjobInfo.getJobVersion());
-            String contextFullName = PerlResourcesHelper.getContextFileName(subjobInfo.getJobName(), subjobInfo.getJobVersion(),
-                    subjobInfo.getContextName());
+            String jobScriptName = PerlResourcesHelper.getJobFileName(subjobInfo.getJobName(), subjobInfo
+                    .getJobVersion());
+            String contextFullName = PerlResourcesHelper.getContextFileName(subjobInfo.getJobName(), subjobInfo
+                    .getJobVersion(), subjobInfo.getContextName());
 
             addToList(list, jobScriptName);
             addToList(list, contextFullName);
 
-            getChildrenJobAndContextName(rootName, list, subjobInfo.getProcessItem(), projectName, processedJob, resource,
-                    exportChoice);
+            getChildrenJobAndContextName(rootName, list, subjobInfo.getProcessItem(), projectName, processedJob,
+                    resource, exportChoice);
         }
     }
 
@@ -327,8 +334,8 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
                 if (string.length != 2) {
                     continue;
                 }
-                resource.addResources(LIBRARY_FOLDER_NAME + PATH_SEPARATOR + string[0], getComponentModules(string[0] + "/"
-                        + string[1] + ".pm"));
+                resource.addResources(LIBRARY_FOLDER_NAME + PATH_SEPARATOR + string[0], getComponentModules(string[0]
+                        + "/" + string[1] + ".pm"));
             }
         }
     }
@@ -369,8 +376,8 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
         List<URL> list = new ArrayList<URL>();
         Properties p = new Properties();
         FileOutputStream out = null;
-        String name = PerlResourcesHelper.getJobFileName(processItem.getProperty().getLabel(), processItem.getProperty()
-                .getVersion());
+        String name = PerlResourcesHelper.getJobFileName(processItem.getProperty().getLabel(), processItem
+                .getProperty().getVersion());
 
         try {
             IPath path = getSrcRootLocation();
@@ -385,14 +392,15 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
             PrintStream ps = new PrintStream(out);
             IDesignerCoreService service = CorePlugin.getDefault().getDesignerCoreService();
             IProcess process = service.getProcessFromProcessItem(processItem);
-            List<IContextParameter> ctxParams = process.getContextManager().getContext(contextName).getContextParameterList();
+            List<IContextParameter> ctxParams = process.getContextManager().getContext(contextName)
+                    .getContextParameterList();
             for (IContextParameter ctxParam : ctxParams) {
                 p.put(ctxParam.getName(), ctxParam.getValue());
             }
             p.put("JobClassName", getCurrentProjectName()
                     + "."
-                    + JavaResourcesHelper.getJobFolderName(processItem.getProperty().getLabel(), processItem.getProperty()
-                            .getVersion()) + "." + processItem.getProperty().getLabel());
+                    + JavaResourcesHelper.getJobFolderName(processItem.getProperty().getLabel(), processItem
+                            .getProperty().getVersion()) + "." + processItem.getProperty().getLabel());
             p.put("talendJobClassDescription", HTMLDocUtils.checkString(processItem.getProperty().getDescription()));
             p.put("rowNumber", Integer.toString(nbLine));
             p.put("host", "localhost");

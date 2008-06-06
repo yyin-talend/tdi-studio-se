@@ -48,7 +48,7 @@ public class StyleLinkFactory {
     private IStyleLink selectedZoneToZoneStyle;
 
     private IStyleLink selectedSameZoneFilterStyle;
-    
+
     private IStyleLink unselectedSameZoneFilterStyle;
 
     private IStyleLink selectedZoneToZoneFilterStyle;
@@ -294,7 +294,7 @@ public class StyleLinkFactory {
         style.setForegroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_UNSELECTED_FILTER_LINK));
         return style;
     }
-    
+
     /**
      * DOC amaumont Comment method "getNotSelectedSameZoneStyle".
      * 

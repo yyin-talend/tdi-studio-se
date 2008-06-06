@@ -84,8 +84,8 @@ public class JetBean {
      * @param classpathParameter
      * @param templateRelativeUri
      */
-    public JetBean(String jetPluginRepository, String templateRelativeUri, String className, String version, String language,
-            String codePart) {
+    public JetBean(String jetPluginRepository, String templateRelativeUri, String className, String version,
+            String language, String codePart) {
         this.classPath = new HashMap<String, String>();
         this.jetPluginRepository = jetPluginRepository;
         this.templateRelativeUri = templateRelativeUri;

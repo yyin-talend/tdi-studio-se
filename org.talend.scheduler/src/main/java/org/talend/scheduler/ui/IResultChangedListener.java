@@ -11,53 +11,61 @@
 //
 // ============================================================================
 package org.talend.scheduler.ui;
+
 /**
  * 
- * DOC dev  class global comment. Detailled comment
- * <br/>
- *
+ * DOC dev class global comment. Detailled comment <br/>
+ * 
  * $Id$
- *
+ * 
  */
 public interface IResultChangedListener {
+
     /**
      * 
      * DOC dev Comment method "commandChanged".
+     * 
      * @param newCommand
      */
-	public void commandChanged(String newCommand);
+    public void commandChanged(String newCommand);
+
     /**
      * 
      * DOC dev Comment method "hourChanged".
+     * 
      * @param newHour
      */
-	public void hourChanged(String newHour);
+    public void hourChanged(String newHour);
 
     /**
      * 
      * DOC dev Comment method "minuteChanged".
+     * 
      * @param newMinute
      */
-	public void minuteChanged(String newMinute);
+    public void minuteChanged(String newMinute);
 
     /**
      * 
      * DOC dev Comment method "dayofWeekChanged".
+     * 
      * @param newDayofWeek
      */
-	public void dayofWeekChanged(String newDayofWeek);
+    public void dayofWeekChanged(String newDayofWeek);
 
     /**
      * 
      * DOC dev Comment method "dayofMonthChanged".
+     * 
      * @param newdayofMonth
      */
-	public void dayofMonthChanged(String newdayofMonth);
+    public void dayofMonthChanged(String newdayofMonth);
 
     /**
      * 
      * DOC dev Comment method "monthChanged".
+     * 
      * @param newMonth
      */
-	public void monthChanged(String newMonth);
+    public void monthChanged(String newMonth);
 }

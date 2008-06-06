@@ -24,39 +24,39 @@ import org.eclipse.swt.widgets.Display;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 
-
-
 /**
- * DOC dev  class global comment. Detailled comment
- * <br/>
- *
+ * DOC dev class global comment. Detailled comment <br/>
+ * 
  * $Id: CloseSQLResultTabAction.java,v 1.6 2006/11/03 10:09:21 yi.zhang Exp $
- *
+ * 
  */
 public class CloseSQLResultTabAction extends Action {
+
     private ImageDescriptor img = getDescriptor(Messages.getString("Images.CloseIcon")); //$NON-NLS-1$
+
     /**
      * Holds a reference to the TableItem we should close.
      */
     private CTabItem tabItem;
-    
+
     /**
      * Default Constructor.
-     *
+     * 
      */
     public CloseSQLResultTabAction() {
         super();
     }
-    
+
     /**
      * Constructor.
+     * 
      * @param tabItem
      */
     public CloseSQLResultTabAction(CTabItem tabItem) {
         super();
         this.tabItem = tabItem;
     }
-    
+
     public ImageDescriptor getHoverImageDescriptor() {
         return img;
     }
@@ -66,9 +66,9 @@ public class CloseSQLResultTabAction extends Action {
     }
 
     public String getToolTipText() {
-        return "Close";  //$NON-NLS-1$
+        return "Close"; //$NON-NLS-1$
     }
-    
+
     private ImageDescriptor getDescriptor(String path) {
         if (path == null || path.trim().length() == 0) {
             SqlBuilderPlugin.log(Messages.getString("CloseSQLResultTabAction.logMessageMissingImagePath", path), null); //$NON-NLS-1$
@@ -80,12 +80,15 @@ public class CloseSQLResultTabAction extends Action {
         return ImageDescriptor.createFromURL(url);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jface.action.Action#run()
      */
     @Override
     public void run() {
         BusyIndicator.showWhile(Display.getCurrent(), new Runnable() {
+
             public void run() {
                 tabItem.dispose();
             }

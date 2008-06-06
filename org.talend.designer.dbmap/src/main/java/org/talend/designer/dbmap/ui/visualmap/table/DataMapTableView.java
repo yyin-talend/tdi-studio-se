@@ -218,8 +218,7 @@ public abstract class DataMapTableView extends Composite {
      * @param abstractDataMapTable
      * @param mapperManager
      */
-    public DataMapTableView(Composite parent, int style, IDataMapTable abstractDataMapTable,
-            MapperManager mapperManager) {
+    public DataMapTableView(Composite parent, int style, IDataMapTable abstractDataMapTable, MapperManager mapperManager) {
         super(parent, style);
         this.mapperManager = mapperManager;
         this.abstractDataMapTable = abstractDataMapTable;
@@ -303,7 +302,7 @@ public abstract class DataMapTableView extends Composite {
         if (WindowSystem.isGTK()) {
             gridDataToolbar.heightHint = 26;
         } else {
-        	// gridDataToolbar.heightHint = 30; // Win32
+            // gridDataToolbar.heightHint = 30; // Win32
         }
 
         if (WindowSystem.isGTK()) {
@@ -342,7 +341,6 @@ public abstract class DataMapTableView extends Composite {
         footerComposite.setLayoutData(footerGridData);
 
         headerComposite.moveAbove(nameLabel);
-
 
         if (WindowSystem.isGTK()) {
             sizeToolBar = toolBarActions.computeSize(SWT.DEFAULT, SWT.DEFAULT);
@@ -682,10 +680,10 @@ public abstract class DataMapTableView extends Composite {
                         toolTip = defaultToolTip;
                     }
                     setTableToolTipText(table, tableColumn, tableEntry, toolTip);
-                    
-//                    System.out.println("toolTip="+toolTip);
-//                    System.out.println("table.getToolTipText()="+table.getToolTipText());
-                    
+
+                    // System.out.println("toolTip="+toolTip);
+                    // System.out.println("table.getToolTipText()="+table.getToolTipText());
+
                     break;
                 default:
                 }
@@ -1395,7 +1393,8 @@ public abstract class DataMapTableView extends Composite {
 
             public void editorValueChanged(boolean oldValidState, boolean newValidState) {
 
-                if (expressionTextEditor.isFocusControl() || lastExpressionEditorTextWhichLostFocus == expressionTextEditor) {
+                if (expressionTextEditor.isFocusControl()
+                        || lastExpressionEditorTextWhichLostFocus == expressionTextEditor) {
                     ModifiedObjectInfo modifiedObjectInfo = tableViewerCreator.getModifiedObjectInfo();
                     ITableEntry tableEntry = (ITableEntry) (modifiedObjectInfo.getCurrentModifiedBean() != null ? modifiedObjectInfo
                             .getCurrentModifiedBean()
@@ -1450,8 +1449,8 @@ public abstract class DataMapTableView extends Composite {
                 StyledTextHandler styledTextHandler = mapperManager.getUiManager().getTabFolderEditors()
                         .getStyledTextHandler();
                 styledTextHandler.setCurrentEntry(currentModifiedEntry);
-                styledTextHandler.setTextWithoutNotifyListeners(
-                        currentModifiedEntry.getExpression() == null ? "" : currentModifiedEntry.getExpression()); //$NON-NLS-1$
+                styledTextHandler
+                        .setTextWithoutNotifyListeners(currentModifiedEntry.getExpression() == null ? "" : currentModifiedEntry.getExpression()); //$NON-NLS-1$
             }
 
             public void focusLost(FocusEvent e) {
@@ -1573,18 +1572,19 @@ public abstract class DataMapTableView extends Composite {
 
         /**
          * DOC amaumont Comment method "getBackgroundColor".
+         * 
          * @param isBackground TODO
-         * @param keyProblem 
+         * @param keyProblem
          * @param expression
          */
-        public Color getColor(boolean isBackground, List<Problem> problems, String ... keyProblems) {
+        public Color getColor(boolean isBackground, List<Problem> problems, String... keyProblems) {
 
             if (problems != null) {
                 boolean hasError = false;
                 boolean hasWarning = false;
                 for (Problem problem : problems) {
                     for (String keyProblem : keyProblems) {
-                        if(keyProblem.equals(problem.getKey())) {
+                        if (keyProblem.equals(problem.getKey())) {
                             if (problem.getStatus() == Problem.ProblemStatus.ERROR) {
                                 hasError = true;
                             }
@@ -1595,14 +1595,14 @@ public abstract class DataMapTableView extends Composite {
                     }
                 }
                 if (hasError) {
-                    if(isBackground) {
+                    if (isBackground) {
                         return ColorProviderMapper.getColor(ColorInfo.COLOR_BACKGROUND_ERROR_EXPRESSION_CELL);
                     } else {
                         return ColorProviderMapper.getColor(ColorInfo.COLOR_FOREGROUND_ERROR_EXPRESSION_CELL);
                     }
                 }
                 if (hasWarning) {
-                    if(isBackground) {
+                    if (isBackground) {
                         return ColorProviderMapper.getColor(ColorInfo.COLOR_BACKGROUND_WARNING_EXPRESSION_CELL);
                     } else {
                         return null;
@@ -1633,18 +1633,20 @@ public abstract class DataMapTableView extends Composite {
 
     /**
      * DOC amaumont Comment method "getCellColor".
+     * 
      * @param tableViewerCreator
      * @param element
      * @param columnIndex
      * @param isBackground TODO
      * @return
      */
-    protected Color getCellColor(TableViewerCreator tableViewerCreator, Object element, int columnIndex, boolean isBackground) {
+    protected Color getCellColor(TableViewerCreator tableViewerCreator, Object element, int columnIndex,
+            boolean isBackground) {
         ITableEntry entry = (ITableEntry) element;
         TableViewerCreatorColumn column = (TableViewerCreatorColumn) tableViewerCreator.getColumns().get(columnIndex);
         if (column.getId().equals(ID_EXPRESSION_COLUMN)) {
-            return expressionColorProvider.getColor(isBackground, entry.getProblems(), ProblemsManager.KEY_INPUT_EXPRESSION_EMPTY,
-                    ProblemsManager.KEY_OUTPUT_EXPRESSION_EMPTY);
+            return expressionColorProvider.getColor(isBackground, entry.getProblems(),
+                    ProblemsManager.KEY_INPUT_EXPRESSION_EMPTY, ProblemsManager.KEY_OUTPUT_EXPRESSION_EMPTY);
         }
         return null;
     }
@@ -1759,7 +1761,6 @@ public abstract class DataMapTableView extends Composite {
     public Point getRealToolbarSize() {
         return realToolbarSize;
     }
-
 
     /*
      * (non-Javadoc)

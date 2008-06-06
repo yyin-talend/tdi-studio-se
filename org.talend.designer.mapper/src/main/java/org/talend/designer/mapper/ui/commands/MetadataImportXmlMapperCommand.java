@@ -17,16 +17,15 @@ import java.io.File;
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.core.ui.extended.command.MetadataImportXmlCommand;
 
-
 /**
- * DOC amaumont  class global comment. Detailled comment
- * <br/>
- *
+ * DOC amaumont class global comment. Detailled comment <br/>
+ * 
  */
 public class MetadataImportXmlMapperCommand extends MetadataImportXmlCommand {
 
     /**
      * DOC amaumont MetadataImportXmlMapperCommand constructor comment.
+     * 
      * @param extendedTableModel
      * @param file
      */
@@ -34,9 +33,9 @@ public class MetadataImportXmlMapperCommand extends MetadataImportXmlCommand {
         super(extendedTableModel, file);
     }
 
-    
-    
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.ui.extended.command.MetadataImportXmlCommand#execute()
      */
     @Override
@@ -44,7 +43,9 @@ public class MetadataImportXmlMapperCommand extends MetadataImportXmlCommand {
         super.execute();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.gef.commands.Command#redo()
      */
     @Override
@@ -52,7 +53,9 @@ public class MetadataImportXmlMapperCommand extends MetadataImportXmlCommand {
         super.redo();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.gef.commands.Command#undo()
      */
     @Override
@@ -60,6 +63,4 @@ public class MetadataImportXmlMapperCommand extends MetadataImportXmlCommand {
         super.undo();
     }
 
-    
-    
 }

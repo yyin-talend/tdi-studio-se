@@ -12,22 +12,20 @@
 // ============================================================================
 package org.talend.sqlbuilder.sqleditor;
 
-
 import org.eclipse.jface.text.rules.IWhitespaceDetector;
 
 /**
- * A java aware white space detector.
- * <br/>
- *
+ * A java aware white space detector. <br/>
+ * 
  * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40 +0000 (Fri, 29 Sep 2006) nrousseau $
- *
+ * 
  */
 public class SQLWhitespaceDetector implements IWhitespaceDetector {
 
-	/**
-	 * @see IWhitespaceDetector#isWhitespace
-	 */
-	public boolean isWhitespace(char c) {
-		return Character.isWhitespace(c);
-	}
+    /**
+     * @see IWhitespaceDetector#isWhitespace
+     */
+    public boolean isWhitespace(char c) {
+        return Character.isWhitespace(c);
+    }
 }

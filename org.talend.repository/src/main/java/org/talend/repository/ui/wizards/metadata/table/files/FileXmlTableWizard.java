@@ -57,8 +57,8 @@ public class FileXmlTableWizard extends RepositoryWizard implements INewWizard {
      * @param ISelection
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    public FileXmlTableWizard(IWorkbench workbench, boolean creation, ConnectionItem connectionItem, MetadataTable metadataTable,
-            boolean forceReadOnly) {
+    public FileXmlTableWizard(IWorkbench workbench, boolean creation, ConnectionItem connectionItem,
+            MetadataTable metadataTable, boolean forceReadOnly) {
         super(workbench, creation, forceReadOnly);
         this.connectionItem = connectionItem;
         this.metadataTable = metadataTable;

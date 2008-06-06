@@ -12,10 +12,9 @@
 // ============================================================================
 package org.talend.componentdesigner.ui.view;
 
-
 /**
  * @author rli
- *
+ * 
  */
 public class ComponentNavigator extends org.eclipse.ui.navigator.CommonNavigator {
 

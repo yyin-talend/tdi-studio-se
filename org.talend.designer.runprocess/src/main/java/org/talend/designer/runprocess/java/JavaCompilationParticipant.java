@@ -98,7 +98,8 @@ public class JavaCompilationParticipant extends CompilationParticipant {
             List<IRepositoryObject> routineObjectList = factory.getAll(type, false);
             for (IRepositoryObject repositoryObject : routineObjectList) {
                 Property property = repositoryObject.getProperty();
-                ITalendSynchronizer synchronizer = CorePlugin.getDefault().getCodeGeneratorService().createRoutineSynchronizer();
+                ITalendSynchronizer synchronizer = CorePlugin.getDefault().getCodeGeneratorService()
+                        .createRoutineSynchronizer();
                 if (fileName.equals(synchronizer.getFile(property.getItem()).getName())) {
                     Problems.addRoutineFile(synchronizer.getFile(property.getItem()), property);
                     break;
