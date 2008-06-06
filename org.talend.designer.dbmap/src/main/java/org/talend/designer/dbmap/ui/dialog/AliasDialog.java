@@ -82,8 +82,8 @@ public class AliasDialog {
                 String selectedPhysicalTable = aliasInternalDialog.getTableName();
 
                 if (newText.length() == 0 && isSameAsVisibleTableName(selectedPhysicalTable)) {// tableManager.getInputTableFromAlias(newText)
-                                                                                                // != null) {
-                // return Messages.getString("AliasDialog.aliasIsInvalid"); //$NON-NLS-1$
+                    // != null) {
+                    // return Messages.getString("AliasDialog.aliasIsInvalid"); //$NON-NLS-1$
                     return Messages.getString("AliasDialog.aliasAlreadyExists", new Object[] { selectedPhysicalTable }); //$NON-NLS-1$
                 }
                 if (selectedPhysicalTable == null || selectedPhysicalTable.length() == 0) {
