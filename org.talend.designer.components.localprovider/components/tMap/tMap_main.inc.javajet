@@ -177,6 +177,9 @@
 
 		boolean firstLookupIsPersistentSorted = false;
 
+		%>
+		boolean hasCasePrimitiveKeyWithNull_<%= uniqueNameComponent%> = false;
+		<%
 
 		// exprKey(s) initialization(s) for Main flow
 		// ---------------------------------------------
@@ -185,6 +188,7 @@
             String tableName = inputTable.getName();
             nextLookupName = inputTable.getName();
             firstLookupIsPersistentSorted = true;
+            
             IConnection connection = hNameToConnection.get(tableName);
             if (!isVirtualIn && connection != null) { // T_TM_M_206
             	//EConnectionType connectionType = connection.getLineStyle();
@@ -192,6 +196,11 @@
             	IMetadataTable metadataTable = connection.getMetadataTable();
             	if (inputTable != null) { // T_TM_M_205
 		        	hExternalInputTableEntries.clear();
+		        	
+		        	%>
+					hasCasePrimitiveKeyWithNull_<%= uniqueNameComponent%> = false;
+					<%
+		        	
             		List<ExternalMapperTableEntry> metadataTableEntries = inputTable.getMetadataTableEntries();
                 	if (metadataTableEntries != null) { // T_TM_M_207
                 	
@@ -206,6 +215,8 @@
 			                	String expressionKey = externalInputTableEntry.getExpression();
                         		if (expressionKey != null && !"".equals(expressionKey.trim())) { // T_TM_M_202
 		                        	nextLookupColumnsKeys.add(column);
+	                                String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+                                	boolean javaPrimitiveKeyColumn = JavaTypesManager.isJavaPrimitiveType(typeToGenerate);
 				            		String key = CodeGenerationUtils.buildProblemKey(componentNameForKeyProblem,
 			                		JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN.toString(), tableName, columnName);
             						if (checkingSyntax) {
@@ -213,9 +224,29 @@
 	 	           						<%= CodeGenerationUtils.buildJavaStartFieldKey(key) %>
     	    	    				<%
             						}	
-				            		%>
+
+
+                       		    	if(javaPrimitiveKeyColumn) {
+                        		    	
+                       		    		JavaType javaType = JavaTypesManager.getJavaTypeFromName(typeToGenerate);
+                       		    		String nullableType = JavaTypesManager.getTypeToGenerate(javaType.getId(), true);
+                       		    		String defaultValue = JavaTypesManager.getDefaultValueFromJavaIdType(javaType.getId(), false);
+                        		    	%>
+                        		    	<%= JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> exprKey_<%= tableName %>__<%= column.getLabel() %> = <%= defaultValue %>; 
+                        		    	Object exprKeyValue_<%= tableName %>__<%= columnName %> = <%= expressionKey %>;
+                        		    	if(exprKeyValue_<%= tableName %>__<%= columnName %> == null) {
+                        		    		hasCasePrimitiveKeyWithNull_<%= uniqueNameComponent%> = true;
+                        		    	} else {
+							            	exprKey_<%= tableName %>__<%= column.getLabel() %> =  (<%= typeToGenerate %>)(<%= nullableType %>) exprKeyValue_<%= tableName %>__<%= columnName %>;
+                       		    		}
+                       		    		<%
+                       		    	} else {
+					            		%>
 						            	<%= JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> exprKey_<%= tableName %>__<%= column.getLabel() %> = <%= expressionKey %>;
-            						<%
+            							<%
+                       		    	}
+
+
             						if (checkingSyntax) {
                 					%>
 	                					<%= CodeGenerationUtils.buildJavaEndFieldKey(key) %>
@@ -470,6 +501,10 @@
                     List<IMetadataColumn> listColumns = metadataTable.getListColumns();
                     ArrayList<String> keysNames = new ArrayList<String>();
                     ArrayList<String> keysValues = new ArrayList<String>();
+                    ArrayList<String> keysTypes = new ArrayList<String>();
+                    
+                    boolean hasPrimitiveKey = false;
+                    
                     for (IMetadataColumn column : listColumns) {
                         String columnName = column.getLabel();
                         ExternalMapperTableEntry externalInputTableEntry = hExternalInputTableEntries.get(columnName);
@@ -478,6 +513,12 @@
                             if (expressionKey != null && !"".equals(expressionKey.trim())) {
                                 keysNames.add(columnName);
                                 keysValues.add(expressionKey);
+                                String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+                                keysTypes.add(typeToGenerate);
+                                boolean javaPrimitiveKeyColumn = JavaTypesManager.isJavaPrimitiveType(typeToGenerate);
+                                if(javaPrimitiveKeyColumn) {
+                                	hasPrimitiveKey = true;
+                                }
                             }
                         }
                     }
@@ -536,6 +577,9 @@
 								<% 
                         		if(aKeysValues.length > 0 || checkingSyntax) { // T 001
 
+								%>
+								hasCasePrimitiveKeyWithNull_<%= uniqueNameComponent%> = false;
+								<%
 
                         		for (int iKeyName = 0; iKeyName < aKeysNames.length; iKeyName++) {
 
@@ -547,14 +591,49 @@
                         			    <%
                         		    }
 
+                       		    	String typeToGenerate = keysTypes.get(iKeyName);
+                       		        boolean javaPrimitiveKeyColumn = JavaTypesManager.isJavaPrimitiveType(typeToGenerate);
+                       		        
 									if(isPersistentSortedTable) {
-                        		    	%>
-                        		    	<%= tableName %>HashKey. <%= aKeysNames[iKeyName] %> = rsc_<%= currentJoinedTableNames %>.exprKey_<%= tableName %>__<%= aKeysNames[iKeyName] %>;
-                        		    	<%
+
+
+                        		    	if(javaPrimitiveKeyColumn) {
+                        		    	
+                        		    		JavaType javaType = JavaTypesManager.getJavaTypeFromName(typeToGenerate);
+                        		    		String nullableType = JavaTypesManager.getTypeToGenerate(javaType.getId(), true);
+	                        		    	%>
+	                        		    	Object exprKeyValue_<%= tableName %>__<%= aKeysNames[iKeyName] %> = <%= aKeysValues[iKeyName] %>;
+	                        		    	if(exprKeyValue_<%= tableName %>__<%= aKeysNames[iKeyName] %> == null) {
+	                        		    		hasCasePrimitiveKeyWithNull_<%= uniqueNameComponent%> = true;
+	                        		    	} else {
+	                        		    		<%= tableName %>HashKey.<%= aKeysNames[iKeyName] %> = (<%= typeToGenerate %>)(<%= nullableType %>) rsc_<%= currentJoinedTableNames %>.exprKey_<%= tableName %>__<%= aKeysNames[iKeyName] %>;
+                        		    		}
+                        		    		<%
+                        		    	} else {
+	                        		    	%>
+                        		    		<%= tableName %>HashKey.<%= aKeysNames[iKeyName] %> = rsc_<%= currentJoinedTableNames %>.exprKey_<%= tableName %>__<%= aKeysNames[iKeyName] %>;
+                        		    		<%
+                        		    	}
+
                         		    } else {
-                        		    	%>
-                        		    	<%= tableName %>HashKey. <%= aKeysNames[iKeyName] %> = <%= aKeysValues[iKeyName] %>;
-                        		    	<%
+                        		    
+                        		    	if(javaPrimitiveKeyColumn) {
+                        		    	
+                        		    		JavaType javaType = JavaTypesManager.getJavaTypeFromName(typeToGenerate);
+                        		    		String nullableType = JavaTypesManager.getTypeToGenerate(javaType.getId(), true);
+	                        		    	%>
+	                        		    	Object exprKeyValue_<%= tableName %>__<%= aKeysNames[iKeyName] %> = <%= aKeysValues[iKeyName] %>;
+	                        		    	if(exprKeyValue_<%= tableName %>__<%= aKeysNames[iKeyName] %> == null) {
+	                        		    		hasCasePrimitiveKeyWithNull_<%= uniqueNameComponent%> = true;
+	                        		    	} else {
+                        		    			<%= tableName %>HashKey.<%= aKeysNames[iKeyName] %> = (<%= typeToGenerate %>)(<%= nullableType %>) exprKeyValue_<%= tableName %>__<%= aKeysNames[iKeyName] %>;
+                        		    		}
+                        		    		<%
+                        		    	} else {
+	                        		    	%>
+                        		    		<%= tableName %>HashKey.<%= aKeysNames[iKeyName] %> = <%= aKeysValues[iKeyName] %>;
+                        		    		<%
+                        		    	}
                         		    }
                         		    if (checkingSyntax) {
                         		    	%>
@@ -575,28 +654,46 @@
                         		} // T 002
                         		%>
 	  					
-	  							tHash_Lookup_<%= tableName %>.lookup( <%= tableName %>HashKey );
+	  							<%
+	  							if(hasPrimitiveKey) { // T_TM_M_171
+	  							%>
+	
+		  							if(!hasCasePrimitiveKeyWithNull_<%= uniqueNameComponent%>) { // G_TM_M_091
+		  							
+			  					<%
+			  					} // T_TM_M_171
+			  					%>
+	  					
+		  							tHash_Lookup_<%= tableName %>.lookup( <%= tableName %>HashKey );
 
-								if(!tHash_Lookup_<%= tableName %>.hasNext()) { // G 090
+	  							<%
+	  							if(hasPrimitiveKey) { // T_TM_M_172
+	  							%>
+
+			  						} // G_TM_M_091
+			  						
+			  					<%
+			  					} // T_TM_M_171
+			  					%>
+
+								if(<%= hasPrimitiveKey ? "hasCasePrimitiveKeyWithNull_" + uniqueNameComponent + " || " : "" %>!tHash_Lookup_<%= tableName %>.hasNext()) { // G 090
 		  				
-		  							<%
-		  							if(externalTable.isInnerJoin()) {
-		  							%>
-			  							<%= rejectedInnerJoin %> = true;
-		  							<%
-	  								}
+	  								<%
+	  								if(externalTable.isInnerJoin()) {
 	  								%>
+			  							<%= rejectedInnerJoin %> = true;
+	  								<%
+  									}
+  									%>
 						
 									<%if(isMultipleResultMode) { // T 56 %>
 	
 		  								forceLoop<%= tableName %> = true;
-		  					
-	  								<% } // T 56 %>
+	  					
+  									<% } // T 56 %>
   									  		
-  									  
-
-		  						} // G 090
-	  								
+	  							} // G 090
+		  							
 							} // G 20
 			           		  	  
 							<%
@@ -800,6 +897,8 @@
                     					if (externalInputTableEntry != null) { // T_TM_M_213
 	                        				String expressionKey = externalInputTableEntry.getExpression();
                         					if (expressionKey != null && !"".equals(expressionKey.trim())) { // T_TM_M_212
+				                                String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+                                				boolean javaPrimitiveKeyColumn = JavaTypesManager.isJavaPrimitiveType(typeToGenerate);
                         						nextLookupColumnsKeys.add(column);
 					            				String key = CodeGenerationUtils.buildProblemKey(componentNameForKeyProblem,
 				                				JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN.toString(), nextTableName, columnName);
@@ -808,9 +907,26 @@
  	           										<%= CodeGenerationUtils.buildJavaStartFieldKey(key) %>
         	    								<%
             									}
-					            				%>
+
+				                       	    	if(javaPrimitiveKeyColumn) {
+                        		    	
+                       		    					JavaType javaType = JavaTypesManager.getJavaTypeFromName(typeToGenerate);
+                       		    					String nullableType = JavaTypesManager.getTypeToGenerate(javaType.getId(), true);
+                       		    					String defaultValue = JavaTypesManager.getDefaultValueFromJavaIdType(javaType.getId(), false);
+                        		    				%>
+                        		    				Object exprKeyValue_<%= nextTableName %>__<%= columnName %> = <%= expressionKey %>;
+                        		    				if(exprKeyValue_<%= nextTableName %>__<%= columnName %> == null) {
+            	            		    				hasCasePrimitiveKeyWithNull_<%= uniqueNameComponent%> = true;
+			                        		    	} else {
+							            				exprKey_<%= nextTableName %>__<%= column.getLabel() %> =  (<%= typeToGenerate %>)(<%= nullableType %>) exprKeyValue_<%= nextTableName %>__<%= columnName %>;
+                       		    					}
+                       		    					<%
+                       		    				} else {
+						            				%>
 					            					exprKey_<%= nextTableName %>__<%= column.getLabel() %> = <%= expressionKey %>;
-            									<%
+            										<%
+                       		    				}
+
             									if (checkingSyntax) {
                 								%>
                 									<%= CodeGenerationUtils.buildJavaEndFieldKey(key) %>
