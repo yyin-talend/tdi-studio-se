@@ -21,7 +21,6 @@ import java.util.Set;
 
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.CLabel;
@@ -31,7 +30,6 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
@@ -40,13 +38,9 @@ import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog;
 import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog.EEditSelection;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.IMetadataColumn;
-import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
-import org.talend.core.model.metadata.builder.ConvertionHelper;
-import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
-import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
@@ -55,7 +49,6 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.properties.ConnectionItem;
-import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
@@ -77,8 +70,6 @@ import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.actions.metadata.CreateTableAction;
 import org.talend.repository.ui.dialog.RepositoryReviewDialog;
-import org.talend.repository.ui.utils.ManagerConnection;
-import org.talend.repository.ui.wizards.metadata.table.database.DatabaseTableWizard;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
@@ -355,44 +346,6 @@ public class SchemaTypeController extends AbstractRepositoryController {
     public void propertyChange(PropertyChangeEvent arg0) {
         // TODO Auto-generated method stub
 
-    }
-
-    private void openDatabaseTableWizard(DatabaseConnectionItem item,
-            org.talend.core.model.metadata.builder.connection.MetadataTable metadataTable, IRepositoryObject node, int width,
-            int height) {
-
-        ManagerConnection managerConnection = new ManagerConnection();
-        String[] test = new String[0];
-        IMetadataConnection metadataConnection = ConvertionHelper.convert((DatabaseConnection) item.getConnection());
-
-        boolean skipStep = checkConnectStatus(managerConnection, metadataConnection);
-        DatabaseTableWizard databaseTableWizard = new DatabaseTableWizard(PlatformUI.getWorkbench(), false, item, metadataTable,
-                test, false, managerConnection, metadataConnection);
-        databaseTableWizard.setSkipStep(skipStep);
-        databaseTableWizard.setRepositoryObject(node);
-
-        WizardDialog wizardDialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                databaseTableWizard);
-        wizardDialog.setBlockOnOpen(true);
-        wizardDialog.setPageSize(width, height);
-        wizardDialog.create();
-        wizardDialog.open();
-
-    }
-
-    public boolean checkConnectStatus(ManagerConnection managerConnection, IMetadataConnection metadataConnection) {
-        boolean skipStep = false;
-
-        managerConnection.check(metadataConnection);
-        if (managerConnection.getIsValide()) {
-            List<String> itemTableName = ExtractMetaDataFromDataBase.returnTablesFormConnection(metadataConnection);
-            if (itemTableName == null || itemTableName.isEmpty()) {
-                skipStep = true;
-            }
-        } else {
-            skipStep = true;
-        }
-        return skipStep;
     }
 
     /**
