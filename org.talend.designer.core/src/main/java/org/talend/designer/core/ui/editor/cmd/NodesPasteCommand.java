@@ -48,10 +48,12 @@ import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
+import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
+import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
 import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
@@ -598,6 +600,15 @@ public class NodesPasteCommand extends Command {
         for (NodeContainer nodeContainer : nodeContainerList) {
             process.addNodeContainer(nodeContainer);
         }
+        // check that the created connections exists now, or create them if needed
+        for (String newConnectionName : createdNames) {
+            if (process.checkValidConnectionName(newConnectionName, true)) {
+                process.addUniqueConnectionName(newConnectionName);
+            }
+        }
+        process.checkStartNodes();
+        process.checkProcess();
+
         // set the new node as the current selection
         if (!multipleCommand) {
             EditPart processPart = (EditPart) viewer.getRootEditPart().getChildren().get(0);
@@ -606,6 +617,18 @@ public class NodesPasteCommand extends Command {
                 // test
                 List<EditPart> sel = new ArrayList<EditPart>();
                 for (EditPart editPart : (List<EditPart>) processPart.getChildren()) {
+                    if (editPart instanceof SubjobContainerPart) {
+                        for (EditPart subjobChildsPart : (List<EditPart>) editPart.getChildren()) {
+                            if (subjobChildsPart instanceof NodeContainerPart) {
+                                if (nodeContainerList.contains(((NodeContainerPart) subjobChildsPart).getModel())) {
+                                    NodePart nodePart = ((NodeContainerPart) subjobChildsPart).getNodePart();
+                                    if (nodePart != null) {
+                                        sel.add(nodePart);
+                                    }
+                                }
+                            }
+                        }
+                    }
                     if (editPart instanceof NodePart) {
                         Node currentNode = (Node) editPart.getModel();
                         if (nodeContainerList.contains(currentNode.getNodeContainer())) {
@@ -617,14 +640,6 @@ public class NodesPasteCommand extends Command {
                 viewer.setSelection(s);
             }
         }
-        // check that the created connections exists now, or create them if needed
-        for (String newConnectionName : createdNames) {
-            if (process.checkValidConnectionName(newConnectionName, true)) {
-                process.addUniqueConnectionName(newConnectionName);
-            }
-        }
-        process.checkStartNodes();
-        process.checkProcess();
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
@@ -646,11 +661,6 @@ public class NodesPasteCommand extends Command {
             process.removeNodeContainer(nodeContainer);
         }
 
-        // set the old selection active
-        if (!multipleCommand) {
-            StructuredSelection s = new StructuredSelection(oldSelection);
-            viewer.setSelection(s);
-        }
         // check that the created connections are removed, remove them if not
         for (String newConnectionName : createdNames) {
             if (!process.checkValidConnectionName(newConnectionName, true)) {
@@ -660,6 +670,12 @@ public class NodesPasteCommand extends Command {
 
         process.checkStartNodes();
         process.checkProcess();
+
+        // set the old selection active
+        if (!multipleCommand) {
+            StructuredSelection s = new StructuredSelection(oldSelection);
+            viewer.setSelection(s);
+        }
     }
 
     /**
