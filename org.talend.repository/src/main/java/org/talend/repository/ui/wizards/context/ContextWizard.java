@@ -202,11 +202,14 @@ public class ContextWizard extends RepositoryWizard implements INewWizard {
                     if (contextManager instanceof JobContextManager) {
                         JobContextManager manager = (JobContextManager) contextManager;
                         if (manager.isModified()) {
+                            // the function has moved to UpdateContextParameterCommand for update manager(bug 3993).
+                            // update the tRunJob reference
+                            // UpdateContextReferenceHelper.updateJobContextReference((JobContextManager)
+                            // contextManager,
+                            // contextItem);
+
                             // update
                             RepositoryUpdateManager.updateContext((JobContextManager) contextManager, contextItem);
-                            // update the job context and tRunJob reference
-                            UpdateContextReferenceHelper.updateJobContextReference((JobContextManager) contextManager,
-                                    contextItem);
 
                         }
                     }

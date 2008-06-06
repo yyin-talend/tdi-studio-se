@@ -26,7 +26,6 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.context.UpdateRunJobComponentContextHelper;
 import org.talend.core.model.context.JobContextManager;
-import org.talend.core.model.context.UpdateContextVariablesHelper;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
@@ -45,20 +44,28 @@ import org.talend.repository.model.ProxyRepositoryFactory;
 /**
  * DOC ggu class global comment. Detailled comment
  */
+@Deprecated
 public final class UpdateContextReferenceHelper {
 
+    /**
+     * only update tRunJob component.
+     * 
+     * the function has moved to UpdateContextParameterCommand for update manager(bug 3993).
+     * 
+     */
+    @Deprecated
     public static synchronized void updateJobContextReference(JobContextManager curRepositoryManager, ContextItem curContextItem) {
         final Set<String> repositoryVarsSet = getCurRepositoryContextVarsName(curRepositoryManager);
         final Map<String, String> renamedMap = curRepositoryManager.getNameMap();
 
         String curContextName = curContextItem.getProperty().getLabel();
         String curContextId = curContextItem.getProperty().getId();
-        // if rename the context variable naem, update the item context.
         if (renamedMap != null && !renamedMap.isEmpty()) {
+            // if rename the context variable naem, update the item context.
             updateProcessItemforVariablesReference(curRepositoryManager, curContextId, repositoryVarsSet, renamedMap);
+            // update the opened context.
+            updateOpenedJobforVariablesReference(curRepositoryManager, curContextName, repositoryVarsSet, renamedMap);
         }
-        // update the opened context.
-        updateOpenedJobforVariablesReference(curRepositoryManager, curContextName, repositoryVarsSet, renamedMap);
     }
 
     /*
@@ -87,11 +94,12 @@ public final class UpdateContextReferenceHelper {
                         String source = contextParameter.getSource();
                         if (source.equals(contextName)) {
                             // check variable reference of current repository context
-                            String newName = getRenamedVarName(contextParameter.getName(), renamedMap);
-                            if (newName != null) {
+                            final String paramName = contextParameter.getName();
+                            String newName = getRenamedVarName(paramName, renamedMap);
+                            if (newName != null && !newName.equals(paramName)) {
                                 // for 2608
                                 if (!recordFlag && !realRenamedVarMap.containsKey(newName)) {
-                                    realRenamedVarMap.put(newName, contextParameter.getName());
+                                    realRenamedVarMap.put(newName, paramName);
                                 }
 
                                 // have renamed this variable.
@@ -126,7 +134,7 @@ public final class UpdateContextReferenceHelper {
                 UpdateRunJobComponentContextHelper.updateOpenedJobRunJobComponentReference(processes, realRenamedVarMap, process
                         .getProperty().getId(), null);
                 // update parameter for current job and nodes in it. for 2608
-                UpdateContextVariablesHelper.updateProcessForRenamed(process, realRenamedVarMap);
+                // UpdateContextVariablesHelper.updateProcessForRenamed(process, realRenamedVarMap);
 
                 // update the job state
                 if (process instanceof IProcess2) {
@@ -254,11 +262,12 @@ public final class UpdateContextReferenceHelper {
                                 String repositoryId = parameterType.getRepositoryContextId();
                                 if (repositoryId != null && repositoryId.equals(curContextId)) {
                                     // found the current reference variable
-                                    String newName = getRenamedVarName(parameterType.getName(), renamedMap);
-                                    if (newName != null) {
+                                    final String paramName = parameterType.getName();
+                                    String newName = getRenamedVarName(paramName, renamedMap);
+                                    if (newName != null && !newName.equals(paramName)) {
                                         // for 2608
                                         if (!recordFlag && !realRenamedVarMap.containsKey(newName)) {
-                                            realRenamedVarMap.put(newName, parameterType.getName());
+                                            realRenamedVarMap.put(newName, paramName);
                                         }
 
                                         // have renamed this variable.
@@ -290,7 +299,8 @@ public final class UpdateContextReferenceHelper {
                                     item.getProperty().getId(), null);
 
                             // update parameter reference for current item and nodes. for 2608
-                            UpdateContextVariablesHelper.updateProcessForRenamed(item.getProcess(), realRenamedVarMap);
+                            // UpdateContextVariablesHelper.updateProcessForRenamed(item.getProcess(),
+                            // realRenamedVarMap);
 
                             factory.save(item);
                         }
