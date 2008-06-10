@@ -99,7 +99,7 @@
       NAME="DBNAME"
       FIELD="TEXT"
       NUM_ROW="4"
-      REPOSITORY_VALUE="DATASOURCE"
+      REPOSITORY_VALUE="SID"
       SHOW_IF="((ACTION=='INSERT') or (ACTION=='UPDATE'))  and (USE_EXISTING_CONNECTION == 'false')"
     >
       <DEFAULT>""</DEFAULT>

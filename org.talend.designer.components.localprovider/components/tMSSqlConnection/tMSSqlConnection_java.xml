@@ -79,7 +79,7 @@
       NAME="DBNAME"
       FIELD="TEXT"
       NUM_ROW="4"
-      REPOSITORY_VALUE="DATASOURCE"
+      REPOSITORY_VALUE="SID"
       REQUIRED="true"
     >
       <DEFAULT>""</DEFAULT>
