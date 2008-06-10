@@ -17,6 +17,11 @@
 			String cid = node.getUniqueName();
 %>
 <% 
+	if(codeGenArgument.getIsRunInMultiThread()){
+%>
+	synchronized (multiThreadLockWrite) {
+<%
+	}
 	if (codeGenArgument.subTreeContainsParallelIterate()) {
 %>
 	synchronized (lockWrite) {
@@ -29,6 +34,11 @@
 %>
 	}
 <% 
+	}
+	if(codeGenArgument.getIsRunInMultiThread()){
+%>
+	}
+<%
 	}
 %>
 	globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);

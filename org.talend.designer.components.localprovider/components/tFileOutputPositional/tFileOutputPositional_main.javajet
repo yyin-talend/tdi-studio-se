@@ -148,6 +148,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			%>
 			sb_<%=cid %>.append(<%=separator%>);
 			<% 
+				if(codeGenArgument.getIsRunInMultiThread()){
+			%>
+			synchronized (multiThreadLockWrite) {
+			<%
+				}
 				if (codeGenArgument.subTreeContainsParallelIterate()) {
 			%>
 			synchronized (lockWrite) {
@@ -168,6 +173,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				}
 			<% 
 				}
+				if(codeGenArgument.getIsRunInMultiThread()){
+    		%>
+    			}
+    		<%
+    			}
 			%> 						
 			nb_line_<%=cid %>++;
 <%

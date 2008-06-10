@@ -15,6 +15,11 @@
 %>
 
 <% 
+    if(codeGenArgument.getIsRunInMultiThread()){
+%>
+   	synchronized (multiThreadLockWrite) {
+<%
+	}
 	if (codeGenArgument.subTreeContainsParallelIterate()) {
 %>
 	synchronized (lockWrite) {
@@ -69,4 +74,9 @@
 }
 <% 
 	}
+	if(codeGenArgument.getIsRunInMultiThread()){
+%>
+}
+<%
+}
 %>
