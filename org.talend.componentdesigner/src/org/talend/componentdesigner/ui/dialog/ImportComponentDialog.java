@@ -432,7 +432,7 @@ public class ImportComponentDialog extends Dialog {
                         .lastIndexOf(File.separator)
                         + File.separator.length()) : component;
                 FileCopy.copyComponentFolder(sourceDirectory + File.separator + component, targetDirectory + File.separator
-                        + componentName);
+                        + componentName, false);
             }
             // refresh workspace
             try {

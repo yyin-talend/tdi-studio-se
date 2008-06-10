@@ -40,7 +40,9 @@ public class PushToPaletteActionProvider extends CommonActionProvider {
 
     private List<IFolder> selectedFolderList;
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.ui.navigator.CommonActionProvider#init(org.eclipse.ui.navigator.ICommonActionExtensionSite)
      */
     public void init(ICommonActionExtensionSite anExtensionSite) {
@@ -84,13 +86,17 @@ public class PushToPaletteActionProvider extends CommonActionProvider {
             String path = CorePlugin.getDefault().getComponentsLocalProviderService().getPreferenceStore().getString(
                     "USER_COMPONENTS_FOLDER"); //$NON-NLS-1$
             if (path == null || path.length() == 0) {
-                new MessageDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), Messages.getString("PushToPaletteActionProvider.Error"), null, //$NON-NLS-1$
+                new MessageDialog(
+                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                        Messages.getString("PushToPaletteActionProvider.Error"), null, //$NON-NLS-1$
                         Messages.getString("PushToPaletteActionProvider.ErrorMSG"), MessageDialog.ERROR, new String[] { Messages.getString("PushToPaletteActionProvider.OK") }, 0).open(); //$NON-NLS-1$ //$NON-NLS-2$
                 return;
             }
             File targetFile = new File(path);
             if (!targetFile.exists()) {
-                new MessageDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), Messages.getString("PushToPaletteActionProvider.Error2"), null, //$NON-NLS-1$
+                new MessageDialog(
+                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                        Messages.getString("PushToPaletteActionProvider.Error2"), null, //$NON-NLS-1$
                         Messages.getString("PushToPaletteActionProvider.ErrorMSG2"), MessageDialog.ERROR, new String[] { Messages.getString("PushToPaletteActionProvider.OK2") }, 0).open(); //$NON-NLS-1$ //$NON-NLS-2$
                 return;
             }
@@ -99,13 +105,14 @@ public class PushToPaletteActionProvider extends CommonActionProvider {
                 String sourceComponentFolder = sourceFile.getAbsolutePath();
                 String targetComponentFolder = targetFile.getAbsolutePath() + File.separator + sourceFile.getName();
 
-                FileCopy.copyComponentFolder(sourceComponentFolder, targetComponentFolder);
+                FileCopy.copyComponentFolder(sourceComponentFolder, targetComponentFolder, true);
             }
-            
+
             CorePlugin.getDefault().getCodeGeneratorService().generationInit();
 
-            MessageDialog warningMessageDialog = new MessageDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-                    .getShell(), Messages.getString("PushToPaletteActionProvider.Information"), null, Messages.getString("PushToPaletteActionProvider.InformationMSG"), MessageDialog.INFORMATION, //$NON-NLS-1$ //$NON-NLS-2$
+            MessageDialog warningMessageDialog = new MessageDialog(
+                    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                    Messages.getString("PushToPaletteActionProvider.Information"), null, Messages.getString("PushToPaletteActionProvider.InformationMSG"), MessageDialog.INFORMATION, //$NON-NLS-1$ //$NON-NLS-2$
                     new String[] { Messages.getString("PushToPaletteActionProvider.OK3") }, 0); //$NON-NLS-1$
             warningMessageDialog.open();
 

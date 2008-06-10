@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.componentdesigner.util.file;
 
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -101,7 +102,7 @@ public class FileCopy {
      * @param sourceComponentFolder
      * @param targetComponentFolder
      */
-    public static void copyComponentFolder(String sourceComponentFolder, String targetComponentFolder) {
+    public static void copyComponentFolder(String sourceComponentFolder, String targetComponentFolder, boolean modifySkeletonValue) {
         try {
             File targetFolder = new File(targetComponentFolder);
             if (!targetFolder.exists()) {
@@ -118,11 +119,33 @@ public class FileCopy {
                 }
 
                 if (temp.isFile() && !file[i].startsWith(".")) { //$NON-NLS-1$
-                    FileInputStream input = new FileInputStream(temp);
+                    DataInputStream input = new DataInputStream(new FileInputStream(temp));
                     FileOutputStream output = new FileOutputStream(targetComponentFolder + File.separator
                             + (temp.getName()).toString());
+
+                    // check and fix the skeleton value.
+                    if (modifySkeletonValue && (file[i].endsWith(".javajet") || file[i].endsWith(".perljet"))) { //$NON-NLS-1$ //$NON-NLS-2$
+                        StringBuilder sb = new StringBuilder();
+                        while (sb.indexOf("%>") < 0 && sb.indexOf("/templates/") < 0) { //$NON-NLS-1$ //$NON-NLS-2$
+                            char c = (char) input.readByte();
+                            sb.append(c);
+                        }
+                        int index = sb.indexOf("/templates/"); //$NON-NLS-1$
+                        if (index > 0) {
+                            int end = index;
+                            int start = index;
+                            while (sb.charAt(start) != '"') { //$NON-NLS-1$
+                                start--;
+                            }
+                            sb.replace(start + 1, end, "../../.."); //$NON-NLS-1$
+                        }
+                        output.write(sb.toString().getBytes());
+
+                    }
+                    
                     byte[] b = new byte[1024];
                     int len;
+
                     while ((len = input.read(b)) != -1) {
                         output.write(b, 0, len);
                     }
@@ -130,9 +153,9 @@ public class FileCopy {
                     output.close();
                     input.close();
                 }
-                if (temp.isDirectory()) {// copy subfolder
+                if (temp.isDirectory()) { // copy subfolder
                     copyComponentFolder(sourceComponentFolder + File.separator + file[i], targetComponentFolder + File.separator
-                            + file[i]);
+                            + file[i], modifySkeletonValue);
                 }
             }
         } catch (Exception e) {
