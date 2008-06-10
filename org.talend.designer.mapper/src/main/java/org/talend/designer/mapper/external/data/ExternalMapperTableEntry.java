@@ -14,13 +14,15 @@ package org.talend.designer.mapper.external.data;
 
 import java.io.Serializable;
 
+import org.talend.designer.abstractmap.model.tableentry.IExternalEntry;
+
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
  * 
  * $Id$
  * 
  */
-public class ExternalMapperTableEntry implements Serializable, Cloneable {
+public class ExternalMapperTableEntry implements Serializable, Cloneable, IExternalEntry {
 
     /**
      * 
@@ -118,7 +120,9 @@ public class ExternalMapperTableEntry implements Serializable, Cloneable {
         return super.clone();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
@@ -150,6 +154,4 @@ public class ExternalMapperTableEntry implements Serializable, Cloneable {
         return true;
     }
 
-    
-    
 }

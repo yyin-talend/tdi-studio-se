@@ -22,11 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.oro.text.regex.MalformedPatternException;
 import org.apache.oro.text.regex.Pattern;
-import org.apache.oro.text.regex.PatternCompiler;
 import org.apache.oro.text.regex.PatternMatcher;
-import org.apache.oro.text.regex.Perl5Compiler;
 import org.apache.oro.text.regex.Perl5Matcher;
 import org.apache.oro.text.regex.Perl5Substitution;
 import org.eclipse.swt.SWT;
@@ -630,71 +627,54 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
         if (oldName == null || newName == null && renameAction) {
             throw new NullPointerException();
         }
-        PatternCompiler compiler = new Perl5Compiler();
-        PatternMatcher matcher = new Perl5Matcher();
-        ((Perl5Matcher) matcher).setMultiline(true);
-        Perl5Substitution substitution = null;
-        Pattern pattern;
-        if (renameAction) {
-            substitution = new Perl5Substitution(newName + "$2", Perl5Substitution.INTERPOLATE_ALL);
-        }
-        try {
-            pattern = compiler.compile("\\b(" + oldName + ")(\\b|\\_)");
-        } catch (MalformedPatternException e) {
-            ExceptionHandler.process(e);
-            return false;
-        }
+
         if (externalData != null) {
             List<ExternalMapperTable> tables = new ArrayList<ExternalMapperTable>(externalData.getInputTables());
             tables.addAll(externalData.getOutputTables());
+            if (externalData.getVarsTables() != null) {
+                tables.addAll(externalData.getVarsTables());
+            }
+
             for (ExternalMapperTable table : tables) {
 
-                List<ExternalMapperTableEntry> metadataTableEntries = table.getMetadataTableEntries();
-
                 if (table.getExpressionFilter() != null) {
-                    if (renameAction) {
-                        String expression = renameDataIntoExpression(pattern, matcher, substitution, table.getExpressionFilter());
-                        table.setExpressionFilter(expression);
-                    } else {
-                        if (hasDataIntoExpression(pattern, matcher, table.getExpressionFilter())) {
-                            return true;
+                    Pattern pattern = getRenamePattern(oldName);
+                    if (pattern != null) {
+                        PatternMatcher matcher = new Perl5Matcher();
+                        ((Perl5Matcher) matcher).setMultiline(true);
+
+                        if (renameAction) {
+                            Perl5Substitution substitution = getRenameSubstitution(newName);
+                            String expression = renameDataIntoExpression(pattern, matcher, substitution, table
+                                    .getExpressionFilter());
+                            table.setExpressionFilter(expression);
+                        } else {
+                            if (hasDataIntoExpression(pattern, matcher, table.getExpressionFilter())) {
+                                return true;
+                            }
                         }
                     }
                 }
 
+                List<ExternalMapperTableEntry> metadataTableEntries = table.getMetadataTableEntries();
                 if (metadataTableEntries != null) {
                     // loop on all entries of current table
                     for (ExternalMapperTableEntry entry : metadataTableEntries) {
-                        if (entry.getExpression() != null) {
-                            if (renameAction) {
-                                String expression = renameDataIntoExpression(pattern, matcher, substitution, entry
-                                        .getExpression());
-                                entry.setExpression(expression);
-                            } else {
-                                if (hasDataIntoExpression(pattern, matcher, entry.getExpression())) {
-                                    return true;
-                                }
-                            }
+                        if (hasOrRenameEntry(entry, oldName, newName, renameAction)) {
+                            return true; // existed
                         }
                     } // for (ExternalMapperTableEntry entry : metadataTableEntries) {
                 }
                 if (table.getConstraintTableEntries() != null) {
                     for (ExternalMapperTableEntry entry : table.getConstraintTableEntries()) {
-                        if (entry.getExpression() != null) {
-                            if (renameAction) {
-                                String expression = renameDataIntoExpression(pattern, matcher, substitution, entry
-                                        .getExpression());
-                                entry.setExpression(expression);
-                            } else {
-                                if (hasDataIntoExpression(pattern, matcher, entry.getExpression())) {
-                                    return true;
-                                }
-                            }
+                        if (hasOrRenameEntry(entry, oldName, newName, renameAction)) {
+                            return true; // existed
                         }
                     }
                 }
 
             }
+
         }
         return false;
     }
