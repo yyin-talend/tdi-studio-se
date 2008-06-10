@@ -14,13 +14,15 @@ package org.talend.designer.dbmap.external.data;
 
 import java.io.Serializable;
 
+import org.talend.designer.abstractmap.model.tableentry.IExternalEntry;
+
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
  * 
  * $Id: ExternalMapperTableEntry.java 2010 2007-02-12 13:18:38Z amaumont $
  * 
  */
-public class ExternalDbMapEntry implements Serializable, Cloneable {
+public class ExternalDbMapEntry implements Serializable, Cloneable, IExternalEntry {
 
     /**
      * 

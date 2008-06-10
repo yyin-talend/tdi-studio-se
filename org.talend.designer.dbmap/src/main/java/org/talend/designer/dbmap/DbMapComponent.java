@@ -22,13 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.oro.text.regex.MalformedPatternException;
-import org.apache.oro.text.regex.Pattern;
-import org.apache.oro.text.regex.PatternCompiler;
-import org.apache.oro.text.regex.PatternMatcher;
-import org.apache.oro.text.regex.Perl5Compiler;
-import org.apache.oro.text.regex.Perl5Matcher;
-import org.apache.oro.text.regex.Perl5Substitution;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -388,8 +381,7 @@ public class DbMapComponent extends AbstractMapComponent {
         List<ExternalDbMapTable> tables = new ArrayList<ExternalDbMapTable>(externalData.getInputTables());
         tables.addAll(new ArrayList<ExternalDbMapTable>(externalData.getVarsTables()));
         tables.addAll(new ArrayList<ExternalDbMapTable>(externalData.getOutputTables()));
-        DataMapExpressionParser dataMapExpressionParser = new DataMapExpressionParser(getGenerationManager()
-                .getLanguage());
+        DataMapExpressionParser dataMapExpressionParser = new DataMapExpressionParser(getGenerationManager().getLanguage());
         // loop on all tables
         for (ExternalDbMapTable table : tables) {
             List<ExternalDbMapEntry> metadataTableEntries = table.getMetadataTableEntries();
@@ -407,8 +399,8 @@ public class DbMapComponent extends AbstractMapComponent {
         } // for (ExternalMapperTable table : tables) {
     }
 
-    public void replaceLocation(TableEntryLocation oldLocation, TableEntryLocation newLocation,
-            ExternalDbMapEntry entry, DataMapExpressionParser dataMapExpressionParser, boolean tableRenamed) {
+    public void replaceLocation(TableEntryLocation oldLocation, TableEntryLocation newLocation, ExternalDbMapEntry entry,
+            DataMapExpressionParser dataMapExpressionParser, boolean tableRenamed) {
         String currentExpression = entry.getExpression();
         if (currentExpression == null || currentExpression.length() == 0) {
             return;
@@ -422,8 +414,7 @@ public class DbMapComponent extends AbstractMapComponent {
                 newLocation.columnName = currentLocation.columnName;
             }
             if (currentLocation.equals(oldLocation)) {
-                currentExpression = dataMapExpressionParser.replaceLocation(currentExpression, currentLocation,
-                        newLocation);
+                currentExpression = dataMapExpressionParser.replaceLocation(currentExpression, currentLocation, newLocation);
             }
         } // for (int i = 0; i < tableEntryLocations.length; i++) {
         entry.setExpression(currentExpression);
@@ -493,23 +484,13 @@ public class DbMapComponent extends AbstractMapComponent {
             throw new NullPointerException();
         }
 
-        PatternCompiler compiler = new Perl5Compiler();
-        PatternMatcher matcher = new Perl5Matcher();
-        ((Perl5Matcher) matcher).setMultiline(true);
-        Perl5Substitution substitution = null;
-        Pattern pattern;
-        if (renameAction) {
-            substitution = new Perl5Substitution(newName + "$2", Perl5Substitution.INTERPOLATE_ALL);
-        }
-        try {
-            pattern = compiler.compile("\\b(" + oldName + ")(\\b|\\_)");
-        } catch (MalformedPatternException e) {
-            ExceptionHandler.process(e);
-            return false;
-        }
         if (externalData != null) {
             List<ExternalDbMapTable> tables = new ArrayList<ExternalDbMapTable>(externalData.getInputTables());
             tables.addAll(externalData.getOutputTables());
+            if (externalData.getVarsTables() != null) {
+                tables.addAll(externalData.getVarsTables());
+            }
+
             for (ExternalDbMapTable table : tables) {
 
                 List<ExternalDbMapEntry> metadataTableEntries = table.getMetadataTableEntries();
@@ -529,38 +510,20 @@ public class DbMapComponent extends AbstractMapComponent {
                 if (metadataTableEntries != null) {
                     // loop on all entries of current table
                     for (ExternalDbMapEntry entry : metadataTableEntries) {
-                        if (entry.getExpression() != null) {
-                            if (renameAction) {
-                                String expression = renameDataIntoExpression(pattern, matcher, substitution, entry
-                                        .getExpression());
-                                entry.setExpression(expression);
-                            } else {
-                                if (hasDataIntoExpression(pattern, matcher, entry.getExpression())) {
-                                    return true;
-                                }
-                            }
+                        if (hasOrRenameEntry(entry, oldName, newName, renameAction)) {
+                            return true;
                         }
                     } // for (ExternalMapperTableEntry entry : metadataTableEntries) {
                 }
                 if (table.getCustomConditionsEntries() != null) {
                     for (ExternalDbMapEntry entry : table.getCustomConditionsEntries()) {
-                        if (entry.getExpression() != null) {
-                            if (renameAction) {
-                                String expression = renameDataIntoExpression(pattern, matcher, substitution, entry
-                                        .getExpression());
-                                entry.setExpression(expression);
-                            } else {
-                                if (hasDataIntoExpression(pattern, matcher, entry.getExpression())) {
-                                    return true;
-                                }
-                            }
+                        if (hasOrRenameEntry(entry, oldName, newName, renameAction)) {
+                            return true;
                         }
                     }
                 }
-
             }
         }
         return false;
     }
-
 }
