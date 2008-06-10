@@ -12,14 +12,20 @@
 // ============================================================================
 package org.talend.designer.abstractmap;
 
-import java.util.List;
-
+import org.apache.oro.text.regex.MalformedPatternException;
 import org.apache.oro.text.regex.Pattern;
+import org.apache.oro.text.regex.PatternCompiler;
 import org.apache.oro.text.regex.PatternMatcher;
+import org.apache.oro.text.regex.Perl5Compiler;
+import org.apache.oro.text.regex.Perl5Matcher;
+import org.apache.oro.text.regex.Perl5Substitution;
 import org.apache.oro.text.regex.Substitution;
 import org.apache.oro.text.regex.Util;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.model.context.UpdateContextVariablesHelper;
 import org.talend.core.model.process.AbstractExternalNode;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.designer.abstractmap.model.tableentry.IExternalEntry;
 import org.talend.designer.abstractmap.ui.prefs.MapPrefsConstants;
 
 /**
@@ -50,8 +56,7 @@ public abstract class AbstractMapComponent extends AbstractExternalNode {
     private void initElementParameters() {
         IElementParameter elementParameter = getElementParameter(MapPrefsConstants.LINK_STYLE);
         if (elementParameter != null && ((String) elementParameter.getValue()).trim().equals("")) {
-            elementParameter.setValue(MapPlugin.getDefault().getPreferenceStore().getString(
-                    MapPrefsConstants.LINK_STYLE));
+            elementParameter.setValue(MapPlugin.getDefault().getPreferenceStore().getString(MapPrefsConstants.LINK_STYLE));
         }
     }
 
@@ -103,6 +108,53 @@ public abstract class AbstractMapComponent extends AbstractExternalNode {
 
         hasOrRenameData(oldName, newName, true);
 
+    }
+
+    protected final Pattern getRenamePattern(String oldName) {
+        PatternCompiler compiler = new Perl5Compiler();
+        Pattern pattern = null;
+        try {
+            pattern = compiler.compile("\\b(" + UpdateContextVariablesHelper.replaceSpecialChar(oldName) + ")(\\b|\\_)");
+            return pattern;
+        } catch (MalformedPatternException e) {
+            ExceptionHandler.process(e);
+            return null;
+        }
+    }
+
+    protected final Perl5Substitution getRenameSubstitution(String newName) {
+        return new Perl5Substitution(newName + "$2", Perl5Substitution.INTERPOLATE_ALL);
+    }
+
+    /**
+     * 
+     * ggu Comment method "hasOrRenameEntry".
+     * 
+     */
+    protected boolean hasOrRenameEntry(IExternalEntry entry, String oldName, String newName, boolean renameAction) {
+        if (entry == null || oldName == null || newName == null && renameAction) {
+            throw new NullPointerException();
+        }
+
+        if (entry.getExpression() != null) {
+            Pattern pattern = getRenamePattern(oldName);
+            if (pattern != null) {
+                PatternMatcher matcher = new Perl5Matcher();
+                ((Perl5Matcher) matcher).setMultiline(true);
+
+                if (renameAction) {
+                    Perl5Substitution substitution = getRenameSubstitution(newName);
+                    String expression = renameDataIntoExpression(pattern, matcher, substitution, entry.getExpression());
+                    entry.setExpression(expression);
+                } else {
+                    if (hasDataIntoExpression(pattern, matcher, entry.getExpression())) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     protected abstract boolean hasOrRenameData(String oldName, String newName, boolean renameAction);
