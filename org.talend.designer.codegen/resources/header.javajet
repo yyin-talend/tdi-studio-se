@@ -94,6 +94,13 @@ import java.util.Comparator;
  * @status <%=ElementParameterParser.getValue(process, "__STATUS__") %> 
  */                                
  public class <%=process.getName()%> {    
+<%
+if(isRunInMultiThread){
+%>
+ 	private final Object[] multiThreadLockWrite = new Object[0];
+<%
+}
+%>
     // create and load default properties
 	private static java.util.Properties defaultProps = new java.util.Properties();
 	// create application properties with default
