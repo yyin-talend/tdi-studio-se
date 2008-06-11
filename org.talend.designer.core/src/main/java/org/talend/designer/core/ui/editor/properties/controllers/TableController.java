@@ -29,6 +29,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.talend.commons.ui.swt.advanced.dataeditor.control.ExtendedPushButton;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.utils.data.list.IListenableListListener;
@@ -49,6 +50,7 @@ import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
 import org.talend.designer.core.ui.editor.properties.macrowidgets.tableeditor.PropertiesTableEditorModel;
 import org.talend.designer.core.ui.editor.properties.macrowidgets.tableeditor.PropertiesTableEditorView;
+import org.talend.designer.core.ui.editor.properties.macrowidgets.tableeditor.PropertiesTableToolbarEditorView;
 import org.talend.designer.core.ui.views.properties.ComponentSettings;
 import org.talend.designer.runprocess.ProcessorUtilities;
 
@@ -64,6 +66,8 @@ public class TableController extends AbstractElementPropertySectionController {
      * 
      */
     private static final int MIN_NUMBER_ROWS = 8;
+
+    private static final String TOOLBAR_NAME = "_TABLE_VIEW_TOOLBAR_NAME_";
 
     /**
      * DOC yzhang TableController constructor comment.
@@ -163,6 +167,7 @@ public class TableController extends AbstractElementPropertySectionController {
         mainComposite.setLayoutData(formData);
 
         hashCurControls.put(param.getName(), tableEditorView.getExtendedTableViewer().getTableViewerCreator());
+        hashCurControls.put(TOOLBAR_NAME, tableEditorView.getToolBar());
         updateTableValues(param);
 
         this.dynamicProperty.setCurRowSize(ySize2 + ITabbedPropertyConstants.VSPACE);
@@ -537,12 +542,9 @@ public class TableController extends AbstractElementPropertySectionController {
                             if (o instanceof Integer) {
                                 Integer nb = (Integer) o;
                                 if ((nb >= oldItems.length) || (nb == -1)) {
-                                    nb = new Integer(tmpParam.getIndexOfItemFromList((String) tmpParam
-                                            .getDefaultClosedListValue()));
-                                    currentLine.put(items[j], nb);
+                                    currentLine.put(items[j], (String) tmpParam.getDefaultClosedListValue());
                                 } else {
-                                    nb = new Integer(tmpParam.getIndexOfItemFromList(oldItems[nb]));
-                                    currentLine.put(items[j], nb);
+                                    currentLine.put(items[j], oldItems[nb]);
                                 }
                             }
                         }
@@ -550,6 +552,22 @@ public class TableController extends AbstractElementPropertySectionController {
                 }
             }
         }
+        // (bug 3740)
+        boolean checked = contextParameterNames != null && contextParameterNames.length > 0;
+        if (!checked) {
+            Object value = param.getValue();
+            if (value != null && value instanceof List) {
+                if (!((List) value).isEmpty()) {
+                    ((List) value).clear();
+                    if (part != null && part.getTalendEditor() != null) {
+                        part.getTalendEditor().setDirty(true);
+                    }
+                }
+            }
+
+        }
+        revertToolBarButtonState(checked);
+
     }
 
     public static Map<String, Object> createNewLine(IElementParameter param) {
@@ -600,5 +618,25 @@ public class TableController extends AbstractElementPropertySectionController {
             }
         }
         return line;
+    }
+
+    /**
+     * 
+     * ggu Comment method "revertAllButton".
+     * 
+     * if flag is false, will set the button for unenabled state. (bug 3740)
+     */
+    private void revertToolBarButtonState(boolean flag) {
+
+        PropertiesTableToolbarEditorView toolBar = (PropertiesTableToolbarEditorView) hashCurControls.get(TOOLBAR_NAME);
+        if (toolBar != null) {
+            for (ExtendedPushButton btn : toolBar.getButtons()) {
+                if (flag) {
+                    btn.getButton().setEnabled(btn.getEnabledState());
+                } else {
+                    btn.getButton().setEnabled(false);
+                }
+            }
+        }
     }
 }
