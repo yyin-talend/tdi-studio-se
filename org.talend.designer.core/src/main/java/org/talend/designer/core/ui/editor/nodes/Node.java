@@ -1050,7 +1050,7 @@ public class Node extends Element implements INode {
         return this.activate;
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     public void setActivate(final boolean activate) {
         this.activate = activate;
         nodeLabel.setActivate(activate);
@@ -1423,7 +1423,7 @@ public class Node extends Element implements INode {
         return currentStatus;
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     private void checkParameters() {
         for (IElementParameter param : this.getElementParametersWithChildrens()) {
             // if the parameter is required but empty, an error will be added
@@ -1605,9 +1605,9 @@ public class Node extends Element implements INode {
         // not a sub process start
         if (!isSubProcessStart() || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
             if (/*
-                 * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_AFTER) > 0) ||
-                 * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_BEFORE) > 0)||
-                 */
+             * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_AFTER) > 0) ||
+             * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_BEFORE) > 0)||
+             */
             (getCurrentActiveLinksNbOutput(EConnectionType.ON_SUBJOB_OK) > 0)
                     || getCurrentActiveLinksNbOutput(EConnectionType.ON_SUBJOB_ERROR) > 0) {
                 String errorMessage = "A component that is not a sub process start can not have any link on sub job ok / on sub job error in input.";
@@ -1625,9 +1625,9 @@ public class Node extends Element implements INode {
         // not a sub process start
         if ((!isELTComponent() && !isSubProcessStart()) || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
             if (/*
-                 * (getCurrentActiveLinksNbInput(EConnectionType.RUN_AFTER) > 0) ||
-                 * (getCurrentActiveLinksNbInput(EConnectionType.RUN_BEFORE) > 0) ||
-                 */(getCurrentActiveLinksNbInput(EConnectionType.ON_SUBJOB_OK) > 0)
+             * (getCurrentActiveLinksNbInput(EConnectionType.RUN_AFTER) > 0) ||
+             * (getCurrentActiveLinksNbInput(EConnectionType.RUN_BEFORE) > 0) ||
+             */(getCurrentActiveLinksNbInput(EConnectionType.ON_SUBJOB_OK) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_OK) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_ERROR) > 0)) {
@@ -1823,12 +1823,15 @@ public class Node extends Element implements INode {
                 String errorMessage = "No schema has been defined yet.";
                 Problems.add(ProblemStatus.ERROR, this, errorMessage);
             } else {
-                IMetadataTable firstSchema = inputs.get(0).getMetadataTable();
-                boolean isSame = firstSchema.sameMetadataAs(getMetadataList().get(0));
-                if (!isSame) {
-                    String warningMessage = "The schema on the first input link of the merge component \"" + getUniqueName()
-                            + "\" is different from the schema defined in the component.";
-                    Problems.add(ProblemStatus.WARNING, this, warningMessage);
+                // see bug 0004139: Schema check error on tUnite.
+                if (inputs.size() > 0) { // avoid index out of bound exception
+                    IMetadataTable firstSchema = inputs.get(0).getMetadataTable();
+                    boolean isSame = firstSchema.sameMetadataAs(getMetadataList().get(0));
+                    if (!isSame) {
+                        String warningMessage = "The schema on the first input link of the merge component \"" + getUniqueName()
+                                + "\" is different from the schema defined in the component.";
+                        Problems.add(ProblemStatus.WARNING, this, warningMessage);
+                    }
                 }
             }
 
