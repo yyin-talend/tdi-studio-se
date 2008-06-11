@@ -34,16 +34,34 @@
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
       SHOW="true"
-      NUM_ROW="1"
+      NUM_ROW="10"
       REPOSITORY_VALUE="DATABASE:FIREBIRD"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+    />
+
+    <PARAMETER
+      NAME="USE_EXISTING_CONNECTION"
+      FIELD="CHECK"
+      NUM_ROW="11"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="CONNECTION"
+      FIELD="COMPONENT_LIST"
+      FILTER="tFirebirdConnection"
+      NUM_ROW="11"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
     />
     
     <PARAMETER 
-    	NAME="HOST"
-    	FIELD="TEXT"
-    	NUM_ROW="2"
-    	REPOSITORY_VALUE="SERVER_NAME"
-    	REQUIRED="true"
+	  NAME="HOST"
+ 	  FIELD="TEXT"
+ 	  NUM_ROW="20"
+ 	  REPOSITORY_VALUE="SERVER_NAME"
+ 	  REQUIRED="true"
+ 	  SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
     	<DEFAULT>"localhost"</DEFAULT>
     </PARAMETER>
@@ -51,7 +69,7 @@
 	<PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
-      NUM_ROW="2"
+      NUM_ROW="20"
       SHOW="false"
       REPOSITORY_VALUE="TYPE"
     >
@@ -61,8 +79,9 @@
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
-      NUM_ROW="2"
+      NUM_ROW="20"
       REPOSITORY_VALUE="PORT"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
       SHOW="false"
     >
       <DEFAULT>"3050"</DEFAULT>
@@ -71,29 +90,21 @@
     <PARAMETER
       NAME="DB"
       FIELD="FILE"
-      NUM_ROW="3"
+      NUM_ROW="30"
       REPOSITORY_VALUE="FILE"
       REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
-    </PARAMETER>
- 
-    <PARAMETER
-      NAME="TYPE"
-      FIELD="TEXT"
-      NUM_ROW="3"
-      SHOW="false"
-      REPOSITORY_VALUE="TYPE"
-    >
-      <DEFAULT>FireBird</DEFAULT>
     </PARAMETER>
     
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="40"
       REPOSITORY_VALUE="USERNAME"
       REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -101,9 +112,10 @@
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="40"
       REPOSITORY_VALUE="PASSWORD"
       REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -111,7 +123,7 @@
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
-      NUM_ROW="5"
+      NUM_ROW="50"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -119,7 +131,7 @@
     <PARAMETER
       NAME="TABLE"
       FIELD="DBTABLE"
-      NUM_ROW="6"
+      NUM_ROW="60"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -127,7 +139,7 @@
     <PARAMETER
       NAME="QUERYSTORE"
       FIELD="QUERYSTORE_TYPE"
-      NUM_ROW="7"
+      NUM_ROW="70"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -135,7 +147,7 @@
     <PARAMETER
       NAME="GUESS_SCHEMA"
       FIELD="GUESS_SCHEMA"
-      NUM_ROW="7"
+      NUM_ROW="70"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -143,7 +155,7 @@
     <PARAMETER
       NAME="QUERY"
       FIELD="MEMO_SQL"
-      NUM_ROW="8"
+      NUM_ROW="80"
       REQUIRED="true"
     >
       <DEFAULT>"select id, name from employee"</DEFAULT>
