@@ -12,6 +12,7 @@
 	org.talend.core.model.process.IConnection
 	java.util.HashMap
 	java.util.Map
+    org.talend.core.model.process.ElementParameterParser
 	" 
 	skeleton="tMap_commons.skeleton"
 %>

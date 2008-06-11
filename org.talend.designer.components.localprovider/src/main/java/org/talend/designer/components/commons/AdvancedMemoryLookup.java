@@ -28,7 +28,7 @@ import org.talend.designer.components.commons.AdvancedLookup.MATCHING_MODE;
  * 
  * @param <V> value
  */
-public class AdvancedMemoryLookup<V> implements IMemoryLookup<V, V> {
+public class AdvancedMemoryLookup<V> implements IMemoryLookup<V, V>, Cloneable {
 
     private MultiLazyValuesMap mapOfCol;
 
@@ -59,7 +59,7 @@ public class AdvancedMemoryLookup<V> implements IMemoryLookup<V, V> {
     int currentIndex = 0;
 
     private int sizeResultList;
-    
+
     private boolean hasResult;
 
     /**
@@ -356,6 +356,11 @@ public class AdvancedMemoryLookup<V> implements IMemoryLookup<V, V> {
                 return ZERO;
             }
         }
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 
 }

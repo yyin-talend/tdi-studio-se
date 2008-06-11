@@ -21,7 +21,10 @@
 	org.talend.designer.mapper.language.generation.JavaGenerationManager
 	org.talend.designer.mapper.language.LanguageProvider
     org.talend.core.model.process.ElementParameterParser
+	org.talend.core.model.process.EConnectionType
+	org.talend.core.model.process.INode
 	" 
+	skeleton="tMap_commons.skeleton"
 %>
 
 <%
@@ -32,6 +35,7 @@
 	
 	String componentName = node.getUniqueName();
 	
+	
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         ExternalMapperData data = (ExternalMapperData) node.getExternalData();
@@ -41,11 +45,55 @@
 
 		String tempFolder = ElementParameterParser.getValue(node, "__TEMPORARY_DATA_DIRECTORY__");
 		String rowsBufferSize = ElementParameterParser.getValue(node, "__ROWS_BUFFER_SIZE__");
+		
+		
 %>
 // ###############################
-// # Lookup's keys initialization<%
+// # Lookup's keys initialization
+<%
 
         List<IConnection> inputConnections = (List<IConnection>) node.getIncomingConnections();
+
+		boolean hasConcurrencyContext = false;
+		boolean isVirtualIn = componentName.endsWith("TMAP_IN");
+		boolean isVirtualOut = componentName.endsWith("TMAP_OUT");
+
+		String uniqueNameComponent = componentName.replaceAll("_TMAP_IN", "");
+		uniqueNameComponent = componentName.replaceAll("_TMAP_OUT", "");
+
+		if(isVirtualIn) {
+			List<IConnection> localInputConnections = inputConnections;
+			String searchedComponentName = componentName.replaceAll("TMAP_IN", "TMAP_OUT");
+			List<? extends INode> generatedNodes = node.getProcess().getGeneratingNodes();
+			for(INode loopNode : generatedNodes) {
+				if(loopNode.getUniqueName().equals(searchedComponentName)) {
+					localInputConnections = (List<IConnection>) loopNode.getIncomingConnections();
+					break;
+				}
+			}
+			hasConcurrencyContext = hasConcurrencyContext(localInputConnections);
+		} else {
+			hasConcurrencyContext = hasConcurrencyContext(inputConnections);
+		}
+
+		if(hasConcurrencyContext && !isVirtualIn) {
+		%>
+		
+			Integer currentThreadNumber_<%= uniqueNameComponent %> = null;  
+			synchronized(<%= node.getProcess().getName() %>.globalMap) {
+				
+				currentThreadNumber_<%= uniqueNameComponent %> = (Integer) <%= node.getProcess().getName() %>.globalMap.get("currentThreadNumber_<%= uniqueNameComponent %>");
+			
+				if(currentThreadNumber_<%= uniqueNameComponent %> == null) {
+					currentThreadNumber_<%= uniqueNameComponent %> = 1;
+				} else {
+					currentThreadNumber_<%= uniqueNameComponent %>++;
+				}
+				<%= node.getProcess().getName() %>.globalMap.put("currentThreadNumber_<%= uniqueNameComponent %>", currentThreadNumber_<%= uniqueNameComponent %>);
+			
+			}
+		<%
+		}
 
         HashMap<String, IConnection> hNameToConnection = new HashMap<String, IConnection>();
         for (IConnection connection : inputConnections) {
@@ -75,18 +123,37 @@
             boolean isAllRows = "ALL_ROWS".equals(inputTable.getMatchingMode());
             
             if(inputTable.isPersistent()) {
-%>
 
-org.talend.designer.components.persistent.Persistent<%= isAllRows ? "" : "Sorted" %>LookupManager<<%=tableName%>Struct> tHash_Lookup_<%=tableName%> = (org.talend.designer.components.persistent.Persistent<%= isAllRows ? "" : "Sorted" %>LookupManager<<%=tableName%>Struct>) globalMap.get( "tHash_Lookup_<%=tableName%>" );
-
-<%
+				%>
+	
+	org.talend.designer.components.persistent.Persistent<%= isAllRows ? "" : "Sorted" %>LookupManager<<%=tableName%>Struct> tHash_Lookup_<%=tableName%> = 
+		(org.talend.designer.components.persistent.Persistent<%= isAllRows ? "" : "Sorted" %>LookupManager<<%=tableName%>Struct>) 
+			((org.talend.designer.components.persistent.Persistent<%= isAllRows ? "" : "Sorted" %>LookupManager<<%=tableName%>Struct>) 
+				 globalMap.get( "tHash_Lookup_<%=tableName%>" ))
+				<%
+				if(hasConcurrencyContext) {
+				%>
+				.clone()
+				<%}%>;
+	<%
+	
 } else {
-%>
 
-org.talend.designer.components.commons.AdvancedMemoryLookup<<%=tableName%>Struct> tHash_Lookup_<%=tableName%> = (org.talend.designer.components.commons.AdvancedMemoryLookup<<%=tableName%>Struct>) globalMap.get( "tHash_Lookup_<%=tableName%>" );
+	%>
 
-<%
+	org.talend.designer.components.commons.AdvancedMemoryLookup<<%=tableName%>Struct> tHash_Lookup_<%=tableName%> = 
+		(org.talend.designer.components.commons.AdvancedMemoryLookup<<%=tableName%>Struct>) 
+			((org.talend.designer.components.commons.AdvancedMemoryLookup<<%=tableName%>Struct>) 
+				globalMap.get( "tHash_Lookup_<%=tableName%>" ))
+				<%
+				if(hasConcurrencyContext) {
+				%>
+				.clone()
+				<%}%>;
+	<%
+	
 }
+
 
 if(isAllRows) {
 %>
@@ -449,11 +516,13 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
 		
     public void readData(ObjectInputStream dis) {
 
-        try {
+		synchronized(<%= currentTableName %>Struct.commonByteArrayLock) {
+
+	        try {
             
-			int length = 0;
+				int length = 0;
 			
-			this.is__rejectedInnerJoin = dis.readBoolean();
+				this.is__rejectedInnerJoin = dis.readBoolean();
 			
 		<%	
 		boolean hasAtLeastOneRead = false;
@@ -632,6 +701,8 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
 		%>
 
         }
+        
+      } 
     }
 
     public void writeData(ObjectOutputStream dos) {
@@ -783,11 +854,15 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
 		
 		
 		} // G_TM_B_001
-		
+	
+	<%
+	String threadInsertedString = "thread\" + currentThreadNumber_" + uniqueNameComponent + " + \""; 
+	%>
+	
 
 	org.talend.designer.components.persistent.PersistentRowSorterIterator<SortableRow_<%= currentJoinedTableNames %>> fsi_<%= currentJoinedTableNames %> = 
 		new org.talend.designer.components.persistent.PersistentRowSorterIterator<SortableRow_<%= currentJoinedTableNames %>>(
-			<%= tempFolder %> + "/"+ jobName +"_tMapData_<%= currentJoinedTableNames %>", <%= rowsBufferSize %>) {
+			<%= tempFolder %> + "/"+ jobName +"_tMapData_<%= hasConcurrencyContext ? threadInsertedString + "_" : "" %><%= currentJoinedTableNames %>", <%= rowsBufferSize %>) {
 			public SortableRow_<%= currentJoinedTableNames %> createRowInstance() {
 				return new SortableRow_<%= currentJoinedTableNames %>();
 			}
@@ -800,10 +875,7 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
 <%
 	} // T_TM_B_103
 } // T_TM_B_101      
+
 %>        
-        
-        
-        
-        
         
         

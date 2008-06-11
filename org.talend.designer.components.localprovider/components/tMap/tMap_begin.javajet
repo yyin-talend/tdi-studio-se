@@ -21,10 +21,14 @@
 	org.talend.designer.mapper.language.generation.JavaGenerationManager
 	org.talend.designer.mapper.language.LanguageProvider
     org.talend.core.model.process.ElementParameterParser
+	org.talend.core.model.process.EConnectionType
+	org.talend.core.model.process.INode
 	" 
-	
+	skeleton="tMap_commons.skeleton"
 %>
 
 
 <%@ include file="tMap_begin.inc.javajet" %>
+
+
 

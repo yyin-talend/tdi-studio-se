@@ -34,12 +34,6 @@
 	org.talend.core.model.process.IMatchingMode
 	org.talend.core.model.process.INode
 	" 
-
-
-
-
-
-
 %>
 
 <%@ include file="tMap_main.inc.javajet" %>

@@ -572,7 +572,7 @@
    	                    				%> && <%= beforeMatchFilter %><%
            		  	    			} // T 101
 		           		  	    
-		           		  	 %>) { // G 20
+		           		  	 %>) { // G_TM_M_020
 
 								<% 
                         		if(aKeysValues.length > 0 || checkingSyntax) { // T 001
@@ -676,7 +676,15 @@
 			  					} // T_TM_M_171
 			  					%>
 
-								if(<%= hasPrimitiveKey ? "hasCasePrimitiveKeyWithNull_" + uniqueNameComponent + " || " : "" %>!tHash_Lookup_<%= tableName %>.hasNext()) { // G 090
+ 								<%
+  								if(externalTable.isInnerJoin() || isMultipleResultMode) {
+  								%>
+								  
+								  if(<%= hasPrimitiveKey ? "hasCasePrimitiveKeyWithNull_" + uniqueNameComponent + " || " : "" %>!tHash_Lookup_<%= tableName %>.hasNext()) { // G_TM_M_090
+
+  								<%
+								}
+								%>
 		  				
 	  								<%
 	  								if(externalTable.isInnerJoin()) {
@@ -692,9 +700,19 @@
 	  					
   									<% } // T 56 %>
   									  		
-	  							} // G 090
-		  							
-							} // G 20
+ 								<%
+  								if(externalTable.isInnerJoin() || isMultipleResultMode) {
+  								%>
+								  
+								  } // G_TM_M_090
+
+  								<%
+								}
+								%>
+
+
+
+							} // G_TM_M_020
 			           		  	  
 							<%
 							if(isMultipleResultMode) { // T 57 

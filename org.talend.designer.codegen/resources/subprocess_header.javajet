@@ -99,6 +99,7 @@
 %>
 
 static class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines.system.<%= isLookup ? "IPersistableComparableLookupRow<"+conn.getName()+"Struct>" : "IPersistableRow<"+conn.getName()+"Struct"+ templateOrigin + ">" %> {
+    final static byte[] commonByteArrayLock = new byte[0];
     static byte[] commonByteArray = new byte[0];
 <%
 	if(hasAtLeastOneKey) {
@@ -230,9 +231,11 @@ static class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines.
     
     public void <%= isLookup ? "readKeys" : "read" %>Data(ObjectInputStream dis) {
 
-        try {
+		synchronized(commonByteArrayLock) {
 
-			int length = 0;
+        	try {
+
+				int length = 0;
 		<%	
 		boolean hasAtLeastOneRead = false;
 		boolean hasAtLeastOneObjectType = false;
@@ -333,6 +336,7 @@ static class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines.
 		}
 		%>
         
+      }
         
         
     }
