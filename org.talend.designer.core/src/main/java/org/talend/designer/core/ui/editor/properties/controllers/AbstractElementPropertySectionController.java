@@ -1246,7 +1246,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
         public void mouseDown(MouseEvent e) {
 
-            ModelSelectionDialog modelSelect = new ModelSelectionDialog(((Control) e.getSource()).getShell());
+            ModelSelectionDialog modelSelect = new ModelSelectionDialog(((Control) e.getSource()).getShell(), false);
 
             if (modelSelect.open() == ModelSelectionDialog.OK) {
                 if (modelSelect.getOptionValue() == EEditSelection.BUILDIN) {

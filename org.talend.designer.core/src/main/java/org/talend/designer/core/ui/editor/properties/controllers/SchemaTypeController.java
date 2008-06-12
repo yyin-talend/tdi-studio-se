@@ -425,7 +425,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
                     node = ((Connection) elem).getSource();
                 }
                 boolean isReadOnly = node.getProcess().isReadOnly();
-                ModelSelectionDialog modelSelect = new ModelSelectionDialog(button.getShell(), isReadOnly);
+                ModelSelectionDialog modelSelect = new ModelSelectionDialog(button.getShell(), true, isReadOnly);
                 stop = true;
                 if (modelSelect.open() == ModelSelectionDialog.OK) {
                     if (modelSelect.getOptionValue() == EEditSelection.REPOSITORY) {
