@@ -448,7 +448,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
      * @param shell
      */
     private void promptForChangingMode(Shell shell) {
-        ModelSelectionDialog modelSelect = new ModelSelectionDialog(shell, false, false);
+        ModelSelectionDialog modelSelect = new ModelSelectionDialog(shell, false);
 
         if (modelSelect.open() == ModelSelectionDialog.OK) {
             if (modelSelect.getOptionValue() == EEditSelection.BUILDIN) {
