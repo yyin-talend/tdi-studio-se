@@ -419,9 +419,20 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
             // set the item's relative path in the repository view
             IPath categoryPath = new Path(categoryName);
             IPath systemPath = categoryPath.append(RepositoryConstants.SYSTEM_DIRECTORY);
+            IPath userPath = categoryPath.append(RepositoryConstants.USER_DEFINED);
 
+            FolderHelper folderHelper = getFolderHelper(getRepositoryContext().getProject().getEmfProject());
+            IPath parentPath = new Path(ERepositoryObjectType.getFolderName(ERepositoryObjectType.SQLPATTERNS));
+            if (folderHelper.getFolder(parentPath.append(categoryPath)) == null) {
+                createFolder(ERepositoryObjectType.SQLPATTERNS, new Path(""), categoryPath.lastSegment());
+            }
+            if (folderHelper.getFolder(parentPath.append(systemPath)) == null) {
+                createFolder(ERepositoryObjectType.SQLPATTERNS, categoryPath, systemPath.lastSegment());
+            }
+            if (folderHelper.getFolder(parentPath.append(userPath)) == null) {
+                createFolder(ERepositoryObjectType.SQLPATTERNS, categoryPath, userPath.lastSegment());
+            }
             create(sqlpatternItem, systemPath);
-            createFolder(ERepositoryObjectType.SQLPATTERNS, categoryPath, RepositoryConstants.USER_DEFINED);
 
         } catch (IOException ioe) {
             if (stream != null) {
