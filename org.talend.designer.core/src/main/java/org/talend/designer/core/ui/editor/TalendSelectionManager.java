@@ -96,6 +96,9 @@ public class TalendSelectionManager extends SelectionManager {
                     this.selectionType = ETalendSelectionType.NONE;
                 }
                 super.setSelection(selection);
+            } else {
+                this.selectionType = ETalendSelectionType.SINGLE;
+                super.setSelection(selection);
             }
         } else {
             this.selectionType = ETalendSelectionType.SINGLE;
