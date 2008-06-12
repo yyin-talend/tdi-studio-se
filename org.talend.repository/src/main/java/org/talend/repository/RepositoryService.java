@@ -18,13 +18,17 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
@@ -380,6 +384,42 @@ public class RepositoryService implements IRepositoryService {
      */
     public void createSqlpattern(String path, boolean isFromSqlPatternComposite) {
         new CreateSqlpatternAction(path, isFromSqlPatternComposite).run();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IRepositoryService#addRepositoryViewListener(org.eclipse.ui.ISelectionListener)
+     */
+    public void addRepositoryTreeViewListener(ISelectionChangedListener listener) {
+        getRepositoryTreeView().addSelectionChangedListener(listener);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IRepositoryService#removeRepositoryTreeViewListener(org.eclipse.jface.viewers.ISelectionChangedListener)
+     */
+    public void removeRepositoryTreeViewListener(ISelectionChangedListener listener) {
+        getRepositoryTreeView().removeSelectionChangedListener(listener);
+    }
+
+    /**
+     * yzhang Comment method "getRepositoryView".
+     * 
+     * @return
+     */
+    private TreeViewer getRepositoryTreeView() {
+        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        IViewPart view = page.findView(RepositoryView.ID);
+        if (view == null) {
+            try {
+                view = page.showView(RepositoryView.ID);
+            } catch (Exception e) {
+                ExceptionHandler.process(e);
+            }
+        }
+        return ((RepositoryView) view).getViewer();
     }
 
 }

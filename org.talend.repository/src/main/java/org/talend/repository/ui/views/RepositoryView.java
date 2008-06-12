@@ -111,6 +111,8 @@ import org.talend.repository.ui.actions.RepositoryDoubleClickAction;
 public class RepositoryView extends ViewPart implements IRepositoryView, ITabbedPropertySheetPageContributor,
         IRepositoryChangedListener {
 
+    public final static String ID = "org.talend.repository.views.repository";
+
     private static Logger log = Logger.getLogger(RepositoryView.class);
 
     private RepositoryTreeViewer viewer;
