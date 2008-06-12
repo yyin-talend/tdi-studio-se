@@ -29,7 +29,7 @@ public class JobSettings {
     public static void switchToCurJobSettingsView() {
         JobSettingsView jobSettingsView = getView();
         if (jobSettingsView != null) {
-            jobSettingsView.refresh(true);
+            jobSettingsView.refresh(true, null);
         }
     }
 

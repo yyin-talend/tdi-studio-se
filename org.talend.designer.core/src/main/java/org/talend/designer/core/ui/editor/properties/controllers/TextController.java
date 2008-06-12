@@ -99,7 +99,7 @@ public class TextController extends AbstractElementPropertySectionController {
             if (param.isRepositoryValueUsed()) {
                 addRepositoryPropertyListener(labelText);
             }
-            labelText.setEditable(!param.isRepositoryValueUsed());
+            labelText.setEditable(!param.isReadOnly() && !param.isRepositoryValueUsed());
         } else {
             labelText.setEditable(false);
         }

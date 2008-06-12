@@ -175,7 +175,19 @@ public enum EParameterName {
      * JAVA_CATCH_USER_WARNING(Messages.getString("EParameterName.catchUserWarning")), //$NON-NLS-1$
      * JAVA_CATCH_REALTIME_STATS(Messages.getString("EParameterName.catchRealtimeStats")), //$NON-NLS-1$
      */
-    ;
+
+    // main tab within job setting.
+    JOB_MAIN_NAME("Name"),
+    JOB_MAIN_AUTHOR("Author"),
+    JOB_MAIN_VERSION("Version"),
+    JOB_MAIN_PURPOSE("Purpose"),
+    JOB_MAIN_STATUS("Status"),
+    JOB_MAIN_DESCRIPTION("Description"),
+    JOB_MAIN_CREATION("Creation"),
+    JOB_MAIN_MODIFICATION("Modification"),
+
+    // version tab within job setting.
+    JOB_VERSION("Version");
 
     private String displayName;
 

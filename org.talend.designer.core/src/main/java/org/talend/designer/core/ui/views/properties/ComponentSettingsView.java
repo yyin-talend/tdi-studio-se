@@ -152,19 +152,19 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
                 }
 
                 if (currentSelectedTab != null
-                        && (!currentSelectedTab.getElement().equals(descriptor.getElement()) || currentSelectedTab.getCategory() != descriptor
+                        && (!currentSelectedTab.getData().equals(descriptor.getData()) || currentSelectedTab.getCategory() != descriptor
                                 .getCategory())) {
                     for (Control curControl : tabFactory.getTabComposite().getChildren()) {
                         curControl.dispose();
                     }
                 }
 
-                if (element == null || !element.equals(descriptor.getElement()) || currentSelectedTab == null
+                if (element == null || !element.equals(descriptor.getData()) || currentSelectedTab == null
                         || currentSelectedTab.getCategory() != descriptor.getCategory() || selectedPrimary) {
-                    element = descriptor.getElement();
+                    element = (Element) descriptor.getData();
                     currentSelectedTab = descriptor;
 
-                    createDynamicComposite(tabFactory.getTabComposite(), descriptor.getElement(), descriptor.getCategory());
+                    createDynamicComposite(tabFactory.getTabComposite(), (Element) descriptor.getData(), descriptor.getCategory());
 
                     selectedPrimary = false;
                 }
@@ -211,8 +211,7 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
                 dc = new AdvancedContextComposite(parent, SWT.NONE, element);
             } else if (category == EComponentCategory.SQL_PATTERN) {
                 dc = new SQLPatternComposite(parent, SWT.NONE, element);
-            }
-            else {
+            } else {
                 tabFactory.getTabbedPropertyComposite().getCompactButton().setVisible(false);
                 tabFactory.getTabbedPropertyComposite().getTableButton().setVisible(false);
                 dc = new MultipleThreadDynamicComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, category, element,
@@ -400,7 +399,7 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
     }
 
     public void setElement(Element elem) {
-        if (currentSelectedTab != null && currentSelectedTab.getElement().equals(elem) && !cleaned) {
+        if (currentSelectedTab != null && currentSelectedTab.getData().equals(elem) && !cleaned) {
             return;
         }
 
@@ -408,7 +407,7 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
         final List<TalendPropertyTabDescriptor> descriptors = new ArrayList<TalendPropertyTabDescriptor>();
         for (EComponentCategory category : categories) {
             TalendPropertyTabDescriptor d = new TalendPropertyTabDescriptor(category);
-            d.setElement(elem);
+            d.setData(elem);
             descriptors.add(d);
             // if (category.hadSubCategories()) {
             // for (EComponentCategory subCategory : category.getSubCategories()) {
@@ -532,7 +531,7 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
         } else if (elem instanceof Node) {
             // if (isAdvancedType(elem)) {
             if (((Node) elem).isELTComponent()) {
-                if(CorePlugin.getDefault().useSQLPattern()){
+                if (CorePlugin.getDefault().useSQLPattern()) {
                     return EElementType.ELT_NODE.getCategories();
                 }
             }

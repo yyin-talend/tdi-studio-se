@@ -13,12 +13,16 @@
 package org.talend.designer.core.ui.views.jobsettings;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
@@ -26,9 +30,14 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.part.ViewPart;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.properties.Property;
+import org.talend.core.model.properties.User;
+import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.properties.tab.HorizontalTabFactory;
 import org.talend.core.properties.tab.TalendPropertyTabDescriptor;
 import org.talend.core.ui.images.ECoreImage;
@@ -38,18 +47,21 @@ import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
+import org.talend.designer.core.ui.views.jobsettings.tabs.MainComposite;
+import org.talend.designer.core.ui.views.jobsettings.tabs.VersionComposite;
 import org.talend.designer.core.ui.views.properties.IJobSettingsView;
 import org.talend.designer.core.ui.views.properties.MultipleThreadDynamicComposite;
 import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsComposite;
+import org.talend.repository.model.RepositoryNode;
 
 /**
  * DOC ggu class global comment. Detailled comment
  */
-public class JobSettingsView extends ViewPart implements IJobSettingsView {
+public class JobSettingsView extends ViewPart implements IJobSettingsView, ISelectionChangedListener {
 
     public static final String VIEW_NAME = Messages.getString("JobSettingsView.JobSettings"); //$NON-NLS-1$
 
-    public static final String VIEW_NAME_JOBLET = "Joblet Settings";
+    public static final String VIEW_NAME_JOBLET = "Joblet";
 
     private HorizontalTabFactory tabFactory = null;
 
@@ -61,8 +73,11 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView {
 
     private boolean selectedPrimary;
 
+    private Process process;
+
     public JobSettingsView() {
         tabFactory = new HorizontalTabFactory();
+        CorePlugin.getDefault().getRepositoryService().addRepositoryTreeViewListener(this);
     }
 
     @Override
@@ -80,7 +95,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView {
                 }
 
                 if (currentSelectedTab != null) {
-                    if ((!currentSelectedTab.getElement().equals(descriptor.getElement()) || currentSelectedTab.getCategory() != descriptor
+                    if ((!currentSelectedTab.getData().equals(descriptor.getData()) || currentSelectedTab.getCategory() != descriptor
                             .getCategory())) {
                         for (Control curControl : tabFactory.getTabComposite().getChildren()) {
                             curControl.dispose();
@@ -88,13 +103,21 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView {
                     }
                 }
 
-                if (element == null || !element.equals(descriptor.getElement()) || currentSelectedTab == null
+                if (element == null || !element.equals(descriptor.getData()) || currentSelectedTab == null
                         || currentSelectedTab.getCategory() != descriptor.getCategory() || selectedPrimary) {
-                    element = descriptor.getElement();
-                    currentSelectedTab = descriptor;
+                    Object data = descriptor.getData();
+                    if (data instanceof Element) {
+                        element = (Element) data;
+                        currentSelectedTab = descriptor;
 
-                    createTabComposite(tabFactory.getTabComposite(), descriptor.getElement(), descriptor.getCategory());
+                        createTabComposite(tabFactory.getTabComposite(), element, descriptor.getCategory());
 
+                    } else if (data instanceof IRepositoryObject) {
+
+                        currentSelectedTab = descriptor;
+                        createTabComposite(tabFactory.getTabComposite(), data, descriptor.getCategory());
+
+                    }
                     selectedPrimary = false;
                 }
             }
@@ -102,20 +125,24 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView {
 
     }
 
-    private void createTabComposite(Composite parent, Element element, EComponentCategory category) {
+    private void createTabComposite(Composite parent, Object data, EComponentCategory category) {
         final int style = SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS;
         IDynamicProperty dynamicComposite = null;
 
         if (EComponentCategory.EXTRA.equals(category)) {
-            dynamicComposite = new MultipleThreadDynamicComposite(parent, style, category, element, true);
+            dynamicComposite = new MultipleThreadDynamicComposite(parent, style, category, (Element) data, true);
 
         } else if (EComponentCategory.STATSANDLOGS.equals(category)) {
-            dynamicComposite = new StatsAndLogsComposite(parent, style, category, element);
+            dynamicComposite = new StatsAndLogsComposite(parent, style, category, (Element) data);
 
         } else if (EComponentCategory.CONTEXT.equals(category)) {
             // TODO
             // dynamicComposite = new ContextDynamicComposite(parent, style, category, element);
 
+        } else if (EComponentCategory.MAIN.equals(category)) {
+            dynamicComposite = new MainComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(), (IRepositoryObject) data);
+        } else if (EComponentCategory.VERSIONS.equals(category)) {
+            dynamicComposite = new VersionComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(), (IRepositoryObject) data);
         }
         if (dynamicComposite != null) {
             dynamicComposite.refresh();
@@ -126,71 +153,76 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView {
      * 
      * DOC ggu Comment method "setElement".
      * 
-     * @param element
+     * @param obj
      */
 
-    private void setElement(Element element, final String title) {
+    private void setElement(Object obj, final String title, Image image) {
+        EComponentCategory[] categories = null;
 
-        if (element != null && element instanceof Process) {
-            Process process = (Process) element;
-            if (currentSelectedTab != null && currentSelectedTab.getElement().equals(process) && !cleaned) {
+        if (obj != null && obj instanceof Process) {
+            process = (Process) obj;
+            if (currentSelectedTab != null && currentSelectedTab.getData().equals(process) && !cleaned) {
                 return;
             }
 
-            EComponentCategory[] categories = getCategories(process);
-            final List<TalendPropertyTabDescriptor> descriptors = new ArrayList<TalendPropertyTabDescriptor>();
-            for (EComponentCategory category : categories) {
-                TalendPropertyTabDescriptor d = new TalendPropertyTabDescriptor(category);
-                d.setElement(process);
-                descriptors.add(d);
-            }
-
-            tabFactory.setInput(descriptors);
-            setPartName(title);
-            cleaned = false;
-            tabFactory.setSelection(new IStructuredSelection() {
-
-                public Object getFirstElement() {
-                    return null;
-                }
-
-                public Iterator iterator() {
-                    return null;
-                }
-
-                public int size() {
-                    return 0;
-                }
-
-                public Object[] toArray() {
-                    return null;
-                }
-
-                public List toList() {
-                    List<TalendPropertyTabDescriptor> d = new ArrayList<TalendPropertyTabDescriptor>();
-
-                    if (descriptors.size() > 0) {
-                        if (currentSelectedTab != null) {
-                            for (TalendPropertyTabDescriptor ds : descriptors) {
-                                if (ds.getCategory() == currentSelectedTab.getCategory()) {
-                                    d.add(ds);
-                                    return d;
-                                }
-                            }
-                        }
-                        d.add(descriptors.get(0));
-                    }
-                    return d;
-                }
-
-                public boolean isEmpty() {
-                    return false;
-                }
-
-            });
+            categories = getCategories(process);
+        } else if (obj != null && obj instanceof IRepositoryObject) {
+            categories = getCategories(obj);
         } else {
             cleanDisplay();
+            return;
         }
+
+        final List<TalendPropertyTabDescriptor> descriptors = new ArrayList<TalendPropertyTabDescriptor>();
+        for (EComponentCategory category : categories) {
+            TalendPropertyTabDescriptor d = new TalendPropertyTabDescriptor(category);
+            d.setData(obj);
+            descriptors.add(d);
+        }
+
+        tabFactory.setInput(descriptors);
+        setPartName(title, image);
+        cleaned = false;
+        tabFactory.setSelection(new IStructuredSelection() {
+
+            public Object getFirstElement() {
+                return null;
+            }
+
+            public Iterator iterator() {
+                return null;
+            }
+
+            public int size() {
+                return 0;
+            }
+
+            public Object[] toArray() {
+                return null;
+            }
+
+            public List toList() {
+                List<TalendPropertyTabDescriptor> d = new ArrayList<TalendPropertyTabDescriptor>();
+
+                if (descriptors.size() > 0) {
+                    if (currentSelectedTab != null) {
+                        for (TalendPropertyTabDescriptor ds : descriptors) {
+                            if (ds.getCategory() == currentSelectedTab.getCategory()) {
+                                d.add(ds);
+                                return d;
+                            }
+                        }
+                    }
+                    d.add(descriptors.get(0));
+                }
+                return d;
+            }
+
+            public boolean isEmpty() {
+                return false;
+            }
+
+        });
 
     }
 
@@ -200,7 +232,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView {
      * 
      * set title
      */
-    public void setPartName(String title) {
+    public void setPartName(String title, Image icon) {
         String viewName = VIEW_NAME;
         if (element instanceof IProcess && AbstractProcessProvider.isExtensionProcessForJoblet((IProcess) element)) {
             viewName = VIEW_NAME_JOBLET;
@@ -212,7 +244,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView {
             viewName = viewName + "(" + title + ")"; //$NON-NLS-1$ //$NON-NLS-2$            
             super.setTitleToolTip(title);
         }
-        if (tabFactory != null) {
+        if (tabFactory != null && icon == null) {
             Image image = ImageProvider.getImage(ECoreImage.PROCESS_ICON);
             if (this.element != null && this.element instanceof IProcess) {
                 if (((IProcess) this.element).disableRunJobView()) { // ?? joblet
@@ -220,6 +252,8 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView {
                 }
             }
             tabFactory.setTitle(title, image);
+        } else {
+            tabFactory.setTitle(title, icon);
         }
         super.setPartName(viewName);
     }
@@ -227,16 +261,23 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView {
     /**
      * set the category.
      */
-    private EComponentCategory[] getCategories(Process process) {
+    private EComponentCategory[] getCategories(Object obj) {
         List<EComponentCategory> category = new ArrayList<EComponentCategory>();
+        if (obj instanceof Process) {
+            Process process = (Process) obj;
+            category.add(EComponentCategory.MAIN);
+            category.add(EComponentCategory.EXTRA);
+            boolean isJoblet = AbstractProcessProvider.isExtensionProcessForJoblet(process);
+            if (!isJoblet) {
+                category.add(EComponentCategory.STATSANDLOGS);
+            }
+            category.add(EComponentCategory.VERSIONS);
+            // category.add(EComponentCategory.CONTEXT);
 
-        category.add(EComponentCategory.EXTRA);
-        boolean isJoblet = AbstractProcessProvider.isExtensionProcessForJoblet(process);
-        if (!isJoblet) {
-            category.add(EComponentCategory.STATSANDLOGS);
+        } else if (obj instanceof IRepositoryObject) {
+            category.add(EComponentCategory.MAIN);
+            category.add(EComponentCategory.VERSIONS);
         }
-        // category.add(EComponentCategory.CONTEXT);
-
         return category.toArray(new EComponentCategory[0]);
     }
 
@@ -264,25 +305,34 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView {
     }
 
     public void refresh() {
-        refresh(false);
+        refresh(false, null);
     }
 
-    public void refresh(boolean force) {
+    public void refresh(boolean force, Object obj) {
         if (force) {
             cleanDisplay();
         }
-        final IEditorPart activeEditor = getSite().getPage().getActiveEditor();
-        if (activeEditor != null && activeEditor instanceof AbstractMultiPageTalendEditor) {
-            AbstractTalendEditor talendEditor = ((AbstractMultiPageTalendEditor) activeEditor).getTalendEditor();
-            IProcess process = talendEditor.getProcess();
-            if (process != null && process instanceof Element) {
-                this.selectedPrimary = true;
-                this.cleaned = force;
-                this.element = (Element) process;
-                setElement(element, activeEditor.getTitle());
-                return;
+
+        if (obj == null) {
+            final IEditorPart activeEditor = getSite().getPage().getActiveEditor();
+            if (activeEditor != null && activeEditor instanceof AbstractMultiPageTalendEditor) {
+                AbstractTalendEditor talendEditor = ((AbstractMultiPageTalendEditor) activeEditor).getTalendEditor();
+                IProcess process = talendEditor.getProcess();
+                if (process != null && process instanceof Element) {
+                    this.selectedPrimary = true;
+                    this.cleaned = force;
+                    this.element = (Element) process;
+                    setElement(element, activeEditor.getTitle(), null);
+                    return;
+                }
+            }
+        } else {
+            if (obj instanceof IRepositoryObject) {
+                IRepositoryObject repositoryObject = (IRepositoryObject) obj;
+
             }
         }
+
         cleanDisplay();
 
     }
@@ -298,6 +348,239 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView {
                 tabFactory.getTabComposite().setFocus();
             }
         }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.ui.part.WorkbenchPart#dispose()
+     */
+    @Override
+    public void dispose() {
+        super.dispose();
+        CorePlugin.getDefault().getRepositoryService().removeRepositoryTreeViewListener(this);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
+     */
+    public void selectionChanged(SelectionChangedEvent event) {
+        ISelection selection = event.getSelection();
+        if (selection instanceof StructuredSelection) {
+            Object input = ((IStructuredSelection) selection).getFirstElement();
+
+            if (!(input instanceof RepositoryNode)) {
+                if (input instanceof IAdaptable) {
+                    // see ProcessPart.getAdapter()
+                    IAdaptable adaptable = (IAdaptable) input;
+                    input = adaptable.getAdapter(RepositoryNode.class);
+                }
+            }
+
+            if (input instanceof RepositoryNode) {
+                RepositoryNode repositoryNode = (RepositoryNode) input;
+                IRepositoryObject repositoryObject = repositoryNode.getObject();
+                if (repositoryObject == null) {
+                    repositoryObject = new EmptyRepositoryObject();
+                    return;
+                }
+                setElement(repositoryObject, repositoryObject.getLabel(), ImageProvider.getImage(repositoryNode.getIcon()));
+            }
+        }
+
+    }
+
+    /**
+     * yzhang JobSettingsView class global comment. Detailled comment
+     */
+    class EmptyRepositoryObject implements IRepositoryObject {
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.talend.core.model.repository.IRepositoryObject#getAuthor()
+         */
+        public User getAuthor() {
+            return null;
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.talend.core.model.repository.IRepositoryObject#getCreationDate()
+         */
+        public Date getCreationDate() {
+            return null;
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.talend.core.model.repository.IRepositoryObject#getDescription()
+         */
+        public String getDescription() {
+            return ""; //$NON-NLS-1$
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.talend.core.model.repository.IRepositoryObject#getId()
+         */
+        public String getId() {
+            return ""; //$NON-NLS-1$
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.talend.core.model.repository.IRepositoryObject#getLabel()
+         */
+        public String getLabel() {
+            return ""; //$NON-NLS-1$
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.talend.core.model.repository.IRepositoryObject#getModificationDate()
+         */
+        public Date getModificationDate() {
+            return null;
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.talend.core.model.repository.IRepositoryObject#getProperty()
+         */
+        public Property getProperty() {
+            return null;
+        }
+
+        public void setProperty(Property property) {
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.talend.core.model.repository.IRepositoryObject#getPurpose()
+         */
+        public String getPurpose() {
+            return ""; //$NON-NLS-1$
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.talend.core.model.repository.IRepositoryObject#getStatusCode()
+         */
+        public String getStatusCode() {
+            return ""; //$NON-NLS-1$
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.talend.core.model.repository.IRepositoryObject#getType()
+         */
+        public ERepositoryObjectType getType() {
+            return null;
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.talend.core.model.repository.IRepositoryObject#getVersion()
+         */
+        public String getVersion() {
+            return ""; //$NON-NLS-1$
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.talend.core.model.repository.IRepositoryObject#setAuthor(org.talend.core.model.general.User)
+         */
+        public void setAuthor(User author) {
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.talend.core.model.repository.IRepositoryObject#setCreationDate(java.util.Date)
+         */
+        public void setCreationDate(Date value) {
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.talend.core.model.repository.IRepositoryObject#setDescription(java.lang.String)
+         */
+        public void setDescription(String value) {
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.talend.core.model.repository.IRepositoryObject#setId(int)
+         */
+        public void setId(String id) {
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.talend.core.model.repository.IRepositoryObject#setLabel(java.lang.String)
+         */
+        public void setLabel(String label) {
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.talend.core.model.repository.IRepositoryObject#setModificationDate(java.util.Date)
+         */
+        public void setModificationDate(Date value) {
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.talend.core.model.repository.IRepositoryObject#setPurpose(java.lang.String)
+         */
+        public void setPurpose(String value) {
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.talend.core.model.repository.IRepositoryObject#setStatusCode(java.lang.String)
+         */
+        public void setStatusCode(String statusCode) {
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.talend.core.model.repository.IRepositoryObject#setVersion(org.talend.core.model.general.Version)
+         */
+        public void setVersion(String version) {
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.talend.core.model.repository.IRepositoryObject#getChildren()
+         */
+        public List<IRepositoryObject> getChildren() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
     }
 
 }
