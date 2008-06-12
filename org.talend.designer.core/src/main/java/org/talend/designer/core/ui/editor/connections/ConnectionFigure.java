@@ -41,7 +41,8 @@ public class ConnectionFigure extends PolylineConnection {
 
     @Override
     public void paint(Graphics graphics) {
-        if (linkedNode.getNodeContainer().getSubjobContainer().isCollapsed()) {
+        if (linkedNode.getNodeContainer().getSubjobContainer() != null
+                && linkedNode.getNodeContainer().getSubjobContainer().isCollapsed()) {
             return;
         }
         if (alpha != -1) {
