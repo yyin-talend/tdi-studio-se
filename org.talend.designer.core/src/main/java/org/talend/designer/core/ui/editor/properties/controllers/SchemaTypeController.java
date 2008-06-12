@@ -82,7 +82,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
     /**
      * 
      */
-    private static final String FOUCE_READ_ONLY = "FOUCE_READ_ONLY";
+    private static final String FORCE_READ_ONLY = "FORCE_READ_ONLY";
 
     private static final String RESET_COLUMNS = "RESET_COLUMNS"; //$NON-NLS-1$
 
@@ -430,15 +430,15 @@ public class SchemaTypeController extends AbstractRepositoryController {
                 if (modelSelect.open() == ModelSelectionDialog.OK) {
                     if (modelSelect.getOptionValue() == EEditSelection.REPOSITORY) {
                         // update repository schema
-                        button.setData(FOUCE_READ_ONLY, false);
+                        button.setData(FORCE_READ_ONLY, false);
                         updateRepositorySchema(button);
                     } else if (modelSelect.getOptionValue() == EEditSelection.BUILDIN) {
                         // change the schema type to built in, then continue the original process
                         executeCommand(new RepositoryChangeSchemaBuiltinCommand(elem));
-                        button.setData(FOUCE_READ_ONLY, false);
+                        button.setData(FORCE_READ_ONLY, false);
                         stop = false;
                     } else if (modelSelect.getOptionValue() == EEditSelection.SHOW_SCHEMA) {
-                        button.setData(FOUCE_READ_ONLY, true);
+                        button.setData(FORCE_READ_ONLY, true);
                         stop = false;
                     }
                 }
@@ -483,12 +483,12 @@ public class SchemaTypeController extends AbstractRepositoryController {
             if (connectionParam != null) {
                 connectionName = (String) connectionParam.getValue();
             }
-            Object obj = button.getData(FOUCE_READ_ONLY);
+            Object obj = button.getData(FORCE_READ_ONLY);
             boolean forceReadOnly = false;
             if (obj != null) {
                 forceReadOnly = (Boolean) obj;
             }
-            boolean inputReadOnly = !forceReadOnly, outputReadOnly = !forceReadOnly, inputReadOnlyNode = !forceReadOnly, inputReadOnlyParam = !forceReadOnly;
+            boolean inputReadOnly = false, outputReadOnly = false, inputReadOnlyNode = false, inputReadOnlyParam = false;
 
             for (Connection connec : (List<Connection>) node.getIncomingConnections()) {
                 if (connec.isActivate()
@@ -522,11 +522,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
                             columnCopied.setReadOnly(column.isReadOnly());
                         }
                         inputMetaCopy.setReadOnly(inputMetadata.isReadOnly());
-                        if (!forceReadOnly) {
-                            inputReadOnly = prepareReadOnlyTable(inputMetaCopy, inputReadOnlyParam, inputReadOnlyNode);
-                        } else {
-                            inputReadOnly = true;
-                        }
+                        inputReadOnly = prepareReadOnlyTable(inputMetaCopy, inputReadOnlyParam, inputReadOnlyNode);
                     }
 
                     // store the value for Dialog
