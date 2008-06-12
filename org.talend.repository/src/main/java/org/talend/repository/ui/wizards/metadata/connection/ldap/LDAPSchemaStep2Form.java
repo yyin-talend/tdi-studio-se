@@ -209,7 +209,6 @@ public class LDAPSchemaStep2Form extends AbstractLDAPSchemaStepForm {
         autoFetchBaseDnsButton = BaseWidgetUtils.createCheckbox(groupComposite, Messages
                 .getString("LDAPSchemaStep2Form.GetBaseDNS"), 2); //$NON-NLS-1$
         autoFetchBaseDnsButton.setSelection(true);
-
         fetchBaseDnsButton = new Button(groupComposite, SWT.PUSH);
         fetchBaseDnsButton.setText(Messages.getString("LDAPSchemaStep2Form.FetchBaseDNs")); //$NON-NLS-1$
         fetchBaseDnsButton.setEnabled(true);
@@ -246,7 +245,7 @@ public class LDAPSchemaStep2Form extends AbstractLDAPSchemaStepForm {
 
         final LDAPSchemaConnection connection = (LDAPSchemaConnection) connectionItem.getConnection();
 
-        if (connection != null) {
+        if (connection == null) {
             connection.setProtocol(EAuthenticationMethod.ANONYMOUS.getName());
         }
 
@@ -303,7 +302,7 @@ public class LDAPSchemaStep2Form extends AbstractLDAPSchemaStepForm {
                         public void run(IProgressMonitor monitor) {
 
                             connection.setUseAuthen(true);
-                            isOK = LDAPConnectionUtils.checkParam(getOriginalValueConnection());
+                            isOK = LDAPConnectionUtils.checkParam(getOriginalValueConnection(), false);
 
                         }
                     };
@@ -358,11 +357,7 @@ public class LDAPSchemaStep2Form extends AbstractLDAPSchemaStepForm {
 
                         public void run(IProgressMonitor monitor) {
 
-                            isOK = LDAPConnectionUtils.checkParam(getOriginalValueConnection());
-
-                            if (isOK) {
-                                dnList = LDAPConnectionUtils.fetchBaseDNs();
-                            }
+                            dnList = fetchBaseDNsList();
                         }
                     };
                     new ProgressMonitorDialog(Display.getDefault().getActiveShell()).run(true, false, op);
@@ -375,6 +370,7 @@ public class LDAPSchemaStep2Form extends AbstractLDAPSchemaStepForm {
                 }
 
                 if (dnList != null && dnList.size() > 0) {
+                    isOK = true;
                     int length = dnList.size();
                     String[] baseDNarray = dnList.toArray(new String[length]);
                     baseDNCombo.setItems((baseDNarray));
@@ -399,10 +395,20 @@ public class LDAPSchemaStep2Form extends AbstractLDAPSchemaStepForm {
             }
         });
 
-        baseDNCombo.addSelectionListener(new SelectionAdapter() {
+        // baseDNCombo.addSelectionListener(new SelectionAdapter() {
+        //
+        // public void widgetSelected(SelectionEvent e) {
+        // connection.setSelectedDN(baseDNCombo.getText());
+        // }
+        //
+        // });
 
-            public void widgetSelected(SelectionEvent e) {
-                connection.setSelectedDN(baseDNCombo.getText());
+        baseDNCombo.addModifyListener(new ModifyListener() {
+
+            public void modifyText(ModifyEvent e) {
+                if (baseDNCombo.getText() != null) {
+                    connection.setSelectedDN(baseDNCombo.getText());
+                }
             }
 
         });
@@ -589,9 +595,8 @@ public class LDAPSchemaStep2Form extends AbstractLDAPSchemaStepForm {
         }
 
         boolean isGetBaseDNsFromRoot = connection.isGetBaseDNsFromRoot();
-        if (!isGetBaseDNsFromRoot) {
-            this.baseDNCombo.setEnabled(false);
-        }
+        this.autoFetchBaseDnsButton.setSelection(isGetBaseDNsFromRoot);
+        this.baseDNCombo.setEnabled(!isGetBaseDNsFromRoot);
 
         EList baseDNs = connection.getBaseDNs();
         int size = baseDNs.size();
@@ -794,6 +799,18 @@ public class LDAPSchemaStep2Form extends AbstractLDAPSchemaStepForm {
         if (getContextModeManager() != null) {
             getContextModeManager().setDefaultContextType(getConnection());
         }
+    }
+
+    /**
+     * ftang Comment method "fetchBaseDNsList".
+     */
+    private List<String> fetchBaseDNsList() {
+        boolean isOK = LDAPConnectionUtils.checkParam(getOriginalValueConnection(), false);
+
+        if (isOK) {
+            return LDAPConnectionUtils.fetchBaseDNs();
+        }
+        return null;
     }
 
 }

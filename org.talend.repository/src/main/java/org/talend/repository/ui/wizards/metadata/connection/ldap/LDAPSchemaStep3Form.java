@@ -464,10 +464,11 @@ public class LDAPSchemaStep3Form extends AbstractLDAPSchemaStepForm implements I
         // System.out.println(id);
         // }
         // }
-
-        for (Object object : attributeList) {
-            String str = (String) object;
-            itemTableNameList.add(str);
+        if (attributeList != null && attributeList.length > 0) {
+            for (Object object : attributeList) {
+                String str = (String) object;
+                itemTableNameList.add(str);
+            }
         }
     }
 
