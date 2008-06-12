@@ -288,15 +288,16 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
             }
 
             StringBuffer libPaths = new StringBuffer();
+            char pathSeparator = System.getProperty("path.separator").charAt(0);
             if (externalLibs != null) {
                 for (URL libUrl : externalLibs) {
                     libPaths.append(libUrl.getFile());
-                    libPaths.append(";");
+                    libPaths.append(pathSeparator);
                 }
             }
 
             TalendJava2WSDL.generateWSDL(new String[] { "-T1.2", "-yDOCUMENT", "-uLITERAL", "-o" + wsdlFilePath, "-d",
-                    "-lhttp://localhost:8080/" + jobName, "-nhttp://talend.org", "-X" + classRoot + ";" + libPaths,
+                    "-lhttp://localhost:8080/" + jobName, "-nhttp://talend.org", "-X" + classRoot + pathSeparator + libPaths,
                     "-m" + EXPORT_METHOD, projectName + "." + jobFolderName + "." + jobName });
 
             wsdlUrlList.add(new File(wsdlFilePath).toURL());
