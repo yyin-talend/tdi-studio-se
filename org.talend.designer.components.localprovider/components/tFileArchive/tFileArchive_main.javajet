@@ -28,7 +28,7 @@
     String zipFile_<%=cid %> = <%=zipFile %>;
     <%if(mkDir){%>
     String zipDir_<%=cid %> = (<%=zipFile %>).contains("\\")?
-    <%=zipFile %>.substring(0,(<%=zipFile %>).lastIndexOf("\\")): (<%=zipFile %>).substring(0,(<%=zipFile %>).lastIndexOf("/"));
+    (<%=zipFile %>).substring(0,(<%=zipFile %>).lastIndexOf("\\")): (<%=zipFile %>).substring(0,(<%=zipFile %>).lastIndexOf("/"));
     java.io.File zDir_<%=cid %> = new java.io.File(zipDir_<%=cid %>);
     zDir_<%=cid %>.mkdirs();
     <%}%>
