@@ -12,10 +12,10 @@ INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 String fileName = ElementParameterParser.getValue(node, "__FILENAME__");
 String dirName = ElementParameterParser.getValue(node, "__DIRECTORY__");
+String path = ElementParameterParser.getValue(node, "__PATH__");
 String failon = ElementParameterParser.getValue(node, "__FAILON__");
 boolean ifFolder = ElementParameterParser.getValue(node, "__FOLDER__").equals("true");
-
-if(ifFolder){
+boolean either = ElementParameterParser.getValue(node, "__FOLDER_FILE__").equals("true");
 %>
 class DeleteFolder<%=cid%>{
 	 /**
@@ -54,6 +54,31 @@ class DeleteFolder<%=cid%>{
     }
 
 }
+<%
+if(either){%>
+
+	java.io.File path_<%=cid%>=new java.io.File(<%=path%>);
+	if(path_<%=cid%>.exists()){
+	  if(path_<%=cid%>.isFile()){
+		path_<%=cid%>.delete();
+	  }else if(path_<%=cid%>.isDirectory()){ 
+	    DeleteFolder<%=cid%> df<%=cid%> = new DeleteFolder<%=cid%>();
+	    df<%=cid%>.delete(path_<%=cid%>);   
+	  }
+    }
+<%
+	if(failon.equals("true")){
+%>
+    else{
+    	throw new RuntimeException("the file or path does not exists or is invalid");
+    }
+<%
+	}
+%>
+    
+<%
+}else if(ifFolder){
+%>
 
 java.io.File file<%=cid%> = new java.io.File(<%=dirName%>);
 
