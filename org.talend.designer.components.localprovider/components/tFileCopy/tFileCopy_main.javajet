@@ -46,3 +46,6 @@
             org.talend.FileCopy.copyFile(srcFile_<%=cid %>.getPath(), desFile_<%=cid %>.getPath(), <%=reFile %>);
 
         }
+        globalMap.put("<%=cid %>_DESTINATION_FILEPATH",desFile_<%=cid %>.getPath());
+        globalMap.put("<%=cid %>_DESTINATION_FILENAME",desFile_<%=cid %>.getName());
+        
