@@ -250,7 +250,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                                 DatabaseConnection dbConnection = (DatabaseConnection) connection;
                                 QueriesConnection queriesConnection = dbConnection.getQueries();
                                 if (queriesConnection != null) {
-                                    List<Query> qs = (List<Query>) queriesConnection.getQuery();
+                                    List<Query> qs = queriesConnection.getQuery();
                                     for (Query query : qs) {
                                         repositoryQueryStoreMap.put(connectionItem.getProperty().getId() + " - "
                                                 + query.getLabel(), query);
@@ -664,6 +664,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
 
         Thread thread = new Thread() {
 
+            @Override
             public void run() {
                 try {
                     operationInThread();
@@ -740,8 +741,8 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                 public void run() {
                     try {
                         removeListener(SWT.Resize, resizeListener);
-                        composite.pack();
                         getParent().layout();
+                        composite.pack();
                         propertyResized = false;
                         addListener(SWT.Resize, resizeListener);
                     } catch (Exception e) {
@@ -756,12 +757,12 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
         if (DynamicTabbedPropertySection.DEBUG_TIME) {
             System.out.println("DC;total;" + getCurrentComponent() + ";" + time);
         }
-        
-        isRefreshing=false;
+
+        isRefreshing = false;
     }
 
-    public static boolean isRefreshing=false;
-    
+    public static boolean isRefreshing = false;
+
     private final Listener resizeListener = new Listener() {
 
         public void handleEvent(Event event) {
@@ -878,6 +879,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
         }
         currentComponent = elem.getElementName();
 
+        propertyResized = true;
         addListener(SWT.Resize, resizeListener);
         addListener(SWT.FocusOut, new Listener() {
 
