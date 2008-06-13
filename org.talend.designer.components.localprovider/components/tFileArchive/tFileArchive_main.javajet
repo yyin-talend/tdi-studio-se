@@ -15,6 +15,7 @@
 	String directory = ElementParameterParser.getValue(node, "__SOURCE__");
 	String zipFile = ElementParameterParser.getValue(node, "__TARGET__");
 	String level = ElementParameterParser.getValue(node, "__LEVEL__");
+	boolean mkDir = ElementParameterParser.getValue(node, "__MKDIR__").equals("true");
 	boolean isAllFile = ElementParameterParser.getValue(node, "__ALL_FILES__").equals("true");
 	boolean subDir = ElementParameterParser.getValue(node, "__SUB_DIRECTROY__").equals("true");
 	String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
@@ -25,6 +26,12 @@
     String sourceDir_<%=cid %> = <%=directory %>;      
     java.io.File file_<%=cid %> = new java.io.File(sourceDir_<%=cid %>);
     String zipFile_<%=cid %> = <%=zipFile %>;
+    <%if(mkDir){%>
+    String zipDir_<%=cid %> = <%=zipFile %>.contains("\\")?
+    <%=zipFile %>.substring(0,<%=zipFile %>.lastIndexOf("\\")): <%=zipFile %>.substring(0,<%=zipFile %>.lastIndexOf("/"));
+    java.io.File zDir_<%=cid %> = new java.io.File(zipDir_<%=cid %>);
+    zDir_<%=cid %>.mkdirs();
+    <%}%>
     int level_<%=cid %> = <%=level %>;        
     final java.util.List<java.io.File> list_<%=cid %> = new java.util.ArrayList<java.io.File>();  
     <% 
