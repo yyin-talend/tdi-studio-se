@@ -47,14 +47,12 @@ import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog;
 import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog.EEditSelection;
 import org.talend.core.CorePlugin;
-import org.talend.core.language.ECodeLanguage;
-import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.metadata.QueryUtil;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.repository.IRepositoryObject;
-import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -119,16 +117,11 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         String repositoryType = (String) elem.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
         String propertyName = (String) openSQLEditorButton.getData(PARAMETER_NAME);
         String query = (String) elem.getPropertyValue(propertyName);
-        String qoute = (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) ? TalendTextUtils.QUOTATION_MARK
-                : TalendTextUtils.SINGLE_QUOTE;
 
-        boolean isCanOpen = !ContextParameterUtils.isContainContextParam(query) && query.startsWith(qoute)
-                && query.endsWith(qoute) && query.length() > 1;
-        isCanOpen = isCanOpen || "".equals(query);
-        if (!isCanOpen) {
+        if (!canOpenSQLBuilderDialog(query)) {
             String pid = SqlBuilderPlugin.PLUGIN_ID;
             String mainMsg = Messages.getString("SqlMemoController.QueryError.mainMsg");
-            String infoMsg = Messages.getString("SqlMemoController.QueryError.infoMsg", qoute);
+            String infoMsg = Messages.getString("SqlMemoController.QueryError.infoMsg", TalendTextUtils.getQuoteChar());
             new ErrorDialogWidthDetailArea(composite.getShell(), pid, mainMsg, infoMsg);
             return null;
         }
@@ -458,5 +451,14 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
                 executeCommand(refreshConnectionCommand());
             }
         }
+    }
+
+    private boolean canOpenSQLBuilderDialog(String query) {
+        if (query == null || "".equals(query.trim())) {
+            return false;
+        }
+        query = query.replaceAll("\r", " ");
+        query = query.replaceAll("\n", " ");
+        return !QueryUtil.containVariables(query);
     }
 }

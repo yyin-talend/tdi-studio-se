@@ -971,8 +971,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 realTableName = metadataTable.getTableName();
             }
         }
-        connParameters
-                .setSchemaName(QueryUtil.getTableName(elem, connParameters.getMetadataTable(), schema, type, realTableName));
+        connParameters.setSchemaName(QueryUtil.getTableName(elem, connParameters.getMetadataTable(), TalendTextUtils
+                .removeQuotes(schema), type, realTableName));
 
     }
 
