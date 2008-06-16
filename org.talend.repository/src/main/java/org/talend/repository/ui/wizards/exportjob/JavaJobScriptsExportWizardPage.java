@@ -134,13 +134,11 @@ public class JavaJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
         if (settings != null) {
             String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES_ID);
             if (directoryNames != null && directoryNames.length > 0) {
-                setDestinationValue(directoryNames[0]);
                 for (int i = 0; i < directoryNames.length; i++) {
                     addDestinationItem(directoryNames[i]);
                 }
-            } else {
-                setDefaultDestination();
             }
+            setDefaultDestination();
 
             shellLauncherButton.setSelection(settings.getBoolean(STORE_SHELL_LAUNCHER_ID));
             systemRoutineButton.setSelection(settings.getBoolean(STORE_SYSTEM_ROUTINE_ID));

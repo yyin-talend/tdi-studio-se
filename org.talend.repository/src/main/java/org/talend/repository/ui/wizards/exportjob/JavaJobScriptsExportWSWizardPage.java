@@ -17,8 +17,6 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -193,6 +191,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         }
         chkButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 chkButton.setSelection(chkButton.getSelection());
                 zipOption = String.valueOf(chkButton.getSelection());
@@ -283,10 +282,8 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         IDialogSettings settings = getDialogSettings();
         if (settings != null) {
             String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES_ID);
-            boolean destinationValid = false;
             if (directoryNames != null) {
                 // destination
-                boolean isFirstValid = false;
                 String filterName = ".zip"; //$NON-NLS-1$
 
                 if (exportTypeCombo.getText().equals(EXPORTTYPE_WSWAR)) {
@@ -296,20 +293,12 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                 }
 
                 for (int i = 0; i < directoryNames.length; i++) {
-                    if (directoryNames[i].substring(directoryNames[i].indexOf('.')).equalsIgnoreCase(filterName)) {
+                    if (directoryNames[i].toLowerCase().endsWith(filterName)) {
                         addDestinationItem(directoryNames[i]);
-                        if (!isFirstValid) {
-                            setDestinationValue(directoryNames[i]);
-                            isFirstValid = true;
-                        }
-                        destinationValid = true;
                     }
                 }
             }
-
-            if (!destinationValid || directoryNames == null) {
-                setDefaultDestination();
-            }
+            setDefaultDestination();
 
             webXMLButton.setSelection(settings.getBoolean(STORE_WEBXML_ID));
             configFileButton.setSelection(settings.getBoolean(STORE_CONFIGFILE_ID));
@@ -342,33 +331,16 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
         if (settings != null) {
             String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES_ID);
-            boolean destinationValid = false;
             if (directoryNames != null) {
                 // destination
-                boolean isFirstValid = false;
-
                 for (int i = 0; i < directoryNames.length; i++) {
-                    if (directoryNames[i].substring(directoryNames[i].indexOf('.')).equalsIgnoreCase(".zip")) { //$NON-NLS-1$
+                    if (directoryNames[i].toLowerCase().endsWith(".zip")) { //$NON-NLS-1$
                         addDestinationItem(directoryNames[i]);
-
-                        if (!isFirstValid) {
-                            if (process.length == 1) {
-                                IPath path = new Path(directoryNames[i]);
-                                String directory = directoryNames[i].substring(0, directoryNames[i].indexOf(path.lastSegment()));
-                                setDestinationValue(directory + property.getLabel() + "_" + property.getVersion() + ".zip");
-                            } else {
-                                setDestinationValue(directoryNames[i]);
-                            }
-                            isFirstValid = true;
-                        }
-                        destinationValid = true;
                     }
                 }
             }
 
-            if (directoryNames == null || !destinationValid) {
-                setDefaultDestination();
-            }
+            setDefaultDestination();
             shellLauncherButton.setSelection(settings.getBoolean(STORE_SHELL_LAUNCHER_ID));
             systemRoutineButton.setSelection(settings.getBoolean(STORE_SYSTEM_ROUTINE_ID));
             userRoutineButton.setSelection(settings.getBoolean(STORE_USER_ROUTINE_ID));
@@ -583,6 +555,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
      * 
      * @see org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWizardPage#getExportResources()
      */
+    @Override
     public List<ExportFileResource> getExportResources() {
         Map<ExportChoice, Boolean> exportChoiceMap = getExportChoiceMap();
         if (exportTypeCombo.getText().equals(EXPORTTYPE_POJO)) {
@@ -600,6 +573,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
      * @see org.talend.repository.ui.wizards.exportjob.JobScriptsExportWizardPage#setTopFolder(java.util.List,
      * java.lang.String)
      */
+    @Override
     public void setTopFolder(List<ExportFileResource> resourcesToExport, String topFolder) {
         if (exportTypeCombo.getText().equals(EXPORTTYPE_WSWAR) || exportTypeCombo.getText().equals(EXPORTTYPE_WSZIP)) {
             return;
