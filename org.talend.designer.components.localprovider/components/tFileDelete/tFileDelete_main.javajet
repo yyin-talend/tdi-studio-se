@@ -75,7 +75,7 @@ if(either){%>
 <%
 	}
 %>
-    
+    globalMap.put("<%=cid %>_DELETE_PATH",<%=path%>);
 <%
 }else if(ifFolder){
 %>
@@ -94,7 +94,9 @@ if(file<%=cid%>.exists()&& file<%=cid%>.isDirectory()){
     }
 <%
 	}
-
+	%>
+	globalMap.put("<%=cid %>_DELETE_PATH",<%=dirName%>);
+<%
 }else{
 %>
     java.io.File file_<%=cid%>=new java.io.File(<%=fileName%>);
@@ -110,9 +112,11 @@ if(file<%=cid%>.exists()&& file<%=cid%>.isDirectory()){
     }
 <%
 	}
+	%>
+	globalMap.put("<%=cid %>_DELETE_PATH",<%=fileName%>);
+	<%
 }
 %>
-    	
-    	
+    
      
  

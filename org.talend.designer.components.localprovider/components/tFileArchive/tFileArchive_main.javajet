@@ -121,3 +121,6 @@
       }
       
       if (out_<%=cid %> != null)  out_<%=cid %>.close();
+      globalMap.put("<%=cid %>_ARCHIVE_FILEPATH",zipFile_<%=cid %>);
+      globalMap.put("<%=cid %>_ARCHIVE_FILENAME",(<%=zipFile %>).contains("\\")?
+    (<%=zipFile %>).substring(((<%=zipFile %>).lastIndexOf("\\")+2)): (<%=zipFile %>).substring(((<%=zipFile %>).lastIndexOf("/"))+1));

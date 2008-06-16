@@ -23,3 +23,5 @@ if (!file_<%=cid%>.exists()) {
 }else{
 	globalMap.put("<%=cid %>_EXISTS",true);
 }
+
+globalMap.put("<%=cid %>_FILENAME",<%=fileName%>);
