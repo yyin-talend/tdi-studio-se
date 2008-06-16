@@ -21,9 +21,9 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IControllerGenerator;
-import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>

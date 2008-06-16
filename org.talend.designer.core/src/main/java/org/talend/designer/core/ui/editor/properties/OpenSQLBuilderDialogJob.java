@@ -16,7 +16,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.window.Window;
@@ -28,7 +27,9 @@ import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.properties.tab.IMultiPageTalendEditor;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -105,7 +106,14 @@ public class OpenSQLBuilderDialogJob extends Job {
     @Override
     protected IStatus run(IProgressMonitor monitor) {
         loginProgress = new OpenSQLBuilderDialogProgress(connectionParameters, manager, composite);
-        final Process process = (Process) controller.getDynamicProperty().getPart().getTalendEditor().getProcess();
+        Object obj = controller.getDynamicProperty().getPart();
+        Process p = null;
+        if (obj instanceof IMultiPageTalendEditor) {
+            p = (Process) ((AbstractMultiPageTalendEditor) obj).getTalendEditor().getProcess();
+        } else {
+            throw new RuntimeException("Type IMultiPageTalendEditor is requried.");
+        }
+        final Process process = p;
         try {
             loginProgress.run(monitor);
             if (EDatabaseTypeName.ACCESS.getDisplayName().equals(connectionParameters.getDbType())

@@ -76,6 +76,8 @@ import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.properties.tab.IDynamicProperty;
+import org.talend.core.properties.tab.IMultiPageTalendEditor;
 import org.talend.core.ui.proposal.TalendProposalUtils;
 import org.talend.core.ui.viewer.ReconcilerStyledText;
 import org.talend.designer.core.DesignerPlugin;
@@ -90,7 +92,6 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.ContextParameterExtractor;
 import org.talend.designer.core.ui.editor.properties.OpenSQLBuilderDialogJob;
-import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
 import org.talend.designer.core.ui.views.jobsettings.JobSettingsView;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
 import org.talend.designer.core.ui.views.properties.WidgetFactory;
@@ -316,7 +317,12 @@ public abstract class AbstractElementPropertySectionController implements Proper
         this.dynamicProperty = dp;
         hashCurControls = dp.getHashCurControls();
         elem = dp.getElement();
-        part = dp.getPart();
+        Object obj = dp.getPart();
+        if (obj instanceof IMultiPageTalendEditor) {
+            part = (AbstractMultiPageTalendEditor) obj;
+        } else {
+            throw new RuntimeException("Type IMultiPageTalendEditor is requried.");
+        }
         section = dp.getSection();
         composite = dp.getComposite();
 

@@ -47,10 +47,10 @@ import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
-import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
 
 /**

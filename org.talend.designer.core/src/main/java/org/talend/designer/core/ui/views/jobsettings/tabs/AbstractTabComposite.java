@@ -25,8 +25,8 @@ import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
-import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
 
 /**
  * yzhang class global comment. Detailled comment

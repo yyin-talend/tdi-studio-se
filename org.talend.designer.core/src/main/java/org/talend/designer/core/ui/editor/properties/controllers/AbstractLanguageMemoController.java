@@ -44,6 +44,7 @@ import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.ui.viewer.ReconcilerViewer;
 import org.talend.core.ui.viewer.java.TalendJavaSourceViewer;
 import org.talend.core.ui.viewer.perl.TalendPerlSourceViewer;
@@ -52,7 +53,6 @@ import org.talend.designer.core.ui.editor.TalendJavaEditor;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
-import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 
 /**

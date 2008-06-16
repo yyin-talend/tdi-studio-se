@@ -37,11 +37,11 @@ import org.talend.commons.ui.swt.tableviewer.celleditor.DateDialog;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.controllers.creator.SelectAllTextControlCreator;
-import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>

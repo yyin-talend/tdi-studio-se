@@ -68,6 +68,7 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.PropertiesPackage;
+import org.talend.core.properties.tab.IMultiPageTalendEditor;
 import org.talend.core.ui.IUIRefresher;
 import org.talend.core.utils.AccessingEmfJob;
 import org.talend.designer.core.DesignerPlugin;
@@ -99,7 +100,7 @@ import org.talend.repository.ui.views.IRepositoryView;
  * DOC qzhang class global comment. Detailled comment
  */
 public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart implements IResourceChangeListener,
-        ISelectionListener, IUIRefresher {
+        ISelectionListener, IUIRefresher, IMultiPageTalendEditor {
 
     protected AdapterImpl dirtyListener = new AdapterImpl() {
 

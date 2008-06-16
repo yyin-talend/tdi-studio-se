@@ -32,10 +32,10 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalNode;
+import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.model.components.ExternalUtilities;
 import org.talend.designer.core.ui.editor.cmd.ExternalNodeChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
-import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>

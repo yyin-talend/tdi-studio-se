@@ -12,7 +12,7 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.properties.controllers;
 
-import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
+import org.talend.core.properties.tab.IDynamicProperty;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>

@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.core.model.process.IElementParameter;
-import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
+import org.talend.core.properties.tab.IDynamicProperty;
 
 /**
  * yzhang class global comment. Detailled comment

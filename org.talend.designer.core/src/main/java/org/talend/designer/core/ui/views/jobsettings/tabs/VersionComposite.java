@@ -337,4 +337,14 @@ public class VersionComposite extends AbstractTabComposite {
         }
     }
 
+    /**
+     * yzhang Comment method "getTableViewer".
+     * 
+     * @return
+     */
+    public ISelection getSelection() {
+        refresh();
+        return this.tableViewer.getSelection();
+    }
+
 }

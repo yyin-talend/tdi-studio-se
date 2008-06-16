@@ -39,6 +39,7 @@ import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.properties.tab.HorizontalTabFactory;
+import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.properties.tab.TalendPropertyTabDescriptor;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.i18n.Messages;
@@ -46,7 +47,6 @@ import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.process.Process;
-import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
 import org.talend.designer.core.ui.views.jobsettings.tabs.MainComposite;
 import org.talend.designer.core.ui.views.jobsettings.tabs.VersionComposite;
 import org.talend.designer.core.ui.views.properties.IJobSettingsView;
@@ -108,14 +108,18 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                     Object data = descriptor.getData();
                     if (data instanceof Element) {
                         element = (Element) data;
-                        currentSelectedTab = descriptor;
 
-                        createTabComposite(tabFactory.getTabComposite(), element, descriptor.getCategory());
+                        currentSelectedTab = descriptor;
+                        IDynamicProperty propertyComposite = createTabComposite(tabFactory.getTabComposite(), element, descriptor
+                                .getCategory());
+                        currentSelectedTab.setPropertyComposite(propertyComposite);
 
                     } else if (data instanceof IRepositoryObject) {
 
                         currentSelectedTab = descriptor;
-                        createTabComposite(tabFactory.getTabComposite(), data, descriptor.getCategory());
+                        IDynamicProperty propertyComposite = createTabComposite(tabFactory.getTabComposite(), data, descriptor
+                                .getCategory());
+                        currentSelectedTab.setPropertyComposite(propertyComposite);
 
                     }
                     selectedPrimary = false;
@@ -125,7 +129,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
 
     }
 
-    private void createTabComposite(Composite parent, Object data, EComponentCategory category) {
+    private IDynamicProperty createTabComposite(Composite parent, Object data, EComponentCategory category) {
         final int style = SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS;
         IDynamicProperty dynamicComposite = null;
 
@@ -147,6 +151,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
         if (dynamicComposite != null) {
             dynamicComposite.refresh();
         }
+        return dynamicComposite;
     }
 
     /**
@@ -390,6 +395,19 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
             }
         }
 
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.ui.views.properties.IJobSettingsView#getSelection()
+     */
+    public ISelection getSelection() {
+        IDynamicProperty dc = currentSelectedTab.getPropertyComposite();
+        if (dc instanceof VersionComposite) {
+            return ((VersionComposite) dc).getSelection();
+        }
+        return null;
     }
 
     /**
