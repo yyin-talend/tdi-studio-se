@@ -53,6 +53,13 @@
         <ITEM NAME="MERGE" FIELD="CHECK" VALUE="false"></ITEM>
       </ITEMS>
     </PARAMETER>
+    
+    <PARAMETER
+      NAME="NOTE"
+      FIELD="LABEL"
+      REQUIRED="false"
+      SHOW="true"
+      NUM_ROW="20"/>
 
   </PARAMETERS>
   
