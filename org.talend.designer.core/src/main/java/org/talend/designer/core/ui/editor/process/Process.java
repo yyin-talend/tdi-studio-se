@@ -2832,13 +2832,12 @@ public class Process extends Element implements IProcess2 {
         this.needRegenerateCode = regenerateCode;
     }
 
-    /*
-     * (non-Javadoc)
+    /**
+     * ftang Comment method "getJobModificationDateMap".
      * 
-     * @see org.talend.core.model.process.IProcess#getJobModificationDateMap()
+     * @return
      */
     public Map<String, Date> getJobModificationDateMap() {
-        // TODO Auto-generated method stub
         return this.jobModificationDateMap;
     }
 }
