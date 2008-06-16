@@ -23,46 +23,45 @@ List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
 
     IMetadataTable metadata = metadatas.get(0);
-    
-    if (metadata != null) { 
-    	List<IMetadataColumn> columns = metadata.getListColumns();
+    List< ? extends IConnection> inConns = node.getIncomingConnections();
+    IMetadataTable inMetadata = null;
+    if(inConns != null){ 
+    	for (IConnection conn : inConns) { 
+			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { 
+				inMetadata = conn.getMetadataTable();
+    			break;
+			}
+		}
+	}
+    if (metadata != null && inMetadata != null) { 
+    	List<IMetadataColumn> inColumns = inMetadata.getListColumns();
     	Map<String, String> typesMap = new HashMap<String, String>();
-    	for(IMetadataColumn column : columns){
-    		String type = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+    	for(IMetadataColumn column : inColumns){
+    		String type = JavaTypesManager.getTypeToGenerate(column.getTalendType(), true);
     		typesMap.put(column.getLabel(), type);
     	}
         List<Map<String, String>> denormalizes = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__DENORMALIZE_COLUMNS__");
         List<String> denormalizeColumns = new ArrayList<String>();
+        List<String> denormalizeColumnsType = new ArrayList<String>();
         List<String> denormalizeDelimiters = new ArrayList<String>();
         List<Boolean> denormalizeMergeFlags = new ArrayList<Boolean>();
         List<String> groupColumns = new ArrayList<String>();
-		boolean invalidFlag = false;
         for(Map<String, String> denormalize : denormalizes){
         	String columnName = denormalize.get("INPUT_COLUMN");
         	if(denormalizeColumns.contains(columnName)){
         		continue;
         	}
-        	if(!typesMap.get(columnName).equals("String")){
-        		invalidFlag = true;
-        	}
         	denormalizeColumns.add(columnName);
+        	denormalizeColumnsType.add(typesMap.get(columnName));
         	denormalizeDelimiters.add(denormalize.get("DELIMITER"));
         	denormalizeMergeFlags.add(denormalize.get("MERGE").equals("true"));
         }
-        for(IMetadataColumn column : columns){
+        for(IMetadataColumn column : inColumns){
         	String columnName = column.getLabel();
         	if(denormalizeColumns.contains(columnName)){
         		continue;
         	}
         	groupColumns.add(column.getLabel());
-        }
-        if(invalidFlag){
-%>
-boolean hasInvalidType = true;
-if(hasInvalidType){
-	throw new RuntimeException("The Denormalize fields should be for String type.");
-}	
-<%
         }
         
 		List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
@@ -86,24 +85,27 @@ boolean  flag_<%=cid%> = true;//flag for the encounter of first row.
 	for(String columnName : groupColumns){
 		String type = typesMap.get(columnName);
 %><%=type %> group_<%=columnName %>_<%=cid %><%
-if(type.equals("String") || type.equals("Object") || type.equals("Date") || type.equals("byte[]")){%>=null<%}else if(type.equals("boolean") || type.equals("Boolean")){%>=false<%}else{%>=(<%=type %>)0<%}%>;
+if(type.equals("String") || type.equals("Object") || type.equals("java.util.Date") || type.equals("byte[]")){%>=null<%}else if(type.equals("boolean") || type.equals("Boolean")){%>=false<%}else{%>=(<%=type %>)0<%}%>;
 <%	}
 	
 	//gen denormalize variable
 	boolean flag = false;
 	for(int i = 0; i < denormalizeColumns.size(); i++){
 		String columnName = denormalizeColumns.get(i);
+		String columnType = denormalizeColumnsType.get(i);
 		if(denormalizeMergeFlags.get(i)){
 			if(!flag){
 				flag = true;
-%>StringBuilder tempSB_<%=cid %> = new StringBuilder();
+%>
+StringBuilder tempSB_<%=cid %> = new StringBuilder();
 <%
 			}
 %>
-java.util.List<String> denormalize_<%=columnName %>_<%=cid %> = new java.util.ArrayList<String>();
+java.util.List<<%=columnType %>> denormalize_<%=columnName %>_<%=cid %> = new java.util.ArrayList<<%=columnType %>>();
 <%
 		}else{
-%>StringBuilder denormalize_<%=columnName %>_<%=cid %> = new StringBuilder();
+%>
+StringBuilder denormalize_<%=columnName %>_<%=cid %> = new StringBuilder();
 <%
 		}
 	}
