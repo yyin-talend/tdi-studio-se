@@ -30,13 +30,13 @@ public enum EElementType {
     ADVANCED_NODE(
                   EComponentCategory.BASIC,
                   EComponentCategory.ADVANCED,
-                  EComponentCategory.ADVANCED_CONTEXT,
+                  EComponentCategory.DYNAMICS_SETTINGS,
                   EComponentCategory.VIEW,
                   EComponentCategory.DOC),
     ELT_NODE(
              EComponentCategory.BASIC,
              EComponentCategory.ADVANCED,
-             EComponentCategory.ADVANCED_CONTEXT,
+             EComponentCategory.DYNAMICS_SETTINGS,
              EComponentCategory.SQL_PATTERN,
              EComponentCategory.VIEW,
              EComponentCategory.DOC)

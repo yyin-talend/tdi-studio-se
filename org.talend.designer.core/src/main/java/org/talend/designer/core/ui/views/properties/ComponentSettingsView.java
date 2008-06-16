@@ -207,7 +207,7 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
                     dc = new MultipleThreadDynamicComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, category,
                             element, false);
                 }
-            } else if (category == EComponentCategory.ADVANCED_CONTEXT) {
+            } else if (category == EComponentCategory.DYNAMICS_SETTINGS) {
                 dc = new AdvancedContextComposite(parent, SWT.NONE, element);
             } else if (category == EComponentCategory.SQL_PATTERN) {
                 dc = new SQLPatternComposite(parent, SWT.NONE, element);
