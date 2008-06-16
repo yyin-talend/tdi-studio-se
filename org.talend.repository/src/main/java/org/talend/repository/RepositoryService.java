@@ -392,7 +392,10 @@ public class RepositoryService implements IRepositoryService {
      * @see org.talend.repository.model.IRepositoryService#addRepositoryViewListener(org.eclipse.ui.ISelectionListener)
      */
     public void addRepositoryTreeViewListener(ISelectionChangedListener listener) {
-        getRepositoryTreeView().addSelectionChangedListener(listener);
+        TreeViewer treeViewer = getRepositoryTreeView();
+        if (treeViewer != null) {
+            treeViewer.addSelectionChangedListener(listener);
+        }
     }
 
     /*
@@ -401,7 +404,10 @@ public class RepositoryService implements IRepositoryService {
      * @see org.talend.repository.model.IRepositoryService#removeRepositoryTreeViewListener(org.eclipse.jface.viewers.ISelectionChangedListener)
      */
     public void removeRepositoryTreeViewListener(ISelectionChangedListener listener) {
-        getRepositoryTreeView().removeSelectionChangedListener(listener);
+        TreeViewer treeViewer = getRepositoryTreeView();
+        if (treeViewer != null) {
+            treeViewer.removeSelectionChangedListener(listener);
+        }
     }
 
     /**
@@ -411,15 +417,19 @@ public class RepositoryService implements IRepositoryService {
      */
     private TreeViewer getRepositoryTreeView() {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        IViewPart view = page.findView(RepositoryView.ID);
-        if (view == null) {
-            try {
-                view = page.showView(RepositoryView.ID);
-            } catch (Exception e) {
-                ExceptionHandler.process(e);
+        if (page != null) {
+            IViewPart view = page.findView(RepositoryView.ID);
+            if (view == null) {
+                try {
+                    view = page.showView(RepositoryView.ID);
+                } catch (Exception e) {
+                    ExceptionHandler.process(e);
+                }
             }
+            return ((RepositoryView) view).getViewer();
+        } else {
+            return null;
         }
-        return ((RepositoryView) view).getViewer();
     }
 
 }
