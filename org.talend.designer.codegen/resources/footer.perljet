@@ -4,6 +4,8 @@ imports="
     org.talend.core.model.process.IProcess
     org.talend.core.model.process.INode 
     org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.EConnectionType
     java.util.Vector
     java.util.List
     java.util.ArrayList
@@ -51,6 +53,20 @@ for (INode rootNode : rootNodes) {
 
     if (componentName.equals("tPostjob")) {
         postjob = rootNode.getUniqueName() + "_subprocess()";
+        continue;
+    }
+
+    // we don't launch the "parallelized" subjobs, tSynchronize do it better
+    // than we do here.
+    boolean isParallelized = false;
+    for (IConnection conn : rootNode.getOutgoingConnections()) {
+        EConnectionType lineStyle = conn.getLineStyle();
+
+        if (lineStyle.equals(EConnectionType.SYNCHRONIZE)) {
+            isParallelized = true;
+        }
+    }
+    if (isParallelized) {
         continue;
     }
 
