@@ -23,6 +23,7 @@ import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.INode;
+import org.talend.core.utils.KeywordsValidator;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -91,22 +92,22 @@ public class ConnectionManager {
         // no matter the type of the connection and the direction
         List<Connection> connections = new ArrayList<Connection>((List<Connection>) source.getOutgoingConnections());
 
-        connections.removeAll((List<Connection>) source.getOutgoingConnections(EConnectionType.FLOW_MAIN));
+        connections.removeAll(source.getOutgoingConnections(EConnectionType.FLOW_MAIN));
 
         // connections = source.getOutgoingConnections();
         for (int i = 0; i < connections.size(); i++) {
-            if (((Connection) connections.get(i)).getTarget().equals(target)) {
+            if ((connections.get(i)).getTarget().equals(target)) {
                 return false;
             }
         }
 
         connections = new ArrayList<Connection>((List<Connection>) source.getIncomingConnections());
 
-        connections.removeAll((List<Connection>) source.getIncomingConnections(EConnectionType.FLOW_MAIN));
+        connections.removeAll(source.getIncomingConnections(EConnectionType.FLOW_MAIN));
 
         // connections = source.getIncomingConnections();
         for (int i = 0; i < connections.size(); i++) {
-            if (((Connection) connections.get(i)).getSource().equals(target)) {
+            if ((connections.get(i)).getSource().equals(target)) {
                 return false;
             }
         }
@@ -123,8 +124,8 @@ public class ConnectionManager {
         connections = (List<Connection>) target.getIncomingConnections();
         for (int i = 0; i < connections.size(); i++) {
             if (connType.equals(EConnectionType.TABLE)) {
-                if (((Connection) connections.get(i)).isActivate()) {
-                    if (((Connection) connections.get(i)).getName().equals(connectionName)) {
+                if ((connections.get(i)).isActivate()) {
+                    if ((connections.get(i)).getName().equals(connectionName)) {
                         return false;
                     }
                 }
@@ -341,6 +342,12 @@ public class ConnectionManager {
                 }
             }
         }
+        // see bug 0004157: Using specific name for (main) tream
+        if (connType.hasConnectionCategory(IConnectionCategory.FLOW)) {
+            // This name cannot be keyword in generated code, because it may cause compilation to fail.
+            canRename = !KeywordsValidator.isKeyword(connectionName);
+        }
+
         return canRename;
     }
 }
