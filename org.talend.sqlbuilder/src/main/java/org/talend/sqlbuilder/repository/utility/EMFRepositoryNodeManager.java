@@ -180,7 +180,7 @@ public final class EMFRepositoryNodeManager {
             try {
                 if (dbMetaData != null && table.getSourceName() != null) {
                     ResultSet resultSet;
-                    if (dbMetaData.supportsSchemasInDataManipulation()) {
+                    if (dbMetaData.supportsSchemasInDataManipulation() && !"".equals(iMetadataConnection.getSchema())) {
                         resultSet = dbMetaData.getExportedKeys("", iMetadataConnection.getSchema(), table.getSourceName()); //$NON-NLS-1$
                     } else {
                         resultSet = dbMetaData.getExportedKeys("", null, table.getSourceName()); //$NON-NLS-1$
