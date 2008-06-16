@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.repository.ui.actions;
 
+import java.util.Arrays;
 import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.IPath;
@@ -32,6 +33,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.utils.KeywordsValidator;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
@@ -196,9 +198,29 @@ public class DuplicateAction extends AContextualAction {
             } catch (PersistenceException e) {
                 return org.talend.core.i18n.Messages.getString("PropertiesWizardPage.ItemExistsError");
             }
+            // see bug 0004157: Using specific name for (main) tream
+            if (isKeyword(itemName)) {
+                return org.talend.core.i18n.Messages.getString("PropertiesWizardPage.KeywordsError");
+            }
         }
 
         return null;
+    }
+
+    /**
+     * DOC hcw Comment method "isKeyword".
+     * 
+     * @param itemName
+     * @return
+     */
+    private boolean isKeyword(String itemName) {
+        ERepositoryObjectType itemType = sourceNode.getObjectType();
+        ERepositoryObjectType[] types = { ERepositoryObjectType.PROCESS, ERepositoryObjectType.ROUTINES,
+                ERepositoryObjectType.JOBS, ERepositoryObjectType.JOBLET, ERepositoryObjectType.JOBLETS };
+        if (Arrays.asList(types).contains(itemType)) {
+            return KeywordsValidator.isKeyword(itemName);
+        }
+        return false;
     }
 
     private Item createNewItem() {
