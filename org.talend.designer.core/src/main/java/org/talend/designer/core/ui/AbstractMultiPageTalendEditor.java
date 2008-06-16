@@ -521,13 +521,32 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                 nodeName = node.getUniqueName();
             } else {
                 nodeName = null;
-
             }
-            if (node.getComponent().getMultipleComponentManagers().size() > 0) {
+
+            if (isVirtualNode(node)) {
                 nodeName += "_" + node.getComponent().getMultipleComponentManagers().get(0).getInput().getName(); //$NON-NLS-1$
             }
         }
         return nodeName;
+    }
+
+    /**
+     * 
+     * DOC YeXiaowei Comment method "isVirtualNode".
+     * 
+     * @param node
+     * @return
+     */
+    private boolean isVirtualNode(final INode node) {
+        boolean isVirtualNode = false;
+
+        if (node.getUniqueName().startsWith("tMap")) {
+            isVirtualNode = CorePlugin.getDefault().getMapperService().isVirtualComponent(node);
+        } else {
+            isVirtualNode = node.getComponent().getMultipleComponentManagers().size() > 0;
+        }
+
+        return isVirtualNode;
     }
 
     /**

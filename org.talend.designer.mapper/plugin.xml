@@ -6,5 +6,12 @@
          point="org.talend.core.external_component">
       <ExternalComponent class="org.talend.designer.mapper.MapperComponent"/>
    </extension>
+   <extension
+         point="org.talend.core.service">
+      <Service
+            class="org.talend.designer.mapper.DesignerMapperService"
+            serviceId="IDesignerMapperService">
+      </Service>
+   </extension>
 
 </plugin>
