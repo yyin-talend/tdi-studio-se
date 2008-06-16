@@ -376,4 +376,16 @@ public class DesignerCoreService implements IDesignerCoreService {
         }
         return null;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.IDesignerCoreService#getJobModificationDateMap(org.talend.core.model.process.IProcess)
+     */
+    public Map<String, java.util.Date> getJobModificationDateMap(IProcess process) {
+        if (process instanceof Process) {
+            return ((Process) process).getJobModificationDateMap();
+        }
+        return null;
+    }
 }
