@@ -43,11 +43,11 @@ import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.utils.TalendTextUtils;
-import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
 import org.talend.designer.core.ui.editor.properties.macrowidgets.tableeditor.PropertiesTableEditorModel;
 import org.talend.designer.core.ui.editor.properties.macrowidgets.tableeditor.PropertiesTableEditorView;
 import org.talend.designer.core.ui.editor.properties.macrowidgets.tableeditor.PropertiesTableToolbarEditorView;
@@ -240,6 +240,7 @@ public class TableController extends AbstractElementPropertySectionController {
         if (tableViewerCreator == null || tableViewerCreator.getTable() == null || tableViewerCreator.getTable().isDisposed()) {
             return;
         }
+        updateContextList(param);
         Object value = param.getValue();
         if (value instanceof List) {
             // updateTableValues(param);
@@ -487,6 +488,7 @@ public class TableController extends AbstractElementPropertySectionController {
         String contextName = (String) contextElemParam.getValue();
 
         if (processId == null || contextName == null) {
+            revertToolBarButtonState(false);
             return;
         }
 
