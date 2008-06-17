@@ -27,6 +27,7 @@ import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.utils.ContextParameterUtils;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.utils.DataStringConnection;
 import org.talend.sqlbuilder.Messages;
@@ -400,7 +401,11 @@ public class ConnectionParameters {
      * @param query the query to set
      */
     public void setQuery(String query) {
-        this.query = TextUtil.removeQuots(query);
+        if (query.startsWith(TalendTextUtils.getQuoteChar()) && TalendTextUtils.isCommonString(query)) {
+            this.query = TextUtil.removeQuots(query);
+        } else {
+            this.query = query;
+        }
     }
 
     /**
@@ -454,8 +459,8 @@ public class ConnectionParameters {
         DataStringConnection urlDataStringConnection = new DataStringConnection();
         int dbIndex = urlDataStringConnection.getIndexOfLabel(dbType);
         urlDataStringConnection.setSelectionIndex(dbIndex);
-        String url = urlDataStringConnection.getString(dbIndex, getHost(), getUserName(), getPassword(), getPort(),
-                getDbName(), getFilename(), getDatasource(), getDirectory(), getJdbcProperties());
+        String url = urlDataStringConnection.getString(dbIndex, getHost(), getUserName(), getPassword(), getPort(), getDbName(),
+                getFilename(), getDatasource(), getDirectory(), getJdbcProperties());
         return url;
 
     }

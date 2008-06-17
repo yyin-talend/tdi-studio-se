@@ -101,10 +101,13 @@ public class BuildInDBStructure extends SashForm {
         String string = (connectionParameters.getSchemaName() != null && !connectionParameters.getSchemaName().equals("")) ? connectionParameters
                 .getSchemaName()
                 : schema;
+        string = TalendTextUtils.removeQuotes(string);
         int indexOf = string.lastIndexOf(".");
-        if (indexOf > -1) {
-            string = TalendTextUtils.removeQuotes(string.substring(indexOf + 1));
+        if (indexOf > -1) { // schema
+            string = string.substring(indexOf + 1);
         }
+        string = string.replaceAll("\\\\", "");
+        string = TalendTextUtils.removeQuotes(string);
         return string;
     }
 
