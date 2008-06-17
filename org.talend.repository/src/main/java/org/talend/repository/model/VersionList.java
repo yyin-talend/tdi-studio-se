@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.talend.commons.utils.VersionUtils;
 import org.talend.core.model.repository.IRepositoryObject;
 
 /**
@@ -78,8 +79,8 @@ public class VersionList extends ArrayList<IRepositoryObject> {
                 return super.add(o);
             } else {
                 IRepositoryObject another = super.get(index);
-                // compare version
-                if (o.getVersion().compareTo(another.getVersion()) > 0) {
+                // compare version, see bug 0004190: Version check for the latest version is wrong.
+                if (VersionUtils.compareTo(o.getVersion(), another.getVersion()) > 0) {
                     // version is newer than existing one , replace it
                     super.set(index, o);
                     return true;
