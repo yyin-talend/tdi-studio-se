@@ -32,57 +32,32 @@
 	
 	List<IConnection> allSubProcessConnection = codeGenArgument.getAllMainSubTreeConnections();
 %>
-/*/*
+
+/**
  * [<%=node.getUniqueName() %> <%=codePart %> ] start
  */
 
 <%
-	if (codePart.equals(ECodePart.END)) {
-		boolean parallelIterate = false;
-		for (IConnection iterateConn : iterateConnSet) {
-			parallelIterate = "true".equals(ElementParameterParser.getValue(iterateConn, "__ENABLE_PARALLEL__")); 
-	        if (parallelIterate) {
-	        	String rowList=","; 
-				for (IConnection conn : allSubProcessConnection) {
-					rowList += conn.getUniqueName()+",";
-				}
-				rowList = rowList.substring(0, rowList.length()-1);
-				if(stat){
-%>
-				runStat.updateStatOnConnection("<%=iterateConn.getUniqueName() %>",2,"exec"+globalMap.get("PARALLEL_ITERATOR_THREAD_ID"));
-<%
-				}
-%>
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			this.isRunning = false;
-		}
-	}
-
-	<%=node.getUniqueName() %>Thread bt_<%=node.getUniqueName() %> = new <%=node.getUniqueName() %>Thread(globalMap<%=rowList %>,threadIdCounter++);
-	mtp_<%=node.getUniqueName() %>.execute(bt_<%=node.getUniqueName() %>);
-<%
-				continue;
-			}
-		}
-	}
-%>
-
-<%
+    //This part in order to feedback with the iterate_subprocess_header.javajet and iterate_subprocess_footer.javajet
+    
 	if (codePart.equals(ECodePart.BEGIN)) {
 		boolean parallelIterate = false;
 		for (IConnection iterateConn : iterateConnSet) { 
 			parallelIterate = "true".equals(ElementParameterParser.getValue(iterateConn, "__ENABLE_PARALLEL__"));
 	        if (parallelIterate) {
 %>
-			TalendThreadPool mtp_<%=node.getUniqueName() %> = new TalendThreadPool(<%=ElementParameterParser.getValue(iterateConn,"__NUMBER_PARALLEL__") %>);
+			TalendThreadPool mtp_<%=iterateConn.getTarget().getUniqueName() %> = new TalendThreadPool(<%=ElementParameterParser.getValue(iterateConn,"__NUMBER_PARALLEL__") %>);
 			final Object[] lockWrite = new Object[0];
 			int threadIdCounter =0;
 <%
 			}
 			continue;
 		}
+	}	
+%>
+
+<%
+	if (codePart.equals(ECodePart.BEGIN)) {
 %>
 
 ok_Hash.put("<%=node.getUniqueName() %>", false);

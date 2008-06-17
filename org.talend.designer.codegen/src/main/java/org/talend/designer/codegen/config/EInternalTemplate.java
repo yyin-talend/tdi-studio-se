@@ -30,7 +30,9 @@ public enum EInternalTemplate {
     PART_HEADER("component_part_header", "0.0.1"),
     PART_FOOTER("component_part_footer", "0.0.1"),
     PART_ENDMAIN("component_part_endmain", "0.0.1"),
-    PROCESSINFO("footer_process_info", "0.0.1");
+    PROCESSINFO("footer_process_info", "0.0.1"),
+    ITERATE_SUBPROCESS_HEADER("iterate_subprocess_header", "0.0.1"),
+    ITERATE_SUBPROCESS_FOOTER("iterate_subprocess_footer", "0.0.1");
 
     private String templateName;
 

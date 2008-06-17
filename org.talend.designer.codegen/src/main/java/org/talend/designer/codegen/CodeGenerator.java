@@ -434,6 +434,8 @@ public class CodeGenerator implements ICodeGenerator {
                 break;
             case MAIN:
                 if (isIterate) {
+                    codeComponent.append(generateTypedComponentCode(EInternalTemplate.ITERATE_SUBPROCESS_HEADER, node,
+                            ECodePart.BEGIN, incomingName, subProcess));
                     codeComponent.append(generatesTreeCode(subProcess, node, ECodePart.BEGIN));
                     codeComponent.append(generateComponentCode(subProcess, node, ECodePart.BEGIN, incomingName));
 
@@ -442,6 +444,8 @@ public class CodeGenerator implements ICodeGenerator {
 
                     codeComponent.append(generateComponentCode(subProcess, node, ECodePart.END, incomingName));
                     codeComponent.append(generatesTreeCode(subProcess, node, ECodePart.END));
+                    codeComponent.append(generateTypedComponentCode(EInternalTemplate.ITERATE_SUBPROCESS_FOOTER, node,
+                            ECodePart.END, incomingName, subProcess));
                 } else {
 
                     codeComponent.append(generateComponentCode(subProcess, node, ECodePart.MAIN, incomingName));

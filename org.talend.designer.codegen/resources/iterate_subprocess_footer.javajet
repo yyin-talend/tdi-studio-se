@@ -1,0 +1,67 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.INode
+		org.talend.core.model.temp.ECodePart		
+		org.talend.core.model.process.IConnection 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.process.EConnectionType 
+        org.talend.core.model.process.ElementParameterParser
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.IConnectionCategory
+  		java.util.List
+ 		 java.util.Set
+  		java.util.HashSet
+		java.util.Iterator
+	"
+	class="IterateSubProcessFooter" 
+%>
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	ECodePart codePart = codeGenArgument.getCodePart();
+	//boolean trace = codeGenArgument.isTrace();
+	boolean stat = codeGenArgument.isStatistics();
+	Set<IConnection> connSet =  new HashSet<IConnection>();
+	connSet.addAll(node.getOutgoingConnections(EConnectionType.FLOW_MAIN));
+	connSet.addAll(node.getOutgoingConnections(EConnectionType.FLOW_MERGE));
+	//String incomingName = codeGenArgument.getIncomingName();
+	
+	Set<IConnection> iterateConnSet =  new HashSet<IConnection>();
+	iterateConnSet.addAll(node.getIncomingConnections(EConnectionType.ITERATE));
+	
+	List<IConnection> allSubProcessConnection = codeGenArgument.getAllMainSubTreeConnections();
+%>
+
+<%
+	if (codePart.equals(ECodePart.END)) {
+		boolean parallelIterate = false;
+		for (IConnection iterateConn : iterateConnSet) {
+			parallelIterate = "true".equals(ElementParameterParser.getValue(iterateConn, "__ENABLE_PARALLEL__")); 
+	        if (parallelIterate) {
+	        	String rowList=","; 
+				for (IConnection conn : allSubProcessConnection) {
+					rowList += conn.getUniqueName()+",";
+				}
+				rowList = rowList.substring(0, rowList.length()-1);
+				if(stat){
+%>
+				runStat.updateStatOnConnection("<%=iterateConn.getUniqueName() %>",2,"exec"+globalMap.get("PARALLEL_ITERATOR_THREAD_ID"));
+<%
+				}
+%>
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			this.isRunning = false;
+		}
+	}
+
+	<%=node.getUniqueName() %>Thread bt_<%=node.getUniqueName() %> = new <%=node.getUniqueName() %>Thread(globalMap<%=rowList %>,threadIdCounter++);
+	mtp_<%=node.getUniqueName() %>.execute(bt_<%=node.getUniqueName() %>);
+<%
+				continue;
+			}
+		}
+	}
+%>
