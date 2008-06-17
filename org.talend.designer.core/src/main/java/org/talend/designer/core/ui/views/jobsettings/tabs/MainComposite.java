@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
+import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.i18n.Messages;
 
@@ -88,8 +89,13 @@ public class MainComposite extends AbstractTabComposite {
         data.right = new FormAttachment(70, 0);
         data.top = new FormAttachment(nameLabel, ITabbedPropertyConstants.VSPACE);
         authorText.setLayoutData(data);
-        String author = repositoryObject.getAuthor().getLogin();
-        authorText.setText(author != null ? author : "");
+        User user = repositoryObject.getAuthor();
+        if (user != null) {
+            String author = user.getLogin();
+            authorText.setText(author != null ? author : "");
+        } else {
+            authorText.setText(nameContent);
+        }
         authorText.setEnabled(enableControl);
 
         CLabel authorLabel = widgetFactory.createCLabel(composite, Messages.getString("VersionAuthorSection.authorLabel")); //$NON-NLS-1$
