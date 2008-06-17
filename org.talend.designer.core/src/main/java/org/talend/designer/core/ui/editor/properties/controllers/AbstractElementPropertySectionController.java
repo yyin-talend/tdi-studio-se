@@ -1217,7 +1217,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 if (Window.OK == sqlBuilder.open()) {
                     if (!composite.isDisposed() && !connParameters.isNodeReadOnly()) {
                         String sql = connParameters.getQuery();
-                        sql = TalendTextUtils.addSQLQuotes(sql);
+                        if (!sql.startsWith(TalendTextUtils.getQuoteChar())) {
+                            sql = TalendTextUtils.addSQLQuotes(sql);
+                        }
                         return sql;
                     }
                 }

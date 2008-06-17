@@ -48,7 +48,6 @@ import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog;
 import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog.EEditSelection;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.MetadataTool;
-import org.talend.core.model.metadata.QueryUtil;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.DatabaseConnectionItem;
@@ -118,7 +117,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         String propertyName = (String) openSQLEditorButton.getData(PARAMETER_NAME);
         String query = (String) elem.getPropertyValue(propertyName);
 
-        if (!canOpenSQLBuilderDialog(query)) {
+        if (!TalendTextUtils.isCommonString(query)) {
             String pid = SqlBuilderPlugin.PLUGIN_ID;
             String mainMsg = Messages.getString("SqlMemoController.QueryError.mainMsg");
             String infoMsg = Messages.getString("SqlMemoController.QueryError.infoMsg", TalendTextUtils.getQuoteChar());
@@ -453,12 +452,4 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         }
     }
 
-    private boolean canOpenSQLBuilderDialog(String query) {
-        if (query == null || "".equals(query.trim())) {
-            return false;
-        }
-        query = query.replaceAll("\r", " ");
-        query = query.replaceAll("\n", " ");
-        return !QueryUtil.containVariables(query);
-    }
 }
