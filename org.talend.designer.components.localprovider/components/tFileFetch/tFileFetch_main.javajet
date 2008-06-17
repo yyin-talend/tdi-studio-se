@@ -26,6 +26,11 @@ String username = ElementParameterParser.getValue(node,"__AUTH_USERNAME__");
 String password = ElementParameterParser.getValue(node,"__AUTH_PASSWORD__");
 
 String timeout = ElementParameterParser.getValue(node,"__TIMEOUT__");
+boolean useProxy = ElementParameterParser.getValue(node,"__USE_PROXY__").equals("true");
+String proxyHost = ElementParameterParser.getValue(node,"__PROXY_HOST__");
+String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
+String proxyUser = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
+String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
 %>
 
 <%
@@ -39,6 +44,15 @@ String timeout = ElementParameterParser.getValue(node,"__TIMEOUT__");
     org.apache.commons.httpclient.HttpClient client_<%=cid %> = new org.apache.commons.httpclient.HttpClient();
     client_<%=cid %>.getHttpConnectionManager().getParams().setConnectionTimeout(<%=timeout %>);
     org.apache.commons.httpclient.methods.PostMethod post_<%=cid %> = new org.apache.commons.httpclient.methods.PostMethod(<%=uri %>);		
+
+<%if(useProxy){%>
+
+	client_<%=cid %>.getHostConfiguration().setProxy(<%=proxyHost %>, Integer.parseInt(<%=proxyPort%>));
+	client_<%=cid %>.getState().setProxyCredentials(
+            new org.apache.commons.httpclient.auth.AuthScope(<%=proxyHost %>, Integer.parseInt(<%=proxyPort%>), null),
+            new org.apache.commons.httpclient.UsernamePasswordCredentials(<%=proxyUser %>, <%=proxyPassword %>));
+	
+<%}%>
 
 <%if(needAuth){%>
     org.apache.commons.httpclient.Credentials creds_<%=cid %> = new org.apache.commons.httpclient.UsernamePasswordCredentials(<%=username %>, <%=password %>);
