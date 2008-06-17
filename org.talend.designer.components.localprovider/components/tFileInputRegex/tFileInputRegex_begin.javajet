@@ -88,11 +88,11 @@
         	}
         	
         	matcher<%= cid %> = pattern<%= cid %>.matcher(str<%=cid %>);
-        	if(!matcher<%= cid %>.find()){//line data not matched with given regex parameter
-        		continue;
-        	}
-        	int groupCount<%=cid %>=matcher<%= cid %>.groupCount();
-
+        	int groupCount<%=cid %> = 0;
+        	boolean isMatch<%=cid %> = matcher<%= cid %>.find(); 
+        	if(isMatch<%=cid %>){
+        	groupCount<%=cid %>=matcher<%= cid %>.groupCount();
+			}
 <%
 	List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
 
@@ -147,7 +147,9 @@
 			boolean whetherReject_<%=cid %> = false;
 			<%=firstConnName %> = new <%=conn.getName() %>Struct();
 			try {			
-			
+			if(!isMatch<%=cid %>){//line data not matched with given regex parameter
+        		throw new Exception("Line doesn't match: " + str<%=cid %>);
+        	}
 			<%	
 				List<IMetadataColumn> listColumns = metadata.getListColumns();
 				int sizeListColumns = listColumns.size();
@@ -206,7 +208,12 @@
         <%
         if (dieOnError) {
             %>
-            throw(e);
+            if(isMatch<%=cid %>){
+            	throw(e);
+            }else{
+				 System.err.println(e.getMessage());
+          		continue;
+            }
             <%
         } else {
             if(!rejectConnName.equals("")&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) {
