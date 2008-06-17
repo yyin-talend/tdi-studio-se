@@ -343,7 +343,7 @@ public class ConnectionManager {
             }
         }
         // see bug 0004157: Using specific name for (main) tream
-        if (connType.hasConnectionCategory(IConnectionCategory.FLOW)) {
+        if (canRename && connType.hasConnectionCategory(IConnectionCategory.FLOW)) {
             // This name cannot be keyword in generated code, because it may cause compilation to fail.
             canRename = !KeywordsValidator.isKeyword(connectionName);
         }
