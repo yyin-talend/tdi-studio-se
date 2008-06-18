@@ -897,11 +897,14 @@ public class SQLBuilderRepositoryNodeManager {
                 removeEmfDB.add(emf);
             }
         }
-        if (((SqlBuilderRepositoryObject) oldNode.getObject()).getRepositoryName().equals("Built-In")) {
-            for (MetadataTable metadataTable : removeEmfDB) {
+        // if (((SqlBuilderRepositoryObject) oldNode.getObject()).getRepositoryName().equals("Built-In")) {
+
+        for (MetadataTable metadataTable : removeEmfDB) {
+            if (metadataTable.getLabel() == null || "".equals(metadataTable.getLabel())) {
                 metaFromEMF.remove(metadataTable);
             }
         }
+        // }
         while (!metaFromDB.isEmpty()) {
             MetadataTable db = metaFromDB.remove(0);
             modifyOldOneTableFromEMF(metaFromEMF, iMetadataConnection, db);
