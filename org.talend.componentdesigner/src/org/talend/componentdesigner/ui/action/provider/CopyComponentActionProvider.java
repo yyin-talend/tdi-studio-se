@@ -13,6 +13,7 @@
 package org.talend.componentdesigner.ui.action.provider;
 
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
@@ -32,52 +33,50 @@ import org.talend.componentdesigner.ui.dialog.CopyComponentValidator;
  */
 public class CopyComponentActionProvider extends CommonActionProvider {
 
-	private IAction copyProjectAction;
+    private IAction copyProjectAction;
 
-	private String selectedFolderName;
+    private IPath selectedProjectRelativePath;
 
-	public void init(ICommonActionExtensionSite anExtensionSite) {
+    public void init(ICommonActionExtensionSite anExtensionSite) {
 
-		if (anExtensionSite.getViewSite() instanceof ICommonViewerWorkbenchSite) {
-			copyProjectAction = new CopyComponentAction();
-		}
-	}
+        if (anExtensionSite.getViewSite() instanceof ICommonViewerWorkbenchSite) {
+            copyProjectAction = new CopyComponentAction();
+        }
+    }
 
-	/**
-	 * Adds a submenu to the given menu with the name "New Component".
-	 */
-	public void fillContextMenu(IMenuManager menu) {
-		menu.insertBefore("group.edit", copyProjectAction); //$NON-NLS-1$
-		Object obj = ((TreeSelection) this.getContext().getSelection())
-				.getFirstElement();
-		if (obj instanceof IFolder) {
-			selectedFolderName = ((IFolder) obj).getName();
-		}
-	}
+    /**
+     * Adds a submenu to the given menu with the name "New Component".
+     */
+    public void fillContextMenu(IMenuManager menu) {
+        menu.insertBefore("group.edit", copyProjectAction); //$NON-NLS-1$
+        Object obj = ((TreeSelection) this.getContext().getSelection()).getFirstElement();
+        if (obj instanceof IFolder) {
+            selectedProjectRelativePath = ((IFolder) obj).getProjectRelativePath();
+        }
+    }
 
-	/**
-	 * @author rli
-	 * 
-	 */
-	class CopyComponentAction extends Action {
+    /**
+     * @author rli
+     * 
+     */
+    class CopyComponentAction extends Action {
 
-		public CopyComponentAction() {
-			super(Messages.getString("CopyComponentActionProvider.CopyComponent")); //$NON-NLS-1$
-			setImageDescriptor(ImageLib
-					.getImageDescriptor(ImageLib.COPYCOMPONENT_ACTION));
-		}
+        public CopyComponentAction() {
+            super(Messages.getString("CopyComponentActionProvider.CopyComponent")); //$NON-NLS-1$
+            setImageDescriptor(ImageLib.getImageDescriptor(ImageLib.COPYCOMPONENT_ACTION));
+        }
 
-		/*
-		 * (non-Javadoc) Method declared on IAction.
-		 */
-		public void run() {
-			CopyComponentValidator validator = new CopyComponentValidator();
-			CopyComponentDialog dialog = new CopyComponentDialog(PlatformUI
-					.getWorkbench().getActiveWorkbenchWindow().getShell(),
-					Messages.getString("CopyComponentActionProvider.CopyComponent2"), Messages.getString("CopyComponentActionProvider.InputName", selectedFolderName) //$NON-NLS-1$ //$NON-NLS-2$
-							, selectedFolderName, //$NON-NLS-1$
-					validator);
-			dialog.open();
-		}
-	}
+        /*
+         * (non-Javadoc) Method declared on IAction.
+         */
+        public void run() {
+            CopyComponentValidator validator = new CopyComponentValidator();
+            CopyComponentDialog dialog = new CopyComponentDialog(
+                    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                    Messages.getString("CopyComponentActionProvider.CopyComponent2"), (Messages.getString("CopyComponentActionProvider.InputName") + selectedProjectRelativePath.lastSegment()) //$NON-NLS-1$ //$NON-NLS-2$
+                    , selectedProjectRelativePath, validator);
+            dialog.open();
+        }
+    }
+
 }

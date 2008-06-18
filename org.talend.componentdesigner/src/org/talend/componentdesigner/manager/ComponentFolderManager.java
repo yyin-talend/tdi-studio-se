@@ -181,10 +181,11 @@ public class ComponentFolderManager {
      * @param desComponentFolderName
      * @throws CoreException, IOException
      */
-    public void copyComponent(IProject project, String srcComponentFolderName, String desComponentFolderName)
-            throws CoreException, IOException {
-        IFolder srcFolder = project.getFolder(srcComponentFolderName);
+    public void copyComponent(IProject project, IPath srcComponentFolder, String desComponentFolderName) throws CoreException,
+            IOException {
+        IFolder srcFolder = project.getFolder(srcComponentFolder);
         IFolder desFolder = project.getFolder(desComponentFolderName);
+        String srcComponentFolderName = srcComponentFolder.lastSegment();
         String newDestinationFileName;
         if (!desFolder.exists()) {
             desFolder.create(false, true, null);
