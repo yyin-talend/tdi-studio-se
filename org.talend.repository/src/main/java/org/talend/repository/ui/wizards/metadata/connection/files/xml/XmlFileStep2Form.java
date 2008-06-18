@@ -31,10 +31,6 @@ import org.eclipse.datatools.enablement.oda.xml.util.ui.ATreeNode;
 import org.eclipse.datatools.enablement.oda.xml.util.ui.XPathPopulationUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.FocusListener;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
@@ -129,7 +125,9 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
 
     private static Boolean firstTimeWizardOpened = null;
 
-    private Text limitText;
+    private String xmlFilePath;
+
+    private Group schemaTargetGroup;
 
     /**
      * Constructor to use by RCP Wizard.
@@ -157,16 +155,17 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
         if (xmlXPathLoopDescriptor == null) {
             if (getConnection().getSchema() != null && !getConnection().getSchema().isEmpty()) {
                 xmlXPathLoopDescriptor = (XmlXPathLoopDescriptor) getConnection().getSchema().get(0);
+                xmlFilePath = getConnection().getXmlFilePath();
             } else {
                 xmlXPathLoopDescriptor = ConnectionFactory.eINSTANCE.createXmlXPathLoopDescriptor();
                 getConnection().getSchema().add(xmlXPathLoopDescriptor);
             }
         }
-        if (xmlXPathLoopDescriptor.getLimitBoucle() != null && !xmlXPathLoopDescriptor.getLimitBoucle().equals("")) {
-            limitText.setText(xmlXPathLoopDescriptor.getLimitBoucle().toString());
-        }
+
         loopModel.setXmlXPathLoopDescriptor(xmlXPathLoopDescriptor);
-        xmlXPathLoopDescriptor.setLimitBoucle(Integer.parseInt(limitText.getText()));
+        if (xmlXPathLoopDescriptor.getLimitBoucle() == null) {
+            xmlXPathLoopDescriptor.setLimitBoucle(XmlArray.getRowLimit());
+        }
         fieldsModel.setXmlXPathLoopDescriptor(xmlXPathLoopDescriptor.getSchemaTargets());
         fieldsTableEditorView.getTableViewerCreator().layout();
 
@@ -175,10 +174,12 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
     /**
      * DOC ocarbone Comment method "adaptFormToReadOnly".
      */
+    @Override
     protected void adaptFormToReadOnly() {
         // readOnly = isReadOnly();
     }
 
+    @Override
     protected void addFields() {
 
         // compositeFile Main Fields
@@ -240,15 +241,15 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
 
     private void addGroupSchemaTarget(final Composite mainComposite, final int width, final int height) {
         // Group Schema Viewer
-        final Group group = Form.createGroup(mainComposite, 1, Messages.getString("XmlFileStep1.groupSchemaTarget"), height); //$NON-NLS-1$
+        schemaTargetGroup = Form.createGroup(mainComposite, 1, Messages.getString("XmlFileStep1.groupSchemaTarget"), height); //$NON-NLS-1$
 
         // ///////////////////////////////////////////
         // to correct graphic bug under Linux-GTK when the wizard is opened the first time
         if (WindowSystem.isGTK() && firstTimeWizardOpened.equals(Boolean.TRUE)) {
-            group.addListener(SWT.Paint, new Listener() {
+            schemaTargetGroup.addListener(SWT.Paint, new Listener() {
 
                 public void handleEvent(Event event) {
-                    Point offsetPoint = event.display.map(linker.getBgDrawableComposite(), group, new Point(0, 0));
+                    Point offsetPoint = event.display.map(linker.getBgDrawableComposite(), schemaTargetGroup, new Point(0, 0));
                     linker.setOffset(offsetPoint);
                     linker.drawBackground(event.gc);
                 }
@@ -257,13 +258,13 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
         }
         // ///////////////////////////////////////////
 
-        group.setBackgroundMode(SWT.INHERIT_FORCE);
+        schemaTargetGroup.setBackgroundMode(SWT.INHERIT_FORCE);
 
-        CommandStackForComposite commandStack = new CommandStackForComposite(group);
+        CommandStackForComposite commandStack = new CommandStackForComposite(schemaTargetGroup);
 
         loopModel = new XmlExtractorLoopModel("Xpath loop expression"); //$NON-NLS-1$
 
-        loopTableEditorView = new ExtractionLoopWithXPathEditorView(loopModel, group);
+        loopTableEditorView = new ExtractionLoopWithXPathEditorView(loopModel, schemaTargetGroup);
         loopTableEditorView.getExtendedTableViewer().setCommandStack(commandStack);
         GridData data2 = new GridData(GridData.FILL_HORIZONTAL);
         data2.heightHint = 90;
@@ -289,7 +290,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
 
         // Messages.getString("FileStep3.metadataDescription")
         fieldsModel = new XmlExtractorFieldModel("Fields to extract"); //$NON-NLS-1$
-        fieldsTableEditorView = new ExtractionFieldsWithXPathEditorView(fieldsModel, group);
+        fieldsTableEditorView = new ExtractionFieldsWithXPathEditorView(fieldsModel, schemaTargetGroup);
         fieldsTableEditorView.getExtendedTableViewer().setCommandStack(commandStack);
         final Composite fieldTableEditorComposite = fieldsTableEditorView.getMainComposite();
         fieldTableEditorComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -343,11 +344,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
         GridData labelGd = new GridData(GridData.FILL_HORIZONTAL);
         limitLabel.setLayoutData(labelGd);
 
-        limitText = new Text(preivewButtonPart, SWT.BORDER | SWT.RIGHT);
-        GridData textGd = new GridData(30, SWT.DEFAULT);
-        limitText.setLayoutData(textGd);
         XmlArray.setLimitToDefault();
-        limitText.setText(String.valueOf(XmlArray.getRowLimit()));
         previewInformationLabel = new Label(previewGroup, SWT.NONE);
         previewInformationLabel.setForeground(getDisplay().getSystemColor(SWT.COLOR_BLUE));
 
@@ -420,11 +417,16 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
             return;
         }
 
+        // set row limit
+        if (xmlXPathLoopDescriptor.getLimitBoucle() > 0 && xmlXPathLoopDescriptor.getLimitBoucle() < XmlArray.getRowLimit()) {
+            XmlArray.setRowLimit(xmlXPathLoopDescriptor.getLimitBoucle());
+        }
+
         previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewProgress")); //$NON-NLS-1$ //$NON-NLS-2$
 
         AsynchronousPreviewHandler<CsvArray> previewHandler = null;
         try {
-            previewHandler = (AsynchronousPreviewHandler<CsvArray>) ShadowProcessHelper.createPreviewHandler();
+            previewHandler = ShadowProcessHelper.createPreviewHandler();
         } catch (CoreException e) {
             previewInError(e);
             return;
@@ -476,6 +478,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
     /**
      * Main Fields addControls.
      */
+    @Override
     protected void addFieldsListeners() {
         // add listener to tableMetadata (listen the event of the toolbars)
         fieldsTableEditorView.getExtendedTableModel().addAfterOperationListListener(new IListenableListListener() {
@@ -483,34 +486,6 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
             public void handleEvent(ListenableListEvent event) {
                 checkFieldsValue();
             }
-        });
-        limitText.addModifyListener(new ModifyListener() {
-
-            public void modifyText(ModifyEvent e) {
-                String limitValue = limitText.getText();
-                if (!limitValue.matches("\\d+")) {
-                    limitText.setText(String.valueOf(XmlArray.getRowLimit()));
-                } else {
-                    int limit = Integer.valueOf(limitValue);
-                    XmlArray.setRowLimit(limit);
-                }
-                xmlXPathLoopDescriptor.setLimitBoucle(Integer.parseInt(limitText.getText()));
-            }
-
-        });
-
-        limitText.addFocusListener(new FocusListener() {
-
-            public void focusGained(FocusEvent e) {
-
-            }
-
-            public void focusLost(FocusEvent e) {
-                limitText.setText(String.valueOf(XmlArray.getRowLimit()));
-                xmlXPathLoopDescriptor.setLimitBoucle(Integer.parseInt(limitText.getText()));
-
-            }
-
         });
     }
 
@@ -545,6 +520,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
      * 
      * @return
      */
+    @Override
     protected boolean checkFieldsValue() {
         previewInformationLabel.setText("   " + Messages.getString("FileStep2.settingsIncomplete")); //$NON-NLS-1$ //$NON-NLS-2$
         updateStatus(IStatus.OK, null);
@@ -579,11 +555,13 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
      * 
      * @param cancelButton
      */
+    @Override
     protected void addUtilsButtonListeners() {
 
         // Event PreviewButton
         previewButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(final SelectionEvent e) {
                 if (!previewButton.getText().equals(Messages.getString("FileStep2.wait"))) { //$NON-NLS-1$
                     previewButton.setText(Messages.getString("FileStep2.wait")); //$NON-NLS-1$
@@ -617,6 +595,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
             // Event CancelButton
             cancelButton.addSelectionListener(new SelectionAdapter() {
 
+                @Override
                 public void widgetSelected(final SelectionEvent e) {
                     getShell().close();
                 }
@@ -694,6 +673,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
      * @see org.eclipse.swt.widgets.Control#setVisible(boolean)
      * 
      */
+    @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         if (super.isVisible()) {
@@ -705,6 +685,8 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
             if (verticalBar != null) {
                 verticalBar.setSelection(0);
             }
+            // fix bug: when the xml file is changed, the linker doesn't work.
+            resetStatusIfNecessary();
 
             if (this.linker == null) {
                 this.linker = new XmlToXPathLinker(this.xmlToSchemaSash);
@@ -717,15 +699,48 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
             checkFilePathAndManageIt();
             // Refresh the preview width the adapted rowSeparator
             // If metadata exist, refreshMetadata
-            if (getConnection().getXmlFilePath() != null
-                    && !getConnection().getXmlFilePath().equals("") //$NON-NLS-1$
-                    && getConnection().getSchema() != null && !getConnection().getSchema().isEmpty()
-                    && ((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getAbsoluteXPathQuery() != null
-                    && ((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getSchemaTargets() != null
-                    && !((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getSchemaTargets().isEmpty()) {
-                // refreshPreview();
+            // if (getConnection().getXmlFilePath() != null
+            // && !getConnection().getXmlFilePath().equals("") //$NON-NLS-1$
+            // && getConnection().getSchema() != null && !getConnection().getSchema().isEmpty()
+            // && ((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getAbsoluteXPathQuery() != null
+            // && ((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getSchemaTargets() != null
+            // && !((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getSchemaTargets().isEmpty()) {
+            // refreshPreview();
+            // }
+        }
+    }
+
+    /**
+     * see bug 0004206: bug on the loop limit case in XMLfile source metadata defining
+     */
+    private void resetStatusIfNecessary() {
+        if (xmlFilePath != null && getConnection().getXmlFilePath() != null) {
+            // change xml file
+            if (!xmlFilePath.equals(getConnection().getXmlFilePath())) {
+                // clear command stack
+                CommandStackForComposite commandStack = new CommandStackForComposite(schemaTargetGroup);
+                loopTableEditorView.getExtendedTableViewer().setCommandStack(commandStack);
+                fieldsTableEditorView.getExtendedTableViewer().setCommandStack(commandStack);
+
+                getConnection().getSchema().remove(xmlXPathLoopDescriptor);
+                xmlXPathLoopDescriptor = ConnectionFactory.eINSTANCE.createXmlXPathLoopDescriptor();
+                getConnection().getSchema().add(xmlXPathLoopDescriptor);
+
+                loopModel.setXmlXPathLoopDescriptor(xmlXPathLoopDescriptor);
+                XmlArray.setLimitToDefault();
+                xmlXPathLoopDescriptor.setLimitBoucle(XmlArray.getRowLimit());
+
+                fieldsModel.setXmlXPathLoopDescriptor(xmlXPathLoopDescriptor.getSchemaTargets());
+                fieldsTableEditorView.getTableViewerCreator().layout();
+
+                // reset linker
+                if (linker != null) {
+                    linker.init(treePopulator);
+                }
+                clearPreview();
             }
         }
+        xmlFilePath = getConnection().getXmlFilePath();
     }
 
     /*

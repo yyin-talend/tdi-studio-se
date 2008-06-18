@@ -136,6 +136,11 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
         init();
     }
 
+    public void init(TreePopulator treePopulator) {
+        this.treePopulator = treePopulator;
+        this.nodeRetriever = new XmlNodeRetriever(treePopulator.getFilePath(), getCurrentLoopXPath());
+    }
+
     public String getAbsoluteXPath(TreeItem treeItem) {
         return treePopulator.getAbsoluteXPath(treeItem);
     }
@@ -148,18 +153,18 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
     private void init() {
 
         Display display = getBgDrawableComposite().getDisplay();
-        
-        
+
         initColors(display);
-        
+
         StyleLink unselectedStyleLink = new StyleLink();
         unselectedStyleLink.setDrawableLink(new BezierHorizontalLink(unselectedStyleLink));
         unselectedStyleLink.setForegroundColor(display.getSystemColor(SWT.COLOR_GRAY));
         unselectedStyleLink.setLineWidth(2);
-        
+
         int xOffset = WindowSystem.isGTK() ? 2 : -2;
         int yOffset = WindowSystem.isGTK() ? -1 : 0;
-        unselectedStyleLink.setExtremity2(new ExtremityEastArrow(unselectedStyleLink, -ExtremityEastArrow.WIDTH_ARROW + xOffset, yOffset));
+        unselectedStyleLink.setExtremity2(new ExtremityEastArrow(unselectedStyleLink, -ExtremityEastArrow.WIDTH_ARROW + xOffset,
+                yOffset));
         setUnselectedStyleLink(unselectedStyleLink);
 
         getSelectedRelativeStyleLink();
@@ -171,6 +176,7 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
 
     /**
      * DOC amaumont Comment method "initColors".
+     * 
      * @param display
      */
     private void initColors(Display display) {
@@ -183,9 +189,9 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
                 selectedRelativeLinkColor.dispose();
                 getTree().removeDisposeListener(this);
             }
-            
+
         });
-        
+
     }
 
     /**
@@ -220,7 +226,7 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
                 String taskName = Messages.getString("XmlToXPathLinker.Loop"); //$NON-NLS-1$
                 int totalWork = loopTableItems.length + fieldsTableItems.length;
 
-                monitorWrap.beginTask(taskName, totalWork); //$NON-NLS-1$
+                monitorWrap.beginTask(taskName, totalWork);
 
                 List<XmlXPathLoopDescriptor> xpathLoopDescriptorList = loopTableEditorView.getModel().getBeansList();
                 for (int i = 0; i < loopTableItems.length; i++) {
@@ -403,9 +409,9 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
 
         Rectangle tableBounds = table.getDisplay().map(table, getBgDrawableComposite(), table.getBounds());
         // System.out.println(tableBounds);
-        
-//         System.out.println(getBgDrawableComposite());
-        
+
+        // System.out.println(getBgDrawableComposite());
+
         int offset = WindowSystem.isGTK() ? 0 : 20;
 
         clipBounds.width = tableBounds.x;
@@ -600,8 +606,8 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
                     if (treeItemFromAbsoluteXPath != null) {
                         loopXpathNodes.add(absoluteXPathFromNode);
                         uniqueLoopNodes.add(node);
-                        addLoopLink(treeItemFromAbsoluteXPath, (Object) treeItemFromAbsoluteXPath.getData(), tableItemTarget
-                                .getParent(), (XmlXPathLoopDescriptor) tableItemTarget.getData());
+                        addLoopLink(treeItemFromAbsoluteXPath, treeItemFromAbsoluteXPath.getData(), tableItemTarget.getParent(),
+                                (XmlXPathLoopDescriptor) tableItemTarget.getData());
                         alreadyProcessedXPath.add(absoluteXPathFromNode);
                     }
                 }
@@ -694,8 +700,8 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
                         if (!alreadyProcessedXPath.contains(absoluteXPathFromNode)) {
                             TreeItem treeItemFromAbsoluteXPath = treePopulator.getTreeItem(absoluteXPathFromNode);
                             if (treeItemFromAbsoluteXPath != null) {
-                                addFieldLink(treeItemFromAbsoluteXPath, (Object) treeItemFromAbsoluteXPath.getData(),
-                                        tableItemTarget.getParent(), (SchemaTarget) tableItemTarget.getData());
+                                addFieldLink(treeItemFromAbsoluteXPath, treeItemFromAbsoluteXPath.getData(), tableItemTarget
+                                        .getParent(), (SchemaTarget) tableItemTarget.getData());
                                 alreadyProcessedXPath.add(absoluteXPathFromNode);
                             }
                         }
@@ -746,7 +752,7 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
                     if (!alreadyProcessedXPath.contains(absoluteXPathFromNode)) {
                         TreeItem treeItemFromAbsoluteXPath = treePopulator.getTreeItem(absoluteXPathFromNode);
                         if (treeItemFromAbsoluteXPath != null) {
-                            addFieldLink(treeItemFromAbsoluteXPath, (Object) treeItemFromAbsoluteXPath.getData(), tableItemTarget
+                            addFieldLink(treeItemFromAbsoluteXPath, treeItemFromAbsoluteXPath.getData(), tableItemTarget
                                     .getParent(), (SchemaTarget) tableItemTarget.getData());
                             alreadyProcessedXPath.add(absoluteXPathFromNode);
                         }
@@ -785,7 +791,8 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
         return this.loopTableEditorView;
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @Override
+    @SuppressWarnings("unchecked")
     public void updateLinksStyleAndControlsSelection(Control currentControl) {
 
         boolean selectedControlIsTable = false;
@@ -849,7 +856,7 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
                     styleLink = getSelectedStyleLink();
                     if (selectedControlIsTable) {
 
-                        itemsToSelect.put((TreeItem) otherExtremity.getGraphicalObject(), null);
+                        itemsToSelect.put(otherExtremity.getGraphicalObject(), null);
 
                     } else {
 
@@ -874,14 +881,14 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
 
         }
         if (selectedControlIsTable) {
-            ((Tree) getTree()).setSelection((TreeItem[]) itemsToSelect.keySet().toArray(new TreeItem[0]));
+            (getTree()).setSelection((TreeItem[]) itemsToSelect.keySet().toArray(new TreeItem[0]));
         } else {
             Set<Table> set = itemsToSelect.keySet();
             if (set.size() > 0) {
                 for (Table table : set) {
                     ArrayList<TableItem> tableItemsToSelect = (ArrayList<TableItem>) itemsToSelect.get(table);
                     table.deselectAll();
-                    TableItem[] tableItems = (TableItem[]) tableItemsToSelect.toArray(new TableItem[0]);
+                    TableItem[] tableItems = tableItemsToSelect.toArray(new TableItem[0]);
                     table.setSelection(tableItems);
                 }
             } else {
@@ -920,20 +927,22 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
 
     /**
      * DOC amaumont Comment method "getSelectedRelativeStyleLink".
+     * 
      * @param selectedLoopLinkColor
      */
     private void getSelectedRelativeStyleLink() {
-        
+
         StyleLink selectedStyleLink = new StyleLink();
         selectedStyleLink.setDrawableLink(new BezierHorizontalLink(selectedStyleLink));
         selectedStyleLink.setForegroundColor(selectedRelativeLinkColor);
         selectedStyleLink.setLineWidth(2);
         int xOffset = WindowSystem.isGTK() ? 2 : -2;
         int yOffset = WindowSystem.isGTK() ? -1 : 0;
-        selectedStyleLink.setExtremity2(new ExtremityEastArrow(selectedStyleLink, -ExtremityEastArrow.WIDTH_ARROW + xOffset, yOffset));
+        selectedStyleLink.setExtremity2(new ExtremityEastArrow(selectedStyleLink, -ExtremityEastArrow.WIDTH_ARROW + xOffset,
+                yOffset));
         setSelectedStyleLink(selectedStyleLink);
     }
-    
+
     public String getCurrentLoopXPath() {
         return loopTableEditorView.getExtendedTableModel().getBeansList().get(0).getAbsoluteXPathQuery();
     }
