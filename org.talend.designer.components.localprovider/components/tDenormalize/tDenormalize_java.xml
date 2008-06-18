@@ -9,6 +9,7 @@
     AUTHOR="Talend"
     RELEASE_DATE="20050320A"
     STARTABLE="false"
+    SCHEMA_AUTO_PROPAGATE="false"
   >
     <SIGNATURE></SIGNATURE>
   </HEADER>
@@ -33,63 +34,45 @@
       <DEFAULT/>
     </PARAMETER>
     
-    <PARAMETER
-      NAME="DELIMITER"
-      FIELD="TEXT"
-      REQUIRED="true"
-      NUM_ROW="5"
-    >
-      <DEFAULT>","</DEFAULT>
-    </PARAMETER>    
-
-    <PARAMETER
-      NAME="GROUPS"
+	<PARAMETER
+      NAME="DENORMALIZE_COLUMNS"
       FIELD="TABLE"
       REQUIRED="false"
-      NUM_ROW="8"
+      NUM_ROW="15"
       NB_LINES="5"
     >
       <ITEMS>
-        <ITEM NAME="INPUT_COLUMN" FIELD="PREV_COLUMN_LIST" />
+        <ITEM NAME="INPUT_COLUMN" FIELD="COLUMN_LIST" />
+        <ITEM NAME="DELIMITER" FIELD="TEXT" VALUE='";"'></ITEM>
+        <ITEM NAME="MERGE" FIELD="CHECK" VALUE="false"></ITEM>
       </ITEMS>
     </PARAMETER>
+    
     <PARAMETER
       NAME="NOTE"
       FIELD="LABEL"
       REQUIRED="false"
       SHOW="true"
       NUM_ROW="11"/>
-    
 
   </PARAMETERS>
   
-  <ADVANCED_PARAMETERS>
-  	<PARAMETER
-      NAME="MERGE"
-      FIELD="CHECK"
-      REQUIRED="true"
-      NUM_ROW="6"
-    >
-      <DEFAULT>false</DEFAULT>
-    </PARAMETER>    
-  </ADVANCED_PARAMETERS>
+  <ADVANCED_PARAMETERS></ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
-    <TEMPLATES INPUT="Array" OUTPUT="DenormalizeIn">
+    <TEMPLATES INPUT="DenormalizeOut" OUTPUT="ArrayIn">
 
-      <TEMPLATE NAME="Array" COMPONENT="tArray">
-        <LINK_TO NAME="DenormalizeIn" CTYPE="ROWS_END"/>
+      <TEMPLATE NAME="DenormalizeOut" COMPONENT="tDenormalizeOut">
+        <LINK_TO NAME="ArrayIn" CTYPE="ROWS_END"/>
       </TEMPLATE>
       
-      <TEMPLATE NAME="DenormalizeIn" COMPONENT="tDenormalizeIn"/>
+      <TEMPLATE NAME="ArrayIn" COMPONENT="tArrayIn"/>
       
-      <TEMPLATE_PARAM SOURCE="self.GROUPS" TARGET="DenormalizeIn.GROUPS"/>
-      <TEMPLATE_PARAM SOURCE="self.SCHEMA" TARGET="DenormalizeIn.SCHEMA"/>
-      <TEMPLATE_PARAM SOURCE="self.SCHEMA" TARGET="Array.SCHEMA"/>
-      <TEMPLATE_PARAM SOURCE="self.UNIQUE_NAME" TARGET="Array.DESTINATION"/>
-      <TEMPLATE_PARAM SOURCE="self.UNIQUE_NAME" TARGET="DenormalizeIn.ORIGIN" />
-      <TEMPLATE_PARAM SOURCE="self.DELIMITER" TARGET="DenormalizeIn.DELIMITER" />
-      <TEMPLATE_PARAM SOURCE="self.MERGE" TARGET="DenormalizeIn.MERGE" />
+      <TEMPLATE_PARAM SOURCE="self.DENORMALIZE_COLUMNS" TARGET="DenormalizeOut.DENORMALIZE_COLUMNS"/>
+      <TEMPLATE_PARAM SOURCE="self.SCHEMA" TARGET="DenormalizeOut.SCHEMA"/>
+      <TEMPLATE_PARAM SOURCE="self.SCHEMA" TARGET="ArrayIn.SCHEMA"/>
+      <TEMPLATE_PARAM SOURCE="self.UNIQUE_NAME" TARGET="DenormalizeOut.DESTINATION"/>
+      <TEMPLATE_PARAM SOURCE="self.UNIQUE_NAME" TARGET="ArrayIn.ORIGIN" />
     </TEMPLATES>
   </CODEGENERATION>
 
