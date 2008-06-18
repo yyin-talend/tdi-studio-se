@@ -53,11 +53,17 @@ import org.talend.designer.core.ui.views.properties.IJobSettingsView;
 import org.talend.designer.core.ui.views.properties.MultipleThreadDynamicComposite;
 import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsComposite;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryNode.EProperties;
 
 /**
  * DOC ggu class global comment. Detailled comment
  */
 public class JobSettingsView extends ViewPart implements IJobSettingsView, ISelectionChangedListener {
+
+    /**
+     * 
+     */
+    private static final String SEPARATOR = "->";
 
     public static final String VIEW_NAME = Messages.getString("JobSettingsView.JobSettings"); //$NON-NLS-1$
 
@@ -112,14 +118,12 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                         currentSelectedTab = descriptor;
                         IDynamicProperty propertyComposite = createTabComposite(tabFactory.getTabComposite(), element, descriptor
                                 .getCategory());
-                        currentSelectedTab.setPropertyComposite(propertyComposite);
 
-                    } else if (data instanceof IRepositoryObject) {
+                    } else if (data instanceof IRepositoryObject && currentSelectedTab != descriptor) {
 
                         currentSelectedTab = descriptor;
                         IDynamicProperty propertyComposite = createTabComposite(tabFactory.getTabComposite(), data, descriptor
                                 .getCategory());
-                        currentSelectedTab.setPropertyComposite(propertyComposite);
 
                     }
                     selectedPrimary = false;
@@ -151,6 +155,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
         if (dynamicComposite != null) {
             dynamicComposite.refresh();
         }
+        currentSelectedTab.setPropertyComposite(dynamicComposite);
         return dynamicComposite;
     }
 
@@ -231,14 +236,40 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
 
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.ui.part.ViewPart#setPartName(java.lang.String)
+     */
+    @Override
+    protected void setPartName(String partName) {
+        setPartName(partName, null);
+    }
+
     /**
      * 
      * DOC ggu Comment method "setPartName".
      * 
      * set title
      */
-    public void setPartName(String title, Image icon) {
+    public void setPartName(String typeTitle, Image icon) {
+        String title = null;
+        String type = null;
+
+        if (typeTitle.contains(SEPARATOR)) {
+            String[] tt = typeTitle.split(SEPARATOR);
+            type = tt[0];
+            title = tt[1];
+        } else {
+            title = typeTitle;
+        }
+
         String viewName = VIEW_NAME;
+
+        if (type != null) {
+            viewName = type;
+        }
+
         if (element instanceof IProcess && AbstractProcessProvider.isExtensionProcessForJoblet((IProcess) element)) {
             viewName = VIEW_NAME_JOBLET;
         }
@@ -260,6 +291,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
         } else {
             tabFactory.setTitle(title, icon);
         }
+
         super.setPartName(viewName);
     }
 
@@ -386,12 +418,16 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
 
             if (input instanceof RepositoryNode) {
                 RepositoryNode repositoryNode = (RepositoryNode) input;
+                String type = repositoryNode.getProperties(EProperties.CONTENT_TYPE).toString();
+
                 IRepositoryObject repositoryObject = repositoryNode.getObject();
                 if (repositoryObject == null) {
                     repositoryObject = new EmptyRepositoryObject();
                     return;
                 }
-                setElement(repositoryObject, repositoryObject.getLabel(), ImageProvider.getImage(repositoryNode.getIcon()));
+                String title = repositoryObject.getLabel();
+
+                setElement(repositoryObject, type + SEPARATOR + title, ImageProvider.getImage(repositoryNode.getIcon()));
             }
         }
 

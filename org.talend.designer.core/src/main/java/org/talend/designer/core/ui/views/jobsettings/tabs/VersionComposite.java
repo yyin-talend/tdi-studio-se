@@ -23,9 +23,11 @@ import org.eclipse.jface.viewers.ColumnPixelData;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -64,6 +66,8 @@ import org.talend.repository.ui.views.IRepositoryView;
 public class VersionComposite extends AbstractTabComposite {
 
     private TableViewer tableViewer;
+
+    private ISelection selection;
 
     /**
      * yzhang VersionComposite class global comment. Detailled comment
@@ -283,6 +287,19 @@ public class VersionComposite extends AbstractTabComposite {
                 });
             }
         };
+
+        tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
+             */
+            public void selectionChanged(SelectionChangedEvent event) {
+                VersionComposite.this.selection = event.getSelection();
+            }
+        });
+
         column1.addListener(SWT.Selection, sortListener);
         column2.addListener(SWT.Selection, sortListener);
         column3.addListener(SWT.Selection, sortListener);
@@ -343,8 +360,7 @@ public class VersionComposite extends AbstractTabComposite {
      * @return
      */
     public ISelection getSelection() {
-        refresh();
-        return this.tableViewer.getSelection();
+        return this.selection;
     }
 
 }
