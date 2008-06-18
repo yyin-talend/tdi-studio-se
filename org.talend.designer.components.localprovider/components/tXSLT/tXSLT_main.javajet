@@ -31,10 +31,10 @@ String outputFile = ElementParameterParser.getValue(node, "__OUTPUT_FILE__");
 	javax.xml.transform.stream.StreamSource xmlSource<%=cid%> = new javax.xml.transform.stream.StreamSource(new java.io.File(<%=xmlFile%>));
 	t<%=cid%>.transform(xmlSource<%=cid%>, new javax.xml.transform.stream.StreamResult(new java.io.File(<%=outputFile%>)));
 		
-	if(<%=outputFile%>.indexOf("/") != -1)
+	if((<%=outputFile%>).indexOf("/") != -1)
 	{
-		globalMap.put("<%=cid %>_OUTPUT_FILEPATH", <%=outputFile%>.substring(0,<%=outputFile%>.lastIndexOf("/")));
-		globalMap.put("<%=cid %>_OUTPUT_FILENAME", <%=outputFile%>.substring(<%=outputFile%>.lastIndexOf("/") + 1));
+		globalMap.put("<%=cid %>_OUTPUT_FILEPATH", (<%=outputFile%>).substring(0,(<%=outputFile%>).lastIndexOf("/")));
+		globalMap.put("<%=cid %>_OUTPUT_FILENAME", (<%=outputFile%>).substring((<%=outputFile%>).lastIndexOf("/") + 1));
 	}
 	else
 	{
