@@ -60,7 +60,8 @@ public class RepositoryPreferenceStore implements IPersistentPreferenceStore {
 
         initialDocStatusList = StatusHelper.flat(factory.getDocumentationStatus());
         docStatusList = initialDocStatusList;
-        defaultDocumentationStatusList = "1ER 1er lecture;2EM 2eme lecture;VAL validate"; //$NON-NLS-1$
+        // defaultDocumentationStatusList = "1ER 1er lecture;2EM 2eme lecture;VAL validate"; //$NON-NLS-1$
+        defaultDocumentationStatusList = "UCK unchecked;CHK checked;VAL validated"; //$NON-NLS-1$
     }
 
     public void setValue(String name, String value) {

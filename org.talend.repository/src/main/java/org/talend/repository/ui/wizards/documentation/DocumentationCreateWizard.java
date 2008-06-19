@@ -57,6 +57,8 @@ public class DocumentationCreateWizard extends RepositoryWizard implements IDocu
 
     private Property property;
 
+    private DocumentationItem documentationItem;
+
     /**
      * Constructs a new DocumentationCreateWizard.
      * 
@@ -71,10 +73,20 @@ public class DocumentationCreateWizard extends RepositoryWizard implements IDocu
         setNeedsProgressMonitor(true);
 
         property = PropertiesFactory.eINSTANCE.createProperty();
-        property.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                .getUser());
+        property.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getUser());
         property.setVersion(VersionUtils.DEFAULT_VERSION);
-        property.setStatusCode(""); //$NON-NLS-1$        
+        property.setStatusCode(""); //$NON-NLS-1$  
+
+        this.property = PropertiesFactory.eINSTANCE.createProperty();
+        this.property.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                .getUser());
+        this.property.setVersion(VersionUtils.DEFAULT_VERSION);
+        this.property.setStatusCode(""); //$NON-NLS-1$
+
+        documentationItem = PropertiesFactory.eINSTANCE.createDocumentationItem();
+        documentationItem.setProperty(property);
+
+        setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.PROCESS_WIZ));
     }
 
     /*
