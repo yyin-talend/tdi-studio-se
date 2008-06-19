@@ -303,10 +303,8 @@ public class CLASS {
                             }
                             createSQL.append(suffix);
                         }
-                        createSQL.append(setDefaultValue(column.getColumn().getDefault(), dataType));                        
-                        if (!column.getColumn().isNullable()) {
-                            createSQL.append(" not null ");
-                        }                        
+                        createSQL.append(setDefaultValue(column.getColumn().getDefault(), dataType));
+                        createSQL.append(setNullable(column.getColumn().isNullable()));
                         if (count == columnList.size() - 1 && pkList.size() == 0) {
                             ending = "";
                         }
@@ -329,6 +327,13 @@ public class CLASS {
             }
             createSQL.append(")");
             return createSQL.toString();
+        }
+        protected String setNullable(boolean nullable) {
+            if(!nullable) {
+                return " not null ";
+            } else {
+                return "";
+            }
         }
         private String setDefaultValue(String defaultValue, String columnType) {
             if (defaultValue == null || defaultValue.equals("\"\"") || defaultValue.equals("")) {
@@ -1150,6 +1155,13 @@ public class CLASS {
         protected String getRProtectedChar() {
             return "";
         }
+        protected String setNullable(boolean nullable) {
+            if(!nullable) {
+                return " not null ";
+            } else {
+                return " null ";
+            }
+        }        
         public String getUpdateBulkSQL(List<IMetadataColumn> columnList) {
             StringBuilder updateBulkSQL = new StringBuilder();
             StringBuilder updateSetStmt = new StringBuilder();

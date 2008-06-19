@@ -140,10 +140,13 @@ if(columnList != null && columnList.size() > 0) {
     String selectColumnString = "";
     String columnNameString = "";    
     List<String> joinClause = new ArrayList<String>();
+    List<String> updateJoinClause = new ArrayList<String>();
     for(Map<String, String> sk : sourceKeys) {
         joinClause.add(" d." + sk.get("NAME") + " = t." + sk.get("NAME"));
+        updateJoinClause.add("\" + tableName_" + cid + " + \"." + sk.get("NAME") + " = t." + sk.get("NAME"));
     }
-    String joinClauseString = StringUtils.join(joinClause.toArray(), " AND ");    
+    String joinClauseString = StringUtils.join(joinClause.toArray(), " AND ");
+    String updateJoinClauseString = StringUtils.join(updateJoinClause.toArray(), " AND ");
     if(isEnableType1) {
         List<String> columnNames = new ArrayList<String>();
         List<String> setColumns = new ArrayList<String>();
@@ -153,15 +156,15 @@ if(columnList != null && columnList.size() > 0) {
         }
         for(Map<String, String> type1Attribute : type1Attributes) {
             columnNames.add(type1Attribute.get("NAME"));
-            setColumns.add(" d." + type1Attribute.get("NAME") + " = t." + type1Attribute.get("NAME"));
-            whereClause.add(" d." + type1Attribute.get("NAME") + " <> t." + type1Attribute.get("NAME"));            
+            setColumns.add(type1Attribute.get("NAME") + " = t." + type1Attribute.get("NAME"));
+            whereClause.add("\" + tableName_" + cid + " + \"." + type1Attribute.get("NAME") + " <> t." + type1Attribute.get("NAME"));            
         }
         selectColumnString = StringUtils.join(columnNames.toArray(), ", t.");
         columnNameString = StringUtils.join(columnNames.toArray(), ", ");    
         String setColumnsString = StringUtils.join(setColumns.toArray(), ", ");    
         String whereClauseString = StringUtils.join(whereClause.toArray(), " OR ");
         %>
-        String updateForType1_<%=cid%> = "UPDATE " + tableName_<%=cid%> + " d SET <%=setColumnsString%> FROM " + sourceTable_<%=cid%> + " t WHERE <%=joinClauseString%> AND (<%=whereClauseString%>)";
+        String updateForType1_<%=cid%> = "UPDATE " + tableName_<%=cid%> + " SET <%=setColumnsString%> FROM " + sourceTable_<%=cid%> + " t WHERE <%=updateJoinClauseString%> AND (<%=whereClauseString%>)";
         java.sql.Statement stmtType1Update_<%=cid%> = conn_<%=cid%>.createStatement();
         stmtType1Update_<%=cid%>.executeUpdate(updateForType1_<%=cid%>);
         stmtType1Update_<%=cid%>.close();
@@ -180,12 +183,15 @@ if(columnList != null && columnList.size() > 0) {
     String versionField = ElementParameterParser.getValue(node,"__L2_VERSION_FIELD__");    
     if(isEnableType2) {
         List<String> whereClause = new ArrayList<String>();
+        List<String> updateWhereClause = new ArrayList<String>();
         for (Map<String, String> type2Attribute : type2Attributes) {
             whereClause.add(" d." + type2Attribute.get("NAME") + " <> t." + type2Attribute.get("NAME"));
+            updateWhereClause.add("\" + tableName_" + cid + " + \"." + type2Attribute.get("NAME") + " <> t." + type2Attribute.get("NAME"));
         }
         String whereClauseString = StringUtils.join(whereClause.toArray(), " OR ");
+        String updateWhereClauseString = StringUtils.join(updateWhereClause.toArray(), " OR ");
         %>
-        String updateForType2_<%=cid%> = "UPDATE " + tableName_<%=cid%> + " d SET <%=endDateField%> = '" + (new java.sql.Date((Long)start_Hash.get("<%=cid %>"))) + "'<%if(isEnableActive) {%>, <%=activeField%> = 0<%}%> FROM " + sourceTable_<%=cid%> + " t WHERE <%=joinClauseString%> AND (<%=whereClauseString%>) AND d.<%=endDateField%> IS NULL";
+        String updateForType2_<%=cid%> = "UPDATE " + tableName_<%=cid%> + " SET <%=endDateField%> = '" + (new java.sql.Date((Long)start_Hash.get("<%=cid %>"))) + "'<%if(isEnableActive) {%>, <%=activeField%> = 0<%}%> FROM " + sourceTable_<%=cid%> + " t WHERE <%=updateJoinClauseString%> AND (<%=updateWhereClauseString%>) AND " + tableName_<%=cid%> + ".<%=endDateField%> IS NULL";
         java.sql.Statement stmtType2Update_<%=cid%> = conn_<%=cid%>.createStatement();
         stmtType2Update_<%=cid%>.executeUpdate(updateForType2_<%=cid%>);
         stmtType2Update_<%=cid%>.close();
