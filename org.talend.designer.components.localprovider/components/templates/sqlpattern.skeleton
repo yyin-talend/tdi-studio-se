@@ -338,6 +338,85 @@ public class CLASS {
                          */
                         if (line.endsWith(";")) {// end of SQL QUERY found
                             sqlQueryBuilder.append("\"");
+                            
+                            // //////////////////////////////////////////////////
+                            // //special code for tELTTeradataAggregate begin////
+                            // //////////////////////////////////////////////////
+                            position = 0;
+                            position = sqlQueryBuilder.indexOf("</", position) + 2;
+                            while (position > 0 && position < sqlQueryBuilder.length()) {
+                                int indexOfEnd = sqlQueryBuilder.indexOf("/>", position);
+                                if ((indexOfEnd > 0) && ((indexOfEnd + 2) < sqlQueryBuilder.length())) {
+                                    /*
+                                     * all components' parameter name should match "[0-9A-Z\\-_]+"
+                                     */
+                                    String paramName = sqlQueryBuilder.substring(position, indexOfEnd);
+                                    if (paramName.matches("[0-9A-Z\\-_]+")) {
+                                        String realValue = "";
+                                        if (paramName.equals("ELT_METADATA_SHEMA")) {
+                                            // ......
+                                            // get the SCHEMA value
+                                            List<IMetadataColumn> schemaValue = getColumnList(node);
+
+                                            int size = 0;
+                                            if (schemaValue != null) {
+                                                size = schemaValue.size();
+                                            }
+
+                                            for (int ii = 0; ii < size; ii++) {
+                                                IMetadataColumn column = schemaValue.get(ii);
+                                                if (ii != 0) {
+                                                    realValue += ", ";
+                                                }
+                                                realValue += column.getLabel();
+                                            }
+
+                                        } else if (paramName.equals("OPERATION")) {
+                                            // get the OPERATION table value
+                                            List<Map<String, String>> operationTableValue = (List<Map<String, String>>) ElementParameterParser
+                                                    .getObjectValue(node, "__OPERATION__");
+
+                                            for (int ii = 0; ii < operationTableValue.size(); ii++) {
+                                                Map<String, String> operationMap = operationTableValue.get(ii);
+                                                if (ii != 0) {
+                                                    realValue += ", ";
+                                                }
+                                                realValue += (operationMap.get("FUNCTION") + "("
+                                                        + operationMap.get("INPUT_COLUMN") + ")");
+                                            }
+
+                                        } else if (paramName.equals("GROUPBY")) {
+                                            // get the OPERATION table value
+                                            List<Map<String, String>> groupbyTableValue = (List<Map<String, String>>) ElementParameterParser
+                                                    .getObjectValue(node, "__GROUPBY__");
+
+                                            for (int ii = 0; ii < groupbyTableValue.size(); ii++) {
+                                                Map<String, String> operationMap = groupbyTableValue.get(ii);
+                                                if (ii != 0) {
+                                                    realValue += ", ";
+                                                }
+                                                realValue += operationMap.get("INPUT_COLUMN");
+                                            }
+                                        } else {
+                                            // get the param value
+                                            realValue = ElementParameterParser.getValue(node, "__" + paramName + "__");
+                                        }
+
+                                        int formerLength = paramName.length() + 4;
+                                        int newLength = realValue.length();
+                                        sqlQueryBuilder.replace(position - 2, indexOfEnd + 2, realValue);
+                                        position = (indexOfEnd + 2) + (newLength - formerLength);
+                                    }
+                                    position = sqlQueryBuilder.indexOf("</", position) + 2;
+
+                                } else {
+                                    break;
+                                }
+                            }
+                            // //////////////////////////////////////////////////
+                            // //special code for tELTTeradataAggregate end//////
+                            // //////////////////////////////////////////////////
+                            
                             codeStringBuilder.append("stmt_").append(cid).append(".addBatch(").append(sqlQueryBuilder.toString())
                                     .append(");\n");
                             sqlQueryBuilder.delete(0, sqlQueryBuilder.length()).append("\"");
