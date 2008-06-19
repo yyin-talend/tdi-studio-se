@@ -256,7 +256,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
         String title = null;
         String type = null;
 
-        if (typeTitle.contains(SEPARATOR)) {
+        if (typeTitle != null && typeTitle.contains(SEPARATOR)) {
             String[] tt = typeTitle.split(SEPARATOR);
             type = tt[0];
             title = tt[1];
