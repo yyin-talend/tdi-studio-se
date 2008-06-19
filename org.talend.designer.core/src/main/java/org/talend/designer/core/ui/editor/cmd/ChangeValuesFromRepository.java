@@ -395,7 +395,15 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         if (query != null) {
             IElementParameter memoSqlParam = elem.getElementParameterFromField(EParameterFieldType.MEMO_SQL, queryParam
                     .getCategory());
-            memoSqlParam.setValue(TalendTextUtils.addSQLQuotes(query.getValue()));
+            String queryStr = query.getValue();
+            if (queryStr == null) {
+                queryStr = "";
+            }
+            queryStr = queryStr.trim();
+            if (!queryStr.startsWith(TalendTextUtils.getQuoteChar())) { // is expression
+                queryStr = TalendTextUtils.addSQLQuotes(queryStr);
+            }
+            memoSqlParam.setValue(queryStr);
             memoSqlParam.setRepositoryValueUsed(true);
         }
     }

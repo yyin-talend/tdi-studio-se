@@ -72,7 +72,15 @@ public class RepositoryChangeQueryCommand extends Command {
             for (IElementParameter param : (List<IElementParameter>) elem.getElementParameters()) {
                 if (param.getField() == EParameterFieldType.MEMO_SQL) {
                     oldValue = elem.getPropertyValue(param.getName());
-                    elem.setPropertyValue(param.getName(), TalendTextUtils.addSQLQuotes(query.getValue()));
+                    String queryStr = query.getValue();
+                    if (queryStr == null) {
+                        queryStr = "";
+                    }
+                    queryStr = queryStr.trim();
+                    if (!queryStr.startsWith(TalendTextUtils.getQuoteChar())) { // is expression
+                        queryStr = TalendTextUtils.addSQLQuotes(queryStr);
+                    }
+                    elem.setPropertyValue(param.getName(), queryStr);
                     param.setRepositoryValueUsed(true);
                     param.setReadOnly(true);
                 }
