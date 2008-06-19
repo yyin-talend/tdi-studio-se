@@ -39,16 +39,36 @@ COMPATIBILITY="ALL"
     <PARAMETER NAME="USERNAME" FIELD="TEXT" REQUIRED="true" NUM_ROW="2">
       <DEFAULT>"anonymous"</DEFAULT>
     </PARAMETER>
-    <PARAMETER NAME="PASSWORD" FIELD="TEXT" REQUIRED="true" NUM_ROW="2">
+    <PARAMETER NAME="PASSWORD" FIELD="TEXT" REQUIRED="true" NUM_ROW="2"
+    NOT_SHOW_IF="(SFTP=='true') AND (AUTH_METHOD == 'PUBLICKEY')">
       <DEFAULT>"suomynona"</DEFAULT>
     </PARAMETER>
-    <PARAMETER NAME="LOCALDIR" FIELD="DIRECTORY" REQUIRED="false" NUM_ROW="3">
+    
+    <PARAMETER
+      NAME="PRIVATEKEY"
+      FIELD="FILE"
+      NUM_ROW="3"
+      SHOW_IF="(SFTP=='true') AND (AUTH_METHOD == 'PUBLICKEY')"
+    >
+      <DEFAULT>"/.ssh/id_dsa"</DEFAULT>
+    </PARAMETER>
+
+	<PARAMETER
+      NAME="PASSPHRASE"
+      FIELD="TEXT"
+      NUM_ROW="4"
+      SHOW_IF="(SFTP=='true') AND (AUTH_METHOD == 'PUBLICKEY')"
+    >
+      <DEFAULT>"secret"</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER NAME="LOCALDIR" FIELD="DIRECTORY" REQUIRED="false" NUM_ROW="5">
       <DEFAULT>"."</DEFAULT>
     </PARAMETER>
-    <PARAMETER NAME="REMOTEDIR" FIELD="TEXT" REQUIRED="false" NUM_ROW="4">
+    <PARAMETER NAME="REMOTEDIR" FIELD="TEXT" REQUIRED="false" NUM_ROW="6">
       <DEFAULT>"."</DEFAULT>
     </PARAMETER>
-    <PARAMETER NAME="MODE" FIELD="CLOSED_LIST" NUM_ROW="5" NOT_SHOW_IF="(SFTP=='true')">
+    <PARAMETER NAME="MODE" FIELD="CLOSED_LIST" NUM_ROW="7" NOT_SHOW_IF="(SFTP=='true')">
       <ITEMS DEFAULT="ascii">
      	<ITEM NAME="ASCII"  VALUE="ascii" />
         <ITEM NAME="BINARY"  VALUE="binary" />        
@@ -57,7 +77,7 @@ COMPATIBILITY="ALL"
     <PARAMETER 
     	NAME="OVERWRITE" 
     	FIELD="CLOSED_LIST" 
-    	NUM_ROW="5" 
+    	NUM_ROW="8" 
     	NOT_SHOW_IF="(SFTP=='true')">
     	<ITEMS DEFAULT="never">
      	<ITEM NAME="NEVER" VALUE="never"/>
@@ -68,27 +88,38 @@ COMPATIBILITY="ALL"
     <PARAMETER 
     	NAME="SFTPOVERWRITE" 
     	FIELD="CLOSED_LIST" 
-    	NUM_ROW="5" 
+    	NUM_ROW="8" 
     	SHOW_IF="(SFTP=='true')">
     	<ITEMS DEFAULT="overwrite">
      	<ITEM NAME="OVERWRITE" VALUE="overwrite"/>    
         <ITEM NAME="RESUME"  VALUE="resume"/>  
         <ITEM NAME="APPEND"  VALUE="append"/>      
       </ITEMS>
-    </PARAMETER> 
+    </PARAMETER>   
+    <PARAMETER
+      NAME="AUTH_METHOD"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="8"
+      SHOW_IF="(SFTP=='true')"
+    >
+      <ITEMS DEFAULT="PASSWORD">
+        <ITEM NAME="PUBLICKEY"  VALUE="PUBLICKEY"/>
+        <ITEM NAME="PASSWORD"   VALUE="PASSWORD"/>
+      </ITEMS>
+    </PARAMETER>
     
-    <PARAMETER NAME="FILES" FIELD="TABLE" REQUIRED="false" NUM_ROW="6" NB_LINES="5">
+    <PARAMETER NAME="FILES" FIELD="TABLE" REQUIRED="false" NUM_ROW="9" NB_LINES="5">
       <ITEMS>
         <ITEM NAME="FILEMASK" />
       </ITEMS>
     </PARAMETER>
-    <PARAMETER NAME="SFTP" FIELD="CHECK" REQUIRED="true" NUM_ROW="5">
+    <PARAMETER NAME="SFTP" FIELD="CHECK" REQUIRED="true" NUM_ROW="8">
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
     <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
-      NUM_ROW="7"
+      NUM_ROW="10"
       SHOW_IF="(SFTP=='true')"
       REQUIRED="true">
        <DEFAULT>"ISO-8859-15"</DEFAULT>

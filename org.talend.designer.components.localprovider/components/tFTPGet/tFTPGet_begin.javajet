@@ -21,6 +21,9 @@
 	String remotedir = ElementParameterParser.getValue(node, "__REMOTEDIR__");
 	String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
 	boolean sftp = ElementParameterParser.getValue(node, "__SFTP__").equals("true");
+	String authMethod = ElementParameterParser.getValue(node,"__AUTH_METHOD__");
+	String privateKey = ElementParameterParser.getValue(node,"__PRIVATEKEY__");
+	String passPhrase = ElementParameterParser.getValue(node,"__PASSPHRASE__");
 	List<Map<String, String>> files = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FILES__");	
 	String cid = node.getUniqueName();
 %>
@@ -29,7 +32,9 @@
 	if(sftp){ // *** sftp *** //
 %>	
     class MyUserInfo implements com.jcraft.jsch.UserInfo, com.jcraft.jsch.UIKeyboardInteractive {
-        public String getPassphrase() { return null; } 
+    
+    	String passphrase_<%=cid %> = <%=passPhrase %>;
+        public String getPassphrase() { return passphrase_<%=cid %>; }
         
         public String getPassword() { return null; } 
         
@@ -141,8 +146,17 @@
     }
     
     com.jcraft.jsch.JSch jsch_<%=cid%>=new com.jcraft.jsch.JSch(); 
-    com.jcraft.jsch.Session session_<%=cid%>=jsch_<%=cid%>.getSession(<%=user%>, <%=host%>, <%=port%>); 
+    
+    <%if(authMethod.equals("PUBLICKEY")){%>
+    jsch_<%=cid%>.addIdentity(<%=privateKey %>, defaultUserInfo_<%=cid%>.getPassphrase());
+    <%}%>
+    
+    com.jcraft.jsch.Session session_<%=cid%>=jsch_<%=cid%>.getSession(<%=user%>, <%=host%>, <%=port%>);
+    
+    <%if(authMethod.equals("PASSWORD")){%> 
 	session_<%=cid%>.setPassword(<%=pass%>); 
+    <%}%>
+    
     session_<%=cid%>.setUserInfo(defaultUserInfo_<%=cid%>); 
     session_<%=cid%>.connect(); 
     
