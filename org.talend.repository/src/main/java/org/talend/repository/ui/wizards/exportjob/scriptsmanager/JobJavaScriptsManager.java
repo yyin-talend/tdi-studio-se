@@ -385,7 +385,6 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             return list;
         }
         String projectName = getCurrentProjectName();
-        projectName = projectName.replaceAll("-", "_");
         String jobFolderName = JavaResourcesHelper.getJobFolderName(jobName, jobVersion);
 
         try {
