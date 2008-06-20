@@ -339,11 +339,6 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
         previewButton.setText(Messages.getString("FileStep2.refreshPreview")); //$NON-NLS-1$
         previewButton.setSize(WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL);
 
-        Label limitLabel = new Label(preivewButtonPart, SWT.RIGHT);
-        limitLabel.setText(Messages.getString("XmlFileStep2Form.limitOfRow")); //$NON-NLS-1$
-        GridData labelGd = new GridData(GridData.FILL_HORIZONTAL);
-        limitLabel.setLayoutData(labelGd);
-
         XmlArray.setLimitToDefault();
         previewInformationLabel = new Label(previewGroup, SWT.NONE);
         previewInformationLabel.setForeground(getDisplay().getSystemColor(SWT.COLOR_BLUE));
@@ -737,7 +732,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
                 if (linker != null) {
                     linker.init(treePopulator);
                 }
-                clearPreview();
+                xmlFilePreview.removePreviewContent();
             }
         }
         xmlFilePath = getConnection().getXmlFilePath();
