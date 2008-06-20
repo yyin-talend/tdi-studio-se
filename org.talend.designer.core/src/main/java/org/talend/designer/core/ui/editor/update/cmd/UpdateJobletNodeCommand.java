@@ -14,6 +14,7 @@ package org.talend.designer.core.ui.editor.update.cmd;
 
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,103 +64,165 @@ public class UpdateJobletNodeCommand extends Command {
             return;
         }
         if (job instanceof Process) {
+
             Process process = (Process) job;
             Object parameter = result.getParameter();
-            if (!(parameter instanceof PropertyChangeEvent)) {
-                return;
-            }
-            PropertyChangeEvent evt = (PropertyChangeEvent) parameter;
 
-            String propertyName = evt.getPropertyName();
-            Object updateObject = result.getUpdateObject();
-
-            List<INode> jobletNodes = null;
-            if (updateObject instanceof List) {
-                jobletNodes = (List<INode>) updateObject;
-            }
-
-            if (propertyName.equals(ComponentUtilities.NORMAL)) {
-                for (Node node : (List<Node>) process.getGraphicalNodes()) {
-                    /*
-                     * if jobletNodes==null, will reload all component. Or, olny reload the fixed node.
-                     */
-                    if (jobletNodes != null && !jobletNodes.contains(node)) {
-                        continue;
+            // update property change events
+            if (parameter instanceof PropertyChangeEvent) {
+                PropertyChangeEvent evt = (PropertyChangeEvent) parameter;
+                updatePropertyChangeEvents(process, evt);
+            } else {
+                // 
+                switch (result.getUpdateType()) {
+                case JOBLET_RENAMED:
+                    if (!(parameter instanceof List)) {
+                        return;
                     }
-
-                    IComponent newComponent = ComponentsFactoryProvider.getInstance().get(node.getComponent().getName());
-                    if (newComponent == null) {
-                        continue;
+                    List<Object> params = (List<Object>) parameter;
+                    if (params.size() != 3) {
+                        return;
                     }
-                    Map<String, Object> parameters = new HashMap<String, Object>();
+                    final String oldName = (String) params.get(1);
+                    final String newName = (String) params.get(2);
 
-                    if (node.getComponent().getComponentType() != EComponentType.JOBLET) {
-                        if (node.getExternalData() != null) {
-                            parameters.put(INode.RELOAD_PARAMETER_EXTERNAL_BYTES_DATA, node.getExternalBytesData());
-                        }
-                        parameters.put(INode.RELOAD_PARAMETER_METADATA_LIST, node.getMetadataList());
-                        parameters.put(INode.RELOAD_PARAMETER_ELEMENT_PARAMETERS, node.getElementParameters());
-                    } else {
-                        parameters.put(INode.RELOAD_PARAMETER_ELEMENT_PARAMETERS, node.getElementParameters());
-                    }
-
-                    parameters.put(INode.RELOAD_PARAMETER_CONNECTORS, node.getListConnector());
-
-                    node.reloadComponent(newComponent, parameters);
+                    updateRenaming(process, oldName, newName);
+                    break;
+                case RELOAD:
+                    // keep event
+                    break;
+                case JOBLET_SCHEMA:
+                    updateSchema(process, (Node) result.getUpdateObject());
+                    break;
+                default:
                 }
-
-                for (Node node : (List<Node>) process.getGraphicalNodes()) {
-                    node.checkAndRefreshNode();
-                }
-
-            } else if (propertyName.equals(ComponentUtilities.JOBLET_NAME_CHANGED)) {
-                String oldName = (String) evt.getOldValue();
-                String newName = (String) evt.getNewValue();
-                IComponent newComponent = ComponentsFactoryProvider.getInstance().get(newName);
-                if (newComponent == null) {
-                    return;
-                }
-
-                for (Node node : (List<Node>) process.getGraphicalNodes()) {
-                    if (node.getComponent().getName().equals(oldName) || node.getLabel().contains(oldName)) {
-                        Map<String, Object> parameters = new HashMap<String, Object>();
-                        node.reloadComponent(newComponent, parameters);
-
-                    }
-                }
-
-            } else if (propertyName.equals(ComponentUtilities.JOBLET_SCHEMA_CHANGED)) {
-                // updateGraphicalNodesSchema(process, evt);
-                INode sourceNode = (INode) evt.getSource();
-                String componentName = sourceNode.getComponent().getName();
-                IComponent newComponent = ComponentsFactoryProvider.getInstance().get(componentName);
-                if (newComponent == null) {
-                    return;
-                }
-                List<Node> nodesToUpdate = new ArrayList<Node>();
-                for (Node node : (List<Node>) process.getGraphicalNodes()) {
-                    if (node.getComponent().getName().equals(componentName)) {
-                        nodesToUpdate.add(node);
-                    }
-                }
-                for (Node node : nodesToUpdate) {
-                    Map<String, Object> parameters = new HashMap<String, Object>();
-
-                    // if (node.getComponent().getComponentType() != EComponentType.JOBLET) {
-                    // parameters.put(INode.RELOAD_PARAMETER_METADATA_LIST, node.getMetadataList());
-                    parameters.put(INode.RELOAD_PARAMETER_ELEMENT_PARAMETERS, node.getElementParameters());
-                    // } else {
-                    // parameters.put(INode.RELOAD_NEW, true);
-                    // }
-
-                    parameters.put(INode.RELOAD_PARAMETER_CONNECTORS, node.getListConnector());
-
-                    node.reloadComponent(newComponent, parameters);
-                }
-
-                ((Process) sourceNode.getProcess()).checkProcess();
             }
         }
+    }
+
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    private void updateRenaming(Process process, final String oldName, final String newName) {
+        if (process == null || oldName == null || newName == null) {
+            return;
+        }
+        IComponent newComponent = ComponentsFactoryProvider.getInstance().get(newName);
+        if (newComponent == null) {
+            return;
+        }
+
+        for (Node node : (List<Node>) process.getGraphicalNodes()) {
+            if (node.getComponent().getName().equals(newName) || node.getConnectionName().equals(oldName)) {
+                reloadNode(node, newComponent);
+            }
+        }
+        process.checkProcess();
+    }
+
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    private void updateSchema(Process process, Node node) {
+        if (process == null || node == null) {
+            return;
+        }
+
+        String componentName = node.getComponent().getName();
+        IComponent newComponent = ComponentsFactoryProvider.getInstance().get(componentName);
+        if (newComponent == null) {
+            return;
+        }
+        reloadNode(node, newComponent);
+
+        process.checkProcess();
+    }
+
+    private void reloadNode(Node node, IComponent newComponent) {
+        if (node == null || newComponent == null) {
+            return;
+        }
+        Map<String, Object> parameters = createParameters(node);
+        if (!parameters.isEmpty()) {
+            node.reloadComponent(newComponent, parameters);
+        }
+    }
+
+    private Map<String, Object> createParameters(Node node) {
+        if (node == null) {
+            Collections.emptyMap();
+        }
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        if (node.getComponent().getComponentType() != EComponentType.JOBLET) {
+            if (node.getExternalData() != null) {
+                parameters.put(INode.RELOAD_PARAMETER_EXTERNAL_BYTES_DATA, node.getExternalBytesData());
+            }
+            parameters.put(INode.RELOAD_PARAMETER_METADATA_LIST, node.getMetadataList());
+        }
+        parameters.put(INode.RELOAD_PARAMETER_ELEMENT_PARAMETERS, node.getElementParameters());
+        parameters.put(INode.RELOAD_PARAMETER_CONNECTORS, node.getListConnector());
+
+        return parameters;
+    }
+
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    private void updatePropertyChangeEvents(Process process, PropertyChangeEvent evt) {
+        if (process == null || evt == null) {
+            return;
+        }
+        String propertyName = evt.getPropertyName();
+        Object updateObject = result.getUpdateObject();
+
+        List<INode> jobletNodes = null;
+        if (updateObject instanceof List) {
+            jobletNodes = new ArrayList((List<INode>) updateObject);
+        }
+
+        if (propertyName.equals(ComponentUtilities.NORMAL)) {
+            for (Node node : (List<Node>) process.getGraphicalNodes()) {
+                /*
+                 * if jobletNodes==null, will reload all component. Or, olny reload the fixed node.
+                 */
+                if (jobletNodes != null && !jobletNodes.contains(node)) {
+                    continue;
+                }
+
+                IComponent newComponent = ComponentsFactoryProvider.getInstance().get(node.getComponent().getName());
+                if (newComponent == null) {
+                    continue;
+                }
+                reloadNode(node, newComponent);
+            }
+            process.checkProcess();
+            // moved (bug 4231)
+            // } else
+            // if (propertyName.equals(ComponentUtilities.JOBLET_NAME_CHANGED)) {
+            // String oldName = (String) evt.getOldValue();
+            // String newName = (String) evt.getNewValue();
+            //
+            // updateRenaming(process, oldName, newName);
+            // } else
+            //
+            // if (propertyName.equals(ComponentUtilities.JOBLET_SCHEMA_CHANGED)) {
+            // // updateGraphicalNodesSchema(process, evt);
+            // INode sourceNode = (INode) evt.getSource();
+            // String componentName = sourceNode.getComponent().getName();
+            // IComponent newComponent = ComponentsFactoryProvider.getInstance().get(componentName);
+            // if (newComponent == null) {
+            // return;
+            // }
+            // List<Node> nodesToUpdate = new ArrayList<Node>();
+            // for (Node node : (List<Node>) process.getGraphicalNodes()) {
+            // if (node.getComponent().getName().equals(componentName)) {
+            // nodesToUpdate.add(node);
+            // }
+            // }
+            // for (Node node : nodesToUpdate) {
+            // Map<String, Object> parameters = createParameters(node);
+            // if (!parameters.isEmpty()) {
+            // node.reloadComponent(newComponent, parameters);
+            // }
+            // }
+            //
+            // ((Process) sourceNode.getProcess()).checkProcess();
+        }
+
     }
 
     /**

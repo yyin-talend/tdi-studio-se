@@ -33,7 +33,6 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.dialogs.SelectionDialog;
 import org.eclipse.ui.internal.WorkbenchMessages;
-import org.talend.core.model.update.EUpdateResult;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.update.UpdatesConstants;
 import org.talend.designer.core.i18n.Messages;
@@ -120,14 +119,19 @@ public class UpdateDetectionDialog extends SelectionDialog {
     }
 
     private void checkInitialSelections() {
-        boolean cancel = true;
         for (UpdateResult result : getInputElements()) {
             result.setChecked(true);
-            if (result.getResultType() == EUpdateResult.RENAME) {
-                cancel = false;
+            switch (result.getResultType()) {
+            case RENAME:
+            case RELOAD:
+            case JOBLET_UPDATE:
+                this.canCancel = false;
+                return;
+            default:
+                this.canCancel = true;
             }
         }
-        this.canCancel = cancel;
+
     }
 
     @Override

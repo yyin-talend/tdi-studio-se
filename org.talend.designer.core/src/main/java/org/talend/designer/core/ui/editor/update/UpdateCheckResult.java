@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.talend.core.model.process.EComponentCategory;
+import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.update.EUpdateResult;
 import org.talend.core.model.update.RepositoryUpdateManager;
@@ -49,10 +50,10 @@ public class UpdateCheckResult extends UpdateResult {
                 List<Object> param = (List<Object>) getParameter();
                 String[] oldSourceIdAndChildName = UpdateManagerUtils.getSourceIdAndChildName((String) param.get(1));
                 String[] newSourceIdAndChildName = UpdateManagerUtils.getSourceIdAndChildName((String) param.get(2));
-                if (oldSourceIdAndChildName != null && newSourceIdAndChildName != null) {
-                    displayName = oldSourceIdAndChildName[1];
-                    displayName = displayName + UpdatesConstants.RENAME_SIGN;
-                    displayName = displayName + newSourceIdAndChildName[1];
+
+                String display = getRenamedDisplay(oldSourceIdAndChildName[1], newSourceIdAndChildName[1]);
+                if (display != null) {
+                    displayName = display;
                 }
             }
             break;
@@ -67,36 +68,39 @@ public class UpdateCheckResult extends UpdateResult {
             displayName = displayName + UpdateManagerUtils.addBrackets(EComponentCategory.STATSANDLOGS.getTitle());
             break;
         case CONTEXT:
-        case JOBLET_CONTEXT:
-            if (getResultType() == EUpdateResult.UPDATE || getResultType() == EUpdateResult.BUIL_IN) {
-                if (getUpdateObject() != null && getUpdateObject() instanceof Collection) {
-                    displayName = UpdatesConstants.EMPTY;
-                    for (String str : (Collection<String>) getUpdateObject()) {
-                        displayName = displayName + UpdatesConstants.SEGMENT + str;
-                    }
-                    if (displayName.startsWith(UpdatesConstants.SEGMENT)) {
-                        displayName = displayName.substring(1);
-                    }
+        case JOBLET_CONTEXT: {
+            String display = null;
+            switch (getResultType()) {
+            case RENAME:
+                List<Object> param = (List<Object>) getParameter();
+                display = getRenamedDisplay((String) param.get(1), (String) param.get(2));
+                break;
+            default:
+                if (getUpdateObject() instanceof Collection) {
+                    display = getCollectionsDisplay(getUpdateObject(), false);
                 }
-            } else if (getResultType() == EUpdateResult.RENAME) {
-                // old name
-                displayName = (String) ((List<Object>) getParameter()).get(1);
-                displayName = displayName + UpdatesConstants.RENAME_SIGN;
-                displayName = displayName + (String) ((List<Object>) getParameter()).get(2);
+                break;
             }
 
+            if (display != null) {
+                displayName = display;
+            }
             break;
-        case JOBLET_RENAMED:
+        }
+        case JOBLET_RENAMED: {
+            List<Object> param = (List<Object>) getParameter();
+            String display = getRenamedDisplay((String) param.get(1), (String) param.get(2));
+            if (display != null) {
+                displayName = display;
+            }
+            break;
+        }
         case RELOAD:
             if (getUpdateObject() != null && getUpdateObject() instanceof List) {
-                String label = UpdatesConstants.EMPTY;
-                for (Node node : (List<Node>) getUpdateObject()) {
-                    label = label + UpdatesConstants.SEGMENT + node.getLabel();
+                String display = getCollectionsDisplay(getUpdateObject(), false);
+                if (display != null) {
+                    displayName = display;
                 }
-                if (label.startsWith(UpdatesConstants.SEGMENT)) {
-                    label = label.substring(1);
-                }
-                displayName = displayName + UpdateManagerUtils.addBrackets(label);
             } else if (getParameter() != null && getParameter() instanceof PropertyChangeEvent) {
                 PropertyChangeEvent event = (PropertyChangeEvent) getParameter();
                 // reload all compoennts.
@@ -109,6 +113,43 @@ public class UpdateCheckResult extends UpdateResult {
         default:
         }
 
+        return displayName;
+    }
+
+    private String getRenamedDisplay(final String oldName, final String newName) {
+        if (oldName == null || newName == null) {
+            return null;
+        }
+        return oldName + UpdatesConstants.RENAME_SIGN + newName;
+    }
+
+    @SuppressWarnings("unchecked")
+    private String getCollectionsDisplay(Object object, boolean all) {
+        if (object == null) {
+            return null;
+        }
+        String displayName = UpdatesConstants.EMPTY;
+        if (object instanceof Collection) {
+            for (Object obj : (Collection) object) {
+                String tmp = null;
+                if (obj instanceof String) {
+                    tmp = (String) obj;
+                } else if (obj instanceof INode) {
+                    INode node = (INode) obj;
+                    if (all && !node.getLabel().equals(node.getUniqueName())) {
+                        tmp = node.getLabel() + UpdateManagerUtils.addBrackets(node.getUniqueName());
+                    } else {
+                        tmp = node.getLabel();
+                    }
+                }
+                if (tmp != null) {
+                    displayName = displayName + UpdatesConstants.SEGMENT + tmp;
+                }
+            }
+            if (displayName.startsWith(UpdatesConstants.SEGMENT)) {
+                displayName = displayName.substring(1);
+            }
+        }
         return displayName;
     }
 
@@ -152,6 +193,11 @@ public class UpdateCheckResult extends UpdateResult {
             category = UpdatesConstants.CONTEXT;
             break;
         case JOBLET_RENAMED:
+            String display = getCollectionsDisplay(getUpdateObject(), true);
+            if (display != null) {
+                category = display;
+            }
+            break;
         case RELOAD:
             if (getUpdateObject() != null && getUpdateObject() instanceof List) {
                 Node node = ((List<Node>) getUpdateObject()).get(0);

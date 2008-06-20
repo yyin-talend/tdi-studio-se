@@ -819,17 +819,17 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                     result = new UpdateCheckResult(UpdatesConstants.COMPONENT);
                     result.setResult(EUpdateItemType.RELOAD, EUpdateResult.RELOAD, event);
                 }
-
-            } else if (propertyName.equals(ComponentUtilities.JOBLET_NAME_CHANGED)) {
-                String oldName = (String) event.getOldValue();
-                String newName = (String) event.getNewValue();
-                List<INode> jobletNodes = findRelatedJobletNode(getProcess(), oldName, newName);
-                if (jobletNodes != null && !jobletNodes.isEmpty()) {
-                    String source = UpdatesConstants.JOBLET + UpdatesConstants.COLON + newName;
-
-                    result = new UpdateCheckResult(jobletNodes);
-                    result.setResult(EUpdateItemType.JOBLET_RENAMED, EUpdateResult.JOBLET_UPDATE, event, source);
-                }
+                // moved (bug 4231)
+                // } else if (propertyName.equals(ComponentUtilities.JOBLET_NAME_CHANGED)) {
+                // String oldName = (String) event.getOldValue();
+                // String newName = (String) event.getNewValue();
+                // List<INode> jobletNodes = findRelatedJobletNode(getProcess(), oldName, newName);
+                // if (jobletNodes != null && !jobletNodes.isEmpty()) {
+                // String source = UpdatesConstants.JOBLET + UpdatesConstants.COLON + newName;
+                //
+                // result = new UpdateCheckResult(jobletNodes);
+                // result.setResult(EUpdateItemType.JOBLET_RENAMED, EUpdateResult.JOBLET_UPDATE, event, source);
+                // }
                 // } else if (propertyName.equals(ComponentUtilities.JOBLET_SCHEMA_CHANGED)) {
                 // Object object = event.getSource();
                 // if (object instanceof IProcess) {
@@ -905,7 +905,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         case JOBLET_SCHEMA:
             tmpResults = checkJobletNodeSchema();
             break;
-        case JOBLET_RENAMED:
+        case JOBLET_RENAMED: // unused
         case RELOAD:
             tmpResults = checkJobletNodesPropertyChanger();
             break;

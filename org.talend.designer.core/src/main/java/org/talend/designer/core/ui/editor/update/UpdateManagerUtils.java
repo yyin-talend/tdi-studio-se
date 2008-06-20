@@ -12,9 +12,9 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.update;
 
-import java.beans.PropertyChangeEvent;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
@@ -33,6 +34,7 @@ import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
@@ -53,6 +55,7 @@ import org.talend.designer.core.ui.views.contexts.Contexts;
 import org.talend.designer.core.ui.views.jobsettings.JobSettings;
 import org.talend.designer.core.ui.views.properties.ComponentSettings;
 import org.talend.designer.joblet.model.JobletProcess;
+import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
@@ -146,6 +149,17 @@ public final class UpdateManagerUtils {
             return UpdatesConstants.EMPTY;
         }
         return UpdatesConstants.SPACE + UpdatesConstants.LEFT_BRACKETS + value + UpdatesConstants.RIGHT_BRACKETS;
+    }
+
+    public static List<IProcess> getOpenedProcess() {
+        IEditorReference[] reference = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getEditorReferences();
+        if (reference != null) {
+            List<IProcess> processes = RepositoryPlugin.getDefault().getDesignerCoreService().getOpenedProcess(reference);
+            if (processes != null) {
+                return processes;
+            }
+        }
+        return Collections.emptyList();
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
@@ -382,7 +396,7 @@ public final class UpdateManagerUtils {
             return null;
         }
         Object parameter = result.getParameter();
-        if (parameter instanceof PropertyChangeEvent) {
+        if (parameter != null) {
             return new UpdateJobletNodeCommand(result);
         }
         return null;
