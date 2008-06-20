@@ -418,7 +418,14 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
 
             if (input instanceof RepositoryNode) {
                 RepositoryNode repositoryNode = (RepositoryNode) input;
-                String type = repositoryNode.getProperties(EProperties.CONTENT_TYPE).toString();
+                Object obj = repositoryNode.getProperties(EProperties.CONTENT_TYPE);
+
+                String type = null;
+                if (obj != null) {
+                    type = obj.toString();
+                } else {
+                    return;
+                }
 
                 IRepositoryObject repositoryObject = repositoryNode.getObject();
                 if (repositoryObject == null) {
