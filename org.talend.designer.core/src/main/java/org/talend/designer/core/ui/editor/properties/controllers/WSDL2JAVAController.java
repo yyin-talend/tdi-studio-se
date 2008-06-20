@@ -63,6 +63,7 @@ import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.designer.core.DesignerPlugin;
@@ -297,6 +298,7 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
         IProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
         try {
             property.setId(repositoryFactory.getNextId());
+            repositoryFactory.createParentFoldersRecursively(ERepositoryObjectType.getItemType(routineItem), path);
             repositoryFactory.create(routineItem, path);
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);
