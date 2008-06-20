@@ -44,8 +44,7 @@ public abstract class AbstractRoutineAction extends AContextualAction {
      * @throws SystemException
      * @throws PartInitException
      */
-    protected IEditorPart openRoutineEditor(RoutineItem routineItem, boolean readOnly) throws SystemException,
-            PartInitException {
+    protected IEditorPart openRoutineEditor(RoutineItem routineItem, boolean readOnly) throws SystemException, PartInitException {
         if (routineItem == null) {
             return null;
         }
@@ -91,7 +90,7 @@ public abstract class AbstractRoutineAction extends AContextualAction {
             routineSynchronizer.syncRoutine(routineItem, true);
             IFile file = routineSynchronizer.getFile(routineItem);
 
-            RepositoryEditorInput input = new RepositoryEditorInput(file, routineItem);
+            RepositoryEditorInput input = new RoutineEditorInput(file, routineItem);
             input.setReadOnly(readOnly);
             talendEditor = page.openEditor(input, talendEditorID); //$NON-NLS-1$            
         }
