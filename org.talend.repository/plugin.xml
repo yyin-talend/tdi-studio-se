@@ -869,6 +869,13 @@
             id="org.talend.repository.model.migration.RenametFileInputBasic"
             name="rename tFileInputBasic into tFileIntoFullRow">
       </projecttask>
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.UpgradetDenormalizeMigrationTask"
+            description="Replace DELIMITER, GROUPS, MERGE with DENORMALIZE_COLUMNS"
+            id="org.talend.repository.model.migration.UpgradetDenormalizeMigrationTask"
+            name="Replace DELIMITER, GROUPS, MERGE with DENORMALIZE_COLUMNS">
+      </projecttask>
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">
