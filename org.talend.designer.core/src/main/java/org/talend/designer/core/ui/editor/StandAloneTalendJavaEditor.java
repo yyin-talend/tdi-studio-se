@@ -46,7 +46,6 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.FileItem;
 import org.talend.core.model.properties.Property;
-import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.ui.IUIRefresher;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.repository.editor.RepositoryEditorInput;
@@ -197,12 +196,13 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         propertyIsDirty = false;
 
-        if (!(item instanceof RoutineItem)) {
-            adapters.add(dirtyListener);
-            firePropertyChange(IEditorPart.PROP_DIRTY);
-        }
+        // if (!(item instanceof RoutineItem)) {
+        adapters.add(dirtyListener);
+        firePropertyChange(IEditorPart.PROP_DIRTY);
+        // }
 
         IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);
         viewPart.refresh();
