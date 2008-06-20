@@ -1130,7 +1130,7 @@ public class CLASS {
             return "\\\"";
         }
         protected String getSequence(String surrogateKeySequence) {
-            return "nextval for\" + " + surrogateKeySequence + " + \"";
+            return "nextval for \" + " + surrogateKeySequence + " + \"";
         }
         protected String getDate(String endDateValue) {
             return "'\" + " + endDateValue + " + \"-01-01'";
