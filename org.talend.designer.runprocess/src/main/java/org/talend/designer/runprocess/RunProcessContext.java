@@ -824,7 +824,7 @@ public class RunProcessContext {
             for (IPerformance performance : performanceDataSet) {
                 performance.resetStatus();
             }
-            stopThread = true;
+            // stopThread = true;
             synchronized (this) {
                 notify();
             }
