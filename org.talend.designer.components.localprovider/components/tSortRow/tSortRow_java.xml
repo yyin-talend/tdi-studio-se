@@ -34,6 +34,7 @@
 					<ITEMS DEFAULT="NUM">
 						<ITEM NAME="NUM" VALUE="num" />
 						<ITEM NAME="ALPHA" VALUE="alpha" />
+						<ITEM NAME="DATE" VALUE="date" />
 					</ITEMS>
 				</ITEM>
 
