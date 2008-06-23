@@ -150,7 +150,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
                 ExceptionHandler.process(e1);
             }
         } finally {
-            CursorHelper.changeCursor(parentShell, SWT.CURSOR_ARROW);
+            parentShell.setCursor(null);
         }
         while (shell != null && !shell.isDisposed()) {
             try {
