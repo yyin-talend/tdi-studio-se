@@ -38,6 +38,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.EcoreUtil.ExternalCrossReferencer;
+import org.talend.commons.emf.EmfHelper;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
@@ -310,9 +311,9 @@ public class ExportItemUtil {
         }
     }
 
-    private void saveResources() throws IOException {
+    private void saveResources() throws IOException, PersistenceException {
         for (Resource resource : resourceSet.getResources()) {
-            resource.save(Collections.EMPTY_MAP);
+            EmfHelper.saveResource(resource);
         }
     }
 
