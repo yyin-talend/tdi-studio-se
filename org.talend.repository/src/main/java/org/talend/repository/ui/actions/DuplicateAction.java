@@ -281,16 +281,10 @@ public class DuplicateAction extends AContextualAction {
 
             if (((RepositoryNode) currentSource).getType().equals(ENodeType.REPOSITORY_ELEMENT)) {
                 Item originalItem = ((RepositoryNode) currentSource).getObject().getProperty().getItem();
-                String version = originalItem.getProperty().getVersion();
-                String name = originalItem.getProperty().getLabel();
-                // if (resetProcessVersion()) {
-                originalItem.getProperty().setVersion(JOB_INIT_VERSION);
-                // }
-                originalItem.getProperty().setLabel(newJobName);
-                factory.copy(originalItem, path, false);
-                // restore originalItem
-                originalItem.getProperty().setLabel(name);
-                originalItem.getProperty().setVersion(version);
+                Item newItem = factory.copy(originalItem, path, false);
+                newItem.getProperty().setVersion(JOB_INIT_VERSION);
+                newItem.getProperty().setLabel(newJobName);
+                factory.save(newItem);
             }
         } catch (Exception e) {
             ExceptionHandler.process(e);
