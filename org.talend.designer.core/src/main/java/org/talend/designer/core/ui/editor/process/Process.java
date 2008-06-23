@@ -400,13 +400,11 @@ public class Process extends Element implements IProcess2 {
             if (o instanceof SubjobContainer) {
                 SubjobContainer sjc = (SubjobContainer) o;
                 if (sjc.getNodeContainers().contains(nodeContainer)) {
-                    List<NodeContainer> nodeContainers = sjc.getNodeContainers();
-                    while (nodeContainers.contains(nodeContainer)) {
-                        nodeContainers.remove(nodeContainer);
-                    }
+                    sjc.getNodeContainers().remove(nodeContainer);
                     if (nodeContainer.getNode().isDesignSubjobStartNode()) {
                         subjobContainers.remove(sjc);
                         toAdd.addAll(sjc.getNodeContainers());
+                        sjc.getNodeContainers().clear();
                         toRemove = sjc;
                         break;
                     }
