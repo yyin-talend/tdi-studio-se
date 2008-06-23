@@ -391,14 +391,14 @@ public class Connection extends Element implements IConnection, IPerformance {
             }
             updateName = true;
         } else {
-            if (outputId >= 0) {
+            if (outputId >= 0 && !getLineStyle().equals(EConnectionType.PARALLELIZE)) {
                 labelText += " (" + "order:" + outputId + ")";
             }
             updateName = true;
         } /*
-         * else if (getLineStyle().equals(EConnectionType.LOOKUP)) { labelText += " (" + nodeConnector.getLinkName() +
-         * ")"; updateName = true; }
-         */
+             * else if (getLineStyle().equals(EConnectionType.LOOKUP)) { labelText += " (" + nodeConnector.getLinkName() +
+             * ")"; updateName = true; }
+             */
 
         if (updateName) {
 
@@ -533,6 +533,10 @@ public class Connection extends Element implements IConnection, IPerformance {
         this.target = newTarget;
         this.lineStyle = newLineStyle;
         sourceNodeConnector = source.getConnectorFromName(connectorName);
+
+        if ((lineStyle == EConnectionType.SYNCHRONIZE) || (lineStyle == EConnectionType.PARALLELIZE)) {
+            ((Process) source.getProcess()).setPropertyValue(EParameterName.MULTI_THREAD_EXECATION.getName(), Boolean.TRUE);
+        }
         reconnect();
     }
 

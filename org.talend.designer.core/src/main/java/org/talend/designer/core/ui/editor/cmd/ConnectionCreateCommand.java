@@ -25,7 +25,6 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.i18n.Messages;
-import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.process.ConnectionManager;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -196,10 +195,6 @@ public class ConnectionCreateCommand extends Command {
         nodeConnectorSource.setCurLinkNbOutput(nodeConnectorSource.getCurLinkNbOutput() + 1);
         nodeConnectorTarget = connection.getTargetNodeConnector();
         nodeConnectorTarget.setCurLinkNbInput(nodeConnectorTarget.getCurLinkNbInput() + 1);
-
-        if ((newLineStyle == EConnectionType.SYNCHRONIZE) || (newLineStyle == EConnectionType.PARALLELIZE)) {
-            ((Process) source.getProcess()).setPropertyValue(EParameterName.MULTI_THREAD_EXECATION.getName(), Boolean.TRUE);
-        }
 
         creatingConnection = false;
         ((Process) source.getProcess()).checkStartNodes();

@@ -1249,26 +1249,33 @@ public class Node extends Element implements INode {
      */
     public INode getSubProcessStartNode(boolean withConditions) {
         if (!withConditions) {
-            // if ((getCurrentActiveLinksNbInput(EConnectionType.FLOW_MAIN) ==
-            // 0)
-            // // && (getCurrentActiveLinksNbInput(EConnectionType.FLOW_REF) ==
-            // 0)
-            // && (getCurrentActiveLinksNbInput(EConnectionType.ITERATE) == 0))
-            // {
-            // return this;
-            // }
-            // PTODO MHI / Modif à revoir avec NRO
-            if ((getCurrentActiveLinksNbInput(IConnectionCategory.MAIN) == 0)) {
+            // if there is the dummy state, we know we're still in the same subjob as the previous node.
+            boolean found = false;
+            for (IConnection connection : inputs) {
+                if ((connection.getSource().isActivate() == connection.getTarget().isActivate())
+                        && connection.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
+                    found = true;
+                    break;
+                }
+                if (((Node) connection.getSource()).isDummy() || isDummy()) {
+                    return connection.getSource().getSubProcessStartNode(withConditions);
+                }
+            }
+            if (!found) {
                 return this;
             }
         } else {
-            int nb = 0;
+            boolean found = false;
             for (IConnection connection : inputs) {
-                if (connection.isActivate()) {
-                    nb++;
+                if ((connection.getSource().isActivate() == connection.getTarget().isActivate())) {
+                    found = true;
+                    break;
+                }
+                if (((Node) connection.getSource()).isDummy() || isDummy()) {
+                    return connection.getSource().getSubProcessStartNode(withConditions);
                 }
             }
-            if (nb == 0) {
+            if (!found) {
                 return this;
             }
         }
@@ -1521,12 +1528,10 @@ public class Node extends Element implements INode {
         return nb;
     }
 
-    // PTODO MHIRT: Modif à revoir avec NRO
     public int getCurrentActiveLinksNbInput(int connCategory) {
         int nb = 0;
         for (IConnection connection : inputs) {
-            if ((connection.getSource().isActivate() == connection.getTarget().isActivate())
-                    && connection.getLineStyle().hasConnectionCategory(connCategory)) {
+            if (connection.isActivate() && connection.getLineStyle().hasConnectionCategory(connCategory)) {
                 nb++;
             }
         }
@@ -1537,6 +1542,16 @@ public class Node extends Element implements INode {
         int nb = 0;
         for (IConnection connection : outputs) {
             if (connection.isActivate() && connection.getLineStyle().equals(type)) {
+                nb++;
+            }
+        }
+        return nb;
+    }
+
+    public int getCurrentActiveLinksNbOutput(int connCategory) {
+        int nb = 0;
+        for (IConnection connection : outputs) {
+            if (connection.isActivate() && connection.getLineStyle().hasConnectionCategory(connCategory)) {
                 nb++;
             }
         }
@@ -1564,33 +1579,6 @@ public class Node extends Element implements INode {
             }
         }
 
-        // check Subjob start order links
-        boolean atLeastOneLinkOnNonStartNode = false;
-
-        for (IConnection connection : getOutgoingConnections(EConnectionType.SYNCHRONIZE)) {
-            if (!connection.getTarget().isStart() || !connection.getSource().isStart()) {
-                atLeastOneLinkOnNonStartNode = true;
-            }
-        }
-        if (atLeastOneLinkOnNonStartNode) {
-            String errorMessage = "The source and the target of a " + EConnectionType.SYNCHRONIZE.getDefaultLinkName()
-                    + " link must be starts component (green state).";
-            Problems.add(ProblemStatus.ERROR, this, errorMessage);
-        }
-        for (IConnection connection : getOutgoingConnections(EConnectionType.PARALLELIZE)) {
-            if (!connection.getTarget().isStart() || !connection.getSource().isStart()) {
-                atLeastOneLinkOnNonStartNode = true;
-            }
-        }
-        if (atLeastOneLinkOnNonStartNode) {
-            String errorMessage = "The source and the target of a " + EConnectionType.PARALLELIZE.getDefaultLinkName()
-                    + " link must be starts component (green state).";
-            Problems.add(ProblemStatus.ERROR, this, errorMessage);
-        }
-        // for (IConnection connection : getIncomingConnections(EConnectionType.SUBJOB_START_ORDER)) {
-        //            
-        // }
-
         // check not startable components not linked
         if ((getConnectorFromType(EConnectionType.FLOW_MAIN).getMaxLinkInput() == 0)
                 && (getConnectorFromType(EConnectionType.FLOW_MAIN).getMaxLinkOutput() != 0)) {
@@ -1603,14 +1591,15 @@ public class Node extends Element implements INode {
             }
         }
 
+        if (getComponent().getName().equals("tSynchronize") && getCurrentActiveLinksNbOutput(IConnectionCategory.DEPENDENCY) == 0) {
+            String errorMessage = "This component should be followed by a dependency link or it won't be usefull.";
+            Problems.add(ProblemStatus.WARNING, this, errorMessage);
+        }
+
         // Check if there's an output run after / before on a component that is
         // not a sub process start
         if (!isSubProcessStart() || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
-            if (/*
-             * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_AFTER) > 0) ||
-             * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_BEFORE) > 0)||
-             */
-            (getCurrentActiveLinksNbOutput(EConnectionType.ON_SUBJOB_OK) > 0)
+            if ((getCurrentActiveLinksNbOutput(EConnectionType.ON_SUBJOB_OK) > 0)
                     || getCurrentActiveLinksNbOutput(EConnectionType.ON_SUBJOB_ERROR) > 0) {
                 String errorMessage = "A component that is not a sub process start can not have any link on sub job ok / on sub job error in input.";
                 Problems.add(ProblemStatus.ERROR, this, errorMessage);
@@ -1626,10 +1615,7 @@ public class Node extends Element implements INode {
         // Check if there's an input run after / before on a component that is
         // not a sub process start
         if ((!isELTComponent() && !isSubProcessStart()) || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
-            if (/*
-             * (getCurrentActiveLinksNbInput(EConnectionType.RUN_AFTER) > 0) ||
-             * (getCurrentActiveLinksNbInput(EConnectionType.RUN_BEFORE) > 0) ||
-             */(getCurrentActiveLinksNbInput(EConnectionType.ON_SUBJOB_OK) > 0)
+            if ((getCurrentActiveLinksNbInput(EConnectionType.ON_SUBJOB_OK) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_OK) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_ERROR) > 0)) {
@@ -2222,8 +2208,7 @@ public class Node extends Element implements INode {
                 // connection that will generate a hash file are not
                 // considered as activated for this test.
                 if (connection.isActivate() && !connection.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_HASH)
-                        && connection.getLineStyle() != EConnectionType.SYNCHRONIZE
-                        && connection.getLineStyle() != EConnectionType.PARALLELIZE) {
+                        && connection.getLineStyle() != EConnectionType.SYNCHRONIZE) {
                     isActivatedConnection = true;
                 }
             }
