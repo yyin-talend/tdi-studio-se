@@ -51,7 +51,6 @@ import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.macrowidgets.tableeditor.PropertiesTableEditorModel;
 import org.talend.designer.core.ui.editor.properties.macrowidgets.tableeditor.PropertiesTableEditorView;
 import org.talend.designer.core.ui.editor.properties.macrowidgets.tableeditor.PropertiesTableToolbarEditorView;
-import org.talend.designer.core.ui.views.properties.ComponentSettings;
 import org.talend.designer.runprocess.ProcessorUtilities;
 
 /**
@@ -309,9 +308,6 @@ public class TableController extends AbstractElementPropertySectionController {
 
         paramValues.clear();
         paramValues.addAll(newParamValues);
-
-        // to optimize
-        ComponentSettings.switchToCurComponentSettingsView();
     }
 
     private void updateColumnList(IElementParameter param) {
