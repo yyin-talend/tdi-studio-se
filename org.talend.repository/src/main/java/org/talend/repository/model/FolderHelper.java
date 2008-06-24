@@ -31,7 +31,6 @@ import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.User;
-import org.talend.repository.i18n.Messages;
 
 /**
  * This helper class contains a set of methods to perform basic operations on FolderItem objects.
@@ -204,17 +203,22 @@ public abstract class FolderHelper {
 
     public FolderItem findChildFolder(FolderItem parent, String name) {
         EList children;
-        if (parent != null) {
-            children = parent.getChildren();
-        } else {
-            children = project.getFolders();
-        }
 
-        for (Iterator it = children.iterator(); it.hasNext();) {
-            Item item = (Item) it.next();
-            if (item instanceof FolderItem && item.getProperty().getLabel().equals(name)) {
-                return (FolderItem) item;
+        try {
+            if (parent != null) {
+                children = parent.getChildren();
+            } else {
+                children = project.getFolders();
             }
+
+            for (Iterator it = children.iterator(); it.hasNext();) {
+                Item item = (Item) it.next();
+                if (item instanceof FolderItem && item.getProperty().getLabel().equals(name)) {
+                    return (FolderItem) item;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return null;
     }
