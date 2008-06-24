@@ -89,7 +89,17 @@ public class UpdateJobletNodeCommand extends Command {
                     updateRenaming(process, oldName, newName);
                     break;
                 case RELOAD:
-                    // keep event
+                    List<Node> jobletNodes = (List<Node>) result.getUpdateObject();
+                    if (jobletNodes != null && !jobletNodes.isEmpty()) {
+                        for (Node node : jobletNodes) {
+                            IComponent newComponent = ComponentsFactoryProvider.getInstance().get(node.getComponent().getName());
+                            if (newComponent == null) {
+                                continue;
+                            }
+                            reloadNode(node, newComponent);
+                        }
+                        process.checkProcess();
+                    }
                     break;
                 case JOBLET_SCHEMA:
                     updateSchema(process, (Node) result.getUpdateObject());

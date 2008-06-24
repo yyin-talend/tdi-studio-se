@@ -96,12 +96,7 @@ public class UpdateCheckResult extends UpdateResult {
             break;
         }
         case RELOAD:
-            if (getUpdateObject() != null && getUpdateObject() instanceof List) {
-                String display = getCollectionsDisplay(getUpdateObject(), false);
-                if (display != null) {
-                    displayName = display;
-                }
-            } else if (getParameter() != null && getParameter() instanceof PropertyChangeEvent) {
+            if (getParameter() != null && getParameter() instanceof PropertyChangeEvent) {
                 PropertyChangeEvent event = (PropertyChangeEvent) getParameter();
                 // reload all compoennts.
                 if (event.getSource() != null && !(event.getSource() instanceof IProcess)) {
@@ -193,17 +188,11 @@ public class UpdateCheckResult extends UpdateResult {
             category = UpdatesConstants.CONTEXT;
             break;
         case JOBLET_RENAMED:
-            String display = getCollectionsDisplay(getUpdateObject(), true);
-            if (display != null) {
-                category = display;
-            }
-            break;
         case RELOAD:
             if (getUpdateObject() != null && getUpdateObject() instanceof List) {
-                Node node = ((List<Node>) getUpdateObject()).get(0);
-                if (node != null) {
-                    category = node.getComponent().getName();
-                    break;
+                String display = getCollectionsDisplay(getUpdateObject(), true);
+                if (display != null) {
+                    category = display;
                 }
             } else if (getParameter() != null && getParameter() instanceof PropertyChangeEvent) {
                 PropertyChangeEvent event = (PropertyChangeEvent) getParameter();
@@ -212,8 +201,9 @@ public class UpdateCheckResult extends UpdateResult {
                     category = UpdatesConstants.COMPONENT;
                     break;
                 }
+            } else {
+                category = UpdatesConstants.JOBLET;
             }
-            category = UpdatesConstants.JOBLET;
             break;
         default:
         }
