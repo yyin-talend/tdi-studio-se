@@ -18,7 +18,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.editor.MetadataTableEditor;
@@ -82,7 +81,8 @@ public class MainConnectionComposite extends MultipleThreadDynamicComposite {
                  * On windows it will adjust automatically the size depends the number of columns. Seems this system
                  * doesn't work on linux
                  */
-                data.height = 160; // fix bug 3893.
+                int tableHeight = 160;
+                data.height = tableHeight; // fix bug 3893.
 
                 IMetadataTable outputMetaTable = ((Connection) elem).getMetadataTable();
                 if (outputMetaTable != null) {
@@ -102,10 +102,10 @@ public class MainConnectionComposite extends MultipleThreadDynamicComposite {
                     compositeEditorView.setLayoutData(data);
                     // compositeEditorView.getParent().layout();
 
-                    Table table = metadataTableEditorView.getTable();
-                    int currentHeightEditor = table.getHeaderHeight() + outputMetaTable.getListColumns().size()
-                            * table.getItemHeight() + table.getItemHeight() + 50;
-                    curRowSize = currentHeightEditor + ITabbedPropertyConstants.VSPACE + curRowSize;
+                    // Table table = metadataTableEditorView.getTable();
+                    // int currentHeightEditor = table.getHeaderHeight() + outputMetaTable.getListColumns().size()
+                    // * table.getItemHeight() + table.getItemHeight() + 50;
+                    curRowSize = tableHeight + ITabbedPropertyConstants.VSPACE + curRowSize;
                 }
             }
             super.addComponents(forceRedraw, false, curRowSize);
