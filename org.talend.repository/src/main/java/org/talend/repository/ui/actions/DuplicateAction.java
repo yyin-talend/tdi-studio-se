@@ -281,7 +281,7 @@ public class DuplicateAction extends AContextualAction {
 
             if (((RepositoryNode) currentSource).getType().equals(ENodeType.REPOSITORY_ELEMENT)) {
                 Item originalItem = ((RepositoryNode) currentSource).getObject().getProperty().getItem();
-                Item newItem = factory.copy(originalItem, path, false);
+                Item newItem = factory.copy(originalItem, path, true);
                 newItem.getProperty().setVersion(JOB_INIT_VERSION);
                 newItem.getProperty().setLabel(newJobName);
                 factory.save(newItem);
