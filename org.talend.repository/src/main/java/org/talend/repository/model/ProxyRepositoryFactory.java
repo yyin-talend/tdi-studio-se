@@ -212,9 +212,6 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
             throws PersistenceException {
         String fileName = label;
         checkFileName(fileName, pattern);
-        if (fileName.equals("System")) {
-            System.out.println("here..");
-        }
 
         if (!this.repositoryFactoryFromProvider.isPathValid(type, path, label)) {
             // i18n
