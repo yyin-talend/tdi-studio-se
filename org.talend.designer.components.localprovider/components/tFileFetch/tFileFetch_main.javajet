@@ -14,6 +14,8 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
+boolean post = ElementParameterParser.getValue(node,"__POST__").equals("true");
+
 boolean printResponse = ElementParameterParser.getValue(node,"__PRINT__").equals("true");
 
 String uri = ElementParameterParser.getValue(node, "__URI__");
@@ -31,19 +33,14 @@ String proxyHost = ElementParameterParser.getValue(node,"__PROXY_HOST__");
 String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
 String proxyUser = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
 String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
-%>
-
-<%
-	/* The following is post upload part */
-    boolean uploadFile = ElementParameterParser.getValue(node,"__UPLOAD__").equals("true");
-    
-	List<Map<String, String>> commonParams = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__COMMON_PARAMS__");
-	List<Map<String, String>> fileParams = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FILE_PARAMS__");
-	List<String> varPartList = new ArrayList<String>();
-%>    
+%>   
     org.apache.commons.httpclient.HttpClient client_<%=cid %> = new org.apache.commons.httpclient.HttpClient();
     client_<%=cid %>.getHttpConnectionManager().getParams().setConnectionTimeout(<%=timeout %>);
+<%if(post){%>
     org.apache.commons.httpclient.methods.PostMethod post_<%=cid %> = new org.apache.commons.httpclient.methods.PostMethod(<%=uri %>);		
+<%}else{%>
+	org.apache.commons.httpclient.methods.GetMethod get_<%=cid %> = new org.apache.commons.httpclient.methods.GetMethod(<%=uri %>);
+<%}%>
 
 <%if(useProxy){%>
 
@@ -59,7 +56,14 @@ String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__"
     client_<%=cid %>.getState().setCredentials(org.apache.commons.httpclient.auth.AuthScope.ANY, creds_<%=cid %>);
 <%}%>
 
-<%	//common string parameter part	
+
+
+<%if(post){
+	boolean uploadFile = ElementParameterParser.getValue(node,"__UPLOAD__").equals("true");
+    
+	List<Map<String, String>> commonParams = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__COMMON_PARAMS__");
+	List<Map<String, String>> fileParams = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FILE_PARAMS__");
+	List<String> varPartList = new ArrayList<String>();	//common string parameter part	
 	int i = 0;
 	for(Map<String, String> param : commonParams){
 		i++;
@@ -88,24 +92,37 @@ String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__"
     org.apache.commons.httpclient.methods.multipart.Part[] parts_<%=cid %> = new org.apache.commons.httpclient.methods.multipart.Part[]{<%for(String var: varPartList){%><%=var %>,<%}%>};		
     
     post_<%=cid %>.setRequestEntity(new org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity(parts_<%=cid %>, post_<%=cid %>.getParams()));					
-    			
-    //here excute the post the method
+//here excute the post the method
     client_<%=cid %>.executeMethod(post_<%=cid %>);
-        
+
+<% }else{%>   			
+    client_<%=cid %>.executeMethod(get_<%=cid %>);
+<%}%>
+
 <%  if(printResponse){%>	
 	
+	<%if(post){%>
 	System.out.println("Status Line: " + post_<%=cid %>.getStatusLine());
-	
+	<%}else{%>
+	System.out.println("Status Line: " + get_<%=cid %>.getStatusLine());
+	<%}%>
 	//write out the response headers
-	System.out.println("*** Response Header Part ***");	
+	System.out.println("*** Response Header ***");	
+	<%if(post){%>
 	org.apache.commons.httpclient.Header[] responseHeaders_<%=cid %> = post_<%=cid %>.getResponseHeaders();	
+	<%}else{%>
+	org.apache.commons.httpclient.Header[] responseHeaders_<%=cid %> = get_<%=cid %>.getResponseHeaders();	
+	<%}%>
 	for (int i=0; i<responseHeaders_<%=cid %>.length; i++){
     	System.out.print(responseHeaders_<%=cid %>[i]);
 	}
 <%  }%>
-    
-	java.io.InputStream in_<%=cid %> = post_<%=cid %>.getResponseBodyAsStream();
 
+    <%if(post){%>
+	java.io.InputStream in_<%=cid %> = post_<%=cid %>.getResponseBodyAsStream();
+	<%}else{%>
+	java.io.InputStream in_<%=cid %> = get_<%=cid %>.getResponseBodyAsStream();
+	<%}%>
 	String fileName_<%=cid %> = <%=filename%>;
 	
 	//open directory
@@ -133,5 +150,8 @@ String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__"
     // close opened object
     in_<%=cid %>.close();
     out_<%=cid %>.close();
-
+    <%if(post){%>
 	post_<%=cid %>.releaseConnection();
+	<%}else{%>
+	get_<%=cid %>.releaseConnection();
+	<%}%>

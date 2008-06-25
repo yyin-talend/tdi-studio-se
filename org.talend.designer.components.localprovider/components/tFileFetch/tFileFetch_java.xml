@@ -27,6 +27,9 @@ COMPATIBILITY="ALL"
   </CONNECTORS>
 
   <PARAMETERS>
+  <PARAMETER NAME="POST" FIELD="CHECK" NUM_ROW="3" SHOW="true">
+  <DEFAULT>true</DEFAULT>
+  </PARAMETER>
   <PARAMETER
     	NAME="PRINT"
     	FIELD="CHECK"
@@ -113,7 +116,6 @@ COMPATIBILITY="ALL"
 		FIELD="CHECK" 
 		REQUIRED="true"
 		NUM_ROW="50"
-		SHOW="true"
 	 >
 		<DEFAULT>false</DEFAULT>
 	</PARAMETER>
@@ -123,7 +125,7 @@ COMPATIBILITY="ALL"
       FIELD="TEXT"
       REQUIRED="false"
       NUM_ROW="50"
-      SHOW_IF="NEED_AUTH == 'true'"
+      SHOW_IF="(NEED_AUTH == 'true')"
     >
       <DEFAULT>"username"</DEFAULT>
     </PARAMETER>
@@ -133,12 +135,10 @@ COMPATIBILITY="ALL"
       FIELD="TEXT"
       REQUIRED="false"
       NUM_ROW="50"
-      SHOW_IF="NEED_AUTH == 'true'"
+      SHOW_IF=" (NEED_AUTH == 'true')"
     >
       <DEFAULT>"password"</DEFAULT>
-    </PARAMETER> 
-    
-    
+    </PARAMETER>   
       
     
     <PARAMETER
@@ -154,6 +154,7 @@ COMPATIBILITY="ALL"
       NAME="COMMON_PARAMS" 
       FIELD="TABLE" NUM_ROW="80" 
       NB_LINES="10"
+      SHOW_IF="POST == 'true'"
     >
       <ITEMS>
         <ITEM NAME="COMMON_PARAMS_NAME" />
@@ -171,6 +172,7 @@ COMPATIBILITY="ALL"
       NAME="UPLOAD"
       FIELD="CHECK"
       NUM_ROW="10"
+      SHOW_IF="POST == 'true'"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER> 
@@ -180,7 +182,7 @@ COMPATIBILITY="ALL"
       FIELD="TABLE" 
       NUM_ROW="20" 
       NB_LINES="8"
-	  SHOW_IF="UPLOAD == 'true'"
+	  SHOW_IF="(POST == 'true')AND(UPLOAD == 'true')"
     >
       <ITEMS>
         <ITEM NAME="FILE_PARAMS_NAME" />
