@@ -284,7 +284,9 @@ public class DuplicateAction extends AContextualAction {
                 Item newItem = factory.copy(originalItem, path, true);
                 newItem.getProperty().setVersion(JOB_INIT_VERSION);
                 newItem.getProperty().setLabel(newJobName);
+                factory.saveCopy(originalItem, newItem);
                 factory.save(newItem);
+
             }
         } catch (Exception e) {
             ExceptionHandler.process(e);
