@@ -26,10 +26,10 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.EList;
 import org.talend.commons.exception.BusinessException;
-import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
@@ -212,6 +212,10 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
             throws PersistenceException {
         String fileName = label;
         checkFileName(fileName, pattern);
+        if (fileName.equals("System")) {
+            System.out.println("here..");
+        }
+
         if (!this.repositoryFactoryFromProvider.isPathValid(type, path, label)) {
             // i18n
             // throw new IllegalArgumentException("Label " + fileName + " is already in use");
@@ -811,6 +815,9 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
 
             String folderName = parentPath.append(folderLabel).toString();
             if (!folders.contains(folderName)) {
+                if (folderLabel.equals("System")) {
+                    System.out.println("herer");
+                }
                 createFolder(itemType, parentPath, folderLabel);
             }
         }
@@ -1257,7 +1264,8 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @throws PersistenceException
      * @throws LoginException
      */
-    public void logOnProject(Project project, IProgressMonitor monitorWrap) throws LoginException, PersistenceException {
+    public void logOnProject(Project project, IProgressMonitor monitorWrap) throws LoginException, PersistenceException,
+            OperationCanceledException {
         IMigrationToolService service = (IMigrationToolService) GlobalServiceRegister.getDefault().getService(
                 IMigrationToolService.class);
         service.executeProjectTasks(project, true, monitorWrap);
@@ -1278,11 +1286,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         monitorWrap.setTaskName(Messages.getString("ProxyRepositoryFactory.synchronizeLibraries")); //$NON-NLS-1$
         monitorWrap.worked(1);
 
-        try {
-            CorePlugin.getDefault().getLibrariesService().syncLibraries();
-        } catch (Exception e) {
-            ExceptionHandler.process(e);
-        }
+        CorePlugin.getDefault().getLibrariesService().syncLibraries(monitorWrap);
 
         service.executeProjectTasks(project, false, monitorWrap);
 

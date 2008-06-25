@@ -15,8 +15,11 @@ package org.talend.repository.ui.login;
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
@@ -35,10 +38,11 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
 import org.talend.commons.exception.BusinessException;
+import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
-import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.general.Project;
@@ -63,6 +67,8 @@ public class LoginDialog extends TitleAreaDialog {
     private LoginComposite loginComposite;
 
     private static final int MAX_TASKS = 60;
+
+    private boolean isOK = true;
 
     /**
      * Construct a new LoginDialog.
@@ -128,8 +134,7 @@ public class LoginDialog extends TitleAreaDialog {
                 }
             }
         } catch (BusinessException e) {
-            ErrorDialogWidthDetailArea errorDialog = new ErrorDialogWidthDetailArea(getShell(),
-                    RepositoryPlugin.PLUGIN_ID,
+            ErrorDialogWidthDetailArea errorDialog = new ErrorDialogWidthDetailArea(getShell(), RepositoryPlugin.PLUGIN_ID,
                     Messages.getString("RegisterWizardPage.serverCommunicationProblem"), e.getMessage()); //$NON-NLS-1$
         }
 
@@ -174,35 +179,41 @@ public class LoginDialog extends TitleAreaDialog {
         prefManipulator.setLastProject(project.getLabel());
 
         final Shell shell = this.getShell();
-        final ProgressDialog progressDialog = new ProgressDialog(shell) {
+        ProgressMonitorDialog dialog = new ProgressMonitorDialog(shell);
+
+        IRunnableWithProgress runnable = new IRunnableWithProgress() {
 
             private IProgressMonitor monitorWrap;
 
-            @Override
-            public void run(IProgressMonitor monitor) throws InvocationTargetException {
+            public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                 monitorWrap = new EventLoopProgressMonitor(monitor);
-
                 monitorWrap.beginTask("Migration tasks running in progress...", MAX_TASKS);
                 monitorWrap.worked(2);
 
                 try {
                     ProxyRepositoryFactory.getInstance().logOnProject(project, monitorWrap);
-                } catch (Exception e) {
+                } catch (LoginException e) {
                     throw new InvocationTargetException(e);
+                } catch (PersistenceException e) {
+                    throw new InvocationTargetException(e);
+                } catch (OperationCanceledException e) {
+                    throw new InterruptedException(e.getLocalizedMessage());
                 }
+
                 monitorWrap.done();
             }
         };
 
         try {
-            progressDialog.executeProcess();
+
+            dialog.run(true, true, runnable);
+
         } catch (InvocationTargetException e) {
             loginComposite.populateProjectList();
             MessageBoxExceptionHandler.process(e.getTargetException(), getShell());
             return;
-        } catch (Exception e) {
+        } catch (InterruptedException e) {
             loginComposite.populateProjectList();
-            MessageBoxExceptionHandler.process(e, getShell());
             return;
         }
 
