@@ -184,6 +184,9 @@ public class SubjobContainer extends Element implements ISubjobContainer {
                 }
             }
         }
+        if (totalRectangle == null) {
+            return new Rectangle();
+        }
 
         Point location = totalRectangle.getLocation();
         Point newLocation = new Point();
