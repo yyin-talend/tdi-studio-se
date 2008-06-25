@@ -321,6 +321,9 @@ public class DatabaseForm extends AbstractForm {
         fileField = new LabelledFileField(compositeDbSettings, Messages.getString("DatabaseForm.mdbFile"), extensions); //$NON-NLS-1$
         directoryField = new LabelledDirectoryField(compositeDbSettings, "DB Root Path"); //$NON-NLS-1$
 
+        fileField.hide();
+        directoryField.hide();
+
         // Button Check
         Composite compositeCheckButton = Form.startNewGridLayout(compositeGroupDbSettings, 1, false, SWT.CENTER, SWT.TOP);
         layout2 = (GridLayout) compositeCheckButton.getLayout();
