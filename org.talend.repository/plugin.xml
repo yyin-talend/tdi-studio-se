@@ -876,6 +876,13 @@
             id="org.talend.repository.model.migration.UpgradetDenormalizeMigrationTask"
             name="Replace DELIMITER, GROUPS, MERGE with DENORMALIZE_COLUMNS">
       </projecttask>
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.ReplaceRunJobLabelVariableMigrationTask"
+            description="Replace from &quot;__PROCESS_TYPE_PROCESS__&quot; to &quot;__PROCESS__&quot;"
+            id="org.talend.repository.model.migration.ReplaceRunJobLabelVariable"
+            name="Replace tRunJob label variable">
+      </projecttask>
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">
