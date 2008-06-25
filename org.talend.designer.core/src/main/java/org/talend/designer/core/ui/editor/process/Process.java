@@ -404,7 +404,6 @@ public class Process extends Element implements IProcess2 {
                     if (nodeContainer.getNode().isDesignSubjobStartNode()) {
                         subjobContainers.remove(sjc);
                         toAdd.addAll(sjc.getNodeContainers());
-                        sjc.getNodeContainers().clear();
                         toRemove = sjc;
                         break;
                     }
@@ -2727,6 +2726,7 @@ public class Process extends Element implements IProcess2 {
                         sjc.setSubjobStartNode(node);
                         mapSubjobStarts.put(node, sjc);
                     }
+                    sjc.getNodeContainers().clear();
                     sjc.addNodeContainer(node.getNodeContainer());
                     subjobContainers.add(sjc);
                     updatedSubjobContainers.add(sjc);

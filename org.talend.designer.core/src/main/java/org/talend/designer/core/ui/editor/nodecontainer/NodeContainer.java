@@ -217,4 +217,14 @@ public class NodeContainer extends Element {
     public void setSubjobContainer(SubjobContainer subjobContainer) {
         this.subjobContainer = subjobContainer;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "NodeContainer{" + node.toString() + "}";
+    }
 }

@@ -184,9 +184,6 @@ public class SubjobContainer extends Element implements ISubjobContainer {
                 }
             }
         }
-        if (totalRectangle == null) {
-            return new Rectangle();
-        }
 
         Point location = totalRectangle.getLocation();
         Point newLocation = new Point();
@@ -277,5 +274,22 @@ public class SubjobContainer extends Element implements ISubjobContainer {
                 || id.equals(EParameterName.SUBJOB_TITLE.getName())) {
             fireStructureChange(UPDATE_SUBJOB_DATA, this);
         }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        String nodes = "";
+        for (NodeContainer nodeContainer : nodeContainers) {
+            nodes += nodeContainer.getNode().toString();
+            if (nodeContainers.indexOf(nodeContainer) != (nodeContainers.size() - 1)) {
+                nodes += ", ";
+            }
+        }
+        return "SubjobContainer [" + nodes + "]";
     }
 }
