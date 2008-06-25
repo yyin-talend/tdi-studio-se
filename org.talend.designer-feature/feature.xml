@@ -58,6 +58,7 @@
       <import plugin="org.eclipse.ui.ide" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.ui.editors" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.core.variables" version="3.1.100" match="compatible"/>
+      <import plugin="org.talend.registration"/>
    </requires>
 
    <plugin
@@ -467,7 +468,6 @@
          id="org.talend.designer.components.ecosystem"
          download-size="0"
          install-size="0"
-         version="0.0.0"
-         unpack="true"/>
+         version="0.0.0"/>
 
 </feature>
