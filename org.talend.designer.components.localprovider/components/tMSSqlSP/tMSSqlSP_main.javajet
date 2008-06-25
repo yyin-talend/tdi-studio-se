@@ -220,15 +220,16 @@ if (canGenerate) {
 		if(hasOutput) { //fixed 2777 issue. it must get ResultSet first.
             %>
             Object resultSet_<%=cid%> = null;
-            do {
-            	resultSet_<%=cid%> = statement_<%=cid%>.getResultSet();
-            	if(resultSet_<%=cid%> != null){
-            		break;
-            	}
-            	if(!statement_<%=cid%>.getMoreResults()){
-            		break;
-            	}
-            } while(true);		
+            boolean resultSetFound_<%=cid %> = false;
+	        while (!resultSetFound_<%=cid %>) {
+	            resultSetFound_<%=cid %> = statement_<%=cid%>.getMoreResults();
+	            if (!resultSetFound_<%=cid %> && statement_<%=cid%>.getUpdateCount()==-1) {
+	                break;
+	            }
+	        }
+	        if (resultSetFound_<%=cid %>) {
+	            resultSet_<%=cid%> = statement_<%=cid%>.getResultSet();
+	        }
             <%
 		}
 		

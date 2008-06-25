@@ -13,9 +13,9 @@ String cid = node.getUniqueName();
 
 String useExistingConn = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__");
 %>
-stmt_<%=cid%>.execute("SET NOCOUNT OFF");
+//stmt_<%=cid%>.execute("SET NOCOUNT OFF");
 
-stmt_<%=cid%>.close();
+//stmt_<%=cid%>.close();
 
 statement_<%=cid%>.close();
 <%
