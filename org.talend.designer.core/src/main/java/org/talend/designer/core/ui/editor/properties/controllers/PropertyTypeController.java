@@ -19,7 +19,9 @@ import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
+import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.metadata.builder.connection.Connection;
+import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -70,6 +72,8 @@ public class PropertyTypeController extends AbstractRepositoryController {
                     repositoryConnection = null;
                 }
 
+                updateDBType(repositoryConnection);
+
                 if (repositoryConnection != null) {
                     ChangeValuesFromRepository changeValuesFromRepository = new ChangeValuesFromRepository(elem,
                             repositoryConnection, fullParamName, id);
@@ -80,6 +84,24 @@ public class PropertyTypeController extends AbstractRepositoryController {
             }
         }
         return null;
+    }
+
+    // see bug 0004305
+    private void updateDBType(Connection repositoryConnection) {
+        if (repositoryConnection == null) {
+            return;
+        }
+        if (!(repositoryConnection instanceof DatabaseConnection)) {
+            return;
+        }
+
+        final String property = "DBTYPE";
+        if (elem.getElementParameter(property) == null) {
+            return;
+        }
+        String currentDbType = ((DatabaseConnection) repositoryConnection).getDatabaseType();
+        EDatabaseTypeName typeName = EDatabaseTypeName.getTypeFromDbType(currentDbType);
+        elem.setPropertyValue(property, typeName.getXMLType());
     }
 
     /*
@@ -127,6 +149,9 @@ public class PropertyTypeController extends AbstractRepositoryController {
                     repositoryConnection = null;
                 }
             }
+
+            updateDBType(repositoryConnection);
+
         }
         CompoundCommand cc = new CompoundCommand();
         ChangeValuesFromRepository changeValuesFromRepository1 = new ChangeValuesFromRepository(elem, repositoryConnection,
