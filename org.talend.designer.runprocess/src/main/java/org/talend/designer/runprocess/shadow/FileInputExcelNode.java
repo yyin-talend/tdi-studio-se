@@ -63,8 +63,9 @@ public class FileInputExcelNode extends FileInputNode {
             break;
         default: // PERL
             paramValues = new String[] { filename, encoding == null ? TalendTextUtils.addQuotes("ISO-8859-1") : encoding,
-                    limitRows.equals("0") ? "50" : limitRows, header, footer, emptyEmptyRow, "'" + bean.getFirstColumn() + "'",
-                    "'" + bean.getLastColumn() + "'", "true" };
+                    limitRows.equals("0") ? "50" : limitRows, header, footer, emptyEmptyRow,
+                    bean.getFirstColumn() == null ? null : "'" + bean.getFirstColumn() + "'",
+                    bean.getLastColumn() == null ? null : "'" + bean.getLastColumn() + "'", "true" };
         }
 
         for (int i = 0; i < paramNames.length; i++) {
