@@ -103,8 +103,6 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
 
     private LabelledCheckboxCombo rowsToSkipFooterCheckboxCombo;
 
-    private Button emptyRowsToSkipCheckbox;
-
     private Button advanceSeparatorCheckbox;
 
     private LabelledText thousandSeparaotrText;
@@ -161,10 +159,7 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
         flag = initRowsToSkip(rowsToSkipLimitCheckboxCombo, getConnection().getLimitValue());
         getConnection().setUseLimit(flag);
 
-        emptyRowsToSkipCheckbox.setSelection(getConnection().isRemoveEmptyRow());
         firstRowIsCaptionCheckbox.setSelection(getConnection().isFirstLineCaption());
-
-        emptyRowsToSkipCheckbox.setSelection(getConnection().isRemoveEmptyRow());
         advanceSeparatorCheckbox.setSelection(getConnection().isAdvancedSpearator());
 
         if (isContextMode()) {
@@ -213,7 +208,6 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
         // rowsToSkipHeaderCheckboxCombo.setReadOnly(isReadOnly());
         // rowsToSkipFooterCheckboxCombo.setReadOnly(isReadOnly());
         // rowsToSkipLimitCheckboxCombo.setReadOnly(isReadOnly());
-        emptyRowsToSkipCheckbox.setEnabled(!isReadOnly());
         firstRowIsCaptionCheckbox.setEnabled(!isReadOnly());
     }
 
@@ -283,15 +277,7 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
 
         // Footer
         rowsToSkipFooterCheckboxCombo = new LabelledCheckboxCombo(compositeRowsToSkip, Messages.getString("FileStep2.footer"), //$NON-NLS-1$
-                Messages.getString("FileStep2.footerTip"), STRING_NUMBERS_DATA, 1, true, SWT.NONE); //$NON-NLS-1$
-
-        // Empty row
-        emptyRowsToSkipCheckbox = new Button(compositeRowsToSkip, SWT.CHECK);
-        emptyRowsToSkipCheckbox.setText(Messages.getString("FileStep2.removeEmptyRow")); //$NON-NLS-1$
-        emptyRowsToSkipCheckbox.setAlignment(SWT.LEFT);
-        gridData = new GridData(SWT.FILL, SWT.BOTTOM, true, false);
-        gridData.horizontalSpan = 3;
-        emptyRowsToSkipCheckbox.setLayoutData(gridData);
+                Messages.getString("FileStep2.footerTip"), STRING_NUMBERS_DATA, 1, true, SWT.NONE); //$NON-NLS-1$      
 
     }
 
@@ -364,10 +350,10 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
 
         Composite mainComposite = Form.startNewGridLayout(this, 2);
 
-        addGroupDelimitedFileSettings(mainComposite, 280, 120);
-        addGroupRowsToSkip(mainComposite, 300, 120);
-        addGroupDieOnErrorSettings(mainComposite, 280, 50);
-        addGroupLimit(mainComposite, 300, 50);
+        addGroupDelimitedFileSettings(mainComposite, 280, 80);
+        addGroupRowsToSkip(mainComposite, 300, 80);
+        addGroupDieOnErrorSettings(mainComposite, 280, 60);
+        addGroupLimit(mainComposite, 300, 60);
 
         Composite mainComposite2 = Form.startNewGridLayout(this, 1);
 
@@ -388,8 +374,7 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
      */
     private ProcessDescription getProcessDescription(FileExcelConnection originalValueConnection) {
 
-        ProcessDescription processDescription = (ProcessDescription) ShadowProcessHelper
-                .getProcessDescription(originalValueConnection);
+        ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(originalValueConnection);
 
         // Adapt Header width firstRowIsCaption to preview the first line on caption or not
         Integer i = 0;
@@ -418,6 +403,7 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
         }
 
         processDescription.setEncoding(TalendTextUtils.addQuotes(originalValueConnection.getEncoding()));
+        processDescription.setRemoveEmptyRow(originalValueConnection.isRemoveEmptyRow());
 
         ExcelSchemaBean bean = new ExcelSchemaBean();
 
@@ -719,15 +705,6 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
                 checkRowToSkip();
             }
         });
-
-        // empty Rows To Skip
-        emptyRowsToSkipCheckbox.addSelectionListener(new SelectionAdapter() {
-
-            @Override
-            public void widgetSelected(final SelectionEvent e) {
-                getConnection().setRemoveEmptyRow(emptyRowsToSkipCheckbox.getSelection());
-            }
-        });
     }
 
     /**
@@ -910,6 +887,7 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
 
         boolean firstRowIsCatption = false;
 
+        @Override
         public boolean preProcessStart() {
             previewButton.setText(Messages.getString("FileStep2.stop"));
 
@@ -955,6 +933,7 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
             return true;
         }
 
+        @Override
         public void nonUIProcessInThread() {
             // get the XmlArray width an adapt ProcessDescription
             try {
@@ -974,12 +953,14 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
             }
         }
 
+        @Override
         public void updateUIInThreadIfThreadIsCanceled() {
             if (!previewInformationLabel.isDisposed()) {
                 previewInformationLabel.setText("");
             }
         }
 
+        @Override
         public void updateUIInThreadIfThreadIsNotCanceled() {
             if (previewInformationLabel.isDisposed()) {
                 return;
@@ -998,6 +979,7 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
             }
         }
 
+        @Override
         public void updateUIInThreadIfThreadFinally() {
             if (!previewButton.isDisposed()) {
                 previewButton.setText(Messages.getString("FileStep2.refreshPreview"));
@@ -1006,6 +988,7 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
             }
         }
 
+        @Override
         public void postProcessCancle() {
             previewButton.setEnabled(false);
         }
@@ -1177,6 +1160,7 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
 
     }
 
+    @Override
     protected void collectConnParams() {
         super.collectConnParams();
         addContextParams(EFileParamName.FirstColumn, true);
