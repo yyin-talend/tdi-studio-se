@@ -94,6 +94,7 @@ import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.job.deletion.JobResourceManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
+import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.views.IRepositoryView;
 
 /**
@@ -186,6 +187,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         IRepositoryService service = CorePlugin.getDefault().getRepositoryService();
         IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
         processEditorInput = (RepositoryEditorInput) editorInput;
+
         IProcess2 currentProcess = processEditorInput.getLoadedProcess();
         if (!currentProcess.isReadOnly()) {
             try {
@@ -761,6 +763,11 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
      */
     @Override
     public void dispose() {
+        IEditorInput input = this.getEditorInput();
+        RepositoryNode repositoryNode = null;
+        if (input instanceof RepositoryEditorInput) {
+            repositoryNode = ((RepositoryEditorInput) input).getRepositoryNode();
+        }
         getSite().setSelectionProvider(null);
         getSite().getWorkbenchWindow().getSelectionService().removeSelectionListener(this);
         setInput(null);
@@ -786,7 +793,11 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
         IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);
         if (viewPart != null) {
-            viewPart.refresh();
+            if (repositoryNode != null) {
+                viewPart.refresh(repositoryNode);
+            } else {
+                viewPart.refresh();
+            }
         }
 
         processEditorInput.setLoadedProcess(null);
