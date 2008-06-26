@@ -539,4 +539,27 @@ public class PerlProcessor extends Processor {
         return cmd;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.Processor#generateContextCode(boolean, boolean, boolean)
+     */
+    @Override
+    public void generateContextCode() throws ProcessorException {
+        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
+                Context.REPOSITORY_CONTEXT_KEY);
+        Project repositoryProject = repositoryContext.getProject();
+
+        ICodeGenerator codeGen;
+        ICodeGeneratorService service = RunProcessPlugin.getDefault().getCodeGeneratorService();
+        String perlInterpreter = getInterpreter();
+        String perlLib = getLibraryPath();
+        String currentPerlProject = repositoryProject.getTechnicalLabel();
+        String codeLocation = getCodeLocation();
+
+        codeGen = service.createCodeGenerator(process, false, false, perlInterpreter, perlLib, codeLocation, currentPerlProject);
+
+        updateContextCode(codeGen);
+    }
+
 }
