@@ -229,8 +229,8 @@ skeleton="../templates/db_output_bulk.skeleton"
         %>
         whetherReject_<%=cid%> = false;
         <%	
-        if(dataAction.equals("INSERT")){
-            if(extendedInsert){//extended-insert mode(begin)
+        if(dataAction.equals("INSERT")) {
+            if(extendedInsert) {//extended-insert mode(begin)
                 ExtendInsertOperation eiOperation = new ExtendInsertOperation(); 
                 int insertableCount = 0;
                 for(Column column : colStruct) {
@@ -296,11 +296,10 @@ skeleton="../templates/db_output_bulk.skeleton"
 
                 }
                 %>
-                try{
+                try {
                     insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
                     nb_line_<%=cid%>++;
-                }catch(Exception e)
-                {
+                } catch(Exception e) {
                     whetherReject_<%=cid%> = true;
                     <%
                     if (dieOnError.equals("true")) {
@@ -329,7 +328,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                 }
                 <%
             }
-    	}else if(dataAction.equals("UPDATE")){
+    	} else if(dataAction.equals("UPDATE")) {
     		int counterCol = 1;
     		
     		for(Column column : colStruct) {
@@ -353,11 +352,10 @@ skeleton="../templates/db_output_bulk.skeleton"
     		}
     
     		%>
-            try{
+            try {
                 updatedCount_<%=cid%> = updatedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
                 nb_line_<%=cid%>++;
-            }catch(Exception e)
-            {
+            } catch(Exception e) {
                 whetherReject_<%=cid%> = true;
                 <%
                 if (dieOnError.equals("true")) {
@@ -385,13 +383,12 @@ skeleton="../templates/db_output_bulk.skeleton"
                 %>
             }
             <%
-    	}else if (dataAction.equals("INSERT_OR_UPDATE")){
+    	} else if (dataAction.equals("INSERT_OR_UPDATE")) {
     	    %>
     
     	    <%
     		int columnIndex = 1;
-    		for(Column column : colStruct)
-    		{
+    		for(Column column : colStruct) {
     			if(column.isUpdateKey()) {
     			    String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
     			    %>
@@ -404,16 +401,13 @@ skeleton="../templates/db_output_bulk.skeleton"
     
     		java.sql.ResultSet rs_<%=cid%> = pstmt_<%=cid %>.executeQuery();
     		int checkCount_<%=cid%> = -1;
-    		while(rs_<%=cid%>.next())
-    		{
+    		while(rs_<%=cid%>.next()) {
     			checkCount_<%=cid%> = rs_<%=cid%>.getInt(1);
     		}
-    		if(checkCount_<%=cid%> > 0)
-    		{
+    		if(checkCount_<%=cid%> > 0) {
     			<%
     			int counterCol = 1;
-    			for(Column column : colStruct)
-    			{
+    			for(Column column : colStruct) {
     				if(column.isUpdatable()) {
     				    String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
     				    %>
@@ -422,8 +416,7 @@ skeleton="../templates/db_output_bulk.skeleton"
     				    counterCol++;
     				}
     			}
-    			for(Column column : colStruct)
-    			{
+    			for(Column column : colStruct) {
     				if(column.isUpdateKey()) {
     				    String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
     				    %>
@@ -433,10 +426,9 @@ skeleton="../templates/db_output_bulk.skeleton"
     				}
     			}
     			%>
-                try{
+                try {
                     updatedCount_<%=cid%> = updatedCount_<%=cid%> + pstmtUpdate_<%=cid %>.executeUpdate();
-                }catch(Exception e)
-                {
+                } catch(Exception e) {
                     whetherReject_<%=cid%> = true;
                     <%
                     if (dieOnError.equals("true")) {
@@ -463,9 +455,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                     } 
                     %>
                 }
-    		}
-    		else
-    		{
+    		} else {
     			<%
     			int counterInsert = 1;
     			for(Column columnInsert : colStruct)
@@ -479,10 +469,9 @@ skeleton="../templates/db_output_bulk.skeleton"
     				}
     			}
     			%>
-                try{
+                try {
                     insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmtInsert_<%=cid %>.executeUpdate();
-                }catch(Exception e)
-                {
+                } catch(Exception e) {
                     whetherReject_<%=cid%> = true;
                     <%
                     if (dieOnError.equals("true")) {
@@ -512,7 +501,7 @@ skeleton="../templates/db_output_bulk.skeleton"
     		}
     		nb_line_<%=cid%>++;
     		<%
-    	}else if (dataAction.equals("UPDATE_OR_INSERT")){
+    	} else if (dataAction.equals("UPDATE_OR_INSERT")) {
     	    %>
     	    int updateFlag_<%=cid%>=0;
     	    <%
@@ -538,12 +527,11 @@ skeleton="../templates/db_output_bulk.skeleton"
     		}
     		%>
     	
-            try{
+            try {
                 updateFlag_<%=cid%>=pstmtUpdate_<%=cid %>.executeUpdate();
                 updatedCount_<%=cid%> = updatedCount_<%=cid%>+updateFlag_<%=cid%>;
                 
-            }catch(Exception e)
-            {
+            } catch(Exception e) {
                 whetherReject_<%=cid%> = true;
                 <%
                 if (dieOnError.equals("true")) {
@@ -584,10 +572,9 @@ skeleton="../templates/db_output_bulk.skeleton"
         			}
         		}
         		%>
-                try{
+                try {
                     insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmtInsert_<%=cid %>.executeUpdate();
-                }catch(Exception e)
-                {
+                } catch(Exception e) {
                     whetherReject_<%=cid%> = true;
                     <%
                     if (dieOnError.equals("true")) {
@@ -616,7 +603,7 @@ skeleton="../templates/db_output_bulk.skeleton"
             nb_line_<%=cid%>++;
             <%
     	
-    	}else if (dataAction.equals("DELETE")){
+    	} else if (dataAction.equals("DELETE")) {
     		int keyCounter = 1;
     		for(Column column : colStruct) {
     			if(column.isDeleteKey()) {
@@ -627,39 +614,150 @@ skeleton="../templates/db_output_bulk.skeleton"
     			    keyCounter++;
     			}
     		}
-    	%>
-        try{
-    	    deletedCount_<%=cid%> = deletedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
-        }catch(Exception e)
-        {
-            whetherReject_<%=cid%> = true;
-            <%
-            if (dieOnError.equals("true")) {
-                %>
-                throw(e);
+        	%>
+            try {
+        	    deletedCount_<%=cid%> = deletedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
+            } catch(Exception e) {
+                whetherReject_<%=cid%> = true;
                 <%
-            } else {
-                if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {%>
-                <%=rejectConnName %> = new <%=rejectConnName %>Struct();
-                <%
-                    for(IMetadataColumn column : columnList) {
-                        %>
-                        <%=rejectConnName%>.<%=column.getLabel()%> = <%=incomingConnName%>.<%=column.getLabel()%>;
-                        <%
-                    }
+                if (dieOnError.equals("true")) {
                     %>
-                    <%=rejectConnName%>.errorMessage = e.getMessage();
+                    throw(e);
                     <%
                 } else {
-                    %>
-                    System.err.print(e.getMessage());
-                    <%
+                    if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
+                        %>
+                        <%=rejectConnName %> = new <%=rejectConnName %>Struct();
+                        <%
+                        for(IMetadataColumn column : columnList) {
+                            %>
+                            <%=rejectConnName%>.<%=column.getLabel()%> = <%=incomingConnName%>.<%=column.getLabel()%>;
+                            <%
+                        }
+                        %>
+                        <%=rejectConnName%>.errorMessage = e.getMessage();
+                        <%
+                    } else {
+                        %>
+                        System.err.print(e.getMessage());
+                        <%
+                    }
                 }
-            } 
+                %>
+            }
+            nb_line_<%=cid%>++;
+        	<%
+    	} else if(dataAction.equals("REPLACE")) {
+    	    int counter = 1;
+            for(Column column : colStruct) {
+                if(column.isInsertable()) {
+                    String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
+                    %>
+                    <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, column, counter, incomingConnName, cid, NORMAL_TYPE)%>
+                    <%
+                    counter++;                        
+                }       
+
+            }
             %>
-        }
-        nb_line_<%=cid%>++;
-    	<%
+            int replaceCount_<%=cid%> = 0;
+            try {
+                replaceCount_<%=cid%> = pstmt_<%=cid %>.executeUpdate();
+            } catch(Exception e) {
+                whetherReject_<%=cid%> = true;
+                <%
+                if (dieOnError.equals("true")) {
+                    %>
+                    throw(e);
+                    <%
+                } else {
+                    if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
+                        %>
+                        <%=rejectConnName %> = new <%=rejectConnName %>Struct();
+                        <%
+                        for(IMetadataColumn column : columnList) {
+                            %>
+                            <%=rejectConnName%>.<%=column.getLabel()%> = <%=incomingConnName%>.<%=column.getLabel()%>;
+                            <%
+                        }
+                        %>
+                        <%=rejectConnName%>.errorMessage = e.getMessage();
+                        <%
+                    } else {
+                        %>
+                        System.err.print(e.getMessage());
+                        <%
+                    }
+                }
+                %>                
+            }
+            if(replaceCount_<%=cid%> == 1) {
+                insertedCount_<%=cid%> += replaceCount_<%=cid%>;
+            } else {
+                insertedCount_<%=cid%> += 1;
+                deletedCount_<%=cid%> += replaceCount_<%=cid%> - 1;
+            }
+            <%
+    	} else if(dataAction.equals("INSERT_ON_DUPLICATE_KEY_UPDATE")) {
+    	    int counter = 1;
+            for(Column column : colStruct) {
+                if(column.isInsertable()) {
+                    String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
+                    %>
+                    <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, column, counter, incomingConnName, cid, NORMAL_TYPE)%>
+                    <%
+                    counter++;                        
+                }       
+
+            }
+            for(Column column : colStruct) {
+                if(column.isUpdatable()) {
+                    String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
+                    %>
+                    <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, column, counter, incomingConnName, cid, NORMAL_TYPE)%>
+                    <%
+                    counter++;                   
+                }
+            }
+            %>
+            int count_<%=cid%> = 0;
+            try {
+                count_<%=cid%> = pstmt_<%=cid %>.executeUpdate();
+            } catch(Exception e) {
+                whetherReject_<%=cid%> = true;
+                <%
+                if (dieOnError.equals("true")) {
+                    %>
+                    throw(e);
+                    <%
+                } else {
+                    if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
+                        %>
+                        <%=rejectConnName %> = new <%=rejectConnName %>Struct();
+                        <%
+                        for(IMetadataColumn column : columnList) {
+                            %>
+                            <%=rejectConnName%>.<%=column.getLabel()%> = <%=incomingConnName%>.<%=column.getLabel()%>;
+                            <%
+                        }
+                        %>
+                        <%=rejectConnName%>.errorMessage = e.getMessage();
+                        <%
+                    } else {
+                        %>
+                        System.err.print(e.getMessage());
+                        <%
+                    }
+                }
+                %>                
+            }
+            if(count_<%=cid%> == 1) {
+                insertedCount_<%=cid%> += count_<%=cid%>;
+            } else {
+                insertedCount_<%=cid%> += 1;
+                updatedCount_<%=cid%> += count_<%=cid%> - 1;
+            }
+            <%
     	}
     	
         if(outgoingConns != null && outgoingConns.size() > 0) {

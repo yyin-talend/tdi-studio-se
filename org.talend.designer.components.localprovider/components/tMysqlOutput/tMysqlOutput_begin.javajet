@@ -125,17 +125,14 @@ long date_<%=cid %>;
 java.sql.Connection conn_<%=cid%> = null;
 <%
 String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
-if(useExistingConn.equals("true"))
-{
+if(useExistingConn.equals("true")) {
 	commitEvery = "0";
 	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 	String conn = "conn_" + connection;;
 	%>
 	conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
 	<%
-}
-else
-{
+} else {
 	String javaDbDriver   = "org.gjt.mm.mysql.Driver";
 	%>
 	java.lang.Class.forName("<%=javaDbDriver %>");
@@ -221,8 +218,8 @@ if(columnList != null && columnList.size() > 0) {
     StringBuilder updateWhereStmt = actionSQLMap.get(UPDATE_WHERE_STMT);
     StringBuilder deleteWhereStmt = actionSQLMap.get(DELETE_WHERE_STMT);
     
-	if(dataAction.equals("INSERT")){
-	    if(!extendedInsert){
+	if(dataAction.equals("INSERT")) {
+	    if(!extendedInsert) {
 	        %>      	    
 	        java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO `"+<%=tableName%>+"` (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");	        
 	        <%
@@ -289,36 +286,33 @@ if(columnList != null && columnList.size() > 0) {
 	            int rowCount<%=cid%> = 0;	            
 	    <%
 	    }//extended-insert mode(end)
-	}else if (dataAction.equals("UPDATE")){
-	    %>
-	
+	} else if (dataAction.equals("UPDATE")) {
+	    %>	
 	    java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE `" + <%=tableName%> + "` SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
-
 	    <%		
-	}else if (dataAction.equals("INSERT_OR_UPDATE")){
+	} else if (dataAction.equals("INSERT_OR_UPDATE")) {
 	    %>
 	    java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("SELECT COUNT(1) FROM `" + <%=tableName%> + "` WHERE <%=updateWhereStmt.toString()%>");	
-
 	    java.sql.PreparedStatement pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO `" + <%=tableName%> + "` (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
-
-	    java.sql.PreparedStatement pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE `" + <%=tableName%> + "` SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
-		
+	    java.sql.PreparedStatement pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE `" + <%=tableName%> + "` SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");		
 	    <%
-	}else if (dataAction.equals("UPDATE_OR_INSERT")){
+	} else if (dataAction.equals("UPDATE_OR_INSERT")) {
 	    %>
 	    java.sql.PreparedStatement pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE `" + <%=tableName%> + "` SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
-
-
-	    java.sql.PreparedStatement pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO `" + <%=tableName%> + "` (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
-				
-	    <%
-			
-	}else if (dataAction.equals("DELETE")){
-	    %>
-	
+	    java.sql.PreparedStatement pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO `" + <%=tableName%> + "` (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");				
+	    <%			
+	} else if (dataAction.equals("DELETE")) {
+	    %>	
 	    java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("DELETE  FROM `" + <%=tableName%> + "` WHERE <%=deleteWhereStmt.toString()%>");
-
 	    <%		
+	} else if(dataAction.equals("REPLACE")) {
+	    %>
+	    java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("REPLACE INTO `" + <%=tableName%> + "` (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
+	    <%
+	} else if(dataAction.equals("INSERT_ON_DUPLICATE_KEY_UPDATE")) {
+	    %>
+	    java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT IGNORE INTO `" + <%=tableName%> + "` (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>) ON DUPLICATE KEY UPDATE <%=updateSetStmt.toString()%>");
+	    <%
 	}
 
 	if(!commitEvery.equals("")&&!commitEvery.equals("0")){
