@@ -946,6 +946,14 @@ public class Node extends Element implements INode {
 
         parameter.setValue(value);
         updateVisibleData();
+
+        if (id.equals("WAIT_FOR") && this.getComponent().getName().equals("tParallelize")) {
+            List<Connection> synchroConnList = (List<Connection>) this.getOutgoingConnections(EConnectionType.SYNCHRONIZE);
+            for (Connection synchroConn : synchroConnList) {
+                synchroConn.updateName();
+            }
+        }
+
     }
 
     public List<IMetadataTable> getMetadataList() {
@@ -1591,11 +1599,6 @@ public class Node extends Element implements INode {
             }
         }
 
-        if (getComponent().getName().equals("tSynchronize") && getCurrentActiveLinksNbOutput(IConnectionCategory.DEPENDENCY) == 0) {
-            String errorMessage = "This component should be followed by a dependency link or it won't be usefull.";
-            Problems.add(ProblemStatus.WARNING, this, errorMessage);
-        }
-
         // Check if there's an output run after / before on a component that is
         // not a sub process start
         if (!isSubProcessStart() || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
@@ -2207,8 +2210,7 @@ public class Node extends Element implements INode {
                 IConnection connection = getIncomingConnections().get(j);
                 // connection that will generate a hash file are not
                 // considered as activated for this test.
-                if (connection.isActivate() && !connection.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_HASH)
-                        && connection.getLineStyle() != EConnectionType.SYNCHRONIZE) {
+                if (connection.isActivate() && !connection.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_HASH)) {
                     isActivatedConnection = true;
                 }
             }

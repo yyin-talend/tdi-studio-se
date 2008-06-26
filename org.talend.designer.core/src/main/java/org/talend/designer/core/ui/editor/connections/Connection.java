@@ -390,6 +390,16 @@ public class Connection extends Element implements IConnection, IPerformance {
                 labelText = sourceNodeConnector.getLinkName() + " (x " + (String) numberParam.getValue() + ")";
             }
             updateName = true;
+        } else if (getLineStyle().equals(EConnectionType.SYNCHRONIZE)) {
+            IElementParameter synchroType = this.getSource().getElementParameter("WAIT_FOR");
+            if (synchroType != null) {
+                if ("All".equals(synchroType.getValue())) {
+                    labelText += " (Wait for all)";
+                } else if ("First".equals(synchroType.getValue())) {
+                    labelText += " (Wait for first)";
+                }
+            }
+            updateName = true;
         } else {
             if (outputId >= 0 && !getLineStyle().equals(EConnectionType.PARALLELIZE)) {
                 labelText += " (" + "order:" + outputId + ")";

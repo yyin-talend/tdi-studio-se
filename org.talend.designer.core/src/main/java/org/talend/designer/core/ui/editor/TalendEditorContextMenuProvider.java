@@ -27,7 +27,6 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.actions.ActionFactory;
-import org.talend.core.PluginChecker;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.designer.core.i18n.Messages;
@@ -232,32 +231,20 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
                 subMenu.add(action);
             }
 
-            if (PluginChecker.isJobLetPluginLoaded()) {
-                subMenu.add(new Separator());
+            subMenu.add(new Separator());
 
-                action = new ConnectionCreateAction(part, EConnectionType.SYNCHRONIZE);
-                ((ConnectionCreateAction) action).update();
-                if (action.isEnabled()) {
-                    subMenu.add(action);
-                }
-
-                action = new ConnectionCreateAction(part, EConnectionType.PARALLELIZE);
-                ((ConnectionCreateAction) action).update();
-                if (action.isEnabled()) {
-                    subMenu.add(action);
-                }
+            action = new ConnectionCreateAction(part, EConnectionType.SYNCHRONIZE);
+            ((ConnectionCreateAction) action).update();
+            if (action.isEnabled()) {
+                subMenu.add(action);
             }
 
-            /*
-             * action = new ConnectionCreateAction(part, EConnectionType.RUN_AFTER); ((ConnectionCreateAction)
-             * action).update(); if (action.isEnabled()) { subMenu.add(action); }
-             */
-            /*
-             * subMenu.add(new Separator());
-             * 
-             * action = new ConnectionCreateAction(part, EConnectionType.REFERENCE); ((ConnectionCreateAction)
-             * action).update(); if (action.isEnabled()) { subMenu.add(action); }
-             */
+            action = new ConnectionCreateAction(part, EConnectionType.PARALLELIZE);
+            ((ConnectionCreateAction) action).update();
+            if (action.isEnabled()) {
+                subMenu.add(action);
+            }
+
             subMenu.add(new Separator());
 
             action = new ConnectionCreateAction(part, EConnectionType.RUN_IF);
