@@ -474,22 +474,72 @@ public class DatabaseForm extends AbstractForm {
                         String[] s = urlDataStringConnection.getAnalyse(urlConnectionStringText.getText());
                         // if the ConnectionString write manually don't correspond width selectedIndex of combo DbType
                         // we search if another regex corresponding at this string
-                        if (new Integer(s[0]) != dbTypeCombo.getSelectionIndex()) {
+                        int selection = new Integer(s[0]);
+                        if (selection != dbTypeCombo.getSelectionIndex()) {
                             dbTypeCombo.select(new Integer(s[0]));
                             dbTypeCombo.forceFocus();
                         }
 
-                        if (s[1] != "") { //$NON-NLS-1$
-                            serverText.setText(s[1]);
-                            getConnection().setServerName(s[1]);
+                        int index = 1;
+                        if (s[index] != "") {//$NON-NLS-1$
+                            if (selection == DataStringConnection.DBTYPE_GENERIC_ODBC
+                                    || selection == DataStringConnection.DBTYPE_MICORSOFT_SQL_SERVER_ODBC_DRIVER) {
+                                datasourceText.setText(s[index]);
+                                getConnection().setDatasourceName(s[index]);
+                            } else if (selection == DataStringConnection.DBTYPE_SQLITE
+                                    || selection == DataStringConnection.DBTYPE_ACCESS) {
+                                fileField.setText(s[index]);
+                                getConnection().setFileFieldName(s[index]);
+                            } else if (selection == DataStringConnection.DBTYPE_JAVADB_EMBEDED) {
+                                sidOrDatabaseText.setText(s[index]);
+                                getConnection().setSID(s[index]);
+                            } else if (selection == DataStringConnection.DBTYPE_HSQLDB_IN_PROCESS) {
+                                directoryField.setText(s[index]);
+                                getConnection().setDBRootPath(s[index]);
+                            } else {
+                                serverText.setText(s[index]);
+                                getConnection().setServerName(s[index]);
+                            }
                         }
-                        if (s[2] != "") { //$NON-NLS-1$
-                            portText.setText(s[2]);
-                            getConnection().setPort(s[2]);
+
+                        index = 2;
+                        if (s[index] != "") { //$NON-NLS-1$
+                            if (selection == DataStringConnection.DBTYPE_INTERBASE
+                                    || selection == DataStringConnection.DBTYPE_TERDATA
+                                    || selection == DataStringConnection.DBTYPE_AS400
+                                    || selection == DataStringConnection.DBTYPE_HSQLDB_IN_PROCESS) {
+                                sidOrDatabaseText.setText(s[index]);
+                                getConnection().setSID(s[index]);
+                            } else if (selection == DataStringConnection.DBTYPE_FIREBIRD) {
+                                fileField.setText(s[index]);
+                                getConnection().setFileFieldName(s[index]);
+                            } else {
+                                portText.setText(s[index]);
+                                getConnection().setPort(s[index]);
+                            }
                         }
-                        if (s[3] != "") { //$NON-NLS-1$
-                            sidOrDatabaseText.setText(s[3]);
-                            getConnection().setSID(s[3]);
+
+                        index = 3;
+                        if (s[index] != "") { //$NON-NLS-1$
+                            sidOrDatabaseText.setText(s[index]);
+                            getConnection().setSID(s[index]);
+                        }
+
+                        index = 4;
+                        if (s[index] != "") { //$NON-NLS-1$
+                            if (selection == DataStringConnection.DBTYPE_INFORMIX) {
+                                datasourceText.setText(s[index]);
+                                getConnection().setDatasourceName(s[index]);
+                            } else {
+                                additionParamText.setText(s[index]);
+                                getConnection().setAdditionalParams(s[index]);
+                            }
+                        }
+
+                        index = 5;
+                        if (s[index] != "") {
+                            additionParamText.setText(s[index]);
+                            getConnection().setAdditionalParams(s[index]);
                         }
                     }
                     checkDBTypeAS400();
