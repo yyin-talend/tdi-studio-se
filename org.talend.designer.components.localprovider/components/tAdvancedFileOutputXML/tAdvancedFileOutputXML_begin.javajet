@@ -5,6 +5,7 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.metadata.IMetadataTable
     java.util.List
+    java.util.Map
     java.util.ArrayList
    	org.talend.core.model.process.IConnection    
 	org.talend.core.model.process.IConnectionCategory
@@ -28,6 +29,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         		String fileName = ElementParameterParser.getValue(node, "__FILENAME__");
         		
         		String mode = ElementParameterParser.getValue(node, "__GENERATION_MODE__");
+        		List<Map<String, String>> rootTable = 
+                	(List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ROOT__");
+                List<Map<String, String>> groupTable = 
+                	(List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__GROUP__");
+                List<Map<String, String>> loopTable = 
+                	(List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__LOOP__");
 %>
 int nb_line_<%=cid%> = 0;
 boolean needRoot_<%=cid%>  = true;
@@ -87,6 +94,21 @@ class NestXMLTool_<%=cid%>{
        		}
        	}
 	}
+	
+	public void removeEmptyElement(org.dom4j.Element root){
+		if (root!=null) {
+			for (org.dom4j.Element tmp: (java.util.List<org.dom4j.Element>) root.elements()) {
+				removeEmptyElement(tmp);
+			}
+			if (root.content().size() == 0 
+    			&& root.attributes().size() == 0 
+    			&& root.declaredNamespaces().size() == 0) {
+    			if(root.getParent()!=null){
+                	root.getParent().remove(root);
+                }
+            }
+		}
+	}
 }
 NestXMLTool_<%=cid%> nestXMLTool_<%=cid%> = new NestXMLTool_<%=cid%>();
 
@@ -100,6 +122,25 @@ format_<%=cid%>.setEncoding(<%=encoding%>);
 <%
 				}else if(mode.equals("Null")){
 %>
+java.util.List<String> endTabStrs_<%=cid%> = new java.util.ArrayList<String>();
+java.util.List<String> startTabStrs_<%=cid%> = new java.util.ArrayList<String>();
+<%
+            		if(loopTable.size()>0){
+            			String emptyspace = "";
+        				String endPath = loopTable.get(0).get("PATH");
+        				String[] endTabs = endPath.split("/");
+        				for(int len = 1; len<endTabs.length-1;len++){
+%>
+endTabStrs_<%=cid%>.add("<%=emptyspace%></<%=endTabs[len]%>>");
+startTabStrs_<%=cid%>.add("\n<%=emptyspace%><<%=endTabs[len]%>>");
+<%
+	         				emptyspace += "  ";
+            			}
+        			}
+%>
+int preUnNullMaxIndex_<%=cid%> = -1;
+int preNewTabIndex_<%=cid%> = -1;
+String[] startTabs_<%=cid%> = new String[endTabStrs_<%=cid%>.size()];
 java.io.BufferedWriter out_<%=cid%> = new java.io.BufferedWriter(
 	new java.io.OutputStreamWriter(new java.io.FileOutputStream(fileName_<%=cid%>), <%=encoding%>));
 out_<%=cid%>.write("<?xml version=\"1.0\" encoding=\""+<%=encoding%>+"\"?>");
