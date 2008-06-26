@@ -55,19 +55,31 @@ public class JavaCompilationParticipant extends CompilationParticipant {
     @Override
     public void processAnnotations(BuildContext[] files) {
 
-        boolean fileModified = false;
+        boolean routineToUpdate = false;
         super.processAnnotations(files);
+
+        List<IRepositoryObject> routineObjectList = null;
         for (BuildContext context : files) {
 
             String filePath = (context.getFile().getProjectRelativePath()).toString();
 
             if (isRoutineFile(filePath)) {
-                updateProblems(ERepositoryObjectType.ROUTINES, filePath);
-                fileModified = true;
+                if (!routineToUpdate) {
+                    IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
+
+                    try {
+
+                        routineObjectList = factory.getAll(ERepositoryObjectType.ROUTINES, false);
+                    } catch (PersistenceException e) {
+                        ExceptionHandler.process(e);
+                    }
+                }
+                updateProblems(routineObjectList, filePath);
+                routineToUpdate = true;
             }
         }
 
-        if (fileModified) {
+        if (routineToUpdate) {
             Display.getDefault().asyncExec(new Runnable() {
 
                 public void run() {
@@ -82,18 +94,14 @@ public class JavaCompilationParticipant extends CompilationParticipant {
     /**
      * yzhang Comment method "updateProblems".
      */
-    private void updateProblems(ERepositoryObjectType type, String filePath) {
+    private void updateProblems(List<IRepositoryObject> routineObjectList, String filePath) {
 
         IRunProcessService runProcessService = CorePlugin.getDefault().getRunProcessService();
-        IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
-
         try {
-
             IProject javaProject = runProcessService.getProject(ECodeLanguage.JAVA);
             IFile file = javaProject.getFile(filePath);
             String fileName = file.getName();
 
-            List<IRepositoryObject> routineObjectList = factory.getAll(type, false);
             for (IRepositoryObject repositoryObject : routineObjectList) {
                 Property property = repositoryObject.getProperty();
                 ITalendSynchronizer synchronizer = CorePlugin.getDefault().getCodeGeneratorService().createRoutineSynchronizer();
@@ -103,9 +111,6 @@ public class JavaCompilationParticipant extends CompilationParticipant {
                 }
 
             }
-
-        } catch (PersistenceException e) {
-            ExceptionHandler.process(e);
         } catch (SystemException e) {
             ExceptionHandler.process(e);
         } catch (CoreException e) {
