@@ -194,6 +194,10 @@ public class SubjobContainer extends Element implements ISubjobContainer {
             }
         }
 
+        if (totalRectangle == null) {
+            return null;
+        }
+
         Point location = totalRectangle.getLocation();
         Point newLocation = new Point();
         newLocation.x = (location.x / TalendEditor.GRID_SIZE) * TalendEditor.GRID_SIZE;
