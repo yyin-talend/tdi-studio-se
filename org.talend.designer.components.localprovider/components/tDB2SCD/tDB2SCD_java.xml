@@ -203,6 +203,26 @@
     </PARAMETER>
 
     <PARAMETER
+      NAME="USE_L0"
+      FIELD="CHECK"
+      NUM_ROW="68"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="L0_FIELDS"
+      FIELD="TABLE"
+      NUM_ROW="69"
+      NB_LINES="5"
+      SHOW_IF="USE_L0 == 'true'"
+    >
+      <ITEMS>
+        <ITEM NAME="NAME" FIELD="PREV_COLUMN_LIST" />
+      </ITEMS>
+    </PARAMETER>
+
+    <PARAMETER
       NAME="USE_L1"
       FIELD="CHECK"
       NUM_ROW="70"

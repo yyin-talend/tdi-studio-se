@@ -48,9 +48,11 @@ public class CLASS {
         private String surrogateKeyInputField;
         private String surrogateKeyRoutine;
         private List<Column> sourceKeys;
+        private boolean isEnableType0;
         private boolean isEnableType1;
         private boolean isEnableType2;
         private boolean isEnableType3;
+        private DimensionType0Configer dimensionType0Configer;
         private DimensionType1Configer dimensionType1Configer;
         private DimensionType2Configer dimensionType2Configer;
         private DimensionType3Configer dimensionType3Configer;
@@ -93,6 +95,12 @@ public class CLASS {
         public String getSurrogateKeyRoutine() {
             return surrogateKeyRoutine;
         }
+        public void setEnableType0(boolean isEnableType0) {
+            this.isEnableType0 = isEnableType0;
+        }
+        public boolean isEnableType0() {
+            return isEnableType0;
+        }
         public void setEnableType1(boolean isEnableType1) {
             this.isEnableType1 = isEnableType1;
         }
@@ -110,7 +118,13 @@ public class CLASS {
         }
         public boolean isEnableType3() {
             return isEnableType3;
-        }        
+        }
+        public void setDimensionType0Configer(DimensionType0Configer dimensionType0Configer) {
+            this.dimensionType0Configer = dimensionType0Configer;
+        }
+        public DimensionType0Configer getDimensionType0Configer() {
+            return dimensionType0Configer;
+        }
         public void setDimensionType1Configer(DimensionType1Configer dimensionType1Configer) {
             this.dimensionType1Configer = dimensionType1Configer;
         }
@@ -133,14 +147,23 @@ public class CLASS {
             return sourceKeys;
         }
     }
-    public class DimensionType1Configer {
-        private List<Column> dimensionAttrbites;
-        private boolean isOnlyUpdateActive;
-        public DimensionType1Configer(List<Column> dimensionAttrbites) {
-            this.dimensionAttrbites = dimensionAttrbites;
+    public class DimensionType0Configer {
+        private List<Column> dimensionAttributes;
+        public DimensionType0Configer(List<Column> dimensionAttributes) {
+            this.dimensionAttributes = dimensionAttributes;
         }
         public List<Column> getDimensionAttributes() {
-            return dimensionAttrbites;
+            return dimensionAttributes;
+        }
+    }
+    public class DimensionType1Configer {
+        private List<Column> dimensionAttributes;
+        private boolean isOnlyUpdateActive;
+        public DimensionType1Configer(List<Column> dimensionAttributes) {
+            this.dimensionAttributes = dimensionAttributes;
+        }
+        public List<Column> getDimensionAttributes() {
+            return dimensionAttributes;
         }
         public void setOnlyUpdateActive(boolean isOnlyUpdateActive) {
             this.isOnlyUpdateActive = isOnlyUpdateActive;
@@ -150,7 +173,7 @@ public class CLASS {
         }
     }
     public class DimensionType2Configer {
-        private List<Column> dimensionAttrbites;
+        private List<Column> dimensionAttributes;
         private String startDateField;
         private String startDateValueType;
         private String startDateValue;
@@ -163,8 +186,8 @@ public class CLASS {
         private boolean isEnableActive;
         private String activeField;
         private JavaType activeFieldType;        
-        public DimensionType2Configer(List<Column> dimensionAttrbites) {
-            this.dimensionAttrbites = dimensionAttrbites;
+        public DimensionType2Configer(List<Column> dimensionAttributes) {
+            this.dimensionAttributes = dimensionAttributes;
         }
         public void setStartDateField(String startDateField) {
             this.startDateField = startDateField;
@@ -239,7 +262,7 @@ public class CLASS {
             return activeFieldType;
         }
         public List<Column> getDimensionAttributes() {
-            return dimensionAttrbites;
+            return dimensionAttributes;
         }        
     }
     public class DimensionType3Configer {
@@ -297,24 +320,45 @@ public class CLASS {
         }
         return outputSchema;
     }
-    public DimensionType1Configer getDimensionType1Configer(INode node) {
-        DimensionType1Configer dimensionType1Configer = null;
+    public DimensionType0Configer getDimensionType0Configer(INode node) {
+        DimensionType0Configer dimensionType0Configer = null;
         List<IMetadataColumn> inputSchema = getInputSchema(node);
         if(inputSchema != null && inputSchema.size() > 0) {
-            List<Map<String, String>> dimensionType1s = (List<Map<String, String>>)ElementParameterParser.getObjectValue(node, "__L1_FIELDS__");
-            List<Column> dimensionAttrbites = new ArrayList<Column>();
-            if(dimensionType1s != null && dimensionType1s.size() > 0) {
-                for(Map<String, String> dimensionType1 : dimensionType1s) {
+            List<Map<String, String>> dimensionType0s = (List<Map<String, String>>)ElementParameterParser.getObjectValue(node, "__L0_FIELDS__");
+            List<Column> dimensionAttributes = new ArrayList<Column>();
+            if(dimensionType0s != null && dimensionType0s.size() > 0) {
+                for(Map<String, String> dimensionType0 : dimensionType0s) {
                     for(IMetadataColumn metadataColumn : inputSchema) {
-                        if(dimensionType1.get("NAME").equals(metadataColumn.getLabel())) {
+                        if(dimensionType0.get("NAME").equals(metadataColumn.getLabel())) {
                             Column column = getColumn(metadataColumn);
-                            dimensionAttrbites.add(column);
+                            dimensionAttributes.add(column);
                             break;
                         }
                     }
                 }
             }
-            dimensionType1Configer = new DimensionType1Configer(dimensionAttrbites);
+            dimensionType0Configer = new DimensionType0Configer(dimensionAttributes);
+        }
+        return dimensionType0Configer;
+    }
+    public DimensionType1Configer getDimensionType1Configer(INode node) {
+        DimensionType1Configer dimensionType1Configer = null;
+        List<IMetadataColumn> inputSchema = getInputSchema(node);
+        if(inputSchema != null && inputSchema.size() > 0) {
+            List<Map<String, String>> dimensionType1s = (List<Map<String, String>>)ElementParameterParser.getObjectValue(node, "__L1_FIELDS__");
+            List<Column> dimensionAttributes = new ArrayList<Column>();
+            if(dimensionType1s != null && dimensionType1s.size() > 0) {
+                for(Map<String, String> dimensionType1 : dimensionType1s) {
+                    for(IMetadataColumn metadataColumn : inputSchema) {
+                        if(dimensionType1.get("NAME").equals(metadataColumn.getLabel())) {
+                            Column column = getColumn(metadataColumn);
+                            dimensionAttributes.add(column);
+                            break;
+                        }
+                    }
+                }
+            }
+            dimensionType1Configer = new DimensionType1Configer(dimensionAttributes);
             boolean isOnlyUpdateActive = ElementParameterParser.getValue(node, "__ONLY_UPDATE_ACTIVE__").equals("true");
             dimensionType1Configer.setOnlyUpdateActive(isOnlyUpdateActive);
         }
@@ -366,19 +410,19 @@ public class CLASS {
         List<IMetadataColumn> outputSchema = getOutputSchema(node);
         if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outputSchema.size() > 0) {
             List<Map<String, String>> dimensionType2s = (List<Map<String, String>>)ElementParameterParser.getObjectValue(node, "__L2_FIELDS__");
-            List<Column> dimensionAttrbites = new ArrayList<Column>();
+            List<Column> dimensionAttributes = new ArrayList<Column>();
             if(dimensionType2s != null && dimensionType2s.size() > 0) {
                 for(Map<String, String> dimensionType2 : dimensionType2s) {
                     for(IMetadataColumn metadataColumn : inputSchema) {
                         if(dimensionType2.get("NAME").equals(metadataColumn.getLabel())) {
                             Column column = getColumn(metadataColumn);
-                            dimensionAttrbites.add(column);
+                            dimensionAttributes.add(column);
                             break;
                         }
                     }
                 }
             }
-            dimensionType2Configer = new DimensionType2Configer(dimensionAttrbites);
+            dimensionType2Configer = new DimensionType2Configer(dimensionAttributes);
             String startDateField = getColumnNameByLabel(ElementParameterParser.getValue(node, "__L2_STARTDATE_FIELD__"), outputSchema);
             String startDateValueType = ElementParameterParser.getValue(node, "__L2_STARTDATE_VALUE__");
             String startDateValue = ElementParameterParser.getValue(node, "__L2_STARTDATE_INPUT_FIELD__");
@@ -412,7 +456,7 @@ public class CLASS {
         List<IMetadataColumn> outputSchema = getOutputSchema(node);
         if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outputSchema.size() > 0) {
             List<Map<String, String>> dimensionType3s = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__L3_FIELDS__");
-            List<DimensionType3Attribute> dimensionAttrbites = new ArrayList<DimensionType3Attribute>();
+            List<DimensionType3Attribute> dimensionAttributes = new ArrayList<DimensionType3Attribute>();
             if(dimensionType3s != null && dimensionType3s.size() > 0) {
                 Column currentColumn = null;
                 Column prevColumn = null;
@@ -430,10 +474,10 @@ public class CLASS {
                         }
                     }
                     DimensionType3Attribute dimensionType3Attribute = new DimensionType3Attribute(currentColumn, prevColumn);
-                    dimensionAttrbites.add(dimensionType3Attribute);
+                    dimensionAttributes.add(dimensionType3Attribute);
                 }
             }
-            dimensionType3Configer = new DimensionType3Configer(dimensionAttrbites);
+            dimensionType3Configer = new DimensionType3Configer(dimensionAttributes);
         }
         return dimensionType3Configer;
     }    
@@ -462,6 +506,7 @@ public class CLASS {
             String surrogateKeySequence = ElementParameterParser.getValue(node, "__SK_DB_SEQUENCE__");
             String surrogateKeyInputField = ElementParameterParser.getValue(node, "__SK_INPUT_FIELD__");
             String surrogateKeyRoutine = ElementParameterParser.getValue(node, "__SK_ROUTINE__");
+            boolean isEnableType0 = ElementParameterParser.getValue(node, "__USE_L0__").equals("true");
             boolean isEnableType1 = ElementParameterParser.getValue(node, "__USE_L1__").equals("true");
             boolean isEnableType2 = ElementParameterParser.getValue(node, "__USE_L2__").equals("true");
             boolean isEnableType3 = ElementParameterParser.getValue(node, "__USE_L3__").equals("true");
@@ -471,9 +516,11 @@ public class CLASS {
             scdConfiger.setSurrogateKeySequence(surrogateKeySequence);
             scdConfiger.setSurrogateKeyInputField(surrogateKeyInputField);
             scdConfiger.setSurrogateKeyRoutine(surrogateKeyRoutine);
+            scdConfiger.setEnableType0(isEnableType0);
             scdConfiger.setEnableType1(isEnableType1);
             scdConfiger.setEnableType2(isEnableType2);
             scdConfiger.setEnableType3(isEnableType3);
+            scdConfiger.setDimensionType0Configer(getDimensionType0Configer(node));
             scdConfiger.setDimensionType1Configer(getDimensionType1Configer(node));
             scdConfiger.setDimensionType2Configer(getDimensionType2Configer(node));
             scdConfiger.setDimensionType3Configer(getDimensionType3Configer(node));
@@ -581,15 +628,21 @@ public class CLASS {
                 insertionColumnList.add(column);
             }
         }
+        if(scdConfiger.isEnableType0()) {
+            List<Column> dimensionAttributes = scdConfiger.getDimensionType0Configer().getDimensionAttributes();
+            for(Column column : dimensionAttributes) {
+                insertionColumnList.add(column);
+            }
+        }
         if(scdConfiger.isEnableType1()) {
-            List<Column> dimensionAttrbites = scdConfiger.getDimensionType1Configer().getDimensionAttributes();
-            for(Column column : dimensionAttrbites) {
+            List<Column> dimensionAttributes = scdConfiger.getDimensionType1Configer().getDimensionAttributes();
+            for(Column column : dimensionAttributes) {
                 insertionColumnList.add(column);
             }
         }
         if(scdConfiger.isEnableType2()) {
-            List<Column> dimensionAttrbites = scdConfiger.getDimensionType2Configer().getDimensionAttributes();
-            for(Column column : dimensionAttrbites) {
+            List<Column> dimensionAttributes = scdConfiger.getDimensionType2Configer().getDimensionAttributes();
+            for(Column column : dimensionAttributes) {
                 insertionColumnList.add(column);
             }
             if(scdConfiger.getDimensionType2Configer().isEnableVersion()) {
@@ -839,16 +892,23 @@ public class CLASS {
                     insertValues += separator + "?";
                 }
             }
+            if(scdConfiger.isEnableType0()) {
+                List<Column> dimensionAttributes = scdConfiger.getDimensionType0Configer().getDimensionAttributes();
+                for(Column column : dimensionAttributes) {
+                    insertColumns += separator + getLProtectedChar() + column.getColumnName() + getRProtectedChar();
+                    insertValues += separator + "?";
+                }
+            }
             if(scdConfiger.isEnableType1()) {
-                List<Column> dimensionAttrbites = scdConfiger.getDimensionType1Configer().getDimensionAttributes();
-                for(Column column : dimensionAttrbites) {
+                List<Column> dimensionAttributes = scdConfiger.getDimensionType1Configer().getDimensionAttributes();
+                for(Column column : dimensionAttributes) {
                     insertColumns += separator + getLProtectedChar() + column.getColumnName() + getRProtectedChar();
                     insertValues += separator + "?";
                 }
             }
             if(scdConfiger.isEnableType2()) {
-                List<Column> dimensionAttrbites = scdConfiger.getDimensionType2Configer().getDimensionAttributes();
-                for(Column column : dimensionAttrbites) {
+                List<Column> dimensionAttributes = scdConfiger.getDimensionType2Configer().getDimensionAttributes();
+                for(Column column : dimensionAttributes) {
                     insertColumns += separator + getLProtectedChar() + column.getColumnName() + getRProtectedChar();
                     insertValues += separator + "?";
                 }
@@ -923,14 +983,14 @@ public class CLASS {
                         updateWhereStmt += keySeparator + getYear(endDateField) + " = \" + " + endDateValue + " + \"";
                     }
                 }
-                List<Column> dimensionAttrbites = scdConfiger.getDimensionType1Configer().getDimensionAttributes();
-                for(Column dimensionAttrbite : dimensionAttrbites) {
+                List<Column> dimensionAttributes = scdConfiger.getDimensionType1Configer().getDimensionAttributes();
+                for(Column dimensionAttribute : dimensionAttributes) {
                     if(firstColumn) {
                         firstColumn = false;
                     } else {
                         updateSetStmt += separator;
                     }
-                    updateSetStmt += getLProtectedChar() + dimensionAttrbite.getColumnName() + getRProtectedChar() + " = ?";
+                    updateSetStmt += getLProtectedChar() + dimensionAttribute.getColumnName() + getRProtectedChar() + " = ?";
                 }
                 updateSQL.append(" SET " + updateSetStmt + " WHERE " + updateWhereStmt);
             }
@@ -1004,15 +1064,15 @@ public class CLASS {
                         updateWhereStmt += keySeparator + getYear(endDateField) + " = \" + " + endDateValue + " + \"";
                     }
                 }
-                List<DimensionType3Attribute> dimensionAttrbites = scdConfiger.getDimensionType3Configer().getDimensionAttributes();
-                for(DimensionType3Attribute dimensionAttrbite : dimensionAttrbites) {
+                List<DimensionType3Attribute> dimensionAttributes = scdConfiger.getDimensionType3Configer().getDimensionAttributes();
+                for(DimensionType3Attribute dimensionAttribute : dimensionAttributes) {
                     if(firstColumn) {
                         firstColumn = false;
                     } else {
                         updateSetStmt += separator;
                     }
-                    updateSetStmt += getLProtectedChar() + dimensionAttrbite.getCurrentColumn().getColumnName() + getRProtectedChar() + " = ?";
-                    updateSetStmt += ", " + getLProtectedChar() + dimensionAttrbite.getPrevColumn().getColumnName() + getRProtectedChar() + " = ?";
+                    updateSetStmt += getLProtectedChar() + dimensionAttribute.getCurrentColumn().getColumnName() + getRProtectedChar() + " = ?";
+                    updateSetStmt += ", " + getLProtectedChar() + dimensionAttribute.getPrevColumn().getColumnName() + getRProtectedChar() + " = ?";
                 }
                 updateSQL.append(" SET " + updateSetStmt + " WHERE " + updateWhereStmt);
             }
