@@ -164,6 +164,15 @@ public class SubjobContainer extends Element implements ISubjobContainer {
         return this.nodeContainers;
     }
 
+    public boolean deleteNodeContainer(NodeContainer nodeContainer) {
+        if (getNodeContainers().contains(nodeContainer)) {
+            getNodeContainers().remove(nodeContainer);
+            updateSubjobContainer();
+            return true;
+        }
+        return false;
+    }
+
     /**
      * DOC nrousseau Comment method "getSubjobContainerRectangle".
      * 

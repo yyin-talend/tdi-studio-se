@@ -399,8 +399,7 @@ public class Process extends Element implements IProcess2 {
         for (Object o : elem) {
             if (o instanceof SubjobContainer) {
                 SubjobContainer sjc = (SubjobContainer) o;
-                if (sjc.getNodeContainers().contains(nodeContainer)) {
-                    sjc.getNodeContainers().remove(nodeContainer);
+                if (sjc.deleteNodeContainer(nodeContainer)) {
                     if (nodeContainer.getNode().isDesignSubjobStartNode()) {
                         subjobContainers.remove(sjc);
                         toAdd.addAll(sjc.getNodeContainers());
@@ -2746,15 +2745,22 @@ public class Process extends Element implements IProcess2 {
                 updatedSubjobContainers.add(sjc);
             }
         }
-
         fireStructureChange(NEED_UPDATE_JOB, elem);
-
         // update modified subjobs
+        int i = updatedSubjobContainers.size();
         for (SubjobContainer sjc : updatedSubjobContainers) {
             sjc.updateSubjobContainer();
         }
 
         // at the end, there should be no Node / NodeContainer without SubjobContainer
+    }
+
+    public List<NodeContainer> getAllNodeContainers() {
+        List<NodeContainer> list = new ArrayList<NodeContainer>();
+        for (SubjobContainer sjc : subjobContainers) {
+            list.addAll(sjc.getNodeContainers());
+        }
+        return list;
     }
 
     /*
