@@ -49,6 +49,9 @@ public enum EDatabaseComponentName {
     IBMDB2(DatabaseConnectionItem.class, EDatabaseTypeName.IBMDB2, "tDB2Input", "tDB2Output", true),
     SYBASEASE(DatabaseConnectionItem.class, EDatabaseTypeName.SYBASEASE, "tSybaseInput", "tSybaseOutput", true),
     AS400(DatabaseConnectionItem.class, EDatabaseTypeName.AS400, "tAS400Input", "tAS400Output", true),
+
+    // General JDBC
+    GENERAL_JDBC(DatabaseConnectionItem.class, EDatabaseTypeName.GENERAL_JDBC, "tJDBCInput", "tJDBCOutput", true),
     // this Sybase IQ not used.
     // SYBASEIQ(DatabaseConnectionItem.class,"SYBASE", "Sybase IQ", new Boolean(false), "SYBASE"),
     MSSQLODBC(DatabaseConnectionItem.class, EDatabaseTypeName.MSSQL, "tMSSqlInput", "tMSSqlOutput", true),
