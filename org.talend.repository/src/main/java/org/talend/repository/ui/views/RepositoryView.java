@@ -517,8 +517,8 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
      * @see org.talend.repository.ui.views.IRepositoryView#refresh(java.lang.Object)
      */
     public void refresh(Object object) {
-        //refresh();
-        viewer.refresh(object);
+        refresh();
+        // viewer.refresh(object);
         if (object != null) {
             viewer.setExpandedState(object, true);
         }
