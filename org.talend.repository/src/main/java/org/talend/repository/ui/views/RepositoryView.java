@@ -517,40 +517,11 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
      * @see org.talend.repository.ui.views.IRepositoryView#refresh(java.lang.Object)
      */
     public void refresh(Object object) {
-        // refresh();
-        if (object instanceof RepositoryNode) {
-            RepositoryNode node = (RepositoryNode) object;
-            if (node.getType() != ENodeType.SYSTEM_FOLDER) {
-                node = findSystemFolderNode(node);
-            }
-            if (node != null) {
-                node.setProperties(EProperties.NEED_REFRESH, true);
-                viewer.refresh(node);
-            }
-        } else {
-            viewer.refresh(object);
-        }
+        //refresh();
+        viewer.refresh(object);
         if (object != null) {
             viewer.setExpandedState(object, true);
         }
-    }
-
-    /**
-     * yzhang Comment method "findSystemFolder".
-     * 
-     * @param node
-     */
-    private RepositoryNode findSystemFolderNode(RepositoryNode node) {
-        RepositoryNode toReturn = null;
-        if (node != null) {
-            if (node.getType() == ENodeType.SYSTEM_FOLDER) {
-                toReturn = node;
-            } else {
-                toReturn = findSystemFolderNode(node.getParent());
-            }
-        }
-        return toReturn;
-
     }
 
     public void expand(Object object) {
