@@ -64,6 +64,10 @@ public class ManagerConnection {
 
     private String dbRootPath;
 
+    private String driverClassName;
+
+    private String driverJarPath;
+
     /**
      * setValue.
      * 
@@ -77,7 +81,7 @@ public class ManagerConnection {
      */
     public void setValue(Integer id, final String dbType, final String url, final String server, final String username,
             final String password, final String sidOrDatabase, final String port, final String file, final String datasource,
-            final String schemaOracle, final String additionalParams) {
+            final String schemaOracle, final String additionalParams, final String driverClassName, final String driverJarPath) {
         this.id = id;
         this.dbTypeString = dbType;
         this.urlConnectionString = url;
@@ -90,6 +94,8 @@ public class ManagerConnection {
         this.datasource = datasource;
         this.schemaOracle = schemaOracle;
         this.additionalParams = additionalParams;
+        this.driverClassName = driverClassName;
+        this.driverJarPath = driverJarPath;
 
     }
 
@@ -108,7 +114,7 @@ public class ManagerConnection {
         messageException = null;
         try {
             ConnectionStatus testConnection = ExtractMetaDataFromDataBase.testConnection(dbTypeString, urlConnectionString,
-                    username, password, schemaOracle);
+                    username, password, schemaOracle, driverClassName, driverJarPath);
             isValide = testConnection.getResult();
             messageException = testConnection.getMessageException();
         } catch (Exception e) {
@@ -130,7 +136,7 @@ public class ManagerConnection {
         try {
             ConnectionStatus testConnection = ExtractMetaDataFromDataBase.testConnection(metadataConnection.getDbType(),
                     metadataConnection.getUrl(), metadataConnection.getUsername(), metadataConnection.getPassword(),
-                    metadataConnection.getSchema());
+                    metadataConnection.getSchema(), metadataConnection.getDriverClass(), metadataConnection.getDriverJarPath());
             isValide = testConnection.getResult();
             messageException = testConnection.getMessageException();
         } catch (Exception e) {

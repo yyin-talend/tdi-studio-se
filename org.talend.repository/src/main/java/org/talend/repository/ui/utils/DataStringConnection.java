@@ -54,6 +54,8 @@ public class DataStringConnection {
 
     public final static int DBTYPE_HSQLDB_IN_PROCESS = 22;
 
+    public final static String GENERAL_JDBC = "General JDBC";
+
     // private Combo combo;
 
     private int selectionIndex;
@@ -69,9 +71,9 @@ public class DataStringConnection {
         String file = "([\\w\\.\\-_]{0,})"; //$NON-NLS-1$
         String addParam = "([\\w\\.\\-_=]{0,})"; //$NON-NLS-1$
 
-        dataConnection = new DataConnection[27];
+        dataConnection = new DataConnection[28];
 
-        defaultTable = new String[27];
+        defaultTable = new String[28];
 
         dataConnection[0] = new DataConnection(
                 "MySQL", "jdbc:mysql://<host>:<port>/<sid>?<property>", "jdbc:mysql://" + host + ":" + port //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
@@ -165,6 +167,10 @@ public class DataStringConnection {
 
         dataConnection[26] = new DataConnection("SAS", "jdbc:sasiom://<host>:<port>", "jdbc:sasiom://" + host //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + ":" + port, "7070"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+        // General jdbc
+        dataConnection[27] = new DataConnection(GENERAL_JDBC, "jdbc:xxx://<xxx>:<xxx>", "jdbc:xxx://" + host //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + ":" + port, "xxxx"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         // dataConnection[8] = new DataConnection("Sybase IQ", "jdbc:sybase:Tds:<host>:<port>/<sid>", "jdbc:sybase:Tds:"
         // + host + ":" + port //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$

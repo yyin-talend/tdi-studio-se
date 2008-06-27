@@ -191,6 +191,8 @@ public final class DBConnectionContextUtils {
         String schemaOracle = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getSchema());
         String dbRootPath = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getDBRootPath());
         String additionParam = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getAdditionalParams());
+        String driverClassName = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getDriverClass());
+        String driverJarPath = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getDriverJarPath());
 
         filePath = TalendTextUtils.removeQuotes(filePath);
         dbRootPath = TalendTextUtils.removeQuotes(dbRootPath);
@@ -207,7 +209,7 @@ public final class DBConnectionContextUtils {
         }
         // set the value
         managerConnection.setValue(0, dbType, urlConnection, server, username, password, sidOrDatabase, port, filePath,
-                datasource, schemaOracle, additionParam);
+                datasource, schemaOracle, additionParam, driverClassName, driverJarPath);
         managerConnection.setDbRootPath(dbRootPath);
 
         return urlConnection;
@@ -330,7 +332,12 @@ public final class DBConnectionContextUtils {
         dataStringConn.setSelectionIndex(dbIndex);
         dataStringConn.getString(dbIndex, server, username, password, port, sidOrDatabase, filePath.toLowerCase(), datasource,
                 dbRootPath, additionParam);
-        cloneConn.setURL(dataStringConn.getUrlConnectionStr());
+        if (dbConn.getURL() != null && !dbConn.getURL().equals("")) {
+            // for general db, url is given directly.
+            cloneConn.setURL(dbConn.getURL());
+        } else {
+            cloneConn.setURL(dataStringConn.getUrlConnectionStr());
+        }
 
         return cloneConn;
     }

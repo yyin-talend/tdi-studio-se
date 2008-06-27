@@ -31,7 +31,9 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.commons.ui.swt.formtools.Form;
@@ -124,11 +126,39 @@ public class DatabaseForm extends AbstractForm {
     private Button systemButton;
 
     /**
+     * Fields for general jdbc
+     */
+
+    private LabelledText generalJdbcUrlText = null;
+
+    private LabelledText generalJdbcUserText = null;
+
+    private LabelledText generalJdbcPasswordText = null;
+
+    private LabelledText generalJdbcSchemaText = null;
+
+    private LabelledText generalJdbcClassNameText = null;
+
+    private LabelledText generalJdbcDriverjarText = null;
+
+    private Button browseJarFilesButton = null;
+
+    /**
      * Anothers Fields.
      */
     private UtilsButton checkButton;
 
     private Group databaseSettingGroup;
+
+    private Composite typeDbCompositeParent;
+
+    private Composite generalDbCompositeParent;
+
+    private Composite compositeGroupDbSettings;
+
+    private LabelledText generalMappingFileText;
+
+    private Button mappingSelectButton;
 
     /**
      * Constructor to use by a Wizard to create a new database connection.
@@ -159,6 +189,11 @@ public class DatabaseForm extends AbstractForm {
         if (indexOfCombo > -1) {
             dbTypeCombo.select(indexOfCombo);
             urlDataStringConnection.setSelectionIndex(indexOfCombo);
+
+            if (isGeneralJDBC()) {
+                switchBetweenTypeandGeneralDB(false);
+                initializeGeneralJDBC();
+            }
         }
         if (isContextMode()) {
             adaptFormToEditable();
@@ -185,6 +220,19 @@ public class DatabaseForm extends AbstractForm {
         getConnection().setSqlSynthax(Messages.getString("DatabaseForm.sqlSyntax")); //$NON-NLS-1$
         sqlSyntaxCombo.select(getSqlSyntaxIndex(getConnection().getSqlSynthax()));
         updateStatus(IStatus.OK, ""); //$NON-NLS-1$
+    }
+
+    /**
+     * DOC YeXiaowei Comment method "initializeGeneralJDBC".
+     */
+    private void initializeGeneralJDBC() {
+        generalJdbcUrlText.setText(getConnection().getURL());
+        generalJdbcClassNameText.setText(getConnection().getDriverClass());
+        generalJdbcUserText.setText(getConnection().getUsername());
+        generalJdbcPasswordText.setText(getConnection().getPassword());
+        generalJdbcDriverjarText.setText(getConnection().getDriverJarPath());
+        generalMappingFileText.setText(getConnection().getDbmsId());
+        generalJdbcSchemaText.setText(getConnection().getSchema() == null ? "" : getConnection().getSchema());
     }
 
     private void checkAS400SpecificCase() {
@@ -243,7 +291,7 @@ public class DatabaseForm extends AbstractForm {
         int width = getSize().x;
         GridLayout layout2;
         databaseSettingGroup = Form.createGroup(this, 1, Messages.getString("DatabaseForm.groupDatabaseSettings"), 310);
-        Composite compositeGroupDbSettings = Form.startNewGridLayout(databaseSettingGroup, 1);
+        compositeGroupDbSettings = Form.startNewGridLayout(databaseSettingGroup, 1);
         layout2 = (GridLayout) compositeGroupDbSettings.getLayout();
         layout2.marginHeight = 0;
         layout2.marginTop = 0;
@@ -252,7 +300,16 @@ public class DatabaseForm extends AbstractForm {
         layout2.marginRight = 0;
         layout2.marginWidth = 0;
 
-        compositeDbSettings = Form.startNewDimensionnedGridLayout(compositeGroupDbSettings, 3, width, 240);
+        compositeDbSettings = new Composite(compositeGroupDbSettings, SWT.NULL);
+
+        compositeDbSettings.setLayout(new GridLayout(3, false));
+        GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
+        gridData.minimumWidth = width;
+        // gridData.minimumHeight = 50;
+        gridData.widthHint = width;
+        // gridData.heightHint = 50;
+        compositeDbSettings.setLayoutData(gridData);
+
         layout2 = (GridLayout) compositeDbSettings.getLayout();
         layout2.marginHeight = 0;
         layout2.marginTop = 0;
@@ -263,67 +320,145 @@ public class DatabaseForm extends AbstractForm {
         // Database Type Combo
         urlDataStringConnection = new DataStringConnection();
 
-        // PTODO cantoine : HIDDEN some Database connection in function of project MODE (Perl/Java).
-        if (LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL) {
-            Collection<String> databasePerl = new ArrayList<String>(Arrays.asList(urlDataStringConnection.getItem()));
-            databasePerl.remove("Microsoft SQL Server"); //$NON-NLS-1$
-            databasePerl.remove("Ingres"); //$NON-NLS-1$
-            databasePerl.remove("Interbase"); //$NON-NLS-1$
-            databasePerl.remove("FireBird"); //$NON-NLS-1$
-            databasePerl.remove("Informix"); //$NON-NLS-1$
-            databasePerl.remove("Access"); //$NON-NLS-1$
-            databasePerl.remove("Teradata"); //$NON-NLS-1$
-            databasePerl.remove("AS400"); //$NON-NLS-1$
+        addDBSelectCombo();
 
-            databasePerl.remove("JavaDB Embeded"); //$NON-NLS-1$
-            databasePerl.remove("JavaDB JCCJDBC"); //$NON-NLS-1$
-            databasePerl.remove(Messages.getString("DatabaseForm.10")); //$NON-NLS-1$
+        Label label = new Label(compositeDbSettings, SWT.SEPARATOR | SWT.H_SCROLL);
+        GridData data = new GridData(GridData.FILL_HORIZONTAL);
+        data.horizontalSpan = 3;
+        label.setLayoutData(data);
 
-            databasePerl.remove("HSQLDB Server"); //$NON-NLS-1$
-            databasePerl.remove("HSQLDB WebServer"); //$NON-NLS-1$
-            databasePerl.remove("HSQLDB In-Process"); //$NON-NLS-1$
+        addFieldsForTypeDB(compositeGroupDbSettings);
+        addFieldsForGeneralDB(compositeGroupDbSettings);
 
-            String[] dbPerl = databasePerl.toArray(new String[databasePerl.size()]);
-            dbTypeCombo = new LabelledCombo(compositeDbSettings, Messages.getString("DatabaseForm.dbType"), Messages //$NON-NLS-1$
-                    .getString("DatabaseForm.dbTypeTip"), dbPerl, 2, true); //$NON-NLS-1$
-        } else {
-            dbTypeCombo = new LabelledCombo(compositeDbSettings, Messages.getString("DatabaseForm.dbType"), Messages //$NON-NLS-1$
-                    .getString("DatabaseForm.dbTypeTip"), urlDataStringConnection.getItem(), 2, true); //$NON-NLS-1$
-        }
+        switchBetweenTypeandGeneralDB(true);
 
-        // configure the visible item of database combo
-        int visibleItemCount = dbTypeCombo.getCombo().getItemCount();
-        if (visibleItemCount > VISIBLE_DATABASE_COUNT) {
-            visibleItemCount = VISIBLE_DATABASE_COUNT;
-        }
-        dbTypeCombo.getCombo().setVisibleItemCount(visibleItemCount);
+        addCheckAndStandardButtons(width, compositeGroupDbSettings);
+
+        checkDBTypeAS400();
+
+    }
+
+    /**
+     * DOC YeXiaowei Comment method "addFieldForTypeDB".
+     * 
+     * @param width
+     * @param compositeGroupDbSettings
+     */
+    private void addFieldsForTypeDB(Composite compositeGroupDbSettings) {
+
+        typeDbCompositeParent = new Composite(compositeGroupDbSettings, SWT.NULL);
+        typeDbCompositeParent.setLayout(new GridLayout(3, false));
+
+        GridLayout layout2 = (GridLayout) typeDbCompositeParent.getLayout();
+        layout2.marginHeight = 0;
+        layout2.marginTop = 0;
+        layout2.marginBottom = 0;
 
         // Field connectionString
         urlDataStringConnection.setSelectionIndex(dbTypeCombo.getSelectionIndex());
-        urlConnectionStringText = new LabelledText(compositeDbSettings, Messages.getString("DatabaseForm.stringConnection"), 2); //$NON-NLS-1$
+        urlConnectionStringText = new LabelledText(typeDbCompositeParent, Messages.getString("DatabaseForm.stringConnection"), 2); //$NON-NLS-1$
         urlConnectionStringText.setEditable(false);
 
         // Field login & password
-        usernameText = new LabelledText(compositeDbSettings, Messages.getString("DatabaseForm.login"), 2); //$NON-NLS-1$
-        passwordText = new LabelledText(compositeDbSettings, Messages.getString("DatabaseForm.password"), 2, SWT.BORDER //$NON-NLS-1$
+        usernameText = new LabelledText(typeDbCompositeParent, Messages.getString("DatabaseForm.login"), 2); //$NON-NLS-1$
+        passwordText = new LabelledText(typeDbCompositeParent, Messages.getString("DatabaseForm.password"), 2, SWT.BORDER //$NON-NLS-1$
                 | SWT.SINGLE | SWT.PASSWORD);
 
         // Another fields
-        serverText = new LabelledText(compositeDbSettings, Messages.getString("DatabaseForm.server"), 2); //$NON-NLS-1$
-        portText = new LabelledText(compositeDbSettings, Messages.getString("DatabaseForm.port"), 2); //$NON-NLS-1$
+        serverText = new LabelledText(typeDbCompositeParent, Messages.getString("DatabaseForm.server"), 2); //$NON-NLS-1$
+        portText = new LabelledText(typeDbCompositeParent, Messages.getString("DatabaseForm.port"), 2); //$NON-NLS-1$
         // portText.setTextLimit(5);
-        sidOrDatabaseText = new LabelledText(compositeDbSettings, Messages.getString("DatabaseForm.database"), 2); //$NON-NLS-1$
-        schemaText = new LabelledText(compositeDbSettings, Messages.getString("DatabaseForm.schema"), 2); //$NON-NLS-1$
-        datasourceText = new LabelledText(compositeDbSettings, Messages.getString("DatabaseForm.dataSource"), 2); //$NON-NLS-1$
-        additionParamText = new LabelledText(compositeDbSettings, Messages.getString("DatabaseForm.AddParams"), 2); //$NON-NLS-1$
+        sidOrDatabaseText = new LabelledText(typeDbCompositeParent, Messages.getString("DatabaseForm.database"), 2); //$NON-NLS-1$
+        schemaText = new LabelledText(typeDbCompositeParent, Messages.getString("DatabaseForm.schema"), 2); //$NON-NLS-1$
+        datasourceText = new LabelledText(typeDbCompositeParent, Messages.getString("DatabaseForm.dataSource"), 2); //$NON-NLS-1$
+        additionParamText = new LabelledText(typeDbCompositeParent, Messages.getString("DatabaseForm.AddParams"), 2); //$NON-NLS-1$
 
         String[] extensions = { "*.*" }; //$NON-NLS-1$
-        fileField = new LabelledFileField(compositeDbSettings, Messages.getString("DatabaseForm.mdbFile"), extensions); //$NON-NLS-1$
-        directoryField = new LabelledDirectoryField(compositeDbSettings, "DB Root Path"); //$NON-NLS-1$
+        fileField = new LabelledFileField(typeDbCompositeParent, Messages.getString("DatabaseForm.mdbFile"), extensions); //$NON-NLS-1$
+        directoryField = new LabelledDirectoryField(typeDbCompositeParent, "DB Root Path"); //$NON-NLS-1$
+    }
+
+    private void addFieldsForGeneralDB(Composite parent) {
+
+        generalDbCompositeParent = new Composite(parent, SWT.NULL);
+
+        generalDbCompositeParent.setLayout(new GridLayout(3, false));
+
+        GridLayout layout2 = (GridLayout) generalDbCompositeParent.getLayout();
+        layout2.marginHeight = 0;
+        layout2.marginTop = 0;
+        layout2.marginBottom = 0;
+
+        generalJdbcUrlText = new LabelledText(generalDbCompositeParent, Messages.getString("DatabaseForm.general.url"), 2); //$NON-NLS-1$
+
+        generalJdbcDriverjarText = new LabelledText(generalDbCompositeParent, Messages.getString("DatabaseForm.general.jarfile"),
+                1);
+
+        browseJarFilesButton = new Button(generalDbCompositeParent, SWT.NONE);
+        browseJarFilesButton.setText("...");
+        browseJarFilesButton.setToolTipText("Select jar file");
+
+        generalJdbcClassNameText = new LabelledText(generalDbCompositeParent, Messages
+                .getString("DatabaseForm.general.classname"), 2); //$NON-NLS-1$
+
+        generalJdbcUserText = new LabelledText(generalDbCompositeParent, Messages.getString("DatabaseForm.general.user"), 2); //$NON-NLS-1$
+
+        generalJdbcPasswordText = new LabelledText(generalDbCompositeParent,
+                Messages.getString("DatabaseForm.general.password"), 2); //$NON-NLS-1$
+
+        generalJdbcSchemaText = new LabelledText(generalDbCompositeParent, Messages.getString("DatabaseForm.schema"), 2); //$NON-NLS-1$ 
+
+        generalMappingFileText = new LabelledText(generalDbCompositeParent, Messages.getString("DatabaseForm.general.mapping"), 1);
+        // generalMappingFileText.setEditable(false);
+
+        mappingSelectButton = new Button(generalDbCompositeParent, SWT.NONE);
+        mappingSelectButton.setText("...");
+        mappingSelectButton.setToolTipText("Select mapping rule");
+
+    }
+
+    /**
+     * Hidden one composite and display another one
+     * <p>
+     * DOC YeXiaowei Comment method "switchBetweenTypeandGeneralDB".
+     * 
+     * @param hiddenGeneral
+     */
+    private void switchBetweenTypeandGeneralDB(boolean hiddenGeneral) {
+
+        GridData dataGeneralDb = null;
+        GridData dataTypeDb = null;
+
+        if (hiddenGeneral) {
+            dataGeneralDb = new GridData(GridData.FILL_HORIZONTAL);
+            dataGeneralDb.heightHint = 0;
+
+            dataTypeDb = new GridData(GridData.FILL_BOTH);
+        } else {
+            dataGeneralDb = new GridData(GridData.FILL_BOTH);
+
+            dataTypeDb = new GridData(GridData.FILL_HORIZONTAL);
+            dataTypeDb.heightHint = 0;
+        }
+
+        generalDbCompositeParent.setLayoutData(dataGeneralDb);
+        typeDbCompositeParent.setLayoutData(dataTypeDb);
+
+        compositeGroupDbSettings.layout();
+    }
+
+    /**
+     * DOC YeXiaowei Comment method "addCheckAndStandardButtons".
+     * 
+     * @param width
+     * @param compositeGroupDbSettings
+     */
+    private void addCheckAndStandardButtons(int width, Composite compositeGroupDbSettings) {
+
+        GridLayout layout2 = null;
 
         fileField.hide();
         directoryField.hide();
-
         // Button Check
         Composite compositeCheckButton = Form.startNewGridLayout(compositeGroupDbSettings, 1, false, SWT.CENTER, SWT.TOP);
         layout2 = (GridLayout) compositeCheckButton.getLayout();
@@ -358,8 +493,46 @@ public class DatabaseForm extends AbstractForm {
         systemButton = new Button(compositeGroupDbProperties, SWT.RADIO);
         systemButton.setText(Messages.getString("DatabaseForm.SystemSQL")); //$NON-NLS-1$
         systemButton.setLayoutData(gridData);
-        checkDBTypeAS400();
+    }
 
+    /**
+     * DOC YeXiaowei Comment method "addDBSelectCombo". Extract method form addFields()
+     */
+    private void addDBSelectCombo() {
+        // PTODO cantoine : HIDDEN some Database connection in function of project MODE (Perl/Java).
+        if (LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL) {
+            Collection<String> databasePerl = new ArrayList<String>(Arrays.asList(urlDataStringConnection.getItem()));
+            databasePerl.remove("Microsoft SQL Server"); //$NON-NLS-1$
+            databasePerl.remove("Ingres"); //$NON-NLS-1$
+            databasePerl.remove("Interbase"); //$NON-NLS-1$
+            databasePerl.remove("FireBird"); //$NON-NLS-1$
+            databasePerl.remove("Informix"); //$NON-NLS-1$
+            databasePerl.remove("Access"); //$NON-NLS-1$
+            databasePerl.remove("Teradata"); //$NON-NLS-1$
+            databasePerl.remove("AS400"); //$NON-NLS-1$
+
+            databasePerl.remove("JavaDB Embeded"); //$NON-NLS-1$
+            databasePerl.remove("JavaDB JCCJDBC"); //$NON-NLS-1$
+            databasePerl.remove(Messages.getString("DatabaseForm.10")); //$NON-NLS-1$
+
+            databasePerl.remove("HSQLDB Server"); //$NON-NLS-1$
+            databasePerl.remove("HSQLDB WebServer"); //$NON-NLS-1$
+            databasePerl.remove("HSQLDB In-Process"); //$NON-NLS-1$
+
+            String[] dbPerl = databasePerl.toArray(new String[databasePerl.size()]);
+            dbTypeCombo = new LabelledCombo(compositeDbSettings, Messages.getString("DatabaseForm.dbType"), Messages //$NON-NLS-1$
+                    .getString("DatabaseForm.dbTypeTip"), dbPerl, 2, true); //$NON-NLS-1$
+        } else {
+            dbTypeCombo = new LabelledCombo(compositeDbSettings, Messages.getString("DatabaseForm.dbType"), Messages //$NON-NLS-1$
+                    .getString("DatabaseForm.dbTypeTip"), urlDataStringConnection.getItem(), 2, true); //$NON-NLS-1$
+        }
+
+        // configure the visible item of database combo
+        int visibleItemCount = dbTypeCombo.getCombo().getItemCount();
+        if (visibleItemCount > VISIBLE_DATABASE_COUNT) {
+            visibleItemCount = VISIBLE_DATABASE_COUNT;
+        }
+        dbTypeCombo.getCombo().setVisibleItemCount(visibleItemCount);
     }
 
     /**
@@ -403,9 +576,13 @@ public class DatabaseForm extends AbstractForm {
         } else {
             // set the value
             managerConnection.setValue(0, dbTypeCombo.getItem(dbTypeCombo.getSelectionIndex()),
-                    urlConnectionStringText.getText(), serverText.getText(), usernameText.getText(), passwordText.getText(),
-                    sidOrDatabaseText.getText(), portText.getText(), fileField.getText(), datasourceText.getText(), schemaText
-                            .getText(), additionParamText.getText());
+                    isGeneralJDBC() ? generalJdbcUrlText.getText() : urlConnectionStringText.getText(), serverText.getText(),
+                    isGeneralJDBC() ? generalJdbcUserText.getText() : usernameText.getText(),
+                    isGeneralJDBC() ? generalJdbcPasswordText.getText() : passwordText.getText(), sidOrDatabaseText.getText(),
+                    portText.getText(), fileField.getText(), datasourceText.getText(), isGeneralJDBC() ? generalJdbcSchemaText
+                            .getText() : schemaText.getText(), additionParamText.getText(), generalJdbcClassNameText.getText(),
+                    generalJdbcDriverjarText.getText());
+
             managerConnection.setDbRootPath(directoryField.getText());
 
         }
@@ -751,15 +928,34 @@ public class DatabaseForm extends AbstractForm {
 
             // Event Modify
             public void modifyText(final ModifyEvent e) {
+
+                boolean hiddenGeneral = !isGeneralJDBC();
+                // change controls
+                switchBetweenTypeandGeneralDB(hiddenGeneral);
+
                 if (!isContextMode()) {
                     urlDataStringConnection.setSelectionIndex(dbTypeCombo.getSelectionIndex());
                     setPropertiesFormEditable(true);
                     getConnection().setDatabaseType(dbTypeCombo.getText());
                     portText.setText(urlDataStringConnection.getDefaultPort());
+
                     final String product = EDatabaseTypeName.getTypeFromDisplayName(getConnection().getDatabaseType())
                             .getProduct();
                     getConnection().setProductId(product);
-                    final String mapping = MetadataTalendType.getDefaultDbmsFromProduct(product).getId();
+
+                    String mapping = null;
+
+                    if (product == null || product.equals("General JDBC")) {
+                        mapping = generalMappingFileText.getText();
+                    } else {
+                        if (MetadataTalendType.getDefaultDbmsFromProduct(product) != null) {
+                            mapping = MetadataTalendType.getDefaultDbmsFromProduct(product).getId();
+                        }
+                    }
+                    if (mapping == null) {
+                        mapping = "mysql_id";// default value
+                    }
+
                     getConnection().setDbmsId(mapping);
                     if (dbTypeCombo.getSelectionIndex() == 0) {
                         // additionParamText.setText(DataStringConnection.mySQlDefaultValue);
@@ -861,6 +1057,8 @@ public class DatabaseForm extends AbstractForm {
             }
         });
 
+        addGeneralDbFieldsListeners();
+
         // urlConnectionStringText : Event modifyText
         // urlConnectionStringText.addModifyListener(new ModifyListener() {
         //
@@ -885,6 +1083,134 @@ public class DatabaseForm extends AbstractForm {
     }
 
     /**
+     * DOC YeXiaowei Comment method "addGeneralDbFieldsListeners".
+     */
+    private void addGeneralDbFieldsListeners() {
+
+        generalJdbcClassNameText.addModifyListener(new ModifyListener() {
+
+            public void modifyText(final ModifyEvent e) {
+                if (!isContextMode()) {
+                    if (validText(generalJdbcClassNameText.getText())) {
+                        getConnection().setDriverClass(generalJdbcClassNameText.getText());
+                        checkFieldsValue();
+                    }
+                }
+            }
+        });
+
+        generalJdbcDriverjarText.addModifyListener(new ModifyListener() {
+
+            public void modifyText(final ModifyEvent e) {
+                if (!isContextMode()) {
+                    if (validText(generalJdbcDriverjarText.getText())) {
+                        getConnection().setDriverJarPath(generalJdbcDriverjarText.getText());
+                        checkFieldsValue();
+                    }
+                }
+            }
+        });
+
+        generalJdbcUrlText.addModifyListener(new ModifyListener() {
+
+            public void modifyText(final ModifyEvent e) {
+                if (!isContextMode()) {
+                    if (validText(generalJdbcUrlText.getText())) {
+                        getConnection().setURL(generalJdbcUrlText.getText());
+                        checkFieldsValue();
+                    }
+                }
+            }
+        });
+
+        generalJdbcPasswordText.addModifyListener(new ModifyListener() {
+
+            public void modifyText(final ModifyEvent e) {
+                if (!isContextMode()) {
+                    if (validText(generalJdbcPasswordText.getText())) {
+                        getConnection().setPassword(generalJdbcPasswordText.getText());
+                        checkFieldsValue();
+                    }
+                }
+            }
+        });
+
+        generalJdbcSchemaText.addModifyListener(new ModifyListener() {
+
+            public void modifyText(final ModifyEvent e) {
+                if (!isContextMode()) {
+                    if (validText(generalJdbcSchemaText.getText())) {
+                        getConnection().setSchema(generalJdbcSchemaText.getText());
+                        checkFieldsValue();
+                    }
+                }
+            }
+        });
+
+        generalJdbcUserText.addModifyListener(new ModifyListener() {
+
+            public void modifyText(final ModifyEvent e) {
+                if (!isContextMode()) {
+                    if (validText(generalJdbcUserText.getText())) {
+                        getConnection().setUsername(generalJdbcUserText.getText());
+                        checkFieldsValue();
+                    }
+                }
+            }
+        });
+
+        generalMappingFileText.addModifyListener(new ModifyListener() {
+
+            public void modifyText(final ModifyEvent e) {
+                if (!isContextMode()) {
+                    if (validText(generalMappingFileText.getText())) {
+                        getConnection().setDbmsId(generalMappingFileText.getText());
+                        checkFieldsValue();
+                    }
+                }
+            }
+        });
+
+        browseJarFilesButton.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                FileDialog dialog = new FileDialog(getShell());
+                dialog.setFilterExtensions(new String[] { "*.jar", "*.zip", "*.*", "*" });
+                String userDir = System.getProperty("user.dir");
+                String pathSeparator = System.getProperty("path.separator");
+                dialog.setFilterPath(userDir + pathSeparator + "lib" + pathSeparator + "java");
+                String path = dialog.open();
+                if (path == null) {
+                    return;
+                }
+                generalJdbcDriverjarText.setText(path);
+            }
+
+        });
+
+        mappingSelectButton.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                MappingFileSelectDialog dialog = new MappingFileSelectDialog(getShell());
+                dialog.open();
+                generalMappingFileText.setText(dialog.getSelectId());
+            }
+        });
+    }
+
+    /**
+     * 
+     * DOC YeXiaowei Comment method "isGeneralJDBC".
+     * 
+     * @return
+     */
+    private boolean isGeneralJDBC() {
+        return dbTypeCombo.getText().equals(DataStringConnection.GENERAL_JDBC);
+    }
+
+    /**
      * Ensures that fields are set. Update checkEnable / use to checkConnection().
      */
     @Override
@@ -905,6 +1231,79 @@ public class DatabaseForm extends AbstractForm {
 
         // Show Database Properties
         setPropertiesFormEditable(true);
+
+        boolean checkGeneralDB = isGeneralJDBC();
+
+        if (!checkGeneralDB) {
+            if (!checkTypeDBFieldValues()) {
+                return false;
+            }
+        } else {
+            if (!checkGeneralDBFieldValues()) {
+                return false;
+            }
+        }
+
+        if (!databaseSettingIsValide) {
+            updateStatus(IStatus.INFO, Messages.getString("DatabaseForm.checkInformation")); //$NON-NLS-1$
+            return false;
+        }
+        if (sqlSyntaxCombo.getSelectionIndex() == -1) {
+            updateStatus(IStatus.WARNING, Messages.getString("DatabaseForm.alert", sqlSyntaxCombo.getLabel())); //$NON-NLS-1$
+            return false;
+        }
+        if (nullCharText.getCharCount() == 0) {
+            updateStatus(IStatus.WARNING, Messages.getString("DatabaseForm.alert", nullCharText.getLabelText())); //$NON-NLS-1$
+            return false;
+        }
+        if (stringQuoteText.getCharCount() == 0) {
+            updateStatus(IStatus.WARNING, Messages.getString("DatabaseForm.alert", stringQuoteText.getLabelText())); //$NON-NLS-1$
+            return false;
+        }
+        updateStatus(IStatus.OK, null);
+        return true;
+    }
+
+    private boolean checkGeneralDBFieldValues() {
+        String value = generalJdbcUrlText.getText();
+        if (!validText(value)) {
+            updateStatus(IStatus.WARNING, Messages.getString("DatabaseForm.alert", generalJdbcUrlText.getLabelText())); //$NON-NLS-1$
+            return false;
+        }
+
+        value = generalJdbcDriverjarText.getText();
+        if (!validText(value)) {
+            updateStatus(IStatus.WARNING, Messages.getString("DatabaseForm.alert", generalJdbcDriverjarText.getLabelText())); //$NON-NLS-1$
+            return false;
+        }
+
+        value = generalJdbcClassNameText.getText();
+        if (!validText(value)) {
+            updateStatus(IStatus.WARNING, Messages.getString("DatabaseForm.alert", generalJdbcClassNameText.getLabelText())); //$NON-NLS-1$
+            return false;
+        }
+
+        value = generalJdbcUserText.getText();
+        if (!validText(value)) {
+            updateStatus(IStatus.WARNING, Messages.getString("DatabaseForm.alert", generalJdbcUserText.getLabelText())); //$NON-NLS-1$
+            return false;
+        }
+
+        value = generalJdbcPasswordText.getText();
+        if (!validText(value)) {
+            updateStatus(IStatus.WARNING, Messages.getString("DatabaseForm.alert", generalJdbcPasswordText.getLabelText())); //$NON-NLS-1$
+            return false;
+        }
+
+        updateStatus(IStatus.OK, null);
+        return true;
+    }
+
+    private boolean validText(final String value) {
+        return value != null && !value.equals("");
+    }
+
+    private boolean checkTypeDBFieldValues() {
 
         // Another fields depend on DbType
         String s = urlDataStringConnection.getStringConnectionTemplate();
@@ -937,25 +1336,9 @@ public class DatabaseForm extends AbstractForm {
             updateStatus(IStatus.WARNING, Messages.getString("DatabaseForm.alert", schemaText.getLabelText())); //$NON-NLS-1$
             return false;
         }
-
-        if (!databaseSettingIsValide) {
-            updateStatus(IStatus.INFO, Messages.getString("DatabaseForm.checkInformation")); //$NON-NLS-1$
-            return false;
-        }
-        if (sqlSyntaxCombo.getSelectionIndex() == -1) {
-            updateStatus(IStatus.WARNING, Messages.getString("DatabaseForm.alert", sqlSyntaxCombo.getLabel())); //$NON-NLS-1$
-            return false;
-        }
-        if (nullCharText.getCharCount() == 0) {
-            updateStatus(IStatus.WARNING, Messages.getString("DatabaseForm.alert", nullCharText.getLabelText())); //$NON-NLS-1$
-            return false;
-        }
-        if (stringQuoteText.getCharCount() == 0) {
-            updateStatus(IStatus.WARNING, Messages.getString("DatabaseForm.alert", stringQuoteText.getLabelText())); //$NON-NLS-1$
-            return false;
-        }
         updateStatus(IStatus.OK, null);
         return true;
+
     }
 
     private String getStringConnection() {
@@ -979,6 +1362,9 @@ public class DatabaseForm extends AbstractForm {
         } else {
             checkButton.setEnabled((dbTypeCombo.getSelectionIndex() >= 0)
                     && (getStringConnection() != urlDataStringConnection.getStringConnectionTemplate()));
+            if (isGeneralJDBC()) {
+                checkButton.setEnabled(true);
+            }
         }
     }
 
