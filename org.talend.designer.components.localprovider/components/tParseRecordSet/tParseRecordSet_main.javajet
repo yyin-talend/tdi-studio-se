@@ -58,6 +58,14 @@ if (outputConns!=null && outputConns.size()>0) {
 				String attriName = tmpMap.get("SCHEMA_COLUMN");
 				if (attriName!=null && column.getLabel().equals(attriName)) {
 					if(tmpMap.get("VALUE").length()>0){
+						boolean isNotSetDefault = false;
+						String defaultValue=column.getDefault();
+						if(defaultValue!=null){
+							isNotSetDefault = defaultValue.length()==0;
+						}else{
+							isNotSetDefault=true;
+						}
+						String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 						JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 						if (javaType == JavaTypesManager.OBJECT) {
 %>
@@ -77,16 +85,17 @@ if (outputConns!=null && outputConns.size()>0) {
 	if(re_<%=cid%>.getString(<%=tmpMap.get("VALUE")%>)!=null){
 		<%=outputConnName%>.<%=column.getLabel() %> = re_<%=cid%>.getString(<%=tmpMap.get("VALUE")%>).trim();
 	}else{
-		<%=outputConnName%>.<%=column.getLabel() %> = re_<%=cid%>.getString(<%=tmpMap.get("VALUE")%>);
+		//<%=outputConnName%>.<%=column.getLabel() %> = re_<%=cid%>.getString(<%=tmpMap.get("VALUE")%>);
+		<%=outputConnName%>.<%=column.getLabel() %> = <%=isNotSetDefault?JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate):column.getDefault()%>;
 	}
 <%
     					}else {
-    							String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 %>
 	if(re_<%=cid%>.getString(<%=tmpMap.get("VALUE")%>)!=null){
 		<%=outputConnName%>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(re_<%=cid%>.getString(<%=tmpMap.get("VALUE")%>).trim());
 	}else{
-		<%=outputConnName%>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(re_<%=cid%>.getString(<%=tmpMap.get("VALUE")%>));		
+		//<%=outputConnName%>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(re_<%=cid%>.getString(<%=tmpMap.get("VALUE")%>));
+		<%=outputConnName%>.<%=column.getLabel() %> = <%=isNotSetDefault?JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate):column.getDefault()%>;		
 	}
 <%
 						}
