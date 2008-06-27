@@ -89,8 +89,7 @@ public class SessionTreeNodeUtils {
             throws Exception {
         SQLConnection connection = createSQLConnection(dbconnection);
         ISQLAlias alias = createSQLAlias("Repository Name", dbconnection.getURL(), dbconnection.getUsername(), dbconnection
-                .getPassword(),  dbconnection.getSID().length() == 0 ? dbconnection
-                        .getDatasourceName() : dbconnection.getSID());
+                .getPassword(), dbconnection.getSID().length() == 0 ? dbconnection.getDatasourceName() : dbconnection.getSID());
         SessionTreeModel stm = new SessionTreeModel();
         SessionTreeNode session;
         session = stm.createSessionTreeNode(new SQLConnection[] { connection, connection }, alias, null, dbconnection
@@ -144,7 +143,7 @@ public class SessionTreeNodeUtils {
         IMetadataConnection iMetadataConnection = ConvertionHelper.convert(con);
         ExtractMetaDataUtils.getConnection(iMetadataConnection.getDbType(), iMetadataConnection.getUrl(), iMetadataConnection
                 .getUsername(), iMetadataConnection.getPassword(), iMetadataConnection.getDatabase(), iMetadataConnection
-                .getSchema());
+                .getSchema(), iMetadataConnection.getDriverClass(), iMetadataConnection.getDriverJarPath());
         SQLConnection sqlConnection = new SQLConnection(ExtractMetaDataUtils.conn, null);
         return sqlConnection;
     }
