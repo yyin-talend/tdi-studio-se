@@ -31,6 +31,8 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.components.ComponentUtilities;
+import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.core.model.metadata.builder.connection.SubscriberTable;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
@@ -51,6 +53,7 @@ import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.actions.metadata.DeleteTableAction;
 import org.talend.repository.ui.dialog.JobletReferenceDialog;
+import org.talend.repository.ui.views.RepositoryContentProvider.MetadataTableRepositoryObject;
 
 /**
  * Action used to delete object from repository. This action manages logical and physical deletions.<br/>
@@ -183,8 +186,8 @@ public class DeleteAction extends AContextualAction {
                                             // path = path + File.separator;
                                             // }
                                             boolean found = false;
-                                            JobletReferenceBean bean = new JobletReferenceBean(property2.getLabel(),
-                                                    property2.getVersion(), path);
+                                            JobletReferenceBean bean = new JobletReferenceBean(property2.getLabel(), property2
+                                                    .getVersion(), path);
                                             bean.setJobFlag(isJob, isDelete);
 
                                             for (JobletReferenceBean b : list) {
@@ -243,6 +246,18 @@ public class DeleteAction extends AContextualAction {
         if (node.getContentType() == ERepositoryObjectType.GENERATED) {
             return true;
         }
+        if (node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_CON_CDC) {
+            return true;
+        }
+        if (node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_CON_TABLE) {
+            final IRepositoryObject object = node.getObject();
+            if (object != null && object instanceof MetadataTableRepositoryObject) {
+                final MetadataTable table = ((MetadataTableRepositoryObject) object).getTable();
+                if (table != null && table instanceof SubscriberTable) {
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -254,16 +269,16 @@ public class DeleteAction extends AContextualAction {
      * @throws PersistenceException
      * @throws BusinessException
      */
-    private boolean deleteElements(IProxyRepositoryFactory factory, RepositoryNode currentJobNode)
-            throws PersistenceException, BusinessException {
+    private boolean deleteElements(IProxyRepositoryFactory factory, RepositoryNode currentJobNode) throws PersistenceException,
+            BusinessException {
         Boolean confirm = null;
         boolean needReturn = false;
         IRepositoryObject objToDelete = currentJobNode.getObject();
 
         List<JobletReferenceBean> checkRepository = checkRepositoryNodeFromProcess(factory, currentJobNode);
         if (checkRepository.size() > 0) {
-            JobletReferenceDialog dialog = new JobletReferenceDialog(PlatformUI.getWorkbench()
-                    .getActiveWorkbenchWindow().getShell(), objToDelete, checkRepository);
+            JobletReferenceDialog dialog = new JobletReferenceDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                    .getShell(), objToDelete, checkRepository);
             dialog.open();
             return true;
         }
@@ -353,8 +368,12 @@ public class DeleteAction extends AContextualAction {
                     break;
                 case REPOSITORY_ELEMENT:
                     if (node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.JOB_DOC
-                            || node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.JOBLET_DOC
-                            || node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_CON_CDC) {
+                            || node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.JOBLET_DOC) {
+                        visible = false;
+                        break;
+                    }
+                    if (node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_CON_CDC) {
+                        enabled = false;
                         visible = false;
                         break;
                     }
@@ -366,8 +385,7 @@ public class DeleteAction extends AContextualAction {
                     boolean isDeleted = repFactory.getStatus(repObj) == ERepositoryStatus.DELETED;
 
                     if (isDeleted) {
-                        ERepositoryObjectType nodeType = (ERepositoryObjectType) node
-                                .getProperties(EProperties.CONTENT_TYPE);
+                        ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
                         if (ERepositoryObjectType.METADATA_CON_TABLE.equals(nodeType)) {
                             visible = false;
                             break;

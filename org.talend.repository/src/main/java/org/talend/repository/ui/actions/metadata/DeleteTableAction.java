@@ -29,6 +29,7 @@ import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.SubItemHelper;
+import org.talend.core.model.metadata.builder.connection.SubscriberTable;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.Item;
@@ -89,6 +90,9 @@ public class DeleteTableAction extends AContextualAction {
                         connection = (item).getConnection();
                         ISubRepositoryObject subRepositoryObject = (ISubRepositoryObject) node.getObject();
                         AbstractMetadataObject abstractMetadataObject = subRepositoryObject.getAbstractMetadataObject();
+                        if (abstractMetadataObject instanceof SubscriberTable) {
+                            return;
+                        }
                         if (SubItemHelper.isDeleted(abstractMetadataObject)) {
                             if (confirm == null) {
                                 String title = Messages.getString("DeleteAction.dialog.title"); //$NON-NLS-1$

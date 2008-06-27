@@ -220,7 +220,11 @@ public class DatabaseWizard extends RepositoryWizard implements INewWizard {
                         DatabaseConnection c = (DatabaseConnection) connectionItem.getConnection();
                         final boolean equals = c.getProductId().equals(EDatabaseTypeName.ORACLEFORSID.getProduct());
                         if (equals && !c.isContextMode()) {
-                            c.setSchema(c.getSchema().toUpperCase());
+                            if (c.getSchema() == null) {
+                                c.setSchema(""); //$NON-NLS-1$
+                            } else {
+                                c.setSchema(c.getSchema().toUpperCase());
+                            }
                         }
                     }
                     factory.create(connectionItem, propertiesWizardPage.getDestinationPath());
@@ -229,7 +233,11 @@ public class DatabaseWizard extends RepositoryWizard implements INewWizard {
                         DatabaseConnection c = (DatabaseConnection) connectionItem.getConnection();
                         final boolean equals = c.getProductId().equals(EDatabaseTypeName.ORACLEFORSID.getProduct());
                         if (equals && !c.isContextMode()) {
-                            c.setSchema(c.getSchema().toUpperCase());
+                            if (c.getSchema() == null) {
+                                c.setSchema(""); //$NON-NLS-1$
+                            } else {
+                                c.setSchema(c.getSchema().toUpperCase());
+                            }
                         }
                         // update
                         RepositoryUpdateManager.updateDBConnection(c);

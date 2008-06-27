@@ -19,6 +19,7 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.CDCConnection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.core.model.metadata.builder.connection.SubscriberTable;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.Item;
@@ -92,7 +93,15 @@ public class CreateTableAction extends AbstractCreateTableAction {
         ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
 
         if (ERepositoryObjectType.METADATA_CON_TABLE.equals(nodeType)) {
-            ConnectionItem connectionItem = (ConnectionItem) node.getObject().getProperty().getItem();
+            final IRepositoryObject object = node.getObject();
+            if (object instanceof MetadataTableRepositoryObject) {
+                MetadataTable table = ((MetadataTableRepositoryObject) object).getTable();
+                if (table instanceof SubscriberTable) {
+                    this.node = null;
+                    return;
+                }
+            }
+            ConnectionItem connectionItem = (ConnectionItem) object.getProperty().getItem();
             nodeType = ERepositoryObjectType.getItemType(connectionItem);
         }
 
@@ -182,8 +191,7 @@ public class CreateTableAction extends AbstractCreateTableAction {
                     if (repositoryObject != null) {
                         Item item2 = repositoryObject.getProperty().getItem();
                         if (item2 instanceof DatabaseConnectionItem) {
-                            DatabaseConnectionItem item = (DatabaseConnectionItem) repositoryObject.getProperty()
-                                    .getItem();
+                            DatabaseConnectionItem item = (DatabaseConnectionItem) repositoryObject.getProperty().getItem();
                             DatabaseConnection connection = (DatabaseConnection) item.getConnection();
                             CDCConnection cdcConns = connection.getCdcConns();
                             if (cdcConns != null) {
