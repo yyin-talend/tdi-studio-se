@@ -89,8 +89,7 @@ public class OpenDocumentationAction extends AContextualAction {
             // if (documentationItem.getExtension() != null) {
             // extension = documentationItem.getExtension();
             // }
-            IFile file = LinkDocumentationHelper.getTempFile(documentationItem.getName(), documentationItem
-                    .getExtension());
+            IFile file = LinkDocumentationHelper.getTempFile(documentationItem.getName(), documentationItem.getExtension());
             try {
                 documentationItem.getContent().setInnerContentToFile(file.getLocation().toFile());
                 url = file.getLocationURI().toURL();
@@ -148,7 +147,7 @@ public class OpenDocumentationAction extends AContextualAction {
         } catch (Exception e) {
             //
         }
-        if (node != null) {
+        if (node != null && node.getObject() != null) {
             Item item = node.getObject().getProperty().getItem();
             if (item != null && item instanceof LinkDocumentationItem) {
                 return LinkDocumentationItem.class;

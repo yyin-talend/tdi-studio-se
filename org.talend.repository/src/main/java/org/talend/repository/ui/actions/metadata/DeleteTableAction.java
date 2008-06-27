@@ -147,8 +147,7 @@ public class DeleteTableAction extends AContextualAction {
                 case REPOSITORY_ELEMENT:
                     IRepositoryObject repObj = node.getObject();
 
-                    ERepositoryObjectType nodeType = (ERepositoryObjectType) node
-                            .getProperties(EProperties.CONTENT_TYPE);
+                    ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
                     if (!nodeType.isSubItem()) {
                         canWork = false;
                         break;
@@ -158,14 +157,12 @@ public class DeleteTableAction extends AContextualAction {
                         if (repositoryObject != null) {
                             Item item2 = repositoryObject.getProperty().getItem();
                             if (item2 instanceof DatabaseConnectionItem) {
-                                DatabaseConnectionItem item = (DatabaseConnectionItem) repositoryObject.getProperty()
-                                        .getItem();
+                                DatabaseConnectionItem item = (DatabaseConnectionItem) repositoryObject.getProperty().getItem();
                                 DatabaseConnection connection = (DatabaseConnection) item.getConnection();
                                 CDCConnection cdcConns = connection.getCdcConns();
                                 if (cdcConns != null) {
                                     if (repositoryObject instanceof MetadataTableRepositoryObject) {
-                                        MetadataTable table = ((MetadataTableRepositoryObject) repositoryObject)
-                                                .getTable();
+                                        MetadataTable table = ((MetadataTableRepositoryObject) repositoryObject).getTable();
                                         String tableType = table.getTableType();
                                         boolean is = RepositoryConstants.TABLE.equals(tableType);
                                         canWork = is && !table.isAttachedCDC();
@@ -173,6 +170,11 @@ public class DeleteTableAction extends AContextualAction {
                                 }
                             }
                         }
+                    } else if (node.getObjectType() == ERepositoryObjectType.METADATA_CON_CDC) {
+                        canWork = false;
+                    }
+                    if (!canWork) {
+                        break;
                     }
                     IProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
                     boolean isLocked = false;

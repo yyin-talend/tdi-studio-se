@@ -170,6 +170,7 @@ public class CreateConnectionAction extends AbstractCreateAction {
     protected void init(RepositoryNode node) {
         ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
         if (!ERepositoryObjectType.METADATA_CONNECTIONS.equals(nodeType)) {
+            setEnabled(false);
             return;
         }
         switch (node.getType()) {

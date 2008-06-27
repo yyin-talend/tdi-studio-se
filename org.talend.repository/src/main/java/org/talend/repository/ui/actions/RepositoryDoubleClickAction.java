@@ -26,6 +26,9 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.swt.actions.ITreeContextualAction;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.builder.connection.CDCConnection;
+import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.model.QueryEMFRepositoryNode;
@@ -75,8 +78,8 @@ public class RepositoryDoubleClickAction extends Action {
 
         RepositoryNode node = (RepositoryNode) obj;
 
-        if (node.getType() == ENodeType.SIMPLE_FOLDER || node.getType() == ENodeType.STABLE_SYSTEM_FOLDER
-                || node.getType() == ENodeType.SYSTEM_FOLDER) {
+        if ((node.getType() == ENodeType.SIMPLE_FOLDER || node.getType() == ENodeType.STABLE_SYSTEM_FOLDER || node.getType() == ENodeType.SYSTEM_FOLDER)
+                && !isLinkCDCNode(node)) {
             view.expand(node);
             view.getViewer().refresh();
         } else {
@@ -89,10 +92,46 @@ public class RepositoryDoubleClickAction extends Action {
         }
     }
 
-    private ITreeContextualAction getAction(RepositoryNode obj) {
-        for (ITreeContextualAction current : contextualsActions) {
+    /**
+     * 
+     * ggu Comment method "isLinkCDCNode".
+     * 
+     * for cdc
+     */
+    private boolean isLinkCDCNode(RepositoryNode node) {
+        if (node != null) {
+            if (ENodeType.STABLE_SYSTEM_FOLDER.equals(node.getType())) {
+                if (node.getParent() != null) {
+                    RepositoryNode pNode = node.getParent().getParent();
+                    if (pNode != null) {
+                        ERepositoryObjectType nodeType = (ERepositoryObjectType) pNode.getProperties(EProperties.CONTENT_TYPE);
+                        if (ERepositoryObjectType.METADATA_CONNECTIONS.equals(nodeType) && pNode.getObject() != null) {
+                            DatabaseConnection connection = (DatabaseConnection) ((DatabaseConnectionItem) pNode.getObject()
+                                    .getProperty().getItem()).getConnection();
+                            if (connection != null) {
+                                CDCConnection cdcConns = connection.getCdcConns();
+                                return cdcConns != null;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
 
-            ERepositoryObjectType nodeType = (ERepositoryObjectType) obj.getProperties(EProperties.CONTENT_TYPE);
+    private ITreeContextualAction getAction(RepositoryNode obj) {
+        final boolean isCDC = isLinkCDCNode(obj);
+        final ERepositoryObjectType nodeType = (ERepositoryObjectType) obj.getProperties(EProperties.CONTENT_TYPE);
+
+        for (ITreeContextualAction current : contextualsActions) {
+            // for cdc
+            if (isCDC) {
+                if (current.getClassForDoubleClick().equals(CDCConnection.class)) {
+                    return current;
+                }
+                continue;
+            }
             if (nodeType != null && nodeType.equals(ERepositoryObjectType.METADATA_CON_TABLE)) {
                 if (current.getClassForDoubleClick().equals(IMetadataTable.class)) {
                     return current;
@@ -102,6 +141,8 @@ public class RepositoryDoubleClickAction extends Action {
                 if (current.getClassForDoubleClick().equals(QueryEMFRepositoryNode.class)) {
                     return current;
                 }
+            } else if (nodeType != null && nodeType.equals(ERepositoryObjectType.METADATA_CON_CDC)) {
+                return null; // for cdc system table
                 // end
             } else if (obj.getObject() != null
                     && current.getClassForDoubleClick().isInstance(obj.getObject().getProperty().getItem())) {
