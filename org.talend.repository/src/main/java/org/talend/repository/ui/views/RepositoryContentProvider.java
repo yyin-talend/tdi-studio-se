@@ -129,8 +129,14 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
 
     public Object[] getChildren(Object parent) {
         RepositoryNode repositoryNode = ((RepositoryNode) parent);
-
-        if (!repositoryNode.isInitialized()) {
+        Boolean needRefresh = (Boolean) repositoryNode.getProperties(EProperties.NEED_REFRESH);
+        if (needRefresh == null) {
+            needRefresh = false;
+        }
+        if (!repositoryNode.isInitialized() || needRefresh) {
+            if (needRefresh) {
+                repositoryNode.getChildren().clear();
+            }
             try {
                 if (parent == businessProcessNode) {
                     convert(factory.getBusinessProcess(), businessProcessNode, ERepositoryObjectType.BUSINESS_PROCESS, recBinNode);
@@ -193,8 +199,8 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
                         node.setParent(recBinNode);
                     }
                 }
-
                 repositoryNode.setInitialized(true);
+                repositoryNode.setProperties(EProperties.NEED_REFRESH, false);
             } catch (PersistenceException e) {
                 RuntimeExceptionHandler.process(e);
             }
