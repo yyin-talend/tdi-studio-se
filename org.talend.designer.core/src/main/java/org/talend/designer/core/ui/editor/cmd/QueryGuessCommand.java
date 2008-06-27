@@ -107,7 +107,7 @@ public class QueryGuessCommand extends Command {
             schema = this.dbNameAndSchemaMap.get(this.realTableId);
         }
         String propertyType = (String) node.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
-        if (!propertyType.equals(EmfComponent.REPOSITORY)) {
+        if (propertyType != null && !propertyType.equals(EmfComponent.REPOSITORY)) {
             for (IElementParameter param : this.node.getElementParameters()) {
                 if (param.getRepositoryValue() != null && param.getRepositoryValue().equals("SCHEMA")) {
                     schema = (String) param.getValue();
