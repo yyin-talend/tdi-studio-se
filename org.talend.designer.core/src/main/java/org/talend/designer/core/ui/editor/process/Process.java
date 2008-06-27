@@ -49,6 +49,8 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.emf.EmfHelper;
+import org.talend.commons.exception.BusinessException;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.components.IComponent;
@@ -958,9 +960,6 @@ public class Process extends Element implements IProcess2 {
      * @param process
      */
     public void loadXmlFile() {
-        if (property.getItem() instanceof ProcessItem) {
-            property = ProcessorUtilities.getProcessItem(property.getId(), property.getVersion()).getProperty();
-        }
         init();
         Hashtable<String, Node> nodesHashtable = new Hashtable<String, Node>();
 
