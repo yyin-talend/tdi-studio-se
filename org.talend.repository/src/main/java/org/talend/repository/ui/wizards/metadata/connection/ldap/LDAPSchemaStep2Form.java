@@ -245,9 +245,9 @@ public class LDAPSchemaStep2Form extends AbstractLDAPSchemaStepForm {
 
         final LDAPSchemaConnection connection = (LDAPSchemaConnection) connectionItem.getConnection();
 
-        if (connection == null) {
-            connection.setProtocol(EAuthenticationMethod.ANONYMOUS.getName());
-        }
+        // if (connection == null) {
+        // connection.setProtocol(EAuthenticationMethod.ANONYMOUS.getName());
+        // }
 
         bindPrincipalCombo.addModifyListener(new ModifyListener() {
 
