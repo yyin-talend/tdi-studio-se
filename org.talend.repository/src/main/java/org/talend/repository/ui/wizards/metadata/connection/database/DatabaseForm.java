@@ -521,8 +521,10 @@ public class DatabaseForm extends AbstractForm {
 
                         index = 3;
                         if (s[index] != "") { //$NON-NLS-1$
-                            sidOrDatabaseText.setText(s[index]);
-                            getConnection().setSID(s[index]);
+                            if (selection != DataStringConnection.DBTYPE_AS400) {
+                                sidOrDatabaseText.setText(s[index]);
+                                getConnection().setSID(s[index]);
+                            }
                         }
 
                         index = 4;

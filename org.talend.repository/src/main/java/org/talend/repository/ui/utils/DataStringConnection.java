@@ -124,7 +124,7 @@ public class DataStringConnection {
 
         dataConnection[DBTYPE_ACCESS] = new DataConnection("Access",
                 "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ=<filename>",
-                "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ=" + file); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                "jdbc:odbc:Driver={Microsoft Access Driver \\(\\*\\.mdb\\)};DBQ=" + file); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         dataConnection[DBTYPE_TERDATA] = new DataConnection(
                 "Teradata", "jdbc:teradata://<host>/<sid>", "jdbc:teradata://" + host + "/" + sid); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -148,7 +148,7 @@ public class DataStringConnection {
                 "jdbc:hsqldb:hsql://" + host + ":" + port + "/" + sid, "9001"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         dataConnection[21] = new DataConnection("HSQLDB WebServer", "jdbc:hsqldb:http://<host>:<port>/<sid>",
-                "jdbc:derby://" + host + ":" + port + "/" + sid, "9001"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                "jdbc:hsqldb:http://" + host + ":" + port + "/" + sid, "9001"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         dataConnection[DBTYPE_HSQLDB_IN_PROCESS] = new DataConnection("HSQLDB In-Process",
                 "jdbc:hsqldb:file:<dbRootPath>/<sid>;ifexists=true", "jdbc:hsqldb:file:" + file + "/" + sid + ";ifexists=true"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
