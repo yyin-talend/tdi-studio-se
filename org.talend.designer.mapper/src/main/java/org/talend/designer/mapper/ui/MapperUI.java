@@ -709,7 +709,7 @@ public class MapperUI {
             dataMapTableView.setLayoutData(formData);
             previousControl = dataMapTableView;
             dataMapTableView.minimizeTable(varsTable.isMinimized());
-            // dataMapTableView.registerStyledExpressionEditor(getTabFolderEditors().getStyledTextHandler());
+            dataMapTableView.registerStyledExpressionEditor(getTabFolderEditors().getStyledTextHandler());
             // dataMapTableView.fillMinimumSize(false);
         }
 
