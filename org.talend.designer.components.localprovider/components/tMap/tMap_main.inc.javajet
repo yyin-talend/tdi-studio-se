@@ -95,6 +95,8 @@
 		boolean isFirstPersistentSortedTable = false;
 		boolean previousStateIsFirstPersistentSortedTable = false;
 		boolean isPersistentSortedTable = false;
+		boolean hasMainFilter = false;
+		boolean mainFilterAlreadyDone = false;
 
         DataMapExpressionParser expressionParser = new DataMapExpressionParser(currentLanguage);
 
@@ -181,6 +183,35 @@
 		boolean hasCasePrimitiveKeyWithNull_<%= uniqueNameComponent%> = false;
 		<%
 
+
+			  	   if(mainInputTable.isActivateExpressionFilter() && mainInputTable.getExpressionFilter() != null && !mainInputTable.getExpressionFilter().trim().equals("")) { // T_TM_M_300 
+
+						mainFilterAlreadyDone = true;
+							
+						if(isVirtualOut) { // T_TM_M_301
+	
+							hasMainFilter = true;
+
+		                	String key = CodeGenerationUtils.buildProblemKey(componentNameForKeyProblem,
+   	                     	JavaGenerationManager.PROBLEM_KEY_FIELD.FILTER.toString(), mainInputTableName);
+					  	  	 %>
+		              
+			   	  		  	if(
+ 				  		  			<%= checkingSyntax ? CodeGenerationUtils.buildJavaStartFieldKey(key) : "" %>
+ 				  		  			(
+ 				  		  			<%// keep this line to allow comments in filter %>
+ 				  		  			<%= mainInputTable.getExpressionFilter()%>
+ 				  		  			<%// keep this line to allow comments in filter %>
+ 				  		  			)
+  				  		  			<%= checkingSyntax ? CodeGenerationUtils.buildJavaEndFieldKey(key) : "" %>
+	  	  		  				) { // G_TM_M_281
+
+								<%
+						} // T_TM_M_301
+				 	} // T_TM_M_300
+			
+
+
 		// exprKey(s) initialization(s) for Main flow
 		// ---------------------------------------------
 		if (sizeInputTables > 1 && inputTables.get(1).isPersistent() && !"ALL_ROWS".equals(inputTables.get(1).getMatchingMode())) { // T_TM_M_201
@@ -259,9 +290,10 @@
 				} // T_TM_M_205
 			} // T_TM_M_206
 		
-		
 			if(!isVirtualIn) { // T_TM_M_211
-        %>
+			
+			
+		        %>
 
                     SortableRow_<%= mainInputTableName %> rsc_<%= mainInputTableName %> = fsi_<%= mainInputTableName %>.getNextFreeRow();
 
@@ -275,8 +307,19 @@
 
                     fsi_<%= mainInputTableName %>.put(rsc_<%= mainInputTableName %>);
 
-<%
+				<%
+
 			} // T_TM_M_211
+
+
+
+				if(isVirtualOut && hasMainFilter) {
+					%>
+					} // G_TM_M_281
+					<%
+				}
+				
+
 
 		if(!isVirtualOut) { // T_TM_M_212
         %>
@@ -305,7 +348,6 @@
             				    								  
 		<%
 
-		boolean hasMainFilter = false;
 		String previousLookupName = null;
 		String previousTableName = mainInputTableName;
 
@@ -364,7 +406,7 @@
             
             		cumulatedInputConnections.add(connection);
             
-			  	  	   if(externalTable.isActivateExpressionFilter() && externalTable.getExpressionFilter() != null && !externalTable.getExpressionFilter().trim().equals("")) { 
+			  	  	   if(!mainFilterAlreadyDone && externalTable.isActivateExpressionFilter() && externalTable.getExpressionFilter() != null && !externalTable.getExpressionFilter().trim().equals("")) { 
 
 						hasMainFilter = true;
 
@@ -374,17 +416,18 @@
 		              
 			   	  		  if(
  				  		  			<%= checkingSyntax ? CodeGenerationUtils.buildJavaStartFieldKey(key) : "" %>
- 				  		  			!(
+ 				  		  			(
  				  		  			<%// keep this line to allow comments in filter %>
  				  		  			<%= externalTable.getExpressionFilter()%>
  				  		  			<%// keep this line to allow comments in filter %>
  				  		  			)
   				  		  			<%= checkingSyntax ? CodeGenerationUtils.buildJavaEndFieldKey(key) : "" %>
-	  	  		  				) {
-		      	  					<%= mainRowRejected %> = true;
-		    		  	  	   }
-		    	  	  	  
-				 	  	   <%
+	  	  		  				) { // G_TM_M_280
+
+							 // CALL close main tMap filter for table '<%=tableName %>'
+							<%
+							gm.addBlocksCodeToClose(new BlockCode("G_TM_M_280 close main tMap filter for table '" + tableName +"'"));
+
 			 	  	   }
                   continue;
                   
@@ -1111,10 +1154,12 @@
 
         %>// ###############################
         <%
-        
+
         // /////////////////////////////////////////////////////////////////////////////////////////////////////
         // /////////////////////////////////////////////////////////////////////////////////////////////////////
 
+if(!isVirtualOut) { // T_TM_M_320
+	
         // /////////////////////////////////////////////////////////////////////////////////////////////////////
         // /////////////////////////////////////////////////////////////////////////////////////////////////////
         // VARIABLES
@@ -1263,10 +1308,6 @@
         // ///////////////////////////////////////////////////////////////////
 
 		// System.out.println(uniqueNameComponent + " lastValidOutputTableName="+lastValidOutputTableName);
-
-		if(hasMainFilter) { // T_TM_M_280
-			sb.append(cr + "if(!" + mainRowRejected + ") { // G_TM_M_280");
-		} // T_TM_M_280
 
         sb.append(cr);
 
@@ -1479,16 +1520,14 @@
 
         } // for output tables
 
-		if(hasMainFilter) { // T_TM_M_280
-			sb.append(cr + "} // G_TM_M_280");
-		} // T_TM_M_280
-
         sb.append(cr + "// ###############################");
 
         
         sb.append(cr);
         sb.append(cr + "} // end of Var scope");
-        
+
+
+
         sb.append(cr + cr + rejectedInnerJoin + " = false;");
         
         sb.append(cr);
@@ -1498,4 +1537,11 @@
 
 %>
 <%= sb.toString()%>
+
+
+<%
+} // T_TM_M_320
+%>
+
+
 	
