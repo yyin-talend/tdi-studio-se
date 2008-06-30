@@ -122,7 +122,123 @@ for(IConnection conn:conns){
 <%
 }
 }
-}  //server judgement   /***WebSphere MQ*****/
+
+}else if(serverType.equals("ActiveMQ")){
+boolean startServer = ElementParameterParser.getValue(node, "__STARTSERVER__").equals("true");
+boolean topic = ElementParameterParser.getValue(node, "__MSGTYPE__").equals("Topic");
+String from = ElementParameterParser.getValue(node, "__FROM__");
+boolean useMax = ElementParameterParser.getValue(node,"__USEMAX__").equals("true");
+String maxiumMessages = ElementParameterParser.getValue(node,"__MAXMSG__");
+String receiveTimeOut = ElementParameterParser.getValue(node,"__TIMEOUT__");
+if(maxiumMessages.equals("")|| maxiumMessages == null){maxiumMessages = "0";}
+if(receiveTimeOut.equals("")|| receiveTimeOut == null){receiveTimeOut = "0L";}
+%>
+String url_<%=cid %> = "tcp://"+<%=host%>+":"+<%=port%>;
+long timeout_<%=cid %> =<%=receiveTimeOut %>;
+
+<%if(startServer){%>
+org.apache.activemq.broker.BrokerService broker_<%=cid %> = new org.apache.activemq.broker.BrokerService();
+broker_<%=cid %>.setUseJmx(true);
+broker_<%=cid %>.addConnector(url_<%=cid %>);
+broker_<%=cid %>.start();
+<%}%>
+
+System.out.println("Connecting to URL: " + url_<%=cid %>);
+System.out.println("Consuming " + (<%=topic%> ? "topic" : "queue") + ": " + <%=from%>);
+
+org.apache.activemq.ActiveMQConnectionFactory factory_<%=cid %> = 
+new org.apache.activemq.ActiveMQConnectionFactory
+(org.apache.activemq.ActiveMQConnection.DEFAULT_USER, org.apache.activemq.ActiveMQConnection.DEFAULT_PASSWORD, url_<%=cid %>);
+
+javax.jms.Connection connection_<%=cid %> = factory_<%=cid %>.createConnection();
+connection_<%=cid %>.start();
+javax.jms.Session session_<%=cid %> = connection_<%=cid %>.createSession(false, javax.jms.Session.AUTO_ACKNOWLEDGE);
+javax.jms.Destination des_<%=cid %> = null;
+if (<%=topic%>) {
+        des_<%=cid %> = session_<%=cid %>.createTopic(<%=from%>);
+} else {
+        des_<%=cid %> = session_<%=cid %>.createQueue(<%=from%>);
+}
+javax.jms.MessageProducer replyProducer_<%=cid %> = session_<%=cid %>.createProducer(null);
+replyProducer_<%=cid %>.setDeliveryMode(javax.jms.DeliveryMode.NON_PERSISTENT);
+
+javax.jms.MessageConsumer consumer_<%=cid %> = null;
+consumer_<%=cid %> = session_<%=cid %>.createConsumer(des_<%=cid %>);
+String msg_<%=cid %>  = "";
+ 
+ 
+<%  if(kListen.equals("true")){%>
+                System.out.println("We will consume messages while they continue to be delivered ");
+                javax.jms.Message message;
+                while ((message = consumer_<%=cid %>.receive()) != null) {
+            	if (message instanceof javax.jms.TextMessage) {
+                javax.jms.TextMessage txtMsg = (javax.jms.TextMessage) message;
+                msg_<%=cid %> = txtMsg.getText();
+<%
+List< ? extends IConnection> connss = node.getOutgoingSortedConnections();
+List<IMetadataColumn> columnLists = metadata.getListColumns();
+for(IConnection conn:connss){
+	if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
+ 	String firstConnName = conn.getName();
+%>
+				<%=firstConnName%>.from=<%=from%>;	
+				<%=firstConnName%>.message=msg_<%=cid %>;	
+<%
+}
+}%> 
+
+            }         
+      <%}else if (useMax) {%>
+ int maxMsg_<%=cid %> = <%=maxiumMessages %>;
+ System.out.println("We are about to wait until we consume: " + maxMsg_<%=cid %> + " message(s) then we will shutdown");
+ for (int i_<%=cid %> = 0; i_<%=cid %> < maxMsg_<%=cid %> ;) {
+            javax.jms.Message message = consumer_<%=cid %>.receive();
+            if (message != null) {
+                i_<%=cid %>++;
+                if (message instanceof javax.jms.TextMessage) {
+                javax.jms.TextMessage txtMsg = (javax.jms.TextMessage) message;
+                msg_<%=cid %> = txtMsg.getText();
+<%
+List< ? extends IConnection> connss = node.getOutgoingSortedConnections();
+List<IMetadataColumn> columnLists = metadata.getListColumns();
+for(IConnection conn:connss){
+	if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
+ 	String firstConnName = conn.getName();
+%>
+				<%=firstConnName%>.from=<%=from%>;	
+				<%=firstConnName%>.message=msg_<%=cid %>;	
+<%
+}
+}%>
+ 
+            }
+            
+        }
+       
+<% } else {%>
+                System.out.println("We will wait for messages within: " + <%=receiveTimeOut%>*1000 + " ms, and then we will shutdown");
+                javax.jms.Message message;
+                while ((message = consumer_<%=cid %>.receive(<%=receiveTimeOut%>*1000)) != null) {
+            	if (message instanceof javax.jms.TextMessage) {
+                javax.jms.TextMessage txtMsg = (javax.jms.TextMessage) message;
+                msg_<%=cid %> = txtMsg.getText();
+<%
+List< ? extends IConnection> connss = node.getOutgoingSortedConnections();
+List<IMetadataColumn> columnLists = metadata.getListColumns();
+for(IConnection conn:connss){
+	if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
+ 	String firstConnName = conn.getName();
+%>
+				<%=firstConnName%>.from=<%=from%>;	
+				<%=firstConnName%>.message=msg_<%=cid %>;	
+<%
+}
+}%>          
+         } 
+<% } %>
+
+    
+<%}  //server judgement   /***WebSphere MQ*****/
 else{
 	String channel=ElementParameterParser.getValue(node, "__CHANNEL__");
 	String qm=ElementParameterParser.getValue(node, "__QM__");

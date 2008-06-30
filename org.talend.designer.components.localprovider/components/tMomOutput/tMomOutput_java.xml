@@ -39,6 +39,7 @@
       <ITEMS DEFAULT="WEBSPHERE">
         <ITEM NAME="WEBSPHERE"   VALUE="WebSphere" />
         <ITEM NAME="JBOSS"   VALUE="JBoss" />
+        <ITEM NAME="ACTIVEMQ" VALUE="ActiveMQ"/>
       </ITEMS>
     </PARAMETER>
 
@@ -57,6 +58,7 @@
     >
 	<DEFAULT IF="(SERVER == 'JBOSS')">"1099"</DEFAULT>
 	<DEFAULT IF="(SERVER == 'WEBSPHERE')">"1414"</DEFAULT>
+	<DEFAULT IF="(SERVER == 'ACTIVEMQ')">61616</DEFAULT>
     </PARAMETER>
     
      <PARAMETER
@@ -64,7 +66,7 @@
       FIELD="TEXT"
       SHOW="true"
       NUM_ROW="30"
-      SHOW_IF="(SERVER == 'JBOSS')"
+      SHOW_IF="(SERVER == 'JBOSS')OR (SERVER == 'ACTIVEMQ')"
     > 
     <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -73,7 +75,7 @@
       NAME="MSGTYPE"
       FIELD="CLOSED_LIST"
       NUM_ROW="30"
-      SHOW_IF="(SERVER == 'JBOSS')"
+      SHOW_IF="(SERVER == 'JBOSS')OR (SERVER == 'ACTIVEMQ')"
     >
       <ITEMS DEFAULT="TOPIC">
         <ITEM NAME="TOPIC"   VALUE="Topic" />
@@ -100,7 +102,7 @@
         <COLUMN NAME="message" TYPE="id_String" LENGTH="255"/>
         <COLUMN NAME="messageid" TYPE="id_String" LENGTH="255"/>
       </TABLE>
-      <TABLE IF="(SERVER == 'JBOSS') or (IS_USE_MESSAGE_ID == 'false')" READONLY="true">
+      <TABLE IF="(SERVER == 'JBOSS') or (IS_USE_MESSAGE_ID == 'false')or (SERVER == 'ACTIVEMQ')" READONLY="true">
         <COLUMN NAME="message" TYPE="id_String" LENGTH="255"/>
       </TABLE>
     </PARAMETER>
@@ -135,6 +137,7 @@
        <IMPORT NAME="JNP-CLIENT" MODULE="jnp-client.jar" REQUIRED="true" />
        <IMPORT NAME="MQ" MODULE="com.ibm.mq.jar" REQUIRED="true" />
        <IMPORT NAME="MQJMS" MODULE="com.ibm.mqjms.jar" REQUIRED="true" />
+       <IMPORT NAME="ACTIVEMQ" MODULE="activemq-all-5.1.0.jar" REQUIRED="true"/>
      </IMPORTS>
   </CODEGENERATION>
 

@@ -17,7 +17,14 @@ if(serverType.equals("JBoss")){
 	session_<%=cid%>.close();
     connection_<%=cid%>.close();
 <%
-}else{//server judgement   /***WebSphere MQ*****/
+}else if(serverType.equals("ActiveMQ")){%>
+
+ System.out.println("Closing connection");
+        producer_<%=cid %>.close();
+        session_<%=cid %>.close();
+        connection_<%=cid %>.close();
+
+<%}else{//server judgement   /***WebSphere MQ*****/
 %>
 	remoteQ_<%=cid%>.close();
     qMgr_<%=cid%>.disconnect();

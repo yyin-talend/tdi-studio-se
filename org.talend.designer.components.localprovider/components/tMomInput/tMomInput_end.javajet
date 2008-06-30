@@ -22,7 +22,16 @@ if(serverType.equals("JBoss")){
 
 }
 <%
-}else{
+}else if(serverType.equals("ActiveMQ")){%>
+
+}
+
+ System.out.println("Closing connection");
+        consumer_<%=cid %>.close();
+        session_<%=cid %>.close();
+        connection_<%=cid %>.close();
+
+<%}else{
 %>
 		
 		remoteQ<%=cid%>.close();

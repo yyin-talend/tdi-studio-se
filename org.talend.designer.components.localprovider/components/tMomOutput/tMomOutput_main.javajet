@@ -47,7 +47,11 @@ class="MomInput"
     topicPublisher_<%=cid%>.publish(type_<%=cid%>,messageQ_<%=cid%>);
 <%
 					}
-				}else{//server judgement   /***WebSphere MQ*****/
+					}else if(serverType.equals("ActiveMQ")){
+					%>
+					javax.jms.TextMessage message_<%=cid %> = session_<%=cid%>.createTextMessage(msg_<%=cid%>);
+					producer_<%=cid %>.send(message_<%=cid %>);
+				<%}else{//server judgement   /***WebSphere MQ*****/
 					String useMsgId=ElementParameterParser.getValue(node, "__IS_USE_MESSAGE_ID__");
 %>
 	com.ibm.mq.MQMessage message_<%=cid%> = new com.ibm.mq.MQMessage();
