@@ -163,7 +163,7 @@ if(columnList != null && columnList.size() > 0) {
     		if(column.getType().equals("DATE") && useDatePattern.equals("true")){//date
     			String pattn = column.getPattern();
     			if(pattn != null && pattn.length() > 2){
-    				columns += ("DATE '" + pattn.substring(1, pattn.length() - 1) + "'");
+    				columns += (" DATE '" + pattn.substring(1, pattn.length() - 1) + "'");
     			}
     		}else if(dataType.equals("CHAR") || dataType.equals("NCHAR") || dataType.equals("NVARCHAR2") || dataType.equals("VARCHAR") || dataType.equals("VARCHAR2")){//long text
     			if(length > 255){
