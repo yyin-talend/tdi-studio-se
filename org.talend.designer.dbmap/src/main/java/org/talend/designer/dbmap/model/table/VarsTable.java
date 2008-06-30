@@ -58,7 +58,7 @@ public class VarsTable extends AbstractDataMapTable {
                 }
             }
         } else {
-            setMinimized(externalMapperTable.isMinimized());
+            setMinimized(true);
         }
     }
 

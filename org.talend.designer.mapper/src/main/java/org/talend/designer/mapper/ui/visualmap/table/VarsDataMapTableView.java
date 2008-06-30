@@ -44,6 +44,7 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.designer.abstractmap.model.table.IDataMapTable;
+import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.core.ui.celleditor.JavaTypeComboValueAdapter;
 import org.talend.designer.mapper.i18n.Messages;
@@ -99,25 +100,24 @@ public class VarsDataMapTableView extends DataMapTableView {
 
         });
 
-        getExtendedTableViewerForColumns().getExtendedTableModel().addAfterOperationListListener(
-                new IListenableListListener() {
+        getExtendedTableViewerForColumns().getExtendedTableModel().addAfterOperationListListener(new IListenableListListener() {
 
-                    public void handleEvent(ListenableListEvent event) {
-                        if (event.type == ListenableListEvent.TYPE.SWAPED) {
-                            DataMapTableView varsDataMapTableView = mapperManager
-                                    .retrieveDataMapTableView(getExtendedTableViewerForColumns().getTable());
-                            UIManager uiManager = mapperManager.getUiManager();
-                            uiManager.parseAllExpressions(varsDataMapTableView, false);
-                            mapperManager.getProblemsManager().checkProblemsForAllEntries(varsDataMapTableView, true);
-                            uiManager.refreshBackground(true, false);
-                            List<ITableEntry> list = uiManager.extractSelectedTableEntries(varsDataMapTableView
-                                    .getTableViewerCreatorForColumns().getTableViewer().getSelection());
+            public void handleEvent(ListenableListEvent event) {
+                if (event.type == ListenableListEvent.TYPE.SWAPED) {
+                    DataMapTableView varsDataMapTableView = mapperManager
+                            .retrieveDataMapTableView(getExtendedTableViewerForColumns().getTable());
+                    UIManager uiManager = mapperManager.getUiManager();
+                    uiManager.parseAllExpressions(varsDataMapTableView, false);
+                    mapperManager.getProblemsManager().checkProblemsForAllEntries(varsDataMapTableView, true);
+                    uiManager.refreshBackground(true, false);
+                    List<ITableEntry> list = uiManager.extractSelectedTableEntries(varsDataMapTableView
+                            .getTableViewerCreatorForColumns().getTableViewer().getSelection());
 
-                            uiManager.selectLinks(varsDataMapTableView, list, false, false);
-                        }
-                    }
+                    uiManager.selectLinks(varsDataMapTableView, list, false, false);
+                }
+            }
 
-                });
+        });
 
     }
 
@@ -141,8 +141,8 @@ public class VarsDataMapTableView extends DataMapTableView {
         TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
         column.setTitle(Messages.getString("VarsDataMapTableView.columnTitle.expression")); //$NON-NLS-1$
         column.setId(DataMapTableView.ID_EXPRESSION_COLUMN);
-        expressionCellEditor = createExpressionCellEditor(tableViewerCreatorForColumns, column, new Zone[] {
-                Zone.INPUTS, Zone.VARS }, false);
+        expressionCellEditor = createExpressionCellEditor(tableViewerCreatorForColumns, column, new Zone[] { Zone.INPUTS,
+                Zone.VARS }, false);
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<VarTableEntry, String>() {
 
             public String get(VarTableEntry bean) {
@@ -188,8 +188,8 @@ public class VarsDataMapTableView extends DataMapTableView {
 
             };
 
-            CellEditorValueAdapter comboValueAdapter = new JavaTypeComboValueAdapter(JavaTypesManager
-                    .getDefaultJavaType(), nullableAccessors);
+            CellEditorValueAdapter comboValueAdapter = new JavaTypeComboValueAdapter(JavaTypesManager.getDefaultJavaType(),
+                    nullableAccessors);
 
             column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
             column.setTitle(Messages.getString("VarsDataMapTableView.columnTitle.type")); //$NON-NLS-1$
@@ -264,8 +264,8 @@ public class VarsDataMapTableView extends DataMapTableView {
                     ModifiedObjectInfo modifiedObjectInfo = tableViewerCreatorForColumns.getModifiedObjectInfo();
                     String originalValue = (String) modifiedObjectInfo.getOriginalPropertyBeanValue();
                     Object currentModifiedBean = modifiedObjectInfo.getCurrentModifiedBean();
-                    mapperManager.getUiManager().processColumnNameChanged(originalValue.toString(),
-                            newValue.toString(), VarsDataMapTableView.this, (ITableEntry) currentModifiedBean);
+                    mapperManager.getUiManager().processColumnNameChanged(originalValue.toString(), newValue.toString(),
+                            VarsDataMapTableView.this, (ITableEntry) currentModifiedBean);
                 }
             }
 
@@ -337,8 +337,8 @@ public class VarsDataMapTableView extends DataMapTableView {
         ToolItem addEntryItem = new ToolItem(toolBarActions, SWT.PUSH);
         addEntryItem.setEnabled(!getMapperManager().componentIsReadOnly());
         addEntryItem.setToolTipText(Messages.getString("VarsDataMapTableView.entryItemTooltip.addVariable")); //$NON-NLS-1$
-        addEntryItem.setImage(org.talend.commons.ui.image.ImageProvider
-                .getImage(org.talend.commons.ui.image.ImageProvider.getImageDesc(EImage.ADD_ICON)));
+        addEntryItem.setImage(org.talend.commons.ui.image.ImageProvider.getImage(org.talend.commons.ui.image.ImageProvider
+                .getImageDesc(EImage.ADD_ICON)));
 
         addEntryItem.addSelectionListener(new SelectionListener() {
 
@@ -346,6 +346,11 @@ public class VarsDataMapTableView extends DataMapTableView {
             }
 
             public void widgetSelected(SelectionEvent e) {
+
+                TableViewerCreator<IColumnEntry> tableViewerCreator = getExtendedTableViewerForColumns().getTableViewerCreator();
+
+                tableViewerCreator.applyActivatedCellEditor();
+
                 Table table = getExtendedTableViewerForColumns().getTable();
 
                 int[] indices = table.getSelectionIndices();
@@ -371,9 +376,9 @@ public class VarsDataMapTableView extends DataMapTableView {
 
                 mapperManager.addNewVarEntry(VarsDataMapTableView.this, varName, indexInsert, type); //$NON-NLS-1$
                 tableViewerCreatorForColumns.getTableViewer().refresh();
-                if(canBeResizedAtPreferedSize()) {
-                    VarsDataMapTableView.this.changeSize(VarsDataMapTableView.this.getPreferredSize(true, true, false),
-                            true, true);
+                if (canBeResizedAtPreferedSize()) {
+                    VarsDataMapTableView.this.changeSize(VarsDataMapTableView.this.getPreferredSize(true, true, false), true,
+                            true);
                     changeMinimizeState(false);
                 }
                 mapperManager.getUiManager().refreshBackground(true, false);
@@ -389,8 +394,8 @@ public class VarsDataMapTableView extends DataMapTableView {
         // /////////////////////////////////////////////////////////////////
         removeEntryItem = new ToolItem(toolBarActions, SWT.PUSH);
         removeEntryItem.setEnabled(false);
-        removeEntryItem.setImage(org.talend.commons.ui.image.ImageProvider
-                .getImage(org.talend.commons.ui.image.ImageProvider.getImageDesc(EImage.MINUS_ICON)));
+        removeEntryItem.setImage(org.talend.commons.ui.image.ImageProvider.getImage(org.talend.commons.ui.image.ImageProvider
+                .getImageDesc(EImage.MINUS_ICON)));
         removeEntryItem.setToolTipText(Messages.getString("VarsDataMapTableView.entryItemTooltip.removeVariable")); //$NON-NLS-1$
 
         removeEntryItem.addSelectionListener(new SelectionListener() {
@@ -433,8 +438,8 @@ public class VarsDataMapTableView extends DataMapTableView {
             public void widgetSelected(SelectionEvent e) {
 
                 AbstractExtendedTableViewer viewer = getExtendedTableViewerForColumns();
-                ExtendedTableMoveCommand moveCommand = new ExtendedTableMoveCommand(viewer.getExtendedTableModel(),
-                        true, viewer.getTableViewerCreator().getTable().getSelectionIndices());
+                ExtendedTableMoveCommand moveCommand = new ExtendedTableMoveCommand(viewer.getExtendedTableModel(), true, viewer
+                        .getTableViewerCreator().getTable().getSelectionIndices());
                 viewer.executeCommand(moveCommand);
             }
 
@@ -455,8 +460,8 @@ public class VarsDataMapTableView extends DataMapTableView {
             public void widgetSelected(SelectionEvent e) {
 
                 AbstractExtendedTableViewer viewer = getExtendedTableViewerForColumns();
-                ExtendedTableMoveCommand moveCommand = new ExtendedTableMoveCommand(viewer.getExtendedTableModel(),
-                        false, viewer.getTableViewerCreator().getTable().getSelectionIndices());
+                ExtendedTableMoveCommand moveCommand = new ExtendedTableMoveCommand(viewer.getExtendedTableModel(), false, viewer
+                        .getTableViewerCreator().getTable().getSelectionIndices());
                 viewer.executeCommand(moveCommand);
             }
 
