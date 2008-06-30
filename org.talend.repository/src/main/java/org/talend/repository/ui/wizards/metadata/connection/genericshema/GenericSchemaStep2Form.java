@@ -266,6 +266,8 @@ public class GenericSchemaStep2Form extends AbstractForm {
         // mappingTypeCombo.setEnabled(!isReadOnly());
         metadataCommentText.setReadOnly(isReadOnly());
         tableEditorView.setReadOnly(isReadOnly());
+        mappingTypeCheckBox.setEnabled(!isReadOnly());
+        mappingTypeCombo.setEnabled(!isReadOnly());
     }
 
     protected void addFields() {

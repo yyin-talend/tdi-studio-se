@@ -532,9 +532,10 @@ public class DatabaseTableForm extends AbstractForm {
         tableSettingsInfoLabel.setText(""); //$NON-NLS-1$
         tableCombo.setReadOnly(true);
         checkConnectionButton.setVisible(false);
-
+        addTableButton.setEnabled(true);
         if (isReadOnly()) {
             retreiveSchemaButton.setEnabled(false);
+            addTableButton.setEnabled(false);
         } else if (!managerConnection.getIsValide()) {
             // Connection failure
             tableSettingsInfoLabel.setText(Messages.getString("DatabaseTableForm.connectionFailure")); //$NON-NLS-1$
@@ -645,7 +646,9 @@ public class DatabaseTableForm extends AbstractForm {
                 metadataTable = TableHelper.findByLabel(getConnection(), schemaLabel);
                 // initExistingNames();
                 initMetadataForm();
-
+                if (isReadOnly()) {
+                    addTableButton.setEnabled(false);
+                }
             }
 
         });
@@ -746,7 +749,11 @@ public class DatabaseTableForm extends AbstractForm {
     }
 
     private void updateRetreiveSchemaButton() {
-        retreiveSchemaButton.setEnabled(tableCombo.getSelectionIndex() >= 0);
+        if (isReadOnly()) {
+            retreiveSchemaButton.setEnabled(false);
+        } else {
+            retreiveSchemaButton.setEnabled(tableCombo.getSelectionIndex() >= 0);
+        }
         streamDetachCheckbox.setEnabled(tableCombo.getSelectionIndex() >= 0);
         // manage infoLabel
         if (tableCombo.getItemCount() > 0) {
@@ -820,6 +827,7 @@ public class DatabaseTableForm extends AbstractForm {
         commentText.setReadOnly(isReadOnly());
         tableEditorView.setReadOnly(isReadOnly());
         addTableButton.setEnabled(!isReadOnly());
+        retreiveSchemaButton.setEnabled(!isReadOnly());
     }
 
     /*
