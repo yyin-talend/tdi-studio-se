@@ -442,13 +442,6 @@ public abstract class DataMapTableView extends Composite {
             @Override
             protected void initTableListeners() {
                 super.initTableListeners();
-                getTableViewerCreator().addCellValueModifiedListener(new ITableCellValueModifiedListener() {
-
-                    public void cellValueModified(TableCellValueModifiedEvent e) {
-                        getTableViewerCreator().getTable().deselectAll();
-                    }
-
-                });
             }
 
             /*
