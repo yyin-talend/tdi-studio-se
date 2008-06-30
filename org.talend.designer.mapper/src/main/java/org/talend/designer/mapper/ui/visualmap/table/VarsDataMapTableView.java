@@ -14,10 +14,15 @@ package org.talend.designer.mapper.ui.visualmap.table;
 
 import java.util.List;
 
+import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Composite;
@@ -87,6 +92,7 @@ public class VarsDataMapTableView extends DataMapTableView {
     @Override
     protected void addListeners() {
         super.addListeners();
+
         tableViewerCreatorForColumns.getSelectionHelper().addAfterSelectionListener(new ILineSelectionListener() {
 
             public void handle(LineSelectionEvent e) {
@@ -438,8 +444,12 @@ public class VarsDataMapTableView extends DataMapTableView {
             public void widgetSelected(SelectionEvent e) {
 
                 AbstractExtendedTableViewer viewer = getExtendedTableViewerForColumns();
+
                 ExtendedTableMoveCommand moveCommand = new ExtendedTableMoveCommand(viewer.getExtendedTableModel(), true, viewer
                         .getTableViewerCreator().getTable().getSelectionIndices());
+
+                viewer.getTableViewerCreator().applyActivatedCellEditor();
+
                 viewer.executeCommand(moveCommand);
             }
 
@@ -460,8 +470,12 @@ public class VarsDataMapTableView extends DataMapTableView {
             public void widgetSelected(SelectionEvent e) {
 
                 AbstractExtendedTableViewer viewer = getExtendedTableViewerForColumns();
+
                 ExtendedTableMoveCommand moveCommand = new ExtendedTableMoveCommand(viewer.getExtendedTableModel(), false, viewer
                         .getTableViewerCreator().getTable().getSelectionIndices());
+
+                viewer.getTableViewerCreator().applyActivatedCellEditor();
+
                 viewer.executeCommand(moveCommand);
             }
 

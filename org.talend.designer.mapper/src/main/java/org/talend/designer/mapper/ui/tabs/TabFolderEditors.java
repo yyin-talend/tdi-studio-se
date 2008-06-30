@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.designer.mapper.ui.tabs;
 
+import java.util.List;
+
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
@@ -19,16 +21,23 @@ import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.talend.commons.ui.swt.advanced.dataeditor.control.ExtendedPushButton;
 import org.talend.commons.ui.swt.colorstyledtext.UnnotifiableColorStyledText;
+import org.talend.commons.ui.swt.extended.table.ExtendedButtonEvent;
+import org.talend.commons.ui.swt.extended.table.IExtendedButtonListener;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
+import org.talend.core.ui.metadata.editor.MetadataToolbarEditorView;
 import org.talend.designer.mapper.MapperMain;
 import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.managers.MapperManager;
@@ -56,6 +65,14 @@ public class TabFolderEditors extends CTabFolder {
     public static final int INDEX_TAB_EXPRESSION_EDITOR = 1;
 
     private StyledTextHandler styledTextHandler;
+
+    private IExtendedButtonListener beforeCommandListenerForInputButtons;
+
+    private List<ExtendedPushButton> inputToolBarButtons;
+
+    private List<ExtendedPushButton> outputToolBarButtons;
+
+    private IExtendedButtonListener beforeCommandListenerForOutputButtons;
 
     public TabFolderEditors(Composite parent, int style, MapperManager mapperManager) {
         super(parent, style);
@@ -86,9 +103,13 @@ public class TabFolderEditors extends CTabFolder {
         inputMetaEditor.initGraphicComponents();
         inputMetaEditor.getExtendedTableViewer().setCommandStack(commandStack);
 
+        addListenersToInputButtons();
+
         outputMetaEditor = new MetadataTableEditorView(inOutMetaEditorContainer, SWT.BORDER);
         outputMetaEditor.initGraphicComponents();
         outputMetaEditor.getExtendedTableViewer().setCommandStack(commandStack);
+
+        addListenersToOutputButtons();
 
         item = new CTabItem(tabFolderEditors, SWT.BORDER);
         item.setText(Messages.getString("TabFolderEditors.expressionEditor")); //$NON-NLS-1$
@@ -104,6 +125,84 @@ public class TabFolderEditors extends CTabFolder {
             }
         });
         tabFolderEditors.setSelection(0);
+    }
+
+    /**
+     * DOC amaumont Comment method "addListenersToInputButtons".
+     */
+    private void addListenersToInputButtons() {
+        MetadataToolbarEditorView toolBar = inputMetaEditor.getToolBar();
+        inputToolBarButtons = toolBar.getButtons();
+        beforeCommandListenerForInputButtons = new IExtendedButtonListener() {
+
+            public void handleEvent(ExtendedButtonEvent event) {
+                TableViewerCreator tableViewerCreator = mapperManager.getUiManager().getCurrentSelectedInputTableView()
+                        .getTableViewerCreatorForColumns();
+                if (tableViewerCreator != null) {
+                    tableViewerCreator.applyActivatedCellEditor();
+                }
+            }
+
+        };
+
+        for (ExtendedPushButton extendedPushButton : inputToolBarButtons) {
+            extendedPushButton.addListener(beforeCommandListenerForInputButtons, true);
+        }
+
+        this.addDisposeListener(new DisposeListener() {
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.swt.events.DisposeListener#widgetDisposed(org.eclipse.swt.events.DisposeEvent)
+             */
+            public void widgetDisposed(DisposeEvent e) {
+                for (ExtendedPushButton extendedPushButton : inputToolBarButtons) {
+                    extendedPushButton.removeListener(beforeCommandListenerForInputButtons, true);
+                }
+
+            }
+
+        });
+    }
+
+    /**
+     * DOC amaumont Comment method "addListenersToInputButtons".
+     */
+    private void addListenersToOutputButtons() {
+        MetadataToolbarEditorView toolBar = outputMetaEditor.getToolBar();
+        outputToolBarButtons = toolBar.getButtons();
+        beforeCommandListenerForOutputButtons = new IExtendedButtonListener() {
+
+            public void handleEvent(ExtendedButtonEvent event) {
+                TableViewerCreator tableViewerCreator = mapperManager.getUiManager().getCurrentSelectedOutputTableView()
+                        .getTableViewerCreatorForColumns();
+                if (tableViewerCreator != null) {
+                    tableViewerCreator.applyActivatedCellEditor();
+                }
+            }
+
+        };
+
+        for (ExtendedPushButton extendedPushButton : outputToolBarButtons) {
+            extendedPushButton.addListener(beforeCommandListenerForOutputButtons, true);
+        }
+
+        this.addDisposeListener(new DisposeListener() {
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.swt.events.DisposeListener#widgetDisposed(org.eclipse.swt.events.DisposeEvent)
+             */
+            public void widgetDisposed(DisposeEvent e) {
+                for (ExtendedPushButton extendedPushButton : outputToolBarButtons) {
+                    extendedPushButton.removeListener(beforeCommandListenerForOutputButtons, true);
+                }
+
+            }
+
+        });
     }
 
     private StyledText createStyledText(CTabItem item) {

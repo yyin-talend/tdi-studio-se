@@ -255,6 +255,7 @@ public class UIManager extends AbstractUIManager {
                     public void handleEvent(ListenableListEvent event) {
 
                         DataMapTableView view = mapperManager.retrieveAbstractDataMapTableView(abstractDataMapTable);
+
                         if (event.type == TYPE.ADDED) {
                             // metadataEditorTableViewer.refresh();
                             List<IMetadataColumn> metadataColumns = (List<IMetadataColumn>) event.addedObjects;
