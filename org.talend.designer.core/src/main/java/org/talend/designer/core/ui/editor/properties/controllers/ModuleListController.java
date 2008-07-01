@@ -13,6 +13,8 @@
 package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.beans.PropertyChangeEvent;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -279,9 +281,11 @@ public class ModuleListController extends AbstractElementPropertySectionControll
             moduleNameList.add(moduleName);
             moduleValueList.add(TalendTextUtils.addQuotes(moduleName));
         }
-
+        Comparator<String> comprarator = new IgnoreCaseComparator();
         String[] moduleNameArray = moduleNameList.toArray(new String[0]);
         String[] moduleValueArray = moduleValueList.toArray(new String[0]);
+        Arrays.sort(moduleNameArray, comprarator);
+        Arrays.sort(moduleValueArray, comprarator);
 
         for (int i = 0; i < node.getElementParameters().size(); i++) {
             IElementParameter param = node.getElementParameters().get(i);
@@ -289,6 +293,16 @@ public class ModuleListController extends AbstractElementPropertySectionControll
                 param.setListItemsDisplayName(moduleNameArray);
                 param.setListItemsValue(moduleValueArray);
             }
+        }
+    }
+
+    /**
+     * DOC yzhang class global comment. Detailled comment
+     */
+    private final class IgnoreCaseComparator implements Comparator<String> {
+
+        public int compare(String o1, String o2) {
+            return o1.compareToIgnoreCase(o2);
         }
     }
 
