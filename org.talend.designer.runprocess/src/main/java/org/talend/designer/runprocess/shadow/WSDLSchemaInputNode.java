@@ -67,6 +67,10 @@ public class WSDLSchemaInputNode extends FileInputNode {
             addPerlParameters(schemaBean);
         }
         param = new TextElementParameter("METHOD", schemaBean.getMethod());
+        addParameter(param);        
+        
+     // fix preview
+        param = new TextElementParameter("ADVANCED_USE", Boolean.toString(false));
         addParameter(param);
 
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
@@ -114,24 +118,22 @@ public class WSDLSchemaInputNode extends FileInputNode {
         addParameter(param);
     }
 
-    /*
-     * (non-Javadoc)
+    /**
+     * Getter for metadatas.
      * 
-     * @see org.talend.designer.runprocess.shadow.ShadowNode#getMetadataList()
+     * @return the metadatas
      */
-    @Override
-    public List<IMetadataTable> getMetadataList() {
-        return metadatas;
+    public List<IMetadataTable> getMetadatas() {
+        return this.metadatas;
     }
 
-    /*
-     * (non-Javadoc)
+    /**
+     * Sets the metadatas.
      * 
-     * @see org.talend.designer.runprocess.shadow.ShadowNode#setMetadataList(java.util.List)
+     * @param metadatas the metadatas to set
      */
-    @Override
-    public void setMetadataList(List<IMetadataTable> metadataList) {
-        this.metadatas = metadataList;
+    public void setMetadatas(List<IMetadataTable> metadatas) {
+        this.metadatas = metadatas;
     }
 
 }
