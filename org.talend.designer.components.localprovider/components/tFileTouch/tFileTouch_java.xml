@@ -38,6 +38,13 @@
     >
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/in.csv"</DEFAULT>
     </PARAMETER>
+    <PARAMETER
+      NAME="CREATEDIR"
+      FIELD="CHECK"
+      NUM_ROW="2"
+	>
+	<DEFAULT>false</DEFAULT>
+    </PARAMETER>
     
   </PARAMETERS>
   <CODEGENERATION/>
