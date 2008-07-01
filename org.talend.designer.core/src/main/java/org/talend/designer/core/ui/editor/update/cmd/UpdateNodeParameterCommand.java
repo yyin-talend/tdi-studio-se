@@ -30,6 +30,7 @@ import org.talend.core.model.update.UpdatesConstants;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
+import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 
@@ -164,7 +165,14 @@ public class UpdateNodeParameterCommand extends Command {
                     if (newTable != null) {
                         for (INodeConnector nodeConnector : node.getListConnector()) {
                             if (nodeConnector.getBaseSchema().equals(newTable.getAttachedConnector())) {
-                                MetadataTool.copyTable(newTable, node.getMetadataFromConnector(nodeConnector.getName()));
+                                IElementParameter param = node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
+                                if (param != null) {
+                                    ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, param, null, newTable);
+                                    cmd.setRepositoryMode(true);
+                                    cmd.execute(true);
+                                } else {
+                                    MetadataTool.copyTable(newTable, node.getMetadataFromConnector(nodeConnector.getName()));
+                                }
                             }
                         }
                         builtIn = false;
