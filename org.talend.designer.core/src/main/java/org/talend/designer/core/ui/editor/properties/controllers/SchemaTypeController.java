@@ -392,18 +392,36 @@ public class SchemaTypeController extends AbstractRepositoryController {
 
         RepositoryNode repositoryNode = RepositoryNodeUtilities.getRepositoryNode(node);
         RepositoryNode metadataNode = null;
-        for (RepositoryNode childNode : repositoryNode.getChildren()) {
-            String label = (String) childNode.getProperties(EProperties.LABEL);
-            if (label.equals(names[1])) {
-                metadataNode = childNode;
-                break;
-            }
-        }
+
+        metadataNode = findRepositoryNode(names[1], repositoryNode);
         if (metadataNode != null) {
             CreateTableAction action = new CreateTableAction(metadataNode);
             action.run();
         }
 
+    }
+
+    /**
+     * yzhang Comment method "findRepositoryNode".
+     * 
+     * @param label
+     * @param root
+     * @return
+     */
+    private RepositoryNode findRepositoryNode(String label, RepositoryNode root) {
+        String name = (String) root.getProperties(EProperties.LABEL);
+        RepositoryNode toReturn = null;
+        if (label.equals(name)) {
+            toReturn = root;
+        } else {
+            for (RepositoryNode node : root.getChildren()) {
+                toReturn = findRepositoryNode(label, node);
+                if (toReturn != null) {
+                    break;
+                }
+            }
+        }
+        return toReturn;
     }
 
     /**
