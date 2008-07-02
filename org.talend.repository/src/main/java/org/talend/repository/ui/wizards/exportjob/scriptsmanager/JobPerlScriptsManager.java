@@ -38,6 +38,7 @@ import org.talend.core.model.utils.PerlResourcesHelper;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.runprocess.IProcessor;
+import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.designer.runprocess.JobInfo;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.RepositoryPlugin;
@@ -324,6 +325,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
         addComponentModules(process, resource);
         addSource(process, exportChoice.get(ExportChoice.needSource), resource, JOB_SOURCE_FOLDER_NAME);
 
+        ItemCacheManager.clearCache();
         Set<JobInfo> subjobInfos = ProcessorUtilities.getChildrenJobInfo(process);
         for (JobInfo subjobInfo : subjobInfos) {
             if (subjobInfo.getJobName().equals(rootName)) {
@@ -335,7 +337,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             if (exportChoice.get(ExportChoice.applyToChildren)) {
                 // see bug 0003862: Export job with the flag "Apply to children" if the child don't have the
                 // same context fails.
-                ProcessItem processItem = ProcessorUtilities.getProcessItem(subjobInfo.getJobId(), subjobInfo.getJobVersion());
+                ProcessItem processItem = ItemCacheManager.getProcessItem(subjobInfo.getJobId(), subjobInfo.getJobVersion());
                 if (ProcessorUtilities.checkIfContextExisted(processItem, fatherContext)) {
                     contextName = fatherContext;
                 } else {
