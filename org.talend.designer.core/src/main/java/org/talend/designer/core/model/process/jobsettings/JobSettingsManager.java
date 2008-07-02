@@ -397,6 +397,19 @@ public class JobSettingsManager {
         param.setShowIf(dbCondition);
         param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);
+
+        // query condition
+        param = new ElementParameter(process);
+        param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.QUERY_CONDITION.getName()));
+        param.setValue("name='talend'");
+        param.setDisplayName(EParameterName.QUERY_CONDITION.getDisplayName());
+        param.setField(EParameterFieldType.TEXT);
+        param.setCategory(EComponentCategory.EXTRA);
+        param.setNumRow(47);
+        param.setShowIf(dbCondition);
+        param.setGroup(IMPLICIT_GROUP);
+        paramList.add(param);
+
     }
 
     private static void createExtraContextLoadParameters(IProcess process) {
@@ -664,7 +677,12 @@ public class JobSettingsManager {
             if (dbType != null) {
                 String query = TalendTextUtils.addSQLQuotes(QueryUtil
                         .generateNewQuery(null, table, dbType, schema, realTableName));
+                paramName = JobSettingsConstants.getExtraParameterName(EParameterName.QUERY_CONDITION.getName());
+                String conditionStatement = (String) process.getElementParameter(paramName).getValue();
+                if (!"".equals(conditionStatement)) {
 
+                    query = "\"" + query.replaceAll("\"", "") + " WHERE " + conditionStatement + "\"";
+                }
                 tContextLoadNode.getElementParameter(JobSettingsConstants.QUERY).setValue(query);
             }
         }

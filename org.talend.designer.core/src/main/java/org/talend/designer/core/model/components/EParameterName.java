@@ -75,6 +75,7 @@ public enum EParameterName {
     MAPPING_TYPE(Messages.getString("EParameterName.mapping")), //$NON-NLS-1$
     DUMMY("DUMMY"), //$NON-NLS-1$ Hidden parameter so no translation needed
     DBTABLE(Messages.getString("EParameterName.TableName")), //$NON-NLS-1$
+    QUERY_CONDITION("Query Condition"),
     MODULE_LIST(Messages.getString("EParameterName.ModuleList")), //$NON-NLS-1$
     CURRENT_OS(Messages.getString("EParameterName.CurrentOS")), //$NON-NLS-1$
     IREPORT_PATH("IREPORT_PATH"), //$NON-NLS-1$  Hidden parameter so no translation needed
