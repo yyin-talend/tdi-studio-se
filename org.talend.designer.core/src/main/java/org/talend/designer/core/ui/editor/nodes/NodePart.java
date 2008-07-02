@@ -62,7 +62,7 @@ import org.talend.designer.core.ui.editor.process.ProcessPart;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
 import org.talend.designer.core.ui.views.CodeView;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
-import org.talend.designer.runprocess.ProcessorUtilities;
+import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.repository.ui.views.IRepositoryView;
 
 /**
@@ -445,7 +445,8 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
 
                 if (processName != null && !"".equals(processName) && !isAvoidShowJobAfterDoubleClick) {
                     try {
-                        ProcessItem processItem = ProcessorUtilities.getProcessItem(processName);
+                        ItemCacheManager.clearCache();
+                        ProcessItem processItem = ItemCacheManager.getProcessItem(processName);
                         if (processItem != null) {
                             ProcessEditorInput fileEditorInput = new ProcessEditorInput(processItem, true);
 

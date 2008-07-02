@@ -28,7 +28,7 @@ import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.views.CodeView;
-import org.talend.designer.runprocess.ProcessorUtilities;
+import org.talend.designer.runprocess.ItemCacheManager;
 
 /**
  * Command that changes a given property. It will call the set or get property value in an element. This element can be
@@ -129,7 +129,7 @@ public class PropertyChangeCommand extends Command {
         elem.setPropertyValue(propName, newValue);
         if (propName.contains(EParameterName.PROCESS_TYPE_PROCESS.getName())) {
             // newValue is the id of the job
-            ProcessItem processItem = ProcessorUtilities.getProcessItem((String) newValue);
+            ProcessItem processItem = ItemCacheManager.getProcessItem((String) newValue);
             if (processItem != null) {
                 currentParam.setLinkedRepositoryItem(processItem);
                 currentParam.getParentParameter().setValue(processItem.getProperty().getLabel());
@@ -139,7 +139,7 @@ public class PropertyChangeCommand extends Command {
             // newValue is the id of the job
             IElementParameter processIdParam = currentParam.getParentParameter().getChildParameters().get(
                     EParameterName.PROCESS_TYPE_PROCESS.getName());
-            ProcessItem processItem = ProcessorUtilities.getProcessItem((String) processIdParam.getValue(), (String) newValue);
+            ProcessItem processItem = ItemCacheManager.getProcessItem((String) processIdParam.getValue(), (String) newValue);
             if (processItem != null) {
                 processIdParam.setLinkedRepositoryItem(processItem);
                 currentParam.getParentParameter().setValue(processItem.getProperty().getLabel());
@@ -206,11 +206,11 @@ public class PropertyChangeCommand extends Command {
             ((Node) elem).checkAndRefreshNode();
         }
     }
-    
-    public void setUpdate(boolean update){
-        toUpdate=update;
+
+    public void setUpdate(boolean update) {
+        toUpdate = update;
     }
-    
+
     /**
      * Set the values to default if needed.
      * 
@@ -297,7 +297,7 @@ public class PropertyChangeCommand extends Command {
         elem.setPropertyValue(propName, oldValue);
         if (propName.contains(EParameterName.PROCESS_TYPE_PROCESS.getName())) {
             // oldValue is the id of the job
-            ProcessItem processItem = ProcessorUtilities.getProcessItem((String) oldValue);
+            ProcessItem processItem = ItemCacheManager.getProcessItem((String) oldValue);
             if (processItem != null) {
                 currentParam.setLinkedRepositoryItem(processItem);
                 currentParam.getParentParameter().setValue(processItem.getProperty().getLabel());
@@ -343,7 +343,7 @@ public class PropertyChangeCommand extends Command {
         elem.setPropertyValue(propName, newValue);
         if (propName.contains(EParameterName.PROCESS_TYPE_PROCESS.getName())) {
             // newValue is the id of the job
-            ProcessItem processItem = ProcessorUtilities.getProcessItem((String) newValue);
+            ProcessItem processItem = ItemCacheManager.getProcessItem((String) newValue);
             if (processItem != null) {
                 currentParam.setLinkedRepositoryItem(processItem);
                 currentParam.getParentParameter().setValue(processItem.getProperty().getLabel());

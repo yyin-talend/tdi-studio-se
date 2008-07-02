@@ -58,6 +58,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.controllers.creator.SelectAllTextControlCreator;
+import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.ui.dialog.RepositoryReviewDialog;
 
@@ -445,7 +446,7 @@ public class ProcessController extends AbstractElementPropertySectionController 
                 String jobId = (String) runJobNode.getPropertyValue(paramName); // .getElementParameter(name).getValue();
                 if (StringUtils.isNotEmpty(jobId)) {
                     // if user have selected job
-                    ProcessItem processItem = ProcessorUtilities.getProcessItem(jobId);
+                    ProcessItem processItem = ItemCacheManager.getProcessItem(jobId);
                     String jobName = processItem.getProperty().getLabel();
                     // expand the tree node and reveal it
                     dialog.setSelectedNodeName(jobName);
@@ -588,8 +589,8 @@ public class ProcessController extends AbstractElementPropertySectionController 
         // for version type
         List<String> versionNameList = new ArrayList<String>();
         List<String> versionValueList = new ArrayList<String>();
-        versionNameList.add(ProcessorUtilities.LATEST_JOB_VERSION);
-        versionValueList.add(ProcessorUtilities.LATEST_JOB_VERSION);
+        versionNameList.add(ItemCacheManager.LATEST_VERSION);
+        versionValueList.add(ItemCacheManager.LATEST_VERSION);
 
         IElementParameter jobNameParam = processParam.getChildParameters().get(EParameterName.PROCESS_TYPE_PROCESS.getName());
 

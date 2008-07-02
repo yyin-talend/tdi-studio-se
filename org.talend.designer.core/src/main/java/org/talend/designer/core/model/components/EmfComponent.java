@@ -95,7 +95,7 @@ import org.talend.designer.core.model.utils.emf.component.TEMPLATESType;
 import org.talend.designer.core.model.utils.emf.component.TEMPLATEType;
 import org.talend.designer.core.model.utils.emf.component.impl.PLUGINDEPENDENCYTypeImpl;
 import org.talend.designer.core.model.utils.emf.component.util.ComponentResourceFactoryImpl;
-import org.talend.designer.runprocess.ProcessorUtilities;
+import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ExternalNodesFactory;
 
@@ -1031,9 +1031,9 @@ public class EmfComponent implements IComponent {
             newParam.setCategory(EComponentCategory.BASIC);
             newParam.setName(EParameterName.PROCESS_TYPE_VERSION.getName());
             newParam.setDisplayName(EParameterName.PROCESS_TYPE_VERSION.getDisplayName());
-            newParam.setListItemsDisplayName(new String[] { ProcessorUtilities.LATEST_JOB_VERSION });
-            newParam.setListItemsValue(new String[] { ProcessorUtilities.LATEST_JOB_VERSION });
-            newParam.setValue(ProcessorUtilities.LATEST_JOB_VERSION); //$NON-NLS-1$
+            newParam.setListItemsDisplayName(new String[] { ItemCacheManager.LATEST_VERSION });
+            newParam.setListItemsValue(new String[] { ItemCacheManager.LATEST_VERSION });
+            newParam.setValue(ItemCacheManager.LATEST_VERSION); //$NON-NLS-1$
             newParam.setNumRow(xmlParam.getNUMROW());
             newParam.setField(EParameterFieldType.TECHNICAL);
             if (xmlParam.isSetSHOW()) {

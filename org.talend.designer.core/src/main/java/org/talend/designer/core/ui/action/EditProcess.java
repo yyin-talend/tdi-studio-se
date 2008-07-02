@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.core.ui.action;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -22,12 +23,14 @@ import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
+import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.RepositoryNode;
@@ -63,7 +66,13 @@ public class EditProcess extends AContextualAction {
         Object obj = ((IStructuredSelection) selection).getFirstElement();
 
         RepositoryNode node = (RepositoryNode) obj;
-        ProcessItem processItem = (ProcessItem) node.getObject().getProperty().getItem();
+        Property property = (Property) node.getObject().getProperty();
+        ProcessItem processItem = null;
+
+        ItemCacheManager.clearCache();
+        Assert.isTrue(property.getItem() instanceof ProcessItem);
+
+        processItem = ItemCacheManager.getProcessItem(property.getId(), property.getVersion());
 
         IWorkbenchPage page = getActivePage();
 

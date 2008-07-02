@@ -29,7 +29,7 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.runprocess.IRunProcessService;
-import org.talend.designer.runprocess.ProcessorUtilities;
+import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.repository.editor.RepositoryEditorInput;
 
 /**
@@ -91,7 +91,8 @@ public class JobLaunchConfigurationDelegate extends org.eclipse.debug.core.model
      */
     private IProcess findProcessFromRepository(String jobId) {
         try {
-            ProcessItem processItem = ProcessorUtilities.getProcessItem(jobId);
+            ItemCacheManager.clearCache();
+            ProcessItem processItem = ItemCacheManager.getProcessItem(jobId);
 
             ProcessEditorInput fileEditorInput = new ProcessEditorInput((ProcessItem) processItem, true);
             IProcess process = fileEditorInput.getLoadedProcess();

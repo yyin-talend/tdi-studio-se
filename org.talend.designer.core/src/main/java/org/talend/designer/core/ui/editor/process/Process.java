@@ -110,8 +110,8 @@ import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.runprocess.IProcessor;
+import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.designer.runprocess.JobInfo;
-import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.migration.UpdateTheJobsActionsOnTable;
@@ -958,9 +958,6 @@ public class Process extends Element implements IProcess2 {
      * @param process
      */
     public void loadXmlFile() {
-        if (property.getItem() instanceof ProcessItem) {
-            property = ProcessorUtilities.getProcessItem(property.getId(), property.getVersion()).getProperty();
-        }
         init();
         Hashtable<String, Node> nodesHashtable = new Hashtable<String, Node>();
 
@@ -1090,10 +1087,10 @@ public class Process extends Element implements IProcess2 {
                     EParameterName.PROCESS_TYPE_VERSION.getName());
             ProcessItem processItem = null;
             if (processVersionParam != null) {
-                processItem = ProcessorUtilities.getProcessItem((String) processIdParam.getValue(), (String) processVersionParam
+                processItem = ItemCacheManager.getProcessItem((String) processIdParam.getValue(), (String) processVersionParam
                         .getValue());
             } else {
-                processItem = ProcessorUtilities.getProcessItem((String) processIdParam.getValue());
+                processItem = ItemCacheManager.getProcessItem((String) processIdParam.getValue());
             }
             if (processItem != null) {
                 nc.setPropertyValue(processParam.getName(), processItem.getProperty().getLabel());
@@ -2522,10 +2519,8 @@ public class Process extends Element implements IProcess2 {
                 if (node.getComponent().getName().equals("tRunJob")) {
                     IElementParameter processIdparam = node.getElementParameter("PROCESS_TYPE_PROCESS");
                     String jobId = (String) processIdparam.getValue();
-                    ProcessItem processItem = (ProcessItem) processIdparam.getLinkedRepositoryItem();
-                    if (processItem == null) {
-                        processItem = ProcessorUtilities.getProcessItem(jobId);
-                    }
+                    ProcessItem processItem = ItemCacheManager.getProcessItem(jobId);
+
                     String context = (String) node.getElementParameter("PROCESS_TYPE_CONTEXT").getValue();
                     if (processItem != null) {
                         JobInfo subJobInfo = new JobInfo(processItem, context);

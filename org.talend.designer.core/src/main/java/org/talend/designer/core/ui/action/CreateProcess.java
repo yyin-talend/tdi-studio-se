@@ -37,6 +37,7 @@ import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.core.ui.wizards.NewProcessWizard;
+import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
@@ -104,6 +105,7 @@ public class CreateProcess extends AContextualAction {
             Object obj = ((IStructuredSelection) selection).getFirstElement();
             node = (RepositoryNode) obj;
         }
+        ItemCacheManager.clearCache();
 
         IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
         IPath path = service.getRepositoryPath(node);

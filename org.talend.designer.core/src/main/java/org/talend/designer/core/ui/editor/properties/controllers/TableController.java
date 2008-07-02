@@ -51,7 +51,7 @@ import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.macrowidgets.tableeditor.PropertiesTableEditorModel;
 import org.talend.designer.core.ui.editor.properties.macrowidgets.tableeditor.PropertiesTableEditorView;
 import org.talend.designer.core.ui.editor.properties.macrowidgets.tableeditor.PropertiesTableToolbarEditorView;
-import org.talend.designer.runprocess.ProcessorUtilities;
+import org.talend.designer.runprocess.ItemCacheManager;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -488,10 +488,7 @@ public class TableController extends AbstractElementPropertySectionController {
             return;
         }
 
-        ProcessItem processItem = (ProcessItem) jobElemParam.getLinkedRepositoryItem();
-        if (processItem == null) {
-            processItem = ProcessorUtilities.getProcessItem(processId, (String) jobVersionParam.getValue());
-        }
+        ProcessItem processItem = ItemCacheManager.getProcessItem(processId, (String) jobVersionParam.getValue());
         Process process = null;
         String[] contextParameterNames = null;
         if (processItem != null) {
