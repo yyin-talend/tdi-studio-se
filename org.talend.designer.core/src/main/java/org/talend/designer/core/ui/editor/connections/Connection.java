@@ -115,6 +115,23 @@ public class Connection extends Element implements IConnection, IPerformance {
         performance.resetStatus();
     }
 
+    /**
+     * 
+     * Return true if link matches one of types.
+     * 
+     * @param link
+     * @param types
+     * @return
+     */
+    private boolean isInTypes(EConnectionType link, EConnectionType... types) {
+        for (EConnectionType type : types) {
+            if (link.equals(type)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void init(Node source, Node target, EConnectionType lineStyle, String connectorName, String metaName, String linkName) {
         if (lineStyle.equals(EConnectionType.ITERATE)) {
             performance = new IterateConnectionPerformance(this);
@@ -406,16 +423,14 @@ public class Connection extends Element implements IConnection, IPerformance {
             }
             updateName = true;
         } /*
-             * else if (getLineStyle().equals(EConnectionType.LOOKUP)) { labelText += " (" + nodeConnector.getLinkName() +
-             * ")"; updateName = true; }
-             */
+         * else if (getLineStyle().equals(EConnectionType.LOOKUP)) { labelText += " (" + nodeConnector.getLinkName() +
+         * ")"; updateName = true; }
+         */
 
         if (updateName) {
 
             if (!label.getLabelText().equals(labelText)) {
-
                 label.setLabelText(labelText);
-
             }
 
             firePropertyChange(NAME, null, name);
@@ -484,6 +499,12 @@ public class Connection extends Element implements IConnection, IPerformance {
                 if (!uniqueName.startsWith(Process.DEFAULT_ITERATE_CONNECTION_NAME)) {
                     uniqueName = source.getProcess().generateUniqueConnectionName(Process.DEFAULT_ITERATE_CONNECTION_NAME);
                 }
+            } else if (isInTypes(lineStyle, EConnectionType.ON_COMPONENT_OK, EConnectionType.ON_COMPONENT_ERROR,
+                    EConnectionType.ON_SUBJOB_OK, EConnectionType.ON_SUBJOB_ERROR, EConnectionType.RUN_IF)) {
+                // see 3443, these links should have unique name
+                if (uniqueName.equals(lineStyle.getDefaultLinkName())) {
+                    uniqueName = source.getProcess().generateUniqueConnectionName(lineStyle.getDefaultLinkName());
+                }
             }
             if ((lineStyle.equals(EConnectionType.TABLE) && sourceNodeConnector.isBuiltIn())
                     || lineStyle.hasConnectionCategory(IConnectionCategory.UNIQUE_NAME)) {
@@ -512,7 +533,10 @@ public class Connection extends Element implements IConnection, IPerformance {
     public void disconnect() {
         if (isConnected) {
             if (!sourceNodeConnector.isBuiltIn()) {
-                if (lineStyle.hasConnectionCategory(IConnectionCategory.CUSTOM_NAME) || lineStyle.equals(EConnectionType.ITERATE)) {
+                if (lineStyle.hasConnectionCategory(IConnectionCategory.CUSTOM_NAME)
+                        || isInTypes(lineStyle, EConnectionType.ITERATE, EConnectionType.ON_COMPONENT_OK,
+                                EConnectionType.ON_COMPONENT_ERROR, EConnectionType.ON_SUBJOB_OK,
+                                EConnectionType.ON_SUBJOB_ERROR, EConnectionType.RUN_IF)) {
                     source.getProcess().removeUniqueConnectionName(uniqueName);
                 }
             }
