@@ -16,6 +16,11 @@ imports="
 	
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 	
+	boolean useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__").equals("true");
+	if(useExistingConn){
+		commitEvery = "0";
+	}
+	
     if(!commitEvery.equals("")&&!commitEvery.equals("0")){
         %>
         conn_<%=cid%>.commit();
@@ -61,9 +66,15 @@ imports="
             
         }        
         <%
-    }   
+    }
     %>
+<%
+	if(!useExistingConn){
+%>
     conn_<%=cid%> .close();
+<%
+	}
+%>
 
 	nb_line_deleted_<%=cid%>=nb_line_deleted_<%=cid%>+ deletedCount_<%=cid%>;
 	nb_line_update_<%=cid%>=nb_line_update_<%=cid%> + updatedCount_<%=cid%>;

@@ -29,18 +29,30 @@ imports="
     	   dbquery = dbquery.replaceAll("\r"," ");
     boolean whetherTrimAllCol = ElementParameterParser.getValue(node, "__TRIM_ALL_COLUMN__").equals("true");
     List<Map<String, String>> trimColumnList = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__TRIM_COLUMN__");
-    	   
+    boolean useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__").equals("true");	
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	if ((metadatas != null) && (metadatas.size() > 0)) {
 		IMetadataTable metadata = metadatas.get(0);
 		if (metadata!=null) {
 		    %>
             int nb_line_<%=cid%> = 0;
-            java.lang.Class.forName("com.ncr.teradata.TeraDriver");
+            <%	
+        	if(useExistingConn){
+        		String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+        		String conn = "conn_" + connection;
+        		%>
+        	java.sql.Connection conn_<%=cid %> = (java.sql.Connection)globalMap.get("<%=conn %>");
+        		<%
+        	} else {       
+        	    %>
+			java.lang.Class.forName("com.ncr.teradata.TeraDriver");
             String url_<%=cid %> = "jdbc:teradata://" + <%=dbhost%> + "/" + <%=dbname%>;
             String dbUser_<%=cid %> = <%=dbuser%>;
             String dbPwd_<%=cid %> = <%=dbpwd%>;
             java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+                <%
+        	}
+            %>
             java.sql.Statement stmt_<%=cid %> = conn_<%=cid%>.createStatement();
             java.sql.ResultSet rs_<%=cid %> = stmt_<%=cid %>.executeQuery(<%=dbquery%>);
             java.sql.ResultSetMetaData rsmd_<%=cid %> = rs_<%=cid %>.getMetaData();

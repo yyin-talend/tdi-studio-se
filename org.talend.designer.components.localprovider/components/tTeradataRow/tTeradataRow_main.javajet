@@ -19,7 +19,10 @@ String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 String propagateRecordset = ElementParameterParser.getValue(node,"__PROPAGATE_RECORD_SET__");
 String recordsetColumn = ElementParameterParser.getValue(node,"__RECORD_SET_COLUMN__");
-
+boolean useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__").equals("true");
+if(useExistingConn){
+	commitEvery = "0";
+}
 String incomingConnName = null;
 
 List<IMetadataColumn> columnList = null;

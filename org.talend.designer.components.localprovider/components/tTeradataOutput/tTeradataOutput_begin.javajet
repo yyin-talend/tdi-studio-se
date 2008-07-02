@@ -104,13 +104,40 @@ if(dataAction.equals("UPDATE") || dataAction.equals("INSERT_OR_UPDATE") || dataA
         <%
     }
 }
-%> 
+    boolean useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__").equals("true");
+    if(useExistingConn){
+		String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+		String conn = "conn_" + connection;
+		commitEvery = "0";
+%>java.sql.Connection conn_<%=cid %> = (java.sql.Connection)globalMap.get("<%=conn %>");
+<%
+	}else{
+%>
 java.lang.Class.forName("com.ncr.teradata.TeraDriver");
+
 String url_<%=cid %> = "jdbc:teradata://" + <%=dbhost%>;
+
 String dbUser_<%=cid %> = <%=dbuser%>;
+
 String dbPwd_<%=cid %> = <%=dbpwd%>;
+
 java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
-conn_<%=cid%>.setAutoCommit(false);
+
+<%
+	}
+	if(!commitEvery.equals("") && !commitEvery.equals("0")) {
+%>
+
+        int commitEvery_<%=cid%> = <%=commitEvery%>;
+
+        int commitCounter_<%=cid%> = 0;
+        
+        conn_<%=cid%>.setAutoCommit(false);
+        
+<%
+	}
+%>
+
 <%
 if(columnList != null && columnList.size() > 0) {        
     if(!tableAction.equals("NONE")) {
@@ -194,15 +221,6 @@ if(columnList != null && columnList.size() > 0) {
 	    %>	
 	    java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("DELETE FROM \"" + <%=tableName%> + "\" WHERE <%=deleteWhereStmt.toString()%>");
 	    <%		
-	}
-	if(!commitEvery.equals("") && !commitEvery.equals("0")) {
-	    %>
-
-        int commitEvery_<%=cid%> = <%=commitEvery%>;
-
-        int commitCounter_<%=cid%> = 0;
-        
-        <%
 	}
 }
 %>
