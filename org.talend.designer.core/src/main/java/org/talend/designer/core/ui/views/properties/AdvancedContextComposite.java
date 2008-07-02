@@ -162,7 +162,8 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
             if (parameter.isShow(element.getElementParameters())
                     && parameter.getCategory() != EComponentCategory.TECHNICAL
                     && (parameter.getField() == EParameterFieldType.CHECK || parameter.getField() == EParameterFieldType.CLOSED_LIST)
-                    || parameter.getField() == EParameterFieldType.MODULE_LIST) {
+                    || parameter.getField() == EParameterFieldType.MODULE_LIST
+                    || parameter.getField() == EParameterFieldType.RADIO) {
                 legalParameters.add(parameter);
             }
         }
@@ -255,7 +256,15 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
                     List<IElementParameter> tableInput = (List<IElementParameter>) tableViewer.getInput();
                     IElementParameter parameter = comboContent.get(0);
                     tableInput.add(parameter);
+
                     ((IElementParameter) parameter).setContextMode(true);
+
+                    List<IElementParameter> associateParams = findRadioParamInSameGroup(comboContent, parameter);
+                    for (IElementParameter param : associateParams) {
+                        param.setContextMode(true);
+                        tableInput.add(param);
+                    }
+
                     refreshComboContent(tableViewer, legalParameters);
                     if (comboContent.size() == 0) {
                         buttonAdd.setEnabled(false);
@@ -292,6 +301,7 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
                     Object[] elements = ((StructuredSelection) selection).toArray();
                     for (Object element : elements) {
                         tableViewerInput.remove(element);
+                        removeAssociateParams(tableViewerInput, element);
                         ((IElementParameter) element).setContextMode(false);
                     }
                     needRefresh = true;
@@ -299,6 +309,7 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
                     int index = tableViewerInput.size() - 1;
                     ((IElementParameter) tableViewerInput.get(index)).setContextMode(false);
                     tableViewerInput.remove(index);
+                    removeAssociateParams(tableViewerInput, element);
                     needRefresh = true;
                 }
 
@@ -311,6 +322,20 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
                     if (((List) tableViewer.getInput()).size() == 0) {
                         buttonRemove.setEnabled(false);
                     }
+                }
+            }
+
+            /**
+             * DOC YeXiaowei Comment method "removeAssociateParams".
+             * 
+             * @param tableViewerInput
+             * @param element
+             */
+            private void removeAssociateParams(List<IElementParameter> tableViewerInput, Object element) {
+                List<IElementParameter> associateParams = findRadioParamInSameGroup(tableViewerInput, (IElementParameter) element);
+                for (IElementParameter param : associateParams) {
+                    param.setContextMode(false);
+                    tableViewerInput.remove(param);
                 }
             }
         });
@@ -327,6 +352,38 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
                 table.setEnabled(!node.isReadOnly());
             }
         }
+    }
+
+    /**
+     * 
+     * DOC YeXiaowei Comment method "findRadioParamInSameGroup".
+     * 
+     * @param param
+     * @return
+     */
+    private List<IElementParameter> findRadioParamInSameGroup(final List<IElementParameter> list, final IElementParameter param) {
+        List<IElementParameter> associateParams = new ArrayList<IElementParameter>();
+        for (IElementParameter p : list) {
+
+            if (p.equals(param)) {
+                continue;
+            }
+
+            if (p.getField() == EParameterFieldType.RADIO) {
+                String group = param.getGroup();
+                if (group == null) {
+                    if (p.getGroup() == null) {
+                        associateParams.add(p);
+                    }
+                } else {
+                    if (p.getGroup() != null && p.getGroup().equals(group)) {
+                        associateParams.add(p);
+                    }
+                }
+            }
+        }
+
+        return associateParams;
     }
 
     /**

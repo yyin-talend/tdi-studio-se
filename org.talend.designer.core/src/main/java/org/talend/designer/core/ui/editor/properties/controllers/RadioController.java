@@ -30,6 +30,7 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.properties.tab.IDynamicProperty;
@@ -186,7 +187,17 @@ public class RadioController extends AbstractElementPropertySectionController {
         if (radioButton == null || radioButton.isDisposed()) {
             return;
         }
-        radioButton.setSelection((Boolean) value);
+
+        if (value instanceof String) {
+            radioButton.setSelection(Boolean.valueOf((String) value));
+        } else {
+            radioButton.setSelection((Boolean) value);
+        }
+
+        if (param.isContextMode()) {
+            radioButton.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_YELLOW));
+            radioButton.setEnabled(false);
+        }
     }
 
     /*
