@@ -92,7 +92,7 @@ for (int i=0; i<contextParams.size(); i++) {
     String name = contextParam.get("PARAM_NAME_COLUMN");
     String value = contextParam.get("PARAM_VALUE_COLUMN");
 %>        
-    paraList_<%=cid %>.add("--context_param <%=name %>=" + <%=value %>);
+    paraList_<%=cid %>.add("--context_param <%=name %>=" + RuntimeUtils.tRunJobConvertContext(<%=value %>));
 <% 
 }
 %>
