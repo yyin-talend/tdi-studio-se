@@ -13,12 +13,20 @@
 package org.talend.repository.ui.wizards.routines;
 
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.ui.wizards.PropertiesWizardPage;
 
 /**
@@ -60,5 +68,54 @@ public class NewRoutineWizardPage extends PropertiesWizardPage {
 
     public ERepositoryObjectType getRepositoryObjectType() {
         return ERepositoryObjectType.ROUTINES;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.wizards.PropertiesWizardPage#evaluateTextField()
+     */
+    protected void evaluateTextField() {
+        super.evaluateTextField();
+        if (nameStatus.getSeverity() == IStatus.OK) {
+            evaluateNameInJob();
+        }
+    }
+
+    /**
+     * ftang Comment method "evaluateNameInJob".
+     */
+    private void evaluateNameInJob() {
+        String jobName = nameText.getText().trim();
+        boolean isValid = isNameValidInJob(jobName);
+
+        if (!isValid) {
+            nameStatus = createStatus(IStatus.ERROR, Messages.getString("PropertiesWizardPage.ItemExistsInJobError")); //$NON-NLS-1$
+            updatePageStatus();
+        }
+    }
+
+    /**
+     * ftang Comment method "isNameExistingInJob".
+     * 
+     * @param jobName
+     */
+    private boolean isNameValidInJob(String jobName) {
+        Property property = PropertiesFactory.eINSTANCE.createProperty();
+
+        IRepositoryService repositoryService = (IRepositoryService) GlobalServiceRegister.getDefault().getService(
+                IRepositoryService.class);
+        IProxyRepositoryFactory repositoryFactory = repositoryService.getProxyRepositoryFactory();
+        property.setId(repositoryFactory.getNextId());
+        ProcessItem processItem = PropertiesFactory.eINSTANCE.createProcessItem();
+        processItem.setProperty(property);
+        boolean isValid = false;
+        try {
+            isValid = repositoryFactory.isNameAvailable(property.getItem(), jobName);
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
+            return false;
+        }
+        return isValid;
     }
 }
