@@ -675,7 +675,20 @@ public class CLASS {
                 setStmt.append("}\r\n");
             }
             return setStmt.toString();
-        }        
+        }
+        public String retrieveSQL(String generatedType, Column column, String incomingConnName, String cid, String stmt) {
+            String replaceStr = null;
+            if(generatedType.equals("char") || generatedType.equals("Character")) {
+                replaceStr = "\"'\" + String.valueOf(" + incomingConnName + "." + column.getName() + ") + \"'\"";
+            } else if(generatedType.equals("String")) {
+                replaceStr = "\"'\" + " + incomingConnName + "." + column.getName() + " + \"'\"";
+            } else if(generatedType.equals("java.util.Date")) {
+                replaceStr = "\"'\" + new java.text.SimpleDateFormat(" + column.getColumn().getPattern() + ").format(" + incomingConnName + "." + column.getName() + ") + \"'\"";
+            } else {
+                replaceStr = "String.valueOf(" + incomingConnName + "." + column.getName() + ")";
+            }
+            return stmt + cid + ".replaceFirst(\"\\\\?\", " + replaceStr + ")";    
+        }
     }
     
     public class AS400Manager extends Manager {
