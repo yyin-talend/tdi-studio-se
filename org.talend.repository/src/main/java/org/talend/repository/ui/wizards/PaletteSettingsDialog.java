@@ -62,7 +62,11 @@ import org.talend.repository.model.IProxyRepositoryFactory;
  */
 public class PaletteSettingsDialog extends Dialog {
 
+    private static final String FAMILY_SPEARATOR = "--FAMILY--";
+
     private static final String DIALOG_TITLE = "Palette Settings";
+
+    private static final boolean RESTORE = true;
 
     private TreeViewer hiddenViewer, displayViewer;
 
@@ -90,7 +94,8 @@ public class PaletteSettingsDialog extends Dialog {
         this.project = pro;
         List<ComponentSetting> c = getComponentsFromProject();
         for (ComponentSetting componentSetting : c) {
-            statusBackup.put(componentSetting.getName(), !componentSetting.isHidden());
+            statusBackup.put(componentSetting.getFamily() + FAMILY_SPEARATOR + componentSetting.getName(), !componentSetting
+                    .isHidden());
         }
 
     }
@@ -194,9 +199,9 @@ public class PaletteSettingsDialog extends Dialog {
                 }
 
                 if (isVisible) {
-                    return isComponentVisible(entry.getLabel());
+                    return isComponentVisible(entry);
                 } else {
-                    return !isComponentVisible(entry.getLabel());
+                    return !isComponentVisible(entry);
                 }
             }
         };
@@ -222,11 +227,11 @@ public class PaletteSettingsDialog extends Dialog {
                 }
             } else {
                 if (isVisible) {
-                    if (isComponentVisible(entry.getLabel())) {
+                    if (isComponentVisible(entry)) {
                         return true;
                     }
                 } else {
-                    if (!isComponentVisible(entry.getLabel())) {
+                    if (!isComponentVisible(entry)) {
                         return true;
                     }
                 }
@@ -315,7 +320,7 @@ public class PaletteSettingsDialog extends Dialog {
         }
 
         for (String string : names) {
-            setComponentVisible(string, visible);
+            setComponentVisible(string, visible, !RESTORE);
         }
 
         refreshViewer();
@@ -329,23 +334,25 @@ public class PaletteSettingsDialog extends Dialog {
                 retreiveAllEntry(list, en);
             }
         } else {
-            list.add(entry.getLabel());
+            String family = ComponentsFactoryProvider.getPaletteEntryFamily(entry.getParent()).replaceFirst("/", "");
+            list.add(family + FAMILY_SPEARATOR + entry.getLabel());
         }
 
     }
 
     @SuppressWarnings("unchecked")
     public List<ComponentSetting> getComponentsFromProject() {
-        ComponentSetting cs;
-
         List<ComponentSetting> components = (List<ComponentSetting>) project.getEmfProject().getComponentsSettings();
         return components;
     }
 
-    public boolean isComponentVisible(String name) {
+    public boolean isComponentVisible(PaletteEntry entry) {
+        String label = entry.getLabel();
+        String family = ComponentsFactoryProvider.getPaletteEntryFamily(entry.getParent()).replaceFirst("/", "");
         List<ComponentSetting> components = getComponentsFromProject();
+
         for (ComponentSetting componentSetting : components) {
-            if (componentSetting.getName().equals(name)) {
+            if (componentSetting.getName().equals(label) && componentSetting.getFamily().equals(family)) {
                 return !componentSetting.isHidden();
             }
         }
@@ -354,28 +361,28 @@ public class PaletteSettingsDialog extends Dialog {
     }
 
     private void setComponentVisibleForRestore(String name, boolean visible) {
-        List<ComponentSetting> components = getComponentsFromProject();
-        for (ComponentSetting componentSetting : components) {
-            if (componentSetting.getName().equals(name)) {
-                componentSetting.setHidden(!visible);
-                return;
-            }
-        }
+        setComponentVisible(name, visible, RESTORE);
     }
 
-    private void setComponentVisible(String name, boolean visible) {
+    private void setComponentVisible(String name, boolean visible, boolean restore) {
+        String[] names = name.split(FAMILY_SPEARATOR);
+        String family = names[0];
+        String label = names[1];
         List<ComponentSetting> components = getComponentsFromProject();
         for (ComponentSetting componentSetting : components) {
-            if (componentSetting.getName().equals(name)) {
+            if (componentSetting.getFamily().equals(family) && componentSetting.getName().equals(label)) {
                 componentSetting.setHidden(!visible);
                 return;
             }
         }
-        ComponentSetting cs = PropertiesFactory.eINSTANCE.createComponentSetting();
-        cs.setName(name);
-        cs.setHidden(!visible);
-        components.add(cs);
-        statusBackup.put(name, !visible);
+        if (!restore) {
+            ComponentSetting cs = PropertiesFactory.eINSTANCE.createComponentSetting();
+            cs.setName(label);
+            cs.setHidden(!visible);
+            cs.setFamily(family);
+            components.add(cs);
+            statusBackup.put(label, !visible);
+        }
     }
 
     /**
