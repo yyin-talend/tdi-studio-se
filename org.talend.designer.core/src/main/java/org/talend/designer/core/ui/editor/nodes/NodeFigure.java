@@ -283,7 +283,8 @@ public class NodeFigure extends Figure {
      */
     public void addSourceConnection(ConnectionFigure sourceConnection) {
         if (!sourceDummyMap.keySet().contains(sourceConnection)) {
-            ConnectionFigure connection = new ConnectionFigure(sourceConnection.getConnectionProperty(), node);
+            ConnectionFigure connection = new ConnectionFigure(sourceConnection.getConnection(), sourceConnection
+                    .getConnectionProperty(), node);
             connection.setTargetDecoration(null);
             add(connection);
             if (dummy) {
@@ -304,7 +305,8 @@ public class NodeFigure extends Figure {
      */
     public void setTargetConnection(ConnectionFigure targetConnection) {
         this.targetConnection = targetConnection;
-        ConnectionFigure connection = new ConnectionFigure(targetConnection.getConnectionProperty(), node);
+        ConnectionFigure connection = new ConnectionFigure(targetConnection.getConnection(), targetConnection
+                .getConnectionProperty(), node);
         connection.setTargetDecoration(null);
         add(connection);
         if (dummy) {
@@ -314,11 +316,11 @@ public class NodeFigure extends Figure {
             connection.setVisible(false);
         }
         targetDummy = connection;
-        
+
         AnchorListener targetListener = new AnchorListener() {
 
             public void anchorMoved(ConnectionAnchor anchor) {
-                    updateTarget();
+                updateTarget();
             }
 
         };

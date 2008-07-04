@@ -80,6 +80,11 @@ public class Connection extends Element implements IConnection, IPerformance {
 
     private ConnectionPerformance performance;
 
+    /**
+     * Tells if this connection has a subjob source or not instead of a node.
+     */
+    private boolean isSubjobConnection;
+
     // used only for copy / paste (will generate the name) && connection
     // creation
     public Connection(Node source, Node target, EConnectionType lineStyle, String connectorName, String metaName, String linkName) {
@@ -423,9 +428,9 @@ public class Connection extends Element implements IConnection, IPerformance {
             }
             updateName = true;
         } /*
-         * else if (getLineStyle().equals(EConnectionType.LOOKUP)) { labelText += " (" + nodeConnector.getLinkName() +
-         * ")"; updateName = true; }
-         */
+             * else if (getLineStyle().equals(EConnectionType.LOOKUP)) { labelText += " (" + nodeConnector.getLinkName() +
+             * ")"; updateName = true; }
+             */
 
         if (updateName) {
 
@@ -896,5 +901,23 @@ public class Connection extends Element implements IConnection, IPerformance {
             }
         }
         return false;
+    }
+
+    /**
+     * Getter for isSubjobConnection.
+     * 
+     * @return the isSubjobConnection
+     */
+    public boolean isSubjobConnection() {
+        return this.isSubjobConnection;
+    }
+
+    /**
+     * Sets the isSubjobConnection.
+     * 
+     * @param isSubjobConnection the isSubjobConnection to set
+     */
+    public void setSubjobConnection(boolean isSubjobConnection) {
+        this.isSubjobConnection = isSubjobConnection;
     }
 }

@@ -18,15 +18,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.draw2d.ChopboxAnchor;
+import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FreeformLayer;
 import org.eclipse.draw2d.FreeformLayout;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.CompoundSnapToHelper;
+import org.eclipse.gef.ConnectionEditPart;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.GraphicalEditPart;
+import org.eclipse.gef.NodeEditPart;
+import org.eclipse.gef.Request;
 import org.eclipse.gef.SnapToGrid;
 import org.eclipse.gef.SnapToHelper;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
@@ -39,7 +44,7 @@ import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
 /**
  * DOC nrousseau class global comment. Detailled comment
  */
-public class SubjobContainerPart extends AbstractGraphicalEditPart implements PropertyChangeListener, IAdaptable {
+public class SubjobContainerPart extends AbstractGraphicalEditPart implements PropertyChangeListener, IAdaptable, NodeEditPart {
 
     /*
      * (non-Javadoc)
@@ -148,6 +153,8 @@ public class SubjobContainerPart extends AbstractGraphicalEditPart implements Pr
             for (AbstractGraphicalEditPart part : childrens) {
                 part.refresh();
             }
+        } else if (SubjobContainer.UPDATE_SUBJOB_CONNECTIONS.equals(prop)) {
+            refreshSourceConnections();
         } else { // can only be UPDATE_SUBJOB_DATA, need to modify if some others are added
             ((SubjobContainerFigure) getFigure()).updateData();
             refreshVisuals();
@@ -215,5 +222,51 @@ public class SubjobContainerPart extends AbstractGraphicalEditPart implements Pr
             nbChildrensInFigure = 0;
         }
         super.addChildVisual(childEditPart, index + nbChildrensInFigure);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.gef.NodeEditPart#getSourceConnectionAnchor(org.eclipse.gef.ConnectionEditPart)
+     */
+    public ConnectionAnchor getSourceConnectionAnchor(ConnectionEditPart connection) {
+        return new ChopboxAnchor(getFigure());
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.gef.NodeEditPart#getSourceConnectionAnchor(org.eclipse.gef.Request)
+     */
+    public ConnectionAnchor getSourceConnectionAnchor(Request request) {
+        return new ChopboxAnchor(getFigure());
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.gef.NodeEditPart#getTargetConnectionAnchor(org.eclipse.gef.ConnectionEditPart)
+     */
+    public ConnectionAnchor getTargetConnectionAnchor(ConnectionEditPart connection) {
+        return new ChopboxAnchor(getFigure());
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.gef.NodeEditPart#getTargetConnectionAnchor(org.eclipse.gef.Request)
+     */
+    public ConnectionAnchor getTargetConnectionAnchor(Request request) {
+        return new ChopboxAnchor(getFigure());
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#getModelSourceConnections()
+     */
+    @Override
+    protected List getModelSourceConnections() {
+        return ((SubjobContainer) this.getModel()).getOutgoingConnections();
     }
 }

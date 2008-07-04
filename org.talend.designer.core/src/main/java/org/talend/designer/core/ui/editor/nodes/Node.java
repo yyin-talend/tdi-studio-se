@@ -843,6 +843,13 @@ public class Node extends Element implements INode {
     }
 
     /**
+     * Force connection draw update. This is only used when the subjobs are collapsed or uncollapsed
+     */
+    public void forceConnectionsUpdate() {
+        fireStructureChange(OUTPUTS, null);
+    }
+
+    /**
      * Remove a connection output.
      * 
      * @param connection

@@ -131,8 +131,9 @@ public class ConnectionPart extends AbstractConnectionEditPart implements Proper
      * @see org.eclipse.gef.editparts.AbstractConnectionEditPart#createFigure()
      */
     protected IFigure createFigure() {
-        ConnectionFigure connection = new ConnectionFigure(((Connection) getModel()).getSourceNodeConnector()
-                .getConnectionProperty(((Connection) getModel()).getLineStyle()), ((Connection) getModel()).getSource());
+        ConnectionFigure connection = new ConnectionFigure((Connection) getModel(), ((Connection) getModel())
+                .getSourceNodeConnector().getConnectionProperty(((Connection) getModel()).getLineStyle()),
+                ((Connection) getModel()).getSource());
 
         if (((Connection) getModel()).isActivate()) {
             ((ConnectionFigure) connection).setAlpha(-1);

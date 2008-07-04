@@ -21,11 +21,14 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
+import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.ISubjobContainer;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.ui.editor.TalendEditor;
+import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 
@@ -38,9 +41,13 @@ public class SubjobContainer extends Element implements ISubjobContainer {
 
     public static final String UPDATE_SUBJOB_DATA = "UPDATE_SUBJOB_DATA";
 
+    public static final String UPDATE_SUBJOB_CONNECTIONS = "UPDATE_SUBJOB_CONNECTIONS";
+
     protected List<NodeContainer> nodeContainers = new ArrayList<NodeContainer>();
 
     private IProcess2 process;
+
+    private List<Connection> outputs = new ArrayList<Connection>();
 
     public SubjobContainer(IProcess2 process) {
         // if the subjob is in collapse State.
@@ -282,10 +289,54 @@ public class SubjobContainer extends Element implements ISubjobContainer {
     public void setPropertyValue(String id, Object value) {
         super.setPropertyValue(id, value);
         if (id.equals(EParameterName.COLLAPSED.getName())) {
+            refreshOutputConnections();
             updateSubjobContainer();
         } else if (id.equals(EParameterName.SUBJOB_COLOR.getName()) || id.equals(EParameterName.SHOW_SUBJOB_TITLE.getName())
                 || id.equals(EParameterName.SUBJOB_TITLE.getName())) {
             fireStructureChange(UPDATE_SUBJOB_DATA, this);
+        }
+    }
+
+    /**
+     * DOC nrousseau Comment method "refreshOutputConnections".
+     */
+    private void refreshOutputConnections() {
+        boolean collapsed = isCollapsed();
+        // reinitialize all output connections.
+        Node subjobStartNode = this.getSubjobStartNode();
+
+        List<Connection> connectionsToUpdate = new ArrayList<Connection>(outputs);
+        outputs = new ArrayList<Connection>();
+
+        if (!collapsed) {
+            fireStructureChange(UPDATE_SUBJOB_CONNECTIONS, this);
+
+            for (NodeContainer nodeContainer : this.nodeContainers) {
+                Node currentNode = nodeContainer.getNode();
+                // force connections draw update
+                currentNode.forceConnectionsUpdate();
+
+                for (Connection connection : outputs) {
+                    if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DEPENDENCY)) {
+                        connection.setSubjobConnection(false);
+                    }
+                }
+            }
+            return;
+        }
+        for (NodeContainer nodeContainer : this.nodeContainers) {
+            Node currentNode = nodeContainer.getNode();
+            if (currentNode.equals(subjobStartNode)) {
+                // avoid subjobStartNode as it's not needed
+                continue;
+            }
+            for (Connection connection : (List<Connection>) currentNode.getOutgoingConnections()) {
+                if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DEPENDENCY)) {
+                    connection.setSubjobConnection(true);
+                    outputs.add(connection);
+                }
+            }
+            fireStructureChange(UPDATE_SUBJOB_CONNECTIONS, this);
         }
     }
 
@@ -304,5 +355,9 @@ public class SubjobContainer extends Element implements ISubjobContainer {
             }
         }
         return "SubjobContainer [" + nodes + "]";
+    }
+
+    public List<? extends IConnection> getOutgoingConnections() {
+        return this.outputs;
     }
 }

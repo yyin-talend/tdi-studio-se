@@ -16,6 +16,7 @@ import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.PolygonDecoration;
 import org.eclipse.draw2d.PolylineConnection;
 import org.eclipse.swt.graphics.Color;
+import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IConnectionProperty;
 import org.talend.designer.core.ui.editor.nodes.Node;
 
@@ -33,17 +34,46 @@ public class ConnectionFigure extends PolylineConnection {
 
     private Node linkedNode;
 
-    public ConnectionFigure(IConnectionProperty connectionProperty, Node node) {
+    private Connection connection;
+
+    /**
+     * Used for standard connections.
+     * 
+     * @param connection
+     * @param connectionProperty
+     * @param node
+     */
+    public ConnectionFigure(Connection connection, IConnectionProperty connectionProperty, Node node) {
         linkedNode = node;
+        this.connection = connection;
         setTargetDecoration(new PolygonDecoration());
         setConnectionProperty(connectionProperty);
+    }
+
+    /**
+     * Only used for partial connections used for dummy state.
+     * 
+     * @param connectionProperty
+     * @param node
+     */
+    public ConnectionFigure(IConnectionProperty connectionProperty, Node node) {
+        this(null, connectionProperty, node);
     }
 
     @Override
     public void paint(Graphics graphics) {
         if (linkedNode.getNodeContainer().getSubjobContainer() != null
-                && linkedNode.getNodeContainer().getSubjobContainer().isCollapsed()) {
-            return;
+                && linkedNode.getNodeContainer().getSubjobContainer().isCollapsed() && connection != null
+                && !connection.isSubjobConnection()) {
+
+            Node subjobStartNode = linkedNode.getNodeContainer().getSubjobContainer().getSubjobStartNode();
+            // only dependency links will be drawn
+            if (!connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DEPENDENCY)) {
+                return;
+            }
+            if (!connection.getSource().equals(subjobStartNode) && !connection.getTarget().equals(subjobStartNode)) {
+                return;
+            }
         }
         if (alpha != -1) {
             graphics.setAlpha(alpha);
@@ -72,6 +102,15 @@ public class ConnectionFigure extends PolylineConnection {
      */
     public IConnectionProperty getConnectionProperty() {
         return this.connectionProperty;
+    }
+
+    /**
+     * Getter for connection.
+     * 
+     * @return the connection
+     */
+    public Connection getConnection() {
+        return this.connection;
     }
 
 }

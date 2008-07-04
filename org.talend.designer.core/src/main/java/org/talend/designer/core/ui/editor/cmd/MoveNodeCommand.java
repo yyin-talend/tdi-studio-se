@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.cmd;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.draw2d.geometry.Point;
@@ -38,6 +39,8 @@ public class MoveNodeCommand extends Command {
 
     private Point oldPos;
 
+    private List<Node> currentSelection;
+
     /**
      * Move the given node to another location.
      * 
@@ -48,6 +51,8 @@ public class MoveNodeCommand extends Command {
         this.node = node;
         this.newPos = newPos;
         setLabel(Messages.getString("MoveNodeCommand.Label")); //$NON-NLS-1$
+
+        initializeCurrentSelection();
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
@@ -56,24 +61,23 @@ public class MoveNodeCommand extends Command {
         Rectangle movingRect = new Rectangle(newPos, node.getSize());
         for (Node currentNode : (List<Node>) node.getProcess().getGraphicalNodes()) {
             Rectangle currentRect = new Rectangle(currentNode.getLocation(), currentNode.getSize());
-            if ((currentRect.intersects(movingRect)) && (!isSelected(currentNode))) {
+            if ((currentRect.intersects(movingRect)) && (!currentSelection.contains(currentNode))) {
                 return false;
             }
         }
         return true;
     }
 
-    private boolean isSelected(Node currentNode) {
+    private void initializeCurrentSelection() {
+        currentSelection = new ArrayList<Node>();
         AbstractMultiPageTalendEditor multiPageTalendEditor = (AbstractMultiPageTalendEditor) PlatformUI.getWorkbench()
                 .getActiveWorkbenchWindow().getActivePage().getActiveEditor();
         GraphicalViewer viewer = multiPageTalendEditor.getTalendEditor().getViewer();
         for (EditPart editPart : (List<EditPart>) viewer.getSelectedEditParts()) {
-            if (editPart.getModel().equals(currentNode)) {
-                return true;
+            if (editPart.getModel() instanceof Node) {
+                currentSelection.add((Node) editPart.getModel());
             }
         }
-
-        return false;
     }
 
     public void execute() {

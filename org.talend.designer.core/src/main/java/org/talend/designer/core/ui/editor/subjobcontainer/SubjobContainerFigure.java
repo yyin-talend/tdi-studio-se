@@ -70,9 +70,7 @@ public class SubjobContainerFigure extends Figure {
         rectFig = new RoundedRectangle();
         titleFigure = new SimpleHtmlFigure();
         collapseFigure = new CollapseFigure();
-        // deactivate the collapse due to the problems with GEF.
-        collapseFigure.setVisible(false);
-        // ////
+
         collapseFigure.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent event) {
