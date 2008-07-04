@@ -43,6 +43,7 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.notes.NoteCreationFactory;
 import org.talend.designer.core.ui.editor.palette.TalendPaletteDrawer;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
+import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
  * This class creates the palette in the Gef Editor. <br/>
@@ -53,8 +54,6 @@ import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 public final class TalendEditorPaletteFactory {
 
     private static final String FAMILY_HIER_SEPARATOR = "/";
-
-    private static final String FAMILY_SEPARATOR_REGEX = "\\|";
 
     /** Preference ID used to persist the palette location. */
     public static final String PALETTE_DOCK_LOCATION = "TalendEditorPaletteFactory.Location"; //$NON-NLS-1$
@@ -95,18 +94,17 @@ public final class TalendEditorPaletteFactory {
                 continue;
             }
 
-            if (!needHiddenComponent && !xmlComponent.isVisible()) {
-                continue;
-            }
-
             // if (xmlComponent.isTechnical() || !xmlComponent.isVisible()) {
             // continue;
             // }
 
             if (xmlComponent.isLoaded()) {
                 family = xmlComponent.getFamily();
-                String[] strings = family.split(FAMILY_SEPARATOR_REGEX);
+                String[] strings = family.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
                 for (int j = 0; j < strings.length; j++) {
+                    if (!needHiddenComponent && !xmlComponent.isVisible(strings[j])) {
+                        continue;
+                    }
                     families.add(strings[j]);
                 }
             }
@@ -149,13 +147,17 @@ public final class TalendEditorPaletteFactory {
                     imageLarge = xmlComponent.getIcon32();
                 }
 
-                component = new CombinedTemplateCreationEntry(name, name, Node.class, new PaletteComponentFactory(xmlComponent),
-                        imageSmall, imageLarge);
-                component.setDescription(longName);
-
-                String[] strings = family.split(FAMILY_SEPARATOR_REGEX);
+                String[] strings = family.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
                 for (int j = 0; j < strings.length; j++) {
+                    if (!needHiddenComponent && !xmlComponent.isVisible(strings[j])) {
+                        continue;
+                    }
+                    component = new CombinedTemplateCreationEntry(name, name, Node.class, new PaletteComponentFactory(
+                            xmlComponent), imageSmall, imageLarge);
+
+                    component.setDescription(longName);
                     componentsDrawer = ht.get(strings[j]);
+                    component.setParent(componentsDrawer);
                     componentsDrawer.add(component);
                 }
             }
@@ -163,6 +165,7 @@ public final class TalendEditorPaletteFactory {
     }
 
     private static PaletteDrawer createComponentDrawer(Hashtable<String, PaletteDrawer> ht, String familyToCreate) {
+
         int index = familyToCreate.lastIndexOf(FAMILY_HIER_SEPARATOR);
         String family;
         PaletteDrawer parentPaletteDrawer = null;

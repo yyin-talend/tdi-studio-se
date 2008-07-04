@@ -1776,16 +1776,27 @@ public class EmfComponent implements IComponent {
         return compType.getHEADER().isDATAAUTOPROPAGATE();
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#isVisible()
+     */
     public boolean isVisible() {
+        return isVisible(null);
+    }
+
+    public boolean isVisible(String family) {
         RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
                 Context.REPOSITORY_CONTEXT_KEY);
         Project project = repositoryContext.getProject();
 
         List<ComponentSetting> components = (List<ComponentSetting>) project.getEmfProject().getComponentsSettings();
         for (ComponentSetting componentSetting : components) {
-            if (componentSetting.getName().equals(getName())) {
+
+            if (componentSetting.getFamily().equals(family) && componentSetting.getName().equals(getName())) {
                 return !componentSetting.isHidden();
             }
+
         }
 
         // return compType.getHEADER().isVISIBLE();

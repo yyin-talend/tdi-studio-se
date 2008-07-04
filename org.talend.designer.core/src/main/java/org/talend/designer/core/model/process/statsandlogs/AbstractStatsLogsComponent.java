@@ -158,6 +158,15 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
     /*
      * (non-Javadoc)
      * 
+     * @see org.talend.core.model.components.IComponent#isVisible(java.lang.String)
+     */
+    public boolean isVisible(String family) {
+        return false;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.components.IComponent#isVisibleInComponentDefinition()
      */
     public boolean isVisibleInComponentDefinition() {

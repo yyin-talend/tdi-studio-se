@@ -165,6 +165,15 @@ public class JobContextLoadComponent implements IComponent {
         return false;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#isVisible(java.lang.String)
+     */
+    public boolean isVisible(String family) {
+        return false;
+    }
+
     public boolean isVisible() {
         return false;
     }
