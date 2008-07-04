@@ -15,7 +15,6 @@ package org.talend.scheduler.ui;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.jface.action.Action;
@@ -114,10 +113,12 @@ public class SchedulerView extends ViewPart {
      * 
      * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
      */
+    @Override
     public void createPartControl(Composite parent) {
         tableViewerCreator = new TableViewerCreator(parent);
-
         initialTable(tableViewerCreator.createTable());
+        // see bug 4457: click on some column may throw exception
+        tableViewerCreator.setCellModifier(null);
         tableViewerCreator.init();
         TableViewer viewer = tableViewerCreator.getTableViewer();
 
@@ -237,6 +238,7 @@ public class SchedulerView extends ViewPart {
          * 
          * @see org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse.jface.viewers.IStructuredSelection)
          */
+        @Override
         public void selectionChanged(IStructuredSelection selection) {
             if (selection.size() != 1) {
                 this.setEnabled(false);
@@ -250,6 +252,7 @@ public class SchedulerView extends ViewPart {
          * 
          * @see org.eclipse.jface.action.Action#run()
          */
+        @Override
         public void run() {
             editSelectedTaskProperty();
         }
@@ -272,6 +275,7 @@ public class SchedulerView extends ViewPart {
          * 
          * @see org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse.jface.viewers.IStructuredSelection)
          */
+        @Override
         public void selectionChanged(IStructuredSelection selection) {
             if (selection.size() == 0) {
                 this.setEnabled(false);
@@ -285,16 +289,16 @@ public class SchedulerView extends ViewPart {
          * 
          * @see org.eclipse.jface.action.Action#run()
          */
+        @Override
         public void run() {
             boolean sure = false;
             sure = MessageDialog.openConfirm(tableViewerCreator.getTableViewer().getControl().getShell(), Messages
                     .getString("SchedulerView.deleteDialogTitle"), //$NON-NLS-1$
                     Messages.getString("SchedulerView.deleteDialogContent")); //$NON-NLS-1$
             if (sure) {
-                StructuredSelection selection = (StructuredSelection) tableViewerCreator.getTableViewer()
-                        .getSelection();
+                StructuredSelection selection = (StructuredSelection) tableViewerCreator.getTableViewer().getSelection();
 
-                List<ScheduleTask> list = (List<ScheduleTask>) selection.toList();
+                List<ScheduleTask> list = selection.toList();
                 JobResourceManager jobResourceManager = JobResourceManager.getInstance();
 
                 for (ScheduleTask tasks : list) {
@@ -327,6 +331,7 @@ public class SchedulerView extends ViewPart {
 
         addTaskAction = new Action() {
 
+            @Override
             public void run() {
                 addScheduleTask();
             }
@@ -341,13 +346,13 @@ public class SchedulerView extends ViewPart {
         editTaskAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(
                 ISharedImages.IMG_OBJS_INFO_TSK));
 
-        delTaskAction = new DelTaskAction(tableViewerCreator.getTableViewer(), Messages
-                .getString("SchedulerView.deleteTaskText")); //$NON-NLS-1$
+        delTaskAction = new DelTaskAction(tableViewerCreator.getTableViewer(), Messages.getString("SchedulerView.deleteTaskText")); //$NON-NLS-1$
         delTaskAction.setToolTipText(Messages.getString("SchedulerView.deleteTaskToolTip")); //$NON-NLS-1$
         delTaskAction.setImageDescriptor(imgDesDel);
 
         genCrontabAction = new Action() {
 
+            @Override
             public void run() {
                 genCrontab2File();
             }
@@ -395,9 +400,8 @@ public class SchedulerView extends ViewPart {
         for (ScheduleTask task : list) {
             StringBuilder sb = new StringBuilder();
             String blank = " "; //$NON-NLS-1$
-            sb.append(task.getMinute()).append(blank).append(task.getHour()).append(blank).append(task.getDay())
-                    .append(blank).append(task.getMonth()).append(blank).append(task.getWeekly()).append(blank).append(
-                            task.getCommand());
+            sb.append(task.getMinute()).append(blank).append(task.getHour()).append(blank).append(task.getDay()).append(blank)
+                    .append(task.getMonth()).append(blank).append(task.getWeekly()).append(blank).append(task.getCommand());
 
             pw.println(sb.toString());
         }
@@ -413,7 +417,7 @@ public class SchedulerView extends ViewPart {
                 return;
             }
             ScheduleTask newTask = d.getResult();
-            
+
             tasks.add(newTask);
             tableViewerCreator.getTableViewer().add(newTask);
             if (newTask.getTaskMode() == CommandModeType.TalendJob) {
@@ -481,6 +485,7 @@ public class SchedulerView extends ViewPart {
     /**
      * Passing the focus request to the viewer's control.
      */
+    @Override
     public void setFocus() {
         tableViewerCreator.getTableViewer().getControl().setFocus();
     }
@@ -509,6 +514,7 @@ class SchedulerViewProvider extends LabelProvider implements IStructuredContentP
      * 
      * @see org.eclipse.jface.viewers.LabelProvider#dispose()
      */
+    @Override
     public void dispose() {
     }
 
@@ -564,6 +570,7 @@ class SchedulerViewProvider extends LabelProvider implements IStructuredContentP
      * 
      * @see org.eclipse.jface.viewers.LabelProvider#getImage(java.lang.Object)
      */
+    @Override
     public Image getImage(Object obj) {
         return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_ELEMENT);
     }
