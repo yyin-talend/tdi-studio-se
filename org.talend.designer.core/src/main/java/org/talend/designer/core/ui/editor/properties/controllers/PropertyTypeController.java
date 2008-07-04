@@ -29,6 +29,7 @@ import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
+import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.repository.ui.dialog.RepositoryReviewDialog;
 
 /**
@@ -72,13 +73,17 @@ public class PropertyTypeController extends AbstractRepositoryController {
                     repositoryConnection = null;
                 }
 
-                updateDBType(repositoryConnection);
-
                 if (repositoryConnection != null) {
+                    CompoundCommand compoundCommand = new CompoundCommand();
+
                     ChangeValuesFromRepository changeValuesFromRepository = new ChangeValuesFromRepository(elem,
                             repositoryConnection, fullParamName, id);
                     changeValuesFromRepository.setMaps(dynamicProperty.getRepositoryTableMap());
-                    return changeValuesFromRepository;
+
+                    compoundCommand.add(changeValuesFromRepository);
+
+                    updateDBType(compoundCommand, repositoryConnection);
+                    return compoundCommand;
                 }
 
             }
@@ -87,21 +92,24 @@ public class PropertyTypeController extends AbstractRepositoryController {
     }
 
     // see bug 0004305
-    private void updateDBType(Connection repositoryConnection) {
+    private void updateDBType(CompoundCommand compoundCommand, Connection repositoryConnection) {
+
         if (repositoryConnection == null) {
             return;
         }
         if (!(repositoryConnection instanceof DatabaseConnection)) {
             return;
         }
-
         final String property = "DBTYPE";
         if (elem.getElementParameter(property) == null) {
             return;
         }
+
         String currentDbType = ((DatabaseConnection) repositoryConnection).getDatabaseType();
         EDatabaseTypeName typeName = EDatabaseTypeName.getTypeFromDbType(currentDbType);
-        elem.setPropertyValue(property, typeName.getXMLType());
+
+        Command command = new PropertyChangeCommand(elem, property, typeName.getXMLType());
+        compoundCommand.add(command);
     }
 
     /*
@@ -150,8 +158,6 @@ public class PropertyTypeController extends AbstractRepositoryController {
                 }
             }
 
-            updateDBType(repositoryConnection);
-
         }
         CompoundCommand cc = new CompoundCommand();
         ChangeValuesFromRepository changeValuesFromRepository1 = new ChangeValuesFromRepository(elem, repositoryConnection,
@@ -165,6 +171,10 @@ public class PropertyTypeController extends AbstractRepositoryController {
             changeValuesFromRepository2.setMaps(dynamicProperty.getRepositoryTableMap());
             cc.add(changeValuesFromRepository2);
         }
+        if (value.equals(EmfComponent.REPOSITORY)) {
+            updateDBType(cc, repositoryConnection);
+        }
+
         return cc;
 
     }
