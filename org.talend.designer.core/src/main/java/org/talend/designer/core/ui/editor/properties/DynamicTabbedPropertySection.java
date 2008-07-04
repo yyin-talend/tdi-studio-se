@@ -1056,14 +1056,14 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
 
         public void handleEvent(Event event) {
             REFRESH_LIMITER.resetTimer();
-            REFRESH_LIMITER.startIfExecutable(true);
+            REFRESH_LIMITER.startIfExecutable(true, null);
         }
     };
 
     private static final ExecutionLimiter REFRESH_LIMITER = new ExecutionLimiter(250, true) {
 
         @Override
-        public void execute(final boolean isFinalExecution) {
+        public void execute(final boolean isFinalExecution, Object data) {
             Composite currentComposite = lastPropertyUsed.getComposite();
             if (currentComposite.isDisposed()) {
                 return;

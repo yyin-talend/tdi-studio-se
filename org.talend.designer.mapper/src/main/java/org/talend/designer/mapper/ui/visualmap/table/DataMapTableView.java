@@ -1560,7 +1560,7 @@ public abstract class DataMapTableView extends Composite {
                     executionLimiter = new ExecutionLimiter(50, true) {
 
                         @Override
-                        public void execute(boolean isFinalExecution) {
+                        public void execute(boolean isFinalExecution, Object data) {
 
                             if (isFinalExecution) {
                                 expressionTextEditor.getDisplay().syncExec(new Runnable() {
@@ -2005,7 +2005,7 @@ public abstract class DataMapTableView extends Composite {
                 executionLimiterForExpressionFilterSetText = new ExecutionLimiter(50, true) {
 
                     @Override
-                    public void execute(boolean isFinalExecution) {
+                    public void execute(boolean isFinalExecution, Object data) {
 
                         if (isFinalExecution) {
                             expressionFilterText.getDisplay().syncExec(new Runnable() {
@@ -2146,7 +2146,7 @@ public abstract class DataMapTableView extends Composite {
                  * @see org.talend.commons.utils.threading.ExecutionLimiter#execute(boolean)
                  */
                 @Override
-                protected void execute(boolean isFinalExecution) {
+                protected void execute(boolean isFinalExecution, Object data) {
                     if (!expressionFilterText.isDisposed()) {
                         expressionFilterText.getDisplay().asyncExec(new Runnable() {
 
@@ -2162,7 +2162,7 @@ public abstract class DataMapTableView extends Composite {
             };
         }
         executionLimiterForCheckProblemsExpressionFilter.resetTimer();
-        executionLimiterForCheckProblemsExpressionFilter.startIfExecutable(true);
+        executionLimiterForCheckProblemsExpressionFilter.startIfExecutable(true, null);
 
     }
 

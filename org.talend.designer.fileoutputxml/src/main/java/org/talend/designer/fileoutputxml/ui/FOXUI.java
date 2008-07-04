@@ -360,20 +360,6 @@ public class FOXUI {
     private void addSchemaViewer(final Composite mainComposite, final int width, final int height) {
         // Group Schema Viewer
         final Group group = Form.createGroup(mainComposite, 1, Messages.getString("FOXUI.19"), height); //$NON-NLS-1$
-        // group.setBackgroundMode(SWT.INHERIT_FORCE);
-        // ///////////////////////////////////////////
-        // to correct graphic bug under Linux-GTK when the wizard is opened the first time
-        if (WindowSystem.isGTK()) {
-            group.addListener(SWT.Paint, new Listener() {
-
-                public void handleEvent(Event event) {
-                    Point offsetPoint = event.display.map(linker.getBgDrawableComposite(), group, new Point(0, 0));
-                    linker.setOffset(offsetPoint);
-                    linker.drawBackground(event.gc);
-                }
-
-            });
-        }
         schemaViewer = new TableViewer(group);
 
         // schemaViewer.set
@@ -387,23 +373,11 @@ public class FOXUI {
         Table table = schemaViewer.getTable();
         // table.setLinesVisible(true);
         table.setHeaderVisible(true);
-        TableColumn column1 = new TableColumn(table, SWT.CENTER);
+        TableColumn column1 = new TableColumn(table, SWT.LEFT);
         column1.setText(Messages.getString("FOXUI.20")); //$NON-NLS-1$
         column1.setWidth(100);
         table.setLayoutData(data2);
 
-        // to correct graphic bug under Linux-GTK when the wizard is opened the first time
-        if (WindowSystem.isGTK()) {
-            table.addListener(SWT.Paint, new Listener() {
-
-                public void handleEvent(Event event) {
-                    Point offsetPoint = event.display.map(linker.getBgDrawableComposite(), schemaViewer.getTable(), new Point(0,
-                            0));
-                    linker.setOffset(offsetPoint);
-                    linker.drawBackground(event.gc);
-                }
-            });
-        }
     }
 
     public Composite getFoxUIParent() {

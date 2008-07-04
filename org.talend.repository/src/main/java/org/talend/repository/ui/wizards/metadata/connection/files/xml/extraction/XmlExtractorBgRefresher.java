@@ -29,7 +29,7 @@ public class XmlExtractorBgRefresher extends BackgroundRefresher {
      * @param commonParent
      */
     public XmlExtractorBgRefresher(IBgDrawableComposite drawableComposite) {
-        super(drawableComposite);
+        super(drawableComposite, 300);
     }
 
 }

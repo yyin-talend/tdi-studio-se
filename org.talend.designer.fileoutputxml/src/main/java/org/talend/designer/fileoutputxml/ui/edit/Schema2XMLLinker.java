@@ -49,8 +49,10 @@ import org.talend.commons.ui.swt.drawing.link.ExtremityLink;
 import org.talend.commons.ui.swt.drawing.link.IExtremityLink;
 import org.talend.commons.ui.swt.drawing.link.IStyleLink;
 import org.talend.commons.ui.swt.drawing.link.ItemExtremityDescriptor;
+import org.talend.commons.ui.swt.drawing.link.LineLinkWithHorizontalConnectors;
 import org.talend.commons.ui.swt.drawing.link.LinkDescriptor;
 import org.talend.commons.ui.swt.drawing.link.StyleLink;
+import org.talend.commons.ui.swt.linking.TableToTreeLinker;
 import org.talend.commons.ui.utils.TableUtils;
 import org.talend.commons.ui.utils.TreeUtils;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
@@ -106,13 +108,7 @@ public class Schema2XMLLinker extends TableToTreeLinker<Object, Object> {
 
         initColors(display);
 
-        StyleLink unselectedStyleLink = new StyleLink();
-        unselectedStyleLink.setDrawableLink(new BezierHorizontalLink(unselectedStyleLink));
-        unselectedStyleLink.setForegroundColor(display.getSystemColor(SWT.COLOR_BLUE));
-        unselectedStyleLink.setLineWidth(2);
-        unselectedStyleLink.setExtremity2(new ExtremityEastArrow(unselectedStyleLink,
-                -ExtremityEastArrow.WIDTH_ARROW - 2, 0));
-        setUnselectedStyleLink(unselectedStyleLink);
+        setUnselectedStyleLink(createStandardLink(display.getSystemColor(SWT.COLOR_BLUE)));
 
         getSelectedRelativeStyleLink();
 
@@ -422,12 +418,7 @@ public class Schema2XMLLinker extends TableToTreeLinker<Object, Object> {
 
     public StyleLink getSelectedLoopStyleLink() {
         if (this.selectedLoopStyleLink == null) {
-            StyleLink styleLink = new StyleLink();
-            styleLink.setDrawableLink(new BezierHorizontalLink(styleLink));
-            styleLink.setForegroundColor(selectedLoopLinkColor);
-            styleLink.setLineWidth(2);
-            styleLink.setExtremity2(new ExtremityEastArrow(styleLink, -ExtremityEastArrow.WIDTH_ARROW - 2, 0));
-            this.selectedLoopStyleLink = styleLink;
+            this.selectedLoopStyleLink = createStandardLink(selectedLoopLinkColor);
         }
         return this.selectedLoopStyleLink;
     }
@@ -438,14 +429,7 @@ public class Schema2XMLLinker extends TableToTreeLinker<Object, Object> {
      * @param selectedLoopLinkColor
      */
     private void getSelectedRelativeStyleLink() {
-
-        StyleLink selectedStyleLink = new StyleLink();
-        selectedStyleLink.setDrawableLink(new BezierHorizontalLink(selectedStyleLink));
-        selectedStyleLink.setForegroundColor(selectedRelativeLinkColor);
-        selectedStyleLink.setLineWidth(2);
-        selectedStyleLink.setExtremity2(new ExtremityEastArrow(selectedStyleLink, -ExtremityEastArrow.WIDTH_ARROW - 2,
-                0));
-        setSelectedStyleLink(selectedStyleLink);
+        setSelectedStyleLink(createStandardLink(selectedLoopLinkColor));
     }
 
     /**

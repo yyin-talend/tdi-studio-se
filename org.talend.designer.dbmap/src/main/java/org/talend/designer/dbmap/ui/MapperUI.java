@@ -345,7 +345,7 @@ public class MapperUI {
         backgroundRefreshLimiter = new ExecutionLimiter(DEFAULT_TIME_BEFORE_NEW_BG_REFRESH, true) {
 
             @Override
-            public void execute(final boolean isFinalExecution) {
+            public void execute(final boolean isFinalExecution, Object data) {
 
                 display.asyncExec(new Runnable() {
 
@@ -365,7 +365,7 @@ public class MapperUI {
         backgroundRefreshLimiterForceRecalculate = new ExecutionLimiter(DEFAULT_TIME_BEFORE_NEW_BG_REFRESH, true) {
 
             @Override
-            public void execute(final boolean isFinalExecution) {
+            public void execute(final boolean isFinalExecution, Object data) {
                 display.asyncExec(new Runnable() {
 
                     public void run() {

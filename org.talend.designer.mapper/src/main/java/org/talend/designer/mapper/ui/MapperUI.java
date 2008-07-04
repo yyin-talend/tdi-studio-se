@@ -51,6 +51,7 @@ import org.talend.commons.ui.swt.linking.BgDrawableComposite;
 import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.commons.utils.threading.ExecutionLimiter;
 import org.talend.commons.utils.threading.ExecutionLimiterImproved;
+import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.designer.abstractmap.model.table.IDataMapTable;
 import org.talend.designer.abstractmap.ui.visualmap.link.IMapperLink;
 import org.talend.designer.mapper.MapperComponent;
@@ -94,7 +95,7 @@ public class MapperUI {
     /**
      * Default value for middle performance in ms.
      */
-    public static final int DEFAULT_TIME_BEFORE_NEW_BG_REFRESH = 10;
+    public static final int DEFAULT_TIME_BEFORE_NEW_BG_REFRESH = 100;
 
     private SashForm datasFlowViewSashForm;
 
@@ -443,7 +444,7 @@ public class MapperUI {
         backgroundRefreshLimiter = (ExecutionLimiter) new ExecutionLimiterImproved(time, true) {
 
             @Override
-            public void execute(final boolean isFinalExecution) {
+            public void execute(final boolean isFinalExecution, Object data) {
 
                 // new Exception("backgroundRefreshLimiter.updateBackground").printStackTrace();
 
@@ -465,7 +466,7 @@ public class MapperUI {
         backgroundRefreshLimiterForceRecalculate = (ExecutionLimiter) new ExecutionLimiterImproved(time, true) {
 
             @Override
-            public void execute(final boolean isFinalExecution) {
+            public void execute(final boolean isFinalExecution, Object data) {
 
                 // new Exception("backgroundRefreshLimiterForceRecalculate.updateBackground").printStackTrace();
 
@@ -858,6 +859,7 @@ public class MapperUI {
                 }
                 link.draw(gc, boundsOfDrawing);
             }
+            
         } // public void drawBackground(GC gc) {
 
         /**

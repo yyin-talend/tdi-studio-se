@@ -501,9 +501,9 @@ public class UIManager extends AbstractUIManager {
      */
     public void refreshBackground(boolean forceRecalculate, boolean firstExecutionAfterTime) {
         if (forceRecalculate) {
-            mapperUI.getBackgroundRefreshLimiterForceRecalculate().startIfExecutable(firstExecutionAfterTime);
+            mapperUI.getBackgroundRefreshLimiterForceRecalculate().startIfExecutable(firstExecutionAfterTime, null);
         } else {
-            mapperUI.getBackgroundRefreshLimiter().startIfExecutable(firstExecutionAfterTime);
+            mapperUI.getBackgroundRefreshLimiter().startIfExecutable(firstExecutionAfterTime, null);
         }
     }
 

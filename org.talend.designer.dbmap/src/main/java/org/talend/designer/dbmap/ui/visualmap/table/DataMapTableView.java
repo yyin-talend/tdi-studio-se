@@ -1417,7 +1417,7 @@ public abstract class DataMapTableView extends Composite {
                     executionLimiter = new ExecutionLimiter(50, true) {
 
                         @Override
-                        public void execute(boolean isFinalExecution) {
+                        public void execute(boolean isFinalExecution, Object data) {
 
                             if (isFinalExecution && !expressionTextEditor.isDisposed()) {
                                 expressionTextEditor.getDisplay().syncExec(new Runnable() {

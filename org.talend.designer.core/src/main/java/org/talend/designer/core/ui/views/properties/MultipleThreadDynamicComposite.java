@@ -767,14 +767,14 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
 
         public void handleEvent(Event event) {
             resizeLimiter.resetTimer();
-            resizeLimiter.startIfExecutable(true);
+            resizeLimiter.startIfExecutable(true, null);
         }
     };
 
     private final ExecutionLimiter resizeLimiter = new ExecutionLimiter(250, true) {
 
         @Override
-        public void execute(final boolean isFinalExecution) {
+        public void execute(final boolean isFinalExecution, Object data) {
             if (!isDisposed()) {
                 getDisplay().asyncExec(new Runnable() {
 

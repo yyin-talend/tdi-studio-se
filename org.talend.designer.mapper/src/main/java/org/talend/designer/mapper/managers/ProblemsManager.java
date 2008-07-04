@@ -311,11 +311,11 @@ public class ProblemsManager {
         }
         this.checkProblemForEntryLimiter.setCurrentTableEntry(tableEntry);
         if (tableEntry != this.checkProblemForEntryLimiter.getPreviousTableEntry()) {
-            this.checkProblemForEntryLimiter.execute(false);
+            this.checkProblemForEntryLimiter.execute(false, null);
         } else {
 
             this.checkProblemForEntryLimiter.resetTimer();
-            this.checkProblemForEntryLimiter.startIfExecutable(true);
+            this.checkProblemForEntryLimiter.startIfExecutable(true, null);
         }
 
     }
@@ -424,7 +424,7 @@ public class ProblemsManager {
         }
 
         @Override
-        protected void execute(boolean isFinalExecution) {
+        protected void execute(boolean isFinalExecution, Object data) {
             if (canExecuteCheckProblems()) {
                 mapperManager.getUiManager().getDisplay().syncExec(new Runnable() {
 
