@@ -58,6 +58,7 @@ skeleton="../templates/db_output_bulk.skeleton"
     
     String identityInsert = ElementParameterParser.getValue(node, "__IDENTITY_INSERT__");
 
+    boolean isEnableDebug = ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__").equals("true");
 %>
 int nb_line_<%=cid%> = 0;
 int nb_line_update_<%=cid%> = 0;
@@ -128,6 +129,7 @@ if(useExistingConn.equals("true")) {
     String dbUser_<%=cid %> = <%=dbuser%>;
     String dbPwd_<%=cid %> = <%=dbpwd%>;
     java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+    conn_<%=cid%>.setAutoCommit(false);
     <%
 }
 %>
@@ -206,62 +208,56 @@ if(columnList != null && columnList.size()>0) {
     StringBuilder updateWhereStmt = actionSQLMap.get(UPDATE_WHERE_STMT);
     StringBuilder deleteWhereStmt = actionSQLMap.get(DELETE_WHERE_STMT);
 
-    if(dataAction.equals("INSERT")){
-    %>  
-    
-        java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO [" + tableName_<%=cid%> + "] (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
-
-    <%
-    }else if (dataAction.equals("UPDATE")){
-    %>
-    
-        java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE [" + tableName_<%=cid%> + "] SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
-
-    <%      
-    }else if (dataAction.equals("INSERT_OR_UPDATE")){
-    %>
-        java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("SELECT COUNT(1) FROM [" + tableName_<%=cid%> + "] WHERE <%=updateWhereStmt.toString()%>"); 
-
-        java.sql.PreparedStatement pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO [" + tableName_<%=cid%> + "] (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
-
-        java.sql.PreparedStatement pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE [" + tableName_<%=cid%> + "] SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
-    
-    <%
-    }else if (dataAction.equals("UPDATE_OR_INSERT")){
-    %>
-
-        java.sql.PreparedStatement pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE [" + tableName_<%=cid%> + "] SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
-
-        java.sql.PreparedStatement pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO [" + tableName_<%=cid%> + "] (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
-        
-    <%
-            
-    }else if (dataAction.equals("DELETE")){
-    %>
-    
-        java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("DELETE FROM [" + tableName_<%=cid%> + "] WHERE <%=deleteWhereStmt.toString()%>");
-
-    <%      
-    }
-}
-if(!useExistingConn.equals("true")) {
-    if(!commitEvery.equals("") && !commitEvery.equals("0")) {
+    if(dataAction.equals("INSERT")) {
+        %>  
+        String insert_<%=cid%> = "INSERT INTO [" + tableName_<%=cid%> + "] (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)";
+        java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
+        <%
+    } else if (dataAction.equals("UPDATE")) {
         %>
-        
-        int commitEvery_<%=cid%> = <%=commitEvery%>;
-        
-        int commitCounter_<%=cid%> = 0;
-        
-        conn_<%=cid%>.setAutoCommit(false);
-        
+        String update_<%=cid%> = "UPDATE [" + tableName_<%=cid%> + "] SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>";
+        java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(update_<%=cid%>);
+        <%      
+    } else if (dataAction.equals("INSERT_OR_UPDATE")) {
+        %>
+        java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("SELECT COUNT(1) FROM [" + tableName_<%=cid%> + "] WHERE <%=updateWhereStmt.toString()%>"); 
+        String insert_<%=cid%> = "INSERT INTO [" + tableName_<%=cid%> + "] (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)";
+        java.sql.PreparedStatement pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
+        String update_<%=cid%> = "UPDATE [" + tableName_<%=cid%> + "] SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>";
+        java.sql.PreparedStatement pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement(update_<%=cid%>);    
+        <%
+    } else if (dataAction.equals("UPDATE_OR_INSERT")) {
+        %>
+        String update_<%=cid%> = "UPDATE [" + tableName_<%=cid%> + "] SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>";
+        java.sql.PreparedStatement pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement(update_<%=cid%>);
+        String insert_<%=cid%> = "INSERT INTO [" + tableName_<%=cid%> + "] (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)";
+        java.sql.PreparedStatement pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);        
+        <%            
+    } else if (dataAction.equals("DELETE")) {
+        %>
+        String delete_<%=cid%> = "DELETE FROM [" + tableName_<%=cid%> + "] WHERE <%=deleteWhereStmt.toString()%>";
+        java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(delete_<%=cid%>);
+        <%      
+    }
+    if(isEnableDebug) {
+        %>
+        String query_<%=cid%> = null;
         <%
     }
-}
-
-if(identityInsert.equals("true")){
-%>
- java.sql.Statement stmt_<%=cid %> = conn_<%=cid%>.createStatement();
- stmt_<%=cid %>.execute("SET IDENTITY_INSERT ["+ tableName_<%=cid%> +"] ON");
-<%
+    if(!useExistingConn.equals("true")) {
+        if(!commitEvery.equals("") && !commitEvery.equals("0")) {
+            %>            
+            int commitEvery_<%=cid%> = <%=commitEvery%>;            
+            int commitCounter_<%=cid%> = 0;
+                        
+            <%
+        }
+    }
+    if(identityInsert.equals("true")) {
+        %>
+        java.sql.Statement stmt_<%=cid %> = conn_<%=cid%>.createStatement();
+        stmt_<%=cid %>.execute("SET IDENTITY_INSERT ["+ tableName_<%=cid%> +"] ON");
+        <%
+    }    
 }
 %>
