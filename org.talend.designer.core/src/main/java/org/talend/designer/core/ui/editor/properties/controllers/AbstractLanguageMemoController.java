@@ -29,6 +29,8 @@ import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.GC;
@@ -36,7 +38,9 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
@@ -54,6 +58,8 @@ import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
+import org.talend.designer.core.utils.ISampleCodeFactory;
+import org.talend.designer.core.utils.JavaSampleCodeFactory;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -82,6 +88,8 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
     private String language;
 
     private ISourceViewer viewer;
+
+    private Button codeGenereateButton;
 
     /*
      * (non-Javadoc)
@@ -155,6 +163,9 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
                     data.bottom = new FormAttachment(100, 0);
 
                     b.setLayoutData(data);
+
+                    addCodeGenerateButton(b);
+
                     Process process = null;
                     if (elem instanceof Node) {
                         process = (Process) ((Node) elem).getProcess();
@@ -189,6 +200,9 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
                 data.bottom = new FormAttachment(100, 0);
 
                 b.setLayoutData(data);
+
+                addCodeGenerateButton(b);
+
                 viewer = (TalendPerlSourceViewer) TalendPerlSourceViewer.createViewer(b, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL
                         | SWT.H_SCROLL | SWT.WRAP, true);
                 text = viewer.getTextWidget();
@@ -273,6 +287,38 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
 
         dynamicProperty.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
         return null;
+    }
+
+    /**
+     * 
+     * DOC YeXiaowei Comment method "addCodeGenerateButton".
+     * 
+     * @param parent
+     */
+    private void addCodeGenerateButton(final Composite parent) {
+
+        codeGenereateButton = new Button(parent, SWT.CENTER);
+        codeGenereateButton.setText("Generate code");
+        codeGenereateButton.setToolTipText("Try to generate sample code for this component");
+
+        GridData layoutData = new GridData();
+        layoutData.horizontalAlignment = SWT.CENTER;
+
+        codeGenereateButton.setLayoutData(layoutData);
+
+        codeGenereateButton.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                if (elem instanceof Node) {
+                    // generate code
+                    ISampleCodeFactory factory = JavaSampleCodeFactory.getInstance();
+                    executeCommand(factory.generateCodeForParameters((Node) elem));
+                    refresh(curParameter, false);
+                }
+            }
+
+        });
     }
 
     /**
