@@ -1793,7 +1793,8 @@ public class EmfComponent implements IComponent {
         List<ComponentSetting> components = (List<ComponentSetting>) project.getEmfProject().getComponentsSettings();
         for (ComponentSetting componentSetting : components) {
 
-            if (componentSetting.getFamily().equals(family) && componentSetting.getName().equals(getName())) {
+            if (componentSetting.getFamily() != null && componentSetting.getFamily().equals(family)
+                    && componentSetting.getName().equals(getName())) {
                 return !componentSetting.isHidden();
             }
 
