@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.repository.ui.wizards;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.jface.wizard.Wizard;
@@ -68,8 +70,7 @@ public class PropertiesWizard extends Wizard {
     }
 
     private void lockObject() {
-        IProxyRepositoryFactory repositoryFactory = CorePlugin.getDefault().getRepositoryService()
-                .getProxyRepositoryFactory();
+        IProxyRepositoryFactory repositoryFactory = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();
         try {
             if (repositoryFactory.getStatus(object).equals(ERepositoryStatus.LOCK_BY_USER)) {
                 alreadyLockedByUser = true;
@@ -89,6 +90,18 @@ public class PropertiesWizard extends Wizard {
                     .getProxyRepositoryFactory();
             try {
                 repositoryFactory.unlock(object);
+
+                // if we have updated the version, the object will change, so we still need to unlock the original
+                // version of the object.
+                if (!object.getProperty().getVersion().equals(originalVersion)) {
+                    List<IRepositoryObject> list = repositoryFactory.getAllVersion(object.getProperty().getId());
+                    for (IRepositoryObject obj : list) {
+                        if (obj.getProperty().getVersion().equals(originalVersion)) {
+                            repositoryFactory.unlock(obj);
+                            break;
+                        }
+                    }
+                }
             } catch (PersistenceException e) {
                 ExceptionHandler.process(e);
             }
@@ -96,8 +109,7 @@ public class PropertiesWizard extends Wizard {
     }
 
     private boolean isReadOnly() {
-        IProxyRepositoryFactory repositoryFactory = CorePlugin.getDefault().getRepositoryService()
-                .getProxyRepositoryFactory();
+        IProxyRepositoryFactory repositoryFactory = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();
         return !repositoryFactory.getStatus(object).isEditable() || alreadyLockedByUser;
     }
 
@@ -143,8 +155,7 @@ public class PropertiesWizard extends Wizard {
             return false;
         }
 
-        IProxyRepositoryFactory repositoryFactory = CorePlugin.getDefault().getRepositoryService()
-                .getProxyRepositoryFactory();
+        IProxyRepositoryFactory repositoryFactory = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();
         try {
             repositoryFactory.save(object.getProperty(), this.originaleObjectLabel, this.originalVersion);
             // if (!object.getLabel().equals(originaleObjectLabel)) {
@@ -223,8 +234,7 @@ public class PropertiesWizard extends Wizard {
     }
 
     private void reloadProperty() throws PersistenceException {
-        IProxyRepositoryFactory repositoryFactory = CorePlugin.getDefault().getRepositoryService()
-                .getProxyRepositoryFactory();
+        IProxyRepositoryFactory repositoryFactory = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();
         Property property = repositoryFactory.reload(object.getProperty());
         object.setProperty(property);
     }
