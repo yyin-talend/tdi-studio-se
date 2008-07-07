@@ -27,6 +27,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
@@ -179,6 +180,13 @@ public abstract class Processor implements IProcessor {
             ExceptionHandler.process(e);
         }
         cmd = addCommmandLineAttch(cmd, context.getName(), statOption, traceOption, codeOptions);
+
+        // (feature 4258)
+        if (Platform.OS_LINUX.equals(getTargetPlatform())) {
+            cmd = (String[]) ArrayUtils.add(cmd, "$*"); //$NON-NLS-1$
+        } else if (Platform.OS_WIN32.equals(getTargetPlatform())) {
+            cmd = (String[]) ArrayUtils.add(cmd, "%*"); //$NON-NLS-1$
+        }
         return cmd;
     }
 
