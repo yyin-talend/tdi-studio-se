@@ -883,6 +883,12 @@
             id="org.talend.repository.model.migration.ReplaceRunJobLabelVariable"
             name="Replace tRunJob label variable">
       </projecttask>
+      <projecttask
+            class="org.talend.repository.model.migration.AddFamilyFieldProjectMigrationTask"
+            description="Add family field in component setting."
+            id="org.talend.repository.model.migration.AddFamilyFieldProjectMigrationTask"
+            name="Add family field in component setting migration task.">
+      </projecttask>
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">
