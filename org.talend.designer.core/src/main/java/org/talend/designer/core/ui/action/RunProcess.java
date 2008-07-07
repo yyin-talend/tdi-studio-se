@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.designer.core.ui.action;
 
-import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.launchConfigurations.LaunchConfigurationManager;
 import org.eclipse.jface.viewers.ISelection;
@@ -23,7 +22,7 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.DesignerPlugin;
-import org.talend.designer.core.debug.TalendDebugUIConstants;
+import org.talend.designer.core.debug.JobLaunchShortcutManager;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.actions.AContextualAction;
@@ -56,13 +55,8 @@ public class RunProcess extends AContextualAction {
         if (!(obj instanceof RepositoryNode)) {
             return;
         }
-
-        RepositoryNode node = (RepositoryNode) obj;
         // Add this job to running history list.
-        TalendLaunchShortcutAction launchAction = new TalendLaunchShortcutAction(ILaunchManager.RUN_MODE,
-                getLaunchConfigurationManager().getLaunchShortcut(TalendDebugUIConstants.TALEND_JOB_LAUNCH_SHORTCUT_ID));
-        launchAction.run();
-
+        JobLaunchShortcutManager.run(selection);
     }
 
     /*

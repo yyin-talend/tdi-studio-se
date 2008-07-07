@@ -13,7 +13,6 @@
 package org.talend.designer.core.debug;
 
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.launchConfigurations.LaunchConfigurationManager;
 import org.eclipse.debug.internal.ui.launchConfigurations.LaunchHistory;
@@ -193,8 +192,7 @@ public class TalendLaunchToolbarAction extends AbstractLaunchToolbarAction {
             if ((o instanceof RepositoryNode)) {
                 RepositoryNode node = (RepositoryNode) o;
                 if (node.getObject() != null && node.getObject().getType().equals(ERepositoryObjectType.PROCESS)) {
-                    DebugUIPlugin.getDefault().getLaunchConfigurationManager().getLaunchShortcut(
-                            TalendDebugUIConstants.TALEND_JOB_LAUNCH_SHORTCUT_ID).launch(selection, ILaunchManager.RUN_MODE);
+                    JobLaunchShortcutManager.run(selection);
                     return;
                 }
             }
@@ -207,8 +205,7 @@ public class TalendLaunchToolbarAction extends AbstractLaunchToolbarAction {
                     IEditorPart editor = page.getActiveEditor();
                     IEditorInput input = editor.getEditorInput();
                     if (input instanceof RepositoryEditorInput) {
-                        DebugUIPlugin.getDefault().getLaunchConfigurationManager().getLaunchShortcut(
-                                TalendDebugUIConstants.TALEND_JOB_LAUNCH_SHORTCUT_ID).launch(editor, ILaunchManager.RUN_MODE);
+                        JobLaunchShortcutManager.run(editor);
                         return;
                     }
                 }

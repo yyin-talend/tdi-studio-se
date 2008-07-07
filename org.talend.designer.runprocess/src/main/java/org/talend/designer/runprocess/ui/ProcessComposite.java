@@ -66,7 +66,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.IContext;
 import org.talend.designer.core.DesignerPlugin;
-import org.talend.designer.core.debug.TalendDebugUIConstants;
+import org.talend.designer.core.debug.JobLaunchShortcutManager;
 import org.talend.designer.runprocess.IProcessMessage;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessMessage;
@@ -730,8 +730,7 @@ public class ProcessComposite extends Composite {
         // Add this job to running history list.
         IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
         if (CorePlugin.getDefault().getDesignerCoreService().isTalendEditor(activeEditor)) {
-            DebugUIPlugin.getDefault().getLaunchConfigurationManager().getLaunchShortcut(
-                    TalendDebugUIConstants.TALEND_JOB_LAUNCH_SHORTCUT_ID).launch(activeEditor, ILaunchManager.RUN_MODE);
+            JobLaunchShortcutManager.run(activeEditor);
         } else {
             exec();
         }
