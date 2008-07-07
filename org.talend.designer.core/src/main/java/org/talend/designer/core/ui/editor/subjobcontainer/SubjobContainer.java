@@ -331,7 +331,8 @@ public class SubjobContainer extends Element implements ISubjobContainer {
                 continue;
             }
             for (Connection connection : (List<Connection>) currentNode.getOutgoingConnections()) {
-                if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DEPENDENCY)) {
+                if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DEPENDENCY)
+                        && !subjobStartNode.equals(connection.getTarget().getDesignSubjobStartNode())) {
                     connection.setSubjobConnection(true);
                     outputs.add(connection);
                 }

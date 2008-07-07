@@ -74,6 +74,9 @@ public class ConnectionFigure extends PolylineConnection {
             if (!connection.getSource().equals(subjobStartNode) && !connection.getTarget().equals(subjobStartNode)) {
                 return;
             }
+            if (connection.getTarget().getDesignSubjobStartNode().equals(subjobStartNode)) {
+                return;
+            }
         }
         if (alpha != -1) {
             graphics.setAlpha(alpha);
