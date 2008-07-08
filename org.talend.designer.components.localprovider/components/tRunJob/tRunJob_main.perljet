@@ -4,6 +4,7 @@ imports="
     org.talend.core.model.process.ElementParameterParser
     org.talend.core.model.utils.PerlResourcesHelper
     org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.designer.runprocess.ItemCacheManager
     org.talend.designer.runprocess.ProcessorUtilities
     org.talend.designer.runprocess.ProcessorException
     java.util.Map
@@ -47,7 +48,7 @@ List<Map<String, String>> contextParams =
         "__CONTEXTPARAMS__"
     );
 
-String processName = ProcessorUtilities.getProcessNameByProcessId(processId);
+String processName = ItemCacheManager.getProcessNameByProcessId(processId);
 
 // if it's a generation to run in talend.
 if (!ProcessorUtilities.isExportConfig()) {
