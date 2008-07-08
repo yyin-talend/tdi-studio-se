@@ -43,6 +43,8 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
@@ -56,7 +58,10 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
@@ -75,6 +80,7 @@ import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.designer.runprocess.RunProcessContext;
 import org.talend.designer.runprocess.RunProcessPlugin;
+import org.talend.designer.runprocess.RunprocessConstants;
 import org.talend.designer.runprocess.ProcessMessage.MsgType;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
@@ -147,6 +153,10 @@ public class ProcessComposite extends Composite {
     private boolean isAddedStreamListener;
 
     private boolean hideConsoleLine = false;
+
+    private Button enableLineLimitButton;
+
+    private Text lineLimitText;
 
     /**
      * DOC chuger ProcessComposite2 constructor comment.
@@ -347,7 +357,6 @@ public class ProcessComposite extends Composite {
         consoleText.setLayoutData(data);
         Font font = new Font(parent.getDisplay(), "courier", 8, SWT.NONE); //$NON-NLS-1$
         consoleText.setFont(font);
-
         execScroll.setMinSize(execContent.computeSize(SWT.DEFAULT, SWT.DEFAULT));
         sash.setWeights(new int[] { 2, H_WEIGHT });
 
@@ -366,6 +375,86 @@ public class ProcessComposite extends Composite {
             }
         };
         addListeners();
+        createLineLimitedControl(execContent);
+    }
+
+    /**
+     * DOC bqian Comment method "createLineLimitedControl".
+     */
+    private void createLineLimitedControl(Composite container) {
+        Composite composite = new Composite(container, SWT.NONE);
+        composite.setLayoutData(new GridData());
+
+        FormLayout formLayout = new FormLayout();
+        formLayout.marginWidth = 7;
+        formLayout.marginHeight = 4;
+        formLayout.spacing = 7;
+        composite.setLayout(formLayout);
+
+        enableLineLimitButton = new Button(composite, SWT.CHECK);
+        enableLineLimitButton.setText("Line limit");
+        FormData formData = new FormData();
+        enableLineLimitButton.setLayoutData(formData);
+        enableLineLimitButton.addSelectionListener(new SelectionAdapter() {
+
+            public void widgetSelected(SelectionEvent e) {
+                lineLimitText.setEditable(enableLineLimitButton.getSelection());
+                RunProcessPlugin.getDefault().getPluginPreferences().setValue(RunprocessConstants.ENABLE_CONSOLE_LINE_LIMIT,
+                        enableLineLimitButton.getSelection());
+            }
+        });
+
+        lineLimitText = new Text(composite, SWT.BORDER);
+        formData = new FormData();
+        formData.width = 120;
+        formData.left = new FormAttachment(enableLineLimitButton, 0, SWT.RIGHT);
+        lineLimitText.setLayoutData(formData);
+        lineLimitText.addListener(SWT.Verify, new Listener() {
+
+            // this text only receive number here.
+            public void handleEvent(Event e) {
+                String s = e.text;
+                if (!s.equals("")) {
+                    try {
+                        Integer.parseInt(s);
+                        RunProcessPlugin.getDefault().getPluginPreferences().setValue(
+                                RunprocessConstants.CONSOLE_LINE_LIMIT_COUNT, lineLimitText.getText() + s);
+                    } catch (Exception ex) {
+                        e.doit = false;
+                    }
+                }
+            }
+        });
+        lineLimitText.addModifyListener(new ModifyListener() {
+
+            public void modifyText(ModifyEvent e) {
+                RunProcessPlugin.getDefault().getPluginPreferences().setValue(RunprocessConstants.CONSOLE_LINE_LIMIT_COUNT,
+                        lineLimitText.getText());
+            }
+        });
+
+        boolean enable = RunProcessPlugin.getDefault().getPluginPreferences().getBoolean(
+                RunprocessConstants.ENABLE_CONSOLE_LINE_LIMIT);
+        enableLineLimitButton.setSelection(enable);
+        lineLimitText.setEditable(enable);
+        String count = RunProcessPlugin.getDefault().getPluginPreferences().getString(
+                RunprocessConstants.CONSOLE_LINE_LIMIT_COUNT);
+        if (count.equals("")) {
+            count = "100";
+        }
+        lineLimitText.setText(count);
+    }
+
+    private int getConsoleRowLimit() {
+        if (!enableLineLimitButton.isDisposed()) {
+            if (enableLineLimitButton.getSelection()) {
+                try {
+                    return Integer.parseInt(lineLimitText.getText());
+                } catch (Exception e) {
+                }
+            }
+        }
+        return SWT.DEFAULT;
     }
 
     /**
@@ -544,7 +633,6 @@ public class ProcessComposite extends Composite {
         if (processContext != null) {
             processContext.removePropertyChangeListener(pcl);
         }
-
         super.dispose();
     }
 
@@ -679,9 +767,36 @@ public class ProcessComposite extends Composite {
     }
 
     private void doAppendToConsole(final IProcessMessage message) {
+        if (consoleText.isDisposed()) {
+            return;
+        }
+        String[] rows = message.getContent().split("\n");
+        int rowLimit = getConsoleRowLimit();
+        String content = null;
+        if (rowLimit != SWT.DEFAULT) {
+            int currentRows = consoleText.getLineCount();
+            // if (consoleText.getText().equals("")) {
+            currentRows--;
+            // }
+            if (currentRows >= rowLimit) {
+                return;
+            } else if (currentRows + rows.length <= rowLimit) {
+                content = message.getContent();
+            } else {
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < rowLimit - currentRows; i++) {
+                    sb.append(rows[i]).append("\n");
+                }
+                content = sb.toString();
+            }
+        }
+
+        if (content == null) {
+            content = message.getContent();
+        }
         StyleRange style = new StyleRange();
         style.start = consoleText.getText().length();
-        style.length = message.getContent().length();
+        style.length = content.length();
         if (message.getType() == MsgType.CORE_OUT || message.getType() == MsgType.CORE_ERR) {
             style.fontStyle = SWT.ITALIC;
         }
@@ -703,19 +818,23 @@ public class ProcessComposite extends Composite {
         }
         style.foreground = color;
 
-        consoleText.append(message.getContent());
+        consoleText.append(content);
         consoleText.setStyleRange(style);
     }
 
     private void fillConsole(Collection<IProcessMessage> messages) {
         consoleText.setText(""); //$NON-NLS-1$
-        for (IProcessMessage message : messages) {
-            doAppendToConsole(message);
+
+        for (IProcessMessage processMessage : messages) {
+            doAppendToConsole(processMessage);
         }
         scrollToEnd();
     }
 
     private void scrollToEnd() {
+        if (consoleText.isDisposed()) {
+            return;
+        }
         consoleText.setCaretOffset(consoleText.getText().length());
         consoleText.showSelection();
     }
@@ -953,7 +1072,9 @@ public class ProcessComposite extends Composite {
             getDisplay().asyncExec(new Runnable() {
 
                 public void run() {
-                    consoleText.setText(""); //$NON-NLS-1$
+                    if (!consoleText.isDisposed()) {
+                        consoleText.setText(""); //$NON-NLS-1$
+                    }
                 }
             });
         } else if (RunProcessContext.PROP_MONITOR.equals(propName)) {
@@ -964,6 +1085,9 @@ public class ProcessComposite extends Composite {
             getDisplay().asyncExec(new Runnable() {
 
                 public void run() {
+                    if (isDisposed()) {
+                        return;
+                    }
                     boolean running = ((Boolean) evt.getNewValue()).booleanValue();
                     setRunnable(!running);
                     killBtn.setEnabled(running);
