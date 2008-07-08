@@ -20,8 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.talend.core.language.ECodeLanguage;
-import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.designer.abstractmap.model.table.IDataMapTable;
@@ -234,6 +232,8 @@ public class ExternalDataConverter {
                 } else {
                     externalMapperTableEntry.setType(((AbstractInOutTableEntry) dataMapTableEntry).getMetadataColumn()
                             .getTalendType());
+                    externalMapperTableEntry.setNullable(((AbstractInOutTableEntry) dataMapTableEntry).getMetadataColumn()
+                            .isNullable());
                 }
                 perTableEntries.add(externalMapperTableEntry);
             }
@@ -306,12 +306,10 @@ public class ExternalDataConverter {
         externalMapperTable.setReject(table.isReject());
         externalMapperTable.setRejectInnerJoin(table.isRejectInnerJoin());
         externalMapperTable.setActivateExpressionFilter(table.isActivateExpressionFilter());
-        externalMapperTable
-                .setExpressionFilter(table.getExpressionFilter() != null
-                        && table.getExpressionFilter().getExpression() != null
-                        && table.getExpressionFilter().getExpression().equals(
-                                InputDataMapTableView.DEFAULT_EXPRESSION_FILTER) ? null : table.getExpressionFilter()
-                        .getExpression());
+        externalMapperTable.setExpressionFilter(table.getExpressionFilter() != null
+                && table.getExpressionFilter().getExpression() != null
+                && table.getExpressionFilter().getExpression().equals(InputDataMapTableView.DEFAULT_EXPRESSION_FILTER) ? null
+                : table.getExpressionFilter().getExpression());
         if (mapperManager.isAdvancedMap()) {
             externalMapperTable.setConstraintTableEntries(null);
         } else {
