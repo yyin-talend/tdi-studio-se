@@ -131,9 +131,8 @@ public class JavaCodeProblemsChecker extends CodeProblemsChecker {
             int generatingNodesListSize = generatingNodes.size();
             for (int i = 0; i < generatingNodesListSize; i++) {
                 INode node = generatingNodes.get(i);
-                if (selectedNodeName.startsWith(node.getUniqueName() + "_")) { // startsWith method used in case of
-                                                                                // virtual component such as
-                                                                                // 'tMap_1_TMAP_OUT'
+                /* startsWith method used in case of virtual component such as 'tMap_1_TMAP_OUT' */
+                if (node.getUniqueName().equals(selectedNodeName) || node.getUniqueName().startsWith(selectedNodeName + "_")) {
                     uniqueNodeName = node.getUniqueName();
                     found = true;
                     break;
