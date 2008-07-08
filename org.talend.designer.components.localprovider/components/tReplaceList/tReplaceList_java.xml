@@ -64,11 +64,8 @@
       NB_LINES="5"
     >
       <ITEMS BASED_ON_SCHEMA="true">
-        <ITEM
-          NAME="REPLACE"
-          FIELD="CHECK"
-          VALUE="false"
-        />
+        <ITEM NAME="REPLACE" FIELD="CHECK" VALUE="false"/>
+        <ITEM NAME="CASE_INSENSITIVE" FIELD="CHECK" VALUE="false"/>
       </ITEMS>
     </PARAMETER>
   </PARAMETERS>
