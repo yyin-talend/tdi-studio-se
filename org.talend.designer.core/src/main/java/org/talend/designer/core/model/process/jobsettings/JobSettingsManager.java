@@ -401,7 +401,7 @@ public class JobSettingsManager {
         // query condition
         param = new ElementParameter(process);
         param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.QUERY_CONDITION.getName()));
-        param.setValue("name='talend'");
+        param.setValue("\"\"");
         param.setDisplayName(EParameterName.QUERY_CONDITION.getDisplayName());
         param.setField(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.EXTRA);
@@ -679,9 +679,8 @@ public class JobSettingsManager {
                         .generateNewQuery(null, table, dbType, schema, realTableName));
                 paramName = JobSettingsConstants.getExtraParameterName(EParameterName.QUERY_CONDITION.getName());
                 String conditionStatement = (String) process.getElementParameter(paramName).getValue();
-                if (!"".equals(conditionStatement)) {
-
-                    query = "\"" + query.replaceAll("\"", "") + " WHERE " + conditionStatement + "\"";
+                if (!("\"\"".equals(conditionStatement) || "".equals(conditionStatement))) {
+                    query = query + "+\" WHERE \"+" + conditionStatement;
                 }
                 tContextLoadNode.getElementParameter(JobSettingsConstants.QUERY).setValue(query);
             }
