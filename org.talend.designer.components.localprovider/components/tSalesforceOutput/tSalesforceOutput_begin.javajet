@@ -14,9 +14,19 @@ imports="
 
 	String username = ElementParameterParser.getValue(node, "__USER__");
 	String password = ElementParameterParser.getValue(node, "__PASS__");
+	
+	String logFile = ElementParameterParser.getValue(node, "__LOGFILENAME__").trim();
 %>       
         int nb_line_<%=cid %> = 0;
 
         org.talend.salesforce.SforceManagement sforceManagement_<%=cid %> = new org.talend.salesforce.SforceManagementImpl();
         
         sforceManagement_<%=cid %>.login(<%=username %>, <%=password %>, <%=endpoint %>);
+        
+<%
+	if(logFile.length() > 0 && !logFile.equals("\"\"")){
+%>        
+        final java.io.BufferedWriter logFile_<%=cid %> = new java.io.BufferedWriter(new java.io.FileWriter(<%=logFile %>));
+<%
+	}
+%>

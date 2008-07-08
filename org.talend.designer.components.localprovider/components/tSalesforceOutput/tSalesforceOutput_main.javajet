@@ -18,6 +18,8 @@ INode node = (INode)codeGenArgument.getArgument();
 
 String action = ElementParameterParser.getValue(node, "__ACTION__");
 String modulename = ElementParameterParser.getValue(node, "__MODULENAME__");
+String logFile = ElementParameterParser.getValue(node, "__LOGFILENAME__").trim();
+boolean ceaseForError = ElementParameterParser.getValue(node, "__CEASE_FOR_ERROR__").equals("true");
 
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {//1
@@ -99,13 +101,140 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 <%
  if ("insert".equals(action)) {//#######
 %> 				
- 				sforceManagement_<%=cid %>.insert("<%=modulename %>", (org.apache.axis.message.MessageElement[])list_<%=cid %>.toArray(new org.apache.axis.message.MessageElement[list_<%=cid %>.size()]));    			
+<%
+	if((logFile.length() > 0 && !logFile.equals("\"\"")) || ceaseForError){
+%>
+ 				com.sforce.soap.partner.SaveResult sr_<%=cid %> = sforceManagement_<%=cid %>.insert("<%=modulename %>", (org.apache.axis.message.MessageElement[])list_<%=cid %>.toArray(new org.apache.axis.message.MessageElement[list_<%=cid %>.size()]));
+ 				
+ 				com.sforce.soap.partner.Error[] errors_<%=cid %> = sr_<%=cid %>.getErrors();
+                    if (errors_<%=cid %>.length > 0) {
+<%
+		if(logFile.length() > 0 && !logFile.equals("\"\"")){
+%>                    
+                        logFile_<%=cid %>.append("================================================================================");
+                        logFile_<%=cid %>.newLine();
+                        logFile_<%=cid %>.append("Error in executing: sforceManagement_<%=cid %>.insert(\"<%=modulename %>\", (org.apache.axis.message.MessageElement[])list_<%=cid %>.toArray(new org.apache.axis.message.MessageElement[list_<%=cid %>.size()]));");
+                        logFile_<%=cid %>.newLine();
+                        for (com.sforce.soap.partner.Error error_<%=cid %> : errors_<%=cid %>) {
+                            logFile_<%=cid %>.append("\tStatus Code: ").append(error_<%=cid %>.getStatusCode().toString());
+                            logFile_<%=cid %>.newLine();
+                            logFile_<%=cid %>.newLine();
+                            logFile_<%=cid %>.append("\tFields: ");
+                            boolean flag_<%=cid %> = false;
+                            for (String field_<%=cid %> : error_<%=cid %>.getFields()) {
+                                if (flag_<%=cid %>) {
+                                    logFile_<%=cid %>.append(", ");
+                                } else {
+                                    flag_<%=cid %> = true;
+                                }
+                                logFile_<%=cid %>.append(field_<%=cid %>);
+                            }
+                            logFile_<%=cid %>.newLine();
+                            logFile_<%=cid %>.newLine();
+
+                            logFile_<%=cid %>.append("\tMessage: ").append(error_<%=cid %>.getMessage());
+
+                            logFile_<%=cid %>.newLine();
+
+                            logFile_<%=cid %>.append("\t--------------------------------------------------------------------------------");
+
+                            logFile_<%=cid %>.newLine();
+                            logFile_<%=cid %>.newLine();
+
+                        }
+                        logFile_<%=cid %>.newLine();
+<%                        
+		}
+        if(ceaseForError){
+        	if(logFile.length() > 0 && !logFile.equals("\"\"")){
+%>
+logFile_<%=cid %>.close();
+<%
+			}
+%>
+if(true){
+	throw new Exception("The job is ceased because of error. Please see more detail in the log file.");
+}
+<%
+        }
+%>
+                    }
+<%
+		}else{
+%>
+sforceManagement_<%=cid %>.insert("<%=modulename %>", (org.apache.axis.message.MessageElement[])list_<%=cid %>.toArray(new org.apache.axis.message.MessageElement[list_<%=cid %>.size()]));
+<%
+		}
+%>
 
 <%
 	} else if ("update".equals(action)) {//#######
+%>
+<%
+	if((logFile.length() > 0 && !logFile.equals("\"\"")) || ceaseForError){
 %> 
-    			sforceManagement_<%=cid %>.update("<%=modulename %>", <%=conn.getName() %>.Id, (org.apache.axis.message.MessageElement[])list_<%=cid %>.toArray(new org.apache.axis.message.MessageElement[list_<%=cid %>.size()]));    			
+    			com.sforce.soap.partner.SaveResult sr_<%=cid %> = sforceManagement_<%=cid %>.update("<%=modulename %>", <%=conn.getName() %>.Id, (org.apache.axis.message.MessageElement[])list_<%=cid %>.toArray(new org.apache.axis.message.MessageElement[list_<%=cid %>.size()]));    			
 
+ 				com.sforce.soap.partner.Error[] errors_<%=cid %> = sr_<%=cid %>.getErrors();
+                    if (errors_<%=cid %>.length > 0) {
+<%
+		if(logFile.length() > 0 && !logFile.equals("\"\"")){
+%>
+                        logFile_<%=cid %>.append("================================================================================");
+                        logFile_<%=cid %>.newLine();
+                        logFile_<%=cid %>.append("Error in executing: sforceManagement_<%=cid %>.update(\"<%=modulename %>\", <%=conn.getName() %>.Id, (org.apache.axis.message.MessageElement[])list_<%=cid %>.toArray(new org.apache.axis.message.MessageElement[list_<%=cid %>.size()]));");
+                        logFile_<%=cid %>.newLine();
+                        for (com.sforce.soap.partner.Error error_<%=cid %> : errors_<%=cid %>) {
+                            logFile_<%=cid %>.append("\tStatus Code: ").append(error_<%=cid %>.getStatusCode().toString());
+                            logFile_<%=cid %>.newLine();
+                            logFile_<%=cid %>.newLine();
+                            logFile_<%=cid %>.append("\tFields: ");
+                            boolean flag_<%=cid %> = false;
+                            for (String field_<%=cid %> : error_<%=cid %>.getFields()) {
+                                if (flag_<%=cid %>) {
+                                    logFile_<%=cid %>.append(", ");
+                                } else {
+                                    flag_<%=cid %> = true;
+                                }
+                                logFile_<%=cid %>.append(field_<%=cid %>);
+                            }
+                            logFile_<%=cid %>.newLine();
+                            logFile_<%=cid %>.newLine();
+
+                            logFile_<%=cid %>.append("\tMessage: ").append(error_<%=cid %>.getMessage());
+
+                            logFile_<%=cid %>.newLine();
+
+                            logFile_<%=cid %>.append("\t--------------------------------------------------------------------------------");
+
+                            logFile_<%=cid %>.newLine();
+                            logFile_<%=cid %>.newLine();
+
+                        }
+                        logFile_<%=cid %>.newLine();
+<%                        
+        }
+        if(ceaseForError){
+			if(logFile.length() > 0 && !logFile.equals("\"\"")){
+%>
+logFile_<%=cid %>.close();
+<%
+			}
+%>
+if(true){
+	throw new Exception("The job is ceased because of error. Please see more detail in the log file.");
+}
+<%
+		}
+%>
+                    }
+<%
+	}else{
+%>
+sforceManagement_<%=cid %>.update("<%=modulename %>", <%=conn.getName() %>.Id, (org.apache.axis.message.MessageElement[])list_<%=cid %>.toArray(new org.apache.axis.message.MessageElement[list_<%=cid %>.size()]));
+<%
+	}
+%>
 <%
   }//#######
 %> 
@@ -114,9 +243,71 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 <%
 	} else if ("delete".equals(action)) {//*************	
 %>
-    			sforceManagement_<%=cid %>.delete(<%=conn.getName() %>.Id);    			
+<%
+	if((logFile.length() > 0 && !logFile.equals("\"\"")) || ceaseForError){
+%> 
+    			com.sforce.soap.partner.DeleteResult dr_<%=cid %> = sforceManagement_<%=cid %>.delete(<%=conn.getName() %>.Id);    			
     							
-				
+ 				com.sforce.soap.partner.Error[] errors_<%=cid %> = dr_<%=cid %>.getErrors();
+                    if (errors_<%=cid %>.length > 0) {
+<%
+		if(logFile.length() > 0 && !logFile.equals("\"\"")){
+%>        
+                        logFile_<%=cid %>.append("================================================================================");
+                        logFile_<%=cid %>.newLine();
+                        logFile_<%=cid %>.append("Error in executing: sforceManagement_<%=cid %>.delete(<%=conn.getName() %>.Id);");
+                        logFile_<%=cid %>.newLine();
+                        for (com.sforce.soap.partner.Error error_<%=cid %> : errors_<%=cid %>) {
+                            logFile_<%=cid %>.append("\tStatus Code: ").append(error_<%=cid %>.getStatusCode().toString());
+                            logFile_<%=cid %>.newLine();
+                            logFile_<%=cid %>.newLine();
+                            logFile_<%=cid %>.append("\tFields: ");
+                            boolean flag_<%=cid %> = false;
+                            for (String field_<%=cid %> : error_<%=cid %>.getFields()) {
+                                if (flag_<%=cid %>) {
+                                    logFile_<%=cid %>.append(", ");
+                                } else {
+                                    flag_<%=cid %> = true;
+                                }
+                                logFile_<%=cid %>.append(field_<%=cid %>);
+                            }
+                            logFile_<%=cid %>.newLine();
+                            logFile_<%=cid %>.newLine();
+
+                            logFile_<%=cid %>.append("\tMessage: ").append(error_<%=cid %>.getMessage());
+
+                            logFile_<%=cid %>.newLine();
+
+                            logFile_<%=cid %>.append("\t--------------------------------------------------------------------------------");
+
+                            logFile_<%=cid %>.newLine();
+                            logFile_<%=cid %>.newLine();
+
+                        }
+                        logFile_<%=cid %>.newLine();
+<%                        
+        }
+        if(ceaseForError){
+			if(logFile.length() > 0 && !logFile.equals("\"\"")){
+%>
+logFile_<%=cid %>.close();
+<%
+			}
+%>
+if(true){
+	throw new Exception("The job is ceased because of error. Please see more detail in the log file.");
+}
+<%
+		}
+%>
+                    }
+<%
+	}else{
+%>
+sforceManagement_<%=cid %>.delete(<%=conn.getName() %>.Id);
+<%
+	}
+%>
 <%
   }//************
 %>     			
