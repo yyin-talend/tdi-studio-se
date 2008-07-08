@@ -206,20 +206,20 @@ public class JavaProcessor extends Processor {
             IPackageFragment jobPackage = getProjectPackage(projectPackage, jobFolderName);
             IPackageFragment contextPackage = getProjectPackage(jobPackage, "contexts"); //$NON-NLS-1$
 
-            this.codePath = jobPackage.getPath().append(fileName + JavaUtils.JAVA_EXTENSION); //$NON-NLS-1$
+            this.codePath = jobPackage.getPath().append(fileName + JavaUtils.JAVA_EXTENSION);
             this.codePath = this.codePath.removeFirstSegments(1);
             this.compiledCodePath = this.codePath.removeLastSegments(1).append(fileName);
             this.compiledCodePath = new Path(JavaUtils.JAVA_CLASSES_DIRECTORY).append(this.compiledCodePath
-                    .removeFirstSegments(1)); //$NON-NLS-1$
+                    .removeFirstSegments(1));
 
             this.typeName = jobPackage.getPath().append(fileName).removeFirstSegments(2).toString().replace('/', '.');
 
             this.contextPath = contextPackage.getPath().append(
-                    escapeFilename(context.getName()) + JavaUtils.JAVA_CONTEXT_EXTENSION); //$NON-NLS-1$
+                    escapeFilename(context.getName()) + JavaUtils.JAVA_CONTEXT_EXTENSION);
             this.contextPath = this.contextPath.removeFirstSegments(1);
             this.compiledContextPath = this.contextPath.removeLastSegments(1).append(fileName);
             this.compiledContextPath = new Path(JavaUtils.JAVA_CLASSES_DIRECTORY).append(this.compiledContextPath
-                    .removeFirstSegments(1)); //$NON-NLS-1$
+                    .removeFirstSegments(1));
 
         } catch (CoreException e) {
             throw new ProcessorException(Messages.getString("JavaProcessor.notFoundedFolderException")); //$NON-NLS-1$
@@ -560,7 +560,7 @@ public class JavaProcessor extends Processor {
             initializeProject();
         }
         IClasspathEntry jreClasspathEntry = JavaCore.newContainerEntry(new Path("org.eclipse.jdt.launching.JRE_CONTAINER")); //$NON-NLS-1$
-        IClasspathEntry classpathEntry = JavaCore.newSourceEntry(javaProject.getPath().append(JavaUtils.JAVA_SRC_DIRECTORY)); //$NON-NLS-1$
+        IClasspathEntry classpathEntry = JavaCore.newSourceEntry(javaProject.getPath().append(JavaUtils.JAVA_SRC_DIRECTORY));
 
         List<IClasspathEntry> classpath = new ArrayList<IClasspathEntry>();
         classpath.add(jreClasspathEntry);
@@ -584,7 +584,7 @@ public class JavaProcessor extends Processor {
 
         javaProject.setRawClasspath(classpathEntryArray, null);
 
-        javaProject.setOutputLocation(javaProject.getPath().append(JavaUtils.JAVA_CLASSES_DIRECTORY), null); //$NON-NLS-1$
+        javaProject.setOutputLocation(javaProject.getPath().append(JavaUtils.JAVA_CLASSES_DIRECTORY), null);
 
         // CorePlugin.getDefault().getLibrariesService().checkLibraries();
     }
@@ -610,12 +610,12 @@ public class JavaProcessor extends Processor {
             prj.open(IResource.BACKGROUND_REFRESH, null);
             prj.setDescription(desc, null);
 
-            IFolder runtimeFolder = prj.getFolder(new Path(JavaUtils.JAVA_CLASSES_DIRECTORY)); //$NON-NLS-1$
+            IFolder runtimeFolder = prj.getFolder(new Path(JavaUtils.JAVA_CLASSES_DIRECTORY));
             if (!runtimeFolder.exists()) {
                 runtimeFolder.create(false, true, null);
             }
 
-            IFolder sourceFolder = prj.getFolder(new Path(JavaUtils.JAVA_SRC_DIRECTORY)); //$NON-NLS-1$
+            IFolder sourceFolder = prj.getFolder(new Path(JavaUtils.JAVA_SRC_DIRECTORY));
             if (!sourceFolder.exists()) {
                 sourceFolder.create(false, true, null);
             }
@@ -643,7 +643,7 @@ public class JavaProcessor extends Processor {
     private IPackageFragment getProjectPackage(String packageName) throws JavaModelException {
 
         IPackageFragmentRoot root = this.javaProject.getPackageFragmentRoot(this.javaProject.getProject().getFolder(
-                JavaUtils.JAVA_SRC_DIRECTORY)); //$NON-NLS-1$
+                JavaUtils.JAVA_SRC_DIRECTORY));
         IPackageFragment leave = root.getPackageFragment(packageName);
         if (!leave.exists()) {
             root.createPackageFragment(packageName, true, null);
@@ -655,7 +655,7 @@ public class JavaProcessor extends Processor {
     public static void createInternalPackage() {
 
         IPackageFragmentRoot root = getJavaProject().getPackageFragmentRoot(
-                getJavaProject().getProject().getFolder(JavaUtils.JAVA_SRC_DIRECTORY)); //$NON-NLS-1$
+                getJavaProject().getProject().getFolder(JavaUtils.JAVA_SRC_DIRECTORY));
         IPackageFragment leave = root.getPackageFragment("internal");
         if (!leave.exists()) {
             try {
@@ -834,7 +834,7 @@ public class JavaProcessor extends Processor {
                 projectPath = projectPath.replace(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR, classPathSeparator);
             }
         } else {
-            IFolder classesFolder = javaProject.getProject().getFolder(JavaUtils.JAVA_CLASSES_DIRECTORY); //$NON-NLS-1$
+            IFolder classesFolder = javaProject.getProject().getFolder(JavaUtils.JAVA_CLASSES_DIRECTORY);
             IPath projectFolderPath = classesFolder.getFullPath().removeFirstSegments(1);
             projectPath = Path.fromOSString(getCodeProject().getLocation().toOSString()).append(projectFolderPath).toOSString()
                     + classPathSeparator;
@@ -927,6 +927,8 @@ public class JavaProcessor extends Processor {
      */
     @Override
     public Object saveLaunchConfiguration() throws CoreException {
+        sortClasspath();
+
         ILaunchConfiguration config = null;
         ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
         String projectName = this.getCodeProject().getName();
@@ -942,6 +944,61 @@ public class JavaProcessor extends Processor {
             config = wc.doSave();
         }
         return config;
+    }
+
+    // see bug 3914, make the order of the jar files consistent with the command line in run mode
+    private void sortClasspath() throws CoreException {
+        // get classpath from command line in run mode
+        String[] cmd = getCommandLine(false, NO_STATISTICS, NO_TRACES, new String[0]);
+        String[] paths = null;
+        for (int i = 0; i < cmd.length; i++) {
+            if (cmd[i].equals("-cp")) {
+                paths = cmd[i + 1].split(";");
+                break;
+            }
+        }
+
+        List<IClasspathEntry> classpath = new ArrayList<IClasspathEntry>();
+
+        // classpath of .Java project
+        IClasspathEntry[] rawClasspath = javaProject.getRawClasspath();
+
+        // improve speed of looking up existing jar file in classpath
+        Map<String, Integer> location = new HashMap<String, Integer>();
+        for (int i = 0; i < rawClasspath.length; i++) {
+            if (rawClasspath[i].getEntryKind() != IClasspathEntry.CPE_LIBRARY) {
+                classpath.add(rawClasspath[i]);
+                rawClasspath[i] = null;
+            } else {
+                // jar file
+                location.put(rawClasspath[i].getPath().toOSString(), i);
+            }
+        }
+
+        for (int i = 0; i < paths.length; i++) {
+            if (paths[i].endsWith(".jar")) {
+                Integer pos = location.get(new Path(paths[i]).toOSString());
+                if (pos != null) {
+                    // jar file is already in raw classpath, move it up
+                    classpath.add(rawClasspath[pos]);
+                    rawClasspath[pos] = null;
+
+                } else {
+                    // user jar file does not exist, create new jar entry in classpath
+                    classpath.add(JavaCore.newLibraryEntry(new Path(paths[i]), null, null));
+                }
+            }
+        }
+
+        // copy remaining jar file in raw classpath
+        for (int i = 0; i < rawClasspath.length; i++) {
+            if (rawClasspath[i] != null) {
+                classpath.add(rawClasspath[i]);
+            }
+        }
+
+        rawClasspath = classpath.toArray(new IClasspathEntry[classpath.size()]);
+        javaProject.setRawClasspath(rawClasspath, null);
     }
 
     public static IJavaProject getJavaProject() {
