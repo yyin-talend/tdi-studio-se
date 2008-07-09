@@ -154,7 +154,7 @@ public class ConnectionManager {
         // it will be removed after the test
         INode targetStartNode = target.getProcessStartNode(true);
         INode sourceStartNode = source.getProcessStartNode(true);
-        Connection connection = new Connection(source, target, newlineStyle);
+        Connection connection = new Connection(source, target, newlineStyle, false);
         ((List<IConnection>) source.getOutgoingConnections()).add(connection);
         ((List<IConnection>) target.getIncomingConnections()).add(connection);
         boolean noStart = (!((Node) sourceStartNode).checkIfCanBeStart())

@@ -140,6 +140,7 @@ public class ConnectionPart extends AbstractConnectionEditPart implements Proper
         } else {
             ((ConnectionFigure) connection).setAlpha(Connection.ALPHA_VALUE);
         }
+
         return connection;
     }
 
@@ -159,6 +160,11 @@ public class ConnectionPart extends AbstractConnectionEditPart implements Proper
             refreshChildren();
         }
 
+        if (Connection.MONITOR_CONNECTION.equals(property)) {
+            ((ConnectionFigure) figure).repaint();
+            refreshChildren();
+        }
+
         if (property.equals(EParameterName.ACTIVATE.getName())) {
             if (((Connection) getModel()).isActivate()) {
                 ((ConnectionFigure) figure).setAlpha(-1);
@@ -170,6 +176,12 @@ public class ConnectionPart extends AbstractConnectionEditPart implements Proper
                 refreshVisuals();
             }
         }
+
+        if (Connection.MONITOR_CONNECTION.equals(property)) {
+            ((ConnectionFigure) figure).repaint();
+            refreshVisuals();
+        }
+
     }
 
     /*
@@ -185,6 +197,12 @@ public class ConnectionPart extends AbstractConnectionEditPart implements Proper
         if (((Connection) getModel()).getConnectionTrace() != null) {
             elements.add(((Connection) getModel()).getConnectionTrace());
         }
+
+        // Add monitor label
+        if (((Connection) getModel()).isMonitorConnection()) {
+            elements.add(((Connection) getModel()).getMonitorLabel());
+        }
+
         return elements;
     }
 }

@@ -184,11 +184,14 @@ public class ConnectionCreateCommand extends Command {
 
         }
 
+        boolean monitorConnection = false; // Default not monitor the connection
         if (newMetadata != null) {
             source.getMetadataList().add(newMetadata);
-            this.connection = new Connection(source, target, newLineStyle, connectorName, metaName, connectionName);
+            this.connection = new Connection(source, target, newLineStyle, connectorName, metaName, connectionName,
+                    monitorConnection);
         } else {
-            this.connection = new Connection(source, target, newLineStyle, connectorName, metaName, connectionName, metaName);
+            this.connection = new Connection(source, target, newLineStyle, connectorName, metaName, connectionName, metaName,
+                    monitorConnection);
         }
         INodeConnector nodeConnectorSource, nodeConnectorTarget;
         nodeConnectorSource = connection.getSourceNodeConnector();

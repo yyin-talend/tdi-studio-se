@@ -1648,13 +1648,14 @@ public class Process extends Element implements IProcess2 {
             }
             // end of fix
 
+            boolean monitorConnection = getConnectionMonitorProperty(cType);
             if (connectionTypeFound) {
                 connec = new Connection(source, target, EConnectionType.getTypeFromId(lineStyleId), connectorName, metaname,
-                        cType.getLabel(), cType.getMetaname());
+                        cType.getLabel(), cType.getMetaname(), monitorConnection);
             } else {
                 EConnectionType type = EConnectionType.getTypeFromId(lineStyleId);
                 connec = new Connection(source, target, type, source.getConnectorFromType(type).getName(), metaname, cType
-                        .getLabel(), cType.getMetaname());
+                        .getLabel(), cType.getMetaname(), monitorConnection);
             }
             // if ((!source.isActivate()) || (!target.isActivate())) {
             // connec.setActivate(false);
@@ -1704,6 +1705,31 @@ public class Process extends Element implements IProcess2 {
                 DesignerPlugin.getDefault().getLog().log(status);
             }
         }
+    }
+
+    /**
+     * 
+     * DOC YeXiaowei Comment method "getConnectionMonitorProperty".
+     * 
+     * @param type
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    private boolean getConnectionMonitorProperty(ConnectionType type) {
+        EList params = type.getElementParameter();
+        if (params == null || params.isEmpty()) {
+            return false;
+        }
+        for (int i = 0, size = params.size(); i < size; i++) {
+            ElementParameterType param = (ElementParameterType) params.get(i);
+            if (param != null) {
+                if (param.getName().equals(Connection.MONITOR_CONNECTION)) {
+                    return Boolean.valueOf(param.getValue());
+                }
+            }
+        }
+
+        return false;
     }
 
     private void loadContexts(ProcessType process) {

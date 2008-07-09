@@ -995,7 +995,8 @@ public class DataProcess {
             INode target = buildNodeFromNode((Node) connection.getTarget(), process);
 
             dataConnec = new Connection(newGraphicalNode, (Node) target, connection.getLineStyle(),
-                    connection.getConnectorName(), connection.getMetaName(), connection.getName(), connection.getUniqueName());
+                    connection.getConnectorName(), connection.getMetaName(), connection.getName(), connection.getUniqueName(),
+                    connection.isMonitorConnection());
             // incomingConnections = (List<Connection>) target.getIncomingConnections();
             // if (incomingConnections == null) {
             // incomingConnections = new ArrayList<Connection>();

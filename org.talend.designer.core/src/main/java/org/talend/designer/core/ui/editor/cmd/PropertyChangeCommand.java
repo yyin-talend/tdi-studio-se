@@ -26,6 +26,7 @@ import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants;
+import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.views.CodeView;
 import org.talend.designer.runprocess.ItemCacheManager;
@@ -205,6 +206,22 @@ public class PropertyChangeCommand extends Command {
         if (elem instanceof Node) {
             ((Node) elem).checkAndRefreshNode();
         }
+
+        // See feature 3902
+        if (needUpdateMonitorConnection()) {
+            ((Connection) elem).setMonitorConnection((Boolean) currentParam.getValue());
+        }
+    }
+
+    private boolean needUpdateMonitorConnection() {
+
+        if (elem instanceof Connection) {
+            if (propName.equals(Connection.MONITOR_CONNECTION)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public void setUpdate(boolean update) {

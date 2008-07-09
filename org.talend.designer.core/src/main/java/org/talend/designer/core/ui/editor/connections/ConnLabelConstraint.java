@@ -55,7 +55,6 @@ public class ConnLabelConstraint implements Locator {
     }
 
     public ConnLabelConstraint(Dimension minimum, String position, Point offset, PolylineConnection connFigure) {
-        this.text = text;
         this.position = position;
         this.offset = offset;
         this.connFigure = connFigure;

@@ -483,10 +483,11 @@ public class NodesPasteCommand extends Command {
                     Connection pastedConnection;
                     if (!pastedTargetNode.isELTComponent()) {
                         pastedConnection = new Connection(pastedSourceNode, pastedTargetNode, connection.getLineStyle(),
-                                connection.getConnectorName(), metaTableName, newConnectionName);
+                                connection.getConnectorName(), metaTableName, newConnectionName, connection.isMonitorConnection());
                     } else {
                         pastedConnection = new Connection(pastedSourceNode, pastedTargetNode, connection.getLineStyle(),
-                                connection.getConnectorName(), metaTableName, newConnectionName, metaTableName);
+                                connection.getConnectorName(), metaTableName, newConnectionName, metaTableName, connection
+                                        .isMonitorConnection());
                     }
 
                     // pastedConnection.setActivate(pastedSourceNode.isActivate());

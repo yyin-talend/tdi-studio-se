@@ -49,6 +49,8 @@ public class Connection extends Element implements IConnection, IPerformance {
 
     public static final String LINESTYLE_PROP = "LineStyle"; //$NON-NLS-1$
 
+    public static final String MONITOR_CONNECTION = "MONITOR_CONNECTION";
+
     private EConnectionType lineStyle = EConnectionType.FLOW_MAIN;
 
     private boolean isConnected;
@@ -62,6 +64,8 @@ public class Connection extends Element implements IConnection, IPerformance {
     private ConnectionLabel label;
 
     private ConnectionTrace trace;
+
+    private MonitorConnectionLabel monitorLabel;
 
     private String metaName;
 
@@ -80,6 +84,8 @@ public class Connection extends Element implements IConnection, IPerformance {
 
     private ConnectionPerformance performance;
 
+    private boolean monitorConnection = false;
+
     /**
      * Tells if this connection has a subjob source or not instead of a node.
      */
@@ -87,22 +93,24 @@ public class Connection extends Element implements IConnection, IPerformance {
 
     // used only for copy / paste (will generate the name) && connection
     // creation
-    public Connection(Node source, Node target, EConnectionType lineStyle, String connectorName, String metaName, String linkName) {
-        init(source, target, lineStyle, connectorName, metaName, linkName);
+    public Connection(Node source, Node target, EConnectionType lineStyle, String connectorName, String metaName,
+            String linkName, final boolean monitorConnection) {
+        init(source, target, lineStyle, connectorName, metaName, linkName, monitorConnection);
     }
 
     // used only when loading a process && connection creation
     public Connection(Node source, Node target, EConnectionType lineStyle, String connectorName, String metaName,
-            String linkName, String uniqueName) {
+            String linkName, String uniqueName, final boolean monitorConnection) {
         this.uniqueName = uniqueName;
-        init(source, target, lineStyle, connectorName, metaName, linkName);
+        init(source, target, lineStyle, connectorName, metaName, linkName, monitorConnection);
     }
 
     // used only in ConnectionManager to test if we can connect or not.
-    public Connection(Node source, Node target, EConnectionType lineStyle) {
+    public Connection(Node source, Node target, EConnectionType lineStyle, final boolean monitorConnection) {
         this.source = source;
         this.target = target;
         this.lineStyle = lineStyle;
+        this.monitorConnection = monitorConnection;
 
         // add activate parameter
         IElementParameter param = new ElementParameter(this);
@@ -137,7 +145,8 @@ public class Connection extends Element implements IConnection, IPerformance {
         return false;
     }
 
-    private void init(Node source, Node target, EConnectionType lineStyle, String connectorName, String metaName, String linkName) {
+    private void init(Node source, Node target, EConnectionType lineStyle, String connectorName, String metaName,
+            String linkName, final boolean monitorConnection) {
         if (lineStyle.equals(EConnectionType.ITERATE)) {
             performance = new IterateConnectionPerformance(this);
         } else {
@@ -149,6 +158,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         this.connectorName = connectorName;
         this.lineStyle = lineStyle;
         this.metaName = metaName;
+        this.monitorConnection = monitorConnection;
         if (lineStyle.hasConnectionCategory(IConnectionCategory.FLOW)) {
             trace = new ConnectionTrace(this);
             createMeterParameters((Process) source.getProcess());
@@ -239,14 +249,16 @@ public class Connection extends Element implements IConnection, IPerformance {
         // param.setRequired(false);
         // param.setShow(false);
         // addElementParameter(param);
+
     }
 
     private void createMeterParameters(Process process) {
+
         IElementParameter param = new ElementParameter(this);
-        param.setName("MONITOR_CONNECTION");
+        param.setName(MONITOR_CONNECTION);
         param.setDisplayName("Monitor this connection");
         param.setField(EParameterFieldType.CHECK);
-        param.setValue(Boolean.FALSE);
+        param.setValue(monitorConnection);
         param.setCategory(EComponentCategory.ADVANCED);
         param.setShow(true);
         param.setNumRow(1);
@@ -268,6 +280,19 @@ public class Connection extends Element implements IConnection, IPerformance {
             }
         }
         meterAttached = null;
+
+        setMonitorLabel(new MonitorConnectionLabel(this));
+
+        updateMonitorLabel(param);
+    }
+
+    /**
+     * DOC YeXiaowei Comment method "updateMonitorLabel".
+     * 
+     * @param param
+     */
+    private void updateMonitorLabel(IElementParameter param) {
+        firePropertyChange(MONITOR_CONNECTION, null, ((Boolean) param.getValue()));
     }
 
     @Override
@@ -919,5 +944,42 @@ public class Connection extends Element implements IConnection, IPerformance {
      */
     public void setSubjobConnection(boolean isSubjobConnection) {
         this.isSubjobConnection = isSubjobConnection;
+    }
+
+    /**
+     * Getter for monitorConnection.
+     * 
+     * @return the monitorConnection
+     */
+    public boolean isMonitorConnection() {
+        return this.monitorConnection;
+    }
+
+    /**
+     * Sets the monitorConnection.
+     * 
+     * @param monitorConnection the monitorConnection to set
+     */
+    public void setMonitorConnection(boolean monitorConnection) {
+        this.monitorConnection = monitorConnection;
+        firePropertyChange(MONITOR_CONNECTION, null, name);
+    }
+
+    /**
+     * Getter for monitorLabel.
+     * 
+     * @return the monitorLabel
+     */
+    public MonitorConnectionLabel getMonitorLabel() {
+        return this.monitorLabel;
+    }
+
+    /**
+     * Sets the monitorLabel.
+     * 
+     * @param monitorLabel the monitorLabel to set
+     */
+    public void setMonitorLabel(MonitorConnectionLabel monitorLabel) {
+        this.monitorLabel = monitorLabel;
     }
 }
