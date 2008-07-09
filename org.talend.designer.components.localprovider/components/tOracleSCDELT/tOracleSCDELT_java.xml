@@ -280,7 +280,7 @@
       NAME="L2_ACTIVE_FIELD"
       FIELD="COLUMN_LIST"
       NUM_ROW="220"
-      SHOW_IF="USE_L2_ACTIVE == 'true'"
+      SHOW_IF="(USE_L2_ACTIVE == 'true') and (USE_L2 == 'true')"
     >
     </PARAMETER>
     
@@ -297,7 +297,7 @@
       NAME="L2_VERSION_FIELD"
       FIELD="COLUMN_LIST"
       NUM_ROW="250"
-      SHOW_IF="USE_L2_VERSION == 'true'"
+      SHOW_IF="(USE_L2_VERSION == 'true') and (USE_L2 == 'true')"
     >
     </PARAMETER>
     
