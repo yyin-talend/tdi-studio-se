@@ -131,7 +131,7 @@ if(columnList != null && columnList.size() > 0) {
         } else if(tableAction.equals("CLEAR")) {
             %>
             java.sql.Statement stmtClear_<%=cid%> = conn_<%=cid%>.createStatement();
-            deletedCount_<%=cid%> = deletedCount_<%=cid%> + stmtClear_<%=cid%>.executeUpdate("<%=manager.getDeleteTableSQL()%>");
+            stmtClear_<%=cid%>.executeUpdate("<%=manager.getDeleteTableSQL()%>");
             stmtClear_<%=cid%>.close();
             <%
         }        
@@ -244,7 +244,7 @@ if(columnList != null && columnList.size() > 0) {
     String outerWhereClauseString = StringUtils.join(outerWhereClause.toArray(), " AND ");
     %>
     String insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\"(<%=columnNameString%>) SELECT t.<%=selectColumnString%>, '" + 
-    (new java.sql.Date((Long)start_Hash.get("<%=cid %>"))) + "', CAST(NULL AS DATE)<%if(isEnableActive) {%>, 1<%}%><%if(isEnableVersion) {%>, 1<%}%> FROM \"" + 
+    (new java.sql.Date((Long)start_Hash.get("<%=cid %>"))) + "', NULL<%if(isEnableActive) {%>, 1<%}%><%if(isEnableVersion) {%>, 1<%}%> FROM \"" + 
     sourceTable_<%=cid%> + "\" t LEFT JOIN \"" + tableName_<%=cid%> + "\" d ON <%=joinClauseString%> WHERE (<%=outerWhereClauseString%>)";
     java.sql.Statement stmtInsert_<%=cid%> = conn_<%=cid%>.createStatement();
     stmtInsert_<%=cid%>.executeUpdate(insert_<%=cid%>);

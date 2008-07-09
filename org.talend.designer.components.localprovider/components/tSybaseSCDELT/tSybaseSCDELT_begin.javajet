@@ -119,15 +119,8 @@ if(columnList != null && columnList.size() > 0) {
             }
         } else if(tableAction.equals("CLEAR")) {
             %>
-            java.sql.Statement stmtClearCount_<%=cid%> = conn_<%=cid%>.createStatement();
-            java.sql.ResultSet rsClearCount_<%=cid%> = stmtClearCount_<%=cid%>.executeQuery("<%=manager.getSelectionSQL()%>");
             java.sql.Statement stmtClear_<%=cid%> = conn_<%=cid%>.createStatement();
             stmtClear_<%=cid%>.executeUpdate("<%=manager.getTruncateTableSQL()%>");
-            while(rsClearCount_<%=cid%>.next()) {
-                deletedCount_<%=cid%> += rsClearCount_<%=cid%>.getInt(1);
-            }
-            rsClearCount_<%=cid%>.close();
-            stmtClearCount_<%=cid%>.close();
             stmtClear_<%=cid%>.close();
             <%
         }        
