@@ -110,7 +110,7 @@ public class OpenNewEditorAction extends SelectionProviderAction {
         connParam.setRepositoryId(object.getId());
         if (isQuery) {
             DBTreeProvider provider = (DBTreeProvider) selectionProvider.getContentProvider();
-            selectReveal(provider.getSelectQuery());
+            selectReveal(provider.getSelectedExtReposiotryNode());
             isQuery = false;
         } else {
             connParam.setEditorTitle(TextUtil.getNewQueryLabel());

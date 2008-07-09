@@ -1194,6 +1194,9 @@ public class SQLBuilderRepositoryNodeManager {
     }
 
     public void synchronizeAllSqlEditors(SQLBuilderDialog builderDialog) {
+        if (builderDialog.getStructureComposite() == null) {
+            return;
+        }
         List<Query> displayQueries = builderDialog.getStructureComposite().getTreeLabelProvider().getDisplayQueries();
         for (Query activeQuery : displayQueries) {
             CTabItem[] items = builderDialog.getEditorComposite().getTabFolder().getItems();

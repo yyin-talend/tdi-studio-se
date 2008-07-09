@@ -28,6 +28,7 @@ import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.QueryEMFRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.actions.AContextualAction;
+import org.talend.repository.ui.views.RepositoryContentProvider.MetadataTableRepositoryObject;
 import org.talend.repository.ui.views.RepositoryContentProvider.QueryRepositoryObject;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.ui.SQLBuilderDialog;
@@ -63,6 +64,12 @@ public class EditQueriesAction extends AContextualAction {
             connParameters.setRepositoryId(parent.getProperty().getId());
             connParameters.setQueryObject(queryRepositoryObject.getQuery());
             connParameters.setQuery(queryRepositoryObject.getQuery().getValue());
+        } else if (node.getObjectType() == ERepositoryObjectType.METADATA_CON_TABLE) {
+            DatabaseConnectionItem connectionItem = (DatabaseConnectionItem) node.getObject().getProperty().getItem();
+            connParameters.setRepositoryName(connectionItem.getProperty().getLabel());
+            connParameters.setRepositoryId(connectionItem.getProperty().getId());
+            connParameters.setMetadataTable((MetadataTableRepositoryObject) node.getObject());
+            connParameters.setQuery("");
         }
 
         Shell parentShell = new Shell(getViewPart().getViewer().getControl().getDisplay());
@@ -91,8 +98,12 @@ public class EditQueriesAction extends AContextualAction {
                 if (factory.getStatus(node.getObject()) == ERepositoryStatus.DELETED) {
                     canWork = false;
                 }
+                if (!isUnderDBConnection(node)) {
+                    canWork = false;
+                }
                 if (node.getObjectType() != ERepositoryObjectType.METADATA_CONNECTIONS
-                        && node.getObjectType() != ERepositoryObjectType.METADATA_CON_QUERY) {
+                        && node.getObjectType() != ERepositoryObjectType.METADATA_CON_QUERY
+                        && node.getObjectType() != ERepositoryObjectType.METADATA_CON_TABLE) {
                     canWork = false;
                 } else {
                     IRepositoryService service = (IRepositoryService) GlobalServiceRegister.getDefault().getService(

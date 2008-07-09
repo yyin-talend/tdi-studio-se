@@ -98,7 +98,7 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
 
     private Map<String, Color> colors = new HashMap<String, Color>();
 
-    private RepositoryNode selectQuery;
+    private RepositoryNode selectedExtReposiotryNode;
 
     public DBTreeProvider(RepositoryView repositoryView, ConnectionParameters connectionParameters) {
         this(connectionParameters);
@@ -360,7 +360,7 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
                 queriesConnectionNode.getChildren().add(node);
                 if (connectionParameters.getQueryObject() != null
                         && query.getLabel().equals(connectionParameters.getQueryObject().getLabel())) {
-                    this.selectQuery = node;
+                    this.selectedExtReposiotryNode = node;
                 }
                 displayQueries.add(query);
             }
@@ -383,6 +383,11 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
                 // ignore recycle node
             } else {
                 node.getChildren().add(tableNode);
+            }
+
+            if (connectionParameters.getMetadataTable() != null
+                    && metadataTable.getLabel().equals(connectionParameters.getMetadataTable().getLabel())) {
+                this.selectedExtReposiotryNode = tableNode;
             }
 
             // create columns
@@ -638,8 +643,8 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
         return maps;
     }
 
-    public RepositoryNode getSelectQuery() {
-        return this.selectQuery;
+    public RepositoryNode getSelectedExtReposiotryNode() {
+        return this.selectedExtReposiotryNode;
     }
 
     public List<Query> getDisplayQueries() {

@@ -181,13 +181,22 @@ public class DBStructureComposite extends Composite {
      */
     public void openNewQueryEditor() {
         final ConnectionParameters connParameters = builderDialog.getConnParameters();
-        final RepositoryNode selectQuery = this.treeLabelProvider.getSelectQuery();
+        final RepositoryNode selectQuery = this.treeLabelProvider.getSelectedExtReposiotryNode();
         expandNodes = new ArrayList<RepositoryNode>();
         getNeedExpandedNodes(selectQuery);
         treeViewer.setExpandedElements(expandNodes.toArray(new Object[0]));
         treeViewer.getTree().setSelection(treeViewer.getTree().getItem(0));
         Action tempOpenNewEditorAction = new OpenNewEditorAction(treeViewer, builderDialog, connParameters, true);
         tempOpenNewEditorAction.run();
+    }
+
+    /**
+     * yzhang Comment method "openNewTableEditor".
+     */
+    public void openNewTableEditor() {
+        final RepositoryNode selectedMetadataTableNode = this.treeLabelProvider.getSelectedExtReposiotryNode();
+        ((GenerateSelectSQLAction) generateSelectAction).setSelectedNode(selectedMetadataTableNode);
+        generateSelectAction.run();
     }
 
     /**

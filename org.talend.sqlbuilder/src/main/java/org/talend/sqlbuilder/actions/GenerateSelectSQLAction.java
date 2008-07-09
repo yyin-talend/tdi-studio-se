@@ -98,8 +98,7 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
         for (RepositoryNode node : selectedNodes) {
             Object type = node.getProperties(EProperties.CONTENT_TYPE);
 
-            if (type != RepositoryNodeType.COLUMN && type != RepositoryNodeType.TABLE
-                    && type != RepositoryNodeType.DATABASE) {
+            if (type != RepositoryNodeType.COLUMN && type != RepositoryNodeType.TABLE && type != RepositoryNodeType.DATABASE) {
                 setEnabled(false);
                 break;
             }
@@ -129,8 +128,8 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
             connParam.setNeedTakePrompt(false);
             connParam.setShowDesignerPage(true);
             connParam.setEditorTitle(TextUtil.getNewQueryLabel()); //$NON-NLS-1$
-            dialog.openEditor(SQLBuilderRepositoryNodeManager.getRoot(selectedNodes.get(0)), repositoryNames,
-                    connParam, isDefaultEditor, selectedNodes);
+            dialog.openEditor(SQLBuilderRepositoryNodeManager.getRoot(selectedNodes.get(0)), repositoryNames, connParam,
+                    isDefaultEditor, selectedNodes);
         } catch (Throwable e) {
             SqlBuilderPlugin.log(Messages.getString("GenerateSelectSQLAction.logMessageGenerateSql"), e); //$NON-NLS-1$
         }
@@ -276,4 +275,13 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
         return SQL_EDITOR_IMAGE;
     }
 
+    /**
+     * yzhang Comment method "setSelectedNode".
+     * 
+     * @param node
+     */
+    public void setSelectedNode(RepositoryNode node) {
+        selectedNodes.clear();
+        selectedNodes.add(node);
+    }
 }

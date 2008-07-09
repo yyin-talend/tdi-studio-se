@@ -241,6 +241,8 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
 
         if (connParameters.isFromRepository() && connParameters.getQueryObject() != null) {
             structureComposite.openNewQueryEditor();
+        } else if (connParameters.isFromRepository() && connParameters.getMetadataTable() != null) {
+            structureComposite.openNewTableEditor();
         } else {
             structureComposite.openNewEditor();
         }
@@ -574,7 +576,9 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
 
     public void repositoryChanged(RepositoryChangedEvent event) {
         clean();
-        structureComposite.updateStructureView(event);
+        if (structureComposite != null) {
+            structureComposite.updateStructureView(event);
+        }
         manager.synchronizeAllSqlEditors(this);
     }
 
