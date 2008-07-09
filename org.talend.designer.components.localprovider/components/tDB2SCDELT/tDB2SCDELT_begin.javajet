@@ -167,7 +167,7 @@ if(columnList != null && columnList.size() > 0) {
         String setColumnsString = StringUtils.join(setColumns.toArray(), ", ");    
         String whereClauseString = StringUtils.join(whereClause.toArray(), " OR ");
         %>
-        String updateForType1_<%=cid%> = "UPDATE \"" + tableName_<%=cid%> + "\" d SET (<%=setColumnsString%>) = (SELECT <%=setColumnsString%> FROM \"" + sourceTable_<%=cid%> + "\" t <%=joinClauseString%> AND (<%=whereClauseString%>))";
+        String updateForType1_<%=cid%> = "UPDATE \"" + tableName_<%=cid%> + "\" d SET (<%=setColumnsString%>) = (SELECT <%=setColumnsString%> FROM \"" + sourceTable_<%=cid%> + "\" t WHERE <%=joinClauseString%> AND (<%=whereClauseString%>)) WHERE EXISTS (SELECT 1 FROM \"" + sourceTable_<%=cid%> + "\" t WHERE <%=joinClauseString%> AND (<%=whereClauseString%>))";
         java.sql.Statement stmtType1Update_<%=cid%> = conn_<%=cid%>.createStatement();
         stmtType1Update_<%=cid%>.executeUpdate(updateForType1_<%=cid%>);
         stmtType1Update_<%=cid%>.close();
@@ -192,7 +192,8 @@ if(columnList != null && columnList.size() > 0) {
         }
         String whereClauseString = StringUtils.join(whereClause.toArray(), " OR ");
         %>
-        String updateForType2_<%=cid%> = "UPDATE \"" + tableName_<%=cid%> + "\" d SET (\"<%=endDateField%>\" <%if(isEnableActive) {%>, \"<%=activeField%>\"<%}%>) = (SELECT '" + (new java.sql.Date((Long)start_Hash.get("<%=cid %>"))) + "'<%if(isEnableActive) {%>, 0<%}%> FROM \"" + sourceTable_<%=cid%> + "\" t WHERE <%=joinClauseString%> AND (<%=whereClauseString%>) AND d.\"<%=endDateField%>\" IS NULL)";
+        String updateForType2_<%=cid %> = "UPDATE \"" + tableName_<%=cid%> + "\" d SET \"<%=endDateField%>\" = '" + (new java.sql.Date((Long)start_Hash.get("<%=cid %>"))) + "'<%if (isEnableActive) {%>, \"<%=activeField%>\" = 0<%}%> WHERE EXISTS (SELECT 1 FROM \"" + sourceTable_<%=cid%> + 
+        "\" t WHERE <%=joinClauseString%> AND (<%=whereClauseString%>)) AND d.\"<%=endDateField%>\" IS NULL";
         java.sql.Statement stmtType2Update_<%=cid%> = conn_<%=cid%>.createStatement();
         stmtType2Update_<%=cid%>.executeUpdate(updateForType2_<%=cid%>);
         stmtType2Update_<%=cid%>.close();
@@ -244,7 +245,7 @@ if(columnList != null && columnList.size() > 0) {
     String outerWhereClauseString = StringUtils.join(outerWhereClause.toArray(), " AND ");
     %>
     String insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\"(<%=columnNameString%>) SELECT t.<%=selectColumnString%>, '" + 
-    (new java.sql.Date((Long)start_Hash.get("<%=cid %>"))) + "', NULL<%if(isEnableActive) {%>, 1<%}%><%if(isEnableVersion) {%>, 1<%}%> FROM \"" + 
+    (new java.sql.Date((Long)start_Hash.get("<%=cid %>"))) + "', CAST(NULL AS DATE)<%if(isEnableActive) {%>, 1<%}%><%if(isEnableVersion) {%>, 1<%}%> FROM \"" + 
     sourceTable_<%=cid%> + "\" t LEFT JOIN \"" + tableName_<%=cid%> + "\" d ON <%=joinClauseString%> WHERE (<%=outerWhereClauseString%>)";
     java.sql.Statement stmtInsert_<%=cid%> = conn_<%=cid%>.createStatement();
     stmtInsert_<%=cid%>.executeUpdate(insert_<%=cid%>);
