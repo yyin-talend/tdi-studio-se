@@ -52,8 +52,7 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.notes.Note;
 import org.talend.designer.core.ui.editor.properties.connections.MainConnectionComposite;
 import org.talend.designer.core.ui.editor.properties.notes.AbstractNotePropertyComposite;
-import org.talend.designer.core.ui.editor.properties.notes.OpaqueNotePropertyComposite;
-import org.talend.designer.core.ui.editor.properties.notes.TextNotePropertyComposite;
+import org.talend.designer.core.ui.editor.properties.notes.BasicNotePropertyComposite;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 
@@ -247,14 +246,14 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
                 d.bottom = new FormAttachment(100, 0);
                 composite.setLayoutData(d);
 
-                AbstractNotePropertyComposite c1 = new OpaqueNotePropertyComposite(composite, (Note) element, tabFactory);
-                AbstractNotePropertyComposite c2 = new TextNotePropertyComposite(composite, (Note) element, tabFactory);
-                FormData data = new FormData();
-                data.top = new FormAttachment(c1.getComposite(), 20, SWT.DOWN);
-                data.left = new FormAttachment(0, 0);
-                data.right = new FormAttachment(100, 0);
-                c2.getComposite().setLayoutData(data);
-
+                AbstractNotePropertyComposite c1 = new BasicNotePropertyComposite(composite, (Note) element, tabFactory);
+                // AbstractNotePropertyComposite c2 = new TextNotePropertyComposite(composite, (Note) element,
+                // tabFactory);
+                // FormData data = new FormData();
+                // data.top = new FormAttachment(c1.getComposite(), 20, SWT.DOWN);
+                // data.left = new FormAttachment(0, 0);
+                // data.right = new FormAttachment(100, 0);
+                // c2.getComposite().setLayoutData(data);
                 parent.layout();
             }
         } else {

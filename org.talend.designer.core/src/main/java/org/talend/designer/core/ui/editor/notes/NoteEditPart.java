@@ -16,6 +16,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
@@ -24,8 +25,11 @@ import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.tools.DirectEditManager;
 import org.eclipse.jface.viewers.TextCellEditor;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
+import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeNoteOpacityCommand;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
@@ -88,6 +92,30 @@ public class NoteEditPart extends AbstractGraphicalEditPart implements PropertyC
         noteFigure.setSize(note.getSize());
         noteFigure.setText(note.getText());
         noteFigure.setOpaque(note.isOpaque());
+        noteFigure.setBackgroundColor(new Color(null, TalendTextUtils.stringToRGB((String) note
+                .getPropertyValue(EParameterName.NOTE_COLOR.getName()))));
+        noteFigure.getLabel().setForegroundColor(
+                new Color(null, TalendTextUtils.stringToRGB((String) note
+                        .getPropertyValue(EParameterName.NOTETXT_COLOR.getName()))));
+        if ((Boolean) note.getPropertyValue(EParameterName.NOTETXT_LEFT.getName())) {
+            noteFigure.getLabel().setLabelAlignment(PositionConstants.LEFT);
+        }
+        if ((Boolean) note.getPropertyValue(EParameterName.NOTETXT_RIGHT.getName())) {
+            noteFigure.getLabel().setLabelAlignment(PositionConstants.RIGHT);
+        }
+        if ((Boolean) note.getPropertyValue(EParameterName.NOTETXT_CENTER.getName())) {
+            noteFigure.getLabel().setLabelAlignment(PositionConstants.CENTER);
+        }
+        if ((Boolean) note.getPropertyValue(EParameterName.NOTETXT_TOP.getName())) {
+            noteFigure.getLabel().setTextAlignment(PositionConstants.TOP);
+        }
+        if ((Boolean) note.getPropertyValue(EParameterName.NOTETXT_BOTTOM.getName())) {
+            noteFigure.getLabel().setTextAlignment(PositionConstants.BOTTOM);
+        }
+        if ((Boolean) note.getPropertyValue(EParameterName.NOTELABEL_CENTER.getName())) {
+            noteFigure.getLabel().setTextAlignment(PositionConstants.CENTER);
+        }
+
     }
 
     @Override

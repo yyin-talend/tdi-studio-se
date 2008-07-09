@@ -74,6 +74,7 @@ public class NoteFigure extends Figure {
 
         label.setLocation(new Point(getLocation().x + CORNER_SIZE, getLocation().y + CORNER_SIZE));
         label.setSize(getSize().width - CORNER_SIZE * 2, getSize().height - CORNER_SIZE * 2);
+
     }
 
     public String getText() {
@@ -84,4 +85,12 @@ public class NoteFigure extends Figure {
         label.setText(text);
     }
 
+    /**
+     * Getter for label.
+     * 
+     * @return the label
+     */
+    public Label getLabel() {
+        return this.label;
+    }
 }

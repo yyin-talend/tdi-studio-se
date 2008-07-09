@@ -851,7 +851,8 @@ public class Process extends Element implements IProcess2 {
         noteType.setSizeHeight(note.getSize().height);
         noteType.setOpaque(note.isOpaque());
         noteType.setText(note.getText());
-
+        List<? extends IElementParameter> paramList = note.getElementParameters();
+        saveElementParameters(fileFact, paramList, noteType.getElementParameter(), process);
         process.getNote().add(noteType);
     }
 
@@ -1014,13 +1015,12 @@ public class Process extends Element implements IProcess2 {
     private void loadNotes(ProcessType process) {
         for (Iterator iter = process.getNote().iterator(); iter.hasNext();) {
             NoteType noteType = (NoteType) iter.next();
-
             Note note = new Note();
             note.setLocation(new Point(noteType.getPosX(), noteType.getPosY()));
             note.setSize(new Dimension(noteType.getSizeWidth(), noteType.getSizeHeight()));
             note.setOpaque(noteType.isOpaque());
             note.setText(noteType.getText());
-
+            loadElementParameters(note, noteType.getElementParameter());
             addNote(note);
         }
     }

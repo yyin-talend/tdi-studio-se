@@ -12,10 +12,16 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.notes;
 
+import java.util.List;
+
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
+import org.talend.core.model.process.EComponentCategory;
+import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.ui.editor.TalendEditor;
 
 /**
@@ -33,11 +39,84 @@ public class Note extends Element {
 
     private boolean readOnly;
 
+    private List elementParameter;
+
     /**
      * tang Note constructor comment.
      */
     public Note() {
         super();
+        ElementParameter param = new ElementParameter(this);
+        param = new ElementParameter(this);
+        param.setName(EParameterName.NOTE_COLOR.getName());
+        param.setValue("255;255;203"); // default note color
+        param.setDisplayName(EParameterName.NOTE_COLOR.getDisplayName());
+        param.setField(EParameterFieldType.COLOR);
+        param.setCategory(EComponentCategory.BASIC);
+        param.setNumRow(2);
+        param.setReadOnly(false);
+        param.setRequired(true);
+        param.setShow(true);
+        addElementParameter(param);
+        param = new ElementParameter(this);
+        param.setName(EParameterName.NOTETXT_COLOR.getName());
+        param.setValue("255;0;0"); // default note color
+        param.setDisplayName(EParameterName.NOTETXT_COLOR.getDisplayName());
+        param.setField(EParameterFieldType.COLOR);
+        param.setCategory(EComponentCategory.BASIC);
+        param.setNumRow(3);
+        param.setReadOnly(false);
+        param.setRequired(true);
+        param.setShow(true);
+        addElementParameter(param);
+        param = new ElementParameter(this);
+        param.setName(EParameterName.NOTETXT_LEFT.getName());
+        param.setValue(false);
+        param.setDisplayName(EParameterName.NOTETXT_LEFT.getDisplayName());
+        param.setField(EParameterFieldType.RADIO);
+        param.setCategory(EComponentCategory.BASIC);
+        param.setNumRow(4);
+        addElementParameter(param);
+        param = new ElementParameter(this);
+        param.setName(EParameterName.NOTETXT_RIGHT.getName());
+        param.setValue(false);
+        param.setDisplayName(EParameterName.NOTETXT_RIGHT.getDisplayName());
+        param.setField(EParameterFieldType.RADIO);
+        param.setCategory(EComponentCategory.BASIC);
+        param.setNumRow(4);
+        addElementParameter(param);
+        param = new ElementParameter(this);
+        param.setName(EParameterName.NOTETXT_CENTER.getName());
+        param.setValue(true);
+        param.setDisplayName(EParameterName.NOTETXT_CENTER.getDisplayName());
+        param.setField(EParameterFieldType.RADIO);
+        param.setCategory(EComponentCategory.BASIC);
+        param.setNumRow(4);
+        addElementParameter(param);
+        param = new ElementParameter(this);
+        param.setName(EParameterName.NOTELABEL_CENTER.getName());
+        param.setValue(true);
+        param.setDisplayName(EParameterName.NOTELABEL_CENTER.getDisplayName());
+        param.setField(EParameterFieldType.RADIO);
+        param.setCategory(EComponentCategory.BASIC);
+        param.setNumRow(4);
+        addElementParameter(param);
+        param = new ElementParameter(this);
+        param.setName(EParameterName.NOTETXT_TOP.getName());
+        param.setValue(false);
+        param.setDisplayName(EParameterName.NOTETXT_TOP.getDisplayName());
+        param.setField(EParameterFieldType.RADIO);
+        param.setCategory(EComponentCategory.BASIC);
+        param.setNumRow(4);
+        addElementParameter(param);
+        param = new ElementParameter(this);
+        param.setName(EParameterName.NOTETXT_BOTTOM.getName());
+        param.setValue(false);
+        param.setDisplayName(EParameterName.NOTETXT_BOTTOM.getDisplayName());
+        param.setField(EParameterFieldType.RADIO);
+        param.setCategory(EComponentCategory.BASIC);
+        param.setNumRow(4);
+        addElementParameter(param);
     }
 
     @Override
@@ -87,5 +166,35 @@ public class Note extends Element {
     public void setOpaque(boolean opaque) {
         this.opaque = opaque;
         firePropertyChange("", null, opaque); //$NON-NLS-1$
+    }
+
+    /**
+     * Getter for elementParameter.
+     * 
+     * @return the elementParameter
+     */
+    public List getElementParameter() {
+        return this.elementParameter;
+    }
+
+    /**
+     * Sets the elementParameter.
+     * 
+     * @param elementParameter the elementParameter to set
+     */
+    public void setElementParameter(List elementParameter) {
+        this.elementParameter = elementParameter;
+    }
+
+    /**
+     * Getter for process.
+     * 
+     * @return the process
+     */
+    // public IProcess2 getProcess() {
+    // return this.process;
+    // }
+    public void refresh() {
+        firePropertyChange("", null, "");
     }
 }

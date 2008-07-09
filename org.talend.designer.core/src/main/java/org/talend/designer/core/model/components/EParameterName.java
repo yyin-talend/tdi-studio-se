@@ -88,6 +88,14 @@ public enum EParameterName {
     SUBJOB_COLOR("Subjob color"),
     SQLPATTERN_DB_NAME("SQL Pattern DB"),
     SQLPATTERN_VALUE("SQL Pattern"),
+    NOTE_COLOR("Note color"),
+    NOTETXT_COLOR("Font color"),
+    NOTETXT_LEFT("left"),
+    NOTETXT_RIGHT("right"),
+    NOTETXT_CENTER("center"),
+    NOTETXT_TOP("top"),
+    NOTETXT_BOTTOM("bottom"),
+    NOTELABEL_CENTER("center"),
 
     /**
      * For stats & logs parameters.
