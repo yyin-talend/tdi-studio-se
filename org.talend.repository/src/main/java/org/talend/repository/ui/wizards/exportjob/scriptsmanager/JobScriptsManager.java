@@ -62,6 +62,8 @@ public abstract class JobScriptsManager {
 
     protected static final String JOB_SOURCE_FOLDER_NAME = "src"; //$NON-NLS-1$
 
+    private String selectedJobVersion; //$NON-NLS-1$
+
     public Map<ExportChoice, Boolean> getDefaultExportChoiseMap() {
         Map<ExportChoice, Boolean> exportChoiceMap = new EnumMap<ExportChoice, Boolean>(ExportChoice.class);
         exportChoiceMap.put(ExportChoice.needLauncher, true);
@@ -115,8 +117,8 @@ public abstract class JobScriptsManager {
      */
 
     public abstract List<ExportFileResource> getExportResources(ExportFileResource[] process,
-            Map<ExportChoice, Boolean> exportChoiceMap, String contextName, String launcher, int statisticPort,
-            int tracePort, String... codeOptions);
+            Map<ExportChoice, Boolean> exportChoiceMap, String contextName, String launcher, int statisticPort, int tracePort,
+            String... codeOptions);
 
     protected String getTmpFolder() {
         String tmpFold = getTmpFolderPath();
@@ -164,10 +166,11 @@ public abstract class JobScriptsManager {
         if (!needLauncher) {
             return list;
         }
-        String windowsCmd = getCommandByTalendJob(Platform.OS_WIN32, process, contextName, statisticPort, tracePort,
-                codeOptions);
-        String unixCmd = getCommandByTalendJob(Platform.OS_LINUX, process, contextName, statisticPort, tracePort,
-                codeOptions);
+        String processId = process.getProperty().getId();
+        String windowsCmd = getCommandByTalendJob(Platform.OS_WIN32, processId, contextName, this.selectedJobVersion,
+                statisticPort, tracePort, codeOptions);
+        String unixCmd = getCommandByTalendJob(Platform.OS_LINUX, processId, contextName, this.selectedJobVersion, statisticPort,
+                tracePort, codeOptions);
         String tmpFold = getTmpFolder();
 
         if (environment.equals(ALL_ENVIRONMENTS)) {
@@ -182,12 +185,29 @@ public abstract class JobScriptsManager {
         return list;
     }
 
-    protected String getCommandByTalendJob(String targetPlatform, ProcessItem processItem, String context,
+    protected String getCommandByTalendJob(String targetPlatform, String processId, String context, String processVersion,
             int statisticPort, int tracePort, String... codeOptions) {
         String[] cmd = new String[] {};
         try {
-            cmd = ProcessorUtilities.getCommandLine(targetPlatform, true, processItem, context, statisticPort,
+            cmd = ProcessorUtilities.getCommandLine(targetPlatform, true, processId, context, processVersion, statisticPort,
                     tracePort, codeOptions);
+        } catch (ProcessorException e) {
+            ExceptionHandler.process(e);
+        }
+        StringBuffer sb = new StringBuffer();
+        sb.append(""); //$NON-NLS-1$
+        for (String s : cmd) {
+            sb.append(s).append(' ');
+        }
+        return sb.toString();
+    }
+
+    protected String getCommandByTalendJob(String targetPlatform, ProcessItem processItem, String context, int statisticPort,
+            int tracePort, String... codeOptions) {
+        String[] cmd = new String[] {};
+        try {
+            cmd = ProcessorUtilities.getCommandLine(targetPlatform, true, processItem, context, statisticPort, tracePort,
+                    codeOptions);
         } catch (ProcessorException e) {
             ExceptionHandler.process(e);
         }
@@ -208,8 +228,7 @@ public abstract class JobScriptsManager {
      * @param cmdSecondary
      * @param tmpFold
      */
-    private void createLauncherFile(ProcessItem process, List<URL> list, String cmdPrimary, String fileName,
-            String tmpFold) {
+    private void createLauncherFile(ProcessItem process, List<URL> list, String cmdPrimary, String fileName, String tmpFold) {
         PrintWriter pw = null;
         try {
 
@@ -300,6 +319,18 @@ public abstract class JobScriptsManager {
         ProcessorUtilities.generateCode(process, contextName, statistics, trace, applyContextToChildren);
     }
 
+    /**
+     * Generates the perl files.
+     * 
+     * @param needGenerateCode
+     * @param contextName
+     * @param process
+     */
+    protected void generateJobFiles(ProcessItem process, String contextName, String version, boolean statistics, boolean trace,
+            boolean applyContextToChildren) {
+        ProcessorUtilities.generateCode(process, contextName, version, statistics, trace, applyContextToChildren);
+    }
+
     protected IResource[] sourceResouces = null;
 
     protected void addNodeToResource(IResource[] resources, List<IResource> sourceFile) throws CoreException {
@@ -316,7 +347,8 @@ public abstract class JobScriptsManager {
         }
     }
 
-    protected void addSource(ProcessItem processItem, boolean needChoice, ExportFileResource resource, String basePath) {
+    protected void addSource(ProcessItem processItem, boolean needChoice, ExportFileResource resource, String basePath,
+            String... selectedJobVersion) {
         List<URL> list = new ArrayList<URL>();
         if (needChoice) {
             try {
@@ -364,6 +396,24 @@ public abstract class JobScriptsManager {
         if (!list.contains(o)) {
             list.add(o);
         }
+    }
+
+    /**
+     * ftang Comment method "setJobVersion".
+     * 
+     * @param selectedJobVersion
+     */
+    public void setJobVersion(String selectedJobVersion) {
+        this.selectedJobVersion = selectedJobVersion;
+    }
+
+    /**
+     * ftang Comment method "getSelectedJobVersion".
+     * 
+     * @return
+     */
+    public String getSelectedJobVersion() {
+        return this.selectedJobVersion;
     }
 
 }

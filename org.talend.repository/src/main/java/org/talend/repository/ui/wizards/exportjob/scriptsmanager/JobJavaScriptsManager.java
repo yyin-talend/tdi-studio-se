@@ -78,6 +78,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = (ProcessItem) process[i].getItem();
+            String selectedJobVersion = getSelectedJobVersion();
 
             String libPath = calculateLibraryPathFromDirectory(process[i].getDirectoryName());
             // use character @ as temporary classpath separator, this one will be replaced during the export.
@@ -86,7 +87,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             ProcessorUtilities.setExportConfig("java", standardJars, libPath);
 
             if (!BooleanUtils.isTrue(exportChoice.get(ExportChoice.doNotCompileCode))) {
-                generateJobFiles(processItem, contextName, statisticPort != IProcessor.NO_STATISTICS,
+                generateJobFiles(processItem, contextName, selectedJobVersion, statisticPort != IProcessor.NO_STATISTICS,
                         tracePort != IProcessor.NO_TRACES, BooleanUtils.isTrue(exportChoice.get(ExportChoice.applyToChildren)));
             }
             List<URL> resources = new ArrayList<URL>();
@@ -94,11 +95,12 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                     escapeSpace(contextName), escapeSpace(launcher), statisticPort, tracePort, codeOptions));
 
             addSource(processItem, BooleanUtils.isTrue(exportChoice.get(ExportChoice.needSource)), process[i],
-                    JOB_SOURCE_FOLDER_NAME);
+                    JOB_SOURCE_FOLDER_NAME, getSelectedJobVersion());
 
-            resources.addAll(getJobScripts(processItem, BooleanUtils.isTrue(exportChoice.get(ExportChoice.needJob))));
+            resources.addAll(getJobScripts(processItem, selectedJobVersion, BooleanUtils.isTrue(exportChoice
+                    .get(ExportChoice.needJob))));
 
-            addContextScripts(process[i], BooleanUtils.isTrue(exportChoice.get(ExportChoice.needContext)));
+            addContextScripts(process[i], selectedJobVersion, BooleanUtils.isTrue(exportChoice.get(ExportChoice.needContext)));
 
             // add children jobs
             boolean needChildren = BooleanUtils.isTrue(exportChoice.get(ExportChoice.needJob))
@@ -141,6 +143,17 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     protected void addContextScripts(ExportFileResource resource, Boolean needContext) {
         addContextScripts((ProcessItem) resource.getItem(), escapeFileNameSpace((ProcessItem) resource.getItem()), resource
                 .getItem().getProperty().getVersion(), resource, needContext);
+    }
+
+    /**
+     * ftang Comment method "addContextScripts".
+     * 
+     * @param resource
+     * @param boolean1
+     */
+    protected void addContextScripts(ExportFileResource resource, String jobVersion, Boolean needContext) {
+        addContextScripts((ProcessItem) resource.getItem(), escapeFileNameSpace((ProcessItem) resource.getItem()), jobVersion,
+                resource, needContext);
     }
 
     /**
@@ -218,8 +231,9 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * boolean)
      */
     @Override
-    protected void addSource(ProcessItem processItem, boolean needSource, ExportFileResource resource, String basePath) {
-        super.addSource(processItem, needSource, resource, basePath);
+    protected void addSource(ProcessItem processItem, boolean needSource, ExportFileResource resource, String basePath,
+            String... selectedJobVersion) {
+        super.addSource(processItem, needSource, resource, basePath, selectedJobVersion);
         if (!needSource) {
             return;
         }
@@ -227,7 +241,12 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         try {
             String projectName = getCurrentProjectName();
             String jobName = processItem.getProperty().getLabel();
-            String jobFolderName = JavaResourcesHelper.getJobFolderName(jobName, processItem.getProperty().getVersion());
+            String jobVersion = processItem.getProperty().getVersion();
+            if (selectedJobVersion != null && selectedJobVersion.length == 1) {
+                jobVersion = selectedJobVersion[0];
+            }
+
+            String jobFolderName = JavaResourcesHelper.getJobFolderName(jobName, jobVersion);
 
             IPath path = getSrcRootLocation();
             path = path.append(projectName).append(jobFolderName).append(jobName + ".java");
@@ -369,6 +388,18 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      */
     protected List<URL> getJobScripts(ProcessItem process, boolean needJob) {
         return this.getJobScripts(escapeFileNameSpace(process), process.getProperty().getVersion(), needJob);
+    }
+
+    /**
+     * Gets Job Scripts.
+     * 
+     * @param process
+     * @param version
+     * @param needJob
+     * @return
+     */
+    protected List<URL> getJobScripts(ProcessItem process, String version, boolean needJob) {
+        return this.getJobScripts(escapeFileNameSpace(process), version, needJob);
     }
 
     /**

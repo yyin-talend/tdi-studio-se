@@ -135,6 +135,10 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
         createDestinationGroup(destinationNameFieldInnerComposite);
 
+        if (!isMultiNodes()) {
+            createJobVersionGroup(pageComposite);
+        }
+
         createExportTypeGroup(pageComposite);
 
         createOptionsGroupButtons(pageComposite);

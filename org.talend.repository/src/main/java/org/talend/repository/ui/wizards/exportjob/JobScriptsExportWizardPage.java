@@ -33,6 +33,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -41,6 +42,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
 import org.talend.core.CorePlugin;
@@ -49,6 +51,7 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.runprocess.IProcessor;
+import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.designer.runprocess.JobInfo;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.documentation.ArchiveFileExportOperationFullPath;
@@ -62,6 +65,7 @@ import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager.ExportChoice;
+import org.talend.repository.utils.JobVersionUtils;
 
 /**
  * Page of the Job Scripts Export Wizard. <br/>
@@ -104,6 +108,16 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     protected Button chkButton;
 
+    private boolean isMultiNodes;
+
+    private String allVersions = "All";
+
+    private String outputFileSuffix = ".zip";
+
+    private String selectedJobVersion;
+
+    private String originalRootFolderName;
+
     /**
      * Create an instance of this class.
      * 
@@ -117,7 +131,11 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         nodes = (RepositoryNode[]) selection.toList().toArray(new RepositoryNode[selection.size()]);
 
         List<ExportFileResource> list = new ArrayList<ExportFileResource>();
-        for (int i = 0; i < nodes.length; i++) {
+        int nodeSize = nodes.length;
+        if (nodeSize > 1) {
+            this.isMultiNodes = true;
+        }
+        for (int i = 0; i < nodeSize; i++) {
             RepositoryNode node = nodes[i];
             if (node.getType() == ENodeType.SYSTEM_FOLDER || node.getType() == ENodeType.SIMPLE_FOLDER) {
                 addTreeNode(node, node.getProperties(EProperties.LABEL).toString(), list);
@@ -173,11 +191,15 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      */
     protected void setDefaultDestination() {
 
-        if (nodes.length >= 1) {
-            String userDir = System.getProperty("user.dir");
-            IPath path = new Path(userDir).append(getDefaultFileName() + getOutputSuffix());
-            setDestinationValue(path.toOSString());
+        String userDir = System.getProperty("user.dir");
+        IPath path = new Path(userDir);
+        int length = nodes.length;
+        if (length == 1) {
+            path = path.append(getDefaultFileName() + getOutputSuffix());
+        } else if (length > 1) {
+            path = path.append(this.allVersions + this.outputFileSuffix);
         }
+        setDestinationValue(path.toOSString());
     }
 
     /**
@@ -186,7 +208,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     protected String getDefaultFileName() {
         if (nodes.length >= 1) {
             String label = null;
-            String version = null;
+            // String version = null;
             RepositoryNode node = nodes[0];
             if (node.getType() == ENodeType.SYSTEM_FOLDER || node.getType() == ENodeType.SIMPLE_FOLDER) {
                 label = node.getProperties(EProperties.LABEL).toString();
@@ -195,11 +217,12 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                 if (repositoryObject.getProperty().getItem() instanceof ProcessItem) {
                     ProcessItem processItem = (ProcessItem) repositoryObject.getProperty().getItem();
                     label = processItem.getProperty().getLabel();
-                    version = processItem.getProperty().getVersion();
+                    // version = processItem.getProperty().getVersion();
                 }
             }
 
-            return label + "_" + version;
+            return label;
+            // + "_" + version;
         }
         return "";
 
@@ -224,6 +247,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         // createButtonsGroup(composite);
 
         createDestinationGroup(composite);
+
         createUnzipOptionGroup(composite);
         createOptionsGroup(composite);
 
@@ -237,6 +261,54 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         setControl(composite);
         giveFocusToDestination();
 
+    }
+
+    /**
+     * ftang Comment method "createJobVersionGroup".
+     * 
+     * @param composite
+     */
+    protected void createJobVersionGroup(Composite parent) {
+        Group versionGroup = new Group(parent, SWT.NONE);
+        GridLayout layout = new GridLayout();
+        versionGroup.setLayout(layout);
+        versionGroup.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
+        versionGroup.setText(Messages.getString("JobScriptsExportWSWizardPage.JobVersion")); //$NON-NLS-1$
+        versionGroup.setFont(parent.getFont());
+
+        versionGroup.setLayout(new GridLayout(1, true));
+
+        Composite left = new Composite(versionGroup, SWT.NONE);
+        left.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false));
+        left.setLayout(new GridLayout(3, false));
+
+        Label label = new Label(left, SWT.NONE);
+        label.setText(Messages.getString("JobScriptsExportWSWizardPage.JobVersion.Label")); //$NON-NLS-1$
+
+        final Combo versionCombo = new Combo(left, SWT.PUSH);
+        GridData gd = new GridData();
+        gd.horizontalSpan = 1;
+        versionCombo.setLayoutData(gd);
+
+        String[] allVersions = JobVersionUtils.getAllVersions(nodes[0]);
+        String currentVersion = JobVersionUtils.getCurrentVersion(nodes[0]);
+        versionCombo.setItems(allVersions);
+        if (allVersions.length > 1) {
+            versionCombo.add(this.allVersions);
+        }
+        versionCombo.setText(currentVersion);
+        selectedJobVersion = currentVersion;
+        versionCombo.addSelectionListener(new SelectionListener() {
+
+            public void widgetSelected(SelectionEvent e) {
+                selectedJobVersion = versionCombo.getText();
+            }
+
+            public void widgetDefaultSelected(SelectionEvent e) {
+                widgetSelected(e);
+            }
+
+        });
     }
 
     protected void createUnzipOptionGroup(Composite parent) {
@@ -409,6 +481,15 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      */
     protected boolean ensureTargetIsValid() {
         String targetPath = getDestinationValue();
+        if (this.selectedJobVersion.equals(this.allVersions)) {
+
+            if (this.originalRootFolderName == null) {
+                this.originalRootFolderName = getRootFolderName();
+            }
+            String newFileName = this.originalRootFolderName + manager.getSelectedJobVersion() + outputFileSuffix;
+            targetPath = targetPath.substring(0, targetPath.lastIndexOf(File.separator) + 1) + newFileName;
+            setDestinationValue(targetPath);
+        }
 
         if (!ensureTargetDirectoryIsValid(targetPath)) {
             return false;
@@ -459,6 +540,30 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     public boolean finish() {
         manager = createJobScriptsManager();
 
+        boolean ok = false;
+        if (this.selectedJobVersion.equals(this.allVersions)) {
+            String[] allVersions = JobVersionUtils.getAllVersions(this.nodes[0]);
+            for (String version : allVersions) {
+                ok = exportJobScript(version);
+                if (!ok) {
+                    return false;
+                }
+            }
+        } else {
+            ok = exportJobScript(selectedJobVersion);
+        }
+
+        return ok;
+    }
+
+    /**
+     * ftang Comment method "exportJobScript".
+     * 
+     * @return
+     */
+    private boolean exportJobScript(String version) {
+        manager.setJobVersion(version);
+
         Map<ExportChoice, Boolean> exportChoiceMap = getExportChoiceMap();
         boolean canExport = false;
         for (ExportChoice choice : ExportChoice.values()) {
@@ -480,10 +585,19 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         if (!ensureTargetIsValid()) {
             return false;
         }
-        String topFolder = getRootFolderName();
+        // String topFolder = getRootFolderName();
 
+        boolean isNotFirstTime = this.originalRootFolderName != null;
+        if (isNotFirstTime && process[0] != null) {
+            process[0].setDirectoryName(this.originalRootFolderName);
+        }
         List<ExportFileResource> resourcesToExport = getExportResources();
-        setTopFolder(resourcesToExport, topFolder);
+
+        if (isNotFirstTime) {
+            setTopFolder(resourcesToExport, this.originalRootFolderName);
+        } else {
+            setTopFolder(resourcesToExport, this.getRootFolderName());
+        }
 
         // Save dirty editors if possible but do not stop if not all are saved
         saveDirtyEditors();
@@ -514,7 +628,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = (ProcessItem) process[i].getItem();
-            JobInfo jobInfo = new JobInfo(processItem, processItem.getProcess().getDefaultContext());
+            processItem = ItemCacheManager.getProcessItem(processItem.getProperty().getId(), version);
+            JobInfo jobInfo = new JobInfo(processItem, processItem.getProcess().getDefaultContext(), version);
             jobResources.add(new JobResource(projectName, jobInfo));
 
             Set<JobInfo> jobInfos = ProcessorUtilities.getChildrenJobInfo(processItem);
@@ -529,10 +644,13 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                 ProcessorUtilities.generateCode(r.getJobInfo().getJobId(), r.getJobInfo().getContextName(), r.getJobInfo()
                         .getJobVersion(), false, false);
             } else {
-                reManager.deleteResource(r);
+                try {
+                    reManager.deleteResource(r);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
-
         return ok;
     }
 
@@ -667,7 +785,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      * 
      */
     protected String getOutputSuffix() {
-        return ".zip"; //$NON-NLS-1$
+        return outputFileSuffix; //$NON-NLS-1$
     }
 
     /**
@@ -711,5 +829,32 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      */
     protected String destinationEmptyMessage() {
         return ""; //$NON-NLS-1$
+    }
+
+    /**
+     * ftang Comment method "isMultiNodes".
+     * 
+     * @return
+     */
+    public boolean isMultiNodes() {
+        return this.isMultiNodes;
+    }
+
+    /**
+     * ftang Comment method "setMultiNodes".
+     * 
+     * @param isMultiNodes
+     */
+    public void setMultiNodes(boolean isMultiNodes) {
+        this.isMultiNodes = isMultiNodes;
+    }
+
+    /**
+     * ftang Comment method "getSelectedJobVersion".
+     * 
+     * @return
+     */
+    public String getSelectedJobVersion() {
+        return this.selectedJobVersion;
     }
 }
