@@ -21,16 +21,16 @@ import java.util.Map;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.draw2d.geometry.Translatable;
+import org.eclipse.gef.EditPart;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
+import org.eclipse.gef.dnd.TemplateTransferDropTargetListener;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.LocalSelectionTransfer;
-import org.eclipse.jface.util.TransferDropTargetListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
-import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Canvas;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -59,6 +59,7 @@ import org.talend.designer.core.ui.editor.cmd.QueryGuessCommand;
 import org.talend.designer.core.ui.editor.cmd.RepositoryChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.cmd.RepositoryChangeQueryCommand;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
+import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.repository.model.ERepositoryStatus;
@@ -73,7 +74,7 @@ import org.talend.repository.ui.utils.ConnectionContextHelper;
  * $Id: TalendEditorDropTargetListener.java 1 2006-09-29 17:06:40 +0000 (ææäº, 29 ä¹æ 2006) nrousseau $
  * 
  */
-public class TalendEditorDropTargetListener implements TransferDropTargetListener {
+public class TalendEditorDropTargetListener extends TemplateTransferDropTargetListener {
 
     private AbstractTalendEditor editor;
 
@@ -83,11 +84,9 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
      * @param editor
      */
     public TalendEditorDropTargetListener(AbstractTalendEditor editor) {
+        super(editor.getViewer());
         this.editor = editor;
-    }
-
-    public Transfer getTransfer() {
-        return LocalSelectionTransfer.getTransfer();
+        setTransfer(LocalSelectionTransfer.getTransfer());
     }
 
     public boolean isEnabled(DropTargetEvent event) {
@@ -104,6 +103,65 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
 
     public void dragOperationChanged(DropTargetEvent event) {
 
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.gef.dnd.TemplateTransferDropTargetListener#handleDragOver()
+     */
+    @Override
+    protected void handleDragOver() {
+        super.handleDragOver();
+        // when the job that selected is the same one in the current editor, the drag event should be disabled.
+        IStructuredSelection selection = getSelection();
+        if (selection.size() != 1) {
+            return;
+        }
+
+        if (selection.getFirstElement() instanceof RepositoryNode) {
+            RepositoryNode sourceNode = (RepositoryNode) selection.getFirstElement();
+            if (equalsJobInCurrentEditor(sourceNode)) {
+                getCurrentEvent().detail = DND.DROP_NONE;
+            }
+        }
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.gef.dnd.TemplateTransferDropTargetListener#handleDrop()
+     */
+    @Override
+    protected void handleDrop() {
+        updateTargetRequest();
+        updateTargetEditPart();
+
+        createNewComponent(getCurrentEvent());
+        createSchema(getSelection().getFirstElement(), getTargetEditPart());
+    }
+
+    /**
+     * DOC bqian Comment method "createSchema".
+     * 
+     * @param firstElement
+     * @param targetEditPart
+     */
+    private void createSchema(Object dragModel, EditPart targetEditPart) {
+        if (!(dragModel instanceof RepositoryNode && targetEditPart instanceof NodeContainerPart)) {
+            return;
+        }
+        RepositoryNode dragNode = (RepositoryNode) dragModel;
+        NodeContainerPart nodePart = (NodeContainerPart) targetEditPart;
+
+        if (dragNode.getObject().getProperty().getItem() instanceof ConnectionItem) {
+            ConnectionItem connectionItem = (ConnectionItem) dragNode.getObject().getProperty().getItem();
+            Command command = getChangeMetadataCommand(dragNode, (Node) nodePart.getNodePart().getModel(), connectionItem);
+            if (command != null) {
+                execCommandStack(command);
+            }
+        }
     }
 
     public void dragOver(DropTargetEvent event) {
@@ -152,7 +210,7 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
 
     }
 
-    public void drop(DropTargetEvent event1) {
+    public void createNewComponent(DropTargetEvent event1) {
         boolean isInput = event1.detail == DND.DROP_MOVE;
         List<TempStore> list = new ArrayList<TempStore>();
 
@@ -283,24 +341,9 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
             }
 
             // command used to set metadata
-            if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_CON_TABLE) {
-                RepositoryObject object = (RepositoryObject) selectedNode.getObject();
-                MetadataTable table = (MetadataTable) object.getAdapter(MetadataTable.class);
-                String value = connectionItem.getProperty().getId() + " - " + table.getLabel();
-                IElementParameter schemaParam = node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
-                IElementParameter queryParam = node.getElementParameterFromField(EParameterFieldType.QUERYSTORE_TYPE);
-                if (queryParam != null) {
-                    queryParam = queryParam.getChildParameters().get(EParameterName.QUERYSTORE_TYPE.getName());
-                    if (queryParam != null) {
-                        queryParam.setValue(EmfComponent.BUILTIN);
-                    }
-                }
-                if (schemaParam != null && node.isELTComponent()) {
-                    schemaParam.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()).setValue(EmfComponent.REPOSITORY);
-                }
-                RepositoryChangeMetadataCommand command2 = new RepositoryChangeMetadataCommand(node, schemaParam.getName() + ":"
-                        + EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), value, ConvertionHelper.convert(table), null);
-                list.add(command2);
+            Command command = getChangeMetadataCommand(selectedNode, node, connectionItem);
+            if (command != null) {
+                list.add(command);
             }
 
             // command used to set query
@@ -340,6 +383,38 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
         }
 
         return list;
+    }
+
+    /**
+     * DOC bqian Comment method "getChangeMetadataCommand".
+     * 
+     * @param selectedNode
+     * @param node
+     * @param list
+     * @param connectionItem
+     */
+    private Command getChangeMetadataCommand(RepositoryNode selectedNode, Node node, ConnectionItem connectionItem) {
+        if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_CON_TABLE) {
+            RepositoryObject object = (RepositoryObject) selectedNode.getObject();
+            MetadataTable table = (MetadataTable) object.getAdapter(MetadataTable.class);
+            String value = connectionItem.getProperty().getId() + " - " + table.getLabel();
+            IElementParameter schemaParam = node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
+            IElementParameter queryParam = node.getElementParameterFromField(EParameterFieldType.QUERYSTORE_TYPE);
+            if (queryParam != null) {
+                queryParam = queryParam.getChildParameters().get(EParameterName.QUERYSTORE_TYPE.getName());
+                if (queryParam != null) {
+                    queryParam.setValue(EmfComponent.BUILTIN);
+                }
+            }
+            // && node.isELTComponent()
+            if (schemaParam != null) {
+                schemaParam.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()).setValue(EmfComponent.REPOSITORY);
+            }
+            RepositoryChangeMetadataCommand command2 = new RepositoryChangeMetadataCommand(node, schemaParam.getName() + ":"
+                    + EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), value, ConvertionHelper.convert(table), null);
+            return command2;
+        }
+        return null;
     }
 
     //

@@ -155,7 +155,6 @@ import org.talend.designer.core.ui.editor.outline.ProcessTreePartFactory;
 import org.talend.designer.core.ui.editor.palette.TalendPaletteViewerProvider;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
-import org.talend.designer.core.ui.editor.process.ProcessTemplateTransferDropTargetListener;
 import org.talend.designer.core.ui.editor.process.TalendEditorDropTargetListener;
 import org.talend.designer.core.ui.views.jobsettings.JobSettings;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
@@ -1180,7 +1179,6 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         fActivationCodeTrigger = null;
         getSelectionActions().clear();
 
-        getGraphicalViewer().removeDropTargetListener(processTemplateTransferDropTargetListener);
         getGraphicalViewer().removeDropTargetListener(talendEditorDropTargetListener);
 
         if (getGraphicalViewer().getContents() != null) {
@@ -1207,7 +1205,6 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         // getGraphicalViewer().getControl().dispose();
         // }
 
-        processTemplateTransferDropTargetListener = null;
         talendEditorDropTargetListener.setEditor(null);
         talendEditorDropTargetListener = null;
         // TalendScalableFreeformRootEditPart rootEditPart = (TalendScalableFreeformRootEditPart) getGraphicalViewer()
@@ -1724,8 +1721,6 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         return sharedKeyHandler;
     }
 
-    ProcessTemplateTransferDropTargetListener processTemplateTransferDropTargetListener = null;
-
     TalendEditorDropTargetListener talendEditorDropTargetListener = null;
 
     // ------------------------------------------------------------------------
@@ -1755,9 +1750,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                 updateActions(getSelectionActions());
             }
         });
-        processTemplateTransferDropTargetListener = new ProcessTemplateTransferDropTargetListener(getGraphicalViewer());
         talendEditorDropTargetListener = new TalendEditorDropTargetListener(this);
-        getGraphicalViewer().addDropTargetListener(processTemplateTransferDropTargetListener);
         getGraphicalViewer().addDropTargetListener(talendEditorDropTargetListener);
     }
 
