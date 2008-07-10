@@ -115,7 +115,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
     private static Logger log = Logger.getLogger(RepositoryView.class);
 
-    private RepositoryTreeViewer viewer;
+    private TreeViewer viewer;
 
     private RepositoryContentProvider contentProvider = null;
 
@@ -166,10 +166,16 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         return (IRepositoryView) part;
     }
 
+    protected TreeViewer createTreeViewer(Composite parent) {
+        return new RepositoryTreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+    }
+
     @Override
     public void createPartControl(Composite parent) {
-        viewer = new RepositoryTreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
-        viewer.addTreeListener(viewer);
+        viewer = createTreeViewer(parent);
+        if (viewer instanceof ITreeViewerListener) {
+            viewer.addTreeListener((ITreeViewerListener) viewer);
+        }
         viewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
         contentProvider = new RepositoryContentProvider(this);
         viewer.setContentProvider(contentProvider);
