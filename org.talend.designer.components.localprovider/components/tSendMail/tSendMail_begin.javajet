@@ -42,11 +42,11 @@
     }
 	%>
 	
-	String from_<%=cid %> = <%=from %>;
-    String to_<%=cid %> = <%=to %>;
-    String cc_<%=cid %> = <%=(cc==null || "".equals(cc))?null:cc.replace(";",",") %>;
-    String bcc_<%=cid %> = <%=(bcc==null || "".equals(bcc))?null:bcc.replace(";",",") %>;
-    String subject_<%=cid %> = <%=subject %>;
+	String from_<%=cid %> = (<%=from %>);
+    String to_<%=cid %> = (<%=to %>).replace(";",",");
+    String cc_<%=cid %> = ((<%=cc %>)==null || "".equals(<%=cc %>))?null:(<%=cc %>).replace(";",",");
+    String bcc_<%=cid %> = ((<%=bcc %>)==null || "".equals(<%=bcc %>))?null:(<%=bcc %>).replace(";",",");
+    String subject_<%=cid %> = (<%=subject %>);
     
 	
 	java.util.List<java.util.Map<String, String>> headers_<%=cid %> = new java.util.ArrayList<java.util.Map<String,String>>();
