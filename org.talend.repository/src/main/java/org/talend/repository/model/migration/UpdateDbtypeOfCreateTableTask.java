@@ -12,9 +12,9 @@
 // ============================================================================
 package org.talend.repository.model.migration;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -98,7 +98,7 @@ public class UpdateDbtypeOfCreateTableTask extends AbstractJobMigrationTask {
             cons.add(conversion);
 
             try {
-                ModifyComponentsAction.searchAndModify(filert, cons);
+                ModifyComponentsAction.searchAndModify(item, filert, cons);
                 return ExecutionResult.SUCCESS_NO_ALERT;
             } catch (Exception e) {
                 ExceptionHandler.process(e);
@@ -109,6 +109,7 @@ public class UpdateDbtypeOfCreateTableTask extends AbstractJobMigrationTask {
             return ExecutionResult.NOTHING_TO_DO;
         }
     }
+
     public Date getOrder() {
         GregorianCalendar gc = new GregorianCalendar(2008, 2, 17, 12, 0, 0);
         return gc.getTime();
