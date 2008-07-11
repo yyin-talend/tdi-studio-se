@@ -41,6 +41,10 @@ public class Note extends Element {
 
     private List elementParameter;
 
+    private String noteColor = "255;255;203";
+
+    private String textColor = "0;0;0";
+
     /**
      * tang Note constructor comment.
      */
@@ -49,7 +53,7 @@ public class Note extends Element {
         ElementParameter param = new ElementParameter(this);
         param = new ElementParameter(this);
         param.setName(EParameterName.NOTE_COLOR.getName());
-        param.setValue("255;255;203"); // default note color
+        param.setValue(noteColor); // default note color
         param.setDisplayName(EParameterName.NOTE_COLOR.getDisplayName());
         param.setField(EParameterFieldType.COLOR);
         param.setCategory(EComponentCategory.BASIC);
@@ -60,7 +64,7 @@ public class Note extends Element {
         addElementParameter(param);
         param = new ElementParameter(this);
         param.setName(EParameterName.NOTETXT_COLOR.getName());
-        param.setValue("255;0;0"); // default note color
+        param.setValue(textColor); // default note color
         param.setDisplayName(EParameterName.NOTETXT_COLOR.getDisplayName());
         param.setField(EParameterFieldType.COLOR);
         param.setCategory(EComponentCategory.BASIC);
