@@ -23,10 +23,13 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
 import org.talend.commons.utils.workbench.gef.SimpleHtmlFigure;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.connections.CollapseFigure;
+import org.talend.designer.core.ui.editor.nodes.Node;
 
 /**
  * DOC nrousseau class global comment. Detailled comment
@@ -77,12 +80,27 @@ public class SubjobContainerFigure extends Figure {
                 PropertyChangeCommand ppc = new PropertyChangeCommand(subjobContainer, EParameterName.COLLAPSED.getName(),
                         !subjobContainer.isCollapsed());
                 subjobContainer.getProcess().getCommandStack().execute(ppc);
+                reSelection();
             }
         });
 
         updateData();
 
         initializeSubjobContainer(subjobContainer.getSubjobContainerRectangle());
+    }
+
+    private void reSelection() {
+        // select the start node.
+        if (subjobContainer.isCollapsed()) {
+            IProcess2 process = subjobContainer.getProcess();
+            if (process instanceof org.talend.designer.core.ui.editor.process.Process) {
+                AbstractMultiPageTalendEditor editor = ((org.talend.designer.core.ui.editor.process.Process) process).getEditor();
+                Node startNode = subjobContainer.getSubjobStartNode();
+                if (startNode != null && editor != null) {
+                    editor.selectNode(startNode);
+                }
+            }
+        }
     }
 
     /*
