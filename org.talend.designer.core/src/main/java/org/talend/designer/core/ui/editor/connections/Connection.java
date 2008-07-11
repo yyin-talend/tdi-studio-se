@@ -292,7 +292,7 @@ public class Connection extends Element implements IConnection, IPerformance {
      * @param param
      */
     private void updateMonitorLabel(IElementParameter param) {
-        firePropertyChange(MONITOR_CONNECTION, null, ((Boolean) param.getValue()));
+        firePropertyChange(MONITOR_CONNECTION, null, (param.getValue()));
     }
 
     @Override
@@ -453,9 +453,9 @@ public class Connection extends Element implements IConnection, IPerformance {
             }
             updateName = true;
         } /*
-             * else if (getLineStyle().equals(EConnectionType.LOOKUP)) { labelText += " (" + nodeConnector.getLinkName() +
-             * ")"; updateName = true; }
-             */
+         * else if (getLineStyle().equals(EConnectionType.LOOKUP)) { labelText += " (" + nodeConnector.getLinkName() +
+         * ")"; updateName = true; }
+         */
 
         if (updateName) {
 
@@ -526,7 +526,7 @@ public class Connection extends Element implements IConnection, IPerformance {
                 // }
             } else if (lineStyle.equals(EConnectionType.ITERATE)) {
                 // see 3680, the iterate link must have a unique name.
-                if (!uniqueName.startsWith(Process.DEFAULT_ITERATE_CONNECTION_NAME)) {
+                if (uniqueName == null || !uniqueName.startsWith(Process.DEFAULT_ITERATE_CONNECTION_NAME)) {
                     uniqueName = source.getProcess().generateUniqueConnectionName(Process.DEFAULT_ITERATE_CONNECTION_NAME);
                 }
             } else if (isInTypes(lineStyle, EConnectionType.ON_COMPONENT_OK, EConnectionType.ON_COMPONENT_ERROR,

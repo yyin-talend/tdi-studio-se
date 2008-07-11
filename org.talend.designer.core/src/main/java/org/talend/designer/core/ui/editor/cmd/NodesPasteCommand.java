@@ -107,7 +107,7 @@ public class NodesPasteCommand extends Command {
 
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     private String createNewConnectionName(String oldName, String baseName) {
         String newName = null;
         if (baseName != null) {
@@ -221,7 +221,7 @@ public class NodesPasteCommand extends Command {
         return newLocation;
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     private Point findLocationForNodeInProcess(final Point location, Dimension size) {
         Rectangle copiedRect = new Rectangle(location, size);
         Point newLocation = new Point(location);
@@ -286,7 +286,7 @@ public class NodesPasteCommand extends Command {
         return false;
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     private void createNodeContainerList() {
         int firstIndex = 0;
         int index = 0;
@@ -445,7 +445,8 @@ public class NodesPasteCommand extends Command {
                     String newConnectionName;
                     String metaTableName;
 
-                    if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.UNIQUE_NAME)) {
+                    if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.UNIQUE_NAME)
+                            && connection.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
                         String newNameBuiltIn = oldMetaToNewMeta.get(pastedSourceNode.getUniqueName() + ":" //$NON-NLS-1$
                                 + connection.getMetaName());
                         if (newNameBuiltIn == null) {
@@ -580,7 +581,7 @@ public class NodesPasteCommand extends Command {
         }
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     @Override
     public void execute() {
         // create the node container list to paste
@@ -643,7 +644,7 @@ public class NodesPasteCommand extends Command {
         }
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     @Override
     public void undo() {
         // remove the current selection
