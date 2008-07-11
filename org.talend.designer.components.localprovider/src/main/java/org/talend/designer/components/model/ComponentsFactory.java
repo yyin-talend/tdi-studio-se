@@ -29,7 +29,6 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
-import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.io.FilesUtils;
@@ -287,10 +286,6 @@ public class ComponentsFactory implements IComponentsFactory {
     }
 
     private void loadIcons(File folder, IComponent component) {
-        if (CommonsPlugin.isHeadless()) {
-            return;
-        }
-
         ComponentIconLoading cil = new ComponentIconLoading(folder);
 
         component.setIcon32(cil.getImage32());
@@ -344,6 +339,7 @@ public class ComponentsFactory implements IComponentsFactory {
         URL url = FileLocator.toFileURL(FileLocator.find(b, new Path(IComponentsFactory.COMPONENTS_INNER_FOLDER), null));
         return url;
     }
+
     /*
      * (non-Javadoc)
      * 
