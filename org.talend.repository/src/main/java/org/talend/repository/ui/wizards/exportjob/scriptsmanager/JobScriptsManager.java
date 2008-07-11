@@ -333,6 +333,8 @@ public abstract class JobScriptsManager {
 
     protected IResource[] sourceResouces = null;
 
+    private boolean isMultiNodes;
+
     protected void addNodeToResource(IResource[] resources, List<IResource> sourceFile) throws CoreException {
 
         for (IResource resource : resources) {
@@ -414,6 +416,24 @@ public abstract class JobScriptsManager {
      */
     public String getSelectedJobVersion() {
         return this.selectedJobVersion;
+    }
+
+    /**
+     * ftang Comment method "setMultiNodes".
+     * 
+     * @param b
+     */
+    public void setMultiNodes(boolean isMultiNodes) {
+        this.isMultiNodes = isMultiNodes;
+    }
+
+    /**
+     * ftang Comment method "setMultiNodes".
+     * 
+     * @param b
+     */
+    public boolean isMultiNodes() {
+        return this.isMultiNodes;
     }
 
 }

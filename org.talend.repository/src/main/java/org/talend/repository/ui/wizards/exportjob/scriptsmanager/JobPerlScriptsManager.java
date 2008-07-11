@@ -75,8 +75,13 @@ public class JobPerlScriptsManager extends JobScriptsManager {
 
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = (ProcessItem) process[i].getItem();
+            String selectedJobVersion = getSelectedJobVersion();
+            if (selectedJobVersion == null) {
+                selectedJobVersion = process[i].getItem().getProperty().getVersion();
+            }
+
             if (!BooleanUtils.isTrue(exportChoice.get(ExportChoice.doNotCompileCode))) {
-                generateJobFiles(processItem, contextName, statisticPort != IProcessor.NO_STATISTICS,
+                generateJobFiles(processItem, contextName, selectedJobVersion,statisticPort != IProcessor.NO_STATISTICS,
                         statisticPort != IProcessor.NO_TRACES, exportChoice.get(ExportChoice.applyToChildren));
             }
             List<URL> resources = new ArrayList<URL>();

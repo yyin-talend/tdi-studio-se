@@ -98,6 +98,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         super(selection);
         // there assign the manager again
         manager = createJobScriptsManager();
+        manager.setMultiNodes(isMultiNodes());
     }
 
     public String getCurrentExportType() {

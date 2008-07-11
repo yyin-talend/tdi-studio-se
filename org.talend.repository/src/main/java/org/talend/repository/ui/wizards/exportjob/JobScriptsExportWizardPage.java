@@ -134,6 +134,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         int nodeSize = nodes.length;
         if (nodeSize > 1) {
             this.isMultiNodes = true;
+            manager.setMultiNodes(true);
         }
         for (int i = 0; i < nodeSize; i++) {
             RepositoryNode node = nodes[i];
@@ -247,6 +248,10 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         // createButtonsGroup(composite);
 
         createDestinationGroup(composite);
+
+        if (!isMultiNodes) {
+            createJobVersionGroup(composite);
+        }
 
         createUnzipOptionGroup(composite);
         createOptionsGroup(composite);
@@ -481,7 +486,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      */
     protected boolean ensureTargetIsValid() {
         String targetPath = getDestinationValue();
-        if (this.selectedJobVersion.equals(this.allVersions)) {
+        if (this.selectedJobVersion != null && this.selectedJobVersion.equals(this.allVersions)) {
 
             if (this.originalRootFolderName == null) {
                 this.originalRootFolderName = getRootFolderName();
@@ -539,9 +544,10 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      */
     public boolean finish() {
         manager = createJobScriptsManager();
+        manager.setMultiNodes(isMultiNodes());
 
         boolean ok = false;
-        if (this.selectedJobVersion.equals(this.allVersions)) {
+        if (this.selectedJobVersion != null && this.selectedJobVersion.equals(this.allVersions)) {
             String[] allVersions = JobVersionUtils.getAllVersions(this.nodes[0]);
             for (String version : allVersions) {
                 ok = exportJobScript(version);
@@ -590,6 +596,13 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         boolean isNotFirstTime = this.originalRootFolderName != null;
         if (isNotFirstTime && process[0] != null) {
             process[0].setDirectoryName(this.originalRootFolderName);
+
+        }
+
+        if (!isMultiNodes) {
+            for (int i = 0; i <= process.length - 1; i++) {
+                process[i].removeAllMap();
+            }
         }
         List<ExportFileResource> resourcesToExport = getExportResources();
 
