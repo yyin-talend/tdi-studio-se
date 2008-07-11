@@ -341,9 +341,6 @@ public class NodeFigure extends Figure {
 
     }
 
-    /**
-     * DOC nrousseau Comment method "dispose".
-     */
     public void removeSourceConnection(ConnectionFigure connectionFigure) {
         for (ConnectionFigure curConn : sourceListeners.keySet()) {
             if (connectionFigure.equals(curConn) && curConn.getTargetAnchor() != null) {
