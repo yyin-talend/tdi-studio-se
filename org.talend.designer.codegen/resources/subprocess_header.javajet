@@ -450,10 +450,6 @@ static class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines.
 				hasAtLeastOneRead = true;
 			 	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 
-			 	if(typeToGenerate.equals("Object")) {
-			 		hasAtLeastOneObjectType = true;
-			 	}
-			 	
 				if (JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable())) {
 					typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
 					%>
@@ -491,6 +487,7 @@ static class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines.
            				}
 					<%
 				} else if(typeToGenerate.equals("Object") || typeToGenerate.equals("BigDecimal") || typeToGenerate.equals("List")) {
+			 		hasAtLeastOneObjectType = true;
 					%>
        			    	this.<%=column.getLabel() %> = (<%= typeToGenerate %>) ois.readObject();
 					<%
