@@ -1293,4 +1293,8 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         return repositoryFactoryFromProvider.setAuthorByLogin(item, login);
     }
 
+    public Property getUptodateProperty(Property property) throws PersistenceException {
+        return repositoryFactoryFromProvider.getUptodateProperty(property);
+    }
+
 }

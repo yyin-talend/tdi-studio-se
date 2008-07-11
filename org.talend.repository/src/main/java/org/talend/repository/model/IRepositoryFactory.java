@@ -284,4 +284,5 @@ public interface IRepositoryFactory {
 
     public boolean setAuthorByLogin(Item item, String login) throws PersistenceException;
 
+    public Property getUptodateProperty(Property property) throws PersistenceException;
 }

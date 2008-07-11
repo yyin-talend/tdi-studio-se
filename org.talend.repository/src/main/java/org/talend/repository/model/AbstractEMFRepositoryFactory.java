@@ -525,4 +525,15 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         }
         property.setMaxInformationLevel(maxLevel);
     }
+
+    public Property getUptodateProperty(Property property) throws PersistenceException {
+        List<IRepositoryObject> allVersion = getAllVersion(property.getId());
+        for (IRepositoryObject repositoryObject : allVersion) {
+            Property uptodateProperty = repositoryObject.getProperty();
+            if (uptodateProperty.getVersion().equals(property.getVersion())) {
+                return uptodateProperty;
+            }
+        }
+        return null;
+    }
 }
