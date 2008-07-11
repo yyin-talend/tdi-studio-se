@@ -12,7 +12,10 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.context;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.context.JobContextManager;
@@ -125,20 +128,9 @@ public class ContextRepositoryComposite extends ContextComposite {
      * java.lang.String)
      */
     public void onContextRemoveParameter(IContextManager contextManager, String contextParamName) {
-        boolean found;
-        for (int i = 0; i < contextManager.getListContext().size(); i++) {
-            List<IContextParameter> listParams = contextManager.getListContext().get(i).getContextParameterList();
-            found = false;
-            for (int j = 0; j < listParams.size() && !found; j++) {
-                if (listParams.get(j).getName().equals(contextParamName)) {
-                    listParams.remove(j);
-                    found = true;
-                }
-            }
-        }
-        // record the modified operation.
-        setModifiedFlag(contextManager);
-        refresh();
+        Set<String> names = new HashSet<String>();
+        names.add(contextParamName);
+        onContextRemoveParameter(contextManager, names);
     }
 
     /*
@@ -240,5 +232,42 @@ public class ContextRepositoryComposite extends ContextComposite {
             // record the modified operation.
             manager.setModified(true);
         }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.ui.context.IContextModelManager#onContextRemoveParameter(org.talend.core.model.process.IContextManager,
+     * java.util.List)
+     */
+    public void onContextRemoveParameter(IContextManager contextManager, Set<String> paramNames) {
+        if (contextManager == null || paramNames == null || paramNames.isEmpty()) {
+            return;
+        }
+        for (int i = 0; i < contextManager.getListContext().size(); i++) {
+            List<IContextParameter> listParams = contextManager.getListContext().get(i).getContextParameterList();
+            boolean found = false;
+            List<IContextParameter> movedList = new ArrayList<IContextParameter>();
+
+            for (int j = 0; j < listParams.size(); j++) {
+                IContextParameter contextParameter = listParams.get(j);
+                if (paramNames.contains(contextParameter.getName())) {
+                    movedList.add(contextParameter);
+                    found = true;
+                }
+                if (movedList.size() == paramNames.size()) { // has finished search
+                    break;
+                }
+            }
+            if (found) {
+                listParams.removeAll(movedList);
+            } else { // not find anything in first
+                return;
+            }
+        }
+        // record the modified operation.
+        setModifiedFlag(contextManager);
+        refresh();
+
     }
 }
