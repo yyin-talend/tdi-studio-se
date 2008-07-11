@@ -19,9 +19,11 @@ import org.talend.commons.ui.swt.drawing.link.ExtremityEastArrow;
 import org.talend.commons.ui.swt.drawing.link.ExtremityWestArrow;
 import org.talend.commons.ui.swt.drawing.link.IDrawableLink;
 import org.talend.commons.ui.swt.drawing.link.IStyleLink;
+import org.talend.commons.ui.swt.drawing.link.LineLinkWithHorizontalConnectors;
 import org.talend.commons.ui.swt.drawing.link.StyleLink;
 import org.talend.commons.ui.swt.drawing.link.VerticalRoundedCornerLink;
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
+import org.talend.designer.abstractmap.ui.properties.LINK_STYLE;
 import org.talend.designer.abstractmap.ui.visualmap.link.ILinkState;
 import org.talend.designer.abstractmap.ui.visualmap.link.IMapperLink;
 import org.talend.designer.abstractmap.ui.visualmap.link.LinkState;
@@ -53,11 +55,14 @@ public class StyleLinkFactory {
 
     private IStyleLink unselectedZoneToZoneStyle;
 
+    private LINK_STYLE linkStyle;
+
     /**
      * DOC amaumont LinkFactory constructor comment.
      */
-    public StyleLinkFactory() {
+    public StyleLinkFactory(LINK_STYLE linkStyle) {
         super();
+        this.linkStyle = linkStyle;
         init();
     }
 
@@ -264,8 +269,11 @@ public class StyleLinkFactory {
      * @return
      */
     private IDrawableLink getZoneToZoneLink(StyleLink style) {
-        // return new HorizontalBezierLink(style);
-        return new BezierHorizontalLink(style);
+        if (linkStyle == LINK_STYLE.BEZIER_CURVE) {
+            return new BezierHorizontalLink(style);
+        } else {
+            return new LineLinkWithHorizontalConnectors(style);
+        }
     }
 
 }
