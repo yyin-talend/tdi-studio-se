@@ -12,14 +12,18 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.cmd;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.gef.commands.Command;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
+import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.designer.core.i18n.Messages;
@@ -35,14 +39,29 @@ public class ContextRemoveParameterCommand extends Command {
 
     private IContextManager contextManager;
 
-    private String contextParamName;
+    private Set<String> contextParamNames = new HashSet<String>();
 
-    private Map<String, IContextParameter> mapParams = new HashMap<String, IContextParameter>();
+    private Map<String, List<IContextParameter>> mapParams = new HashMap<String, List<IContextParameter>>();
+
+    public ContextRemoveParameterCommand(IContextManager contextManager, Set<String> contextParamNames) {
+        init(contextManager, contextParamNames);
+    }
 
     public ContextRemoveParameterCommand(IContextManager contextManager, String contextParamName) {
+        Set<String> names = new HashSet<String>();
+        if (contextParamName != null) {
+            names.add(contextParamName);
+        }
+        init(contextManager, names);
+    }
+
+    private void init(IContextManager contextManager, Set<String> contextParamNames) {
         this.contextManager = contextManager;
-        this.contextParamName = contextParamName;
+        if (contextParamNames != null) {
+            this.contextParamNames.addAll(contextParamNames);
+        }
         this.setLabel(Messages.getString("ContextRemoveParameterCommand.label")); //$NON-NLS-1$
+
     }
 
     private void refreshPropertyView() {
@@ -69,16 +88,29 @@ public class ContextRemoveParameterCommand extends Command {
 
     @Override
     public void execute() {
-        boolean found;
+        mapParams.clear();
         for (int i = 0; i < contextManager.getListContext().size(); i++) {
-            List<IContextParameter> listParams = contextManager.getListContext().get(i).getContextParameterList();
-            found = false;
-            for (int j = 0; j < listParams.size() && !found; j++) {
-                if (listParams.get(j).getName().equals(contextParamName)) {
-                    mapParams.put(contextManager.getListContext().get(i).getName(), listParams.get(j));
-                    listParams.remove(j);
+            IContext context = contextManager.getListContext().get(i);
+            List<IContextParameter> listParams = context.getContextParameterList();
+
+            boolean found = false;
+            List<IContextParameter> movedList = new ArrayList<IContextParameter>();
+
+            for (int j = 0; j < listParams.size(); j++) {
+                IContextParameter contextParameter = listParams.get(j);
+                if (contextParamNames.contains(contextParameter.getName())) {
+                    movedList.add(contextParameter);
                     found = true;
                 }
+                if (movedList.size() == contextParamNames.size()) { // has finished search
+                    break;
+                }
+            }
+            if (found) {
+                mapParams.put(context.getName(), movedList);
+                listParams.removeAll(movedList);
+            } else { // not find anything in first
+                return;
             }
         }
         contextManager.fireContextsChangedEvent();
@@ -93,8 +125,12 @@ public class ContextRemoveParameterCommand extends Command {
     @Override
     public void undo() {
         for (int i = 0; i < contextManager.getListContext().size(); i++) {
-            List<IContextParameter> listParams = contextManager.getListContext().get(i).getContextParameterList();
-            listParams.add(mapParams.get(contextManager.getListContext().get(i).getName()));
+            IContext context = contextManager.getListContext().get(i);
+            List<IContextParameter> listParams = context.getContextParameterList();
+            List<IContextParameter> contextParamList = mapParams.get(context.getName());
+            if (contextParamList != null) {
+                listParams.addAll(contextParamList);
+            }
         }
         contextManager.fireContextsChangedEvent();
         refreshContextView();

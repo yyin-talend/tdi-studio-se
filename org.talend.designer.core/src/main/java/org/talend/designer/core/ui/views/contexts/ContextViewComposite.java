@@ -12,7 +12,9 @@
 // ============================================================================
 package org.talend.designer.core.ui.views.contexts;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.collections.BidiMap;
 import org.eclipse.gef.commands.CommandStack;
@@ -315,9 +317,9 @@ public class ContextViewComposite extends ContextComposite {
     }
 
     public void onContextRemoveParameter(IContextManager contextManager, String paramName) {
-        // record the modified operation.
-        setModifiedFlag(contextManager);
-        getCommandStack().execute(new ContextRemoveParameterCommand(getContextManager(), paramName));
+        Set<String> names = new HashSet<String>();
+        names.add(paramName);
+        onContextRemoveParameter(contextManager, names);
     }
 
     private void setModifiedFlag(IContextManager contextManager) {
@@ -326,5 +328,17 @@ public class ContextViewComposite extends ContextComposite {
             // record the modified operation.
             manager.setModified(true);
         }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.ui.context.IContextModelManager#onContextRemoveParameter(org.talend.core.model.process.IContextManager,
+     * java.util.List)
+     */
+    public void onContextRemoveParameter(IContextManager contextManager, Set<String> paramNames) {
+        // record the modified operation.
+        setModifiedFlag(contextManager);
+        getCommandStack().execute(new ContextRemoveParameterCommand(getContextManager(), paramNames));
     }
 }
