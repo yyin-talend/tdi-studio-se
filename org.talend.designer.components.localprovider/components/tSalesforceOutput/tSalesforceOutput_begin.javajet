@@ -14,7 +14,7 @@ imports="
 
 	String username = ElementParameterParser.getValue(node, "__USER__");
 	String password = ElementParameterParser.getValue(node, "__PASS__");
-	
+	String action = ElementParameterParser.getValue(node, "__ACTION__");
 	String logFile = ElementParameterParser.getValue(node, "__LOGFILENAME__").trim();
 %>       
         int nb_line_<%=cid %> = 0;
@@ -28,5 +28,34 @@ imports="
 %>        
         final java.io.BufferedWriter logFile_<%=cid %> = new java.io.BufferedWriter(new java.io.FileWriter(<%=logFile %>));
 <%
+	}
+%><%
+	if(action.equals("insert")){
+		boolean useBatchMode = ElementParameterParser.getValue(node, "__BATCH_MODE_INSERT__").equals("true");
+		if(useBatchMode){
+			String batchSize = ElementParameterParser.getValue(node, "__BATCH_SIZE__");
+%>int batchSize_<%=cid %> = <%=batchSize %>;
+java.util.List<String> tablenameList_<%=cid %> = new java.util.ArrayList<String>();
+java.util.List<org.apache.axis.message.MessageElement[]> nameValuesList_<%=cid %> = new java.util.ArrayList<org.apache.axis.message.MessageElement[]>();
+<%
+		}
+	}else if(action.equals("update")){
+		boolean useBatchMode = ElementParameterParser.getValue(node, "__BATCH_MODE_UPDATE__").equals("true");
+		if(useBatchMode){
+			String batchSize = ElementParameterParser.getValue(node, "__BATCH_SIZE__");
+%>int batchSize_<%=cid %> = <%=batchSize %>;
+java.util.List<String> tablenameList_<%=cid %> = new java.util.ArrayList<String>();
+java.util.List<String> idList_<%=cid %> = new java.util.ArrayList<String>();
+java.util.List<org.apache.axis.message.MessageElement[]> updatefieldsList_<%=cid %> = new java.util.ArrayList<org.apache.axis.message.MessageElement[]>();
+<%
+		}
+	}else if(action.equals("delete")){
+		boolean useBatchMode = ElementParameterParser.getValue(node, "__BATCH_MODE_DELETE__").equals("true");
+		if(useBatchMode){
+			String batchSize = ElementParameterParser.getValue(node, "__BATCH_SIZE__");
+%>int batchSize_<%=cid %> = <%=batchSize %>;
+java.util.List<String> idList_<%=cid %> = new java.util.ArrayList<String>();
+<%
+		}
 	}
 %>
