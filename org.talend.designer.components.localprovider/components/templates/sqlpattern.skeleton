@@ -400,6 +400,7 @@ public class CLASS {
                                         } else {
                                             // get the param value
                                             realValue = ElementParameterParser.getValue(node, "__" + paramName + "__");
+                                            realValue = "\" + " + realValue + " + \"";
                                         }
 
                                         int formerLength = paramName.length() + 4;
