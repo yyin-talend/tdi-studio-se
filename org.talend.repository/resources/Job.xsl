@@ -9,8 +9,7 @@
 		<html>
 			<head>
 				<title>Generated documentation</title>
-				<style type="text/css">
-					@page {  size: letter; }
+				<style type="text/css">@page {  size: letter; }
 					SPAN.special { font:12pt black; } TABLE.properties {
 					width:95%; } TD.propname { width:30%; font:bold; }
 					TR.profont{ font:bold; }
@@ -26,9 +25,7 @@
 					.TOPTITLESTYLE{font-size: 40px; color: #818181;}
 					.TABLECOLUMNSTYLE {font-family: Arial, Helvetica,
 					sans-serif; color: #818181; background-color:
-					#E6E6E6;align: center}
-
-				</style>
+					#E6E6E6;align: center}</style>
 			</head>
 			<body>
 				<br />
@@ -114,6 +111,20 @@
 					<b>
 						<a href="#JobPreviewPicture">
 							Job Preview Picture
+						</a>
+					</b>
+				</div>
+				<div class="FONTSTYLE">
+					<b>
+						<a href="#Job Settings">
+							Job Settings
+						</a>
+					</b>
+				</div>
+				<div class="FONTSTYLE">
+					<b>
+						<a href="#Context List">
+							Context List
 						</a>
 					</b>
 				</div>
@@ -280,6 +291,176 @@
 						</xsl:for-each>
 					</map>
 				</xsl:if>
+				<br />
+				<br />
+				<!-- Job settings -->
+				<!--HR-->
+				<h2 class="FONTSTYLE">
+					<a name="#Job settings">
+						Job settings
+					</a>
+				</h2>
+				<table border="0" width="80%" class="FONTSTYLE"
+					cellpadding="0" cellspacing="0" style="border-collapse: collapse"
+					bordercolor="#111111" summary="">
+					<tr bgcolor="#E6E6E6" class="FONTSTYLE">
+						<td class="FONTSTYLE">
+							<b>
+								Extra settings
+							</b>
+						</td>
+					</tr>
+				</table>
+				<br/>
+				<xsl:variable name="extra" select="$job/jobSetting/extra"></xsl:variable>
+				<table width="80%" border="1" cellpadding="0"
+					cellspacing="0"
+					style="border-collapse: collapse; padding-left:10mm;"
+					bordercolor="#111111" frame="box" summary="">
+					<tr>
+						<th width="50%" align="left"
+							class="TABLECOLUMNSTYLE">
+							Name
+						</th>
+						<th width="50%" align="left"
+							class="TABLECOLUMNSTYLE">
+							Value
+						</th>
+					</tr>
+					<xsl:for-each
+							select="$extra/jobParameter">
+							<tr>
+								<td class="FONTSTYLE" align="left">
+									<xsl:value-of select="@name" />
+								</td>
+								<td class="FONTSTYLE" align="left">
+									<xsl:value-of select="@value" />
+								</td>
+							</tr>
+						</xsl:for-each>
+				</table>
+				<br />
+				<br />
+				<table border="0" width="80%" class="FONTSTYLE"
+					cellpadding="0" cellspacing="0" style="border-collapse: collapse"
+					bordercolor="#111111" summary="">
+					<tr bgcolor="#E6E6E6" class="FONTSTYLE">
+						<td class="FONTSTYLE">
+							<b>
+								Stats &amp; Logs
+							</b>
+						</td>
+					</tr>
+				</table>
+				<br/>
+				<xsl:variable name="statsAndLog" select="$job/jobSetting/Statslogs"></xsl:variable>
+				<table width="80%" border="1" cellpadding="0"
+					cellspacing="0"
+					style="border-collapse: collapse; padding-left:10mm;"
+					bordercolor="#111111" frame="box" summary="">
+					<tr>
+						<th width="50%" align="left"
+							class="TABLECOLUMNSTYLE">
+							Name
+						</th>
+						<th width="50%" align="left"
+							class="TABLECOLUMNSTYLE">
+							Value
+						</th>
+					</tr>
+					<xsl:for-each
+							select="$statsAndLog/jobParameter">
+							<tr>
+								<td class="FONTSTYLE" align="left">
+									<xsl:value-of select="@name" />
+								</td>
+								<td class="FONTSTYLE" align="left">
+									<xsl:value-of select="@value" />
+								</td>
+							</tr>
+					</xsl:for-each>
+				</table>
+				<br />
+				<br />
+				<!-- Context List-->
+				<!--HR-->
+				<h2 class="FONTSTYLE">
+					<a name="#Context List">
+						Context List
+					</a>
+				</h2>
+				<xsl:for-each select="$job/contextList/context">
+					<table border="0" width="80%" class="FONTSTYLE"
+						cellpadding="0" cellspacing="0" style="border-collapse: collapse"
+						bordercolor="#111111" summary="">
+						<tr bgcolor="#E6E6E6" class="FONTSTYLE">
+							<td class="FONTSTYLE">
+								<b>
+									Context :
+									<xsl:value-of select="@name" />
+								</b>
+							</td>
+						</tr>
+					</table>
+					<br />
+					<table width="80%" border="1" cellpadding="0"
+						cellspacing="0"
+						style="border-collapse: collapse; padding-left:10mm;"
+						bordercolor="#111111" frame="box" summary="">
+						<tr>
+							<th width="20%" align="left"
+								class="TABLECOLUMNSTYLE">
+								Name
+							</th>
+							<th width="25%" align="left"
+								class="TABLECOLUMNSTYLE">
+								Prompt
+							</th>
+							<th width="20%" align="left"
+								class="TABLECOLUMNSTYLE">
+								Need Prompt?
+							</th>
+							<th width="10%" align="left"
+								class="TABLECOLUMNSTYLE">
+								Type
+							</th>
+							<th width="15%" align="left"
+								class="TABLECOLUMNSTYLE">
+								Value
+							</th>
+							<th width="10%" align="left"
+								class="TABLECOLUMNSTYLE">
+								Source
+							</th>
+						</tr>
+						<xsl:for-each
+							select="$job/contextList/context/contextParameter">
+							<tr>
+								<td class="FONTSTYLE" align="left">
+									<xsl:value-of select="@name" />
+								</td>
+								<td class="FONTSTYLE" align="left">
+									<xsl:value-of select="@prompt" />
+								</td>
+								<td class="FONTSTYLE" align="left">
+									<xsl:value-of
+										select="@promptNeeded" />
+								</td>
+								<td class="FONTSTYLE" align="left">
+									<xsl:value-of select="@type" />
+								</td>
+								<td class="FONTSTYLE" align="left">
+									<xsl:value-of select="@value" />
+								</td>
+								<td class="FONTSTYLE" align="left">
+									<xsl:value-of select="@source" />
+								</td>
+							</tr>
+						</xsl:for-each>
+					</table>
+					<br />
+					<br />
+				</xsl:for-each>
 				<br />
 				<br />
 				<!-- Component List-->
