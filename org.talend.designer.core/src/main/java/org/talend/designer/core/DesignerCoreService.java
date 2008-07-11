@@ -29,6 +29,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
+import org.talend.core.model.genhtml.IJobSettingConstants;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
@@ -37,6 +38,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.update.UpdateResult;
+import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.model.process.DataNode;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
@@ -387,5 +389,39 @@ public class DesignerCoreService implements IDesignerCoreService {
             return ((Process) process).getJobModificationDateMap();
         }
         return null;
+    }
+
+    /**
+     * 
+     * DOC YeXiaowei Comment method "getDisplayForProcessParameterFromName".
+     * 
+     * @param name
+     * @return
+     */
+    public String getDisplayForProcessParameterFromName(final String name) {
+
+        for (EParameterName param : EParameterName.values()) {
+            String keyName = name;
+            String suffix = "";
+            if (name.endsWith("_IMPLICIT_CONTEXT")) {
+                keyName = name.substring(0, name.indexOf("_IMPLICIT_CONTEXT"));
+                suffix = " (implict context)";
+            }
+            if (param.name().equals(keyName)) {
+                return param.getDisplayName() + suffix;
+            }
+        }
+
+        if (name.equals(IJobSettingConstants.PROPERTY_TYPE_IMPLICIT_CONTEXT_PROPERTY_TYPE)) {
+            return "Property";
+        } else if (name.equals(IJobSettingConstants.PROPERTY_TYPE_IMPLICIT_CONTEXT_REPOSITORY_PROPERTY_TYPE)) {
+            return "Property:source";
+        } else if (name.equals(IJobSettingConstants.PROPERTY_TYPE_PROPERTY_TYPE)) {
+            return "Property";
+        } else if (name.equals(IJobSettingConstants.PROPERTY_TYPE_REPOSITORY_PROPERTY_TYPE)) {
+            return "Property:source";
+        }
+
+        return name;
     }
 }
