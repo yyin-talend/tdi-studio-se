@@ -344,8 +344,6 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
             }
         }
         Connection conn = (Connection) connection.getModel();
-        // System.out.println("getSource=> connection:" + conn + " / source:" + conn.getSource() + " / target:" +
-        // conn.getTarget());
         NodeAnchor anchor = new NodeAnchor((NodeFigure) getFigure(), conn.getSource(), conn.getTarget(), false);
         anchor.setConnection(conn);
         return anchor;
@@ -366,8 +364,6 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
         }
         Connection conn = (Connection) connection.getModel();
         sourceAnchor = null;
-        // System.out.println("getTarget=> connection:" + conn + " / source:" + conn.getSource() + " / target:" +
-        // conn.getTarget());
         NodeAnchor anchor = new NodeAnchor((NodeFigure) getFigure(), conn.getSource(), conn.getTarget(), true);
         anchor.setConnection(conn);
         return anchor;

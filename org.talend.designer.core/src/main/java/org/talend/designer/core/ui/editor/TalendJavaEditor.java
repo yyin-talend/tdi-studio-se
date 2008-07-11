@@ -12,8 +12,12 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor;
 
+import org.eclipse.jdt.internal.ui.JavaPlugin;
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jdt.internal.ui.javaeditor.JavaSourceViewer;
+import org.eclipse.jdt.ui.text.IJavaPartitions;
+import org.eclipse.jdt.ui.text.JavaSourceViewerConfiguration;
+import org.eclipse.jdt.ui.text.JavaTextTools;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.FindReplaceDocumentAdapter;
 import org.eclipse.jface.text.IDocument;
@@ -61,6 +65,7 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
      */
     @Override
     public void createPartControl(Composite parent) {
+        setSourceViewerConfiguration(createJavaSourceViewerConfiguration());
         super.createPartControl(parent);
         addCompiler();
     }
@@ -197,5 +202,17 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
     public void placeCursorTo(String currentSelection) {
         this.currentSelection = currentSelection;
         placeCursorToSelection();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jdt.internal.ui.javaeditor.JavaEditor#createJavaSourceViewerConfiguration()
+     */
+    @Override
+    protected JavaSourceViewerConfiguration createJavaSourceViewerConfiguration() {
+        JavaTextTools textTools = JavaPlugin.getDefault().getJavaTextTools();
+        return new TalendJavaSourceViewerConfiguration(textTools.getColorManager(), getPreferenceStore(), this,
+                IJavaPartitions.JAVA_PARTITIONING);
     }
 }

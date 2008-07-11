@@ -2621,6 +2621,7 @@ public class Process extends Element implements IProcess2 {
         }
         for (Node curNode : new ArrayList<Node>(nodes)) {
             removeNodeContainer(curNode.getNodeContainer());
+            curNode.getNodeContainer().setSubjobContainer(null);
             curNode.getNodeContainer().setNode(null);
             curNode.getNodeContainer().setNodeLabel(null);
         }
@@ -2632,15 +2633,22 @@ public class Process extends Element implements IProcess2 {
             curNode.setElementParameters(null);
             curNode.setProcess(null);
         }
+        for (SubjobContainer curSubjob : subjobContainers) {
+            curSubjob.dispose();
+        }
         for (IElementParameter param : getElementParametersWithChildrens()) {
             param.setElement(null);
         }
+
+        mapSubjobStarts.clear();
         setElementParameters(null);
+        subjobContainers = null;
         nodes = null;
         elem = null;
         notes = null;
         processor = null;
         contextManager = null;
+        mapSubjobStarts = null;
         if (this.editor != null) {
             CommandStack commandStack = (CommandStack) this.editor.getTalendEditor().getAdapter(CommandStack.class);
             if (commandStack != null) {

@@ -70,6 +70,16 @@ public class NodeFigure extends Figure {
 
     private Node node;
 
+    private AnchorListener targetListener = new AnchorListener() {
+
+        public void anchorMoved(ConnectionAnchor anchor) {
+            updateTarget();
+        }
+
+    };
+
+    private Map<ConnectionFigure, AnchorListener> sourceListeners = new HashMap<ConnectionFigure, AnchorListener>();
+
     public NodeFigure(Node node) {
         this.node = node;
         fig = new ImageFigure();
@@ -117,6 +127,9 @@ public class NodeFigure extends Figure {
     }
 
     private void updateTarget() {
+        if (targetConnection == null) {
+            return;
+        }
         Point figCenter = fig.getBounds().getCenter();
         if (targetConnection.getTargetAnchor() == null) {
             targetDummy.setVisible(false);
@@ -152,7 +165,8 @@ public class NodeFigure extends Figure {
                                 }
                             }
                         };
-                        if (curConn.getTargetAnchor() != null) {
+                        if (curConn.getTargetAnchor() != null && curConn.getTargetAnchor().getOwner() != null) {
+                            sourceListeners.put(curConn, sourceListener);
                             curConn.getTargetAnchor().addAnchorListener(sourceListener);
                         }
                     }
@@ -304,6 +318,10 @@ public class NodeFigure extends Figure {
      * @param endConnection the endConnection to set
      */
     public void setTargetConnection(ConnectionFigure targetConnection) {
+        if (targetConnection != null && targetConnection.getSourceAnchor() != null) {
+            targetConnection.getSourceAnchor().removeAnchorListener(targetListener);
+        }
+
         this.targetConnection = targetConnection;
         ConnectionFigure connection = new ConnectionFigure(targetConnection.getConnection(), targetConnection
                 .getConnectionProperty(), node);
@@ -317,16 +335,29 @@ public class NodeFigure extends Figure {
         }
         targetDummy = connection;
 
-        AnchorListener targetListener = new AnchorListener() {
-
-            public void anchorMoved(ConnectionAnchor anchor) {
-                updateTarget();
-            }
-
-        };
-        if (targetConnection.getSourceAnchor() != null) {
+        if (targetConnection.getSourceAnchor() != null && targetConnection.getSourceAnchor().getOwner() != null) {
             targetConnection.getSourceAnchor().addAnchorListener(targetListener);
         }
 
+    }
+
+    /**
+     * DOC nrousseau Comment method "dispose".
+     */
+    public void removeSourceConnection(ConnectionFigure connectionFigure) {
+        for (ConnectionFigure curConn : sourceListeners.keySet()) {
+            if (connectionFigure.equals(curConn) && curConn.getTargetAnchor() != null) {
+                curConn.getTargetAnchor().removeAnchorListener(sourceListeners.get(curConn));
+            }
+        }
+    }
+
+    public void removeTargetConnection(ConnectionFigure connectionFigure) {
+        // there can be only one "target" connection
+        if (targetConnection != null && targetConnection.getSourceAnchor() != null
+                && targetConnection.getSourceAnchor().getOwner() != null) {
+            targetConnection.getSourceAnchor().removeAnchorListener(targetListener);
+            targetConnection = null;
+        }
     }
 }

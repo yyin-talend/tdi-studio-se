@@ -8,7 +8,6 @@
       <editor
             class="org.talend.designer.core.ui.MultiPageTalendEditor"
             contributorClass="org.talend.designer.core.ui.MultiPageEditorContributor"
-            extensions="tl2"
             icon="icons/empty.gif"
             id="org.talend.designer.core.ui.MultiPageTalendEditor"
             name="Designer">

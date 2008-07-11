@@ -67,6 +67,8 @@ public class ProcessContextComposite extends Composite {
 
     private IProcess process;
 
+    private IContextListener contextListener;
+
     /**
      * Constructs a new ProcessContextComposite.
      * 
@@ -151,20 +153,34 @@ public class ProcessContextComposite extends Composite {
     public void setProcess(final IProcess process) {
         // Select the first context
         if (process != null) {
+            if (process.equals(this.process)) {
+                // avoid to set two times the same object
+                return;
+            }
             this.process = process;
             contextComboViewer.getControl().setEnabled(true);
 
             getInformationsFromContextManager(process.getContextManager());
 
-            process.getContextManager().addContextListener(new IContextListener() {
+            contextListener = new IContextListener() {
 
                 public void contextsChanged() {
                     getInformationsFromContextManager(process.getContextManager());
                     // contextComboViewer.refresh();
 
                 }
-            });
+            };
+
+            this.process.getContextManager().addContextListener(contextListener);
         } else {
+            if (this.process == null) {
+                // there is no process already
+                return;
+            }
+            if (this.process != null) {
+                this.process.getContextManager().removeContextListener(contextListener);
+                this.process = null;
+            }
             contextComboViewer.getControl().setEnabled(false);
             contextComboViewer.setInput(null);
             contextTableViewer.setInput(null);

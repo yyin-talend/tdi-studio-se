@@ -339,6 +339,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
         this.element = null;
         this.cleaned = true;
         this.selectedPrimary = true;
+        process = null;
     }
 
     public void refresh() {

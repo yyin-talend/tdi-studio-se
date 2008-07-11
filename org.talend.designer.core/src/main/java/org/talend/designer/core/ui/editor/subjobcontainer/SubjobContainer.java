@@ -361,4 +361,15 @@ public class SubjobContainer extends Element implements ISubjobContainer {
     public List<? extends IConnection> getOutgoingConnections() {
         return this.outputs;
     }
+
+    /**
+     * DOC nrousseau Comment method "dispose".
+     */
+    public void dispose() {
+        this.nodeContainers.clear();
+        nodeContainers = null;
+        process = null;
+        outputs.clear();
+        outputs = null;
+    }
 }

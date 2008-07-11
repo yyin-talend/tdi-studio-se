@@ -169,11 +169,8 @@ public class ActiveProcessTracker implements IPartListener {
                 service.removeProcess(process);
 
                 if (currentProcess == process) {
-                    // Problems.clearAll();
                     Contexts.setTitle(""); //$NON-NLS-1$
                     Contexts.clearAll();
-                    // StatsAndLogs.setTitle("");
-                    // StatsAndLogs.clearAll();
                     JobSettings.cleanDisplay();
                     if (lastProcessOpened == currentProcess) {
                         lastProcessOpened = null;

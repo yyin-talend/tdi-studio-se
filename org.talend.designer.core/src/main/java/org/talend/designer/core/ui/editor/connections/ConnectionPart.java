@@ -31,6 +31,7 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.process.Element;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.ConnectionDeleteCommand;
+import org.talend.designer.core.ui.editor.nodes.NodeFigure;
 import org.talend.designer.core.ui.views.CodeView;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
 
@@ -64,6 +65,25 @@ public class ConnectionPart extends AbstractConnectionEditPart implements Proper
             super.deactivate();
             ((Element) getModel()).removePropertyChangeListener(this);
         }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.gef.editparts.AbstractConnectionEditPart#deactivateFigure()
+     */
+    @Override
+    protected void deactivateFigure() {
+        ConnectionFigure connFig = (ConnectionFigure) this.getFigure();
+        IFigure targetFig = connFig.getTargetAnchor().getOwner();
+        if (targetFig != null && targetFig instanceof NodeFigure) {
+            ((NodeFigure) targetFig).removeTargetConnection(connFig);
+        }
+        IFigure sourceFig = connFig.getSourceAnchor().getOwner();
+        if (sourceFig != null && sourceFig instanceof NodeFigure) {
+            ((NodeFigure) sourceFig).removeSourceConnection(connFig);
+        }
+        super.deactivateFigure();
     }
 
     /*
