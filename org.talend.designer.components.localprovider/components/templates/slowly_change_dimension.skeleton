@@ -652,6 +652,8 @@ public class CLASS {
             }
             String startDateField = scdConfiger.getDimensionType2Configer().getStartDateField();
             insertionColumnList.add(getColumn(startDateField, "java.util.Date"));
+            String endDateField = scdConfiger.getDimensionType2Configer().getEndDateField();
+            insertionColumnList.add(getColumn(endDateField, "java.util.Date"));            
         }
         if(scdConfiger.isEnableType3()) {
             List<DimensionType3Attribute> dimensionAttributes = scdConfiger.getDimensionType3Configer().getDimensionAttributes();
@@ -930,12 +932,7 @@ public class CLASS {
                 insertColumns += separator + getLProtectedChar() + scdConfiger.getDimensionType2Configer().getStartDateField() + getRProtectedChar();
                 insertValues += separator + "?";
                 insertColumns += separator + getLProtectedChar() + scdConfiger.getDimensionType2Configer().getEndDateField() + getRProtectedChar();
-                insertValues += separator;
-                if(scdConfiger.getDimensionType2Configer().getEndDateValueType().equals("NULL_VALUE")) {
-                    insertValues += "NULL";
-                } else {
-                    insertValues += getDate(scdConfiger.getDimensionType2Configer().getEndDateValue());
-                }
+                insertValues += separator + "?";
             }
             if(scdConfiger.isEnableType3()) {
                 List<DimensionType3Attribute> dimensionAttributes = scdConfiger.getDimensionType3Configer().getDimensionAttributes();

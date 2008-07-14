@@ -180,9 +180,11 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
                 <%=scdManager.genSetStatement("insertionStatement_" + cid, "version_" + cid, paramIndex, scdConfiger.getDimensionType2Configer().getVersionFieldType())%>
                 <%
             } else {
-                %>
-                <%=scdManager.genSetStatement("insertionStatement_" + cid, inConnectionName + "." + insertionColumn.getLabelName(), paramIndex, insertionColumn.getJavaType())%>
-                <%
+                if(!insertionColumn.getColumnName().equals(scdConfiger.getDimensionType2Configer().getEndDateField())) {
+                    %>
+                    <%=scdManager.genSetStatement("insertionStatement_" + cid, inConnectionName + "." + insertionColumn.getLabelName(), paramIndex, insertionColumn.getJavaType())%>
+                    <%
+                }
             }
             paramIndex++;
         }
@@ -319,9 +321,11 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
                         <%=scdManager.genSetStatement("insertionStatement_" + cid, "maxVersion_" + cid, paramIndex, scdConfiger.getDimensionType2Configer().getVersionFieldType())%>
                         <%
                     } else {
-                        %>
-                        <%=scdManager.genSetStatement("insertionStatement_" + cid, inConnectionName + "." + insertionColumn.getLabelName(), paramIndex, insertionColumn.getJavaType())%>
-                        <%
+                        if(!insertionColumn.getColumnName().equals(scdConfiger.getDimensionType2Configer().getEndDateField())) {
+                            %>
+                            <%=scdManager.genSetStatement("insertionStatement_" + cid, inConnectionName + "." + insertionColumn.getLabelName(), paramIndex, insertionColumn.getJavaType())%>
+                            <%
+                        }
                     }
                     paramIndex++;
                 }                
