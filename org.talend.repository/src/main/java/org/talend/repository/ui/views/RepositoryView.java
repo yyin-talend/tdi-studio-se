@@ -74,6 +74,7 @@ import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.actions.ITreeContextualAction;
 import org.talend.commons.ui.swt.dialogs.ProgressDialog;
+import org.talend.commons.ui.swt.tooltip.AbstractTreeTooltip;
 import org.talend.commons.utils.Timer;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
@@ -208,7 +209,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                 }
             }
         });
-
+        createTreeTooltip(viewer.getTree());
         makeActions();
         hookContextMenu();
         contributeToActionBars();
@@ -286,6 +287,37 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
             });
         }
+    }
+
+    /**
+     * DOC bqian Comment method "createTreeTooltip".
+     * 
+     * @param tree
+     */
+    private void createTreeTooltip(Tree tree) {
+        AbstractTreeTooltip tooltip = new AbstractTreeTooltip(tree) {
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.talend.commons.ui.swt.tooltip.AbstractTreeTooltip#getTooltipContent(org.eclipse.swt.widgets.TreeItem)
+             */
+            @Override
+            public String getTooltipContent(TreeItem item) {
+
+                RepositoryNode node = (RepositoryNode) item.getData();
+                if (node.getObject() == null) {
+                    return null;
+                }
+                String content = node.getObject().getDescription();
+                if (content == null || content.equals("")) {
+                    return null;
+                }
+
+                return content;
+            }
+        };
+
     }
 
     IContextActivation ca;
