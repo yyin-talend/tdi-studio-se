@@ -54,6 +54,8 @@ public class ShadowProcess<T extends IProcessDescription> {
 
     private static final String TEMP_SALEFORCE_SCHEMA_FILE_NAME = "TempSALESFORCESchema";
 
+    private String currentProcessEncoding = "ISO-8859-15";
+
     /**
      * Available Shadow Process Types.
      * 
@@ -181,6 +183,8 @@ public class ShadowProcess<T extends IProcessDescription> {
 
             outNode.setMetadataList(excelNode.getMetadataList());
 
+            currentProcessEncoding = TalendTextUtils.removeQuotes(description.getEncoding());
+
             ps = new FileinToDelimitedProcess<FileInputExcelNode>(excelNode, outNode);
             break;
         case FILE_LDIF:
@@ -267,19 +271,14 @@ public class ShadowProcess<T extends IProcessDescription> {
         if (!outPath.toFile().exists()) {
             throw new ProcessorException(Messages.getString("ShadowProcess.notGeneratedOutputException")); //$NON-NLS-1$
         }
-        // FileInputStream fis = new FileInputStream(outPath.toFile());
+
         try {
             CsvArray array = new CsvArray();
-            array = array.createFrom(outPath.toFile());
+            array = array.createFrom(outPath.toFile(), currentProcessEncoding);
             return array;
         } catch (IOException ioe) {
             throw new ProcessorException(ioe);
         }
-        // catch (ParserConfigurationException pce) {
-        // throw new ProcessorException(pce);
-        // } catch (SAXException se) {
-        // throw new ProcessorException(se);
-        // }
     }
 
     /**
@@ -317,7 +316,7 @@ public class ShadowProcess<T extends IProcessDescription> {
 
         try {
             CsvArray array = new CsvArray();
-            array = array.createFrom(outPath.toFile());
+            array = array.createFrom(outPath.toFile(), currentProcessEncoding);
             return array;
         } catch (IOException ioe) {
             throw new ProcessorException(ioe);
