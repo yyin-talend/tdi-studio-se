@@ -81,7 +81,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             }
 
             if (!BooleanUtils.isTrue(exportChoice.get(ExportChoice.doNotCompileCode))) {
-                generateJobFiles(processItem, contextName, selectedJobVersion,statisticPort != IProcessor.NO_STATISTICS,
+                generateJobFiles(processItem, contextName, selectedJobVersion, statisticPort != IProcessor.NO_STATISTICS,
                         statisticPort != IProcessor.NO_TRACES, exportChoice.get(ExportChoice.applyToChildren));
             }
             List<URL> resources = new ArrayList<URL>();
@@ -280,8 +280,11 @@ public class JobPerlScriptsManager extends JobScriptsManager {
         List<String> list = new ArrayList<String>();
         if (needJob) {
             try {
-                String fileName = PerlResourcesHelper.getJobFileName(process.getProperty().getLabel(), process.getProperty()
-                        .getVersion());
+                String version = process.getProperty().getVersion();
+                if (getSelectedJobVersion() != null) {
+                    version = getSelectedJobVersion();
+                }
+                String fileName = PerlResourcesHelper.getJobFileName(process.getProperty().getLabel(), version);
                 list.add(fileName);
             } catch (Exception e) {
                 ExceptionHandler.process(e);
@@ -375,9 +378,13 @@ public class JobPerlScriptsManager extends JobScriptsManager {
         List<String> list = new ArrayList<String>();
         if (needContext) {
             List<String> contexts = getJobContexts(process);
+            String version = process.getProperty().getVersion();
+            if (getSelectedJobVersion() != null) {
+                version = getSelectedJobVersion();
+            }
             for (String contextName : contexts) {
-                String contextFileName = PerlResourcesHelper.getContextFileName(process.getProperty().getLabel(), process
-                        .getProperty().getVersion(), contextName);
+                String contextFileName = PerlResourcesHelper.getContextFileName(process.getProperty().getLabel(), version,
+                        contextName);
                 list.add(contextFileName);
             }
         }
