@@ -9,10 +9,10 @@
 		<html>
 			<head>
 				<title>Generated documentation</title>
-				<style type="text/css">@page {  size: letter; }
-					SPAN.special { font:12pt black; } TABLE.properties {
-					width:95%; } TD.propname { width:30%; font:bold; }
-					TR.profont{ font:bold; }
+				<style type="text/css">
+					@page { size: letter; } SPAN.special { font:12pt
+					black; } TABLE.properties { width:95%; } TD.propname
+					{ width:30%; font:bold; } TR.profont{ font:bold; }
 
 					TD.propval { width:70%; } TD.dependtype { width:20%;
 					} TD.dependloc { width:60%; } TABLE.cols {
@@ -25,22 +25,24 @@
 					.TOPTITLESTYLE{font-size: 40px; color: #818181;}
 					.TABLECOLUMNSTYLE {font-family: Arial, Helvetica,
 					sans-serif; color: #818181; background-color:
-					#E6E6E6;align: center}</style>
+					#E6E6E6;align: center} tr{page-break-inside: avoid}
+				</style>
 			</head>
 			<body>
 				<br />
-				<table border="0" cellspacing="0" width="90%" class="FONTSTYLE" summary="Job&#160;documentation">
+				<table border="0" cellspacing="0" width="90%"
+					class="FONTSTYLE" summary="Job&#160;documentation">
 					<tr valign="top">
 						<!--<td width="15%" rowspan="2" align="center"></td> -->
 						<td rowspan="2" align="center">
 							<a href="{project/@link}">
 								<img src="{project/@logo}" border="0"
-									align="bottom" alt=""/>
+									align="bottom" alt="" />
 							</a>
 						</td>
 						<!-- <td width="1%" rowspan="2" align="center"></td> -->
 						<td class="TOPTITLESTYLE">
-									<xsl:value-of select="/project/@docType" />
+							<xsl:value-of select="/project/@docType" />
 						</td>
 					</tr>
 					<tr valign="top">
@@ -79,8 +81,7 @@
 							AUTHOR
 						</td>
 						<td align="center" width="25%">
-							<xsl:value-of
-								select="/project/job/@author" />
+							<xsl:value-of select="/project/job/@author" />
 						</td>
 						<td align="center" width="25%"
 							class="TABLECOLUMNSTYLE">
@@ -89,8 +90,7 @@
 						</td>
 						<td align="center" width="25%"
 							class="FONTSTYLE">
-							<xsl:value-of
-								select="/project/@version" />
+							<xsl:value-of select="/project/@version" />
 						</td>
 					</tr>
 				</table>
@@ -116,16 +116,12 @@
 				</div>
 				<div class="FONTSTYLE">
 					<b>
-						<a href="#Job Settings">
-							Job Settings
-						</a>
+						<a href="#Job Settings">Job Settings</a>
 					</b>
 				</div>
 				<div class="FONTSTYLE">
 					<b>
-						<a href="#Context List">
-							Context List
-						</a>
+						<a href="#Context List">Context List</a>
 					</b>
 				</div>
 				<div class="FONTSTYLE">
@@ -151,7 +147,8 @@
 				</h2>
 				<br />
 				<table border="1" width="90%" class="FONTSTYLE"
-					cellpadding="0" cellspacing="0" style="border-collapse: collapse; padding-left:10mm;"
+					cellpadding="0" cellspacing="0"
+					style="border-collapse: collapse; padding-left:10mm;"
 					bordercolor="#111111" summary="">
 					<tr>
 						<th align="left" width="30%"
@@ -169,9 +166,7 @@
 						</td>
 					</tr>
 					<tr>
-						<td class="FONTSTYLE" align="left">
-							Language
-						</td>
+						<td class="FONTSTYLE" align="left">Language</td>
 						<td class="FONTSTYLE" align="left">
 							<xsl:value-of select="/project/@language" />
 						</td>
@@ -190,13 +185,12 @@
 				<br />
 				<xsl:variable name="job" select="/project/job" />
 				<h2 class="FONTSTYLE">
-					<a name="#JobDescription">
-						Job Description
-					</a>
+					<a name="#JobDescription">Job Description</a>
 				</h2>
 				<br />
 				<table border="1" width="90%" cellpadding="0"
-					cellspacing="0" style="border-collapse: collapse; padding-left:10mm;"
+					cellspacing="0"
+					style="border-collapse: collapse; padding-left:10mm;"
 					bordercolor="#111111" frame="box" summary="">
 					<tr>
 						<th align="left" width="30%"
@@ -220,17 +214,13 @@
 						</td>
 					</tr>
 					<tr>
-						<td class="FONTSTYLE" align="left">
-							Version
-						</td>
+						<td class="FONTSTYLE" align="left">Version</td>
 						<td class="FONTSTYLE" align="left">
 							<xsl:value-of select="$job/@version" />
 						</td>
 					</tr>
 					<tr>
-						<td class="FONTSTYLE" align="left">
-							Purpose
-						</td>
+						<td class="FONTSTYLE" align="left">Purpose</td>
 						<td class="FONTSTYLE" align="left">
 							<xsl:value-of select="$job/@purpose" />
 						</td>
@@ -250,9 +240,7 @@
 						</td>
 					</tr>
 					<tr>
-						<td class="FONTSTYLE" align="left">
-							Creation
-						</td>
+						<td class="FONTSTYLE" align="left">Creation</td>
 						<td class="FONTSTYLE" align="left">
 							<xsl:value-of select="$job/@creation" />
 						</td>
@@ -282,7 +270,7 @@
 						<img src="{$jobPreviewPicture}" usemap="#jobmap"
 							alt="No image available" class="bordercolor" />
 					</div>
-										<map id="jobmap" name="jobmap">
+					<map id="jobmap" name="jobmap">
 						<xsl:for-each
 							select="$job/componentList/componentItem">
 							<area shape="rect"
@@ -296,23 +284,21 @@
 				<!-- Job settings -->
 				<!--HR-->
 				<h2 class="FONTSTYLE">
-					<a name="#Job settings">
-						Job settings
-					</a>
+					<a name="#Job settings">Job settings</a>
 				</h2>
 				<table border="0" width="80%" class="FONTSTYLE"
 					cellpadding="0" cellspacing="0" style="border-collapse: collapse"
 					bordercolor="#111111" summary="">
 					<tr bgcolor="#E6E6E6" class="FONTSTYLE">
 						<td class="FONTSTYLE">
-							<b>
-								Extra settings
-							</b>
+							<b>Extra settings</b>
 						</td>
 					</tr>
 				</table>
-				<br/>
-				<xsl:variable name="extra" select="$job/jobSetting/extra"></xsl:variable>
+				<br />
+				<xsl:variable name="extra"
+					select="$job/jobSetting/extra">
+				</xsl:variable>
 				<table width="80%" border="1" cellpadding="0"
 					cellspacing="0"
 					style="border-collapse: collapse; padding-left:10mm;"
@@ -327,17 +313,16 @@
 							Value
 						</th>
 					</tr>
-					<xsl:for-each
-							select="$extra/jobParameter">
-							<tr>
-								<td class="FONTSTYLE" align="left">
-									<xsl:value-of select="@name" />
-								</td>
-								<td class="FONTSTYLE" align="left">
-									<xsl:value-of select="@value" />
-								</td>
-							</tr>
-						</xsl:for-each>
+					<xsl:for-each select="$extra/jobParameter">
+						<tr>
+							<td class="FONTSTYLE" align="left">
+								<xsl:value-of select="@name" />
+							</td>
+							<td class="FONTSTYLE" align="left">
+								<xsl:value-of select="@value" />
+							</td>
+						</tr>
+					</xsl:for-each>
 				</table>
 				<br />
 				<br />
@@ -346,14 +331,14 @@
 					bordercolor="#111111" summary="">
 					<tr bgcolor="#E6E6E6" class="FONTSTYLE">
 						<td class="FONTSTYLE">
-							<b>
-								Stats &amp; Logs
-							</b>
+							<b>Stats &amp; Logs</b>
 						</td>
 					</tr>
 				</table>
-				<br/>
-				<xsl:variable name="statsAndLog" select="$job/jobSetting/Statslogs"></xsl:variable>
+				<br />
+				<xsl:variable name="statsAndLog"
+					select="$job/jobSetting/Statslogs">
+				</xsl:variable>
 				<table width="80%" border="1" cellpadding="0"
 					cellspacing="0"
 					style="border-collapse: collapse; padding-left:10mm;"
@@ -368,16 +353,15 @@
 							Value
 						</th>
 					</tr>
-					<xsl:for-each
-							select="$statsAndLog/jobParameter">
-							<tr>
-								<td class="FONTSTYLE" align="left">
-									<xsl:value-of select="@name" />
-								</td>
-								<td class="FONTSTYLE" align="left">
-									<xsl:value-of select="@value" />
-								</td>
-							</tr>
+					<xsl:for-each select="$statsAndLog/jobParameter">
+						<tr>
+							<td class="FONTSTYLE" align="left">
+								<xsl:value-of select="@name" />
+							</td>
+							<td class="FONTSTYLE" align="left">
+								<xsl:value-of select="@value" />
+							</td>
+						</tr>
 					</xsl:for-each>
 				</table>
 				<br />
@@ -385,9 +369,7 @@
 				<!-- Context List-->
 				<!--HR-->
 				<h2 class="FONTSTYLE">
-					<a name="#Context List">
-						Context List
-					</a>
+					<a name="#Context List">Context List</a>
 				</h2>
 				<xsl:for-each select="$job/contextList/context">
 					<table border="0" width="80%" class="FONTSTYLE"
@@ -466,12 +448,11 @@
 				<!-- Component List-->
 				<!--HR-->
 				<h2 class="FONTSTYLE">
-					<a name="#ComponentList">
-						Component List
-					</a>
+					<a name="#ComponentList">Component List</a>
 				</h2>
 				<table width="60%" border="1" cellpadding="0"
-					cellspacing="0" style="border-collapse: collapse; padding-left:10mm;"
+					cellspacing="0"
+					style="border-collapse: collapse; padding-left:10mm;"
 					bordercolor="#111111" frame="box" summary="">
 					<tr>
 						<th width="50%" align="left"
@@ -480,8 +461,7 @@
 						</th>
 						<th width="50%" align="left"
 							class="TABLECOLUMNSTYLE">
-							Component
-							Type
+							Component Type
 						</th>
 					</tr>
 					<xsl:for-each
@@ -514,8 +494,10 @@
 						bordercolor="#111111" summary="">
 						<tr bgcolor="#E6E6E6" class="FONTSTYLE">
 							<td class="FONTSTYLE">
-								<b>Component:&#160;&#160;
-								<xsl:value-of select="componentType" />
+								<b>
+									Component:&#160;&#160;
+									<xsl:value-of
+										select="componentType" />
 								</b>
 							</td>
 						</tr>
@@ -527,7 +509,7 @@
 						<tr>
 							<td class="cols" align="center" rowspan="2"
 								width="10%">
-								<img src="{@icon}" alt=""/>
+								<img src="{@icon}" alt="" />
 								&#160;&#160;&#160;&#160;&#160;
 							</td>
 							<td align="center" class="TABLECOLUMNSTYLE"
@@ -613,8 +595,9 @@
 					<br />
 					<b class="FONTSTYLE">Component Parameters:</b>
 					<br />
-					<table class="cols" width="90%" border="1" cellpadding="0"
-						cellspacing="0" style="border-collapse: collapse; padding-left:10mm;"
+					<table class="cols" width="90%" border="1"
+						cellpadding="0" cellspacing="0"
+						style="border-collapse: collapse; padding-left:10mm;"
 						bordercolor="#111111" frame="box" summary="">
 						<tr>
 							<th align="left" width="30%"
@@ -647,8 +630,8 @@
 							:
 						</b>
 						<br />
-						<table class="cols" width="90%" border="1" cellpadding="0"
-							cellspacing="0" style="border-collapse: collapse"
+						<table class="cols" width="90%" border="1"
+							cellpadding="0" cellspacing="0" style="border-collapse: collapse"
 							bordercolor="#111111" frame="box" summary="">
 							<tr class="profont">
 								<th class="TABLECOLUMNSTYLE"
@@ -719,8 +702,10 @@
 						bordercolor="#111111" summary="">
 						<tr bgcolor="#E6E6E6">
 							<td class="FONTSTYLE">
-								<b>Component:&#160;&#160;
-								<xsl:value-of select="componentType" />
+								<b>
+									Component:&#160;&#160;
+									<xsl:value-of
+										select="componentType" />
 								</b>
 							</td>
 						</tr>
@@ -732,7 +717,7 @@
 						<tr>
 							<td class="cols" align="center" rowspan="2"
 								width="10%">
-								<img src="{@icon}" alt=""/>
+								<img src="{@icon}" alt="" />
 								&#160;&#160;&#160;&#160;&#160;
 							</td>
 							<td align="center" class="TABLECOLUMNSTYLE"
@@ -818,8 +803,8 @@
 					<br />
 					<b class="FONTSTYLE">Component Parameters:</b>
 					<br />
-					<table width="90%" class="FONTSTYLE" border="1" cellpadding="0"
-						cellspacing="0" style="border-collapse: collapse"
+					<table width="90%" class="FONTSTYLE" border="1"
+						cellpadding="0" cellspacing="0" style="border-collapse: collapse"
 						bordercolor="#111111" frame="box" summary="">
 						<tr>
 							<th align="center" width="30%"
@@ -917,8 +902,10 @@
 					</xsl:for-each>
 					<br />
 					<xsl:comment>
-						<xsl:value-of select="@uniqueName" />ended</xsl:comment>
-						<xsl:text /><!--before: $job/externalNodeComponents/component/@uniqueName -->
+						<xsl:value-of select="@uniqueName" />
+						ended
+					</xsl:comment>
+					<xsl:text /><!--before: $job/externalNodeComponents/component/@uniqueName -->
 				</xsl:for-each>
 			</body>
 		</html>
