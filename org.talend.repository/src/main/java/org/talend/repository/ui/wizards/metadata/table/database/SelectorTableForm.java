@@ -20,10 +20,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -124,6 +126,9 @@ public class SelectorTableForm extends AbstractForm {
     private Text nameFilter;
 
     private final TableInfoParameters tableInfoParameters;
+
+    // store column number for each table name
+    private Map<String, Integer> tableColumnNums = new HashMap<String, Integer>();
 
     /**
      * TableForm Constructor to use by RCP Wizard.
@@ -520,6 +525,7 @@ public class SelectorTableForm extends AbstractForm {
                         item.setText(1, ExtractMetaDataFromDataBase.getTableTypeByTableName(nameTable));
                     }
                 }
+                restoreCheckItems();
                 if (displayMessageBox) {
                     String msg = Messages.getString("DatabaseTableForm.connectionIsDone"); //$NON-NLS-1$
                     openInfoDialogInUIThread(getShell(), Messages.getString("DatabaseTableForm.checkConnection"), msg, false);
@@ -795,6 +801,7 @@ public class SelectorTableForm extends AbstractForm {
             if (checkConnectionIsDone) {
                 tableItem.setText(2, "" + metadataColumns.size()); //$NON-NLS-1$
                 tableItem.setText(3, Messages.getString("SelectorTableForm.Success")); //$NON-NLS-1$
+                tableColumnNums.put(tableItem.getText(0), metadataColumns.size());
             } else {
                 updateStatus(IStatus.WARNING, Messages.getString("DatabaseTableForm.connectionFailure")); //$NON-NLS-1$
                 new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("DatabaseTableForm.connectionFailure"), //$NON-NLS-1$
@@ -828,7 +835,13 @@ public class SelectorTableForm extends AbstractForm {
     }
 
     private void clearTableItem(TableItem item) {
-        deleteTable(item);
+        clearTableItem(item, true);
+    }
+
+    private void clearTableItem(TableItem item, boolean deleteFromConnection) {
+        if (deleteFromConnection) {
+            deleteTable(item);
+        }
         item.setText(2, ""); //$NON-NLS-1$
         item.setText(3, ""); //$NON-NLS-1$
         RetrieveColumnRunnable runnable = threadExecutor.getRunnable(item);
@@ -875,7 +888,7 @@ public class SelectorTableForm extends AbstractForm {
                 for (int j = 0; j < table.getItemCount(); j++) {
                     TableItem item = table.getItem(j);
                     if (item.getChecked()) {
-                        clearTableItem(item);
+                        clearTableItem(item, false);
                         item.setChecked(false);
                     }
                 }
@@ -890,6 +903,31 @@ public class SelectorTableForm extends AbstractForm {
             }
 
         });
+    }
+
+    /**
+     * DOC hcw Comment method "restoreCheckItems".
+     */
+    protected void restoreCheckItems() {
+        Set<String> checkedItems = new HashSet<String>();
+        for (Object obj : getConnection().getTables()) {
+            MetadataTable table = (MetadataTable) obj;
+            checkedItems.add(table.getLabel());
+        }
+        for (TableItem tableItem : table.getItems()) {
+            if (checkedItems.contains(tableItem.getText(0))) {
+                tableItem.setChecked(true);
+                Integer num = tableColumnNums.get(tableItem.getText(0));
+                if (num != null) {
+                    // get column num from previous result
+                    tableItem.setText(2, num.toString());
+                    tableItem.setText(3, Messages.getString("SelectorTableForm.Success")); //$NON-NLS-1$   
+                } else {
+                    // retrieve column num again
+                    refreshTable(tableItem, -1);
+                }
+            }
+        }
     }
 
     /**
