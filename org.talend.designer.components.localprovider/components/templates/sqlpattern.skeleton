@@ -496,6 +496,12 @@ public class CLASS {
         }
         resultBuilder.append(param).append("_struct_").append(cid).append("[] ").append(param).append("_").append(cid)
                 .append(" = new ").append(param).append("_struct_").append(cid).append(" [").append(size).append("];\n");
+                
+        resultBuilder.append("String[] ").append(param).append("_NAME_").append(cid).append(" = new String[").append(size).append("];\n");
+        resultBuilder.append("String[] ").append(param).append("_DBTYPE_").append(cid).append(" = new String[").append(size).append("];\n");
+        resultBuilder.append("String[] ").append(param).append("_ISKEY_").append(cid).append(" = new String[").append(size).append("];\n");
+        resultBuilder.append("String[] ").append(param).append("_LENGTH_").append(cid).append(" = new String[").append(size).append("];\n");
+        resultBuilder.append("String[] ").append(param).append("_NULLABLE_").append(cid).append(" = new String[").append(size).append("];\n");
         for (int i = 0; i < size; i++) {
             IMetadataColumn column = schemaValue.get(i);
             resultBuilder.append(param).append("_").append(cid).append("[").append(i).append("] = new ").append(param).append(
@@ -510,8 +516,18 @@ public class CLASS {
                     column.getLength()).append(";\n");
             resultBuilder.append(param).append("_").append(cid).append("[").append(i).append("].nullable = ").append(column.isNullable())
             .append(";\n");
+            resultBuilder.append(param).append("_NAME_").append(cid).append("[").append(i).append("] = ").append("\"").append(
+                    column.getLabel()).append("\";\n");
+        	resultBuilder.append(param).append("_DBTYPE_").append(cid).append("[").append(i).append("] = ").append("\"").append(
+                    column.getType()).append("\";\n");
+        	resultBuilder.append(param).append("_ISKEY_").append(cid).append("[").append(i).append("] = ").append("\"").append(
+        			column.isKey()).append("\";\n");
+        	resultBuilder.append(param).append("_LENGTH_").append(cid).append("[").append(i).append("] = ").append("\"").append(
+        			column.getLength()).append("\";\n");
+        	resultBuilder.append(param).append("_NULLABLE_").append(cid).append("[").append(i).append("] = ").append("\"").append(
+        			column.isNullable()).append("\";\n");
         }
-
+        
         return resultBuilder.toString();
     }
 
