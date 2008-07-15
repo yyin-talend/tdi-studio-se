@@ -114,6 +114,9 @@ class GenerateToolByDom4j{
 			for(XMLNode attri:node.attributes){
 				addAttribute(currEleName,attri);
 			}
+%>
+			<%=currEleName%>_<%=cid%>.setName("<%=node.name%>");
+<%
 			int index = 0;
 			for(XMLNode child:node.elements){
 				if(0==(child.special & 1)){
@@ -135,9 +138,21 @@ class GenerateToolByDom4j{
 		}
 	}
 	private void createElement(String currEleName, XMLNode node, String parentName){
+		int index = node.name.indexOf(":");
+		if(index>0 && node.parent!=null){
+%>
+		org.dom4j.Element <%=currEleName%>_<%=cid%>;
+		if (<%=parentName%>_<%=cid%>.getNamespaceForPrefix("<%=node.name.substring(0,index)%>") == null) {
+            <%=currEleName%>_<%=cid%> = <%=parentName%>_<%=cid%>.addElement("<%=node.name.substring(index+1)%>");
+        } else {
+        	<%=currEleName%>_<%=cid%> = <%=parentName%>_<%=cid%>.addElement("<%=node.name%>");
+        }
+<%
+		}else{
 %>
 		org.dom4j.Element <%=currEleName%>_<%=cid%> = <%=parentName%>_<%=cid%>.addElement("<%=node.name%>");
 <%
+		}
 		if(0!=(node.special & 2)){
 %>
 		subTreeRootParent_<%=cid%> = <%=currEleName%>_<%=cid%>;
