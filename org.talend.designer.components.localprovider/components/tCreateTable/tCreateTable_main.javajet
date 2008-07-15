@@ -137,9 +137,7 @@ abstract class  Manager {
                 createTableSQL.append(suffix);
             }
             createTableSQL.append(getDefaultValueSQL(metadataColumn.getDefault()));            
-            if(!metadataColumn.isNullable()) {
-                createTableSQL.append(" not null ");
-            }            
+            createTableSQL.append(setNullable(metadataColumn.isNullable()));            
             if(count == listColumn.size() - 1 && pkList.size() == 0) {
                 ending = "";
             }
@@ -161,6 +159,13 @@ abstract class  Manager {
         createTableSQL.append(")");
         return createTableSQL.toString();
     }
+    protected String setNullable(boolean nullable) {
+        if(!nullable) {
+            return " not null ";
+        } else {
+            return "";
+        }
+    }    
     private String getDefaultValueSQL(String defaultValue) {
         if(defaultValue == null || defaultValue.equals("\"\"") || defaultValue.equals("")) {
             return " ";
@@ -842,6 +847,13 @@ class SybaseManager extends Manager {
     protected String getRProtectedChar() {
         return "";
     }
+    protected String setNullable(boolean nullable) {
+        if(!nullable) {
+            return " not null ";
+        } else {
+            return " null ";
+        }
+    }    
 }
 class ODBCManager extends Manager {
     public ODBCManager(String dbName, String tableName, String userName, String password, String cid) {
