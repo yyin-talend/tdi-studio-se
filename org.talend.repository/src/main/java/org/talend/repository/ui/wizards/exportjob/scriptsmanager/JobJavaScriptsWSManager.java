@@ -120,6 +120,12 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
 
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = (ProcessItem) process[i].getItem();
+
+            String selectedJobVersion = processItem.getProperty().getVersion();
+            if (!isMultiNodes() && this.getSelectedJobVersion() != null) {
+                selectedJobVersion = this.getSelectedJobVersion();
+            }
+
             // generate the source files
             String libPath = calculateLibraryPathFromDirectory(process[i].getDirectoryName());
             // use character @ as temporary classpath separator, this one will be replaced during the export.
@@ -128,7 +134,7 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
             ProcessorUtilities.setExportConfig("java", standardJars, libPath); //$NON-NLS-1$
 
             if (!BooleanUtils.isTrue(exportChoice.get(ExportChoice.doNotCompileCode))) {
-                generateJobFiles(processItem, contextName, statisticPort != IProcessor.NO_STATISTICS,
+                generateJobFiles(processItem, contextName, selectedJobVersion, statisticPort != IProcessor.NO_STATISTICS,
                         tracePort != IProcessor.NO_TRACES, BooleanUtils.isTrue(exportChoice.get(ExportChoice.applyToChildren)));
             }
             // generate the WSDL file
@@ -141,13 +147,14 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
 
             // add children jobs
             boolean needChildren = true;
-            addSubJobResources(processItem, needChildren, exportChoice, libResource, contextResource, srcResource);
+            addSubJobResources(processItem, needChildren, exportChoice, libResource, contextResource, srcResource,
+                    selectedJobVersion);
 
             // generate the context file
-            getContextScripts(processItem, needContext, contextResource);
+            getContextScripts(processItem, needContext, contextResource, selectedJobVersion);
 
             // generate jar file for job
-            libResource.addResources(getJobScripts(processItem, needJob));
+            libResource.addResources(getJobScripts(processItem, selectedJobVersion, needJob));
         }
 
         // generate Server Config file
@@ -184,7 +191,8 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
     }
 
     private void addSubJobResources(ProcessItem process, boolean needChildren, Map<ExportChoice, Boolean> exportChoice,
-            ExportFileResource libResource, ExportFileResource contextResource, ExportFileResource srcResource) {
+            ExportFileResource libResource, ExportFileResource contextResource, ExportFileResource srcResource,
+            String selectedJobVersion) {
 
         List<JobInfo> list = new ArrayList<JobInfo>();
 
@@ -193,7 +201,7 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
             try {
                 List<ProcessItem> processedJob = new ArrayList<ProcessItem>();
                 getChildrenJobAndContextName(process.getProperty().getLabel(), list, process, projectName, processedJob,
-                        srcResource, exportChoice);
+                        srcResource, exportChoice, selectedJobVersion);
             } catch (Exception e) {
                 ExceptionHandler.process(e);
             }
@@ -221,9 +229,10 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
 
     }
 
-    protected void getContextScripts(ProcessItem processItem, Boolean needContext, ExportFileResource contextResource) {
+    protected void getContextScripts(ProcessItem processItem, Boolean needContext, ExportFileResource contextResource,
+            String version) {
         String jobName = processItem.getProperty().getLabel();
-        addContextScripts(processItem, jobName, processItem.getProperty().getVersion(), contextResource, needContext);
+        addContextScripts(processItem, jobName, version, contextResource, needContext);
     }
 
     protected List<URL> getAxisLib(Boolean needAxisLib) {
@@ -273,8 +282,13 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
         try {
             String projectName = getCurrentProjectName();
             String jobName = processItem.getProperty().getLabel();
-            String jobFolderName = JavaResourcesHelper.getJobFolderName(escapeFileNameSpace(processItem), processItem
-                    .getProperty().getVersion());
+            String selectedProcessVersion = processItem.getProperty().getVersion();
+
+            if (!isMultiNodes() && this.getSelectedJobVersion() != null) {
+                selectedProcessVersion = this.getSelectedJobVersion();
+            }
+
+            String jobFolderName = JavaResourcesHelper.getJobFolderName(escapeFileNameSpace(processItem), selectedProcessVersion);
 
             String classRoot = getClassRootLocation();
 
@@ -371,8 +385,12 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
      */
     private void editWSDDFile(ProcessItem processItem) {
         String projectName = getCurrentProjectName();
-        String jobFolderName = JavaResourcesHelper.getJobFolderName(escapeFileNameSpace(processItem), processItem.getProperty()
-                .getVersion());
+        String selectedProcessVersion = processItem.getProperty().getVersion();
+        if (!isMultiNodes() && this.getSelectedJobVersion() != null) {
+            selectedProcessVersion = this.getSelectedJobVersion();
+        }
+
+        String jobFolderName = JavaResourcesHelper.getJobFolderName(escapeFileNameSpace(processItem), selectedProcessVersion);
 
         String deployFileName = getTmpFolder() + PATH_SEPARATOR + projectName + PATH_SEPARATOR + jobFolderName + PATH_SEPARATOR
                 + "deploy.wsdd"; //$NON-NLS-1$

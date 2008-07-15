@@ -25,15 +25,20 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.utils.PerlResourcesHelper;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
+import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.local.ExportItemUtil;
@@ -435,5 +440,24 @@ public abstract class JobScriptsManager {
     public boolean isMultiNodes() {
         return this.isMultiNodes;
     }
+
+    protected IPath getEmfFileRootPath() throws Exception {
+        IPath root = getCurrnetProjectRootPath().append(ERepositoryObjectType.getFolderName(ERepositoryObjectType.PROCESS));
+        return root;
+    }
+
+    protected IPath getCurrnetProjectRootPath() throws Exception {
+        IProject project = RepositoryPlugin.getDefault().getRunProcessService().getProject(LanguageManager.getCurrentLanguage());
+
+        IPath root = project.getParent().getLocation().append(getCurrentProjectName().toUpperCase());
+        return root;
+    }
+
+    /**
+     * Gets current project name.
+     * 
+     * @return
+     */
+    protected abstract String getCurrentProjectName();
 
 }

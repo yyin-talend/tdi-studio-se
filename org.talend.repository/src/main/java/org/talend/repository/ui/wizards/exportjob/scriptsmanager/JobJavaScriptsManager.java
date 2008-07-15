@@ -38,11 +38,11 @@ import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ProcessItem;
-import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.runprocess.IProcessor;
+import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.designer.runprocess.JobInfo;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
@@ -80,9 +80,9 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = (ProcessItem) process[i].getItem();
-            String selectedJobVersion = getSelectedJobVersion();
-            if (selectedJobVersion == null) {
-                selectedJobVersion = process[i].getItem().getProperty().getVersion();
+            String selectedJobVersion = processItem.getProperty().getVersion();
+            if (!isMultiNodes() && this.getSelectedJobVersion() != null) {
+                selectedJobVersion = this.getSelectedJobVersion();
             }
 
             String libPath = calculateLibraryPathFromDirectory(process[i].getDirectoryName());
@@ -344,7 +344,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         processedJob.add(process);
         addSource(process, exportChoice.get(ExportChoice.needSource), resource, JOB_SOURCE_FOLDER_NAME, selectedJobVersion);
 
-        Set<JobInfo> subjobInfos = ProcessorUtilities.getChildrenJobInfo(process);
+        Set<JobInfo> subjobInfos = ProcessorUtilities.getChildrenJobInfo(process, selectedJobVersion);
         for (JobInfo subjobInfo : subjobInfos) {
             String processLabel = subjobInfo.getJobName();
             if (processLabel.equals(rootName)) {
@@ -387,7 +387,14 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         IDesignerCoreService designerService = RepositoryPlugin.getDefault().getDesignerCoreService();
         for (int i = 0; i < process.length; i++) {
             ExportFileResource resource = process[i];
-            IProcess iProcess = designerService.getProcessFromProcessItem((ProcessItem) resource.getItem());
+            ProcessItem item = (ProcessItem) resource.getItem();
+
+            String version = item.getProperty().getVersion();
+            if (!isMultiNodes() && this.getSelectedJobVersion() != null) {
+                version = this.getSelectedJobVersion();
+            }
+            ProcessItem selectedProcessItem = ItemCacheManager.getProcessItem(item.getProperty().getId(), version);
+            IProcess iProcess = designerService.getProcessFromProcessItem(selectedProcessItem);
             listModulesReallyNeeded.addAll(iProcess.getNeededLibraries(true));
         }
 
@@ -537,15 +544,6 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     }
 
     /**
-     * Gets current project name.
-     * 
-     * @return
-     */
-    protected String getCurrentProjectName() {
-        return JavaResourcesHelper.getCurrentProjectName();
-    }
-
-    /**
      * Gets system routine.
      * 
      * @param needSystemRoutine
@@ -637,15 +635,12 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         return contextNameList;
     }
 
-    private IPath getEmfFileRootPath() throws Exception {
-        IPath root = getCurrnetProjectRootPath().append(ERepositoryObjectType.getFolderName(ERepositoryObjectType.PROCESS));
-        return root;
-    }
-
-    private IPath getCurrnetProjectRootPath() throws Exception {
-        IProject project = RepositoryPlugin.getDefault().getRunProcessService().getProject(ECodeLanguage.JAVA);
-
-        IPath root = project.getParent().getLocation().append(getCurrentProjectName().toUpperCase());
-        return root;
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager#getCurrentProjectName()
+     */
+    protected String getCurrentProjectName() {
+        return JavaResourcesHelper.getCurrentProjectName();
     }
 }

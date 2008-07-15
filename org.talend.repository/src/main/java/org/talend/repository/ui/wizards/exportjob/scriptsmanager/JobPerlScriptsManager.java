@@ -26,6 +26,8 @@ import java.util.Set;
 import org.apache.commons.lang.BooleanUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.emf.common.util.EList;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
@@ -42,6 +44,7 @@ import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.designer.runprocess.JobInfo;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.RepositoryPlugin;
+import org.talend.repository.constants.FileConstants;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.model.ComponentsFactoryProvider;
 
@@ -112,7 +115,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             resources.addAll(getJobScripts(processItem, exportChoice.get(ExportChoice.needJob)));
             resources.addAll(getContextScripts(processItem, exportChoice.get(ExportChoice.needContext)));
             boolean needChildren = exportChoice.get(ExportChoice.needJob) && exportChoice.get(ExportChoice.needContext);
-            addChildrenResources(processItem, needChildren, process[i], exportChoice, contextName);
+            addChildrenResources(processItem, needChildren, process[i], exportChoice, contextName, selectedJobVersion);
             process[i].addResources(resources);
         }
         return Arrays.asList(process);
@@ -281,7 +284,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
         if (needJob) {
             try {
                 String version = process.getProperty().getVersion();
-                if (getSelectedJobVersion() != null) {
+                if (!isMultiNodes() && getSelectedJobVersion() != null) {
                     version = getSelectedJobVersion();
                 }
                 String fileName = PerlResourcesHelper.getJobFileName(process.getProperty().getLabel(), version);
@@ -294,24 +297,24 @@ public class JobPerlScriptsManager extends JobScriptsManager {
         return getResourcesURL(resources, list);
     }
 
-    /**
-     * DOC acer Comment method "getCurrentProjectName".
+    /*
+     * (non-Javadoc)
      * 
-     * @return
+     * @see org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager#getCurrentProjectName()
      */
-    private String getCurrentProjectName() {
+    protected String getCurrentProjectName() {
         return PerlResourcesHelper.getCurrentProjectName();
     }
 
     private void addChildrenResources(ProcessItem process, boolean needChildren, ExportFileResource resource,
-            Map<ExportChoice, Boolean> exportChoice, String contextName) {
+            Map<ExportChoice, Boolean> exportChoice, String contextName, String... selectedJobVersion) {
         List<String> list = new ArrayList<String>();
         if (needChildren) {
             String projectName = getCurrentProjectName();
             try {
                 List<ProcessItem> processedJob = new ArrayList<ProcessItem>();
                 getChildrenJobAndContextName(process.getProperty().getLabel(), list, process, projectName, processedJob,
-                        resource, exportChoice, contextName);
+                        resource, exportChoice, contextName, selectedJobVersion);
             } catch (Exception e) {
                 ExceptionHandler.process(e);
             }
@@ -324,14 +327,14 @@ public class JobPerlScriptsManager extends JobScriptsManager {
 
     private void getChildrenJobAndContextName(String rootName, List<String> list, ProcessItem process, String projectName,
             List<ProcessItem> processedJob, ExportFileResource resource, Map<ExportChoice, Boolean> exportChoice,
-            String fatherContext) {
+            String fatherContext, String... selectedJobVersion) {
         if (processedJob.contains(process)) {
             // prevent circle
             return;
         }
         processedJob.add(process);
         addComponentModules(process, resource);
-        addSource(process, exportChoice.get(ExportChoice.needSource), resource, JOB_SOURCE_FOLDER_NAME);
+        addSource(process, exportChoice.get(ExportChoice.needSource), resource, JOB_SOURCE_FOLDER_NAME, selectedJobVersion);
 
         ItemCacheManager.clearCache();
         Set<JobInfo> subjobInfos = ProcessorUtilities.getChildrenJobInfo(process);
@@ -379,7 +382,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
         if (needContext) {
             List<String> contexts = getJobContexts(process);
             String version = process.getProperty().getVersion();
-            if (getSelectedJobVersion() != null) {
+            if (!isMultiNodes() && getSelectedJobVersion() != null) {
                 version = getSelectedJobVersion();
             }
             for (String contextName : contexts) {
@@ -413,5 +416,49 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             }
         }
         return contextNameList;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager#getSource(org.talend.core.model.properties.ProcessItem,
+     * boolean)
+     */
+    @Override
+    protected void addSource(ProcessItem processItem, boolean needSource, ExportFileResource resource, String basePath,
+            String... selectedJobVersion) {
+        if (!needSource) {
+            return;
+        }
+
+        // getItemResource(processItem, resource, basePath, selectedJobVersion);
+        // super.addSource(processItem, needSource, resource, basePath, selectedJobVersion);
+        // Get java src
+        try {
+            String jobName = processItem.getProperty().getLabel();
+            String jobVersion = processItem.getProperty().getVersion();
+            if (!isMultiNodes() && selectedJobVersion != null && selectedJobVersion.length == 1) {
+                jobVersion = selectedJobVersion[0];
+            }
+
+            IPath projectFilePath = getCurrnetProjectRootPath().append(FileConstants.LOCAL_PROJECT_FILENAME);
+
+            String processPath = processItem.getState().getPath();
+            processPath = processPath == null || processPath.equals("") ? "" : processPath;
+
+            IPath itemFilePath = getEmfFileRootPath().append(processPath).append(
+                    jobName + "_" + jobVersion + "." + FileConstants.ITEM_EXTENSION);
+            IPath propertiesFilePath = getEmfFileRootPath().append(processPath).append(
+                    jobName + "_" + jobVersion + "." + FileConstants.PROPERTIES_EXTENSION);
+
+            List<URL> projectAndEmfFileUrls = new ArrayList<URL>();
+            projectAndEmfFileUrls.add(FileLocator.toFileURL(projectFilePath.toFile().toURL()));
+            projectAndEmfFileUrls.add(FileLocator.toFileURL(itemFilePath.toFile().toURL()));
+            projectAndEmfFileUrls.add(FileLocator.toFileURL(propertiesFilePath.toFile().toURL()));
+            resource.addResources(basePath, projectAndEmfFileUrls);
+
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
     }
 }
