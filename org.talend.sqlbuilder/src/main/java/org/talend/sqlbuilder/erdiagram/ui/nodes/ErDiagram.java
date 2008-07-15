@@ -136,8 +136,9 @@ public class ErDiagram extends Element {
         Map<String, Column> allColumns = new HashMap<String, Column>();
         for (Table table : tables) {
             for (Column column : (List<Column>) table.getColumns()) {
+                String columnName = table.getElementName();
                 allColumns.put(
-                        table.getElementName().toLowerCase() + "." + column.getElementName().toLowerCase(), column); //$NON-NLS-1$
+                        columnName != null ? columnName.toLowerCase() : "" + "." + column.getElementName().toLowerCase(), column); //$NON-NLS-1$
             }
         }
 

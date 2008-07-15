@@ -89,7 +89,7 @@ public class Table extends Element {
                 } else if (selectedColumns.contains(metadataColumn)) {
                     column.setSelected(true);
                 }
-                
+
                 column.setTable(this);
                 addColumn(column);
             }
@@ -102,7 +102,7 @@ public class Table extends Element {
      * 
      * @param column
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     private void addColumn(Object column) {
         columns.add(column);
     }
@@ -128,7 +128,8 @@ public class Table extends Element {
         this.metadataTable = metadataTable;
         formColumns(selectedColumns);
         size.height = 17;
-        size.width = this.metadataTable.getSourceName().length() * 7 + 6;
+        String sourceName = this.metadataTable.getSourceName();
+        size.width = (sourceName == null ? 0 : sourceName.length()) * 7 + 6;
         for (Object object : columns) {
             if (object instanceof Column) {
                 Dimension dimension = ((Column) object).getSize();
