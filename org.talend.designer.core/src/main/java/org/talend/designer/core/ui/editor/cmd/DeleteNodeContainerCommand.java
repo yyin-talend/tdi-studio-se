@@ -43,7 +43,8 @@ public class DeleteNodeContainerCommand extends Command {
         setLabel(Messages.getString("DeleteNodeCommand.Label")); //$NON-NLS-1$
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @Override
+    @SuppressWarnings("unchecked")
     public void execute() {
         process.setActivate(false);
 
@@ -60,7 +61,7 @@ public class DeleteNodeContainerCommand extends Command {
                 connection.getSourceNodeConnector().setCurLinkNbOutput(
                         connection.getSourceNodeConnector().getCurLinkNbOutput() - 1);
 
-                Node prevNode = (Node) connection.getSource();
+                Node prevNode = connection.getSource();
                 if (!nodeList.contains(prevNode)) {
                     INodeConnector nodeConnector = prevNode.getConnectorFromType(connection.getLineStyle());
                     nodeConnector.setCurLinkNbOutput(nodeConnector.getCurLinkNbOutput() - 1);
@@ -69,7 +70,7 @@ public class DeleteNodeContainerCommand extends Command {
                 }
             }
             for (Connection connection : outputList) {
-                Node nextNode = (Node) connection.getTarget();
+                Node nextNode = connection.getTarget();
                 if (!nodeList.contains(nextNode)) {
                     INodeConnector nodeConnector = nextNode.getConnectorFromType(connection.getLineStyle());
                     nodeConnector.setCurLinkNbInput(nodeConnector.getCurLinkNbInput() - 1);
@@ -98,7 +99,8 @@ public class DeleteNodeContainerCommand extends Command {
         process.checkProcess();
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @Override
+    @SuppressWarnings("unchecked")
     public void undo() {
         process.setActivate(false);
         for (Node node : nodeList) {
@@ -111,7 +113,11 @@ public class DeleteNodeContainerCommand extends Command {
             boolean builtIn = node.getConnectorFromType(EConnectionType.FLOW_MAIN).isBuiltIn()
                     | node.getConnectorFromType(EConnectionType.TABLE).isBuiltIn();
             for (Connection connection : inputList) {
-                Node prevNode = (Node) connection.getSource();
+                // see bug 0004514: need to undo for 0002633
+                connection.getSourceNodeConnector().setCurLinkNbOutput(
+                        connection.getSourceNodeConnector().getCurLinkNbOutput() + 1);
+
+                Node prevNode = connection.getSource();
                 if (!nodeList.contains(prevNode)) {
                     prevNode.addOutput(connection);
                     INodeConnector nodeConnector = prevNode.getConnectorFromType(connection.getLineStyle());
@@ -123,7 +129,7 @@ public class DeleteNodeContainerCommand extends Command {
                 }
             }
             for (Connection connection : outputList) {
-                Node nextNode = (Node) connection.getTarget();
+                Node nextNode = connection.getTarget();
                 if (!nodeList.contains(nextNode)) {
                     nextNode.addInput(connection);
                     INodeConnector nodeConnector = nextNode.getConnectorFromType(connection.getLineStyle());
@@ -149,6 +155,7 @@ public class DeleteNodeContainerCommand extends Command {
         process.checkProcess();
     }
 
+    @Override
     public void redo() {
         this.execute();
     }
