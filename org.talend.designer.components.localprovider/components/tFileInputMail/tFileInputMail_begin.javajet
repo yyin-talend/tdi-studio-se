@@ -97,8 +97,8 @@ try{
                  for (int i = 0; i < mp<%=cid%>.getCount(); i++) {
                      javax.mail.BodyPart mpart<%=cid%> = mp<%=cid%>.getBodyPart(i);
                      String disposition<%=cid%> = mpart<%=cid%>.getDisposition();
-                     if (!((dispositiontFileInputMail_1 != null) && ((dispositiontFileInputMail_1
-                                .equals(javax.mail.Part.ATTACHMENT)) || (dispositiontFileInputMail_1.equals(javax.mail.Part.INLINE)))))                    
+                     if (!((disposition<%=cid%> != null) && ((disposition<%=cid%>
+                                .equals(javax.mail.Part.ATTACHMENT)) || (disposition<%=cid%>.equals(javax.mail.Part.INLINE)))))                    
                          list_<%=cid %>.add(mpart<%=cid%>.getContent().toString());
                  }
      		 } else {
