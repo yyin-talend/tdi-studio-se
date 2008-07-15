@@ -619,15 +619,20 @@ public class JavaProcessor extends Processor {
             if (!sourceFolder.exists()) {
                 sourceFolder.create(false, true, null);
             }
-        } else if (prj.getNature(JavaCore.NATURE_ID) == null && nature != null) {
-            IProjectDescription description = prj.getDescription();
-            String[] natures = description.getNatureIds();
-            String[] newNatures = new String[natures.length + 1];
-            System.arraycopy(natures, 0, newNatures, 0, natures.length);
-            newNatures[natures.length] = JavaCore.NATURE_ID;
-            description.setNatureIds(newNatures);
-            prj.open(IResource.BACKGROUND_REFRESH, null);
-            prj.setDescription(description, null);
+        } else {
+            if (!prj.isOpen()) {
+                prj.open(null);
+            }
+            if (prj.getNature(JavaCore.NATURE_ID) == null && nature != null) {
+                IProjectDescription description = prj.getDescription();
+                String[] natures = description.getNatureIds();
+                String[] newNatures = new String[natures.length + 1];
+                System.arraycopy(natures, 0, newNatures, 0, natures.length);
+                newNatures[natures.length] = JavaCore.NATURE_ID;
+                description.setNatureIds(newNatures);
+                prj.open(IResource.BACKGROUND_REFRESH, null);
+                prj.setDescription(description, null);
+            }
         }
     }
 

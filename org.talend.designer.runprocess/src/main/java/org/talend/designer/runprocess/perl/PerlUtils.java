@@ -96,14 +96,21 @@ public final class PerlUtils {
             }
             prj.create(desc, null);
             prj.open(IResource.BACKGROUND_REFRESH, null);
-        } else if (prj.getNature(PERL_NATURE) == null && nature != null) {
-            IProjectDescription description = prj.getDescription();
-            String[] natures = description.getNatureIds();
-            String[] newNatures = new String[natures.length + 1];
-            System.arraycopy(natures, 0, newNatures, 0, natures.length);
-            newNatures[natures.length] = PERL_NATURE;
-            description.setNatureIds(newNatures);
-            prj.setDescription(description, null);
+        } else {
+            if (!prj.isOpen()) {
+                prj.open(null);
+            }
+
+            if (prj.getNature(PERL_NATURE) == null && nature != null) {
+
+                IProjectDescription description = prj.getDescription();
+                String[] natures = description.getNatureIds();
+                String[] newNatures = new String[natures.length + 1];
+                System.arraycopy(natures, 0, newNatures, 0, natures.length);
+                newNatures[natures.length] = PERL_NATURE;
+                description.setNatureIds(newNatures);
+                prj.setDescription(description, null);
+            }
         }
 
         // Fix perl module includes
@@ -165,8 +172,7 @@ public final class PerlUtils {
         Bundle b = Platform.getBundle(IComponentsFactory.COMPONENTS_LOCATION);
         URL url = null;
         try {
-            url = FileLocator
-                    .toFileURL(FileLocator.find(b, new Path(IComponentsFactory.COMPONENTS_INNER_FOLDER), null));
+            url = FileLocator.toFileURL(FileLocator.find(b, new Path(IComponentsFactory.COMPONENTS_INNER_FOLDER), null));
             return new Path(url.getFile());
         } catch (IOException e) {
             throw new CoreException(new Status(Status.ERROR, RunProcessPlugin.PLUGIN_ID, Status.OK,

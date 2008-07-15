@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.designer.runprocess;
 
+import java.io.File;
+
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -23,7 +25,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IStartup;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.RuntimeExceptionHandler;
+import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.CorePlugin;
+import org.talend.designer.runprocess.perl.PerlUtils;
 
 /**
  * Delete all the perl and java jobs when T.O.S start up.
@@ -58,10 +62,13 @@ public class DeleteAllJobWhenStartUp implements IStartup {
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
         IWorkspaceRoot workspaceRoot = workspace.getRoot();
 
-        IResource perlRecs = workspaceRoot.findMember(".Perl");
+        IResource perlRecs = workspaceRoot.findMember(PerlUtils.PERL_PROJECT_NAME);
         if (perlRecs != null && perlRecs.getType() == IResource.PROJECT) {
             IProject perlProject = (IProject) perlRecs;
             try {
+                if (!perlProject.isOpen()) {
+                    perlProject.open(null);
+                }
                 IResource[] perlProResrouces = perlProject.members();
                 for (int i = 0; i < perlProResrouces.length; i++) {
                     if (perlProResrouces[i].getType() == IResource.FILE
@@ -73,16 +80,24 @@ public class DeleteAllJobWhenStartUp implements IStartup {
                 RuntimeExceptionHandler.process(e);
             }
         }
-
-        IResource javaRecs = workspaceRoot.findMember(".Java/src");
-        if (javaRecs != null && javaRecs.getType() == IResource.FOLDER) {
-            IFolder javaSrcFolder = (IFolder) javaRecs;
+        IResource javaRecs = workspaceRoot.findMember(JavaUtils.JAVA_PROJECT_NAME);
+        if (javaRecs != null && javaRecs.getType() == IResource.PROJECT) {
+            IProject javaProject = (IProject) javaRecs;
             try {
-                IResource[] javaProRecs = javaSrcFolder.members();
-                if (javaProRecs.length > 0) {
-                    for (int i = 0; i < javaProRecs.length; i++) {
-                        javaProRecs[i].delete(true, null);
+                if (!javaProject.isOpen()) {
+                    javaProject.open(null);
+                }
+                javaRecs = workspaceRoot.findMember(JavaUtils.JAVA_PROJECT_NAME + File.separator + JavaUtils.JAVA_SRC_DIRECTORY);
+                if (javaRecs != null && javaRecs.getType() == IResource.FOLDER) {
+                    IFolder javaSrcFolder = (IFolder) javaRecs;
+
+                    IResource[] javaProRecs = javaSrcFolder.members();
+                    if (javaProRecs.length > 0) {
+                        for (int i = 0; i < javaProRecs.length; i++) {
+                            javaProRecs[i].delete(true, null);
+                        }
                     }
+
                 }
             } catch (CoreException e) {
                 RuntimeExceptionHandler.process(e);
