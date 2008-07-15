@@ -978,7 +978,7 @@ public class JavaProcessor extends Processor {
         for (int i = 0; i < paths.length; i++) {
             if (paths[i].endsWith(".jar")) {
                 Integer pos = location.get(new Path(paths[i]).toOSString());
-                if (pos != null) {
+                if (pos != null && rawClasspath[pos] != null) {
                     // jar file is already in raw classpath, move it up
                     classpath.add(rawClasspath[pos]);
                     rawClasspath[pos] = null;
