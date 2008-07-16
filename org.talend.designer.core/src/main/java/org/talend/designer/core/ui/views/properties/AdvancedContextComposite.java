@@ -307,9 +307,10 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
                     needRefresh = true;
                 } else if (!tableViewerInput.isEmpty()) {
                     int index = tableViewerInput.size() - 1;
-                    ((IElementParameter) tableViewerInput.get(index)).setContextMode(false);
+                    final IElementParameter elementParameter = (IElementParameter) tableViewerInput.get(index);
+                    elementParameter.setContextMode(false);
                     tableViewerInput.remove(index);
-                    removeAssociateParams(tableViewerInput, element);
+                    removeAssociateParams(tableViewerInput, elementParameter);
                     needRefresh = true;
                 }
 
