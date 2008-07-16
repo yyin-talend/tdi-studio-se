@@ -30,6 +30,12 @@ public class DocumentationPreferencePage extends FieldEditorPreferencePage imple
 
     private boolean isDocumentationPluginLoaded = true;
 
+    private boolean isHidePassords = true, isGenerateSourcecode = false;
+
+    private BooleanFieldEditor passwordHideFieldEditor;
+
+    private BooleanFieldEditor sourceCodeGenFieldEditor;
+
     /**
      * ftang DocumentationPreferencePage constructor comment.
      */
@@ -47,8 +53,15 @@ public class DocumentationPreferencePage extends FieldEditorPreferencePage imple
     protected void createFieldEditors() {
         booleanFieldEditor = new BooleanFieldEditor(ITalendCorePrefConstants.DOC_GENERATION,
                 "Automatic update corresponding documentation if job/joblet is saved.", getFieldEditorParent());
+        passwordHideFieldEditor = new BooleanFieldEditor(ITalendCorePrefConstants.DOC_HIDEPASSWORDS, "Hide passwords",
+                getFieldEditorParent());
+        sourceCodeGenFieldEditor = new BooleanFieldEditor(ITalendCorePrefConstants.DOC_GENERATESOURCECODE,
+                "Source code to HTML generation", getFieldEditorParent());
         addField(booleanFieldEditor);
+        addField(passwordHideFieldEditor);
+        addField(sourceCodeGenFieldEditor);
         booleanFieldEditor.setEnabled(isDocumentationPluginLoaded, getFieldEditorParent());
+
     }
 
     /*

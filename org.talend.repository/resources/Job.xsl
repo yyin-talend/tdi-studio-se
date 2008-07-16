@@ -136,6 +136,11 @@
 						</a>
 					</b>
 				</div>
+				<div class="FONTSTYLE">
+					<b>
+						<a href="#SourceCode">Source Code</a>
+					</b>
+				</div>
 				<br />
 				<br />
 				<!-- Project Description-->
@@ -907,6 +912,30 @@
 					</xsl:comment>
 					<xsl:text /><!--before: $job/externalNodeComponents/component/@uniqueName -->
 				</xsl:for-each>
+					<!-- Source Code-->
+				<!--HR-->
+				<h2 class="FONTSTYLE">
+					<a name="#SourceCode">Source Code</a>
+				</h2>
+				<xsl:variable name="code" select="$job/sourcecodes"></xsl:variable>
+				<table width="90%" border="1" cellpadding="0"
+					cellspacing="0"
+					style="border-collapse: collapse; padding-left:10mm;"
+					bordercolor="#111111" frame="box" summary="">
+					<tr>
+						<th width="50%" align="center"
+							class="TABLECOLUMNSTYLE">
+							content
+						</th>
+					</tr>
+					<tr>
+					<td bgcolor="gray" style="word-break:break-all;word-wrap:break-word;">
+						<xsl:for-each select="$code/code" >
+							<xsl:value-of select="@content" />
+							<br />
+						</xsl:for-each></td>
+					</tr>
+				</table>
 			</body>
 		</html>
 	</xsl:template>
