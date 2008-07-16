@@ -79,9 +79,16 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			breer_<%=cid%>.close();
 			stderr_<%=cid%>.close();
 			
+			 /* Close this session */
+			sess_<%=cid%>.close();
+
+			/* Close the connection */
+			conn_<%=cid%>.close();
+			
 			globalMap.put("<%=cid %>_STDOUT",stringStdout_<%=cid%>.toString());
 			globalMap.put("<%=cid %>_STDERR",stringStderr_<%=cid%>.toString());
             globalMap.put("<%=cid %>_EXIT_CODE",sess_<%=cid%>.getExitStatus());
+            
 <%
     }
 }
