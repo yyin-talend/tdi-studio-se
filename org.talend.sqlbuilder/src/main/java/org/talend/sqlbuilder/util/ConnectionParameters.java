@@ -22,12 +22,12 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.QueryUtil;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.utils.ContextParameterUtils;
-import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.utils.DataStringConnection;
 import org.talend.sqlbuilder.Messages;
@@ -213,8 +213,10 @@ public class ConnectionParameters {
      */
     public void setQueryObject(Query queryObject) {
         this.queryObject = queryObject;
-        if (queryObject != null && queryObject.getValue() != null) {
-            query = queryObject.getValue();
+        if (queryObject != null) {
+            setQuery(queryObject.getValue());
+        } else {
+            setQuery(null);
         }
     }
 
@@ -401,11 +403,7 @@ public class ConnectionParameters {
      * @param query the query to set
      */
     public void setQuery(String query) {
-        if (query.startsWith(TalendTextUtils.getQuoteChar()) && TalendTextUtils.isCommonString(query)) {
-            this.query = TextUtil.removeQuots(query);
-        } else {
-            this.query = query;
-        }
+        this.query = QueryUtil.checkAndRemoveQuotes(query);
     }
 
     /**
