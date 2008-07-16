@@ -15,47 +15,19 @@ imports="
 	String username = ElementParameterParser.getValue(node, "__USER__");
 	String password = ElementParameterParser.getValue(node, "__PASS__");
 	String action = ElementParameterParser.getValue(node, "__ACTION__");
+	String commitLevel = ElementParameterParser.getValue(node, "__COMMIT_LEVEL__");
+	boolean extendedInsert = ElementParameterParser.getValue(node, "__EXTENDINSERT__").equals("true");
 	String logFile = ElementParameterParser.getValue(node, "__LOGFILENAME__").trim();
+	boolean ceaseForError = ElementParameterParser.getValue(node, "__CEASE_FOR_ERROR__").equals("true");
+	
+	// if action is 'upsert' or the extended insert is disabled set the commit level to 1
+	if (!extendedInsert)
+		commitLevel = "1";
+	else if (action.equals("upsert"))
+		commitLevel = "1";
 %>       
         int nb_line_<%=cid %> = 0;
 
         org.talend.salesforce.SforceManagement sforceManagement_<%=cid %> = new org.talend.salesforce.SforceManagementImpl();
         
-        sforceManagement_<%=cid %>.login(<%=username %>, <%=password %>, <%=endpoint %>);
-        
-<%
-	if(logFile.length() > 0 && !logFile.equals("\"\"")){
-%>        
-        final java.io.BufferedWriter logFile_<%=cid %> = new java.io.BufferedWriter(new java.io.FileWriter(<%=logFile %>));
-<%
-	}
-%><%
-	if(action.equals("insert")){
-		boolean useBatchMode = ElementParameterParser.getValue(node, "__BATCH_MODE_INSERT__").equals("true");
-		if(useBatchMode){
-			String batchSize = ElementParameterParser.getValue(node, "__BATCH_SIZE__");
-%>int batchSize_<%=cid %> = <%=batchSize %>;
-java.util.List<String> tablenameList_<%=cid %> = new java.util.ArrayList<String>();
-java.util.List<org.apache.axis.message.MessageElement[]> nameValuesList_<%=cid %> = new java.util.ArrayList<org.apache.axis.message.MessageElement[]>();
-<%
-		}
-	}else if(action.equals("update")){
-		boolean useBatchMode = ElementParameterParser.getValue(node, "__BATCH_MODE_UPDATE__").equals("true");
-		if(useBatchMode){
-			String batchSize = ElementParameterParser.getValue(node, "__BATCH_SIZE__");
-%>int batchSize_<%=cid %> = <%=batchSize %>;
-java.util.List<String> tablenameList_<%=cid %> = new java.util.ArrayList<String>();
-java.util.List<String> idList_<%=cid %> = new java.util.ArrayList<String>();
-java.util.List<org.apache.axis.message.MessageElement[]> updatefieldsList_<%=cid %> = new java.util.ArrayList<org.apache.axis.message.MessageElement[]>();
-<%
-		}
-	}else if(action.equals("delete")){
-		boolean useBatchMode = ElementParameterParser.getValue(node, "__BATCH_MODE_DELETE__").equals("true");
-		if(useBatchMode){
-			String batchSize = ElementParameterParser.getValue(node, "__BATCH_SIZE__");
-%>int batchSize_<%=cid %> = <%=batchSize %>;
-java.util.List<String> idList_<%=cid %> = new java.util.ArrayList<String>();
-<%
-		}
-	}
-%>
+        sforceManagement_<%=cid %>.login(<%=username %>, <%=password %>, <%=endpoint %>, <%=commitLevel%>, <%=ceaseForError %>, <%=logFile %>);
