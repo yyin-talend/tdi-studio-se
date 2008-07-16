@@ -31,6 +31,7 @@ import org.eclipse.jface.fieldassist.IControlContentAdapter;
 import org.eclipse.jface.util.Assert;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusAdapter;
@@ -650,6 +651,7 @@ public class SQLEditorProposalAdapter {
             /*
              * Create a text control for showing the info about a proposal.
              */
+            @Override
             protected Control createDialogArea(Composite parent) {
                 text = new Text(parent, SWT.MULTI | SWT.READ_ONLY | SWT.WRAP | SWT.NO_FOCUS);
 
@@ -663,6 +665,7 @@ public class SQLEditorProposalAdapter {
                 // since SWT.NO_FOCUS is only a hint...
                 text.addFocusListener(new FocusAdapter() {
 
+                    @Override
                     public void focusGained(FocusEvent event) {
                         // ContentProposalPopup.this.close();
                     }
@@ -673,6 +676,7 @@ public class SQLEditorProposalAdapter {
             /*
              * Adjust the bounds so that we appear adjacent to our parent shell
              */
+            @Override
             protected void adjustBounds() {
                 Rectangle parentBounds = getParentShell().getBounds();
                 Rectangle proposedBounds;
@@ -794,6 +798,7 @@ public class SQLEditorProposalAdapter {
          * 
          * @see org.eclipse.jface.dialogs.PopupDialog#createContents(org.eclipse.swt.widgets.Composite)
          */
+        @Override
         protected Control createContents(Composite parent) {
             Control contents = super.createContents(parent);
             changeDefaultColors(parent);
@@ -814,6 +819,7 @@ public class SQLEditorProposalAdapter {
          * 
          * @param parent The parent composite to contain the dialog area; must not be <code>null</code>.
          */
+        @Override
         protected final Control createDialogArea(final Composite parent) {
             // Use virtual where appropriate (see flag definition).
             if (USE_VIRTUAL) {
@@ -863,6 +869,7 @@ public class SQLEditorProposalAdapter {
          * 
          * @see org.eclipse.jface.dialogs.PopupDialog.adjustBounds()
          */
+        @Override
         protected void adjustBounds() {
             // Get our control's location in display coordinates.
             Point location = control.getDisplay().map(control.getParent(), null, control.getLocation());
@@ -1047,6 +1054,7 @@ public class SQLEditorProposalAdapter {
          * 
          * @see org.eclipse.jface.window.Window#open()
          */
+        @Override
         public int open() {
             // System.out.println("open");
 
@@ -1075,6 +1083,7 @@ public class SQLEditorProposalAdapter {
          * @return <code>true</code> if the window is (or was already) closed, and <code>false</code> if it is still
          * open
          */
+        @Override
         public boolean close() {
             return false;
         }
@@ -1107,6 +1116,12 @@ public class SQLEditorProposalAdapter {
             if (position == -1) {
                 position = getControlContentAdapter().getCursorPosition(getControl());
             }
+            // see bug 4352: there is some problem when select the text from right to left
+            Point selection = ((StyledText) getControl()).getSelection();
+            if (position == selection.x) {
+                position = selection.y;
+            }
+
             String contents = getControlContentAdapter().getControlContents(getControl());
             IContentProposal[] contentProposals = proposalProvider.getProposals(contents, position);
             if (filterStyle != FILTER_NONE) {
@@ -1220,7 +1235,7 @@ public class SQLEditorProposalAdapter {
          * @param filterString
          * @return
          */
-        @SuppressWarnings("unchecked")//$NON-NLS-1$
+        @SuppressWarnings("unchecked")
         private IContentProposal[] filterProposals(IContentProposal[] contentProposals, String filterString) {
             if (filterString.length() == 0) {
                 return contentProposals;
