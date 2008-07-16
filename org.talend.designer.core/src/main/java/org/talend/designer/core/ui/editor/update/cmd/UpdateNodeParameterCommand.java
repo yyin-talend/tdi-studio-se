@@ -18,6 +18,7 @@ import java.util.Map;
 import org.eclipse.gef.commands.Command;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.metadata.QueryUtil;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.EParameterFieldType;
@@ -27,7 +28,6 @@ import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.update.EUpdateResult;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.update.UpdatesConstants;
-import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
@@ -225,7 +225,8 @@ public class UpdateNodeParameterCommand extends Command {
                         for (IElementParameter param : node.getElementParameters()) {
                             if (param.getField() == EParameterFieldType.MEMO_SQL
                                     && UpdatesConstants.QUERY.equals(param.getName())) {
-                                param.setValue(TalendTextUtils.addSQLQuotes(query.getValue()));
+                                String value = QueryUtil.checkAndAddQuotes(query.getValue());
+                                param.setValue(value);
                                 param.setRepositoryValueUsed(true);
                                 param.setReadOnly(true);
                                 update = true;
@@ -244,5 +245,5 @@ public class UpdateNodeParameterCommand extends Command {
             }
         }
     }
-
+    
 }

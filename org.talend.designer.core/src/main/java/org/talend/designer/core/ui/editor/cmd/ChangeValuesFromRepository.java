@@ -22,6 +22,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.metadata.QueryUtil;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.Query;
@@ -395,14 +396,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         if (query != null) {
             IElementParameter memoSqlParam = elem.getElementParameterFromField(EParameterFieldType.MEMO_SQL, queryParam
                     .getCategory());
-            String queryStr = query.getValue();
-            if (queryStr == null) {
-                queryStr = "";
-            }
-            queryStr = queryStr.trim();
-            if (!queryStr.startsWith(TalendTextUtils.getQuoteChar())) { // is expression
-                queryStr = TalendTextUtils.addSQLQuotes(queryStr);
-            }
+            String queryStr = QueryUtil.checkAndAddQuotes(query.getValue());
             memoSqlParam.setValue(queryStr);
             memoSqlParam.setRepositoryValueUsed(true);
         }

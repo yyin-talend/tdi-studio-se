@@ -15,11 +15,11 @@ package org.talend.designer.core.ui.editor.cmd;
 import java.util.List;
 
 import org.eclipse.gef.commands.Command;
+import org.talend.core.model.metadata.QueryUtil;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
-import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -72,14 +72,7 @@ public class RepositoryChangeQueryCommand extends Command {
             for (IElementParameter param : (List<IElementParameter>) elem.getElementParameters()) {
                 if (param.getField() == EParameterFieldType.MEMO_SQL) {
                     oldValue = elem.getPropertyValue(param.getName());
-                    String queryStr = query.getValue();
-                    if (queryStr == null) {
-                        queryStr = "";
-                    }
-                    queryStr = queryStr.trim();
-                    if (!queryStr.startsWith(TalendTextUtils.getQuoteChar())) { // is expression
-                        queryStr = TalendTextUtils.addSQLQuotes(queryStr);
-                    }
+                    String queryStr = QueryUtil.checkAndAddQuotes(query.getValue());
                     elem.setPropertyValue(param.getName(), queryStr);
                     param.setRepositoryValueUsed(true);
                     param.setReadOnly(true);

@@ -24,9 +24,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWithDetailAreaAndContinueButton;
 import org.talend.core.database.EDatabaseTypeName;
+import org.talend.core.model.metadata.QueryUtil;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
-import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IMultiPageTalendEditor;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
@@ -142,9 +142,7 @@ public class OpenSQLBuilderDialogJob extends Job {
                                     // }
                                 } else {
                                     String sql = connectionParameters.getQuery();
-                                    if (!sql.startsWith(TalendTextUtils.getQuoteChar())) {
-                                        sql = TalendTextUtils.addSQLQuotes(sql);
-                                    }
+                                    sql = QueryUtil.checkAndAddQuotes(sql);
                                     PropertyChangeCommand cmd = new PropertyChangeCommand(elem, propertyName, sql);
                                     cmd.setUpdate(true);
                                     commandStack.execute(cmd);

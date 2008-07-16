@@ -30,6 +30,7 @@ import org.talend.core.model.context.ContextUtils;
 import org.talend.core.model.context.JobContextManager;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.QueryUtil;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
@@ -53,7 +54,6 @@ import org.talend.core.model.update.EUpdateResult;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.update.UpdatesConstants;
-import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -688,8 +688,8 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                     IElementParameter sqlParam = node.getElementParameterFromField(EParameterFieldType.MEMO_SQL);
                     if (sqlParam != null && UpdatesConstants.QUERY.equals(sqlParam.getName())) {
                         String paramValue = (String) sqlParam.getValue();
-
-                        connectQuery = TalendTextUtils.addSQLQuotes(connectQuery);
+                        
+                        connectQuery = QueryUtil.checkAndAddQuotes(connectQuery);
                         if (!connectQuery.equals(paramValue)) {
                             result = new UpdateCheckResult(node);
                             result.setResult(EUpdateItemType.NODE_QUERY, EUpdateResult.UPDATE, query, source);
