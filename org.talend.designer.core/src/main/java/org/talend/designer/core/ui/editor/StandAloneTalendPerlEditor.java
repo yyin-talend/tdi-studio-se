@@ -12,23 +12,30 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.impl.AdapterImpl;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
+import org.eclipse.ui.progress.WorkbenchJob;
 import org.epic.perleditor.editors.PerlEditor;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.FileItem;
+import org.talend.core.model.properties.Information;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.ui.IUIRefresher;
@@ -67,6 +74,7 @@ public class StandAloneTalendPerlEditor extends PerlEditor implements IUIRefresh
         return !rEditorInput.isReadOnly() && getRepositoryFactory().getStatus(item).isEditable();
     }
 
+    @Override
     public void doSetInput(IEditorInput input) throws CoreException {
 
         // Lock the process :
@@ -94,7 +102,6 @@ public class StandAloneTalendPerlEditor extends PerlEditor implements IUIRefresh
         IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);
         viewPart.refresh();
 
-        addProblems();
     }
 
     private void setName() {
@@ -128,10 +135,12 @@ public class StandAloneTalendPerlEditor extends PerlEditor implements IUIRefresh
         return propertyIsDirty || super.isDirty();
     }
 
+    @Override
     protected void editorSaved() {
 
     }
 
+    @Override
     public void doSave(final IProgressMonitor monitor) {
         EList adapters = item.getProperty().eAdapters();
         adapters.remove(dirtyListener);
@@ -146,34 +155,80 @@ public class StandAloneTalendPerlEditor extends PerlEditor implements IUIRefresh
 
             ICodeGeneratorService codeGenService = (ICodeGeneratorService) GlobalServiceRegister.getDefault().getService(
                     ICodeGeneratorService.class);
-            if(item instanceof RoutineItem){
+            if (item instanceof RoutineItem) {
                 codeGenService.createPerlRoutineSynchronizer().syncRoutine((RoutineItem) item, false);
             }
-            
+            startRefreshJob(repFactory);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        propertyIsDirty = false;
-        adapters.add(dirtyListener);
-        firePropertyChange(IEditorPart.PROP_DIRTY);
-        IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);
-        viewPart.refresh();
-        addProblems();
+    }
 
+    private void startRefreshJob(final IProxyRepositoryFactory repFactory) {
+        Job refreshJob = new WorkbenchJob("") {//$NON-NLS-1$
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.ui.progress.UIJob#runInUIThread(org.eclipse.core.runtime.IProgressMonitor)
+             */
+            @Override
+            public IStatus runInUIThread(IProgressMonitor monitor) {
+                // check syntax error
+                addProblems();
+
+                try {
+                    // cause it to update MaxInformationLevel
+                    repFactory.save(item.getProperty());
+                } catch (Exception e) {
+
+                }
+
+                // add dirtyListener
+                propertyIsDirty = false;
+                EList adapters = item.getProperty().eAdapters();
+                // if (!(item instanceof RoutineItem)) {
+                adapters.add(dirtyListener);
+                firePropertyChange(IEditorPart.PROP_DIRTY);
+                // }
+
+                // update image in repository
+                IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);
+                viewPart.refresh();
+
+                // update editor image
+                setTitleImage(getTitleImage());
+                return Status.OK_STATUS;
+            }
+        };
+        refreshJob.setSystem(true);
+
+        refreshJob.schedule(300);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.ui.part.WorkbenchPart#getTitleImage()
+     */
+    @Override
+    public Image getTitleImage() {
+        if (item != null) {
+            IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);
+            ILabelProvider labelProvider = (ILabelProvider) viewPart.getViewer().getLabelProvider();
+            return labelProvider.getImage(item.getProperty());
+        }
+        return super.getTitleImage();
     }
 
     /**
      * add routine compilation errors into problems view.
      */
     private void addProblems() {
-        Problems.addRoutineFile(rEditorInput.getFile(), item.getProperty());
-
-        Display.getDefault().asyncExec(new Runnable() {
-
-            public void run() {
-                Problems.refreshProblemTreeView();
-            }
-        });
+        List<Information> informations = Problems.addRoutineFile(rEditorInput.getFile(), item.getProperty());
+        item.getProperty().getInformations().clear();
+        item.getProperty().getInformations().addAll(informations);
+        Problems.refreshProblemTreeView();
     }
 
     private FileItem item;
@@ -182,6 +237,7 @@ public class StandAloneTalendPerlEditor extends PerlEditor implements IUIRefresh
 
     private AdapterImpl dirtyListener = new AdapterImpl() {
 
+        @Override
         public void notifyChanged(Notification notification) {
             if (notification.getEventType() != Notification.REMOVING_ADAPTER) {
                 propertyIsDirty = true;

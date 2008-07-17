@@ -13,6 +13,7 @@
 package org.talend.designer.core.ui;
 
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +42,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
@@ -68,6 +70,7 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.PropertiesPackage;
+import org.talend.core.model.properties.Property;
 import org.talend.core.properties.tab.IMultiPageTalendEditor;
 import org.talend.core.ui.IUIRefresher;
 import org.talend.core.utils.AccessingEmfJob;
@@ -87,6 +90,7 @@ import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
+import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
@@ -107,7 +111,12 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         @Override
         public void notifyChanged(Notification notification) {
             if (notification.getEventType() != Notification.REMOVING_ADAPTER) {
-                if (notification.getFeatureID(Properties.class) == PropertiesPackage.PROPERTY__MAX_INFORMATION_LEVEL) {
+                int featureID = notification.getFeatureID(Properties.class);
+                if (featureID == PropertiesPackage.PROPERTY__INFORMATIONS) {
+                    // || featureID == PropertiesPackage.PROPERTY__MODIFICATION_DATE) {
+                    // ignore
+                    return;
+                } else if (featureID == PropertiesPackage.PROPERTY__MAX_INFORMATION_LEVEL) {
                     updateTitleImage();
                     return;
                 }
@@ -141,6 +150,44 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
     private RepositoryEditorInput processEditorInput;
 
     protected AbstractTalendEditor designerEditor;
+
+    private List propertyInformation;
+
+    private IPartListener partListener = new IPartListener() {
+
+        public void partOpened(IWorkbenchPart part) {
+
+        }
+
+        public void partClosed(IWorkbenchPart part) {
+            if (part == AbstractMultiPageTalendEditor.this) {
+                restorePropertyInformation();
+            }
+        }
+
+        public void partActivated(IWorkbenchPart part) {
+        }
+
+        public void partBroughtToTop(IWorkbenchPart part) {
+        }
+
+        public void partDeactivated(IWorkbenchPart part) {
+        }
+
+    };
+
+    /**
+     * DOC hcw Comment method "restorePropertyInformation".
+     */
+    protected void restorePropertyInformation() {
+        if (getEditor(0).isDirty()) {
+            // if user discard change, restore property information, make it possible to remove error status
+            Property property = processEditorInput.getItem().getProperty();
+            property.getInformations().clear();
+            property.getInformations().addAll(propertyInformation);
+            Problems.computePropertyMaxInformationLevel(property);
+        }
+    }
 
     public AbstractMultiPageTalendEditor() {
         super();
@@ -189,7 +236,9 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         IProcess2 currentProcess = processEditorInput.getLoadedProcess();
         if (!currentProcess.isReadOnly()) {
             try {
-                processEditorInput.getItem().getProperty().eAdapters().add(dirtyListener);
+                Property property = processEditorInput.getItem().getProperty();
+                propertyInformation = new ArrayList(property.getInformations());
+                property.eAdapters().add(dirtyListener);
                 repFactory.lock(currentProcess);
             } catch (PersistenceException e) {
                 e.printStackTrace();
@@ -199,6 +248,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         } else {
             setReadOnly(true);
         }
+        getSite().getWorkbenchWindow().getPartService().addPartListener(partListener);
+
     }
 
     /*
@@ -302,9 +353,9 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         String nodeName = getSelectedNodeName();
         if (nodeName != null) {
             if (codeEditor instanceof TalendJavaEditor) {
-                ((TalendJavaEditor) codeEditor).placeCursorTo(nodeName); //$NON-NLS-1$ //$NON-NLS-2$
+                ((TalendJavaEditor) codeEditor).placeCursorTo(nodeName);
             } else {
-                ((TalendPerlEditor) codeEditor).placeCursorTo(nodeName); //$NON-NLS-1$ //$NON-NLS-2$
+                ((TalendPerlEditor) codeEditor).placeCursorTo(nodeName);
             }
         }
     }
@@ -764,8 +815,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         getSite().setSelectionProvider(null);
         getSite().getWorkbenchWindow().getSelectionService().removeSelectionListener(this);
         setInput(null);
-
         ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
+        getSite().getWorkbenchWindow().getPartService().addPartListener(partListener);
 
         super.dispose();
 

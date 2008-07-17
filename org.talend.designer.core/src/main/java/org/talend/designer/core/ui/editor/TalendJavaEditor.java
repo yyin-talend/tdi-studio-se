@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor;
 
+import java.util.List;
+
 import org.eclipse.jdt.internal.ui.JavaPlugin;
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jdt.internal.ui.javaeditor.JavaSourceViewer;
@@ -28,6 +30,7 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.SystemException;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.properties.Information;
 import org.talend.core.model.properties.Property;
 import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.designer.core.ISyntaxCheckableEditor;
@@ -114,7 +117,13 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
                             .createRoutineSynchronizer();
 
                     try {
-                        Problems.addRoutineFile(synchronizer.getFile(property.getItem()), property);
+                        List<Information> informations = Problems.addRoutineFile(synchronizer.getFile(property.getItem()),
+                                property);
+
+                        // save error status
+                        property.getInformations().clear();
+                        property.getInformations().addAll(informations);
+                        Problems.computePropertyMaxInformationLevel(property);
                     } catch (SystemException e) {
                         ExceptionHandler.process(e);
                     }

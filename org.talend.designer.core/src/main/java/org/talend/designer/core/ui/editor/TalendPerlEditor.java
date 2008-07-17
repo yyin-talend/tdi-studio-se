@@ -12,16 +12,23 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor;
 
+import java.util.List;
+
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.FindReplaceDocumentAdapter;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.Region;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.progress.WorkbenchJob;
 import org.epic.perleditor.editors.PerlEditor;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.SystemException;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.properties.Information;
 import org.talend.core.model.properties.Property;
 import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.designer.core.ISyntaxCheckableEditor;
@@ -79,26 +86,44 @@ public class TalendPerlEditor extends PerlEditor implements ISyntaxCheckableEdit
      */
     public void validateSyntax() {
         revalidateSyntax();
-        placeCursorToSelection();
+        Job refreshJob = new WorkbenchJob("") {//$NON-NLS-1$
 
-        Property property = process.getProperty();
-        ITalendSynchronizer synchronizer = CorePlugin.getDefault().getCodeGeneratorService().createRoutineSynchronizer();
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.ui.progress.UIJob#runInUIThread(org.eclipse.core.runtime.IProgressMonitor)
+             */
+            @Override
+            public IStatus runInUIThread(IProgressMonitor monitor) {
 
-        try {
-            Problems.addRoutineFile(synchronizer.getFile(property.getItem()), property);
-        } catch (SystemException e) {
-            ExceptionHandler.process(e);
-        }
+                placeCursorToSelection();
 
-        Display.getDefault().asyncExec(new Runnable() {
+                Property property = process.getProperty();
+                ITalendSynchronizer synchronizer = CorePlugin.getDefault().getCodeGeneratorService().createRoutineSynchronizer();
 
-            public void run() {
+                try {
+                    List<Information> informations = Problems.addRoutineFile(synchronizer.getFile(property.getItem()), property);
+
+                    // save error status
+                    property.getInformations().clear();
+                    property.getInformations().addAll(informations);
+                    Problems.computePropertyMaxInformationLevel(property);
+
+                } catch (SystemException e) {
+                    ExceptionHandler.process(e);
+                }
+
                 Problems.refreshRepositoryView();
                 Problems.refreshProblemTreeView();
-            }
-        });
 
-        codeSynchronized = false;
+                codeSynchronized = false;
+                return Status.OK_STATUS;
+            }
+        };
+        refreshJob.setSystem(true);
+
+        // need some time to wait for PerlSyntaxValidationThread, as revalidateSyntax will activate it
+        refreshJob.schedule(300);
     }
 
     /*

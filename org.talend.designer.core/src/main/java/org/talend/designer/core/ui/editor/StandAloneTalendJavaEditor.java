@@ -13,10 +13,14 @@
 package org.talend.designer.core.ui.editor;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.impl.AdapterImpl;
 import org.eclipse.emf.common.util.EList;
@@ -41,13 +45,17 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
+import org.eclipse.ui.progress.WorkbenchJob;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.FileItem;
+import org.talend.core.model.properties.Information;
+import org.talend.core.model.properties.InformationLevel;
 import org.talend.core.model.properties.Property;
 import org.talend.core.ui.IUIRefresher;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
@@ -193,19 +201,76 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
             IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
             IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
             repFactory.save(item);
+            startRefreshJob(repFactory);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        propertyIsDirty = false;
+    }
 
-        // if (!(item instanceof RoutineItem)) {
-        adapters.add(dirtyListener);
-        firePropertyChange(IEditorPart.PROP_DIRTY);
-        // }
+    private void startRefreshJob(final IProxyRepositoryFactory repFactory) {
+        Job refreshJob = new WorkbenchJob("") {//$NON-NLS-1$
 
-        IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);
-        viewPart.refresh();
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.ui.progress.UIJob#runInUIThread(org.eclipse.core.runtime.IProgressMonitor)
+             */
+            @Override
+            public IStatus runInUIThread(IProgressMonitor monitor) {
+                // check syntax error
+                addProblems();
+
+                try {
+                    // cause it to update MaxInformationLevel
+                    repFactory.save(item.getProperty());
+                } catch (Exception e) {
+
+                }
+
+                // add dirtyListener
+                propertyIsDirty = false;
+                EList adapters = item.getProperty().eAdapters();
+                // if (!(item instanceof RoutineItem)) {
+                adapters.add(dirtyListener);
+                firePropertyChange(IEditorPart.PROP_DIRTY);
+                // }
+
+                // update image in repository
+                IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);
+                viewPart.refresh();
+                // update editor image
+                setTitleImage(getTitleImage());
+                return Status.OK_STATUS;
+            }
+        };
+        refreshJob.setSystem(true);
+
+        refreshJob.schedule(300);
+
+    }
+
+    protected void computePropertyMaxInformationLevel(Property property) {
+        EList<Information> informations = property.getInformations();
+        InformationLevel maxLevel = null;
+        for (Information information : informations) {
+            int value = information.getLevel().getValue();
+            if (maxLevel == null || value > maxLevel.getValue()) {
+                maxLevel = information.getLevel();
+            }
+        }
+        property.setMaxInformationLevel(maxLevel);
+    }
+
+    /**
+     * add routine compilation errors into problems view.
+     */
+    private void addProblems() {
+        List<Information> informations = Problems.addRoutineFile(rEditorInput.getFile(), item.getProperty());
+        item.getProperty().getInformations().clear();
+        item.getProperty().getInformations().addAll(informations);
+        Problems.refreshProblemTreeView();
     }
 
     private FileItem item;

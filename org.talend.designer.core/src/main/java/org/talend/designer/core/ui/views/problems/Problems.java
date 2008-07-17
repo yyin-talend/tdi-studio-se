@@ -20,6 +20,7 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
@@ -32,8 +33,10 @@ import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.TalendProblem;
 import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.core.model.process.Problem.ProblemType;
+import org.talend.core.model.properties.Information;
 import org.talend.core.model.properties.InformationLevel;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.designer.core.DesignerPlugin;
@@ -378,12 +381,10 @@ public class Problems {
      * 
      * 
      */
-    public static void addRoutineFile(IFile file, final Property property) {
+    public static List<Information> addRoutineFile(IFile file, final Property property) {
         if (file == null || !file.exists()) {
-            return;
+            return null;
         }
-
-        boolean hasError = false;
 
         String routineFileName = null;
         if (property == null) {
@@ -392,6 +393,7 @@ public class Problems {
             routineFileName = property.getLabel();
         }
 
+        List<Information> informations = new ArrayList<Information>();
         try {
             IMarker[] markers = file.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_ONE);
 
@@ -403,17 +405,23 @@ public class Problems {
                 Integer start = (Integer) marker.getAttribute(IMarker.CHAR_START);
                 Integer end = (Integer) marker.getAttribute(IMarker.CHAR_END);
 
+                Information information = PropertiesFactory.eINSTANCE.createInformation();
+                information.setText(message);
+                informations.add(information);
+
                 ProblemStatus status = null;
                 switch (severity) {
                 case IMarker.SEVERITY_ERROR:
                     status = ProblemStatus.ERROR;
-                    hasError = true;
+                    information.setLevel(InformationLevel.ERROR_LITERAL);
                     break;
                 case IMarker.SEVERITY_WARNING:
                     status = ProblemStatus.WARNING;
+                    information.setLevel(InformationLevel.WARN_LITERAL);
                     break;
                 case IMarker.SEVERITY_INFO:
                     status = ProblemStatus.INFO;
+                    information.setLevel(InformationLevel.INFO_LITERAL);
                     break;
                 default:
                     break;
@@ -439,14 +447,27 @@ public class Problems {
         }
 
         if (property == null) {
-            return;
+            return null;
         }
 
-        if (hasError) {
-            property.setMaxInformationLevel(InformationLevel.ERROR_LITERAL);
-        } else {
-            property.setMaxInformationLevel(InformationLevel.DEBUG_LITERAL);
+        return informations;
+    }
+
+    /**
+     * See also AbstractEMFRepositoryFactory.computePropertyMaxInformationLevel
+     * 
+     * @param property
+     */
+    public static void computePropertyMaxInformationLevel(Property property) {
+        EList<Information> informations = property.getInformations();
+        InformationLevel maxLevel = null;
+        for (Information information : informations) {
+            int value = information.getLevel().getValue();
+            if (maxLevel == null || value > maxLevel.getValue()) {
+                maxLevel = information.getLevel();
+            }
         }
+        property.setMaxInformationLevel(maxLevel);
     }
 
     private static String getFileName(IFile file) {
