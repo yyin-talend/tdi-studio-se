@@ -35,6 +35,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.controllers.creator.SelectAllTextControlCreator;
 
@@ -192,7 +193,13 @@ public class TextController extends AbstractElementPropertySectionController {
             labelText.setText(""); //$NON-NLS-1$
         } else {
             if (!value.equals(labelText.getText())) {
-                labelText.setText((String) value);
+                // see feature 0025
+                if (param.isRepositoryValueUsed() && isPasswordParam(param)) {
+                    labelText.setText(TalendTextUtils.hidePassword((String) value));
+                } else {
+                    labelText.setText((String) value);
+                }
+
                 valueChanged = true;
             }
         }
@@ -234,5 +241,16 @@ public class TextController extends AbstractElementPropertySectionController {
     private void setTextErrorInfo(Text labelText, Color red) {
         labelText.setBackground(red);
         labelText.setToolTipText("Value is invalid.");
+    }
+
+    /**
+     * 
+     * DOC YeXiaowei Comment method "isPasswordParam".
+     * 
+     * @param parameter
+     * @return
+     */
+    private boolean isPasswordParam(final IElementParameter parameter) {
+        return parameter.getName().equals(EParameterName.PASS.getName());
     }
 }
