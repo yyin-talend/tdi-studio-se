@@ -79,6 +79,7 @@
       <ITEMS DEFAULT="filecreated">
         <ITEM NAME="FILE_NEW" VALUE="filecreated" />
         <ITEM NAME="FILE_DELETED" VALUE="filedeleted" />
+        <ITEM NAME="FILE_UPDATED" VALUE="fileupdated" />
       </ITEMS>
     </PARAMETER>
 
@@ -97,9 +98,11 @@
  	<PARAMETER
       NAME="CHECK_SUM"
       FIELD="CHECK"
-      NUM_ROW="9"
+      NUM_ROW="9" 
+      SHOW="false"
     >
-      <DEFAULT>false</DEFAULT>
+      <DEFAULT IF="ACTION_ON == 'FILE_UPDATED'">true</DEFAULT>
+      <DEFAULT IF="(ACTION_ON == 'FILE_NEW') or (ACTION_ON == 'FILE_DELETED')">false</DEFAULT>
     </PARAMETER>
 
   </PARAMETERS>
@@ -111,5 +114,6 @@
     <RETURN NAME="PRESENT_FILE" TYPE="id_String" AVAILABILITY="FLOW"/>
     <RETURN NAME="DELETED_FILE" TYPE="id_String" AVAILABILITY="FLOW"/>
     <RETURN NAME="CREATED_FILE" TYPE="id_String" AVAILABILITY="FLOW"/>
+    <RETURN NAME="UPDATED_FILE" TYPE="id_String" AVAILABILITY="FLOW"/>
   </RETURNS>
 </COMPONENT>
