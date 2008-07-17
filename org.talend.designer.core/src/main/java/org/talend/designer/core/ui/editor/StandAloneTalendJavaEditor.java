@@ -51,7 +51,6 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.FileItem;
 import org.talend.core.model.properties.Information;
-import org.talend.core.model.properties.InformationLevel;
 import org.talend.core.model.properties.Property;
 import org.talend.core.ui.IUIRefresher;
 import org.talend.designer.core.DesignerPlugin;
@@ -249,18 +248,6 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
 
         refreshJob.schedule(300);
 
-    }
-
-    protected void computePropertyMaxInformationLevel(Property property) {
-        EList<Information> informations = property.getInformations();
-        InformationLevel maxLevel = null;
-        for (Information information : informations) {
-            int value = information.getLevel().getValue();
-            if (maxLevel == null || value > maxLevel.getValue()) {
-                maxLevel = information.getLevel();
-            }
-        }
-        property.setMaxInformationLevel(maxLevel);
     }
 
     /**

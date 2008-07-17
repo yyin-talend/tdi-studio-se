@@ -816,7 +816,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         getSite().getWorkbenchWindow().getSelectionService().removeSelectionListener(this);
         setInput(null);
         ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
-        getSite().getWorkbenchWindow().getPartService().addPartListener(partListener);
+        getSite().getWorkbenchWindow().getPartService().removePartListener(partListener);
 
         super.dispose();
 
