@@ -14,7 +14,6 @@ package org.talend.designer.runprocess.ui.views;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Date;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.IHandler;
@@ -120,14 +119,17 @@ public class ProcessView extends ViewPart {
         container.setLayout(layout);
 
         processNameLab = new Label(container, SWT.NONE);
-        GridData data = new GridData(GridData.HORIZONTAL_ALIGN_CENTER);
+        GridData data = new GridData(GridData.FILL_HORIZONTAL);
         data.verticalIndent = 2;
+        data.horizontalAlignment = SWT.CENTER;
         processNameLab.setLayoutData(data);
         FontData[] fds = processNameLab.getFont().getFontData();
+
         for (FontData fd : fds) {
             fd.setHeight(fd.getHeight() + 2);
             fd.setStyle(fd.getStyle() | SWT.BOLD);
         }
+
         Font titleFont = new Font(processNameLab.getDisplay(), fds);
         processNameLab.setFont(titleFont);
         processNameLab.setForeground(getSite().getShell().getDisplay().getSystemColor(SWT.COLOR_DARK_BLUE));
@@ -257,10 +259,10 @@ public class ProcessView extends ViewPart {
             setPartName(Messages.getString("ProcessView.titleEmpty")); //$NON-NLS-1$
             processNameLab.setText(Messages.getString("ProcessView.subtitleEmpty")); //$NON-NLS-1$
         }
-        
-//        processNameLab.getParent().layout(true, true);
+
+        // processNameLab.getParent().layout(true, true);
     }
-  
+
     /**
      * DOC smallet ProcessView class global comment. Detailled comment <br/>
      * 
