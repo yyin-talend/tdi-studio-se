@@ -15,11 +15,14 @@
 	boolean createDir=ElementParameterParser.getValue(node, "__CREATEDIR__").equals("true");
    
 %>     
+		java.io.File file_<%=cid %> = new java.io.File((<%=fileName%>));
 <%if(createDir){%>
-		java.io.File dir_<%=cid %> = new java.io.File((<%=fileName%>).substring(0,(<%=fileName%>).lastIndexOf("/")));
+		java.io.File dir_<%=cid %> = file_<%=cid %>.getParentFile();
+		if(dir_<%=cid %>!= null){
 		dir_<%=cid %>.mkdirs();
+		}
 <%}%>        
-        java.io.File file_<%=cid %> = new java.io.File( <%=fileName %>);
+        
         //create new file
         boolean result<%=cid %> = file_<%=cid %>.createNewFile();
         //if file already exists, modify the last-modified-time of the file
