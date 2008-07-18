@@ -2477,7 +2477,7 @@ public abstract class DataMapTableView extends Composite {
                         if (selection.x == selection.y) {
 
                             if (e.character == SWT.BS) {
-                                if (selection.x - 1 > 0) {
+                                if (selection.x - 1 > 0 && mapperColorStyledText.getText().length() > selection.x - 1) {
                                     char previousChar = mapperColorStyledText.getText().charAt(selection.x - 1);
                                     if (previousChar == '\n') {
                                         mapperColorStyledText.replaceTextRangeWithoutNotifyListeners(selection.x - 2, 2, ""); //$NON-NLS-1$
@@ -2497,16 +2497,20 @@ public abstract class DataMapTableView extends Composite {
                             }
 
                         } else {
-                            mapperColorStyledText.replaceTextRangeWithoutNotifyListeners(selection.x, selection.y - selection.x,
-                                    ""); //$NON-NLS-1$
+                            if (selection.y <= mapperColorStyledText.getCharCount()) {
+                                mapperColorStyledText.replaceTextRangeWithoutNotifyListeners(selection.x, selection.y
+                                        - selection.x, ""); //$NON-NLS-1$
+                            }
                             highlightLineAndSetSelectionOfStyledTextFromTextControl(textWidget);
                         }
                     } else {
                         // System.out.println("selection.x="+selection.x);
                         // System.out.println("selection.y="+selection.y);
                         // System.out.println("mapperColorStyledText.getText()="+mapperColorStyledText.getText().length());
-                        mapperColorStyledText.replaceTextRangeWithoutNotifyListeners(selection.x, selection.y - selection.x,
-                                String.valueOf(e.character));
+                        if (selection.y <= mapperColorStyledText.getCharCount()) {
+                            mapperColorStyledText.replaceTextRangeWithoutNotifyListeners(selection.x, selection.y - selection.x,
+                                    String.valueOf(e.character));
+                        }
                         highlightLineAndSetSelectionOfStyledTextFromTextControl(textWidget);
                     }
                 }
