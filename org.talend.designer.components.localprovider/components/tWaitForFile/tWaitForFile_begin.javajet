@@ -9,9 +9,9 @@
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
     String cid = node.getUniqueName();
-    boolean incldSubdir=ElementParameterParser.getValue(node, "__INCLUDE_SUBDIR__").equals("true");
-    boolean present=ElementParameterParser.getValue(node, "__INCLUDE_PRESENT__").equals("true");
-    boolean checksum=ElementParameterParser.getValue(node, "__CHECK_SUM__").equals("true");
+    boolean incldSubdir = ElementParameterParser.getValue(node, "__INCLUDE_SUBDIR__").equals("true");
+    boolean present = ElementParameterParser.getValue(node, "__INCLUDE_PRESENT__").equals("true");
+    String triggerAction = ElementParameterParser.getValue(node, "__ACTION_ON__");
 %>
        
         class Util_<%=cid %> {
@@ -84,38 +84,37 @@
 
                 return list;
             }
-
             <%
-            if(checksum){
+            if(triggerAction.equals("fileupdated") || triggerAction.equals("fileall")) {
                 %>
-                public String getFileChecksum(java.io.File file){
+                public String getFileChecksum(java.io.File file) {
                 	String strMD5 = "";
                 	java.security.MessageDigest complete = null;
                 	java.io.InputStream fis = null;
                 	try{
                         fis =  new java.io.FileInputStream(file);
                         byte[] buffer = new byte[1024];
-                        complete= java.security.MessageDigest.getInstance("MD5");
+                        complete = java.security.MessageDigest.getInstance("MD5");
                         int numRead;
                         while((numRead = fis.read(buffer))!= -1){
                           	if (numRead > 0) {
                             	complete.update(buffer, 0, numRead);
                             }
                         }
-                    }catch(java.lang.Exception ex){
+                    } catch(java.lang.Exception ex) {
     
-                    }finally{
-                    	if(fis!=null){
-                    		try{
+                    } finally {
+                    	if(fis != null) {
+                    		try {
                     			fis.close();
-                    		}catch(Exception ex){
+                    		} catch(Exception ex) {
                     		}
                     	}
                     }
                    	
-                   	if(complete !=null){
+                   	if(complete != null){
             			byte[] b = complete.digest();
-             			for (int i=0; i < b.length; i++) {
+             			for (int i = 0; i < b.length; i++) {
               				strMD5 += Integer.toString( ( b[i] & 0xff ) + 0x100, 16).substring( 1 );
               			}
           			}
@@ -127,19 +126,18 @@
         }
             
         Util_<%=cid %> util_<%=cid %> = new Util_<%=cid %>();
-        java.util.List<java.io.File> originalFiles_<%=cid %> = util_<%=cid %>.getFiles();
-        java.util.List<java.io.File> changeList_<%=cid %> = new java.util.ArrayList();
-            
+        java.util.List<java.io.File> originalFiles_<%=cid %> = util_<%=cid %>.getFiles();            
         <%
-        if(checksum){
+        if(triggerAction.equals("fileupdated") || triggerAction.equals("fileall")) {
             %>
             java.util.Map<String, java.io.File> originalMap_<%=cid%> = new java.util.HashMap<String, java.io.File>();
             for(java.io.File file_<%=cid%>:originalFiles_<%=cid %>){
-            	originalMap_<%=cid%>.put(util_<%=cid %>.getFileChecksum(file_<%=cid%>),file_<%=cid%>);
+            	originalMap_<%=cid%>.put(util_<%=cid %>.getFileChecksum(file_<%=cid%>), file_<%=cid%>);
             }
             <%
         }
-        %>      
+        %>
+      
         int count_<%=cid %> = 0;
         while (true) {
             <%
@@ -155,57 +153,99 @@
             <%
             if(present){
                 %>              
-    			if( count_<%=cid %> < originalFiles_<%=cid %>.size()){
+    			if( count_<%=cid %> < originalFiles_<%=cid %>.size()) {
                     java.io.File file_<%=cid %> = originalFiles_<%=cid %>.get(count_<%=cid %>);
                     globalMap.put("<%=cid %>_PRESENT_FILE", file_<%=cid %>.getAbsolutePath());
                     found_<%=cid %> = true;
-    			}else{
+    			} else {
 			    <%
     			}
 			%>
             java.util.List<java.io.File> fetchFilesOneTime_<%=cid %> = util_<%=cid %>.getFiles();
             <%
-            if(ElementParameterParser.getValue(node, "__ACTION_ON__").equals("filedeleted")){
+            if(triggerAction.equals("filecreated")) {
                 %>
-                for (java.io.File file_<%=cid %> : originalFiles_<%=cid %>) {
-                    if (!changeList_<%=cid %>.contains(file_<%=cid %>) && !fetchFilesOneTime_<%=cid %>.contains(file_<%=cid %>)){
-                        globalMap.put("<%=cid %>_DELETED_FILE", file_<%=cid %>.getAbsolutePath());
-
-                <%
-            }else if(ElementParameterParser.getValue(node, "__ACTION_ON__").equals("filecreated")){
-                %>
-                for (java.io.File file_<%=cid %> : fetchFilesOneTime_<%=cid %>) {
-
-                    <%
-                    if(checksum){
-                        %>
-                        if (null==originalMap_<%=cid%>.get(util_<%=cid %>.getFileChecksum(file_<%=cid%>))){
-                            originalMap_<%=cid%>.put(util_<%=cid %>.getFileChecksum(file_<%=cid%>),file_<%=cid%>);
-                        <%
-                    }else{
-                        %>
-                        if (!changeList_<%=cid %>.contains(file_<%=cid %>) && !originalFiles_<%=cid %>.contains(file_<%=cid %>)) {
-                        <%
+                for(java.io.File file_<%=cid %> : fetchFilesOneTime_<%=cid %>) {
+                    if(!originalFiles_<%=cid %>.contains(file_<%=cid %>)) {
+                        globalMap.put("<%=cid %>_CREATED_FILE", file_<%=cid %>.getAbsolutePath());
+                        found_<%=cid %> = true;                    
+                        break;
                     }
-                    %>                
-                    globalMap.put("<%=cid %>_CREATED_FILE", file_<%=cid %>.getAbsolutePath()); 
-                    <%
-            } else if(ElementParameterParser.getValue(node, "__ACTION_ON__").equals("fileupdated")) {
+                }
+                originalFiles_<%=cid %> = util_<%=cid %>.getFiles();
+                <%
+            } else if(triggerAction.equals("filedeleted")) {
+                %>
+                for(java.io.File file_<%=cid %> : originalFiles_<%=cid %>) {
+                    if(!fetchFilesOneTime_<%=cid %>.contains(file_<%=cid %>)) {
+                        globalMap.put("<%=cid %>_DELETED_FILE", file_<%=cid %>.getAbsolutePath());
+                        found_<%=cid %> = true;                    
+                        break;
+                    }
+                }
+                originalFiles_<%=cid %> = util_<%=cid %>.getFiles();
+                <%
+            } else if(triggerAction.equals("fileupdated")) {
                 %>
                 for(java.io.File file_<%=cid %> : fetchFilesOneTime_<%=cid %>) {
                     if(null == originalMap_<%=cid%>.get(util_<%=cid %>.getFileChecksum(file_<%=cid%>))) {
-                        originalMap_<%=cid%>.put(util_<%=cid %>.getFileChecksum(file_<%=cid%>),file_<%=cid%>);
                         globalMap.put("<%=cid %>_UPDATED_FILE", file_<%=cid %>.getAbsolutePath());
+                        found_<%=cid %> = true;
+                        originalFiles_<%=cid %> = util_<%=cid %>.getFiles();
+                        originalMap_<%=cid%>.clear();
+                        for(java.io.File newFile_<%=cid%> : originalFiles_<%=cid %>) {
+                            originalMap_<%=cid%>.put(util_<%=cid %>.getFileChecksum(newFile_<%=cid%>), newFile_<%=cid%>);
+                        }                        
+                        break;                        
+                    }                   
+                }                
+                <%
+            } else if(triggerAction.equals("fileall")) {
+                %>
+                for(java.io.File file_<%=cid %> : originalFiles_<%=cid %>) {
+                    if(!fetchFilesOneTime_<%=cid %>.contains(file_<%=cid %>)) {
+                        globalMap.put("<%=cid %>_DELETED_FILE", file_<%=cid %>.getAbsolutePath());
+                        found_<%=cid %> = true;
+                        originalFiles_<%=cid %> = util_<%=cid %>.getFiles();
+                        originalMap_<%=cid%>.clear();
+                        for(java.io.File newFile_<%=cid%> : originalFiles_<%=cid %>) {
+                            originalMap_<%=cid%>.put(util_<%=cid %>.getFileChecksum(newFile_<%=cid%>), newFile_<%=cid%>);
+                        }
+                        fetchFilesOneTime_<%=cid %> = util_<%=cid %>.getFiles();                    
+                        break;
+                    }
+                }
+                for(java.io.File file_<%=cid %> : fetchFilesOneTime_<%=cid %>) {
+                    if(!originalFiles_<%=cid %>.contains(file_<%=cid %>)) {
+                        globalMap.put("<%=cid %>_CREATED_FILE", file_<%=cid %>.getAbsolutePath());
+                        found_<%=cid %> = true;
+                        originalFiles_<%=cid %> = util_<%=cid %>.getFiles();
+                        originalMap_<%=cid%>.clear();
+                        for(java.io.File newFile_<%=cid%> : originalFiles_<%=cid %>) {
+                            originalMap_<%=cid%>.put(util_<%=cid %>.getFileChecksum(newFile_<%=cid%>), newFile_<%=cid%>);
+                        }
+                        fetchFilesOneTime_<%=cid %> = util_<%=cid %>.getFiles();                    
+                        break;
+                    }
+                }
+                for(java.io.File file_<%=cid %> : fetchFilesOneTime_<%=cid %>) {
+                    if(null == originalMap_<%=cid%>.get(util_<%=cid %>.getFileChecksum(file_<%=cid%>))) {
+                        globalMap.put("<%=cid %>_UPDATED_FILE", file_<%=cid %>.getAbsolutePath());
+                        found_<%=cid %> = true;
+                        originalFiles_<%=cid %> = util_<%=cid %>.getFiles();
+                        originalMap_<%=cid%>.clear();
+                        for(java.io.File newFile_<%=cid%> : originalFiles_<%=cid %>) {
+                            originalMap_<%=cid%>.put(util_<%=cid %>.getFileChecksum(newFile_<%=cid%>), newFile_<%=cid%>);
+                        }                    
+                        break;
+                    }
+                }                
                 <%
             }
             %>
-            changeList_<%=cid %>.add(file_<%=cid %>); 
-            found_<%=cid %> = true;
-            break;
-                }
-            }
+
             <%
-            if(present){
+            if(present) {
                 %>   
                 }
                 <%
@@ -216,6 +256,6 @@
             globalMap.put("<%=cid %>_CURRENT_ITERATION", count_<%=cid %>);
             
             if (!found_<%=cid %>) {
-            	Thread.currentThread().sleep(<%=ElementParameterParser.getValue(node, "__WAIT__")%>*1000);
+            	Thread.currentThread().sleep(<%=ElementParameterParser.getValue(node, "__WAIT__")%> * 1000);
                 continue;
             }

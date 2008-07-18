@@ -78,8 +78,9 @@
     >
       <ITEMS DEFAULT="filecreated">
         <ITEM NAME="FILE_NEW" VALUE="filecreated" />
-        <ITEM NAME="FILE_DELETED" VALUE="filedeleted" />
-        <ITEM NAME="FILE_UPDATED" VALUE="fileupdated" />
+        <ITEM NAME="FILE_DELETED" VALUE="filedeleted"/>
+        <ITEM NAME="FILE_UPDATED" VALUE="fileupdated"/>
+        <ITEM NAME="FILE_ALL" VALUE="fileall"/>
       </ITEMS>
     </PARAMETER>
 
@@ -93,16 +94,6 @@
         <ITEM NAME="CONTINUE" VALUE="continue" />
         <ITEM NAME="EXIT_LOOP" VALUE="exitloop" />
       </ITEMS>
-    </PARAMETER>
-
- 	<PARAMETER
-      NAME="CHECK_SUM"
-      FIELD="CHECK"
-      NUM_ROW="9" 
-      SHOW="false"
-    >
-      <DEFAULT IF="ACTION_ON == 'FILE_UPDATED'">true</DEFAULT>
-      <DEFAULT IF="(ACTION_ON == 'FILE_NEW') or (ACTION_ON == 'FILE_DELETED')">false</DEFAULT>
     </PARAMETER>
 
   </PARAMETERS>
