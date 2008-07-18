@@ -466,7 +466,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         getEditor(0).doSave(monitor);
         designerEditor.getProperty().eAdapters().add(dirtyListener);
         // codeSync();
-
+        propertyInformation = new ArrayList(processEditorInput.getItem().getProperty().getInformations());
         propertyIsDirty = false;
         firePropertyChange(IEditorPart.PROP_DIRTY);
     }
