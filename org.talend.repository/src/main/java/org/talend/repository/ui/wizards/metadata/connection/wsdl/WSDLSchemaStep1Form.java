@@ -15,7 +15,6 @@ package org.talend.repository.ui.wizards.metadata.connection.wsdl;
 import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.jface.viewers.CellEditor;
@@ -25,6 +24,8 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseAdapter;
@@ -35,12 +36,12 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
-import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.commons.ui.swt.formtools.LabelledCombo;
 import org.talend.commons.ui.swt.thread.SWTUIThreadProcessor;
@@ -99,8 +100,6 @@ public class WSDLSchemaStep1Form extends AbstractWSDLSchemaStepForm {
 
     private static final String VALUE_PROPERTY = "Value"; //$NON-NLS-1$
 
-    private Group previewGroup;
-
     // private Button firstRowIsCaptionCheckbox;
 
     private Button previewButton;
@@ -131,6 +130,17 @@ public class WSDLSchemaStep1Form extends AbstractWSDLSchemaStepForm {
     SWTUIThreadProcessor processor = new PreviewProcessor();
 
     private static Logger log = Logger.getLogger(WSDLSchemaStep1Form.class);
+
+    /**
+     * Output tab.
+     */
+    private CTabFolder tabFolder;
+
+    private CTabItem previewTabItem;
+
+    private CTabItem outputTabItem;
+
+    private Composite outputComposite;
 
     /**
      * WSDLSchemaStep2Form constructor comment.
@@ -300,9 +310,22 @@ public class WSDLSchemaStep1Form extends AbstractWSDLSchemaStepForm {
      * @param height
      */
     private void addGroupFileViewer(final Composite parent, final int width, int height) {
+
+        tabFolder = new CTabFolder(parent, SWT.BORDER);
+        tabFolder.setLayoutData(new GridData(GridData.FILL_BOTH));
+
+        previewTabItem = new CTabItem(tabFolder, SWT.BORDER);
+        previewTabItem.setText("Preview");
+        outputTabItem = new CTabItem(tabFolder, SWT.BORDER);
+        outputTabItem.setText("Output");
+
+        Composite previewComposite = Form.startNewGridLayout(tabFolder, 1);
+        outputComposite = Form.startNewGridLayout(tabFolder, 1);
+
         // composite Delimited File Preview
-        previewGroup = Form.createGroup(parent, 1, Messages.getString("FileStep2.groupPreview"), height); //$NON-NLS-1$
-        Composite compositeDelimitedFilePreviewButton = Form.startNewDimensionnedGridLayout(previewGroup, 4, width,
+        // previewGroup = Form.createGroup(parent, 1, Messages.getString("FileStep2.groupPreview"), height);
+        // //$NON-NLS-1$
+        Composite compositeDelimitedFilePreviewButton = Form.startNewDimensionnedGridLayout(previewComposite, 4, width,
                 HEIGHT_BUTTON_PIXEL);
         height = height - HEIGHT_BUTTON_PIXEL - 15;
 
@@ -323,11 +346,16 @@ public class WSDLSchemaStep1Form extends AbstractWSDLSchemaStepForm {
                 .setText("                                                                                                                        "); //$NON-NLS-1$
         previewInformationLabel.setForeground(getDisplay().getSystemColor(SWT.COLOR_BLUE));
 
-        Composite compositeDelimitedFilePreview = Form.startNewDimensionnedGridLayout(previewGroup, 1, width, height);
+        Composite compositeDelimitedFilePreview = Form.startNewDimensionnedGridLayout(previewComposite, 1, width, height);
 
         // Delimited File Preview
         wsdlPreview = new ShadowProcessPreview(compositeDelimitedFilePreview, null, width, height - 10);
         wsdlPreview.newTablePreview();
+
+        previewTabItem.setControl(previewComposite);
+        outputTabItem.setControl(outputComposite);
+        tabFolder.setSelection(previewTabItem);
+        tabFolder.pack();
     }
 
     private void addJavaFieldsListeners() {
@@ -754,7 +782,7 @@ public class WSDLSchemaStep1Form extends AbstractWSDLSchemaStepForm {
             try {
                 csvArray = ShadowProcessHelper.getCsvArray(processDescription, "WSDL_SCHEMA"); //$NON-NLS-1$
 
-            } catch (CoreException e) {
+            } catch (Exception e) {
                 setException(e);
                 log.error(Messages.getString("FileStep2.previewFailure") + " " + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
             }
@@ -766,9 +794,13 @@ public class WSDLSchemaStep1Form extends AbstractWSDLSchemaStepForm {
             }
             if (getException() != null) {
                 previewInformationLabel.setText(" " + Messages.getString("FileStep2.previewFailure")); //$NON-NLS-1$ //$NON-NLS-2$
-                //$NON-NLS-2$
-                new ErrorDialogWidthDetailArea(getShell(), PID,
-                        Messages.getString("FileStep2.previewFailure"), getException().getMessage()); //$NON-NLS-1$
+                Display.getDefault().asyncExec(new Runnable() {
+
+                    public void run() {
+                        handleErrorOutput(outputComposite, tabFolder, outputTabItem);
+                    }
+
+                });
                 return;
             }
 
@@ -795,6 +827,16 @@ public class WSDLSchemaStep1Form extends AbstractWSDLSchemaStepForm {
         public void updateUIInThreadIfThreadIsCanceled() {
             if (!previewInformationLabel.isDisposed()) {
                 previewInformationLabel.setText(""); //$NON-NLS-1$
+            }
+
+            if (getException() != null) {
+                Display.getDefault().asyncExec(new Runnable() {
+
+                    public void run() {
+                        handleErrorOutput(outputComposite, tabFolder, outputTabItem);
+                    }
+
+                });
             }
         }
 

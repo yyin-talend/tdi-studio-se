@@ -16,11 +16,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -28,6 +28,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
@@ -62,8 +63,6 @@ public class LDAPSchemaStep3Form extends AbstractLDAPSchemaStepForm implements I
 
     private static Logger log = Logger.getLogger(LDAPSchemaStep3Form.class);
 
-    private Group previewGroup;
-
     public static List<String> itemTableNameList;
 
     private Button previewButton;
@@ -87,6 +86,17 @@ public class LDAPSchemaStep3Form extends AbstractLDAPSchemaStepForm implements I
     SWTUIThreadProcessor processor = new PreviewProcessor();
 
     private Text filterText;
+
+    /**
+     * Output tab.
+     */
+    private CTabFolder tabFolder;
+
+    private CTabItem previewTabItem;
+
+    private CTabItem outputTabItem;
+
+    private Composite outputComposite;
 
     /**
      * Constructor to use by RCP Wizard.
@@ -271,7 +281,7 @@ public class LDAPSchemaStep3Form extends AbstractLDAPSchemaStepForm implements I
             try {
                 csvArray = ShadowProcessHelper.getCsvArray(processDescription, "LDAP_SCHEMA"); //$NON-NLS-1$
 
-            } catch (CoreException e) {
+            } catch (Exception e) {
                 setException(e);
                 log.error(Messages.getString("FileStep2.previewFailure") + " " + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
             }
@@ -291,15 +301,33 @@ public class LDAPSchemaStep3Form extends AbstractLDAPSchemaStepForm implements I
             if (getException() != null) {
                 previewInformationLabel.setText(" " + Messages.getString("FileStep2.previewFailure")); //$NON-NLS-1$
                 //$NON-NLS-2$
-                new ErrorDialogWidthDetailArea(getShell(), PID,
-                        Messages.getString("FileStep2.previewFailure"), getException().getMessage()); //$NON-NLS-1$
+                Display.getDefault().asyncExec(new Runnable() {
+
+                    public void run() {
+                        handleErrorOutput(outputComposite, tabFolder, outputTabItem);
+                    }
+
+                });
                 return;
             }
 
             if (csvArray == null || csvArray.getRows() == null || csvArray.getRows().size() == 0) {
                 previewInformationLabel.setText(" " + Messages.getString("FileStep2.previewFailure")); //$NON-NLS-1$
-                //$NON-NLS-2$
-                MessageDialog.openError(getShell(), "Error", "Preview refresh failed, please check attributes and filter.");
+                // MessageDialog.openError(getShell(), "Error", "Preview refresh failed, please check attributes and
+                // filter.");
+
+                String errorInfo = "Error!" + "\n" + "Preview refresh failed, please check attributes and filter.";
+
+                final RuntimeException e = new RuntimeException(errorInfo);
+
+                Display.getDefault().asyncExec(new Runnable() {
+
+                    public void run() {
+                        handleErrorOutput(outputComposite, tabFolder, outputTabItem, e);
+                    }
+
+                });
+
                 if (!isContextMode()) {
                     filterText.setText(ConnectionUIConstants.DEFAULT_FILTER);
                     connection.setFilter(ConnectionUIConstants.DEFAULT_FILTER);
@@ -311,8 +339,15 @@ public class LDAPSchemaStep3Form extends AbstractLDAPSchemaStepForm implements I
                 // refresh TablePreview on this step
                 try {
                     ldapSchemaPreview.refreshTablePreview(csvArray, false, processDescription);
-                } catch (Exception e) {
-                    MessageDialog.openError(getShell(), "Error", "Preview refresh failed, please check attributes and filter.");
+                } catch (final Exception e) {
+                    Display.getDefault().asyncExec(new Runnable() {
+
+                        public void run() {
+                            handleErrorOutput(outputComposite, tabFolder, outputTabItem, e);
+                        }
+
+                    });
+
                     if (!isContextMode()) {
                         filterText.setText(ConnectionUIConstants.DEFAULT_FILTER);
                         connection.setFilter(ConnectionUIConstants.DEFAULT_FILTER);
@@ -389,8 +424,21 @@ public class LDAPSchemaStep3Form extends AbstractLDAPSchemaStepForm implements I
      */
     private void addGroupFileViewer(final Composite parent, final int width, int height) {
         // composite LDAP Schema Preview
-        previewGroup = Form.createGroup(parent, 1, Messages.getString("FileStep2.groupPreview"), height); //$NON-NLS-1$
-        Composite compositeLdifFilePreviewButton = Form.startNewDimensionnedGridLayout(previewGroup, 4, width,
+        // previewGroup = Form.createGroup(parent, 1, Messages.getString("FileStep2.groupPreview"), height);
+        // //$NON-NLS-1$
+
+        tabFolder = new CTabFolder(this, SWT.BORDER);
+        tabFolder.setLayoutData(new GridData(GridData.FILL_BOTH));
+
+        previewTabItem = new CTabItem(tabFolder, SWT.BORDER);
+        previewTabItem.setText("Preview");
+        outputTabItem = new CTabItem(tabFolder, SWT.BORDER);
+        outputTabItem.setText("Output");
+
+        Composite previewComposite = Form.startNewGridLayout(tabFolder, 1);
+        outputComposite = Form.startNewGridLayout(tabFolder, 1);
+
+        Composite compositeLdifFilePreviewButton = Form.startNewDimensionnedGridLayout(previewComposite, 4, width,
                 HEIGHT_BUTTON_PIXEL);
         height = height - HEIGHT_BUTTON_PIXEL - 15;
 
@@ -407,11 +455,16 @@ public class LDAPSchemaStep3Form extends AbstractLDAPSchemaStepForm implements I
                 .setText("                                                                                                                        "); //$NON-NLS-1$
         previewInformationLabel.setForeground(getDisplay().getSystemColor(SWT.COLOR_BLUE));
 
-        Composite compositeLDAPSchemaPreview = Form.startNewDimensionnedGridLayout(previewGroup, 1, width, height);
+        Composite compositeLDAPSchemaPreview = Form.startNewDimensionnedGridLayout(previewComposite, 1, width, height);
 
         // LDAP Schema Preview
         ldapSchemaPreview = new ShadowProcessPreview(compositeLDAPSchemaPreview, null, width, height - 10);
         ldapSchemaPreview.newTablePreview();
+
+        previewTabItem.setControl(previewComposite);
+        outputTabItem.setControl(outputComposite);
+        tabFolder.setSelection(previewTabItem);
+        tabFolder.pack();
     }
 
     /**

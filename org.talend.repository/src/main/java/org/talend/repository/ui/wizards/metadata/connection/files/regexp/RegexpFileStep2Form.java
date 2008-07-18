@@ -16,9 +16,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.ModifyEvent;
@@ -28,10 +29,10 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.commons.ui.swt.formtools.LabelledCheckboxCombo;
 import org.talend.commons.ui.swt.formtools.LabelledCombo;
@@ -101,9 +102,6 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
     /**
      * Fields use to preview.
      */
-
-    private Group previewGroup;
-
     private Button firstRowIsCaptionCheckbox;
 
     private Button previewButton;
@@ -121,6 +119,17 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
     private UtilsButton cancelButton;
 
     private boolean readOnly;
+
+    /**
+     * Output tab.
+     */
+    private CTabFolder tabFolder;
+
+    private CTabItem previewTabItem;
+
+    private CTabItem outputTabItem;
+
+    private Composite outputComposite;
 
     /**
      * Constructor to use by RCP Wizard.
@@ -329,9 +338,22 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
      * @param height
      */
     private void addGroupFileViewer(final Composite parent, final int width, int height) {
+
+        tabFolder = new CTabFolder(parent, SWT.BORDER);
+        tabFolder.setLayoutData(new GridData(GridData.FILL_BOTH));
+
+        previewTabItem = new CTabItem(tabFolder, SWT.BORDER);
+        previewTabItem.setText("Preview");
+        outputTabItem = new CTabItem(tabFolder, SWT.BORDER);
+        outputTabItem.setText("Output");
+
+        Composite previewComposite = Form.startNewGridLayout(tabFolder, 1);
+        outputComposite = Form.startNewGridLayout(tabFolder, 1);
+
         // composite Regex File Preview
-        previewGroup = Form.createGroup(parent, 1, Messages.getString("FileStep2.groupPreview"), height); //$NON-NLS-1$
-        Composite compositeRegexFilePreviewButton = Form.startNewDimensionnedGridLayout(previewGroup, 4, width,
+        // previewGroup = Form.createGroup(parent, 1, Messages.getString("FileStep2.groupPreview"), height);
+        // //$NON-NLS-1$
+        Composite compositeRegexFilePreviewButton = Form.startNewDimensionnedGridLayout(previewComposite, 4, width,
                 HEIGHT_BUTTON_PIXEL);
         height = height - HEIGHT_BUTTON_PIXEL - 15;
 
@@ -352,11 +374,16 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
                 .setText("                                                                                                                        "); //$NON-NLS-1$
         previewInformationLabel.setForeground(getDisplay().getSystemColor(SWT.COLOR_BLUE));
 
-        Composite compositeRegexFilePreview = Form.startNewDimensionnedGridLayout(previewGroup, 1, width, height);
+        Composite compositeRegexFilePreview = Form.startNewDimensionnedGridLayout(previewComposite, 1, width, height);
 
         // Regex File Preview
         regexpFilePreview = new ShadowProcessPreview(compositeRegexFilePreview, null, width, height - 10);
         regexpFilePreview.newTablePreview();
+
+        previewTabItem.setControl(previewComposite);
+        outputTabItem.setControl(outputComposite);
+        tabFolder.setSelection(previewTabItem);
+        tabFolder.pack();
     }
 
     @Override
@@ -489,7 +516,7 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
             try {
                 csvArray = ShadowProcessHelper.getCsvArray(processDescription, "FILE_REGEXP"); //$NON-NLS-1$
 
-            } catch (CoreException e) {
+            } catch (Exception e) {
                 setException(e);
                 log.error(Messages.getString("FileStep2.previewFailure") + " " + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
             }
@@ -507,8 +534,13 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
             }
             if (getException() != null) {
                 previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewFailure")); //$NON-NLS-1$ //$NON-NLS-2$
-                new ErrorDialogWidthDetailArea(getShell(), PID,
-                        Messages.getString("FileStep2.previewFailure"), getException().getMessage()); //$NON-NLS-1$
+                Display.getDefault().asyncExec(new Runnable() {
+
+                    public void run() {
+                        handleErrorOutput(outputComposite, tabFolder, outputTabItem);
+                    }
+
+                });
                 return;
             }
 

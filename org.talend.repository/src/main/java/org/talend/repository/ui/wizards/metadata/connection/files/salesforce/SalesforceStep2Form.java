@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -24,6 +23,8 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -33,10 +34,10 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.TableColumn;
-import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
@@ -88,6 +89,17 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
     private SWTUIThreadProcessor processor = new PreviewProcessor();
 
     /**
+     * Output tab.
+     */
+    private CTabFolder tabFolder;
+
+    private CTabItem previewTabItem;
+
+    private CTabItem outputTabItem;
+
+    private Composite outputComposite;
+
+    /**
      * DOC YeXiaowei SalesforceStep2Form constructor comment.
      * 
      * @param parent
@@ -131,19 +143,36 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
      * DOC YeXiaowei Comment method "addSalesforcePreviewGroup".
      */
     private void addSalesforcePreviewGroup() {
-        Group previewGroup = Form.createGroup(this, 2, "Salesforce Preview");
+        // Group previewGroup = Form.createGroup(this, 2, "Salesforce Preview");
 
-        previewButton = new Button(previewGroup, SWT.NONE);
+        tabFolder = new CTabFolder(this, SWT.BORDER);
+        tabFolder.setLayoutData(new GridData(GridData.FILL_BOTH));
+
+        previewTabItem = new CTabItem(tabFolder, SWT.BORDER);
+        previewTabItem.setText("Preview");
+        outputTabItem = new CTabItem(tabFolder, SWT.BORDER);
+        outputTabItem.setText("Output");
+
+        Composite previewComposite = Form.startNewGridLayout(tabFolder, 1);
+        outputComposite = Form.startNewGridLayout(tabFolder, 1);
+
+        previewButton = new Button(previewComposite, SWT.NONE);
         previewButton.setText(Messages.getString("FileStep2.refreshPreview")); //$NON-NLS-1$
         previewButton.setSize(WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL);
 
-        previewInformationLabel = new Label(previewGroup, SWT.NONE);
+        previewInformationLabel = new Label(previewComposite, SWT.NONE);
         previewInformationLabel
                 .setText("                                                                                                                        "); //$NON-NLS-1$
         previewInformationLabel.setForeground(getDisplay().getSystemColor(SWT.COLOR_BLUE));
 
-        salesforcePreviewProcess = new ShadowProcessPreview(previewGroup, null, 600, 200);
+        salesforcePreviewProcess = new ShadowProcessPreview(previewComposite, null, 600, 200);
         salesforcePreviewProcess.newTablePreview();
+
+        previewTabItem.setControl(previewComposite);
+        outputTabItem.setControl(outputComposite);
+        tabFolder.setSelection(previewTabItem);
+        tabFolder.pack();
+
     }
 
     /**
@@ -385,7 +414,7 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
                     // refresh TablePreview on this step
                     previewInformationLabelMsg = ""; //$NON-NLS-1$
                 }
-            } catch (CoreException ex) {
+            } catch (Exception ex) {
                 setException(ex);
                 previewInformationLabelMsg = "   " + Messages.getString("FileStep2.previewFailure"); //$NON-NLS-1$ //$NON-NLS-2$
             }
@@ -405,8 +434,19 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
             }
             previewInformationLabel.setText(previewInformationLabelMsg);
             if (getException() != null) {
-                new ErrorDialogWidthDetailArea(getShell(), PID,
-                        Messages.getString("FileStep2.previewFailure"), getException().getMessage()); //$NON-NLS-1$
+
+                // new ErrorDialogWidthDetailArea(getShell(), PID,
+                // Messages.getString("FileStep2.previewFailure"), getException().getMessage()); //$NON-NLS-1$
+
+                previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewFailure")); //$NON-NLS-1$ //$NON-NLS-2$
+                Display.getDefault().asyncExec(new Runnable() {
+
+                    public void run() {
+                        handleErrorOutput(outputComposite, tabFolder, outputTabItem);
+                    }
+                });
+                return;
+
             }
             if (csvArray != null) {
                 salesforcePreviewProcess.refreshTablePreview(csvArray, firstRowIsCatption, processDescription);

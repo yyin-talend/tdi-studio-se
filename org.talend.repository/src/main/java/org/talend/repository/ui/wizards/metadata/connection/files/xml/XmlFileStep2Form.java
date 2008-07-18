@@ -30,14 +30,19 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.datatools.enablement.oda.xml.util.ui.ATreeNode;
 import org.eclipse.datatools.enablement.oda.xml.util.ui.XPathPopulationUtil;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
@@ -128,6 +133,17 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
     private String xmlFilePath;
 
     private Group schemaTargetGroup;
+
+    /**
+     * Output tab.
+     */
+    private CTabFolder tabFolder;
+
+    private CTabItem previewTabItem;
+
+    private CTabItem outputTabItem;
+
+    private Composite outputComposite;
 
     /**
      * Constructor to use by RCP Wizard.
@@ -323,14 +339,26 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
      */
     private void addGroupFileViewer(final Composite parent, final int width, int height) {
         // composite Xml File Preview
-        Group previewGroup = Form.createGroup(parent, 1, Messages.getString("FileStep2.groupPreview"), height); //$NON-NLS-1$
+        // Group previewGroup = Form.createGroup(parent, 1, Messages.getString("FileStep2.groupPreview"), height);
+        // //$NON-NLS-1$
         // Composite compositeXmlFilePreviewButton = Form.startNewDimensionnedGridLayout(previewGroup, 4, width,
         // HEIGHT_BUTTON_PIXEL);
         // height = height - HEIGHT_BUTTON_PIXEL - 15;
 
-        previewGroup.setLayout(new GridLayout());
+        tabFolder = new CTabFolder(parent, SWT.BORDER);
+        tabFolder.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        Composite preivewButtonPart = new Composite(previewGroup, SWT.NONE);
+        previewTabItem = new CTabItem(tabFolder, SWT.BORDER);
+        previewTabItem.setText("Preview");
+        outputTabItem = new CTabItem(tabFolder, SWT.BORDER);
+        outputTabItem.setText("Output");
+
+        Composite previewComposite = Form.startNewGridLayout(tabFolder, 1);
+        outputComposite = Form.startNewGridLayout(tabFolder, 1);
+
+        // previewGroup.setLayout(new GridLayout());
+
+        Composite preivewButtonPart = new Composite(previewComposite, SWT.NONE);
         preivewButtonPart.setLayout(new GridLayout(3, false));
         preivewButtonPart.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
@@ -340,12 +368,17 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
         previewButton.setSize(WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL);
 
         XmlArray.setLimitToDefault();
-        previewInformationLabel = new Label(previewGroup, SWT.NONE);
+        previewInformationLabel = new Label(previewComposite, SWT.NONE);
         previewInformationLabel.setForeground(getDisplay().getSystemColor(SWT.COLOR_BLUE));
 
         // Xml File Preview
-        xmlFilePreview = new ShadowProcessPreview(previewGroup, null, width, height - 10);
+        xmlFilePreview = new ShadowProcessPreview(previewComposite, null, width, height - 10);
         xmlFilePreview.newTablePreview();
+
+        previewTabItem.setControl(previewComposite);
+        outputTabItem.setControl(outputComposite);
+        tabFolder.setSelection(previewTabItem);
+        tabFolder.pack();
     }
 
     /**
@@ -572,8 +605,17 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
                     } else {
                         previewButton.setText(Messages.getString("FileStep2.refreshPreview")); //$NON-NLS-1$
                         if (!previewButton.getEnabled()) {
-                            new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep2.noresult"), Messages //$NON-NLS-1$
-                                    .getString("FileStep2.noresultDetailMessage")); //$NON-NLS-1$
+                            // new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep2.noresult"),
+                            // Messages //$NON-NLS-1$
+                            // .getString("FileStep2.noresultDetailMessage")); //$NON-NLS-1$
+
+                            Display.getDefault().asyncExec(new Runnable() {
+
+                                public void run() {
+                                    handleErrorOutput(outputComposite, tabFolder, outputTabItem);
+
+                                }
+                            });
                             log.error(Messages.getString("FileStep2.noresult")); //$NON-NLS-1$
                             previewButton.setEnabled(true);
                         } else {
@@ -596,6 +638,27 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
                 }
             });
         }
+    }
+
+    /**
+     * ftang Comment method "handleErrorOutput".
+     */
+    private void handleErrorOutput(Composite outputComposite, CTabFolder tabFolder, CTabItem outputTabItem) {
+        Font font = new Font(Display.getDefault(), "courier", 8, SWT.NONE); //$NON-NLS-1$
+
+        StyledText text = new StyledText(outputComposite, SWT.WRAP | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.READ_ONLY);
+        GridData gridData = new GridData(GridData.FILL_BOTH);
+        text.setLayoutData(gridData);
+        outputComposite.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WHITE));
+
+        String errorInfo = Messages.getString("FileStep2.noresult") + "\n";
+        errorInfo = errorInfo + Messages.getString("FileStep2.noresultDetailMessage") + "\n";
+
+        text.setText(errorInfo);
+        text.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_RED));
+        text.setFont(font);
+
+        tabFolder.setSelection(outputTabItem);
     }
 
     /**
