@@ -174,7 +174,7 @@ groupby_new_<%=cid %> = 0;
 									}else if(isByteArray){
 									%>TalendString.replaceSpecialCharForXML(java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=groupby[i][0] %>)).toString())<%
 									}else if(isBigDecimal){
-									%>TalendString.replaceSpecialCharForXML(String.valueof(<%=conn.getName() %>.<%=tag[i][0] %>.doublevalue()))<%
+									%>TalendString.replaceSpecialCharForXML(String.valueOf(<%=conn.getName() %>.<%=tag[i][0] %>.doubleValue()))<%
 									}else{
 									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%><%=conn.getName() %>.<%=groupby[i][0] %><%if(needReplace){%>)<%}%><%
 									}%>))<%
@@ -276,7 +276,7 @@ for(int i = 0; i < attribute.length; i++){
 									}else if(isByteArray){
 									%>TalendString.replaceSpecialCharForXML(java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=attribute[i][0] %>)).toString())<%
 									}else if(isBigDecimal){
-									%>TalendString.replaceSpecialCharForXML(String.valueof(<%=conn.getName() %>.<%=tag[i][0] %>.doublevalue()))<%
+									%>TalendString.replaceSpecialCharForXML(String.valueOf(<%=conn.getName() %>.<%=tag[i][0] %>.doubleValue()))<%
 									}else{
 									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%><%=conn.getName() %>.<%=attribute[i][0] %><%if(needReplace){%>)<%}%><%
 									}%>))<%
@@ -346,7 +346,7 @@ for(int i = 0; i < tag.length; i++){
 									}else if(isByteArray){
 									%>TalendString.checkCDATAForXML(java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=tag[i][0] %>)).toString())<%
 									}else if(isBigDecimal){
-									%>TalendString.checkCDATAForXML(String.valueof(<%=conn.getName() %>.<%=tag[i][0] %>.doublevalue()))<%
+									%>TalendString.checkCDATAForXML(String.valueOf(<%=conn.getName() %>.<%=tag[i][0] %>.doubleValue()))<%
 									}else{
 									%><%if(needReplace){%>TalendString.checkCDATAForXML(<%}%><%=conn.getName() %>.<%=tag[i][0] %><%if(needReplace){%>)<%}%><%
 									}%>))<%
