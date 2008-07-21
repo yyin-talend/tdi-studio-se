@@ -83,10 +83,8 @@ public class ConnectionManager {
             return false;
         }
 
-        // int nbMerge = countNbMerge(source, target);
-        int nbMergeSource = countNbMergeOutgoing(source);
-        int nbMergeTarget = countNbMergeOutgoing(target);
-        if (nbMergeTarget > 1 || nbMergeSource > 1) {
+        int nbMerge = countNbMerge(source, target);
+        if (nbMerge > 1) {
             return false;
         }
 
