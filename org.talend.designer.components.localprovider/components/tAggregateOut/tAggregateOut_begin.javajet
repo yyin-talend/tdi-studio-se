@@ -100,6 +100,8 @@ if(sizeOps>0){
                     				    		java.util.Set <%=funin[1] %>_<%=funin[0] %> = new java.util.HashSet(); 
                     				    <% } else if("list".equals(funin[0])) {%>
                     				    		String <%=funin[1] %>_<%=funin[0] %> = "";
+                    				    <% } else if("list_object".equals(funin[0])) {%>
+                    				    		java.util.List <%=funin[1] %>_<%=funin[0] %> = new java.util.ArrayList();
                     				    <% } else {%> 
                     				    		<%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> <%=funin[1] %>_<%=funin[0] %>;
                     				    <% } %>                                   
