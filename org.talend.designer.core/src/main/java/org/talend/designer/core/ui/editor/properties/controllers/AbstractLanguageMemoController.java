@@ -164,7 +164,9 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
 
                     b.setLayoutData(data);
 
-                    addCodeGenerateButton(b);
+                    if (isNeedToAddCodeGenerateButton()) {
+                        addCodeGenerateButton(b);
+                    }
 
                     Process process = null;
                     if (elem instanceof Node) {
@@ -201,7 +203,9 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
 
                 b.setLayoutData(data);
 
-                addCodeGenerateButton(b);
+                if (isNeedToAddCodeGenerateButton()) {
+                    addCodeGenerateButton(b);
+                }
 
                 viewer = (TalendPerlSourceViewer) TalendPerlSourceViewer.createViewer(b, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL
                         | SWT.H_SCROLL | SWT.WRAP, true);
@@ -319,6 +323,13 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
             }
 
         });
+    }
+
+    private boolean isNeedToAddCodeGenerateButton() {
+        if (elem instanceof Node) {
+            return ((Node) elem).getUniqueName().startsWith("tJavaRow");
+        }
+        return false;
     }
 
     /**
