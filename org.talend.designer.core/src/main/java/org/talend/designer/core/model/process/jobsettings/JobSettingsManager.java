@@ -76,6 +76,10 @@ public class JobSettingsManager {
 
     private static final String CONTEXTLOAD_CONDITION = EParameterName.IMPLICIT_TCONTEXTLOAD.getName() + " == 'true'"; //$NON-NLS-1$
 
+    private static final String QUOTE = LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA ? "\"" : "'";
+
+    private static final String CONNECTOR = LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA ? "+" : ".";
+
     /**
      * 
      * create parameter for extra tab.
@@ -401,7 +405,7 @@ public class JobSettingsManager {
         // query condition
         param = new ElementParameter(process);
         param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.QUERY_CONDITION.getName()));
-        param.setValue("\"\"");
+        param.setValue(QUOTE + QUOTE);
         param.setDisplayName(EParameterName.QUERY_CONDITION.getDisplayName());
         param.setField(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.EXTRA);
@@ -679,8 +683,8 @@ public class JobSettingsManager {
                         .generateNewQuery(null, table, dbType, schema, realTableName));
                 paramName = JobSettingsConstants.getExtraParameterName(EParameterName.QUERY_CONDITION.getName());
                 String conditionStatement = (String) process.getElementParameter(paramName).getValue();
-                if (!("\"\"".equals(conditionStatement) || "".equals(conditionStatement))) {
-                    query = query + "+\" WHERE \"+" + conditionStatement;
+                if (!("\"\"".equals(conditionStatement) || "".equals(conditionStatement) || "''".equals(conditionStatement))) {
+                    query = query + CONNECTOR + QUOTE + " WHERE " + QUOTE + CONNECTOR + conditionStatement;
                 }
                 tContextLoadNode.getElementParameter(JobSettingsConstants.QUERY).setValue(query);
             }
