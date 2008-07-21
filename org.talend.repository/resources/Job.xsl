@@ -136,11 +136,15 @@
 						</a>
 					</b>
 				</div>
+				<xsl:variable name="job" select="/project/job" />
+				<xsl:variable name="code" select="$job/sourcecodes"></xsl:variable>
+				<xsl:if test="$code">
 				<div class="FONTSTYLE">
 					<b>
 						<a href="#SourceCode">Source Code</a>
 					</b>
 				</div>
+				</xsl:if>
 				<br />
 				<br />
 				<!-- Project Description-->
@@ -188,7 +192,6 @@
 				</table>
 				<br />
 				<br />
-				<xsl:variable name="job" select="/project/job" />
 				<h2 class="FONTSTYLE">
 					<a name="#JobDescription">Job Description</a>
 				</h2>
@@ -914,10 +917,10 @@
 				</xsl:for-each>
 					<!-- Source Code-->
 				<!--HR-->
+				<xsl:if test="$code">
 				<h2 class="FONTSTYLE">
 					<a name="#SourceCode">Source Code</a>
 				</h2>
-				<xsl:variable name="code" select="$job/sourcecodes"></xsl:variable>
 				<table width="90%" border="1" cellpadding="0"
 					cellspacing="0"
 					style="border-collapse: collapse; padding-left:10mm;"
@@ -936,6 +939,7 @@
 						</xsl:for-each></td>
 					</tr>
 				</table>
+				</xsl:if>
 			</body>
 		</html>
 	</xsl:template>
