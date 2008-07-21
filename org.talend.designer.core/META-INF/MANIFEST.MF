@@ -34,7 +34,8 @@ Require-Bundle: org.talend.libraries.logging,
  org.talend.commons.ui,
  org.eclipse.debug.core,
  org.eclipse.debug.ui,
- org.apache.axis
+ org.apache.axis,
+ org.eclipse.gmf.runtime.diagram.ui.properties
 Eclipse-LazyStart: true
 Plugin-Class: org.talend.designer.core.DesignerPlugin
 Export-Package: org.talend.designer.core;

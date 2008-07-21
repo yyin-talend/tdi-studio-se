@@ -45,6 +45,8 @@ public class Note extends Element {
 
     private String textColor = "0;0;0";
 
+    private String noteLineColor = "237;201;122";
+
     /**
      * tang Note constructor comment.
      */
@@ -121,6 +123,51 @@ public class Note extends Element {
         param.setCategory(EComponentCategory.BASIC);
         param.setNumRow(4);
         addElementParameter(param);
+        param = new ElementParameter(this);
+        param.setName(EParameterName.NOTE_FONT.getName());
+        param.setValue("Time New Roman");
+        param.setDisplayName(EParameterName.NOTE_FONT.getDisplayName());
+        param.setField(EParameterFieldType.TEXT);
+        param.setCategory(EComponentCategory.BASIC);
+        param.setNumRow(4);
+        addElementParameter(param);
+
+        param = new ElementParameter(this);
+        param.setName(EParameterName.FONT_SIZE.getName());
+        param.setValue("10");
+        param.setDisplayName(EParameterName.FONT_SIZE.getDisplayName());
+        param.setField(EParameterFieldType.TEXT);
+        param.setCategory(EComponentCategory.BASIC);
+        param.setNumRow(4);
+        addElementParameter(param);
+
+        param = new ElementParameter(this);
+        param.setName(EParameterName.FONT_BOLD.getName());
+        param.setValue(false);
+        param.setDisplayName(EParameterName.FONT_BOLD.getDisplayName());
+        param.setField(EParameterFieldType.CHECK);
+        param.setCategory(EComponentCategory.BASIC);
+        param.setNumRow(4);
+        addElementParameter(param);
+
+        param = new ElementParameter(this);
+        param.setName(EParameterName.FONT_ITALIC.getName());
+        param.setValue(false);
+        param.setDisplayName(EParameterName.FONT_ITALIC.getDisplayName());
+        param.setField(EParameterFieldType.CHECK);
+        param.setCategory(EComponentCategory.BASIC);
+        param.setNumRow(4);
+        addElementParameter(param);
+
+        param = new ElementParameter(this);
+        param.setName(EParameterName.NOTE_LINECOLOR.getName());
+        param.setValue(noteLineColor);
+        param.setDisplayName(EParameterName.FONT_ITALIC.getDisplayName());
+        param.setField(EParameterFieldType.COLOR);
+        param.setCategory(EComponentCategory.BASIC);
+        param.setNumRow(4);
+        addElementParameter(param);
+
     }
 
     @Override

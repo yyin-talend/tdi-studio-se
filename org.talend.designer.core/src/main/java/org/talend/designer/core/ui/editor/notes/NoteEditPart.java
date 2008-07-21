@@ -25,7 +25,9 @@ import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.tools.DirectEditManager;
 import org.eclipse.jface.viewers.TextCellEditor;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.utils.TalendTextUtils;
@@ -94,6 +96,8 @@ public class NoteEditPart extends AbstractGraphicalEditPart implements PropertyC
         noteFigure.setOpaque(note.isOpaque());
         noteFigure.setBackgroundColor(new Color(null, TalendTextUtils.stringToRGB((String) note
                 .getPropertyValue(EParameterName.NOTE_COLOR.getName()))));
+        noteFigure.setForegroundColor(new Color(null, TalendTextUtils.stringToRGB((String) note
+                .getPropertyValue(EParameterName.NOTE_LINECOLOR.getName()))));
         noteFigure.getLabel().setForegroundColor(
                 new Color(null, TalendTextUtils.stringToRGB((String) note
                         .getPropertyValue(EParameterName.NOTETXT_COLOR.getName()))));
@@ -114,6 +118,24 @@ public class NoteEditPart extends AbstractGraphicalEditPart implements PropertyC
         }
         if ((Boolean) note.getPropertyValue(EParameterName.NOTELABEL_CENTER.getName())) {
             noteFigure.getLabel().setTextAlignment(PositionConstants.CENTER);
+        }
+        if ((Boolean) note.getPropertyValue(EParameterName.FONT_BOLD.getName())
+                && (Boolean) note.getPropertyValue(EParameterName.FONT_ITALIC.getName())) {
+            Font font = new Font(null, (String) note.getPropertyValue(EParameterName.NOTE_FONT.getName()), Integer.parseInt(note
+                    .getPropertyValue(EParameterName.FONT_SIZE.getName()).toString()), SWT.BOLD | SWT.ITALIC);
+            noteFigure.getLabel().setFont(font);
+        } else if ((Boolean) note.getPropertyValue(EParameterName.FONT_BOLD.getName())) {
+            Font font = new Font(null, (String) note.getPropertyValue(EParameterName.NOTE_FONT.getName()), Integer.parseInt(note
+                    .getPropertyValue(EParameterName.FONT_SIZE.getName()).toString()), SWT.BOLD);
+            noteFigure.getLabel().setFont(font);
+        } else if ((Boolean) note.getPropertyValue(EParameterName.FONT_ITALIC.getName())) {
+            Font font = new Font(null, (String) note.getPropertyValue(EParameterName.NOTE_FONT.getName()), Integer.parseInt(note
+                    .getPropertyValue(EParameterName.FONT_SIZE.getName()).toString()), SWT.ITALIC);
+            noteFigure.getLabel().setFont(font);
+        } else {
+            Font font = new Font(null, (String) note.getPropertyValue(EParameterName.NOTE_FONT.getName()), Integer.parseInt(note
+                    .getPropertyValue(EParameterName.FONT_SIZE.getName()).toString()), SWT.NULL);
+            noteFigure.getLabel().setFont(font);
         }
 
     }

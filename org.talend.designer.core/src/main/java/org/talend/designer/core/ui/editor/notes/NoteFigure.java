@@ -71,7 +71,6 @@ public class NoteFigure extends Figure {
         graphics.drawPolygon(innerLine);
 
         graphics.translate(getLocation().getNegated());
-
         label.setLocation(new Point(getLocation().x + CORNER_SIZE, getLocation().y + CORNER_SIZE));
         label.setSize(getSize().width - CORNER_SIZE * 2, getSize().height - CORNER_SIZE * 2);
 

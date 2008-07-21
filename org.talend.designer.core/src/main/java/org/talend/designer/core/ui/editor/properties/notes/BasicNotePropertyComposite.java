@@ -13,7 +13,16 @@
 package org.talend.designer.core.ui.editor.properties.notes;
 
 import org.eclipse.gef.commands.Command;
+import org.eclipse.gmf.runtime.diagram.ui.internal.util.FontHelper;
+import org.eclipse.gmf.runtime.diagram.ui.l10n.DiagramUIMessages;
+import org.eclipse.gmf.runtime.diagram.ui.properties.internal.l10n.DiagramUIPropertiesImages;
+import org.eclipse.gmf.runtime.diagram.ui.properties.sections.appearance.ColorPalettePopup;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.resource.CompositeImageDescriptor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.accessibility.AccessibleAdapter;
+import org.eclipse.swt.accessibility.AccessibleEvent;
+import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
@@ -21,20 +30,22 @@ import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.PaletteData;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.ColorDialog;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.core.model.utils.TalendTextUtils;
@@ -55,19 +66,27 @@ public class BasicNotePropertyComposite extends AbstractNotePropertyComposite {
 
     private Text text;
 
-    private Button notecolorbutton;
-
-    private Button textcolorbutton;
-
     private Composite composite;
-
-    private static final int SIZE_X = 50;
-
-    private static final int SIZE_Y = 18;
 
     private Group adjustTextGroup, adjustLabelGroup;
 
     private Button leftBtn, rightBtn, centreBtn, centreLabelBtn, topBtn, bottomBtn;
+
+    protected Group colorsAndFontsGroup;
+
+    protected CCombo fontFamilyCombo;
+
+    private CCombo fontSizeCombo;
+
+    private Button fontBoldButton;
+
+    private Button fontItalicButton;
+
+    protected Button fillColorButton;
+
+    protected Button fontColorButton;
+
+    protected Button lineColorButton;
 
     /**
      * DOC yzhang BasicNotePropertyComposite constructor comment.
@@ -99,7 +118,6 @@ public class BasicNotePropertyComposite extends AbstractNotePropertyComposite {
         data.left = new FormAttachment(0, 0);
         data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
         check.setLayoutData(data);
-
         CLabel labelLabel = getWidgetFactory().createCLabel(composite, Messages.getString("OpaqueNoteSection.Label")); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(check);
@@ -118,113 +136,28 @@ public class BasicNotePropertyComposite extends AbstractNotePropertyComposite {
                 }
             }
         });
-        CLabel labelcolor = getWidgetFactory().createCLabel(composite, Messages.getString("BasicNotePropertyComposite.Label")); //$NON-NLS-1$
-        data = new FormData();
+        createFontsAndColorsGroups(composite);
+
+        createAlignGroups(composite);
+
+        createTextControl(composite);
+    }
+
+    /**
+     * DOC qwei Comment method "createTextcontrol".
+     */
+    private void createTextControl(Composite parent) {
+        CLabel textLabel = getWidgetFactory().createCLabel(composite, Messages.getString("TextNoteSection.Label"));
+        //$NON-NLS-1$
+        FormData data = new FormData();
         data.left = new FormAttachment(0, 0);
-        data.top = new FormAttachment(check, 30);
-        labelcolor.setLayoutData(data);
-        notecolorbutton = getWidgetFactory().createButton(composite, "", SWT.NONE); //$NON-NLS-1$
-        data = new FormData();
-        data.left = new FormAttachment(labelcolor);
-        data.top = new FormAttachment(labelcolor, 0, SWT.TOP);
-        notecolorbutton.setLayoutData(data);
-        colorButtonrefresh();
-        notecolorbutton.addSelectionListener(new SelectionAdapter() {
-
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                Control ctrl = (Control) e.getSource();
-                if (ctrl instanceof Button) {
-                    ColorDialog colorDialog = new ColorDialog(ctrl.getShell());
-                    colorDialog.setRGB(TalendTextUtils.stringToRGB((String) note.getPropertyValue(EParameterName.NOTE_COLOR
-                            .getName())));
-                    RGB rgb = colorDialog.open();
-                    if (rgb != null) {
-                        String value = rgb.red + ";" + rgb.green + ";" + rgb.blue;
-                        Command cmd = new PropertyChangeCommand(note, EParameterName.NOTE_COLOR.getName(), value);
-                        getCommandStack().execute(cmd);
-                        note.refresh();
-                        colorButtonrefresh();
-                    }
-                }
-            }
-        });
-
-        CLabel textcolor = getWidgetFactory().createCLabel(composite, Messages.getString("BasicNotePropertyComposite.Text")); //$NON-NLS-1$
-        data = new FormData();
-        data.left = new FormAttachment(notecolorbutton, 30);
-        data.top = new FormAttachment(check, 30);
-        textcolor.setLayoutData(data);
-        textcolorbutton = getWidgetFactory().createButton(composite, "", SWT.NONE); //$NON-NLS-1$
-        data = new FormData();
-        data.left = new FormAttachment(textcolor);
-        data.top = new FormAttachment(textcolor, 0, SWT.TOP);
-        textcolorbutton.setLayoutData(data);
-        textcolorButtonrefresh();
-        textcolorbutton.addSelectionListener(new SelectionAdapter() {
-
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                Control ctrl = (Control) e.getSource();
-                if (ctrl instanceof Button) {
-                    ColorDialog colorDialog = new ColorDialog(ctrl.getShell());
-                    colorDialog.setRGB(TalendTextUtils.stringToRGB((String) note.getPropertyValue(EParameterName.NOTETXT_COLOR
-                            .getName())));
-                    RGB rgb = colorDialog.open();
-                    if (rgb != null) {
-                        String value = rgb.red + ";" + rgb.green + ";" + rgb.blue;
-                        Command cmd = new PropertyChangeCommand(note, EParameterName.NOTETXT_COLOR.getName(), value);
-                        getCommandStack().execute(cmd);
-                        note.refresh();
-                        text.setForeground(new Color(null, TalendTextUtils.stringToRGB((String) note
-                                .getPropertyValue(EParameterName.NOTETXT_COLOR.getName()))));
-                        textcolorButtonrefresh();
-                    }
-                }
-            }
-        });
-
-        adjustLabelGroup = getWidgetFactory().createGroup(composite, "Adjust horizontal");
-        data = new FormData();
-        adjustLabelGroup.setLayout(new GridLayout(3, false));
-        data.left = new FormAttachment(0, 0);
-        data.top = new FormAttachment(notecolorbutton, 30);
-        adjustLabelGroup.setLayoutData(data);
-        leftBtn = getWidgetFactory().createButton(adjustLabelGroup, "left", SWT.RADIO);
-        leftBtn.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        leftBtn.setSelection((Boolean) note.getPropertyValue(EParameterName.NOTETXT_LEFT.getName()));
-        rightBtn = getWidgetFactory().createButton(adjustLabelGroup, "right", SWT.RADIO);
-        rightBtn.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        rightBtn.setSelection((Boolean) note.getPropertyValue(EParameterName.NOTETXT_RIGHT.getName()));
-        centreBtn = getWidgetFactory().createButton(adjustLabelGroup, "centre", SWT.RADIO);
-        centreBtn.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        centreBtn.setSelection((Boolean) note.getPropertyValue(EParameterName.NOTETXT_CENTER.getName()));
-
-        adjustTextGroup = getWidgetFactory().createGroup(composite, "Adjust vertical");
-        data = new FormData();
-        adjustTextGroup.setLayout(new GridLayout(3, false));
-        data.left = new FormAttachment(adjustLabelGroup, 10);
-        data.top = new FormAttachment(notecolorbutton, 30);
-        adjustTextGroup.setLayoutData(data);
-        topBtn = getWidgetFactory().createButton(adjustTextGroup, "top", SWT.RADIO);
-        topBtn.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        topBtn.setSelection((Boolean) note.getPropertyValue(EParameterName.NOTETXT_TOP.getName()));
-        bottomBtn = getWidgetFactory().createButton(adjustTextGroup, "bottom", SWT.RADIO);
-        bottomBtn.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        bottomBtn.setSelection((Boolean) note.getPropertyValue(EParameterName.NOTETXT_BOTTOM.getName()));
-        centreLabelBtn = getWidgetFactory().createButton(adjustTextGroup, "centre", SWT.RADIO);
-        centreLabelBtn.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        centreLabelBtn.setSelection((Boolean) note.getPropertyValue(EParameterName.NOTELABEL_CENTER.getName()));
-
-        CLabel textLabel = getWidgetFactory().createCLabel(composite, Messages.getString("TextNoteSection.Label")); //$NON-NLS-1$
-        data = new FormData();
-        data.left = new FormAttachment(0, 0);
-        data.top = new FormAttachment(adjustTextGroup, 30);
+        data.top = new FormAttachment(colorsAndFontsGroup, 30);
         textLabel.setLayoutData(data);
-        text = getWidgetFactory().createText(composite, "", SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL); //$NON-NLS-1$
+        text = getWidgetFactory().createText(composite, "", SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
+        //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
-        data.right = new FormAttachment(textLabel, 600);
+        data.right = new FormAttachment(textLabel, 560);
         data.top = new FormAttachment(textLabel, 0, SWT.TOP);
         data.height = 5 * text.getLineHeight(); // 5 lines
         text.setLayoutData(data);
@@ -259,7 +192,258 @@ public class BasicNotePropertyComposite extends AbstractNotePropertyComposite {
             }
 
         });
+        textChanged();
+    }
+
+    /**
+     * DOC qwei Comment method "createAlignGroups".
+     */
+    private void createAlignGroups(Composite parent) {
+        adjustLabelGroup = getWidgetFactory().createGroup(composite, "Adjust horizontal");
+        FormData data = new FormData();
+        adjustLabelGroup.setLayout(new GridLayout(3, false));
+        data.left = new FormAttachment(colorsAndFontsGroup, 10);
+        data.top = new FormAttachment(check, 30);
+        adjustLabelGroup.setLayoutData(data);
+        leftBtn = getWidgetFactory().createButton(adjustLabelGroup, "left", SWT.RADIO);
+        leftBtn.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        leftBtn.setSelection((Boolean) note.getPropertyValue(EParameterName.NOTETXT_LEFT.getName()));
+        rightBtn = getWidgetFactory().createButton(adjustLabelGroup, "right", SWT.RADIO);
+        rightBtn.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        rightBtn.setSelection((Boolean) note.getPropertyValue(EParameterName.NOTETXT_RIGHT.getName()));
+        centreBtn = getWidgetFactory().createButton(adjustLabelGroup, "centre", SWT.RADIO);
+        centreBtn.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        centreBtn.setSelection((Boolean) note.getPropertyValue(EParameterName.NOTETXT_CENTER.getName()));
+
+        adjustTextGroup = getWidgetFactory().createGroup(composite, "Adjust vertical");
+        data = new FormData();
+        adjustTextGroup.setLayout(new GridLayout(3, false));
+        data.left = new FormAttachment(adjustLabelGroup, 10);
+        data.top = new FormAttachment(check, 30);
+        adjustTextGroup.setLayoutData(data);
+        topBtn = getWidgetFactory().createButton(adjustTextGroup, "top", SWT.RADIO);
+        topBtn.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        topBtn.setSelection((Boolean) note.getPropertyValue(EParameterName.NOTETXT_TOP.getName()));
+        bottomBtn = getWidgetFactory().createButton(adjustTextGroup, "bottom", SWT.RADIO);
+        bottomBtn.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        bottomBtn.setSelection((Boolean) note.getPropertyValue(EParameterName.NOTETXT_BOTTOM.getName()));
+        centreLabelBtn = getWidgetFactory().createButton(adjustTextGroup, "centre", SWT.RADIO);
+        centreLabelBtn.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        centreLabelBtn.setSelection((Boolean) note.getPropertyValue(EParameterName.NOTELABEL_CENTER.getName()));
         addListener();
+    }
+
+    /**
+     * DOC qwei Comment method "createFontsAndColorsGroups".
+     */
+    protected Group createFontsAndColorsGroups(Composite parent) {
+        colorsAndFontsGroup = getWidgetFactory().createGroup(parent, "Fonts and Colors");
+        FormData data = new FormData();
+        data.left = new FormAttachment(0, 0);
+        data.top = new FormAttachment(check, 10);
+        GridLayout layout = new GridLayout(1, false);
+        colorsAndFontsGroup.setLayout(layout);
+        colorsAndFontsGroup.setLayoutData(data);
+        createFontsGroup(colorsAndFontsGroup);
+        return colorsAndFontsGroup;
+
+    }
+
+    /**
+     * Create font tool bar group
+     * 
+     * @param parent - parent composite
+     * @return - font tool bar
+     */
+    protected Composite createFontsGroup(Composite parent) {
+        Composite familySize = getWidgetFactory().createComposite(parent);
+        GridLayout layout = new GridLayout(2, false);
+        layout.horizontalSpacing = 0;
+        layout.verticalSpacing = 0;
+        layout.marginHeight = 0;
+        layout.marginWidth = 0;
+        familySize.setLayout(layout);
+
+        fontFamilyCombo = getWidgetFactory().createCCombo(familySize, SWT.DROP_DOWN | SWT.READ_ONLY | SWT.BORDER);
+        fontFamilyCombo.setItems(FontHelper.getFontNames());
+        fontFamilyCombo.setText((String) note.getPropertyValue(EParameterName.NOTE_FONT.getName()));
+        fontFamilyCombo.addSelectionListener(new SelectionAdapter() {
+
+            public void widgetSelected(SelectionEvent event) {
+                updateFontFamily();
+            }
+        });
+
+        fontSizeCombo = getWidgetFactory().createCCombo(familySize, SWT.DROP_DOWN | SWT.READ_ONLY | SWT.BORDER);
+        fontSizeCombo.setItems(FontHelper.getFontSizes());
+        fontSizeCombo.setText((String) note.getPropertyValue(EParameterName.FONT_SIZE.getName()));
+        fontSizeCombo.addSelectionListener(new SelectionAdapter() {
+
+            public void widgetSelected(SelectionEvent event) {
+                updateFontSize();
+            }
+        });
+
+        Composite toolBar = new Composite(parent, SWT.SHADOW_NONE);
+        toolBar.setLayout(new GridLayout(7, false));
+        toolBar.setBackground(parent.getBackground());
+
+        fontBoldButton = new Button(toolBar, SWT.TOGGLE);
+        fontBoldButton.setImage(DiagramUIPropertiesImages.get(DiagramUIPropertiesImages.IMG_BOLD));
+        fontBoldButton.getAccessible().addAccessibleListener(new AccessibleAdapter() {
+
+            public void getName(AccessibleEvent e) {
+                e.result = DiagramUIMessages.PropertyDescriptorFactory_FontStyle_Bold;
+            }
+        });
+
+        fontItalicButton = new Button(toolBar, SWT.TOGGLE);
+        fontItalicButton.setImage(DiagramUIPropertiesImages.get(DiagramUIPropertiesImages.IMG_ITALIC));
+        fontItalicButton.getAccessible().addAccessibleListener(new AccessibleAdapter() {
+
+            public void getName(AccessibleEvent e) {
+                e.result = DiagramUIMessages.PropertyDescriptorFactory_FontStyle_Italic;
+            }
+        });
+
+        fontBoldButton.addSelectionListener(new SelectionAdapter() {
+
+            public void widgetSelected(SelectionEvent event) {
+                updateFontBold();
+            }
+        });
+
+        fontItalicButton.addSelectionListener(new SelectionAdapter() {
+
+            public void widgetSelected(SelectionEvent event) {
+                updateFontItalic();
+            }
+        });
+
+        new Label(toolBar, SWT.LEFT);
+
+        fontColorButton = new Button(toolBar, SWT.PUSH);
+        Image overlyedImage = new ColorOverlayImageDescriptor(DiagramUIPropertiesImages.DESC_FONT_COLOR.getImageData(),
+                TalendTextUtils.stringToRGB((String) note.getPropertyValue(EParameterName.NOTETXT_COLOR.getName())))
+                .createImage();
+        fontColorButton.setImage(overlyedImage);
+        fontColorButton.getAccessible().addAccessibleListener(new AccessibleAdapter() {
+
+            public void getName(AccessibleEvent e) {
+                e.result = DiagramUIMessages.PropertyDescriptorFactory_FontColor;
+            }
+        });
+        fontColorButton.addSelectionListener(new SelectionAdapter() {
+
+            public void widgetSelected(SelectionEvent event) {
+                ColorPalettePopup popup = new ColorPalettePopup(fontColorButton.getParent().getShell(),
+                        IDialogConstants.BUTTON_BAR_HEIGHT);
+                Rectangle r = fontColorButton.getBounds();
+                Point location = fontColorButton.getParent().toDisplay(r.x, r.y);
+                popup.open(new Point(location.x, location.y + r.height));
+
+                if (popup.getSelectedColor() == null && !popup.useDefaultColor()) {
+                    return;
+                }
+                // selectedColor should be null if we are to use the default color
+                RGB selectedColor = popup.getSelectedColor();
+                if (popup.useDefaultColor()) {
+                    selectedColor = new RGB(0, 0, 0);
+                }
+                if (selectedColor != null) {
+                    String value = selectedColor.red + ";" + selectedColor.green + ";" + selectedColor.blue;
+                    Command cmd = new PropertyChangeCommand(note, EParameterName.NOTETXT_COLOR.getName(), value);
+                    getCommandStack().execute(cmd);
+                    note.refresh();
+                    Image overlyedImage = new ColorOverlayImageDescriptor(DiagramUIPropertiesImages.DESC_FONT_COLOR
+                            .getImageData(), selectedColor).createImage();
+                    fontColorButton.setImage(overlyedImage);
+                    text.setForeground(new Color(null, TalendTextUtils.stringToRGB((String) note
+                            .getPropertyValue(EParameterName.NOTETXT_COLOR.getName()))));
+                }
+            }
+        });
+        new Label(toolBar, SWT.LEFT);
+
+        lineColorButton = new Button(toolBar, SWT.PUSH);
+        overlyedImage = new ColorOverlayImageDescriptor(DiagramUIPropertiesImages.DESC_LINE_COLOR.getImageData(), TalendTextUtils
+                .stringToRGB((String) note.getPropertyValue(EParameterName.NOTE_LINECOLOR.getName()))).createImage();
+        lineColorButton.setImage(overlyedImage);
+        lineColorButton.getAccessible().addAccessibleListener(new AccessibleAdapter() {
+
+            public void getName(AccessibleEvent e) {
+                e.result = DiagramUIMessages.PropertyDescriptorFactory_LineColor;
+            }
+        });
+        lineColorButton.addSelectionListener(new SelectionAdapter() {
+
+            public void widgetSelected(SelectionEvent event) {
+                ColorPalettePopup popup = new ColorPalettePopup(lineColorButton.getParent().getShell(),
+                        IDialogConstants.BUTTON_BAR_HEIGHT);
+                Rectangle r = lineColorButton.getBounds();
+                Point location = lineColorButton.getParent().toDisplay(r.x, r.y);
+                popup.open(new Point(location.x, location.y + r.height));
+
+                if (popup.getSelectedColor() == null && !popup.useDefaultColor()) {
+                    return;
+                }
+                // selectedColor should be null if we are to use the default color
+                RGB selectedColor = popup.getSelectedColor();
+                if (popup.useDefaultColor()) {
+                    selectedColor = new RGB(237, 201, 122);
+                }
+                if (selectedColor != null) {
+                    String value = selectedColor.red + ";" + selectedColor.green + ";" + selectedColor.blue;
+                    Command cmd = new PropertyChangeCommand(note, EParameterName.NOTE_LINECOLOR.getName(), value);
+                    getCommandStack().execute(cmd);
+                    note.refresh();
+                    Image overlyedImage = new ColorOverlayImageDescriptor(DiagramUIPropertiesImages.DESC_LINE_COLOR
+                            .getImageData(), selectedColor).createImage();
+                    lineColorButton.setImage(overlyedImage);
+                }
+            }
+        });
+
+        fillColorButton = new Button(toolBar, SWT.PUSH);
+        overlyedImage = new ColorOverlayImageDescriptor(DiagramUIPropertiesImages.DESC_FILL_COLOR.getImageData(), TalendTextUtils
+                .stringToRGB((String) note.getPropertyValue(EParameterName.NOTE_COLOR.getName()))).createImage();
+        fillColorButton.setImage(overlyedImage);
+        fillColorButton.getAccessible().addAccessibleListener(new AccessibleAdapter() {
+
+            public void getName(AccessibleEvent e) {
+                e.result = DiagramUIMessages.PropertyDescriptorFactory_FillColor;
+            }
+        });
+        fillColorButton.addSelectionListener(new SelectionAdapter() {
+
+            public void widgetSelected(SelectionEvent event) {
+                ColorPalettePopup popup = new ColorPalettePopup(fillColorButton.getParent().getShell(),
+                        IDialogConstants.BUTTON_BAR_HEIGHT);
+                Rectangle r = fillColorButton.getBounds();
+                Point location = fillColorButton.getParent().toDisplay(r.x, r.y);
+                popup.open(new Point(location.x, location.y + r.height));
+
+                if (popup.getSelectedColor() == null && !popup.useDefaultColor()) {
+                    return;
+                }
+                // selectedColor should be null if we are to use the default color
+                RGB selectedColor = popup.getSelectedColor();
+                if (popup.useDefaultColor()) {
+                    selectedColor = new RGB(255, 255, 203);
+                }
+                if (selectedColor != null) {
+                    String value = selectedColor.red + ";" + selectedColor.green + ";" + selectedColor.blue;
+                    Command cmd = new PropertyChangeCommand(note, EParameterName.NOTE_COLOR.getName(), value);
+                    getCommandStack().execute(cmd);
+                    note.refresh();
+                    Image overlyedImage = new ColorOverlayImageDescriptor(DiagramUIPropertiesImages.DESC_FILL_COLOR
+                            .getImageData(), selectedColor).createImage();
+                    fillColorButton.setImage(overlyedImage);
+                }
+            }
+        });
+
+        return toolBar;
     }
 
     /*
@@ -270,42 +454,6 @@ public class BasicNotePropertyComposite extends AbstractNotePropertyComposite {
     @Override
     public Composite getComposite() {
         return composite;
-    }
-
-    private ImageData createColorImage(Button button, RGB color) {
-        int width = SIZE_X - 5;
-        int height = SIZE_Y - 5;
-
-        RGB black = new RGB(0, 0, 0);
-        PaletteData dataPalette = new PaletteData(new RGB[] { black, black, color });
-        ImageData data = new ImageData(width, height, 4, dataPalette);
-        data.transparentPixel = 0;
-
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                if (x == 0 || y == 0 || x == (width - 1) || y == (height - 1)) {
-                    data.setPixel(x, y, 1);
-                } else {
-                    data.setPixel(x, y, 2);
-                }
-            }
-        }
-
-        return data;
-    }
-
-    private void colorButtonrefresh() {
-        ImageData id = createColorImage(notecolorbutton, TalendTextUtils.stringToRGB((String) note
-                .getPropertyValue(EParameterName.NOTE_COLOR.getName())));
-        Image image = new Image(notecolorbutton.getDisplay(), id, id.getTransparencyMask());
-        notecolorbutton.setImage(image);
-    }
-
-    private void textcolorButtonrefresh() {
-        ImageData id = createColorImage(textcolorbutton, TalendTextUtils.stringToRGB((String) note
-                .getPropertyValue(EParameterName.NOTETXT_COLOR.getName())));
-        Image image = new Image(textcolorbutton.getDisplay(), id, id.getTransparencyMask());
-        textcolorbutton.setImage(image);
     }
 
     private void addListener() {
@@ -432,4 +580,116 @@ public class BasicNotePropertyComposite extends AbstractNotePropertyComposite {
         });
     }
 
+    /**
+     * Update font family property
+     */
+    protected void updateFontFamily() {
+
+        // Update model in response to user
+        if (fontFamilyCombo.getText() != null || !fontFamilyCombo.getText().equals("")) { //$NON-NLS-1$
+            String value = fontFamilyCombo.getText();
+            Command cmd = new PropertyChangeCommand(note, EParameterName.NOTE_FONT.getName(), value);
+            getCommandStack().execute(cmd);
+            note.refresh();
+            textChanged();
+        }
+    }
+
+    private void updateFontSize() {
+        if (fontSizeCombo.getText() != null || !fontSizeCombo.getText().equals("")) { //$NON-NLS-1$
+            String value = fontSizeCombo.getText();
+            Command cmd = new PropertyChangeCommand(note, EParameterName.FONT_SIZE.getName(), value);
+            getCommandStack().execute(cmd);
+            note.refresh();
+            textChanged();
+        }
+    }
+
+    private void updateFontBold() {
+        Boolean value = fontBoldButton.getSelection();
+        Command cmd = new PropertyChangeCommand(note, EParameterName.FONT_BOLD.getName(), value);
+        getCommandStack().execute(cmd);
+        note.refresh();
+        textChanged();
+
+    }
+
+    private void updateFontItalic() {
+        Boolean value = fontItalicButton.getSelection();
+        Command cmd = new PropertyChangeCommand(note, EParameterName.FONT_ITALIC.getName(), value);
+        getCommandStack().execute(cmd);
+        note.refresh();
+        textChanged();
+    }
+
+    /**
+     * An image descriptor that overlays two images: a basic icon and a thin color bar underneath it
+     */
+    protected static class ColorOverlayImageDescriptor extends CompositeImageDescriptor {
+
+        /** default color icon width */
+        private static final Point ICON_SIZE = new Point(16, 16);
+
+        /** the basic icon */
+        private ImageData basicImgData;
+
+        /** the color of the thin color bar */
+        private RGB rgb;
+
+        /**
+         * Creates a new color menu image descriptor
+         * 
+         * @param basicIcon The basic Image data
+         * @param rgb The color bar RGB value
+         */
+        public ColorOverlayImageDescriptor(ImageData basicImgData, RGB rgb) {
+            this.basicImgData = basicImgData;
+            this.rgb = rgb;
+        }
+
+        /**
+         * @see org.eclipse.jface.resource.CompositeImageDescriptor#drawCompositeImage(int, int)
+         */
+        protected void drawCompositeImage(int width, int height) {
+
+            // draw the thin color bar underneath
+            if (rgb != null) {
+                ImageData colorBar = new ImageData(width, height / 5, 1,
+
+                new PaletteData(new RGB[] { rgb }));
+                drawImage(colorBar, 0, height - height / 5);
+
+            }
+            // draw the base image
+            drawImage(basicImgData, 0, 0);
+        }
+
+        /**
+         * @see org.eclipse.jface.resource.CompositeImageDescriptor#getSize()
+         */
+        protected Point getSize() {
+            return ICON_SIZE;
+        }
+    }
+
+    private void textChanged() {
+        if ((Boolean) note.getPropertyValue(EParameterName.FONT_BOLD.getName())
+                && (Boolean) note.getPropertyValue(EParameterName.FONT_ITALIC.getName())) {
+            Font font = new Font(null, (String) note.getPropertyValue(EParameterName.NOTE_FONT.getName()), Integer.parseInt(note
+                    .getPropertyValue(EParameterName.FONT_SIZE.getName()).toString()), SWT.BOLD | SWT.ITALIC);
+            text.setFont(font);
+        } else if ((Boolean) note.getPropertyValue(EParameterName.FONT_BOLD.getName())) {
+            Font font = new Font(null, (String) note.getPropertyValue(EParameterName.NOTE_FONT.getName()), Integer.parseInt(note
+                    .getPropertyValue(EParameterName.FONT_SIZE.getName()).toString()), SWT.BOLD);
+            text.setFont(font);
+        } else if ((Boolean) note.getPropertyValue(EParameterName.FONT_ITALIC.getName())) {
+            Font font = new Font(null, (String) note.getPropertyValue(EParameterName.NOTE_FONT.getName()), Integer.parseInt(note
+                    .getPropertyValue(EParameterName.FONT_SIZE.getName()).toString()), SWT.ITALIC);
+            text.setFont(font);
+        } else {
+            Font font = new Font(null, (String) note.getPropertyValue(EParameterName.NOTE_FONT.getName()), Integer.parseInt(note
+                    .getPropertyValue(EParameterName.FONT_SIZE.getName()).toString()), SWT.NULL);
+            text.setFont(font);
+        }
+    }
 }

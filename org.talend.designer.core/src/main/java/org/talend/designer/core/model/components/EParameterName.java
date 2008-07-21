@@ -96,6 +96,11 @@ public enum EParameterName {
     NOTETXT_TOP("top"),
     NOTETXT_BOTTOM("bottom"),
     NOTELABEL_CENTER("center"),
+    NOTE_FONT("Font"),
+    FONT_SIZE("Font Size"),
+    FONT_BOLD("Bold"),
+    FONT_ITALIC("Italic"),
+    NOTE_LINECOLOR("Note Line Color"),
 
     /**
      * For stats & logs parameters.
