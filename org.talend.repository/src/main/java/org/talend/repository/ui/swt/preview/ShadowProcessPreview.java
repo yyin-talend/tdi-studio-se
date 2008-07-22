@@ -385,6 +385,8 @@ public class ShadowProcessPreview {
         if (firstRowIsLabel) {
             end--;
         }
+
+        table.setRedraw(false);
         for (int f = 0; f < end; f++) {
             String[] csvFields;
             if (firstRowIsLabel) {
@@ -392,11 +394,8 @@ public class ShadowProcessPreview {
             } else {
                 csvFields = csvRows.get(f);
             }
-            String[] values = new String[csvFields.length];
-            for (int i = 0; i < csvFields.length; i++) {
-                values[i] = csvFields[i];
-            }
 
+            String[] values = csvFields;
             if (f >= existingItemCount) {
                 // create a new Item
                 TableItem row = new TableItem(table, SWT.NONE);
@@ -406,6 +405,7 @@ public class ShadowProcessPreview {
                 table.getItem(f).setText(values);
             }
         }
+        table.setRedraw(true);
     }
 
     /**
