@@ -948,8 +948,8 @@ public class DatabaseForm extends AbstractForm {
                     if (product == null || product.equals("General JDBC")) {
                         mapping = generalMappingFileText.getText();
                     } else {
-                        if (MetadataTalendType.getDefaultDbmsFromProduct(product) != null) {
-                            mapping = MetadataTalendType.getDefaultDbmsFromProduct(product).getId();
+                        if (MetadataTalendType.getDefaultDbmsFromProduct(filterProductName(product)) != null) {
+                            mapping = MetadataTalendType.getDefaultDbmsFromProduct(filterProductName(product)).getId();
                         }
                     }
                     if (mapping == null) {
@@ -1080,6 +1080,13 @@ public class DatabaseForm extends AbstractForm {
         // }
         // });
 
+    }
+
+    private String filterProductName(final String product) {
+        if (product.startsWith("ORACLE")) {
+            return "ORACLE";
+        }
+        return product;
     }
 
     /**
