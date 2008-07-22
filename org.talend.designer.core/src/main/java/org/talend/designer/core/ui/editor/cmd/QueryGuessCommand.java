@@ -18,6 +18,7 @@ import java.util.Map;
 import org.eclipse.gef.commands.Command;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
+import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.QueryUtil;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
@@ -125,8 +126,14 @@ public class QueryGuessCommand extends Command {
                     if (object != null) {
                         Item item = object.getProperty().getItem();
                         if (item != null && item instanceof DatabaseConnectionItem) {
-                            schema = (String) RepositoryToComponentProperty.getValue(((DatabaseConnectionItem) item)
-                                    .getConnection(), "SCHEMA");
+
+                            if (dbType.equals(EDatabaseTypeName.TERADATA.getDisplayName())) {
+                                schema = (String) RepositoryToComponentProperty.getValue(((DatabaseConnectionItem) item)
+                                        .getConnection(), "SID");
+                            } else {
+                                schema = (String) RepositoryToComponentProperty.getValue(((DatabaseConnectionItem) item)
+                                        .getConnection(), "SCHEMA");
+                            }
                             schema = TalendTextUtils.removeQuotes(schema);
                         }
                     }
