@@ -214,13 +214,10 @@ if (canGenerate) {
 			}
             argIndex++;			
 		}
-		%>
-		statement_<%=cid%>.execute();
-		<%
 		if(hasOutput) { //fixed 2777 issue. it must get ResultSet first.
             %>
             Object resultSet_<%=cid%> = null;
-            boolean resultSetFound_<%=cid %> = false;
+            boolean resultSetFound_<%=cid %> = statement_<%=cid%>.execute();
 	        while (!resultSetFound_<%=cid %>) {
 	            resultSetFound_<%=cid %> = statement_<%=cid%>.getMoreResults();
 	            if (!resultSetFound_<%=cid %> && statement_<%=cid%>.getUpdateCount()==-1) {
@@ -231,6 +228,10 @@ if (canGenerate) {
 	            resultSet_<%=cid%> = statement_<%=cid%>.getResultSet();
 	        }
             <%
+		}else{
+%>statement_<%=cid%>.execute();
+
+<%
 		}
 		
 		List<? extends IConnection> outConnections = node.getOutgoingConnections();
