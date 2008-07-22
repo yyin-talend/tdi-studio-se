@@ -26,7 +26,9 @@ public class StatsAndLogsConstants {
 
     private static final String ODBC = "ODBC"; //$NON-NLS-1$
 
-    private static final String ORACLE = "ORACLE"; //$NON-NLS-1$
+    private static final String ORACLE_WITH_SID = "ORACLE_SID"; //$NON-NLS-1$
+
+    private static final String ORACLE_WITH_SERVICE_NAME = "ORACLE_SERIVCE_NAME"; //$NON-NLS-1$
 
     private static final String IBM_DB2 = "IBM_DB2"; //$NON-NLS-1$
 
@@ -51,29 +53,31 @@ public class StatsAndLogsConstants {
     private static final String TERADATA = "TERADATA"; //$NON-NLS-1$
 
     private static final String[] PERL_DISPLAY_DBNAMES = new String[] {
-            "Generic ODBC", "MySQL", "Microsoft SQL Server (Odbc driver)", "Oracle", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            "Generic ODBC", "MySQL", "Microsoft SQL Server (Odbc driver)", "Oracle with SID", "Oracle with service name", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
             "PostgreSQL", "IBM DB2", "Sybase", "Ingres", "Interbase", "SQLite", "FireBird", "Informix", "Access", "Teradata" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ 
 
     private static final String[] JAVA_DISPLAY_DBNAMES = new String[] {
-            "Generic ODBC", "MySQL", "Microsoft SQL Server", "Oracle", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            "Generic ODBC", "MySQL", "Microsoft SQL Server", "Oracle with SID", "Oracle with service name", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
             "PostgreSQL", "IBM DB2", "Sybase", "Ingres", "Interbase", "SQLite", "FireBird", "Informix", "Access", "Teradata" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
     private static final String[] PERL_DB_COMPONENTS = new String[] {
-            "tDBOutput", "tMysqlOutput", "tDBOutput", "tOracleOutput", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            "tDBOutput", "tMysqlOutput", "tDBOutput", "tOracleOutput_sid", "tOracleOutput_service", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
             "tPostgresqlOutput", "tDB2Output", "tSybaseOutput", "tIngresOutput", "tInterbaseOutput", "tSQLiteOutput", "tFirebirdOutput", "tInformixOutput", "tAccessOutput", "tTeradataOutput" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
     private static final String[] JAVA_DB_COMPONENTS = new String[] {
-            "tDBOutput", "tMysqlOutput", "tMSSqlOutput", "tOracleOutput", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            "tDBOutput", "tMysqlOutput", "tMSSqlOutput", "tOracleOutput_sid", "tOracleOutput_service",//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
             "tPostgresqlOutput", "tDB2Output", "tSybaseOutput", "tIngresOutput", "tInterbaseOutput", "tSQLiteOutput", "tFirebirdOutput", "tInformixOutput", "tAccessOutput", "tTeradataOutput" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
-    private static final String[] PERL_REPOSITORY_ITEMS = new String[] { ODBC, MYSQL, ODBC, ORACLE, POSTGRESQL, IBM_DB2, SYBASE,
-            INGRES, INTERBASE, SQLITE, FIREBIRD, INFORMIX, ACCESS, TERADATA };
+    private static final String[] PERL_REPOSITORY_ITEMS = new String[] { ODBC, MYSQL, ODBC, ORACLE_WITH_SID,
+            ORACLE_WITH_SERVICE_NAME, POSTGRESQL, IBM_DB2, SYBASE, INGRES, INTERBASE, SQLITE, FIREBIRD, INFORMIX, ACCESS,
+            TERADATA };
 
     private static final String[] PERL_CODE_LIST = new String[] { ODBC, MYSQL, ODBC, "OCLE", POSTGRESQL, //$NON-NLS-1$
             IBM_DB2, SYBASE, INGRES, INTERBASE, SQLITE, FIREBIRD, INFORMIX, ACCESS, TERADATA };
 
-    private static final String[] JAVA_REPOSITORY_ITEMS = new String[] { ODBC, MYSQL, SQL_SERVER, ORACLE, POSTGRESQL, IBM_DB2,
-            SYBASE, INGRES, INTERBASE, SQLITE, FIREBIRD, INFORMIX, ACCESS, TERADATA };
+    private static final String[] JAVA_REPOSITORY_ITEMS = new String[] { ODBC, MYSQL, SQL_SERVER, ORACLE_WITH_SID,
+            ORACLE_WITH_SERVICE_NAME, POSTGRESQL, IBM_DB2, SYBASE, INGRES, INTERBASE, SQLITE, FIREBIRD, INFORMIX, ACCESS,
+            TERADATA };
 
     private static final String[] JAVA_CODE_LIST = new String[] { ODBC, MYSQL, SQL_SERVER, "OCLE", POSTGRESQL, //$NON-NLS-1$
             IBM_DB2, SYBASE, INGRES, INTERBASE, SQLITE, FIREBIRD, INFORMIX, ACCESS, TERADATA };

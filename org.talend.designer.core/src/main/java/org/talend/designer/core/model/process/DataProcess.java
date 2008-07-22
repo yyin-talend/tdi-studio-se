@@ -39,6 +39,7 @@ import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.model.process.jobsettings.JobSettingsManager;
@@ -512,7 +513,8 @@ public class DataProcess {
 
         for (IMultipleComponentItem curItem : itemList) {
             String uniqueName = graphicalNode.getUniqueName() + "_" + curItem.getName(); //$NON-NLS-1$
-            IComponent component = ComponentsFactoryProvider.getInstance().get(curItem.getComponent());
+            IComponent component = ComponentsFactoryProvider.getInstance().get(
+                    TalendTextUtils.filterOracleComponentName(curItem.getComponent()));
             if (component == null) {
                 continue;
             }
