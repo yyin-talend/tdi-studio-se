@@ -114,9 +114,11 @@ class GenerateToolByDom4j{
 			for(XMLNode attri:node.attributes){
 				addAttribute(currEleName,attri);
 			}
+			if(node.name.indexOf(":")>0){
 %>
 			<%=currEleName%>_<%=cid%>.setName("<%=node.name%>");
 <%
+			}
 			int index = 0;
 			for(XMLNode child:node.elements){
 				if(0==(child.special & 1)){
