@@ -405,7 +405,12 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
                 IProcess process = getProcess(elem, part);
 
-                this.extendedProposal = TalendProposalUtils.installOn(control, process);
+                if (elem instanceof INode) {
+                    this.extendedProposal = TalendProposalUtils.installOn(control, process, (INode) elem);
+                } else {
+                    this.extendedProposal = TalendProposalUtils.installOn(control, process);
+                }
+
                 if (!elem.getElementParameter(parameterName).isNoCheck()) {
                     this.checkErrorsHelper.register(control, extendedProposal);
                 }

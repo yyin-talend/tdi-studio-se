@@ -48,6 +48,7 @@ import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.ui.viewer.ReconcilerViewer;
 import org.talend.core.ui.viewer.java.TalendJavaSourceViewer;
@@ -207,11 +208,19 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
                     addCodeGenerateButton(b);
                 }
 
-                viewer = (TalendPerlSourceViewer) TalendPerlSourceViewer.createViewer(b, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL
-                        | SWT.H_SCROLL | SWT.WRAP, true);
+                if (elem instanceof INode) {
+                    viewer = (TalendPerlSourceViewer) TalendPerlSourceViewer.createViewer(b, SWT.BORDER | SWT.MULTI
+                            | SWT.V_SCROLL | SWT.H_SCROLL | SWT.WRAP, true, (INode) elem);
+                } else {
+
+                    viewer = (TalendPerlSourceViewer) TalendPerlSourceViewer.createViewer(b, SWT.BORDER | SWT.MULTI
+                            | SWT.V_SCROLL | SWT.H_SCROLL | SWT.WRAP, true);
+                }
+
                 text = viewer.getTextWidget();
 
                 Process process = null;
+
                 if (elem instanceof Node) {
                     process = (Process) ((Node) elem).getProcess();
                 } else if (elem instanceof Connection) {
