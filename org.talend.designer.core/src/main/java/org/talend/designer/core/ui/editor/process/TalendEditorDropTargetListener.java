@@ -140,6 +140,8 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
 
         createNewComponent(getCurrentEvent());
         createSchema(getSelection().getFirstElement(), getTargetEditPart());
+        createQuery(getSelection().getFirstElement(), getTargetEditPart());
+        createProperty(getSelection().getFirstElement(), getTargetEditPart());
     }
 
     /**
@@ -158,6 +160,36 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
         if (dragNode.getObject().getProperty().getItem() instanceof ConnectionItem) {
             ConnectionItem connectionItem = (ConnectionItem) dragNode.getObject().getProperty().getItem();
             Command command = getChangeMetadataCommand(dragNode, (Node) nodePart.getNodePart().getModel(), connectionItem);
+            if (command != null) {
+                execCommandStack(command);
+            }
+        }
+    }
+
+    private void createQuery(Object dragModel, EditPart targetEditPart) {
+        if (!(dragModel instanceof RepositoryNode && targetEditPart instanceof NodeContainerPart)) {
+            return;
+        }
+        RepositoryNode dragNode = (RepositoryNode) dragModel;
+        NodeContainerPart nodePart = (NodeContainerPart) targetEditPart;
+        if (dragNode.getObject().getProperty().getItem() instanceof ConnectionItem) {
+            ConnectionItem connectionItem = (ConnectionItem) dragNode.getObject().getProperty().getItem();
+            Command command = getChangeQueryCommand(dragNode, (Node) nodePart.getNodePart().getModel(), connectionItem);
+            if (command != null) {
+                execCommandStack(command);
+            }
+        }
+    }
+
+    private void createProperty(Object dragModel, EditPart targetEditPart) {
+        if (!(dragModel instanceof RepositoryNode && targetEditPart instanceof NodeContainerPart)) {
+            return;
+        }
+        RepositoryNode dragNode = (RepositoryNode) dragModel;
+        NodeContainerPart nodePart = (NodeContainerPart) targetEditPart;
+        if (dragNode.getObject().getProperty().getItem() instanceof ConnectionItem) {
+            ConnectionItem connectionItem = (ConnectionItem) dragNode.getObject().getProperty().getItem();
+            Command command = getChangePropertyCommand(dragNode, (Node) nodePart.getNodePart().getModel(), connectionItem);
             if (command != null) {
                 execCommandStack(command);
             }
@@ -412,6 +444,42 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             }
             RepositoryChangeMetadataCommand command2 = new RepositoryChangeMetadataCommand(node, schemaParam.getName() + ":"
                     + EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), value, ConvertionHelper.convert(table), null);
+            return command2;
+        }
+        return null;
+    }
+
+    private Command getChangeQueryCommand(RepositoryNode selectedNode, Node node, ConnectionItem connectionItem) {
+        if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_CON_QUERY) {
+            RepositoryObject object = (RepositoryObject) selectedNode.getObject();
+            Query query = (Query) object.getAdapter(Query.class);
+            String value = connectionItem.getProperty().getId() + " - " + query.getLabel();
+            IElementParameter queryParam = node.getElementParameterFromField(EParameterFieldType.QUERYSTORE_TYPE);
+            if (queryParam != null) {
+                queryParam.getChildParameters().get(EParameterName.QUERYSTORE_TYPE.getName()).setValue(EmfComponent.REPOSITORY);
+            }
+            RepositoryChangeQueryCommand command2 = new RepositoryChangeQueryCommand(node, query, queryParam.getName() + ":"
+                    + EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName(), value);
+            return command2;
+        }
+        return null;
+    }
+
+    private Command getChangePropertyCommand(RepositoryNode selectedNode, Node node, ConnectionItem connectionItem) {
+        if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_CONNECTIONS) {
+
+            RepositoryObject object = (RepositoryObject) selectedNode.getObject();
+            String value = connectionItem.getProperty().getId();
+            IElementParameter param = node.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
+            if (param != null) {
+                param.getChildParameters().get(EParameterName.PROPERTY_TYPE.getName()).setValue(EmfComponent.REPOSITORY);
+            }
+
+            // PropertyChangeCommand command2 = new PropertyChangeCommand(node, param.getName() + ":"
+            // + EParameterName.REPOSITORY_PROPERTY_TYPE, value);
+            ChangeValuesFromRepository command2 = new ChangeValuesFromRepository(node, connectionItem.getConnection(), param
+                    .getName()
+                    + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), selectedNode.getObject().getProperty().getId());
             return command2;
         }
         return null;
