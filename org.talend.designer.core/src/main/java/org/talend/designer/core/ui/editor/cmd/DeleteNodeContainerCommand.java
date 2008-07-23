@@ -63,8 +63,11 @@ public class DeleteNodeContainerCommand extends Command {
 
                 Node prevNode = connection.getSource();
                 if (!nodeList.contains(prevNode)) {
-                    INodeConnector nodeConnector = prevNode.getConnectorFromType(connection.getLineStyle());
-                    nodeConnector.setCurLinkNbOutput(nodeConnector.getCurLinkNbOutput() - 1);
+                    // see bug 0004577
+                    // INodeConnector nodeConnector = prevNode.getConnectorFromType(connection.getLineStyle());
+                    // if (!connection.getSourceNodeConnector().equals(nodeConnector)) {
+                    // nodeConnector.setCurLinkNbOutput(nodeConnector.getCurLinkNbOutput() - 1);
+                    // }
                     prevNode.removeOutput(connection);
                     process.removeUniqueConnectionName(connection.getName());
                 }
