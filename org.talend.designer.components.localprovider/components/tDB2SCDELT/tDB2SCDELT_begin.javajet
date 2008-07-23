@@ -244,8 +244,8 @@ if(columnList != null && columnList.size() > 0) {
     }
     String outerWhereClauseString = StringUtils.join(outerWhereClause.toArray(), " AND ");
     %>
-    String insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\"(<%=columnNameString%>) SELECT t.<%=selectColumnString%>, '" + 
-    (new java.sql.Date((Long)start_Hash.get("<%=cid %>"))) + "', CAST(NULL AS DATE)<%if(isEnableActive) {%>, 1<%}%><%if(isEnableVersion) {%>, 1<%}%> FROM \"" + 
+    String insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\"(<%=columnNameString%>) SELECT t.<%=selectColumnString%>"<%if(isEnableType2) {%> + ", '" + (new java.sql.Date((Long)start_Hash.get("<%=cid %>"))) + "', CAST(NULL AS DATE)"<%}%>
+    + "<%if(isEnableType2 && isEnableActive) {%>, 1<%}%><%if(isEnableType2 && isEnableVersion) {%>, 1<%}%> FROM \"" + 
     sourceTable_<%=cid%> + "\" t LEFT JOIN \"" + tableName_<%=cid%> + "\" d ON <%=joinClauseString%> WHERE (<%=outerWhereClauseString%>)";
     java.sql.Statement stmtInsert_<%=cid%> = conn_<%=cid%>.createStatement();
     stmtInsert_<%=cid%>.executeUpdate(insert_<%=cid%>);
