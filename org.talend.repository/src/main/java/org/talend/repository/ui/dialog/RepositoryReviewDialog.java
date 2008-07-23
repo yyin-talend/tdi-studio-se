@@ -500,7 +500,7 @@ class RepositoryTypeProcessor implements ITypeProcessor {
                         // specified
                         // //$NON-NLS-1$
                         String neededDbType = repositoryType.substring(repositoryType.indexOf(":") + 1); //$NON-NLS-1$
-                        if (!neededDbType.equals(currentDbType)) {
+                        if (!currentDbType.startsWith(neededDbType)) {
                             return false;
                         }
                     }

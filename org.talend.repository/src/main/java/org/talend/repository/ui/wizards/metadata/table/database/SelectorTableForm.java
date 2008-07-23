@@ -825,6 +825,9 @@ public class SelectorTableForm extends AbstractForm {
      * @param size
      */
     private void refreshTable(final TableItem tableItem, final int size) {
+        if (threadExecutor == null) {
+            return;
+        }
         if (!threadExecutor.isThreadRunning(tableItem)) {
             RetrieveColumnRunnable runnable = new RetrieveColumnRunnable(tableItem);
             threadExecutor.execute(runnable);
