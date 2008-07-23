@@ -110,6 +110,9 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
      */
     @Override
     public void run() {
+        if (selectedNodes.isEmpty()) {
+            return;
+        }
         try {
             // String query = null;
             // ErDiagramDialog erDiagramDialog = new ErDiagramDialog(dialog.getShell(), Messages
@@ -281,7 +284,9 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
      * @param node
      */
     public void setSelectedNode(RepositoryNode node) {
-        selectedNodes.clear();
-        selectedNodes.add(node);
+        if (node != null) {
+            selectedNodes.clear();
+            selectedNodes.add(node);
+        }
     }
 }

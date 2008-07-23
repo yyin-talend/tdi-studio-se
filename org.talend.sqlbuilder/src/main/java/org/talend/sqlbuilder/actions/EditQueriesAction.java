@@ -17,9 +17,11 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.PluginChecker;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.ui.ICDCProviderService;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -106,6 +108,15 @@ public class EditQueriesAction extends AContextualAction {
                         && node.getObjectType() != ERepositoryObjectType.METADATA_CON_TABLE) {
                     canWork = false;
                 } else {
+                    // for cdc
+                    if (PluginChecker.isCDCPluginLoaded()) {
+                        ICDCProviderService cdcService = (ICDCProviderService) GlobalServiceRegister.getDefault().getService(
+                                ICDCProviderService.class);
+                        if (cdcService != null && cdcService.isSubscriberTableNode(node)) {
+                            canWork = false;
+                            break;
+                        }
+                    }
                     IRepositoryService service = (IRepositoryService) GlobalServiceRegister.getDefault().getService(
                             IRepositoryService.class);
                     IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
