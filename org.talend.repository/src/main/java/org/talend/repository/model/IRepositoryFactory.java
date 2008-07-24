@@ -109,7 +109,7 @@ public interface IRepositoryFactory {
      * @return a list (may be empty) of all version
      * @throws PersistenceException
      */
-    public List<IRepositoryObject> getAllVersion(String id) throws PersistenceException;
+    public List<IRepositoryObject> getAllVersion(Project project, String id) throws PersistenceException;
 
     /**
      * Returns last version of an object given its id.
@@ -120,7 +120,7 @@ public interface IRepositoryFactory {
      * found
      * @throws PersistenceException
      */
-    public IRepositoryObject getLastVersion(String id) throws PersistenceException;
+    public IRepositoryObject getLastVersion(Project project, String id) throws PersistenceException;
 
     /**
      * Returns all object of a given type.<br/>
@@ -199,8 +199,7 @@ public interface IRepositoryFactory {
 
     public Item copy(Item item, IPath path) throws PersistenceException, BusinessException;
 
-    public Item copy(Item item, IPath path, boolean changeLabelWithCopyPrefix) throws PersistenceException,
-            BusinessException;
+    public Item copy(Item item, IPath path, boolean changeLabelWithCopyPrefix) throws PersistenceException, BusinessException;
 
     /**
      * DOC mhelleboid Comment method "cancel".
@@ -210,48 +209,48 @@ public interface IRepositoryFactory {
      */
     public Property reload(Property property) throws PersistenceException;
 
-    public RootContainer<String, IRepositoryObject> getBusinessProcess() throws PersistenceException;
+    public RootContainer<String, IRepositoryObject> getBusinessProcess(Project project) throws PersistenceException;
 
-    public RootContainer<String, IRepositoryObject> getDocumentation() throws PersistenceException;
+    public RootContainer<String, IRepositoryObject> getDocumentation(Project project) throws PersistenceException;
 
-    public RootContainer<String, IRepositoryObject> getProcess() throws PersistenceException;
+    public RootContainer<String, IRepositoryObject> getProcess(Project project) throws PersistenceException;
 
-    public RootContainer<String, IRepositoryObject> getContext() throws PersistenceException;
+    public RootContainer<String, IRepositoryObject> getContext(Project project) throws PersistenceException;
 
-    public RootContainer<String, IRepositoryObject> getSnippets() throws PersistenceException;
+    public RootContainer<String, IRepositoryObject> getSnippets(Project project) throws PersistenceException;
 
-    public RootContainer<String, IRepositoryObject> getRoutine() throws PersistenceException;
+    public RootContainer<String, IRepositoryObject> getRoutine(Project project) throws PersistenceException;
 
-    public RootContainer<String, IRepositoryObject> getMetadataConnection() throws PersistenceException;
+    public RootContainer<String, IRepositoryObject> getMetadataConnection(Project project) throws PersistenceException;
 
-    public RootContainer<String, IRepositoryObject> getMetadataSQLPattern() throws PersistenceException;
+    public RootContainer<String, IRepositoryObject> getMetadataSQLPattern(Project project) throws PersistenceException;
 
-    public RootContainer<String, IRepositoryObject> getMetadataFileDelimited() throws PersistenceException;
+    public RootContainer<String, IRepositoryObject> getMetadataFileDelimited(Project project) throws PersistenceException;
 
-    public RootContainer<String, IRepositoryObject> getMetadataFilePositional() throws PersistenceException;
+    public RootContainer<String, IRepositoryObject> getMetadataFilePositional(Project project) throws PersistenceException;
 
-    public RootContainer<String, IRepositoryObject> getMetadataFileRegexp() throws PersistenceException;
+    public RootContainer<String, IRepositoryObject> getMetadataFileRegexp(Project project) throws PersistenceException;
 
-    public RootContainer<String, IRepositoryObject> getMetadataFileXml() throws PersistenceException;
+    public RootContainer<String, IRepositoryObject> getMetadataFileXml(Project project) throws PersistenceException;
 
-    public RootContainer<String, IRepositoryObject> getMetadataFileExcel() throws PersistenceException;
+    public RootContainer<String, IRepositoryObject> getMetadataFileExcel(Project project) throws PersistenceException;
 
-    public RootContainer<String, IRepositoryObject> getMetadataSalesforceSchema() throws PersistenceException;
+    public RootContainer<String, IRepositoryObject> getMetadataSalesforceSchema(Project project) throws PersistenceException;
 
-    public RootContainer<String, IRepositoryObject> getMetadataFileLdif() throws PersistenceException;
+    public RootContainer<String, IRepositoryObject> getMetadataFileLdif(Project project) throws PersistenceException;
 
-    public RootContainer<String, IRepositoryObject> getMetadataLDAPSchema() throws PersistenceException;
+    public RootContainer<String, IRepositoryObject> getMetadataLDAPSchema(Project project) throws PersistenceException;
 
-    public RootContainer<String, IRepositoryObject> getMetadataGenericSchema() throws PersistenceException;
+    public RootContainer<String, IRepositoryObject> getMetadataGenericSchema(Project project) throws PersistenceException;
 
-    public RootContainer<String, IRepositoryObject> getMetadataWSDLSchema() throws PersistenceException;
+    public RootContainer<String, IRepositoryObject> getMetadataWSDLSchema(Project project) throws PersistenceException;
 
-    public List<IRepositoryObject> getRecycleBinItems() throws PersistenceException;
+    public List<IRepositoryObject> getRecycleBinItems(Project project) throws PersistenceException;
 
     /**
      * gather all the metadata connections (file / db / etc ...).
      */
-    List<ConnectionItem> getMetadataConnectionsItem() throws PersistenceException;
+    List<ConnectionItem> getMetadataConnectionsItem(Project project) throws PersistenceException;
 
     /**
      * get all context items.
@@ -259,7 +258,7 @@ public interface IRepositoryFactory {
      * @return
      * @throws PersistenceException
      */
-    List<ContextItem> getContextItem() throws PersistenceException;
+    List<ContextItem> getContextItem(Project project) throws PersistenceException;
 
     public List<org.talend.core.model.properties.Project> getReferencedProjects();
 
@@ -276,7 +275,7 @@ public interface IRepositoryFactory {
      * 
      * @return
      */
-    public RootContainer<String, IRepositoryObject> getJoblets() throws PersistenceException;
+    public RootContainer<String, IRepositoryObject> getJoblets(Project project) throws PersistenceException;
 
     public RootContainer<String, IRepositoryObject> getRoutineFromProject(Project project) throws PersistenceException;
 
@@ -284,5 +283,5 @@ public interface IRepositoryFactory {
 
     public boolean setAuthorByLogin(Item item, String login) throws PersistenceException;
 
-    public Property getUptodateProperty(Property property) throws PersistenceException;
+    public Property getUptodateProperty(Project project, Property property) throws PersistenceException;
 }

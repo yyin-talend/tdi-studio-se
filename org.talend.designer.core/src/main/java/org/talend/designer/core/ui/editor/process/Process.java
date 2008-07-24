@@ -2544,8 +2544,16 @@ public class Process extends Element implements IProcess2 {
             if (withChildrens) {
                 if (node.getComponent().getName().equals("tRunJob")) {
                     IElementParameter processIdparam = node.getElementParameter("PROCESS_TYPE_PROCESS");
-                    String jobId = (String) processIdparam.getValue();
-                    ProcessItem processItem = ItemCacheManager.getProcessItem(jobId);
+                    IElementParameter processVersionParam = node.getElementParameter(EParameterName.PROCESS_TYPE_VERSION
+                            .getName());
+
+                    ProcessItem processItem = null;
+                    if (processVersionParam != null) {
+                        processItem = ItemCacheManager.getProcessItem((String) processIdparam.getValue(),
+                                (String) processVersionParam.getValue());
+                    } else {
+                        processItem = ItemCacheManager.getProcessItem((String) processIdparam.getValue());
+                    }
 
                     String context = (String) node.getElementParameter("PROCESS_TYPE_CONTEXT").getValue();
                     if (processItem != null) {

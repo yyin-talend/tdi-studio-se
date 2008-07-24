@@ -28,11 +28,11 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.ISubRepositoryObject;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.model.actions.RestoreObjectAction;
-import org.talend.repository.ui.views.RepositoryContentProvider.ISubRepositoryObject;
 
 /**
  * Action used to restore obects that had been logically deleted.<br/>
@@ -59,8 +59,7 @@ public class RestoreAction extends AContextualAction {
             if (obj instanceof RepositoryNode) {
                 try {
                     RepositoryNode node = (RepositoryNode) obj;
-                    ERepositoryObjectType nodeType = (ERepositoryObjectType) (node)
-                            .getProperties(EProperties.CONTENT_TYPE);
+                    ERepositoryObjectType nodeType = (ERepositoryObjectType) (node).getProperties(EProperties.CONTENT_TYPE);
                     if (nodeType.isSubItem()) {
                         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
                         ConnectionItem item = (ConnectionItem) node.getObject().getProperty().getItem();

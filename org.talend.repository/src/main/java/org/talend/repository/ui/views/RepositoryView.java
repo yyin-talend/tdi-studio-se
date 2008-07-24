@@ -89,6 +89,7 @@ import org.talend.repository.IRepositoryChangedListener;
 import org.talend.repository.RepositoryChangedEvent;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
@@ -120,7 +121,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
     private RepositoryContentProvider contentProvider = null;
 
-    private static RepositoryNode root = new RepositoryNode(null, null, ENodeType.STABLE_SYSTEM_FOLDER);
+    private static ProjectRepositoryNode root = new ProjectRepositoryNode(null, null, ENodeType.STABLE_SYSTEM_FOLDER);
 
     private List<ITreeContextualAction> contextualsActions;
 
@@ -529,7 +530,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                     throw new InvocationTargetException(e);
                 }
 
-                root = new RepositoryNode(null, null, ENodeType.STABLE_SYSTEM_FOLDER);
+                root = new ProjectRepositoryNode(null, null, ENodeType.STABLE_SYSTEM_FOLDER);
                 viewer.refresh();
                 // unsetting the selection will prevent the propertyView from displaying dirty data
                 viewer.setSelection(new TreeSelection());

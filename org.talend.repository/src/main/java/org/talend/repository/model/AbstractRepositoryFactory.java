@@ -21,6 +21,7 @@ import org.talend.commons.utils.data.container.RootContainer;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.repository.IRepositoryObject;
@@ -141,30 +142,30 @@ public abstract class AbstractRepositoryFactory implements IRepositoryFactory {
     }
 
     // gather all the metadata connections (file / db / etc ...)
-    public List<ConnectionItem> getMetadataConnectionsItem() throws PersistenceException {
+    public List<ConnectionItem> getMetadataConnectionsItem(Project project) throws PersistenceException {
 
         List<ConnectionItem> result = new ArrayList<ConnectionItem>();
 
-        collect(getMetadataFileDelimited(), result);
-        collect(getMetadataFilePositional(), result);
-        collect(getMetadataFileRegexp(), result);
-        collect(getMetadataFileXml(), result);
-        collect(getMetadataFileExcel(), result);
-        collect(getMetadataFileLdif(), result);
-        collect(getMetadataConnection(), result);
-        collect(getMetadataLDAPSchema(), result);
-        collect(getMetadataGenericSchema(), result);
-        collect(getMetadataWSDLSchema(), result);
-        collect(getMetadataSalesforceSchema(), result);
+        collect(getMetadataFileDelimited(project), result);
+        collect(getMetadataFilePositional(project), result);
+        collect(getMetadataFileRegexp(project), result);
+        collect(getMetadataFileXml(project), result);
+        collect(getMetadataFileExcel(project), result);
+        collect(getMetadataFileLdif(project), result);
+        collect(getMetadataConnection(project), result);
+        collect(getMetadataLDAPSchema(project), result);
+        collect(getMetadataGenericSchema(project), result);
+        collect(getMetadataWSDLSchema(project), result);
+        collect(getMetadataSalesforceSchema(project), result);
 
         return result;
     }
 
     // gather all the contexts
-    public List<ContextItem> getContextItem() throws PersistenceException {
+    public List<ContextItem> getContextItem(Project project) throws PersistenceException {
         List<ContextItem> result = new ArrayList<ContextItem>();
 
-        for (IRepositoryObject repositoryObject : getContext().getAbsoluteMembers().objects()) {
+        for (IRepositoryObject repositoryObject : getContext(project).getAbsoluteMembers().objects()) {
             ContextItem contextItem = (ContextItem) repositoryObject.getProperty().getItem();
             if (getStatus(contextItem) != ERepositoryStatus.DELETED) {
                 result.add(contextItem);

@@ -81,24 +81,24 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         return EcoreUtil.generateUUID();
     }
 
-    public RootContainer<String, IRepositoryObject> getDocumentation() throws PersistenceException {
-        return getObjectFromFolder(ERepositoryObjectType.DOCUMENTATION, true);
+    public RootContainer<String, IRepositoryObject> getDocumentation(Project project) throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.DOCUMENTATION, true);
     }
 
-    public RootContainer<String, IRepositoryObject> getMetadataConnection() throws PersistenceException {
-        return getObjectFromFolder(ERepositoryObjectType.METADATA_CONNECTIONS, true);
+    public RootContainer<String, IRepositoryObject> getMetadataConnection(Project project) throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.METADATA_CONNECTIONS, true);
     }
 
-    public RootContainer<String, IRepositoryObject> getMetadataFileDelimited() throws PersistenceException {
-        return getObjectFromFolder(ERepositoryObjectType.METADATA_FILE_DELIMITED, true);
+    public RootContainer<String, IRepositoryObject> getMetadataFileDelimited(Project project) throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.METADATA_FILE_DELIMITED, true);
     }
 
-    public RootContainer<String, IRepositoryObject> getMetadataFilePositional() throws PersistenceException {
-        return getObjectFromFolder(ERepositoryObjectType.METADATA_FILE_POSITIONAL, true);
+    public RootContainer<String, IRepositoryObject> getMetadataFilePositional(Project project) throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.METADATA_FILE_POSITIONAL, true);
     }
 
-    public RootContainer<String, IRepositoryObject> getProcess() throws PersistenceException {
-        return getObjectFromFolder(ERepositoryObjectType.PROCESS, true);
+    public RootContainer<String, IRepositoryObject> getProcess(Project project) throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.PROCESS, true);
     }
 
     /*
@@ -106,60 +106,60 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
      * 
      * @see org.talend.repository.model.IRepositoryFactory#getJoblets()
      */
-    public RootContainer<String, IRepositoryObject> getJoblets() throws PersistenceException {
-        return getObjectFromFolder(ERepositoryObjectType.JOBLET, true);
+    public RootContainer<String, IRepositoryObject> getJoblets(Project project) throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.JOBLET, true);
     }
 
-    public RootContainer<String, IRepositoryObject> getContext() throws PersistenceException {
-        return getObjectFromFolder(ERepositoryObjectType.CONTEXT, true);
+    public RootContainer<String, IRepositoryObject> getContext(Project project) throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.CONTEXT, true);
     }
 
-    public RootContainer<String, IRepositoryObject> getRoutine() throws PersistenceException {
-        return getObjectFromFolder(ERepositoryObjectType.ROUTINES, true);
+    public RootContainer<String, IRepositoryObject> getRoutine(Project project) throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.ROUTINES, true);
     }
 
-    public RootContainer<String, IRepositoryObject> getMetadataSQLPattern() throws PersistenceException {
-        return getObjectFromFolder(ERepositoryObjectType.SQLPATTERNS, true);
+    public RootContainer<String, IRepositoryObject> getMetadataSQLPattern(Project project) throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.SQLPATTERNS, true);
     }
 
-    public RootContainer<String, IRepositoryObject> getSnippets() throws PersistenceException {
-        return getObjectFromFolder(ERepositoryObjectType.SNIPPETS, true);
+    public RootContainer<String, IRepositoryObject> getSnippets(Project project) throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.SNIPPETS, true);
     }
 
-    public RootContainer<String, IRepositoryObject> getBusinessProcess() throws PersistenceException {
-        return getObjectFromFolder(ERepositoryObjectType.BUSINESS_PROCESS, true);
+    public RootContainer<String, IRepositoryObject> getBusinessProcess(Project project) throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.BUSINESS_PROCESS, true);
     }
 
-    public RootContainer<String, IRepositoryObject> getMetadataFileRegexp() throws PersistenceException {
-        return getObjectFromFolder(ERepositoryObjectType.METADATA_FILE_REGEXP, true);
+    public RootContainer<String, IRepositoryObject> getMetadataFileRegexp(Project project) throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.METADATA_FILE_REGEXP, true);
     }
 
-    public RootContainer<String, IRepositoryObject> getMetadataFileXml() throws PersistenceException {
-        return getObjectFromFolder(ERepositoryObjectType.METADATA_FILE_XML, true);
+    public RootContainer<String, IRepositoryObject> getMetadataFileXml(Project project) throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.METADATA_FILE_XML, true);
     }
 
-    public RootContainer<String, IRepositoryObject> getMetadataFileLdif() throws PersistenceException {
-        return getObjectFromFolder(ERepositoryObjectType.METADATA_FILE_LDIF, true);
+    public RootContainer<String, IRepositoryObject> getMetadataFileLdif(Project project) throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.METADATA_FILE_LDIF, true);
     }
 
-    public RootContainer<String, IRepositoryObject> getMetadataFileExcel() throws PersistenceException {
-        return getObjectFromFolder(ERepositoryObjectType.METADATA_FILE_EXCEL, true);
+    public RootContainer<String, IRepositoryObject> getMetadataFileExcel(Project project) throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.METADATA_FILE_EXCEL, true);
     }
 
-    public RootContainer<String, IRepositoryObject> getMetadataSalesforceSchema() throws PersistenceException {
-        return getObjectFromFolder(ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA, true);
+    public RootContainer<String, IRepositoryObject> getMetadataSalesforceSchema(Project project) throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA, true);
     }
 
-    public RootContainer<String, IRepositoryObject> getMetadataLDAPSchema() throws PersistenceException {
-        return getObjectFromFolder(ERepositoryObjectType.METADATA_LDAP_SCHEMA, true);
+    public RootContainer<String, IRepositoryObject> getMetadataLDAPSchema(Project project) throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.METADATA_LDAP_SCHEMA, true);
     }
 
-    public RootContainer<String, IRepositoryObject> getMetadataGenericSchema() throws PersistenceException {
-        return getObjectFromFolder(ERepositoryObjectType.METADATA_GENERIC_SCHEMA, true);
+    public RootContainer<String, IRepositoryObject> getMetadataGenericSchema(Project project) throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.METADATA_GENERIC_SCHEMA, true);
     }
 
-    public RootContainer<String, IRepositoryObject> getMetadataWSDLSchema() throws PersistenceException {
-        return getObjectFromFolder(ERepositoryObjectType.METADATA_WSDL_SCHEMA, true);
+    public RootContainer<String, IRepositoryObject> getMetadataWSDLSchema(Project project) throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.METADATA_WSDL_SCHEMA, true);
     }
 
     /*
@@ -167,7 +167,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
      * 
      * @see org.talend.repository.model.IRepositoryFactory#getRecycleBinItems()
      */
-    public List<IRepositoryObject> getRecycleBinItems() throws PersistenceException {
+    public List<IRepositoryObject> getRecycleBinItems(Project project) throws PersistenceException {
         ERepositoryObjectType types[] = { ERepositoryObjectType.DOCUMENTATION, ERepositoryObjectType.METADATA_CONNECTIONS,
                 ERepositoryObjectType.SQLPATTERNS, ERepositoryObjectType.METADATA_FILE_DELIMITED,
                 ERepositoryObjectType.METADATA_FILE_POSITIONAL, ERepositoryObjectType.PROCESS, ERepositoryObjectType.CONTEXT,
@@ -180,7 +180,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
 
         List<IRepositoryObject> deletedItems = new ArrayList<IRepositoryObject>();
         for (int i = 0; i < types.length; i++) {
-            RootContainer<String, IRepositoryObject> container = getObjectFromFolder(types[i], true);
+            RootContainer<String, IRepositoryObject> container = getObjectFromFolder(project, types[i], true);
             List<IRepositoryObject> repositoryObjects = container.getAbsoluteMembers().objects();
             for (IRepositoryObject object : repositoryObjects) {
                 if (object.getProperty().getItem().getState().isDeleted()) {
@@ -226,8 +226,8 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
 
     protected abstract Object getFolder(Project project, ERepositoryObjectType repositoryObjectType) throws PersistenceException;
 
-    public List<IRepositoryObject> getAllVersion(String id) throws PersistenceException {
-        List<IRepositoryObject> serializableAllVersion = getSerializable(getRepositoryContext().getProject(), id, true);
+    public List<IRepositoryObject> getAllVersion(Project project, String id) throws PersistenceException {
+        List<IRepositoryObject> serializableAllVersion = getSerializable(project, id, true);
         return convert(serializableAllVersion);
     }
 
@@ -260,8 +260,8 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
     protected abstract List<IRepositoryObject> getSerializableFromFolder(Object folder, String id, ERepositoryObjectType type,
             boolean allVersion, boolean searchInChildren, boolean withDeleted) throws PersistenceException;
 
-    protected abstract <K, T> RootContainer<K, T> getObjectFromFolder(ERepositoryObjectType type, boolean onlyLastVersion)
-            throws PersistenceException;
+    protected abstract <K, T> RootContainer<K, T> getObjectFromFolder(Project project, ERepositoryObjectType type,
+            boolean onlyLastVersion) throws PersistenceException;
 
     protected abstract <K, T> void addFolderMembers(ERepositoryObjectType type, Container<K, T> toReturn, Object objectFolder,
             boolean onlyLastVersion) throws PersistenceException;
@@ -501,8 +501,8 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         return toReturn;
     }
 
-    public IRepositoryObject getLastVersion(String id) throws PersistenceException {
-        List<IRepositoryObject> serializableAllVersion = getSerializable(getRepositoryContext().getProject(), id, false);
+    public IRepositoryObject getLastVersion(Project project, String id) throws PersistenceException {
+        List<IRepositoryObject> serializableAllVersion = getSerializable(project, id, false);
 
         if (serializableAllVersion.size() > 1) {
             throw new PersistenceException(Messages
@@ -526,8 +526,8 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         property.setMaxInformationLevel(maxLevel);
     }
 
-    public Property getUptodateProperty(Property property) throws PersistenceException {
-        List<IRepositoryObject> allVersion = getAllVersion(property.getId());
+    public Property getUptodateProperty(Project project, Property property) throws PersistenceException {
+        List<IRepositoryObject> allVersion = getAllVersion(project, property.getId());
         for (IRepositoryObject repositoryObject : allVersion) {
             Property uptodateProperty = repositoryObject.getProperty();
             if (uptodateProperty.getVersion().equals(property.getVersion())) {

@@ -39,10 +39,10 @@ import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.model.ECDCStatus;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.MetadataTableRepositoryObject;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
-import org.talend.repository.ui.views.RepositoryContentProvider.MetadataTableRepositoryObject;
 
 /**
  * Label provider for the repository view. <code>DEBUG</code> boolean field specify if details (such as objects ids)
@@ -207,8 +207,7 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
                 Image tableImage = ImageProvider.getImage(node.getIcon());
                 Item item = node.getObject().getProperty().getItem();
                 if (item != null && item instanceof DatabaseConnectionItem) {
-                    DatabaseConnection connection = (DatabaseConnection) ((DatabaseConnectionItem) item)
-                            .getConnection();
+                    DatabaseConnection connection = (DatabaseConnection) ((DatabaseConnectionItem) item).getConnection();
                     CDCConnection cdcConns = connection.getCdcConns();
                     if (cdcConns != null) {
                         if (node.getObject() instanceof MetadataTableRepositoryObject) {

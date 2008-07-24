@@ -72,7 +72,7 @@ public class EditProcess extends AContextualAction {
         ItemCacheManager.clearCache();
         Assert.isTrue(property.getItem() instanceof ProcessItem);
 
-        processItem = ItemCacheManager.getProcessItem(property.getId(), property.getVersion());
+        processItem = ItemCacheManager.getProcessItem(node.getRoot().getProject(), property.getId(), property.getVersion());
 
         IWorkbenchPage page = getActivePage();
 

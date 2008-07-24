@@ -29,12 +29,12 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.ISubRepositoryObject;
+import org.talend.repository.model.MetadataTableRepositoryObject;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.actions.AContextualAction;
-import org.talend.repository.ui.views.RepositoryContentProvider.ISubRepositoryObject;
-import org.talend.repository.ui.views.RepositoryContentProvider.MetadataTableRepositoryObject;
 
 /**
  * ggu class global comment. Detailled comment
@@ -74,14 +74,12 @@ public class DetecteViewImpactAction extends AContextualAction {
                         if (repositoryObject != null) {
                             Item item2 = repositoryObject.getProperty().getItem();
                             if (item2 instanceof DatabaseConnectionItem) {
-                                DatabaseConnectionItem item = (DatabaseConnectionItem) repositoryObject.getProperty()
-                                        .getItem();
+                                DatabaseConnectionItem item = (DatabaseConnectionItem) repositoryObject.getProperty().getItem();
                                 DatabaseConnection connection = (DatabaseConnection) item.getConnection();
                                 CDCConnection cdcConns = connection.getCdcConns();
                                 if (cdcConns != null) {
                                     if (repositoryObject instanceof MetadataTableRepositoryObject) {
-                                        MetadataTable table = ((MetadataTableRepositoryObject) repositoryObject)
-                                                .getTable();
+                                        MetadataTable table = ((MetadataTableRepositoryObject) repositoryObject).getTable();
                                         String tableType = table.getTableType();
                                         canWork = RepositoryConstants.TABLE.equals(tableType);
                                         break;

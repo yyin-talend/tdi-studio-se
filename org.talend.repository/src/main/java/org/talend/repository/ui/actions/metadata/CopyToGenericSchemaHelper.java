@@ -33,7 +33,7 @@ import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.model.IProxyRepositoryFactory;
-import org.talend.repository.ui.views.RepositoryContentProvider.MetadataTableRepositoryObject;
+import org.talend.repository.model.MetadataTableRepositoryObject;
 
 /**
  * Administrator class global comment. Detailed comment <br/>
