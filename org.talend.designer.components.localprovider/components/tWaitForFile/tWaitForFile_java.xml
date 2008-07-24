@@ -96,6 +96,16 @@
         <ITEM NAME="EXIT_LOOP" VALUE="exitloop" />
       </ITEMS>
     </PARAMETER>
+    
+	<PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="9">
+      <TABLE READONLY="true">
+      	<COLUMN NAME="CURRENT_ITERATION"	TYPE="id_Integer" />
+      	<COLUMN NAME="PRESENT_FILE"			TYPE="id_String"  LENGTH="255" />
+      	<COLUMN NAME="DELETED_FILE"			TYPE="id_String"  LENGTH="255" />
+      	<COLUMN NAME="CREATED_FILE"			TYPE="id_String"  LENGTH="255" />
+      	<COLUMN NAME="UPDATED_FILE"         TYPE="id_String"  LENGTH="255" />
+      </TABLE>
+	</PARAMETER>    
 
   </PARAMETERS>
 
