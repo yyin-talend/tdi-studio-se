@@ -30,75 +30,41 @@
 	      FILTER="tTeradataConnection"
 	      NUM_ROW="2"
 	    />
-	    
-	    <PARAMETER
-	      NAME="STAGING_TABLE_CREATION"
-	      FIELD="CHECK"
-	      NUM_ROW="3"
-	    >
-	      <DEFAULT>false</DEFAULT>
-	    </PARAMETER>  
-	    
-	    
-		<PARAMETER 
-		  NAME="ELT_TABLE_NAME" 
-		  FIELD="TEXT" 
-		  NUM_ROW="4"
-		  SHOW_IF="STAGING_TABLE_CREATION == 'true'"
-		>
-			<DEFAULT>""</DEFAULT>
-		</PARAMETER>
-		
-		<PARAMETER
-	      NAME="TABLE_ACTION"
-	      FIELD="CLOSED_LIST"
-	      NUM_ROW="4"
-	      SHOW_IF="STAGING_TABLE_CREATION == 'true'"
-	    >
-	      <ITEMS DEFAULT="CREATE">
-	        <ITEM NAME="CREATE" VALUE="CREATE"/>
-	        <ITEM NAME="CREATE_IF_NOT_EXISTS" VALUE="CREATE_IF_NOT_EXISTS"/>
-	        <ITEM NAME="DROP_CREATE" VALUE="DROP_CREATE"/>
-	        <ITEM NAME="DROP_IF_EXISTS_AND_CREATE" VALUE="DROP_IF_EXISTS_AND_CREATE" />
-	      </ITEMS>
-	    </PARAMETER>
-
-		<PARAMETER 
-		  NAME="SCHEMA" 
-		  FIELD="SCHEMA_TYPE" 
-		  NUM_ROW="5"
-		>
-			<DEFAULT>''</DEFAULT>
-		</PARAMETER>
 
 		<PARAMETER 
 		  NAME="DATABASE_NAME" 
 		  FIELD="TEXT" 
-		  NUM_ROW="6"
+		  NUM_ROW="3"
 		>
 			<DEFAULT>""</DEFAULT>
 		</PARAMETER>
 		<PARAMETER 
 		  NAME="TABLE_NAME" 
 		  FIELD="TEXT" 
-		  NUM_ROW="7"
+		  NUM_ROW="4"
 		>
 			<DEFAULT>""</DEFAULT>
 		</PARAMETER>
 		<PARAMETER 
+		  NAME="SCHEMA" 
+		  FIELD="SCHEMA_TYPE" 
+		  NUM_ROW="4"
+		>
+			<DEFAULT>''</DEFAULT>
+		</PARAMETER>
+		
+		<PARAMETER 
 		  NAME="TABLE_NAME_TARGET" 
 		  FIELD="TEXT" 
-		  NUM_ROW="7"
+		  NUM_ROW="5"
 		>
 			<DEFAULT>""</DEFAULT>
 		</PARAMETER>
-
-
 		<PARAMETER
 		  NAME="OPERATION"
 		  FIELD="TABLE"
 		  REQUIRED="false"
-		  NUM_ROW="8"
+		  NUM_ROW="6"
 		  NB_LINES="4"
 		>
 		  <ITEMS>
@@ -124,7 +90,7 @@
 	    <PARAMETER
 		  NAME="GROUPBY"
 		  FIELD="TABLE"
-		  NUM_ROW="9"
+		  NUM_ROW="7"
 		  NB_LINES="4"
 		>
 		  <ITEMS>
