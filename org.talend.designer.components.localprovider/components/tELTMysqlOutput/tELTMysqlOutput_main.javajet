@@ -55,17 +55,15 @@ imports="
         String dbuser = null;
         String dbpwd = null;
         String encoding = null;
-        
+        boolean useExistingConn = false;
         if(previousNode != null) {
 	        dbhost = ElementParameterParser.getValue(previousNode, "__HOST__");
 	        dbport = ElementParameterParser.getValue(previousNode, "__PORT__");
 	        dbname = ElementParameterParser.getValue(previousNode, "__DBNAME__");
 	        dbuser = ElementParameterParser.getValue(previousNode, "__USER__");
 	        dbpwd = ElementParameterParser.getValue(previousNode, "__PASS__");
-	        encoding = ElementParameterParser.getValue(
-	            previousNode,
-	            "__ENCODING__"
-	        );
+	        encoding = ElementParameterParser.getValue(previousNode, "__ENCODING__");
+	        useExistingConn = ElementParameterParser.getValue(previousNode, "__USE_EXISTING_CONNECTION__").equals("true");
         }
 
 //        String tableAction = ElementParameterParser.getValue(
@@ -73,15 +71,27 @@ imports="
 //            "__TABLE_ACTION__"
 //        );
 
-        String whereClause = ElementParameterParser.getValue(
-                node,
-            "__WHERE_CLAUSE__"
-        );
+        String whereClause = ElementParameterParser.getValue(node, "__WHERE_CLAUSE__");
 
 %>
-java.lang.Class.forName("org.gjt.mm.mysql.Driver");
 
-String url_<%=cid %> = "jdbc:mysql://"+<%=dbhost%>+":"+<%=dbport%>+"/"+<%=dbname%>;
+<%
+if(useExistingConn) {
+    String connection = ElementParameterParser.getValue(previousNode, "__CONNECTION__");
+    String conn = "conn_" + connection;
+    %>
+    java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
+    <%
+} else {
+    %>
+    java.lang.Class.forName("org.gjt.mm.mysql.Driver");
+    String url_<%=cid %> = "jdbc:mysql://"+<%=dbhost%>+":"+<%=dbport%>+"/"+<%=dbname%>;
+    String dbUser_<%=cid %> = <%=dbuser%>;
+    String dbPwd_<%=cid %> = <%=dbpwd%>;
+    java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);    
+    <%
+}
+%>
 
 <%
 List<IMetadataColumn> columnList = null;
@@ -94,10 +104,7 @@ if(metadatas !=null && metadatas.size()>0){
 	}
 }
 %>
-String dbUser_<%=cid %> = <%=dbuser%>;
-String dbPwd_<%=cid %> = <%=dbpwd%>;
 
-java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
 <%if(dataAction.equals("INSERT_OR_UPDATE")||dataAction.equals("UPDATE_OR_INSERT")){%>
 
 java.sql.PreparedStatement pstmtInsert_<%=cid %> =null;

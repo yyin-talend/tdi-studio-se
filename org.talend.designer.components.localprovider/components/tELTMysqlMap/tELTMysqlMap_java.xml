@@ -38,16 +38,30 @@
   </CONNECTORS>
 
   <PARAMETERS>
+	   <PARAMETER
+	     NAME="USE_EXISTING_CONNECTION"
+	     FIELD="CHECK"
+	     NUM_ROW="2"
+	   >
+	     <DEFAULT>false</DEFAULT>
+	   </PARAMETER>    
+	   
+	   <PARAMETER
+	     NAME="CONNECTION"
+	     FIELD="COMPONENT_LIST"
+	     FILTER="tMysqlConnection"
+	     NUM_ROW="2"
+	     SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
+	   />	  
 
-
-      <PARAMETER NAME="MAP" FIELD="EXTERNAL" NUM_ROW="1">
+      <PARAMETER NAME="MAP" FIELD="EXTERNAL" NUM_ROW="10">
          <DEFAULT/>  
       </PARAMETER>
 
       <PARAMETER
         NAME="LINK_STYLE"
         FIELD="CLOSED_LIST"
-        NUM_ROW="1"
+        NUM_ROW="10"
       >
         <ITEMS DEFAULT="">
           <ITEM NAME="AUTO"   VALUE="AUTO" />
@@ -61,15 +75,16 @@
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
       SHOW="true"
-      NUM_ROW="2"
+      NUM_ROW="20"
       REPOSITORY_VALUE="DATABASE"
     />
 
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="30"
       REPOSITORY_VALUE="SERVER_NAME"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -77,8 +92,9 @@
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="30"
       REPOSITORY_VALUE="PORT"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>"3306"</DEFAULT>
     </PARAMETER>
@@ -86,9 +102,10 @@
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="30"
       REPOSITORY_VALUE="SID"
       REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -96,9 +113,10 @@
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="40"
       REPOSITORY_VALUE="USERNAME"
       REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -106,9 +124,10 @@
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="40"
       REPOSITORY_VALUE="PASSWORD"
       REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -116,7 +135,7 @@
     <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
-      NUM_ROW="5"
+      NUM_ROW="50"
       REQUIRED="true"
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>
@@ -125,7 +144,7 @@
     <PARAMETER
       NAME="MAPPING"
       FIELD="MAPPING_TYPE"
-      NUM_ROW="5"
+      NUM_ROW="50"
       SHOW="true"
       READONLY="true"
     >
@@ -133,7 +152,7 @@
     </PARAMETER>
  
 
-      <PARAMETER NAME="PREVIEW" FIELD="IMAGE" SHOW="true" NUM_ROW="6">
+      <PARAMETER NAME="PREVIEW" FIELD="IMAGE" SHOW="true" NUM_ROW="60">
          <DEFAULT/>
       </PARAMETER>
 
