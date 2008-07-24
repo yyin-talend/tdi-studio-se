@@ -183,7 +183,28 @@ public class JobSettingsManager {
         param.setCategory(EComponentCategory.EXTRA);
         param.setGroup(IMPLICIT_GROUP);
         param.setNumRow(31);
-        final String condition = JobSettingsConstants.addBrackets(CONTEXTLOAD_CONDITION)
+        String condition = JobSettingsConstants.addBrackets(CONTEXTLOAD_CONDITION)
+                + " and " //$NON-NLS-1$ 
+                + JobSettingsConstants.addBrackets(JobSettingsConstants.getExtraParameterName(EParameterName.FROM_FILE_FLAG
+                        .getName())
+                        + " == 'true'"); //$NON-NLS-1$
+
+        param.setShowIf(condition);
+        paramList.add(param);
+
+        param = new ElementParameter(process);
+        param.setName(EParameterName.FIELDSEPARATOR.getName());
+
+        String value = ";";
+        value = TalendTextUtils.addQuotes(value);
+
+        param.setValue(value);
+        param.setDisplayName(EParameterName.FIELDSEPARATOR.getDisplayName());
+        param.setField(EParameterFieldType.TEXT);
+        param.setCategory(EComponentCategory.EXTRA);
+        param.setGroup(IMPLICIT_GROUP);
+        param.setNumRow(32);
+        condition = JobSettingsConstants.addBrackets(CONTEXTLOAD_CONDITION)
                 + " and " //$NON-NLS-1$ 
                 + JobSettingsConstants.addBrackets(JobSettingsConstants.getExtraParameterName(EParameterName.FROM_FILE_FLAG
                         .getName())
@@ -633,7 +654,9 @@ public class JobSettingsManager {
             // is file
             String inputFile = (String) process.getElementParameter(EParameterName.IMPLICIT_TCONTEXTLOAD_FILE.getName())
                     .getValue();
+            String fileSparator = (String) process.getElementParameter(EParameterName.FIELDSEPARATOR.getName()).getValue();
             tContextLoadNode.getElementParameter(EParameterName.IMPLICIT_TCONTEXTLOAD_FILE.getName()).setValue(inputFile);
+            tContextLoadNode.getElementParameter(EParameterName.FIELDSEPARATOR.getName()).setValue(fileSparator);
         } else {
             // is db
             paramName = JobSettingsConstants.getExtraParameterName(EParameterName.HOST.getName());

@@ -215,8 +215,12 @@ public class JobContextLoadComponent implements IComponent {
             IMultipleComponentManager multipleComponentManager = multipleComponentManagers.get(0);
             if (isFile) {
                 // delimited
-                final String source = self + EParameterName.IMPLICIT_TCONTEXTLOAD_FILE.getName();
+                String source = self + EParameterName.IMPLICIT_TCONTEXTLOAD_FILE.getName();
                 multipleComponentManager.addParam(source, FILE_INPUT_DELIMITED + ".FILENAME"); //$NON-NLS-1$ 
+
+                source = self + EParameterName.FIELDSEPARATOR.getName();
+                multipleComponentManager.addParam(source, FILE_INPUT_DELIMITED + ".FIELDSEPARATOR"); //$NON-NLS-1$ 
+
             } else {
                 String source = self + JobSettingsConstants.getExtraParameterName(EParameterName.HOST.getName());
                 multipleComponentManager.addParam(source, DB_INPUT + ".HOST"); //$NON-NLS-1$ 
@@ -301,6 +305,12 @@ public class JobContextLoadComponent implements IComponent {
 
         IElementParameter newParam = new ElementParameter(node);
         newParam.setName(EParameterName.IMPLICIT_TCONTEXTLOAD_FILE.getName());
+        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setValue(""); //$NON-NLS-1$
+        elemParamList.add(newParam);
+
+        newParam = new ElementParameter(node);
+        newParam.setName(EParameterName.FIELDSEPARATOR.getName());
         newParam.setField(EParameterFieldType.TEXT);
         newParam.setValue(""); //$NON-NLS-1$
         elemParamList.add(newParam);
