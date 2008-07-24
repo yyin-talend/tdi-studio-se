@@ -148,6 +148,9 @@ public class StatsAndLogsManager {
             logsNode.getElementParameter(EParameterName.CATCH_USER_WARNING.getName()).setValue(
                     process.getElementParameter(EParameterName.CATCH_USER_WARNING.getName()).getValue());
 
+            logsNode.getElementParameter(EParameterName.CONNECTION_TYPE.getName()).setValue(
+                    process.getElementParameter(EParameterName.DB_TYPE.getName()).getValue());
+
             logsNode.setProcess(process);
             nodeList.add(logsNode);
         }

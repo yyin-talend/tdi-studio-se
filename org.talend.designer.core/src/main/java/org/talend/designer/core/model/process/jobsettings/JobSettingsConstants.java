@@ -42,12 +42,12 @@ public final class JobSettingsConstants {
     }
 
     private static final String[] PERL_DB_INPUT_COMPONENTS = new String[] { "tDBInput", "tMysqlInput", "tDBInput",
-            "tOracleInput", "tPostgresqlInput", "tDB2Input", "tSybaseInput", "tIngresInput", "tInterbaseInput", "tSQLiteInput",
-            "tFirebirdInput", "tInformixInput", "tAccessInput", "tTeradataInput" };
+            "tOracleInput_sid", "tOracleInput_service", "tPostgresqlInput", "tDB2Input", "tSybaseInput", "tIngresInput",
+            "tInterbaseInput", "tSQLiteInput", "tFirebirdInput", "tInformixInput", "tAccessInput", "tTeradataInput" };
 
     private static final String[] JAVA_DB_INPUT_COMPONENTS = new String[] { "tDBInput", "tMysqlInput", "tMSSqlInput",
-            "tOracleInput", "tPostgresqlInput", "tDB2Input", "tSybaseInput", "tIngresInput", "tInterbaseInput", "tSQLiteInput",
-            "tFirebirdInput", "tInformixInput", "tAccessInput", "tTeradataInput" };
+            "tOracleInput_sid", "tOracleInput_service", "tPostgresqlInput", "tDB2Input", "tSybaseInput", "tIngresInput",
+            "tInterbaseInput", "tSQLiteInput", "tFirebirdInput", "tInformixInput", "tAccessInput", "tTeradataInput" };
 
     public static final String[][] DB_INPUT_COMPONENTS = new String[][] { PERL_DB_INPUT_COMPONENTS, JAVA_DB_INPUT_COMPONENTS };
 

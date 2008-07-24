@@ -116,6 +116,7 @@ public enum EParameterName {
     FILENAME_METTER(Messages.getString("EParameterName.MeterFileName")), //$NON-NLS-1$
     ON_DATABASE_FLAG(Messages.getString("EParameterName.onDatabaseFlag")), //$NON-NLS-1$
     DB_TYPE(Messages.getString("EParameterName.dbType")), //$NON-NLS-1$
+    CONNECTION_TYPE(Messages.getString("EParameterName.connectionType")), //$NON-NLS-1$
     HOST(Messages.getString("EParameterName.host")), //$NON-NLS-1$
     PORT(Messages.getString("EParameterName.port")), //$NON-NLS-1$
     DBNAME(Messages.getString("EParameterName.dbName")), //$NON-NLS-1$

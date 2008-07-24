@@ -264,7 +264,7 @@ public class JobSettingsManager {
         param.setListItemsValue(JobSettingsConstants.DB_INPUT_COMPONENTS[languageType]);
         param.setListRepositoryItems(StatsAndLogsConstants.REPOSITORY_ITEMS[languageType]);
         param.setListItemsDisplayCodeName(StatsAndLogsConstants.CODE_LIST[languageType]);
-        param.setValue(JobSettingsConstants.DB_INPUT_COMPONENTS[languageType][0]);
+        // param.setValue(JobSettingsConstants.DB_INPUT_COMPONENTS[languageType][0]);
         param.setNumRow(42);
         param.setRepositoryValue("TYPE"); //$NON-NLS-1$
         param.setRequired(true);
