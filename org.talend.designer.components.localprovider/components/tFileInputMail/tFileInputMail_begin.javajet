@@ -98,8 +98,25 @@ try{
                      javax.mail.BodyPart mpart<%=cid%> = mp<%=cid%>.getBodyPart(i);
                      String disposition<%=cid%> = mpart<%=cid%>.getDisposition();
                      if (!((disposition<%=cid%> != null) && ((disposition<%=cid%>
-                                .equals(javax.mail.Part.ATTACHMENT)) || (disposition<%=cid%>.equals(javax.mail.Part.INLINE)))))                    
-                         list_<%=cid %>.add(mpart<%=cid%>.getContent().toString());
+                                .equals(javax.mail.Part.ATTACHMENT)) || (disposition<%=cid%>.equals(javax.mail.Part.INLINE)))))
+                                
+                        {   
+                        	// the following extract the body part(text/plain + text/html)
+    						Object content_<%=cid %> = mpart<%=cid %>.getContent();
+    						if (content_<%=cid %> instanceof javax.mail.internet.MimeMultipart) {
+    							javax.mail.internet.MimeMultipart mimeMultipart_<%=cid %> = (javax.mail.internet.MimeMultipart) content_<%=cid %>;
+    							for (int j_<%=cid %> = 0; j_<%=cid %> < mimeMultipart_<%=cid %> .getCount(); j_<%=cid %>++) {
+    								javax.mail.BodyPart bodyPart_<%=cid %> = mimeMultipart_<%=cid %> .getBodyPart(j_<%=cid %>);
+    								if (bodyPart_<%=cid %>.isMimeType("text/plain")) {
+    									list_<%=cid %>.add(bodyPart_<%=cid %>.getContent().toString());
+    								} else {    
+    									System.out.println("Ignore the part " + bodyPart_<%=cid %>.getContentType());
+    								}
+    							}
+    						} else {    
+    							list_<%=cid %>.add(mpart<%=cid%>.getContent().toString());
+    						}    
+    					}
                  }
      		 } else {
      		    java.io.InputStream in_<%=cid %> = msg_<%=cid %>.getInputStream();
