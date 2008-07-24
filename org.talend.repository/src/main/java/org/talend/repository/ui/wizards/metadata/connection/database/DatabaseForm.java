@@ -539,7 +539,7 @@ public class DatabaseForm extends AbstractForm {
      * Check DBType is AS400,set systemButton and stardardButton visible.a
      */
     private void checkDBTypeAS400() {
-        if (dbTypeCombo.getSelectionIndex() == 16) {
+        if (dbTypeCombo.getSelectionIndex() == 16 || dbTypeCombo.getSelectionIndex() == 25 || dbTypeCombo.getSelectionIndex() == 26) {
             standardButton.setVisible(true);
             systemButton.setVisible(true);
         } else {
