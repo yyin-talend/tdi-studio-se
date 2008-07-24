@@ -909,10 +909,7 @@
 						</table>
 					</xsl:for-each>
 					<br />
-					<xsl:comment>
-						<xsl:value-of select="@uniqueName" />
-						ended
-					</xsl:comment>
+					<xsl:comment><xsl:value-of select="@uniqueName" />ended</xsl:comment>
 					<xsl:text /><!--before: $job/externalNodeComponents/component/@uniqueName -->
 				</xsl:for-each>
 					<!-- Source Code-->
