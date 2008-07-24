@@ -22,8 +22,9 @@ String rowSeparator = ElementParameterParser.getValue(
 );
 %>
 
-        java.io.FileInputStream fis_<%=cid %> = new java.io.FileInputStream(<%=filename %>);
-        java.io.BufferedReader br_<%=cid %> = new java.io.BufferedReader(new java.io.InputStreamReader(fis_<%=cid %>));
+        java.io.BufferedReader br_<%=cid %> = new java.io.BufferedReader
+        									(new java.io.InputStreamReader
+        									(new java.io.FileInputStream(<%=filename %>)));
         int lineCount_<%=cid %> = 0;
 
         String rowSeparator_<%=cid %> = <%=rowSeparator %>;
@@ -54,4 +55,5 @@ String rowSeparator = ElementParameterParser.getValue(
             }
             if(eol_<%=cid %>) lineCount_<%=cid %>=lineCount_<%=cid %>-emptyLineCount_<%=cid %>;
         }
-        globalMap.put("<%=cid %>_COUNT",lineCount_<%=cid %>);    
+        globalMap.put("<%=cid %>_COUNT",lineCount_<%=cid %>); 
+        br_<%=cid %>.close();
