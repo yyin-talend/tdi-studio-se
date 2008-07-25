@@ -840,7 +840,6 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             viewPart.refresh();
         }
 
-        process.setProperty(null);
         processEditorInput.setLoadedProcess(null);
 
         processEditorInput = null;
