@@ -37,7 +37,7 @@
 
     <PARAMETER
       NAME="DIRECTORY"
-      FIELD="FILE"
+      FIELD="DIRECTORY"
       NUM_ROW="20"
     >
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__"</DEFAULT>
