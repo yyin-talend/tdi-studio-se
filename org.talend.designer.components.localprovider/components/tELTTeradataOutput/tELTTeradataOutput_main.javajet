@@ -497,15 +497,22 @@ if(pstmtUpdate_<%=cid%> != null){
 	
 }
 
-conn_<%=cid%> .close();
-
 <%	
 	}else{
 %>
 pstmt_<%=cid %>.close();
-conn_<%=cid%> .close();
 <%
 	}
+%>
+
+<%
+if(!useExistingConn) {
+    %>
+    if(conn_<%=cid%> != null && conn_<%=cid%>.isClosed()) {
+        conn_<%=cid%> .close();
+    }
+    <%
+}
 %>
 
 globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid%>);
