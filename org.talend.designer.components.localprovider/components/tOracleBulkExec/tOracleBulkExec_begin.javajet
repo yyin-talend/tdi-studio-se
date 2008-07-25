@@ -232,7 +232,7 @@ if(use_existing_clt_file.equals("true")) {
 	//options clause begin
 	List<Map<String, String>> options = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__OPTIONS__");
     java.util.Map<String, String> parametersMap = new java.util.HashMap<String, String>();
-    parametersMap.put("PARALLEL", "fase");
+    parametersMap.put("PARALLEL", "false");
     parametersMap.put("BINDSIZE", "20000000");
     parametersMap.put("ROWS", "5000");
     parametersMap.put("READSIZE", "20000000");
