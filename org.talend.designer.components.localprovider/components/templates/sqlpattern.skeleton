@@ -488,7 +488,7 @@ public class CLASS {
         List<IMetadataColumn> schemaValue = getColumnList(node);
 
         resultBuilder.append("class ").append(param).append("_struct_").append(cid).append(
-                "{ \nString name;\nString dbType;\nboolean isKey;\nInteger length;\nboolean nullable;\n}\n");
+                "{ \nString name;\nString dbType;\nboolean isKey;\nInteger length;\nInteger pricision;\nboolean nullable;\n}\n");
 
         int size = 0;
         if (schemaValue != null) {
@@ -502,6 +502,7 @@ public class CLASS {
         resultBuilder.append("String[] ").append(param).append("_ISKEY_").append(cid).append(" = new String[").append(size).append("];\n");
         resultBuilder.append("String[] ").append(param).append("_LENGTH_").append(cid).append(" = new String[").append(size).append("];\n");
         resultBuilder.append("String[] ").append(param).append("_NULLABLE_").append(cid).append(" = new String[").append(size).append("];\n");
+        resultBuilder.append("String[] ").append(param).append("_PRECISION_").append(cid).append(" = new String[").append(size).append("];\n");
         for (int i = 0; i < size; i++) {
             IMetadataColumn column = schemaValue.get(i);
             resultBuilder.append(param).append("_").append(cid).append("[").append(i).append("] = new ").append(param).append(
@@ -514,6 +515,8 @@ public class CLASS {
                     .append(";\n");
             resultBuilder.append(param).append("_").append(cid).append("[").append(i).append("].length = ").append(
                     column.getLength()).append(";\n");
+            resultBuilder.append(param).append("_").append(cid).append("[").append(i).append("].pricision = ").append(
+                    column.getPrecision()).append(";\n");
             resultBuilder.append(param).append("_").append(cid).append("[").append(i).append("].nullable = ").append(column.isNullable())
             .append(";\n");
             resultBuilder.append(param).append("_NAME_").append(cid).append("[").append(i).append("] = ").append("\"").append(
@@ -524,6 +527,8 @@ public class CLASS {
         			column.isKey()).append("\";\n");
         	resultBuilder.append(param).append("_LENGTH_").append(cid).append("[").append(i).append("] = ").append("\"").append(
         			column.getLength()).append("\";\n");
+        	resultBuilder.append(param).append("_PRECISION_").append(cid).append("[").append(i).append("] = ").append("\"").append(
+        			column.getPrecision()).append("\";\n");
         	resultBuilder.append(param).append("_NULLABLE_").append(cid).append("[").append(i).append("] = ").append("\"").append(
         			column.isNullable()).append("\";\n");
         }
