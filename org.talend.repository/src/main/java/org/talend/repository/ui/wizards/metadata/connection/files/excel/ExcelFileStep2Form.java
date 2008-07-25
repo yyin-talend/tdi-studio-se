@@ -965,7 +965,7 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
         public void nonUIProcessInThread() {
             // get the XmlArray width an adapt ProcessDescription
             try {
-                csvArray = ShadowProcessHelper.getCsvArray(processDescription, "FILE_EXCEL"); //$NON-NLS-1$
+                csvArray = ShadowProcessHelper.getCsvArray(processDescription, "FILE_EXCEL", true); //$NON-NLS-1$
                 if (csvArray == null) {
                     previewInformationLabelMsg = "   " + Messages.getString("FileStep2.previewFailure"); //$NON-NLS-1$ //$NON-NLS-2$
                 } else {

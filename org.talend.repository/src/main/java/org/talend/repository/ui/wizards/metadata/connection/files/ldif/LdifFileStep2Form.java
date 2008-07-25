@@ -430,7 +430,7 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm implements IRefr
         public void nonUIProcessInThread() {
             // get the CsvArray width an adapt ProcessDescription
             try {
-                csvArray = ShadowProcessHelper.getCsvArray(processDescription, "FILE_LDIF"); //$NON-NLS-1$
+                csvArray = ShadowProcessHelper.getCsvArray(processDescription, "FILE_LDIF", true); //$NON-NLS-1$
 
             } catch (Exception e) {
                 setException(e);

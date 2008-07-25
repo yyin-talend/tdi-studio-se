@@ -1194,7 +1194,7 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
             try {
                 if (Escape.CSV_LITERAL.equals(getConnection().getEscapeType())) {
 
-                    csvArray = ShadowProcessHelper.getCsvArray(processDescription, "FILE_CSV"); //$NON-NLS-1$
+                    csvArray = ShadowProcessHelper.getCsvArray(processDescription, "FILE_CSV", true); //$NON-NLS-1$
                     if (csvArray == null) {
                         previewInformationLabelMsg = "   " + Messages.getString("FileStep2.previewFailure"); //$NON-NLS-1$ //$NON-NLS-2$
                     } else {
@@ -1203,7 +1203,7 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
                         previewInformationLabelMsg = ""; //$NON-NLS-1$
                     }
                 } else {
-                    csvArray = ShadowProcessHelper.getCsvArray(processDescription, "FILE_DELIMITED"); //$NON-NLS-1$
+                    csvArray = ShadowProcessHelper.getCsvArray(processDescription, "FILE_DELIMITED", true); //$NON-NLS-1$
                     if (csvArray == null) {
                         previewInformationLabelMsg = "   " + Messages.getString("FileStep2.previewFailure"); //$NON-NLS-1$ //$NON-NLS-2$
                     } else {
@@ -1245,6 +1245,7 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
                 return;
 
             }
+
             if (csvArray != null) {
                 delimitedFilePreview.refreshTablePreview(csvArray, firstRowIsCatption);
             }

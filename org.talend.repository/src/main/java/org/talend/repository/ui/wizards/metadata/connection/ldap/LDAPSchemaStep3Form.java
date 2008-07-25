@@ -279,7 +279,7 @@ public class LDAPSchemaStep3Form extends AbstractLDAPSchemaStepForm implements I
         public void nonUIProcessInThread() {
             // get the CsvArray width an adapt ProcessDescription
             try {
-                csvArray = ShadowProcessHelper.getCsvArray(processDescription, "LDAP_SCHEMA"); //$NON-NLS-1$
+                csvArray = ShadowProcessHelper.getCsvArray(processDescription, "LDAP_SCHEMA", true); //$NON-NLS-1$
 
             } catch (Exception e) {
                 setException(e);

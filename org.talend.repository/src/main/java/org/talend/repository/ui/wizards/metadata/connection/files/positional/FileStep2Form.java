@@ -532,7 +532,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
         public void nonUIProcessInThread() {
             // get the XmlArray width an adapt ProcessDescription
             try {
-                csvArray = ShadowProcessHelper.getCsvArray(processDescription, "FILE_POSITIONAL"); //$NON-NLS-1$
+                csvArray = ShadowProcessHelper.getCsvArray(processDescription, "FILE_POSITIONAL", true); //$NON-NLS-1$
             } catch (Exception e) {
                 setException(e);
                 log.error(Messages.getString("FileStep2.previewFailure") + " " + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
@@ -551,12 +551,11 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
             }
             if (getException() != null) {
                 previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewFailure")); //$NON-NLS-1$ //$NON-NLS-2$
-                Display.getDefault().asyncExec(new Runnable() {
+                Display.getDefault().syncExec(new Runnable() {
 
                     public void run() {
                         handleErrorOutput(outputComposite, tabFolder, outputTabItem);
                     }
-
                 });
                 return;
             }

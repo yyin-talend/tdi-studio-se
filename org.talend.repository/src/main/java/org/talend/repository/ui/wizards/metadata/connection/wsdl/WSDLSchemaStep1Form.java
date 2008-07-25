@@ -780,7 +780,7 @@ public class WSDLSchemaStep1Form extends AbstractWSDLSchemaStepForm {
         public void nonUIProcessInThread() {
             // get the CsvArray width an adapt ProcessDescription
             try {
-                csvArray = ShadowProcessHelper.getCsvArray(processDescription, "WSDL_SCHEMA"); //$NON-NLS-1$
+                csvArray = ShadowProcessHelper.getCsvArray(processDescription, "WSDL_SCHEMA", true); //$NON-NLS-1$
 
             } catch (Exception e) {
                 setException(e);
@@ -830,7 +830,7 @@ public class WSDLSchemaStep1Form extends AbstractWSDLSchemaStepForm {
             }
 
             if (getException() != null) {
-                Display.getDefault().asyncExec(new Runnable() {
+                Display.getDefault().syncExec(new Runnable() {
 
                     public void run() {
                         handleErrorOutput(outputComposite, tabFolder, outputTabItem);
