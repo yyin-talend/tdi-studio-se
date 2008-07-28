@@ -96,6 +96,9 @@ public class ConfigureConnParamDialog extends Dialog {
         pvValues.put(EConnectionParameterName.DIRECTORY, parameters.getDirectory());
         pvValues.put(EConnectionParameterName.DATASOURCE, parameters.getDatasource());
         pvValues.put(EConnectionParameterName.PROPERTIES_STRING, parameters.getJdbcProperties());
+        pvValues.put(EConnectionParameterName.URL, parameters.getUrl());
+        pvValues.put(EConnectionParameterName.DRIVER_CLASS, parameters.getDriverClass());
+        pvValues.put(EConnectionParameterName.DRIVER_JAR, parameters.getDriverJar());
         ConfigureConnParamDialog.contextManager = contextManager;
         setShellStyle(SWT.APPLICATION_MODAL | SWT.RESIZE | SWT.DIALOG_TRIM);
         this.selctedElement = elem;
@@ -414,8 +417,9 @@ public class ConfigureConnParamDialog extends Dialog {
         if (key == null || selctedElement == null) {
             return false;
         }
-        IElementParameter param = selctedElement
-                .getElementParameter(AbstractElementPropertySectionController.connKeyMap.get(key));
+
+        String actualKey = AbstractElementPropertySectionController.connKeyMap.get(key);
+        IElementParameter param = selctedElement.getElementParameter(actualKey == null ? key : actualKey);
         return param != null && param.isRequired();
     }
 

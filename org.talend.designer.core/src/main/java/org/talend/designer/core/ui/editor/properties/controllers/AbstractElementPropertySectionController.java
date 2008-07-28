@@ -940,38 +940,51 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
     protected ConnectionParameters connParameters;
 
-    private void setConnectionParameters(Element element) {
+    private void setAllConnectionParameters(Element element) {
+
         String type = getValueFromRepositoryName(element, "TYPE"); //$NON-NLS-1$
         connParameters.setDbType(type);
         String frameWorkKey = getValueFromRepositoryName(element, "FRAMEWORK_TYPE"); //$NON-NLS-1$
         connParameters.setFrameworkType(frameWorkKey);
 
-        String schema = setConnectionParameter(element, connParameters, EConnectionParameterName.SCHEMA.getName());
+        String schema = getValueFromRepositoryName(element, EConnectionParameterName.SCHEMA.getName());
         connParameters.setSchema(schema);
 
-        String userName = setConnectionParameter(element, connParameters, EConnectionParameterName.USERNAME.getName());
+        String userName = getValueFromRepositoryName(element, EConnectionParameterName.USERNAME.getName());
         connParameters.setUserName(userName);
 
-        String password = setConnectionParameter(element, connParameters, EConnectionParameterName.PASSWORD.getName());
+        String password = getValueFromRepositoryName(element, EConnectionParameterName.PASSWORD.getName());
         connParameters.setPassword(password);
 
-        String host = setConnectionParameter(element, connParameters, EConnectionParameterName.SERVER_NAME.getName());
+        String host = getValueFromRepositoryName(element, EConnectionParameterName.SERVER_NAME.getName());
         connParameters.setHost(host);
 
-        String port = setConnectionParameter(element, connParameters, EConnectionParameterName.PORT.getName());
+        String port = getValueFromRepositoryName(element, EConnectionParameterName.PORT.getName());
         connParameters.setPort(port);
 
-        String datasource = setConnectionParameter(element, connParameters, EConnectionParameterName.DATASOURCE.getName());
+        String datasource = getValueFromRepositoryName(element, EConnectionParameterName.DATASOURCE.getName());
         connParameters.setDatasource(datasource);
 
-        String dbName = setConnectionParameter(element, connParameters, EConnectionParameterName.SID.getName());
+        String dbName = getValueFromRepositoryName(element, EConnectionParameterName.SID.getName());
         connParameters.setDbName(dbName);
-        String file = setConnectionParameter(element, connParameters, EConnectionParameterName.FILE.getName());
+
+        String file = getValueFromRepositoryName(element, EConnectionParameterName.FILE.getName());
         connParameters.setFilename(file);
-        String dir = setConnectionParameter(element, connParameters, EConnectionParameterName.DIRECTORY.getName());
+
+        String dir = getValueFromRepositoryName(element, EConnectionParameterName.DIRECTORY.getName());
         connParameters.setDirectory(dir);
 
-        String jdbcProps = setConnectionParameter(element, connParameters, EConnectionParameterName.PROPERTIES_STRING.getName());
+        // General jdbc
+        String url = getValueFromRepositoryName(element, EConnectionParameterName.URL.getName());
+        connParameters.setUrl(TalendTextUtils.removeQuotes(url));
+
+        String driverJar = getValueFromRepositoryName(element, EConnectionParameterName.DRIVER_JAR.getName());
+        connParameters.setDriverJar(TalendTextUtils.removeQuotes(driverJar));
+
+        String driverClass = getValueFromRepositoryName(element, EConnectionParameterName.DRIVER_CLASS.getName());
+        connParameters.setDriverClass(TalendTextUtils.removeQuotes(driverClass));
+
+        String jdbcProps = getValueFromRepositoryName(element, EConnectionParameterName.PROPERTIES_STRING.getName());
         connParameters.setJdbcProperties(jdbcProps);
 
         String realTableName = null;
@@ -988,6 +1001,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
     }
 
     protected void initConnectionParametersWithContext(IElement element, IContext context) {
+
         connParameters.setDbName(getParameterValueWithContext(element, EConnectionParameterName.SID.getName(), context));
         connParameters.setPassword(getParameterValueWithContext(element, EConnectionParameterName.PASSWORD.getName(), context));
         connParameters.setPort(getParameterValueWithContext(element, EConnectionParameterName.PORT.getName(), context));
@@ -995,6 +1009,14 @@ public abstract class AbstractElementPropertySectionController implements Proper
         connParameters.setHost(getParameterValueWithContext(element, EConnectionParameterName.SERVER_NAME.getName(), context));
         connParameters.setUserName(getParameterValueWithContext(element, EConnectionParameterName.USERNAME.getName(), context));
         connParameters.setDirectory(getParameterValueWithContext(element, EConnectionParameterName.DIRECTORY.getName(), context));
+        // TODO here maybe need url,driver class, driver jar parameters setting.
+        connParameters.setUrl(TalendTextUtils.removeQuotesIfExist(getParameterValueWithContext(element,
+                EConnectionParameterName.URL.getName(), context)));
+        connParameters.setDriverClass(TalendTextUtils.removeQuotesIfExist(getParameterValueWithContext(element,
+                EConnectionParameterName.DRIVER_CLASS.getName(), context)));
+        connParameters.setDriverJar(TalendTextUtils.removeQuotesIfExist(getParameterValueWithContext(element,
+                EConnectionParameterName.DRIVER_JAR.getName(), context)));
+
         if (!(EDatabaseTypeName.ACCESS.getDisplayName().equals(connParameters.getDbType()) && ""
                 .equals(getParameterValueWithContext(element, EConnectionParameterName.FILE.getName(), context)))) {
             connParameters.setFilename(getParameterValueWithContext(element, EConnectionParameterName.FILE.getName(), context));
@@ -1086,56 +1108,52 @@ public abstract class AbstractElementPropertySectionController implements Proper
                     }
                 }
                 if (connectionNode != null) {
-                    setConnectionParameters(connectionNode);
+                    setAllConnectionParameters(connectionNode);
                 }
             }
         } else {
-            setConnectionParameters(elem);
+            setAllConnectionParameters(elem);
         }
         setConnectionParameterNames(elem, connParameters);
     }
 
-    private String setConnectionParameter(Element element, ConnectionParameters connParameters, String repositoryName) {
-        String userName = getValueFromRepositoryName(element, repositoryName); //$NON-NLS-1$
-        return userName;
-    }
-
     private void setConnectionParameterNames(Element element, ConnectionParameters connParameters) {
 
-        setConnectionParameterName(element, connParameters, EConnectionParameterName.SCHEMA.getName());
+        addConnectionParameter(element, connParameters, EConnectionParameterName.SCHEMA.getName());
 
-        setConnectionParameterName(element, connParameters, EConnectionParameterName.USERNAME.getName());
+        addConnectionParameter(element, connParameters, EConnectionParameterName.USERNAME.getName());
 
-        setConnectionParameterName(element, connParameters, EConnectionParameterName.PASSWORD.getName());
+        addConnectionParameter(element, connParameters, EConnectionParameterName.PASSWORD.getName());
 
-        setConnectionParameterName(element, connParameters, EConnectionParameterName.SERVER_NAME.getName());
+        addConnectionParameter(element, connParameters, EConnectionParameterName.SERVER_NAME.getName());
 
-        setConnectionParameterName(element, connParameters, EConnectionParameterName.PORT.getName());
-        setConnectionParameterName(element, connParameters, EConnectionParameterName.DATASOURCE.getName());
+        addConnectionParameter(element, connParameters, EConnectionParameterName.PORT.getName());
 
-        setConnectionParameterName(element, connParameters, EConnectionParameterName.SID.getName());
-        setConnectionParameterName(element, connParameters, EConnectionParameterName.FILE.getName());
-        setConnectionParameterName(element, connParameters, EConnectionParameterName.DIRECTORY.getName());
-        setConnectionParameterName(element, connParameters, EConnectionParameterName.PROPERTIES_STRING.getName());
+        addConnectionParameter(element, connParameters, EConnectionParameterName.DATASOURCE.getName());
+
+        addConnectionParameter(element, connParameters, EConnectionParameterName.SID.getName());
+
+        addConnectionParameter(element, connParameters, EConnectionParameterName.FILE.getName());
+
+        addConnectionParameter(element, connParameters, EConnectionParameterName.DIRECTORY.getName());
+
+        // General jdbc
+
+        addConnectionParameter(element, connParameters, EConnectionParameterName.URL.getName());
+
+        addConnectionParameter(element, connParameters, EConnectionParameterName.DRIVER_CLASS.getName());
+
+        addConnectionParameter(element, connParameters, EConnectionParameterName.DRIVER_JAR.getName());
+
+        addConnectionParameter(element, connParameters, EConnectionParameterName.PROPERTIES_STRING.getName());
 
     }
 
-    private void setConnectionParameterName(Element element, ConnectionParameters connParameters, String repositoryName) {
+    private void addConnectionParameter(Element element, ConnectionParameters connParameters, String repositoryName) {
         final String paraNameFromRepositoryName = getParaNameFromRepositoryName(element, repositoryName);
         if (paraNameFromRepositoryName != null) {
             connParameters.getRepositoryNameParaName().put(repositoryName, paraNameFromRepositoryName);
         }
-    }
-
-    /**
-     * DOC Administrator Comment method "setTextErrorInfo".
-     * 
-     * @param labelText
-     * @param red
-     */
-    private void setTextErrorInfo(Text labelText, Color red) {
-        labelText.setBackground(red);
-        labelText.setToolTipText("Value is invalid");
     }
 
     /**

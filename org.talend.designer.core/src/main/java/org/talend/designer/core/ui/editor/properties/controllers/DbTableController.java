@@ -390,6 +390,13 @@ public class DbTableController extends AbstractElementPropertySectionController 
                                     } else {
                                         connO.setLabel(connParameters.getDbName());
                                     }
+
+                                    // for general jdbc, there will always no db name and data source as the label, So
+                                    // ...
+                                    if (connO.getLabel() == null || connO.getLabel().equals("")) {
+                                        connO.setLabel(elem.getElementName());
+                                    }
+
                                     connO.setType(ObjectType.DB);
 
                                     if (monitor.isCanceled()) {
