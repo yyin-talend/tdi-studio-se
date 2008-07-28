@@ -474,20 +474,112 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             String productId = ((DatabaseConnection) connectionItem.getConnection()).getProductId();
             String[] id = productId.split("_");
             IElementParameter paramType = node.getElementParameter("TYPE");
-            if (id[0].toLowerCase().equals(paramType.getValue().toString().toLowerCase())) {
-                IElementParameter param = node.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
+            if (paramType != null) {
+                if (id[0].toLowerCase().equals(paramType.getValue().toString().toLowerCase())) {
+                    IElementParameter param = node.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
 
-                if (param != null) {
-                    param.getChildParameters().get(EParameterName.PROPERTY_TYPE.getName()).setValue(EmfComponent.REPOSITORY);
-                    ChangeValuesFromRepository command2 = new ChangeValuesFromRepository(node, connectionItem.getConnection(),
-                            param.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), selectedNode.getObject()
-                                    .getProperty().getId());
-                    return command2;
+                    if (param != null) {
+                        param.getChildParameters().get(EParameterName.PROPERTY_TYPE.getName()).setValue(EmfComponent.REPOSITORY);
+                        ChangeValuesFromRepository command2 = new ChangeValuesFromRepository(node,
+                                connectionItem.getConnection(), param.getName() + ":"
+                                        + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), selectedNode.getObject()
+                                        .getProperty().getId());
+                        return command2;
+                    }
                 }
+                // PropertyChangeCommand command2 = new PropertyChangeCommand(node, param.getName() + ":"
+                // + EParameterName.REPOSITORY_PROPERTY_TYPE, value);
             }
-            // PropertyChangeCommand command2 = new PropertyChangeCommand(node, param.getName() + ":"
-            // + EParameterName.REPOSITORY_PROPERTY_TYPE, value);
-
+        }
+        if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_FILE_DELIMITED) {
+            IElementParameter param = node.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
+            if (param != null && param.getRepositoryValue().equals("DELIMITED")) {
+                param.getChildParameters().get(EParameterName.PROPERTY_TYPE.getName()).setValue(EmfComponent.REPOSITORY);
+                ChangeValuesFromRepository command2 = new ChangeValuesFromRepository(node, connectionItem.getConnection(), param
+                        .getName()
+                        + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), selectedNode.getObject().getProperty().getId());
+                return command2;
+            }
+        }
+        if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_FILE_EXCEL) {
+            IElementParameter param = node.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
+            if (param != null && param.getRepositoryValue().equals("EXCEL")) {
+                param.getChildParameters().get(EParameterName.PROPERTY_TYPE.getName()).setValue(EmfComponent.REPOSITORY);
+                ChangeValuesFromRepository command2 = new ChangeValuesFromRepository(node, connectionItem.getConnection(), param
+                        .getName()
+                        + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), selectedNode.getObject().getProperty().getId());
+                return command2;
+            }
+        }
+        if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_FILE_LDIF) {
+            IElementParameter param = node.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
+            if (param != null && param.getRepositoryValue().equals("LDIF")) {
+                param.getChildParameters().get(EParameterName.PROPERTY_TYPE.getName()).setValue(EmfComponent.REPOSITORY);
+                ChangeValuesFromRepository command2 = new ChangeValuesFromRepository(node, connectionItem.getConnection(), param
+                        .getName()
+                        + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), selectedNode.getObject().getProperty().getId());
+                return command2;
+            }
+        }
+        if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_FILE_POSITIONAL) {
+            IElementParameter param = node.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
+            if (param != null && param.getRepositoryValue().equals("POSITIONAL")) {
+                param.getChildParameters().get(EParameterName.PROPERTY_TYPE.getName()).setValue(EmfComponent.REPOSITORY);
+                ChangeValuesFromRepository command2 = new ChangeValuesFromRepository(node, connectionItem.getConnection(), param
+                        .getName()
+                        + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), selectedNode.getObject().getProperty().getId());
+                return command2;
+            }
+        }
+        if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_FILE_REGEXP) {
+            IElementParameter param = node.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
+            if (param != null && param.getRepositoryValue().equals("REGEX")) {
+                param.getChildParameters().get(EParameterName.PROPERTY_TYPE.getName()).setValue(EmfComponent.REPOSITORY);
+                ChangeValuesFromRepository command2 = new ChangeValuesFromRepository(node, connectionItem.getConnection(), param
+                        .getName()
+                        + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), selectedNode.getObject().getProperty().getId());
+                return command2;
+            }
+        }
+        if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_FILE_XML) {
+            IElementParameter param = node.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
+            if (param != null && param.getRepositoryValue().equals("XML")) {
+                param.getChildParameters().get(EParameterName.PROPERTY_TYPE.getName()).setValue(EmfComponent.REPOSITORY);
+                ChangeValuesFromRepository command2 = new ChangeValuesFromRepository(node, connectionItem.getConnection(), param
+                        .getName()
+                        + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), selectedNode.getObject().getProperty().getId());
+                return command2;
+            }
+        }
+        if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_LDAP_SCHEMA) {
+            IElementParameter param = node.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
+            if (param != null && param.getRepositoryValue().equals("LDAP")) {
+                param.getChildParameters().get(EParameterName.PROPERTY_TYPE.getName()).setValue(EmfComponent.REPOSITORY);
+                ChangeValuesFromRepository command2 = new ChangeValuesFromRepository(node, connectionItem.getConnection(), param
+                        .getName()
+                        + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), selectedNode.getObject().getProperty().getId());
+                return command2;
+            }
+        }
+        if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA) {
+            IElementParameter param = node.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
+            if (param != null && param.getRepositoryValue().equals("SALESFORCE")) {
+                param.getChildParameters().get(EParameterName.PROPERTY_TYPE.getName()).setValue(EmfComponent.REPOSITORY);
+                ChangeValuesFromRepository command2 = new ChangeValuesFromRepository(node, connectionItem.getConnection(), param
+                        .getName()
+                        + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), selectedNode.getObject().getProperty().getId());
+                return command2;
+            }
+        }
+        if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_WSDL_SCHEMA) {
+            IElementParameter param = node.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
+            if (param != null && param.getRepositoryValue().equals("WSDL")) {
+                param.getChildParameters().get(EParameterName.PROPERTY_TYPE.getName()).setValue(EmfComponent.REPOSITORY);
+                ChangeValuesFromRepository command2 = new ChangeValuesFromRepository(node, connectionItem.getConnection(), param
+                        .getName()
+                        + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), selectedNode.getObject().getProperty().getId());
+                return command2;
+            }
         }
         return null;
     }
