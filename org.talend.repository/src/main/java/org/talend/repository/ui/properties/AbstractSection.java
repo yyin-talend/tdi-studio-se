@@ -13,7 +13,6 @@
 package org.talend.repository.ui.properties;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.eclipse.core.runtime.IAdaptable;
@@ -29,9 +28,8 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
-import org.talend.core.model.properties.Property;
-import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.EmptyRepositoryObject;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -220,200 +218,5 @@ public abstract class AbstractSection extends AbstractPropertySection {
      */
     protected IProxyRepositoryFactory getRepositoryFactory() {
         return ProxyRepositoryFactory.getInstance();
-    }
-
-    /**
-     * 
-     * DOC tguiu AbstractSection class global comment. Detailled comment <br/>
-     * 
-     * $Id$
-     * 
-     */
-    class EmptyRepositoryObject implements IRepositoryObject {
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.core.model.repository.IRepositoryObject#getAuthor()
-         */
-        public User getAuthor() {
-            return null;
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.core.model.repository.IRepositoryObject#getCreationDate()
-         */
-        public Date getCreationDate() {
-            return null;
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.core.model.repository.IRepositoryObject#getDescription()
-         */
-        public String getDescription() {
-            return ""; //$NON-NLS-1$
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.core.model.repository.IRepositoryObject#getId()
-         */
-        public String getId() {
-            return ""; //$NON-NLS-1$
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.core.model.repository.IRepositoryObject#getLabel()
-         */
-        public String getLabel() {
-            return ""; //$NON-NLS-1$
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.core.model.repository.IRepositoryObject#getModificationDate()
-         */
-        public Date getModificationDate() {
-            return null;
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.core.model.repository.IRepositoryObject#getProperty()
-         */
-        public Property getProperty() {
-            return null;
-        }
-
-        public void setProperty(Property property) {
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.core.model.repository.IRepositoryObject#getPurpose()
-         */
-        public String getPurpose() {
-            return ""; //$NON-NLS-1$
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.core.model.repository.IRepositoryObject#getStatusCode()
-         */
-        public String getStatusCode() {
-            return ""; //$NON-NLS-1$
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.core.model.repository.IRepositoryObject#getType()
-         */
-        public ERepositoryObjectType getType() {
-            return null;
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.core.model.repository.IRepositoryObject#getVersion()
-         */
-        public String getVersion() {
-            return ""; //$NON-NLS-1$
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.core.model.repository.IRepositoryObject#setAuthor(org.talend.core.model.general.User)
-         */
-        public void setAuthor(User author) {
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.core.model.repository.IRepositoryObject#setCreationDate(java.util.Date)
-         */
-        public void setCreationDate(Date value) {
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.core.model.repository.IRepositoryObject#setDescription(java.lang.String)
-         */
-        public void setDescription(String value) {
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.core.model.repository.IRepositoryObject#setId(int)
-         */
-        public void setId(String id) {
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.core.model.repository.IRepositoryObject#setLabel(java.lang.String)
-         */
-        public void setLabel(String label) {
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.core.model.repository.IRepositoryObject#setModificationDate(java.util.Date)
-         */
-        public void setModificationDate(Date value) {
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.core.model.repository.IRepositoryObject#setPurpose(java.lang.String)
-         */
-        public void setPurpose(String value) {
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.core.model.repository.IRepositoryObject#setStatusCode(java.lang.String)
-         */
-        public void setStatusCode(String statusCode) {
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.core.model.repository.IRepositoryObject#setVersion(org.talend.core.model.general.Version)
-         */
-        public void setVersion(String version) {
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.core.model.repository.IRepositoryObject#getChildren()
-         */
-        public List<IRepositoryObject> getChildren() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
     }
 }

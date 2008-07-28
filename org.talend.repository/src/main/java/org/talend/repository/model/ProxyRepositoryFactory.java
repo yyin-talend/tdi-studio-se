@@ -74,6 +74,7 @@ import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.model.utils.PerlResourcesHelper;
 import org.talend.repository.documentation.ERepositoryActionName;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.nodes.IProjectRepositoryNode;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsManager;
 import org.talend.repository.utils.RepositoryPathProvider;
 
@@ -1122,6 +1123,14 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see org.talend.repository.model.IProxyRepositoryFactory#isEditableAndLockIfPossible(org.talend.core.model.repository.IRepositoryObject)
      */
     public boolean isEditableAndLockIfPossible(IRepositoryObject obj) {
+
+        // Check if node is under reference project
+        RepositoryNode repositoryNode = obj.getRepositoryNode();
+        IProjectRepositoryNode root = repositoryNode.getRoot();
+        if (root != null && (!root.isMainProject())) {
+            return false;
+        }
+
         if (obj instanceof ISubRepositoryObject) {
             AbstractMetadataObject abstractMetadataObject = ((ISubRepositoryObject) obj).getAbstractMetadataObject();
             if (SubItemHelper.isDeleted(abstractMetadataObject)) {
