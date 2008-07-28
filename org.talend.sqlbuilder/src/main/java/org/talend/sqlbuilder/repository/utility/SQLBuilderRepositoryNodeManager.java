@@ -640,10 +640,20 @@ public class SQLBuilderRepositoryNodeManager {
         }
         connection.setServerName(parameters.getHost());
         connection.setAdditionalParams(parameters.getJdbcProperties());
-        String driverClassByDbType = ExtractMetaDataUtils.getDriverClassByDbType(dbType);
+
+        String driverClassByDbType = null;
+        if (parameters.getDriverClass() != null) {
+            driverClassByDbType = parameters.getDriverClass();
+        } else {
+            driverClassByDbType = ExtractMetaDataUtils.getDriverClassByDbType(dbType);
+        }
+
         connection.setDriverClass(driverClassByDbType);
+        connection.setDriverJarPath(parameters.getDriverJar());
+        connection.setURL(parameters.getCombineURL());
+
         connection.setDBRootPath(parameters.getDirectory());
-        connection.setURL(parameters.getURL());
+
         return connection;
     }
 

@@ -140,6 +140,17 @@ public class ConnectionParameters {
 
     private String jdbcProperties = "";
 
+    /*
+     * Use for general jdbc connection.
+     */
+    private boolean isGeneralJDBC = false;
+
+    private String url = null;
+
+    private String driverJar = null;
+
+    private String driverClass = null;
+
     /**
      * Sets the connectionComment.
      * 
@@ -450,7 +461,12 @@ public class ConnectionParameters {
      * 
      * @return url String from user input parameters.
      */
-    public String getURL() {
+    public String getCombineURL() {
+
+        if (getUrl() != null) {
+            return getUrl();
+        }
+
         if (isRepository()) {
             throw new RuntimeException(Messages.getString("ConnectionParameters.exceptionMessage")); //$NON-NLS-1$
         }
@@ -459,6 +475,7 @@ public class ConnectionParameters {
         urlDataStringConnection.setSelectionIndex(dbIndex);
         String url = urlDataStringConnection.getString(dbIndex, getHost(), getUserName(), getPassword(), getPort(), getDbName(),
                 getFilename(), getDatasource(), getDirectory(), getJdbcProperties());
+
         return url;
 
     }
@@ -705,6 +722,78 @@ public class ConnectionParameters {
 
     public void setRepositoryId(String repositoryId) {
         this.repositoryId = repositoryId;
+    }
+
+    /**
+     * Getter for isGeneralJDBC.
+     * 
+     * @return the isGeneralJDBC
+     */
+    public boolean isGeneralJDBC() {
+        return this.isGeneralJDBC;
+    }
+
+    /**
+     * Sets the isGeneralJDBC.
+     * 
+     * @param isGeneralJDBC the isGeneralJDBC to set
+     */
+    public void setGeneralJDBC(boolean isGeneralJDBC) {
+        this.isGeneralJDBC = isGeneralJDBC;
+    }
+
+    /**
+     * Getter for url.
+     * 
+     * @return the url
+     */
+    public String getUrl() {
+        return this.url;
+    }
+
+    /**
+     * Sets the url.
+     * 
+     * @param url the url to set
+     */
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    /**
+     * Getter for driverJar.
+     * 
+     * @return the driverJar
+     */
+    public String getDriverJar() {
+        return this.driverJar;
+    }
+
+    /**
+     * Sets the driverJar.
+     * 
+     * @param driverJar the driverJar to set
+     */
+    public void setDriverJar(String driverJar) {
+        this.driverJar = driverJar;
+    }
+
+    /**
+     * Getter for driverClass.
+     * 
+     * @return the driverClass
+     */
+    public String getDriverClass() {
+        return this.driverClass;
+    }
+
+    /**
+     * Sets the driverClass.
+     * 
+     * @param driverClass the driverClass to set
+     */
+    public void setDriverClass(String driverClass) {
+        this.driverClass = driverClass;
     }
 
 }

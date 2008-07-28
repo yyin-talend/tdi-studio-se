@@ -28,7 +28,10 @@ public enum EConnectionParameterName {
     FILE(Messages.getString("ConnectionParameterName.DbfileLabel")), //$NON-NLS-1$
     DIRECTORY(Messages.getString("ConnectionParameterName.DbPathLabel")), //$NON-NLS-1$
     PROPERTIES_STRING("Additional JDBC Parameters"),
-    DATASOURCE("DataSource"); //$NON-NLS-1$
+    DATASOURCE("DataSource"), //$NON-NLS-1$
+    DRIVER_JAR("Driver jar"),
+    DRIVER_CLASS("Driver class"),
+    URL("Url");
 
     private String displayName;
 
