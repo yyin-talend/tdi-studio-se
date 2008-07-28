@@ -457,10 +457,11 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             IElementParameter queryParam = node.getElementParameterFromField(EParameterFieldType.QUERYSTORE_TYPE);
             if (queryParam != null) {
                 queryParam.getChildParameters().get(EParameterName.QUERYSTORE_TYPE.getName()).setValue(EmfComponent.REPOSITORY);
+                RepositoryChangeQueryCommand command2 = new RepositoryChangeQueryCommand(node, query, queryParam.getName() + ":"
+                        + EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName(), value);
+                return command2;
             }
-            RepositoryChangeQueryCommand command2 = new RepositoryChangeQueryCommand(node, query, queryParam.getName() + ":"
-                    + EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName(), value);
-            return command2;
+
         }
         return null;
     }
@@ -468,19 +469,25 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
     private Command getChangePropertyCommand(RepositoryNode selectedNode, Node node, ConnectionItem connectionItem) {
         if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_CONNECTIONS) {
 
-            RepositoryObject object = (RepositoryObject) selectedNode.getObject();
-            String value = connectionItem.getProperty().getId();
-            IElementParameter param = node.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
-            if (param != null) {
-                param.getChildParameters().get(EParameterName.PROPERTY_TYPE.getName()).setValue(EmfComponent.REPOSITORY);
-            }
+            // RepositoryObject object = (RepositoryObject) selectedNode.getObject();
+            // String value = connectionItem.getProperty().getId();
+            String productId = ((DatabaseConnection) connectionItem.getConnection()).getProductId();
+            String[] id = productId.split("_");
+            IElementParameter paramType = node.getElementParameter("TYPE");
+            if (id[0].toLowerCase().equals(paramType.getValue().toString().toLowerCase())) {
+                IElementParameter param = node.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
 
+                if (param != null) {
+                    param.getChildParameters().get(EParameterName.PROPERTY_TYPE.getName()).setValue(EmfComponent.REPOSITORY);
+                    ChangeValuesFromRepository command2 = new ChangeValuesFromRepository(node, connectionItem.getConnection(),
+                            param.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), selectedNode.getObject()
+                                    .getProperty().getId());
+                    return command2;
+                }
+            }
             // PropertyChangeCommand command2 = new PropertyChangeCommand(node, param.getName() + ":"
             // + EParameterName.REPOSITORY_PROPERTY_TYPE, value);
-            ChangeValuesFromRepository command2 = new ChangeValuesFromRepository(node, connectionItem.getConnection(), param
-                    .getName()
-                    + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), selectedNode.getObject().getProperty().getId());
-            return command2;
+
         }
         return null;
     }
