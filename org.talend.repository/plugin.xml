@@ -889,6 +889,12 @@
             id="org.talend.repository.model.migration.AddFamilyFieldProjectMigrationTask"
             name="Add family field in component setting migration task.">
       </projecttask>
+      <projecttask
+            class="org.talend.repository.model.migration.QuoteWraptSSHcommandMigrationTask"
+            description="wrap tSSH parameter with double quot to support context variable"
+            id="org.talend.repository.model.migration.QuoteWraptSSHcommandMigrationTask"
+            name="wrap tSSH parameter with double quot to support context variable">
+      </projecttask>
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">
