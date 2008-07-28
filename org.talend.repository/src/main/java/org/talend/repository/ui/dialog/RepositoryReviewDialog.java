@@ -32,7 +32,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PartInitException;
 import org.talend.core.CorePlugin;
-import org.talend.core.database.EDatabaseTypeName;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.PluginChecker;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.Query;
 import org.talend.core.model.metadata.builder.connection.Connection;
@@ -43,6 +44,7 @@ import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.FolderItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.ui.ICDCProviderService;
 import org.talend.repository.model.MetadataTableRepositoryObject;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
@@ -429,6 +431,9 @@ class RepositoryTypeProcessor implements ITypeProcessor {
     }
 
     public RepositoryNode getInputRoot(RepositoryContentProvider contentProvider) {
+        if (repositoryType == null) {
+            return contentProvider.getMetadataNode();
+        }
         if (repositoryType.equals("DELIMITED")) {
             return contentProvider.getMetadataFileNode();
         }
@@ -579,9 +584,15 @@ class SchemaTypeProcessor implements ITypeProcessor {
                     if (node.getObject().getType() == ERepositoryObjectType.METADATA_CONNECTIONS) {
                         DatabaseConnectionItem item = (DatabaseConnectionItem) node.getObject().getProperty().getItem();
                         DatabaseConnection connection = (DatabaseConnection) item.getConnection();
-                        if (!connection.getProductId().equals(EDatabaseTypeName.ORACLEFORSID.getProduct())) {
-                            return false;
+
+                        if (PluginChecker.isCDCPluginLoaded()) {
+                            ICDCProviderService service = (ICDCProviderService) GlobalServiceRegister.getDefault().getService(
+                                    ICDCProviderService.class);
+                            if (service != null && service.canCreateCDCConnection(connection)) {
+                                return true;
+                            }
                         }
+                        return false;
                     }
                     if (node.getObject() instanceof MetadataTable) {
                         return ((MetadataTableRepositoryObject) node.getObject()).getTable().isActivatedCDC();

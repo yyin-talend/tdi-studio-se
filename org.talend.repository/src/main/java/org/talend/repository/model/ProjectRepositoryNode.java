@@ -677,13 +677,16 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             if (item instanceof DatabaseConnectionItem) {
                 DatabaseConnectionItem connectionItem = (DatabaseConnectionItem) item;
                 DatabaseConnection connection = (DatabaseConnection) connectionItem.getConnection();
-                boolean isOral = EDatabaseTypeName.ORACLEFORSID.getProduct().equals((connection).getProductId());
-                if (isOral && PluginChecker.isCDCPluginLoaded()) {
-                    RepositoryNode cdcNode = new StableRepositoryNode(node, "CDC Foundation", ECoreImage.FOLDER_CLOSE_ICON);
-                    node.getChildren().add(cdcNode);
+                if (PluginChecker.isCDCPluginLoaded()) {
                     ICDCProviderService service = (ICDCProviderService) GlobalServiceRegister.getDefault().getService(
                             ICDCProviderService.class);
-                    service.createCDCTypes(recBinNode, cdcNode, connection.getCdcConns());
+                    if (service != null && service.canCreateCDCConnection(connection)) {
+                        RepositoryNode cdcNode = new StableRepositoryNode(node, Messages
+                                .getString("RepositoryContentProvider.repositoryLabel.CDCFoundation"),
+                                ECoreImage.FOLDER_CLOSE_ICON);
+                        node.getChildren().add(cdcNode);
+                        service.createCDCTypes(recBinNode, cdcNode, connection.getCdcConns());
+                    }
                 }
             }
         } else {
