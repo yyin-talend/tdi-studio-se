@@ -135,8 +135,6 @@ public class DatabaseForm extends AbstractForm {
 
     private LabelledText generalJdbcPasswordText = null;
 
-    private LabelledText generalJdbcSchemaText = null;
-
     private LabelledText generalJdbcClassNameText = null;
 
     private LabelledText generalJdbcDriverjarText = null;
@@ -232,7 +230,6 @@ public class DatabaseForm extends AbstractForm {
         generalJdbcPasswordText.setText(getConnection().getPassword());
         generalJdbcDriverjarText.setText(getConnection().getDriverJarPath());
         generalMappingFileText.setText(getConnection().getDbmsId());
-        generalJdbcSchemaText.setText(getConnection().getSchema() == null ? "" : getConnection().getSchema());
     }
 
     private void checkAS400SpecificCase() {
@@ -405,11 +402,9 @@ public class DatabaseForm extends AbstractForm {
 
         generalJdbcPasswordText = new LabelledText(generalDbCompositeParent,
                 Messages.getString("DatabaseForm.general.password"), 2); //$NON-NLS-1$
-
-        generalJdbcSchemaText = new LabelledText(generalDbCompositeParent, Messages.getString("DatabaseForm.schema"), 2); //$NON-NLS-1$ 
+        generalJdbcPasswordText.getTextControl().setEchoChar('*'); // see feature 3629 hide password
 
         generalMappingFileText = new LabelledText(generalDbCompositeParent, Messages.getString("DatabaseForm.general.mapping"), 1);
-        // generalMappingFileText.setEditable(false);
 
         mappingSelectButton = new Button(generalDbCompositeParent, SWT.NONE);
         mappingSelectButton.setText("...");
@@ -539,7 +534,8 @@ public class DatabaseForm extends AbstractForm {
      * Check DBType is AS400,set systemButton and stardardButton visible.a
      */
     private void checkDBTypeAS400() {
-        if (dbTypeCombo.getSelectionIndex() == 16 || dbTypeCombo.getSelectionIndex() == 25 || dbTypeCombo.getSelectionIndex() == 26) {
+        if (dbTypeCombo.getSelectionIndex() == 16 || dbTypeCombo.getSelectionIndex() == 25
+                || dbTypeCombo.getSelectionIndex() == 26) {
             standardButton.setVisible(true);
             systemButton.setVisible(true);
         } else {
@@ -579,9 +575,9 @@ public class DatabaseForm extends AbstractForm {
                     isGeneralJDBC() ? generalJdbcUrlText.getText() : urlConnectionStringText.getText(), serverText.getText(),
                     isGeneralJDBC() ? generalJdbcUserText.getText() : usernameText.getText(),
                     isGeneralJDBC() ? generalJdbcPasswordText.getText() : passwordText.getText(), sidOrDatabaseText.getText(),
-                    portText.getText(), fileField.getText(), datasourceText.getText(), isGeneralJDBC() ? generalJdbcSchemaText
-                            .getText() : schemaText.getText(), additionParamText.getText(), generalJdbcClassNameText.getText(),
-                    generalJdbcDriverjarText.getText());
+                    portText.getText(), fileField.getText(), datasourceText.getText(), isGeneralJDBC() ? "" : schemaText
+                            .getText(), additionParamText.getText(), generalJdbcClassNameText.getText(), generalJdbcDriverjarText
+                            .getText());
 
             managerConnection.setDbRootPath(directoryField.getText());
 
@@ -1136,18 +1132,6 @@ public class DatabaseForm extends AbstractForm {
                 if (!isContextMode()) {
                     if (validText(generalJdbcPasswordText.getText())) {
                         getConnection().setPassword(generalJdbcPasswordText.getText());
-                        checkFieldsValue();
-                    }
-                }
-            }
-        });
-
-        generalJdbcSchemaText.addModifyListener(new ModifyListener() {
-
-            public void modifyText(final ModifyEvent e) {
-                if (!isContextMode()) {
-                    if (validText(generalJdbcSchemaText.getText())) {
-                        getConnection().setSchema(generalJdbcSchemaText.getText());
                         checkFieldsValue();
                     }
                 }
