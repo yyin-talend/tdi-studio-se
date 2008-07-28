@@ -33,6 +33,7 @@ import org.talend.designer.rowgenerator.shadow.RowGenContextManager;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.shadow.ShadowConnection;
 import org.talend.designer.runprocess.shadow.ShadowNode;
+import org.talend.repository.model.RepositoryNode;
 
 /**
  * yzhang class global comment. Detailled comment <br/>
@@ -174,8 +175,7 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
      */
     public List<? extends INode> getNodesOfType(String componentName) {
         List<INode> matchingNodes = new ArrayList<INode>();
-        if ((inNode != null) && (inNode.getComponentName() != null)
-                && (inNode.getComponentName().compareTo(componentName) == 0)) {
+        if ((inNode != null) && (inNode.getComponentName() != null) && (inNode.getComponentName().compareTo(componentName) == 0)) {
             matchingNodes.add(inNode);
         }
         if ((outNode != null) && (outNode.getComponentName() != null)
@@ -542,6 +542,26 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
      * @see org.talend.core.model.process.IProcess#setLastRunContext(org.talend.core.model.process.IContext)
      */
     public void setLastRunContext(IContext context) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.repository.IRepositoryObject#getRepositoryNode()
+     */
+    public RepositoryNode getRepositoryNode() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.repository.IRepositoryObject#setRepositoryNode(org.talend.repository.model.RepositoryNode)
+     */
+    public void setRepositoryNode(RepositoryNode node) {
         // TODO Auto-generated method stub
 
     }
