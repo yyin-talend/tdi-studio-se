@@ -25,27 +25,28 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             node,
             "__COMMANDSEPARATOR__"
         );
-        commandSeparator = commandSeparator.replace("\"", "");
-        
-        StringBuilder command = new StringBuilder();
-        List<Map<String, String>> commands =
+                List<Map<String, String>> commands =
             (List<Map<String,String>>)ElementParameterParser.getObjectValue(
                 node,"__COMMANDS__");
                 
         if(commands.size() > 0)
-        {
-            for(Map<String, String> map : commands)  
-            {
-                if(command.length() > 0)
+        {%>
+        	StringBuilder command_<%=cid %> = new StringBuilder();
+           <% for(java.util.Map<String, String> map : commands)
+            {%>
+                if(command_<%=cid %>.length() > 0)
                 {
-                	command.append(commandSeparator);
+                	command_<%=cid %>.append(<%=commandSeparator%>);
                 }
-       		    command.append(map.get("COMMAND"));
-            } 
-        }            
+                <%String cmd = map.get("COMMAND");%>
+       		    command_<%=cid %>.append(<%=cmd %>);
+            <% }
+       }
 %>
+			
 			/* Create a session */
-			sess_<%=cid%>.execCommand("<%=command%>");
+ 			ch.ethz.ssh2.Session sess_<%=cid%> = conn_<%=cid%>.openSession();
+			sess_<%=cid%>.execCommand((command_<%=cid %>).toString());
 			
 			java.io.InputStream stdout_<%=cid%> = sess_<%=cid%>.getStdout();
 			java.io.BufferedReader brout_<%=cid%>= new java.io.BufferedReader(new java.io.InputStreamReader(stdout_<%=cid%>));
@@ -80,15 +81,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			stderr_<%=cid%>.close();
 			
 			 /* Close this session */
-			sess_<%=cid%>.close();
-
-			/* Close the connection */
-			conn_<%=cid%>.close();
 			
+			sess_<%=cid%>.close();
 			globalMap.put("<%=cid %>_STDOUT",stringStdout_<%=cid%>.toString());
 			globalMap.put("<%=cid %>_STDERR",stringStderr_<%=cid%>.toString());
             globalMap.put("<%=cid %>_EXIT_CODE",sess_<%=cid%>.getExitStatus());
-            
+
 <%
     }
 }

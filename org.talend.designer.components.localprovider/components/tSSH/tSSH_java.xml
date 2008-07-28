@@ -97,9 +97,10 @@
       <DEFAULT>";"</DEFAULT>
     </PARAMETER>
 
-	<PARAMETER NAME="COMMANDS" FIELD="TABLE" NUM_ROW="110" NB_LINES="5" >
+	<PARAMETER NAME="COMMANDS" FIELD="TABLE" NUM_ROW="110" REQUIRED="true" NB_LINES="5" >
       <ITEMS>
-        <ITEM NAME="COMMAND" VALUE="echo Talend Open Studio"/>
+        <ITEM NAME="COMMAND" VALUE="&quot;echo Talend Open Studio&quot;" />
+        
       </ITEMS>
     </PARAMETER>
 
