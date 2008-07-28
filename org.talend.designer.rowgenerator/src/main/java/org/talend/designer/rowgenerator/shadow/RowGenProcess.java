@@ -34,6 +34,7 @@ import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.rowgenerator.RowGeneratorComponent;
 import org.talend.designer.rowgenerator.i18n.Messages;
 import org.talend.designer.runprocess.IProcessor;
+import org.talend.repository.model.RepositoryNode;
 
 /**
  * qzhang class global comment. Detailled comment <br/>
@@ -653,6 +654,26 @@ public class RowGenProcess extends Element implements IProcess {
      * @see org.talend.core.model.process.IProcess#setLastRunContext(org.talend.core.model.process.IContext)
      */
     public void setLastRunContext(IContext context) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.repository.IRepositoryObject#getRepositoryNode()
+     */
+    public RepositoryNode getRepositoryNode() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.repository.IRepositoryObject#setRepositoryNode(org.talend.repository.model.RepositoryNode)
+     */
+    public void setRepositoryNode(RepositoryNode node) {
         // TODO Auto-generated method stub
 
     }
