@@ -114,6 +114,7 @@ import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.designer.runprocess.JobInfo;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.migration.UpdateTheJobsActionsOnTable;
 
 /**
@@ -2885,4 +2886,25 @@ public class Process extends Element implements IProcess2 {
     public Map<String, Date> getJobModificationDateMap() {
         return this.jobModificationDateMap;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.repository.IRepositoryObject#getRepositoryNode()
+     */
+    public RepositoryNode getRepositoryNode() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.repository.IRepositoryObject#setRepositoryNode(org.talend.repository.model.RepositoryNode)
+     */
+    public void setRepositoryNode(RepositoryNode node) {
+        // TODO Auto-generated method stub
+
+    }
+
 }

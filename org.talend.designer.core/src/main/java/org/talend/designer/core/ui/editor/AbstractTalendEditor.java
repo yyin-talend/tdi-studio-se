@@ -118,7 +118,9 @@ import org.eclipse.ui.part.PageBook;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.workbench.preferences.GlobalConstant;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -622,11 +624,18 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         if (!readOnly) {
             // When gain focus, check read-only to disable read-only mode if process has been restore while opened :
             // 1. Enabled/disabled components :
-            process.checkReadOnly();
+            try {
+                readOnly = ((RepositoryEditorInput) getEditorInput()).checkReadOnly();
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+            }
+
+            // process.checkReadOnly();
             // 2. Set backgroung color :
             List children = getViewer().getRootEditPart().getChildren();
             if (!children.isEmpty()) {
                 ProcessPart rep = (ProcessPart) children.get(0);
+                ((Process) (rep.getModel())).setReadOnly(readOnly);
                 rep.ajustReadOnly();
             }
         }
