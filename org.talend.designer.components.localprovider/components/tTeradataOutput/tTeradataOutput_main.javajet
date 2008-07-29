@@ -38,9 +38,6 @@ skeleton="../templates/db_output_bulk.skeleton"
     String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
     boolean isEnableDebug = ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__").equals("true");
 	boolean useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__").equals("true");
-	if(useExistingConn){
-		commitEvery = "0";
-	}
 	String incomingConnName = null;
 	List<IMetadataColumn> columnList = getColumnList(node);
 	
@@ -595,18 +592,20 @@ skeleton="../templates/db_output_bulk.skeleton"
         }
     	
     	////////////commit every////////////
-    	if(!commitEvery.equals("") && !commitEvery.equals("0")) {
-    	    %>
-            commitCounter_<%=cid%>++;
-            
-            if(commitEvery_<%=cid%> <= commitCounter_<%=cid%>) {
-            
-            	conn_<%=cid%>.commit();
-            	
-            	commitCounter_<%=cid%>=0;
-            	
-            }	
-    	<%
-    	}
+        if(!useExistingConn) {
+        	if(!commitEvery.equals("") && !commitEvery.equals("0")) {
+        	    %>
+                commitCounter_<%=cid%>++;
+                
+                if(commitEvery_<%=cid%> <= commitCounter_<%=cid%>) {
+                
+                	conn_<%=cid%>.commit();
+                	
+                	commitCounter_<%=cid%> = 0;
+                	
+                }	
+                <%
+        	}
+        }
     }
     %>

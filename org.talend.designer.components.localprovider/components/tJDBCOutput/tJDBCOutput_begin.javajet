@@ -160,13 +160,14 @@ if (columnList != null && columnList.size() > 0) {
         <%
     }	
 	// Commit every
-	if (!commitEvery.equals("") && !commitEvery.equals("0")) {
-		%>
-		int commitEvery_<%=cid%> = <%=commitEvery%>;
-		int commitCounter_<%=cid%> = 0;
-		<%
-	}
-
+    if(!useExistingConn.equals("true")) {
+    	if (!commitEvery.equals("") && !commitEvery.equals("0")) {
+    		%>
+    		int commitEvery_<%=cid%> = <%=commitEvery%>;
+    		int commitCounter_<%=cid%> = 0;
+    		<%
+    	}
+    }
 }
 %>
 

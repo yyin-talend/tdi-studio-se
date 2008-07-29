@@ -21,9 +21,6 @@ String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 String propagateRecordset = ElementParameterParser.getValue(node,"__PROPAGATE_RECORD_SET__");
 String recordsetColumn = ElementParameterParser.getValue(node,"__RECORD_SET_COLUMN__");
 String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
-if(useExistingConn.equals("true")){
-	commitEvery = "0";
-}
 String incomingConnName = null;
 
 List<IMetadataColumn> columnList = null;
@@ -48,126 +45,121 @@ for(IConnection conn : outgoingConns) {
 		if(!hasOutgoingDataConnection){
 			hasOutgoingDataConnection = true;
 		}
-%>
-    
-    <%=conn.getName() %> = null;            
-<%      }
+		%>    
+		<%=conn.getName() %> = null;            
+		<%      
+    }
 }
 String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
-	       dbquery = dbquery.replaceAll("\n"," ");
-    	   dbquery = dbquery.replaceAll("\r"," ");
+       dbquery = dbquery.replaceAll("\n"," ");
+	   dbquery = dbquery.replaceAll("\r"," ");
 %>
 whetherReject_<%=cid%> = false;
 <%
-if (!commitEvery.equals("") && !commitEvery.equals("0")) {
-    %>
-    commitCounter_<%=cid%>++;
-    <%
-}
-
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas != null) && (metadatas.size() > 0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata != null) {
         List<? extends IConnection> inConnections = node.getIncomingConnections();
         columnList = metadata.getListColumns();
-				if(inConnections != null && inConnections.size()>0){
-        			IConnection conn = inConnections.get(0);
-        			incomingConnName = conn.getName();
-				}//end of connection size.
-			}//end of metadatas
-	}
-	if(!hasOutgoingDataConnection || columnList == null || columnList.size() < 1){
-		propagateRecordset = "false";
-	}
-	%>
-	query_<%=cid %> = <%=dbquery%>;
-    globalMap.put("<%=cid %>_QUERY",query_<%=cid %>);
-<%
-	if(propagateRecordset.equals("true")){
+		if(inConnections != null && inConnections.size()>0){
+			IConnection conn = inConnections.get(0);
+			incomingConnName = conn.getName();
+		}//end of connection size.
+	}//end of metadatas
+}
+if(!hasOutgoingDataConnection || columnList == null || columnList.size() < 1){
+	propagateRecordset = "false";
+}
 %>
+query_<%=cid %> = <%=dbquery%>;
+globalMap.put("<%=cid %>_QUERY",query_<%=cid %>);
+<%
+if(propagateRecordset.equals("true")){
+    %>
 	java.sql.ResultSet rs_<%=cid %> = null;
-<%
-	}
+	<%
+}
 %>
-    try {
-<%
-	if(propagateRecordset.equals("true")){
-%>
-		rs_<%=cid %> = stmt_<%=cid %>.executeQuery(query_<%=cid %>);
-<%
-	}else{%>
-    	stmt_<%=cid %>.execute(query_<%=cid %>);
-<%
-	}
-%>
-    } catch (Exception e) {
-    whetherReject_<%=cid%> = true;
+try {
     <%
-    if (dieOnError.equals("true")) {
-        %>
-        throw(e);
+	if(propagateRecordset.equals("true")) {
+	    %>
+		rs_<%=cid %> = stmt_<%=cid %>.executeQuery(query_<%=cid %>);
+		<%
+	} else {
+	    %>
+    	stmt_<%=cid %>.execute(query_<%=cid %>);
+    	<%
+	}
+    %>
+    } catch (Exception e) {
+        whetherReject_<%=cid%> = true;
         <%
-    } else {
-        if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
+        if (dieOnError.equals("true")) {
             %>
-            <%=rejectConnName %> = new <%=rejectConnName %>Struct();
-        <%
-            for(IMetadataColumn column : columnList) {
-                %>
-                <%=rejectConnName%>.<%=column.getLabel()%> = <%=incomingConnName%>.<%=column.getLabel()%>;
-                <%
-            }
-            %>
-            <%=rejectConnName%>.errorMessage = e.getMessage();
+            throw(e);
             <%
         } else {
-            %>
-            System.err.print(e.getMessage());
-            <%
-        }
-    } 
-    %>
-}
+            if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
+                %>
+                <%=rejectConnName %> = new <%=rejectConnName %>Struct();
+                <%
+                for(IMetadataColumn column : columnList) {
+                    %>
+                    <%=rejectConnName%>.<%=column.getLabel()%> = <%=incomingConnName%>.<%=column.getLabel()%>;
+                    <%
+                }
+                %>
+                <%=rejectConnName%>.errorMessage = e.getMessage();
+                <%
+            } else {
+                %>
+                System.err.print(e.getMessage());
+                <%
+            }
+        } 
+        %>
+    }
 
 <%
-
 if(outgoingConns != null && outgoingConns.size() > 0) {
     %>
     if(!whetherReject_<%=cid%>) {
-    <%
+        <%
         for(IConnection outgoingConn : outgoingConns) {
             if(rejectConnName == null || (rejectConnName != null && !outgoingConn.getName().equals(rejectConnName))) {
-                if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-                    
+                if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {                    
                     %>
-<%=outgoingConn.getName()%> = new <%=outgoingConn.getName()%>Struct();
+                    <%=outgoingConn.getName()%> = new <%=outgoingConn.getName()%>Struct();
                     <%
                     for(IMetadataColumn column : columnList) {
-                        	if(propagateRecordset.equals("true") && column.getLabel().equals(recordsetColumn)){
-%>
-<%=outgoingConn.getName()%>.<%=column.getLabel()%> = rs_<%=cid %>;
-<%
-                        	}else{
-                        %>
-<%=outgoingConn.getName()%>.<%=column.getLabel()%> = <%=incomingConnName%>.<%=column.getLabel()%>;
-<%
-	                  		}
-                    }
+                    	if(propagateRecordset.equals("true") && column.getLabel().equals(recordsetColumn)) {
+                    	    %>
+                    	    <%=outgoingConn.getName()%>.<%=column.getLabel()%> = rs_<%=cid %>;
+                    	    <%
+                    	} else {
+                    	    %>
+                    	    <%=outgoingConn.getName()%>.<%=column.getLabel()%> = <%=incomingConnName%>.<%=column.getLabel()%>;
+                    	    <%
+                  		}
+                    }   
                 }
             }
         }
-    %>
+        %>
     }
-    <%
+<%
 }
-
-if (!commitEvery.equals("") && !commitEvery.equals("0")) {
-    %>
-    if (commitEvery_<%=cid%> <= commitCounter_<%=cid%>) {
-        connection_<%=cid%>.commit();
-        commitCounter_<%=cid%> = 0;
+if(!useExistingConn.equals("true")) {
+    if (!commitEvery.equals("") && !commitEvery.equals("0")) {
+        %>
+        commitCounter_<%=cid%>++;
+        if (commitEvery_<%=cid%> <= commitCounter_<%=cid%>) {
+            connection_<%=cid%>.commit();
+            commitCounter_<%=cid%> = 0;
+        }
+        <%
     }
-    <%
 }
 %>

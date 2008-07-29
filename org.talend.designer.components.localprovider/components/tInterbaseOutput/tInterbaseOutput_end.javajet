@@ -63,12 +63,15 @@ imports="
     <%
     if(!useExistingConn.equals("true")){
         if(!commitEvery.equals("")&&!commitEvery.equals("0")){
+            %>
+            conn_<%=cid%>.commit();
+            <%
+        }
         %>
-        conn_<%=cid%>.commit();
+        conn_<%=cid%> .close();
         <%
-    }%>
-    conn_<%=cid%> .close();
-<%}%>
+    }
+    %>
 	nb_line_deleted_<%=cid%>=nb_line_deleted_<%=cid%>+ deletedCount_<%=cid%>;
 	nb_line_update_<%=cid%>=nb_line_update_<%=cid%> + updatedCount_<%=cid%>;
 	nb_line_inserted_<%=cid%>=nb_line_inserted_<%=cid%> + insertedCount_<%=cid%>;

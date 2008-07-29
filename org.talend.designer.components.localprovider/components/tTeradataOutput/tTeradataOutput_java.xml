@@ -193,6 +193,7 @@
       FIELD="TEXT"
       NUM_ROW="6"
       REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>10000</DEFAULT>
     </PARAMETER>  

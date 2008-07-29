@@ -117,7 +117,6 @@ if(dataAction.equals("UPDATE") || dataAction.equals("INSERT_OR_UPDATE") || dataA
 if(useExistingConn){
 	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 	String conn = "conn_" + connection;
-	commitEvery = "0";
 	%>
 	java.sql.Connection conn_<%=cid %> = (java.sql.Connection)globalMap.get("<%=conn %>");
 	<%
@@ -232,13 +231,15 @@ if(columnList != null && columnList.size()>0) {
         %>
         String query_<%=cid%> = null;
         <%
-    }	
-	if(!commitEvery.equals("") && !commitEvery.equals("0")) {
-        %>        
-        int commitEvery_<%=cid%> = <%=commitEvery%>;        
-        int commitCounter_<%=cid%> = 0;       
-        <%
-	}
+    }
+    if(!useExistingConn) {
+    	if(!commitEvery.equals("") && !commitEvery.equals("0")) {
+            %>        
+            int commitEvery_<%=cid%> = <%=commitEvery%>;        
+            int commitCounter_<%=cid%> = 0;       
+            <%
+    	}
+    }
 	if(identityInsert.equals("true")) {
 	    %>
 	    java.sql.Statement stmt_<%=cid %> = conn_<%=cid%>.createStatement();

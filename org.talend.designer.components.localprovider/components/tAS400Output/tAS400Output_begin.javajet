@@ -120,20 +120,16 @@ if(useExistingConn.equals("true")) {
     <%
 } else {
     %>
-    java.lang.Class.forName("com.ibm.as400.access.AS400JDBCDriver");
-    <%
-    if(dbproperties == null || dbproperties.equals("\"\"") || dbproperties.equals("")) {
-        %>
-        String url_<%=cid %> = "jdbc:as400://" + <%=dbhost%> + "/" + <%=dbname%>;
-   <% }else
-    {
-       %>
-       
-        String url_<%=cid %> = "jdbc:as400://" + <%=dbhost%> + "/" + <%=dbname%>+ ";" + <%=dbproperties%>;
-   <% }%>
-    
+    String dbProperties_<%=cid%> = <%=dbproperties%>;
+    String url_<%=cid%> = null;
+    if(dbProperties_<%=cid%> == null || dbProperties_<%=cid%>.trim().length() == 0) {
+        url_<%=cid %> = "jdbc:as400://" + <%=dbhost%> + "/" + <%=dbname%>;
+    } else {
+        url_<%=cid %> = "jdbc:as400://" + <%=dbhost%> + "/" + <%=dbname%>+ ";" + <%=dbproperties%>;
+    }
     String dbUser_<%=cid %> = <%=dbuser%>;
-    String dbPwd_<%=cid %> = <%=dbpwd%>;
+    String dbPwd_<%=cid %> = <%=dbpwd%>;    
+    java.lang.Class.forName("com.ibm.as400.access.AS400JDBCDriver");
     java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
     conn_<%=cid%>.setAutoCommit(false);
     <%
@@ -233,15 +229,13 @@ if(columnList != null && columnList.size() > 0) {
         String query_<%=cid%> = null;
         <%
     }
-    if(ElementParameterParser.getValue(node,"__USE_COMMIT_CONTROL__").equals("true")) {// if use commit control
-        if(!useExistingConn.equals("true")) {
-            if(!commitEvery.equals("")&&!commitEvery.equals("0")) {
-                %>
-            
-                int commitEvery_<%=cid%> = <%=commitEvery%>;
-                
-                int commitCounter_<%=cid%> = 0;
-                
+    String useCommitControl = ElementParameterParser.getValue(node,"__USE_COMMIT_CONTROL__");
+    if(!useExistingConn.equals("true")) {
+        if(useCommitControl.equals("true")) {// if use commit control
+            if(!commitEvery.equals("") && !commitEvery.equals("0")) {
+                %>            
+                int commitEvery_<%=cid%> = <%=commitEvery%>;                
+                int commitCounter_<%=cid%> = 0;                
                 <%
             }
         }

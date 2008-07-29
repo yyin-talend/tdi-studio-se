@@ -12,35 +12,32 @@ imports="
 	String cid = node.getUniqueName();
 	String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
 
-   String identityInsert = ElementParameterParser.getValue(node, "__IDENTITY_INSERT__");
+	String identityInsert = ElementParameterParser.getValue(node, "__IDENTITY_INSERT__");
 		
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 
-if(identityInsert.equals("true")){
-%>
- stmt_<%=cid %>.execute("SET IDENTITY_INSERT ["+ tableName_<%=cid%> +"] OFF");
-<%
-}
-if(!useExistingConn.equals("true")){
-if(!commitEvery.equals("")&&!commitEvery.equals("0")){
-%>
-if(commitEvery_<%=cid%>>commitCounter_<%=cid%>){
+	if(identityInsert.equals("true")) {
+	    %>
+	    stmt_<%=cid %>.execute("SET IDENTITY_INSERT ["+ tableName_<%=cid%> +"] OFF");
+	    <%
+	}
+	%>
+	stmt_<%=cid%>.close();
+	<%
+	if(!useExistingConn.equals("true")) {
+	    if(!commitEvery.equals("")&&!commitEvery.equals("0")) {
+	        %>
+	        if(commitEvery_<%=cid%> > commitCounter_<%=cid%>) {
 
-	conn_<%=cid%>.commit();
+	            conn_<%=cid%>.commit();
 	
-	commitCounter_<%=cid%>=0;
+	            commitCounter_<%=cid%>=0;
 	
-}
-<%
-}
-}
-%>
-
-stmt_<%=cid%>.close();
-<%
-    if(!useExistingConn.equals("true")){
-%>
-    conn_<%=cid%>.close();
-<%
-    }
+	        }
+	        <%
+	    }
+	    %>
+	    conn_<%=cid%>.close();
+	    <%
+	}
 %>
