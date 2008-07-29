@@ -216,7 +216,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                                     String currentDbType = (String) RepositoryToComponentProperty.getValue(connection, "TYPE"); //$NON-NLS-1$
                                     if (repositoryValue.contains(":")) { // database is specified //$NON-NLS-1$
                                         String neededDbType = repositoryValue.substring(repositoryValue.indexOf(":") + 1); //$NON-NLS-1$
-                                        if (neededDbType.equals(MetadataTalendType.getMapProductName(currentDbType))) {
+                                        if (MetadataTalendType.sameDBProductType(neededDbType, currentDbType)) {
                                             repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
                                         }
                                     } else {
