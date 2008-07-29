@@ -282,11 +282,7 @@ public class ExcelFileStep3Form extends AbstractExcelFileStepForm {
 
         ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(originalValueConnection);
 
-        // Adapt Header width firstRowIsCaption to preview the first line on caption or not
-        // processDescription.setHeaderRow(getConnection().getHeaderValue());
-        // processDescription.setFooterRow(getConnection().getFooterValue());
-        // processDescription.setLimitRows(getConnection().getLimitValue());
-        // processDescription.setRemoveEmptyRow(getConnection().isRemoveEmptyRow());
+        headerRowForSchemaRowNames(originalValueConnection, processDescription);
 
         processDescription.setEncoding(TalendTextUtils.addQuotes(originalValueConnection.getEncoding()));
 
@@ -295,12 +291,6 @@ public class ExcelFileStep3Form extends AbstractExcelFileStepForm {
         bean.setSheetName(originalValueConnection.getSheetName());
         bean.setSelectAllSheets(originalValueConnection.isSelectAllSheets());
         bean.setSheetsList(originalValueConnection.getSheetList());
-        // bean.setFirstColumn(getConnection().getFirstColumn());
-        // bean.setLastColumn(getConnection().getLastColumn());
-        //
-        // bean.setAdvancedSeparator(getConnection().isAdvancedSpearator());
-        // bean.setThousandSeparator(getConnection().getThousandSeparator());
-        // bean.setDecimalSeparator(getConnection().getDecimalSeparator());
 
         processDescription.setExcelSchemaBean(bean);
 

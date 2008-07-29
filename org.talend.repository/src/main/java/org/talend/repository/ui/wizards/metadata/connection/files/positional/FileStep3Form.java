@@ -323,11 +323,7 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
 
         ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(originalValueConnection);
 
-        // Adapt Header width firstRowIsCaption to preview the first line on caption or not
-        if (originalValueConnection.isFirstLineCaption()) {
-            int i = ConnectionContextHelper.convertValue(originalValueConnection.getHeaderValue());
-            processDescription.setHeaderRow(i - 1);
-        }
+        headerRowForSchemaRowNames(originalValueConnection, processDescription);
 
         // adapt the limit to the extract sames rows of preview
         processDescription.setLimitRows(maximumRowsToPreview);

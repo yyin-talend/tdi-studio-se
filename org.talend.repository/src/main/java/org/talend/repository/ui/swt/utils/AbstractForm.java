@@ -34,12 +34,14 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
+import org.talend.core.model.metadata.builder.connection.FileConnection;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IConnParamName;
+import org.talend.repository.preview.ProcessDescription;
 import org.talend.repository.ui.utils.ConnectionContextHelper;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryView;
@@ -488,6 +490,20 @@ public abstract class AbstractForm extends Composite {
             if (contextParamSet.contains(param)) {
                 contextParamSet.remove(param);
             }
+        }
+    }
+
+    /**
+     * DOC YeXiaowei Comment method "headerRowForSchemaRowNames".
+     * 
+     * @param originalValueConnection
+     * @param processDescription
+     */
+    protected void headerRowForSchemaRowNames(FileConnection originalValueConnection, ProcessDescription processDescription) {
+        // Adapt Header width firstRowIsCaption to preview the first line on caption or not
+        if (originalValueConnection.isFirstLineCaption()) {
+            int i = ConnectionContextHelper.convertValue(originalValueConnection.getHeaderValue());
+            processDescription.setHeaderRow(i - 1);
         }
     }
 
