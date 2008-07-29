@@ -630,7 +630,7 @@ public class SQLBuilderRepositoryNodeManager {
         }
         final String product = EDatabaseTypeName.getTypeFromDisplayName(connection.getDatabaseType()).getProduct();
         connection.setProductId(product);
-        final String mapping = MetadataTalendType.getDefaultDbmsFromProduct(filterProductName(product)).getId();
+        final String mapping = MetadataTalendType.getDefaultDbmsFromProduct(product).getId();
         connection.setDbmsId(mapping);
 
         if (!isSchemaInValid && isNeedSchema) {
@@ -655,13 +655,6 @@ public class SQLBuilderRepositoryNodeManager {
         connection.setDBRootPath(parameters.getDirectory());
 
         return connection;
-    }
-
-    private String filterProductName(final String product) {
-        if (product.startsWith("ORACLE")) {
-            return "ORACLE";
-        }
-        return product;
     }
 
     /**
