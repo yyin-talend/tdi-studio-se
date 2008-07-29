@@ -35,6 +35,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.metadata.MetadataTable;
+import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.Query;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
@@ -505,7 +506,7 @@ class RepositoryTypeProcessor implements ITypeProcessor {
                         // specified
                         // //$NON-NLS-1$
                         String neededDbType = repositoryType.substring(repositoryType.indexOf(":") + 1); //$NON-NLS-1$
-                        if (!currentDbType.startsWith(neededDbType)) {
+                        if (!MetadataTalendType.sameDBProductType(neededDbType, currentDbType)) {
                             return false;
                         }
                     }
