@@ -28,6 +28,7 @@ import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
@@ -82,6 +83,13 @@ public class ExportProjectsAsAction extends Action implements IWorkbenchWindowAc
     }
 
     public void run() {
+
+        // Refresh Navigator view before export operation, see bug 4595
+        try {
+            ResourcesPlugin.getWorkspace().getRoot().refreshLocal(IResource.DEPTH_INFINITE, null);
+        } catch (CoreException e) {
+            ExceptionHandler.process(e);
+        }
         initializeExternalLibraries();
         Shell activeShell = Display.getCurrent().getActiveShell();
         TalendZipFileExportWizard docWizard = new TalendZipFileExportWizard();
