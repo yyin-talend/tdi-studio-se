@@ -41,6 +41,7 @@ import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.commons.utils.threading.ExecutionLimiter;
 import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
@@ -215,7 +216,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                                     String currentDbType = (String) RepositoryToComponentProperty.getValue(connection, "TYPE"); //$NON-NLS-1$
                                     if (repositoryValue.contains(":")) { // database is specified //$NON-NLS-1$
                                         String neededDbType = repositoryValue.substring(repositoryValue.indexOf(":") + 1); //$NON-NLS-1$
-                                        if (neededDbType.equals(currentDbType)) {
+                                        if (neededDbType.equals(MetadataTalendType.getMapProductName(currentDbType))) {
                                             repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
                                         }
                                     } else {
