@@ -423,14 +423,14 @@ if(<%=conn.getName() %>.<%=funin[1] %> != null){
 				if(!funin[2].equals("true")){
 //
 //end%>
-operation_result_<%=cid %>.<%=funin[1] %>_list = (operation_result_<%=cid %>.<%=funin[1] %>_list.length() == 0) ? String.valueOf(<%=conn.getName() %>.<%=funin[1] %>) : (operation_result_<%=cid %>.<%=funin[1] %>_list + "," + <%=conn.getName() %>.<%=funin[1] %>);
+operation_result_<%=cid %>.<%=funin[1] %>_list = (operation_result_<%=cid %>.<%=funin[1] %>_list.length() == 0) ? String.valueOf(<%=conn.getName() %>.<%=funin[1] %>) : (operation_result_<%=cid %>.<%=funin[1] %>_list + delimiter_<%=cid %> + <%=conn.getName() %>.<%=funin[1] %>);
 <%//start
 //
 				}else{
 //
 //end%>
 if(<%=conn.getName() %>.<%=funin[1] %> != null){
-	operation_result_<%=cid %>.<%=funin[1] %>_list = (operation_result_<%=cid %>.<%=funin[1] %>_list.length() == 0) ? String.valueOf(<%=conn.getName() %>.<%=funin[1] %>) : (operation_result_<%=cid %>.<%=funin[1] %>_list + "," + <%=conn.getName() %>.<%=funin[1] %>);
+	operation_result_<%=cid %>.<%=funin[1] %>_list = (operation_result_<%=cid %>.<%=funin[1] %>_list.length() == 0) ? String.valueOf(<%=conn.getName() %>.<%=funin[1] %>) : (operation_result_<%=cid %>.<%=funin[1] %>_list + delimiter_<%=cid %> + <%=conn.getName() %>.<%=funin[1] %>);
 }
 <%//start
 //

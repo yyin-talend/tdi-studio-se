@@ -24,11 +24,15 @@ int sizeOperations = operations.size();
 
 //pretreatment opreations before aggregating
 List<String[]> funinOperations = new java.util.ArrayList<String[]>();
+boolean listFlag = false;
 next:
 for(int i=0; i<sizeOperations; i++){
 	Map<String, String> operation = operations.get(i);
 	String fun = operation.get("FUNCTION");
 	String in = operation.get("INPUT_COLUMN");
+	if(!listFlag && fun.equals("list")){
+		listFlag = true;
+	}
 	if(fun.equals("sum") || fun.equals("count")){
 		for(int j=0; j<sizeOperations; j++){
 			Map<String, String> tOperation = operations.get(j);
@@ -268,3 +272,10 @@ OperationStruct<%=cid %> operation_result_<%=cid %> = null;
 }
 //
 //end%>
+<%
+if(listFlag){
+%>
+String delimiter_<%=cid %> = <%=ElementParameterParser.getValue(node, "__LIST_DELIMITER__") %>;
+<%
+}
+%>

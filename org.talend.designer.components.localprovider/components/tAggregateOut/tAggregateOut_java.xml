@@ -89,6 +89,17 @@
     </PARAMETER>
 
   </PARAMETERS>
+  
+  <ADVANCED_PARAMETERS>
+    <PARAMETER
+      NAME="LIST_DELIMITER"
+      FIELD="TEXT"
+      REQUIRED="false"
+      NUM_ROW="1"
+    >
+      <DEFAULT>","</DEFAULT> 
+    </PARAMETER>  
+  </ADVANCED_PARAMETERS>
 
   <CODEGENERATION/>
 
