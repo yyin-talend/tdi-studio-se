@@ -108,13 +108,20 @@ public class QueryGuessCommand extends Command {
             schema = this.dbNameAndSchemaMap.get(this.realTableId);
         }
         String propertyType = (String) node.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
+        boolean isTeradata = dbType.equals(EDatabaseTypeName.TERADATA.getDisplayName());
         if (propertyType != null && !propertyType.equals(EmfComponent.REPOSITORY)) {
             for (IElementParameter param : this.node.getElementParameters()) {
-                if (param.getRepositoryValue() != null && param.getRepositoryValue().equals("SCHEMA")) {
-                    schema = (String) param.getValue();
-                    schema = schema.replace("\"", "");
-                    schema = schema.replace("\'", "");
-                    break;
+                if (param.getRepositoryValue() != null) {
+                    if ((!isTeradata && param.getRepositoryValue().equals("SCHEMA"))
+                            || (isTeradata && param.getRepositoryValue().equals("SID"))) {// check if dbtype is
+                        // Teradata, always keep the
+                        // query style like
+                        // "dbname.tablename.columnname" on build-in mode
+                        schema = (String) param.getValue();
+                        schema = schema.replace("\"", "");
+                        schema = schema.replace("\'", "");
+                        break;
+                    }
                 }
             }
         } else if (schema == null) {
@@ -127,7 +134,7 @@ public class QueryGuessCommand extends Command {
                         Item item = object.getProperty().getItem();
                         if (item != null && item instanceof DatabaseConnectionItem) {
 
-                            if (dbType.equals(EDatabaseTypeName.TERADATA.getDisplayName())) {
+                            if (isTeradata) {
                                 schema = (String) RepositoryToComponentProperty.getValue(((DatabaseConnectionItem) item)
                                         .getConnection(), "SID");
                             } else {
