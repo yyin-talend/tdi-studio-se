@@ -478,6 +478,10 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                 copyOfrepositoryMetadata.setTableName(uniqueName);
                                 copyOfrepositoryMetadata.setAttachedConnector(schemaTypeParam.getContext());
 
+                                // // fixed the such as tContextDump component.
+                                // MetadataTool.initilializeSchemaFromElementParameters(copyOfrepositoryMetadata,
+                                // (List<IElementParameter>) node.getElementParameters());
+
                                 IMetadataTable metadataTable = node.getMetadataFromConnector(schemaTypeParam.getContext());
                                 if (!metadataTable.sameMetadataAs(copyOfrepositoryMetadata, IMetadataColumn.OPTIONS_NONE)) {
                                     result = new UpdateCheckResult(node);
@@ -688,15 +692,14 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                     IElementParameter sqlParam = node.getElementParameterFromField(EParameterFieldType.MEMO_SQL);
                     if (sqlParam != null && UpdatesConstants.QUERY.equals(sqlParam.getName())) {
                         String paramValue = (String) sqlParam.getValue();
-                        
+
                         connectQuery = QueryUtil.checkAndAddQuotes(connectQuery);
                         if (!connectQuery.equals(paramValue)) {
                             result = new UpdateCheckResult(node);
                             result.setResult(EUpdateItemType.NODE_QUERY, EUpdateResult.UPDATE, query, source);
-                        } else {
-                            sqlParam.setReadOnly(true);
-                            sqlParam.setRepositoryValueUsed(true);
                         }
+                        sqlParam.setReadOnly(true);
+                        sqlParam.setRepositoryValueUsed(true);
                     }
                 } else {
                     result = new UpdateCheckResult(node);

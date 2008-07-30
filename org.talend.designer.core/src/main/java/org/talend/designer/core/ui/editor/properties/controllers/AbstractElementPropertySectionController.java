@@ -53,6 +53,7 @@ import org.eclipse.ui.views.properties.PropertySheet;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog;
 import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog.EEditSelection;
+import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog.ESelectionType;
 import org.talend.commons.ui.swt.proposal.ContentProposalAdapterExtended;
 import org.talend.commons.ui.utils.ControlUtils;
 import org.talend.commons.ui.utils.TypedTextCommandExecutor;
@@ -1275,7 +1276,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
         public void mouseDown(MouseEvent e) {
 
-            ModelSelectionDialog modelSelect = new ModelSelectionDialog(((Control) e.getSource()).getShell(), false);
+            ModelSelectionDialog modelSelect = new ModelSelectionDialog(((Control) e.getSource()).getShell(),
+                    ESelectionType.NORMAL);
 
             if (modelSelect.open() == ModelSelectionDialog.OK) {
                 if (modelSelect.getOptionValue() == EEditSelection.BUILDIN) {

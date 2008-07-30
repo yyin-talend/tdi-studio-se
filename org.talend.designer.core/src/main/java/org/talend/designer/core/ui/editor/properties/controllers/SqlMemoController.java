@@ -15,6 +15,8 @@ package org.talend.designer.core.ui.editor.properties.controllers;
 import java.beans.PropertyChangeEvent;
 
 import org.eclipse.gef.commands.Command;
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.fieldassist.DecoratedField;
 import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
@@ -34,6 +36,7 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -46,6 +49,7 @@ import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog;
 import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog.EEditSelection;
+import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog.ESelectionType;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.builder.connection.Query;
@@ -201,11 +205,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         IControlCreator txtCtrl = new IControlCreator() {
 
             public Control createControl(final Composite parent, final int style) {
-                ColorStyledText colorText = new ColorStyledText(parent, style, CorePlugin.getDefault().getPreferenceStore(),
-                        "tsql"); //$NON-NLS-1$
-                Font font = new Font(parent.getDisplay(), "courier", 8, SWT.NONE); //$NON-NLS-1$
-                colorText.setFont(font);
-                return colorText;
+                return createColorStyledText(parent, style);
             }
         };
         DecoratedField dField = null;
@@ -311,11 +311,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         IControlCreator txtCtrl = new IControlCreator() {
 
             public Control createControl(final Composite parent, final int style) {
-                ColorStyledText colorText = new ColorStyledText(parent, style, CorePlugin.getDefault().getPreferenceStore(),
-                        "tsql");
-                Font font = new Font(parent.getDisplay(), "courier", 8, SWT.NONE); //$NON-NLS-1$
-                colorText.setFont(font);
-                return colorText;
+                return createColorStyledText(parent, style);
             }
         };
 
@@ -440,7 +436,8 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
      * @param shell
      */
     private void promptForChangingMode(Shell shell) {
-        ModelSelectionDialog modelSelect = new ModelSelectionDialog(shell, false);
+
+        ModelSelectionDialog modelSelect = new ModelSelectionDialog(shell, ESelectionType.QUERY);
 
         if (modelSelect.open() == ModelSelectionDialog.OK) {
             if (modelSelect.getOptionValue() == EEditSelection.BUILDIN) {
@@ -449,7 +446,63 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
             if (modelSelect.getOptionValue() == EEditSelection.REPOSITORY) {
                 executeCommand(refreshConnectionCommand());
             }
+            if (modelSelect.getOptionValue() == EEditSelection.SHOW_QUERY) {
+                if (queryText != null) {
+                    ShowQueryDialog showQueryDialog = new ShowQueryDialog(shell, queryText.getText());
+                    showQueryDialog.open();
+                }
+            }
         }
     }
 
+    private ColorStyledText createColorStyledText(final Composite parent, final int style) {
+        ColorStyledText colorText = new ColorStyledText(parent, style, CorePlugin.getDefault().getPreferenceStore(), "tsql"); //$NON-NLS-1$
+        Font font = new Font(parent.getDisplay(), "courier", 8, SWT.NONE); //$NON-NLS-1$
+        colorText.setFont(font);
+        return colorText;
+    }
+
+    /**
+     * 
+     * ggu ShowQueryDialog class global comment. Detailled comment
+     */
+    class ShowQueryDialog extends Dialog {
+
+        private String query;
+
+        public ShowQueryDialog(Shell parentShell, String query) {
+            super(parentShell);
+            setShellStyle(getShellStyle() | SWT.MAX | SWT.RESIZE);
+            this.query = query;
+        }
+
+        @Override
+        protected void configureShell(Shell newShell) {
+            super.configureShell(newShell);
+            newShell.setText("Query");
+        }
+
+        @Override
+        protected Control createDialogArea(Composite parent) {
+            Composite composite2 = (Composite) super.createDialogArea(parent);
+
+            ColorStyledText colorStyledText = createColorStyledText(composite2, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL
+                    | SWT.READ_ONLY);
+            GridData gridData = new GridData(GridData.FILL_BOTH);
+            gridData.minimumHeight = 130;
+            gridData.heightHint = 150;
+            gridData.minimumWidth = 350;
+            gridData.widthHint = 400;
+            colorStyledText.setLayoutData(gridData);
+            if (query != null) {
+                colorStyledText.setText(query);
+            }
+            return colorStyledText;
+        }
+
+        @Override
+        protected void createButtonsForButtonBar(Composite parent) {
+            createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
+        }
+    }
 }

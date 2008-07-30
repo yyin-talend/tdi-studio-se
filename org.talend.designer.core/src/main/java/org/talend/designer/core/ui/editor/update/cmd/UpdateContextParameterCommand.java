@@ -64,39 +64,39 @@ public class UpdateContextParameterCommand extends Command {
             for (IContext context : process.getContextManager().getListContext()) {
                 for (IContextParameter param : context.getContextParameterList()) {
                     ContextItem item = null;
-                    switch (result.getResultType()) {
-                    case UPDATE:
-                        item = (ContextItem) result.getParameter();
-                        if (names != null && names.contains(param.getName())) {
+                    if (names != null && names.contains(param.getName())) {
+                        switch (result.getResultType()) {
+                        case UPDATE:
+                            item = (ContextItem) result.getParameter();
+
                             if (item != null && item.getProperty().getLabel().equals(param.getSource()) && result.isChecked()) {
 
                                 ContextUtils.updateParameterFromRepository(item, param, context.getName());
                             } else {
                                 param.setSource(IContextParameter.BUILT_IN);
                             }
-                        }
-                        break;
-                    case RENAME:
-                        List<Object> parameter = (List<Object>) result.getParameter();
-                        if (parameter.size() >= 3) {
-                            item = (ContextItem) parameter.get(0);
-                            String oldName = (String) parameter.get(1);
-                            String newName = (String) parameter.get(2);
-                            if (names != null && names.contains(param.getName()) && oldName.equals(param.getName())) {
-                                if (newName != null) {
-                                    param.setName(newName);
-                                    ContextUtils.updateParameterFromRepository(item, param, context.getName());
+                            break;
+                        case RENAME:
+                            List<Object> parameter = (List<Object>) result.getParameter();
+                            if (parameter.size() >= 3) {
+                                item = (ContextItem) parameter.get(0);
+                                String oldName = (String) parameter.get(1);
+                                String newName = (String) parameter.get(2);
+                                if (oldName.equals(param.getName())) {
+                                    if (newName != null) {
+                                        param.setName(newName);
+                                        ContextUtils.updateParameterFromRepository(item, param, context.getName());
+                                    }
                                 }
+
                             }
-
+                            break;
+                        case BUIL_IN: // built-in
+                        default:
+                            param.setSource(IContextParameter.BUILT_IN);
+                            break;
                         }
-                        break;
-                    case BUIL_IN: // built-in
-                    default:
-                        param.setSource(IContextParameter.BUILT_IN);
-                        break;
                     }
-
                 }
             }
             // update parameters

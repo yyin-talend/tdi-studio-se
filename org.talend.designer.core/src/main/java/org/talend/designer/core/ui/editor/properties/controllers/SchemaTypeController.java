@@ -36,6 +36,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog;
 import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog.EEditSelection;
+import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog.ESelectionType;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -443,7 +444,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
                     node = ((Connection) elem).getSource();
                 }
                 boolean isReadOnly = node.getProcess().isReadOnly();
-                ModelSelectionDialog modelSelect = new ModelSelectionDialog(button.getShell(), true, isReadOnly);
+                ModelSelectionDialog modelSelect = new ModelSelectionDialog(button.getShell(), ESelectionType.SCHEMA, isReadOnly);
                 stop = true;
                 if (modelSelect.open() == ModelSelectionDialog.OK) {
                     if (modelSelect.getOptionValue() == EEditSelection.REPOSITORY) {
