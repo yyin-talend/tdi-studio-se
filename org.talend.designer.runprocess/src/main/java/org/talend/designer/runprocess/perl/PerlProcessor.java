@@ -104,9 +104,6 @@ public class PerlProcessor extends Processor {
     }
 
     private void initCodePath(IContext context) throws ProcessorException {
-        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
-                Context.REPOSITORY_CONTEXT_KEY);
-        Project project = repositoryContext.getProject();
         codePath = new Path(PerlResourcesHelper.getJobFileName(filenameFromLabel ? escapeFilename(process.getLabel()) : process
                 .getId(), process.getVersion())); //$NON-NLS-1$
 

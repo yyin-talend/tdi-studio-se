@@ -192,12 +192,12 @@ public class JavaProcessor extends Processor {
     }
 
     public void initCodePath(IContext context) throws ProcessorException {
-        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
-                Context.REPOSITORY_CONTEXT_KEY);
-        Project project = repositoryContext.getProject();
+        // RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
+        // Context.REPOSITORY_CONTEXT_KEY);
+        // Project project = repositoryContext.getProject();
 
-        String projectFolderName = project.getTechnicalLabel();
-        projectFolderName = projectFolderName.toLowerCase();
+        String projectFolderName = JavaResourcesHelper.getProjectFolderName(getProcess().getProperty().getItem());
+
         String jobFolderName = JavaResourcesHelper.getJobFolderName(process.getLabel(), process.getVersion());
         String fileName = filenameFromLabel ? escapeFilename(process.getLabel()) : process.getId();
 
@@ -238,16 +238,12 @@ public class JavaProcessor extends Processor {
     public void generateCode(boolean statistics, boolean trace, boolean javaProperties) throws ProcessorException {
         super.generateCode(statistics, trace, javaProperties);
         try {
-            RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
-                    Context.REPOSITORY_CONTEXT_KEY);
-            Project project = repositoryContext.getProject();
-
             ICodeGenerator codeGen;
             ICodeGeneratorService service = RunProcessPlugin.getDefault().getCodeGeneratorService();
             if (javaProperties) {
                 String javaInterpreter = ""; //$NON-NLS-1$
                 String javaLib = ""; //$NON-NLS-1$
-                String currentJavaProject = project.getTechnicalLabel();
+                String currentJavaProject = JavaResourcesHelper.getProjectFolderName(getProcess().getProperty().getItem());
                 String javaContext = getContextPath().toOSString();
 
                 codeGen = service.createCodeGenerator(process, statistics, trace, javaInterpreter, javaLib, javaContext,
