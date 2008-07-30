@@ -43,6 +43,8 @@ public class SubjobContainer extends Element implements ISubjobContainer {
 
     public static final String UPDATE_SUBJOB_CONNECTIONS = "UPDATE_SUBJOB_CONNECTIONS";
 
+    public static final String UPDATE_SUBJOB_TITLE_COLOR = "UPDATE_SUBJOB_TITLE_COLOR";
+
     protected List<NodeContainer> nodeContainers = new ArrayList<NodeContainer>();
 
     private IProcess2 process;
@@ -77,31 +79,6 @@ public class SubjobContainer extends Element implements ISubjobContainer {
         param.setShow(true);
         addElementParameter(param);
 
-        // Name of the subjob (title)
-        param = new ElementParameter(this);
-        param.setName(EParameterName.SUBJOB_TITLE.getName());
-        param.setValue("");
-        param.setDisplayName(EParameterName.SUBJOB_TITLE.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
-        param.setCategory(EComponentCategory.BASIC);
-        param.setNumRow(2);
-        param.setReadOnly(false);
-        param.setRequired(false);
-        param.setShowIf(EParameterName.SHOW_SUBJOB_TITLE.getName() + " == 'true'");
-        addElementParameter(param);
-
-        param = new ElementParameter(this);
-        param.setName(EParameterName.SUBJOB_COLOR.getName());
-        param.setValue("220;220;250"); // default subjob color
-        param.setDisplayName(EParameterName.SUBJOB_COLOR.getDisplayName());
-        param.setField(EParameterFieldType.COLOR);
-        param.setCategory(EComponentCategory.BASIC);
-        param.setNumRow(3);
-        param.setReadOnly(false);
-        param.setRequired(false);
-        param.setShow(true);
-        addElementParameter(param);
-
         // Unique name of the the start linked with this subjob.
         param = new ElementParameter(this);
         param.setName(EParameterName.UNIQUE_NAME.getName());
@@ -113,6 +90,43 @@ public class SubjobContainer extends Element implements ISubjobContainer {
         param.setReadOnly(false);
         param.setRequired(false);
         param.setShow(false);
+        addElementParameter(param);
+
+        // Name of the subjob (title)
+        param = new ElementParameter(this);
+        param.setName(EParameterName.SUBJOB_TITLE.getName());
+        param.setValue("");
+        param.setDisplayName(EParameterName.SUBJOB_TITLE.getDisplayName());
+        param.setField(EParameterFieldType.TEXT);
+        param.setCategory(EComponentCategory.BASIC);
+        param.setNumRow(3);
+        param.setReadOnly(false);
+        param.setRequired(false);
+        param.setShowIf(EParameterName.SHOW_SUBJOB_TITLE.getName() + " == 'true'");
+        addElementParameter(param);
+
+        param = new ElementParameter(this);
+        param.setName(EParameterName.SUBJOB_TITLE_COLOR.getName());
+        param.setValue(null); // default subjob color
+        param.setDisplayName(EParameterName.SUBJOB_TITLE_COLOR.getDisplayName());
+        param.setField(EParameterFieldType.COLOR);
+        param.setCategory(EComponentCategory.BASIC);
+        param.setNumRow(4);
+        param.setReadOnly(false);
+        param.setRequired(false);
+        param.setShowIf(EParameterName.SHOW_SUBJOB_TITLE.getName() + " == 'true'");
+        addElementParameter(param);
+
+        param = new ElementParameter(this);
+        param.setName(EParameterName.SUBJOB_COLOR.getName());
+        param.setValue("220;220;250"); // default subjob color
+        param.setDisplayName(EParameterName.SUBJOB_COLOR.getDisplayName());
+        param.setField(EParameterFieldType.COLOR);
+        param.setCategory(EComponentCategory.BASIC);
+        param.setNumRow(4);
+        param.setReadOnly(false);
+        param.setRequired(false);
+        param.setShow(true);
         addElementParameter(param);
 
         param = new ElementParameter(this);
@@ -294,6 +308,8 @@ public class SubjobContainer extends Element implements ISubjobContainer {
         } else if (id.equals(EParameterName.SUBJOB_COLOR.getName()) || id.equals(EParameterName.SHOW_SUBJOB_TITLE.getName())
                 || id.equals(EParameterName.SUBJOB_TITLE.getName())) {
             fireStructureChange(UPDATE_SUBJOB_DATA, this);
+        } else if (id.equals(EParameterName.SUBJOB_TITLE_COLOR.getName())) {
+            fireStructureChange(UPDATE_SUBJOB_TITLE_COLOR, this);
         }
     }
 

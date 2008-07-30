@@ -78,7 +78,9 @@ public class ColorController extends AbstractElementPropertySectionController {
                 ColorDialog colorDialog = new ColorDialog(ctrl.getShell());
                 colorDialog.setRGB(TalendTextUtils.stringToRGB((String) elem.getPropertyValue(paramName)));
                 RGB rgb = colorDialog.open();
+
                 if (rgb != null) {
+                    setButtonColor((Button) ctrl, rgb);
                     Command cmd;
                     String value = rgb.red + ";" + rgb.green + ";" + rgb.blue;
                     cmd = new PropertyChangeCommand(elem, paramName, value);
@@ -211,14 +213,24 @@ public class ColorController extends AbstractElementPropertySectionController {
             return;
         }
         if (value != null) {
-            if (colorBtn.getImage() != null) {
-                colorBtn.getImage().dispose();
-            }
-
-            ImageData id = createColorImage(colorBtn, TalendTextUtils.stringToRGB((String) value));
-            Image image = new Image(colorBtn.getDisplay(), id, id.getTransparencyMask());
-            colorBtn.setImage(image);
+            setButtonColor(colorBtn, TalendTextUtils.stringToRGB((String) value));
         }
+    }
+
+    /**
+     * yzhang Comment method "resetButtonColor".
+     * 
+     * @param colorBtn
+     * @param value
+     */
+    private void setButtonColor(Button colorBtn, RGB rgb) {
+        if (colorBtn.getImage() != null) {
+            colorBtn.getImage().dispose();
+        }
+
+        ImageData id = createColorImage(colorBtn, rgb);
+        Image image = new Image(colorBtn.getDisplay(), id, id.getTransparencyMask());
+        colorBtn.setImage(image);
     }
 
     private ImageData createColorImage(Button button, RGB color) {

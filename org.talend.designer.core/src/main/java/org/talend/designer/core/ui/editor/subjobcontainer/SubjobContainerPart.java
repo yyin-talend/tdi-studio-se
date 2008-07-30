@@ -155,6 +155,9 @@ public class SubjobContainerPart extends AbstractGraphicalEditPart implements Pr
             }
         } else if (SubjobContainer.UPDATE_SUBJOB_CONNECTIONS.equals(prop)) {
             refreshSourceConnections();
+        } else if (SubjobContainer.UPDATE_SUBJOB_TITLE_COLOR.equals(prop)) {
+            ((SubjobContainerFigure) getFigure()).updateSubJobTitleColor();
+            refreshVisuals();
         } else { // can only be UPDATE_SUBJOB_DATA, need to modify if some others are added
             ((SubjobContainerFigure) getFigure()).updateData();
             refreshVisuals();

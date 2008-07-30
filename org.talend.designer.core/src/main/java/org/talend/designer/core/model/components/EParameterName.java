@@ -85,6 +85,7 @@ public enum EParameterName {
     COLLAPSED("COLLAPSED"), //$NON-NLS-1$  Hidden parameter so no translation needed
     SHOW_SUBJOB_TITLE("Show subjob title"),
     SUBJOB_TITLE("Title"),
+    SUBJOB_TITLE_COLOR("Title color"),
     SUBJOB_COLOR("Subjob color"),
     SQLPATTERN_DB_NAME("SQL Pattern DB"),
     SQLPATTERN_VALUE("SQL Pattern"),
