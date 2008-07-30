@@ -119,8 +119,8 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
             Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
                     .getProject();
             initRoutineFolder(javaProject, project);
-            IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/" + JavaUtils.JAVA_ROUTINES_DIRECTORY
-                    + "/" + routineItem.getProperty().getLabel() + JavaUtils.JAVA_EXTENSION);
+            IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/" + JavaUtils.JAVA_ROUTINES_DIRECTORY + "/"
+                    + routineItem.getProperty().getLabel() + JavaUtils.JAVA_EXTENSION);
             return file;
         } catch (CoreException e) {
             throw new SystemException(e);
@@ -131,12 +131,13 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
         IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
         try {
             IProject javaProject = service.getProject(ECodeLanguage.JAVA);
-            Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                    .getProject();
+
+            String projectFolderName = JavaResourcesHelper.getProjectFolderName(item);
+
             String folderName = JavaResourcesHelper.getJobFolderName(item.getProperty().getLabel(), item.getProperty()
                     .getVersion());
-            IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/" + project.getLabel().toLowerCase()
-                    + "/" + folderName + "/" + item.getProperty().getLabel() + JavaUtils.JAVA_EXTENSION);
+            IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/" + projectFolderName + "/" + folderName + "/"
+                    + item.getProperty().getLabel() + JavaUtils.JAVA_EXTENSION);
             return file;
         } catch (CoreException e) {
             throw new SystemException(e);
@@ -159,8 +160,8 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
     }
 
     private void initModuleFolder(IProject javaProject, Project project) throws CoreException {
-        IFolder rep = javaProject.getFolder(JavaUtils.JAVA_SRC_DIRECTORY + "/" + JavaUtils.JAVA_ROUTINES_DIRECTORY
-                + "/" + JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY);
+        IFolder rep = javaProject.getFolder(JavaUtils.JAVA_SRC_DIRECTORY + "/" + JavaUtils.JAVA_ROUTINES_DIRECTORY + "/"
+                + JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY);
         if (!rep.exists()) {
             rep.create(true, true, null);
         }
@@ -192,9 +193,8 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
 
             for (File module : modules) {
                 if (!module.isDirectory()) {
-                    IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/"
-                            + JavaUtils.JAVA_ROUTINES_DIRECTORY + "/" + JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY + "/"
-                            + module.getName());
+                    IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/" + JavaUtils.JAVA_ROUTINES_DIRECTORY + "/"
+                            + JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY + "/" + module.getName());
 
                     copyFile(module, file);
                 }
