@@ -351,6 +351,9 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             userRoutineButton.setSelection(settings.getBoolean(STORE_USER_ROUTINE_ID));
             modelButton.setSelection(settings.getBoolean(STORE_MODEL_ID));
             jobButton.setSelection(settings.getBoolean(STORE_JOB_ID));
+            exportDependencies.setEnabled(settings.getBoolean(STORE_JOB_ID));
+            exportDependencies.setSelection(settings.getBoolean(STORE_DEPENDENCIES_ID));
+
             sourceButton.setSelection(settings.getBoolean(STORE_SOURCE_ID));
             contextButton.setSelection(settings.getBoolean(STORE_CONTEXT_ID));
             applyToChildrenButton.setSelection(settings.getBoolean(APPLY_TO_CHILDREN_ID));
@@ -397,6 +400,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                 settings.put(STORE_USER_ROUTINE_ID, userRoutineButton.getSelection());
                 settings.put(STORE_MODEL_ID, modelButton.getSelection());
                 settings.put(STORE_JOB_ID, jobButton.getSelection());
+                settings.put(STORE_DEPENDENCIES_ID, exportDependencies.getSelection());
                 settings.put(EXTRACT_ZIP_FILE, chkButton.getSelection());
                 return;
             } else if (exportTypeCombo.getText().equals(EXPORTTYPE_WSZIP)) {

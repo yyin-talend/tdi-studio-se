@@ -118,6 +118,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     private String originalRootFolderName;
 
+    protected Button exportDependencies;
+
     /**
      * Create an instance of this class.
      * 
@@ -375,7 +377,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      * @param optionsGroup
      * @param font
      */
-    public void createOptions(Composite optionsGroup, Font font) {
+    public void createOptions(final Composite optionsGroup, Font font) {
         // create directory structure radios
         shellLauncherButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
         shellLauncherButton.setText(Messages.getString("JobScriptsExportWizardPage.shellLauncher")); //$NON-NLS-1$
@@ -416,9 +418,24 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         jobButton.setSelection(true);
         jobButton.setFont(font);
         gd = new GridData(GridData.FILL_HORIZONTAL);
-        gd.horizontalSpan = 3;
+        gd.horizontalSpan = 1;
         jobButton.setLayoutData(gd);
+        jobButton.addSelectionListener(new SelectionAdapter() {
 
+            public void widgetSelected(SelectionEvent e) {
+
+                exportDependencies.setEnabled(jobButton.getSelection());
+                if (!jobButton.getSelection()) {
+                    exportDependencies.setSelection(false);
+                }
+            }
+        });
+        exportDependencies = new Button(optionsGroup, SWT.CHECK);
+        exportDependencies.setText("Export Dependencies"); //$NON-NLS-1$
+        exportDependencies.setFont(font);
+        gd = new GridData(GridData.FILL_HORIZONTAL);
+        gd.horizontalSpan = 2;
+        exportDependencies.setLayoutData(gd);
         sourceButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
         sourceButton.setText(Messages.getString("JobScriptsExportWizardPage.sourceFiles")); //$NON-NLS-1$
         sourceButton.setSelection(true);
@@ -757,9 +774,11 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         exportChoiceMap.put(ExportChoice.needUserRoutine, userRoutineButton.getSelection());
         exportChoiceMap.put(ExportChoice.needTalendLibraries, modelButton.getSelection());
         exportChoiceMap.put(ExportChoice.needJob, jobButton.getSelection());
+        exportChoiceMap.put(ExportChoice.needDependencies, exportDependencies.getSelection());
         exportChoiceMap.put(ExportChoice.needSource, sourceButton.getSelection());
         exportChoiceMap.put(ExportChoice.needContext, contextButton.getSelection());
         exportChoiceMap.put(ExportChoice.applyToChildren, applyToChildrenButton.getSelection());
+        exportChoiceMap.put(ExportChoice.needDependencies, exportDependencies.getSelection());
         // exportChoiceMap.put(ExportChoice.needGenerateCode, genCodeButton.getSelection());
         return exportChoiceMap;
     }

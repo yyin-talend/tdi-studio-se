@@ -58,6 +58,7 @@ public class JobScriptsExportWizard extends Wizard implements IExportWizard {
             section.put(PerlJobScriptsExportWizardPage.STORE_USER_ROUTINE_ID, true);
             section.put(PerlJobScriptsExportWizardPage.STORE_MODEL_ID, true);
             section.put(PerlJobScriptsExportWizardPage.STORE_JOB_ID, true);
+            section.put(PerlJobScriptsExportWizardPage.STORE_DEPENDENCIES_ID, false);
             section.put(PerlJobScriptsExportWizardPage.STORE_CONTEXT_ID, true);
             section.put(PerlJobScriptsExportWizardPage.APPLY_TO_CHILDREN_ID, false);
 
@@ -66,6 +67,7 @@ public class JobScriptsExportWizard extends Wizard implements IExportWizard {
             section.put(JavaJobScriptsExportWizardPage.STORE_USER_ROUTINE_ID, true);
             section.put(JavaJobScriptsExportWizardPage.STORE_MODEL_ID, true);
             section.put(JavaJobScriptsExportWizardPage.STORE_JOB_ID, true);
+            section.put(JavaJobScriptsExportWizardPage.STORE_DEPENDENCIES_ID, false);
             section.put(JavaJobScriptsExportWizardPage.STORE_CONTEXT_ID, true);
             section.put(JavaJobScriptsExportWizardPage.APPLY_TO_CHILDREN_ID, false);
             section.put(JavaJobScriptsExportWSWizardPage.STORE_EXPORTTYPE_ID, JavaJobScriptsExportWSWizardPage.EXPORTTYPE_POJO);

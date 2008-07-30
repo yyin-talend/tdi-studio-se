@@ -30,18 +30,31 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.CorePlugin;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
+import org.talend.core.model.process.IProcess;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.utils.PerlResourcesHelper;
+import org.talend.designer.core.IDesignerCoreService;
+import org.talend.designer.core.model.utils.emf.talendfile.ContextParameterType;
+import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
+import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.RepositoryPlugin;
+import org.talend.repository.constants.FileConstants;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.local.ExportItemUtil;
+import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
  * Manages the job scripts to be exported. <br/>
@@ -66,6 +79,8 @@ public abstract class JobScriptsManager {
     public static final String WINDOWS_ENVIRONMENT = "Windows"; //$NON-NLS-1$
 
     protected static final String JOB_SOURCE_FOLDER_NAME = "src"; //$NON-NLS-1$
+
+    public static final String JOB_CONTEXT_FOLDER = "contexts";
 
     private String selectedJobVersion; //$NON-NLS-1$
 
@@ -105,7 +120,8 @@ public abstract class JobScriptsManager {
         needSource,
         needContext,
         applyToChildren,
-        doNotCompileCode
+        doNotCompileCode,
+        needDependencies
     }
 
     /**
@@ -446,6 +462,11 @@ public abstract class JobScriptsManager {
         return root;
     }
 
+    protected IPath getEmfContextRootPath() throws Exception {
+        IPath root = getCurrnetProjectRootPath().append(ERepositoryObjectType.getFolderName(ERepositoryObjectType.CONTEXT));
+        return root;
+    }
+
     protected IPath getCurrnetProjectRootPath() throws Exception {
         IProject project = RepositoryPlugin.getDefault().getRunProcessService().getProject(LanguageManager.getCurrentLanguage());
 
@@ -459,5 +480,130 @@ public abstract class JobScriptsManager {
      * @return
      */
     protected abstract String getCurrentProjectName();
+
+    /**
+     * DOC qwei Comment method "addDepencies".
+     */
+    protected void addDepencies(ProcessItem processItem, Boolean needDependencies, ExportFileResource resource) {
+        if (!needDependencies) {
+            return;
+        }
+        addContext(processItem, resource);
+        addMetadata(processItem, resource);
+    }
+
+    /**
+     * DOC qwei Comment method "addMetadata".
+     * 
+     * @param processItem
+     * @param resource
+     */
+    private void addMetadata(ProcessItem processItem, ExportFileResource resource) {
+        IDesignerCoreService designerCoreService = CorePlugin.getDefault().getDesignerCoreService();
+        if (designerCoreService == null) {
+            return;
+        }
+        IProcess process = null;
+        process = designerCoreService.getProcessFromProcessItem(processItem);
+        if (process != null) {
+            List<INode> nodes = (List<INode>) process.getGraphicalNodes();
+            for (INode node : nodes) {
+                List<IElementParameter> eleParams = (List<IElementParameter>) node.getElementParameters();
+                for (IElementParameter elementParameter : eleParams) {
+                    String repositoryMetadataId = "";
+                    if (elementParameter.getName().equals("PROPERTY")) {
+                        repositoryMetadataId = (String) elementParameter.getChildParameters().get("REPOSITORY_PROPERTY_TYPE")
+                                .getValue();
+                    }
+                    if (elementParameter.getName().equals("SCHEMA")) {
+                        repositoryMetadataId = (String) elementParameter.getChildParameters().get("REPOSITORY_SCHEMA_TYPE")
+                                .getValue();
+                    }
+                    if (elementParameter.getName().equals("QUERYSTORE")) {
+                        repositoryMetadataId = (String) elementParameter.getChildParameters().get("REPOSITORY_QUERYSTORE_TYPE")
+                                .getValue();
+                    }
+                    // String[] id = repositoryMetadataId.split("-");
+                    // if (id.length > 0) {
+
+                    if (repositoryMetadataId != null && !repositoryMetadataId.equals("")) {
+                        try {
+                            IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
+                            IRepositoryObject lastVersion = factory.getLastVersion(repositoryMetadataId.trim());
+                            if (lastVersion != null) {
+                                Item item2 = lastVersion.getProperty().getItem();
+                                if (item2 != null) {
+                                    ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(item2);
+                                    IPath typeFolderPath = new Path(ERepositoryObjectType.getFolderName(itemType));
+                                    String metadataName = item2.getProperty().getLabel();
+                                    String metadataVersion = item2.getProperty().getVersion();
+                                    String metadataPath = item2.getState().getPath();
+                                    metadataPath = metadataPath == null || metadataPath.equals("") ? "" : metadataPath;
+                                    IPath itemFilePath = getCurrnetProjectRootPath().append(typeFolderPath).append(metadataPath)
+                                            .append(metadataName + "_" + metadataVersion + "." + FileConstants.ITEM_EXTENSION);
+                                    IPath propertiesFilePath = getCurrnetProjectRootPath().append(typeFolderPath).append(
+                                            metadataPath).append(
+                                            metadataName + "_" + metadataVersion + "." + FileConstants.PROPERTIES_EXTENSION);
+                                    List<URL> metadataNameFileUrls = new ArrayList<URL>();
+                                    metadataNameFileUrls.add(FileLocator.toFileURL(itemFilePath.toFile().toURL()));
+                                    metadataNameFileUrls.add(FileLocator.toFileURL(propertiesFilePath.toFile().toURL()));
+                                    resource.addResources(typeFolderPath.toOSString(), metadataNameFileUrls);
+                                }
+                            }
+                        } catch (Exception e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+
+                    }
+                    // }
+
+                }
+
+            }
+
+        }
+    }
+
+    /**
+     * DOC qwei Comment method "addContext".
+     * 
+     * @param processItem
+     * @param resource
+     */
+    private void addContext(ProcessItem processItem, ExportFileResource resource) {
+        ProcessType process = processItem.getProcess();
+        if (process != null) {
+            ContextType contextType = (ContextType) process.getContext().get(0);
+            for (ContextParameterType param : (List<ContextParameterType>) contextType.getContextParameter()) {
+                String repositoryContextId = param.getRepositoryContextId();
+                if (repositoryContextId != null && !"".equals(repositoryContextId)) {
+                    try {
+                        IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
+                        IRepositoryObject lastVersion = factory.getLastVersion(repositoryContextId);
+                        if (lastVersion != null) {
+                            Item item2 = lastVersion.getProperty().getItem();
+                            String contextName = item2.getProperty().getLabel();
+                            String contextVersion = item2.getProperty().getVersion();
+                            String contextPath = item2.getState().getPath();
+                            contextPath = contextPath == null || contextPath.equals("") ? "" : contextPath;
+                            IPath itemFilePath = getEmfContextRootPath().append(contextPath).append(
+                                    contextName + "_" + contextVersion + "." + FileConstants.ITEM_EXTENSION);
+                            IPath propertiesFilePath = getEmfContextRootPath().append(contextPath).append(
+                                    contextName + "_" + contextVersion + "." + FileConstants.PROPERTIES_EXTENSION);
+                            List<URL> contextFileUrls = new ArrayList<URL>();
+                            contextFileUrls.add(FileLocator.toFileURL(itemFilePath.toFile().toURL()));
+                            contextFileUrls.add(FileLocator.toFileURL(propertiesFilePath.toFile().toURL()));
+                            resource.addResources(JOB_CONTEXT_FOLDER, contextFileUrls);
+                        }
+                    } catch (Exception e) {
+                        ExceptionHandler.process(e);
+                    }
+
+                }
+            }
+
+        }
+    }
 
 }

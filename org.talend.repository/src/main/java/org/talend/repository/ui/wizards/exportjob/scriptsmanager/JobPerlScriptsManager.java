@@ -113,6 +113,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
                 process[i].addResources(LIBRARY_FOLDER_NAME + PATH_SEPARATOR + "talend", talendLibraries);
             }
             resources.addAll(getJobScripts(processItem, exportChoice.get(ExportChoice.needJob)));
+            addDepencies(processItem, BooleanUtils.isTrue(exportChoice.get(ExportChoice.needDependencies)), process[i]);
             resources.addAll(getContextScripts(processItem, exportChoice.get(ExportChoice.needContext)));
             boolean needChildren = exportChoice.get(ExportChoice.needJob) && exportChoice.get(ExportChoice.needContext);
             addChildrenResources(processItem, needChildren, process[i], exportChoice, contextName, selectedJobVersion);
@@ -335,7 +336,6 @@ public class JobPerlScriptsManager extends JobScriptsManager {
         processedJob.add(process);
         addComponentModules(process, resource);
         addSource(process, exportChoice.get(ExportChoice.needSource), resource, JOB_SOURCE_FOLDER_NAME, selectedJobVersion);
-
         Set<JobInfo> subjobInfos = ProcessorUtilities.getChildrenJobInfo(process);
         for (JobInfo subjobInfo : subjobInfos) {
             if (subjobInfo.getJobName().equals(rootName)) {

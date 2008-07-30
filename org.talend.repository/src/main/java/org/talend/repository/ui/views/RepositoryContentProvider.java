@@ -68,6 +68,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
     }
 
     public Object getParent(Object child) {
+
         return ((RepositoryNode) child).getParent();
     }
 
