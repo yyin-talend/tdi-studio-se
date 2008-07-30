@@ -219,7 +219,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
                 ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA, ERepositoryObjectType.JOBLET };
         for (ERepositoryObjectType repositoryObjectType : repositoryObjectTypeList) {
             Object folder = getFolder(project, repositoryObjectType);
-            toReturn.addAll(getSerializableFromFolder(folder, id, repositoryObjectType, allVersion, true, true));
+            toReturn.addAll(getSerializableFromFolder(project, folder, id, repositoryObjectType, allVersion, true, true));
         }
         return toReturn;
     }
@@ -235,9 +235,10 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         if (name == null) {
             name = item.getProperty().getLabel();
         }
+        Project baseProject = getRepositoryContext().getProject();
 
         if (item instanceof FolderItem) {
-            FolderHelper folderHelper = getFolderHelper(getRepositoryContext().getProject().getEmfProject());
+            FolderHelper folderHelper = getFolderHelper(baseProject.getEmfProject());
             return !folderHelper.pathExists((FolderItem) item, name);
         }
 
@@ -246,7 +247,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         if (type == ERepositoryObjectType.METADATA_CON_TABLE) {
             return false;
         }
-        List<IRepositoryObject> list = getAll(type, true, false);
+        List<IRepositoryObject> list = getAll(baseProject, type, true, false);
 
         for (IRepositoryObject current : list) {
             if (name.equalsIgnoreCase(current.getProperty().getLabel())
@@ -257,14 +258,15 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         return true;
     }
 
-    protected abstract List<IRepositoryObject> getSerializableFromFolder(Object folder, String id, ERepositoryObjectType type,
-            boolean allVersion, boolean searchInChildren, boolean withDeleted) throws PersistenceException;
+    protected abstract List<IRepositoryObject> getSerializableFromFolder(Project project, Object folder, String id,
+            ERepositoryObjectType type, boolean allVersion, boolean searchInChildren, boolean withDeleted)
+            throws PersistenceException;
 
     protected abstract <K, T> RootContainer<K, T> getObjectFromFolder(Project project, ERepositoryObjectType type,
             boolean onlyLastVersion) throws PersistenceException;
 
-    protected abstract <K, T> void addFolderMembers(ERepositoryObjectType type, Container<K, T> toReturn, Object objectFolder,
-            boolean onlyLastVersion) throws PersistenceException;
+    protected abstract <K, T> void addFolderMembers(Project project, ERepositoryObjectType type, Container<K, T> toReturn,
+            Object objectFolder, boolean onlyLastVersion) throws PersistenceException;
 
     protected abstract FolderHelper getFolderHelper(org.talend.core.model.properties.Project emfProject);
 
@@ -316,9 +318,14 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
 
     protected void createSystemRoutines() throws PersistenceException {
         ILibrariesService service = CorePlugin.getDefault().getLibrariesService();
+        Project project = getRepositoryContext().getProject();
+        FolderHelper folderHelper = getFolderHelper(project.getEmfProject());
 
         List<URL> routines = service.getSystemRoutines();
         Path path = new Path(RepositoryConstants.SYSTEM_DIRECTORY);
+        // will automatically set the children folders
+        folderHelper.createFolder("code/routines/system");
+
         for (URL url : routines) {
             createRoutine(url, path);
         }
@@ -326,6 +333,10 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
 
     protected void createSystemSQLPatterns() throws PersistenceException {
         ILibrariesService service = CorePlugin.getDefault().getLibrariesService();
+        Project project = getRepositoryContext().getProject();
+        FolderHelper folderHelper = getFolderHelper(project.getEmfProject());
+        // will automatically set the children folders
+        folderHelper.createFolder("sqlPatterns/system");
 
         List<URL> routines = service.getSystemSQLPatterns();
 
@@ -497,7 +508,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         IFolder objectFolder = ResourceUtils.getFolder(fsProject, ERepositoryObjectType
                 .getFolderName(ERepositoryObjectType.ROUTINES), true);
 
-        addFolderMembers(type, toReturn, objectFolder, true);
+        addFolderMembers(project, type, toReturn, objectFolder, true);
         return toReturn;
     }
 

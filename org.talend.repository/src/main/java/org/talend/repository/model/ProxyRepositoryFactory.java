@@ -29,6 +29,8 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
@@ -74,7 +76,6 @@ import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.model.utils.PerlResourcesHelper;
 import org.talend.repository.documentation.ERepositoryActionName;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.nodes.IProjectRepositoryNode;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsManager;
 import org.talend.repository.utils.RepositoryPathProvider;
 
@@ -692,17 +693,31 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         return getLastVersion(getRepositoryContext().getProject(), id);
     }
 
+    public List<IRepositoryObject> getAll(Project project, ERepositoryObjectType type) throws PersistenceException {
+        return getAll(project, type, false);
+    }
+
+    public List<IRepositoryObject> getAll(Project project, ERepositoryObjectType type, boolean withDeleted)
+            throws PersistenceException {
+        return this.repositoryFactoryFromProvider.getAll(project, type, withDeleted, false);
+    }
+
+    public List<IRepositoryObject> getAll(Project project, ERepositoryObjectType type, boolean withDeleted, boolean allVersions)
+            throws PersistenceException {
+        return this.repositoryFactoryFromProvider.getAll(project, type, withDeleted, allVersions);
+    }
+
     public List<IRepositoryObject> getAll(ERepositoryObjectType type) throws PersistenceException {
-        return getAll(type, false);
+        return getAll(getRepositoryContext().getProject(), type, false);
     }
 
     public List<IRepositoryObject> getAll(ERepositoryObjectType type, boolean withDeleted) throws PersistenceException {
-        return this.repositoryFactoryFromProvider.getAll(type, withDeleted, false);
+        return this.repositoryFactoryFromProvider.getAll(getRepositoryContext().getProject(), type, withDeleted, false);
     }
 
     public List<IRepositoryObject> getAll(ERepositoryObjectType type, boolean withDeleted, boolean allVersions)
             throws PersistenceException {
-        return this.repositoryFactoryFromProvider.getAll(type, withDeleted, allVersions);
+        return this.repositoryFactoryFromProvider.getAll(getRepositoryContext().getProject(), type, withDeleted, allVersions);
     }
 
     public List<String> getFolders(ERepositoryObjectType type) throws PersistenceException {
@@ -1097,6 +1112,13 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see org.talend.repository.model.IProxyRepositoryFactory#isEditableAndLockIfPossible(org.talend.core.model.properties.Item)
      */
     public boolean isEditableAndLockIfPossible(Item item) {
+        EObject object = EcoreUtil.getRootContainer(item);
+        if (object != null && object instanceof org.talend.core.model.properties.Project) {
+            org.talend.core.model.properties.Project mainProject = getRepositoryContext().getProject().getEmfProject();
+            if (!mainProject.equals(object)) {
+                return false;
+            }
+        }
         ERepositoryStatus status = getStatus(item);
         if (status.isPotentiallyEditable()) {
             try {
@@ -1123,14 +1145,6 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see org.talend.repository.model.IProxyRepositoryFactory#isEditableAndLockIfPossible(org.talend.core.model.repository.IRepositoryObject)
      */
     public boolean isEditableAndLockIfPossible(IRepositoryObject obj) {
-
-        // Check if node is under reference project
-        RepositoryNode repositoryNode = obj.getRepositoryNode();
-        IProjectRepositoryNode root = repositoryNode.getRoot();
-        if (root != null && (!root.isMainProject())) {
-            return false;
-        }
-
         if (obj instanceof ISubRepositoryObject) {
             AbstractMetadataObject abstractMetadataObject = ((ISubRepositoryObject) obj).getAbstractMetadataObject();
             if (SubItemHelper.isDeleted(abstractMetadataObject)) {
@@ -1154,6 +1168,14 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see org.talend.repository.model.IProxyRepositoryFactory#isPotentiallyEditable(org.talend.core.model.properties.Item)
      */
     private boolean isPotentiallyEditable(Item item) {
+        EObject object = EcoreUtil.getRootContainer(item);
+        if (object != null && object instanceof org.talend.core.model.properties.Project) {
+            org.talend.core.model.properties.Project mainProject = getRepositoryContext().getProject().getEmfProject();
+            if (!mainProject.equals(object)) {
+                return false;
+            }
+        }
+
         ERepositoryStatus status = getStatus(item);
         return status.isPotentiallyEditable();
     }

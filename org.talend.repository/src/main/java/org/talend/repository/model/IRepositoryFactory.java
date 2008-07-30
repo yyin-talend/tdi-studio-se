@@ -132,7 +132,7 @@ public interface IRepositoryFactory {
      * @return a list of all objects of type <code>type</code> in the repository in the project
      * @throws PersistenceException
      */
-    public List<IRepositoryObject> getAll(ERepositoryObjectType type, boolean withDeleted, boolean allVersions)
+    public List<IRepositoryObject> getAll(Project project, ERepositoryObjectType type, boolean withDeleted, boolean allVersions)
             throws PersistenceException;
 
     /**
