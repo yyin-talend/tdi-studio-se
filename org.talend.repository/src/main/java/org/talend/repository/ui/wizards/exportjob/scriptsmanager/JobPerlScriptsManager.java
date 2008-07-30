@@ -35,6 +35,7 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.general.ModuleNeeded;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.utils.PerlResourcesHelper;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
@@ -98,11 +99,12 @@ public class JobPerlScriptsManager extends JobScriptsManager {
                         + PATH_SEPARATOR + SYSTEM_ROUTINES_FOLDER_NAME, systemRoutineList);
             }
             // Gets user routines.
+            String projectName = getCorrespondingProjectName(processItem);
             try {
-                List<URL> userRoutineList = getUserRoutine(exportChoice.get(ExportChoice.needUserRoutine));
+                List<URL> userRoutineList = getUserRoutine(projectName, exportChoice.get(ExportChoice.needUserRoutine));
                 if (userRoutineList.size() > 0) {
                     process[i].addResources(LIBRARY_FOLDER_NAME + PATH_SEPARATOR + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER
-                            + PATH_SEPARATOR + this.getCurrentProjectName(), userRoutineList);
+                            + PATH_SEPARATOR + projectName, userRoutineList);
                 }
             } catch (MalformedURLException e) {
                 ExceptionHandler.process(e);
@@ -129,14 +131,14 @@ public class JobPerlScriptsManager extends JobScriptsManager {
      * @return
      * @throws MalformedURLException
      */
-    private List<URL> getUserRoutine(boolean needUserRoutine) throws MalformedURLException {
+    private List<URL> getUserRoutine(String projectName, boolean needUserRoutine) throws MalformedURLException {
         List<URL> list = new ArrayList<URL>();
         if (!needUserRoutine) {
             return list;
         }
         ILibrariesService librariesService = CorePlugin.getDefault().getLibrariesService();
         String folderPath = librariesService.getLibrariesPath() + PATH_SEPARATOR + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER
-                + PATH_SEPARATOR + this.getCurrentProjectName();
+                + PATH_SEPARATOR + projectName;
         File file = new File(folderPath);
         File[] files = file.listFiles();
         if (files != null) {
@@ -303,7 +305,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
      * 
      * @see org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager#getCurrentProjectName()
      */
-    protected String getCurrentProjectName() {
+    protected String getCorrespondingProjectName(Item item) {
         return PerlResourcesHelper.getCurrentProjectName();
     }
 
@@ -311,7 +313,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             Map<ExportChoice, Boolean> exportChoice, String contextName, String... selectedJobVersion) {
         List<String> list = new ArrayList<String>();
         if (needChildren) {
-            String projectName = getCurrentProjectName();
+            String projectName = getCorrespondingProjectName(process);
             try {
                 List<ProcessItem> processedJob = new ArrayList<ProcessItem>();
                 getChildrenJobAndContextName(process.getProperty().getLabel(), list, process, projectName, processedJob,
@@ -440,14 +442,14 @@ public class JobPerlScriptsManager extends JobScriptsManager {
                 jobVersion = selectedJobVersion[0];
             }
 
-            IPath projectFilePath = getCurrnetProjectRootPath().append(FileConstants.LOCAL_PROJECT_FILENAME);
+            IPath projectFilePath = getCorrespondingProjectRootPath(null).append(FileConstants.LOCAL_PROJECT_FILENAME);
 
             String processPath = processItem.getState().getPath();
             processPath = processPath == null || processPath.equals("") ? "" : processPath;
 
-            IPath itemFilePath = getEmfFileRootPath().append(processPath).append(
+            IPath itemFilePath = getEmfFileRootPath(null).append(processPath).append(
                     jobName + "_" + jobVersion + "." + FileConstants.ITEM_EXTENSION);
-            IPath propertiesFilePath = getEmfFileRootPath().append(processPath).append(
+            IPath propertiesFilePath = getEmfFileRootPath(null).append(processPath).append(
                     jobName + "_" + jobVersion + "." + FileConstants.PROPERTIES_EXTENSION);
 
             List<URL> projectAndEmfFileUrls = new ArrayList<URL>();

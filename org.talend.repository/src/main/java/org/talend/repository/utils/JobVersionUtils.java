@@ -34,7 +34,8 @@ public class JobVersionUtils {
      */
     public static String getCurrentVersion(RepositoryNode repositoryNode) {
         try {
-            return ProxyRepositoryFactory.getInstance().getLastVersion(repositoryNode.getId()).getVersion();
+            return ProxyRepositoryFactory.getInstance().getLastVersion(repositoryNode.getRoot().getProject(),
+                    repositoryNode.getId()).getVersion();
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);
         }
@@ -49,7 +50,8 @@ public class JobVersionUtils {
     public static String[] getAllVersions(RepositoryNode repositoryNode) {
         List<String> versionList = new ArrayList<String>();
         try {
-            List<IRepositoryObject> allVersion = ProxyRepositoryFactory.getInstance().getAllVersion(repositoryNode.getId());
+            List<IRepositoryObject> allVersion = ProxyRepositoryFactory.getInstance().getAllVersion(
+                    repositoryNode.getRoot().getProject(), repositoryNode.getId());
             for (IRepositoryObject repositoryObject : allVersion) {
                 versionList.add(repositoryObject.getVersion());
             }

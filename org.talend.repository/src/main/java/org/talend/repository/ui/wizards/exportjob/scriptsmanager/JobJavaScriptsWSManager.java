@@ -195,9 +195,9 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
             String selectedJobVersion) {
 
         List<JobInfo> list = new ArrayList<JobInfo>();
-
+        String projectName = getCorrespondingProjectName(process);
         if (needChildren) {
-            String projectName = getCurrentProjectName();
+
             try {
                 List<ProcessItem> processedJob = new ArrayList<ProcessItem>();
                 getChildrenJobAndContextName(process.getProperty().getLabel(), list, process, projectName, processedJob,
@@ -209,7 +209,7 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
 
         for (Iterator<JobInfo> iter = list.iterator(); iter.hasNext();) {
             JobInfo jobInfo = iter.next();
-            libResource.addResources(getJobScripts(jobInfo.getJobName(), jobInfo.getJobVersion(), true));
+            libResource.addResources(getJobScripts(projectName, jobInfo.getJobName(), jobInfo.getJobVersion(), true));
             addContextScripts(jobInfo.getProcessItem(), jobInfo.getJobName(), jobInfo.getJobVersion(), contextResource, true);
         }
 
@@ -280,7 +280,7 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
 
         List<URL> wsdlUrlList = new ArrayList<URL>();
         try {
-            String projectName = getCurrentProjectName();
+            String projectName = getCorrespondingProjectName(processItem);
             String jobName = processItem.getProperty().getLabel();
             String selectedProcessVersion = processItem.getProperty().getVersion();
 
@@ -337,7 +337,8 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
 
         List<URL> wsddUrlList = new ArrayList<URL>();
         try {
-            String projectName = getCurrentProjectName();
+            // String projectName = getCorrespondingProjectName(nullxxx);
+            String projectName = JavaResourcesHelper.getCurrentProjectName();
 
             String deployFile = getTmpFolder() + PATH_SEPARATOR + projectName;
             File file = new File(deployFile);
@@ -384,7 +385,7 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
      * @param list
      */
     private void editWSDDFile(ProcessItem processItem) {
-        String projectName = getCurrentProjectName();
+        String projectName = getCorrespondingProjectName(processItem);
         String selectedProcessVersion = processItem.getProperty().getVersion();
         if (!isMultiNodes() && this.getSelectedJobVersion() != null) {
             selectedProcessVersion = this.getSelectedJobVersion();

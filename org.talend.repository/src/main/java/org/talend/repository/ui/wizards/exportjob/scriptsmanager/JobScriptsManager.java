@@ -35,6 +35,7 @@ import org.eclipse.core.runtime.Platform;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
@@ -457,29 +458,33 @@ public abstract class JobScriptsManager {
         return this.isMultiNodes;
     }
 
-    protected IPath getEmfFileRootPath() throws Exception {
-        IPath root = getCurrnetProjectRootPath().append(ERepositoryObjectType.getFolderName(ERepositoryObjectType.PROCESS));
+    protected IPath getEmfFileRootPath(Item item) throws Exception {
+        IPath root = getCorrespondingProjectRootPath(item).append(
+                ERepositoryObjectType.getFolderName(ERepositoryObjectType.PROCESS));
         return root;
     }
 
-    protected IPath getEmfContextRootPath() throws Exception {
-        IPath root = getCurrnetProjectRootPath().append(ERepositoryObjectType.getFolderName(ERepositoryObjectType.CONTEXT));
+    protected IPath getEmfContextRootPath(Item item) throws Exception {
+        IPath root = getCorrespondingProjectRootPath(item).append(
+                ERepositoryObjectType.getFolderName(ERepositoryObjectType.CONTEXT));
         return root;
     }
 
-    protected IPath getCurrnetProjectRootPath() throws Exception {
+    protected IPath getCorrespondingProjectRootPath(Item item) throws Exception {
         IProject project = RepositoryPlugin.getDefault().getRunProcessService().getProject(LanguageManager.getCurrentLanguage());
 
-        IPath root = project.getParent().getLocation().append(getCurrentProjectName().toUpperCase());
+        IPath root = project.getParent().getLocation().append(getCorrespondingProjectName(item).toUpperCase());
         return root;
     }
 
     /**
      * Gets current project name.
      * 
+     * @param item TODO
+     * 
      * @return
      */
-    protected abstract String getCurrentProjectName();
+    protected abstract String getCorrespondingProjectName(Item item);
 
     /**
      * DOC qwei Comment method "addDepencies".
@@ -539,11 +544,13 @@ public abstract class JobScriptsManager {
                                     String metadataVersion = item2.getProperty().getVersion();
                                     String metadataPath = item2.getState().getPath();
                                     metadataPath = metadataPath == null || metadataPath.equals("") ? "" : metadataPath;
-                                    IPath itemFilePath = getCurrnetProjectRootPath().append(typeFolderPath).append(metadataPath)
-                                            .append(metadataName + "_" + metadataVersion + "." + FileConstants.ITEM_EXTENSION);
-                                    IPath propertiesFilePath = getCurrnetProjectRootPath().append(typeFolderPath).append(
+                                    IPath itemFilePath = getCorrespondingProjectRootPath(item2).append(typeFolderPath).append(
                                             metadataPath).append(
-                                            metadataName + "_" + metadataVersion + "." + FileConstants.PROPERTIES_EXTENSION);
+                                            metadataName + "_" + metadataVersion + "." + FileConstants.ITEM_EXTENSION);
+                                    IPath propertiesFilePath = getCorrespondingProjectRootPath(item2).append(typeFolderPath)
+                                            .append(metadataPath).append(
+                                                    metadataName + "_" + metadataVersion + "."
+                                                            + FileConstants.PROPERTIES_EXTENSION);
                                     List<URL> metadataNameFileUrls = new ArrayList<URL>();
                                     metadataNameFileUrls.add(FileLocator.toFileURL(itemFilePath.toFile().toURL()));
                                     metadataNameFileUrls.add(FileLocator.toFileURL(propertiesFilePath.toFile().toURL()));
@@ -587,9 +594,9 @@ public abstract class JobScriptsManager {
                             String contextVersion = item2.getProperty().getVersion();
                             String contextPath = item2.getState().getPath();
                             contextPath = contextPath == null || contextPath.equals("") ? "" : contextPath;
-                            IPath itemFilePath = getEmfContextRootPath().append(contextPath).append(
+                            IPath itemFilePath = getEmfContextRootPath(item2).append(contextPath).append(
                                     contextName + "_" + contextVersion + "." + FileConstants.ITEM_EXTENSION);
-                            IPath propertiesFilePath = getEmfContextRootPath().append(contextPath).append(
+                            IPath propertiesFilePath = getEmfContextRootPath(item2).append(contextPath).append(
                                     contextName + "_" + contextVersion + "." + FileConstants.PROPERTIES_EXTENSION);
                             List<URL> contextFileUrls = new ArrayList<URL>();
                             contextFileUrls.add(FileLocator.toFileURL(itemFilePath.toFile().toURL()));

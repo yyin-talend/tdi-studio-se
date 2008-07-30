@@ -179,7 +179,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             return;
         }
         List<URL> list = new ArrayList<URL>(1);
-        String projectName = getCurrentProjectName();
+        String projectName = getCorrespondingProjectName(processItem);
         String folderName = JavaResourcesHelper.getJobFolderName(jobName, jobVersion);
         try {
             IPath classRoot = getClassRootPath();
@@ -252,21 +252,21 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         // super.addSource(processItem, needSource, resource, basePath, selectedJobVersion);
         // Get java src
         try {
-            String projectName = getCurrentProjectName();
+            String projectName = getCorrespondingProjectName(processItem);
             String jobName = processItem.getProperty().getLabel();
             String jobVersion = processItem.getProperty().getVersion();
             if (!isMultiNodes() && selectedJobVersion != null && selectedJobVersion.length == 1) {
                 jobVersion = selectedJobVersion[0];
             }
 
-            IPath projectFilePath = getCurrnetProjectRootPath().append(FileConstants.LOCAL_PROJECT_FILENAME);
+            IPath projectFilePath = getCorrespondingProjectRootPath(null).append(FileConstants.LOCAL_PROJECT_FILENAME);
 
             String processPath = processItem.getState().getPath();
             processPath = processPath == null || processPath.equals("") ? "" : processPath;
 
-            IPath itemFilePath = getEmfFileRootPath().append(processPath).append(
+            IPath itemFilePath = getEmfFileRootPath(null).append(processPath).append(
                     jobName + "_" + jobVersion + "." + FileConstants.ITEM_EXTENSION);
-            IPath propertiesFilePath = getEmfFileRootPath().append(processPath).append(
+            IPath propertiesFilePath = getEmfFileRootPath(null).append(processPath).append(
                     jobName + "_" + jobVersion + "." + FileConstants.PROPERTIES_EXTENSION);
 
             List<URL> projectAndEmfFileUrls = new ArrayList<URL>();
@@ -316,8 +316,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     private List<URL> addChildrenResources(ProcessItem process, boolean needChildren, ExportFileResource resource,
             Map<ExportChoice, Boolean> exportChoice, String... selectedJobVersion) {
         List<JobInfo> list = new ArrayList<JobInfo>();
+        String projectName = getCorrespondingProjectName(process);
         if (needChildren) {
-            String projectName = getCurrentProjectName();
             try {
                 List<ProcessItem> processedJob = new ArrayList<ProcessItem>();
                 getChildrenJobAndContextName(process.getProperty().getLabel(), list, process, projectName, processedJob,
@@ -331,7 +331,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         List<URL> allJobScripts = new ArrayList<URL>();
         for (Iterator<JobInfo> iter = list.iterator(); iter.hasNext();) {
             JobInfo jobInfo = iter.next();
-            allJobScripts.addAll(getJobScripts(jobInfo.getJobName(), jobInfo.getJobVersion(), exportChoice
+            allJobScripts.addAll(getJobScripts(projectName, jobInfo.getJobName(), jobInfo.getJobVersion(), exportChoice
                     .get(ExportChoice.needJob)));
             addContextScripts(jobInfo.getProcessItem(), jobInfo.getJobName(), jobInfo.getJobVersion(), resource, exportChoice
                     .get(ExportChoice.needContext));
@@ -399,7 +399,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             if (!isMultiNodes() && this.getSelectedJobVersion() != null) {
                 version = this.getSelectedJobVersion();
             }
-            ProcessItem selectedProcessItem = ItemCacheManager.getProcessItem(item.getProperty().getId(), version);
+            ProcessItem selectedProcessItem = ItemCacheManager.getProcessItem(resource.getNode().getRoot().getProject(), item
+                    .getProperty().getId(), version);
             IProcess iProcess = designerService.getProcessFromProcessItem(selectedProcessItem);
             listModulesReallyNeeded.addAll(iProcess.getNeededLibraries(true));
         }
@@ -441,7 +442,9 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * @return
      */
     protected List<URL> getJobScripts(ProcessItem process, boolean needJob) {
-        return this.getJobScripts(escapeFileNameSpace(process), process.getProperty().getVersion(), needJob);
+
+        String projectName = getCorrespondingProjectName(process);
+        return this.getJobScripts(projectName, escapeFileNameSpace(process), process.getProperty().getVersion(), needJob);
     }
 
     /**
@@ -453,23 +456,25 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * @return
      */
     protected List<URL> getJobScripts(ProcessItem process, String version, boolean needJob) {
-        return this.getJobScripts(escapeFileNameSpace(process), version, needJob);
+        String projectName = getCorrespondingProjectName(process);
+        return this.getJobScripts(projectName, escapeFileNameSpace(process), version, needJob);
     }
 
     /**
      * Gets Job Scripts.
      * 
-     * @param process
+     * @param projectName TODO
      * @param needJob
+     * @param process
      * @param needContext
+     * 
      * @return
      */
-    protected List<URL> getJobScripts(String jobName, String jobVersion, boolean needJob) {
+    protected List<URL> getJobScripts(String projectName, String jobName, String jobVersion, boolean needJob) {
         List<URL> list = new ArrayList<URL>(1);
         if (!needJob) {
             return list;
         }
-        String projectName = getCurrentProjectName();
         String jobFolderName = JavaResourcesHelper.getJobFolderName(jobName, jobVersion);
 
         try {
@@ -688,12 +693,14 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                                         String metadataVersion = item2.getProperty().getVersion();
                                         String metadataPath = item2.getState().getPath();
                                         metadataPath = metadataPath == null || metadataPath.equals("") ? "" : metadataPath;
-                                        IPath itemFilePath = getCurrnetProjectRootPath().append(typeFolderPath).append(
-                                                metadataPath).append(
-                                                metadataName + "_" + metadataVersion + "." + FileConstants.ITEM_EXTENSION);
-                                        IPath propertiesFilePath = getCurrnetProjectRootPath().append(typeFolderPath).append(
-                                                metadataPath).append(
-                                                metadataName + "_" + metadataVersion + "." + FileConstants.PROPERTIES_EXTENSION);
+                                        IPath itemFilePath = getCorrespondingProjectRootPath(item2)
+                                                .append(typeFolderPath)
+                                                .append(metadataPath)
+                                                .append(metadataName + "_" + metadataVersion + "." + FileConstants.ITEM_EXTENSION);
+                                        IPath propertiesFilePath = getCorrespondingProjectRootPath(item2).append(typeFolderPath)
+                                                .append(metadataPath).append(
+                                                        metadataName + "_" + metadataVersion + "."
+                                                                + FileConstants.PROPERTIES_EXTENSION);
                                         List<URL> metadataNameFileUrls = new ArrayList<URL>();
                                         metadataNameFileUrls.add(FileLocator.toFileURL(itemFilePath.toFile().toURL()));
                                         metadataNameFileUrls.add(FileLocator.toFileURL(propertiesFilePath.toFile().toURL()));
@@ -720,7 +727,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * 
      * @see org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager#getCurrentProjectName()
      */
-    protected String getCurrentProjectName() {
-        return JavaResourcesHelper.getCurrentProjectName();
+    protected String getCorrespondingProjectName(Item item) {
+        return JavaResourcesHelper.getProjectFolderName(item);
     }
 }

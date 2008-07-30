@@ -83,6 +83,7 @@ public class GenerateDocAsHTMLWizardPage extends WizardFileSystemResourceExportP
                 if (repositoryObject.getProperty().getItem() instanceof ProcessItem) {
                     ProcessItem processItem = (ProcessItem) repositoryObject.getProperty().getItem();
                     ExportFileResource resource = new ExportFileResource(processItem, processItem.getProperty().getLabel());
+                    resource.setNode(node);
                     list.add(resource);
                 }
             }
@@ -97,6 +98,7 @@ public class GenerateDocAsHTMLWizardPage extends WizardFileSystemResourceExportP
             if (repositoryObject.getProperty().getItem() instanceof ProcessItem) {
                 ProcessItem processItem = (ProcessItem) repositoryObject.getProperty().getItem();
                 ExportFileResource resource = new ExportFileResource(processItem, path);
+                resource.setNode(node);
                 list.add(resource);
             }
         }

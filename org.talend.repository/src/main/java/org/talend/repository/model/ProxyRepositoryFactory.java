@@ -1153,6 +1153,26 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         }
     }
 
+    public org.talend.core.model.properties.Project getProject(Item item) {
+        EObject object = EcoreUtil.getRootContainer(item);
+        if (object == null) {
+            return getRepositoryContext().getProject().getEmfProject();
+        }
+        if (object instanceof org.talend.core.model.properties.Project) {
+            return (org.talend.core.model.properties.Project) object;
+        }
+        return getRepositoryContext().getProject().getEmfProject();
+    }
+
+    public boolean isUnderRefProjects(Item item) {
+        EObject object = EcoreUtil.getRootContainer(item);
+        if (object == null || !(object instanceof org.talend.core.model.properties.Project)) {
+            return false;
+        }
+        org.talend.core.model.properties.Project mainProject = getRepositoryContext().getProject().getEmfProject();
+        return !mainProject.equals(object);
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -1221,7 +1241,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         switch (((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
                 .getLanguage()) {
         case JAVA:
-            IPath path = new Path(JavaUtils.JAVA_SRC_DIRECTORY).append(JavaResourcesHelper.getCurrentProjectName()).append(
+            IPath path = new Path(JavaUtils.JAVA_SRC_DIRECTORY).append(JavaResourcesHelper.getProjectFolderName(process.getProperty().getItem())).append(
                     JavaResourcesHelper.getJobFolderName(process.getName(), process.getVersion())).append(
                     JobJavaScriptsManager.JOB_CONTEXT_FOLDER).append(context.getName() + JavaUtils.JAVA_CONTEXT_EXTENSION);
             return JavaResourcesHelper.getSpecificResourceInJavaProject(path);
