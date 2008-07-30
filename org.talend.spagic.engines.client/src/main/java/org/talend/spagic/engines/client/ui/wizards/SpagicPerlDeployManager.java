@@ -42,6 +42,7 @@ import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.genhtml.HTMLDocUtils;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.model.utils.PerlResourcesHelper;
@@ -101,7 +102,7 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
                 List<URL> userRoutineList = getUserRoutine(exportChoice.get(ExportChoice.needUserRoutine));
                 if (userRoutineList.size() > 0) {
                     process[i].addResources(LIBRARY_FOLDER_NAME + PATH_SEPARATOR + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER
-                            + PATH_SEPARATOR + this.getCurrentProjectName(), userRoutineList);
+                            + PATH_SEPARATOR + this.getCorrespondingProjectName(null), userRoutineList);
                 }
             } catch (MalformedURLException e) {
                 ExceptionHandler.process(e);
@@ -178,7 +179,7 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
         }
         ILibrariesService librariesService = CorePlugin.getDefault().getLibrariesService();
         String folderPath = librariesService.getLibrariesPath() + PATH_SEPARATOR + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER
-                + PATH_SEPARATOR + this.getCurrentProjectName();
+                + PATH_SEPARATOR + this.getCorrespondingProjectName(null);
         File file = new File(folderPath);
         File[] files = file.listFiles();
         if (files != null) {
@@ -196,7 +197,7 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
      * 
      * @see org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobPerlScriptsManager#getCurrentProjectName()
      */
-    protected String getCurrentProjectName() {
+    protected String getCorrespondingProjectName(Item item) {
         return PerlResourcesHelper.getCurrentProjectName();
     }
 
@@ -245,7 +246,7 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
             Map<ExportChoice, Boolean> exportChoice) {
         List<String> list = new ArrayList<String>();
         if (needChildren) {
-            String projectName = getCurrentProjectName();
+            String projectName = getCorrespondingProjectName(null);
             try {
                 List<ProcessItem> processedJob = new ArrayList<ProcessItem>();
                 getChildrenJobAndContextName(process.getProperty().getLabel(), list, process, projectName, processedJob,
@@ -389,7 +390,7 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
             for (IContextParameter ctxParam : ctxParams) {
                 p.put(ctxParam.getName(), ctxParam.getValue());
             }
-            p.put("JobClassName", getCurrentProjectName()
+            p.put("JobClassName", getCorrespondingProjectName(null)
                     + "."
                     + JavaResourcesHelper.getJobFolderName(processItem.getProperty().getLabel(), processItem.getProperty()
                             .getVersion()) + "." + processItem.getProperty().getLabel());
