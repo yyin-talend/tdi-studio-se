@@ -172,12 +172,11 @@ public class CreateTableAction extends AbstractCreateTableAction {
      */
     @Override
     protected void init(RepositoryNode node) {
-        if (ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        if (factory.isUserReadOnlyOnCurrentProject() || !factory.isMainProjectItem(node.getObject())) {
             setEnabled(false);
         } else {
             if (ENodeType.REPOSITORY_ELEMENT.equals(node.getType())) {
-
-                IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
                 if (factory.getStatus(node.getObject()) == ERepositoryStatus.DELETED) {
                     setEnabled(false);
                     return;

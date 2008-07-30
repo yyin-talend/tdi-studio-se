@@ -29,6 +29,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ISubRepositoryObject;
 import org.talend.repository.model.MetadataTableRepositoryObject;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -61,7 +62,8 @@ public class DetecteViewImpactAction extends AContextualAction {
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         boolean canWork = !selection.isEmpty() && selection.size() == 1;
         if (canWork) {
-            if (ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
+            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            if (factory.isUserReadOnlyOnCurrentProject()) {
                 canWork = false;
             } else {
                 Object o = selection.getFirstElement();
@@ -110,6 +112,9 @@ public class DetecteViewImpactAction extends AContextualAction {
                     }
                     break;
                 default:
+                    canWork = false;
+                }
+                if (!factory.isMainProjectItem(node.getObject())) {
                     canWork = false;
                 }
             }

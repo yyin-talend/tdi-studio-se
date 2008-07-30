@@ -87,7 +87,8 @@ public class EditQueriesAction extends AContextualAction {
 
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         boolean canWork = !selection.isEmpty() && selection.size() == 1;
-        if (ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        if (factory.isUserReadOnlyOnCurrentProject()) {
             canWork = false;
         }
         if (canWork) {
@@ -96,7 +97,6 @@ public class EditQueriesAction extends AContextualAction {
             RepositoryNode node = (RepositoryNode) o;
             switch (node.getType()) {
             case REPOSITORY_ELEMENT:
-                IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
                 if (factory.getStatus(node.getObject()) == ERepositoryStatus.DELETED) {
                     canWork = false;
                 }
@@ -128,6 +128,9 @@ public class EditQueriesAction extends AContextualAction {
                 }
                 break;
             default:
+                canWork = false;
+            }
+            if (!factory.isMainProjectItem(node.getObject())) {
                 canWork = false;
             }
         }

@@ -97,7 +97,8 @@ public class RestoreAction extends AContextualAction {
      */
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         boolean canWork = !selection.isEmpty();
-        if (ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        if (factory.isUserReadOnlyOnCurrentProject()) {
             canWork = false;
         }
         RestoreObjectAction restoreObjectAction = RestoreObjectAction.getInstance();
@@ -106,6 +107,12 @@ public class RestoreAction extends AContextualAction {
                 if (o instanceof RepositoryNode) {
                     RepositoryNode node = (RepositoryNode) o;
                     canWork = restoreObjectAction.validateAction(node, null);
+                    if (!factory.isMainProjectItem(node.getObject())) {
+                        canWork = false;
+                    }
+                    if (!canWork) {
+                        break;
+                    }
                 }
             }
         }

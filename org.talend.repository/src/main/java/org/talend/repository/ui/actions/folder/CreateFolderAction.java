@@ -26,6 +26,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
@@ -90,7 +91,8 @@ public class CreateFolderAction extends AContextualAction {
      */
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         boolean canWork = !selection.isEmpty() && selection.size() == 1;
-        if (ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        if (factory.isUserReadOnlyOnCurrentProject()) {
             canWork = false;
         }
         if (canWork) {
@@ -104,7 +106,8 @@ public class CreateFolderAction extends AContextualAction {
                 break;
             case SYSTEM_FOLDER:
                 if (property == ERepositoryObjectType.GENERATED || property == ERepositoryObjectType.JOBS
-                        || property == ERepositoryObjectType.JOBLETS || property == ERepositoryObjectType.SQLPATTERNS) {
+                        || property == ERepositoryObjectType.JOBLETS || property == ERepositoryObjectType.SQLPATTERNS
+                        || property == ERepositoryObjectType.REFERENCED_PROJECTS) {
                     canWork = false;
                 }
                 break;
@@ -116,6 +119,10 @@ public class CreateFolderAction extends AContextualAction {
                 break;
             default:
                 // Nothing to do
+            }
+
+            if (!node.getRoot().getProject().equals(factory.getRepositoryContext().getProject())) {
+                canWork = false;
             }
         }
         setEnabled(canWork);

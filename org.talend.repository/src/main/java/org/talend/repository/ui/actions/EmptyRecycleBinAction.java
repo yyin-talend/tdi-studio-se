@@ -132,7 +132,8 @@ public class EmptyRecycleBinAction extends AContextualAction {
      */
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         boolean canWork = !selection.isEmpty() && selection.size() == 1;
-        if (ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        if (factory.isUserReadOnlyOnCurrentProject()) {
             canWork = false;
         }
         if (canWork) {
@@ -147,6 +148,9 @@ public class EmptyRecycleBinAction extends AContextualAction {
             default:
                 canWork = false;
                 break;
+            }
+            if (!factory.isMainProjectItem(node.getObject())) {
+                canWork = false;
             }
         }
         setEnabled(canWork);

@@ -137,76 +137,78 @@ public class DeleteTableAction extends AContextualAction {
      * org.eclipse.jface.viewers.IStructuredSelection)
      */
     public void init(TreeViewer viewer, IStructuredSelection selection) {
-        boolean canWork = !selection.isEmpty();
+        boolean canWork = false;
         setText(null);
         for (Object o : (selection).toArray()) {
-            if (canWork) {
-                RepositoryNode node = (RepositoryNode) o;
-                switch (node.getType()) {
-                case STABLE_SYSTEM_FOLDER:
-                case SYSTEM_FOLDER:
-                case SIMPLE_FOLDER:
+            RepositoryNode node = (RepositoryNode) o;
+            switch (node.getType()) {
+            case STABLE_SYSTEM_FOLDER:
+            case SYSTEM_FOLDER:
+            case SIMPLE_FOLDER:
+                canWork = false;
+                break;
+            case REPOSITORY_ELEMENT:
+                IRepositoryObject repObj = node.getObject();
+
+                ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+                if (!nodeType.isSubItem()) {
                     canWork = false;
                     break;
-                case REPOSITORY_ELEMENT:
-                    IRepositoryObject repObj = node.getObject();
-
-                    ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
-                    if (!nodeType.isSubItem()) {
-                        canWork = false;
-                        break;
-                    }
-                    if (node.getObjectType() == ERepositoryObjectType.METADATA_CON_TABLE) {
-                        IRepositoryObject repositoryObject = node.getObject();
-                        if (repositoryObject != null) {
-                            Item item2 = repositoryObject.getProperty().getItem();
-                            if (item2 instanceof DatabaseConnectionItem) {
-                                DatabaseConnectionItem item = (DatabaseConnectionItem) repositoryObject.getProperty().getItem();
-                                DatabaseConnection connection = (DatabaseConnection) item.getConnection();
-                                CDCConnection cdcConns = connection.getCdcConns();
-                                if (cdcConns != null) {
-                                    if (repositoryObject instanceof MetadataTableRepositoryObject) {
-                                        MetadataTable table = ((MetadataTableRepositoryObject) repositoryObject).getTable();
-                                        String tableType = table.getTableType();
-                                        boolean is = RepositoryConstants.TABLE.equals(tableType);
-                                        canWork = is && !table.isAttachedCDC();
-                                    }
+                }
+                if (node.getObjectType() == ERepositoryObjectType.METADATA_CON_TABLE) {
+                    canWork = true;
+                    IRepositoryObject repositoryObject = node.getObject();
+                    if (repositoryObject != null) {
+                        Item item2 = repositoryObject.getProperty().getItem();
+                        if (item2 instanceof DatabaseConnectionItem) {
+                            DatabaseConnectionItem item = (DatabaseConnectionItem) repositoryObject.getProperty().getItem();
+                            DatabaseConnection connection = (DatabaseConnection) item.getConnection();
+                            CDCConnection cdcConns = connection.getCdcConns();
+                            if (cdcConns != null) {
+                                if (repositoryObject instanceof MetadataTableRepositoryObject) {
+                                    MetadataTable table = ((MetadataTableRepositoryObject) repositoryObject).getTable();
+                                    String tableType = table.getTableType();
+                                    boolean is = RepositoryConstants.TABLE.equals(tableType);
+                                    canWork = is && !table.isAttachedCDC();
                                 }
                             }
                         }
-                    } else if (node.getObjectType() == ERepositoryObjectType.METADATA_CON_CDC) {
-                        canWork = false;
                     }
-                    if (!canWork) {
-                        break;
-                    }
-                    IProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
-                    boolean isLocked = false;
-                    boolean isDeleted = false;
-                    try {
-                        isLocked = !repFactory.isPotentiallyEditable(repObj);
-                        isDeleted = DeletionHelper.isDeleted(node);
-                    } catch (PersistenceException e) {
-                        e.printStackTrace();
-                    }
-                    if (isLocked) {
-                        canWork = false;
-                    } else if (isDeleted) {
-                        if (getText() == null || DELETE_FOREVER_TITLE.equals(getText())) {
-                            this.setText(DELETE_FOREVER_TITLE);
-                            this.setToolTipText(DELETE_FOREVER_TOOLTIP);
-                        } else {
-                            canWork = false;
-                        }
-                    } else {
-                        setText(DELETE_LOGICAL_TITLE);
-                        setToolTipText(DELETE_LOGICAL_TOOLTIP);
-                    }
-                    break;
-                default:
-                    // Nothing to do
+                } else if (node.getObjectType() == ERepositoryObjectType.METADATA_CON_CDC) {
+                    canWork = false;
+                }
+                if (!canWork) {
                     break;
                 }
+                IProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
+                boolean isLocked = false;
+                boolean isDeleted = false;
+                try {
+                    isLocked = !repFactory.isPotentiallyEditable(repObj);
+                    isDeleted = DeletionHelper.isDeleted(node);
+                } catch (PersistenceException e) {
+                    e.printStackTrace();
+                }
+                if (isLocked) {
+                    canWork = false;
+                } else if (isDeleted) {
+                    if (getText() == null || DELETE_FOREVER_TITLE.equals(getText())) {
+                        this.setText(DELETE_FOREVER_TITLE);
+                        this.setToolTipText(DELETE_FOREVER_TOOLTIP);
+                    } else {
+                        canWork = false;
+                    }
+                } else {
+                    setText(DELETE_LOGICAL_TITLE);
+                    setToolTipText(DELETE_LOGICAL_TOOLTIP);
+                }
+                break;
+            default:
+                // Nothing to do
+                break;
+            }
+            if (!canWork) {
+                break;
             }
         }
         setEnabled(canWork);

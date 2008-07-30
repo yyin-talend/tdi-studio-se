@@ -21,7 +21,6 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ECoreImage;
-import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.debug.JobLaunchShortcutManager;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
@@ -67,9 +66,11 @@ public class RunProcess extends AContextualAction {
      */
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         boolean canWork = !selection.isEmpty() && selection.size() == 1;
-        if (DesignerPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().isUserReadOnlyOnCurrentProject()) {
-            canWork = false;
-        }
+        // if
+        // (DesignerPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().isUserReadOnlyOnCurrentProject())
+        // {
+        // canWork = false;
+        // }
         if (canWork) {
             Object o = selection.getFirstElement();
             RepositoryNode node = (RepositoryNode) o;

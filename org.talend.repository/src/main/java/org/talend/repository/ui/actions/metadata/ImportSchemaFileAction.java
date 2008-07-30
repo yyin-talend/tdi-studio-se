@@ -26,6 +26,8 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.wizards.metadata.connection.genericshema.ImportSchemaFileWizard;
@@ -46,8 +48,7 @@ public class ImportSchemaFileAction extends CreateGenericSchemaAction {
     public ImportSchemaFileAction() {
         this.setText(LABEL);
         this.setToolTipText(LABEL);
-        this.setImageDescriptor(OverlayImageProvider.getImageWithNew(ImageProvider
-                .getImage(ECoreImage.METADATA_GENERIC_ICON)));
+        this.setImageDescriptor(OverlayImageProvider.getImageWithNew(ImageProvider.getImage(ECoreImage.METADATA_GENERIC_ICON)));
 
     }
 
@@ -68,6 +69,12 @@ public class ImportSchemaFileAction extends CreateGenericSchemaAction {
      */
     @Override
     protected void init(RepositoryNode node) {
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        if (factory.isUserReadOnlyOnCurrentProject()
+                || !node.getRoot().getProject().equals(factory.getRepositoryContext().getProject())) {
+            setEnabled(false);
+            return;
+        }
 
         ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
         if (nodeType == null) {
@@ -117,8 +124,7 @@ public class ImportSchemaFileAction extends CreateGenericSchemaAction {
 
     private void openImportWizard() {
         ISelection selection = getSelection();
-        ImportSchemaFileWizard wizard = new ImportSchemaFileWizard(PlatformUI.getWorkbench(), selection,
-                getExistingNames(), file);
+        ImportSchemaFileWizard wizard = new ImportSchemaFileWizard(PlatformUI.getWorkbench(), selection, getExistingNames(), file);
         if (!wizard.isInitOK()) {
             wizard.dispose();
             return;

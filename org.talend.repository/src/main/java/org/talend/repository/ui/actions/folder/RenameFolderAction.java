@@ -35,6 +35,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
@@ -104,7 +105,8 @@ public class RenameFolderAction extends AContextualAction {
      */
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         boolean canWork = !selection.isEmpty() && selection.size() == 1;
-        if (ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        if (factory.isUserReadOnlyOnCurrentProject()) {
             canWork = false;
         }
         if (canWork) {
@@ -125,6 +127,9 @@ public class RenameFolderAction extends AContextualAction {
                 }
                 break;
             default:
+                canWork = false;
+            }
+            if (!factory.isMainProjectItem(node.getObject())) {
                 canWork = false;
             }
         }

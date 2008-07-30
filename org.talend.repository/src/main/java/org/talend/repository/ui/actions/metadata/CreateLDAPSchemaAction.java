@@ -63,8 +63,7 @@ public class CreateLDAPSchemaAction extends AbstractCreateAction {
 
         // TODO: should change to another icon.
         defaultImage = ImageProvider.getImageDesc(ECoreImage.METADATA_LDAP_SCHEMA_ICON);
-        createImage = OverlayImageProvider
-                .getImageWithNew(ImageProvider.getImage(ECoreImage.METADATA_LDAP_SCHEMA_ICON));
+        createImage = OverlayImageProvider.getImageWithNew(ImageProvider.getImage(ECoreImage.METADATA_LDAP_SCHEMA_ICON));
 
         setText(createLabel);
         setToolTipText(createLabel);
@@ -99,8 +98,8 @@ public class CreateLDAPSchemaAction extends AbstractCreateAction {
                     fileLDAPSchemaNode, getExistingNames(), false));
         } else {
             selection = getSelection();
-            wizardDialog = new WizardDialog(new Shell(), new LDAPSchemaWizard(PlatformUI.getWorkbench(), creation,
-                    selection, getExistingNames(), false));
+            wizardDialog = new WizardDialog(new Shell(), new LDAPSchemaWizard(PlatformUI.getWorkbench(), creation, selection,
+                    getExistingNames(), false));
         }
 
         wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);
@@ -121,10 +120,12 @@ public class CreateLDAPSchemaAction extends AbstractCreateAction {
             return;
         }
 
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         switch (node.getType()) {
         case SIMPLE_FOLDER:
         case SYSTEM_FOLDER:
-            if (ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
+            if (factory.isUserReadOnlyOnCurrentProject()
+                    || !node.getRoot().getProject().equals(factory.getRepositoryContext().getProject())) {
                 setEnabled(false);
                 return;
             }
@@ -134,7 +135,6 @@ public class CreateLDAPSchemaAction extends AbstractCreateAction {
             creation = true;
             break;
         case REPOSITORY_ELEMENT:
-            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             if (factory.isPotentiallyEditable(node.getObject())) {
                 this.setText(editLabel);
                 this.setImageDescriptor(defaultImage);

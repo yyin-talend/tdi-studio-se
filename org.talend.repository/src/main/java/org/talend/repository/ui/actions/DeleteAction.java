@@ -335,12 +335,17 @@ public class DeleteAction extends AContextualAction {
 
         boolean enabled = true;
         this.setText(null);
-        if (ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        if (factory.isUserReadOnlyOnCurrentProject()) {
             visible = false;
         }
         for (Object o : (selection).toArray()) {
             if (visible) {
                 RepositoryNode node = (RepositoryNode) o;
+                if (!node.getRoot().getProject().equals(factory.getRepositoryContext().getProject())) {
+                    visible = false;
+                    break;
+                }
                 switch (node.getType()) {
                 case STABLE_SYSTEM_FOLDER:
                     visible = false;

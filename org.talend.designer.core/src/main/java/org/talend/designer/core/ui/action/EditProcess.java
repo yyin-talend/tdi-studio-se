@@ -33,6 +33,7 @@ import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.actions.AContextualAction;
 
@@ -122,7 +123,8 @@ public class EditProcess extends AContextualAction {
      */
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         boolean canWork = !selection.isEmpty() && selection.size() == 1;
-        if (DesignerPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().isUserReadOnlyOnCurrentProject()) {
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        if (factory.isUserReadOnlyOnCurrentProject()) {
             canWork = false;
         }
         if (canWork) {
@@ -143,6 +145,9 @@ public class EditProcess extends AContextualAction {
                 }
                 break;
             default:
+                canWork = false;
+            }
+            if (!factory.isMainProjectItem(node.getObject())) {
                 canWork = false;
             }
         }

@@ -75,8 +75,8 @@ public class DuplicateAction extends AContextualAction {
 
         this.sourceNode = node;
         this.selection = selection;
-
-        if (ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        if (factory.isUserReadOnlyOnCurrentProject() || !factory.isMainProjectItem(node.getObject())) {
             canWork = false;
         }
 

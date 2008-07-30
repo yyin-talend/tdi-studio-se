@@ -22,10 +22,10 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.ui.images.OverlayImageProvider;
-import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
@@ -62,7 +62,8 @@ public class CreateDocumentationAction extends AContextualAction {
      */
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         boolean canWork = !selection.isEmpty() && selection.size() == 1;
-        if (ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        if (factory.isUserReadOnlyOnCurrentProject()) {
             canWork = false;
         }
         if (canWork) {
@@ -76,6 +77,9 @@ public class CreateDocumentationAction extends AContextualAction {
                 }
                 break;
             default:
+                canWork = false;
+            }
+            if (!node.getRoot().getProject().equals(factory.getRepositoryContext().getProject())) {
                 canWork = false;
             }
         }

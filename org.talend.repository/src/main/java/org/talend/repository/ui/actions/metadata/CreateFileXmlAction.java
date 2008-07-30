@@ -122,10 +122,12 @@ public class CreateFileXmlAction extends AbstractCreateAction {
             return;
         }
 
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         switch (node.getType()) {
         case SIMPLE_FOLDER:
         case SYSTEM_FOLDER:
-            if (ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
+            if (factory.isUserReadOnlyOnCurrentProject()
+                    || !node.getRoot().getProject().equals(factory.getRepositoryContext().getProject())) {
                 setEnabled(false);
                 return;
             }
@@ -135,7 +137,6 @@ public class CreateFileXmlAction extends AbstractCreateAction {
             this.setImageDescriptor(createImage);
             break;
         case REPOSITORY_ELEMENT:
-            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             if (factory.isPotentiallyEditable(node.getObject())) {
                 this.setText(EDIT_LABEL);
                 this.setImageDescriptor(defaultImage);

@@ -1079,7 +1079,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
             toReturn = this.repositoryFactoryFromProvider.getStatus(item);
         }
 
-        if (toReturn != ERepositoryStatus.DELETED && isUserReadOnlyOnCurrentProject()) {
+        if (toReturn != ERepositoryStatus.DELETED && (isUserReadOnlyOnCurrentProject() || !isMainProjectItem(item))) {
             return ERepositoryStatus.READ_ONLY;
         }
 
@@ -1112,12 +1112,8 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see org.talend.repository.model.IProxyRepositoryFactory#isEditableAndLockIfPossible(org.talend.core.model.properties.Item)
      */
     public boolean isEditableAndLockIfPossible(Item item) {
-        EObject object = EcoreUtil.getRootContainer(item);
-        if (object != null && object instanceof org.talend.core.model.properties.Project) {
-            org.talend.core.model.properties.Project mainProject = getRepositoryContext().getProject().getEmfProject();
-            if (!mainProject.equals(object)) {
-                return false;
-            }
+        if (!isMainProjectItem(item)) {
+            return false;
         }
         ERepositoryStatus status = getStatus(item);
         if (status.isPotentiallyEditable()) {
@@ -1168,12 +1164,8 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see org.talend.repository.model.IProxyRepositoryFactory#isPotentiallyEditable(org.talend.core.model.properties.Item)
      */
     private boolean isPotentiallyEditable(Item item) {
-        EObject object = EcoreUtil.getRootContainer(item);
-        if (object != null && object instanceof org.talend.core.model.properties.Project) {
-            org.talend.core.model.properties.Project mainProject = getRepositoryContext().getProject().getEmfProject();
-            if (!mainProject.equals(object)) {
-                return false;
-            }
+        if (!isMainProjectItem(item)) {
+            return false;
         }
 
         ERepositoryStatus status = getStatus(item);
@@ -1526,6 +1518,34 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      */
     public IRepositoryObject getSpecificVersion(String id, String version) throws PersistenceException {
         return getSpecificVersion(getRepositoryContext().getProject(), id, version);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IProxyRepositoryFactory#isMainProjectItem(org.talend.core.model.properties.Item)
+     */
+    public boolean isMainProjectItem(Item item) {
+        EObject object = EcoreUtil.getRootContainer(item);
+        if (object != null && object instanceof org.talend.core.model.properties.Project) {
+            org.talend.core.model.properties.Project mainProject = getRepositoryContext().getProject().getEmfProject();
+            if (!mainProject.equals(object)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IProxyRepositoryFactory#isMainProjectItem(org.talend.core.model.repository.IRepositoryObject)
+     */
+    public boolean isMainProjectItem(IRepositoryObject obj) {
+        if (obj == null) {
+            return true;
+        }
+        return isMainProjectItem(obj.getProperty().getItem());
     }
 
 }

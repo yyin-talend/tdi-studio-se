@@ -38,7 +38,9 @@ import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.core.ui.wizards.NewProcessWizard;
 import org.talend.designer.runprocess.ItemCacheManager;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
@@ -145,7 +147,8 @@ public class CreateProcess extends AContextualAction {
      */
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         boolean canWork = !selection.isEmpty() && selection.size() == 1;
-        if (DesignerPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().isUserReadOnlyOnCurrentProject()) {
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        if (factory.isUserReadOnlyOnCurrentProject()) {
             canWork = false;
         }
         if (canWork) {
@@ -160,6 +163,9 @@ public class CreateProcess extends AContextualAction {
                 }
                 break;
             default:
+                canWork = false;
+            }
+            if (!node.getRoot().getProject().equals(factory.getRepositoryContext().getProject())) {
                 canWork = false;
             }
         }

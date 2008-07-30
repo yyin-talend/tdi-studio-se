@@ -77,8 +77,7 @@ public class CreateFileDelimitedAction extends AbstractCreateAction {
         RepositoryNode fileDelimitedNode = getCurrentRepositoryNode();
 
         if (isToolbar()) {
-            if (fileDelimitedNode != null
-                    && fileDelimitedNode.getContentType() != ERepositoryObjectType.METADATA_FILE_DELIMITED) {
+            if (fileDelimitedNode != null && fileDelimitedNode.getContentType() != ERepositoryObjectType.METADATA_FILE_DELIMITED) {
                 fileDelimitedNode = null;
             }
             if (fileDelimitedNode == null) {
@@ -94,8 +93,8 @@ public class CreateFileDelimitedAction extends AbstractCreateAction {
                     fileDelimitedNode, getExistingNames()));
         } else {
             selection = getSelection();
-            wizardDialog = new WizardDialog(new Shell(), new DelimitedFileWizard(PlatformUI.getWorkbench(), creation,
-                    selection, getExistingNames()));
+            wizardDialog = new WizardDialog(new Shell(), new DelimitedFileWizard(PlatformUI.getWorkbench(), creation, selection,
+                    getExistingNames()));
         }
 
         wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);
@@ -114,10 +113,12 @@ public class CreateFileDelimitedAction extends AbstractCreateAction {
             return;
         }
 
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         switch (node.getType()) {
         case SIMPLE_FOLDER:
         case SYSTEM_FOLDER:
-            if (ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
+            if (factory.isUserReadOnlyOnCurrentProject()
+                    || !node.getRoot().getProject().equals(factory.getRepositoryContext().getProject())) {
                 setEnabled(false);
                 return;
             }
@@ -127,7 +128,6 @@ public class CreateFileDelimitedAction extends AbstractCreateAction {
             creation = true;
             break;
         case REPOSITORY_ELEMENT:
-            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             if (factory.isPotentiallyEditable(node.getObject())) {
                 this.setText(EDIT_LABEL);
                 this.setImageDescriptor(defaultImage);
