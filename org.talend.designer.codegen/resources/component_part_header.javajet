@@ -51,6 +51,11 @@
 			int threadIdCounter =0;
 <%
 			}
+			
+			String iterateNodeName = iterateConn.getTarget().getUniqueName();
+%>			
+			int NB_ITERATE_<%=iterateNodeName %> = 0; //for statistics
+<%			
 			continue;
 		}
 	}	

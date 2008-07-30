@@ -30,15 +30,17 @@
 	Set<IConnection> iterateConnSet =  new HashSet<IConnection>();
 	iterateConnSet.addAll(node.getIncomingConnections(EConnectionType.ITERATE));
 	
+	String iterateNodeName = node.getUniqueName();
+	
 	List<IConnection> allSubProcessConnection = codeGenArgument.getAllMainSubTreeConnections();
 %>
 
 <%
-	if (codePart.equals(ECodePart.END)) {
+	if (codePart.equals(ECodePart.END)) {//1
 		boolean parallelIterate = false;
-		for (IConnection iterateConn : iterateConnSet) {
+		for (IConnection iterateConn : iterateConnSet) {//2
 			parallelIterate = "true".equals(ElementParameterParser.getValue(iterateConn, "__ENABLE_PARALLEL__")); 
-	        if (parallelIterate) {
+	        if (parallelIterate) {//3
 	        	String rowList=","; 
 				for (IConnection conn : allSubProcessConnection) {
 					rowList += conn.getUniqueName()+",";
@@ -61,7 +63,13 @@
 	mtp_<%=node.getUniqueName() %>.execute(bt_<%=node.getUniqueName() %>);
 <%
 				continue;
-			}
-		}
-	}
+			}else {//3
+	      		if(stat){
+%>
+				runStat.updateStatOnConnection("<%=iterateConn.getUniqueName() %>", 2, "exec" + NB_ITERATE_<%=iterateNodeName %>);
+<%
+		  		}
+		  	}//3				
+		}//2
+	}//1
 %>
