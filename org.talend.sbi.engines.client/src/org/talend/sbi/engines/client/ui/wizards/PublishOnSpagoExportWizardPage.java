@@ -121,8 +121,8 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
                 IRepositoryObject repositoryObject = node.getObject();
                 if (repositoryObject.getProperty().getItem() instanceof ProcessItem) {
                     ProcessItem processItem = (ProcessItem) repositoryObject.getProperty().getItem();
-                    ExportFileResource resource = new ExportFileResource(processItem, processItem.getProperty()
-                            .getLabel());
+                    ExportFileResource resource = new ExportFileResource(processItem, processItem.getProperty().getLabel());
+                    resource.setNode(node);
                     jobLabelName = processItem.getProperty().getLabel();
                     jobPurposeDescription = processItem.getProperty().getPurpose();
                     list.add(resource);
@@ -139,6 +139,7 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
             if (repositoryObject.getProperty().getItem() instanceof ProcessItem) {
                 ProcessItem processItem = (ProcessItem) repositoryObject.getProperty().getItem();
                 ExportFileResource resource = new ExportFileResource(processItem, path);
+                resource.setNode(node);
                 list.add(resource);
             }
         }
@@ -261,8 +262,7 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
         jobName = new LabelledText(optionsGroup, Messages.getString("PublishOnSpagoExportWizardPage.jobName"), true);
         jobName.setText(jobLabelName);
 
-        jobDescription = new LabelledText(optionsGroup, Messages
-                .getString("PublishOnSpagoExportWizardPage.jobDescription"), true);
+        jobDescription = new LabelledText(optionsGroup, Messages.getString("PublishOnSpagoExportWizardPage.jobDescription"), true);
         jobDescription.setText(jobPurposeDescription);
 
         contextButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
@@ -448,8 +448,7 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
             String port = spagoBiServer.getPort();
 
             // create the client
-            ISpagoBITalendEngineClient client = new SpagoBITalendEngineClient(user, password, host, port,
-                    "SpagoBITalendEngine");
+            ISpagoBITalendEngineClient client = new SpagoBITalendEngineClient(user, password, host, port, "SpagoBITalendEngine");
 
             // get some informations about the engine instance referenced by the client
             System.out.println("Engine version: " + client.getEngineVersion());
@@ -493,8 +492,8 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
      * @return
      */
     protected ArchiveFileExportOperationFullPath getExporterOperation(List<ExportFileResource> resourcesToExport) {
-        ArchiveFileExportOperationFullPath exporterOperation = new ArchiveFileExportOperationFullPath(
-                resourcesToExport, getDestinationValue());
+        ArchiveFileExportOperationFullPath exporterOperation = new ArchiveFileExportOperationFullPath(resourcesToExport,
+                getDestinationValue());
         return exporterOperation;
     }
 
@@ -539,8 +538,8 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
      */
     protected List<ExportFileResource> getExportResources() {
         Map<ExportChoice, Boolean> exportChoiceMap = getExportChoiceMap();
-        return manager.getExportResources(process, exportChoiceMap, contextCombo.getText(), "All",
-                IProcessor.NO_STATISTICS, IProcessor.NO_TRACES);
+        return manager.getExportResources(process, exportChoiceMap, contextCombo.getText(), "All", IProcessor.NO_STATISTICS,
+                IProcessor.NO_TRACES);
     }
 
     private Map<ExportChoice, Boolean> getExportChoiceMap() {
