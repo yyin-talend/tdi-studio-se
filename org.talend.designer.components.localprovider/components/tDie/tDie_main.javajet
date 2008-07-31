@@ -33,7 +33,7 @@
     <%
     if(isRunInMultiThread ){
     %>
-        ((java.util.Map)threadLocal.get()).put(errorCode, new Integer(<%=ElementParameterParser.getValue(node, "__CODE__") %>)); 
+        ((java.util.Map)threadLocal.get()).put("errorCode", new Integer(<%=ElementParameterParser.getValue(node, "__CODE__") %>)); 
     <%
         }else {
     %>

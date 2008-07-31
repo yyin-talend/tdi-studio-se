@@ -340,9 +340,9 @@ private class TalendException extends Exception {
                             <%
                             if(isRunInMultiThread ){
                                 %>
-                                ((java.util.Map)threadLocal.get()).put(errorCode, null); 
+                                ((java.util.Map)threadLocal.get()).put("errorCode", null); 
                                 <%=conn.getTarget().getUniqueName() %>Process();
-                                ((java.util.Map)threadLocal.get()).put(status, "end");
+                                ((java.util.Map)threadLocal.get()).put("status", "end");
                                 <%
                             }else {
                                 %>
@@ -379,9 +379,9 @@ private class TalendException extends Exception {
 <%
 					if(isRunInMultiThread ){
 %>
-					((java.util.Map)threadLocal.get()).put(errorCode, null); 
+					((java.util.Map)threadLocal.get()).put("errorCode", null); 
 					<%=conn.getTarget().getUniqueName() %>Process();
-					((java.util.Map)threadLocal.get()).put(status, "end");
+					((java.util.Map)threadLocal.get()).put("status", "end");
 <%
 					} else {
 %>
