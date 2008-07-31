@@ -107,21 +107,28 @@ if(useExistingConn.equals("true")) {
     String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
     String conn = "conn_" + connection;
     String tableschema = "tableschema_" + connection;
-    commitEvery = "";
     %>
+    String schema_<%=cid%> = (String)globalMap.get("<%=tableschema%>");    
     java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
-    String schema_<%=cid%> = (String)globalMap.get("<%=tableschema%>");
     <%
 } else {       
     %>
     java.lang.Class.forName("com.ibm.db2.jcc.DB2Driver");    
     String url_<%=cid %> = "jdbc:db2://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;    
     String dbUser_<%=cid %> = <%=dbuser%>;    
-    String dbPwd_<%=cid %> = <%=dbpwd%>;    
+    String dbPwd_<%=cid %> = <%=dbpwd%>;
+    String schema_<%=cid%> = <%=tableSchema%>;    
     java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
-    conn_<%=cid%>.setAutoCommit(false);    
-    String schema_<%=cid%> = <%=tableSchema%>;
     <%
+}
+if(!useExistingConn.equals("true")) {
+    if(!commitEvery.equals("") && !commitEvery.equals("0")) {
+        %>
+        conn_<%=cid%>.setAutoCommit(false);
+        int commitEvery_<%=cid%> = <%=commitEvery%>;        
+        int commitCounter_<%=cid%> = 0;        
+        <%
+    }
 }
 %>
 String tableName_<%=cid%> = null;
@@ -226,14 +233,6 @@ if(columnList != null && columnList.size() > 0) {
         %>
         String query_<%=cid%> = null;
         <%
-    }
-    if(!useExistingConn.equals("true")) {
-        if(!commitEvery.equals("") && !commitEvery.equals("0")) {
-            %>        
-            int commitEvery_<%=cid%> = <%=commitEvery%>;        
-            int commitCounter_<%=cid%> = 0;        
-            <%
-        }
     }
 }
 %>

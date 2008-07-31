@@ -116,15 +116,24 @@ if(useExistingConn.equals("true")) {
     java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
     <%
 } else {
-    %>
- 
-java.lang.Class.forName("<%=javaDbDriver %>");
-String url_<%=cid %> = "jdbc:interbase://" + <%=host%> + "/" + <%=dbname%>;
-String userName_<%=cid%> = <%=username%>;
-String password_<%=cid%> = <%=password%>;
-java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,userName_<%=cid%>,password_<%=cid%>);
-conn_<%=cid%>.setAutoCommit(false);
-<%}%>
+    %> 
+    java.lang.Class.forName("<%=javaDbDriver %>");
+    String url_<%=cid %> = "jdbc:interbase://" + <%=host%> + "/" + <%=dbname%>;
+    String userName_<%=cid%> = <%=username%>;
+    String password_<%=cid%> = <%=password%>;
+    java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,userName_<%=cid%>,password_<%=cid%>);
+    <%
+}
+if(!useExistingConn.equals("true")) {
+    if(!commitEvery.equals("") && !commitEvery.equals("0")) {
+        %>
+        conn_<%=cid%>.setAutoCommit(false);
+        int commitEvery_<%=cid%> = <%=commitEvery%>;            
+        int commitCounter_<%=cid%> = 0;            
+        <%
+    }
+}
+%>
 
 <%
 if(columnList != null && columnList.size() > 0) {    
@@ -221,14 +230,6 @@ if(columnList != null && columnList.size() > 0) {
         %>
         String query_<%=cid%> = null;
         <%
-    }
-    if(!useExistingConn.equals("true")) {
-    	if(!commitEvery.equals("") && !commitEvery.equals("0")) {
-            %>            
-            int commitEvery_<%=cid%> = <%=commitEvery%>;            
-            int commitCounter_<%=cid%> = 0;            
-            <%
-    	}
     }
 }
 %>

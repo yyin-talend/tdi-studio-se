@@ -131,8 +131,19 @@ if(useExistingConn.equals("true")) {
     String dbPwd_<%=cid %> = <%=dbpwd%>;    
     java.lang.Class.forName("com.ibm.as400.access.AS400JDBCDriver");
     java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
-    conn_<%=cid%>.setAutoCommit(false);
     <%
+}
+String useCommitControl = ElementParameterParser.getValue(node,"__USE_COMMIT_CONTROL__");
+if(!useExistingConn.equals("true")) {
+    if(useCommitControl.equals("true")) {// if use commit control
+        if(!commitEvery.equals("") && !commitEvery.equals("0")) {
+            %>
+            conn_<%=cid%>.setAutoCommit(false);
+            int commitEvery_<%=cid%> = <%=commitEvery%>;                
+            int commitCounter_<%=cid%> = 0;                
+            <%
+        }
+    }
 }
 if(columnList != null && columnList.size() > 0) {    
     if(!tableAction.equals("NONE")) {
@@ -228,17 +239,6 @@ if(columnList != null && columnList.size() > 0) {
         %>
         String query_<%=cid%> = null;
         <%
-    }
-    String useCommitControl = ElementParameterParser.getValue(node,"__USE_COMMIT_CONTROL__");
-    if(!useExistingConn.equals("true")) {
-        if(useCommitControl.equals("true")) {// if use commit control
-            if(!commitEvery.equals("") && !commitEvery.equals("0")) {
-                %>            
-                int commitEvery_<%=cid%> = <%=commitEvery%>;                
-                int commitCounter_<%=cid%> = 0;                
-                <%
-            }
-        }
     }    
 }
 %>

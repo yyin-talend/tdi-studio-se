@@ -47,23 +47,17 @@ else
 }
 %>
 
-java.sql.Statement stmt_<%=cid %> = conn_<%=cid %>.createStatement();
-
-boolean whetherReject_<%=cid%> = false;
-
 <%
-if(!useExistingConn.equals("true"))
-{
-    if(!commitEvery.equals("")&&!commitEvery.equals("0")){
-    %>
-    
-        int commitEvery_<%=cid%> = <%=commitEvery%>;
-        
-        int commitCounter_<%=cid%> = 0;
-        
-        conn_<%=cid%>.setAutoCommit(false);
-    <%
+if(!useExistingConn.equals("true")) {
+    if(!commitEvery.equals("") && !commitEvery.equals("0")){
+        %>
+        conn_<%=cid%>.setAutoCommit(false);        
+        int commitEvery_<%=cid%> = <%=commitEvery%>;        
+        int commitCounter_<%=cid%> = 0;        
+        <%
     }
 }
 %>
+java.sql.Statement stmt_<%=cid %> = conn_<%=cid %>.createStatement();
 String query_<%=cid %> = "";
+boolean whetherReject_<%=cid%> = false;

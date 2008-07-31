@@ -88,25 +88,32 @@ int insertedCount_<%=cid%> = 0;
 boolean whetherReject_<%=cid%> = false;
 
 <%
-	String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
-	if(useExistingConn.equals("true")){
-		String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
-		String conn = "conn_" + connection;
-		commitEvery = "0";//deactive "commit every" feature
-		%>
-		java.sql.Connection connection_<%=cid %> = (java.sql.Connection)globalMap.get("<%=conn %>");
-		<%
-	} else {       
-	    %>
-        java.lang.Class.forName(<%=driverClass %>);
-        String connectionString_<%=cid %> = <%=jdbcUrl %>;
-        java.sql.Connection connection_<%=cid %> = java.sql.DriverManager.getConnection(connectionString_<%=cid %>, <%=dbuser %>, <%=dbpwd %>);
+String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
+if(useExistingConn.equals("true")){
+	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+	String conn = "conn_" + connection;
+	%>
+	java.sql.Connection connection_<%=cid %> = (java.sql.Connection)globalMap.get("<%=conn %>");
+	<%
+} else {       
+    %>
+    java.lang.Class.forName(<%=driverClass %>);
+    String connectionString_<%=cid %> = <%=jdbcUrl %>;
+    java.sql.Connection connection_<%=cid %> = java.sql.DriverManager.getConnection(connectionString_<%=cid %>, <%=dbuser %>, <%=dbpwd %>);
+    <%
+}
+// Commit every
+if(!useExistingConn.equals("true")) {
+    if (!commitEvery.equals("") && !commitEvery.equals("0")) {
+        %>
         connection_<%=cid%>.setAutoCommit(false);
+        int commitEvery_<%=cid%> = <%=commitEvery%>;
+        int commitCounter_<%=cid%> = 0;         
         <%
-	}
+    }
+}	
 %>
 <%
-
 // Clear table
 if (clearTable.equals("true")) {
 	%>
@@ -158,15 +165,6 @@ if (columnList != null && columnList.size() > 0) {
         %>
         String query_<%=cid%> = null;
         <%
-    }	
-	// Commit every
-    if(!useExistingConn.equals("true")) {
-    	if (!commitEvery.equals("") && !commitEvery.equals("0")) {
-    		%>
-    		int commitEvery_<%=cid%> = <%=commitEvery%>;
-    		int commitCounter_<%=cid%> = 0;
-    		<%
-    	}
     }
 }
 %>

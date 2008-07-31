@@ -143,10 +143,18 @@ if(useExistingConn.equals("true")) {
 	%>
 	String dbUser_<%=cid%> = <%=dbuser%>;
 	String dbPwd_<%=cid%> = <%=dbpwd%>;
+    dbschema_<%=cid%> = <%=tableSchema%>;	
 	conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>, dbUser_<%=cid%>, dbPwd_<%=cid%>);
-    conn_<%=cid%>.setAutoCommit(false);
-	dbschema_<%=cid%> = <%=tableSchema%>;
 	<%
+}
+if(!useExistingConn.equals("true")) {
+    if(!commitEvery.equals("")&&!commitEvery.equals("0")) {
+        %>
+        conn_<%=cid%>.setAutoCommit(false);
+        int commitEvery_<%=cid%> = <%=commitEvery%>;        
+        int commitCounter_<%=cid%> = 0;        
+        <%
+    }
 }
 %> 
 
@@ -256,14 +264,6 @@ if(columnList != null && columnList.size()>0) {
         %>
         String query_<%=cid%> = null;
         <%
-    }
-    if(!useExistingConn.equals("true")) {
-    	if(!commitEvery.equals("")&&!commitEvery.equals("0")) {
-            %>        
-            int commitEvery_<%=cid%> = <%=commitEvery%>;        
-            int commitCounter_<%=cid%> = 0;        
-            <%
-    	}
     }
 }
 %>

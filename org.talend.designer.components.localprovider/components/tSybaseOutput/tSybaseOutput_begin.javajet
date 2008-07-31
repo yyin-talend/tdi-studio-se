@@ -127,9 +127,17 @@ if(useExistingConn){
     java.lang.Class.forName("com.sybase.jdbc3.jdbc.SybDriver");
     String url_<%=cid %> = "jdbc:sybase:Tds:" + <%=dbServer%> + ":" + <%=dbport%> + "/" + <%=dbname%>; 
     java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
-    conn_<%=cid%>.setAutoCommit(false);
     <%
-	}
+}
+if(!useExistingConn) {
+    if(!commitEvery.equals("") && !commitEvery.equals("0")) {
+        %>
+        conn_<%=cid%>.setAutoCommit(false);
+        int commitEvery_<%=cid%> = <%=commitEvery%>;        
+        int commitCounter_<%=cid%> = 0;       
+        <%
+    }
+}
 %>
 <%
 if(columnList != null && columnList.size()>0) {    
@@ -231,14 +239,6 @@ if(columnList != null && columnList.size()>0) {
         %>
         String query_<%=cid%> = null;
         <%
-    }
-    if(!useExistingConn) {
-    	if(!commitEvery.equals("") && !commitEvery.equals("0")) {
-            %>        
-            int commitEvery_<%=cid%> = <%=commitEvery%>;        
-            int commitCounter_<%=cid%> = 0;       
-            <%
-    	}
     }
 	if(identityInsert.equals("true")) {
 	    %>

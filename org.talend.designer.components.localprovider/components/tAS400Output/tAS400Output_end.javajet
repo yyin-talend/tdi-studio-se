@@ -71,10 +71,6 @@ imports="
                 }
                 <%
             }
-        } else {
-            %>
-            conn_<%=cid%>.commit();
-            <%
         }
         %>  
         conn_<%=cid%> .close();
