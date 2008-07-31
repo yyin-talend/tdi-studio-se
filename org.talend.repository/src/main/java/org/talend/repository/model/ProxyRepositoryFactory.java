@@ -74,6 +74,7 @@ import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.model.utils.PerlResourcesHelper;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.documentation.ERepositoryActionName;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsManager;
