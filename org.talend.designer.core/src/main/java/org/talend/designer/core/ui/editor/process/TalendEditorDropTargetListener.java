@@ -467,79 +467,19 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
     }
 
     private Command getChangePropertyCommand(RepositoryNode selectedNode, Node node, ConnectionItem connectionItem) {
-        if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_CONNECTIONS) {
+        ERepositoryObjectType selectedNodetype = selectedNode.getObjectType();
+        EDatabaseComponentName name = EDatabaseComponentName.getCorrespondingComponentName(connectionItem, selectedNodetype);
+        List<String> componentNameList = new ArrayList<String>();
+        componentNameList.add(name.getInputComponentName());
+        componentNameList.add(name.getOutPutComponentName());
+        String nodeComponentName = node.getComponent().getName();
+        if (componentNameList.contains(nodeComponentName)) {
+            IElementParameter param = node.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
+            if (param != null) {
+                return getPropertyPublicPart(selectedNode, param, node, connectionItem);
+            }
+        }
 
-            // RepositoryObject object = (RepositoryObject) selectedNode.getObject();
-            // String value = connectionItem.getProperty().getId();
-            String productId = ((DatabaseConnection) connectionItem.getConnection()).getProductId();
-            String[] id = productId.split("_");
-            IElementParameter paramType = node.getElementParameter("TYPE");
-            if (paramType != null) {
-                if (id[0].toLowerCase().equals(paramType.getValue().toString().toLowerCase())) {
-                    IElementParameter param = node.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
-
-                    if (param != null) {
-                        return getPropertyPublicPart(selectedNode, param, node, connectionItem);
-                    }
-                }
-                // PropertyChangeCommand command2 = new PropertyChangeCommand(node, param.getName() + ":"
-                // + EParameterName.REPOSITORY_PROPERTY_TYPE, value);
-            }
-        }
-        if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_FILE_DELIMITED) {
-            IElementParameter param = node.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
-            if (param != null && param.getRepositoryValue().equals("DELIMITED")) {
-                return getPropertyPublicPart(selectedNode, param, node, connectionItem);
-            }
-        }
-        if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_FILE_EXCEL) {
-            IElementParameter param = node.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
-            if (param != null && param.getRepositoryValue().equals("EXCEL")) {
-                return getPropertyPublicPart(selectedNode, param, node, connectionItem);
-            }
-        }
-        if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_FILE_LDIF) {
-            IElementParameter param = node.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
-            if (param != null && param.getRepositoryValue().equals("LDIF")) {
-                return getPropertyPublicPart(selectedNode, param, node, connectionItem);
-            }
-        }
-        if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_FILE_POSITIONAL) {
-            IElementParameter param = node.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
-            if (param != null && param.getRepositoryValue().equals("POSITIONAL")) {
-                return getPropertyPublicPart(selectedNode, param, node, connectionItem);
-            }
-        }
-        if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_FILE_REGEXP) {
-            IElementParameter param = node.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
-            if (param != null && param.getRepositoryValue().equals("REGEX")) {
-                return getPropertyPublicPart(selectedNode, param, node, connectionItem);
-            }
-        }
-        if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_FILE_XML) {
-            IElementParameter param = node.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
-            if (param != null && param.getRepositoryValue().equals("XML")) {
-                return getPropertyPublicPart(selectedNode, param, node, connectionItem);
-            }
-        }
-        if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_LDAP_SCHEMA) {
-            IElementParameter param = node.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
-            if (param != null && param.getRepositoryValue().equals("LDAP")) {
-                return getPropertyPublicPart(selectedNode, param, node, connectionItem);
-            }
-        }
-        if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA) {
-            IElementParameter param = node.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
-            if (param != null && param.getRepositoryValue().equals("SALESFORCE")) {
-                return getPropertyPublicPart(selectedNode, param, node, connectionItem);
-            }
-        }
-        if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_WSDL_SCHEMA) {
-            IElementParameter param = node.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
-            if (param != null && param.getRepositoryValue().equals("WSDL")) {
-                return getPropertyPublicPart(selectedNode, param, node, connectionItem);
-            }
-        }
         return null;
     }
 
