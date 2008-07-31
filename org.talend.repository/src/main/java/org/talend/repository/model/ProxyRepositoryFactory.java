@@ -99,6 +99,8 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
 
     private final PropertyChangeSupport support = new PropertyChangeSupport(this);
 
+    private ProjectManager projectManager;
+
     public synchronized void addPropertyChangeListener(PropertyChangeListener l) {
         if (l == null) {
             throw new IllegalArgumentException();
@@ -122,7 +124,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * DOC smallet ProxyRepositoryFactory constructor comment.
      */
     private ProxyRepositoryFactory() {
-        // TODO Auto-generated constructor stub
+        projectManager = ProjectManager.getInstance();
     }
 
     public static synchronized ProxyRepositoryFactory getInstance() {
@@ -668,7 +670,17 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see org.talend.repository.model.IProxyRepositoryFactory#getAllVersion(java.lang.String)
      */
     public List<IRepositoryObject> getAllVersion(String id) throws PersistenceException {
-        return getAllVersion(getRepositoryContext().getProject(), id);
+        List<IRepositoryObject> allVersion = getAllVersion(projectManager.getCurrentProject(), id);
+        if (allVersion.isEmpty()) {
+            for (Project p : projectManager.getReferencedProjects()) {
+                allVersion = getAllVersion(p, id);
+                if (!allVersion.isEmpty()) {
+                    break;
+                }
+            }
+        }
+
+        return allVersion;
     }
 
     public List<IRepositoryObject> getAllVersion(Project project, String id) throws PersistenceException {
@@ -690,7 +702,16 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     }
 
     public IRepositoryObject getLastVersion(String id) throws PersistenceException {
-        return getLastVersion(getRepositoryContext().getProject(), id);
+        IRepositoryObject lastVersion = getLastVersion(projectManager.getCurrentProject(), id);
+        if (lastVersion == null) {
+            for (Project p : projectManager.getReferencedProjects()) {
+                lastVersion = getLastVersion(p, id);
+                if (lastVersion != null) {
+                    break;
+                }
+            }
+        }
+        return lastVersion;
     }
 
     public List<IRepositoryObject> getAll(Project project, ERepositoryObjectType type) throws PersistenceException {
@@ -1241,7 +1262,8 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         switch (((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
                 .getLanguage()) {
         case JAVA:
-            IPath path = new Path(JavaUtils.JAVA_SRC_DIRECTORY).append(JavaResourcesHelper.getProjectFolderName(process.getProperty().getItem())).append(
+            IPath path = new Path(JavaUtils.JAVA_SRC_DIRECTORY).append(
+                    JavaResourcesHelper.getProjectFolderName(process.getProperty().getItem())).append(
                     JavaResourcesHelper.getJobFolderName(process.getName(), process.getVersion())).append(
                     JobJavaScriptsManager.JOB_CONTEXT_FOLDER).append(context.getName() + JavaUtils.JAVA_CONTEXT_EXTENSION);
             return JavaResourcesHelper.getSpecificResourceInJavaProject(path);
