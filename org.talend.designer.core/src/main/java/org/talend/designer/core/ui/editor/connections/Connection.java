@@ -149,6 +149,9 @@ public class Connection extends Element implements IConnection, IPerformance {
             String linkName, final boolean monitorConnection) {
         if (lineStyle.equals(EConnectionType.ITERATE)) {
             performance = new IterateConnectionPerformance(this);
+        } else if (lineStyle.hasConnectionCategory(IConnectionCategory.DEPENDENCY)) {
+            // "OnComponentOK/OnComponentError/OnSubJobOK/OnSubJobError/If"
+            performance = new LiteralConnectionPerformance(this);
         } else {
             // if no parallel execution existed, just delegate to super class.
             performance = new ParallelConnectionPerformance(this);
@@ -453,9 +456,9 @@ public class Connection extends Element implements IConnection, IPerformance {
             }
             updateName = true;
         } /*
-         * else if (getLineStyle().equals(EConnectionType.LOOKUP)) { labelText += " (" + nodeConnector.getLinkName() +
-         * ")"; updateName = true; }
-         */
+             * else if (getLineStyle().equals(EConnectionType.LOOKUP)) { labelText += " (" + nodeConnector.getLinkName() +
+             * ")"; updateName = true; }
+             */
 
         if (updateName) {
 
