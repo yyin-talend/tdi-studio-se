@@ -138,6 +138,15 @@ end_Hash.put("<%=node.getUniqueName() %>", System.currentTimeMillis());
    if (<%=outgoingConn.getCondition() %>) {
     <%=outgoingConn.getTarget().getUniqueName() %>Process();
    }
+
+<%
+//send the false status to socket, about the true status, please see: subprocess_header.javajet
+if(stat){%>   
+   else{
+   	 runStat.updateStatOnConnection("<%=outgoingConn.getUniqueName() %>", 0, "false");
+   }
+<%}%>
+   
 <%
    		}
    	}

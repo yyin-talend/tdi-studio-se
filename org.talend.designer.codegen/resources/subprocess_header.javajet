@@ -27,6 +27,7 @@
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	NodesSubTree subTree = (NodesSubTree) codeGenArgument.getArgument();
 	boolean isRunInMultiThread = codeGenArgument.getIsRunInMultiThread();
+	boolean stat = codeGenArgument.isStatistics();
 %>
 
 <%
@@ -758,4 +759,28 @@ public void <%=subTree.getName() %>Process() throws TalendException {
 	}
     
   }
+%>
+
+<%
+if(stat){
+    INode firstNode = subTree.getNode(subTree.getName());
+    List<? extends IConnection> inConns = firstNode.getIncomingConnections();
+    for(IConnection conn : inConns){
+    	EConnectionType lineStyle = conn.getLineStyle();
+    	if(lineStyle == EConnectionType.RUN_IF){
+    %>	
+    		runStat.updateStatOnConnection("<%=conn.getUniqueName() %>", 0, "true");
+    <%	
+    	}else if(lineStyle == EConnectionType.ON_SUBJOB_OK || lineStyle == EConnectionType.ON_COMPONENT_OK){
+    %>	
+    		runStat.updateStatOnConnection("<%=conn.getUniqueName() %>", 0, "ok");
+    <%	
+    	}else if(lineStyle == EConnectionType.ON_SUBJOB_ERROR || lineStyle == EConnectionType.ON_COMPONENT_ERROR){
+    %>	
+    		runStat.updateStatOnConnection("<%=conn.getUniqueName() %>", 0, "error");
+    <%	
+    	}
+
+    }
+}
 %>
