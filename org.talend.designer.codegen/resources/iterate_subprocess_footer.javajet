@@ -22,6 +22,9 @@
 	ECodePart codePart = codeGenArgument.getCodePart();
 	//boolean trace = codeGenArgument.isTrace();
 	boolean stat = codeGenArgument.isStatistics();
+	
+	boolean isRunInMultiThread = codeGenArgument.getIsRunInMultiThread();	
+	
 	Set<IConnection> connSet =  new HashSet<IConnection>();
 	connSet.addAll(node.getOutgoingConnections(EConnectionType.FLOW_MAIN));
 	connSet.addAll(node.getOutgoingConnections(EConnectionType.FLOW_MERGE));
@@ -52,15 +55,48 @@
 <%
 				}
 %>
-			} catch (Exception e) {
-				e.printStackTrace();
+			} catch (Exception e) {			
+					((java.util.Map) threadLocal.get()).put("status", "failure");
+					e.printStackTrace();
 			}
-			this.isRunning = false;
+			this.isRunning = false;			
+
+			Integer localErrorCode = (Integer) (((java.util.Map) threadLocal.get()).get("errorCode"));
+			String localStatus = (String) (((java.util.Map) threadLocal.get()).get("status"));
+			if (localErrorCode != null) {
+				if (this.errorCode == null || localErrorCode.compareTo(this.errorCode) > 0) {
+					this.errorCode = localErrorCode;
+				}
+			} else if (!this.status.equals("failure")) {
+				this.status = localStatus;
+			}			
 		}
 	}
 
 	<%=node.getUniqueName() %>Thread bt_<%=node.getUniqueName() %> = new <%=node.getUniqueName() %>Thread(globalMap<%=rowList %>,threadIdCounter++);
 	mtp_<%=node.getUniqueName() %>.execute(bt_<%=node.getUniqueName() %>);
+	
+<%if(!isRunInMultiThread){%>
+	if (bt_<%=node.getUniqueName() %>.errorCode != null) {
+		if (errorCode == null || bt_<%=node.getUniqueName() %>.errorCode.compareTo(errorCode) > 0) {
+			errorCode = bt_<%=node.getUniqueName() %>.errorCode;
+		}
+	} else if (!status.equals("failure")) {
+		status = bt_<%=node.getUniqueName() %>.status;
+	}	
+<%}else{%>
+	Integer localErrorCode = (Integer) (((java.util.Map) threadLocal.get()).get("errorCode"));
+	String localStatus = (String) (((java.util.Map) threadLocal.get()).get("status"));
+	
+	if (bt_<%=node.getUniqueName() %>.errorCode != null) {
+		if (localErrorCode == null || bt_<%=node.getUniqueName() %>.errorCode.compareTo(localErrorCode) > 0) {
+			((java.util.Map) threadLocal.get()).put("errorCode", bt_<%=node.getUniqueName() %>.errorCode);
+		}
+	} else if (!localStatus.equals("failure")) {
+		((java.util.Map) threadLocal.get()).put("status", bt_<%=node.getUniqueName() %>.status);
+	}
+<%}%>
+	
 <%
 				continue;
 			}else {//3

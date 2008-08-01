@@ -44,10 +44,10 @@
     public static String fatherPid = null;
     public static long startTime = 0;
     
+    private static ThreadLocal threadLocal = new ThreadLocal();
 <%
 	if(isRunInMultiThread){
-%>
-    private static ThreadLocal threadLocal = new ThreadLocal();
+%>  
 	private static SyncInt runningThreadCount =new SyncInt();
 	
 	private static class SyncInt
@@ -462,7 +462,9 @@
 	private static void reset() {
 
 		defaultProps.clear();
-		context.clear();	
+		context.clear();
+		
+		threadLocal = new ThreadLocal();	
 <%
 	if(!isRunInMultiThread ){
 %>
@@ -470,7 +472,6 @@
 <%
 	}else{
 %>	
-	threadLocal = new ThreadLocal();
 	runningThreadCount = new SyncInt();
 <%
 	}

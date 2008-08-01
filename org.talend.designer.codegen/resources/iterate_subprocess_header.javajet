@@ -28,6 +28,7 @@ NodesSubTree subTree = (NodesSubTree) codeGenArgument.getSubTree();
 ECodePart codePart = codeGenArgument.getCodePart();
 //boolean trace = codeGenArgument.isTrace();
 boolean stat = codeGenArgument.isStatistics();
+
 Set<IConnection> connSet =  new HashSet<IConnection>();
 connSet.addAll(node.getOutgoingConnections(EConnectionType.FLOW_MAIN));
 connSet.addAll(node.getOutgoingConnections(EConnectionType.FLOW_MERGE));
@@ -78,7 +79,10 @@ for (IConnection iterateConn : iterateConnSet) { //1
 		}
 
 		ThreadedMap globalMap = null;
-		boolean isRunning = false;
+		boolean isRunning = false;		
+
+        public Integer errorCode = null;
+        public String status = "";	
 		
 <%
 			if(!subTree.isMergeSubTree()) {
@@ -123,10 +127,16 @@ for (IConnection iterateConn : iterateConnSet) { //1
 		}
 
 		
-		public void run() {
+		public void run() {		
+
+			java.util.Map threadRunResultMap = new java.util.HashMap();
+			threadRunResultMap.put("errorCode", null);
+			threadRunResultMap.put("status", "");
+			threadLocal.set(threadRunResultMap);
+			
 			this.isRunning = true;
-			try {
 			String currentComponent = "";
+			try {			
 <%
 	        	if(stat){
 %>
