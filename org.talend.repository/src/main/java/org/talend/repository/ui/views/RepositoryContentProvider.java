@@ -116,6 +116,10 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         return root.getProcessNode();
     }
 
+    public RepositoryNode getReferenceProjectNode() {
+        return root.getReferenceProjectNode();
+    }
+
     /**
      * Getter for metadataConNode.
      * 

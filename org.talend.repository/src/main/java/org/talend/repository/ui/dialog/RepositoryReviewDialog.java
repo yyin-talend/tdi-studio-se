@@ -47,6 +47,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.ICDCProviderService;
 import org.talend.repository.model.MetadataTableRepositoryObject;
+import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
@@ -379,7 +380,23 @@ class JobTypeProcessor implements ITypeProcessor {
     }
 
     public RepositoryNode getInputRoot(RepositoryContentProvider contentProvider) {
-        return contentProvider.getProcessNode();
+        List<RepositoryNode> refProjects = contentProvider.getReferenceProjectNode().getChildren();
+        RepositoryNode mainJobs = contentProvider.getProcessNode();
+        if (!refProjects.isEmpty()) {
+            List<RepositoryNode> list = new ArrayList<RepositoryNode>();
+
+            for (RepositoryNode repositoryNode : refProjects) {
+                ProjectRepositoryNode refProject = (ProjectRepositoryNode) repositoryNode;
+
+                ProjectRepositoryNode newProject = new ProjectRepositoryNode(refProject);
+                newProject.getChildren().add(refProject.getProcessNode());
+                list.add(newProject);
+            }
+
+            // add the referenced projects' jobs
+            mainJobs.getChildren().addAll(list);
+        }
+        return mainJobs;
     }
 
     public boolean isSelectionValid(RepositoryNode node) {

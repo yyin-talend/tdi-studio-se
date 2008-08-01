@@ -1186,15 +1186,6 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         return getRepositoryContext().getProject().getEmfProject();
     }
 
-    public boolean isUnderRefProjects(Item item) {
-        EObject object = EcoreUtil.getRootContainer(item);
-        if (object == null || !(object instanceof org.talend.core.model.properties.Project)) {
-            return false;
-        }
-        org.talend.core.model.properties.Project mainProject = getRepositoryContext().getProject().getEmfProject();
-        return !mainProject.equals(object);
-    }
-
     /*
      * (non-Javadoc)
      * 

@@ -22,7 +22,6 @@ import org.talend.commons.utils.data.container.Container;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
-import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.genhtml.IHTMLDocConstants;
@@ -89,6 +88,14 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         // for referenced project
         this.project = project;
         setRoot(this);
+    }
+
+    public ProjectRepositoryNode(ProjectRepositoryNode projectNode) {
+        this(projectNode.getProject(), projectNode.getObject(), projectNode.getParent(), (RepositoryNode) projectNode.getRoot(),
+                projectNode.getType());
+
+        this.setProperties(EProperties.LABEL, projectNode.getProperties(EProperties.LABEL));
+        this.setProperties(EProperties.CONTENT_TYPE, projectNode.getProperties(EProperties.CONTENT_TYPE));
     }
 
     public ProjectRepositoryNode(IRepositoryObject object, RepositoryNode parent, ENodeType type) {
@@ -911,6 +918,10 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
      */
     public RepositoryNode getJobletNode() {
         return this.jobletNode;
+    }
+
+    public RepositoryNode getReferenceProjectNode() {
+        return this.refProject;
     }
 
     /*
