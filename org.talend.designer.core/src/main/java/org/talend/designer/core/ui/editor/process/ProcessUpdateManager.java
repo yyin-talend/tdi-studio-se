@@ -361,17 +361,17 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                             result = new UpdateCheckResult(getProcess());
                             result.setResult(type, EUpdateResult.UPDATE, repositoryConnection, source);
 
-                        } else {
-                            for (IElementParameter param : getProcess().getElementParameters()) {
-                                String repositoryValue = param.getRepositoryValue();
-                                if (param.isShow(getProcess().getElementParameters()) && (repositoryValue != null)
-                                        && (!param.getName().equals(EParameterName.PROPERTY_TYPE.getName()))
-                                        && param.getCategory() == category) {
-                                    param.setRepositoryValueUsed(true);
-                                    param.setReadOnly(true);
-                                }
+                        }
+                        for (IElementParameter param : getProcess().getElementParameters()) {
+                            String repositoryValue = param.getRepositoryValue();
+                            if (param.isShow(getProcess().getElementParameters()) && (repositoryValue != null)
+                                    && (!param.getName().equals(EParameterName.PROPERTY_TYPE.getName()))
+                                    && param.getCategory() == category) {
+                                param.setRepositoryValueUsed(true);
+                                param.setReadOnly(true);
                             }
                         }
+
                     } else {
                         result = new UpdateCheckResult(getProcess());
                         result.setResult(type, EUpdateResult.BUIL_IN);
@@ -631,16 +631,17 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                         // result.setResult(EUpdateItemType.NODE_PROPERTY, EUpdateResult.BUIL_IN, null, source);
                         // }
 
-                    } else {
-                        for (IElementParameter param : node.getElementParameters()) {
-                            String repositoryValue = param.getRepositoryValue();
-                            if (param.isShow(node.getElementParameters()) && (repositoryValue != null)
-                                    && (!param.getName().equals(EParameterName.PROPERTY_TYPE.getName()))
-                                    && param.getField() != EParameterFieldType.MEMO_SQL) {
-                                param.setRepositoryValueUsed(true);
-                            }
+                    }
+                    for (IElementParameter param : node.getElementParameters()) {
+                        String repositoryValue = param.getRepositoryValue();
+                        if (param.isShow(node.getElementParameters()) && (repositoryValue != null)
+                                && (!param.getName().equals(EParameterName.PROPERTY_TYPE.getName()))
+                                && param.getField() != EParameterFieldType.MEMO_SQL) {
+                            param.setRepositoryValueUsed(true);
+                            param.setReadOnly(true);
                         }
                     }
+
                 } else {
                     result = new UpdateCheckResult(node);
                     result.setResult(EUpdateItemType.NODE_PROPERTY, EUpdateResult.BUIL_IN);
