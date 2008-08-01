@@ -488,7 +488,9 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
                         }
                     }
                 }
-                RepositoryUpdateManager.updateQuery(connParameters.getQueryObject().getQueries());
+                if (connParameters.getQueryObject() != null) {
+                    RepositoryUpdateManager.updateQuery(connParameters.getQueryObject().getQueries());
+                }
             }
         }
         super.okPressed();
