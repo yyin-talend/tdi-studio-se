@@ -437,7 +437,39 @@ if(data_action.equals("UPDATE")) {
     <%
 } else {
     %>
-    final Process process_<%=cid %> = Runtime.getRuntime().exec(command_<%=cid %>);
+		java.util.ArrayList<String> envParam=new java.util.ArrayList<String>();
+		java.util.Map<String, String> systemEnvMap = System.getenv();
+		for (java.util.Map.Entry<String, String> entry : systemEnvMap.entrySet())
+		{
+		   envParam.add(entry.getKey() + "=" + entry.getValue());
+		}
+<%
+	String nlsLanguage = ElementParameterParser.getValue(node, "__NLS_LANGUAGE__");
+	boolean setNLSTerritory = ElementParameterParser.getValue(node, "__SET_NLS_TERRITORY__").equals("true");
+	String NLSTerritory = ElementParameterParser.getValue(node, "__NLS_TERRITORY__");
+	List<Map<String, String>> nlsoptions = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__NLSOPTIONS__");
+	if(!nlsLanguage.equals("DEFAULT")){
+%>envParam.add("NLS_LANGUAGE=<%=nlsLanguage%>");
+<%
+	}
+	if(setNLSTerritory){
+		if(!NLSTerritory.equals("DEFAULT")){
+%>envParam.add("NLS_TERRITORY=<%=NLSTerritory%>");
+<%
+		}
+	}else{
+    	for(java.util.Map<String, String> option : nlsoptions) {
+    		String key = option.get("KEY");
+        	String value = option.get("VALUE");
+        	if(value != null && value.trim().length()>2){
+%>
+        envParam.add("<%=key%>=<%=value%>");
+<%
+    		}
+    	}
+    }
+%>
+    final Process process_<%=cid %> = Runtime.getRuntime().exec(command_<%=cid %>,envParam.toArray(new String[0]));
     <%
 }
 %> 
