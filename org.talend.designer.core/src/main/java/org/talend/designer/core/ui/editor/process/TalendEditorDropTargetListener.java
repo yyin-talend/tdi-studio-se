@@ -142,6 +142,26 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
         createSchema(getSelection().getFirstElement(), getTargetEditPart());
         createQuery(getSelection().getFirstElement(), getTargetEditPart());
         createProperty(getSelection().getFirstElement(), getTargetEditPart());
+        createChildJob(getSelection().getFirstElement(), getTargetEditPart());
+    }
+
+    /**
+     * DOC qwei Comment method "createChildJob".
+     */
+    private void createChildJob(Object dragModel, EditPart targetEditPart) {
+        if (!(dragModel instanceof RepositoryNode && targetEditPart instanceof NodeContainerPart)) {
+            return;
+        }
+        RepositoryNode dragNode = (RepositoryNode) dragModel;
+        NodeContainerPart nodePart = (NodeContainerPart) targetEditPart;
+
+        if (dragNode.getObject().getProperty().getItem() instanceof ProcessItem) {
+            ProcessItem processItem = (ProcessItem) dragNode.getObject().getProperty().getItem();
+            Command command = getChangeChildProcessCommand((Node) nodePart.getNodePart().getModel(), processItem);
+            if (command != null) {
+                execCommandStack(command);
+            }
+        }
     }
 
     /**
@@ -491,6 +511,20 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), selectedNode.getObject().getProperty().getId());
         return command2;
 
+    }
+
+    /**
+     * DOC qwei Comment method "getChangeChildProcessCommand".
+     */
+    private Command getChangeChildProcessCommand(Node node, ProcessItem processItem) {
+        // command used to set job
+        String value = processItem.getProperty().getId();
+        IElementParameter processParam = node.getElementParameterFromField(EParameterFieldType.PROCESS_TYPE);
+        if (processParam != null) {
+            PropertyChangeCommand command2 = new PropertyChangeCommand(node, EParameterName.PROCESS_TYPE_PROCESS.getName(), value);
+            return command2;
+        }
+        return null;
     }
 
     //
