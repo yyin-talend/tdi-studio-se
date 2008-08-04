@@ -28,7 +28,6 @@ import org.apache.commons.lang.BooleanUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
@@ -37,13 +36,9 @@ import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.general.ModuleNeeded;
-import org.talend.core.model.process.IElementParameter;
-import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
-import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
@@ -55,7 +50,6 @@ import org.talend.librariesmanager.model.ModulesNeededProvider;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.constants.FileConstants;
 import org.talend.repository.documentation.ExportFileResource;
-import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
  * Manages the job scripts to be exported. <br/>
@@ -259,21 +253,22 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                 jobVersion = selectedJobVersion[0];
             }
 
-            IPath projectFilePath = getCorrespondingProjectRootPath(null).append(FileConstants.LOCAL_PROJECT_FILENAME);
+            IPath projectFilePath = getCorrespondingProjectRootPath(processItem).append(FileConstants.LOCAL_PROJECT_FILENAME);
 
             String processPath = processItem.getState().getPath();
             processPath = processPath == null || processPath.equals("") ? "" : processPath;
 
-            IPath itemFilePath = getEmfFileRootPath(null).append(processPath).append(
+            IPath emfFileRootPath = getEmfFileRootPath(processItem);
+            IPath itemFilePath = emfFileRootPath.append(processPath).append(
                     jobName + "_" + jobVersion + "." + FileConstants.ITEM_EXTENSION);
-            IPath propertiesFilePath = getEmfFileRootPath(null).append(processPath).append(
+            IPath propertiesFilePath = emfFileRootPath.append(processPath).append(
                     jobName + "_" + jobVersion + "." + FileConstants.PROPERTIES_EXTENSION);
 
             List<URL> projectAndEmfFileUrls = new ArrayList<URL>();
             projectAndEmfFileUrls.add(FileLocator.toFileURL(projectFilePath.toFile().toURL()));
             projectAndEmfFileUrls.add(FileLocator.toFileURL(itemFilePath.toFile().toURL()));
             projectAndEmfFileUrls.add(FileLocator.toFileURL(propertiesFilePath.toFile().toURL()));
-            resource.addResources(basePath, projectAndEmfFileUrls);
+            resource.addResources(basePath + PATH_SEPARATOR + projectName, projectAndEmfFileUrls);
 
             String jobFolderName = JavaResourcesHelper.getJobFolderName(jobName, jobVersion);
 
@@ -281,7 +276,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             path = path.append(projectName).append(jobFolderName).append(jobName + ".java");
             List<URL> javaFileUrls = new ArrayList<URL>();
             javaFileUrls.add(FileLocator.toFileURL(path.toFile().toURL()));
-            resource.addResources(basePath + PATH_SEPARATOR + jobFolderName, javaFileUrls);
+            resource.addResources(basePath + PATH_SEPARATOR + projectName + PATH_SEPARATOR + jobFolderName, javaFileUrls);
         } catch (Exception e) {
             ExceptionHandler.process(e);
         }
@@ -335,6 +330,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                     .get(ExportChoice.needJob)));
             addContextScripts(jobInfo.getProcessItem(), jobInfo.getJobName(), jobInfo.getJobVersion(), resource, exportChoice
                     .get(ExportChoice.needContext));
+            addDepencies(jobInfo.getProcessItem(), BooleanUtils.isTrue(exportChoice.get(ExportChoice.needDependencies)), resource);
         }
 
         return allJobScripts;
@@ -644,82 +640,6 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             }
         }
         return contextNameList;
-    }
-
-    /**
-     * DOC qwei Comment method "addMetadata".
-     * 
-     * @param processItem
-     * @param resource
-     */
-    private void addMetadata(ProcessItem processItem, ExportFileResource resource) {
-        IDesignerCoreService designerCoreService = CorePlugin.getDefault().getDesignerCoreService();
-        if (designerCoreService == null) {
-            return;
-        }
-        IProcess process = null;
-        process = designerCoreService.getProcessFromProcessItem(processItem);
-        if (process != null) {
-            List<INode> nodes = (List<INode>) process.getGraphicalNodes();
-            for (INode node : nodes) {
-                List<IElementParameter> eleParams = (List<IElementParameter>) node.getElementParameters();
-                for (IElementParameter elementParameter : eleParams) {
-                    String repositoryMetadataId = "";
-                    if (elementParameter.getName().equals("PROPERTY")) {
-                        repositoryMetadataId = (String) elementParameter.getChildParameters().get("REPOSITORY_PROPERTY_TYPE")
-                                .getValue();
-                    }
-                    if (elementParameter.getName().equals("SCHEMA")) {
-                        repositoryMetadataId = (String) elementParameter.getChildParameters().get("REPOSITORY_SCHEMA_TYPE")
-                                .getValue();
-                    }
-                    if (elementParameter.getName().equals("QUERYSTORE")) {
-                        repositoryMetadataId = (String) elementParameter.getChildParameters().get("REPOSITORY_QUERYSTORE_TYPE")
-                                .getValue();
-                    }
-                    String[] id = repositoryMetadataId.split("-");
-                    if (id.length > 0) {
-
-                        if (repositoryMetadataId != null && !repositoryMetadataId.equals("")) {
-                            try {
-                                IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
-                                IRepositoryObject lastVersion = factory.getLastVersion(id[0].trim());
-                                if (lastVersion != null) {
-                                    Item item2 = lastVersion.getProperty().getItem();
-                                    if (item2 != null) {
-                                        ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(item2);
-                                        IPath typeFolderPath = new Path(ERepositoryObjectType.getFolderName(itemType));
-                                        String metadataName = item2.getProperty().getLabel();
-                                        String metadataVersion = item2.getProperty().getVersion();
-                                        String metadataPath = item2.getState().getPath();
-                                        metadataPath = metadataPath == null || metadataPath.equals("") ? "" : metadataPath;
-                                        IPath itemFilePath = getCorrespondingProjectRootPath(item2)
-                                                .append(typeFolderPath)
-                                                .append(metadataPath)
-                                                .append(metadataName + "_" + metadataVersion + "." + FileConstants.ITEM_EXTENSION);
-                                        IPath propertiesFilePath = getCorrespondingProjectRootPath(item2).append(typeFolderPath)
-                                                .append(metadataPath).append(
-                                                        metadataName + "_" + metadataVersion + "."
-                                                                + FileConstants.PROPERTIES_EXTENSION);
-                                        List<URL> metadataNameFileUrls = new ArrayList<URL>();
-                                        metadataNameFileUrls.add(FileLocator.toFileURL(itemFilePath.toFile().toURL()));
-                                        metadataNameFileUrls.add(FileLocator.toFileURL(propertiesFilePath.toFile().toURL()));
-                                        resource.addResources(typeFolderPath.toOSString(), metadataNameFileUrls);
-                                    }
-                                }
-                            } catch (Exception e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
-                            }
-
-                        }
-                    }
-
-                }
-
-            }
-
-        }
     }
 
     /*

@@ -17,17 +17,13 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
-import org.talend.repository.ui.actions.metadata.CreateTableAction;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryView;
 
@@ -199,7 +195,7 @@ public class RepositoryNodeUtilities {
             List<RepositoryNode> folderChild = new ArrayList<RepositoryNode>();
 
             for (RepositoryNode childNode : children) {
-                if (isRepositoryFolder(childNode)) {
+                if (isRepositoryFolder(childNode) || childNode.getType() == ENodeType.REFERENCED_PROJECT) {
                     folderChild.add(childNode);
                 } else if (childNode.getId().equals(curNode.getId()) && childNode.getObjectType() == curNode.getType()) {
                     return childNode;
@@ -222,6 +218,10 @@ public class RepositoryNodeUtilities {
             return;
         }
         final ERepositoryObjectType rootContextType = rootNode.getContentType();
+        // for referenced project
+        if (rootContextType == ERepositoryObjectType.REFERENCED_PROJECTS || rootNode.getType() == ENodeType.REFERENCED_PROJECT) {
+            expandParentNode(view, rootNode);
+        }
         if (rootContextType != null) {
             final ERepositoryObjectType curType = curNode.getType();
             ERepositoryObjectType tmpType = null;

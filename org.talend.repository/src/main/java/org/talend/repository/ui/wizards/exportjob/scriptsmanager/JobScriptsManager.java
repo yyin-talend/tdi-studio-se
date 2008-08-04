@@ -27,6 +27,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
@@ -35,7 +36,6 @@ import org.eclipse.core.runtime.Platform;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.language.LanguageManager;
-import org.talend.core.model.properties.Item;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
@@ -470,9 +470,22 @@ public abstract class JobScriptsManager {
         return root;
     }
 
+    /**
+     * ggu Comment method "getCorrespondingProjectRootPath".
+     * 
+     * if item is null, will return currrent probject path.
+     */
     protected IPath getCorrespondingProjectRootPath(Item item) throws Exception {
-        IProject project = RepositoryPlugin.getDefault().getRunProcessService().getProject(LanguageManager.getCurrentLanguage());
-
+        org.talend.core.model.properties.Project p = CorePlugin.getDefault().getProxyRepositoryFactory().getProject(item);
+        IProject project = null;
+        if (p != null) {
+            project = ResourcesPlugin.getWorkspace().getRoot().getProject(p.getTechnicalLabel().toUpperCase());
+            if (project != null) {
+                return project.getLocation();
+            }
+        }
+        // maybe, not used
+        project = RepositoryPlugin.getDefault().getRunProcessService().getProject(LanguageManager.getCurrentLanguage());
         IPath root = project.getParent().getLocation().append(getCorrespondingProjectName(item).toUpperCase());
         return root;
     }
@@ -528,42 +541,47 @@ public abstract class JobScriptsManager {
                         repositoryMetadataId = (String) elementParameter.getChildParameters().get("REPOSITORY_QUERYSTORE_TYPE")
                                 .getValue();
                     }
-                    // String[] id = repositoryMetadataId.split("-");
-                    // if (id.length > 0) {
 
                     if (repositoryMetadataId != null && !repositoryMetadataId.equals("")) {
-                        try {
-                            IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
-                            IRepositoryObject lastVersion = factory.getLastVersion(repositoryMetadataId.trim());
-                            if (lastVersion != null) {
-                                Item item2 = lastVersion.getProperty().getItem();
-                                if (item2 != null) {
-                                    ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(item2);
-                                    IPath typeFolderPath = new Path(ERepositoryObjectType.getFolderName(itemType));
-                                    String metadataName = item2.getProperty().getLabel();
-                                    String metadataVersion = item2.getProperty().getVersion();
-                                    String metadataPath = item2.getState().getPath();
-                                    metadataPath = metadataPath == null || metadataPath.equals("") ? "" : metadataPath;
-                                    IPath itemFilePath = getCorrespondingProjectRootPath(item2).append(typeFolderPath).append(
-                                            metadataPath).append(
-                                            metadataName + "_" + metadataVersion + "." + FileConstants.ITEM_EXTENSION);
-                                    IPath propertiesFilePath = getCorrespondingProjectRootPath(item2).append(typeFolderPath)
-                                            .append(metadataPath).append(
-                                                    metadataName + "_" + metadataVersion + "."
-                                                            + FileConstants.PROPERTIES_EXTENSION);
-                                    List<URL> metadataNameFileUrls = new ArrayList<URL>();
-                                    metadataNameFileUrls.add(FileLocator.toFileURL(itemFilePath.toFile().toURL()));
-                                    metadataNameFileUrls.add(FileLocator.toFileURL(propertiesFilePath.toFile().toURL()));
-                                    resource.addResources(typeFolderPath.toOSString(), metadataNameFileUrls);
-                                }
-                            }
-                        } catch (Exception e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
+                        String[] id = repositoryMetadataId.split(" - ");
+                        if (id.length > 0) {
+                            repositoryMetadataId = id[0];
+                            try {
+                                IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
+                                IRepositoryObject lastVersion = factory.getLastVersion(repositoryMetadataId.trim());
+                                if (lastVersion != null) {
+                                    Item item2 = lastVersion.getProperty().getItem();
+                                    if (item2 != null) {
+                                        ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(item2);
+                                        IPath typeFolderPath = new Path(ERepositoryObjectType.getFolderName(itemType));
+                                        String metadataName = item2.getProperty().getLabel();
+                                        String metadataVersion = item2.getProperty().getVersion();
+                                        String metadataPath = item2.getState().getPath();
 
+                                        metadataPath = metadataPath == null || metadataPath.equals("") ? "" : metadataPath;
+                                        IPath projectRootPath = getCorrespondingProjectRootPath(item2);
+                                        String projectName = getCorrespondingProjectName(item2);
+
+                                        IPath itemFilePath = projectRootPath.append(typeFolderPath).append(metadataPath).append(
+                                                metadataName + "_" + metadataVersion + "." + FileConstants.ITEM_EXTENSION);
+                                        IPath propertiesFilePath = projectRootPath.append(typeFolderPath).append(metadataPath)
+                                                .append(
+                                                        metadataName + "_" + metadataVersion + "."
+                                                                + FileConstants.PROPERTIES_EXTENSION);
+                                        List<URL> metadataNameFileUrls = new ArrayList<URL>();
+                                        metadataNameFileUrls.add(FileLocator.toFileURL(itemFilePath.toFile().toURL()));
+                                        metadataNameFileUrls.add(FileLocator.toFileURL(propertiesFilePath.toFile().toURL()));
+                                        String basePath = JOB_SOURCE_FOLDER_NAME + PATH_SEPARATOR + projectName + PATH_SEPARATOR
+                                                + typeFolderPath.toOSString();
+                                        resource.addResources(basePath, metadataNameFileUrls);
+                                    }
+                                }
+                            } catch (Exception e) {
+                                ExceptionHandler.process(e);
+                            }
+
+                        }
                     }
-                    // }
 
                 }
 
@@ -593,15 +611,21 @@ public abstract class JobScriptsManager {
                             String contextName = item2.getProperty().getLabel();
                             String contextVersion = item2.getProperty().getVersion();
                             String contextPath = item2.getState().getPath();
+
                             contextPath = contextPath == null || contextPath.equals("") ? "" : contextPath;
-                            IPath itemFilePath = getEmfContextRootPath(item2).append(contextPath).append(
+                            IPath emfContextRootPath = getEmfContextRootPath(item2);
+                            String projectName = getCorrespondingProjectName(item2);
+
+                            IPath itemFilePath = emfContextRootPath.append(contextPath).append(
                                     contextName + "_" + contextVersion + "." + FileConstants.ITEM_EXTENSION);
-                            IPath propertiesFilePath = getEmfContextRootPath(item2).append(contextPath).append(
+                            IPath propertiesFilePath = emfContextRootPath.append(contextPath).append(
                                     contextName + "_" + contextVersion + "." + FileConstants.PROPERTIES_EXTENSION);
                             List<URL> contextFileUrls = new ArrayList<URL>();
                             contextFileUrls.add(FileLocator.toFileURL(itemFilePath.toFile().toURL()));
                             contextFileUrls.add(FileLocator.toFileURL(propertiesFilePath.toFile().toURL()));
-                            resource.addResources(JOB_CONTEXT_FOLDER, contextFileUrls);
+                            String basePath = JOB_SOURCE_FOLDER_NAME + PATH_SEPARATOR + projectName + PATH_SEPARATOR
+                                    + JOB_CONTEXT_FOLDER;
+                            resource.addResources(basePath, contextFileUrls);
                         }
                     } catch (Exception e) {
                         ExceptionHandler.process(e);

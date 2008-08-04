@@ -436,27 +436,29 @@ public class JobPerlScriptsManager extends JobScriptsManager {
         // super.addSource(processItem, needSource, resource, basePath, selectedJobVersion);
         // Get java src
         try {
+            String projectName = getCorrespondingProjectName(processItem);
             String jobName = processItem.getProperty().getLabel();
             String jobVersion = processItem.getProperty().getVersion();
             if (!isMultiNodes() && selectedJobVersion != null && selectedJobVersion.length == 1) {
                 jobVersion = selectedJobVersion[0];
             }
 
-            IPath projectFilePath = getCorrespondingProjectRootPath(null).append(FileConstants.LOCAL_PROJECT_FILENAME);
+            IPath projectFilePath = getCorrespondingProjectRootPath(processItem).append(FileConstants.LOCAL_PROJECT_FILENAME);
 
             String processPath = processItem.getState().getPath();
             processPath = processPath == null || processPath.equals("") ? "" : processPath;
 
-            IPath itemFilePath = getEmfFileRootPath(null).append(processPath).append(
+            IPath emfFileRootPath = getEmfFileRootPath(processItem);
+            IPath itemFilePath = emfFileRootPath.append(processPath).append(
                     jobName + "_" + jobVersion + "." + FileConstants.ITEM_EXTENSION);
-            IPath propertiesFilePath = getEmfFileRootPath(null).append(processPath).append(
+            IPath propertiesFilePath = emfFileRootPath.append(processPath).append(
                     jobName + "_" + jobVersion + "." + FileConstants.PROPERTIES_EXTENSION);
 
             List<URL> projectAndEmfFileUrls = new ArrayList<URL>();
             projectAndEmfFileUrls.add(FileLocator.toFileURL(projectFilePath.toFile().toURL()));
             projectAndEmfFileUrls.add(FileLocator.toFileURL(itemFilePath.toFile().toURL()));
             projectAndEmfFileUrls.add(FileLocator.toFileURL(propertiesFilePath.toFile().toURL()));
-            resource.addResources(basePath, projectAndEmfFileUrls);
+            resource.addResources(basePath + PATH_SEPARATOR + projectName, projectAndEmfFileUrls);
 
         } catch (Exception e) {
             ExceptionHandler.process(e);
