@@ -479,7 +479,7 @@
                label="Upate modified jobs"
                style="push"
                toolbarPath="Default"
-               tooltip="Detecte and update all jobs">
+               tooltip="Detect and update all jobs">
          </action>
          <action
                class="org.talend.repository.ui.actions.toolbar.ProjectSettingsAction"
