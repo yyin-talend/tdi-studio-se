@@ -473,7 +473,7 @@ if(data_action.equals("UPDATE")) {
     	for(java.util.Map<String, String> option : nlsoptions) {
     		String key = option.get("KEY");
         	String value = option.get("VALUE");
-        	if(value != null && value.trim().length()>2){
+        	if(value != null && value.trim().length()>0){
 %>
         envParam.add("<%=key%>=<%=value%>");
 <%
