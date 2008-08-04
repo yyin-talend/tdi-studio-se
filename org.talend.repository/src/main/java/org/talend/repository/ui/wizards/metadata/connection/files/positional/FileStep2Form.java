@@ -89,8 +89,6 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
 
     private LabelledCombo rowSeparatorCombo;
 
-    private LabelledCombo textEnclosureCombo;
-
     private LabelledCheckboxCombo rowsToSkipHeaderCheckboxCombo;
 
     private LabelledCheckboxCombo rowsToSkipLimitCheckboxCombo;
@@ -99,13 +97,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
 
     private LabelledText rowSeparatorText;
 
-    private LabelledCombo escapeCharCombo;
-
     private Button emptyRowsToSkipCheckbox;
-
-    private Label escapeCharFlag;
-
-    private Label textEnclosureFlag;
 
     /**
      * Fields use to preview.
@@ -184,27 +176,9 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
         emptyRowsToSkipCheckbox.setSelection(getConnection().isRemoveEmptyRow());
         firstRowIsCaptionCheckbox.setSelection(getConnection().isFirstLineCaption());
 
-        // Fields to the Group Escape Char Settings
-        textEnclosureCombo.select(0);
-        escapeCharCombo.select(0);
-
-        textEnclosureCombo.setEnabled(true);
-        escapeCharCombo.setEnabled(true);
-
-        String s = getConnection().getEscapeChar();
-        if (!(s == null) && !s.equals("") && !s.equals(EMPTY_VALUE)) { //$NON-NLS-1$
-            escapeCharCombo.setText(s);
-        }
-        s = getConnection().getTextEnclosure();
-        if (!(s == null) && !s.equals("") && !s.equals(EMPTY_VALUE)) { //$NON-NLS-1$
-            textEnclosureCombo.setText(s);
-        }
-
         // clearSelection of the selected combo
         encodingCombo.clearSelection();
         rowSeparatorCombo.clearSelection();
-        escapeCharCombo.clearSelection();
-        textEnclosureCombo.clearSelection();
 
         emptyRowsToSkipCheckbox.setSelection(getConnection().isRemoveEmptyRow());
         checkFieldsValue();
@@ -222,8 +196,6 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
         fieldSeparatorText.setReadOnly(isReadOnly());
         rowSeparatorCombo.setReadOnly(isReadOnly());
         rowSeparatorText.setReadOnly(isReadOnly());
-        escapeCharCombo.setReadOnly(isReadOnly());
-        textEnclosureCombo.setReadOnly(isReadOnly());
         // rowsToSkipHeaderCheckboxCombo.setReadOnly(isReadOnly());
         // rowsToSkipFooterCheckboxCombo.setReadOnly(isReadOnly());
         // rowsToSkipLimitCheckboxCombo.setReadOnly(isReadOnly());
@@ -291,34 +263,6 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
         gridData = new GridData(SWT.FILL, SWT.BOTTOM, true, false);
         gridData.horizontalSpan = 3;
         emptyRowsToSkipCheckbox.setLayoutData(gridData);
-
-    }
-
-    /**
-     * add Field to Group Escape Char.
-     * 
-     * @param mainComposite
-     * @param form
-     * @param width
-     * @param height
-     */
-    private void addGroupEscapeChar(final Composite mainComposite, final int width, final int height) {
-
-        // Composite Escape Char
-        Group group = Form.createGroup(mainComposite, 2, Messages.getString("FileStep2.groupEscapeCharSettings"), height); //$NON-NLS-1$
-        Composite compositeEscapeChar = Form.startNewDimensionnedGridLayout(group, 3, width, height);
-
-        // escape Char Combo
-        escapeCharCombo = new LabelledCombo(compositeEscapeChar, Messages.getString("FileStep2.escapeChar"), Messages //$NON-NLS-1$
-                .getString("FileStep2.escapeCharTip"), ESCAPE_CHAR_DATA, 1, false, SWT.READ_ONLY); //$NON-NLS-1$
-        escapeCharFlag = new Label(compositeEscapeChar, SWT.NONE);
-        escapeCharFlag.setText("                            "); //$NON-NLS-1$
-
-        // Text Enclosure Combo
-        textEnclosureCombo = new LabelledCombo(compositeEscapeChar, Messages.getString("FileStep2.textEnclosure"), Messages //$NON-NLS-1$
-                .getString("FileStep2.textEnclosureTip"), TEXT_ENCLOSURE_DATA, 1, false, SWT.READ_ONLY); //$NON-NLS-1$
-        textEnclosureFlag = new Label(compositeEscapeChar, SWT.NONE);
-        textEnclosureFlag.setText("                            "); //$NON-NLS-1$
 
     }
 
@@ -412,7 +356,6 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
 
         addGroupFileSettings(mainComposite, 400, 110);
         addGroupRowsToSkip(mainComposite, 300, 110);
-        addGroupEscapeChar(mainComposite, 400, 85);
         addGroupLimit(mainComposite, 300, 85);
         addGroupFileViewer(this, 700, 200);
 
@@ -658,32 +601,6 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
             @Override
             public void widgetSelected(SelectionEvent e) {
                 getConnection().setRemoveEmptyRow(emptyRowsToSkipCheckbox.getSelection());
-                checkFieldsValue();
-            }
-        });
-
-        // Escape Char Combo
-        escapeCharCombo.addModifyListener(new ModifyListener() {
-
-            public void modifyText(final ModifyEvent e) {
-                if (escapeCharCombo.getText() != null && !("").equals(escapeCharCombo.getText()) //$NON-NLS-1$
-                        && !(EMPTY_VALUE).equals(escapeCharCombo.getText())) {
-                    getConnection().setEscapeChar(escapeCharCombo.getText());
-                } else {
-                    getConnection().setEscapeChar(null);
-                }
-                checkFieldsValue();
-            }
-        });
-        textEnclosureCombo.addModifyListener(new ModifyListener() {
-
-            public void modifyText(final ModifyEvent e) {
-                if (textEnclosureCombo.getText() != null && !("").equals(textEnclosureCombo.getText()) //$NON-NLS-1$
-                        && !(EMPTY_VALUE).equals(textEnclosureCombo.getText())) {
-                    getConnection().setTextEnclosure(textEnclosureCombo.getText());
-                } else {
-                    getConnection().setTextEnclosure(null);
-                }
                 checkFieldsValue();
             }
         });
@@ -1032,19 +949,6 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
                     return false;
                 }
             }
-        }
-
-        // escape Char Combo
-        if (escapeCharCombo.getText() == "") { // || escapeCharCombo.getText().equals("\\") || //$NON-NLS-1$
-            // escapeCharCombo.getText().endsWith("\\"
-            updateStatus(IStatus.ERROR, Messages.getString("FileStep2.escapeCharAlert")); //$NON-NLS-1$
-            return false;
-        }
-
-        if (textEnclosureCombo.getText() == "") { // || textEnclosureCombo.getText().equals("\\") || //$NON-NLS-1$
-            // textEnclosureCombo.getText().endsWith("\\")
-            updateStatus(IStatus.ERROR, Messages.getString("FileStep2.textEnclosureAlert")); //$NON-NLS-1$
-            return false;
         }
 
         previewInformationLabel.setText(""); //$NON-NLS-1$
