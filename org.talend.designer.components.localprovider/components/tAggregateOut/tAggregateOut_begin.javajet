@@ -25,6 +25,7 @@ int sizeOperations = operations.size();
 //pretreatment opreations before aggregating
 List<String[]> funinOperations = new java.util.ArrayList<String[]>();
 boolean listFlag = false;
+boolean haveSTD_DEV = false;
 next:
 for(int i=0; i<sizeOperations; i++){
 	Map<String, String> operation = operations.get(i);
@@ -32,6 +33,9 @@ for(int i=0; i<sizeOperations; i++){
 	String in = operation.get("INPUT_COLUMN");
 	if(!listFlag && fun.equals("list")){
 		listFlag = true;
+	}
+	if(!haveSTD_DEV && fun.equals("std_dev")){
+		haveSTD_DEV = true;
 	}
 	if(fun.equals("sum") || fun.equals("count")){
 		for(int j=0; j<sizeOperations; j++){
@@ -67,7 +71,30 @@ int sizeOps = funinOperations.size();
 if(sizeOps>0){
 //
 //end
-    %>
+	if(haveSTD_DEV){
+%>
+class SD_<%=cid %> {
+
+	public double sd(Double[] data) {
+        final int n = data.length;
+        if (n < 2) {
+            return Double.NaN;
+        }
+        double d1 = 0d;
+        double d2 =0d;
+        
+        for (int i = 0; i < data.length; i++) {
+            d1 += (data[i]*data[i]);
+            d2 += data[i];
+        }
+        
+        return Math.sqrt((n*d1 - d2*d2)/n/n);
+    }
+}
+SD_<%=cid %> sd_<%=cid %> = new SD_<%=cid %>();
+<%
+	}
+%>
 
     class OperationStruct<%=cid %>{
 
@@ -106,6 +133,8 @@ if(sizeOps>0){
                     				    		String <%=funin[1] %>_<%=funin[0] %> = "";
                     				    <% } else if("list_object".equals(funin[0])) {%>
                     				    		java.util.List <%=funin[1] %>_<%=funin[0] %> = new java.util.ArrayList();
+                    				    <% } else if("std_dev".equals(funin[0])) {%>
+                    				    		java.util.List<Double> <%=funin[1] %>_<%=funin[0] %> = new java.util.ArrayList<Double>();
                     				    <% } else {%> 
                     				    		<%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> <%=funin[1] %>_<%=funin[0] %>;
                     				    <% } %>                                   

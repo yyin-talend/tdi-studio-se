@@ -453,6 +453,24 @@ if(<%=conn.getName() %>.<%=funin[1] %> != null){
 //
 				}
 			}
+			//standard deviation
+			if(funin[0].equals("std_dev")){
+				if(!funin[2].equals("true")){
+//
+//end%>
+operation_result_<%=cid %>.<%=funin[1] %>_std_dev.add(Double.valueOf(<%=conn.getName() %>.<%=funin[1] %>));
+<%//start
+//
+				}else{
+//
+//end%>
+if(<%=conn.getName() %>.<%=funin[1] %> != null){
+	operation_result_<%=cid %>.<%=funin[1] %>_std_dev.add(Double.valueOf(<%=conn.getName() %>.<%=funin[1] %>));
+}
+<%//start
+//
+				}
+			}
 			if(funin[0].equals("distinct")){
 				if(!funin[2].equals("true")){
 //

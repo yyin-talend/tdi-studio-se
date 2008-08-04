@@ -203,7 +203,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 					}
                 				}
             				}
-            				if(function.equals("list_object")){
+            				if(function.equals("std_dev")|| function.equals("list_object")){//force to sameType
             					sameType = true;
             				}
                 			if(function.equals("avg")){
@@ -255,7 +255,20 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     						<% } else if(function.equals("list_object")) {
     							%>
     								aggregated_row_<%=cid %>.<%=outOperation %> = operation_result_<%=cid %>.<%=inOperation %>_<%=function %>;
-    						<% } else if(function.equals("distinct")) {
+    						<% } else if(function.equals("std_dev")) {
+    								if(javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.CHARACTER || javaType == JavaTypesManager.INTEGER || javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.FLOAT || javaType == JavaTypesManager.DOUBLE){
+    							%>
+    								aggregated_row_<%=cid %>.<%=outOperation %> = (<%=typeName%>)sd_<%=cid %>.sd(operation_result_<%=cid %>.<%=inOperation %>_<%=function %>.toArray(new Double[0]));
+    						<% 		}else if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){
+							%>aggregated_row_<%=cid %>.<%=outOperation %> = String.valueOf(sd_<%=cid %>.sd(operation_result_<%=cid %>.<%=inOperation %>_<%=function %>.toArray(new Double[0])));
+							<%
+    								}else{
+							%>if(true){
+								throw new RuntimeException("Output column's type is not applicable for standard deviation result.");
+							}
+							<%
+    								}
+    							} else if(function.equals("distinct")) {
     							if(sameType){%>
     								aggregated_row_<%=cid %>.<%=outOperation %> = operation_result_<%=cid %>.<%=inOperation %>_<%=function %>.size();
     							<%}else{
