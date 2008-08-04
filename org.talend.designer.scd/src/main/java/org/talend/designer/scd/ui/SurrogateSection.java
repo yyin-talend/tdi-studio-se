@@ -13,7 +13,6 @@
 package org.talend.designer.scd.ui;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -454,14 +453,20 @@ public class SurrogateSection extends ScdSection {
         int found = indexOf(arr, value);
 
         if (found > -1) {
-            int[] newArr = Arrays.copyOf(arr, arr.length - 1);
+            int[] newArr = copyOfArray(arr, arr.length - 1);
             if (found < newArr.length) {
                 newArr[found] = arr[arr.length - 1]; // replace with the last element
             }
             return newArr;
         } else {
-            return Arrays.copyOf(arr, arr.length);
+            return copyOfArray(arr, arr.length);
         }
+    }
+
+    public static int[] copyOfArray(int[] original, int newLength) {
+        int[] copy = new int[newLength];
+        System.arraycopy(original, 0, copy, 0, Math.min(original.length, newLength));
+        return copy;
     }
 
     /**
@@ -475,9 +480,9 @@ public class SurrogateSection extends ScdSection {
         int found = indexOf(arr, value);
 
         if (found > -1) {
-            return Arrays.copyOf(arr, arr.length);
+            return copyOfArray(arr, arr.length);
         } else {
-            int[] newArr = Arrays.copyOf(arr, arr.length + 1);
+            int[] newArr = copyOfArray(arr, arr.length + 1);
             newArr[arr.length] = value;
             return newArr;
         }
