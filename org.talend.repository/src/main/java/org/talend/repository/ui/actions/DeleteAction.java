@@ -12,12 +12,15 @@
 // ============================================================================
 package org.talend.repository.ui.actions;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -110,12 +113,8 @@ public class DeleteAction extends AContextualAction {
                         }
 
                     } else if (node.getType() == ENodeType.SIMPLE_FOLDER) {
-                        if (!node.hasChildren()) {
-                            IPath path = RepositoryNodeUtilities.getPath(node);
-                            ERepositoryObjectType objectType = (ERepositoryObjectType) node
-                                    .getProperties(EProperties.CONTENT_TYPE);
-                            factory.deleteFolder(objectType, path);
-                        }
+
+                        deleteFolder(node, factory);
                     }
                 } catch (PersistenceException e) {
                     MessageBoxExceptionHandler.process(e);
@@ -128,6 +127,58 @@ public class DeleteAction extends AContextualAction {
             ComponentUtilities.updatePalette();
         }
         refresh();
+    }
+
+    /**
+     * DOC qwei Comment method "deleteFolder".
+     */
+    private void deleteFolder(final RepositoryNode node, final IProxyRepositoryFactory factory) {
+        try {
+            IRunnableWithProgress op = new IRunnableWithProgress() {
+
+                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                    try {
+                        monitor.beginTask("Delete Running", 100);
+                        IPath path = RepositoryNodeUtilities.getPath(node);
+                        ERepositoryObjectType objectType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+                        List<RepositoryNode> repositoryList = node.getChildren();
+                        monitor.worked(10);
+                        int taskTotal = repositoryList.size();
+                        for (RepositoryNode repositoryNode : repositoryList) {
+                            deleteRepositoryNode(repositoryNode, factory);
+                            monitor.worked(1 * 100 / taskTotal);
+                        }
+                        factory.deleteFolder(objectType, path);
+                    } catch (Exception e) {
+
+                    }
+                    monitor.done();
+                    refresh();
+                }
+
+            };
+            PlatformUI.getWorkbench().getProgressService().run(true, true, op);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void deleteRepositoryNode(RepositoryNode repositoryNode, IProxyRepositoryFactory factory)
+            throws PersistenceException, BusinessException {
+        // TODO Auto-generated method stub
+        if (repositoryNode.getType() == ENodeType.SIMPLE_FOLDER) {
+            IPath path = RepositoryNodeUtilities.getPath(repositoryNode);
+            ERepositoryObjectType objectType = (ERepositoryObjectType) repositoryNode.getProperties(EProperties.CONTENT_TYPE);
+            List<RepositoryNode> repositoryList = repositoryNode.getChildren();
+            for (RepositoryNode repositoryNode2 : repositoryList) {
+                deleteRepositoryNode(repositoryNode2, factory);
+            }
+            factory.deleteFolder(objectType, path);
+
+        } else {
+            IRepositoryObject objToDelete = repositoryNode.getObject();
+            factory.deleteObjectLogical(objToDelete);
+        }
     }
 
     /**
@@ -367,7 +418,7 @@ public class DeleteAction extends AContextualAction {
                         this.setToolTipText(DELETE_LOGICAL_TOOLTIP);
                         if (node.hasChildren()) {
                             visible = true;
-                            enabled = false;
+                            enabled = true;
                         }
                     }
                     break;
