@@ -487,7 +487,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
             Composite composite2 = (Composite) super.createDialogArea(parent);
 
             ColorStyledText colorStyledText = createColorStyledText(composite2, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL
-                    | SWT.READ_ONLY);
+                    | SWT.READ_ONLY | SWT.WRAP);
             GridData gridData = new GridData(GridData.FILL_BOTH);
             gridData.minimumHeight = 130;
             gridData.heightHint = 150;
