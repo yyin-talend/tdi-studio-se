@@ -145,31 +145,30 @@ if(action.equals("EXPORT")) {
     List<IMetadataColumn> columnList = getColumnList(node);
     boolean useExistingConnection = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__").equals("true");
 	
-if(useExistingConnection){
-	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
-	String conn = "conn_" + connection;
-	String schema = "dbschema_" + connection;
-%>
-java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
-String dbschema_<%=cid%> = (String)globalMap.get("<%=schema %>");
-<%
-}
-else{ 
-%>
-    java.lang.Class.forName("net.sourceforge.jtds.jdbc.Driver").newInstance();
-    String url_<%=cid %> = "jdbc:jtds:sqlserver://" + <%=host%> + ":" + <%=port%> + "//" + <%=db%> + ";appName=" + projectName + ";" + <%=dbproperties%>;
-    java.sql.Connection conn_<%=cid %> = java.sql.DriverManager.getConnection(url_<%=cid %>, <%=user%>, <%=pas%>);
-	String dbschema_<%=cid%> = <%=dbschema%>;
-<%
-}
-%>
+    if(useExistingConnection) {
+    	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+    	String conn = "conn_" + connection;
+    	String schema = "dbschema_" + connection;
+        %>
+        java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
+        String dbschema_<%=cid%> = (String)globalMap.get("<%=schema %>");
+        <%
+    } else { 
+        %>
+        java.lang.Class.forName("net.sourceforge.jtds.jdbc.Driver").newInstance();
+        String url_<%=cid %> = "jdbc:jtds:sqlserver://" + <%=host%> + ":" + <%=port%> + "//" + <%=db%> + ";appName=" + projectName + ";" + <%=dbproperties%>;
+        java.sql.Connection conn_<%=cid %> = java.sql.DriverManager.getConnection(url_<%=cid %>, <%=user%>, <%=pas%>);
+    	String dbschema_<%=cid%> = <%=dbschema%>;
+    	<%
+    }
+    %>
     String tableName_<%=cid%> = null;
     if(dbschema_<%=cid%> == null || dbschema_<%=cid%>.trim().length() == 0) {
         tableName_<%=cid%> = <%=table%>;
     } else {
         tableName_<%=cid%> = dbschema_<%=cid%> + "].[" + <%=table%>;
     }
-<%
+    <%
     String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
     String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
     Manager manager = null;
@@ -181,13 +180,16 @@ else{
             %>
             java.sql.Statement stmtDrop_<%=cid%> = conn_<%=cid%>.createStatement();
             stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
+            stmtDrop_<%=cid%>.close();
             java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
             stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
+            stmtCreate_<%=cid%>.close();
             <%
         } else if(tableAction.equals("CREATE")) {
             %>
             java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
             stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
+            stmtCreate_<%=cid%>.close();
             <%
         } else if(tableAction.equals("CREATE_IF_NOT_EXISTS")) {
             %>
@@ -206,15 +208,24 @@ else{
                     break;
                 }
             }
+            rsTable_<%=cid%>.close();
             if(!whetherExist_<%=cid%>) {
                 java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
-                stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");            
+                stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
+                stmtCreate_<%=cid%>.close();
             }
             <%
         } else if(tableAction.equals("CLEAR")) {
             %>
             java.sql.Statement stmtClear_<%=cid%> = conn_<%=cid%>.createStatement();
-            stmtClear_<%=cid%>.executeUpdate("<%=manager.getTruncateTableSQL()%>");
+            stmtClear_<%=cid%>.executeUpdate("<%=manager.getDeleteTableSQL()%>");
+            stmtClear_<%=cid%>.close();
+            <%
+        } else if(tableAction.equals("TRUNCATE")) {
+            %>
+            java.sql.Statement stmtTrunc_<%=cid%> = conn_<%=cid%>.createStatement();
+            stmtTrunc_<%=cid%>.executeUpdate("<%=manager.getTruncateTableSQL()%>");
+            stmtTrunc_<%=cid%>.close();
             <%
         }        
     }    
@@ -257,8 +268,12 @@ else{
             <%
         }
     }
-    %>
-    conn_<%=cid %>.close();
-    <%
+    if(!useExistingConnection) {
+        %>
+        if(conn_<%=cid %> != null && !conn_<%=cid %>.isClosed()) {
+            conn_<%=cid %>.close();
+        }
+        <%
+    }
 }
 %>

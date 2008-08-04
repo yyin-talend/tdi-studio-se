@@ -120,8 +120,14 @@ if(columnList != null && columnList.size() > 0) {
         } else if(tableAction.equals("CLEAR")) {
             %>
             java.sql.Statement stmtClear_<%=cid%> = conn_<%=cid%>.createStatement();
-            stmtClear_<%=cid%>.executeUpdate("<%=manager.getTruncateTableSQL()%>");
+            stmtClear_<%=cid%>.executeUpdate("<%=manager.getDeleteTableSQL()%>");
             stmtClear_<%=cid%>.close();
+            <%
+        } else if(tableAction.equals("TRUNCATE")) {
+            %>
+            java.sql.Statement stmtTrunc_<%=cid%> = conn_<%=cid%>.createStatement();
+            stmtTrunc_<%=cid%>.executeUpdate("<%=manager.getTruncateTableSQL()%>");
+            stmtTrunc_<%=cid%>.close();
             <%
         }        
     }

@@ -70,13 +70,16 @@ if(columnList != null && columnList.size() > 0) {
         %>
         java.sql.Statement stmtDrop_<%=cid%> = con_<%=cid%>.createStatement();
         stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
+        stmtDrop_<%=cid%>.close();
         java.sql.Statement stmtCreate_<%=cid%> = con_<%=cid%>.createStatement();
         stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
+        stmtCreate_<%=cid%>.close();
         <%
     } else if(tableAction.equals("CREATE")) {
         %>
         java.sql.Statement stmtCreate_<%=cid%> = con_<%=cid%>.createStatement();
         stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
+        stmtCreate_<%=cid%>.close();
         <%
     } else if(tableAction.equals("CREATE_IF_NOT_EXISTS")) {
         %>
@@ -90,15 +93,24 @@ if(columnList != null && columnList.size() > 0) {
                 break;
             }
         }
+        rsTable_<%=cid%>.close();
         if(!whetherExist_<%=cid%>) {
             java.sql.Statement stmtCreate_<%=cid%> = con_<%=cid%>.createStatement();
-            stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");            
+            stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
+            stmtCreate_<%=cid%>.close();
         }
         <%
     } else if(tableAction.equals("CLEAR")) {
         %>
         java.sql.Statement stmtClear_<%=cid%> = con_<%=cid%>.createStatement();
-        stmtClear_<%=cid%>.executeUpdate("<%=manager.getTruncateTableSQL()%>");
+        stmtClear_<%=cid%>.executeUpdate("<%=manager.getDeleteTableSQL()%>");
+        stmtClear_<%=cid%>.close();
+        <%
+    } else if(tableAction.equals("TRUNCATE")) {
+        %>
+        java.sql.Statement stmtTrunc_<%=cid%> = con_<%=cid%>.createStatement();
+        stmtTrunc_<%=cid%>.executeUpdate("<%=manager.getTruncateTableSQL()%>");
+        stmtTrunc_<%=cid%>.close();
         <%
     }    
 }
