@@ -183,6 +183,10 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         if (stringConnection.contains("<port>")) { //$NON-NLS-1$
             portField.setEnabled(visible, parent);
         }
+        dbNameField.setEnabled(visible, parent);
+        additionParamField.setEnabled(visible, parent);
+        schemaField.setEnabled(visible, parent);
+
         if (stringConnection.contains("<sid>") || stringConnection.contains("<service_name>")) { //$NON-NLS-1$ //$NON-NLS-2$
             // sidOrDatabaseText.setEditable(visible);
         }
@@ -220,7 +224,7 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         }
 
         if (dbNameField.getTextControl(parent).isEnabled()) {
-            dbNameField.getTextControl(parent).setText(processQuotes(conn.getDatasourceName()));
+            dbNameField.getTextControl(parent).setText(processQuotes(conn.getSID()));
             dbNameField.getTextControl(parent).setEditable(false);
         } else {
             dbNameField.getTextControl(parent).setText("");
@@ -279,6 +283,9 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
      * @return
      */
     private String processQuotes(String text) {
+        if (text == null) {
+            return "";
+        }
         if (ContextParameterUtils.isContainContextParam(text)) {
             return text;
         } else {
@@ -686,7 +693,10 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
                     connectionItem = (ConnectionItem) dialog.getResult().getObject().getProperty().getItem();
                     String repositoryType = formRepositoryTypeText(connectionItem);
                     textRepositoryType.setText(repositoryType);
-                    updateDbFields(connectionItem);
+
+                    setDbFieldsEnable(true);
+                    updateEnableStateFromDisplay();
+                    // updateDbFields(connectionItem);
                 }
             }
 
