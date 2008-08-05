@@ -342,6 +342,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
         processedJob.add(process);
         addComponentModules(process, resource);
         addSource(process, exportChoice.get(ExportChoice.needSource), resource, JOB_SOURCE_FOLDER_NAME, selectedJobVersion);
+        addDepencies(process, BooleanUtils.isTrue(exportChoice.get(ExportChoice.needDependencies)), resource);
         Set<JobInfo> subjobInfos = ProcessorUtilities.getChildrenJobInfo(process);
         for (JobInfo subjobInfo : subjobInfos) {
             if (subjobInfo.getJobName().equals(rootName)) {
