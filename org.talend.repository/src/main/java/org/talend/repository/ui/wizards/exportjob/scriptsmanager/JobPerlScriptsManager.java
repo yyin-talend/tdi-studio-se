@@ -28,6 +28,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.EList;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
@@ -37,6 +38,7 @@ import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.utils.PerlResourcesHelper;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
@@ -110,6 +112,8 @@ public class JobPerlScriptsManager extends JobScriptsManager {
                 ExceptionHandler.process(e);
             }
 
+            addSource(processItem, BooleanUtils.isTrue(exportChoice.get(ExportChoice.needSource)), process[i],
+                    JOB_SOURCE_FOLDER_NAME, selectedJobVersion);
             List<URL> talendLibraries = getTalendLibraries(exportChoice.get(ExportChoice.needTalendLibraries));
             if (talendLibraries.size() > 0) {
                 process[i].addResources(LIBRARY_FOLDER_NAME + PATH_SEPARATOR + "talend", talendLibraries);
@@ -428,9 +432,9 @@ public class JobPerlScriptsManager extends JobScriptsManager {
     @Override
     protected void addSource(ProcessItem processItem, boolean needSource, ExportFileResource resource, String basePath,
             String... selectedJobVersion) {
-        if (!needSource) {
-            return;
-        }
+        // if (!needSource) {
+        // return;
+        // }
 
         // getItemResource(processItem, resource, basePath, selectedJobVersion);
         // super.addSource(processItem, needSource, resource, basePath, selectedJobVersion);
@@ -447,18 +451,22 @@ public class JobPerlScriptsManager extends JobScriptsManager {
 
             String processPath = processItem.getState().getPath();
             processPath = processPath == null || processPath.equals("") ? "" : processPath;
-
+            ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(processItem);
+            IPath typeFolderPath = new Path(ERepositoryObjectType.getFolderName(itemType));
             IPath emfFileRootPath = getEmfFileRootPath(processItem);
             IPath itemFilePath = emfFileRootPath.append(processPath).append(
                     jobName + "_" + jobVersion + "." + FileConstants.ITEM_EXTENSION);
             IPath propertiesFilePath = emfFileRootPath.append(processPath).append(
                     jobName + "_" + jobVersion + "." + FileConstants.PROPERTIES_EXTENSION);
 
-            List<URL> projectAndEmfFileUrls = new ArrayList<URL>();
-            projectAndEmfFileUrls.add(FileLocator.toFileURL(projectFilePath.toFile().toURL()));
-            projectAndEmfFileUrls.add(FileLocator.toFileURL(itemFilePath.toFile().toURL()));
-            projectAndEmfFileUrls.add(FileLocator.toFileURL(propertiesFilePath.toFile().toURL()));
-            resource.addResources(basePath + PATH_SEPARATOR + projectName, projectAndEmfFileUrls);
+            List<URL> projectUrls = new ArrayList<URL>();
+            List<URL> emfFileUrls = new ArrayList<URL>();
+            projectUrls.add(FileLocator.toFileURL(projectFilePath.toFile().toURL()));
+            resource.addResources(basePath + PATH_SEPARATOR + projectName, projectUrls);
+            emfFileUrls.add(FileLocator.toFileURL(itemFilePath.toFile().toURL()));
+            emfFileUrls.add(FileLocator.toFileURL(propertiesFilePath.toFile().toURL()));
+            resource.addResources(basePath + PATH_SEPARATOR + projectName + PATH_SEPARATOR + typeFolderPath.toOSString(),
+                    emfFileUrls);
 
         } catch (Exception e) {
             ExceptionHandler.process(e);

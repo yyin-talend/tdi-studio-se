@@ -28,6 +28,7 @@ import org.apache.commons.lang.BooleanUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
@@ -39,6 +40,7 @@ import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
@@ -238,10 +240,6 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     @Override
     protected void addSource(ProcessItem processItem, boolean needSource, ExportFileResource resource, String basePath,
             String... selectedJobVersion) {
-        if (!needSource) {
-            return;
-        }
-
         // getItemResource(processItem, resource, basePath, selectedJobVersion);
         // super.addSource(processItem, needSource, resource, basePath, selectedJobVersion);
         // Get java src
@@ -257,21 +255,27 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
             String processPath = processItem.getState().getPath();
             processPath = processPath == null || processPath.equals("") ? "" : processPath;
-
             IPath emfFileRootPath = getEmfFileRootPath(processItem);
+            ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(processItem);
+            IPath typeFolderPath = new Path(ERepositoryObjectType.getFolderName(itemType));
             IPath itemFilePath = emfFileRootPath.append(processPath).append(
                     jobName + "_" + jobVersion + "." + FileConstants.ITEM_EXTENSION);
             IPath propertiesFilePath = emfFileRootPath.append(processPath).append(
                     jobName + "_" + jobVersion + "." + FileConstants.PROPERTIES_EXTENSION);
 
-            List<URL> projectAndEmfFileUrls = new ArrayList<URL>();
-            projectAndEmfFileUrls.add(FileLocator.toFileURL(projectFilePath.toFile().toURL()));
-            projectAndEmfFileUrls.add(FileLocator.toFileURL(itemFilePath.toFile().toURL()));
-            projectAndEmfFileUrls.add(FileLocator.toFileURL(propertiesFilePath.toFile().toURL()));
-            resource.addResources(basePath + PATH_SEPARATOR + projectName, projectAndEmfFileUrls);
-
+            List<URL> projectUrls = new ArrayList<URL>();
+            List<URL> emfFileUrls = new ArrayList<URL>();
+            projectUrls.add(FileLocator.toFileURL(projectFilePath.toFile().toURL()));
+            resource.addResources(basePath + PATH_SEPARATOR + projectName, projectUrls);
+            emfFileUrls.add(FileLocator.toFileURL(itemFilePath.toFile().toURL()));
+            emfFileUrls.add(FileLocator.toFileURL(propertiesFilePath.toFile().toURL()));
+            resource.addResources(basePath + PATH_SEPARATOR + projectName + PATH_SEPARATOR + typeFolderPath.toOSString(),
+                    emfFileUrls);
             String jobFolderName = JavaResourcesHelper.getJobFolderName(jobName, jobVersion);
 
+            if (!needSource) {
+                return;
+            }
             IPath path = getSrcRootLocation();
             path = path.append(projectName).append(jobFolderName).append(jobName + ".java");
             List<URL> javaFileUrls = new ArrayList<URL>();

@@ -636,5 +636,4 @@ public abstract class JobScriptsManager {
 
         }
     }
-
 }
