@@ -15,10 +15,13 @@ package org.talend.repository.ui.wizards.newproject;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
+import org.eclipse.core.resources.IPathVariableManager;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -28,7 +31,9 @@ import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
 import org.eclipse.ui.internal.wizards.datatransfer.ArchiveFileManipulations;
 import org.eclipse.ui.internal.wizards.datatransfer.TarException;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardProjectsImportPage;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.CorePlugin;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.actions.importproject.ImportProjectsUtilities;
@@ -100,8 +105,12 @@ public class ImportProjectAsWizard extends Wizard {
             final String sourcePath = mainPage.getSourcePath();
             final boolean isArchive = mainPage.isArchive();
 
+            // see bug 4600, update the external lib path, make it possible to copy external jar files into tos
+            updateExternalLibPath();
+
             WorkspaceModifyOperation op = new WorkspaceModifyOperation() {
 
+                @Override
                 protected void execute(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                     try {
                         monitor.beginTask("", 1); //$NON-NLS-1$
@@ -114,8 +123,8 @@ public class ImportProjectAsWizard extends Wizard {
                                     new SubProgressMonitor(monitor, 1));
                         } else {
                             try {
-                                ImportProjectsUtilities.importArchiveProjectAs(getShell(), name, technicalName,
-                                        sourcePath, new SubProgressMonitor(monitor, 1));
+                                ImportProjectsUtilities.importArchiveProjectAs(getShell(), name, technicalName, sourcePath,
+                                        new SubProgressMonitor(monitor, 1));
                             } catch (TarException e) {
                                 throw new InvocationTargetException(e, "Encoutering problems opening archive file");
                             } catch (IOException e) {
@@ -155,4 +164,25 @@ public class ImportProjectAsWizard extends Wizard {
             // MessageBoxExceptionHandler.process(e, shell);
         }
     }
+
+    /**
+     * DOC hcw Comment method "updateExternalLibPath".
+     */
+    private void updateExternalLibPath() {
+        String destinationJavaPath = CorePlugin.getDefault().getLibrariesService().getJavaLibrariesPath();
+        String destinationPerlPath = CorePlugin.getDefault().getLibrariesService().getPerlLibrariesPath();
+
+        IPathVariableManager pathVariableManager = ResourcesPlugin.getWorkspace().getPathVariableManager();
+        try {
+            pathVariableManager.setValue(EXTERNAL_LIB_JAVA_PATH, new Path(destinationJavaPath));
+            pathVariableManager.setValue(EXTERNAL_LIB_PERL_PATH, new Path(destinationPerlPath));
+        } catch (CoreException e) {
+            ExceptionHandler.process(e);
+        }
+
+    }
+
+    public final static String EXTERNAL_LIB_JAVA_PATH = "external_lib_java_path";
+
+    public final static String EXTERNAL_LIB_PERL_PATH = "external_lib_perl_path";
 }
