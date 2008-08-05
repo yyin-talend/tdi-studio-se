@@ -187,7 +187,8 @@ public class StatsAndLogsViewHelper {
                 continue;
             }
 
-            if (PREFERENCE_STORE.getString(LANGUAGE_PREFIX + EParameterName.PROPERTY_TYPE.getName()).equals(EmfComponent.BUILTIN)) {
+            if (!PREFERENCE_STORE.getString(LANGUAGE_PREFIX + EParameterName.PROPERTY_TYPE.getName())
+                    .equals(EmfComponent.BUILTIN)) {
                 if (name.equals(EParameterName.DB_TYPE.getName())) {
                     elementParameter.setValue(PREFERENCE_STORE.getString(LANGUAGE_PREFIX + EParameterName.DB_TYPE.getName()));
                     continue;

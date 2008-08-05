@@ -46,6 +46,7 @@ import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.ui.proposal.TalendProposalUtils;
 import org.talend.designer.core.DesignerPlugin;
@@ -205,42 +206,42 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         }
 
         if (hostField.getTextControl(parent).isEnabled()) {
-            hostField.getTextControl(parent).setText(TalendTextUtils.addQuotes(conn.getServerName()));
+            hostField.getTextControl(parent).setText(processQuotes(conn.getServerName()));
             hostField.getTextControl(parent).setEnabled(false);
         } else {
             hostField.getTextControl(parent).setText("");
         }
 
         if (portField.getTextControl(parent).isEnabled()) {
-            portField.getTextControl(parent).setText(TalendTextUtils.addQuotes(conn.getPort()));
+            portField.getTextControl(parent).setText(processQuotes(conn.getPort()));
             portField.getTextControl(parent).setEnabled(false);
         } else {
             portField.getTextControl(parent).setText("");
         }
 
         if (dbNameField.getTextControl(parent).isEnabled()) {
-            dbNameField.getTextControl(parent).setText(TalendTextUtils.addQuotes(conn.getDatasourceName()));
+            dbNameField.getTextControl(parent).setText(processQuotes(conn.getDatasourceName()));
             dbNameField.getTextControl(parent).setEditable(false);
         } else {
             dbNameField.getTextControl(parent).setText("");
         }
 
         if (schemaField.getTextControl(parent).isEnabled()) {
-            schemaField.getTextControl(parent).setText(TalendTextUtils.addQuotes(conn.getSchema()));
+            schemaField.getTextControl(parent).setText(processQuotes(conn.getSchema()));
             schemaField.getTextControl(parent).setEditable(false);
         } else {
             schemaField.getTextControl(parent).setText("");
         }
 
         if (userField.getTextControl(parent).isEnabled()) {
-            userField.getTextControl(parent).setText(TalendTextUtils.addQuotes(conn.getUsername()));
+            userField.getTextControl(parent).setText(processQuotes(conn.getUsername()));
             userField.getTextControl(parent).setEditable(false);
         } else {
             userField.getTextControl(parent).setText("");
         }
 
         if (passwordField.getTextControl(parent).isEnabled()) {
-            passwordField.getTextControl(parent).setText(TalendTextUtils.addQuotes(conn.getPassword()));
+            passwordField.getTextControl(parent).setText(processQuotes(conn.getPassword()));
             passwordField.getTextControl(parent).setEditable(false);
         } else {
             passwordField.getTextControl(parent).setText("");
@@ -248,7 +249,7 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
 
         if (dabasePathField.getTextControl(parent).isEnabled()) {
             dabasePathField.getTextControl(parent).setText(
-                    conn.getDBRootPath() == null ? "" : TalendTextUtils.addQuotes(conn.getFileFieldName()));
+                    conn.getDBRootPath() == null ? "" : processQuotes(conn.getFileFieldName()));
             dabasePathField.getTextControl(parent).setEditable(false);
         } else {
             dabasePathField.getTextControl(parent).setText("");
@@ -256,7 +257,7 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         if (additionParamField != null) {
             if (additionParamField.getTextControl(parent).isEnabled()) {
                 additionParamField.getTextControl(parent).setText(
-                        conn.getAdditionalParams() == null ? "" : TalendTextUtils.addQuotes(conn.getAdditionalParams()));
+                        conn.getAdditionalParams() == null ? "" : processQuotes(conn.getAdditionalParams()));
                 additionParamField.getTextControl(parent).setEditable(false);
             } else {
                 additionParamField.getTextControl(parent).setText("");
@@ -269,6 +270,20 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
             }
         }
 
+    }
+
+    /**
+     * yzhang Comment method "processQuotes".
+     * 
+     * @param text
+     * @return
+     */
+    private String processQuotes(String text) {
+        if (ContextParameterUtils.isContainContextParam(text)) {
+            return text;
+        } else {
+            return TalendTextUtils.addQuotes(text);
+        }
     }
 
     private void resetAllDbFieldsContent() {
