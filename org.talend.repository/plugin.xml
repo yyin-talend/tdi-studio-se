@@ -895,6 +895,13 @@
             id="org.talend.repository.model.migration.QuoteWraptSSHcommandMigrationTask"
             name="wrap tSSH parameter with double quot to support context variable">
       </projecttask>
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.MigrationTaskForIssue4449"
+            description="change the value of &quot;Action on table&quot; from &quot;CLEAR&quot; to &quot;TRUNCATE&quot;"
+            id="org.talend.repository.model.migration.MigrationTaskForIssue4449"
+            name="MigrationTaskForIssue4449">
+      </projecttask>
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">
