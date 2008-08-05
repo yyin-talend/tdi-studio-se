@@ -57,13 +57,15 @@
 	 String outPattern = col.getPattern();
 	 String outTypeWhole = JavaTypesManager.getTypeToGenerate(col.getTalendType(), col.isNullable());
 	 String outType = outTypeWhole.contains(".") ? outTypeWhole.substring(outTypeWhole.lastIndexOf(".")+1) : outTypeWhole;
-	 
+	 if(outType.equals("byte[]")){outType = "byteArray";}
 	 for(IMetadataColumn preCol:preColumns){
 	 String preLabel = preCol.getLabel();	 
 	 	if(preLabel.equals(outLabel)){	 	
     	 	String inTypeWhole = JavaTypesManager.getTypeToGenerate(preCol.getTalendType(), preCol.isNullable());
     	 	String inType = inTypeWhole.contains(".") ? inTypeWhole.substring(inTypeWhole.lastIndexOf(".")+1) : inTypeWhole;
+    	 	if(inType.equals("byte[]")){inType = "byteArray";}
 %>
+
 <%if((outType.equals("Date") && inType.equals("String"))||(outType.equals("String")&& inType.equals("Date"))){%>
 	 	<%=outconnName %>.<%=outLabel %> = TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>, <%=outPattern%>);
 <%}else{%>
@@ -88,6 +90,8 @@
 			String inType = inTypeWhole.contains(".") ? inTypeWhole.substring(inTypeWhole.lastIndexOf(".")+1) : inTypeWhole;
 			String outTypeWhole = JavaTypesManager.getTypeToGenerate(out.getTalendType(), out.isNullable());
 			String outType = outTypeWhole.contains(".") ? outTypeWhole.substring(outTypeWhole.lastIndexOf(".")+1) : outTypeWhole;
+			if(outType.equals("byte[]")){outType = "byteArray";}
+			if(inType.equals("byte[]")){inType = "byteArray";}
 			String outLabel = out.getLabel();
 			String outPattern = out.getPattern();
 			String preLabel = in.getLabel();
