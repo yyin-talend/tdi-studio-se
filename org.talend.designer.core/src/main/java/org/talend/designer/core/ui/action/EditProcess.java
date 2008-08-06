@@ -181,6 +181,9 @@ public class EditProcess extends AContextualAction {
     private boolean isLastJobVersion(RepositoryNode repositoryObject) {
         try {
             List<IRepositoryObject> allVersion = ProxyRepositoryFactory.getInstance().getAllVersion(repositoryObject.getId());
+            if (allVersion == null || allVersion.isEmpty()) {
+                return true;
+            }
             Collections.sort(allVersion, new IRepositoryObjectComparator());
             IRepositoryObject lastVersion = allVersion.get(allVersion.size() - 1);
             return lastVersion.getVersion().equals(repositoryObject.getObject().getVersion());
