@@ -108,7 +108,7 @@ public class PushToPaletteActionProvider extends CommonActionProvider {
                 FileCopy.copyComponentFolder(sourceComponentFolder, targetComponentFolder, true);
             }
 
-            CorePlugin.getDefault().getCodeGeneratorService().generationInit();
+            CorePlugin.getDefault().getCodeGeneratorService().initializeTemplates();
 
             MessageDialog warningMessageDialog = new MessageDialog(
                     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),

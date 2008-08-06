@@ -241,7 +241,7 @@ public class RepositoryService implements IRepositoryService {
             IRunProcessService runService = CorePlugin.getDefault().getRunProcessService();
             runService.deleteAllJobs(SwitchProjectAction.PLUGIN_MODEL);
 
-            CorePlugin.getDefault().getCodeGeneratorService().generationInit();
+            CorePlugin.getDefault().getCodeGeneratorService().initializeTemplates();
             CorePlugin.getDefault().getDesignerCoreService().synchronizeDesignerUI(
                     new PropertyChangeEvent(this, ComponentUtilities.NORMAL, null, null));
 
@@ -264,7 +264,7 @@ public class RepositoryService implements IRepositoryService {
      * 
      * @see org.talend.repository.model.IRepositoryService#initializeTalend()
      */
-    public void initializeTalend() {
+    public void initializePluginMode() {
 
         if (CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY) != null) {
             return;

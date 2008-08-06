@@ -145,7 +145,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     @Override
     public void init(IViewSite site) throws PartInitException {
         super.init(site);
-        CorePlugin.getDefault().getRepositoryService().initializeTalend();
+        CorePlugin.getDefault().getRepositoryService().initializePluginMode();
         if (!codeGenerationEngineInitialised && !CorePlugin.getDefault().getRepositoryService().isRCPMode()) {
 
             if (!CorePlugin.getDefault().getLibrariesService().isLibSynchronized()) {

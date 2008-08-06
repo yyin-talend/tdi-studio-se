@@ -29,7 +29,7 @@ import java.util.zip.CheckedInputStream;
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.IWorkspaceDescription;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -41,7 +41,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.emf.codegen.jet.JETEmitter;
 import org.eclipse.emf.codegen.jet.JETException;
 import org.eclipse.emf.common.CommonPlugin;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.CommonsPlugin;
@@ -57,8 +56,6 @@ import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentFileNaming;
 import org.talend.core.model.components.IComponentsFactory;
-import org.talend.core.model.properties.ComponentSetting;
-import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.core.utils.AccessingEmfJob;
 import org.talend.designer.codegen.CodeGeneratorActivator;
@@ -70,7 +67,6 @@ import org.talend.designer.codegen.config.TemplateUtil;
 import org.talend.designer.codegen.i18n.Messages;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ExternalNodesFactory;
-import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
  * Pool of initialized Jet Emitters. There are as many Emitters in this pool as Templzte available. Used for generation
@@ -97,17 +93,6 @@ public final class CodeGeneratorEmittersPoolFactory {
     private CodeGeneratorEmittersPoolFactory() {
     }
 
-    public static void setAutomaticBuild(boolean value) {
-        IWorkspace workspace = ResourcesPlugin.getWorkspace();
-        IWorkspaceDescription description = workspace.getDescription();
-        description.setAutoBuilding(value);
-        try {
-            workspace.setDescription(description);
-        } catch (CoreException e) {
-            // do nothing
-        }
-    }
-
     /**
      * initialization of the pool.
      * 
@@ -125,8 +110,6 @@ public final class CodeGeneratorEmittersPoolFactory {
 
                         jetFilesCompileFail.clear();
                         initInProgress = true;
-
-                        setAutomaticBuild(false);
 
                         IProgressMonitor monitorWrap = null;
                         if (!CommonsPlugin.isHeadless()) {
@@ -197,7 +180,14 @@ public final class CodeGeneratorEmittersPoolFactory {
                         return new Status(IStatus.ERROR, CodeGeneratorActivator.PLUGIN_ID, "Exception during Initialization", e);
                     } finally {
                         initInProgress = false;
-                        setAutomaticBuild(true);
+                        try {
+                            IWorkspace workspace = ResourcesPlugin.getWorkspace();
+                            IProject project = workspace.getRoot().getProject(".JETEmitters");
+                            project.build(IncrementalProjectBuilder.AUTO_BUILD, null);
+                        } catch (CoreException e) {
+                            ExceptionHandler.process(e);
+                        }
+
                     }
                     if (jetFilesCompileFail.size() > 0) {
                         StringBuilder message = new StringBuilder();

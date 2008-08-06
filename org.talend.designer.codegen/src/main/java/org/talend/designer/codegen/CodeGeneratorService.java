@@ -92,14 +92,4 @@ public class CodeGeneratorService implements ICodeGeneratorService {
     public Job initializeTemplates() {
         return CodeGeneratorEmittersPoolFactory.initialize();
     }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.codegen.ICodeGeneratorService#generationInit()
-     */
-    public void generationInit() {
-        CodeGeneratorEmittersPoolFactory.initialize();
-    }
-
 }
