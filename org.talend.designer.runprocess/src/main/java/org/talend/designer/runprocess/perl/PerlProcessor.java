@@ -54,7 +54,6 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
-import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.model.utils.PerlResourcesHelper;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.codegen.ICodeGenerator;
@@ -126,7 +125,7 @@ public class PerlProcessor extends Processor {
             if (perlProperties) {
                 String perlInterpreter = getInterpreter();
                 String perlLib = getLibraryPath();
-                String currentPerlProject = JavaResourcesHelper.getProjectFolderName(getProcess().getProperty().getItem());
+                String currentPerlProject = PerlResourcesHelper.getRootProjectName(getProcess().getProperty().getItem());
                 String codeLocation = getCodeLocation();
 
                 codeGen = service.createCodeGenerator(process, statistics, trace, perlInterpreter, perlLib, codeLocation,
