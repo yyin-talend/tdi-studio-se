@@ -122,8 +122,6 @@ import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.utils.workbench.preferences.GlobalConstant;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
-import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
@@ -135,6 +133,7 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.ISubjobContainer;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.Property;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
@@ -531,7 +530,9 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     protected JobResource currentJobResource;
 
-    protected final String projectName;
+    // protected final String projectName;
+
+    protected Project rootProject;
 
     protected final Map<String, JobResource> protectedJobs;
 
@@ -552,8 +553,10 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         setEditDomain(new TalendEditDomain(this));
         this.readOnly = readOnly;
 
-        projectName = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
-                .getLabel();
+        // projectName = ((RepositoryContext)
+        // CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
+        // .getLabel();
+
         currentJobResource = new JobResource();
         protectedJobs = new HashMap<String, JobResource>();
         initializeKeyBindingScopes();
@@ -656,6 +659,8 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
             if (input instanceof RepositoryEditorInput) {
                 process = ((RepositoryEditorInput) input).getLoadedProcess();
                 property = ((RepositoryEditorInput) input).getItem().getProperty();
+                rootProject = CorePlugin.getDefault().getProxyRepositoryFactory().getProject(
+                        ((RepositoryEditorInput) input).getItem());
             }
         } catch (Exception e) {
             MessageBoxExceptionHandler.process(e);
@@ -665,7 +670,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         if (property.getItem() instanceof ProcessItem) {
             currentJobResource.setJobInfo(new JobInfo((ProcessItem) property.getItem(), process.getContextManager()
                     .getDefaultContext().getName()));
-            currentJobResource.setProjectName(projectName);
+            currentJobResource.setProjectName(rootProject.getLabel());
 
             JobResourceManager.getInstance().addProtection(this);
         }
@@ -1317,6 +1322,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
         Set<JobInfo> subJobs = ProcessorUtilities.getChildrenJobInfo((ProcessItem) process.getProperty().getItem());
 
+        String projectName = rootProject.getLabel();
         for (JobInfo jobInfo : subJobs) {
             String protectedJob = "subjob_of_" + process.getLabel() + "_" + //$NON-NLS-1$ //$NON-NLS-2$ 
                     projectName + "_" + jobInfo.getJobName() + "_" + jobInfo.getJobVersion(); //$NON-NLS-1$ //$NON-NLS-2$
