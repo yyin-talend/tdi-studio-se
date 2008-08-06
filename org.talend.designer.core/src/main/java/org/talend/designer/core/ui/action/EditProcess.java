@@ -12,6 +12,10 @@
 // ============================================================================
 package org.talend.designer.core.ui.action;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -22,15 +26,19 @@ import org.eclipse.ui.PartInitException;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.commons.utils.VersionUtils;
+import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.runprocess.ItemCacheManager;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -73,7 +81,9 @@ public class EditProcess extends AContextualAction {
         ItemCacheManager.clearCache();
         Assert.isTrue(property.getItem() instanceof ProcessItem);
 
-        processItem = ItemCacheManager.getProcessItem(node.getRoot().getProject(), property.getId(), property.getVersion());
+        ProjectManager projectManager = ProjectManager.getInstance();
+        processItem = ItemCacheManager.getProcessItem(new Project(projectManager.getProject(property.getItem())), property
+                .getId(), property.getVersion());
 
         IWorkbenchPage page = getActivePage();
 
@@ -150,8 +160,33 @@ public class EditProcess extends AContextualAction {
             if (!factory.isMainProjectItem(node.getObject())) {
                 canWork = false;
             }
+            canWork = isLastJobVersion(node);
         }
         setEnabled(canWork);
+    }
+
+    /**
+     * 
+     * DOC YeXiaowei EditProcess class global comment. Detailled comment
+     */
+    @SuppressWarnings("unchecked")
+    private static class IRepositoryObjectComparator implements Comparator {
+
+        public int compare(Object o1, Object o2) {
+            return VersionUtils.compareTo(((IRepositoryObject) o1).getVersion(), ((IRepositoryObject) o2).getVersion());
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private boolean isLastJobVersion(RepositoryNode repositoryObject) {
+        try {
+            List<IRepositoryObject> allVersion = ProxyRepositoryFactory.getInstance().getAllVersion(repositoryObject.getId());
+            Collections.sort(allVersion, new IRepositoryObjectComparator());
+            IRepositoryObject lastVersion = allVersion.get(allVersion.size() - 1);
+            return lastVersion.getVersion().equals(repositoryObject.getObject().getVersion());
+        } catch (PersistenceException e) {
+            return true;
+        }
     }
 
     /*
