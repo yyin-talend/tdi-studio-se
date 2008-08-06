@@ -238,7 +238,17 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     }
 
     public List<ContextItem> getContextItem() throws PersistenceException {
-        return getContextItem(getRepositoryContext().getProject());
+        List<ContextItem> contextItems = getContextItem(projectManager.getCurrentProject());
+        if (contextItems == null) {
+            contextItems = new ArrayList<ContextItem>();
+        }
+        for (Project p : projectManager.getReferencedProjects()) {
+            List<ContextItem> rContextItems = getContextItem(p);
+            if (rContextItems != null) {
+                contextItems.addAll(rContextItems);
+            }
+        }
+        return contextItems;
     }
 
     /*
@@ -1177,13 +1187,10 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
 
     public org.talend.core.model.properties.Project getProject(Item item) {
         EObject object = EcoreUtil.getRootContainer(item);
-        if (object == null) {
-            return getRepositoryContext().getProject().getEmfProject();
-        }
-        if (object instanceof org.talend.core.model.properties.Project) {
+        if (object != null && object instanceof org.talend.core.model.properties.Project) {
             return (org.talend.core.model.properties.Project) object;
         }
-        return getRepositoryContext().getProject().getEmfProject();
+        return projectManager.getCurrentProject().getEmfProject();
     }
 
     /*
