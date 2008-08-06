@@ -39,6 +39,7 @@ import org.talend.commons.ui.swt.formtools.LabelledCombo;
 import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
 import org.talend.commons.ui.swt.thread.SWTUIThreadProcessor;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.EMetadataEncoding;
 import org.talend.core.model.metadata.IMetadataContextModeManager;
@@ -297,10 +298,8 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
         // new Label(compositeFileDelimitor, SWT.NONE);
 
         // Field Separator Combo & Text
-        String[] fieldSeparatorData = { FieldSeparator.SEMICOLON_LITERAL.getName(), FieldSeparator.COMMA_LITERAL.getName(),
-                FieldSeparator.TABULATION_LITERAL.getName(), FieldSeparator.SPACE_LITERAL.getName(),
-                FieldSeparator.ALT_65_LITERAL.getName(), FieldSeparator.CUSTOM_ANSI_LITERAL.getName(),
-                FieldSeparator.CUSTOM_UTF8_LITERAL.getName(), FieldSeparator.CUSTOM_REG_EXP_LITERAL.getName() };
+        String[] fieldSeparatorData = getFieldSeparatorStyleSupportByLanguage();
+
         fieldSeparatorCombo = new LabelledCombo(compositeFileDelimitor, Messages.getString("FileStep2.fieldSeparator"), Messages //$NON-NLS-1$
                 .getString("FileStep2.fieldSeparatorDelimitedTip"), fieldSeparatorData, 1, true, SWT.READ_ONLY); //$NON-NLS-1$
 
@@ -317,6 +316,29 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
         rowSeparatorCombo = new LabelledCombo(compositeFileDelimitor, Messages.getString("FileStep2.rowSeparator"), Messages //$NON-NLS-1$
                 .getString("FileStep2.rowSeparatorTip"), rowSeparatorData, 1, true, SWT.READ_ONLY); //$NON-NLS-1$
         rowSeparatorText = new LabelledText(compositeFileDelimitor, "", 1, true, SWT.RIGHT); //$NON-NLS-1$
+    }
+
+    /**
+     * CUSTOM_REGEX is not supported in java mode.
+     * <p>
+     * DOC YeXiaowei Comment method "getFieldSeparatorStyleSupportByLanguage".
+     * 
+     * @return
+     */
+    private String[] getFieldSeparatorStyleSupportByLanguage() {
+        ECodeLanguage language = LanguageManager.getCurrentLanguage();
+        String[] styles = { FieldSeparator.SEMICOLON_LITERAL.getName(), FieldSeparator.COMMA_LITERAL.getName(),
+                FieldSeparator.TABULATION_LITERAL.getName(), FieldSeparator.SPACE_LITERAL.getName(),
+                FieldSeparator.ALT_65_LITERAL.getName(), FieldSeparator.CUSTOM_ANSI_LITERAL.getName(),
+                FieldSeparator.CUSTOM_UTF8_LITERAL.getName(), FieldSeparator.CUSTOM_REG_EXP_LITERAL.getName() };
+        switch (language) {
+        case JAVA:
+            String[] javaStyles = new String[styles.length - 1];
+            System.arraycopy(styles, 0, javaStyles, 0, javaStyles.length);
+            return javaStyles;
+        default: // PERL
+            return styles;
+        }
     }
 
     private void addGroupRowsToSkip(final Composite mainComposite, final int width, final int height) {
