@@ -150,4 +150,11 @@ public class ConnectionPerformance extends Element {
         // do nothing now
     }
 
+    /**
+     * DOC xtan After every iterate, there should clear the last data on the link lable.(If/OnComponentOK/row/...).
+     */
+    public void clearPerformanceDataOnUI() {
+        setLabel("");
+    }
+
 }

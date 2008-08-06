@@ -456,9 +456,9 @@ public class Connection extends Element implements IConnection, IPerformance {
             }
             updateName = true;
         } /*
-             * else if (getLineStyle().equals(EConnectionType.LOOKUP)) { labelText += " (" + nodeConnector.getLinkName() +
-             * ")"; updateName = true; }
-             */
+         * else if (getLineStyle().equals(EConnectionType.LOOKUP)) { labelText += " (" + nodeConnector.getLinkName() +
+         * ")"; updateName = true; }
+         */
 
         if (updateName) {
 
@@ -909,6 +909,10 @@ public class Connection extends Element implements IConnection, IPerformance {
     public void setPerformanceData(String pefData) {
         performance.setLabel(pefData);
 
+    }
+
+    public void clearPerformanceDataOnUI() {
+        this.performance.clearPerformanceDataOnUI();
     }
 
     public boolean isUseByMetter() {
