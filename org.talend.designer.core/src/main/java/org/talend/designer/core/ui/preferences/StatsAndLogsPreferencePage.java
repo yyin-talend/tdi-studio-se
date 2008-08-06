@@ -183,9 +183,6 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         if (stringConnection.contains("<port>")) { //$NON-NLS-1$
             portField.setEnabled(visible, parent);
         }
-        dbNameField.setEnabled(visible, parent);
-        additionParamField.setEnabled(visible, parent);
-        schemaField.setEnabled(visible, parent);
 
         if (stringConnection.contains("<sid>") || stringConnection.contains("<service_name>")) { //$NON-NLS-1$ //$NON-NLS-2$
             // sidOrDatabaseText.setEditable(visible);
@@ -202,11 +199,15 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         }
 
         if (url.isSchemaNeeded()) {
-            schemaField.getTextControl(parent).setEditable(visible);
+            schemaField.setEnabled(visible, parent);
         }
 
         if (url.isAddtionParamsNeeded() && additionParamField != null) {
-            additionParamField.getTextControl(parent).setEditable(visible);
+            additionParamField.setEnabled(visible, parent);
+        }
+
+        if (url.isDatabaseNeeded()) {
+            dbNameField.setEnabled(visible, parent);
         }
 
         if (hostField.getTextControl(parent).isEnabled()) {
