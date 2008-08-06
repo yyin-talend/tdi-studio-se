@@ -7,7 +7,7 @@
 		org.talend.core.model.process.EConnectionType
 		org.talend.core.model.process.ElementParameterParser
 		org.talend.designer.codegen.config.CodeGeneratorArgument
-		org.talend.designer.codegen.temp.CodeGeneratorRoutine
+		org.talend.designer.runprocess.CodeGeneratorRoutine
 		org.talend.designer.codegen.i18n.Messages
 		org.talend.core.ui.branding.IBrandingService
 		org.talend.core.GlobalServiceRegister
