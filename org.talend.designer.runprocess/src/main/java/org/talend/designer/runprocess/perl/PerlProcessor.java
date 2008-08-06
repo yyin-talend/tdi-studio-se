@@ -54,6 +54,7 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.model.utils.PerlResourcesHelper;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.codegen.ICodeGenerator;
@@ -104,11 +105,13 @@ public class PerlProcessor extends Processor {
     }
 
     private void initCodePath(IContext context) throws ProcessorException {
-        codePath = new Path(PerlResourcesHelper.getJobFileName(filenameFromLabel ? escapeFilename(process.getLabel()) : process
-                .getId(), process.getVersion())); //$NON-NLS-1$
 
-        contextPath = new Path(PerlResourcesHelper.getContextFileName(filenameFromLabel ? process.getLabel() : process.getId(),
-                process.getVersion(), context.getName())); //$NON-NLS-1$ //$NON-NLS-2$
+        String projectName = PerlResourcesHelper.getRootProjectName(process.getProperty().getItem());
+        codePath = new Path(PerlResourcesHelper.getJobFileName(projectName,
+                filenameFromLabel ? escapeFilename(process.getLabel()) : process.getId(), process.getVersion())); //$NON-NLS-1$
+
+        contextPath = new Path(PerlResourcesHelper.getContextFileName(projectName, filenameFromLabel ? process.getLabel()
+                : process.getId(), process.getVersion(), context.getName())); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     public void initPath() throws ProcessorException {
@@ -118,16 +121,12 @@ public class PerlProcessor extends Processor {
     public void generateCode(boolean statistics, boolean trace, boolean perlProperties) throws ProcessorException {
         super.generateCode(statistics, trace, perlProperties);
         try {
-            RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
-                    Context.REPOSITORY_CONTEXT_KEY);
-            Project repositoryProject = repositoryContext.getProject();
-
             ICodeGenerator codeGen;
             ICodeGeneratorService service = RunProcessPlugin.getDefault().getCodeGeneratorService();
             if (perlProperties) {
                 String perlInterpreter = getInterpreter();
                 String perlLib = getLibraryPath();
-                String currentPerlProject = repositoryProject.getTechnicalLabel();
+                String currentPerlProject = JavaResourcesHelper.getProjectFolderName(getProcess().getProperty().getItem());
                 String codeLocation = getCodeLocation();
 
                 codeGen = service.createCodeGenerator(process, statistics, trace, perlInterpreter, perlLib, codeLocation,
