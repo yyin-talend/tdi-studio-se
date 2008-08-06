@@ -126,8 +126,9 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
         List<String> list = new ArrayList<String>();
         if (needJob) {
             try {
-                String fileName = PerlResourcesHelper.getJobFileName(process.getProperty().getLabel(), process.getProperty()
-                        .getVersion());
+                String projectName = PerlResourcesHelper.getRootProjectName(process);
+                String fileName = PerlResourcesHelper.getJobFileName(projectName, process.getProperty().getLabel(), process
+                        .getProperty().getVersion());
                 list.add(fileName);
             } catch (Exception e) {
                 ExceptionHandler.process(e);
@@ -231,9 +232,10 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
         List<String> list = new ArrayList<String>();
         if (needContext) {
             List<String> contexts = getJobContexts(process);
+            String projectName = PerlResourcesHelper.getRootProjectName(process);
             for (String contextName : contexts) {
-                String contextFileName = PerlResourcesHelper.getContextFileName(process.getProperty().getLabel(), process
-                        .getProperty().getVersion(), contextName);
+                String contextFileName = PerlResourcesHelper.getContextFileName(projectName, process.getProperty().getLabel(),
+                        process.getProperty().getVersion(), contextName);
                 list.add(contextFileName);
             }
         }
@@ -295,13 +297,15 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
         addSource(process, exportChoice.get(ExportChoice.needSource), resource, JOB_SOURCE_FOLDER_NAME);
 
         Set<JobInfo> subjobInfos = ProcessorUtilities.getChildrenJobInfo(process);
+        String rootProjectName = PerlResourcesHelper.getRootProjectName(resource.getItem());
         for (JobInfo subjobInfo : subjobInfos) {
             if (subjobInfo.getJobName().equals(rootName)) {
                 continue;
             }
-            String jobScriptName = PerlResourcesHelper.getJobFileName(subjobInfo.getJobName(), subjobInfo.getJobVersion());
-            String contextFullName = PerlResourcesHelper.getContextFileName(subjobInfo.getJobName(), subjobInfo.getJobVersion(),
-                    subjobInfo.getContextName());
+            String jobScriptName = PerlResourcesHelper.getJobFileName(rootProjectName, subjobInfo.getJobName(), subjobInfo
+                    .getJobVersion());
+            String contextFullName = PerlResourcesHelper.getContextFileName(rootProjectName, subjobInfo.getJobName(), subjobInfo
+                    .getJobVersion(), subjobInfo.getContextName());
 
             addToList(list, jobScriptName);
             addToList(list, contextFullName);
@@ -370,8 +374,9 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
         List<URL> list = new ArrayList<URL>();
         Properties p = new Properties();
         FileOutputStream out = null;
-        String name = PerlResourcesHelper.getJobFileName(processItem.getProperty().getLabel(), processItem.getProperty()
-                .getVersion());
+        String rootProjectName = PerlResourcesHelper.getRootProjectName(processItem);
+        String name = PerlResourcesHelper.getJobFileName(rootProjectName, processItem.getProperty().getLabel(), processItem
+                .getProperty().getVersion());
 
         try {
             IPath path = getSrcRootLocation();
