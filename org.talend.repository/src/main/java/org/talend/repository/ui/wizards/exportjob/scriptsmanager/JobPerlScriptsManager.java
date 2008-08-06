@@ -294,7 +294,8 @@ public class JobPerlScriptsManager extends JobScriptsManager {
                 if (!isMultiNodes() && getSelectedJobVersion() != null) {
                     version = getSelectedJobVersion();
                 }
-                String fileName = PerlResourcesHelper.getJobFileName(process.getProperty().getLabel(), version);
+                String rootProjectName = PerlResourcesHelper.getRootProjectName(process);
+                String fileName = PerlResourcesHelper.getJobFileName(rootProjectName, process.getProperty().getLabel(), version);
                 list.add(fileName);
             } catch (Exception e) {
                 ExceptionHandler.process(e);
@@ -344,12 +345,14 @@ public class JobPerlScriptsManager extends JobScriptsManager {
         addSource(process, exportChoice.get(ExportChoice.needSource), resource, JOB_SOURCE_FOLDER_NAME, selectedJobVersion);
         addDepencies(process, BooleanUtils.isTrue(exportChoice.get(ExportChoice.needDependencies)), resource);
         Set<JobInfo> subjobInfos = ProcessorUtilities.getChildrenJobInfo(process);
+        String rootProjectName = PerlResourcesHelper.getRootProjectName(resource.getItem());
         for (JobInfo subjobInfo : subjobInfos) {
             if (subjobInfo.getJobName().equals(rootName)) {
                 continue;
             }
 
-            String jobScriptName = PerlResourcesHelper.getJobFileName(subjobInfo.getJobName(), subjobInfo.getJobVersion());
+            String jobScriptName = PerlResourcesHelper.getJobFileName(rootProjectName, subjobInfo.getJobName(), subjobInfo
+                    .getJobVersion());
             String contextName = null;
             if (exportChoice.get(ExportChoice.applyToChildren)) {
                 // see bug 0003862: Export job with the flag "Apply to children" if the child don't have the
@@ -365,8 +368,8 @@ public class JobPerlScriptsManager extends JobScriptsManager {
                 contextName = escapeSpace(subjobInfo.getContextName());
             }
 
-            String contextFullName = PerlResourcesHelper.getContextFileName(subjobInfo.getJobName(), subjobInfo.getJobVersion(),
-                    contextName);
+            String contextFullName = PerlResourcesHelper.getContextFileName(rootProjectName, subjobInfo.getJobName(), subjobInfo
+                    .getJobVersion(), contextName);
 
             addToList(list, jobScriptName);
             addToList(list, contextFullName);
@@ -391,9 +394,10 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             if (!isMultiNodes() && getSelectedJobVersion() != null) {
                 version = getSelectedJobVersion();
             }
+            String rootProjectName = PerlResourcesHelper.getRootProjectName(process);
             for (String contextName : contexts) {
-                String contextFileName = PerlResourcesHelper.getContextFileName(process.getProperty().getLabel(), version,
-                        contextName);
+                String contextFileName = PerlResourcesHelper.getContextFileName(rootProjectName,
+                        process.getProperty().getLabel(), version, contextName);
                 list.add(contextFileName);
             }
         }

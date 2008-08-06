@@ -1267,8 +1267,9 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
                     JobJavaScriptsManager.JOB_CONTEXT_FOLDER).append(context.getName() + JavaUtils.JAVA_CONTEXT_EXTENSION);
             return JavaResourcesHelper.getSpecificResourceInJavaProject(path);
         case PERL:
-            String contextFullName = PerlResourcesHelper.getContextFileName(process.getName(), process.getVersion(), context
-                    .getName());
+            String rootProjectName = PerlResourcesHelper.getRootProjectName(process.getProperty().getItem());
+            String contextFullName = PerlResourcesHelper.getContextFileName(rootProjectName, process.getName(), process
+                    .getVersion(), context.getName());
             return PerlResourcesHelper.getSpecificResourceInPerlProject(new Path(contextFullName));
         }
         return null;
