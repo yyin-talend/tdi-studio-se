@@ -12,6 +12,7 @@
   org.talend.designer.codegen.config.CodeGeneratorArgument
   org.talend.designer.codegen.config.NodesSubTree
   org.talend.core.model.process.IProcess
+  org.talend.core.model.utils.NodeUtil  
   java.util.List
   java.util.Set
   java.util.HashSet
@@ -148,6 +149,16 @@ for (IConnection iterateConn : iterateConnSet) { //1
 		}else {//2
 	      		if(stat){
 %>
+
+<%				
+				Set<? extends IConnection> allInLineJobConns = NodeUtil.getAllInLineJobConnections(iterateConn.getTarget());
+				for (IConnection inLineConn : allInLineJobConns) {
+%>				
+           			runStat.updateStatOnConnection("<%=inLineConn.getUniqueName() %>", 3, "exec" + NB_ITERATE_<%=iterateNodeName %>);
+<%        		
+				}
+%>        		
+
 				runStat.updateStatOnConnection("<%=iterateConn.getUniqueName() %>", 1, "exec" + NB_ITERATE_<%=iterateNodeName %>);
 				Thread.sleep(1000);
 <%
