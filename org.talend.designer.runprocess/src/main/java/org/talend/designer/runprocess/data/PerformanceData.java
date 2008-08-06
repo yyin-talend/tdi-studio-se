@@ -95,4 +95,27 @@ public final class PerformanceData implements IPerformanceData {
         String action = sepIndex3 != -1 ? data.substring(sepIndex3 + 1, data.length()) : ACTION_PERF;
         return action;
     }
+
+    /**
+     * DOC xtan the info style like this: row1|clear;row1.1|clear;if1|clear.
+     * 
+     * @return
+     */
+    public boolean isClearCommand() {
+        if (data == null) {
+            return false;
+        }
+        if (data.equals("")) { //$NON-NLS-1$
+            return false;
+        }
+        int sepIndex1 = data.indexOf(FIELD_SEP);
+
+        if (sepIndex1 != -1 && data.length() == sepIndex1 + 6) {
+            String clearStr = data.substring(sepIndex1 + 1, sepIndex1 + 6); // "clear"
+            if ("clear".equals(clearStr)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

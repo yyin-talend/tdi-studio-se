@@ -785,7 +785,7 @@ public class RunProcessContext {
                         if (data == null) {
                             stopThread = true;
                         } else {
-                            PerformanceData perfData = new PerformanceData(data);
+                            final PerformanceData perfData = new PerformanceData(data);
                             String connectionId = perfData.getConnectionId();
                             // handle connectionId as row1.1 and row1
                             connectionId = connectionId.split("\\.")[0];
@@ -797,7 +797,13 @@ public class RunProcessContext {
 
                                     public void run() {
                                         if (data != null) {
-                                            performance.setPerformanceData(data);
+                                            if (perfData.isClearCommand()) {
+
+                                                performance.clearPerformanceDataOnUI();
+                                            } else {
+
+                                                performance.setPerformanceData(data);
+                                            }
                                         }
                                     }
                                 });
