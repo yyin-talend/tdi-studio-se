@@ -33,7 +33,6 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IExtension;
@@ -279,11 +278,8 @@ public class JavaProcessor extends Processor {
 
             processCode = null;
 
-            updateContextCode(codeGen);
+            // updateContextCode(codeGen);
             syntaxCheck();
-
-            // javaProject.getResource().getWorkspace().build(IncrementalProjectBuilder.AUTO_BUILD, null);
-            javaProject.getProject().build(IncrementalProjectBuilder.AUTO_BUILD, null);
 
             List<INode> breakpointNodes = CorePlugin.getContext().getBreakpointNodes(process);
             if (!breakpointNodes.isEmpty()) {
