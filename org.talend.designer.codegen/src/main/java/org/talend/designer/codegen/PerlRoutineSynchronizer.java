@@ -66,10 +66,9 @@ public class PerlRoutineSynchronizer extends AbstractRoutineSynchronizer {
 
             if (!routineItem.isBuiltIn()) {
                 // Copy the routine in external "lib/perl" folder:
-                String librariesPath = CorePlugin.getDefault().getLibrariesService().getLibrariesPath()
-                        + IPath.SEPARATOR + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER + IPath.SEPARATOR
-                        + project.getTechnicalLabel() + IPath.SEPARATOR + routineItem.getProperty().getLabel()
-                        + service.getRoutineFilenameExt();
+                String librariesPath = CorePlugin.getDefault().getLibrariesService().getLibrariesPath() + IPath.SEPARATOR
+                        + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER + IPath.SEPARATOR + project.getTechnicalLabel()
+                        + IPath.SEPARATOR + routineItem.getProperty().getLabel() + service.getRoutineFilenameExt();
                 File target = new File(librariesPath);
 
                 byteArrayInputStream = new ByteArrayInputStream(routineItem.getContent().getInnerContent());
@@ -97,8 +96,7 @@ public class PerlRoutineSynchronizer extends AbstractRoutineSynchronizer {
 
     private IFile getRoutineFile(RoutineItem routineItem) throws SystemException {
         IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
-        Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                .getProject();
+        Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject();
 
         IProject fsProject = ResourceModelUtils.getProject(project);
         IFolder folder = ResourceUtils.getFolder(fsProject, RepositoryConstants.TEMP_DIRECTORY, true);
@@ -112,8 +110,9 @@ public class PerlRoutineSynchronizer extends AbstractRoutineSynchronizer {
         IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
         try {
             IProject perlProject = service.getProject(ECodeLanguage.PERL);
-            tempfile = perlProject.getFile(PerlResourcesHelper.getJobFileName(processItem.getProperty().getLabel(),
-                    processItem.getProperty().getVersion()));
+            String rootProjectName = PerlResourcesHelper.getRootProjectName(processItem);
+            tempfile = perlProject.getFile(PerlResourcesHelper.getJobFileName(rootProjectName, processItem.getProperty()
+                    .getLabel(), processItem.getProperty().getVersion()));
 
         } catch (CoreException e) {
             throw new SystemException(e);
