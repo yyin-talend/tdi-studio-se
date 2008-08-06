@@ -160,7 +160,12 @@ public class EditProcess extends AContextualAction {
             if (!factory.isMainProjectItem(node.getObject())) {
                 canWork = false;
             }
-            canWork = isLastJobVersion(node);
+
+            // If the editProcess action canwork is true, then detect that the job version is the latest verison or not.
+            if (canWork) {
+                canWork = isLastJobVersion(node);
+            }
+
         }
         setEnabled(canWork);
     }
@@ -182,13 +187,13 @@ public class EditProcess extends AContextualAction {
         try {
             List<IRepositoryObject> allVersion = ProxyRepositoryFactory.getInstance().getAllVersion(repositoryObject.getId());
             if (allVersion == null || allVersion.isEmpty()) {
-                return true;
+                return false;
             }
             Collections.sort(allVersion, new IRepositoryObjectComparator());
             IRepositoryObject lastVersion = allVersion.get(allVersion.size() - 1);
             return lastVersion.getVersion().equals(repositoryObject.getObject().getVersion());
         } catch (PersistenceException e) {
-            return true;
+            return false;
         }
     }
 
