@@ -399,6 +399,27 @@ public class DataStringConnection {
 
     }
 
+    private static String[] dataBaseNeededList = { "jdbc:mysql", "jdbc:sybase", "jdbc:db2", "jdbc:ingres", "jdbc:interbase",
+            "jdbc:jtds:sqlserver", "jdbc:informix-sqli", "jdbc:teradata", "jdbc:as400", "jdbc:derby", "jdbc:derby:net",
+            "jdbc:hsqldb:hsql", "jdbc:hsqldb:http", "jdbc:hsqldb:file", "jdbc:sapdb", "jdbc:postgresql", "jdbc:db2" };
+
+    public boolean isDatabaseNeeded() {
+        if (selectionIndex < 0) {
+            return false;
+        }
+        String connectionTemplate = getStringConnectionTemplate();
+        int subIndex = 0;
+        for (String connection : dataBaseNeededList) {
+            subIndex = connection.length();
+            boolean needed = connectionTemplate.substring(0, subIndex).equals(connection);
+            if (needed) {
+                return needed;
+            }
+        }
+        return false;
+
+    }
+
     /**
      * DOC qiang.zhang Comment method "getString".
      * 
