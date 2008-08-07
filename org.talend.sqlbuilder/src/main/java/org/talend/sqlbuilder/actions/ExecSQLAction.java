@@ -146,13 +146,13 @@ public class ExecSQLAction extends AbstractEditorAction {
         try {
             runNode = nodeManager.getSessionTreeNode(node);
         } catch (Exception e) {
+            e.printStackTrace();
             MessageDialog.openError(null, Messages.getString("AbstractSQLExecution.Executing.Error"), e.getMessage()); //$NON-NLS-1$
             SqlBuilderPlugin.log(Messages.getString("ExecSQLAction.logMessageGetSessionTreeNodeFail"), e); //$NON-NLS-1$
             return;
         }
 
-        QueryTokenizer qt = new QueryTokenizer(getSQLToBeExecuted(), queryDelimiter, alternateDelimiter,
-                commentDelimiter);
+        QueryTokenizer qt = new QueryTokenizer(getSQLToBeExecuted(), queryDelimiter, alternateDelimiter, commentDelimiter);
 
         List<String> queryStrings = new ArrayList<String>();
         while (qt.hasQuery()) {
@@ -173,6 +173,7 @@ public class ExecSQLAction extends AbstractEditorAction {
                 }
             }
         } catch (Exception e) {
+            e.printStackTrace();
             SqlBuilderPlugin.log(Messages.getString("ExecSQLAction.logMessageErrorCreatingSqlTab"), e); //$NON-NLS-1$
         }
     }

@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.sqlbuilder.sqlcontrol;
 
-
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
@@ -30,21 +29,19 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.ProgressBar;
 
-
 /**
- * Abstract Class : Execute SQL Statement.
- * <br/>
- *
+ * Abstract Class : Execute SQL Statement. <br/>
+ * 
  * $Id: AbstractSQLExecution.java,v 1.13 2006/10/27 17:40:40 qiang.zhang Exp $
- *
+ * 
  */
 public abstract class AbstractSQLExecution {
+
     /**
-     * DOC dev AbstrsactSQLExecution class global comment. Detailled comment
-     * <br/>
-     *
+     * DOC dev AbstrsactSQLExecution class global comment. Detailled comment <br/>
+     * 
      * $Id: AbstractSQLExecution.java,v 1.13 2006/10/27 17:40:40 qiang.zhang Exp $
-     *
+     * 
      */
     private class LocalThread extends Thread {
 
@@ -75,13 +72,13 @@ public abstract class AbstractSQLExecution {
                     SqlBuilderPlugin.log("Error executing.", e); //$NON-NLS-1$
                 }
 
-                
                 Display.getDefault().asyncExec(new Runnable() {
 
                     public void run() {
 
                         clearCanvas();
                         if (!(e instanceof InterruptedException)) {
+                            e.printStackTrace();
                             MessageDialog.openError(null, Messages.getString("AbstractSQLExecution.Executing.Error"), //$NON-NLS-1$
                                     e.getMessage());
                         }
@@ -114,13 +111,11 @@ public abstract class AbstractSQLExecution {
 
     private String progressMessage;
 
-
     protected SessionTreeNode session;
 
     protected String sqlStatement;
 
     protected SQLConnection connection;
-
 
     /**
      * Clear progress bar or results.
@@ -149,7 +144,6 @@ public abstract class AbstractSQLExecution {
 
         group = null;
     }
-
 
     /**
      * Display progress bar on tab until results are ready.
@@ -191,7 +185,6 @@ public abstract class AbstractSQLExecution {
 
     }
 
-
     /**
      * Main execution method. This method is called from a background thread.
      * 
@@ -199,31 +192,26 @@ public abstract class AbstractSQLExecution {
      */
     protected abstract void doExecution() throws Exception;
 
-
     /**
-     * This method will be called from the UI thread when execution is cancelled
-     * and the tab will be disposed. Do any cleanups required in here.
+     * This method will be called from the UI thread when execution is cancelled and the tab will be disposed. Do any
+     * cleanups required in here.
      */
     protected abstract void doStop() throws Exception;
-
 
     public final String getSqlStatement() {
 
         return sqlStatement;
     }
 
-
     public final void setComposite(Composite composite) {
 
         this.composite = composite;
     }
 
-
     public final void setParentTab(CTabItem parentTab) {
 
         this.parentTab = parentTab;
     }
-
 
     /**
      * @param progressMessage
@@ -233,7 +221,7 @@ public abstract class AbstractSQLExecution {
         progressMessage = progressMessageInput;
         if (group != null) {
 
-           Display.getDefault().asyncExec(new Runnable() {
+            Display.getDefault().asyncExec(new Runnable() {
 
                 public void run() {
 
@@ -244,14 +232,13 @@ public abstract class AbstractSQLExecution {
         }
     }
 
-
     /**
      * Start exection.
      */
     public final void startExecution() {
 
         connectionNumber = session.getQueuedConnectionNumber();
-        
+
         // start progress bar
         displayProgress();
 
@@ -260,7 +247,6 @@ public abstract class AbstractSQLExecution {
         executionThread.start();
 
     }
-
 
     /**
      * Cancel execution.
@@ -275,7 +261,6 @@ public abstract class AbstractSQLExecution {
 
         } catch (final Exception e) {
 
-            
             Display.getDefault().asyncExec(new Runnable() {
 
                 public void run() {
