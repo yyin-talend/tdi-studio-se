@@ -9,6 +9,7 @@
     RELEASE_DATE="20050320A"
     STARTABLE="false"
     SCHEMA_AUTO_PROPAGATE="false"
+    EXTENSION="org.talend.designer.scd"
   >
     <SIGNATURE />
   </HEADER>
@@ -27,8 +28,8 @@
     <CONNECTOR CTYPE="RUN_IF" />
   </CONNECTORS>
   
-  <PARAMETERS>
-
+  <PARAMETERS>     
+    
     <PARAMETER
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
@@ -118,9 +119,13 @@
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
-      NUM_ROW="60"
+      NUM_ROW="55"
     >
       <DEFAULT>''</DEFAULT>
+    </PARAMETER>
+    
+     <PARAMETER NAME="MAP" FIELD="EXTERNAL" NUM_ROW="60">
+         <DEFAULT/>  
     </PARAMETER>
     
     <PARAMETER
@@ -128,6 +133,7 @@
       FIELD="TABLE"
       NUM_ROW="61"
       NB_LINES="2"
+      SHOW="false"
     >
       <ITEMS>
         <ITEM NAME="NAME" FIELD="PREV_COLUMN_LIST" />
@@ -138,6 +144,7 @@
       NAME="USE_L1"
       FIELD="CHECK"
       NUM_ROW="70"
+      SHOW="false"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -148,6 +155,7 @@
       NUM_ROW="71"
       NB_LINES="5"
       SHOW_IF="USE_L1 == 'true'"
+      SHOW="false"
     >
       <ITEMS>
         <ITEM NAME="NAME" FIELD="PREV_COLUMN_LIST" />
@@ -158,6 +166,7 @@
       NAME="USE_L2"
       FIELD="CHECK"
       NUM_ROW="80"
+      SHOW="false"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -168,6 +177,7 @@
       NUM_ROW="81"
       NB_LINES="5"
       SHOW_IF="USE_L2 == 'true'"
+      SHOW="false"
     >
       <ITEMS>
         <ITEM NAME="NAME" FIELD="PREV_COLUMN_LIST" />
@@ -179,6 +189,7 @@
       FIELD="COLUMN_LIST"
       NUM_ROW="82"
       SHOW_IF="USE_L2 == 'true'"
+      SHOW="false"
     >
     </PARAMETER>
     
@@ -187,6 +198,7 @@
       FIELD="COLUMN_LIST"
       NUM_ROW="82"
       SHOW_IF="USE_L2 == 'true'"
+      SHOW="false"
     >
     </PARAMETER>
     
@@ -195,6 +207,7 @@
       FIELD="CHECK"
       NUM_ROW="83"
       SHOW_IF="USE_L2 == 'true'"
+      SHOW="false"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -204,6 +217,7 @@
       FIELD="COLUMN_LIST"
       NUM_ROW="83"
       SHOW_IF="USE_L2_ACTIVE == 'true'"
+      SHOW="false"
     >
     </PARAMETER>
     
@@ -212,6 +226,7 @@
       FIELD="CHECK"
       NUM_ROW="84"
       SHOW_IF="USE_L2 == 'true'"
+      SHOW="false"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -221,6 +236,7 @@
       FIELD="COLUMN_LIST"
       NUM_ROW="84"
       SHOW_IF="USE_L2_VERSION == 'true'"
+      SHOW="false"
     >
     </PARAMETER>
     
