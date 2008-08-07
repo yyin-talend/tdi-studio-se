@@ -246,7 +246,7 @@ private class TalendException extends Exception {
 				if (ElementParameterParser.getValue(logCatcher, "__CATCH_JAVA_EXCEPTION__").equals("true")) {
 					// 2) launch logCatcher subProcess
 %>
-			<%=logCatcher.getDesignSubjobStartNode().getUniqueName() %>Process();
+			<%=logCatcher.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
 <%
 				}
 			}
@@ -313,7 +313,7 @@ private class TalendException extends Exception {
                                 %>
                                 if(!(exception instanceof TDieException)){
                                     <%=assertCatcher.getUniqueName()%>.addMessage(pid, projectName, jobName, "java", null, "Failed", "Job execution error", exception.getMessage());
-                                    <%=assertCatcher.getDesignSubjobStartNode().getUniqueName() %>Process();
+                                    <%=assertCatcher.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
                                 }
                                 <%
                             }
@@ -326,7 +326,7 @@ private class TalendException extends Exception {
                 		for (INode statCatcherNode : node.getProcess().getNodesOfType("tStatCatcher")) {
                 		    %>
                 		    <%=statCatcherNode.getUniqueName() %>.addMessage("failure","<%=node.getUniqueName() %>", end_Hash.get("<%=node.getUniqueName() %>")-start_Hash.get("<%=node.getUniqueName() %>"));
-                		    <%=statCatcherNode.getDesignSubjobStartNode().getUniqueName() %>Process();
+                		    <%=statCatcherNode.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
                 		    <%
                 		}
                 	}
@@ -341,13 +341,13 @@ private class TalendException extends Exception {
                             if(isRunInMultiThread ){
                                 %>
                                 ((java.util.Map)threadLocal.get()).put("errorCode", null); 
-                                <%=conn.getTarget().getUniqueName() %>Process();
+                                <%=conn.getTarget().getUniqueName() %>Process(globalMap);
                                 ((java.util.Map)threadLocal.get()).put("status", "end");
                                 <%
                             }else {
                                 %>
                                 errorCode = null;
-                                <%=conn.getTarget().getUniqueName() %>Process();
+                                <%=conn.getTarget().getUniqueName() %>Process(globalMap);
                                 status="end";
                                 <%
                             }
@@ -380,13 +380,13 @@ private class TalendException extends Exception {
 					if(isRunInMultiThread ){
 %>
 					((java.util.Map)threadLocal.get()).put("errorCode", null); 
-					<%=conn.getTarget().getUniqueName() %>Process();
+					<%=conn.getTarget().getUniqueName() %>Process(globalMap);
 					((java.util.Map)threadLocal.get()).put("status", "end");
 <%
 					} else {
 %>
 					errorCode = null;
-					<%=conn.getTarget().getUniqueName() %>Process();
+					<%=conn.getTarget().getUniqueName() %>Process(globalMap);
 					status="end";
 <%
 					}

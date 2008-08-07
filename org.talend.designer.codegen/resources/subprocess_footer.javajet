@@ -28,7 +28,7 @@
 	// Calls for RUN BEFORE links
 	for (String before : subTree.getBeforeSubProcesses()) {
 %>
-		<%=before %>Process();
+		<%=before %>Process(globalMap);
 <%
 	}
 	
@@ -59,7 +59,7 @@
 			for (INode metterCatcher : metterCatchers) {
 				
 %>
-	<%=metterCatcher.getDesignSubjobStartNode().getUniqueName() %>Process();
+	<%=metterCatcher.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
 <%      
 
 			}

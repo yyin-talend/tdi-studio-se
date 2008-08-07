@@ -117,7 +117,7 @@ end_Hash.put("<%=node.getUniqueName() %>", System.currentTimeMillis());
    for (INode statCatcherNode : node.getProcess().getNodesOfType("tStatCatcher")) {
 %>
 <%=statCatcherNode.getUniqueName() %>.addMessage("end","<%=node.getUniqueName() %>", end_Hash.get("<%=node.getUniqueName() %>")-start_Hash.get("<%=node.getUniqueName() %>"));
-<%=statCatcherNode.getDesignSubjobStartNode().getUniqueName() %>Process();
+<%=statCatcherNode.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
 <%
    }
   }
@@ -128,7 +128,7 @@ end_Hash.put("<%=node.getUniqueName() %>", System.currentTimeMillis());
 	         
   	        if (outgoingConn.getLineStyle().equals(EConnectionType.ON_COMPONENT_OK)) { 
 %>
-<%=outgoingConn.getTarget().getUniqueName() %>Process();
+<%=outgoingConn.getTarget().getUniqueName() %>Process(globalMap);
 <%  
   	        }        
        
@@ -136,7 +136,7 @@ end_Hash.put("<%=node.getUniqueName() %>", System.currentTimeMillis());
    		if (outgoingConn.getLineStyle().equals(EConnectionType.RUN_IF)) {
 %>
    if (<%=outgoingConn.getCondition() %>) {
-    <%=outgoingConn.getTarget().getUniqueName() %>Process();
+    <%=outgoingConn.getTarget().getUniqueName() %>Process(globalMap);
    }
 
 <%

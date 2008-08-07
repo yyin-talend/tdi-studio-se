@@ -713,7 +713,7 @@ static class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines.
 	}
 %>
 
-public void <%=subTree.getName() %>Process() throws TalendException {
+public void <%=subTree.getName() %>Process(java.util.Map<String, Object> globalMap) throws TalendException {
 	globalMap.put("<%=subTree.getName() %>_SUBPROCESS_STATE", 0);
 <%
 	if(isRunInMultiThread){
@@ -727,7 +727,7 @@ public void <%=subTree.getName() %>Process() throws TalendException {
 	// Call for RUN AFTER links
 	for (String after : subTree.getAfterSubProcesses()) {
 %>
-		<%=after %>Process();
+		<%=after %>Process(globalMap);
 <%
 	}
 %>

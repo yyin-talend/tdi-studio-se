@@ -19,7 +19,7 @@ public class CLASS
             toReturn +=  errorCode_singleThread;
         }        
         
-        toReturn += className + "Class."+ rootNode.getUniqueName() + "Process();\n";
+        toReturn += className + "Class."+ rootNode.getUniqueName() + "Process(globalMap);\n";
         
         if(isMultiThread) {
             toReturn +=  end_multiThread;

@@ -298,7 +298,7 @@
 		for (INode statCatcherNode : process.getNodesOfType("tStatCatcher")) {
 %>
 		try {
-			<%=process.getName() %>Class.<%=statCatcherNode.getDesignSubjobStartNode().getUniqueName() %>Process();
+			<%=process.getName() %>Class.<%=statCatcherNode.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}		
@@ -398,7 +398,7 @@
 %>
 		<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>.addMessage(status==""?"end":status, (end-startTime));
 		try {
-			<%=process.getName() %>Class.<%=statCatcherNode.getDesignSubjobStartNode().getUniqueName() %>Process();
+			<%=process.getName() %>Class.<%=statCatcherNode.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
