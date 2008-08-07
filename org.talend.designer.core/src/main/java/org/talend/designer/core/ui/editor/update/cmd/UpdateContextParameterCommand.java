@@ -13,6 +13,7 @@
 package org.talend.designer.core.ui.editor.update.cmd;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,7 +33,10 @@ import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.update.EUpdateResult;
 import org.talend.core.model.update.UpdateResult;
+import org.talend.core.ui.context.ContextManagerHelper;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.model.utils.emf.talendfile.ContextParameterType;
+import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.RepositoryPlugin;
 
 /**
@@ -46,7 +50,17 @@ public class UpdateContextParameterCommand extends Command {
         this.result = result;
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    private ContextType getDefaultContextType(ContextItem item) {
+        for (Object obj : item.getContext()) {
+            ContextType type = (ContextType) obj;
+            if (type.getName().equals(item.getDefaultContext())) {
+                return type;
+            }
+        }
+        return null;
+    }
+
+    @SuppressWarnings("unchecked")
     @Override
     public void execute() {
         if (result == null) {
@@ -59,13 +73,30 @@ public class UpdateContextParameterCommand extends Command {
         if (job instanceof IProcess2) {
             IProcess2 process = (IProcess2) job;
 
+            ContextParameterMap deleteParameters = new ContextParameterMap();
             Set<String> names = (Set<String>) result.getUpdateObject();
+
+            if (result.getResultType() == EUpdateResult.ADD && result.isChecked()) {
+                // check parameters that have been added to repository context group
+                checkNewRepositoryParameters(process, names);
+                return;
+            }
 
             for (IContext context : process.getContextManager().getListContext()) {
                 for (IContextParameter param : context.getContextParameterList()) {
                     ContextItem item = null;
                     if (names != null && names.contains(param.getName())) {
                         switch (result.getResultType()) {
+                        case DELETE:
+                            item = (ContextItem) result.getParameter();
+
+                            if (item != null && item.getProperty().getLabel().equals(param.getSource()) && result.isChecked()) {
+                                // delete it later
+                                deleteParameters.addParameter(context, param);
+                            } else {
+                                param.setSource(IContextParameter.BUILT_IN);
+                            }
+                            break;
                         case UPDATE:
                             item = (ContextItem) result.getParameter();
 
@@ -98,7 +129,12 @@ public class UpdateContextParameterCommand extends Command {
                         }
                     }
                 }
+
             }
+
+            // delete parameters
+            deleteParameters.removeFromContext();
+
             // update parameters
             if (result.getResultType() == EUpdateResult.RENAME) {
                 List<Object> parameter = (List<Object>) result.getParameter();
@@ -122,6 +158,60 @@ public class UpdateContextParameterCommand extends Command {
                                 .getProxyRepositoryFactory(), renamedMap, process.getId(), null);
                     } catch (PersistenceException e) {
                         ExceptionHandler.process(e);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * DOC hcw Comment method "checkAddedParameters".
+     * 
+     * @param process
+     * @param names
+     */
+    private void checkNewRepositoryParameters(IProcess2 process, Set<String> names) {
+        // add context in repository
+        ContextManagerHelper helper = new ContextManagerHelper(process.getContextManager());
+        Set<ContextItem> contextItemList = helper.getContextItems();
+        ContextItem item = (ContextItem) result.getParameter();
+        // this job contains the repository context group
+        if (contextItemList.contains(item)) {
+            ContextType contextType = getDefaultContextType(item);
+            for (String paramName : names) {
+                ContextParameterType contextParameterType = ContextUtils.getContextParameterTypeByName(contextType, paramName);
+                // check if there is a parameter with same name
+                IContextParameter paramExisted = helper.getExistedContextParameter(contextParameterType.getName());
+                if (paramExisted == null) {
+                    helper.addContextParameterType(contextParameterType);
+                }
+            }
+        }
+    }
+
+    /**
+     * 
+     * DOC hcw UpdateContextParameterCommand class global comment. Detailled comment
+     */
+    static class ContextParameterMap {
+
+        private Map<IContext, Set<IContextParameter>> map = new HashMap<IContext, Set<IContextParameter>>();
+
+        public void addParameter(IContext item, IContextParameter param) {
+            Set<IContextParameter> params = map.get(item);
+            if (params == null) {
+                params = new HashSet<IContextParameter>();
+                map.put(item, params);
+            }
+            params.add(param);
+        }
+
+        public void removeFromContext() {
+            if (map.size() > 0) {
+                for (IContext context : map.keySet()) {
+                    Set<IContextParameter> params = map.get(context);
+                    for (IContextParameter param : params) {
+                        context.getContextParameterList().remove(param);
                     }
                 }
             }

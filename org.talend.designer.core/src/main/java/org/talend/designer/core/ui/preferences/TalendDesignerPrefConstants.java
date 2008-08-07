@@ -60,4 +60,7 @@ public class TalendDesignerPrefConstants {
     public static final String GENERATE_CODE_WHEN_OPEN_JOB = "generateCodeWhenOpenJob";
 
     public static final String CHECK_ONLY_LAST_VERSION = "checkOnlyLastVersion";
+
+    public static final String PROPAGATE_CONTEXT_VARIABLE = "propagateContextVariable";
+
 }

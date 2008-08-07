@@ -144,5 +144,10 @@ public class DesignerPreferencePage extends FieldEditorPreferencePage implements
         BooleanFieldEditor checkOnlyLastVersion = new BooleanFieldEditor(TalendDesignerPrefConstants.CHECK_ONLY_LAST_VERSION,
                 "Check only the last version when updating jobs or joblets", getFieldEditorParent());
         addField(checkOnlyLastVersion);
+
+        BooleanFieldEditor propagateContextVariable = new BooleanFieldEditor(
+                TalendDesignerPrefConstants.PROPAGATE_CONTEXT_VARIABLE,
+                "Propagate add/delete variable modification in the contexts", getFieldEditorParent());
+        addField(propagateContextVariable);
     }
 }

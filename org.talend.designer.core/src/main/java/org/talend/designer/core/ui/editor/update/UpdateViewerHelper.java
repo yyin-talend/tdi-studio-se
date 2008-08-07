@@ -186,9 +186,11 @@ public class UpdateViewerHelper {
             return;
         }
         // not checked
-        if (!state && item.getResultObject().getResultType() == EUpdateResult.UPDATE && !item.getResultObject().isReadOnly()) {
-            item.setChecked(false);
-
+        if (!state && !item.getResultObject().isReadOnly()) {
+            EUpdateResult resultType = item.getResultObject().getResultType();
+            if (resultType == EUpdateResult.UPDATE || resultType == EUpdateResult.ADD || resultType == EUpdateResult.DELETE) {
+                item.setChecked(false);
+            }
         } else {
             // keep the checked
             item.setChecked(true);
@@ -283,7 +285,7 @@ public class UpdateViewerHelper {
      * 
      * refresh the label of select button.
      */
-    @SuppressWarnings("restriction")//$NON-NLS-1$
+    @SuppressWarnings("restriction")
     public void refreshSelectButton() {
         List<UpdateResult> inputElements = updateDialog.getInputElements();
         if (inputElements == null) {
@@ -307,7 +309,8 @@ public class UpdateViewerHelper {
         List<UpdateResult> inputElements = updateDialog.getInputElements();
         if (inputElements != null) {
             for (UpdateResult result : inputElements) {
-                if (result.getResultType() == EUpdateResult.UPDATE && !result.isChecked()) {
+                if (!result.isChecked()
+                        && (result.getResultType() == EUpdateResult.UPDATE || result.getResultType() == EUpdateResult.DELETE)) {
                     updateDialog.updateWarnMessage();
                     return;
                 }

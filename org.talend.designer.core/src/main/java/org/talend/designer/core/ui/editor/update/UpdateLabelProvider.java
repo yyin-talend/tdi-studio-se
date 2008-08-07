@@ -175,7 +175,8 @@ public class UpdateLabelProvider implements ITableLabelProvider {
     }
 
     private boolean isBuilInMode(Item item) {
-        if (item != null && !item.isChecked() && item.getOperation() == EUpdateResult.UPDATE) {
+        if (item != null && !item.isChecked()
+                && (item.getOperation() == EUpdateResult.UPDATE || item.getOperation() == EUpdateResult.DELETE)) {
             return true;
         }
         return false;

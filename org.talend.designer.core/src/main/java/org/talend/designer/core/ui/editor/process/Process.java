@@ -632,7 +632,7 @@ public class Process extends Element implements IProcess2 {
         pType.setField(param.getField().getName());
         pType.setContextMode(param.isContextMode());
         Object value = param.getValue();
-        if (param.getField().equals(EParameterFieldType.TABLE)) {
+        if (param.getField().equals(EParameterFieldType.TABLE) && value != null) {
             List<Map<String, Object>> tableValues = (List<Map<String, Object>>) value;
             for (Map<String, Object> currentLine : tableValues) {
                 for (int i = 0; i < currentLine.size(); i++) {

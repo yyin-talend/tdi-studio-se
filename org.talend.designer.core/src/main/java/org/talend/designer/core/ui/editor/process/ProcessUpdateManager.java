@@ -97,37 +97,35 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         List<UpdateResult> contextResults = new ArrayList<UpdateResult>();
         final IContextManager contextManager = getProcess().getContextManager();
         // record the unsame
-        Map<ContextItem, Set<String>> unsameMap = new HashMap<ContextItem, Set<String>>();
+        ContextItemParamMap unsameMap = new ContextItemParamMap();
         // rename
-        Map<ContextItem, Set<String>> renamedMap = new HashMap<ContextItem, Set<String>>();
+        ContextItemParamMap renamedMap = new ContextItemParamMap();
         // built in
-        Map<ContextItem, Set<String>> builtInMap = new HashMap<ContextItem, Set<String>>();
+        ContextItemParamMap builtInMap = new ContextItemParamMap();
         Set<String> builtInSet = new HashSet<String>();
 
         Map<ContextItem, Map<String, String>> repositoryRenamedMap = ((JobContextManager) contextManager)
                 .getRepositoryRenamedMap();
 
+        ContextItemParamMap deleteParams = new ContextItemParamMap();
+
         final List<ContextItem> allContextItem = ContextUtils.getAllContextItem();
+
+        Set<String> refContextNames = new HashSet<String>();
 
         for (IContext context : contextManager.getListContext()) {
             for (IContextParameter param : context.getContextParameterList()) {
                 if (!param.isBuiltIn()) {
                     String source = param.getSource();
                     String paramName = param.getName();
-
+                    refContextNames.add(source);
                     // rename
                     boolean renamed = false;
                     for (ContextItem item : repositoryRenamedMap.keySet()) {
                         if (source.equals(item.getProperty().getLabel())) {
                             String newName = getRenamedVarName(paramName, repositoryRenamedMap.get(item));
                             if (newName != null && !newName.equals(paramName)) {
-                                // param.setName(newName);
-                                Set<String> names = renamedMap.get(item);
-                                if (names == null) {
-                                    names = new HashSet<String>();
-                                    renamedMap.put(item, names);
-                                }
-                                names.add(paramName);
+                                renamedMap.add(item, paramName);
                                 renamed = true;
                             }
                         }
@@ -144,26 +142,22 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                         contextType, paramName);
                                 if (contextParameterType != null) {
                                     if (!ContextUtils.samePropertiesForContextParameter(param, contextParameterType)) {
-                                        Set<String> names = unsameMap.get(contextItem);
-                                        if (names == null) {
-                                            names = new HashSet<String>();
-                                            unsameMap.put(contextItem, names);
-                                        }
-                                        names.add(paramName);
+                                        unsameMap.add(contextItem, paramName);
                                     }
                                     builtin = false;
+                                } else {
+                                    // delete context variable
+                                    if (ContextUtils.isPropagateContextVariable()) {
+                                        deleteParams.add(contextItem, paramName);
+                                        builtin = false;
+                                    }
                                 }
                             }
                         }
                         if (builtin) {
                             // built in
                             if (contextItem != null) {
-                                Set<String> names = builtInMap.get(contextItem);
-                                if (names == null) {
-                                    names = new HashSet<String>();
-                                    builtInMap.put(contextItem, names);
-                                }
-                                names.add(paramName);
+                                builtInMap.add(contextItem, paramName);
                             } else {
                                 builtInSet.add(paramName);
                             }
@@ -187,7 +181,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
             contextResults.add(result);
         }
         if (!builtInMap.isEmpty()) {
-            for (ContextItem item : builtInMap.keySet()) {
+            for (ContextItem item : builtInMap.getContexts()) {
                 Set<String> names = builtInMap.get(item);
                 if (names != null && !names.isEmpty()) {
                     UpdateCheckResult result = new UpdateCheckResult(names);
@@ -198,22 +192,22 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                 }
             }
         }
+        // see 0004661: Add an option to propagate when add or remove a variable in a repository context to
+        // jobs/joblets.
+        checkPropagateContextVariable(contextResults, contextManager, deleteParams, allContextItem, refContextNames);
+
         // update
         if (!unsameMap.isEmpty()) {
-            for (ContextItem item : unsameMap.keySet()) {
+            for (ContextItem item : unsameMap.getContexts()) {
                 Set<String> names = unsameMap.get(item);
                 if (names != null && !names.isEmpty()) {
-                    UpdateCheckResult result = new UpdateCheckResult(names);
-                    result.setResult(EUpdateItemType.CONTEXT, EUpdateResult.UPDATE, item, UpdateRepositoryUtils
-                            .getRepositorySourceName(item));
-                    result.setJob(getProcess());
-                    contextResults.add(result);
+                    collectUpdateResult(contextResults, EUpdateItemType.CONTEXT, EUpdateResult.UPDATE, item, names);
                 }
             }
         }
         // rename
         if (!renamedMap.isEmpty()) {
-            for (ContextItem item : renamedMap.keySet()) {
+            for (ContextItem item : renamedMap.getContexts()) {
                 Map<String, String> nameMap = repositoryRenamedMap.get(item);
                 if (nameMap != null && !nameMap.isEmpty()) {
                     for (String newName : nameMap.keySet()) {
@@ -243,6 +237,58 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         }
         repositoryRenamedMap.clear();
         return contextResults;
+    }
+
+    /**
+     * propagate when add or remove a variable in a repository context to jobs/joblets.
+     * 
+     * @param contextResults
+     * @param contextManager
+     * @param deleteParams
+     * @param allContextItem
+     * @param refContextNames
+     */
+    private void checkPropagateContextVariable(List<UpdateResult> contextResults, final IContextManager contextManager,
+            ContextItemParamMap deleteParams, final List<ContextItem> allContextItem, Set<String> refContextNames) {
+        if (ContextUtils.isPropagateContextVariable()) {
+            // check newly added parameter
+            Map<ContextItem, Set<String>> newParametersMap = ((JobContextManager) contextManager).getNewParametersMap();
+            if (newParametersMap != null) {
+                // improve lookup speed
+                Map<String, ContextItem> contextItemsMap = new HashMap<String, ContextItem>();
+                for (ContextItem contextItem : allContextItem) {
+                    contextItemsMap.put(contextItem.getProperty().getLabel(), contextItem);
+                }
+
+                for (String name : refContextNames) {
+                    ContextItem contextItem = contextItemsMap.get(name);
+                    Set<String> names = newParametersMap.get(contextItem);
+                    if (names == null || names.isEmpty()) {
+                        continue;
+                    }
+                    collectUpdateResult(contextResults, EUpdateItemType.CONTEXT, EUpdateResult.ADD, contextItem, names);
+                }
+            }
+
+            // delete
+            if (!deleteParams.isEmpty()) {
+                for (ContextItem item : deleteParams.getContexts()) {
+                    Set<String> names = deleteParams.get(item);
+                    if (!names.isEmpty()) {
+                        collectUpdateResult(contextResults, EUpdateItemType.CONTEXT, EUpdateResult.DELETE, item, names);
+                    }
+                }
+            }
+        }
+    }
+
+    private UpdateCheckResult collectUpdateResult(List<UpdateResult> contextResults, EUpdateItemType itemType,
+            EUpdateResult resulstType, ContextItem contextItem, Object names) {
+        UpdateCheckResult result = new UpdateCheckResult(names);
+        result.setResult(itemType, resulstType, contextItem, UpdateRepositoryUtils.getRepositorySourceName(contextItem));
+        result.setJob(getProcess());
+        contextResults.add(result);
+        return result;
     }
 
     private static boolean isOpenedProcess(Process curProcess) {
@@ -389,7 +435,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
     /*
      * check node parameters.
      */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     private List<UpdateResult> checkNodesParameters(EUpdateItemType type) {
         List<UpdateResult> nodesResults = new ArrayList<UpdateResult>();
         for (Node node : (List<Node>) getProcess().getGraphicalNodes()) {
@@ -517,7 +563,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
      * @param node
      * @return true if the data have been modified
      */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     private List<UpdateResult> checkNodePropertiesFromRepository(final Node node) {
         if (node == null) {
             return Collections.emptyList();
@@ -857,7 +903,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         return nodeResults;
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     private List<INode> findRelatedJobletNode(Process process, String oldjobletName, String newJobletName) {
         if (oldjobletName == null || process == null) {
             return null;
@@ -921,9 +967,42 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         return tmpResults;
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     public boolean executeUpdates(List<UpdateResult> results) {
         return UpdateManagerUtils.executeUpdates(results);
+    }
+
+    /**
+     * 
+     * DOC hcw ProcessUpdateManager class global comment. Detailled comment
+     */
+    static class ContextItemParamMap {
+
+        private Map<ContextItem, Set<String>> map = new HashMap<ContextItem, Set<String>>();
+
+        public void add(ContextItem item, String param) {
+            Set<String> params = map.get(item);
+            if (params == null) {
+                params = new HashSet<String>();
+                map.put(item, params);
+            }
+            params.add(param);
+        }
+
+        @SuppressWarnings("unchecked")
+        public Set<String> get(ContextItem item) {
+            Set<String> params = map.get(item);
+            return (params == null) ? Collections.EMPTY_SET : params;
+
+        }
+
+        public boolean isEmpty() {
+            return map.isEmpty();
+        }
+
+        public Set<ContextItem> getContexts() {
+            return map.keySet();
+        }
     }
 
 }
