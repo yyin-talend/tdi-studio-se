@@ -37,6 +37,7 @@ import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.designer.runprocess.IRunProcessService;
+import org.talend.repository.ProjectManager;
 
 /**
  * Routine synchronizer of java project.
@@ -92,6 +93,16 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
                 String label = routineItem.getProperty().getLabel();
                 if (!label.equals(ITalendSynchronizer.TEMPLATE)) {
                     routineContent = routineContent.replaceAll(ITalendSynchronizer.TEMPLATE, label);
+                    if (!routineItem.isBuiltIn()) { // only for user created routines
+                        ProjectManager pManager = ProjectManager.getInstance();
+                        org.talend.core.model.properties.Project project = pManager.getProject(routineItem);
+                        // for create new routine
+                        String oldPackage = "package(\\s)+" + JavaUtils.JAVA_ROUTINES_DIRECTORY + "(\\s)*;";
+                        String newPackage = "package " + JavaUtils.JAVA_ROUTINES_DIRECTORY + "."
+                                + project.getTechnicalLabel().toLowerCase() + ";";
+
+                        routineContent = routineContent.replaceAll(oldPackage, newPackage);
+                    }
                     File f = file.getLocation().toFile();
                     fos = new FileOutputStream(f);
                     fos.write(routineContent.getBytes());
@@ -116,11 +127,15 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
         try {
             IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
             IProject javaProject = service.getProject(ECodeLanguage.JAVA);
-            Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                    .getProject();
+            ProjectManager projectManager = ProjectManager.getInstance();
+            org.talend.core.model.properties.Project project = projectManager.getProject(routineItem);
             initRoutineFolder(javaProject, project);
-            IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/" + JavaUtils.JAVA_ROUTINES_DIRECTORY + "/"
-                    + routineItem.getProperty().getLabel() + JavaUtils.JAVA_EXTENSION);
+            String routinesFolder = getRoutinesFolder(null);
+            if (!routineItem.isBuiltIn()) {
+                routinesFolder = getRoutinesFolder(project);
+            }
+            IFile file = javaProject.getFile(routinesFolder + "/" + routineItem.getProperty().getLabel()
+                    + JavaUtils.JAVA_EXTENSION);
             return file;
         } catch (CoreException e) {
             throw new SystemException(e);
@@ -152,11 +167,25 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
      * @param project
      * @throws CoreException
      */
-    private void initRoutineFolder(IProject javaProject, Project project) throws CoreException {
-        IFolder rep = javaProject.getFolder(JavaUtils.JAVA_SRC_DIRECTORY + "/" + JavaUtils.JAVA_ROUTINES_DIRECTORY);
+    private void initRoutineFolder(IProject javaProject, org.talend.core.model.properties.Project project) throws CoreException {
+        IFolder rep = javaProject.getFolder(getRoutinesFolder(null));
         if (!rep.exists()) {
             rep.create(true, true, null);
         }
+        if (project != null) {
+            rep = javaProject.getFolder(getRoutinesFolder(project));
+            if (!rep.exists()) {
+                rep.create(true, true, null);
+            }
+        }
+    }
+
+    private String getRoutinesFolder(org.talend.core.model.properties.Project project) {
+        String routinesPath = JavaUtils.JAVA_SRC_DIRECTORY + "/" + JavaUtils.JAVA_ROUTINES_DIRECTORY;
+        if (project != null) {
+            routinesPath += "/" + project.getLabel().toLowerCase();
+        }
+        return routinesPath;
     }
 
     private void initModuleFolder(IProject javaProject, Project project) throws CoreException {
