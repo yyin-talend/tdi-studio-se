@@ -23,10 +23,10 @@
 %>
  if(<%=expression %>) {
 	<%=assertCatcher.getUniqueName() %>.addMessage(pid, projectName, jobName, "java", "<%=cid %>", "Ok", "--", <%=description.trim().length()==0?"null":description %>);
-	<%=assertCatcher.getDesignSubjobStartNode().getUniqueName() %>Process();
+	<%=assertCatcher.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
 }else {
 	<%=assertCatcher.getUniqueName() %>.addMessage(pid, projectName, jobName, "java", "<%=cid %>", "Failed", "Test logically failed", <%=description.trim().length()==0?"null":description %>);
-	<%=assertCatcher.getDesignSubjobStartNode().getUniqueName() %>Process();	
+	<%=assertCatcher.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);	
 }					
 <%
 					}

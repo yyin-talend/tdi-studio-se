@@ -20,7 +20,7 @@
 					if (ElementParameterParser.getValue(logCatcher, "__CATCH_TWARN__").equals("true")) {
 %>
 	<%=logCatcher.getUniqueName() %>.addMessage("tWarn", "<%=cid %>", <%=ElementParameterParser.getValue(node, "__PRIORITY__") %>, <%=ElementParameterParser.getValue(node, "__MESSAGE__") %>, <%=ElementParameterParser.getValue(node, "__CODE__") %>);
-	<%=logCatcher.getDesignSubjobStartNode().getUniqueName() %>Process();
+	<%=logCatcher.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
 <%
 					}
 				}
