@@ -196,7 +196,7 @@ imports="
                  	            } else if(typeToGenerate.equals("Object") && columnType.equals("CLOB")) {
                  	                %>
                  	                if(rs_<%=cid %>.getObject(<%=currentColNo%>) != null) {
-                 	                    Clob temp<%=column.getLabel()%> = null;
+                 	                    java.sql.Clob temp<%=column.getLabel()%> = null;
                  	                    temp<%=column.getLabel()%> = rs_<%=cid %>.getClob(<%=currentColNo%>);
                  	                    <%=firstConnName%>.<%=column.getLabel()%> = temp<%=column.getLabel()%>.getSubString(1, (int) temp<%=column.getLabel()%>.length());
                  	                } else {
