@@ -40,6 +40,7 @@ import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.Project;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.designer.core.IDesignerCoreService;
@@ -49,6 +50,7 @@ import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.designer.runprocess.JobInfo;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.constants.FileConstants;
 import org.talend.repository.documentation.ExportFileResource;
@@ -328,9 +330,15 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         }
 
         List<URL> allJobScripts = new ArrayList<URL>();
+        ProjectManager projectManager = ProjectManager.getInstance();
         for (Iterator<JobInfo> iter = list.iterator(); iter.hasNext();) {
             JobInfo jobInfo = iter.next();
-            allJobScripts.addAll(getJobScripts(projectName, jobInfo.getJobName(), jobInfo.getJobVersion(), exportChoice
+            Project project = projectManager.getProject(jobInfo.getProcessItem());
+            String childProjectName = projectName;
+            if (project != null) {
+                childProjectName = project.getLabel().toLowerCase();
+            }
+            allJobScripts.addAll(getJobScripts(childProjectName, jobInfo.getJobName(), jobInfo.getJobVersion(), exportChoice
                     .get(ExportChoice.needJob)));
             addContextScripts(jobInfo.getProcessItem(), jobInfo.getJobName(), jobInfo.getJobVersion(), resource, exportChoice
                     .get(ExportChoice.needContext));
