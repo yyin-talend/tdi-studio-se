@@ -181,20 +181,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.gmf.runtime.common.ui.services.dnd"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.gmf.runtime.common.ui.services.dnd.ide"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.gmf.runtime.common.ui.services.properties"
          download-size="0"
          install-size="0"
@@ -217,20 +203,6 @@
 
    <plugin
          id="org.eclipse.gmf.runtime.diagram.ui.actions"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.gmf.runtime.diagram.ui.dnd"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.gmf.runtime.diagram.ui.geoshapes"
          download-size="0"
          install-size="0"
          version="0.0.0"

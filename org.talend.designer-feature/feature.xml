@@ -58,6 +58,7 @@
       <import plugin="org.eclipse.ui.ide" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.ui.editors" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.core.variables" version="3.1.100" match="compatible"/>
+      <import plugin="org.talend.registration"/>
    </requires>
 
    <plugin
@@ -436,13 +437,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.talend.designer.mapper.advanced"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.talend.expressionbuilder"
          download-size="0"
          install-size="0"
@@ -470,10 +464,21 @@
          version="0.0.0"/>
 
    <plugin
+         id="org.apache.axis"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.apache.xml.serializer"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+   <plugin
          id="org.talend.designer.scd"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
 </feature>

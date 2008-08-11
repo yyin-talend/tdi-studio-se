@@ -236,14 +236,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.core.resources.win32"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.core.runtime"
          download-size="0"
          install-size="0"
@@ -840,6 +832,34 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="net.sourceforge.lpg.lpgjavaruntime"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="javax.xml"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="javax.wsdl"
+         download-size="0"
+         install-size="0"
+         version="1.4.0.v200806030407"
+         unpack="false"/>
+
+   <plugin
+         id="javax.wsdl"
+         download-size="0"
+         install-size="0"
+         version="1.5.1.v200806030408"
          unpack="false"/>
 
 </feature>
