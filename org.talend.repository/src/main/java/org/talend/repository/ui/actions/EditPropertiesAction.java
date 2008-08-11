@@ -27,7 +27,6 @@ import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.internal.compiler.util.SuffixConstants;
 import org.eclipse.jdt.internal.corext.refactoring.rename.JavaRenameProcessor;
-import org.eclipse.jdt.internal.corext.refactoring.rename.JavaRenameRefactoring;
 import org.eclipse.jdt.internal.corext.refactoring.rename.RenameCompilationUnitProcessor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -77,186 +76,206 @@ import org.talend.repository.ui.wizards.PropertiesWizard;
  */
 public class EditPropertiesAction extends AContextualAction {
 
-    public EditPropertiesAction() {
-        super();
-        this.setText(Messages.getString("EditPropertiesAction.action.title")); //$NON-NLS-1$
-        this.setToolTipText(Messages.getString("EditPropertiesAction.action.toolTipText")); //$NON-NLS-1$
-        this.setImageDescriptor(ImageProvider.getImageDesc(EImage.EDIT_ICON));
-    }
+	public EditPropertiesAction() {
+		super();
+		this.setText(Messages.getString("EditPropertiesAction.action.title")); //$NON-NLS-1$
+		this.setToolTipText(Messages
+				.getString("EditPropertiesAction.action.toolTipText")); //$NON-NLS-1$
+		this.setImageDescriptor(ImageProvider.getImageDesc(EImage.EDIT_ICON));
+	}
 
-    public void run() {
-        ISelection selection = getSelection();
-        Object obj = ((IStructuredSelection) selection).getFirstElement();
-        RepositoryNode node = (RepositoryNode) obj;
+	public void run() {
+		ISelection selection = getSelection();
+		Object obj = ((IStructuredSelection) selection).getFirstElement();
+		RepositoryNode node = (RepositoryNode) obj;
 
-        IPath path = RepositoryNodeUtilities.getPath(node);
+		IPath path = RepositoryNodeUtilities.getPath(node);
 
-        String originalName = node.getObject().getLabel();
+		String originalName = node.getObject().getLabel();
 
-        PropertiesWizard wizard = new PropertiesWizard(node, path);
-        WizardDialog dlg = new WizardDialog(Display.getCurrent().getActiveShell(), wizard);
-        if (dlg.open() == Window.OK) {
-            refresh(node);
-            // refresh the corresponding editor's name
-            IEditorPart part = getCorrespondingEditor(node);
-            if (part != null && part instanceof IUIRefresher) {
-                ((IUIRefresher) part).refreshName();
-            }else{
-                processRoutineRenameOperation(originalName, node, path);
-            }
-        }
-    }
+		PropertiesWizard wizard = new PropertiesWizard(node, path);
+		WizardDialog dlg = new WizardDialog(Display.getCurrent()
+				.getActiveShell(), wizard);
+		if (dlg.open() == Window.OK) {
+			refresh(node);
+			// refresh the corresponding editor's name
+			IEditorPart part = getCorrespondingEditor(node);
+			if (part != null && part instanceof IUIRefresher) {
+				((IUIRefresher) part).refreshName();
+			} else {
+				processRoutineRenameOperation(originalName, node, path);
+			}
+		}
+	}
 
-    /**
-     * delete the used routine java file if the routine is renamed. This method is added for solving bug 1321, only
-     * supply to talend java version.
-     * 
-     * @param path
-     * @param node
-     * @param originalName
-     */
-    private void processRoutineRenameOperation(String originalName, RepositoryNode node, IPath path) {
-        if (LanguageManager.getCurrentLanguage() != ECodeLanguage.JAVA) {
-            return;
-        }
+	/**
+	 * delete the used routine java file if the routine is renamed. This method
+	 * is added for solving bug 1321, only supply to talend java version.
+	 * 
+	 * @param path
+	 * @param node
+	 * @param originalName
+	 */
+	private void processRoutineRenameOperation(String originalName,
+			RepositoryNode node, IPath path) {
+		if (LanguageManager.getCurrentLanguage() != ECodeLanguage.JAVA) {
+			return;
+		}
 
-        if (node.getObjectType() != ERepositoryObjectType.ROUTINES) {
-            return;
-        }
-        if (originalName.equals(node.getObject().getLabel())) {
-            return;
-        }
+		if (node.getObjectType() != ERepositoryObjectType.ROUTINES) {
+			return;
+		}
+		if (originalName.equals(node.getObject().getLabel())) {
+			return;
+		}
 
-        try {
-            IJavaProject javaProject = CorePlugin.getDefault().getRunProcessService().getJavaProject();
-            if (javaProject == null) {
-                return;
-            }
+		try {
+			IJavaProject javaProject = CorePlugin.getDefault()
+					.getRunProcessService().getJavaProject();
+			if (javaProject == null) {
+				return;
+			}
 
-            IProject project = javaProject.getProject();
-            IFolder srcFolder = project.getFolder(JavaUtils.JAVA_SRC_DIRECTORY);
-            IPackageFragmentRoot root = javaProject.getPackageFragmentRoot(srcFolder);
-            IPackageFragment routinesPkg = root.getPackageFragment(JavaUtils.JAVA_ROUTINES_DIRECTORY);
+			IProject project = javaProject.getProject();
+			IFolder srcFolder = project.getFolder(JavaUtils.JAVA_SRC_DIRECTORY);
+			IPackageFragmentRoot root = javaProject
+					.getPackageFragmentRoot(srcFolder);
+			IPackageFragment routinesPkg = root
+					.getPackageFragment(JavaUtils.JAVA_ROUTINES_DIRECTORY);
 
-            ICompilationUnit unit = routinesPkg.getCompilationUnit(originalName + SuffixConstants.SUFFIX_STRING_java);
-            if (unit == null) {
-                return;
-            }
-            String newName = node.getObject().getLabel();
+			ICompilationUnit unit = routinesPkg.getCompilationUnit(originalName
+					+ SuffixConstants.SUFFIX_STRING_java);
+			if (unit == null) {
+				return;
+			}
+			String newName = node.getObject().getLabel();
 
-            JavaRenameProcessor processor = new RenameCompilationUnitProcessor(unit);
-            processor.setNewElementName(newName + SuffixConstants.SUFFIX_STRING_java);
-            RenameRefactoring ref = new JavaRenameRefactoring(processor);
-            final PerformRefactoringOperation operation = new PerformRefactoringOperation(ref,
-                    CheckConditionsOperation.ALL_CONDITIONS);
+			JavaRenameProcessor processor = new RenameCompilationUnitProcessor(
+					unit);
+			processor.setNewElementName(newName
+					+ SuffixConstants.SUFFIX_STRING_java);
+			RenameRefactoring ref = new RenameRefactoring(processor);
+			final PerformRefactoringOperation operation = new PerformRefactoringOperation(
+					ref, CheckConditionsOperation.ALL_CONDITIONS);
 
-            IRunnableWithProgress r = new IRunnableWithProgress() {
+			IRunnableWithProgress r = new IRunnableWithProgress() {
 
-                public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                    Display.getDefault().asyncExec(new Runnable() {
+				public void run(final IProgressMonitor monitor)
+						throws InvocationTargetException, InterruptedException {
+					Display.getDefault().asyncExec(new Runnable() {
 
-                        public void run() {
-                            try {
-                                operation.run(monitor);
-                            } catch (CoreException e) {
-                                ExceptionHandler.process(e);
-                            }
-                        }
-                    });
-                }
-            };
-            PlatformUI.getWorkbench().getProgressService().run(true, true, r);
-            RefactoringStatus conditionStatus = operation.getConditionStatus();
-            if (conditionStatus.hasError()) {
-                String errorMessage = "Rename " + unit.getElementName() + " to " + newName + " has errors!";
-                RefactoringStatusEntry[] entries = conditionStatus.getEntries();
-                for (int i = 0; i < entries.length; i++) {
-                    RefactoringStatusEntry entry = entries[i];
-                    errorMessage += "\n>>>" + entry.getMessage();
-                }
-                MessageDialog.openError(this.getViewPart().getViewSite().getShell(), "Warning", errorMessage);
-                return;
-            }
+						public void run() {
+							try {
+								operation.run(monitor);
+							} catch (CoreException e) {
+								ExceptionHandler.process(e);
+							}
+						}
+					});
+				}
+			};
+			PlatformUI.getWorkbench().getProgressService().run(true, true, r);
+			RefactoringStatus conditionStatus = operation.getConditionStatus();
+			if (conditionStatus.hasError()) {
+				String errorMessage = "Rename " + unit.getElementName()
+						+ " to " + newName + " has errors!";
+				RefactoringStatusEntry[] entries = conditionStatus.getEntries();
+				for (int i = 0; i < entries.length; i++) {
+					RefactoringStatusEntry entry = entries[i];
+					errorMessage += "\n>>>" + entry.getMessage();
+				}
+				MessageDialog.openError(this.getViewPart().getViewSite()
+						.getShell(), "Warning", errorMessage);
+				return;
+			}
 
-            ICompilationUnit newUnit = routinesPkg.getCompilationUnit(newName + SuffixConstants.SUFFIX_STRING_java);
-            if (newUnit == null) {
-                return;
-            }
-            RoutineItem item = (RoutineItem) node.getObject().getProperty().getItem();
-            IFile javaFile = (IFile) newUnit.getAdapter(IResource.class);
-            try {
-                ByteArray byteArray = item.getContent();
-                byteArray.setInnerContentFromFile(javaFile);
-                IRepositoryService service = CorePlugin.getDefault().getRepositoryService();
-                IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
-                repFactory.save(item);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+			ICompilationUnit newUnit = routinesPkg.getCompilationUnit(newName
+					+ SuffixConstants.SUFFIX_STRING_java);
+			if (newUnit == null) {
+				return;
+			}
+			RoutineItem item = (RoutineItem) node.getObject().getProperty()
+					.getItem();
+			IFile javaFile = (IFile) newUnit.getAdapter(IResource.class);
+			try {
+				ByteArray byteArray = item.getContent();
+				byteArray.setInnerContentFromFile(javaFile);
+				IRepositoryService service = CorePlugin.getDefault()
+						.getRepositoryService();
+				IProxyRepositoryFactory repFactory = service
+						.getProxyRepositoryFactory();
+				repFactory.save(item);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
-    /**
-     * Find the editor that is related to the node.
-     * 
-     * @param node
-     * @return
-     */
-    private IEditorPart getCorrespondingEditor(RepositoryNode node) {
-        IEditorReference[] eidtors = getActivePage().getEditorReferences();
+	/**
+	 * Find the editor that is related to the node.
+	 * 
+	 * @param node
+	 * @return
+	 */
+	private IEditorPart getCorrespondingEditor(RepositoryNode node) {
+		IEditorReference[] eidtors = getActivePage().getEditorReferences();
 
-        for (int i = 0; i < eidtors.length; i++) {
-            try {
-                IEditorInput input = eidtors[i].getEditorInput();
-                if (!(input instanceof RepositoryEditorInput)) {
-                    continue;
-                }
+		for (int i = 0; i < eidtors.length; i++) {
+			try {
+				IEditorInput input = eidtors[i].getEditorInput();
+				if (!(input instanceof RepositoryEditorInput)) {
+					continue;
+				}
 
-                RepositoryEditorInput repositoryInput = (RepositoryEditorInput) input;
-                if (repositoryInput.getItem().equals(node.getObject().getProperty().getItem())) {
+				RepositoryEditorInput repositoryInput = (RepositoryEditorInput) input;
+				if (repositoryInput.getItem().equals(
+						node.getObject().getProperty().getItem())) {
 
-                    IPath path = repositoryInput.getFile().getLocation();
+					IPath path = repositoryInput.getFile().getLocation();
 
-                    return eidtors[i].getEditor(false);
-                }
-            } catch (PartInitException e) {
-                continue;
-            }
-        }
-        return null;
-    }
+					return eidtors[i].getEditor(false);
+				}
+			} catch (PartInitException e) {
+				continue;
+			}
+		}
+		return null;
+	}
 
-    public void init(TreeViewer viewer, IStructuredSelection selection) {
-        boolean canWork = selection.size() == 1;
-        for (Object o : ((IStructuredSelection) selection).toArray()) {
-            if (canWork) {
-                if (o instanceof RepositoryNode) {
-                    RepositoryNode node = (RepositoryNode) o;
-                    switch (node.getType()) {
-                    case REPOSITORY_ELEMENT:
-                        if (node.getObjectType() == ERepositoryObjectType.BUSINESS_PROCESS
-                                || node.getObjectType() == ERepositoryObjectType.PROCESS
-                                || node.getObjectType() == ERepositoryObjectType.ROUTINES) {
-                            IRepositoryObject repObj = node.getObject();
-                            IProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
-                            ERepositoryStatus status = repFactory.getStatus(repObj);
-                            boolean isEditable = status.isPotentiallyEditable() || status.isEditable();
-                            canWork = isEditable;
-                        } else {
-                            canWork = false;
-                        }
-                        break;
-                    default:
-                        canWork = false;
-                        break;
-                    }
-                }
-            }
-        }
-        setEnabled(canWork);
-    }
+	public void init(TreeViewer viewer, IStructuredSelection selection) {
+		boolean canWork = selection.size() == 1;
+		for (Object o : ((IStructuredSelection) selection).toArray()) {
+			if (canWork) {
+				if (o instanceof RepositoryNode) {
+					RepositoryNode node = (RepositoryNode) o;
+					switch (node.getType()) {
+					case REPOSITORY_ELEMENT:
+						if (node.getObjectType() == ERepositoryObjectType.BUSINESS_PROCESS
+								|| node.getObjectType() == ERepositoryObjectType.PROCESS
+								|| node.getObjectType() == ERepositoryObjectType.ROUTINES) {
+							IRepositoryObject repObj = node.getObject();
+							IProxyRepositoryFactory repFactory = ProxyRepositoryFactory
+									.getInstance();
+							ERepositoryStatus status = repFactory
+									.getStatus(repObj);
+							boolean isEditable = status.isPotentiallyEditable()
+									|| status.isEditable();
+							canWork = isEditable;
+						} else {
+							canWork = false;
+						}
+						break;
+					default:
+						canWork = false;
+						break;
+					}
+				}
+			}
+		}
+		setEnabled(canWork);
+	}
 
 }

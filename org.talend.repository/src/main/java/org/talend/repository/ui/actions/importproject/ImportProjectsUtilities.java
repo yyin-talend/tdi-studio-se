@@ -50,7 +50,6 @@ import org.eclipse.ui.internal.wizards.datatransfer.TarException;
 import org.eclipse.ui.internal.wizards.datatransfer.TarFile;
 import org.eclipse.ui.internal.wizards.datatransfer.TarLeveledStructureProvider;
 import org.eclipse.ui.internal.wizards.datatransfer.ZipLeveledStructureProvider;
-import org.eclipse.ui.wizards.datatransfer.FileSystemStructureProvider;
 import org.eclipse.ui.wizards.datatransfer.IImportStructureProvider;
 import org.eclipse.ui.wizards.datatransfer.ImportOperation;
 import org.osgi.framework.Bundle;
@@ -70,327 +69,375 @@ import org.talend.resources.ResourcesPlugin;
  */
 public class ImportProjectsUtilities {
 
-    public static final String TALEND_PROJECT_FILE_NAME = "talend.project"; //$NON-NLS-1$
+	public static final String TALEND_PROJECT_FILE_NAME = "talend.project"; //$NON-NLS-1$
 
-    public static final String OLD_TALEND_PROJECT_FILE_NAME = "talendProject"; //$NON-NLS-1$
+	public static final String OLD_TALEND_PROJECT_FILE_NAME = "talendProject"; //$NON-NLS-1$
 
-    private static final String XML_FILE_PATH = "resources/demoprojects.xml"; //$NON-NLS-1$
+	private static final String XML_FILE_PATH = "resources/demoprojects.xml"; //$NON-NLS-1$
 
-    public static void importProjectAs(Shell shell, String newName, String technicalName, String sourcePath,
-            IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-        IImportStructureProvider provider = FilterFileSystemStructureProvider.INSTANCE;
+	public static void importProjectAs(Shell shell, String newName,
+			String technicalName, String sourcePath, IProgressMonitor monitor)
+			throws InvocationTargetException, InterruptedException {
+		IImportStructureProvider provider = FilterFileSystemStructureProvider.INSTANCE;
 
-        importProject(shell, provider, new File(sourcePath), new Path(technicalName), true, false, monitor);
+		importProject(shell, provider, new File(sourcePath), new Path(
+				technicalName), true, false, monitor);
 
-        afterImportAs(newName, technicalName);
-    }
+		afterImportAs(newName, technicalName);
+	}
 
-    /**
-     * DOC smallet Comment method "afterImportAs".
-     * 
-     * @param newName
-     * @param technicalName
-     * @throws InvocationTargetException
-     */
-    private static void afterImportAs(String newName, String technicalName) throws InvocationTargetException {
-        // Rename in ".project" and "talendProject" or "talend.project"
-        // TODO SML Optimize
-        final IWorkspace workspace = org.eclipse.core.resources.ResourcesPlugin.getWorkspace();
-        IContainer containers = (IProject) workspace.getRoot().findMember(new Path(technicalName));
+	/**
+	 * DOC smallet Comment method "afterImportAs".
+	 * 
+	 * @param newName
+	 * @param technicalName
+	 * @throws InvocationTargetException
+	 */
+	private static void afterImportAs(String newName, String technicalName)
+			throws InvocationTargetException {
+		// Rename in ".project" and "talendProject" or "talend.project"
+		// TODO SML Optimize
+		final IWorkspace workspace = org.eclipse.core.resources.ResourcesPlugin
+				.getWorkspace();
+		IContainer containers = (IProject) workspace.getRoot().findMember(
+				new Path(technicalName));
 
-        IResource file2 = containers.findMember(IProjectDescription.DESCRIPTION_FILE_NAME);
-        try {
-            FilesUtils.replaceInFile(
-                    "<name>.*</name>", file2.getLocation().toOSString(), "<name>" + technicalName + "</name>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		IResource file2 = containers
+				.findMember(IProjectDescription.DESCRIPTION_FILE_NAME);
+		try {
+			FilesUtils
+					.replaceInFile(
+							"<name>.*</name>", file2.getLocation().toOSString(), "<name>" + technicalName + "</name>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-            IResource file3 = containers.findMember(OLD_TALEND_PROJECT_FILE_NAME);
-            if (file3 == null || !file3.exists()) {
-                file3 = containers.findMember(TALEND_PROJECT_FILE_NAME);
-            }
-            replaceInFile("label=\".*?\"", file3.getLocation().toOSString(), "label=\"" + newName + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            replaceInFile("technicalLabel=\".*?\"", file3.getLocation().toOSString(), "technicalLabel=\"" //$NON-NLS-1$ //$NON-NLS-2$
-                    + technicalName + "\""); //$NON-NLS-1$
-        } catch (IOException e) {
-            throw new InvocationTargetException(e);
-        }
-    }
+			IResource file3 = containers
+					.findMember(OLD_TALEND_PROJECT_FILE_NAME);
+			if (file3 == null || !file3.exists()) {
+				file3 = containers.findMember(TALEND_PROJECT_FILE_NAME);
+			}
+			replaceInFile(
+					"label=\".*?\"", file3.getLocation().toOSString(), "label=\"" + newName + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			replaceInFile(
+					"technicalLabel=\".*?\"", file3.getLocation().toOSString(), "technicalLabel=\"" //$NON-NLS-1$ //$NON-NLS-2$
+							+ technicalName + "\""); //$NON-NLS-1$
+		} catch (IOException e) {
+			throw new InvocationTargetException(e);
+		}
+	}
 
-    private static void replaceInFile(String regex, String fileName, String replacement) throws IOException {
-        InputStream in = new FileInputStream(fileName);
-        StringBuffer buffer = new StringBuffer();
-        try {
-            InputStreamReader inR = new InputStreamReader(in);
-            BufferedReader buf = new BufferedReader(inR);
-            String line;
-            while ((line = buf.readLine()) != null) {
-                if (line.contains("<TalendProperties:Project")) {
-                    line = line.replaceAll(regex, replacement);
-                }
-                buffer.append(line).append("\n");
-            }
-        } finally {
-            in.close();
-        }
+	private static void replaceInFile(String regex, String fileName,
+			String replacement) throws IOException {
+		InputStream in = new FileInputStream(fileName);
+		StringBuffer buffer = new StringBuffer();
+		try {
+			InputStreamReader inR = new InputStreamReader(in);
+			BufferedReader buf = new BufferedReader(inR);
+			String line;
+			while ((line = buf.readLine()) != null) {
+				if (line.contains("<TalendProperties:Project")) {
+					line = line.replaceAll(regex, replacement);
+				}
+				buffer.append(line).append("\n");
+			}
+		} finally {
+			in.close();
+		}
 
-        OutputStream os = new FileOutputStream(fileName);
-        os.write(buffer.toString().getBytes());
-        os.close();
-    }
-    
-    public static void importArchiveProjectAs(Shell shell, String newName, String technicalName, String sourcePath,
-            IProgressMonitor monitor) throws InvocationTargetException, InterruptedException, TarException, IOException {
-        importArchiveProject(shell, technicalName, sourcePath, monitor);
+		OutputStream os = new FileOutputStream(fileName);
+		os.write(buffer.toString().getBytes());
+		os.close();
+	}
 
-        afterImportAs(newName, technicalName);
-    }
+	public static void importArchiveProjectAs(Shell shell, String newName,
+			String technicalName, String sourcePath, IProgressMonitor monitor)
+			throws InvocationTargetException, InterruptedException,
+			TarException, IOException {
+		importArchiveProject(shell, technicalName, sourcePath, monitor);
 
-    public static void importArchiveProject(Shell shell, String technicalName, String sourcePath,
-            IProgressMonitor monitor) throws InvocationTargetException, InterruptedException, TarException, IOException {
+		afterImportAs(newName, technicalName);
+	}
 
-        IImportStructureProvider provider;
-        Object source;
+	public static void importArchiveProject(Shell shell, String technicalName,
+			String sourcePath, IProgressMonitor monitor)
+			throws InvocationTargetException, InterruptedException,
+			TarException, IOException {
 
-        if (ArchiveFileManipulations.isZipFile(sourcePath)) {
-            ZipLeveledStructureProvider zipProvider = ArchiveFileManipulations.getZipStructureProvider(new ZipFile(
-                    sourcePath), shell);
-            source = zipProvider.getRoot();
-            boolean ok = true;
-            for (Object o : zipProvider.getChildren(source)) {
-                String label = zipProvider.getLabel(o);
-                if (!label.equals(IProjectDescription.DESCRIPTION_FILE_NAME) && ok) {
-                    source = o;
-                } else {
-                    ok = false;
-                }
-            }
-            if (!ok) {
-                source = zipProvider.getRoot();
-            }
+		IImportStructureProvider provider;
+		Object source;
 
-            provider = zipProvider;
-        } else if (ArchiveFileManipulations.isTarFile(sourcePath)) {
-            TarLeveledStructureProvider tarProvider = ArchiveFileManipulations.getTarStructureProvider(new TarFile(
-                    sourcePath), shell);
-            source = tarProvider.getRoot();
-            boolean ok = true;
-            for (Object o : tarProvider.getChildren(source)) {
-                String label = tarProvider.getLabel(o);
-                if (!label.equals(IProjectDescription.DESCRIPTION_FILE_NAME) && ok) {
-                    source = o;
-                } else {
-                    ok = false;
-                }
-            }
-            if (!ok) {
-                source = tarProvider.getRoot();
-            }
-            
-            provider = tarProvider;
-        } else {
-            throw new IllegalArgumentException("File " + sourcePath + " is not a zip neither a tar file");
-        }
+		if (ArchiveFileManipulations.isZipFile(sourcePath)) {
+			ZipLeveledStructureProvider zipProvider = new ZipLeveledStructureProvider(
+					new ZipFile(sourcePath));
+			source = zipProvider.getRoot();
+			boolean ok = true;
+			for (Object o : zipProvider.getChildren(source)) {
+				String label = zipProvider.getLabel(o);
+				if (!label.equals(IProjectDescription.DESCRIPTION_FILE_NAME)
+						&& ok) {
+					source = o;
+				} else {
+					ok = false;
+				}
+			}
+			if (!ok) {
+				source = zipProvider.getRoot();
+			}
 
-        importProject(shell, provider, source, new Path(technicalName), false, false, monitor);
-    }
+			provider = zipProvider;
+		} else if (ArchiveFileManipulations.isTarFile(sourcePath)) {
+			TarLeveledStructureProvider tarProvider = new TarLeveledStructureProvider(
+					new TarFile(sourcePath));
+			source = tarProvider.getRoot();
+			boolean ok = true;
+			for (Object o : tarProvider.getChildren(source)) {
+				String label = tarProvider.getLabel(o);
+				if (!label.equals(IProjectDescription.DESCRIPTION_FILE_NAME)
+						&& ok) {
+					source = o;
+				} else {
+					ok = false;
+				}
+			}
+			if (!ok) {
+				source = tarProvider.getRoot();
+			}
 
-    private static void importProject(Shell shell, IImportStructureProvider provider, Object source, IPath path,
-            boolean overwriteResources, boolean createContainerStructure, IProgressMonitor monitor)
-            throws InvocationTargetException, InterruptedException {
-        monitor.beginTask(Messages.getString("ImportProjectsUtilities.task.importingProject"), 1); //$NON-NLS-1$
+			provider = tarProvider;
+		} else {
+			throw new IllegalArgumentException("File " + sourcePath
+					+ " is not a zip neither a tar file");
+		}
 
-        ArrayList fileSystemObjects = new ArrayList();
-        ImportProjectsUtilities.getFilesForProject(fileSystemObjects, provider, source);
+		importProject(shell, provider, source, new Path(technicalName), false,
+				false, monitor);
+	}
 
-        ImportOperation operation = new ImportOperation(path, source, provider, new MyOverwriteQuery(),
-                fileSystemObjects);
-        operation.setContext(shell);
-        operation.setOverwriteResources(overwriteResources);
-        operation.setCreateContainerStructure(createContainerStructure);
-        operation.run(new SubProgressMonitor(monitor, 1));
-        monitor.done();
-    }
+	private static void importProject(Shell shell,
+			IImportStructureProvider provider, Object source, IPath path,
+			boolean overwriteResources, boolean createContainerStructure,
+			IProgressMonitor monitor) throws InvocationTargetException,
+			InterruptedException {
+		monitor.beginTask(Messages
+				.getString("ImportProjectsUtilities.task.importingProject"), 1); //$NON-NLS-1$
 
-    /**
-     * Return a list of all files in the project
-     * 
-     * Method as taken in org.eclipse.ui.internal.wizards.datatransfer.WizardProjectsImportPage.
-     * 
-     * @param provider The provider for the parent file
-     * @param entry The root directory of the project
-     * @return A list of all files in the project
-     */
-    public static void getFilesForProject(Collection files, IImportStructureProvider provider, Object entry) {
-        List children = provider.getChildren(entry);
-        Iterator childrenEnum = children.iterator();
+		ArrayList fileSystemObjects = new ArrayList();
+		ImportProjectsUtilities.getFilesForProject(fileSystemObjects, provider,
+				source);
 
-        while (childrenEnum.hasNext()) {
-            Object child = childrenEnum.next();
-            // Add the child, this way we get every files except the project
-            // folder itself which we don't want
-            files.add(child);
-            // We don't have isDirectory for tar so must check for children
-            // instead
-            if (provider.isFolder(child)) {
-                getFilesForProject(files, provider, child);
-            }
-        }
-    }
+		ImportOperation operation = new ImportOperation(path, source, provider,
+				new MyOverwriteQuery(), fileSystemObjects);
+		operation.setContext(shell);
+		operation.setOverwriteResources(overwriteResources);
+		operation.setCreateContainerStructure(createContainerStructure);
+		operation.run(new SubProgressMonitor(monitor, 1));
+		monitor.done();
+	}
 
-    /**
-     * Collect the list of .project files that are under directory into files.
-     * 
-     * <br/> Method almost as taken in org.eclipse.ui.internal.wizards.datatransfer.WizardProjectsImportPage.
-     * Modifications are:
-     * <ol>
-     * <li>no recusrive search</li>
-     * <li>add searchFileName as parameter</li>
-     * <li>checks if monitor is null</li>
-     * </ol>
-     * 
-     * @param files
-     * @param directory
-     * @param monitor The monitor to report to
-     * @param searchFileName
-     * @return boolean <code>true</code> if the operation was completed.
-     */
-    public static boolean collectProjectFilesFromDirectory(Collection files, File directory, IProgressMonitor monitor,
-            String searchFileName) {
-        if (monitor != null && monitor.isCanceled()) {
-            return false;
-        }
-        if (monitor != null) {
-            monitor.subTask(Messages.getString("ImportProjectsUtilities.task.checkingFolder", directory.getPath())); //$NON-NLS-1$
-        }
-        File[] contents = directory.listFiles();
-        // first look for project description files
-        for (int i = 0; i < contents.length; i++) {
-            File file = contents[i];
-            if (file.isFile() && file.getName().equals(searchFileName)) {
-                files.add(file);
-                // don't search sub-directories since we can't have nested
-                // projects
-                return true;
-            }
-        }
-        return true;
-    }
+	/**
+	 * Return a list of all files in the project
+	 * 
+	 * Method as taken in
+	 * org.eclipse.ui.internal.wizards.datatransfer.WizardProjectsImportPage.
+	 * 
+	 * @param provider
+	 *            The provider for the parent file
+	 * @param entry
+	 *            The root directory of the project
+	 * @return A list of all files in the project
+	 */
+	public static void getFilesForProject(Collection files,
+			IImportStructureProvider provider, Object entry) {
+		List children = provider.getChildren(entry);
+		Iterator childrenEnum = children.iterator();
 
-    /**
-     * Collect the list of .project files that are under directory into files.
-     * 
-     * <br/> Method almost as taken in org.eclipse.ui.internal.wizards.datatransfer.WizardProjectsImportPage.
-     * Modifications are:
-     * <ol>
-     * <li>no recusrive search</li>
-     * <li>add searchFileName as parameter</li>
-     * <li>checks if monitor is null</li>
-     * </ol>
-     * 
-     * @param files
-     * @param monitor The monitor to report to
-     * @return boolean <code>true</code> if the operation was completed.
-     */
-    public static boolean collectProjectFilesFromProvider(Collection files, IImportStructureProvider provider,
-            Object entry, int level, IProgressMonitor monitor, String searchFileName) {
+		while (childrenEnum.hasNext()) {
+			Object child = childrenEnum.next();
+			// Add the child, this way we get every files except the project
+			// folder itself which we don't want
+			files.add(child);
+			// We don't have isDirectory for tar so must check for children
+			// instead
+			if (provider.isFolder(child)) {
+				getFilesForProject(files, provider, child);
+			}
+		}
+	}
 
-        if (monitor != null && monitor.isCanceled()) {
-            return false;
-        }
-        if (monitor != null) {
-            monitor
-                    .subTask(Messages
-                            .getString("ImportProjectsUtilities.task.checkingFolder", provider.getLabel(entry))); //$NON-NLS-1$
-        }
-        List children = provider.getChildren(entry);
-        if (children == null) {
-            children = new ArrayList(1);
-        }
-        Iterator childrenEnum = children.iterator();
-        while (childrenEnum.hasNext()) {
-            Object child = childrenEnum.next();
-            if (level < 1) {
-                if (provider.isFolder(child)) {
-                    collectProjectFilesFromProvider(files, provider, child, level + 1, monitor, searchFileName);
-                }
-            }
-            String elementLabel = provider.getLabel(child);
-            if (elementLabel.equals(searchFileName)) {
-                files.add(elementLabel);
-            }
-        }
-        return true;
-    }
+	/**
+	 * Collect the list of .project files that are under directory into files.
+	 * 
+	 * <br/> Method almost as taken in
+	 * org.eclipse.ui.internal.wizards.datatransfer.WizardProjectsImportPage.
+	 * Modifications are:
+	 * <ol>
+	 * <li>no recusrive search</li>
+	 * <li>add searchFileName as parameter</li>
+	 * <li>checks if monitor is null</li>
+	 * </ol>
+	 * 
+	 * @param files
+	 * @param directory
+	 * @param monitor
+	 *            The monitor to report to
+	 * @param searchFileName
+	 * @return boolean <code>true</code> if the operation was completed.
+	 */
+	public static boolean collectProjectFilesFromDirectory(Collection files,
+			File directory, IProgressMonitor monitor, String searchFileName) {
+		if (monitor != null && monitor.isCanceled()) {
+			return false;
+		}
+		if (monitor != null) {
+			monitor
+					.subTask(Messages
+							.getString(
+									"ImportProjectsUtilities.task.checkingFolder", directory.getPath())); //$NON-NLS-1$
+		}
+		File[] contents = directory.listFiles();
+		// first look for project description files
+		for (int i = 0; i < contents.length; i++) {
+			File file = contents[i];
+			if (file.isFile() && file.getName().equals(searchFileName)) {
+				files.add(file);
+				// don't search sub-directories since we can't have nested
+				// projects
+				return true;
+			}
+		}
+		return true;
+	}
 
-    /**
-     * 
-     * DOC smallet ImportDemoProjectAction class global comment. Detailled comment <br/>
-     * 
-     * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ven., 29 sept. 2006) nrousseau $
-     * 
-     */
-    private static class MyOverwriteQuery implements IOverwriteQuery {
+	/**
+	 * Collect the list of .project files that are under directory into files.
+	 * 
+	 * <br/> Method almost as taken in
+	 * org.eclipse.ui.internal.wizards.datatransfer.WizardProjectsImportPage.
+	 * Modifications are:
+	 * <ol>
+	 * <li>no recusrive search</li>
+	 * <li>add searchFileName as parameter</li>
+	 * <li>checks if monitor is null</li>
+	 * </ol>
+	 * 
+	 * @param files
+	 * @param monitor
+	 *            The monitor to report to
+	 * @return boolean <code>true</code> if the operation was completed.
+	 */
+	public static boolean collectProjectFilesFromProvider(Collection files,
+			IImportStructureProvider provider, Object entry, int level,
+			IProgressMonitor monitor, String searchFileName) {
 
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.eclipse.ui.dialogs.IOverwriteQuery#queryOverwrite(java.lang.String)
-         */
-        public String queryOverwrite(String pathString) {
-            return pathString;
-        }
+		if (monitor != null && monitor.isCanceled()) {
+			return false;
+		}
+		if (monitor != null) {
+			monitor
+					.subTask(Messages
+							.getString(
+									"ImportProjectsUtilities.task.checkingFolder", provider.getLabel(entry))); //$NON-NLS-1$
+		}
+		List children = provider.getChildren(entry);
+		if (children == null) {
+			children = new ArrayList(1);
+		}
+		Iterator childrenEnum = children.iterator();
+		while (childrenEnum.hasNext()) {
+			Object child = childrenEnum.next();
+			if (level < 1) {
+				if (provider.isFolder(child)) {
+					collectProjectFilesFromProvider(files, provider, child,
+							level + 1, monitor, searchFileName);
+				}
+			}
+			String elementLabel = provider.getLabel(child);
+			if (elementLabel.equals(searchFileName)) {
+				files.add(elementLabel);
+			}
+		}
+		return true;
+	}
 
-    }
+	/**
+	 * 
+	 * DOC smallet ImportDemoProjectAction class global comment. Detailled
+	 * comment <br/>
+	 * 
+	 * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ven., 29 sept. 2006)
+	 * nrousseau $
+	 * 
+	 */
+	private static class MyOverwriteQuery implements IOverwriteQuery {
 
-    /**
-     * Gets all demo projects information.
-     * 
-     * @return a list of <code>DemoProjectBean</code>
-     */
-    public static List<DemoProjectBean> getAllDemoProjects() {
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * org.eclipse.ui.dialogs.IOverwriteQuery#queryOverwrite(java.lang.String
+		 * )
+		 */
+		public String queryOverwrite(String pathString) {
+			return pathString;
+		}
 
-        SAXReader reader = new SAXReader();
-        Document doc = null;
-        List<DemoProjectBean> demoProjectList = new ArrayList<DemoProjectBean>();
-        DemoProjectBean demoProject = null;
+	}
 
-        try {
-            doc = reader.read(getXMLFilePath());
-        } catch (DocumentException e) {
-            ExceptionHandler.process(e);
-            return null;
-        }
+	/**
+	 * Gets all demo projects information.
+	 * 
+	 * @return a list of <code>DemoProjectBean</code>
+	 */
+	public static List<DemoProjectBean> getAllDemoProjects() {
 
-        Element demoProjectsInfo = doc.getRootElement();
+		SAXReader reader = new SAXReader();
+		Document doc = null;
+		List<DemoProjectBean> demoProjectList = new ArrayList<DemoProjectBean>();
+		DemoProjectBean demoProject = null;
 
-        for (Iterator<DemoProjectBean> i = demoProjectsInfo.elementIterator("project"); i.hasNext();) {
-            Element demoProjectElement = (Element) i.next();
-            demoProject = new DemoProjectBean();
-            demoProject.setProjectName(demoProjectElement.attributeValue("name"));
-            String language = demoProjectElement.attributeValue("language");
-            demoProject.setLanguage(ECodeLanguage.getCodeLanguage(language));
-            String demoProjectFileType = demoProjectElement.attributeValue("demoProjectFileType");
-            demoProject.setDemoProjectFileType(EDemoProjectFileType.getDemoProjectFileTypeName(demoProjectFileType));
-            demoProject.setDemoProjectFilePath(demoProjectElement.attributeValue("demoFilePath"));
-            demoProject.setDescriptionFilePath(demoProjectElement.attributeValue("descriptionFilePath"));
-            demoProjectList.add(demoProject);
-        }
-        return demoProjectList;
-    }
+		try {
+			doc = reader.read(getXMLFilePath());
+		} catch (DocumentException e) {
+			ExceptionHandler.process(e);
+			return null;
+		}
 
-    /**
-     * Gets the path of demo projects xml file.
-     * 
-     * @return String
-     */
-    private static File getXMLFilePath() {
-        Bundle bundle = Platform.getBundle(ResourcesPlugin.PLUGIN_ID);
-        URL url = null;
-        try {
-            url = FileLocator.toFileURL(FileLocator.find(bundle, new Path(XML_FILE_PATH), null));
-        } catch (IOException e) {
-            ExceptionHandler.process(e);
-        }
-        File xmlFilePath = new File(url.getPath());
-        return xmlFilePath;
-    }
+		Element demoProjectsInfo = doc.getRootElement();
+
+		for (Iterator<DemoProjectBean> i = demoProjectsInfo
+				.elementIterator("project"); i.hasNext();) {
+			Element demoProjectElement = (Element) i.next();
+			demoProject = new DemoProjectBean();
+			demoProject.setProjectName(demoProjectElement
+					.attributeValue("name"));
+			String language = demoProjectElement.attributeValue("language");
+			demoProject.setLanguage(ECodeLanguage.getCodeLanguage(language));
+			String demoProjectFileType = demoProjectElement
+					.attributeValue("demoProjectFileType");
+			demoProject.setDemoProjectFileType(EDemoProjectFileType
+					.getDemoProjectFileTypeName(demoProjectFileType));
+			demoProject.setDemoProjectFilePath(demoProjectElement
+					.attributeValue("demoFilePath"));
+			demoProject.setDescriptionFilePath(demoProjectElement
+					.attributeValue("descriptionFilePath"));
+			demoProjectList.add(demoProject);
+		}
+		return demoProjectList;
+	}
+
+	/**
+	 * Gets the path of demo projects xml file.
+	 * 
+	 * @return String
+	 */
+	private static File getXMLFilePath() {
+		Bundle bundle = Platform.getBundle(ResourcesPlugin.PLUGIN_ID);
+		URL url = null;
+		try {
+			url = FileLocator.toFileURL(FileLocator.find(bundle, new Path(
+					XML_FILE_PATH), null));
+		} catch (IOException e) {
+			ExceptionHandler.process(e);
+		}
+		File xmlFilePath = new File(url.getPath());
+		return xmlFilePath;
+	}
 }
