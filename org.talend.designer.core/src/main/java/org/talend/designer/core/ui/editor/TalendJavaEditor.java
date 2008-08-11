@@ -66,11 +66,11 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
      * Over write this method force to add complier to this editor. Beacuse by default if the editor is not editable,
      * the complier for error check will not installed.
      * 
-     * @see org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor#createPartControl(org.eclipse.swt.widgets.Composite)
+     * @see
+     * org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor#createPartControl(org.eclipse.swt.widgets.Composite)
      */
     @Override
     public void createPartControl(Composite parent) {
-        setSourceViewerConfiguration(createJavaSourceViewerConfiguration());
         super.createPartControl(parent);
         addCompiler();
     }
@@ -239,7 +239,7 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
     @Override
     protected JavaSourceViewerConfiguration createJavaSourceViewerConfiguration() {
         JavaTextTools textTools = JavaPlugin.getDefault().getJavaTextTools();
-        return new TalendJavaSourceViewerConfiguration(textTools.getColorManager(), getPreferenceStore(), this,
+        return new JavaSourceViewerConfiguration(textTools.getColorManager(), getPreferenceStore(), this,
                 IJavaPartitions.JAVA_PARTITIONING);
     }
 }

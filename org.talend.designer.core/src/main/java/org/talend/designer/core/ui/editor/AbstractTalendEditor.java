@@ -941,15 +941,23 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         // Grid properties
         getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_SPACING,
                 new Dimension(AbstractTalendEditor.GRID_SIZE, AbstractTalendEditor.GRID_SIZE));
-        getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_ENABLED, new Boolean(true/* getProcess().isGridEnabled() */));
+        getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_ENABLED, new Boolean(true/*
+                                                                                            * getProcess().isGridEnabled(
+                                                                                            * )
+                                                                                            */));
         // We keep grid visibility and enablement in sync
-        getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_VISIBLE, new Boolean(true/* getProcess().isGridEnabled() */));
+        getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_VISIBLE, new Boolean(true/*
+                                                                                            * getProcess().isGridEnabled(
+                                                                                            * )
+                                                                                            */));
         IAction showGrid = new ToggleGridAction(getGraphicalViewer());
         getActionRegistry().registerAction(showGrid);
 
         /** * Snap To Geometry ** */
-        getGraphicalViewer().setProperty(SnapToGeometry.PROPERTY_SNAP_ENABLED,
-                new Boolean(false/* getProcess().isSnapToGeometryEnabled() */));
+        getGraphicalViewer().setProperty(SnapToGeometry.PROPERTY_SNAP_ENABLED, new Boolean(false/*
+                                                                                                 * getProcess().isSnapToGeometryEnabled
+                                                                                                 * ()
+                                                                                                 */));
         IAction snapAction = new ToggleSnapToGeometryAction(getGraphicalViewer());
         getActionRegistry().registerAction(snapAction);
 

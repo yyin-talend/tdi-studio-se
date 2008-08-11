@@ -28,7 +28,6 @@ import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.internal.compiler.util.SuffixConstants;
 import org.eclipse.jdt.internal.corext.refactoring.rename.JavaRenameProcessor;
-import org.eclipse.jdt.internal.corext.refactoring.rename.JavaRenameRefactoring;
 import org.eclipse.jdt.internal.corext.refactoring.rename.RenameCompilationUnitProcessor;
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -313,7 +312,7 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
         try {
             JavaRenameProcessor processor = new RenameCompilationUnitProcessor(unit);
             processor.setNewElementName(newName + SuffixConstants.SUFFIX_STRING_java);
-            RenameRefactoring ref = new JavaRenameRefactoring(processor);
+            RenameRefactoring ref = new RenameRefactoring(processor);
             final PerformRefactoringOperation operation = new PerformRefactoringOperation(ref,
                     CheckConditionsOperation.ALL_CONDITIONS);
 
