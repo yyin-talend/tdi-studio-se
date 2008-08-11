@@ -30,6 +30,7 @@
     String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
     String myHeader = ElementParameterParser.getValue(node, "__HEADER__");
     String myLimit = ElementParameterParser.getValue(node, "__LIMIT__");
+    String myFooter = ElementParameterParser.getValue(node, "__FOOTER__"); 
     String row_separator = ElementParameterParser.getValue(node, "__ROWSEPARATOR__");
     String regex = ElementParameterParser.getValue(node, "__REGEX__");
 	String dieOnErrorStr = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
@@ -37,21 +38,25 @@
 %>
 		int nb_line_<%=cid%> = 0;
         
-        int footer_<%=cid %>  = <% String myFooter = ElementParameterParser.getValue(node, "__FOOTER__"); if (myFooter.equals("")) myFooter = "0"; %><%=myFooter%>;
+        String myFooter_<%=cid %> = <%=myFooter %>;
+        if(myFooter_<%=cid %>.equals(""))myFooter_<%=cid %> = "0";
+        int footer_<%=cid %>  = Integer.parseInt(myFooter_<%=cid %>);
         boolean removeEmptyRow<%=cid %> = <%= ElementParameterParser.getValue(node, "__REMOVE_EMPTY_ROW__") %>;
         org.talend.fileprocess.TOSDelimitedReader in<%=cid%>=null;
         	in<%=cid %> = new org.talend.fileprocess.TOSDelimitedReader(<%=filename %>, <%= encoding%>, "", <%=row_separator%>, removeEmptyRow<%=cid %>);
         String str<%=cid %>;
         int totalLine<%=cid %>=0,currentLine<%=cid %>=0,beginLine<%=cid %>=0,lastLine<%=cid %>=-1,validRowCount<%=cid %>=0;
-        int limit<%=cid %>=<%if (myLimit.equals("")) {myLimit = "-1";}%><%=myLimit %>;
+        String myLimit_<%=cid %> = <%=myLimit %>;
+        if (myLimit_<%=cid %>.equals("")) {myLimit_<%=cid %> = "-1";}
+        int limit<%=cid %>=Integer.parseInt(myLimit_<%=cid %>);
         
-        <% 
-         	if (myHeader.equals("")) myHeader = "0"; 
-        	int header =Integer.parseInt(myHeader);
-        	if (header > 0){
-        		%>beginLine<%=cid %>=<%=header%>+1;
-      		<%}
-      		%>
+      		String myHeader_<%=cid %> = <%=myHeader %>;
+         	if (myHeader_<%=cid %>.equals("")) myHeader_<%=cid %> = "0"; 
+        	int header_<%=cid %> =Integer.parseInt(myHeader_<%=cid %>);
+        	if (header_<%=cid %> > 0){
+        		beginLine<%=cid %>=header_<%=cid %>+1;
+      		}
+      		
     	
         if(footer_<%=cid %> > 0){
 			while (in<%=cid %>.readRecord()) {
