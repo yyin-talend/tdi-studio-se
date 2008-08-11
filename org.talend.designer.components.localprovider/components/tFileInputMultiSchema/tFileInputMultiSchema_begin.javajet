@@ -1,0 +1,218 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.IMetadataColumn 
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.IConnectionCategory
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.types.JavaType
+		java.util.List
+		java.util.Map
+	" 
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
+if (conns!=null && conns.size()>0) {
+	String filename = ElementParameterParser.getValue(node,"__FILENAME__");
+    String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
+    String rowSeparator = ElementParameterParser.getValue(node,"__ROWSEPARATOR__");
+    String fieldSeparator = ElementParameterParser.getValue(node,"__FIELDSEPARATOR__");
+    String header = ElementParameterParser.getValue(node, "__HEADER__");
+    if(header.equals("")){
+    	header="0";
+    }
+    String footer = ElementParameterParser.getValue(node, "__FOOTER__");
+    if(footer.equals("")){
+    	footer="0";
+    }
+    String isTrimAllStr = ElementParameterParser.getValue(node,"__TRIMALL__");
+	boolean isTrimAll = (isTrimAllStr!=null&&!isTrimAllStr.equals(""))?isTrimAllStr.equals("true"):true;
+	
+	String loopOnSchemaStr = ElementParameterParser.getValue(node,"__LOOP_SCHEMA__");
+	boolean loopOnSchema = (loopOnSchemaStr!=null&&!loopOnSchemaStr.equals(""))?loopOnSchemaStr.equals("true"):true;
+		
+    List<String> connections = new java.util.ArrayList<String>();
+    Map<String, List<IMetadataColumn>> connectionMap = new java.util.HashMap<String, List<IMetadataColumn>>();
+    for(int i=0;i<conns.size();i++){
+    	IConnection connTemp = conns.get(i);
+    	if (connTemp.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+    		IMetadataTable tempMetadataTable = connTemp.getMetadataTable();
+    		List<IMetadataColumn> listColumns = tempMetadataTable.getListColumns();
+    		connections.add(connTemp.getName());
+    		connectionMap.put(connTemp.getName(), listColumns);
+    	}
+    }
+	if(connections.size() > 0){
+		//////////
+%>
+org.talend.fileprocess.FileInputDelimited fid_<%=cid %> = new org.talend.fileprocess.FileInputDelimited(<%=filename %>,<%=encoding %>,<%=fieldSeparator %>,<%=rowSeparator %>, true, <%=header %>,<%=footer %>,-1, -1, false);
+String temp_<%=cid %> = null;
+<%
+	if(!loopOnSchema){
+%>
+while (fid_<%=cid %>.nextRecord()) {
+<%
+		for(String conName : connections){
+%>	<%=conName %> = null;
+<%
+		}
+%>
+	while(true){
+		int lastIndex_<%=cid %> = 0;
+		for(int i=0; i<32; i++){//assume 32 is them maximun of schema columns
+			if(!fid_<%=cid %>.get(i).equals("")){
+				lastIndex_<%=cid %> = i;
+			}
+		}
+<%
+		for(String conName : connections){
+			List<IMetadataColumn> listColumns = connectionMap.get(conName);
+%>
+		try{
+			<%=conName %> = new <%=conName %>Struct();
+<%
+			if(listColumns.size() == 0){
+%>
+			if(lastIndex_<%=cid %> > 0){
+				throw new Exception();
+			}
+<%
+			}
+			for (int valueN=0; valueN<listColumns.size(); valueN++) {
+				IMetadataColumn column = listColumns.get(valueN);
+				String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+				JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+				String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();%><%
+				if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){%>
+if(fid_<%=cid %>.get(<%=valueN%>) == ""){
+	if(<%=valueN%> > lastIndex_<%=cid %>){
+		throw new Exception();
+	}else{
+		<%=conName %>.<%=column.getLabel() %> = fid_<%=cid %>.get(<%=valueN%>)<%=isTrimAll ? ".trim()":"" %>;
+	}
+}else{
+	<%=conName %>.<%=column.getLabel() %> = fid_<%=cid %>.get(<%=valueN%>)<%=isTrimAll ? ".trim()":"" %>;
+}
+<%
+				}else{ 
+%>
+if(<%=valueN%> > lastIndex_<%=cid %>){
+		throw new Exception();
+}
+temp_<%=cid %> = fid_<%=cid %>.get(<%=valueN%>)<%=isTrimAll ? ".trim()":"" %>;
+<%
+					if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
+					} else if(javaType == JavaTypesManager.BYTE_ARRAY){ 
+%><%=conName %>.<%=column.getLabel() %> = temp_<%=cid %>.getBytes(<%=encoding%>);
+<%
+					}else if(javaType == JavaTypesManager.DATE) { 
+%><%=conName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_<%=cid %>, <%= patternValue %>);
+<%
+					} else { 
+%><%=conName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(temp_<%=cid %>);
+<%
+					}
+				}
+			}
+%>		}catch(Exception e){
+    		<%=conName %> = null;
+		}
+		if(<%=conName %> != null){
+			break;
+		}
+<%
+		}
+%>
+		break;
+	}
+
+<%
+	}else{
+%>
+java.util.Set<String> processedSet_<%=cid %> = new java.util.HashSet<String>();
+while (fid_<%=cid %>.nextRecord()) {
+<%
+		for(String conName : connections){
+%>	<%=conName %> = null;
+<%
+		}
+%>
+	while(true){
+<%
+		for(int i=0; i < connections.size(); i++){
+			String conName = connections.get(i);
+			List<IMetadataColumn> listColumns = connectionMap.get(conName);
+%>
+		if(!processedSet_<%=cid %>.contains("<%=conName %>")){
+			processedSet_<%=cid %>.add("<%=conName %>");
+			<%=conName %> = new <%=conName %>Struct();
+<%	
+			int sizeListColumns = listColumns.size();
+			for (int valueN=0; valueN < sizeListColumns; valueN++) {
+				IMetadataColumn column = listColumns.get(valueN);
+				String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+				JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+				String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();%><%
+				if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){%>
+			<%=conName %>.<%=column.getLabel() %> = fid_<%=cid %>.get(<%=valueN%>)<%=isTrimAll ? ".trim()":"" %>;
+<%
+				}else{ 
+%>
+			temp_<%=cid %> = fid_<%=cid %>.get(<%=valueN%>)<%=isTrimAll ? ".trim()":"" %>;
+			if(temp_<%=cid %>.length() > 0) {
+<%
+					if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
+					} else if(javaType == JavaTypesManager.BYTE_ARRAY){ 
+%>
+				<%=conName %>.<%=column.getLabel() %> = temp_<%=cid %>.getBytes(<%=encoding%>);
+<%
+					}else if(javaType == JavaTypesManager.DATE) { 
+%>				<%=conName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_<%=cid %>, <%= patternValue %>);
+<%
+					} else { 
+%>
+				<%=conName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(temp_<%=cid %>);
+<%
+					}
+%>
+			} else {						
+<%
+					String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
+					if(defaultValue == null) {
+%>
+				throw new RuntimeException("Value is empty for column : '<%= column.getLabel() %>' in '<%=conName %>' connection, value is invalid or this column should be nullable or have a default value.");
+<%
+					} else {
+%>				<%=conName %>.<%=column.getLabel() %> = <%=defaultValue %>;
+<%
+					}
+%>}
+<%
+}
+%><%
+				}
+				if(i==connections.size()-1){
+%>
+		processedSet_<%=cid %>.clear();
+<%
+				}
+				%>
+			break;
+		}
+<%
+		}
+%>
+		break;
+	}
+<%
+	}
+	}
+}
+//End all
+%>
