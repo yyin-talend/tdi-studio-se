@@ -184,7 +184,10 @@
 		<%
 
 
-			  	   if(mainInputTable.isActivateExpressionFilter() && mainInputTable.getExpressionFilter() != null && !mainInputTable.getExpressionFilter().trim().equals("")) { // T_TM_M_300 
+			  	   if(mainInputTable != null
+			  	   	 && mainInputTable.isActivateExpressionFilter()
+			  	   	 && mainInputTable.getExpressionFilter() != null 
+			  	   	 && !mainInputTable.getExpressionFilter().trim().equals("")) { // T_TM_M_300 
 
 						if(isVirtualOut) { // T_TM_M_301
 
