@@ -68,9 +68,12 @@ public class GenerateDocAsHTMLWizardPage extends WizardFileSystemResourceExportP
      */
     protected GenerateDocAsHTMLWizardPage(String name, IStructuredSelection selection) {
         super(name, null);
-        manager = new JobHTMLScriptsManager(new HTMLDocGenerator(ERepositoryObjectType.JOBS), true);
-
         nodes = (RepositoryNode[]) selection.toList().toArray(new RepositoryNode[selection.size()]);
+        if (nodes.length > 0) {
+
+            manager = new JobHTMLScriptsManager(
+                    new HTMLDocGenerator(nodes[0].getRoot().getProject(), ERepositoryObjectType.JOBS), true);
+        }
 
         List<ExportFileResource> list = new ArrayList<ExportFileResource>();
         for (int i = 0; i < nodes.length; i++) {

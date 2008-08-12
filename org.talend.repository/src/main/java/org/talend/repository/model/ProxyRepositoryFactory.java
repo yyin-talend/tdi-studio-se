@@ -201,10 +201,11 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         }
     }
 
-    private void checkFileNameAndPath(Item item, String pattern, IPath path, boolean folder) throws PersistenceException {
+    private void checkFileNameAndPath(Project project, Item item, String pattern, IPath path, boolean folder)
+            throws PersistenceException {
         String fileName = item.getProperty().getLabel();
         checkFileName(fileName, pattern);
-        if (!this.repositoryFactoryFromProvider.isNameAvailable(item, null)) {
+        if (!this.repositoryFactoryFromProvider.isNameAvailable(project, item, null)) {
             // i18n
             // throw new IllegalArgumentException("Label " + fileName + " is already in use");
             throw new IllegalArgumentException(Messages.getString(
@@ -212,12 +213,12 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         }
     }
 
-    private void checkFileNameAndPath(String label, String pattern, ERepositoryObjectType type, IPath path, boolean folder)
-            throws PersistenceException {
+    private void checkFileNameAndPath(Project proejct, String label, String pattern, ERepositoryObjectType type, IPath path,
+            boolean folder) throws PersistenceException {
         String fileName = label;
         checkFileName(fileName, pattern);
 
-        if (!this.repositoryFactoryFromProvider.isPathValid(type, path, label)) {
+        if (!this.repositoryFactoryFromProvider.isPathValid(proejct, type, path, label)) {
             // i18n
             // throw new IllegalArgumentException("Label " + fileName + " is already in use");
             throw new IllegalArgumentException(Messages.getString(
@@ -258,7 +259,11 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * java.lang.String)
      */
     public boolean isNameAvailable(Item item, String name) throws PersistenceException {
-        return this.repositoryFactoryFromProvider.isNameAvailable(item, name);
+        return isNameAvailable(projectManager.getCurrentProject(), item, name);
+    }
+
+    public boolean isNameAvailable(Project project, Item item, String name) throws PersistenceException {
+        return this.repositoryFactoryFromProvider.isNameAvailable(project, item, name);
     }
 
     /*
@@ -268,7 +273,11 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * org.eclipse.core.runtime.IPath, java.lang.String)
      */
     public boolean isPathValid(ERepositoryObjectType type, IPath path, String label) throws PersistenceException {
-        return this.repositoryFactoryFromProvider.isPathValid(type, path, label);
+        return isPathValid(projectManager.getCurrentProject(), type, path, label);
+    }
+
+    public boolean isPathValid(Project proejct, ERepositoryObjectType type, IPath path, String label) throws PersistenceException {
+        return this.repositoryFactoryFromProvider.isPathValid(proejct, type, path, label);
     }
 
     /*
@@ -300,8 +309,12 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * org.eclipse.core.runtime.IPath, java.lang.String)
      */
     public Folder createFolder(ERepositoryObjectType type, IPath path, String label) throws PersistenceException {
-        checkFileNameAndPath(label, RepositoryConstants.FOLDER_PATTERN, type, path, true);
-        Folder createFolder = this.repositoryFactoryFromProvider.createFolder(type, path, label);
+        return createFolder(projectManager.getCurrentProject(), type, path, label);
+    }
+
+    public Folder createFolder(Project project, ERepositoryObjectType type, IPath path, String label) throws PersistenceException {
+        checkFileNameAndPath(project, label, RepositoryConstants.FOLDER_PATTERN, type, path, true);
+        Folder createFolder = this.repositoryFactoryFromProvider.createFolder(project, type, path, label);
         if (type == ERepositoryObjectType.PROCESS || type == ERepositoryObjectType.JOBLET) {
             fireRepositoryPropertyChange(ERepositoryActionName.FOLDER_CREATE.getName(), path, new Object[] { createFolder, type });
         }
@@ -315,7 +328,11 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * org.eclipse.core.runtime.IPath)
      */
     public synchronized void deleteFolder(ERepositoryObjectType type, IPath path) throws PersistenceException {
-        this.repositoryFactoryFromProvider.deleteFolder(type, path);
+        deleteFolder(projectManager.getCurrentProject(), type, path);
+    }
+
+    public synchronized void deleteFolder(Project project, ERepositoryObjectType type, IPath path) throws PersistenceException {
+        this.repositoryFactoryFromProvider.deleteFolder(project, type, path);
         if (type == ERepositoryObjectType.PROCESS) {
             fireRepositoryPropertyChange(ERepositoryActionName.FOLDER_DELETE.getName(), path, type);
         }
@@ -483,8 +500,13 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see org.talend.repository.model.IProxyRepositoryFactory#deleteObjectLogical(org.talend.core.model.repository.IRepositoryObject)
      */
     public void deleteObjectLogical(IRepositoryObject objToDelete) throws PersistenceException, BusinessException {
+        deleteObjectLogical(projectManager.getCurrentProject(), objToDelete);
+    }
+
+    public void deleteObjectLogical(Project project, IRepositoryObject objToDelete) throws PersistenceException,
+            BusinessException {
         checkAvailability(objToDelete);
-        this.repositoryFactoryFromProvider.deleteObjectLogical(objToDelete);
+        this.repositoryFactoryFromProvider.deleteObjectLogical(project, objToDelete);
         unlock(objToDelete);
         // i18n
         // log.debug("Logical deletion [" + objToDelete + "] by " + getRepositoryContext().getUser() + ".");
@@ -504,7 +526,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see org.talend.repository.model.IProxyRepositoryFactory#deleteObjectPhysical(org.talend.core.model.repository.IRepositoryObject)
      */
     public void forceDeleteObjectPhysical(IRepositoryObject objToDelete) throws PersistenceException {
-        this.repositoryFactoryFromProvider.deleteObjectPhysical(objToDelete);
+        this.repositoryFactoryFromProvider.deleteObjectPhysical(projectManager.getCurrentProject(), objToDelete);
         // i18n
         // log.info("Physical deletion [" + objToDelete + "] by " + getRepositoryContext().getUser() + ".");
         String str[] = new String[] { objToDelete.toString(), getRepositoryContext().getUser().toString() };
@@ -517,7 +539,11 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see org.talend.repository.model.IProxyRepositoryFactory#deleteObjectPhysical(org.talend.core.model.repository.IRepositoryObject)
      */
     public void deleteObjectPhysical(IRepositoryObject objToDelete) throws PersistenceException {
-        this.repositoryFactoryFromProvider.deleteObjectPhysical(objToDelete);
+        deleteObjectPhysical(projectManager.getCurrentProject(), objToDelete);
+    }
+
+    public void deleteObjectPhysical(Project project, IRepositoryObject objToDelete) throws PersistenceException {
+        this.repositoryFactoryFromProvider.deleteObjectPhysical(project, objToDelete);
         // i18n
         // log.info("Physical deletion [" + objToDelete + "] by " + getRepositoryContext().getUser() + ".");
         String str[] = new String[] { objToDelete.toString(), getRepositoryContext().getUser().toString() };
@@ -567,8 +593,9 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     public void moveObject(IRepositoryObject objToMove, IPath targetPath, IPath... sourcePath) throws PersistenceException,
             BusinessException {
         checkAvailability(objToMove);
-        checkFileNameAndPath(objToMove.getProperty().getItem(), RepositoryConstants.getPattern(objToMove.getType()), targetPath,
-                false);
+        Item item = objToMove.getProperty().getItem();
+        Project project = new Project(projectManager.getProject(item));
+        checkFileNameAndPath(project, item, RepositoryConstants.getPattern(objToMove.getType()), targetPath, false);
         this.repositoryFactoryFromProvider.moveObject(objToMove, targetPath);
         // i18n
         // log.debug("Move [" + objToMove + "] to \"" + path + "\".");
@@ -753,8 +780,11 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     }
 
     public List<String> getFolders(ERepositoryObjectType type) throws PersistenceException {
+        return getFolders(projectManager.getCurrentProject(), type);
+    }
+
+    public List<String> getFolders(Project project, ERepositoryObjectType type) throws PersistenceException {
         List<String> toReturn = new ArrayList<String>();
-        Project project = getRepositoryContext().getProject();
         EList list = project.getEmfProject().getFolders();
 
         String[] split = ERepositoryObjectType.getFolderName(type).split("/"); //$NON-NLS-1$
@@ -837,14 +867,23 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * org.eclipse.core.runtime.IPath)
      */
     public void forceCreate(Item item, IPath path) throws PersistenceException {
-        this.repositoryFactoryFromProvider.create(item, path);
+        forceCreate(projectManager.getCurrentProject(), item, path);
         // if (item instanceof ProcessItem) {
         // fireRepositoryPropertyChange(ERepositoryActionName.JOB_CREATE.getName(), null, item);
         // }
     }
 
+    public void forceCreate(Project project, Item item, IPath path) throws PersistenceException {
+        this.repositoryFactoryFromProvider.create(project, item, path);
+    }
+
     public void createParentFoldersRecursively(ERepositoryObjectType itemType, IPath path) throws PersistenceException {
-        List<String> folders = getFolders(itemType);
+        createParentFoldersRecursively(projectManager.getCurrentProject(), itemType, path);
+    }
+
+    public void createParentFoldersRecursively(Project project, ERepositoryObjectType itemType, IPath path)
+            throws PersistenceException {
+        List<String> folders = getFolders(project, itemType);
 
         for (int i = 0; i < path.segmentCount(); i++) {
             IPath parentPath = path.removeLastSegments(path.segmentCount() - i);
@@ -852,10 +891,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
 
             String folderName = parentPath.append(folderLabel).toString();
             if (!folders.contains(folderName)) {
-                if (folderLabel.equals("System")) {
-                    System.out.println("herer");
-                }
-                createFolder(itemType, parentPath, folderLabel);
+                createFolder(project, itemType, parentPath, folderLabel);
             }
         }
     }
@@ -902,8 +938,12 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * org.eclipse.core.runtime.IPath)
      */
     public void create(Item item, IPath path, boolean... isImportItem) throws PersistenceException {
-        checkFileNameAndPath(item, RepositoryConstants.getPattern(ERepositoryObjectType.getItemType(item)), path, false);
-        this.repositoryFactoryFromProvider.create(item, path);
+        create(projectManager.getCurrentProject(), item, path, isImportItem);
+    }
+
+    public void create(Project project, Item item, IPath path, boolean... isImportItem) throws PersistenceException {
+        checkFileNameAndPath(project, item, RepositoryConstants.getPattern(ERepositoryObjectType.getItemType(item)), path, false);
+        this.repositoryFactoryFromProvider.create(project, item, path);
         if ((item instanceof ProcessItem || item instanceof JobletProcessItem)
                 && (isImportItem == null || isImportItem.length == 0)) {
             fireRepositoryPropertyChange(ERepositoryActionName.JOB_CREATE.getName(), null, item);
@@ -916,7 +956,11 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see org.talend.repository.model.IProxyRepositoryFactory#save(org.talend.core.model.properties.Item)
      */
     public void save(Item item, boolean... isMigrationTask) throws PersistenceException {
-        this.repositoryFactoryFromProvider.save(item);
+        save(projectManager.getCurrentProject(), item, isMigrationTask);
+    }
+
+    public void save(Project project, Item item, boolean... isMigrationTask) throws PersistenceException {
+        this.repositoryFactoryFromProvider.save(project, item);
         if ((item instanceof ProcessItem || item instanceof JobletProcessItem)
                 && (isMigrationTask == null || isMigrationTask.length == 0)) {
             fireRepositoryPropertyChange(ERepositoryActionName.JOB_SAVE.getName(), null, item);
@@ -929,7 +973,11 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see org.talend.repository.model.IProxyRepositoryFactory#save(org.talend.core.model.properties.Property)
      */
     public void save(Property property, String... originalNameAndVersion) throws PersistenceException {
-        this.repositoryFactoryFromProvider.save(property);
+        save(projectManager.getCurrentProject(), property, originalNameAndVersion);
+    }
+
+    public void save(Project project, Property property, String... originalNameAndVersion) throws PersistenceException {
+        this.repositoryFactoryFromProvider.save(project, property);
         if (property.getItem() instanceof ProcessItem || property.getItem() instanceof JobletProcessItem) {
             fireRepositoryPropertyChange(ERepositoryActionName.JOB_PROPERTIES_CHANGE.getName(), originalNameAndVersion, property);
         }

@@ -231,14 +231,13 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         return convert(serializableAllVersion);
     }
 
-    public boolean isNameAvailable(Item item, String name) throws PersistenceException {
+    public boolean isNameAvailable(Project project, Item item, String name) throws PersistenceException {
         if (name == null) {
             name = item.getProperty().getLabel();
         }
-        Project baseProject = getRepositoryContext().getProject();
 
         if (item instanceof FolderItem) {
-            FolderHelper folderHelper = getFolderHelper(baseProject.getEmfProject());
+            FolderHelper folderHelper = getFolderHelper(project.getEmfProject());
             return !folderHelper.pathExists((FolderItem) item, name);
         }
 
@@ -247,7 +246,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         if (type == ERepositoryObjectType.METADATA_CON_TABLE) {
             return false;
         }
-        List<IRepositoryObject> list = getAll(baseProject, type, true, false);
+        List<IRepositoryObject> list = getAll(project, type, true, false);
 
         for (IRepositoryObject current : list) {
             if (name.equalsIgnoreCase(current.getProperty().getLabel())
@@ -302,11 +301,11 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         String add1 = "Copy_of_"; //$NON-NLS-1$
         String initialTry = add1 + originalLabel;
         copiedProperty.setLabel(initialTry);
-        if (isNameAvailable(copiedProperty.getItem(), null)) {
+        if (isNameAvailable(getRepositoryContext().getProject(), copiedProperty.getItem(), null)) {
             return;
         } else {
             char j = 'a';
-            while (!isNameAvailable(copiedProperty.getItem(), null)) {
+            while (!isNameAvailable(getRepositoryContext().getProject(), copiedProperty.getItem(), null)) {
                 if (j > 'z') {
                     throw new BusinessException("Cannot generate pasted item label.");
                 }
@@ -377,7 +376,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
             routineItem.setContent(byteArray);
             routineItem.setBuiltIn(true);
             if (!routineItem.getProperty().getLabel().equals(ITalendSynchronizer.TEMPLATE)) {
-                create(routineItem, path);
+                create(getRepositoryContext().getProject(), routineItem, path);
             }
         } catch (IOException ioe) {
             if (stream != null) {
@@ -435,15 +434,18 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
             FolderHelper folderHelper = getFolderHelper(getRepositoryContext().getProject().getEmfProject());
             IPath parentPath = new Path(ERepositoryObjectType.getFolderName(ERepositoryObjectType.SQLPATTERNS));
             if (folderHelper.getFolder(parentPath.append(categoryPath)) == null) {
-                createFolder(ERepositoryObjectType.SQLPATTERNS, new Path(""), categoryPath.lastSegment());
+                createFolder(getRepositoryContext().getProject(), ERepositoryObjectType.SQLPATTERNS, new Path(""), categoryPath
+                        .lastSegment());
             }
             if (folderHelper.getFolder(parentPath.append(systemPath)) == null) {
-                createFolder(ERepositoryObjectType.SQLPATTERNS, categoryPath, systemPath.lastSegment());
+                createFolder(getRepositoryContext().getProject(), ERepositoryObjectType.SQLPATTERNS, categoryPath, systemPath
+                        .lastSegment());
             }
             if (folderHelper.getFolder(parentPath.append(userPath)) == null) {
-                createFolder(ERepositoryObjectType.SQLPATTERNS, categoryPath, userPath.lastSegment());
+                createFolder(getRepositoryContext().getProject(), ERepositoryObjectType.SQLPATTERNS, categoryPath, userPath
+                        .lastSegment());
             }
-            create(sqlpatternItem, systemPath);
+            create(getRepositoryContext().getProject(), sqlpatternItem, systemPath);
 
         } catch (IOException ioe) {
             if (stream != null) {

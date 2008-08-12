@@ -78,7 +78,7 @@ public interface IRepositoryFactory {
 
     public Project[] readProject() throws PersistenceException, BusinessException;
 
-    public Folder createFolder(ERepositoryObjectType type, IPath path, String label) throws PersistenceException;
+    public Folder createFolder(Project project, ERepositoryObjectType type, IPath path, String label) throws PersistenceException;
 
     /**
      * Returns if the name is used by another item of the same type. Type, name and id of item are used to test label
@@ -91,11 +91,11 @@ public interface IRepositoryFactory {
      * @return <code>true</code> if the name is not used an so is available.
      * @throws PersistenceException
      */
-    public boolean isNameAvailable(Item item, String name) throws PersistenceException;
+    public boolean isNameAvailable(Project project, Item item, String name) throws PersistenceException;
 
-    public boolean isPathValid(ERepositoryObjectType type, IPath path, String label) throws PersistenceException;
+    public boolean isPathValid(Project project, ERepositoryObjectType type, IPath path, String label) throws PersistenceException;
 
-    public void deleteFolder(ERepositoryObjectType type, IPath path) throws PersistenceException;
+    public void deleteFolder(Project project, ERepositoryObjectType type, IPath path) throws PersistenceException;
 
     public void moveFolder(ERepositoryObjectType type, IPath sourcePath, IPath targetPath) throws PersistenceException;
 
@@ -143,7 +143,7 @@ public interface IRepositoryFactory {
      * @param deletionAuthor - the user perfom the deletion (only for logging in this version)
      * @throws PersistenceException
      */
-    public void deleteObjectLogical(IRepositoryObject objToDelete) throws PersistenceException;
+    public void deleteObjectLogical(Project project, IRepositoryObject objToDelete) throws PersistenceException;
 
     /**
      * Deletes physically the given object. Object cannot be retrieved.
@@ -153,7 +153,7 @@ public interface IRepositoryFactory {
      * @param deletionAuthor - the user perfom the deletion (only for logging in this version)
      * @throws PersistenceException
      */
-    public void deleteObjectPhysical(IRepositoryObject objToDelete) throws PersistenceException;
+    public void deleteObjectPhysical(Project project, IRepositoryObject objToDelete) throws PersistenceException;
 
     /**
      * Restore a logically deleted object. <code>isDeleted</code> on this object will now returned <code>false</code>.
@@ -191,11 +191,11 @@ public interface IRepositoryFactory {
 
     public String isServerValid() throws BusinessException;
 
-    public void create(Item item, IPath path) throws PersistenceException;
+    public void create(Project project, Item item, IPath path) throws PersistenceException;
 
-    public void save(Item item) throws PersistenceException;
+    public void save(Project project, Item item) throws PersistenceException;
 
-    public void save(Property property) throws PersistenceException;
+    public void save(Project project, Property property) throws PersistenceException;
 
     public Item copy(Item item, IPath path) throws PersistenceException, BusinessException;
 
