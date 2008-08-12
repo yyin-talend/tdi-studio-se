@@ -110,6 +110,8 @@ public class ElementParameter implements IElementParameter {
 
     private Color backgroundColor;
 
+    private boolean dynamicSettings = false;
+
     public ElementParameter(final IElement element) {
         this.element = element;
     }
@@ -157,7 +159,8 @@ public class ElementParameter implements IElementParameter {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.model.components.IDesignerElementParameter#setField(org.talend.core.model.designer.EParameterFieldType)
+     * @seeorg.talend.designer.core.model.components.IDesignerElementParameter#setField(org.talend.core.model.designer.
+     * EParameterFieldType)
      */
     public void setField(final EParameterFieldType type) {
         field = type;
@@ -583,7 +586,8 @@ public class ElementParameter implements IElementParameter {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.core.model.process.IElementParameter#setLinkedRepositoryItem(org.talend.core.model.properties.Item)
+     * @see
+     * org.talend.core.model.process.IElementParameter#setLinkedRepositoryItem(org.talend.core.model.properties.Item)
      */
     public void setLinkedRepositoryItem(Item item) {
         this.linkedRepositoryItem = item;
@@ -678,5 +682,23 @@ public class ElementParameter implements IElementParameter {
      */
     public void setBasedOnSubjobStarts(boolean basedOnSubjobStarts) {
         this.basedOnSubjobStarts = basedOnSubjobStarts;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#isDynamicSettings()
+     */
+    public boolean isDynamicSettings() {
+        return this.dynamicSettings;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#setDynamicSettings(java.lang.Boolean)
+     */
+    public void setDynamicSettings(boolean dynamicSettings) {
+        this.dynamicSettings = dynamicSettings;
     }
 }

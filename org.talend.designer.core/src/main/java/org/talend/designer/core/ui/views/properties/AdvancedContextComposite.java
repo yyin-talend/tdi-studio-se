@@ -159,7 +159,8 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
 
         final List<IElementParameter> legalParameters = new ArrayList<IElementParameter>();
         for (IElementParameter parameter : element.getElementParameters()) {
-            if (parameter.isShow(element.getElementParameters())
+            if (parameter.isDynamicSettings()
+                    && parameter.isShow(element.getElementParameters())
                     && parameter.getCategory() != EComponentCategory.TECHNICAL
                     && (parameter.getField() == EParameterFieldType.CHECK || parameter.getField() == EParameterFieldType.CLOSED_LIST)
                     || parameter.getField() == EParameterFieldType.MODULE_LIST
@@ -286,7 +287,8 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
             /*
              * (non-Javadoc)
              * 
-             * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
+             * @see
+             * org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
              */
             public void widgetDefaultSelected(SelectionEvent e) {
 
@@ -557,7 +559,8 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
         /*
          * (non-Javadoc)
          * 
-         * @see org.eclipse.jface.viewers.IBaseLabelProvider#addListener(org.eclipse.jface.viewers.ILabelProviderListener)
+         * @see
+         * org.eclipse.jface.viewers.IBaseLabelProvider#addListener(org.eclipse.jface.viewers.ILabelProviderListener)
          */
         public void addListener(ILabelProviderListener listener) {
 
@@ -575,7 +578,8 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
         /*
          * (non-Javadoc)
          * 
-         * @see org.eclipse.jface.viewers.IBaseLabelProvider#removeListener(org.eclipse.jface.viewers.ILabelProviderListener)
+         * @see
+         * org.eclipse.jface.viewers.IBaseLabelProvider#removeListener(org.eclipse.jface.viewers.ILabelProviderListener)
          */
         public void removeListener(ILabelProviderListener listener) {
 
@@ -639,7 +643,9 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getRepositoryAliasName(org.talend.core.model.properties.ConnectionItem)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getRepositoryAliasName(org
+     * .talend.core.model.properties.ConnectionItem)
      */
     public String getRepositoryAliasName(ConnectionItem connectionItem) {
         return null;
@@ -648,7 +654,9 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getRepositoryConnectionItemMap()
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getRepositoryConnectionItemMap
+     * ()
      */
     public Map<String, ConnectionItem> getRepositoryConnectionItemMap() {
         return null;
@@ -657,7 +665,8 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getRepositoryQueryStoreMap()
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getRepositoryQueryStoreMap()
      */
     public Map<String, Query> getRepositoryQueryStoreMap() {
         return null;
@@ -684,7 +693,8 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getTableIdAndDbSchemaMap()
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getTableIdAndDbSchemaMap()
      */
     public Map<String, String> getTableIdAndDbSchemaMap() {
         return null;
@@ -693,7 +703,8 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getTableIdAndDbTypeMap()
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getTableIdAndDbTypeMap()
      */
     public Map<String, String> getTableIdAndDbTypeMap() {
         return null;

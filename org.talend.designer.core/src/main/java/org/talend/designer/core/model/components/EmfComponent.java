@@ -1115,6 +1115,9 @@ public class EmfComponent implements IComponent {
             if (xmlParam.isSetNBLINES()) {
                 param.setNbLines(xmlParam.getNBLINES());
             }
+            if (xmlParam.isSetDYNAMICSETTINGS()) {
+                param.setDynamicSettings(xmlParam.isDYNAMICSETTINGS());
+            }
 
             param.setFilter(xmlParam.getFILTER());
             param.setShowIf(xmlParam.getSHOWIF());
