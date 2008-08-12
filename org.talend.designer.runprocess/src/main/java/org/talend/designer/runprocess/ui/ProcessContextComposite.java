@@ -196,7 +196,7 @@ public class ProcessContextComposite extends Composite {
         // contextComboViewer.getSelection()).getFirstElement();
         // }
 
-        if (process.getLastRunContext() != null) {
+        if (process != null && process.getLastRunContext() != null) {
             for (IContext context : contextManager.getListContext()) {
                 IContext copiedContext = context.clone();
                 internalContextList.add(copiedContext);

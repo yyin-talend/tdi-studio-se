@@ -850,4 +850,13 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         dirtyListener = null;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.ui.part.MultiPageEditorPart#initializePageSwitching()
+     */
+    protected void initializePageSwitching() {
+
+    }
+
 }
