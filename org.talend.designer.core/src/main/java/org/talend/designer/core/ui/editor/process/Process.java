@@ -2541,7 +2541,14 @@ public class Process extends Element implements IProcess2 {
                                 .replaceAll(TalendTextUtils.SINGLE_QUOTE, ""));
                     }
                 }
+
+                // see feature 4720 Add libraries for different version DB components
+                if (curParam.getName().equals("DB_VERSION")) {
+                    neededLibraries.add(((String) curParam.getValue()).replaceAll(TalendTextUtils.QUOTATION_MARK, "").replaceAll(
+                            TalendTextUtils.SINGLE_QUOTE, ""));
+                }
             }
+
             if (withChildrens) {
                 if (node.getComponent().getName().equals("tRunJob")) {
                     IElementParameter processIdparam = node.getElementParameter("PROCESS_TYPE_PROCESS");
