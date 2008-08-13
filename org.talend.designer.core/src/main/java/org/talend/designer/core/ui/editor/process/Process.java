@@ -2542,11 +2542,8 @@ public class Process extends Element implements IProcess2 {
                     }
                 }
 
-                // see feature 4720 Add libraries for different version DB components
-                if (curParam.getName().equals("DB_VERSION")) {
-                    neededLibraries.add(((String) curParam.getValue()).replaceAll(TalendTextUtils.QUOTATION_MARK, "").replaceAll(
-                            TalendTextUtils.SINGLE_QUOTE, ""));
-                }
+                // see feature 4720 Add libraries for different version DB components and tMomInput components
+                findMoreLibraries(neededLibraries, curParam);
             }
 
             if (withChildrens) {
@@ -2574,6 +2571,33 @@ public class Process extends Element implements IProcess2 {
             }
         }
         return neededLibraries;
+    }
+
+    /**
+     * DOC YeXiaowei Comment method "findMoreLibraries".
+     * 
+     * @param neededLibraries
+     * @param curParam
+     */
+    private void findMoreLibraries(Set<String> neededLibraries, IElementParameter curParam) {
+
+        if (curParam.getName().equals("DB_VERSION")) {
+            neededLibraries.add(((String) curParam.getValue()).replaceAll(TalendTextUtils.QUOTATION_MARK, "").replaceAll(
+                    TalendTextUtils.SINGLE_QUOTE, ""));
+        }
+
+        String separator = ";";
+        if (curParam.getName().equals("MQ_DERVIERS")) {
+            String path = (String) curParam.getValue();
+
+            if (path == null || path.equals("")) {
+                return;
+            }
+
+            for (String jar : path.split(separator)) {
+                neededLibraries.add(jar);
+            }
+        }
     }
 
     /**
@@ -2907,7 +2931,8 @@ public class Process extends Element implements IProcess2 {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.core.model.repository.IRepositoryObject#setRepositoryNode(org.talend.repository.model.RepositoryNode)
+     * @see
+     * org.talend.core.model.repository.IRepositoryObject#setRepositoryNode(org.talend.repository.model.RepositoryNode)
      */
     public void setRepositoryNode(RepositoryNode node) {
         // TODO Auto-generated method stub
