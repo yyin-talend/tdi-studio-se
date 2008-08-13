@@ -193,6 +193,7 @@ public final class DBConnectionContextUtils {
         String additionParam = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getAdditionalParams());
         String driverClassName = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getDriverClass());
         String driverJarPath = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getDriverJarPath());
+        String dbVersionString = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getDbVersionString());
 
         filePath = TalendTextUtils.removeQuotes(filePath);
         dbRootPath = TalendTextUtils.removeQuotes(dbRootPath);
@@ -209,7 +210,7 @@ public final class DBConnectionContextUtils {
         }
         // set the value
         managerConnection.setValue(0, dbType, urlConnection, server, username, password, sidOrDatabase, port, filePath,
-                datasource, schemaOracle, additionParam, driverClassName, driverJarPath);
+                datasource, schemaOracle, additionParam, driverClassName, driverJarPath, dbVersionString);
         managerConnection.setDbRootPath(dbRootPath);
 
         return urlConnection;

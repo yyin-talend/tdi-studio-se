@@ -15,6 +15,7 @@ package org.talend.repository.ui.wizards.metadata.connection.database;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.IStatus;
@@ -49,6 +50,7 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.builder.database.EDatabaseDriver4Version;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.repository.i18n.Messages;
@@ -92,6 +94,8 @@ public class DatabaseForm extends AbstractForm {
      * Main Fields.
      */
     private LabelledCombo dbTypeCombo;
+
+    private LabelledCombo dbVersionCombo;
 
     private LabelledCombo sqlSyntaxCombo;
 
@@ -208,13 +212,19 @@ public class DatabaseForm extends AbstractForm {
         additionParamText.setText(getConnection().getAdditionalParams());
         sidOrDatabaseText.setText(getConnection().getSID());
         schemaText.setText(getConnection().getSchema());
+
+        if (getConnection().getDbVersionString() != null) {
+            dbVersionCombo.setText(getConnection().getDbVersionString());
+        }
+
         fileField.setText(getConnection().getFileFieldName());
         stringQuoteText.setText(getConnection().getStringQuote());
         nullCharText.setText(getConnection().getNullChar());
         directoryField.setText(getConnection().getDBRootPath());
 
         checkAS400SpecificCase();
-        // PTODO !StandBy! (use width SQL Editor): to define the values of SQL Syntax (need by SQL Editor)
+        // PTODO !StandBy! (use width SQL Editor): to define the values of SQL
+        // Syntax (need by SQL Editor)
         getConnection().setSqlSynthax(Messages.getString("DatabaseForm.sqlSyntax")); //$NON-NLS-1$
         sqlSyntaxCombo.select(getSqlSyntaxIndex(getConnection().getSqlSynthax()));
         updateStatus(IStatus.OK, ""); //$NON-NLS-1$
@@ -233,7 +243,8 @@ public class DatabaseForm extends AbstractForm {
     }
 
     private void checkAS400SpecificCase() {
-        if (getConnection().isStandardSQL() == getConnection().isSystemSQL()) { // create connection
+        if (getConnection().isStandardSQL() == getConnection().isSystemSQL()) { // create
+            // connection
             boolean b = CorePlugin.getDefault().getPreferenceStore().getBoolean(ITalendCorePrefConstants.AS400_SQL_SEG);
             standardButton.setSelection(b);
             systemButton.setSelection(!b);
@@ -260,6 +271,7 @@ public class DatabaseForm extends AbstractForm {
         portText.setReadOnly(isReadOnly());
         sidOrDatabaseText.setReadOnly(isReadOnly());
         schemaText.setReadOnly(isReadOnly());
+        dbVersionCombo.setReadOnly(isReadOnly());
         datasourceText.setReadOnly(isReadOnly());
         additionParamText.setReadOnly(isReadOnly());
         fileField.setReadOnly(isReadOnly());
@@ -351,6 +363,13 @@ public class DatabaseForm extends AbstractForm {
         layout2.marginTop = 0;
         layout2.marginBottom = 0;
 
+        List<String> items = getVersionDrivers();
+        String[] versions = new String[items.size()];
+        items.toArray(versions);
+        dbVersionCombo = new LabelledCombo(typeDbCompositeParent, Messages.getString("DatabaseForm.dbversion"), Messages
+                .getString("DatabaseForm.dbversion.tip"), versions, 2, true);
+        dbVersionCombo.select(0);
+
         // Field connectionString
         urlDataStringConnection.setSelectionIndex(dbTypeCombo.getSelectionIndex());
         urlConnectionStringText = new LabelledText(typeDbCompositeParent, Messages.getString("DatabaseForm.stringConnection"), 2); //$NON-NLS-1$
@@ -373,6 +392,20 @@ public class DatabaseForm extends AbstractForm {
         String[] extensions = { "*.*" }; //$NON-NLS-1$
         fileField = new LabelledFileField(typeDbCompositeParent, Messages.getString("DatabaseForm.mdbFile"), extensions); //$NON-NLS-1$
         directoryField = new LabelledDirectoryField(typeDbCompositeParent, "DB Root Path"); //$NON-NLS-1$
+    }
+
+    /**
+     * 
+     * DOC YeXiaowei Comment method "getVersionDrivers".
+     * 
+     * @return
+     */
+    private List<String> getVersionDrivers() {
+        List<String> result = new ArrayList<String>();
+        for (EDatabaseDriver4Version d4v : EDatabaseDriver4Version.values()) {
+            result.add(d4v.getDbVersionName());
+        }
+        return result;
     }
 
     private void addFieldsForGeneralDB(Composite parent) {
@@ -402,7 +435,10 @@ public class DatabaseForm extends AbstractForm {
 
         generalJdbcPasswordText = new LabelledText(generalDbCompositeParent,
                 Messages.getString("DatabaseForm.general.password"), 2); //$NON-NLS-1$
-        generalJdbcPasswordText.getTextControl().setEchoChar('*'); // see feature 3629 hide password
+        generalJdbcPasswordText.getTextControl().setEchoChar('*'); // see
+        // feature
+        // 3629 hide
+        // password
 
         generalMappingFileText = new LabelledText(generalDbCompositeParent, Messages.getString("DatabaseForm.general.mapping"), 1);
 
@@ -470,10 +506,12 @@ public class DatabaseForm extends AbstractForm {
         gridData.minimumHeight = 80;
         gridData.heightHint = 80;
         group1.setLayoutData(gridData);
-        // Composite compositeGroupDbProperties = Form.startNewGridLayout(group1, 4, false, SWT.LEFT, SWT.CENTER);
+        // Composite compositeGroupDbProperties =
+        // Form.startNewGridLayout(group1, 4, false, SWT.LEFT, SWT.CENTER);
         Composite compositeGroupDbProperties = Form.startNewDimensionnedGridLayout(group1, 4, width, 70);
 
-        // PTODO !StandBy! (use width SQL Editor): to define the values of SQL Syntax (need by SQL Editor)
+        // PTODO !StandBy! (use width SQL Editor): to define the values of SQL
+        // Syntax (need by SQL Editor)
         String[] item = { "SQL 92" }; //$NON-NLS-1$
         sqlSyntaxCombo = new LabelledCombo(compositeGroupDbProperties, Messages.getString("DatabaseForm.sqlSyntax"), null, item, //$NON-NLS-1$
                 3);
@@ -494,7 +532,8 @@ public class DatabaseForm extends AbstractForm {
      * DOC YeXiaowei Comment method "addDBSelectCombo". Extract method form addFields()
      */
     private void addDBSelectCombo() {
-        // PTODO cantoine : HIDDEN some Database connection in function of project MODE (Perl/Java).
+        // PTODO cantoine : HIDDEN some Database connection in function of
+        // project MODE (Perl/Java).
         if (LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL) {
             Collection<String> databasePerl = new ArrayList<String>(Arrays.asList(urlDataStringConnection.getItem()));
             databasePerl.remove("Microsoft SQL Server"); //$NON-NLS-1$
@@ -577,7 +616,7 @@ public class DatabaseForm extends AbstractForm {
                     isGeneralJDBC() ? generalJdbcPasswordText.getText() : passwordText.getText(), sidOrDatabaseText.getText(),
                     portText.getText(), fileField.getText(), datasourceText.getText(), isGeneralJDBC() ? "" : schemaText
                             .getText(), additionParamText.getText(), generalJdbcClassNameText.getText(), generalJdbcDriverjarText
-                            .getText());
+                            .getText(), oracleVersionEnable() ? dbVersionCombo.getText() : null);
 
             managerConnection.setDbRootPath(directoryField.getText());
 
@@ -645,8 +684,10 @@ public class DatabaseForm extends AbstractForm {
                         databaseSettingIsValide = false;
                         checkButton.setEnabled(true);
                         String[] s = urlDataStringConnection.getAnalyse(urlConnectionStringText.getText());
-                        // if the ConnectionString write manually don't correspond width selectedIndex of combo DbType
-                        // we search if another regex corresponding at this string
+                        // if the ConnectionString write manually don't
+                        // correspond width selectedIndex of combo DbType
+                        // we search if another regex corresponding at this
+                        // string
                         int selection = new Integer(s[0]);
                         if (selection != dbTypeCombo.getSelectionIndex()) {
                             dbTypeCombo.select(new Integer(s[0]));
@@ -883,6 +924,18 @@ public class DatabaseForm extends AbstractForm {
                 }
             }
         });
+
+        // Db version
+        dbVersionCombo.addModifyListener(new ModifyListener() {
+
+            public void modifyText(final ModifyEvent e) {
+                if (!isContextMode()) {
+                    getConnection().setDbVersionString(dbVersionCombo.getText());
+                    checkFieldsValue();
+                }
+            }
+        });
+
         // additional parameters: Event modifyText
         additionParamText.addModifyListener(new ModifyListener() {
 
@@ -954,7 +1007,8 @@ public class DatabaseForm extends AbstractForm {
 
                     getConnection().setDbmsId(mapping);
                     if (dbTypeCombo.getSelectionIndex() == 0) {
-                        // additionParamText.setText(DataStringConnection.mySQlDefaultValue);
+                        // additionParamText.setText(DataStringConnection.
+                        // mySQlDefaultValue);
                         additionParamText.setText(DataStringConnection.mySQlDefaultValue);
                     }
                     if (dbTypeCombo.getSelectionIndex() == 16) {
@@ -966,7 +1020,8 @@ public class DatabaseForm extends AbstractForm {
             }
         });
 
-        // When the DbType is selected, disabled the action of keyboard's letter to modify the combo
+        // When the DbType is selected, disabled the action of keyboard's letter
+        // to modify the combo
         // utils when the user use the keyboard to write the connection string
         dbTypeCombo.addKeyListener(new KeyAdapter() {
 
@@ -1378,6 +1433,10 @@ public class DatabaseForm extends AbstractForm {
         addContextParams(EDBParamName.Login, visible);
         addContextParams(EDBParamName.Password, visible);
         // update the UI Fields
+
+        boolean isOracle = visible && oracleVersionEnable();
+
+        dbVersionCombo.setEnabled(isOracle);
         usernameText.setEditable(visible);
         passwordText.setEditable(visible);
         serverText.setEditable(false);
@@ -1416,7 +1475,8 @@ public class DatabaseForm extends AbstractForm {
                 addContextParams(sidOrDatabase, visible);
             }
             if (s.contains("<filename>")) { // && //$NON-NLS-1$
-                // urlDataStringConnection.getStringConnectionTemplate().contains("jdbc:sqlite")
+                // urlDataStringConnection.getStringConnectionTemplate().contains
+                // ("jdbc:sqlite")
                 fileField.show();
                 fileField.setEditable(visible);
                 addContextParams(EDBParamName.File, visible);
@@ -1470,11 +1530,20 @@ public class DatabaseForm extends AbstractForm {
         databaseSettingGroup.layout();
     }
 
+    /**
+     * 
+     * DOC YeXiaowei Comment method "oracleVersionEnable".
+     * 
+     * @return
+     */
+    private boolean oracleVersionEnable() {
+        return dbTypeCombo.getText().startsWith("Oracle") && LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA);
+    }
+
     /*
      * (non-Javadoc)
      * 
      * @see org.eclipse.swt.widgets.Control#setVisible(boolean)
-     * 
      */
     @Override
     public void setVisible(boolean visible) {
@@ -1519,6 +1588,7 @@ public class DatabaseForm extends AbstractForm {
         portText.setEditable(!isContextMode());
         sidOrDatabaseText.setEditable(!isContextMode());
         schemaText.setEditable(!isContextMode());
+        dbVersionCombo.setReadOnly(isContextMode());
         datasourceText.setEditable(!isContextMode());
         additionParamText.setEditable(!isContextMode());
         fileField.setEditable(!isContextMode());

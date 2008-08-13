@@ -12,10 +12,16 @@
 // ============================================================================
 package org.talend.repository.ui.utils;
 
+import java.io.File;
+import java.net.URI;
+
 import org.apache.log4j.Logger;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.builder.database.ConnectionStatus;
+import org.talend.core.model.metadata.builder.database.EDatabaseDriver4Version;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
+import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.repository.i18n.Messages;
 
 /**
@@ -31,6 +37,8 @@ public class ManagerConnection {
     String messageException = null;
 
     // Strings to save
+
+    String dbVersionString;
 
     String dbTypeString;
 
@@ -81,7 +89,8 @@ public class ManagerConnection {
      */
     public void setValue(Integer id, final String dbType, final String url, final String server, final String username,
             final String password, final String sidOrDatabase, final String port, final String file, final String datasource,
-            final String schemaOracle, final String additionalParams, final String driverClassName, final String driverJarPath) {
+            final String schemaOracle, final String additionalParams, final String driverClassName, final String driverJarPath,
+            final String dbVersionString) {
         this.id = id;
         this.dbTypeString = dbType;
         this.urlConnectionString = url;
@@ -96,6 +105,7 @@ public class ManagerConnection {
         this.additionalParams = additionalParams;
         this.driverClassName = driverClassName;
         this.driverJarPath = driverJarPath;
+        this.dbVersionString = dbVersionString;
 
     }
 
@@ -113,6 +123,12 @@ public class ManagerConnection {
     public boolean check() {
         messageException = null;
         try {
+            // see feature 4720&4722
+            if ((driverJarPath == null || driverJarPath.equals("")) && this.dbVersionString != null) {
+                driverJarPath = getJavaLibPath() + EDatabaseDriver4Version.getDriverByVersion(dbVersionString);
+                driverClassName = getDBJdbcDriverName();
+            }
+
             ConnectionStatus testConnection = ExtractMetaDataFromDataBase.testConnection(dbTypeString, urlConnectionString,
                     username, password, schemaOracle, driverClassName, driverJarPath);
             isValide = testConnection.getResult();
@@ -121,6 +137,23 @@ public class ManagerConnection {
             log.error(Messages.getString("CommonWizard.exception") + "\n" + e.toString()); //$NON-NLS-1$ //$NON-NLS-2$
         }
         return isValide;
+    }
+
+    private String getDBJdbcDriverName() {
+        return ExtractMetaDataUtils.getDriverClassByDbType(dbTypeString);
+    }
+
+    /**
+     * 
+     * DOC YeXiaowei Comment method "getJavaLibPath".
+     * 
+     * @return
+     */
+    private String getJavaLibPath() {
+        String separator = File.separator;
+        String javaLibPath = CorePlugin.getDefault().getLibrariesService().getJavaLibrariesPath();
+        URI uri = URI.create(javaLibPath);
+        return uri.getPath() + separator;
     }
 
     /**
@@ -133,6 +166,14 @@ public class ManagerConnection {
         if (metadataConnection.getDbRootPath() != null && !metadataConnection.getDbRootPath().equals("")) {
             setDbRootPath(metadataConnection.getDbRootPath());
         }
+
+        if ((metadataConnection.getDriverJarPath() == null || metadataConnection.getDriverJarPath().equals(""))
+                && metadataConnection.getDbVersionString() != null) {
+            metadataConnection.setDriverJarPath(getJavaLibPath()
+                    + EDatabaseDriver4Version.getDriverByVersion(metadataConnection.getDbVersionString()));
+            metadataConnection.setDriverClass(getDBJdbcDriverName());
+        }
+
         try {
             ConnectionStatus testConnection = ExtractMetaDataFromDataBase.testConnection(metadataConnection.getDbType(),
                     metadataConnection.getUrl(), metadataConnection.getUsername(), metadataConnection.getPassword(),
