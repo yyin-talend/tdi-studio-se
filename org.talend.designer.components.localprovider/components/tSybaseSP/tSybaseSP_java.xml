@@ -147,6 +147,22 @@
       SHOW_IF="IS_FUNCTION == 'true'"
     >
     </PARAMETER>
+
+    <PARAMETER
+      NAME="TIMEOUT_INTERVAL"
+      FIELD="TEXT"
+      NUM_ROW="9"
+    >
+      <DEFAULT>600</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+   	  NAME="NOTE"
+   	  FIELD="LABEL"
+   	  NUM_ROW="9"
+    >
+   	  <DEFAULT>second(s)</DEFAULT>
+    </PARAMETER>
     
 	<PARAMETER
       NAME="SP_ARGS"
