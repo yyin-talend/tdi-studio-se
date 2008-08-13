@@ -13,6 +13,7 @@
 package org.talend.repository.ui.dialog;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.jface.dialogs.Dialog;
@@ -380,7 +381,13 @@ class JobTypeProcessor implements ITypeProcessor {
     }
 
     public RepositoryNode getInputRoot(RepositoryContentProvider contentProvider) {
-        List<RepositoryNode> refProjects = contentProvider.getReferenceProjectNode().getChildren();
+        List<RepositoryNode> refProjects=null;
+        if( contentProvider.getReferenceProjectNode()!=null){
+             refProjects = contentProvider.getReferenceProjectNode().getChildren();
+        }else{
+            refProjects=Collections.EMPTY_LIST;
+        }
+        
         RepositoryNode mainJobs = contentProvider.getProcessNode();
         if (!refProjects.isEmpty()) {
             List<RepositoryNode> list = new ArrayList<RepositoryNode>();
