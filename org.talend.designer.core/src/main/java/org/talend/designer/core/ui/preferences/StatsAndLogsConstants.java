@@ -36,8 +36,6 @@ public class StatsAndLogsConstants {
 
     private static final String SQL_SERVER = "SQL_SERVER"; //$NON-NLS-1$
 
-    private static final String MS_ACCESS = "MS_ACCESS"; //$NON-NLS-1$
-
     private static final String INGRES = "INGRES"; //$NON-NLS-1$
 
     private static final String INTERBASE = "INTERBASE"; //$NON-NLS-1$
@@ -72,14 +70,14 @@ public class StatsAndLogsConstants {
             ORACLE_WITH_SERVICE_NAME, POSTGRESQL, IBM_DB2, SYBASE, INGRES, INTERBASE, SQLITE, FIREBIRD, INFORMIX, ACCESS,
             TERADATA };
 
-    private static final String[] PERL_CODE_LIST = new String[] { ODBC, MYSQL, ODBC, "OCLE", POSTGRESQL, //$NON-NLS-1$
+    private static final String[] PERL_CODE_LIST = new String[] { ODBC, MYSQL, ODBC, "OCLE", "OCLE", POSTGRESQL, //$NON-NLS-1$
             IBM_DB2, SYBASE, INGRES, INTERBASE, SQLITE, FIREBIRD, INFORMIX, ACCESS, TERADATA };
 
     private static final String[] JAVA_REPOSITORY_ITEMS = new String[] { ODBC, MYSQL, SQL_SERVER, ORACLE_WITH_SID,
             ORACLE_WITH_SERVICE_NAME, POSTGRESQL, IBM_DB2, SYBASE, INGRES, INTERBASE, SQLITE, FIREBIRD, INFORMIX, ACCESS,
             TERADATA };
 
-    private static final String[] JAVA_CODE_LIST = new String[] { ODBC, MYSQL, SQL_SERVER, "OCLE", POSTGRESQL, //$NON-NLS-1$
+    private static final String[] JAVA_CODE_LIST = new String[] { ODBC, MYSQL, SQL_SERVER, "OCLE", "OCLE", POSTGRESQL, //$NON-NLS-1$
             IBM_DB2, SYBASE, INGRES, INTERBASE, SQLITE, FIREBIRD, INFORMIX, ACCESS, TERADATA };
 
     public static final String[][] DISPLAY_DBNAMES = new String[][] { PERL_DISPLAY_DBNAMES, JAVA_DISPLAY_DBNAMES };
