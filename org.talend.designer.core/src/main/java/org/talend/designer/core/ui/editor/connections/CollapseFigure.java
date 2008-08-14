@@ -44,6 +44,14 @@ public class CollapseFigure extends Clickable {
     public boolean isCollapsed() {
         return collapsed;
     }
+    
+    protected Image getCollapseFigure() {
+        return ImageProvider.getImage(EImage.TRACES_COLLAPSE);
+    }
+    
+    protected Image getExpandFigure() {
+        return ImageProvider.getImage(EImage.TRACES_EXPAND);
+    }
 
     /**
      * setCollapsed Setter method to change collapsed state of the figure. Will force update to repaint the figure to
@@ -55,9 +63,9 @@ public class CollapseFigure extends Clickable {
         collapsed = b;
         Image img;
         if (isCollapsed()) {
-            img = ImageProvider.getImage(EImage.TRACES_EXPAND);
+            img = getExpandFigure();
         } else {
-            img = ImageProvider.getImage(EImage.TRACES_COLLAPSE);
+            img = getCollapseFigure();
         }
         setContents(new Label(img));
         // revalidate();

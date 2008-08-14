@@ -51,7 +51,7 @@ public class SubjobContainerFigure extends Figure {
 
     private RoundedRectangle rectFig;
 
-    private CollapseFigure collapseFigure;
+    private SubjobCollapseFigure collapseFigure;
 
     private Color mainColor;
 
@@ -74,7 +74,7 @@ public class SubjobContainerFigure extends Figure {
         rectFig = new RoundedRectangle();
         titleFigure = new SimpleHtmlFigure();
         titleFigure.setOpaque(true);
-        collapseFigure = new CollapseFigure();
+        collapseFigure = new SubjobCollapseFigure();
 
         collapseFigure.addActionListener(new ActionListener() {
 
