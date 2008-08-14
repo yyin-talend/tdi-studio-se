@@ -12,19 +12,18 @@
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
-	String localdir = ElementParameterParser.getValue(node, "__LOCALDIR__");	
+	String localdir = ElementParameterParser.getValue(node, "__LOCALDIR__");
 	String cid = node.getUniqueName();
 	String overwrite=ElementParameterParser.getValue(node, "__OVERWRITE__");
 	String sftpoverwrite=ElementParameterParser.getValue(node, "__SFTPOVERWRITE__");
 	boolean sftp = ElementParameterParser.getValue(node, "__SFTP__").equals("true");
 	String remotedir = ElementParameterParser.getValue(node, "__REMOTEDIR__");
+	boolean append = ElementParameterParser.getValue(node, "__APPEND__").equals("true");
 		
 	if(sftp){
-%>	
+%>
 
-    String localdir<%=cid %>  = <%=localdir%>;	
-	for (java.util.Map<String, String> map<%=cid %> : list<%=cid %>) 
-	{
+		 globalMap.put("<%=cid %>_CURRENT_STATUS", "No file transfered.");
    		java.util.Set<String> keySet<%=cid %> = map<%=cid %>.keySet();
       	for (String key<%=cid %> : keySet<%=cid %>)
    		{     
@@ -68,32 +67,33 @@
 				<%}else if(sftpoverwrite.equals("resume")){%>
 					 int mode<%=cid%> = com.jcraft.jsch.ChannelSftp.RESUME;
 				<%}%>
+				try{
     				 c<%=cid%>.put(listings<%=cid %>[m<%=cid %>].getAbsolutePath(), <%=remotedir%>, monitor<%=cid%>, mode<%=cid%>);
+    				  globalMap.put("<%=cid %>_CURRENT_STATUS", "File transfer OK.");
+    				  if(c<%=cid%>.stat(<%=remotedir%>+"/"+listings<%=cid %>[m<%=cid %>].getName()).getAtimeString() != null)
+									{globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS",true);}
+    				} catch (com.jcraft.jsch.SftpException se) {
+                         globalMap.put("<%=cid %>_CURRENT_STATUS", "File transfer fail.");
+                        if(c<%=cid%>.stat(<%=remotedir%>+"/"+listings<%=cid %>[m<%=cid %>].getName()).getAtimeString() != null)
+									{globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS",true);}
+                         
+                   }catch(Exception e){
+                   		globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS",false);
+                   		throw e;
+                   }
 					 nb_file_<%=cid%>++;
       				}
     		}
     	}     
     }
- }
+
      
      
 
 
 <%}else{%>
-<% 
-	if ("binary".equalsIgnoreCase(ElementParameterParser.getValue(node, "__MODE__"))) {
-%>	
-	ftp<%=cid %>.setType(com.enterprisedt.net.ftp.FTPTransferType.BINARY);
-<%
-  }	else {  
-%>	
-	ftp<%=cid %>.setType(com.enterprisedt.net.ftp.FTPTransferType.ASCII);
-<%
- }
-%>
-	String localdir<%=cid %>  = <%=localdir%>;	
-	for (java.util.Map<String, String> map<%=cid %> : list<%=cid %>) 
-	{
+
+		String currentStatus_<%=cid %> = "";
    		java.util.Set<String> keySet<%=cid %> = map<%=cid %>.keySet();
       	for (String key<%=cid %> : keySet<%=cid %>)
    		{     
@@ -127,18 +127,27 @@
     	{
     		for (int m<%=cid %> = 0; m<%=cid %> < listings<%=cid %>.length; m<%=cid %>++)
      		{ 
+     		try{
       			if (listings<%=cid %>[m<%=cid %>].getName().matches(mask<%=cid %>))
-      				{        
-        				 <%if(overwrite.equals("never")){%>
+				{   
+						 globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS",ftp<%=cid %>.exists(listings<%=cid %>[m<%=cid %>].getName()));  
+						 <%if(append){%>
+						 	ftp<%=cid %>.put(tempdir<%=cid %> + "/" + listings<%=cid %>[m<%=cid %>].getName(),listings<%=cid %>[m<%=cid %>].getName(), true);
+						 	currentStatus_<%=cid %> = "Y";
+            				globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS",ftp<%=cid %>.exists(listings<%=cid %>[m<%=cid %>].getName()));
+						 <%}else if(overwrite.equals("never")){%>
             				if(!(ftp<%=cid%>.exists(listings<%=cid %>[m<%=cid %>].getName())))
             				{
             					ftp<%=cid %>.put(tempdir<%=cid %> + "/" + listings<%=cid %>[m<%=cid %>].getName(),listings<%=cid %>[m<%=cid %>].getName());
+            					currentStatus_<%=cid %> = "Y";
+            					globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS",ftp<%=cid %>.exists(listings<%=cid %>[m<%=cid %>].getName()));
             				}
-            			<%}%>
-            			<%if(overwrite.equals("always")){%>
+            			<%}else if(overwrite.equals("always")){%>
             				 ftp<%=cid %>.put(tempdir<%=cid %> + "/" + listings<%=cid %>[m<%=cid %>].getName(),listings<%=cid %>[m<%=cid %>].getName());
-            			<%}%>
-            			<% if(overwrite.equals("size_differ")){%>
+            				 currentStatus_<%=cid %> = "Y";
+							 globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS",ftp<%=cid %>.exists(listings<%=cid %>[m<%=cid %>].getName()));
+            				 
+            			<%}else if(overwrite.equals("size_differ")){%>
             				if((ftp<%=cid%>.exists(listings<%=cid %>[m<%=cid %>].getName())))
             				{
             					com.enterprisedt.net.ftp.FTPFile ftpfile<%=cid%>=ftp<%=cid%>.fileDetails(listings<%=cid %>[m<%=cid %>].getName());
@@ -147,17 +156,28 @@
         						if(!(ftpSize<%=cid%>==localSize<%=cid%>))
         						{
             						ftp<%=cid %>.put(tempdir<%=cid %> + "/" + listings<%=cid %>[m<%=cid %>].getName(),listings<%=cid %>[m<%=cid %>].getName());
+            						currentStatus_<%=cid %> = "Y";
+            						globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS",ftp<%=cid %>.exists(listings<%=cid %>[m<%=cid %>].getName()));
             					}
             				}else
             				{
             					ftp<%=cid %>.put(tempdir<%=cid %> + "/" + listings<%=cid %>[m<%=cid %>].getName(),listings<%=cid %>[m<%=cid %>].getName());
-            				}
+            					currentStatus_<%=cid %> = "Y";
+            					globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS",ftp<%=cid %>.exists(listings<%=cid %>[m<%=cid %>].getName()));
+            					}
             			<%}%>
             			nb_file_<%=cid%>++;
+      				}
+      				}
+      				catch(com.enterprisedt.net.ftp.FTPException e){
+      					currentStatus_<%=cid %> = "N";
+      					globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS",ftp<%=cid %>.exists(listings<%=cid %>[m<%=cid %>].getName()));
+      					throw e;
       				}
     		}
     	}     
     }
- }
+    globalMap.put("<%=cid %>_CURRENT_STATUS", currentStatus_<%=cid %>);
+ 
  
  <%}%>

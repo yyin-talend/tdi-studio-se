@@ -1,0 +1,99 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.process.ElementParameterParser
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.List
+        java.util.Map
+	"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+	
+	String host=ElementParameterParser.getValue(node, "__HOST__");
+	String port=ElementParameterParser.getValue(node, "__PORT__");
+	String username=ElementParameterParser.getValue(node, "__USERNAME__");
+	String password=ElementParameterParser.getValue(node, "__PASSWORD__");
+	String remoteDir = ElementParameterParser.getValue(node, "__REMOTEDIR__");
+	String filename = ElementParameterParser.getValue(node, "__FILENAME__");
+	
+	boolean useProxy = ElementParameterParser.getValue(node, "__REMOTEFILE__").equals("true");
+	String proxyHost = ElementParameterParser.getValue(node, "__PROXY_HOST__");
+	String proxyPort = ElementParameterParser.getValue(node, "__PROXY_PORT__");
+	String proxyUser = ElementParameterParser.getValue(node, "__PROXY_USERNAME__");
+	String proxyPass = ElementParameterParser.getValue(node, "__PROXY_PASSWORD__");
+	
+	boolean sftp = ElementParameterParser.getValue(node, "__SFTP__").equals("true");
+%>
+
+<%
+//The following part support the socks proxy for FTP and SFTP (Socks V4 or V5, they are all OK). 
+//And it can not work with the FTP proxy directly, only support the socks proxy.
+if(useProxy){
+%>
+        java.util.Properties props = System.getProperties();
+        props.put("socksProxyPort", <%=proxyPort %>);
+        props.put("socksProxyHost", <%=proxyHost %>);
+        props.put("java.net.socks.username", <%=proxyUser %>);
+        props.put("java.net.socks.password", <%=proxyPass %>);        
+<%}%>
+
+<%if(sftp){%>
+	class MyUserInfo implements com.jcraft.jsch.UserInfo, com.jcraft.jsch.UIKeyboardInteractive {
+        public String getPassphrase() { return null; } 
+        
+        public String getPassword() { return null; } 
+        
+        public boolean promptPassword(String arg0) { return true; } 
+        
+        public boolean promptPassphrase(String arg0) { return true; } 
+        
+        public boolean promptYesNo(String arg0) { return true; } 
+        
+        public void showMessage(String arg0) { } 
+        
+        public String[] promptKeyboardInteractive(String destination, String name, String instruction, String[] prompt,
+                boolean[] echo) {
+           String[] password_<%=cid %> = {<%=password %>};
+           return password_<%=cid %>;
+        }
+    }; 
+    final com.jcraft.jsch.UserInfo defaultUserInfo_<%=cid %> = new MyUserInfo();
+    com.jcraft.jsch.JSch jsch_<%=cid %>=new com.jcraft.jsch.JSch(); 
+    com.jcraft.jsch.Session session_<%=cid %>=jsch_<%=cid %>.getSession(<%=username%>, <%=host%>, <%=port%>); 
+	session_<%=cid%>.setPassword(<%=password%>); 
+    session_<%=cid%>.setUserInfo(defaultUserInfo_<%=cid %>); 
+    session_<%=cid%>.connect(); 
+    
+    com.jcraft.jsch. Channel channel_<%=cid%>=session_<%=cid%>.openChannel("sftp"); 
+    channel_<%=cid%>.connect(); 
+    com.jcraft.jsch.ChannelSftp c_<%=cid%>=(com.jcraft.jsch.ChannelSftp)channel_<%=cid%>; 
+    String remoteDir_<%=cid %> = <%=remoteDir %>.replaceAll("\\\\","/");
+    try{
+    	if(c_<%=cid %>.stat(<%=remoteDir %> + "/" + <%=filename %>).getAtimeString() != null){
+    		globalMap.put("<%=cid %>_EXISTS", true);
+    	}
+    }catch(Exception e){
+    	globalMap.put("<%=cid %>_EXISTS", false);
+    }
+    globalMap.put("<%=cid %>_FILENAME", <%=filename %>);
+		
+    	
+<%}else{%>
+		com.enterprisedt.net.ftp.FTPClient ftp_<%=cid %> = new com.enterprisedt.net.ftp.FTPClient();
+		ftp_<%=cid %>.setRemoteHost(<%=host %>);
+		ftp_<%=cid %>.setRemotePort(<%=port %>);
+		ftp_<%=cid %>.connect();
+    	ftp_<%=cid %>.login(<%=username %>, <%=password %>);
+    	String remoteDir_<%=cid %> = <%=remoteDir %>.replaceAll("\\\\","/");
+    	if(ftp_<%=cid %>.exists(<%=remoteDir %> + "/" + <%=filename%>)){
+    		globalMap.put("<%=cid %>_EXISTS", true);
+    	}else{
+    		globalMap.put("<%=cid %>_EXISTS", false);
+    	}
+    	globalMap.put("<%=cid %>_FILENAME", <%=filename %>);
+<%}%>

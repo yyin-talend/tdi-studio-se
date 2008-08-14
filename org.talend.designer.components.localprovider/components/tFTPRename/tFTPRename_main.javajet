@@ -14,31 +14,39 @@
 	String overwrite=ElementParameterParser.getValue(node, "__OVERWRITE__");
 	String cid = node.getUniqueName();
 	boolean sftp = ElementParameterParser.getValue(node, "__SFTP__").equals("true");
+	String remotedir = ElementParameterParser.getValue(node, "__REMOTEDIR__");
 	
 	if(sftp){//sftp support
 %>	
 
-	for (java.util.Map<String, String> map<%=cid %> : list<%=cid %>) 
-	{  	
+	  	
+		globalMap.put("<%=cid %>_CURRENT_STATUS", "No file renamed.");
     	java.util.Set<String> keySet<%=cid %> = map<%=cid %>.keySet();   
     	for (String key<%=cid %> : keySet<%=cid %>)
-   		{     	
-   			c<%=cid%>.rename(key<%=cid %>, map<%=cid %>.get(key<%=cid %>));
+   		{    
+   			try{
+   			c<%=cid%>.rename(<%=remotedir %>+"/"+key<%=cid %>, <%=remotedir %>+"/"+map<%=cid %>.get(key<%=cid %>));
+   			globalMap.put("<%=cid %>_CURRENT_STATUS", "File rename OK.");
+   			}catch(com.jcraft.jsch.SftpException se){
+   			globalMap.put("<%=cid %>_CURRENT_STATUS", "File rename fail.");
+   			throw se;
+   			}
    			nb_file_<%=cid%>++;
    		}
-	}
+	
 
 
 <%}else{%>//normal ftp
-	for (java.util.Map<String, String> map<%=cid %> : list<%=cid %>) 
-	{  	
-    	java.util.Set<String> keySet<%=cid %> = map<%=cid %>.keySet();   
+	 	
+    	java.util.Set<String> keySet<%=cid %> = map<%=cid %>.keySet(); 
+    	try{  
     	for (String key<%=cid %> : keySet<%=cid %>)
-   		{     
+   		{
      		<%if(overwrite.equals("always")){%>
      		    if(ftp<%=cid%>.exists(key<%=cid %>))
      			{
      			ftp<%=cid %>.rename(key<%=cid %>, map<%=cid %>.get(key<%=cid %>));
+     			globalMap.put("<%=cid %>_CURRENT_STATUS", "File rename OK.");
      			nb_file_<%=cid%>++;
      			}
      		<%}%>
@@ -46,6 +54,7 @@
      			if(!(ftp<%=cid%>.exists(map<%=cid %>.get(key<%=cid %>))))
      			{
      			ftp<%=cid %>.rename(key<%=cid %>, map<%=cid %>.get(key<%=cid %>));
+     			globalMap.put("<%=cid %>_CURRENT_STATUS", "File rename OK.");
      			nb_file_<%=cid%>++;
      			}
      		<%}%>
@@ -59,15 +68,21 @@
 					if(!(newNameSize<%=cid%>==origNameSize<%=cid%>))
 					{
 						ftp<%=cid %>.rename(key<%=cid %>, map<%=cid %>.get(key<%=cid %>));
+						globalMap.put("<%=cid %>_CURRENT_STATUS", "File rename OK.");
 						nb_file_<%=cid%>++;
 					}
 				}else
 				{
 					ftp<%=cid %>.rename(key<%=cid %>, map<%=cid %>.get(key<%=cid %>));
+					globalMap.put("<%=cid %>_CURRENT_STATUS", "File rename OK.");
 					nb_file_<%=cid%>++;
 				}
      		<%}%>
    		}
-	}
+   		}catch(com.enterprisedt.net.ftp.FTPException e){
+   			globalMap.put("<%=cid %>_CURRENT_STATUS", "File rename fail.");
+            throw e;
+   		}
+	
 
 <%}%>

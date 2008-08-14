@@ -19,7 +19,7 @@
 %>
 
 
-   globalMap.put("<%=cid %>_CURRENT_STATUS", "No file deleted.");
+   globalMap.put("<%=cid %>_CURRENT_STATUS", "No file truncated.");
    java.util.Set<String> keySet<%=cid %> = map<%=cid %>.keySet(); 
    for (String key<%=cid %> : keySet<%=cid %>)
    {     
@@ -40,10 +40,10 @@
 			if ( filePath<%=cid%>.matches(mask<%=cid %>))
 			{
 			try {
-				 c<%=cid%>.rm((<%=remotedir %>)+"/"+ filePath<%=cid%>);
-				 globalMap.put("<%=cid %>_CURRENT_STATUS", "File deleted.");
+				 c<%=cid%>.put(new java.io.ByteArrayInputStream(new byte[]{}), <%=remotedir %>+"/"+filePath<%=cid%>);
+				 globalMap.put("<%=cid %>_CURRENT_STATUS", "File truncate OK.");
 				 } catch (com.jcraft.jsch.SftpException se) {
-                       globalMap.put("<%=cid %>_CURRENT_STATUS", "Deleting file action error");
+                       globalMap.put("<%=cid %>_CURRENT_STATUS", "File truncate fail.");
                        throw se;
                  }
 				 nb_file_<%=cid%>++;
@@ -56,7 +56,7 @@
     
 <%}else{%>
 
-	globalMap.put("<%=cid %>_CURRENT_STATUS", "No file deleted.");
+	globalMap.put("<%=cid %>_CURRENT_STATUS", "No file truncated.");
     java.util.Set<String> keySet<%=cid %> = map<%=cid %>.keySet(); 
     try {
    for (String key<%=cid %> : keySet<%=cid %>)
@@ -77,14 +77,14 @@
 		{  
 			if (listings<%=cid %>[m<%=cid %>].matches(mask<%=cid %>))
 			{
-				ftp<%=cid %>.delete(listings<%=cid %>[m<%=cid %>]);
-				globalMap.put("<%=cid %>_CURRENT_STATUS", "File deleted.");
+				ftp<%=cid %>.put(new ByteArrayInputStream(new byte[]{}), listings<%=cid %>[m<%=cid %>]);
+				globalMap.put("<%=cid %>_CURRENT_STATUS", "File truncate OK.");
 				nb_file_<%=cid%>++;
 			}
 		}
    	}
    	}catch(com.enterprisedt.net.ftp.FTPException e){
-   		globalMap.put("<%=cid %>_CURRENT_STATUS", "Deleting file action error");
+   		globalMap.put("<%=cid %>_CURRENT_STATUS", "File truncate fail.");
    		throw e;
    	}
    ftp<%=cid %>.chdir(root<%=cid %>);

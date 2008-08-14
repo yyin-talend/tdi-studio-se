@@ -12,28 +12,23 @@
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();	
+
 	String host = ElementParameterParser.getValue(node, "__HOST__");
 	String port = ElementParameterParser.getValue(node, "__PORT__");
 	String user = ElementParameterParser.getValue(node, "__USERNAME__");
 	String pass = ElementParameterParser.getValue(node, "__PASSWORD__");
-	String localdir = ElementParameterParser.getValue(node, "__LOCALDIR__");	
 	String remotedir = ElementParameterParser.getValue(node, "__REMOTEDIR__");
-    String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
 	boolean sftp = ElementParameterParser.getValue(node, "__SFTP__").equals("true");
-	String authMethod = ElementParameterParser.getValue(node,"__AUTH_METHOD__");
-	String privateKey = ElementParameterParser.getValue(node,"__PRIVATEKEY__");
-	String passPhrase = ElementParameterParser.getValue(node,"__PASSPHRASE__");
 	List<Map<String, String>> files = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FILES__");	
 	String cid = node.getUniqueName();
-
 %>
 	int nb_file_<%=cid%> = 0;
-<%		
+<%	
 	if(sftp){
 %>	
+
 	class MyUserInfo implements com.jcraft.jsch.UserInfo, com.jcraft.jsch.UIKeyboardInteractive {
-    	String passphrase_<%=cid %> = <%=passPhrase %>;
-        public String getPassphrase() { return passphrase_<%=cid %>; }
+        public String getPassphrase() { return null; } 
         
         public String getPassword() { return null; } 
         
@@ -55,34 +50,37 @@
     final com.jcraft.jsch.UserInfo defaultUserInfo<%=cid%> = new MyUserInfo();
     
     
-    class MyProgressMonitor implements com.jcraft.jsch.SftpProgressMonitor {
-
-        public void init(int op, String src, String dest, long max) {}
- 		
- 		public boolean count(long count) { return true;}
-
-        public void end() {}
-    }
-    
     com.jcraft.jsch.JSch jsch<%=cid%>=new com.jcraft.jsch.JSch(); 
-    <%if(authMethod.equals("PUBLICKEY")){%>
-    jsch<%=cid%>.addIdentity(<%=privateKey %>, defaultUserInfo<%=cid%>.getPassphrase());
-    <%}%>
     com.jcraft.jsch.Session session<%=cid%>=jsch<%=cid%>.getSession(<%=user%>, <%=host%>, <%=port%>); 
-    <%if(authMethod.equals("PASSWORD")){%> 
 	session<%=cid%>.setPassword(<%=pass%>); 
-    <%}%>
     session<%=cid%>.setUserInfo(defaultUserInfo<%=cid%>); 
     session<%=cid%>.connect(); 
     
     com.jcraft.jsch. Channel channel<%=cid%>=session<%=cid%>.openChannel("sftp"); 
     channel<%=cid%>.connect(); 
     com.jcraft.jsch.ChannelSftp c<%=cid%>=(com.jcraft.jsch.ChannelSftp)channel<%=cid%>; 
-    c<%=cid%>.setFilenameEncoding(<%=encoding%>);
-    
-    com.jcraft.jsch.SftpProgressMonitor monitor<%=cid%> = new MyProgressMonitor();
     
     java.util.List<java.util.Map<String,String>> list<%=cid %> = new java.util.ArrayList<java.util.Map<String,String>>();	
+<%
+    for (int i=0; i<files.size(); i++) {
+       Map<String, String> line = files.get(i);
+%>    
+	java.util.Map<String,String> map<%=cid %><%=i %> = new java.util.HashMap<String,String>();
+	map<%=cid %><%=i %>.put(<%= line.get("FILEMASK") %>,"");
+ 	list<%=cid %>.add(map<%=cid %><%=i %>);
+<%
+  }
+%>	
+for (java.util.Map<String, String> map<%=cid %> : list<%=cid %>) 
+{
+<%}else{%>
+
+	com.enterprisedt.net.ftp.FTPClient ftp<%=cid %> = new com.enterprisedt.net.ftp.FTPClient();
+	ftp<%=cid %>.setRemoteHost(<%=host %>);
+	ftp<%=cid %>.setRemotePort(<%=port %>);
+	ftp<%=cid %>.connect();
+    ftp<%=cid %>.login(<%=user %>, <%=pass %>);    
+	java.util.List<java.util.Map<String,String>> list<%=cid %> = new java.util.ArrayList<java.util.Map<String,String>>();	
 <%
     for (int i=0; i<files.size(); i++) {
        Map<String, String> line = files.get(i);
@@ -93,41 +91,11 @@
 <%
   }
 %>	
-
-	String localdir<%=cid %>  = <%=localdir%>;	
-	for (java.util.Map<String, String> map<%=cid %> : list<%=cid %>) 
-	{
-<%}else{%>
-	com.enterprisedt.net.ftp.FTPClient ftp<%=cid %> = new com.enterprisedt.net.ftp.FTPClient();
-	ftp<%=cid %>.setRemoteHost(<%=host %>);
-	ftp<%=cid %>.setRemotePort(<%=port %>);
-	ftp<%=cid %>.connect();
-    ftp<%=cid %>.login(<%=user %>, <%=pass %>);    
-	java.util.List<java.util.Map<String,String>> list<%=cid %> = new java.util.ArrayList<java.util.Map<String,String>>();
-<%
-    for (int i=0; i<files.size(); i++) {
-       Map<String, String> line = files.get(i);
-%>    
-	java.util.Map<String,String> map<%=cid %><%=i %> = new java.util.HashMap<String,String>();
-	map<%=cid %><%=i %>.put(<%= line.get("FILEMASK") %>,"");	
-	list<%=cid %>.add(map<%=cid %><%=i %>);       
-<%
-  }
-%>	
 	String remotedir<%=cid %> = <%=remotedir%>;
 	ftp<%=cid %>.chdir(remotedir<%=cid %>);
-	<% 
-	if ("binary".equalsIgnoreCase(ElementParameterParser.getValue(node, "__MODE__"))) {
-%>	
-	ftp<%=cid %>.setType(com.enterprisedt.net.ftp.FTPTransferType.BINARY);
-<%
-  }	else {  
-%>	
-	ftp<%=cid %>.setType(com.enterprisedt.net.ftp.FTPTransferType.ASCII);
-<%
- }
-%>
-	String localdir<%=cid %>  = <%=localdir%>;	
+	
+	String root<%=cid %> = ftp<%=cid %>.pwd();
 	for (java.util.Map<String, String> map<%=cid %> : list<%=cid %>) 
 	{
+	
 <%}%>

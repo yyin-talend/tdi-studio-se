@@ -15,10 +15,11 @@
 	
 	if(sftp){
 %>
-
+	}
     session<%=cid%>.disconnect(); 
     
 <%}else{%>
+	}
 
 	ftp<%=cid %>.quit();
 	

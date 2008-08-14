@@ -72,7 +72,8 @@
 %>	
 
 
-
+for (java.util.Map<String, String> map<%=cid %> : list<%=cid %>) 
+	{
 
 <%}else{%>
 	com.enterprisedt.net.ftp.FTPClient ftp<%=cid %> = new com.enterprisedt.net.ftp.FTPClient();
@@ -95,5 +96,7 @@
 
 	String remotedir<%=cid %> = <%=remotedir%>;
 	ftp<%=cid %>.chdir(remotedir<%=cid %>);
+	for (java.util.Map<String, String> map<%=cid %> : list<%=cid %>) 
+	{ 
 	
 <%}%>
