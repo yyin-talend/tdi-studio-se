@@ -16,7 +16,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -40,18 +39,15 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.EcoreUtil.ExternalCrossReferencer;
 import org.talend.commons.emf.EmfHelper;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.core.CorePlugin;
-import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.PropertiesPackage;
-import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.User;
 import org.talend.core.model.properties.helper.ByteArrayResource;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.constants.FileConstants;
 import org.talend.repository.documentation.IFileExporterFullPath;
 import org.talend.repository.documentation.TarFileExporterFullPath;
@@ -87,10 +83,10 @@ public class ExportItemUtil {
 
     private Map<String, User> login2user = new HashMap<String, User>();
 
+    private ProjectManager pManager = ProjectManager.getInstance();
+
     public ExportItemUtil() {
-        Context ctx = CorePlugin.getContext();
-        RepositoryContext repositoryContext = (RepositoryContext) ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
-        project = repositoryContext.getProject().getEmfProject();
+        project = pManager.getCurrentProject().getEmfProject();
     }
 
     public ExportItemUtil(Project project) {
@@ -156,7 +152,9 @@ public class ExportItemUtil {
     public Collection<Item> getAllVersions(Collection<Item> items) throws PersistenceException {
         Collection<Item> itemsVersions = new ArrayList<Item>();
         for (Item item : items) {
-            List<IRepositoryObject> allVersion = ProxyRepositoryFactory.getInstance().getAllVersion(
+            org.talend.core.model.general.Project itemProject = new org.talend.core.model.general.Project(pManager
+                    .getProject(item));
+            List<IRepositoryObject> allVersion = ProxyRepositoryFactory.getInstance().getAllVersion(itemProject,
                     item.getProperty().getId());
             for (IRepositoryObject repositoryObject : allVersion) {
                 itemsVersions.add(repositoryObject.getProperty().getItem());
@@ -174,20 +172,24 @@ public class ExportItemUtil {
         return exportItems.keySet();
     }
 
-    private Map<File, IPath> exportItems(Collection<Item> items, File destinationDirectory,
-            boolean projectFolderStructure) throws Exception {
+    private Map<File, IPath> exportItems(Collection<Item> items, File destinationDirectory, boolean projectFolderStructure)
+            throws Exception {
         Map<File, IPath> toExport = new HashMap<File, IPath>();
 
         try {
             init();
-            computeProjectFileAndPath(destinationDirectory);
-            createProjectResource(items);
             for (Item item : items) {
+                project = pManager.getProject(item);
+
+                computeProjectFileAndPath(destinationDirectory);
+                if (!toExport.containsKey(projectFile)) {
+                    createProjectResource(items);
+                    toExport.put(projectFile, projectPath);
+                }
                 if (ERepositoryObjectType.getItemType(item).isResourceItem()) {
                     Collection<EObject> copiedObjects = copyObjects(item);
 
-                    Item copiedItem = (Item) EcoreUtil.getObjectByType(copiedObjects, PropertiesPackage.eINSTANCE
-                            .getItem());
+                    Item copiedItem = (Item) EcoreUtil.getObjectByType(copiedObjects, PropertiesPackage.eINSTANCE.getItem());
                     fixItem(copiedItem);
                     computeItemFilesAndPaths(destinationDirectory, copiedItem, projectFolderStructure);
                     createItemResources(copiedItem, copiedObjects);
@@ -197,7 +199,7 @@ public class ExportItemUtil {
                     toExport.put(itemFile, itemPath);
                 }
             }
-            toExport.put(projectFile, projectPath);
+
             dereferenceNotContainedObjects();
             saveResources();
         } catch (Exception e) {
@@ -236,21 +238,26 @@ public class ExportItemUtil {
     }
 
     private void computeProjectFileAndPath(File destinationFile) {
-        projectPath = new Path(FileConstants.LOCAL_PROJECT_FILENAME);
+        projectPath = getProjectPath();
+        projectPath = projectPath.append(FileConstants.LOCAL_PROJECT_FILENAME);
         projectFile = new File(destinationFile, projectPath.toOSString());
     }
 
+    private IPath getProjectPath() {
+        return new Path(project.getLabel());
+    }
+
     private void computeItemFilesAndPaths(File destinationFile, Item item, boolean projectFolderStructure) {
-        IPath fileNamePath = new Path(ResourceFilenameHelper.getExpectedFileName(item.getProperty().getLabel(), item
-                .getProperty().getVersion()));
+        IPath fileNamePath = getProjectPath();
 
         if (projectFolderStructure) {
             ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(item);
             IPath typeFolderPath = new Path(ERepositoryObjectType.getFolderName(itemType));
             IPath itemDestinationPath = typeFolderPath.append(item.getProperty().getItem().getState().getPath());
-            fileNamePath = itemDestinationPath.append(fileNamePath);
+            fileNamePath = fileNamePath.append(itemDestinationPath);
         }
-
+        fileNamePath = fileNamePath.append(ResourceFilenameHelper.getExpectedFileName(item.getProperty().getLabel(), item
+                .getProperty().getVersion()));
         propertyPath = fileNamePath.addFileExtension(FileConstants.PROPERTIES_EXTENSION);
         propertyFile = new File(destinationFile, propertyPath.toOSString());
 
@@ -364,8 +371,7 @@ public class ExportItemUtil {
     }
 
     private void fixItemUserReferences(Item item) {
-        Item newItem = (Item) EcoreUtil.getObjectByType(propertyResource.getContents(), PropertiesPackage.eINSTANCE
-                .getItem());
+        Item newItem = (Item) EcoreUtil.getObjectByType(propertyResource.getContents(), PropertiesPackage.eINSTANCE.getItem());
         User author = item.getProperty().getAuthor();
         String login = EXPORTUSER_TALEND_COM;
         if (author != null) {
@@ -375,8 +381,7 @@ public class ExportItemUtil {
     }
 
     private void fixItemLockState() {
-        Item item = (Item) EcoreUtil.getObjectByType(propertyResource.getContents(), PropertiesPackage.eINSTANCE
-                .getItem());
+        Item item = (Item) EcoreUtil.getObjectByType(propertyResource.getContents(), PropertiesPackage.eINSTANCE.getItem());
         item.getState().setLocker(null);
         item.getState().setLockDate(null);
         item.getState().setLocked(false);

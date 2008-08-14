@@ -219,7 +219,9 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
                 ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA, ERepositoryObjectType.JOBLET };
         for (ERepositoryObjectType repositoryObjectType : repositoryObjectTypeList) {
             Object folder = getFolder(project, repositoryObjectType);
-            toReturn.addAll(getSerializableFromFolder(project, folder, id, repositoryObjectType, allVersion, true, true));
+            if (folder != null) {
+                toReturn.addAll(getSerializableFromFolder(project, folder, id, repositoryObjectType, allVersion, true, true));
+            }
         }
         return toReturn;
     }
