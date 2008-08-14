@@ -1254,6 +1254,10 @@ public class DatabaseForm extends AbstractForm {
      */
     @Override
     public boolean checkFieldsValue() {
+
+        // See bug 004800
+        getConnection().setURL(getStringConnection());
+
         if (isContextMode()) {
             return true;
         }
