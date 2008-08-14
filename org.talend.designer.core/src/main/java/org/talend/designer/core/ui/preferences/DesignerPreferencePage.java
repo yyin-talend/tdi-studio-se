@@ -20,6 +20,7 @@ import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.talend.core.model.components.ComponentUtilities;
+import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 
@@ -43,6 +44,7 @@ public class DesignerPreferencePage extends FieldEditorPreferencePage implements
 
     public void init(IWorkbench workbench) {
         oldLargeIconsSize = getPreferenceStore().getString(TalendDesignerPrefConstants.LARGE_ICONS_SIZE);
+        getPreferenceStore().setDefault(ITalendCorePrefConstants.DEACTIVE_REPOSITORY_UPDATE, true);
     }
 
     @Override
@@ -77,6 +79,7 @@ public class DesignerPreferencePage extends FieldEditorPreferencePage implements
         BooleanFieldEditor showHint;
         // BooleanFieldEditor displayComponent;
         BooleanFieldEditor useRepositoryName;
+        BooleanFieldEditor deactiveRepositoryUpdate;
 
         labelField = new StringFieldEditor(TalendDesignerPrefConstants.DEFAULT_LABEL, Messages
                 .getString("DesignerPreferencePage.component.defaultLabel"), //$NON-NLS-1$
@@ -93,12 +96,17 @@ public class DesignerPreferencePage extends FieldEditorPreferencePage implements
         // .getString("DesignerPreferencePage.display.hiddenComponents"), getFieldEditorParent()); //$NON-NLS-1$
         useRepositoryName = new BooleanFieldEditor(TalendDesignerPrefConstants.USE_REPOSITORY_NAME, Messages
                 .getString("DesignerPreferencePage.display.useRepositoryName"), getFieldEditorParent()); //$NON-NLS-1$
+
+        deactiveRepositoryUpdate = new BooleanFieldEditor(ITalendCorePrefConstants.DEACTIVE_REPOSITORY_UPDATE, Messages
+                .getString("DesignerPreferencePage.display.deactiveRepositoryUpdate"), getFieldEditorParent()); //$NON-NLS-1$
+
         addField(labelField);
         addField(hintField);
         addField(connectionField);
         addField(showHint);
         // addField(displayComponent);
         addField(useRepositoryName);
+        addField(deactiveRepositoryUpdate);
 
         addField(new BooleanFieldEditor(TalendDesignerPrefConstants.PROPERTY_CODE_CHECK, Messages
                 .getString("DesignerPreferencePage.propertyCodeCheck"), getFieldEditorParent())); //$NON-NLS-1$
