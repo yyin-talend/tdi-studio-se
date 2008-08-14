@@ -25,8 +25,8 @@ import org.talend.designer.core.i18n.Messages;
 
 /**
  * This class represents a preference page that is contributed to the Preferences dialog. By subclassing
- * <samp>FieldEditorPreferencePage</samp>, we can use the field support built into JFace that allows us to create a
- * page that is small and knows how to save, restore and apply itself.
+ * <samp>FieldEditorPreferencePage</samp>, we can use the field support built into JFace that allows us to create a page
+ * that is small and knows how to save, restore and apply itself.
  * <p>
  * This page is used to modify preferences only. They are stored in the preference store that belongs to the main
  * plug-in class. That way, preferences can be accessed directly via the preference store.
@@ -147,7 +147,7 @@ public class DesignerPreferencePage extends FieldEditorPreferencePage implements
 
         BooleanFieldEditor propagateContextVariable = new BooleanFieldEditor(
                 TalendDesignerPrefConstants.PROPAGATE_CONTEXT_VARIABLE,
-                "Propagate add/delete variable modification in the contexts", getFieldEditorParent());
+                "Propagate add/delete variable changes in repository contexts", getFieldEditorParent());
         addField(propagateContextVariable);
     }
 }

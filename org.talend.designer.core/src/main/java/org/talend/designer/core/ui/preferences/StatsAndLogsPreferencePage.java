@@ -150,6 +150,7 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
      * Creates the field editors. Field editors are abstractions of the common GUI blocks needed to manipulate various
      * types of preferences. Each field editor knows how to save and restore itself.
      */
+    @Override
     public void createFieldEditors() {
         languagePrefix = language.toString() + "_";
         createFields();
@@ -807,7 +808,7 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
     /**
      * yzhang StatsAndLogsPreferencePage class global comment. Detailled comment
      */
-    private class DirectoryFieldEditorWithQuotes extends DirectoryFieldEditor {
+    static class DirectoryFieldEditorWithQuotes extends DirectoryFieldEditor {
 
         /**
          * yzhang StatsAndLogsPreferencePage.DirectoryFieldEditorWithQuotes constructor comment.
@@ -864,6 +865,7 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
          * 
          * @see org.eclipse.jface.preference.DirectoryFieldEditor#doCheckState()
          */
+        @Override
         protected boolean doCheckState() {
             return true;
         }
@@ -873,7 +875,7 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
     /**
      * yzhang StatsAndLogsPreferencePage class global comment. Detailled comment
      */
-    private class FileFieldEditorWithQuotes extends FileFieldEditor {
+    static class FileFieldEditorWithQuotes extends FileFieldEditor {
 
         boolean enforceAbsolute = false;
 

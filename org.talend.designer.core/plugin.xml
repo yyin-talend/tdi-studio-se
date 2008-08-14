@@ -41,6 +41,12 @@
       </page>
       <page
             category="org.talend.core.prefs"
+            class="org.talend.designer.core.ui.preferences.ImplicitContextLoadPreferencePage"
+            id="org.talend.designer.core.ui.preferences.ImplicitContextLoadPreferencePage"
+            name="%implicitContextLoad">
+      </page>
+      <page
+            category="org.talend.core.prefs"
             class="org.talend.designer.core.ui.preferences.StatsAndLogsPreferenceNodePage"
             id="org.talend.designer.core.ui.preferences.StatsAndLogsPreferenceNodePage"
             name="%statsAndLogs">
