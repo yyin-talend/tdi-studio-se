@@ -48,17 +48,53 @@
 					VALUE="INFORMATION_MESSAGE" />
 			</ITEMS>
 		</PARAMETER>
-
-		<PARAMETER NAME="MESSAGE" FIELD="MEMO" REQUIRED="false"
-			NUM_ROW="4">
+		
+		<PARAMETER
+		 NAME="INPUT_VARIABLE"
+		 FIELD="CHECK"
+		 NUM_ROW="4"
+		 >
+		 <DEFAULT>false</DEFAULT>
+		 </PARAMETER>
+		 
+		 <PARAMETER
+		  NAME="VARIABLE_NAME"
+		  FIELD="TEXT"
+		  NUM_ROW="5"
+		  REQUIRED="true"
+		  SHOW_IF="INPUT_VARIABLE=='true'"
+		  >
+		   <DEFAULT>""</DEFAULT>
+		  </PARAMETER>
+		  
+		 <PARAMETER
+		  NAME="QUESTION_LABEL"
+		  FIELD="TEXT"
+		  NUM_ROW="6"
+		  REQUIRED="true"
+		  SHOW_IF="INPUT_VARIABLE=='true'"
+		  >
+		  <DEFAULT>""</DEFAULT>
+		  </PARAMETER> 
+		  
+		  <PARAMETER NAME="MESSAGE" FIELD="MEMO" REQUIRED="false"
+			NUM_ROW="7">
 			<DEFAULT>"Hello world!"</DEFAULT>
 		</PARAMETER>
 	</PARAMETERS>
 
-	<CODEGENERATION />
+	<CODEGENERATION>
+     <IMPORTS>
+       <IMPORT NAME="Java-Jface" MODULE="org.eclipse.jface_3.3.0.I20070606-0010.jar" REQUIRED="true" />
+       <IMPORT NAME="Java-swt" MODULE="org.eclipse.swt.win32.win32.x86_3.3.0.v3346.jar" REQUIRED="true" />
+        <IMPORT NAME="Java-swt-runtime" MODULE="org.eclipse.equinox.common_3.3.0.v20070426.jar" REQUIRED="true" />
+         <IMPORT NAME="Java-commands" MODULE="org.eclipse.core.commands_3.3.0.I20070605-0010.jar" REQUIRED="true" />
+     </IMPORTS>
+   </CODEGENERATION>
 
   <RETURNS>
       <RETURN NAME="RESULT" TYPE="id_Integer" AVAILABILITY="AFTER" />
+      <RETURN NAME="USER_RETURN" TYPE="id_String" AVAILABILITY="AFTER" />
   </RETURNS>
 
 </COMPONENT>

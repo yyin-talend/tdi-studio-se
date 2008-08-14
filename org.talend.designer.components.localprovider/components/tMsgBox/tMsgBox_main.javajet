@@ -11,12 +11,30 @@
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
 	
+	boolean isInputVariable=ElementParameterParser.getValue(node, "__INPUT_VARIABLE__").equals("true");
 	int button = Integer.parseInt(ElementParameterParser.getValue(node, "__BUTTONS__"));	
 %>
 	int messageIcon<%=cid %> = javax.swing.JOptionPane.<%=ElementParameterParser.getValue(node, "__ICON__") %>;
 	String title<%=cid %> = <%=ElementParameterParser.getValue(node, "__TITLE__") %>;
 	String message<%=cid %> = <%=ElementParameterParser.getValue(node, "__MESSAGE__") %>;
 	int result<%=cid %> = 0;
+
+<% if(isInputVariable){
+
+%>
+   String variableName_<%=cid %> = <%=ElementParameterParser.getValue(node, "__VARIABLE_NAME__") %>;
+   String question_<%=cid %> = <%=ElementParameterParser.getValue(node, "__QUESTION_LABEL__") %>;
+   String variableValue_<%=cid %>=null;
+   
+   variableValue_<%=cid %>=javax.swing.JOptionPane.showInputDialog(null, question_<%=cid %> , "Please input a value for question", javax.swing.JOptionPane.QUESTION_MESSAGE);
+      
+   globalMap.put("<%=cid %>_USER_RETURN",variableValue_<%=cid %>);
+   globalMap.put(variableName_<%=cid %>,variableValue_<%=cid %>);
+
+   
+<% }
+%>   	
+	
 <%
 	switch(button) {
 		case 0:
