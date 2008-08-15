@@ -70,6 +70,7 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.model.utils.TalendTextUtils.KeyString;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -1256,8 +1257,8 @@ public class Node extends Element implements INode {
      * Will return the first item of the subprocess. If "withCondition" is true, if there is links from type RunIf /
      * RunAfter / RunBefore, it will return the first element found. If "withCondition" is false, it will return the
      * first element with no active link from type Main/Ref/Iterate.<br>
-     * <i><b>Note:</b></i> This function doesn't work if the node has several start points (will return a random
-     * start node).
+     * <i><b>Note:</b></i> This function doesn't work if the node has several start points (will return a random start
+     * node).
      * 
      * @param withCondition
      * @return Start Node found.
@@ -2039,7 +2040,7 @@ public class Node extends Element implements INode {
                 String value = (String) param.getValue();
                 if (value.contains(oldName)) {
                     // param.setValue(value.replaceAll(oldName, newName));
-                    String newValue = renameValues(value, oldName, newName);
+                    String newValue = renameValuesIgnoreQuote(value, oldName, newName);
                     if (!value.equals(newValue)) {
                         param.setValue(newValue);
                     }
@@ -2055,7 +2056,7 @@ public class Node extends Element implements INode {
                             String value = (String) cellValue;
                             if (value.contains(oldName)) {
                                 // line.put(key, value.replaceAll(oldName, newName));
-                                String newValue = renameValues(value, oldName, newName);
+                                String newValue = renameValuesIgnoreQuote(value, oldName, newName);
                                 if (!value.equals(newValue)) {
                                     line.put(key, newValue);
                                 }
@@ -2073,6 +2074,7 @@ public class Node extends Element implements INode {
      * 
      */
     private String renameValues(final String value, final String oldName, final String newName) {
+
         if (value == null || oldName == null || newName == null) {
             return value; // keep original value
         }
@@ -2096,6 +2098,35 @@ public class Node extends Element implements INode {
 
         }
         return value; // keep original value
+
+    }
+
+    /**
+     * 
+     * DOC YeXiaowei Comment method "renameValuesIgnoreQuote".
+     * 
+     * @param value
+     * @param oldName
+     * @param newName
+     * @return
+     */
+    private String renameValuesIgnoreQuote(final String value, final String oldName, final String newName) {
+        List<KeyString> result = TalendTextUtils.spellStringByQuote(value);
+
+        if (result == null || result.isEmpty()) {
+            return renameValues(value, oldName, newName);
+        }
+
+        StringBuilder builder = new StringBuilder();
+        for (KeyString keyString : result) {
+            if (keyString.isKey()) {
+                builder.append(keyString.getString());
+            } else {
+                builder.append(renameValues(keyString.getString(), oldName, newName));
+            }
+        }
+
+        return builder.toString();
 
     }
 
