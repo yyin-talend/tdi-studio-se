@@ -29,7 +29,6 @@ import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
-import org.talend.designer.core.ui.editor.connections.CollapseFigure;
 import org.talend.designer.core.ui.editor.nodes.Node;
 
 /**
@@ -79,10 +78,13 @@ public class SubjobContainerFigure extends Figure {
         collapseFigure.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent event) {
-                PropertyChangeCommand ppc = new PropertyChangeCommand(subjobContainer, EParameterName.COLLAPSED.getName(),
-                        !subjobContainer.isCollapsed());
-                subjobContainer.getProcess().getCommandStack().execute(ppc);
-                reSelection();
+                IProcess2 process = subjobContainer.getProcess();
+                if (!process.isReadOnly()) {
+                    PropertyChangeCommand ppc = new PropertyChangeCommand(subjobContainer, EParameterName.COLLAPSED.getName(),
+                            !subjobContainer.isCollapsed());
+                    process.getCommandStack().execute(ppc);
+                    reSelection();
+                }
             }
         });
 
