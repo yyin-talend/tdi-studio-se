@@ -14,14 +14,17 @@ package org.talend.designer.codegen;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
+import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
 /***/
@@ -30,6 +33,13 @@ public abstract class AbstractRoutineSynchronizer implements ITalendSynchronizer
     private static Map<String, Date> id2date = new HashMap<String, Date>();
 
     protected List<IRepositoryObject> getRoutines() throws SystemException {
+        List<IRepositoryObject> list = getMainProjectRoutine();
+
+        list.addAll(getReferencedProjectRoutine());
+        return list;
+    }
+
+    private List<IRepositoryObject> getMainProjectRoutine() throws SystemException {
         IProxyRepositoryFactory repositoryFactory = CodeGeneratorActivator.getDefault().getRepositoryService()
                 .getProxyRepositoryFactory();
 
@@ -39,6 +49,23 @@ public abstract class AbstractRoutineSynchronizer implements ITalendSynchronizer
         } catch (PersistenceException e) {
             throw new SystemException(e);
         }
+        return routines;
+    }
+
+    private List<IRepositoryObject> getReferencedProjectRoutine() throws SystemException {
+        List<Project> projects = ProjectManager.getInstance().getReferencedProjects();
+        IProxyRepositoryFactory repositoryFactory = CodeGeneratorActivator.getDefault().getRepositoryService()
+                .getProxyRepositoryFactory();
+
+        List<IRepositoryObject> routines = new LinkedList<IRepositoryObject>();
+        for (Project project : projects) {
+            try {
+                routines.addAll(repositoryFactory.getAll(project, ERepositoryObjectType.ROUTINES));
+            } catch (PersistenceException e) {
+                throw new SystemException(e);
+            }
+        }
+
         return routines;
     }
 

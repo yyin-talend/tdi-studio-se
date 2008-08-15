@@ -53,7 +53,7 @@
 %> 
 package <%= packageName %>;
 
-<%for (String routine : CodeGeneratorRoutine.getRoutineName()) {
+<%for (String routine : CodeGeneratorRoutine.getRoutineName(process)) {
 	if(!routine.equals(ITalendSynchronizer.TEMPLATE)){%>
 import routines.<%=routine%>;
 <%	}
