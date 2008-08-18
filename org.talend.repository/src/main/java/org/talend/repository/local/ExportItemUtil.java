@@ -172,14 +172,51 @@ public class ExportItemUtil {
         return exportItems.keySet();
     }
 
+    /**
+     * DOC chuang Comment method "sortItemsByProject".
+     * 
+     * @param items
+     * @param itemProjectMap
+     * @return
+     */
+    private Collection<Item> sortItemsByProject(Collection<Item> items, Map<Item, Project> itemProjectMap) {
+        Map<Project, List<Item>> projectItems = new HashMap<Project, List<Item>>();
+        for (Item item : items) {
+            // get project corresponding to item
+            Project p = pManager.getProject(item);
+            // store for further lookup
+            itemProjectMap.put(item, p);
+
+            // items in the same list belongs to same project
+            List<Item> list = projectItems.get(p);
+            if (list == null) {
+                list = new ArrayList<Item>();
+                projectItems.put(p, list);
+            }
+            list.add(item);
+        }
+
+        // merge items from different projects
+        items = new ArrayList<Item>(items.size());
+        for (List<Item> list : projectItems.values()) {
+            items.addAll(list);
+        }
+        return items;
+    }
+
     private Map<File, IPath> exportItems(Collection<Item> items, File destinationDirectory, boolean projectFolderStructure)
             throws Exception {
         Map<File, IPath> toExport = new HashMap<File, IPath>();
 
         try {
             init();
+            // store item and its corresponding project
+            Map<Item, Project> itemProjectMap = new HashMap<Item, Project>();
+
+            items = sortItemsByProject(items, itemProjectMap);
+
             for (Item item : items) {
-                project = pManager.getProject(item);
+                project = itemProjectMap.get(item);
 
                 computeProjectFileAndPath(destinationDirectory);
                 if (!toExport.containsKey(projectFile)) {
