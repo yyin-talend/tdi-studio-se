@@ -1,0 +1,194 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.metadata.MetadataTalendType    
+    org.talend.core.model.metadata.MappingTypeRetriever    
+    java.util.List
+    java.util.ArrayList    
+    java.util.Map
+    java.util.HashMap
+" 
+skeleton="../templates/db_output_bulk.skeleton"
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+String table = ElementParameterParser.getValue(node, "__TABLE__");
+String dbSchema = ElementParameterParser.getValue(node, "__SCHEMA_DB__");
+String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
+StringBuilder tableName = new StringBuilder();
+StringBuilder tmpTableName = new StringBuilder();
+%>
+String tableName_<%=cid%> = null;
+<%
+if(dbSchema == null || dbSchema.equals("") || dbSchema.equals("\"\"")) {
+    tableName.append("\\\"\" + " + table + " + \"\\\"");
+    %>
+    tableName_<%=cid%> = <%=table%>;
+    <%
+} else {
+    tableName.append("\\\"\" + " + dbSchema + " + \"\\\".\\\"\" + " + table + " + \"\\\"");
+    %>
+    tableName_<%=cid%> = <%=dbSchema%> + "\".\"" + <%=table%>;
+    <%
+}
+if(dataAction.equals("UPDATE")) {
+    tmpTableName = tableName;
+    tableName = new StringBuilder("\\\"tmp_" + cid + "\\\"");
+}
+String file = ElementParameterParser.getValue(node, "__FILENAME__");
+List<IMetadataColumn> columnList = getColumnList(node);
+StringBuilder copyColumns = new StringBuilder("");
+if(columnList != null && columnList.size() > 0) {
+    copyColumns.append(" (");
+    int count = 0;
+    for(IMetadataColumn column : columnList) {
+        copyColumns.append("\\\"" + column.getOriginalDbColumnName() + "\\\"");
+        if(count != columnList.size() - 1) {
+            copyColumns.append(",");
+        }
+        count++;
+    }
+    copyColumns.append(") ");
+}
+StringBuilder notNullColumns = new StringBuilder(" ");
+List<Map<String, String>> notNullCols =
+    (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+        node,"__FORCENOTNULL__" );
+if(notNullCols != null && notNullCols.size() > 0) {
+    notNullColumns.append("FORCE NOT NULL ");
+    int notNullCount = 0;
+    for(Map<String, String> notNullCol : notNullCols) {
+        if(notNullCol.get("FORCENOTNULL").equals("true")) {
+            notNullColumns.append("\\\"" + notNullCol.get("SCHEMA_COLUMN") + "\\\",");
+            notNullCount++;
+        }
+    }
+    if(notNullCount == 0) {
+        notNullColumns = new StringBuilder(" ");
+    }
+}
+%>
+String bulkSQL_<%=cid%> = "COPY " + "<%=tableName.toString()%>" + "<%=copyColumns.toString()%>FROM '" + <%=file%> + "' WITH ";
+<%
+String fileType = ElementParameterParser.getValue(node, "__FILETYPE__");
+String oids = (ElementParameterParser.getValue(node, "__OIDS__").equals("true") ? "OIDS" : "");
+if(fileType.equals("BINARYFILE")) {
+    %>
+    bulkSQL_<%=cid%> += "BINARY <%=oids%>";
+    <%
+} else {
+    %>
+    bulkSQL_<%=cid%> += "<%=oids%> " + "DELIMITER AS '" + <%=ElementParameterParser.getValue(node, "__FIELDS_TERMINATED_BY__")%> + "' ";
+    bulkSQL_<%=cid%> += "NULL AS '" + <%=ElementParameterParser.getValue(node, "__NULLSTRING__")%> + "' ";
+    <%
+    if(fileType.equals("CSVFILE")) {
+        String header = (ElementParameterParser.getValue(node, "__HEADER__").equals("true") ? "HEADER" : "");
+        String escapeChar = ElementParameterParser.getValue(node, "__ESCAPE_CHAR__");        
+        String textEnclosure = ElementParameterParser.getValue(node, "__TEXT_ENCLOSURE__");        
+        %>
+        bulkSQL_<%=cid%> += "CSV <%=header%> QUOTE AS '" + <%=textEnclosure %>.replaceAll("\\\\", "\\\\\\\\") + "' ";
+        bulkSQL_<%=cid%> += "ESCAPE AS '" + <%=escapeChar %>.replaceAll("\\\\", "\\\\\\\\") + "' ";
+        bulkSQL_<%=cid%> += "<%=notNullColumns.toString().substring(0, notNullColumns.toString().length() - 1)%>";
+        <%
+    }
+}
+String host = ElementParameterParser.getValue(node, "__HOST__");
+String port = ElementParameterParser.getValue(node, "__PORT__");
+String dbName = ElementParameterParser.getValue(node, "__DBNAME__");
+String userName = ElementParameterParser.getValue(node, "__USER__");
+String password = ElementParameterParser.getValue(node, "__PASS__");
+%> 
+java.lang.Class.forName("org.postgresql.Driver").newInstance();
+java.sql.Connection con_<%=cid %> = java.sql.DriverManager.getConnection("jdbc:postgresql://" + <%=host%> + ":" + <%=port%> + "/" + <%=dbName%>, <%=userName%>, <%=password%>);
+<%
+String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
+String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
+List<Column> stmtStructure = null;
+Manager manager = null;
+if(columnList != null && columnList.size() > 0) {
+    stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, null);
+    manager = getManager(dbmsId, cid);
+    if(tableAction.equals("DROP_CREATE")) {
+        %>
+        java.sql.Statement stmtDrop_<%=cid%> = con_<%=cid%>.createStatement();
+        stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
+        java.sql.Statement stmtCreate_<%=cid%> = con_<%=cid%>.createStatement();
+        stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
+        <%
+    } else if(tableAction.equals("CREATE")) {
+        %>
+        java.sql.Statement stmtCreate_<%=cid%> = con_<%=cid%>.createStatement();
+        stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
+        <%
+    } else if(tableAction.equals("CREATE_IF_NOT_EXISTS")) {
+        %>
+        java.sql.DatabaseMetaData dbMetaData_<%=cid%> = con_<%=cid%>.getMetaData();
+        java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
+        boolean whetherExist_<%=cid%> = false;
+        while(rsTable_<%=cid%>.next()) {
+            String table_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_NAME");
+            if(table_<%=cid%>.equalsIgnoreCase(<%=table%>)) {
+                whetherExist_<%=cid%> = true;
+                break;
+            }
+        }
+        if(!whetherExist_<%=cid%>) {
+            java.sql.Statement stmtCreate_<%=cid%> = con_<%=cid%>.createStatement();
+            stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");            
+        }
+        <%
+    } else if(tableAction.equals("CLEAR")) {
+        %>
+        java.sql.Statement stmtClear_<%=cid%> = con_<%=cid%>.createStatement();
+        stmtClear_<%=cid%>.executeUpdate("<%=manager.getTruncateTableSQL()%>");
+        <%
+    }    
+}
+if(dataAction.equals("UPDATE")) {
+    if(columnList != null && columnList.size() > 0) {
+        int keyCount = 0;
+        for(IMetadataColumn column : columnList) {
+            if(column.isKey()) {
+                keyCount++;
+            }
+        }
+        %>
+        int keyCount_<%=cid%> = <%=keyCount%>;
+        if(keyCount_<%=cid%> == 0) {
+            throw new RuntimeException("For bulk update, Schema must have a key at least."); 
+        }
+        String tmpTableName_<%=cid%> = tableName_<%=cid%>;
+        tableName_<%=cid%> = "tmp_<%=cid%>";
+        java.sql.Statement stmtCreateTmp_<%=cid%> = con_<%=cid%>.createStatement();
+        stmtCreateTmp_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
+        stmtCreateTmp_<%=cid%>.close();
+        java.sql.Statement stmtTmpBulk_<%=cid%> = con_<%=cid%>.createStatement();
+        stmtTmpBulk_<%=cid%>.execute(bulkSQL_<%=cid%>);
+        stmtTmpBulk_<%=cid%>.close();
+        tableName_<%=cid%> = tmpTableName_<%=cid%>;
+        tmpTableName_<%=cid%> = "tmp_<%=cid%>";
+        java.sql.Statement stmtUpdateBulk_<%=cid%> = con_<%=cid%>.createStatement();
+        stmtUpdateBulk_<%=cid%>.executeUpdate("<%=manager.getUpdateBulkSQL(columnList)%>");
+        stmtUpdateBulk_<%=cid%>.close();
+        tableName_<%=cid%> = tmpTableName_<%=cid%>;
+        java.sql.Statement stmtTmpDrop_<%=cid%> = con_<%=cid%>.createStatement();
+        stmtTmpDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
+        stmtTmpDrop_<%=cid%>.close();
+        <%
+    }
+} else if(dataAction.equals("INSERT")) {
+    %>
+    java.sql.Statement stmtBulk_<%=cid %> = con_<%=cid %>.createStatement();
+    //stmt.execute("SET client_encoding to 'UNICODE'");
+    stmtBulk_<%=cid %>.execute(bulkSQL_<%=cid%>);
+    stmtBulk_<%=cid %>.close();    
+    <%
+}
+%>
+con_<%=cid %>.close();
