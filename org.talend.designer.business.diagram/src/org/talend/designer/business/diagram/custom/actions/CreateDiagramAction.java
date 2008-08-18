@@ -16,6 +16,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.designer.business.diagram.i18n.Messages;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
@@ -67,8 +68,7 @@ public class CreateDiagramAction extends AContextualAction {
         boolean enabled = false;
 
         if (repositoryNode != null) {
-            ERepositoryObjectType nodeType = (ERepositoryObjectType) repositoryNode
-                    .getProperties(EProperties.CONTENT_TYPE);
+            ERepositoryObjectType nodeType = (ERepositoryObjectType) repositoryNode.getProperties(EProperties.CONTENT_TYPE);
             if (repositoryNode.getType() == RepositoryNode.ENodeType.SYSTEM_FOLDER
                     || repositoryNode.getType() == RepositoryNode.ENodeType.SIMPLE_FOLDER) {
                 if (nodeType == ERepositoryObjectType.BUSINESS_PROCESS) {
@@ -79,6 +79,9 @@ public class CreateDiagramAction extends AContextualAction {
 
         if (ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
             enabled = false;
+        }
+        if (enabled) {
+            enabled = ProjectManager.getInstance().isInCurrentMainProject(repositoryNode);
         }
 
         setEnabled(enabled);

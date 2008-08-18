@@ -19,6 +19,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.MetadataTableRepositoryObject;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -57,6 +58,9 @@ public class CopyToGenericSchemaAction extends AContextualAction {
         init((RepositoryNode) o);
         if (ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
             // setEnabled(false);
+        }
+        if (!ProjectManager.getInstance().isInCurrentMainProject((RepositoryNode) o)) {
+            setEnabled(false);
         }
     }
 

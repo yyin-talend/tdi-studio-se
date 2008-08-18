@@ -27,8 +27,11 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
+import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.data.container.Container;
+import org.talend.commons.utils.data.container.RootContainer;
+import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
@@ -42,6 +45,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.RepositoryObject;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
@@ -231,12 +235,30 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
     /**
      * @return MetadataConnection
      */
+    @SuppressWarnings("unchecked")
     private Container getMetadataConnection() {
         ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        ProjectManager pManager = ProjectManager.getInstance();
         Container container = null;
         try {
-            container = factory.getMetadataConnection();
+            container = factory.getMetadataConnection(pManager.getCurrentProject());
+            pManager.retrieveReferencedProjects();
+            for (Project p : pManager.getReferencedProjects()) {
+                RootContainer rContainer = factory.getMetadataConnection(p);
+                if (container == null) {
+                    container = rContainer;
+                } else if (rContainer != null) {
+                    Iterator iterator = rContainer.absoluteKeySet().iterator();
+                    while (iterator.hasNext()) {
+                        Object id = iterator.next();
+                        container.addMember(id, rContainer.getAbsoluteMember(id));
+                    }
+                }
+            }
+
         } catch (PersistenceException e) {
+            SqlBuilderPlugin.log(Messages.getString("DBTreeProvider.logMessage"), e); //$NON-NLS-1$
+        } catch (BusinessException e) {
             SqlBuilderPlugin.log(Messages.getString("DBTreeProvider.logMessage"), e); //$NON-NLS-1$
         }
         return container;
