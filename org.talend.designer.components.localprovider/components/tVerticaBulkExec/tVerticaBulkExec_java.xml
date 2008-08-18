@@ -165,12 +165,20 @@
     </PARAMETER>
     
     <PARAMETER
+      NAME="EXIT_ON_NO_ROWS"
+      FIELD="CHECK"
+      NUM_ROW="8"
+    >
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
       NAME="FIELDS_TERMINATED_BY"
       FIELD="TEXT"
       NUM_ROW="10"
       REQUIRED="true"
     >
-      <DEFAULT>","</DEFAULT>
+      <DEFAULT>";"</DEFAULT>
     </PARAMETER>
     
    <PARAMETER
