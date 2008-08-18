@@ -162,6 +162,7 @@
                 %>              
     			if( count_<%=cid %> < originalFiles_<%=cid %>.size()) {
                     java.io.File file_<%=cid %> = originalFiles_<%=cid %>.get(count_<%=cid %>);
+                    globalMap.put("<%=cid %>_FILENAME", file_<%=cid %>.getName());
                     globalMap.put("<%=cid %>_PRESENT_FILE", file_<%=cid %>.getAbsolutePath());
                     found_<%=cid %> = true;
     			} else {
@@ -174,6 +175,7 @@
                 %>
                 for(java.io.File file_<%=cid %> : fetchFilesOneTime_<%=cid %>) {
                     if(!originalFiles_<%=cid %>.contains(file_<%=cid %>)) {
+                    	globalMap.put("<%=cid %>_FILENAME", file_<%=cid %>.getName());
                         globalMap.put("<%=cid %>_CREATED_FILE", file_<%=cid %>.getAbsolutePath());
                         found_<%=cid %> = true;                    
                         break;
@@ -185,6 +187,7 @@
                 %>
                 for(java.io.File file_<%=cid %> : originalFiles_<%=cid %>) {
                     if(!fetchFilesOneTime_<%=cid %>.contains(file_<%=cid %>)) {
+                    	globalMap.put("<%=cid %>_FILENAME", file_<%=cid %>.getName());
                         globalMap.put("<%=cid %>_DELETED_FILE", file_<%=cid %>.getAbsolutePath());
                         found_<%=cid %> = true;                    
                         break;
@@ -196,6 +199,7 @@
                 %>
                 for(java.io.File file_<%=cid %> : fetchFilesOneTime_<%=cid %>) {
                     if(null == originalMap_<%=cid%>.get(util_<%=cid %>.getFileChecksum(file_<%=cid%>))) {
+                    	globalMap.put("<%=cid %>_FILENAME", file_<%=cid %>.getName());
                         globalMap.put("<%=cid %>_UPDATED_FILE", file_<%=cid %>.getAbsolutePath());
                         found_<%=cid %> = true;
                         originalFiles_<%=cid %> = util_<%=cid %>.getFiles();
@@ -211,6 +215,7 @@
                 %>
                 for(java.io.File file_<%=cid %> : originalFiles_<%=cid %>) {
                     if(!fetchFilesOneTime_<%=cid %>.contains(file_<%=cid %>)) {
+                    	globalMap.put("<%=cid %>_FILENAME", file_<%=cid %>.getName());
                         globalMap.put("<%=cid %>_DELETED_FILE", file_<%=cid %>.getAbsolutePath());
                         found_<%=cid %> = true;
                         if(fetchFilesOneTime_<%=cid %>.size() != originalFiles_<%=cid %>.size()) {
@@ -226,6 +231,7 @@
                 }
                 for(java.io.File file_<%=cid %> : fetchFilesOneTime_<%=cid %>) {
                     if(!originalFiles_<%=cid %>.contains(file_<%=cid %>)) {
+                    	globalMap.put("<%=cid %>_FILENAME", file_<%=cid %>.getName());
                         globalMap.put("<%=cid %>_CREATED_FILE", file_<%=cid %>.getAbsolutePath());
                         found_<%=cid %> = true;
                         originalFiles_<%=cid %> = util_<%=cid %>.getFiles();
@@ -239,6 +245,7 @@
                 }
                 for(java.io.File file_<%=cid %> : fetchFilesOneTime_<%=cid %>) {
                     if(null == originalMap_<%=cid%>.get(util_<%=cid %>.getFileChecksum(file_<%=cid%>))) {
+                    	globalMap.put("<%=cid %>_FILENAME", file_<%=cid %>.getName());
                         globalMap.put("<%=cid %>_UPDATED_FILE", file_<%=cid %>.getAbsolutePath());
                         found_<%=cid %> = true;
                         originalFiles_<%=cid %> = util_<%=cid %>.getFiles();
