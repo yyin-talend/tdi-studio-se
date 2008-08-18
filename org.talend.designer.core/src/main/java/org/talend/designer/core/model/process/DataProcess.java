@@ -88,6 +88,7 @@ public class DataProcess {
         for (IElementParameter sourceParam : sourceElement.getElementParameters()) {
             IElementParameter targetParam = targetElement.getElementParameter(sourceParam.getName());
             if (targetParam != null) {
+                targetParam.setContextMode(sourceParam.isContextMode());
                 targetParam.setValue(sourceParam.getValue());
                 if (targetParam.getField() == EParameterFieldType.TABLE) {
                     targetParam.setListItemsValue(sourceParam.getListItemsValue());
