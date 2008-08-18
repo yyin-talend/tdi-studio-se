@@ -70,7 +70,6 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.core.model.utils.TalendTextUtils;
-import org.talend.core.model.utils.TalendTextUtils.KeyString;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -2033,14 +2032,14 @@ public class Node extends Element implements INode {
         }
 
         for (IElementParameter param : this.getElementParameters()) {
-            if (param.getName().equals(EParameterName.UNIQUE_NAME.getName())) {
+            if (param.getName().equals(EParameterName.UNIQUE_NAME.getName()) || isSQLQueryParameter(param)) {
                 continue;
             }
             if (param.getValue() instanceof String) { // for TEXT / MEMO etc..
                 String value = (String) param.getValue();
                 if (value.contains(oldName)) {
                     // param.setValue(value.replaceAll(oldName, newName));
-                    String newValue = renameValuesIgnoreQuote(value, oldName, newName);
+                    String newValue = renameValues(value, oldName, newName);
                     if (!value.equals(newValue)) {
                         param.setValue(newValue);
                     }
@@ -2056,7 +2055,7 @@ public class Node extends Element implements INode {
                             String value = (String) cellValue;
                             if (value.contains(oldName)) {
                                 // line.put(key, value.replaceAll(oldName, newName));
-                                String newValue = renameValuesIgnoreQuote(value, oldName, newName);
+                                String newValue = renameValues(value, oldName, newName);
                                 if (!value.equals(newValue)) {
                                     line.put(key, newValue);
                                 }
@@ -2066,6 +2065,18 @@ public class Node extends Element implements INode {
                 }
             }
         }
+    }
+
+    /**
+     * see bug 4733
+     * <p>
+     * DOC YeXiaowei Comment method "isSQLQueryParameter".
+     * 
+     * @param parameter
+     * @return
+     */
+    private boolean isSQLQueryParameter(final IElementParameter parameter) {
+        return parameter.getField().equals(EParameterFieldType.MEMO_SQL) && parameter.getName().equals("QUERY");
     }
 
     /**
@@ -2098,35 +2109,6 @@ public class Node extends Element implements INode {
 
         }
         return value; // keep original value
-
-    }
-
-    /**
-     * 
-     * DOC YeXiaowei Comment method "renameValuesIgnoreQuote".
-     * 
-     * @param value
-     * @param oldName
-     * @param newName
-     * @return
-     */
-    private String renameValuesIgnoreQuote(final String value, final String oldName, final String newName) {
-        List<KeyString> result = TalendTextUtils.spellStringByQuote(value);
-
-        if (result == null || result.isEmpty()) {
-            return renameValues(value, oldName, newName);
-        }
-
-        StringBuilder builder = new StringBuilder();
-        for (KeyString keyString : result) {
-            if (keyString.isKey()) {
-                builder.append(keyString.getString());
-            } else {
-                builder.append(renameValues(keyString.getString(), oldName, newName));
-            }
-        }
-
-        return builder.toString();
 
     }
 
