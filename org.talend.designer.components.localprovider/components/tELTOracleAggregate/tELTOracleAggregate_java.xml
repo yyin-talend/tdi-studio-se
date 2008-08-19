@@ -20,7 +20,7 @@
 		<CONNECTOR CTYPE="RUN_IF" />
 	</CONNECTORS>
 
-	<SQLPATTERNS DB="Generic"/>
+	<SQLPATTERNS DB="Oracle"/>
 
 	<PARAMETERS>
 	
