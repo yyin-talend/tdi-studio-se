@@ -88,7 +88,16 @@ COMPATIBILITY="ALL"
       NAME="SSL"
       FIELD="CHECK"
       REQUIRED="true"
-      NUM_ROW="90"
+      NUM_ROW="95"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="STARTTLS"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="95"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -97,16 +106,16 @@ COMPATIBILITY="ALL"
       NAME="NEED_AUTH"
       FIELD="CHECK"
       REQUIRED="true"
-      NUM_ROW="90"
+      NUM_ROW="100"
     >
       <DEFAULT>true</DEFAULT>
     </PARAMETER>
-
+    
     <PARAMETER
       NAME="AUTH_USERNAME"
       FIELD="TEXT"
       REQUIRED="true"
-      NUM_ROW="100"
+      NUM_ROW="110"
       SHOW_IF="NEED_AUTH == 'true'"
     >
       <DEFAULT>"username"</DEFAULT>
@@ -115,11 +124,12 @@ COMPATIBILITY="ALL"
       NAME="AUTH_PASSWORD"
       FIELD="TEXT"
       REQUIRED="true"
-      NUM_ROW="100"
+      NUM_ROW="110"
       SHOW_IF="NEED_AUTH == 'true'"
     >
       <DEFAULT>"password"</DEFAULT>
     </PARAMETER>
+	
   </PARAMETERS>
 
   <CODEGENERATION>

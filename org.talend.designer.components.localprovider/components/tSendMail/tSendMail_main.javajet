@@ -16,13 +16,20 @@
 	String cid = node.getUniqueName();
 	String message     = ElementParameterParser.getValue(node, "__MESSAGE__");
 	boolean ifSSL = ElementParameterParser.getValue(node, "__SSL__").equals("true");
+	boolean startTLS = ElementParameterParser.getValue(node, "__STARTTLS__").equals("true");
 	boolean checkAttachementOnSend = ElementParameterParser.getValue(node, "__CHECK_ATTACHMENT__").equals("true");
 %>
 	 String message_<%=cid %> = ((<%=message %>)==null || "".equals(<%=message %>))?"\"\"":(<%=message %>) ;
 	 java.util.Properties props_<%=cid %> = System.getProperties();     
      props_<%=cid %>.put("mail.smtp.host", smtpHost_<%=cid %>);
      props_<%=cid %>.put("mail.smtp.port", smtpPort_<%=cid %>);
-     
+<%     
+	 if(startTLS){
+%>
+	 props_<%=cid %>.put("mail.smtp.starttls.enable","true");
+<%
+	}
+%> 
 <%
 	if(ifSSL){
 %>	
