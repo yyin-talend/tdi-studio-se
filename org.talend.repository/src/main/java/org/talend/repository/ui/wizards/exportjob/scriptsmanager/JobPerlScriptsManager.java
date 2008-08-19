@@ -112,17 +112,17 @@ public class JobPerlScriptsManager extends JobScriptsManager {
                 ExceptionHandler.process(e);
             }
 
-            addSource(processItem, BooleanUtils.isTrue(exportChoice.get(ExportChoice.needSource)), process[i],
+            addSource(process, processItem, BooleanUtils.isTrue(exportChoice.get(ExportChoice.needSource)), process[i],
                     JOB_SOURCE_FOLDER_NAME, selectedJobVersion);
             List<URL> talendLibraries = getTalendLibraries(exportChoice.get(ExportChoice.needTalendLibraries));
             if (talendLibraries.size() > 0) {
                 process[i].addResources(LIBRARY_FOLDER_NAME + PATH_SEPARATOR + "talend", talendLibraries);
             }
             resources.addAll(getJobScripts(processItem, exportChoice.get(ExportChoice.needJob)));
-            addDepencies(processItem, BooleanUtils.isTrue(exportChoice.get(ExportChoice.needDependencies)), process[i]);
+            addDepencies(process, processItem, BooleanUtils.isTrue(exportChoice.get(ExportChoice.needDependencies)), process[i]);
             resources.addAll(getContextScripts(processItem, exportChoice.get(ExportChoice.needContext)));
             boolean needChildren = exportChoice.get(ExportChoice.needJob) && exportChoice.get(ExportChoice.needContext);
-            addChildrenResources(processItem, needChildren, process[i], exportChoice, contextName, selectedJobVersion);
+            addChildrenResources(process, processItem, needChildren, process[i], exportChoice, contextName, selectedJobVersion);
             process[i].addResources(resources);
         }
         return Arrays.asList(process);
@@ -311,18 +311,19 @@ public class JobPerlScriptsManager extends JobScriptsManager {
      * @see org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager#getCurrentProjectName()
      */
     protected String getCorrespondingProjectName(Item item) {
-        return PerlResourcesHelper.getCurrentProjectName();
+        return PerlResourcesHelper.getRootProjectName(item);
     }
 
-    private void addChildrenResources(ProcessItem process, boolean needChildren, ExportFileResource resource,
-            Map<ExportChoice, Boolean> exportChoice, String contextName, String... selectedJobVersion) {
+    private void addChildrenResources(ExportFileResource[] allResources, ProcessItem process, boolean needChildren,
+            ExportFileResource curResource, Map<ExportChoice, Boolean> exportChoice, String contextName,
+            String... selectedJobVersion) {
         List<String> list = new ArrayList<String>();
         if (needChildren) {
             String projectName = getCorrespondingProjectName(process);
             try {
                 List<ProcessItem> processedJob = new ArrayList<ProcessItem>();
-                getChildrenJobAndContextName(process.getProperty().getLabel(), list, process, projectName, processedJob,
-                        resource, exportChoice, contextName, selectedJobVersion);
+                getChildrenJobAndContextName(allResources, process.getProperty().getLabel(), list, process, projectName,
+                        processedJob, curResource, exportChoice, contextName, selectedJobVersion);
             } catch (Exception e) {
                 ExceptionHandler.process(e);
             }
@@ -330,22 +331,23 @@ public class JobPerlScriptsManager extends JobScriptsManager {
         }
 
         IResource[] resources = this.getAllPerlFiles();
-        resource.addResources(getResourcesURL(resources, list));
+        curResource.addResources(getResourcesURL(resources, list));
     }
 
-    private void getChildrenJobAndContextName(String rootName, List<String> list, ProcessItem process, String projectName,
-            List<ProcessItem> processedJob, ExportFileResource resource, Map<ExportChoice, Boolean> exportChoice,
-            String fatherContext, String... selectedJobVersion) {
+    private void getChildrenJobAndContextName(ExportFileResource[] allResources, String rootName, List<String> list,
+            ProcessItem process, String projectName, List<ProcessItem> processedJob, ExportFileResource curResource,
+            Map<ExportChoice, Boolean> exportChoice, String fatherContext, String... selectedJobVersion) {
         if (processedJob.contains(process)) {
             // prevent circle
             return;
         }
         processedJob.add(process);
-        addComponentModules(process, resource);
-        addSource(process, exportChoice.get(ExportChoice.needSource), resource, JOB_SOURCE_FOLDER_NAME, selectedJobVersion);
-        addDepencies(process, BooleanUtils.isTrue(exportChoice.get(ExportChoice.needDependencies)), resource);
+        addComponentModules(process, curResource);
+        addSource(allResources, process, exportChoice.get(ExportChoice.needSource), curResource, JOB_SOURCE_FOLDER_NAME,
+                selectedJobVersion);
+        addDepencies(allResources, process, BooleanUtils.isTrue(exportChoice.get(ExportChoice.needDependencies)), curResource);
         Set<JobInfo> subjobInfos = ProcessorUtilities.getChildrenJobInfo(process);
-        String rootProjectName = PerlResourcesHelper.getRootProjectName(resource.getItem());
+        String rootProjectName = PerlResourcesHelper.getRootProjectName(curResource.getItem());
         for (JobInfo subjobInfo : subjobInfos) {
             if (subjobInfo.getJobName().equals(rootName)) {
                 continue;
@@ -374,8 +376,8 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             addToList(list, jobScriptName);
             addToList(list, contextFullName);
 
-            getChildrenJobAndContextName(rootName, list, subjobInfo.getProcessItem(), projectName, processedJob, resource,
-                    exportChoice, fatherContext);
+            getChildrenJobAndContextName(allResources, rootName, list, subjobInfo.getProcessItem(), projectName, processedJob,
+                    curResource, exportChoice, fatherContext);
         }
     }
 
@@ -431,12 +433,12 @@ public class JobPerlScriptsManager extends JobScriptsManager {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager#getSource(org.talend.core.model.properties.ProcessItem,
-     * boolean)
+     * @seeorg.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager#getSource(org.talend.core.model.
+     * properties.ProcessItem, boolean)
      */
     @Override
-    protected void addSource(ProcessItem processItem, boolean needSource, ExportFileResource resource, String basePath,
-            String... selectedJobVersion) {
+    protected void addSource(ExportFileResource[] allResources, ProcessItem processItem, boolean needSource,
+            ExportFileResource curResource, String basePath, String... selectedJobVersion) {
         // if (!needSource) {
         // return;
         // }
@@ -463,14 +465,14 @@ public class JobPerlScriptsManager extends JobScriptsManager {
                     jobName + "_" + jobVersion + "." + FileConstants.ITEM_EXTENSION);
             IPath propertiesFilePath = emfFileRootPath.append(processPath).append(
                     jobName + "_" + jobVersion + "." + FileConstants.PROPERTIES_EXTENSION);
+            // project file
+            checkAndAddProjectResource(allResources, curResource, basePath + PATH_SEPARATOR + projectName, FileLocator
+                    .toFileURL(projectFilePath.toFile().toURL()));
 
-            List<URL> projectUrls = new ArrayList<URL>();
             List<URL> emfFileUrls = new ArrayList<URL>();
-            projectUrls.add(FileLocator.toFileURL(projectFilePath.toFile().toURL()));
-            resource.addResources(basePath + PATH_SEPARATOR + projectName, projectUrls);
             emfFileUrls.add(FileLocator.toFileURL(itemFilePath.toFile().toURL()));
             emfFileUrls.add(FileLocator.toFileURL(propertiesFilePath.toFile().toURL()));
-            resource.addResources(basePath + PATH_SEPARATOR + projectName + PATH_SEPARATOR + typeFolderPath.toOSString(),
+            curResource.addResources(basePath + PATH_SEPARATOR + projectName + PATH_SEPARATOR + typeFolderPath.toOSString(),
                     emfFileUrls);
 
         } catch (Exception e) {

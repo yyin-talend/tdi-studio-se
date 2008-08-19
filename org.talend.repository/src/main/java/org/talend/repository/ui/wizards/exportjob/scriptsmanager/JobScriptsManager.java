@@ -371,8 +371,8 @@ public abstract class JobScriptsManager {
         }
     }
 
-    protected void addSource(ProcessItem processItem, boolean needChoice, ExportFileResource resource, String basePath,
-            String... selectedJobVersion) {
+    protected void addSource(ExportFileResource[] resources, ProcessItem processItem, boolean needChoice,
+            ExportFileResource curResource, String basePath, String... selectedJobVersion) {
         List<URL> list = new ArrayList<URL>();
         if (needChoice) {
             try {
@@ -380,7 +380,7 @@ public abstract class JobScriptsManager {
                 for (File file : files) {
                     list.add(file.toURI().toURL());
                 }
-                resource.addResources(basePath, list);
+                curResource.addResources(basePath, list);
             } catch (Exception e) {
                 ExceptionHandler.process(e);
             }
@@ -502,12 +502,13 @@ public abstract class JobScriptsManager {
     /**
      * DOC qwei Comment method "addDepencies".
      */
-    protected void addDepencies(ProcessItem processItem, Boolean needDependencies, ExportFileResource resource) {
+    protected void addDepencies(ExportFileResource[] allResources, ProcessItem processItem, Boolean needDependencies,
+            ExportFileResource resource) {
         if (!needDependencies) {
             return;
         }
-        addContext(processItem, resource);
-        addMetadata(processItem, resource);
+        addContext(allResources, processItem, resource);
+        addMetadata(allResources, processItem, resource);
     }
 
     /**
@@ -516,7 +517,7 @@ public abstract class JobScriptsManager {
      * @param processItem
      * @param resource
      */
-    private void addMetadata(ProcessItem processItem, ExportFileResource resource) {
+    private void addMetadata(ExportFileResource[] allResources, ProcessItem processItem, ExportFileResource resource) {
         IDesignerCoreService designerCoreService = CorePlugin.getDefault().getDesignerCoreService();
         if (designerCoreService == null) {
             return;
@@ -561,6 +562,12 @@ public abstract class JobScriptsManager {
                                         metadataPath = metadataPath == null || metadataPath.equals("") ? "" : metadataPath;
                                         IPath projectRootPath = getCorrespondingProjectRootPath(item2);
                                         String projectName = getCorrespondingProjectName(item2);
+                                        // project file
+                                        IPath projectFilePath = getCorrespondingProjectRootPath(item2).append(
+                                                FileConstants.LOCAL_PROJECT_FILENAME);
+                                        checkAndAddProjectResource(allResources, resource, JOB_SOURCE_FOLDER_NAME
+                                                + PATH_SEPARATOR + projectName, FileLocator.toFileURL(projectFilePath.toFile()
+                                                .toURL()));
 
                                         IPath itemFilePath = projectRootPath.append(typeFolderPath).append(metadataPath).append(
                                                 metadataName + "_" + metadataVersion + "." + FileConstants.ITEM_EXTENSION);
@@ -596,7 +603,7 @@ public abstract class JobScriptsManager {
      * @param processItem
      * @param resource
      */
-    private void addContext(ProcessItem processItem, ExportFileResource resource) {
+    private void addContext(ExportFileResource[] allResources, ProcessItem processItem, ExportFileResource resource) {
         ProcessType process = processItem.getProcess();
         if (process != null) {
             ContextType contextType = (ContextType) process.getContext().get(0);
@@ -615,6 +622,11 @@ public abstract class JobScriptsManager {
                             contextPath = contextPath == null || contextPath.equals("") ? "" : contextPath;
                             IPath emfContextRootPath = getEmfContextRootPath(item2);
                             String projectName = getCorrespondingProjectName(item2);
+                            // project file
+                            IPath projectFilePath = getCorrespondingProjectRootPath(item2).append(
+                                    FileConstants.LOCAL_PROJECT_FILENAME);
+                            checkAndAddProjectResource(allResources, resource, JOB_SOURCE_FOLDER_NAME + PATH_SEPARATOR
+                                    + projectName, FileLocator.toFileURL(projectFilePath.toFile().toURL()));
 
                             IPath itemFilePath = emfContextRootPath.append(contextPath).append(
                                     contextName + "_" + contextVersion + "." + FileConstants.ITEM_EXTENSION);
@@ -634,6 +646,29 @@ public abstract class JobScriptsManager {
                 }
             }
 
+        }
+    }
+
+    protected void checkAndAddProjectResource(ExportFileResource[] allResources, ExportFileResource curResource,
+            String relativePath, URL projectURL) {
+        if (allResources == null || curResource == null || projectURL == null) {
+            return;
+        }
+        if (relativePath == null) {
+            relativePath = "";
+        }
+        boolean found = false;
+        for (ExportFileResource res : allResources) {
+            Set<URL> urls = res.getResourcesByRelativePath(relativePath);
+            if (urls != null && urls.contains(projectURL)) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            List<URL> projectUrls = new ArrayList<URL>();
+            projectUrls.add(projectURL);
+            curResource.addResources(relativePath, projectUrls);
         }
     }
 }

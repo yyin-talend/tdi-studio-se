@@ -116,7 +116,7 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
             resources.addAll(getContextScripts(processItem, exportChoice.get(ExportChoice.needContext)));
             resources.addAll(getProperties(processItem, contextName));
             boolean needChildren = exportChoice.get(ExportChoice.needJob) && exportChoice.get(ExportChoice.needContext);
-            addChildrenResources(processItem, needChildren, process[i], exportChoice);
+            addChildrenResources(process, processItem, needChildren, process[i], exportChoice);
             process[i].addResources(resources);
         }
         return Arrays.asList(process);
@@ -199,7 +199,7 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
      * @see org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobPerlScriptsManager#getCurrentProjectName()
      */
     protected String getCorrespondingProjectName(Item item) {
-        return PerlResourcesHelper.getCurrentProjectName();
+        return PerlResourcesHelper.getRootProjectName(item);
     }
 
     /**
@@ -244,15 +244,15 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
         return getResourcesURL(resources, list);
     }
 
-    private void addChildrenResources(ProcessItem process, boolean needChildren, ExportFileResource resource,
-            Map<ExportChoice, Boolean> exportChoice) {
+    private void addChildrenResources(ExportFileResource[] allResources, ProcessItem process, boolean needChildren,
+            ExportFileResource resource, Map<ExportChoice, Boolean> exportChoice) {
         List<String> list = new ArrayList<String>();
         if (needChildren) {
             String projectName = getCorrespondingProjectName(null);
             try {
                 List<ProcessItem> processedJob = new ArrayList<ProcessItem>();
-                getChildrenJobAndContextName(process.getProperty().getLabel(), list, process, projectName, processedJob,
-                        resource, exportChoice);
+                getChildrenJobAndContextName(allResources, process.getProperty().getLabel(), list, process, projectName,
+                        processedJob, resource, exportChoice);
             } catch (Exception e) {
                 ExceptionHandler.process(e);
             }
@@ -286,15 +286,16 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
         return getAllPerlFiles(false);
     }
 
-    private void getChildrenJobAndContextName(String rootName, List<String> list, ProcessItem process, String projectName,
-            List<ProcessItem> processedJob, ExportFileResource resource, Map<ExportChoice, Boolean> exportChoice) {
+    private void getChildrenJobAndContextName(ExportFileResource[] allResources, String rootName, List<String> list,
+            ProcessItem process, String projectName, List<ProcessItem> processedJob, ExportFileResource resource,
+            Map<ExportChoice, Boolean> exportChoice) {
         if (processedJob.contains(process)) {
             // prevent circle
             return;
         }
         processedJob.add(process);
         addComponentModules(process, resource);
-        addSource(process, exportChoice.get(ExportChoice.needSource), resource, JOB_SOURCE_FOLDER_NAME);
+        addSource(allResources, process, exportChoice.get(ExportChoice.needSource), resource, JOB_SOURCE_FOLDER_NAME);
 
         Set<JobInfo> subjobInfos = ProcessorUtilities.getChildrenJobInfo(process);
         String rootProjectName = PerlResourcesHelper.getRootProjectName(resource.getItem());
@@ -310,8 +311,8 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
             addToList(list, jobScriptName);
             addToList(list, contextFullName);
 
-            getChildrenJobAndContextName(rootName, list, subjobInfo.getProcessItem(), projectName, processedJob, resource,
-                    exportChoice);
+            getChildrenJobAndContextName(allResources, rootName, list, subjobInfo.getProcessItem(), projectName, processedJob,
+                    resource, exportChoice);
         }
     }
 

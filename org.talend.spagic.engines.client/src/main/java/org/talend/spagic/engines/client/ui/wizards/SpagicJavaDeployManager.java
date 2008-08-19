@@ -67,7 +67,7 @@ public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.ex
             resources.addAll(getLauncher(BooleanUtils.isTrue(exportChoice.get(ExportChoice.needLauncher)), processItem,
                     escapeSpace(contextName), escapeSpace(launcher), statisticPort, tracePort, codeOptions));
 
-            addSource(processItem, BooleanUtils.isTrue(exportChoice.get(ExportChoice.needSource)), process[i],
+            addSource(process, processItem, BooleanUtils.isTrue(exportChoice.get(ExportChoice.needSource)), process[i],
                     JOB_SOURCE_FOLDER_NAME);
 
             resources.addAll(getJobScripts(processItem, BooleanUtils.isTrue(exportChoice.get(ExportChoice.needJob))));
@@ -78,7 +78,7 @@ public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.ex
             // add children jobs
             boolean needChildren = BooleanUtils.isTrue(exportChoice.get(ExportChoice.needJob))
                     && BooleanUtils.isTrue(exportChoice.get(ExportChoice.needContext));
-            List<URL> childrenList = addChildrenResources(processItem, needChildren, process[i], exportChoice);
+            List<URL> childrenList = addChildrenResources(process, processItem, needChildren, process[i], exportChoice);
             resources.addAll(childrenList);
             process[i].addResources(resources);
 
@@ -110,15 +110,15 @@ public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.ex
         return list;
     }
 
-    private List<URL> addChildrenResources(ProcessItem process, boolean needChildren, ExportFileResource resource,
-            Map<ExportChoice, Boolean> exportChoice) {
+    private List<URL> addChildrenResources(ExportFileResource[] allResources, ProcessItem process, boolean needChildren,
+            ExportFileResource resource, Map<ExportChoice, Boolean> exportChoice) {
         List<JobInfo> list = new ArrayList<JobInfo>();
         String projectName = getCorrespondingProjectName(process);
         if (needChildren) {
             try {
                 List<ProcessItem> processedJob = new ArrayList<ProcessItem>();
-                getChildrenJobAndContextName(process.getProperty().getLabel(), list, process, projectName, processedJob,
-                        resource, exportChoice);
+                getChildrenJobAndContextName(allResources, process.getProperty().getLabel(), list, process, projectName,
+                        processedJob, resource, exportChoice);
             } catch (Exception e) {
                 ExceptionHandler.process(e);
             }

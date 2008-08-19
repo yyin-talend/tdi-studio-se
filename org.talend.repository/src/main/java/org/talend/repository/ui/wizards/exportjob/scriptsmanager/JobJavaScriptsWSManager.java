@@ -147,7 +147,7 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
 
             // add children jobs
             boolean needChildren = true;
-            addSubJobResources(processItem, needChildren, exportChoice, libResource, contextResource, srcResource,
+            addSubJobResources(process, processItem, needChildren, exportChoice, libResource, contextResource, srcResource,
                     selectedJobVersion);
 
             // generate the context file
@@ -190,9 +190,9 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
         return list;
     }
 
-    private void addSubJobResources(ProcessItem process, boolean needChildren, Map<ExportChoice, Boolean> exportChoice,
-            ExportFileResource libResource, ExportFileResource contextResource, ExportFileResource srcResource,
-            String selectedJobVersion) {
+    private void addSubJobResources(ExportFileResource[] allResources, ProcessItem process, boolean needChildren,
+            Map<ExportChoice, Boolean> exportChoice, ExportFileResource libResource, ExportFileResource contextResource,
+            ExportFileResource srcResource, String selectedJobVersion) {
 
         List<JobInfo> list = new ArrayList<JobInfo>();
         String projectName = getCorrespondingProjectName(process);
@@ -200,8 +200,8 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
 
             try {
                 List<ProcessItem> processedJob = new ArrayList<ProcessItem>();
-                getChildrenJobAndContextName(process.getProperty().getLabel(), list, process, projectName, processedJob,
-                        srcResource, exportChoice, selectedJobVersion);
+                getChildrenJobAndContextName(allResources, process.getProperty().getLabel(), list, process, projectName,
+                        processedJob, srcResource, exportChoice, selectedJobVersion);
             } catch (Exception e) {
                 ExceptionHandler.process(e);
             }

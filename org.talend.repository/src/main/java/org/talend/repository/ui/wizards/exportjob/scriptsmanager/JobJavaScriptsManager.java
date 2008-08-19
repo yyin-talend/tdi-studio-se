@@ -74,8 +74,9 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.repository.ui.wizards.exportjob.JobScriptsManager#getExportResources(org.talend.core.model.properties.ProcessItem[],
-     * boolean, boolean, boolean, boolean, boolean, boolean, boolean, java.lang.String)
+     * @see
+     * org.talend.repository.ui.wizards.exportjob.JobScriptsManager#getExportResources(org.talend.core.model.properties
+     * .ProcessItem[], boolean, boolean, boolean, boolean, boolean, boolean, boolean, java.lang.String)
      */
     @Override
     public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Boolean> exportChoice,
@@ -102,10 +103,10 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             resources.addAll(getLauncher(BooleanUtils.isTrue(exportChoice.get(ExportChoice.needLauncher)), processItem,
                     escapeSpace(contextName), escapeSpace(launcher), statisticPort, tracePort, codeOptions));
 
-            addSource(processItem, BooleanUtils.isTrue(exportChoice.get(ExportChoice.needSource)), process[i],
+            addSource(process, processItem, BooleanUtils.isTrue(exportChoice.get(ExportChoice.needSource)), process[i],
                     JOB_SOURCE_FOLDER_NAME, selectedJobVersion);
 
-            addDepencies(processItem, BooleanUtils.isTrue(exportChoice.get(ExportChoice.needDependencies)), process[i]);
+            addDepencies(process, processItem, BooleanUtils.isTrue(exportChoice.get(ExportChoice.needDependencies)), process[i]);
             resources.addAll(getJobScripts(processItem, selectedJobVersion, BooleanUtils.isTrue(exportChoice
                     .get(ExportChoice.needJob))));
 
@@ -114,7 +115,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             // add children jobs
             boolean needChildren = BooleanUtils.isTrue(exportChoice.get(ExportChoice.needJob))
                     && BooleanUtils.isTrue(exportChoice.get(ExportChoice.needContext));
-            List<URL> childrenList = addChildrenResources(processItem, needChildren, process[i], exportChoice, selectedJobVersion);
+            List<URL> childrenList = addChildrenResources(process, processItem, needChildren, process[i], exportChoice,
+                    selectedJobVersion);
             resources.addAll(childrenList);
             process[i].addResources(resources);
 
@@ -236,12 +238,12 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager#getSource(org.talend.core.model.properties.ProcessItem,
-     * boolean)
+     * @seeorg.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager#getSource(org.talend.core.model.
+     * properties.ProcessItem, boolean)
      */
     @Override
-    protected void addSource(ProcessItem processItem, boolean needSource, ExportFileResource resource, String basePath,
-            String... selectedJobVersion) {
+    protected void addSource(ExportFileResource[] allResources, ProcessItem processItem, boolean needSource,
+            ExportFileResource resource, String basePath, String... selectedJobVersion) {
         // getItemResource(processItem, resource, basePath, selectedJobVersion);
         // super.addSource(processItem, needSource, resource, basePath, selectedJobVersion);
         // Get java src
@@ -264,11 +266,11 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                     jobName + "_" + jobVersion + "." + FileConstants.ITEM_EXTENSION);
             IPath propertiesFilePath = emfFileRootPath.append(processPath).append(
                     jobName + "_" + jobVersion + "." + FileConstants.PROPERTIES_EXTENSION);
+            // project file
+            checkAndAddProjectResource(allResources, resource, JOB_SOURCE_FOLDER_NAME + PATH_SEPARATOR + projectName, FileLocator
+                    .toFileURL(projectFilePath.toFile().toURL()));
 
-            List<URL> projectUrls = new ArrayList<URL>();
             List<URL> emfFileUrls = new ArrayList<URL>();
-            projectUrls.add(FileLocator.toFileURL(projectFilePath.toFile().toURL()));
-            resource.addResources(basePath + PATH_SEPARATOR + projectName, projectUrls);
             emfFileUrls.add(FileLocator.toFileURL(itemFilePath.toFile().toURL()));
             emfFileUrls.add(FileLocator.toFileURL(propertiesFilePath.toFile().toURL()));
             resource.addResources(basePath + PATH_SEPARATOR + projectName + PATH_SEPARATOR + typeFolderPath.toOSString(),
@@ -314,15 +316,15 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         return path + LIBRARY_FOLDER_NAME;
     }
 
-    private List<URL> addChildrenResources(ProcessItem process, boolean needChildren, ExportFileResource resource,
-            Map<ExportChoice, Boolean> exportChoice, String... selectedJobVersion) {
+    private List<URL> addChildrenResources(ExportFileResource[] allResources, ProcessItem process, boolean needChildren,
+            ExportFileResource resource, Map<ExportChoice, Boolean> exportChoice, String... selectedJobVersion) {
         List<JobInfo> list = new ArrayList<JobInfo>();
         String projectName = getCorrespondingProjectName(process);
         if (needChildren) {
             try {
                 List<ProcessItem> processedJob = new ArrayList<ProcessItem>();
-                getChildrenJobAndContextName(process.getProperty().getLabel(), list, process, projectName, processedJob,
-                        resource, exportChoice, selectedJobVersion);
+                getChildrenJobAndContextName(allResources, process.getProperty().getLabel(), list, process, projectName,
+                        processedJob, resource, exportChoice, selectedJobVersion);
             } catch (Exception e) {
                 ExceptionHandler.process(e);
             }
@@ -342,21 +344,23 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                     .get(ExportChoice.needJob)));
             addContextScripts(jobInfo.getProcessItem(), jobInfo.getJobName(), jobInfo.getJobVersion(), resource, exportChoice
                     .get(ExportChoice.needContext));
-            addDepencies(jobInfo.getProcessItem(), BooleanUtils.isTrue(exportChoice.get(ExportChoice.needDependencies)), resource);
+            addDepencies(allResources, jobInfo.getProcessItem(), BooleanUtils.isTrue(exportChoice
+                    .get(ExportChoice.needDependencies)), resource);
         }
 
         return allJobScripts;
     }
 
-    protected void getChildrenJobAndContextName(String rootName, List<JobInfo> list, ProcessItem process, String projectName,
-            List<ProcessItem> processedJob, ExportFileResource resource, Map<ExportChoice, Boolean> exportChoice,
-            String... selectedJobVersion) {
+    protected void getChildrenJobAndContextName(ExportFileResource[] allResources, String rootName, List<JobInfo> list,
+            ProcessItem process, String projectName, List<ProcessItem> processedJob, ExportFileResource resource,
+            Map<ExportChoice, Boolean> exportChoice, String... selectedJobVersion) {
         if (processedJob.contains(process)) {
             // prevent circle
             return;
         }
         processedJob.add(process);
-        addSource(process, exportChoice.get(ExportChoice.needSource), resource, JOB_SOURCE_FOLDER_NAME, selectedJobVersion);
+        addSource(allResources, process, exportChoice.get(ExportChoice.needSource), resource, JOB_SOURCE_FOLDER_NAME,
+                selectedJobVersion);
 
         Set<JobInfo> subjobInfos = ProcessorUtilities.getChildrenJobInfo(process, selectedJobVersion);
         for (JobInfo subjobInfo : subjobInfos) {
@@ -367,8 +371,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
             list.add(subjobInfo);
 
-            getChildrenJobAndContextName(rootName, list, subjobInfo.getProcessItem(), projectName, processedJob, resource,
-                    exportChoice);
+            getChildrenJobAndContextName(allResources, rootName, list, subjobInfo.getProcessItem(), projectName, processedJob,
+                    resource, exportChoice);
         }
     }
 
