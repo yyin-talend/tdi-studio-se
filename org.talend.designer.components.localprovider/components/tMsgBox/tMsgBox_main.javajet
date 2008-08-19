@@ -11,28 +11,29 @@
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
 	
-	boolean isInputVariable=ElementParameterParser.getValue(node, "__INPUT_VARIABLE__").equals("true");
+	boolean isPromptQuestion=ElementParameterParser.getValue(node, "__PROMPT_QUESTION__").equals("true");
 	int button = Integer.parseInt(ElementParameterParser.getValue(node, "__BUTTONS__"));	
 %>
 	int messageIcon<%=cid %> = javax.swing.JOptionPane.<%=ElementParameterParser.getValue(node, "__ICON__") %>;
 	String title<%=cid %> = <%=ElementParameterParser.getValue(node, "__TITLE__") %>;
 	String message<%=cid %> = <%=ElementParameterParser.getValue(node, "__MESSAGE__") %>;
-	int result<%=cid %> = 0;
+	String result<%=cid %> = null;
 
-<% if(isInputVariable){
+<% if(isPromptQuestion){
 
 %>
-   String variableName_<%=cid %> = <%=ElementParameterParser.getValue(node, "__VARIABLE_NAME__") %>;
+   
    String question_<%=cid %> = <%=ElementParameterParser.getValue(node, "__QUESTION_LABEL__") %>;
    String variableValue_<%=cid %>=null;
    
    variableValue_<%=cid %>=javax.swing.JOptionPane.showInputDialog(null, question_<%=cid %> , "Please input a value for question", javax.swing.JOptionPane.QUESTION_MESSAGE);
       
-   globalMap.put("<%=cid %>_USER_RETURN",variableValue_<%=cid %>);
-   globalMap.put(variableName_<%=cid %>,variableValue_<%=cid %>);
+  
+   globalMap.put("<%=cid%>_RESULT", variableValue_<%=cid %>);
 
    
 <% }
+else{
 %>   	
 	
 <%
@@ -41,7 +42,7 @@
 		// 0) OK
 %>
 		javax.swing.JOptionPane.showMessageDialog(null, message<%=cid %>, title<%=cid %>, messageIcon<%=cid %>);
-		result<%=cid %> = 1;
+		result<%=cid %> = String.valueOf(1);
 <%
 			break;
 		case 1:
@@ -50,31 +51,31 @@
 		//javax.swing.JOptionPane.showOptionDialog(null, message<%=cid %>, title<%=cid %>, javax.swing.JOptionPane.YES_NO_OPTION, messageIcon<%=cid %>, null, new String[] { "OK", "Cancel" }, null);
 		//result<%=cid %> = 1;
 		
-		result<%=cid %> = javax.swing.JOptionPane.showOptionDialog(null, message<%=cid %>, title<%=cid %>, javax.swing.JOptionPane.OK_CANCEL_OPTION, messageIcon<%=cid %>, null, new String[] { "OK", "Cancel" }, null);
+		result<%=cid %> = String.valueOf(javax.swing.JOptionPane.showOptionDialog(null, message<%=cid %>, title<%=cid %>, javax.swing.JOptionPane.OK_CANCEL_OPTION, messageIcon<%=cid %>, null, new String[] { "OK", "Cancel" }, null));
 <%
 			break;
 		case 2:
 		// 2) Abort Retry Ignore
 %>
-		result<%=cid %> = javax.swing.JOptionPane.showOptionDialog(null, message<%=cid %>, title<%=cid %>, javax.swing.JOptionPane.YES_NO_CANCEL_OPTION, messageIcon<%=cid %>, null, new String[] { "Abort", "Retry", "Ignore" }, null);
+		result<%=cid %> = String.valueOf(javax.swing.JOptionPane.showOptionDialog(null, message<%=cid %>, title<%=cid %>, javax.swing.JOptionPane.YES_NO_CANCEL_OPTION, messageIcon<%=cid %>, null, new String[] { "Abort", "Retry", "Ignore" }, null));
 <%
 			break;
 		case 3:
 		// 3) Yes No and Cancel
 %>
-		result<%=cid %> = javax.swing.JOptionPane.showOptionDialog(null, message<%=cid %>, title<%=cid %>, javax.swing.JOptionPane.YES_NO_CANCEL_OPTION, messageIcon<%=cid %>, null, new String[] { "Yes", "No", "Cancel" }, null);
+		result<%=cid %> = String.valueOf(javax.swing.JOptionPane.showOptionDialog(null, message<%=cid %>, title<%=cid %>, javax.swing.JOptionPane.YES_NO_CANCEL_OPTION, messageIcon<%=cid %>, null, new String[] { "Yes", "No", "Cancel" }, null));
 <%
 			break;
 		case 4:
 		// 4) Yes and No
 %>
-		result<%=cid %> = javax.swing.JOptionPane.showOptionDialog(null, message<%=cid %>, title<%=cid %>, javax.swing.JOptionPane.YES_NO_OPTION, messageIcon<%=cid %>, null, new String[] { "Yes", "No" }, null);
+		result<%=cid %> = String.valueOf(javax.swing.JOptionPane.showOptionDialog(null, message<%=cid %>, title<%=cid %>, javax.swing.JOptionPane.YES_NO_OPTION, messageIcon<%=cid %>, null, new String[] { "Yes", "No" }, null));
 <%
 			break;
 		case 5:
 		// 5) Retry and Cancel
 %>
-		result<%=cid %> = javax.swing.JOptionPane.showOptionDialog(null, message<%=cid %>, title<%=cid %>, javax.swing.JOptionPane.YES_NO_OPTION, messageIcon<%=cid %>, null, new String[] { "Retry", "Cancel" }, null);
+		result<%=cid %> = String.valueOf(javax.swing.JOptionPane.showOptionDialog(null, message<%=cid %>, title<%=cid %>, javax.swing.JOptionPane.YES_NO_OPTION, messageIcon<%=cid %>, null, new String[] { "Retry", "Cancel" }, null));
 <%
 			break;
 		default:
@@ -84,3 +85,7 @@
 %>
 
 globalMap.put("<%=cid%>_RESULT", result<%=cid %>);
+
+<% 
+}
+%>
