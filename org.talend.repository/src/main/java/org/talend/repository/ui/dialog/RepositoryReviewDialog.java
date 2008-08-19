@@ -47,6 +47,7 @@ import org.talend.core.model.properties.FolderItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.ICDCProviderService;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.model.MetadataTableRepositoryObject;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
@@ -381,13 +382,13 @@ class JobTypeProcessor implements ITypeProcessor {
     }
 
     public RepositoryNode getInputRoot(RepositoryContentProvider contentProvider) {
-        List<RepositoryNode> refProjects=null;
-        if( contentProvider.getReferenceProjectNode()!=null){
-             refProjects = contentProvider.getReferenceProjectNode().getChildren();
-        }else{
-            refProjects=Collections.EMPTY_LIST;
+        List<RepositoryNode> refProjects = null;
+        if (contentProvider.getReferenceProjectNode() != null) {
+            refProjects = contentProvider.getReferenceProjectNode().getChildren();
+        } else {
+            refProjects = Collections.EMPTY_LIST;
         }
-        
+
         RepositoryNode mainJobs = contentProvider.getProcessNode();
         if (!refProjects.isEmpty()) {
             List<RepositoryNode> list = new ArrayList<RepositoryNode>();
@@ -456,44 +457,115 @@ class RepositoryTypeProcessor implements ITypeProcessor {
     }
 
     public RepositoryNode getInputRoot(RepositoryContentProvider contentProvider) {
+        RepositoryNode metadataNode = null;
         if (repositoryType == null) {
-            return contentProvider.getMetadataNode();
+            metadataNode = contentProvider.getMetadataNode();
         }
         if (repositoryType.equals("DELIMITED")) {
-            return contentProvider.getMetadataFileNode();
+            metadataNode = contentProvider.getMetadataFileNode();
         }
         if (repositoryType.equals("POSITIONAL")) {
-            return contentProvider.getMetadataFilePositionalNode();
+            metadataNode = contentProvider.getMetadataFilePositionalNode();
         }
         if (repositoryType.equals("REGEX")) {
-            return contentProvider.getMetadataFileRegexpNode();
+            metadataNode = contentProvider.getMetadataFileRegexpNode();
         }
         if (repositoryType.equals("XML")) {
-            return contentProvider.getMetadataFileXmlNode();
+            metadataNode = contentProvider.getMetadataFileXmlNode();
         }
         if (repositoryType.equals("LDIF")) {
-            return contentProvider.getMetadataFileLdifNode();
+            metadataNode = contentProvider.getMetadataFileLdifNode();
         }
         if (repositoryType.equals("EXCEL")) {
-            return contentProvider.getMetadataFileExcelNode();
+            metadataNode = contentProvider.getMetadataFileExcelNode();
         }
         if (repositoryType.equals("GENERIC")) {
-            return contentProvider.getMetadataGenericSchemaNode();
+            metadataNode = contentProvider.getMetadataGenericSchemaNode();
         }
         if (repositoryType.equals("LDAP")) {
-            return contentProvider.getMetadataLDAPSchemaNode();
+            metadataNode = contentProvider.getMetadataLDAPSchemaNode();
         }
         if (repositoryType.equals("WSDL")) {
-            return contentProvider.getMetadataWSDLSchemaNode();
+            metadataNode = contentProvider.getMetadataWSDLSchemaNode();
         }
         if (repositoryType.equals("SALESFORCE")) {
-            return contentProvider.getMetadataSalesforceSchemaNode();
+            metadataNode = contentProvider.getMetadataSalesforceSchemaNode();
         }
 
         if (repositoryType.startsWith("DATABASE")) { //$NON-NLS-1$
-            return contentProvider.getMetadataConNode();
+            metadataNode = contentProvider.getMetadataConNode();
         }
-        return null;
+        addReferencedProjectNodes(contentProvider, metadataNode);
+        return metadataNode;
+    }
+
+    /**
+     * 
+     * ggu Comment method "addReferencedProjectNodes".
+     * 
+     */
+    private void addReferencedProjectNodes(RepositoryContentProvider contentProvider, RepositoryNode metadataNode) {
+        if (contentProvider == null || metadataNode == null) {
+            return;
+        }
+        // referenced project.
+        if (contentProvider.getReferenceProjectNode() != null) {
+            List<RepositoryNode> refProjects = contentProvider.getReferenceProjectNode().getChildren();
+            if (refProjects != null && !refProjects.isEmpty()) {
+
+                List<RepositoryNode> nodesList = new ArrayList<RepositoryNode>();
+                for (RepositoryNode repositoryNode : refProjects) {
+                    ProjectRepositoryNode refProject = (ProjectRepositoryNode) repositoryNode;
+
+                    ProjectRepositoryNode newProject = new ProjectRepositoryNode(refProject);
+
+                    RepositoryNode refMetadataNode = null;
+                    if (repositoryType == null) {
+                        refMetadataNode = refProject.getMetadataNode();
+                    }
+                    if (repositoryType.equals("DELIMITED")) {
+                        refMetadataNode = refProject.getMetadataFileNode();
+                    }
+                    if (repositoryType.equals("POSITIONAL")) {
+                        refMetadataNode = refProject.getMetadataFilePositionalNode();
+                    }
+                    if (repositoryType.equals("REGEX")) {
+                        refMetadataNode = refProject.getMetadataFileRegexpNode();
+                    }
+                    if (repositoryType.equals("XML")) {
+                        refMetadataNode = refProject.getMetadataFileXmlNode();
+                    }
+                    if (repositoryType.equals("LDIF")) {
+                        refMetadataNode = refProject.getMetadataFileLdifNode();
+                    }
+                    if (repositoryType.equals("EXCEL")) {
+                        refMetadataNode = refProject.getMetadataFileExcelNode();
+                    }
+                    if (repositoryType.equals("GENERIC")) {
+                        refMetadataNode = refProject.getMetadataGenericSchemaNode();
+                    }
+                    if (repositoryType.equals("LDAP")) {
+                        refMetadataNode = refProject.getMetadataLDAPSchemaNode();
+                    }
+                    if (repositoryType.equals("WSDL")) {
+                        refMetadataNode = refProject.getMetadataWSDLSchemaNode();
+                    }
+                    if (repositoryType.equals("SALESFORCE")) {
+                        refMetadataNode = refProject.getMetadataSalesforceSchemaNode();
+                    }
+
+                    if (repositoryType.startsWith("DATABASE")) {
+                        refMetadataNode = refProject.getMetadataConNode();
+                    }
+
+                    if (refMetadataNode != null) {
+                        newProject.getChildren().add(refMetadataNode);
+                        nodesList.add(newProject);
+                    }
+                }
+                metadataNode.getChildren().addAll(nodesList);
+            }
+        }
     }
 
     public boolean isSelectionValid(RepositoryNode node) {
@@ -510,6 +582,20 @@ class RepositoryTypeProcessor implements ITypeProcessor {
             public boolean select(Viewer viewer, Object parentElement, Object element) {
                 // if (repositoryType.startsWith("DATABASE") && repositoryType.contains(":")) {
                 RepositoryNode node = (RepositoryNode) element;
+                if (node.getContentType() == ERepositoryObjectType.REFERENCED_PROJECTS) {
+                    return true;
+                }
+                ProjectManager pManager = ProjectManager.getInstance();
+                if (!pManager.isInCurrentMainProject(node)) {
+                    // for sub folders
+                    if (node.getType() == ENodeType.STABLE_SYSTEM_FOLDER) {
+                        return false;
+                    }
+                    // for Db Connections
+                    if (node.getType() == ENodeType.SYSTEM_FOLDER) {
+                        return true;
+                    }
+                }
                 if (node.getObject() == null || node.getObject().getProperty().getItem() == null) {
                     return false;
                 }
@@ -581,10 +667,56 @@ class SchemaTypeProcessor implements ITypeProcessor {
 
             container.remove(null); // Not allow null element
         }
-
+        addReferencedProjectNodes(contentProvider, container);
         RepositoryNode node = new RepositoryNode(null, null, null);
         node.getChildren().addAll(container);
+
         return node;
+    }
+
+    private void addReferencedProjectNodes(RepositoryContentProvider contentProvider, List<RepositoryNode> container) {
+        if (contentProvider == null || container == null) {
+            return;
+        }
+        // referenced project.
+        if (contentProvider.getReferenceProjectNode() != null) {
+            List<RepositoryNode> refProjects = contentProvider.getReferenceProjectNode().getChildren();
+            if (refProjects != null && !refProjects.isEmpty()) {
+
+                List<RepositoryNode> nodesList = new ArrayList<RepositoryNode>();
+
+                for (RepositoryNode repositoryNode : refProjects) {
+                    ProjectRepositoryNode refProject = (ProjectRepositoryNode) repositoryNode;
+
+                    ProjectRepositoryNode newProject = new ProjectRepositoryNode(refProject);
+
+                    List<RepositoryNode> refContainer = new ArrayList<RepositoryNode>();
+                    if (repositoryType != null && repositoryType.startsWith("DATABASE")) {
+                        refContainer.add(refProject.getMetadataConNode());
+                    } else {
+                        refContainer.add(refProject.getMetadataFileNode());
+                        refContainer.add(refProject.getMetadataFilePositionalNode());
+                        refContainer.add(refProject.getMetadataFileRegexpNode());
+                        refContainer.add(refProject.getMetadataFileXmlNode());
+                        refContainer.add(refProject.getMetadataFileLdifNode());
+                        refContainer.add(refProject.getMetadataFileExcelNode());
+                        refContainer.add(refProject.getMetadataGenericSchemaNode());
+                        refContainer.add(refProject.getMetadataLDAPSchemaNode());
+                        refContainer.add(refProject.getMetadataWSDLSchemaNode());
+                        // Salesforce metadata node is not exist in Perl Project.
+                        refContainer.add(refProject.getMetadataSalesforceSchemaNode());
+
+                        refContainer.add(refProject.getMetadataConNode());
+
+                    }
+                    refContainer.remove(null); // Not allow null element
+                    newProject.getChildren().addAll(refContainer);
+
+                    nodesList.add(newProject);
+                }
+                container.addAll(nodesList);
+            }
+        }
     }
 
     public boolean isSelectionValid(RepositoryNode node) {
@@ -649,7 +781,27 @@ class QueryTypeProcessor implements ITypeProcessor {
     }
 
     public RepositoryNode getInputRoot(RepositoryContentProvider contentProvider) {
-        return contentProvider.getMetadataConNode();
+        RepositoryNode metadataConNode = contentProvider.getMetadataConNode();
+        // referenced project.
+        if (contentProvider.getReferenceProjectNode() != null) {
+            List<RepositoryNode> refProjects = contentProvider.getReferenceProjectNode().getChildren();
+            if (refProjects != null && !refProjects.isEmpty()) {
+
+                List<RepositoryNode> nodesList = new ArrayList<RepositoryNode>();
+
+                for (RepositoryNode repositoryNode : refProjects) {
+                    ProjectRepositoryNode refProject = (ProjectRepositoryNode) repositoryNode;
+
+                    ProjectRepositoryNode newProject = new ProjectRepositoryNode(refProject);
+
+                    newProject.getChildren().add(refProject.getMetadataConNode());
+
+                    nodesList.add(newProject);
+                }
+                metadataConNode.getChildren().addAll(nodesList);
+            }
+        }
+        return metadataConNode;
     }
 
     public boolean isSelectionValid(RepositoryNode node) {

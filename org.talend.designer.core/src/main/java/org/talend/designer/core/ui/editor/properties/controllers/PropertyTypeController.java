@@ -24,6 +24,7 @@ import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.model.components.EParameterName;
@@ -45,7 +46,9 @@ public class PropertyTypeController extends AbstractRepositoryController {
      * (non-Javadoc)
      * 
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractRepositoryController#createButtonCommand(org.eclipse.swt.widgets.Button)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractRepositoryController#createButtonCommand(org
+     * .eclipse.swt.widgets.Button)
      */
     @Override
     protected Command createButtonCommand(Button button) {
@@ -71,6 +74,12 @@ public class PropertyTypeController extends AbstractRepositoryController {
                     repositoryConnection = repositoryConnectionItemMap.get(id).getConnection();
                 } else {
                     repositoryConnection = null;
+                    if (repositoryParam != null) {
+                        Item item = repositoryParam.getLinkedRepositoryItem();
+                        if (item instanceof ConnectionItem) {
+                            repositoryConnection = ((ConnectionItem) item).getConnection();
+                        }
+                    }
                 }
 
                 if (repositoryConnection != null) {
@@ -115,7 +124,9 @@ public class PropertyTypeController extends AbstractRepositoryController {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractRepositoryController#createComboCommand(org.eclipse.swt.custom.CCombo)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractRepositoryController#createComboCommand(org
+     * .eclipse.swt.custom.CCombo)
      */
     @Override
     protected Command createComboCommand(CCombo combo) {
@@ -182,7 +193,9 @@ public class PropertyTypeController extends AbstractRepositoryController {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractRepositoryController#getRepositoryChoiceParamName()
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractRepositoryController#getRepositoryChoiceParamName
+     * ()
      */
     @Override
     protected String getRepositoryChoiceParamName() {
@@ -192,7 +205,9 @@ public class PropertyTypeController extends AbstractRepositoryController {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractRepositoryController#getRepositoryTypeParamName()
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractRepositoryController#getRepositoryTypeParamName
+     * ()
      */
     @Override
     protected String getRepositoryTypeParamName() {

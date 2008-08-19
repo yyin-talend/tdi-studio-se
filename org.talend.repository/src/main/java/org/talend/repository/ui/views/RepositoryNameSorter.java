@@ -94,7 +94,7 @@ public class RepositoryNameSorter extends ViewerSorter {
         } else if (node.getType() == ENodeType.SIMPLE_FOLDER) {
             return 120;
         } else if (node.getType() == ENodeType.REFERENCED_PROJECT) {
-            return 140;
+            return 200;
         } else {
             if (node.getType() == ENodeType.REPOSITORY_ELEMENT) {
                 ERepositoryObjectType contentType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
