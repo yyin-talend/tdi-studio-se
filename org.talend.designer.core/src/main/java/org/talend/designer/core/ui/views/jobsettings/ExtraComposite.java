@@ -46,4 +46,14 @@ public class ExtraComposite extends AbstractPreferenceComposite {
     protected void onSavePreference() {
         ImplicitContextLoadHelper.saveValuesToPreferencePage(elem, ExtraComposite.this);
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.ui.views.jobsettings.AbstractPreferenceComposite#needApplyToChildren()
+     */
+    @Override
+    protected boolean needApplyToChildren() {
+        return false;
+    }
 }

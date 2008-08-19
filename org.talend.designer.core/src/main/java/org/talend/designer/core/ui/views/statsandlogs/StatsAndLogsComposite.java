@@ -49,4 +49,14 @@ public class StatsAndLogsComposite extends AbstractPreferenceComposite {
         StatsAndLogsViewHelper.saveValuesToPreferencePage(elem, StatsAndLogsComposite.this);
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.ui.views.jobsettings.AbstractPreferenceComposite#needApplyToChildren()
+     */
+    @Override
+    protected boolean needApplyToChildren() {
+        return true;
+    }
+
 }

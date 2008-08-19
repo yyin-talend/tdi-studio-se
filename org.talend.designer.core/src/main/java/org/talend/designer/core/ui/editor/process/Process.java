@@ -682,7 +682,6 @@ public class Process extends Element implements IProcess2 {
 
         for (int j = 0; j < listParamType.size(); j++) {
             pType = (ElementParameterType) listParamType.get(j);
-
             if (pType != null) {
                 IElementParameter param = elemParam.getElementParameter(pType.getName());
                 if (param != null) {

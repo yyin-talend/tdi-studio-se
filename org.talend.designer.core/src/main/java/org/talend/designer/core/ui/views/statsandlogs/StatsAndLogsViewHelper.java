@@ -15,11 +15,13 @@ package org.talend.designer.core.ui.views.statsandlogs;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.process.Element;
+import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
@@ -27,7 +29,9 @@ import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.model.components.EmfComponent;
+import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -74,6 +78,400 @@ public class StatsAndLogsViewHelper {
 
         return connectionItem;
 
+    }
+
+    /**
+     * yzhang Comment method "applySettings".
+     * 
+     * @param element
+     * @param dynamicProperty
+     */
+    public static void applySettings(IElement element, IElement applyTo, IDynamicProperty dynamicProperty) {
+        List<? extends IElementParameter> elementParameters = applyTo.getElementParameters();
+
+        for (IElementParameter elementParameterType : elementParameters) {
+
+            String parameterName = elementParameterType.getName();
+
+            if (parameterName.equals(EParameterName.ON_STATCATCHER_FLAG.getName())) {
+                elementParameterType.setValue(element.getElementParameter(EParameterName.ON_STATCATCHER_FLAG.getName())
+                        .getValue());
+                continue;
+            }
+
+            if (parameterName.equals(EParameterName.ON_LOGCATCHER_FLAG.getName())) {
+                elementParameterType
+                        .setValue(element.getElementParameter(EParameterName.ON_LOGCATCHER_FLAG.getName()).getValue());
+                continue;
+            }
+
+            if (parameterName.equals(EParameterName.ON_METERCATCHER_FLAG.getName())) {
+                elementParameterType.setValue(element.getElementParameter(EParameterName.ON_METERCATCHER_FLAG.getName())
+                        .getValue());
+                continue;
+            }
+
+            if (parameterName.equals(EParameterName.ON_FILES_FLAG.getName())) {
+                elementParameterType.setValue(element.getElementParameter(EParameterName.ON_FILES_FLAG.getName()).getValue());
+                continue;
+            }
+
+            if (parameterName.equals(EParameterName.FILE_PATH.getName())) {
+                elementParameterType.setValue(element.getElementParameter(EParameterName.FILE_PATH.getName()).getValue());
+                continue;
+            }
+
+            if (parameterName.equals(EParameterName.FILENAME_STATS.getName())) {
+                elementParameterType.setValue(element.getElementParameter(EParameterName.FILENAME_STATS.getName()).getValue());
+                continue;
+            }
+
+            if (parameterName.equals(EParameterName.FILENAME_LOGS.getName())) {
+                elementParameterType.setValue(element.getElementParameter(EParameterName.FILENAME_LOGS.getName()).getValue());
+                continue;
+            }
+
+            if (parameterName.equals(EParameterName.FILENAME_METTER.getName())) {
+                elementParameterType.setValue(element.getElementParameter(EParameterName.FILENAME_METTER.getName()).getValue());
+                continue;
+            }
+
+            if (parameterName.equals(EParameterName.ON_DATABASE_FLAG.getName())) {
+                elementParameterType.setValue(element.getElementParameter(EParameterName.ON_DATABASE_FLAG.getName()).getValue());
+                continue;
+            }
+
+            if (parameterName.equals(EParameterName.PROPERTY_TYPE.getName())) {
+                //elementParameterType.setValue(String.valueOf(element.getElementParameter(EParameterName.PROPERTY_TYPE.
+                // getName())
+                // .getValue()));
+                //
+                // ElementParameter repositoryPropertyType = (ElementParameter)
+                // elementParameterType.getChildParameters().get(
+                // EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+                // repositoryPropertyType.setValue(element.getElementParameter(
+                // EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName())
+                // .getValue());
+                //
+                // ElementParameter repositorPropertyType = (ElementParameter)
+                // elementParameterType.getChildParameters().get(
+                // EParameterName.PROPERTY_TYPE.getName());
+                // repositorPropertyType.setValue(element.getElementParameter(
+                // EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.PROPERTY_TYPE.getName()).getValue());
+
+                String id = (String) element.getElementParameter(
+                        EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName())
+                        .getValue();
+                String propertyType = (String) element.getElementParameter(
+                        EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.PROPERTY_TYPE.getName()).getValue();
+                // String connectionLabel = null;
+                //
+                // RepositoryContentProvider contentProvider = (RepositoryContentProvider)
+                // RepositoryView.show().getViewer()
+                // .getContentProvider();
+                // RepositoryNode repositoryNode = (contentProvider).getMetadataConNode();
+                //
+                // IElementParameter parameterRepositoryType =
+                // element.getElementParameter(EParameterName.PROPERTY_TYPE.getName())
+                // .getChildParameters().get(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+                // if (parameterRepositoryType != null) {
+                // parameterRepositoryType.setLinkedRepositoryItem(findConnectionItem(contentProvider, repositoryNode,
+                // connectionLabel));
+                // }
+
+                Connection repositoryConnection = null;
+                Map<String, ConnectionItem> repositoryConnectionItemMap = dynamicProperty.getRepositoryConnectionItemMap();
+
+                if (repositoryConnectionItemMap.containsKey(id)) {
+                    repositoryConnection = repositoryConnectionItemMap.get(id).getConnection();
+                } else {
+                    repositoryConnection = null;
+                }
+
+                ChangeValuesFromRepository cmd1 = new ChangeValuesFromRepository((Element) applyTo, repositoryConnection,
+                        EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.PROPERTY_TYPE.getName(), propertyType);
+
+                ChangeValuesFromRepository cmd2 = new ChangeValuesFromRepository((Element) applyTo, repositoryConnection,
+                        EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), id);
+                cmd2.setMaps(dynamicProperty.getRepositoryTableMap());
+
+                AbstractMultiPageTalendEditor part = ((Process) element).getEditor();
+                if (part instanceof AbstractMultiPageTalendEditor) {
+                    Object adapter = ((AbstractMultiPageTalendEditor) part).getTalendEditor().getAdapter(CommandStack.class);
+                    if (adapter != null) {
+                        CommandStack commandStack = ((CommandStack) adapter);
+                        commandStack.execute(cmd1);
+                        commandStack.execute(cmd2);
+                    }
+                }
+
+                continue;
+            }
+
+            if (PREFERENCE_STORE.getString(LANGUAGE_PREFIX + EParameterName.PROPERTY_TYPE.getName()).equals(EmfComponent.BUILTIN)) {
+
+                if (parameterName.equals(EParameterName.DB_TYPE.getName())) {
+                    elementParameterType.setValue(element.getElementParameter(EParameterName.DB_TYPE.getName()).getValue());
+                    continue;
+                }
+
+                if (parameterName.equals(EParameterName.HOST.getName())) {
+                    elementParameterType.setValue(element.getElementParameter(EParameterName.HOST.getName()).getValue());
+                    continue;
+                }
+
+                if (parameterName.equals(EParameterName.PORT.getName())) {
+                    elementParameterType.setValue(element.getElementParameter(EParameterName.PORT.getName()).getValue());
+                    continue;
+                }
+
+                if (parameterName.equals(EParameterName.DBNAME.getName())) {
+                    elementParameterType.setValue(element.getElementParameter(EParameterName.DBNAME.getName()).getValue());
+                    continue;
+                }
+                if (parameterName.equals(EParameterName.PROPERTIES.getName())) {
+                    elementParameterType.setValue(element.getElementParameter(EParameterName.PROPERTIES.getName()).getValue());
+                    continue;
+                }
+
+                if (parameterName.equals(EParameterName.DBFILE.getName())) {
+                    elementParameterType.setValue(element.getElementParameter(EParameterName.DBFILE.getName()).getValue());
+                    continue;
+                }
+                if (parameterName.equals(EParameterName.SCHEMA_DB.getName())) {
+                    elementParameterType.setValue(element.getElementParameter(EParameterName.SCHEMA_DB.getName()).getValue());
+                    continue;
+                }
+
+                if (parameterName.equals(EParameterName.USER.getName())) {
+                    elementParameterType.setValue(element.getElementParameter(EParameterName.USER.getName()).getValue());
+                    continue;
+                }
+
+                if (parameterName.equals(EParameterName.PASS.getName())) {
+                    elementParameterType.setValue(element.getElementParameter(EParameterName.PASS.getName()).getValue());
+                    continue;
+                }
+
+                if (parameterName.equals(EParameterName.TABLE_STATS.getName())) {
+                    elementParameterType.setValue(element.getElementParameter(EParameterName.TABLE_STATS.getName()).getValue());
+                    continue;
+                }
+
+                if (parameterName.equals(EParameterName.TABLE_LOGS.getName())) {
+                    elementParameterType.setValue(element.getElementParameter(EParameterName.TABLE_LOGS.getName()).getValue());
+                    continue;
+                }
+
+                if (parameterName.equals(EParameterName.TABLE_METER.getName())) {
+                    elementParameterType.setValue(element.getElementParameter(EParameterName.TABLE_METER.getName()).getValue());
+                    continue;
+                }
+
+                if (parameterName.equals(EParameterName.CATCH_RUNTIME_ERRORS.getName())) {
+                    elementParameterType.setValue(element.getElementParameter(EParameterName.CATCH_RUNTIME_ERRORS.getName())
+                            .getValue());
+                    continue;
+                }
+
+                if (parameterName.equals(EParameterName.CATCH_USER_ERRORS.getName())) {
+                    elementParameterType.setValue(element.getElementParameter(EParameterName.CATCH_USER_ERRORS.getName())
+                            .getValue());
+                    continue;
+                }
+
+                if (parameterName.equals(EParameterName.CATCH_USER_WARNING.getName())) {
+                    elementParameterType.setValue(element.getElementParameter(EParameterName.CATCH_USER_WARNING.getName())
+                            .getValue());
+                    continue;
+                }
+
+                if (parameterName.equals(EParameterName.CATCH_REALTIME_STATS.getName())) {
+                    elementParameterType.setValue(element.getElementParameter(EParameterName.CATCH_REALTIME_STATS.getName())
+                            .getValue());
+                    continue;
+                }
+            }
+        }
+    }
+
+    public static void applySettings(EList<ElementParameterType> elementParameterTypes, Element elem) {
+
+        for (ElementParameterType elementParameterType : elementParameterTypes) {
+
+            String parameterTypeName = elementParameterType.getName();
+
+            if (parameterTypeName.equals(EParameterName.ON_STATCATCHER_FLAG.getName())) {
+                elementParameterType.setValue(String.valueOf(elem.getElementParameter(
+                        EParameterName.ON_STATCATCHER_FLAG.getName()).getValue()));
+                continue;
+            }
+
+            if (parameterTypeName.equals(EParameterName.ON_LOGCATCHER_FLAG.getName())) {
+                elementParameterType.setValue(String.valueOf(elem
+                        .getElementParameter(EParameterName.ON_LOGCATCHER_FLAG.getName()).getValue()));
+                continue;
+            }
+
+            if (parameterTypeName.equals(EParameterName.ON_METERCATCHER_FLAG.getName())) {
+                elementParameterType.setValue(String.valueOf(elem.getElementParameter(
+                        EParameterName.ON_METERCATCHER_FLAG.getName()).getValue()));
+                continue;
+            }
+
+            if (parameterTypeName.equals(EParameterName.ON_FILES_FLAG.getName())) {
+                elementParameterType.setValue(String.valueOf(elem.getElementParameter(EParameterName.ON_FILES_FLAG.getName())
+                        .getValue()));
+                continue;
+            }
+
+            if (parameterTypeName.equals(EParameterName.FILE_PATH.getName())) {
+                elementParameterType.setValue(String.valueOf(elem.getElementParameter(EParameterName.FILE_PATH.getName())
+                        .getValue()));
+                continue;
+            }
+
+            if (parameterTypeName.equals(EParameterName.FILENAME_STATS.getName())) {
+                elementParameterType.setValue(String.valueOf(elem.getElementParameter(EParameterName.FILENAME_STATS.getName())
+                        .getValue()));
+                continue;
+            }
+
+            if (parameterTypeName.equals(EParameterName.FILENAME_LOGS.getName())) {
+                elementParameterType.setValue(String.valueOf(elem.getElementParameter(EParameterName.FILENAME_LOGS.getName())
+                        .getValue()));
+                continue;
+            }
+
+            if (parameterTypeName.equals(EParameterName.FILENAME_METTER.getName())) {
+                elementParameterType.setValue(String.valueOf(elem.getElementParameter(EParameterName.FILENAME_METTER.getName())
+                        .getValue()));
+                continue;
+            }
+
+            if (parameterTypeName.equals(EParameterName.ON_DATABASE_FLAG.getName())) {
+                elementParameterType.setValue(String.valueOf(elem.getElementParameter(EParameterName.ON_DATABASE_FLAG.getName())
+                        .getValue()));
+                continue;
+            }
+
+            if (parameterTypeName.equals(EParameterName.PROPERTY_TYPE.getName())) {
+                elementParameterType.setValue(String.valueOf(elem.getElementParameter(EParameterName.PROPERTY_TYPE.getName())
+                        .getValue()));
+                continue;
+            }
+
+            if (parameterTypeName.equals(EParameterName.PROPERTY_TYPE.getName() + ":"
+                    + EParameterName.REPOSITORY_PROPERTY_TYPE.getName())) {
+                elementParameterType.setValue(String.valueOf(elem.getElementParameter(
+                        EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName())
+                        .getValue()));
+                continue;
+            }
+
+            if (parameterTypeName.equals(EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.PROPERTY_TYPE.getName())) {
+                elementParameterType.setValue(String.valueOf(elem.getElementParameter(
+                        EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.PROPERTY_TYPE.getName()).getValue()));
+                continue;
+            }
+
+            if (elem.getElementParameter(EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.PROPERTY_TYPE.getName())
+                    .getValue().equals(EmfComponent.BUILTIN)) {
+                if (parameterTypeName.equals(EParameterName.DB_TYPE.getName())) {
+                    elementParameterType.setValue(String.valueOf(elem.getElementParameter(EParameterName.DB_TYPE.getName())
+                            .getValue()));
+                    continue;
+                }
+
+                if (parameterTypeName.equals(EParameterName.HOST.getName())) {
+                    elementParameterType.setValue(String.valueOf(elem.getElementParameter(EParameterName.HOST.getName())
+                            .getValue()));
+                    continue;
+                }
+
+                if (parameterTypeName.equals(EParameterName.PORT.getName())) {
+                    elementParameterType.setValue(String.valueOf(elem.getElementParameter(EParameterName.PORT.getName())
+                            .getValue()));
+                    continue;
+                }
+
+                if (parameterTypeName.equals(EParameterName.DBNAME.getName())) {
+                    elementParameterType.setValue(checkAndAddQuote(String.valueOf(elem.getElementParameter(
+                            EParameterName.DBNAME.getName()).getValue())));
+                    continue;
+                }
+                if (parameterTypeName.equals(EParameterName.PROPERTIES.getName())) {
+                    elementParameterType.setValue(checkAndAddQuote(String.valueOf(elem.getElementParameter(
+                            EParameterName.PROPERTIES.getName()).getValue())));
+                    continue;
+                }
+
+                if (parameterTypeName.equals(EParameterName.DBFILE.getName())) {
+                    elementParameterType.setValue(checkAndAddQuote(String.valueOf(elem.getElementParameter(
+                            EParameterName.DBFILE.getName()).getValue())));
+                    continue;
+                }
+                if (parameterTypeName.equals(EParameterName.SCHEMA_DB.getName())) {
+                    elementParameterType.setValue(checkAndAddQuote(String.valueOf(elem.getElementParameter(
+                            EParameterName.SCHEMA_DB.getName()).getValue())));
+                    continue;
+                }
+
+                if (parameterTypeName.equals(EParameterName.USER.getName())) {
+                    elementParameterType.setValue(checkAndAddQuote(String.valueOf(elem.getElementParameter(
+                            EParameterName.USER.getName()).getValue())));
+                    continue;
+                }
+
+                if (parameterTypeName.equals(EParameterName.PASS.getName())) {
+                    elementParameterType.setValue(checkAndAddQuote(String.valueOf(elem.getElementParameter(
+                            EParameterName.PASS.getName()).getValue())));
+                    continue;
+                }
+
+                if (parameterTypeName.equals(EParameterName.TABLE_STATS.getName())) {
+                    elementParameterType.setValue(checkAndAddQuote(String.valueOf(elem.getElementParameter(
+                            EParameterName.TABLE_STATS.getName()).getValue())));
+                    continue;
+                }
+
+                if (parameterTypeName.equals(EParameterName.TABLE_LOGS.getName())) {
+                    elementParameterType.setValue(checkAndAddQuote(String.valueOf(elem.getElementParameter(
+                            EParameterName.TABLE_LOGS.getName()).getValue())));
+                    continue;
+                }
+
+                if (parameterTypeName.equals(EParameterName.TABLE_METER.getName())) {
+                    elementParameterType.setValue(checkAndAddQuote(String.valueOf(elem.getElementParameter(
+                            EParameterName.TABLE_METER.getName()).getValue())));
+                    continue;
+                }
+
+                if (parameterTypeName.equals(EParameterName.CATCH_RUNTIME_ERRORS.getName())) {
+                    elementParameterType.setValue(String.valueOf(elem.getElementParameter(
+                            EParameterName.CATCH_RUNTIME_ERRORS.getName()).getValue()));
+                    continue;
+                }
+
+                if (parameterTypeName.equals(EParameterName.CATCH_USER_ERRORS.getName())) {
+                    elementParameterType.setValue(String.valueOf(elem.getElementParameter(
+                            EParameterName.CATCH_USER_ERRORS.getName()).getValue()));
+                    continue;
+                }
+
+                if (parameterTypeName.equals(EParameterName.CATCH_USER_WARNING.getName())) {
+                    elementParameterType.setValue(String.valueOf(elem.getElementParameter(
+                            EParameterName.CATCH_USER_WARNING.getName()).getValue()));
+                    continue;
+                }
+
+                if (parameterTypeName.equals(EParameterName.CATCH_REALTIME_STATS.getName())) {
+                    elementParameterType.setValue(String.valueOf(elem.getElementParameter(
+                            EParameterName.CATCH_REALTIME_STATS.getName()).getValue()));
+                    continue;
+                }
+            }
+        }
     }
 
     /**
@@ -292,7 +690,7 @@ public class StatsAndLogsViewHelper {
      * @param preferenceStore
      * @param element
      */
-    public static void saveValuesToPreferencePage(Element element, IDynamicProperty dynamicProperty) {
+    public static void saveValuesToPreferencePage(IElement element, IDynamicProperty dynamicProperty) {
 
         List<? extends IElementParameter> elementParameters = element.getElementParameters();
         for (IElementParameter elementParameter : elementParameters) {
