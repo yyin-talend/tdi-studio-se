@@ -1255,8 +1255,12 @@ public class DatabaseForm extends AbstractForm {
     @Override
     public boolean checkFieldsValue() {
 
+        boolean checkGeneralDB = isGeneralJDBC();
+
         // See bug 004800
-        getConnection().setURL(getStringConnection());
+        if (!checkGeneralDB) {
+            getConnection().setURL(getStringConnection());
+        }
 
         if (isContextMode()) {
             return true;
@@ -1274,8 +1278,6 @@ public class DatabaseForm extends AbstractForm {
 
         // Show Database Properties
         setPropertiesFormEditable(true);
-
-        boolean checkGeneralDB = isGeneralJDBC();
 
         if (!checkGeneralDB) {
             if (!checkTypeDBFieldValues()) {
@@ -1303,6 +1305,7 @@ public class DatabaseForm extends AbstractForm {
             updateStatus(IStatus.WARNING, Messages.getString("DatabaseForm.alert", stringQuoteText.getLabelText())); //$NON-NLS-1$
             return false;
         }
+
         updateStatus(IStatus.OK, null);
         return true;
     }
