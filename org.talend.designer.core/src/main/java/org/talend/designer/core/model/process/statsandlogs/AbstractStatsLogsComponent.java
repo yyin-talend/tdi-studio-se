@@ -205,10 +205,11 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
         newParam.setField(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 
+        // This parameter is use for Oracle component
         newParam = new ElementParameter(node);
         newParam.setName("CONNECTION_TYPE"); //$NON-NLS-1$
-        newParam.setValue(dbComponent);
         newParam.setField(EParameterFieldType.TEXT);
+        newParam.setShow(false);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
@@ -370,7 +371,7 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
                 multipleComponentManager.addParam("self.DATA_ACTION", "DB.DATA_ACTION"); //$NON-NLS-1$ //$NON-NLS-2$
                 multipleComponentManager.addParam("self.COMMIT_EVERY", "DB.COMMIT_EVERY"); //$NON-NLS-1$ //$NON-NLS-2$
                 multipleComponentManager.addParam("self.SCHEMA_DB", "DB.SCHEMA_DB"); //$NON-NLS-1$ //$NON-NLS-2$
-                multipleComponentManager.addParam("self.DB_TYPE", "DB.CONNECTION_TYPE"); //$NON-NLS-1$ //$NON-NLS-2$
+                multipleComponentManager.addParam("self.DB_TYPE", "DB.DB_TYPE"); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
     }

@@ -249,7 +249,7 @@ public class JobContextLoadComponent implements IComponent {
                 multipleComponentManager.addParam(source, DB_INPUT + ".DBTABLE"); //$NON-NLS-1$ 
 
                 source = self + JobSettingsConstants.getExtraParameterName(EParameterName.DB_TYPE.getName());
-                multipleComponentManager.addParam(source, DB_INPUT + ".CONNECTION_TYPE"); //$NON-NLS-1$ 
+                multipleComponentManager.addParam(source, DB_INPUT + ".DB_TYPE"); //$NON-NLS-1$ 
 
                 source = self + JobSettingsConstants.QUERY;
                 multipleComponentManager.addParam(source, DB_INPUT + "." + JobSettingsConstants.QUERY); //$NON-NLS-1$ //$NON-NLS-2$
@@ -326,7 +326,6 @@ public class JobContextLoadComponent implements IComponent {
 
         newParam = new ElementParameter(node);
         newParam.setName("CONNECTION_TYPE"); //$NON-NLS-1$
-        newParam.setValue(dbComponent);
         newParam.setField(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 

@@ -38,6 +38,7 @@ import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.model.process.DataNode;
 import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants.ContextLoadInfo;
+import org.talend.designer.core.model.process.statsandlogs.OracleComponentHelper;
 import org.talend.designer.core.model.process.statsandlogs.StatsAndLogsManager;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.preferences.StatsAndLogsConstants;
@@ -623,6 +624,7 @@ public class JobSettingsManager {
 
             dbInput = (String) process.getElementParameter(
                     JobSettingsConstants.getExtraParameterName(EParameterName.DB_TYPE.getName())).getValue();
+            dbInput = OracleComponentHelper.filterOracleComponentName(dbInput);
             if (dbInput == null || dbInput.equals("")) {
                 dbInput = null;
                 dbFlag = false;
@@ -692,6 +694,9 @@ public class JobSettingsManager {
 
             paramName = JobSettingsConstants.getExtraParameterName(EParameterName.DBTABLE.getName());
             tContextLoadNode.getElementParameter(paramName).setValue(process.getElementParameter(paramName).getValue());
+
+            OracleComponentHelper.setConnectionTypeForOracle(tContextLoadNode, process, JobSettingsConstants
+                    .getExtraParameterName(EParameterName.DB_TYPE.getName()));
 
             // query
             String dbTableName = (String) process.getElementParameter(paramName).getValue();

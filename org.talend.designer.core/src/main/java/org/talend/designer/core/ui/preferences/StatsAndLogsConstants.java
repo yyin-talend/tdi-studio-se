@@ -20,15 +20,21 @@ package org.talend.designer.core.ui.preferences;
  */
 public class StatsAndLogsConstants {
 
+    public static final String ORACLE_WITH_SID_CONN_TYPE = "ORACLE_SID"; //$NON-NLS-1$
+
+    public static final String ORACLE_WITH_SERVICE_CONN_TYPE = "ORACLE_SERVICE_NAME"; //$NON-NLS-1$
+
+    public static final String ORACLE_SID_ALIAS = "tOracleOutput_sid";
+
+    public static final String ORACLE_SN_ALIAS = "tOracleOutput_servername";
+
     private static final String MYSQL = "MYSQL"; //$NON-NLS-1$
 
     private static final String POSTGRESQL = "POSTGRESQL"; //$NON-NLS-1$
 
     private static final String ODBC = "ODBC"; //$NON-NLS-1$
 
-    private static final String ORACLE_WITH_SID = "ORACLE_SID"; //$NON-NLS-1$
-
-    private static final String ORACLE_WITH_SERVICE_NAME = "ORACLE_SERIVCE_NAME"; //$NON-NLS-1$
+    public static final String ORACLE_OCI = "ORACLE_OCI";
 
     private static final String IBM_DB2 = "IBM_DB2"; //$NON-NLS-1$
 
@@ -59,22 +65,22 @@ public class StatsAndLogsConstants {
             "PostgreSQL", "IBM DB2", "Sybase", "Ingres", "Interbase", "SQLite", "FireBird", "Informix", "Access", "Teradata" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
     private static final String[] PERL_DB_COMPONENTS = new String[] {
-            "tDBOutput", "tMysqlOutput", "tDBOutput", "tOracleOutput_sid", "tOracleOutput_service", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            "tDBOutput", "tMysqlOutput", "tDBOutput", ORACLE_SID_ALIAS, ORACLE_SN_ALIAS, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
             "tPostgresqlOutput", "tDB2Output", "tSybaseOutput", "tIngresOutput", "tInterbaseOutput", "tSQLiteOutput", "tFirebirdOutput", "tInformixOutput", "tAccessOutput", "tTeradataOutput" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
     private static final String[] JAVA_DB_COMPONENTS = new String[] {
-            "tDBOutput", "tMysqlOutput", "tMSSqlOutput", "tOracleOutput_sid", "tOracleOutput_service",//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            "tDBOutput", "tMysqlOutput", "tMSSqlOutput", ORACLE_SID_ALIAS, ORACLE_SN_ALIAS,//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
             "tPostgresqlOutput", "tDB2Output", "tSybaseOutput", "tIngresOutput", "tInterbaseOutput", "tSQLiteOutput", "tFirebirdOutput", "tInformixOutput", "tAccessOutput", "tTeradataOutput" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
-    private static final String[] PERL_REPOSITORY_ITEMS = new String[] { ODBC, MYSQL, ODBC, ORACLE_WITH_SID,
-            ORACLE_WITH_SERVICE_NAME, POSTGRESQL, IBM_DB2, SYBASE, INGRES, INTERBASE, SQLITE, FIREBIRD, INFORMIX, ACCESS,
+    private static final String[] PERL_REPOSITORY_ITEMS = new String[] { ODBC, MYSQL, ODBC, ORACLE_WITH_SID_CONN_TYPE,
+            ORACLE_WITH_SERVICE_CONN_TYPE, POSTGRESQL, IBM_DB2, SYBASE, INGRES, INTERBASE, SQLITE, FIREBIRD, INFORMIX, ACCESS,
             TERADATA };
 
     private static final String[] PERL_CODE_LIST = new String[] { ODBC, MYSQL, ODBC, "OCLE", "OCLE", POSTGRESQL, //$NON-NLS-1$
             IBM_DB2, SYBASE, INGRES, INTERBASE, SQLITE, FIREBIRD, INFORMIX, ACCESS, TERADATA };
 
-    private static final String[] JAVA_REPOSITORY_ITEMS = new String[] { ODBC, MYSQL, SQL_SERVER, ORACLE_WITH_SID,
-            ORACLE_WITH_SERVICE_NAME, POSTGRESQL, IBM_DB2, SYBASE, INGRES, INTERBASE, SQLITE, FIREBIRD, INFORMIX, ACCESS,
+    private static final String[] JAVA_REPOSITORY_ITEMS = new String[] { ODBC, MYSQL, SQL_SERVER, ORACLE_WITH_SID_CONN_TYPE,
+            ORACLE_WITH_SERVICE_CONN_TYPE, POSTGRESQL, IBM_DB2, SYBASE, INGRES, INTERBASE, SQLITE, FIREBIRD, INFORMIX, ACCESS,
             TERADATA };
 
     private static final String[] JAVA_CODE_LIST = new String[] { ODBC, MYSQL, SQL_SERVER, "OCLE", "OCLE", POSTGRESQL, //$NON-NLS-1$

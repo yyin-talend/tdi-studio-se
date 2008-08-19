@@ -1838,8 +1838,7 @@ public class EmfComponent implements IComponent {
         }
         for (IMultipleComponentManager multipleComponentManager : multipleComponentManagers) {
             for (IMultipleComponentItem multipleComponentItem : multipleComponentManager.getItemList()) {
-                IComponent component = ComponentsFactoryProvider.getInstance().get(
-                        TalendTextUtils.filterOracleComponentName(multipleComponentItem.getComponent()));
+                IComponent component = ComponentsFactoryProvider.getInstance().get(multipleComponentItem.getComponent());
                 if (component == null) {
                     continue;
                 }

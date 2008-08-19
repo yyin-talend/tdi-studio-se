@@ -82,6 +82,7 @@ public class StatsAndLogsManager {
             dbOutput = null;
         } else {
             dbOutput = (String) process.getElementParameter(EParameterName.DB_TYPE.getName()).getValue(); //$NON-NLS-1$
+            dbOutput = OracleComponentHelper.filterOracleComponentName(dbOutput);
             if (dbOutput == null || dbOutput.equals("")) {
                 dbOutput = null;
                 dbFlag = false;
@@ -148,8 +149,7 @@ public class StatsAndLogsManager {
             logsNode.getElementParameter(EParameterName.CATCH_USER_WARNING.getName()).setValue(
                     process.getElementParameter(EParameterName.CATCH_USER_WARNING.getName()).getValue());
 
-            logsNode.getElementParameter(EParameterName.CONNECTION_TYPE.getName()).setValue(
-                    process.getElementParameter(EParameterName.DB_TYPE.getName()).getValue());
+            OracleComponentHelper.setConnectionTypeForOracle(logsNode, process, EParameterName.DB_TYPE.getName());
 
             logsNode.setProcess(process);
             nodeList.add(logsNode);
@@ -181,6 +181,8 @@ public class StatsAndLogsManager {
                     process.getElementParameter(EParameterName.PASS.getName()).getValue());
             statsNode.getElementParameter("TABLE").setValue(//$NON-NLS-1$
                     process.getElementParameter(EParameterName.TABLE_STATS.getName()).getValue());
+
+            OracleComponentHelper.setConnectionTypeForOracle(statsNode, process, EParameterName.DB_TYPE.getName());
 
             statsNode.setProcess(process);
             nodeList.add(statsNode);

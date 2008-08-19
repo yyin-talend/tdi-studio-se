@@ -17,6 +17,10 @@ package org.talend.designer.core.model.process.jobsettings;
  */
 public final class JobSettingsConstants {
 
+    public static final String ORACLE_INPUT_SID_ALIAS = "tOracleInput_sid";
+
+    public static final String ORACLE_INOUT_SN_ALIAS = "tOracleInput_servicename";
+
     /**
      * 
      */
@@ -42,11 +46,11 @@ public final class JobSettingsConstants {
     }
 
     private static final String[] PERL_DB_INPUT_COMPONENTS = new String[] { "tDBInput", "tMysqlInput", "tDBInput",
-            "tOracleInput_sid", "tOracleInput_service", "tPostgresqlInput", "tDB2Input", "tSybaseInput", "tIngresInput",
+            ORACLE_INPUT_SID_ALIAS, ORACLE_INOUT_SN_ALIAS, "tPostgresqlInput", "tDB2Input", "tSybaseInput", "tIngresInput",
             "tInterbaseInput", "tSQLiteInput", "tFirebirdInput", "tInformixInput", "tAccessInput", "tTeradataInput" };
 
     private static final String[] JAVA_DB_INPUT_COMPONENTS = new String[] { "tDBInput", "tMysqlInput", "tMSSqlInput",
-            "tOracleInput_sid", "tOracleInput_service", "tPostgresqlInput", "tDB2Input", "tSybaseInput", "tIngresInput",
+            ORACLE_INPUT_SID_ALIAS, ORACLE_INOUT_SN_ALIAS, "tPostgresqlInput", "tDB2Input", "tSybaseInput", "tIngresInput",
             "tInterbaseInput", "tSQLiteInput", "tFirebirdInput", "tInformixInput", "tAccessInput", "tTeradataInput" };
 
     public static final String[][] DB_INPUT_COMPONENTS = new String[][] { PERL_DB_INPUT_COMPONENTS, JAVA_DB_INPUT_COMPONENTS };
