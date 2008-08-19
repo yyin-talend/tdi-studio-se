@@ -44,7 +44,6 @@ public class DesignerPreferencePage extends FieldEditorPreferencePage implements
 
     public void init(IWorkbench workbench) {
         oldLargeIconsSize = getPreferenceStore().getString(TalendDesignerPrefConstants.LARGE_ICONS_SIZE);
-        getPreferenceStore().setDefault(ITalendCorePrefConstants.DEACTIVE_REPOSITORY_UPDATE, true);
     }
 
     @Override
