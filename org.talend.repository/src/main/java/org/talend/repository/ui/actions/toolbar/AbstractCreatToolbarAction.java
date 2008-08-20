@@ -18,21 +18,22 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MenuAdapter;
 import org.eclipse.swt.events.MenuEvent;
-import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.swt.widgets.TypedListener;
+import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.ui.IActionDelegate2;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowPulldownDelegate2;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.internal.WWinPluginPulldown;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.repository.ui.actions.AContextualAction;
@@ -56,7 +57,7 @@ import org.talend.repository.ui.views.IRepositoryView;
  * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ææäº, 29 ä¹æ 2006) nrousseau $
  * 
  */
-public abstract class AbstractCreatToolbarAction implements IWorkbenchWindowPulldownDelegate2 {
+public abstract class AbstractCreatToolbarAction implements IWorkbenchWindowPulldownDelegate2, IActionDelegate2 {
 
     /**
      * The menu created by this action
@@ -103,9 +104,33 @@ public abstract class AbstractCreatToolbarAction implements IWorkbenchWindowPull
     /*
      * (non-Javadoc)
      * 
+     * @see org.eclipse.ui.IActionDelegate2#init(org.eclipse.jface.action.IAction)
+     */
+    public void init(IAction action) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
      */
     public void run(IAction action) {
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.ui.IActionDelegate2#runWithEvent(org.eclipse.jface.action.IAction,
+     * org.eclipse.swt.widgets.Event)
+     */
+    public void runWithEvent(IAction action, Event event) {
+        if (fMenu == null && action instanceof WWinPluginPulldown) {
+            IMenuCreator menuProxy = ((WWinPluginPulldown) action).getMenuCreator();
+            ToolItem item = (ToolItem) event.widget;
+            menuProxy.getMenu(item.getParent());
+        }
         fMenu.setVisible(true);
     }
 
