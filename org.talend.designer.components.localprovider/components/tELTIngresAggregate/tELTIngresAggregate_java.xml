@@ -20,7 +20,9 @@
 		<CONNECTOR CTYPE="RUN_IF" />
 	</CONNECTORS>
 
-	<SQLPATTERNS DB="Generic"/>
+	<SQLPATTERNS DB="Generic">
+		<SQLPATTERN NAME="Aggregate"/>
+	</SQLPATTERNS>
 
 	<PARAMETERS>
 	

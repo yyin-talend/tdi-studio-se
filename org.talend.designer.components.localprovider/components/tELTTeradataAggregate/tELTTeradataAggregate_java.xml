@@ -20,7 +20,9 @@
 		<CONNECTOR CTYPE="RUN_IF" />
 	</CONNECTORS>
 
-	<SQLPATTERNS DB="Teradata"/>
+	<SQLPATTERNS DB="Teradata">
+		<SQLPATTERN NAME="Aggregate"/>
+	</SQLPATTERNS>
 
 	<PARAMETERS>
 	
