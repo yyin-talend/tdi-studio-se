@@ -12,9 +12,6 @@
 // ============================================================================
 package org.talend.designer.core.model.process.statsandlogs;
 
-import org.talend.core.model.process.IProcess;
-import org.talend.designer.core.model.components.EParameterName;
-import org.talend.designer.core.model.process.DataNode;
 import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants;
 import org.talend.designer.core.ui.preferences.StatsAndLogsConstants;
 
@@ -30,23 +27,19 @@ public final class OracleComponentHelper {
      * @param node
      * @param process
      */
-    public static void setConnectionTypeForOracle(final DataNode node, final IProcess process, final String dbtype) {
-        String dbType = (String) process.getElementParameter(dbtype).getValue();
+    public static String filterOracleConnectionType(final String dbType) {
         if (dbType != null) {
             if (dbType.startsWith("tOracle")) {
                 if (dbType.contains("sid")) {
-                    // Sid
-                    node.getElementParameter(EParameterName.CONNECTION_TYPE.getName()).setValue(
-                            StatsAndLogsConstants.ORACLE_WITH_SID_CONN_TYPE);
+                    return StatsAndLogsConstants.ORACLE_WITH_SID_CONN_TYPE;
                 } else if (dbType.contains("servername")) {
-                    node.getElementParameter(EParameterName.CONNECTION_TYPE.getName()).setValue(
-                            StatsAndLogsConstants.ORACLE_WITH_SERVICE_CONN_TYPE);
+                    return StatsAndLogsConstants.ORACLE_WITH_SERVICE_CONN_TYPE;
                 } else {
-                    node.getElementParameter(EParameterName.CONNECTION_TYPE.getName()).setValue(StatsAndLogsConstants.ORACLE_OCI);
+                    return StatsAndLogsConstants.ORACLE_OCI;
                 }
             }
         }
-
+        return dbType;
     }
 
     /**

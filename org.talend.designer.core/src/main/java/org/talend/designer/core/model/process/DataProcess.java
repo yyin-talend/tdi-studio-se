@@ -544,21 +544,6 @@ public class DataProcess {
                 curNode.setComponent(graphicalNode.getComponent());
             }
 
-            // see feature 4565
-            if (component.getName().startsWith("tOracle")) {
-                String value = null;
-                if (graphicalNode.getElementParameter(EParameterName.CONNECTION_TYPE.getName()) != null
-                        && graphicalNode.getElementParameter(EParameterName.CONNECTION_TYPE.getName()).getValue() != null) {
-                    value = (String) graphicalNode.getElementParameter(EParameterName.CONNECTION_TYPE.getName()).getValue();
-                    if (value.endsWith("service")) {
-                        value = "ORACLE_SERVICE_NAME";
-                    } else if (value.endsWith("sid")) {
-                        value = "ORACLE_SID";
-                    }
-                    curNode.getElementParameter(EParameterName.CONNECTION_TYPE.getName()).setValue(value);
-                }
-            }
-
             curNode.setActivate(graphicalNode.isActivate());
             IMetadataTable newMetadata = null;
             if (multipleComponentManager.isSetConnector()) {

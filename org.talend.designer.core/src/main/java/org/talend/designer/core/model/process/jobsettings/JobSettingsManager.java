@@ -692,11 +692,13 @@ public class JobSettingsManager {
             paramName = JobSettingsConstants.getExtraParameterName(EParameterName.PASS.getName());
             tContextLoadNode.getElementParameter(paramName).setValue(process.getElementParameter(paramName).getValue());
 
+            paramName = JobSettingsConstants.getExtraParameterName(EParameterName.CONNECTION_TYPE.getName());
+            tContextLoadNode.getElementParameter(paramName).setValue(
+                    OracleComponentHelper.filterOracleConnectionType((String) process.getElementParameter(
+                            JobSettingsConstants.getExtraParameterName(EParameterName.DB_TYPE.getName())).getValue()));
+
             paramName = JobSettingsConstants.getExtraParameterName(EParameterName.DBTABLE.getName());
             tContextLoadNode.getElementParameter(paramName).setValue(process.getElementParameter(paramName).getValue());
-
-            OracleComponentHelper.setConnectionTypeForOracle(tContextLoadNode, process, JobSettingsConstants
-                    .getExtraParameterName(EParameterName.DB_TYPE.getName()));
 
             // query
             String dbTableName = (String) process.getElementParameter(paramName).getValue();

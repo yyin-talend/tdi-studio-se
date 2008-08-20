@@ -149,7 +149,9 @@ public class StatsAndLogsManager {
             logsNode.getElementParameter(EParameterName.CATCH_USER_WARNING.getName()).setValue(
                     process.getElementParameter(EParameterName.CATCH_USER_WARNING.getName()).getValue());
 
-            OracleComponentHelper.setConnectionTypeForOracle(logsNode, process, EParameterName.DB_TYPE.getName());
+            logsNode.getElementParameter(EParameterName.CONNECTION_TYPE.getName()).setValue(
+                    OracleComponentHelper.filterOracleConnectionType((String) process.getElementParameter(
+                            EParameterName.DB_TYPE.getName()).getValue()));
 
             logsNode.setProcess(process);
             nodeList.add(logsNode);
@@ -182,7 +184,9 @@ public class StatsAndLogsManager {
             statsNode.getElementParameter("TABLE").setValue(//$NON-NLS-1$
                     process.getElementParameter(EParameterName.TABLE_STATS.getName()).getValue());
 
-            OracleComponentHelper.setConnectionTypeForOracle(statsNode, process, EParameterName.DB_TYPE.getName());
+            statsNode.getElementParameter(EParameterName.CONNECTION_TYPE.getName()).setValue(
+                    OracleComponentHelper.filterOracleConnectionType((String) process.getElementParameter(
+                            EParameterName.DB_TYPE.getName()).getValue()));
 
             statsNode.setProcess(process);
             nodeList.add(statsNode);
