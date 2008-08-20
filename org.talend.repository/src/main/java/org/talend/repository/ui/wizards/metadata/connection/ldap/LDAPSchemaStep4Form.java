@@ -53,6 +53,7 @@ import org.talend.core.model.metadata.types.PerlDataTypeHelper;
 import org.talend.core.model.metadata.types.PerlTypesManager;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.core.prefs.ui.MetadataTypeLengthConstants;
 import org.talend.core.ui.metadata.editor.MetadataEmfTableEditorView;
 import org.talend.core.utils.CsvArray;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
@@ -457,6 +458,21 @@ public class LDAPSchemaStep4Form extends AbstractLDAPSchemaStepForm {
                                 positionDecimal = value.lastIndexOf('.');
                                 precisionValue = lengthValue - positionDecimal;
                             }
+                        } else {
+                            if (CorePlugin.getDefault().getPreferenceStore().getString(
+                                    MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE) != null
+                                    && !CorePlugin.getDefault().getPreferenceStore().getString(
+                                            MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE).equals("")) {
+                                globalType = CorePlugin.getDefault().getPreferenceStore().getString(
+                                        MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE);
+                                if (CorePlugin.getDefault().getPreferenceStore().getString(
+                                        MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH) != null
+                                        && !CorePlugin.getDefault().getPreferenceStore().getString(
+                                                MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH).equals("")) {
+                                    lengthValue = Integer.parseInt(CorePlugin.getDefault().getPreferenceStore().getString(
+                                            MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH));
+                                }
+                            }
                         }
                     }
                 }
@@ -514,7 +530,6 @@ public class LDAPSchemaStep4Form extends AbstractLDAPSchemaStepForm {
      * (non-Javadoc)
      * 
      * @see org.eclipse.swt.widgets.Control#setVisible(boolean)
-     * 
      */
     public void setVisible(boolean visible) {
         super.setVisible(visible);

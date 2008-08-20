@@ -37,6 +37,7 @@ import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
 import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
+import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.MetadataTalendType;
@@ -51,6 +52,7 @@ import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.metadata.types.PerlDataTypeHelper;
 import org.talend.core.model.metadata.types.PerlTypesManager;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.prefs.ui.MetadataTypeLengthConstants;
 import org.talend.core.ui.metadata.editor.MetadataEmfTableEditorView;
 import org.talend.core.utils.CsvArray;
 import org.talend.repository.i18n.Messages;
@@ -416,6 +418,21 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
                                 positionDecimal = value.lastIndexOf('.');
                                 precisionValue = lengthValue - positionDecimal;
                             }
+                        } else {
+                            if (CorePlugin.getDefault().getPreferenceStore().getString(
+                                    MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE) != null
+                                    && !CorePlugin.getDefault().getPreferenceStore().getString(
+                                            MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE).equals("")) {
+                                globalType = CorePlugin.getDefault().getPreferenceStore().getString(
+                                        MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE);
+                                if (CorePlugin.getDefault().getPreferenceStore().getString(
+                                        MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH) != null
+                                        && !CorePlugin.getDefault().getPreferenceStore().getString(
+                                                MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH).equals("")) {
+                                    lengthValue = Integer.parseInt(CorePlugin.getDefault().getPreferenceStore().getString(
+                                            MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH));
+                                }
+                            }
                         }
                     }
                 }
@@ -490,7 +507,6 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
      * (non-Javadoc)
      * 
      * @see org.eclipse.swt.widgets.Control#setVisible(boolean)
-     * 
      */
     @Override
     public void setVisible(boolean visible) {
