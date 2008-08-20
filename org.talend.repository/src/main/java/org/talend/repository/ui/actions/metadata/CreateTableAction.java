@@ -26,6 +26,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ERepositoryStatus;
@@ -168,12 +169,13 @@ public class CreateTableAction extends AbstractCreateTableAction {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.repository.ui.actions.metadata.AbstractCreateAction#init(org.talend.repository.model.RepositoryNode)
+     * @see
+     * org.talend.repository.ui.actions.metadata.AbstractCreateAction#init(org.talend.repository.model.RepositoryNode)
      */
     @Override
     protected void init(RepositoryNode node) {
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-        if (factory.isUserReadOnlyOnCurrentProject() || !factory.isMainProjectItem(node.getObject())) {
+        if (factory.isUserReadOnlyOnCurrentProject() || !ProjectManager.getInstance().isInCurrentMainProject(node)) {
             setEnabled(false);
         } else {
             if (ENodeType.REPOSITORY_ELEMENT.equals(node.getType())) {

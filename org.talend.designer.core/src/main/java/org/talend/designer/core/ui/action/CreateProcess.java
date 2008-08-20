@@ -38,6 +38,7 @@ import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.core.ui.wizards.NewProcessWizard;
 import org.talend.designer.runprocess.ItemCacheManager;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -165,7 +166,7 @@ public class CreateProcess extends AContextualAction {
             default:
                 canWork = false;
             }
-            if (!node.getRoot().getProject().equals(factory.getRepositoryContext().getProject())) {
+            if (canWork && !ProjectManager.getInstance().isInCurrentMainProject(node)) {
                 canWork = false;
             }
         }

@@ -157,7 +157,7 @@ public class EditProcess extends AContextualAction {
             default:
                 canWork = false;
             }
-            if (!factory.isMainProjectItem(node.getObject())) {
+            if (canWork && !ProjectManager.getInstance().isInCurrentMainProject(node)) {
                 canWork = false;
             }
 

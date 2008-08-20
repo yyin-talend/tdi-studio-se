@@ -34,6 +34,7 @@ import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.utils.KeywordsValidator;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
@@ -76,7 +77,7 @@ public class DuplicateAction extends AContextualAction {
         this.sourceNode = node;
         this.selection = selection;
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-        if (factory.isUserReadOnlyOnCurrentProject() || !factory.isMainProjectItem(node.getObject())) {
+        if (factory.isUserReadOnlyOnCurrentProject() || !ProjectManager.getInstance().isInCurrentMainProject(node)) {
             canWork = false;
         }
 

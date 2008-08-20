@@ -28,6 +28,7 @@ import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.update.RepositoryUpdateManager;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ISubRepositoryObject;
@@ -114,7 +115,7 @@ public class DetecteViewImpactAction extends AContextualAction {
                 default:
                     canWork = false;
                 }
-                if (!factory.isMainProjectItem(node.getObject())) {
+                if (canWork && !ProjectManager.getInstance().isInCurrentMainProject(node)) {
                     canWork = false;
                 }
             }

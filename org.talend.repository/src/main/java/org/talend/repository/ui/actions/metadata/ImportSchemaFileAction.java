@@ -25,6 +25,7 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.images.OverlayImageProvider;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -65,13 +66,14 @@ public class ImportSchemaFileAction extends CreateGenericSchemaAction {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.repository.ui.actions.metadata.CreateGenericSchemaAction#init(org.talend.repository.model.RepositoryNode)
+     * @see
+     * org.talend.repository.ui.actions.metadata.CreateGenericSchemaAction#init(org.talend.repository.model.RepositoryNode
+     * )
      */
     @Override
     protected void init(RepositoryNode node) {
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-        if (factory.isUserReadOnlyOnCurrentProject()
-                || !node.getRoot().getProject().equals(factory.getRepositoryContext().getProject())) {
+        if (factory.isUserReadOnlyOnCurrentProject() || !ProjectManager.getInstance().isInCurrentMainProject(node)) {
             setEnabled(false);
             return;
         }

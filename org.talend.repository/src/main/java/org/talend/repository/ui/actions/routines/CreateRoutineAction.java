@@ -27,6 +27,7 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.images.OverlayImageProvider;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -84,7 +85,7 @@ public class CreateRoutineAction extends AbstractRoutineAction {
             default:
                 canWork = false;
             }
-            if (!node.getRoot().getProject().equals(factory.getRepositoryContext().getProject())) {
+            if (canWork && !ProjectManager.getInstance().isInCurrentMainProject(node)) {
                 canWork = false;
             }
         }

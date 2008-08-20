@@ -21,6 +21,7 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
@@ -59,7 +60,7 @@ public class EditSqlpatternAction extends AbstractSqlpatternAction {
             canWork = node.getType() == ENodeType.REPOSITORY_ELEMENT
                     && node.getObject().getType() == ERepositoryObjectType.SQLPATTERNS
                     && !((SQLPatternItem) node.getObject().getProperty().getItem()).isSystem();
-            if (!factory.isMainProjectItem(node.getObject())) {
+            if (canWork && !ProjectManager.getInstance().isInCurrentMainProject(node)) {
                 canWork = false;
             }
         }

@@ -119,7 +119,7 @@ my @arguments = (
     '<%=interpreterPath %>',
     '-I "' . $libPath . '"',
     '-I "' . $runtimeFilePath . '"',
-    '"' . $runtimeFilePath . '<%=PerlResourcesHelper.getJobFileName(processName, version)%>"',
+    '"' . $runtimeFilePath . '<%=PerlResourcesHelper.getJobFileName(processId, version)%>"',
     '--root_pid='.$_globals{root_pid},
     '--father_pid='.$_globals{pid},
     '--context='.<%=context %>,

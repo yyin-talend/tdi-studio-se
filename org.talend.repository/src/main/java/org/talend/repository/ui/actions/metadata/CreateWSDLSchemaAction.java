@@ -22,6 +22,7 @@ import org.talend.core.model.properties.WSDLSchemaConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.images.OverlayImageProvider;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
@@ -75,7 +76,8 @@ public class CreateWSDLSchemaAction extends AbstractCreateAction {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.repository.ui.actions.metadata.AbstractCreateAction#init(org.talend.repository.model.RepositoryNode)
+     * @see
+     * org.talend.repository.ui.actions.metadata.AbstractCreateAction#init(org.talend.repository.model.RepositoryNode)
      */
     @Override
     protected void init(RepositoryNode node) {
@@ -88,8 +90,7 @@ public class CreateWSDLSchemaAction extends AbstractCreateAction {
         switch (node.getType()) {
         case SIMPLE_FOLDER:
         case SYSTEM_FOLDER:
-            if (factory.isUserReadOnlyOnCurrentProject()
-                    || !node.getRoot().getProject().equals(factory.getRepositoryContext().getProject())) {
+            if (factory.isUserReadOnlyOnCurrentProject() || !ProjectManager.getInstance().isInCurrentMainProject(node)) {
                 setEnabled(false);
                 return;
             }

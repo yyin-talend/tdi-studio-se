@@ -21,6 +21,7 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -60,7 +61,7 @@ public class EditRoutineAction extends AbstractRoutineAction {
             canWork = node.getType() == ENodeType.REPOSITORY_ELEMENT
                     && node.getObject().getType() == ERepositoryObjectType.ROUTINES
                     && !((RoutineItem) node.getObject().getProperty().getItem()).isBuiltIn();
-            if (!factory.isMainProjectItem(node.getObject())) {
+            if (canWork && !ProjectManager.getInstance().isInCurrentMainProject(node)) {
                 canWork = false;
             }
         }

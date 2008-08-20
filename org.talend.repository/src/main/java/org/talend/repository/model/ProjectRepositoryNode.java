@@ -52,6 +52,7 @@ import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.ICDCProviderService;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.nodes.IProjectRepositoryNode;
 
@@ -101,7 +102,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
     public ProjectRepositoryNode(IRepositoryObject object, RepositoryNode parent, ENodeType type) {
         super(object, parent, type);
         // base project
-        this.project = factory.getRepositoryContext().getProject();
+        this.project = ProjectManager.getInstance().getCurrentProject();
         setRoot(this);
     }
 
@@ -393,7 +394,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         }
 
         generatedFolder.setProperties(EProperties.LABEL, ERepositoryObjectType.GENERATED.toString());
-        generatedFolder.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.GENERATED); // ERepositoryObjectType.FOLDER);
+        generatedFolder.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.GENERATED); // ERepositoryObjectType
+                                                                                                  // .FOLDER);
         parent.getChildren().add(generatedFolder);
 
     }

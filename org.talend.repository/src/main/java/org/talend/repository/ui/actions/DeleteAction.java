@@ -44,6 +44,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.expressionbuilder.ExpressionPersistance;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -393,7 +394,7 @@ public class DeleteAction extends AContextualAction {
         for (Object o : (selection).toArray()) {
             if (visible) {
                 RepositoryNode node = (RepositoryNode) o;
-                if (!node.getRoot().getProject().equals(factory.getRepositoryContext().getProject())) {
+                if (!ProjectManager.getInstance().isInCurrentMainProject(node)) {
                     visible = false;
                     break;
                 }

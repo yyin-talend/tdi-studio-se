@@ -30,9 +30,9 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.core.CorePlugin;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.model.RepositoryNode;
 
@@ -226,7 +226,7 @@ public class TalendLaunchToolbarAction extends AbstractLaunchToolbarAction {
     private boolean isCurrentProject(ILaunchConfiguration configuration) {
         try {
             String projectName = configuration.getAttribute(TalendDebugUIConstants.CURRENT_PROJECT_NAME, (String) null);
-            return projectName.equals(CorePlugin.getCurrentProject().getLabel());
+            return projectName.equals(ProjectManager.getInstance().getCurrentProject().getLabel());
         } catch (Exception e) {
             // TODO: handle exception
         }

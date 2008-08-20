@@ -32,9 +32,9 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.core.CorePlugin;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.model.RepositoryNode;
 
@@ -76,7 +76,7 @@ import org.talend.repository.model.RepositoryNode;
  *    
  *  	    &lt;/shortcut&gt;
  *  	&lt;/extension&gt;
- *  
+ * 
  * </pre>
  * 
  * @author bqian
@@ -161,7 +161,7 @@ public class JobLaunchShortcut implements ILaunchShortcut {
                 if (projectName == null) {
                     continue;
                 }
-                if (!projectName.equals(CorePlugin.getCurrentProject().getLabel())) {
+                if (!projectName.equals(ProjectManager.getInstance().getCurrentProject().getLabel())) {
                     continue;
                 }
                 String jobId = config.getAttribute(TalendDebugUIConstants.JOB_ID, (String) null);
@@ -209,7 +209,7 @@ public class JobLaunchShortcut implements ILaunchShortcut {
                 wc.setAttribute(TalendDebugUIConstants.JOB_NAME, jobName);
                 wc.setAttribute(TalendDebugUIConstants.JOB_ID, jobId);
                 wc.setAttribute(TalendDebugUIConstants.JOB_VERSION, jobVersion);
-                String projectName = CorePlugin.getCurrentProject().getLabel();
+                String projectName = ProjectManager.getInstance().getCurrentProject().getLabel();
                 wc.setAttribute(TalendDebugUIConstants.CURRENT_PROJECT_NAME, projectName);
                 config = wc.doSave();
             }

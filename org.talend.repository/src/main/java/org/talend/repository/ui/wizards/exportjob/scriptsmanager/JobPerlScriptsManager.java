@@ -347,11 +347,11 @@ public class JobPerlScriptsManager extends JobScriptsManager {
                 selectedJobVersion);
         addDepencies(allResources, process, BooleanUtils.isTrue(exportChoice.get(ExportChoice.needDependencies)), curResource);
         Set<JobInfo> subjobInfos = ProcessorUtilities.getChildrenJobInfo(process);
-        String rootProjectName = PerlResourcesHelper.getRootProjectName(curResource.getItem());
         for (JobInfo subjobInfo : subjobInfos) {
             if (subjobInfo.getJobName().equals(rootName)) {
                 continue;
             }
+            String rootProjectName = PerlResourcesHelper.getRootProjectName(subjobInfo.getProcessItem());
 
             String jobScriptName = PerlResourcesHelper.getJobFileName(rootProjectName, subjobInfo.getJobName(), subjobInfo
                     .getJobVersion());

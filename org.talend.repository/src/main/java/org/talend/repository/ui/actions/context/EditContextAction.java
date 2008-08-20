@@ -18,12 +18,11 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.image.ImageProvider;
-import org.talend.core.CorePlugin;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.repository.ui.wizards.context.ContextWizard;
@@ -71,11 +70,8 @@ public class EditContextAction extends AContextualAction {
             default:
                 canWork = false;
             }
-            if (canWork) {
-                IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
-                if (!factory.isMainProjectItem(node.getObject())) {
-                    canWork = false;
-                }
+            if (canWork && !ProjectManager.getInstance().isInCurrentMainProject(node)) {
+                canWork = false;
             }
         }
         setEnabled(canWork);

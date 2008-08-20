@@ -26,6 +26,7 @@ import org.talend.core.model.metadata.builder.connection.SubItemHelper;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ISubRepositoryObject;
@@ -107,7 +108,7 @@ public class RestoreAction extends AContextualAction {
                 if (o instanceof RepositoryNode) {
                     RepositoryNode node = (RepositoryNode) o;
                     canWork = restoreObjectAction.validateAction(node, null);
-                    if (!factory.isMainProjectItem(node.getObject())) {
+                    if (canWork && !ProjectManager.getInstance().isInCurrentMainProject(node)) {
                         canWork = false;
                     }
                     if (!canWork) {
