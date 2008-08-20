@@ -155,7 +155,7 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
             List<INodeConnector> connectors = ((ConnectionCreateAction) action).getConnectors();
             if (connectors.size() > 1) {
                 for (INodeConnector connector : connectors) {
-                    if (connector.isBuiltIn()) {
+                    if (connector.isMultiSchema()) {
                         action = new ConnectionCreateAction(part, connector);
                         ((ConnectionCreateAction) action).update();
                         if (action.isEnabled()) {

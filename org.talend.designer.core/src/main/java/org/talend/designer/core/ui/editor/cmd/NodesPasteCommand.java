@@ -332,7 +332,7 @@ public class NodesPasteCommand extends Command {
                 mainConnector = pastedNode.getConnectorFromType(EConnectionType.FLOW_MAIN);
             }
 
-            if (!mainConnector.isBuiltIn()) {
+            if (!mainConnector.isMultiSchema()) {
                 if (copiedNode.getMetadataList().size() != 0) {
                     pastedNode.getMetadataList().clear();
                     for (IMetadataTable metaTable : copiedNode.getMetadataList()) {
@@ -469,13 +469,13 @@ public class NodesPasteCommand extends Command {
 
                     String meta = oldMetaToNewMeta.get(pastedSourceNode.getUniqueName() + ":" + connection.getMetaName()); //$NON-NLS-1$
                     if (meta != null) {
-                        if (pastedSourceNode.getConnectorFromType(connection.getLineStyle()).isBuiltIn()
+                        if (pastedSourceNode.getConnectorFromType(connection.getLineStyle()).isMultiSchema()
                                 && !connection.getLineStyle().equals(EConnectionType.TABLE)) {
                             newConnectionName = meta;
                         }
                         metaTableName = meta;
                     } else {
-                        if (pastedSourceNode.getConnectorFromType(connection.getLineStyle()).isBuiltIn()) {
+                        if (pastedSourceNode.getConnectorFromType(connection.getLineStyle()).isMultiSchema()) {
                             metaTableName = pastedSourceNode.getMetadataList().get(0).getTableName();
                         } else {
                             metaTableName = pastedSourceNode.getUniqueName(); // connection.getMetaName();

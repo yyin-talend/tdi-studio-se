@@ -232,7 +232,7 @@ public class Node extends Element implements INode {
 
         for (INodeConnector curConnector : getListConnector()) {
             if (curConnector.getDefaultConnectionType().hasConnectionCategory(IConnectionCategory.DATA)) {
-                if (!curConnector.isBuiltIn() && (curConnector.getMaxLinkInput() != 0 || curConnector.getMaxLinkOutput() != 0)) {
+                if (!curConnector.isMultiSchema() && (curConnector.getMaxLinkInput() != 0 || curConnector.getMaxLinkOutput() != 0)) {
                     hasMetadata = true;
                     break;
                 }
@@ -611,7 +611,7 @@ public class Node extends Element implements INode {
                 mainConnector = this.getConnectorFromType(EConnectionType.FLOW_MAIN);
             }
             Boolean takeSchema = null;
-            if (!mainConnector.isBuiltIn()
+            if (!mainConnector.isMultiSchema()
                     && (connection.getLineStyle() == EConnectionType.FLOW_MAIN
                             || (connection.getLineStyle() == EConnectionType.TABLE) || ((connection.getLineStyle() == EConnectionType.FLOW_MERGE) && (connection
                             .getInputId() == 1))) && ((Process) getProcess()).isActivate()) {
@@ -693,7 +693,7 @@ public class Node extends Element implements INode {
                         if (takeSchema) {
                             connection.getSource().takeSchemaFrom(this, mainConnector.getName());
                         }
-                    } else if (connection.getSourceNodeConnector().isBuiltIn()) {
+                    } else if (connection.getSourceNodeConnector().isMultiSchema()) {
                         if (takeSchema == null) {
                             takeSchema = getTakeSchema();
                         }
@@ -815,7 +815,7 @@ public class Node extends Element implements INode {
             mainConnector = this.getConnectorFromType(EConnectionType.FLOW_MAIN);
         }
 
-        if (!mainConnector.isBuiltIn() && component.isSchemaAutoPropagated()
+        if (!mainConnector.isMultiSchema() && component.isSchemaAutoPropagated()
                 && (connection.getLineStyle() == EConnectionType.FLOW_MAIN)) {
 
             for (INodeConnector connector : getListConnector()) {
@@ -1732,7 +1732,7 @@ public class Node extends Element implements INode {
         // test empty schema in built in connections (several outputs with
         // different schema)
         if (!noSchema && (!canEditSchema || isExternalNode())) {
-            if (mainConnector.isBuiltIn()) {
+            if (mainConnector.isMultiSchema()) {
                 if (getMetadataList() != null) {
                     for (IMetadataTable meta : getMetadataList()) {
                         if (meta.getListColumns().size() == 0) {

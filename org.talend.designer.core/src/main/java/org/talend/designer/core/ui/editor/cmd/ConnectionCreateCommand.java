@@ -144,7 +144,7 @@ public class ConnectionCreateCommand extends Command {
             }
             mainConnector = source.getConnectorFromType(connecType);
 
-            if (source.getConnectorFromName(connectorName).isBuiltIn()) {
+            if (source.getConnectorFromName(connectorName).isMultiSchema()) {
                 boolean connectionOk = false;
                 while (!connectionOk) {
                     connectionName = askForConnectionName(source.getLabel(), connectionName);

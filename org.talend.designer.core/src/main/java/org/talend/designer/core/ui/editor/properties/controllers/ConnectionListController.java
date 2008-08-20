@@ -73,7 +73,8 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createCommand()
+     * @see
+     * org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createCommand()
      */
     public Command createCommand(SelectionEvent selectionEvent) {
         Assert.isTrue(selectionEvent.getSource() instanceof CCombo);
@@ -107,7 +108,8 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createControl()
+     * @see
+     * org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createControl()
      */
     @Override
     public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
@@ -193,8 +195,9 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite,
-     * org.talend.core.model.process.IElementParameter)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize
+     * (org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
      */
     @Override
     public int estimateRowSize(Composite subComposite, IElementParameter param) {
@@ -265,7 +268,7 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
         }
     }
 
-    private static void renameConnectionInElement(String oldConnectionName, String newConnectionName, Element elem) {
+    public static void renameConnectionInElement(String oldConnectionName, String newConnectionName, Element elem) {
         for (IElementParameter curParam : elem.getElementParameters()) {
             if (curParam.getField().equals(EParameterFieldType.CONNECTION_LIST)) {
                 if (oldConnectionName.equals(curParam.getValue())) {
@@ -287,7 +290,22 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
                                         curLine.put(param.getName(), newConnectionName);
                                     }
                                 } else if (value instanceof String) {
-                                    curLine.put(param.getName(), newConnectionName);
+                                    String connectionName = (String) curLine.get(param.getName());
+                                    if (connectionName.equals(oldConnectionName)) {
+                                        curLine.put(param.getName(), newConnectionName);
+                                    }
+                                }
+                            }
+                        }
+                        if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
+                            List<Map<String, Object>> tableValues = (List<Map<String, Object>>) curParam.getValue();
+                            for (Map<String, Object> curLine : tableValues) {
+                                Object value = curLine.get(param.getName());
+                                if (value instanceof String) {
+                                    String connectionName = (String) curLine.get(param.getName());
+                                    if (connectionName.equals(oldConnectionName)) {
+                                        curLine.put(param.getName(), newConnectionName);
+                                    }
                                 }
                             }
                         }

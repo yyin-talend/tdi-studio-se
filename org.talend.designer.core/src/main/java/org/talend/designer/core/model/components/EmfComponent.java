@@ -1536,6 +1536,9 @@ public class EmfComponent implements IComponent {
                 case RADIO:
                     newParam.setValue(new Boolean(item.getVALUE()));
                     break;
+                case SCHEMA_TYPE:
+                    newParam.setValue("");
+                    break;
                 default: // TEXT by default
                     newParam.setField(EParameterFieldType.TEXT);
                     newParam.setValue(item.getVALUE());
@@ -1648,6 +1651,10 @@ public class EmfComponent implements IComponent {
             }
             if (connType.isSetBUILTIN()) {
                 nodeConnector.setBuiltIn(connType.isBUILTIN());
+                nodeConnector.setMultiSchema(connType.isBUILTIN());
+            }
+            if (connType.isSetMULTISCHEMA()) {
+                nodeConnector.setMultiSchema(connType.isMULTISCHEMA());
             }
 
             if (connType.getNAME() == null) {

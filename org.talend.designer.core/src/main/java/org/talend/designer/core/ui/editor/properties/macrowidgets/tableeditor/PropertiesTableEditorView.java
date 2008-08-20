@@ -40,7 +40,9 @@ import org.talend.commons.ui.swt.tableviewer.tableeditor.CheckboxTableEditorCont
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.ui.metadata.celleditor.SchemaCellEditor;
 import org.talend.core.ui.proposal.TalendProposalProvider;
 import org.talend.designer.core.model.components.ElementParameter;
 
@@ -107,7 +109,9 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.commons.ui.swt.advanced.dataeditor.AbstractDataTableEditorView#setTableViewerCreatorOptions(org.talend.commons.ui.swt.tableviewer.TableViewerCreator)
+     * @see
+     * org.talend.commons.ui.swt.advanced.dataeditor.AbstractDataTableEditorView#setTableViewerCreatorOptions(org.talend
+     * .commons.ui.swt.tableviewer.TableViewerCreator)
      */
     @Override
     protected void setTableViewerCreatorOptions(TableViewerCreator<B> newTableViewerCreator) {
@@ -118,9 +122,11 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.commons.ui.swt.extended.macrotable.AbstractExtendedTableViewer#createColumns(org.talend.commons.ui.swt.tableviewer.TableViewerCreator,
-     * org.eclipse.swt.widgets.Table)
+     * @see
+     * org.talend.commons.ui.swt.extended.macrotable.AbstractExtendedTableViewer#createColumns(org.talend.commons.ui
+     * .swt.tableviewer.TableViewerCreator, org.eclipse.swt.widgets.Table)
      */
+    @SuppressWarnings("unchecked")
     @Override
     protected void createColumns(final TableViewerCreator<B> tableViewerCreator, final Table table) {
 
@@ -253,6 +259,14 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                     column.setModifiable((!param.isRepositoryValueUsed()) && (!param.isReadOnly()) && (!tmpParam.isReadOnly()));
                     column.setTableEditorContent(new CheckboxTableEditorContent());
                     column.setDisplayedValue(""); //$NON-NLS-1$
+                    break;
+                case SCHEMA_TYPE:
+                    column.setModifiable((!param.isRepositoryValueUsed()) && (!param.isReadOnly()) && (!tmpParam.isReadOnly()));
+                    INode node = (INode) element;
+                    // List<IMetadataTable> tables = node.getMetadataList();
+
+                    column.setLabelProvider(null);
+                    column.setCellEditor(new SchemaCellEditor(table, node));
                     break;
                 default: // TEXT
                     TextCellEditorWithProposal textCellEditor = new TextCellEditorWithProposal(table, column);

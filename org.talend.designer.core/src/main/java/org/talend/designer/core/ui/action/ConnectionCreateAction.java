@@ -128,11 +128,11 @@ public class ConnectionCreateAction extends SelectionAction {
                 return false;
             }
 
-            if (!curNodeConnector.isBuiltIn()) {
+            if (!curNodeConnector.isMultiSchema()) {
                 setText(curNodeConnector.getMenuName());
             }
 
-            if (curNodeConnector.isBuiltIn()) {
+            if (curNodeConnector.isMultiSchema()) {
                 for (int i = 0; i < node.getMetadataList().size(); i++) {
                     IMetadataTable table = (node.getMetadataList().get(i));
                     if (table.getAttachedConnector() == null || table.getAttachedConnector().equals(curNodeConnector.getName())) {
@@ -154,8 +154,9 @@ public class ConnectionCreateAction extends SelectionAction {
                         }
                     }
                 }
-                if (curNodeConnector.getMaxLinkOutput() == -1
-                        || node.getMetadataList().size() < curNodeConnector.getMaxLinkOutput()) {
+                if ((curNodeConnector.getMaxLinkOutput() == -1 || node.getMetadataList().size() < curNodeConnector
+                        .getMaxLinkOutput())
+                        && curNodeConnector.isBuiltIn()) {
                     menuList.add(getNewOutputMenuName());
                 }
             } else {
@@ -331,7 +332,7 @@ public class ConnectionCreateAction extends SelectionAction {
         }
 
         Node node = (Node) nodePart.getModel();
-        if (curNodeConnector.isBuiltIn()) {
+        if (curNodeConnector.isMultiSchema()) {
             if (getText().equals(getNewOutputMenuName())) {
                 // boolean nameOk = false;
                 // while (!nameOk) {
@@ -477,7 +478,7 @@ public class ConnectionCreateAction extends SelectionAction {
             fromConnectionName = node.getProcess().generateUniqueConnectionName(baseName);
         }
         if (fromConnectionName != null && connecType.hasConnectionCategory(IConnectionCategory.FLOW)
-                && node.getProcess().checkValidConnectionName(fromConnectionName, false) && !curNodeConnector.isBuiltIn()) {
+                && node.getProcess().checkValidConnectionName(fromConnectionName, false) && !curNodeConnector.isMultiSchema()) {
 
             listArgs.add(fromConnectionName);
 

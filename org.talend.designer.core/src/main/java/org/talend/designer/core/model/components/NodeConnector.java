@@ -54,6 +54,8 @@ public class NodeConnector implements INodeConnector {
 
     private Map<EConnectionType, IConnectionProperty> propertyMap = new HashMap<EConnectionType, IConnectionProperty>();
 
+    private boolean multiSchema = false;
+
     /*
      * (non-Javadoc)
      * 
@@ -66,7 +68,8 @@ public class NodeConnector implements INodeConnector {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.model.components.INodeConnector#setConnectionType(org.talend.core.model.designer.EConnectionType)
+     * @seeorg.talend.designer.core.model.components.INodeConnector#setConnectionType(org.talend.core.model.designer.
+     * EConnectionType)
      */
     public void setDefaultConnectionType(final EConnectionType defaultConnectionType) {
         this.defaultConnectionType = defaultConnectionType;
@@ -304,5 +307,23 @@ public class NodeConnector implements INodeConnector {
      */
     public void setBaseSchema(String baseSchema) {
         this.baseSchema = baseSchema;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.INodeConnector#isMultiSchema()
+     */
+    public boolean isMultiSchema() {
+        return this.multiSchema;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.INodeConnector#setMultiSchema(boolean)
+     */
+    public void setMultiSchema(boolean multiSchema) {
+        this.multiSchema = multiSchema;
     }
 }

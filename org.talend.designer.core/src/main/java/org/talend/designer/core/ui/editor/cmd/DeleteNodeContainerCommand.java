@@ -54,8 +54,8 @@ public class DeleteNodeContainerCommand extends Command {
             this.process.removeNodeContainer(nodeContainer);
             List<Connection> inputList = (List<Connection>) node.getIncomingConnections();
             List<Connection> outputList = (List<Connection>) node.getOutgoingConnections();
-            boolean builtIn = node.getConnectorFromType(EConnectionType.FLOW_MAIN).isBuiltIn()
-                    | node.getConnectorFromType(EConnectionType.TABLE).isBuiltIn();
+            boolean builtIn = node.getConnectorFromType(EConnectionType.FLOW_MAIN).isMultiSchema()
+                    | node.getConnectorFromType(EConnectionType.TABLE).isMultiSchema();
             for (Connection connection : inputList) {
                 // see bug 0002633: "rejects" link disappears at times.
                 connection.getSourceNodeConnector().setCurLinkNbOutput(
@@ -113,8 +113,8 @@ public class DeleteNodeContainerCommand extends Command {
 
             List<Connection> inputList = (List<Connection>) node.getIncomingConnections();
             List<Connection> outputList = (List<Connection>) node.getOutgoingConnections();
-            boolean builtIn = node.getConnectorFromType(EConnectionType.FLOW_MAIN).isBuiltIn()
-                    | node.getConnectorFromType(EConnectionType.TABLE).isBuiltIn();
+            boolean builtIn = node.getConnectorFromType(EConnectionType.FLOW_MAIN).isMultiSchema()
+                    | node.getConnectorFromType(EConnectionType.TABLE).isMultiSchema();
             for (Connection connection : inputList) {
                 // see bug 0004514: need to undo for 0002633
                 connection.getSourceNodeConnector().setCurLinkNbOutput(

@@ -176,7 +176,7 @@ public class ChangeMetadataCommand extends Command {
             if (connec.isActivate()
                     && (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN) || ((connec.getLineStyle().equals(
                             EConnectionType.FLOW_MERGE) && (connec.getInputId() == 1))))) {
-                if ((!connec.getSource().getConnectorFromType(connec.getLineStyle()).isBuiltIn())
+                if ((!connec.getSource().getConnectorFromType(connec.getLineStyle()).isMultiSchema())
                         || (connec.getMetaName().equals(newOutputMetadata.getTableName()))) {
                     IODataComponent output = new IODataComponent(connec, newOutputMetadata);
                     outputdataContainer.getOuputs().add(output);
@@ -188,7 +188,7 @@ public class ChangeMetadataCommand extends Command {
             inputdataContainer = new IODataComponentContainer();
             for (Connection connec : (List<Connection>) inputNode.getOutgoingConnections()) {
                 if (connec.isActivate() && (connec.getTarget().equals(node))) {
-                    if ((!connec.getSource().getConnectorFromType(connec.getLineStyle()).isBuiltIn())
+                    if ((!connec.getSource().getConnectorFromType(connec.getLineStyle()).isMultiSchema())
                             || (connec.getMetaName().equals(newInputMetadata.getTableName()))) {
                         IODataComponent output = new IODataComponent(connec, newInputMetadata);
                         inputdataContainer.getOuputs().add(output);
@@ -281,10 +281,10 @@ public class ChangeMetadataCommand extends Command {
                 INode targetNode = currentIO.getTarget();
 
                 boolean sourceIsBuiltIn = ((Node) currentIO.getSource()).getConnectorFromType(
-                        currentIO.getConnection().getLineStyle()).isBuiltIn();
+                        currentIO.getConnection().getLineStyle()).isMultiSchema();
 
                 boolean targetIsBuiltIn = ((Node) targetNode).getConnectorFromType(currentIO.getConnection().getLineStyle())
-                        .isBuiltIn();
+                        .isMultiSchema();
                 if (baseConnector.equals(currentConnector)
                         && (targetIsBuiltIn || (!newOutputMetadata.sameMetadataAs(targetNode
                                 .getMetadataFromConnector(baseConnector))))) {

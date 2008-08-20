@@ -182,8 +182,8 @@ public class ConnectionReconnectCommand extends Command {
             connector.setCurLinkNbOutput(connector.getCurLinkNbOutput() + 1);
             if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
                 newSourceSchemaType = (String) newSource.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
-                boolean builtInNewSource = newSource.getConnectorFromName(connectorName).isBuiltIn();
-                boolean builtInOldSource = oldSource.getConnectorFromName(connectorName).isBuiltIn();
+                boolean builtInNewSource = newSource.getConnectorFromName(connectorName).isMultiSchema();
+                boolean builtInOldSource = oldSource.getConnectorFromName(connectorName).isMultiSchema();
                 if ((!builtInNewSource) && (!builtInOldSource)) {
                     setSchemaToNotBuiltInNode(oldSource, newSource, oldMetadataTable);
                     connection.setMetaName(newSource.getUniqueName());
@@ -291,8 +291,8 @@ public class ConnectionReconnectCommand extends Command {
             connector = newSource.getConnectorFromName(connectorName);
             connector.setCurLinkNbOutput(connector.getCurLinkNbOutput() - 1);
             if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
-                boolean builtInNewSource = newSource.getConnectorFromName(connectorName).isBuiltIn();
-                boolean builtInOldSource = oldSource.getConnectorFromName(connectorName).isBuiltIn();
+                boolean builtInNewSource = newSource.getConnectorFromName(connectorName).isMultiSchema();
+                boolean builtInOldSource = oldSource.getConnectorFromName(connectorName).isMultiSchema();
                 if ((!builtInNewSource) && (!builtInOldSource)) {
                     setSchemaToNotBuiltInNode(newSource, oldSource, oldMetadataTable);
                     connection.setMetaName(oldSource.getUniqueName());

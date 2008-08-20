@@ -356,7 +356,7 @@ public class Connection extends Element implements IConnection, IPerformance {
             }
 
             if (source != null && lineStyle.hasConnectionCategory(IConnectionCategory.FLOW)) {
-                if (sourceNodeConnector.isBuiltIn()) {
+                if (sourceNodeConnector.isMultiSchema()) {
                     IMetadataTable table = getMetadataTable();
                     table.setTableName(name);
                     metaName = name;
@@ -456,9 +456,9 @@ public class Connection extends Element implements IConnection, IPerformance {
             }
             updateName = true;
         } /*
-         * else if (getLineStyle().equals(EConnectionType.LOOKUP)) { labelText += " (" + nodeConnector.getLinkName() +
-         * ")"; updateName = true; }
-         */
+           * else if (getLineStyle().equals(EConnectionType.LOOKUP)) { labelText += " (" + nodeConnector.getLinkName() +
+           * ")"; updateName = true; }
+           */
 
         if (updateName) {
 
@@ -539,7 +539,7 @@ public class Connection extends Element implements IConnection, IPerformance {
                     uniqueName = source.getProcess().generateUniqueConnectionName(lineStyle.getDefaultLinkName());
                 }
             }
-            if ((lineStyle.equals(EConnectionType.TABLE) && sourceNodeConnector.isBuiltIn())
+            if ((lineStyle.equals(EConnectionType.TABLE) && sourceNodeConnector.isMultiSchema())
                     || lineStyle.hasConnectionCategory(IConnectionCategory.UNIQUE_NAME)) {
                 if (source.getProcess().checkValidConnectionName(uniqueName)) {
                     source.getProcess().addUniqueConnectionName(uniqueName);
@@ -565,7 +565,7 @@ public class Connection extends Element implements IConnection, IPerformance {
      */
     public void disconnect() {
         if (isConnected) {
-            if (!sourceNodeConnector.isBuiltIn()) {
+            if (!sourceNodeConnector.isMultiSchema()) {
                 if (lineStyle.hasConnectionCategory(IConnectionCategory.CUSTOM_NAME)
                         || isInTypes(lineStyle, EConnectionType.ITERATE, EConnectionType.ON_COMPONENT_OK,
                                 EConnectionType.ON_COMPONENT_ERROR, EConnectionType.ON_SUBJOB_OK,
@@ -686,7 +686,7 @@ public class Connection extends Element implements IConnection, IPerformance {
      */
     public IMetadataTable getMetadataTable() {
         if (source != null && this.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-            if (sourceNodeConnector.isBuiltIn()) {
+            if (sourceNodeConnector.isMultiSchema()) {
                 return source.getMetadataTable(metaName);
             } else {
                 return source.getMetadataFromConnector(sourceNodeConnector.getName());
