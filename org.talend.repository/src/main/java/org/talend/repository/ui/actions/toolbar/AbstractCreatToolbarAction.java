@@ -22,9 +22,13 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MenuAdapter;
 import org.eclipse.swt.events.MenuEvent;
+import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.TypedListener;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowPulldownDelegate2;
@@ -102,7 +106,7 @@ public abstract class AbstractCreatToolbarAction implements IWorkbenchWindowPull
      * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
      */
     public void run(IAction action) {
-
+        fMenu.setVisible(true);
     }
 
     /*
@@ -246,6 +250,7 @@ public abstract class AbstractCreatToolbarAction implements IWorkbenchWindowPull
                 }
             }
         });
+
     }
 
     private IRepositoryView getRepositoryView() {
