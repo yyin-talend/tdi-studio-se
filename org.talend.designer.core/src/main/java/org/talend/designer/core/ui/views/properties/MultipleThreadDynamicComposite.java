@@ -77,6 +77,7 @@ import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySectio
 import org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController;
 import org.talend.designer.core.ui.editor.properties.controllers.GroupController;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
+import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
@@ -215,7 +216,8 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                                 if ((connection instanceof DatabaseConnection) && (repositoryValue.startsWith("DATABASE"))) { //$NON-NLS-1$
                                     String currentDbType = (String) RepositoryToComponentProperty.getValue(connection, "TYPE"); //$NON-NLS-1$
                                     if (repositoryValue.contains(":")) { // database is specified //$NON-NLS-1$
-                                        String neededDbType = repositoryValue.substring(repositoryValue.indexOf(":") + 1); //$NON-NLS-1$
+                                        String neededDbType = UpdateRepositoryUtils.getNeededDbType(currentDbType,
+                                                repositoryValue);
                                         if (MetadataTalendType.sameDBProductType(neededDbType, currentDbType)) {
                                             repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
                                         }
