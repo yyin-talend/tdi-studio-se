@@ -106,13 +106,46 @@
         <ITEM NAME="EXIT_LOOP" VALUE="exitloop" />
       </ITEMS>
     </PARAMETER>
-
-
-
   </PARAMETERS>
 
+  <ADVANCED_PARAMETERS>
+    <PARAMETER
+      NAME="ENABLE_WHERE_CLAUSE"
+      FIELD="CHECK"
+      NUM_ROW="1"
+      SHOW_IF="ENABLE_SQL_STMT == 'false'"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>    
+    
+    <PARAMETER
+      NAME="WHERE_CLAUSE"
+      FIELD="MEMO_JAVA"
+      NUM_ROW="10"
+      NB_LINES="5"
+      SHOW_IF="(ENABLE_WHERE_CLAUSE == 'true') and (ENABLE_SQL_STMT == 'false')"
+    >
+      <DEFAULT>"WHERE name='talend'"</DEFAULT>
+    </PARAMETER>
 
-
+    <PARAMETER
+      NAME="ENABLE_SQL_STMT"
+      FIELD="CHECK"
+      NUM_ROW="11"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="SQL_STMT"
+      FIELD="MEMO_JAVA"
+      NUM_ROW="20"
+      NB_LINES="5"
+      SHOW_IF="ENABLE_SQL_STMT == 'true'"
+    >
+      <DEFAULT>"SELECT COUNT(*) FROM test WHERE name='talend'"</DEFAULT>
+    </PARAMETER>      
+  </ADVANCED_PARAMETERS>
   <CODEGENERATION/>
 
   <RETURNS>

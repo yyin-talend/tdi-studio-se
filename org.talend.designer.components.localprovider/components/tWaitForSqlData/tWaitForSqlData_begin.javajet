@@ -10,32 +10,49 @@ imports="
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
-
 String table = ElementParameterParser.getValue(node,"__TABLE__");
 String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 String max = ElementParameterParser.getValue(node,"__MAX_ITERATIONS__");
 String operator = ElementParameterParser.getValue(node,"__OPERATOR__");
 String value = ElementParameterParser.getValue(node,"__VALUE__");
-
+boolean isEnableWhereClause = ElementParameterParser.getValue(node,"__ENABLE_WHERE_CLAUSE__").equals("true");
+boolean isEnableSQLStmt = ElementParameterParser.getValue(node,"__ENABLE_SQL_STMT__").equals("true");
 String conn = "conn_" + connection ;
-String query = "select count(*) from ";
+String query = "SELECT COUNT(*) FROM ";
 %>
-String sqlStr_<%=cid%> = "<%=query%>"+<%=table%>;
+
+<%
+if(isEnableSQLStmt) {
+    %>
+    String sqlStr_<%=cid%> = <%=ElementParameterParser.getValue(node,"__SQL_STMT__")%>;
+    <%
+} else {
+    if(isEnableWhereClause) {
+        %>
+        String sqlStr_<%=cid%> = "<%=query%>" + <%=table%> + " " + <%=ElementParameterParser.getValue(node,"__WHERE_CLAUSE__")%>;
+        <%
+    } else {
+        %>
+        String sqlStr_<%=cid%> = "<%=query%>" + <%=table%>;
+        <%
+    }
+}
+%>
+
 java.sql.Connection connection_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
 java.sql.Statement statement_<%=cid%> = connection_<%=cid%>.createStatement();
 int count_<%=cid%> = 0;
 int rowCount_<%=cid%>=0;
 while (true) {
-<%
-if(!max.equals("")){
-%>
-    if(<%=max%> == count_<%=cid%>)
-    {
-    	break;
+    <%
+    if(!max.equals("")) {
+        %>
+        if(<%=max%> == count_<%=cid%>) {
+        	break;
+        }
+        <%
     }
-<%
-}
-%>
+    %>
     statement_<%=cid%>.execute(sqlStr_<%=cid%>);
     java.sql.ResultSet set_<%=cid%> = statement_<%=cid%>.getResultSet();
     set_<%=cid%>.next();
