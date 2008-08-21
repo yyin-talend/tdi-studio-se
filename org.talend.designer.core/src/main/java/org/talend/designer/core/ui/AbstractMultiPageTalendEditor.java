@@ -55,6 +55,7 @@ import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.talend.commons.exception.BusinessException;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
@@ -427,8 +428,12 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
                 @Override
                 protected IStatus doRun(IProgressMonitor monitor) {
-                    ProcessorUtilities.generateCode(process, process.getContextManager().getDefaultContext(), false, false, true,
-                            ProcessorUtilities.GENERATE_WITH_FIRST_CHILD);
+                    try {
+                        ProcessorUtilities.generateCode(process, process.getContextManager().getDefaultContext(), false, false,
+                                true, ProcessorUtilities.GENERATE_WITH_FIRST_CHILD);
+                    } catch (ProcessorException e) {
+                        ExceptionHandler.process(e);
+                    }
 
                     return Status.OK_STATUS;
                 }
@@ -510,12 +515,16 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
     public void codeSync() {
 
         // if some code has been generated already, for the editor we should need only the main job, not the childs.
-        if (processor.isCodeGenerated()) {
-            ProcessorUtilities.generateCode(process, process.getContextManager().getDefaultContext(), false, false, true,
-                    ProcessorUtilities.GENERATE_MAIN_ONLY);
-        } else {
-            ProcessorUtilities.generateCode(process, process.getContextManager().getDefaultContext(), false, false, true,
-                    ProcessorUtilities.GENERATE_WITH_FIRST_CHILD);
+        try {
+            if (processor.isCodeGenerated()) {
+                ProcessorUtilities.generateCode(process, process.getContextManager().getDefaultContext(), false, false, true,
+                        ProcessorUtilities.GENERATE_MAIN_ONLY);
+            } else {
+                ProcessorUtilities.generateCode(process, process.getContextManager().getDefaultContext(), false, false, true,
+                        ProcessorUtilities.GENERATE_WITH_FIRST_CHILD);
+            }
+        } catch (ProcessorException e) {
+            ExceptionHandler.process(e);
         }
     }
 

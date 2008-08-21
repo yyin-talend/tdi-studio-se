@@ -40,6 +40,7 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
@@ -47,6 +48,7 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.JobInfo;
+import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.documentation.ArchiveFileExportOperationFullPath;
 import org.talend.repository.documentation.ExportFileResource;
@@ -434,8 +436,12 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
         JobResourceManager reManager = JobResourceManager.getInstance();
         for (JobResource r : jobResources) {
             if (reManager.isProtected(r)) {
-                ProcessorUtilities.generateCode(r.getJobInfo().getJobId(), r.getJobInfo().getContextName(), r.getJobInfo()
-                        .getJobVersion(), false, false);
+                try {
+                    ProcessorUtilities.generateCode(r.getJobInfo().getJobId(), r.getJobInfo().getContextName(), r.getJobInfo()
+                            .getJobVersion(), false, false);
+                } catch (ProcessorException e) {
+                    ExceptionHandler.process(e);
+                }
             } else {
                 reManager.deleteResource(r);
             }

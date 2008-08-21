@@ -338,7 +338,11 @@ public abstract class JobScriptsManager {
      */
     protected void generateJobFiles(ProcessItem process, String contextName, boolean statistics, boolean trace,
             boolean applyContextToChildren) {
-        ProcessorUtilities.generateCode(process, contextName, statistics, trace, applyContextToChildren);
+        try {
+            ProcessorUtilities.generateCode(process, contextName, statistics, trace, applyContextToChildren);
+        } catch (ProcessorException e) {
+            ExceptionHandler.process(e);
+        }
     }
 
     /**
@@ -350,7 +354,11 @@ public abstract class JobScriptsManager {
      */
     protected void generateJobFiles(ProcessItem process, String contextName, String version, boolean statistics, boolean trace,
             boolean applyContextToChildren) {
-        ProcessorUtilities.generateCode(process, contextName, version, statistics, trace, applyContextToChildren);
+        try {
+            ProcessorUtilities.generateCode(process, contextName, version, statistics, trace, applyContextToChildren);
+        } catch (ProcessorException e) {
+            ExceptionHandler.process(e);
+        }
     }
 
     protected IResource[] sourceResouces = null;

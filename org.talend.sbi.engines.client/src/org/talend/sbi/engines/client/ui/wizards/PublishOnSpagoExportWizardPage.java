@@ -47,6 +47,7 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.formtools.LabelledCombo;
 import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.core.CorePlugin;
@@ -58,6 +59,7 @@ import org.talend.core.model.properties.SpagoBiServer;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.runprocess.IProcessor;
+import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.documentation.ArchiveFileExportOperationFullPath;
 import org.talend.repository.documentation.ExportFileResource;
@@ -408,7 +410,11 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
         ProcessorUtilities.resetExportConfig();
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = (ProcessItem) process[i].getItem();
-            ProcessorUtilities.generateCode(processItem, processItem.getProcess().getDefaultContext(), false, false);
+            try {
+                ProcessorUtilities.generateCode(processItem, processItem.getProcess().getDefaultContext(), false, false);
+            } catch (ProcessorException e) {
+                ExceptionHandler.process(e);
+            }
 
         }
 
