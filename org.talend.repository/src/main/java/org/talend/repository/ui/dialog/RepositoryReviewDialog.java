@@ -28,6 +28,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
@@ -141,7 +142,7 @@ public class RepositoryReviewDialog extends Dialog {
         super.configureShell(shell);
         // Set the title bar text and the size
         shell.setText("Repository Content");
-        shell.setSize(500, 400);
+        // shell.setSize(500, 400);
     }
 
     /*
@@ -152,6 +153,12 @@ public class RepositoryReviewDialog extends Dialog {
     @Override
     protected Control createDialogArea(Composite parent) {
         Composite content = (Composite) super.createDialogArea(parent);
+        GridData data = (GridData) content.getLayoutData();
+        data.minimumHeight = 400;
+        data.heightHint = 400;
+        data.minimumWidth = 500;
+        data.widthHint = 500;
+        content.setLayoutData(data);
 
         IRepositoryView view = RepositoryView.show();
         repositoryView = new FakeRepositoryView(typeProcessor, type, repositoryType);
@@ -458,44 +465,7 @@ class RepositoryTypeProcessor implements ITypeProcessor {
     }
 
     public RepositoryNode getInputRoot(RepositoryContentProvider contentProvider) {
-        RepositoryNode metadataNode = null;
-        if (repositoryType == null) {
-            metadataNode = contentProvider.getMetadataNode();
-        }
-        if (repositoryType.equals("DELIMITED")) {
-            metadataNode = contentProvider.getMetadataFileNode();
-        }
-        if (repositoryType.equals("POSITIONAL")) {
-            metadataNode = contentProvider.getMetadataFilePositionalNode();
-        }
-        if (repositoryType.equals("REGEX")) {
-            metadataNode = contentProvider.getMetadataFileRegexpNode();
-        }
-        if (repositoryType.equals("XML")) {
-            metadataNode = contentProvider.getMetadataFileXmlNode();
-        }
-        if (repositoryType.equals("LDIF")) {
-            metadataNode = contentProvider.getMetadataFileLdifNode();
-        }
-        if (repositoryType.equals("EXCEL")) {
-            metadataNode = contentProvider.getMetadataFileExcelNode();
-        }
-        if (repositoryType.equals("GENERIC")) {
-            metadataNode = contentProvider.getMetadataGenericSchemaNode();
-        }
-        if (repositoryType.equals("LDAP")) {
-            metadataNode = contentProvider.getMetadataLDAPSchemaNode();
-        }
-        if (repositoryType.equals("WSDL")) {
-            metadataNode = contentProvider.getMetadataWSDLSchemaNode();
-        }
-        if (repositoryType.equals("SALESFORCE")) {
-            metadataNode = contentProvider.getMetadataSalesforceSchemaNode();
-        }
-
-        if (repositoryType.startsWith("DATABASE")) { //$NON-NLS-1$
-            metadataNode = contentProvider.getMetadataConNode();
-        }
+        RepositoryNode metadataNode = getMetadataNode(contentProvider);
         addReferencedProjectNodes(contentProvider, metadataNode);
         return metadataNode;
     }
@@ -520,44 +490,7 @@ class RepositoryTypeProcessor implements ITypeProcessor {
 
                     ProjectRepositoryNode newProject = new ProjectRepositoryNode(refProject);
 
-                    RepositoryNode refMetadataNode = null;
-                    if (repositoryType == null) {
-                        refMetadataNode = refProject.getMetadataNode();
-                    }
-                    if (repositoryType.equals("DELIMITED")) {
-                        refMetadataNode = refProject.getMetadataFileNode();
-                    }
-                    if (repositoryType.equals("POSITIONAL")) {
-                        refMetadataNode = refProject.getMetadataFilePositionalNode();
-                    }
-                    if (repositoryType.equals("REGEX")) {
-                        refMetadataNode = refProject.getMetadataFileRegexpNode();
-                    }
-                    if (repositoryType.equals("XML")) {
-                        refMetadataNode = refProject.getMetadataFileXmlNode();
-                    }
-                    if (repositoryType.equals("LDIF")) {
-                        refMetadataNode = refProject.getMetadataFileLdifNode();
-                    }
-                    if (repositoryType.equals("EXCEL")) {
-                        refMetadataNode = refProject.getMetadataFileExcelNode();
-                    }
-                    if (repositoryType.equals("GENERIC")) {
-                        refMetadataNode = refProject.getMetadataGenericSchemaNode();
-                    }
-                    if (repositoryType.equals("LDAP")) {
-                        refMetadataNode = refProject.getMetadataLDAPSchemaNode();
-                    }
-                    if (repositoryType.equals("WSDL")) {
-                        refMetadataNode = refProject.getMetadataWSDLSchemaNode();
-                    }
-                    if (repositoryType.equals("SALESFORCE")) {
-                        refMetadataNode = refProject.getMetadataSalesforceSchemaNode();
-                    }
-
-                    if (repositoryType.startsWith("DATABASE")) {
-                        refMetadataNode = refProject.getMetadataConNode();
-                    }
+                    RepositoryNode refMetadataNode = getMetadataNode(refProject);
 
                     if (refMetadataNode != null) {
                         newProject.getChildren().add(refMetadataNode);
@@ -567,6 +500,110 @@ class RepositoryTypeProcessor implements ITypeProcessor {
                 metadataNode.getChildren().addAll(nodesList);
             }
         }
+    }
+
+    private RepositoryNode getMetadataNode(Object provider) {
+        RepositoryNode metadataNode = null;
+        if (provider != null) {
+            if (repositoryType == null) { // all
+                if (provider instanceof RepositoryContentProvider) {
+                    metadataNode = ((RepositoryContentProvider) provider).getMetadataNode();
+                }
+                if (provider instanceof ProjectRepositoryNode) {
+                    metadataNode = ((ProjectRepositoryNode) provider).getMetadataNode();
+                }
+            }
+            if (repositoryType.equals("DELIMITED")) {
+                if (provider instanceof RepositoryContentProvider) {
+                    metadataNode = ((RepositoryContentProvider) provider).getMetadataFileNode();
+                }
+                if (provider instanceof ProjectRepositoryNode) {
+                    metadataNode = ((ProjectRepositoryNode) provider).getMetadataFileNode();
+                }
+            }
+            if (repositoryType.equals("POSITIONAL")) {
+                if (provider instanceof RepositoryContentProvider) {
+                    metadataNode = ((RepositoryContentProvider) provider).getMetadataFilePositionalNode();
+                }
+                if (provider instanceof ProjectRepositoryNode) {
+                    metadataNode = ((ProjectRepositoryNode) provider).getMetadataFilePositionalNode();
+                }
+            }
+            if (repositoryType.equals("REGEX")) {
+                if (provider instanceof RepositoryContentProvider) {
+                    metadataNode = ((RepositoryContentProvider) provider).getMetadataFileRegexpNode();
+                }
+                if (provider instanceof ProjectRepositoryNode) {
+                    metadataNode = ((ProjectRepositoryNode) provider).getMetadataFileRegexpNode();
+                }
+            }
+            if (repositoryType.equals("XML")) {
+                if (provider instanceof RepositoryContentProvider) {
+                    metadataNode = ((RepositoryContentProvider) provider).getMetadataFileXmlNode();
+                }
+                if (provider instanceof ProjectRepositoryNode) {
+                    metadataNode = ((ProjectRepositoryNode) provider).getMetadataFileXmlNode();
+                }
+            }
+            if (repositoryType.equals("LDIF")) {
+                if (provider instanceof RepositoryContentProvider) {
+                    metadataNode = ((RepositoryContentProvider) provider).getMetadataFileLdifNode();
+                }
+                if (provider instanceof ProjectRepositoryNode) {
+                    metadataNode = ((ProjectRepositoryNode) provider).getMetadataFileLdifNode();
+                }
+            }
+            if (repositoryType.equals("EXCEL")) {
+                if (provider instanceof RepositoryContentProvider) {
+                    metadataNode = ((RepositoryContentProvider) provider).getMetadataFileExcelNode();
+                }
+                if (provider instanceof ProjectRepositoryNode) {
+                    metadataNode = ((ProjectRepositoryNode) provider).getMetadataFileExcelNode();
+                }
+            }
+            if (repositoryType.equals("GENERIC")) {
+                if (provider instanceof RepositoryContentProvider) {
+                    metadataNode = ((RepositoryContentProvider) provider).getMetadataGenericSchemaNode();
+                }
+                if (provider instanceof ProjectRepositoryNode) {
+                    metadataNode = ((ProjectRepositoryNode) provider).getMetadataGenericSchemaNode();
+                }
+            }
+            if (repositoryType.equals("LDAP")) {
+                if (provider instanceof RepositoryContentProvider) {
+                    metadataNode = ((RepositoryContentProvider) provider).getMetadataLDAPSchemaNode();
+                }
+                if (provider instanceof ProjectRepositoryNode) {
+                    metadataNode = ((ProjectRepositoryNode) provider).getMetadataLDAPSchemaNode();
+                }
+            }
+            if (repositoryType.equals("WSDL")) {
+                if (provider instanceof RepositoryContentProvider) {
+                    metadataNode = ((RepositoryContentProvider) provider).getMetadataWSDLSchemaNode();
+                }
+                if (provider instanceof ProjectRepositoryNode) {
+                    metadataNode = ((ProjectRepositoryNode) provider).getMetadataWSDLSchemaNode();
+                }
+            }
+            if (repositoryType.equals("SALESFORCE")) {
+                if (provider instanceof RepositoryContentProvider) {
+                    metadataNode = ((RepositoryContentProvider) provider).getMetadataSalesforceSchemaNode();
+                }
+                if (provider instanceof ProjectRepositoryNode) {
+                    metadataNode = ((ProjectRepositoryNode) provider).getMetadataSalesforceSchemaNode();
+                }
+            }
+
+            if (repositoryType.startsWith("DATABASE")) {
+                if (provider instanceof RepositoryContentProvider) {
+                    metadataNode = ((RepositoryContentProvider) provider).getMetadataConNode();
+                }
+                if (provider instanceof ProjectRepositoryNode) {
+                    metadataNode = ((ProjectRepositoryNode) provider).getMetadataConNode();
+                }
+            }
+        }
+        return metadataNode;
     }
 
     public boolean isSelectionValid(RepositoryNode node) {
@@ -737,18 +774,25 @@ class SchemaTypeProcessor implements ITypeProcessor {
                 if (node.getObject() != null && (node.getObject() instanceof Query)) {
                     return false;
                 }
+                // cdc
+                ICDCProviderService cdcService = null;
+                if (node.getObjectType() == ERepositoryObjectType.METADATA_CON_CDC) {
+                    return false;
+                }
+                if (PluginChecker.isCDCPluginLoaded()) {
+                    cdcService = (ICDCProviderService) GlobalServiceRegister.getDefault().getService(ICDCProviderService.class);
+                    if (cdcService != null && cdcService.isSubscriberTableNode(node)) {
+                        return false;
+                    }
+                }
 
                 if ("DATABASE:CDC".equals(repositoryType) && (node.getObject() != null)) {
                     if (node.getObject().getType() == ERepositoryObjectType.METADATA_CONNECTIONS) {
                         DatabaseConnectionItem item = (DatabaseConnectionItem) node.getObject().getProperty().getItem();
                         DatabaseConnection connection = (DatabaseConnection) item.getConnection();
 
-                        if (PluginChecker.isCDCPluginLoaded()) {
-                            ICDCProviderService service = (ICDCProviderService) GlobalServiceRegister.getDefault().getService(
-                                    ICDCProviderService.class);
-                            if (service != null && service.canCreateCDCConnection(connection)) {
-                                return true;
-                            }
+                        if (cdcService != null && cdcService.canCreateCDCConnection(connection)) {
+                            return true;
                         }
                         return false;
                     }
