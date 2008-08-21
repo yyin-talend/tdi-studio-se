@@ -37,6 +37,7 @@ import org.talend.designer.core.ui.action.BringForwardAction;
 import org.talend.designer.core.ui.action.BringToFrontAction;
 import org.talend.designer.core.ui.action.ConnectionCreateAction;
 import org.talend.designer.core.ui.action.ConnectionSetAsMainRef;
+import org.talend.designer.core.ui.action.DisplaySubjobAction;
 import org.talend.designer.core.ui.action.GEFCopyAction;
 import org.talend.designer.core.ui.action.GEFPasteAction;
 import org.talend.designer.core.ui.action.ModifyMergeOrderAction;
@@ -61,6 +62,8 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
     public static final String ID = "org.talend.designer.core.ui.editor.TalendEditorContextMenuProvider"; //$NON-NLS-1$
 
     private static final String GROUP_CONNECTIONS = "ConnectionsGroup"; //$NON-NLS-1$
+
+    private static final String GROUP_OTHER = "OtherGroup"; //$NON-NLS-1$
 
     private static boolean enableContextMenu = true;
 
@@ -88,6 +91,7 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
         menu.add(new Separator(GEFActionConstants.GROUP_COPY));
         menu.add(new Separator(GEFActionConstants.GROUP_EDIT));
         menu.add(new Separator(GEFActionConstants.GROUP_REST));
+        menu.add(new Separator(GROUP_OTHER));
         menu.add(new Separator(GEFActionConstants.GROUP_VIEW));
         IAction action;
 
@@ -272,8 +276,13 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
             }
             action = new ShowComponentSettingViewerAction(part);
             ((ShowComponentSettingViewerAction) action).update();
-            menu.add(new Separator());
-            menu.add(action);
+            menu.appendToGroup(GROUP_OTHER, action);
+
+            action = new DisplaySubjobAction(part);
+            ((SelectionAction) action).update();
+            if (action.isEnabled()) {
+                menu.appendToGroup(GROUP_OTHER, action);
+            }
 
             action = new BringForwardAction(part);
             ((SelectionAction) action).update();

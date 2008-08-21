@@ -45,6 +45,8 @@ public class SubjobContainer extends Element implements ISubjobContainer {
 
     public static final String UPDATE_SUBJOB_TITLE_COLOR = "UPDATE_SUBJOB_TITLE_COLOR";
 
+    public static final String UPDATE_SUBJOB_DISPLAY = "UPDATE_SUBJOB_DISPLAY";
+
     protected List<NodeContainer> nodeContainers = new ArrayList<NodeContainer>();
 
     private IProcess2 process;
@@ -137,6 +139,17 @@ public class SubjobContainer extends Element implements ISubjobContainer {
         param.setCategory(EComponentCategory.BASIC);
         param.setNumRow(5);
         param.setReadOnly(true);
+        param.setRequired(false);
+        param.setShow(false);
+        addElementParameter(param);
+
+        param = new ElementParameter(this);
+        param.setName(EParameterName.SUBJOB_DISPLAYED.getName());
+        param.setValue(Boolean.TRUE);
+        param.setDisplayName(EParameterName.SUBJOB_DISPLAYED.getDisplayName());
+        param.setField(EParameterFieldType.CHECK);
+        param.setCategory(EComponentCategory.BASIC);
+        param.setNumRow(5);
         param.setRequired(false);
         param.setShow(false);
         addElementParameter(param);
@@ -310,6 +323,8 @@ public class SubjobContainer extends Element implements ISubjobContainer {
             fireStructureChange(UPDATE_SUBJOB_DATA, this);
         } else if (id.equals(EParameterName.SUBJOB_TITLE_COLOR.getName())) {
             fireStructureChange(UPDATE_SUBJOB_TITLE_COLOR, this);
+        } else if (id.equals(EParameterName.SUBJOB_DISPLAYED.getName())) {
+            fireStructureChange(UPDATE_SUBJOB_DISPLAY, this);
         }
     }
 
@@ -387,5 +402,18 @@ public class SubjobContainer extends Element implements ISubjobContainer {
         process = null;
         outputs.clear();
         outputs = null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.ISubjobContainer#isDisplayed()
+     */
+    public boolean isDisplayed() {
+        return (Boolean) getPropertyValue(EParameterName.SUBJOB_DISPLAYED.getName());
+    }
+
+    public void setDisplayed(Boolean displayed) {
+        setPropertyValue(EParameterName.SUBJOB_DISPLAYED.getName(), displayed);
     }
 }

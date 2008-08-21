@@ -30,7 +30,7 @@ import org.talend.designer.core.ui.editor.nodes.NodePart;
  */
 public class ActivateSubjobOneComponentAction extends SelectionAction {
 
-    public static final String ID = "org.talend.designer.core.ui.editor.action.NodeSetActivateAction"; //$NON-NLS-1$
+    public static final String ID = "org.talend.designer.core.ui.editor.action.ActivateSubjobOneComponentAction"; //$NON-NLS-1$
 
     private static final String TEXT_SET_ACTIVATE_PART = Messages.getString("ActivateSubjobAction.ActivatePart"); //$NON-NLS-1$
 

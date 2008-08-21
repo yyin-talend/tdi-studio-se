@@ -36,7 +36,7 @@ import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
  */
 public class ShowComponentSettingViewerAction extends SelectionAction {
 
-    public static final String ID = "org.talend.designer.core.ui.editor.action.PropertiesContextAction"; //$NON-NLS-1$
+    public static final String ID = "org.talend.designer.core.ui.editor.action.ShowComponentSettingViewerAction"; //$NON-NLS-1$
 
     private IProcess process;
 

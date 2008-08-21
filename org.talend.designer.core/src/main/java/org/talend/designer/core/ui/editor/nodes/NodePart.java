@@ -195,10 +195,10 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
     @Override
     protected IFigure createFigure() {
         NodeFigure nodeFigure;
-        EditPart parentPart = getParent();
-        while (!(parentPart instanceof ProcessPart)) {
-            parentPart = parentPart.getParent();
-        }
+        // EditPart parentPart = getParent();
+        // while (!(parentPart instanceof ProcessPart)) {
+        // parentPart = parentPart.getParent();
+        // }
 
         nodeFigure = new NodeFigure((Node) this.getModel());
 

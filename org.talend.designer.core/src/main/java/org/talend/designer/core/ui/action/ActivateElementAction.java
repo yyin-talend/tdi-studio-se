@@ -35,7 +35,7 @@ import org.talend.designer.core.ui.editor.nodes.NodePart;
  */
 public class ActivateElementAction extends SelectionAction {
 
-    public static final String ID = "org.talend.designer.core.ui.editor.action.NodeSetActivateAction"; //$NON-NLS-1$
+    public static final String ID = "org.talend.designer.core.ui.editor.action.ActivateElementAction"; //$NON-NLS-1$
 
     private static final String TEXT_SET_ACTIVATE = Messages.getString("NodeSetActivateAction.Activate"); //$NON-NLS-1$
 
