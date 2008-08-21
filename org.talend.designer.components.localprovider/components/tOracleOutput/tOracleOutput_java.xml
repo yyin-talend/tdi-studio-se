@@ -34,7 +34,7 @@
     <PARAMETER
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
-      NUM_ROW="1"
+      NUM_ROW="10"
       REPOSITORY_VALUE="DATABASE:ORACLE"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     />
@@ -42,7 +42,7 @@
     <PARAMETER
       NAME="USE_EXISTING_CONNECTION"
       FIELD="CHECK"
-      NUM_ROW="2"
+      NUM_ROW="20"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -51,14 +51,14 @@
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
       FILTER="tOracleConnection"
-      NUM_ROW="2"
+      NUM_ROW="20"
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
     />         
 
     <PARAMETER
       NAME="CONNECTION_TYPE"
       FIELD="CLOSED_LIST"
-      NUM_ROW="3"
+      NUM_ROW="30"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <ITEMS DEFAULT="ORACLE_SID">
@@ -66,12 +66,21 @@
         <ITEM NAME="ORACLE_SERVICE_NAME" VALUE="ORACLE_SERVICE_NAME"/>
         <ITEM NAME="ORACLE_OCI" VALUE="ORACLE_OCI"/>
       </ITEMS>
-    </PARAMETER> 
+    </PARAMETER>
+    
+	<PARAMETER NAME="DB_VERSION" FIELD="CLOSED_LIST" NUM_ROW="35"
+		REPOSITORY_VALUE="DB_VERSION" SHOW_IF="(USE_EXISTING_CONNECTION == 'false')">
+		<ITEMS DEFAULT="ORACLE_10">
+			<ITEM NAME="ORACLE_10" VALUE="ojdbc5.jar" />
+			<ITEM NAME="ORACLE_9" VALUE="ojdbc_for_9.jar" />
+			<ITEM NAME="ORACLE_8" VALUE="ojdbc_for_8.jar" />
+		</ITEMS>
+	</PARAMETER>
 
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="40"
       REPOSITORY_VALUE="SERVER_NAME"
       SHOW_IF="(USE_EXISTING_CONNECTION == 'false' and CONNECTION_TYPE != 'ORACLE_OCI')"
     >
@@ -81,7 +90,7 @@
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="40"
       REPOSITORY_VALUE="PORT"
       SHOW_IF="(USE_EXISTING_CONNECTION == 'false' and CONNECTION_TYPE != 'ORACLE_OCI')"
     >
@@ -91,7 +100,7 @@
     <PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="40"
       SHOW="false"
       REPOSITORY_VALUE="TYPE"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
@@ -102,7 +111,7 @@
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
-      NUM_ROW="5"
+      NUM_ROW="50"
       REPOSITORY_VALUE="SID"
       REQUIRED="true"
       SHOW_IF="(USE_EXISTING_CONNECTION == 'false' and CONNECTION_TYPE != 'ORACLE_OCI')"
@@ -113,7 +122,7 @@
     <PARAMETER
       NAME="LOCAL_SERVICE_NAME"
       FIELD="TEXT"
-      NUM_ROW="5"
+      NUM_ROW="50"
       REPOSITORY_VALUE="SID"
       REQUIRED="true"
       SHOW_IF="(USE_EXISTING_CONNECTION == 'false' and CONNECTION_TYPE == 'ORACLE_OCI')"
@@ -124,7 +133,7 @@
     <PARAMETER
       NAME="TABLESCHEMA"
       FIELD="TEXT"
-      NUM_ROW="5"
+      NUM_ROW="50"
       REPOSITORY_VALUE="SCHEMA"
       REQUIRED="false"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
@@ -135,7 +144,7 @@
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
-      NUM_ROW="6"
+      NUM_ROW="60"
       REPOSITORY_VALUE="USERNAME"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
@@ -146,7 +155,7 @@
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
-      NUM_ROW="6"
+      NUM_ROW="60"
       REPOSITORY_VALUE="PASSWORD"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
@@ -157,7 +166,7 @@
     <PARAMETER
       NAME="TABLE"
       FIELD="DBTABLE"
-      NUM_ROW="7"
+      NUM_ROW="70"
       REQUIRED="true"
     >
       <DEFAULT>""</DEFAULT>
@@ -166,7 +175,7 @@
     <PARAMETER
       NAME="TABLE_ACTION"
       FIELD="CLOSED_LIST"
-      NUM_ROW="8"
+      NUM_ROW="80"
     >
       <ITEMS DEFAULT="NONE">
         <ITEM NAME="NONE" VALUE="NONE" />
@@ -182,7 +191,7 @@
     <PARAMETER
       NAME="DATA_ACTION"
       FIELD="CLOSED_LIST"
-      NUM_ROW="8"
+      NUM_ROW="80"
     >
       <ITEMS DEFAULT="INSERT">
         <ITEM NAME="INSERT"           VALUE="INSERT" />
@@ -196,7 +205,7 @@
     <PARAMETER
       NAME="SCHEMA_FLOW"
       FIELD="SCHEMA_TYPE"
-      NUM_ROW="9"
+      NUM_ROW="90"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -205,7 +214,7 @@
       NAME="SCHEMA_REJECT"
       FIELD="SCHEMA_TYPE"
       REQUIRED="true"
-      NUM_ROW="9"
+      NUM_ROW="90"
       CONTEXT="REJECT"
       SHOW="true">
       <TABLE READONLY="true">
@@ -217,14 +226,14 @@
     <PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
-      NUM_ROW="10"
+      NUM_ROW="100"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
 	<PARAMETER
       NAME="MAPPING"
       FIELD="MAPPING_TYPE"
-      NUM_ROW="11"
+      NUM_ROW="110"
       SHOW="false"
     >       
       <DEFAULT>oracle_id</DEFAULT>
@@ -235,7 +244,7 @@
   	<PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
-      NUM_ROW="9"
+      NUM_ROW="90"
       REQUIRED="true"
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>
@@ -244,7 +253,7 @@
     <PARAMETER
       NAME="COMMIT_EVERY"
       FIELD="TEXT"
-      NUM_ROW="9"
+      NUM_ROW="90"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
@@ -255,7 +264,7 @@
       NAME="ADD_COLS"
       FIELD="TABLE"
       REQUIRED="false"
-      NUM_ROW="10"
+      NUM_ROW="100"
       NB_LINES="3"
     >
       <ITEMS>
@@ -276,7 +285,7 @@
     <PARAMETER
       NAME="USE_FIELD_OPTIONS"
       FIELD="CHECK"
-      NUM_ROW="12"
+      NUM_ROW="120"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -285,7 +294,7 @@
       NAME="FIELD_OPTIONS"
       FIELD="TABLE"
       REQUIRED="true"
-      NUM_ROW="13"
+      NUM_ROW="130"
       NB_LINES="5"
       SHOW_IF="USE_FIELD_OPTIONS == 'true'"
     >
@@ -300,7 +309,7 @@
     <PARAMETER
       NAME="CONVERT_COLUMN_TABLE_TO_UPPERCASE"
       FIELD="CHECK"
-      NUM_ROW="14"
+      NUM_ROW="140"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -308,15 +317,12 @@
   	<PARAMETER 
   	  NAME="ENABLE_DEBUG_MODE" 
   	  FIELD="CHECK"
-	  NUM_ROW="15">
+	  NUM_ROW="150">
 	  <DEFAULT>false</DEFAULT>
 	</PARAMETER>            
   </ADVANCED_PARAMETERS>
  
   <CODEGENERATION>
-    <IMPORTS>
-		<IMPORT NAME="Driver-Oracle" MODULE="ojdbc5.jar" REQUIRED="true" />
-    </IMPORTS>
   </CODEGENERATION>
    
   <RETURNS>

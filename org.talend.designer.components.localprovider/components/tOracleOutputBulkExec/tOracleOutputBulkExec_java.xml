@@ -66,6 +66,16 @@
       </ITEMS>
     </PARAMETER>
 
+    <PARAMETER NAME="DB_VERSION" FIELD="CLOSED_LIST" NUM_ROW="35"
+    	REPOSITORY_VALUE="DB_VERSION"
+    	SHOW_IF="(USE_EXISTING_CONNECTION == 'false')">
+    	<ITEMS DEFAULT="ORACLE_10">
+    		<ITEM NAME="ORACLE_10" VALUE="ojdbc5.jar"  />
+    		<ITEM NAME="ORACLE_9" VALUE="ojdbc_for_9.jar" />
+    		<ITEM NAME="ORACLE_8" VALUE="ojdbc_for_8.jar" />
+    	</ITEMS>
+    </PARAMETER>
+
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
