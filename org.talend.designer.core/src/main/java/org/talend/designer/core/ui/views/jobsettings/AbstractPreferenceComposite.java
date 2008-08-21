@@ -174,6 +174,11 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
                                 .getValue();
                         String version = (String) runjobNode.getElementParameter(EParameterName.PROCESS_TYPE_VERSION.getName())
                                 .getValue();
+                        if ("".equals(id) || id == null) {
+                            MessageDialog.openWarning(getShell(), "Warning: " + runjobNode.getUniqueName(),
+                                    "Child job should be assigned to " + runjobNode.getUniqueName());
+                            return;
+                        }
                         IEditorReference[] editorReferences = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
                                 .getActivePage().getEditorReferences();
                         IEditorPart activeEditorPart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
