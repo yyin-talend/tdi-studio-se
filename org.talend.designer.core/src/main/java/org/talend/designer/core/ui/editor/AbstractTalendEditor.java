@@ -118,32 +118,23 @@ import org.eclipse.ui.part.PageBook;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
-import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
-import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.workbench.preferences.GlobalConstant;
 import org.talend.core.CorePlugin;
-import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
-import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.process.EConnectionType;
-import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.ISubjobContainer;
-import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.Property;
-import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
-import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
-import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.action.ConnectionSetAsMainRef;
 import org.talend.designer.core.ui.action.GEFCopyAction;
@@ -172,8 +163,6 @@ import org.talend.repository.job.deletion.IJobResourceProtection;
 import org.talend.repository.job.deletion.JobResource;
 import org.talend.repository.job.deletion.JobResourceManager;
 import org.talend.repository.model.ComponentsFactoryProvider;
-import org.talend.repository.model.ERepositoryStatus;
-import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.RepositoryConstants;
 
@@ -590,10 +579,10 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
             getCommandStack().markSaveLocation();
             setDirty(false);
 
-            // See bug 4821
-            if (isRepositoryEditorInput && needToUpdateModules(((RepositoryEditorInput) getEditorInput()).getItem())) {
-                ((ILibrariesService) GlobalServiceRegister.getDefault().getService(ILibrariesService.class)).resetModulesNeeded();
-            }
+            // // See bug 4821
+            // Item item = ((RepositoryEditorInput) getEditorInput()).getItem();
+            // ((ILibrariesService) GlobalServiceRegister.getDefault().getService(ILibrariesService.class))
+            // .updateModulesNeededForCurrentJob(item);
 
             monitor.worked(10);
 
@@ -604,40 +593,6 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
             monitor.done();
         }
 
-    }
-
-    /**
-     * DOC ftang Comment method "needToUpdateModules".
-     * 
-     * @param item
-     * @return
-     */
-    private boolean needToUpdateModules(Item item) {
-
-        IProxyRepositoryFactory repositoryFactory = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();
-        List<IRepositoryObject> jobs;
-        try {
-            jobs = repositoryFactory.getAllVersion(item.getProperty().getId());
-        } catch (PersistenceException e) {
-            ExceptionHandler.process(e);
-            return false;
-        }
-        for (IRepositoryObject cur : jobs) {
-            if (repositoryFactory.getStatus(cur) != ERepositoryStatus.DELETED) {
-                ProcessItem processItem = (ProcessItem) cur.getProperty().getItem();
-                List<NodeType> nodes = processItem.getProcess().getNode();
-                for (NodeType node : nodes) {
-                    List<ElementParameterType> elementParameter = node.getElementParameter();
-                    for (ElementParameterType elementParam : elementParameter) {
-                        if (elementParam.getField().equals(EParameterFieldType.MODULE_LIST.getName())) {
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-
-        return false;
     }
 
     @Override
