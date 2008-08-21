@@ -1173,9 +1173,6 @@ public class Process extends Element implements IProcess2 {
                     metadataTable.setTableName(nc.getUniqueName());
                 }
             }
-            if (nc.isELTComponent()) {
-                metadataTable.setAttachedConnector(EConnectionType.TABLE.getName());
-            }
             MetadataTool.initilializeSchemaFromElementParameters(metadataTable, (List<IElementParameter>) nc
                     .getElementParameters());
         }
