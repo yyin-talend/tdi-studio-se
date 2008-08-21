@@ -110,32 +110,38 @@ public class CLASS {
                                         if (lineBuilder.substring(indexEXTRACTBegin, position).equals("EXTRACT(__")
                                                 && lineBuilder.charAt(indexEXTRACTEnd) == ')') {
                                             if (!tableParamSet.contains(paramName)) {
-                                                resultBuilder.insert(0, extractTableValue(node, paramName));
-                                                tableParamSet.add(paramName);
+                                                // modify it to merge SCHEMA(__ELT_SCHEMA__)
+                                                if(isSchemaProperty(node, paramName)){
+                                                    resultBuilder.insert(0, extractSchemaValue(node, paramName));
+                                                    tableParamSet.add(paramName);
+                                                }else{
+                                                    resultBuilder.insert(0, extractTableValue(node, paramName));
+                                                    tableParamSet.add(paramName);
+                                                }
                                             }
                                             line = null;
                                             continue LINES;
                                         }
                                     }
 
-                                    // to see whether this is extract SCHEMA value sentence
-                                    /*
-                                     * The sentence for extract SCHEMA property must be in the scopce of "< %" and "%
-                                     * >". And the code is something like EXTRACT(__SCHEMA__);
-                                     */
-                                    indexEXTRACTBegin = position - 9;
-                                    indexEXTRACTEnd = indexOfEnd__ + 2;
-                                    if (indexEXTRACTBegin >= 0 && indexEXTRACTEnd < lineBuilder.length()) {
-                                        if (lineBuilder.substring(indexEXTRACTBegin, position).equals("SCHEMA(__")
-                                                && lineBuilder.charAt(indexEXTRACTEnd) == ')') {
-                                            if (!tableParamSet.contains(paramName)) {
-                                                resultBuilder.insert(0, extractSchemaValue(node, paramName));
-                                                tableParamSet.add(paramName);
-                                            }
-                                            line = null;
-                                            continue LINES;
-                                        }
-                                    }
+//                                    // to see whether this is extract SCHEMA value sentence
+//                                    /*
+//                                     * The sentence for extract SCHEMA property must be in the scopce of "< %" and "%
+//                                     * >". And the code is something like SCHEMA(__SCHEMA__);
+//                                     */
+//                                    indexEXTRACTBegin = position - 9;
+//                                    indexEXTRACTEnd = indexOfEnd__ + 2;
+//                                    if (indexEXTRACTBegin >= 0 && indexEXTRACTEnd < lineBuilder.length()) {
+//                                        if (lineBuilder.substring(indexEXTRACTBegin, position).equals("SCHEMA(__")
+//                                                && lineBuilder.charAt(indexEXTRACTEnd) == ')') {
+//                                            if (!tableParamSet.contains(paramName)) {
+//                                                resultBuilder.insert(0, extractSchemaValue(node, paramName));
+//                                                tableParamSet.add(paramName);
+//                                            }
+//                                            line = null;
+//                                            continue LINES;
+//                                        }
+//                                    }
 
                                     // to see whether this is the extracted TABLE para;
                                     boolean flag = false;
@@ -234,8 +240,8 @@ public class CLASS {
                         // lineBuilder.toString();
 
                         /*
-                         * Caution: here, we assume all the assign script("< %=value % >") always doesn't span more
-                         * than one lines; or it may generate error code.
+                         * Caution: here, we assume all the assign script("< %=value % >") always doesn't span more than
+                         * one lines; or it may generate error code.
                          */
                         // replace All "< %=" with "\" + "
                         position = 0;
@@ -338,7 +344,7 @@ public class CLASS {
                          */
                         if (line.endsWith(";")) {// end of SQL QUERY found
                             sqlQueryBuilder.append("\"");
-                            
+
                             // //////////////////////////////////////////////////
                             // //special code for tELTTeradataAggregate begin////
                             // //////////////////////////////////////////////////
@@ -353,10 +359,10 @@ public class CLASS {
                                     String paramName = sqlQueryBuilder.substring(position, indexOfEnd);
                                     if (paramName.matches("[0-9A-Z\\-_]+")) {
                                         String realValue = "";
-                                        if (paramName.equals("ELT_METADATA_SHEMA")) {
+                                        if (paramName.startsWith("SCHEMA")) {
                                             // ......
                                             // get the SCHEMA value
-                                            List<IMetadataColumn> schemaValue = getColumnList(node);
+                                            List<IMetadataColumn> schemaValue = getColumnList(node, paramName);
 
                                             int size = 0;
                                             if (schemaValue != null) {
@@ -417,7 +423,7 @@ public class CLASS {
                             // //////////////////////////////////////////////////
                             // //special code for tELTTeradataAggregate end//////
                             // //////////////////////////////////////////////////
-                            
+
                             codeStringBuilder.append("stmt_").append(cid).append(".addBatch(").append(sqlQueryBuilder.toString())
                                     .append(");\n");
                             sqlQueryBuilder.delete(0, sqlQueryBuilder.length()).append("\"");
@@ -480,12 +486,23 @@ public class CLASS {
         return resultBuilder.toString();
     }
 
+    private boolean isSchemaProperty(INode node, String param) {
+        if (node.getMetadataFromConnector("param") != null) {
+            return true;
+        }
+        // default schema can be with name SCHEMA_SOURCE or SCHEMA
+        if (param.equals("SCHEMA") || param.equals("SCHEMA_SOURCE")) {
+            return true;
+        }
+        return false;
+    }
+
     private String extractSchemaValue(INode node, String param) {
         String cid = node.getUniqueName();
         StringBuilder resultBuilder = new StringBuilder();
 
         // get the SCHEMA value
-        List<IMetadataColumn> schemaValue = getColumnList(node);
+        List<IMetadataColumn> schemaValue = getColumnList(node, param);
 
         resultBuilder.append("class ").append(param).append("_struct_").append(cid).append(
                 "{ \nString name;\nString dbType;\nboolean isKey;\nInteger length;\nInteger pricision;\nboolean nullable;\n}\n");
@@ -494,15 +511,21 @@ public class CLASS {
         if (schemaValue != null) {
             size = schemaValue.size();
         }
-        resultBuilder.append(param).append("_struct_").append(cid).append("[] ").append(param).append("_").append(cid)
-                .append(" = new ").append(param).append("_struct_").append(cid).append(" [").append(size).append("];\n");
-                
-        resultBuilder.append("String[] ").append(param).append("_NAME_").append(cid).append(" = new String[").append(size).append("];\n");
-        resultBuilder.append("String[] ").append(param).append("_DBTYPE_").append(cid).append(" = new String[").append(size).append("];\n");
-        resultBuilder.append("String[] ").append(param).append("_ISKEY_").append(cid).append(" = new String[").append(size).append("];\n");
-        resultBuilder.append("String[] ").append(param).append("_LENGTH_").append(cid).append(" = new String[").append(size).append("];\n");
-        resultBuilder.append("String[] ").append(param).append("_NULLABLE_").append(cid).append(" = new String[").append(size).append("];\n");
-        resultBuilder.append("String[] ").append(param).append("_PRECISION_").append(cid).append(" = new String[").append(size).append("];\n");
+        resultBuilder.append(param).append("_struct_").append(cid).append("[] ").append(param).append("_").append(cid).append(
+                " = new ").append(param).append("_struct_").append(cid).append(" [").append(size).append("];\n");
+
+        resultBuilder.append("String[] ").append(param).append("_NAME_").append(cid).append(" = new String[").append(size)
+                .append("];\n");
+        resultBuilder.append("String[] ").append(param).append("_DBTYPE_").append(cid).append(" = new String[").append(size)
+                .append("];\n");
+        resultBuilder.append("String[] ").append(param).append("_ISKEY_").append(cid).append(" = new String[").append(size)
+                .append("];\n");
+        resultBuilder.append("String[] ").append(param).append("_LENGTH_").append(cid).append(" = new String[").append(size)
+                .append("];\n");
+        resultBuilder.append("String[] ").append(param).append("_NULLABLE_").append(cid).append(" = new String[").append(size)
+                .append("];\n");
+        resultBuilder.append("String[] ").append(param).append("_PRECISION_").append(cid).append(" = new String[").append(size)
+                .append("];\n");
         for (int i = 0; i < size; i++) {
             IMetadataColumn column = schemaValue.get(i);
             resultBuilder.append(param).append("_").append(cid).append("[").append(i).append("] = new ").append(param).append(
@@ -517,33 +540,37 @@ public class CLASS {
                     column.getLength()).append(";\n");
             resultBuilder.append(param).append("_").append(cid).append("[").append(i).append("].pricision = ").append(
                     column.getPrecision()).append(";\n");
-            resultBuilder.append(param).append("_").append(cid).append("[").append(i).append("].nullable = ").append(column.isNullable())
-            .append(";\n");
+            resultBuilder.append(param).append("_").append(cid).append("[").append(i).append("].nullable = ").append(
+                    column.isNullable()).append(";\n");
             resultBuilder.append(param).append("_NAME_").append(cid).append("[").append(i).append("] = ").append("\"").append(
                     column.getLabel()).append("\";\n");
-        	resultBuilder.append(param).append("_DBTYPE_").append(cid).append("[").append(i).append("] = ").append("\"").append(
+            resultBuilder.append(param).append("_DBTYPE_").append(cid).append("[").append(i).append("] = ").append("\"").append(
                     column.getType()).append("\";\n");
-        	resultBuilder.append(param).append("_ISKEY_").append(cid).append("[").append(i).append("] = ").append("\"").append(
-        			column.isKey()).append("\";\n");
-        	resultBuilder.append(param).append("_LENGTH_").append(cid).append("[").append(i).append("] = ").append("\"").append(
-        			column.getLength()).append("\";\n");
-        	resultBuilder.append(param).append("_PRECISION_").append(cid).append("[").append(i).append("] = ").append("\"").append(
-        			column.getPrecision()).append("\";\n");
-        	resultBuilder.append(param).append("_NULLABLE_").append(cid).append("[").append(i).append("] = ").append("\"").append(
-        			column.isNullable()).append("\";\n");
+            resultBuilder.append(param).append("_ISKEY_").append(cid).append("[").append(i).append("] = ").append("\"").append(
+                    column.isKey()).append("\";\n");
+            resultBuilder.append(param).append("_LENGTH_").append(cid).append("[").append(i).append("] = ").append("\"").append(
+                    column.getLength()).append("\";\n");
+            resultBuilder.append(param).append("_PRECISION_").append(cid).append("[").append(i).append("] = ").append("\"")
+                    .append(column.getPrecision()).append("\";\n");
+            resultBuilder.append(param).append("_NULLABLE_").append(cid).append("[").append(i).append("] = ").append("\"")
+                    .append(column.isNullable()).append("\";\n");
         }
-        
+
         return resultBuilder.toString();
     }
 
-    public List<IMetadataColumn> getColumnList(INode node) {
+    private List<IMetadataColumn> getColumnList(INode node, String param) {
+        IMetadataTable metadata = null;
         List<IMetadataColumn> columnList = null;
-        List<IMetadataTable> metadatas = node.getMetadataList();
-        if (metadatas != null && metadatas.size() > 0) {
-            IMetadataTable metadata = metadatas.get(0);
-            if (metadata != null) {
-                columnList = metadata.getListColumns();
+        metadata = node.getMetadataFromConnector(param);
+        if (metadata == null) {
+            List<IMetadataTable> metadatas = node.getMetadataList();
+            if (metadatas != null && metadatas.size() > 0) {
+                metadata = metadatas.get(0);
             }
+        }
+        if (metadata != null) {
+            columnList = metadata.getListColumns();
         }
         return columnList;
     }
