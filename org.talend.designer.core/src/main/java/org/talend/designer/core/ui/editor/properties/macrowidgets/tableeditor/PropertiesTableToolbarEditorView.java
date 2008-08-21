@@ -37,6 +37,7 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.Element;
 import org.talend.designer.core.ui.editor.cmd.PropertyTablePasteCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.editor.properties.controllers.TableController;
 
 /**
  * $Id$
@@ -101,6 +102,14 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
      */
     @Override
     protected AddAllPushButton createAddAllPushButton() {
+
+        final PropertiesTableEditorModel tableEditorModel = (PropertiesTableEditorModel) getExtendedTableViewer()
+                .getExtendedControlModel();
+
+        if (!TableController.isNeedAddAllButton(tableEditorModel.getElemParameter())) {
+            return null;
+        }
+
         return new AddAllPushButtonForExtendedTable(this.toolbar, getExtendedTableViewer()) {
 
             @Override
@@ -110,8 +119,7 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
 
             @Override
             protected List<Object> getObjectToAdd() {
-                PropertiesTableEditorModel tableEditorModel = (PropertiesTableEditorModel) getExtendedTableViewer()
-                        .getExtendedControlModel();
+
                 Element element = tableEditorModel.getElement();
                 if (element != null && element instanceof Node) {
                     Node node = (Node) element;
@@ -200,5 +208,4 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
             }
         };
     }
-
 }

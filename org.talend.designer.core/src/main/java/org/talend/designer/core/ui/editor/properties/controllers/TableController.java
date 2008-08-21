@@ -636,4 +636,24 @@ public class TableController extends AbstractElementPropertySectionController {
             }
         }
     }
+
+    /**
+     * 
+     * DOC YeXiaowei Comment method "isNeedAddAllButton".
+     * 
+     * @param param
+     * @return
+     */
+    public static boolean isNeedAddAllButton(IElementParameter param) {
+        Object[] itemsValue = param.getListItemsValue();
+        IElementParameter tmpParam;
+
+        if (itemsValue[0] == null) {
+            return false;
+        }
+
+        tmpParam = (IElementParameter) itemsValue[0];
+
+        return tmpParam.getField() == EParameterFieldType.COLUMN_LIST;
+    }
 }
