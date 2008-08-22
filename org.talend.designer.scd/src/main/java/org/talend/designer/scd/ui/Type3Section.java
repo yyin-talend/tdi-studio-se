@@ -15,6 +15,7 @@ package org.talend.designer.scd.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
@@ -111,6 +112,17 @@ public class Type3Section extends ScdSection implements IDragDropDelegate {
         tableViewer.setLabelProvider(new TableLabelProvider());
         tableViewer.setContentProvider(new ContentProvider());
 
+    }
+
+    @Override
+    public List<String> getUsedFields() {
+        List<String> fields = new ArrayList<String>();
+        for (Type3Field field : tableModel) {
+            if (StringUtils.isNotEmpty(field.getPreviousValue())) {
+                fields.add(field.getPreviousValue());
+            }
+        }
+        return fields;
     }
 
     public Table getTable() {
@@ -230,7 +242,11 @@ public class Type3Section extends ScdSection implements IDragDropDelegate {
     }
 
     public void setTableInput(List<Type3Field> tableModel) {
-        this.tableModel = tableModel;
+        if (tableModel == null) {
+            this.tableModel.clear();
+        } else {
+            this.tableModel = tableModel;
+        }
         tableViewer.setInput(tableModel);
     }
 
@@ -369,6 +385,7 @@ public class Type3Section extends ScdSection implements IDragDropDelegate {
                     break;
                 case PREVIOUS_COLUMN_INDEX:
                     field.setPreviousValue(inputColumns.get(value));
+                    scdManager.fireFieldChange();
                     break;
                 }
 

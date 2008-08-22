@@ -88,6 +88,12 @@ public class PerlScdDialog extends AbstractScdDialog {
         }
         addContextHelp(type2Fields.getTableViewer().getTable(), "org.talend.designer.scd.type2");
 
+        scdManager.setUnusedFieldsSource(unusedFields);
+        ScdSection[] sections = { sourceKeys, type1Fields, type2Fields };
+        for (ScdSection scd : sections) {
+            scdManager.addUnusedFieldsTarget(scd);
+        }
+
         return composite;
     }
 

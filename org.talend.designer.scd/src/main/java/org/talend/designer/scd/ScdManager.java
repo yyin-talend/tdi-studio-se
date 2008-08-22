@@ -33,6 +33,7 @@ import org.talend.designer.scd.model.Type3Field;
 import org.talend.designer.scd.model.VersionEndType;
 import org.talend.designer.scd.model.VersionStartType;
 import org.talend.designer.scd.model.Versioning;
+import org.talend.designer.scd.ui.ScdSection;
 
 /**
  * Manage the state of ui input and element parameters.
@@ -59,6 +60,10 @@ public class ScdManager {
 
     private List<Type3Field> type3Table;
 
+    private ScdSection source;
+
+    private List<ScdSection> targets;
+
     /**
      * DOC hcw ScdManager constructor comment.
      * 
@@ -66,7 +71,26 @@ public class ScdManager {
      */
     public ScdManager(ScdComponent scdComponent) {
         component = scdComponent;
+        targets = new ArrayList<ScdSection>();
+    }
 
+    public void setUnusedFieldsSource(ScdSection section) {
+        source = section;
+    }
+
+    public void addUnusedFieldsTarget(ScdSection section) {
+        targets.add(section);
+    }
+
+    public void fireFieldChange() {
+        List<String> unusedFields = getInputColumnNames();
+        List<String> usedFields = new ArrayList<String>();
+        for (ScdSection scd : targets) {
+            usedFields.addAll(scd.getUsedFields());
+        }
+        unusedFields = removeAll(unusedFields, usedFields);
+        // update unused field table
+        source.onUnusedFieldsChange(unusedFields);
     }
 
     public List<String> getUnusedFields() {
@@ -109,7 +133,7 @@ public class ScdManager {
     }
 
     /**
-     * DOC hcw Comment method "getMetadataColumn".
+     * DOC hcw Comment method "getOutputColumns".
      * 
      * @param node
      * @return
@@ -218,9 +242,14 @@ public class ScdManager {
         } else {
             List<String> columns = new ArrayList<String>();
             for (SurrogateKey key : keys) {
-                if (StringUtils.isNotEmpty(key.getColumn())) {
-                    columns.add(key.getColumn());
+                if (key.getCreation() == SurrogateCreationType.INPUT_FIELD) {
+                    if (StringUtils.isNotEmpty(key.getComplement())) {
+                        columns.add(key.getComplement());
+                    }
                 }
+                // if (StringUtils.isNotEmpty(key.getColumn())) {
+                // columns.add(key.getColumn());
+                // }
             }
             return columns;
         }
@@ -238,8 +267,10 @@ public class ScdManager {
         } else {
             List<String> columns = new ArrayList<String>();
             for (Type3Field field : type3) {
-                columns.add(field.getCurrentValue());
-                columns.add(field.getPreviousValue());
+                // columns.add(field.getCurrentValue());
+                if (StringUtils.isNotEmpty(field.getPreviousValue())) {
+                    columns.add(field.getPreviousValue());
+                }
             }
             return columns;
         }
@@ -273,17 +304,18 @@ public class ScdManager {
             return Collections.EMPTY_LIST;
         } else {
             List<String> columns = new ArrayList<String>();
-            columns.add(ver.getStartName());
-            columns.add(ver.getEndName());
-            if (ver.getStartType() == VersionStartType.INPUT_FIELD) {
+            // columns.add(ver.getStartName());
+            // columns.add(ver.getEndName());
+            if (ver.getStartType() == VersionStartType.INPUT_FIELD && StringUtils.isNotEmpty(ver.getStartComplement())) {
                 columns.add(ver.getStartComplement());
             }
-            if (ver.isActiveChecked()) {
-                columns.add(ver.getActiveName());
-            }
-            if (ver.isVersionChecked()) {
-                columns.add(ver.getVersionName());
-            }
+            // if (ver.isActiveChecked()) {
+            // columns.add(ver.getActiveName());
+            // }
+            // if (ver.isVersionChecked()) {
+            // columns.add(ver.getVersionName());
+            // }
+
             return columns;
         }
     }

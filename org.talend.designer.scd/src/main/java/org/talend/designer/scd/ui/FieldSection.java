@@ -48,7 +48,7 @@ public class FieldSection extends ScdSection implements IDragDropDelegate {
 
     private DragDropManager dragDropManager;
 
-    private List tableModel;
+    private List<String> tableModel;
 
     /**
      * DOC hcw FieldSection constructor comment.
@@ -60,7 +60,7 @@ public class FieldSection extends ScdSection implements IDragDropDelegate {
         dragDropManager = new DragDropManager();
         dragDropManager.addDragSupport(tableViewer.getTable(), this);
         dragDropManager.addDropSupport(tableViewer.getTable(), this);
-        tableModel = new ArrayList();
+        tableModel = new ArrayList<String>();
     }
 
     @Override
@@ -93,8 +93,9 @@ public class FieldSection extends ScdSection implements IDragDropDelegate {
         }
     }
 
-    public void setTableInput(List input) {
+    public void setTableInput(List<String> input) {
         if (input == null) {
+            tableModel.clear();
             return;
         }
         tableModel = input;
@@ -119,7 +120,7 @@ public class FieldSection extends ScdSection implements IDragDropDelegate {
                     tableViewer.setInput(tableModel);
                     // tableViewer.refresh();
                 }
-
+                scdManager.fireFieldChange();
             }
         });
 
@@ -136,6 +137,7 @@ public class FieldSection extends ScdSection implements IDragDropDelegate {
                     tableModel.remove(selection[i]);
                 }
                 tableViewer.setInput(tableModel);
+                scdManager.fireFieldChange();
             }
         });
 
@@ -175,13 +177,24 @@ public class FieldSection extends ScdSection implements IDragDropDelegate {
 
     }
 
+    @Override
+    public void onUnusedFieldsChange(List<String> fields) {
+        setTableInput(fields);
+    }
+
+    @Override
+    public List<String> getUsedFields() {
+        return new ArrayList<String>(tableModel);
+    }
+
     public List<String> getTableData() {
-        Table table = tableViewer.getTable();
-        List<String> result = new ArrayList<String>(table.getItemCount());
-        for (TableItem item : table.getItems()) {
-            result.add(item.getText());
-        }
-        return result;
+        // Table table = tableViewer.getTable();
+        // List<String> result = new ArrayList<String>(table.getItemCount());
+        // for (TableItem item : table.getItems()) {
+        // result.add(item.getText());
+        // }
+        // return result;
+        return tableModel;
     }
 
     /*
@@ -332,6 +345,8 @@ public class FieldSection extends ScdSection implements IDragDropDelegate {
             }
             tableModel.set(index, columnNames.get(value));
             tableViewer.refresh();
+            scdManager.fireFieldChange();
         }
     }
+
 }

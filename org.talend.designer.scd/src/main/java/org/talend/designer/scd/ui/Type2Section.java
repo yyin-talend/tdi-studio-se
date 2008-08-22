@@ -226,6 +226,17 @@ public class Type2Section extends FieldSection {
         return versionData;
     }
 
+    @Override
+    public List<String> getUsedFields() {
+        List<String> fields = super.getUsedFields();
+        if (versionData != null && versionData.getStartType() == VersionStartType.INPUT_FIELD) {
+            if (StringUtils.isNotEmpty(versionData.getStartComplement())) {
+                fields.add(versionData.getStartComplement());
+            }
+        }
+        return fields;
+    }
+
     /**
      * DOC hcw Comment method "onEndCreationChange".
      * 
@@ -303,6 +314,7 @@ public class Type2Section extends FieldSection {
                         versioning.setStartComplement(inputColumns.get(value));
                         Color color = value == 0 ? ERROR_COLOR : null;
                         editorManager.setComboColor(item, COMPLEMENT_INDEX, color);
+                        scdManager.fireFieldChange();
                     }
                 });
 

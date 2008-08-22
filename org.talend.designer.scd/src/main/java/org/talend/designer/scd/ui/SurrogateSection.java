@@ -243,10 +243,26 @@ public class SurrogateSection extends ScdSection {
 
     public void setTableInput(List<SurrogateKey> input) {
         tableModel = new ArrayList<SurrogateKey>();
+        if (input == null) {
+            return;
+        }
         for (SurrogateKey key : input) {
             createNewItem(key);
             surrogateManager.addSurrogateKey(key);
         }
+    }
+
+    @Override
+    public List<String> getUsedFields() {
+        List<String> fields = new ArrayList<String>();
+        for (SurrogateKey key : tableModel) {
+            if (key.getCreation() == SurrogateCreationType.INPUT_FIELD) {
+                if (StringUtils.isNotEmpty(key.getComplement())) {
+                    fields.add(key.getComplement());
+                }
+            }
+        }
+        return fields;
     }
 
     /**
@@ -448,6 +464,7 @@ public class SurrogateSection extends ScdSection {
                             key.setComplement(inputColumns.get(value));
                             Color color = value == 0 ? ERROR_COLOR : null;
                             editorManager.setComboColor(item, COMPLEMENT_INDEX, color);
+                            scdManager.fireFieldChange();
                         }
                     });
 

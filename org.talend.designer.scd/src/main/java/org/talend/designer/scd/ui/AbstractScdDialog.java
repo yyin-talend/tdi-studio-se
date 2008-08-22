@@ -13,12 +13,12 @@
 package org.talend.designer.scd.ui;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
-import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseTrackAdapter;
@@ -27,12 +27,15 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.SearchPattern;
 import org.eclipse.ui.help.IWorkbenchHelpSystem;
 import org.talend.designer.scd.ScdManager;
+import org.talend.designer.scd.i18n.Messages;
 
 /**
  * DOC hcw class global comment. Detailled comment
@@ -61,6 +64,8 @@ public abstract class AbstractScdDialog extends TrayDialog {
 
     protected Type3Section type3Fields;
 
+    protected Shell shell;
+
     /**
      * DOC hcw AbstractScdDialog constructor comment.
      * 
@@ -68,16 +73,17 @@ public abstract class AbstractScdDialog extends TrayDialog {
      */
     public AbstractScdDialog(Shell shell) {
         super(shell);
+        this.shell = shell;
     }
 
-    /**
-     * DOC hcw AbstractScdDialog constructor comment.
-     * 
-     * @param parentShell
-     */
-    public AbstractScdDialog(IShellProvider parentShell) {
-        super(parentShell);
-    }
+    // /**
+    // * DOC hcw AbstractScdDialog constructor comment.
+    // *
+    // * @param parentShell
+    // */
+    // public AbstractScdDialog(IShellProvider parentShell) {
+    // super(parentShell);
+    // }
 
     /**
      * Create contents of the dialog
@@ -91,7 +97,33 @@ public abstract class AbstractScdDialog extends TrayDialog {
         PlatformUI.getWorkbench().getHelpSystem().setHelp(container, "org.talend.designer.scd.scdDialog");
 
         createScdContents(container);
+        this.shell.addListener(SWT.Close, new Listener() {
+
+            public void handleEvent(Event event) {
+                showWarningDialog();
+            }
+
+        });
         return container;
+    }
+
+    @Override
+    protected void cancelPressed() {
+        setReturnCode(CANCEL);
+        showWarningDialog();
+    }
+
+    /**
+     * DOC chuang Comment method "showWarningDialog".
+     */
+    protected void showWarningDialog() {
+        boolean isNotSaveSetting = MessageDialog.openQuestion(shell, Messages.getString("UIManager.MessageBox.title"), Messages
+                .getString("UIManager.MessageBox.Content"));
+        if (!isNotSaveSetting) {
+            setReturnCode(OK);
+        }
+        close();
+
     }
 
     abstract Control createScdContents(Composite container);

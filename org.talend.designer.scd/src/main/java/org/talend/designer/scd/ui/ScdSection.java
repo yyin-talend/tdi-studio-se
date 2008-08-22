@@ -171,13 +171,13 @@ public class ScdSection {
         if (model.size() < 2) {
             return new int[0];
         }
-    
+
         Map<Integer, Integer> selectionMap = new HashMap<Integer, Integer>(); // old selected item index, new selected
         // item index
         for (int index : selectionIndices) {
             selectionMap.put(index, index);
         }
-    
+
         Map<Integer, Integer> map = new HashMap<Integer, Integer>(); // new index , old index
         for (int i = selectionIndices.length - 1; i >= 0;) {
             int j = i - 1;
@@ -185,14 +185,14 @@ public class ScdSection {
             while (j >= 0 && selectionIndices[j] + 1 == selectionIndices[j + 1]) {
                 j--;
             }
-    
+
             if (selectionIndices[i] + 1 < model.size()) {
                 // from j + 1 to i, all index add 1
                 for (int k = j + 1; k <= i; k++) {
                     map.put(selectionIndices[k] + 1, selectionIndices[k]);
                     selectionMap.put(selectionIndices[k], selectionIndices[k] + 1);
                 }
-    
+
                 map.put(selectionIndices[j + 1], selectionIndices[i] + 1);
             }
             i = j;
@@ -217,13 +217,13 @@ public class ScdSection {
         if (model.size() < 2) {
             return new int[0];
         }
-    
+
         Map<Integer, Integer> selectionMap = new HashMap<Integer, Integer>(); // old selected item index, new selected
         // item index
         for (int i : selectionIndices) {
             selectionMap.put(i, i);
         }
-    
+
         Map<Integer, Integer> map = new HashMap<Integer, Integer>(); // new index , old index
         for (int i = selectionIndices.length - 1; i >= 0;) {
             int j = i - 1;
@@ -231,14 +231,14 @@ public class ScdSection {
             while (j >= 0 && selectionIndices[j] + 1 == selectionIndices[j + 1]) {
                 j--;
             }
-    
+
             if (selectionIndices[j + 1] - 1 >= 0) {
                 // from j + 1 to i, all index minus 1
                 for (int k = j + 1; k <= i; k++) {
                     map.put(selectionIndices[k] - 1, selectionIndices[k]);
                     selectionMap.put(selectionIndices[k], selectionIndices[k] - 1);
                 }
-    
+
                 map.put(selectionIndices[i], selectionIndices[j + 1] - 1);
             }
             i = j;
@@ -265,6 +265,13 @@ public class ScdSection {
             array[i] = collection.get(i);
         }
         return array;
+    }
+
+    public List<String> getUsedFields() {
+        return null;
+    }
+
+    public void onUnusedFieldsChange(List<String> fields) {
     }
 
 }

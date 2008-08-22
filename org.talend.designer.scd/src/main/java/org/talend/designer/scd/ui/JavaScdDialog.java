@@ -110,6 +110,11 @@ public class JavaScdDialog extends AbstractScdDialog {
         type3Fields.setTableInput(scdManager.getType3Table());
         addContextHelp(type3Fields.getTable(), "org.talend.designer.scd.type3");
 
+        scdManager.setUnusedFieldsSource(unusedFields);
+        ScdSection[] sections = { surrogateKeys, sourceKeys, type0Fields, type1Fields, type2Fields, type3Fields };
+        for (ScdSection scd : sections) {
+            scdManager.addUnusedFieldsTarget(scd);
+        }
         return composite;
     }
 
