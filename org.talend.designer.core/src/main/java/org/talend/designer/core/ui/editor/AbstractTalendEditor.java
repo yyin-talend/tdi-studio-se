@@ -121,9 +121,11 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributo
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.utils.workbench.preferences.GlobalConstant;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
+import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.INodeConnector;
@@ -579,10 +581,9 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
             getCommandStack().markSaveLocation();
             setDirty(false);
 
-            // // See bug 4821
-            // Item item = ((RepositoryEditorInput) getEditorInput()).getItem();
-            // ((ILibrariesService) GlobalServiceRegister.getDefault().getService(ILibrariesService.class))
-            // .updateModulesNeededForCurrentJob(item);
+            // / See bug 4821
+            ((ILibrariesService) GlobalServiceRegister.getDefault().getService(ILibrariesService.class))
+                    .updateModulesNeededForCurrentJob(this.process);
 
             monitor.worked(10);
 
