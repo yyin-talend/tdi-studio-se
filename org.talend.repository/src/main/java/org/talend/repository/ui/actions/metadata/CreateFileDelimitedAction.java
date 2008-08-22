@@ -90,8 +90,10 @@ public class CreateFileDelimitedAction extends AbstractCreateAction {
         WizardDialog wizardDialog;
         if (isToolbar()) {
             init(fileDelimitedNode);
-            wizardDialog = new WizardDialog(new Shell(), new DelimitedFileWizard(PlatformUI.getWorkbench(), creation,
-                    fileDelimitedNode, getExistingNames()));
+            DelimitedFileWizard delimitedFileWizard = new DelimitedFileWizard(PlatformUI.getWorkbench(), creation, fileDelimitedNode,
+                    getExistingNames());
+            delimitedFileWizard.setToolbar(true);
+            wizardDialog = new WizardDialog(new Shell(), delimitedFileWizard);
         } else {
             selection = getSelection();
             wizardDialog = new WizardDialog(new Shell(), new DelimitedFileWizard(PlatformUI.getWorkbench(), creation, selection,

@@ -72,6 +72,17 @@ public class FilePositionalWizard extends RepositoryWizard implements INewWizard
 
     private IMetadataContextModeManager contextModeManager;
 
+    private boolean isToolbar;
+
+    /**
+     * Sets the isToolbar.
+     * 
+     * @param isToolbar the isToolbar to set
+     */
+    public void setToolbar(boolean isToolbar) {
+        this.isToolbar = isToolbar;
+    }
+
     /**
      * Constructor for FileWizard.
      * 
@@ -198,6 +209,9 @@ public class FilePositionalWizard extends RepositoryWizard implements INewWizard
      * Adding the page to the wizard.
      */
     public void addPages() {
+        if (isToolbar) {
+            pathToSave = null;
+        }
         fileWizardPage0 = new Step0WizardPage(connectionProperty, pathToSave, ERepositoryObjectType.METADATA_FILE_POSITIONAL,
                 !isRepositoryObjectEditable(), creation);
         fileWizardPage1 = new FilePositionalWizardPage(1, connectionItem, isRepositoryObjectEditable(), existingNames,

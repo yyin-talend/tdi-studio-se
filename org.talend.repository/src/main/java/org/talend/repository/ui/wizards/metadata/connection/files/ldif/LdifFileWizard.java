@@ -72,6 +72,17 @@ public class LdifFileWizard extends RepositoryWizard implements INewWizard {
 
     private IMetadataContextModeManager contextModeManager;
 
+    private boolean isToobar;
+
+    /**
+     * Sets the isToobar.
+     * 
+     * @param isToobar the isToobar to set
+     */
+    public void setToolbar(boolean isToobar) {
+        this.isToobar = isToobar;
+    }
+
     /**
      * Constructor for FileWizard.
      * 
@@ -195,6 +206,9 @@ public class LdifFileWizard extends RepositoryWizard implements INewWizard {
      * Adding the page to the wizard.
      */
     public void addPages() {
+        if (isToobar) {
+            pathToSave = null;
+        }
         ldifFileWizardPage0 = new Step0WizardPage(connectionProperty, pathToSave, ERepositoryObjectType.METADATA_FILE_LDIF,
                 !isRepositoryObjectEditable(), creation);
         ldifFileWizardPage1 = new LdifFileWizardPage(1, connectionItem, isRepositoryObjectEditable(), existingNames,

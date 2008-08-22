@@ -70,6 +70,17 @@ public class ExcelFileWizard extends RepositoryWizard implements INewWizard {
 
     private IMetadataContextModeManager contextModeManager;
 
+    private boolean isToolbar;
+
+    /**
+     * Sets the isToolbar.
+     * 
+     * @param isToolbar the isToolbar to set
+     */
+    public void setToolbar(boolean isToolbar) {
+        this.isToolbar = isToolbar;
+    }
+
     public ExcelFileWizard(IWorkbench workbench, boolean creation, ISelection selection, String[] existingNames) {
         super(workbench, creation);
 
@@ -236,6 +247,9 @@ public class ExcelFileWizard extends RepositoryWizard implements INewWizard {
     @Override
     public void addPages() {
 
+        if (isToolbar) {
+            pathToSave = null;
+        }
         excelFileWizardPage0 = new Step0WizardPage(connectionProperty, pathToSave, ERepositoryObjectType.METADATA_FILE_EXCEL,
                 !isRepositoryObjectEditable(), creation);
 

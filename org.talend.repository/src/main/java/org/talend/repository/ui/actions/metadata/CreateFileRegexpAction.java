@@ -93,8 +93,10 @@ public class CreateFileRegexpAction extends AbstractCreateAction {
         WizardDialog wizardDialog;
         if (isToolbar()) {
             init(fileRegexpNode);
-            wizardDialog = new WizardDialog(new Shell(), new RegexpFileWizard(PlatformUI.getWorkbench(), creation,
-                    fileRegexpNode, getExistingNames()));
+            RegexpFileWizard regexpfileWizard = new RegexpFileWizard(PlatformUI.getWorkbench(), creation, fileRegexpNode,
+                    getExistingNames());
+            regexpfileWizard.setToolbar(true);
+            wizardDialog = new WizardDialog(new Shell(), regexpfileWizard);
 
         } else {
             selection = getSelection();

@@ -150,6 +150,7 @@ public class CreateConnectionAction extends AbstractCreateAction {
         DatabaseWizard databaseWizard;
         if (isToolbar()) {
             databaseWizard = new DatabaseWizard(PlatformUI.getWorkbench(), creation, node, getExistingNames());
+            databaseWizard.setToolBar(true);
         } else {
             databaseWizard = new DatabaseWizard(PlatformUI.getWorkbench(), creation, selection, getExistingNames());
         }

@@ -66,6 +66,17 @@ public class XmlFileWizard extends RepositoryWizard implements INewWizard {
 
     private ConnectionItem connectionItem;
 
+    private boolean isToolbar;
+
+    /**
+     * Sets the isToolbar.
+     * 
+     * @param isToolbar the isToolbar to set
+     */
+    public void setToolbar(boolean isToolbar) {
+        this.isToolbar = isToolbar;
+    }
+
     /**
      * Constructor for FileWizard.
      * 
@@ -181,6 +192,9 @@ public class XmlFileWizard extends RepositoryWizard implements INewWizard {
      * Adding the page to the wizard.
      */
     public void addPages() {
+        if (isToolbar) {
+            pathToSave = null;
+        }
         xmlFileWizardPage0 = new Step0WizardPage(connectionProperty, pathToSave, ERepositoryObjectType.METADATA_FILE_XML,
                 !isRepositoryObjectEditable(), creation);
         xmlFileWizardPage1 = new XmlFileWizardPage(1, connectionItem, isRepositoryObjectEditable(), existingNames);

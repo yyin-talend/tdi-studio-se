@@ -88,6 +88,17 @@ public class LDAPSchemaWizard extends RepositoryWizard implements INewWizard {
 
     private List<IMetadataTable> oldMetadataTable;
 
+    private boolean isToolbar;
+
+    /**
+     * Sets the isToolbar.
+     * 
+     * @param isToolbar the isToolbar to set
+     */
+    public void setToolbar(boolean isToolbar) {
+        this.isToolbar = isToolbar;
+    }
+
     /**
      * LDAPSchemaWizard constructor comment.
      * 
@@ -256,9 +267,14 @@ public class LDAPSchemaWizard extends RepositoryWizard implements INewWizard {
         ldapSchemaWizardPage4 = null;
 
         if (creation) {
-            setWindowTitle(Messages.getString("LDAPSchemaWizard.CreateNewLdapSchema"));// Messages.getString("DelimitedFileWizard.windowTitleCreate"));
+            setWindowTitle(Messages.getString("LDAPSchemaWizard.CreateNewLdapSchema"));// Messages.getString(
+            // "DelimitedFileWizard.windowTitleCreate"
+            // ));
             // //$NON-NLS-1$
             // //$NON-NLS-1$
+            if (isToolbar) {
+                pathToSave = null;
+            }
             ldapSchemaWizardPage0 = new Step0WizardPage(connectionProperty, pathToSave,
                     ERepositoryObjectType.METADATA_GENERIC_SCHEMA, !isRepositoryObjectEditable(), creation);
             ldapSchemaWizardPage0.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 1 " //$NON-NLS-1$ //$NON-NLS-2$
@@ -302,7 +318,9 @@ public class LDAPSchemaWizard extends RepositoryWizard implements INewWizard {
 
         } else {
 
-            setWindowTitle(Messages.getString("LDAPSchemaWizard.UpdateLdapSchema"));// Messages.getString("DelimitedFileWizard.windowTitleUpdate"));
+            setWindowTitle(Messages.getString("LDAPSchemaWizard.UpdateLdapSchema"));// Messages.getString(
+            // "DelimitedFileWizard.windowTitleUpdate"
+            // ));
             // //$NON-NLS-1$
             // //$NON-NLS-1$
 

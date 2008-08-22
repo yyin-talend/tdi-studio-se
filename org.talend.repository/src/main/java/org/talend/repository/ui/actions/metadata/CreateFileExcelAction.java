@@ -87,8 +87,10 @@ public class CreateFileExcelAction extends AbstractCreateAction {
         WizardDialog wizardDialog;
         if (isToolbar()) {
             init(fileExcelNode);
-            wizardDialog = new WizardDialog(new Shell(), new ExcelFileWizard(PlatformUI.getWorkbench(), creation, fileExcelNode,
-                    getExistingNames()));
+            ExcelFileWizard excelFileWizard = new ExcelFileWizard(PlatformUI.getWorkbench(), creation, fileExcelNode,
+                    getExistingNames());
+            excelFileWizard.setToolbar(true);
+            wizardDialog = new WizardDialog(new Shell(), excelFileWizard);
         } else {
             selection = getSelection();
             wizardDialog = new WizardDialog(new Shell(), new ExcelFileWizard(PlatformUI.getWorkbench(), creation, selection,

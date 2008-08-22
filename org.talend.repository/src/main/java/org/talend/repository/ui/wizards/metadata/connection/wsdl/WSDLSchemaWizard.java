@@ -81,6 +81,17 @@ public class WSDLSchemaWizard extends RepositoryWizard implements INewWizard {
 
     private List<IMetadataTable> oldMetadataTable;
 
+    private boolean isToolbar;
+
+    /**
+     * Sets the isToolbar.
+     * 
+     * @param isToolbar the isToolbar to set
+     */
+    public void setToolbar(boolean isToolbar) {
+        this.isToolbar = isToolbar;
+    }
+
     /**
      * WSDLSchemaWizard constructor comment.
      * 
@@ -244,8 +255,15 @@ public class WSDLSchemaWizard extends RepositoryWizard implements INewWizard {
         wsdlSchemaWizardPage0 = null;
         wsdlSchemaWizardPage1 = null;
         wsdlSchemaWizardPage2 = null;
+
+        if (isToolbar) {
+            pathToSave = null;
+        }
+
         if (creation) {
-            setWindowTitle(Messages.getString("WSDLSchemaWizard.CreateNewWSDLSchema"));// Messages.getString("DelimitedFileWizard.windowTitleCreate"));
+            setWindowTitle(Messages.getString("WSDLSchemaWizard.CreateNewWSDLSchema"));// Messages.getString(
+            // "DelimitedFileWizard.windowTitleCreate"
+            // ));
             // //$NON-NLS-1$
             // //$NON-NLS-1$
             wsdlSchemaWizardPage0 = new Step0WizardPage(connectionProperty, pathToSave,
@@ -272,7 +290,9 @@ public class WSDLSchemaWizard extends RepositoryWizard implements INewWizard {
 
         } else if (this.isSinglePageOnly == false) {
 
-            setWindowTitle(Messages.getString("WSDLSchemaWizard.UpdateWSDLSchema"));// Messages.getString("DelimitedFileWizard.windowTitleUpdate"));
+            setWindowTitle(Messages.getString("WSDLSchemaWizard.UpdateWSDLSchema"));// Messages.getString(
+            // "DelimitedFileWizard.windowTitleUpdate"
+            // ));
             // //$NON-NLS-1$
             // //$NON-NLS-1$
 
@@ -298,7 +318,9 @@ public class WSDLSchemaWizard extends RepositoryWizard implements INewWizard {
             addPage(wsdlSchemaWizardPage2);
 
         } else {
-            setWindowTitle(Messages.getString("WSDLSchemaWizard.SaveAsWSDLSchema"));// Messages.getString("DelimitedFileWizard.windowTitleUpdate"));
+            setWindowTitle(Messages.getString("WSDLSchemaWizard.SaveAsWSDLSchema"));// Messages.getString(
+            // "DelimitedFileWizard.windowTitleUpdate"
+            // ));
             // //$NON-NLS-1$
             // //$NON-NLS-1$
             wsdlSchemaWizardPage0 = new Step0WizardPage(connectionProperty, pathToSave,

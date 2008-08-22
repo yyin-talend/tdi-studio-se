@@ -101,22 +101,25 @@ public class CreateProcess extends AContextualAction {
      */
     public void run() {
         RepositoryNode node;
+        NewProcessWizard processWizard = null;
         if (isToolbar()) {
-            node = getProcessNode();
+            processWizard = new NewProcessWizard(null);
         } else {
             ISelection selection = getSelection();
             Object obj = ((IStructuredSelection) selection).getFirstElement();
             node = (RepositoryNode) obj;
-        }
-        ItemCacheManager.clearCache();
+            ItemCacheManager.clearCache();
 
-        IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
-        IPath path = service.getRepositoryPath(node);
-        if (RepositoryConstants.isSystemFolder(path.toString())) {
-            // Not allowed to create in system folder.
-            return;
+            IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
+            IPath path = service.getRepositoryPath(node);
+            if (RepositoryConstants.isSystemFolder(path.toString())) {
+                // Not allowed to create in system folder.
+                return;
+            }
+
+            processWizard = new NewProcessWizard(path);
         }
-        NewProcessWizard processWizard = new NewProcessWizard(path);
+
         WizardDialog dlg = new WizardDialog(Display.getCurrent().getActiveShell(), processWizard);
         if (dlg.open() == Window.OK) {
             // refresh(node);

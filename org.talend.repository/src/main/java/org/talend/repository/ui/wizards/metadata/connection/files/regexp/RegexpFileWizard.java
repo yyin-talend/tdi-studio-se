@@ -72,6 +72,8 @@ public class RegexpFileWizard extends RepositoryWizard implements INewWizard {
 
     private IMetadataContextModeManager contextModeManager;
 
+    private boolean isToolbar;
+
     /**
      * Constructor for FileWizard.
      * 
@@ -195,6 +197,9 @@ public class RegexpFileWizard extends RepositoryWizard implements INewWizard {
      * Adding the page to the wizard.
      */
     public void addPages() {
+        if (isToolbar) {
+            pathToSave = null;
+        }
         regexpFileWizardPage0 = new Step0WizardPage(connectionProperty, pathToSave, ERepositoryObjectType.METADATA_FILE_REGEXP,
                 !isRepositoryObjectEditable(), creation);
         regexpFileWizardPage1 = new RegexpFileWizardPage(1, connectionItem, isRepositoryObjectEditable(), existingNames,
@@ -301,5 +306,14 @@ public class RegexpFileWizard extends RepositoryWizard implements INewWizard {
      */
     public void init(final IWorkbench workbench, final IStructuredSelection selection2) {
         this.selection = selection2;
+    }
+
+    /**
+     * yzhang Comment method "setToolbar".
+     * 
+     * @param isToolbar
+     */
+    public void setToolbar(boolean isToolbar) {
+        this.isToolbar = isToolbar;
     }
 }

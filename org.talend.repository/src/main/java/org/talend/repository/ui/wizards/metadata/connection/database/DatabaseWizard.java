@@ -67,6 +67,8 @@ public class DatabaseWizard extends RepositoryWizard implements INewWizard {
 
     private ConnectionItem connectionItem;
 
+    private boolean isToolBar;
+
     /**
      * Constructor for DatabaseWizard. Analyse Iselection to extract DatabaseConnection and the pathToSave. Start the
      * Lock Strategy.
@@ -174,12 +176,23 @@ public class DatabaseWizard extends RepositoryWizard implements INewWizard {
     }
 
     /**
+     * yzhang Comment method "setToolBar".
+     * 
+     * @param isToolbar
+     */
+    public void setToolBar(boolean isToolbar) {
+        this.isToolBar = isToolbar;
+    }
+
+    /**
      * Adding the page to the wizard and set Title, Description and PageComplete.
      */
     public void addPages() {
         setWindowTitle(Messages.getString("DatabaseWizard.windowTitle")); //$NON-NLS-1$
         setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.METADATA_CONNECTION_WIZ));
-
+        if (isToolBar) {
+            pathToSave = null;
+        }
         propertiesWizardPage = new Step0WizardPage(connectionProperty, pathToSave, ERepositoryObjectType.METADATA_CONNECTIONS,
                 !isRepositoryObjectEditable(), creation);
         databaseWizardPage = new DatabaseWizardPage(connectionItem, isRepositoryObjectEditable(), existingNames);

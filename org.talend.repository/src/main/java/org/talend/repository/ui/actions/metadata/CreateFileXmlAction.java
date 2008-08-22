@@ -93,8 +93,9 @@ public class CreateFileXmlAction extends AbstractCreateAction {
         WizardDialog wizardDialog;
         if (isToolbar()) {
             init(fileXMLNode);
-            wizardDialog = new WizardDialog(new Shell(), new XmlFileWizard(PlatformUI.getWorkbench(), creation, fileXMLNode,
-                    getExistingNames()));
+            XmlFileWizard xmlFileWizard = new XmlFileWizard(PlatformUI.getWorkbench(), creation, fileXMLNode, getExistingNames());
+            xmlFileWizard.setToolbar(true);
+            wizardDialog = new WizardDialog(new Shell(), xmlFileWizard);
         } else {
             selection = getSelection();
             wizardDialog = new WizardDialog(new Shell(), new XmlFileWizard(PlatformUI.getWorkbench(), creation, selection,

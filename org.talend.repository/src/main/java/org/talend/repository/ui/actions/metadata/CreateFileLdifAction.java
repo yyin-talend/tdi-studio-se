@@ -89,8 +89,10 @@ public class CreateFileLdifAction extends AbstractCreateAction {
         WizardDialog wizardDialog;
         if (isToolbar()) {
             init(fileLdifNode);
-            wizardDialog = new WizardDialog(new Shell(), new LdifFileWizard(PlatformUI.getWorkbench(), creation, fileLdifNode,
-                    getExistingNames()));
+            LdifFileWizard ldifFileWizard = new LdifFileWizard(PlatformUI.getWorkbench(), creation, fileLdifNode,
+                    getExistingNames());
+            ldifFileWizard.setToolbar(true);
+            wizardDialog = new WizardDialog(new Shell(), ldifFileWizard);
         } else {
             selection = getSelection();
             wizardDialog = new WizardDialog(new Shell(), new LdifFileWizard(PlatformUI.getWorkbench(), creation, selection,

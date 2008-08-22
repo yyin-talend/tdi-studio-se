@@ -92,8 +92,10 @@ public class CreateGenericSchemaAction extends AbstractCreateAction {
         ISelection selection = null;
         if (isToolbar()) {
             init(fileGenericSchemaNode);
-            wizardDialog = new WizardDialog(new Shell(), new GenericSchemaWizard(PlatformUI.getWorkbench(), creation,
-                    fileGenericSchemaNode, getExistingNames(), false));
+            GenericSchemaWizard genericSchemaWizard = new GenericSchemaWizard(PlatformUI.getWorkbench(), creation,
+                    fileGenericSchemaNode, getExistingNames(), false);
+            genericSchemaWizard.setToolbar(true);
+            wizardDialog = new WizardDialog(new Shell(), genericSchemaWizard);
         } else {
             selection = getSelection();
             wizardDialog = new WizardDialog(new Shell(), new GenericSchemaWizard(PlatformUI.getWorkbench(), creation, selection,

@@ -76,6 +76,17 @@ public class SalesforceSchemaWizard extends RepositoryWizard implements INewWiza
 
     private IMetadataContextModeManager contextModeManager;
 
+    private boolean isToolbar;
+
+    /**
+     * Sets the isToolbar.
+     * 
+     * @param isToolbar the isToolbar to set
+     */
+    public void setToolbar(boolean isToolbar) {
+        this.isToolbar = isToolbar;
+    }
+
     /**
      * DOC YeXiaowei SalesforceSchemaWizard constructor comment.
      * 
@@ -215,6 +226,9 @@ public class SalesforceSchemaWizard extends RepositoryWizard implements INewWiza
 
     @Override
     public void addPages() {
+        if (isToolbar) {
+            pathToSave = null;
+        }
         salesforceSchemaWizardPage0 = new Step0WizardPage(connectionProperty, pathToSave,
                 ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA, !isRepositoryObjectEditable(), creation);
 

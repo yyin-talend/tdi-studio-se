@@ -135,8 +135,9 @@ public class CreateWSDLSchemaAction extends AbstractCreateAction {
         ISelection selection = null;
         if (isToolbar()) {
             init(wsdlSchemaNode);
-            wizardDialog = new WizardDialog(new Shell(), new WSDLSchemaWizard(PlatformUI.getWorkbench(), creation,
-                    wsdlSchemaNode, getExistingNames(), false));
+            WSDLSchemaWizard wsdlSchemaWizard = new WSDLSchemaWizard(PlatformUI.getWorkbench(), creation,
+                    wsdlSchemaNode, getExistingNames(), false);
+            wizardDialog = new WizardDialog(new Shell(), wsdlSchemaWizard);
         } else {
             selection = getSelection();
             wizardDialog = new WizardDialog(new Shell(), new WSDLSchemaWizard(PlatformUI.getWorkbench(), creation, selection,

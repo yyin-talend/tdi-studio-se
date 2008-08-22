@@ -100,15 +100,18 @@ public class CreateDiagramAction extends AContextualAction {
     private IPath getPath() {
         IPath path;
         if (isToolbar()) {
-            repositoryNode = getProcessNode();
-        }
 
-        if (repositoryNode.getType() == ENodeType.SIMPLE_FOLDER || repositoryNode.getType() == ENodeType.SYSTEM_FOLDER) {
-            path = RepositoryNodeUtilities.getPath(repositoryNode);
+            return null;
+
         } else {
-            path = new Path(""); //$NON-NLS-1$
+
+            if (repositoryNode.getType() == ENodeType.SIMPLE_FOLDER || repositoryNode.getType() == ENodeType.SYSTEM_FOLDER) {
+                path = RepositoryNodeUtilities.getPath(repositoryNode);
+            } else {
+                path = new Path(""); //$NON-NLS-1$
+            }
+            return path;
         }
-        return path;
 
     }
 

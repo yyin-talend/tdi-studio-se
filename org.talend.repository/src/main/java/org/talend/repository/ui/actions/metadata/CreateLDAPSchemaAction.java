@@ -95,8 +95,10 @@ public class CreateLDAPSchemaAction extends AbstractCreateAction {
         WizardDialog wizardDialog;
         if (isToolbar()) {
             init(fileLDAPSchemaNode);
-            wizardDialog = new WizardDialog(new Shell(), new LDAPSchemaWizard(PlatformUI.getWorkbench(), creation,
-                    fileLDAPSchemaNode, getExistingNames(), false));
+            LDAPSchemaWizard ldafSchemaWizard = new LDAPSchemaWizard(PlatformUI.getWorkbench(), creation, fileLDAPSchemaNode,
+                    getExistingNames(), false);
+            ldafSchemaWizard.setToolbar(true);
+            wizardDialog = new WizardDialog(new Shell(), ldafSchemaWizard);
         } else {
             selection = getSelection();
             wizardDialog = new WizardDialog(new Shell(), new LDAPSchemaWizard(PlatformUI.getWorkbench(), creation, selection,

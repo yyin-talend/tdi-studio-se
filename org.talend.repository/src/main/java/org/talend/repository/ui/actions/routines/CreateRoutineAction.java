@@ -111,11 +111,8 @@ public class CreateRoutineAction extends AbstractRoutineAction {
             }
         }
         RepositoryNode node = null;
-        IPath path;
-        if (isToolbar()) {
-            path = RepositoryNodeUtilities.getPath(routineNode);
-
-        } else {
+        IPath path = null;
+        if (!isToolbar()) {
             ISelection selection = getSelection();
             Object obj = ((IStructuredSelection) selection).getFirstElement();
             node = (RepositoryNode) obj;

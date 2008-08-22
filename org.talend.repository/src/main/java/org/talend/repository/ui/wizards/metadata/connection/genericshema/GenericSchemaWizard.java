@@ -73,6 +73,17 @@ public class GenericSchemaWizard extends RepositoryWizard implements INewWizard 
 
     private List<IMetadataTable> oldMetadataTable;
 
+    private boolean isToolbar;
+
+    /**
+     * Sets the isToolbar.
+     * 
+     * @param isToolbar the isToolbar to set
+     */
+    public void setToolbar(boolean isToolbar) {
+        this.isToolbar = isToolbar;
+    }
+
     /**
      * Constructor for FileWizard.
      * 
@@ -219,9 +230,14 @@ public class GenericSchemaWizard extends RepositoryWizard implements INewWizard 
 
         genericSchemaWizardPage0 = null;
         genericSchemaWizardPage1 = null;
+        if (isToolbar) {
+            pathToSave = null;
+        }
 
         if (creation) {
-            setWindowTitle(Messages.getString("GenericSchemaWizard.CreateNewGenericSchema"));// Messages.getString("DelimitedFileWizard.windowTitleCreate"));
+            setWindowTitle(Messages.getString("GenericSchemaWizard.CreateNewGenericSchema"));// Messages.getString(
+            // "DelimitedFileWizard.windowTitleCreate"
+            // ));
             // //$NON-NLS-1$
             // //$NON-NLS-1$
             genericSchemaWizardPage0 = new Step0WizardPage(connectionProperty, pathToSave,
@@ -232,7 +248,12 @@ public class GenericSchemaWizard extends RepositoryWizard implements INewWizard 
             addPage(genericSchemaWizardPage0);
 
             genericSchemaWizardPage1 = new GenericSchemaWizardPage(2, connectionItem, isRepositoryObjectEditable(), null);
-            genericSchemaWizardPage1.setTitle(Messages.getString("GenericSchemaWizard.CreateNewGenericSchema") // Messages.getString("FileWizardPage.titleCreate")
+            genericSchemaWizardPage1.setTitle(Messages.getString("GenericSchemaWizard.CreateNewGenericSchema") // Messages
+                    // .
+                    // getString
+                    // (
+                    // "FileWizardPage.titleCreate"
+                    // )
                     // //$NON-NLS-1$
                     // + " 2 " //$NON-NLS-1$ //$NON-NLS-2$
                     + Messages.getString("FileWizardPage.of") + " 2"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -243,7 +264,9 @@ public class GenericSchemaWizard extends RepositoryWizard implements INewWizard 
 
         } else if (this.isSinglePageOnly == false) {
 
-            setWindowTitle(Messages.getString("GenericSchemaWizard.UpdateGenericSchema"));// Messages.getString("DelimitedFileWizard.windowTitleUpdate"));
+            setWindowTitle(Messages.getString("GenericSchemaWizard.UpdateGenericSchema"));// Messages.getString(
+            // "DelimitedFileWizard.windowTitleUpdate"
+            // ));
             // //$NON-NLS-1$
             // //$NON-NLS-1$
 
@@ -264,7 +287,9 @@ public class GenericSchemaWizard extends RepositoryWizard implements INewWizard 
             genericSchemaWizardPage0.setPageComplete(true);
             genericSchemaWizardPage1.setPageComplete(isRepositoryObjectEditable());
         } else {
-            setWindowTitle(Messages.getString("GenericSchemaWizard.SaveAsGenericSchema"));// Messages.getString("DelimitedFileWizard.windowTitleUpdate"));
+            setWindowTitle(Messages.getString("GenericSchemaWizard.SaveAsGenericSchema"));// Messages.getString(
+            // "DelimitedFileWizard.windowTitleUpdate"
+            // ));
             // //$NON-NLS-1$
             // //$NON-NLS-1$
             genericSchemaWizardPage0 = new Step0WizardPage(connectionProperty, pathToSave,

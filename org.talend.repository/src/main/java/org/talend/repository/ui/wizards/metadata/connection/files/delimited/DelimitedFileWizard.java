@@ -72,6 +72,17 @@ public class DelimitedFileWizard extends RepositoryWizard implements INewWizard 
 
     private IMetadataContextModeManager contextModeManager;
 
+    private boolean isToolbar;
+
+    /**
+     * Sets the isToolbar.
+     * 
+     * @param isToolbar the isToolbar to set
+     */
+    public void setToolbar(boolean isToolbar) {
+        this.isToolbar = isToolbar;
+    }
+
     /**
      * Constructor for FileWizard.
      * 
@@ -194,6 +205,9 @@ public class DelimitedFileWizard extends RepositoryWizard implements INewWizard 
      * Adding the page to the wizard.
      */
     public void addPages() {
+        if (isToolbar) {
+            pathToSave = null;
+        }
         delimitedFileWizardPage0 = new Step0WizardPage(connectionProperty, pathToSave,
                 ERepositoryObjectType.METADATA_FILE_DELIMITED, !isRepositoryObjectEditable(), creation);
         delimitedFileWizardPage1 = new DelimitedFileWizardPage(1, connectionItem, isRepositoryObjectEditable(), existingNames,
