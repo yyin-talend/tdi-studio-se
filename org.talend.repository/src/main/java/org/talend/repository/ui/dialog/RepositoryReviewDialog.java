@@ -49,7 +49,6 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.ICDCProviderService;
 import org.talend.repository.ProjectManager;
-import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.model.MetadataTableRepositoryObject;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
@@ -653,7 +652,7 @@ class RepositoryTypeProcessor implements ITypeProcessor {
                         // is
                         // specified
                         // //$NON-NLS-1$
-                        String neededDbType = UpdateRepositoryUtils.getNeededDbType(currentDbType, repositoryType); //$NON-NLS-1$
+                        String neededDbType = repositoryType.substring(repositoryType.indexOf(":") + 1); //$NON-NLS-1$
                         if (!MetadataTalendType.sameDBProductType(neededDbType, currentDbType)) {
                             return false;
                         }
