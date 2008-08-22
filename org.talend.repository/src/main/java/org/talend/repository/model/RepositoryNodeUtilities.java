@@ -17,6 +17,8 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -294,7 +296,7 @@ public class RepositoryNodeUtilities {
         String tableName = values[1];
 
         try {
-            final RepositoryNode realNode = RepositoryNodeUtilities.getRepositoryNode(repositoryID);
+            final RepositoryNode realNode = getRepositoryNode(repositoryID);
             return getSchemeFromConnection(realNode, tableName);
         } catch (Exception e) {
             ExceptionHandler.process(e);
@@ -318,4 +320,27 @@ public class RepositoryNodeUtilities {
         return null;
     }
 
+    /**
+     * 
+     * ggu Comment method "getParentRepositoryNodeFromSelection".
+     * 
+     */
+    public static RepositoryNode getParentRepositoryNodeFromSelection(IRepositoryObject object) {
+        IRepositoryView viewPart = RepositoryView.show();
+        ISelection repositoryViewSelection = viewPart.getViewer().getSelection();
+
+        if (repositoryViewSelection instanceof IStructuredSelection) {
+            RepositoryNode selectedRepositoryNode = (RepositoryNode) ((IStructuredSelection) repositoryViewSelection)
+                    .getFirstElement();
+            // fixed for the opened job and lost the selected node.
+            if (object != null && selectedRepositoryNode == null) {
+                selectedRepositoryNode = getRepositoryNode(object);
+            }
+            if (selectedRepositoryNode != null) {
+                return selectedRepositoryNode.getParent();
+            }
+        }
+        return null;
+
+    }
 }

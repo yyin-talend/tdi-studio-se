@@ -53,10 +53,10 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.actions.ActionsHelper;
-import org.talend.repository.ui.views.IRepositoryView;
 
 /**
  * 
@@ -130,7 +130,8 @@ public class VersionSection extends AbstractSection implements ISelectionProvide
                     return null;
                 }
 
-                RepositoryNode parentRepositoryNode = getParentRepositoryNode();
+                RepositoryNode parentRepositoryNode = RepositoryNodeUtilities
+                        .getParentRepositoryNodeFromSelection(repositoryObject);
 
                 try {
                     List<IRepositoryObject> allVersion = ProxyRepositoryFactory.getInstance().getAllVersion(
@@ -156,7 +157,7 @@ public class VersionSection extends AbstractSection implements ISelectionProvide
                 RepositoryNode repositoryNode = new RepositoryNode(repositoryObjectVersion, parentRepositoryNode,
                         ENodeType.REPOSITORY_ELEMENT);
                 repositoryNode.setProperties(EProperties.CONTENT_TYPE, itemType);
-                repositoryNode.setProperties(EProperties.LABEL,repositoryObjectVersion.getLabel() );
+                repositoryNode.setProperties(EProperties.LABEL, repositoryObjectVersion.getLabel());
                 return repositoryNode;
             }
 
@@ -320,21 +321,6 @@ public class VersionSection extends AbstractSection implements ISelectionProvide
     public ISelection getSelection() {
         refresh();
         return tableViewer.getSelection();
-    }
-
-    private RepositoryNode getParentRepositoryNode() {
-        IRepositoryView viewPart = (IRepositoryView) getActivePage().findView(IRepositoryView.VIEW_ID);
-        ISelection repositoryViewSelection = viewPart.getViewer().getSelection();
-        if (!(repositoryViewSelection instanceof IStructuredSelection)) {
-            return null;
-        }
-        IStructuredSelection structuredSelection = (IStructuredSelection) repositoryViewSelection;
-        RepositoryNode selectedRepositoryNode = (RepositoryNode) structuredSelection.getFirstElement();
-
-        if (selectedRepositoryNode == null) {
-            return null;
-        }
-        return selectedRepositoryNode.getParent();
     }
 
 }
