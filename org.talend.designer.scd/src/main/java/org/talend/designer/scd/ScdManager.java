@@ -22,10 +22,14 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.scd.model.SurrogateCreationType;
 import org.talend.designer.scd.model.SurrogateKey;
+import org.talend.designer.scd.model.Type3Field;
 import org.talend.designer.scd.model.VersionEndType;
 import org.talend.designer.scd.model.VersionStartType;
 import org.talend.designer.scd.model.Versioning;
@@ -53,7 +57,7 @@ public class ScdManager {
 
     private Versioning versionData;
 
-    private Map<String, String> type3Table;
+    private List<Type3Field> type3Table;
 
     /**
      * DOC hcw ScdManager constructor comment.
@@ -66,26 +70,53 @@ public class ScdManager {
     }
 
     public List<String> getUnusedFields() {
-        List<String> unused = new ArrayList<String>();
-        List<IMetadataColumn> inputSchema = getMetadataColumn(component);
-        if (inputSchema != null) {
-            for (IMetadataColumn col : inputSchema) {
-                unused.add(col.getLabel());
+        List<String> unused = getInputColumnNames();
+        return removeAll(unused, getUsedColumns());
+    }
+
+    public List<String> getOutputColumnNames() {
+        return getColumnNames(getOutputColumns(component));
+    }
+
+    public List<String> getInputColumnNames() {
+        return getColumnNames(getInputColumns(component));
+    }
+
+    private List<String> getColumnNames(List<IMetadataColumn> columns) {
+        List<String> names = new ArrayList<String>();
+        if (columns != null) {
+            for (IMetadataColumn col : columns) {
+                names.add(col.getLabel());
             }
         }
+        return names;
+    }
 
-        return removeAll(unused, getUsedColumns());
+    public List<IMetadataColumn> getInputColumns(INode node) {
+        List<IMetadataColumn> inputSchema = null;
+        List<? extends IConnection> incomingConnections = node.getIncomingConnections();
+        if (incomingConnections != null && incomingConnections.size() > 0) {
+            for (IConnection incomingConnection : incomingConnections) {
+                if (incomingConnection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+                    IMetadataTable schemaTable = incomingConnection.getMetadataTable();
+                    if (schemaTable != null) {
+                        inputSchema = schemaTable.getListColumns();
+                    }
+                }
+            }
+        }
+        return inputSchema;
     }
 
     /**
      * DOC hcw Comment method "getMetadataColumn".
      * 
-     * @param component2
+     * @param node
      * @return
      */
-    private List<IMetadataColumn> getMetadataColumn(ScdComponent component) {
+    public List<IMetadataColumn> getOutputColumns(INode node) {
 
-        List<IMetadataTable> metaDataList = component.getMetadataList();
+        List<IMetadataTable> metaDataList = node.getMetadataList();
         List<IMetadataColumn> columns = new ArrayList<IMetadataColumn>();
         if (metaDataList != null) {
             for (IMetadataTable table : metaDataList) {
@@ -117,22 +148,6 @@ public class ScdManager {
         }
         return result;
     }
-
-    // public List<IMetadataColumn> getInputSchema(INode node) {
-    // List<IMetadataColumn> inputSchema = null;
-    // List<? extends IConnection> incomingConnections = node.getIncomingConnections();
-    // if (incomingConnections != null && incomingConnections.size() > 0) {
-    // for (IConnection incomingConnection : incomingConnections) {
-    // if (incomingConnection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-    // IMetadataTable schemaTable = incomingConnection.getMetadataTable();
-    // if (schemaTable != null) {
-    // inputSchema = schemaTable.getListColumns();
-    // }
-    // }
-    // }
-    // }
-    // return inputSchema;
-    // }
 
     public int getDialogResponse() {
         return dialogResponse;
@@ -178,7 +193,7 @@ public class ScdManager {
         addAll(usedColumns, sourceKeys, type0Table, type1Table, type2Table);
 
         usedColumns.addAll(getUsedColumns(versionData));
-        usedColumns.addAll(getUsedColumns(type3Table));
+        usedColumns.addAll(getUsedType3Columns(type3Table));
         usedColumns.addAll(getUsedColumns(surrogateKeys));
         return usedColumns;
     }
@@ -212,21 +227,40 @@ public class ScdManager {
     }
 
     /**
-     * DOC hcw Comment method "getUsedColumns".
+     * DOC hcw Comment method "getUsedType3Columns".
      * 
      * @param type3Table2
      * @return
      */
-    private Collection<? extends String> getUsedColumns(Map<String, String> type3) {
+    private Collection<? extends String> getUsedType3Columns(List<Type3Field> type3) {
         if (type3 == null) {
             return Collections.EMPTY_LIST;
         } else {
             List<String> columns = new ArrayList<String>();
-            columns.addAll(type3.keySet());
-            columns.addAll(type3.values());
+            for (Type3Field field : type3) {
+                columns.add(field.getCurrentValue());
+                columns.add(field.getPreviousValue());
+            }
             return columns;
         }
     }
+
+    // /**
+    // * DOC hcw Comment method "getUsedColumns".
+    // *
+    // * @param type3Table2
+    // * @return
+    // */
+    // private Collection<? extends String> getUsedColumns(Map<String, String> type3) {
+    // if (type3 == null) {
+    // return Collections.EMPTY_LIST;
+    // } else {
+    // List<String> columns = new ArrayList<String>();
+    // columns.addAll(type3.keySet());
+    // columns.addAll(type3.values());
+    // return columns;
+    // }
+    // }
 
     /**
      * DOC hcw Comment method "getUsedColumns".
@@ -279,7 +313,7 @@ public class ScdManager {
     }
 
     public void saveUIData(List<String> sourceKeys, List<SurrogateKey> surrogateKeys, List<String> type0Table,
-            List<String> type1Table, List<String> type2Table, Versioning versionData, Map<String, String> type3Table) {
+            List<String> type1Table, List<String> type2Table, Versioning versionData, List<Type3Field> type3Table) {
         this.sourceKeys = sourceKeys;
         this.surrogateKeys = surrogateKeys;
         this.type0Table = type0Table;
@@ -409,7 +443,7 @@ public class ScdManager {
 
             // activate
             versionData.setActiveChecked(getBooleanParameter(ScdParameterConstants.USE_L2_ACTIVE));
-            if (versionData.isVersionChecked()) {
+            if (versionData.isActiveChecked()) {
                 versionData.setActiveName(getStringParameter(ScdParameterConstants.L2_ACTIVE_FIELD));
             }
 
@@ -421,13 +455,13 @@ public class ScdManager {
         if (useL3 != null && useL3.getValue().equals(Boolean.TRUE)) {
             IElementParameter l3FieldsParam = paramsMap.get(ScdParameterConstants.L3_FIELDS_PARAM_NAME);
 
-            type3Table = new HashMap<String, String>();
+            type3Table = new ArrayList<Type3Field>();
             List<Map<String, String>> values = (List<Map<String, String>>) l3FieldsParam.getValue();
             for (Map<String, String> entry : values) {
                 String current = entry.get(ScdParameterConstants.L3_ITEM_CURRENT_VALUE);
                 String previous = entry.get(ScdParameterConstants.L3_ITEM_PREV_VALUE);
 
-                type3Table.put(current, previous);
+                type3Table.add(new Type3Field(current, previous));
             }
         }
 
@@ -539,7 +573,7 @@ public class ScdManager {
         }
     }
 
-    public void updateType3Parameter(Map<String, String> model) {
+    public void updateType3Parameter(List<Type3Field> model) {
         IElementParameter useL3 = paramsMap.get(ScdParameterConstants.USE_L3);
         if (useL3 == null) {
             return;
@@ -550,11 +584,10 @@ public class ScdManager {
             useL3.setValue(Boolean.TRUE);
 
             List<Map<String, String>> table = new ArrayList<Map<String, String>>();
-            for (String current : model.keySet()) {
-                String previous = model.get(current);
+            for (Type3Field field : model) {
                 Map<String, String> row = new HashMap<String, String>();
-                row.put(ScdParameterConstants.L3_ITEM_CURRENT_VALUE, current);
-                row.put(ScdParameterConstants.L3_ITEM_PREV_VALUE, previous);
+                row.put(ScdParameterConstants.L3_ITEM_CURRENT_VALUE, field.getCurrentValue());
+                row.put(ScdParameterConstants.L3_ITEM_PREV_VALUE, field.getPreviousValue());
                 table.add(row);
             }
 
@@ -609,7 +642,7 @@ public class ScdManager {
         return versionData;
     }
 
-    public Map<String, String> getType3Table() {
+    public List<Type3Field> getType3Table() {
         return type3Table;
     }
 

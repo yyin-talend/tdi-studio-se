@@ -15,20 +15,28 @@ package org.talend.designer.scd.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.ColumnViewer;
+import org.eclipse.jface.viewers.ComboBoxCellEditor;
+import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
+import org.talend.designer.scd.ScdManager;
 import org.talend.designer.scd.util.DragDropManager;
 
 /**
@@ -47,8 +55,8 @@ public class FieldSection extends ScdSection implements IDragDropDelegate {
      * 
      * @param parent
      */
-    public FieldSection(Composite parent, int width, int height) {
-        super(parent, width, height);
+    public FieldSection(Composite parent, int width, int height, ScdManager scdManager, boolean toolbarNeeded) {
+        super(parent, width, height, scdManager, toolbarNeeded);
         dragDropManager = new DragDropManager();
         dragDropManager.addDragSupport(tableViewer.getTable(), this);
         dragDropManager.addDropSupport(tableViewer.getTable(), this);
@@ -68,11 +76,21 @@ public class FieldSection extends ScdSection implements IDragDropDelegate {
         TableViewerColumn column = new TableViewerColumn(tableViewer, SWT.NONE);
         column.getColumn().setWidth(width);
 
+        column.setEditingSupport(new FieldEditingSupport(tableViewer, 0));
+
         tableViewer.setLabelProvider(new TableLabelProvider());
         tableViewer.setContentProvider(new ContentProvider());
         // sorter
-        tableViewer.setSorter(new ViewerSorter());
+        // tableViewer.setSorter(new ViewerSorter());
 
+    }
+
+    public void setSortable(boolean sortable) {
+        if (sortable) {
+            tableViewer.setSorter(new ViewerSorter());
+        } else {
+            tableViewer.setSorter(null);
+        }
     }
 
     public void setTableInput(List input) {
@@ -88,28 +106,73 @@ public class FieldSection extends ScdSection implements IDragDropDelegate {
         return tableViewer;
     }
 
-    static class TableLabelProvider extends LabelProvider implements ITableLabelProvider {
+    @Override
+    protected void addToolbarListener() {
+        addEntryItem.addSelectionListener(new SelectionAdapter() {
 
-        public String getColumnText(Object element, int columnIndex) {
-            return element.toString();
-        }
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                List<String> names = scdManager.getInputColumnNames();
+                if (names.size() > 0) {
+                    String value = names.get(0);
+                    tableModel.add(value);
+                    tableViewer.setInput(tableModel);
+                    // tableViewer.refresh();
+                }
 
-        public Image getColumnImage(Object element, int columnIndex) {
-            return null;
-        }
-    }
+            }
+        });
 
-    static class ContentProvider implements IStructuredContentProvider {
+        removeEntryItem.addSelectionListener(new SelectionAdapter() {
 
-        public Object[] getElements(Object inputElement) {
-            return ((List) inputElement).toArray();
-        }
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                int[] selection = tableViewer.getTable().getSelectionIndices();
+                if (selection == null || selection.length == 0) {
+                    return;
+                }
+                tableViewer.cancelEditing();
+                for (int i = selection.length - 1; i >= 0; i--) {
+                    tableModel.remove(selection[i]);
+                }
+                tableViewer.setInput(tableModel);
+            }
+        });
 
-        public void dispose() {
-        }
+        moveUpEntryItem.addSelectionListener(new SelectionAdapter() {
 
-        public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-        }
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                int[] selection = tableViewer.getTable().getSelectionIndices();
+                if (selection == null || selection.length == 0) {
+                    return;
+                }
+                tableViewer.cancelEditing();
+                List<Integer> updateIndices = new ArrayList<Integer>(); // indices of item which will be updated
+                int[] newSelectionIndices = adjustIndicesUp(selection, tableModel, updateIndices);
+                // refresh
+                tableViewer.setInput(tableModel);
+                // tableViewer.getTable().setSelection(newSelectionIndices);
+            }
+        });
+
+        moveDownEntryItem.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                int[] selection = tableViewer.getTable().getSelectionIndices();
+                if (selection == null || selection.length == 0) {
+                    return;
+                }
+                tableViewer.cancelEditing();
+                List<Integer> updateIndices = new ArrayList<Integer>(); // indices of item which will be updated
+                int[] newSelectionIndices = adjustIndicesDown(selection, tableModel, updateIndices);
+                // refresh
+                tableViewer.setInput(tableModel);
+                // tableViewer.getTable().setSelection(newSelectionIndices);
+            }
+        });
+
     }
 
     public List<String> getTableData() {
@@ -147,17 +210,13 @@ public class FieldSection extends ScdSection implements IDragDropDelegate {
      * @see org.talend.designer.scd.ui.IDragDrop#onDropItems(java.lang.String, org.eclipse.swt.graphics.Point)
      */
     public void onDropItems(String data, Point position) {
-        Table table = tableViewer.getTable();
         String[] items = data.split("\\|");
         // skip items[0], which is the number of selected elements
-        table.setRedraw(false);
         for (int i = 1; i < items.length; i++) {
-            TableItem item = new TableItem(table, SWT.NONE);
-            item.setText(new String[] { items[i] });
             tableModel.add(items[i]);
         }
+        tableViewer.setInput(tableModel);
 
-        table.setRedraw(true);
     }
 
     /*
@@ -180,5 +239,99 @@ public class FieldSection extends ScdSection implements IDragDropDelegate {
      */
     public boolean isDropAllowed(String data) {
         return true;
+    }
+
+    static class TableLabelProvider extends LabelProvider implements ITableLabelProvider {
+
+        public String getColumnText(Object element, int columnIndex) {
+            return element.toString();
+        }
+
+        public Image getColumnImage(Object element, int columnIndex) {
+            return null;
+        }
+    }
+
+    static class ContentProvider implements IStructuredContentProvider {
+
+        public Object[] getElements(Object inputElement) {
+            return ((List) inputElement).toArray();
+        }
+
+        public void dispose() {
+        }
+
+        public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+        }
+    }
+
+    class FieldEditingSupport extends EditingSupport {
+
+        private CellEditor editor;
+
+        private int column;
+
+        private ColumnViewer viewer;
+
+        private List<String> columnNames;
+
+        public FieldEditingSupport(ColumnViewer viewer, int column) {
+            super(viewer);
+            this.column = column;
+            this.viewer = viewer;
+            columnNames = scdManager.getInputColumnNames();
+            editor = new ComboBoxCellEditor(((TableViewer) viewer).getTable(), columnNames
+                    .toArray(new String[columnNames.size()]));
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.jface.viewers.EditingSupport#canEdit(java.lang.Object)
+         */
+        @Override
+        protected boolean canEdit(Object element) {
+            return true;
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.jface.viewers.EditingSupport#getCellEditor(java.lang.Object)
+         */
+        @Override
+        protected CellEditor getCellEditor(Object element) {
+            return editor;
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.jface.viewers.EditingSupport#getValue(java.lang.Object)
+         */
+        @Override
+        protected Object getValue(Object element) {
+            return columnNames.indexOf(element);
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.jface.viewers.EditingSupport#setValue(java.lang.Object, java.lang.Object)
+         */
+        @Override
+        protected void setValue(Object element, Object value) {
+        }
+
+        @Override
+        protected void saveCellEditorValue(CellEditor cellEditor, ViewerCell cell) {
+            Integer value = (Integer) cellEditor.getValue();
+            int index = tableViewer.getTable().getSelectionIndex();
+            if (index < 0 || index >= tableModel.size() || value < 0) {
+                return;
+            }
+            tableModel.set(index, columnNames.get(value));
+            tableViewer.refresh();
+        }
     }
 }

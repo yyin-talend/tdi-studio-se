@@ -12,18 +12,32 @@
 // ============================================================================
 package org.talend.designer.scd.ui;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.ColumnViewer;
+import org.eclipse.jface.viewers.ComboBoxCellEditor;
+import org.eclipse.jface.viewers.EditingSupport;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.talend.designer.scd.ScdManager;
+import org.talend.designer.scd.model.Type3Field;
 import org.talend.designer.scd.util.DragDropManager;
-import org.talend.designer.scd.util.IPropertySetter;
 import org.talend.designer.scd.util.TableEditorManager;
 
 /**
@@ -35,6 +49,8 @@ public class Type3Section extends ScdSection implements IDragDropDelegate {
 
     private static final String CURRENT_HEADER = "current value";
 
+    private static final int CURRENT_COLUMN_INDEX = 0;
+
     private static final int PREVIOUS_COLUMN_INDEX = 1;
 
     private static final String PREVIOUS_NAME_PREFIX = "previous_";
@@ -45,7 +61,13 @@ public class Type3Section extends ScdSection implements IDragDropDelegate {
 
     private DragDropManager dragDropManager;
 
-    private Map<String, String> tableModel;
+    private List<Type3Field> tableModel;
+
+    private TableViewer tableViewer;
+
+    private List<String> inputColumns;
+
+    private List<String> outputColumns;
 
     /**
      * DOC hcw Type3Section constructor comment.
@@ -54,54 +76,110 @@ public class Type3Section extends ScdSection implements IDragDropDelegate {
      * @param width
      * @param height
      */
-    public Type3Section(Composite parent, int width, int height) {
-        super(parent, width, height);
+    public Type3Section(Composite parent, int width, int height, ScdManager scdManager) {
+        super(parent, width, height, scdManager, true);
         editorManager = new TableEditorManager();
         dragDropManager = new DragDropManager();
         dragDropManager.addDragSupport(table, this);
         dragDropManager.addDropSupport(table, this);
-        tableModel = new HashMap<String, String>();
+        tableModel = new ArrayList<Type3Field>();
+
     }
 
     @Override
     protected void createContents(Composite composite) {
-        // createLabelTitle(composite, new String[] { "current value", "previous value" }, new int[] { 100, 100 },
-        // SWTResourceManager.getColor(IColorConstants.GRAY));
-        table = new Table(composite, SWT.BORDER);
+        inputColumns = scdManager.getInputColumnNames();
+        outputColumns = scdManager.getOutputColumnNames();
+        tableViewer = new TableViewer(composite, SWT.FULL_SELECTION | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+        table = tableViewer.getTable();
+        table.setLinesVisible(true);
+        table.setHeaderVisible(true);
 
         GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
         table.setLayoutData(gd);
-        table.setHeaderVisible(true);
-        table.setLinesVisible(true);
 
-        TableColumn currentColumn = new TableColumn(table, SWT.NONE);
-        currentColumn.setWidth(200);
-        currentColumn.setText(CURRENT_HEADER);
+        TableViewerColumn currentColumn = new TableViewerColumn(tableViewer, SWT.NONE);
+        currentColumn.getColumn().setText(CURRENT_HEADER);
+        currentColumn.getColumn().setWidth(200);
+        currentColumn.setEditingSupport(new Type3EditingSupport(tableViewer, 0));
 
-        TableColumn previousColumn = new TableColumn(table, SWT.NONE);
-        previousColumn.setWidth(200);
-        previousColumn.setText(PREVIOUS_HEADER);
+        TableViewerColumn previousColumn = new TableViewerColumn(tableViewer, SWT.NONE);
+        previousColumn.getColumn().setText(PREVIOUS_HEADER);
+        previousColumn.getColumn().setWidth(200);
+        previousColumn.setEditingSupport(new Type3EditingSupport(tableViewer, 1));
+
+        tableViewer.setLabelProvider(new TableLabelProvider());
+        tableViewer.setContentProvider(new ContentProvider());
 
     }
 
-    // protected Label[] createLabelTitle(Composite parent, String[] text, int[] width, Color background) {
-    // Composite composite = new Composite(parent, SWT.NONE);
-    // GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).applyTo(composite);
-    // GridLayoutFactory.swtDefaults().numColumns(text.length).margins(0, 0).spacing(2, 0).applyTo(composite);
-    //
-    // Label[] headers = new Label[text.length];
-    // for (int i = 0; i < text.length; i++) {
-    // headers[i] = new Label(composite, SWT.NONE);
-    // headers[i].setBackground(background);
-    // headers[i].setText(text[i]);
-    // GridDataFactory.swtDefaults().hint(width[i], SWT.DEFAULT).applyTo(headers[i]);
-    // }
-    // return headers;
-    //
-    // }
-
     public Table getTable() {
         return table;
+    }
+
+    @Override
+    protected void addToolbarListener() {
+        addEntryItem.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                if (inputColumns.size() > 0 && outputColumns.size() > 0) {
+                    Type3Field field = new Type3Field(outputColumns.get(0), inputColumns.get(0));
+                    tableModel.add(field);
+                    tableViewer.setInput(tableModel);
+                }
+            }
+        });
+
+        removeEntryItem.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                int[] selection = tableViewer.getTable().getSelectionIndices();
+                if (selection == null || selection.length == 0) {
+                    return;
+                }
+                tableViewer.cancelEditing();
+                for (int i = selection.length - 1; i >= 0; i--) {
+                    tableModel.remove(selection[i]);
+                }
+                tableViewer.setInput(tableModel);
+            }
+        });
+
+        moveUpEntryItem.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                int[] selection = tableViewer.getTable().getSelectionIndices();
+                if (selection == null || selection.length == 0) {
+                    return;
+                }
+                tableViewer.cancelEditing();
+                List<Integer> updateIndices = new ArrayList<Integer>(); // indices of item which will be updated
+                int[] newSelectionIndices = adjustIndicesUp(selection, tableModel, updateIndices);
+                // refresh
+                tableViewer.setInput(tableModel);
+
+            }
+        });
+
+        moveDownEntryItem.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                int[] selection = tableViewer.getTable().getSelectionIndices();
+                if (selection == null || selection.length == 0) {
+                    return;
+                }
+                tableViewer.cancelEditing();
+                List<Integer> updateIndices = new ArrayList<Integer>(); // indices of item which will be updated
+                int[] newSelectionIndices = adjustIndicesDown(selection, tableModel, updateIndices);
+                // refresh
+                tableViewer.setInput(tableModel);
+            }
+        });
+
     }
 
     /*
@@ -116,7 +194,7 @@ public class Type3Section extends ScdSection implements IDragDropDelegate {
         buf.append(selection.length);
         for (int i = 0, n = selection.length; i < n; i++) {
             buf.append('|');
-            buf.append(selection[i].getText(0));
+            buf.append(selection[i].getText(1));
         }
 
         return buf.toString();
@@ -129,14 +207,17 @@ public class Type3Section extends ScdSection implements IDragDropDelegate {
      * @see org.talend.designer.scd.ui.IDragDropDelegate#onDropItems(java.lang.String, org.eclipse.swt.graphics.Point)
      */
     public void onDropItems(String data, Point position) {
-        table.setRedraw(false);
+
         String[] items = data.split("\\|");
         // skip items[0], which is the number of selected elements
         for (int i = 1; i < items.length; i++) {
-            createNewItem(items[i], PREVIOUS_NAME_PREFIX + items[i]);
+            Type3Field field = new Type3Field();
+            field.setCurrentValue("");
+            field.setPreviousValue(items[i]);
+            tableModel.add(field);
         }
+        tableViewer.setInput(tableModel);
 
-        table.setRedraw(true);
     }
 
     /*
@@ -148,33 +229,13 @@ public class Type3Section extends ScdSection implements IDragDropDelegate {
         return true;
     }
 
-    public void setTableInput(Map<String, String> tableModel) {
-        this.tableModel = new HashMap<String, String>();
-        if (tableModel != null) {
-            table.setRedraw(false);
-            for (String current : tableModel.keySet()) {
-                String previous = tableModel.get(current);
-                createNewItem(current, previous);
-            }
-            table.setRedraw(true);
-        }
+    public void setTableInput(List<Type3Field> tableModel) {
+        this.tableModel = tableModel;
+        tableViewer.setInput(tableModel);
     }
 
-    public Map<String, String> getTableData() {
+    public List<Type3Field> getTableData() {
         return tableModel;
-    }
-
-    public void createNewItem(final String currentName, String previousName) {
-        tableModel.put(currentName, previousName);
-        TableItem item = new TableItem(table, SWT.NONE);
-        item.setText(new String[] { currentName, previousName });
-        item.setData(currentName);
-        editorManager.createTextEditor(table, previousName, item, PREVIOUS_COLUMN_INDEX, new IPropertySetter<String>() {
-
-            public void set(String value) {
-                tableModel.put(currentName, value);
-            }
-        });
     }
 
     /*
@@ -185,10 +246,136 @@ public class Type3Section extends ScdSection implements IDragDropDelegate {
     public void removeDragItems() {
         TableItem[] selection = table.getSelection();
         for (TableItem item : selection) {
-            String currentName = (String) item.getData();
-            tableModel.remove(currentName);
+            Type3Field field = (Type3Field) item.getData();
+            tableModel.remove(field);
             editorManager.removeEditors(item);
         }
         table.remove(table.getSelectionIndices());
     }
+
+    static class TableLabelProvider extends LabelProvider implements ITableLabelProvider {
+
+        public String getColumnText(Object element, int columnIndex) {
+            switch (columnIndex) {
+            case CURRENT_COLUMN_INDEX:
+                return ((Type3Field) element).getCurrentValue();
+            case PREVIOUS_COLUMN_INDEX:
+                return ((Type3Field) element).getPreviousValue();
+            }
+            return "";
+        }
+
+        public Image getColumnImage(Object element, int columnIndex) {
+            return null;
+        }
+    }
+
+    static class ContentProvider implements IStructuredContentProvider {
+
+        public Object[] getElements(Object inputElement) {
+            return ((List) inputElement).toArray();
+        }
+
+        public void dispose() {
+        }
+
+        public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+        }
+    }
+
+    class Type3EditingSupport extends EditingSupport {
+
+        private CellEditor editor;
+
+        private int column;
+
+        private ColumnViewer viewer;
+
+        public Type3EditingSupport(ColumnViewer viewer, int column) {
+            super(viewer);
+            this.column = column;
+            this.viewer = viewer;
+
+            switch (column) {
+            case CURRENT_COLUMN_INDEX:
+                editor = new ComboBoxCellEditor(((TableViewer) viewer).getTable(), outputColumns.toArray(new String[outputColumns
+                        .size()]));
+                break;
+            case PREVIOUS_COLUMN_INDEX:
+                editor = new ComboBoxCellEditor(((TableViewer) viewer).getTable(), inputColumns.toArray(new String[inputColumns
+                        .size()]));
+                break;
+
+            }
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.jface.viewers.EditingSupport#canEdit(java.lang.Object)
+         */
+        @Override
+        protected boolean canEdit(Object element) {
+            return true;
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.jface.viewers.EditingSupport#getCellEditor(java.lang.Object)
+         */
+        @Override
+        protected CellEditor getCellEditor(Object element) {
+            return editor;
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.jface.viewers.EditingSupport#getValue(java.lang.Object)
+         */
+        @Override
+        protected Object getValue(Object element) {
+            switch (column) {
+            case CURRENT_COLUMN_INDEX:
+                return outputColumns.indexOf(((Type3Field) element).getCurrentValue());
+            case PREVIOUS_COLUMN_INDEX:
+                return inputColumns.indexOf(((Type3Field) element).getPreviousValue());
+            }
+            return 0;
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.jface.viewers.EditingSupport#setValue(java.lang.Object, java.lang.Object)
+         */
+        @Override
+        protected void setValue(Object element, Object value) {
+        }
+
+        @Override
+        protected void saveCellEditorValue(CellEditor cellEditor, ViewerCell cell) {
+            Integer value = (Integer) cellEditor.getValue();
+            int index = tableViewer.getTable().getSelectionIndex();
+            if (value == null || value < 0 || index < 0 || index >= tableModel.size()) {
+                return;
+            }
+            try {
+                Type3Field field = tableModel.get(index);
+                switch (column) {
+                case CURRENT_COLUMN_INDEX:
+                    field.setCurrentValue(outputColumns.get(value));
+                    break;
+                case PREVIOUS_COLUMN_INDEX:
+                    field.setPreviousValue(inputColumns.get(value));
+                    break;
+                }
+
+                tableViewer.refresh();
+            } catch (Exception e) {
+            }
+        }
+    }
+
 }

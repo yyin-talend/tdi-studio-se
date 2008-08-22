@@ -13,9 +13,7 @@
 package org.talend.designer.scd.ui;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.SWT;
@@ -33,6 +31,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.talend.core.ui.proposal.TalendProposalUtils;
+import org.talend.designer.scd.ScdManager;
 import org.talend.designer.scd.ScdPlugin;
 import org.talend.designer.scd.model.SurrogateCreationType;
 import org.talend.designer.scd.model.SurrogateKey;
@@ -83,8 +82,8 @@ public class SurrogateSection extends ScdSection {
      * @param width
      * @param height
      */
-    public SurrogateSection(Composite parent, int width, int height) {
-        super(parent, width, height);
+    public SurrogateSection(Composite parent, int width, int height, ScdManager scdManager) {
+        super(parent, width, height, scdManager, false);
         surrogateManager = new SurrogateKeyManager();
         editorManager = new TableEditorManager();
         dragDropManager = new DragDropManager();
@@ -124,7 +123,7 @@ public class SurrogateSection extends ScdSection {
      * 
      * @param composite
      */
-    private void createToolbar(Composite composite) {
+    private void createToolbarActions(Composite composite) {
         ToolBar toolBar = new ToolBar(composite, SWT.NONE);
         toolBar.setLayoutData(new GridData(157, SWT.DEFAULT));
 
@@ -182,15 +181,18 @@ public class SurrogateSection extends ScdSection {
      */
     protected void moveDownButtonClick() {
         table.setRedraw(false);
-        int[] updateIndices = adjustIndicesDown(table.getSelectionIndices(), tableModel);
+        List<Integer> updateIndices = new ArrayList<Integer>(); // indices of item which will be updated
+        int[] newSelectionIndices = adjustIndicesDown(table.getSelectionIndices(), tableModel, updateIndices);
+        // move selection
+        table.setSelection(newSelectionIndices);
 
         // remove editors
-        for (int i : updateIndices) {
-            editorManager.removeEditors(table.getItem(i));
+        for (int index : updateIndices) {
+            editorManager.removeEditors(table.getItem(index));
         }
         // rebuild table item
-        for (int i : updateIndices) {
-            initTableItem(tableModel.get(i), table.getItem(i));
+        for (int index : updateIndices) {
+            initTableItem(tableModel.get(index), table.getItem(index));
         }
 
         table.setRedraw(true);
@@ -202,132 +204,21 @@ public class SurrogateSection extends ScdSection {
      */
     protected void moveUpButtonClick() {
         table.setRedraw(false);
-        int[] updateIndices = adjustIndicesUp(table.getSelectionIndices(), tableModel);
+        List<Integer> updateIndices = new ArrayList<Integer>(); // indices of item which will be updated
+        int[] newSelectionIndices = adjustIndicesUp(table.getSelectionIndices(), tableModel, updateIndices);
+        // move selection
+        table.setSelection(newSelectionIndices);
 
         // remove editors
-        for (int i : updateIndices) {
-            editorManager.removeEditors(table.getItem(i));
+        for (int index : updateIndices) {
+            editorManager.removeEditors(table.getItem(index));
         }
         // rebuild table item
-        for (int i : updateIndices) {
-            initTableItem(tableModel.get(i), table.getItem(i));
+        for (int index : updateIndices) {
+            initTableItem(tableModel.get(index), table.getItem(index));
         }
 
         table.setRedraw(true);
-    }
-
-    /**
-     * DOC hcw Comment method "adjustIndicesDown".
-     * 
-     * @param selectionIndices
-     * @param tableModel2
-     * @return
-     */
-    private int[] adjustIndicesDown(int[] selectionIndices, List<SurrogateKey> model) {
-        if (model.size() < 2) {
-            return new int[0];
-        }
-
-        Map<Integer, Integer> selectionMap = new HashMap<Integer, Integer>(); // old selected item index, new selected
-        // item index
-        for (int i : selectionIndices) {
-            selectionMap.put(i, i);
-        }
-
-        List<Integer> updateIndices = new ArrayList<Integer>(); // indices of item which will be updated
-        Map<Integer, Integer> map = new HashMap<Integer, Integer>(); // new index , old index
-        for (int i = selectionIndices.length - 1; i >= 0;) {
-            int j = i - 1;
-            // find continous block
-            while (j >= 0 && selectionIndices[j] + 1 == selectionIndices[j + 1]) {
-                j--;
-            }
-
-            if (selectionIndices[i] + 1 < tableModel.size()) {
-                // from j + 1 to i, all index add 1
-                for (int k = j + 1; k <= i; k++) {
-                    map.put(selectionIndices[k] + 1, selectionIndices[k]);
-                    selectionMap.put(selectionIndices[k], selectionIndices[k] + 1);
-                }
-
-                map.put(selectionIndices[j + 1], selectionIndices[i] + 1);
-            }
-            i = j;
-        }
-        List<SurrogateKey> temp = new ArrayList<SurrogateKey>(model);
-        for (Integer newIndex : map.keySet()) {
-            Integer oldIndex = map.get(newIndex);
-            model.set(newIndex, temp.get(oldIndex));
-            updateIndices.add(newIndex);
-        }
-        // move selection
-        table.setSelection(convertToArray(new ArrayList<Integer>(selectionMap.values())));
-        return convertToArray(updateIndices);
-    }
-
-    /**
-     * DOC hcw Comment method "adjustIndicesUp".
-     * 
-     * @param selectionIndices
-     * @param tableModel2
-     * @return
-     */
-    private int[] adjustIndicesUp(int[] selectionIndices, List<SurrogateKey> model) {
-        if (model.size() < 2) {
-            return new int[0];
-        }
-
-        Map<Integer, Integer> selectionMap = new HashMap<Integer, Integer>(); // old selected item index, new selected
-        // item index
-        for (int i : selectionIndices) {
-            selectionMap.put(i, i);
-        }
-
-        List<Integer> updateIndices = new ArrayList<Integer>(); // indices of item which will be updated
-        Map<Integer, Integer> map = new HashMap<Integer, Integer>(); // new index , old index
-        for (int i = selectionIndices.length - 1; i >= 0;) {
-            int j = i - 1;
-            // find continous block
-            while (j >= 0 && selectionIndices[j] + 1 == selectionIndices[j + 1]) {
-                j--;
-            }
-
-            if (selectionIndices[j + 1] - 1 >= 0) {
-                // from j + 1 to i, all index minus 1
-                for (int k = j + 1; k <= i; k++) {
-                    map.put(selectionIndices[k] - 1, selectionIndices[k]);
-                    selectionMap.put(selectionIndices[k], selectionIndices[k] - 1);
-                }
-
-                map.put(selectionIndices[i], selectionIndices[j + 1] - 1);
-            }
-            i = j;
-        }
-        List<SurrogateKey> temp = new ArrayList<SurrogateKey>(model);
-        for (Integer newIndex : map.keySet()) {
-            Integer oldIndex = map.get(newIndex);
-            model.set(newIndex, temp.get(oldIndex));
-            updateIndices.add(newIndex);
-        }
-        // move selection
-        table.setSelection(convertToArray(new ArrayList<Integer>(selectionMap.values())));
-        return convertToArray(updateIndices);
-
-    }
-
-    /**
-     * DOC hcw Comment method "convertToArray".
-     * 
-     * @param collection
-     * @return
-     */
-    private int[] convertToArray(List<Integer> collection) {
-        // convert to int array
-        int[] array = new int[collection.size()];
-        for (int i = 0; i < array.length; i++) {
-            array[i] = collection.get(i);
-        }
-        return array;
     }
 
     /**
@@ -397,12 +288,14 @@ public class SurrogateSection extends ScdSection {
         // }
         // }
         // });
+        final List<String> outputColumns = scdManager.getOutputColumnNames();
+        int index = editorManager.getComboIndex(outputColumns, key.getColumn());
+        final TableEditor editor = editorManager.createComboEditor(table,
+                outputColumns.toArray(new String[outputColumns.size()]), item, COLUMN_INDEX, index,
+                new IPropertySetter<Integer>() {
 
-        TableEditor editor = editorManager.createTextEditor(table, key.getColumn(), item, COLUMN_INDEX,
-                new IPropertySetter<String>() {
-
-                    public void set(String value) {
-                        key.setColumn(value);
+                    public void set(Integer value) {
+                        key.setColumn(outputColumns.get(value));
                     }
                 });
         editor.layout();
@@ -526,7 +419,7 @@ public class SurrogateSection extends ScdSection {
      * @param key
      * @param item
      */
-    protected void creationComplement(Integer value, final SurrogateKey key, TableItem item) {
+    protected void creationComplement(Integer value, final SurrogateKey key, final TableItem item) {
 
         // dispose editor
         TableEditor editor = editorManager.getEditor(item, COMPLEMENT_INDEX);
@@ -544,16 +437,34 @@ public class SurrogateSection extends ScdSection {
             // add content proposal
             TalendProposalUtils.installOn(editor.getEditor(), null);
         } else if (value == SurrogateCreationType.INPUT_FIELD.getIndex()) {
-            editor = editorManager.createLabelEditor(editor, table, key.getComplement(), item, COMPLEMENT_INDEX);
-            final Label text = (Label) editor.getEditor();
+
+            final List<String> inputColumns = scdManager.getInputColumnNames();
+            inputColumns.add(0, "");
+            int index = editorManager.getComboIndex(inputColumns, key.getComplement());
+            editor = editorManager.createComboEditor(table, inputColumns.toArray(new String[inputColumns.size()]), item,
+                    COMPLEMENT_INDEX, index, new IPropertySetter<Integer>() {
+
+                        public void set(Integer value) {
+                            key.setComplement(inputColumns.get(value));
+                            Color color = value == 0 ? ERROR_COLOR : null;
+                            editorManager.setComboColor(item, COMPLEMENT_INDEX, color);
+                        }
+                    });
+
             if (StringUtils.isEmpty(key.getComplement())) {
                 // display as error status, this field must not be null
-                text.setBackground(ERROR_COLOR);
+                editorManager.setComboColor(item, COMPLEMENT_INDEX, ERROR_COLOR);
             }
-            // add drag and drop support
-            IDragDropDelegate delegate = createDragDropDelegate(key, text);
-            dragDropManager.addDragSupport(text, delegate);
-            dragDropManager.addDropSupport(text, delegate);
+            // editor = editorManager.createLabelEditor(editor, table, key.getComplement(), item, COMPLEMENT_INDEX);
+            // final Label text = (Label) editor.getEditor();
+            // if (StringUtils.isEmpty(key.getComplement())) {
+            // // display as error status, this field must not be null
+            // text.setBackground(ERROR_COLOR);
+            // }
+            // // add drag and drop support
+            // IDragDropDelegate delegate = createDragDropDelegate(key, text);
+            // dragDropManager.addDragSupport(text, delegate);
+            // dragDropManager.addDropSupport(text, delegate);
         }
     }
 

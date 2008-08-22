@@ -17,19 +17,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+import org.talend.designer.scd.ui.ColorCombo;
 
 /**
  * Helper for creating editor on table.
@@ -88,10 +90,18 @@ public class TableEditorManager {
         return editor;
     }
 
+    public static int getComboIndex(List<String> items, String text) {
+        if (StringUtils.isEmpty(text)) {
+            return 0;
+        } else {
+            return items.indexOf(text);
+        }
+    }
+
     public TableEditor createComboEditor(Table table, String[] displayText, TableItem item, int column, int selectIndex,
             final IPropertySetter<Integer> accessor) {
         TableEditor editor = new TableEditor(table);
-        final CCombo combo = new CCombo(table, SWT.NONE);
+        final ColorCombo combo = new ColorCombo(table, SWT.NONE | SWT.READ_ONLY);
         for (String text : displayText) {
             combo.add(text);
         }
@@ -183,6 +193,11 @@ public class TableEditorManager {
                 control.dispose();
             }
         }
+    }
+
+    public void setComboColor(TableItem item, int column, Color color) {
+        ColorCombo combo = (ColorCombo) getEditor(item, column).getEditor();
+        combo.setTextBackground(color);
     }
 
 }
