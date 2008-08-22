@@ -69,6 +69,7 @@ import org.talend.designer.business.model.business.BusinessPackage;
 import org.talend.designer.business.model.business.provider.BusinessItemProviderAdapterFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.actions.ActionsHelper;
@@ -170,8 +171,7 @@ public class AssignmentPropertySection extends AbstractModelerPropertySection im
                 if (businessAssignment != null) {
                     repositoryNode = createRepositoryNode(businessAssignment);
                     if (repositoryNode != null) {
-                        List<ITreeContextualAction> contextualsActions = ActionsHelper
-                                .getRepositoryContextualsActions();
+                        List<ITreeContextualAction> contextualsActions = ActionsHelper.getRepositoryContextualsActions();
                         for (ITreeContextualAction action : contextualsActions) {
                             if (action.isReadAction() || action.isEditAction() || action.isPropertiesAction()) {
                                 action.init(null, new StructuredSelection(repositoryNode));
@@ -233,8 +233,7 @@ public class AssignmentPropertySection extends AbstractModelerPropertySection im
                 if (businessAssignment != null) {
                     repositoryNode = createRepositoryNode(businessAssignment);
                     if (repositoryNode != null) {
-                        List<ITreeContextualAction> contextualsActions = ActionsHelper
-                                .getRepositoryContextualsActions();
+                        List<ITreeContextualAction> contextualsActions = ActionsHelper.getRepositoryContextualsActions();
                         for (ITreeContextualAction action : contextualsActions) {
                             if (action.isReadAction() || action.isEditAction() || action.isPropertiesAction()) {
                                 action.init(null, new StructuredSelection(repositoryNode));
@@ -254,13 +253,12 @@ public class AssignmentPropertySection extends AbstractModelerPropertySection im
     private RepositoryNode createRepositoryNode(BusinessAssignment businessAssignment) {
         IRepositoryObject lastVersion;
         try {
-            lastVersion = ProxyRepositoryFactory.getInstance().getLastVersion(
-                    businessAssignment.getTalendItem().getId());
+            lastVersion = ProxyRepositoryFactory.getInstance().getLastVersion(businessAssignment.getTalendItem().getId());
 
             if (lastVersion != null) {
                 ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(lastVersion.getProperty().getItem());
-                RepositoryNode repositoryNode = new RepositoryNode(lastVersion, getParentRepositoryNode(),
-                        ENodeType.REPOSITORY_ELEMENT);
+                RepositoryNode repositoryNode = new RepositoryNode(lastVersion, RepositoryNodeUtilities
+                        .getParentRepositoryNodeFromSelection(lastVersion), ENodeType.REPOSITORY_ELEMENT);
                 repositoryNode.setProperties(EProperties.CONTENT_TYPE, itemType);
 
                 return repositoryNode;
@@ -270,28 +268,13 @@ public class AssignmentPropertySection extends AbstractModelerPropertySection im
         return null;
     }
 
-    private RepositoryNode getParentRepositoryNode() {
-        ISelection repositoryViewSelection = getRepositoryView().getViewer().getSelection();
-        if (!(repositoryViewSelection instanceof IStructuredSelection)) {
-            return null;
-        }
-        IStructuredSelection structuredSelection = (IStructuredSelection) repositoryViewSelection;
-        RepositoryNode selectedRepositoryNode = (RepositoryNode) structuredSelection.getFirstElement();
-
-        if (selectedRepositoryNode == null) {
-            return null;
-        }
-        return selectedRepositoryNode.getParent();
-    }
-
     private IRepositoryView getRepositoryView() {
         IWorkbenchPage activePage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         IRepositoryView viewPart = (IRepositoryView) activePage.findView(IRepositoryView.VIEW_ID);
         return viewPart;
     }
 
-    private void handleLayout(Composite parent, Table table, TableColumn column1, TableColumn column2,
-            TableColumn column3) {
+    private void handleLayout(Composite parent, Table table, TableColumn column1, TableColumn column2, TableColumn column3) {
         Object layoutData = parent.getLayoutData();
         if (layoutData instanceof GridData) {
             GridData gridData = (GridData) layoutData;
@@ -311,8 +294,8 @@ public class AssignmentPropertySection extends AbstractModelerPropertySection im
         // PTODO mhelleboid find another way to itempropertysource without an eobject
         BusinessAssignment sampleBusinessAssignment = BusinessFactory.eINSTANCE.createBusinessAssignment();
         EStructuralFeature businessAssignment_Comment = BusinessPackage.eINSTANCE.getBusinessAssignment_Comment();
-        IItemPropertySource itemPropertySource = EmfPropertyHelper.getItemPropertySource(adapterFactory,
-                sampleBusinessAssignment);
+        IItemPropertySource itemPropertySource = EmfPropertyHelper
+                .getItemPropertySource(adapterFactory, sampleBusinessAssignment);
         return EmfPropertyHelper.getItemPropertyDescriptor(itemPropertySource, sampleBusinessAssignment,
                 businessAssignment_Comment);
     }
