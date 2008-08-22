@@ -44,8 +44,6 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.actions.ITreeContextualAction;
@@ -55,10 +53,10 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.actions.ActionsHelper;
-import org.talend.repository.ui.views.IRepositoryView;
 
 /**
  * yzhang class global comment. Detailled comment
@@ -143,7 +141,8 @@ public class VersionComposite extends AbstractTabComposite {
                     return null;
                 }
 
-                RepositoryNode parentRepositoryNode = getParentRepositoryNode();
+                RepositoryNode parentRepositoryNode = RepositoryNodeUtilities
+                        .getParentRepositoryNodeFromSelection(repositoryObject);
 
                 try {
                     List<IRepositoryObject> allVersion = ProxyRepositoryFactory.getInstance().getAllVersion(
@@ -293,7 +292,8 @@ public class VersionComposite extends AbstractTabComposite {
             /*
              * (non-Javadoc)
              * 
-             * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
+             * @seeorg.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.
+             * SelectionChangedEvent)
              */
             public void selectionChanged(SelectionChangedEvent event) {
                 VersionComposite.this.selection = event.getSelection();
@@ -306,35 +306,6 @@ public class VersionComposite extends AbstractTabComposite {
         table.setSortColumn(column1);
         table.setSortDirection(SWT.DOWN);
 
-    }
-
-    /**
-     * yzhang Comment method "getParentRepositoryNode".
-     * 
-     * @return
-     */
-    private RepositoryNode getParentRepositoryNode() {
-        IRepositoryView viewPart = (IRepositoryView) getActivePage().findView(IRepositoryView.VIEW_ID);
-        ISelection repositoryViewSelection = viewPart.getViewer().getSelection();
-        if (!(repositoryViewSelection instanceof IStructuredSelection)) {
-            return null;
-        }
-        IStructuredSelection structuredSelection = (IStructuredSelection) repositoryViewSelection;
-        RepositoryNode selectedRepositoryNode = (RepositoryNode) structuredSelection.getFirstElement();
-
-        if (selectedRepositoryNode == null) {
-            return null;
-        }
-        return selectedRepositoryNode.getParent();
-    }
-
-    /**
-     * yzhang Comment method "getActivePage".
-     * 
-     * @return
-     */
-    private IWorkbenchPage getActivePage() {
-        return PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
     }
 
     /*
