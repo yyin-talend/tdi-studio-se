@@ -76,7 +76,9 @@ public class FieldSection extends ScdSection implements IDragDropDelegate {
         TableViewerColumn column = new TableViewerColumn(tableViewer, SWT.NONE);
         column.getColumn().setWidth(width);
 
-        column.setEditingSupport(new FieldEditingSupport(tableViewer, 0));
+        if(toolbarNeeded){
+        	column.setEditingSupport(new FieldEditingSupport(tableViewer, 0));
+        }
 
         tableViewer.setLabelProvider(new TableLabelProvider());
         tableViewer.setContentProvider(new ContentProvider());
@@ -203,6 +205,7 @@ public class FieldSection extends ScdSection implements IDragDropDelegate {
      * @see org.talend.designer.scd.ui.IDragDrop#getDragItemsAsText()
      */
     public String getDragItemsAsText() {
+    	tableViewer.cancelEditing();
         Table table = tableViewer.getTable();
         TableItem[] selection = table.getSelection();
 

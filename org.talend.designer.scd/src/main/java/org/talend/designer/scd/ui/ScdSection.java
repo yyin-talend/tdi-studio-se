@@ -51,7 +51,7 @@ public class ScdSection {
 
     protected ToolBar toolBar;
 
-    private boolean toolbarNeeded;
+    protected boolean toolbarNeeded;
 
     protected Composite headerComposite;
 

@@ -64,8 +64,6 @@ public abstract class AbstractScdDialog extends TrayDialog {
 
     protected Type3Section type3Fields;
 
-    protected Shell shell;
-
     /**
      * DOC hcw AbstractScdDialog constructor comment.
      * 
@@ -73,7 +71,7 @@ public abstract class AbstractScdDialog extends TrayDialog {
      */
     public AbstractScdDialog(Shell shell) {
         super(shell);
-        this.shell = shell;
+        setShellStyle(SWT.APPLICATION_MODAL | SWT.BORDER | SWT.RESIZE | SWT.CLOSE | SWT.MIN | SWT.MAX | SWT.TITLE);
     }
 
     // /**
@@ -95,15 +93,14 @@ public abstract class AbstractScdDialog extends TrayDialog {
         Composite container = (Composite) super.createDialogArea(parent);
         GridLayoutFactory.swtDefaults().applyTo(container);
         PlatformUI.getWorkbench().getHelpSystem().setHelp(container, "org.talend.designer.scd.scdDialog");
-
-        createScdContents(container);
-        this.shell.addListener(SWT.Close, new Listener() {
+        getShell().addListener(SWT.Close, new Listener() {
 
             public void handleEvent(Event event) {
                 showWarningDialog();
             }
 
         });
+        createScdContents(container);
         return container;
     }
 
@@ -114,16 +111,15 @@ public abstract class AbstractScdDialog extends TrayDialog {
     }
 
     /**
-     * DOC chuang Comment method "showWarningDialog".
+     * Prompt the user for saving before closing the dialog.
      */
     protected void showWarningDialog() {
-        boolean isNotSaveSetting = MessageDialog.openQuestion(shell, Messages.getString("UIManager.MessageBox.title"), Messages
-                .getString("UIManager.MessageBox.Content"));
+        boolean isNotSaveSetting = MessageDialog.openQuestion(getShell(), Messages.getString("UIManager.MessageBox.title"),
+                Messages.getString("UIManager.MessageBox.Content"));
         if (!isNotSaveSetting) {
             setReturnCode(OK);
         }
         close();
-
     }
 
     abstract Control createScdContents(Composite container);
