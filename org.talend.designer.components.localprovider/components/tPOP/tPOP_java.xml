@@ -37,12 +37,21 @@
     >
       <DEFAULT>"127.0.0.1"</DEFAULT>
     </PARAMETER>
+    
+    <PARAMETER
+     NAME="PORT"
+     FIELD="TEXT"
+     REQUIRED="true"
+     NUM_ROW="1"
+    >
+     <DEFAULT>110</DEFAULT>
+    </PARAMETER>
 
     <PARAMETER
       NAME="USERNAME"
       FIELD="TEXT"
       REQUIRED="true"
-      NUM_ROW="1"
+      NUM_ROW="2"
     >
       <DEFAULT>"username"</DEFAULT>
     </PARAMETER>
@@ -51,7 +60,7 @@
       NAME="PASSWORD"
       FIELD="TEXT"
       REQUIRED="true"
-      NUM_ROW="1"
+      NUM_ROW="2"
     >
       <DEFAULT>"password"</DEFAULT>
     </PARAMETER>
