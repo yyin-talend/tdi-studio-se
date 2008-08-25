@@ -139,9 +139,9 @@ public class DesignerPreferencePage extends FieldEditorPreferencePage implements
                 { "table view", "table view" } }, getFieldEditorParent(), true); //$NON-NLS-1$ //$NON-NLS-2$
         addField(viewOptions);
 
-        BooleanFieldEditor viewSubjobs = new BooleanFieldEditor(TalendDesignerPrefConstants.DISPLAY_SUBJOBS,
-                "Highlight subjobs in the job designs", getFieldEditorParent());
-        addField(viewSubjobs);
+        // BooleanFieldEditor viewSubjobs = new BooleanFieldEditor(TalendDesignerPrefConstants.DISPLAY_SUBJOBS,
+        // "Highlight subjobs in the job designs", getFieldEditorParent());
+        // addField(viewSubjobs);
         BooleanFieldEditor generateCodeWhenOpenJob = new BooleanFieldEditor(
                 TalendDesignerPrefConstants.GENERATE_CODE_WHEN_OPEN_JOB, "Generate code when opening the job",
                 getFieldEditorParent());

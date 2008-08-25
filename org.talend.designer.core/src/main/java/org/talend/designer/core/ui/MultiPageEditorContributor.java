@@ -37,6 +37,8 @@ import org.eclipse.ui.actions.RetargetAction;
 import org.eclipse.ui.part.MultiPageEditorActionBarContributor;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.ui.action.ToggleSubjobsAction;
+import org.talend.designer.core.ui.action.ToggleSubjobsRetargetAction;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 
 /**
@@ -85,6 +87,8 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
         addDesignRetargetAction(new RetargetAction(GEFActionConstants.TOGGLE_GRID_VISIBILITY, Messages
                 .getString("MultiPageEditorContributor.Grid"), //$NON-NLS-1$
                 IAction.AS_CHECK_BOX));
+
+        addDesignRetargetAction(new ToggleSubjobsRetargetAction());
 
         addDesignActionKey(ActionFactory.COPY.getId());
         addDesignActionKey(ActionFactory.PASTE.getId());
@@ -157,6 +161,7 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
             actionBars.setGlobalActionHandler(ActionFactory.PASTE.getId(), getAction(activeEditor, ActionFactory.PASTE.getId()));
             actionBars.setGlobalActionHandler(ActionFactory.SELECT_ALL.getId(), getAction(activeEditor, ActionFactory.SELECT_ALL
                     .getId()));
+            actionBars.setGlobalActionHandler(ToggleSubjobsAction.ID, getAction(activeEditor, ToggleSubjobsAction.ID));
             // see bug 0003656: Actions in the main menu "View" are always disabled.
             activateActionsInViewMenu(activeEditor, actionBars, VIEW_MENU_ACTIONS_ID);
             actionBars.updateActionBars();
@@ -204,6 +209,7 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
         // toolBarManager.add(CorePlugin.getDefault().getRunProcessService().getRunProcessAction());
         toolBarManager.add(getAction(ActionFactory.UNDO.getId()));
         toolBarManager.add(getAction(ActionFactory.REDO.getId()));
+        toolBarManager.add(getAction(ToggleSubjobsAction.ID));
         String[] zoomStrings = new String[] { ZoomManager.FIT_ALL, ZoomManager.FIT_HEIGHT, ZoomManager.FIT_WIDTH };
         toolBarManager.add(new ZoomComboContributionItem(getPage(), zoomStrings));
     }

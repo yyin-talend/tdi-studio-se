@@ -416,4 +416,8 @@ public class SubjobContainer extends Element implements ISubjobContainer {
     public void setDisplayed(Boolean displayed) {
         setPropertyValue(EParameterName.SUBJOB_DISPLAYED.getName(), displayed);
     }
+
+    public void updateSubjobDisplay() {
+        fireStructureChange(UPDATE_SUBJOB_DISPLAY, this);
+    }
 }

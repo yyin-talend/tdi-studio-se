@@ -145,6 +145,7 @@ import org.talend.designer.core.ui.action.GEFPasteAction;
 import org.talend.designer.core.ui.action.ModifyMergeOrderAction;
 import org.talend.designer.core.ui.action.ModifyOutputOrderAction;
 import org.talend.designer.core.ui.action.TalendConnectionCreationTool;
+import org.talend.designer.core.ui.action.ToggleSubjobsAction;
 import org.talend.designer.core.ui.editor.cmd.MoveNodeCommand;
 import org.talend.designer.core.ui.editor.connections.ConnectionPart;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -965,6 +966,10 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                                                                                                  */));
         IAction snapAction = new ToggleSnapToGeometryAction(getGraphicalViewer());
         getActionRegistry().registerAction(snapAction);
+
+        // toggle subjobs action
+        IAction toggleSubjobsAction = ToggleSubjobsAction.getDefault();
+        getActionRegistry().registerAction(toggleSubjobsAction);
 
         for (Iterator iterator = getSelectionActions().iterator(); iterator.hasNext();) {
             String actionID = (String) iterator.next();
