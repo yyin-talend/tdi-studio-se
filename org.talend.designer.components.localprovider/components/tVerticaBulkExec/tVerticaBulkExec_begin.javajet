@@ -171,7 +171,7 @@ if(true){
 	}
 %>
 	}
-	System.out.println("Number of records loaded to table \"tableName_<%=cid %>\" by <%=cid %>: " + (nbLineAfterLoad_<%=cid %> - nbLineBeforeLoad_<%=cid %>));
+	System.out.println("Number of records loaded to table " + tableName_<%=cid %> + " by <%=cid %>: " + (nbLineAfterLoad_<%=cid %> - nbLineBeforeLoad_<%=cid %>));
     stmt_<%=cid %>.close();
     <%
 }
