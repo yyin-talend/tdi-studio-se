@@ -159,6 +159,18 @@ public class CodeGenerator implements ICodeGenerator {
     }
 
     /**
+     * Return true to display size of source code in method comment.
+     * 
+     * @return
+     */
+    private boolean isMethodSizeNeeded() {
+        // must match TalendDesignerPrefConstants.DISPLAY_METHOD_SIZE
+        boolean displayMethodSize = Boolean.parseBoolean(CorePlugin.getDefault().getDesignerCoreService().getPreferenceStore(
+                "displayMethodSize"));
+        return displayMethodSize;
+    }
+
+    /**
      * Generate the code for the process given to the constructor.
      * 
      * @return the generated code
@@ -192,8 +204,10 @@ public class CodeGenerator implements ICodeGenerator {
                 headerArgument.add(CodeGeneratorActivator.getDefault().getBundle().getHeaders().get(
                         org.osgi.framework.Constants.BUNDLE_VERSION));
 
+                boolean displayMethodSize = isMethodSizeNeeded();
                 componentsCode.append(generateTypedComponentCode(EInternalTemplate.HEADER, headerArgument));
                 for (NodesSubTree subTree : processTree.getSubTrees()) {
+                    subTree.setMethodSizeNeeded(displayMethodSize);
                     if (!subTree.isMergeSubTree()) {
                         componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_HEADER, subTree));
                         componentsCode.append(generateComponentsCode(subTree, subTree.getRootNode(), ECodePart.BEGIN, null));

@@ -53,14 +53,25 @@ public class NodesSubTree {
     private static final boolean DEBUG = false;
 
     boolean isMergeSubTree = false;
-    
+
     List<IConnection> allMainSubTreeConnections = null;
-    
+
     boolean subTreeContainsParallelIterate = false;
 
     List<INode> mergeBranchStarts;
 
     INode mergeNode;
+
+    /* display size of method code in comment */
+    boolean methodSizeNeeded = false;
+
+    public boolean isMethodSizeNeeded() {
+        return methodSizeNeeded;
+    }
+
+    public void setMethodSizeNeeded(boolean methodSizeNeeded) {
+        this.methodSizeNeeded = methodSizeNeeded;
+    }
 
     /**
      * Constructor for a NodesSubTree.
@@ -352,29 +363,29 @@ public class NodesSubTree {
     public INode getMergeNode() {
         return this.mergeNode;
     }
-    
+
     /**
      * Getter for allMainSubTreeConnections.
+     * 
      * @return the allMainSubTreeConnections
      */
     public List<IConnection> getAllMainSubTreeConnections() {
         return allMainSubTreeConnections;
     }
-    
+
     /**
      * Sets the allMainSubTreeConnections.
+     * 
      * @param allMainSubTreeConnections the allMainSubTreeConnections to set
      */
     public void setAllMainSubTreeConnections(List<IConnection> allMainSubTreeConnections) {
         this.allMainSubTreeConnections = allMainSubTreeConnections;
     }
 
-    
     public boolean subTreeContainsParallelIterate() {
         return subTreeContainsParallelIterate;
     }
 
-    
     public void setSubTreeContainsParallelIterate(boolean subTreeContainsParallelIterate) {
         this.subTreeContainsParallelIterate = subTreeContainsParallelIterate;
     }

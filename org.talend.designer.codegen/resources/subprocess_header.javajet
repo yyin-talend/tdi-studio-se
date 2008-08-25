@@ -712,7 +712,12 @@ static class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines.
 				}
 	}
 %>
-
+<% if (subTree.isMethodSizeNeeded()){ %>
+/**
+ * Start of Function: <%=subTree.getName() %>Process.
+ * Byte Length of Source Code: ?SIZE? 
+ */
+ <% } %>
 public void <%=subTree.getName() %>Process(java.util.Map<String, Object> globalMap) throws TalendException {
 	globalMap.put("<%=subTree.getName() %>_SUBPROCESS_STATE", 0);
 <%

@@ -140,3 +140,8 @@
 	
 	globalMap.put("<%=subTree.getName() %>_SUBPROCESS_STATE", 1);
 }
+<% if (subTree.isMethodSizeNeeded()){ %>
+/**
+ * End of Function: <%=subTree.getName() %>Process 
+ */
+ <% } %>
