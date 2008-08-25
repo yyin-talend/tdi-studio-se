@@ -63,4 +63,6 @@ public class TalendDesignerPrefConstants {
 
     public static final String PROPAGATE_CONTEXT_VARIABLE = "propagateContextVariable";
 
+    public static final String DISPLAY_METHOD_SIZE = "displayMethodSize";
+
 }
