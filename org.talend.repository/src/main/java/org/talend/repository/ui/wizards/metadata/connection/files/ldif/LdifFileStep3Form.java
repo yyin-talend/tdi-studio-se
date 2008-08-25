@@ -435,18 +435,35 @@ public class LdifFileStep3Form extends AbstractLdifFileStepForm {
                                 precisionValue = lengthValue - positionDecimal;
                             }
                         } else {
-                            if (CorePlugin.getDefault().getPreferenceStore().getString(
-                                    MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE) != null
-                                    && !CorePlugin.getDefault().getPreferenceStore().getString(
-                                            MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE).equals("")) {
-                                globalType = CorePlugin.getDefault().getPreferenceStore().getString(
-                                        MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE);
+                            if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
                                 if (CorePlugin.getDefault().getPreferenceStore().getString(
-                                        MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH) != null
+                                        MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE) != null
                                         && !CorePlugin.getDefault().getPreferenceStore().getString(
-                                                MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH).equals("")) {
-                                    lengthValue = Integer.parseInt(CorePlugin.getDefault().getPreferenceStore().getString(
-                                            MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH));
+                                                MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE).equals("")) {
+                                    globalType = CorePlugin.getDefault().getPreferenceStore().getString(
+                                            MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE);
+                                    if (CorePlugin.getDefault().getPreferenceStore().getString(
+                                            MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH) != null
+                                            && !CorePlugin.getDefault().getPreferenceStore().getString(
+                                                    MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH).equals("")) {
+                                        lengthValue = Integer.parseInt(CorePlugin.getDefault().getPreferenceStore().getString(
+                                                MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH));
+                                    }
+                                }
+                            } else {
+                                if (CorePlugin.getDefault().getPreferenceStore().getString(
+                                        MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_TYPE) != null
+                                        && !CorePlugin.getDefault().getPreferenceStore().getString(
+                                                MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_TYPE).equals("")) {
+                                    globalType = CorePlugin.getDefault().getPreferenceStore().getString(
+                                            MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_TYPE);
+                                    if (CorePlugin.getDefault().getPreferenceStore().getString(
+                                            MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH) != null
+                                            && !CorePlugin.getDefault().getPreferenceStore().getString(
+                                                    MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH).equals("")) {
+                                        lengthValue = Integer.parseInt(CorePlugin.getDefault().getPreferenceStore().getString(
+                                                MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH));
+                                    }
                                 }
                             }
                         }
