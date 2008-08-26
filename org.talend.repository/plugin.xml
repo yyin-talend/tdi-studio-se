@@ -268,7 +268,7 @@
        <Action
              class="org.talend.repository.ui.actions.sqlpattern.EditSqlpatternAction"
              id="org.talend.repository.ui.actions.sqlpattern.editsqlpatternaction"
-             level="13"
+             level="11"
              name="Edit Sql Pattern">
        </Action>
        <Action

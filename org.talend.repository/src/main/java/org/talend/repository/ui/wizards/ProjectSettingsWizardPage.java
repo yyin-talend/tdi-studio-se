@@ -109,6 +109,8 @@ public class ProjectSettingsWizardPage extends WizardPage {
         // Version management
         versionBtn = new Button(btnComposite, SWT.PUSH);
         versionBtn.setText("Version Management");
+        // FIXME for feature 4706
+        versionBtn.setVisible(false);
 
     }
 

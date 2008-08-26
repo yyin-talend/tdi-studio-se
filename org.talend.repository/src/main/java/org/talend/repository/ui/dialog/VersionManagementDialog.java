@@ -228,7 +228,7 @@ public class VersionManagementDialog extends Dialog {
 
             ERepositoryObjectType objectType = node.getObjectType();
             switch (objectType) {
-            // case SQLPATTERNS:
+            case SQLPATTERNS:
             case ROUTINES:
                 RepositoryNode systemNode = node.getParent();
                 if (systemNode != null) {
@@ -246,9 +246,8 @@ public class VersionManagementDialog extends Dialog {
             switch (contentType) {
             case REFERENCED_PROJECTS: // referenced project.
             case GENERATED: // generated documentation
-            case SQLPATTERNS: // sql pattern
                 return false;
-                // case SQLPATTERNS:
+            case SQLPATTERNS:
             case ROUTINES:
 
                 // for system folder
