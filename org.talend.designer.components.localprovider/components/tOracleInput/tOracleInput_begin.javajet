@@ -204,6 +204,26 @@ imports="
                  	                }
                  	                <%
                  	            } else {
+                 	            	if(typeToGenerate.equals("Object")){
+                 	            	%>
+                 	            	Object tmpObj_<%=currentColNo%>_<%=cid %> = rs_<%=cid %>.getObject(<%=currentColNo%>);
+                 	            	if(tmpObj_<%=currentColNo%>_<%=cid %> != null) {
+                 	                    <%=firstConnName%>.<%=column.getLabel()%> = tmpObj_<%=currentColNo%>_<%=cid %>;
+                 	                } else {
+                 	                    <%
+                 	                    if(column.isNullable()) {
+                 	                        %>
+                 	                        <%=firstConnName%>.<%=column.getLabel()%> = null;
+                 	                        <%
+                 	                    } else {
+                 	                        %>    
+                 	                        throw new RuntimeException("Null value in non-Nullable column");
+                 	                        <%    
+                 	                    }
+                 	                    %>
+                 	                }
+                 	            	<%
+                 	            	} else {
                  	                %>
                  	                if(rs_<%=cid %>.getObject(<%=currentColNo%>) != null) {
                  	                    <%=firstConnName%>.<%=column.getLabel()%> = rs_<%=cid %>.get<%=typeToGenerate%>(<%=currentColNo%>);
@@ -221,6 +241,7 @@ imports="
                  	                    %>
                  	                }
                  	                <%
+                 	                }
                  	            }
                  	            %>
                  	        } 		
