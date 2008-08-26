@@ -22,6 +22,7 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
+import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 
 /**
  * Action used to set the start status on a node with the context menu. <br/>
@@ -62,6 +63,10 @@ public class DisplaySubjobAction extends SelectionAction {
             if (o instanceof NodePart) {
                 NodePart part = (NodePart) o;
                 Node node = (Node) part.getModel();
+                if (!(Boolean) node.getProcess().getElementParameter(TalendDesignerPrefConstants.DISPLAY_SUBJOBS).getValue()) {
+                    // if the subjobs are not displayed, no need to display this action.
+                    return false;
+                }
                 if (node.getNodeContainer().getSubjobContainer().isDisplayed()) {
                     setText(TEXT_HIDE_SUBJOB);
                 } else {
@@ -71,6 +76,10 @@ public class DisplaySubjobAction extends SelectionAction {
             } else if (o instanceof SubjobContainerPart) {
                 SubjobContainerPart part = (SubjobContainerPart) o;
                 SubjobContainer subjob = (SubjobContainer) part.getModel();
+                if (!(Boolean) subjob.getProcess().getElementParameter(TalendDesignerPrefConstants.DISPLAY_SUBJOBS).getValue()) {
+                    // if the subjobs are not displayed, no need to display this action.
+                    return false;
+                }
 
                 if (!subjob.isDisplayed()) {
                     return false;
