@@ -10,7 +10,7 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.repository.ui.wizards;
+package org.talend.repository.ui.dialog;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -87,7 +87,7 @@ public class PaletteSettingsDialog extends Dialog {
      * @param parentShell
      */
 
-    protected PaletteSettingsDialog(Shell parentShell, Project pro) {
+    public PaletteSettingsDialog(Shell parentShell, Project pro) {
         super(parentShell);
         setShellStyle(getShellStyle() | SWT.RESIZE);
 

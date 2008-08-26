@@ -13,11 +13,9 @@
 package org.talend.repository.ui.wizards;
 
 import org.eclipse.jface.wizard.Wizard;
-import org.talend.core.CorePlugin;
-import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
 import org.talend.core.i18n.Messages;
 import org.talend.core.model.general.Project;
+import org.talend.repository.ProjectManager;
 
 /**
  * DOC qwei class global comment. Detailled comment
@@ -43,9 +41,7 @@ public class ProjectSettingsWizard extends Wizard {
 
     @Override
     public void addPages() {
-        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
-                Context.REPOSITORY_CONTEXT_KEY);
-        Project pro = repositoryContext.getProject();
+        Project pro = ProjectManager.getInstance().getCurrentProject();
 
         mainPage = new ProjectSettingsWizardPage("WizardPage", pro);
         addPage(mainPage);

@@ -18,6 +18,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -27,6 +28,8 @@ import org.talend.core.CorePlugin;
 import org.talend.core.i18n.Messages;
 import org.talend.core.model.general.Project;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.ui.dialog.PaletteSettingsDialog;
+import org.talend.repository.ui.dialog.VersionManagementDialog;
 
 /**
  * DOC qwei class global comment. Detailled comment
@@ -41,6 +44,9 @@ public class ProjectSettingsWizardPage extends WizardPage {
 
     /** Project settings button */
     private Button projectSetBtn;
+
+    /** Version management button */
+    private Button versionBtn;
 
     private Project pro;
 
@@ -78,16 +84,31 @@ public class ProjectSettingsWizardPage extends WizardPage {
         data.heightHint = 120;
         descriptionText.setLayoutData(data);
 
-        // Project settings
-        GridData gd = new GridData();
-        gd.horizontalSpan = 2;
-        projectSetBtn = new Button(container, SWT.PUSH);
-        projectSetBtn.setText("Palette Settings");
-        projectSetBtn.setLayoutData(gd);
+        createButtons(container);
+
         setControl(container);
         updateContent();
         addListeners();
         setPageComplete(true);
+
+    }
+
+    private void createButtons(Composite parent) {
+        Composite btnComposite = new Composite(parent, SWT.NONE);
+        GridData data = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
+        data.horizontalSpan = 2;
+        btnComposite.setLayoutData(data);
+        RowLayout layout = new RowLayout();
+        layout.marginTop = 8;
+        layout.spacing = 15;
+        btnComposite.setLayout(layout);
+
+        // Project settings
+        projectSetBtn = new Button(btnComposite, SWT.PUSH);
+        projectSetBtn.setText("Palette Settings");
+        // Version management
+        versionBtn = new Button(btnComposite, SWT.PUSH);
+        versionBtn.setText("Version Management");
 
     }
 
@@ -103,6 +124,14 @@ public class ProjectSettingsWizardPage extends WizardPage {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 PaletteSettingsDialog dialog = new PaletteSettingsDialog(getShell(), pro);
+                dialog.open();
+            }
+        });
+        versionBtn.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                VersionManagementDialog dialog = new VersionManagementDialog(getShell());
                 dialog.open();
             }
         });
