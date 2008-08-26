@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.gef.EditPart;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalListener;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
@@ -69,8 +68,6 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.swt.colorstyledtext.UnnotifiableColorStyledText;
 import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
@@ -106,13 +103,11 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.types.JavaTypesManager;
-import org.talend.core.model.process.INode;
 import org.talend.core.model.process.Problem;
 import org.talend.core.ui.proposal.TalendProposalProvider;
 import org.talend.designer.abstractmap.model.table.IDataMapTable;
 import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
-import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.mapper.MapperMain;
 import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.managers.MapperManager;
@@ -447,7 +442,9 @@ public abstract class DataMapTableView extends Composite {
             /*
              * (non-Javadoc)
              * 
-             * @see org.talend.commons.ui.swt.extended.macrotable.AbstractExtendedTableViewer#setTableViewerCreatorOptions(org.talend.commons.ui.swt.tableviewer.TableViewerCreator)
+             * @see
+             * org.talend.commons.ui.swt.extended.macrotable.AbstractExtendedTableViewer#setTableViewerCreatorOptions
+             * (org.talend.commons.ui.swt.tableviewer.TableViewerCreator)
              */
             @Override
             protected void setTableViewerCreatorOptions(final TableViewerCreator<IColumnEntry> newTableViewerCreator) {
@@ -1429,10 +1426,7 @@ public abstract class DataMapTableView extends Composite {
 
         StringBuffer id = new StringBuffer();
 
-        IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-        Object obj = ((AbstractMultiPageTalendEditor) editor).getTalendEditor().getViewer().getSelectedEditParts().get(0);
-        EditPart editorPart = (EditPart) obj;
-        id.append(((INode) editorPart.getModel()).getLabel() + "=>");
+        id.append(mapperManager.getAbstractMapComponent().getLabel() + "=>");
 
         TableItem[] items = tableViewerCreator.getTable().getSelection();
         if (items.length == 1) {
@@ -1503,7 +1497,7 @@ public abstract class DataMapTableView extends Composite {
         };
 
         dialog = ((IExpressionBuilderDialogService) expressionBuilderDialogService).getExpressionBuilderInstance(
-                tableViewerCreator.getCompositeParent(), cellEditor);
+                tableViewerCreator.getCompositeParent(), cellEditor, mapperManager.getAbstractMapComponent());
 
         behavior.setCellEditorDialog(dialog);
 
@@ -2506,7 +2500,8 @@ public abstract class DataMapTableView extends Composite {
                     } else {
                         // System.out.println("selection.x="+selection.x);
                         // System.out.println("selection.y="+selection.y);
-                        // System.out.println("mapperColorStyledText.getText()="+mapperColorStyledText.getText().length());
+                        //System.out.println("mapperColorStyledText.getText()="+mapperColorStyledText.getText().length()
+                        // );
                         if (selection.y <= mapperColorStyledText.getCharCount()) {
                             mapperColorStyledText.replaceTextRangeWithoutNotifyListeners(selection.x, selection.y - selection.x,
                                     String.valueOf(e.character));

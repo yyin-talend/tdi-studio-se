@@ -44,7 +44,7 @@ import org.talend.designer.rowgenerator.ui.editor.MetadataTableEditorViewExt;
 public class TabFolderEditors extends CTabFolder {
 
     public static final String PREVIEW_NUMBER_ROWS = "10";
-    
+
     private TabFolderEditors tabFolderEditors;
 
     protected int lastSelectedTab;
@@ -73,7 +73,8 @@ public class TabFolderEditors extends CTabFolder {
 
     private SashForm inOutMetaEditorContainer;
 
-    public TabFolderEditors(Composite parent, int style, RowGeneratorComponent component, MetadataTableEditorViewExt genTableEditor2) {
+    public TabFolderEditors(Composite parent, int style, RowGeneratorComponent component,
+            MetadataTableEditorViewExt genTableEditor2) {
         super(parent, style);
         this.genTableEditor2 = genTableEditor2;
         this.component = component;
@@ -160,7 +161,7 @@ public class TabFolderEditors extends CTabFolder {
         // String number = component.getNumber();
         // if (number == null || "".equals(number)) {
         // number = "10";
-        //        }
+        // }
         rowText.setText("10");
         GridDataFactory.swtDefaults().hint(50, SWT.DEFAULT).applyTo(rowText);
 
@@ -217,7 +218,7 @@ public class TabFolderEditors extends CTabFolder {
      * @param inEditorContainer
      */
     public void createTableView() {
-        inputParameterEditor = new FunParaTableView2(inOutMetaEditorContainer, SWT.BORDER, genTableEditor2);
+        inputParameterEditor = new FunParaTableView2(inOutMetaEditorContainer, SWT.BORDER, genTableEditor2, component);
         inOutMetaEditorContainer.setData(inputParameterEditor);
         inputParameterEditor.setTitle(""); //$NON-NLS-1$
     }
@@ -243,7 +244,6 @@ public class TabFolderEditors extends CTabFolder {
         return this.component;
     }
 
-    
     public String getRowText() {
         return this.rowText.getText();
     }

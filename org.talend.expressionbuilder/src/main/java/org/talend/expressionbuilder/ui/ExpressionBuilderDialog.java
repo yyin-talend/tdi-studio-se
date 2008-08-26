@@ -42,8 +42,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.RuntimeExceptionHandler;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
@@ -51,7 +49,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.Project;
-import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
+import org.talend.core.model.process.INode;
 import org.talend.expressionbuilder.ExpressionFileOperation;
 import org.talend.expressionbuilder.ExpressionPersistance;
 import org.talend.expressionbuilder.IExpressionDataBean;
@@ -89,15 +87,18 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
 
     private Composite container;
 
+    private INode component;
+
     /**
      * Create the dialog
      * 
      * @param parentShell
      */
-    public ExpressionBuilderDialog(Shell parentShell, IExpressionDataBean dataBean) {
+    public ExpressionBuilderDialog(Shell parentShell, IExpressionDataBean dataBean, INode component) {
         super(parentShell);
         setShellStyle(this.getShellStyle() | SWT.RESIZE);
         this.dataBean = dataBean;
+        this.component = component;
     }
 
     /**
@@ -434,12 +435,7 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
             }
         }
 
-        IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-        String jobName = null;
-        if (editor instanceof AbstractMultiPageTalendEditor) {
-            jobName = ((AbstractMultiPageTalendEditor) editor).getTalendEditor().getCurrentJobResource().getJobInfo()
-                    .getJobName();
-        }
+        String jobName = component.getProcess().getLabel();
         IPath path = expressionFolder.getLocation().append(jobName + ".xml");
         return path.toOSString();
     }

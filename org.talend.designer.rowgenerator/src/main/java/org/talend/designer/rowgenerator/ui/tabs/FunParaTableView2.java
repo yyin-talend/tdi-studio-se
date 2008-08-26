@@ -14,7 +14,6 @@ package org.talend.designer.rowgenerator.ui.tabs;
 
 import java.util.List;
 
-import org.eclipse.gef.EditPart;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
@@ -29,9 +28,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.swt.advanced.dataeditor.AbstractDataTableEditorView;
 import org.talend.commons.ui.swt.advanced.dataeditor.ExtendedToolbarView;
 import org.talend.commons.ui.swt.proposal.ExtendedTextCellEditorWithProposal;
@@ -43,7 +39,6 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IService;
 import org.talend.core.model.process.INode;
 import org.talend.core.ui.proposal.TalendProposalProvider;
-import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.data.ListParameter;
 import org.talend.designer.rowgenerator.data.Parameter;
@@ -69,15 +64,17 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
 
     private TableViewerCreator<Parameter> tableViewerCreator;
 
-    public FunParaTableView2(Composite parentComposite, int mainCompositeStyle) {
-        super(parentComposite, mainCompositeStyle);
+    private INode component;
 
+    public FunParaTableView2(Composite parentComposite, int mainCompositeStyle, INode component) {
+        super(parentComposite, mainCompositeStyle, false);
+        this.component = component;
+        initGraphicComponents();
     }
 
-    public FunParaTableView2(Composite inEditorContainer, int border, MetadataTableEditorViewExt genTableEditor2) {
-        this(inEditorContainer, border);
+    public FunParaTableView2(Composite inEditorContainer, int border, MetadataTableEditorViewExt genTableEditor2, INode component) {
+        this(inEditorContainer, border, component);
         this.rowGenTableEditor2 = genTableEditor2;
-
     }
 
     private ExtendedTextCellEditorWithProposal cellEditor;
@@ -116,17 +113,14 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
         column.setId(VALUE_PROPERTY);
 
         CellEditorDialogBehavior behavior = new CellEditorDialogBehavior();
-        cellEditor = new ExtendedTextCellEditorWithProposal(tableViewerCreator.getTable(), SWT.MULTI | SWT.BORDER, column, behavior);
+        cellEditor = new ExtendedTextCellEditorWithProposal(tableViewerCreator.getTable(), SWT.MULTI | SWT.BORDER, column,
+                behavior);
 
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<Parameter, Object>() {
 
             public String get(Parameter bean) {
                 StringBuffer id = new StringBuffer();
-
-                IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-                Object obj = ((AbstractMultiPageTalendEditor) editor).getTalendEditor().getViewer().getSelectedEditParts().get(0);
-                EditPart editorPart = (EditPart) obj;
-                id.append(((INode) editorPart.getModel()).getLabel() + "=>");
+                id.append(component.getLabel() + "=>");
 
                 TableItem[] item = rowGenTableEditor2.getTable().getSelection();
                 if (item.length == 1) {
@@ -159,7 +153,7 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
         column.setWidth(115);
 
         dialog = ((IExpressionBuilderDialogService) expressionBuilderDialogService).getExpressionBuilderInstance(mainComposite,
-                cellEditor);
+                cellEditor, component);
         behavior.setCellEditorDialog(dialog);
 
         cellEditor.setContentProposalProvider(getProcessProposals());
@@ -292,11 +286,7 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
      * @return IContentProposalProvider
      */
     private IContentProposalProvider getProcessProposals() {
-
-        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        // create the proposal
-        IContentProposalProvider processProposalProvider = new TalendProposalProvider(((AbstractMultiPageTalendEditor) page
-                .getActiveEditor()).getProcess());
+        IContentProposalProvider processProposalProvider = new TalendProposalProvider(component.getProcess());
         return processProposalProvider;
 
     }
