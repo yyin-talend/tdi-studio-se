@@ -22,6 +22,7 @@
 	
 	String errorOuput  = ElementParameterParser.getValue(node, "__ERROROUTPUT__");
 	
+	
 	boolean ifDir = ElementParameterParser.getValue(node, "__ROOTDIR__").equals("true");
 	
 	String rootDir  = ElementParameterParser.getValue(node, "__DIRECTORY__").replace("\\","/");
@@ -87,7 +88,19 @@ Thread normal_<%=cid %> = new Thread() {
 						globalMap.put("<%=cid %>_OUTPUT", line);
 					}
 <%
-	} else if (outputAction.equals("NORMAL_OUTPUT")) {
+	} else if(outputAction.equals("OUTPUT_TO_CONSOLE_AND_RETRIVE_OUTPUT")){
+%>
+        System.out.println(line);
+        
+        	if (globalMap.get("<%=cid %>_OUTPUT") != null) {
+						globalMap.put("<%=cid %>_OUTPUT", (String)globalMap.get("<%=cid %>_OUTPUT")+"\n"+line);
+					} else {
+						globalMap.put("<%=cid %>_OUTPUT", line);
+					}
+					
+    	 
+<%
+   } else if (outputAction.equals("NORMAL_OUTPUT")) {
 %>
 					output_<%=cid%>.add(line);
 <%
@@ -124,7 +137,19 @@ Thread error_<%=cid %> = new Thread() {
 						globalMap.put("<%=cid %>_OUTPUT", line);
 					}
 <%
-	} else if (errorOuput.equals("NORMAL_OUTPUT")) {
+	}else if(outputAction.equals("OUTPUT_TO_CONSOLE_AND_RETRIVE_OUTPUT")){
+%>
+        System.out.println(line);
+        
+        	if (globalMap.get("<%=cid %>_OUTPUT") != null) {
+						globalMap.put("<%=cid %>_OUTPUT", (String)globalMap.get("<%=cid %>_OUTPUT")+"\n"+line);
+					} else {
+						globalMap.put("<%=cid %>_OUTPUT", line);
+					}
+					
+    	 
+<% 
+	}else if (errorOuput.equals("NORMAL_OUTPUT")) {
 %>
 					output_<%=cid%>.add(line);
 <%
