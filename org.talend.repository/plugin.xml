@@ -902,6 +902,12 @@
             id="org.talend.repository.model.migration.MigrationTaskForIssue4449"
             name="MigrationTaskForIssue4449">
       </projecttask>
+      <projecttask
+            class="org.talend.repository.model.migration.FileInputRegexContextVariableMigrationTask"
+            description="add quotes to FileInputRegex header/footer/limit variables."
+            id="org.talend.repository.model.migration.FileInputRegexContextVariableMigrationTask"
+            name="add quotes to FileInputRegex header/footer/limit variables.">
+      </projecttask>
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">
