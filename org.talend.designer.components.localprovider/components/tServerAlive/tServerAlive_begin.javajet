@@ -1,0 +1,55 @@
+<%@ jet 
+imports="
+        org.talend.core.model.process.INode 
+        org.talend.core.model.process.ElementParameterParser
+        org.talend.designer.codegen.config.CodeGeneratorArgument
+" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+String protocol = ElementParameterParser.getValue(node, "__PROTOCOL__");
+String host = ElementParameterParser.getValue(node, "__HOST__");
+String timeoutInterval = ElementParameterParser.getValue(node, "__TIMEOUT_INTERVAL__");
+boolean isEnableProxy = ElementParameterParser.getValue(node, "__ENABLE_PROXY_SERVER__").equals("true");
+if(protocol.equals("PING")) {
+    %>
+    try {
+        java.net.InetAddress address_<%=cid%> = java.net.InetAddress.getByName(<%=host%>);
+        boolean isAlive_<%=cid%> = address_<%=cid%>.isReachable(<%=timeoutInterval%> * 1000);
+        globalMap.put("<%=cid %>_SERVER_ALIVE_RESULT","OK");
+    } catch(Exception e) {
+        globalMap.put("<%=cid %>_SERVER_ALIVE_RESULT","KO");
+        throw new RuntimeException(e);
+    }
+    <%
+} else {
+    String port = ElementParameterParser.getValue(node, "__PORT__");
+    %>
+    try {
+        <%
+        if(isEnableProxy) {
+            String proxyHost = ElementParameterParser.getValue(node, "__PROXY_HOST__");
+            String proxyPort = ElementParameterParser.getValue(node, "__PROXY_PORT__");
+            %>
+            java.net.Socket server_<%=cid%> = new java.net.Socket(new java.net.Proxy(java.net.Proxy.Type.HTTP, new java.net.InetSocketAddress(<%=proxyHost%>, <%=proxyPort%>)));
+            <%
+        } else {
+            %>
+            java.net.Socket server_<%=cid%> = new java.net.Socket();
+            <%
+        }
+        %>    
+        java.net.InetSocketAddress address_<%=cid%> = new java.net.InetSocketAddress(<%=host%>, <%=port%>);
+        server_<%=cid%>.connect(address_<%=cid%>, <%=timeoutInterval%> * 1000);
+        server_<%=cid%>.close();
+        globalMap.put("<%=cid %>_SERVER_ALIVE_RESULT","OK");
+    } catch(Exception e) {
+        globalMap.put("<%=cid %>_SERVER_ALIVE_RESULT","KO");
+        throw new RuntimeException(e);
+    }
+    <%   
+}
+%>
