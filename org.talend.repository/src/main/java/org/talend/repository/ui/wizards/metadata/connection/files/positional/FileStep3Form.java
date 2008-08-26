@@ -467,11 +467,11 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
                                 globalType = CorePlugin.getDefault().getPreferenceStore().getString(
                                         MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_TYPE);
                                 if (CorePlugin.getDefault().getPreferenceStore().getString(
-                                        MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH) != null
+                                        MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_LENGTH) != null
                                         && !CorePlugin.getDefault().getPreferenceStore().getString(
-                                                MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH).equals("")) {
+                                                MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_LENGTH).equals("")) {
                                     lengthValue = Integer.parseInt(CorePlugin.getDefault().getPreferenceStore().getString(
-                                            MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH));
+                                            MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_LENGTH));
                                 }
                             } else {
                                 lengthValue = (int) (Math.random() * 10);
