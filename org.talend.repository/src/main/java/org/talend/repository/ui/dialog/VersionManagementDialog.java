@@ -67,6 +67,7 @@ import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.nodes.IProjectRepositoryNode;
@@ -78,8 +79,6 @@ import org.talend.repository.ui.views.RepositoryView;
  * ggu class global comment. Detailled comment
  */
 public class VersionManagementDialog extends Dialog {
-
-    private static final String SYSTEM_LABEL = "system"; //$NON-NLS-1$
 
     private static final String TITLE = Messages.getString("VersionManagementDialog.Title"); //$NON-NLS-1$
 
@@ -235,7 +234,7 @@ public class VersionManagementDialog extends Dialog {
                 if (systemNode != null) {
                     // for system folder
                     if (systemNode.getType() == ENodeType.STABLE_SYSTEM_FOLDER
-                            && systemNode.getLabel().equalsIgnoreCase(SYSTEM_LABEL)) {
+                            && systemNode.getLabel().equalsIgnoreCase(RepositoryConstants.SYSTEM_DIRECTORY)) {
                         return false;
                     }
                 }
@@ -253,7 +252,8 @@ public class VersionManagementDialog extends Dialog {
             case ROUTINES:
 
                 // for system folder
-                if (node.getType() == ENodeType.STABLE_SYSTEM_FOLDER && node.getLabel().equalsIgnoreCase(SYSTEM_LABEL)) {
+                if (node.getType() == ENodeType.STABLE_SYSTEM_FOLDER
+                        && node.getLabel().equalsIgnoreCase(RepositoryConstants.SYSTEM_DIRECTORY)) {
                     return false;
                 }
             default:
