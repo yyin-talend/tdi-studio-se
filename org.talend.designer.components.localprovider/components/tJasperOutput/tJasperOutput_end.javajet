@@ -22,12 +22,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         String tempDirectory = ElementParameterParser.getValue(node,"__TEMP_FILE__");
         String destinationDirectory = ElementParameterParser.getValue(node,"__DESTINATION__");
        	String reportType = ElementParameterParser.getValue(node,"__REPORT_TYPE__");
+       	String outFileName=ElementParameterParser.getValue(node,"__FILE_NAME__");
+       	
 %>	
 	CsvWriter_<%=cid%>.close();
 	globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
 	
-	String jasperFile_<%=cid%> = <%=tempDirectory%>+jrxmlName_<%=cid%> + ".jasper";
-    String reportFile_<%=cid%> = <%=destinationDirectory%>+jrxmlName_<%=cid%>+".<%=reportType%>";
+	String jasperFile_<%=cid%> = <%=tempDirectory%>+jrxmlName_<%=cid%>+ ".jasper";
+    String reportFile_<%=cid%> = <%=destinationDirectory%>+"/"+<%=outFileName %>+".<%=reportType%>";
     
     net.sf.jasperreports.engine.xml.JRXmlDigester digester_<%=cid%> = new net.sf.jasperreports.engine.xml.JRXmlDigester();
     net.sf.jasperreports.engine.xml.JRXmlDigesterFactory.configureDigester(digester_<%=cid%>);
