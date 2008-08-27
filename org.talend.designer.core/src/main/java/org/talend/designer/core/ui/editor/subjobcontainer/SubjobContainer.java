@@ -31,6 +31,7 @@ import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 
 /**
  * DOC nrousseau class global comment. Detailled comment
@@ -324,7 +325,7 @@ public class SubjobContainer extends Element implements ISubjobContainer {
         } else if (id.equals(EParameterName.SUBJOB_TITLE_COLOR.getName())) {
             fireStructureChange(UPDATE_SUBJOB_TITLE_COLOR, this);
         } else if (id.equals(EParameterName.SUBJOB_DISPLAYED.getName())) {
-            fireStructureChange(UPDATE_SUBJOB_DISPLAY, this);
+            updateSubjobDisplay();
         }
     }
 
@@ -410,6 +411,9 @@ public class SubjobContainer extends Element implements ISubjobContainer {
      * @see org.talend.core.model.process.ISubjobContainer#isDisplayed()
      */
     public boolean isDisplayed() {
+        if (!(Boolean) getProcess().getElementParameter(TalendDesignerPrefConstants.DISPLAY_SUBJOBS).getValue()) {
+            return false;
+        }
         return (Boolean) getPropertyValue(EParameterName.SUBJOB_DISPLAYED.getName());
     }
 
@@ -418,6 +422,10 @@ public class SubjobContainer extends Element implements ISubjobContainer {
     }
 
     public void updateSubjobDisplay() {
+        if (!isDisplayed() && isCollapsed()) {
+            // if the subjob hidden and collapsed, remove the collapse status first.
+            setCollapsed(false);
+        }
         fireStructureChange(UPDATE_SUBJOB_DISPLAY, this);
     }
 }

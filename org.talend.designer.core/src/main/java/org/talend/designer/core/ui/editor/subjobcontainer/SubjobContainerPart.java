@@ -40,7 +40,6 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.process.NodeSnapToGeometry;
 import org.talend.designer.core.ui.editor.process.Process;
-import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
 
 /**
@@ -96,9 +95,7 @@ public class SubjobContainerPart extends AbstractGraphicalEditPart implements Pr
      */
     @Override
     protected void refreshVisuals() {
-        Boolean isDisplaySubjobs = ((Boolean) ((SubjobContainer) this.getModel()).getProcess().getElementParameter(
-                TalendDesignerPrefConstants.DISPLAY_SUBJOBS).getValue())
-                && ((SubjobContainer) this.getModel()).isDisplayed();
+        Boolean isDisplaySubjobs = ((SubjobContainer) this.getModel()).isDisplayed();
         if (getParent() == null || !isDisplaySubjobs) {
             return;
         }
@@ -120,10 +117,9 @@ public class SubjobContainerPart extends AbstractGraphicalEditPart implements Pr
      */
     @Override
     protected IFigure createFigure() {
-        Boolean isDisplaySubjobs = (Boolean) ((SubjobContainer) this.getModel()).getProcess().getElementParameter(
-                TalendDesignerPrefConstants.DISPLAY_SUBJOBS).getValue();
+        Boolean isDisplaySubjobs = ((SubjobContainer) this.getModel()).isDisplayed();
 
-        if (!isDisplaySubjobs || !((SubjobContainer) this.getModel()).isDisplayed()) {
+        if (!isDisplaySubjobs) {
             Figure figure = new FreeformLayer();
             figure.setLayoutManager(new FreeformLayout());
             return figure;
@@ -233,9 +229,8 @@ public class SubjobContainerPart extends AbstractGraphicalEditPart implements Pr
     @Override
     protected void addChildVisual(EditPart childEditPart, int index) {
         int nbChildrensInFigure = 2;
-        Boolean isDisplaySubjobs = (Boolean) ((SubjobContainer) this.getModel()).getProcess().getElementParameter(
-                TalendDesignerPrefConstants.DISPLAY_SUBJOBS).getValue();
-        if (!isDisplaySubjobs || !((SubjobContainer) this.getModel()).isDisplayed()) {
+        Boolean isDisplaySubjobs = ((SubjobContainer) this.getModel()).isDisplayed();
+        if (!isDisplaySubjobs) {
             nbChildrensInFigure = 0;
         }
         super.addChildVisual(childEditPart, index + nbChildrensInFigure);
