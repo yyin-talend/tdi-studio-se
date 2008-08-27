@@ -65,6 +65,7 @@
       FIELD="CHECK"
       REQUIRED="true"
       NUM_ROW="4"
+      DYNAMIC_SETTINGS="true"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
