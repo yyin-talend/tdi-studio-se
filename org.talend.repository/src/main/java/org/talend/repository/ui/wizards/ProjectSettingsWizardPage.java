@@ -109,9 +109,8 @@ public class ProjectSettingsWizardPage extends WizardPage {
         // Version management
         versionBtn = new Button(btnComposite, SWT.PUSH);
         versionBtn.setText("Version Management");
-        // FIXME for feature 4706
+        // FIXME for feature 4706, disable temporarily.
         versionBtn.setVisible(false);
-
     }
 
     protected void updateContent() {
@@ -133,7 +132,7 @@ public class ProjectSettingsWizardPage extends WizardPage {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                VersionManagementDialog dialog = new VersionManagementDialog(getShell());
+                VersionManagementDialog dialog = new VersionManagementDialog(getShell(), pro);
                 dialog.open();
             }
         });

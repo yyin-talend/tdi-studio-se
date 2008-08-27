@@ -71,7 +71,7 @@ public class ItemsVersionConfirmDialog extends Dialog {
         table.setLinesVisible(true);
 
         TableColumn column = new TableColumn(table, SWT.NONE);
-        column.setText(Messages.getString("ItemsVersionChangedDialog.Items")); //$NON-NLS-1$
+        column.setText(Messages.getString("VersionManagementDialog.Items")); //$NON-NLS-1$
         column.setWidth(140);
 
         column = new TableColumn(table, SWT.NONE);
@@ -79,7 +79,7 @@ public class ItemsVersionConfirmDialog extends Dialog {
         column.setWidth(120);
 
         column = new TableColumn(table, SWT.NONE);
-        column.setText(Messages.getString("ItemsVersionChangedDialog.NewVersion")); //$NON-NLS-1$
+        column.setText(Messages.getString("VersionManagementDialog.NewVersion")); //$NON-NLS-1$
         column.setWidth(90);
 
         viewer.setContentProvider(new ArrayContentProvider());

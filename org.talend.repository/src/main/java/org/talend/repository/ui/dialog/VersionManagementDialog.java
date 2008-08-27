@@ -45,6 +45,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
@@ -60,6 +61,7 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.advanced.composite.ThreeCompositesSashForm;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -86,17 +88,32 @@ public class VersionManagementDialog extends Dialog {
 
     private static final String ITEM_EDITOR_KEY = "ITEM_EDITOR_KEY"; //$NON-NLS-1$
 
-    private CheckboxRepositoryTreeViewer treeViewer;
+    private Project project;
 
-    private Table itemTable;
+    private CheckboxRepositoryTreeViewer treeViewer;
 
     private Button removeBtn;
 
+    private Table itemTable;
+
+    private Button fixedVersionBtn;
+
+    private Text maxVersionText;
+
+    private Button majorBtn;
+
+    private Button minorBtn;
+
+    private Button revertBtn;
+
+    private Button eachVersionBtn;
+
     private List<ItemVersionObject> checkedObjects = new ArrayList<ItemVersionObject>();
 
-    public VersionManagementDialog(Shell parentShell) {
+    public VersionManagementDialog(Shell parentShell, Project project) {
         super(parentShell);
         setShellStyle(getShellStyle() | SWT.RESIZE | SWT.MAX);
+        this.project = project;
     }
 
     @Override
@@ -116,7 +133,7 @@ public class VersionManagementDialog extends Dialog {
         composite.setLayout(gridLayout);
         GridData gridData = new GridData(GridData.FILL_BOTH);
         gridData.heightHint = 400;
-        gridData.widthHint = 500;
+        gridData.widthHint = 570;
         composite.setLayoutData(gridData);
 
         //
@@ -134,7 +151,7 @@ public class VersionManagementDialog extends Dialog {
      */
     private void addRepositoryTreeViewer(Composite leftComposite) {
         GridData gridData = new GridData(GridData.FILL_BOTH);
-        gridData.widthHint = 250;
+        gridData.widthHint = 210;
         leftComposite.setLayoutData(gridData);
         RepositoryCheckBoxView view = new RepositoryCheckBoxView();
         try {
@@ -163,12 +180,12 @@ public class VersionManagementDialog extends Dialog {
                 if (!objects.isEmpty()) {
                     if (event.getChecked()) {
                         checkedObjects.addAll(objects);
-                        addItemElements(objects);
                     } else {
                         checkedObjects.removeAll(objects);
                         removeItemElements(objects);
                     }
-                    checkButtonsState();
+                    researchMaxVersion();
+                    refreshTableItems();
                 }
             }
         });
@@ -224,7 +241,7 @@ public class VersionManagementDialog extends Dialog {
                 return false;
             }
             // opened items
-            // FIXME
+            // TODO
 
             ERepositoryObjectType objectType = node.getObjectType();
             switch (objectType) {
@@ -300,7 +317,7 @@ public class VersionManagementDialog extends Dialog {
 
         removeBtn = new Button(btnComposite, SWT.NONE);
         removeBtn.setImage(ImageProvider.getImage(EImage.LEFT_ICON));
-        removeBtn.setToolTipText("remove items");
+        removeBtn.setToolTipText(Messages.getString("VersionManagementDialog.RemoveTip")); //$NON-NLS-1$
         removeBtn.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent e) {
@@ -312,21 +329,23 @@ public class VersionManagementDialog extends Dialog {
                     removeTableItem(item);
                 }
                 itemTable.setRedraw(true);
-                // some problem for table update. so disable it as follow
                 refreshCheckedTreeView();
-                checkButtonsState();
+                refreshTableItems();
             }
         });
 
         removeBtn.setEnabled(false);
-        // disable
-        removeBtn.setVisible(false);
     }
 
     private void addItemTableViewer(Composite rightComposite) {
+        Composite composite = new Composite(rightComposite, SWT.NONE);
+        composite.setLayout(new GridLayout());
+        GridDataFactory.fillDefaults().grab(true, true).applyTo(composite);
 
-        itemTable = new Table(rightComposite, SWT.MULTI | SWT.BORDER);
-        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, true).applyTo(itemTable);
+        addItemsOption(composite);
+
+        itemTable = new Table(composite, SWT.MULTI | SWT.BORDER);
+        GridDataFactory.fillDefaults().grab(true, true).applyTo(itemTable);
         itemTable.setHeaderVisible(true);
         itemTable.setLinesVisible(true);
 
@@ -335,8 +354,12 @@ public class VersionManagementDialog extends Dialog {
         itemColumn.setText(Messages.getString("VersionManagementDialog.Items")); //$NON-NLS-1$
         itemColumn.setWidth(110);
 
+        TableColumn oldVersionColumn = new TableColumn(itemTable, SWT.CENTER);
+        oldVersionColumn.setText(Messages.getString("VersionManagementDialog.Version")); //$NON-NLS-1$
+        oldVersionColumn.setWidth(60);
+
         TableColumn versionColumn = new TableColumn(itemTable, SWT.CENTER);
-        versionColumn.setText(Messages.getString("VersionManagementDialog.Version")); //$NON-NLS-1$
+        versionColumn.setText(Messages.getString("VersionManagementDialog.NewVersion")); //$NON-NLS-1$
         versionColumn.setWidth(82);
 
         final TableColumn delColumn = new TableColumn(itemTable, SWT.CENTER);
@@ -351,19 +374,132 @@ public class VersionManagementDialog extends Dialog {
             }
 
             public void controlResized(ControlEvent e) {
-                removeItemElements(checkedObjects);
-                addItemElements(checkedObjects);
+                if (!isFixedVersion()) {
+                    refreshTableItems();
+                }
             }
         });
-
         itemTable.addSelectionListener(new SelectionAdapter() {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
                 checkButtonsState();
             }
-
         });
+    }
+
+    private void addItemsOption(Composite parent) {
+        Group option = new Group(parent, SWT.NONE);
+        option.setLayout(new GridLayout());
+        option.setText(Messages.getString("VersionManagementDialog.Options")); //$NON-NLS-1$
+        GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).applyTo(option);
+        fixedVersionBtn = new Button(option, SWT.RADIO);
+        fixedVersionBtn.setText(Messages.getString("VersionManagementDialog.FixedVersion")); //$NON-NLS-1$
+        fixedVersionBtn.setSelection(true); // default
+
+        Composite versionComposit = new Composite(option, SWT.NONE);
+        GridLayout layout = new GridLayout(5, false);
+        layout.horizontalSpacing = 1;
+        layout.verticalSpacing = 0;
+        layout.marginHeight = 0;
+        layout.marginWidth = 0;
+        versionComposit.setLayout(layout);
+        GridDataFactory.swtDefaults().align(SWT.FILL, SWT.BEGINNING).applyTo(versionComposit);
+
+        maxVersionText = new Text(versionComposit, SWT.BORDER | SWT.READ_ONLY);
+        GridData data = new GridData();
+        data.widthHint = 50;
+        data.minimumWidth = 50;
+        maxVersionText.setLayoutData(data);
+        maxVersionText.setEnabled(false);
+        maxVersionText.setText(VersionUtils.DEFAULT_VERSION);
+
+        majorBtn = new Button(versionComposit, SWT.NONE);
+        majorBtn.setText("M"); //$NON-NLS-1$
+        minorBtn = new Button(versionComposit, SWT.NONE);
+        minorBtn.setText("m"); //$NON-NLS-1$
+        Label label = new Label(versionComposit, SWT.NONE);
+        label.setText(""); //$NON-NLS-1$
+        data = new GridData();
+        data.minimumWidth = 20;
+        data.widthHint = 20;
+        label.setLayoutData(data);
+        label.setVisible(false);
+
+        revertBtn = new Button(versionComposit, SWT.NONE);
+        revertBtn.setText(Messages.getString("VersionManagementDialog.Revert")); //$NON-NLS-1$
+        revertBtn.setToolTipText(Messages.getString("VersionManagementDialog.RevertTip")); //$NON-NLS-1$
+
+        eachVersionBtn = new Button(option, SWT.RADIO);
+        eachVersionBtn.setText(Messages.getString("VersionManagementDialog.EachVersion")); //$NON-NLS-1$
+
+        // event
+        fixedVersionBtn.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                checkFixedButtons();
+                researchMaxVersion();
+                refreshTableItems();
+            }
+        });
+        majorBtn.addSelectionListener(new SelectionAdapter() {
+
+            public void widgetSelected(SelectionEvent e) {
+                String version = maxVersionText.getText();
+                version = VersionUtils.upMajor(version);
+                maxVersionText.setText(version);
+                refreshTableItems();
+            }
+        });
+        minorBtn.addSelectionListener(new SelectionAdapter() {
+
+            public void widgetSelected(SelectionEvent e) {
+                String version = maxVersionText.getText();
+                version = VersionUtils.upMinor(version);
+                maxVersionText.setText(version);
+                refreshTableItems();
+            }
+        });
+        revertBtn.addSelectionListener(new SelectionAdapter() {
+
+            public void widgetSelected(SelectionEvent e) {
+                maxVersionText.setText(VersionUtils.DEFAULT_VERSION); // set min version
+                researchMaxVersion();
+                refreshTableItems();
+            }
+        });
+        eachVersionBtn.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                checkFixedButtons();
+                refreshTableItems();
+            }
+        });
+        checkFixedButtons();
+    }
+
+    private void refreshTableItems() {
+        removeItemElements(checkedObjects);
+        addItemElements(checkedObjects);
+        // if (checkedObjects.isEmpty()) {
+        // maxVersionText.setText(VersionUtils.DEFAULT_VERSION);
+        // }
+        checkButtonsState();
+    }
+
+    private void researchMaxVersion() {
+        String version = maxVersionText.getText();
+        if ("".equals(version.trim())) { //$NON-NLS-1$
+            version = VersionUtils.DEFAULT_VERSION;
+        }
+        for (ItemVersionObject object : checkedObjects) {
+            if (VersionUtils.compareTo(version, object.getOldVersion()) < 0) {
+                version = object.getOldVersion();
+            }
+        }
+        maxVersionText.setText(version);
     }
 
     private void checkButtonsState() {
@@ -373,6 +509,16 @@ public class VersionManagementDialog extends Dialog {
         } else {
             removeBtn.setEnabled(false);
         }
+    }
+
+    private boolean isFixedVersion() {
+        return fixedVersionBtn.getSelection();
+    }
+
+    private void checkFixedButtons() {
+        majorBtn.setEnabled(isFixedVersion());
+        minorBtn.setEnabled(isFixedVersion());
+        revertBtn.setEnabled(isFixedVersion());
     }
 
     private void removeTableItem(TableItem item) {
@@ -414,10 +560,12 @@ public class VersionManagementDialog extends Dialog {
     }
 
     private void addItemElements(List<ItemVersionObject> elements) {
-        itemTable.setRedraw(false);
         if (elements == null || elements.isEmpty()) {
             return;
         }
+        itemTable.setRedraw(false);
+        final Color redColor = new Color(null, 255, 0, 0);
+
         for (final ItemVersionObject object : elements) {
             final TableItem tableItem = new TableItem(itemTable, SWT.NONE);
             tableItem.setData(object);
@@ -426,51 +574,70 @@ public class VersionManagementDialog extends Dialog {
             ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(item);
             tableItem.setImage(ImageProvider.getImage(CoreImageProvider.getIcon(itemType)));
             tableItem.setText(item.getProperty().getLabel());
+            // old version
+            tableItem.setText(1, object.getOldVersion());
 
-            // version
-            TableEditor versionEditor = new TableEditor(itemTable);
-            Composite versionComposit = new Composite(itemTable, SWT.NONE);
-            GridLayout layout = new GridLayout(3, false);
-            layout.horizontalSpacing = 1;
-            layout.verticalSpacing = 0;
-            layout.marginHeight = 0;
-            layout.marginWidth = 0;
-            versionComposit.setLayout(layout);
+            TableEditor versionEditor = null;
 
-            final Text text = new Text(versionComposit, SWT.BORDER | SWT.READ_ONLY);
-            GridData data = new GridData(GridData.FILL_HORIZONTAL);
-            text.setLayoutData(data);
-            text.setEditable(false);
-            text.setText(object.getOldVersion());
-            text.setForeground(new Color(null, 0, 0, 255));
-
-            Button majorBtn = new Button(versionComposit, SWT.NONE);
-            majorBtn.setText("M"); //$NON-NLS-1$
-            Button minorBtn = new Button(versionComposit, SWT.NONE);
-            minorBtn.setText("m"); //$NON-NLS-1$
-
-            majorBtn.addSelectionListener(new SelectionAdapter() {
-
-                public void widgetSelected(SelectionEvent e) {
-                    String version = object.getNewVersion();
-                    version = VersionUtils.upMajor(version);
-                    text.setText(version);
-                    object.setNewVersion(version);
+            if (isFixedVersion()) {
+                String version = maxVersionText.getText();
+                tableItem.setText(2, version);
+                if (VersionUtils.compareTo(version, object.getOldVersion()) > 0) {
+                    tableItem.setForeground(2, redColor);
+                } else {
+                    tableItem.setForeground(2, new Color(null, 0, 0, 0));
                 }
-            });
-            minorBtn.addSelectionListener(new SelectionAdapter() {
+            } else {
+                // new version
+                versionEditor = new TableEditor(itemTable);
+                Composite versionComposit = new Composite(itemTable, SWT.NONE);
+                GridLayout layout = new GridLayout(3, false);
+                layout.horizontalSpacing = 1;
+                layout.verticalSpacing = 0;
+                layout.marginHeight = 0;
+                layout.marginWidth = 0;
+                versionComposit.setLayout(layout);
 
-                public void widgetSelected(SelectionEvent e) {
-                    String version = object.getNewVersion();
-                    version = VersionUtils.upMinor(version);
-                    text.setText(version);
-                    object.setNewVersion(version);
+                final Text text = new Text(versionComposit, SWT.BORDER | SWT.READ_ONLY);
+                GridData data = new GridData(GridData.FILL_HORIZONTAL);
+                text.setLayoutData(data);
+                text.setEditable(false);
+                text.setText(object.getNewVersion());
+                if (VersionUtils.compareTo(object.getNewVersion(), object.getOldVersion()) > 0) {
+                    text.setForeground(redColor);
+                } else {
+                    text.setForeground(new Color(null, 0, 0, 255));
                 }
-            });
 
-            versionEditor.minimumWidth = itemTable.getColumn(1).getWidth();
-            versionEditor.setEditor(versionComposit, tableItem, 1);
+                Button tableMajorBtn = new Button(versionComposit, SWT.NONE);
+                tableMajorBtn.setText("M"); //$NON-NLS-1$
+                Button tableMinorBtn = new Button(versionComposit, SWT.NONE);
+                tableMinorBtn.setText("m"); //$NON-NLS-1$
 
+                tableMajorBtn.addSelectionListener(new SelectionAdapter() {
+
+                    public void widgetSelected(SelectionEvent e) {
+                        String version = object.getNewVersion();
+                        version = VersionUtils.upMajor(version);
+                        text.setText(version);
+                        text.setForeground(redColor);
+                        object.setNewVersion(version);
+                    }
+                });
+                tableMinorBtn.addSelectionListener(new SelectionAdapter() {
+
+                    public void widgetSelected(SelectionEvent e) {
+                        String version = object.getNewVersion();
+                        version = VersionUtils.upMinor(version);
+                        text.setText(version);
+                        text.setForeground(redColor);
+                        object.setNewVersion(version);
+                    }
+                });
+
+                versionEditor.minimumWidth = itemTable.getColumn(2).getWidth();
+                versionEditor.setEditor(versionComposit, tableItem, 2);
+            }
             TableEditor delEditor = new TableEditor(itemTable);
             Label delLabel = new Label(itemTable, SWT.CENTER);
             delLabel.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WHITE));
@@ -491,9 +658,12 @@ public class VersionManagementDialog extends Dialog {
 
             delEditor.minimumWidth = 25;
             delEditor.horizontalAlignment = SWT.CENTER;
-            delEditor.setEditor(delLabel, tableItem, 2);
-
-            tableItem.setData(ITEM_EDITOR_KEY, new TableEditor[] { versionEditor, delEditor });
+            delEditor.setEditor(delLabel, tableItem, 3);
+            if (isFixedVersion()) {
+                tableItem.setData(ITEM_EDITOR_KEY, new TableEditor[] { delEditor });
+            } else if (versionEditor != null) {
+                tableItem.setData(ITEM_EDITOR_KEY, new TableEditor[] { versionEditor, delEditor });
+            }
             itemTable.setRedraw(true);
         }
     }
@@ -562,58 +732,80 @@ public class VersionManagementDialog extends Dialog {
         return this.checkedObjects;
     }
 
-    @SuppressWarnings("restriction")
     @Override
     protected void okPressed() {
         boolean modified = false;
+        String newVersion = maxVersionText.getText();
         for (ItemVersionObject object : getModifiedVersionItems()) {
-            if (!object.getOldVersion().equals(object.getNewVersion())) {
+            if (!isFixedVersion()) {
+                newVersion = object.getNewVersion();
+            }
+            if (!object.getOldVersion().equals(newVersion)) {
                 modified = true;
                 break;
             }
         }
-        if (!modified) {
+        if (modified) {
+            boolean confirm = false;
+            if (isFixedVersion()) {
+                confirm = MessageDialog.openConfirm(getShell(), Messages.getString("VersionManagementDialog.ConfirmTitle"), //$NON-NLS-1$
+                        Messages.getString("VersionManagementDialog.ConfirmMessage", newVersion)); //$NON-NLS-1$
+                if (confirm) {
+                    // set all items for new version
+                    for (ItemVersionObject object : getModifiedVersionItems()) {
+                        object.setNewVersion(newVersion);
+                    }
+                }
+            } else {
+                ItemsVersionConfirmDialog chanedDialog = new ItemsVersionConfirmDialog(getShell(), getModifiedVersionItems());
+                confirm = (chanedDialog.open() == Window.OK);
+            }
+
+            if (confirm) {
+                updateItemsVersion();
+                super.okPressed();
+            }
+        } else {
             if (!getModifiedVersionItems().isEmpty()) {
                 MessageDialog.openWarning(getShell(), Messages.getString("VersionManagementDialog.WarningTitle"), //$NON-NLS-1$
                         Messages.getString("VersionManagementDialog.WarningMessages")); //$NON-NLS-1$
             }
             super.okPressed();
-            return;
         }
-        ItemsVersionConfirmDialog chanedDialog = new ItemsVersionConfirmDialog(getShell(), getModifiedVersionItems());
-        if (chanedDialog.open() == Window.OK) {
-            IRunnableWithProgress runnable = new IRunnableWithProgress() {
 
-                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                    monitor.beginTask("", getModifiedVersionItems().size() * 100); //$NON-NLS-1$
-                    for (ItemVersionObject object : getModifiedVersionItems()) {
-                        if (!object.getOldVersion().equals(object.getNewVersion())) {
-                            final Item item = object.getItem();
-                            item.getProperty().setVersion(object.getNewVersion());
-
-                            try {
-                                FACTORY.save(item);
-                            } catch (PersistenceException e) {
-                                ExceptionHandler.process(e);
-                            }
-                        }
-                        monitor.worked(100);
-                    }
-                    RepositoryView.show().refresh();
-                    monitor.done();
-                }
-            };
-
-            final ProgressMonitorJobsDialog dialog = new ProgressMonitorJobsDialog(null);
-            try {
-                dialog.run(false, false, runnable);
-            } catch (InvocationTargetException e) {
-                ExceptionHandler.process(e);
-            } catch (InterruptedException e) {
-                ExceptionHandler.process(e);
-            }
-            super.okPressed();
-        }
     }
 
+    @SuppressWarnings("restriction")
+    private void updateItemsVersion() {
+        IRunnableWithProgress runnable = new IRunnableWithProgress() {
+
+            public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                monitor.beginTask("", getModifiedVersionItems().size() * 100); //$NON-NLS-1$
+                for (ItemVersionObject object : getModifiedVersionItems()) {
+                    if (!object.getOldVersion().equals(object.getNewVersion())) {
+                        final Item item = object.getItem();
+                        item.getProperty().setVersion(object.getNewVersion());
+
+                        try {
+                            FACTORY.save(project, item);
+                        } catch (PersistenceException e) {
+                            ExceptionHandler.process(e);
+                        }
+                    }
+                    monitor.worked(100);
+                }
+                RepositoryView.show().refresh();
+                monitor.done();
+            }
+        };
+
+        final ProgressMonitorJobsDialog dialog = new ProgressMonitorJobsDialog(null);
+        try {
+            dialog.run(false, false, runnable);
+        } catch (InvocationTargetException e) {
+            ExceptionHandler.process(e);
+        } catch (InterruptedException e) {
+            ExceptionHandler.process(e);
+        }
+    }
 }
