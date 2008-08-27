@@ -30,7 +30,7 @@
 		<PARAMETER
 	      NAME="CONNECTION"
 	      FIELD="COMPONENT_LIST"
-	      FILTER="tMySQLConnection"
+	      FILTER="tMysqlConnection"
 	      NUM_ROW="2"
 	    />
 
