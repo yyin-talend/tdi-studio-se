@@ -291,29 +291,27 @@ public class SurrogateSection extends ScdSection {
      */
     private void initTableItem(final SurrogateKey key, final TableItem item) {
         item.setData(key);
-        // check
-        // item.setText(new String[] { "", key.getColumn(), key.getCreation().getName(), key.getComplement() });
-        //
-        // boolean selected = isItemSelected(item);
-        // TableEditor checkEditor = editorManager.createCheckboxEditor(table, selected, item, 0, new
-        // IPropertySetter<Boolean>() {
-        //
-        // public void set(Boolean value) {
-        // if (value.booleanValue()) {
-        // setItemChecked(item, true);
-        // }
-        // }
-        // });
-        final List<String> outputColumns = scdManager.getOutputColumnNames();
-        int index = editorManager.getComboIndex(outputColumns, key.getColumn());
-        final TableEditor editor = editorManager.createComboEditor(table,
-                outputColumns.toArray(new String[outputColumns.size()]), item, COLUMN_INDEX, index,
-                new IPropertySetter<Integer>() {
 
-                    public void set(Integer value) {
-                        key.setColumn(outputColumns.get(value));
+        // text editor
+        TableEditor editor = editorManager.createTextEditor(table, key.getColumn(), item, COLUMN_INDEX,
+                new IPropertySetter<String>() {
+
+                    public void set(String value) {
+                        key.setColumn(value);
                     }
                 });
+
+        // combo editor
+        // final List<String> outputColumns = scdManager.getOutputColumnNames();
+        // int index = editorManager.getComboIndex(outputColumns, key.getColumn());
+        // final TableEditor editor = editorManager.createComboEditor(table,
+        // outputColumns.toArray(new String[outputColumns.size()]), item, COLUMN_INDEX, index,
+        // new IPropertySetter<Integer>() {
+        //
+        // public void set(Integer value) {
+        // key.setColumn(outputColumns.get(value));
+        // }
+        // });
         editor.layout();
 
         TableEditor comboEditor = editorManager.createComboEditor(table, SurrogateCreationType.getAllTypeNames(), item,
@@ -453,35 +451,38 @@ public class SurrogateSection extends ScdSection {
             // add content proposal
             TalendProposalUtils.installOn(editor.getEditor(), null);
         } else if (value == SurrogateCreationType.INPUT_FIELD.getIndex()) {
-
-            final List<String> inputColumns = scdManager.getInputColumnNames();
-            inputColumns.add(0, "");
-            int index = editorManager.getComboIndex(inputColumns, key.getComplement());
-            editor = editorManager.createComboEditor(table, inputColumns.toArray(new String[inputColumns.size()]), item,
-                    COMPLEMENT_INDEX, index, new IPropertySetter<Integer>() {
-
-                        public void set(Integer value) {
-                            key.setComplement(inputColumns.get(value));
-                            Color color = value == 0 ? ERROR_COLOR : null;
-                            editorManager.setComboColor(item, COMPLEMENT_INDEX, color);
-                            scdManager.fireFieldChange();
-                        }
-                    });
-
-            if (StringUtils.isEmpty(key.getComplement())) {
-                // display as error status, this field must not be null
-                editorManager.setComboColor(item, COMPLEMENT_INDEX, ERROR_COLOR);
-            }
-            // editor = editorManager.createLabelEditor(editor, table, key.getComplement(), item, COMPLEMENT_INDEX);
-            // final Label text = (Label) editor.getEditor();
+            // combo editor
+            // final List<String> inputColumns = scdManager.getInputColumnNames();
+            // inputColumns.add(0, "");
+            // int index = editorManager.getComboIndex(inputColumns, key.getComplement());
+            // editor = editorManager.createComboEditor(table, inputColumns.toArray(new String[inputColumns.size()]),
+            // item,
+            // COMPLEMENT_INDEX, index, new IPropertySetter<Integer>() {
+            //
+            // public void set(Integer value) {
+            // key.setComplement(inputColumns.get(value));
+            // Color color = value == 0 ? ERROR_COLOR : null;
+            // editorManager.setComboColor(item, COMPLEMENT_INDEX, color);
+            // scdManager.fireFieldChange();
+            // }
+            // });
+            //
             // if (StringUtils.isEmpty(key.getComplement())) {
             // // display as error status, this field must not be null
-            // text.setBackground(ERROR_COLOR);
+            // editorManager.setComboColor(item, COMPLEMENT_INDEX, ERROR_COLOR);
             // }
-            // // add drag and drop support
-            // IDragDropDelegate delegate = createDragDropDelegate(key, text);
-            // dragDropManager.addDragSupport(text, delegate);
-            // dragDropManager.addDropSupport(text, delegate);
+
+            // label editor
+            editor = editorManager.createLabelEditor(editor, table, key.getComplement(), item, COMPLEMENT_INDEX);
+            final Label text = (Label) editor.getEditor();
+            if (StringUtils.isEmpty(key.getComplement())) {
+                // display as error status, this field must not be null
+                text.setBackground(ERROR_COLOR);
+            }
+            // add drag and drop support
+            IDragDropDelegate delegate = createDragDropDelegate(key, text);
+            dragDropManager.addDragSupport(text, delegate);
+            dragDropManager.addDropSupport(text, delegate);
         }
     }
 

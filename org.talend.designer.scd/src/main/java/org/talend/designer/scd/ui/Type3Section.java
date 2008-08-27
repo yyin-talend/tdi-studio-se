@@ -25,6 +25,7 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
@@ -78,7 +79,7 @@ public class Type3Section extends ScdSection implements IDragDropDelegate {
      * @param height
      */
     public Type3Section(Composite parent, int width, int height, ScdManager scdManager) {
-        super(parent, width, height, scdManager, true);
+        super(parent, width, height, scdManager, false);
         editorManager = new TableEditorManager();
         dragDropManager = new DragDropManager();
         dragDropManager.addDragSupport(table, this);
@@ -91,6 +92,7 @@ public class Type3Section extends ScdSection implements IDragDropDelegate {
     protected void createContents(Composite composite) {
         inputColumns = scdManager.getInputColumnNames();
         outputColumns = scdManager.getOutputColumnNames();
+        // | SWT.BORDER);
         tableViewer = new TableViewer(composite, SWT.FULL_SELECTION | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
         table = tableViewer.getTable();
         table.setLinesVisible(true);
@@ -102,7 +104,8 @@ public class Type3Section extends ScdSection implements IDragDropDelegate {
         TableViewerColumn currentColumn = new TableViewerColumn(tableViewer, SWT.NONE);
         currentColumn.getColumn().setText(CURRENT_HEADER);
         currentColumn.getColumn().setWidth(200);
-        currentColumn.setEditingSupport(new Type3EditingSupport(tableViewer, 0));
+
+        // currentColumn.setEditingSupport(new Type3EditingSupport(tableViewer, 0));
 
         TableViewerColumn previousColumn = new TableViewerColumn(tableViewer, SWT.NONE);
         previousColumn.getColumn().setText(PREVIOUS_HEADER);
@@ -206,7 +209,8 @@ public class Type3Section extends ScdSection implements IDragDropDelegate {
         buf.append(selection.length);
         for (int i = 0, n = selection.length; i < n; i++) {
             buf.append('|');
-            buf.append(selection[i].getText(1));
+            // drag from current field
+            buf.append(selection[i].getText(0));
         }
 
         return buf.toString();
@@ -224,8 +228,9 @@ public class Type3Section extends ScdSection implements IDragDropDelegate {
         // skip items[0], which is the number of selected elements
         for (int i = 1; i < items.length; i++) {
             Type3Field field = new Type3Field();
-            field.setCurrentValue("");
-            field.setPreviousValue(items[i]);
+            // drop to current field
+            field.setCurrentValue(items[i]);
+            field.setPreviousValue("");
             tableModel.add(field);
         }
         tableViewer.setInput(tableModel);
@@ -315,11 +320,13 @@ public class Type3Section extends ScdSection implements IDragDropDelegate {
             switch (column) {
             case CURRENT_COLUMN_INDEX:
                 editor = new ComboBoxCellEditor(((TableViewer) viewer).getTable(), outputColumns.toArray(new String[outputColumns
-                        .size()]));
+                        .size()]), SWT.READ_ONLY);
                 break;
             case PREVIOUS_COLUMN_INDEX:
-                editor = new ComboBoxCellEditor(((TableViewer) viewer).getTable(), inputColumns.toArray(new String[inputColumns
-                        .size()]));
+                // editor = new ComboBoxCellEditor(((TableViewer) viewer).getTable(), inputColumns.toArray(new
+                // String[inputColumns
+                // .size()]), SWT.READ_ONLY);
+                editor = new TextCellEditor(((TableViewer) viewer).getTable(), SWT.NONE);
                 break;
 
             }
@@ -356,7 +363,8 @@ public class Type3Section extends ScdSection implements IDragDropDelegate {
             case CURRENT_COLUMN_INDEX:
                 return outputColumns.indexOf(((Type3Field) element).getCurrentValue());
             case PREVIOUS_COLUMN_INDEX:
-                return inputColumns.indexOf(((Type3Field) element).getPreviousValue());
+                // return inputColumns.indexOf(((Type3Field) element).getPreviousValue());
+                return ((Type3Field) element).getPreviousValue();
             }
             return 0;
         }
@@ -372,19 +380,24 @@ public class Type3Section extends ScdSection implements IDragDropDelegate {
 
         @Override
         protected void saveCellEditorValue(CellEditor cellEditor, ViewerCell cell) {
-            Integer value = (Integer) cellEditor.getValue();
+            Object value = cellEditor.getValue();
             int index = tableViewer.getTable().getSelectionIndex();
-            if (value == null || value < 0 || index < 0 || index >= tableModel.size()) {
+            if (value == null || index < 0 || index >= tableModel.size()) {
                 return;
             }
+            if (value instanceof Integer && ((Integer) value).intValue() < 0) {
+                return;
+            }
+
             try {
                 Type3Field field = tableModel.get(index);
                 switch (column) {
                 case CURRENT_COLUMN_INDEX:
-                    field.setCurrentValue(outputColumns.get(value));
+                    field.setCurrentValue(outputColumns.get((Integer) value));
                     break;
                 case PREVIOUS_COLUMN_INDEX:
-                    field.setPreviousValue(inputColumns.get(value));
+                    // field.setPreviousValue(inputColumns.get((Integer)value));
+                    field.setPreviousValue((String) value);
                     scdManager.fireFieldChange();
                     break;
                 }

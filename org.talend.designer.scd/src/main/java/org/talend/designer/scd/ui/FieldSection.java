@@ -50,22 +50,27 @@ public class FieldSection extends ScdSection implements IDragDropDelegate {
 
     private List<String> tableModel;
 
+    private boolean editable;
+
     /**
      * DOC hcw FieldSection constructor comment.
      * 
      * @param parent
      */
-    public FieldSection(Composite parent, int width, int height, ScdManager scdManager, boolean toolbarNeeded) {
+    public FieldSection(Composite parent, int width, int height, ScdManager scdManager, boolean toolbarNeeded, boolean editable) {
         super(parent, width, height, scdManager, toolbarNeeded);
         dragDropManager = new DragDropManager();
         dragDropManager.addDragSupport(tableViewer.getTable(), this);
         dragDropManager.addDropSupport(tableViewer.getTable(), this);
         tableModel = new ArrayList<String>();
+        this.editable = editable;
     }
 
     @Override
     protected void createContents(Composite composite) {
-        tableViewer = new TableViewer(composite, SWT.FULL_SELECTION | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+        tableViewer = new TableViewer(composite, SWT.FULL_SELECTION | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);// | SWT.
+                                                                                                               // BORDER
+                                                                                                               // );
         Table table = tableViewer.getTable();
         table.setLinesVisible(true);
         table.setHeaderVisible(false);
@@ -76,8 +81,8 @@ public class FieldSection extends ScdSection implements IDragDropDelegate {
         TableViewerColumn column = new TableViewerColumn(tableViewer, SWT.NONE);
         column.getColumn().setWidth(width);
 
-        if(toolbarNeeded){
-        	column.setEditingSupport(new FieldEditingSupport(tableViewer, 0));
+        if (editable) {
+            column.setEditingSupport(new FieldEditingSupport(tableViewer, 0));
         }
 
         tableViewer.setLabelProvider(new TableLabelProvider());
@@ -205,7 +210,7 @@ public class FieldSection extends ScdSection implements IDragDropDelegate {
      * @see org.talend.designer.scd.ui.IDragDrop#getDragItemsAsText()
      */
     public String getDragItemsAsText() {
-    	tableViewer.cancelEditing();
+        tableViewer.cancelEditing();
         Table table = tableViewer.getTable();
         TableItem[] selection = table.getSelection();
 
@@ -297,7 +302,7 @@ public class FieldSection extends ScdSection implements IDragDropDelegate {
             this.viewer = viewer;
             columnNames = scdManager.getInputColumnNames();
             editor = new ComboBoxCellEditor(((TableViewer) viewer).getTable(), columnNames
-                    .toArray(new String[columnNames.size()]));
+                    .toArray(new String[columnNames.size()]), SWT.READ_ONLY);
         }
 
         /*

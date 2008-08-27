@@ -20,6 +20,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Color;
@@ -102,6 +103,10 @@ public class SWTResourceManager {
      */
     private static HashMap<String, Font> m_FontMap = new HashMap<String, Font>();
 
+    private static Map<Integer, Font> m_systemFontMap = new HashMap<Integer, Font>();
+
+    private static FontData[] systemFontData = Display.getCurrent().getSystemFont().getFontData();
+
     /**
      * Returns a font based on its name, height and style
      * 
@@ -118,6 +123,16 @@ public class SWTResourceManager {
 
             font = new Font(Display.getCurrent(), fontData);
             m_FontMap.put(fontName, font);
+        }
+        return font;
+    }
+
+    public static Font getSystemFont(int style) {
+        Font font = m_systemFontMap.get(style);
+        if (font == null) {
+            systemFontData[0].setStyle(style);
+            font = new Font(Display.getCurrent(), systemFontData);
+            m_systemFontMap.put(style, font);
         }
         return font;
     }

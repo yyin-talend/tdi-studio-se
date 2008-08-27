@@ -42,7 +42,7 @@ import org.talend.designer.scd.i18n.Messages;
  */
 public abstract class AbstractScdDialog extends TrayDialog {
 
-    protected static final int SECTION_HEIGHT = 100;
+    protected static final int SECTION_HEIGHT = 110;
 
     protected static final int SECTION_WIDTH = 400;
 
@@ -71,7 +71,7 @@ public abstract class AbstractScdDialog extends TrayDialog {
      */
     public AbstractScdDialog(Shell shell) {
         super(shell);
-        setShellStyle(SWT.APPLICATION_MODAL | SWT.BORDER | SWT.RESIZE | SWT.CLOSE | SWT.MIN | SWT.MAX | SWT.TITLE);
+        setShellStyle(SWT.BORDER | SWT.CLOSE | SWT.MIN | SWT.MAX | SWT.TITLE);
     }
 
     // /**

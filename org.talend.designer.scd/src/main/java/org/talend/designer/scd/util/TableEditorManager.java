@@ -101,7 +101,7 @@ public class TableEditorManager {
     public TableEditor createComboEditor(Table table, String[] displayText, TableItem item, int column, int selectIndex,
             final IPropertySetter<Integer> accessor) {
         TableEditor editor = new TableEditor(table);
-        final ColorCombo combo = new ColorCombo(table, SWT.NONE | SWT.READ_ONLY);
+        final ColorCombo combo = new ColorCombo(table, SWT.READ_ONLY);
         for (String text : displayText) {
             combo.add(text);
         }
@@ -118,6 +118,8 @@ public class TableEditorManager {
         combo.select(selectIndex);
         editor.grabHorizontal = true;
         editor.setEditor(combo, item, column);
+        editor.minimumWidth = combo.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
+        table.getColumn(column).setWidth(editor.minimumWidth);
         addEditor(item, column, editor);
         return editor;
     }

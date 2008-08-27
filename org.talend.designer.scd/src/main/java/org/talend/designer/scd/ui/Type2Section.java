@@ -19,6 +19,7 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -60,7 +61,7 @@ public class Type2Section extends FieldSection {
     private boolean supportCreationType = true;
 
     public Type2Section(Composite parent, int width, int height, ScdManager scdManager) {
-        super(parent, width, height, scdManager, true);
+        super(parent, width, height, scdManager, false, false);
         editorManager = new TableEditorManager();
         dragDropManager = new DragDropManager();
     }
@@ -68,31 +69,31 @@ public class Type2Section extends FieldSection {
     @Override
     protected void createContents(Composite composite) {
         super.createContents(composite);
-        Label subTitle = new Label(composite, SWT.NONE);
+        Label subTitle = new Label(composite, SWT.NONE); // SWT.BORDER
         subTitle.setAlignment(SWT.CENTER);
-        subTitle.setFont(SWTResourceManager.getFont("Times New Roman", 12, SWT.BOLD));
+        subTitle.setFont(titleFont);
         subTitle.setText("Versioning");
         subTitle.setBackground(SWTResourceManager.getColor(IColorConstants.DARK_GREEN));
-        GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).applyTo(subTitle);
+        GridDataFactory.swtDefaults().hint(SWT.DEFAULT, HEADER_HEIGHT).align(SWT.FILL, SWT.CENTER).applyTo(subTitle);
         createVersionTable(composite);
 
     }
 
     private void createVersionTable(Composite composite) {
-        versionTable = new Table(composite, SWT.BORDER);
+        versionTable = new Table(composite, SWT.NONE);
         GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
         versionTable.setLayoutData(gd);
 
         versionTable.setLinesVisible(true);
         versionTable.setHeaderVisible(true);
-        versionTable.setBackground(SWTResourceManager.getColor(IColorConstants.LIGHT_GREEN));
+        // versionTable.setBackground(SWTResourceManager.getColor(IColorConstants.LIGHT_GREEN));
 
         // create header
         TableColumn checkColumn = new TableColumn(versionTable, SWT.NONE);
-        checkColumn.setWidth(15);
+        checkColumn.setWidth(20);
 
         TableColumn typeColumn = new TableColumn(versionTable, SWT.NONE);
-        typeColumn.setWidth(100);
+        typeColumn.setWidth(60);
         typeColumn.setText("type");
 
         TableColumn nameColumn = new TableColumn(versionTable, SWT.NONE);
@@ -100,7 +101,7 @@ public class Type2Section extends FieldSection {
         nameColumn.setText("name");
 
         TableColumn creationColumn = new TableColumn(versionTable, SWT.NONE);
-        creationColumn.setWidth(100);
+        creationColumn.setWidth(120);
         creationColumn.setText("creation");
 
         TableColumn complementColumn = new TableColumn(versionTable, SWT.NONE);
@@ -117,19 +118,29 @@ public class Type2Section extends FieldSection {
         versionData = ver;
         // start row
         final TableItem startItem = new TableItem(versionTable, SWT.NONE);
-        startItem.setBackground(SWTResourceManager.getColor(IColorConstants.LIGHT_GREEN));
+        // startItem.setBackground(SWTResourceManager.getColor(IColorConstants.LIGHT_GREEN));
         startItem.setText(new String[] { "", Versioning.START_LABEL, ver.getStartName(), "" });
 
-        final List<String> outputColumns = scdManager.getOutputColumnNames();
-        final String[] outputColumnsArray = outputColumns.toArray(new String[outputColumns.size()]);
-        int index = editorManager.getComboIndex(outputColumns, ver.getStartName());
+        // combo editor
+        // final List<String> outputColumns = scdManager.getOutputColumnNames();
+        // final String[] outputColumnsArray = outputColumns.toArray(new String[outputColumns.size()]);
+        // int index = editorManager.getComboIndex(outputColumns, ver.getStartName());
+        //
+        // editorManager.createComboEditor(versionTable, outputColumnsArray, startItem, NAME_COLUMN_INDEX, index,
+        // new IPropertySetter<Integer>() {
+        //
+        // public void set(Integer value) {
+        // ver.setStartName(outputColumns.get(value));
+        //
+        // }
+        // });
 
-        editorManager.createComboEditor(versionTable, outputColumnsArray, startItem, NAME_COLUMN_INDEX, index,
-                new IPropertySetter<Integer>() {
+        // text editor
+        editorManager.createTextEditor(versionTable, ver.getStartName(), startItem, NAME_COLUMN_INDEX,
+                new IPropertySetter<String>() {
 
-                    public void set(Integer value) {
-                        ver.setStartName(outputColumns.get(value));
-
+                    public void set(String value) {
+                        ver.setStartName(value);
                     }
                 });
 
@@ -149,18 +160,27 @@ public class Type2Section extends FieldSection {
 
         // end row
         final TableItem endItem = new TableItem(versionTable, SWT.NONE);
-        endItem.setBackground(SWTResourceManager.getColor(IColorConstants.LIGHT_GREEN));
+        // endItem.setBackground(SWTResourceManager.getColor(IColorConstants.LIGHT_GREEN));
         endItem.setText(new String[] { "", Versioning.END_LABEL, ver.getEndName(), "" });
 
-        index = editorManager.getComboIndex(outputColumns, ver.getEndName());
-        editorManager.createComboEditor(versionTable, outputColumnsArray, endItem, NAME_COLUMN_INDEX, index,
-                new IPropertySetter<Integer>() {
+        // combo editor
+        // index = editorManager.getComboIndex(outputColumns, ver.getEndName());
+        // editorManager.createComboEditor(versionTable, outputColumnsArray, endItem, NAME_COLUMN_INDEX, index,
+        // new IPropertySetter<Integer>() {
+        //
+        // public void set(Integer value) {
+        // ver.setEndName(outputColumns.get(value));
+        //
+        // }
+        // });
 
-                    public void set(Integer value) {
-                        ver.setEndName(outputColumns.get(value));
+        // text editor
+        editorManager.createTextEditor(versionTable, ver.getEndName(), endItem, NAME_COLUMN_INDEX, new IPropertySetter<String>() {
 
-                    }
-                });
+            public void set(String value) {
+                ver.setEndName(value);
+            }
+        });
 
         if (supportCreationType) {
             editorManager.createComboEditor(versionTable, VersionEndType.getAllTypeNames(), endItem, CREATION_TYPE_INDEX, ver
@@ -178,7 +198,7 @@ public class Type2Section extends FieldSection {
 
         // version row
         TableItem versionItem = new TableItem(versionTable, SWT.NONE);
-        versionItem.setBackground(SWTResourceManager.getColor(IColorConstants.LIGHT_GREEN));
+        // versionItem.setBackground(SWTResourceManager.getColor(IColorConstants.LIGHT_GREEN));
         versionItem.setText(new String[] { "", Versioning.VERSION_LABEL, ver.getVersionName(), "" });
         editorManager.createCheckboxEditor(versionTable, ver.isVersionChecked(), versionItem, CHECKBOX_COLUMN_INDEX,
                 new IPropertySetter<Boolean>() {
@@ -187,20 +207,29 @@ public class Type2Section extends FieldSection {
                         ver.setVersionChecked(value);
                     }
                 });
+        // combo editor
+        // index = editorManager.getComboIndex(outputColumns, ver.getVersionName());
+        // editorManager.createComboEditor(versionTable, outputColumnsArray, versionItem, NAME_COLUMN_INDEX, index,
+        // new IPropertySetter<Integer>() {
+        //
+        // public void set(Integer value) {
+        // ver.setVersionName(outputColumns.get(value));
+        //
+        // }
+        // });
 
-        index = editorManager.getComboIndex(outputColumns, ver.getVersionName());
-        editorManager.createComboEditor(versionTable, outputColumnsArray, versionItem, NAME_COLUMN_INDEX, index,
-                new IPropertySetter<Integer>() {
+        // text editor
+        editorManager.createTextEditor(versionTable, ver.getVersionName(), versionItem, NAME_COLUMN_INDEX,
+                new IPropertySetter<String>() {
 
-                    public void set(Integer value) {
-                        ver.setVersionName(outputColumns.get(value));
-
+                    public void set(String value) {
+                        ver.setVersionName(value);
                     }
                 });
 
         // active row
         TableItem activeItem = new TableItem(versionTable, SWT.NONE);
-        activeItem.setBackground(SWTResourceManager.getColor(IColorConstants.LIGHT_GREEN));
+        // activeItem.setBackground(SWTResourceManager.getColor(IColorConstants.LIGHT_GREEN));
         activeItem.setText(new String[] { "", Versioning.ACTIVE_LABEL, ver.getActiveName(), "" });
         editorManager.createCheckboxEditor(versionTable, ver.isActiveChecked(), activeItem, CHECKBOX_COLUMN_INDEX,
                 new IPropertySetter<Boolean>() {
@@ -209,17 +238,25 @@ public class Type2Section extends FieldSection {
                         ver.setActiveChecked(value);
                     }
                 });
+        // combo editor
+        // index = editorManager.getComboIndex(outputColumns, ver.getActiveName());
+        // editorManager.createComboEditor(versionTable, outputColumnsArray, activeItem, NAME_COLUMN_INDEX, index,
+        // new IPropertySetter<Integer>() {
+        //
+        // public void set(Integer value) {
+        // ver.setActiveName(outputColumns.get(value));
+        //
+        // }
+        // });
 
-        index = editorManager.getComboIndex(outputColumns, ver.getActiveName());
-        editorManager.createComboEditor(versionTable, outputColumnsArray, activeItem, NAME_COLUMN_INDEX, index,
-                new IPropertySetter<Integer>() {
+        // text editor
+        editorManager.createTextEditor(versionTable, ver.getActiveName(), activeItem, NAME_COLUMN_INDEX,
+                new IPropertySetter<String>() {
 
-                    public void set(Integer value) {
-                        ver.setActiveName(outputColumns.get(value));
-
+                    public void set(String value) {
+                        ver.setActiveName(value);
                     }
                 });
-
     }
 
     public Versioning getVersionData() {
@@ -303,63 +340,80 @@ public class Type2Section extends FieldSection {
      * @param editor
      */
     private void createStartComplement(final Versioning versioning, final TableItem item, TableEditor editor) {
-        final List<String> inputColumns = scdManager.getInputColumnNames();
-        inputColumns.add(0, "");
-        int index = editorManager.getComboIndex(inputColumns, versioning.getStartComplement());
-
-        editor = editorManager.createComboEditor(versionTable, inputColumns.toArray(new String[inputColumns.size()]), item,
-                COMPLEMENT_INDEX, index, new IPropertySetter<Integer>() {
-
-                    public void set(Integer value) {
-                        versioning.setStartComplement(inputColumns.get(value));
-                        Color color = value == 0 ? ERROR_COLOR : null;
-                        editorManager.setComboColor(item, COMPLEMENT_INDEX, color);
-                        scdManager.fireFieldChange();
-                    }
-                });
-
-        if (StringUtils.isEmpty(versioning.getStartComplement())) {
-            // display as error status, this field must not be null
-            editorManager.setComboColor(item, COMPLEMENT_INDEX, ERROR_COLOR);
-        }
-
-        // editor = editorManager.createLabelEditor(editor, versionTable, versioning.getStartComplement(), item,
-        // COMPLEMENT_INDEX);
-        // final Label text = (Label) editor.getEditor();
+        // combo editor
+        // final List<String> inputColumns = scdManager.getInputColumnNames();
+        // inputColumns.add(0, "");
+        // int index = editorManager.getComboIndex(inputColumns, versioning.getStartComplement());
+        //
+        // editor = editorManager.createComboEditor(versionTable, inputColumns.toArray(new String[inputColumns.size()]),
+        // item,
+        // COMPLEMENT_INDEX, index, new IPropertySetter<Integer>() {
+        //
+        // public void set(Integer value) {
+        // versioning.setStartComplement(inputColumns.get(value));
+        // Color color = value == 0 ? ERROR_COLOR : null;
+        // editorManager.setComboColor(item, COMPLEMENT_INDEX, color);
+        // scdManager.fireFieldChange();
+        // }
+        // });
+        //
         // if (StringUtils.isEmpty(versioning.getStartComplement())) {
         // // display as error status, this field must not be null
-        // text.setBackground(ERROR_COLOR);
+        // editorManager.setComboColor(item, COMPLEMENT_INDEX, ERROR_COLOR);
         // }
 
-        // // add drag and drop support
-        // IDragDropDelegate delegate = new IDragDropDelegate() {
-        //
-        // public String getDragItemsAsText() {
-        // return "1|" + text.getText();
-        // }
-        //
-        // public void onDropItems(String data, Point position) {
-        // String[] items = data.split("\\|");
-        // text.setText(items[1]);
-        // versioning.setStartComplement(items[1]);
-        // text.setBackground(null);
-        // }
-        //
-        // public void removeDragItems() {
-        // versioning.setStartComplement("");
-        // text.setText("");
-        // // display as error status, this field must not be null
-        // text.setBackground(ERROR_COLOR);
-        // // don't remove table item here, it can be removed by the delete button
-        // }
-        //
-        // public boolean isDropAllowed(String data) {
-        // // only allow single selection
-        // return StringUtils.isEmpty(versioning.getStartComplement()) && data.startsWith("1|");
-        // }
-        //
-        // };
-        // dragDropManager.addDragSupport(text, delegate);
-        // dragDropManager.addDropSupport(text, delegate);
+        // label editor
+        editor = editorManager.createLabelEditor(editor, versionTable, versioning.getStartComplement(), item, COMPLEMENT_INDEX);
+        final Label text = (Label) editor.getEditor();
+        if (StringUtils.isEmpty(versioning.getStartComplement())) {
+            // display as error status, this field must not be null
+            text.setBackground(ERROR_COLOR);
+        }
+
+        // add drag and drop support
+        IDragDropDelegate delegate = createDragDropDelegate(versioning, text);
+        dragDropManager.addDragSupport(text, delegate);
+        dragDropManager.addDropSupport(text, delegate);
+    }
+
+    /**
+     * DOC chuang Comment method "createDragDropDelegate".
+     * 
+     * @param versioning
+     * @param text
+     * @return
+     */
+    private IDragDropDelegate createDragDropDelegate(final Versioning versioning, final Label text) {
+        IDragDropDelegate delegate = new IDragDropDelegate() {
+
+            public String getDragItemsAsText() {
+                return "1|" + text.getText();
+            }
+
+            public void onDropItems(String data, Point position) {
+                String[] items = data.split("\\|");
+                if (items.length < 2) {
+                    return;
+                }
+                text.setText(items[1]);
+                versioning.setStartComplement(items[1]);
+                text.setBackground(null);
+            }
+
+            public void removeDragItems() {
+                versioning.setStartComplement("");
+                text.setText("");
+                // display as error status, this field must not be null
+                text.setBackground(ERROR_COLOR);
+                // don't remove table item here, it can be removed by the delete button
+            }
+
+            public boolean isDropAllowed(String data) {
+                // only allow single selection
+                return StringUtils.isEmpty(versioning.getStartComplement()) && data.startsWith("1|");
+            }
+
+        };
+        return delegate;
     }
 }

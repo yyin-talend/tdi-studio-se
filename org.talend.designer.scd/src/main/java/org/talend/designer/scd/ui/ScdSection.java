@@ -21,6 +21,7 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Decorations;
@@ -29,6 +30,7 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.designer.scd.ScdManager;
 import org.talend.designer.scd.util.SWTResourceManager;
 
@@ -37,15 +39,15 @@ import org.talend.designer.scd.util.SWTResourceManager;
  */
 public class ScdSection {
 
-    private static final int HEADER_HEIGHT = 23;
+    protected static final int HEADER_HEIGHT = 20;
 
-    private Label title;
+    protected Label title;
 
     protected int width;
 
     protected int height;
 
-    private Decorations composite;
+    private Composite composite;
 
     protected ScdManager scdManager;
 
@@ -63,14 +65,22 @@ public class ScdSection {
 
     protected ToolItem moveDownEntryItem;
 
+    protected Font titleFont;
+
     public ScdSection(Composite parent, int width, int height, ScdManager scdManager, boolean toolbarNeeded) {
         this.width = width;
         this.height = height;
         this.toolbarNeeded = toolbarNeeded;
         this.scdManager = scdManager;
-        composite = new Decorations(parent, SWT.ON_TOP);
+        if (WindowSystem.isWIN32()) {
+            composite = new Decorations(parent, SWT.ON_TOP);
+        } else {
+            composite = new Composite(parent, SWT.BORDER);
+        }
         GridDataFactory.swtDefaults().hint(this.width, height).applyTo(composite);
         GridLayoutFactory.swtDefaults().margins(0, 0).spacing(0, 0).applyTo(composite);
+        // SWTResourceManager.getFont("Times New Roman", 12, SWT.BOLD)
+        titleFont = SWTResourceManager.getSystemFont(SWT.BOLD);
         init(composite);
     }
 
@@ -91,15 +101,16 @@ public class ScdSection {
 
             title = new Label(headerComposite, SWT.NONE);
             title.setAlignment(SWT.CENTER);
-            title.setFont(SWTResourceManager.getFont("Times New Roman", 12, SWT.BOLD));
-            GridDataFactory.swtDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).applyTo(title);
+            title.setFont(titleFont);
+            GridDataFactory.swtDefaults().hint(SWT.DEFAULT, HEADER_HEIGHT).align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(
+                    title);
 
             createToolbar(headerComposite);
         } else {
             title = new Label(composite, SWT.NONE);
             title.setAlignment(SWT.CENTER);
-            title.setFont(SWTResourceManager.getFont("Times New Roman", 12, SWT.BOLD));
-            GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).applyTo(title);
+            title.setFont(titleFont);
+            GridDataFactory.swtDefaults().hint(SWT.DEFAULT, HEADER_HEIGHT).align(SWT.FILL, SWT.FILL).applyTo(title);
         }
         createContents(composite);
     }

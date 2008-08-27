@@ -57,20 +57,20 @@ public class PerlScdDialog extends AbstractScdDialog {
 
         ViewerFilter filter = createFilter(filterUnusedComposite);
 
-        unusedFields = new FieldSection(filterUnusedComposite, SECTION_WIDTH, SECTION_HEIGHT, scdManager, false);
+        unusedFields = new FieldSection(filterUnusedComposite, SECTION_WIDTH, SECTION_HEIGHT, scdManager, false, false);
         unusedFields.setTitle("Unused", SWTResourceManager.getColor(IColorConstants.RED));
         unusedFields.setTableInput(scdManager.getUnusedFields());
         unusedFields.getTableViewer().addFilter(filter);
-        GridDataFactory.swtDefaults().hint(SECTION_WIDTH - 3, SECTION_HEIGHT * 2 - 35).applyTo(unusedFields.getControl());
+        GridDataFactory.swtDefaults().hint(SECTION_WIDTH - 3, SECTION_HEIGHT * 2 - 40).applyTo(unusedFields.getControl());
         addContextHelp(unusedFields.getTableViewer().getTable(), "org.talend.designer.scd.unused");
 
-        type1Fields = new FieldSection(composite, SECTION_WIDTH, SECTION_HEIGHT * 2, scdManager, true);
+        type1Fields = new FieldSection(composite, SECTION_WIDTH, SECTION_HEIGHT * 2, scdManager, false, false);
         type1Fields.setTitle("Type 1 fields", SWTResourceManager.getColor(IColorConstants.YELLOW));
         // GridDataFactory.swtDefaults().hint(SECTION_WIDTH, SECTION_HEIGHT).applyTo(type1Fields.getControl());
         type1Fields.setTableInput(scdManager.getType1Table());
         addContextHelp(type1Fields.getTableViewer().getTable(), "org.talend.designer.scd.type1");
 
-        sourceKeys = new FieldSection(composite, SECTION_WIDTH, SECTION_HEIGHT * 2 + 40, scdManager, true);
+        sourceKeys = new FieldSection(composite, SECTION_WIDTH, SECTION_HEIGHT * 2 + 40, scdManager, false, false);
         sourceKeys.setTitle("Source Keys", SWTResourceManager.getColor(IColorConstants.YELLOW));
         // GridDataFactory.swtDefaults().hint(SECTION_WIDTH, SECTION_HEIGHT).applyTo(sourceKeys.getControl());
         sourceKeys.setTableInput(scdManager.getSourceKeys());
@@ -110,7 +110,7 @@ public class PerlScdDialog extends AbstractScdDialog {
      */
     @Override
     protected Point getInitialSize() {
-        return new Point(850, 550);
+        return new Point(850, 570);
     }
 
 }

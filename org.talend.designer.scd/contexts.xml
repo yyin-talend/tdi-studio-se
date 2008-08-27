@@ -1,23 +1,10 @@
 <contexts>
-<!-- 
-  <context id="scdDialog">
-    <description>This is Scd Dialog</description>
-    <topic
-      label="Managing Contacts"
-      href="html/toc.html"    />
-  </context>
-  <context id="group1" title="Group 1">
-    <description>Group 1 goes</description>    
-  </context>
-  <context id="group2" title="Group 2">
-    <description>Select group 2</description>    
-  </context>
-   -->
+
   <context id="scdDialog" title="SCD Dialog">
     <description>Scd Dialog</description>   
   </context>
    <context id="unused" title="Unused fields">
-    <description>Unused fields.</description>    
+    <description>Unused fields are coming from the previous component by auto propagation.</description>    
   </context>
   <context id="surrogateKey" title="Surrogate key">
     <description>Select the column where the generated surrogate key will be stored. A surrogate key can be generated based on a method  selected on the Creation list.
