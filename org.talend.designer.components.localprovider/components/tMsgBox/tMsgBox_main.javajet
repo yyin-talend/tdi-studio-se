@@ -11,30 +11,12 @@
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
 	
-	boolean isPromptQuestion=ElementParameterParser.getValue(node, "__PROMPT_QUESTION__").equals("true");
 	int button = Integer.parseInt(ElementParameterParser.getValue(node, "__BUTTONS__"));	
 %>
 	int messageIcon<%=cid %> = javax.swing.JOptionPane.<%=ElementParameterParser.getValue(node, "__ICON__") %>;
 	String title<%=cid %> = <%=ElementParameterParser.getValue(node, "__TITLE__") %>;
 	String message<%=cid %> = <%=ElementParameterParser.getValue(node, "__MESSAGE__") %>;
-	String result<%=cid %> = null;
-
-<% if(isPromptQuestion){
-
-%>
-   
-   String question_<%=cid %> = <%=ElementParameterParser.getValue(node, "__QUESTION_LABEL__") %>;
-   String variableValue_<%=cid %>=null;
-   
-   variableValue_<%=cid %>=javax.swing.JOptionPane.showInputDialog(null, question_<%=cid %> , "Please input a value for question", javax.swing.JOptionPane.QUESTION_MESSAGE);
-      
-  
-   globalMap.put("<%=cid%>_RESULT", variableValue_<%=cid %>);
-
-   
-<% }
-else{
-%>   	
+	String result<%=cid %> = null;   	
 	
 <%
 	switch(button) {
@@ -78,6 +60,12 @@ else{
 		result<%=cid %> = String.valueOf(javax.swing.JOptionPane.showOptionDialog(null, message<%=cid %>, title<%=cid %>, javax.swing.JOptionPane.YES_NO_OPTION, messageIcon<%=cid %>, null, new String[] { "Retry", "Cancel" }, null));
 <%
 			break;
+		case 6:
+		// 6) Question
+%>
+		result<%=cid %> = javax.swing.JOptionPane.showInputDialog(null, <%=ElementParameterParser.getValue(node, "__QUESTION_LABEL__") %> , <%=ElementParameterParser.getValue(node, "__QUESTION_TITLE__") %>, messageIcon<%=cid %>);
+<%
+			break;
 		default:
 			//do nothing
 			break;
@@ -85,7 +73,3 @@ else{
 %>
 
 globalMap.put("<%=cid%>_RESULT", result<%=cid %>);
-
-<% 
-}
-%>

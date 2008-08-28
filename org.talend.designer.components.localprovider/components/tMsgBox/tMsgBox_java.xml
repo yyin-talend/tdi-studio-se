@@ -35,6 +35,7 @@
 				<ITEM NAME="YES_NO_CANCEL" VALUE="3" />
 				<ITEM NAME="YES_NO" VALUE="4" />
 				<ITEM NAME="RETRY_CANCEL" VALUE="5" />
+				<ITEM NAME="QUESTION" VALUE="6" />
 			</ITEMS>
 		</PARAMETER>
 
@@ -48,29 +49,29 @@
 					VALUE="INFORMATION_MESSAGE" />
 			</ITEMS>
 		</PARAMETER>
-		
+
 		<PARAMETER
-		 NAME="PROMPT_QUESTION"
-		 FIELD="CHECK"
-		 NUM_ROW="4"
-		 >
-		 <DEFAULT>false</DEFAULT>
-		 </PARAMETER>
-		 
+		  NAME="QUESTION_TITLE"
+		  FIELD="TEXT" 
+		  NUM_ROW="4"
+		  REQUIRED="true"
+		  SHOW_IF="BUTTONS=='QUESTION'"
+		  >
+		  <DEFAULT>"Window Title"</DEFAULT>
+		  </PARAMETER>
 		
-		  
 		 <PARAMETER
 		  NAME="QUESTION_LABEL"
-		  FIELD="TEXT"
+		  FIELD="MEMO" 
 		  NUM_ROW="5"
 		  REQUIRED="true"
-		  SHOW_IF="PROMPT_QUESTION=='true'"
+		  SHOW_IF="BUTTONS=='QUESTION'"
 		  >
-		  <DEFAULT>""</DEFAULT>
-		  </PARAMETER> 
+		  <DEFAULT>"Question ?"</DEFAULT>
+		  </PARAMETER>
 		  
 		  <PARAMETER NAME="MESSAGE" FIELD="MEMO" REQUIRED="false"
-			NUM_ROW="6" SHOW_IF="PROMPT_QUESTION=='false'">
+			NUM_ROW="4" SHOW_IF="BUTTONS!='QUESTION'">
 			<DEFAULT>"Hello world!"</DEFAULT>
 		</PARAMETER>
 	</PARAMETERS>
