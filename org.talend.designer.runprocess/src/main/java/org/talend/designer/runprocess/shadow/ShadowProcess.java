@@ -124,6 +124,11 @@ public class ShadowProcess<T extends IProcessDescription> {
 
     private IProcess buildProcess() {
         IProcess ps = null;
+
+        if (description.getEncoding() != null) {
+            currentProcessEncoding = TalendTextUtils.removeQuotes(description.getEncoding());
+        }
+
         FileOutputDelimitedNode outNode = new FileOutputDelimitedNode(TalendTextUtils
                 .addQuotes("" + PathUtils.getPortablePath(outPath.toOSString())), description.getEncoding()); //$NON-NLS-1$ //$NON-NLS-2$
         switch (type) {
@@ -182,8 +187,6 @@ public class ShadowProcess<T extends IProcessDescription> {
                     excelBean);
 
             outNode.setMetadataList(excelNode.getMetadataList());
-
-            currentProcessEncoding = TalendTextUtils.removeQuotes(description.getEncoding());
 
             ps = new FileinToDelimitedProcess<FileInputExcelNode>(excelNode, outNode);
             break;
