@@ -85,7 +85,7 @@
       NAME="PROXY_HOST"
       FIELD="TEXT"
       NUM_ROW="30"
-      SHOW_IF="ENABLE_PROXY_SERVER == 'true'"
+      SHOW_IF="(PROTOCOL == 'TELNET') and (ENABLE_PROXY_SERVER == 'true')"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>

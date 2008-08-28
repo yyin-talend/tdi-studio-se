@@ -19,7 +19,11 @@ if(protocol.equals("PING")) {
     try {
         java.net.InetAddress address_<%=cid%> = java.net.InetAddress.getByName(<%=host%>);
         boolean isAlive_<%=cid%> = address_<%=cid%>.isReachable(<%=timeoutInterval%> * 1000);
-        globalMap.put("<%=cid %>_SERVER_ALIVE_RESULT","OK");
+        if(isAlive_<%=cid%>) {
+            globalMap.put("<%=cid %>_SERVER_ALIVE_RESULT","OK");
+        } else {
+            globalMap.put("<%=cid %>_SERVER_ALIVE_RESULT","KO");
+        }
     } catch(Exception e) {
         globalMap.put("<%=cid %>_SERVER_ALIVE_RESULT","KO");
         throw new RuntimeException(e);
