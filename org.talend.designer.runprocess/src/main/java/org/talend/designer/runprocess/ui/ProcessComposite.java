@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -49,6 +50,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
@@ -204,7 +206,8 @@ public class ProcessComposite extends Composite {
 
         targetExecutionTabItem = new CTabItem(leftTabFolder, SWT.BORDER);
         targetExecutionTabItem.setText(Messages.getString("ProcessComposite.targetExecutionTab")); //$NON-NLS-1$
-        // targetExecutionTabItem.setToolTipText(Messages.getString("ProcessComposite.targetExecutionTabTooltipAvailable"));
+        //targetExecutionTabItem.setToolTipText(Messages.getString("ProcessComposite.targetExecutionTabTooltipAvailable"
+        // ));
         targetExecutionTabItem.setControl(targetExecutionComposite);
 
         // Group execution
@@ -355,8 +358,13 @@ public class ProcessComposite extends Composite {
         data.minimumHeight = MINIMUM_HEIGHT;
         data.minimumWidth = MINIMUM_WIDTH;
         consoleText.setLayoutData(data);
-        Font font = new Font(parent.getDisplay(), "courier", 8, SWT.NONE); //$NON-NLS-1$
-        consoleText.setFont(font);
+
+        // see feature 0004895: Font size of the output console are very small
+        if (!setConsoleFont()) {
+            Font font = new Font(parent.getDisplay(), "courier", 8, SWT.NONE); //$NON-NLS-1$
+            consoleText.setFont(font);
+        }
+
         execScroll.setMinSize(execContent.computeSize(SWT.DEFAULT, SWT.DEFAULT));
         sash.setWeights(new int[] { 2, H_WEIGHT });
 
@@ -397,6 +405,7 @@ public class ProcessComposite extends Composite {
         enableLineLimitButton.setLayoutData(formData);
         enableLineLimitButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 lineLimitText.setEditable(enableLineLimitButton.getSelection());
                 RunProcessPlugin.getDefault().getPluginPreferences().setValue(RunprocessConstants.ENABLE_CONSOLE_LINE_LIMIT,
@@ -672,7 +681,8 @@ public class ProcessComposite extends Composite {
         // perfBtn.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
         // RunProcessPrefsConstants.ISSTATISTICSRUN)
         // && !disableAll);
-        // traceBtn.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(RunProcessPrefsConstants.ISTRACESRUN)
+        // traceBtn.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(RunProcessPrefsConstants.
+        // ISTRACESRUN)
         // && !disableAll);
         if (this.processContext != null) {
             this.processContext.setMonitorTrace(traceBtn.getSelection());
@@ -770,6 +780,9 @@ public class ProcessComposite extends Composite {
         if (consoleText.isDisposed()) {
             return;
         }
+        // see feature 0004895: Font size of the output console are very small
+        setConsoleFont();
+
         String[] rows = message.getContent().split("\n");
         int rowLimit = getConsoleRowLimit();
         String content = null;
@@ -820,6 +833,29 @@ public class ProcessComposite extends Composite {
 
         consoleText.append(content);
         consoleText.setStyleRange(style);
+    }
+
+    /**
+     * DOC chuang Comment method "setConsoleFont".
+     */
+    private boolean setConsoleFont() {
+        IPreferenceStore preferenceStore = RunProcessPlugin.getDefault().getPreferenceStore();
+        String fontType = preferenceStore.getString(RunProcessPrefsConstants.CONSOLE_FONT);
+        if (StringUtils.isNotEmpty(fontType)) {
+            FontData fontData = new FontData(fontType);
+            if (consoleText.getFont() != null) {
+                FontData oldFont = consoleText.getFont().getFontData()[0];
+                // font is same
+                if (oldFont.equals(fontData)) {
+                    return false;
+                }
+            }
+            Font font = new Font(this.getDisplay(), fontData);
+            consoleText.setFont(font);
+            return true;
+
+        }
+        return false;
     }
 
     private void fillConsole(Collection<IProcessMessage> messages) {
@@ -925,7 +961,7 @@ public class ProcessComposite extends Composite {
 
                         } else {
                             MessageDialog.openInformation(getShell(), Messages.getString("ProcessDebugDialog.debugBtn"), //$NON-NLS-1$
-                                    Messages.getString("ProcessDebugDialog.errortext")); //$NON-NLS-1$ //$NON-NLS-2$
+                                    Messages.getString("ProcessDebugDialog.errortext")); //$NON-NLS-1$ 
                         }
                     } catch (ProcessorException e) {
                         IStatus status = new Status(IStatus.ERROR, RunProcessPlugin.PLUGIN_ID, IStatus.OK,

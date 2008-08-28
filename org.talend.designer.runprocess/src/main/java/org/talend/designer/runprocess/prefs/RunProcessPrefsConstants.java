@@ -39,4 +39,6 @@ public class RunProcessPrefsConstants {
     public static final String STRACESTIME = "tracesTime";
 
     public static final String VMARGUMENTS = "vmarguments";
+
+    public static final String CONSOLE_FONT = "talendOutputConsoleFont";
 }

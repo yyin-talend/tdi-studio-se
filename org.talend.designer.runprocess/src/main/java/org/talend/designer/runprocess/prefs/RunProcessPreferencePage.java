@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.runprocess.prefs;
 
+import org.eclipse.gmf.runtime.common.ui.preferences.FontFieldEditor;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
@@ -103,6 +104,8 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
 
     private Composite parent;
 
+    private FontFieldEditor consoleFontField = null;
+
     /**
      * Create the console page.
      */
@@ -127,6 +130,25 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
     @Override
     public void createControl(Composite parent) {
         super.createControl(parent);
+
+    }
+
+    /**
+     * DOC chuang Comment method "addConsoleFont".
+     */
+    private void addConsoleFont() {
+        Group group = new Group(parent, SWT.NONE);
+        group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        group.setLayout(new GridLayout(1, false));
+        group.setText("Ouput Console");
+
+        Composite composite = new Composite(group, SWT.NONE);
+        composite.setLayout(new GridLayout(3, false));
+        GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
+        gridData.grabExcessHorizontalSpace = true;
+        gridData.horizontalSpan = 3;
+        composite.setLayoutData(gridData);
+        consoleFontField = new FontFieldEditor(RunProcessPrefsConstants.CONSOLE_FONT, "Console Text Font:", composite);
 
     }
 
@@ -265,6 +287,9 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
         tracesTime = new IntegerFieldEditor(RunProcessPrefsConstants.STRACESTIME, "Pause Time(ms)", compositeTracesTime);
         addField(tracesTime);
 
+        // 0004895: Font size of the output console are very small
+        addConsoleFont();
+
         Composite argumentsComposite = new Composite(parent, SWT.NONE);
         argumentsComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
         GridLayout gridLayoutArguments = new GridLayout(1, false);
@@ -296,6 +321,7 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
     @Override
     public boolean performOk() {
         boolean ok = super.performOk();
+        consoleFontField.store();
         // update high water mark to be (about) 100 lines (100 * 80 chars) greater than low water mark
         // IPreferenceStore store = RunRemoteProcessPlugin.getDefault().getPreferenceStore();
         // int low = store.getInt(IDebugPreferenceConstants.CONSOLE_LOW_WATER_MARK);
@@ -313,6 +339,22 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
     @Override
     protected void initialize() {
         super.initialize();
+        if (consoleFontField != null) {
+            consoleFontField.setPage(this);
+            consoleFontField.setPropertyChangeListener(this);
+            consoleFontField.setPreferenceStore(getPreferenceStore());
+            consoleFontField.load();
+        }
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        if (consoleFontField != null) {
+            consoleFontField.setPage(null);
+            consoleFontField.setPropertyChangeListener(null);
+            consoleFontField.setPreferenceStore(null);
+        }
     }
 
     /**
@@ -322,7 +364,7 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
     protected void performDefaults() {
         RunProcessPlugin.getDefault().getPreferenceStore().setDefault(RunProcessPrefsConstants.ISCLEARBEFORERUN, true);
         super.performDefaults();
-
+        consoleFontField.loadDefault();
     }
 
     protected boolean canClearErrorMessage() {
