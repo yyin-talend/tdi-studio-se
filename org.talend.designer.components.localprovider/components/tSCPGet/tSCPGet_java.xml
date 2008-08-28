@@ -61,6 +61,7 @@
       <ITEMS DEFAULT="PASSWORD">
         <ITEM NAME="PUBLICKEY"  VALUE="PUBLICKEY"/>
         <ITEM NAME="PASSWORD"   VALUE="PASSWORD"/>
+        <ITEM NAME="KEYBOARDINTERACTIVE"   VALUE="KEYBOARDINTERACTIVE"/>
       </ITEMS>
     </PARAMETER>
 
@@ -68,7 +69,7 @@
       NAME="PASSWORD"
       FIELD="TEXT"
       NUM_ROW="50"
-      SHOW_IF="AUTH_METHOD == 'PASSWORD'"
+      SHOW_IF="(AUTH_METHOD == 'PASSWORD') or (AUTH_METHOD == 'KEYBOARDINTERACTIVE')"
     >
       <DEFAULT>"password"</DEFAULT>
     </PARAMETER>
@@ -95,14 +96,17 @@
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__"</DEFAULT>
     </PARAMETER>
     
-    <PARAMETER
-      NAME="REPLACE_FILES"
-      FIELD="CHECK"
-      REQUIRED="true"
-      NUM_ROW="85"
-    >
-      <DEFAULT>false</DEFAULT>
-    </PARAMETER>    
+    <PARAMETER 
+    	NAME="REPLACEOPTION" 
+    	FIELD="CLOSED_LIST" 
+    	NUM_ROW="90" 
+    	SHOW="true">
+    	<ITEMS DEFAULT="replace">
+     	<ITEM NAME="OVERWRITE" VALUE="overwrite"/>
+        <ITEM NAME="APPEND"  VALUE="append"/>
+        <ITEM NAME="NOREPLACE"  VALUE="none"/>
+      </ITEMS>
+    </PARAMETER>  
 
     <PARAMETER
       NAME="FILELIST"
@@ -122,5 +126,8 @@
     	<IMPORT  NAME="Java_SCP"  MODULE="ganymed-ssh2-build211beta4.jar" REQUIRED="true"/>
     </IMPORTS>
   </CODEGENERATION>
-<RETURNS/>
+	<RETURNS>
+		<RETURN NAME="NB_FILE" TYPE="id_Integer" AVAILABILITY="AFTER"/>
+		<RETURN NAME="STATUS" TYPE="id_String" AVAILABILITY="AFTER"/>
+	</RETURNS>
 </COMPONENT>
