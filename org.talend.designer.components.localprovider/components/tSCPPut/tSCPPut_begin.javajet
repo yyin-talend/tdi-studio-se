@@ -54,6 +54,8 @@ imports="
                 "__FILELIST__"
         );
 %>
+	int nb_file_<%=cid%> = 0;
+	globalMap.put("<%=cid %>_STATUS", "");
     String hostname_<%=cid%> = <%=host%>;
     String username_<%=cid%> = <%=user%>;
 
@@ -88,15 +90,44 @@ imports="
             throw new RuntimeException("Authentication failed.");
 <%
         }
-%>                 
+        if (authMethod.equals("KEYBOARDINTERACTIVE")) {
+%>
+        boolean isAuthenticated_<%=cid%> = conn_<%=cid%>.authenticateWithKeyboardInteractive(username_<%=cid%>, 
+            new ch.ethz.ssh2.InteractiveCallback() {
+        
+        		public String[] replyToChallenge(String name,
+        				String instruction, int numPrompts,
+        				String[] prompt, boolean[] echo)
+        				throws Exception {
+        			// TODO Auto-generated method stub
+        			String[] reply = new String[numPrompts];
+        			for (int i = 0; i < reply.length; i++) {
+        				reply[i] = <%=password%>;
+        			}
+        
+        			return reply;
+        		}
+        	}	
+        );
+        if (isAuthenticated_<%=cid%> == false)
+            throw new RuntimeException("Authentication failed.");
+<%
+        }
+%>
         ch.ethz.ssh2.SCPClient scp_<%=cid%> = new  ch.ethz.ssh2.SCPClient(conn_<%=cid%>);
         
-        String[] sourceFileNames_<%=cid%> = new String[]{
-         <%
-             for (Map<String, String> file : filelist) {
-         %>
-             <%=file.get("SOURCE")%>,
-         <%          
-            }
-         %>
-       };
+        java.util.List<String> sourceList_<%=cid %> = new java.util.ArrayList<String>();
+<%
+        for (Map<String, String> file : filelist) {
+%>
+          if((new java.io.File(<%=file.get("SOURCE") %>).exists()) 
+          && (new java.io.File(<%=file.get("SOURCE") %>).isFile())){
+             sourceList_<%=cid %>.add(<%=file.get("SOURCE") %>);
+          }
+<%
+        }
+%>   
+        String[] sourceFileNames_<%=cid%> = new String[sourceList_<%=cid %>.size()];
+        for(int i_<%=cid %> = 0;i_<%=cid %> < sourceList_<%=cid %>.size(); i_<%=cid %>++){
+        	sourceFileNames_<%=cid%>[i_<%=cid %>] = sourceList_<%=cid %>.get(i_<%=cid %>);
+        }
