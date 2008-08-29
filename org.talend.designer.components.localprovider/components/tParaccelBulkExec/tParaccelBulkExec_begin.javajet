@@ -21,6 +21,7 @@ String cid = node.getUniqueName();
 String table = ElementParameterParser.getValue(node, "__TABLE__");
 String dbSchema = ElementParameterParser.getValue(node, "__SCHEMA_DB__");
 String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
+String parallel = ElementParameterParser.getValue(node, "__COPY_MODE__");
 StringBuilder tableName = new StringBuilder();
 StringBuilder tmpTableName = new StringBuilder();
 %>
@@ -42,6 +43,8 @@ if(dataAction.equals("UPDATE")) {
     tableName = new StringBuilder("\\\"tmp_" + cid + "\\\"");
 }
 String file = ElementParameterParser.getValue(node, "__FILENAME__");
+String folder = ElementParameterParser.getValue(node, "__FOLDER__");
+
 List<IMetadataColumn> columnList = getColumnList(node);
 StringBuilder copyColumns = new StringBuilder("");
 if(columnList != null && columnList.size() > 0) {
@@ -74,29 +77,27 @@ if(notNullCols != null && notNullCols.size() > 0) {
     }
 }
 %>
-String bulkSQL_<%=cid%> = "COPY " + "<%=tableName.toString()%>" + "<%=copyColumns.toString()%>FROM '" + <%=file%> + "' WITH ";
+	String bulkSQL_<%=cid%>="";
 <%
+	if(parallel.equals("PARALLEL")){
+%>
+	bulkSQL_<%=cid%> += "COPY " + "<%=tableName.toString()%>" + "<%=copyColumns.toString()%>FROM '" + <%=folder%> + "' WITH <%=parallel%> ";
+<%
+	} else {
+%>
+	bulkSQL_<%=cid%> += "COPY " + "<%=tableName.toString()%>" + "<%=copyColumns.toString()%>FROM '" + <%=file%> + "' WITH ";
+<%
+	}
 String fileType = ElementParameterParser.getValue(node, "__FILETYPE__");
-String oids = (ElementParameterParser.getValue(node, "__OIDS__").equals("true") ? "OIDS" : "");
-if(fileType.equals("BINARYFILE")) {
+String oids = "";
+if(fileType.equals("GZIP")) {
     %>
-    bulkSQL_<%=cid%> += "BINARY <%=oids%>";
+    bulkSQL_<%=cid%> += "GZIP <%=oids%>";
     <%
 } else {
     %>
     bulkSQL_<%=cid%> += "<%=oids%> " + "DELIMITER AS '" + <%=ElementParameterParser.getValue(node, "__FIELDS_TERMINATED_BY__")%> + "' ";
-    bulkSQL_<%=cid%> += "NULL AS '" + <%=ElementParameterParser.getValue(node, "__NULLSTRING__")%> + "' ";
     <%
-    if(fileType.equals("CSVFILE")) {
-        String header = (ElementParameterParser.getValue(node, "__HEADER__").equals("true") ? "HEADER" : "");
-        String escapeChar = ElementParameterParser.getValue(node, "__ESCAPE_CHAR__");        
-        String textEnclosure = ElementParameterParser.getValue(node, "__TEXT_ENCLOSURE__");        
-        %>
-        bulkSQL_<%=cid%> += "CSV <%=header%> QUOTE AS '" + <%=textEnclosure %>.replaceAll("\\\\", "\\\\\\\\") + "' ";
-        bulkSQL_<%=cid%> += "ESCAPE AS '" + <%=escapeChar %>.replaceAll("\\\\", "\\\\\\\\") + "' ";
-        bulkSQL_<%=cid%> += "<%=notNullColumns.toString().substring(0, notNullColumns.toString().length() - 1)%>";
-        <%
-    }
 }
 String host = ElementParameterParser.getValue(node, "__HOST__");
 String port = ElementParameterParser.getValue(node, "__PORT__");
