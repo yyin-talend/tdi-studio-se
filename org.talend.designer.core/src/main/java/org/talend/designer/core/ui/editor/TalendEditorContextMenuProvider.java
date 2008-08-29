@@ -46,6 +46,7 @@ import org.talend.designer.core.ui.action.NodeBreakpointAction;
 import org.talend.designer.core.ui.action.SendBackwardAction;
 import org.talend.designer.core.ui.action.SendToBackAction;
 import org.talend.designer.core.ui.action.ShowComponentSettingViewerAction;
+import org.talend.designer.core.ui.hierarchy.OpenJobHierarchyAction;
 
 /**
  * Class that manages the context menu in the Gef Editor. <br/>
@@ -279,6 +280,12 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
             menu.appendToGroup(GROUP_OTHER, action);
 
             action = new DisplaySubjobAction(part);
+            ((SelectionAction) action).update();
+            if (action.isEnabled()) {
+                menu.appendToGroup(GROUP_OTHER, action);
+            }
+
+            action = new OpenJobHierarchyAction(part);
             ((SelectionAction) action).update();
             if (action.isEnabled()) {
                 menu.appendToGroup(GROUP_OTHER, action);

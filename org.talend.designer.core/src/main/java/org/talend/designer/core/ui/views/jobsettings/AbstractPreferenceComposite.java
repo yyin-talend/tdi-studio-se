@@ -43,8 +43,8 @@ import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.views.properties.MultipleThreadDynamicComposite;
-import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsComposite;
 import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsViewHelper;
+import org.talend.designer.core.utils.DesignerUtilities;
 import org.talend.designer.runprocess.ItemCacheManager;
 
 /**
@@ -61,8 +61,6 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
     Button applyToChildrenJob;
 
     private List<INode> tRunJobNodes;
-
-    private static final String TRUN_JOB = "tRunJob"; //$NON-NLS-1$
 
     private static final String PROCESS = "PROCESS";
 
@@ -260,13 +258,7 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
      */
     private List<INode> findRunJobNode() {
         if (elem instanceof IProcess) {
-            List<INode> matchingNodes = new ArrayList<INode>();
-            for (INode node : (List<INode>) ((IProcess) elem).getGeneratingNodes()) {
-                if (TRUN_JOB.equals(node.getComponent().getName())) {
-                    matchingNodes.add(node);
-                }
-            }
-            return matchingNodes;
+            return DesignerUtilities.getTRunjobs((IProcess) elem);
         } else {
             return null;
         }
@@ -281,7 +273,7 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
     private List<NodeType> findRunJobNode(EList<NodeType> nodes) {
         List<NodeType> matchingNodes = new ArrayList<NodeType>();
         for (NodeType nodeType : nodes) {
-            if (TRUN_JOB.equals(nodeType.getComponentName())) {
+            if (DesignerUtilities.isTRunJobComponent(nodeType)) {
                 matchingNodes.add(nodeType);
             }
         }
