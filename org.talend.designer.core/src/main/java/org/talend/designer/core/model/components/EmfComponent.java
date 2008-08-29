@@ -2250,4 +2250,13 @@ public class EmfComponent implements IComponent {
     public boolean isSingleton() {
         return compType.getHEADER().isSINGLETON();
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#isMainCodeCalled()
+     */
+    public boolean isMainCodeCalled() {
+        return compType.getHEADER().isMAINCODECALLED();
+    }
 }

@@ -438,4 +438,12 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
         return false;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#isMainCodeCalled()
+     */
+    public boolean isMainCodeCalled() {
+        return true;
+    }
 }

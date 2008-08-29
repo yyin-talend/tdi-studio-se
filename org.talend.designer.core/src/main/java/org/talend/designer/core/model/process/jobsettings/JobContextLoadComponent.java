@@ -489,4 +489,13 @@ public class JobContextLoadComponent implements IComponent {
     public boolean isSingleton() {
         return false;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#isMainCodeCalled()
+     */
+    public boolean isMainCodeCalled() {
+        return true;
+    }
 }
