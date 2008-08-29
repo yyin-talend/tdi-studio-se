@@ -12,12 +12,14 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.properties;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
@@ -31,6 +33,8 @@ import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.utils.ContextParameterUtils;
+import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.wizards.ContextParameterWizard;
@@ -72,16 +76,19 @@ public final class ContextParameterExtractor {
                     // return;
                     // }
                     IContextParameter parameter = buildParameterFrom(text, process.getContextManager(), parameterName);
+                    if (parameter == null) { // some context have existed
+                        return;
+                    }
                     ContextParameterWizard prmWizard = new ContextParameterWizard(process.getContextManager(), parameter);
                     WizardDialog dlg = new WizardDialog(text.getShell(), prmWizard);
                     if (dlg.open() == WizardDialog.OK) {
                         ECodeLanguage curLanguage = LanguageManager.getCurrentLanguage();
-                        String replaceCode = "";
+                        String replaceCode = ""; //$NON-NLS-1$
                         if (curLanguage == ECodeLanguage.PERL) {
                             replaceCode = ContextParameterUtils.getScriptCode(parameter, ((RepositoryContext) CorePlugin
                                     .getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage());
                         } else {
-                            replaceCode = "context." + parameter.getName();
+                            replaceCode = ContextParameterUtils.getNewScriptCode(parameter.getName(), curLanguage);
                         }
                         if (text instanceof Text) {
                             if (((Text) text).getSelectionCount() == 0) {
@@ -141,14 +148,16 @@ public final class ContextParameterExtractor {
             }
         }
         if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
-            if (nameProposal.startsWith("\"") && nameProposal.endsWith("\"") && (nameProposal.length() > 1)) {
-                nameProposal = nameProposal.substring(1, nameProposal.length() - 1);
-            }
+            nameProposal = TalendTextUtils.removeQuotes(nameProposal);
         }
 
         String value = nameProposal;
-
-        nameProposal = nameProposal.replace(" ", "_");
+        if (ContextParameterUtils.containContextVariables(value)) {
+            MessageDialog.openError(new Shell(), Messages.getString("ContextParameterExtractor.ExistedTitle"), //$NON-NLS-1$
+                    Messages.getString("ContextParameterExtractor.ExistedMessages")); //$NON-NLS-1$
+            return null;
+        }
+        nameProposal = nameProposal.replace(" ", "_"); //$NON-NLS-1$ //$NON-NLS-2$
 
         IContextParameter parameter = new JobContextParameter();
         if (manager.checkValidParameterName(parameterName)) {
@@ -165,7 +174,7 @@ public final class ContextParameterExtractor {
             parameter.setType(JavaTypesManager.getDefaultJavaType().getId());
         }
         parameter.setPrompt(parameterName + "?"); //$NON-NLS-1$
-        parameter.setComment("");
+        parameter.setComment(""); //$NON-NLS-1$
         parameter.setValue(value);
         return parameter;
     }

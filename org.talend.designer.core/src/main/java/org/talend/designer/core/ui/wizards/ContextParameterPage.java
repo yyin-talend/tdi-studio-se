@@ -226,7 +226,9 @@ public class ContextParameterPage extends WizardPage {
                 if (curLanguage == ECodeLanguage.JAVA) {
                     type = getJavaDisplayedType(type);
                 }
-                parameter.setType(type);
+                final String value = parameter.getValue();
+                parameter.setType(type); // value will be empty
+                parameter.setValue(value); // revert the value
                 updatePageStatus();
             }
         });
