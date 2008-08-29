@@ -254,6 +254,9 @@ public final class ConnectionContextHelper {
                 } else if (type == JavaTypesManager.INTEGER) {
                     contextParam.setType(MetadataTalendType.getPerlTypes()[3]); // int
                     break;
+                } else if (type == JavaTypesManager.PASSWORD) {
+                    contextParam.setType(ContextParameterJavaTypeManager.PERL_PASSWORD);
+                    break;
                 }
             }
             contextParam.setType(MetadataTalendType.getPerlTypes()[5]); // string

@@ -251,7 +251,7 @@ public final class OtherConnectionContextUtils {
         ConnectionContextHelper.createParameters(varList, paramName, ssConn.getUserName());
 
         paramName = prefixName + EParamName.Password;
-        ConnectionContextHelper.createParameters(varList, paramName, ssConn.getPassword());
+        ConnectionContextHelper.createParameters(varList, paramName, ssConn.getPassword(), JavaTypesManager.PASSWORD);
 
         paramName = prefixName + EParamName.QueryCondition;
         ConnectionContextHelper.createParameters(varList, paramName, ssConn.getQueryCondition());
@@ -338,7 +338,7 @@ public final class OtherConnectionContextUtils {
         ConnectionContextHelper.createParameters(varList, paramName, ldapConn.getPort(), JavaTypesManager.INTEGER);
 
         paramName = prefixName + EParamName.BindPassword;
-        ConnectionContextHelper.createParameters(varList, paramName, ldapConn.getBindPassword());
+        ConnectionContextHelper.createParameters(varList, paramName, ldapConn.getBindPassword(), JavaTypesManager.PASSWORD);
 
         paramName = prefixName + EParamName.BindPrincipal;
         ConnectionContextHelper.createParameters(varList, paramName, ldapConn.getBindPrincipal());
@@ -485,7 +485,7 @@ public final class OtherConnectionContextUtils {
             ConnectionContextHelper.createParameters(varList, paramName, wsdlConn.getUserName());
 
             paramName = prefixName + EParamName.Password;
-            ConnectionContextHelper.createParameters(varList, paramName, wsdlConn.getPassword());
+            ConnectionContextHelper.createParameters(varList, paramName, wsdlConn.getPassword(), JavaTypesManager.PASSWORD);
 
             paramName = prefixName + EParamName.ProxyHost;
             ConnectionContextHelper.createParameters(varList, paramName, wsdlConn.getProxyHost());
@@ -497,7 +497,7 @@ public final class OtherConnectionContextUtils {
             ConnectionContextHelper.createParameters(varList, paramName, wsdlConn.getProxyUser());
 
             paramName = prefixName + EParamName.ProxyPassword;
-            ConnectionContextHelper.createParameters(varList, paramName, wsdlConn.getProxyPassword());
+            ConnectionContextHelper.createParameters(varList, paramName, wsdlConn.getProxyPassword(), JavaTypesManager.PASSWORD);
             break;
         case PERL:
         default:

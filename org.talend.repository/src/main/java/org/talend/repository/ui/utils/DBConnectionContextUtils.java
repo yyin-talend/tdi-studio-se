@@ -83,7 +83,7 @@ public final class DBConnectionContextUtils {
                     ConnectionContextHelper.createParameters(varList, paramName, conn.getFileFieldName(), JavaTypesManager.FILE);
                     break;
                 case Password:
-                    ConnectionContextHelper.createParameters(varList, paramName, conn.getPassword());
+                    ConnectionContextHelper.createParameters(varList, paramName, conn.getPassword(), JavaTypesManager.PASSWORD);
                     break;
                 case Port:
                     ConnectionContextHelper.createParameters(varList, paramName, conn.getPort(), JavaTypesManager.INTEGER);
