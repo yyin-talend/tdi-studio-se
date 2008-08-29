@@ -15,8 +15,10 @@ package org.talend.designer.core.ui.editor.nodecontainer;
 import java.util.Iterator;
 
 import org.eclipse.draw2d.ColorConstants;
+import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.RectangleFigure;
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.LayerConstants;
@@ -85,11 +87,15 @@ public class NodeContainerResizableEditPolicy extends ResizableEditPolicy {
 
         if (modelPart instanceof Node) {
             Node node = (Node) modelPart;
-            figure = new NodeFigure(node);
+            figure = new Figure();
+            figure.setOpaque(false);
+            NodeFigure nodeFigure = new NodeFigure(node);
+            figure.add(nodeFigure);
+            nodeFigure.setLocation(new Point(32, 32));
             if (node.isStart()) {
-                figure.setBackgroundColor(NodeFigure.START_COLOR);
+                nodeFigure.setBackgroundColor(NodeFigure.START_COLOR);
             } else {
-                figure.setOpaque(false);
+                nodeFigure.setOpaque(false);
             }
         } else {
             figure = new RectangleFigure();
@@ -117,7 +123,7 @@ public class NodeContainerResizableEditPolicy extends ResizableEditPolicy {
      * @see org.eclipse.gef.editpolicies.NonResizableEditPolicy#getInitialFeedbackBounds()
      */
     protected Rectangle getInitialFeedbackBounds() {
-        return getHostFigure().getBounds();
+        return getHostFigure().getBounds().getExpanded(32, 32);
     }
 
     /*
