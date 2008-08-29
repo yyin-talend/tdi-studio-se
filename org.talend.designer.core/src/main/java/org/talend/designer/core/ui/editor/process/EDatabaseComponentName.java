@@ -39,6 +39,9 @@ public enum EDatabaseComponentName {
     // DATABASES
     DBMYSQL(DatabaseConnectionItem.class, EDatabaseTypeName.MYSQL, "tMysqlInput", "tMysqlOutput", true),
     DBPSQL(DatabaseConnectionItem.class, EDatabaseTypeName.PSQL, "tPostgresqlInput", "tPostgresqlOutput", true),
+    PARACCEL(DatabaseConnectionItem.class, EDatabaseTypeName.PARACCEL, "tParaccelInput", "tParaccelOutput", true),
+    GREENPLUM(DatabaseConnectionItem.class, EDatabaseTypeName.GREENPLUM, "tGreenplumInput", "tGreenplumOutput", true),
+
     DBPLUSPSQL(DatabaseConnectionItem.class, EDatabaseTypeName.PLUSPSQL, "tPostgresPlusInput", "tPostgresPlusOutput", true),
     DBORACLEFORSID(DatabaseConnectionItem.class, EDatabaseTypeName.ORACLEFORSID, "tOracleInput", "tOracleOutput", true),
 
@@ -59,14 +62,21 @@ public enum EDatabaseComponentName {
     HSQL(DatabaseConnectionItem.class, EDatabaseTypeName.HSQLDB, "tHSQLDbInput", "tHSQLDbOutput", true),
     JAVADB(DatabaseConnectionItem.class, EDatabaseTypeName.JAVADB, "tJavaDBInput", "tJavaDBOutput", true),
     INGRES(DatabaseConnectionItem.class, EDatabaseTypeName.INGRES, "tIngresInput", "tIngresOutput", true), // "INGRES"),
-    INTERBASE(DatabaseConnectionItem.class, EDatabaseTypeName.INTERBASE, "tInterbaseInput", "tInterbaseOutput", true), // "INTERBASE"),
+    INTERBASE(DatabaseConnectionItem.class, EDatabaseTypeName.INTERBASE, "tInterbaseInput", "tInterbaseOutput", true), // "INTERBASE"
+                                                                                                                       // )
+                                                                                                                       // ,
     SQLITE(DatabaseConnectionItem.class, EDatabaseTypeName.SQLITE, "tSQLiteInput", "tSQLiteOutput", true), // "SQLITE"),
-    FIREBIRD(DatabaseConnectionItem.class, EDatabaseTypeName.FIREBIRD, "tFirebirdInput", "tFirebirdOutput", true), // "FIREBIRD"),
-    INFORMIX(DatabaseConnectionItem.class, EDatabaseTypeName.INFORMIX, "tInformixInput", "tInformixOutput", true), // "INFORMIX");
+    FIREBIRD(DatabaseConnectionItem.class, EDatabaseTypeName.FIREBIRD, "tFirebirdInput", "tFirebirdOutput", true), // "FIREBIRD"
+                                                                                                                   // ),
+    INFORMIX(DatabaseConnectionItem.class, EDatabaseTypeName.INFORMIX, "tInformixInput", "tInformixOutput", true), // "INFORMIX"
+                                                                                                                   // );
     ACCESS(DatabaseConnectionItem.class, EDatabaseTypeName.ACCESS, "tAccessInput", "tAccessOutput", true), // "ACCESS");
 
-    TERADATA(DatabaseConnectionItem.class, EDatabaseTypeName.TERADATA, "tELTTeradataMap", "tELTTeradataMap"), // "TERADATA");
-    TERADATA_TABLE(DatabaseConnectionItem.class, EDatabaseTypeName.TERADATA, "tELTTeradataInput", "tELTTeradataOutput", true), // "TERADATA");
+    TERADATA(DatabaseConnectionItem.class, EDatabaseTypeName.TERADATA, "tELTTeradataMap", "tELTTeradataMap"), // "TERADATA"
+                                                                                                              // );
+    TERADATA_TABLE(DatabaseConnectionItem.class, EDatabaseTypeName.TERADATA, "tELTTeradataInput", "tELTTeradataOutput", true), // "TERADATA"
+                                                                                                                               // )
+                                                                                                                               // ;
 
     MAXDB(DatabaseConnectionItem.class, EDatabaseTypeName.MAXDB, "tMaxDBInput", "tMaxDBOutput", true), // "MAXDB");
 
