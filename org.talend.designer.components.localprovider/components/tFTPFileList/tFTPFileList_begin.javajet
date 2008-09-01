@@ -1,0 +1,49 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser
+		org.talend.core.model.metadata.IMetadataTable
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.List
+		java.util.Map
+	"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();	
+	String host = ElementParameterParser.getValue(node, "__HOST__");
+	String port = ElementParameterParser.getValue(node, "__PORT__");
+	String user = ElementParameterParser.getValue(node, "__USERNAME__");
+	String pass = ElementParameterParser.getValue(node, "__PASSWORD__");
+	String remotedir = ElementParameterParser.getValue(node, "__REMOTEDIR__");
+	boolean dirFull = ElementParameterParser.getValue(node, "__DIR_FULL__").equals("true");
+	String cid = node.getUniqueName();
+%>	
+	int nb_file_<%=cid%> = 0;
+	com.enterprisedt.net.ftp.FTPClient ftp_<%=cid %> = new com.enterprisedt.net.ftp.FTPClient();
+	ftp_<%=cid %>.setRemoteHost(<%=host %>);
+	ftp_<%=cid %>.setRemotePort(<%=port %>);
+	ftp_<%=cid %>.connect();
+    ftp_<%=cid %>.login(<%=user %>, <%=pass %>);    
+	
+	String remotedir_<%=cid %> = <%=remotedir%>;
+	ftp_<%=cid %>.chdir(remotedir_<%=cid %>);
+    
+    String[] fileList_<%=cid %>;
+    if (<%=dirFull %>) {
+        fileList_<%=cid %> = ftp_<%=cid %>.dir(remotedir_<%=cid %>, true);
+    }
+    else {
+        fileList_<%=cid %> = ftp_<%=cid %>.dir(remotedir_<%=cid %>, false);
+    }
+    
+    int i<%=cid %> = -1;
+    int size<%=cid %> = fileList_<%=cid %>.length;
+    
+    while(++i<%=cid %> < size<%=cid %>) {
+        String currentFileName_<%=cid%> = fileList_<%=cid %>[i<%=cid %>]; 
+        String currentFilePath_<%=cid%> = remotedir_<%=cid %> + "/" + fileList_<%=cid %>[i<%=cid %>];
+ 
+        globalMap.put("<%=cid %>_CURRENT_FILE", currentFileName_<%=cid%>);
+        globalMap.put("<%=cid %>_CURRENT_FILEPATH", currentFilePath_<%=cid%>);
