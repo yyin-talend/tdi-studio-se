@@ -115,7 +115,7 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
         setName();
 
         IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);
-        viewPart.refresh();
+        viewPart.refresh(rEditorInput.getRepositoryNode());
     }
 
     private void setName() {
@@ -176,7 +176,7 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
             e.printStackTrace();
         }
         IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);
-        viewPart.refresh();
+        viewPart.refresh(rEditorInput.getRepositoryNode());
     }
 
     @Override

@@ -102,8 +102,7 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
 
     protected void initializeGraphicalViewer() {
         super.initializeGraphicalViewer();
-        getDiagramGraphicalViewer().addDropTargetListener(
-                new BusinessDiagramDropTargetListener(getDiagramGraphicalViewer()));
+        getDiagramGraphicalViewer().addDropTargetListener(new BusinessDiagramDropTargetListener(getDiagramGraphicalViewer()));
     }
 
     RepositoryEditorInput repositoryEditorInput;
@@ -130,7 +129,7 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
             propertyIsDirty = false;
             firePropertyChange(IEditorPart.PROP_DIRTY);
             IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(RepositoryView.VIEW_ID);
-            viewPart.refresh();
+            viewPart.refresh(repositoryEditorInput.getRepositoryNode());
 
         }
     }

@@ -100,7 +100,7 @@ public class StandAloneTalendPerlEditor extends PerlEditor implements IUIRefresh
         setName();
 
         IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);
-        viewPart.refresh();
+        viewPart.refresh(rEditorInput.getRepositoryNode());
 
     }
 
@@ -126,7 +126,7 @@ public class StandAloneTalendPerlEditor extends PerlEditor implements IUIRefresh
             e.printStackTrace();
         }
         IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);
-        viewPart.refresh();
+        viewPart.refresh(rEditorInput.getRepositoryNode());
         // viewPart1.refresh();
     }
 
@@ -194,7 +194,7 @@ public class StandAloneTalendPerlEditor extends PerlEditor implements IUIRefresh
 
                 // update image in repository
                 IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);
-                viewPart.refresh();
+                viewPart.refresh(rEditorInput.getRepositoryNode());
 
                 // update editor image
                 setTitleImage(getTitleImage());

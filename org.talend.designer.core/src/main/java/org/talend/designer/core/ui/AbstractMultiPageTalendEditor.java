@@ -846,7 +846,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
         IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);
         if (viewPart != null) {
-            viewPart.refresh();
+            viewPart.refresh(processEditorInput.getRepositoryNode());
         }
 
         processEditorInput.setLoadedProcess(null);
