@@ -112,6 +112,13 @@ if(isRunInMultiThread){
 	    public ContextProperties(){
 	        super();
 	    }
+	    
+		public void synchronizeContext(){
+			<% for (IContextParameter ctxParam :params){%>
+			this.put("<%=ctxParam.getName()%>", <%=ctxParam.getName()%>);
+			<% } %>
+		}
+			    
 <%
     for (IContextParameter ctxParam :params)
      {
