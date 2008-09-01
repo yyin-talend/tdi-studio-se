@@ -14,7 +14,9 @@ package org.talend.repository.ui.dialog;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.internal.core.util.Util;
@@ -39,6 +41,8 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -57,6 +61,7 @@ import org.eclipse.ui.internal.progress.ProgressMonitorJobsDialog;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.EImage;
+import org.talend.commons.ui.image.IImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.advanced.composite.ThreeCompositesSashForm;
 import org.talend.commons.utils.VersionUtils;
@@ -87,6 +92,8 @@ public class VersionManagementDialog extends Dialog {
     private static final IProxyRepositoryFactory FACTORY = CorePlugin.getDefault().getProxyRepositoryFactory();
 
     private static final String ITEM_EDITOR_KEY = "ITEM_EDITOR_KEY"; //$NON-NLS-1$
+
+    private Map<IImage, Image> cacheItemImages = new HashMap<IImage, Image>();
 
     private Project project;
 
@@ -416,8 +423,11 @@ public class VersionManagementDialog extends Dialog {
 
         majorBtn = new Button(versionComposit, SWT.NONE);
         majorBtn.setText("M"); //$NON-NLS-1$
+        majorBtn.setToolTipText(Messages.getString("VersionManagementDialog.MajorVersionTip")); //$NON-NLS-1$
         minorBtn = new Button(versionComposit, SWT.NONE);
         minorBtn.setText("m"); //$NON-NLS-1$
+        minorBtn.setToolTipText(Messages.getString("VersionManagementDialog.MinorVersionTip")); //$NON-NLS-1$
+
         Label label = new Label(versionComposit, SWT.NONE);
         label.setText(""); //$NON-NLS-1$
         data = new GridData();
@@ -559,12 +569,29 @@ public class VersionManagementDialog extends Dialog {
         // treeViewer.refresh();
     }
 
+    private Image getItemsImage(IImage iImage) {
+        if (iImage == null) {
+            iImage = EImage.DEFAULT_IMAGE;
+        }
+        Image image = cacheItemImages.get(iImage);
+        if (image == null) {
+            Image oImage = ImageProvider.getImage(iImage);
+            ImageData imageData = oImage.getImageData();
+            // enlarge image
+            final int larger = 4;
+            ImageData newData = imageData.scaledTo(imageData.width + larger, imageData.height + larger);
+            image = new Image(oImage.getDevice(), newData);
+            cacheItemImages.put(iImage, image);
+        }
+        return image;
+    }
+
     private void addItemElements(List<ItemVersionObject> elements) {
         if (elements == null || elements.isEmpty()) {
             return;
         }
         itemTable.setRedraw(false);
-        final Color redColor = new Color(null, 255, 0, 0);
+        final Color redColor = Display.getDefault().getSystemColor(SWT.COLOR_RED);
 
         for (final ItemVersionObject object : elements) {
             final TableItem tableItem = new TableItem(itemTable, SWT.NONE);
@@ -572,7 +599,8 @@ public class VersionManagementDialog extends Dialog {
             Item item = object.getItem();
 
             ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(item);
-            tableItem.setImage(ImageProvider.getImage(CoreImageProvider.getIcon(itemType)));
+
+            tableItem.setImage(getItemsImage(CoreImageProvider.getIcon(itemType)));
             tableItem.setText(item.getProperty().getLabel());
             // old version
             tableItem.setText(1, object.getOldVersion());
@@ -585,7 +613,7 @@ public class VersionManagementDialog extends Dialog {
                 if (VersionUtils.compareTo(version, object.getOldVersion()) > 0) {
                     tableItem.setForeground(2, redColor);
                 } else {
-                    tableItem.setForeground(2, new Color(null, 0, 0, 0));
+                    tableItem.setForeground(2, Display.getDefault().getSystemColor(SWT.COLOR_BLACK));
                 }
             } else {
                 // new version
@@ -606,13 +634,15 @@ public class VersionManagementDialog extends Dialog {
                 if (VersionUtils.compareTo(object.getNewVersion(), object.getOldVersion()) > 0) {
                     text.setForeground(redColor);
                 } else {
-                    text.setForeground(new Color(null, 0, 0, 255));
+                    text.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_BLUE));
                 }
 
                 Button tableMajorBtn = new Button(versionComposit, SWT.NONE);
                 tableMajorBtn.setText("M"); //$NON-NLS-1$
+                tableMajorBtn.setToolTipText(Messages.getString("VersionManagementDialog.MajorVersionTip")); //$NON-NLS-1$
                 Button tableMinorBtn = new Button(versionComposit, SWT.NONE);
                 tableMinorBtn.setText("m"); //$NON-NLS-1$
+                tableMinorBtn.setToolTipText(Messages.getString("VersionManagementDialog.MinorVersionTip")); //$NON-NLS-1$
 
                 tableMajorBtn.addSelectionListener(new SelectionAdapter() {
 

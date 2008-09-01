@@ -105,12 +105,11 @@ public class ProjectSettingsWizardPage extends WizardPage {
 
         // Project settings
         projectSetBtn = new Button(btnComposite, SWT.PUSH);
-        projectSetBtn.setText("Palette Settings");
+        projectSetBtn.setText(org.talend.repository.i18n.Messages.getString("ProjectSettingsWizardPage.PaletteSettings")); //$NON-NLS-1$
         // Version management
         versionBtn = new Button(btnComposite, SWT.PUSH);
-        versionBtn.setText("Version Management");
-        // FIXME for feature 4706, disable temporarily.
-        versionBtn.setVisible(false);
+        versionBtn.setText(org.talend.repository.i18n.Messages.getString("ProjectSettingsWizardPage.VersionManagement")); //$NON-NLS-1$
+
     }
 
     protected void updateContent() {

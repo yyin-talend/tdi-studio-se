@@ -21,11 +21,11 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -130,7 +130,7 @@ public class ItemsVersionConfirmDialog extends Dialog {
         for (TableItem item : table.getItems()) {
             ItemVersionObject object = (ItemVersionObject) item.getData();
             if (!object.getOldVersion().equals(object.getNewVersion())) {
-                item.setForeground(2, new Color(null, 255, 0, 0));
+                item.setForeground(2, Display.getDefault().getSystemColor(SWT.COLOR_RED));
             }
         }
         return composite;
