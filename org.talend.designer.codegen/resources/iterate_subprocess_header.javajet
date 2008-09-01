@@ -160,7 +160,7 @@ for (IConnection iterateConn : iterateConnSet) { //1
 %>        		
 
 				runStat.updateStatOnConnection("<%=iterateConn.getUniqueName() %>", 1, "exec" + NB_ITERATE_<%=iterateNodeName %>);
-				Thread.sleep(1000);
+				//Thread.sleep(1000);
 <%
 		  		}
 		}//2
