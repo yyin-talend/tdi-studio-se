@@ -2521,6 +2521,21 @@ public class Process extends Element implements IProcess2 {
     }
 
     public Set<String> getNeededLibraries(boolean withChildrens) {
+        // see bug 4939: making tRunjobs work loop will cause a error of "out of memory"
+        Set<ProcessItem> searchItems = new HashSet<ProcessItem>();
+        ProcessItem processItem = null;
+        if (property.getVersion() != null) {
+            processItem = ItemCacheManager.getProcessItem(property.getId(), property.getVersion());
+        } else {
+            processItem = ItemCacheManager.getProcessItem(property.getId());
+        }
+        if (processItem != null) {
+            searchItems.add(processItem);
+        }
+        return getNeededLibraries(withChildrens, searchItems);
+    }
+
+    private Set<String> getNeededLibraries(boolean withChildrens, Set<ProcessItem> searchItems) {
         Set<String> neededLibraries = new HashSet<String>();
         List<? extends INode> nodeList = getGeneratingNodes();
         for (INode node : nodeList) {
@@ -2556,16 +2571,19 @@ public class Process extends Element implements IProcess2 {
                     }
 
                     String context = (String) node.getElementParameter("PROCESS_TYPE_CONTEXT").getValue();
-                    if (processItem != null) {
+                    if (processItem != null && !searchItems.contains(processItem)) {
+                        // avoid dead loop of method call
+                        searchItems.add(processItem);
                         JobInfo subJobInfo = new JobInfo(processItem, context);
                         Process child = new Process(subJobInfo.getProcessItem().getProperty());
                         child.loadXmlFile();
-                        neededLibraries.addAll(child.getNeededLibraries(true));
+                        neededLibraries.addAll(child.getNeededLibraries(true, searchItems));
                     }
                 }
             }
         }
         return neededLibraries;
+
     }
 
     /**
