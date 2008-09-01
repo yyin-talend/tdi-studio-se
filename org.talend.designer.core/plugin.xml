@@ -253,6 +253,14 @@
             id="org.talend.designer.core.actions.createprocess"
             level="10"
             name="Create process"/>
+      <Action
+            class="org.talend.designer.core.ui.hierarchy.OpenRepositoryJobHierarchyAction"
+            id="org.talend.designer.core.ui.hierarchy.OpenRepositoryJobHierarchyAction"
+            level="12"
+            name="Open Job Hierarchy"/>
+            
+            
+      
    </extension>
    <extension
          point="org.eclipse.ui.contexts">
