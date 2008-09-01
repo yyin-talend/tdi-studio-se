@@ -78,6 +78,7 @@ for (int i=1; i<commandLine.length; i++) {
 
 if(transmitWholeContext){
 %> 
+    context.synchronizeContext();
     java.util.Enumeration<?> propertyNames_<%=cid %> = context.propertyNames();
     while (propertyNames_<%=cid %>.hasMoreElements()) {
         String key_<%=cid %> = (String) propertyNames_<%=cid %>.nextElement();
