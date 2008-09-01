@@ -903,10 +903,11 @@
             name="MigrationTaskForIssue4449">
       </projecttask>
       <projecttask
-            class="org.talend.repository.model.migration.FileInputRegexContextVariableMigrationTask"
-            description="add quotes to FileInputRegex header/footer/limit variables."
-            id="org.talend.repository.model.migration.FileInputRegexContextVariableMigrationTask"
-            name="add quotes to FileInputRegex header/footer/limit variables.">
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.MoveFileListFilemaskToFilemaskListForJava"
+            description="move filemask to filemask list"
+            id="org.talend.repository.model.migration.MoveFileListFilemaskToFilemaskListForJava"
+            name="Move filemask to filemask list">
       </projecttask>
    </extension>
    <extension
