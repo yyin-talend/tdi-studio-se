@@ -16,6 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -47,6 +48,7 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.progress.WorkbenchJob;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.FileItem;
 import org.talend.core.model.properties.Information;
@@ -217,6 +219,12 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
              */
             @Override
             public IStatus runInUIThread(IProgressMonitor monitor) {
+                try {
+                    CorePlugin.getDefault().getRunProcessService().getJavaProject().getProject().build(
+                            IncrementalProjectBuilder.AUTO_BUILD, null);
+                } catch (CoreException e1) {
+                    ExceptionHandler.process(e1);
+                }
                 // check syntax error
                 addProblems();
 
@@ -237,7 +245,7 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
 
                 // update image in repository
                 IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);
-                viewPart.refresh();
+                viewPart.refresh(rEditorInput.getRepositoryNode());
                 // update editor image
                 setTitleImage(getTitleImage());
                 return Status.OK_STATUS;
