@@ -18,6 +18,7 @@ import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.swt.graphics.Image;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.sqlbuilder.util.ImageUtil;
+import org.talend.sqlbuilder.util.TextUtil;
 
 /**
  * dev class global comment. Detailled comment <br/>
@@ -55,7 +56,7 @@ public class SQLEditorAllProposal implements IContentProposal {
         this.dbType = dbType;
         String tmpC = contents[0] + contents[1];
 
-        if (!dbType.equals("PostgreSQL")) { //$NON-NLS-1$
+        if (!TextUtil.isDoubleQuotesNeededDbType(dbType)) { //$NON-NLS-1$
             hasString = initHasString(hasString);
             if (!label.contains(" ")) {
                 label = label.replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
@@ -91,7 +92,7 @@ public class SQLEditorAllProposal implements IContentProposal {
     private String initContent(String hasString, String[] contents, String dbType, int position2) {
         String tmp = initLabel(dbType);
         String c1 = "";
-        if (label.contains(" ") && !dbType.equals("PostgreSQL")) {
+        if (label.contains(" ") && !TextUtil.isDoubleQuotesNeededDbType(dbType)) {
             tmp = TalendTextUtils.addQuotesWithSpaceField(tmp, dbType);
             c1 = contents[0].substring(0, contents[0].length() - hasString.length());
             // contents[0] += tmp.substring(0, tmp.indexOf(hasString) + hasString.length());
@@ -161,8 +162,8 @@ public class SQLEditorAllProposal implements IContentProposal {
 
         String newHasString = hasString.replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
         if (!"".equals(hasString) //$NON-NLS-1$
-                && (qualityName.toLowerCase().startsWith(hasString.toLowerCase()) || newQualityName.toLowerCase()
-                        .startsWith(newHasString.toLowerCase()))) {
+                && (qualityName.toLowerCase().startsWith(hasString.toLowerCase()) || newQualityName.toLowerCase().startsWith(
+                        newHasString.toLowerCase()))) {
             if (hasString.indexOf(".") > -1) { //$NON-NLS-1$
                 hasString = hasString.substring(index3 + 1);
             }
@@ -179,7 +180,7 @@ public class SQLEditorAllProposal implements IContentProposal {
     private String initLabel(String dbType) {
         String tmp = label;
         int index = allString.indexOf("."); //$NON-NLS-1$
-        if (index > -1 && dbType.equals("PostgreSQL")) { //$NON-NLS-1$
+        if (index > -1 && TextUtil.isDoubleQuotesNeededDbType(dbType)) { //$NON-NLS-1$
             tmp = "\"" + label + "\""; //$NON-NLS-1$ //$NON-NLS-2$
         } else {
             tmp = label;

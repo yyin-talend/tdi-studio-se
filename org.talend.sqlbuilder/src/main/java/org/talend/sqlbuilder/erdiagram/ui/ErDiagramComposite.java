@@ -47,6 +47,7 @@ import org.talend.sqlbuilder.erdiagram.ui.parts.TablePart;
 import org.talend.sqlbuilder.repository.utility.EMFRepositoryNodeManager;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.ui.ISQLBuilderDialog;
+import org.talend.sqlbuilder.util.TextUtil;
 import org.talend.sqlbuilder.util.UIUtils;
 
 /**
@@ -240,7 +241,7 @@ public class ErDiagramComposite extends SashForm {
                     if (object instanceof TablePart) {
                         TablePart tablePart = (TablePart) object;
                         Table table = (Table) tablePart.getModel();
-                        if (getCurrentDbType().equals("PostgreSQL")) { //$NON-NLS-1$
+                        if (TextUtil.isDoubleQuotesNeededDbType(getCurrentDbType())) { //$NON-NLS-1$
                             if (!"".equals(getSchema())) {
                                 tables.add("\"" + getSchema() + "\".\"" + table.getElementName() + "\""); //$NON-NLS-1$ //$NON-NLS-2$
                             } else {
@@ -255,7 +256,7 @@ public class ErDiagramComposite extends SashForm {
                                 Column column = (Column) columnPart.getModel();
                                 CheckBox isSelected = columnPart.getPrimativeFigure().getFigureCustomColumnIsSelectedFigure();
                                 if (isSelected != null && isSelected.isSelected() && !column.getElementName().equals("*")) { //$NON-NLS-1$
-                                    if (getCurrentDbType().equals("PostgreSQL")) { //$NON-NLS-1$
+                                    if (TextUtil.isDoubleQuotesNeededDbType(getCurrentDbType())) { //$NON-NLS-1$
                                         columns.add("\"" + table.getElementName() + "\".\"" + column.getElementName() + "\"");
                                     } else {
                                         columns.add(TalendTextUtils.addQuotesWithSpaceField(table.getElementName(),
@@ -268,7 +269,7 @@ public class ErDiagramComposite extends SashForm {
                                 for (Relation rel : (List<Relation>) column.getOutputs()) {
                                     Column source = rel.getSource();
                                     Column target = rel.getTarget();
-                                    if (getCurrentDbType().equals("PostgreSQL")) {
+                                    if (TextUtil.isDoubleQuotesNeededDbType(getCurrentDbType())) {
                                         String where1 = "\"" + source.getTable().getElementName() + "\".\""
                                                 + source.getElementName() + "\"=\"" + target.getTable().getElementName()
                                                 + "\".\"" + target.getElementName() + "\"";

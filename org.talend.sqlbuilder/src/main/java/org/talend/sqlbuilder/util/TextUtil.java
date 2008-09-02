@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.sqlbuilder.util;
 
+import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.sqlbuilder.Messages;
 
@@ -172,7 +173,7 @@ public class TextUtil {
     }
 
     public static String addSqlQuots(String dbType, String sql, String schema) {
-        if (dbType.equals("PostgreSQL")) {
+        if (isDoubleQuotesNeededDbType(dbType)) {
             if (schema != null && !"".equals(schema)) {
                 sql = "\"" + schema + "\".\"" + sql + "\"";
             } else {
@@ -227,5 +228,18 @@ public class TextUtil {
             title += TalendTextUtils.SQL_BUILDER_TITLE_COMP_NAME + nodeLabel + "(" + uniqueName + ")";
         }
         dialogTitle = title;
+    }
+
+    /**
+     * ftang Comment method "isDoubleQuotesNeededDbType".
+     * 
+     * @param dbType
+     * @return
+     */
+    public static boolean isDoubleQuotesNeededDbType(String dbType) {
+        boolean isPostgresql = dbType.equalsIgnoreCase(EDatabaseTypeName.PSQL.getXmlName());
+        boolean isGreenplum = dbType.equalsIgnoreCase(EDatabaseTypeName.GREENPLUM.getXmlName());
+        boolean isParaccel = dbType.equalsIgnoreCase(EDatabaseTypeName.PARACCEL.getXmlName());
+        return isPostgresql || isGreenplum || isParaccel;
     }
 }

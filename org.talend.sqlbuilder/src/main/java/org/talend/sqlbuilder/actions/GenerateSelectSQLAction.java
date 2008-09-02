@@ -261,7 +261,7 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
         RepositoryNode root = SQLBuilderRepositoryNodeManager.getRoot(node);
         DatabaseConnection connection = (DatabaseConnection) ((ConnectionItem) root.getObject().getProperty().getItem())
                 .getConnection();
-        if (connection.getDatabaseType().equals("PostgreSQL")) { //$NON-NLS-1$
+        if (TextUtil.isDoubleQuotesNeededDbType(connection.getDatabaseType())) { //$NON-NLS-1$
             return "\""; //$NON-NLS-1$
         }
         return ""; //$NON-NLS-1$

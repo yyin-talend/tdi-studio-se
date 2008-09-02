@@ -31,6 +31,7 @@ import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.util.QueryTokenizer;
+import org.talend.sqlbuilder.util.TextUtil;
 
 /**
  * dev class global comment. Detailled comment <br/>
@@ -319,7 +320,7 @@ public class SQLEditorProposalUtil {
         String compareStr2 = "\"" + str + "\""; //$NON-NLS-1$ //$NON-NLS-2$
         for (int i = 0; i < allString.size(); i++) {
             String strFromAllString = allString.get(i);
-            if (this.dbType.equals("PostgreSQL") && strFromAllString.indexOf(str + ".") != -1) { //$NON-NLS-1$ //$NON-NLS-2$
+            if (TextUtil.isDoubleQuotesNeededDbType(this.dbType) && strFromAllString.indexOf(str + ".") != -1) { //$NON-NLS-1$ //$NON-NLS-2$
                 return true;
             } else if (strFromAllString.equalsIgnoreCase(str) || strFromAllString.indexOf(compareStr1) != -1
                     || strFromAllString.indexOf(compareStr2) != -1) {
