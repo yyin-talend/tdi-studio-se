@@ -1,0 +1,43 @@
+<%@ jet 
+imports="
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.INode
+		org.talend.core.model.process.ElementParameterParser  
+" 
+%>
+
+<%
+    CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+    INode node = (INode)codeGenArgument.getArgument();
+
+    String cid = node.getUniqueName();
+    
+    String dbType = ElementParameterParser.getValue(node,"__DBTYPE__");
+
+    String connection = ElementParameterParser.getValue(node,"__CONNECTION_" + dbType + "__");
+    
+    String conn = "conn_" + connection;
+    
+    String tableName = ElementParameterParser.getValue(node,"__TABLE_NAME__");
+%>
+java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
+
+int nb_column_<%=cid%> = 0;
+
+int column_count_<%=cid%> = 0;
+
+java.sql.Statement stmt2_<%=cid%> = conn_<%=cid%>.createStatement();
+
+java.sql.ResultSet rs_<%=cid %> = stmt2_<%=cid %>.executeQuery("SELECT * from " + <%=tableName %> + " where 1<>1");
+
+java.sql.ResultSetMetaData rsMetaData_<%=cid %> = rs_<%=cid %>.getMetaData();
+
+column_count_<%=cid %> = rsMetaData_<%=cid %>.getColumnCount();
+
+for(int i_<%=cid %> = 1; i_<%=cid %> <= column_count_<%=cid %>; i_<%=cid %>++) {
+
+	String currentColumnName_<%=cid %> = rsMetaData_<%=cid %>.getColumnName(i_<%=cid %>);
+
+	nb_column_<%=cid %>++;
+        
+	globalMap.put("<%=cid %>_CURRENT_COLUMN", currentColumnName_<%=cid %>);
