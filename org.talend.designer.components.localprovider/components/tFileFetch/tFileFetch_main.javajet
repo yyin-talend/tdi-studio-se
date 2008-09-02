@@ -14,26 +14,33 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
-boolean post = ElementParameterParser.getValue(node,"__POST__").equals("true");
 
-boolean printResponse = ElementParameterParser.getValue(node,"__PRINT__").equals("true");
+String protocol = ElementParameterParser.getValue(node,"__PROTO__");
+
 
 String uri = ElementParameterParser.getValue(node, "__URI__");
 
 String directory = ElementParameterParser.getValue(node, "__DIRECTORY__");
 String filename = ElementParameterParser.getValue(node, "__FILENAME__");
 
-boolean needAuth = ElementParameterParser.getValue(node,"__NEED_AUTH__").equals("true");
-String username = ElementParameterParser.getValue(node,"__AUTH_USERNAME__");
-String password = ElementParameterParser.getValue(node,"__AUTH_PASSWORD__");
 
-String timeout = ElementParameterParser.getValue(node,"__TIMEOUT__");
+
+
 boolean useProxy = ElementParameterParser.getValue(node,"__USE_PROXY__").equals("true");
 String proxyHost = ElementParameterParser.getValue(node,"__PROXY_HOST__");
 String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
 String proxyUser = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
 String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
 %>   
+
+<%if(protocol.equals("http")){
+boolean post = ElementParameterParser.getValue(node,"__POST__").equals("true");
+boolean printResponse = ElementParameterParser.getValue(node,"__PRINT__").equals("true");
+boolean needAuth = ElementParameterParser.getValue(node,"__NEED_AUTH__").equals("true");
+String username = ElementParameterParser.getValue(node,"__AUTH_USERNAME__");
+String password = ElementParameterParser.getValue(node,"__AUTH_PASSWORD__");
+String timeout = ElementParameterParser.getValue(node,"__TIMEOUT__");
+%>
     org.apache.commons.httpclient.HttpClient client_<%=cid %> = new org.apache.commons.httpclient.HttpClient();
     client_<%=cid %>.getHttpConnectionManager().getParams().setConnectionTimeout(<%=timeout %>);
 <%if(post){%>
@@ -46,8 +53,8 @@ String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__"
 
 	client_<%=cid %>.getHostConfiguration().setProxy(<%=proxyHost %>, Integer.parseInt(<%=proxyPort%>));
 	client_<%=cid %>.getState().setProxyCredentials(
-            new org.apache.commons.httpclient.auth.AuthScope(<%=proxyHost %>, Integer.parseInt(<%=proxyPort%>), null),
-            new org.apache.commons.httpclient.UsernamePasswordCredentials(<%=proxyUser %>, <%=proxyPassword %>));
+    new org.apache.commons.httpclient.auth.AuthScope(<%=proxyHost %>, Integer.parseInt(<%=proxyPort%>), null),
+    new org.apache.commons.httpclient.UsernamePasswordCredentials(<%=proxyUser %>, <%=proxyPassword %>));
 	
 <%}%>
 
@@ -55,8 +62,6 @@ String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__"
     org.apache.commons.httpclient.Credentials creds_<%=cid %> = new org.apache.commons.httpclient.UsernamePasswordCredentials(<%=username %>, <%=password %>);
     client_<%=cid %>.getState().setCredentials(org.apache.commons.httpclient.auth.AuthScope.ANY, creds_<%=cid %>);
 <%}%>
-
-
 
 <%if(post){
 	boolean uploadFile = ElementParameterParser.getValue(node,"__UPLOAD__").equals("true");
@@ -155,3 +160,51 @@ String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__"
 	<%}else{%>
 	get_<%=cid %>.releaseConnection();
 	<%}%>
+	
+<%}
+if(protocol.equals("ftp")){%>
+
+<%
+//The following part support the socks proxy for FTP and SFTP (Socks V4 or V5, they are all OK). 
+//And it can not work with the FTP proxy directly, only support the socks proxy.
+if(useProxy){
+%>
+        java.util.Properties props = System.getProperties();
+        props.put("socksProxyPort", <%=proxyPort %>);
+        props.put("socksProxyHost", <%=proxyHost %>);
+        props.put("java.net.socks.username", <%=proxyUser %>);
+        props.put("java.net.socks.password", <%=proxyPassword %>);        
+<%}%>
+
+String fileName<%=cid %> = <%=filename %>;
+	
+	//open directory
+	java.io.File dir<%=cid %> = new java.io.File(<%=directory %>);
+        		
+    // open url stream
+	java.net.URL url<%=cid %> = new java.net.URL(<%=uri %>);
+	java.net.URLConnection conn<%=cid %> = url<%=cid %>.openConnection();
+	
+	//open file dans la directory
+	if (fileName<%=cid %>.compareTo("")==0) {
+		fileName<%=cid %> = url<%=cid %>.getFile();
+		if (fileName<%=cid %>.compareTo("")==0) {
+			fileName<%=cid %> = "defaultfilename.txt";
+		}
+	}
+    final java.io.DataOutputStream out<%=cid%>= new java.io.DataOutputStream(new java.io.FileOutputStream(new java.io.File(
+            dir<%=cid %>, fileName<%=cid %>))); 
+	// copy file
+    final java.io.DataInputStream in<%=cid%> = new java.io.DataInputStream(conn<%=cid %>.getInputStream());
+	//close opened object
+    byte[] buffer<%=cid%> = new byte[1024];
+    int count<%=cid%> = 0;
+    while ((count<%=cid%> = in<%=cid%>.read(buffer<%=cid%>)) > 0) {
+        out<%=cid%>.write(buffer<%=cid%>, 0, count<%=cid%>);
+    }
+    // close opened object
+    in<%=cid%>.close();
+    out<%=cid%>.close();
+
+
+<%}%>
