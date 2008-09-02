@@ -14,11 +14,79 @@
 	
 	boolean rename = ElementParameterParser.getValue(node, "__RENAME__").equals("true");	
 	String destination_filename  = ElementParameterParser.getValue(node, "__DESTINATION_RENAME__");
+	boolean isCopyADir = ElementParameterParser.getValue(node, "__ENABLE_COPY_DIRECTORY__").equals("true");
 	
 	boolean reFile = ElementParameterParser.getValue(node, "__REMOVE_FILE__").equals("true");
 	boolean rpFile = ElementParameterParser.getValue(node,"__REPLACE_FILE__").equals("true");
-    boolean creatDir = ElementParameterParser.getValue(node,"__CREATE_DIRECTORY__").equals("true");
+  boolean creatDir = ElementParameterParser.getValue(node,"__CREATE_DIRECTORY__").equals("true");
 %>     
+
+<% if(isCopyADir){
+%>
+//copy a directory
+     
+      String srcFileFolderPath_<%=cid %>=<%=ElementParameterParser.getValue(node, "__SOURCE_DERECTORY__") %>;
+      String desFileFolderPath_<%=cid %>=<%=ElementParameterParser.getValue(node, "__DESTINATION__") %>;
+      
+      java.io.File srcFileFolder_<%=cid %> =new java.io.File(srcFileFolderPath_<%=cid %>);
+      java.io.File desFileFolder_<%=cid %> =new java.io.File(desFileFolderPath_<%=cid %>);
+      
+      int srcFilePathLength_<%=cid %> = srcFileFolder_<%=cid %>.getPath().length();
+     
+      String srcFolderName_<%=cid %>=srcFileFolder_<%=cid %>.getName();
+      java.io.File newDesFileFolder_<%=cid %> = new java.io.File(desFileFolder_<%=cid %>, srcFolderName_<%=cid %>);
+      
+      class CopyDirectory_<%=cid %>{
+      
+          public void copyAllFiles(java.io.File rootFolder, int pathLength, java.io.File newDesFileFolder) {
+
+        java.io.File[] fileList = rootFolder.listFiles();
+        if (fileList != null || fileList.length > 0) {
+            for (java.io.File file : fileList) {
+
+                if (file.isDirectory()) {
+
+                    copyAllFiles(file, pathLength, newDesFileFolder);
+                } else {
+                    String srcFilePath = file.getPath();
+                    String temFileName = srcFilePath.substring(pathLength);
+                    
+                    java.io.File desFile = new java.io.File(newDesFileFolder, temFileName);
+                    String desFilePath = desFile.getPath();
+                   
+                    java.io.File parentFile = desFile.getParentFile();
+                    if (!parentFile.exists()) {
+                        parentFile.mkdirs();
+
+                    }
+                    try {
+                        org.talend.FileCopy.copyFile(srcFilePath, desFilePath, false);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+            }
+        }
+        
+    }
+    }
+    
+    CopyDirectory_<%=cid %> copyDir_<%=cid %>=new CopyDirectory_<%=cid %>();
+      
+      
+    copyDir_<%=cid %>.copyAllFiles(srcFileFolder_<%=cid %>, srcFilePathLength_<%=cid %>,newDesFileFolder_<%=cid %>);
+    
+    globalMap.put("<%=cid %>_Copy_DIRECTORYPATH",srcFileFolderPath_<%=cid %>);
+      
+     
+      
+       
+
+<% }else{
+%>
+//copy a file
         String srcFileName_<%=cid %> = <%=fileName %>;
         java.io.File srcFile_<%=cid %> = new java.io.File(srcFileName_<%=cid %>);
         // here need check first, before mkdirs().
@@ -48,4 +116,7 @@
         }
         globalMap.put("<%=cid %>_DESTINATION_FILEPATH",desFile_<%=cid %>.getPath());
         globalMap.put("<%=cid %>_DESTINATION_FILENAME",desFile_<%=cid %>.getName());
+<%
+}
+%>        
         

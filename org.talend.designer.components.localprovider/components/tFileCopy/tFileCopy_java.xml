@@ -35,14 +35,41 @@
       NUM_ROW="10"
       REQUIRED="true"
       REPOSITORY_VALUE="FILE_PATH"
+      SHOW_IF="ENABLE_COPY_DIRECTORY=='false'"
+      
+      
+      
     >
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/in.csv"</DEFAULT>
     </PARAMETER>
     
     <PARAMETER
+     NAME="ENABLE_COPY_DIRECTORY"
+     FIELD="CHECK"
+     NUM_ROW="20"
+    >
+     <DEFAULT>false</DEFAULT>
+    </PARAMETER> 
+    
+     <PARAMETER
+     NAME="SOURCE_DERECTORY"
+     FIELD="DIRECTORY"
+     NUM_ROW="30"
+     REQUIRED="true"
+     REPOSITORY_VALUE="DESTINATION_PATH"
+     SHOW_IF="ENABLE_COPY_DIRECTORY=='true'"
+    >
+    <DEFAULT>"__COMP_DEFAULT_FILE_DIR__"</DEFAULT>
+    </PARAMETER> 
+    
+    
+     
+   
+    
+    <PARAMETER
       NAME="DESTINATION"
       FIELD="DIRECTORY"
-      NUM_ROW="20"
+      NUM_ROW="40"
       REQUIRED="true"
       REPOSITORY_VALUE="DESTINATION_PATH"
     > 
@@ -53,7 +80,8 @@
       NAME="RENAME"
       FIELD="CHECK"
       REQUIRED="true"
-      NUM_ROW="30"
+      NUM_ROW="50"
+      SHOW_IF="ENABLE_COPY_DIRECTORY=='false'"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>    
@@ -61,7 +89,7 @@
     <PARAMETER
       NAME="DESTINATION_RENAME"
       FIELD="TEXT"
-      NUM_ROW="30"
+      NUM_ROW="50"
       REQUIRED="true"
       SHOW_IF="RENAME == 'true'"
     > 
@@ -72,8 +100,9 @@
       NAME="REMOVE_FILE"
       FIELD="CHECK"
       REQUIRED="true"
-      NUM_ROW="40"
+      NUM_ROW="60"
       REPOSITORY_VALUE="REMOVE_FILE"
+      SHOW_IF="ENABLE_COPY_DIRECTORY=='false'"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -81,8 +110,9 @@
       NAME="REPLACE_FILE"
       FIELD="CHECK"
       REQUIRED="true"
-      NUM_ROW="40"
+      NUM_ROW="60"
       REPOSITORY_VALUE="REPLACE_FILE"
+      SHOW_IF="ENABLE_COPY_DIRECTORY=='false'"
     >
       <DEFAULT>true</DEFAULT>
     </PARAMETER>
@@ -90,8 +120,9 @@
       NAME="CREATE_DIRECTORY"
       FIELD="CHECK"
       REQUIRED="true"
-      NUM_ROW="40"
+      NUM_ROW="60"
       REPOSITORY_VALUE="CREATE_DIRECTORY"
+      SHOW_IF="ENABLE_COPY_DIRECTORY=='false'"
     >
       <DEFAULT>true</DEFAULT>
     </PARAMETER>
@@ -106,6 +137,8 @@
   <RETURNS>
   		<RETURN NAME="DESTINATION_FILENAME" TYPE="id_String" AVAILABILITY="AFTER" />
 		<RETURN NAME="DESTINATION_FILEPATH" TYPE="id_String" AVAILABILITY="AFTER" />
+		<RETURN NAME="Copy_DIRECTORYPATH" TYPE="id_String" AVAILABILITY="AFTER" />
+		
   </RETURNS>
   
 </COMPONENT>
