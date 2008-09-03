@@ -138,7 +138,7 @@ public class Connection extends Element implements IConnection, IPerformance {
      */
     private boolean isInTypes(EConnectionType link, EConnectionType... types) {
         for (EConnectionType type : types) {
-            if (link.equals(type)) {
+            if (link.getId() == type.getId()) {
                 return true;
             }
         }
@@ -351,7 +351,11 @@ public class Connection extends Element implements IConnection, IPerformance {
         if (canModify) {
 
             this.name = name;
-            if (!lineStyle.equals(EConnectionType.TABLE) && !lineStyle.equals(EConnectionType.ITERATE)) {
+
+            if (!lineStyle.equals(EConnectionType.TABLE)
+                    && !isInTypes(lineStyle, EConnectionType.ITERATE, EConnectionType.ON_COMPONENT_OK,
+                            EConnectionType.ON_COMPONENT_ERROR, EConnectionType.ON_SUBJOB_OK, EConnectionType.ON_SUBJOB_ERROR,
+                            EConnectionType.RUN_IF)) {
                 uniqueName = name;
             }
 
