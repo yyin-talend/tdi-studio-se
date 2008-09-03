@@ -90,4 +90,11 @@ public interface IJobHierarchyViewPart {
 
     public IProcess2 getInputProcess();
 
+    /**
+     * DOC bqian Comment method "setViewLayout".
+     * 
+     * @param actionOrientation
+     */
+    public void setViewLayout(int actionOrientation);
+
 }

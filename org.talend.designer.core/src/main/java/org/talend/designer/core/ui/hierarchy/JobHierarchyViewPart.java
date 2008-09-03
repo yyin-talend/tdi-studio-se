@@ -15,9 +15,19 @@ package org.talend.designer.core.ui.hierarchy;
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.jdt.internal.ui.typehierarchy.TypeHierarchyMessages;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.util.DelegatingDropAdapter;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
+import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.custom.CLabel;
@@ -26,16 +36,22 @@ import org.eclipse.swt.custom.ViewForm;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.PageBook;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.views.navigator.LocalSelectionTransfer;
 import org.talend.core.model.process.IProcess2;
+import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.IJobHierarchyViewPart;
 import org.talend.repository.ProjectManager;
@@ -47,8 +63,12 @@ public class JobHierarchyViewPart extends ViewPart implements IJobHierarchyViewP
 
     public static final String ID = "org.talend.designer.core.ui.hierarchy.JobHierarchyViewPart";
 
+    private static final String DIALOGSTORE_VIEWLAYOUT = "TypeHierarchyViewPart.orientation"; //$NON-NLS-1$
+
     // input job or null
     private IProcess2 inputProcess;
+
+    private IDialogSettings fDialogSettings;
 
     private ToggleViewAction[] fViewActions;
 
@@ -62,9 +82,9 @@ public class JobHierarchyViewPart extends ViewPart implements IJobHierarchyViewP
 
     private ViewForm fTypeViewerViewForm;
 
-    private ViewForm fMethodViewerViewForm;
+    private ViewForm dependencyViewerViewForm;
 
-    private CLabel fMethodViewerPaneLabel;
+    private CLabel dependencyViewerPaneLabel;
 
     private PageBook fViewerbook;
 
@@ -72,7 +92,15 @@ public class JobHierarchyViewPart extends ViewPart implements IJobHierarchyViewP
 
     private Label fEmptyTypesViewer;
 
+    private Composite fParent;
+
+    private TableViewer dependencyViewer;
+
     private JobHierarchyLifeCycle fHierarchyLifeCycle;
+
+    private ISelectionChangedListener fSelectionChangedListener;
+
+    private ToggleOrientationAction[] fToggleOrientationActions;
 
     /**
      * Constructor
@@ -82,12 +110,28 @@ public class JobHierarchyViewPart extends ViewPart implements IJobHierarchyViewP
         fViewActions = new ToggleViewAction[] { new ToggleViewAction(this, IJobHierarchyViewPart.HIERARCHY_MODE_SUBTYPES),
                 new ToggleViewAction(this, IJobHierarchyViewPart.HIERARCHY_MODE_SUPERTYPES) };
 
+        fSelectionChangedListener = new ISelectionChangedListener() {
+
+            public void selectionChanged(SelectionChangedEvent event) {
+                doSelectionChanged(event);
+            }
+        };
+        fDialogSettings = DesignerPlugin.getDefault().getDialogSettings();
+        fToggleOrientationActions = new ToggleOrientationAction[] { new ToggleOrientationAction(this, VIEW_LAYOUT_VERTICAL),
+                new ToggleOrientationAction(this, VIEW_LAYOUT_HORIZONTAL),
+                new ToggleOrientationAction(this, VIEW_LAYOUT_AUTOMATIC), new ToggleOrientationAction(this, VIEW_LAYOUT_SINGLE) };
     }
 
     String showEmptyLabel = "To display the job hierarchy, select a job, and select the \'Open Job Hierarchy\' menu option. Alternatively, you can drag and drop an job from repository view onto this view.";
 
+    private int fCurrentLayout;
+
+    private boolean fInComputeLayout;
+
     @Override
     public void createPartControl(Composite container) {
+        fParent = container;
+        addResizeListener(fParent);
         fPagebook = new PageBook(container, SWT.NONE);
         // page 1 of page book (no hierarchy label)
 
@@ -103,24 +147,39 @@ public class JobHierarchyViewPart extends ViewPart implements IJobHierarchyViewP
         Control typeViewerControl = createTypeViewerControl(fTypeViewerViewForm);
         fTypeViewerViewForm.setContent(typeViewerControl);
 
-        fMethodViewerViewForm = new ViewForm(fTypeMethodsSplitter, SWT.NONE);
-        fTypeMethodsSplitter.setWeights(new int[] { 99, 1 });
+        dependencyViewerViewForm = new ViewForm(fTypeMethodsSplitter, SWT.NONE);
+        fTypeMethodsSplitter.setWeights(new int[] { 65, 35 });
 
-        Control methodViewerPart = createMethodViewerControl(fMethodViewerViewForm);
-        fMethodViewerViewForm.setContent(methodViewerPart);
+        Control dependencyViewerPart = createMethodViewerControl(dependencyViewerViewForm);
+        dependencyViewerViewForm.setContent(dependencyViewerPart);
 
-        fMethodViewerPaneLabel = new CLabel(fMethodViewerViewForm, SWT.NONE);
-        fMethodViewerViewForm.setTopLeft(fMethodViewerPaneLabel);
+        dependencyViewerPaneLabel = new CLabel(dependencyViewerViewForm, SWT.NONE);
+        dependencyViewerViewForm.setTopLeft(dependencyViewerPaneLabel);
 
-        ToolBar methodViewerToolBar = new ToolBar(fMethodViewerViewForm, SWT.FLAT | SWT.WRAP);
-        fMethodViewerViewForm.setTopCenter(methodViewerToolBar);
+        ToolBar methodViewerToolBar = new ToolBar(dependencyViewerViewForm, SWT.FLAT | SWT.WRAP);
+        dependencyViewerViewForm.setTopCenter(methodViewerToolBar);
 
         fPagebook.showPage(fNoHierarchyShownLabel);
 
         initDragAndDrop();
+
+        int layout;
+        try {
+            layout = fDialogSettings.getInt(DIALOGSTORE_VIEWLAYOUT);
+            if (layout < 0 || layout > 3) {
+                layout = VIEW_LAYOUT_AUTOMATIC;
+            }
+        } catch (NumberFormatException e) {
+            layout = VIEW_LAYOUT_AUTOMATIC;
+        }
+        // force the update
+        fCurrentLayout = -1;
+        // will fill the main tool bar
+        setViewLayout(layout);
+
         // set the filter menu items
-        // IActionBars actionBars = getViewSite().getActionBars();
-        // IMenuManager viewMenu = actionBars.getMenuManager();
+        IActionBars actionBars = getViewSite().getActionBars();
+        IMenuManager viewMenu = actionBars.getMenuManager();
         // for (int i = 0; i < fViewActions.length; i++) {
         // ToggleViewAction action = fViewActions[i];
         // viewMenu.add(action);
@@ -128,15 +187,26 @@ public class JobHierarchyViewPart extends ViewPart implements IJobHierarchyViewP
         // }
         // viewMenu.add(new Separator());
 
+        IMenuManager layoutSubMenu = new MenuManager(TypeHierarchyMessages.TypeHierarchyViewPart_layout_submenu);
+        viewMenu.add(layoutSubMenu);
+        for (int i = 0; i < fToggleOrientationActions.length; i++) {
+            layoutSubMenu.add(fToggleOrientationActions[i]);
+        }
+        viewMenu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
     }
 
-    private Control createMethodViewerControl(ViewForm methodViewerViewForm) {
-        // TODO Auto-generated method stub
-        return null;
+    private Control createMethodViewerControl(Composite parent) {
+        dependencyViewer = new TableViewer(parent);
+
+        DependencyViewerProvider provider = new DependencyViewerProvider(this.fHierarchyLifeCycle);
+        dependencyViewer.setContentProvider(provider);
+        dependencyViewer.setLabelProvider(provider);
+        Control control = dependencyViewer.getTable();
+        return control;
     }
 
     /**
-     * DOC bqian Comment method "createTypeViewerControl".
+     * bqian Comment method "createTypeViewerControl".
      * 
      * @param typeViewerViewForm
      * @return
@@ -146,9 +216,9 @@ public class JobHierarchyViewPart extends ViewPart implements IJobHierarchyViewP
 
         // Create the viewers
         JobHierarchyViewer superTypesViewer = new SuperJobHierarchyViewer(fViewerbook, fHierarchyLifeCycle, this);
-
+        initializeTypesViewer(superTypesViewer);
         JobHierarchyViewer subTypesViewer = new SubJobHierarchyViewer(fViewerbook, fHierarchyLifeCycle, this);
-
+        initializeTypesViewer(subTypesViewer);
         fAllViewers = new JobHierarchyViewer[2];
         fAllViewers[HIERARCHY_MODE_SUBTYPES] = subTypesViewer;
         fAllViewers[HIERARCHY_MODE_SUPERTYPES] = superTypesViewer;
@@ -410,4 +480,147 @@ public class JobHierarchyViewPart extends ViewPart implements IJobHierarchyViewP
         viewer.addDropSupport(ops, transfers, delegatingDropAdapter);
     }
 
+    private void jobSelectionChanged(ISelection sel) {
+        if (sel instanceof IStructuredSelection) {
+            Object object = ((IStructuredSelection) sel).getFirstElement();
+            if (object == null) {
+                return;
+            }
+            IProcess2 process = (IProcess2) object;
+            updateMethodViewer(process);
+        }
+    }
+
+    protected void doSelectionChanged(SelectionChangedEvent e) {
+        if (e.getSelectionProvider() == this.dependencyViewer) {
+
+        } else {
+            jobSelectionChanged(e.getSelection());
+        }
+    }
+
+    private void updateMethodViewer(final IProcess2 input) {
+
+        if (input == dependencyViewer.getInput()) {
+            if (input != null) {
+                Runnable runnable = new Runnable() {
+
+                    public void run() {
+                        dependencyViewer.refresh(); // refresh
+                    }
+                };
+                BusyIndicator.showWhile(getDisplay(), runnable);
+            }
+        } else {
+            if (input != null) {
+                ILabelProvider provider = (ILabelProvider) getCurrentViewer().getLabelProvider();
+                dependencyViewerPaneLabel.setText(provider.getText(input));
+                dependencyViewerPaneLabel.setImage(provider.getImage(input));
+            } else {
+                dependencyViewerPaneLabel.setText(""); //$NON-NLS-1$
+                dependencyViewerPaneLabel.setImage(null);
+            }
+            Runnable runnable = new Runnable() {
+
+                public void run() {
+                    dependencyViewer.setInput(input); // refresh
+                }
+            };
+            BusyIndicator.showWhile(getDisplay(), runnable);
+        }
+    }
+
+    public void setViewLayout(int layout) {
+        if (fCurrentLayout != layout || layout == VIEW_LAYOUT_AUTOMATIC) {
+            fInComputeLayout = true;
+            try {
+                boolean methodViewerNeedsUpdate = false;
+
+                if (this.dependencyViewerViewForm != null && !dependencyViewerViewForm.isDisposed()
+                        && fTypeMethodsSplitter != null && !fTypeMethodsSplitter.isDisposed()) {
+
+                    boolean horizontal = false;
+                    if (layout == VIEW_LAYOUT_SINGLE) {
+                        dependencyViewerViewForm.setVisible(false);
+                        // showMembersInHierarchy(false);
+                        updateMethodViewer(null);
+                    } else {
+                        if (fCurrentLayout == VIEW_LAYOUT_SINGLE) {
+                            dependencyViewerViewForm.setVisible(true);
+                            methodViewerNeedsUpdate = true;
+                        }
+                        if (layout == VIEW_LAYOUT_AUTOMATIC) {
+                            if (fParent != null && !fParent.isDisposed()) {
+                                Point size = fParent.getSize();
+                                if (size.x != 0 && size.y != 0) {
+                                    // bug 185397 - Hierarchy View flips orientation multiple times on resize
+                                    // Control viewFormToolbar = fTypeViewerViewForm.getTopLeft();
+                                    // if (viewFormToolbar != null && !viewFormToolbar.isDisposed() &&
+                                    // viewFormToolbar.isVisible()) {
+                                    // size.y -= viewFormToolbar.getSize().y;
+                                    // }
+                                    horizontal = size.x > size.y;
+                                }
+                            }
+                            if (fCurrentLayout == VIEW_LAYOUT_AUTOMATIC) {
+                                boolean wasHorizontal = fTypeMethodsSplitter.getOrientation() == SWT.HORIZONTAL;
+                                if (wasHorizontal == horizontal) {
+                                    return; // no real change
+                                }
+                            }
+
+                        } else if (layout == VIEW_LAYOUT_HORIZONTAL) {
+                            horizontal = true;
+                        }
+                        fTypeMethodsSplitter.setOrientation(horizontal ? SWT.HORIZONTAL : SWT.VERTICAL);
+                    }
+                    // updateMainToolbar(horizontal);
+                    fTypeMethodsSplitter.layout();
+                }
+                if (methodViewerNeedsUpdate) {
+                    jobSelectionChanged(getCurrentViewer().getSelection());
+                }
+                fDialogSettings.put(DIALOGSTORE_VIEWLAYOUT, layout);
+                fCurrentLayout = layout;
+
+                updateCheckedState();
+            } finally {
+                fInComputeLayout = false;
+            }
+        }
+    }
+
+    private void addResizeListener(Composite parent) {
+        parent.addControlListener(new ControlListener() {
+
+            public void controlMoved(ControlEvent e) {
+            }
+
+            public void controlResized(ControlEvent e) {
+                if (getViewLayout() == VIEW_LAYOUT_AUTOMATIC && !fInComputeLayout) {
+                    setViewLayout(VIEW_LAYOUT_AUTOMATIC);
+                }
+            }
+        });
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jdt.ui.ITypeHierarchyViewPart#getViewLayout()
+     */
+    public int getViewLayout() {
+        return fCurrentLayout;
+    }
+
+    private void updateCheckedState() {
+        for (int i = 0; i < fToggleOrientationActions.length; i++) {
+            fToggleOrientationActions[i].setChecked(getViewLayout() == fToggleOrientationActions[i].getOrientation());
+        }
+    }
+
+    private void initializeTypesViewer(final JobHierarchyViewer typesViewer) {
+        // typesViewer.getControl().setVisible(false);
+        typesViewer.addPostSelectionChangedListener(fSelectionChangedListener);
+    }
 }
