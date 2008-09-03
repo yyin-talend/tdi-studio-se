@@ -28,8 +28,17 @@ java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%
 int nb_table_<%=cid%> = 0;
 
 java.sql.Statement stmt2_<%=cid%> = conn_<%=cid%>.createStatement();
-
+<%
+	if(dbType.equals("DBORACLE")){
+%>
 java.sql.ResultSet rs_<%=cid %> = stmt2_<%=cid %>.executeQuery("SELECT table_name from user_tables");
+<%
+	}else if(dbType.equals("MYSQL")){
+%>
+java.sql.ResultSet rs_<%=cid %> = stmt2_<%=cid %>.executeQuery("SHOW tables");
+<%
+	}
+%>
 
 while (rs_<%=cid %>.next()) {
 
