@@ -113,7 +113,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     			//gen loops begin end
     			}
                 %>
-
+				<%//modify for issue 4898 begin
+                	if(sizeGroupbys == 0){
+                %>
+            if(operation_result_<%=cid %> != null){
+                <%
+                	}
+                //modify for issue 4898 end%>
 
 
                 //in the deepest begin
@@ -361,6 +367,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 //in the deepest end
                 result_list_<%=cid %>.add(aggregated_row_<%=cid %>);
                 nb_line_<%=cid %>++;
+                <%//modify for issue 4898 begin
+                	if(sizeGroupbys == 0){
+                %>
+            }
+                <%
+                	}
+                //modify for issue 4898 end%>
                 <%
                 //in the innest end
 
