@@ -101,6 +101,10 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
             FileEditorInput fileInput = (FileEditorInput) input;
             rEditorInput = new RepositoryEditorInput(fileInput.getFile(), rEditorInput.getItem());
         }
+        if (rEditorInput.getRepositoryNode() == null) {
+            rEditorInput.setRepositoryNode(null); // retrieve node
+        }
+
         try {
             // see bug 1321
             item = (FileItem) rEditorInput.getItem();
@@ -175,7 +179,9 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
         } catch (PersistenceException e) {
             e.printStackTrace();
         }
-        RepositoryManager.refreshSavedNode(rEditorInput.getRepositoryNode());
+        if (rEditorInput.getRepositoryNode() != null) {
+            RepositoryManager.refresh(rEditorInput.getRepositoryNode().getObjectType());
+        }
     }
 
     @Override

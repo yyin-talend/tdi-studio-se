@@ -87,6 +87,9 @@ public class StandAloneTalendPerlEditor extends PerlEditor implements IUIRefresh
             FileEditorInput fileInput = (FileEditorInput) input;
             rEditorInput = new RepositoryEditorInput(fileInput.getFile(), rEditorInput.getItem());
         }
+        if (rEditorInput.getRepositoryNode() == null) {
+            rEditorInput.setRepositoryNode(null); // retrieve node
+        }
         super.doSetInput(rEditorInput);
         try {
             item = (FileItem) rEditorInput.getItem();
@@ -125,7 +128,9 @@ public class StandAloneTalendPerlEditor extends PerlEditor implements IUIRefresh
         } catch (PersistenceException e) {
             e.printStackTrace();
         }
-        RepositoryManager.refreshSavedNode(rEditorInput.getRepositoryNode());
+        if (rEditorInput.getRepositoryNode() != null) {
+            RepositoryManager.refresh(rEditorInput.getRepositoryNode().getObjectType());
+        }
     }
 
     @Override

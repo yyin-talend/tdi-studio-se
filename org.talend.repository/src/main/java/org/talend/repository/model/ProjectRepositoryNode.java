@@ -153,7 +153,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
 
         // 4.2. Snippets
         if (PluginChecker.isSnippetsPluginLoaded()) {
-            snippetsNode = new RepositoryNode(null, codeNode, ENodeType.SYSTEM_FOLDER);
+            snippetsNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
             snippetsNode.setProperties(EProperties.LABEL, ERepositoryObjectType.SNIPPETS);
             snippetsNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.SNIPPETS);
             codeNode.getChildren().add(snippetsNode);
