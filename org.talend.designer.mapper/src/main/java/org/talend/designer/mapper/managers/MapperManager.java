@@ -878,7 +878,7 @@ public class MapperManager extends AbstractMapperManager {
      */
     @Override
     public boolean isDataChanged() {
-        getAbstractMapComponent().refreshMapperConnectorData();
+        getAbstractMapComponent().restoreMapperModelFromInternalData();
         IExternalData originalExternalData = getOriginalExternalData();
         IExternalData currentExternalData = getAbstractMapComponent().getExternalData();
         if (originalExternalData == null && currentExternalData == null) {

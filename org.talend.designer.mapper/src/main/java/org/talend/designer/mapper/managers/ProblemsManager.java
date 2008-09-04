@@ -212,7 +212,7 @@ public class ProblemsManager {
         tablesView.addAll(mapperManager.getUiManager().getVarsTablesView());
         tablesView.addAll(mapperManager.getUiManager().getOutputsTablesView());
         if (forceRefreshData) {
-            mapperManager.getAbstractMapComponent().refreshMapperConnectorData();
+            mapperManager.getAbstractMapComponent().restoreMapperModelFromInternalData();
             checkProblems();
         }
         for (DataMapTableView view : tablesView) {
@@ -234,7 +234,7 @@ public class ProblemsManager {
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public boolean checkProblemsForAllEntries(DataMapTableView dataMapTableView, boolean forceRefreshData) {
         if (forceRefreshData) {
-            mapperManager.getAbstractMapComponent().refreshMapperConnectorData();
+            mapperManager.getAbstractMapComponent().restoreMapperModelFromInternalData();
             checkProblems();
         }
 
@@ -335,7 +335,7 @@ public class ProblemsManager {
         }
 
         if (forceRefreshData) {
-            mapperManager.getAbstractMapComponent().refreshMapperConnectorData();
+            mapperManager.getAbstractMapComponent().restoreMapperModelFromInternalData();
             checkProblems();
         }
 

@@ -29,19 +29,19 @@ import org.talend.designer.mapper.managers.MapperManager;
  */
 public abstract class AbstractDataMapTable implements IDataMapTable {
 
-    public SIZE_STATE sizeState = SIZE_STATE.INTERMEDIATE;
+    private SIZE_STATE sizeState = SIZE_STATE.INTERMEDIATE;
 
-    public boolean minimized;
+    private boolean minimized;
 
-    public String name;
+    private String name;
 
-    public ExtendedTableModel<IColumnEntry> tableColumnsEntriesModel;
+    private ExtendedTableModel<IColumnEntry> tableColumnsEntriesModel;
 
-    public MapperManager mapperManager;
+    protected MapperManager mapperManager;
 
-    public boolean readOnly;
+    private boolean readOnly;
 
-    public final List<IColumnEntry> dataMapTableEntries = new ArrayList<IColumnEntry>();
+    protected final List<IColumnEntry> dataMapTableEntries = new ArrayList<IColumnEntry>();
 
     /**
      * DOC amaumont DataMapTable constructor comment.

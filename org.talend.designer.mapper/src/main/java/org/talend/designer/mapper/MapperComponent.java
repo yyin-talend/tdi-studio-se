@@ -144,7 +144,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
             // TimeMeasure.display = true;
             // TimeMeasure.end("Total open");
             try {
-                refreshMapperConnectorData();
+                restoreMapperModelFromInternalData();
                 mapperMain.getMapperManager().setOriginalExternalData(externalData.clone());
             } catch (CloneNotSupportedException e1) {
                 ExceptionHandler.process(e1);
@@ -174,8 +174,8 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
     /**
      * Restore mapper model from internal stored data.
      */
-    public void refreshMapperConnectorData() {
-        super.refreshMapperConnectorData();
+    public void restoreMapperModelFromInternalData() {
+        super.restoreMapperModelFromInternalData();
         mapperMain.loadModelFromInternalData();
         metadataListOut = mapperMain.getMetadataListOut();
         externalData = mapperMain.buildExternalData();

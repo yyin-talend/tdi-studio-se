@@ -62,6 +62,7 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.editor.MetadataTableEditor;
+import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.ui.metadata.editor.AbstractMetadataTableEditorView;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
@@ -75,6 +76,8 @@ import org.talend.designer.abstractmap.ui.visualmap.link.IMapperLink;
 import org.talend.designer.abstractmap.ui.visualmap.link.LinkState;
 import org.talend.designer.abstractmap.ui.visualmap.link.PointLinkDescriptor;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.mapper.external.data.ExternalMapperData;
+import org.talend.designer.mapper.external.data.ExternalMapperTable;
 import org.talend.designer.mapper.external.data.ExternalMapperUiProperties;
 import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.language.LanguageProvider;
@@ -650,7 +653,7 @@ public class UIManager extends AbstractUIManager {
         if (response == SWT.CANCEL) {
             removeUnsavedOutputsFromProcess();
         } else {
-            mapperManager.getAbstractMapComponent().refreshMapperConnectorData();
+            mapperManager.getAbstractMapComponent().restoreMapperModelFromInternalData();
         }
 
         saveCurrentUIProperties();
@@ -668,22 +671,22 @@ public class UIManager extends AbstractUIManager {
         AbstractMapComponent abstractMapComponent = getAbstractMapperManager().getAbstractMapComponent();
         IProcess process = abstractMapComponent.getProcess();
 
-        List<OutputTable> outputTables = mapperManager.getOutputTables();
-
-        List<String> currentTables = new ArrayList<String>(outputTables.size());
-        for (OutputTable outputTable : outputTables) {
+        List<OutputTable> currentOutputTablesList = mapperManager.getOutputTables();
+        HashSet<String> currentTables = new HashSet<String>(currentOutputTablesList.size());
+        for (OutputTable outputTable : currentOutputTablesList) {
             currentTables.add(outputTable.getName());
         }
+        
+        ExternalMapperData originalExternalData = (ExternalMapperData) mapperManager.getOriginalExternalData();
 
-        HashSet<String> previousTables = new HashSet<String>(outputTables.size());
-        for (OutputTable outputTable : outputTables) {
-            previousTables.add(outputTable.getName());
+        List<ExternalMapperTable> originalOutputTables = originalExternalData.getOutputTables();
+        HashSet<String> originalTableNames = new HashSet<String>(originalOutputTables.size());
+        for (ExternalMapperTable outputTable : originalOutputTables) {
+            originalTableNames.add(outputTable.getName());
         }
-
-        mapperManager.getAbstractMapComponent().refreshMapperConnectorData();
-
+        
         for (String currentTable : currentTables) {
-            if (!previousTables.contains(currentTable)) {
+            if (!originalTableNames.contains(currentTable)) {
                 process.removeUniqueConnectionName(currentTable);
             }
         }
