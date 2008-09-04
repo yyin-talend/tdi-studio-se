@@ -51,6 +51,7 @@ String rowSeparator = ElementParameterParser.getValue(
                 }else{
                 	eol_<%=cid %> = false;
                 	emptyLineCount_<%=cid %>=1;
+                	index_<%=cid %>= 0;
                 }
             }
             if(eol_<%=cid %>) lineCount_<%=cid %>=lineCount_<%=cid %>-emptyLineCount_<%=cid %>;
