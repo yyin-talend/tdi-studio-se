@@ -677,7 +677,7 @@ public class UIManager extends AbstractUIManager {
 
         HashSet<String> previousTables = new HashSet<String>(outputTables.size());
         for (OutputTable outputTable : outputTables) {
-            currentTables.add(outputTable.getName());
+            previousTables.add(outputTable.getName());
         }
 
         mapperManager.getAbstractMapComponent().refreshMapperConnectorData();
