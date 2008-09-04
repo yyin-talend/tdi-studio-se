@@ -99,7 +99,9 @@ public class InputDataMapTableView extends DataMapTableView {
      */
     @Override
     public void notifyFocusLost() {
-        expressionCellEditor.focusLost();
+        if (expressionCellEditor != null) {
+            expressionCellEditor.focusLost();
+        }
     }
 
     @Override
@@ -581,15 +583,13 @@ public class InputDataMapTableView extends DataMapTableView {
     private void enableDisablePersistentMode(TMAP_MATCHING_MODE matchingMode) {
         if (mapperManager.isPersistentMap()) {
             switch (matchingMode) {
-//                activatePersistentCheck
-//                        .setToolTipText("The current lookup mode is incompatible with the 'Store on disk' mode for the moment"); //$NON-NLS-1$
-//                activatePersistentCheck.setEnabled(false);
-//                activatePersistentCheck.setSelection(false);
-//                getInputTable().setPersistent(false);
-//                break;
+            // activatePersistentCheck
+            //                        .setToolTipText("The current lookup mode is incompatible with the 'Store on disk' mode for the moment"); //$NON-NLS-1$
+            // activatePersistentCheck.setEnabled(false);
+            // activatePersistentCheck.setSelection(false);
+            // getInputTable().setPersistent(false);
+            // break;
 
-            
-            
             case ALL_ROWS:
             case FIRST_MATCH:
             case UNIQUE_MATCH:

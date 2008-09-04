@@ -612,6 +612,9 @@ public class UIManager extends AbstractUIManager {
     public void closeMapper(int response) {
 
         boolean save = true;
+        for (DataMapTableView dataMapTableView : getInputsTablesView()) {
+            dataMapTableView.notifyFocusLost();
+        }
         for (DataMapTableView dataMapTableView : getOutputsTablesView()) {
             dataMapTableView.notifyFocusLost();
         }
