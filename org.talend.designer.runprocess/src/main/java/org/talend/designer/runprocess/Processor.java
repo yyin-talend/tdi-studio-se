@@ -39,6 +39,7 @@ import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.ITargetExecutionConfig;
+import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.codegen.ICodeGenerator;
 import org.talend.designer.core.ISyntaxCheckableEditor;
 import org.talend.designer.runprocess.i18n.Messages;
@@ -185,6 +186,10 @@ public abstract class Processor implements IProcessor {
     public String[] getCommandLine(boolean externalUse, int statOption, int traceOption, String... codeOptions) {
         setExternalUse(externalUse);
         String[] cmd = null;
+
+        String beforeCommandStr = CorePlugin.getDefault().getPreferenceStore().getString(
+                ITalendCorePrefConstants.BEFORE_COMMAND_STR);
+
         try {
             cmd = getCommandLine();
 
@@ -198,6 +203,17 @@ public abstract class Processor implements IProcessor {
             cmd = (String[]) ArrayUtils.add(cmd, "$*"); //$NON-NLS-1$
         } else if (Platform.OS_WIN32.equals(getTargetPlatform())) {
             cmd = (String[]) ArrayUtils.add(cmd, "%*"); //$NON-NLS-1$
+        }
+        String[] tempStrArray = null;
+        if (getTargetPlatform() != null && beforeCommandStr != null && !beforeCommandStr.equals("")) {
+            tempStrArray = new String[cmd.length + 1];
+            tempStrArray[0] = beforeCommandStr + "\n";
+            for (int i = 0; i < cmd.length; i++) {
+                tempStrArray[i + 1] = cmd[i];
+            }
+        }
+        if (tempStrArray != null) {
+            return tempStrArray;
         }
         return cmd;
     }

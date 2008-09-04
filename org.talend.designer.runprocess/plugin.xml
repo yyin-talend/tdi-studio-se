@@ -110,6 +110,12 @@
           class="org.talend.designer.runprocess.prefs.RunProcessPreferencePage"
           id="org.talend.designer.runprocess"
           name="Run/Debug"/>
+    <page
+          category="org.talend.core.prefs"
+          class="org.talend.designer.runprocess.prefs.ShellSettingPreferencePage"
+          id="org.talend.designer.runprocess.shellsetting"
+          name="Shell Setting">
+    </page>
  </extension>
  <extension
        point="org.eclipse.jdt.core.compilationParticipant">
