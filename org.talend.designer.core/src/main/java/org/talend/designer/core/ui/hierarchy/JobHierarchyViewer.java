@@ -13,11 +13,15 @@
 package org.talend.designer.core.ui.hierarchy;
 
 import org.eclipse.jdt.internal.ui.viewsupport.ProblemTreeViewer;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchPartSite;
 
 /**
  * DOC bqian class global comment. Detailled comment
@@ -62,6 +66,23 @@ public abstract class JobHierarchyViewer extends ProblemTreeViewer {
             }
         }
         return null;
+    }
+
+    /**
+     * Attaches a contextmenu listener to the tree
+     * 
+     * @param menuListener the menu listener
+     * @param popupId the popup id
+     * @param viewSite the view site
+     */
+    public void initContextMenu(IMenuListener menuListener, IWorkbenchPartSite viewSite) {
+        String popupId = "JobHierarchyViewer_ContextMenu";
+        MenuManager menuMgr = new MenuManager();
+        menuMgr.setRemoveAllWhenShown(true);
+        menuMgr.addMenuListener(menuListener);
+        Menu menu = menuMgr.createContextMenu(getTree());
+        getTree().setMenu(menu);
+        viewSite.registerContextMenu(popupId, menuMgr, this);
     }
 
     /**

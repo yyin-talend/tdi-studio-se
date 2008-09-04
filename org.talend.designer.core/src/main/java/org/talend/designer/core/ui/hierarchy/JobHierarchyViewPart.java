@@ -15,7 +15,10 @@ package org.talend.designer.core.ui.hierarchy;
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.jdt.internal.ui.actions.CompositeActionGroup;
 import org.eclipse.jdt.internal.ui.typehierarchy.TypeHierarchyMessages;
+import org.eclipse.jdt.internal.ui.viewsupport.SelectionProviderMediator;
+import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
@@ -27,6 +30,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
@@ -47,6 +51,8 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.actions.ActionContext;
+import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.part.PageBook;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.views.navigator.LocalSelectionTransfer;
@@ -102,6 +108,8 @@ public class JobHierarchyViewPart extends ViewPart implements IJobHierarchyViewP
 
     private ToggleOrientationAction[] fToggleOrientationActions;
 
+    private CompositeActionGroup fActionGroups;
+
     /**
      * Constructor
      */
@@ -127,6 +135,8 @@ public class JobHierarchyViewPart extends ViewPart implements IJobHierarchyViewP
     private int fCurrentLayout;
 
     private boolean fInComputeLayout;
+
+    private SelectionProviderMediator fSelectionProviderMediator;
 
     @Override
     public void createPartControl(Composite container) {
@@ -193,6 +203,20 @@ public class JobHierarchyViewPart extends ViewPart implements IJobHierarchyViewP
             layoutSubMenu.add(fToggleOrientationActions[i]);
         }
         viewMenu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+
+        // selection provider
+        int nHierarchyViewers = fAllViewers.length;
+        StructuredViewer[] trackedViewers = new StructuredViewer[nHierarchyViewers + 1];
+        for (int i = 0; i < nHierarchyViewers; i++) {
+            trackedViewers[i] = fAllViewers[i];
+        }
+        trackedViewers[nHierarchyViewers] = dependencyViewer;
+        fSelectionProviderMediator = new SelectionProviderMediator(trackedViewers, getCurrentViewer());
+        getSite().setSelectionProvider(fSelectionProviderMediator);
+        ActionGroup[] actionGroups = new ActionGroup[] { new JobActionGroup() };
+        fActionGroups = new CompositeActionGroup(actionGroups);
+
+        fActionGroups.fillActionBars(actionBars);
     }
 
     private Control createMethodViewerControl(Composite parent) {
@@ -621,6 +645,35 @@ public class JobHierarchyViewPart extends ViewPart implements IJobHierarchyViewP
 
     private void initializeTypesViewer(final JobHierarchyViewer typesViewer) {
         // typesViewer.getControl().setVisible(false);
+        typesViewer.initContextMenu(new IMenuListener() {
+
+            public void menuAboutToShow(IMenuManager menu) {
+                fillTypesViewerContextMenu(typesViewer, menu);
+            }
+        }, getSite());
+
         typesViewer.addPostSelectionChangedListener(fSelectionChangedListener);
+    }
+
+    private void fillTypesViewerContextMenu(JobHierarchyViewer viewer, IMenuManager menu) {
+        // viewer entries
+        ISelection selection = viewer.getSelection();
+
+        // if (fFocusOnSelectionAction.canActionBeAdded())
+        // menu.appendToGroup(GROUP_FOCUS, fFocusOnSelectionAction);
+        // menu.appendToGroup(GROUP_FOCUS, fFocusOnTypeAction);
+
+        fActionGroups.setContext(new ActionContext(getSite().getSelectionProvider().getSelection()));
+        fActionGroups.fillContextMenu(menu);
+        fActionGroups.setContext(null);
+    }
+
+    public void dispose() {
+        fHierarchyLifeCycle.freeHierarchy();
+
+        if (fActionGroups != null)
+            fActionGroups.dispose();
+
+        super.dispose();
     }
 }

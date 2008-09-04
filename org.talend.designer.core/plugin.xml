@@ -226,8 +226,25 @@
                         name="%jobHierarchyView">
                   </view>
                   
-                  
    </extension>
+   
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.talend.rcp.perspective">
+          <view
+                id="org.talend.designer.core.ui.hierarchy.JobHierarchyViewPart"
+                relationship="stack"
+                relative="org.talend.scheduler.views.Scheduler"
+                visible="true">
+         </view>
+        
+          <showInPart
+               id="org.talend.designer.core.ui.hierarchy.JobHierarchyViewPart">
+         </showInPart>
+      </perspectiveExtension>
+   </extension>
+   
    <extension
          point="org.talend.core.repositoryContextualsActions">
       <Action
@@ -256,6 +273,7 @@
       <Action
             class="org.talend.designer.core.ui.hierarchy.OpenRepositoryJobHierarchyAction"
             id="org.talend.designer.core.ui.hierarchy.OpenRepositoryJobHierarchyAction"
+            isReadAction="true"
             level="12"
             name="Open Job Hierarchy"/>
             

@@ -23,7 +23,6 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.process.Process;
-import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.actions.AContextualAction;
 
@@ -56,9 +55,7 @@ public class OpenRepositoryJobHierarchyAction extends AContextualAction {
 
         RepositoryNode node = (RepositoryNode) obj;
         Property property = (Property) node.getObject().getProperty();
-        ProcessItem processItem = null;
 
-        ItemCacheManager.clearCache();
         Assert.isTrue(property.getItem() instanceof ProcessItem);
 
         // TODO should use a fake Process here to replace the real Process.
