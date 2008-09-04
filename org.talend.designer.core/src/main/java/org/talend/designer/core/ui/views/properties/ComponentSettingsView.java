@@ -530,8 +530,12 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
         } else if (elem instanceof Node) {
             // if (isAdvancedType(elem)) {
             if (((Node) elem).isELTComponent()) {
-                if (CorePlugin.getDefault().useSQLPattern()) {
-                    return EElementType.ELT_NODE.getCategories();
+                if (!((Node) elem).getComponent().getName().endsWith("Output")
+                        && !((Node) elem).getComponent().getName().endsWith("Input")
+                        && !((Node) elem).getComponent().getName().endsWith("Map")) {
+                    if (CorePlugin.getDefault().useSQLPattern()) {
+                        return EElementType.ELT_NODE.getCategories();
+                    }
                 }
             }
             return EElementType.ADVANCED_NODE.getCategories();
