@@ -1733,7 +1733,7 @@ public class UIManager extends AbstractUIManager {
      * Refresh Sql select query in the bottom tab and its title.
      */
     public void refreshSqlExpression() {
-        mapperManager.getComponent().refreshMapperConnectorData();
+        mapperManager.getComponent().restoreMapperModelFromInternalData();
         OutputDataMapTableView selectedOutputTableView = getCurrentSelectedOutputTableView();
         if (selectedOutputTableView == null) {
 

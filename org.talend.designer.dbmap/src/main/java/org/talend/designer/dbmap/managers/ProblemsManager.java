@@ -170,7 +170,7 @@ public class ProblemsManager {
         tablesView.addAll(mapperManager.getUiManager().getVarsTablesView());
         tablesView.addAll(mapperManager.getUiManager().getOutputsTablesView());
         if (forceRefreshData) {
-            mapperManager.getComponent().refreshMapperConnectorData();
+            mapperManager.getComponent().restoreMapperModelFromInternalData();
             checkProblems();
         }
         for (DataMapTableView view : tablesView) {
@@ -186,7 +186,7 @@ public class ProblemsManager {
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public void checkProblemsForAllEntries(DataMapTableView dataMapTableView, boolean forceRefreshData) {
         if (forceRefreshData) {
-            mapperManager.getComponent().refreshMapperConnectorData();
+            mapperManager.getComponent().restoreMapperModelFromInternalData();
             checkProblems();
         }
         List<IColumnEntry> columnsEntriesList = dataMapTableView.getDataMapTable().getColumnEntries();

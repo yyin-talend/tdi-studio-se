@@ -127,14 +127,14 @@ public class DbMapComponent extends AbstractMapComponent {
         if (MapperMain.isStandAloneMode()) {
             display.dispose();
         }
-        refreshMapperConnectorData();
+        restoreMapperModelFromInternalData();
         return mapperMain.getMapperDialogResponse();
     }
 
     /**
      * DOC amaumont Comment method "refreshMapperConnectorData".
      */
-    public void refreshMapperConnectorData() {
+    public void restoreMapperModelFromInternalData() {
         mapperMain.loadModelFromInternalData();
         metadataListOut = mapperMain.getMetadataListOut();
         externalData = mapperMain.buildExternalData();

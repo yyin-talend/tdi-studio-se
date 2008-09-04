@@ -61,9 +61,9 @@ public abstract class AbstractMapComponent extends AbstractExternalNode {
     }
 
     /**
-     * DOC amaumont Comment method "refreshMapperConnectorData".
+     * Restore mapper model from internal stored data.
      */
-    public void refreshMapperConnectorData() {
+    public void restoreMapperModelFromInternalData() {
 
     }
 
