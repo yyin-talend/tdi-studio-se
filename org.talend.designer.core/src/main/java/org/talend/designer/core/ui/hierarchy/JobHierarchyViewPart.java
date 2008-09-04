@@ -47,6 +47,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
@@ -226,6 +227,20 @@ public class JobHierarchyViewPart extends ViewPart implements IJobHierarchyViewP
         dependencyViewer.setContentProvider(provider);
         dependencyViewer.setLabelProvider(provider);
         Control control = dependencyViewer.getTable();
+
+        String popupId = "DependencyViewer_ContextMenu";
+        MenuManager menuMgr = new MenuManager();
+        menuMgr.setRemoveAllWhenShown(true);
+        menuMgr.addMenuListener(new IMenuListener() {
+
+            public void menuAboutToShow(IMenuManager menu) {
+                fillDependencyViewerContextMenu(menu);
+            }
+        });
+        Menu menu = menuMgr.createContextMenu(control);
+        control.setMenu(menu);
+        getSite().registerContextMenu(popupId, menuMgr, dependencyViewer);
+
         return control;
     }
 
@@ -648,21 +663,31 @@ public class JobHierarchyViewPart extends ViewPart implements IJobHierarchyViewP
         typesViewer.initContextMenu(new IMenuListener() {
 
             public void menuAboutToShow(IMenuManager menu) {
-                fillTypesViewerContextMenu(typesViewer, menu);
+                fillJobViewerContextMenu(typesViewer, menu);
             }
         }, getSite());
 
         typesViewer.addPostSelectionChangedListener(fSelectionChangedListener);
     }
 
-    private void fillTypesViewerContextMenu(JobHierarchyViewer viewer, IMenuManager menu) {
+    private void fillJobViewerContextMenu(JobHierarchyViewer viewer, IMenuManager menu) {
         // viewer entries
-        ISelection selection = viewer.getSelection();
+        // ISelection selection = viewer.getSelection();
 
         // if (fFocusOnSelectionAction.canActionBeAdded())
         // menu.appendToGroup(GROUP_FOCUS, fFocusOnSelectionAction);
         // menu.appendToGroup(GROUP_FOCUS, fFocusOnTypeAction);
 
+        fActionGroups.setContext(new ActionContext(getSite().getSelectionProvider().getSelection()));
+        fActionGroups.fillContextMenu(menu);
+        fActionGroups.setContext(null);
+    }
+
+    /*
+     * Creates the context menu for the method viewer
+     */
+    private void fillDependencyViewerContextMenu(IMenuManager menu) {
+        // viewer entries
         fActionGroups.setContext(new ActionContext(getSite().getSelectionProvider().getSelection()));
         fActionGroups.fillContextMenu(menu);
         fActionGroups.setContext(null);

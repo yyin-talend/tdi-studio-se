@@ -25,6 +25,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.actions.ActionGroup;
 import org.talend.commons.ui.swt.actions.ITreeContextualAction;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.actions.ActionsHelper;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
@@ -59,7 +60,7 @@ public class JobActionGroup extends ActionGroup {
     public void fillContextMenu(IMenuManager menu) {
         IStructuredSelection selection = (IStructuredSelection) getContext().getSelection();
 
-        JobSelectionProvider selectionProvider = new JobSelectionProvider(selection);
+        SelectionProviderAdapter selectionProvider = new SelectionProviderAdapter(selection);
         List<ITreeContextualAction> contextualsActions = ActionsHelper.getRepositoryContextualsActions();
         for (ITreeContextualAction action : contextualsActions) {
             if (action.isReadAction() || action.isEditAction() || action.isPropertiesAction()) {
@@ -81,13 +82,13 @@ public class JobActionGroup extends ActionGroup {
     /**
      * DOC bqian JobActionGroup class global comment. Detailled comment
      */
-    class JobSelectionProvider implements ISelectionProvider {
+    class SelectionProviderAdapter implements ISelectionProvider {
 
         IStructuredSelection selection = null;
 
         IStructuredSelection newSelection = null;
 
-        public JobSelectionProvider(IStructuredSelection selection) {
+        public SelectionProviderAdapter(IStructuredSelection selection) {
             this.selection = selection;
             adaptProcessToRepositoryNode(selection);
         }
@@ -103,10 +104,16 @@ public class JobActionGroup extends ActionGroup {
             List<RepositoryNode> list = new ArrayList<RepositoryNode>();
 
             for (Iterator iterator = inputSelection.iterator(); iterator.hasNext();) {
-                IProcess2 process = (IProcess2) iterator.next();
-
-                RepositoryNode repositoryNode = RepositoryNodeUtilities.getRepositoryNode(process.getId());
-                list.add(repositoryNode);
+                Object o = iterator.next();
+                RepositoryNode repositoryNode = null;
+                if (o instanceof IProcess2) {
+                    repositoryNode = RepositoryNodeUtilities.getRepositoryNode(((IProcess2) o).getId());
+                } else if (o instanceof IRepositoryObject) {
+                    repositoryNode = RepositoryNodeUtilities.getRepositoryNode((IRepositoryObject) o);
+                }
+                if (repositoryNode != null) {
+                    list.add(repositoryNode);
+                }
             }
 
             newSelection = new StructuredSelection(list);
