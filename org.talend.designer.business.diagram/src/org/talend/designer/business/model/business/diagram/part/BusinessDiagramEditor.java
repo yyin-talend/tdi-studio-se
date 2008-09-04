@@ -22,14 +22,13 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.properties.BusinessProcessItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.designer.business.diagram.custom.actions.DiagramResourceManager;
 import org.talend.designer.business.diagram.custom.dnd.BusinessDiagramDropTargetListener;
 import org.talend.designer.business.model.business.diagram.edit.parts.BusinessEditPartFactory;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
-import org.talend.repository.ui.views.IRepositoryView;
-import org.talend.repository.ui.views.RepositoryView;
 
 /**
  * @generated
@@ -128,8 +127,7 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
             }
             propertyIsDirty = false;
             firePropertyChange(IEditorPart.PROP_DIRTY);
-            IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(RepositoryView.VIEW_ID);
-            viewPart.refresh(repositoryEditorInput.getRepositoryNode());
+            RepositoryManager.refreshSavedNode(repositoryEditorInput.getRepositoryNode());
 
         }
     }
@@ -165,8 +163,7 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(RepositoryView.VIEW_ID);
-        viewPart.refresh();
+        RepositoryManager.refreshSavedNode(repositoryEditorInput.getRepositoryNode());
     }
 
     public void init(final IEditorSite site, final IEditorInput editorInput) throws PartInitException {

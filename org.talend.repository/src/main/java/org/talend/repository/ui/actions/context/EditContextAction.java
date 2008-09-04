@@ -20,6 +20,7 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
@@ -88,7 +89,7 @@ public class EditContextAction extends AContextualAction {
         dlg.open();
 
         if (node != null) {
-            refresh(node);
+            RepositoryManager.refreshSavedNode(node);
         }
     }
 

@@ -17,6 +17,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -121,7 +122,8 @@ public class RepositoryService implements IRepositoryService {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.repository.model.IRepositoryService#registerRepositoryChangedListener(org.talend.repository.IRepositoryChangedListener)
+     * @seeorg.talend.repository.model.IRepositoryService#registerRepositoryChangedListener(org.talend.repository.
+     * IRepositoryChangedListener)
      */
     public void registerRepositoryChangedListener(IRepositoryChangedListener listener) {
         changeProcessor.addRepositoryChangedListener(listener);
@@ -130,7 +132,9 @@ public class RepositoryService implements IRepositoryService {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.repository.model.IRepositoryService#registerRepositoryChangedListenerAsFirst(org.talend.repository.IRepositoryChangedListener)
+     * @see
+     * org.talend.repository.model.IRepositoryService#registerRepositoryChangedListenerAsFirst(org.talend.repository
+     * .IRepositoryChangedListener)
      */
     public void registerRepositoryChangedListenerAsFirst(IRepositoryChangedListener listener) {
         changeProcessor.registerRepositoryChangedListenerAsFirst(listener);
@@ -139,7 +143,8 @@ public class RepositoryService implements IRepositoryService {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.repository.model.IRepositoryService#removeRepositoryChangedListener(org.talend.repository.IRepositoryChangedListener)
+     * @seeorg.talend.repository.model.IRepositoryService#removeRepositoryChangedListener(org.talend.repository.
+     * IRepositoryChangedListener)
      */
     public void removeRepositoryChangedListener(IRepositoryChangedListener listener) {
         changeProcessor.removeRepositoryChangedListener(listener);
@@ -148,7 +153,8 @@ public class RepositoryService implements IRepositoryService {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.repository.model.IRepositoryService#repositoryChanged(org.talend.repository.RepositoryElementDelta)
+     * @see
+     * org.talend.repository.model.IRepositoryService#repositoryChanged(org.talend.repository.RepositoryElementDelta)
      */
     public void repositoryChanged(RepositoryElementDelta delta) {
         changeProcessor.repositoryChanged(delta);
@@ -391,7 +397,8 @@ public class RepositoryService implements IRepositoryService {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.repository.model.IRepositoryService#removeRepositoryTreeViewListener(org.eclipse.jface.viewers.ISelectionChangedListener)
+     * @seeorg.talend.repository.model.IRepositoryService#removeRepositoryTreeViewListener(org.eclipse.jface.viewers.
+     * ISelectionChangedListener)
      */
     public void removeRepositoryTreeViewListener(ISelectionChangedListener listener) {
         TreeViewer treeViewer = getRepositoryTreeView();
@@ -422,4 +429,11 @@ public class RepositoryService implements IRepositoryService {
         }
     }
 
+    public IPreferenceStore getRepositoryPreferenceStore() {
+        return RepositoryPlugin.getDefault().getPreferenceStore();
+    }
+
+    public RepositoryNode getRepositoryNode(String id) {
+        return RepositoryNodeUtilities.getRepositoryNode(id);
+    }
 }

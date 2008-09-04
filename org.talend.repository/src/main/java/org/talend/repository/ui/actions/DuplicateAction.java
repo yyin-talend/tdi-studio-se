@@ -33,6 +33,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.utils.KeywordsValidator;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
@@ -150,7 +151,7 @@ public class DuplicateAction extends AContextualAction {
 
         createOperation(jobNewName, sourceNode, copyObjectAction, selectionInClipboard);
 
-        refresh();
+        RepositoryManager.refreshCreatedNode(sourceNode.getObjectType());
 
     }
 

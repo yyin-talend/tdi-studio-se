@@ -72,6 +72,7 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.PropertiesPackage;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.properties.tab.IMultiPageTalendEditor;
 import org.talend.core.ui.IUIRefresher;
 import org.talend.core.utils.AccessingEmfJob;
@@ -99,7 +100,6 @@ import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.job.deletion.JobResourceManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
-import org.talend.repository.ui.views.IRepositoryView;
 
 /**
  * DOC qzhang class global comment. Detailled comment
@@ -474,6 +474,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         propertyInformation = new ArrayList(processEditorInput.getItem().getProperty().getInformations());
         propertyIsDirty = false;
         firePropertyChange(IEditorPart.PROP_DIRTY);
+        RepositoryManager.refreshSavedNode(processEditorInput.getRepositoryNode());
     }
 
     protected void updateRunJobContext() {
@@ -844,11 +845,11 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             e.printStackTrace();
         }
 
-        IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);
-        if (viewPart != null) {
-            viewPart.refresh(processEditorInput.getRepositoryNode());
-        }
-
+        // IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);
+        // if (viewPart != null) {
+        // viewPart.refresh(processEditorInput.getRepositoryNode());
+        // }
+        RepositoryManager.refreshSavedNode(processEditorInput.getRepositoryNode());
         processEditorInput.setLoadedProcess(null);
 
         processEditorInput = null;

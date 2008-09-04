@@ -53,6 +53,7 @@ import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.FileItem;
 import org.talend.core.model.properties.Information;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.IUIRefresher;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.views.problems.Problems;
@@ -114,8 +115,7 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
         super.doSetInput(rEditorInput);
         setName();
 
-        IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);
-        viewPart.refresh(rEditorInput.getRepositoryNode());
+        RepositoryManager.getRepositoryView().refresh(rEditorInput.getRepositoryNode());
     }
 
     private void setName() {
@@ -175,8 +175,7 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
         } catch (PersistenceException e) {
             e.printStackTrace();
         }
-        IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);
-        viewPart.refresh(rEditorInput.getRepositoryNode());
+        RepositoryManager.refreshSavedNode(rEditorInput.getRepositoryNode());
     }
 
     @Override
@@ -244,8 +243,7 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
                 // }
 
                 // update image in repository
-                IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);
-                viewPart.refresh(rEditorInput.getRepositoryNode());
+                RepositoryManager.refreshSavedNode(rEditorInput.getRepositoryNode());
                 // update editor image
                 setTitleImage(getTitleImage());
                 return Status.OK_STATUS;

@@ -38,6 +38,7 @@ import org.talend.core.model.properties.FileItem;
 import org.talend.core.model.properties.Information;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.IUIRefresher;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.core.DesignerPlugin;
@@ -99,8 +100,7 @@ public class StandAloneTalendPerlEditor extends PerlEditor implements IUIRefresh
 
         setName();
 
-        IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);
-        viewPart.refresh(rEditorInput.getRepositoryNode());
+        RepositoryManager.getRepositoryView().refresh(rEditorInput.getRepositoryNode());
 
     }
 
@@ -125,9 +125,7 @@ public class StandAloneTalendPerlEditor extends PerlEditor implements IUIRefresh
         } catch (PersistenceException e) {
             e.printStackTrace();
         }
-        IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);
-        viewPart.refresh(rEditorInput.getRepositoryNode());
-        // viewPart1.refresh();
+        RepositoryManager.refreshSavedNode(rEditorInput.getRepositoryNode());
     }
 
     @Override
@@ -193,8 +191,7 @@ public class StandAloneTalendPerlEditor extends PerlEditor implements IUIRefresh
                 // }
 
                 // update image in repository
-                IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);
-                viewPart.refresh(rEditorInput.getRepositoryNode());
+                RepositoryManager.refreshSavedNode(rEditorInput.getRepositoryNode());
 
                 // update editor image
                 setTitleImage(getTitleImage());

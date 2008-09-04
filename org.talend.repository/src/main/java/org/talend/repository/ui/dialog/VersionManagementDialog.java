@@ -15,8 +15,10 @@ package org.talend.repository.ui.dialog;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.internal.core.util.Util;
@@ -70,6 +72,7 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ERepositoryStatus;
@@ -811,10 +814,12 @@ public class VersionManagementDialog extends Dialog {
 
             public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                 monitor.beginTask("", getModifiedVersionItems().size() * 100); //$NON-NLS-1$
+                Set<ERepositoryObjectType> types = new HashSet<ERepositoryObjectType>();
                 for (ItemVersionObject object : getModifiedVersionItems()) {
                     if (!object.getOldVersion().equals(object.getNewVersion())) {
                         final Item item = object.getItem();
                         item.getProperty().setVersion(object.getNewVersion());
+                        types.add(object.getRepositoryNode().getObjectType());
 
                         try {
                             FACTORY.save(project, item);
@@ -824,7 +829,7 @@ public class VersionManagementDialog extends Dialog {
                     }
                     monitor.worked(100);
                 }
-                RepositoryView.show().refresh();
+                RepositoryManager.refresh(types);
                 monitor.done();
             }
         };

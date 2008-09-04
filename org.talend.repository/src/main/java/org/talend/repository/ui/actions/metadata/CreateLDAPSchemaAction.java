@@ -14,13 +14,13 @@ package org.talend.repository.ui.actions.metadata;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.LDAPSchemaConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.repository.ProjectManager;
@@ -109,11 +109,7 @@ public class CreateLDAPSchemaAction extends AbstractCreateAction {
         wizardDialog.create();
 
         wizardDialog.open();
-        if (isToolbar()) {
-            refresh(fileLDAPSchemaNode);
-        } else {
-            refresh(((IStructuredSelection) selection).getFirstElement());
-        }
+        RepositoryManager.refreshCreatedNode(ERepositoryObjectType.METADATA_LDAP_SCHEMA);
 
     }
 

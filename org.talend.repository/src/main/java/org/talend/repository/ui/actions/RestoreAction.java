@@ -13,7 +13,9 @@
 package org.talend.repository.ui.actions;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -26,6 +28,7 @@ import org.talend.core.model.metadata.builder.connection.SubItemHelper;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -56,6 +59,7 @@ public class RestoreAction extends AContextualAction {
         List<IRepositoryObject> connections = new ArrayList<IRepositoryObject>();
         ISelection selection = getSelection();
         boolean needToUpdatePalette = false;
+        Set<ERepositoryObjectType> types = new HashSet<ERepositoryObjectType>();
         for (Object obj : ((IStructuredSelection) selection).toArray()) {
             if (obj instanceof RepositoryNode) {
                 try {
@@ -76,7 +80,15 @@ public class RestoreAction extends AContextualAction {
                     if (nodeType == ERepositoryObjectType.JOBLET) {
                         needToUpdatePalette = true;
                     }
-                    refresh();
+                    if (nodeType.isSubItem()) {
+                        RepositoryNode parent = node.getParent();
+                        if (parent.getObject() == null) { // db
+                            parent = parent.getParent();
+                        }
+                        nodeType = parent.getObjectType();
+                    }
+                    types.add(nodeType);
+                    RepositoryManager.refreshDeletedNode(types);
                 } catch (Exception e) {
                     // ExceptionHandler.process(e);
                     e.printStackTrace();

@@ -23,6 +23,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.repository.ProjectManager;
@@ -79,7 +80,7 @@ public class CreateFolderAction extends AContextualAction {
             dialog.setPageSize(400, 60);
             dialog.create();
             if (dialog.open() == Window.OK) {
-                refresh(node);
+                RepositoryManager.refreshCreatedNode(objectType);
             }
         }
     }

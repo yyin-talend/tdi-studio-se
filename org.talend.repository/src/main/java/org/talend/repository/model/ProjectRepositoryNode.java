@@ -395,7 +395,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
 
         generatedFolder.setProperties(EProperties.LABEL, ERepositoryObjectType.GENERATED.toString());
         generatedFolder.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.GENERATED); // ERepositoryObjectType
-                                                                                                  // .FOLDER);
+        // .FOLDER);
         parent.getChildren().add(generatedFolder);
 
     }
@@ -968,6 +968,69 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         return this.project;
     }
 
+    public RepositoryNode getRootRepositoryNode(ERepositoryObjectType type) {
+        if (type == null) {
+            return null;
+        }
+
+        switch (type) {
+        case BUSINESS_PROCESS:
+            return this.businessProcessNode;
+        case PROCESS:
+            return this.processNode;
+        case CONTEXT:
+            return this.contextNode;
+        case ROUTINES:
+            return this.routineNode;
+        case SNIPPETS:
+            return this.snippetsNode;
+        case GENERATED:
+        case JOBS:
+        case JOB_DOC:
+        case JOBLETS:
+        case JOBLET_DOC:
+        case DOCUMENTATION:
+            return this.docNode;
+        case METADATA_CON_TABLE:
+        case METADATA:
+            return this.metadataNode; // maybe, there are some problems to process some fuctions.
+        case METADATA_CON_VIEW:
+        case METADATA_CON_SYNONYM:
+        case METADATA_CON_QUERY:
+        case METADATA_CON_CDC:
+        case METADATA_CONNECTIONS:
+            return this.metadataConNode;
+        case SQLPATTERNS:
+            return this.sqlPatternNode;
+        case METADATA_FILE_DELIMITED:
+            return this.metadataFileNode;
+        case METADATA_FILE_POSITIONAL:
+            return this.metadataFilePositionalNode;
+        case METADATA_FILE_REGEXP:
+            return this.metadataFileRegexpNode;
+        case METADATA_FILE_XML:
+            return this.metadataFileXmlNode;
+        case METADATA_FILE_LDIF:
+            return this.metadataFileLdifNode;
+        case METADATA_FILE_EXCEL:
+            return this.metadataFileExcelNode;
+        case METADATA_SALESFORCE_SCHEMA:
+            return this.metadataSalesforceSchemaNode;
+        case METADATA_GENERIC_SCHEMA:
+            return this.metadataGenericSchemaNode;
+        case METADATA_LDAP_SCHEMA:
+            return this.metadataLDAPSchemaNode;
+        case METADATA_WSDL_SCHEMA:
+            return this.metadataWSDLSchemaNode;
+        case REFERENCED_PROJECTS:
+            return this.refProject;
+        case JOBLET:
+            return this.jobletNode;
+        default:
+        }
+        return null;
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -975,5 +1038,14 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
      */
     public boolean isMainProject() {
         return getParent() == null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.nodes.IProjectRepositoryNode#getRecBinNode()
+     */
+    public RepositoryNode getRecBinNode() {
+        return this.recBinNode;
     }
 }

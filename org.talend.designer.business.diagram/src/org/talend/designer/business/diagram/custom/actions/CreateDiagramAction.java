@@ -13,6 +13,7 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.designer.business.diagram.i18n.Messages;
@@ -58,7 +59,7 @@ public class CreateDiagramAction extends AContextualAction {
         wizardDialog.create();
         wizardDialog.open();
 
-        refresh();
+        RepositoryManager.refreshCreatedNode(ERepositoryObjectType.BUSINESS_PROCESS);
     }
 
     public void init(TreeViewer viewer, IStructuredSelection selection) {

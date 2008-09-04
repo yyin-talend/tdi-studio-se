@@ -37,14 +37,14 @@ import org.talend.commons.ui.swt.formtools.UtilsButton;
 import org.talend.core.model.metadata.builder.connection.FileConnection;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ContextItem;
+import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IConnParamName;
 import org.talend.repository.preview.ProcessDescription;
 import org.talend.repository.ui.utils.ConnectionContextHelper;
-import org.talend.repository.ui.views.IRepositoryView;
-import org.talend.repository.ui.views.RepositoryView;
 
 /**
  * DOC tguiu class global comment. Detailled comment <br/>
@@ -432,8 +432,7 @@ public abstract class AbstractForm extends Composite {
                     // refresh current UI.
                     initialize();
                     adaptFormToEditable();
-                    IRepositoryView view = RepositoryView.show();
-                    view.refresh();
+                    RepositoryManager.refreshCreatedNode(ERepositoryObjectType.CONTEXT);
                 }
             }
         }

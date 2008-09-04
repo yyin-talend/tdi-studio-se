@@ -25,6 +25,7 @@ import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.repository.ProjectManager;
@@ -123,11 +124,7 @@ public class CreateRoutineAction extends AbstractRoutineAction {
         WizardDialog dlg = new WizardDialog(Display.getCurrent().getActiveShell(), routineWizard);
 
         if (dlg.open() == Window.OK) {
-            if (isToolbar()) {
-                refresh(routineNode);
-            } else {
-                refresh(node);
-            }
+            RepositoryManager.refreshCreatedNode(ERepositoryObjectType.ROUTINES);
 
             try {
                 openRoutineEditor(routineWizard.getRoutine(), false);

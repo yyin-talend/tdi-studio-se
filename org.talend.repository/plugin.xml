@@ -361,6 +361,12 @@
             id="org.talend.repository.prefs.documentation"
             name="Documentation">
       </page>
+      <page
+            category="org.talend.core.prefs"
+            class="org.talend.repository.preference.RepositoryPreferencePage"
+            id="org.talend.repository.prefs.repository"
+            name="%prefsRepositoryName">
+      </page>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
@@ -1028,6 +1034,12 @@
                label="Create"
                toolbarPath="Default"/>
       </actionSet>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.talend.repository.preference.RepositoryPreferenceInitializer">
+      </initializer>
    </extension>
 
 </plugin>

@@ -21,6 +21,7 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.BusinessProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.model.repository.RepositoryObject;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.business.diagram.i18n.Messages;
@@ -58,14 +59,14 @@ public class OpenDiagramAction extends AContextualAction {
             if (repositoryObject instanceof RepositoryObject) {
                 RepositoryObject abstractRepositoryObject = (RepositoryObject) repositoryObject;
 
-                BusinessProcessItem businessProcessItem = (BusinessProcessItem) abstractRepositoryObject.getProperty()
-                        .getItem();
+                BusinessProcessItem businessProcessItem = (BusinessProcessItem) abstractRepositoryObject.getProperty().getItem();
                 DiagramResourceManager diagramResourceManager = new DiagramResourceManager(getActivePage(),
                         new NullProgressMonitor());
                 IFile file = diagramResourceManager.createDiagramFile();
                 diagramResourceManager.updateResource(businessProcessItem, file);
                 diagramResourceManager.openEditor(businessProcessItem, file, false);
             }
+            RepositoryManager.getRepositoryView().refresh(repositoryNode);
         }
     }
 
@@ -82,8 +83,7 @@ public class OpenDiagramAction extends AContextualAction {
             Object object = selection.getFirstElement();
             if (object instanceof RepositoryNode) {
                 RepositoryNode repositoryNode = (RepositoryNode) object;
-                ERepositoryObjectType nodeType = (ERepositoryObjectType) repositoryNode
-                        .getProperties(EProperties.CONTENT_TYPE);
+                ERepositoryObjectType nodeType = (ERepositoryObjectType) repositoryNode.getProperties(EProperties.CONTENT_TYPE);
                 if (repositoryNode.getType() == RepositoryNode.ENodeType.REPOSITORY_ELEMENT) {
                     if (nodeType == ERepositoryObjectType.BUSINESS_PROCESS) {
                         enabled = true;

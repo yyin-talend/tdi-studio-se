@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.repository.ProjectManager;
@@ -93,6 +94,6 @@ public class CreateContextAction extends AContextualAction {
         dlg.open();
 
         RepositoryNode node = (RepositoryNode) ((IStructuredSelection) getSelection()).getFirstElement();
-        refresh(node);
+        RepositoryManager.refreshCreatedNode(ERepositoryObjectType.CONTEXT);
     }
 }

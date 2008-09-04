@@ -26,6 +26,7 @@ import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.repository.ProjectManager;
@@ -151,10 +152,8 @@ public class CreateSqlpatternAction extends AbstractSqlpatternAction {
         if (dlg.open() == Window.OK) {
             if (isFromSqlPatternComposite) {
                 // do nothing
-            } else if (isToolbar()) {
-                refresh(sqlPatternNode);
             } else {
-                refresh(node);
+                RepositoryManager.refreshCreatedNode(ERepositoryObjectType.SQLPATTERNS);
             }
 
             try {

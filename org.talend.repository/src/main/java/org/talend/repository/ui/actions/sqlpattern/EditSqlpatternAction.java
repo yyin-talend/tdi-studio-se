@@ -78,6 +78,7 @@ public class EditSqlpatternAction extends AbstractSqlpatternAction {
 
         try {
             openSQLPatternEditor(sqlPatternItem, false);
+            refresh(node);
         } catch (PartInitException e) {
             MessageBoxExceptionHandler.process(e);
         } catch (SystemException e) {

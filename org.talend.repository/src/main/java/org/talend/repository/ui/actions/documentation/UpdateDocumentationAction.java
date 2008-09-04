@@ -20,9 +20,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
@@ -76,12 +76,12 @@ public class UpdateDocumentationAction extends AContextualAction {
     public void run() {
         RepositoryNode node = (RepositoryNode) ((IStructuredSelection) getSelection()).getFirstElement();
 
-        DocumentationUpdateWizard docWizard = new DocumentationUpdateWizard(PlatformUI.getWorkbench(),
-                node.getObject(), getPath());
+        DocumentationUpdateWizard docWizard = new DocumentationUpdateWizard(PlatformUI.getWorkbench(), node.getObject(),
+                getPath());
         WizardDialog dlg = new WizardDialog(Display.getCurrent().getActiveShell(), docWizard);
         dlg.open();
 
-        refresh(node);
+        RepositoryManager.refreshSavedNode(node);
     }
 
     private IPath getPath() {

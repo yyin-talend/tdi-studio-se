@@ -79,6 +79,7 @@ public class EditRoutineAction extends AbstractRoutineAction {
 
         try {
             openRoutineEditor(routineItem, false);
+            refresh(node);
         } catch (PartInitException e) {
             MessageBoxExceptionHandler.process(e);
         } catch (SystemException e) {

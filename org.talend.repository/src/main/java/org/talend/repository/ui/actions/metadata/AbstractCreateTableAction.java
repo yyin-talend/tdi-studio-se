@@ -53,6 +53,7 @@ import org.talend.core.model.properties.SalesforceSchemaConnectionItem;
 import org.talend.core.model.properties.WSDLSchemaConnectionItem;
 import org.talend.core.model.properties.XmlFileConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
@@ -95,7 +96,16 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
         wizardDialog.create();
         wizardDialog.open();
         getViewPart().expand(node, true);
-        refresh(node);
+        ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+        if (nodeType.isSubItem()) { // edit table
+            RepositoryNode parent = node.getParent();
+            if (parent.getObject() == null) { // db
+                parent = parent.getParent();
+            }
+            RepositoryManager.refreshSavedNode(parent);
+        } else {
+            RepositoryManager.refreshCreatedNode(nodeType);
+        }
     }
 
     protected String getStringIndexed(String string) {

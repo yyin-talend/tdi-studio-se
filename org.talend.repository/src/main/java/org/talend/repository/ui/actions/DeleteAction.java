@@ -14,7 +14,9 @@ package org.talend.repository.ui.actions;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -42,6 +44,7 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.expressionbuilder.ExpressionPersistance;
 import org.talend.repository.ProjectManager;
@@ -94,7 +97,7 @@ public class DeleteAction extends AContextualAction {
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
         boolean needToUpdataPalette = false;
-
+        Set<ERepositoryObjectType> types = new HashSet<ERepositoryObjectType>();
         for (Object obj : ((IStructuredSelection) selection).toArray()) {
             if (obj instanceof RepositoryNode) {
                 RepositoryNode node = (RepositoryNode) obj;
@@ -112,8 +115,15 @@ public class DeleteAction extends AContextualAction {
                         if (needReturn) {
                             return;
                         }
-
+                        types.add(node.getObjectType());
                     } else if (node.getType() == ENodeType.SIMPLE_FOLDER) {
+
+                        types.add(node.getContentType());
+                        // fixed for the documentation deleted
+                        if (node.getContentType() == ERepositoryObjectType.PROCESS
+                                || node.getContentType() == ERepositoryObjectType.JOBLET) {
+                            types.add(ERepositoryObjectType.DOCUMENTATION);
+                        }
 
                         deleteFolder(node, factory);
                     }
@@ -127,7 +137,7 @@ public class DeleteAction extends AContextualAction {
         if (needToUpdataPalette) {
             ComponentUtilities.updatePalette();
         }
-        refresh();
+        RepositoryManager.refreshDeletedNode(types);
     }
 
     /**
@@ -154,7 +164,6 @@ public class DeleteAction extends AContextualAction {
 
                     }
                     monitor.done();
-                    refresh();
                 }
 
             };

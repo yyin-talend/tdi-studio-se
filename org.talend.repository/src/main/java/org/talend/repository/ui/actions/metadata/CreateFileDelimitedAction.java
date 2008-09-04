@@ -14,13 +14,13 @@ package org.talend.repository.ui.actions.metadata;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.DelimitedFileConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.repository.ProjectManager;
@@ -90,8 +90,8 @@ public class CreateFileDelimitedAction extends AbstractCreateAction {
         WizardDialog wizardDialog;
         if (isToolbar()) {
             init(fileDelimitedNode);
-            DelimitedFileWizard delimitedFileWizard = new DelimitedFileWizard(PlatformUI.getWorkbench(), creation, fileDelimitedNode,
-                    getExistingNames());
+            DelimitedFileWizard delimitedFileWizard = new DelimitedFileWizard(PlatformUI.getWorkbench(), creation,
+                    fileDelimitedNode, getExistingNames());
             delimitedFileWizard.setToolbar(true);
             wizardDialog = new WizardDialog(new Shell(), delimitedFileWizard);
         } else {
@@ -103,11 +103,7 @@ public class CreateFileDelimitedAction extends AbstractCreateAction {
         wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);
         wizardDialog.create();
         wizardDialog.open();
-        if (isToolbar()) {
-            refresh(fileDelimitedNode);
-        } else {
-            refresh(((IStructuredSelection) selection).getFirstElement());
-        }
+        RepositoryManager.refreshCreatedNode(ERepositoryObjectType.METADATA_FILE_DELIMITED);
     }
 
     protected void init(RepositoryNode node) {

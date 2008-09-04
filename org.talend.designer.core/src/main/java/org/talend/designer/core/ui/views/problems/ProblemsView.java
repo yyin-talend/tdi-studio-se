@@ -60,6 +60,7 @@ import org.talend.core.model.process.TalendProblem;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.designer.core.DesignerPlugin;
@@ -284,7 +285,6 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
          * 
          * @see org.talend.commons.ui.swt.actions.ITreeContextualAction#init(org.eclipse.jface.viewers.TreeViewer,
          * org.eclipse.jface.viewers.IStructuredSelection)
-         * 
          */
         public OpenRoutineAction(TalendProblem problem) {
             super();
@@ -297,6 +297,7 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
                     RoutineItem routine = getRoutineItem();
                     IEditorPart editor = openRoutineEditor(routine, false);
                     focusMarkerForRoutineEditor(editor);
+                    RepositoryManager.getRepositoryView().refresh(ERepositoryObjectType.ROUTINES);
                 } catch (SystemException e) {
                     MessageBoxExceptionHandler.process(e);
                 } catch (PartInitException e) {

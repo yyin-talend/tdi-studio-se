@@ -19,6 +19,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.MetadataTableRepositoryObject;
@@ -111,7 +112,7 @@ public class CopyToGenericSchemaAction extends AContextualAction {
             try {
                 CopyToGenericSchemaHelper.copyToGenericSchema(factory, (MetadataTableRepositoryObject) this.sourceNode
                         .getObject(), new Path(""));
-                refresh();
+                RepositoryManager.refreshCreatedNode(ERepositoryObjectType.METADATA_GENERIC_SCHEMA);
             } catch (PersistenceException e) {
                 e.printStackTrace();
             }

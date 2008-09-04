@@ -15,7 +15,6 @@ package org.talend.repository.ui.actions.metadata;
 import java.io.File;
 
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
@@ -23,6 +22,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.repository.ProjectManager;
@@ -135,7 +135,7 @@ public class ImportSchemaFileAction extends CreateGenericSchemaAction {
         wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);
         wizardDialog.create();
         wizardDialog.open();
-        refresh(((IStructuredSelection) selection).getFirstElement());
+        RepositoryManager.refreshCreatedNode(ERepositoryObjectType.METADATA_GENERIC_SCHEMA);
     }
 
 }

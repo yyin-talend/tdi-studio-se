@@ -24,6 +24,7 @@ import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
@@ -96,7 +97,7 @@ public class EmptyRecycleBinAction extends AContextualAction {
                 MessageBoxExceptionHandler.process(e);
             }
         }
-        refresh();
+        RepositoryManager.refreshDeletedNode(null);
     }
 
     /**

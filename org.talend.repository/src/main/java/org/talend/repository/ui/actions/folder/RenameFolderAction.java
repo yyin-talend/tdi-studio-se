@@ -32,6 +32,7 @@ import org.eclipse.ui.PartInitException;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.editor.RepositoryEditorInput;
@@ -93,7 +94,7 @@ public class RenameFolderAction extends AContextualAction {
             dialog.setPageSize(400, 60);
             dialog.create();
             if (dialog.open() == Window.OK) {
-                refresh(node);
+                RepositoryManager.refreshCreatedNode(objectType);
             }
         }
     }

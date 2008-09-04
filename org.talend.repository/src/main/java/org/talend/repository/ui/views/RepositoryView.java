@@ -301,7 +301,8 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
             /*
              * (non-Javadoc)
              * 
-             * @see org.talend.commons.ui.swt.tooltip.AbstractTreeTooltip#getTooltipContent(org.eclipse.swt.widgets.TreeItem)
+             * @see
+             * org.talend.commons.ui.swt.tooltip.AbstractTreeTooltip#getTooltipContent(org.eclipse.swt.widgets.TreeItem)
              */
             @Override
             public String getTooltipContent(TreeItem item) {
@@ -556,10 +557,46 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
      * @see org.talend.repository.ui.views.IRepositoryView#refresh(java.lang.Object)
      */
     public void refresh(Object object) {
-        refresh();
-        // viewer.refresh(object);
+
         if (object != null) {
+            // maybe, no effect.
+            viewer.refresh(object);
             viewer.setExpandedState(object, true);
+        } else {
+            // refresh();
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.talend.repository.ui.views.IRepositoryView#refresh(org.talend.core.model.repository.ERepositoryObjectType)
+     */
+    public void refresh(ERepositoryObjectType type) {
+        RepositoryNode rootNode = researchRootRepositoryNode(type);
+        refreshAllChildNodes(rootNode);
+    }
+
+    private RepositoryNode researchRootRepositoryNode(ERepositoryObjectType type) {
+
+        if (type != null && getRoot() instanceof ProjectRepositoryNode) {
+            ProjectRepositoryNode pRoot = (ProjectRepositoryNode) getRoot();
+            return pRoot.getRootRepositoryNode(type);
+
+        }
+        return null;
+    }
+
+    /**
+     * only refresh the child of root node.
+     */
+    public void refreshAllChildNodes(RepositoryNode rootNode) {
+        if (rootNode != null) {
+            rootNode.setInitialized(false);
+            rootNode.getChildren().clear();
+            contentProvider.getChildren(rootNode); // retrieve child
+            viewer.refresh(rootNode);
         }
     }
 

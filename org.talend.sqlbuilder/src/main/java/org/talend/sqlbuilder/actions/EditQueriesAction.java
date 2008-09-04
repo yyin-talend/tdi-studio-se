@@ -20,6 +20,7 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.ui.ICDCProviderService;
 import org.talend.core.ui.images.ECoreImage;
@@ -83,7 +84,7 @@ public class EditQueriesAction extends AContextualAction {
         connParameters.setFromRepository(true);
         dial.setConnParameters(connParameters);
         dial.open();
-        refresh(node);
+        RepositoryManager.refreshCreatedNode(ERepositoryObjectType.METADATA_CONNECTIONS);
     }
 
     public void init(TreeViewer viewer, IStructuredSelection selection) {

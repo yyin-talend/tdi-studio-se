@@ -13,7 +13,9 @@
 package org.talend.repository.ui.actions.metadata;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
@@ -35,6 +37,7 @@ import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ISubRepositoryObject;
@@ -75,7 +78,7 @@ public class DeleteTableAction extends AContextualAction {
 
         // used to store the database connection object that are used to notify the sqlBuilder.
         List<IRepositoryObject> connections = new ArrayList<IRepositoryObject>();
-
+        Set<ERepositoryObjectType> types = new HashSet<ERepositoryObjectType>();
         for (Object obj : ((IStructuredSelection) selection).toArray()) {
             if (obj instanceof RepositoryNode) {
                 RepositoryNode node = (RepositoryNode) obj;
@@ -85,6 +88,12 @@ public class DeleteTableAction extends AContextualAction {
                         Connection connection = null;
                         ERepositoryObjectType parentNodeType = (ERepositoryObjectType) node.getParent().getProperties(
                                 EProperties.CONTENT_TYPE);
+                        if (parentNodeType == null) {
+                            parentNodeType = node.getParent().getParent().getObjectType(); // for db connection
+                        }
+                        if (parentNodeType != null) {
+                            types.add(parentNodeType);
+                        }
                         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
                         ConnectionItem item = (ConnectionItem) node.getObject().getProperty().getItem();
                         connection = (item).getConnection();
@@ -108,7 +117,8 @@ public class DeleteTableAction extends AContextualAction {
                         }
                         factory.save(item);
                         connections.add(node.getObject());
-                        refresh();
+
+                        RepositoryManager.refreshDeletedNode(types);
                     } catch (PersistenceException e) {
                         e.printStackTrace();
                     }

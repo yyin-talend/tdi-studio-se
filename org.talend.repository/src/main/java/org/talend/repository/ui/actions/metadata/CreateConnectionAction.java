@@ -27,6 +27,7 @@ import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.repository.ProjectManager;
@@ -160,11 +161,7 @@ public class CreateConnectionAction extends AbstractCreateAction {
         wizardDialog.setPageSize(600, 480);
         wizardDialog.create();
         wizardDialog.open();
-        if (isToolbar()) {
-            refresh(node);
-        } else {
-            refresh(((IStructuredSelection) getSelection()).getFirstElement());
-        }
+        RepositoryManager.refreshCreatedNode(ERepositoryObjectType.METADATA_CONNECTIONS);
 
     }
 

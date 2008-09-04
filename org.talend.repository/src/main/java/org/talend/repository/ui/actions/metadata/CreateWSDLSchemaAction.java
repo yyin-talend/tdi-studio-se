@@ -20,6 +20,7 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.WSDLSchemaConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.repository.ProjectManager;
@@ -135,8 +136,8 @@ public class CreateWSDLSchemaAction extends AbstractCreateAction {
         ISelection selection = null;
         if (isToolbar()) {
             init(wsdlSchemaNode);
-            WSDLSchemaWizard wsdlSchemaWizard = new WSDLSchemaWizard(PlatformUI.getWorkbench(), creation,
-                    wsdlSchemaNode, getExistingNames(), false);
+            WSDLSchemaWizard wsdlSchemaWizard = new WSDLSchemaWizard(PlatformUI.getWorkbench(), creation, wsdlSchemaNode,
+                    getExistingNames(), false);
             wizardDialog = new WizardDialog(new Shell(), wsdlSchemaWizard);
         } else {
             selection = getSelection();
@@ -148,11 +149,7 @@ public class CreateWSDLSchemaAction extends AbstractCreateAction {
         wizardDialog.create();
 
         wizardDialog.open();
-        if (isToolbar()) {
-            refresh(wsdlSchemaNode);
-        } else {
-            refresh(getCurrentRepositoryNode());
-        }
+        RepositoryManager.refreshCreatedNode(ERepositoryObjectType.METADATA_WSDL_SCHEMA);
 
     }
 }

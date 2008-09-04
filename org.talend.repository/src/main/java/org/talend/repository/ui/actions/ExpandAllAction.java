@@ -12,9 +12,14 @@
 // ============================================================================
 package org.talend.repository.ui.actions;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.views.IRepositoryView;
@@ -41,12 +46,14 @@ public class ExpandAllAction extends AContextualAction {
     public void run() {
         IRepositoryView view = getViewPart();
         ISelection selection = getSelection();
-
+        Set<ERepositoryObjectType> types = new HashSet<ERepositoryObjectType>();
         for (Object obj : ((IStructuredSelection) selection).toArray()) {
             expand(view, (RepositoryNode) obj, !view.getExpandedState(obj));
+            types.add(((RepositoryNode) obj).getContentType());
         }
-
-        refresh();
+        for (ERepositoryObjectType type : types) {
+            RepositoryManager.getRepositoryView().refresh(type);
+        }
     }
 
     private void expand(IRepositoryView view, RepositoryNode obj, boolean state) {
