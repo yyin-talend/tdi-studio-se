@@ -54,7 +54,7 @@ String rowSeparator = ElementParameterParser.getValue(
                 	index_<%=cid %>= 0;
                 }
             }
-            if(eol_<%=cid %>) lineCount_<%=cid %>=lineCount_<%=cid %>-emptyLineCount_<%=cid %>;
+            if(eol_<%=cid %> && index_<%=cid %> == 0) lineCount_<%=cid %>=lineCount_<%=cid %>-emptyLineCount_<%=cid %>;
         }
         globalMap.put("<%=cid %>_COUNT",lineCount_<%=cid %>); 
         br_<%=cid %>.close();
