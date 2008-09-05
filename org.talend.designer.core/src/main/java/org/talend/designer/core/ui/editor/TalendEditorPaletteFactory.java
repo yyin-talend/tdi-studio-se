@@ -66,6 +66,8 @@ public final class TalendEditorPaletteFactory {
 
     private static PaletteRoot palette;
 
+    private static String filter;
+
     /** Create the "Shapes" drawer. */
     private static void createComponentsDrawer(final IComponentsFactory compFac, boolean needHiddenComponent) {
         PaletteDrawer componentsDrawer;
@@ -126,6 +128,14 @@ public final class TalendEditorPaletteFactory {
 
             if (xmlComponent.isTechnical()) {
                 continue;
+            }
+
+            if (filter != null) {
+                String regex = "\\b.*" + filter.replaceAll("\\*", ".*") + ".*\\b";
+                regex = regex.replaceAll("\\?", ".?");
+                if (!xmlComponent.getTranslatedName().matches(regex)) {
+                    continue;
+                }
             }
 
             if (!needHiddenComponent && !xmlComponent.isVisible()) {
@@ -337,6 +347,15 @@ public final class TalendEditorPaletteFactory {
     /** Utility class. */
     private TalendEditorPaletteFactory() {
         // Utility class
+    }
+
+    /**
+     * yzhang Comment method "setFilter".
+     * 
+     * @param filter
+     */
+    public static void setFilter(String filter) {
+        TalendEditorPaletteFactory.filter = filter;
     }
 
 }

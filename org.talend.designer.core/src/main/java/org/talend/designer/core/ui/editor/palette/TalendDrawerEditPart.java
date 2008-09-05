@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.palette;
 
+import java.beans.PropertyChangeEvent;
+
 import org.eclipse.draw2d.FocusEvent;
 import org.eclipse.draw2d.FocusListener;
 import org.eclipse.draw2d.IFigure;

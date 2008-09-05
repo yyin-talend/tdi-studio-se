@@ -89,7 +89,9 @@ public class DesignerCoreService implements IDesignerCoreService {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.IDesignerCoreService#getProcessFromProcessItem(org.talend.core.model.properties.ProcessItem)
+     * @see
+     * org.talend.designer.core.IDesignerCoreService#getProcessFromProcessItem(org.talend.core.model.properties.ProcessItem
+     * )
      */
     public IProcess getProcessFromProcessItem(ProcessItem processItem) {
         Process process = null;
@@ -102,7 +104,9 @@ public class DesignerCoreService implements IDesignerCoreService {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.IDesignerCoreService#getProcessFromJobletProcessItem(org.talend.core.model.properties.JobletProcessItem)
+     * @see
+     * org.talend.designer.core.IDesignerCoreService#getProcessFromJobletProcessItem(org.talend.core.model.properties
+     * .JobletProcessItem)
      */
     public IProcess getProcessFromJobletProcessItem(JobletProcessItem jobletProcessItem) {
         AbstractProcessProvider processProvider = AbstractProcessProvider.findProcessProviderFromPID(IComponent.JOBLET_PID);
@@ -141,7 +145,9 @@ public class DesignerCoreService implements IDesignerCoreService {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.IDesignerCoreService#getRepositoryAliasName(org.talend.core.model.properties.ConnectionItem)
+     * @see
+     * org.talend.designer.core.IDesignerCoreService#getRepositoryAliasName(org.talend.core.model.properties.ConnectionItem
+     * )
      */
     public String getRepositoryAliasName(ConnectionItem connectionItem) {
         return repositoryValueUtils.getRepositoryAliasName(connectionItem);
@@ -303,7 +309,8 @@ public class DesignerCoreService implements IDesignerCoreService {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.IDesignerCoreService#createPalette(org.talend.core.model.components.IComponentsFactory)
+     * @see
+     * org.talend.designer.core.IDesignerCoreService#createPalette(org.talend.core.model.components.IComponentsFactory)
      */
     public PaletteRoot createPalette(IComponentsFactory factory) {
         return TalendEditorPaletteFactory.createPalette(factory);
@@ -316,11 +323,21 @@ public class DesignerCoreService implements IDesignerCoreService {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.IDesignerCoreService#createPalette(org.talend.core.model.components.IComponentsFactory,
+     * @see
+     * org.talend.designer.core.IDesignerCoreService#createPalette(org.talend.core.model.components.IComponentsFactory,
      * org.eclipse.gef.palette.PaletteRoot)
      */
     public PaletteRoot createPalette(IComponentsFactory compFac, PaletteRoot root) {
         return TalendEditorPaletteFactory.createPalette(compFac, root);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.IDesignerCoreService#setPaletteFilter(java.lang.String)
+     */
+    public void setPaletteFilter(String filter) {
+        TalendEditorPaletteFactory.setFilter(filter);
     }
 
     public IAction getCreateProcessAction(boolean isToolbar) {
@@ -382,7 +399,8 @@ public class DesignerCoreService implements IDesignerCoreService {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.IDesignerCoreService#getJobModificationDateMap(org.talend.core.model.process.IProcess)
+     * @see
+     * org.talend.designer.core.IDesignerCoreService#getJobModificationDateMap(org.talend.core.model.process.IProcess)
      */
     public Map<String, java.util.Date> getJobModificationDateMap(IProcess process) {
         if (process instanceof Process) {
