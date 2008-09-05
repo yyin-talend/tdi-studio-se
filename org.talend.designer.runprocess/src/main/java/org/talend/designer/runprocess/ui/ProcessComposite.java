@@ -76,6 +76,7 @@ import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.debug.JobLaunchShortcutManager;
 import org.talend.designer.runprocess.IProcessMessage;
 import org.talend.designer.runprocess.IProcessor;
+import org.talend.designer.runprocess.JobErrorsChecker;
 import org.talend.designer.runprocess.ProcessMessage;
 import org.talend.designer.runprocess.ProcessMessageManager;
 import org.talend.designer.runprocess.ProcessorException;
@@ -954,14 +955,18 @@ public class ProcessComposite extends Composite {
                         // use this function to generate childrens also.
                         ProcessorUtilities.generateCode(processContext.getProcess(), context, false, false, true);
                         ILaunchConfiguration config = processor.debug();
-                        if (config != null) {
-                            // PlatformUI.getWorkbench().getActiveWorkbenchWindow().addPerspectiveListener(new
-                            // DebugInNewWindowListener());
-                            DebugUITools.launch(config, ILaunchManager.DEBUG_MODE);
+                        // see feature 0004820: The run job doesn't verify if code is correct before launching
+                        if (!JobErrorsChecker.hasErrors(ProcessComposite.this.getShell())) {
 
-                        } else {
-                            MessageDialog.openInformation(getShell(), Messages.getString("ProcessDebugDialog.debugBtn"), //$NON-NLS-1$
-                                    Messages.getString("ProcessDebugDialog.errortext")); //$NON-NLS-1$ 
+                            if (config != null) {
+                                // PlatformUI.getWorkbench().getActiveWorkbenchWindow().addPerspectiveListener(new
+                                // DebugInNewWindowListener());
+                                DebugUITools.launch(config, ILaunchManager.DEBUG_MODE);
+
+                            } else {
+                                MessageDialog.openInformation(getShell(), Messages.getString("ProcessDebugDialog.debugBtn"), //$NON-NLS-1$
+                                        Messages.getString("ProcessDebugDialog.errortext")); //$NON-NLS-1$ 
+                            }
                         }
                     } catch (ProcessorException e) {
                         IStatus status = new Status(IStatus.ERROR, RunProcessPlugin.PLUGIN_ID, IStatus.OK,

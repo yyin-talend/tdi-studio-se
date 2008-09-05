@@ -379,8 +379,12 @@ public class RunProcessContext {
                                                         getStatisticsPort() != IProcessor.NO_STATISTICS,
                                                         getTracesPort() != IProcessor.NO_TRACES, true);
 
-                                                ps = processor.run(getStatisticsPort(), getTracesPort(), watchParam,
-                                                        progressMonitor, processMessageManager);
+                                                // see feature 0004820: The run job doesn't verify if code is correct
+                                                // before launching
+                                                if (!JobErrorsChecker.hasErrors(shell)) {
+                                                    ps = processor.run(getStatisticsPort(), getTracesPort(), watchParam,
+                                                            progressMonitor, processMessageManager);
+                                                }
                                                 if (ps != null && !progressMonitor.isCanceled()) {
 
                                                     psMonitor = createProcessMonitor(ps);
