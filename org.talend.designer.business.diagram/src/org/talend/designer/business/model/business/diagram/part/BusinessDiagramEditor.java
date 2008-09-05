@@ -27,6 +27,7 @@ import org.talend.designer.business.diagram.custom.actions.DiagramResourceManage
 import org.talend.designer.business.diagram.custom.dnd.BusinessDiagramDropTargetListener;
 import org.talend.designer.business.model.business.diagram.edit.parts.BusinessEditPartFactory;
 import org.talend.repository.editor.RepositoryEditorInput;
+import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
@@ -166,7 +167,7 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
         }
         RepositoryNode repositoryNode = repositoryEditorInput.getRepositoryNode();
         if (repositoryNode != null) {
-            if (repositoryNode.getParent().isBin()) {
+            if (repFactory.getStatus(repositoryEditorInput.getItem()) == ERepositoryStatus.DELETED) {
                 RepositoryManager.refreshDeletedNode(null);
             } else {
                 RepositoryManager.refresh(repositoryNode.getObjectType());

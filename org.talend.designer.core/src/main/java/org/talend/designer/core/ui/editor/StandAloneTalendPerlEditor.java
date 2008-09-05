@@ -44,6 +44,7 @@ import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.repository.editor.RepositoryEditorInput;
+import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.RepositoryNode;
@@ -131,7 +132,7 @@ public class StandAloneTalendPerlEditor extends PerlEditor implements IUIRefresh
         }
         RepositoryNode repositoryNode = rEditorInput.getRepositoryNode();
         if (repositoryNode != null) {
-            if (repositoryNode.getParent().isBin()) {
+            if (repFactory.getStatus(item) == ERepositoryStatus.DELETED) {
                 RepositoryManager.refreshDeletedNode(null);
             } else {
                 RepositoryManager.refresh(repositoryNode.getObjectType());

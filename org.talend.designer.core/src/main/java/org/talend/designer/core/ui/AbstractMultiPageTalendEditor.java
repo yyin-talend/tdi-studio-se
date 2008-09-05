@@ -98,6 +98,7 @@ import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.job.deletion.JobResourceManager;
+import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.RepositoryNode;
@@ -852,7 +853,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         // }
         RepositoryNode repositoryNode = processEditorInput.getRepositoryNode();
         if (repositoryNode != null) {
-            if (repositoryNode.getParent().isBin()) {
+            if (repFactory.getStatus(designerEditor.getProperty().getItem()) == ERepositoryStatus.DELETED) {
                 RepositoryManager.refreshDeletedNode(null);
             } else {
                 RepositoryManager.refreshSavedNode(repositoryNode);

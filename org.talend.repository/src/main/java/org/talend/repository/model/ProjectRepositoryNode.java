@@ -991,7 +991,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         case JOBLET_DOC:
         case DOCUMENTATION:
             return this.docNode;
-        case METADATA_CON_TABLE:
+            // case METADATA_CON_TABLE:
         case METADATA:
             return this.metadataNode; // maybe, there are some problems to process some fuctions.
         case METADATA_CON_VIEW:

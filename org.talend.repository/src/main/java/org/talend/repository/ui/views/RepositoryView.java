@@ -562,6 +562,14 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
             // maybe, no effect.
             viewer.refresh(object);
             viewer.setExpandedState(object, true);
+            if (object instanceof RepositoryNode) {
+                RepositoryNode node = (RepositoryNode) object;
+                ERepositoryObjectType type = node.getObjectType();
+                if (type == null) {
+                    type = node.getContentType();
+                }
+                refresh(type);
+            }
         } else {
             // refresh();
         }
@@ -574,8 +582,10 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
      * org.talend.repository.ui.views.IRepositoryView#refresh(org.talend.core.model.repository.ERepositoryObjectType)
      */
     public void refresh(ERepositoryObjectType type) {
-        RepositoryNode rootNode = researchRootRepositoryNode(type);
-        refreshAllChildNodes(rootNode);
+        if (type != null && !type.isSubItem()) {
+            RepositoryNode rootNode = researchRootRepositoryNode(type);
+            refreshAllChildNodes(rootNode);
+        }
     }
 
     private RepositoryNode researchRootRepositoryNode(ERepositoryObjectType type) {
