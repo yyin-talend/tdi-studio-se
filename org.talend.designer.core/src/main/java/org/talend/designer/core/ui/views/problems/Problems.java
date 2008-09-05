@@ -106,6 +106,10 @@ public class Problems {
         problemList.clear();
     }
 
+    public static ProblemList getProblemList() {
+        return problemList;
+    }
+
     public static void clearAllComliationError(String javaEditorName) {
         for (Iterator<Problem> iter = problemList.getProblemList().iterator(); iter.hasNext();) {
             Problem problem = iter.next();
