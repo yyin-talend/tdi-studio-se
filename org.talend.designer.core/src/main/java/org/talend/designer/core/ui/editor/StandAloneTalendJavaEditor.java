@@ -60,6 +60,7 @@ import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
+import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.views.IRepositoryView;
 
 /**
@@ -179,8 +180,13 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
         } catch (PersistenceException e) {
             e.printStackTrace();
         }
-        if (rEditorInput.getRepositoryNode() != null) {
-            RepositoryManager.refresh(rEditorInput.getRepositoryNode().getObjectType());
+        RepositoryNode repositoryNode = rEditorInput.getRepositoryNode();
+        if (repositoryNode != null) {
+            if (repositoryNode.getParent().isBin()) {
+                RepositoryManager.refreshDeletedNode(null);
+            } else {
+                RepositoryManager.refresh(repositoryNode.getObjectType());
+            }
         }
     }
 

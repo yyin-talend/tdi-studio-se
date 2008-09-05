@@ -29,6 +29,7 @@ import org.talend.designer.business.model.business.diagram.edit.parts.BusinessEd
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.model.RepositoryNode;
 
 /**
  * @generated
@@ -163,7 +164,14 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        RepositoryManager.refreshSavedNode(repositoryEditorInput.getRepositoryNode());
+        RepositoryNode repositoryNode = repositoryEditorInput.getRepositoryNode();
+        if (repositoryNode != null) {
+            if (repositoryNode.getParent().isBin()) {
+                RepositoryManager.refreshDeletedNode(null);
+            } else {
+                RepositoryManager.refresh(repositoryNode.getObjectType());
+            }
+        }
     }
 
     public void init(final IEditorSite site, final IEditorInput editorInput) throws PartInitException {

@@ -264,8 +264,13 @@ public class RepositoryNodeUtilities {
             // expand the parent node
 
             if (curType == rootContextType && isRepositoryFolder(rootNode)) {
-                expandParentNode(view, rootNode);
-                view.getViewer().refresh();
+                if (rootContextType == ERepositoryObjectType.SQLPATTERNS
+                        && !(rootNode.getParent() instanceof ProjectRepositoryNode)) {
+                    // sql pattern
+                } else {
+                    expandParentNode(view, rootNode);
+                    view.getViewer().refresh();
+                }
             }
 
         }

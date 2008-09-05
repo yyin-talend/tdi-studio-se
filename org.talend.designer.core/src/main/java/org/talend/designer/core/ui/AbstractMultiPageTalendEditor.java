@@ -100,6 +100,7 @@ import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.job.deletion.JobResourceManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
+import org.talend.repository.model.RepositoryNode;
 
 /**
  * DOC qzhang class global comment. Detailled comment
@@ -849,7 +850,14 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         // if (viewPart != null) {
         // viewPart.refresh(processEditorInput.getRepositoryNode());
         // }
-        RepositoryManager.refreshSavedNode(processEditorInput.getRepositoryNode());
+        RepositoryNode repositoryNode = processEditorInput.getRepositoryNode();
+        if (repositoryNode != null) {
+            if (repositoryNode.getParent().isBin()) {
+                RepositoryManager.refreshDeletedNode(null);
+            } else {
+                RepositoryManager.refreshSavedNode(repositoryNode);
+            }
+        }
         processEditorInput.setLoadedProcess(null);
 
         processEditorInput = null;

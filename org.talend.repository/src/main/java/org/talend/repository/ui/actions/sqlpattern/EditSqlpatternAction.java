@@ -20,6 +20,7 @@ import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -78,7 +79,7 @@ public class EditSqlpatternAction extends AbstractSqlpatternAction {
 
         try {
             openSQLPatternEditor(sqlPatternItem, false);
-            refresh(node);
+            RepositoryManager.getRepositoryView().refresh(node);
         } catch (PartInitException e) {
             MessageBoxExceptionHandler.process(e);
         } catch (SystemException e) {
