@@ -12,6 +12,9 @@
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
     String cid = node.getUniqueName();
+    
+    String filename = ElementParameterParser.getValue(node,"__FILENAME__");
+	boolean isDeleteEmptyFile = ElementParameterParser.getValue(node, "__DELETE_EMPTYFILE__").equals("true");    
 %>
 
 <% 
@@ -80,3 +83,9 @@
 <%
 }
 %>
+
+<%if(isDeleteEmptyFile){%>
+	if(nb_line_<%=cid %> == 0){
+		new java.io.File(<%=filename %>).delete();
+	}		
+<%}%>

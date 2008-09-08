@@ -3,18 +3,22 @@
 		org.talend.core.model.process.INode 
 		org.talend.core.model.metadata.IMetadataTable 
 		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.ElementParameterParser
 		java.util.List
 	"
 %>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+	
+    String filename = ElementParameterParser.getValue(node, "__FILENAME__");
+    boolean isDeleteEmptyFile = ElementParameterParser.getValue(node, "__DELETE_EMPTYFILE__").equals("true");
 
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
 		IMetadataTable metadata = metadatas.get(0);
 		if (metadata!=null) {
-			String cid = node.getUniqueName();
 %>
 <% 
 	if(codeGenArgument.getIsRunInMultiThread()){
@@ -46,3 +50,9 @@
 		}
 	}
 %>
+
+<%if(isDeleteEmptyFile){%>
+	if(nb_line_<%=cid %> == 0){
+		new java.io.File(<%=filename %>).delete();
+	}		
+<%}%>
