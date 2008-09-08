@@ -22,6 +22,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.BinRepositoryNode;
 import org.talend.repository.model.ERepositoryStatus;
@@ -193,6 +194,10 @@ public class MoveObjectAction {
                 if (factory.getStatus(objectToMove) == ERepositoryStatus.DELETED) {
                     // Restore :
                     factory.restoreObject(objectToMove, targetPath);
+                    // if object is opened and editable, will re-lock it.
+                    if (RepositoryManager.isEditableItemInEditor(objectToMove)) {
+                        factory.lock(objectToMove);
+                    }
                 } else {
                     // Move :
                     if (isGenericSchema) {
@@ -209,4 +214,5 @@ public class MoveObjectAction {
             factory.moveFolder(sourceType, sourcePath, targetPath);
         }
     }
+
 }
