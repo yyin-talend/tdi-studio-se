@@ -21,10 +21,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.widgets.Shell;
-import org.epic.perleditor.editors.util.PerlValidator;
+import org.epic.perleditor.editors.util.TalendPerlValidator;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
@@ -47,8 +46,8 @@ public class JobErrorsChecker {
     public static boolean hasErrors(Shell shell) {
 
         try {
-            CorePlugin.getDefault().getRunProcessService().getProject(LanguageManager.getCurrentLanguage()).build(
-                    IncrementalProjectBuilder.AUTO_BUILD, null);
+            // CorePlugin.getDefault().getRunProcessService().getProject(LanguageManager.getCurrentLanguage()).build(
+            // IncrementalProjectBuilder.AUTO_BUILD, null);
 
             List<ProcessItem> items = ProcessorUtilities.getAllProcessItems();
             IDesignerCoreService service = CorePlugin.getDefault().getDesignerCoreService();
@@ -64,10 +63,10 @@ public class JobErrorsChecker {
             for (ProcessItem item : items) {
                 // get source file
                 IFile sourceFile = synchronizer.getFile(item);
-                // if (isPerl) {
-                // // check syntax error in perl. java use auto build to check syntax
-                // validatePerlScript(sourceFile);
-                // }
+                if (isPerl) {
+                    // check syntax error in perl. java use auto build to check syntax
+                    validatePerlScript(sourceFile);
+                }
                 IProcess process = service.getProcessFromProcessItem(item);
                 jobNames.add(process.getLabel());
 
@@ -102,7 +101,7 @@ public class JobErrorsChecker {
     public static void validatePerlScript(IFile file) {
         try {
             String sourceCode = getSourceCode(file.getContents());
-            PerlValidator.instance().validate(file, sourceCode);
+            TalendPerlValidator.instance().validate(file, sourceCode);
         } catch (Exception e) {
             ExceptionHandler.process(e);
         }
