@@ -23,6 +23,7 @@ public class CLASS {
     public static final String MAXDB = "maxdb_id";
     public static final String MSSQL = "id_MSSQL";
     public static final String MYSQL = "mysql_id";
+    public static final String NETEZZA = "netezza_id";
     public static final String ORACLE = "oracle_id";
     public static final String POSTGRESQL = "postgres_id";
     public static final String POSTGREPLUS = "postgresplus_id";
@@ -1077,6 +1078,21 @@ public class CLASS {
             return setStmt.toString();
         }        
     }
+
+    public class NetezzaManager extends Manager {
+        public NetezzaManager(String cid) {
+            super(cid);
+        }
+        protected String getDBMSId() {
+            return NETEZZA;
+        }
+        protected String getLProtectedChar() {
+            return "";
+        }
+        protected String getRProtectedChar() {
+            return "";
+        }
+    }
     
     public class OracleManager extends Manager {
         public OracleManager(String cid) {
@@ -1499,6 +1515,8 @@ public class CLASS {
                 manager = new MSSQLManager(cid);
             } else if(dbmsId.equalsIgnoreCase(MYSQL)) {
                 manager = new MysqlManager(cid);
+            } else if(dbmsId.equalsIgnoreCase(NETEZZA)) {
+                manager = new NetezzaManager(cid);
             } else if(dbmsId.equalsIgnoreCase(ORACLE)) {
                 manager = new OracleManager(cid);
             } else if(dbmsId.equalsIgnoreCase(POSTGREPLUS)) {
