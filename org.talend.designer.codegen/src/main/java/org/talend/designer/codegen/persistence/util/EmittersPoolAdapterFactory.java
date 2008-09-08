@@ -88,7 +88,7 @@ public class EmittersPoolAdapterFactory extends AdapterFactoryImpl {
     public Adapter createAdapter(Notifier target) {
         return (Adapter) modelSwitch.doSwitch((EObject) target);
     }
-
+ 
     /**
      * Creates a new adapter for an object of class '{@link org.talend.designer.codegen.persistence.DocumentRoot <em>Document Root</em>}'.
      * <!-- begin-user-doc --> This default implementation returns null so that we can easily ignore cases; it's useful

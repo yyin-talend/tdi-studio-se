@@ -34,153 +34,166 @@ import org.talend.core.model.repository.IRepositoryObject;
  */
 public abstract class AbstractRepositoryFactory implements IRepositoryFactory {
 
-    private String name;
+	private String name;
 
-    private String id;
+	private String id;
 
-    private boolean displayToUser;
+	private boolean displayToUser;
 
-    private boolean authenticationNeeded;
+	private boolean authenticationNeeded;
 
-    private List<DynamicFieldBean> fields = new ArrayList<DynamicFieldBean>();
+	private List<DynamicFieldBean> fields = new ArrayList<DynamicFieldBean>();
 
-    private List<DynamicButtonBean> buttons = new ArrayList<DynamicButtonBean>();
+	private List<DynamicButtonBean> buttons = new ArrayList<DynamicButtonBean>();
 
-    private List<DynamicChoiceBean> choices = new ArrayList<DynamicChoiceBean>();
+	private List<DynamicChoiceBean> choices = new ArrayList<DynamicChoiceBean>();
 
-    public List<DynamicButtonBean> getButtons() {
-        return buttons;
-    }
+	public List<DynamicButtonBean> getButtons() {
+		return buttons;
+	}
 
-    public List<DynamicChoiceBean> getChoices() {
-        return choices;
-    }
+	public List<DynamicChoiceBean> getChoices() {
+		return choices;
+	}
 
-    /**
-     * Getter for authenticationNeeded.
-     * 
-     * @return the authenticationNeeded
-     */
-    public boolean isAuthenticationNeeded() {
-        return this.authenticationNeeded;
-    }
+	/**
+	 * Getter for authenticationNeeded.
+	 * 
+	 * @return the authenticationNeeded
+	 */
+	public boolean isAuthenticationNeeded() {
+		return this.authenticationNeeded;
+	}
 
-    /**
-     * Sets the authenticationNeeded.
-     * 
-     * @param authenticationNeeded the authenticationNeeded to set
-     */
-    public void setAuthenticationNeeded(boolean authenticationNeeded) {
-        this.authenticationNeeded = authenticationNeeded;
-    }
+	/**
+	 * Sets the authenticationNeeded.
+	 * 
+	 * @param authenticationNeeded
+	 *            the authenticationNeeded to set
+	 */
+	public void setAuthenticationNeeded(boolean authenticationNeeded) {
+		this.authenticationNeeded = authenticationNeeded;
+	}
 
-    /**
-     * Getter for name.
-     * 
-     * @return the name
-     */
-    public String getName() {
-        return this.name;
-    }
+	/**
+	 * Getter for name.
+	 * 
+	 * @return the name
+	 */
+	public String getName() {
+		return this.name;
+	}
 
-    /**
-     * Sets the name.
-     * 
-     * @param name the name to set
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
+	/**
+	 * Sets the name.
+	 * 
+	 * @param name
+	 *            the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public String getId() {
-        return this.id;
-    }
+	public String getId() {
+		return this.id;
+	}
 
-    public void setId(String id) {
-        this.id = id;
-    }
+	public void setId(String id) {
+		this.id = id;
+	}
 
-    public List<DynamicFieldBean> getFields() {
-        return this.fields;
-    }
+	public List<DynamicFieldBean> getFields() {
+		return this.fields;
+	}
 
-    public void setFields(List<DynamicFieldBean> fields) {
-        this.fields = fields;
-    }
+	public void setFields(List<DynamicFieldBean> fields) {
+		this.fields = fields;
+	}
 
-    public RepositoryContext getRepositoryContext() {
-        Context ctx = CorePlugin.getContext();
-        return (RepositoryContext) ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
-    }
+	public RepositoryContext getRepositoryContext() {
+		Context ctx = CorePlugin.getContext();
+		return (RepositoryContext) ctx
+				.getProperty(Context.REPOSITORY_CONTEXT_KEY);
+	}
 
-    @Override
-    public String toString() {
-        return getName();
-    }
+	@Override
+	public String toString() {
+		return getName();
+	}
 
-    /**
-     * Generates the next id for serializable. If no serializable returns 0.
-     * 
-     * @param project the project to scan
-     * 
-     * @return the next id for the project
-     * @throws PersistenceException
-     * @throws PersistenceException if processes cannot be retrieved
-     */
-    public String getNextId() {
-        return EcoreUtil.generateUUID();
-    }
+	/**
+	 * Generates the next id for serializable. If no serializable returns 0.
+	 * 
+	 * @param project
+	 *            the project to scan
+	 * 
+	 * @return the next id for the project
+	 * @throws PersistenceException
+	 * @throws PersistenceException
+	 *             if processes cannot be retrieved
+	 */
+	public String getNextId() {
+		return EcoreUtil.generateUUID();
+	}
 
-    private void collect(RootContainer<String, IRepositoryObject> rootContainer, List<ConnectionItem> result)
-            throws PersistenceException {
-        for (IRepositoryObject repositoryObject : rootContainer.getAbsoluteMembers().objects()) {
-            ConnectionItem connectionItem = (ConnectionItem) repositoryObject.getProperty().getItem();
-            if (getStatus(connectionItem) != ERepositoryStatus.DELETED) {
-                result.add(connectionItem);
-            }
-        }
-    }
+	private void collect(
+			RootContainer<String, IRepositoryObject> rootContainer,
+			List<ConnectionItem> result) throws PersistenceException {
+		for (IRepositoryObject repositoryObject : rootContainer
+				.getAbsoluteMembers().objects()) {
+			ConnectionItem connectionItem = (ConnectionItem) repositoryObject
+					.getProperty().getItem();
+			if (getStatus(connectionItem) != ERepositoryStatus.DELETED) {
+				result.add(connectionItem);
+			}
+		}
+	}
 
-    // gather all the metadata connections (file / db / etc ...)
-    public List<ConnectionItem> getMetadataConnectionsItem(Project project) throws PersistenceException {
+	// gather all the metadata connections (file / db / etc ...)
+	public List<ConnectionItem> getMetadataConnectionsItem(Project project)
+			throws PersistenceException {
 
-        List<ConnectionItem> result = new ArrayList<ConnectionItem>();
+		List<ConnectionItem> result = new ArrayList<ConnectionItem>();
 
-        collect(getMetadataFileDelimited(project), result);
-        collect(getMetadataFilePositional(project), result);
-        collect(getMetadataFileRegexp(project), result);
-        collect(getMetadataFileXml(project), result);
-        collect(getMetadataFileExcel(project), result);
-        collect(getMetadataFileLdif(project), result);
-        collect(getMetadataConnection(project), result);
-        collect(getMetadataLDAPSchema(project), result);
-        collect(getMetadataGenericSchema(project), result);
-        collect(getMetadataWSDLSchema(project), result);
-        collect(getMetadataSalesforceSchema(project), result);
+		collect(getMetadataFileDelimited(project), result);
+		collect(getMetadataFilePositional(project), result);
+		collect(getMetadataFileRegexp(project), result);
+		collect(getMetadataFileXml(project), result);
+		collect(getMetadataFileExcel(project), result);
+		collect(getMetadataFileLdif(project), result);
+		collect(getMetadataConnection(project), result);
+		collect(getMetadataSAPConnection(project), result);
+		collect(getMetadataLDAPSchema(project), result);
+		collect(getMetadataGenericSchema(project), result);
+		collect(getMetadataWSDLSchema(project), result);
+		collect(getMetadataSalesforceSchema(project), result);
 
-        return result;
-    }
+		return result;
+	}
 
-    // gather all the contexts
-    public List<ContextItem> getContextItem(Project project) throws PersistenceException {
-        List<ContextItem> result = new ArrayList<ContextItem>();
+	// gather all the contexts
+	public List<ContextItem> getContextItem(Project project)
+			throws PersistenceException {
+		List<ContextItem> result = new ArrayList<ContextItem>();
 
-        for (IRepositoryObject repositoryObject : getContext(project).getAbsoluteMembers().objects()) {
-            ContextItem contextItem = (ContextItem) repositoryObject.getProperty().getItem();
-            if (getStatus(contextItem) != ERepositoryStatus.DELETED) {
-                result.add(contextItem);
-            }
-        }
+		for (IRepositoryObject repositoryObject : getContext(project)
+				.getAbsoluteMembers().objects()) {
+			ContextItem contextItem = (ContextItem) repositoryObject
+					.getProperty().getItem();
+			if (getStatus(contextItem) != ERepositoryStatus.DELETED) {
+				result.add(contextItem);
+			}
+		}
 
-        return result;
-    }
+		return result;
+	}
 
-    public boolean isDisplayToUser() {
-        return displayToUser;
-    }
+	public boolean isDisplayToUser() {
+		return displayToUser;
+	}
 
-    public void setDisplayToUser(boolean displayToUser) {
-        this.displayToUser = displayToUser;
-    }
+	public void setDisplayToUser(boolean displayToUser) {
+		this.displayToUser = displayToUser;
+	}
 
 }

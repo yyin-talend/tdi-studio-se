@@ -210,6 +210,7 @@ public class CreateTableAction extends AbstractCreateTableAction {
                 }
 
                 if (ERepositoryObjectType.METADATA_CONNECTIONS.equals(nodeType)
+                        || ERepositoryObjectType.METADATA_SAPCONNECTIONS.equals(nodeType)
                         || ERepositoryObjectType.METADATA_FILE_DELIMITED.equals(nodeType)
                         || ERepositoryObjectType.METADATA_FILE_POSITIONAL.equals(nodeType)
                         || ERepositoryObjectType.METADATA_FILE_REGEXP.equals(nodeType)

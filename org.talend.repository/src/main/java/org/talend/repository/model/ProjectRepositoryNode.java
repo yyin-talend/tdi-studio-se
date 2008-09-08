@@ -37,6 +37,8 @@ import org.talend.core.model.metadata.builder.connection.PositionalFileConnectio
 import org.talend.core.model.metadata.builder.connection.QueriesConnection;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.RegexpFileConnection;
+import org.talend.core.model.metadata.builder.connection.SAPConnection;
+import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.metadata.builder.connection.SalesforceSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.SubItemHelper;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
@@ -64,7 +66,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
     private RepositoryNode businessProcessNode, recBinNode, codeNode, routineNode, snippetsNode, processNode, contextNode,
             docNode, metadataConNode, sqlPatternNode, metadataFileNode, metadataFilePositionalNode, metadataFileRegexpNode,
             metadataFileXmlNode, metadataFileLdifNode, metadataGenericSchemaNode, metadataLDAPSchemaNode, metadataWSDLSchemaNode,
-            metadataFileExcelNode, metadataSalesforceSchemaNode;
+            metadataFileExcelNode, metadataSalesforceSchemaNode, metadataSAPConnectionNode;
 
     private RepositoryNode jobletNode;
 
@@ -249,6 +251,14 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             metadataNode.getChildren().add(metadataSalesforceSchemaNode);
         }
 
+        // 7.12 SAP
+        if (PluginChecker.isSAPWizardPluginLoaded() && LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
+            metadataSAPConnectionNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+            metadataSAPConnectionNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_SAPCONNECTIONS);
+            metadataSAPConnectionNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_SAPCONNECTIONS);
+            metadataNode.getChildren().add(metadataSAPConnectionNode);
+        }
+
         if (getParent() == null && PluginChecker.isJobLetPluginLoaded()) {
             // 1.0 Referenced projects
             refProject = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
@@ -285,6 +295,9 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             } else if (parent == metadataConNode) {
                 convert(factory.getMetadataConnection(project), metadataConNode, ERepositoryObjectType.METADATA_CONNECTIONS,
                         recBinNode);
+            } else if (parent == metadataSAPConnectionNode) {
+                convert(factory.getMetadataSAPConnection(project), metadataSAPConnectionNode,
+                        ERepositoryObjectType.METADATA_SAPCONNECTIONS, recBinNode);
             } else if (parent == sqlPatternNode) {
                 convert(factory.getMetadataSQLPattern(project), sqlPatternNode, ERepositoryObjectType.SQLPATTERNS, recBinNode);
             } else if (parent == metadataFileNode) {
@@ -503,6 +516,11 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                     .getItem()).getConnection();
             createTables(recBinNode, node, repositoryObject, metadataConnection);
         }
+        if (type == ERepositoryObjectType.METADATA_SAPCONNECTIONS) {
+            SAPConnection metadataConnection = (SAPConnection) ((ConnectionItem) repositoryObject.getProperty().getItem())
+                    .getConnection();
+            createTables(recBinNode, node, repositoryObject, metadataConnection);
+        }
         // PTODO tgu implementation a revoir
         if (type == ERepositoryObjectType.METADATA_FILE_DELIMITED) {
             DelimitedFileConnection metadataConnection = (DelimitedFileConnection) ((ConnectionItem) repositoryObject
@@ -698,9 +716,59 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                     }
                 }
             }
+        } else if (metadataConnection instanceof SAPConnection) {
+            // The sap wizard plugin is loaded
+            // 1.Tables:
+            RepositoryNode functionNode = new StableRepositoryNode(node, Messages
+                    .getString("RepositoryContentProvider.repositoryLabel.sapFunction"), ECoreImage.FOLDER_CLOSE_ICON);
+            node.getChildren().add(functionNode);
+            // add functions
+            createSAPFunctionNodes(recBinNode, repObj, metadataConnection, functionNode);
+
         } else {
             createTables(recBinNode, node, repObj, metadataConnection.getTables(), ERepositoryObjectType.METADATA_CON_TABLE);
         }
+    }
+
+    /**
+     * DOC YeXiaowei Comment method "createSAPFunctionNodes".
+     * 
+     * @param metadataConnection
+     * @param functionNode
+     */
+    private void createSAPFunctionNodes(final RepositoryNode recBin, IRepositoryObject rebObj, Connection metadataConnection,
+            RepositoryNode functionNode) {
+        EList functions = ((SAPConnection) metadataConnection).getFuntions();
+        if (functions == null || functions.isEmpty()) {
+            return;
+        }
+        for (int i = 0; i < functions.size(); i++) {
+            SAPFunctionUnit unit = (SAPFunctionUnit) functions.get(i);
+            RepositoryNode tableNode = createSAPNode(rebObj, functionNode, unit);
+            if (SubItemHelper.isDeleted(unit)) {
+                recBin.getChildren().add(tableNode);
+            } else {
+                functionNode.getChildren().add(tableNode);
+            }
+
+        }
+    }
+
+    /**
+     * DOC YeXiaowei Comment method "createSAPNode".
+     * 
+     * @param rebObj
+     * @param functionNode
+     * @param unit
+     * @return
+     */
+    private RepositoryNode createSAPNode(IRepositoryObject rebObj, RepositoryNode functionNode, SAPFunctionUnit unit) {
+        SAPFunctionRepositoryObject modelObj = new SAPFunctionRepositoryObject(rebObj, functionNode, unit);
+        modelObj.setLabel(unit.getName());
+        RepositoryNode tableNode = new RepositoryNode(modelObj, functionNode, ENodeType.REPOSITORY_ELEMENT);
+        tableNode.setProperties(EProperties.LABEL, modelObj.getLabel());
+        tableNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_SAP_FUNCTION);
+        return tableNode;
     }
 
     /**
@@ -721,6 +789,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         tableNode.setProperties(EProperties.LABEL, table.getLabel());
         tableNode.setProperties(EProperties.CONTENT_TYPE, repositoryObjectType);
         return tableNode;
+
     }
 
     /**
@@ -780,6 +849,20 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
      */
     public RepositoryNode getMetadataConNode() {
         return this.metadataConNode;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IProjectRepositoryNode#getMetadataConNode()
+     */
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IProjectRepositoryNode#getMetadataConNode()
+     */
+    public RepositoryNode getMetadataSAPConnectionNode() {
+        return this.metadataSAPConnectionNode;
     }
 
     /*
@@ -1000,6 +1083,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         case METADATA_CON_CDC:
         case METADATA_CONNECTIONS:
             return this.metadataConNode;
+        case METADATA_SAPCONNECTIONS:
+            return this.metadataSAPConnectionNode;
         case SQLPATTERNS:
             return this.sqlPatternNode;
         case METADATA_FILE_DELIMITED:

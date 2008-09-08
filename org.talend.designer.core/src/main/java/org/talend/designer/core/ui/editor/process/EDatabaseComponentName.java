@@ -22,6 +22,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.PositionalFileConnectionItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.RegExFileConnectionItem;
+import org.talend.core.model.properties.SAPConnectionItem;
 import org.talend.core.model.properties.SalesforceSchemaConnectionItem;
 import org.talend.core.model.properties.WSDLSchemaConnectionItem;
 import org.talend.core.model.properties.XmlFileConnectionItem;
@@ -63,20 +64,20 @@ public enum EDatabaseComponentName {
     JAVADB(DatabaseConnectionItem.class, EDatabaseTypeName.JAVADB, "tJavaDBInput", "tJavaDBOutput", true),
     INGRES(DatabaseConnectionItem.class, EDatabaseTypeName.INGRES, "tIngresInput", "tIngresOutput", true), // "INGRES"),
     INTERBASE(DatabaseConnectionItem.class, EDatabaseTypeName.INTERBASE, "tInterbaseInput", "tInterbaseOutput", true), // "INTERBASE"
-                                                                                                                       // )
-                                                                                                                       // ,
+    // )
+    // ,
     SQLITE(DatabaseConnectionItem.class, EDatabaseTypeName.SQLITE, "tSQLiteInput", "tSQLiteOutput", true), // "SQLITE"),
     FIREBIRD(DatabaseConnectionItem.class, EDatabaseTypeName.FIREBIRD, "tFirebirdInput", "tFirebirdOutput", true), // "FIREBIRD"
-                                                                                                                   // ),
+    // ),
     INFORMIX(DatabaseConnectionItem.class, EDatabaseTypeName.INFORMIX, "tInformixInput", "tInformixOutput", true), // "INFORMIX"
-                                                                                                                   // );
+    // );
     ACCESS(DatabaseConnectionItem.class, EDatabaseTypeName.ACCESS, "tAccessInput", "tAccessOutput", true), // "ACCESS");
 
     TERADATA(DatabaseConnectionItem.class, EDatabaseTypeName.TERADATA, "tELTTeradataMap", "tELTTeradataMap"), // "TERADATA"
-                                                                                                              // );
+    // );
     TERADATA_TABLE(DatabaseConnectionItem.class, EDatabaseTypeName.TERADATA, "tELTTeradataInput", "tELTTeradataOutput", true), // "TERADATA"
-                                                                                                                               // )
-                                                                                                                               // ;
+    // )
+    // ;
 
     MAXDB(DatabaseConnectionItem.class, EDatabaseTypeName.MAXDB, "tMaxDBInput", "tMaxDBOutput", true), // "MAXDB");
 
@@ -88,6 +89,7 @@ public enum EDatabaseComponentName {
     FILEPOSITIONAL(PositionalFileConnectionItem.class, "tFileInputPositional", "tFileOutputPositional"),
     FILEREGEX(RegExFileConnectionItem.class, "tFileInputRegex", null),
     FILEXML(XmlFileConnectionItem.class, "tFileInputXML", "tFileOutputXML"),
+    SAPFFUNCTION(SAPConnectionItem.class, "tSAPInput", "tSAPOutput"),
 
     WSDL(WSDLSchemaConnectionItem.class, "tWebServiceInput", null),
     SALESFORCE(SalesforceSchemaConnectionItem.class, "tSalesforceInput", null),

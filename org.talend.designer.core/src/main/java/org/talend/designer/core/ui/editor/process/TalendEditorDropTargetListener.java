@@ -389,6 +389,9 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 if (selectedNode.getProperties(EProperties.CONTENT_TYPE) != ERepositoryObjectType.METADATA_CON_QUERY) {
                     command1.setGuessQuery(true);
                 }
+                if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_SAP_FUNCTION) {
+                    command1.setSapFunctionName((String) selectedNode.getProperties(EProperties.LABEL));
+                }
                 list.add(command1);
             }
 
@@ -446,7 +449,8 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
      * @param connectionItem
      */
     private Command getChangeMetadataCommand(RepositoryNode selectedNode, Node node, ConnectionItem connectionItem) {
-        if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_CON_TABLE) {
+        if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_CON_TABLE
+                || selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_SAP_FUNCTION) {
             RepositoryObject object = (RepositoryObject) selectedNode.getObject();
             MetadataTable table = (MetadataTable) object.getAdapter(MetadataTable.class);
             String value = connectionItem.getProperty().getId() + " - " + table.getLabel();

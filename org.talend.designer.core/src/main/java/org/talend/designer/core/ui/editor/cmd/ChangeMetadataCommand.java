@@ -537,6 +537,17 @@ public class ChangeMetadataCommand extends Command {
         }
     }
 
+    protected void setSAPFunctionName(Element curNode, String functionName) {
+        if (functionName == null) {
+            return;
+        }
+
+        IElementParameter parameter = curNode.getElementParameter("SAP_FUNCTION");
+        if (parameter != null) {
+            parameter.setValue(TalendTextUtils.addQuotes(functionName));
+        }
+    }
+
     /**
      * DOC qzhang Comment method "changeTableNameParameter".
      * 

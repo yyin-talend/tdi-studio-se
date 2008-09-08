@@ -601,6 +601,14 @@ class RepositoryTypeProcessor implements ITypeProcessor {
                     metadataNode = ((ProjectRepositoryNode) provider).getMetadataConNode();
                 }
             }
+            if (repositoryType.startsWith("SAP")) {
+                if (provider instanceof RepositoryContentProvider) {
+                    metadataNode = ((RepositoryContentProvider) provider).getMetadataSAPConnectionNode();
+                }
+                if (provider instanceof ProjectRepositoryNode) {
+                    metadataNode = ((ProjectRepositoryNode) provider).getMetadataSAPConnectionNode();
+                }
+            }
         }
         return metadataNode;
     }

@@ -1648,4 +1648,25 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         return getSpecificVersion(projectManager.getCurrentProject(), id, version);
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.talend.repository.model.IProxyRepositoryFactory#getMetadataSAPConnection(org.talend.core.model.general.Project
+     * )
+     */
+    public RootContainer<String, IRepositoryObject> getMetadataSAPConnection(Project project) throws PersistenceException {
+        // TODO Auto-generated method stub
+        return this.repositoryFactoryFromProvider.getMetadataSAPConnection(project);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IProxyRepositoryFactory#getMetadataSAPConnection()
+     */
+    public RootContainer<String, IRepositoryObject> getMetadataSAPConnection() throws PersistenceException {
+        return getMetadataSAPConnection(projectManager.getCurrentProject());
+    }
+
 }

@@ -69,6 +69,7 @@ import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.repository.ui.actions.metadata.AbstractCreateTableAction;
 import org.talend.repository.ui.actions.metadata.CreateTableAction;
 import org.talend.repository.ui.dialog.RepositoryReviewDialog;
 
@@ -396,7 +397,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
 
         metadataNode = findRepositoryNode(names[1], repositoryNode);
         if (metadataNode != null) {
-            CreateTableAction action = new CreateTableAction(metadataNode);
+            AbstractCreateTableAction action = new CreateTableAction(metadataNode);
             action.run();
         }
 

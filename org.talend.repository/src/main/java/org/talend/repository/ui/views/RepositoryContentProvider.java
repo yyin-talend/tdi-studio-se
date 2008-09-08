@@ -19,6 +19,7 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProjectRepositoryNode;
@@ -256,5 +257,13 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         }
 
         return res;
+    }
+
+    public RepositoryNode getMetadataSAPConnectionNode() {
+        return root.getMetadataSAPConnectionNode();
+    }
+
+    public RepositoryNode getRootRepositoryNode(ERepositoryObjectType type) {
+        return root.getRootRepositoryNode(type);
     }
 }

@@ -26,6 +26,7 @@ import org.talend.core.model.metadata.QueryUtil;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.Query;
+import org.talend.core.model.metadata.builder.connection.SAPConnection;
 import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.EComponentCategory;
@@ -75,6 +76,9 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
     private final String repositoryPropertyTypeName;
 
     private final String updataComponentParamName;
+
+    // use for SAP
+    private String sapFunctionName = null;
 
     public ChangeValuesFromRepository(Element elem, Connection connection, String propertyName, String value) {
         this.elem = elem;
@@ -230,6 +234,20 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                             table.add(map2);
                         }
                         param.setRepositoryValueUsed(true);
+                    } else if (param.getField().equals(EParameterFieldType.TABLE)
+                            && param.getRepositoryValue().equals("INPUT_PARAMS")) {
+                        // FOR SAP
+                        List<Map<String, Object>> table = (List<Map<String, Object>>) elem.getPropertyValue(param.getName());
+                        RepositoryToComponentProperty.getSAPInputAndOutputValue((SAPConnection) connection, table,
+                                getSapFunctionName(), true);
+                        param.setRepositoryValueUsed(true);
+                    } else if (param.getField().equals(EParameterFieldType.TABLE)
+                            && param.getRepositoryValue().equals("OUTPUT_PARAMS")) {
+                        // FOR SAP
+                        List<Map<String, Object>> table = (List<Map<String, Object>>) elem.getPropertyValue(param.getName());
+                        RepositoryToComponentProperty.getSAPInputAndOutputValue((SAPConnection) connection, table,
+                                getSapFunctionName(), false);
+                        param.setRepositoryValueUsed(true);
                     }
                     //
                     if (param.isRepositoryValueUsed()) {
@@ -310,9 +328,11 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                     if (table != null) {
                                         table = table.clone();
                                         setDBTableFieldValue(node, table.getTableName(), null);
+                                        setSAPFunctionName(node, table.getLabel());
                                         table.setTableName(node.getMetadataList().get(0).getTableName());
                                         if (!table.sameMetadataAs(node.getMetadataList().get(0))) {
                                             ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, param, null, table);
+                                            cmd.setConnection(connection);
                                             cmd.setRepositoryMode(true);
                                             cmd.execute(true);
                                         }
@@ -328,6 +348,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                     if (isTake && getTake()) {
                                         ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) elem, param, null,
                                                 sourceMetadataTable);
+                                        cmd.setConnection(connection);
                                         cmd.execute(true);
                                         elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), sourceSchema);
                                         if (sourceSchema.equals(EmfComponent.REPOSITORY)) {
@@ -528,6 +549,24 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
 
     public void setGuessQuery(boolean isGuessQuery) {
         this.isGuessQuery = isGuessQuery;
+    }
+
+    /**
+     * Getter for sapFunctionName.
+     * 
+     * @return the sapFunctionName
+     */
+    public String getSapFunctionName() {
+        return this.sapFunctionName;
+    }
+
+    /**
+     * Sets the sapFunctionName.
+     * 
+     * @param sapFunctionName the sapFunctionName to set
+     */
+    public void setSapFunctionName(String sapFunctionName) {
+        this.sapFunctionName = sapFunctionName;
     }
 
 }

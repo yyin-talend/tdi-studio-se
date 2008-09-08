@@ -108,6 +108,22 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
         }
     }
 
+    /**
+     * DOC mhelleboid Comment method "handleWizard".
+     * 
+     * @param node
+     * @param wizardDialog
+     */
+    protected void handleWizard(RepositoryNode node, WizardDialog wizardDialog, boolean notSetSize) {
+        if (!notSetSize) {
+            wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);
+        }
+        wizardDialog.create();
+        wizardDialog.open();
+        getViewPart().expand(node, true);
+        refresh(node);
+    }
+
     protected String getStringIndexed(String string) {
         int indiceIndex = string.length();
 
@@ -157,7 +173,7 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
         return true;
     }
 
-    private void initContextMode(ConnectionItem item) {
+    protected void initContextMode(ConnectionItem item) {
         ConnectionContextHelper.checkContextMode(item);
     }
 

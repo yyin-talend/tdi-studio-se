@@ -86,6 +86,7 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
 
         node.getElementParameter(EParameterName.UPDATE_COMPONENTS.getName()).setValue(true);
         setDBTableFieldValue(node, newOutputMetadata.getTableName(), oldOutputMetadata.getTableName());
+        setSAPFunctionName(node, newOutputMetadata.getLabel());
         super.execute();
     }
 

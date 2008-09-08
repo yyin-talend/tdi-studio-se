@@ -54,6 +54,7 @@ import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.plugin.integration.BindingActions;
 import org.talend.repository.plugin.integration.SwitchProjectAction;
+import org.talend.repository.ui.actions.metadata.AbstractCreateTableAction;
 import org.talend.repository.ui.actions.metadata.CreateTableAction;
 import org.talend.repository.ui.actions.sqlpattern.CreateSqlpatternAction;
 import org.talend.repository.ui.actions.sqlpattern.EditSqlpatternAction;
@@ -341,7 +342,7 @@ public class RepositoryService implements IRepositoryService {
     public void openEditSchemaWizard(String value) {
         final RepositoryNode realNode = RepositoryNodeUtilities.getSchemeFromConnection(value);
         if (realNode != null) {
-            CreateTableAction action = new CreateTableAction() {
+            AbstractCreateTableAction action = new CreateTableAction() {
 
                 /*
                  * (non-Javadoc)
