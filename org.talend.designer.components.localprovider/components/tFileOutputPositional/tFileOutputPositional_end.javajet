@@ -52,7 +52,7 @@
 	}
 %>
 
-<%if(isAppend && isDeleteEmptyFile){%>
+<%if(!isAppend && isDeleteEmptyFile){%>
 	if(nb_line_<%=cid %> == 0){
 		new java.io.File(<%=filename %>).delete();
 	}		
