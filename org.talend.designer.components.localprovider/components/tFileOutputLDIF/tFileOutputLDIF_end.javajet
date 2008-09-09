@@ -11,13 +11,14 @@
 		String cid = node.getUniqueName();
 		
 		String filename = ElementParameterParser.getValue(node, "__FILENAME__");		
-		boolean isDeleteEmptyFile = ElementParameterParser.getValue(node, "__DELETE_EMPTYFILE__").equals("true");		
+		boolean isDeleteEmptyFile = ElementParameterParser.getValue(node, "__DELETE_EMPTYFILE__").equals("true");
+		boolean isAppend = ElementParameterParser.getValue(node,"__APPEND__").equals("true");		
 %>
 	pw_<%=cid %>.flush();
 	pw_<%=cid %>.close();
 	globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
 	
-<%if(isDeleteEmptyFile){%>
+<%if(isAppend && isDeleteEmptyFile){%>
 	if(nb_line_<%=cid %> == 0){
 		new java.io.File(<%=filename %>).delete();
 	}		

@@ -16,6 +16,7 @@
 	
 	String filename = ElementParameterParser.getValue(node, "__FILENAME__");	
 	boolean isDeleteEmptyFile = ElementParameterParser.getValue(node, "__DELETE_EMPTYFILE__").equals("true");	
+	boolean isAppend = ElementParameterParser.getValue(node,"__APPEND_FILE__").equals("true");
 	
 	String allColumnAutoSize = ElementParameterParser.getValue(node, "__IS_ALL_AUTO_SZIE__");
 	boolean isAllColumnAutoSize = (allColumnAutoSize!=null&&!allColumnAutoSize.equals(""))?allColumnAutoSize.equals("true"):false;
@@ -51,7 +52,7 @@
 	writeableWorkbook_<%=cid %>.close();
 	globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
 	
-<%if(isDeleteEmptyFile){%>
+<%if(isAppend && isDeleteEmptyFile){%>
 	if(nb_line_<%=cid %> == 0){
 		new java.io.File(<%=filename %>).delete();
 	}		

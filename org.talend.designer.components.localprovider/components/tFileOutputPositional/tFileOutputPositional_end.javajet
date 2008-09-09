@@ -14,6 +14,7 @@
 	
     String filename = ElementParameterParser.getValue(node, "__FILENAME__");
     boolean isDeleteEmptyFile = ElementParameterParser.getValue(node, "__DELETE_EMPTYFILE__").equals("true");
+	boolean isAppend = ElementParameterParser.getValue(node,"__APPEND__").equals("true");
 
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -51,7 +52,7 @@
 	}
 %>
 
-<%if(isDeleteEmptyFile){%>
+<%if(isAppend && isDeleteEmptyFile){%>
 	if(nb_line_<%=cid %> == 0){
 		new java.io.File(<%=filename %>).delete();
 	}		
