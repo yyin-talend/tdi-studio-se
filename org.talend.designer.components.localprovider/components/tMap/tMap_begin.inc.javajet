@@ -482,36 +482,33 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
                     return returnValue;
                 }
 
-		    private int checkNullsAndCompare(Object object1, Object object2) {
+                private int checkNullsAndCompare(Object object1, Object object2) {
+                    int returnValue = 0;
+                    if (object1 instanceof Comparable && object2 instanceof Comparable) {
+                        returnValue = ((Comparable) object1).compareTo(object2);
+                    } else if (object1 != null && object2 != null) {
+                        returnValue = compareStrings(object1.toString(), object2
+                                .toString());
+                    } else if (object1 == null && object2 != null) {
+                        returnValue = 1;
+                    } else if (object1 != null && object2 == null) {
+                        returnValue = -1;
+                    } else {
+                        returnValue = 0;
+                    }
 
-        int ascendingInt = 1;
+                    return returnValue;
+                }
 
-        int returnValue = 0;
-        if (object1 instanceof String && object2 instanceof String) {
-            returnValue = compareStrings((String) object1, (String) object2);
-        } else if (object1 instanceof Comparable && object2 instanceof Comparable) {
-            returnValue = ((Comparable) object1).compareTo(object2);
-        } else if (object1 != null && object2 != null) {
-            returnValue = compareStrings(object1.toString(), object2.toString());
-        } else if (object1 == null && object2 != null) {
-            returnValue = 1;
-        } else if (object1 != null && object2 == null) {
-            returnValue = -1;
-        } else {
-            returnValue = 0;
-        }
+                private int compareStrings(String string1, String string2) {
+//                    boolean ignoreCase = true;
+//                    if (ignoreCase) {
+                        return string1.compareToIgnoreCase(string2);
+//                    } else {
+//                        return string1.compareTo(string2);
+//                    }
+                }
 
-        return ascendingInt * returnValue;
-    }
-
-    private int compareStrings(String string1, String string2) {
-        boolean ignoreCase = true;
-        if (ignoreCase) {
-            return string1.compareToIgnoreCase(string2);
-        } else {
-            return string1.compareTo(string2);
-        }
-    }
 
 		
     public void readData(ObjectInputStream dis) {
