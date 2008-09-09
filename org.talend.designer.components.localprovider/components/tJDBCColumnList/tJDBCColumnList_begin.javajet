@@ -18,17 +18,50 @@ imports="
     
     String conn = "conn_" + connection;
     
+    String schema = "dbschema_" + connection;
+    
     String tableName = ElementParameterParser.getValue(node,"__TABLE_NAME__");
 %>
 java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
+String tableName_<%=cid%> = <%=tableName%>;
+<%
+	if(dbType.equals("MSSQL")){
+%>
+String dbschema_<%=cid%> = (String)globalMap.get("<%=schema%>");
 
+if(dbschema_<%=cid%> != null && dbschema_<%=cid%>.trim().length() > 0){
+	tableName_<%=cid%> = "[" + dbschema_<%=cid%> + "].[" + tableName_<%=cid%> + "]";
+}else{
+	tableName_<%=cid%> = "[" + tableName_<%=cid%> + "]";
+}
+<%
+	}else if(dbType.equals("DBORACLE")){
+%>
+String dbschema_<%=cid%> = (String)globalMap.get("<%=schema%>");
+
+if(dbschema_<%=cid%> != null && dbschema_<%=cid%>.trim().length() > 0){
+	tableName_<%=cid%> = dbschema_<%=cid%> + "." + tableName_<%=cid%>;
+}
+<%
+	}else if(dbType.equals("DB2")){
+%>
+String dbschema_<%=cid%> = (String)globalMap.get("<%=schema%>");
+
+if(dbschema_<%=cid%> != null && dbschema_<%=cid%>.trim().length() > 0){
+	tableName_<%=cid%> = "\"" + dbschema_<%=cid%> + "\".\"" + <%=tableName%> + "\"";
+}else{
+	tableName_<%=cid%> = "\"" + <%=tableName%> + "\"";
+}
+<%
+	}
+%>
 int nb_column_<%=cid%> = 0;
 
 int column_count_<%=cid%> = 0;
 
 java.sql.Statement stmt2_<%=cid%> = conn_<%=cid%>.createStatement();
 
-java.sql.ResultSet rs_<%=cid %> = stmt2_<%=cid %>.executeQuery("SELECT * from " + <%=tableName %> + " where 1<>1");
+java.sql.ResultSet rs_<%=cid %> = stmt2_<%=cid %>.executeQuery("SELECT * from " + tableName_<%=cid%> + " where 1<>1");
 
 java.sql.ResultSetMetaData rsMetaData_<%=cid %> = rs_<%=cid %>.getMetaData();
 
