@@ -697,11 +697,7 @@ static class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines.
     }
 
     private int compareStrings(String string1, String string2) {
-        //if (this.ignoreCase) {
-            return string1.compareToIgnoreCase(string2);
-        //} else {
-        //    return string1.compareTo(string2);
-        //}
+        return string1.compareTo(string2);
     }
 
     
