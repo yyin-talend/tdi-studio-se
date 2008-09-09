@@ -25,14 +25,38 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         String  dateTime=ElementParameterParser.getValue(node,"__DATE__");
         String  amount=ElementParameterParser.getValue(node,"__AMOUNT__");
         boolean dieOnError = ElementParameterParser.getValue(node,"__DIE_ON_ERROR__").equals("true");
+        boolean useProxy=ElementParameterParser.getValue(node,"__USE_PROXY__").equals("true");
        	List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
+       	
+       	String host=ElementParameterParser.getValue(node,"__PROXY_HOST__");
+       	String port=ElementParameterParser.getValue(node,"__PROXY_PORT__");
+       	String username=ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
+       	String password=ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
+  	
 %>
     int nb_line_<%=cid%> = 0;
     String rssurl<%=cid%>=<%=rss%>;
     int aMount<%=cid%>=<%=amount%>;
+<%
+if(useProxy){
+%>
+    java.util.Properties props = System.getProperties();
+    
+    props.put("socksProxyHost",<%=host %>);  
+    props.put("socksProxyPort",<%=port %>);
+    props.put("java.net.socks.username", <%=username %>);
+    props.put("java.net.socks.password", <%=password %>); 
+  
+    
+<%
+}
+%>   
     java.net.URL url<%=cid%> = new java.net.URL(rssurl<%=cid%>);
     it.sauronsoftware.feed4j.bean.Feed feed<%=cid%>=null;
     boolean ifInvalid<%=cid%> = false;
+    
+  
+           
     
 <%if(!dieOnError){%>    
         try{
