@@ -52,8 +52,9 @@ public class ContextRepositoryComposite extends ContextComposite {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.core.ui.context.JobContextComposite#onContextAddParameter(org.talend.core.model.process.IContextManager,
-     * org.talend.core.model.process.IContextParameter)
+     * @see
+     * org.talend.core.ui.context.JobContextComposite#onContextAddParameter(org.talend.core.model.process.IContextManager
+     * , org.talend.core.model.process.IContextParameter)
      */
     public void onContextAddParameter(IContextManager contextManager, IContextParameter contextParam) {
         for (int i = 0; i < contextManager.getListContext().size(); i++) {
@@ -69,8 +70,9 @@ public class ContextRepositoryComposite extends ContextComposite {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.core.ui.context.JobContextComposite#onContextRenameParameter(org.talend.core.model.process.IContextManager,
-     * java.lang.String, java.lang.String)
+     * @see
+     * org.talend.core.ui.context.JobContextComposite#onContextRenameParameter(org.talend.core.model.process.IContextManager
+     * , java.lang.String, java.lang.String)
      */
     public void onContextRenameParameter(IContextManager contextManager, String oldName, String newName) {
         boolean found;
@@ -99,7 +101,9 @@ public class ContextRepositoryComposite extends ContextComposite {
         manager.addNewName(newName, oldName);
 
         // record the modified operation.
-        setModifiedFlag(contextManager);
+        if (manager.isOriginalParameter(newName)) {
+            setModifiedFlag(contextManager);
+        }
 
         // refresh();
     }
@@ -124,8 +128,9 @@ public class ContextRepositoryComposite extends ContextComposite {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.core.ui.context.JobContextComposite#onContextRemoveParameter(org.talend.core.model.process.IContextManager,
-     * java.lang.String)
+     * @see
+     * org.talend.core.ui.context.JobContextComposite#onContextRemoveParameter(org.talend.core.model.process.IContextManager
+     * , java.lang.String)
      */
     public void onContextRemoveParameter(IContextManager contextManager, String contextParamName) {
         Set<String> names = new HashSet<String>();
@@ -136,8 +141,9 @@ public class ContextRepositoryComposite extends ContextComposite {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.core.ui.context.JobContextComposite#onContextChangeDefault(org.talend.core.model.process.IContextManager,
-     * org.talend.core.model.process.IContext)
+     * @see
+     * org.talend.core.ui.context.JobContextComposite#onContextChangeDefault(org.talend.core.model.process.IContextManager
+     * , org.talend.core.model.process.IContext)
      */
     public void onContextChangeDefault(IContextManager contextManager, IContext newDefault) {
         contextManager.setDefaultContext(newDefault);
@@ -237,8 +243,8 @@ public class ContextRepositoryComposite extends ContextComposite {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.core.ui.context.IContextModelManager#onContextRemoveParameter(org.talend.core.model.process.IContextManager,
-     * java.util.List)
+     * @seeorg.talend.core.ui.context.IContextModelManager#onContextRemoveParameter(org.talend.core.model.process.
+     * IContextManager, java.util.List)
      */
     public void onContextRemoveParameter(IContextManager contextManager, Set<String> paramNames) {
         if (contextManager == null || paramNames == null || paramNames.isEmpty()) {

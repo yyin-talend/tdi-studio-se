@@ -38,8 +38,7 @@ public class ContextForm extends AbstractForm {
      * @param style
      * @param existingNames
      */
-    public ContextForm(Composite parent, int style, String[] existingNames, IContextManager contextManager,
-            boolean readOnly) {
+    public ContextForm(Composite parent, int style, String[] existingNames, IContextManager contextManager, boolean readOnly) {
         super(parent, style, existingNames);
         this.contextManager = contextManager;
         this.readOnly = readOnly;
@@ -69,6 +68,8 @@ public class ContextForm extends AbstractForm {
         gridData.grabExcessVerticalSpace = true;
         gridData.verticalAlignment = SWT.FILL;
         gridData.horizontalAlignment = SWT.FILL;
+        gridData.heightHint = 250;
+        gridData.widthHint = 700;
         jobContext.setLayoutData(gridData);
         jobContext.setReadOnly(readOnly);
         jobContext.refresh();
