@@ -70,6 +70,8 @@ public class JobHierarchyViewPart extends ViewPart implements IJobHierarchyViewP
 
     public static final String ID = "org.talend.designer.core.ui.hierarchy.JobHierarchyViewPart";
 
+    private static final String GROUP_FOCUS = "group.focus"; //$NON-NLS-1$
+
     private static final String DIALOGSTORE_VIEWLAYOUT = "TypeHierarchyViewPart.orientation"; //$NON-NLS-1$
 
     // input job or null
@@ -111,6 +113,8 @@ public class JobHierarchyViewPart extends ViewPart implements IJobHierarchyViewP
 
     private CompositeActionGroup fActionGroups;
 
+    private FocusOnJobAction focusOnTypeAction = null;
+
     /**
      * Constructor
      */
@@ -129,6 +133,8 @@ public class JobHierarchyViewPart extends ViewPart implements IJobHierarchyViewP
         fToggleOrientationActions = new ToggleOrientationAction[] { new ToggleOrientationAction(this, VIEW_LAYOUT_VERTICAL),
                 new ToggleOrientationAction(this, VIEW_LAYOUT_HORIZONTAL),
                 new ToggleOrientationAction(this, VIEW_LAYOUT_AUTOMATIC), new ToggleOrientationAction(this, VIEW_LAYOUT_SINGLE) };
+
+        focusOnTypeAction = new FocusOnJobAction(this);
     }
 
     String showEmptyLabel = "To display the job hierarchy, select a job, and select the \'Open Job Hierarchy\' menu option. Alternatively, you can drag and drop an job from repository view onto this view.";
@@ -170,9 +176,12 @@ public class JobHierarchyViewPart extends ViewPart implements IJobHierarchyViewP
         ToolBar methodViewerToolBar = new ToolBar(dependencyViewerViewForm, SWT.FLAT | SWT.WRAP);
         dependencyViewerViewForm.setTopCenter(methodViewerToolBar);
 
-        fPagebook.showPage(fNoHierarchyShownLabel);
-
         initDragAndDrop();
+
+        MenuManager menu = new MenuManager();
+        menu.add(focusOnTypeAction);
+        fNoHierarchyShownLabel.setMenu(menu.createContextMenu(fNoHierarchyShownLabel));
+        fPagebook.showPage(fNoHierarchyShownLabel);
 
         int layout;
         try {
@@ -674,9 +683,11 @@ public class JobHierarchyViewPart extends ViewPart implements IJobHierarchyViewP
         // viewer entries
         // ISelection selection = viewer.getSelection();
 
-        // if (fFocusOnSelectionAction.canActionBeAdded())
-        // menu.appendToGroup(GROUP_FOCUS, fFocusOnSelectionAction);
+        // if (focusOnSelectionAction.canActionBeAdded())
+        // menu.appendToGroup(GROUP_FOCUS, focusOnSelectionAction);
         // menu.appendToGroup(GROUP_FOCUS, fFocusOnTypeAction);
+
+        menu.add(focusOnTypeAction);
 
         fActionGroups.setContext(new ActionContext(getSite().getSelectionProvider().getSelection()));
         fActionGroups.fillContextMenu(menu);

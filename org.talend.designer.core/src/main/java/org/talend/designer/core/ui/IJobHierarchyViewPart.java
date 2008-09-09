@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.core.ui;
 
+import org.eclipse.ui.IViewPart;
 import org.talend.core.model.process.IProcess2;
 
 /**
@@ -23,7 +24,7 @@ import org.talend.core.model.process.IProcess2;
  * 
  * @noimplement This interface is not intended to be implemented by clients.
  */
-public interface IJobHierarchyViewPart {
+public interface IJobHierarchyViewPart extends IViewPart {
 
     /**
      * Constant used for the vertical view layout.
