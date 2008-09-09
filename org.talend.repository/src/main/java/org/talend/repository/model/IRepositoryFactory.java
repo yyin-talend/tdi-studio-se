@@ -360,4 +360,6 @@ public interface IRepositoryFactory {
 
 	public Property getUptodateProperty(Project project, Property property)
 			throws PersistenceException;
+
+    public Project beforeLogon(Project project) throws PersistenceException;
 }
