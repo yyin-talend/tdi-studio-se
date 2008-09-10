@@ -915,6 +915,12 @@
             id="org.talend.repository.model.migration.MoveFileListFilemaskToFilemaskListForJava"
             name="Move filemask to filemask list">
       </projecttask>
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.AddOutputFileNameOntJasperOutputForJava"
+            id="org.talend.repository.model.migration.AddOutputFileNameOntJasperOutputForJava"
+            name="add output file name on tJasperOutput">
+      </projecttask>
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">
