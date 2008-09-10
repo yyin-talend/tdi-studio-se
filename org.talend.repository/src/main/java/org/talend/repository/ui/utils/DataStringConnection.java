@@ -71,9 +71,9 @@ public class DataStringConnection {
         String file = "([\\w\\.\\-_]{0,})"; //$NON-NLS-1$
         String addParam = "([\\w\\.\\-_=]{0,})"; //$NON-NLS-1$
 
-        dataConnection = new DataConnection[30];
+        dataConnection = new DataConnection[31];
 
-        defaultTable = new String[30];
+        defaultTable = new String[31];
 
         dataConnection[0] = new DataConnection(
                 "MySQL", "jdbc:mysql://<host>:<port>/<sid>?<property>", "jdbc:mysql://" + host + ":" + port //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
@@ -173,8 +173,11 @@ public class DataStringConnection {
         dataConnection[28] = new DataConnection("ParAccel", "jdbc:postgresql://<host>:<port>/<sid>", "jdbc:postgresql://" + host //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + ":" + port + "/" + sid, "5432"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
+        dataConnection[29] = new DataConnection("Netezza", "jdbc:netezza://<host>:<port>/<sid>", "jdbc:netezza://" + host //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + ":" + port + "/" + sid, "5480");
+
         // General jdbc
-        dataConnection[29] = new DataConnection(GENERAL_JDBC, "jdbc:xxx://<xxx>:<xxx>", "jdbc:xxx://" + host //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        dataConnection[30] = new DataConnection(GENERAL_JDBC, "jdbc:xxx://<xxx>:<xxx>", "jdbc:xxx://" + host //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + ":" + port, "xxxx"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         // dataConnection[8] = new DataConnection("Sybase IQ", "jdbc:sybase:Tds:<host>:<port>/<sid>", "jdbc:sybase:Tds:"
@@ -406,7 +409,8 @@ public class DataStringConnection {
 
     private static String[] dataBaseNeededList = { "jdbc:mysql", "jdbc:sybase", "jdbc:db2", "jdbc:ingres", "jdbc:interbase",
             "jdbc:jtds:sqlserver", "jdbc:informix-sqli", "jdbc:teradata", "jdbc:as400", "jdbc:derby", "jdbc:derby:net",
-            "jdbc:hsqldb:hsql", "jdbc:hsqldb:http", "jdbc:hsqldb:file", "jdbc:sapdb", "jdbc:postgresql", "jdbc:db2" };
+            "jdbc:hsqldb:hsql", "jdbc:hsqldb:http", "jdbc:hsqldb:file", "jdbc:sapdb", "jdbc:postgresql", "jdbc:db2",
+            "jdbc:netezza" };
 
     public boolean isDatabaseNeeded() {
         if (selectionIndex < 0) {
