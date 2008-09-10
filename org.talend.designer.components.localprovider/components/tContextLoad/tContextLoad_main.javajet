@@ -104,7 +104,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         {                
            <% if(typeToGenerate.equals("java.util.Date"))
             {%>            
-            context.<%=ctxParam.getName()%>=(java.util.Date)(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(value_<%=cid %>));
+                String context_<%=ctxParam.getName()%>_value = context.getProperty("<%=ctxParam.getName()%>");
+				int context_<%=ctxParam.getName()%>_pos = context_<%=ctxParam.getName()%>_value.indexOf(";");
+				String context_<%=ctxParam.getName()%>_pattern =  "yyyy-MM-dd HH:mm:ss";
+				if(context_<%=ctxParam.getName()%>_pos > -1){
+					context_<%=ctxParam.getName()%>_pattern = context_<%=ctxParam.getName()%>_value.substring(0, context_<%=ctxParam.getName()%>_pos);
+					context_<%=ctxParam.getName()%>_value = context_<%=ctxParam.getName()%>_value.substring(context_<%=ctxParam.getName()%>_pos + 1);
+				}
+			    context.<%=ctxParam.getName()%>=(java.util.Date)(new java.text.SimpleDateFormat(context_<%=ctxParam.getName()%>_pattern).parse(context_<%=ctxParam.getName()%>_value));
+			    
             <%}else if(typeToGenerate.equals("Integer")){%>
             try{
                 context.<%=ctxParam.getName()%>=Integer.parseInt(value_<%=cid %>);
