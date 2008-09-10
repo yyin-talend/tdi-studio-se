@@ -23,6 +23,10 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceDescription;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -157,10 +161,12 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      */
     public void refreshDocumentationFolder(String docFolder) {
         IFolder folder = RepositoryPathProvider.getFolder(docFolder);
-        try {
-            folder.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (folder != null) {
+            try {
+                folder.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -1411,6 +1417,15 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
 
         service.executeProjectTasks(project, false, monitorWrap);
 
+        // remove the auto-build to enhance the build speed and application's use
+        IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        IWorkspaceDescription description = workspace.getDescription();
+        description.setAutoBuilding(false);
+        try {
+            workspace.setDescription(description);
+        } catch (CoreException e) {
+            // do nothing
+        }
     }
 
     public boolean setAuthorByLogin(Item item, String login) throws PersistenceException {
