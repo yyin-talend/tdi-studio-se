@@ -161,7 +161,16 @@
 			        
 			%>
 			try{
-			    context.<%=ctxParam.getName()%>=(java.util.Date)(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(context.getProperty("<%=ctxParam.getName()%>")));
+				String context_<%=ctxParam.getName()%>_value = context.getProperty("<%=ctxParam.getName()%>");
+				int context_<%=ctxParam.getName()%>_pos = context_<%=ctxParam.getName()%>_value.indexOf(";");
+				String context_<%=ctxParam.getName()%>_pattern =  "yyyy-MM-dd HH:mm:ss";
+				if(context_<%=ctxParam.getName()%>_pos > -1){
+					context_<%=ctxParam.getName()%>_pattern = context_<%=ctxParam.getName()%>_value.substring(0, context_<%=ctxParam.getName()%>_pos);
+					context_<%=ctxParam.getName()%>_value = context_<%=ctxParam.getName()%>_value.substring(context_<%=ctxParam.getName()%>_pos + 1);
+				}
+				
+			    context.<%=ctxParam.getName()%>=(java.util.Date)(new java.text.SimpleDateFormat(context_<%=ctxParam.getName()%>_pattern).parse(context_<%=ctxParam.getName()%>_value));
+			   
 			}catch(ParseException e)
 			{
 			    context.<%=ctxParam.getName()%>=null;
