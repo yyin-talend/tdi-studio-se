@@ -82,17 +82,17 @@ public enum EDatabaseComponentName {
     MAXDB(DatabaseConnectionItem.class, EDatabaseTypeName.MAXDB, "tMaxDBInput", "tMaxDBOutput", true), // "MAXDB");
 
     // FILES
-    FILEARFF(FakeFileConnectionItem.class, "tFileInputARFF", "tFileOutputARFF"),
-    FILEDELIMITED(DelimitedFileConnectionItem.class, "tFileInputDelimited", "tFileOutputDelimited"),
-    FILEEXCEL(ExcelFileConnectionItem.class, "tFileInputExcel", "tFileOutputExcel"),
-    FILELDIF(LdifFileConnectionItemImpl.class, "tFileInputLDIF", "tFileOutputLDIF"),
-    FILEPOSITIONAL(PositionalFileConnectionItem.class, "tFileInputPositional", "tFileOutputPositional"),
-    FILEREGEX(RegExFileConnectionItem.class, "tFileInputRegex", null),
-    FILEXML(XmlFileConnectionItem.class, "tFileInputXML", "tFileOutputXML"),
-    SAPFFUNCTION(SAPConnectionItem.class, "tSAPInput", "tSAPOutput"),
+    FILEARFF(FakeFileConnectionItem.class, "tFileInputARFF", "tFileOutputARFF", "DELIMITED"),
+    FILEDELIMITED(DelimitedFileConnectionItem.class, "tFileInputDelimited", "tFileOutputDelimited", "DELIMITED"),
+    FILEEXCEL(ExcelFileConnectionItem.class, "tFileInputExcel", "tFileOutputExcel", "EXCEL"),
+    FILELDIF(LdifFileConnectionItemImpl.class, "tFileInputLDIF", "tFileOutputLDIF", "LDIF"),
+    FILEPOSITIONAL(PositionalFileConnectionItem.class, "tFileInputPositional", "tFileOutputPositional", "POSITIONAL"),
+    FILEREGEX(RegExFileConnectionItem.class, "tFileInputRegex", null, "REGEX"),
+    FILEXML(XmlFileConnectionItem.class, "tFileInputXML", "tFileOutputXML", "XML"),
+    SAPFFUNCTION(SAPConnectionItem.class, "tSAPInput", "tSAPOutput", "SAP"),
 
-    WSDL(WSDLSchemaConnectionItem.class, "tWebServiceInput", null),
-    SALESFORCE(SalesforceSchemaConnectionItem.class, "tSalesforceInput", null),
+    WSDL(WSDLSchemaConnectionItem.class, "tWebServiceInput", null, "WSDL"),
+    SALESFORCE(SalesforceSchemaConnectionItem.class, "tSalesforceInput", null, "SALESFORCE"),
 
     // RunJob
     RunJob(ProcessItem.class, "tRunJob", "tRunJob");
@@ -124,11 +124,14 @@ public enum EDatabaseComponentName {
 
     String inputComponentName;
 
+    @Deprecated
     String outPutComponentName;
 
     EDatabaseTypeName dbTypeName;
 
     boolean forTableItem;
+
+    private String productName;
 
     public boolean isForTableItem() {
         return this.forTableItem;
@@ -147,13 +150,20 @@ public enum EDatabaseComponentName {
         return dbTypeName.getDisplayName();
     }
 
-    /**
-     * Getter for dbType.
-     * 
-     * @return the dbType
-     */
-    public String getProduct() {
-        return dbTypeName.getProduct();
+    public String getProductName() {
+        if (dbTypeName != null) {
+            return "DATABASE:" + dbTypeName.getProduct();
+        }
+
+        return this.productName;
+    }
+
+    public String getDefaultComponentName() {
+        return getInputComponentName();
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
 
     /**
@@ -169,23 +179,26 @@ public enum EDatabaseComponentName {
      * Getter for outPutComponentName.
      * 
      * @return the outPutComponentName
+     * @deprecated it is useless.
      */
     public String getOutPutComponentName() {
         return this.outPutComponentName;
     }
 
-    /**
-     * Contructor for files.
-     * 
-     * @param clazz
-     * @param inputComponentName
-     * @param outPutComponentName
-     */
+    EDatabaseComponentName(Class clazz, String inputComponentName, String outPutComponentName, String productName) {
+        this.clazz = clazz;
+        this.inputComponentName = inputComponentName;
+        this.outPutComponentName = outPutComponentName;
+        this.productName = productName;
+
+    }
+
+    // TODO need to be removed after implementing this feature
+    // 
     EDatabaseComponentName(Class clazz, String inputComponentName, String outPutComponentName) {
         this.clazz = clazz;
         this.inputComponentName = inputComponentName;
         this.outPutComponentName = outPutComponentName;
-
     }
 
     /**
@@ -251,6 +264,26 @@ public enum EDatabaseComponentName {
                 } else {
                     return typeName;
                 }
+            }
+        }
+        return null;
+    }
+
+    public static String getProductName(Item item) {
+        for (EDatabaseComponentName typeName : EDatabaseComponentName.values()) {
+            if (typeName.getMappingKey().isAssignableFrom(item.getClass())) {
+
+                return typeName.getProductName();
+
+                // if (typeName.getMappingKey() == DatabaseConnectionItem.class) {
+                // DatabaseConnectionItem dbItem = (DatabaseConnectionItem) item;
+                // DatabaseConnection dbConnection = (DatabaseConnection) dbItem.getConnection();
+                // if (typeName.getDBType().equals(dbConnection.getDatabaseType()) && flag) {
+                // return typeName;
+                // }
+                // } else {
+                // return typeName;
+                // }
             }
         }
         return null;

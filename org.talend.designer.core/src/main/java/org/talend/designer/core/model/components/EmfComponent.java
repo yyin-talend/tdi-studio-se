@@ -2259,4 +2259,19 @@ public class EmfComponent implements IComponent {
     public boolean isMainCodeCalled() {
         return compType.getHEADER().isMAINCODECALLED();
     }
+
+    /**
+     * get this component's repository type <br>
+     * see <PARAMETER NAME="PROPERTY" ...> in the component's xml definition.
+     * 
+     * @return
+     */
+    public String getRepositoryType() {
+        for (PARAMETERType pType : (List<PARAMETERType>) compType.getPARAMETERS().getPARAMETER()) {
+            if (pType.getNAME().endsWith("PROPERTY")) {
+                return pType.getREPOSITORYVALUE();
+            }
+        }
+        return null;
+    }
 }
