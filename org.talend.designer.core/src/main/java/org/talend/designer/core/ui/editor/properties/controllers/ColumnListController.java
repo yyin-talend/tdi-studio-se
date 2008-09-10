@@ -81,7 +81,8 @@ public class ColumnListController extends AbstractElementPropertySectionControll
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createCommand()
+     * @see
+     * org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createCommand()
      */
     public Command createCommand(SelectionEvent selectionEvent) {
         repositoryTableMap = dynamicProperty.getRepositoryTableMap();
@@ -141,7 +142,8 @@ public class ColumnListController extends AbstractElementPropertySectionControll
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createControl()
+     * @see
+     * org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createControl()
      */
     @Override
     public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
@@ -230,8 +232,9 @@ public class ColumnListController extends AbstractElementPropertySectionControll
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite,
-     * org.talend.core.model.process.IElementParameter)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize
+     * (org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
      */
     @Override
     public int estimateRowSize(Composite subComposite, IElementParameter param) {
@@ -308,11 +311,11 @@ public class ColumnListController extends AbstractElementPropertySectionControll
     // only set synWidthWithMhaoetadataColumn =true, when use the metadataDialog to set the metadata.
     // see issue 0001676
     public static void updateColumnList(INode node, List<ColumnNameChanged> columnsChanged, boolean synWidthWithMetadataColumn) {
-        List<String> columnList = getColumnList(node);
+        List<String> columnList = null;
         List<String> prevColumnList = getPrevColumnList(node);
         Map<IConnection, List<String>> refColumnLists = getRefColumnLists(node);
 
-        String[] columnNameList = columnList.toArray(new String[0]);
+        String[] columnNameList = null;
         String[] prevColumnNameList = prevColumnList.toArray(new String[0]);
         String[] curColumnNameList = null;
         String[] curColumnValueList = null;
@@ -330,6 +333,8 @@ public class ColumnListController extends AbstractElementPropertySectionControll
         String[] refColumnListValues = refColumnListValuesTmp.toArray(new String[0]);
         for (int i = 0; i < node.getElementParameters().size(); i++) {
             IElementParameter param = node.getElementParameters().get(i);
+            columnList = getColumnList(node, param.getContext());
+            columnNameList = columnList.toArray(new String[0]);
             if (param.getField() == EParameterFieldType.COLUMN_LIST) {
                 curColumnNameList = columnNameList;
                 curColumnValueList = columnNameList;
@@ -354,9 +359,11 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                 for (int j = 0; j < itemsValue.length; j++) {
                     if (itemsValue[j] instanceof IElementParameter) {
                         IElementParameter tmpParam = (IElementParameter) itemsValue[j];
+                        columnList = getColumnList(node, tmpParam.getContext());
+                        String[] tableColumnNameList = columnList.toArray(new String[0]);
                         if (tmpParam.getField() == EParameterFieldType.COLUMN_LIST) {
-                            curColumnNameList = columnNameList;
-                            curColumnValueList = columnNameList;
+                            curColumnNameList = tableColumnNameList;
+                            curColumnValueList = tableColumnNameList;
                         }
                         if (tmpParam.getField() == EParameterFieldType.PREV_COLUMN_LIST) {
                             curColumnNameList = prevColumnNameList;
@@ -517,11 +524,17 @@ public class ColumnListController extends AbstractElementPropertySectionControll
         return synLengthTipFlag.booleanValue();
     }
 
-    private static List<String> getColumnList(INode node) {
+    private static List<String> getColumnList(INode node, String context) {
         List<String> columnList = new ArrayList<String>();
 
-        if (node.getMetadataList().size() > 0) {
-            IMetadataTable table = node.getMetadataList().get(0);
+        IMetadataTable table = node.getMetadataFromConnector(context);
+
+        if (table == null) {
+            if (node.getMetadataList().size() > 0) {
+                table = node.getMetadataList().get(0);
+            }
+        }
+        if (table != null) {
             for (IMetadataColumn column : table.getListColumns()) {
                 columnList.add(column.getLabel());
             }
@@ -577,7 +590,8 @@ public class ColumnListController extends AbstractElementPropertySectionControll
      * 
      * DOC ggu Comment method "syncNodePropertiesTableColumns".<BR/>
      * 
-     * synchronize COLUMN_LIST, PREV_COLUMN_LIST, LOOKUP_COLUMN_LIST in table. <br/> when modified column name of schema .
+     * synchronize COLUMN_LIST, PREV_COLUMN_LIST, LOOKUP_COLUMN_LIST in table. <br/> when modified column name of schema
+     * .
      * 
      * @param param
      * @param columnsChanged
