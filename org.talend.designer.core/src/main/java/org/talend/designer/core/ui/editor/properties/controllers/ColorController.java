@@ -37,8 +37,8 @@ import org.eclipse.swt.widgets.ColorDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.talend.commons.utils.image.ColorUtils;
 import org.talend.core.model.process.IElementParameter;
-import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
@@ -68,7 +68,8 @@ public class ColorController extends AbstractElementPropertySectionController {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createCommand()
+     * @see
+     * org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createCommand()
      */
     private Command createCommand(SelectionEvent event) {
         Control ctrl = (Control) event.getSource();
@@ -76,14 +77,13 @@ public class ColorController extends AbstractElementPropertySectionController {
             String paramName = (String) ctrl.getData(PARAMETER_NAME);
             if (paramName != null) {
                 ColorDialog colorDialog = new ColorDialog(ctrl.getShell());
-                colorDialog.setRGB(TalendTextUtils.stringToRGB((String) elem.getPropertyValue(paramName)));
+                colorDialog.setRGB(ColorUtils.parserStringToRGB((String) elem.getPropertyValue(paramName)));
                 RGB rgb = colorDialog.open();
 
                 if (rgb != null) {
                     setButtonColor((Button) ctrl, rgb);
                     Command cmd;
-                    String value = rgb.red + ";" + rgb.green + ";" + rgb.blue;
-                    cmd = new PropertyChangeCommand(elem, paramName, value);
+                    cmd = new PropertyChangeCommand(elem, paramName, ColorUtils.getColorValue(rgb));
                     return cmd;
                 }
             }
@@ -94,7 +94,8 @@ public class ColorController extends AbstractElementPropertySectionController {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createControl()
+     * @see
+     * org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createControl()
      */
     @Override
     public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
@@ -169,8 +170,9 @@ public class ColorController extends AbstractElementPropertySectionController {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite,
-     * org.talend.core.model.process.IElementParameter)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize
+     * (org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
      */
     @Override
     public int estimateRowSize(Composite subComposite, IElementParameter param) {
@@ -213,7 +215,7 @@ public class ColorController extends AbstractElementPropertySectionController {
             return;
         }
         if (value != null) {
-            setButtonColor(colorBtn, TalendTextUtils.stringToRGB((String) value));
+            setButtonColor(colorBtn, ColorUtils.parserStringToRGB((String) value));
         }
     }
 

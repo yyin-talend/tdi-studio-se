@@ -18,6 +18,8 @@ import java.util.List;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.swt.graphics.Color;
+import org.talend.commons.utils.image.ColorUtils;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
@@ -25,6 +27,7 @@ import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.ISubjobContainer;
+import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.ui.editor.TalendEditor;
@@ -122,7 +125,7 @@ public class SubjobContainer extends Element implements ISubjobContainer {
 
         param = new ElementParameter(this);
         param.setName(EParameterName.SUBJOB_COLOR.getName());
-        param.setValue("220;220;250"); // default subjob color
+        param.setValue(null); // default subjob color
         param.setDisplayName(EParameterName.SUBJOB_COLOR.getDisplayName());
         param.setField(EParameterFieldType.COLOR);
         param.setCategory(EComponentCategory.BASIC);
@@ -286,13 +289,28 @@ public class SubjobContainer extends Element implements ISubjobContainer {
 
     public void setSubjobStartNode(Node node) {
         setPropertyValue(EParameterName.UNIQUE_NAME.getName(), node.getUniqueName());
+
         if (node.getComponent().getName().equals("tPrejob") || node.getComponent().getName().equals("tPostjob")) {
-            setPropertyValue(EParameterName.SUBJOB_COLOR.getName(), "255;220;180");
             setPropertyValue(EParameterName.SHOW_SUBJOB_TITLE.getName(), Boolean.TRUE);
             getElementParameter(EParameterName.SHOW_SUBJOB_TITLE.getName()).setShow(false);
         } else {
             getElementParameter(EParameterName.SHOW_SUBJOB_TITLE.getName()).setShow(true);
         }
+        setSubjobPropertyColor(EParameterName.SUBJOB_COLOR.getName(), node, getDefaultSubjobColor(ColorUtils.SUBJOB_COLOR_NAME,
+                ColorUtils.SUBJOB_COLOR));
+        setSubjobPropertyColor(EParameterName.SUBJOB_TITLE_COLOR.getName(), node, getDefaultSubjobColor(
+                ColorUtils.SUBJOB_TITLE_COLOR_NAME, ColorUtils.SUBJOB_TITLE_COLOR));
+
+    }
+
+    private void setSubjobPropertyColor(String propertyName, Node node, Color defaultColor) {
+        Color colorValue = ColorUtils.parseStringToColor((String) node.getPropertyValue(propertyName), defaultColor);
+        setPropertyValue(propertyName, ColorUtils.getColorValue(colorValue));
+    }
+
+    public Color getDefaultSubjobColor(String name, Color defaultColor) {
+        String colorStr = DesignerPlugin.getDefault().getPreferenceStore().getString(name);
+        return ColorUtils.parseStringToColor(colorStr, defaultColor);
     }
 
     public void updateSubjobContainer() {

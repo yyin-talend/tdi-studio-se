@@ -22,10 +22,10 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
+import org.talend.commons.utils.image.ColorUtils;
 import org.talend.commons.utils.workbench.gef.SimpleHtmlFigure;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess2;
-import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
@@ -35,12 +35,6 @@ import org.talend.designer.core.ui.editor.nodes.Node;
  * DOC nrousseau class global comment. Detailled comment
  */
 public class SubjobContainerFigure extends Figure {
-
-    private static final Color SUBJOB_TITLE_COLOR = new Color(null, 50, 50, 250);
-
-    private static final Color PREJOB_TITLE_COLOR = new Color(null, 230, 100, 0);
-
-    private static final Color POSTJOB_TITLE_COLOR = new Color(null, 230, 100, 0);
 
     private SubjobContainer subjobContainer;
 
@@ -100,20 +94,18 @@ public class SubjobContainerFigure extends Figure {
      */
     private void initSubJobTitleColor() {
         IElementParameter colorParameter = subjobContainer.getElementParameter(EParameterName.SUBJOB_TITLE_COLOR.getName());
+        // Color titleColor = ColorUtils.SUBJOB_TITLE_COLOR;
+        if (subjobContainer.getSubjobStartNode().getComponent().getName().equals("tPrejob")
+                || subjobContainer.getSubjobStartNode().getComponent().getName().equals("tPostjob")) {
+            // titleColor = ColorUtils.SPECIAL_SUBJOB_TITLE_COLOR;
+        }
         if (colorParameter.getValue() == null) {
-            subjobTitleColor = SUBJOB_TITLE_COLOR;
-            if (subjobContainer.getSubjobStartNode().getComponent().getName().equals("tPrejob")) {
-                subjobTitleColor = PREJOB_TITLE_COLOR;
-            }
-            if (subjobContainer.getSubjobStartNode().getComponent().getName().equals("tPostjob")) {
-                subjobTitleColor = POSTJOB_TITLE_COLOR;
-            }
-
-            String colorValue = subjobTitleColor.getRed() + ";" + subjobTitleColor.getGreen() + ";" + subjobTitleColor.getBlue();
+            subjobTitleColor = ColorUtils.SUBJOB_TITLE_COLOR;
+            String colorValue = ColorUtils.getColorValue(subjobTitleColor);
             colorParameter.setValue(colorValue);
         } else {
             String strRgb = (String) colorParameter.getValue();
-            subjobTitleColor = new Color(null, TalendTextUtils.stringToRGB(strRgb));
+            subjobTitleColor = ColorUtils.parseStringToColor(strRgb, ColorUtils.SUBJOB_TITLE_COLOR);
         }
     }
 
@@ -174,8 +166,8 @@ public class SubjobContainerFigure extends Figure {
      */
     public void updateSubJobTitleColor() {
         String rgb = (String) subjobContainer.getPropertyValue(EParameterName.SUBJOB_TITLE_COLOR.getName());
-        if (rgb != null) {
-            subjobTitleColor = new Color(null, TalendTextUtils.stringToRGB(rgb));
+        if (rgb != null && !"".equals(rgb)) {
+            subjobTitleColor = ColorUtils.parseStringToColor(rgb);
         } else {
             initSubJobTitleColor();
         }
@@ -186,19 +178,32 @@ public class SubjobContainerFigure extends Figure {
      * yzhang Comment method "updateData".
      */
     public void updateData() {
-        mainColor = new Color(null, TalendTextUtils.stringToRGB((String) subjobContainer
-                .getPropertyValue(EParameterName.SUBJOB_COLOR.getName())));
 
         showTitle = (Boolean) subjobContainer.getPropertyValue(EParameterName.SHOW_SUBJOB_TITLE.getName());
 
         title = (String) subjobContainer.getPropertyValue(EParameterName.SUBJOB_TITLE.getName());
-
         if (subjobContainer.getSubjobStartNode().getComponent().getName().equals("tPrejob")) {
             title = " Prejob:" + title;
-        }
-        if (subjobContainer.getSubjobStartNode().getComponent().getName().equals("tPostjob")) {
+            subjobContainer.getElementParameter(EParameterName.SHOW_SUBJOB_TITLE.getName()).setShow(false);
+        } else if (subjobContainer.getSubjobStartNode().getComponent().getName().equals("tPostjob")) {
             title = " Postjob:" + title;
+            subjobContainer.getElementParameter(EParameterName.SHOW_SUBJOB_TITLE.getName()).setShow(false);
+        } else {
+            subjobContainer.getElementParameter(EParameterName.SHOW_SUBJOB_TITLE.getName()).setShow(true);
         }
+        String propertyValue = (String) subjobContainer.getPropertyValue(EParameterName.SUBJOB_TITLE_COLOR.getName());
+        if (propertyValue == null || "".equals(propertyValue)) {
+            subjobContainer.setPropertyValue(EParameterName.SUBJOB_TITLE_COLOR.getName(), ColorUtils
+                    .getColorValue(ColorUtils.SUBJOB_TITLE_COLOR));
+        }
+        //
+        propertyValue = (String) subjobContainer.getPropertyValue(EParameterName.SUBJOB_COLOR.getName());
+        if (propertyValue == null || "".equals(propertyValue)) {
+            subjobContainer.setPropertyValue(EParameterName.SUBJOB_COLOR.getName(), ColorUtils
+                    .getColorValue(ColorUtils.SUBJOB_COLOR));
+        }
+
+        mainColor = ColorUtils.parseStringToColor(propertyValue, ColorUtils.SUBJOB_COLOR);
 
         this.getChildren().remove(outlineFigure);
         this.getChildren().remove(rectFig);

@@ -840,6 +840,28 @@ public class EmfComponent implements IComponent {
         param.setValue(CorePlugin.getDefault().getPluginPreferences().getString(ITalendCorePrefConstants.IREPORT_PATH));
         param.setReadOnly(true);
         listParam.add(param);
+
+        param = new ElementParameter(node);
+        param.setName(EParameterName.SUBJOB_COLOR.getName());
+        param.setValue(compType.getHEADER().getSUBJOB_COLOR());
+        param.setDisplayName(EParameterName.SUBJOB_COLOR.getDisplayName());
+        param.setField(EParameterFieldType.TEXT);
+        param.setCategory(EComponentCategory.ADVANCED);
+        param.setNumRow(99);
+        param.setReadOnly(true);
+        param.setShow(false);
+        listParam.add(param);
+
+        param = new ElementParameter(node);
+        param.setName(EParameterName.SUBJOB_TITLE_COLOR.getName());
+        param.setValue(compType.getHEADER().getSUBJOB_TITLE_COLOR());
+        param.setDisplayName(EParameterName.SUBJOB_TITLE_COLOR.getDisplayName());
+        param.setField(EParameterFieldType.TEXT);
+        param.setCategory(EComponentCategory.ADVANCED);
+        param.setNumRow(99);
+        param.setReadOnly(true);
+        param.setShow(false);
+        listParam.add(param);
     }
 
     private void createSpecificParametersFromType(final List<ElementParameter> listParam, final PARAMETERType xmlParam,
