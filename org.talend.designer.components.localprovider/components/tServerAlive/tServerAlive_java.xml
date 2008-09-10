@@ -96,8 +96,26 @@
       NUM_ROW="30"
       SHOW_IF="(PROTOCOL == 'TELNET') and (ENABLE_PROXY_SERVER == 'true')"
     >
-      <DEFAULT>23</DEFAULT>
-    </PARAMETER>	    
+      <DEFAULT>"23"</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="PROXY_USER"
+      FIELD="TEXT"
+      NUM_ROW="40"
+      SHOW_IF="(PROTOCOL == 'TELNET') and (ENABLE_PROXY_SERVER == 'true')"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="PROXY_PASS"
+      FIELD="TEXT"
+      NUM_ROW="40"
+      SHOW_IF="(PROTOCOL == 'TELNET') and (ENABLE_PROXY_SERVER == 'true')"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>        	    
   </ADVANCED_PARAMETERS>
 
   <CODEGENERATION/>
