@@ -30,6 +30,7 @@ import org.talend.designer.core.ui.editor.process.Process;
 /**
  * class global comment. Detailed comment <br/>
  * 
+ * @deprecated remove to job settings
  */
 public class StatsAndLogsView extends ViewPart {
 

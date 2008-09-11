@@ -33,6 +33,7 @@ public class CreateNoteCommand extends CreateCommand {
         if (location != null) {
             note.setLocation(this.location);
         }
+        note.setProcess(process);
         process.addNote(note);
     }
 

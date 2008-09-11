@@ -55,6 +55,7 @@ import org.talend.designer.core.ui.editor.properties.notes.AbstractNotePropertyC
 import org.talend.designer.core.ui.editor.properties.notes.BasicNotePropertyComposite;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
+import org.talend.designer.core.ui.views.subjob.SubjobBasicComposite;
 
 /**
  * nrousseau class global comment. Detailled comment <br/>
@@ -255,6 +256,10 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
                 // data.right = new FormAttachment(100, 0);
                 // c2.getComposite().setLayoutData(data);
                 parent.layout();
+            }
+        } else if (element instanceof SubjobContainer) {
+            if (category == EComponentCategory.BASIC) {
+                dc = new SubjobBasicComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, element);
             }
         } else {
             tabFactory.getTabbedPropertyComposite().getCompactButton().setVisible(false);

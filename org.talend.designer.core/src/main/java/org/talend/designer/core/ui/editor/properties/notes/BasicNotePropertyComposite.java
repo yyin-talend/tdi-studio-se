@@ -48,6 +48,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.HorizontalTabFactory;
 import org.talend.designer.core.i18n.Messages;
@@ -102,7 +103,9 @@ public class BasicNotePropertyComposite extends AbstractNotePropertyComposite {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.notes.AbstractNotePropertyComposite#createControl(org.eclipse.swt.widgets.Composite)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.notes.AbstractNotePropertyComposite#createControl(org.eclipse.swt
+     * .widgets.Composite)
      */
     @Override
     public void createControl(Composite parent) {
@@ -141,6 +144,8 @@ public class BasicNotePropertyComposite extends AbstractNotePropertyComposite {
         createAlignGroups(composite);
 
         createTextControl(composite);
+        
+        refresh();
     }
 
     /**
@@ -690,6 +695,44 @@ public class BasicNotePropertyComposite extends AbstractNotePropertyComposite {
             Font font = new Font(null, (String) note.getPropertyValue(EParameterName.NOTE_FONT.getName()), Integer.parseInt(note
                     .getPropertyValue(EParameterName.FONT_SIZE.getName()).toString()), SWT.NULL);
             text.setFont(font);
+        }
+    }
+
+    public void refresh() {
+        IProcess2 process = note.getProcess();
+        if (process != null) {
+            boolean readOnly = process.isReadOnly();
+            if (check != null && !check.isDisposed()) {
+                check.setEnabled(!readOnly);
+            }
+            if (text != null && !text.isDisposed()) {
+                text.setEnabled(!readOnly);
+            }
+            if (fontFamilyCombo != null && !fontFamilyCombo.isDisposed()) {
+                fontFamilyCombo.setEnabled(!readOnly);
+            }
+            if (fontSizeCombo != null && !fontSizeCombo.isDisposed()) {
+                fontSizeCombo.setEnabled(!readOnly);
+            }
+
+            checkButton(leftBtn, readOnly);
+            checkButton(rightBtn, readOnly);
+            checkButton(centreBtn, readOnly);
+            checkButton(centreLabelBtn, readOnly);
+            checkButton(topBtn, readOnly);
+            checkButton(bottomBtn, readOnly);
+            checkButton(fontBoldButton, readOnly);
+            checkButton(fontItalicButton, readOnly);
+            checkButton(fillColorButton, readOnly);
+            checkButton(fontColorButton, readOnly);
+            checkButton(lineColorButton, readOnly);
+
+        }
+    }
+
+    private void checkButton(Button btn, boolean readOnly) {
+        if (btn != null && !btn.isDisposed()) {
+            btn.setEnabled(!readOnly);
         }
     }
 }

@@ -52,13 +52,13 @@ import org.talend.designer.runprocess.ItemCacheManager;
  */
 public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicComposite {
 
-    Button reloadBtn;
+    protected Button reloadBtn;
 
-    Button saveBtn;
+    protected Button saveBtn;
 
-    String dialogTitle;
+    private String dialogTitle;
 
-    Button applyToChildrenJob;
+    protected Button applyToChildrenJob;
 
     private List<INode> tRunJobNodes;
 
@@ -248,6 +248,9 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
         if (tRunJobNodes == null || needRefresh) {
             tRunJobNodes = findRunJobNode();
         }
+        if (tRunJobNodes == null) {
+            return false;
+        }
         return tRunJobNodes.size() > 0;
     }
 
@@ -336,6 +339,9 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
             }
             if (saveBtn != null && !saveBtn.isDisposed()) {
                 saveBtn.setEnabled(!process.isReadOnly());
+            }
+            if (applyToChildrenJob != null && !applyToChildrenJob.isDisposed()) {
+                applyToChildrenJob.setEnabled(!process.isReadOnly());
             }
         }
     }

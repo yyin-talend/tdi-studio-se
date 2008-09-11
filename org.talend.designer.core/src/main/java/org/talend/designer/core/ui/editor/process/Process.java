@@ -1020,6 +1020,7 @@ public class Process extends Element implements IProcess2 {
             note.setSize(new Dimension(noteType.getSizeWidth(), noteType.getSizeHeight()));
             note.setOpaque(noteType.isOpaque());
             note.setText(noteType.getText());
+            note.setProcess(this);
             loadElementParameters(note, noteType.getElementParameter());
             addNote(note);
         }

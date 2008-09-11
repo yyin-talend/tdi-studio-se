@@ -19,6 +19,7 @@ import org.eclipse.draw2d.geometry.Point;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
+import org.talend.core.model.process.IProcess2;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
@@ -46,6 +47,8 @@ public class Note extends Element {
     private String textColor = "0;0;0";
 
     private String noteLineColor = "237;201;122";
+
+    private IProcess2 process;
 
     /**
      * tang Note constructor comment.
@@ -248,4 +251,13 @@ public class Note extends Element {
     public void refresh() {
         firePropertyChange("", null, "");
     }
+
+    public IProcess2 getProcess() {
+        return this.process;
+    }
+
+    public void setProcess(IProcess2 process) {
+        this.process = process;
+    }
+
 }

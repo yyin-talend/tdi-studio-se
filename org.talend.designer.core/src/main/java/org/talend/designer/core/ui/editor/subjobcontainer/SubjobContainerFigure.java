@@ -99,13 +99,15 @@ public class SubjobContainerFigure extends Figure {
                 || subjobContainer.getSubjobStartNode().getComponent().getName().equals("tPostjob")) {
             // titleColor = ColorUtils.SPECIAL_SUBJOB_TITLE_COLOR;
         }
+        Color defaultSubjobColor = subjobContainer.getDefaultSubjobColor(ColorUtils.SUBJOB_TITLE_COLOR_NAME,
+                ColorUtils.SUBJOB_TITLE_COLOR);
         if (colorParameter.getValue() == null) {
-            subjobTitleColor = ColorUtils.SUBJOB_TITLE_COLOR;
+            subjobTitleColor = defaultSubjobColor;
             String colorValue = ColorUtils.getColorValue(subjobTitleColor);
             colorParameter.setValue(colorValue);
         } else {
             String strRgb = (String) colorParameter.getValue();
-            subjobTitleColor = ColorUtils.parseStringToColor(strRgb, ColorUtils.SUBJOB_TITLE_COLOR);
+            subjobTitleColor = ColorUtils.parseStringToColor(strRgb, defaultSubjobColor);
         }
     }
 
@@ -193,14 +195,14 @@ public class SubjobContainerFigure extends Figure {
         }
         String propertyValue = (String) subjobContainer.getPropertyValue(EParameterName.SUBJOB_TITLE_COLOR.getName());
         if (propertyValue == null || "".equals(propertyValue)) {
-            subjobContainer.setPropertyValue(EParameterName.SUBJOB_TITLE_COLOR.getName(), ColorUtils
-                    .getColorValue(ColorUtils.SUBJOB_TITLE_COLOR));
+            subjobContainer.setPropertyValue(EParameterName.SUBJOB_TITLE_COLOR.getName(), subjobContainer.getDefaultSubjobColor(
+                    ColorUtils.SUBJOB_TITLE_COLOR_NAME, ColorUtils.SUBJOB_TITLE_COLOR));
         }
         //
         propertyValue = (String) subjobContainer.getPropertyValue(EParameterName.SUBJOB_COLOR.getName());
         if (propertyValue == null || "".equals(propertyValue)) {
-            subjobContainer.setPropertyValue(EParameterName.SUBJOB_COLOR.getName(), ColorUtils
-                    .getColorValue(ColorUtils.SUBJOB_COLOR));
+            subjobContainer.setPropertyValue(EParameterName.SUBJOB_COLOR.getName(), subjobContainer.getDefaultSubjobColor(
+                    ColorUtils.SUBJOB_COLOR_NAME, ColorUtils.SUBJOB_COLOR));
         }
 
         mainColor = ColorUtils.parseStringToColor(propertyValue, ColorUtils.SUBJOB_COLOR);

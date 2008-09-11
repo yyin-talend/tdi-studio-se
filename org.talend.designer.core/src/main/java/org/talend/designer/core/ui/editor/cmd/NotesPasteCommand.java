@@ -202,7 +202,7 @@ public class NotesPasteCommand extends Command {
             pastedNote.setOpaque(copiedNote.isOpaque());
             pastedNote.setText(copiedNote.getText());
             pastedNote.setSize(copiedNote.getSize());
-
+            pastedNote.setProcess(process);
             Point location = null;
             if (getCursorLocation() == null) {
                 location = copiedNote.getLocation();
@@ -251,7 +251,7 @@ public class NotesPasteCommand extends Command {
         if (!multipleCommand) {
             EditPart processPart = (EditPart) viewer.getRootEditPart().getChildren().get(0);
             if (processPart instanceof ProcessPart) { // can only be ProcessPart but still test
-                List<EditPart> sel=new ArrayList<EditPart>();
+                List<EditPart> sel = new ArrayList<EditPart>();
                 for (EditPart editPart : (List<EditPart>) processPart.getChildren()) {
                     if (editPart instanceof NoteEditPart) {
                         Note currentNode = (Note) editPart.getModel();
@@ -260,7 +260,7 @@ public class NotesPasteCommand extends Command {
                         }
                     }
                 }
-                StructuredSelection s=new StructuredSelection(sel);
+                StructuredSelection s = new StructuredSelection(sel);
                 viewer.setSelection(s);
             }
         }
@@ -285,7 +285,7 @@ public class NotesPasteCommand extends Command {
 
         // set the old selection active
         if (!multipleCommand) {
-            StructuredSelection s=new StructuredSelection(oldSelection);
+            StructuredSelection s = new StructuredSelection(oldSelection);
             viewer.setSelection(s);
         }
 

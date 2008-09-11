@@ -1,0 +1,150 @@
+// ============================================================================
+//
+// Copyright (C) 2006-2007 Talend Inc. - www.talend.com
+//
+// This source code is available under agreement available at
+// %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
+//
+// You should have received a copy of the agreement
+// along with this program; if not, write to Talend SA
+// 9 rue Pages 92150 Suresnes, France
+//
+// ============================================================================
+package org.talend.designer.core.ui.views.subjob;
+
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.PreferenceConverter;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.widgets.Composite;
+import org.talend.commons.utils.image.ColorUtils;
+import org.talend.core.model.process.EComponentCategory;
+import org.talend.core.model.process.Element;
+import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
+import org.talend.designer.core.ui.views.jobsettings.AbstractPreferenceComposite;
+
+/**
+ * ggu class global comment. Detailled comment
+ */
+public class SubjobBasicComposite extends AbstractPreferenceComposite {
+
+    private static final IPreferenceStore PREFERENCE_STORE = DesignerPlugin.getDefault().getPreferenceStore();
+
+    public SubjobBasicComposite(Composite parentComposite, int styles, Element element) {
+        super(parentComposite, styles, EComponentCategory.BASIC, element, true);
+        setDialogTitle(Messages.getString("SubjobBasicComposite.DialogTitle")); //$NON-NLS-1$
+    }
+
+    @Override
+    public void addComponents(boolean forceRedraw, boolean reInitialize, int height) {
+        super.addComponents(forceRedraw, reInitialize, height);
+        if (reloadBtn != null) {
+            reloadBtn.setText(Messages.getString("SubjobBasicComposite.RestoreLabel")); //$NON-NLS-1$
+            reloadBtn.setToolTipText(Messages.getString("SubjobBasicComposite.RestoreTip")); //$NON-NLS-1$
+        }
+        if (saveBtn != null) {
+            saveBtn.setText(Messages.getString("SubjobBasicComposite.SaveLabel")); //$NON-NLS-1$
+            saveBtn.setToolTipText(Messages.getString("SubjobBasicComposite.SaveTip")); //$NON-NLS-1$
+        }
+    }
+
+    @Override
+    protected boolean needApplyToChildren() {
+        return false;
+    }
+
+    @Override
+    protected void onReloadButtonClick() {
+        if (!sameASPreference()) {
+            super.onReloadButtonClick();
+        }
+    }
+
+    @Override
+    protected void onSaveButtonClick() {
+        if (!sameASPreference()) {
+            super.onSaveButtonClick();
+        }
+    }
+
+    private boolean sameASPreference() {
+        String subjobColor = getPropertyColor();
+        String pSubjobColor = ColorUtils.transform(getPreferenceColor());
+
+        String subjobTitleColor = getPropertyTitleColor();
+        String pSubjobTitleColor = ColorUtils.transform(getPreferenceTitleColor());
+
+        if (pSubjobColor != null && pSubjobColor.equals(subjobColor) && pSubjobTitleColor != null
+                && pSubjobTitleColor.equals(subjobTitleColor)) {
+            return true; // same as preference
+        }
+        return false;
+    }
+
+    private String getPreferenceColor() {
+        return PREFERENCE_STORE.getString(ColorUtils.SUBJOB_COLOR_NAME);
+    }
+
+    private String getPreferenceTitleColor() {
+        return PREFERENCE_STORE.getString(ColorUtils.SUBJOB_TITLE_COLOR_NAME);
+    }
+
+    private String getPropertyColor() {
+        if (getElement() == null) {
+            return null;
+        }
+        return (String) getElement().getPropertyValue(EParameterName.SUBJOB_COLOR.getName());
+    }
+
+    private String getPropertyTitleColor() {
+        if (getElement() == null) {
+            return null;
+        }
+        return (String) getElement().getPropertyValue(EParameterName.SUBJOB_TITLE_COLOR.getName());
+    }
+
+    @Override
+    protected void onReloadPreference() {
+        if (getElement() != null) {
+            String colorStr = getPreferenceColor();
+            Color subjobColor = ColorUtils.parseStringToColor(colorStr, ColorUtils.SUBJOB_COLOR);
+            getElement().setPropertyValue(EParameterName.SUBJOB_COLOR.getName(), ColorUtils.getColorValue(subjobColor));
+
+            colorStr = getPreferenceTitleColor();
+            Color subjobTitleColor = ColorUtils.parseStringToColor(colorStr, ColorUtils.SUBJOB_TITLE_COLOR);
+            getElement()
+                    .setPropertyValue(EParameterName.SUBJOB_TITLE_COLOR.getName(), ColorUtils.getColorValue(subjobTitleColor));
+
+        }
+    }
+
+    @Override
+    protected void onSavePreference() {
+        if (getElement() != null) {
+            Color subjobColor = ColorUtils.parseStringToColor(getPropertyColor(), ColorUtils.SUBJOB_COLOR);
+            PreferenceConverter.setValue(PREFERENCE_STORE, ColorUtils.SUBJOB_COLOR_NAME, subjobColor.getRGB());
+
+            subjobColor = ColorUtils.parseStringToColor(getPropertyTitleColor(), ColorUtils.SUBJOB_TITLE_COLOR);
+            PreferenceConverter.setValue(PREFERENCE_STORE, ColorUtils.SUBJOB_TITLE_COLOR_NAME, subjobColor.getRGB());
+        }
+    }
+
+    @Override
+    public void refresh() {
+        super.refresh();
+
+        Element element = getElement();
+        if (element != null && element instanceof SubjobContainer) {
+            SubjobContainer process = (SubjobContainer) element;
+            if (reloadBtn != null && !reloadBtn.isDisposed()) {
+                reloadBtn.setEnabled(!process.isReadOnly());
+            }
+            if (saveBtn != null && !saveBtn.isDisposed()) {
+                saveBtn.setEnabled(!process.isReadOnly());
+            }
+        }
+    }
+
+}
