@@ -32,73 +32,91 @@ List<Map<String, String>> headers =
         node,
         "__HEADERS__"
     );
-%>
 
-my $smtp_server = sprintf(
-    '%s:%s',
-    <%= smtpHost %>,
-    <%= smtpPort %>,
+boolean needAuth = ElementParameterParser.getValue(
+    node,
+    "__NEED_AUTH__"
+).equals("true");
+
+String authUsername = ElementParameterParser.getValue(
+    node,
+    "__AUTH_USERNAME__"
 );
 
+String authPassword = ElementParameterParser.getValue(
+    node,
+    "__AUTH_PASSWORD__"
+);
+
+%>
+
+use Net::SMTP;
 use MIME::Lite;
 use File::Basename;
 
-my $msg = MIME::Lite->new(
-    From    => <%= from %>,
-    To      => <%= to %>,
+{
+    my $msg = MIME::Lite->new(
+        From    => <%=from%>,
+        To      => <%=to%>,
 <%
 if( ! cc.equals("") ){
 %>
-    Cc      => <%= cc %>,
+        Cc      => <%= cc %>,
 <%
 }
-%>
-<%
 if( ! bcc.equals("") ){
 %>
-    Bcc     => <%= bcc %>,
+        Bcc     => <%= bcc %>,
 <%
 }
 %>
-    Subject => <%= subject %>,
-    Data    => <%=message %>,
-);
-
-
+        Subject => <%= subject %>,
+        Data    => <%=message %>,
+    );
 
 <%
 for (int i = 0; i < headers.size(); i++) {
     Map<String, String> header = headers.get(i);
 %>
-$msg->add(<%=header.get("KEY")%>, <%=header.get("VALUE")%>);
+    $msg->add(<%=header.get("KEY")%>, <%=header.get("VALUE")%>);
 <%
 }
 %>
 
-my @attachments = (
+    my @attachments = (
 <%
   for (int i=0; i<tableValues.size(); i++) {
     Map<String, String> lineValue = tableValues.get(i);
 %>
-    <%= lineValue.get("FILE") %>,
+        <%= lineValue.get("FILE") %>,
 <%
   }
 %>
-);
-
-foreach my $path (@attachments) {
-    $msg->attach(
-        Type     => 'AUTO',
-        Encoding => 'base64',
-        Path     => $path,
-        Filename => basename($path),
     );
+
+    foreach my $path (@attachments) {
+        $msg->attach(
+            Type     => 'AUTO',
+            Encoding => 'base64',
+            Path     => $path,
+            Filename => basename($path),
+        );
+    }
+
+    my $smtp = Net::SMTP->new(
+        <%=smtpHost%>,
+        Port => <%=smtpPort%>,
+    )
+      or die $!;
+    
+    $smtp->auth(<%=authUsername%>, <%=authPassword%>)
+      or die "Could not authenticate $!";
+    
+    $smtp->mail(<%=from%>);
+    $smtp->to(<%=to%>);
+    
+    $smtp->data();
+    $smtp->datasend($msg->as_string());
+    $smtp->dataend();
+    $smtp->quit;
 }
-
-$msg->send(
-    'smtp',
-    <%= smtpHost %>,
-    Port => <%= smtpPort %>,
-)
-    or die('cannot send mail with attachment on '.$smtp_server);
-

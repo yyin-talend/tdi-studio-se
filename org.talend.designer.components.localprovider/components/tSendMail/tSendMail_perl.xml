@@ -79,6 +79,36 @@ COMPATIBILITY="ALL"
     <PARAMETER NAME="SMTP_PORT" FIELD="TEXT" REQUIRED="true" NUM_ROW="10">
       <DEFAULT>25</DEFAULT>
     </PARAMETER>
+
+    <PARAMETER
+      NAME="NEED_AUTH"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="100"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="AUTH_USERNAME"
+      FIELD="TEXT"
+      REQUIRED="true"
+      NUM_ROW="110"
+      SHOW_IF="NEED_AUTH == 'true'"
+    >
+      <DEFAULT>"username"</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="AUTH_PASSWORD"
+      FIELD="TEXT"
+      REQUIRED="true"
+      NUM_ROW="110"
+      SHOW_IF="NEED_AUTH == 'true'"
+    >
+      <DEFAULT>"password"</DEFAULT>
+    </PARAMETER>
+
   </PARAMETERS>
 
   <CODEGENERATION>
