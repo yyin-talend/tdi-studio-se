@@ -61,7 +61,10 @@ import org.eclipse.gef.editparts.AbstractEditPart;
 import org.eclipse.gef.editparts.LayerManager;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.editparts.ZoomManager;
+import org.eclipse.gef.internal.ui.palette.editparts.ToolEntryEditPart;
+import org.eclipse.gef.palette.PaletteContainer;
 import org.eclipse.gef.palette.PaletteRoot;
+import org.eclipse.gef.palette.ToolEntry;
 import org.eclipse.gef.requests.CreationFactory;
 import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.actions.DirectEditAction;
@@ -152,6 +155,8 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.outline.NodeTreeEditPart;
 import org.talend.designer.core.ui.editor.outline.ProcessTreePartFactory;
+import org.talend.designer.core.ui.editor.palette.TalendDrawerEditPart;
+import org.talend.designer.core.ui.editor.palette.TalendPaletteDrawer;
 import org.talend.designer.core.ui.editor.palette.TalendPaletteViewerProvider;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
@@ -179,6 +184,89 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     protected FigureCanvas getEditor() {
         return (FigureCanvas) getGraphicalViewer().getControl();
+    }
+
+    public void selectPaletteEntry(String componentName) {
+        PaletteViewer paletteViewer = getPaletteViewerProvider().getEditDomain().getPaletteViewer();
+        PaletteRoot root = getPaletteRoot();
+        RootEditPart part = paletteViewer.getRootEditPart();
+        collapsePalette(part.getChildren());
+        selectPaletteEntry(componentName, paletteViewer, root.getChildren());
+    }
+
+    /**
+     * DOC hcw Comment method "collapsePalette".
+     * 
+     * @param children
+     */
+    private void collapsePalette(List children) {
+        for (Object object : children) {
+            if (object instanceof TalendDrawerEditPart) {
+                TalendDrawerEditPart part = (TalendDrawerEditPart) object;
+                part.setExpanded(false);
+                collapsePalette(part.getChildren());
+            } else if (object instanceof EditPart) {
+                collapsePalette(((EditPart) object).getChildren());
+            }
+        }
+    }
+
+    private boolean selectPaletteEntry(String componentName, PaletteViewer paletteViewer, List entries) {
+        for (Object entry : entries) {
+
+            if (entry instanceof PaletteContainer) {
+                PaletteContainer container = (PaletteContainer) entry;
+                if (selectPaletteEntry(componentName, paletteViewer, container.getChildren())) {
+                    return true;
+                }
+
+            } else if (entry instanceof TalendPaletteDrawer) {
+                TalendPaletteDrawer drawer = (TalendPaletteDrawer) entry;
+                if (selectPaletteEntry(componentName, paletteViewer, drawer.getChildren())) {
+                    return true;
+                }
+            } else if (entry instanceof ToolEntry) {
+                ToolEntry paletteEntry = (ToolEntry) entry;
+                if (paletteEntry.getLabel().equals(componentName)) {
+                    ToolEntryEditPart part = getToolEntryEditPart(paletteViewer, paletteEntry);
+                    expandPaletteDrawer(paletteViewer, paletteEntry);
+                    // paletteViewer.setSelection(new StructuredSelection(part));
+                    // paletteViewer.setFocus(part);
+                    paletteViewer.select(part);
+                    paletteViewer.reveal(part);
+                    paletteViewer.setActiveTool(paletteEntry);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * DOC hcw Comment method "expandPaletteDrawer".
+     * 
+     * @param paletteViewer
+     * @param paletteEntry
+     */
+    private void expandPaletteDrawer(PaletteViewer paletteViewer, ToolEntry paletteEntry) {
+        List<TalendDrawerEditPart> parts = new ArrayList<TalendDrawerEditPart>();
+        PaletteContainer parent = paletteEntry.getParent();
+        while (parent != null) {
+            if (parent instanceof TalendPaletteDrawer) {
+                Object editpart = paletteViewer.getEditPartRegistry().get(parent);
+                if (editpart instanceof TalendDrawerEditPart) {
+                    parts.add((TalendDrawerEditPart) editpart);
+                }
+            }
+            parent = parent.getParent();
+        }
+        for (int i = parts.size() - 1; i >= 0; i--) {
+            parts.get(i).setExpanded(true);
+        }
+    }
+
+    private ToolEntryEditPart getToolEntryEditPart(PaletteViewer paletteViewer, ToolEntry entry) {
+        return (ToolEntryEditPart) paletteViewer.getEditPartRegistry().get(entry);
     }
 
     public void savePaletteState() {
@@ -658,6 +746,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
     // ------------------------------------------------------------------------
     // Overridden from EditorPart
 
+    @Override
     protected void setInput(final IEditorInput input) {
         super.setInput(input);
 
@@ -689,8 +778,9 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         Assert.isNotNull(actionID);
         if (action == null) {
             action = getActionRegistry().getAction(actionID);
-            if (action != null)
+            if (action != null) {
                 fActivationCodeTrigger.unregisterActionFromKeyActivation(action);
+            }
         } else {
             // getActionRegistry().registerAction(action);
             fActivationCodeTrigger.registerActionForKeyActivation(action);
@@ -802,8 +892,9 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
          * @since 2.0
          */
         public void registerActionForKeyActivation(IAction action) {
-            if (action.getActionDefinitionId() != null)
+            if (action.getActionDefinitionId() != null) {
                 fKeyBindingService.registerAction(action);
+            }
         }
 
         /**
@@ -813,8 +904,9 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
          * @since 2.0
          */
         public void unregisterActionFromKeyActivation(IAction action) {
-            if (action.getActionDefinitionId() != null)
+            if (action.getActionDefinitionId() != null) {
                 fKeyBindingService.unregisterAction(action);
+            }
         }
 
         /**
@@ -824,8 +916,9 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
          * @since 2.1
          */
         public void setScopes(String[] keyBindingScopes) {
-            if (keyBindingScopes != null && keyBindingScopes.length > 0)
+            if (keyBindingScopes != null && keyBindingScopes.length > 0) {
                 fKeyBindingService.setScopes(keyBindingScopes);
+            }
         }
     }
 
@@ -866,6 +959,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         }
     }
 
+    @Override
     protected void configureGraphicalViewer() {
         super.configureGraphicalViewer();
         /** * Manage the view in the Outline ** */
@@ -1009,7 +1103,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         this.property = property;
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     public List<String> getActions() {
         return getSelectionActions();
     }
@@ -1019,6 +1113,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
      * 
      * @see org.eclipse.gef.ui.parts.GraphicalEditor#getActionRegistry()
      */
+    @Override
     public ActionRegistry getActionRegistry() {
         return super.getActionRegistry();
     }
@@ -1352,7 +1447,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
         Set<String> set = protectedJobs.keySet();
 
-        return set.toArray(new String[set.size()]); //$NON-NLS-1$
+        return set.toArray(new String[set.size()]);
     }
 
     /*
