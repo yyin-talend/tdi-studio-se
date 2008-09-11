@@ -28,6 +28,9 @@ NodesSubTree subTree = (NodesSubTree) codeGenArgument.getSubTree();
 ECodePart codePart = codeGenArgument.getCodePart();
 boolean trace = codeGenArgument.isTrace();
 boolean stat = codeGenArgument.isStatistics();
+
+boolean isRunInMultiThread = codeGenArgument.getIsRunInMultiThread();
+
 Set<IConnection> connSet =  new HashSet<IConnection>();
 connSet.addAll(node.getOutgoingConnections(EConnectionType.FLOW_MAIN));
 connSet.addAll(node.getOutgoingConnections(EConnectionType.FLOW_MERGE));
@@ -164,6 +167,36 @@ if(stat){%>
 			if (codePart.equals(ECodePart.END)) {			
 %>
 			mtp_<%=iterateConn.getTarget().getUniqueName() %>.waitForEndOfQueue();
+			
+			TalendThread errorThread = mtp_tRunJob_1.getErrorThread();
+
+<%if(!isRunInMultiThread){%>
+	if(errorThread != null) {
+		if (errorThread.errorCode != null) {
+			if (errorCode == null
+					|| errorThread.errorCode.compareTo(errorCode) > 0) {
+				errorCode = errorThread.errorCode;
+			}
+		} else if (!status.equals("failure")) {
+			status = errorThread.status;
+		}
+	}			
+<%}else{%>
+	if(errorThread != null) {
+		Integer localErrorCode = (Integer) (((java.util.Map) threadLocal.get()).get("errorCode"));
+		String localStatus = (String) (((java.util.Map) threadLocal.get()).get("status"));
+		
+		if (errorThread.errorCode != null) {
+			if (localErrorCode == null || errorThread.errorCode.compareTo(localErrorCode) > 0) {
+				((java.util.Map) threadLocal.get()).put("errorCode", errorThread.errorCode);
+			}
+		} else if (!localStatus.equals("failure")) {
+			((java.util.Map) threadLocal.get()).put("status", errorThread.status);
+		}
+	}
+<%}%>
+			
+			
 <%
 			}
 			continue;
