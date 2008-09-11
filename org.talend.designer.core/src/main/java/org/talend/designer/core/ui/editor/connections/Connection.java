@@ -50,6 +50,10 @@ public class Connection extends Element implements IConnection, IPerformance {
     public static final String LINESTYLE_PROP = "LineStyle"; //$NON-NLS-1$
 
     public static final String MONITOR_CONNECTION = "MONITOR_CONNECTION";
+    
+    public static final String ENABLE_PARALLEL = "ENABLE_PARALLEL";
+    
+    public static final String NUMBER_PARALLEL = "NUMBER_PARALLEL";
 
     private EConnectionType lineStyle = EConnectionType.FLOW_MAIN;
 
@@ -197,7 +201,7 @@ public class Connection extends Element implements IConnection, IPerformance {
             param.setField(EParameterFieldType.CHECK);
             param.setCategory(EComponentCategory.BASIC);
             param.setValue(Boolean.FALSE);
-            param.setName("ENABLE_PARALLEL");
+            param.setName(ENABLE_PARALLEL);
             param.setDisplayName("Enable parallel execution");
             param.setShow(true);
             param.setNumRow(1);
@@ -210,7 +214,7 @@ public class Connection extends Element implements IConnection, IPerformance {
             // param.setListItemsDisplayCodeName(new String[] { "2", "3", "4" });
             // param.setListItemsValue(new String[] { "2", "3", "4" });
             param.setValue("2"); //$NON-NLS-1$
-            param.setName("NUMBER_PARALLEL");
+            param.setName(NUMBER_PARALLEL);
             param.setDisplayName("Number of parallel execution");
             param.setShow(true);
             param.setShowIf("ENABLE_PARALLEL == 'true'");
@@ -438,8 +442,8 @@ public class Connection extends Element implements IConnection, IPerformance {
             labelText = sourceNodeConnector.getLinkName() + " (" + name + ")";
             updateName = true;
         } else if (getLineStyle().equals(EConnectionType.ITERATE)) {
-            IElementParameter enableParam = this.getElementParameter("ENABLE_PARALLEL");
-            IElementParameter numberParam = this.getElementParameter("NUMBER_PARALLEL");
+            IElementParameter enableParam = this.getElementParameter(ENABLE_PARALLEL);
+            IElementParameter numberParam = this.getElementParameter(NUMBER_PARALLEL);
             if (enableParam != null && (Boolean) enableParam.getValue()) {
                 labelText = sourceNodeConnector.getLinkName() + " (x " + (String) numberParam.getValue() + ")";
             }
@@ -663,7 +667,7 @@ public class Connection extends Element implements IConnection, IPerformance {
                 super.setPropertyValue(id, value);
             }
         }
-        if (id.equals("NUMBER_PARALLEL") || id.equals("ENABLE_PARALLEL") || id.equals(EParameterName.LABEL.getName())) {
+        if (id.equals(NUMBER_PARALLEL) || id.equals(ENABLE_PARALLEL) || id.equals(EParameterName.LABEL.getName())) {
             updateName();
         }
     }

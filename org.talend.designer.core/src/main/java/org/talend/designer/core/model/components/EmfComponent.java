@@ -843,7 +843,7 @@ public class EmfComponent implements IComponent {
 
         param = new ElementParameter(node);
         param.setName(EParameterName.SUBJOB_COLOR.getName());
-        param.setValue(compType.getHEADER().getSUBJOB_COLOR());
+        param.setValue(compType.getHEADER().getSUBJOBCOLOR());
         param.setDisplayName(EParameterName.SUBJOB_COLOR.getDisplayName());
         param.setField(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.ADVANCED);
@@ -854,13 +854,33 @@ public class EmfComponent implements IComponent {
 
         param = new ElementParameter(node);
         param.setName(EParameterName.SUBJOB_TITLE_COLOR.getName());
-        param.setValue(compType.getHEADER().getSUBJOB_TITLE_COLOR());
+        param.setValue(compType.getHEADER().getSUBJOBTITLECOLOR());
         param.setDisplayName(EParameterName.SUBJOB_TITLE_COLOR.getDisplayName());
         param.setField(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.ADVANCED);
         param.setNumRow(99);
         param.setReadOnly(true);
         param.setShow(false);
+        listParam.add(param);
+
+        param = new ElementParameter(node);
+        param.setName(EParameterName.PARALLELIZE.getName());
+        param.setValue(compType.getHEADER().isPARALLELIZE());
+        param.setDisplayName(EParameterName.PARALLELIZE.getDisplayName());
+        param.setField(EParameterFieldType.CHECK);
+        param.setCategory(EComponentCategory.ADVANCED);
+        param.setNumRow(100);
+        param.setShow(true);
+        listParam.add(param);
+
+        param = new ElementParameter(node);
+        param.setName(EParameterName.PARALLILIZE_NUMBER.getName());
+        param.setValue(compType.getHEADER().getNUMBERPARALLELIZE());
+        param.setDisplayName(EParameterName.PARALLILIZE_NUMBER.getDisplayName());
+        param.setField(EParameterFieldType.TEXT);
+        param.setCategory(EComponentCategory.ADVANCED);
+        param.setNumRow(100);
+        param.setShow(true);
         listParam.add(param);
     }
 

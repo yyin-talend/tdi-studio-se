@@ -51,6 +51,8 @@ public class NodeContainer extends Element {
 
     private Point errorLocation = new Point();
 
+    private Point parallelLocation = new Point();
+
     private SubjobContainer subjobContainer;
 
     private Dimension breakpointSize;
@@ -58,6 +60,8 @@ public class NodeContainer extends Element {
     private Dimension errorSize;
 
     private Dimension warningSize;
+
+    private Dimension parallelSize;
 
     public NodeContainer(Node node) {
         this.node = node;
@@ -75,12 +79,14 @@ public class NodeContainer extends Element {
             errorSize = new Dimension(image.getImageData().width, image.getImageData().height);
             image = ImageProvider.getImage(EImage.WARNING_SMALL);
             warningSize = new Dimension(image.getImageData().width, image.getImageData().height);
+            image = ImageProvider.getImage(EImage.PARALLEL_EXECUTION);
+            parallelSize = new Dimension(image.getImageData().width, image.getImageData().height);
         }
     }
 
     private Rectangle prepareStatus(Point nodeLocation, Dimension nodeSize) {
         Rectangle statusRectangle = new Rectangle();
-        Rectangle breakpointRectangle, warningRectangle, errorRectangle;
+        Rectangle breakpointRectangle, warningRectangle, errorRectangle, parallelLocationRectangle;
 
         breakpointLocation.x = nodeLocation.x - breakpointSize.width;
         breakpointLocation.y = nodeLocation.y - breakpointSize.height;
@@ -96,6 +102,12 @@ public class NodeContainer extends Element {
         warningLocation.y = nodeLocation.y - warningSize.height;
         warningRectangle = new Rectangle(warningLocation, warningSize);
         statusRectangle.union(warningRectangle);
+
+        parallelLocation.x = nodeLocation.x - parallelSize.width;
+        parallelLocation.y = nodeLocation.y - parallelSize.height + 18;
+        parallelLocationRectangle = new Rectangle(parallelLocation, parallelSize);
+
+        statusRectangle.union(parallelLocationRectangle);
 
         return statusRectangle;
     }
@@ -189,6 +201,15 @@ public class NodeContainer extends Element {
      */
     public Point getWarningLocation() {
         return this.warningLocation;
+    }
+
+    /**
+     * Getter for parallelLocation.
+     * 
+     * @return the parallelLocation
+     */
+    public Point getParallelLocation() {
+        return this.parallelLocation;
     }
 
     /**

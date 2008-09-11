@@ -43,6 +43,7 @@ import org.talend.designer.core.ui.action.GEFPasteAction;
 import org.talend.designer.core.ui.action.ModifyMergeOrderAction;
 import org.talend.designer.core.ui.action.ModifyOutputOrderAction;
 import org.talend.designer.core.ui.action.NodeBreakpointAction;
+import org.talend.designer.core.ui.action.ParallelExecutionAction;
 import org.talend.designer.core.ui.action.SendBackwardAction;
 import org.talend.designer.core.ui.action.SendToBackAction;
 import org.talend.designer.core.ui.action.ShowComponentSettingViewerAction;
@@ -280,6 +281,12 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
             menu.appendToGroup(GROUP_OTHER, action);
 
             action = new DisplaySubjobAction(part);
+            ((SelectionAction) action).update();
+            if (action.isEnabled()) {
+                menu.appendToGroup(GROUP_OTHER, action);
+            }
+            
+            action = new ParallelExecutionAction(part);
             ((SelectionAction) action).update();
             if (action.isEnabled()) {
                 menu.appendToGroup(GROUP_OTHER, action);

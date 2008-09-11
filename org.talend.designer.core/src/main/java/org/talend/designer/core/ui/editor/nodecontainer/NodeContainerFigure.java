@@ -18,11 +18,15 @@ import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FreeformLayout;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.ImageFigure;
+import org.eclipse.draw2d.Label;
+import org.eclipse.swt.widgets.Display;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.utils.workbench.gef.SimpleHtmlFigure;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.Problem.ProblemStatus;
+import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.views.problems.Problems;
 
@@ -48,6 +52,8 @@ public class NodeContainerFigure extends Figure {
 
     public static final String BREAKPOINT_IMAGE = "icons/breakpoint.png"; //$NON-NLS-1$
 
+    private Label parallelFigure;
+
     public NodeContainerFigure(NodeContainer nodeContainer) {
         this.nodeContainer = nodeContainer;
         this.setLayoutManager(new FreeformLayout());
@@ -72,7 +78,29 @@ public class NodeContainerFigure extends Figure {
         warningFigure.setSize(warningFigure.getPreferredSize());
         this.add(warningFigure);
 
+        addParallelFigure();
+
         htmlStatusHint = new SimpleHtmlFigure();
+    }
+
+    /**
+     * DOC bqian Comment method "addParallelFigure".
+     */
+    private void addParallelFigure() {
+        parallelFigure = new LabelTextCenterFigure();
+        parallelFigure.setIcon(ImageProvider.getImage(EImage.PARALLEL_EXECUTION));
+        parallelFigure.setFont(Display.getDefault().getSystemFont());
+        parallelFigure.setText("x0");
+
+        boolean visible = false;
+        IElementParameter enableParallelizeParameter = nodeContainer.getNode().getElementParameter(
+                EParameterName.PARALLELIZE.getName());
+        if (enableParallelizeParameter != null) {
+            visible = (Boolean) enableParallelizeParameter.getValue();
+        }
+        parallelFigure.setVisible(visible);
+        parallelFigure.setSize(parallelFigure.getPreferredSize());
+        this.add(parallelFigure);
     }
 
     public void updateStatus(int status) {
@@ -126,6 +154,28 @@ public class NodeContainerFigure extends Figure {
                 warningFigure.setToolTip(htmlStatusHint);
             }
         }
+
+        updateParallelFigure(status);
+    }
+
+    /**
+     * DOC YeXiaowei Comment method "updateParallelFigure".
+     * 
+     * @param status
+     */
+    private void updateParallelFigure(int status) {
+        String numberParallel = "0";
+        if ((status & Process.PARALLEL_STATUS) != 0) {
+            IElementParameter numberParallelizeParameter = nodeContainer.getNode().getElementParameter(
+                    EParameterName.PARALLILIZE_NUMBER.getName());
+            if (numberParallelizeParameter != null) {
+                numberParallel = (String) numberParallelizeParameter.getValue();
+            }
+            parallelFigure.setText("x" + numberParallel);
+            parallelFigure.setVisible(true);
+        } else {
+            parallelFigure.setVisible(false);
+        }
     }
 
     @Override
@@ -138,6 +188,7 @@ public class NodeContainerFigure extends Figure {
         breakpointFigure.setLocation(nodeContainer.getBreakpointLocation());
         errorFigure.setLocation(nodeContainer.getErrorLocation());
         warningFigure.setLocation(nodeContainer.getWarningLocation());
+        parallelFigure.setLocation(nodeContainer.getParallelLocation());
 
         super.paint(graphics);
     }

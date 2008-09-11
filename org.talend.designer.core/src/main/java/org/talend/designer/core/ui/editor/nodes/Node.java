@@ -232,7 +232,8 @@ public class Node extends Element implements INode {
 
         for (INodeConnector curConnector : getListConnector()) {
             if (curConnector.getDefaultConnectionType().hasConnectionCategory(IConnectionCategory.DATA)) {
-                if (!curConnector.isMultiSchema() && (curConnector.getMaxLinkInput() != 0 || curConnector.getMaxLinkOutput() != 0)) {
+                if (!curConnector.isMultiSchema()
+                        && (curConnector.getMaxLinkInput() != 0 || curConnector.getMaxLinkOutput() != 0)) {
                     hasMetadata = true;
                     break;
                 }
@@ -1529,6 +1530,14 @@ public class Node extends Element implements INode {
                         Problems.add(ProblemStatus.ERROR, this, errorMessage);
                     }
                 }
+            }
+        }
+
+        IElementParameter enableParallelizeParameter = getElementParameter(EParameterName.PARALLELIZE.getName());
+        if (enableParallelizeParameter != null) {
+            boolean x = (Boolean) enableParallelizeParameter.getValue();
+            if (x) {
+                addStatus(Process.PARALLEL_STATUS);
             }
         }
     }

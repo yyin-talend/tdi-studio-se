@@ -205,7 +205,10 @@ public enum EParameterName {
     JOB_MAIN_MODIFICATION("Modification"),
 
     // version tab within job setting.
-    JOB_VERSION("Version");
+    JOB_VERSION("Version"),
+
+    PARALLELIZE("Parallelize"),
+    PARALLILIZE_NUMBER("Parallelize Number");
 
     private String displayName;
 
