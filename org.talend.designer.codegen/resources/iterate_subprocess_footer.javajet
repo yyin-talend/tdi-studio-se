@@ -75,7 +75,10 @@
 				}
 			} else if (!this.status.equals("failure")) {
 				this.status = localStatus;
-			}						
+			}
+			
+			talendThreadPool.getTalendThreadResult().setErrorCode(this.errorCode);
+			talendThreadPool.getTalendThreadResult().setStatus(this.status);						
 		}
 	}
 

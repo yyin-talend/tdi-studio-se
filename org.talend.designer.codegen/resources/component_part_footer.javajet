@@ -168,7 +168,7 @@ if(stat){%>
 %>
 			mtp_<%=iterateConn.getTarget().getUniqueName() %>.waitForEndOfQueue();
 			
-			TalendThread errorThread = mtp_tRunJob_1.getErrorThread();
+			TalendThread errorThread = mtp_<%=iterateConn.getTarget().getUniqueName() %>.getErrorThread();
 
 <%if(!isRunInMultiThread){%>
 	if(errorThread != null) {
@@ -180,7 +180,19 @@ if(stat){%>
 		} else if (!status.equals("failure")) {
 			status = errorThread.status;
 		}
-	}			
+	}else{				
+		Integer threadErrorCode = mtp_<%=iterateConn.getTarget().getUniqueName() %>.getTalendThreadResult().getErrorCode();
+		String threadStatus = mtp_<%=iterateConn.getTarget().getUniqueName() %>.getTalendThreadResult().getStatus();
+		
+		if (threadErrorCode != null) {
+			if (errorCode == null
+					|| threadErrorCode.compareTo(errorCode) > 0) {
+				errorCode = threadErrorCode;
+			}
+		} else if (!status.equals("failure")) {
+			status = threadStatus;
+		}
+	 }			
 <%}else{%>
 	if(errorThread != null) {
 		Integer localErrorCode = (Integer) (((java.util.Map) threadLocal.get()).get("errorCode"));
@@ -192,6 +204,25 @@ if(stat){%>
 			}
 		} else if (!localStatus.equals("failure")) {
 			((java.util.Map) threadLocal.get()).put("status", errorThread.status);
+		}
+	}else{
+		Integer threadErrorCode = mtp_<%=iterateConn.getTarget().getUniqueName() %>.getTalendThreadResult().getErrorCode();
+		String threadStatus = mtp_<%=iterateConn.getTarget().getUniqueName() %>.getTalendThreadResult().getStatus();
+		
+		Integer localErrorCode = (Integer) (((java.util.Map) threadLocal
+				.get()).get("errorCode"));
+		String localStatus = (String) (((java.util.Map) threadLocal
+				.get()).get("status"));
+
+		if (threadErrorCode != null) {
+			if (localErrorCode == null
+					|| threadErrorCode.compareTo(localErrorCode) > 0) {
+				((java.util.Map) threadLocal.get()).put("errorCode",
+						threadErrorCode);
+			}
+		} else if (!localStatus.equals("failure")) {
+			((java.util.Map) threadLocal.get()).put("status",
+					threadStatus);
 		}
 	}
 <%}%>
