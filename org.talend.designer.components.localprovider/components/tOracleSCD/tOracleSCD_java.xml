@@ -10,6 +10,7 @@
     RELEASE_DATE="20050320A"
     STARTABLE="false"
     SCHEMA_AUTO_PROPAGATE="false"
+    EXTENSION="org.talend.designer.scd"
   >
     <SIGNATURE/>
   </HEADER>
@@ -168,15 +169,20 @@
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
-      NUM_ROW="70"
+      NUM_ROW="69"
     >
       <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER NAME="MAP" FIELD="EXTERNAL" NUM_ROW="70">
+         <DEFAULT/>  
     </PARAMETER>
 
     <PARAMETER
       NAME="SURROGATE_KEY"
       FIELD="COLUMN_LIST"
       NUM_ROW="71"
+      SHOW="false"
     >
       <DEFAULT></DEFAULT>
     </PARAMETER>
@@ -185,6 +191,7 @@
       NAME="SK_CREATION"
       FIELD="CLOSED_LIST"
       NUM_ROW="71"
+      SHOW="false"
     >
       <ITEMS DEFAULT="AUTO_INCREMENT">
         <ITEM NAME="DB_SEQUENCE"      VALUE="DB_SEQUENCE"/>
@@ -199,6 +206,7 @@
       FIELD="TEXT"
       NUM_ROW="71"
       SHOW_IF="SK_CREATION == 'DB_SEQUENCE'"
+      SHOW="false"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -208,6 +216,7 @@
       FIELD="PREV_COLUMN_LIST"
       NUM_ROW="71"
       SHOW_IF="SK_CREATION == 'INPUT_FIELD'"
+      SHOW="false"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -217,6 +226,7 @@
       FIELD="TEXT"
       NUM_ROW="71"
       SHOW_IF="SK_CREATION == 'ROUTINE'"
+      SHOW="false"
     >
       <DEFAULT>Numeric.sequence("seq", 1, 1)</DEFAULT>
     </PARAMETER>
@@ -226,6 +236,7 @@
       FIELD="TABLE"
       NUM_ROW="72"
       NB_LINES="2"
+      SHOW="false"
     >
       <ITEMS>
         <ITEM NAME="NAME" FIELD="PREV_COLUMN_LIST" />
@@ -244,6 +255,7 @@
       NAME="USE_L0"
       FIELD="CHECK"
       NUM_ROW="78"
+      SHOW="false"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -254,6 +266,7 @@
       NUM_ROW="79"
       NB_LINES="5"
       SHOW_IF="USE_L0 == 'true'"
+      SHOW="false"
     >
       <ITEMS>
         <ITEM NAME="NAME" FIELD="PREV_COLUMN_LIST" />
@@ -264,6 +277,7 @@
       NAME="USE_L1"
       FIELD="CHECK"
       NUM_ROW="80"
+      SHOW="false"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -274,6 +288,7 @@
       NUM_ROW="81"
       NB_LINES="5"
       SHOW_IF="USE_L1 == 'true'"
+      SHOW="false"
     >
       <ITEMS>
         <ITEM NAME="NAME" FIELD="PREV_COLUMN_LIST" />
@@ -293,6 +308,7 @@
       NAME="USE_L2"
       FIELD="CHECK"
       NUM_ROW="90"
+      SHOW="false"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -303,6 +319,7 @@
       NUM_ROW="91"
       NB_LINES="5"
       SHOW_IF="USE_L2 == 'true'"
+      SHOW="false"
     >
       <ITEMS>
         <ITEM NAME="NAME" FIELD="PREV_COLUMN_LIST" />
@@ -314,6 +331,7 @@
       FIELD="COLUMN_LIST"
       NUM_ROW="92"
       SHOW_IF="USE_L2 == 'true'"
+      SHOW="false"
     >
     </PARAMETER>
 
@@ -322,6 +340,7 @@
       FIELD="CLOSED_LIST"
       NUM_ROW="92"
       SHOW_IF="USE_L2 == 'true'"
+      SHOW="false"
     >
       <ITEMS DEFAULT="JOB_START_TIME">
         <ITEM NAME="JOB_START_TIME"   VALUE="JOB_START_TIME" />
@@ -334,6 +353,7 @@
       FIELD="PREV_COLUMN_LIST"
       NUM_ROW="92"
       SHOW_IF="(USE_L2 == 'true' and L2_STARTDATE_VALUE == 'INPUT_FIELD')"
+      SHOW="false"
     >
     </PARAMETER>
 
@@ -342,6 +362,7 @@
       FIELD="COLUMN_LIST"
       NUM_ROW="93"
       SHOW_IF="USE_L2 == 'true'"
+      SHOW="false"
     >
     </PARAMETER>
 
@@ -350,6 +371,7 @@
       FIELD="CLOSED_LIST"
       NUM_ROW="93"
       SHOW_IF="USE_L2 == 'true'"
+      SHOW="false"
     >
       <ITEMS DEFAULT="NULL_VALUE">
         <ITEM NAME="NULL_VALUE"   VALUE="NULL_VALUE" />
@@ -362,6 +384,7 @@
       FIELD="TEXT"
       NUM_ROW="93"
       SHOW_IF="(USE_L2 == 'true' and L2_ENDDATE_VALUE == 'FIXED_VALUE')"
+      SHOW="false"
     >
       <DEFAULT>"2500"</DEFAULT>
     </PARAMETER>
@@ -371,6 +394,7 @@
       FIELD="CHECK"
       NUM_ROW="94"
       SHOW_IF="USE_L2 == 'true'"
+      SHOW="false"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -380,6 +404,7 @@
       FIELD="COLUMN_LIST"
       NUM_ROW="94"
       SHOW_IF="(USE_L2_ACTIVE == 'true' and USE_L2=='true')"
+      SHOW="false"
     >
     </PARAMETER>
 
@@ -388,6 +413,7 @@
       FIELD="CHECK"
       NUM_ROW="95"
       SHOW_IF="USE_L2 == 'true'"
+      SHOW="false"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -397,6 +423,7 @@
       FIELD="COLUMN_LIST"
       NUM_ROW="95"
       SHOW_IF="(USE_L2_VERSION == 'true' and USE_L2=='true')"
+      SHOW="false"
     >
     </PARAMETER>
 
@@ -405,6 +432,7 @@
     	FIELD="LABEL"
     	NUM_ROW="95"
 		SHOW_IF="(USE_L2_VERSION == 'true' and USE_L2=='true')"
+		SHOW="false"
     >
     	<DEFAULT>(Version must be an Integer)</DEFAULT>
     </PARAMETER>
@@ -413,6 +441,7 @@
       NAME="USE_L3"
       FIELD="CHECK"
       NUM_ROW="100"
+      SHOW="false"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -423,6 +452,7 @@
       NUM_ROW="110"
       NB_LINES="5"
       SHOW_IF="USE_L3 == 'true'"
+      SHOW="false"
     >
       <ITEMS>
         <ITEM NAME="CURRENT_VALUE" FIELD="PREV_COLUMN_LIST" />
