@@ -2598,7 +2598,15 @@ public class Process extends Element implements IProcess2 {
     private void findMoreLibraries(Set<String> neededLibraries, IElementParameter curParam) {
 
         if (curParam.getName().equals("DB_VERSION")) {
-            neededLibraries.add(((String) curParam.getValue()).replaceAll(TalendTextUtils.QUOTATION_MARK, "").replaceAll(
+            String jdbcName = (String) curParam.getValue();
+            if(jdbcName.contains("11g")){
+                if(System.getProperty("java.version").startsWith("1.6")){
+                    jdbcName = jdbcName.replace('5', '6');
+                }else{
+                    jdbcName = jdbcName.replace('6', '5');
+                }
+            }
+            neededLibraries.add((jdbcName).replaceAll(TalendTextUtils.QUOTATION_MARK, "").replaceAll(
                     TalendTextUtils.SINGLE_QUOTE, ""));
         }
 
