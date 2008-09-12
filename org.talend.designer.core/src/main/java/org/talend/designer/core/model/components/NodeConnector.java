@@ -19,6 +19,7 @@ import org.eclipse.swt.graphics.RGB;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnectionProperty;
 import org.talend.core.model.process.INodeConnector;
+import org.talend.core.model.utils.DesignerColorUtils;
 
 /**
  * Defines connector type and name for each component. <br/>
@@ -196,6 +197,7 @@ public class NodeConnector implements INodeConnector {
     }
 
     public void addConnectionProperty(EConnectionType type, RGB rgb, Integer lineStyle) {
+        rgb = DesignerColorUtils.getPreferenceConnectionColor(type, rgb);
         propertyMap.put(type, new ConnectionProperty(rgb, lineStyle));
     }
 

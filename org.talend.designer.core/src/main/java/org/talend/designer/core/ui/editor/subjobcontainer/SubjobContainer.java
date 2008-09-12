@@ -27,7 +27,7 @@ import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.ISubjobContainer;
-import org.talend.designer.core.DesignerPlugin;
+import org.talend.core.model.utils.DesignerColorUtils;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.ui.editor.TalendEditor;
@@ -296,21 +296,16 @@ public class SubjobContainer extends Element implements ISubjobContainer {
         } else {
             getElementParameter(EParameterName.SHOW_SUBJOB_TITLE.getName()).setShow(true);
         }
-        setSubjobPropertyColor(EParameterName.SUBJOB_COLOR.getName(), node, getDefaultSubjobColor(ColorUtils.SUBJOB_COLOR_NAME,
-                ColorUtils.SUBJOB_COLOR));
-        setSubjobPropertyColor(EParameterName.SUBJOB_TITLE_COLOR.getName(), node, getDefaultSubjobColor(
-                ColorUtils.SUBJOB_TITLE_COLOR_NAME, ColorUtils.SUBJOB_TITLE_COLOR));
+        setSubjobPropertyColor(EParameterName.SUBJOB_COLOR.getName(), node, DesignerColorUtils.getPreferenceSubjobColor(
+                DesignerColorUtils.SUBJOB_COLOR_NAME, DesignerColorUtils.SUBJOB_COLOR));
+        setSubjobPropertyColor(EParameterName.SUBJOB_TITLE_COLOR.getName(), node, DesignerColorUtils.getPreferenceSubjobColor(
+                DesignerColorUtils.SUBJOB_TITLE_COLOR_NAME, DesignerColorUtils.SUBJOB_TITLE_COLOR));
 
     }
 
     private void setSubjobPropertyColor(String propertyName, Node node, Color defaultColor) {
         Color colorValue = ColorUtils.parseStringToColor((String) node.getPropertyValue(propertyName), defaultColor);
         setPropertyValue(propertyName, ColorUtils.getColorValue(colorValue));
-    }
-
-    public Color getDefaultSubjobColor(String name, Color defaultColor) {
-        String colorStr = DesignerPlugin.getDefault().getPreferenceStore().getString(name);
-        return ColorUtils.parseStringToColor(colorStr, defaultColor);
     }
 
     public void updateSubjobContainer() {

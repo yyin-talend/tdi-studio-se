@@ -57,6 +57,12 @@
             id="org.talend.designer.core.properties.memo.text.font"
             name="Memo Text Font">
       </page>
+      <page
+            category="org.talend.designer.core.ui.preferences.TalendPreferencePage"
+            class="org.talend.designer.core.ui.preferences.DesignerColorsPreferencePage"
+            id="org.talend.designer.core.ui.preferences.DesignerColorsPreferencePage"
+            name="Colors">
+      </page>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">

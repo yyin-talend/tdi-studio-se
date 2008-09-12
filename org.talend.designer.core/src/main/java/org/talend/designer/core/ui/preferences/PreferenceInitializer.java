@@ -18,13 +18,12 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.gef.ui.palette.FlyoutPaletteComposite;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.CommonsPlugin;
-import org.talend.commons.utils.image.ColorUtils;
 import org.talend.core.language.ECodeLanguage;
+import org.talend.core.model.utils.DesignerColorUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
@@ -111,9 +110,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
             store.setDefault(TalendDesignerPrefConstants.EDITOR_ANTIALIASING, false);
             // store.setDefault(TalendDesignerPrefConstants.EDITOR_INTERPOLATION, false);
 
-            // subjob color
-            PreferenceConverter.setDefault(store, ColorUtils.SUBJOB_COLOR_NAME, ColorUtils.SUBJOB_COLOR.getRGB());
-            PreferenceConverter.setDefault(store, ColorUtils.SUBJOB_TITLE_COLOR_NAME, ColorUtils.SUBJOB_TITLE_COLOR.getRGB());
+            // designer color
+            DesignerColorUtils.initPreferenceDefault(store);
         }
 
     }

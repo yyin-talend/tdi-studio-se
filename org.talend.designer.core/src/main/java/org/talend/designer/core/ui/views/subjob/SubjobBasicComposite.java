@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.talend.commons.utils.image.ColorUtils;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
+import org.talend.core.model.utils.DesignerColorUtils;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -84,11 +85,11 @@ public class SubjobBasicComposite extends AbstractPreferenceComposite {
     }
 
     private String getPreferenceColor() {
-        return PREFERENCE_STORE.getString(ColorUtils.SUBJOB_COLOR_NAME);
+        return PREFERENCE_STORE.getString(DesignerColorUtils.SUBJOB_COLOR_NAME);
     }
 
     private String getPreferenceTitleColor() {
-        return PREFERENCE_STORE.getString(ColorUtils.SUBJOB_TITLE_COLOR_NAME);
+        return PREFERENCE_STORE.getString(DesignerColorUtils.SUBJOB_TITLE_COLOR_NAME);
     }
 
     private String getPropertyColor() {
@@ -109,11 +110,11 @@ public class SubjobBasicComposite extends AbstractPreferenceComposite {
     protected void onReloadPreference() {
         if (getElement() != null) {
             String colorStr = getPreferenceColor();
-            Color subjobColor = ColorUtils.parseStringToColor(colorStr, ColorUtils.SUBJOB_COLOR);
+            Color subjobColor = ColorUtils.parseStringToColor(colorStr, DesignerColorUtils.SUBJOB_COLOR);
             getElement().setPropertyValue(EParameterName.SUBJOB_COLOR.getName(), ColorUtils.getColorValue(subjobColor));
 
             colorStr = getPreferenceTitleColor();
-            Color subjobTitleColor = ColorUtils.parseStringToColor(colorStr, ColorUtils.SUBJOB_TITLE_COLOR);
+            Color subjobTitleColor = ColorUtils.parseStringToColor(colorStr, DesignerColorUtils.SUBJOB_TITLE_COLOR);
             getElement()
                     .setPropertyValue(EParameterName.SUBJOB_TITLE_COLOR.getName(), ColorUtils.getColorValue(subjobTitleColor));
 
@@ -123,11 +124,11 @@ public class SubjobBasicComposite extends AbstractPreferenceComposite {
     @Override
     protected void onSavePreference() {
         if (getElement() != null) {
-            Color subjobColor = ColorUtils.parseStringToColor(getPropertyColor(), ColorUtils.SUBJOB_COLOR);
-            PreferenceConverter.setValue(PREFERENCE_STORE, ColorUtils.SUBJOB_COLOR_NAME, subjobColor.getRGB());
+            Color subjobColor = ColorUtils.parseStringToColor(getPropertyColor(), DesignerColorUtils.SUBJOB_COLOR);
+            PreferenceConverter.setValue(PREFERENCE_STORE, DesignerColorUtils.SUBJOB_COLOR_NAME, subjobColor.getRGB());
 
-            subjobColor = ColorUtils.parseStringToColor(getPropertyTitleColor(), ColorUtils.SUBJOB_TITLE_COLOR);
-            PreferenceConverter.setValue(PREFERENCE_STORE, ColorUtils.SUBJOB_TITLE_COLOR_NAME, subjobColor.getRGB());
+            subjobColor = ColorUtils.parseStringToColor(getPropertyTitleColor(), DesignerColorUtils.SUBJOB_TITLE_COLOR);
+            PreferenceConverter.setValue(PREFERENCE_STORE, DesignerColorUtils.SUBJOB_TITLE_COLOR_NAME, subjobColor.getRGB());
         }
     }
 
