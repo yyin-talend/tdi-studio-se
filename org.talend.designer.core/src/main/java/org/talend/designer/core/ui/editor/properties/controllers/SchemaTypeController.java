@@ -47,6 +47,7 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.IElementParameterDefaultValue;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.properties.ConnectionItem;
@@ -119,8 +120,10 @@ public class SchemaTypeController extends AbstractRepositoryController {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#createControl(org.eclipse.swt.widgets.Composite,
-     * org.talend.core.model.process.IElementParameter, int, int, int, org.eclipse.swt.widgets.Control)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#createControl
+     * (org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter, int, int, int,
+     * org.eclipse.swt.widgets.Control)
      */
     @Override
     public Control createControl(Composite subComposite, IElementParameter param, int numInRow, int nbInRow, int top,
@@ -136,8 +139,9 @@ public class SchemaTypeController extends AbstractRepositoryController {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite,
-     * org.talend.core.model.process.IElementParameter)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize
+     * (org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
      */
     @Override
     public int estimateRowSize(Composite subComposite, IElementParameter param) {
@@ -275,8 +279,9 @@ public class SchemaTypeController extends AbstractRepositoryController {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#refresh(org.talend.core.model.process.IElementParameter,
-     * boolean)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#refresh(org
+     * .talend.core.model.process.IElementParameter, boolean)
      */
     @Override
     public void refresh(IElementParameter param, boolean check) {
@@ -470,7 +475,9 @@ public class SchemaTypeController extends AbstractRepositoryController {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractRepositoryController#createButtonCommand(org.eclipse.swt.widgets.Button)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractRepositoryController#createButtonCommand(org
+     * .eclipse.swt.widgets.Button)
      */
     @Override
     protected Command createButtonCommand(Button button) {
@@ -569,6 +576,22 @@ public class SchemaTypeController extends AbstractRepositoryController {
                 // setColumnLength(node, param, columnCopied);
             }
             outputMetaCopy.setReadOnly(originaleOutputTable.isReadOnly());
+
+            for (IElementParameter elementParameter : node.getElementParameters()) {
+                if (elementParameter.getField() == EParameterFieldType.SCHEMA_TYPE) {
+                    List<IElementParameterDefaultValue> defaultValues = elementParameter.getDefaultValues();
+                    for (IElementParameterDefaultValue elementParameterDefaultValue : defaultValues) {
+                        if (elementParameterDefaultValue.getDefaultValue() instanceof MetadataTable) {
+                            MetadataTable table = (MetadataTable) elementParameterDefaultValue.getDefaultValue();
+                            outputMetaCopy.setReadOnlyColumnPosition(table.getReadOnlyColumnPosition());
+                            break;
+                        }
+                    }
+                }
+            }
+
+            outputMetaCopy.sortCustomColumns();
+
             if (!forceReadOnly) {
                 outputReadOnly = prepareReadOnlyTable(outputMetaCopy, param.isReadOnly(), node.isReadOnly());
             } else {
@@ -800,7 +823,9 @@ public class SchemaTypeController extends AbstractRepositoryController {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractRepositoryController#createComboCommand(org.eclipse.swt.custom.CCombo)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractRepositoryController#createComboCommand(org
+     * .eclipse.swt.custom.CCombo)
      */
     @Override
     protected Command createComboCommand(CCombo combo) {
@@ -892,7 +917,9 @@ public class SchemaTypeController extends AbstractRepositoryController {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractRepositoryController#getRepositoryChoiceParamName()
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractRepositoryController#getRepositoryChoiceParamName
+     * ()
      */
     @Override
     protected String getRepositoryChoiceParamName() {
@@ -902,7 +929,9 @@ public class SchemaTypeController extends AbstractRepositoryController {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractRepositoryController#getRepositoryTypeParamName()
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractRepositoryController#getRepositoryTypeParamName
+     * ()
      */
     @Override
     protected String getRepositoryTypeParamName() {
