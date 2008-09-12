@@ -1324,6 +1324,8 @@ public class EmfComponent implements IComponent {
                 isReadOnly = param.isReadOnly();
             }
 
+            defaultTable.setReadOnlyColumnPosition(tableType.getREAD_ONLY_COLUMN_POSITION());
+
             int nbCustom = 0;
             for (int i = 0; i < xmlColumnList.size(); i++) {
                 xmlColumn = (COLUMNType) xmlColumnList.get(i);
