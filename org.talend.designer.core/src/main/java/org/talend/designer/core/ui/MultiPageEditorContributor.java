@@ -226,7 +226,6 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
         toolBarManager.add(getAction(ToggleSubjobsAction.ID));
         String[] zoomStrings = new String[] { ZoomManager.FIT_ALL, ZoomManager.FIT_HEIGHT, ZoomManager.FIT_WIDTH };
         toolBarManager.add(new ZoomComboContributionItem(getPage(), zoomStrings));
-        toolBarManager.add(new PaletteFilterTextContributionItem());
     }
 
     /*
@@ -248,113 +247,6 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
         designActionKeys = null;
         retargetActions = null;
         registry = null;
-    }
-
-    /**
-     * yzhang class global comment. Detailled comment
-     */
-    private final class PaletteFilterTextContributionItem extends ContributionItem {
-
-        /**
-         * 
-         */
-        private static final String SEARCH_COMPONENT = "search component...";
-
-        private ToolItem toolItem;
-
-        private Text filterText;
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.eclipse.jface.action.ContributionItem#fill(org.eclipse.swt.widgets.ToolBar, int)
-         */
-        @Override
-        public void fill(ToolBar parent, int index) {
-            toolItem = new ToolItem(parent, SWT.SEPARATOR, index);
-            Control control = createControl(parent);
-            toolItem.setControl(control);
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.eclipse.jface.action.ContributionItem#fill(org.eclipse.swt.widgets.Composite)
-         */
-        @Override
-        public void fill(Composite parent) {
-            createControl(parent);
-        }
-
-        /**
-         * yzhang Comment method "createControl".
-         * 
-         * @param parent
-         * @return
-         */
-        private Control createControl(Composite parent) {
-
-            filterText = new Text(parent, SWT.BORDER);
-            filterText.setText(SEARCH_COMPONENT);
-            filterText.setSize(100, SWT.DEFAULT);
-            filterText.setToolTipText("Enter component prefix or pattern (*, ?)");
-
-            int width = filterText.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
-            toolItem.setWidth(width);
-
-            addListeners(filterText);
-            return filterText;
-        }
-
-        /**
-         * yzhang Comment method "addListeners".
-         * 
-         * @param text
-         */
-        private void addListeners(final Text text) {
-            text.addMouseListener(new MouseListener() {
-
-                public void mouseDoubleClick(MouseEvent e) {
-
-                }
-
-                public void mouseDown(MouseEvent e) {
-                    text.selectAll();
-                }
-
-                public void mouseUp(MouseEvent e) {
-
-                }
-
-            });
-
-            text.addFocusListener(new FocusListener() {
-
-                public void focusGained(FocusEvent e) {
-
-                }
-
-                public void focusLost(FocusEvent e) {
-                    if (text.getText() == "") {
-                        text.setText(SEARCH_COMPONENT);
-                    }
-
-                }
-
-            });
-
-            text.addModifyListener(new ModifyListener() {
-
-                public void modifyText(ModifyEvent e) {
-                    String filter = text.getText();
-                    if (!filter.equals(SEARCH_COMPONENT)) {
-                        ComponentUtilities.filterPalette(filter.trim());
-                    }
-                }
-
-            });
-
-        }
     }
 
 }

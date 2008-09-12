@@ -133,7 +133,7 @@ public final class TalendEditorPaletteFactory {
             if (filter != null) {
                 String regex = "\\b.*" + filter.replaceAll("\\*", ".*") + ".*\\b";
                 regex = regex.replaceAll("\\?", ".?");
-                if (!xmlComponent.getTranslatedName().matches(regex)) {
+                if (!xmlComponent.getTranslatedName().toLowerCase().matches(regex)) {
                     continue;
                 }
             }
@@ -355,7 +355,7 @@ public final class TalendEditorPaletteFactory {
      * @param filter
      */
     public static void setFilter(String filter) {
-        TalendEditorPaletteFactory.filter = filter;
+        TalendEditorPaletteFactory.filter = filter.toLowerCase();
     }
 
 }
