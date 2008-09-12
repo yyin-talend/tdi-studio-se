@@ -28,6 +28,7 @@ String xmlfile = ElementParameterParser.getValue(node, "__XMLFILE__");
 javax.xml.validation.SchemaFactory factory<%=cid %> =javax.xml.validation.SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
 java.io.File schemaLocation<%=cid %> = new java.io.File(<%=xsdfile %>);
 String message<%=cid %> = "";
+int lineNumber<%=cid %>=0;
 String xsdErrorMessage_<%=cid%>="";
 int validate<%=cid %> = 0;
 try {
@@ -37,10 +38,12 @@ try {
 	javax.xml.transform.Source source<%=cid %> = new javax.xml.transform.stream.StreamSource(xmlfile<%=cid %>);
     validator<%=cid %>.validate(source<%=cid %>);
   	message<%=cid %> = <%=validMessage%>;
-	validate<%=cid %> = 1;  	
-} catch (org.xml.sax.SAXException ex) {
+	validate<%=cid %> = 1;
+} catch (org.xml.sax.SAXParseException ex) {
+  
 	message<%=cid %> = <%=invalidMessage%>;
-	xsdErrorMessage_<%=cid%> = "Sax Error is : " + ex.getMessage();
+	lineNumber<%=cid %>=ex.getLineNumber();
+	xsdErrorMessage_<%=cid%> = ex.getMessage();
 } 
 
 globalMap.put("<%=cid %>_DIFFERENCE", "" + validate<%=cid %>);
@@ -51,6 +54,10 @@ globalMap.put("<%=cid %>_XSD_ERROR_MESSAGE", "" + xsdErrorMessage_<%=cid%>);
 if (print) {
 %>
     System.out.println(message<%=cid %>);
+    if(validate<%=cid %>==0)
+    {
+    System.err.println("The "+String.valueOf(lineNumber<%=cid %>)+" line found an error: "+xsdErrorMessage_<%=cid%>);
+    }
 <%
 }
 
