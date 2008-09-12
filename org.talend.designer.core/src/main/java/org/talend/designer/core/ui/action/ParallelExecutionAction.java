@@ -50,8 +50,6 @@ public class ParallelExecutionAction extends SelectionAction {
 
     private String numberParallel = "0";
 
-    private IConnection connection;
-
     private Node node;
 
     public ParallelExecutionAction(IWorkbenchPart part) {
@@ -85,7 +83,7 @@ public class ParallelExecutionAction extends SelectionAction {
                 numberParallel = (String) numberParallelizeParameter.getValue();
             }
 
-            return enableParallelizeParameter != null;
+            return parallelEnable;
         }
         return false;
     }

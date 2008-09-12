@@ -24,6 +24,7 @@ import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.utils.workbench.gef.SimpleHtmlFigure;
 import org.talend.core.CorePlugin;
+import org.talend.core.PluginChecker;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.designer.core.model.components.EParameterName;
@@ -78,7 +79,9 @@ public class NodeContainerFigure extends Figure {
         warningFigure.setSize(warningFigure.getPreferredSize());
         this.add(warningFigure);
 
-        addParallelFigure();
+        if (PluginChecker.isTIS()) {
+            addParallelFigure();
+        }
 
         htmlStatusHint = new SimpleHtmlFigure();
     }
@@ -164,6 +167,11 @@ public class NodeContainerFigure extends Figure {
      * @param status
      */
     private void updateParallelFigure(int status) {
+        
+        if (!PluginChecker.isTIS() || parallelFigure == null) {
+            return;
+        }
+        
         String numberParallel = "0";
         if ((status & Process.PARALLEL_STATUS) != 0) {
             IElementParameter numberParallelizeParameter = nodeContainer.getNode().getElementParameter(
@@ -188,7 +196,9 @@ public class NodeContainerFigure extends Figure {
         breakpointFigure.setLocation(nodeContainer.getBreakpointLocation());
         errorFigure.setLocation(nodeContainer.getErrorLocation());
         warningFigure.setLocation(nodeContainer.getWarningLocation());
-        parallelFigure.setLocation(nodeContainer.getParallelLocation());
+        if(parallelFigure != null){
+            parallelFigure.setLocation(nodeContainer.getParallelLocation());
+        }
 
         super.paint(graphics);
     }

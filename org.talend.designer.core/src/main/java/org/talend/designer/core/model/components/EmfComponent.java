@@ -863,25 +863,28 @@ public class EmfComponent implements IComponent {
         param.setShow(false);
         listParam.add(param);
 
-        param = new ElementParameter(node);
-        param.setName(EParameterName.PARALLELIZE.getName());
-        param.setValue(compType.getHEADER().isPARALLELIZE());
-        param.setDisplayName(EParameterName.PARALLELIZE.getDisplayName());
-        param.setField(EParameterFieldType.CHECK);
-        param.setCategory(EComponentCategory.ADVANCED);
-        param.setNumRow(100);
-        param.setShow(true);
-        listParam.add(param);
+        if(compType.getHEADER().isPARALLELIZE()){
+            param = new ElementParameter(node);
+            param.setName(EParameterName.PARALLELIZE.getName());
+            param.setValue(compType.getHEADER().isPARALLELIZE());
+            param.setDisplayName(EParameterName.PARALLELIZE.getDisplayName());
+            param.setField(EParameterFieldType.CHECK);
+            param.setCategory(EComponentCategory.ADVANCED);
+            param.setNumRow(100);
+            param.setShow(true);
+            listParam.add(param);
 
-        param = new ElementParameter(node);
-        param.setName(EParameterName.PARALLILIZE_NUMBER.getName());
-        param.setValue(compType.getHEADER().getNUMBERPARALLELIZE());
-        param.setDisplayName(EParameterName.PARALLILIZE_NUMBER.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
-        param.setCategory(EComponentCategory.ADVANCED);
-        param.setNumRow(100);
-        param.setShow(true);
-        listParam.add(param);
+            param = new ElementParameter(node);
+            param.setName(EParameterName.PARALLILIZE_NUMBER.getName());
+            param.setValue(compType.getHEADER().getNUMBERPARALLELIZE());
+            param.setDisplayName(EParameterName.PARALLILIZE_NUMBER.getDisplayName());
+            param.setField(EParameterFieldType.TEXT);
+            param.setCategory(EComponentCategory.ADVANCED);
+            param.setNumRow(100);
+            param.setShow(true);
+            listParam.add(param);
+        }
+        
     }
 
     private void createSpecificParametersFromType(final List<ElementParameter> listParam, final PARAMETERType xmlParam,
