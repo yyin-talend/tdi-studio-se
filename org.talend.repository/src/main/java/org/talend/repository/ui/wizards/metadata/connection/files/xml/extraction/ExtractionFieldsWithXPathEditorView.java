@@ -13,17 +13,17 @@
 package org.talend.repository.ui.wizards.metadata.connection.files.xml.extraction;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
 import org.talend.commons.ui.swt.advanced.dataeditor.AbstractDataTableEditorView;
-import org.talend.commons.ui.swt.advanced.dataeditor.AbstractExtendedToolbar;
 import org.talend.commons.ui.swt.advanced.dataeditor.ExtendedToolbarView;
 import org.talend.commons.ui.swt.advanced.dataeditor.button.AddPushButtonForExtendedTable;
 import org.talend.commons.ui.swt.advanced.dataeditor.button.PastePushButton;
@@ -40,7 +40,6 @@ import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.model.targetschema.editor.XmlExtractorFieldModel;
-import org.talend.core.model.targetschema.editor.XmlExtractorLoopModel;
 import org.talend.repository.i18n.Messages;
 
 /**
@@ -75,7 +74,8 @@ public class ExtractionFieldsWithXPathEditorView extends AbstractDataTableEditor
      * @param styleChild
      * @param showDbTypeColumn
      */
-    public ExtractionFieldsWithXPathEditorView(XmlExtractorFieldModel model, Composite parent, int styleChild, boolean showDbTypeColumn) {
+    public ExtractionFieldsWithXPathEditorView(XmlExtractorFieldModel model, Composite parent, int styleChild,
+            boolean showDbTypeColumn) {
         super(parent, styleChild, model);
     }
 
@@ -91,7 +91,9 @@ public class ExtractionFieldsWithXPathEditorView extends AbstractDataTableEditor
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.commons.ui.swt.advanced.dataeditor.AbstractDataTableEditorView#handleBeforeListenableListOperationEvent(org.talend.commons.utils.data.list.ListenableListEvent)
+     * @see
+     * org.talend.commons.ui.swt.advanced.dataeditor.AbstractDataTableEditorView#handleBeforeListenableListOperationEvent
+     * (org.talend.commons.utils.data.list.ListenableListEvent)
      */
     @Override
     protected void handleBeforeListenableListOperationEvent(ListenableListEvent<SchemaTarget> event) {
@@ -101,7 +103,9 @@ public class ExtractionFieldsWithXPathEditorView extends AbstractDataTableEditor
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.commons.ui.swt.extended.macrotable.AbstractExtendedTableViewer#handleListenableListEvent(org.talend.commons.utils.data.list.ListenableListEvent)
+     * @see
+     * org.talend.commons.ui.swt.extended.macrotable.AbstractExtendedTableViewer#handleListenableListEvent(org.talend
+     * .commons.utils.data.list.ListenableListEvent)
      */
     @Override
     protected void handleAfterListenableListOperationEvent(ListenableListEvent<SchemaTarget> event) {
@@ -116,7 +120,9 @@ public class ExtractionFieldsWithXPathEditorView extends AbstractDataTableEditor
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.commons.ui.swt.extended.macrotable.AbstractExtendedTableViewer#setTableViewerCreatorOptions(org.talend.commons.ui.swt.tableviewer.TableViewerCreator)
+     * @see
+     * org.talend.commons.ui.swt.extended.macrotable.AbstractExtendedTableViewer#setTableViewerCreatorOptions(org.talend
+     * .commons.ui.swt.tableviewer.TableViewerCreator)
      */
     @Override
     protected void setTableViewerCreatorOptions(TableViewerCreator<SchemaTarget> newTableViewerCreator) {
@@ -127,13 +133,15 @@ public class ExtractionFieldsWithXPathEditorView extends AbstractDataTableEditor
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.commons.ui.swt.advanced.macrotable.AbstractExtendedTableViewer#createColumns(org.talend.commons.ui.swt.tableviewer.TableViewerCreator,
-     * org.eclipse.swt.widgets.Table)
+     * @see
+     * org.talend.commons.ui.swt.advanced.macrotable.AbstractExtendedTableViewer#createColumns(org.talend.commons.ui
+     * .swt.tableviewer.TableViewerCreator, org.eclipse.swt.widgets.Table)
      */
     @Override
     protected void createColumns(TableViewerCreator<SchemaTarget> tableViewerCreator, final Table table) {
         CellEditorValueAdapter intValueAdapter = new CellEditorValueAdapter() {
 
+            @Override
             public Object getOriginalTypedValue(final CellEditor cellEditor, Object value) {
                 try {
                     return new Integer(value.toString());
@@ -142,6 +150,7 @@ public class ExtractionFieldsWithXPathEditorView extends AbstractDataTableEditor
                 }
             }
 
+            @Override
             public Object getCellEditorTypedValue(final CellEditor cellEditor, Object value) {
                 if (value != null) {
                     return String.valueOf(value);
@@ -225,9 +234,91 @@ public class ExtractionFieldsWithXPathEditorView extends AbstractDataTableEditor
         column.setModifiable(true);
         column.setWeight(10);
         column.setMinimumWidth(50);
-        column.setCellEditor(new TextCellEditor(table));
+        // column.setCellEditor(new TextCellEditor(table));
         column.setDefaultInternalValue(""); //$NON-NLS-1$
 
+        final TextCellEditorWithProposal tagNameCellEditor = createTagNameEditor(tableViewerCreator, column);
+        column.setCellEditor(tagNameCellEditor);
+    }
+
+    /**
+     * DOC chuang Comment method "createTagName".
+     * 
+     * @param tableViewerCreator
+     * @param column
+     * @return
+     */
+    private TextCellEditorWithProposal createTagNameEditor(TableViewerCreator<SchemaTarget> tableViewerCreator,
+            TableViewerCreatorColumn column) {
+        final TextCellEditorWithProposal tagNameCellEditor = new TextCellEditorWithProposal(tableViewerCreator.getTable(),
+                SWT.NONE, column);
+        tagNameCellEditor.addListener(new DialogErrorForCellEditorListener(tagNameCellEditor, column) {
+
+            @Override
+            public void newValidValueTyped(int itemIndex, Object previousValue, Object newValue, CELL_EDITOR_STATE state) {
+            }
+
+            @Override
+            public String validateValue(String newValue, int beanPosition) {
+                List<SchemaTarget> list = getModel().getBeansList();
+                String errorMessage = null;
+                int lstSize = list.size();
+                for (int i = 0; i < lstSize; i++) {
+                    if (newValue.equals(list.get(i).getTagName()) && i != beanPosition) {
+                        errorMessage = "The column name '" + newValue + "' already exists."; //$NON-NLS-1$
+                        break;
+                    }
+
+                }
+                return errorMessage;
+            }
+
+        });
+        return tagNameCellEditor;
+    }
+
+    /**
+     * DOC chuang Comment method "checkColumnNames".
+     */
+    public String checkColumnNames() {
+        List<SchemaTarget> list = getModel().getBeansList();
+        Set<String> conflictNames = new HashSet<String>();
+        Set<String> names = new HashSet<String>();
+
+        int lstSize = list.size();
+        for (int i = 0; i < lstSize; i++) {
+            String name = list.get(i).getTagName();
+            if (names.contains(name)) {
+                conflictNames.add(name);
+            } else {
+                names.add(name);
+            }
+        }
+
+        if (conflictNames.isEmpty()) {
+            return null;
+        } else {
+            // set background
+            getTable().setRedraw(false);
+            for (int i = 0; i < lstSize; i++) {
+                String name = list.get(i).getTagName();
+                if (conflictNames.contains(name)) {
+                    getTable().getItem(i).setBackground(Display.getDefault().getSystemColor(SWT.COLOR_RED));
+                }
+            }
+            getTable().setRedraw(true);
+
+            // create error message
+            StringBuffer buf = new StringBuffer();
+            buf.append("The column names ");
+            for (String name : conflictNames) {
+                buf.append(name);
+                buf.append(",");
+            }
+            buf.deleteCharAt(buf.length() - 1);
+            buf.append(" already exists.");
+            return buf.toString();
+        }
     }
 
     public XmlExtractorFieldModel getModel() {
@@ -273,7 +364,9 @@ public class ExtractionFieldsWithXPathEditorView extends AbstractDataTableEditor
                 };
             }
 
-            /* (non-Javadoc)
+            /*
+             * (non-Javadoc)
+             * 
              * @see org.talend.core.ui.extended.ExtendedToolbarView#createPastePushButton()
              */
             @Override
@@ -282,7 +375,7 @@ public class ExtractionFieldsWithXPathEditorView extends AbstractDataTableEditor
 
                     @Override
                     protected Command getCommandToExecute(ExtendedTableModel extendedTableModel, Integer indexWhereInsert) {
-                         return new ExtendedTablePasteCommand(extendedTableModel, indexWhereInsert) {
+                        return new ExtendedTablePasteCommand(extendedTableModel, indexWhereInsert) {
 
                             @Override
                             public List createPastableBeansList(ExtendedTableModel extendedTableModel, List copiedObjectsList) {
@@ -299,14 +392,12 @@ public class ExtractionFieldsWithXPathEditorView extends AbstractDataTableEditor
                                 }
                                 return list;
                             }
-                         };
+                        };
                     }
 
                 };
             }
 
-            
-            
         };
 
     }

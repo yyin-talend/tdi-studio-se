@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.axis.utils.StringUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
@@ -465,7 +466,9 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
             /*
              * (non-Javadoc)
              * 
-             * @see org.talend.repository.ui.wizards.metadata.connection.files.xml.StoppablePreviewLoader#previewEnded(java.lang.Object)
+             * @see
+             * org.talend.repository.ui.wizards.metadata.connection.files.xml.StoppablePreviewLoader#previewEnded(java
+             * .lang.Object)
              */
             @Override
             protected void previewEnded(CsvArray result) {
@@ -553,6 +556,12 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
         previewInformationLabel.setText("   " + Messages.getString("FileStep2.settingsIncomplete")); //$NON-NLS-1$ //$NON-NLS-2$
         updateStatus(IStatus.OK, null);
         previewButton.setEnabled(false);
+
+        String msg = fieldsTableEditorView.checkColumnNames();
+        if (!StringUtils.isEmpty(msg)) {
+            updateStatus(IStatus.ERROR, msg);
+            return false;
+        }
 
         // Labelled Checkbox Combo (Row to Skip and Limit)
         ArrayList<LabelledCheckboxCombo> labelledCheckboxCombo2Control = new ArrayList<LabelledCheckboxCombo>();
@@ -729,7 +738,6 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
      * (non-Javadoc)
      * 
      * @see org.eclipse.swt.widgets.Control#setVisible(boolean)
-     * 
      */
     @Override
     public void setVisible(boolean visible) {
