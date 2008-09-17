@@ -50,6 +50,7 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.emf.EmfHelper;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.context.ContextUtils;
 import org.talend.core.model.context.JobContextManager;
@@ -79,6 +80,7 @@ import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.update.IUpdateManager;
+import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
@@ -2550,8 +2552,16 @@ public class Process extends Element implements IProcess2 {
                 if (curParam.getField().equals(EParameterFieldType.MODULE_LIST)) {
                     if (!"".equals(curParam.getValue())) { // if the parameter
                         // is not empty.
-                        neededLibraries.add(((String) curParam.getValue()).replaceAll(TalendTextUtils.QUOTATION_MARK, "")
-                                .replaceAll(TalendTextUtils.SINGLE_QUOTE, ""));
+                        String moduleValue = (String) curParam.getValue();
+
+                        if (ContextParameterUtils.isContainContextParam(moduleValue)) {
+                            IContext selectedContext = CorePlugin.getDefault().getRunProcessService().getSelectedContext();
+                            neededLibraries.add(selectedContext.getContextParameter(
+                                    ContextParameterUtils.getVariableFromCode(moduleValue)).getValue());
+                        } else {
+                            neededLibraries.add(moduleValue.replaceAll(TalendTextUtils.QUOTATION_MARK, "").replaceAll(
+                                    TalendTextUtils.SINGLE_QUOTE, ""));
+                        }
                     }
                 }
 

@@ -21,6 +21,7 @@ import org.eclipse.jface.action.IAction;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
 import org.talend.designer.runprocess.data.PerformanceData;
 import org.talend.designer.runprocess.java.JavaProcessor;
@@ -55,9 +56,20 @@ public class DefaultRunProcessService implements IRunProcessService {
     public void setActiveProcess(IProcess activeProcess) {
         RunProcessPlugin.getDefault().getRunProcessContextManager().setActiveProcess(activeProcess);
     }
+
     public void setActiveProcess(IProcess activeProcess, boolean refreshUI) {
         RunProcessPlugin.getDefault().getRunProcessContextManager().setActiveProcess(activeProcess, refreshUI);
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IRunProcessService#getSelectedContext()
+     */
+    public IContext getSelectedContext() {
+        return RunProcessPlugin.getDefault().getRunProcessContextManager().getActiveContext().getSelectedContext();
+    }
+
     /**
      * DOC qian Removes IProcess.
      * 
@@ -86,7 +98,8 @@ public class DefaultRunProcessService implements IRunProcessService {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.runprocess.IRunProcessFactory#createCodeProcessor(org.talend.core.model.process.IProcess,
+     * @see
+     * org.talend.designer.runprocess.IRunProcessFactory#createCodeProcessor(org.talend.core.model.process.IProcess,
      * boolean)
      */
     public IProcessor createCodeProcessor(IProcess process, ECodeLanguage language, boolean filenameFromLabel) {
@@ -148,7 +161,8 @@ public class DefaultRunProcessService implements IRunProcessService {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.runprocess.IRunProcessService#setDelegateService(org.talend.designer.runprocess.IRunProcessService)
+     * @seeorg.talend.designer.runprocess.IRunProcessService#setDelegateService(org.talend.designer.runprocess.
+     * IRunProcessService)
      */
     public void setDelegateService(IRunProcessService delegateService) {
         throw new UnsupportedOperationException("This method should'nt be called here, use it on RunProcessService class.");

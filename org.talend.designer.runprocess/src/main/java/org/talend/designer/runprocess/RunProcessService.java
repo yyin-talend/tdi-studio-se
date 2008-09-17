@@ -20,6 +20,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.action.IAction;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.ICodeProblemsChecker;
+import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
 import org.talend.designer.runprocess.ui.actions.RunProcessAction;
 
@@ -45,7 +46,8 @@ public class RunProcessService implements IRunProcessService {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.runprocess.IRunProcessService#createCodeProcessor(org.talend.core.model.process.IProcess,
+     * @see
+     * org.talend.designer.runprocess.IRunProcessService#createCodeProcessor(org.talend.core.model.process.IProcess,
      * org.talend.core.language.ECodeLanguage, boolean)
      */
     public IProcessor createCodeProcessor(IProcess process, ECodeLanguage language, boolean filenameFromLabel) {
@@ -91,6 +93,15 @@ public class RunProcessService implements IRunProcessService {
     /*
      * (non-Javadoc)
      * 
+     * @see org.talend.designer.runprocess.IRunProcessService#getSelectedContext()
+     */
+    public IContext getSelectedContext() {
+        return RunProcessPlugin.getDefault().getRunProcessContextManager().getActiveContext().getSelectedContext();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.runprocess.IRunProcessService#perlExec(java.lang.StringBuffer, java.lang.StringBuffer,
      * org.eclipse.core.runtime.IPath, java.lang.String, org.apache.log4j.Level, java.lang.String, java.lang.String,
      * int, int, java.lang.String[])
@@ -127,7 +138,8 @@ public class RunProcessService implements IRunProcessService {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.runprocess.IRunProcessService#setDelegateService(org.talend.designer.runprocess.IRunProcessService)
+     * @seeorg.talend.designer.runprocess.IRunProcessService#setDelegateService(org.talend.designer.runprocess.
+     * IRunProcessService)
      */
     public void setDelegateService(IRunProcessService delegateService) {
         boolean isValidDelegate = delegateService != null && !(delegateService instanceof RunProcessService);
