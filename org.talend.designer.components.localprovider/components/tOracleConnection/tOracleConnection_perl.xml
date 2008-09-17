@@ -105,9 +105,17 @@
     </PARAMETER>
 
     <PARAMETER
-      NAME="PRINT_ERROR"
+      NAME="OVERRIDE_NLS_LANG"
       FIELD="CHECK"
       NUM_ROW="9"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="PRINT_ERROR"
+      FIELD="CHECK"
+      NUM_ROW="10"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>

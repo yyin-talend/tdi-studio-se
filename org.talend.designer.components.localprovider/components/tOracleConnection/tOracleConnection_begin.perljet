@@ -25,6 +25,16 @@ String encoding = ElementParameterParser.getValue(
     "__ENCODING__"
 );
 
+String encodingType = ElementParameterParser.getValue(
+    node,
+    "__ENCODING_TYPE__"
+);
+
+String overrideNLS_LANG = "0";
+if (ElementParameterParser.getValue(node, "__OVERRIDE_NLS_LANG__").equals("true")) {
+  overrideNLS_LANG = "1";
+}
+
 String printError = ElementParameterParser.getValue(
     node,
     "__PRINT_ERROR__"
@@ -36,13 +46,13 @@ String connectionType = ElementParameterParser.getValue(
 );
 %>
 use DBI;
+use tOracleOutput::Oracle;
 
-if (<%=encoding%> =~ m/^utf-?8$/i) {
-    $ENV{NLS_LANG} = 'AMERICAN_AMERICA.AL32UTF8';
-}
-elsif (<%=encoding%> =~ m/^iso-?8859-?1$/i) {
-    $ENV{NLS_LANG} = 'AMERICAN_AMERICA.WE8ISO8859P1';
-}
+tOracleOutput::Oracle::manage_encoding(
+    override => <%=overrideNLS_LANG%>,
+    encoding_type => '<%=encodingType%>',
+    encoding => <%=encoding%>,
+);
 
 our $dbh_<%=cid %> = DBI->connect(
     sprintf(

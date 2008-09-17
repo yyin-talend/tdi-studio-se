@@ -106,4 +106,104 @@ sub getTableCreationQuery {
     return $query;
 }
 
+sub manage_encoding {
+    my %param = @_;
+
+    my $set_encoding = 1;
+    if (defined $ENV{NLS_LANG} and !$param{override}) {
+        $set_encoding = 0;
+    }
+
+    if ($set_encoding) {
+        if ($param{encoding_type} eq 'UTF-8') {
+            $ENV{NLS_LANG} = '.AL32UTF8';
+        }
+
+        if ($param{encoding_type} eq 'ISO-8859-15') {
+            $ENV{NLS_LANG} = '.WE8ISO8859P15';
+        }
+
+        # if the encoding type is CUSTOM, we take the encoding "as is"
+        if ($param{encoding_type} eq 'CUSTOM') {
+            $ENV{NLS_LANG} = $param{encoding};
+        }
+    }
+}
+
+sub performTableAction {
+    my %param = @_;
+
+    # tableAction
+    # dbschema
+    # dbh
+    # dbtable
+    # component
+    # schema
+
+    my $sth;
+    my $table_exists;
+
+    if ($param{tableAction} eq "DROP_CREATE"
+        or $param{tableAction} eq "CREATE_IF_NOT_EXISTS") {
+        # We need the table list to know if drop or "create if not exists"
+        # is relevant
+        my $tabsth = $param{dbh}->prepare(
+            '
+select 1
+  from all_tables
+  where owner = ?
+    and table_name = ?
+'
+        );
+
+        $tabsth->execute(
+            uc $param{dbschema},
+            uc $param{dbtable}
+        )
+            or die "can't execute query : $!";
+
+        while (my $row = $tabsth->fetchrow_arrayref()) {
+            $table_exists = $row->[0];
+            last;
+        }
+        $tabsth->finish();
+    }
+
+    if ($param{tableAction} eq "DROP_CREATE" and $table_exists) {
+        $param{dbh}->do('DROP TABLE '.$param{dbtable})
+            or die sprintf("[%s] can't drop table", $param{component});
+
+        $table_exists = 0;
+    }
+
+    if ($param{tableAction} eq "CREATE"
+        or $param{tableAction} eq "DROP_CREATE"
+        or ($param{tableAction} eq "CREATE_IF_NOT_EXISTS"
+            and not $table_exists)) {
+
+        # now we create the table
+        $query = getTableCreationQuery(
+            tablename  => $param{dbtable},
+            schema     => $param{schema},
+        );
+
+        $param{dbh}->do($query)
+            or die sprintf(
+                "[%s] cannot create table\n===\n%s\n===\n",
+                $param{component},
+                $query,
+            );
+    }
+
+    if ($param{tableAction} eq "CLEAR") {
+        $param{dbh}->do('DELETE FROM '.$param{dbtable})
+            or die sprintf(
+                "[%s] can't clear table",
+                $param{component}
+            );
+    }
+
+    return $query;
+}
+
 1;

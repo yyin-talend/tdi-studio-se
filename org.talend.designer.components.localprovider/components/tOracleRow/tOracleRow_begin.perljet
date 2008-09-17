@@ -36,6 +36,16 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             "__ENCODING__"
         );
 
+        String encodingType = ElementParameterParser.getValue(
+            node,
+            "__ENCODING_TYPE__"
+        );
+
+        String overrideNLS_LANG = "0";
+        if (ElementParameterParser.getValue(node, "__OVERRIDE_NLS_LANG__").equals("true")) {
+          overrideNLS_LANG = "1";
+        }
+
         String commitEvery = ElementParameterParser.getValue(
             node,
             "__COMMIT_EVERY__"
@@ -71,6 +81,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 
 use DBI;
+use tOracleOutput::Oracle;
 
 my %desc_<%=cid %> = (
     dbhost        => <%=dbhost %>,
@@ -104,12 +115,11 @@ my %desc_<%=cid %> = (
         if (useExistingConnection.equals("false")) {
 %>
 
-if ($desc_<%=cid %>{encoding} =~ m/^utf-?8$/i) {
-    $ENV{NLS_LANG} = 'AMERICAN_AMERICA.AL32UTF8';
-}
-elsif ($desc_<%=cid %>{encoding} =~ m/^iso-?8859-?1$/i) {
-    $ENV{NLS_LANG} = 'AMERICAN_AMERICA.WE8ISO8859P1';
-}
+tOracleOutput::Oracle::manage_encoding(
+    override => <%=overrideNLS_LANG%>,
+    encoding_type => '<%=encodingType%>',
+    encoding => <%=encoding%>,
+);
 
 my $<%=dbh%> = DBI->connect(
     sprintf(

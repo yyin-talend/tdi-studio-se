@@ -41,10 +41,21 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
         String dbuser = ElementParameterParser.getValue(node, "__USER__");
         String dbpass = ElementParameterParser.getValue(node, "__PASS__");
+
         String encoding = ElementParameterParser.getValue(
             node,
             "__ENCODING__"
         );
+
+        String encodingType = ElementParameterParser.getValue(
+            node,
+            "__ENCODING_TYPE__"
+        );
+
+        String overrideNLS_LANG = "0";
+        if (ElementParameterParser.getValue(node, "__OVERRIDE_NLS_LANG__").equals("true")) {
+          overrideNLS_LANG = "1";
+        }
 
         String schemaDB = ElementParameterParser.getValue(
             node,
@@ -124,12 +135,11 @@ my %desc_<%=cid %> = (
         if (useExistingConnection.equals("false")) {
 %>
 
-if ($desc_<%=cid %>{encoding} =~ m/^utf-?8$/i) {
-    $ENV{NLS_LANG} = 'AMERICAN_AMERICA.AL32UTF8';
-}
-elsif ($desc_<%=cid %>{encoding} =~ m/^iso-?8859-?1$/i) {
-    $ENV{NLS_LANG} = 'AMERICAN_AMERICA.WE8ISO8859P1';
-}
+tOracleOutput::Oracle::manage_encoding(
+    override => <%=overrideNLS_LANG%>,
+    encoding_type => '<%=encodingType%>',
+    encoding => <%=encoding%>,
+);
 
 my $<%=dbh%> = DBI->connect(
     sprintf(
@@ -156,94 +166,14 @@ my $<%=dbh%> = DBI->connect(
         }
 %>
 
-my $sth_<%=cid %>;
-my $query;
-my $table_exists;
-
-<%
-        if (tableAction.equals("DROP_CREATE")
-            || tableAction.equals("CREATE_IF_NOT_EXISTS")) {
-%>
-# We need the table list to know if drop or "create if not exists" is
-# relevant
-my $tabsth = $<%=dbh%>->prepare(
-"
-select 1 
-from all_tables 
-where 
-owner = ?
-and table_name = ?
-"
+tOracleOutput::Oracle::performTableAction(
+    tableAction => '<%=tableAction%>',
+    dbh => $<%=dbh%>,
+    dbtable => <%=dbtable %>,
+    dbschema => $desc_<%=cid %>{schemadb},
+    component => <%=cid%>,
+    schema => $desc_<%=cid %>{schema}
 );
-$tabsth->execute(uc $desc_<%=cid %>{schemadb}, uc $desc_<%=cid %>{dbtable})
-    or die "can't execute query : $!";
-while (my $row = $tabsth->fetchrow_arrayref()) {
-    $table_exists = $row->[0];
-    last;
-}
-<%
-        }
-
-        if (tableAction.equals("DROP_CREATE")) {
-%>
-if ($table_exists) {
-    $query = '
-DROP TABLE '.<%=dbtable%>.'
-';
-    $sth_<%=cid %> = $<%=dbh%>->prepare($query);
-
-    $sth_<%=cid %>->execute()
-        or die "can't drop table : $!";
-
-    # the table does not exist anymore
-    $table_exists = 0;
-}
-<%
-        }
-
-        if (tableAction.equals("CREATE")
-            || tableAction.equals("DROP_CREATE")
-            || tableAction.equals("CREATE_IF_NOT_EXISTS")) {
-
-            if (tableAction.equals("CREATE_IF_NOT_EXISTS")) {
-%>
-if (not $table_exists) {
-<%
-            }
-%>
-# now we create the table
-$query = tOracleOutput::Oracle::getTableCreationQuery(
-    tablename  => $desc_<%=cid %>{dbtable},
-    schema     => $desc_<%=cid %>{schema},
-);
-
-$sth_<%=cid %> = $<%=dbh%>->prepare(
-    $query
-);
-
-$sth_<%=cid %>->execute()
-    or die "can't create table\n===\n$query\n===\n";
-<%
-            if (tableAction.equals("CREATE_IF_NOT_EXISTS")) {
-%>
-}
-<%
-            }
-        }
-
-        if (tableAction.equals("CLEAR")) {
-%>
-$query = '
-DELETE
-  FROM '.<%=dbtable%>.'
-';
-
-$sth_<%=cid %> = $<%=dbh%>->prepare($query);
-$sth_<%=cid %>->execute()
-    or die "can't clear table";
-<%
-        }
-%>
 
 my $query = '';
 
