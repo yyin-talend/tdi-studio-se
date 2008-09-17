@@ -19,6 +19,8 @@
 	
 	String inputConnName = null;
 	Set<String> inputCols = new HashSet<String>();
+ 
+ 	
 	if (node.getIncomingConnections()!=null) {
 		for (IConnection incomingConn : node.getIncomingConnections()) {
 			if (incomingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
@@ -31,7 +33,9 @@
 			}
 		}
 	}
-	
+%>	
+	StringBuffer sb_<%=cid %>=new StringBuffer();
+<%	
 	
 	for (IConnection conn : node.getOutgoingConnections()) {
 		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
@@ -39,12 +43,24 @@
 			if (outputMetadataTable!=null) {
 				for (IMetadataColumn outputCol : outputMetadataTable.getListColumns()) { 
 					if (inputCols.contains(outputCol.getLabel())) {
+					
 %>
 	<%=conn.getName() %>.<%=outputCol.getLabel() %> = <%=inputConnName %>.<%=outputCol.getLabel() %>;
+	if(<%=conn.getName() %>.<%=outputCol.getLabel() %>!=null)
+	{
+	sb_<%=cid %>.append(<%=conn.getName() %>.<%=outputCol.getLabel() %>);
+	}
+	
 <%
 					}
 				}
 			}
+%>
+    if(sb_<%=cid %>.length()>0){
+    nb_line_<%=cid %>++;
+     
+ }
+<%			
 		}
 	}
 %>
