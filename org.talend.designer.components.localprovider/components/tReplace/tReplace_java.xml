@@ -49,7 +49,7 @@
       FIELD="TABLE"
       REQUIRED="false"
       NUM_ROW="3"
-      NB_LINES="3"
+      NB_LINES="8"
       NOT_SHOW_IF="(SIMPLE_MODE=='false')"
     >
       <ITEMS>
@@ -60,15 +60,6 @@
         <ITEM NAME="CASE_SENSITIVE" FIELD="CHECK" VALUE="false" />
         <ITEM NAME="COMMENT" FIELD="String" />
       </ITEMS>
-    </PARAMETER>
-    
-    <PARAMETER
-      NAME="IGNORE_NULL_VALUE"
-      FIELD="CHECK"
-      REQUIRED="true"
-      NUM_ROW="10"
-    >
-      <DEFAULT>false</DEFAULT>
     </PARAMETER>
    </PARAMETERS>
    
@@ -87,7 +78,7 @@
       FIELD="TABLE"
       REQUIRED="false"
       NUM_ROW="5"
-      NB_LINES="3"
+      NB_LINES="8"
       NOT_SHOW_IF="(ADVANCED_MODE=='false')"
     >
       <ITEMS>
