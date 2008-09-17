@@ -27,36 +27,106 @@ String xmlfile = ElementParameterParser.getValue(node, "__XMLFILE__");
 
 javax.xml.validation.SchemaFactory factory<%=cid %> =javax.xml.validation.SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
 java.io.File schemaLocation<%=cid %> = new java.io.File(<%=xsdfile %>);
-String message<%=cid %> = "";
-int lineNumber<%=cid %>=0;
-String xsdErrorMessage_<%=cid%>="";
-int validate<%=cid %> = 0;
+String message_<%=cid %> =null;
+String ErrorMessage_<%=cid%>=null;
+int validate_<%=cid %> = 0;
+
+
+	class MyErrorHandler_<%=cid %> implements org.xml.sax.ErrorHandler
+	{
+	  String errorMessage=null;
+
+		public void warning(org.xml.sax.SAXParseException ex) throws org.xml.sax.SAXException
+		{
+			if (errorMessage== null)
+			{
+				errorMessage = "The " + String.valueOf(ex.getLineNumber()) + " line found an warning: " + ex.getMessage();
+			}
+			else
+			{
+
+				errorMessage = errorMessage + "\n" + "The " + String.valueOf(ex.getLineNumber()) + " line found an warning: " + ex.getMessage();
+			}
+		}
+
+		public void error(org.xml.sax.SAXParseException ex) throws org.xml.sax.SAXException
+		{
+			if (errorMessage== null)
+			{
+				errorMessage = "The " + String.valueOf(ex.getLineNumber()) + " line found an error: " + ex.getMessage();
+			}
+			else
+			{
+
+				errorMessage = errorMessage + "\n" + "The " + String.valueOf(ex.getLineNumber()) + " line found an error: " + ex.getMessage();
+			}
+				//throw ex;
+		}
+
+		public void fatalError(org.xml.sax.SAXParseException ex) throws org.xml.sax.SAXException
+		{
+
+			if (errorMessage == null)
+			{
+				errorMessage = "The " + String.valueOf(ex.getLineNumber()) + " line found an fatalError: " + ex.getMessage();
+			}
+			else
+			{
+
+				errorMessage =errorMessage + "\n" + "The " + String.valueOf(ex.getLineNumber()) + " line found an fatalError: " + ex.getMessage();
+			}
+			throw ex;
+
+		}
+		
+		private String returnMessage(){
+		   
+		   return errorMessage==null?"":errorMessage;
+		   }
+
+	}
+MyErrorHandler_<%=cid %> errorHandler_<%=cid %>=null;
+
 try {
 	javax.xml.validation.Schema schema<%=cid %> = factory<%=cid %>.newSchema(schemaLocation<%=cid %>);
 	javax.xml.validation.Validator validator<%=cid %> = schema<%=cid %>.newValidator();
 	java.io.File xmlfile<%=cid %> = new java.io.File(<%=xmlfile %>);
 	javax.xml.transform.Source source<%=cid %> = new javax.xml.transform.stream.StreamSource(xmlfile<%=cid %>);
-    validator<%=cid %>.validate(source<%=cid %>);
-  	message<%=cid %> = <%=validMessage%>;
-	validate<%=cid %> = 1;
-} catch (org.xml.sax.SAXParseException ex) {
-  
-	message<%=cid %> = <%=invalidMessage%>;
-	lineNumber<%=cid %>=ex.getLineNumber();
-	xsdErrorMessage_<%=cid%> = ex.getMessage();
-} 
+	  errorHandler_<%=cid %>=new MyErrorHandler_<%=cid %>();
+	  validator<%=cid %>.setErrorHandler(errorHandler_<%=cid %>);
+    	  
 
-globalMap.put("<%=cid %>_DIFFERENCE", "" + validate<%=cid %>);
-globalMap.put("<%=cid %>_ERROR_MESSAGE", "" + message<%=cid %>);
-globalMap.put("<%=cid %>_XSD_ERROR_MESSAGE", "" + xsdErrorMessage_<%=cid%>);
+    validator<%=cid %>.validate(source<%=cid %>);
+  	
+	  	
+} catch (org.xml.sax.SAXParseException ex) {
+   //do nothing.
+ 
+} 
+ErrorMessage_<%=cid%>=errorHandler_<%=cid %>.returnMessage();
+if(ErrorMessage_<%=cid%>.length()>0&&ErrorMessage_<%=cid%>!=null)
+{
+ message_<%=cid %> = <%=invalidMessage %>;
+}else
+{
+ message_<%=cid %> = <%=validMessage %>;
+ validate_<%=cid %> = 1;
+ ErrorMessage_<%=cid%>=null;
+}
+
+
+
+globalMap.put("<%=cid %>_DIFFERENCE", "" + validate_<%=cid %>);
+globalMap.put("<%=cid %>_ERROR_MESSAGE", "" + message_<%=cid %>);
+globalMap.put("<%=cid %>_XSD_ERROR_MESSAGE", "" + ErrorMessage_<%=cid%>);
 
 <%
 if (print) {
 %>
-    System.out.println(message<%=cid %>);
-    if(validate<%=cid %>==0)
+    System.out.println(message_<%=cid %>);
+    if(validate_<%=cid %>==0)
     {
-    System.err.println("The "+String.valueOf(lineNumber<%=cid %>)+" line found an error: "+xsdErrorMessage_<%=cid%>);
+    System.err.println(ErrorMessage_<%=cid%>);
     }
 <%
 }
@@ -69,8 +139,8 @@ for (IConnection conn : node.getOutgoingConnections()) {
     	<%=conn.getName() %>.moment = java.util.Calendar.getInstance().getTime();
     	<%=conn.getName() %>.job = jobName;
 		<%=conn.getName() %>.component = currentComponent;
-		<%=conn.getName() %>.validate = validate<%=cid %>;
-		<%=conn.getName() %>.message = message<%=cid %>;
+		<%=conn.getName() %>.validate = validate_<%=cid %>;
+		<%=conn.getName() %>.message = message_<%=cid %>;
 <%
 	}
 }
