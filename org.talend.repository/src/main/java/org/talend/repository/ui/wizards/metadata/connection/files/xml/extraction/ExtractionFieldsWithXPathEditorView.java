@@ -294,19 +294,11 @@ public class ExtractionFieldsWithXPathEditorView extends AbstractDataTableEditor
                 names.add(name);
             }
         }
+        setRowBackground(list, conflictNames);
 
         if (conflictNames.isEmpty()) {
             return null;
         } else {
-            // set background
-            getTable().setRedraw(false);
-            for (int i = 0; i < lstSize; i++) {
-                String name = list.get(i).getTagName();
-                if (conflictNames.contains(name)) {
-                    getTable().getItem(i).setBackground(Display.getDefault().getSystemColor(SWT.COLOR_RED));
-                }
-            }
-            getTable().setRedraw(true);
 
             // create error message
             StringBuffer buf = new StringBuffer();
@@ -319,6 +311,27 @@ public class ExtractionFieldsWithXPathEditorView extends AbstractDataTableEditor
             buf.append(" already exists.");
             return buf.toString();
         }
+    }
+
+    /**
+     * DOC hcw Comment method "setRowBackground".
+     * 
+     * @param list
+     * @param conflictNames
+     */
+    private void setRowBackground(List<SchemaTarget> list, Set<String> conflictNames) {
+        // set background
+        getTable().setRedraw(false);
+        for (int i = 0; i < list.size(); i++) {
+            String name = list.get(i).getTagName();
+            if (conflictNames.contains(name)) {
+                getTable().getItem(i).setBackground(Display.getDefault().getSystemColor(SWT.COLOR_RED));
+            } else {
+                getTable().getItem(i).setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WHITE));
+            }
+        }
+
+        getTable().setRedraw(true);
     }
 
     public XmlExtractorFieldModel getModel() {
