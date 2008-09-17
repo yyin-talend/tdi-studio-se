@@ -36,6 +36,9 @@ if (connection.startsWith("tMysqlConnection")) {
 else if (connection.startsWith("tPostgresqlConnection")) {
     dbtype = "postgresql";
 }
+else if (connection.startsWith("tOracleConnection")) {
+    dbtype = "oracle";
+}
 
 String perlPackage = null;
 if (dbtype.equals("mysql")) {
@@ -43,6 +46,9 @@ if (dbtype.equals("mysql")) {
 }
 else if (dbtype.equals("postgresql")) {
     perlPackage = "tPostgresqlOutput::Postgresql";
+}
+else if (dbtype.equals("oracle")) {
+    perlPackage = "tOracleOutput::Oracle";
 }
 
 String dbh = "dbh_" + connection;
@@ -91,7 +97,7 @@ $_globals{<%=cid%>}{QUERY} = <%=perlPackage%>::performTableAction(
     dbh => $<%=dbh%>,
     dbtable => <%=dbtable %>,
     component => <%=cid%>,
-    schema => $desc_<%=cid %>{schema}
+    schema => $desc_<%=cid %>{schema},
 <%
     if (!dbschema.equals("")) {
 %>

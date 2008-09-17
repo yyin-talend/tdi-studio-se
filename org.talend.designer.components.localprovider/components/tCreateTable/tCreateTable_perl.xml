@@ -39,7 +39,7 @@
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
-      FILTER="REGEXP:^t(Mysql|Postgresql)*Connection$"
+      FILTER="REGEXP:^t(Mysql|Postgresql|Oracle)*Connection$"
       NUM_ROW="20"
     />
 
@@ -106,6 +106,12 @@
       <IMPORT
         NAME="PostgresqlOutput"
         MODULE="tPostgresqlOutput::Postgresql"
+        REQUIRED="true"
+      />
+
+      <IMPORT
+        NAME="OracleOutput"
+        MODULE="tOracleOutput::Oracle"
         REQUIRED="true"
       />
     </IMPORTS>
