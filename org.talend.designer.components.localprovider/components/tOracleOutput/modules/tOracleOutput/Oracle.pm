@@ -203,6 +203,14 @@ select 1
             );
     }
 
+    if ($param{tableAction} eq "TRUNCATE") {
+        $param{dbh}->do('TRUNCATE TABLE '.$param{dbtable})
+            or die sprintf(
+                "[%s] cannot truncate table",
+                $param{component}
+            );
+    }
+
     return $query;
 }
 
