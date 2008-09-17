@@ -12,6 +12,10 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.palette;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.eclipse.gef.EditDomain;
 import org.eclipse.gef.ui.palette.PaletteViewer;
 import org.eclipse.gef.ui.parts.PaletteViewerKeyHandler;
@@ -38,6 +42,12 @@ public class TalendPaletteViewer extends PaletteViewer {
 
     private static final String SEARCH_COMPONENT = "search component...";
 
+    private static List<Text> filters = new ArrayList<Text>();
+
+    private static Text setTextOnly;
+
+    private static String currentFilterText;
+
     public TalendPaletteViewer(EditDomain graphicalViewerDomain) {
         setEditDomain(graphicalViewerDomain);
         setKeyHandler(new PaletteViewerKeyHandler(this));
@@ -52,6 +62,7 @@ public class TalendPaletteViewer extends PaletteViewer {
     @Override
     public Control creatToolControl(Composite parent) {
         Text text = new Text(parent, SWT.BORDER);
+        filters.add(text);
         initFilterTextControl(text);
         return text;
     }
@@ -62,7 +73,12 @@ public class TalendPaletteViewer extends PaletteViewer {
      * @param control
      */
     private void initFilterTextControl(Text filterText) {
-        filterText.setText(SEARCH_COMPONENT);
+        if (currentFilterText != null) {
+            filterText.setText(currentFilterText);
+        } else {
+            filterText.setText(SEARCH_COMPONENT);
+        }
+
         filterText.setToolTipText(TOOL_TIP);
         configListeners(filterText);
 
@@ -108,13 +124,34 @@ public class TalendPaletteViewer extends PaletteViewer {
         text.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
-                String filter = text.getText();
-                if (!filter.equals(SEARCH_COMPONENT)) {
-                    ComponentUtilities.filterPalette(filter.trim());
+                if (setTextOnly == text) {
+                    return;
                 }
+
+                List<Text> disposed = new ArrayList<Text>();
+                for (Text otherText : filters) {
+
+                    if (text == otherText) {
+                        continue;
+                    }
+
+                    if (otherText.isDisposed()) {
+                        disposed.add(otherText);
+                        continue;
+                    }
+                    setTextOnly = otherText;
+                    otherText.setText(text.getText());
+                    setTextOnly = null;
+                }
+
+                currentFilterText = text.getText();
+                if (!currentFilterText.equals(SEARCH_COMPONENT)) {
+                    ComponentUtilities.filterPalette(currentFilterText.trim());
+                }
+
+                filters.removeAll(disposed);
             }
 
         });
     }
-
 }
