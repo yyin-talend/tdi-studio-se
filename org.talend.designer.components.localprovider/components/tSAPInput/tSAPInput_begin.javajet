@@ -301,7 +301,7 @@ String iterate_out_tablename = ElementParameterParser.getValue(node, "__SAP_ITER
         	if(!iterate_out_tablename.equals(key)) {continue;} //only iterate one table
         	startIterate = true;
 %>          
-		com.sap.mw.jco.JCO.Structure output_structure_structure_<%=cid %> = importParameterList_<%=cid %>.getStructure(<%=key %>);
+		com.sap.mw.jco.JCO.Structure output_structure_structure_<%=cid %> = exportParameterList_<%=cid %>.getStructure(<%=key %>);
 		{//block
 <%          List<SchemaUtil.SAPSchema> oneTableNamelist = output_structure_map.get(key);
             for (SchemaUtil.SAPSchema schema : oneTableNamelist) {
@@ -322,7 +322,7 @@ String iterate_out_tablename = ElementParameterParser.getValue(node, "__SAP_ITER
         	if(!iterate_out_tablename.equals(key)) {continue;} //only iterate one table
         	startIterate = true;
 %>          
-		com.sap.mw.jco.JCO.Table output_table_table_<%=cid %> = importParameterList_<%=cid %>.getTable(<%=key %>);
+		com.sap.mw.jco.JCO.Table output_table_table_<%=cid %> = exportParameterList_<%=cid %>.getTable(<%=key %>);
         output_table_table_<%=cid %>.firstRow();
         for (int irow_<%=cid %> = 0; irow_<%=cid %> < output_table_table_<%=cid %>.getNumRows(); irow_<%=cid %>++) {
 <%          List<SchemaUtil.SAPSchema> oneTableNamelist = output_table_map.get(key);
