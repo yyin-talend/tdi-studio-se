@@ -19,6 +19,11 @@
 	boolean startTLS = ElementParameterParser.getValue(node, "__STARTTLS__").equals("true");
 	boolean checkAttachementOnSend = ElementParameterParser.getValue(node, "__CHECK_ATTACHMENT__").equals("true");
 %>
+<%
+ 
+    message=message.replaceAll("\r\n","\\\\n");
+    
+%> 
 	 String message_<%=cid %> = ((<%=message %>)==null || "".equals(<%=message %>))?"\"\"":(<%=message %>) ;
 	 java.util.Properties props_<%=cid %> = System.getProperties();     
      props_<%=cid %>.put("mail.smtp.host", smtpHost_<%=cid %>);
