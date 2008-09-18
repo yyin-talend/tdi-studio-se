@@ -33,6 +33,7 @@ import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.model.QueryEMFRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.SAPFunctionRepositoryObject;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.views.IRepositoryView;
@@ -144,6 +145,10 @@ public class RepositoryDoubleClickAction extends Action {
             } else if (nodeType != null && nodeType.equals(ERepositoryObjectType.METADATA_CON_CDC)) {
                 return null; // for cdc system table
                 // end
+            } else if (nodeType != null && nodeType.equals(ERepositoryObjectType.METADATA_SAP_FUNCTION)) {
+                if (current.getClassForDoubleClick().equals(SAPFunctionRepositoryObject.class)) {
+                    return current;
+                }
             } else if (obj.getObject() != null
                     && current.getClassForDoubleClick().isInstance(obj.getObject().getProperty().getItem())) {
                 if (obj.getObject().getProperty().getItem() instanceof JobletProcessItem) {
