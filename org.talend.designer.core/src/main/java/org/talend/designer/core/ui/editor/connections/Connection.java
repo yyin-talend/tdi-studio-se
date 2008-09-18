@@ -50,9 +50,9 @@ public class Connection extends Element implements IConnection, IPerformance {
     public static final String LINESTYLE_PROP = "LineStyle"; //$NON-NLS-1$
 
     public static final String MONITOR_CONNECTION = "MONITOR_CONNECTION";
-    
+
     public static final String ENABLE_PARALLEL = "ENABLE_PARALLEL";
-    
+
     public static final String NUMBER_PARALLEL = "NUMBER_PARALLEL";
 
     private EConnectionType lineStyle = EConnectionType.FLOW_MAIN;
@@ -543,7 +543,7 @@ public class Connection extends Element implements IConnection, IPerformance {
             } else if (isInTypes(lineStyle, EConnectionType.ON_COMPONENT_OK, EConnectionType.ON_COMPONENT_ERROR,
                     EConnectionType.ON_SUBJOB_OK, EConnectionType.ON_SUBJOB_ERROR, EConnectionType.RUN_IF)) {
                 // see 3443, these links should have unique name
-                if (uniqueName.equals(lineStyle.getDefaultLinkName())) {
+                if (uniqueName == null || uniqueName.equals(lineStyle.getDefaultLinkName())) {
                     uniqueName = source.getProcess().generateUniqueConnectionName(lineStyle.getDefaultLinkName());
                 }
             }

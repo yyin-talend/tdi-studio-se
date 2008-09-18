@@ -459,6 +459,9 @@ public class NodesPasteCommand extends Command {
                                     baseName = value;
                                 }
                             }
+                            if (process.checkValidConnectionName(connection.getName(), true)) {
+                                baseName = null; // keep the name, bug 5086
+                            }
                             newConnectionName = createNewConnectionName(connection.getName(), baseName);
                         } else {
                             newConnectionName = newNameBuiltIn;
