@@ -18,7 +18,7 @@ import java.util.List;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
 import org.talend.commons.utils.image.ColorUtils;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
@@ -296,16 +296,16 @@ public class SubjobContainer extends Element implements ISubjobContainer {
         } else {
             getElementParameter(EParameterName.SHOW_SUBJOB_TITLE.getName()).setShow(true);
         }
-        setSubjobPropertyColor(EParameterName.SUBJOB_COLOR.getName(), node, DesignerColorUtils.getPreferenceSubjobColor(
+        setSubjobPropertyColor(EParameterName.SUBJOB_COLOR.getName(), node, DesignerColorUtils.getPreferenceSubjobRGB(
                 DesignerColorUtils.SUBJOB_COLOR_NAME, DesignerColorUtils.SUBJOB_COLOR));
-        setSubjobPropertyColor(EParameterName.SUBJOB_TITLE_COLOR.getName(), node, DesignerColorUtils.getPreferenceSubjobColor(
+        setSubjobPropertyColor(EParameterName.SUBJOB_TITLE_COLOR.getName(), node, DesignerColorUtils.getPreferenceSubjobRGB(
                 DesignerColorUtils.SUBJOB_TITLE_COLOR_NAME, DesignerColorUtils.SUBJOB_TITLE_COLOR));
 
     }
 
-    private void setSubjobPropertyColor(String propertyName, Node node, Color defaultColor) {
-        Color colorValue = ColorUtils.parseStringToColor((String) node.getPropertyValue(propertyName), defaultColor);
-        setPropertyValue(propertyName, ColorUtils.getColorValue(colorValue));
+    private void setSubjobPropertyColor(String propertyName, Node node, RGB defaultColor) {
+        RGB rgbValue = ColorUtils.parseStringToRGB((String) node.getPropertyValue(propertyName), defaultColor);
+        setPropertyValue(propertyName, ColorUtils.getRGBValue(rgbValue));
     }
 
     public void updateSubjobContainer() {

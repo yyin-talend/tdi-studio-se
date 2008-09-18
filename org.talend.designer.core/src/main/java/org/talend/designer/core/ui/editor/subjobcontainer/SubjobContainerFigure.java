@@ -22,6 +22,8 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Display;
 import org.talend.commons.utils.image.ColorUtils;
 import org.talend.commons.utils.workbench.gef.SimpleHtmlFigure;
 import org.talend.core.model.process.IElementParameter;
@@ -47,13 +49,13 @@ public class SubjobContainerFigure extends Figure {
 
     private SubjobCollapseFigure collapseFigure;
 
-    private Color mainColor;
+    private RGB mainColor;
 
     private boolean showTitle;
 
     private String title;
 
-    private Color subjobTitleColor;
+    private RGB subjobTitleColor;
 
     /**
      * DOC nrousseau SubjobContainerFigure constructor comment.
@@ -100,15 +102,15 @@ public class SubjobContainerFigure extends Figure {
                 || subjobContainer.getSubjobStartNode().getComponent().getName().equals("tPostjob")) {
             // titleColor = ColorUtils.SPECIAL_SUBJOB_TITLE_COLOR;
         }
-        Color defaultSubjobColor = DesignerColorUtils.getPreferenceSubjobColor(DesignerColorUtils.SUBJOB_TITLE_COLOR_NAME,
+        RGB defaultSubjobColor = DesignerColorUtils.getPreferenceSubjobRGB(DesignerColorUtils.SUBJOB_TITLE_COLOR_NAME,
                 DesignerColorUtils.SUBJOB_TITLE_COLOR);
         if (colorParameter.getValue() == null) {
             subjobTitleColor = defaultSubjobColor;
-            String colorValue = ColorUtils.getColorValue(subjobTitleColor);
+            String colorValue = ColorUtils.getRGBValue(subjobTitleColor);
             colorParameter.setValue(colorValue);
         } else {
             String strRgb = (String) colorParameter.getValue();
-            subjobTitleColor = ColorUtils.parseStringToColor(strRgb, defaultSubjobColor);
+            subjobTitleColor = ColorUtils.parseStringToRGB(strRgb, defaultSubjobColor);
         }
     }
 
@@ -150,8 +152,8 @@ public class SubjobContainerFigure extends Figure {
 
         outlineFigure.setLocation(location);
         outlineFigure.setVisible(showTitle);
-        outlineFigure.setBackgroundColor(subjobTitleColor);
-        outlineFigure.setForegroundColor(subjobTitleColor);
+        outlineFigure.setBackgroundColor(new Color(Display.getDefault(), subjobTitleColor));
+        outlineFigure.setForegroundColor(new Color(Display.getDefault(), subjobTitleColor));
         outlineFigure.setSize(rectangle.width, preferedSize.height);
 
         collapseFigure.setLocation(new Point(rectangle.width - preferedSize.height + location.x, location.y));
@@ -160,8 +162,8 @@ public class SubjobContainerFigure extends Figure {
 
         rectFig.setLocation(new Point(location.x, /* preferedSize.height + */location.y));
         rectFig.setSize(new Dimension(rectangle.width, rectangle.height /*- preferedSize.height*/));
-        rectFig.setBackgroundColor(mainColor);
-        rectFig.setForegroundColor(subjobTitleColor);
+        rectFig.setBackgroundColor(new Color(Display.getDefault(), mainColor));
+        rectFig.setForegroundColor(new Color(Display.getDefault(), subjobTitleColor));
     }
 
     /**
@@ -170,7 +172,7 @@ public class SubjobContainerFigure extends Figure {
     public void updateSubJobTitleColor() {
         String rgb = (String) subjobContainer.getPropertyValue(EParameterName.SUBJOB_TITLE_COLOR.getName());
         if (rgb != null && !"".equals(rgb)) {
-            subjobTitleColor = ColorUtils.parseStringToColor(rgb);
+            subjobTitleColor = ColorUtils.parseStringToRGB(rgb);
         } else {
             initSubJobTitleColor();
         }
@@ -197,16 +199,16 @@ public class SubjobContainerFigure extends Figure {
         String propertyValue = (String) subjobContainer.getPropertyValue(EParameterName.SUBJOB_TITLE_COLOR.getName());
         if (propertyValue == null || "".equals(propertyValue)) {
             subjobContainer.setPropertyValue(EParameterName.SUBJOB_TITLE_COLOR.getName(), DesignerColorUtils
-                    .getPreferenceSubjobColor(DesignerColorUtils.SUBJOB_TITLE_COLOR_NAME, DesignerColorUtils.SUBJOB_TITLE_COLOR));
+                    .getPreferenceSubjobRGB(DesignerColorUtils.SUBJOB_TITLE_COLOR_NAME, DesignerColorUtils.SUBJOB_TITLE_COLOR));
         }
         //
         propertyValue = (String) subjobContainer.getPropertyValue(EParameterName.SUBJOB_COLOR.getName());
         if (propertyValue == null || "".equals(propertyValue)) {
-            subjobContainer.setPropertyValue(EParameterName.SUBJOB_COLOR.getName(), DesignerColorUtils.getPreferenceSubjobColor(
+            subjobContainer.setPropertyValue(EParameterName.SUBJOB_COLOR.getName(), DesignerColorUtils.getPreferenceSubjobRGB(
                     DesignerColorUtils.SUBJOB_COLOR_NAME, DesignerColorUtils.SUBJOB_COLOR));
         }
 
-        mainColor = ColorUtils.parseStringToColor(propertyValue, DesignerColorUtils.SUBJOB_COLOR);
+        mainColor = ColorUtils.parseStringToRGB(propertyValue, DesignerColorUtils.SUBJOB_COLOR);
 
         this.getChildren().remove(outlineFigure);
         this.getChildren().remove(rectFig);

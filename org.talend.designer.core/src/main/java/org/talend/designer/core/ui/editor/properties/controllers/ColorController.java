@@ -77,13 +77,13 @@ public class ColorController extends AbstractElementPropertySectionController {
             String paramName = (String) ctrl.getData(PARAMETER_NAME);
             if (paramName != null) {
                 ColorDialog colorDialog = new ColorDialog(ctrl.getShell());
-                colorDialog.setRGB(ColorUtils.parserStringToRGB((String) elem.getPropertyValue(paramName)));
+                colorDialog.setRGB(ColorUtils.parseStringToRGB((String) elem.getPropertyValue(paramName)));
                 RGB rgb = colorDialog.open();
 
                 if (rgb != null) {
                     setButtonColor((Button) ctrl, rgb);
                     Command cmd;
-                    cmd = new PropertyChangeCommand(elem, paramName, ColorUtils.getColorValue(rgb));
+                    cmd = new PropertyChangeCommand(elem, paramName, ColorUtils.getRGBValue(rgb));
                     return cmd;
                 }
             }
@@ -215,7 +215,7 @@ public class ColorController extends AbstractElementPropertySectionController {
             return;
         }
         if (value != null) {
-            setButtonColor(colorBtn, ColorUtils.parserStringToRGB((String) value));
+            setButtonColor(colorBtn, ColorUtils.parseStringToRGB((String) value));
         }
     }
 

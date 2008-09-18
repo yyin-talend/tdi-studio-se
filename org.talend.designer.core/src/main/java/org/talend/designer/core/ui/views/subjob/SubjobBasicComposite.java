@@ -14,7 +14,7 @@ package org.talend.designer.core.ui.views.subjob;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
-import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.commons.utils.image.ColorUtils;
 import org.talend.core.model.process.EComponentCategory;
@@ -110,13 +110,12 @@ public class SubjobBasicComposite extends AbstractPreferenceComposite {
     protected void onReloadPreference() {
         if (getElement() != null) {
             String colorStr = getPreferenceColor();
-            Color subjobColor = ColorUtils.parseStringToColor(colorStr, DesignerColorUtils.SUBJOB_COLOR);
-            getElement().setPropertyValue(EParameterName.SUBJOB_COLOR.getName(), ColorUtils.getColorValue(subjobColor));
+            RGB subjobColor = ColorUtils.parseStringToRGB(colorStr, DesignerColorUtils.SUBJOB_COLOR);
+            getElement().setPropertyValue(EParameterName.SUBJOB_COLOR.getName(), ColorUtils.getRGBValue(subjobColor));
 
             colorStr = getPreferenceTitleColor();
-            Color subjobTitleColor = ColorUtils.parseStringToColor(colorStr, DesignerColorUtils.SUBJOB_TITLE_COLOR);
-            getElement()
-                    .setPropertyValue(EParameterName.SUBJOB_TITLE_COLOR.getName(), ColorUtils.getColorValue(subjobTitleColor));
+            RGB subjobTitleColor = ColorUtils.parseStringToRGB(colorStr, DesignerColorUtils.SUBJOB_TITLE_COLOR);
+            getElement().setPropertyValue(EParameterName.SUBJOB_TITLE_COLOR.getName(), ColorUtils.getRGBValue(subjobTitleColor));
 
         }
     }
@@ -124,11 +123,11 @@ public class SubjobBasicComposite extends AbstractPreferenceComposite {
     @Override
     protected void onSavePreference() {
         if (getElement() != null) {
-            Color subjobColor = ColorUtils.parseStringToColor(getPropertyColor(), DesignerColorUtils.SUBJOB_COLOR);
-            PreferenceConverter.setValue(PREFERENCE_STORE, DesignerColorUtils.SUBJOB_COLOR_NAME, subjobColor.getRGB());
+            RGB subjobColor = ColorUtils.parseStringToRGB(getPropertyColor(), DesignerColorUtils.SUBJOB_COLOR);
+            PreferenceConverter.setValue(PREFERENCE_STORE, DesignerColorUtils.SUBJOB_COLOR_NAME, subjobColor);
 
-            subjobColor = ColorUtils.parseStringToColor(getPropertyTitleColor(), DesignerColorUtils.SUBJOB_TITLE_COLOR);
-            PreferenceConverter.setValue(PREFERENCE_STORE, DesignerColorUtils.SUBJOB_TITLE_COLOR_NAME, subjobColor.getRGB());
+            subjobColor = ColorUtils.parseStringToRGB(getPropertyTitleColor(), DesignerColorUtils.SUBJOB_TITLE_COLOR);
+            PreferenceConverter.setValue(PREFERENCE_STORE, DesignerColorUtils.SUBJOB_TITLE_COLOR_NAME, subjobColor);
         }
     }
 
