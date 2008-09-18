@@ -31,4 +31,14 @@ public class LabelTextCenterFigure extends Label {
         return textLocation;
     }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.draw2d.Label#getSubStringText()
+     */
+    @Override
+    public String getSubStringText() {
+        return getText();
+    }
+    
+    
+
 }

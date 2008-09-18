@@ -37,6 +37,7 @@ import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.system.EnvironmentUtils;
 import org.talend.core.CorePlugin;
+import org.talend.core.PluginChecker;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
@@ -863,8 +864,11 @@ public class EmfComponent implements IComponent {
         param.setShow(false);
         listParam.add(param);
 
-        if(compType.getHEADER().isPARALLELIZE()){
+        //These parameters is only work when TIS is loaded
+        if(PluginChecker.isTIS()){
+            boolean defaultParalelize = new Boolean(compType.getHEADER().isPARALLELIZE());
             param = new ElementParameter(node);
+            param.setReadOnly(!defaultParalelize);
             param.setName(EParameterName.PARALLELIZE.getName());
             param.setValue(compType.getHEADER().isPARALLELIZE());
             param.setDisplayName(EParameterName.PARALLELIZE.getDisplayName());
@@ -875,13 +879,14 @@ public class EmfComponent implements IComponent {
             listParam.add(param);
 
             param = new ElementParameter(node);
+            param.setReadOnly(!defaultParalelize);
             param.setName(EParameterName.PARALLILIZE_NUMBER.getName());
             param.setValue(compType.getHEADER().getNUMBERPARALLELIZE());
             param.setDisplayName(EParameterName.PARALLILIZE_NUMBER.getDisplayName());
             param.setField(EParameterFieldType.TEXT);
             param.setCategory(EComponentCategory.ADVANCED);
             param.setNumRow(100);
-            param.setShow(true);
+            param.setShowIf(EParameterName.PARALLELIZE.getName() + " == 'true'");
             listParam.add(param);
         }
         

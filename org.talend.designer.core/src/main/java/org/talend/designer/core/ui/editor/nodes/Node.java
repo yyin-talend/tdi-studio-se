@@ -1874,6 +1874,7 @@ public class Node extends Element implements INode {
             checkLinks();
             checkModules();
             checkStartLinks();
+            checkParallelizeStates();
 
             if (externalNode != null) {
                 List<Problem> problems = externalNode.getProblems();
@@ -1883,6 +1884,26 @@ public class Node extends Element implements INode {
                         Problems.add(current);
                     }
                 }
+            }
+        }
+    }
+
+    /**
+     * DOC xye Comment method "checkParallelizeStates".
+     */
+    private void checkParallelizeStates() {
+        //see feature 5027
+        Boolean parallelEnable = false;
+        IElementParameter enableParallelizeParameter = getElementParameter(EParameterName.PARALLELIZE.getName());
+        if(enableParallelizeParameter == null){
+            return;
+        }else{
+            parallelEnable = (Boolean) enableParallelizeParameter.getValue();
+            if (parallelEnable) {
+                removeStatus(Process.PARALLEL_STATUS);
+                addStatus(Process.PARALLEL_STATUS);
+            } else {
+                removeStatus(Process.PARALLEL_STATUS);
             }
         }
     }

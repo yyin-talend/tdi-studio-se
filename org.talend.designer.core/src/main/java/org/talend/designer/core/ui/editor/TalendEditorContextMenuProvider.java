@@ -27,6 +27,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.actions.ActionFactory;
+import org.talend.core.PluginChecker;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.designer.core.i18n.Messages;
@@ -245,12 +246,6 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
                 subMenu.add(action);
             }
 
-            action = new ConnectionCreateAction(part, EConnectionType.PARALLELIZE);
-            ((ConnectionCreateAction) action).update();
-            if (action.isEnabled()) {
-                subMenu.add(action);
-            }
-
             subMenu.add(new Separator());
 
             action = new ConnectionCreateAction(part, EConnectionType.RUN_IF);
@@ -286,11 +281,14 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
                 menu.appendToGroup(GROUP_OTHER, action);
             }
             
+            //see feature 5027
             action = new ParallelExecutionAction(part);
             ((SelectionAction) action).update();
-            if (action.isEnabled()) {
+            if(PluginChecker.isTIS()){
                 menu.appendToGroup(GROUP_OTHER, action);
             }
+
+
 
             action = new OpenJobHierarchyAction(part);
             ((SelectionAction) action).update();

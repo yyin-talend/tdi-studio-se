@@ -14,6 +14,7 @@ package org.talend.designer.core.ui.action;
 
 import java.util.List;
 
+import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -28,13 +29,12 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPart;
 import org.talend.commons.ui.swt.formtools.LabelledText;
-import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
-import org.talend.designer.core.ui.editor.process.Process;
 
 /**
  * 
@@ -46,7 +46,7 @@ public class ParallelExecutionAction extends SelectionAction {
 
     private static final String TEXT_PARALLEL = Messages.getString("ParallelExecutionCommand.Parallel");
 
-    private boolean parallelEnable;
+    private boolean parallelEnable; 
 
     private String numberParallel = "0";
 
@@ -70,7 +70,6 @@ public class ParallelExecutionAction extends SelectionAction {
         }
 
         Object o = parts.get(0);
-
         if (o instanceof NodePart) {
             NodePart nodePart = (NodePart) o;
             node = (Node) nodePart.getModel();
@@ -78,11 +77,6 @@ public class ParallelExecutionAction extends SelectionAction {
             if (enableParallelizeParameter != null) {
                 parallelEnable = (Boolean) enableParallelizeParameter.getValue();
             }
-            IElementParameter numberParallelizeParameter = node.getElementParameter(EParameterName.PARALLILIZE_NUMBER.getName());
-            if (numberParallelizeParameter != null) {
-                numberParallel = (String) numberParallelizeParameter.getValue();
-            }
-
             return parallelEnable;
         }
         return false;
@@ -95,21 +89,20 @@ public class ParallelExecutionAction extends SelectionAction {
      */
     @Override
     public void run() {
+        
+        IElementParameter enableParallelizeParameter = node.getElementParameter(EParameterName.PARALLELIZE.getName());
+        if (enableParallelizeParameter != null) {
+            parallelEnable = (Boolean) enableParallelizeParameter.getValue();
+        }
+        IElementParameter numberParallelizeParameter = node.getElementParameter(EParameterName.PARALLILIZE_NUMBER.getName());
+        if (numberParallelizeParameter != null) {
+            numberParallel = (String) numberParallelizeParameter.getValue();
+        }
+        
         Dialog dialog = new ParallelDialog(getWorkbenchPart().getSite().getShell());
         if (dialog.open() == Dialog.OK) {
-            updateNodeLabel();
-        }
-    }
-
-    /**
-     * DOC YeXiaowei Comment method "updateNodeLabel".
-     */
-    private void updateNodeLabel() {
-        if (parallelEnable) {
-            node.removeStatus(Process.PARALLEL_STATUS);
-            node.addStatus(Process.PARALLEL_STATUS);
-        } else {
-            node.removeStatus(Process.PARALLEL_STATUS);
+            Command command = new PropertyChangeCommand(node, EParameterName.PARALLELIZE.getName(), parallelEnable);
+            execute(command);
         }
     }
 
@@ -219,5 +212,4 @@ public class ParallelExecutionAction extends SelectionAction {
         }
 
     }
-
 }
