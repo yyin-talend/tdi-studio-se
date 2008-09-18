@@ -395,6 +395,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     }
                 }
             }
+
             if (propertyParam != null) {
                 // command used to set property type
                 ChangeValuesFromRepository command1 = new ChangeValuesFromRepository(node, connectionItem.getConnection(),
