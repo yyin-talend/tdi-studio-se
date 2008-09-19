@@ -30,6 +30,8 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
+import org.talend.core.model.process.IContextManager;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.designer.rowgenerator.RowGeneratorComponent;
@@ -38,6 +40,7 @@ import org.talend.designer.rowgenerator.data.FunctionManagerExt;
 import org.talend.designer.rowgenerator.i18n.Messages;
 import org.talend.designer.rowgenerator.ui.editor.MetadataColumnExt;
 import org.talend.designer.runprocess.IProcessor;
+import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 
 /**
@@ -66,17 +69,23 @@ public class RowGenPreviewCodeMain {
 
     private String number;
 
+    private IContextManager jobContextManager;
+
     /**
      * qzhang RowGenPreivewCodeMain constructor comment.
      */
     public RowGenPreviewCodeMain(RowGeneratorComponent component) {
         this.component = component;
         results = new ArrayList<List<String>>();
+        // initPerlArray();
     }
 
     private void getProcess() {
         initPerlArray();
         this.component.setNumber(number);
+        if (component.getProcess() instanceof IProcess2) { // get current job context manager.
+            jobContextManager = component.getProcess().getContextManager();
+        }
         Property property = PropertiesFactory.eINSTANCE.createProperty();
         property.setLabel(PREVIEW + "_RowGenerator2"); //$NON-NLS-1$
         property.setId(PREVIEW + "_RowGenerator2"); //$NON-NLS-1$
@@ -104,9 +113,13 @@ public class RowGenPreviewCodeMain {
      */
     public Process runPreviewCode() {
         getProcess();
-        proc.getContextManager().setListContext(component.getProcess().getContextManager().getListContext());
-        proc.getContextManager().setDefaultContext(component.getProcess().getContextManager().getDefaultContext());
-
+        if (jobContextManager == null) {
+            // proc.getContextManager().setListContext(component.getProcess().getContextManager().getListContext());
+            proc.getContextManager().setDefaultContext(component.getProcess().getContextManager().getDefaultContext());
+        } else {
+            // proc.getContextManager().setListContext(jobContextManager.getListContext());
+            proc.getContextManager().setDefaultContext(jobContextManager.getDefaultContext());
+        }
         // IContext context2 = new org.talend.core.model.context.JobContext(PREVIEW);
         // if (UIManager.isJavaProject()) {
         // List<IContextParameter> params = new ArrayList<IContextParameter>();
@@ -118,6 +131,16 @@ public class RowGenPreviewCodeMain {
         // params.add(contextParameter);
         // context2.setContextParameterList(params);
         // }
+
+        // generate context files.
+        IProcessor contextProcessor = ProcessorUtilities.getProcessor(proc);
+        contextProcessor.setContext(proc.getContextManager().getDefaultContext());
+        try {
+            contextProcessor.generateContextCode();
+        } catch (ProcessorException pe) {
+            ExceptionHandler.process(pe);
+        }
+
         IProcessor processor = ProcessorUtilities.getProcessor(proc, proc.getContextManager().getDefaultContext());
         try {
             return processor.run(IProcessor.NO_STATISTICS, IProcessor.NO_TRACES, null);
@@ -135,8 +158,7 @@ public class RowGenPreviewCodeMain {
             progressService.runInUI(PlatformUI.getWorkbench().getProgressService(), new IRunnableWithProgress() {
 
                 public void run(final IProgressMonitor monitor) {
-                    monitor.beginTask(
-                            Messages.getString("RowGenPreivewCodeMain.Process.Generate"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
+                    monitor.beginTask(Messages.getString("RowGenPreivewCodeMain.Process.Generate"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
                     try {
                         try {
                             process = runPreviewCode();

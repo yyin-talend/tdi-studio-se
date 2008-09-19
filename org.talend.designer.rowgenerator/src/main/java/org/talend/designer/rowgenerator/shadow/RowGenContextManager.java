@@ -30,10 +30,13 @@ import org.talend.core.model.process.IContextParameter;
  */
 public class RowGenContextManager implements IContextManager, Cloneable {
 
+    private IContext defaultContext = new EmptyContext();
+
     /*
      * (non-Java)
      * 
-     * @see org.talend.core.model.process.IContextManager#addContextListener(org.talend.core.model.process.IContextListener)
+     * @see
+     * org.talend.core.model.process.IContextManager#addContextListener(org.talend.core.model.process.IContextListener)
      */
     public void addContextListener(IContextListener listener) {
     }
@@ -52,7 +55,7 @@ public class RowGenContextManager implements IContextManager, Cloneable {
      * @see org.talend.core.model.process.IContextManager#getDefaultContext()
      */
     public IContext getDefaultContext() {
-        return new EmptyContext();
+        return this.defaultContext;
     }
 
     /*
@@ -67,7 +70,9 @@ public class RowGenContextManager implements IContextManager, Cloneable {
     /*
      * (non-Java)
      * 
-     * @see org.talend.core.model.process.IContextManager#removeContextListener(org.talend.core.model.process.IContextListener)
+     * @see
+     * org.talend.core.model.process.IContextManager#removeContextListener(org.talend.core.model.process.IContextListener
+     * )
      */
     public void removeContextListener(IContextListener listener) {
     }
@@ -78,6 +83,11 @@ public class RowGenContextManager implements IContextManager, Cloneable {
      * @see org.talend.core.model.process.IContextManager#setDefaultContext(org.talend.core.model.process.IContext)
      */
     public void setDefaultContext(IContext context) {
+        if (context != null) {
+            for (IContextParameter param : context.getContextParameterList()) {
+                this.defaultContext.getContextParameterList().add(param.clone());
+            }
+        }
     }
 
     /*
@@ -86,6 +96,7 @@ public class RowGenContextManager implements IContextManager, Cloneable {
      * @see org.talend.core.model.process.IContextManager#setListContext(java.util.List)
      */
     public void setListContext(List<IContext> listContext) {
+        // Read-only
     }
 
     /*
@@ -109,13 +120,15 @@ public class RowGenContextManager implements IContextManager, Cloneable {
      */
     private class EmptyContext implements IContext, Cloneable {
 
+        List<IContextParameter> contextParameterList = new ArrayList<IContextParameter>();
+
         /*
          * (non-Java)
          * 
          * @see org.talend.core.model.process.IContext#getContextParameterList()
          */
         public List<IContextParameter> getContextParameterList() {
-            return new ArrayList<IContextParameter>();
+            return this.contextParameterList;
         }
 
         /*
@@ -124,7 +137,7 @@ public class RowGenContextManager implements IContextManager, Cloneable {
          * @see org.talend.core.model.process.IContext#getName()
          */
         public String getName() {
-            return "Preview"; //$NON-NLS-1$
+            return RowGenPreviewCodeMain.PREVIEW;
         }
 
         /*
