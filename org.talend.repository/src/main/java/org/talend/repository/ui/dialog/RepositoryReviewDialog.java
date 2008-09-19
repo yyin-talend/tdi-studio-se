@@ -52,6 +52,7 @@ import org.talend.repository.ProjectManager;
 import org.talend.repository.model.MetadataTableRepositoryObject;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.SAPFunctionRepositoryObject;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.views.IRepositoryView;
@@ -707,6 +708,8 @@ class SchemaTypeProcessor implements ITypeProcessor {
             container.add(contentProvider.getMetadataWSDLSchemaNode());
             // Salesforce metadata node is not exist in Perl Project.
             container.add(contentProvider.getMetadataSalesforceSchemaNode());
+            // For sap
+            container.add(contentProvider.getMetadataSAPConnectionNode());
 
             container.add(contentProvider.getMetadataConNode());
 
@@ -751,6 +754,9 @@ class SchemaTypeProcessor implements ITypeProcessor {
                         // Salesforce metadata node is not exist in Perl Project.
                         refContainer.add(refProject.getMetadataSalesforceSchemaNode());
 
+                        // for sap
+                        container.add(contentProvider.getMetadataSAPConnectionNode());
+
                         refContainer.add(refProject.getMetadataConNode());
 
                     }
@@ -765,7 +771,7 @@ class SchemaTypeProcessor implements ITypeProcessor {
     }
 
     public boolean isSelectionValid(RepositoryNode node) {
-        if (node.getObject() instanceof MetadataTable) {
+        if (node.getObject() instanceof MetadataTable || node.getObject() instanceof SAPFunctionRepositoryObject) {
             return true;
         }
         return false;
