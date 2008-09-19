@@ -27,6 +27,7 @@ import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.SAPConnection;
+import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.EComponentCategory;
@@ -67,13 +68,9 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
 
     private String oldMetadata;
 
-    private Map<String, IMetadataTable> repositoryTableMap;
-
     private boolean isGuessQuery = false;
 
     private final String propertyTypeName;
-
-    private final String repositoryPropertyTypeName;
 
     private final String updataComponentParamName;
 
@@ -98,7 +95,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         // JobSettingsConstants.getExtraParameterName(EParameterName.UPDATE_COMPONENTS.getName());
         // } else {
         propertyTypeName = EParameterName.PROPERTY_TYPE.getName();
-        repositoryPropertyTypeName = EParameterName.REPOSITORY_PROPERTY_TYPE.getName();
+        EParameterName.REPOSITORY_PROPERTY_TYPE.getName();
         updataComponentParamName = EParameterName.UPDATE_COMPONENTS.getName();
         // }
     }
@@ -120,16 +117,10 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
             // query is not set.
             Node node = (Node) elem;
             boolean isSchemaEmpty = node.getMetadataList().get(0).getListColumns().size() == 0;
-            boolean isQueryEmpty = false;
             for (IElementParameter curParam : node.getElementParameters()) {
                 if (curParam.getField().equals(EParameterFieldType.MEMO_SQL)) {
-                    String defaultValue = "";
                     if (curParam.getDefaultValues().size() > 0) {
-                        defaultValue = (String) curParam.getDefaultValues().get(0).getDefaultValue();
                     }
-                    String paramValue = (String) curParam.getValue();
-                    isQueryEmpty = paramValue.equals("") || paramValue.equals("''") || paramValue.equals("\"\"")
-                            || paramValue.equals(defaultValue);
                 }
             }
             if (isSchemaEmpty) {
@@ -532,7 +523,6 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
      */
 
     public void setMaps(Map<String, IMetadataTable> repositoryTableMap) {
-        this.repositoryTableMap = repositoryTableMap;
     }
 
     /**
@@ -557,6 +547,13 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
      * @return the sapFunctionName
      */
     public String getSapFunctionName() {
+        // Use the first function
+        if (this.sapFunctionName == null) {
+            SAPConnection sapConn = (SAPConnection) connection;
+            if (sapConn.getFuntions() != null && !sapConn.getFuntions().isEmpty()) {
+                return ((SAPFunctionUnit) sapConn.getFuntions().get(0)).getName();
+            }
+        }
         return this.sapFunctionName;
     }
 
