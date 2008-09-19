@@ -566,4 +566,20 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
 
     }
 
+    /* (non-Javadoc)
+     * @see org.talend.core.model.process.IProcess#isNeedRegenerateCode()
+     */
+    public boolean isNeedRegenerateCode() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.core.model.process.IProcess#setNeedRegenerateCode(boolean)
+     */
+    public void setNeedRegenerateCode(boolean regenerateCode) {
+        // TODO Auto-generated method stub
+        
+    }
+
 }
