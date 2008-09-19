@@ -53,6 +53,7 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
+import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
 import org.talend.repository.model.ComponentsFactoryProvider;
 
@@ -79,6 +80,8 @@ public class NodesPasteCommand extends Command {
     private boolean multipleCommand;
 
     Point cursorLocation = null;
+
+    private List<SubjobContainerPart> subjobParts;
 
     /**
      * Getter for cursorLocation.
@@ -295,6 +298,8 @@ public class NodesPasteCommand extends Command {
         Map<String, String> oldNameTonewNameMap = new HashMap<String, String>();
         Map<String, String> oldMetaToNewMeta = new HashMap<String, String>();
 
+        // see bug 0004882: Subjob title is not copied when copying/pasting subjobs from one job to another
+        Map<Node, SubjobContainer> mapping = new HashMap<Node, SubjobContainer>();
         // create the nodes
         for (NodePart copiedNodePart : nodeParts) {
             Node copiedNode = (Node) copiedNodePart.getModel();
@@ -306,6 +311,8 @@ public class NodesPasteCommand extends Command {
                 component = copiedNode.getComponent();
             }
             Node pastedNode = new Node(component, process);
+            // for bug 0004882: Subjob title is not copied when copying/pasting subjobs from one job to another
+            makeCopyNodeAndSubjobMapping(copiedNode, pastedNode, mapping);
 
             Point location = null;
             if (getCursorLocation() == null) {
@@ -410,7 +417,7 @@ public class NodesPasteCommand extends Command {
             }
             nodeContainerList.add(new NodeContainer(pastedNode));
         }
-
+        process.setCopyPasteSubjobMappings(mapping);
         Map<String, String> oldToNewConnVarMap = new HashMap<String, String>();
 
         // add the connections
@@ -584,6 +591,22 @@ public class NodesPasteCommand extends Command {
         }
     }
 
+    /**
+     * DOC bqian Comment method "makeCopyNodeAndSubjobMapping".<br>
+     * see bug 0004882: Subjob title is not copied when copying/pasting subjobs from one job to another
+     * 
+     * @param copiedNode
+     * @param pastedNode
+     */
+    private void makeCopyNodeAndSubjobMapping(Node copiedNode, Node pastedNode, Map<Node, SubjobContainer> mapping) {
+        for (SubjobContainerPart subjobPart : subjobParts) {
+            SubjobContainer subjob = (SubjobContainer) subjobPart.getModel();
+            if (subjob.getSubjobStartNode().equals(copiedNode)) {
+                mapping.put(pastedNode, subjob);
+            }
+        }
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public void execute() {
@@ -708,5 +731,15 @@ public class NodesPasteCommand extends Command {
      */
     public List<NodeContainer> getNodeContainerList() {
         return nodeContainerList;
+    }
+
+    /**
+     * bqian Comment method "setSelectedSubjobs". <br>
+     * see bug 0004882: Subjob title is not copied when copying/pasting subjobs from one job to another
+     * 
+     * @param subjobParts
+     */
+    public void setSelectedSubjobs(List<SubjobContainerPart> subjobParts) {
+        this.subjobParts = subjobParts;
     }
 }

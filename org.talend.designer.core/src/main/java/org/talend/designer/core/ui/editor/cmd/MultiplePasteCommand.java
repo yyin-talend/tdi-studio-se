@@ -28,6 +28,7 @@ import org.talend.designer.core.ui.editor.notes.Note;
 import org.talend.designer.core.ui.editor.notes.NoteEditPart;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
+import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
@@ -112,6 +113,16 @@ public class MultiplePasteCommand extends CompoundCommand {
         // set the old selection active
         StructuredSelection s = new StructuredSelection(oldSelection);
         viewer.setSelection(s);
+    }
+
+    /**
+     * bqian Comment method "setSelectedSubjobs". <br>
+     * see bug 0004882: Subjob title is not copied when copying/pasting subjobs from one job to another
+     * 
+     * @param subjobParts
+     */
+    public void setSelectedSubjobs(List<SubjobContainerPart> subjobParts) {
+        nodeCmd.setSelectedSubjobs(subjobParts);
     }
 
 }

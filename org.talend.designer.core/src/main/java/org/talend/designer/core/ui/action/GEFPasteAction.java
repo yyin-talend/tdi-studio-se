@@ -120,7 +120,8 @@ public class GEFPasteAction extends SelectionAction {
             return false;
         }
         for (Object currentObject : objects) {
-            if (!(currentObject instanceof NodePart) && !(currentObject instanceof NoteEditPart)&&!(currentObject instanceof SubjobContainerPart)) {
+            if (!(currentObject instanceof NodePart) && !(currentObject instanceof NoteEditPart)
+                    && !(currentObject instanceof SubjobContainerPart)) {
                 return false;
             }
         }
@@ -148,10 +149,12 @@ public class GEFPasteAction extends SelectionAction {
 
             List<NodePart> nodeParts = new ArrayList<NodePart>();
             List<NoteEditPart> noteParts = new ArrayList<NoteEditPart>();
-
+            List<SubjobContainerPart> subjobParts = new ArrayList<SubjobContainerPart>();
             for (Object o : partsList) {
                 if (o instanceof NodePart) {
-                    nodeParts.add((NodePart) o);
+                    if (!nodeParts.contains(o)) {
+                        nodeParts.add((NodePart) o);
+                    }
                 } else if (o instanceof NoteEditPart) {
                     noteParts.add((NoteEditPart) o);
                 } else if (o instanceof SubjobContainerPart) {
@@ -161,7 +164,10 @@ public class GEFPasteAction extends SelectionAction {
                         NodeContainerPart nodeContainerPart = (NodeContainerPart) iterator.next();
                         NodePart nodePart = nodeContainerPart.getNodePart();
                         if (nodePart != null) {
-                            nodeParts.add(nodePart);
+                            if (!nodeParts.contains(nodePart)) {
+                                nodeParts.add(nodePart);
+                            }
+                            subjobParts.add(subjob);
                         }
                     }
                 }
@@ -173,10 +179,12 @@ public class GEFPasteAction extends SelectionAction {
             if (nodeParts.size() != 0 && noteParts.size() != 0) {
                 MultiplePasteCommand mpc = new MultiplePasteCommand(nodeParts, noteParts,
                         (org.talend.designer.core.ui.editor.process.Process) editor.getProcess(), gefPoint);
+                mpc.setSelectedSubjobs(subjobParts);
                 execute(mpc);
             } else if (nodeParts.size() != 0) {
                 NodesPasteCommand cmd = new NodesPasteCommand(nodeParts,
                         (org.talend.designer.core.ui.editor.process.Process) editor.getProcess(), gefPoint);
+                cmd.setSelectedSubjobs(subjobParts);
                 execute(cmd);
             } else if (noteParts.size() != 0) {
                 NotesPasteCommand cmd = new NotesPasteCommand(noteParts,

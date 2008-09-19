@@ -2609,10 +2609,10 @@ public class Process extends Element implements IProcess2 {
 
         if (curParam.getName().equals("DB_VERSION")) {
             String jdbcName = (String) curParam.getValue();
-            if(jdbcName.contains("11g")){
-                if(System.getProperty("java.version").startsWith("1.6")){
+            if (jdbcName.contains("11g")) {
+                if (System.getProperty("java.version").startsWith("1.6")) {
                     jdbcName = jdbcName.replace('5', '6');
-                }else{
+                } else {
                     jdbcName = jdbcName.replace('6', '5');
                 }
             }
@@ -2667,6 +2667,8 @@ public class Process extends Element implements IProcess2 {
 
     private boolean needRegenerateCode;
 
+    private Map<Node, SubjobContainer> copySubjobMap;
+
     /**
      * Sets the editor.
      * 
@@ -2713,7 +2715,7 @@ public class Process extends Element implements IProcess2 {
         for (IElementParameter param : getElementParametersWithChildrens()) {
             param.setElement(null);
         }
-
+        copySubjobMap.clear();
         mapSubjobStarts.clear();
         setElementParameters(null);
         subjobContainers = null;
@@ -2826,6 +2828,7 @@ public class Process extends Element implements IProcess2 {
                     if (sjc == null) {
                         sjc = new SubjobContainer(this);
                         sjc.setSubjobStartNode(node);
+                        fillSubjobTitle(node, sjc);
                         mapSubjobStarts.put(node, sjc);
                     }
                     sjc.getNodeContainers().clear();
@@ -2856,6 +2859,33 @@ public class Process extends Element implements IProcess2 {
         }
 
         // at the end, there should be no Node / NodeContainer without SubjobContainer
+    }
+
+    /**
+     * DOC bqian Comment method "fillSubjobTitle".
+     * 
+     * @param node
+     * @param sjc
+     */
+    private void fillSubjobTitle(Node node, SubjobContainer sjc) {
+        if (copySubjobMap == null) {
+            return;
+        }
+        SubjobContainer original = copySubjobMap.get(node);
+        if (original != null) {
+            sjc.getElementParameter(EParameterName.COLLAPSED.getName()).setValue(
+                    original.getElementParameter(EParameterName.COLLAPSED.getName()).getValue());
+            sjc.getElementParameter(EParameterName.SHOW_SUBJOB_TITLE.getName()).setValue(
+                    original.getElementParameter(EParameterName.SHOW_SUBJOB_TITLE.getName()).getValue());
+            sjc.getElementParameter(EParameterName.SUBJOB_TITLE.getName()).setValue(
+                    original.getElementParameter(EParameterName.SUBJOB_TITLE.getName()).getValue());
+
+            sjc.getElementParameter(EParameterName.SUBJOB_TITLE_COLOR.getName()).setValue(
+                    original.getElementParameter(EParameterName.SUBJOB_TITLE_COLOR.getName()).getValue());
+
+            sjc.getElementParameter(EParameterName.SUBJOB_COLOR.getName()).setValue(
+                    original.getElementParameter(EParameterName.SUBJOB_COLOR.getName()).getValue());
+        }
     }
 
     public List<NodeContainer> getAllNodeContainers() {
@@ -2971,6 +3001,16 @@ public class Process extends Element implements IProcess2 {
     public void setRepositoryNode(RepositoryNode node) {
         // TODO Auto-generated method stub
 
+    }
+
+    /**
+     * <br>
+     * see bug 0004882: Subjob title is not copied when copying/pasting subjobs from one job to another
+     * 
+     * @param mapping
+     */
+    public void setCopyPasteSubjobMappings(Map<Node, SubjobContainer> mapping) {
+        copySubjobMap = mapping;
     }
 
 }
