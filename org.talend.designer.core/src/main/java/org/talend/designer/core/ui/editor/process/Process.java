@@ -2715,7 +2715,9 @@ public class Process extends Element implements IProcess2 {
         for (IElementParameter param : getElementParametersWithChildrens()) {
             param.setElement(null);
         }
-        copySubjobMap.clear();
+        if (copySubjobMap != null) {
+            copySubjobMap.clear();
+        }
         mapSubjobStarts.clear();
         setElementParameters(null);
         subjobContainers = null;
