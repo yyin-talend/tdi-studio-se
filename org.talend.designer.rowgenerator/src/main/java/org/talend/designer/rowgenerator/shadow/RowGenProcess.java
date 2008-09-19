@@ -677,4 +677,20 @@ public class RowGenProcess extends Element implements IProcess {
         // TODO Auto-generated method stub
 
     }
+
+    /* (non-Javadoc)
+     * @see org.talend.core.model.process.IProcess#isNeedRegenerateCode()
+     */
+    public boolean isNeedRegenerateCode() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.core.model.process.IProcess#setNeedRegenerateCode(boolean)
+     */
+    public void setNeedRegenerateCode(boolean regenerateCode) {
+        // TODO Auto-generated method stub
+        
+    }
 }
