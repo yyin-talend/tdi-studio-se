@@ -186,7 +186,7 @@
 			      context.<%=ctxParam.getName()%>=null;
 			  }
 			  <%
-			    }else if(typeToGenerate.equals("Object")||typeToGenerate.equals("String") )
+			    }else if(typeToGenerate.equals("Object")||typeToGenerate.equals("String")||typeToGenerate.equals("java.lang.String") )
 			    {
 			    %>
 			    context.<%=ctxParam.getName()%>=(<%=typeToGenerate%>) context.getProperty("<%=ctxParam.getName()%>");
