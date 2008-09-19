@@ -625,4 +625,20 @@ public class FileinToDelimitedProcess<K extends FileInputNode> extends Repositor
     public boolean isProcessModified() {
         return true;
     }
+
+    /* (non-Javadoc)
+     * @see org.talend.core.model.process.IProcess#isNeedRegenerateCode()
+     */
+    public boolean isNeedRegenerateCode() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.core.model.process.IProcess#setNeedRegenerateCode(boolean)
+     */
+    public void setNeedRegenerateCode(boolean regenerateCode) {
+        // TODO Auto-generated method stub
+        
+    }
 }
