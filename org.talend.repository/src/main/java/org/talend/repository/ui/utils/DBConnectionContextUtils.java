@@ -86,7 +86,7 @@ public final class DBConnectionContextUtils {
                     ConnectionContextHelper.createParameters(varList, paramName, conn.getPassword(), JavaTypesManager.PASSWORD);
                     break;
                 case Port:
-                    ConnectionContextHelper.createParameters(varList, paramName, conn.getPort(), JavaTypesManager.INTEGER);
+                    ConnectionContextHelper.createParameters(varList, paramName, conn.getPort(), JavaTypesManager.STRING);
                     break;
                 case Schema:
                     if (conn.getProductId().equals(EDatabaseTypeName.ORACLEFORSID.getProduct())) {
