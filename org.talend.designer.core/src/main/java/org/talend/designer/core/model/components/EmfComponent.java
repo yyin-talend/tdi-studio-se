@@ -43,6 +43,7 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.EComponentType;
+import org.talend.core.model.components.EReadOnlyComlumnPosition;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.components.IMultipleComponentItem;
@@ -864,8 +865,8 @@ public class EmfComponent implements IComponent {
         param.setShow(false);
         listParam.add(param);
 
-        //These parameters is only work when TIS is loaded
-        if(PluginChecker.isTIS()){
+        // These parameters is only work when TIS is loaded
+        if (PluginChecker.isTIS()) {
             boolean defaultParalelize = new Boolean(compType.getHEADER().isPARALLELIZE());
             param = new ElementParameter(node);
             param.setReadOnly(!defaultParalelize);
@@ -889,7 +890,7 @@ public class EmfComponent implements IComponent {
             param.setShowIf(EParameterName.PARALLELIZE.getName() + " == 'true'");
             listParam.add(param);
         }
-        
+
     }
 
     private void createSpecificParametersFromType(final List<ElementParameter> listParam, final PARAMETERType xmlParam,
@@ -1332,8 +1333,11 @@ public class EmfComponent implements IComponent {
                 isReadOnly = param.isReadOnly();
             }
 
-            defaultTable.setReadOnlyColumnPosition(tableType.getREAD_ONLY_COLUMN_POSITION());
-
+            String readOnlyColumnPosition = tableType.getREAD_ONLY_COLUMN_POSITION();
+            if (readOnlyColumnPosition == null) {
+                readOnlyColumnPosition = EReadOnlyComlumnPosition.BOTTOM.toString();
+            }
+            defaultTable.setReadOnlyColumnPosition(readOnlyColumnPosition);
             int nbCustom = 0;
             for (int i = 0; i < xmlColumnList.size(); i++) {
                 xmlColumn = (COLUMNType) xmlColumnList.get(i);
