@@ -144,6 +144,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		}
 	}
 %>
+                    nb_line_reject_<%=cid%>++;
 	}
 <%
 	}
