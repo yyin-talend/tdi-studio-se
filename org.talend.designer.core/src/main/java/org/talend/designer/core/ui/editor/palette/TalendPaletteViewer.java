@@ -13,7 +13,6 @@
 package org.talend.designer.core.ui.editor.palette;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.gef.EditDomain;
@@ -26,8 +25,6 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
@@ -59,7 +56,6 @@ public class TalendPaletteViewer extends PaletteViewer {
      * 
      * @see org.eclipse.gef.ui.parts.ScrollingGraphicalViewer#creatToolControl(org.eclipse.swt.widgets.Composite)
      */
-    @Override
     public Control creatToolControl(Composite parent) {
         Text text = new Text(parent, SWT.BORDER);
         filters.add(text);
