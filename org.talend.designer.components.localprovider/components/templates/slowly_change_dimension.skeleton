@@ -527,8 +527,10 @@ public class CLASS {
         }
         return scdConfiger;
     }
-    public String genSourceKeyClass(SCDConfiger scdConfiger, String cid) {
+    public String genSourceKeyClass(SCDConfiger scdConfiger, String cid) {       
+        
         StringBuilder sourceKeyClass = new StringBuilder();
+        
         sourceKeyClass.append("class SCDSK_" + cid + " {\r\n");
         sourceKeyClass.append("private int hashCode;\r\n");
         sourceKeyClass.append("public boolean hashCodeDirty = true;\r\n");        
@@ -536,27 +538,32 @@ public class CLASS {
         for(Column sourceKey : sourceKeys) {
             sourceKeyClass.append(sourceKey.getJavaType() + " " + sourceKey.getColumnName() + ";\r\n");
         }
-        sourceKeyClass.append("public boolean equals(Object o) {\r\n");
-        sourceKeyClass.append("if(!(o instanceof SCDSK_" + cid + ")) {\r\n");
-        sourceKeyClass.append("return false;\r\n");
-        sourceKeyClass.append("}\r\n");
-        sourceKeyClass.append("SCDSK_" + cid + " sk = (SCDSK_" + cid + ")o;\r\n");
-        sourceKeyClass.append("return ");
+        
+        //equals()
+        sourceKeyClass.append("public boolean equals(Object obj) {\r\n");
+        sourceKeyClass.append("if (this == obj) return true;\r\n");
+        sourceKeyClass.append("if (obj == null) return false;\r\n");
+        sourceKeyClass.append("if (getClass() != obj.getClass()) return false;\r\n");
+        sourceKeyClass.append("final SCDSK_" + cid + " other = (SCDSK_" + cid + ") obj;\r\n");
         boolean isFirstSK = true;
-        for(Column sourceKey : sourceKeys) {
-            if(isFirstSK) {
-                isFirstSK = false;
-            } else {
-                sourceKeyClass.append(" && ");
+        for(Column sourceKey : sourceKeys) { 
+            //if (JavaTypesManager.isJavaPrimitiveType(sourceKey.getJavaType(), sourceKey.isNullable())) {
+            if (sourceKey.getJavaType().equals("java.util.Date") || sourceKey.getJavaType().equals("String") || sourceKey.getJavaType().equals("Object") || sourceKey.isNullable()) {
+                sourceKeyClass.append("if (this." + sourceKey.getLabelName() + " == null) {\r\n");
+                sourceKeyClass.append("if (other." + sourceKey.getLabelName() + "!= null)\r\n");
+                sourceKeyClass.append("return false;\r\n");
+                sourceKeyClass.append("} else if (!this." + sourceKey.getLabelName() + ".equals(other." + sourceKey.getLabelName() + "))\r\n");
+                sourceKeyClass.append("return false;\r\n");
+            } else {                
+                sourceKeyClass.append("if (this." + sourceKey.getLabelName() + "!= other." + sourceKey.getLabelName() + ")\r\n");
+                sourceKeyClass.append("return false;\r\n");
             }
-            if(sourceKey.getJavaType().equals("java.util.Date") || sourceKey.getJavaType().equals("String") || sourceKey.getJavaType().equals("Object") || sourceKey.isNullable()) {
-                sourceKeyClass.append(sourceKey.getColumnName() + ".equals(sk." + sourceKey.getColumnName() + ")");
-            } else {
-                sourceKeyClass.append(sourceKey.getColumnName() + " == sk." + sourceKey.getColumnName());
-            }
-        }
-        sourceKeyClass.append(";\r\n");
+            sourceKeyClass.append("\r\n");
+        }        
+        sourceKeyClass.append("return true;\r\n");        
         sourceKeyClass.append("}\r\n");
+        
+        //hashCode()
         sourceKeyClass.append("public int hashCode() {\r\n");
         sourceKeyClass.append("if(hashCodeDirty) {\r\n");
         sourceKeyClass.append("int prime = 31;");
