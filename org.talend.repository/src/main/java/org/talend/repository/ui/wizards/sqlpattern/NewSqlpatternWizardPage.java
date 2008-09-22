@@ -16,6 +16,9 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.ItemState;
+import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.ui.wizards.PropertiesWizardPage;
@@ -41,6 +44,7 @@ public class NewSqlpatternWizardPage extends PropertiesWizardPage {
     /**
      * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
      */
+    @Override
     public void createControl(Composite parent) {
         Composite container = new Composite(parent, SWT.NONE);
         GridLayout layout = new GridLayout(2, false);
@@ -54,6 +58,19 @@ public class NewSqlpatternWizardPage extends PropertiesWizardPage {
         setPageComplete(false);
     }
 
+    @Override
+    public boolean isValid(String itemName) {
+        IPath path = getDestinationPath();
+        Item item = property.getItem();
+        if (item.getState() == null) {
+            ItemState itemState = PropertiesFactory.eINSTANCE.createItemState();
+            item.setState(itemState);
+        }
+        item.getState().setPath(path.toString());
+        return super.isValid(itemName);
+    }
+
+    @Override
     public ERepositoryObjectType getRepositoryObjectType() {
         return ERepositoryObjectType.SQLPATTERNS;
     }

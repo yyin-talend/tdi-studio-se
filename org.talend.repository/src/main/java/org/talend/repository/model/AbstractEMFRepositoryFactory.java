@@ -254,12 +254,17 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         if (type == ERepositoryObjectType.METADATA_CON_TABLE) {
             return false;
         }
+        boolean isSqlPattern = (type == ERepositoryObjectType.SQLPATTERNS);
+        String path = item.getState().getPath();
         List<IRepositoryObject> list = getAll(project, type, true, false);
 
         for (IRepositoryObject current : list) {
             if (name.equalsIgnoreCase(current.getProperty().getLabel())
                     && item.getProperty().getId() != current.getProperty().getId()) {
-                return false;
+                // To check SQLPattern in same path. see bug 0005038: unable to add a SQLPattern into repository.
+                if (!isSqlPattern || path.equals(current.getProperty().getItem().getState().getPath())) {
+                    return false;
+                }
             }
         }
         return true;
