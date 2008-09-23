@@ -440,7 +440,8 @@ public class SchemaTypeController extends AbstractRepositoryController {
     private boolean checkForRepositoryShema(Button button) {
         boolean stop = false;
         if (button.getData(NAME).equals(SCHEMA)) {
-            String type = (String) elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
+            String paramName = (String) button.getData(PARAMETER_NAME);
+            String type = (String) elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName(), paramName);
             if (type != null && type.equals(EmfComponent.REPOSITORY)) {
                 // use repository schema, pop up a dialog to ask the user for changing mode
                 Node node;
