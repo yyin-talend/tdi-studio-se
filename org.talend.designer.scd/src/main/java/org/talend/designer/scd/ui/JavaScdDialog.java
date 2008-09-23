@@ -122,7 +122,7 @@ public class JavaScdDialog extends AbstractScdDialog {
     protected void okPressed() {
         scdManager.saveUIData(sourceKeys.getTableData(), surrogateKeys.getTableData(), type0Fields.getTableData(), type1Fields
                 .getTableData(), type2Fields.getTableData(), type2Fields.getVersionData(), type3Fields.getTableData());
-
+        scdManager.createOutputSchema(unusedFields.getTableData());
         super.okPressed();
     }
 

@@ -101,7 +101,7 @@ public class PerlScdDialog extends AbstractScdDialog {
     protected void okPressed() {
         scdManager.saveUIData(sourceKeys.getTableData(), null, null, type1Fields.getTableData(), type2Fields.getTableData(),
                 type2Fields.getVersionData(), null);
-
+        scdManager.createOutputSchema(unusedFields.getTableData());
         super.okPressed();
     }
 
