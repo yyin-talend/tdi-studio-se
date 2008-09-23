@@ -199,4 +199,8 @@ public abstract class AbstractRepositoryFactory implements IRepositoryFactory {
     public Project beforeLogon(Project project) throws PersistenceException {
         return project;
     }
+    
+    public boolean isUserReadOnlyOnCurrentProject() {
+        return false;
+    }
 }

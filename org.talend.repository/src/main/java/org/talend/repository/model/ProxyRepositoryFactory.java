@@ -71,8 +71,6 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.SpagoBiServer;
 import org.talend.core.model.properties.Status;
 import org.talend.core.model.properties.User;
-import org.talend.core.model.properties.UserProjectAuthorization;
-import org.talend.core.model.properties.UserProjectAuthorizationType;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryObject;
@@ -1144,20 +1142,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     }
 
     public boolean isUserReadOnlyOnCurrentProject() {
-        Project project = projectManager.getCurrentProject();
-
-        EList userAuthorizations = project.getEmfProject().getUserAuthorization();
-        for (Object o : userAuthorizations.toArray()) {
-            UserProjectAuthorization userProjectAuthorization = (UserProjectAuthorization) o;
-            if (userProjectAuthorization.getUser() != null) {
-                if (userProjectAuthorization.getUser().getLogin().equals(getRepositoryContext().getUser().getLogin())) {
-                    UserProjectAuthorizationType type = userProjectAuthorization.getType();
-                    return type.getValue() == UserProjectAuthorizationType.READ_ONLY;
-                }
-            }
-        }
-
-        return false;
+        return this.repositoryFactoryFromProvider.isUserReadOnlyOnCurrentProject();
     }
 
     /*

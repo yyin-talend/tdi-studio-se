@@ -362,4 +362,6 @@ public interface IRepositoryFactory {
 			throws PersistenceException;
 
     public Project beforeLogon(Project project) throws PersistenceException, LoginException;
+
+    public boolean isUserReadOnlyOnCurrentProject();
 }
