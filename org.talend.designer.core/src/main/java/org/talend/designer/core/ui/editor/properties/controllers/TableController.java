@@ -218,10 +218,7 @@ public class TableController extends AbstractElementPropertySectionController {
      */
     private int getNumberLines(IElementParameter param) {
         int numlines = param.getNbLines();
-        if (numlines != 0) {
-            return numlines;
-        }
-        return this.MIN_NUMBER_ROWS;
+        return numlines < MIN_NUMBER_ROWS ? MIN_NUMBER_ROWS : numlines;
     }
 
     /*
