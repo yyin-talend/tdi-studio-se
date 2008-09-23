@@ -122,6 +122,13 @@
 		</PARAMETER>
 	</ADVANCED_PARAMETERS>
 	<CODEGENERATION>
+     <IMPORTS>
+       <IMPORT NAME="Driver-Oracle8i" MODULE="ojdbc12-8i.jar" REQUIRED="true" />
+       <IMPORT NAME="Driver-Oracle9i" MODULE="ojdbc14-9i.jar" REQUIRED="true" />
+       <IMPORT NAME="Driver-Oracle10g" MODULE="ojdbc14-10g.jar" REQUIRED="true" />
+       <IMPORT NAME="Driver-Oracle11g-1" MODULE="ojdbc5-11g.jar" REQUIRED="true" />
+       <IMPORT NAME="Driver-Oracle11g-2" MODULE="ojdbc6-11g.jar" REQUIRED="true" />
+     </IMPORTS>	
 	</CODEGENERATION>
 	<RETURNS>
 		<RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER" />
