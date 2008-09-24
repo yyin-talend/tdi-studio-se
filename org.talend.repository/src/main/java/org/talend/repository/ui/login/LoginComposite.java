@@ -550,10 +550,12 @@ public class LoginComposite extends Composite {
         ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
         repositoryFactory.setRepositoryFactoryFromProvider(RepositoryFactoryProvider.getRepositoriyById(getConnection()
                 .getRepositoryId()));
-
+        
         boolean initialized = false;
 
         try {
+            repositoryFactory.checkAvailability();
+            
             try {
                 IRunnableWithProgress op = new IRunnableWithProgress() {
 

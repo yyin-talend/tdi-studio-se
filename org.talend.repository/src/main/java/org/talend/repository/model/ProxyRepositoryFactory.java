@@ -1670,4 +1670,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         return getMetadataSAPConnection(projectManager.getCurrentProject());
     }
 
+    public void checkAvailability() throws PersistenceException {
+        this.repositoryFactoryFromProvider.checkAvailability();
+    }
 }

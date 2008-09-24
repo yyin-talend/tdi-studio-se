@@ -203,4 +203,8 @@ public abstract class AbstractRepositoryFactory implements IRepositoryFactory {
     public boolean isUserReadOnlyOnCurrentProject() {
         return false;
     }
+    
+    public void checkAvailability() {
+        // is available by default
+    }
 }
