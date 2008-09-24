@@ -79,6 +79,7 @@ import org.talend.commons.utils.Timer;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.migration.IMigrationToolService;
 import org.talend.core.model.repository.ERepositoryObjectType;
