@@ -94,35 +94,35 @@ public class TreePopulator {
      */
     private void populateTreeItems(Object tree, Object[] node, int level, String parentXPath) {
         level++;
-        if (level > 10) {
-            return;
-        } else {
-            for (int i = 0; i < node.length; i++) {
-                TreeItem treeItem;
-                if (tree instanceof Tree) {
-                    treeItem = new TreeItem((Tree) tree, 0);
-                } else {
-                    treeItem = new TreeItem((TreeItem) tree, 0);
-                }
-
-                ATreeNode treeNode = (ATreeNode) node[i];
-                treeItem.setData(treeNode);
-                int type = treeNode.getType();
-                if (type == ATreeNode.ATTRIBUTE_TYPE) {
-                    treeItem.setText("@" + treeNode.getValue().toString()); //$NON-NLS-1$
-                } else {
-                    treeItem.setText(treeNode.getValue().toString());
-                }
-
-                String currentXPath = parentXPath + "/" + treeItem.getText(); //$NON-NLS-1$
-                xPathToTreeItem.put(currentXPath, treeItem);
-
-                if (treeNode.getChildren() != null && treeNode.getChildren().length > 0) {
-                    populateTreeItems(treeItem, treeNode.getChildren(), level, currentXPath);
-                }
-                setExpanded(treeItem);
+        // if (level > 10) {
+        // return;
+        // } else {
+        for (int i = 0; i < node.length; i++) {
+            TreeItem treeItem;
+            if (tree instanceof Tree) {
+                treeItem = new TreeItem((Tree) tree, 0);
+            } else {
+                treeItem = new TreeItem((TreeItem) tree, 0);
             }
+
+            ATreeNode treeNode = (ATreeNode) node[i];
+            treeItem.setData(treeNode);
+            int type = treeNode.getType();
+            if (type == ATreeNode.ATTRIBUTE_TYPE) {
+                treeItem.setText("@" + treeNode.getValue().toString()); //$NON-NLS-1$
+            } else {
+                treeItem.setText(treeNode.getValue().toString());
+            }
+
+            String currentXPath = parentXPath + "/" + treeItem.getText(); //$NON-NLS-1$
+            xPathToTreeItem.put(currentXPath, treeItem);
+
+            if (treeNode.getChildren() != null && treeNode.getChildren().length > 0) {
+                populateTreeItems(treeItem, treeNode.getChildren(), level, currentXPath);
+            }
+            setExpanded(treeItem);
         }
+        // }
     }
 
     // expand the tree
