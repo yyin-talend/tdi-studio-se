@@ -26,6 +26,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
     boolean tablePrint = ElementParameterParser.getValue(node,"__TABLE_PRINT__").equals("true");
     String printHeader = ElementParameterParser.getValue(node,"__PRINT_HEADER__");
     boolean vertical = ElementParameterParser.getValue(node,"__VERTICAL__").equals("true");
+    boolean uniquePrint = ElementParameterParser.getValue(node,"__PRINT_UNIQUE__").equals("true");
+    boolean titlePrint = ElementParameterParser.getValue(node,"__PRINT_LABEL__").equals("true");
+    boolean uniqueTitlePrint = ElementParameterParser.getValue(node,"__PRINT_UNIQUE_LABEL__").equals("true");
     boolean basic = !(tablePrint||vertical);
 
 
@@ -208,8 +211,21 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 		public String print(String[] row, int nbLine){
 			
 			StringBuilder sb = new StringBuilder();
-			
-			String title = "#" + nbLine + ". " + "<%=cid%>";
+			<%
+			if(uniquePrint) {
+			    %>
+			    String title = "#" + nbLine + ". " + "<%=cid%>";
+			    <%
+			} else if(titlePrint) {
+			    %>
+			    String title = "#" + nbLine + ". " + "<%=label%>";
+			    <%
+			} else if(uniqueTitlePrint) {
+			    %>
+			    String title = "#" + nbLine + ". " + "<%=cid%>--<%=label%>";
+			    <%
+			}
+			%>
 		
 			//step 1: get the max length of all the row[] member;
 			int dataWidth = 5;		//the length of the string "value"	
