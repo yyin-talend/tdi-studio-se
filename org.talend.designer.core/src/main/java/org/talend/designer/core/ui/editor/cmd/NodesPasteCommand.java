@@ -55,6 +55,7 @@ import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
+import org.talend.designer.core.utils.UpgradeElementHelper;
 import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
@@ -74,6 +75,8 @@ public class NodesPasteCommand extends Command {
     private NodePart nodePart;
 
     private List<NodePart> nodeParts;
+
+    private List<Connection> connections;
 
     private List<String> createdNames;
 
@@ -294,6 +297,7 @@ public class NodesPasteCommand extends Command {
         int firstIndex = 0;
         int index = 0;
         nodeContainerList = new ArrayList<NodeContainer>();
+        connections = new ArrayList<Connection>();
         createdNames = new ArrayList<String>();
         Map<String, String> oldNameTonewNameMap = new HashMap<String, String>();
         Map<String, String> oldMetaToNewMeta = new HashMap<String, String>();
@@ -501,6 +505,8 @@ public class NodesPasteCommand extends Command {
                                         .isMonitorConnection());
                     }
 
+                    connections.add(pastedConnection);
+
                     // pastedConnection.setActivate(pastedSourceNode.isActivate());
                     for (ElementParameter param : (List<ElementParameter>) connection.getElementParameters()) {
                         // pastedConnection.getElementParameter(param.getName())
@@ -573,7 +579,24 @@ public class NodesPasteCommand extends Command {
                 }
             }
         }
-        if (!usedDataMap.isEmpty()) {
+
+        // check if the new connections use the old components name.
+        Map<String, Set<String>> usedDataMapForConnections = new HashMap<String, Set<String>>();
+        for (Connection connection : connections) {
+            String uniqueName = connection.getUniqueName();
+            for (String oldName : oldNameTonewNameMap.keySet()) {
+                if (!oldName.equals(oldNameTonewNameMap.get(oldName)) && UpgradeElementHelper.isUseData(connection, oldName)) {
+                    Set<String> oldNameSet = usedDataMapForConnections.get(uniqueName);
+                    if (oldNameSet == null) {
+                        oldNameSet = new HashSet<String>();
+                        usedDataMapForConnections.put(uniqueName, oldNameSet);
+                    }
+                    oldNameSet.add(oldName);
+                }
+            }
+        }
+
+        if (!usedDataMap.isEmpty() || !usedDataMapForConnections.isEmpty()) {
             MessageBox msgBox = new MessageBox(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.YES | SWT.NO
                     | SWT.ICON_WARNING);
             msgBox.setMessage(Messages.getString("NodesPasteCommand.renameMessages")); //$NON-NLS-1$
@@ -584,6 +607,16 @@ public class NodesPasteCommand extends Command {
                     if (oldNameSet != null && !oldNameSet.isEmpty()) {
                         for (String oldName : oldNameSet) {
                             currentNode.renameData(oldName, oldNameTonewNameMap.get(oldName));
+                        }
+                    }
+                }
+
+                // Rename connections
+                for (Connection connection : connections) {
+                    Set<String> oldNameSet = usedDataMapForConnections.get(connection.getUniqueName());
+                    if (oldNameSet != null && !oldNameSet.isEmpty()) {
+                        for (String oldName : oldNameSet) {
+                            UpgradeElementHelper.renameData(connection, oldName, oldNameTonewNameMap.get(oldName));
                         }
                     }
                 }

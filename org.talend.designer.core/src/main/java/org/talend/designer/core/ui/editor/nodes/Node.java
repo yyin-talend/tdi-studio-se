@@ -25,13 +25,6 @@ import java.util.Map;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.oro.text.regex.MalformedPatternException;
-import org.apache.oro.text.regex.Pattern;
-import org.apache.oro.text.regex.PatternCompiler;
-import org.apache.oro.text.regex.Perl5Compiler;
-import org.apache.oro.text.regex.Perl5Matcher;
-import org.apache.oro.text.regex.Perl5Substitution;
-import org.apache.oro.text.regex.Util;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.gef.commands.CommandStack;
@@ -47,7 +40,6 @@ import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.components.IMultipleComponentManager;
 import org.talend.core.model.components.IODataComponent;
-import org.talend.core.model.context.UpdateContextVariablesHelper;
 import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -84,6 +76,7 @@ import org.talend.designer.core.ui.editor.properties.NodeQueryCheckUtil;
 import org.talend.designer.core.ui.editor.properties.controllers.ColumnListController;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.views.problems.Problems;
+import org.talend.designer.core.utils.UpgradeElementHelper;
 import org.talend.repository.model.ExternalNodesFactory;
 
 /**
@@ -1892,12 +1885,12 @@ public class Node extends Element implements INode {
      * DOC xye Comment method "checkParallelizeStates".
      */
     private void checkParallelizeStates() {
-        //see feature 5027
+        // see feature 5027
         Boolean parallelEnable = false;
         IElementParameter enableParallelizeParameter = getElementParameter(EParameterName.PARALLELIZE.getName());
-        if(enableParallelizeParameter == null){
+        if (enableParallelizeParameter == null) {
             return;
-        }else{
+        } else {
             parallelEnable = (Boolean) enableParallelizeParameter.getValue();
             if (parallelEnable) {
                 removeStatus(Process.PARALLEL_STATUS);
@@ -2052,7 +2045,6 @@ public class Node extends Element implements INode {
     }
 
     public void renameData(String oldName, String newName) {
-
         if (oldName.equals(newName)) {
             return;
         }
@@ -2061,135 +2053,14 @@ public class Node extends Element implements INode {
             return;
         }
 
-        for (IElementParameter param : this.getElementParameters()) {
-            if (param.getName().equals(EParameterName.UNIQUE_NAME.getName()) || isSQLQueryParameter(param)) {
-                continue;
-            }
-            if (param.getValue() instanceof String) { // for TEXT / MEMO etc..
-                String value = (String) param.getValue();
-                if (value.contains(oldName)) {
-                    // param.setValue(value.replaceAll(oldName, newName));
-                    String newValue = renameValues(value, oldName, newName);
-                    if (!value.equals(newValue)) {
-                        param.setValue(newValue);
-                    }
-                }
-            } else if (param.getValue() instanceof List) { // for TABLE
-                List<Map<String, Object>> tableValues = (List<Map<String, Object>>) param.getValue();
-                for (Map<String, Object> line : tableValues) {
-                    for (String key : line.keySet()) {
-                        Object cellValue = line.get(key);
-                        if (cellValue instanceof String) { // cell is text so
-                            // rename data if
-                            // needed
-                            String value = (String) cellValue;
-                            if (value.contains(oldName)) {
-                                // line.put(key, value.replaceAll(oldName, newName));
-                                String newValue = renameValues(value, oldName, newName);
-                                if (!value.equals(newValue)) {
-                                    line.put(key, newValue);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * see bug 4733
-     * <p>
-     * DOC YeXiaowei Comment method "isSQLQueryParameter".
-     * 
-     * @param parameter
-     * @return
-     */
-    private boolean isSQLQueryParameter(final IElementParameter parameter) {
-        return parameter.getField().equals(EParameterFieldType.MEMO_SQL) && parameter.getName().equals("QUERY");
-    }
-
-    /**
-     * 
-     * DOC ggu Comment method "renameValues".
-     * 
-     */
-    private String renameValues(final String value, final String oldName, final String newName) {
-
-        if (value == null || oldName == null || newName == null) {
-            return value; // keep original value
-        }
-
-        PatternCompiler compiler = new Perl5Compiler();
-        Perl5Matcher matcher = new Perl5Matcher();
-        matcher.setMultiline(true);
-        Perl5Substitution substitution = new Perl5Substitution(newName + "$2", Perl5Substitution.INTERPOLATE_ALL);
-
-        Pattern pattern;
-        try {
-            pattern = compiler.compile("\\b(" + UpdateContextVariablesHelper.replaceSpecialChar(oldName) + ")(\\b|\\_)");
-        } catch (MalformedPatternException e) {
-            return value; // keep original value
-        }
-
-        if (matcher.contains(value, pattern)) {
-            // replace
-            String returnValue = Util.substitute(matcher, pattern, substitution, value, Util.SUBSTITUTE_ALL);
-            return returnValue;
-
-        }
-        return value; // keep original value
-
-    }
-
-    private boolean valueContains(String value, String toTest) {
-        if (value.contains(toTest)) {
-            Perl5Matcher matcher = new Perl5Matcher();
-            Perl5Compiler compiler = new Perl5Compiler();
-            Pattern pattern;
-
-            try {
-                pattern = compiler.compile("\\b(" + UpdateContextVariablesHelper.replaceSpecialChar(toTest) + ")(\\b|\\_)"); //$NON-NLS-1$
-                if (matcher.contains(value, pattern)) {
-                    return true;
-                }
-            } catch (MalformedPatternException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return false;
+        UpgradeElementHelper.renameData(this, oldName, newName);
     }
 
     public boolean useData(String name) {
-
         if (isExternalNode()) {
             return getExternalNode().useData(name);
         }
-        for (IElementParameter param : this.getElementParameters()) {
-            if (param.getName().equals(EParameterName.UNIQUE_NAME.getName())) {
-                continue;
-            }
-            if (param.getValue() instanceof String) { // for TEXT / MEMO etc..
-                String value = (String) param.getValue();
-                if (valueContains(value, name)) {
-                    return true;
-                }
-            } else if (param.getValue() instanceof List) { // for TABLE
-                List<Map<String, Object>> tableValues = (List<Map<String, Object>>) param.getValue();
-                for (Map<String, Object> line : tableValues) {
-                    for (String key : line.keySet()) {
-                        Object cellValue = line.get(key);
-                        if (cellValue instanceof String) { // cell is text so
-                            // test data
-                            if (valueContains((String) cellValue, name)) {
-                                return true;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return false;
+        return UpgradeElementHelper.isUseData(this, name);
     }
 
     public boolean isThereLinkWithMerge() {
