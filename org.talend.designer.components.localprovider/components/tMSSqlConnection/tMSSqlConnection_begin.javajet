@@ -36,4 +36,6 @@ conn_<%=cid%>.setAutoCommit(false);
 
 globalMap.put("dbschema_<%=cid%>", <%=dbschema%>);
 
+globalMap.put("db_<%=cid%>",  <%=dbname%>);
+
 globalMap.put("conn_<%=cid%>",conn_<%=cid%>);
