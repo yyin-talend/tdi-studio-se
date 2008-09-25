@@ -2324,7 +2324,7 @@ public class EmfComponent implements IComponent {
      */
     public String getRepositoryType() {
         for (PARAMETERType pType : (List<PARAMETERType>) compType.getPARAMETERS().getPARAMETER()) {
-            if (pType.getNAME().endsWith("PROPERTY")) {
+            if (pType.getFIELD().equals("PROPERTY_TYPE")) {
                 return pType.getREPOSITORYVALUE();
             }
         }
