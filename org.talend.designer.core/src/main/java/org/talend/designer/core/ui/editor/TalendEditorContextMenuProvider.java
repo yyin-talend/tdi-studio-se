@@ -246,6 +246,12 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
                 subMenu.add(action);
             }
 
+            action = new ConnectionCreateAction(part, EConnectionType.PARALLELIZE);
+            ((ConnectionCreateAction) action).update();
+            if (action.isEnabled()) {
+                subMenu.add(action);
+            }
+
             subMenu.add(new Separator());
 
             action = new ConnectionCreateAction(part, EConnectionType.RUN_IF);
@@ -280,15 +286,13 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
             if (action.isEnabled()) {
                 menu.appendToGroup(GROUP_OTHER, action);
             }
-            
-            //see feature 5027
+
+            // see feature 5027
             action = new ParallelExecutionAction(part);
             ((SelectionAction) action).update();
-            if(PluginChecker.isTIS()){
+            if (PluginChecker.isTIS()) {
                 menu.appendToGroup(GROUP_OTHER, action);
             }
-
-
 
             action = new OpenJobHierarchyAction(part);
             ((SelectionAction) action).update();
