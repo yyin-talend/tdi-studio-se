@@ -728,6 +728,7 @@ public class ScdManager {
         clone.setLabel(label);
         clone.setOriginalDbColumnName(label);
         clone.setComment(GENERATE_COLUMN);
+        clone.setKey(false);
         return clone;
     }
 
@@ -744,10 +745,10 @@ public class ScdManager {
         IMetadataTable schema = component.getMetadataList().get(0);
 
         // adding all used columns to output schema
-        Map<String, IMetadataColumn> columnsMap = new HashMap<String, IMetadataColumn>();
+        Map<String, IMetadataColumn> inputColumnsMap = new HashMap<String, IMetadataColumn>();
         List<IMetadataColumn> inputColumns = getInputColumns(component);
         for (IMetadataColumn column : inputColumns) {
-            columnsMap.put(column.getLabel(), column);
+            inputColumnsMap.put(column.getLabel(), column);
             if (!unusedFields.contains(column.getLabel()) && outputColumns.get(column.getLabel()) == null) {
                 schema.getListColumns().add(cloneColumn(column, column.getLabel()));
             }
@@ -760,9 +761,10 @@ public class ScdManager {
                 if (outputColumns.get(type3.getPreviousValue()) != null) {
                     continue;
                 }
-                IMetadataColumn column = columnsMap.get(type3.getCurrentValue());
-                IMetadataColumn previous = column.clone();
-                schema.getListColumns().add(cloneColumn(column, type3.getPreviousValue()));
+                IMetadataColumn column = inputColumnsMap.get(type3.getCurrentValue());
+                IMetadataColumn previous = cloneColumn(column, type3.getPreviousValue());
+                outputColumns.put(previous.getLabel(), previous);
+                schema.getListColumns().add(previous);
             }
         }
 
@@ -787,6 +789,7 @@ public class ScdManager {
                 createMetadataColumn(outputColumns, schema, versionData.getActiveName(), Boolean.class, lang);
             }
         }
+        fixKeyColumnsInOutputSchema(schema, inputColumnsMap, lang);
         // sort column by name
         Collections.sort(schema.getListColumns(), new Comparator<IMetadataColumn>() {
 
@@ -796,6 +799,59 @@ public class ScdManager {
             }
 
         });
+
+    }
+
+    /**
+     * DOC chuang Comment method "fixKeyColumnsInOutputSchema".
+     * 
+     * @param schema
+     * @param inputColumnsMap
+     * @param lang
+     */
+    private void fixKeyColumnsInOutputSchema(IMetadataTable schema, Map<String, IMetadataColumn> inputColumnsMap,
+            ECodeLanguage lang) {
+        Map<String, IMetadataColumn> columnsMap = new HashMap<String, IMetadataColumn>();
+        for (IMetadataColumn column : schema.getListColumns()) {
+            columnsMap.put(column.getLabel(), column);
+        }
+
+        // all source keys are not keys in the output schema
+        if (sourceKeys != null && !sourceKeys.isEmpty()) {
+            for (String key : sourceKeys) {
+                IMetadataColumn column = columnsMap.get(key);
+                if (column != null && column.getComment().equals(GENERATE_COLUMN)) {
+                    column.setKey(false);
+                }
+            }
+        }
+
+        if (surrogateKeys != null && !surrogateKeys.isEmpty()) {
+            for (SurrogateKey key : surrogateKeys) {
+                IMetadataColumn column = columnsMap.get(key.getColumn());
+                if (column == null) {
+                    // create surrogate key
+                    if (key.getCreation() == SurrogateCreationType.INPUT_FIELD) {
+                        IMetadataColumn inputCol = inputColumnsMap.get(key.getComplement());
+                        if (inputCol != null) {
+                            column = inputCol.clone();
+                            column.setLabel(key.getColumn());
+                            column.setOriginalDbColumnName(key.getColumn());
+                            column.setComment(GENERATE_COLUMN);
+                            column.setKey(true); // set as key in output schema
+                            schema.getListColumns().add(column);
+                        }
+                    } else {
+                        column = createMetadataColumn(columnsMap, schema, key.getColumn(), Integer.class, lang);
+                        column.setKey(true); // set as key in output schema
+                        if (key.getCreation() == SurrogateCreationType.ROUTINE) {
+                            // routine is treated as string now
+                            column.setTalendType(getType(String.class, lang));
+                        }
+                    }
+                }
+            }
+        }
 
     }
 
@@ -838,6 +894,7 @@ public class ScdManager {
         column.setTalendType(getType(clazz, lang));
         column.setComment(GENERATE_COLUMN);
         schema.getListColumns().add(column);
+        outputColumns.put(column.getLabel(), column);
         return column;
     }
 
@@ -850,15 +907,20 @@ public class ScdManager {
                 return JavaTypesManager.INTEGER.getId();
             } else if (clazz.equals(Boolean.class)) {
                 return JavaTypesManager.BOOLEAN.getId();
+            } else if (clazz.equals(String.class)) {
+                return JavaTypesManager.STRING.getId();
             }
             break;
         case PERL:
+            // see MetadataTalendType.PERL_TYPES
             if (clazz.equals(Date.class)) {
                 return "datetime";
             } else if (clazz.equals(Integer.class)) {
                 return "int";
             } else if (clazz.equals(Boolean.class)) {
                 return "boolean";
+            } else if (clazz.equals(String.class)) {
+                return "string";
             }
             break;
         }
