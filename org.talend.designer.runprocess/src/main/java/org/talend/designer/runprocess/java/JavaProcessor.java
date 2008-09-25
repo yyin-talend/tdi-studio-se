@@ -28,6 +28,7 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
@@ -42,6 +43,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
@@ -53,6 +55,13 @@ import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.core.dom.Message;
+import org.eclipse.jdt.debug.core.IJavaBreakpoint;
+import org.eclipse.jdt.debug.core.IJavaBreakpointListener;
+import org.eclipse.jdt.debug.core.IJavaDebugTarget;
+import org.eclipse.jdt.debug.core.IJavaLineBreakpoint;
+import org.eclipse.jdt.debug.core.IJavaThread;
+import org.eclipse.jdt.debug.core.IJavaType;
 import org.eclipse.jdt.debug.core.JDIDebugModel;
 import org.eclipse.jdt.internal.ui.JavaPlugin;
 import org.eclipse.jdt.internal.ui.text.java.JavaFormattingStrategy;
@@ -69,8 +78,10 @@ import org.eclipse.jface.text.formatter.FormattingContext;
 import org.eclipse.jface.text.formatter.FormattingContextProperties;
 import org.eclipse.jface.text.formatter.IFormattingContext;
 import org.eclipse.jface.text.formatter.MultiPassContentFormatter;
+import org.eclipse.swt.widgets.Display;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.RuntimeExceptionHandler;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.io.FilesUtils;
@@ -89,6 +100,8 @@ import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.codegen.ICodeGenerator;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.core.ISyntaxCheckableEditor;
+import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.runprocess.IJavaProcessorStates;
 import org.talend.designer.runprocess.JobInfo;
 import org.talend.designer.runprocess.Processor;
@@ -112,7 +125,7 @@ import org.talend.librariesmanager.model.ModulesNeededProvider;
  * $Id: JavaProcessor.java 2007-1-22 上�?�10:53:24 yzhang $
  * 
  */
-public class JavaProcessor extends Processor {
+public class JavaProcessor extends Processor implements IJavaBreakpointListener {
 
     /** The java project within the project. */
     private static IJavaProject javaProject;
@@ -1081,5 +1094,152 @@ public class JavaProcessor extends Processor {
         codeGen = service.createCodeGenerator(process, false, false, javaInterpreter, javaLib, javaContext, currentJavaProject);
 
         updateContextCode(codeGen);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.eclipse.jdt.debug.core.IJavaBreakpointListener#addingBreakpoint(org.eclipse.jdt.debug.core.IJavaDebugTarget,
+     * org.eclipse.jdt.debug.core.IJavaBreakpoint)
+     */
+    public void addingBreakpoint(IJavaDebugTarget target, IJavaBreakpoint breakpoint) {
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.eclipse.jdt.debug.core.IJavaBreakpointListener#breakpointHasCompilationErrors(org.eclipse.jdt.debug.core.
+     * IJavaLineBreakpoint, org.eclipse.jdt.core.dom.Message[])
+     */
+    public void breakpointHasCompilationErrors(IJavaLineBreakpoint breakpoint, Message[] errors) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @seeorg.eclipse.jdt.debug.core.IJavaBreakpointListener#breakpointHasRuntimeException(org.eclipse.jdt.debug.core.
+     * IJavaLineBreakpoint, org.eclipse.debug.core.DebugException)
+     */
+    public void breakpointHasRuntimeException(IJavaLineBreakpoint breakpoint, DebugException exception) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jdt.debug.core.IJavaBreakpointListener#breakpointHit(org.eclipse.jdt.debug.core.IJavaThread,
+     * org.eclipse.jdt.debug.core.IJavaBreakpoint)
+     */
+    public int breakpointHit(IJavaThread thread, IJavaBreakpoint breakpoint) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.eclipse.jdt.debug.core.IJavaBreakpointListener#breakpointInstalled(org.eclipse.jdt.debug.core.IJavaDebugTarget
+     * , org.eclipse.jdt.debug.core.IJavaBreakpoint)
+     */
+    public void breakpointInstalled(IJavaDebugTarget target, IJavaBreakpoint breakpoint) {
+        updateGraphicalNodeBreaking(breakpoint, false);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.eclipse.jdt.debug.core.IJavaBreakpointListener#breakpointRemoved(org.eclipse.jdt.debug.core.IJavaDebugTarget,
+     * org.eclipse.jdt.debug.core.IJavaBreakpoint)
+     */
+    public void breakpointRemoved(IJavaDebugTarget target, IJavaBreakpoint breakpoint) {
+        if (!target.isTerminated()) {
+            updateGraphicalNodeBreaking(breakpoint, true);
+        }
+
+    }
+
+    /**
+     * yzhang Comment method "updateGraphicalNodeBreaking".
+     * 
+     * @param breakpoint
+     */
+    private void updateGraphicalNodeBreaking(IJavaBreakpoint breakpoint, boolean removed) {
+        try {
+            Integer breakLineNumber = (Integer) breakpoint.getMarker().getAttribute(IMarker.LINE_NUMBER);
+            if (breakLineNumber == null || breakLineNumber == -1) {
+                return;
+            }
+            IFile codeFile = this.project.getFile(this.codePath);
+            LineNumberReader lineReader = new LineNumberReader(new InputStreamReader(codeFile.getContents()));
+            String content = null;
+            while (lineReader.getLineNumber() < breakLineNumber - 3) {
+                content = lineReader.readLine();
+            }
+            int startIndex = content.indexOf("[") + 1;
+            int endIndex = content.indexOf(" main ] start");
+            if (startIndex != -1 && endIndex != -1) {
+                String nodeUniqueName = content.substring(startIndex, endIndex);
+                List<? extends INode> breakpointNodes = CorePlugin.getContext().getBreakpointNodes(process);
+                List<? extends INode> graphicalNodes = process.getGraphicalNodes();
+                if (graphicalNodes == null) {
+                    return;
+                }
+                for (INode node : graphicalNodes) {
+                    if (node.getUniqueName().equals(nodeUniqueName) && removed && breakpointNodes.contains(node)) {
+                        CorePlugin.getContext().removeBreakpoint(process, node);
+                        if (node instanceof Node) {
+                            final INode currentNode = node;
+                            Display.getDefault().syncExec(new Runnable() {
+
+                                public void run() {
+                                    ((Node) currentNode).removeStatus(Process.BREAKPOINT_STATUS);
+
+                                }
+
+                            });
+                        }
+                    } else if (node.getUniqueName().equals(nodeUniqueName) && !removed && !breakpointNodes.contains(node)) {
+                        CorePlugin.getContext().addBreakpoint(process, node);
+                        if (node instanceof Node) {
+                            final INode currentNode = node;
+                            Display.getDefault().syncExec(new Runnable() {
+
+                                public void run() {
+                                    ((Node) currentNode).addStatus(Process.BREAKPOINT_STATUS);
+
+                                }
+
+                            });
+                        }
+                    }
+                }
+
+            }
+
+        } catch (CoreException e) {
+            RuntimeExceptionHandler.process(e);
+        } catch (IOException e) {
+            RuntimeExceptionHandler.process(e);
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.eclipse.jdt.debug.core.IJavaBreakpointListener#installingBreakpoint(org.eclipse.jdt.debug.core.IJavaDebugTarget
+     * , org.eclipse.jdt.debug.core.IJavaBreakpoint, org.eclipse.jdt.debug.core.IJavaType)
+     */
+    public int installingBreakpoint(IJavaDebugTarget target, IJavaBreakpoint breakpoint, IJavaType type) {
+        // TODO Auto-generated method stub
+        return 0;
     }
 }
