@@ -776,7 +776,10 @@ public class ScdManager {
             // start date
             createMetadataColumn(outputColumns, schema, versionData.getStartName(), Date.class, lang);
             // end date
-            createMetadataColumn(outputColumns, schema, versionData.getEndName(), Date.class, lang);
+            IMetadataColumn endColumn = createMetadataColumn(outputColumns, schema, versionData.getEndName(), Date.class, lang);
+            if (endColumn != null) {
+                endColumn.setNullable(true);
+            }
             if (versionData.isVersionChecked()) {
                 createMetadataColumn(outputColumns, schema, versionData.getVersionName(), Integer.class, lang);
             }
@@ -827,7 +830,7 @@ public class ScdManager {
     private IMetadataColumn createMetadataColumn(Map<String, IMetadataColumn> outputColumns, IMetadataTable schema, String name,
             Class clazz, ECodeLanguage lang) {
         if (outputColumns.get(name) != null) {
-            return outputColumns.get(name);
+            return null;
         }
         IMetadataColumn column = new MetadataColumn();
         column.setLabel(name);
