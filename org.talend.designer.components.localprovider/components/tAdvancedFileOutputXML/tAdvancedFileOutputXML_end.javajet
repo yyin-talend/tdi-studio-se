@@ -148,6 +148,8 @@ List<Map<String, String>> loopTable =
 String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
 String mode = ElementParameterParser.getValue(node, "__GENERATION_MODE__");
 String cid = node.getUniqueName();
+String cid_original = cid;
+cid = cid_original.replace("tAdvancedFileOutputXML","tAFOX");
 
 String filename = ElementParameterParser.getValue(node, "__FILENAME__");
 boolean isDeleteEmptyFile = ElementParameterParser.getValue(node, "__DELETE_EMPTYFILE__").equals("true");
@@ -234,7 +236,7 @@ if(currentRowCount_<%=cid %> > 0){
 <%
 	}
 %>
-globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
+globalMap.put("<%=cid_original %>_NB_LINE",nb_line_<%=cid %>);
 <%
 
 // ------------------- *** xsd output code start *** ------------------- //
