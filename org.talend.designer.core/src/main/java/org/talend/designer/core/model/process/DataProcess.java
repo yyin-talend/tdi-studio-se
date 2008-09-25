@@ -107,7 +107,7 @@ public class DataProcess {
     }
 
     // should only be called by a starting node
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     public INode buildDataNodeFromNode(final Node graphicalNode, String prefix) {
         if (buildCheckMap.containsKey(graphicalNode)) {
             return buildCheckMap.get(graphicalNode);
@@ -210,7 +210,7 @@ public class DataProcess {
                     IElementParameter param = new ElementParameter(dataConnec);
                     param.setField(EParameterFieldType.CHECK);
                     param.setCategory(EComponentCategory.BASIC);
-                    param.setValue(Boolean.FALSE); //$NON-NLS-1$
+                    param.setValue(Boolean.FALSE);
                     param.setName("ENABLE_PARALLEL");
                     param.setDisplayName("Enable parallel execution");
                     param.setShow(true);
@@ -320,7 +320,7 @@ public class DataProcess {
      * @param multipleComponentManager
      * @return
      */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     private void addMultipleNode(INode graphicalNode, List<IMultipleComponentManager> multipleComponentManagers) {
         AbstractNode dataNode;
         // prepare all the nodes
@@ -705,7 +705,7 @@ public class DataProcess {
         }
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     public void checkFlowRefLink(final Node graphicalNode) {
         if (checkRefList.contains(graphicalNode)) {
             return;
@@ -821,7 +821,7 @@ public class DataProcess {
                     }
                     if (connecToMove != null) {
                         ((List<IConnection>) refSource.getOutgoingConnections()).remove(connecToMove);
-                        ((List<IConnection>) meterNode.getOutgoingConnections()).add(connecToMove);
+                        ((List<IConnection>) meterNode.getOutgoingConnections()).add(0, connecToMove);
                         ((DataConnection) connecToMove).setSource(meterNode);
                         ((DataConnection) connecToMove).setName(connecToMove.getName());
                         ((DataConnection) connecToMove).setUniqueName("meterRow" + connecToMove.getUniqueName());
@@ -994,7 +994,7 @@ public class DataProcess {
             if (!connection.isActivate()) {
                 continue;
             }
-            INode target = buildNodeFromNode((Node) connection.getTarget(), process);
+            INode target = buildNodeFromNode(connection.getTarget(), process);
 
             dataConnec = new Connection(newGraphicalNode, (Node) target, connection.getLineStyle(),
                     connection.getConnectorName(), connection.getMetaName(), connection.getName(), connection.getUniqueName(),
