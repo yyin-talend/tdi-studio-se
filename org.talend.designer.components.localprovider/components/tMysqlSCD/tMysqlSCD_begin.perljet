@@ -55,6 +55,11 @@ if (inMetadata != null && metadata != null) {
         "__USE_EXISTING_CONNECTION__"
     );
 
+    String tableAction = ElementParameterParser.getValue(
+        node,
+        "__TABLE_ACTION__"
+    );
+
     String dbhost = ElementParameterParser.getValue(node, "__HOST__");
     String dbport = ElementParameterParser.getValue(node, "__PORT__");
     String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
@@ -164,6 +169,36 @@ if (inMetadata != null && metadata != null) {
 
 use DBI;
 use Digest::MD5 qw/md5_hex/;
+use tMysqlOutput::Mysql;
+
+my %desc_<%=cid %> = (
+    schema => [
+<%
+    for (IMetadataColumn column: metadata.getListColumns()) {
+%>
+        {
+            name    => '`<%=column.getLabel() %>`',
+            key     => <%=column.isKey() %>,
+            type    => '<%=column.getTalendType() %>',
+            len     => <%=column.getLength() %>,
+            precision => <%=column.getPrecision() %>,
+            null    => <%=column.isNullable() %>,
+            default => '<%=column.getDefault() %>',
+            comment => '<%=column.getComment() %>',
+        },
+<%
+    }
+%>
+    ],
+);
+
+tMysqlOutput::Mysql::performTableAction(
+    tableAction => '<%=tableAction%>',
+    dbh => $<%=dbh%>,
+    dbtable => <%=dbtable %>,
+    component => '<%=cid%>',
+    schema => $desc_<%=cid %>{schema}
+);
 
 <%
     int column_number = 0;
