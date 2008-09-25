@@ -284,6 +284,12 @@ public class DeleteAction extends AContextualAction {
      */
     private boolean isForbidNode(RepositoryNode node) {
 
+        IRepositoryObject nodeObject = node.getObject();
+        // Avoid to delete node which is locked.
+        if (nodeObject != null && nodeObject.getProperty().getItem().getState().isLocked()) {
+            return true;
+        }
+
         // Avoid to delete all related documentation node by click Key "Delete" from keyboard.
         if (node.getContentType() == ERepositoryObjectType.JOB_DOC) {
             return true;
@@ -311,7 +317,7 @@ public class DeleteAction extends AContextualAction {
             return true;
         }
         if (node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_CON_TABLE) {
-            final IRepositoryObject object = node.getObject();
+            final IRepositoryObject object = nodeObject;
             if (object != null && object instanceof MetadataTableRepositoryObject) {
                 final MetadataTable table = ((MetadataTableRepositoryObject) object).getTable();
                 if (table != null && table instanceof SubscriberTable) {
