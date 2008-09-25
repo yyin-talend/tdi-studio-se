@@ -30,11 +30,14 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.debug.core.IBreakpointListener;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.impl.AdapterImpl;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gmf.runtime.diagram.ui.editparts.INodeEditPart;
+import org.eclipse.jdt.debug.core.IJavaBreakpointListener;
+import org.eclipse.jdt.debug.core.JDIDebugModel;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Display;
@@ -397,6 +400,9 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         codeEditor = CodeEditorFactory.getInstance().getCodeEditor(getCurrentLang(), process);
         ((Process) process).setEditor(this);
         processor = ProcessorUtilities.getProcessor(process, process.getContextManager().getDefaultContext());
+        if (processor instanceof IJavaBreakpointListener) {
+            JDIDebugModel.addJavaBreakpointListener((IJavaBreakpointListener) processor);
+        }
 
         process.setProcessor(processor);
         processor.setProcessorStates(IProcessor.STATES_EDIT);
@@ -864,6 +870,9 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         processEditorInput = null;
         designerEditor = null;
         codeEditor = null;
+        if (processor instanceof IBreakpointListener) {
+            JDIDebugModel.removeJavaBreakpointListener((IJavaBreakpointListener) processor);
+        }
         processor = null;
         process = null;
         dirtyListener = null;
