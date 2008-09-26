@@ -126,7 +126,6 @@ public enum EDatabaseComponentName {
 
     String inputComponentName;
 
-    @Deprecated
     String outPutComponentName;
 
     EDatabaseTypeName dbTypeName;
@@ -181,7 +180,6 @@ public enum EDatabaseComponentName {
      * Getter for outPutComponentName.
      * 
      * @return the outPutComponentName
-     * @deprecated it is useless.
      */
     public String getOutPutComponentName() {
         return this.outPutComponentName;
@@ -274,9 +272,7 @@ public enum EDatabaseComponentName {
     public static String getProductName(Item item) {
         for (EDatabaseComponentName typeName : EDatabaseComponentName.values()) {
             if (typeName.getMappingKey().isAssignableFrom(item.getClass())) {
-
                 return typeName.getProductName();
-
                 // if (typeName.getMappingKey() == DatabaseConnectionItem.class) {
                 // DatabaseConnectionItem dbItem = (DatabaseConnectionItem) item;
                 // DatabaseConnection dbConnection = (DatabaseConnection) dbItem.getConnection();

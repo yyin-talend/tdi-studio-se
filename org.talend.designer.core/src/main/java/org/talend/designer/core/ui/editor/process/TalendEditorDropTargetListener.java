@@ -124,6 +124,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
         // when the job that selected is the same one in the current editor, the drag event should be disabled.
         IStructuredSelection selection = getSelection();
         if (selection.size() != 1) {
+            getCurrentEvent().detail = DND.DROP_NONE;
             return;
         }
 
@@ -133,7 +134,22 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 getCurrentEvent().detail = DND.DROP_NONE;
             }
         }
+    }
 
+    public void dragOver(DropTargetEvent event) {
+        // when the job that selected is the same one in the current editor, the drag event should be disabled.
+        IStructuredSelection selection = getSelection();
+        if (selection.size() != 1) {
+            event.detail = DND.DROP_NONE;
+            return;
+        }
+
+        if (selection.getFirstElement() instanceof RepositoryNode) {
+            RepositoryNode sourceNode = (RepositoryNode) selection.getFirstElement();
+            if (equalsJobInCurrentEditor(sourceNode)) {
+                event.detail = DND.DROP_NONE;
+            }
+        }
     }
 
     /*
@@ -233,22 +249,6 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
         }
     }
 
-    public void dragOver(DropTargetEvent event) {
-        // when the job that selected is the same one in the current editor, the drag event should be disabled.
-        IStructuredSelection selection = getSelection();
-        if (selection.size() != 1) {
-            event.detail = DND.DROP_NONE;
-            return;
-        }
-
-        if (selection.getFirstElement() instanceof RepositoryNode) {
-            RepositoryNode sourceNode = (RepositoryNode) selection.getFirstElement();
-            if (equalsJobInCurrentEditor(sourceNode)) {
-                event.detail = DND.DROP_NONE;
-            }
-        }
-    }
-
     private boolean equalsJobInCurrentEditor(RepositoryNode sourceNode) {
         Item item = sourceNode.getObject().getProperty().getItem();
         if (item instanceof ProcessItem) {
@@ -281,7 +281,8 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
     }
 
     public void createNewComponent(DropTargetEvent event1) {
-        boolean quickCreation = event1.detail != DND.DROP_MOVE;
+        boolean quickCreateInput = event1.detail == DND.DROP_LINK;
+        boolean quickCreateOutput = event1.detail == DND.DROP_COPY;
         List<TempStore> list = new ArrayList<TempStore>();
 
         Object obj = getSelection().getFirstElement();
@@ -298,7 +299,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             }
             TempStore store = new TempStore();
             store.seletetedNode = sourceNode;
-            getAppropriateComponent(item, quickCreation, store, type);
+            getAppropriateComponent(item, quickCreateInput, quickCreateOutput, store, type);
             if (store.component != null) {
                 list.add(store);
             } else {
@@ -551,7 +552,8 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
     public void dropAccept(DropTargetEvent event) {
     }
 
-    private void getAppropriateComponent(Item item, boolean quickCreation, TempStore store, ERepositoryObjectType type) {
+    private void getAppropriateComponent(Item item, boolean quickCreateInput, boolean quickCreateOutput, TempStore store,
+            ERepositoryObjectType type) {
         EDatabaseComponentName name = EDatabaseComponentName.getCorrespondingComponentName(item, type);
 
         List<IComponent> components = ComponentsFactoryProvider.getInstance().getComponents();
@@ -574,7 +576,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     }
                 }
             }
-            IComponent component = chooseOneComponent(neededComponents, name.getDefaultComponentName(), quickCreation);
+            IComponent component = chooseOneComponent(neededComponents, name, quickCreateInput, quickCreateOutput);
             store.component = component;
         }
         store.componentName = name;
@@ -584,10 +586,12 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
      * Let the user choose which component he would like to create.
      * 
      * @param neededComponents
-     * @param defaultComponentName
-     * @param quickCreation
+     * @param name
+     * @param quickCreateInput
+     * @param quickCreateOutput
      */
-    private IComponent chooseOneComponent(List<IComponent> neededComponents, String defaultComponentName, boolean quickCreation) {
+    private IComponent chooseOneComponent(List<IComponent> neededComponents, EDatabaseComponentName name,
+            boolean quickCreateInput, boolean quickCreateOutput) {
         if (neededComponents.isEmpty()) {
             return null;
         }
@@ -595,24 +599,36 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             return neededComponents.get(0);
         }
 
-        IComponent defaultComponent = neededComponents.get(0);
-        for (IComponent component : neededComponents) {
-            if (component.getName().equals(defaultComponentName)) {
-                defaultComponent = component;
-                break;
-            }
+        IComponent inputComponent = getComponentByName(name.getInputComponentName(), quickCreateInput, neededComponents);
+        if (inputComponent != null) {
+            return inputComponent;
         }
-        if (quickCreation) {
-            return defaultComponent;
+        IComponent outputComponent = getComponentByName(name.getOutPutComponentName(), quickCreateOutput, neededComponents);
+        if (outputComponent != null) {
+            return outputComponent;
         }
 
         ComponentChooseDialog dialog = new ComponentChooseDialog(editor.getSite().getShell(), neededComponents);
-        dialog.setInitialSelections(new Object[] { defaultComponent });
+        IComponent defaultComponent = getComponentByName(name.getDefaultComponentName(), true, neededComponents);
+        if (defaultComponent != null) {
+            dialog.setInitialSelections(new Object[] { defaultComponent });
+        }
         if (dialog.open() == IDialogConstants.OK_ID) {
             return dialog.getResultComponent();
         }
 
         throw new OperationCanceledException("cancel this operation");
+    }
+
+    private IComponent getComponentByName(String name, boolean loop, List<IComponent> neededComponents) {
+        if (loop) {
+            for (IComponent component : neededComponents) {
+                if (component.getName().equals(name)) {
+                    return component;
+                }
+            }
+        }
+        return null;
     }
 
     private void execCommandStack(Command command) {
