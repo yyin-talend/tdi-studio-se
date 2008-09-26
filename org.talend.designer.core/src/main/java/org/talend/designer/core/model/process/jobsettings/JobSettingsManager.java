@@ -113,16 +113,17 @@ public class JobSettingsManager {
         param.setShow(!isJoblet);
         paramList.add(param);
 
-        if (isJoblet) {
-            param = new ElementParameter(process);
-            param.setName(EParameterName.STARTABLE.getName());
-            param.setValue(false);
-            param.setDisplayName(EParameterName.STARTABLE.getDisplayName());
-            param.setField(EParameterFieldType.CHECK);
-            param.setCategory(EComponentCategory.EXTRA);
-            param.setNumRow(2);
-            paramList.add(param);
-        }
+        // if (isJoblet) {
+        // param = new ElementParameter(process);
+        // param.setName(EParameterName.STARTABLE.getName());
+        // param.setValue(false);
+        // param.setDisplayName(EParameterName.STARTABLE.getDisplayName());
+        // param.setField(EParameterFieldType.CHECK);
+        // param.setCategory(EComponentCategory.EXTRA);
+        // param.setNumRow(2);
+        // paramList.add(param);
+        // }
+
         param = new ElementParameter(process);
         param.setName(EParameterName.IMPLICIT_TCONTEXTLOAD.getName());
         param.setValue(false);
