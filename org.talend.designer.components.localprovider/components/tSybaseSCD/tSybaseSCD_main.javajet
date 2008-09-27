@@ -9,6 +9,8 @@ imports="
     org.talend.core.model.metadata.types.JavaTypesManager
     org.talend.core.model.metadata.types.JavaType
     org.talend.core.model.process.IConnectionCategory
+    org.talend.core.model.metadata.MetadataTalendType
+    org.talend.core.model.metadata.MappingTypeRetriever    
     java.util.List
     java.util.ArrayList
     java.util.Map

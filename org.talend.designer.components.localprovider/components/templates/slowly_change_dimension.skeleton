@@ -16,7 +16,10 @@ public class CLASS {
         private String labelName;
         private String columnName;
         private String javaType;
+        private String talendType;
+        private String dbType;
         private boolean isNullable;
+        private boolean isKey;
         public Column(String columnName, String javaType) {
             this.columnName = columnName;
             this.javaType = javaType;
@@ -25,7 +28,10 @@ public class CLASS {
             labelName = column.getLabel();
             columnName = column.getOriginalDbColumnName();
             javaType = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+            talendType = column.getTalendType();
+            dbType = column.getType();
             isNullable = column.isNullable();
+            isKey = column.isKey();
         }
         public String getLabelName() {
             return labelName;
@@ -36,8 +42,17 @@ public class CLASS {
         public String getJavaType() {
             return javaType;
         }
+        public String getTalendType() {
+            return talendType;
+        }
+        public String getDbType() {
+            return dbType;
+        }
         public boolean isNullable() {
             return isNullable;
+        }
+        public boolean isKey() {
+            return isKey;
         }
     }
     public class SCDConfiger {
@@ -549,13 +564,13 @@ public class CLASS {
         for(Column sourceKey : sourceKeys) { 
             //if (JavaTypesManager.isJavaPrimitiveType(sourceKey.getJavaType(), sourceKey.isNullable())) {
             if (sourceKey.getJavaType().equals("java.util.Date") || sourceKey.getJavaType().equals("String") || sourceKey.getJavaType().equals("Object") || sourceKey.isNullable()) {
-                sourceKeyClass.append("if (this." + sourceKey.getLabelName() + " == null) {\r\n");
-                sourceKeyClass.append("if (other." + sourceKey.getLabelName() + "!= null)\r\n");
+                sourceKeyClass.append("if (this." + sourceKey.getColumnName() + " == null) {\r\n");
+                sourceKeyClass.append("if (other." + sourceKey.getColumnName() + "!= null)\r\n");
                 sourceKeyClass.append("return false;\r\n");
-                sourceKeyClass.append("} else if (!this." + sourceKey.getLabelName() + ".equals(other." + sourceKey.getLabelName() + "))\r\n");
+                sourceKeyClass.append("} else if (!this." + sourceKey.getColumnName() + ".equals(other." + sourceKey.getColumnName() + "))\r\n");
                 sourceKeyClass.append("return false;\r\n");
             } else {                
-                sourceKeyClass.append("if (this." + sourceKey.getLabelName() + "!= other." + sourceKey.getLabelName() + ")\r\n");
+                sourceKeyClass.append("if (this." + sourceKey.getColumnName() + "!= other." + sourceKey.getColumnName() + ")\r\n");
                 sourceKeyClass.append("return false;\r\n");
             }
             sourceKeyClass.append("\r\n");
@@ -735,6 +750,7 @@ public class CLASS {
         public SCDManager(String cid) {
             this.cid = cid;
         }
+        protected abstract String getDBMSId();
         protected abstract String getLProtectedChar();
         protected abstract String getRProtectedChar();
         protected abstract String getSequence(String surrogateKeySequence);
@@ -1082,6 +1098,125 @@ public class CLASS {
             }
             return updateSQL.toString();
         }
+        public String getDeleteTableSQL() {
+            StringBuilder deleteTableSQL = new StringBuilder();
+            deleteTableSQL.append("DELETE FROM " + getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar());
+            return deleteTableSQL.toString();
+        }        
+        public String getTruncateTableSQL() {
+            StringBuilder truncateTableSQL = new StringBuilder();
+            truncateTableSQL.append("TRUNCATE TABLE " + getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar());
+            return truncateTableSQL.toString();
+        }
+        public String getDropTableSQL() {
+            StringBuilder dropTableSQL = new StringBuilder();
+            dropTableSQL.append("DROP TABLE " + getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar());
+            return dropTableSQL.toString();
+        }        
+        public String getCreateTableSQL(List<IMetadataColumn> outputSchema) {
+            MappingTypeRetriever mappingType = MetadataTalendType.getMappingTypeRetriever(getDBMSId());
+            StringBuilder createTableSQL = new StringBuilder();
+            createTableSQL.append("CREATE TABLE " + getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar() + "(");
+            List<String> pkList = new ArrayList<String>();
+            int count = 0;
+            String ending = ",";
+            for(IMetadataColumn metadataColumn : outputSchema) {
+                if(metadataColumn.isKey()) {
+                    pkList.add(getLProtectedChar() + metadataColumn.getOriginalDbColumnName() + getRProtectedChar());
+                }
+                createTableSQL.append(getLProtectedChar() + metadataColumn.getOriginalDbColumnName() + getRProtectedChar() + " ");
+                String dataType = null;
+                if(metadataColumn.getType() == null || metadataColumn.getType().trim().length() == 0) {
+                    dataType = mappingType.getDefaultSelectedDbType(metadataColumn.getTalendType());
+                } else {
+                    dataType = metadataColumn.getType();
+                }
+                createTableSQL.append(dataType);
+                Integer length = metadataColumn.getLength() == null ? 0 : metadataColumn.getLength();
+                Integer precision = metadataColumn.getPrecision() == null ? 0 : metadataColumn.getPrecision();
+                boolean lengthIgnored = mappingType.isLengthIgnored(getDBMSId(), dataType);
+                boolean precisionIgnored = mappingType.isPrecisionIgnored(getDBMSId(), dataType);
+                String prefix = "";
+                String suffix = "";
+                String comma = "";
+                if(mappingType.isPreBeforeLength(getDBMSId(),dataType)) {
+                    if(!precisionIgnored) {
+                        prefix = "(";
+                        suffix = ") ";
+                        createTableSQL.append(prefix + precision);
+                    }
+                    if(!lengthIgnored) {
+                        prefix = (prefix.equals("") ? "(" : prefix);
+                        suffix = (suffix.equals("") ? ") " : suffix);
+                        if(precisionIgnored) {
+                            createTableSQL.append(prefix);
+                            comma = "";
+                        } else {
+                            comma = ",";
+                        }
+                        createTableSQL.append(comma + length);
+                    }
+                    createTableSQL.append(suffix);
+                } else {
+                    if(!lengthIgnored) {
+                        prefix = "(";
+                        suffix = ") ";
+                        createTableSQL.append(prefix + length);
+                    }
+                    if(!precisionIgnored) {
+                        prefix = (prefix.equals("") ? "(" : prefix);
+                        suffix = (suffix.equals("") ? ") " : suffix);
+                        if(lengthIgnored) {
+                            createTableSQL.append(prefix);
+                            comma = "";                        
+                        } else {
+                            comma = ",";
+                        }
+                        createTableSQL.append(comma + precision);
+                    }
+                    createTableSQL.append(suffix);
+                }
+                createTableSQL.append(getDefaultValueSQL(metadataColumn.getDefault()));            
+                createTableSQL.append(setNullable(metadataColumn.isNullable()));            
+                if(count == outputSchema.size() - 1 && pkList.size() == 0) {
+                    ending = "";
+                }
+                createTableSQL.append(ending);
+                count++;
+            }
+            if(pkList.size() > 0) {                
+                createTableSQL.append("primary key(");                
+                int i = 0;                
+                for(String pk : pkList) {                    
+                    createTableSQL.append(pk);                    
+                    if(i != pkList.size() - 1) {                        
+                        createTableSQL.append(",");                        
+                    }                    
+                    i++;                    
+                }                
+                createTableSQL.append(")");                
+            }
+            createTableSQL.append(")");
+            return createTableSQL.toString();            
+        }
+        protected String setNullable(boolean nullable) {
+            if(!nullable) {
+                return " not null ";
+            } else {
+                return "";
+            }
+        }    
+        protected String getDefaultValueSQL(String defaultValue) {
+            if(defaultValue == null || defaultValue.equals("\"\"") || defaultValue.equals("")) {
+                return " ";
+            } else if((defaultValue.startsWith("\"") || defaultValue.startsWith("'")) && (defaultValue.endsWith("\"") || defaultValue.endsWith("'"))) {
+                return " default '" + defaultValue.substring(1,defaultValue.length() - 1) + "' ";
+            } else if(defaultValue.equalsIgnoreCase("null")) {
+                return " default null ";
+            } else {
+                return " default " + defaultValue + " ";
+            }            
+        }        
         public String genSetStatement(String pstmt, String variable, int paramIndex, String generatedType) {
             StringBuilder setStatement = new StringBuilder();
             boolean isObject = false;
@@ -1187,6 +1322,9 @@ public class CLASS {
         public DB2SCDManager(String cid) {
             super(cid);
         }
+        protected String getDBMSId() {
+            return "ibmdb2_id";
+        }
         protected String getLProtectedChar() {
             return "\\\"";
         }
@@ -1206,6 +1344,9 @@ public class CLASS {
     public class IngresSCDManager extends SCDManager {
         public IngresSCDManager(String cid) {
             super(cid);
+        }
+        protected String getDBMSId() {
+            return "ingres_id";
         }        
         protected String getLProtectedChar() {
             return "\\\"";
@@ -1226,6 +1367,9 @@ public class CLASS {
     public class MSSQLSCDManager extends SCDManager {
         public MSSQLSCDManager(String cid) {
             super(cid);
+        }
+        protected String getDBMSId() {
+            return "id_MSSQL";
         }        
         protected String getLProtectedChar() {
             return "[";
@@ -1246,6 +1390,9 @@ public class CLASS {
     public class MysqlSCDManager extends SCDManager {
         public MysqlSCDManager(String cid) {
             super(cid);
+        }
+        protected String getDBMSId() {
+            return "mysql_id";
         }        
         protected String getLProtectedChar() {
             return "`";
@@ -1371,6 +1518,9 @@ public class CLASS {
     public class OracleSCDManager extends SCDManager {
         public OracleSCDManager(String cid) {
             super(cid);
+        }
+        protected String getDBMSId() {
+            return "oracle_id";
         }        
         protected String getLProtectedChar() {
             return "";
@@ -1391,6 +1541,9 @@ public class CLASS {
     public class PostgresqlSCDManager extends SCDManager {
         public PostgresqlSCDManager(String cid) {
             super(cid);
+        }
+        protected String getDBMSId() {
+            return "postgres_id";
         }        
         protected String getLProtectedChar() {
             return "\\\"";
@@ -1412,6 +1565,9 @@ public class CLASS {
         public PostgrePlusSCDManager(String cid) {
             super(cid);
         }
+        protected String getDBMSId() {
+            return "postgresplus_id";
+        }        
         protected String getLProtectedChar() {
             return "\\\"";
         }
@@ -1431,6 +1587,9 @@ public class CLASS {
     public class SybaseSCDManager extends SCDManager {
         public SybaseSCDManager(String cid) {
             super(cid);
+        }
+        protected String getDBMSId() {
+            return "sybase_id";
         }        
         protected String getLProtectedChar() {
             return "";
