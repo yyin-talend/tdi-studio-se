@@ -13,7 +13,6 @@
 package org.talend.repository.ui.utils;
 
 import java.io.File;
-import java.net.URI;
 
 import org.apache.log4j.Logger;
 import org.talend.core.CorePlugin;
@@ -152,8 +151,7 @@ public class ManagerConnection {
     private String getJavaLibPath() {
         String separator = File.separator;
         String javaLibPath = CorePlugin.getDefault().getLibrariesService().getJavaLibrariesPath();
-        URI uri = URI.create(javaLibPath);
-        return uri.getPath() + separator;
+        return javaLibPath + separator;
     }
 
     /**
