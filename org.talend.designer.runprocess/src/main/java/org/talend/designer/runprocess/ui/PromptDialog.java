@@ -138,7 +138,8 @@ public class PromptDialog extends Dialog {
                         /*
                          * (non-Javadoc)
                          * 
-                         * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+                         * @see
+                         * org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
                          */
                         @Override
                         public void widgetSelected(SelectionEvent e) {
@@ -217,6 +218,7 @@ public class PromptDialog extends Dialog {
         data.minimumWidth = MINIMUM_WIDTH;
         text.setLayoutData(data);
         if (DefaultCellEditorFactory.isDate(parameter.getType())) {
+            text.setEditable(false);
             final Button b = new Button(child, SWT.NONE);
             b.setText("...");
             b.addSelectionListener(new SelectionAdapter() {
@@ -237,6 +239,7 @@ public class PromptDialog extends Dialog {
 
             });
         } else if (DefaultCellEditorFactory.isFile(parameter.getType())) {
+            text.setEditable(false);
             final Button b = new Button(child, SWT.NONE);
             b.setText("...");
             b.addSelectionListener(new SelectionAdapter() {
@@ -260,6 +263,7 @@ public class PromptDialog extends Dialog {
 
             });
         } else if (DefaultCellEditorFactory.isDirectory(parameter.getType())) {
+            text.setEditable(false);
             final Button b = new Button(child, SWT.NONE);
             b.setText("...");
             b.addSelectionListener(new SelectionAdapter() {
@@ -282,6 +286,8 @@ public class PromptDialog extends Dialog {
                 }
 
             });
+        } else if (DefaultCellEditorFactory.isPassword(parameter.getType())) {
+            text.setEchoChar('*');
         }
     }
 
@@ -301,12 +307,14 @@ public class PromptDialog extends Dialog {
         combo.setLayoutData(data);
 
         String[] valueList = parameter.getValueList();
-        combo.setItems(valueList);
-        int index = Arrays.binarySearch(valueList, parameter.getValue());
-        if (index >= 0) {
-            combo.select(index);
-        } else {
-            combo.select(0);
+        if (valueList != null) {
+            combo.setItems(valueList);
+            int index = Arrays.binarySearch(valueList, parameter.getValue());
+            if (index >= 0) {
+                combo.select(index);
+            } else {
+                combo.select(0);
+            }
         }
         parameter.setInternalValue(combo.getText());
         combo.addModifyListener(new ModifyListener() {
