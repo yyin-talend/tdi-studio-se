@@ -89,6 +89,11 @@ if(outConn!=null && inConn!=null){
 
 String temp_<%=cid%> = null;
 <%
+if(!dieOnError.equals("true")){
+%>
+	boolean flag_<%=cid %> = true;
+<%
+}
 for(int i=0; i<newColumnList.size();i++){
 	IMetadataColumn column = newColumnList.get(i);
 	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
@@ -102,9 +107,14 @@ for(int i=0; i<newColumnList.size();i++){
 <%
 		}else{
 %>
-try{
-	<%=outConn.getName()%>.<%=column.getLabel() %> = matches_<%=cid %> && groupCount_<%=cid %> <= <%=i %>? "" : matcher_<%= cid %>.group(<%=i + 1 %>);
-}catch(IllegalStateException e){
+if(flag_<%=cid %>){
+	try{
+		<%=outConn.getName()%>.<%=column.getLabel() %> = matches_<%=cid %> && groupCount_<%=cid %> <= <%=i %>? "" : matcher_<%= cid %>.group(<%=i + 1 %>);
+	}catch(IllegalStateException e){
+		<%=outConn.getName()%>.<%=column.getLabel() %> = null;
+		flag_<%=cid %> = false;
+	}
+}else{
 	<%=outConn.getName()%>.<%=column.getLabel() %> = null;
 }
 <%
@@ -147,6 +157,7 @@ try{
 <%
 		}else{
 %>
+if(flag_<%=cid %>){
 try{
 	temp_<%=cid%> = matches_<%=cid %> && groupCount_<%=cid %> <= <%=i %>? "" : matcher_<%= cid %>.group(<%=i %> + 1);
 	if(temp_<%=cid %>.length() > 0) {
@@ -183,20 +194,45 @@ try{
 }catch(IllegalStateException e){
 <%
 		if(defaultValue != null){
-%><%=outConn.getName() %>.<%=column.getLabel() %> = <%=defaultValue %>;
+%>
+	<%=outConn.getName() %>.<%=column.getLabel() %> = <%=defaultValue %>;
 <%
 		}else{
 			if(column.isNullable()) {
 %>
-<%=outConn.getName() %>.<%=column.getLabel() %> = null;
+	<%=outConn.getName() %>.<%=column.getLabel() %> = null;
 <%
 			}else if(javaType == JavaTypesManager.BOOLEAN){
 %>
-<%=outConn.getName() %>.<%=column.getLabel() %> = false;
+	<%=outConn.getName() %>.<%=column.getLabel() %> = false;
 <%
 			}else{
 %>
-<%=outConn.getName() %>.<%=column.getLabel() %> = (<%=primitiveTypeToGenerate %>)0;
+	<%=outConn.getName() %>.<%=column.getLabel() %> = (<%=primitiveTypeToGenerate %>)0;
+<%
+			}
+		}
+%>
+	flag_<%=cid %> = false;
+}
+}else{
+<%
+		if(defaultValue != null){
+%>
+	<%=outConn.getName() %>.<%=column.getLabel() %> = <%=defaultValue %>;
+<%
+		}else{
+			if(column.isNullable()) {
+%>
+	<%=outConn.getName() %>.<%=column.getLabel() %> = null;
+<%
+			}else if(javaType == JavaTypesManager.BOOLEAN){
+%>
+	<%=outConn.getName() %>.<%=column.getLabel() %> = false;
+<%
+			}else{
+%>
+	<%=outConn.getName() %>.<%=column.getLabel() %> = (<%=primitiveTypeToGenerate %>)0;
 <%
 			}
 		}
