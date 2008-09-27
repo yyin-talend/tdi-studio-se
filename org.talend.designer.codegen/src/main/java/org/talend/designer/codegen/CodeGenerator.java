@@ -196,16 +196,17 @@ public class CodeGenerator implements ICodeGenerator {
         if ((endTimer - startTimer) > INIT_TIMEOUT) {
             throw new CodeGeneratorException(Messages.getString("CodeGenerator.JET.TimeOut")); //$NON-NLS-1$
         } else {
+            // ####0005204: Cannot Call SubJob with RunJob Component
+            Vector headerArgument = new Vector(2);
+            headerArgument.add(process);
+
+            headerArgument.add(CodeGeneratorActivator.getDefault().getBundle().getHeaders().get(
+                    org.osgi.framework.Constants.BUNDLE_VERSION));
+            componentsCode.append(generateTypedComponentCode(EInternalTemplate.HEADER, headerArgument));
+            // ####
             if ((processTree.getSubTrees() != null) && (processTree.getSubTrees().size() > 0)) {
 
-                Vector headerArgument = new Vector(2);
-                headerArgument.add(process);
-
-                headerArgument.add(CodeGeneratorActivator.getDefault().getBundle().getHeaders().get(
-                        org.osgi.framework.Constants.BUNDLE_VERSION));
-
                 boolean displayMethodSize = isMethodSizeNeeded();
-                componentsCode.append(generateTypedComponentCode(EInternalTemplate.HEADER, headerArgument));
                 for (NodesSubTree subTree : processTree.getSubTrees()) {
                     subTree.setMethodSizeNeeded(displayMethodSize);
                     if (!subTree.isMergeSubTree()) {
@@ -235,13 +236,14 @@ public class CodeGenerator implements ICodeGenerator {
                     }
 
                 }
-                Vector footerArgument = new Vector(2);
-                footerArgument.add(process);
-                footerArgument.add(processTree.getRootNodes());
-                componentsCode.append(generateTypedComponentCode(EInternalTemplate.FOOTER, footerArgument));
-                componentsCode.append(generateTypedComponentCode(EInternalTemplate.PROCESSINFO, componentsCode.length()));
             }
-
+            // ####0005204: Cannot Call SubJob with RunJob Component
+            Vector footerArgument = new Vector(2);
+            footerArgument.add(process);
+            footerArgument.add(processTree.getRootNodes());
+            componentsCode.append(generateTypedComponentCode(EInternalTemplate.FOOTER, footerArgument));
+            componentsCode.append(generateTypedComponentCode(EInternalTemplate.PROCESSINFO, componentsCode.length()));
+            // ####
             return componentsCode.toString();
         }
     }
