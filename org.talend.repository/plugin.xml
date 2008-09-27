@@ -952,13 +952,13 @@
             context="%libraryneeded.dbconnectionwizard"
             language="java"
             message="%libraryneeded.fororacleconnection"
-            name="ojdbc5.jar"
+            name="ojdbc5-11g.jar"
             required="false"/>
       <libraryNeeded
             context="%libraryneeded.dbconnectionwizard"
             language="java"
             message="%libraryneeded.forpostgresqlconnection"
-            name="postgresql-8.1-405.jdbc3.jar"
+            name="postgresql-8.3-603.jdbc3.jar"
             required="false"/>
    </extension>
    <!--
