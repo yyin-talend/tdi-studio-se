@@ -66,6 +66,18 @@
     </PARAMETER>
 
   </PARAMETERS>
+  
+  <ADVANCED_PARAMETERS>
+
+    <PARAMETER
+      NAME="DIE_ON_ERROR"
+      FIELD="CHECK"
+      NUM_ROW="5"
+    >
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER>
+
+  </ADVANCED_PARAMETERS>
 
 
   <CODEGENERATION/>

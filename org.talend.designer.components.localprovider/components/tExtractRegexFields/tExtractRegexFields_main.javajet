@@ -20,6 +20,7 @@ INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
 String field = ElementParameterParser.getValue(node, "__FIELD__");
+String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 
 IConnection inConn = null;
 List< ? extends IConnection> inConns = node.getIncomingConnections();
@@ -91,13 +92,25 @@ String temp_<%=cid%> = null;
 for(int i=0; i<newColumnList.size();i++){
 	IMetadataColumn column = newColumnList.get(i);
 	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+	String primitiveTypeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), false);
 	JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 	String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();%><%
 	if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){
+		if(dieOnError.equals("true")){
 %>
-	<%=outConn.getName()%>.<%=column.getLabel() %> = matches_<%=cid %> && groupCount_<%=cid %> <= <%=i %>? "" : matcher_<%= cid %>.group(<%=i + 1 %>);
+<%=outConn.getName()%>.<%=column.getLabel() %> = matches_<%=cid %> && groupCount_<%=cid %> <= <%=i %>? "" : matcher_<%= cid %>.group(<%=i + 1 %>);
 <%
+		}else{
+%>
+try{
+	<%=outConn.getName()%>.<%=column.getLabel() %> = matches_<%=cid %> && groupCount_<%=cid %> <= <%=i %>? "" : matcher_<%= cid %>.group(<%=i + 1 %>);
+}catch(IllegalStateException e){
+	<%=outConn.getName()%>.<%=column.getLabel() %> = null;
+}
+<%
+		}
 	}else{ 
+		if(dieOnError.equals("true")){
 %>
 	temp_<%=cid%> = matches_<%=cid %> && groupCount_<%=cid %> <= <%=i %>? "" : matcher_<%= cid %>.group(<%=i %> + 1);
 	if(temp_<%=cid %>.length() > 0) {
@@ -132,6 +145,65 @@ for(int i=0; i<newColumnList.size();i++){
 %>
 	}
 <%
+		}else{
+%>
+try{
+	temp_<%=cid%> = matches_<%=cid %> && groupCount_<%=cid %> <= <%=i %>? "" : matcher_<%= cid %>.group(<%=i %> + 1);
+	if(temp_<%=cid %>.length() > 0) {
+<%
+		if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
+		} else if(javaType == JavaTypesManager.BYTE_ARRAY){ 
+%>
+		<%=outConn.getName() %>.<%=column.getLabel() %> = temp_<%=cid %>.getBytes();
+<%
+		}else if(javaType == JavaTypesManager.DATE) { 
+%>
+		<%=outConn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_<%=cid %>, <%= patternValue %>);
+<%
+		} else {
+%>
+		<%=outConn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(temp_<%=cid %>);
+<%
+		}
+%>
+	} else {						
+<%
+		String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
+		if(defaultValue == null) {
+%>
+		throw new RuntimeException("Value is empty for column : '<%= column.getLabel() %>' in '<%=outConn.getName() %>' connection, value is invalid or this column should be nullable or have a default value.");
+<%
+		} else {
+%>
+		<%=outConn.getName() %>.<%=column.getLabel() %> = <%=defaultValue %>;
+<%
+		}
+%>
+	}
+}catch(IllegalStateException e){
+<%
+		if(defaultValue != null){
+%><%=outConn.getName() %>.<%=column.getLabel() %> = <%=defaultValue %>;
+<%
+		}else{
+			if(column.isNullable()) {
+%>
+<%=outConn.getName() %>.<%=column.getLabel() %> = null;
+<%
+			}else if(javaType == JavaTypesManager.BOOLEAN){
+%>
+<%=outConn.getName() %>.<%=column.getLabel() %> = false;
+<%
+			}else{
+%>
+<%=outConn.getName() %>.<%=column.getLabel() %> = (<%=primitiveTypeToGenerate %>)0;
+<%
+			}
+		}
+%>
+}
+<%
+		}
 	}
 }
 %>
