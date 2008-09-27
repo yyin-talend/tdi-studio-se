@@ -21,8 +21,8 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.talend.commons.ui.image.ImageProvider;
-import org.talend.core.model.metadata.builder.connection.CDCConnection;
-import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.PluginChecker;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.DocumentationItem;
@@ -32,6 +32,7 @@ import org.talend.core.model.properties.LinkDocumentationItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.ui.ICDCProviderService;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.images.OverlayImageProvider;
@@ -208,20 +209,25 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
                 Image tableImage = ImageProvider.getImage(node.getIcon());
                 Item item = node.getObject().getProperty().getItem();
                 if (item != null && item instanceof DatabaseConnectionItem) {
-                    DatabaseConnection connection = (DatabaseConnection) ((DatabaseConnectionItem) item).getConnection();
-                    CDCConnection cdcConns = connection.getCdcConns();
-                    if (cdcConns != null) {
-                        if (node.getObject() instanceof MetadataTableRepositoryObject) {
-                            MetadataTable table = ((MetadataTableRepositoryObject) node.getObject()).getTable();
-                            String tableType = table.getTableType();
-                            if (tableType != null && "TABLE".equals(tableType)) {
-                                ECDCStatus status = ECDCStatus.NONE;
-                                if (table.isActivatedCDC()) {
-                                    status = ECDCStatus.ACTIVATED;
-                                } else if (table.isAttachedCDC()) {
-                                    status = ECDCStatus.ADDED;
+                    if (PluginChecker.isCDCPluginLoaded()) {
+                        ICDCProviderService service = (ICDCProviderService) GlobalServiceRegister.getDefault().getService(
+                                ICDCProviderService.class);
+                        if (service != null) {
+                            String cdcLinkId = service.getCDCConnectionLinkId((DatabaseConnectionItem) item);
+                            if (cdcLinkId != null) { // cdc connection exist.
+                                if (node.getObject() instanceof MetadataTableRepositoryObject) {
+                                    MetadataTable table = ((MetadataTableRepositoryObject) node.getObject()).getTable();
+                                    String tableType = table.getTableType();
+                                    if (tableType != null && "TABLE".equals(tableType)) {
+                                        ECDCStatus status = ECDCStatus.NONE;
+                                        if (table.isActivatedCDC()) {
+                                            status = ECDCStatus.ACTIVATED;
+                                        } else if (table.isAttachedCDC()) {
+                                            status = ECDCStatus.ADDED;
+                                        }
+                                        return OverlayImageProvider.getImageWithCDCStatus(tableImage, status).createImage();
+                                    }
                                 }
-                                return OverlayImageProvider.getImageWithCDCStatus(tableImage, status).createImage();
                             }
                         }
                     }

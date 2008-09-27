@@ -186,7 +186,10 @@ public class DeleteTableAction extends AContextualAction {
                     }
                 } else if (node.getObjectType() == ERepositoryObjectType.METADATA_CON_CDC) {
                     canWork = false;
+                } else if (node.getObjectType() == ERepositoryObjectType.METADATA_CON_QUERY) {
+                    canWork = true;
                 }
+
                 if (!canWork) {
                     break;
                 }
