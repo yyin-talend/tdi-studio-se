@@ -1450,7 +1450,7 @@ public class Node extends Element implements INode {
                     List<Map<String, String>> tableValues = (List<Map<String, String>>) param.getValue();
                     if (tableValues.size() == 0) {
                         String errorMessage = "Parameter (" + param.getDisplayName() + ") must have at least one value.";
-                        Problems.add(ProblemStatus.WARNING, this, errorMessage);
+                        Problems.add(ProblemStatus.ERROR, this, errorMessage);
                     }
                 }
             }
