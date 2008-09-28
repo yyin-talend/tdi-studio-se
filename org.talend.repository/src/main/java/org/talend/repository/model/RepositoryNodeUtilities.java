@@ -151,6 +151,10 @@ public class RepositoryNodeUtilities {
      * @return the repository node by id
      */
     public static RepositoryNode getRepositoryNode(final String id) {
+        return getRepositoryNode(id, true);
+    }
+
+    public static RepositoryNode getRepositoryNode(final String id, boolean expanded) {
         if (id == null || "".equals(id) || RepositoryNode.NO_ID.equals(id)) {
             return null;
         }
@@ -158,7 +162,7 @@ public class RepositoryNodeUtilities {
         try {
             final IRepositoryObject lastVersion = factory.getLastVersion(id);
             if (lastVersion != null) {
-                return getRepositoryNode(lastVersion);
+                return getRepositoryNode(lastVersion, expanded);
             }
         } catch (PersistenceException e) {
             //
@@ -173,6 +177,10 @@ public class RepositoryNodeUtilities {
      * get the repository node by a IRepositoryObject.
      */
     public static RepositoryNode getRepositoryNode(IRepositoryObject curNode) {
+        return getRepositoryNode(curNode, true);
+    }
+
+    public static RepositoryNode getRepositoryNode(IRepositoryObject curNode, boolean expanded) {
         if (curNode == null) {
             return null;
         }
@@ -180,15 +188,18 @@ public class RepositoryNodeUtilities {
         if (view == null) {
             return null;
         }
-        return getRepositoryNode(view.getRoot(), curNode, view);
+        return getRepositoryNode(view.getRoot(), curNode, view, expanded);
     }
 
-    private static RepositoryNode getRepositoryNode(RepositoryNode rootNode, IRepositoryObject curNode, IRepositoryView view) {
+    private static RepositoryNode getRepositoryNode(RepositoryNode rootNode, IRepositoryObject curNode, IRepositoryView view,
+            boolean expanded) {
         if (rootNode == null || curNode == null || view == null) {
             return null;
         }
-        // expande the unvisible node
-        expandNode(rootNode, curNode, view);
+        if (expanded) {
+            // expande the unvisible node
+            expandNode(rootNode, curNode, view);
+        }
 
         final List<RepositoryNode> children = rootNode.getChildren();
 
@@ -205,7 +216,7 @@ public class RepositoryNodeUtilities {
 
             }
             for (RepositoryNode folderNode : folderChild) {
-                final RepositoryNode repositoryNode = getRepositoryNode(folderNode, curNode, view);
+                final RepositoryNode repositoryNode = getRepositoryNode(folderNode, curNode, view, expanded);
                 if (repositoryNode != null) {
                     return repositoryNode;
                 }
