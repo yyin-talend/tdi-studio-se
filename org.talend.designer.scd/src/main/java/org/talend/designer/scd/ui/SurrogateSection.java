@@ -151,8 +151,10 @@ public class SurrogateSection extends ScdSection {
                 } else {
                     routineText.setBackground(white);
                 }
-                // update model value
-                key.setColumn(routineText.getText());
+                if (key.getCreation() == SurrogateCreationType.ROUTINE) {
+                    // update model value
+                    key.setComplement(routineText.getText());
+                }
             }
         });
         GridDataFactory.fillDefaults().hint(SURROGATE_FIELD_WIDTH, SWT.DEFAULT).applyTo(routineText);
