@@ -38,7 +38,7 @@ public class HeaderComposite extends Composite {
     }
 
     public void updateStatus(String message) {
-        iconLabel.setImage(ImageProvider.getImage(EImage.WARNING_SMALL));
+        iconLabel.setImage(ImageProvider.getImage(EImage.ERROR_SMALL));
         statusLabel.setText(message);
     }
 
