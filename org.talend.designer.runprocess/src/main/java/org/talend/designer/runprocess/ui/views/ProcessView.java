@@ -220,6 +220,8 @@ public class ProcessView extends ViewPart {
             RunProcessPlugin.getDefault().getRunProcessContextManager().removePropertyChangeListener(contextManagerListener);
             contextManagerListener = null;
         }
+        processComposite.dispose();
+        processComposite = null;
         super.dispose();
     }
 
