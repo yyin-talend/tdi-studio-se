@@ -16,64 +16,52 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.TableEditor;
+import org.eclipse.swt.custom.CCombo;
+import org.eclipse.swt.custom.StackLayout;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.swt.widgets.Text;
 import org.talend.core.ui.proposal.TalendProposalUtils;
 import org.talend.designer.scd.ScdManager;
-import org.talend.designer.scd.ScdPlugin;
 import org.talend.designer.scd.model.SurrogateCreationType;
 import org.talend.designer.scd.model.SurrogateKey;
 import org.talend.designer.scd.util.DragDropManager;
-import org.talend.designer.scd.util.IPropertySetter;
 import org.talend.designer.scd.util.SWTResourceManager;
 import org.talend.designer.scd.util.SurrogateKeyManager;
-import org.talend.designer.scd.util.TableEditorManager;
 
 /**
  * DOC hcw class global comment. Detailled comment
  */
 public class SurrogateSection extends ScdSection {
 
-    private static final int START_INDEX = 0;
-
-    /**
-     * 
-     */
-    private static final int COMPLEMENT_INDEX = START_INDEX + 2;
-
-    /**
-     * 
-     */
-    private static final int CREATION_INDEX = START_INDEX + 1;
-
-    /**
-     * 
-     */
-    private static final int COLUMN_INDEX = START_INDEX;
+    private static final int SURROGATE_FIELD_WIDTH = 150;
 
     private static final Color ERROR_COLOR = SWTResourceManager.getColor(IColorConstants.RED);
 
-    private Table table;
-
-    private SurrogateKeyManager surrogateManager;
-
-    private TableEditorManager editorManager;
-
-    private List<SurrogateKey> tableModel = new ArrayList<SurrogateKey>();
+    private final SurrogateKeyManager surrogateManager;
 
     private DragDropManager dragDropManager;
+
+    private Text nameText;
+
+    private CCombo creationCombo;
+
+    private SurrogateKey key;
+
+    private Label inputFieldLabel;
+
+    private Text routineText;
+
+    private Runnable creationSwitch;
 
     /**
      * DOC hcw SurrogateSection constructor comment.
@@ -85,408 +73,189 @@ public class SurrogateSection extends ScdSection {
     public SurrogateSection(Composite parent, int width, int height, ScdManager scdManager) {
         super(parent, width, height, scdManager, false);
         surrogateManager = new SurrogateKeyManager();
-        editorManager = new TableEditorManager();
-        dragDropManager = new DragDropManager();
     }
 
     @Override
-    protected void createContents(Composite composite) {
-        table = new Table(composite, SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION);
-        GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
-        table.setLayoutData(gd);
-        table.setHeaderVisible(true);
-        table.setLinesVisible(true);
+    protected void createContents(Composite parent) {
+        dragDropManager = new DragDropManager();
+        key = new SurrogateKey();
 
-        // TableColumn checkColumn = new TableColumn(table, SWT.NONE);
-        // checkColumn.setWidth(15);
+        final Color white = parent.getDisplay().getSystemColor(SWT.COLOR_WHITE);
+        parent.setBackground(white);
+        Composite composite = new Composite(parent, SWT.NONE);
 
-        TableColumn column = new TableColumn(table, SWT.NONE);
-        column.setWidth(100);
-        column.setText("column");
+        composite.setBackground(white);
+        GridDataFactory.fillDefaults().grab(true, true).align(SWT.CENTER, SWT.CENTER).applyTo(composite);
+        GridLayoutFactory.fillDefaults().numColumns(2).applyTo(composite);
 
-        TableColumn creation = new TableColumn(table, SWT.NONE);
-        creation.setWidth(100);
-        creation.setText("creation");
+        // row 1
+        Label nameLabel = new Label(composite, SWT.NONE);
+        nameLabel.setText("name");
+        nameLabel.setBackground(white);
+        GridDataFactory.swtDefaults().applyTo(nameLabel);
+        nameText = new Text(composite, SWT.BORDER);
+        GridDataFactory.swtDefaults().hint(SURROGATE_FIELD_WIDTH, SWT.DEFAULT).applyTo(nameText);
 
-        TableColumn complement = new TableColumn(table, SWT.NONE);
-        complement.setWidth(150);
-        complement.setText("complement");
+        nameText.addModifyListener(new ModifyListener() {
 
-        TableColumn empty = new TableColumn(table, SWT.NONE);
-        empty.setWidth(100);
-
-        // createToolbar(composite);
-    }
-
-    /**
-     * DOC hcw Comment method "createToolbar".
-     * 
-     * @param composite
-     */
-    private void createToolbarActions(Composite composite) {
-        ToolBar toolBar = new ToolBar(composite, SWT.NONE);
-        toolBar.setLayoutData(new GridData(157, SWT.DEFAULT));
-
-        ToolItem addToolItem = new ToolItem(toolBar, SWT.PUSH);
-        addToolItem.setImage(SWTResourceManager.getPluginImage(ScdPlugin.getDefault(), "icons/add.gif"));
-        addToolItem.addSelectionListener(new SelectionAdapter() {
-
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                addButtonClick();
+            public void modifyText(ModifyEvent e) {
+                if (StringUtils.isEmpty(nameText.getText())) {
+                    nameText.setBackground(ERROR_COLOR);
+                } else {
+                    nameText.setBackground(white);
+                }
+                // update model value
+                key.setColumn(nameText.getText());
             }
         });
 
-        ToolItem removeToolItem = new ToolItem(toolBar, SWT.PUSH);
-        removeToolItem.setImage(SWTResourceManager.getPluginImage(ScdPlugin.getDefault(), "icons/delete.gif"));
-        removeToolItem.addSelectionListener(new SelectionAdapter() {
+        // row 2
+        Label creationLabel = new Label(composite, SWT.NONE);
+        creationLabel.setText("creation");
+        creationLabel.setBackground(white);
+        GridDataFactory.swtDefaults().applyTo(creationLabel);
+
+        creationCombo = new CCombo(composite, SWT.READ_ONLY | SWT.BORDER);
+        creationCombo.setItems(SurrogateCreationType.getAllTypeNames());
+        GridDataFactory.swtDefaults().hint(SURROGATE_FIELD_WIDTH + 3, SWT.DEFAULT).applyTo(creationCombo);
+
+        // row 3
+        Label complementLabel = new Label(composite, SWT.NONE);
+        complementLabel.setText("complement");
+        complementLabel.setBackground(white);
+        GridDataFactory.swtDefaults().applyTo(complementLabel);
+
+        final Composite complementComp = new Composite(composite, SWT.NONE);
+        GridDataFactory.swtDefaults().applyTo(complementComp);
+        final StackLayout stack = new StackLayout();
+        complementComp.setLayout(stack);
+
+        final Composite inputFieldComp = new Composite(complementComp, SWT.NONE);
+        GridLayoutFactory.fillDefaults().applyTo(inputFieldComp);
+        inputFieldLabel = new Label(inputFieldComp, SWT.BORDER);
+        GridDataFactory.fillDefaults().grab(true, true).hint(100, SWT.DEFAULT).applyTo(inputFieldLabel);
+
+        // add drag and drop support for input field
+        IDragDropDelegate delegate = createDragDropDelegate(inputFieldLabel);
+        dragDropManager.addDragSupport(inputFieldLabel, delegate);
+        dragDropManager.addDropSupport(inputFieldLabel, delegate);
+
+        final Composite routineFieldComp = new Composite(complementComp, SWT.NONE);
+        GridLayoutFactory.fillDefaults().applyTo(routineFieldComp);
+        routineText = new Text(routineFieldComp, SWT.BORDER);
+        routineText.addModifyListener(new ModifyListener() {
+
+            public void modifyText(ModifyEvent e) {
+                if (StringUtils.isEmpty(routineText.getText())) {
+                    routineText.setBackground(ERROR_COLOR);
+                } else {
+                    routineText.setBackground(white);
+                }
+                // update model value
+                key.setColumn(routineText.getText());
+            }
+        });
+        GridDataFactory.fillDefaults().hint(SURROGATE_FIELD_WIDTH, SWT.DEFAULT).applyTo(routineText);
+
+        // add content proposal for routine
+        TalendProposalUtils.installOn(routineText, null);
+
+        final Label emptyLabel = new Label(complementComp, SWT.NONE);
+        emptyLabel.setBackground(white);
+        stack.topControl = emptyLabel;
+
+        // when combo is changed, also change the control in complement
+        creationSwitch = new Runnable() {
+
+            public void run() {
+                int index = creationCombo.getSelectionIndex();
+                SurrogateCreationType type = SurrogateCreationType.getTypeByIndex(index);
+                key.setCreation(type);
+                if (type == SurrogateCreationType.ROUTINE) {
+                    stack.topControl = routineFieldComp; // routineText;
+                    if (StringUtils.isEmpty(routineText.getText())) {
+                        routineText.setBackground(ERROR_COLOR);
+                        key.setComplement("");
+                    } else {
+                        routineText.setBackground(white);
+                    }
+
+                    inputFieldLabel.setText("");
+
+                } else if (type == SurrogateCreationType.INPUT_FIELD) {
+                    stack.topControl = inputFieldComp; // inputFieldLabel;
+                    if (StringUtils.isEmpty(inputFieldLabel.getText())) {
+                        inputFieldLabel.setBackground(ERROR_COLOR);
+                        key.setComplement("");
+                    } else {
+                        inputFieldLabel.setBackground(null);
+                    }
+                    routineText.setText("");
+                } else {
+                    stack.topControl = emptyLabel;
+                    routineText.setText("");
+                    inputFieldLabel.setText("");
+                    key.setComplement("");
+                }
+                scdManager.fireFieldChange();
+                complementComp.layout();
+
+            }
+
+        };
+        creationCombo.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+                widgetSelected(e);
+            }
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                removeButtonClick();
+                creationSwitch.run();
             }
-
         });
 
-        ToolItem moveUpToolItem = new ToolItem(toolBar, SWT.PUSH);
-        moveUpToolItem.setImage(SWTResourceManager.getPluginImage(ScdPlugin.getDefault(), "icons/up.gif"));
-        moveUpToolItem.addSelectionListener(new SelectionAdapter() {
-
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                moveUpButtonClick();
-            }
-
-        });
-
-        ToolItem moveDownToolItem = new ToolItem(toolBar, SWT.PUSH);
-        moveDownToolItem.setImage(SWTResourceManager.getPluginImage(ScdPlugin.getDefault(), "icons/down.gif"));
-        moveDownToolItem.addSelectionListener(new SelectionAdapter() {
-
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                moveDownButtonClick();
-            }
-
-        });
-
-    }
-
-    public Table getTable() {
-        return table;
-    }
-
-    /**
-     * DOC hcw Comment method "moveDownButtonClick".
-     */
-    protected void moveDownButtonClick() {
-        table.setRedraw(false);
-        List<Integer> updateIndices = new ArrayList<Integer>(); // indices of item which will be updated
-        int[] newSelectionIndices = adjustIndicesDown(table.getSelectionIndices(), tableModel, updateIndices);
-        // move selection
-        table.setSelection(newSelectionIndices);
-
-        // remove editors
-        for (int index : updateIndices) {
-            editorManager.removeEditors(table.getItem(index));
-        }
-        // rebuild table item
-        for (int index : updateIndices) {
-            initTableItem(tableModel.get(index), table.getItem(index));
-        }
-
-        table.setRedraw(true);
-
-    }
-
-    /**
-     * DOC hcw Comment method "moveUpButtonClick".
-     */
-    protected void moveUpButtonClick() {
-        table.setRedraw(false);
-        List<Integer> updateIndices = new ArrayList<Integer>(); // indices of item which will be updated
-        int[] newSelectionIndices = adjustIndicesUp(table.getSelectionIndices(), tableModel, updateIndices);
-        // move selection
-        table.setSelection(newSelectionIndices);
-
-        // remove editors
-        for (int index : updateIndices) {
-            editorManager.removeEditors(table.getItem(index));
-        }
-        // rebuild table item
-        for (int index : updateIndices) {
-            initTableItem(tableModel.get(index), table.getItem(index));
-        }
-
-        table.setRedraw(true);
-    }
-
-    /**
-     * DOC hcw Comment method "removeButtonClick".
-     */
-    private void removeButtonClick() {
-        table.setRedraw(false);
-        TableItem[] items = table.getSelection();
-        for (TableItem item : items) {
-            // SurrogateKey key = (SurrogateKey) item.getData();
-            editorManager.removeEditors(item);
-            tableModel.remove(item.getData());
-        }
-
-        table.remove(table.getSelectionIndices());
-        table.setRedraw(true);
     }
 
     public List<SurrogateKey> getTableData() {
+        List<SurrogateKey> tableModel = new ArrayList<SurrogateKey>();
+        tableModel.add(key);
         return tableModel;
     }
 
     public void setTableInput(List<SurrogateKey> input) {
-        tableModel = new ArrayList<SurrogateKey>();
-        if (input == null) {
-            return;
+        if (input == null || input.isEmpty()) {
+            key = new SurrogateKey();
+        } else {
+            key = input.get(0);
         }
-        for (SurrogateKey key : input) {
-            createNewItem(key);
-            surrogateManager.addSurrogateKey(key);
+        nameText.setText(key.getColumn());
+
+        if (key.getCreation() == SurrogateCreationType.INPUT_FIELD) {
+            inputFieldLabel.setText(key.getComplement());
+        } else if (key.getCreation() == SurrogateCreationType.ROUTINE) {
+            routineText.setText(key.getComplement());
         }
+        creationCombo.select(key.getCreation().getIndex());
+        // activate event to switch component in stack layout
+        creationSwitch.run();
     }
 
     @Override
     public List<String> getUsedFields() {
         List<String> fields = new ArrayList<String>();
-        for (SurrogateKey key : tableModel) {
-            if (key.getCreation() == SurrogateCreationType.INPUT_FIELD) {
-                if (StringUtils.isNotEmpty(key.getComplement())) {
-                    fields.add(key.getComplement());
-                }
+
+        if (key.getCreation() == SurrogateCreationType.INPUT_FIELD) {
+            if (StringUtils.isNotEmpty(key.getComplement())) {
+                fields.add(key.getComplement());
             }
         }
+
         return fields;
     }
 
-    /**
-     * DOC hcw Comment method "addButtonClick".
-     */
-    protected void addButtonClick() {
-        SurrogateKey key = surrogateManager.createSurrogateKey();
-        createNewItem(key);
-    }
-
-    public void createNewItem(final SurrogateKey key) {
-        tableModel.add(key);
-        table.setRedraw(false);
-        final TableItem item = new TableItem(table, SWT.NONE);
-
-        initTableItem(key, item);
-
-        table.setRedraw(true);
-    }
-
-    /**
-     * DOC hcw Comment method "initTableItem".
-     * 
-     * @param key
-     * @param item
-     */
-    private void initTableItem(final SurrogateKey key, final TableItem item) {
-        item.setData(key);
-
-        // text editor
-        TableEditor editor = editorManager.createTextEditor(table, key.getColumn(), item, COLUMN_INDEX,
-                new IPropertySetter<String>() {
-
-                    public void set(String value) {
-                        key.setColumn(value);
-                    }
-                });
-
-        // combo editor
-        // final List<String> outputColumns = scdManager.getOutputColumnNames();
-        // int index = editorManager.getComboIndex(outputColumns, key.getColumn());
-        // final TableEditor editor = editorManager.createComboEditor(table,
-        // outputColumns.toArray(new String[outputColumns.size()]), item, COLUMN_INDEX, index,
-        // new IPropertySetter<Integer>() {
-        //
-        // public void set(Integer value) {
-        // key.setColumn(outputColumns.get(value));
-        // }
-        // });
-        editor.layout();
-
-        TableEditor comboEditor = editorManager.createComboEditor(table, SurrogateCreationType.getAllTypeNames(), item,
-                CREATION_INDEX, key.getCreation().getIndex(), new IPropertySetter<Integer>() {
-
-                    public void set(Integer value) {
-                        key.setCreation(SurrogateCreationType.getTypeByIndex(value));
-                        // remove value from model
-                        key.setComplement("");
-                        creationComplement(value, key, item);
-                    }
-                });
-
-        creationComplement(key.getCreation().getIndex(), key, item);
-    }
-
-    /**
-     * DOC hcw Comment method "markItemAsSelected".
-     * 
-     * @param item
-     * @param checked
-     */
-    protected void setItemChecked(TableItem item, boolean checked) {
-        for (int i = 0; i < table.getItemCount(); i++) {
-            if (item == table.getItem(i)) {
-
-                if (checked) {
-                    table.setSelection(add(table.getSelectionIndices(), i));
-                } else {
-                    table.setSelection(remove(table.getSelectionIndices(), i));
-                }
-
-                break;
-            }
-        }
-    }
-
-    /**
-     * DOC hcw Comment method "remove".
-     * 
-     * @param selectionIndices
-     * @param i
-     * @return
-     */
-    private int[] remove(int[] arr, int value) {
-        int found = indexOf(arr, value);
-
-        if (found > -1) {
-            int[] newArr = copyOfArray(arr, arr.length - 1);
-            if (found < newArr.length) {
-                newArr[found] = arr[arr.length - 1]; // replace with the last element
-            }
-            return newArr;
-        } else {
-            return copyOfArray(arr, arr.length);
-        }
-    }
-
-    public static int[] copyOfArray(int[] original, int newLength) {
-        int[] copy = new int[newLength];
-        System.arraycopy(original, 0, copy, 0, Math.min(original.length, newLength));
-        return copy;
-    }
-
-    /**
-     * DOC hcw Comment method "add".
-     * 
-     * @param selectionIndices
-     * @param i
-     * @return
-     */
-    private int[] add(int[] arr, int value) {
-        int found = indexOf(arr, value);
-
-        if (found > -1) {
-            return copyOfArray(arr, arr.length);
-        } else {
-            int[] newArr = copyOfArray(arr, arr.length + 1);
-            newArr[arr.length] = value;
-            return newArr;
-        }
-    }
-
-    /**
-     * DOC hcw Comment method "find".
-     * 
-     * @param arr
-     * @param value
-     * @return
-     */
-    private int indexOf(int[] arr, int value) {
-        for (int i = 0; i < arr.length; i++) {
-            if (arr[i] == value) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    /**
-     * DOC hcw Comment method "isItemSelected".
-     * 
-     * @param item
-     * @return
-     */
-    private boolean isItemSelected(TableItem item) {
-        for (TableItem i : table.getSelection()) {
-            if (i == item) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * DOC hcw Comment method "onCreationChange".
-     * 
-     * @param value
-     * @param key
-     * @param item
-     */
-    protected void creationComplement(Integer value, final SurrogateKey key, final TableItem item) {
-
-        // dispose editor
-        TableEditor editor = editorManager.getEditor(item, COMPLEMENT_INDEX);
-        editorManager.disposeEditor(editor);
-
-        if (value == SurrogateCreationType.ROUTINE.getIndex()) {
-            // create routine editor
-            editor = editorManager.createTextEditor(editor, table, key.getComplement(), item, COMPLEMENT_INDEX,
-                    new IPropertySetter<String>() {
-
-                        public void set(String value) {
-                            key.setComplement(value);
-                        }
-                    });
-            // add content proposal
-            TalendProposalUtils.installOn(editor.getEditor(), null);
-        } else if (value == SurrogateCreationType.INPUT_FIELD.getIndex()) {
-            // combo editor
-            // final List<String> inputColumns = scdManager.getInputColumnNames();
-            // inputColumns.add(0, "");
-            // int index = editorManager.getComboIndex(inputColumns, key.getComplement());
-            // editor = editorManager.createComboEditor(table, inputColumns.toArray(new String[inputColumns.size()]),
-            // item,
-            // COMPLEMENT_INDEX, index, new IPropertySetter<Integer>() {
-            //
-            // public void set(Integer value) {
-            // key.setComplement(inputColumns.get(value));
-            // Color color = value == 0 ? ERROR_COLOR : null;
-            // editorManager.setComboColor(item, COMPLEMENT_INDEX, color);
-            // scdManager.fireFieldChange();
-            // }
-            // });
-            //
-            // if (StringUtils.isEmpty(key.getComplement())) {
-            // // display as error status, this field must not be null
-            // editorManager.setComboColor(item, COMPLEMENT_INDEX, ERROR_COLOR);
-            // }
-
-            // label editor
-            editor = editorManager.createLabelEditor(editor, table, key.getComplement(), item, COMPLEMENT_INDEX);
-            final Label text = (Label) editor.getEditor();
-            if (StringUtils.isEmpty(key.getComplement())) {
-                // display as error status, this field must not be null
-                text.setBackground(ERROR_COLOR);
-            }
-            // add drag and drop support
-            IDragDropDelegate delegate = createDragDropDelegate(key, text);
-            dragDropManager.addDragSupport(text, delegate);
-            dragDropManager.addDropSupport(text, delegate);
-        }
-    }
-
-    private IDragDropDelegate createDragDropDelegate(final SurrogateKey key, final Label text) {
+    private IDragDropDelegate createDragDropDelegate(final Label text) {
         return new IDragDropDelegate() {
 
             public String getDragItemsAsText() {
@@ -505,7 +274,8 @@ public class SurrogateSection extends ScdSection {
                 key.setComplement("");
                 // display as error status, this field must not be null
                 text.setBackground(ERROR_COLOR);
-                // don't remove table item here, it can be removed by the delete button
+                // don't remove table item here, it can be removed by the delete
+                // button
             }
 
             public boolean isDropAllowed(String data) {
@@ -515,6 +285,15 @@ public class SurrogateSection extends ScdSection {
 
         };
 
+    }
+
+    /**
+     * DOC chuang Comment method "addContextHelp".
+     * 
+     * @param scdDialog
+     */
+    public void addContextHelp(AbstractScdDialog scdDialog) {
+        scdDialog.addContextHelp(getControl(), "org.talend.designer.scd.surrogateKey");
     }
 
 }

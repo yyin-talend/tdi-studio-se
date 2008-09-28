@@ -72,6 +72,8 @@ public class ScdManager {
 
     private List<ScdSection> targets;
 
+    private List<String> unusedFields;
+
     /**
      * DOC hcw ScdManager constructor comment.
      * 
@@ -91,6 +93,9 @@ public class ScdManager {
     }
 
     public void fireFieldChange() {
+        if (source == null) {
+            return;
+        }
         List<String> unusedFields = getInputColumnNames();
         List<String> usedFields = new ArrayList<String>();
         for (ScdSection scd : targets) {
@@ -276,8 +281,8 @@ public class ScdManager {
             List<String> columns = new ArrayList<String>();
             for (Type3Field field : type3) {
                 // columns.add(field.getCurrentValue());
-                if (StringUtils.isNotEmpty(field.getPreviousValue())) {
-                    columns.add(field.getPreviousValue());
+                if (StringUtils.isNotEmpty(field.getCurrentValue())) {
+                    columns.add(field.getCurrentValue());
                 }
             }
             return columns;
@@ -352,8 +357,10 @@ public class ScdManager {
         return columns;
     }
 
-    public void saveUIData(List<String> sourceKeys, List<SurrogateKey> surrogateKeys, List<String> type0Table,
-            List<String> type1Table, List<String> type2Table, Versioning versionData, List<Type3Field> type3Table) {
+    public void saveUIData(List<String> unusedFields, List<String> sourceKeys, List<SurrogateKey> surrogateKeys,
+            List<String> type0Table, List<String> type1Table, List<String> type2Table, Versioning versionData,
+            List<Type3Field> type3Table) {
+        this.unusedFields = unusedFields;
         this.sourceKeys = sourceKeys;
         this.surrogateKeys = surrogateKeys;
         this.type0Table = type0Table;
@@ -737,7 +744,7 @@ public class ScdManager {
      * 
      * @param unusedFields
      */
-    public void createOutputSchema(List<String> unusedFields) {
+    public void createOutputSchema() {
         // the unused columns must not be present in the output schema and also remove all generated column from
         // output schema
         Map<String, IMetadataColumn> outputColumns = removeUnusedAndGeneratedColumns(component.getMetadataList(), unusedFields);
@@ -758,7 +765,7 @@ public class ScdManager {
         // "current value" column
         if (type3Table != null) {
             for (Type3Field type3 : type3Table) {
-                if (outputColumns.get(type3.getPreviousValue()) != null) {
+                if (outputColumns.get(type3.getPreviousValue()) != null || StringUtils.isEmpty(type3.getPreviousValue())) {
                     continue;
                 }
                 IMetadataColumn column = inputColumnsMap.get(type3.getCurrentValue());
@@ -828,9 +835,13 @@ public class ScdManager {
 
         if (surrogateKeys != null && !surrogateKeys.isEmpty()) {
             for (SurrogateKey key : surrogateKeys) {
+                if (StringUtils.isEmpty(key.getColumn())) {
+                    // name is missing
+                    continue;
+                }
                 IMetadataColumn column = columnsMap.get(key.getColumn());
                 if (column == null) {
-                    // create surrogate key
+                    // if not exist in output schema, create surrogate key
                     if (key.getCreation() == SurrogateCreationType.INPUT_FIELD) {
                         IMetadataColumn inputCol = inputColumnsMap.get(key.getComplement());
                         if (inputCol != null) {

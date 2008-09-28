@@ -59,6 +59,7 @@ public class ScdUI {
         int dialogResponse = dialog.open();
         if (dialogResponse == IDialogConstants.OK_ID) {
             scdManager.setDialogResponse(SWT.OK);
+            scdManager.createOutputSchema();
             scdManager.updateElementParameters();
         } else {
             scdManager.setDialogResponse(SWT.CANCEL);

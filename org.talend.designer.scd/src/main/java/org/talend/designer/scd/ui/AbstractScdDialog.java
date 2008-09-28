@@ -27,8 +27,6 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
@@ -93,13 +91,13 @@ public abstract class AbstractScdDialog extends TrayDialog {
         Composite container = (Composite) super.createDialogArea(parent);
         GridLayoutFactory.swtDefaults().applyTo(container);
         PlatformUI.getWorkbench().getHelpSystem().setHelp(container, "org.talend.designer.scd.scdDialog");
-        getShell().addListener(SWT.Close, new Listener() {
-
-            public void handleEvent(Event event) {
-                showWarningDialog();
-            }
-
-        });
+        // getShell().addListener(SWT.Close, new Listener() {
+        //
+        // public void handleEvent(Event event) {
+        // showWarningDialog();
+        // }
+        //
+        // });
         createScdContents(container);
         return container;
     }
@@ -118,6 +116,7 @@ public abstract class AbstractScdDialog extends TrayDialog {
                 Messages.getString("UIManager.MessageBox.Content"));
         if (!isNotSaveSetting) {
             setReturnCode(OK);
+            saveState();
         }
         close();
     }
@@ -202,5 +201,13 @@ public abstract class AbstractScdDialog extends TrayDialog {
             }
         });
     }
+
+    @Override
+    protected void handleShellCloseEvent() {
+        showWarningDialog();
+        super.handleShellCloseEvent();
+    }
+
+    public abstract void saveState();
 
 }

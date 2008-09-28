@@ -99,7 +99,7 @@ public class JavaScdDialog extends AbstractScdDialog {
         surrogateKeys.setTitle("Surrogate Keys", SWTResourceManager.getColor(IColorConstants.YELLOW));
         GridDataFactory.swtDefaults().hint(SECTION_WIDTH, SECTION_HEIGHT + 30).applyTo(surrogateKeys.getControl());
         surrogateKeys.setTableInput(scdManager.getSurrogateKeys());
-        addContextHelp(surrogateKeys.getTable(), "org.talend.designer.scd.surrogateKey");
+        surrogateKeys.addContextHelp(this);
 
         Label placeHolder = new Label(composite, SWT.NONE);
         GridDataFactory.swtDefaults().hint(SECTION_WIDTH, SECTION_HEIGHT).applyTo(placeHolder);
@@ -120,10 +120,16 @@ public class JavaScdDialog extends AbstractScdDialog {
 
     @Override
     protected void okPressed() {
-        scdManager.saveUIData(sourceKeys.getTableData(), surrogateKeys.getTableData(), type0Fields.getTableData(), type1Fields
-                .getTableData(), type2Fields.getTableData(), type2Fields.getVersionData(), type3Fields.getTableData());
-        scdManager.createOutputSchema(unusedFields.getTableData());
+        saveState();
         super.okPressed();
+    }
+
+    @Override
+    public void saveState() {
+        scdManager.saveUIData(unusedFields.getTableData(), sourceKeys.getTableData(), surrogateKeys.getTableData(), type0Fields
+                .getTableData(), type1Fields.getTableData(), type2Fields.getTableData(), type2Fields.getVersionData(),
+                type3Fields.getTableData());
+
     }
 
     /**

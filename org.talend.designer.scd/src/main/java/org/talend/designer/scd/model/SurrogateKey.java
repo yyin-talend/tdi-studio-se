@@ -23,6 +23,12 @@ public class SurrogateKey {
 
     private String complement;
 
+    public SurrogateKey() {
+        column = "";
+        complement = "";
+        creation = SurrogateCreationType.AUTO_INCREMENT;
+    }
+
     public String getColumn() {
         return column;
     }
@@ -44,7 +50,7 @@ public class SurrogateKey {
     }
 
     public void setComplement(String complement) {
-        this.complement = complement;
+        this.complement = complement == null ? "" : complement;
     }
 
 }

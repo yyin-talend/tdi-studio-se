@@ -31,15 +31,20 @@ import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.talend.designer.scd.ScdManager;
 import org.talend.designer.scd.model.Type3Field;
 import org.talend.designer.scd.util.DragDropManager;
+import org.talend.designer.scd.util.SWTResourceManager;
 import org.talend.designer.scd.util.TableEditorManager;
 
 /**
@@ -56,6 +61,8 @@ public class Type3Section extends ScdSection implements IDragDropDelegate {
     private static final int PREVIOUS_COLUMN_INDEX = 1;
 
     private static final String PREVIOUS_NAME_PREFIX = "previous_";
+
+    private static final Color ERROR_COLOR = SWTResourceManager.getColor(IColorConstants.RED);
 
     private Table table;
 
@@ -115,14 +122,38 @@ public class Type3Section extends ScdSection implements IDragDropDelegate {
         tableViewer.setLabelProvider(new TableLabelProvider());
         tableViewer.setContentProvider(new ContentProvider());
 
+        table.addListener(SWT.EraseItem, new Listener() {
+
+            public void handleEvent(Event event) {
+                event.detail &= ~SWT.HOT;
+
+                GC gc = event.gc;
+                TableItem item = (TableItem) event.item;
+                Color background = gc.getBackground();
+                Type3Field field = (Type3Field) item.getData();
+                if (StringUtils.isNotEmpty(field.getPreviousValue())) {
+                    gc.setBackground(table.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+                } else {
+                    gc.setBackground(ERROR_COLOR);
+                    event.detail &= ~SWT.SELECTED;
+                }
+
+                gc.fillRectangle(table.getClientArea());
+                gc.setBackground(background);
+                event.detail &= ~SWT.BACKGROUND;
+
+            }
+
+        });
+
     }
 
     @Override
     public List<String> getUsedFields() {
         List<String> fields = new ArrayList<String>();
         for (Type3Field field : tableModel) {
-            if (StringUtils.isNotEmpty(field.getPreviousValue())) {
-                fields.add(field.getPreviousValue());
+            if (StringUtils.isNotEmpty(field.getCurrentValue())) {
+                fields.add(field.getCurrentValue());
             }
         }
         return fields;
@@ -230,7 +261,7 @@ public class Type3Section extends ScdSection implements IDragDropDelegate {
             Type3Field field = new Type3Field();
             // drop to current field
             field.setCurrentValue(items[i]);
-            field.setPreviousValue("");
+            field.setPreviousValue(PREVIOUS_NAME_PREFIX + items[i]);
             tableModel.add(field);
         }
         tableViewer.setInput(tableModel);
@@ -398,7 +429,7 @@ public class Type3Section extends ScdSection implements IDragDropDelegate {
                 case PREVIOUS_COLUMN_INDEX:
                     // field.setPreviousValue(inputColumns.get((Integer)value));
                     field.setPreviousValue((String) value);
-                    scdManager.fireFieldChange();
+                    // scdManager.fireFieldChange();
                     break;
                 }
 

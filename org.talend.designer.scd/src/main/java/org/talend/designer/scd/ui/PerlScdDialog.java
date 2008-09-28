@@ -99,10 +99,14 @@ public class PerlScdDialog extends AbstractScdDialog {
 
     @Override
     protected void okPressed() {
-        scdManager.saveUIData(sourceKeys.getTableData(), null, null, type1Fields.getTableData(), type2Fields.getTableData(),
-                type2Fields.getVersionData(), null);
-        scdManager.createOutputSchema(unusedFields.getTableData());
+        saveState();
         super.okPressed();
+    }
+
+    @Override
+    public void saveState() {
+        scdManager.saveUIData(unusedFields.getTableData(), sourceKeys.getTableData(), null, null, type1Fields.getTableData(),
+                type2Fields.getTableData(), type2Fields.getVersionData(), null);
     }
 
     /**
