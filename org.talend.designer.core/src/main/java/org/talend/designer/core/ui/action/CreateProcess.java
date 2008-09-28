@@ -45,6 +45,7 @@ import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.repository.ui.views.IRepositoryView;
@@ -100,6 +101,7 @@ public class CreateProcess extends AContextualAction {
      * 
      * @see org.eclipse.jface.action.Action#run()
      */
+    @Override
     public void run() {
         RepositoryNode node = null;
         NewProcessWizard processWizard = null;
@@ -129,8 +131,9 @@ public class CreateProcess extends AContextualAction {
                 fileEditorInput = new ProcessEditorInput(processWizard.getProcess(), false);
 
                 fileEditorInput.setView(getViewPart());
-                fileEditorInput.setRepositoryNode(null); // set null temporary as it's not the correct Repository
-                // Node
+                RepositoryNode repositoryNode = RepositoryNodeUtilities.getRepositoryNode(fileEditorInput.getItem().getProperty()
+                        .getId(), false);
+                fileEditorInput.setRepositoryNode(repositoryNode);
 
                 IWorkbenchPage page = getActivePage();
                 page.openEditor(fileEditorInput, MultiPageTalendEditor.ID, true);
