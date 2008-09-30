@@ -216,7 +216,7 @@ public class UpdateCheckResult extends UpdateResult {
         if (getJob() != null) {
             String jobInfor = null;
             if (getJob() instanceof IProcess) {
-                jobInfor = RepositoryUpdateManager.getUpdateJobInfor((IProcess) getJob());
+                jobInfor = RepositoryUpdateManager.getUpdateJobInfor(((IProcess) getJob()).getProperty());
             }
             String others = null;
             if (getItemProcess() != null) { // update item

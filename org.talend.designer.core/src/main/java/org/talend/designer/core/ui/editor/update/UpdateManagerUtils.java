@@ -39,6 +39,7 @@ import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.Property;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.update.UpdatesConstants;
@@ -279,7 +280,10 @@ public final class UpdateManagerUtils {
                 SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1 * UpdatesConstants.SCALE,
                         SubProgressMonitor.PREPEND_MAIN_LABEL_TO_SUBTASK);
                 subMonitor.beginTask(UpdatesConstants.EMPTY, 1 * rate);
-                subMonitor.subTask(RepositoryUpdateManager.getUpdateJobInfor(process2));
+                Property property = factory.getUptodateProperty(process2.getProperty());
+                process2.setProperty(property);
+
+                subMonitor.subTask(RepositoryUpdateManager.getUpdateJobInfor(process2.getProperty()));
 
                 ProcessType processType = process2.saveXmlFile();
                 Item item = process2.getProperty().getItem();
@@ -292,9 +296,9 @@ public final class UpdateManagerUtils {
                 subMonitor.worked(1);
                 subMonitor.done();
             } catch (PersistenceException e) {
-                // 
+                ExceptionHandler.process(e);
             } catch (IOException e) {
-                // 
+                ExceptionHandler.process(e);
             }
         }
     }

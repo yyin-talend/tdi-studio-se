@@ -21,7 +21,7 @@ import org.talend.designer.core.ui.editor.process.Process;
  * $Id$
  * 
  */
-public class TalendEditor extends AbstractTalendEditor {
+public class TalendEditor extends AbstractTalendEditor implements ITalendJobEditor {
 
     public TalendEditor() {
         this(false);

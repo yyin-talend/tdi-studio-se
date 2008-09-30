@@ -23,11 +23,11 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.utils.VersionUtils;
-import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -81,9 +81,20 @@ public class EditProcess extends AContextualAction {
         ItemCacheManager.clearCache();
         Assert.isTrue(property.getItem() instanceof ProcessItem);
 
-        ProjectManager projectManager = ProjectManager.getInstance();
-        processItem = ItemCacheManager.getProcessItem(new Project(projectManager.getProject(property.getItem())), property
-                .getId(), property.getVersion());
+        // ProjectManager projectManager = ProjectManager.getInstance();
+        // processItem = ItemCacheManager.getProcessItem(new Project(projectManager.getProject(property.getItem())),
+        // property
+        // .getId(), property.getVersion());
+
+        Property updatedProperty = null;
+        try {
+            updatedProperty = ProxyRepositoryFactory.getInstance().getUptodateProperty(property);
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
+        }
+        // update the property of the node repository object
+        node.getObject().setProperty(updatedProperty);
+        processItem = (ProcessItem) updatedProperty.getItem();
 
         IWorkbenchPage page = getActivePage();
 
