@@ -779,11 +779,6 @@ public class Process extends Element implements IProcess2 {
     }
 
     protected ProcessType createProcessType(TalendFileFactory fileFact) {
-        ProcessItem processItem = (ProcessItem) property.getItem();
-        if (processItem.getProcess() != null) {
-            // avoid to create a new ProcessType if not needed, this will save time when save the job on db repository
-            return processItem.getProcess();
-        }
         return fileFact.createProcessType();
     }
 
@@ -801,19 +796,14 @@ public class Process extends Element implements IProcess2 {
 
         ProcessType processType = createProcessType(fileFact);
 
-        if (processType.getParameters() == null) {
-            ParametersType params = fileFact.createParametersType();
-            processType.setParameters(params);
-        }
-        processType.getParameters().getElementParameter().clear();
+        ParametersType params = fileFact.createParametersType();
+        processType.setParameters(params);
 
         saveElementParameters(fileFact, this.getElementParameters(), processType.getParameters().getElementParameter(),
                 processType);
 
         EList nList = processType.getNode();
-        nList.clear();
         EList cList = processType.getConnection();
-        cList.clear();
         MetadataEmfFactory factory = new MetadataEmfFactory();
 
         // save according to elem order to keep zorder (children insertion) in
@@ -837,7 +827,6 @@ public class Process extends Element implements IProcess2 {
          */
         processType.setDefaultContext(contextManager.getDefaultContext().getName());
 
-        processType.getContext().clear();
         contextManager.saveToEmf(processType.getContext());
         return processType;
     }
