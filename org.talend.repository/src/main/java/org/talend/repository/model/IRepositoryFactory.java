@@ -366,4 +366,6 @@ public interface IRepositoryFactory {
     public boolean isUserReadOnlyOnCurrentProject();
 
     public void checkAvailability() throws PersistenceException;
+    
+    public void executeRepositoryWorkUnit(RepositoryWorkUnit workUnit) throws Exception;
 }

@@ -207,4 +207,8 @@ public abstract class AbstractRepositoryFactory implements IRepositoryFactory {
     public void checkAvailability() {
         // is available by default
     }
+    
+    public void executeRepositoryWorkUnit(RepositoryWorkUnit workUnit) throws Exception {
+        workUnit.run();
+    }
 }

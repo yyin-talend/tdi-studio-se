@@ -1673,4 +1673,9 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     public void checkAvailability() throws PersistenceException {
         this.repositoryFactoryFromProvider.checkAvailability();
     }
+    
+    public void executeRepositoryWorkUnit(RepositoryWorkUnit workUnit) throws Exception {
+        this.repositoryFactoryFromProvider.executeRepositoryWorkUnit(workUnit);
+    }
+
 }
