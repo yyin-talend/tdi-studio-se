@@ -411,8 +411,14 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             if (!isMultiNodes() && this.getSelectedJobVersion() != null) {
                 version = this.getSelectedJobVersion();
             }
-            ProcessItem selectedProcessItem = ItemCacheManager.getProcessItem(resource.getNode().getRoot().getProject(), item
-                    .getProperty().getId(), version);
+            ProcessItem selectedProcessItem;
+            if (resource.getNode() != null) {
+                selectedProcessItem = ItemCacheManager.getProcessItem(resource.getNode().getRoot().getProject(), item
+                        .getProperty().getId(), version);
+            } else {
+                // if no node given, take in the current project only
+                selectedProcessItem = ItemCacheManager.getProcessItem(item.getProperty().getId(), version);
+            }
             IProcess iProcess = designerService.getProcessFromProcessItem(selectedProcessItem);
             listModulesReallyNeeded.addAll(iProcess.getNeededLibraries(true));
         }
