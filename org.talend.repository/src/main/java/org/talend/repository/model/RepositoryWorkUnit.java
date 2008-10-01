@@ -12,15 +12,28 @@
 // ============================================================================
 package org.talend.repository.model;
 
+import org.talend.core.model.general.Project;
+
 /***/
 public abstract class RepositoryWorkUnit {
 
     private String name;
 
+    private Project project;
+
     public RepositoryWorkUnit(String name) {
         this.name = name;
     }
-    
+
+    public RepositoryWorkUnit(Project project, String name) {
+        this.project = project;
+        this.name = name;
+    }
+        
+    public Project getProject() {
+        return project;
+    }
+
     public String getName() {
         return name;
     }
