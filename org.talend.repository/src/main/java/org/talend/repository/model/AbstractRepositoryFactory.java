@@ -208,7 +208,8 @@ public abstract class AbstractRepositoryFactory implements IRepositoryFactory {
         // is available by default
     }
     
-    public void executeRepositoryWorkUnit(RepositoryWorkUnit workUnit) throws Exception {
-        workUnit.run();
+    @SuppressWarnings("unchecked")
+    public void executeRepositoryWorkUnit(RepositoryWorkUnit workUnit) {
+        workUnit.doRun();
     }
 }

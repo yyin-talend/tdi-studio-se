@@ -367,5 +367,6 @@ public interface IRepositoryFactory {
 
     public void checkAvailability() throws PersistenceException;
     
-    public void executeRepositoryWorkUnit(RepositoryWorkUnit workUnit) throws Exception;
+    @SuppressWarnings("unchecked")
+    public void executeRepositoryWorkUnit(RepositoryWorkUnit workUnit);
 }

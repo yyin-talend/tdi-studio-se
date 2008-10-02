@@ -1674,7 +1674,8 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         this.repositoryFactoryFromProvider.checkAvailability();
     }
     
-    public void executeRepositoryWorkUnit(RepositoryWorkUnit workUnit) throws Exception {
+    @SuppressWarnings("unchecked")
+    public void executeRepositoryWorkUnit(RepositoryWorkUnit workUnit) {
         this.repositoryFactoryFromProvider.executeRepositoryWorkUnit(workUnit);
     }
 

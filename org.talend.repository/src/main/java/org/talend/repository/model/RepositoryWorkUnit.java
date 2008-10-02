@@ -12,14 +12,28 @@
 // ============================================================================
 package org.talend.repository.model;
 
+import org.talend.commons.exception.LoginException;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.general.Project;
 
-/***/
-public abstract class RepositoryWorkUnit {
+/**
+ * @param <T>
+ */
+public abstract class RepositoryWorkUnit<T> {
 
     private String name;
 
     private Project project;
+
+    protected T result;
+
+    private LoginException loginException;
+
+    private PersistenceException persistenceException;
+
+    public T getResult() {
+        return result;
+    }
 
     public RepositoryWorkUnit(String name) {
         this.name = name;
@@ -29,7 +43,7 @@ public abstract class RepositoryWorkUnit {
         this.project = project;
         this.name = name;
     }
-        
+
     public Project getProject() {
         return project;
     }
@@ -37,7 +51,36 @@ public abstract class RepositoryWorkUnit {
     public String getName() {
         return name;
     }
-    
-    public abstract void run() throws Exception;
-    
+
+    public void setLoginException(LoginException loginException) {
+        this.loginException = loginException;
+    }
+
+    public void setPersistenceException(PersistenceException persistenceException) {
+        this.persistenceException = persistenceException;
+    }
+
+    protected abstract void run() throws LoginException, PersistenceException;
+
+    public void doRun() {
+        try {
+            run();
+        } catch (LoginException e) {
+            setLoginException(e);
+        } catch (PersistenceException e) {
+            setPersistenceException(e);
+        }
+    }
+
+    public void throwLoginExceptionIfAny() throws LoginException {
+        if (loginException != null) {
+            throw loginException;
+        }
+    }
+
+    public void throwPersistenceExceptionIfAny() throws PersistenceException {
+        if (persistenceException != null) {
+            throw persistenceException;
+        }
+    }
 }
