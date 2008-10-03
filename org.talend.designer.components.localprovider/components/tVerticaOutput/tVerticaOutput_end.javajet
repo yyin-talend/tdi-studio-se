@@ -15,7 +15,40 @@ imports="
     String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
     
     String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
-%>    
+    
+    boolean batchMode = ElementParameterParser.getValue(node, "__BATCH_MODE__").equals("true");
+    
+    String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
+%>
+<%
+	//batch mode
+    if(dataAction.equals("INSERT") && batchMode){
+%>
+try {
+	int batchInsertCount_<%=cid %> = 0;
+	int[] returns_<%=cid %> = pstmt_<%=cid %>.executeBatch();
+	for(int i_<%=cid %> = 0; i_<%=cid %> < returns_<%=cid %>.length; i_<%=cid %>++){
+		if(returns_<%=cid %>[i_<%=cid %>] == 1){
+			batchInsertCount_<%=cid %>++;
+		}
+	}
+	insertedCount_<%=cid%> = insertedCount_<%=cid%> + batchInsertCount_<%=cid %>;
+} catch(Exception e) {
+<%
+		if (dieOnError.equals("true")) {
+                    %>
+	throw(e);
+<%
+    	} else {
+%>
+	System.err.print(e.getMessage());
+<%
+    	} 
+%>
+}
+<%
+    }
+    %>    
     <%if(dataAction.equals("INSERT_OR_UPDATE")){%>
         pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("COMMIT;");              
         pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("COMMIT;");   

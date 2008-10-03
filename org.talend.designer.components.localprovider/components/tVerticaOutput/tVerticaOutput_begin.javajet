@@ -53,6 +53,8 @@ skeleton="../templates/db_output_bulk.skeleton"
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 
 	boolean isEnableDebug = ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__").equals("true");
+	
+	boolean batchMode = ElementParameterParser.getValue(node, "__BATCH_MODE__").equals("true");
 %>
 
 int nb_line_<%=cid%> = 0;
@@ -112,7 +114,17 @@ String url_<%=cid %> = "jdbc:vertica://" + <%=dbhost%> + ":" + <%=dbport%> + "/"
 String dbUser_<%=cid %> = <%=dbuser%>;
 String dbPwd_<%=cid %> = <%=dbpwd%>;
 java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+<%
+if(!commitEvery.equals("") && !commitEvery.equals("0")) {
+%>
 conn_<%=cid%>.setAutoCommit(false);
+        
+int commitEvery_<%=cid%> = <%=commitEvery%>;
+        
+int commitCounter_<%=cid%> = 0;        
+<%
+}
+%>
 <%
 if(columnList != null && columnList.size() > 0) {
     if(!tableAction.equals("NONE")) {
@@ -170,7 +182,8 @@ if(columnList != null && columnList.size() > 0) {
                 %>
                 if(!whetherExist_<%=cid%>) {
                     java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
-                    stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");            
+                    stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
+            		stmtCreate_<%=cid%>.execute("CREATE PROJECTION " + <%=tableName%> + "_proj (<%=columnListStr.toString()%>) AS SELECT <%=columnListStr.toString()%> FROM " + <%=tableName%>);//
                 }                
                 <%
             } else {
@@ -180,7 +193,8 @@ if(columnList != null && columnList.size() > 0) {
                     stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
                 }
                 java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
-                stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");                
+                stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
+            	stmtCreate_<%=cid%>.execute("CREATE PROJECTION " + <%=tableName%> + "_proj (<%=columnListStr.toString()%>) AS SELECT <%=columnListStr.toString()%> FROM " + <%=tableName%>);//
             <%
             }
         } else if(tableAction.equals("CLEAR")) {
@@ -200,7 +214,12 @@ if(columnList != null && columnList.size() > 0) {
         %>
         String insert_<%=cid%> = "INSERT INTO " + <%=tableName%> + " (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)";
         java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
+<%
+		if(batchMode){
+		%>
+        int batchCount_<%=cid %> = 0;
         <%
+        }
     } else if (dataAction.equals("UPDATE")) {
         %>
         String update_<%=cid%> = "UPDATE " + <%=tableName%> + " SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>";
@@ -232,15 +251,6 @@ if(columnList != null && columnList.size() > 0) {
         String query_<%=cid%> = null;
         <%
     }    
-    if(!commitEvery.equals("") && !commitEvery.equals("0")) {
-        %>
-        
-        int commitEvery_<%=cid%> = <%=commitEvery%>;
-        
-        int commitCounter_<%=cid%> = 0;
-        
-        <%
-    }
 }
 %>
 
