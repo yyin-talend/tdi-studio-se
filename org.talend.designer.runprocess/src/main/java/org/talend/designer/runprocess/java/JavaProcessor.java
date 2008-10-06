@@ -345,7 +345,10 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
             // updateContextCode(codeGen);
             syntaxCheck();
-
+            
+            codeFile.getProject().deleteMarkers("org.eclipse.jdt.debug.javaLineBreakpointMarker", true,
+                    IResource.DEPTH_INFINITE);
+            
             List<INode> breakpointNodes = CorePlugin.getContext().getBreakpointNodes(process);
             if (!breakpointNodes.isEmpty()) {
                 String[] nodeNames = new String[breakpointNodes.size()];
