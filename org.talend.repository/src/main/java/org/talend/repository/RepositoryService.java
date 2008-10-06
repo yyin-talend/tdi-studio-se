@@ -434,7 +434,7 @@ public class RepositoryService implements IRepositoryService {
         return RepositoryPlugin.getDefault().getPreferenceStore();
     }
 
-    public RepositoryNode getRepositoryNode(String id) {
-        return RepositoryNodeUtilities.getRepositoryNode(id);
+    public RepositoryNode getRepositoryNode(String id, boolean expanded) {
+        return RepositoryNodeUtilities.getRepositoryNode(id, expanded);
     }
 }
