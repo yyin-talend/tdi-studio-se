@@ -198,7 +198,7 @@ public class DeleteAction extends AContextualAction {
      * @param currentJobNode
      * @return
      */
-    private List<JobletReferenceBean> checkRepositoryNodeFromProcess(IProxyRepositoryFactory factory,
+    public static List<JobletReferenceBean> checkRepositoryNodeFromProcess(IProxyRepositoryFactory factory,
             RepositoryNode currentJobNode) {
         IRepositoryObject object = currentJobNode.getObject();
         List<JobletReferenceBean> list = new ArrayList<JobletReferenceBean>();

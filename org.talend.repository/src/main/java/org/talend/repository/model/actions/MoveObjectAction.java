@@ -12,9 +12,12 @@
 // ============================================================================
 package org.talend.repository.model.actions;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.workbench.resources.ResourceUtils;
@@ -27,13 +30,16 @@ import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.BinRepositoryNode;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.JobletReferenceBean;
 import org.talend.repository.model.MetadataTableRepositoryObject;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.repository.ui.actions.DeleteAction;
 import org.talend.repository.ui.actions.metadata.CopyToGenericSchemaHelper;
+import org.talend.repository.ui.dialog.JobletReferenceDialog;
 
 /**
  * DOC smallet class global comment. Detailed comment <br/>
@@ -134,7 +140,21 @@ public class MoveObjectAction {
                     return booleanValue;
                 }
             case STABLE_SYSTEM_FOLDER:
-                return targetNode instanceof BinRepositoryNode; // || isGenericSchema;
+                // see bug remove a joblet haven't the same behavior when move it into the recycle with the mouse or use
+                // delete
+                boolean isJoblet = sourceNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.JOBLET;
+                boolean isBin = targetNode instanceof BinRepositoryNode;
+                if (isBin && isJoblet) {
+                    IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+                    List<JobletReferenceBean> checkRepository = DeleteAction.checkRepositoryNodeFromProcess(factory, sourceNode);
+                    if (checkRepository.size() > 0) {
+                        JobletReferenceDialog dialog = new JobletReferenceDialog(PlatformUI.getWorkbench()
+                                .getActiveWorkbenchWindow().getShell(), sourceNode.getObject(), checkRepository);
+                        dialog.open();
+                        return false;
+                    }
+                }
+                return isBin;// || isGenericSchema;
             default:
                 return false;
             }
