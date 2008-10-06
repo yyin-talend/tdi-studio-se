@@ -18,14 +18,18 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.IOpenListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.OpenEvent;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
@@ -68,7 +72,6 @@ import org.talend.repository.model.IRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryFactoryProvider;
-import org.talend.repository.ui.ERepositoryImages;
 import org.talend.repository.ui.actions.importproject.DeleteProjectsAsAction;
 import org.talend.repository.ui.actions.importproject.ImportDemoProjectAction;
 import org.talend.repository.ui.actions.importproject.ImportProjectAsAction;
@@ -110,25 +113,21 @@ public class LoginComposite extends Composite {
 
     private ComboViewer projectViewer;
 
-    private Button fillProjectsBtn;
+    public Button fillProjectsBtn;
 
     private Button manageConnectionsButton;
 
-    private Button newProjectButton;
-
-    private Button importProjectsButton;
-
-    private Button importDemoProjectButton;
-
-    private Button deleteProjectButton;
-
     private Project[] projects;
-
-    private ImportDemoProjectAction importDemoProjectAction;
 
     private Label newProjectLabel;
 
-    // private Button importProjectAsButton;
+    private Button manageProjectsButton;
+
+    private Label statusLabel;
+
+    private Composite bottomButtons;
+
+    private Composite messageImageStatus;
 
     /**
      * Constructs a new LoginComposite.
@@ -156,8 +155,39 @@ public class LoginComposite extends Composite {
         layout = new GridLayout(3, false);
         formBody.setLayout(layout);
 
+        messageImageStatus = toolkit.createComposite(formBody);
+        messageImageStatus.setLayout(new FormLayout());
+
+        Label createLabel = toolkit.createLabel(messageImageStatus, null);
+        createLabel.setBackgroundImage(JFaceResources.getImage(Dialog.DLG_IMG_MESSAGE_ERROR));
+        FormData formData2 = new FormData();
+        formData2.left = new FormAttachment(0);
+        formData2.right = new FormAttachment(0, 16);
+        formData2.top = new FormAttachment(0);
+        formData2.bottom = new FormAttachment(0, 16);
+        createLabel.setLayoutData(formData2);
+
+        statusLabel = toolkit.createLabel(messageImageStatus, null);
+        formData2 = new FormData();
+        formData2.left = new FormAttachment(createLabel, HORIZONTAL_SPACE);
+        formData2.right = new FormAttachment(100, -HORIZONTAL_SPACE);
+        statusLabel.setLayoutData(formData2);
+
+        GridData projectGroupData2 = new GridData(GridData.FILL_HORIZONTAL);
+        projectGroupData2.horizontalSpan = 3;
+        messageImageStatus.setLayoutData(projectGroupData2);
+
+        Group groupConnection = new Group(formBody, SWT.NONE);
+        groupConnection.setText(Messages.getString("LoginComposite.connection")); //$NON-NLS-1$
+
+        projectGroupData2 = new GridData(GridData.FILL_HORIZONTAL);
+        projectGroupData2.horizontalSpan = 3;
+        groupConnection.setLayoutData(projectGroupData2);
+
+        groupConnection.setLayout(layout);
+
         // Connections listbox:
-        Label connectionLabel = toolkit.createLabel(formBody, Messages.getString("LoginComposite.connections")); //$NON-NLS-1$
+        Label connectionLabel = toolkit.createLabel(groupConnection, Messages.getString("LoginComposite.connections")); //$NON-NLS-1$
         Point size = connectionLabel.computeSize(SWT.DEFAULT, SWT.DEFAULT);
         horizontalMerge = size.x;
         // TODO SML this method assume that this label is the longest and must be optimize
@@ -165,14 +195,14 @@ public class LoginComposite extends Composite {
         conGrid2.widthHint = horizontalMerge;
         connectionLabel.setLayoutData(conGrid2);
 
-        connectionsViewer = new ComboViewer(formBody, SWT.BORDER | SWT.READ_ONLY);
+        connectionsViewer = new ComboViewer(groupConnection, SWT.BORDER | SWT.READ_ONLY);
         GridData conGrid = new GridData(GridData.FILL_HORIZONTAL);
         conGrid.horizontalSpan = 1;
         connectionsViewer.getControl().setLayoutData(conGrid);
         connectionsViewer.setContentProvider(new ArrayContentProvider());
         connectionsViewer.setLabelProvider(new ConnectionLabelProvider());
 
-        manageConnectionsButton = toolkit.createButton(formBody, null, SWT.PUSH);
+        manageConnectionsButton = toolkit.createButton(groupConnection, null, SWT.PUSH);
         manageConnectionsButton.setToolTipText(Messages.getString("LoginComposite.manageConnectionsToolTipHint")); //$NON-NLS-1$
         manageConnectionsButton.setImage(ImageProvider.getImage(EImage.THREE_DOTS_ICON));
         GridData checkGrid = new GridData(SWT.BORDER | SWT.RIGHT);
@@ -180,16 +210,16 @@ public class LoginComposite extends Composite {
         manageConnectionsButton.setLayoutData(checkGrid);
 
         // Username:
-        toolkit.createLabel(formBody, Messages.getString("connections.form.field.username")); //$NON-NLS-1$
-        user = toolkit.createText(formBody, "", SWT.BORDER); //$NON-NLS-1$
+        toolkit.createLabel(groupConnection, Messages.getString("connections.form.field.username")); //$NON-NLS-1$
+        user = toolkit.createText(groupConnection, "", SWT.BORDER); //$NON-NLS-1$
         GridData userGrid2 = new GridData(GridData.FILL_HORIZONTAL);
         userGrid2.horizontalSpan = 2;
         user.setLayoutData(userGrid2);
         user.setEnabled(false);
 
         // Password:
-        toolkit.createLabel(formBody, Messages.getString("connections.form.field.password")); //$NON-NLS-1$
-        passwordText = toolkit.createText(formBody, "", SWT.PASSWORD | SWT.BORDER); //$NON-NLS-1$
+        toolkit.createLabel(groupConnection, Messages.getString("connections.form.field.password")); //$NON-NLS-1$
+        passwordText = toolkit.createText(groupConnection, "", SWT.PASSWORD | SWT.BORDER); //$NON-NLS-1$
         GridData passwordGrid = new GridData(GridData.FILL_HORIZONTAL);
         passwordGrid.horizontalSpan = 2;
         passwordText.setLayoutData(passwordGrid);
@@ -213,8 +243,9 @@ public class LoginComposite extends Composite {
 
         // Fill projects
         fillProjectsBtn = toolkit.createButton(group, null, SWT.PUSH);
-        fillProjectsBtn.setToolTipText(Messages.getString("LoginComposite.refresh")); //$NON-NLS-1$
-        fillProjectsBtn.setImage(ImageProvider.getImage(EImage.REFRESH_ICON));
+        fillProjectsBtn.setText(Messages.getString("LoginComposite.buttons.open")); //$NON-NLS-1$
+        fillProjectsBtn.setToolTipText(Messages.getString("LoginComposite.buttons.open.desc")); //$NON-NLS-1$
+        // fillProjectsBtn.setImage(ImageProvider.getImage(EImage.REFRESH_ICON));
         data = new FormData();
         data.right = new FormAttachment(100, -HORIZONTAL_SPACE);
         fillProjectsBtn.setLayoutData(data);
@@ -235,55 +266,30 @@ public class LoginComposite extends Composite {
         existingLabel.setLayoutData(data);
 
         // Bottom buttons:
-        Composite bottomButtons = toolkit.createComposite(group);
+        bottomButtons = toolkit.createComposite(group);
         data = new FormData();
-        data.top = new FormAttachment(projectViewer.getControl(), VERTICAL_SPACE, SWT.BOTTOM);
-        // data.left = new FormAttachment(projectViewer.getControl(), 0, SWT.LEFT);
+        data.top = new FormAttachment(projectViewer.getControl(), VERTICAL_SPACE * 3, SWT.BOTTOM);
         data.left = new FormAttachment(0, HORIZONTAL_SPACE);
         bottomButtons.setLayoutData(data);
         bottomButtons.setLayout(new FormLayout());
 
-        // newProjectLabel = toolkit.createLabel(group, Messages.getString("LoginComposite.new"));
-        // data = new FormData();
-        // data.left = new FormAttachment(0, HORIZONTAL_SPACE);
-        // data.bottom = new FormAttachment(bottomButtons, 0, SWT.CENTER);
-        // newProjectLabel.setLayoutData(data);
-
-        newProjectButton = toolkit.createButton(bottomButtons, null, SWT.PUSH);
-        newProjectButton.setText(Messages.getString("LoginComposite.buttons.newProject")); //$NON-NLS-1$
-        newProjectButton.setToolTipText(Messages.getString("LoginComposite.buttons.newProject.tooltip")); //$NON-NLS-1$
-        newProjectButton.setImage(ImageProvider.getImage(ERepositoryImages.NEW_PROJECT_ACTION));
+        Label manageProjectLabel1 = toolkit.createLabel(bottomButtons, Messages.getString("LoginComposite.manageProjectPre")); //$NON-NLS-1$
         FormData formData = new FormData();
         formData.left = new FormAttachment(0);
-        newProjectButton.setLayoutData(formData);
+        formData.bottom = new FormAttachment(100, -VERTICAL_SPACE);
+        manageProjectLabel1.setLayoutData(formData);
 
-        importProjectsButton = toolkit.createButton(bottomButtons, null, SWT.PUSH);
-        ImportProjectAsAction ipa = ImportProjectAsAction.getInstance();
-        importProjectsButton.setText(Messages.getString("LoginComposite.buttons.importProject")); //$NON-NLS-1$
-        importProjectsButton.setToolTipText(ipa.getToolTipText());
-        importProjectsButton.setImage(ImageProvider.getImage(ipa.getImageDescriptor()));
-        formData = new FormData();
-        formData.left = new FormAttachment(newProjectButton, HORIZONTAL_SPACE_BUTTONS);
-        importProjectsButton.setLayoutData(formData);
-
-        importDemoProjectButton = toolkit.createButton(bottomButtons, null, SWT.PUSH);
-        importDemoProjectAction = ImportDemoProjectAction.getInstance();
-        importDemoProjectButton.setText(importDemoProjectAction.getText());
-        importDemoProjectButton.setToolTipText(importDemoProjectAction.getToolTipText());
-        importDemoProjectButton.setImage(ImageProvider.getImage(importDemoProjectAction.getImageDescriptor()));
-        formData = new FormData();
-        formData.left = new FormAttachment(importProjectsButton, HORIZONTAL_SPACE_BUTTONS);
-        formData.top = new FormAttachment(0);
-        formData.bottom = new FormAttachment(100);
-        importDemoProjectButton.setLayoutData(formData);
-        // delete
-        deleteProjectButton = toolkit.createButton(bottomButtons, null, SWT.PUSH);
-        deleteProjectButton.setText(Messages.getString("LoginComposite.buttons.deleteProject"));
-        deleteProjectButton.setImage(ImageProvider.getImage(ERepositoryImages.DELETE_PROJECT_ACTION));
+        manageProjectsButton = toolkit.createButton(bottomButtons, null, SWT.PUSH);
+        manageProjectsButton.setText("Manage");
         data = new FormData();
-        data.left = new FormAttachment(importDemoProjectButton, HORIZONTAL_SPACE_BUTTONS);
-        // data.top = new FormAttachment(bottomButtons, VERTICAL_SPACE, SWT.BOTTOM);
-        deleteProjectButton.setLayoutData(data);
+        data.left = new FormAttachment(manageProjectLabel1, HORIZONTAL_SPACE_BUTTONS);
+        manageProjectsButton.setLayoutData(data);
+
+        Label manageProjectLabel2 = toolkit.createLabel(bottomButtons, Messages.getString("LoginComposite.manageProjectPost")); //$NON-NLS-1$
+        data = new FormData();
+        data.left = new FormAttachment(manageProjectsButton, HORIZONTAL_SPACE_BUTTONS);
+        data.bottom = new FormAttachment(manageProjectLabel1, 0, SWT.BOTTOM);
+        manageProjectLabel2.setLayoutData(data);
 
         fillContents();
         addListeners();
@@ -296,6 +302,16 @@ public class LoginComposite extends Composite {
     public void dispose() {
         toolkit.dispose();
         super.dispose();
+    }
+
+    public void setErrorMessage(String string) {
+        if (string == null) {
+            messageImageStatus.setVisible(false);
+        } else {
+            statusLabel.setText(string);
+            messageImageStatus.setVisible(true);
+            System.out.println(statusLabel.isVisible());
+        }
     }
 
     private void fillContents() {
@@ -388,6 +404,17 @@ public class LoginComposite extends Composite {
             }
         });
 
+        connectionsViewer.addOpenListener(new IOpenListener() {
+
+            public void open(OpenEvent event) {
+                // Validate data
+                if (validateFields()) {
+                    populateProjectList();
+                    validateProject();
+                }
+            }
+        });
+
         ModifyListener modifyListener = new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
@@ -402,11 +429,7 @@ public class LoginComposite extends Composite {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                // Validate data
-                if (validateFields()) {
-                    populateProjectList();
-                    validateProject();
-                }
+                dialog.okPressed();
             }
         });
 
@@ -435,60 +458,53 @@ public class LoginComposite extends Composite {
             }
         });
 
-        newProjectButton.addSelectionListener(new SelectionAdapter() {
+        manageProjectsButton.addSelectionListener(new SelectionAdapter() {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                Project project = null;
-                NewProjectWizard newPrjWiz = new NewProjectWizard();
-                WizardDialog newProjectDialog = new WizardDialog(getShell(), newPrjWiz);
-                newProjectDialog.setTitle(Messages.getString("LoginDialog.newProjectTitle")); //$NON-NLS-1$
-                if (newProjectDialog.open() == Window.OK) {
-                    project = newPrjWiz.getProject();
-                    populateProjectList();
-                    selectProject(project);
-                }
+                ManageProjectDialog manageProjectDialog = new ManageProjectDialog(getShell(), LoginComposite.this);
+                manageProjectDialog.open();
             }
         });
+    }
 
-        importProjectsButton.addSelectionListener(new SelectionAdapter() {
+    public void createNewProject() {
+        Project project = null;
+        NewProjectWizard newPrjWiz = new NewProjectWizard();
+        WizardDialog newProjectDialog = new WizardDialog(getShell(), newPrjWiz);
+        newProjectDialog.setTitle(Messages.getString("LoginDialog.newProjectTitle")); //$NON-NLS-1$
+        if (newProjectDialog.open() == Window.OK) {
+            project = newPrjWiz.getProject();
+            populateProjectList();
+            selectProject(project);
+        }
+    }
 
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                ImportProjectAsAction.getInstance().run();
-                populateProjectList();
-                String newProject = ImportProjectAsAction.getInstance().getProjectName();
-                if (newProject != null) {
-                    selectProject(newProject);
-                }
-            }
-        });
+    public void importProjects() {
+        ImportProjectAsAction.getInstance().run();
+        populateProjectList();
+        String newProject = ImportProjectAsAction.getInstance().getProjectName();
+        if (newProject != null) {
+            selectProject(newProject);
+        }
+    }
 
-        importDemoProjectButton.addSelectionListener(new SelectionAdapter() {
+    public void importDemoProject() {
+        // dialog.setMessage("Importing demo project ...");
+        ImportDemoProjectAction.getInstance().setShell(getShell());
+        ImportDemoProjectAction.getInstance().run();
+        populateProjectList();
+        String newProject = ImportDemoProjectAction.getInstance().getProjectName();
+        if (newProject != null) {
+            selectProject(newProject);
+        }
+    }
 
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                // dialog.setMessage("Importing demo project ...");
-                ImportDemoProjectAction.getInstance().setShell(getShell());
-                ImportDemoProjectAction.getInstance().run();
-                populateProjectList();
-                String newProject = ImportDemoProjectAction.getInstance().getProjectName();
-                if (newProject != null) {
-                    selectProject(newProject);
-                }
-            }
-        });
-        deleteProjectButton.addSelectionListener(new SelectionAdapter() {
-
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                DeleteProjectsAsAction deleteProjectAction = new DeleteProjectsAsAction(true);
-                deleteProjectAction.run();
-                populateProjectList();
-                dialog.updateButtons();
-            }
-        });
-
+    public void deleteProject() {
+        DeleteProjectsAsAction deleteProjectAction = new DeleteProjectsAsAction(true);
+        deleteProjectAction.run();
+        populateProjectList();
+        dialog.updateButtons();
     }
 
     /**
@@ -509,17 +525,9 @@ public class LoginComposite extends Composite {
 
     private void updateButtons() {
         if (isAuthenticationNeeded() || !validateFields()) {
-            // newProjectLabel.setVisible(false);
-            newProjectButton.setVisible(false);
-            importProjectsButton.setVisible(false);
-            importDemoProjectButton.setVisible(false);
-            deleteProjectButton.setVisible(false);
+            bottomButtons.setVisible(false);
         } else {
-            // newProjectLabel.setVisible(true);
-            newProjectButton.setVisible(true);
-            importProjectsButton.setVisible(true);
-            importDemoProjectButton.setVisible(true);
-            deleteProjectButton.setVisible(true);
+            bottomButtons.setVisible(true);
         }
     }
 
@@ -550,12 +558,12 @@ public class LoginComposite extends Composite {
         ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
         repositoryFactory.setRepositoryFactoryFromProvider(RepositoryFactoryProvider.getRepositoriyById(getConnection()
                 .getRepositoryId()));
-        
+
         boolean initialized = false;
 
         try {
             repositoryFactory.checkAvailability();
-            
+
             try {
                 IRunnableWithProgress op = new IRunnableWithProgress() {
 
@@ -586,7 +594,7 @@ public class LoginComposite extends Composite {
             } catch (PersistenceException e) {
                 projects = new Project[0];
 
-                dialog.setErrorMessage(Messages.getString("LoginComposite.refreshFailure1") + e.getMessage() //$NON-NLS-1$
+                setErrorMessage(Messages.getString("LoginComposite.refreshFailure1") + e.getMessage() //$NON-NLS-1$
                         + Messages.getString("LoginComposite.refreshFailure2")); //$NON-NLS-1$
             } catch (BusinessException e) {
                 projects = new Project[0];
@@ -597,7 +605,7 @@ public class LoginComposite extends Composite {
         }
         projectViewer.setInput(projects);
 
-        importDemoProjectAction.setExistingProjects(projects);
+        // importDemoProjectAction.setExistingProjects(projects);
 
         if (projects.length > 0) {
             // Try to select the last recently used project
@@ -782,10 +790,10 @@ public class LoginComposite extends Composite {
         }
 
         if (!valid) {
-            dialog.setErrorMessage(errorMsg);
+            setErrorMessage(errorMsg);
             // checkBtn.setEnabled(false);
         } else {
-            dialog.setErrorMessage(null);
+            setErrorMessage(null);
             if (isAuthenticationNeeded()) {
                 // checkBtn.setEnabled(true);
             }
@@ -802,9 +810,9 @@ public class LoginComposite extends Composite {
         }
 
         if (!valid) {
-            dialog.setErrorMessage(errorMsg);
+            setErrorMessage(errorMsg);
         } else {
-            dialog.setErrorMessage(null);
+            setErrorMessage(null);
         }
         return valid;
     }

@@ -16,9 +16,8 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
-import org.eclipse.jface.dialogs.TitleAreaDialog;
+import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -28,20 +27,17 @@ import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -61,7 +57,7 @@ import org.talend.repository.ui.wizards.license.LicenseWizardDialog;
  * $Id$
  * 
  */
-public class LoginDialog extends TitleAreaDialog {
+public class LoginDialog extends TrayDialog {
 
     /** The login composite. */
     private LoginComposite loginComposite;
@@ -77,15 +73,11 @@ public class LoginDialog extends TitleAreaDialog {
      */
     public LoginDialog(Shell parentShell) {
         super(parentShell);
-        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
-                IBrandingService.class);
-        ImageDescriptor imgDesc = brandingService.getLoginHImage();
-        if (imgDesc != null) {
-            setTitleImage(ImageProvider.getImage(imgDesc));
-        }
-        // RGB rgb = parentShell.getBackground().getRGB();
-        RGB rgb = new RGB(255, 255, 255);
-        setTitleAreaColor(rgb);
+        setHelpAvailable(false);
+    }
+
+    protected Point getInitialSize() {
+        return getShell().computeSize(610, 250, true);
     }
 
     /**
@@ -104,11 +96,7 @@ public class LoginDialog extends TitleAreaDialog {
      */
     @Override
     protected Control createDialogArea(final Composite parent) {
-        Composite composite = (Composite) super.createDialogArea(parent);
-
-        composite.setBackground(new Color(null, 0, 0, 0));
-
-        Composite container = new Composite(composite, SWT.NONE);
+        Composite container = new Composite(parent, SWT.NONE);
 
         GridLayout layout = new GridLayout(2, false);
         layout.marginWidth = 0;
@@ -140,13 +128,10 @@ public class LoginDialog extends TitleAreaDialog {
 
         loginComposite = new LoginComposite(container, SWT.NONE, this);
         GridData data = new GridData(GridData.FILL_BOTH);
-        data.widthHint = 350;
+        data.widthHint = 395;
         loginComposite.setLayoutData(data);
 
-        Label titleBarSeparator = new Label(composite, SWT.HORIZONTAL | SWT.SEPARATOR);
-        titleBarSeparator.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-
-        return composite;
+        return container;
     }
 
     /**
@@ -154,7 +139,7 @@ public class LoginDialog extends TitleAreaDialog {
      */
     @Override
     protected void createButtonsForButtonBar(Composite parent) {
-        super.createButtonsForButtonBar(parent);
+        // super.createButtonsForButtonBar(parent);
         updateButtons();
     }
 
@@ -221,7 +206,8 @@ public class LoginDialog extends TitleAreaDialog {
     }
 
     public void updateButtons() {
-        getButton(IDialogConstants.OK_ID).setEnabled(loginComposite.canFinish());
+        loginComposite.fillProjectsBtn.setEnabled(loginComposite.canFinish());
+        // getButton(IDialogConstants.OK_ID).setEnabled(loginComposite.canFinish());
     }
 
     /**
