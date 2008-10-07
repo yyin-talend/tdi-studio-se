@@ -356,11 +356,12 @@ public class Connection extends Element implements IConnection, IPerformance {
 
             this.name = name;
 
-            if (!lineStyle.equals(EConnectionType.TABLE)
-                    && !isInTypes(lineStyle, EConnectionType.ITERATE, EConnectionType.ON_COMPONENT_OK,
-                            EConnectionType.ON_COMPONENT_ERROR, EConnectionType.ON_SUBJOB_OK, EConnectionType.ON_SUBJOB_ERROR,
-                            EConnectionType.RUN_IF)) {
-                uniqueName = name;
+            if (!lineStyle.equals(EConnectionType.TABLE) && !lineStyle.equals(EConnectionType.ITERATE)) {
+                if (!isInTypes(lineStyle, EConnectionType.ON_COMPONENT_OK, EConnectionType.ON_COMPONENT_ERROR,
+                        EConnectionType.ON_SUBJOB_OK, EConnectionType.ON_SUBJOB_ERROR, EConnectionType.RUN_IF)
+                        || uniqueName == null || !uniqueName.startsWith(lineStyle.getDefaultLinkName())) {
+                    uniqueName = name;
+                }
             }
 
             if (source != null && lineStyle.hasConnectionCategory(IConnectionCategory.FLOW)) {
