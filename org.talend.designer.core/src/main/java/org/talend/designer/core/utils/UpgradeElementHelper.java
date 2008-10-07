@@ -27,6 +27,7 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.ui.editor.nodes.Node;
 
 /**
  * DOC xye class global comment. Detailled comment
@@ -78,9 +79,10 @@ public final class UpgradeElementHelper {
             return;
         }
 
-        // see bug 4733
+        // see bug 4733 & 5167
         for (IElementParameter param : element.getElementParameters()) {
-            if (param.getName().equals(EParameterName.UNIQUE_NAME.getName()) || isSQLQueryParameter(param)) {
+            if (param.getName().equals(EParameterName.UNIQUE_NAME.getName()) || isSQLQueryParameter(param)
+                    || isJavaRowCodeParameter(element, param)) {
                 continue;
             }
             if (param.getValue() instanceof String) { // for TEXT / MEMO etc..
@@ -156,6 +158,25 @@ public final class UpgradeElementHelper {
      */
     private static boolean isSQLQueryParameter(final IElementParameter parameter) {
         return parameter.getField().equals(EParameterFieldType.MEMO_SQL) && parameter.getName().equals("QUERY");
+    }
+
+    /**
+     * 
+     * DOC xye Comment method "iJavaRowCodeParameter".
+     * <p>
+     * 
+     * @see bug 5167
+     * @param node
+     * @param parameter
+     * @return
+     */
+    private static boolean isJavaRowCodeParameter(final Element node, final IElementParameter parameter) {
+        if (node instanceof Node) {
+            if (((Node) node).getUniqueName().contains("tJavaRow")) {
+                return parameter.getField().equals(EParameterFieldType.MEMO_JAVA) && parameter.getName().equals("CODE");
+            }
+        }
+        return false;
     }
 
     private static boolean valueContains(String value, String toTest) {
