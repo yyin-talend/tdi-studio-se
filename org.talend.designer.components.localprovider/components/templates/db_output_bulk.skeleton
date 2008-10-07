@@ -636,7 +636,11 @@ public class CLASS {
             } else if(typeToGenerate.equals("Object")) {
                 isObject = true;
                 setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
-                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.OTHER);\r\n");               
+                if(dbType.equals("BLOB")) {
+                    setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.BLOB);\r\n");
+                } else {
+                    setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.OTHER);\r\n");                    
+                }               
             } else if(typeToGenerate.equals("Boolean")) {
                 isObject = true;
                 setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
@@ -674,6 +678,8 @@ public class CLASS {
                 setStmt.append("}\r\n");
             } else if(typeToGenerate.equals("String") && dbType.equals("CLOB")) {
                 setStmt.append(prefix + cid + ".setStringForClob(" + index + ", " + incomingConnName + "." + column.getName() + ");\r\n");                
+            } else if(typeToGenerate.equals("Object") && dbType.equals("BLOB")) {
+                setStmt.append(prefix + cid + ".setBLOB(" + index + ", (oracle.sql.BLOB)" + incomingConnName + "." + column.getName() + ");\r\n");
             } else {
                 setStmt.append(prefix + cid + ".set" + typeToGenerate + "(" + index + ", " + incomingConnName + "." + column.getName() + ");\r\n");
             }
