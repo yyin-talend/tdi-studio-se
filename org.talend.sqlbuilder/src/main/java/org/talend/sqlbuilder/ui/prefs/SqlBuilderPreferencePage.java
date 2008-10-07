@@ -14,9 +14,14 @@ package org.talend.sqlbuilder.ui.prefs;
 
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.jface.preference.RadioGroupFieldEditor;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.talend.commons.ui.swt.preferences.CheckBoxFieldEditor;
 import org.talend.core.CorePlugin;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.sqlbuilder.Messages;
@@ -36,9 +41,13 @@ public class SqlBuilderPreferencePage extends FieldEditorPreferencePage implemen
 
     private RadioGroupFieldEditor choiceAS4Sql;
 
-    private static final String STANDARD_MODE = "true";
+    private CheckBoxFieldEditor dbConnTimeoutActive;
 
-    private static final String SYSTEM_MODE = "false";
+    private IntegerFieldEditor dbConnTimeout;
+
+    private static final String STANDARD_MODE = "true"; //$NON-NLS-1$
+
+    private static final String SYSTEM_MODE = "false"; //$NON-NLS-1$
 
     public void init(IWorkbench workbench) {
     }
@@ -50,14 +59,45 @@ public class SqlBuilderPreferencePage extends FieldEditorPreferencePage implemen
      */
     @Override
     protected void createFieldEditors() {
-        booleanFieldEditor = new BooleanFieldEditor(ITalendCorePrefConstants.SQL_ADD_QUOTE,
-                "add quotes, when you generate sql statement", getFieldEditorParent());
+        booleanFieldEditor = new BooleanFieldEditor(ITalendCorePrefConstants.SQL_ADD_QUOTE, Messages
+                .getString("SqlBuilderPreferencePage.AddQuotes"), getFieldEditorParent()); //$NON-NLS-1$
         choiceAS4Sql = new RadioGroupFieldEditor(ITalendCorePrefConstants.AS400_SQL_SEG, Messages
-                .getString("SqlBuilderPreferencePage.AS400SqlGen"), 1, new String[][] {
-                { Messages.getString("SqlBuilderPreferencePage.StandardSQL"), STANDARD_MODE },
-                { Messages.getString("SqlBuilderPreferencePage.SystemSQL"), SYSTEM_MODE }, }, getFieldEditorParent());
+                .getString("SqlBuilderPreferencePage.AS400SqlGen"), 1, new String[][] { //$NON-NLS-1$
+                { Messages.getString("SqlBuilderPreferencePage.StandardSQL"), STANDARD_MODE }, //$NON-NLS-1$
+                        { Messages.getString("SqlBuilderPreferencePage.SystemSQL"), SYSTEM_MODE }, }, getFieldEditorParent()); //$NON-NLS-1$
+
+        dbConnTimeoutActive = new CheckBoxFieldEditor(ITalendCorePrefConstants.DB_CONNECTION_TIMEOUT_ACTIVED, Messages
+                .getString("SqlBuilderPreferencePage.ActivedTimeoutSetting"), getFieldEditorParent()); //$NON-NLS-1$
+        dbConnTimeoutActive.getButton().addSelectionListener(new SelectionAdapter() {
+
+            public void widgetSelected(SelectionEvent e) {
+                checkDBTimeout();
+            }
+        });
+        dbConnTimeout = new IntegerFieldEditor(ITalendCorePrefConstants.DB_CONNECTION_TIMEOUT, Messages
+                .getString("SqlBuilderPreferencePage.ConnectionTimeout"), //$NON-NLS-1$
+                getFieldEditorParent());
+        dbConnTimeout.setValidRange(0, Integer.MAX_VALUE);
+
         addField(booleanFieldEditor);
         addField(choiceAS4Sql);
+        addField(dbConnTimeoutActive);
+        addField(dbConnTimeout);
 
+    }
+
+    @Override
+    protected void initialize() {
+        super.initialize();
+        checkDBTimeout();
+    }
+
+    private void checkDBTimeout() {
+        if (dbConnTimeout != null) {
+            Text textControl = dbConnTimeout.getTextControl(getFieldEditorParent());
+            if (textControl != null && dbConnTimeoutActive != null) {
+                textControl.setEnabled(dbConnTimeoutActive.getBooleanValue());
+            }
+        }
     }
 }

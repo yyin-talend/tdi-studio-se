@@ -134,6 +134,7 @@ public class SessionTreeNodeUtils {
     protected static SQLConnection createSQLConnection(String dbType, String url, String userName, String password)
             throws Exception {
         Class.forName(ExtractMetaDataUtils.getDriverClassByDbType(dbType)).newInstance();
+        ExtractMetaDataUtils.checkDBConnectionTimeout();
         Connection connection = DriverManager.getConnection(url, userName, password);
         SQLConnection sqlConnection = new SQLConnection(connection, null);
         return sqlConnection;

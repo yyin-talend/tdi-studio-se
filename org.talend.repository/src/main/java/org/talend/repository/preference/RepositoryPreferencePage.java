@@ -13,17 +13,16 @@
 package org.talend.repository.preference;
 
 import org.eclipse.jface.layout.GridDataFactory;
-import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.talend.commons.ui.swt.preferences.CheckBoxFieldEditor;
 import org.talend.core.model.repository.IRepositoryPrefConstants;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.repository.i18n.Messages;
@@ -32,28 +31,6 @@ import org.talend.repository.i18n.Messages;
  * ggu class global comment. Detailled comment
  */
 public class RepositoryPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
-
-    /**
-     * 
-     * 
-     */
-    class CheckBoxFieldEditor extends BooleanFieldEditor {
-
-        private Composite parent;
-
-        public CheckBoxFieldEditor(String name, String label, Composite parent) {
-            super(name, label, parent);
-            this.parent = parent;
-        }
-
-        public void setChecked(boolean check) {
-            getButton().setSelection(check);
-        }
-
-        public Button getButton() {
-            return getChangeControl(parent);
-        }
-    }
 
     private CheckBoxFieldEditor manuallyRefreshEditor;
 
