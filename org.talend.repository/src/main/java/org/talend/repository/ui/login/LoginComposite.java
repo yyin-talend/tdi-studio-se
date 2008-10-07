@@ -310,7 +310,6 @@ public class LoginComposite extends Composite {
         } else {
             statusLabel.setText(string);
             messageImageStatus.setVisible(true);
-            System.out.println(statusLabel.isVisible());
         }
     }
 
