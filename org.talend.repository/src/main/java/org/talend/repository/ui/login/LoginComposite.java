@@ -353,6 +353,11 @@ public class LoginComposite extends Composite {
         }
         updateButtons();
 
+        // Validate data
+        if (validateFields()) {
+            populateProjectList();
+            validateProject();
+        }
     }
 
     /**
