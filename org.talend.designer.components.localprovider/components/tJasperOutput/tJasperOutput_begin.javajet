@@ -23,7 +23,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         
 %>       
     int nb_line_<%=cid%> = 0;
-    String jrxmlName_<%=cid%> = <%=filename%>.substring(<%=filename%>.lastIndexOf("/"),<%=filename%>.lastIndexOf("."));
+    String jrxmlName_<%=cid%> = (<%=filename%>).substring((<%=filename%>).lastIndexOf("/"),(<%=filename%>).lastIndexOf("."));
     String tempFile_<%=cid%> = <%=tempDirectory%>+jrxmlName_<%=cid%>+".csv";
     java.io.File file_<%=cid%>=new java.io.File(tempFile_<%=cid%>);	
     if (!file_<%=cid%>.exists()) {
