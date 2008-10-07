@@ -401,6 +401,12 @@ public class LoginComposite extends Composite {
                 passwordText.setText(getConnection().getPassword());
                 updateServerFields();
                 updateButtons();
+
+                // Validate data
+                if (validateFields()) {
+                    populateProjectList();
+                    validateProject();
+                }
             }
         });
 
