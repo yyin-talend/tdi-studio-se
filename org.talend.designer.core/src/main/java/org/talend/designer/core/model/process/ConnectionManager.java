@@ -222,6 +222,11 @@ public class ConnectionManager {
             return false;
         }
 
+        // fix bug 0004935: Error on job save
+        if (checkCircle(newSource, target)) {
+            return false;
+        }
+
         newlineStyle = lineStyle;
         if (!canConnect(newSource, target, lineStyle, connectionName)) {
             return false;
@@ -261,6 +266,12 @@ public class ConnectionManager {
         if (processStartNode.equals(newTarget)) {
             return false;
         }
+
+        // fix bug 0004935: Error on job save
+        if (checkCircle(source, newTarget)) {
+            return false;
+        }
+
         // Modify Connection Type depending old and new target.
         if (newlineStyle.hasConnectionCategory(IConnectionCategory.FLOW)) {
             // if the connection type is not the default one, then we don't change automatically.
@@ -351,5 +362,38 @@ public class ConnectionManager {
         }
 
         return canRename;
+    }
+
+    /**
+     * DOC bqian Comment method "checkCircle".
+     * 
+     * @param newTarget
+     * @param source
+     * @return
+     */
+    private static boolean checkCircle(Node source, Node newTarget) {
+        // get All the source nodes of the source
+        List<INode> list = new ArrayList<INode>();
+        getAllSourceNode(source, list);
+
+        if (list.contains(newTarget)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * DOC bqian Comment method "getAllSourceNode".
+     * 
+     * @param source
+     * @param list
+     */
+    private static void getAllSourceNode(INode source, List<INode> list) {
+        List<? extends IConnection> connections = source.getIncomingConnections();
+        for (IConnection connection : connections) {
+            INode node = connection.getSource();
+            list.add(node);
+            getAllSourceNode(node, list);
+        }
     }
 }
