@@ -310,7 +310,7 @@ private class TalendException extends Exception {
             public void <%=node.getUniqueName() %>_error(Exception exception) throws TalendException {
                 end_Hash.put("<%=node.getUniqueName() %>", System.currentTimeMillis());
                 <%
-                boolean ifBeforRunError = NodeUtil.checkConnectionAfterNode(node, EConnectionType.ON_COMPONENT_ERROR);
+                boolean ifBeforRunError = NodeUtil.checkComponentErrorConnectionAfterNode(node);
                 if(!ifBeforRunError) {
                     if (process.getNodesOfType("tAssertCatcher").size() > 0) {
                         List<INode> assertCatchers = (List<INode>)process.getNodesOfType("tAssertCatcher");
