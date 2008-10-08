@@ -33,6 +33,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
+import org.talend.commons.utils.threading.ExecutionLimiter;
 import org.talend.core.model.components.ComponentUtilities;
 
 /**
@@ -51,6 +52,25 @@ public class TalendPaletteViewer extends PaletteViewer {
     private static String currentFilterText;
 
     private ThreadPoolExecutor executor;
+
+    private final ExecutionLimiter expandLimiter = new ExecutionLimiter(500, true) {
+
+        @Override
+        public void execute(final boolean isFinalExecution, Object data) {
+            final Text text = (Text) data;
+            text.getDisplay().asyncExec(new Runnable() {
+
+                public void run() {
+                    ExpandPaletteRunnable runnable = (ExpandPaletteRunnable) executor.getQueue().poll();
+                    if (runnable != null) {
+                        runnable.stopExpand();
+                    }
+                    filterPalette(text);
+                    executor.execute(new ExpandPaletteRunnable());
+                }
+            });
+        }
+    };
 
     public TalendPaletteViewer(EditDomain graphicalViewerDomain) {
         setEditDomain(graphicalViewerDomain);
@@ -101,7 +121,9 @@ public class TalendPaletteViewer extends PaletteViewer {
             }
 
             public void mouseDown(MouseEvent e) {
-                text.selectAll();
+                if (text.getText().equals(SEARCH_COMPONENT)) {
+                    text.setText("");
+                }
             }
 
             public void mouseUp(MouseEvent e) {
@@ -128,12 +150,8 @@ public class TalendPaletteViewer extends PaletteViewer {
         text.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
-                ExpandPaletteRunnable runnable = (ExpandPaletteRunnable) executor.getQueue().poll();
-                if (runnable != null) {
-                    runnable.stopExpand();
-                }
-                filterPalette(text);
-                executor.execute(new ExpandPaletteRunnable());
+                expandLimiter.resetTimer();
+                expandLimiter.startIfExecutable(true, text);
             }
 
         });
