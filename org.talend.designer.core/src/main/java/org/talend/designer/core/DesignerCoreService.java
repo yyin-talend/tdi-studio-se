@@ -17,19 +17,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.gef.commands.Command;
+import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.palette.PaletteEntry;
 import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.MultiPageEditorPart;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.genhtml.IJobSettingConstants;
+import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
@@ -39,6 +46,7 @@ import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.model.process.DataNode;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
@@ -48,6 +56,7 @@ import org.talend.designer.core.ui.action.SaveJobBeforeRunAction;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.core.ui.editor.TalendEditorPaletteFactory;
+import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.JobTemplateViewsAndProcessUtil;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.GefEditorLabelProvider;
@@ -441,5 +450,93 @@ public class DesignerCoreService implements IDesignerCoreService {
         }
 
         return name;
+    }
+
+    public void refreshComponentView(Item item) {
+        try {
+            IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+            IWorkbenchPage activePage = activeWorkbenchWindow.getActivePage();
+            IEditorReference[] editors = activePage.getEditorReferences();
+            for (IEditorReference er : editors) {
+                IEditorPart part = er.getEditor(false);
+                if (part instanceof AbstractMultiPageTalendEditor) {
+                    AbstractMultiPageTalendEditor editor = (AbstractMultiPageTalendEditor) part;
+                    CommandStack stack = (CommandStack) editor.getTalendEditor().getAdapter(CommandStack.class);
+                    if (stack != null) {
+                        IProcess process = editor.getProcess();
+                        for (final INode processNode : process.getGraphicalNodes()) {
+                            if (processNode instanceof Node) {
+                                checkRepository((Node) processNode, item, stack);
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+    }
+
+    /**
+     * DOC hcw Comment method "checkRepository".
+     * 
+     * @param node
+     * @param item
+     * @param stack
+     */
+    private void checkRepository(final Node node, Item item, CommandStack stack) {
+        final String updataComponentParamName = EParameterName.UPDATE_COMPONENTS.getName();
+        final List<IElementParameter> repositoryParam = new ArrayList<IElementParameter>();
+
+        for (IElementParameter param : node.getElementParameters()) {
+            if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
+                String value = (String) param.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()).getValue();
+
+                if (value.equals(EmfComponent.REPOSITORY)) {
+                    IElementParameter schema = param.getChildParameters().get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+                    if (schema != null && schema.getValue() != null) {
+                        String[] names = ((String) schema.getValue()).split(" - ");
+                        if (names.length > 0) {
+                            if (names[0].equals(item.getProperty().getId())) {
+                                repositoryParam.add(schema);
+                            }
+                        }
+                    }
+                }
+
+            } else if (param.getField().equals(EParameterFieldType.PROPERTY_TYPE)) {
+                Object value = param.getChildParameters().get(EParameterName.PROPERTY_TYPE.getName()).getValue();
+                if (value.equals(EmfComponent.REPOSITORY)) {
+                    IElementParameter property = param.getChildParameters()
+                            .get(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+                    if (property != null && property.getValue() != null) {
+
+                        if (property.getValue().equals(item.getProperty().getId())) {
+                            repositoryParam.add(property);
+                        }
+
+                    }
+                }
+            }
+        }
+
+        if (repositoryParam.isEmpty()) {
+            return;
+        }
+
+        stack.execute(new Command() {
+
+            @Override
+            public void execute() {
+
+                node.setPropertyValue(updataComponentParamName, new Boolean(true));
+                for (IElementParameter param : repositoryParam) {
+                    // force to reload label
+                    param.setListItemsDisplayName(new String[0]);
+                    param.setListItemsValue(new String[0]);
+                }
+            }
+
+        });
     }
 }
