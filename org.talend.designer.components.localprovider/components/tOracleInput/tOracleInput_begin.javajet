@@ -94,6 +94,7 @@ imports="
             List<IMetadataColumn> columnList = metadata.getListColumns();
             %>
             String tmpContent_<%=cid%> = null;
+            byte [] tmpBytes_<%=cid%> = null;
             while (rs_<%=cid %>.next()) {
                 nb_line_<%=cid%>++;
                 <%
@@ -202,6 +203,15 @@ imports="
                  	                } else {
                  	                    <%=firstConnName%>.<%=column.getLabel()%> = null;
                  	                }
+                 	                <%
+                 	            } else if(typeToGenerate.equals("Bytes") && columnType.equals("LONG RAW")) {
+                 	                %>
+                                    tmpBytes_<%=cid%> = rs_<%=cid %>.getBytes(<%=currentColNo%>);
+                                    if(tmpBytes_<%=cid%> != null) {
+                                       <%=firstConnName%>.<%=column.getLabel()%> = tmpBytes_<%=cid%>;
+                                    } else {
+                                       <%=firstConnName%>.<%=column.getLabel()%> = null;
+                                    }                 	                
                  	                <%
                  	            } else {
                  	            	if(typeToGenerate.equals("Object")){
