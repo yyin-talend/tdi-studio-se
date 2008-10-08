@@ -91,7 +91,7 @@ public class GenericSchemaWizard extends RepositoryWizard implements INewWizard 
      * @param selection
      * @param strings
      */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     public GenericSchemaWizard(IWorkbench workbench, boolean creation, ISelection selection, String[] existingNames,
             boolean isSinglePageOnly) {
         super(workbench, creation);
@@ -226,6 +226,7 @@ public class GenericSchemaWizard extends RepositoryWizard implements INewWizard 
     /**
      * Adding the page to the wizard.
      */
+    @Override
     public void addPages() {
 
         genericSchemaWizardPage0 = null;
@@ -308,6 +309,7 @@ public class GenericSchemaWizard extends RepositoryWizard implements INewWizard 
      * This method determine if the 'Finish' button is enable This method is called when 'Finish' button is pressed in
      * the wizard. We will create an operation and run it using wizard as execution context.
      */
+    @Override
     public boolean performFinish() {
         if (isSinglePageOnly) {
 
@@ -331,8 +333,12 @@ public class GenericSchemaWizard extends RepositoryWizard implements INewWizard 
                 } else {
                     // update
                     RepositoryUpdateManager.updateMultiSchema(connectionItem, oldMetadataTable, oldTableMap);
-
                     factory.save(connectionItem);
+                    // 0005170: Schema renamed - new name not pushed out to dependant jobs
+                    boolean isModified = genericSchemaWizardPage0.isNameModifiedByUser();
+                    if (isModified) {
+                        CorePlugin.getDefault().getDesignerCoreService().refreshComponentView(connectionItem);
+                    }
                     closeLockStrategy();
                 }
             } catch (PersistenceException e) {

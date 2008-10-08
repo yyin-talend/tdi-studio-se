@@ -187,6 +187,7 @@ public class DatabaseWizard extends RepositoryWizard implements INewWizard {
     /**
      * Adding the page to the wizard and set Title, Description and PageComplete.
      */
+    @Override
     public void addPages() {
         setWindowTitle(Messages.getString("DatabaseWizard.windowTitle")); //$NON-NLS-1$
         setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.METADATA_CONNECTION_WIZ));
@@ -222,6 +223,7 @@ public class DatabaseWizard extends RepositoryWizard implements INewWizard {
      * This method is called when 'Finish' button is pressed in the wizard. Save metadata close Lock Strategy and close
      * wizard.
      */
+    @Override
     public boolean performFinish() {
         if (databaseWizardPage.isPageComplete()) {
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
@@ -255,8 +257,13 @@ public class DatabaseWizard extends RepositoryWizard implements INewWizard {
                         // update
                         RepositoryUpdateManager.updateDBConnection(c);
                     }
-
                     factory.save(connectionItem);
+                    // 0005170: Schema renamed - new name not pushed out to dependant jobs
+                    boolean isModified = propertiesWizardPage.isNameModifiedByUser();
+                    if (isModified) {
+                        CorePlugin.getDefault().getDesignerCoreService().refreshComponentView(connectionItem);
+                    }
+
                     closeLockStrategy();
 
                 }
