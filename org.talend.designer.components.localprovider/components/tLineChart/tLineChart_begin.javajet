@@ -11,9 +11,10 @@
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
 %>
 //org.jfree.data.category.DefaultCategoryDataset dataset = new org.jfree.data.category.DefaultCategoryDataset();
-org.jfree.data.xy.XYSeriesCollection dataset = new org.jfree.data.xy.XYSeriesCollection();
+org.jfree.data.xy.XYSeriesCollection dataset<%=cid%> = new org.jfree.data.xy.XYSeriesCollection();
 
-java.util.Map<String,org.jfree.data.xy.XYSeries> series = new java.util.HashMap<String,org.jfree.data.xy.XYSeries>();
+java.util.Map<String,org.jfree.data.xy.XYSeries> series<%=cid%> = new java.util.HashMap<String,org.jfree.data.xy.XYSeries>();
 

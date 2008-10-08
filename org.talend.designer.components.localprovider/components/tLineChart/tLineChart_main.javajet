@@ -11,6 +11,7 @@
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
 %>
 <%
 	List< ? extends IConnection> conns = node.getIncomingConnections();
@@ -18,16 +19,16 @@ INode node = (INode)codeGenArgument.getArgument();
 	for (IConnection conn : conns){
 if( conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {%>
 
-  String serieLabel = <%=conn.getName() %>.serie;
-  org.jfree.data.xy.XYSeries serie;
-  if (series.containsKey(serieLabel)){
-    serie=series.get(serieLabel);
+  String serieLabel<%=cid%> = <%=conn.getName() %>.serie;
+  org.jfree.data.xy.XYSeries serie<%=cid%>;
+  if (series<%=cid%>.containsKey(serieLabel<%=cid%>)){
+    serie<%=cid%>=series<%=cid%>.get(serieLabel<%=cid%>);
   } else {
-    serie= new org.jfree.data.xy.XYSeries(serieLabel, true, false);
-    series.put(serieLabel, serie);
+    serie<%=cid%>= new org.jfree.data.xy.XYSeries(serieLabel<%=cid%>, true, false);
+    series<%=cid%>.put(serieLabel<%=cid%>, serie<%=cid%>);
   }
 
-  serie.add(<%=conn.getName() %>.x,<%=conn.getName() %>.y);
+  serie<%=cid%>.add(<%=conn.getName() %>.x,<%=conn.getName() %>.y);
 <%}
 }
 }%>
