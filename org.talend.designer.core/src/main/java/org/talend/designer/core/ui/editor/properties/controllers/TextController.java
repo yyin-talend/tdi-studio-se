@@ -20,6 +20,8 @@ import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.fieldassist.TextControlCreator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
@@ -32,6 +34,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.i18n.Messages;
@@ -63,7 +66,8 @@ public class TextController extends AbstractElementPropertySectionController {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createControl()
+     * @see
+     * org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createControl()
      */
     @Override
     public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
@@ -71,7 +75,7 @@ public class TextController extends AbstractElementPropertySectionController {
         this.curParameter = param;
         this.paramFieldType = param.getField();
         FormData data;
-        Text labelText;
+        final Text labelText;
 
         final DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new SelectAllTextControlCreator());
         if (param.isRequired()) {
@@ -99,6 +103,14 @@ public class TextController extends AbstractElementPropertySectionController {
         if (!elem.isReadOnly()) {
             if (param.isRepositoryValueUsed()) {
                 addRepositoryPropertyListener(labelText);
+            }
+            if (param.isRequired()) {
+                labelText.addModifyListener(new ModifyListener() {
+
+                    public void modifyText(ModifyEvent e) {
+                        checkTextError(param, labelText, labelText.getText());
+                    }
+                });
             }
             labelText.setEditable(!param.isReadOnly() && !param.isRepositoryValueUsed());
         } else {
@@ -154,8 +166,9 @@ public class TextController extends AbstractElementPropertySectionController {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite,
-     * org.talend.core.model.process.IElementParameter)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize
+     * (org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
      */
     @Override
     public int estimateRowSize(Composite subComposite, IElementParameter param) {
@@ -194,7 +207,8 @@ public class TextController extends AbstractElementPropertySectionController {
         } else {
             if (!value.equals(labelText.getText())) {
                 // see feature 0025
-                if (param.isRepositoryValueUsed() && isPasswordParam(param)) {
+                if (param.isRepositoryValueUsed() && isPasswordParam(param)
+                        && !ContextParameterUtils.containContextVariables((String) value)) {
                     labelText.setText(TalendTextUtils.hidePassword((String) value));
                 } else {
                     labelText.setText((String) value);
@@ -204,6 +218,23 @@ public class TextController extends AbstractElementPropertySectionController {
             }
         }
 
+        checkTextError(param, labelText, value);
+
+        if (checkErrorsWhenViewRefreshed || valueChanged) {
+            checkErrorsForPropertiesOnly(labelText);
+        }
+        fixedCursorPosition(param, labelText, value, valueChanged);
+
+    }
+
+    /**
+     * ggu Comment method "checkTextError".
+     * 
+     * @param param
+     * @param labelText
+     * @param value
+     */
+    private void checkTextError(IElementParameter param, Text labelText, Object value) {
         // Only for job settings View.
         // job settings extra (feature 2710)
         if (param.getCategory() == EComponentCategory.STATSANDLOGS || param.getCategory() == EComponentCategory.EXTRA) {
@@ -219,17 +250,11 @@ public class TextController extends AbstractElementPropertySectionController {
                 if (str == null || removedQuotesStr.length() == 0 || str.length() == 0) {
                     setTextErrorInfo(labelText, red);
                 } else {
-                    // labelText.setBackground(white);
+                    labelText.setBackground(null);
                     labelText.setToolTipText("");
                 }
             }
         }
-
-        if (checkErrorsWhenViewRefreshed || valueChanged) {
-            checkErrorsForPropertiesOnly(labelText);
-        }
-        fixedCursorPosition(param, labelText, value, valueChanged);
-
     }
 
     /**
