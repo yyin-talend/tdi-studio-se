@@ -30,7 +30,7 @@ public class ToggleSubjobsRetargetAction extends RetargetAction {
         ISharedImages sharedImages = PlatformUI.getWorkbench().getSharedImages();
 
         // TODO Provides appropriate hover and disabled images
-        setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.UNKNOWN));
-        setDisabledImageDescriptor(ImageProvider.getImageDesc(ECoreImage.UNKNOWN));
+        setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.TOGGLE_SUBJOB));
+        setDisabledImageDescriptor(ImageProvider.getImageDesc(ECoreImage.TOGGLE_SUBJOB_DISABLED));
     }
 }
