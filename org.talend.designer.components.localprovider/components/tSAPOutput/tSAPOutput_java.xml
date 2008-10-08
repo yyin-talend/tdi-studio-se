@@ -28,6 +28,13 @@
   </CONNECTORS>
 
   <PARAMETERS>
+  	<PARAMETER
+    	NAME="NOTE"
+    	FIELD="LABEL"
+    	NUM_ROW="1"
+    >
+    	<DEFAULT>To use this component, you need to register the SAP Java Connector (sapjco.jar) in the module view</DEFAULT>
+    </PARAMETER>
   	<PARAMETER NAME="PROPERTY" FIELD="PROPERTY_TYPE" SHOW="true"
 			NUM_ROW="5" REPOSITORY_VALUE="SAP" />
   	<PARAMETER NAME="CLIENT" FIELD="TEXT" NUM_ROW="10" GROUP="CONNECTION" REQUIRED="true" REPOSITORY_VALUE="CLIENT">
