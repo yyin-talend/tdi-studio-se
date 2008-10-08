@@ -12,7 +12,9 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.palette;
 
+import org.eclipse.draw2d.FigureUtilities;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.gef.internal.ui.palette.PaletteColorUtil;
 import org.eclipse.gef.internal.ui.palette.editparts.DrawerFigure;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Control;
@@ -30,7 +32,9 @@ public class TalendDrawerFigure extends DrawerFigure {
     public TalendDrawerFigure(Control control, int childLevel) {
         super(control);
 
-        Color baseColor = control.getBackground();
+        Color baseColor = FigureUtilities.mixColors(PaletteColorUtil.WIDGET_BACKGROUND, PaletteColorUtil.WIDGET_LIST_BACKGROUND,
+                0.1);
+        ; // control.getBackground();
         Color backgroundColor = new Color(Display.getCurrent(), getNewValue(baseColor.getRed(), childLevel), getNewValue(
                 baseColor.getGreen(), childLevel), getNewValue(baseColor.getBlue(), childLevel));
         getContentPane().setBackgroundColor(backgroundColor);
