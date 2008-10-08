@@ -142,8 +142,13 @@ if(temp_<%=cid %>.length() > 0) {
 %><%=firstConnName %>.<%=column.getLabel() %> = temp_<%=cid %>.getBytes(<%=encoding%>);
 <%
 					}else if(javaType == JavaTypesManager.DATE) { 
+						if(checkNum){
+%><%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_<%=cid %>, <%= patternValue %>, false);
+<%
+						}else{
 %><%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_<%=cid %>, <%= patternValue %>);
 <%
+						}
 					}else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
 %><%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(temp_<%=cid %>, <%= thousandsSeparator %>, <%= decimalSeparator %>));
 <%
@@ -506,9 +511,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 						if(row<%=cid %>[<%=i %>].length() > 0) {
 	<%
 							if(javaType == JavaTypesManager.DATE) {
+								if(checkNum){
+	%>
+								<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(row<%=cid %>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && trimSelects.get(i).get("TRIM").equals("true")))?".trim()":"" %>, <%= patternValue %>, false);
+	<%
+								}else{
 	%>
 								<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(row<%=cid %>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && trimSelects.get(i).get("TRIM").equals("true")))?".trim()":"" %>, <%= patternValue %>);
 	<%
+								}
 							} else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
 	%>
 								<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(row<%=cid %>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && trimSelects.get(i).get("TRIM").equals("true")))?".trim()":"" %>, <%= thousandsSeparator %>, <%= decimalSeparator %>));
