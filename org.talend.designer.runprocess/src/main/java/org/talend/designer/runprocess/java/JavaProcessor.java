@@ -19,7 +19,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -27,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
@@ -1031,7 +1031,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         List<IClasspathEntry> classpath = new ArrayList<IClasspathEntry>();
 
         // classpath of .Java project
-        IClasspathEntry[] rawClasspath = Arrays.copyOf(javaProject.getRawClasspath(), javaProject.getRawClasspath().length);
+        IClasspathEntry[] rawClasspath = (IClasspathEntry[]) ArrayUtils.clone(javaProject.getRawClasspath());
 
         // improve speed of looking up existing jar file in classpath
         Map<String, Integer> location = new HashMap<String, Integer>();
