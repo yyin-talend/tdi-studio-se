@@ -32,7 +32,7 @@ String ErrorMessage_<%=cid%>=null;
 int validate_<%=cid %> = 0;
 
 
-	class MyErrorHandler_<%=cid %> implements org.xml.sax.ErrorHandler
+	class TalendErrorHandler_<%=cid %> implements org.xml.sax.ErrorHandler
 	{
 	  String errorMessage=null;
 
@@ -85,14 +85,14 @@ int validate_<%=cid %> = 0;
 		   }
 
 	}
-MyErrorHandler_<%=cid %> errorHandler_<%=cid %>=null;
+TalendErrorHandler_<%=cid %> errorHandler_<%=cid %>=new TalendErrorHandler_<%=cid %>();
 
 try {
 	javax.xml.validation.Schema schema<%=cid %> = factory<%=cid %>.newSchema(schemaLocation<%=cid %>);
 	javax.xml.validation.Validator validator<%=cid %> = schema<%=cid %>.newValidator();
 	java.io.File xmlfile<%=cid %> = new java.io.File(<%=xmlfile %>);
 	javax.xml.transform.Source source<%=cid %> = new javax.xml.transform.stream.StreamSource(xmlfile<%=cid %>);
-	  errorHandler_<%=cid %>=new MyErrorHandler_<%=cid %>();
+	 
 	  validator<%=cid %>.setErrorHandler(errorHandler_<%=cid %>);
     	  
 
@@ -100,8 +100,8 @@ try {
   	
 	  	
 } catch (org.xml.sax.SAXParseException ex) {
-   //do nothing.
  
+   ex.printStackTrace();
 } 
 ErrorMessage_<%=cid%>=errorHandler_<%=cid %>.returnMessage();
 if(ErrorMessage_<%=cid%>.length()>0&&ErrorMessage_<%=cid%>!=null)
