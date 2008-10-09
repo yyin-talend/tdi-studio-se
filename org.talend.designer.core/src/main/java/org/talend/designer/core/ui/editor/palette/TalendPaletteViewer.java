@@ -29,6 +29,11 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -85,10 +90,26 @@ public class TalendPaletteViewer extends PaletteViewer {
      * @see org.eclipse.gef.ui.parts.ScrollingGraphicalViewer#creatToolControl(org.eclipse.swt.widgets.Composite)
      */
     public Control creatToolControl(Composite parent) {
-        Text text = new Text(parent, SWT.BORDER);
+        Composite container = new Composite(parent, SWT.BORDER);
+        container.setLayout(new GridLayout(2, false));
+
+       final  Text text = new Text(container, SWT.BORDER);
+
+        text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         filters.add(text);
         initFilterTextControl(text);
-        return text;
+
+        Button clearButton = new Button(container, SWT.NONE);
+        clearButton.setLayoutData(new GridData(GridData.END));
+        clearButton.setText("Clear");
+        clearButton.addSelectionListener(new SelectionAdapter() {
+
+            public void widgetSelected(SelectionEvent e) {
+                text.setText("");
+            }
+        });
+
+        return container;
     }
 
     /**
