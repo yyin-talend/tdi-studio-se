@@ -20,6 +20,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.ModifyEvent;
@@ -832,7 +834,24 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
                 }
             }
         });
+        fieldSeparatorText.addFocusListener(new FocusAdapter() {
 
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (!isContextMode()) {
+                    // get and clean the FieldSeparatorValue
+                    String value = getValidateFieldSeparator(fieldSeparatorText.getText());
+                    value = removeInvalidEndComma(value);
+                    String temp = TalendTextUtils.addQuotes(value);
+                    if (!(temp.equals(fieldSeparatorText.getText()))) {
+                        fieldSeparatorText.setText(temp);
+                    }
+                    getConnection().setFieldSeparatorValue(temp);
+                    checkFieldsValue();
+                }
+            }
+
+        });
         rowSeparatorText.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
@@ -990,7 +1009,6 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
      * (non-Javadoc)
      * 
      * @see org.eclipse.swt.widgets.Control#setVisible(boolean)
-     * 
      */
     @Override
     public void setVisible(boolean visible) {

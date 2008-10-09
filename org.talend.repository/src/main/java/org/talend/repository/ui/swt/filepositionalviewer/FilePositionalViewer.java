@@ -218,7 +218,9 @@ public class FilePositionalViewer extends Composite {
 
                 oldToPrint = lineToPrint;
             }
-            GraphicRule.drawHorizontalRule(fieldPositionText, fieldSeparatorValue);
+            if (fieldPositionText != null && fieldSeparatorValue != null) {
+                GraphicRule.drawHorizontalRule(fieldPositionText, fieldSeparatorValue);
+            }
         }
     }
 
@@ -242,7 +244,9 @@ public class FilePositionalViewer extends Composite {
                     GraphicRule.drawGraphicRule(adjustPositionWithPixel(new Integer(drawLine[i]).intValue()));
 
                 }
-                GraphicRule.drawHorizontalRule(fieldPositionText, fieldSeparatorValue);
+                if (fieldPositionText != null && fieldSeparatorValue != null) {
+                    GraphicRule.drawHorizontalRule(fieldPositionText, fieldSeparatorValue);
+                }
             }
         }
     }

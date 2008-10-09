@@ -145,11 +145,11 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
             value = getContextModeManager().getOriginalValue(value);
         }
         value = TalendTextUtils.removeQuotes(value);
-        // remove quotes.
-        if (!value.equals("*")) {
-            value = value.substring(1, value.length() - 1);
-        }
-
+        // remove quotes.(duplicate remove quotes)
+        // if (!value.equals("*")) {
+        // value = value.substring(1, value.length() - 1);
+        // }
+        value = removeInvalidEndComma(value);
         if (isContextMode()) {
             fieldSeparatorText.setText(getConnection().getFieldSeparatorValue());
         } else {
@@ -701,7 +701,6 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
      * (non-Javadoc)
      * 
      * @see org.eclipse.swt.widgets.Control#setVisible(boolean)
-     * 
      */
     @Override
     public void setVisible(boolean visible) {
@@ -723,10 +722,7 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
             oldValue = TalendTextUtils.removeQuotes(oldValue);
             fieldSeparatorText.setText(oldValue);
 
-            if (value.endsWith("*")) {
-                value = value.substring(0, value.length() - 1);
-            }
-
+            value = removeInvalidEndComma(value);
             filePositionalViewer.setSeparatorValue(value, true);
             String newPosition = filePositionalViewer.calculatePositionX();
             if (!fieldPositionText.getText().equals(newPosition)) {

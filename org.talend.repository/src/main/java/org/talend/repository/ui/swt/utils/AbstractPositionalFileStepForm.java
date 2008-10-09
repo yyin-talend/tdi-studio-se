@@ -18,6 +18,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.PositionalFileConnection;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.utils.TalendTextUtils;
 
 /**
  * DOC tguiu class global comment. Detailled comment <br/>
@@ -134,10 +135,15 @@ public abstract class AbstractPositionalFileStepForm extends AbstractFileStepFor
      * @return boolean
      */
     protected boolean charIsAcceptedOnFieldSeparator(final String string, final char character, final int position) {
-        if (string.lastIndexOf("*") > -1) { //$NON-NLS-1$
+        final String newString = TalendTextUtils.removeQuotes(string);
+        // remove the quotes, place will be 1
+        int place = (newString.length() == string.length()) ? 0 : 1;
+        final int newPosition = position - place;
+
+        if (newString.lastIndexOf("*") > -1) { //$NON-NLS-1$
             if ((Character.isDigit(character) || character == Character.valueOf(','))) {
                 // after *, nothing must be insered
-                if (string.lastIndexOf("*") < position) { //$NON-NLS-1$
+                if (newString.lastIndexOf("*") < newPosition) { //$NON-NLS-1$
                     return false;
                 }
             }
@@ -145,33 +151,32 @@ public abstract class AbstractPositionalFileStepForm extends AbstractFileStepFor
         if ((Character.getType(character) == 15) || Character.isDigit(character) || (character) == Character.valueOf(',')) {
             // Check unique comma
             if ((character) == Character.valueOf(',')) {
-                if (position > 0) {
-                    if (string.substring(position - 1, position).equals(",")) { //$NON-NLS-1$
+                if (newPosition > 0) {
+                    if (newString.substring(newPosition - 1, newPosition).equals(",")) { //$NON-NLS-1$
                         return false;
                     }
-                    if (position + 1 < string.length()) {
-                        if (string.substring(position, position + 1).equals(",")) { //$NON-NLS-1$
+                    if (newPosition + 1 < newString.length()) {
+                        if (newString.substring(newPosition, newPosition + 1).equals(",")) { //$NON-NLS-1$
                             return false;
                         }
                     }
-                } else if (position == 0) {
+                } else if (newPosition == 0) {
                     return false;
                 }
             }
         } else if ((character) == Character.valueOf('*')) {
             // Check unique *
-            if (string.lastIndexOf("*") > 0) { //$NON-NLS-1$
+            if (newString.lastIndexOf("*") > 0) { //$NON-NLS-1$
                 return false;
             }
             // Check * is in the last position
-            if ((position < string.length())) {
+            if ((newPosition < newString.length())) {
                 return false;
             }
 
         } else {
             return false;
         }
-
         return true;
     }
 
@@ -216,4 +221,21 @@ public abstract class AbstractPositionalFileStepForm extends AbstractFileStepFor
         return (PositionalFileConnection) super.getConnection();
     }
 
+    /**
+     * 
+     * ggu Comment method "removeInvalidEndComma".
+     * 
+     * remove the end comma
+     */
+    protected String removeInvalidEndComma(String value) {
+        if (value == null) {
+            return "";
+        }
+        value = TalendTextUtils.removeQuotes(value);
+        if (value.endsWith(",")) {
+            value = value.substring(0, value.length() - 1);
+            return removeInvalidEndComma(value);
+        }
+        return value;
+    }
 }
