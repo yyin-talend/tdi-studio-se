@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -1030,7 +1031,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         List<IClasspathEntry> classpath = new ArrayList<IClasspathEntry>();
 
         // classpath of .Java project
-        IClasspathEntry[] rawClasspath = javaProject.getRawClasspath();
+        IClasspathEntry[] rawClasspath = Arrays.copyOf(javaProject.getRawClasspath(), javaProject.getRawClasspath().length);
 
         // improve speed of looking up existing jar file in classpath
         Map<String, Integer> location = new HashMap<String, Integer>();
