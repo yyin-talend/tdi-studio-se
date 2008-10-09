@@ -755,7 +755,7 @@ class SchemaTypeProcessor implements ITypeProcessor {
                         refContainer.add(refProject.getMetadataSalesforceSchemaNode());
 
                         // for sap
-                        container.add(contentProvider.getMetadataSAPConnectionNode());
+                        refContainer.add(contentProvider.getMetadataSAPConnectionNode());
 
                         refContainer.add(refProject.getMetadataConNode());
 
