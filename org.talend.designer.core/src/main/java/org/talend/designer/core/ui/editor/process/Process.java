@@ -2549,6 +2549,9 @@ public class Process extends Element implements IProcess2 {
 
                         if (ContextParameterUtils.isContainContextParam(moduleValue)) {
                             IContext selectedContext = CorePlugin.getDefault().getRunProcessService().getSelectedContext();
+                            if (selectedContext == null) {
+                                selectedContext = getContextManager().getDefaultContext();
+                            }
                             neededLibraries.add(selectedContext.getContextParameter(
                                     ContextParameterUtils.getVariableFromCode(moduleValue)).getValue());
                         } else {

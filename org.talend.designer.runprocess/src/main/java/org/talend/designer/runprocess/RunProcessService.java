@@ -96,7 +96,12 @@ public class RunProcessService implements IRunProcessService {
      * @see org.talend.designer.runprocess.IRunProcessService#getSelectedContext()
      */
     public IContext getSelectedContext() {
-        return RunProcessPlugin.getDefault().getRunProcessContextManager().getActiveContext().getSelectedContext();
+        RunProcessContext activeContext = RunProcessPlugin.getDefault().getRunProcessContextManager().getActiveContext();
+        if (activeContext != null) {
+            return activeContext.getSelectedContext();
+        } else {
+            return null;
+        }
     }
 
     /*
