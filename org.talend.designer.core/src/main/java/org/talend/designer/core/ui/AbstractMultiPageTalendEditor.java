@@ -870,7 +870,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         processEditorInput = null;
         designerEditor = null;
         codeEditor = null;
-        if (processor instanceof IBreakpointListener) {
+        if (processor instanceof IJavaBreakpointListener) {
             JDIDebugModel.removeJavaBreakpointListener((IJavaBreakpointListener) processor);
         }
         processor = null;
