@@ -68,9 +68,7 @@ public class FieldSection extends ScdSection implements IDragDropDelegate {
 
     @Override
     protected void createContents(Composite composite) {
-        tableViewer = new TableViewer(composite, SWT.FULL_SELECTION | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);// | SWT.
-                                                                                                               // BORDER
-                                                                                                               // );
+        tableViewer = new TableViewer(composite, SWT.FULL_SELECTION | SWT.MULTI | SWT.V_SCROLL);
         Table table = tableViewer.getTable();
         table.setLinesVisible(true);
         table.setHeaderVisible(false);

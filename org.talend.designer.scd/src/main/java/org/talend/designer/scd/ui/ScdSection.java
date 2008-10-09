@@ -74,6 +74,8 @@ public class ScdSection {
         this.scdManager = scdManager;
         if (WindowSystem.isWIN32()) {
             composite = new Decorations(parent, SWT.ON_TOP);
+            // composite.setBackgroundMode(SWT.INHERIT_NONE);
+            // composite.setBackground(composite.getDisplay().getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
         } else {
             composite = new Composite(parent, SWT.BORDER);
         }

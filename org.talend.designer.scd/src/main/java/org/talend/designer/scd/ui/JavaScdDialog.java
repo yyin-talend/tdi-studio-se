@@ -49,43 +49,43 @@ public class JavaScdDialog extends AbstractScdDialog {
     @Override
     Control createScdContents(Composite parent) {
         Composite composite = new Composite(parent, SWT.NONE);
-        GridLayoutFactory.swtDefaults().numColumns(2).equalWidth(true).applyTo(composite);
+        GridLayoutFactory.swtDefaults().numColumns(2).equalWidth(true).spacing(20, 10).applyTo(composite);
         GridDataFactory.fillDefaults().applyTo(composite);
 
         Composite filterUnusedComposite = new Composite(composite, SWT.NONE);
         GridLayoutFactory.swtDefaults().margins(0, 0).spacing(0, 0).applyTo(filterUnusedComposite);
-        GridDataFactory.swtDefaults().span(1, 2).hint(SECTION_WIDTH, SECTION_HEIGHT * 2).applyTo(filterUnusedComposite);
+        GridDataFactory.fillDefaults().span(1, 2).hint(SECTION_WIDTH, SECTION_HEIGHT * 2 + 20).applyTo(filterUnusedComposite);
 
         ViewerFilter filter = createFilter(filterUnusedComposite);
 
-        unusedFields = new FieldSection(filterUnusedComposite, SECTION_WIDTH, SECTION_HEIGHT, scdManager, false, false);
-        unusedFields.setTitle("Unused", SWTResourceManager.getColor(IColorConstants.RED));
+        unusedFields = new FieldSection(filterUnusedComposite, SECTION_WIDTH - 5, SECTION_HEIGHT, scdManager, false, false);
+        unusedFields.setTitle("Unused", SWTResourceManager.getColor(198, 195, 198));
         unusedFields.setTableInput(scdManager.getUnusedFields());
         unusedFields.getTableViewer().addFilter(filter);
         unusedFields.setSortable(true);
-        GridDataFactory.swtDefaults().hint(SECTION_WIDTH - 3, SECTION_HEIGHT * 2 - 40).applyTo(unusedFields.getControl());
+        GridDataFactory.swtDefaults().hint(SECTION_WIDTH - 5, SECTION_HEIGHT * 2 - 20).applyTo(unusedFields.getControl());
         addContextHelp(unusedFields.getTableViewer().getTable(), "org.talend.designer.scd.unused");
 
         type0Fields = new FieldSection(composite, SECTION_WIDTH, SECTION_HEIGHT, scdManager, false, false);
-        type0Fields.setTitle("Type 0 fields", SWTResourceManager.getColor(IColorConstants.YELLOW));
+        type0Fields.setTitle("Type 0 fields", SWTResourceManager.getColor(255, 146, 0));
         // GridDataFactory.swtDefaults().hint(SECTION_WIDTH, SECTION_HEIGHT).applyTo(type0Fields.getControl());
         type0Fields.setTableInput(scdManager.getType0Table());
         addContextHelp(type0Fields.getTableViewer().getTable(), "org.talend.designer.scd.type0");
 
         type1Fields = new FieldSection(composite, SECTION_WIDTH, SECTION_HEIGHT, scdManager, false, false);
-        type1Fields.setTitle("Type 1 fields", SWTResourceManager.getColor(IColorConstants.YELLOW));
+        type1Fields.setTitle("Type 1 fields", SWTResourceManager.getColor(255, 203, 0));
         // GridDataFactory.swtDefaults().hint(SECTION_WIDTH, SECTION_HEIGHT).applyTo(type1Fields.getControl());
         type1Fields.setTableInput(scdManager.getType1Table());
         addContextHelp(type1Fields.getTableViewer().getTable(), "org.talend.designer.scd.type1");
 
         sourceKeys = new FieldSection(composite, SECTION_WIDTH, SECTION_HEIGHT, scdManager, false, false);
-        sourceKeys.setTitle("Source Keys", SWTResourceManager.getColor(IColorConstants.YELLOW));
+        sourceKeys.setTitle("Source keys", SWTResourceManager.getColor(156, 0, 255));
         // GridDataFactory.swtDefaults().hint(SECTION_WIDTH, SECTION_HEIGHT).applyTo(sourceKeys.getControl());
         sourceKeys.setTableInput(scdManager.getSourceKeys());
         addContextHelp(sourceKeys.getTableViewer().getTable(), "org.talend.designer.scd.sourceKey");
 
         type2Fields = new Type2Section(composite, SECTION_WIDTH, SECTION_HEIGHT + 120, scdManager);
-        type2Fields.setTitle("Type 2 fields", SWTResourceManager.getColor(IColorConstants.YELLOW));
+        type2Fields.setTitle("Type 2 fields", SWTResourceManager.getColor(255, 255, 0));
         GridDataFactory.swtDefaults().span(1, 2).hint(SECTION_WIDTH, SECTION_HEIGHT * 2 + 40).applyTo(type2Fields.getControl());
         type2Fields.setTableInput(scdManager.getType2Table());
         if (scdManager.getVersionData() != null) {
@@ -96,7 +96,7 @@ public class JavaScdDialog extends AbstractScdDialog {
         addContextHelp(type2Fields.getTableViewer().getTable(), "org.talend.designer.scd.type2");
 
         surrogateKeys = new SurrogateSection(composite, SECTION_WIDTH, SECTION_HEIGHT + 30, scdManager);
-        surrogateKeys.setTitle("Surrogate Keys", SWTResourceManager.getColor(IColorConstants.YELLOW));
+        surrogateKeys.setTitle("Surrogate keys", SWTResourceManager.getColor(214, 40, 255));
         GridDataFactory.swtDefaults().hint(SECTION_WIDTH, SECTION_HEIGHT + 30).applyTo(surrogateKeys.getControl());
         surrogateKeys.setTableInput(scdManager.getSurrogateKeys());
         surrogateKeys.addContextHelp(this);
@@ -105,7 +105,7 @@ public class JavaScdDialog extends AbstractScdDialog {
         GridDataFactory.swtDefaults().hint(SECTION_WIDTH, SECTION_HEIGHT).applyTo(placeHolder);
 
         type3Fields = new Type3Section(composite, SECTION_WIDTH, SECTION_HEIGHT, scdManager);
-        type3Fields.setTitle("Type 3 fields", SWTResourceManager.getColor(IColorConstants.YELLOW));
+        type3Fields.setTitle("Type 3 fields", SWTResourceManager.getColor(24, 182, 255));
         GridDataFactory.swtDefaults().hint(SECTION_WIDTH, SECTION_HEIGHT + 20).applyTo(type3Fields.getControl());
         type3Fields.setTableInput(scdManager.getType3Table());
         addContextHelp(type3Fields.getTable(), "org.talend.designer.scd.type3");
@@ -137,7 +137,7 @@ public class JavaScdDialog extends AbstractScdDialog {
      */
     @Override
     protected Point getInitialSize() {
-        return new Point(850, 720);
+        return new Point(810, 750);
     }
 
 }

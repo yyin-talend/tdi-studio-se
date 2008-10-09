@@ -73,7 +73,8 @@ public class Type2Section extends FieldSection {
         subTitle.setAlignment(SWT.CENTER);
         subTitle.setFont(titleFont);
         subTitle.setText("Versioning");
-        subTitle.setBackground(SWTResourceManager.getColor(IColorConstants.DARK_GREEN));
+        // subTitle.setBackground(SWTResourceManager.getColor(IColorConstants.DARK_GREEN));
+        subTitle.setBackground(SWTResourceManager.getColor(255, 255, 0));
         GridDataFactory.swtDefaults().hint(SWT.DEFAULT, HEADER_HEIGHT).align(SWT.FILL, SWT.CENTER).applyTo(subTitle);
         createVersionTable(composite);
 
@@ -97,7 +98,7 @@ public class Type2Section extends FieldSection {
         typeColumn.setText("type");
 
         TableColumn nameColumn = new TableColumn(versionTable, SWT.NONE);
-        nameColumn.setWidth(100);
+        nameColumn.setWidth(95);
         nameColumn.setText("name");
 
         TableColumn creationColumn = new TableColumn(versionTable, SWT.NONE);
@@ -105,7 +106,7 @@ public class Type2Section extends FieldSection {
         creationColumn.setText("creation");
 
         TableColumn complementColumn = new TableColumn(versionTable, SWT.NONE);
-        complementColumn.setWidth(100);
+        complementColumn.setWidth(95);
         complementColumn.setText("complement");
     }
 
@@ -321,7 +322,7 @@ public class Type2Section extends FieldSection {
      */
     protected void onStartCreationChange(Integer value, final Versioning versioning, TableItem item) {
         versioning.setStartComplement("");
-
+        scdManager.fireFieldChange();
         // dispose editor
         TableEditor editor = editorManager.getEditor(item, COMPLEMENT_INDEX);
         editorManager.disposeEditor(editor);

@@ -42,7 +42,7 @@ public abstract class AbstractScdDialog extends TrayDialog {
 
     protected static final int SECTION_HEIGHT = 110;
 
-    protected static final int SECTION_WIDTH = 400;
+    protected static final int SECTION_WIDTH = 380;
 
     protected ScdManager scdManager;
 
@@ -131,11 +131,11 @@ public abstract class AbstractScdDialog extends TrayDialog {
      */
     protected ViewerFilter createFilter(Composite container) {
         Composite composite = new Composite(container, SWT.NONE);
-        GridLayoutFactory.swtDefaults().numColumns(2).applyTo(composite);
+        GridLayoutFactory.swtDefaults().numColumns(2).margins(0, 5).applyTo(composite);
         GridDataFactory.swtDefaults().hint(SECTION_WIDTH, SWT.DEFAULT).applyTo(composite);
 
         filterText = new Text(composite, SWT.BORDER);
-        GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.FILL).hint(SECTION_WIDTH - 200, SWT.DEFAULT).applyTo(filterText);
+        GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.FILL).hint(SECTION_WIDTH - 100, SWT.DEFAULT).applyTo(filterText);
         Button filterButton = new Button(composite, SWT.PUSH);
         filterButton.setText("filter");
         filterButton.addSelectionListener(new SelectionListener() {
