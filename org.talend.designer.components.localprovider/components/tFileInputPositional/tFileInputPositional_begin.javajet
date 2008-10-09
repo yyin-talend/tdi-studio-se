@@ -9,6 +9,7 @@
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.core.model.metadata.types.JavaTypesManager
 		org.talend.core.model.metadata.types.JavaType
+		org.talend.core.model.utils.TalendTextUtils
 		java.util.List
     	java.util.Map
 	" 
@@ -81,7 +82,7 @@
     		
     		boolean useStar = false;
     		
-    		pattern=pattern.substring(1, pattern.length()-1);
+    		pattern=TalendTextUtils.removeQuotes(pattern);
     		String[] positions=(pattern.trim()).split(",");
     		for(int i=0;i<positions.length;i++){
             	if(positions[i].equals("")){

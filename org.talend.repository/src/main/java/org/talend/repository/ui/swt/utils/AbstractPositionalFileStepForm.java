@@ -188,7 +188,7 @@ public abstract class AbstractPositionalFileStepForm extends AbstractFileStepFor
      */
     protected String getValidateFieldSeparator(String value) {
         // if needed delete last comma
-        if (value.lastIndexOf(",") == value.length() - 1) { //$NON-NLS-1$
+        if (value.lastIndexOf(",") > -1 && value.lastIndexOf(",") == value.length() - 1) { //$NON-NLS-1$ //$NON-NLS-2$
             value = value.substring(0, value.length() - 1);
         }
 
@@ -229,10 +229,10 @@ public abstract class AbstractPositionalFileStepForm extends AbstractFileStepFor
      */
     protected String removeInvalidEndComma(String value) {
         if (value == null) {
-            return "";
+            return ""; //$NON-NLS-1$
         }
         value = TalendTextUtils.removeQuotes(value);
-        if (value.endsWith(",")) {
+        if (value.endsWith(",")) { //$NON-NLS-1$
             value = value.substring(0, value.length() - 1);
             return removeInvalidEndComma(value);
         }
