@@ -430,9 +430,11 @@ public class CLASS {
                                 // //////////////////////////////////////////////////
 
                                 String sqlSentence = sqlQueryBuilder.toString();
-                                sqlSentence = sqlSentence.substring(0, sqlSentence.length() - 1);
-                                codeStringBuilder.append("stmt_").append(cid).append(".addBatch(").append(sqlSentence).append(
-                                        ");\n");
+                                if(sqlSentence.length() > 2){
+                                    sqlSentence = sqlSentence.substring(0, sqlSentence.length() - 2);
+                                    sqlSentence += "\"";
+                                }
+                                codeStringBuilder.append("stmt_").append(cid).append(".addBatch(").append(sqlSentence).append(");\n");
                                 sqlQueryBuilder.delete(0, sqlQueryBuilder.length()).append("\"");
                             } else {
                                 sqlQueryBuilder.append(" ");
