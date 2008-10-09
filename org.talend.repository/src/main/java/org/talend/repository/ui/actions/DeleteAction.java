@@ -286,7 +286,8 @@ public class DeleteAction extends AContextualAction {
 
         IRepositoryObject nodeObject = node.getObject();
         // Avoid to delete node which is locked.
-        if (nodeObject != null && nodeObject.getProperty().getItem().getState().isLocked()) {
+        if (nodeObject != null && nodeObject.getProperty().getItem().getState().isLocked()
+                && !(getText().equals(DELETE_FOREVER_TITLE))) {
             return true;
         }
 
