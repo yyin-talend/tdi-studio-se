@@ -345,10 +345,9 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
             // updateContextCode(codeGen);
             syntaxCheck();
-            
-            codeFile.getProject().deleteMarkers("org.eclipse.jdt.debug.javaLineBreakpointMarker", true,
-                    IResource.DEPTH_INFINITE);
-            
+
+            codeFile.getProject().deleteMarkers("org.eclipse.jdt.debug.javaLineBreakpointMarker", true, IResource.DEPTH_INFINITE);
+
             List<INode> breakpointNodes = CorePlugin.getContext().getBreakpointNodes(process);
             if (!breakpointNodes.isEmpty()) {
                 String[] nodeNames = new String[breakpointNodes.size()];
@@ -1181,6 +1180,10 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
                 return;
             }
             IFile codeFile = this.project.getFile(this.codePath);
+            if (!codeFile.exists()) {
+                JDIDebugModel.removeJavaBreakpointListener((IJavaBreakpointListener) this);
+                return;
+            }
             LineNumberReader lineReader = new LineNumberReader(new InputStreamReader(codeFile.getContents()));
             String content = null;
             while (lineReader.getLineNumber() < breakLineNumber - 3) {
