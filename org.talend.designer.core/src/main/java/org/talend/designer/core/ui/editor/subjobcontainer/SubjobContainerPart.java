@@ -155,8 +155,10 @@ public class SubjobContainerPart extends AbstractGraphicalEditPart implements Pr
         } else if (SubjobContainer.UPDATE_SUBJOB_CONNECTIONS.equals(prop)) {
             refreshSourceConnections();
         } else if (SubjobContainer.UPDATE_SUBJOB_TITLE_COLOR.equals(prop)) {
-            ((SubjobContainerFigure) getFigure()).updateSubJobTitleColor();
-            refreshVisuals();
+            if (getFigure() instanceof SubjobContainerFigure) {
+                ((SubjobContainerFigure) getFigure()).updateSubJobTitleColor();
+                refreshVisuals();
+            }
         } else if (SubjobContainer.UPDATE_SUBJOB_DISPLAY.equals(prop)) {
             List<NodeContainer> tmpList = new ArrayList<NodeContainer>(((SubjobContainer) getModel()).getNodeContainers());
             ((SubjobContainer) getModel()).getNodeContainers().clear();
@@ -169,8 +171,10 @@ public class SubjobContainerPart extends AbstractGraphicalEditPart implements Pr
             elems.add(getModel());
             parent.refresh();
         } else { // can only be UPDATE_SUBJOB_DATA, need to modify if some others are added
-            ((SubjobContainerFigure) getFigure()).updateData();
-            refreshVisuals();
+            if (getFigure() instanceof SubjobContainerFigure) {
+                ((SubjobContainerFigure) getFigure()).updateData();
+                refreshVisuals();
+            }
         }
     }
 
