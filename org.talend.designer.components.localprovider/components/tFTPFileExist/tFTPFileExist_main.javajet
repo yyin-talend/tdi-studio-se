@@ -97,7 +97,7 @@ if(useProxy){
     com.jcraft.jsch. Channel channel<%=cid%>=session<%=cid%>.openChannel("sftp"); 
     channel<%=cid%>.connect();
      
-    com.jcraft.jsch.ChannelSftp c_<%=cid%>=(com.jcraft.jsch.ChannelSftp)channel_<%=cid%>; 
+    com.jcraft.jsch.ChannelSftp c_<%=cid%>=(com.jcraft.jsch.ChannelSftp)channel<%=cid%>; 
     String remoteDir_<%=cid %> = <%=remoteDir %>.replaceAll("\\\\","/");
     try{
     	if(c_<%=cid %>.stat(<%=remoteDir %> + "/" + <%=filename %>).getAtimeString() != null){
