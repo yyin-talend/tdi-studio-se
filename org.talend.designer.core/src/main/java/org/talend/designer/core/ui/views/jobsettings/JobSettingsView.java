@@ -360,10 +360,11 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
 
                     // remove "Job" or "Joblet" from title
                     String title = activeEditor.getTitle();
-                    if (title.startsWith(VIEW_NAME)) {
-                        title = title.substring(VIEW_NAME.length() + 1);
-                    } else if (title.startsWith(VIEW_NAME_JOBLET)) {
+                    if (title.startsWith(VIEW_NAME_JOBLET)) {
                         title = title.substring(VIEW_NAME_JOBLET.length() + 1);
+                    } else if (title.startsWith(VIEW_NAME)) {
+                        title = title.substring(VIEW_NAME.length() + 1);
+
                     }
 
                     setElement(element, title, null);
