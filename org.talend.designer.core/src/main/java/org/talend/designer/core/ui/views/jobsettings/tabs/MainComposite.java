@@ -160,6 +160,8 @@ public class MainComposite extends AbstractTabComposite {
         data.right = new FormAttachment(100, 0);
         data.top = new FormAttachment(authorLabel, ITabbedPropertyConstants.VSPACE);
         statusText.setLayoutData(data);
+        String status = repositoryObject.getStatusCode();
+        statusText.setText(status != null ? status : "");
         statusText.setEnabled(enableControl);
 
         CLabel statusLabel = widgetFactory.createCLabel(composite, Messages.getString("PurposeStatusSection.statusLabel")); //$NON-NLS-1$
@@ -176,6 +178,7 @@ public class MainComposite extends AbstractTabComposite {
         data.top = new FormAttachment(statusText, ITabbedPropertyConstants.VSPACE);
         data.height = NB_LINES * descriptionText.getLineHeight();
         descriptionText.setLayoutData(data);
+
         String description = repositoryObject.getDescription();
         descriptionText.setText(description != null ? description : "");
         descriptionText.setEnabled(enableControl);

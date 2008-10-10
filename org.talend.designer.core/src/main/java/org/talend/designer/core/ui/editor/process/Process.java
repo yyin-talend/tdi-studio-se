@@ -2294,19 +2294,19 @@ public class Process extends Element implements IProcess2 {
 
     // PTODO mhelleboid remove
     public Date getCreationDate() {
-        return null;
+        return getProperty().getCreationDate();
     }
 
     public String getDescription() {
-        return null;
+        return getProperty().getDescription();
     }
 
     public Date getModificationDate() {
-        return null;
+        return getProperty().getModificationDate();
     }
 
     public String getPurpose() {
-        return null;
+        return getProperty().getPurpose();
     }
 
     public void setCreationDate(Date value) {
