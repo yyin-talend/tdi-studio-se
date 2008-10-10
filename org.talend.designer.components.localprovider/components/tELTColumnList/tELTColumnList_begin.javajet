@@ -12,7 +12,9 @@ imports="
 
     String cid = node.getUniqueName();
     
-    String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+    String dbType = ElementParameterParser.getValue(node,"__DBTYPE__");
+
+    String connection = ElementParameterParser.getValue(node,"__CONNECTION_" + dbType + "__");
     
     String conn = "conn_" + connection;
     

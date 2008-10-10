@@ -23,8 +23,10 @@ skeleton="../templates/db_output_bulk.skeleton"
     INode node = (INode)codeGenArgument.getArgument();
 
     String cid = node.getUniqueName();
+    
+    String dbType = ElementParameterParser.getValue(node,"__DBTYPE__");
 
-    String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+    String connection = ElementParameterParser.getValue(node,"__CONNECTION_" + dbType + "__");
     
     String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");	
 
