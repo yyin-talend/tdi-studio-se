@@ -19,7 +19,88 @@
 	String remotedir = ElementParameterParser.getValue(node, "__REMOTEDIR__");
 	boolean dirFull = ElementParameterParser.getValue(node, "__DIR_FULL__").equals("true");
 	String cid = node.getUniqueName();
+	
+	boolean sftp = ElementParameterParser.getValue(node, "__SFTP__").equals("true");	
+
+	String authMethod = ElementParameterParser.getValue(node,"__AUTH_METHOD__");
+	String privateKey = ElementParameterParser.getValue(node,"__PRIVATEKEY__");
+	String passPhrase = ElementParameterParser.getValue(node,"__PASSPHRASE__");		
 %>	
+
+<%if(sftp){%>
+
+	class MyUserInfo implements com.jcraft.jsch.UserInfo, com.jcraft.jsch.UIKeyboardInteractive {
+    	String passphrase_<%=cid %> = <%=passPhrase %>;
+        public String getPassphrase() { return passphrase_<%=cid %>; }
+        
+        public String getPassword() { return null; } 
+        
+        public boolean promptPassword(String arg0) { return true; } 
+        
+        public boolean promptPassphrase(String arg0) { return true; } 
+        
+        public boolean promptYesNo(String arg0) { return true; } 
+        
+        public void showMessage(String arg0) { } 
+        
+        public String[] promptKeyboardInteractive(String destination, String name, String instruction, String[] prompt,
+                boolean[] echo) {
+           String[] password<%=cid%> = {<%=pass%>};
+           return password<%=cid%>;
+        }
+    }; 
+    
+    final com.jcraft.jsch.UserInfo defaultUserInfo<%=cid%> = new MyUserInfo();
+    
+    
+    class MyProgressMonitor implements com.jcraft.jsch.SftpProgressMonitor {
+
+        public void init(int op, String src, String dest, long max) {}
+ 		
+ 		public boolean count(long count) { return true;}
+
+        public void end() {}
+    }
+    
+    com.jcraft.jsch.JSch jsch<%=cid%>=new com.jcraft.jsch.JSch(); 
+    <%if(authMethod.equals("PUBLICKEY")){%>
+    jsch<%=cid%>.addIdentity(<%=privateKey %>, defaultUserInfo<%=cid%>.getPassphrase());
+    <%}%>
+    com.jcraft.jsch.Session session<%=cid%>=jsch<%=cid%>.getSession(<%=user%>, <%=host%>, <%=port%>); 
+    <%if(authMethod.equals("PASSWORD")){%> 
+	session<%=cid%>.setPassword(<%=pass%>); 
+    <%}%>
+    session<%=cid%>.setUserInfo(defaultUserInfo<%=cid%>); 
+    session<%=cid%>.connect(); 
+    
+    com.jcraft.jsch. Channel channel<%=cid%>=session<%=cid%>.openChannel("sftp"); 
+    channel<%=cid%>.connect();
+     
+    com.jcraft.jsch.ChannelSftp c_<%=cid%>=(com.jcraft.jsch.ChannelSftp)channel<%=cid%>; 
+    String remotedir_<%=cid %> = <%=remotedir %>.replaceAll("\\\\","/");
+    
+    
+	java.util.Vector sftpFiles_<%=cid %> = c_<%=cid%>.ls(remotedir_<%=cid %>);
+	int nb_file_<%=cid%> = 0;
+	
+	for(Object sftpFile_<%=cid %> : sftpFiles_<%=cid %>){
+		
+		com.jcraft.jsch.ChannelSftp.LsEntry lsEntry_<%=cid %> = (com.jcraft.jsch.ChannelSftp.LsEntry) sftpFile_<%=cid %>;
+		//com.jcraft.jsch.SftpATTRS attrs_<%=cid %> = lsEntry_<%=cid %>.getAttrs();
+		
+		if (lsEntry_<%=cid %>.getFilename().equals(".") || lsEntry_<%=cid %>.getFilename().equals("..")) {
+			continue;
+		}
+		
+        String currentFileName_<%=cid%> = lsEntry_<%=cid %>.getFilename(); 
+        String currentFilePath_<%=cid%> = remotedir_<%=cid %> + "/" + lsEntry_<%=cid %>.getFilename();
+ 
+        globalMap.put("<%=cid %>_CURRENT_FILE", currentFileName_<%=cid%>);
+        globalMap.put("<%=cid %>_CURRENT_FILEPATH", currentFilePath_<%=cid%>);
+        
+        nb_file_<%=cid%>++;
+    	
+<%}else{%>
 	int nb_file_<%=cid%> = 0;
 	com.enterprisedt.net.ftp.FTPClient ftp_<%=cid %> = new com.enterprisedt.net.ftp.FTPClient();
 	ftp_<%=cid %>.setRemoteHost(<%=host %>);
@@ -47,3 +128,6 @@
  
         globalMap.put("<%=cid %>_CURRENT_FILE", currentFileName_<%=cid%>);
         globalMap.put("<%=cid %>_CURRENT_FILEPATH", currentFilePath_<%=cid%>);
+        
+        nb_file_<%=cid%>++;
+<%}%>
