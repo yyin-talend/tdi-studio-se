@@ -701,7 +701,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
             return Collections.EMPTY_LIST;
         }
 
-        String dbName = (String) elementParam.getValue();
+        // String dbName = (String) elementParam.getValue();
         List<SQLPatternInfor> patternInfor = new ArrayList<SQLPatternInfor>();
         try {
 
@@ -709,10 +709,11 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
                     ERepositoryObjectType.SQLPATTERNS, false);
             for (IRepositoryObject repositoryObject : list) {
                 SQLPatternItem item = (SQLPatternItem) repositoryObject.getProperty().getItem();
-                if (item.getEltName().equals(dbName)) {
-                    patternInfor.add(new SQLPatternInfor(item.getProperty().getId() + SQLPatternUtils.ID_SEPARATOR
-                            + item.getProperty().getLabel(), item.getProperty().getLabel()));
-                }
+                // disable this test as there is now only Generic ELT components
+                // if (item.getEltName().equals(dbName)) {
+                patternInfor.add(new SQLPatternInfor(item.getProperty().getId() + SQLPatternUtils.ID_SEPARATOR
+                        + item.getProperty().getLabel(), item.getProperty().getLabel()));
+                // }
             }
         } catch (Exception e) {
         }
@@ -873,7 +874,9 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getRepositoryAliasName(org.talend.core.model.properties.ConnectionItem)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getRepositoryAliasName(org
+     * .talend.core.model.properties.ConnectionItem)
      */
     public String getRepositoryAliasName(ConnectionItem connectionItem) {
         return null;
@@ -882,7 +885,9 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getRepositoryConnectionItemMap()
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getRepositoryConnectionItemMap
+     * ()
      */
     public Map<String, ConnectionItem> getRepositoryConnectionItemMap() {
         return null;
@@ -891,7 +896,8 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getRepositoryQueryStoreMap()
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getRepositoryQueryStoreMap()
      */
     public Map<String, Query> getRepositoryQueryStoreMap() {
         return null;
@@ -918,7 +924,8 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getTableIdAndDbSchemaMap()
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getTableIdAndDbSchemaMap()
      */
     public Map<String, String> getTableIdAndDbSchemaMap() {
         return null;
@@ -927,7 +934,8 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getTableIdAndDbTypeMap()
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getTableIdAndDbTypeMap()
      */
     public Map<String, String> getTableIdAndDbTypeMap() {
         return null;
@@ -1013,7 +1021,9 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
     /*
      * (non-Javadoc)
      * 
-     * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.eclipse.core.resources.IResourceChangeEvent)
+     * @see
+     * org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.eclipse.core.resources.IResourceChangeEvent
+     * )
      */
     public void resourceChanged(IResourceChangeEvent event) {
         if (event.getType() == IResourceChangeEvent.POST_CHANGE) {
