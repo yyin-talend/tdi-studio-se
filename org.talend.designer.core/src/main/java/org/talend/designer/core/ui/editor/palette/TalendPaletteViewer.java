@@ -71,7 +71,9 @@ public class TalendPaletteViewer extends PaletteViewer {
                         runnable.stopExpand();
                     }
                     filterPalette(text);
-                    executor.execute(new ExpandPaletteRunnable());
+                    if (!text.getText().equals("")) {
+                        executor.execute(new ExpandPaletteRunnable());
+                    }
                 }
             });
         }
@@ -178,8 +180,10 @@ public class TalendPaletteViewer extends PaletteViewer {
         text.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
-                expandLimiter.resetTimer();
-                expandLimiter.startIfExecutable(true, text);
+                if (!text.getText().equals(SEARCH_COMPONENT)) {
+                    expandLimiter.resetTimer();
+                    expandLimiter.startIfExecutable(true, text);
+                }
             }
 
         });

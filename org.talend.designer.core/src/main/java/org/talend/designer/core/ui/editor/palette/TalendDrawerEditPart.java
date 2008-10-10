@@ -12,13 +12,10 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.palette;
 
-import java.beans.PropertyChangeEvent;
-
 import org.eclipse.draw2d.FocusEvent;
 import org.eclipse.draw2d.FocusListener;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.internal.ui.palette.editparts.DrawerEditPart;
-import org.eclipse.gef.internal.ui.palette.editparts.DrawerFigure;
 import org.eclipse.gef.palette.PaletteDrawer;
 
 /**
@@ -36,6 +33,7 @@ public class TalendDrawerEditPart extends DrawerEditPart {
         if (getParent() instanceof TalendDrawerEditPart) {
             TalendDrawerEditPart parent = (TalendDrawerEditPart) getParent();
             childLevel = parent.childLevel + 1;
+            getViewer().getControl().setData("ANIMATE", Boolean.FALSE);
 
             TalendDrawerFigure fig = new TalendDrawerFigure(getViewer().getControl(), childLevel) {
 
@@ -43,6 +41,7 @@ public class TalendDrawerEditPart extends DrawerEditPart {
                     return createToolTip();
                 }
             };
+            getViewer().getControl().setData("ANIMATE", Boolean.TRUE);
             fig.setExpanded(getDrawer().isInitiallyOpen());
             fig.setPinned(getDrawer().isInitiallyPinned());
 

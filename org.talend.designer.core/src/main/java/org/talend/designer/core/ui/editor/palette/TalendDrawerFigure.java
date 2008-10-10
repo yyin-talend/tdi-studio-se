@@ -34,7 +34,7 @@ public class TalendDrawerFigure extends DrawerFigure {
 
         Color baseColor = FigureUtilities.mixColors(PaletteColorUtil.WIDGET_BACKGROUND, PaletteColorUtil.WIDGET_LIST_BACKGROUND,
                 0.1);
-        ; // control.getBackground();
+        // control.getBackground();
         Color backgroundColor = new Color(Display.getCurrent(), getNewValue(baseColor.getRed(), childLevel), getNewValue(
                 baseColor.getGreen(), childLevel), getNewValue(baseColor.getBlue(), childLevel));
         getContentPane().setBackgroundColor(backgroundColor);
