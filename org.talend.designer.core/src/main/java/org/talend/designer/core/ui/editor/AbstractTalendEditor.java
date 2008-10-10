@@ -1692,6 +1692,12 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
             IFigure figure = ((NodePart) part).getFigure();
 
+            ZoomManager zoomManager = (ZoomManager) AbstractTalendEditor.this.getAdapter(ZoomManager.class);
+            double zoom = zoomManager.getZoom();
+            if (zoom > 1e-7) {
+                startPoint.scale(1 / zoom);
+            }
+
             if (!figure.getBounds().contains(startPoint)) {
                 // if the start location of the drag is not in the component, ignore it
                 return;
