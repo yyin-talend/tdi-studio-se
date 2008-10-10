@@ -33,6 +33,12 @@ String authMethod = ElementParameterParser.getValue(node,"__AUTH_METHOD__");
 String privateKey = ElementParameterParser.getValue(node,"__PRIVATEKEY__");
 String passPhrase = ElementParameterParser.getValue(node,"__PASSPHRASE__");	
 
+boolean useProxy = ElementParameterParser.getValue(node,"__UES_PROXY__").equals("true");
+String proxyHost = ElementParameterParser.getValue(node,"__PROXY_HOST__");
+String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
+String proxyUser = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
+String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
+
 String outputConnName = null;
 List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
 if (conns!=null) {
@@ -49,6 +55,18 @@ if (conns!=null) {
 
 if (outputConnName != null){
 %>
+
+<%
+//The following part support the socks proxy for FTP and SFTP (Socks V4 or V5, they are all OK). 
+//And it can not work with the FTP proxy directly, only support the socks proxy.
+if(useProxy){
+%>
+        java.util.Properties props = System.getProperties();
+        props.put("socksProxyPort", <%=proxyPort %>);
+        props.put("socksProxyHost", <%=proxyHost %>);
+        props.put("java.net.socks.username", <%=proxyUser %>);
+        props.put("java.net.socks.password", <%=proxyPassword %>);        
+<%}%>
 
 <%if(sftp){%>
 
