@@ -90,10 +90,17 @@ public class TalendPaletteViewer extends PaletteViewer {
      * @see org.eclipse.gef.ui.parts.ScrollingGraphicalViewer#creatToolControl(org.eclipse.swt.widgets.Composite)
      */
     public Control creatToolControl(Composite parent) {
-        Composite container = new Composite(parent, SWT.BORDER);
-        container.setLayout(new GridLayout(2, false));
+        Composite container = new Composite(parent, SWT.NONE);
+        GridLayout layout = new GridLayout(2, false);
+        layout.marginLeft = 2;
+        layout.marginRight = 2;
+        layout.marginTop = 2;
+        layout.marginBottom = 2;
+        layout.marginHeight = 0;
+        layout.marginWidth = 0;
 
-       final  Text text = new Text(container, SWT.BORDER);
+        container.setLayout(layout);
+        final Text text = new Text(container, SWT.BORDER);
 
         text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         filters.add(text);
