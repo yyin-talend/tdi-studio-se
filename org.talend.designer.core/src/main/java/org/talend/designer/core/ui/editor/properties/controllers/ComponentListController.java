@@ -43,11 +43,13 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
+import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 
 /**
@@ -176,8 +178,9 @@ public class ComponentListController extends AbstractElementPropertySectionContr
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite,
-     * org.talend.core.model.process.IElementParameter)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize
+     * (org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
      */
     @Override
     public int estimateRowSize(Composite subComposite, IElementParameter param) {
@@ -265,6 +268,11 @@ public class ComponentListController extends AbstractElementPropertySectionContr
             if (!componentUniqueNames.contains(value) && (componentUniqueNames.size() > 0)) {
                 if (value == null || value.equals("")) {
                     elem.setPropertyValue(param.getName(), componentValueList[0]);
+                    if (elem instanceof Node) {
+                        ((IProcess2) ((Node) elem).getProcess()).setProcessModified(true);
+                    } else if (elem instanceof Connection) {
+                        ((IProcess2) ((Connection) elem).getSource().getProcess()).setProcessModified(true);
+                    }
                 } else {
                     IEditorPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
                     if (part instanceof AbstractMultiPageTalendEditor) {
