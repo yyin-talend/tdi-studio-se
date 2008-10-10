@@ -28,7 +28,7 @@
     ftp_<%=cid %>.login(<%=user %>, <%=pass %>);    
 	
 	String remotedir_<%=cid %> = <%=remotedir%>;
-	ftp_<%=cid %>.chdir(remotedir_<%=cid %>);
+	//ftp_<%=cid %>.chdir(remotedir_<%=cid %>);
     
     String[] fileList_<%=cid %>;
     if (<%=dirFull %>) {
