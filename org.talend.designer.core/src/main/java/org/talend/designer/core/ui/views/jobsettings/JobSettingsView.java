@@ -33,6 +33,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.EmptyRepositoryObject;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.properties.tab.HorizontalTabFactory;
@@ -261,14 +262,14 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
         }
 
         String viewName = VIEW_NAME;
+        if (element instanceof IProcess && AbstractProcessProvider.isExtensionProcessForJoblet((IProcess) element)) {
+            viewName = VIEW_NAME_JOBLET;
+        }
 
         if (type != null) {
             viewName = type;
         }
 
-        if (element instanceof IProcess && AbstractProcessProvider.isExtensionProcessForJoblet((IProcess) element)) {
-            viewName = VIEW_NAME_JOBLET;
-        }
         if (title == null) {
             title = ""; //$NON-NLS-1$
         }
@@ -356,7 +357,16 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                     this.selectedPrimary = true;
                     this.cleaned = force;
                     this.element = (Element) process;
-                    setElement(element, activeEditor.getTitle(), null);
+
+                    // remove "Job" or "Joblet" from title
+                    String title = activeEditor.getTitle();
+                    if (title.startsWith(VIEW_NAME)) {
+                        title = title.substring(VIEW_NAME.length() + 1);
+                    } else if (title.startsWith(VIEW_NAME_JOBLET)) {
+                        title = title.substring(VIEW_NAME_JOBLET.length() + 1);
+                    }
+
+                    setElement(element, title, null);
                     return;
                 }
             }
@@ -398,7 +408,9 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
     /*
      * (non-Javadoc)
      * 
-     * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
+     * @see
+     * org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent
+     * )
      */
     public void selectionChanged(SelectionChangedEvent event) {
         ISelection selection = event.getSelection();
@@ -420,6 +432,17 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                 String type = null;
                 if (obj != null) {
                     type = obj.toString();
+                    if (obj instanceof ERepositoryObjectType) {
+                        switch ((ERepositoryObjectType) obj) {
+                        case PROCESS:
+                            type = VIEW_NAME;
+                            break;
+                        case JOBLET:
+                            type = VIEW_NAME_JOBLET;
+                            break;
+                        }
+                    }
+
                 } else {
                     return;
                 }
@@ -429,7 +452,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                     repositoryObject = new EmptyRepositoryObject();
                     return;
                 }
-                String title = repositoryObject.getLabel();
+                String title = repositoryObject.getLabel() + " " + repositoryObject.getVersion();
 
                 setElement(repositoryObject, type + SEPARATOR + title, ImageProvider.getImage(repositoryNode.getIcon()));
             }
