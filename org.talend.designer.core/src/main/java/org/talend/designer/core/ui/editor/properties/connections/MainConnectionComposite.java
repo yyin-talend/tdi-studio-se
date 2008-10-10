@@ -85,7 +85,7 @@ public class MainConnectionComposite extends MultipleThreadDynamicComposite {
                 data.height = tableHeight; // fix bug 3893.
 
                 IMetadataTable outputMetaTable = ((Connection) elem).getMetadataTable();
-                if (outputMetaTable != null) {
+                if (outputMetaTable != null && this.section == EComponentCategory.BASIC) {
                     // Composite compositeEditorView = new Composite(composite, SWT.BORDER);
                     // compositeEditorView.setLayoutData(data);
 
