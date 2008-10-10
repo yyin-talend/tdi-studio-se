@@ -20,6 +20,11 @@
 	String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
 	String remotedir = ElementParameterParser.getValue(node, "__REMOTEDIR__");
 	boolean sftp = ElementParameterParser.getValue(node, "__SFTP__").equals("true");
+	
+	String authMethod = ElementParameterParser.getValue(node,"__AUTH_METHOD__");
+	String privateKey = ElementParameterParser.getValue(node,"__PRIVATEKEY__");
+	String passPhrase = ElementParameterParser.getValue(node,"__PASSPHRASE__");		
+	
 	List<Map<String, String>> files = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FILES__");	
 	String cid = node.getUniqueName();
 %>
@@ -29,7 +34,8 @@
 %>	
 
 	class MyUserInfo implements com.jcraft.jsch.UserInfo, com.jcraft.jsch.UIKeyboardInteractive {
-        public String getPassphrase() { return null; } 
+    	String passphrase_<%=cid %> = <%=passPhrase %>;
+        public String getPassphrase() { return passphrase_<%=cid %>; }
         
         public String getPassword() { return null; } 
         
@@ -51,14 +57,29 @@
     final com.jcraft.jsch.UserInfo defaultUserInfo<%=cid%> = new MyUserInfo();
     
     
+    class MyProgressMonitor implements com.jcraft.jsch.SftpProgressMonitor {
+
+        public void init(int op, String src, String dest, long max) {}
+ 		
+ 		public boolean count(long count) { return true;}
+
+        public void end() {}
+    }
+    
     com.jcraft.jsch.JSch jsch<%=cid%>=new com.jcraft.jsch.JSch(); 
+    <%if(authMethod.equals("PUBLICKEY")){%>
+    jsch<%=cid%>.addIdentity(<%=privateKey %>, defaultUserInfo<%=cid%>.getPassphrase());
+    <%}%>
     com.jcraft.jsch.Session session<%=cid%>=jsch<%=cid%>.getSession(<%=user%>, <%=host%>, <%=port%>); 
+    <%if(authMethod.equals("PASSWORD")){%> 
 	session<%=cid%>.setPassword(<%=pass%>); 
+    <%}%>
     session<%=cid%>.setUserInfo(defaultUserInfo<%=cid%>); 
     session<%=cid%>.connect(); 
     
     com.jcraft.jsch. Channel channel<%=cid%>=session<%=cid%>.openChannel("sftp"); 
-    channel<%=cid%>.connect(); 
+    channel<%=cid%>.connect();
+    
     com.jcraft.jsch.ChannelSftp c<%=cid%>=(com.jcraft.jsch.ChannelSftp)channel<%=cid%>; 
     c<%=cid%>.setFilenameEncoding(<%=encoding%>);
     

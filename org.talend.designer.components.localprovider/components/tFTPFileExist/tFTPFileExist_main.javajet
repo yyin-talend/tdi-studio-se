@@ -28,6 +28,12 @@
 	String proxyPass = ElementParameterParser.getValue(node, "__PROXY_PASSWORD__");
 	
 	boolean sftp = ElementParameterParser.getValue(node, "__SFTP__").equals("true");
+	
+	String user = ElementParameterParser.getValue(node, "__USERNAME__");
+	String pass = ElementParameterParser.getValue(node, "__PASSWORD__");
+	String authMethod = ElementParameterParser.getValue(node,"__AUTH_METHOD__");
+	String privateKey = ElementParameterParser.getValue(node,"__PRIVATEKEY__");
+	String passPhrase = ElementParameterParser.getValue(node,"__PASSPHRASE__");		
 %>
 
 <%
@@ -43,8 +49,10 @@ if(useProxy){
 <%}%>
 
 <%if(sftp){%>
+
 	class MyUserInfo implements com.jcraft.jsch.UserInfo, com.jcraft.jsch.UIKeyboardInteractive {
-        public String getPassphrase() { return null; } 
+    	String passphrase_<%=cid %> = <%=passPhrase %>;
+        public String getPassphrase() { return passphrase_<%=cid %>; }
         
         public String getPassword() { return null; } 
         
@@ -58,19 +66,37 @@ if(useProxy){
         
         public String[] promptKeyboardInteractive(String destination, String name, String instruction, String[] prompt,
                 boolean[] echo) {
-           String[] password_<%=cid %> = {<%=password %>};
-           return password_<%=cid %>;
+           String[] password<%=cid%> = {<%=pass%>};
+           return password<%=cid%>;
         }
     }; 
-    final com.jcraft.jsch.UserInfo defaultUserInfo_<%=cid %> = new MyUserInfo();
-    com.jcraft.jsch.JSch jsch_<%=cid %>=new com.jcraft.jsch.JSch(); 
-    com.jcraft.jsch.Session session_<%=cid %>=jsch_<%=cid %>.getSession(<%=username%>, <%=host%>, <%=port%>); 
-	session_<%=cid%>.setPassword(<%=password%>); 
-    session_<%=cid%>.setUserInfo(defaultUserInfo_<%=cid %>); 
-    session_<%=cid%>.connect(); 
     
-    com.jcraft.jsch. Channel channel_<%=cid%>=session_<%=cid%>.openChannel("sftp"); 
-    channel_<%=cid%>.connect(); 
+    final com.jcraft.jsch.UserInfo defaultUserInfo<%=cid%> = new MyUserInfo();
+    
+    
+    class MyProgressMonitor implements com.jcraft.jsch.SftpProgressMonitor {
+
+        public void init(int op, String src, String dest, long max) {}
+ 		
+ 		public boolean count(long count) { return true;}
+
+        public void end() {}
+    }
+    
+    com.jcraft.jsch.JSch jsch<%=cid%>=new com.jcraft.jsch.JSch(); 
+    <%if(authMethod.equals("PUBLICKEY")){%>
+    jsch<%=cid%>.addIdentity(<%=privateKey %>, defaultUserInfo<%=cid%>.getPassphrase());
+    <%}%>
+    com.jcraft.jsch.Session session<%=cid%>=jsch<%=cid%>.getSession(<%=user%>, <%=host%>, <%=port%>); 
+    <%if(authMethod.equals("PASSWORD")){%> 
+	session<%=cid%>.setPassword(<%=pass%>); 
+    <%}%>
+    session<%=cid%>.setUserInfo(defaultUserInfo<%=cid%>); 
+    session<%=cid%>.connect(); 
+    
+    com.jcraft.jsch. Channel channel<%=cid%>=session<%=cid%>.openChannel("sftp"); 
+    channel<%=cid%>.connect();
+     
     com.jcraft.jsch.ChannelSftp c_<%=cid%>=(com.jcraft.jsch.ChannelSftp)channel_<%=cid%>; 
     String remoteDir_<%=cid %> = <%=remoteDir %>.replaceAll("\\\\","/");
     try{
