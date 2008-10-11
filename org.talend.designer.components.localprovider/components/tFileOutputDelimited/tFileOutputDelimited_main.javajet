@@ -72,7 +72,10 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
     		boolean advancedSeparator = (advancedSeparatorStr!=null&&!advancedSeparatorStr.equals(""))?advancedSeparatorStr.equals("true"):false;
     		String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
     		String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER); 
-   		                
+   		    
+			String parallelize = ElementParameterParser.getValue(node.getSubProcessStartNode(true),"__PARALLELIZE__");
+			boolean isParallelize = (parallelize!=null&&!parallelize.equals(""))?parallelize.equals("true"):false;
+
         	List< ? extends IConnection> conns = node.getIncomingConnections();
         	for (IConnection conn : conns) {
         		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
@@ -146,6 +149,12 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
     				synchronized (lockWrite) {
     		        <% 
     		        	}
+    		        	if (isParallelize) {
+  					%>
+					Object[] pLockWrite = (Object[])globalMap.get("PARALLEL_LOCK_WRITE");
+					synchronized (pLockWrite) {
+					<% 
+						}
     		        %>
     		        <%
     		        if(split){ 
@@ -226,6 +235,11 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
     		        }
     		        %>
     		        <% 
+    		        	if (isParallelize) {
+    				%>
+    				} 
+    		        <%
+    		        	}
     					if (codeGenArgument.subTreeContainsParallelIterate()) {
     				%>
     				} 
@@ -280,6 +294,9 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
     		boolean advancedSeparator = (advancedSeparatorStr!=null&&!advancedSeparatorStr.equals(""))?advancedSeparatorStr.equals("true"):false;
     		String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
     		String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER);        	
+        	
+        	String parallelize = ElementParameterParser.getValue(node.getSubProcessStartNode(true),"__PARALLELIZE__");
+			boolean isParallelize = (parallelize!=null&&!parallelize.equals(""))?parallelize.equals("true"):false;
         	
         	List< ? extends IConnection> conns = node.getIncomingConnections();
           	if(!rowSeparator.equals("\\n") && !rowSeparator.equals("\\r")){
@@ -372,6 +389,12 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
     					if (codeGenArgument.subTreeContainsParallelIterate()) {
 %>
 				synchronized (lockWrite) {
+<%
+						}
+						if (isParallelize) {
+%>
+				Object[] pLockWrite = (Object[])globalMap.get("PARALLEL_LOCK_WRITE");
+				synchronized (pLockWrite) {
 <%
 						}
 %>
@@ -501,6 +524,11 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
             			}
             			%>
 <% 
+						if ( isParallelize) {
+%>
+    			} 
+<%
+    		        	}
     					if (codeGenArgument.subTreeContainsParallelIterate()) {
 %>
 				}

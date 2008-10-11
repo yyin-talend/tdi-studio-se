@@ -42,6 +42,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		boolean advancedSeparator = (advancedSeparatorStr!=null&&!advancedSeparatorStr.equals(""))?advancedSeparatorStr.equals("true"):false;
 		String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
 		String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER);        
+
+		String parallelize = ElementParameterParser.getValue(node.getSubProcessStartNode(true),"__PARALLELIZE__");
+			boolean isParallelize = (parallelize!=null&&!parallelize.equals(""))?parallelize.equals("true"):false;
 %>
 
 				String tempStringM<%=cid %>= null;
@@ -158,6 +161,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			synchronized (lockWrite) {
 			<% 
 				}
+				if (isParallelize) {
+			%>
+			Object[] pLockWrite = (Object[])globalMap.get("PARALLEL_LOCK_WRITE");
+			synchronized (pLockWrite) {
+			<% 
+				}
 			%>
 			out<%=cid %>.write(sb_<%=cid %>.toString());
     		<% if(flushOnRow) { %>
@@ -167,7 +176,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     		<%
     			}
     		%>
-    		<% 
+    		<%
+    			if ( isParallelize) {
+			%>
+    			} 
+			<%
+    		    }
 				if (codeGenArgument.subTreeContainsParallelIterate()) {
 			%>
 				}

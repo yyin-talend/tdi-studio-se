@@ -15,7 +15,10 @@
     
     String filename = ElementParameterParser.getValue(node,"__FILENAME__");
 	boolean isDeleteEmptyFile = ElementParameterParser.getValue(node, "__DELETE_EMPTYFILE__").equals("true"); 
-	boolean isAppend = ElementParameterParser.getValue(node,"__APPEND__").equals("true");   
+	boolean isAppend = ElementParameterParser.getValue(node,"__APPEND__").equals("true");
+	
+	String parallelize = ElementParameterParser.getValue(node.getSubProcessStartNode(true),"__PARALLELIZE__");
+	boolean isParallelize = (parallelize!=null&&!parallelize.equals(""))?parallelize.equals("true"):false;
 %>
 
 <% 
@@ -27,6 +30,13 @@
 	if (codeGenArgument.subTreeContainsParallelIterate()) {
 %>
 	synchronized (lockWrite) {
+<% 
+	}
+	
+	if (isParallelize) {
+%>
+	Object[] pLockWrite = (Object[])globalMap.get("PARALLEL_LOCK_WRITE");
+	synchronized (pLockWrite) {
 <% 
 	}
 %>
@@ -73,6 +83,11 @@
   }
 %>
 <% 
+	if (isParallelize) {
+%>
+}
+<%
+	}
 	if (codeGenArgument.subTreeContainsParallelIterate()) {
 %>
 }
