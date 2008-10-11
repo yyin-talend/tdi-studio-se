@@ -7,6 +7,8 @@ imports="
     org.talend.core.model.metadata.MetadataTalendType    
     org.talend.core.model.metadata.MappingTypeRetriever    
     org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.metadata.types.JavaTypesManager
+	org.talend.core.model.metadata.types.JavaType
     java.util.List
     java.util.ArrayList    
     java.lang.StringBuilder
@@ -36,6 +38,26 @@ String useDatePattern = ElementParameterParser.getValue(node, "__USE_DATE_PATTER
 boolean convertToUppercase = ElementParameterParser.getValue(node, "__CONVERT_COLUMN_TABLE_TO_UPPERCASE__").equals("true");
 String columns = "";//if schema is defined, use this option in clt file
 List<IMetadataColumn> columnList = getColumnList(node);
+
+String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
+boolean advancedSeparator = (advancedSeparatorStr!=null&&!advancedSeparatorStr.equals(""))?advancedSeparatorStr.equals("true"):false;
+String thousandsSeparator = ElementParameterParser.getValue(node, "__THOUSANDS_SEPARATOR__");
+String decimalSeparator = ElementParameterParser.getValue(node, "__DECIMAL_SEPARATOR__"); 
+decimalSeparator = decimalSeparator.trim();
+if(decimalSeparator.length() > 2){
+	decimalSeparator = String.valueOf(decimalSeparator.charAt(1));
+}else{
+	decimalSeparator = ".";
+}
+boolean noThousandsSeparator = false;
+thousandsSeparator = thousandsSeparator.trim();
+if(thousandsSeparator.length() > 2){
+	thousandsSeparator = String.valueOf(thousandsSeparator.charAt(1));
+}else{
+	thousandsSeparator = " ";
+	noThousandsSeparator = true;
+}
+
 %>
 
 <%
@@ -147,6 +169,7 @@ if(columnList != null && columnList.size() > 0) {
     	boolean flag = false;
     	for(IMetadataColumn column:columnList){
     		String dataType = null;
+    		JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
             if(column.getType() == null || column.getType().trim().length() == 0) {
             	dataType = mappingType.getDefaultSelectedDbType(column.getTalendType());
             } else {
@@ -155,7 +178,7 @@ if(columnList != null && columnList.size() > 0) {
             Integer length = column.getLength() == null ? 0 : column.getLength();
             
     		if(flag){
-    			columns += ", ";
+    			columns += ", \\n";
     		}else{
     			flag = true;
     		}
@@ -168,6 +191,12 @@ if(columnList != null && columnList.size() > 0) {
     		}else if(dataType.equals("CHAR") || dataType.equals("NCHAR") || dataType.equals("NVARCHAR2") || dataType.equals("VARCHAR") || dataType.equals("VARCHAR2")){//long text
     			if(length > 255){
     				columns += " CHAR(" + length + ")";
+    			}
+    		}else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) {//add for issue
+    			if(noThousandsSeparator){
+    				columns += (" \\\"TO_NUMBER(ltrim(rtrim(:" + column.getOriginalDbColumnName() + ")), '999999999999D999999999999', 'NLS_NUMERIC_CHARACTERS=''" + decimalSeparator + thousandsSeparator + "''')\\\"");
+    			}else{
+    				columns += (" \\\"TO_NUMBER(ltrim(rtrim(:" + column.getOriginalDbColumnName() + ")), '999G999G999G999D999999999999', 'NLS_NUMERIC_CHARACTERS=''" + decimalSeparator + thousandsSeparator + "''')\\\"");
     			}
     		}
     	}

@@ -1,5 +1,6 @@
 <%@ jet 
 	imports="
+		org.talend.core.model.process.ElementParameterParser 
 		org.talend.core.model.process.INode 
 		org.talend.core.model.metadata.IMetadataTable
 		org.talend.core.model.metadata.IMetadataColumn
@@ -20,6 +21,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
     	List< ? extends IConnection> conns = node.getIncomingConnections();
+    	
+    	String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
+    	boolean advancedSeparator = (advancedSeparatorStr!=null&&!advancedSeparatorStr.equals(""))?advancedSeparatorStr.equals("true"):false;
+    	String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
+    	String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER); 
+    	
     	for (IConnection conn : conns) {
     		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
     			List<IMetadataColumn> columns = metadata.getListColumns();
@@ -41,7 +48,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 								FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%= pattern %>)
 <%				
-					} else if(javaType == JavaTypesManager.STRING) {
+					} else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
+							%>
+        							<% if(javaType == JavaTypesManager.BIGDECIMAL) {%>
+        							FormatterUtils.format_Number(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>.doubleValue()), <%= thousandsSeparator %>, <%= decimalSeparator %>)					
+        							<% } else { %>
+        							FormatterUtils.format_Number(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>), <%= thousandsSeparator %>, <%= decimalSeparator %>)						
+        							<% } %>
+							<%
+					}else if(javaType == JavaTypesManager.STRING) {
 %>
 								<%=conn.getName() %>.<%=column.getLabel() %>
 <%				
