@@ -375,7 +375,7 @@
 			if(postjob!=null && postjob.getComponent().getName().equals(componentName)) continue;
 			if(implicit_Context!=null && implicit_Context.getUniqueName().equals(uniqueName)) continue;
 						
-            if (!componentName.equals("tLogCatcher") && !componentName.equals("tFlowMeterCatcher") && !componentName.equals("tAssertCatcher") && !componentName.equals("tStatCatcher")) {
+            if (!componentName.equals("tLogCatcher") && !componentName.equals("tFlowMeterCatcher") && !componentName.equals("tAssertCatcher") && !componentName.equals("tStatCatcher") && !componentName.equals("tAsyncIn")) {
 %>
 <%=createCallProcess(rootNode, process.getName(), false) %>
 <%	  }
