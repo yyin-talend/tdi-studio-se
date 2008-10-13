@@ -183,7 +183,7 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
     private String getRoutinesFolder(org.talend.core.model.properties.Project project) {
         String routinesPath = JavaUtils.JAVA_SRC_DIRECTORY + "/" + JavaUtils.JAVA_ROUTINES_DIRECTORY;
         if (project != null) {
-            routinesPath += "/" + project.getLabel().toLowerCase();
+            routinesPath += "/" + project.getTechnicalLabel().toLowerCase();
         }
         return routinesPath;
     }
