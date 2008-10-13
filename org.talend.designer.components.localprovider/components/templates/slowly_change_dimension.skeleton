@@ -756,6 +756,8 @@ public class CLASS {
         protected abstract String getSequence(String surrogateKeySequence);
         protected abstract String getDate(String endDateValue);
         protected abstract String getYear(String endDateField);
+        protected abstract String getActiveFieldTrueValue(JavaType activeFieldType);
+        protected abstract String getActiveFieldFalseValue(JavaType activeFieldType);        
         public String createSearchingSQL(SCDConfiger scdConfiger) {
             StringBuilder searchingSQL = new StringBuilder();
             boolean firstColumn = true;
@@ -941,12 +943,7 @@ public class CLASS {
                     insertColumns += separator + getLProtectedChar() + scdConfiger.getDimensionType2Configer().getActiveField() + getRProtectedChar();
                     insertValues += separator;
                     JavaType activeFieldType = scdConfiger.getDimensionType2Configer().getActiveFieldType();
-                    if(activeFieldType == JavaTypesManager.STRING || activeFieldType == JavaTypesManager.BOOLEAN) {
-                        insertValues += "'true'";
-                    } else {
-                        insertValues += "1";
-                    }
-                    
+                    insertValues += getActiveFieldTrueValue(activeFieldType);                    
                 }
                 if(scdConfiger.getDimensionType2Configer().isEnableVersion()) {
                     insertColumns += separator + getLProtectedChar() + scdConfiger.getDimensionType2Configer().getVersionField() + getRProtectedChar();
@@ -1046,11 +1043,7 @@ public class CLASS {
                 if(scdConfiger.getDimensionType2Configer().isEnableActive()) {
                     String activeField = scdConfiger.getDimensionType2Configer().getActiveField();
                     JavaType activeFieldType = scdConfiger.getDimensionType2Configer().getActiveFieldType();
-                    if(activeFieldType == JavaTypesManager.STRING || activeFieldType == JavaTypesManager.BOOLEAN) {
-                        updateSetStmt += separator + getLProtectedChar() + activeField + getRProtectedChar() + " = 'false'";
-                    } else {
-                        updateSetStmt += separator + getLProtectedChar() + activeField + getRProtectedChar() + " = 0";
-                    }
+                    updateSetStmt += separator + getLProtectedChar() + activeField + getRProtectedChar() + " = " + getActiveFieldFalseValue(activeFieldType);
                 }
                 updateSQL.append(" SET " + updateSetStmt + " WHERE " + updateWhereStmt);
             }
@@ -1340,6 +1333,24 @@ public class CLASS {
         protected String getYear(String endDateField) {
             return "YEAR(" + getLProtectedChar() + endDateField + getRProtectedChar() + ")";
         }
+        protected String getActiveFieldTrueValue(JavaType activeFieldType) {
+            if(activeFieldType == JavaTypesManager.STRING) {
+                return "'true'";
+            } else if(activeFieldType == JavaTypesManager.BOOLEAN) {
+                return "1";
+            } else {
+                return "1";
+            }            
+        }
+        protected String getActiveFieldFalseValue(JavaType activeFieldType) {
+            if(activeFieldType == JavaTypesManager.STRING) {
+                return "'false'";
+            } else if(activeFieldType == JavaTypesManager.BOOLEAN) {
+                return "0";
+            } else {
+                return "0";
+            }            
+        }        
     }
     public class IngresSCDManager extends SCDManager {
         public IngresSCDManager(String cid) {
@@ -1363,6 +1374,24 @@ public class CLASS {
         protected String getYear(String endDateField) {
             return "DATE_PART('year', " + getLProtectedChar() + endDateField + getRProtectedChar() + ")";
         }
+        protected String getActiveFieldTrueValue(JavaType activeFieldType) {
+            if(activeFieldType == JavaTypesManager.STRING) {
+                return "'true'";
+            } else if(activeFieldType == JavaTypesManager.BOOLEAN) {
+                return "1";
+            } else {
+                return "1";
+            }            
+        }
+        protected String getActiveFieldFalseValue(JavaType activeFieldType) {
+            if(activeFieldType == JavaTypesManager.STRING) {
+                return "'false'";
+            } else if(activeFieldType == JavaTypesManager.BOOLEAN) {
+                return "0";
+            } else {
+                return "0";
+            }            
+        }        
     }
     public class MSSQLSCDManager extends SCDManager {
         public MSSQLSCDManager(String cid) {
@@ -1386,6 +1415,24 @@ public class CLASS {
         protected String getYear(String endDateField) {
             return "YEAR(" + getLProtectedChar() + endDateField + getRProtectedChar() + ")";
         }
+        protected String getActiveFieldTrueValue(JavaType activeFieldType) {
+            if(activeFieldType == JavaTypesManager.STRING) {
+                return "'true'";
+            } else if(activeFieldType == JavaTypesManager.BOOLEAN) {
+                return "1";
+            } else {
+                return "1";
+            }            
+        }
+        protected String getActiveFieldFalseValue(JavaType activeFieldType) {
+            if(activeFieldType == JavaTypesManager.STRING) {
+                return "'false'";
+            } else if(activeFieldType == JavaTypesManager.BOOLEAN) {
+                return "0";
+            } else {
+                return "0";
+            }            
+        }        
     }
     public class MysqlSCDManager extends SCDManager {
         public MysqlSCDManager(String cid) {
@@ -1409,6 +1456,24 @@ public class CLASS {
         protected String getYear(String endDateField) {
             return "YEAR(" + getLProtectedChar() + endDateField + getRProtectedChar() + ")";
         }
+        protected String getActiveFieldTrueValue(JavaType activeFieldType) {
+            if(activeFieldType == JavaTypesManager.STRING) {
+                return "'true'";
+            } else if(activeFieldType == JavaTypesManager.BOOLEAN) {
+                return "b'1'";
+            } else {
+                return "1";
+            }            
+        }
+        protected String getActiveFieldFalseValue(JavaType activeFieldType) {
+            if(activeFieldType == JavaTypesManager.STRING) {
+                return "'false'";
+            } else if(activeFieldType == JavaTypesManager.BOOLEAN) {
+                return "b'0'";
+            } else {
+                return "0";
+            }            
+        }        
         public String genSetStatement(String pstmt, String variable, int paramIndex, String generatedType) {
             StringBuilder setStatement = new StringBuilder();
             boolean isObject = false;
@@ -1537,6 +1602,24 @@ public class CLASS {
         protected String getYear(String endDateField) {
             return "EXTRACT(YEAR FROM " + getLProtectedChar() + endDateField + getRProtectedChar() + ")";
         }
+        protected String getActiveFieldTrueValue(JavaType activeFieldType) {
+            if(activeFieldType == JavaTypesManager.STRING) {
+                return "'true'";
+            } else if(activeFieldType == JavaTypesManager.BOOLEAN) {
+                return "1";
+            } else {
+                return "1";
+            }            
+        }
+        protected String getActiveFieldFalseValue(JavaType activeFieldType) {
+            if(activeFieldType == JavaTypesManager.STRING) {
+                return "'false'";
+            } else if(activeFieldType == JavaTypesManager.BOOLEAN) {
+                return "0";
+            } else {
+                return "0";
+            }            
+        }        
     }
     public class PostgresqlSCDManager extends SCDManager {
         public PostgresqlSCDManager(String cid) {
@@ -1560,6 +1643,24 @@ public class CLASS {
         protected String getYear(String endDateField) {
             return "EXTRACT(YEAR FROM " + getLProtectedChar() + endDateField + getRProtectedChar() + ")";
         }
+        protected String getActiveFieldTrueValue(JavaType activeFieldType) {
+            if(activeFieldType == JavaTypesManager.STRING) {
+                return "'true'";
+            } else if(activeFieldType == JavaTypesManager.BOOLEAN) {
+                return "TURE";
+            } else {
+                return "1";
+            }            
+        }
+        protected String getActiveFieldFalseValue(JavaType activeFieldType) {
+            if(activeFieldType == JavaTypesManager.STRING) {
+                return "'false'";
+            } else if(activeFieldType == JavaTypesManager.BOOLEAN) {
+                return "FALSE";
+            } else {
+                return "0";
+            }            
+        }        
     }
     public class PostgrePlusSCDManager extends SCDManager {
         public PostgrePlusSCDManager(String cid) {
@@ -1582,6 +1683,24 @@ public class CLASS {
         }        
         protected String getYear(String endDateField) {
             return "EXTRACT(YEAR FROM " + getLProtectedChar() + endDateField + getRProtectedChar() + ")";
+        }
+        protected String getActiveFieldTrueValue(JavaType activeFieldType) {
+            if(activeFieldType == JavaTypesManager.STRING) {
+                return "'true'";
+            } else if(activeFieldType == JavaTypesManager.BOOLEAN) {
+                return "TURE";
+            } else {
+                return "1";
+            }            
+        }
+        protected String getActiveFieldFalseValue(JavaType activeFieldType) {
+            if(activeFieldType == JavaTypesManager.STRING) {
+                return "'false'";
+            } else if(activeFieldType == JavaTypesManager.BOOLEAN) {
+                return "FALSE";
+            } else {
+                return "0";
+            }            
         }        
     }
     public class SybaseSCDManager extends SCDManager {
@@ -1606,6 +1725,24 @@ public class CLASS {
         protected String getYear(String endDateField) {
             return "YEAR(" + getLProtectedChar() + endDateField + getRProtectedChar() + ")";
         }
+        protected String getActiveFieldTrueValue(JavaType activeFieldType) {
+            if(activeFieldType == JavaTypesManager.STRING) {
+                return "'true'";
+            } else if(activeFieldType == JavaTypesManager.BOOLEAN) {
+                return "1";
+            } else {
+                return "1";
+            }            
+        }
+        protected String getActiveFieldFalseValue(JavaType activeFieldType) {
+            if(activeFieldType == JavaTypesManager.STRING) {
+                return "'false'";
+            } else if(activeFieldType == JavaTypesManager.BOOLEAN) {
+                return "0";
+            } else {
+                return "0";
+            }            
+        }        
     }
     public SCDManager getSCDManager(String cid, String dbType) {
         SCDManager manager = managerMap.get(cid);
