@@ -1647,7 +1647,7 @@ public class CLASS {
             if(activeFieldType == JavaTypesManager.STRING) {
                 return "'true'";
             } else if(activeFieldType == JavaTypesManager.BOOLEAN) {
-                return "TURE";
+                return "TRUE";
             } else {
                 return "1";
             }            
@@ -1688,7 +1688,7 @@ public class CLASS {
             if(activeFieldType == JavaTypesManager.STRING) {
                 return "'true'";
             } else if(activeFieldType == JavaTypesManager.BOOLEAN) {
-                return "TURE";
+                return "TRUE";
             } else {
                 return "1";
             }            
