@@ -20,65 +20,65 @@ import org.apache.commons.collections.BidiMap;
 import org.eclipse.emf.common.ui.celleditor.ExtendedComboBoxCellEditor;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
-import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TextCellEditor;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
-import org.talend.commons.ui.image.EImage;
-import org.talend.commons.ui.image.ImageProvider;
+import org.talend.commons.ui.swt.advanced.dataeditor.AbstractDataTableEditorView;
+import org.talend.commons.ui.swt.advanced.dataeditor.ExtendedToolbarView;
+import org.talend.commons.ui.swt.advanced.dataeditor.button.AddPushButton;
+import org.talend.commons.ui.swt.advanced.dataeditor.button.AddPushButtonForExtendedTable;
+import org.talend.commons.ui.swt.advanced.dataeditor.button.CopyPushButton;
+import org.talend.commons.ui.swt.advanced.dataeditor.button.MoveDownPushButton;
+import org.talend.commons.ui.swt.advanced.dataeditor.button.MoveUpPushButton;
+import org.talend.commons.ui.swt.advanced.dataeditor.button.RemovePushButton;
+import org.talend.commons.ui.swt.advanced.dataeditor.button.RemovePushButtonForExtendedTable;
+import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
+import org.talend.commons.ui.swt.proposal.TextCellEditorWithProposal;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
+import org.talend.commons.ui.swt.tableviewer.behavior.ColumnCellModifier;
+import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
-import org.talend.core.model.process.INode;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.properties.tab.IDynamicProperty;
+import org.talend.core.ui.proposal.TalendProposalProvider;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
-import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
+import org.talend.designer.core.ui.editor.nodes.Node;
 
 /**
  * yzhang class global comment. Detailled comment
  */
 public class AdvancedContextComposite extends ScrolledComposite implements IDynamicProperty {
 
-    private static final String CODE_PROPERTY = "codeProperty";
+    private static final String CODE_PROPERTY = "codeProperty"; //$NON-NLS-1$
 
-    private static final String NAME_PROPERTY = "nameProperty";
+    private static final String NAME_PROPERTY = "nameProperty"; //$NON-NLS-1$
 
-    private static final int ADD_COLUMN = 0;
+    private Node node;
 
-    private static final int CODE_COLUMN = 1;
+    private List<IElementParameter> comboContent = new ArrayList<IElementParameter>();
 
-    private List<IElementParameter> comboContent;
-
-    private DynamicComboBoxCellEditor dynamicComboBoxCellEditor;
+    private final List<IElementParameter> legalParameters = new ArrayList<IElementParameter>();
 
     /**
      * yzhang AdvancedContextComposite constructor comment.
@@ -88,7 +88,7 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
      */
     public AdvancedContextComposite(Composite parent, int style, final Element element) {
         super(parent, style);
-
+        node = (Node) element;
         setExpandHorizontal(true);
         setExpandVertical(true);
 
@@ -109,58 +109,52 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
         layout.spacing = ITabbedPropertyConstants.VMARGIN + 1;
         panel.setLayout(layout);
 
-        final TableViewer tableViewer = new TableViewer(panel, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
+        ExtendedTableModel<IElementParameter> model = new ExtendedTableModel<IElementParameter>();
+        AdvancedContextTableView tableViewer = new AdvancedContextTableView(panel, model, SWT.BORDER | SWT.FULL_SELECTION
+                | SWT.MULTI, node);
+        if (node.getProcess() instanceof IProcess2) {
+            IProcess2 process = (IProcess2) node.getProcess();
+            tableViewer.getExtendedTableViewer().setCommandStack(process.getCommandStack());
+            tableViewer.setReadOnly(process.isReadOnly());
+        }
+
         FormData tableLayoutData = new FormData();
         tableLayoutData.left = new FormAttachment(10, 0);
         tableLayoutData.right = new FormAttachment(90, 0);
-        tableLayoutData.top = new FormAttachment(10, 0);
-        tableLayoutData.bottom = new FormAttachment(50, 0);
+        tableLayoutData.top = new FormAttachment(5, 0);
+        tableLayoutData.bottom = new FormAttachment(90, 0);
+        tableViewer.getMainComposite().setLayoutData(tableLayoutData);
 
         final Table table = tableViewer.getTable();
-
-        table.setLayoutData(tableLayoutData);
-        table.setHeaderVisible(true);
-        table.setLinesVisible(true);
-
-        TableColumn columnName = new TableColumn(table, SWT.NONE, ADD_COLUMN);
-        columnName.setText("Name");
-        columnName.setWidth(200);
-        columnName.setResizable(true);
-        columnName.setMoveable(true);
-
-        TableColumn columnCode = new TableColumn(table, SWT.NONE, CODE_COLUMN);
-        columnCode.setText("Code");
-        columnCode.setWidth(200);
-        columnCode.setResizable(true);
-        columnCode.setMoveable(true);
-
-        Image addImage = ImageProvider.getImage(EImage.ADD_ICON);
-        Image removeImage = ImageProvider.getImage(EImage.DELETE_ICON);
-
-        final Button buttonAdd = new Button(panel, SWT.NONE);
-        buttonAdd.setText("Add");
-        buttonAdd.setImage(addImage);
-
-        FormData buttonAddData = new FormData();
-        buttonAddData.left = new FormAttachment(table, 10, SWT.LEFT);
-        buttonAddData.top = new FormAttachment(table, 2);
-        buttonAdd.setLayoutData(buttonAddData);
-
-        final Button buttonRemove = new Button(panel, SWT.NONE);
-        buttonRemove.setText("Delete");
-        buttonRemove.setImage(removeImage);
-
-        FormData buttonRemoveData = new FormData();
-        buttonRemoveData.left = new FormAttachment(buttonAdd, 1, SWT.RIGHT);
-        buttonRemoveData.top = new FormAttachment(table, 2);
-        buttonRemove.setLayoutData(buttonRemoveData);
+        GridData layoutData = new GridData(GridData.FILL_BOTH);
+        layoutData.minimumHeight = 80;
+        layoutData.minimumWidth = 300;
+        table.setLayoutData(layoutData);
 
         setMinSize(panel.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 
-        final List<IElementParameter> legalParameters = new ArrayList<IElementParameter>();
+        needContextModeParameters();
+
+        //
+        List<IElementParameter> tableContent = new ArrayList<IElementParameter>();
         for (IElementParameter parameter : element.getElementParameters()) {
+            if (parameter.isContextMode()) {
+                tableContent.add(parameter);
+            }
+        }
+        tableViewer.getTableViewerCreator().setInputList(tableContent);
+
+        comboContent.addAll(calculateComboContent(tableViewer, legalParameters));
+
+        tableViewer.getTableViewerCreator().refresh();
+        tableViewer.getExtendedToolbar().updateEnabledStateOfButtons();
+    }
+
+    private void needContextModeParameters() {
+        legalParameters.clear();
+        for (IElementParameter parameter : node.getElementParameters()) {
             if (parameter.isDynamicSettings()
-                    && parameter.isShow(element.getElementParameters())
+                    && parameter.isShow(node.getElementParameters())
                     && parameter.getCategory() != EComponentCategory.TECHNICAL
                     && (parameter.getField() == EParameterFieldType.CHECK || parameter.getField() == EParameterFieldType.CLOSED_LIST)
                     || parameter.getField() == EParameterFieldType.MODULE_LIST
@@ -168,281 +162,6 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
                 legalParameters.add(parameter);
             }
         }
-
-        TableViewerProvider provider = new TableViewerProvider();
-        tableViewer.setContentProvider(provider);
-        tableViewer.setLabelProvider(provider);
-        tableViewer.setCellModifier(new ICellModifier() {
-
-            public boolean canModify(Object element, String property) {
-                return comboContent.size() > 0 || property.equals(CODE_PROPERTY);
-            }
-
-            public Object getValue(Object element, String property) {
-
-                if (property.equals(NAME_PROPERTY)) {
-                    comboContent.add((IElementParameter) element);
-                    dynamicComboBoxCellEditor.refresh();
-                    return element;
-                } else if (property.equals(CODE_PROPERTY)) {
-                    Object value = ((IElementParameter) element).getValue();
-                    if (value instanceof String) {
-                        return value;
-                    } else {
-                        return String.valueOf(value);
-                    }
-                }
-                return "";
-            }
-
-            public void modify(Object elem, String property, Object value) {
-
-                TableItem item = null;
-                if (elem instanceof Table) {
-                    item = ((Table) elem).getItem(0);
-                } else if (elem instanceof TableItem) {
-                    item = (TableItem) elem;
-                }
-
-                if (item != null && value != null) {
-                    IElementParameter parameter = (IElementParameter) item.getData();
-                    if (property.equals(NAME_PROPERTY)) {
-
-                        List<IElementParameter> tableInput = (List<IElementParameter>) tableViewer.getInput();
-                        int i = tableInput.indexOf(parameter);
-                        tableInput.remove(i);
-                        parameter.setContextMode(false);
-                        tableInput.add(i, (IElementParameter) value);
-                        ((IElementParameter) value).setContextMode(true);
-
-                        refreshComboContent(tableViewer, legalParameters);
-
-                    } else if (property.equals(CODE_PROPERTY)) {
-
-                        Command cmd = new PropertyChangeCommand(element, parameter.getName(), value);
-                        executeCommand(cmd);
-
-                    }
-                    tableViewer.refresh();
-                }
-            }
-
-        });
-
-        List<IElementParameter> tableContent = new ArrayList<IElementParameter>();
-        for (IElementParameter parameter : element.getElementParameters()) {
-            if (parameter.isContextMode()) {
-                tableContent.add(parameter);
-            }
-        }
-        tableViewer.setInput(tableContent);
-
-        comboContent = new ArrayList<IElementParameter>(calculateComboContent(tableViewer, legalParameters));
-        dynamicComboBoxCellEditor = new DynamicComboBoxCellEditor(table, comboContent, comboboxCellEditorLabelProvider);
-        tableViewer.setCellEditors(new CellEditor[] { dynamicComboBoxCellEditor, new TextCellEditor(table) });
-        tableViewer.setColumnProperties(new String[] { NAME_PROPERTY, CODE_PROPERTY });
-
-        if (tableContent.size() == legalParameters.size()) {
-            buttonAdd.setEnabled(false);
-        }
-
-        buttonAdd.addSelectionListener(new SelectionListener() {
-
-            public void widgetDefaultSelected(SelectionEvent e) {
-
-            }
-
-            public void widgetSelected(SelectionEvent e) {
-                if (comboContent.size() > 0) {
-                    List<IElementParameter> tableInput = (List<IElementParameter>) tableViewer.getInput();
-                    IElementParameter parameter = comboContent.get(0);
-                    tableInput.add(parameter);
-
-                    ((IElementParameter) parameter).setContextMode(true);
-
-                    List<IElementParameter> associateParams = findRadioParamInSameGroup(comboContent, parameter);
-                    for (IElementParameter param : associateParams) {
-                        param.setContextMode(true);
-                        tableInput.add(param);
-                    }
-
-                    refreshComboContent(tableViewer, legalParameters);
-                    if (comboContent.size() == 0) {
-                        buttonAdd.setEnabled(false);
-                    }
-                    tableViewer.refresh();
-                    if (!buttonRemove.isEnabled()) {
-                        buttonRemove.setEnabled(true);
-                    }
-                    executeCommand(new PropertyChangeCommand(element, parameter.getName(), parameter.getValue()));
-                }
-            }
-
-        });
-        if (tableContent.size() == 0) {
-            buttonRemove.setEnabled(false);
-        }
-        buttonRemove.addSelectionListener(new SelectionListener() {
-
-            /*
-             * (non-Javadoc)
-             * 
-             * @see
-             * org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
-             */
-            public void widgetDefaultSelected(SelectionEvent e) {
-
-            }
-
-            public void widgetSelected(SelectionEvent e) {
-                ISelection selection = tableViewer.getSelection();
-                List<IElementParameter> tableViewerInput = ((List<IElementParameter>) tableViewer.getInput());
-
-                boolean needRefresh = false;
-                if (!selection.isEmpty() && selection instanceof StructuredSelection) {
-                    Object[] elements = ((StructuredSelection) selection).toArray();
-                    for (Object element : elements) {
-                        tableViewerInput.remove(element);
-                        removeAssociateParams(tableViewerInput, element);
-                        ((IElementParameter) element).setContextMode(false);
-                    }
-                    needRefresh = true;
-                } else if (!tableViewerInput.isEmpty()) {
-                    int index = tableViewerInput.size() - 1;
-                    final IElementParameter elementParameter = (IElementParameter) tableViewerInput.get(index);
-                    elementParameter.setContextMode(false);
-                    tableViewerInput.remove(index);
-                    removeAssociateParams(tableViewerInput, elementParameter);
-                    needRefresh = true;
-                }
-
-                if (needRefresh) {
-                    refreshComboContent(tableViewer, legalParameters);
-                    tableViewer.refresh();
-                    if (!buttonAdd.isEnabled()) {
-                        buttonAdd.setEnabled(true);
-                    }
-                    if (((List) tableViewer.getInput()).size() == 0) {
-                        buttonRemove.setEnabled(false);
-                    }
-                }
-            }
-
-            /**
-             * DOC YeXiaowei Comment method "removeAssociateParams".
-             * 
-             * @param tableViewerInput
-             * @param element
-             */
-            private void removeAssociateParams(List<IElementParameter> tableViewerInput, Object element) {
-                List<IElementParameter> associateParams = findRadioParamInSameGroup(tableViewerInput, (IElementParameter) element);
-                for (IElementParameter param : associateParams) {
-                    param.setContextMode(false);
-                    tableViewerInput.remove(param);
-                }
-            }
-        });
-
-        if (element != null && element instanceof INode) {
-            INode node = (INode) element;
-            if (buttonAdd != null && !buttonAdd.isDisposed()) {
-                buttonAdd.setEnabled(!node.isReadOnly());
-            }
-            if (buttonRemove != null && !buttonRemove.isDisposed()) {
-                buttonRemove.setEnabled(!node.isReadOnly());
-            }
-            if (table != null && !table.isDisposed()) {
-                table.setEnabled(!node.isReadOnly());
-            }
-        }
-    }
-
-    /**
-     * 
-     * DOC YeXiaowei Comment method "findRadioParamInSameGroup".
-     * 
-     * @param param
-     * @return
-     */
-    private List<IElementParameter> findRadioParamInSameGroup(final List<IElementParameter> list, final IElementParameter param) {
-        List<IElementParameter> associateParams = new ArrayList<IElementParameter>();
-        for (IElementParameter p : list) {
-
-            if (p.equals(param)) {
-                continue;
-            }
-
-            if (p.getField() == EParameterFieldType.RADIO) {
-                String group = param.getGroup();
-                if (group == null) {
-                    if (p.getGroup() == null) {
-                        associateParams.add(p);
-                    }
-                } else {
-                    if (p.getGroup() != null && p.getGroup().equals(group)) {
-                        associateParams.add(p);
-                    }
-                }
-            }
-        }
-
-        return associateParams;
-    }
-
-    /**
-     * yzhang AdvancedContextComposite class global comment. Detailled comment
-     */
-    private class DynamicComboBoxCellEditor extends ExtendedComboBoxCellEditor {
-
-        /**
-         * yzhang ComboBoxCellEditor constructor comment.
-         * 
-         * @param composite
-         * @param list
-         * @param labelProvider
-         */
-        public DynamicComboBoxCellEditor(Composite composite, List<?> list, ILabelProvider labelProvider) {
-            super(composite, list, labelProvider);
-        }
-
-        public void refresh() {
-            refreshItems("");
-        }
-
-    }
-
-    /**
-     * yzhang Comment method "executeCommand".
-     * 
-     * @param cmd
-     */
-    private void executeCommand(Command cmd) {
-        if (commandStack == null) {
-            IEditorPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-            if (part instanceof AbstractMultiPageTalendEditor) {
-                AbstractTalendEditor editor = ((AbstractMultiPageTalendEditor) part).getTalendEditor();
-                commandStack = (CommandStack) editor.getAdapter(CommandStack.class);
-            }
-        }
-
-        if (commandStack != null) {
-            commandStack.execute(cmd);
-        } else {
-            // Execute self
-            cmd.execute();
-        }
-
-    }
-
-    /**
-     * yzhang Comment method "refreshComboContent".
-     * 
-     * @param tableViewer
-     * @param legalParameters
-     */
-    private void refreshComboContent(TableViewer tableViewer, List<IElementParameter> legalParameters) {
-        comboContent.clear();
-        comboContent.addAll(calculateComboContent(tableViewer, legalParameters));
     }
 
     /**
@@ -452,138 +171,12 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
      * @param legalParameters
      * @return
      */
-    private List<IElementParameter> calculateComboContent(TableViewer tableViewer, List<IElementParameter> legalParameters) {
-        List<IElementParameter> tableInput = (List<IElementParameter>) tableViewer.getInput();
+    private List<IElementParameter> calculateComboContent(AdvancedContextTableView tableViewer,
+            List<IElementParameter> legalParameters) {
+        List<IElementParameter> tableInput = tableViewer.getTableViewerCreator().getInputList();
         List<IElementParameter> content = new ArrayList<IElementParameter>(legalParameters);
         content.removeAll(tableInput);
         return content;
-    }
-
-    private ILabelProvider comboboxCellEditorLabelProvider = new ILabelProvider() {
-
-        public Image getImage(Object element) {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        public String getText(Object element) {
-            return ((IElementParameter) element).getDisplayName();
-        }
-
-        public void addListener(ILabelProviderListener listener) {
-            // TODO Auto-generated method stub
-
-        }
-
-        public void dispose() {
-            // TODO Auto-generated method stub
-
-        }
-
-        public boolean isLabelProperty(Object element, String property) {
-            // TODO Auto-generated method stub
-            return false;
-        }
-
-        public void removeListener(ILabelProviderListener listener) {
-            // TODO Auto-generated method stub
-
-        }
-
-    };
-
-    private CommandStack commandStack;
-
-    /**
-     * yzhang AdvancedContextComposite class global comment. Detailled comment
-     */
-    private class TableViewerProvider implements IStructuredContentProvider, ITableLabelProvider {
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
-         */
-        public Object[] getElements(Object inputElement) {
-            if (inputElement instanceof List) {
-                return ((List) inputElement).toArray();
-            }
-            return new Object[0];
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.eclipse.jface.viewers.IContentProvider#dispose()
-         */
-        public void dispose() {
-
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer,
-         * java.lang.Object, java.lang.Object)
-         */
-        public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
-         */
-        public Image getColumnImage(Object element, int columnIndex) {
-            return null;
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int)
-         */
-        public String getColumnText(Object element, int columnIndex) {
-            if (element instanceof IElementParameter) {
-                IElementParameter ep = (IElementParameter) element;
-                if (columnIndex == ADD_COLUMN) {
-                    return ep.getDisplayName();
-                } else if (columnIndex == CODE_COLUMN) {
-                    return ep.getValue() != null ? ep.getValue().toString() : "";
-                }
-            }
-            return null;
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see
-         * org.eclipse.jface.viewers.IBaseLabelProvider#addListener(org.eclipse.jface.viewers.ILabelProviderListener)
-         */
-        public void addListener(ILabelProviderListener listener) {
-
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.eclipse.jface.viewers.IBaseLabelProvider#isLabelProperty(java.lang.Object, java.lang.String)
-         */
-        public boolean isLabelProperty(Object element, String property) {
-            return false;
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see
-         * org.eclipse.jface.viewers.IBaseLabelProvider#removeListener(org.eclipse.jface.viewers.ILabelProviderListener)
-         */
-        public void removeListener(ILabelProviderListener listener) {
-
-        }
     }
 
     /*
@@ -716,7 +309,6 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
      * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getTablesMap()
      */
     public Map<String, List<String>> getTablesMap() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -738,4 +330,361 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
 
     }
 
+    /**
+     * 
+     * ggu AdvancedContextTableView class global comment. Detailled comment
+     */
+    class AdvancedContextTableView extends AbstractDataTableEditorView<IElementParameter> {
+
+        private Node node;
+
+        private TextCellEditorWithProposal codeCellEditor;
+
+        private DynamicComboBoxCellEditor nameCellEditor;
+
+        public AdvancedContextTableView(Composite parentComposite, ExtendedTableModel<IElementParameter> model,
+                int mainCompositeStyle, Node node) {
+            super(parentComposite, mainCompositeStyle, model, false, true, true, false);
+            this.node = node;
+            initGraphicComponents();
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * org.talend.commons.ui.swt.advanced.dataeditor.AbstractDataTableEditorView#createColumns(org.talend.commons
+         * .ui.swt.tableviewer.TableViewerCreator, org.eclipse.swt.widgets.Table)
+         */
+        @SuppressWarnings("unchecked")
+        @Override
+        protected void createColumns(TableViewerCreator<IElementParameter> tableViewerCreator, Table table) {
+
+            TableViewerCreatorColumn column;
+            // name
+            column = new TableViewerCreatorColumn(tableViewerCreator);
+            column.setTitle(Messages.getString("AdvancedContextComposite.Name")); //$NON-NLS-1$
+            column.setId(NAME_PROPERTY);
+            column.setWidth(250);
+            column.setModifiable(true);
+
+            nameCellEditor = new DynamicComboBoxCellEditor(table, comboContent, comboboxCellEditorLabelProvider);
+            column.setCellEditor(nameCellEditor);
+            column.setBeanPropertyAccessors(new IBeanPropertyAccessors<IElementParameter, Object>() {
+
+                public String get(IElementParameter bean) {
+                    return bean.getDisplayName();
+                }
+
+                public void set(IElementParameter bean, Object value) {
+                    if (value != null && value instanceof IElementParameter) {
+                        List<IElementParameter> tableInput = getTableViewerCreator().getInputList();
+                        int i = tableInput.indexOf(bean);
+                        tableInput.remove(i);
+                        bean.setContextMode(false);
+                        IElementParameter newBean = (IElementParameter) value;
+                        tableInput.add(i, newBean);
+                        newBean.setContextMode(true);
+
+                        // add related
+                        List<IElementParameter> associateParams = findRadioParamInSameGroup(comboContent, newBean);
+                        for (IElementParameter param : associateParams) {
+                            param.setContextMode(true);
+                            tableInput.add(param);
+                        }
+                        // set dirty
+                        executeCommand(new Command() {
+                        });
+
+                        refreshComboContent(AdvancedContextTableView.this, legalParameters);
+                        getExtendedToolbar().updateEnabledStateOfButtons();
+                        getTableViewerCreator().refresh();
+                    }
+                }
+
+            });
+            column.setColumnCellModifier(new ColumnCellModifier(column) {
+
+                @Override
+                public boolean canModify(Object bean) {
+                    if (super.canModify(bean) && !comboContent.isEmpty()) {
+                        List<IElementParameter> associateParams = findRadioParamInSameGroup(getTableViewerCreator()
+                                .getInputList(), (IElementParameter) bean);
+                        return associateParams.isEmpty();
+                    }
+                    return false;
+                }
+
+                @Override
+                public Object getValue(Object bean) {
+                    refreshComboContent(AdvancedContextTableView.this, legalParameters);
+                    comboContent.add(0, (IElementParameter) bean);
+                    nameCellEditor.refresh();
+                    return bean;
+                }
+
+            });
+
+            // code
+            column = new TableViewerCreatorColumn(tableViewerCreator);
+            column.setTitle(Messages.getString("AdvancedContextComposite.Code")); //$NON-NLS-1$
+            column.setId(CODE_PROPERTY);
+            column.setWidth(200);
+            column.setModifiable(true);
+
+            codeCellEditor = new TextCellEditorWithProposal(tableViewerCreator.getTable(), SWT.BORDER, column);
+            codeCellEditor.setContentProposalProvider(new TalendProposalProvider(node.getProcess(), node));
+            column.setCellEditor(codeCellEditor);
+
+            column.setBeanPropertyAccessors(new IBeanPropertyAccessors<IElementParameter, Object>() {
+
+                public Object get(IElementParameter bean) {
+                    final Object value = bean.getValue();
+                    return value == null ? "" : String.valueOf(value); //$NON-NLS-1$
+                }
+
+                public void set(IElementParameter bean, Object value) {
+                    if (value != null && !value.equals(bean.getValue())) {
+                        executeCommand(new PropertyChangeCommand((Element) node, bean.getName(), value));
+                        getTableViewerCreator().refresh();
+                    }
+                }
+
+            });
+        }
+
+        private void executeCommand(Command cmd) {
+            CommandStack cmdStack = getTableViewerCreator().getCommandStack();
+            if (cmdStack != null) {
+                cmdStack.execute(cmd);
+            } else {
+                cmd.execute();
+            }
+        }
+
+        /**
+         * yzhang Comment method "refreshComboContent".
+         * 
+         * @param tableViewer
+         * @param legalParameters
+         */
+        private void refreshComboContent(AdvancedContextTableView tableViewer, List<IElementParameter> legalParameters) {
+            comboContent.clear();
+            comboContent.addAll(calculateComboContent(tableViewer, legalParameters));
+        }
+
+        @Override
+        protected ExtendedToolbarView initToolBar() {
+
+            return new ExtendedToolbarView(getMainComposite(), SWT.NONE, getExtendedTableViewer()) {
+
+                @Override
+                protected AddPushButton createAddPushButton() {
+                    return new AddPushButtonForExtendedTable(toolbar, extendedTableViewer) {
+
+                        @Override
+                        protected Object getObjectToAdd() {
+                            return null; // un-used
+                        }
+
+                        @Override
+                        protected Command getCommandToExecute() {
+                            return new Command() {
+
+                                @Override
+                                public void execute() {
+                                    if (comboContent.size() > 0) {
+                                        List<IElementParameter> tableInput = getTableViewerCreator().getInputList();
+                                        IElementParameter parameter = comboContent.get(0);
+                                        tableInput.add(parameter);
+
+                                        ((IElementParameter) parameter).setContextMode(true);
+
+                                        List<IElementParameter> associateParams = findRadioParamInSameGroup(comboContent,
+                                                parameter);
+                                        for (IElementParameter param : associateParams) {
+                                            param.setContextMode(true);
+                                            tableInput.add(param);
+                                        }
+
+                                        refreshComboContent(AdvancedContextTableView.this, legalParameters);
+                                        getExtendedToolbar().updateEnabledStateOfButtons();
+                                        getTableViewerCreator().refresh();
+                                    }
+                                }
+                            };
+
+                        }
+
+                        @Override
+                        public boolean getEnabledState() {
+                            if (super.getEnabledState()) {
+                                List<IElementParameter> inputList = getTableViewerCreator().getInputList();
+                                return inputList != null && inputList.size() < legalParameters.size();
+                            }
+                            return false;
+                        }
+
+                    };
+                }
+
+                @Override
+                protected RemovePushButton createRemovePushButton() {
+                    return new RemovePushButtonForExtendedTable(toolbar, extendedTableViewer) {
+
+                        @Override
+                        protected Command getCommandToExecute() {
+                            return new Command() {
+
+                                @Override
+                                public void execute() {
+                                    ISelection selection = getTableViewerCreator().getTableViewer().getSelection();
+                                    List<IElementParameter> tableViewerInput = getTableViewerCreator().getInputList();
+
+                                    boolean needRefresh = false;
+                                    if (!selection.isEmpty() && selection instanceof StructuredSelection) {
+                                        Object[] elements = ((StructuredSelection) selection).toArray();
+                                        for (Object element : elements) {
+                                            tableViewerInput.remove(element);
+                                            removeAssociateParams(tableViewerInput, element);
+                                            ((IElementParameter) element).setContextMode(false);
+                                        }
+                                        needRefresh = true;
+                                    } else if (!tableViewerInput.isEmpty()) {
+                                        int index = tableViewerInput.size() - 1;
+                                        final IElementParameter elementParameter = (IElementParameter) tableViewerInput
+                                                .get(index);
+                                        elementParameter.setContextMode(false);
+                                        tableViewerInput.remove(index);
+                                        removeAssociateParams(tableViewerInput, elementParameter);
+                                        needRefresh = true;
+                                    }
+
+                                    if (needRefresh) {
+                                        refreshComboContent(AdvancedContextTableView.this, legalParameters);
+                                        getTableViewerCreator().refresh();
+                                        getExtendedToolbar().updateEnabledStateOfButtons();
+                                    }
+                                }
+
+                            };
+                        }
+
+                        @Override
+                        public boolean getEnabledState() {
+                            return !getExtendedControlViewer().isReadOnly() && !getTableViewerCreator().getInputList().isEmpty();
+                        }
+
+                    };
+                }
+
+                @Override
+                protected MoveDownPushButton createMoveDownPushButton() {
+                    return null;
+                }
+
+                @Override
+                protected MoveUpPushButton createMoveUpPushButton() {
+                    return null;
+                }
+
+                @Override
+                protected CopyPushButton createCopyPushButton() {
+                    return null;
+                }
+
+                private void removeAssociateParams(List<IElementParameter> tableViewerInput, Object element) {
+                    List<IElementParameter> associateParams = findRadioParamInSameGroup(tableViewerInput,
+                            (IElementParameter) element);
+                    for (IElementParameter param : associateParams) {
+                        param.setContextMode(false);
+                        tableViewerInput.remove(param);
+                    }
+                }
+            };
+        }
+
+        /**
+         * 
+         * YeXiaowei Comment method "findRadioParamInSameGroup".
+         * 
+         * @param param
+         * @return
+         */
+        private List<IElementParameter> findRadioParamInSameGroup(final List<IElementParameter> list,
+                final IElementParameter param) {
+            List<IElementParameter> associateParams = new ArrayList<IElementParameter>();
+            for (IElementParameter p : list) {
+
+                if (p.equals(param)) {
+                    continue;
+                }
+
+                if (p.getField() == EParameterFieldType.RADIO) {
+                    String group = param.getGroup();
+                    if (group == null) {
+                        if (p.getGroup() == null) {
+                            associateParams.add(p);
+                        }
+                    } else {
+                        if (p.getGroup() != null && p.getGroup().equals(group)) {
+                            associateParams.add(p);
+                        }
+                    }
+                }
+            }
+
+            return associateParams;
+        }
+
+        /**
+         * yzhang AdvancedContextComposite class global comment. Detailled comment
+         */
+        private class DynamicComboBoxCellEditor extends ExtendedComboBoxCellEditor {
+
+            /**
+             * yzhang ComboBoxCellEditor constructor comment.
+             * 
+             * @param composite
+             * @param list
+             * @param labelProvider
+             */
+            public DynamicComboBoxCellEditor(Composite composite, List<?> list, ILabelProvider labelProvider) {
+                super(composite, list, labelProvider);
+            }
+
+            public void refresh() {
+                refreshItems(""); //$NON-NLS-1$
+            }
+
+        }
+
+        private ILabelProvider comboboxCellEditorLabelProvider = new ILabelProvider() {
+
+            public Image getImage(Object element) {
+                return null;
+            }
+
+            public String getText(Object element) {
+                return ((IElementParameter) element).getDisplayName();
+            }
+
+            public void addListener(ILabelProviderListener listener) {
+
+            }
+
+            public void dispose() {
+
+            }
+
+            public boolean isLabelProperty(Object element, String property) {
+                return false;
+            }
+
+            public void removeListener(ILabelProviderListener listener) {
+
+            }
+
+        };
+    }
 }

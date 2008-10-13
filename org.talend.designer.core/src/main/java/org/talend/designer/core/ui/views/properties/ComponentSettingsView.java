@@ -183,6 +183,8 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
         // DynamicComposite dc = null;
 
         if (element instanceof Node) {
+            tabFactory.getTabbedPropertyComposite().getCompactButton().setVisible(false);
+            tabFactory.getTabbedPropertyComposite().getTableButton().setVisible(false);
             // dc = new DynamicComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, category, element);
             if (category == EComponentCategory.BASIC) {
                 getParentMap().put(ComponentSettingsView.PARENT, parent);
@@ -208,12 +210,10 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
                             element, false);
                 }
             } else if (category == EComponentCategory.DYNAMICS_SETTINGS) {
-                dc = new AdvancedContextComposite(parent, SWT.NONE, element);
+                dc = new AdvancedContextComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, element);
             } else if (category == EComponentCategory.SQL_PATTERN) {
-                dc = new SQLPatternComposite(parent, SWT.NONE, element);
+                dc = new SQLPatternComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, element);
             } else {
-                tabFactory.getTabbedPropertyComposite().getCompactButton().setVisible(false);
-                tabFactory.getTabbedPropertyComposite().getTableButton().setVisible(false);
                 dc = new MultipleThreadDynamicComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, category, element,
                         true);
             }
