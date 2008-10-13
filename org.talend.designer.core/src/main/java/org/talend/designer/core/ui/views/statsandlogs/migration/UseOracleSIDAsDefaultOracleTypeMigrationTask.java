@@ -41,20 +41,28 @@ public class UseOracleSIDAsDefaultOracleTypeMigrationTask extends AbstractJobMig
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.core.model.migration.AbstractJobMigrationTask#executeOnProcess(org.talend.core.model.properties.ProcessItem)
+     * @seeorg.talend.core.model.migration.AbstractJobMigrationTask#executeOnProcess(org.talend.core.model.properties.
+     * ProcessItem)
      */
     @SuppressWarnings("unchecked")
     @Override
     public ExecutionResult executeOnProcess(ProcessItem item) {
-        EList parameters = item.getProcess().getParameters().getElementParameter();
-        for (int i = 0; i < parameters.size(); i++) {
-            ElementParameterType parameter = (ElementParameterType) parameters.get(i);
-            if ((parameter.getName().equals(EParameterName.DB_TYPE.getName()) || parameter.getName().equals(
-                    "DB_TYPE_IMPLICIT_CONTEXT"))
-                    && parameter.getField().equals(EParameterFieldType.CLOSED_LIST.getName())) {
-                String value = (String) parameter.getValue();
-                if (value.equalsIgnoreCase("tOracleOutput")) {
-                    parameter.setValue("tOracleOutput_sid"); // Default set to Orace SID(see bug 5315)
+        EList parameters = null;
+        try {
+            parameters = item.getProcess().getParameters().getElementParameter();
+        } catch (Exception e) {
+            // ignore it
+        }
+        if (parameters != null) {
+            for (int i = 0; i < parameters.size(); i++) {
+                ElementParameterType parameter = (ElementParameterType) parameters.get(i);
+                if ((parameter.getName().equals(EParameterName.DB_TYPE.getName()) || parameter.getName().equals(
+                        "DB_TYPE_IMPLICIT_CONTEXT"))
+                        && parameter.getField().equals(EParameterFieldType.CLOSED_LIST.getName())) {
+                    String value = parameter.getValue();
+                    if (value.equalsIgnoreCase("tOracleOutput")) {
+                        parameter.setValue("tOracleOutput_sid"); // Default set to Orace SID(see bug 5315)
+                    }
                 }
             }
         }
