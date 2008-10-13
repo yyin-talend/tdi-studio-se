@@ -32,6 +32,12 @@
 	List<IContextParameter> params = new ArrayList<IContextParameter>();
     params=process.getContextManager().getDefaultContext().getContextParameterList();
     String jobFolderName = JavaResourcesHelper.getJobFolderName(process.getLabel(), process.getVersion());
+    
+    boolean exist_tParallelize = false;
+    List<? extends INode> tParallelizeList = process.getNodesOfType("tParallelize");
+    if(tParallelizeList != null && tParallelizeList.size() > 0){
+    	exist_tParallelize = true;
+    }
 %>
     public static boolean watch = false;
     public static int portStats = 3334;
@@ -46,7 +52,7 @@
     
     private static ThreadLocal threadLocal = new ThreadLocal();
 <%
-	if(isRunInMultiThread){
+	if(isRunInMultiThread || exist_tParallelize){
 %>  
 	private static SyncInt runningThreadCount =new SyncInt();
 	
@@ -479,7 +485,9 @@
 %>
 	currentComponent = "";
 <%
-	}else{
+	}
+	
+	if(isRunInMultiThread || exist_tParallelize){
 %>	
 	runningThreadCount = new SyncInt();
 <%
