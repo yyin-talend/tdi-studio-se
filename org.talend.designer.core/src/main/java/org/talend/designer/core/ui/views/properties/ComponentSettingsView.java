@@ -537,7 +537,9 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
             if (((Node) elem).isELTComponent()) {
                 if (!((Node) elem).getComponent().getName().endsWith("Output")
                         && !((Node) elem).getComponent().getName().endsWith("Input")
-                        && !((Node) elem).getComponent().getName().endsWith("Map")) {
+                        && !((Node) elem).getComponent().getName().endsWith("Map")
+                        && !((Node) elem).getComponent().getName().endsWith("TableList")
+                        && !((Node) elem).getComponent().getName().endsWith("ColumnList")) {
                     if (CorePlugin.getDefault().useSQLPattern()) {
                         return EElementType.ELT_NODE.getCategories();
                     }
