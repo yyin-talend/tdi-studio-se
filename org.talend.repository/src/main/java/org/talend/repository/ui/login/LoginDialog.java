@@ -212,7 +212,7 @@ public class LoginDialog extends TrayDialog {
     }
 
     public void updateButtons() {
-        loginComposite.fillProjectsBtn.setEnabled(loginComposite.canFinish());
+        // loginComposite.fillProjectsBtn.setEnabled(loginComposite.canFinish());
         // getButton(IDialogConstants.OK_ID).setEnabled(loginComposite.canFinish());
     }
 

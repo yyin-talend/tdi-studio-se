@@ -436,6 +436,7 @@ public class LoginComposite extends Composite {
             public void modifyText(ModifyEvent e) {
                 unpopulateProjectList();
                 dialog.updateButtons();
+                setRepositoryContextInContext();
             }
         };
 
