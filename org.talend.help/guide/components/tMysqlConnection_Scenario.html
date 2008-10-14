@@ -3,8 +3,8 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
-    <meta name="TEMPLATEBASE" content="Simple HTML">
-    <meta name="LASTUPDATED" content="02/05/08 13:30:49">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="10/14/08 16:13:25">
     <title>Scenario: Inserting data in mother/daughter tables</title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a href="tMysqlConnection_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tMysqlInput_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+<a accesskey="4" href="tMysqlConnection_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMysqlInput_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
@@ -22,98 +22,99 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp1311118"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1311118"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
-</font></div>
-<a name="wp1311303"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+</div>
+<a name="wp1311303"> </a><h2 class="pHeading2">
 Scenario: Inserting data in mother/daughter tables
-</b></font></h3>
-<dl><a name="wp1311891"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-The following job is dedicated to advanced database users, who want to carry out multiple table insertions using a parent table id to feed a child table. As a prerequisite to this job, follow the steps described below to create the relevant tables using an engine such as <i>innodb</i>. 
-</font></dd>
-<ul>
-<a name="wp1311901"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In a command line editor, connect to your Mysql server.</font></li>
-<a name="wp1311904"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Once connected to the relevant database, type in the following command to create the parent table: create table f1090_mum(id int not null auto_increment, name varchar(10), primary key(id)) engine=innodb;</font></li>
-<a name="wp1311963"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then create the second table: create table baby (id_baby int not null, years int) engine=innodb;</font></li>
-</ul>
-<a name="wp1311920"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Back into Talend Open Studio, the job requires seven components including <b>tMysqlConnection</b> and <b>tMysqlCommit</b>.
-</font></dd>
-</dl><a name="wp1311135"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tMysqlConnection1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</h2>
+<a name="wp1311891"> </a><p class="pIndented1">
+The following job is dedicated to advanced database users, who want to carry out multiple table insertions using a parent table id to feed a child table. As a prerequisite to this job, follow the steps described below to create the relevant tables using an engine such as <em class="cEmphasis">innodb</em>. 
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp1311901"> </a><div class="pSmartList2"><li>In a command line editor, connect to your Mysql server.</li></div>
+<a name="wp1311904"> </a><div class="pSmartList2"><li>Once connected to the relevant database, type in the following command to create the parent table: create table f1090_mum(id int not null auto_increment, name varchar(10), primary key(id)) engine=innodb;</li></div>
+<a name="wp1311963"> </a><div class="pSmartList2"><li>Then create the second table: create table baby (id_baby int not null, years int) engine=innodb;</li></div>
+</ul></div>
+</ul></div>
+<a name="wp1311920"> </a><p class="pIndented1">
+Back into <b class="cBold">Talend Open Studio</b>, the job requires seven components including <b class="cBold">tMysqlConnection</b> and <b class="cBold">tMysqlCommit</b>.
+</p>
+<a name="wp1311135"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tMysqlConnection1.png" id="wp1311132" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
-</font></div>
-<ul>
-<ul>
-<a name="wp1311146"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Drag and drop the following components from the Palette: <b>tFileList</b>, <b>tFileInputDelimited</b>, <b>tMap</b>, <b>tMysqlOutput</b> (x2).</font></li>
-<a name="wp1311162"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Connect the <b>tFileList</b> component to the input file component using an <b>Iterate</b> link as the name of the file to be processed will be dynamically filled in from the <b>tFileList</b> directory using a global variable. </font></li>
-<a name="wp1311175"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Connect the <b>tFileInputDelimited</b> component to the <b>tMap</b> and dispatch the flow between the two output Mysql DB components. Use a <b>Row</b> link for each for these connections representing the main data flow.</font></li>
-<a name="wp1311186"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Set the <b>tFileList</b> component properties, such as the directory. name where files will be fetched from.</font></li>
-<a name="wp1312490"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Add a <b>tMysqlConnection</b> component and connect it to the starter component of this job, in this example, the <b>tFileList</b> component using a ThenRun link to define the execution order.</font></li>
-<a name="wp1311192"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>tMysqlConnection</b> Component view, set the connection details manually or fetch them from the Repository if you centrally stored them as a Metadata DB connection entry. For more information about Metadata<a href="Technical_Process-08.html">, see&#160;<i>Defining Metadata items.</i></a></font></li>
-<a name="wp1311205"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">On the <b>tFileInputDelimited</b> component&#39;s <b>Basic settings</b> panel, press Ctrl+Space bar to access the variable list. Set the  <b>File Name</b> field to the global variable: <i>$_globals{tFileList_1}{CURRENT_FILEPATH}</i> </font></li>
-</ul>
-</ul>
-<a name="wp1311222"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tMysqlConnection2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp1311146"> </a><div class="pSmartList2"><li>Drag and drop the following components from the Palette: <b class="cBold">tFileList</b>, <b class="cBold">tFileInputDelimited</b>, <b class="cBold">tMap</b>, <b class="cBold">tMysqlOutput</b> (x2).</li></div>
+<a name="wp1311162"> </a><div class="pSmartList2"><li>Connect the <b class="cBold">tFileList</b> component to the input file component using an <b class="cBold">Iterate</b> link as the name of the file to be processed will be dynamically filled in from the <b class="cBold">tFileList</b> directory using a global variable. </li></div>
+<a name="wp1311175"> </a><div class="pSmartList2"><li>Connect the <b class="cBold">tFileInputDelimited</b> component to the <b class="cBold">tMap</b> and dispatch the flow between the two output Mysql DB components. Use a <b class="cBold">Row</b> link for each for these connections representing the main data flow.</li></div>
+<a name="wp1311186"> </a><div class="pSmartList2"><li>Set the <b class="cBold">tFileList</b> component properties, such as the directory. name where files will be fetched from.</li></div>
+<a name="wp1312490"> </a><div class="pSmartList2"><li>Add a <b class="cBold">tMysqlConnection</b> component and connect it to the starter component of this job, in this example, the <b class="cBold">tFileList</b> component using a ThenRun link to define the execution order.</li></div>
+<a name="wp1311192"> </a><div class="pSmartList2"><li>In the <b class="cBold">tMysqlConnection</b> Component view, set the connection details manually or fetch them from the Repository if you centrally stored them as a Metadata DB connection entry. For more information about Metadata, see&#160;<em class="cEmphasis">Defining Metadata items.</em></li></div>
+<a name="wp1311205"> </a><div class="pSmartList2"><li>On the <b class="cBold">tFileInputDelimited</b> component&#39;s <b class="cBold">Basic settings</b> panel, press Ctrl+Space bar to access the variable list. Set the  <b class="cBold">File Name</b> field to the global variable: <em class="cEmphasis">$_globals{tFileList_1}{CURRENT_FILEPATH}</em> </li></div>
+</ul></div>
+</ul></div>
+<a name="wp1311222"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tMysqlConnection2.png" id="wp1311217" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
-</font></div>
-<ul>
-<ul>
-<a name="wp1311283"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Set the rest of the fields as usual, defining the row and field separators according to your file structure.</font></li>
-<a name="wp1311312"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then set the schema manually through the<b> Edit schema</b> feature or select the schema from the Repository. In Java version, make sure the data type is correctly set, in accordance with the nature of the data processed.</font></li>
-<a name="wp1311344"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Change the encoding if different from the default one.</font></li>
-<a name="wp1311389"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>tMap</b> Output area, add two output tables, one called mum for the parent table, the second called baby, for the child table.</font></li>
-<a name="wp1311417"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Drag the <i>Name</i> column from the <b>Input</b> area, and drop it to the mum table.</font></li>
-<a name="wp1311432"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Drag the <i>Years</i> column from the <b>Input</b> area and drop it to the baby table.</font></li>
-</ul>
-</ul>
-<a name="wp1311470"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tMysqlConnection3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp1311283"> </a><div class="pSmartList2"><li>Set the rest of the fields as usual, defining the row and field separators according to your file structure.</li></div>
+<a name="wp1311312"> </a><div class="pSmartList2"><li>Then set the schema manually through the<b class="cBold"> Edit schema</b> feature or select the schema from the Repository. In Java version, make sure the data type is correctly set, in accordance with the nature of the data processed.</li></div>
+<a name="wp1311344"> </a><div class="pSmartList2"><li>Change the encoding if different from the default one.</li></div>
+<a name="wp1311389"> </a><div class="pSmartList2"><li>In the <b class="cBold">tMap</b> Output area, add two output tables, one called mum for the parent table, the second called baby, for the child table.</li></div>
+<a name="wp1311417"> </a><div class="pSmartList2"><li>Drag the <em class="cEmphasis">Name</em> column from the <b class="cBold">Input</b> area, and drop it to the mum table.</li></div>
+<a name="wp1311432"> </a><div class="pSmartList2"><li>Drag the <em class="cEmphasis">Years</em> column from the <b class="cBold">Input</b> area and drop it to the baby table.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp1311470"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tMysqlConnection3.png" id="wp1311493" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
-</font></div>
-<ul>
-<ul>
-<a name="wp1311505"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Make sure the mum table is on the top of the baby table as the order is determining for the flow sequence hence the DB insert to perform correctly.</font></li>
-<a name="wp1311524"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then connect the output row link to distribute correctly the flow to the  relevant DB output component.</font></li>
-<a name="wp1311558"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In each of the <b>tMysqlOutput</b> components&#39; <b>Basic settings</b> panel, check the <b>Use an existing connection</b> box to retrieve the <b>tMysqlConnection</b> details. </font></li>
-<a name="wp1312691"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Notice (in Perl version) that the <b>Commit every</b> field doesn&#39;t show anymore as you are supposed to use the <b>tMysqlCommit</b> instead to manage the global transaction commit. In Java version, ignore the field as this command will get overridden by the <b>tMysqlCommit</b>.</font></li>
-</ul>
-</ul>
-<a name="wp1311632"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tMysqlConnection4.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp1311505"> </a><div class="pSmartList2"><li>Make sure the mum table is on the top of the baby table as the order is determining for the flow sequence hence the DB insert to perform correctly.</li></div>
+<a name="wp1311524"> </a><div class="pSmartList2"><li>Then connect the output row link to distribute correctly the flow to the  relevant DB output component.</li></div>
+<a name="wp1311558"> </a><div class="pSmartList2"><li>In each of the <b class="cBold">tMysqlOutput</b> components&#39; <b class="cBold">Basic settings</b> panel, check the <b class="cBold">Use an existing connection</b> box to retrieve the <b class="cBold">tMysqlConnection</b> details. </li></div>
+<a name="wp1312691"> </a><div class="pSmartList2"><li>Notice (in Perl version) that the <b class="cBold">Commit every</b> field doesn&#39;t show anymore as you are supposed to use the <b class="cBold">tMysqlCommit</b> instead to manage the global transaction commit. In Java version, ignore the field as this command will get overridden by the <b class="cBold">tMysqlCommit</b>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp1311632"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tMysqlConnection4.png" id="wp1311667" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
-</font></div>
-<ul>
-<ul>
-<a name="wp1311679"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Set the <b>Table</b> name making sure it corresponds to the correct table, in this example either <i>f1090_mum</i> or <i>f1090_baby</i>.</font></li>
-<a name="wp1311717"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">There is no action on the table as they are already created.</font></li>
-<a name="wp1312037"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select <b>Insert</b> as <b>Action on data</b> for both output components.</font></li>
-<a name="wp1312062"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click on Sync columns to retrieve the schema set in the tMap.</font></li>
-<a name="wp1312074"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Change the encoding type if need be.</font></li>
-<a name="wp1312263"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>Additional columns</b> area of  the DB output component corresponding to the child table (<i>f1090_baby</i>), set the id_baby column so that it reuses the id from the parent table. </font></li>
-<a name="wp1312271"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>SQL expression</b> field type in: &#39;(Select Last_Insert_id())&#39;</font></li>
-<a name="wp1312278"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The position is <i>Before</i> and the <b>Reference column</b> is <i>years</i>.</font></li>
-<a name="wp1312515"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Add the <b>tMysqlCommit</b> component to the job workspace and connect it from the <b>tFileList</b> component using a <b>ThenRun</b> connection in order for the job to terminate with  the transaction commit. </font></li>
-<a name="wp1312716"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">On the <b>tMysqlCommit</b> <b>Component</b> view, select in the list the connection to be used.</font></li>
-</ul>
-</ul>
-<dl><a name="wp1312367"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Save your job and press <b>F6</b> to run it.
-</font></dd>
-</dl><a name="wp1312404"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tMysqlConnection5.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp1311679"> </a><div class="pSmartList2"><li>Set the <b class="cBold">Table</b> name making sure it corresponds to the correct table, in this example either <em class="cEmphasis">f1090_mum</em> or <em class="cEmphasis">f1090_baby</em>.</li></div>
+<a name="wp1311717"> </a><div class="pSmartList2"><li>There is no action on the table as they are already created.</li></div>
+<a name="wp1312037"> </a><div class="pSmartList2"><li>Select <b class="cBold">Insert</b> as <b class="cBold">Action on data</b> for both output components.</li></div>
+<a name="wp1312062"> </a><div class="pSmartList2"><li>Click on Sync columns to retrieve the schema set in the tMap.</li></div>
+<a name="wp1312074"> </a><div class="pSmartList2"><li>Change the encoding type if need be.</li></div>
+<a name="wp1312263"> </a><div class="pSmartList2"><li>In the <b class="cBold">Additional columns</b> area of  the DB output component corresponding to the child table (<em class="cEmphasis">f1090_baby</em>), set the id_baby column so that it reuses the id from the parent table. </li></div>
+<a name="wp1312271"> </a><div class="pSmartList2"><li>In the <b class="cBold">SQL expression</b> field type in: &#39;(Select Last_Insert_id())&#39;</li></div>
+<a name="wp1312278"> </a><div class="pSmartList2"><li>The position is <em class="cEmphasis">Before</em> and the <b class="cBold">Reference column</b> is <em class="cEmphasis">years</em>.</li></div>
+<a name="wp1312515"> </a><div class="pSmartList2"><li>Add the <b class="cBold">tMysqlCommit</b> component to the job workspace and connect it from the <b class="cBold">tFileList</b> component using a <b class="cBold">ThenRun</b> connection in order for the job to terminate with  the transaction commit. </li></div>
+<a name="wp1312716"> </a><div class="pSmartList2"><li>On the <b class="cBold">tMysqlCommit</b> <b class="cBold">Component</b> view, select in the list the connection to be used.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp1312367"> </a><p class="pIndented1">
+Save your job and press <b class="cBold">F6</b> to run it.
+</p>
+<a name="wp1312404"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tMysqlConnection5.png" id="wp1312409" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
-</font></div>
-<dl><a name="wp1312419"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-The parent table <i>id</i> has been reused to feed the <i>id_baby</i> column.
-</font></dd>
-</dl>
+</div>
+<a name="wp1312419"> </a><p class="pIndented1">
+The parent table <em class="cEmphasis">id</em> has been reused to feed the <em class="cEmphasis">id_baby</em> column.
+</p>
     </blockquote>
     <hr>
 
@@ -133,7 +134,7 @@ The parent table <i>id</i> has been reused to feed the <i>id_baby</i> column.
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a href="tMysqlConnection_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tMysqlInput_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+<a accesskey="4" href="tMysqlConnection_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMysqlInput_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

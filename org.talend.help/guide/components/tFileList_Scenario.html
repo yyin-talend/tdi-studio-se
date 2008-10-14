@@ -3,8 +3,8 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
-    <meta name="TEMPLATEBASE" content="Simple HTML">
-    <meta name="LASTUPDATED" content="02/05/08 13:30:49">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="10/14/08 16:15:27">
     <title>Scenario: Iterating on a file directory</title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a href="tFileList_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tFileOutputExcel_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+<a accesskey="4" href="tFileList_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFileOutputExcel_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
@@ -22,65 +22,64 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp1185629"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1185629"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
-</font></div>
-<a name="wp1295029"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+</div>
+<a name="wp1295029"> </a><h2 class="pHeading2">
 Scenario: Iterating on a file directory
-</b></font></h3>
-<dl><a name="wp1287676"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-The following scenario creates a three-component job, which aims at listing files from a defined directory, reading each file by iteration, selecting delimited data and displaying the output in the <b>Run Job</b> log console.
-</font></dd>
-</dl><a name="wp1185643"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tFileList.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</h2>
+<a name="wp1287676"> </a><p class="pIndented1">
+The following scenario creates a three-component job, which aims at listing files from a defined directory, reading each file by iteration, selecting delimited data and displaying the output in the <b class="cBold">Run Job</b> log console.
+</p>
+<a name="wp1185643"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tFileList.png" id="wp1185640" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
-</font></div>
-<ul>
-<ul>
-<a name="wp1185657"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop a <b>tFileList</b> , a <b>tFileInputDelimited</b> and a <b>tLogRow</b> component  into the Design workspace.</font></li>
-<a name="wp1185667"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Right-click on the <b>tFileList</b> component, and pull an <b>Iterate</b> connection to the <b>tFileInputDelimited</b> component. Then pull a <b>Main</b> row from the <b>tFileInputDelimited</b> to the <b>tLogRow</b> component.</font></li>
-<a name="wp1185684"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Now define the Basic settings of all three components.</font></li>
-<a name="wp1185695"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">First select the <b>tFileList</b> component, and click on <b>Basic settings</b> tab:</font></li>
-</ul>
-</ul>
-<a name="wp1185702"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tFileList1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp1185657"> </a><div class="pSmartList2"><li>Click and drop a <b class="cBold">tFileList</b> , a <b class="cBold">tFileInputDelimited</b> and a <b class="cBold">tLogRow</b> component  into the Design workspace.</li></div>
+<a name="wp1185667"> </a><div class="pSmartList2"><li>Right-click on the <b class="cBold">tFileList</b> component, and pull an <b class="cBold">Iterate</b> connection to the <b class="cBold">tFileInputDelimited</b> component. Then pull a <b class="cBold">Main</b> row from the <b class="cBold">tFileInputDelimited</b> to the <b class="cBold">tLogRow</b> component.</li></div>
+<a name="wp1185684"> </a><div class="pSmartList2"><li>Now define the Basic settings of all three components.</li></div>
+<a name="wp1185695"> </a><div class="pSmartList2"><li>First select the <b class="cBold">tFileList</b> component, and click on <b class="cBold">Basic settings</b> tab:</li></div>
+</ul></div>
+</ul></div>
+<a name="wp1185702"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tFileList1.png" id="wp1185699" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
-</font></div>
-<ul>
-<ul>
-<a name="wp1185710"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Browse to the <b>Directory</b> of the files to process. To display the path on the job itself, use the hint label (__DIRECTORY__) that shows up when you browse over the Directory field. Type in this reference in the <b>Label Format</b> field of the <b>View</b> tab.</font></li>
-<a name="wp1185724"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Enter a <b>Filemask</b> using wildcards if need be.</font></li>
-<a name="wp1185728"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The case is sensitive.</font></li>
-<a name="wp1185736"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click on the <b>tFileInputDelimited</b> component and set the properties:</font></li>
-</ul>
-</ul>
-<a name="wp1185743"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tFileList2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp1185710"> </a><div class="pSmartList2"><li>Browse to the <b class="cBold">Directory</b> of the files to process. To display the path on the job itself, use the hint label (__DIRECTORY__) that shows up when you browse over the Directory field. Type in this reference in the <b class="cBold">Label Format</b> field of the <b class="cBold">View</b> tab.</li></div>
+<a name="wp1185724"> </a><div class="pSmartList2"><li>Enter a <b class="cBold">Filemask</b> using wildcards if need be.</li></div>
+<a name="wp1185728"> </a><div class="pSmartList2"><li>The case is sensitive.</li></div>
+<a name="wp1185736"> </a><div class="pSmartList2"><li>Click on the <b class="cBold">tFileInputDelimited</b> component and set the properties:</li></div>
+</ul></div>
+</ul></div>
+<a name="wp1185743"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tFileList2.png" id="wp1185740" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
-</font></div>
-<ul>
-<ul>
-<a name="wp1185751"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Enter the <b>File Name</b> field using a variable containing the current filename path, as you filled in in the Basic settings of <b>tFileList</b>. Press <b>Ctrl+Space bar</b> to access the autocomplete list of variables.</font></li>
-<a name="wp1185764"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Fill in all other fields as detailed in the <b>tFileInputDelimited</b> section. Related topic: <a href="tFileInputDelimited_Prop.html#wp1447557"><i>tFileInputDelimited properties</i></a></font></li>
-<a name="wp1185774"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the last component, <b>tLogRow</b> and fill in the separator to be used to distinguish field content displayed on the Log. Related topic: <a href="tLogRow_Prop.html#wp1448725"><i>tLogRow properties</i></a>.</font></li>
-</ul>
-</ul>
-<a name="wp1308707"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tFileList3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp1185751"> </a><div class="pSmartList2"><li>Enter the <b class="cBold">File Name</b> field using a variable containing the current filename path, as you filled in in the Basic settings of <b class="cBold">tFileList</b>. Press <b class="cBold">Ctrl+Space bar</b> to access the autocomplete list of variables.</li></div>
+<a name="wp1185764"> </a><div class="pSmartList2"><li>Fill in all other fields as detailed in the <b class="cBold">tFileInputDelimited</b> section. Related topic: <a href="tFileInputDelimited_Prop.html#wp1447557"><em class="cEmphasis">tFileInputDelimited properties</em></a></li></div>
+<a name="wp1185774"> </a><div class="pSmartList2"><li>Select the last component, <b class="cBold">tLogRow</b> and fill in the separator to be used to distinguish field content displayed on the Log. Related topic: <a href="tLogRow_Prop.html"><em class="cEmphasis">tLogRow</em></a>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp1308707"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tFileList3.png" id="wp1308702" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
-</font></div>
-<dl><a name="wp1324052"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</div>
+<a name="wp1324052"> </a><p class="pIndented1">
 The job iterates on the directory defined, and reads each file contained. Then delimited data is passed on to the last component which displays it on the Log.
-</font></dd>
-<a name="wp1324056"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-For other scenarios using tFileList<a href="tFileCopy_Prop.html">, see&#160;<i>tFileCopy.</i></a>
-</font></dd>
-</dl>
+</p>
+<a name="wp1324056"> </a><p class="pIndented1">
+For other scenarios using tFileList<a href="tFileCopy_Prop.html">, see&#160;<em class="cEmphasis">tFileCopy.</em></a>
+</p>
     </blockquote>
     <hr>
 
@@ -100,7 +99,7 @@ For other scenarios using tFileList<a href="tFileCopy_Prop.html">, see&#160;<i>t
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a href="tFileList_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tFileOutputExcel_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+<a accesskey="4" href="tFileList_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFileOutputExcel_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

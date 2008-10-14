@@ -1,0 +1,197 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="10/14/08 16:16:27">
+    <title>tWaitForFile</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tUnite_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tWaitForFile_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1537845"> </a><h2 class="pHeading1">
+tWaitForFile
+</h2>
+<a name="wp1557074"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left"><img src="images/tWaitForFile_icon32_white.png" id="wp1537840" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+
+</div>
+<a name="wp1538745"> </a><h2 class="pHeading2">
+tWaitForFile properties
+</h2>
+<a name="wp1538869"> </a><p class="pBodyRelative">
+</p>
+<div align="center">
+<table border="1" id="wp1538753table1538748">
+  <caption></caption>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1538753"> </a><div class="pCellBody">
+<b class="cBold">Component family</b>
+</div>
+</td>
+    <td><a name="wp1538755"> </a><div class="pCellBody">
+Orchestration
+</div>
+</td>
+    <td><a name="wp1538764"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="images/Components-13-17-10.jpg" height="59" width="112" id="wp1538760" border="0" hspace="0" vspace="0"/>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1538769"> </a><div class="pCellBody">
+<b class="cBold">Function</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1538774"> </a><div class="pCellBody">
+<b class="cBold">tWaitForFile</b>  component iterates on a given folder for file insertion or deletion then triggers a subjob to be executed when the condition is met.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1538781"> </a><div class="pCellBody">
+<b class="cBold">Purpose</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1538783"> </a><div class="pCellBody">
+This component allows a subjob to be triggered given a condition linked to file presence or removal.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1538790"> </a><div class="pCellBody">
+<b class="cBold">Basic settings</b>
+</div>
+</td>
+    <td><a name="wp1538794"> </a><div class="pCellHeading">
+<em class="cEmphasis">Wait at each iteration (in seconds)</em>
+</div>
+</td>
+    <td><a name="wp1538797"> </a><div class="pCellBody">
+Set the time interval in seconds between each check for the file.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1538802"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1538806"> </a><div class="pCellHeading">
+<em class="cEmphasis">Max. iterations (infinite if empty)</em>
+</div>
+</td>
+    <td><a name="wp1538809"> </a><div class="pCellBody">
+Number of checks for file before the jobs times out.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1538811"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1538816"> </a><div class="pCellHeading">
+<em class="cEmphasis">Directory to scan</em>
+</div>
+</td>
+    <td><a name="wp1538818"> </a><div class="pCellBody">
+Name of the folder to be checked  for  insert or removal
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1538820"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1538825"> </a><div class="pCellHeading">
+<em class="cEmphasis">File mask</em>
+</div>
+</td>
+    <td><a name="wp1538827"> </a><div class="pCellBody">
+Mask of the file to be searched for insertion or removal.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1538829"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1538833"> </a><div class="pCellHeading">
+<em class="cEmphasis">Trigger action when rowcount is</em>
+</div>
+</td>
+    <td><a name="wp1538836"> </a><div class="pCellBody">
+Select the condition to be met for the action to be carried out:<br /><b class="cBold">A file is created</b><br /><b class="cBold">A file is deleted</b>
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1538841"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1538846"> </a><div class="pCellHeading">
+<em class="cEmphasis">Then</em>
+</div>
+</td>
+    <td><a name="wp1538848"> </a><div class="pCellBody">
+Select the action to be carried out: either stop the iterations when the condition is met or continue the loop until the end of the max iteration number.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1538853"> </a><div class="pCellBody">
+<b class="cBold">Usage</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1538855"> </a><div class="pCellBody">
+This component  plays the role of  the start (or trigger) component of the subjob which gets executed under the condition described. Therefore this component requires a subjob to be connected to via an Iterate link.
+</div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1538862"> </a><div class="pCellBody">
+<b class="cBold">Limitation</b>
+</div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1538864"> </a><div class="pCellBody">
+n/a
+</div>
+</td>
+</tr>
+</table>
+</div>
+<p class="pBodyRelative">
+
+</p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a accesskey="4" href="tUnite_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tWaitForFile_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

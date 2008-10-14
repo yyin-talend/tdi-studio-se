@@ -3,8 +3,8 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
-    <meta name="TEMPLATEBASE" content="Simple HTML">
-    <meta name="LASTUPDATED" content="02/05/08 13:30:49">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="10/14/08 16:13:25">
     <title>tMysqlInput</title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a href="tMysqlConnection_Scenario.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tMysqlInput_Scenario.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+<a accesskey="4" href="tMysqlConnection_Scenario.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMysqlInput_Scenario.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
@@ -22,236 +22,236 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp1379304"> </a><h2><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="4"><b>
+<a name="wp1379304"> </a><h2 class="pHeading1">
 tMysqlInput
-</b></font></h2>
-<a name="wp1406685"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="left"><img src="images/tMysqlInput_icon32_white.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</h2>
+<a name="wp1406685"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="left"><img src="images/tMysqlInput_icon32_white.png" id="wp1406682" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
-</font></div>
-<a name="wp1448944"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+</div>
+<a name="wp1448944"> </a><h2 class="pHeading2">
 tMysqlInput properties
-</b></font></h3>
-<a name="wp1376103"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></p>
+</h2>
+<a name="wp1376103"> </a><p class="pBodyRelative">
+</p>
 <div align="center">
-<table border="1">
+<table border="1" id="wp1375864table1375856">
   <caption></caption>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1375864"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-<b>Component family</b>
-</font></div>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1375864"> </a><div class="pCellBody">
+<b class="cBold">Component family</b>
+</div>
 </td>
-    <td><a name="wp1375867"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+    <td><a name="wp1375867"> </a><div class="pCellBody">
 Databases/MySQL
-</font></div>
+</div>
 </td>
-    <td><a name="wp1375879"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-<img src="images/Full-6-209-093.jpg" height="59" width="112" border="0" hspace="0" vspace="0">
-</font></div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1375887"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-<b>Function</b>
-</font></div>
-</td>
-    <td colspan="2" rowspan="1"><a name="wp1375894"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-<b>tMysqlInput</b> reads a database and extracts fields based on a query. 
-</font></div>
+    <td><a name="wp1375879"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+<img src="images/Components-06-109-030.jpg" height="59" width="112" id="wp1375874" border="0" hspace="0" vspace="0"/>
+</div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1375905"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-<b>Purpose</b>
-</font></div>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1375887"> </a><div class="pCellBody">
+<b class="cBold">Function</b>
+</div>
 </td>
-    <td colspan="2" rowspan="1"><a name="wp1375912"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-<b>tMysqlInput</b> executes a DB query with a strictly defined order which must correspond to the schema definition. Then it passes on the field list to the next component via a Main row link.
-</font></div>
+    <td colspan="2" rowspan="1"><a name="wp1375894"> </a><div class="pCellBody">
+<b class="cBold">tMysqlInput</b> reads a database and extracts fields based on a query. 
+</div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1375923"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-<b>Basic settings</b>
-</font></div>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1375905"> </a><div class="pCellBody">
+<b class="cBold">Purpose</b>
+</div>
 </td>
-    <td><a name="wp1375930"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
-Property type
-</b></font></div></div>
+    <td colspan="2" rowspan="1"><a name="wp1375912"> </a><div class="pCellBody">
+<b class="cBold">tMysqlInput</b> executes a DB query with a strictly defined order which must correspond to the schema definition. Then it passes on the field list to the next component via a Main row link.
+</div>
 </td>
-    <td><a name="wp1375933"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1375923"> </a><div class="pCellBody">
+<b class="cBold">Basic settings</b>
+</div>
+</td>
+    <td><a name="wp1375930"> </a><div class="pCellHeading">
+<em class="cEmphasis">Property type</em>
+</div>
+</td>
+    <td><a name="wp1375933"> </a><div class="pCellBody">
 Either Built-in or Repository
-</font></div>
+</div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1375937"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1375937"> </a><div class="pCellBody">
 &#160;
-</font></div>
+</div>
 </td>
-    <td><a name="wp1375940"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+    <td><a name="wp1375940"> </a><div class="pCellBody">
 &#160;
-</font></div>
+</div>
 </td>
-    <td><a name="wp1375947"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-<b>Built-in</b>: No property data stored centrally.
-</font></div>
+    <td><a name="wp1375947"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>: No property data stored centrally.
+</div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1375951"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1375951"> </a><div class="pCellBody">
 &#160;
-</font></div>
+</div>
 </td>
-    <td><a name="wp1375954"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+    <td><a name="wp1375954"> </a><div class="pCellBody">
 &#160;
-</font></div>
+</div>
 </td>
-    <td><a name="wp1375961"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-<b>Repository</b>: Select the Repository file where Properties are stored. The following fields are pre-filled in using fetched data.
-</font></div>
+    <td><a name="wp1375961"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: Select the Repository file where Properties are stored. The following fields are pre-filled in using fetched data.
+</div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1376555"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1376555"> </a><div class="pCellBody">
 &#160;
-</font></div>
+</div>
 </td>
-    <td><a name="wp1376558"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
-Use existing connection
-</b></font></div></div>
+    <td><a name="wp1376558"> </a><div class="pCellHeading">
+<em class="cEmphasis">Use existing connection</em>
+</div>
 </td>
-    <td><a name="wp1376561"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Check this box when using a <b>tMySQLConnection</b>
-</font></div>
+    <td><a name="wp1376561"> </a><div class="pCellBody">
+Check this box when using a <b class="cBold">tMySQLConnection</b>
+</div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1375965"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1375965"> </a><div class="pCellBody">
 &#160;
-</font></div>
+</div>
 </td>
-    <td><a name="wp1375972"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
-Host
-</b></font></div></div>
+    <td><a name="wp1375972"> </a><div class="pCellHeading">
+<em class="cEmphasis">Host</em>
+</div>
 </td>
-    <td><a name="wp1375975"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+    <td><a name="wp1375975"> </a><div class="pCellBody">
 Database server IP address
-</font></div>
+</div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1375979"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1375979"> </a><div class="pCellBody">
 &#160;
-</font></div>
+</div>
 </td>
-    <td><a name="wp1375986"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
-Port
-</b></font></div></div>
+    <td><a name="wp1375986"> </a><div class="pCellHeading">
+<em class="cEmphasis">Port</em>
+</div>
 </td>
-    <td><a name="wp1375989"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+    <td><a name="wp1375989"> </a><div class="pCellBody">
 Listening port number of DB server.
-</font></div>
+</div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1375993"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1375993"> </a><div class="pCellBody">
 &#160;
-</font></div>
+</div>
 </td>
-    <td><a name="wp1375996"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
-Database
-</b></font></div></div>
+    <td><a name="wp1375996"> </a><div class="pCellHeading">
+<em class="cEmphasis">Database</em>
+</div>
 </td>
-    <td><a name="wp1375999"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+    <td><a name="wp1375999"> </a><div class="pCellBody">
 Name of the database
-</font></div>
+</div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1376003"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1376003"> </a><div class="pCellBody">
 &#160;
-</font></div>
+</div>
 </td>
-    <td><a name="wp1376010"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
-Username and Password
-</b></font></div></div>
+    <td><a name="wp1376010"> </a><div class="pCellHeading">
+<em class="cEmphasis">Username</em> and <em class="cEmphasis">Password</em>
+</div>
 </td>
-    <td><a name="wp1376017"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+    <td><a name="wp1376017"> </a><div class="pCellBody">
 DB user authentication data.
-</font></div>
+</div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1376021"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1376021"> </a><div class="pCellBody">
 &#160;
-</font></div>
+</div>
 </td>
-    <td><a name="wp1376031"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
-Schema type and Edit Schema
-</b></font></div></div>
+    <td><a name="wp1376031"> </a><div class="pCellHeading">
+<em class="cEmphasis">Schema type</em> and <em class="cEmphasis">Edit Schema</em>
+</div>
 </td>
-    <td><a name="wp1376035"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+    <td><a name="wp1376035"> </a><div class="pCellBody">
 A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component.  The schema is either built-in or remotely stored in the Repository. 
-</font></div>
+</div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1376039"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1376039"> </a><div class="pCellBody">
 &#160;
-</font></div>
+</div>
 </td>
-    <td><a name="wp1376042"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+    <td><a name="wp1376042"> </a><div class="pCellBody">
 &#160;
-</font></div>
+</div>
 </td>
-    <td><a name="wp1376049"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-<b>Built-in</b>: The schema is created and stored locally for this component only. Related topic: <a href="Technical_Process-06.html#wp1448918"><i>Setting a built-in schema</i></a>
-</font></div>
+    <td><a name="wp1376049"> </a><div class="pCellBody">
+<b class="cBold">Built-in</b>: The schema is created and stored locally for this component only. Related topic: <em class="cEmphasis">Setting a built-in schema</em> of <b class="cBold">Talend Open Studio</b> User Guide
+</div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1376057"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1376057"> </a><div class="pCellBody">
 &#160;
-</font></div>
+</div>
 </td>
-    <td><a name="wp1376060"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+    <td><a name="wp1376060"> </a><div class="pCellBody">
 &#160;
-</font></div>
+</div>
 </td>
-    <td><a name="wp1376067"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-<b>Repository</b>: The schema already  exists and is stored in  the Repository, hence can be reused. Related topic: <a href="Technical_Process-06.html#wp1448364"><i>Setting a repository schema</i></a>
-</font></div>
+    <td><a name="wp1376067"> </a><div class="pCellBody">
+<b class="cBold">Repository</b>: The schema already  exists and is stored in  the Repository, hence can be reused. Related topic: <em class="cEmphasis">Setting a repository schema</em> of <b class="cBold">Talend Open Studio</b> User Guide
+</div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1376075"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1376075"> </a><div class="pCellBody">
 &#160;
-</font></div>
+</div>
 </td>
-    <td><a name="wp1376082"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
-Query type and Query
-</b></font></div></div>
+    <td><a name="wp1376082"> </a><div class="pCellHeading">
+<em class="cEmphasis">Query type </em>and <em class="cEmphasis">Query</em>
+</div>
 </td>
-    <td><a name="wp1376085"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+    <td><a name="wp1376085"> </a><div class="pCellBody">
 Enter your DB query  paying particularly attention to properly sequence the fields in order to  match  the schema definition. 
-</font></div>
+</div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1376697"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1376697"> </a><div class="pCellBody">
 &#160;
-</font></div>
+</div>
 </td>
-    <td><a name="wp1376704"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
-Encoding
-</b></font></div></div>
+    <td><a name="wp1376704"> </a><div class="pCellHeading">
+<em class="cEmphasis">Encoding</em>
+</div>
 </td>
-    <td><a name="wp1376707"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+    <td><a name="wp1376707"> </a><div class="pCellBody">
 Select the encoding from the list or select Custom and define it manually. This field is compulsory for DB data handling.
-</font></div>
+</div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1376093"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-<b>Usage</b>
-</font></div>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1376093"> </a><div class="pCellBody">
+<b class="cBold">Usage</b>
+</div>
 </td>
-    <td colspan="2" rowspan="1"><a name="wp1376096"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+    <td colspan="2" rowspan="1"><a name="wp1376096"> </a><div class="pCellBody">
 This component covers all possibilities of  SQL queries onto a Mysql database.
-</font></div>
+</div>
 </td>
 </tr>
 </table>
 </div>
-<p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<p class="pBodyRelative">
 
-</font></p>
+</p>
     </blockquote>
     <hr>
 
@@ -271,7 +271,7 @@ This component covers all possibilities of  SQL queries onto a Mysql database.
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a href="tMysqlConnection_Scenario.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tMysqlInput_Scenario.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+<a accesskey="4" href="tMysqlConnection_Scenario.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMysqlInput_Scenario.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

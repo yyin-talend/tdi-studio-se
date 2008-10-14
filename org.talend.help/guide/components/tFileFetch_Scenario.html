@@ -3,8 +3,8 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
-    <meta name="TEMPLATEBASE" content="Simple HTML">
-    <meta name="LASTUPDATED" content="02/05/08 13:30:49">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="10/14/08 16:15:51">
     <title>Scenario: Fetching data through HTTP</title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a href="tFileFetch_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tFileInputDelimited_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+<a accesskey="4" href="tFileFetch_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFTP_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
@@ -22,45 +22,46 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp1209877"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1209877"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
-</font></div>
-<a name="wp1294890"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+</div>
+<a name="wp1294890"> </a><h2 class="pHeading2">
 Scenario: Fetching data through HTTP
-</b></font></h3>
-<dl><a name="wp1287593"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</h2>
+<a name="wp1287593"> </a><p class="pIndented1">
 This scenario describes a three-component job which retrieves data from an HTTP website and select data that will be stored into a delimited file. 
-</font></dd>
-</dl><a name="wp1210146"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tFileFetch1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</p>
+<a name="wp1210146"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tFileFetch1.png" id="wp1210143" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
-</font></div>
-<ul>
-<ul>
-<a name="wp1210160"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop a <b>tFileFetch</b>, a <b>tFileInputRegex</b> and a <b>tFileOutputDelimited</b> onto your workspace.</font></li>
-<a name="wp1210170"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>tFileFetch</b> <b>Basic settings</b> panel, type in the URI where the file to be fetched can retrieved from.</font></li>
-<a name="wp1210178"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>Destination directory</b> field, browse to the folder where the fetched file is to be stored. </font></li>
-<a name="wp1210184"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>Filename</b> field, type in a  new name for the file if you want it to be changed. In this example, <i>filefetch.txt</i>.</font></li>
-<a name="wp1210198"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the <b>tFileInputRegex</b>, set the <b>File name</b> so that it corresponds to the file fetched earlier.</font></li>
-<a name="wp1210270"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Using a regular expression, in the <b>Regex </b>field, select the relevant data from the fetched file. In this example: &lt;td(?: class=&quot;leftalign&quot;)?&gt; \s* (t\w+) \s* &lt;/td&gt; </font></li>
-</ul>
-</ul>
-<a name="wp1349491"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_iconhk.gif" align="left" border="0" hspace="0" vspace="0"></table></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp1210160"> </a><div class="pSmartList2"><li>Click and drop a <b class="cBold">tFileFetch</b>, a <b class="cBold">tFileInputRegex</b> and a <b class="cBold">tFileOutputDelimited</b> onto your workspace.</li></div>
+<a name="wp1210170"> </a><div class="pSmartList2"><li>In the <b class="cBold">tFileFetch</b> <b class="cBold">Basic settings</b> panel, type in the URI where the file to be fetched can retrieved from.</li></div>
+<a name="wp1210178"> </a><div class="pSmartList2"><li>In the <b class="cBold">Destination directory</b> field, browse to the folder where the fetched file is to be stored. </li></div>
+<a name="wp1210184"> </a><div class="pSmartList2"><li>In the <b class="cBold">Filename</b> field, type in a  new name for the file if you want it to be changed. In this example, <em class="cEmphasis">filefetch.txt</em>.</li></div>
+<a name="wp1210198"> </a><div class="pSmartList2"><li>Select the <b class="cBold">tFileInputRegex</b>, set the <b class="cBold">File name</b> so that it corresponds to the file fetched earlier.</li></div>
+<a name="wp1210270"> </a><div class="pSmartList2"><li>Using a regular expression, in the <b class="cBold">Regex </b>field, select the relevant data from the fetched file. In this example: &lt;td(?: class=&quot;leftalign&quot;)?&gt; \s* (t\w+) \s* &lt;/td&gt; </li></div>
+</ul></div>
+</ul></div>
+<a name="wp1349491"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_iconba.gif" align="left" id="wp1349503" border="0" hspace="0" vspace="0"/></table></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
-</font></div>
-<dl><a name="wp1349506"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</div>
+<a name="wp1349506"> </a><p class="pIndented1">
 Take care to use the correct Regex syntax according to the generation language in use as the syntax is different in Java/Perl, and to include the regexp in single or double quotes accordingly.
-</font></dd>
-<ul>
-<a name="wp1349580"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Define the <b>header</b>, <b>footer</b> and <b>limit</b> if need be. In this case, we&#39;ll ignore these fields.</font></li>
-<a name="wp1349583"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Define also the schema describing the flow to be passed on to the final output.</font></li>
-<a name="wp1349565"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The schema should be automatically propagated to the final output, but to be sure, check the schema in the <b>Basic settings</b> panel of the tFileOutputDelimited component.</font></li>
-<a name="wp1349554"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then press <b>F6</b> to run the job.</font></li>
-</ul>
-</dl>
+</p>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp1349580"> </a><div class="pSmartList2"><li>Define the <b class="cBold">header</b>, <b class="cBold">footer</b> and <b class="cBold">limit</b> if need be. In this case, we&#39;ll ignore these fields.</li></div>
+<a name="wp1349583"> </a><div class="pSmartList2"><li>Define also the schema describing the flow to be passed on to the final output.</li></div>
+<a name="wp1349565"> </a><div class="pSmartList2"><li>The schema should be automatically propagated to the final output, but to be sure, check the schema in the <b class="cBold">Basic settings</b> panel of the tFileOutputDelimited component.</li></div>
+<a name="wp1349554"> </a><div class="pSmartList2"><li>Then press <b class="cBold">F6</b> to run the job.</li></div>
+</ul></div>
+</ul></div>
     </blockquote>
     <hr>
 
@@ -80,7 +81,7 @@ Take care to use the correct Regex syntax according to the generation language i
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a href="tFileFetch_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tFileInputDelimited_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+<a accesskey="4" href="tFileFetch_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tFTP_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

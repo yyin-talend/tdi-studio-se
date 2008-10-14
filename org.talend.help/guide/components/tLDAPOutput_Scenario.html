@@ -3,8 +3,8 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
-    <meta name="TEMPLATEBASE" content="Simple HTML">
-    <meta name="LASTUPDATED" content="02/05/08 13:30:49">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="10/14/08 16:13:25">
     <title>Scenario: Editing data in an LDAP directory</title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a href="tLDAPOutput_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tLogCatcher_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+<a accesskey="4" href="tLDAPOutput_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMSSqlBulkExec_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
@@ -22,80 +22,79 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp1428263"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1428263"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
-</font></div>
-<a name="wp1431057"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+</div>
+<a name="wp1431057"> </a><h2 class="pHeading2">
 Scenario: Editing data in an LDAP directory
-</b></font></h3>
-<dl><a name="wp1431063"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-The following scenario describes a job that reads an LDAP directory, updates the email of a selected entry and displays the output before writing the LDAP directory. To keep it simple, no alias dereferencing nor referral handling is performed. This scenario is based on <b>LDAPInput</b>&#39;s <a href="tLDAPInput_Scenario.html#wp1431029"><i>Scenario: Displaying LDAP directory&#39;s filtered content</i></a>. The result returned was a single entry, related to an organisational person, whom email  is to be updated.
-</font></dd>
-</dl><a name="wp1429698"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tLDAPOutput1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</h2>
+<a name="wp1431063"> </a><p class="pIndented1">
+The following scenario describes a job that reads an LDAP directory, updates the email of a selected entry and displays the output before writing the LDAP directory. To keep it simple, no alias dereferencing nor referral handling is performed. This scenario is based on <b class="cBold">LDAPInput</b>&#39;s <a href="tLDAPInput_Scenario.html#wp1431029"><em class="cEmphasis">Scenario: Displaying LDAP directory&#39;s filtered content</em></a>. The result returned was a single entry, related to an organisational person, whom email  is to be updated.
+</p>
+<a name="wp1429698"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tLDAPOutput1.png" id="wp1429695" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
-</font></div>
-<ul>
-<ul>
-<a name="wp1429716"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop the <b>tLDAPInput</b>, <b>tLDAPOutput</b>, <b>tMap</b> and <b>tLogRow</b> components.</font></li>
-<a name="wp1429725"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Connect the input component to the <b>tMap</b> then to the <b>tLogRow</b> and to the output component.</font></li>
-<a name="wp1429732"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>tLDAPInput</b> Component view, set the connection details to the LDAP directory server as well as the filter as described in <a href="tLDAPInput_Scenario.html#wp1431029"><i>Scenario: Displaying LDAP directory&#39;s filtered content</i></a>.</font></li>
-<a name="wp1429750"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Change the schema to make it simpler, by removing the unused fields: <i>dc</i>, <i>ou</i>, <i>objectclass</i>.</font></li>
-</ul>
-</ul>
-<a name="wp1429756"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tLDAPOutput2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp1429716"> </a><div class="pSmartList2"><li>Click and drop the <b class="cBold">tLDAPInput</b>, <b class="cBold">tLDAPOutput</b>, <b class="cBold">tMap</b> and <b class="cBold">tLogRow</b> components.</li></div>
+<a name="wp1429725"> </a><div class="pSmartList2"><li>Connect the input component to the <b class="cBold">tMap</b> then to the <b class="cBold">tLogRow</b> and to the output component.</li></div>
+<a name="wp1429732"> </a><div class="pSmartList2"><li>In the <b class="cBold">tLDAPInput</b> Component view, set the connection details to the LDAP directory server as well as the filter as described in <a href="tLDAPInput_Scenario.html#wp1431029"><em class="cEmphasis">Scenario: Displaying LDAP directory&#39;s filtered content</em></a>.</li></div>
+<a name="wp1429750"> </a><div class="pSmartList2"><li>Change the schema to make it simpler, by removing the unused fields: <em class="cEmphasis">dc</em>, <em class="cEmphasis">ou</em>, <em class="cEmphasis">objectclass</em>.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp1429756"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tLDAPOutput2.png" id="wp1429890" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
-</font></div>
-<ul>
-<ul>
-<a name="wp1429904"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then open the mapper to set the edit to be carried out.</font></li>
-<a name="wp1429920"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Drag &amp; drop the uid column from the input table to the output as no change is required on this column.</font></li>
-</ul>
-</ul>
-<a name="wp1429929"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tLDAPOutput3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp1429904"> </a><div class="pSmartList2"><li>Then open the mapper to set the edit to be carried out.</li></div>
+<a name="wp1429920"> </a><div class="pSmartList2"><li>Drag &amp; drop the uid column from the input table to the output as no change is required on this column.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp1429929"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tLDAPOutput3.png" id="wp1429937" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
-</font></div>
-<ul>
-<ul>
-<a name="wp1430033"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>Expression</b> field of the <i>dn</i> column (output), fill in with the exact expression expected by the LDAP server to reach the target tree leaf and allow directory writing on the condition that you haven&#39;t set it already in the <b>Base DN </b>field of the <b>tLDAPOutput</b> component.</font></li>
-<a name="wp1430117"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In this use case, the <b>GetResultName</b> global variable is used to retrieve this path automatically. Press <b>Ctrl+Space bar</b> to access the variable list and select <code>tLDAPInput_1_RESULT_NAME</code>.</font></li>
-<a name="wp1430162"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <i>mail</i> column&#39;s expression field, type in the new email that will overwrite the current data in the LDAP directory. In this example, we change to <i>Pierre.Dupont@talend.com</i>.</font></li>
-<a name="wp1430182"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click <b>OK</b> to validate the changes.</font></li>
-<a name="wp1430211"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The <b>tLogRow</b> component doesn&#39;t need any particular setting.</font></li>
-<a name="wp1430234"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then select the <b>tLDAPOutput</b> component to set the directory writing properties.</font></li>
-</ul>
-</ul>
-<a name="wp1430301"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tLDAPOutput5.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp1430033"> </a><div class="pSmartList2"><li>In the <b class="cBold">Expression</b> field of the <em class="cEmphasis">dn</em> column (output), fill in with the exact expression expected by the LDAP server to reach the target tree leaf and allow directory writing on the condition that you haven&#39;t set it already in the <b class="cBold">Base DN </b>field of the <b class="cBold">tLDAPOutput</b> component.</li></div>
+<a name="wp1430117"> </a><div class="pSmartList2"><li>In this use case, the <b class="cBold">GetResultName</b> global variable is used to retrieve this path automatically. Press <b class="cBold">Ctrl+Space bar</b> to access the variable list and select <code class="cCode">tLDAPInput_1_RESULT_NAME</code>.</li></div>
+<a name="wp1430162"> </a><div class="pSmartList2"><li>In the <em class="cEmphasis">mail</em> column&#39;s expression field, type in the new email that will overwrite the current data in the LDAP directory. In this example, we change to <em class="cEmphasis">Pierre.Dupont@talend.com</em>.</li></div>
+<a name="wp1430182"> </a><div class="pSmartList2"><li>Click <b class="cBold">OK</b> to validate the changes.</li></div>
+<a name="wp1430211"> </a><div class="pSmartList2"><li>The <b class="cBold">tLogRow</b> component doesn&#39;t need any particular setting.</li></div>
+<a name="wp1430234"> </a><div class="pSmartList2"><li>Then select the <b class="cBold">tLDAPOutput</b> component to set the directory writing properties.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp1430301"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tLDAPOutput5.png" id="wp1430321" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
-</font></div>
-<ul>
-<ul>
-<a name="wp1430333"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Set the <b>Port</b> and <b>Host</b> details manually if they aren&#39;t stored in the <b>Repository</b>.</font></li>
-<a name="wp1430371"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In <b>Base DN</b> field, set the highest tree leaf you have the rights to access. If you haven&#39;t set previously the exact and full path of the target DN you want to access, then fill in it here. In this use case, the full DN is provided by the <i>dn</i> output from the tMap component, therefore only the highest accessible leaf is given: <i>o=directoryRoot</i>.</font></li>
-<a name="wp1430499"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the relevant protocol to be used: <b>LDAP</b> for this example.</font></li>
-<a name="wp1430523"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then fill in the <b>User</b> and <b>Password</b> as expected by the LDAP directory.</font></li>
-<a name="wp1430555"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Use the default setting of <b>Alias Dereferencing</b> and <b>Referral Handling</b> fields, respectively <b>Always</b> and <b>Ignore</b>.</font></li>
-<a name="wp1430599"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The <b>Insert mode</b> for this use case is <b>Update</b> (the email address).</font></li>
-<a name="wp1430629"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The schema was provided by the previous component through the propagation operation.</font></li>
-<a name="wp1430754"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Save the job and execute.</font></li>
-</ul>
-</ul>
-<a name="wp1430761"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tLDAPOutput4.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp1430333"> </a><div class="pSmartList2"><li>Set the <b class="cBold">Port</b> and <b class="cBold">Host</b> details manually if they aren&#39;t stored in the <b class="cBold">Repository</b>.</li></div>
+<a name="wp1430371"> </a><div class="pSmartList2"><li>In <b class="cBold">Base DN</b> field, set the highest tree leaf you have the rights to access. If you haven&#39;t set previously the exact and full path of the target DN you want to access, then fill in it here. In this use case, the full DN is provided by the <em class="cEmphasis">dn</em> output from the tMap component, therefore only the highest accessible leaf is given: <em class="cEmphasis">o=directoryRoot</em>.</li></div>
+<a name="wp1430499"> </a><div class="pSmartList2"><li>Select the relevant protocol to be used: <b class="cBold">LDAP</b> for this example.</li></div>
+<a name="wp1430523"> </a><div class="pSmartList2"><li>Then fill in the <b class="cBold">User</b> and <b class="cBold">Password</b> as expected by the LDAP directory.</li></div>
+<a name="wp1430555"> </a><div class="pSmartList2"><li>Use the default setting of <b class="cBold">Alias Dereferencing</b> and <b class="cBold">Referral Handling</b> fields, respectively <b class="cBold">Always</b> and <b class="cBold">Ignore</b>.</li></div>
+<a name="wp1430599"> </a><div class="pSmartList2"><li>The <b class="cBold">Insert mode</b> for this use case is <b class="cBold">Update</b> (the email address).</li></div>
+<a name="wp1430629"> </a><div class="pSmartList2"><li>The schema was provided by the previous component through the propagation operation.</li></div>
+<a name="wp1430754"> </a><div class="pSmartList2"><li>Save the job and execute.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp1430761"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tLDAPOutput4.png" id="wp1430758" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
-</font></div>
-<dl><a name="wp1430767"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-The output shows the following fields: <i>dn</i>, <i>uid</i> and <i>mail</i> as defined in the job. 
-</font></dd>
-</dl>
+</div>
+<a name="wp1430767"> </a><p class="pIndented1">
+The output shows the following fields: <em class="cEmphasis">dn</em>, <em class="cEmphasis">uid</em> and <em class="cEmphasis">mail</em> as defined in the job. 
+</p>
     </blockquote>
     <hr>
 
@@ -115,7 +114,7 @@ The output shows the following fields: <i>dn</i>, <i>uid</i> and <i>mail</i> as 
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a href="tLDAPOutput_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tLogCatcher_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+<a accesskey="4" href="tLDAPOutput_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMSSqlBulkExec_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->

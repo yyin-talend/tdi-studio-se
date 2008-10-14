@@ -3,8 +3,8 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
-    <meta name="TEMPLATEBASE" content="Simple HTML">
-    <meta name="LASTUPDATED" content="02/05/08 13:30:49">
+    <meta name="TEMPLATEBASE" content="Dynamic HTML">
+    <meta name="LASTUPDATED" content="10/14/08 16:13:25">
     <title>Scenario: Adding new column and altering data </title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a href="tMysqlOutput_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tMysqlOutputBulk_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+<a accesskey="4" href="tMysqlOutput_Prop.html"><img id="LongDescNotReq1" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMysqlOutputBulk_Prop.html"><img id="LongDescNotReq2" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
@@ -22,48 +22,47 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp1202747"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1606130"> </a><div style="color: #000000; font-size: 12pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
-</font></div>
-<a name="wp1295392"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+</div>
+<a name="wp1606138"> </a><h2 class="pHeading2">
 Scenario: Adding new column and altering data 
-</b></font></h3>
-<dl><a name="wp1288987"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-This scenario is a three-component job aiming at creating random data using a <b>tRowGenerator</b>, duplicating a column to be altered using the <b>tMap</b> component, eventually altering the data to be inserted based on a SQL expression, as well as inserting a new column in the DB, using the <b>tDBOutput</b> component.
-</font></dd>
-</dl><a name="wp1202969"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tMySQLOutput1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</h2>
+<a name="wp1606144"> </a><p class="pIndented1">
+This scenario is a three-component job aiming at creating random data using a <b class="cBold">tRowGenerator</b>, duplicating a column to be altered using the <b class="cBold">tMap</b> component, eventually altering the data to be inserted based on a SQL expression, as well as inserting a new column in the DB, using the <b class="cBold">tDBOutput</b> component.
+</p>
+<a name="wp1606158"> </a><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
+</div>
+<div align="center"><img src="images/Use_Case_tMySQLOutput1.png" id="wp1606155" border="0" hspace="0" vspace="0"/></div><div style="color: #000000; font-size: 2pt; font-style: normal; font-variant: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: left; text-decoration: none; text-indent: 0pt; text-transform: none">
 
-</font></div>
-<ul>
-<ul>
-<a name="wp1202983"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Drag and drop the <b>tRowGenerator</b>, <b>tMap</b> and <b>tMySQLOutput</b> components onto the designer.</font></li>
-<a name="wp1203134"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Link the <b>tRowGenerator</b> to the <b>tMap</b>.</font></li>
-<a name="wp1202987"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Set the tRowGenerator component properties. Create a two-column  schema: <b>Name</b> and <b>Random_date</b></font></li>
-<a name="wp1202991"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The <b>Name</b> column does pick up randomly names from a list specified. In this use case, le list includes <i>FabriceB</i>, <i>PierrickL</i>, <i>GabrielM</i> and <i>ElisaS</i>. </font></li>
-<a name="wp1203079"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then, double-click on the <b>tMap</b> component to duplicate the random_date column and adapt the schema in order to alter the data in the output component. </font></li>
-<a name="wp1203113"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the Mapper, create an output link to the <b>tMysqlOutput</b> component. Add one more column (based on the input schema) and name it <i>random_date_1</i> to distinguish it from the other <i>random_date</i> column.</font></li>
-<a name="wp1203166"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Drag and drop the <i>random_date</i> content from the input area to the output area.</font></li>
-<a name="wp1203249"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then double-click on the <b>tMysqlOutput</b> component to set its parameters.</font></li>
-<a name="wp1203285"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">First fill in the DB connection details, either through the Repository or manually in case of Built-in information.  </font></li>
-<a name="wp1203320"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the table to be altered, in this example: <i>Feature516</i>. </font></li>
-<a name="wp1203343"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">No <b>Action on table </b>is to be carried out, the <b>Action on data</b> is <i>Insert</i>. </font></li>
-<a name="wp1203411"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>Additional Columns</b> area, set the alteration to be performed on columns and the specific insertion of a new <i>moment</i> column onto the database.</font></li>
-<a name="wp1203434"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The <i>One_month_later</i> column is a replacement column for the <i>random_date_1</i> column. Also, the data it-self gets altered using an SQL expression, which adds one month to the randomly picked-up date of the <i>random_date_1</i> column. ex: 2007-08-12 becomes 2007-09-12</font></li>
-<a name="wp1203454"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Therefore, in <b>Name</b> field goes the new column label (<i>One_Month_Later</i>) and in <b>SQL expression</b> field, type in the relevant addition script to be performed: &#39;adddate(?, interval 1 month)&#39; then as <b>Position</b>, select <b>Replace</b>, and the <b>Reference column</b> is <i>Random_date_1</i>. </font></li>
-<a name="wp1206029"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Note that for this job we duplicated the <i>random_date_1</i> column in the DB table before replacing one instance of it with the <i>One_Month_Later</i> column. The aim of this workaround was to be able to view upfront the modification performed.</font></li>
-<a name="wp1203683"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The second entry is the new column, <i>moment</i>, to be inserted into the database table. As <b>SQL expression</b>, type in the moment function: <i>now()</i> and in the <b>Position</b> field, select <b>Before</b>, the <b>Reference column</b> is name in this example.</font></li>
-<a name="wp1203750"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Once the Output setting is complete, press <b>F6</b> to run the job.</font></li>
-</ul>
-</ul>
-<dl><a name="wp1203789"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Two new columns were added or altered onto the DB table: <i>One_Month_Later</i> and <i>Moment</i>.
-</font></dd>
-<a name="wp1203821"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Related topic: <a href="tDBOutput_Prop.html#wp1447242"><i>tDBOutput properties</i></a>
-</font></dd>
-</dl>
+</div>
+<div class="pSmartList1"><ul class="pSmartList1">
+<div class="pSmartList2"><ul class="pSmartList2">
+<a name="wp1606172"> </a><div class="pSmartList2"><li>Drag and drop the <b class="cBold">tRowGenerator</b>, <b class="cBold">tMap</b> and <b class="cBold">tMySQLOutput</b> components onto the designer.</li></div>
+<a name="wp1606183"> </a><div class="pSmartList2"><li>Link the <b class="cBold">tRowGenerator</b> to the <b class="cBold">tMap</b>.</li></div>
+<a name="wp1606189"> </a><div class="pSmartList2"><li>Set the tRowGenerator component properties. Create a two-column  schema: <b class="cBold">Name</b> and <b class="cBold">Random_date</b></li></div>
+<a name="wp1606199"> </a><div class="pSmartList2"><li>The <b class="cBold">Name</b> column does pick up randomly names from a list specified. In this use case, le list includes <em class="cEmphasis">FabriceB</em>, <em class="cEmphasis">PierrickL</em>, <em class="cEmphasis">GabrielM</em> and <em class="cEmphasis">ElisaS</em>. </li></div>
+<a name="wp1606218"> </a><div class="pSmartList2"><li>Then, double-click on the <b class="cBold">tMap</b> component to duplicate the random_date column and adapt the schema in order to alter the data in the output component. </li></div>
+<a name="wp1606225"> </a><div class="pSmartList2"><li>In the Mapper, create an output link to the <b class="cBold">tMysqlOutput</b> component. Add one more column (based on the input schema) and name it <em class="cEmphasis">random_date_1</em> to distinguish it from the other <em class="cEmphasis">random_date</em> column.</li></div>
+<a name="wp1606239"> </a><div class="pSmartList2"><li>Drag and drop the <em class="cEmphasis">random_date</em> content from the input area to the output area.</li></div>
+<a name="wp1606246"> </a><div class="pSmartList2"><li>Then double-click on the <b class="cBold">tMysqlOutput</b> component to set its parameters.</li></div>
+<a name="wp1606249"> </a><div class="pSmartList2"><li>First fill in the DB connection details, either through the Repository or manually in case of Built-in information.  </li></div>
+<a name="wp1606257"> </a><div class="pSmartList2"><li>Select the table to be altered, in this example: <em class="cEmphasis">Feature516</em>. </li></div>
+<a name="wp1606270"> </a><div class="pSmartList2"><li>No <b class="cBold">Action on table </b>is to be carried out, the <b class="cBold">Action on data</b> is <em class="cEmphasis">Insert</em>. </li></div>
+<a name="wp1606276"> </a><div class="pSmartList2"><li>In the <b class="cBold">Additional Columns</b> area, set the alteration to be performed on columns and the specific insertion of a new <em class="cEmphasis">moment</em> column onto the database.</li></div>
+<a name="wp1606289"> </a><div class="pSmartList2"><li>The <em class="cEmphasis">One_month_later</em> column is a replacement column for the <em class="cEmphasis">random_date_1</em> column. Also, the data it-self gets altered using an SQL expression, which adds one month to the randomly picked-up date of the <em class="cEmphasis">random_date_1</em> column. ex: 2007-08-12 becomes 2007-09-12</li></div>
+<a name="wp1606304"> </a><div class="pSmartList2"><li>Therefore, in <b class="cBold">Name</b> field goes the new column label (<em class="cEmphasis">One_Month_Later</em>) and in <b class="cBold">SQL expression</b> field, type in the relevant addition script to be performed: &#39;adddate(?, interval 1 month)&#39; then as <b class="cBold">Position</b>, select <b class="cBold">Replace</b>, and the <b class="cBold">Reference column</b> is <em class="cEmphasis">Random_date_1</em>. </li></div>
+<a name="wp1606324"> </a><div class="pSmartList2"><li>Note that for this job we duplicated the <em class="cEmphasis">random_date_1</em> column in the DB table before replacing one instance of it with the <em class="cEmphasis">One_Month_Later</em> column. The aim of this workaround was to be able to view upfront the modification performed.</li></div>
+<a name="wp1606336"> </a><div class="pSmartList2"><li>The second entry is the new column, <em class="cEmphasis">moment</em>, to be inserted into the database table. As <b class="cBold">SQL expression</b>, type in the moment function: <em class="cEmphasis">now()</em> and in the <b class="cBold">Position</b> field, select <b class="cBold">Before</b>, the <b class="cBold">Reference column</b> is name in this example.</li></div>
+<a name="wp1606358"> </a><div class="pSmartList2"><li>Once the Output setting is complete, press <b class="cBold">F6</b> to run the job.</li></div>
+</ul></div>
+</ul></div>
+<a name="wp1606368"> </a><p class="pIndented1">
+Two new columns were added or altered onto the DB table: <em class="cEmphasis">One_Month_Later</em> and <em class="cEmphasis">Moment</em>.
+</p>
+<a name="wp1606377"> </a><p class="pIndented1">
+Related topic: <a href="tDBOutput_Prop.html#wp1447242"><em class="cEmphasis">tDBOutput properties</em></a>
+</p>
     </blockquote>
     <hr>
 
@@ -83,7 +82,7 @@ Related topic: <a href="tDBOutput_Prop.html#wp1447242"><i>tDBOutput properties</
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a href="tMysqlOutput_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tMysqlOutputBulk_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+<a accesskey="4" href="tMysqlOutput_Prop.html"><img id="LongDescNotReq3" src="images/prev.gif" border="0" alt="Previous" /></a><a accesskey="5" href="tMysqlOutputBulk_Prop.html"><img id="LongDescNotReq4" src="images/next.gif" border="0" alt="Next" /></a>
         </td>
       </tr>
     </table-->
