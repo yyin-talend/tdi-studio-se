@@ -25,11 +25,9 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
-import org.eclipse.jface.viewers.IOpenListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.OpenEvent;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
@@ -40,6 +38,7 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
@@ -72,6 +71,7 @@ import org.talend.repository.model.IRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryFactoryProvider;
+import org.talend.repository.ui.ERepositoryImages;
 import org.talend.repository.ui.actions.importproject.DeleteProjectsAsAction;
 import org.talend.repository.ui.actions.importproject.ImportDemoProjectAction;
 import org.talend.repository.ui.actions.importproject.ImportProjectAsAction;
@@ -114,6 +114,8 @@ public class LoginComposite extends Composite {
     private ComboViewer projectViewer;
 
     public Button fillProjectsBtn;
+
+    public Button openProjectBtn;
 
     private Button manageConnectionsButton;
 
@@ -241,13 +243,21 @@ public class LoginComposite extends Composite {
         FormLayout groupLayout = new FormLayout();
         group.setLayout(groupLayout);
 
-        // Fill projects
-        fillProjectsBtn = toolkit.createButton(group, null, SWT.PUSH);
-        fillProjectsBtn.setText(Messages.getString("LoginComposite.buttons.open")); //$NON-NLS-1$
-        fillProjectsBtn.setToolTipText(Messages.getString("LoginComposite.buttons.open.desc")); //$NON-NLS-1$
-        // fillProjectsBtn.setImage(ImageProvider.getImage(EImage.REFRESH_ICON));
+        openProjectBtn = toolkit.createButton(group, null, SWT.PUSH);
+        openProjectBtn.setText(Messages.getString("LoginComposite.buttons.open")); //$NON-NLS-1$
+        openProjectBtn.setToolTipText(Messages.getString("LoginComposite.buttons.open.desc")); //$NON-NLS-1$
+        Image image = ImageProvider.getImage(ERepositoryImages.OPEN_PROJECT_ICON);
+        openProjectBtn.setImage(image);
         data = new FormData();
         data.right = new FormAttachment(100, -HORIZONTAL_SPACE);
+        openProjectBtn.setLayoutData(data);
+
+        fillProjectsBtn = toolkit.createButton(group, null, SWT.PUSH);
+        // fillProjectsBtn.setText(Messages.getString("LoginComposite.buttons.open")); //$NON-NLS-1$
+        fillProjectsBtn.setToolTipText(Messages.getString("LoginComposite.buttons.fill.desc")); //$NON-NLS-1$
+        fillProjectsBtn.setImage(ImageProvider.getImage(EImage.REFRESH_ICON));
+        data = new FormData();
+        data.right = new FormAttachment(openProjectBtn, -HORIZONTAL_SPACE);
         fillProjectsBtn.setLayoutData(data);
 
         projectViewer = new ComboViewer(group, SWT.BORDER | SWT.READ_ONLY);
@@ -268,7 +278,7 @@ public class LoginComposite extends Composite {
         // Bottom buttons:
         bottomButtons = toolkit.createComposite(group);
         data = new FormData();
-        data.top = new FormAttachment(projectViewer.getControl(), VERTICAL_SPACE * 3, SWT.BOTTOM);
+        data.top = new FormAttachment(projectViewer.getControl(), VERTICAL_SPACE * 2, SWT.BOTTOM);
         data.left = new FormAttachment(0, HORIZONTAL_SPACE);
         bottomButtons.setLayoutData(data);
         bottomButtons.setLayout(new FormLayout());
@@ -276,13 +286,14 @@ public class LoginComposite extends Composite {
         Label manageProjectLabel1 = toolkit.createLabel(bottomButtons, Messages.getString("LoginComposite.manageProjectPre")); //$NON-NLS-1$
         FormData formData = new FormData();
         formData.left = new FormAttachment(0);
-        formData.bottom = new FormAttachment(100, -VERTICAL_SPACE);
+        formData.top = new FormAttachment(40);
         manageProjectLabel1.setLayoutData(formData);
 
         manageProjectsButton = toolkit.createButton(bottomButtons, null, SWT.PUSH);
         manageProjectsButton.setText("Manage");
         data = new FormData();
         data.left = new FormAttachment(manageProjectLabel1, HORIZONTAL_SPACE_BUTTONS);
+        data.bottom = new FormAttachment(manageProjectLabel1, VERTICAL_SPACE, SWT.CENTER);
         manageProjectsButton.setLayoutData(data);
 
         Label manageProjectLabel2 = toolkit.createLabel(bottomButtons, Messages.getString("LoginComposite.manageProjectPost")); //$NON-NLS-1$
@@ -290,6 +301,12 @@ public class LoginComposite extends Composite {
         data.left = new FormAttachment(manageProjectsButton, HORIZONTAL_SPACE_BUTTONS);
         data.bottom = new FormAttachment(manageProjectLabel1, 0, SWT.BOTTOM);
         manageProjectLabel2.setLayoutData(data);
+
+        Label manageProjectLabel3 = toolkit.createLabel(bottomButtons, Messages.getString("LoginComposite.manageProjectDetails")); //$NON-NLS-1$
+        data = new FormData();
+        formData.left = new FormAttachment(0);
+        data.top = new FormAttachment(manageProjectsButton, VERTICAL_SPACE, SWT.BOTTOM);
+        manageProjectLabel3.setLayoutData(data);
 
         fillContents();
         addListeners();
@@ -414,17 +431,6 @@ public class LoginComposite extends Composite {
             }
         });
 
-        connectionsViewer.addOpenListener(new IOpenListener() {
-
-            public void open(OpenEvent event) {
-                // Validate data
-                if (validateFields()) {
-                    populateProjectList();
-                    validateProject();
-                }
-            }
-        });
-
         ModifyListener modifyListener = new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
@@ -436,6 +442,18 @@ public class LoginComposite extends Composite {
         passwordText.addModifyListener(modifyListener);
 
         fillProjectsBtn.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                // Validate data
+                if (validateFields()) {
+                    populateProjectList();
+                    validateProject();
+                }
+            }
+        });
+
+        openProjectBtn.addSelectionListener(new SelectionAdapter() {
 
             @Override
             public void widgetSelected(SelectionEvent e) {

@@ -28,7 +28,8 @@ public enum ERepositoryImages implements IImage {
     REGISTER_WIZ("/icons/register_wiz.png"), //$NON-NLS-1$
     DELETE_PROJECT_ACTION("/icons/delete.gif"),
     PROJECT_ICON("/icons/project.gif"),
-    FOLDER_ICON("/icons/folder.gif");
+    FOLDER_ICON("/icons/folder.gif"),
+    OPEN_PROJECT_ICON("/icons/bullet_go.png");
 
     private String path;
 

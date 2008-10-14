@@ -59,6 +59,12 @@ import org.talend.repository.ui.wizards.license.LicenseWizardDialog;
  */
 public class LoginDialog extends TrayDialog {
 
+    private static final int INNER_LOGIN_COMPOSITE_WIDTH = 350;
+
+    private static final int DIALOG_HEIGHT = 278;
+
+    private static final int DIALOG_WIDTH = 215 + INNER_LOGIN_COMPOSITE_WIDTH + 1;
+
     /** The login composite. */
     private LoginComposite loginComposite;
 
@@ -77,7 +83,7 @@ public class LoginDialog extends TrayDialog {
     }
 
     protected Point getInitialSize() {
-        return getShell().computeSize(610, 250, true);
+        return getShell().computeSize(DIALOG_WIDTH, DIALOG_HEIGHT, true);
     }
 
     /**
@@ -128,7 +134,7 @@ public class LoginDialog extends TrayDialog {
 
         loginComposite = new LoginComposite(container, SWT.NONE, this);
         GridData data = new GridData(GridData.FILL_BOTH);
-        data.widthHint = 395;
+        data.widthHint = INNER_LOGIN_COMPOSITE_WIDTH;
         loginComposite.setLayoutData(data);
 
         return container;
