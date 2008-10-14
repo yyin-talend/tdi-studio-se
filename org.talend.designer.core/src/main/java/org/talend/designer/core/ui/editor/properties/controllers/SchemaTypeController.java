@@ -378,7 +378,6 @@ public class SchemaTypeController extends AbstractRepositoryController {
      * 
      * @param button
      */
-    @SuppressWarnings("deprecation")
     private void updateRepositorySchema(Button button) {
         String paramName = (String) button.getData(PARAMETER_NAME);
         String fullParamName = paramName + ":" + getRepositoryChoiceParamName();
@@ -460,7 +459,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
                         updateRepositorySchema(button);
                     } else if (modelSelect.getOptionValue() == EEditSelection.BUILDIN) {
                         // change the schema type to built in, then continue the original process
-                        executeCommand(new RepositoryChangeSchemaBuiltinCommand(elem));
+                        executeCommand(new RepositoryChangeSchemaBuiltinCommand(elem, paramName));
                         button.setData(FORCE_READ_ONLY, false);
                         stop = false;
                     } else if (modelSelect.getOptionValue() == EEditSelection.SHOW_SCHEMA) {
@@ -578,16 +577,13 @@ public class SchemaTypeController extends AbstractRepositoryController {
             }
             outputMetaCopy.setReadOnly(originaleOutputTable.isReadOnly());
 
-            for (IElementParameter elementParameter : node.getElementParameters()) {
-                if (elementParameter.getField() == EParameterFieldType.SCHEMA_TYPE) {
-                    List<IElementParameterDefaultValue> defaultValues = elementParameter.getDefaultValues();
-                    for (IElementParameterDefaultValue elementParameterDefaultValue : defaultValues) {
-                        if (elementParameterDefaultValue.getDefaultValue() instanceof MetadataTable) {
-                            MetadataTable table = (MetadataTable) elementParameterDefaultValue.getDefaultValue();
-                            outputMetaCopy.setReadOnlyColumnPosition(table.getReadOnlyColumnPosition());
-                            break;
-                        }
-                    }
+            IElementParameter schemaTypeParam = param.getChildParameters().get("SCHEMA_TYPE");
+            List<IElementParameterDefaultValue> defaultValues = schemaTypeParam.getDefaultValues();
+            for (IElementParameterDefaultValue elementParameterDefaultValue : defaultValues) {
+                if (elementParameterDefaultValue.getDefaultValue() instanceof MetadataTable) {
+                    MetadataTable table = (MetadataTable) elementParameterDefaultValue.getDefaultValue();
+                    outputMetaCopy.setReadOnlyColumnPosition(table.getReadOnlyColumnPosition());
+                    break;
                 }
             }
 
@@ -975,8 +971,11 @@ public class SchemaTypeController extends AbstractRepositoryController {
 
         private Element elem;
 
-        public RepositoryChangeSchemaBuiltinCommand(Element elem) { // , String propertyName) {
+        private String propertyName;
+
+        public RepositoryChangeSchemaBuiltinCommand(Element elem, String propertyName) {
             this.elem = elem;
+            this.propertyName = propertyName;
             setLabel(Messages.getString("PropertyChangeCommand.Label")); //$NON-NLS-1$
         }
 
@@ -984,26 +983,22 @@ public class SchemaTypeController extends AbstractRepositoryController {
         public void execute() {
             // Force redraw of Commponents propoerties
             elem.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), new Boolean(true));
-            for (IElementParameter param : elem.getElementParameters()) {
-                if (param.getField() == EParameterFieldType.SCHEMA_TYPE) {
-                    param.setRepositoryValueUsed(false);
-                    param.setReadOnly(false);
-                }
-            }
-            elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+            IElementParameter param = elem.getElementParameter(propertyName);
+            IElementParameter schemaTypeParam = param.getChildParameters().get("SCHEMA_TYPE");
+            schemaTypeParam.setRepositoryValueUsed(false);
+            schemaTypeParam.setReadOnly(false);
+            elem.setPropertyValue(param.getName() + ":SCHEMA_TYPE", EmfComponent.BUILTIN);
         }
 
         @Override
         public void undo() {
             // Force redraw of Commponents propoerties
             elem.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), new Boolean(true));
-            for (IElementParameter param : elem.getElementParameters()) {
-                if (param.getField() == EParameterFieldType.SCHEMA_TYPE) {
-                    param.setRepositoryValueUsed(true);
-                    param.setReadOnly(true);
-                }
-            }
-            elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.REPOSITORY);
+            IElementParameter param = elem.getElementParameter(propertyName);
+            IElementParameter schemaTypeParam = param.getChildParameters().get("SCHEMA_TYPE");
+            schemaTypeParam.setRepositoryValueUsed(true);
+            schemaTypeParam.setReadOnly(true);
+            elem.setPropertyValue(param.getName() + ":SCHEMA_TYPE", EmfComponent.REPOSITORY);
         }
 
     }
