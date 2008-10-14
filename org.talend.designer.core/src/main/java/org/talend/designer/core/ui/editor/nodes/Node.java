@@ -1180,8 +1180,10 @@ public class Node extends Element implements INode {
 
     public IMetadataTable getMetadataFromConnector(String connector) {
         for (IMetadataTable table : metadataList) {
-            if (table.getAttachedConnector().equals(connector)) {
-                return table;
+            if (table.getAttachedConnector()!=null) {
+                if (table.getAttachedConnector().equals(connector)) {
+                    return table;
+                }
             }
         }
         return null;
