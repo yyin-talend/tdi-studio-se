@@ -56,14 +56,11 @@ import org.talend.core.language.LanguageManager;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.IUIRefresher;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
-import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.ui.wizards.PropertiesWizard;
@@ -240,11 +237,7 @@ public class EditPropertiesAction extends AContextualAction {
                                 || node.getObjectType() == ERepositoryObjectType.PROCESS
                                 || node.getObjectType() == ERepositoryObjectType.ROUTINES
                                 || node.getObjectType() == ERepositoryObjectType.SQLPATTERNS) {
-                            IRepositoryObject repObj = node.getObject();
-                            IProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
-                            ERepositoryStatus status = repFactory.getStatus(repObj);
-                            boolean isEditable = status.isPotentiallyEditable() || status.isEditable();
-                            canWork = isEditable;
+                            canWork = true;
                         } else {
                             canWork = false;
                         }
