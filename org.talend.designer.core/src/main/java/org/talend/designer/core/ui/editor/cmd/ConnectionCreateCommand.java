@@ -157,6 +157,7 @@ public class ConnectionCreateCommand extends Command {
                     newMetadata = new MetadataTable();
                     newMetadata.setTableName(connectionName);
                     newMetadata.setLabel(connectionName);
+                    newMetadata.setAttachedConnector(connectorName);
                     if ((connecType.equals(EConnectionType.TABLE) || source.getProcess().checkValidConnectionName(connectionName))
                             && ConnectionManager.canConnectToTarget(source, null, target, source.getConnectorFromName(
                                     connectorName).getDefaultConnectionType(), connectorName, connectionName)) {
