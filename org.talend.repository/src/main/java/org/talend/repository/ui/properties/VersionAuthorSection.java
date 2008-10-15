@@ -41,6 +41,8 @@ public class VersionAuthorSection extends AbstractSection {
 
     private Text authorText;
 
+    private Text lockerText;
+
     private Button btnDown;
 
     private Button btnUp;
@@ -62,7 +64,7 @@ public class VersionAuthorSection extends AbstractSection {
         authorText.setEnabled(false);
         data = new FormData();
         data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
-        data.right = new FormAttachment(70, 0);
+        data.right = new FormAttachment(35, 0);
         data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
         authorText.setLayoutData(data);
 
@@ -72,6 +74,21 @@ public class VersionAuthorSection extends AbstractSection {
         data.right = new FormAttachment(authorText, -ITabbedPropertyConstants.HSPACE);
         data.top = new FormAttachment(authorText, 0, SWT.CENTER);
         authorLabel.setLayoutData(data);
+
+        lockerText = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
+        lockerText.setEnabled(false);
+        data = new FormData();
+        data.left = new FormAttachment(37, STANDARD_LABEL_WIDTH);
+        data.right = new FormAttachment(70, 0);
+        data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
+        lockerText.setLayoutData(data);
+
+        CLabel lockerLabel = getWidgetFactory().createCLabel(composite, Messages.getString("VersionAuthorSection.lockerLabel")); //$NON-NLS-1$
+        data = new FormData();
+        data.left = new FormAttachment(37, 0);
+        data.right = new FormAttachment(lockerText, -ITabbedPropertyConstants.HSPACE);
+        data.top = new FormAttachment(lockerText, 0, SWT.CENTER);
+        lockerLabel.setLayoutData(data);
 
         btnDown = getWidgetFactory().createButton(composite, "m", SWT.PUSH); //$NON-NLS-1$
         data = new FormData();
@@ -102,14 +119,14 @@ public class VersionAuthorSection extends AbstractSection {
         versionText = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
         versionText.setEnabled(false);
         data = new FormData();
-        data.left = new FormAttachment(authorText, STANDARD_LABEL_WIDTH);
+        data.left = new FormAttachment(lockerText, STANDARD_LABEL_WIDTH);
         data.right = new FormAttachment(btnUp, -2);
         data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
         versionText.setLayoutData(data);
 
         CLabel versionLabel = getWidgetFactory().createCLabel(composite, Messages.getString("VersionAuthorSection.versionLabel")); //$NON-NLS-1$
         data = new FormData();
-        data.left = new FormAttachment(authorText, ITabbedPropertyConstants.HSPACE * 3);
+        data.left = new FormAttachment(lockerText, ITabbedPropertyConstants.HSPACE * 3);
         data.right = new FormAttachment(versionText, -ITabbedPropertyConstants.HSPACE);
         data.top = new FormAttachment(versionText, 0, SWT.CENTER);
         versionLabel.setLayoutData(data);
@@ -128,6 +145,12 @@ public class VersionAuthorSection extends AbstractSection {
             authorText.setText(getAuthor().getLogin()); //$NON-NLS-1$
         } else {
             authorText.setText(""); //$NON-NLS-1$
+        }
+        lockerText.setText("");//$NON-NLS-1$
+        try {
+            lockerText.setText(getObject().getProperty().getItem().getState().getLocker().getLogin());
+        } catch (Exception e) {
+            // ingore null pointer exceptions
         }
 
         versionText.setText(getVersion() == null ? "" : getVersion()); //$NON-NLS-1$
@@ -173,6 +196,7 @@ public class VersionAuthorSection extends AbstractSection {
     @Override
     protected void showControl(boolean visible) {
         authorText.getParent().setVisible(visible);
+        lockerText.getParent().setVisible(visible);
     }
 
     public boolean select(Object object) {
