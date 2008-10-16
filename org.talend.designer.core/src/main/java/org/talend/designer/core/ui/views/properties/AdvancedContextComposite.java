@@ -318,7 +318,9 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
      * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#refresh()
      */
     public void refresh() {
-        getParent().layout();
+        if (!isDisposed()) {
+            getParent().layout();
+        }
     }
 
     /*
