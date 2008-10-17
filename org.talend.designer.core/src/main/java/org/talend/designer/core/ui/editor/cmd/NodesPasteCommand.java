@@ -414,8 +414,12 @@ public class NodesPasteCommand extends Command {
                         }
                         pastedNode.getElementParameter(param.getName()).setValue(newValues);
                     } else {
-                        // pastedNode.getElementParameter(param.getName()).setValue(param.getValue());
-                        pastedNode.setPropertyValue(param.getName(), param.getValue());
+                        if (param.getParentParameter() != null) {
+                            String parentName = param.getParentParameter().getName();
+                            pastedNode.setPropertyValue(parentName + ":" + param.getName(), param.getValue());
+                        } else {
+                            pastedNode.setPropertyValue(param.getName(), param.getValue());
+                        }
                     }
                 }
             }
