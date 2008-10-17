@@ -1,0 +1,322 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.IConnectionCategory
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.metadata.types.JavaTypesManager
+    org.talend.core.model.metadata.types.JavaType
+    java.util.List
+    java.util.Map
+    java.util.HashMap
+"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+List<Map<String, String>> operations = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__OPERATIONS__");
+List<Map<String, String>> groupbys = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__GROUPBYS__");
+
+%>
+// ------------
+
+java.util.Map hashAggreg_<%=cid %> = new java.util.HashMap(); 
+
+// ------------
+<%
+
+
+
+int sizeOperations = operations.size();
+
+//pretreatment opreations before aggregating
+List<String[]> funinOperations = new java.util.ArrayList<String[]>();
+boolean listFlag = false;
+boolean haveSTD_DEV = false;
+next:
+for(int i=0; i<sizeOperations; i++){
+	Map<String, String> operation = operations.get(i);
+	String fun = operation.get("FUNCTION");
+	String in = operation.get("INPUT_COLUMN");
+	if(!listFlag && fun.equals("list")){
+		listFlag = true;
+	}
+	if(!haveSTD_DEV && fun.equals("std_dev")){
+		haveSTD_DEV = true;
+	}
+	if(fun.equals("sum") || fun.equals("count")){
+		for(int j=0; j<sizeOperations; j++){
+			Map<String, String> tOperation = operations.get(j);
+			if(tOperation.get("FUNCTION").equals("avg") && tOperation.get("INPUT_COLUMN").equals(in)){
+				continue next;
+			}
+		}
+	}
+	for(int j = 0; j < i; j++){
+		Map<String, String> tOperation = operations.get(j);
+		if(tOperation.get("FUNCTION").equals(fun) && tOperation.get("INPUT_COLUMN").equals(in)){
+			continue next;
+		}
+	}
+	if(fun.equals("avg")){
+		String[] funin = new String[2];
+		funin[0]="sum";
+		funin[1]=in;
+		funinOperations.add(funin);
+		funin=new String[2];
+		funin[0]="count";
+		funin[1]=in;
+		funinOperations.add(funin);
+	}else{
+		String[] funin = new String[2];
+		funin[0]=fun;
+		funin[1]=in;
+		funinOperations.add(funin);
+	}
+}
+int sizeOps = funinOperations.size();
+if(sizeOps>0){
+//
+//end
+	if(haveSTD_DEV){
+%>
+class SD_<%=cid %> {
+
+	public double sd(Double[] data) {
+        final int n = data.length;
+        if (n < 2) {
+            return Double.NaN;
+        }
+        double d1 = 0d;
+        double d2 =0d;
+        
+        for (int i = 0; i < data.length; i++) {
+            d1 += (data[i]*data[i]);
+            d2 += data[i];
+        }
+        
+        return Math.sqrt((n*d1 - d2*d2)/n/n);
+    }
+}
+SD_<%=cid %> sd_<%=cid %> = new SD_<%=cid %>();
+<%
+	}
+%>
+
+    class OperationStruct<%=cid %>{
+
+        <%//begin
+        //
+    	for (int i = 0; i<sizeOps; i++) {
+    		String[] funin = funinOperations.get(i);
+    		if(funin[0].equals("sum")){
+                //
+                //end
+    		    %>
+    		    BigDecimal <%=funin[1] %>_sum = new BigDecimal("0.0");
+    		    <%//start
+    		    //
+    		}else if(funin[0].equals("count")){
+                //
+                //end
+    		    %>
+    		    Integer <%=funin[1] %>_count = 0;
+    		    <%//start
+    		    //
+       		}else{
+    			List<? extends IConnection> incomingConnections = node.getIncomingConnections();
+            	if (incomingConnections != null && !incomingConnections.isEmpty()) {
+            		for (IConnection conn : incomingConnections) {
+    					if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+            				IMetadataTable inMetadata = conn.getMetadataTable();
+           					for (IMetadataColumn column: inMetadata.getListColumns()) {
+                				if(column.getLabel().equals(funin[1])){
+                                    //
+                                    //end
+                				    %>                    				    
+                    				    <% if("distinct".equals(funin[0])) { %> 
+                    				    		java.util.Set <%=funin[1] %>_<%=funin[0] %> = new java.util.HashSet(); 
+                    				    <% } else if("list".equals(funin[0])) {%>
+                    				    		String <%=funin[1] %>_<%=funin[0] %> = "";
+                    				    <% } else if("list_object".equals(funin[0])) {%>
+                    				    		java.util.List <%=funin[1] %>_<%=funin[0] %> = new java.util.ArrayList();
+                    				    <% } else if("std_dev".equals(funin[0])) {%>
+                    				    		java.util.List<Double> <%=funin[1] %>_<%=funin[0] %> = new java.util.ArrayList<Double>();
+                    				    <% } else {%> 
+                    				    		<%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> <%=funin[1] %>_<%=funin[0] %>;
+                    				    <% } %>                                   
+                                    <%//start
+                                    //
+    								break;
+                				}
+    						}
+    					}
+    				}
+      			}
+    		}
+    	}
+         //
+         //end
+        %>
+    }
+
+<%//start
+//
+}
+int groupbySize = groupbys.size();
+//modify06-04 begin
+String[] groupby_type = new String[groupbySize];
+for(int i = 0; i < groupbySize; i++){
+	String columnname = groupbys.get(i).get("INPUT_COLUMN");
+	List<? extends IConnection> incomingConnections = node.getIncomingConnections();
+    if (incomingConnections != null && !incomingConnections.isEmpty()) {
+    	for (IConnection conn : incomingConnections) {
+			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+        		IMetadataTable inMetadata = conn.getMetadataTable();
+       			for (IMetadataColumn column: inMetadata.getListColumns()) {
+            		if(column.getLabel().equals(columnname)){
+						JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+						if(javaType == JavaTypesManager.BOOLEAN){
+							groupby_type[i] = "Boolean";
+						}else if(javaType == JavaTypesManager.BYTE){
+							groupby_type[i] = "Byte";
+						}else if(javaType == JavaTypesManager.BYTE_ARRAY){
+							groupby_type[i] = "byte[]";
+						}else if(javaType == JavaTypesManager.CHARACTER){
+							groupby_type[i] = "Character";
+						}else if(javaType == JavaTypesManager.DATE){
+							groupby_type[i] = "java.util.Date";
+						}else if(javaType == JavaTypesManager.DOUBLE){
+							groupby_type[i] = "Double";
+						}else if(javaType == JavaTypesManager.FLOAT){
+							groupby_type[i] = "Float";
+						}else if(javaType == JavaTypesManager.INTEGER){
+							groupby_type[i] = "Integer";
+						}else if(javaType == JavaTypesManager.LONG){
+							groupby_type[i] = "Long";
+						}else if(javaType == JavaTypesManager.SHORT){
+							groupby_type[i] = "Short";
+						}else if(javaType == JavaTypesManager.STRING){
+							groupby_type[i] = "String";
+						}else if(javaType == JavaTypesManager.OBJECT){
+							groupby_type[i] = "Object";
+						}
+						break;
+            		}
+				}
+			}
+		}
+  	}
+}
+//modify06-04 end
+
+for(int ii = 0; ii < groupbySize; ii++){
+	String input = groupbys.get(ii).get("INPUT_COLUMN");
+	for(int i = ii; i < groupbySize; i++){
+		if(i == groupbySize - 1){
+			if(sizeOps == 0){
+//
+//end
+%>java.util.Set<<%=groupby_type[i] %> <%
+//start
+//
+			}else{
+//
+//end
+%>java.util.Map<<%=groupby_type[i] %>, OperationStruct<%=cid %><%
+//start
+//
+			}
+		}else{
+//
+//end
+%>java.util.Map<<%=groupby_type[i] %>,<%
+//start
+//
+		}
+	}
+	for(int i = ii; i < groupbySize; i++){
+//
+//end
+%>><%
+//start
+//
+	}
+//
+//end
+%> hash_<%=input %>_<%=cid %> = <%
+	if(ii != 0){
+%>null;
+<%	}else{
+%>new <%
+//start
+//
+		for(int i = 0; i < groupbySize; i++){
+			if(i == groupbySize - 1){
+				if(sizeOps == 0){
+//
+//end
+%>java.util.<%
+					if(i == 0){
+%>Hash<%
+					}
+%>Set<<%=groupby_type[i] %><%
+//start
+//
+				}else{
+//
+//end
+%>java.util.<%
+					if(i == 0){
+%>Hash<%
+					}
+%>Map<<%=groupby_type[i] %>, OperationStruct<%=cid %><%
+//start
+//
+				}
+			}else{
+//
+//end
+%>java.util.<%
+				if(i == 0){
+%>Hash<%
+				}
+%>Map<<%=groupby_type[i] %>,<%
+//start
+//
+			}
+		}
+		for(int i = 0; i < groupbySize; i++){
+//
+//end
+%>><%
+//start
+//
+		}
+//
+//end
+%>();
+<%
+	}
+}
+if(sizeOps>0){
+//
+//end%>
+OperationStruct<%=cid %> operation_result_<%=cid %> = null;
+<%//start
+//
+}
+//
+//end%>
+<%
+if(listFlag){
+%>
+String delimiter_<%=cid %> = <%=ElementParameterParser.getValue(node, "__LIST_DELIMITER__") %>;
+<%
+}
+%>
