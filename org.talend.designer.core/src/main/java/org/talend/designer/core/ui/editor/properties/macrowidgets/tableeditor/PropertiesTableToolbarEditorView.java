@@ -34,7 +34,9 @@ import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.designer.core.ui.editor.cmd.PropertyTablePasteCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.controllers.TableController;
@@ -122,6 +124,20 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
 
                 Element element = tableEditorModel.getElement();
                 if (element != null && element instanceof Node) {
+                    IElementParameter param = tableEditorModel.getElemParameter();
+                    String paramColumnsName = "COLUMN";// default name
+                    String paramSizeName = "SIZE"; // default name
+                    for (Object object : param.getListItemsValue()) {
+                        if (object instanceof IElementParameter) {
+                            IElementParameter tableParameter = (IElementParameter) object;
+                            if (tableParameter.getField().equals(EParameterFieldType.COLUMN_LIST)) {
+                                paramColumnsName = tableParameter.getName();
+                            }
+                            if (tableParameter.getContext() != null && tableParameter.getContext().equals("LENGTH")) {
+                                paramSizeName = tableParameter.getName();
+                            }
+                        }
+                    }
                     Node node = (Node) element;
                     if (node.getMetadataList() != null && !node.getMetadataList().isEmpty()) {
                         IMetadataTable metadata = node.getMetadataList().get(0);
@@ -136,12 +152,12 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
                                 }
 
                                 Map mapObject = (Map) entry;
-                                if (mapObject.containsKey("COLUMN")) {
-                                    mapObject.put("COLUMN", column.getLabel());
+                                if (mapObject.containsKey(paramColumnsName)) {
+                                    mapObject.put(paramColumnsName, column.getLabel());
                                 }
-                                if (mapObject.containsKey("SIZE")) {
+                                if (mapObject.containsKey(paramSizeName)) {
                                     if (column.getLength() != null) {
-                                        mapObject.put("SIZE", Integer.toString(column.getLength()));
+                                        mapObject.put(paramSizeName, Integer.toString(column.getLength()));
                                     }
                                 }
                                 objects.add(entry);
