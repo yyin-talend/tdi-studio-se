@@ -57,6 +57,7 @@ import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.IUIRefresher;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -132,7 +133,16 @@ public class EditPropertiesAction extends AContextualAction {
             IProject project = javaProject.getProject();
             IFolder srcFolder = project.getFolder(JavaUtils.JAVA_SRC_DIRECTORY);
             IPackageFragmentRoot root = javaProject.getPackageFragmentRoot(srcFolder);
-            IPackageFragment routinesPkg = root.getPackageFragment(JavaUtils.JAVA_ROUTINES_DIRECTORY);
+            String projectName;
+            if (node.getRoot() != null) {
+                projectName = node.getRoot().getProject().getTechnicalLabel().toLowerCase();
+            } else {
+                ProjectManager pManager = ProjectManager.getInstance();
+                org.talend.core.model.properties.Project p = pManager.getProject(node.getObject().getProperty().getItem());
+                String projectFolderName = p.getTechnicalLabel();
+                projectName = projectFolderName.toLowerCase();
+            }
+            IPackageFragment routinesPkg = root.getPackageFragment(JavaUtils.JAVA_ROUTINES_DIRECTORY + "." + projectName);
 
             ICompilationUnit unit = routinesPkg.getCompilationUnit(originalName + SuffixConstants.SUFFIX_STRING_java);
             if (unit == null) {
