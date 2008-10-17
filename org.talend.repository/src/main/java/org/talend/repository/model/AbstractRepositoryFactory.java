@@ -196,8 +196,8 @@ public abstract class AbstractRepositoryFactory implements IRepositoryFactory {
 		this.displayToUser = displayToUser;
 	}
 
-    public Project beforeLogon(Project project) throws PersistenceException {
-        return project;
+    public void beforeLogon(Project project) throws PersistenceException {
+        // do nothing by default
     }
     
     public boolean isUserReadOnlyOnCurrentProject() {

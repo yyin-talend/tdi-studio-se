@@ -1377,9 +1377,11 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      */
     public void logOnProject(Project project, IProgressMonitor monitorWrap) throws LoginException, PersistenceException,
             OperationCanceledException {
+        getRepositoryContext().setProject(project);
+
         monitorWrap.setTaskName(Messages.getString("ProxyRepositoryFactory.initializeProjectConnection")); //$NON-NLS-1$
         monitorWrap.worked(1);
-        project = this.repositoryFactoryFromProvider.beforeLogon(project);
+        this.repositoryFactoryFromProvider.beforeLogon(project);
         
         IMigrationToolService service = (IMigrationToolService) GlobalServiceRegister.getDefault().getService(
                 IMigrationToolService.class);
@@ -1387,7 +1389,6 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
 
         monitorWrap.setTaskName(Messages.getString("ProxyRepositoryFactory.logonInProgress")); //$NON-NLS-1$
         monitorWrap.worked(1);
-        getRepositoryContext().setProject(project);
         LanguageManager.reset();
         this.repositoryFactoryFromProvider.logOnProject(project);
 
