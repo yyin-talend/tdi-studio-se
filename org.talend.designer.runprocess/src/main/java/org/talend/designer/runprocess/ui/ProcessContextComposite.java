@@ -165,7 +165,9 @@ public class ProcessContextComposite extends Composite {
             contextListener = new IContextListener() {
 
                 public void contextsChanged() {
-                    getInformationsFromContextManager(process.getContextManager());
+                    if (!ProcessContextComposite.this.isDisposed()) {
+                        getInformationsFromContextManager(process.getContextManager());
+                    }
                     // contextComboViewer.refresh();
 
                 }
@@ -279,7 +281,7 @@ public class ProcessContextComposite extends Composite {
         } else {
             if (context.isConfirmationNeeded()) {
                 continueLaunch = MessageDialog.openQuestion(shell, Messages.getString("ProcessComposite.confirmTitle"), //$NON-NLS-1$
-                        Messages.getString("ProcessComposite.confirmText", context.getName())); //$NON-NLS-1$ //$NON-NLS-2$
+                        Messages.getString("ProcessComposite.confirmText", context.getName())); //$NON-NLS-1$ 
             }
 
             updateDefaultValueForListTypeParameter(context.getContextParameterList());
