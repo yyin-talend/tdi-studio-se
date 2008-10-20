@@ -1,0 +1,388 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.process.IConnection    
+    org.talend.core.model.process.IConnectionCategory
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.util.Map
+    org.talend.core.model.metadata.types.JavaTypesManager
+	org.talend.core.model.metadata.types.JavaType
+"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String origin = ElementParameterParser.getValue(node, "__ORIGIN__");
+String cid = origin;
+
+List<IMetadataTable> mestadataTableListOut = node.getMetadataList();
+
+if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_AggR_600
+    IMetadataTable metadataTableOutput = mestadataTableListOut.get(0);
+    if (metadataTableOutput!=null) { // T_AggR_601
+        List<Map<String, String>> operations = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__OPERATIONS__");
+        List<Map<String, String>> groupbys = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__GROUPBYS__");
+		int sizeOperations = operations.size();
+		int sizeGroupbys = groupbys.size();
+		
+        String[] groupby_type = new String[sizeGroupbys];
+        for(int i = 0; i < sizeGroupbys; i++){ // T_AggR_602
+        	String columnname = groupbys.get(i).get("INPUT_COLUMN");
+        	List<? extends IConnection> incomingConnections = node.getIncomingConnections();
+            if (incomingConnections != null && !incomingConnections.isEmpty()) {
+            	for (IConnection conn : incomingConnections) {
+        			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+                		IMetadataTable inMetadata = conn.getMetadataTable();
+               			for (IMetadataColumn column: inMetadata.getListColumns()) {
+                    		if(column.getLabel().equals(columnname)){
+        						JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+        						if(javaType == JavaTypesManager.BOOLEAN){
+        							groupby_type[i] = "Boolean";
+        						}else if(javaType == JavaTypesManager.BYTE){
+        							groupby_type[i] = "Byte";
+        						}else if(javaType == JavaTypesManager.BYTE_ARRAY){
+        							groupby_type[i] = "byte[]";
+        						}else if(javaType == JavaTypesManager.CHARACTER){
+        							groupby_type[i] = "Character";
+        						}else if(javaType == JavaTypesManager.DATE){
+        							groupby_type[i] = "java.util.Date";
+        						}else if(javaType == JavaTypesManager.DOUBLE){
+        							groupby_type[i] = "Double";
+        						}else if(javaType == JavaTypesManager.FLOAT){
+        							groupby_type[i] = "Float";
+        						}else if(javaType == JavaTypesManager.INTEGER){
+        							groupby_type[i] = "Integer";
+        						}else if(javaType == JavaTypesManager.LONG){
+        							groupby_type[i] = "Long";
+        						}else if(javaType == JavaTypesManager.SHORT){
+        							groupby_type[i] = "Short";
+        						}else if(javaType == JavaTypesManager.STRING){
+        							groupby_type[i] = "String";
+        						}else if(javaType == JavaTypesManager.OBJECT){
+        							groupby_type[i] = "Object";
+        						}
+        						break;
+                    		}
+        				}
+        			}
+        		}
+          	}
+        } // T_AggR_602
+		
+		%>
+        nb_line_<%=cid %> = 0;
+        <%
+
+
+		IConnection outputConn = null;
+		List< ? extends IConnection> outConns = node.getOutgoingSortedConnections();
+		if (outConns!=null) {
+			if (outConns.size()>0) {
+				IConnection conn = outConns.get(0);
+				if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+					outputConn = conn;    					
+				}
+			}
+		}
+
+
+		List<IMetadataColumn> outputColumns = metadataTableOutput.getListColumns();
+		int sizeColumns = outputColumns.size();
+		if(sizeOperations > 0 || sizeGroupbys > 0){ // T_AggR_603
+
+    			next_column:
+    			for(int c = 0; c < sizeColumns; c++){ // T_AggR_604
+    				IMetadataColumn outputColumn = outputColumns.get(c);
+    				String outputColumnName = outputColumn.getLabel();
+    				String typeToGenerate = JavaTypesManager.getTypeToGenerate(outputColumn.getTalendType(), outputColumn.isNullable());
+    				String typeName = JavaTypesManager.getTypeToGenerate(outputColumn.getTalendType(), false);
+    				JavaType javaType = JavaTypesManager.getJavaTypeFromId(outputColumn.getTalendType());
+    				String patternValue = outputColumn.getPattern() == null || outputColumn.getPattern().trim().length() == 0 ? null : outputColumn.getPattern();
+    				
+    				for(int g = 0; g < sizeGroupbys; g++){ // T_AggR_605
+    					Map<String, String> groupby = groupbys.get(g);
+    					String inputColumn = groupby.get("INPUT_COLUMN");
+    					String outputGroupColumn = groupby.get("OUTPUT_COLUMN");
+    					if(outputGroupColumn.equals(outputColumnName)){ // T_AggR_606
+    						Boolean sameType = false;
+                			
+    						List<? extends IConnection> incomingConnections = node.getIncomingConnections();
+            				if (incomingConnections != null && !incomingConnections.isEmpty()) {
+            					loop:
+            					for (IConnection conn : incomingConnections) {
+    								if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+                						IMetadataTable inMetadata = conn.getMetadataTable();
+                						for (IMetadataColumn inColumn: inMetadata.getListColumns()) {
+                							if(inColumn.getLabel().equals(inputColumn)){
+                								sameType = (JavaTypesManager.getJavaTypeFromId(inColumn.getTalendType()) == javaType);
+                								break loop;
+                							}
+                						}
+                					}
+                				}
+            				}
+            				if(sameType){
+            				    %>
+            				    <%= outputConn.getName() %>.<%=outputGroupColumn %> = aggregated_row_<%=cid %>.<%=inputColumn %>;
+            				    <%  					
+            				}else{
+            				    %>
+            				    String s_<%=inputColumn %>_<%=outputGroupColumn %>_<%=cid %> = String.valueOf(aggregated_row_<%=cid %>.<%=inputColumn %>);
+            				    <%= outputConn.getName() %>.<%=outputGroupColumn %> = <%
+    							if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
+    								%>s_<%=inputColumn %>_<%=outputGroupColumn %>_<%=cid %><%
+    							}else if(javaType == JavaTypesManager.BYTE_ARRAY){
+    								%>s_<%=inputColumn %>_<%=outputGroupColumn %>_<%=cid %>.getBytes()<%
+    							} else if(javaType == JavaTypesManager.DATE) {
+    								%>s_<%=inputColumn %>_<%=outputGroupColumn %>_<%=cid %>.equals("null") ? null : ParserUtils.parseTo_Date(s_<%=inputColumn %>_<%=outputGroupColumn %>_<%=cid %>, <%= patternValue %>)<%
+    							} else {
+    								%>ParserUtils.parseTo_<%= typeToGenerate %>(s_<%=inputColumn %>_<%=outputGroupColumn %>_<%=cid %>)<%
+    							}
+            				    %>;
+            				    <%
+    						}
+    						continue next_column;
+    					} // T_AggR_606
+    				} // T_AggR_605
+				
+    				for(int o = 0; o < sizeOperations; o++){ // T_AggR_615
+    					Map<String, String> operation = operations.get(o);
+                		String function = operation.get("FUNCTION");
+                		String outOperation = operation.get("OUTPUT_COLUMN");
+                		String inOperation = operation.get("INPUT_COLUMN");
+                		if(outOperation.equals(outputColumnName)){ // T_AggR_616
+                			boolean sameType = false;
+                			
+    						List<? extends IConnection> incomingConnections = node.getIncomingConnections();
+            				if (incomingConnections != null && !incomingConnections.isEmpty()) { // T_AggR_627
+            					loop:
+            					for (IConnection conn : incomingConnections) {
+            						IMetadataTable inMetadata = conn.getMetadataTable();
+            						for (IMetadataColumn inColumn: inMetadata.getListColumns()) {
+            							if(inColumn.getLabel().equals(outOperation)){
+            								if(function.equals("first")||function.equals("last")||function.equals("min")||function.equals("max")){
+            									sameType = (JavaTypesManager.getJavaTypeFromId(inColumn.getTalendType()) == javaType);
+            								}else if(function.equals("avg")||function.equals("sum")){
+                                                sameType = (typeToGenerate.equals("byte") || typeToGenerate.equals("short") || typeToGenerate.equals("int") || typeToGenerate.equals("long") || typeToGenerate.equals("float") || typeToGenerate.equals("double") || 
+                                                        typeToGenerate.equals("Byte") || typeToGenerate.equals("Short") || typeToGenerate.equals("Integer") || typeToGenerate.equals("Long") || typeToGenerate.equals("Float") || typeToGenerate.equals("Double"));
+            								}else{
+            									sameType = (typeToGenerate.equals("int")||typeToGenerate.equals("long"));
+            								}
+            								break loop;
+            							}
+            						}
+                				}
+            				} // T_AggR_627
+            				
+            				if(function.equals("std_dev")|| function.equals("list_object")){ //force to sameType
+            					sameType = true;
+            				}
+                			if(function.equals("avg")){ // T_AggR_617
+                				int pre = 10;
+                       		 	Integer precision = outputColumn.getPrecision();
+                           		 if(precision!=null && precision!=0) { 
+                           		 	pre = precision;
+                           		 }               				
+                			    %>
+                			    double <%=outOperation %>_avg_temp = 0;
+                                if(operation_result_<%=cid %>.<%=inOperation %>_count > 0){
+    									<%=outOperation %>_avg_temp = operation_result_<%=cid %>.<%=inOperation %>_sum.divide(BigDecimal.valueOf(operation_result_<%=cid %>.<%=inOperation %>_count), <%=pre %>, BigDecimal.ROUND_HALF_UP).doubleValue();                                
+                                }
+                                <%
+                                if(sameType){
+                                    %>
+                                      <%= outputConn.getName() %>.<%=outOperation %> = (<%=typeName%>)<%=outOperation %>_avg_temp;                                 
+                                    <%
+                                }else{
+                                    %>
+                                    String temps<%=outOperation %> = String.valueOf(<%if(javaType == JavaTypesManager.INTEGER || javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.CHARACTER){%>(<%=typeToGenerate %>)<%}%><%=outOperation %>_avg_temp);
+                                <%
+                                }
+                                %>
+                                <%
+                			}  // T_AggR_617
+                			else if(function.equals("sum")) { // T_AggR_618
+                				int pre = 10;
+                       		 	Integer precision = outputColumn.getPrecision();
+                           		 if(precision!=null && precision!=0) { 
+                           		 	pre = precision;
+                           		 }                 			
+    							if(sameType){ // T_AggR_668                     
+
+	                           		 if(javaType == JavaTypesManager.BIGDECIMAL) {
+	                                	%>
+	                                	<%= outputConn.getName() %>.<%=outOperation %> = operation_result_<%=cid %>.<%=inOperation %>_<%=function %>.setScale(<%=pre %>, java.math.BigDecimal.ROUND_HALF_UP);
+	                                	<%
+	                                } else {
+	                                	%>
+	                                    <%= outputConn.getName() %>.<%=outOperation %> = (<%=typeName%>)aggregated_row_<%=cid %>.<%=inOperation %>_<%=function %>;
+	                                	<%
+	                                }
+                                  
+    							} // T_AggR_668
+    							else { // T_AggR_669
+    							    %>
+    							    String temps<%=outOperation %> = String.valueOf(<%if((javaType == JavaTypesManager.INTEGER || javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.CHARACTER)){%>(<%=typeToGenerate %>)<%}%>operation_result_<%=cid %>.<%=inOperation %>_<%=function %>);//??
+    							    <%
+    							} // T_AggR_669
+    							%>
+    						<%
+    						} // T_AggR_618 
+    						else if(function.equals("list_object")) { // T_AggR_619
+    							%>
+    								<%= outputConn.getName() %>.<%=outOperation %> = operation_result_<%=cid %>.<%=inOperation %>_<%=function %>;
+    						<% 
+    						}  // T_AggR_619
+    						else if(function.equals("std_dev")) { // T_AggR_620
+    						
+    							if(javaType == JavaTypesManager.BYTE
+    								 || javaType == JavaTypesManager.SHORT
+    								 || javaType == JavaTypesManager.CHARACTER
+    								 || javaType == JavaTypesManager.INTEGER
+    								 || javaType == JavaTypesManager.LONG
+    								 || javaType == JavaTypesManager.FLOAT
+    								 || javaType == JavaTypesManager.DOUBLE
+    							){ // T_AggR_621
+    								%>
+    								<%= outputConn.getName() %>.<%=outOperation %> = (<%=typeName%>)sd_<%=cid %>.sd(operation_result_<%=cid %>.<%=inOperation %>_<%=function %>.toArray(new Double[0]));
+    								<% 		
+    							} // T_AggR_621
+    							
+    							else if(
+    								javaType == JavaTypesManager.STRING
+    								 || javaType == JavaTypesManager.OBJECT
+    							){ // T_AggR_622
+									%><%= outputConn.getName() %>.<%=outOperation %> = String.valueOf(sd_<%=cid %>.sd(operation_result_<%=cid %>.<%=inOperation %>_<%=function %>.toArray(new Double[0])));
+									<%
+    							} // T_AggR_622
+    							
+    							else { // T_AggR_623
+									%>
+									
+									if(true){
+										throw new RuntimeException("Output column's type is not applicable for standard deviation result.");
+									}
+									
+									<%
+    							} // T_AggR_623
+    							
+    						} // T_AggR_620
+    						
+    						else if(function.equals("distinct")) { // T_AggR_624
+    							
+    							if(sameType){
+    							%>
+    								<%= outputConn.getName() %>.<%=outOperation %> = operation_result_<%=cid %>.<%=inOperation %>_<%=function %>.size();<%
+    							}
+    							else{
+    							    %>
+    							    String temps<%=outOperation %> = String.valueOf(operation_result_<%=cid %>.<%=inOperation %>_<%=function %>.size());//??
+    							    <%
+    							}
+    						}  // T_AggR_624
+    						
+    						else { // T_AggR_636
+    							
+    							if(sameType){
+                                        %>
+                                        <%= outputConn.getName() %>.<%=outOperation %> = operation_result_<%=cid %>.<%=inOperation %>_<%=function %>;
+                                <%}else{
+    							    %>
+    							    String temps<%=outOperation %> = String.valueOf(operation_result_<%=cid %>.<%=inOperation %>_<%=function %>);//??
+    							    <%
+    							}
+    							
+    						} // T_AggR_636
+
+
+                			if(!sameType){ // T_AggR_640
+                			    %>
+                			    if(temps<%=outOperation %>.length() > 0) { // G_AggR_641
+                			        <%
+    								
+            			            if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
+    								
+            			                %>
+            			                <%= outputConn.getName() %>.<%=outOperation %> = temps<%=outOperation %>;
+            			                <%
+    								
+            			            } else if(javaType == JavaTypesManager.BYTE_ARRAY) {
+            			            
+            			                %>
+            			                <%= outputConn.getName() %>.<%=outOperation %> = temps<%=outOperation %>.getBytes();
+            			                <%
+            			                
+            			            } else if(javaType == JavaTypesManager.DATE) {
+            			                
+            			                %>
+            			                <%= outputConn.getName() %>.<%=outOperation %> = ParserUtils.parseTo_Date(temps<%=outOperation %>, <%= patternValue %>);
+            			                <%
+    								
+            			            }else{
+    								
+            			                
+            			                %>
+    								    <%= outputConn.getName() %>.<%=outOperation %> = ParserUtils.parseTo_<%= typeToGenerate %>(temps<%=outOperation %>);
+    								    <%
+    								    
+            			            }
+    								
+                			    %>					
+                				} // G_AggR_641
+								else { // G_AggR_642
+                			 	<%
+        							
+        							String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, outputColumn.getDefault());
+        							if(defaultValue == null) {
+            							
+        								%>
+        								throw new RuntimeException("Value is empty for column : '<%= outputColumn.getLabel() %>', value is invalid or this column should be nullable or have a default value.");
+        								<%
+        								
+        							} else {
+        							    
+        							    %>
+        							    <%= outputConn.getName() %>.<%=outOperation %> = <%=defaultValue%>;
+        							    <%
+        							    
+        							}
+								%>
+								} // T_AggR_642
+								<%        							
+    						
+                            } // T_AggR_640
+                			
+                			continue next_column;
+                			
+                		} // T_AggR_616
+                		
+                	
+                    if(javaType == JavaTypesManager.STRING){
+                        %>
+                        <%= outputConn.getName() %>.<%=outputColumnName %> = "";/*empty string for String value*/
+                        <%
+                    }
+                	
+                } // T_AggR_615
+    		
+    		} // T_AggR_604
+			%>
+            //in the deepest end
+            nb_line_<%=cid %>++;
+            
+            <%
+
+		} // T_AggR_603
+
+		%>
+        //globalMap.put("<%=origin %>",result_list_<%=cid %>);
+        globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
+        <%
+	} // T_AggR_601
+} // T_AggR_600
+%>

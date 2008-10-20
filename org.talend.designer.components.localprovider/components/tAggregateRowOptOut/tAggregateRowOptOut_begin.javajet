@@ -18,7 +18,9 @@ imports="
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
-String cid = node.getUniqueName();
+String origin = ElementParameterParser.getValue(node, "__DESTINATION__");
+String cid = origin;
+
 List<Map<String, String>> operations = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__OPERATIONS__");
 List<Map<String, String>> groupbys = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__GROUPBYS__");
 
@@ -30,6 +32,9 @@ java.util.Map hashAggreg_<%=cid %> = new java.util.HashMap();
 // ------------
 <%
 
+int FUNCTION = 0;
+int INPUT_COLUMN = 1;
+int IGNORE_NULL = 2;
 
 
 int sizeOperations = operations.size();
@@ -65,258 +70,239 @@ for(int i=0; i<sizeOperations; i++){
 	}
 	if(fun.equals("avg")){
 		String[] funin = new String[2];
-		funin[0]="sum";
-		funin[1]=in;
+		funin[FUNCTION]="sum";
+		funin[INPUT_COLUMN]=in;
 		funinOperations.add(funin);
-		funin=new String[2];
-		funin[0]="count";
-		funin[1]=in;
+		funin=new String[IGNORE_NULL];
+		funin[FUNCTION]="count";
+		funin[INPUT_COLUMN]=in;
 		funinOperations.add(funin);
 	}else{
 		String[] funin = new String[2];
-		funin[0]=fun;
-		funin[1]=in;
+		funin[FUNCTION]=fun;
+		funin[INPUT_COLUMN]=in;
 		funinOperations.add(funin);
 	}
 }
+
+java.util.Map<String,IMetadataColumn> keysColumns = new java.util.HashMap<String,IMetadataColumn>();
+java.util.Map<String,IMetadataColumn> valuesColumns = new java.util.HashMap<String,IMetadataColumn>();
+IMetadataTable inputMetadataTable = null;
+java.util.List<IMetadataColumn> inputColumns = null;
+
 int sizeOps = funinOperations.size();
-if(sizeOps>0){
-//
-//end
-	if(haveSTD_DEV){
-%>
-class SD_<%=cid %> {
 
-	public double sd(Double[] data) {
-        final int n = data.length;
-        if (n < 2) {
-            return Double.NaN;
-        }
-        double d1 = 0d;
-        double d2 =0d;
-        
-        for (int i = 0; i < data.length; i++) {
-            d1 += (data[i]*data[i]);
-            d2 += data[i];
-        }
-        
-        return Math.sqrt((n*d1 - d2*d2)/n/n);
-    }
-}
-SD_<%=cid %> sd_<%=cid %> = new SD_<%=cid %>();
-<%
+List<? extends IConnection> incomingConnections = node.getIncomingConnections();
+if (incomingConnections != null && !incomingConnections.isEmpty()) {
+	for (IConnection conn : incomingConnections) {
+		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+			inputMetadataTable = conn.getMetadataTable();
+			inputColumns = inputMetadataTable.getListColumns();
+			break;
+		}
 	}
-%>
+}
 
-    class OperationStruct<%=cid %>{
 
-        <%//begin
-        //
-    	for (int i = 0; i<sizeOps; i++) {
+	int groupbySize = groupbys.size();
+	//modify06-04 begin
+	String[] groupby_type = new String[groupbySize];
+
+	if(inputColumns != null) { // T_AggR_144
+		for (IMetadataColumn column: inputMetadataTable.getListColumns()) { // T_AggR_145
+
+			for(int i = 0; i < groupbySize; i++){ // T_AggR_113
+				String columnname = groupbys.get(i).get("INPUT_COLUMN");
+				if(column.getLabel().equals(columnname)){ // T_AggR_114
+					keysColumns.put(columnname, column);
+            	} // T_AggR_114
+			} // T_AggR_113
+					
+			for(int i = 0; i < sizeOperations; i++){ // T_AggR_213
+				String columnname = operations.get(i).get("INPUT_COLUMN");
+            	if(column.getLabel().equals(columnname)){ // T_AggR_214
+           			valuesColumns.put(columnname, column);
+           		} // T_AggR_214
+			} // T_AggR_213
+
+		} // T_AggR_145
+	} // T_AggR_144
+	//modify06-04 end
+
+
+if(sizeOps>0){ // T_AggR_114
+
+	if(haveSTD_DEV){ // T_AggR_115
+	%>
+
+	class SD_<%=cid %> { // G_AggR_144
+
+		public double sd(Double[] data) {
+	        final int n = data.length;
+        	if (n < 2) {
+	            return Double.NaN;
+        	}
+        	double d1 = 0d;
+        	double d2 =0d;
+	        
+	        for (int i = 0; i < data.length; i++) {
+            	d1 += (data[i]*data[i]);
+            	d2 += data[i];
+        	}
+        
+	        return Math.sqrt((n*d1 - d2*d2)/n/n);
+	    }
+	} // G_AggR_144
+
+	SD_<%=cid %> sd_<%=cid %> = new SD_<%=cid %>();
+	
+	<%
+	}// T_AggR_115
+
+	%>
+	class AggOperationStruct_<%=cid %> { // G_AggR_100
+
+		private static final int DEFAULT_HASHCODE = 1;
+	    private static final int PRIME = 31;
+	    private int hashCode = DEFAULT_HASHCODE;
+	    public boolean hashCodeDirty = true;
+
+        <%
+        
+		for (IMetadataColumn column: inputMetadataTable.getListColumns()) { // G_AggR_143
+			if(keysColumns.containsKey(column.getLabel())){
+				%>
+				<%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> <%=column.getLabel() %>;<%
+				
+			}
+		} // G_AggR_143
+        
+        
+    	for (int i = 0; i<sizeOps; i++) { // T_AggR_131
     		String[] funin = funinOperations.get(i);
-    		if(funin[0].equals("sum")){
-                //
-                //end
-    		    %>
-    		    BigDecimal <%=funin[1] %>_sum = new BigDecimal("0.0");
-    		    <%//start
-    		    //
-    		}else if(funin[0].equals("count")){
-                //
-                //end
-    		    %>
-    		    Integer <%=funin[1] %>_count = 0;
-    		    <%//start
-    		    //
-       		}else{
-    			List<? extends IConnection> incomingConnections = node.getIncomingConnections();
-            	if (incomingConnections != null && !incomingConnections.isEmpty()) {
-            		for (IConnection conn : incomingConnections) {
-    					if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-            				IMetadataTable inMetadata = conn.getMetadataTable();
-           					for (IMetadataColumn column: inMetadata.getListColumns()) {
-                				if(column.getLabel().equals(funin[1])){
-                                    //
-                                    //end
-                				    %>                    				    
-                    				    <% if("distinct".equals(funin[0])) { %> 
-                    				    		java.util.Set <%=funin[1] %>_<%=funin[0] %> = new java.util.HashSet(); 
-                    				    <% } else if("list".equals(funin[0])) {%>
-                    				    		String <%=funin[1] %>_<%=funin[0] %> = "";
-                    				    <% } else if("list_object".equals(funin[0])) {%>
-                    				    		java.util.List <%=funin[1] %>_<%=funin[0] %> = new java.util.ArrayList();
-                    				    <% } else if("std_dev".equals(funin[0])) {%>
-                    				    		java.util.List<Double> <%=funin[1] %>_<%=funin[0] %> = new java.util.ArrayList<Double>();
-                    				    <% } else {%> 
-                    				    		<%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> <%=funin[1] %>_<%=funin[0] %>;
-                    				    <% } %>                                   
-                                    <%//start
-                                    //
-    								break;
-                				}
-    						}
-    					}
-    				}
-      			}
-    		}
-    	}
-         //
-         //end
+    		if(inputColumns != null) { // T_AggR_132
+         		for (IMetadataColumn column: inputColumns) { // T_AggR_135
+               		if(column.getLabel().equals(funin[INPUT_COLUMN])){ // T_AggR_136
+               		%>
+    					<% if(funin[FUNCTION].equals("sum") && column.getTalendType().equals("BigDecimal")){%>
+    		   				BigDecimal <%=funin[INPUT_COLUMN] %>_sum = new BigDecimal("0.0");
+    		   				
+    		   			<% } else if(funin[FUNCTION].equals("count")){%>
+						    int <%=funin[INPUT_COLUMN] %>_count = 0;
+						    
+                   		<% } else if("distinct".equals(funin[FUNCTION])) { %> 
+                   			java.util.Set <%=funin[INPUT_COLUMN] %>_<%=funin[FUNCTION] %> = new java.util.HashSet();
+                   			 
+                   		<% } else if("list".equals(funin[FUNCTION])) {%>
+                   			String <%=funin[INPUT_COLUMN] %>_<%=funin[FUNCTION] %> = "";
+                   			
+                   		<% } else if("list_object".equals(funin[FUNCTION])) {%>
+                   			java.util.List <%=funin[INPUT_COLUMN] %>_<%=funin[FUNCTION] %> = new java.util.ArrayList();
+                   			
+                   		<% } else if("std_dev".equals(funin[FUNCTION])) {%>
+                   			java.util.List<Double> <%=funin[INPUT_COLUMN] %>_<%=funin[FUNCTION] %> = new java.util.ArrayList<Double>();
+                   			
+                   		<% } else {%> 
+                   			<%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> <%=funin[INPUT_COLUMN] %>_<%=funin[FUNCTION] %>;
+                   		<% } %>                                   
+                          <%
+                                   break;
+               		} // T_AggR_136
+    			} // T_AggR_135
+    		} // T_AggR_132
+    	} // T_AggR_131
         %>
-    }
-
-<%//start
-//
-}
-int groupbySize = groupbys.size();
-//modify06-04 begin
-String[] groupby_type = new String[groupbySize];
-for(int i = 0; i < groupbySize; i++){
-	String columnname = groupbys.get(i).get("INPUT_COLUMN");
-	List<? extends IConnection> incomingConnections = node.getIncomingConnections();
-    if (incomingConnections != null && !incomingConnections.isEmpty()) {
-    	for (IConnection conn : incomingConnections) {
-			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-        		IMetadataTable inMetadata = conn.getMetadataTable();
-       			for (IMetadataColumn column: inMetadata.getListColumns()) {
-            		if(column.getLabel().equals(columnname)){
-						JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-						if(javaType == JavaTypesManager.BOOLEAN){
-							groupby_type[i] = "Boolean";
-						}else if(javaType == JavaTypesManager.BYTE){
-							groupby_type[i] = "Byte";
-						}else if(javaType == JavaTypesManager.BYTE_ARRAY){
-							groupby_type[i] = "byte[]";
-						}else if(javaType == JavaTypesManager.CHARACTER){
-							groupby_type[i] = "Character";
-						}else if(javaType == JavaTypesManager.DATE){
-							groupby_type[i] = "java.util.Date";
-						}else if(javaType == JavaTypesManager.DOUBLE){
-							groupby_type[i] = "Double";
-						}else if(javaType == JavaTypesManager.FLOAT){
-							groupby_type[i] = "Float";
-						}else if(javaType == JavaTypesManager.INTEGER){
-							groupby_type[i] = "Integer";
-						}else if(javaType == JavaTypesManager.LONG){
-							groupby_type[i] = "Long";
-						}else if(javaType == JavaTypesManager.SHORT){
-							groupby_type[i] = "Short";
-						}else if(javaType == JavaTypesManager.STRING){
-							groupby_type[i] = "String";
-						}else if(javaType == JavaTypesManager.OBJECT){
-							groupby_type[i] = "Object";
+        
+        
+    @Override
+	public int hashCode() {
+		if (this.hashCodeDirty) {
+			final int prime = PRIME;
+			int result = DEFAULT_HASHCODE;
+	<%
+		if (inputMetadataTable !=null) {
+			for (IMetadataColumn column: inputMetadataTable.getListColumns()) {
+				if (keysColumns.containsKey(column.getLabel())) {
+					if (JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable())) {
+					
+					 	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+					 	if("boolean".equals(typeToGenerate)) {
+						%>
+		        			result = prime * result + (this.<%=column.getLabel() %> ? 1231 : 1237);
+						<%
+						} else {	
+						%>
+							result = prime * result + (int) this.<%=column.getLabel() %>;
+						<%
 						}
-						break;
-            		}
+					} else {
+					%>
+						result = prime * result + ((this.<%=column.getLabel() %> == null) ? 0 : this.<%=column.getLabel() %>.hashCode());
+					<%
+					}
 				}
 			}
 		}
-  	}
-}
-//modify06-04 end
+    %>
+    		this.hashCode = result;
+    		this.hashCodeDirty = false;		
+		}
+		return this.hashCode;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+		final AggOperationStruct_<%=cid %> other = (AggOperationStruct_<%=cid %>) obj;
+		<%	
+		if (inputMetadataTable !=null) {
+			for (IMetadataColumn column: inputMetadataTable.getListColumns()) {
+				if (keysColumns.containsKey(column.getLabel())) {
+					if (JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable())) {
+				%>
+					if (this.<%=column.getLabel() %> != other.<%=column.getLabel() %>) 
+						return false;
+				<%
+					} else {
+				%>
+					if (this.<%=column.getLabel() %> == null) {
+						if (other.<%=column.getLabel() %> != null) 
+							return false;
+					} else if (!this.<%=column.getLabel() %>.equals(other.<%=column.getLabel() %>)) 
+						return false;
+				<%
+					}
+				}
+			}
+    	}
+    	%>
+    	
+		return true;
+      }
+        
+	} // G_AggR_100
 
-for(int ii = 0; ii < groupbySize; ii++){
-	String input = groupbys.get(ii).get("INPUT_COLUMN");
-	for(int i = ii; i < groupbySize; i++){
-		if(i == groupbySize - 1){
-			if(sizeOps == 0){
-//
-//end
-%>java.util.Set<<%=groupby_type[i] %> <%
-//start
-//
-			}else{
-//
-//end
-%>java.util.Map<<%=groupby_type[i] %>, OperationStruct<%=cid %><%
-//start
-//
-			}
-		}else{
-//
-//end
-%>java.util.Map<<%=groupby_type[i] %>,<%
-//start
-//
-		}
-	}
-	for(int i = ii; i < groupbySize; i++){
-//
-//end
-%>><%
-//start
-//
-	}
-//
-//end
-%> hash_<%=input %>_<%=cid %> = <%
-	if(ii != 0){
-%>null;
-<%	}else{
-%>new <%
-//start
-//
-		for(int i = 0; i < groupbySize; i++){
-			if(i == groupbySize - 1){
-				if(sizeOps == 0){
-//
-//end
-%>java.util.<%
-					if(i == 0){
-%>Hash<%
-					}
-%>Set<<%=groupby_type[i] %><%
-//start
-//
-				}else{
-//
-//end
-%>java.util.<%
-					if(i == 0){
-%>Hash<%
-					}
-%>Map<<%=groupby_type[i] %>, OperationStruct<%=cid %><%
-//start
-//
-				}
-			}else{
-//
-//end
-%>java.util.<%
-				if(i == 0){
-%>Hash<%
-				}
-%>Map<<%=groupby_type[i] %>,<%
-//start
-//
-			}
-		}
-		for(int i = 0; i < groupbySize; i++){
-//
-//end
-%>><%
-//start
-//
-		}
-//
-//end
-%>();
 <%
-	}
-}
-if(sizeOps>0){
-//
-//end%>
-OperationStruct<%=cid %> operation_result_<%=cid %> = null;
-<%//start
-//
-}
-//
-//end%>
+} // T_AggR_114
+
+
+if(sizeOps>0){ // G_AggR_191
+%>
+	AggOperationStruct_<%=cid %> operation_result_<%=cid %> = null;
+	AggOperationStruct_<%=cid %> operation_finder_<%=cid %> = new AggOperationStruct_<%=cid %>();
+	java.util.Map<AggOperationStruct_<%=cid %>,AggOperationStruct_<%=cid %>> hash_<%=cid %> = new java.util.HashMap<AggOperationStruct_<%=cid %>,AggOperationStruct_<%=cid %>>();  
 <%
-if(listFlag){
+} // G_AggR_191
+%>
+
+int nb_line_<%=cid %> = 0;
+
+<%
+if(listFlag){ // G_AggR_192
 %>
 String delimiter_<%=cid %> = <%=ElementParameterParser.getValue(node, "__LIST_DELIMITER__") %>;
 <%
-}
+} // G_AggR_192
 %>

@@ -17,22 +17,8 @@ imports="
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
-String origin = ElementParameterParser.getValue(node, "__DESTINATION__");
-String cid = origin;
-
-IConnection inputConn = null;
-String destination = ElementParameterParser.getValue(node, "__DESTINATION__");
+String cid = node.getUniqueName();
 
 %>				
 
-//}
-
-//globalMap.put("<%=destination %>",result_list_<%=cid %>);
-//globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
-
-
-
-
-        
-        
-        
+} // G_AggR_600
