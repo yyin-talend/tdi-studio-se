@@ -77,7 +77,9 @@ public class SqlBuilderPreferencePage extends FieldEditorPreferencePage implemen
         dbConnTimeout = new IntegerFieldEditor(ITalendCorePrefConstants.DB_CONNECTION_TIMEOUT, Messages
                 .getString("SqlBuilderPreferencePage.ConnectionTimeout"), //$NON-NLS-1$
                 getFieldEditorParent());
-        dbConnTimeout.setValidRange(0, Integer.MAX_VALUE);
+        Text textControl = dbConnTimeout.getTextControl(getFieldEditorParent());
+        textControl.setToolTipText(Messages.getString("SqlBuilderPreferencePage.ConnectionTimeoutTip")); //$NON-NLS-1$
+        dbConnTimeout.setValidRange(0, Short.MAX_VALUE);
 
         addField(booleanFieldEditor);
         addField(choiceAS4Sql);

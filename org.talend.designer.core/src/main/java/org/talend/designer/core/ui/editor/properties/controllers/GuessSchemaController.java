@@ -104,8 +104,10 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#createControl(org.eclipse.swt.widgets.Composite,
-     * org.talend.core.model.process.IElementParameter, int, int, int, org.eclipse.swt.widgets.Control)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#createControl
+     * (org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter, int, int, int,
+     * org.eclipse.swt.widgets.Control)
      */
     @Override
     public Control createControl(Composite subComposite, IElementParameter param, int numInRow, int nbInRow, int top,
@@ -277,7 +279,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                                                 .getDriverClass(), iMetadataConnection.getDriverJarPath());
                                 if (ExtractMetaDataUtils.conn != null) {
                                     Statement smst = ExtractMetaDataUtils.conn.createStatement();
-
+                                    ExtractMetaDataUtils.setQueryStatementTimeout(smst);
                                     ResultSet rs = smst.executeQuery(memoSQL);
                                     ResultSetMetaData rsmd = rs.getMetaData();
                                     int numbOfColumn = rsmd.getColumnCount();
@@ -546,8 +548,9 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite,
-     * org.talend.core.model.process.IElementParameter)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize
+     * (org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
      */
     @Override
     public int estimateRowSize(Composite subComposite, IElementParameter param) {
@@ -558,8 +561,9 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#refresh(org.talend.core.model.process.IElementParameter,
-     * boolean)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#refresh(org
+     * .talend.core.model.process.IElementParameter, boolean)
      */
     @Override
     public void refresh(IElementParameter param, boolean check) {

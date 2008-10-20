@@ -20,6 +20,7 @@ import java.sql.Statement;
 import net.sourceforge.squirrel_sql.fw.sql.ITableInfo;
 
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
+import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.dataset.dataset.DataSet;
 import org.talend.sqlbuilder.dbstructure.nodes.INode;
@@ -59,19 +60,18 @@ public class ColumnInfoTab extends AbstractDataSetTab {
             // For synonym table, should get the corresponding table.
             if (ti.getType().equals("SYNONYM")) { //$NON-NLS-1$
 
-                String realTableName = ExtractMetaDataFromDataBase.getTableNameBySynonym(treeNode
-                        .getInteractiveConnection().getConnection(), ti.getSimpleName());
+                String realTableName = ExtractMetaDataFromDataBase.getTableNameBySynonym(treeNode.getInteractiveConnection()
+                        .getConnection(), ti.getSimpleName());
 
-                resultSet = treeNode.getMetaData().getJDBCMetaData().getColumns(ti.getCatalogName(),
-                        ti.getSchemaName(), realTableName, "%"); //$NON-NLS-1$
+                resultSet = treeNode.getMetaData().getJDBCMetaData().getColumns(ti.getCatalogName(), ti.getSchemaName(),
+                        realTableName, "%"); //$NON-NLS-1$
 
             } else {
 
                 resultSet = node.getSession().getMetaData().getColumns(tableNode.getTableInfo());
             }
 
-            DataSet dataSet = new DataSet(null, resultSet, new int[] { 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17,
-                    18 });
+            DataSet dataSet = new DataSet(null, resultSet, new int[] { 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 });
             resultSet.close();
             return dataSet;
         }
@@ -96,6 +96,7 @@ public class ColumnInfoTab extends AbstractDataSetTab {
             String sql = "select TABLE_NAME from USER_SYNONYMS where SYNONYM_NAME = '" + name + "'"; //$NON-NLS-1$ //$NON-NLS-2$
             Statement sta;
             sta = conn.createStatement();
+            ExtractMetaDataUtils.setQueryStatementTimeout(sta);
             ResultSet resultSet = sta.executeQuery(sql);
             while (resultSet.next()) {
                 return resultSet.getString("TABLE_NAME"); //$NON-NLS-1$
