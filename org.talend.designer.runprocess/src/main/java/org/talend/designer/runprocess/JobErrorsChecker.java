@@ -23,6 +23,8 @@ import java.util.Set;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.PlatformUI;
 import org.epic.perleditor.editors.util.TalendPerlValidator;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
@@ -35,6 +37,7 @@ import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.designer.core.IDesignerCoreService;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.runprocess.ErrorDetailTreeBuilder.JobErrorEntry;
 
@@ -68,12 +71,25 @@ public class JobErrorsChecker {
                     validatePerlScript(sourceFile);
                 }
                 IProcess process = service.getProcessFromProcessItem(item);
+               
+                //See bug 5421
+                if (PlatformUI.getWorkbench() != null && PlatformUI.getWorkbench().getActiveWorkbenchWindow() != null
+                        && PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage() != null
+                        && PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor() != null) {
+                    IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                            .getActiveEditor();
+                    if (activeEditor instanceof AbstractMultiPageTalendEditor) {
+                        process = ((AbstractMultiPageTalendEditor) activeEditor).getProcess();
+                    }
+                }
+
                 jobNames.add(process.getLabel());
 
                 if (process instanceof IProcess2) {
                     IProcess2 process2 = (IProcess2) process;
                     process2.setActivate(true);
                     process2.checkProcess();
+
                 }
                 // Property property = process.getProperty();
                 Problems.addRoutineFile(sourceFile, item.getProperty());
