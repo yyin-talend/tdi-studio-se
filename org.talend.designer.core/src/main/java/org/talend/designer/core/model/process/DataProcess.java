@@ -915,6 +915,9 @@ public class DataProcess {
             }
         }
         for (Node node : newGraphicalNodeList) {
+            checkUseParallelize(node);
+        }
+        for (Node node : newGraphicalNodeList) {
             if (node.isSubProcessStart() && node.isActivate()) {
                 replaceMultipleComponents(node);
             }
@@ -965,6 +968,90 @@ public class DataProcess {
         checkRefList = null;
         checkMultipleMap = null;
         buildCheckMap = null;
+    }
+
+    /**
+     * DOC nrousseau Comment method "checkUseParallelize".
+     * 
+     * @param node
+     */
+    private void checkUseParallelize(Node graphicalNode) {
+        // check if the component can use Parallelize first
+        if (!graphicalNode.getComponent().canParallelize()) {
+            return;
+        }
+        IElementParameter enableParallelizeParameter = graphicalNode.getElementParameter(EParameterName.PARALLELIZE.getName());
+        Boolean parallelEnabled = Boolean.FALSE;
+        if (enableParallelizeParameter != null) {
+            parallelEnabled = (Boolean) enableParallelizeParameter.getValue();
+        }
+        if (!parallelEnabled) {
+            return;
+        }
+        INode refNode = buildCheckMap.get(graphicalNode);
+        List<? extends IConnection> connections = refNode.getIncomingConnections(EConnectionType.FLOW_MAIN);
+        DataConnection connection = (DataConnection) connections.get(0);
+
+        // remove this connection from input list, as the input will be tAsyncIn
+        refNode.getIncomingConnections().remove(connection);
+        // take only the first connection, as this kind of component won't support multi input connections
+
+        String suffix = graphicalNode.getUniqueName();
+
+        // create tAsyncOut component
+        IComponent component = ComponentsFactoryProvider.getInstance().get("tAsyncOut");
+        DataNode asyncOutNode = new DataNode(component, "tAsyncOut_" + suffix);
+        asyncOutNode.setActivate(connection.isActivate());
+        asyncOutNode.setStart(false);
+        asyncOutNode.setDesignSubjobStartNode(refNode.getDesignSubjobStartNode());
+        IMetadataTable newMetadata = connection.getMetadataTable().clone();
+        newMetadata.setTableName("tAsyncOut_" + suffix);
+        asyncOutNode.getMetadataList().remove(0);
+        asyncOutNode.getMetadataList().add(newMetadata);
+        asyncOutNode.setSubProcessStart(false);
+        asyncOutNode.setProcess(graphicalNode.getProcess());
+        List outgoingConnections = new ArrayList<IConnection>();
+        List incomingConnections = new ArrayList<IConnection>();
+        asyncOutNode.setIncomingConnections(incomingConnections);
+        asyncOutNode.setOutgoingConnections(outgoingConnections);
+
+        // replace target to have the tAsyncOut component
+        connection.setTarget(asyncOutNode);
+        incomingConnections.add(connection);
+
+        // create tAsyncIn component
+        component = ComponentsFactoryProvider.getInstance().get("tAsyncIn");
+        DataNode asyncInNode = new DataNode(component, "tAsyncIn_" + suffix);
+        asyncInNode.setActivate(connection.isActivate());
+        asyncInNode.setStart(true);
+        asyncInNode.setDesignSubjobStartNode(asyncInNode);
+        newMetadata = connection.getMetadataTable().clone();
+        newMetadata.setTableName("tAsyncIn_" + suffix);
+        asyncInNode.getMetadataList().remove(0);
+        asyncInNode.getMetadataList().add(newMetadata);
+        asyncInNode.setSubProcessStart(true);
+        asyncInNode.setProcess(graphicalNode.getProcess());
+        outgoingConnections = new ArrayList<IConnection>();
+        incomingConnections = new ArrayList<IConnection>();
+        asyncInNode.setIncomingConnections(incomingConnections);
+        asyncInNode.setOutgoingConnections(outgoingConnections);
+
+        // create a new connection to make tAsyncIn -> output component
+        DataConnection dataConnec = new DataConnection();
+        dataConnec.setActivate(connection.isActivate());
+        dataConnec.setLineStyle(EConnectionType.FLOW_MAIN);
+        dataConnec.setMetadataTable(newMetadata);
+        dataConnec.setName("pRow_" + connection.getName());
+        dataConnec.setSource(asyncInNode);
+        dataConnec.setTarget(refNode);
+
+        ((AbstractNode) refNode).setDesignSubjobStartNode(asyncInNode);
+
+        outgoingConnections.add(dataConnec);
+        ((List<DataConnection>) refNode.getIncomingConnections()).add(dataConnec);
+
+        dataNodeList.add(asyncInNode);
+        dataNodeList.add(asyncOutNode);
     }
 
     public INode buildNodeFromNode(final Node graphicalNode, final Process process) {

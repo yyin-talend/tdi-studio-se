@@ -46,7 +46,7 @@ public class ParallelExecutionAction extends SelectionAction {
 
     private static final String TEXT_PARALLEL = Messages.getString("ParallelExecutionCommand.Parallel");
 
-    private boolean parallelEnable; 
+    private boolean parallelEnable;
 
     private String numberParallel = "0";
 
@@ -77,7 +77,7 @@ public class ParallelExecutionAction extends SelectionAction {
             if (enableParallelizeParameter != null) {
                 parallelEnable = (Boolean) enableParallelizeParameter.getValue();
             }
-            return parallelEnable;
+            return node.getComponent().canParallelize();
         }
         return false;
     }
@@ -89,7 +89,7 @@ public class ParallelExecutionAction extends SelectionAction {
      */
     @Override
     public void run() {
-        
+
         IElementParameter enableParallelizeParameter = node.getElementParameter(EParameterName.PARALLELIZE.getName());
         if (enableParallelizeParameter != null) {
             parallelEnable = (Boolean) enableParallelizeParameter.getValue();
@@ -98,7 +98,7 @@ public class ParallelExecutionAction extends SelectionAction {
         if (numberParallelizeParameter != null) {
             numberParallel = (String) numberParallelizeParameter.getValue();
         }
-        
+
         Dialog dialog = new ParallelDialog(getWorkbenchPart().getSite().getShell());
         if (dialog.open() == Dialog.OK) {
             Command command = new PropertyChangeCommand(node, EParameterName.PARALLELIZE.getName(), parallelEnable);

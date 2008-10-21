@@ -2330,4 +2330,8 @@ public class EmfComponent implements IComponent {
         }
         return null;
     }
+
+    public boolean canParallelize() {
+        return compType.getHEADER().isPARALLELIZE();
+    }
 }

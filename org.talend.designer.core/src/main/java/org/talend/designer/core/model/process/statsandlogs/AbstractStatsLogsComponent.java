@@ -446,4 +446,13 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
     public boolean isMainCodeCalled() {
         return true;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#canParallelize()
+     */
+    public boolean canParallelize() {
+        return false;
+    }
 }
