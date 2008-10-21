@@ -47,11 +47,11 @@
         
         <% 
          	if (myHeader.equals("")) myHeader = "0"; 
-        	int header =Integer.parseInt(myHeader);
-        	if (header > 0){
-        		%>beginLine<%=cid %>=<%=header%>+1;
-      		<%}
-      		%>
+        %>
+		int header<%=cid %> = <%=myHeader %>;
+		if(header<%=cid %> > 0){
+			beginLine<%=cid %>=header<%=cid %>+1;
+		}
     	
         if(footer_<%=cid %> > 0){
 			while (in<%=cid %>.readRecord()) {
