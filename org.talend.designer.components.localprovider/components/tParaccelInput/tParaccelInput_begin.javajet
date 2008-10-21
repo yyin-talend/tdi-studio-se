@@ -50,8 +50,8 @@ imports="
             	<%
             } else {
             	%>
-                java.lang.Class.forName("org.postgresql.Driver");    
-                String url_<%=cid %> = "jdbc:postgresql://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;    
+                java.lang.Class.forName("com.paraccel.Driver");    
+                String url_<%=cid %> = "jdbc:paraccel://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;    
                 String dbUser_<%=cid %> = <%=dbuser%>;    
                 String dbPwd_<%=cid %> = <%=dbpwd%>;    
                 conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);	

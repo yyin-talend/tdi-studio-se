@@ -49,7 +49,7 @@
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
-      FILTER="tPostgresqlConnection"
+      FILTER="tParAccelConnection"
       NUM_ROW="2"
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
     />    
@@ -72,7 +72,7 @@
       SHOW="false"
       REPOSITORY_VALUE="TYPE"
     >
-      <DEFAULT>PostgreSQL</DEFAULT>
+      <DEFAULT>ParAccel</DEFAULT>
     </PARAMETER>
     
     <PARAMETER
@@ -83,7 +83,7 @@
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
-      <DEFAULT>"5432"</DEFAULT>
+      <DEFAULT>"5439"</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
@@ -213,7 +213,7 @@
 	
    <CODEGENERATION>
      <IMPORTS>
-     	<IMPORT NAME="Driver-Postgres" MODULE="postgresql-8.3-603.jdbc3.jar" REQUIRED="true" />
+     	<IMPORT NAME="Driver-ParAccel" MODULE="paraccel-jdbc.jar" REQUIRED="true" />
      </IMPORTS>
    </CODEGENERATION>
 
