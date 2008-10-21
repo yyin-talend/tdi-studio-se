@@ -241,11 +241,40 @@ public class TableController extends AbstractElementPropertySectionController {
         Object value = param.getValue();
         if (value instanceof List) {
             // updateTableValues(param);
+            // (bug 5365)
+            checkAndSetDefaultValue(param);
             if (tableViewerCreator != null) {
                 if (!tableViewerCreator.getInputList().equals(value)) {
                     tableViewerCreator.init((List) value);
                 }
                 tableViewerCreator.getTableViewer().refresh();
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void checkAndSetDefaultValue(IElementParameter param) {
+        if (param != null && param.getField() == EParameterFieldType.TABLE) {
+            updateColumnList(param);
+
+            Object[] itemsValue = param.getListItemsValue();
+            if (itemsValue != null && param.getValue() != null && param.getValue() instanceof List) {
+                List<Map<String, Object>> values = (List<Map<String, Object>>) param.getValue();
+                for (int i = 0; i < itemsValue.length; i++) {
+                    if (itemsValue[i] instanceof IElementParameter) {
+                        IElementParameter columnParam = (IElementParameter) itemsValue[i];
+                        if (columnParam.getField() == EParameterFieldType.COLUMN_LIST
+                                || columnParam.getField() == EParameterFieldType.PREV_COLUMN_LIST
+                                || columnParam.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
+                            for (Map<String, Object> columnMap : values) {
+                                Object column = columnMap.get(columnParam.getName());
+                                if (column == null || "".equals(column)) {
+                                    columnMap.put(columnParam.getName(), columnParam.getDefaultClosedListValue());
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }

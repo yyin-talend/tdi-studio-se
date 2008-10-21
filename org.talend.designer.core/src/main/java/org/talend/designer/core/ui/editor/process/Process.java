@@ -106,6 +106,7 @@ import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.Node.Data;
 import org.talend.designer.core.ui.editor.notes.Note;
+import org.talend.designer.core.ui.editor.properties.controllers.ColumnListController;
 import org.talend.designer.core.ui.editor.properties.controllers.ConnectionListController;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
@@ -983,7 +984,39 @@ public class Process extends Element implements IProcess2 {
         initExternalComponents();
         setActivate(true);
         checkStartNodes();
-        // checkStartJobSettingsParameters();
+        // (bug 5365)
+        checkNodeTableParameters();
+    }
+
+    @SuppressWarnings("unchecked")
+    private void checkNodeTableParameters() {
+        for (INode node : getGraphicalNodes()) {
+            ColumnListController.updateColumnList(node, null);
+
+            for (IElementParameter param : node.getElementParameters()) {
+                if (param.getField() == EParameterFieldType.TABLE) {
+                    Object[] itemsValue = param.getListItemsValue();
+                    if (itemsValue != null && param.getValue() != null && param.getValue() instanceof List) {
+                        List<Map<String, Object>> values = (List<Map<String, Object>>) param.getValue();
+                        for (int i = 0; i < itemsValue.length; i++) {
+                            if (itemsValue[i] instanceof IElementParameter) {
+                                IElementParameter columnParam = (IElementParameter) itemsValue[i];
+                                if (columnParam.getField() == EParameterFieldType.COLUMN_LIST
+                                        || columnParam.getField() == EParameterFieldType.PREV_COLUMN_LIST
+                                        || columnParam.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
+                                    for (Map<String, Object> columnMap : values) {
+                                        Object column = columnMap.get(columnParam.getName());
+                                        if (column == null || "".equals(column)) {
+                                            columnMap.put(columnParam.getName(), columnParam.getDefaultClosedListValue());
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
