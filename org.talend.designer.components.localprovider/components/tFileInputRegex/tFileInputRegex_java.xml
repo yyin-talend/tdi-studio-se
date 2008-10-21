@@ -80,30 +80,27 @@
       NAME="HEADER"
       FIELD="TEXT"
       NUM_ROW="50"
-      REQUIRED="true"
       REPOSITORY_VALUE="HEADER"
     >
-      <DEFAULT>"0"</DEFAULT>
+      <DEFAULT>0</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
       NAME="FOOTER"
       FIELD="TEXT"
       NUM_ROW="50"
-      REQUIRED="true"
       REPOSITORY_VALUE="FOOTER"
     >
-      <DEFAULT>"0"</DEFAULT>
+      <DEFAULT>0</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
       NAME="LIMIT"
       FIELD="TEXT"
       NUM_ROW="50"
-      REQUIRED="true"
       REPOSITORY_VALUE="LIMIT"
     >
-      <DEFAULT>"-1"</DEFAULT>
+      <DEFAULT/>
     </PARAMETER>
     
     <PARAMETER
