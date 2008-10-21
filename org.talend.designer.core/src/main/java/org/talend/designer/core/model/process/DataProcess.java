@@ -990,6 +990,9 @@ public class DataProcess {
         }
         INode refNode = buildCheckMap.get(graphicalNode);
         List<? extends IConnection> connections = refNode.getIncomingConnections(EConnectionType.FLOW_MAIN);
+        if (connections.size() == 0) {
+            return;
+        }
         DataConnection connection = (DataConnection) connections.get(0);
 
         // remove this connection from input list, as the input will be tAsyncIn
