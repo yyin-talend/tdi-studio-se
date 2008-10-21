@@ -12,19 +12,27 @@
 // ============================================================================
 package org.talend.repository.model.migration;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.components.ModifyComponentsAction;
+import org.talend.core.model.components.conversions.IComponentConversion;
+import org.talend.core.model.components.conversions.RenameComponentConversion;
+import org.talend.core.model.components.filters.IComponentFilter;
+import org.talend.core.model.components.filters.NameComponentFilter;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
+import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
+import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 
 /**
- * DOC plegall class global comment. Detailled comment <br/>
+ * DOC shong class global comment. Detailled comment <br/>
  * 
- * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ven., 29 sept. 2006) nrousseau $
+ * Rename tParseXMLRow to tExtractXMLField
  * 
  */
 public class RenametParseXMLRowTotExtractXMLFieldMigrationTask extends AbstractJobMigrationTask {
@@ -32,7 +40,33 @@ public class RenametParseXMLRowTotExtractXMLFieldMigrationTask extends AbstractJ
     public ExecutionResult executeOnProcess(ProcessItem item) {
         if (getProject().getLanguage() == ECodeLanguage.JAVA) {
             try {
-                ModifyComponentsAction.searchAndRename(item, "tParseXMLRow", "tExtractXMLField"); //$NON-NLS-1$ //$NON-NLS-2$
+                IComponentFilter filter1 = new NameComponentFilter("tParseXMLRow");
+                IComponentConversion changeNodeNameConversion = new IComponentConversion() {
+
+                    public void transform(NodeType node) {
+
+                        ProcessType item = (ProcessType) node.eContainer();
+                        for (Object o : item.getNode()) {
+                            NodeType nt = (NodeType) o;
+                            for (Object o1 : nt.getElementParameter()) {
+                                ElementParameterType t = (ElementParameterType) o1;
+                                String value = t.getValue();
+                                if (value != null) {
+                                    if (value.contains("tParseXMLRow")) {
+                                        String replaceAll = value.replaceAll("tParseXMLRow", "tExtractXMLField");
+                                        t.setValue(replaceAll);
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                };
+                IComponentConversion renameComponentConversion = new RenameComponentConversion("tExtractXMLField");
+
+                ModifyComponentsAction.searchAndModify(item, filter1, Arrays.<IComponentConversion> asList(
+                        renameComponentConversion, changeNodeNameConversion));
+
                 return ExecutionResult.SUCCESS_WITH_ALERT;
             } catch (Exception e) {
                 ExceptionHandler.process(e);
