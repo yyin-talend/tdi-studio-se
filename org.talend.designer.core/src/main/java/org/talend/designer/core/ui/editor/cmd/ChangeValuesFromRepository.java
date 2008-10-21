@@ -239,8 +239,18 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                         RepositoryToComponentProperty.getSAPInputAndOutputValue((SAPConnection) connection, table,
                                 getSapFunctionName(), false);
                         param.setRepositoryValueUsed(true);
+                    } else if (param.getRepositoryValue().equals("SAP_ITERATE_OUT_TYPE")) {
+                        // FOR SAP
+                        param.setValue(RepositoryToComponentProperty.getSAPValuesForFunction((SAPConnection) connection,
+                                getSapFunctionName(), "SAP_ITERATE_OUT_TYPE"));
+                        param.setRepositoryValueUsed(true);
+                    } else if (param.getRepositoryValue().equals("SAP_ITERATE_OUT_TABLENAME")) {
+                        // FOR SAP
+                        param.setValue(RepositoryToComponentProperty.getSAPValuesForFunction((SAPConnection) connection,
+                                getSapFunctionName(), "SAP_ITERATE_OUT_TABLENAME"));
+                        param.setRepositoryValueUsed(true);
                     }
-                    //
+
                     if (param.isRepositoryValueUsed()) {
                         param.setReadOnly(true);
                     }
