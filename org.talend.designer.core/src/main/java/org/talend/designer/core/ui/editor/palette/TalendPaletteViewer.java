@@ -25,8 +25,6 @@ import org.eclipse.gef.ui.parts.PaletteViewerKeyHandler;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -93,7 +91,7 @@ public class TalendPaletteViewer extends PaletteViewer {
      */
     public Control creatToolControl(Composite parent) {
         Composite container = new Composite(parent, SWT.NONE);
-        GridLayout layout = new GridLayout(2, false);
+        GridLayout layout = new GridLayout(3, false);
         layout.marginLeft = 2;
         layout.marginRight = 2;
         layout.marginTop = 2;
@@ -108,8 +106,27 @@ public class TalendPaletteViewer extends PaletteViewer {
         filters.add(text);
         initFilterTextControl(text);
 
+        final Button okButton = new Button(container, SWT.NONE);
+        GridData gd = new GridData(GridData.END);
+        gd.widthHint = 36;
+        okButton.setLayoutData(gd);
+        okButton.setText("OK");
+        okButton.addSelectionListener(new SelectionAdapter() {
+
+            public void widgetSelected(SelectionEvent e) {
+                startFiltering(text);
+            }
+
+            public void widgetDefaultSelected(SelectionEvent e) {
+                widgetSelected(e);
+            }
+        });
+        okButton.setFocus();
+
         Button clearButton = new Button(container, SWT.NONE);
-        clearButton.setLayoutData(new GridData(GridData.END));
+        gd = new GridData(GridData.END);
+        gd.widthHint = 36;
+        clearButton.setLayoutData(gd);
         clearButton.setText("Clear");
         clearButton.addSelectionListener(new SelectionAdapter() {
 
@@ -159,7 +176,6 @@ public class TalendPaletteViewer extends PaletteViewer {
             public void mouseUp(MouseEvent e) {
 
             }
-
         });
 
         text.addFocusListener(new FocusListener() {
@@ -172,21 +188,23 @@ public class TalendPaletteViewer extends PaletteViewer {
                 if (text.getText() == "") {
                     text.setText(SEARCH_COMPONENT);
                 }
+            }
+        });
 
+        text.addSelectionListener(new SelectionAdapter() {
+
+            public void widgetDefaultSelected(SelectionEvent e) {
+                startFiltering(text);
             }
 
         });
+    }
 
-        text.addModifyListener(new ModifyListener() {
-
-            public void modifyText(ModifyEvent e) {
-                if (!text.getText().equals(SEARCH_COMPONENT)) {
-                    expandLimiter.resetTimer();
-                    expandLimiter.startIfExecutable(true, text);
-                }
-            }
-
-        });
+    private void startFiltering(final Text text) {
+        if (!text.getText().equals(SEARCH_COMPONENT)) {
+            expandLimiter.resetTimer();
+            expandLimiter.startIfExecutable(true, text);
+        }
     }
 
     /**
