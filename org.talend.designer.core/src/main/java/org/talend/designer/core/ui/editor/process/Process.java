@@ -2572,7 +2572,9 @@ public class Process extends Element implements IProcess2 {
         for (INode node : nodeList) {
             List<ModuleNeeded> moduleList = node.getComponent().getModulesNeeded();
             for (ModuleNeeded needed : moduleList) {
-                neededLibraries.add(needed.getModuleName());
+                if (needed.isRequired()) {
+                    neededLibraries.add(needed.getModuleName());
+                }
             }
             for (IElementParameter curParam : node.getElementParameters()) {
                 if (curParam.getField().equals(EParameterFieldType.MODULE_LIST)) {
