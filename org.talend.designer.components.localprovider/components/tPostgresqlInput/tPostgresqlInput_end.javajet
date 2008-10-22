@@ -19,6 +19,7 @@ stmt_<%=cid %>.close();
 if(!useExistingConn.equals("true"))
 {
 	%>
+	conn_<%=cid %>.commit();
 	conn_<%=cid %> .close();
 	<%
 }

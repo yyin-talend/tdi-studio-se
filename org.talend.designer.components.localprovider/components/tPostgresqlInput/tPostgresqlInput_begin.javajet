@@ -54,7 +54,8 @@ imports="
                 String url_<%=cid %> = "jdbc:postgresql://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;    
                 String dbUser_<%=cid %> = <%=dbuser%>;    
                 String dbPwd_<%=cid %> = <%=dbpwd%>;    
-                conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);	
+                conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+                conn_<%=cid%>.setAutoCommit(false);
             	<%
             }
             %>
