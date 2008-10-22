@@ -25,6 +25,8 @@ import java.util.Set;
 
 import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
@@ -93,7 +95,7 @@ public class ExportItemUtil {
         this.project = project;
     }
 
-    public void exportItems(File destination, Collection<Item> items) throws Exception {
+    public void exportItems(File destination, Collection<Item> items, IProgressMonitor progressMonitor) throws Exception {
         IFileExporterFullPath exporter = null;
         File tmpDirectory = null;
         Map<File, IPath> toExport;
@@ -118,7 +120,7 @@ public class ExportItemUtil {
 
             try {
                 if (exporter != null) {
-                    toExport = exportItems(items, tmpDirectory, true);
+                    toExport = exportItems(items, tmpDirectory, true, progressMonitor);
 
                     // in case of .tar.gz we remove extension twice
                     IPath rootPath = new Path(destination.getName()).removeFileExtension().removeFileExtension();
@@ -127,7 +129,7 @@ public class ExportItemUtil {
                         exporter.write(file.getAbsolutePath(), rootPath.append(path).toString());
                     }
                 } else {
-                    toExport = exportItems(items, destination, true);
+                    toExport = exportItems(items, destination, true, progressMonitor);
                 }
             } catch (Exception e) {
                 throw e;
@@ -167,7 +169,7 @@ public class ExportItemUtil {
         List<Item> items = new ArrayList<Item>();
         items.add(item);
 
-        Map<File, IPath> exportItems = exportItems(items, destinationDirectory, false);
+        Map<File, IPath> exportItems = exportItems(items, destinationDirectory, false, new NullProgressMonitor());
 
         return exportItems.keySet();
     }
@@ -204,10 +206,13 @@ public class ExportItemUtil {
         return items;
     }
 
-    private Map<File, IPath> exportItems(Collection<Item> items, File destinationDirectory, boolean projectFolderStructure)
+    private Map<File, IPath> exportItems(Collection<Item> items, File destinationDirectory, boolean projectFolderStructure,
+            IProgressMonitor progressMonitor)
             throws Exception {
         Map<File, IPath> toExport = new HashMap<File, IPath>();
 
+        progressMonitor.beginTask("Export Items", items.size() + 1);
+        
         try {
             init();
             // store item and its corresponding project
@@ -235,10 +240,12 @@ public class ExportItemUtil {
                     toExport.put(propertyFile, propertyPath);
                     toExport.put(itemFile, itemPath);
                 }
+                progressMonitor.worked(1);
             }
 
             dereferenceNotContainedObjects();
             saveResources();
+            progressMonitor.worked(1);
         } catch (Exception e) {
             throw e;
         } finally {
