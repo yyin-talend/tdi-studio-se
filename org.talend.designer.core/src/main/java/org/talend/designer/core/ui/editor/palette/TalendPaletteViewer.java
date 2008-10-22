@@ -121,7 +121,6 @@ public class TalendPaletteViewer extends PaletteViewer {
                 widgetSelected(e);
             }
         });
-        okButton.setFocus();
 
         Button clearButton = new Button(container, SWT.NONE);
         gd = new GridData(GridData.END);
