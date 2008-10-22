@@ -15,6 +15,11 @@ package org.talend.designer.core.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
@@ -24,6 +29,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.runprocess.ItemCacheManager;
+import org.talend.repository.editor.RepositoryEditorInput;
 
 /**
  * DOC bqian class global comment. Detailled comment
@@ -65,5 +71,37 @@ public class DesignerUtilities {
             }
         }
         return matchingNodes;
+    }
+    
+    /**
+     * DOC bqian Comment method "findProcessFromEditors".
+     * 
+     * @param jobName
+     * @param jobVersion
+     */
+    public static IProcess findProcessFromEditors(final String jobId, final String jobVersion) {
+        final IProcess[] process = new IProcess[1];
+
+        Display.getDefault().syncExec(new Runnable() {
+
+            public void run() {
+                IEditorReference[] editors = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                        .getEditorReferences();
+                for (IEditorReference editorReference : editors) {
+                    IEditorPart editor = editorReference.getEditor(false);
+                    IEditorInput input = editor.getEditorInput();
+                    if (input instanceof RepositoryEditorInput) {
+                        RepositoryEditorInput rInput = (RepositoryEditorInput) input;
+                        IProcess p = rInput.getLoadedProcess();
+                        if (p != null && p.getId().equals(jobId) && p.getVersion().equals(jobVersion)) {
+                            process[0] = p;
+                            break;
+                        }
+                    }
+                }
+            }
+        });
+
+        return process[0];
     }
 }
