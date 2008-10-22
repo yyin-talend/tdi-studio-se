@@ -927,6 +927,12 @@
             id="org.talend.repository.model.migration.RenametParseXMLRowTotExtractXMLFieldMigrationTask"
             name="Rename tParseXMLRow to tExtractXMLField">
       </projecttask>
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.FileInputRegexContextVariableMigrationTaskForSave"
+            id="org.talend.repository.model.migration.FileInputRegexContextVariableMigrationTaskForSave"
+            name="remove the quote char for tFileInputRegex on header/footer/limited parameters">
+      </projecttask>
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">
