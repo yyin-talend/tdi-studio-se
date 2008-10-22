@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
@@ -200,7 +199,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         }
 
         try {
-            updateClasspath();
+            computeClasspath();
         } catch (CoreException e) {
             ExceptionHandler.process(e);
         }
@@ -996,7 +995,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
      */
     @Override
     public Object saveLaunchConfiguration() throws CoreException {
-        sortClasspath();
+        computeClasspath();
 
         ILaunchConfiguration config = null;
         ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
@@ -1015,62 +1014,62 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         return config;
     }
 
-    // see bug 3914, make the order of the jar files consistent with the command
-    // line in run mode
-    private void sortClasspath() throws CoreException {
-        // get classpath from command line in run mode
-        String[] cmd = getCommandLine(false, NO_STATISTICS, NO_TRACES, new String[0]);
-        String[] paths = null;
-        for (int i = 0; i < cmd.length; i++) {
-            if (cmd[i].equals("-cp")) {
-                paths = cmd[i + 1].split(";");
-                break;
-            }
-        }
-
-        List<IClasspathEntry> classpath = new ArrayList<IClasspathEntry>();
-
-        // classpath of .Java project
-        IClasspathEntry[] rawClasspath = (IClasspathEntry[]) ArrayUtils.clone(javaProject.getRawClasspath());
-
-        // improve speed of looking up existing jar file in classpath
-        Map<String, Integer> location = new HashMap<String, Integer>();
-        for (int i = 0; i < rawClasspath.length; i++) {
-            if (rawClasspath[i].getEntryKind() != IClasspathEntry.CPE_LIBRARY) {
-                classpath.add(rawClasspath[i]);
-                rawClasspath[i] = null;
-            } else {
-                // jar file
-                location.put(rawClasspath[i].getPath().toOSString(), i);
-            }
-        }
-
-        for (int i = 0; i < paths.length; i++) {
-            if (paths[i].endsWith(".jar")) {
-                Integer pos = location.get(new Path(paths[i]).toOSString());
-                if (pos != null && rawClasspath[pos] != null) {
-                    // jar file is already in raw classpath, move it up
-                    classpath.add(rawClasspath[pos]);
-                    rawClasspath[pos] = null;
-
-                } else {
-                    // user jar file does not exist, create new jar entry in
-                    // classpath
-                    classpath.add(JavaCore.newLibraryEntry(new Path(paths[i]), null, null));
-                }
-            }
-        }
-
-        // copy remaining jar file in raw classpath
-        for (int i = 0; i < rawClasspath.length; i++) {
-            if (rawClasspath[i] != null) {
-                classpath.add(rawClasspath[i]);
-            }
-        }
-
-        rawClasspath = classpath.toArray(new IClasspathEntry[classpath.size()]);
-        javaProject.setRawClasspath(rawClasspath, null);
-    }
+    // // see bug 3914, make the order of the jar files consistent with the command
+    // // line in run mode
+    // private void sortClasspath() throws CoreException {
+    // // get classpath from command line in run mode
+    // String[] cmd = getCommandLine(false, NO_STATISTICS, NO_TRACES, new String[0]);
+    // String[] paths = null;
+    // for (int i = 0; i < cmd.length; i++) {
+    // if (cmd[i].equals("-cp")) {
+    // paths = cmd[i + 1].split(";");
+    // break;
+    // }
+    // }
+    //
+    // List<IClasspathEntry> classpath = new ArrayList<IClasspathEntry>();
+    //
+    // // classpath of .Java project
+    // IClasspathEntry[] rawClasspath = (IClasspathEntry[]) ArrayUtils.clone(javaProject.getRawClasspath());
+    //
+    // // improve speed of looking up existing jar file in classpath
+    // Map<String, Integer> location = new HashMap<String, Integer>();
+    // for (int i = 0; i < rawClasspath.length; i++) {
+    // if (rawClasspath[i].getEntryKind() != IClasspathEntry.CPE_LIBRARY) {
+    // classpath.add(rawClasspath[i]);
+    // rawClasspath[i] = null;
+    // } else {
+    // // jar file
+    // location.put(rawClasspath[i].getPath().toOSString(), i);
+    // }
+    // }
+    //
+    // for (int i = 0; i < paths.length; i++) {
+    // if (paths[i].endsWith(".jar")) {
+    // Integer pos = location.get(new Path(paths[i]).toOSString());
+    // if (pos != null && rawClasspath[pos] != null) {
+    // // jar file is already in raw classpath, move it up
+    // classpath.add(rawClasspath[pos]);
+    // rawClasspath[pos] = null;
+    //
+    // } else {
+    // // user jar file does not exist, create new jar entry in
+    // // classpath
+    // classpath.add(JavaCore.newLibraryEntry(new Path(paths[i]), null, null));
+    // }
+    // }
+    // }
+    //
+    // // copy remaining jar file in raw classpath
+    // for (int i = 0; i < rawClasspath.length; i++) {
+    // if (rawClasspath[i] != null) {
+    // classpath.add(rawClasspath[i]);
+    // }
+    // }
+    //
+    // rawClasspath = classpath.toArray(new IClasspathEntry[classpath.size()]);
+    // javaProject.setRawClasspath(rawClasspath, null);
+    // }
 
     public static IJavaProject getJavaProject() {
         return javaProject;
@@ -1248,5 +1247,45 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
     public int installingBreakpoint(IJavaDebugTarget target, IJavaBreakpoint breakpoint, IJavaType type) {
         // TODO Auto-generated method stub
         return 0;
+    }
+
+    /**
+     * Use this to replace updateClasspath and sortClasspath
+     * <p>
+     * DOC YeXiaowei Comment method "computeClasspath".
+     * 
+     * @throws CoreException
+     */
+    public void computeClasspath() throws CoreException {
+
+        if (rootProject == null || javaProject == null) {
+            initializeProject();
+        }
+
+        IClasspathEntry jreClasspathEntry = JavaCore.newContainerEntry(new Path("org.eclipse.jdt.launching.JRE_CONTAINER")); //$NON-NLS-1$
+        IClasspathEntry classpathEntry = JavaCore.newSourceEntry(javaProject.getPath().append(JavaUtils.JAVA_SRC_DIRECTORY));
+
+        List<IClasspathEntry> classpath = new ArrayList<IClasspathEntry>();
+        classpath.add(jreClasspathEntry);
+        classpath.add(classpathEntry);
+
+        Set<String> listModulesReallyNeeded = process.getNeededLibraries(true);
+
+        File externalLibDirectory = new File(CorePlugin.getDefault().getLibrariesService().getLibrariesPath());
+        if ((externalLibDirectory != null) && (externalLibDirectory.isDirectory())) {
+            for (File externalLib : externalLibDirectory.listFiles(FilesUtils.getAcceptJARFilesFilter())) {
+                if (externalLib.isFile() && listModulesReallyNeeded.contains(externalLib.getName())) {
+                    classpath.add(JavaCore.newLibraryEntry(new Path(externalLib.getAbsolutePath()), null, null));
+                }
+            }
+        }
+
+        IClasspathEntry[] classpathEntryArray = classpath.toArray(new IClasspathEntry[classpath.size()]);
+
+        javaProject.setRawClasspath(classpathEntryArray, null);
+
+        javaProject.setOutputLocation(javaProject.getPath().append(JavaUtils.JAVA_CLASSES_DIRECTORY), null);
+
+        // CorePlugin.getDefault().getLibrariesService().checkLibraries();
     }
 }
