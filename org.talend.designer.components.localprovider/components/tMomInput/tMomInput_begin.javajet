@@ -24,19 +24,15 @@ class="MomInput"
 	
 	IMetadataTable metadata=null;
 	List<IMetadataTable> metadatas = node.getMetadataList();
-		if ((metadatas!=null)&&(metadatas.size()>0)) {
-		metadata = metadatas.get(0);
-		}
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
+	metadata = metadatas.get(0);
+	}
 
-
-
-
-if(serverType.equals("JBoss")){ // server judgement
-	String msgType = ElementParameterParser.getValue(node, "__MSGTYPE__");
-	String from=ElementParameterParser.getValue(node, "__FROM__");
-	
-	
-
+	if(serverType.equals("JBoss")){ // server judgement
+		String msgType = ElementParameterParser.getValue(node, "__MSGTYPE__");
+		String from=ElementParameterParser.getValue(node, "__FROM__");
+		String msgId=ElementParameterParser.getValue(node, "__MSG_ID__");
+		String useMsgId=ElementParameterParser.getValue(node, "__IS_USE_MESSAGE_ID__");
 %>
 
 class HelloInput implements javax.jms.MessageListener {
@@ -59,26 +55,39 @@ class HelloInput implements javax.jms.MessageListener {
 		topic<%=cid%>=(javax.jms.<%=msgType%>)context<%=cid%>.lookup(topicJNDI);
 
 
-<%	
-	if(msgType.equals("Queue")){
+<%
+		if(msgType.equals("Queue")){
 %>
 		javax.jms.<%=msgType%>Receiver receiver<%=cid%>=session<%=cid%>.createReceiver(topic<%=cid%>);
 		receiver<%=cid%>.setMessageListener(this);
 <%
-}else{
+		}else{
 %>
 		javax.jms.<%=msgType%>Subscriber subscriber<%=cid%>=session<%=cid%>.createSubscriber(topic<%=cid%>);
 		subscriber<%=cid%>.setMessageListener(this);
 <%
-}
+		}
 %>	
 		connection<%=cid%>.start();
 	}
 	
 	public void onMessage(javax.jms.Message m){
-	try {
+		try {
+<%
+		if(useMsgId.equals("true")){
+%>
+			String msg<%=cid%>=((javax.jms.MapMessage)m).getString(<%=msgId%>);
+			if(msg<%=cid%> != null){
+				msgQueue<%=cid%>.add(msg<%=cid%>);
+			}
+<%
+		}else{
+%>
 			String msg<%=cid%>=((javax.jms.TextMessage)m).getText();
 			msgQueue<%=cid%>.add(msg<%=cid%>);
+<%
+		}
+%>
 		} catch (javax.jms.JMSException e) {
 			System.err.println("Could not get text message:" + e);
 			e.printStackTrace();
@@ -90,8 +99,6 @@ class HelloInput implements javax.jms.MessageListener {
 	}	
 }
 
-	
-		
 		HelloInput input<%=cid%>=null;
 		try {
 		//begin part
@@ -100,49 +107,62 @@ class HelloInput implements javax.jms.MessageListener {
 			System.err.println("An exception occurred while testing HelloSubscriber:" + e);
 			e.printStackTrace();
 		}
-	System.out.println("Ready to receive message");
-	System.out.println("Waiting...");	
-		
-	Boolean flag<%=cid%>=true;
-	while(flag<%=cid%>){
-					while(!(input<%=cid%>.msgQueue<%=cid%>.size()==0)){
-						String msg<%=cid%>=(String)input<%=cid%>.msgQueue<%=cid%>.poll();
+		System.out.println("Ready to receive message");
+		System.out.println("Waiting...");	
+			
+		Boolean flag<%=cid%>=true;
+		while(flag<%=cid%>){
+			while(!(input<%=cid%>.msgQueue<%=cid%>.size()==0)){
+				String msg<%=cid%>=(String)input<%=cid%>.msgQueue<%=cid%>.poll();
 	
 <%
-List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
-List<IMetadataColumn> columnList = metadata.getListColumns();
-for(IConnection conn:conns){
-	if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
- 	String firstConnName = conn.getName();
+		List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
+		List<IMetadataColumn> columnList = metadata.getListColumns();
+		for(IConnection conn:conns){
+			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
+		 		String firstConnName = conn.getName();
 %>
 
-		<%=firstConnName%>.from=<%=from%>;	
-		<%=firstConnName%>.message=msg<%=cid%>;	
+				<%=firstConnName%>.from=<%=from%>;	
+				<%=firstConnName%>.message=msg<%=cid%>;	
+<%
+				if(useMsgId.equals("true")){
+%>		
+				<%=firstConnName%>.messageid=<%=msgId%>;
 			
 <%
-}
-}
-
-}else if(serverType.equals("ActiveMQ")){
-boolean startServer = ElementParameterParser.getValue(node, "__STARTSERVER__").equals("true");
-boolean topic = ElementParameterParser.getValue(node, "__MSGTYPE__").equals("Topic");
-String from = ElementParameterParser.getValue(node, "__FROM__");
-boolean useMax = ElementParameterParser.getValue(node,"__USEMAX__").equals("true");
-String maxiumMessages = ElementParameterParser.getValue(node,"__MAXMSG__");
-String receiveTimeOut = ElementParameterParser.getValue(node,"__TIMEOUT__");
-if(maxiumMessages.equals("")|| maxiumMessages == null){maxiumMessages = "0";}
-if(receiveTimeOut.equals("")|| receiveTimeOut == null){receiveTimeOut = "0L";}
+				}
+			}
+		}
+	}else if(serverType.equals("ActiveMQ")){
+		boolean startServer = ElementParameterParser.getValue(node, "__STARTSERVER__").equals("true");
+		boolean topic = ElementParameterParser.getValue(node, "__MSGTYPE__").equals("Topic");
+		String from = ElementParameterParser.getValue(node, "__FROM__");
+		boolean useMax = ElementParameterParser.getValue(node,"__USEMAX__").equals("true");
+		String maxiumMessages = ElementParameterParser.getValue(node,"__MAXMSG__");
+		String receiveTimeOut = ElementParameterParser.getValue(node,"__TIMEOUT__");
+		String msgId=ElementParameterParser.getValue(node, "__MSG_ID__");
+		String useMsgId=ElementParameterParser.getValue(node, "__IS_USE_MESSAGE_ID__");
+		
+		if(maxiumMessages.equals("")|| maxiumMessages == null){
+			maxiumMessages = "0";
+		}
+		if(receiveTimeOut.equals("")|| receiveTimeOut == null){
+			receiveTimeOut = "0L";
+		}
 %>
 String url_<%=cid %> = "tcp://"+<%=host%>+":"+<%=port%>;
 long timeout_<%=cid %> =<%=receiveTimeOut %>;
-
-<%if(startServer){%>
+<%
+		if(startServer){
+%>
 org.apache.activemq.broker.BrokerService broker_<%=cid %> = new org.apache.activemq.broker.BrokerService();
 broker_<%=cid %>.setUseJmx(true);
 broker_<%=cid %>.addConnector(url_<%=cid %>);
 broker_<%=cid %>.start();
-<%}%>
-
+<%
+		}
+%>
 System.out.println("Connecting to URL: " + url_<%=cid %>);
 System.out.println("Consuming " + (<%=topic%> ? "topic" : "queue") + ": " + <%=from%>);
 
@@ -155,9 +175,9 @@ connection_<%=cid %>.start();
 javax.jms.Session session_<%=cid %> = connection_<%=cid %>.createSession(false, javax.jms.Session.AUTO_ACKNOWLEDGE);
 javax.jms.Destination des_<%=cid %> = null;
 if (<%=topic%>) {
-        des_<%=cid %> = session_<%=cid %>.createTopic(<%=from%>);
+	des_<%=cid %> = session_<%=cid %>.createTopic(<%=from%>);
 } else {
-        des_<%=cid %> = session_<%=cid %>.createQueue(<%=from%>);
+	des_<%=cid %> = session_<%=cid %>.createQueue(<%=from%>);
 }
 javax.jms.MessageProducer replyProducer_<%=cid %> = session_<%=cid %>.createProducer(null);
 replyProducer_<%=cid %>.setDeliveryMode(javax.jms.DeliveryMode.NON_PERSISTENT);
@@ -167,78 +187,153 @@ consumer_<%=cid %> = session_<%=cid %>.createConsumer(des_<%=cid %>);
 String msg_<%=cid %>  = "";
  
  
-<%  if(kListen.equals("true")){%>
-                System.out.println("We will consume messages while they continue to be delivered ");
-                javax.jms.Message message;
-                while ((message = consumer_<%=cid %>.receive()) != null) {
-            	if (message instanceof javax.jms.TextMessage) {
-                javax.jms.TextMessage txtMsg = (javax.jms.TextMessage) message;
-                msg_<%=cid %> = txtMsg.getText();
 <%
-List< ? extends IConnection> connss = node.getOutgoingSortedConnections();
-List<IMetadataColumn> columnLists = metadata.getListColumns();
-for(IConnection conn:connss){
-	if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
- 	String firstConnName = conn.getName();
+		if(kListen.equals("true")){
 %>
-				<%=firstConnName%>.from=<%=from%>;	
-				<%=firstConnName%>.message=msg_<%=cid %>;	
+System.out.println("We will consume messages while they continue to be delivered ");
+javax.jms.Message message;
+while ((message = consumer_<%=cid %>.receive()) != null) {
 <%
-}
-}%> 
+			if(useMsgId.equals("true")){
+%>
+	if (message instanceof javax.jms.MapMessage) {
+		javax.jms.MapMessage txtMsg = (javax.jms.MapMessage) message;
+		msg_<%=cid %> = txtMsg.getString(<%=msgId%>);
+		if(msg_<%=cid %> !=null){
 
-            }         
-      <%}else if (useMax) {%>
- int maxMsg_<%=cid %> = <%=maxiumMessages %>;
- System.out.println("We are about to wait until we consume: " + maxMsg_<%=cid %> + " message(s) then we will shutdown");
- for (int i_<%=cid %> = 0; i_<%=cid %> < maxMsg_<%=cid %> ;) {
-            javax.jms.Message message = consumer_<%=cid %>.receive();
-            if (message != null) {
-                i_<%=cid %>++;
-                if (message instanceof javax.jms.TextMessage) {
-                javax.jms.TextMessage txtMsg = (javax.jms.TextMessage) message;
-                msg_<%=cid %> = txtMsg.getText();
 <%
-List< ? extends IConnection> connss = node.getOutgoingSortedConnections();
-List<IMetadataColumn> columnLists = metadata.getListColumns();
-for(IConnection conn:connss){
-	if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
- 	String firstConnName = conn.getName();
+			}else{
 %>
-				<%=firstConnName%>.from=<%=from%>;	
-				<%=firstConnName%>.message=msg_<%=cid %>;	
+	if (message instanceof javax.jms.TextMessage) {
+		javax.jms.TextMessage txtMsg = (javax.jms.TextMessage) message;
+		msg_<%=cid %> = txtMsg.getText();
 <%
-}
-}%>
- 
-            }
-            
-        }
+			}
+			List< ? extends IConnection> connss = node.getOutgoingSortedConnections();
+			List<IMetadataColumn> columnLists = metadata.getListColumns();
+			for(IConnection conn:connss){
+				if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
+			 		String firstConnName = conn.getName();
+%>
+		<%=firstConnName%>.from=<%=from%>;	
+		<%=firstConnName%>.message=msg_<%=cid %>;	
+<%
+					if(useMsgId.equals("true")){
+%>		
+		<%=firstConnName%>.messageid=<%=msgId%>;
+
+<%
+					}
+				}
+			}
+			if(useMsgId.equals("true")){
+%>
+			}
+<%
+			}
+%> 
+	}         
+<%
+		}else if (useMax) {
+%>
+	int maxMsg_<%=cid %> = <%=maxiumMessages %>;
+	System.out.println("We are about to wait until we consume: " + maxMsg_<%=cid %> + " message(s) then we will shutdown");
+	for (int i_<%=cid %> = 0; i_<%=cid %> < maxMsg_<%=cid %> ;) {
+        javax.jms.Message message = consumer_<%=cid %>.receive();
+        if (message != null) {
+            i_<%=cid %>++;
+<%
+			if(useMsgId.equals("true")){
+%>
+			if (message instanceof javax.jms.MapMessage) {
+				javax.jms.MapMessage txtMsg = (javax.jms.MapMessage) message;
+				msg_<%=cid %> = txtMsg.getString(<%=msgId%>);
+				if(msg_<%=cid %> !=null){
+<%
+			}else{
+%>
+            if (message instanceof javax.jms.TextMessage) {
+		        javax.jms.TextMessage txtMsg = (javax.jms.TextMessage) message;
+		        msg_<%=cid %> = txtMsg.getText();
+<%
+			}
+			List< ? extends IConnection> connss = node.getOutgoingSortedConnections();
+			List<IMetadataColumn> columnLists = metadata.getListColumns();
+			for(IConnection conn:connss){
+				if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
+			 	String firstConnName = conn.getName();
+%>
+			<%=firstConnName%>.from=<%=from%>;	
+			<%=firstConnName%>.message=msg_<%=cid %>;	
+<%
+					if(useMsgId.equals("true")){
+%>		
+			<%=firstConnName%>.messageid=<%=msgId%>;
+<%
+					}
+				}
+			}
+			if(useMsgId.equals("true")){
+%>
+			}
+<%
+			}
+%>
+		}
+	}
        
-<% } else {%>
-                System.out.println("We will wait for messages within: " + <%=receiveTimeOut%>*1000 + " ms, and then we will shutdown");
-                javax.jms.Message message;
-                while ((message = consumer_<%=cid %>.receive(<%=receiveTimeOut%>*1000)) != null) {
-            	if (message instanceof javax.jms.TextMessage) {
-                javax.jms.TextMessage txtMsg = (javax.jms.TextMessage) message;
-                msg_<%=cid %> = txtMsg.getText();
 <%
-List< ? extends IConnection> connss = node.getOutgoingSortedConnections();
-List<IMetadataColumn> columnLists = metadata.getListColumns();
-for(IConnection conn:connss){
-	if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
- 	String firstConnName = conn.getName();
+		}else {
 %>
-				<%=firstConnName%>.from=<%=from%>;	
-				<%=firstConnName%>.message=msg_<%=cid %>;	
+    System.out.println("We will wait for messages within: " + <%=receiveTimeOut%>*1000 + " ms, and then we will shutdown");
+    javax.jms.Message message;
+    while ((message = consumer_<%=cid %>.receive(<%=receiveTimeOut%>*1000)) != null) {
 <%
-}
-}%>          
+			if(useMsgId.equals("true")){
+%>
+		if (message instanceof javax.jms.MapMessage) {
+			javax.jms.MapMessage txtMsg = (javax.jms.MapMessage) message;
+			msg_<%=cid %> = txtMsg.getString(<%=msgId%>);
+			if(msg_<%=cid %> !=null){
+<%
+			}else{
+%>
+		if (message instanceof javax.jms.TextMessage) {
+			javax.jms.TextMessage txtMsg = (javax.jms.TextMessage) message;
+			msg_<%=cid %> = txtMsg.getText();
+<%
+			}
+			List< ? extends IConnection> connss = node.getOutgoingSortedConnections();
+			List<IMetadataColumn> columnLists = metadata.getListColumns();
+			for(IConnection conn:connss){
+				if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
+			 		String firstConnName = conn.getName();
+%>
+			<%=firstConnName%>.from=<%=from%>;	
+			<%=firstConnName%>.message=msg_<%=cid %>;	
+<%
+					if(useMsgId.equals("true")){
+%>		
+			<%=firstConnName%>.messageid=<%=msgId%>;
+			
+<%
+					}
+				}
+			}
+			if(useMsgId.equals("true")){
+%>
+			}
+<%
+			}
+%>          
          } 
-<% } %>
+<%
+		}
+%>
 
     
-<%}  //server judgement   /***WebSphere MQ*****/
+<%
+	}  //server judgement   /***WebSphere MQ*****/
 else{
 	String channel=ElementParameterParser.getValue(node, "__CHANNEL__");
 	String qm=ElementParameterParser.getValue(node, "__QM__");

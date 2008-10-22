@@ -49,26 +49,26 @@ if(serverType.equals("JBoss")){ // server judgement
 	boolean topic = ElementParameterParser.getValue(node, "__MSGTYPE__").equals("Topic");
 	String to = ElementParameterParser.getValue(node, "__TO__");
 %>
-String url_<%=cid %> = "tcp://"+<%=host%>+":"+<%=port%>;
-System.out.println("Connecting to URL: " + url_<%=cid %>);
-System.out.println("Producing " + (<%=topic%> ? "topic" : "queue") + ": " + <%=to %>);
+	String url_<%=cid %> = "tcp://"+<%=host%>+":"+<%=port%>;
+	System.out.println("Connecting to URL: " + url_<%=cid %>);
+	System.out.println("Producing " + (<%=topic%> ? "topic" : "queue") + ": " + <%=to %>);
+	
+	
+	org.apache.activemq.ActiveMQConnectionFactory factory_<%=cid %> = 
+		new org.apache.activemq.ActiveMQConnectionFactory
+			(org.apache.activemq.ActiveMQConnection.DEFAULT_USER, org.apache.activemq.ActiveMQConnection.DEFAULT_PASSWORD, url_<%=cid %>);
+	javax.jms.Connection connection_<%=cid %> = factory_<%=cid %>.createConnection();
+	connection_<%=cid %>.start();
 
-
-org.apache.activemq.ActiveMQConnectionFactory factory_<%=cid %> = 
-new org.apache.activemq.ActiveMQConnectionFactory
-(org.apache.activemq.ActiveMQConnection.DEFAULT_USER, org.apache.activemq.ActiveMQConnection.DEFAULT_PASSWORD, url_<%=cid %>);
-javax.jms.Connection connection_<%=cid %> = factory_<%=cid %>.createConnection();
-connection_<%=cid %>.start();
-
-javax.jms.Session session_<%=cid %> = connection_<%=cid %>.createSession(false, javax.jms.Session.AUTO_ACKNOWLEDGE);
-
-javax.jms.Destination des_<%=cid %>;
-des_<%=cid %> = session_<%=cid %>.createQueue(<%=to %>);
-if (<%=topic%>) {
-        des_<%=cid %> = session_<%=cid %>.createTopic(<%=to %>);
-       }
-javax.jms.MessageProducer producer_<%=cid %> = session_<%=cid %>.createProducer(des_<%=cid %>);
-producer_<%=cid %>.setDeliveryMode(javax.jms.DeliveryMode.NON_PERSISTENT);
+	javax.jms.Session session_<%=cid %> = connection_<%=cid %>.createSession(false, javax.jms.Session.AUTO_ACKNOWLEDGE);
+	
+	javax.jms.Destination des_<%=cid %>;
+	des_<%=cid %> = session_<%=cid %>.createQueue(<%=to %>);
+	if (<%=topic%>) {
+    	des_<%=cid %> = session_<%=cid %>.createTopic(<%=to %>);
+    }
+	javax.jms.MessageProducer producer_<%=cid %> = session_<%=cid %>.createProducer(des_<%=cid %>);
+	producer_<%=cid %>.setDeliveryMode(javax.jms.DeliveryMode.NON_PERSISTENT);
 
 <%}else{ //server judgement   /***WebSphere MQ*****/
 	String channel=ElementParameterParser.getValue(node, "__CHANNEL__");

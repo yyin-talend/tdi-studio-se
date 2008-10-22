@@ -150,11 +150,11 @@
       REQUIRED="true"
       NUM_ROW="45"
     >
-      <TABLE IF="(SERVER == 'JBOSS') or (IS_USE_MESSAGE_ID == 'false') or (SERVER == 'ACTIVEMQ')" READONLY="true">
+      <TABLE IF="(IS_USE_MESSAGE_ID == 'false')" READONLY="true">
         <COLUMN NAME="from" TYPE="id_String" LENGTH="255"/>
         <COLUMN NAME="message" TYPE="id_String" LENGTH="255"/>
       </TABLE>
-      <TABLE IF="(SERVER == 'WEBSPHERE') and (IS_USE_MESSAGE_ID == 'true')" READONLY="true">
+      <TABLE IF="(IS_USE_MESSAGE_ID == 'true')" READONLY="true">
         <COLUMN NAME="from" TYPE="id_String" LENGTH="255"/>
         <COLUMN NAME="messageid" TYPE="id_String" LENGTH="255"/>
         <COLUMN NAME="message" TYPE="id_String" LENGTH="255"/>
@@ -179,8 +179,7 @@
     <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
-    <PARAMETER NAME="IS_USE_MESSAGE_ID" FIELD="CHECK" REQUIRED="true" NUM_ROW="60" 
-      SHOW_IF="(SERVER == 'WEBSPHERE')">
+    <PARAMETER NAME="IS_USE_MESSAGE_ID" FIELD="CHECK" REQUIRED="true" NUM_ROW="60" >
 	  <DEFAULT>false</DEFAULT>
 	</PARAMETER>
     
@@ -188,7 +187,7 @@
       NAME="MSG_ID"
       FIELD="TEXT"
       NUM_ROW="70"
-      SHOW_IF="(SERVER == 'WEBSPHERE') and (IS_USE_MESSAGE_ID == 'true')"
+      SHOW_IF="(IS_USE_MESSAGE_ID == 'true')"
     > 
     	<DEFAULT>""</DEFAULT>
 	</PARAMETER> 
