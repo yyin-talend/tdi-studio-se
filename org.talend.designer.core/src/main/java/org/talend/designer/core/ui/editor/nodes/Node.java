@@ -1180,7 +1180,7 @@ public class Node extends Element implements INode {
 
     public IMetadataTable getMetadataFromConnector(String connector) {
         for (IMetadataTable table : metadataList) {
-            if (table.getAttachedConnector()!=null) {
+            if (table.getAttachedConnector() != null) {
                 if (table.getAttachedConnector().equals(connector)) {
                     return table;
                 }
@@ -1841,7 +1841,11 @@ public class Node extends Element implements INode {
                 IMetadataTable firstSchema = inputs.get(0).getMetadataTable();
                 boolean isSame = true;
                 for (int i = 1; i < inputs.size(); i++) {
-                    if (!firstSchema.sameMetadataAs(inputs.get(i).getMetadataTable())) {
+                    // ignore dbtype to make the schema as same, see bug 0004961: tUnite" should unite different
+                    // datastreams
+                    if (!firstSchema.sameMetadataAs(inputs.get(i).getMetadataTable(), IMetadataColumn.OPTIONS_IGNORE_DBCOLUMNNAME
+                            | IMetadataColumn.OPTIONS_IGNORE_DEFAULT | IMetadataColumn.OPTIONS_IGNORE_COMMENT
+                            | IMetadataColumn.OPTIONS_IGNORE_DBTYPE)) {
                         isSame = false;
                         break;
                     }
