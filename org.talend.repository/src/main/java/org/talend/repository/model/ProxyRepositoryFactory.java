@@ -695,7 +695,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * 
      * @see org.talend.repository.model.IProxyRepositoryFactory#lock(org.talend.core.model.repository.IRepositoryObject)
      */
-    public void lock(IRepositoryObject obj) throws PersistenceException, BusinessException {
+    public void lock(IRepositoryObject obj) throws PersistenceException {
         lock(getItem(obj));
     }
 
@@ -704,7 +704,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * 
      * @see org.talend.repository.model.IProxyRepositoryFactory#lock(org.talend.core.model.properties.Item)
      */
-    public void lock(Item item) throws PersistenceException, BusinessException {
+    public void lock(Item item) throws PersistenceException {
         if (getStatus(item).isPotentiallyEditable()) {
             this.repositoryFactoryFromProvider.lock(item);
             // i18n
@@ -1206,8 +1206,6 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
                 lock(item);
             } catch (PersistenceException e) {
                 MessageBoxExceptionHandler.process(e);
-            } catch (BusinessException e) {
-                // Nothing to do
             }
             status = getStatus(item);
         }

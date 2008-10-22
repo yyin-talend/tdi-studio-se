@@ -209,7 +209,7 @@ public interface IRepositoryFactory {
 	public void moveObject(IRepositoryObject objToMove, IPath newPath)
 			throws PersistenceException;
 
-	public void lock(Item item) throws PersistenceException, BusinessException;
+	public void lock(Item item) throws PersistenceException;
 
 	public void unlock(Item obj) throws PersistenceException;
 
