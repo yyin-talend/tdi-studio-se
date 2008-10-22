@@ -198,14 +198,16 @@ public class SubjobContainerFigure extends Figure {
         }
         String propertyValue = (String) subjobContainer.getPropertyValue(EParameterName.SUBJOB_TITLE_COLOR.getName());
         if (propertyValue == null || "".equals(propertyValue)) {
-            subjobContainer.setPropertyValue(EParameterName.SUBJOB_TITLE_COLOR.getName(), DesignerColorUtils
-                    .getPreferenceSubjobRGB(DesignerColorUtils.SUBJOB_TITLE_COLOR_NAME, DesignerColorUtils.SUBJOB_TITLE_COLOR));
+            RGB colorValue = DesignerColorUtils.getPreferenceSubjobRGB(DesignerColorUtils.SUBJOB_TITLE_COLOR_NAME,
+                    DesignerColorUtils.SUBJOB_TITLE_COLOR);
+            subjobContainer.setPropertyValue(EParameterName.SUBJOB_TITLE_COLOR.getName(), ColorUtils.getRGBValue(colorValue));
         }
         //
         propertyValue = (String) subjobContainer.getPropertyValue(EParameterName.SUBJOB_COLOR.getName());
         if (propertyValue == null || "".equals(propertyValue)) {
-            subjobContainer.setPropertyValue(EParameterName.SUBJOB_COLOR.getName(), DesignerColorUtils.getPreferenceSubjobRGB(
-                    DesignerColorUtils.SUBJOB_COLOR_NAME, DesignerColorUtils.SUBJOB_COLOR));
+            RGB colorValue = DesignerColorUtils.getPreferenceSubjobRGB(DesignerColorUtils.SUBJOB_COLOR_NAME,
+                    DesignerColorUtils.SUBJOB_COLOR);
+            subjobContainer.setPropertyValue(EParameterName.SUBJOB_COLOR.getName(), ColorUtils.getRGBValue(colorValue));
         }
 
         mainColor = ColorUtils.parseStringToRGB(propertyValue, DesignerColorUtils.SUBJOB_COLOR);
@@ -227,5 +229,4 @@ public class SubjobContainerFigure extends Figure {
             add(rectFig, null, 1);
         }
     }
-
 }
