@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.draw2d.geometry.Translatable;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
@@ -39,9 +40,13 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ListDialog;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
+import org.talend.core.model.metadata.builder.connection.CDCConnection;
+import org.talend.core.model.metadata.builder.connection.CDCType;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
@@ -49,9 +54,11 @@ import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.RepositoryObject;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
@@ -72,6 +79,7 @@ import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.utils.ConnectionContextHelper;
@@ -369,25 +377,56 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
     private List<Command> createRefreshingPropertiesCommand(RepositoryNode selectedNode, Node node) {
         List<Command> list = new ArrayList<Command>();
         if (selectedNode.getObject().getProperty().getItem() instanceof ConnectionItem) {
+            String propertyId = selectedNode.getObject().getProperty().getId();
+            ConnectionItem originalConnectionItem = (ConnectionItem) selectedNode.getObject().getProperty().getItem();
+            ConnectionItem connectionItem = originalConnectionItem;
+            Connection originalConnection = connectionItem.getConnection();
+            Connection connection = connectionItem.getConnection();
+            // if component is CDC, replace by the CDC connection.
+            if (node.getComponent().getName().contains("CDC")) { // to replace by a flag CDC in component?
+                if (selectedNode.getObject().getProperty().getItem() instanceof DatabaseConnectionItem) {
+                    CDCConnection cdcConn = ((DatabaseConnection) connection).getCdcConns();
+                    if (cdcConn != null) {
+                        EList cdcTypes = cdcConn.getCdcTypes();
+                        if (cdcTypes != null && !cdcTypes.isEmpty()) {
+                            CDCType cdcType = (CDCType) cdcTypes.get(0);
+                            // replace property by CDC property.
+                            propertyId = cdcType.getLinkDB();
+                            try {
+                                IRepositoryObject object = ProxyRepositoryFactory.getInstance().getLastVersion(propertyId);
+                                if (object != null) {
+                                    if (object.getProperty().getItem() instanceof DatabaseConnectionItem) {
+                                        DatabaseConnectionItem dbConnItem = (DatabaseConnectionItem) object.getProperty()
+                                                .getItem();
+                                        // replace connection by CDC connection
+                                        connectionItem = dbConnItem;
+                                        connection = dbConnItem.getConnection();
+                                    }
+                                }
+                            } catch (PersistenceException e) {
+                                ExceptionHandler.process(e);
+                            }
+                        }
+                    }
+                }
+
+            }
             IElementParameter propertyParam = node.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
             if (propertyParam != null) {
                 propertyParam.getChildParameters().get(EParameterName.PROPERTY_TYPE.getName()).setValue(EmfComponent.REPOSITORY);
-                propertyParam.getChildParameters().get(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()).setValue(
-                        selectedNode.getObject().getProperty().getId());
+                propertyParam.getChildParameters().get(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()).setValue(propertyId);
             }
             IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
-            ConnectionItem connectionItem = (ConnectionItem) selectedNode.getObject().getProperty().getItem();
 
             Map<String, IMetadataTable> repositoryTableMap = new HashMap<String, IMetadataTable>();
 
-            Connection connection = connectionItem.getConnection();
-            if (!connection.isReadOnly()) {
-                for (Object tableObj : connection.getTables()) {
+            if (!originalConnection.isReadOnly()) {
+                for (Object tableObj : originalConnection.getTables()) {
                     org.talend.core.model.metadata.builder.connection.MetadataTable table;
 
                     table = (org.talend.core.model.metadata.builder.connection.MetadataTable) tableObj;
 
-                    if (factory.getStatus(connectionItem) != ERepositoryStatus.DELETED) {
+                    if (factory.getStatus(originalConnectionItem) != ERepositoryStatus.DELETED) {
                         if (!factory.isDeleted(table)) {
                             String value = table.getId();
                             IMetadataTable newTable = ConvertionHelper.convert(table);
@@ -399,9 +438,8 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
 
             if (propertyParam != null) {
                 // command used to set property type
-                ChangeValuesFromRepository command1 = new ChangeValuesFromRepository(node, connectionItem.getConnection(),
-                        propertyParam.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), selectedNode
-                                .getObject().getProperty().getId());
+                ChangeValuesFromRepository command1 = new ChangeValuesFromRepository(node, connection, propertyParam.getName()
+                        + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), propertyId);
 
                 command1.setMaps(repositoryTableMap);
                 if (selectedNode.getProperties(EProperties.CONTENT_TYPE) != ERepositoryObjectType.METADATA_CON_QUERY) {
@@ -414,7 +452,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             }
 
             // command used to set metadata
-            Command command = getChangeMetadataCommand(selectedNode, node, connectionItem);
+            Command command = getChangeMetadataCommand(selectedNode, node, originalConnectionItem);
             if (command != null) {
                 list.add(command);
             }
@@ -425,7 +463,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
 
                 RepositoryObject object = (RepositoryObject) selectedNode.getObject();
                 Query query = (Query) object.getAdapter(Query.class);
-                String value = connectionItem.getProperty().getId() + " - " + query.getLabel();
+                String value = originalConnectionItem.getProperty().getId() + " - " + query.getLabel();
                 if (queryParam != null) {
                     RepositoryChangeQueryCommand command3 = new RepositoryChangeQueryCommand(node, query, queryParam.getName()
                             + ":" + EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName(), value);
