@@ -39,6 +39,7 @@ import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.views.problems.Problems;
+import org.talend.designer.core.utils.DesignerUtilities;
 import org.talend.designer.runprocess.ErrorDetailTreeBuilder.JobErrorEntry;
 
 /**
@@ -70,18 +71,15 @@ public class JobErrorsChecker {
                     // check syntax error in perl. java use auto build to check syntax
                     validatePerlScript(sourceFile);
                 }
-                IProcess process = service.getProcessFromProcessItem(item);
-               
-                //See bug 5421
-                if (PlatformUI.getWorkbench() != null && PlatformUI.getWorkbench().getActiveWorkbenchWindow() != null
-                        && PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage() != null
-                        && PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor() != null) {
-                    IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                            .getActiveEditor();
-                    if (activeEditor instanceof AbstractMultiPageTalendEditor) {
-                        process = ((AbstractMultiPageTalendEditor) activeEditor).getProcess();
-                    }
-                }
+
+                // See Bug 5421
+                // Get job from editor if it is opened.
+                IProcess process = DesignerUtilities.findProcessFromEditors(item.getProperty().getId(), item.getProperty()
+                        .getVersion());
+                if (process == null) {
+                    // Get job from file if it is not opened.
+                    process = service.getProcessFromProcessItem(item);
+                }//
 
                 jobNames.add(process.getLabel());
 
