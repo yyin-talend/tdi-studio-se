@@ -93,7 +93,9 @@ import java.util.Comparator;
  * @version <%=version %>
  * @status <%=ElementParameterParser.getValue(process, "__STATUS__") %> 
  */                                
- public class <%=process.getName()%> {    
+ public class <%=process.getName()%> {
+ 
+ 	public static final Object obj = new Object();    
 <%
 if(isRunInMultiThread){
 %>

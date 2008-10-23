@@ -57,6 +57,23 @@ for (IConnection iterateConn : iterateConnSet) { //1
 			rowList = rowList.substring(0, rowList.length()-1);
 %>			
 	class <%=node.getUniqueName() %>Thread extends TalendThread {//implements routines.system.TalendThreadPool.PropertySettable
+	
+		class ThreadedMap extends java.util.HashMap<String, Object> {
+			
+			private static final long serialVersionUID = 0L;
+
+			public ThreadedMap(java.util.Map<String, Object> globalMap) {
+				super(globalMap);
+			}
+
+			@Override
+			public Object put(String key, Object value) {
+				synchronized (<%=process.getName()%>.obj) {
+					super.put(key, value);
+					return <%=process.getName()%>.globalMap.put(key, value);
+				}
+			}
+		}	
 
 		private java.util.Map<String, Object> globalMap = null;
 		boolean isRunning = false;
@@ -98,7 +115,9 @@ for (IConnection iterateConn : iterateConnSet) { //1
 			<% for (IConnection conn : allSubProcessConnection) { %>
 			this.<%=conn.getUniqueName() %> = <%=conn.getUniqueName() %>;
 			<% } %>
-			this.globalMap = java.util.Collections.synchronizedMap(new java.util.HashMap<String, Object>(globalMap));
+			synchronized (<%=process.getName()%>.obj) {
+				this.globalMap = java.util.Collections.synchronizedMap(new ThreadedMap(globalMap));
+			}
 			this.globalMap.put("PARALLEL_ITERATOR_THREAD_ID",Integer.toString(threadID));
 		}
 
