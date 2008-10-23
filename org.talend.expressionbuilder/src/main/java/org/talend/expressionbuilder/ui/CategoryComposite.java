@@ -26,6 +26,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.custom.CLabel;
@@ -109,6 +110,7 @@ public class CategoryComposite extends Composite {
             }
         });
         categoryViewer.setContentProvider(new ArrayContentProvider());
+        categoryViewer.setSorter(new ViewerSorter());
         categoryList = categoryViewer.getList();
         categoryList.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
@@ -133,6 +135,7 @@ public class CategoryComposite extends Composite {
                 return ((Function) element).getName();
             }
         });
+        functionViewer.setSorter(new ViewerSorter());
         functionList = functionViewer.getList();
         functionList.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         sashForm1.setWeights(new int[] { 1, 1 });
@@ -166,14 +169,14 @@ public class CategoryComposite extends Composite {
      */
     private void initializeData(ListViewer categoryViewer) {
         categoryViewer.setInput(manager.getInputCategory());
-//        if (manager.getInputCategory().size() > 0) {
-//            categoryViewer.getList().select(0);
-//            java.util.List<Function> functions = manager.getInputCategory().get(0).getFunctions();
-//            if (functions != null && functions.size() > 0) {
-//                functionViewer.setInput(functions);
-//                functionList.select(0);
-//            }
-//        }
+        // if (manager.getInputCategory().size() > 0) {
+        // categoryViewer.getList().select(0);
+        // java.util.List<Function> functions = manager.getInputCategory().get(0).getFunctions();
+        // if (functions != null && functions.size() > 0) {
+        // functionViewer.setInput(functions);
+        // functionList.select(0);
+        // }
+        // }
     }
 
     /**
