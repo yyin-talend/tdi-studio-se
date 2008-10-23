@@ -125,8 +125,8 @@ public class DataStringConnection {
                 "jdbc:informix-sqli://" + host + ":" + port + "/" + sid + ":informixserver=" + word + ";" + addParam); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         dataConnection[DBTYPE_ACCESS] = new DataConnection("Access",
-                "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ=<filename>",
-                "jdbc:odbc:Driver={Microsoft Access Driver \\(\\*\\.mdb\\)};DBQ=" + file); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=<filename>",
+                "jdbc:odbc:Driver={Microsoft Access Driver \\(\\*\\.mdb, \\*\\.accdb\\)};DBQ=" + file); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         dataConnection[DBTYPE_TERDATA] = new DataConnection(
                 "Teradata", "jdbc:teradata://<host>/<sid>", "jdbc:teradata://" + host + "/" + sid); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
