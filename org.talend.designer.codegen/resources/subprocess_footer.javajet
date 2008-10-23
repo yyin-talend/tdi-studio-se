@@ -73,11 +73,11 @@
 <%
 	if(isRunInMultiThread){
 %>
-	throw new TalendException(this, e, currentComponent);
+	throw new TalendException(this, e, currentComponent, globalMap);
 <%
 	}else{
 %>	
-		throw new TalendException(this, e);
+		throw new TalendException(this, e, globalMap);
 <%
 	}
 %>		

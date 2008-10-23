@@ -200,21 +200,23 @@ private static RunTrace runTrace = new RunTrace();
 	}
 %>
 private class TalendException extends Exception {
+	private java.util.Map<String, Object> globalMap = null;
 	private Exception e = null;
 	private <%=process.getName() %> c = null;
 <%
 	if(isRunInMultiThread ){
 %>	
 	private String currentComponent = null;
-	private TalendException(<%=process.getName() %> c, Exception e,String errorComponent) {
+	private TalendException(<%=process.getName() %> c, Exception e, String errorComponent, final java.util.Map<String, Object> globalMap) {
 		this.currentComponent= errorComponent;
 <%
 	}else{
 %>
-	private TalendException(<%=process.getName() %> c, Exception e) {
+	private TalendException(<%=process.getName() %> c, Exception e, final java.util.Map<String, Object> globalMap) {
 <%
 	}
 %>
+		this.globalMap = globalMap;
 		this.e = e;
 		this.c = c;
 	}
@@ -232,7 +234,7 @@ private class TalendException extends Exception {
 		try {
 			for (java.lang.reflect.Method m : this.getClass().getEnclosingClass().getMethods()) {
 				if (m.getName().compareTo(currentComponent + "_error") == 0) {
-					m.invoke(c, new Object[] {e});
+					m.invoke(c, new Object[] { e , globalMap});
 					break;
 				}
 			}
@@ -307,7 +309,7 @@ private class TalendException extends Exception {
 	for (INode node : processNodes) {
 		if (node.isActivate()) {
 		    %>
-            public void <%=node.getUniqueName() %>_error(Exception exception) throws TalendException {
+            public void <%=node.getUniqueName() %>_error(Exception exception, final java.util.Map<String, Object> globalMap) throws TalendException {
                 end_Hash.put("<%=node.getUniqueName() %>", System.currentTimeMillis());
                 <%
                 boolean ifBeforRunError = NodeUtil.checkComponentErrorConnectionAfterNode(node);
@@ -368,7 +370,7 @@ private class TalendException extends Exception {
                     }
                 }
                 %>
-                <%=node.getDesignSubjobStartNode().getUniqueName() %>_onSubJobError(exception);
+                <%=node.getDesignSubjobStartNode().getUniqueName() %>_onSubJobError(exception, globalMap);
             }
             <%
 		}
@@ -376,7 +378,7 @@ private class TalendException extends Exception {
 	for (INode node : processNodes) {
 		if (node.isDesignSubjobStartNode()) {
 %>
-			public void <%=node.getUniqueName() %>_onSubJobError(Exception exception) throws TalendException {
+			public void <%=node.getUniqueName() %>_onSubJobError(Exception exception, final java.util.Map<String, Object> globalMap) throws TalendException {
 <%
 			List< ? extends IConnection> conns = node.getOutgoingConnections();
 			for (IConnection conn : conns) {
