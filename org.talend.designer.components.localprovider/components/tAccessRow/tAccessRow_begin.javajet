@@ -27,7 +27,7 @@ imports="
 
 java.lang.Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
 
-String url_<%=cid %> = "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ=" + <%=dbname%>;
+String url_<%=cid %> = "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=" + <%=dbname%>;
 
 String userName_<%=cid %> = <%=username%>;
 
