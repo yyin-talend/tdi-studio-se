@@ -20,6 +20,7 @@ import java.util.List;
 
 import jxl.read.biff.BiffException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.swt.SWT;
@@ -844,7 +845,7 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
 
     private int getIntFromString(String s) {
         try {
-            return Integer.parseInt(s);
+            return Integer.parseInt(s.trim());
         } catch (Exception e) {
             return -1;
         }
@@ -857,7 +858,7 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
         int first = getIntFromString(firstColumnText.getText());
 
         int last = -1;
-        if (lastColumnText.getText().equals("")) {
+        if (StringUtils.isBlank(lastColumnText.getText())) {
             last = originSchemaColumns.size();
         } else {
             last = getIntFromString(lastColumnText.getText());
@@ -1064,7 +1065,6 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
      * (non-Javadoc)
      * 
      * @see org.eclipse.swt.widgets.Control#setVisible(boolean)
-     * 
      */
     @Override
     public void setVisible(boolean visible) {
