@@ -260,11 +260,13 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         }
 
         if (getParent() == null && PluginChecker.isJobLetPluginLoaded()) {
-            // 1.0 Referenced projects
-            refProject = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-            refProject.setProperties(EProperties.LABEL, ERepositoryObjectType.REFERENCED_PROJECTS);
-            refProject.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.REFERENCED_PROJECTS);
-            nodes.add(refProject);
+            if (CorePlugin.getDefault().useRefproject()) {
+                // 1.0 Referenced projects
+                refProject = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+                refProject.setProperties(EProperties.LABEL, ERepositoryObjectType.REFERENCED_PROJECTS);
+                refProject.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.REFERENCED_PROJECTS);
+                nodes.add(refProject);
+            }
         }
     }
 
