@@ -93,22 +93,13 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
     
     <%
     if(!tableAction.equals("NONE")) {
-        if(tableAction.equals("DROP_CREATE")) {
-            %>
-            java.sql.Statement stmtDrop_<%=cid%> = connection_<%=cid%>.createStatement();
-            stmtDrop_<%=cid%>.execute("<%=scdManager.getDropTableSQL()%>");
-            stmtDrop_<%=cid%>.close();
-            java.sql.Statement stmtCreate_<%=cid%> = connection_<%=cid%>.createStatement();
-            stmtCreate_<%=cid%>.execute("<%=scdManager.getCreateTableSQL(outputSchema)%>");
-            stmtCreate_<%=cid%>.close();
-            <%
-        } else if(tableAction.equals("CREATE")) {
+        if(tableAction.equals("CREATE")) {
             %>
             java.sql.Statement stmtCreate_<%=cid%> = connection_<%=cid%>.createStatement();
-            stmtCreate_<%=cid%>.execute("<%=scdManager.getCreateTableSQL(outputSchema)%>");
+            stmtCreate_<%=cid%>.execute("<%=scdManager.getCreateTableSQL(outputSchema, scdConfiger)%>");
             stmtCreate_<%=cid%>.close();
             <%
-        } else if(tableAction.equals("CREATE_IF_NOT_EXISTS") || tableAction.equals("DROP_IF_EXISTS_AND_CREATE")) {
+        } else if(tableAction.equals("CREATE_IF_NOT_EXISTS")) {
             %>
             java.sql.DatabaseMetaData dbMetaData_<%=cid%> = connection_<%=cid%>.getMetaData();
             java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
@@ -120,43 +111,16 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
                     break;
                 }
             }
-            <%
-            if(tableAction.equals("CREATE_IF_NOT_EXISTS")) {
-                %>
-                if(!whetherExist_<%=cid%>) {
-                    java.sql.Statement stmtCreate_<%=cid%> = connection_<%=cid%>.createStatement();
-                    stmtCreate_<%=cid%>.execute("<%=scdManager.getCreateTableSQL(outputSchema)%>");
-                    stmtCreate_<%=cid%>.close();
-                }                
-                <%
-            } else {
-                %>
-                if(whetherExist_<%=cid%>) {
-                    java.sql.Statement stmtDrop_<%=cid%> = connection_<%=cid%>.createStatement();
-                    stmtDrop_<%=cid%>.execute("<%=scdManager.getDropTableSQL()%>");
-                    stmtDrop_<%=cid%>.close();
-                }
+            if(!whetherExist_<%=cid%>) {
                 java.sql.Statement stmtCreate_<%=cid%> = connection_<%=cid%>.createStatement();
-                stmtCreate_<%=cid%>.execute("<%=scdManager.getCreateTableSQL(outputSchema)%>");
+                stmtCreate_<%=cid%>.execute("<%=scdManager.getCreateTableSQL(outputSchema, scdConfiger)%>");
                 stmtCreate_<%=cid%>.close();
-                <%
             }
-        } else if(tableAction.equals("CLEAR")) {
-            %>
-            java.sql.Statement stmtClear_<%=cid%> = connection_<%=cid%>.createStatement();
-            stmtClear_<%=cid%>.executeUpdate("<%=scdManager.getDeleteTableSQL()%>");
-            stmtClear_<%=cid%>.close();
-            <%
-        } else if(tableAction.equals("TRUNCATE")) {
-            %>
-            java.sql.Statement stmtTrunc_<%=cid%> = connection_<%=cid%>.createStatement();
-            stmtTrunc_<%=cid%>.executeUpdate("<%=scdManager.getTruncateTableSQL()%>");
-            stmtTrunc_<%=cid%>.close();
             <%
         }        
     }
     %>
-    
+        
     java.util.Calendar calendar_<%=cid %> = java.util.Calendar.getInstance();
     calendar_<%=cid %>.set(1, 0, 1, 0, 0, 0);
     final java.util.Date dateYear0_<%=cid%> = calendar_<%=cid%>.getTime();

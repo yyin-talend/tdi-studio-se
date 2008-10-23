@@ -754,6 +754,7 @@ public class CLASS {
         protected abstract String getLProtectedChar();
         protected abstract String getRProtectedChar();
         protected abstract String getSequence(String surrogateKeySequence);
+        protected abstract String getIncrement();
         protected abstract String getDate(String endDateValue);
         protected abstract String getYear(String endDateField);
         protected abstract String getActiveFieldTrueValue(JavaType activeFieldType);
@@ -1106,18 +1107,26 @@ public class CLASS {
             dropTableSQL.append("DROP TABLE " + getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar());
             return dropTableSQL.toString();
         }        
-        public String getCreateTableSQL(List<IMetadataColumn> outputSchema) {
+        public String getCreateTableSQL(List<IMetadataColumn> outputSchema, SCDConfiger scdConfiger) {
             MappingTypeRetriever mappingType = MetadataTalendType.getMappingTypeRetriever(getDBMSId());
             StringBuilder createTableSQL = new StringBuilder();
             createTableSQL.append("CREATE TABLE " + getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar() + "(");
             List<String> pkList = new ArrayList<String>();
             int count = 0;
             String ending = ",";
+            String columnName = null;
+            String surrogateKey = scdConfiger.getSurrogateKeyField();
+            String surrogateKeyValueType = scdConfiger.getSurrogateKeyValueType();
             for(IMetadataColumn metadataColumn : outputSchema) {
-                if(metadataColumn.isKey()) {
-                    pkList.add(getLProtectedChar() + metadataColumn.getOriginalDbColumnName() + getRProtectedChar());
+                columnName = metadataColumn.getOriginalDbColumnName();
+                if(columnName.equals(surrogateKey) && surrogateKeyValueType.equals("AUTO_INCREMENT")) {
+                    pkList.add(getLProtectedChar() + columnName + getRProtectedChar());
+                } else {
+                    if(metadataColumn.isKey()) {
+                        pkList.add(getLProtectedChar() + columnName + getRProtectedChar());
+                    }                    
                 }
-                createTableSQL.append(getLProtectedChar() + metadataColumn.getOriginalDbColumnName() + getRProtectedChar() + " ");
+                createTableSQL.append(getLProtectedChar() + columnName + getRProtectedChar() + " ");
                 String dataType = null;
                 if(metadataColumn.getType() == null || metadataColumn.getType().trim().length() == 0) {
                     dataType = mappingType.getDefaultSelectedDbType(metadataColumn.getTalendType());
@@ -1169,8 +1178,13 @@ public class CLASS {
                     }
                     createTableSQL.append(suffix);
                 }
-                createTableSQL.append(getDefaultValueSQL(metadataColumn.getDefault()));            
-                createTableSQL.append(setNullable(metadataColumn.isNullable()));            
+                if(columnName.equals(surrogateKey) && surrogateKeyValueType.equals("AUTO_INCREMENT")) {
+                    createTableSQL.append(setNullable(false));
+                    createTableSQL.append(getIncrement());
+                } else {
+                    createTableSQL.append(getDefaultValueSQL(metadataColumn.getDefault()));            
+                    createTableSQL.append(setNullable(metadataColumn.isNullable()));                    
+                }            
                 if(count == outputSchema.size() - 1 && pkList.size() == 0) {
                     ending = "";
                 }
@@ -1327,6 +1341,9 @@ public class CLASS {
         protected String getSequence(String surrogateKeySequence) {
             return "nextval for \" + " + surrogateKeySequence + " + \"";
         }
+        protected String getIncrement() {
+            return "";
+        }
         protected String getDate(String endDateValue) {
             return "'\" + " + endDateValue + " + \"-01-01'";
         }
@@ -1368,6 +1385,9 @@ public class CLASS {
         protected String getSequence(String surrogateKeySequence) {
             return "\" + " + surrogateKeySequence + " + \".nextval";
         }
+        protected String getIncrement() {
+            return "";
+        }        
         protected String getDate(String endDateValue) {
             return "'\" + " + endDateValue + " + \"-01-01'";
         }        
@@ -1409,6 +1429,9 @@ public class CLASS {
         protected String getSequence(String surrogateKeySequence) {
             return "\" + " + surrogateKeySequence + " + \".nextval";
         }
+        protected String getIncrement() {
+            return "";
+        }        
         protected String getDate(String endDateValue) {
             return "'\" + " + endDateValue + " + \"-01-01'";
         }        
@@ -1450,6 +1473,9 @@ public class CLASS {
         protected String getSequence(String surrogateKeySequence) {
             return "\" + " + surrogateKeySequence + " + \".nextval";
         }
+        protected String getIncrement() {
+            return " AUTO_INCREMENT ";
+        }        
         protected String getDate(String endDateValue) {
             return "'\" + " + endDateValue + " + \"-01-01'";
         }        
@@ -1596,6 +1622,9 @@ public class CLASS {
         protected String getSequence(String surrogateKeySequence) {
             return "\" + " + surrogateKeySequence + " + \".nextval";
         }
+        protected String getIncrement() {
+            return "";
+        }        
         protected String getDate(String endDateValue) {
             return "TO_DATE('\" + " + endDateValue + " + \"-01-01', 'yyyy-mm-dd')";
         }        
@@ -1637,6 +1666,9 @@ public class CLASS {
         protected String getSequence(String surrogateKeySequence) {
             return "\" + " + surrogateKeySequence + " + \".nextval";
         }
+        protected String getIncrement() {
+            return "";
+        }        
         protected String getDate(String endDateValue) {
             return "'\" + " + endDateValue + " + \"-01-01'";
         }        
@@ -1678,6 +1710,9 @@ public class CLASS {
         protected String getSequence(String surrogateKeySequence) {
             return "\" + " + surrogateKeySequence + " + \".nextval";
         }
+        protected String getIncrement() {
+            return "";
+        }        
         protected String getDate(String endDateValue) {
             return "'\" + " + endDateValue + " + \"-01-01'";
         }        
@@ -1719,6 +1754,9 @@ public class CLASS {
         protected String getSequence(String surrogateKeySequence) {
             return "\" + " + surrogateKeySequence + " + \".nextval";
         }
+        protected String getIncrement() {
+            return "";
+        }        
         protected String getDate(String endDateValue) {
             return "'\" + " + endDateValue + " + \"-01-01'";
         }        
