@@ -1269,23 +1269,25 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         classpath.add(jreClasspathEntry);
         classpath.add(classpathEntry);
 
+        // Some shadow process does not implements process.getNeededLibraries(boolean true). If this, just add all jars
         Set<String> listModulesReallyNeeded = process.getNeededLibraries(true);
-
-        File externalLibDirectory = new File(CorePlugin.getDefault().getLibrariesService().getLibrariesPath());
-        if ((externalLibDirectory != null) && (externalLibDirectory.isDirectory())) {
-            for (File externalLib : externalLibDirectory.listFiles(FilesUtils.getAcceptJARFilesFilter())) {
-                if (externalLib.isFile() && listModulesReallyNeeded.contains(externalLib.getName())) {
-                    classpath.add(JavaCore.newLibraryEntry(new Path(externalLib.getAbsolutePath()), null, null));
+        if (listModulesReallyNeeded == null) {
+            updateClasspath();
+        } else {
+            File externalLibDirectory = new File(CorePlugin.getDefault().getLibrariesService().getLibrariesPath());
+            if ((externalLibDirectory != null) && (externalLibDirectory.isDirectory())) {
+                for (File externalLib : externalLibDirectory.listFiles(FilesUtils.getAcceptJARFilesFilter())) {
+                    if (externalLib.isFile() && listModulesReallyNeeded.contains(externalLib.getName())) {
+                        classpath.add(JavaCore.newLibraryEntry(new Path(externalLib.getAbsolutePath()), null, null));
+                    }
                 }
             }
+
+            IClasspathEntry[] classpathEntryArray = classpath.toArray(new IClasspathEntry[classpath.size()]);
+
+            javaProject.setRawClasspath(classpathEntryArray, null);
+
+            javaProject.setOutputLocation(javaProject.getPath().append(JavaUtils.JAVA_CLASSES_DIRECTORY), null);
         }
-
-        IClasspathEntry[] classpathEntryArray = classpath.toArray(new IClasspathEntry[classpath.size()]);
-
-        javaProject.setRawClasspath(classpathEntryArray, null);
-
-        javaProject.setOutputLocation(javaProject.getPath().append(JavaUtils.JAVA_CLASSES_DIRECTORY), null);
-
-        // CorePlugin.getDefault().getLibrariesService().checkLibraries();
     }
 }
