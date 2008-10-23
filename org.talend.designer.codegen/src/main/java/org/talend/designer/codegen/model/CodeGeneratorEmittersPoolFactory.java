@@ -137,11 +137,16 @@ public final class CodeGeneratorEmittersPoolFactory {
 
                         monitorWrap.beginTask(Messages.getString("CodeGeneratorEmittersPoolFactory.initMessage"), (2 * templates
                                 .size() + 5 * components.size()));
-
+                        
+                        int monitorBuffer = 0;
                         for (TemplateUtil template : templates) {
                             JetBean jetBean = initializeUtilTemplate(template, codeLanguage);
                             jetBeans.add(jetBean);
-                            monitorWrap.worked(1);
+                            monitorBuffer++;
+							if (monitorBuffer % 100 == 0) {
+								monitorWrap.worked(100);
+								monitorBuffer = 0;
+							}
                         }
 
                         if (components != null) {
@@ -152,9 +157,14 @@ public final class CodeGeneratorEmittersPoolFactory {
                                     initComponent(codeLanguage, jetBeans, codePart, component);
                                 }
                                 // }
-                                monitorWrap.worked(1);
+                                monitorBuffer++;
+    							if (monitorBuffer % 100 == 0) {
+    								monitorWrap.worked(100);
+    								monitorBuffer = 0;
+    							}
                             }
                         }
+                        monitorWrap.worked(monitorBuffer);
 
                         initializeEmittersPool(jetBeans, codeLanguage, monitorWrap);
                         monitorWrap.done();
@@ -297,6 +307,7 @@ public final class CodeGeneratorEmittersPoolFactory {
     private static void initializeEmittersPool(List<JetBean> components, ECodeLanguage codeLanguage, IProgressMonitor monitorWrap) {
         IProgressMonitor monitor = new NullProgressMonitor();
         IProgressMonitor sub = new SubProgressMonitor(monitor, 1);
+        int monitorBuffer = 0;
 
         HashMap<String, String> globalClasspath = new HashMap<String, String>();
         for (JetBean jetBean : components) {
@@ -323,7 +334,11 @@ public final class CodeGeneratorEmittersPoolFactory {
                                 dummyEmitter.getTalendEclipseHelper());
                         emitter.setMethod(jetBean.getMethod());
                         emitterPool.put(jetBean, emitter);
-                        monitorWrap.worked(1);
+                        monitorBuffer++;
+						if (monitorBuffer % 100 == 0) {
+							monitorWrap.worked(100);
+							monitorBuffer = 0;
+						}
                     }
                 } catch (BusinessException e) {
                     // error already loggued
@@ -341,14 +356,20 @@ public final class CodeGeneratorEmittersPoolFactory {
                     if (emitter.getMethod() != null) {
                         jetBean.setMethod(emitter.getMethod());
                         jetBean.setClassName(emitter.getMethod().getDeclaringClass().getName());
+                        jetBean.setCrc(extractTemplateHashCode(jetBean));
                         alreadyCompiledEmitters.add(jetBean);
                     } else {
                         jetFilesCompileFail.add(jetBean);
                     }
                     emitterPool.put(jetBean, emitter);
-                    monitorWrap.worked(1);
+                    monitorBuffer++;
+					if (monitorBuffer % 100 == 0) {
+						monitorWrap.worked(100);
+						monitorBuffer = 0;
+					}
                 }
             }
+            monitorWrap.worked(monitorBuffer);
         } catch (JETException e) {
             log.error("Error during JetEmitter initalization " + e.getMessage(), e);
         }
@@ -439,8 +460,13 @@ public final class CodeGeneratorEmittersPoolFactory {
                     mapOnName.put(ljb.getTemplateRelativeUri().substring(ljb.getTemplateRelativeUri().lastIndexOf("/")), ljb);
                 }
             }
+            int monitorBuffer = 0;
             for (JetBean unit : completeJetBeanList) {
-                monitorWrap.worked(1);
+            	monitorBuffer++;
+				if (monitorBuffer % 200 == 0) {
+					monitorWrap.worked(200);
+					monitorBuffer = 0;
+				}
                 unitTemplateFullURI = unit.getTemplateFullUri();
                 unitTemplateHashCode = extractTemplateHashCode(unit);
                 unit.setCrc(unitTemplateHashCode);
@@ -467,6 +493,7 @@ public final class CodeGeneratorEmittersPoolFactory {
                     }
                 }
             }
+            monitorWrap.worked(monitorBuffer);
         } catch (MalformedURLException e) {
             log.error(Messages.getString("CodeGeneratorEmittersPoolFactory.JETEmitters.NoPresent")); //$NON-NLS-1$
             throw new BusinessException(e);
