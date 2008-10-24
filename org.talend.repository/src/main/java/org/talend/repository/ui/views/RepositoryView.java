@@ -52,6 +52,7 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IPartListener;
+import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
@@ -59,6 +60,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.TextActionHandler;
 import org.eclipse.ui.commands.ActionHandler;
 import org.eclipse.ui.contexts.IContextActivation;
@@ -111,7 +113,7 @@ import org.talend.repository.ui.actions.RepositoryDoubleClickAction;
  * 
  */
 public class RepositoryView extends ViewPart implements IRepositoryView, ITabbedPropertySheetPageContributor,
-        IRepositoryChangedListener {
+        IRepositoryChangedListener, ISelectionListener {
 
     public final static String ID = "org.talend.repository.views.repository";
 
@@ -153,6 +155,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
             }
             codeGenerationEngineInitialised = true;
         }
+        getSite().getWorkbenchWindow().getSelectionService().addSelectionListener(this);
     }
 
     public static IRepositoryView show() {
@@ -288,6 +291,17 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
             });
         }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.ui.part.WorkbenchPart#dispose()
+     */
+    @Override
+    public void dispose() {
+        super.dispose();
+        getSite().getWorkbenchWindow().getSelectionService().removeSelectionListener(this);
     }
 
     /**
@@ -434,6 +448,10 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         textActionHandler.setCopyAction(CopyAction.getInstance());
         textActionHandler.setPasteAction(PasteAction.getInstance());
         textActionHandler.setDeleteAction(DeleteAction.getInstance());
+
+        getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.COPY.getId(), CopyAction.getInstance());
+        getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.PASTE.getId(), PasteAction.getInstance());
+        getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.DELETE.getId(), DeleteAction.getInstance());
     }
 
     protected void hookDoubleClickAction() {
@@ -479,6 +497,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                 manager.add(action);
             }
         }
+
         manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
     }
 
@@ -713,4 +732,11 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         return contentProvider.gatherMetdataChildrens();
     }
 
+    public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+        if (part == this) {
+            CopyAction.getInstance().init(getViewer(), (IStructuredSelection) getViewer().getSelection());
+            PasteAction.getInstance().init(getViewer(), (IStructuredSelection) getViewer().getSelection());
+            DeleteAction.getInstance().init(getViewer(), (IStructuredSelection) getViewer().getSelection());
+        }
+    }
 }

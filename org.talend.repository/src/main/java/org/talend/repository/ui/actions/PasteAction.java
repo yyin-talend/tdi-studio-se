@@ -19,6 +19,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.actions.ActionFactory;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
@@ -43,9 +44,10 @@ public class PasteAction extends AContextualAction {
 
     public PasteAction() {
         super();
+        setId(ActionFactory.PASTE.getId());
         this.setText(Messages.getString("PasteAction.thisText.paste")); //$NON-NLS-1$
         this.setImageDescriptor(ImageProvider.getImageDesc(EImage.PASTE_ICON));
-        this.setActionDefinitionId("pasteItem"); //$NON-NLS-1$
+        //        this.setActionDefinitionId("pasteItem"); //$NON-NLS-1$
         singleton = this;
     }
 

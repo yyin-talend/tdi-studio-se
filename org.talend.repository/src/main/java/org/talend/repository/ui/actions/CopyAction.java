@@ -16,6 +16,7 @@ import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.ui.actions.ActionFactory;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -37,14 +38,25 @@ public class CopyAction extends AContextualAction {
 
     public CopyAction() {
         super();
+        setId(ActionFactory.COPY.getId());
         this.setText(Messages.getString("CopyAction.thisText.copy")); //$NON-NLS-1$
         this.setImageDescriptor(ImageProvider.getImageDesc(EImage.COPY_ICON));
-        this.setActionDefinitionId("copyItem"); //$NON-NLS-1$
+        //        this.setActionDefinitionId("copyItem"); //$NON-NLS-1$
         singleton = this;
     }
 
     public static CopyAction getInstance() {
         return singleton;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.action.Action#isEnabled()
+     */
+    @Override
+    public boolean isEnabled() {
+        return super.isEnabled();
     }
 
     @Override

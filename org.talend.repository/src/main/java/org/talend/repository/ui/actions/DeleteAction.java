@@ -30,6 +30,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.actions.ActionFactory;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
@@ -82,8 +83,9 @@ public class DeleteAction extends AContextualAction {
 
     public DeleteAction() {
         super();
+        setId(ActionFactory.DELETE.getId());
         this.setImageDescriptor(ImageProvider.getImageDesc(EImage.DELETE_ICON));
-        this.setActionDefinitionId("deleteItem"); //$NON-NLS-1$
+        //        this.setActionDefinitionId("deleteItem"); //$NON-NLS-1$
         singleton = this;
     }
 
