@@ -13,7 +13,6 @@
 package org.talend.designer.codegen.model;
 
 import java.beans.PropertyChangeEvent;
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -23,8 +22,6 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.zip.Adler32;
-import java.util.zip.CheckedInputStream;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
@@ -47,6 +44,7 @@ import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.StringUtils;
+import org.talend.commons.utils.io.IOUitls;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
@@ -137,16 +135,16 @@ public final class CodeGeneratorEmittersPoolFactory {
 
                         monitorWrap.beginTask(Messages.getString("CodeGeneratorEmittersPoolFactory.initMessage"), (2 * templates
                                 .size() + 5 * components.size()));
-                        
+
                         int monitorBuffer = 0;
                         for (TemplateUtil template : templates) {
                             JetBean jetBean = initializeUtilTemplate(template, codeLanguage);
                             jetBeans.add(jetBean);
                             monitorBuffer++;
-							if (monitorBuffer % 100 == 0) {
-								monitorWrap.worked(100);
-								monitorBuffer = 0;
-							}
+                            if (monitorBuffer % 100 == 0) {
+                                monitorWrap.worked(100);
+                                monitorBuffer = 0;
+                            }
                         }
 
                         if (components != null) {
@@ -158,10 +156,10 @@ public final class CodeGeneratorEmittersPoolFactory {
                                 }
                                 // }
                                 monitorBuffer++;
-    							if (monitorBuffer % 100 == 0) {
-    								monitorWrap.worked(100);
-    								monitorBuffer = 0;
-    							}
+                                if (monitorBuffer % 100 == 0) {
+                                    monitorWrap.worked(100);
+                                    monitorBuffer = 0;
+                                }
                             }
                         }
                         monitorWrap.worked(monitorBuffer);
@@ -335,10 +333,10 @@ public final class CodeGeneratorEmittersPoolFactory {
                         emitter.setMethod(jetBean.getMethod());
                         emitterPool.put(jetBean, emitter);
                         monitorBuffer++;
-						if (monitorBuffer % 100 == 0) {
-							monitorWrap.worked(100);
-							monitorBuffer = 0;
-						}
+                        if (monitorBuffer % 100 == 0) {
+                            monitorWrap.worked(100);
+                            monitorBuffer = 0;
+                        }
                     }
                 } catch (BusinessException e) {
                     // error already loggued
@@ -348,6 +346,8 @@ public final class CodeGeneratorEmittersPoolFactory {
 
             for (JetBean jetBean : components) {
                 if (!emitterPool.containsKey(jetBean)) {
+                    // System.out.println("The new file is not in JetPersistence* cache:" +
+                    // jetBean.getTemplateFullUri());
                     TalendJetEmitter emitter = new TalendJetEmitter(jetBean.getTemplateFullUri(), jetBean.getClassLoader(),
                             jetBean.getFamily(), jetBean.getClassName(), jetBean.getLanguage(), jetBean.getCodePart(),
                             dummyEmitter.getTalendEclipseHelper());
@@ -356,17 +356,18 @@ public final class CodeGeneratorEmittersPoolFactory {
                     if (emitter.getMethod() != null) {
                         jetBean.setMethod(emitter.getMethod());
                         jetBean.setClassName(emitter.getMethod().getDeclaringClass().getName());
-                        jetBean.setCrc(extractTemplateHashCode(jetBean));
+                        // do it in loadEmfPersistentData(...)
+                        // jetBean.setCrc(extractTemplateHashCode(jetBean));
                         alreadyCompiledEmitters.add(jetBean);
                     } else {
                         jetFilesCompileFail.add(jetBean);
                     }
                     emitterPool.put(jetBean, emitter);
                     monitorBuffer++;
-					if (monitorBuffer % 100 == 0) {
-						monitorWrap.worked(100);
-						monitorBuffer = 0;
-					}
+                    if (monitorBuffer % 100 == 0) {
+                        monitorWrap.worked(100);
+                        monitorBuffer = 0;
+                    }
                 }
             }
             monitorWrap.worked(monitorBuffer);
@@ -406,35 +407,27 @@ public final class CodeGeneratorEmittersPoolFactory {
      * @throws MalformedURLException
      * @throws IOException
      */
+    /**
+     * DOC mhirt Comment method "extractTemplateHashCode".
+     * 
+     * @param unit
+     * @return
+     * @throws MalformedURLException
+     * @throws IOException
+     */
     private static long extractTemplateHashCode(JetBean unit) {
         long unitCRC = 0;
 
         URI uri = URI.createURI(unit.getTemplateFullUri());
+        uri = CommonPlugin.resolve(uri);
         URL url;
-
-        BufferedInputStream bufferedInputStream = null;
-
         try {
-            uri = CommonPlugin.resolve(uri);
             url = new URL(uri.toString());
-            bufferedInputStream = new BufferedInputStream(url.openStream());
-
-            // Compute Adler-32 checksum
-            CheckedInputStream cis = new CheckedInputStream(bufferedInputStream, new Adler32());
-            byte[] tempBuf = new byte[128];
-            while (cis.read(tempBuf) >= 0) {
-                // do nothing
-            }
-            unitCRC = cis.getChecksum().getValue();
-        } catch (IOException e) {
-            return -1;
-        } finally {
-            try {
-                bufferedInputStream.close();
-            } catch (Exception e) {
-                // ignore me even if i'm null
-            }
+            unitCRC = IOUitls.computeCRC(url.openStream());
+        } catch (Exception e) {
+            // ignore me even if i'm null
         }
+
         return unitCRC;
     }
 
@@ -462,11 +455,11 @@ public final class CodeGeneratorEmittersPoolFactory {
             }
             int monitorBuffer = 0;
             for (JetBean unit : completeJetBeanList) {
-            	monitorBuffer++;
-				if (monitorBuffer % 200 == 0) {
-					monitorWrap.worked(200);
-					monitorBuffer = 0;
-				}
+                monitorBuffer++;
+                if (monitorBuffer % 200 == 0) {
+                    monitorWrap.worked(200);
+                    monitorBuffer = 0;
+                }
                 unitTemplateFullURI = unit.getTemplateFullUri();
                 unitTemplateHashCode = extractTemplateHashCode(unit);
                 unit.setCrc(unitTemplateHashCode);

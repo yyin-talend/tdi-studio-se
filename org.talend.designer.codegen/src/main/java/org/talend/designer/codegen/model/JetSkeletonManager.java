@@ -17,13 +17,13 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +39,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.osgi.framework.Bundle;
+import org.talend.commons.utils.io.IOUitls;
 import org.talend.core.model.components.ComponentCompilations;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.designer.codegen.CodeGeneratorActivator;
@@ -99,24 +100,32 @@ public final class JetSkeletonManager {
         }
     }
 
-    private boolean needCheck(java.io.File file) {
+    private boolean checkAndUpdateCache(java.io.File file) {
         String path = file.getAbsolutePath();
+        long currentCRC = 0;
+        try {
+            currentCRC = IOUitls.computeCRC(new FileInputStream(file));
+        } catch (FileNotFoundException e) {
+            // ignore here, only print
+            e.printStackTrace();
+        }
         if (forceSkeletonAlreadyChecked) {
-            alreadyCheckedSkeleton.put(path, System.currentTimeMillis());
+
+            alreadyCheckedSkeleton.put(path, currentCRC);
             return false;
         } else {
-            Long lastChecked = alreadyCheckedSkeleton.get(path);
-            long lastModified = file.lastModified();
-            if (lastChecked == null) {
+            Long lastCheckedCRC = alreadyCheckedSkeleton.get(path);
+            if (lastCheckedCRC == null) {
                 return true;
             }
-            return lastModified > lastChecked;
-        }
-    }
 
-    private void setChecked(File file) {
-        String path = file.getAbsolutePath();
-        alreadyCheckedSkeleton.put(path, new Date().getTime());
+            boolean isChanged = currentCRC != lastCheckedCRC;
+            if (isChanged) {
+                alreadyCheckedSkeleton.put(path, currentCRC);
+            }
+
+            return isChanged;
+        }
     }
 
     private File getSerializationFilePath() throws CoreException {
@@ -207,8 +216,7 @@ public final class JetSkeletonManager {
             try {
 
                 File file = new File(jetSkeleton);
-                if (localInstance.needCheck(file)) {
-                    localInstance.setChecked(file);
+                if (localInstance.checkAndUpdateCache(file)) {
                     doUpdate = true;
                     // System.out.println("need check:" + jetSkeleton);
                 }
