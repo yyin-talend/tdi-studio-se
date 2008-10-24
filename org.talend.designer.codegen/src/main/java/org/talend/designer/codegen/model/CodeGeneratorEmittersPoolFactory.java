@@ -44,7 +44,7 @@ import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.StringUtils;
-import org.talend.commons.utils.io.IOUitls;
+import org.talend.commons.utils.io.IOUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
@@ -423,7 +423,7 @@ public final class CodeGeneratorEmittersPoolFactory {
         URL url;
         try {
             url = new URL(uri.toString());
-            unitCRC = IOUitls.computeCRC(url.openStream());
+            unitCRC = IOUtils.computeCRC(url.openStream());
         } catch (Exception e) {
             // ignore me even if i'm null
         }
