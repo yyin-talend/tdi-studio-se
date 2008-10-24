@@ -407,14 +407,6 @@ public final class CodeGeneratorEmittersPoolFactory {
      * @throws MalformedURLException
      * @throws IOException
      */
-    /**
-     * DOC mhirt Comment method "extractTemplateHashCode".
-     * 
-     * @param unit
-     * @return
-     * @throws MalformedURLException
-     * @throws IOException
-     */
     private static long extractTemplateHashCode(JetBean unit) {
         long unitCRC = 0;
 
