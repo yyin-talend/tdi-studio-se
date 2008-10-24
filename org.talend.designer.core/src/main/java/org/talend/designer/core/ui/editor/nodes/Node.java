@@ -548,11 +548,33 @@ public class Node extends Element implements INode {
     }
 
     public void updateVisibleData() {
-        String newLabel = ElementParameterParser.parse(this, labelToParse);
+        String newLabel = label;
+        // label may be replaced with variable from exiting connection. see 0005456: Label Format __DBNAME__ not valid
+        // when using existing connection
+        IElementParameter useConn = this.getElementParameter("USE_EXISTING_CONNECTION");
+        if (labelToParse != null && useConn != null && Boolean.TRUE.equals(useConn.getValue())) {
+            IElementParameter connParam = this.getElementParameter("CONNECTION");
+            String connName = (String) connParam.getValue();
+            INode connNode = null;
+            List<? extends INode> nodeList = this.getProcess().getGraphicalNodes();
+            for (INode node : nodeList) {
+                if (node.getUniqueName().equals(connName)) {
+                    connNode = node;
+                    break;
+                }
+            }
+            if (connNode != null) {
+                newLabel = ElementParameterParser.replaceLabelWithExistingConnection(labelToParse, this.getElementParameters(),
+                        connNode.getElementParameters());
+            }
+        } else {
+            // if it does not use existing connection, do as before
+            newLabel = ElementParameterParser.parse(this, labelToParse);
+        }
+
         if (!newLabel.equals(label)) {
             setLabel(newLabel);
         }
-
         String newshowHintText = ElementParameterParser.parse(this, hintToParse);
         if (!newshowHintText.equals(showHintText)) {
             setShowHintText(newshowHintText);
