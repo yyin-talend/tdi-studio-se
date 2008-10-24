@@ -48,7 +48,7 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
                         searchStr = "\"(?i)\" + " + searchStr;
                     }
                     if(substitution.get("WHOLE_WORD").equals("true")) {
-                        searchStr = "\"\\\\b\" + " + searchStr + " + \"\\\\b\"";
+                        searchStr = "\"^\" + " + searchStr + " + \"$\"";
                     }
 %>
                     <%=incomingConnName%>.<%=substitution.get("INPUT_COLUMN")%> = StringUtils.replaceAll(<%=incomingConnName%>.<%=substitution.get("INPUT_COLUMN")%>, <%=searchStr%>, <%=replaceStr%>);                    
