@@ -12,8 +12,13 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.swt.SWT;
@@ -35,11 +40,36 @@ public class ShowAddedContextdialog extends SelectionDialog {
 
     private static final String TITILE = Messages.getString("ShowAddedContextdialog.Title"); //$NON-NLS-1$
 
-    private Set<String> contextSet;
+    private List<String> contextList = new ArrayList<String>();
+
+    public ShowAddedContextdialog(Map<String, Set<String>> addedVarsMap) {
+        super(PlatformUI.getWorkbench().getDisplay().getActiveShell());
+        Assert.isNotNull(addedVarsMap);
+        for (String lable : addedVarsMap.keySet()) {
+            contextList.addAll(addedVarsMap.get(lable));
+        }
+        Collections.sort(contextList);
+        setShellStyle(getShellStyle() | SWT.RESIZE);
+        setBlockOnOpen(true);
+        setDefaultImage(ImageProvider.getImage(ECoreImage.CONTEXT_ICON));
+        setTitle(TITILE);
+        String label = "";
+        for (String source : addedVarsMap.keySet()) {
+            label += source + "/";
+        }
+        if (label.length() > 1) {
+            label = label.substring(0, label.length() - 1);
+        }
+        setMessage(Messages.getString("ShowAddedContextdialog.Messages", label)); //$NON-NLS-1$
+        setHelpAvailable(false);
+
+    }
 
     public ShowAddedContextdialog(Set<String> contextSet, final String label) {
         super(PlatformUI.getWorkbench().getDisplay().getActiveShell());
-        this.contextSet = contextSet;
+        Assert.isNotNull(contextSet);
+        this.contextList.addAll(contextSet);
+        Collections.sort(contextList);
         setShellStyle(getShellStyle() | SWT.RESIZE);
         setBlockOnOpen(true);
         setDefaultImage(ImageProvider.getImage(ECoreImage.CONTEXT_ICON));
@@ -63,7 +93,7 @@ public class ShowAddedContextdialog extends SelectionDialog {
         inner.setLayoutData(gridData);
 
         ListViewer listViewer = new ListViewer(inner);
-        listViewer.add(contextSet.toArray());
+        listViewer.add(contextList.toArray());
 
         listViewer.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
 

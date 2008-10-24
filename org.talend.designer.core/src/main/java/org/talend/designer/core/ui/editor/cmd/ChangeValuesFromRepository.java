@@ -37,6 +37,7 @@ import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.i18n.Messages;
@@ -47,6 +48,7 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.views.jobsettings.JobSettings;
 import org.talend.repository.UpdateRepositoryUtils;
+import org.talend.repository.ui.utils.ConnectionContextHelper;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
@@ -76,6 +78,9 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
 
     // use for SAP
     private String sapFunctionName = null;
+
+    // for jobtemplate plugin(true, bug 5198)
+    private boolean ignoreContextMode = false;
 
     public ChangeValuesFromRepository(Element elem, Connection connection, String propertyName, String value) {
         this.elem = elem;
@@ -253,6 +258,23 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
 
                     if (param.isRepositoryValueUsed()) {
                         param.setReadOnly(true);
+                    }
+                }
+            }
+            // (bug 5198)
+            IElementParameter parentParameter = propertyParam.getParentParameter();
+            if (parentParameter != null) {
+                IElementParameter param = parentParameter.getChildParameters().get(
+                        EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+                if (param != null && propertyParam == param) { // avoid to process twice.
+                    ConnectionItem connItem = UpdateRepositoryUtils.getConnectionItemByItemId((String) param.getValue());
+                    if (connItem != null) {
+                        if (elem instanceof Node) {
+                            ConnectionContextHelper.addContextForNodeParameter((Node) elem, connItem, ignoreContextMode);
+                        } else if (elem instanceof Process) {
+                            ConnectionContextHelper.addContextForProcessParameter((Process) elem, connItem, param.getCategory(),
+                                    ignoreContextMode);
+                        }
                     }
                 }
             }
@@ -576,4 +598,11 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         this.sapFunctionName = sapFunctionName;
     }
 
+    public boolean isIgnoreContextMode() {
+        return this.ignoreContextMode;
+    }
+
+    public void ignoreContextMode(boolean ignore) {
+        this.ignoreContextMode = ignore;
+    }
 }
