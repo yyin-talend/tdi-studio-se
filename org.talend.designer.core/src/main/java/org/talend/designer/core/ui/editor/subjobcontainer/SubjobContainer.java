@@ -240,6 +240,13 @@ public class SubjobContainer extends Element implements ISubjobContainer {
         Point newLocation = new Point();
         newLocation.x = (location.x / TalendEditor.GRID_SIZE) * TalendEditor.GRID_SIZE;
         newLocation.y = (location.y / TalendEditor.GRID_SIZE) * TalendEditor.GRID_SIZE;
+        // bug 5158
+        if (newLocation.y <= 0) {
+            newLocation.y = newLocation.y - TalendEditor.GRID_SIZE;
+        }
+        if (newLocation.x <= 0) {
+            newLocation.x = newLocation.x - TalendEditor.GRID_SIZE;
+        }
         totalRectangle.setLocation(newLocation);
         Dimension diff = location.getDifference(newLocation);
         Dimension size = totalRectangle.getSize().expand(diff);
@@ -255,6 +262,16 @@ public class SubjobContainer extends Element implements ISubjobContainer {
         }
         totalRectangle.setSize(size);
         return totalRectangle;
+    }
+
+    private int expandGrid(int num) {
+        double newValue = (0.1 * num) / TalendEditor.GRID_SIZE;
+        if (num < 0) {
+            newValue = (newValue - 0.5) * TalendEditor.GRID_SIZE;
+        } else {
+            newValue = (newValue + 0.5) * TalendEditor.GRID_SIZE;
+        }
+        return (int) newValue;
     }
 
     /**
