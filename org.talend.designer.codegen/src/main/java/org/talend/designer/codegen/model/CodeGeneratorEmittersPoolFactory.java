@@ -457,7 +457,7 @@ public final class CodeGeneratorEmittersPoolFactory {
                 unit.setCrc(unitTemplateHashCode);
 
                 myLightJetBean = new LightJetBean(unitTemplateFullURI, unit.getVersion(), unitTemplateHashCode);
-                if (((lightBeanIndex = datas.indexOf(myLightJetBean)) > 0) || forceMethodLoad) {
+                if (((lightBeanIndex = datas.indexOf(myLightJetBean)) > -1) || forceMethodLoad) {
                     if (!forceMethodLoad) {
                         lightBean = datas.get(lightBeanIndex);
                     } else {
