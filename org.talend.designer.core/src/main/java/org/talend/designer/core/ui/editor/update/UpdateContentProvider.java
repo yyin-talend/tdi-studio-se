@@ -75,6 +75,7 @@ public class UpdateContentProvider implements ITreeContentProvider {
                     if (job2 != null) {
                         if (job2 instanceof IProcess2) {
                             job.setJoblet(((IProcess2) job2).disableRunJobView()); // ?? joblet
+                            job.setReadOnlyProcess(result.isReadOnlyProcess()); 
                         }
                     }
                     jobs.add(job);

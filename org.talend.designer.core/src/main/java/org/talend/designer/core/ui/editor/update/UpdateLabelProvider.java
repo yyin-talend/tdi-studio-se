@@ -27,6 +27,7 @@ import org.talend.core.model.update.UpdatesConstants;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.images.OverlayImageProvider;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.nodes.Node;
 
 /**
@@ -117,32 +118,38 @@ public class UpdateLabelProvider implements ITableLabelProvider {
     }
 
     public String getColumnText(Object element, int columnIndex) {
+        boolean isJob = element instanceof Job;
+        boolean isCategory = element instanceof Category;
         switch (columnIndex) {
         case 0:
-            if (element instanceof Job) {
+            if (isJob) {
                 String name = ((Job) element).getName();
                 return name == null ? UpdatesConstants.EMPTY : name;
 
-            } else if (element instanceof Category) {
+            } else if (isCategory) {
                 return ((Category) element).getName();
             } else if (element instanceof Item) {
                 return ((Item) element).getProperty();
             }
             break;
         case 1:
-            if (element instanceof Job || element instanceof Category) {
+            if (isJob || isCategory) {
                 return UpdatesConstants.SEGMENT_LINE;
             } else if (element instanceof Item) {
                 Item item = (Item) element;
-                if (isBuilInMode(item)) {
+                if (isBuilInMode(item) && !item.getParent().getParent().isReadOnlyProcess()) {
                     return EUpdateResult.BUIL_IN.getDisplayName();
                 }
                 return item.getOperation().getDisplayName();
             }
             break;
         case 2:
-            if (element instanceof Job || element instanceof Category) {
+            if (isJob || isCategory) {
+                if (isJob && ((Job) element).isReadOnlyProcess()) {
+                    return Messages.getString("ProcessUpdateManager.ReadOnlyProcessUpdateWarningMessages");
+                }
                 return UpdatesConstants.SEGMENT_LINE;
+
             } else if (element instanceof Item) {
                 Item item = (Item) element;
                 if (isBuilInMode(item)) {

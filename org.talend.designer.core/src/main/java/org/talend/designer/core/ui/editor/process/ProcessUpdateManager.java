@@ -66,6 +66,8 @@ import org.talend.designer.core.ui.editor.update.UpdateManagerUtils;
 import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.model.ComponentsFactoryProvider;
 
+import org.talend.designer.core.i18n.Messages;
+
 /**
  * ggu class global comment. Detailled comment
  */
@@ -178,6 +180,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
             UpdateCheckResult result = new UpdateCheckResult(builtInSet);
             result.setResult(EUpdateItemType.CONTEXT, EUpdateResult.BUIL_IN);
             result.setJob(getProcess());
+            setConfigrationForReadOnlyJob(result);
             contextResults.add(result);
         }
         if (!builtInMap.isEmpty()) {
@@ -188,6 +191,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                     result.setResult(EUpdateItemType.CONTEXT, EUpdateResult.BUIL_IN, null, UpdateRepositoryUtils
                             .getRepositorySourceName(item));
                     result.setJob(getProcess());
+                    setConfigrationForReadOnlyJob(result);
                     contextResults.add(result);
                 }
             }
@@ -230,6 +234,8 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                         if (!isOpenedProcess(getProcess())) {
                             result.setItemProcess(getProcess());
                         }
+                        
+                        setConfigrationForReadOnlyJob(result);
                         contextResults.add(result);
                     }
                 }
@@ -287,6 +293,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         UpdateCheckResult result = new UpdateCheckResult(names);
         result.setResult(itemType, resulstType, contextItem, UpdateRepositoryUtils.getRepositorySourceName(contextItem));
         result.setJob(getProcess());
+        setConfigrationForReadOnlyJob(result);
         contextResults.add(result);
         return result;
     }
@@ -422,8 +429,10 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                         result = new UpdateCheckResult(getProcess());
                         result.setResult(type, EUpdateResult.BUIL_IN);
                     }
+
                     if (result != null) {
                         result.setJob(getProcess());
+                        setConfigrationForReadOnlyJob(result);
                         jobSettingsResults.add(result);
                     }
                 }
@@ -548,6 +557,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                     // add the check result to resultList, hold the value.
                     if (result != null) {
                         result.setJob(getProcess());
+                        setConfigrationForReadOnlyJob(result);
                         schemaResults.add(result);
                     }
                 }
@@ -692,10 +702,11 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                     result = new UpdateCheckResult(node);
                     result.setResult(EUpdateItemType.NODE_PROPERTY, EUpdateResult.BUIL_IN);
                 }
-
+                
                 // add the check result to resultList, hold the value.
                 if (result != null) {
                     result.setJob(getProcess());
+                    setConfigrationForReadOnlyJob(result);
                     propertiesResults.add(result);
                 }
             }
@@ -752,8 +763,10 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                     result = new UpdateCheckResult(node);
                     result.setResult(EUpdateItemType.NODE_QUERY, EUpdateResult.BUIL_IN);
                 }
+               
                 if (result != null) {
                     result.setJob(getProcess());
+                    setConfigrationForReadOnlyJob(result);
                     queryResults.add(result);
                 }
 
@@ -811,6 +824,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                 result.setResult(EUpdateItemType.JOBLET_CONTEXT, EUpdateResult.JOBLET_UPDATE, null, UpdatesConstants.CONTEXT
                         + UpdatesConstants.COLON + source);
                 result.setJob(getProcess());
+                setConfigrationForReadOnlyJob(result);
                 contextResults.add(result);
             }
         }
@@ -895,6 +909,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
             }
             if (result != null) {
                 result.setJob(getProcess());
+                setConfigrationForReadOnlyJob(result);
                 nodeResults.add(result);
             }
         }
@@ -935,6 +950,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
     }
 
     public List<UpdateResult> getUpdatesNeeded(EUpdateItemType type) {
+
         if (type == null) {
             return null;
         }
@@ -1003,6 +1019,15 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         public Set<ContextItem> getContexts() {
             return map.keySet();
         }
+    }
+
+    private void setConfigrationForReadOnlyJob(UpdateCheckResult result) {
+        if (this.process!=null && this.process.isReadOnly()) {
+            result.setChecked(false);
+            result.setRemark(Messages.getString("ProcessUpdateManager.ReadOnlyProcessUpdateWarningMessages"));
+            result.setReadOnlyProcess(true);
+        }
+
     }
 
 }

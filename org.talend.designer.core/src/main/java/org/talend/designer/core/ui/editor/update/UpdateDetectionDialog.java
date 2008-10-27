@@ -53,6 +53,8 @@ public class UpdateDetectionDialog extends SelectionDialog {
     private static final String DEFAULT_MESSAGE = Messages.getString("UpdateDetectionDialog.Messages"); //$NON-NLS-1$
 
     private static final String WARNING_MESSAGE = Messages.getString("UpdateDetectionDialog.WarningMessage"); //$NON-NLS-1$
+    
+    private static final String READ_ONLY_JOB_WARNING_MESSAGE = Messages.getString("ProcessUpdateManager.ReadOnlyProcessUpdateWarningMessages"); //$NON-NLS-1$
 
     // sizing constants
     private static final int SIZING_SELECTION_WIDGET_HEIGHT = 400;
@@ -74,6 +76,8 @@ public class UpdateDetectionDialog extends SelectionDialog {
     private Label imageLabe;
 
     private boolean canCancel = true;
+
+    private boolean isJobReadOnly = false;
 
     /**
      * ggu UpdateCheckDialog constructor comment.
@@ -121,6 +125,10 @@ public class UpdateDetectionDialog extends SelectionDialog {
     private void checkInitialSelections() {
         for (UpdateResult result : getInputElements()) {
             result.setChecked(true);
+            if (result.isReadOnlyProcess()) {
+                result.setChecked(false);
+                this.isJobReadOnly = true;
+            }
             switch (result.getResultType()) {
             case RENAME:
             case RELOAD:
@@ -192,7 +200,8 @@ public class UpdateDetectionDialog extends SelectionDialog {
             public void widgetSelected(SelectionEvent e) {
                 if (getViewerHelper() != null) {
                     boolean state = false;
-                    if (WorkbenchMessages.SelectionDialog_selectLabel.equals(selectButton.getText())) {
+
+                    if (!isJobReadOnly && WorkbenchMessages.SelectionDialog_selectLabel.equals(selectButton.getText())) {
                         state = true;
                     }
                     getViewerHelper().selectAll(state);
@@ -303,9 +312,40 @@ public class UpdateDetectionDialog extends SelectionDialog {
         viewer.addCheckStateListener(new ICheckStateListener() {
 
             public void checkStateChanged(CheckStateChangedEvent event) {
+                if (readOnlyCheck(event)) {
+                    updateReadOnlyJobWarnMessage();
+                    return;
+                }
+
                 if (getViewerHelper() != null) {
                     getViewerHelper().updateCheckedState(event.getElement(), event.getChecked());
                 }
+            }
+
+            /**
+             * Checks if current job is read-only mode or not.
+             * 
+             * @param event
+             */
+            private boolean readOnlyCheck(CheckStateChangedEvent event) {
+                Job currentJob = null;
+                if (event.getElement() instanceof Job) {
+                    currentJob = (Job) event.getElement();
+                } else if (event.getElement() instanceof Category) {
+                    currentJob = ((Category) event.getElement()).getParent();
+                } else if (event.getElement() instanceof Item) {
+                    currentJob = ((Item) event.getElement()).getParent().getParent();
+                }
+
+                if (currentJob == null) {
+                    return false;
+                }
+
+                if (currentJob.isReadOnlyProcess()) {
+                    event.getCheckable().setChecked(event.getElement(), false);
+                    return true;
+                }
+                return false;
             }
         });
 
@@ -331,5 +371,14 @@ public class UpdateDetectionDialog extends SelectionDialog {
     public void updateNomarlMessage() {
         imageLabe.setVisible(false);
         messLabel.setText(DEFAULT_MESSAGE);
+    }
+
+    /**
+     * DOC Administrator Comment method "updateReadOnlyJobWarnMessage".
+     */
+    public void updateReadOnlyJobWarnMessage() {
+        imageLabe.setVisible(true);
+        messLabel.setText(READ_ONLY_JOB_WARNING_MESSAGE);
+        
     }
 }

@@ -39,6 +39,17 @@ class Job {
      */
     private boolean isJoblet = true;
 
+    private boolean readOnlyProcess = false;
+
+    
+    /**
+     * Getter for readOnlyProcess.
+     * @return the readOnlyProcess
+     */
+    public boolean isReadOnlyProcess() {
+        return this.readOnlyProcess;
+    }
+
     public Job(String name) {
         this.name = name;
     }
@@ -76,6 +87,16 @@ class Job {
 
     public void setJoblet(boolean isJoblet) {
         this.isJoblet = isJoblet;
+    }
+
+    /**
+     * DOC Administrator Comment method "setReadOnlyProcess".
+     * 
+     * @param readOnlyProcess
+     */
+    public void setReadOnlyProcess(boolean readOnlyProcess) {
+        this.readOnlyProcess = readOnlyProcess;
+
     }
 
 }

@@ -311,8 +311,13 @@ public final class UpdateManagerUtils {
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     private static void executeUpdates(List selectResult, IProgressMonitor monitor) {
+        
         Command command = null;
         for (UpdateResult result : (List<UpdateResult>) selectResult) {
+            if(result.isReadOnlyProcess())
+            {
+                continue;
+            }
             switch (result.getUpdateType()) {
             case NODE_PROPERTY:
             case NODE_SCHEMA:
