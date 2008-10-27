@@ -322,44 +322,79 @@ while (reader_<%=cid %>.readRecord()) {
 			}else{// end if(advance)
 %>
 	int substringBegin<%=cid %>=0,substringEnd<%=cid %>=0;
+	
 <%
-				for(int i=0;i <	metadata.getListColumns().size();i++){
-					if(i >=positions.length){
-%>
-	columnValue<%=cid %>[<%=i%>]="";
+	///////////////////
+	if ( (positions[0].indexOf("context")) < 0 ){
+	///////////////////
+	
+		for(int i=0;i <	metadata.getListColumns().size();i++){
+			if(i >=positions.length){
+%>	
+				columnValue<%=cid %>[<%=i%>]="";
 <%
-						continue;
-					}
+				continue;
+			}
 %>
-    if(substringBegin<%=cid %> >= row_<%=cid %>.length()){
-    	columnValue<%=cid %>[<%=i%>]= "";
-    }else{
+		    if(substringBegin<%=cid %> >= row_<%=cid %>.length()){
+		    	columnValue<%=cid %>[<%=i%>]= "";
+    		}else{
 <%
 					if(positions[i].equals("*")){
 %>
-        substringEnd<%=cid %>=row_<%=cid %>.length();
+        			substringEnd<%=cid %>=row_<%=cid %>.length();
 <%
-					}else{
+					} else{
 %>
-        substringEnd<%=cid %> = substringEnd<%=cid %> + <%=positions[i]%>;
-        if(substringEnd<%=cid %> > row_<%=cid %>.length()){
-        	substringEnd<%=cid %> = row_<%=cid %>.length();
-    	}
+        				substringEnd<%=cid %> = substringEnd<%=cid %> + <%=positions[i]%>;
+        
+				        if(substringEnd<%=cid %> > row_<%=cid %>.length()){
+				        	substringEnd<%=cid %> = row_<%=cid %>.length();
+				    	}
 <%
 					}
 %>
-        columnValue<%=cid %>[<%=i%>] = row_<%=cid %>.substring(substringBegin<%=cid %>, substringEnd<%=cid %>);
+        			columnValue<%=cid %>[<%=i%>] = row_<%=cid %>.substring(substringBegin<%=cid %>, substringEnd<%=cid %>);
 <% 
        				if(isTrimAll || trimSelects.get(i).get("TRIM").equals("true")){
 %>
-		columnValue<%=cid %>[<%=i%>] = columnValue<%=cid %>[<%=i%>].trim();
+						columnValue<%=cid %>[<%=i%>] = columnValue<%=cid %>[<%=i%>].trim();
 <%
 					}
 %>    	
-        substringBegin<%=cid %> = substringEnd<%=cid %>;
-	}
+        			substringBegin<%=cid %> = substringEnd<%=cid %>;
+			}
 <%
-				}//for(...)
+	
+		}//for(...)
+				
+	///////////////
+	} else{
+	%>		
+		String arrFieldSeparator<%=cid%>[] = <%=positions[0]%>.split(",");		
+		
+		for (int i = 0; i < <%=metadata.getListColumns().size()%>; i++) {
+			if (i > arrFieldSeparator<%=cid%>.length ){
+				columnValue<%=cid %>[i]="";
+				continue;
+			}
+			 
+		    if (substringBegin<%=cid %> >= row_<%=cid %>.length()) {
+		    	columnValue<%=cid %>[i] = "";
+		    } else{
+				
+    			substringEnd<%=cid %> = substringEnd<%=cid %> + Integer.parseInt(arrFieldSeparator<%=cid%>[i]);
+		        if(substringEnd<%=cid %> > row_<%=cid %>.length())
+		        	substringEnd<%=cid %> = row_<%=cid %>.length();
+							
+	        	columnValue<%=cid %>[i] = row_<%=cid %>.substring(substringBegin<%=cid %>, substringEnd<%=cid %>);
+	        	substringBegin<%=cid %> = substringEnd<%=cid %>;
+	        }
+		}
+	<%
+	}
+	///////////////
+	
 				
 				List<IMetadataColumn> listColumns = metadata.getListColumns();
 				int sizeListColumns = listColumns.size();
