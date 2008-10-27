@@ -19,10 +19,14 @@ try{
 for (String sourceFile_<%=cid %> : sourceFileNames_<%=cid %>) {
 				if (sourceFile_<%=cid %> != null
 						&& sourceFile_<%=cid %>.length() != 0) {
+					sourceFile_<%=cid %>=sourceFile_<%=cid %>.replaceAll("\\\\","/"); 
+				    int index_<%=cid %>=sourceFile_<%=cid %>.lastIndexOf("/");
+				    if(index_<%=cid %> >0){
 					java.io.File dir_<%=cid %> = new java.io.File(
 							<%=localdir %>);
+					String extension_<%=cid %>=	sourceFile_<%=cid %>.substring(index_<%=cid %>);	
 					java.io.File file_<%=cid %> = new java.io.File(
-							dir_<%=cid %>, sourceFile_<%=cid %>);
+							dir_<%=cid %>, extension_<%=cid %>);
 					if(!file_<%=cid %>.exists()){
 					  file_<%=cid %>.getParentFile().mkdirs();
 					}
@@ -31,8 +35,13 @@ for (String sourceFile_<%=cid %> : sourceFileNames_<%=cid %>) {
 					scp_<%=cid %>.get(sourceFile_<%=cid %>, out_<%=cid %>);
 					nb_file_<%=cid%> ++ ;
 				}
+				}
 			}
+			if(nb_file_<%=cid%>>0){
 			globalMap.put("<%=cid %>_STATUS", "File get OK.");
+			}else{
+			globalMap.put("<%=cid %>_STATUS", "No file transfered.");
+			}
 <%}else{
 	if(!replaceOption.equals("overwrite")) {%>        
         String parentPath_<%=cid%> = new java.io.File(<%=localdir %>).getPath();
@@ -50,10 +59,15 @@ for (String sourceFile_<%=cid %> : sourceFileNames_<%=cid %>) {
             for (String sourceFile_<%=cid %> : sourceFileNames_<%=cid %>) {
 				if (sourceFile_<%=cid %> != null
 						&& sourceFile_<%=cid %>.length() != 0) {
+					
+					sourceFile_<%=cid %>=sourceFile_<%=cid %>.replaceAll("\\\\","/"); 
+				    int index_<%=cid %>=sourceFile_<%=cid %>.lastIndexOf("/");
+				    if(index_<%=cid %> >0){
 					java.io.File dir_<%=cid %> = new java.io.File(
 							<%=localdir %>);
+					String extension_<%=cid %>=	sourceFile_<%=cid %>.substring(index_<%=cid %>);	
 					java.io.File file_<%=cid %> = new java.io.File(
-							dir_<%=cid %>, sourceFile_<%=cid %>);
+							dir_<%=cid %>, extension_<%=cid %>);
 					if(!file_<%=cid %>.exists()){
 					  file_<%=cid %>.getParentFile().mkdirs();
 					}
@@ -62,13 +76,17 @@ for (String sourceFile_<%=cid %> : sourceFileNames_<%=cid %>) {
 					scp_<%=cid %>.get(sourceFile_<%=cid %>, out_<%=cid %>);
 					nb_file_<%=cid%> ++ ;
 				}
+				}
 			}
-            globalMap.put("<%=cid %>_STATUS", "File get OK.");
-        }else{
-        	globalMap.put("<%=cid %>_STATUS", "No file transfered.");
-        }
+			if(nb_file_<%=cid%>>0){
+			globalMap.put("<%=cid %>_STATUS", "File get OK.");
+			}else{
+			globalMap.put("<%=cid %>_STATUS", "No file transfered.");
+			}
+			}
         
 <%}%>
+
 }catch(Exception e){
 		e.printStackTrace();
 		globalMap.put("<%=cid %>_STATUS", "File get fail.");
