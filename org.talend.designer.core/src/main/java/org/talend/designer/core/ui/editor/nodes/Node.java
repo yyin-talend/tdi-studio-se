@@ -551,9 +551,11 @@ public class Node extends Element implements INode {
         String newLabel = label;
         // label may be replaced with variable from exiting connection. see 0005456: Label Format __DBNAME__ not valid
         // when using existing connection
+        boolean useConnection = false;
         IElementParameter useConn = this.getElementParameter("USE_EXISTING_CONNECTION");
-        if (labelToParse != null && useConn != null && Boolean.TRUE.equals(useConn.getValue())) {
-            IElementParameter connParam = this.getElementParameter("CONNECTION");
+        IElementParameter connParam = this.getElementParameter("CONNECTION");
+        if (labelToParse != null && useConn != null && connParam != null && Boolean.TRUE.equals(useConn.getValue())) {
+
             String connName = (String) connParam.getValue();
             INode connNode = null;
             List<? extends INode> nodeList = this.getProcess().getGraphicalNodes();
@@ -566,8 +568,11 @@ public class Node extends Element implements INode {
             if (connNode != null) {
                 newLabel = ElementParameterParser.replaceLabelWithExistingConnection(labelToParse, this.getElementParameters(),
                         connNode.getElementParameters());
+                useConnection = true;
             }
-        } else {
+        }
+
+        if (useConnection == false) {
             // if it does not use existing connection, do as before
             newLabel = ElementParameterParser.parse(this, labelToParse);
         }
