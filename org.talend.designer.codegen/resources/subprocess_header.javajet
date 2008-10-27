@@ -716,6 +716,42 @@ static class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines.
  <% } %>
 public void <%=subTree.getName() %>Process(final java.util.Map<String, Object> globalMap) throws TalendException {
 	globalMap.put("<%=subTree.getName() %>_SUBPROCESS_STATE", 0);
+
+<%
+	boolean isParallelize = false;
+	INode asyncIn = subTree.getRootNode();
+	if(asyncIn!=null && asyncIn.getComponent().getName().equals("tAsyncIn")){
+		String parallelize = ElementParameterParser.getValue(asyncIn, "__PARALLELIZE__");
+		isParallelize = (parallelize!=null&&!parallelize.equals(""))?parallelize.equals("true"):false;
+	}
+	if(isParallelize){//isParallelize
+%>
+	
+	try {
+		final ParallelThreadPool pool = (ParallelThreadPool) globalMap
+				.get("PARALLEL_FLOW_POOL");
+		class <%=subTree.getName() %>_ParallelThread extends ParallelThread {
+
+			public <%=subTree.getName() %>_ParallelThread(
+					java.util.Map<String, Object> globalMap,
+					Object[] lockWrite) {
+				super(globalMap, lockWrite);
+			}
+			boolean isRunning = false;
+			
+			public void run() {
+				java.util.Map threadRunResultMap = new java.util.HashMap();
+				threadRunResultMap.put("errorCode", null);
+				threadRunResultMap.put("status", "");
+				threadLocal.set(threadRunResultMap);
+				
+				this.isRunning = true;
+				String currentComponent = "";
+				try{
+	
+<%
+	}else{//isParallelize
+%>
 <%
 	if(isRunInMultiThread){
 %>
@@ -731,6 +767,7 @@ public void <%=subTree.getName() %>Process(final java.util.Map<String, Object> g
 		<%=after %>Process(globalMap);
 <%
 	}
+	}//isParallelize
 %>
 
 <%
