@@ -13,6 +13,8 @@
 package org.talend.designer.components.model;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 
@@ -23,6 +25,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 import org.talend.commons.exception.BusinessException;
+import org.talend.commons.utils.io.IOUtils;
 import org.talend.commons.xml.XSDValidator;
 import org.talend.core.model.ModelPlugin;
 import org.xml.sax.SAXException;
@@ -41,12 +44,21 @@ public class ComponentFileChecker {
 
     public static void checkComponentFolder(File currentFolder, String languageSuffix) throws BusinessException {
         checkFiles(currentFolder, languageSuffix);
-        File xmlMainFile = new File(currentFolder, ComponentFilesNaming.getInstance().getMainXMLFileName(
-                currentFolder.getName(), languageSuffix));
+        File xmlMainFile = new File(currentFolder, ComponentFilesNaming.getInstance().getMainXMLFileName(currentFolder.getName(),
+                languageSuffix));
         XsdValidationCacheManager xsdValidationCacheManager = XsdValidationCacheManager.getInstance();
-        if (xsdValidationCacheManager.needCheck(xmlMainFile)) {
+
+        long currentCRC = 0;
+        try {
+            currentCRC = IOUtils.computeCRC(new FileInputStream(xmlMainFile));
+        } catch (FileNotFoundException e) {
+            // ignore here, only print
+            e.printStackTrace();
+        }
+
+        if (xsdValidationCacheManager.needCheck(xmlMainFile, currentCRC)) {
             checkXSD(xmlMainFile);
-            xsdValidationCacheManager.setChecked(xmlMainFile);
+            xsdValidationCacheManager.setChecked(xmlMainFile, currentCRC);
         }
     }
 
@@ -66,8 +78,7 @@ public class ComponentFileChecker {
     }
 
     private static void checkFiles(File folder, String languageSuffix) throws MissingComponentFileException {
-        String mainXmlFileName = ComponentFilesNaming.getInstance()
-                .getMainXMLFileName(folder.getName(), languageSuffix);
+        String mainXmlFileName = ComponentFilesNaming.getInstance().getMainXMLFileName(folder.getName(), languageSuffix);
         File mainXmlFile = new File(folder, mainXmlFileName);
         if (!mainXmlFile.exists()) {
             throw new MissingMainXMLComponentFileException("Cannot find file \"" + mainXmlFile.getName() + "\""); //$NON-NLS-1$ //$NON-NLS-2$

@@ -20,7 +20,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -78,24 +77,28 @@ public class XsdValidationCacheManager {
         }
     }
 
-    public boolean needCheck(java.io.File file) {
+    public boolean needCheck(java.io.File file, long currentCRC) {
         String path = file.getAbsolutePath();
         if (forceXSDAlreadyChecked) {
-            alreadyCheckedXsd.put(path, System.currentTimeMillis());
+            alreadyCheckedXsd.put(path, currentCRC);
             return false;
         } else {
-            Long lastChecked = alreadyCheckedXsd.get(path);
-            long lastModified = file.lastModified();
-            if (lastChecked == null) {
+            Long lastCheckedCRC = alreadyCheckedXsd.get(path);
+
+            if (lastCheckedCRC == null) {
                 return true;
             }
-            return lastModified > lastChecked;
+
+            boolean isChanged = currentCRC != lastCheckedCRC;
+
+            return isChanged;
         }
     }
 
-    public void setChecked(File file) {
+    public void setChecked(File file, long currentCRC) {
+        // System.out.println(file);
         String path = file.getAbsolutePath();
-        alreadyCheckedXsd.put(path, new Date().getTime());
+        alreadyCheckedXsd.put(path, currentCRC);
     }
 
     private File getSerializationFilePath() throws CoreException {
