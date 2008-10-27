@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.repository.ui.actions.importproject;
 
+import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,6 +35,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -86,8 +88,22 @@ public class ExportProjectsAsAction extends Action implements IWorkbenchWindowAc
 
         // Refresh Navigator view before export operation, see bug 4595
         try {
-            ResourcesPlugin.getWorkspace().getRoot().refreshLocal(IResource.DEPTH_INFINITE, null);
-        } catch (CoreException e) {
+            IRunnableWithProgress runnable = new IRunnableWithProgress() {
+
+                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                    monitor.beginTask(ExportProjectsAsAction.this.getToolTipText(), IProgressMonitor.UNKNOWN);
+                    try {
+                        ResourcesPlugin.getWorkspace().getRoot().refreshLocal(IResource.DEPTH_INFINITE, null);
+                    } catch (CoreException e) {
+                        ExceptionHandler.process(e);
+                    }
+                    monitor.done();
+                }
+            };
+            new ProgressMonitorDialog(Display.getCurrent().getActiveShell()).run(true, false, runnable);
+        } catch (InvocationTargetException e) {
+            ExceptionHandler.process(e);
+        } catch (InterruptedException e) {
             ExceptionHandler.process(e);
         }
         initializeExternalLibraries();
