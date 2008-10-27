@@ -264,16 +264,6 @@ public class SubjobContainer extends Element implements ISubjobContainer {
         return totalRectangle;
     }
 
-    private int expandGrid(int num) {
-        double newValue = (0.1 * num) / TalendEditor.GRID_SIZE;
-        if (num < 0) {
-            newValue = (newValue - 0.5) * TalendEditor.GRID_SIZE;
-        } else {
-            newValue = (newValue + 0.5) * TalendEditor.GRID_SIZE;
-        }
-        return (int) newValue;
-    }
-
     /**
      * Getter for collapsed.
      * 
