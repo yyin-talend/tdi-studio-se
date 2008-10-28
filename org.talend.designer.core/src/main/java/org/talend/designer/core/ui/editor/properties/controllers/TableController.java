@@ -14,6 +14,7 @@ package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -269,6 +270,14 @@ public class TableController extends AbstractElementPropertySectionController {
                             for (Map<String, Object> columnMap : values) {
                                 Object column = columnMap.get(columnParam.getName());
                                 if (column == null || "".equals(column)) {
+                                    columnMap.put(columnParam.getName(), columnParam.getDefaultClosedListValue());
+                                }
+                                if (columnParam.getListItemsValue() == null) {
+
+                                }
+
+                                // @see bug 5433(Display and value is not match.)
+                                if (!Arrays.asList(columnParam.getListItemsValue()).contains(column)) {
                                     columnMap.put(columnParam.getName(), columnParam.getDefaultClosedListValue());
                                 }
                             }
