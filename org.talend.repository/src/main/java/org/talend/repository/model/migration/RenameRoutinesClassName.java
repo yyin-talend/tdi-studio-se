@@ -12,25 +12,25 @@
 // ============================================================================
 package org.talend.repository.model.migration;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.migration.AbstractItemMigrationTask;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
  * DOC zwang class global comment. Detailled comment
  */
 public class RenameRoutinesClassName extends AbstractItemMigrationTask {
-
-    private static final ProxyRepositoryFactory FACTORY = ProxyRepositoryFactory.getInstance();
 
     public List<ERepositoryObjectType> getTypes() {
         List<ERepositoryObjectType> toReturn = new ArrayList<ERepositoryObjectType>();
@@ -45,22 +45,29 @@ public class RenameRoutinesClassName extends AbstractItemMigrationTask {
      */
     @Override
     public ExecutionResult execute(Item item) {
-        try {
+        if (getProject().getLanguage() == ECodeLanguage.JAVA) {
             RoutineItem routineItem = (RoutineItem) item;
-            ByteArray content = routineItem.getContent();
-            String str = new String(content.getInnerContent());
-            String string = item.getProperty().getLabel();
-            str = str.replaceAll("__CLASS_NAME__", string);
-            content.setInnerContent(str.getBytes());
-            routineItem.setContent(content);
-            FACTORY.save(routineItem);
-            return ExecutionResult.SUCCESS_NO_ALERT;
-
-        } catch (Exception e) {
-            ExceptionHandler.process(e);
-            return ExecutionResult.FAILURE;
+            if (routineItem.isBuiltIn()) {
+                // if it's a system routine, no migration needed.
+                return ExecutionResult.NOTHING_TO_DO;
+            }
+            try {
+                IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+                ByteArray content = routineItem.getContent();
+                String str = new String(content.getInnerContent());
+                String string = item.getProperty().getLabel();
+                str = str.replaceAll("__CLASS_NAME__", string);
+                content.setInnerContent(str.getBytes());
+                routineItem.setContent(content);
+                factory.save(routineItem);
+                return ExecutionResult.SUCCESS_NO_ALERT;
+            } catch (Exception e) {
+                ExceptionHandler.process(e);
+                return ExecutionResult.FAILURE;
+            }
+        } else {
+            return ExecutionResult.NOTHING_TO_DO;
         }
-
     }
 
     public Date getOrder() {
