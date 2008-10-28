@@ -16,7 +16,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import org.eclipse.emf.common.util.EList;
-import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
@@ -24,7 +23,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
- * DOC liyilin class global comment. Detailled comment <br/>
+ * This migration task did nothing but for importing job(s) from TOS 3.0.0. <br/>
  * 
  * 
  */
@@ -38,16 +37,17 @@ public class FileInputRegexContextVariableMigrationTask extends AbstractJobMigra
      */
     @Override
     public ExecutionResult executeOnProcess(ProcessItem item) {
-        if (getProject().getLanguage() != ECodeLanguage.JAVA) {
-            return ExecutionResult.NOTHING_TO_DO;
-        }
-        try {
-            addQuote(item);
-            return ExecutionResult.SUCCESS_NO_ALERT;
-        } catch (Exception e) {
-            return ExecutionResult.FAILURE;
-
-        }
+        // if (getProject().getLanguage() != ECodeLanguage.JAVA) {
+        // return ExecutionResult.NOTHING_TO_DO;
+        // }
+        // try {
+        // / addQuote(item);
+        // return ExecutionResult.SUCCESS_NO_ALERT;
+        // } catch (Exception e) {
+        // return ExecutionResult.FAILURE;
+        //
+        // }
+        return ExecutionResult.NOTHING_TO_DO;
     }
 
     private boolean addQuote(ProcessItem item) {
