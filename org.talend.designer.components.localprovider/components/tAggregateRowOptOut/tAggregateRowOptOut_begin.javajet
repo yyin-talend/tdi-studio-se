@@ -34,6 +34,7 @@ java.util.Map hashAggreg_<%=cid %> = new java.util.HashMap();
 
 int FUNCTION = 0;
 int INPUT_COLUMN = 1;
+int OUTPUT_COLUMN = 1;
 int IGNORE_NULL = 2;
 
 
@@ -48,6 +49,7 @@ for(int i=0; i<sizeOperations; i++){
 	Map<String, String> operation = operations.get(i);
 	String fun = operation.get("FUNCTION");
 	String in = operation.get("INPUT_COLUMN");
+	String out = operation.get("OUTPUT_COLUMN");
 	if(!listFlag && fun.equals("list")){
 		listFlag = true;
 	}
@@ -69,18 +71,21 @@ for(int i=0; i<sizeOperations; i++){
 		}
 	}
 	if(fun.equals("avg")){
-		String[] funin = new String[2];
+		String[] funin = new String[3];
 		funin[FUNCTION]="sum";
 		funin[INPUT_COLUMN]=in;
+		funin[OUTPUT_COLUMN]=out;
 		funinOperations.add(funin);
-		funin=new String[IGNORE_NULL];
+		funin=new String[3];
 		funin[FUNCTION]="count";
 		funin[INPUT_COLUMN]=in;
+		funin[OUTPUT_COLUMN]=out;
 		funinOperations.add(funin);
 	}else{
-		String[] funin = new String[2];
+		String[] funin = new String[3];
 		funin[FUNCTION]=fun;
 		funin[INPUT_COLUMN]=in;
+		funin[OUTPUT_COLUMN]=out;
 		funinOperations.add(funin);
 	}
 }
@@ -88,54 +93,66 @@ for(int i=0; i<sizeOperations; i++){
 java.util.Map<String,IMetadataColumn> keysColumns = new java.util.HashMap<String,IMetadataColumn>();
 java.util.Map<String,IMetadataColumn> valuesColumns = new java.util.HashMap<String,IMetadataColumn>();
 IMetadataTable inputMetadataTable = null;
+IMetadataTable outputMetadataTable = null;
 java.util.List<IMetadataColumn> inputColumns = null;
+java.util.List<IMetadataColumn> outputColumns = null;
 
 int sizeOps = funinOperations.size();
 
 List<? extends IConnection> incomingConnections = node.getIncomingConnections();
 if (incomingConnections != null && !incomingConnections.isEmpty()) {
 	for (IConnection conn : incomingConnections) {
-		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-			inputMetadataTable = conn.getMetadataTable();
-			inputColumns = inputMetadataTable.getListColumns();
-			break;
-		}
+		inputMetadataTable = conn.getMetadataTable();
+		inputColumns = inputMetadataTable.getListColumns();
+		break;
+	}
+}
+
+List<IMetadataTable> mestadataTableListOut = node.getMetadataList();
+if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_AggR_600
+    outputMetadataTable = mestadataTableListOut.get(0);
+	if(outputMetadataTable != null) {
+		outputColumns = outputMetadataTable.getListColumns();
 	}
 }
 
 
-	int groupbySize = groupbys.size();
-	//modify06-04 begin
-	String[] groupby_type = new String[groupbySize];
+int groupbySize = groupbys.size();
+String[] groupby_type = new String[groupbySize];
 
-	if(inputColumns != null) { // T_AggR_144
-		for (IMetadataColumn column: inputMetadataTable.getListColumns()) { // T_AggR_145
+if(inputColumns != null) { // T_AggR_144
+	for (IMetadataColumn column: inputColumns) { // T_AggR_145
 
-			for(int i = 0; i < groupbySize; i++){ // T_AggR_113
-				String columnname = groupbys.get(i).get("INPUT_COLUMN");
-				if(column.getLabel().equals(columnname)){ // T_AggR_114
-					keysColumns.put(columnname, column);
-            	} // T_AggR_114
-			} // T_AggR_113
-					
-			for(int i = 0; i < sizeOperations; i++){ // T_AggR_213
-				String columnname = operations.get(i).get("INPUT_COLUMN");
-            	if(column.getLabel().equals(columnname)){ // T_AggR_214
-           			valuesColumns.put(columnname, column);
-           		} // T_AggR_214
-			} // T_AggR_213
+		for(int i = 0; i < groupbySize; i++){ // T_AggR_113
+			String columnname = groupbys.get(i).get("INPUT_COLUMN");
+			if(column.getLabel().equals(columnname)){ // T_AggR_114
+				keysColumns.put(columnname, column);
+        	} // T_AggR_114
+		} // T_AggR_113
+				
+	} // T_AggR_145
+} // T_AggR_144
 
-		} // T_AggR_145
-	} // T_AggR_144
-	//modify06-04 end
+
+if(outputColumns != null) { // T_AggR_744
+	for (IMetadataColumn column: outputColumns) { // T_AggR_745
+
+		for(int i = 0; i < sizeOperations; i++){ // T_AggR_713
+			String columnname = operations.get(i).get("OUTPUT_COLUMN");
+        	if(column.getLabel().equals(columnname)){ // T_AggR_714
+       			valuesColumns.put(columnname, column);
+       		} // T_AggR_714
+		} // T_AggR_713
+
+	} // T_AggR_745
+} // T_AggR_744
 
 
 if(sizeOps>0){ // T_AggR_114
 
-	if(haveSTD_DEV){ // T_AggR_115
 	%>
 
-	class SD_<%=cid %> { // G_AggR_144
+	class UtilClass_<%=cid %> { // G_AggR_144
 
 		public double sd(Double[] data) {
 	        final int n = data.length;
@@ -152,14 +169,78 @@ if(sizeOps>0){ // T_AggR_114
         
 	        return Math.sqrt((n*d1 - d2*d2)/n/n);
 	    }
+	    
+		public void checkedIADD(byte a, byte b, boolean checkTypeOverFlow, boolean checkUlp) {
+		    byte r = (byte) (a + b);
+		    if (checkTypeOverFlow && ((a ^ r) & (b ^ r)) < 0) {
+		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'short/Short'", "'int/Integer'"));
+		    }
+		}
+		
+		public void checkedIADD(short a, short b, boolean checkTypeOverFlow, boolean checkUlp) {
+		    short r = (short) (a + b);
+		    if (checkTypeOverFlow && ((a ^ r) & (b ^ r)) < 0) {
+		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'int/Integer'", "'short/Short'"));
+		    }
+		}
+		
+		public void checkedIADD(int a, int b, boolean checkTypeOverFlow, boolean checkUlp) {
+		    int r = a + b;
+		    if (checkTypeOverFlow && ((a ^ r) & (b ^ r)) < 0) {
+		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'long/Long'", "'int/Integer'"));
+		    }
+		}
+		
+		public void checkedIADD(long a, long b, boolean checkTypeOverFlow, boolean checkUlp) {
+		    long r = a + b;
+		    if (checkTypeOverFlow && ((a ^ r) & (b ^ r)) < 0) {
+		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'BigDecimal'", "'long/Long'"));
+		    }
+		}
+		
+		public void checkedIADD(float a, float b, boolean checkTypeOverFlow, boolean checkUlp) {
+		
+			if(checkUlp) {
+			    float minAddedValue = Math.ulp(a);
+			    if (minAddedValue > b) {
+			        throw new RuntimeException(buildPrecisionMessage(String.valueOf(a), String.valueOf(b), "'double' or 'BigDecimal'", "'float/Float'"));
+			    }
+			}
+			
+		    if (checkTypeOverFlow && ((double) a + (double) b > (double) Float.MAX_VALUE) || ((double) a + (double) b < (double) Float.MIN_VALUE)) {
+		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'double' or 'BigDecimal'", "'float/Float'"));
+		    }
+		}
+		
+		public void checkedIADD(double a, double b, boolean checkTypeOverFlow, boolean checkUlp) {
+		
+			if(checkUlp) {
+			    double minAddedValue = Math.ulp(a);
+			    if (minAddedValue > b) {
+			        throw new RuntimeException(buildPrecisionMessage(String.valueOf(a), String.valueOf(a), "'BigDecimal'", "'double/Double'"));
+			    }
+			}
+		
+		    if (checkTypeOverFlow && (a + b > (double) Double.MAX_VALUE) || (a + b < Double.MIN_VALUE)) {
+		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'BigDecimal'", "'double/Double'"));
+		    }
+		}
+		
+		private String buildOverflowMessage(String a, String b, String advicedTypes, String originalType) {
+		    return "Type overflow when adding " + b + " to " + a
+		    + ", to resolve this problem, increase the precision by using "+ advicedTypes +" type in place of "+ originalType +".";
+		}
+		
+		private String buildPrecisionMessage(String a, String b, String advicedTypes, String originalType) {
+		    return "The double precision is unsufficient to add the value " + b + " to " + a
+		    + ", to resolve this problem, increase the precision by using "+ advicedTypes +" type in place of "+ originalType +".";
+		}
+
 	} // G_AggR_144
 
-	SD_<%=cid %> sd_<%=cid %> = new SD_<%=cid %>();
-	
-	<%
-	}// T_AggR_115
+	UtilClass_<%=cid %> utilClass_<%=cid %> = new UtilClass_<%=cid %>();
 
-	%>
+	
 	class AggOperationStruct_<%=cid %> { // G_AggR_100
 
 		private static final int DEFAULT_HASHCODE = 1;
@@ -181,13 +262,19 @@ if(sizeOps>0){ // T_AggR_114
     	for (int i = 0; i<sizeOps; i++) { // T_AggR_131
     		String[] funin = funinOperations.get(i);
     		if(inputColumns != null) { // T_AggR_132
-         		for (IMetadataColumn column: inputColumns) { // T_AggR_135
-               		if(column.getLabel().equals(funin[INPUT_COLUMN])){ // T_AggR_136
+         		for (IMetadataColumn column: outputColumns) { // T_AggR_135
+               		if(column.getLabel().equals(funin[OUTPUT_COLUMN])){ // T_AggR_136
+               		
+               			JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+               		
                		%>
-    					<% if(funin[FUNCTION].equals("sum") && column.getTalendType().equals("BigDecimal")){%>
-    		   				BigDecimal <%=funin[INPUT_COLUMN] %>_sum = new BigDecimal("0.0");
-    		   				
-    		   			<% } else if(funin[FUNCTION].equals("count")){%>
+    					<%
+    					if(funin[FUNCTION].equals("sum") &&
+    						javaType == JavaTypesManager.BIGDECIMAL) {
+	    					%>
+    			   				BigDecimal <%=funin[INPUT_COLUMN] %>_sum = new BigDecimal("0.0");
+    		   				<%
+    		   			} else if(funin[FUNCTION].equals("count")){%>
 						    int <%=funin[INPUT_COLUMN] %>_count = 0;
 						    
                    		<% } else if("distinct".equals(funin[FUNCTION])) { %> 
@@ -202,11 +289,23 @@ if(sizeOps>0){ // T_AggR_114
                    		<% } else if("std_dev".equals(funin[FUNCTION])) {%>
                    			java.util.List<Double> <%=funin[INPUT_COLUMN] %>_<%=funin[FUNCTION] %> = new java.util.ArrayList<Double>();
                    			
-                   		<% } else {%> 
-                   			<%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> <%=funin[INPUT_COLUMN] %>_<%=funin[FUNCTION] %>;
-                   		<% } %>                                   
-                          <%
-                                   break;
+                   		<% } else {  // T_AggR_137
+                   		
+                   			// START OF INIT LINE
+                 			%>
+                 			<%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> <%=funin[INPUT_COLUMN] %>_<%=funin[FUNCTION] %><%
+                 			
+                   			if(column.isNullable() && JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), false) || javaType == JavaTypesManager.CHARACTER) { 
+                   				
+                   				%> = (<%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), false) %>) <%= JavaTypesManager.getDefaultValueFromJavaIdType(column.getTalendType(), false) %><%
+                   				
+	                   		}
+                   			
+                   			%>;<%
+                   			// END OF INIT LINE
+                   			
+                   		} // T_AggR_137
+                        break;
                		} // T_AggR_136
     			} // T_AggR_135
     		} // T_AggR_132
@@ -214,73 +313,96 @@ if(sizeOps>0){ // T_AggR_114
         %>
         
         
-    @Override
-	public int hashCode() {
-		if (this.hashCodeDirty) {
-			final int prime = PRIME;
-			int result = DEFAULT_HASHCODE;
-	<%
-		if (inputMetadataTable !=null) {
-			for (IMetadataColumn column: inputMetadataTable.getListColumns()) {
-				if (keysColumns.containsKey(column.getLabel())) {
-					if (JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable())) {
-					
-					 	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-					 	if("boolean".equals(typeToGenerate)) {
+	    @Override
+		public int hashCode() {
+			if (this.hashCodeDirty) {
+				final int prime = PRIME;
+				int result = DEFAULT_HASHCODE;
+		<%
+			if (inputMetadataTable !=null) {
+				for (IMetadataColumn column: inputMetadataTable.getListColumns()) {
+					if (keysColumns.containsKey(column.getLabel())) {
+						if (JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable())) {
+						
+						 	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+						 	if("boolean".equals(typeToGenerate)) {
+							%>
+			        			result = prime * result + (this.<%=column.getLabel() %> ? 1231 : 1237);
+							<%
+							} else {	
+							%>
+								result = prime * result + (int) this.<%=column.getLabel() %>;
+							<%
+							}
+						} else {
 						%>
-		        			result = prime * result + (this.<%=column.getLabel() %> ? 1231 : 1237);
-						<%
-						} else {	
-						%>
-							result = prime * result + (int) this.<%=column.getLabel() %>;
+							result = prime * result + ((this.<%=column.getLabel() %> == null) ? 0 : this.<%=column.getLabel() %>.hashCode());
 						<%
 						}
-					} else {
+					}
+				}
+			}
+	    %>
+	    		this.hashCode = result;
+	    		this.hashCodeDirty = false;		
+			}
+			return this.hashCode;
+		}
+		
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj) return true;
+			if (obj == null) return false;
+			if (getClass() != obj.getClass()) return false;
+			final AggOperationStruct_<%=cid %> other = (AggOperationStruct_<%=cid %>) obj;
+			<%	
+			if (inputMetadataTable !=null) {
+				for (IMetadataColumn column: inputMetadataTable.getListColumns()) {
+					if (keysColumns.containsKey(column.getLabel())) {
+					
+						JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+					
+						if (JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable())) {
 					%>
-						result = prime * result + ((this.<%=column.getLabel() %> == null) ? 0 : this.<%=column.getLabel() %>.hashCode());
-					<%
-					}
-				}
-			}
-		}
-    %>
-    		this.hashCode = result;
-    		this.hashCodeDirty = false;		
-		}
-		return this.hashCode;
-	}
-	
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) return true;
-		if (obj == null) return false;
-		if (getClass() != obj.getClass()) return false;
-		final AggOperationStruct_<%=cid %> other = (AggOperationStruct_<%=cid %>) obj;
-		<%	
-		if (inputMetadataTable !=null) {
-			for (IMetadataColumn column: inputMetadataTable.getListColumns()) {
-				if (keysColumns.containsKey(column.getLabel())) {
-					if (JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable())) {
-				%>
-					if (this.<%=column.getLabel() %> != other.<%=column.getLabel() %>) 
-						return false;
-				<%
-					} else {
-				%>
-					if (this.<%=column.getLabel() %> == null) {
-						if (other.<%=column.getLabel() %> != null) 
+						if (this.<%=column.getLabel() %> != other.<%=column.getLabel() %>) 
 							return false;
-					} else if (!this.<%=column.getLabel() %>.equals(other.<%=column.getLabel() %>)) 
-						return false;
-				<%
+					<%
+						} else if(javaType == JavaTypesManager.BYTE_ARRAY) {
+					%>
+							if (this.<%=column.getLabel() %> == null) {
+								if (other.<%=column.getLabel() %> != null) 
+									return false;
+							} else {
+								if(this.<%=column.getLabel() %> != null && other.<%=column.getLabel() %> != null
+									&& other.<%=column.getLabel() %>.length != this.<%=column.getLabel() %>.length
+								) {
+									return false;
+								}
+								for(int i = 0; i < this.<%=column.getLabel() %>.length; i++) {
+									if(this.<%=column.getLabel() %>[i] != other.<%=column.getLabel() %>[i]) {
+										return false;
+									}
+								}
+								return true;
+							}
+					<%
+						} else {
+					%>
+						if (this.<%=column.getLabel() %> == null) {
+							if (other.<%=column.getLabel() %> != null) 
+								return false;
+						} else if (!this.<%=column.getLabel() %>.equals(other.<%=column.getLabel() %>)) 
+							return false;
+					<%
+						}
 					}
 				}
 			}
-    	}
-    	%>
-    	
-		return true;
-      }
+			%>
+			
+			return true;
+		}
+  
         
 	} // G_AggR_100
 

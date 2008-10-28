@@ -20,6 +20,18 @@ INode node = (INode)codeGenArgument.getArgument();
 String origin = ElementParameterParser.getValue(node, "__ORIGIN__");
 String cid = origin;
 
+String SUM = "sum";
+String COUNT = "count";
+String MAX = "max";
+String MIN = "min";
+String FIRST = "first";
+String LAST = "last";
+String AVG = "avg";
+String COUNT_DISTINCT = "distinct";
+String LIST = "list";
+String LIST_OBJECT = "list_object";
+String STD_DEV = "std_dev";
+
 List<IMetadataTable> mestadataTableListOut = node.getMetadataList();
 
 if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_AggR_600
@@ -100,8 +112,8 @@ if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_AggR_6
     				IMetadataColumn outputColumn = outputColumns.get(c);
     				String outputColumnName = outputColumn.getLabel();
     				String typeToGenerate = JavaTypesManager.getTypeToGenerate(outputColumn.getTalendType(), outputColumn.isNullable());
-    				String typeName = JavaTypesManager.getTypeToGenerate(outputColumn.getTalendType(), false);
-    				JavaType javaType = JavaTypesManager.getJavaTypeFromId(outputColumn.getTalendType());
+    				String outputTypeName = JavaTypesManager.getTypeToGenerate(outputColumn.getTalendType(), false);
+    				JavaType outputJavaType = JavaTypesManager.getJavaTypeFromId(outputColumn.getTalendType());
     				String patternValue = outputColumn.getPattern() == null || outputColumn.getPattern().trim().length() == 0 ? null : outputColumn.getPattern();
     				
     				for(int g = 0; g < sizeGroupbys; g++){ // T_AggR_605
@@ -115,15 +127,14 @@ if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_AggR_6
             				if (incomingConnections != null && !incomingConnections.isEmpty()) {
             					loop:
             					for (IConnection conn : incomingConnections) {
-    								if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-                						IMetadataTable inMetadata = conn.getMetadataTable();
-                						for (IMetadataColumn inColumn: inMetadata.getListColumns()) {
-                							if(inColumn.getLabel().equals(inputColumn)){
-                								sameType = (JavaTypesManager.getJavaTypeFromId(inColumn.getTalendType()) == javaType);
-                								break loop;
-                							}
-                						}
-                					}
+            						IMetadataTable inMetadata = conn.getMetadataTable();
+            						for (IMetadataColumn inColumn: inMetadata.getListColumns()) {
+            							if(inColumn.getLabel().equals(inputColumn)){
+            								JavaType inputJavaType = JavaTypesManager.getJavaTypeFromId(inColumn.getTalendType());
+            								sameType = (inputJavaType == outputJavaType);
+            								break loop;
+            							}
+            						}
                 				}
             				}
             				if(sameType){
@@ -134,11 +145,11 @@ if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_AggR_6
             				    %>
             				    String s_<%=inputColumn %>_<%=outputGroupColumn %>_<%=cid %> = String.valueOf(aggregated_row_<%=cid %>.<%=inputColumn %>);
             				    <%= outputConn.getName() %>.<%=outputGroupColumn %> = <%
-    							if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
+    							if(outputJavaType == JavaTypesManager.STRING || outputJavaType == JavaTypesManager.OBJECT) {
     								%>s_<%=inputColumn %>_<%=outputGroupColumn %>_<%=cid %><%
-    							}else if(javaType == JavaTypesManager.BYTE_ARRAY){
+    							}else if(outputJavaType == JavaTypesManager.BYTE_ARRAY){
     								%>s_<%=inputColumn %>_<%=outputGroupColumn %>_<%=cid %>.getBytes()<%
-    							} else if(javaType == JavaTypesManager.DATE) {
+    							} else if(outputJavaType == JavaTypesManager.DATE) {
     								%>s_<%=inputColumn %>_<%=outputGroupColumn %>_<%=cid %>.equals("null") ? null : ParserUtils.parseTo_Date(s_<%=inputColumn %>_<%=outputGroupColumn %>_<%=cid %>, <%= patternValue %>)<%
     							} else {
     								%>ParserUtils.parseTo_<%= typeToGenerate %>(s_<%=inputColumn %>_<%=outputGroupColumn %>_<%=cid %>)<%
@@ -155,54 +166,51 @@ if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_AggR_6
                 		String function = operation.get("FUNCTION");
                 		String outOperation = operation.get("OUTPUT_COLUMN");
                 		String inOperation = operation.get("INPUT_COLUMN");
+
+						JavaType inputJavaType = null;
+
                 		if(outOperation.equals(outputColumnName)){ // T_AggR_616
-                			boolean sameType = false;
-                			
-    						List<? extends IConnection> incomingConnections = node.getIncomingConnections();
-            				if (incomingConnections != null && !incomingConnections.isEmpty()) { // T_AggR_627
-            					loop:
-            					for (IConnection conn : incomingConnections) {
-            						IMetadataTable inMetadata = conn.getMetadataTable();
-            						for (IMetadataColumn inColumn: inMetadata.getListColumns()) {
-            							if(inColumn.getLabel().equals(outOperation)){
-            								if(function.equals("first")||function.equals("last")||function.equals("min")||function.equals("max")){
-            									sameType = (JavaTypesManager.getJavaTypeFromId(inColumn.getTalendType()) == javaType);
-            								}else if(function.equals("avg")||function.equals("sum")){
-                                                sameType = (typeToGenerate.equals("byte") || typeToGenerate.equals("short") || typeToGenerate.equals("int") || typeToGenerate.equals("long") || typeToGenerate.equals("float") || typeToGenerate.equals("double") || 
-                                                        typeToGenerate.equals("Byte") || typeToGenerate.equals("Short") || typeToGenerate.equals("Integer") || typeToGenerate.equals("Long") || typeToGenerate.equals("Float") || typeToGenerate.equals("Double"));
-            								}else{
-            									sameType = (typeToGenerate.equals("int")||typeToGenerate.equals("long"));
-            								}
-            								break loop;
-            							}
-            						}
-                				}
-            				} // T_AggR_627
+
+							boolean outputIsNumber = JavaTypesManager.isNumberType(outputJavaType, false);
+			
+							boolean isValidTypeForOperation = 
+								outputIsNumber && (function.equals(SUM) || function.equals(AVG)) 
+								|| !outputIsNumber && !(function.equals(SUM) || function.equals(AVG))
+							;
+	
+							if(!isValidTypeForOperation) {
+								continue;
+							}
             				
-            				if(function.equals("std_dev")|| function.equals("list_object")){ //force to sameType
-            					sameType = true;
-            				}
                 			if(function.equals("avg")){ // T_AggR_617
+                			
                 				int pre = 10;
                        		 	Integer precision = outputColumn.getPrecision();
                            		 if(precision!=null && precision!=0) { 
                            		 	pre = precision;
                            		 }               				
+
                 			    %>
-                			    double <%=outOperation %>_avg_temp = 0;
                                 if(operation_result_<%=cid %>.<%=inOperation %>_count > 0){
-    									<%=outOperation %>_avg_temp = operation_result_<%=cid %>.<%=inOperation %>_sum.divide(BigDecimal.valueOf(operation_result_<%=cid %>.<%=inOperation %>_count), <%=pre %>, BigDecimal.ROUND_HALF_UP).doubleValue();                                
+                                	<%
+									if(outputJavaType == JavaTypesManager.BIGDECIMAL) {
+									%>
+	    								<%= outputConn.getName() %>.<%=outOperation %> = operation_result_<%=cid %>.<%=inOperation %>_sum.divide(new BigDecimal(operation_result_<%=cid %>.<%=inOperation %>_count));
+    								<%
+									} else {
+									%>
+	    								double <%= outputConn.getName() %>_<%=outOperation %>_temp = (double) operation_result_<%=cid %>.<%=inOperation %>_sum / (double) operation_result_<%=cid %>.<%=inOperation %>_count;
+										<%= outputConn.getName() %>.<%=outOperation %> = (<%=outputTypeName%>) <%= outputConn.getName() %>_<%=outOperation %>_temp;
+    								<%
+    								}
+    								%>
                                 }
                                 <%
-                                if(sameType){
+                                /*
                                     %>
-                                      <%= outputConn.getName() %>.<%=outOperation %> = (<%=typeName%>)<%=outOperation %>_avg_temp;                                 
+                                      <%= outputConn.getName() %>.<%=outOperation %> = (<%=outputTypeName%>)<%=outOperation %>_avg_temp;                                 
                                     <%
-                                }else{
-                                    %>
-                                    String temps<%=outOperation %> = String.valueOf(<%if(javaType == JavaTypesManager.INTEGER || javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.CHARACTER){%>(<%=typeToGenerate %>)<%}%><%=outOperation %>_avg_temp);
-                                <%
-                                }
+                                */
                                 %>
                                 <%
                 			}  // T_AggR_617
@@ -212,24 +220,22 @@ if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_AggR_6
                            		 if(precision!=null && precision!=0) { 
                            		 	pre = precision;
                            		 }                 			
-    							if(sameType){ // T_AggR_668                     
-
-	                           		 if(javaType == JavaTypesManager.BIGDECIMAL) {
+									/*
+	                           		 if(outputJavaType == JavaTypesManager.BIGDECIMAL) {
 	                                	%>
-	                                	<%= outputConn.getName() %>.<%=outOperation %> = operation_result_<%=cid %>.<%=inOperation %>_<%=function %>.setScale(<%=pre %>, java.math.BigDecimal.ROUND_HALF_UP);
+	                                	<%= outputConn.getName() %>.<%=outOperation %> = aggregated_row_<%=cid %>.<%=outOperation %>_<%=function %>.setScale(<%=pre %>, java.math.BigDecimal.ROUND_HALF_UP);
 	                                	<%
 	                                } else {
 	                                	%>
-	                                    <%= outputConn.getName() %>.<%=outOperation %> = (<%=typeName%>)aggregated_row_<%=cid %>.<%=inOperation %>_<%=function %>;
+	                                    <%= outputConn.getName() %>.<%=outOperation %> = aggregated_row_<%=cid %>.<%=outOperation %>_<%=function %>;
 	                                	<%
 	                                }
+	                                */
+
+                                	%>
+                                    <%= outputConn.getName() %>.<%=outOperation %> = aggregated_row_<%=cid %>.<%=outOperation %>_<%=function %>;
+                                	<%
                                   
-    							} // T_AggR_668
-    							else { // T_AggR_669
-    							    %>
-    							    String temps<%=outOperation %> = String.valueOf(<%if((javaType == JavaTypesManager.INTEGER || javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.CHARACTER)){%>(<%=typeToGenerate %>)<%}%>operation_result_<%=cid %>.<%=inOperation %>_<%=function %>);//??
-    							    <%
-    							} // T_AggR_669
     							%>
     						<%
     						} // T_AggR_618 
@@ -240,22 +246,22 @@ if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_AggR_6
     						}  // T_AggR_619
     						else if(function.equals("std_dev")) { // T_AggR_620
     						
-    							if(javaType == JavaTypesManager.BYTE
-    								 || javaType == JavaTypesManager.SHORT
-    								 || javaType == JavaTypesManager.CHARACTER
-    								 || javaType == JavaTypesManager.INTEGER
-    								 || javaType == JavaTypesManager.LONG
-    								 || javaType == JavaTypesManager.FLOAT
-    								 || javaType == JavaTypesManager.DOUBLE
+    							if(outputJavaType == JavaTypesManager.BYTE
+    								 || outputJavaType == JavaTypesManager.SHORT
+    								 || outputJavaType == JavaTypesManager.CHARACTER
+    								 || outputJavaType == JavaTypesManager.INTEGER
+    								 || outputJavaType == JavaTypesManager.LONG
+    								 || outputJavaType == JavaTypesManager.FLOAT
+    								 || outputJavaType == JavaTypesManager.DOUBLE
     							){ // T_AggR_621
     								%>
-    								<%= outputConn.getName() %>.<%=outOperation %> = (<%=typeName%>)sd_<%=cid %>.sd(operation_result_<%=cid %>.<%=inOperation %>_<%=function %>.toArray(new Double[0]));
+    								<%= outputConn.getName() %>.<%=outOperation %> = (<%=outputTypeName%>)sd_<%=cid %>.sd(operation_result_<%=cid %>.<%=inOperation %>_<%=function %>.toArray(new Double[0]));
     								<% 		
     							} // T_AggR_621
     							
     							else if(
-    								javaType == JavaTypesManager.STRING
-    								 || javaType == JavaTypesManager.OBJECT
+    								outputJavaType == JavaTypesManager.STRING
+    								 || outputJavaType == JavaTypesManager.OBJECT
     							){ // T_AggR_622
 									%><%= outputConn.getName() %>.<%=outOperation %> = String.valueOf(sd_<%=cid %>.sd(operation_result_<%=cid %>.<%=inOperation %>_<%=function %>.toArray(new Double[0])));
 									<%
@@ -275,94 +281,26 @@ if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_AggR_6
     						
     						else if(function.equals("distinct")) { // T_AggR_624
     							
-    							if(sameType){
     							%>
-    								<%= outputConn.getName() %>.<%=outOperation %> = operation_result_<%=cid %>.<%=inOperation %>_<%=function %>.size();<%
-    							}
-    							else{
-    							    %>
-    							    String temps<%=outOperation %> = String.valueOf(operation_result_<%=cid %>.<%=inOperation %>_<%=function %>.size());//??
-    							    <%
-    							}
+    								<%= outputConn.getName() %>.<%=outOperation %> = operation_result_<%=cid %>.<%=inOperation %>_<%=function %>.size();
+    							<%
     						}  // T_AggR_624
     						
     						else { // T_AggR_636
     							
-    							if(sameType){
-                                        %>
-                                        <%= outputConn.getName() %>.<%=outOperation %> = operation_result_<%=cid %>.<%=inOperation %>_<%=function %>;
-                                <%}else{
-    							    %>
-    							    String temps<%=outOperation %> = String.valueOf(operation_result_<%=cid %>.<%=inOperation %>_<%=function %>);//??
-    							    <%
-    							}
+								%>
+                                <%= outputConn.getName() %>.<%=outOperation %> = operation_result_<%=cid %>.<%=inOperation %>_<%=function %>;
+                                <%
+                                
     							
     						} // T_AggR_636
 
-
-                			if(!sameType){ // T_AggR_640
-                			    %>
-                			    if(temps<%=outOperation %>.length() > 0) { // G_AggR_641
-                			        <%
-    								
-            			            if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
-    								
-            			                %>
-            			                <%= outputConn.getName() %>.<%=outOperation %> = temps<%=outOperation %>;
-            			                <%
-    								
-            			            } else if(javaType == JavaTypesManager.BYTE_ARRAY) {
-            			            
-            			                %>
-            			                <%= outputConn.getName() %>.<%=outOperation %> = temps<%=outOperation %>.getBytes();
-            			                <%
-            			                
-            			            } else if(javaType == JavaTypesManager.DATE) {
-            			                
-            			                %>
-            			                <%= outputConn.getName() %>.<%=outOperation %> = ParserUtils.parseTo_Date(temps<%=outOperation %>, <%= patternValue %>);
-            			                <%
-    								
-            			            }else{
-    								
-            			                
-            			                %>
-    								    <%= outputConn.getName() %>.<%=outOperation %> = ParserUtils.parseTo_<%= typeToGenerate %>(temps<%=outOperation %>);
-    								    <%
-    								    
-            			            }
-    								
-                			    %>					
-                				} // G_AggR_641
-								else { // G_AggR_642
-                			 	<%
-        							
-        							String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, outputColumn.getDefault());
-        							if(defaultValue == null) {
-            							
-        								%>
-        								throw new RuntimeException("Value is empty for column : '<%= outputColumn.getLabel() %>', value is invalid or this column should be nullable or have a default value.");
-        								<%
-        								
-        							} else {
-        							    
-        							    %>
-        							    <%= outputConn.getName() %>.<%=outOperation %> = <%=defaultValue%>;
-        							    <%
-        							    
-        							}
-								%>
-								} // T_AggR_642
-								<%        							
-    						
-                            } // T_AggR_640
-                			
                 			continue next_column;
                 			
                 		} // T_AggR_616
                 		
                 	
-                    if(javaType == JavaTypesManager.STRING){
+                    if(outputJavaType == JavaTypesManager.STRING){
                         %>
                         <%= outputConn.getName() %>.<%=outputColumnName %> = "";/*empty string for String value*/
                         <%
