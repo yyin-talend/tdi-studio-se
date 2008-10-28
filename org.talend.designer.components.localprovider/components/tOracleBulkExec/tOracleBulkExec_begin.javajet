@@ -579,6 +579,8 @@ error_<%=cid %>.start();
 
 process_<%=cid %>.waitFor();
 
+int exitCode_<%=cid%> = process_<%=cid %>.exitValue();
+
 normal_<%=cid %>.interrupt();
 
 error_<%=cid %>.interrupt();
@@ -618,5 +620,5 @@ globalMap.put("<%=cid %>_NB_LINE_BAD", nb_line_bad_<%=cid %>);
 
 globalMap.put("<%=cid %>_NB_LINE_INSERTED", nb_line_data_<%=cid %> - nb_line_inserted_<%=cid %>);
 
-
+globalMap.put("<%=cid %>_RETURN_CODE", exitCode_<%=cid%>);
 
