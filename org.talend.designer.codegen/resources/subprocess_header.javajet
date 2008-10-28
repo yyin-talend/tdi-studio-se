@@ -723,6 +723,8 @@ public void <%=subTree.getName() %>Process(final java.util.Map<String, Object> g
 	if(asyncIn!=null && asyncIn.getComponent().getName().equals("tAsyncIn")){
 		String parallelize = ElementParameterParser.getValue(asyncIn, "__PARALLELIZE__");
 		isParallelize = (parallelize!=null&&!parallelize.equals(""))?parallelize.equals("true"):false;
+		// temporary modification : if tAsyncIn is available, this is always a parallelized process
+		isParallelize = true;
 	}
 	if(isParallelize){//isParallelize
 %>
