@@ -68,7 +68,7 @@ public class CopyAction extends AContextualAction {
 
         LocalSelectionTransfer.getTransfer().setSelection(selection);
         LocalSelectionTransfer.getTransfer().setSelectionSetTime(System.currentTimeMillis());
-        refresh();
+        // refresh();
     }
 
     public void init(TreeViewer viewer, IStructuredSelection selection) {
