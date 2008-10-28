@@ -2583,12 +2583,20 @@ public class Process extends Element implements IProcess2 {
                         String moduleValue = (String) curParam.getValue();
 
                         if (ContextParameterUtils.isContainContextParam(moduleValue)) {
-                            IContext selectedContext = CorePlugin.getDefault().getRunProcessService().getSelectedContext();
-                            if (selectedContext == null) {
-                                selectedContext = getContextManager().getDefaultContext();
+                            String var = ContextParameterUtils.getVariableFromCode(moduleValue);
+                            if (var != null) {
+                                IContext selectedContext = CorePlugin.getDefault().getRunProcessService().getSelectedContext();
+                                if (selectedContext == null) {
+                                    selectedContext = getContextManager().getDefaultContext();
+                                }
+                                IContextParameter param = selectedContext.getContextParameter(var);
+                                if (param != null) {
+                                    String value = param.getValue();
+                                    if (value != null && !"".equals(value)) {
+                                        neededLibraries.add(value);
+                                    }
+                                }
                             }
-                            neededLibraries.add(selectedContext.getContextParameter(
-                                    ContextParameterUtils.getVariableFromCode(moduleValue)).getValue());
                         } else {
                             neededLibraries.add(moduleValue.replaceAll(TalendTextUtils.QUOTATION_MARK, "").replaceAll(
                                     TalendTextUtils.SINGLE_QUOTE, ""));
