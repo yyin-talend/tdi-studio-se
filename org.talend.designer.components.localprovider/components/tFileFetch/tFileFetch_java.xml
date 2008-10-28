@@ -38,6 +38,10 @@ COMPATIBILITY="ALL"
         <ITEM NAME="FTP_PROTO"   VALUE="ftp" />
       </ITEMS>
     </PARAMETER>
+    
+ 
+  
+
   
   <PARAMETER 
   	NAME="POST" 
@@ -74,7 +78,15 @@ COMPATIBILITY="ALL"
      NUM_ROW="40"    
   >
     <DEFAULT>""</DEFAULT>
-  </PARAMETER>      
+  </PARAMETER> 
+  
+   <PARAMETER
+     NAME="DIE_ON_ERROR"
+     FIELD="CHECK"
+     NUM_ROW="50"
+  >
+  <DEFAULT>true</DEFAULT> 
+  </PARAMETER>     
     
   <PARAMETER 
      NAME="COMMON_PARAMS" 

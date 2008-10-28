@@ -31,6 +31,7 @@ String proxyHost = ElementParameterParser.getValue(node,"__PROXY_HOST__");
 String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
 String proxyUser = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
 String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
+String dieOnError = ElementParameterParser.getValue(node,"__DIE_ON_ERROR__");
 %>   
 
 <%if(protocol.equals("http")){
@@ -42,6 +43,7 @@ String password = ElementParameterParser.getValue(node,"__AUTH_PASSWORD__");
 String timeout = ElementParameterParser.getValue(node,"__TIMEOUT__");
 %>
     org.apache.commons.httpclient.HttpClient client_<%=cid %> = new org.apache.commons.httpclient.HttpClient();
+    boolean isContinue=true;
     client_<%=cid %>.getHttpConnectionManager().getParams().setConnectionTimeout(<%=timeout %>);
 <%if(post){%>
     org.apache.commons.httpclient.methods.PostMethod post_<%=cid %> = new org.apache.commons.httpclient.methods.PostMethod(<%=uri %>);		
@@ -98,12 +100,42 @@ String timeout = ElementParameterParser.getValue(node,"__TIMEOUT__");
     
     post_<%=cid %>.setRequestEntity(new org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity(parts_<%=cid %>, post_<%=cid %>.getParams()));					
 //here excute the post the method
+   try{
     client_<%=cid %>.executeMethod(post_<%=cid %>);
-
+    }catch(Exception e){
+<% if(dieOnError.equals("true")){
+%>
+   throw(e);
+<% }else{
+%>   
+      System.err.println("There is an exception on: "+<%=uri %>);
+      e.printStackTrace();
+      System.out.println("\r\n");
+      isContinue=false;
+<% }
+%>
+}
+      
+            
+     
 <% }else{%>   			
+    try{
     client_<%=cid %>.executeMethod(get_<%=cid %>);
+    }catch(Exception e){
+<% if(dieOnError.equals("true")){
+%>
+   throw(e);
+<% }else{
+%>   
+      System.err.println("There is an exception on: "+<%=uri %>);
+      e.printStackTrace();
+      System.out.println("\r\n");
+      isContinue=false;
+<% }
+%>  
+} 
 <%}%>
-
+    if(isContinue==true){
 <%  if(printResponse){%>	
 	
 	<%if(post){%>
@@ -155,6 +187,7 @@ String timeout = ElementParameterParser.getValue(node,"__TIMEOUT__");
     // close opened object
     in_<%=cid %>.close();
     out_<%=cid %>.close();
+    }
     <%if(post){%>
 	post_<%=cid %>.releaseConnection();
 	<%}else{%>
@@ -177,6 +210,7 @@ if(useProxy){
 <%}%>
 
 String fileName<%=cid %> = <%=filename %>;
+java.io.DataInputStream in<%=cid%>=null;
 	
 	//open directory
 	java.io.File dir<%=cid %> = new java.io.File(<%=directory %>);
@@ -195,8 +229,23 @@ String fileName<%=cid %> = <%=filename %>;
     final java.io.DataOutputStream out<%=cid%>= new java.io.DataOutputStream(new java.io.FileOutputStream(new java.io.File(
             dir<%=cid %>, fileName<%=cid %>))); 
 	// copy file
-    final java.io.DataInputStream in<%=cid%> = new java.io.DataInputStream(conn<%=cid %>.getInputStream());
+   try{
+   in<%=cid%> = new java.io.DataInputStream(conn<%=cid %>.getInputStream());
+   }catch(Exception e){
+<% if(dieOnError.equals("true")){
+%>    throw(e);
+<%}else{
+%>
+      System.err.println("There is an exception on: "+<%=uri %>);
+      e.printStackTrace();
+      System.out.println("\r\n");
+      in<%=cid%>=null;
+      
+<%}
+%>    
+}  
 	//close opened object
+	if(in<%=cid%>!=null){
     byte[] buffer<%=cid%> = new byte[1024];
     int count<%=cid%> = 0;
     while ((count<%=cid%> = in<%=cid%>.read(buffer<%=cid%>)) > 0) {
@@ -204,6 +253,7 @@ String fileName<%=cid %> = <%=filename %>;
     }
     // close opened object
     in<%=cid%>.close();
+    }
     out<%=cid%>.close();
 
 
