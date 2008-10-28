@@ -272,13 +272,11 @@ public class TableController extends AbstractElementPropertySectionController {
                                 if (column == null || "".equals(column)) {
                                     columnMap.put(columnParam.getName(), columnParam.getDefaultClosedListValue());
                                 }
-                                if (columnParam.getListItemsValue() == null) {
-
-                                }
-
-                                // @see bug 5433(Display and value is not match.)
-                                if (!Arrays.asList(columnParam.getListItemsValue()).contains(column)) {
-                                    columnMap.put(columnParam.getName(), columnParam.getDefaultClosedListValue());
+                                if (columnParam.getListItemsValue() != null) {
+                                    // @see bug 5433(Display and value is not match.)
+                                    if (!Arrays.asList(columnParam.getListItemsValue()).contains(column)) {
+                                        columnMap.put(columnParam.getName(), columnParam.getDefaultClosedListValue());
+                                    }
                                 }
                             }
                         }
