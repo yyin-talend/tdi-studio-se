@@ -198,6 +198,12 @@ public class MoveObjectAction {
     }
 
     public void execute(RepositoryNode sourceNode, RepositoryNode targetNode) throws Exception {
+        execute(sourceNode, targetNode, null);
+    }
+
+    // folderPath is used for restore item to original folder. see bug 0005465: Restore from Recycle Bin lose the
+    // directories.
+    public void execute(RepositoryNode sourceNode, RepositoryNode targetNode, IPath folderPath) throws Exception {
         if (!validateAction(sourceNode, targetNode)) {
             // i18n
             // log.debug("Cannot move [" + sourceNode + "] to " + targetNode);
@@ -206,7 +212,11 @@ public class MoveObjectAction {
             return;
         }
 
-        targetPath = (targetNode == null ? new Path("") : RepositoryNodeUtilities.getPath(targetNode)); //$NON-NLS-1$
+        if (folderPath != null) {
+            targetPath = folderPath;
+        } else {
+            targetPath = (targetNode == null ? new Path("") : RepositoryNodeUtilities.getPath(targetNode)); //$NON-NLS-1$
+        }
         sourcePath = RepositoryNodeUtilities.getPath(sourceNode);
 
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();

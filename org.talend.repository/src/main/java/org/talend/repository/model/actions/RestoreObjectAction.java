@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.repository.model.actions;
 
+import org.eclipse.core.runtime.IPath;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -48,11 +49,11 @@ public class RestoreObjectAction {
         }
     }
 
-    public void execute(RepositoryNode sourceNode, RepositoryNode targetNode) throws Exception {
+    public void execute(RepositoryNode sourceNode, RepositoryNode targetNode, IPath folderPath) throws Exception {
         if (!validateAction(sourceNode, targetNode)) {
             return;
         }
         MoveObjectAction moveObjectAction = MoveObjectAction.getInstance();
-        moveObjectAction.execute(sourceNode, targetNode);
+        moveObjectAction.execute(sourceNode, targetNode, folderPath);
     }
 }

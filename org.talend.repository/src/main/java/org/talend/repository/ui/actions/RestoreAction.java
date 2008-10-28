@@ -13,13 +13,18 @@
 package org.talend.repository.ui.actions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.components.ComponentUtilities;
@@ -54,12 +59,14 @@ public class RestoreAction extends AContextualAction {
         this.setActionDefinitionId("restoreItem"); //$NON-NLS-1$
     }
 
+    @Override
     public void run() {
         // used to store the database connection object that are used to notify the sqlBuilder.
         List<IRepositoryObject> connections = new ArrayList<IRepositoryObject>();
         ISelection selection = getSelection();
         boolean needToUpdatePalette = false;
         Set<ERepositoryObjectType> types = new HashSet<ERepositoryObjectType>();
+        RestoreFolderUtil restoreFolder = new RestoreFolderUtil();
         for (Object obj : ((IStructuredSelection) selection).toArray()) {
             if (obj instanceof RepositoryNode) {
                 try {
@@ -74,8 +81,9 @@ public class RestoreAction extends AContextualAction {
                         factory.save(item);
                         connections.add(node.getObject());
                     } else {
+                        IPath path = restoreFolder.resotreFolderIfNotExists(nodeType, node);
                         RestoreObjectAction restoreObjectAction = RestoreObjectAction.getInstance();
-                        restoreObjectAction.execute(node, null);
+                        restoreObjectAction.execute(node, null, path);
                     }
                     if (nodeType == ERepositoryObjectType.JOBLET) {
                         needToUpdatePalette = true;
@@ -115,7 +123,7 @@ public class RestoreAction extends AContextualAction {
             canWork = false;
         }
         RestoreObjectAction restoreObjectAction = RestoreObjectAction.getInstance();
-        for (Object o : ((IStructuredSelection) selection).toArray()) {
+        for (Object o : (selection).toArray()) {
             if (canWork) {
                 if (o instanceof RepositoryNode) {
                     RepositoryNode node = (RepositoryNode) o;
@@ -132,4 +140,46 @@ public class RestoreAction extends AContextualAction {
         setEnabled(canWork);
     }
 
+    /**
+     * 
+     * Helper class for restoring folders.
+     */
+    class RestoreFolderUtil {
+
+        Map<ERepositoryObjectType, Set<String>> foldersMap = new HashMap<ERepositoryObjectType, Set<String>>();
+
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+
+        IPath resotreFolderIfNotExists(ERepositoryObjectType type, RepositoryNode node) throws PersistenceException {
+            Set<String> folders = getFolders(type);
+            String oldPath = node.getObject().getProperty().getItem().getState().getPath();
+            return createFolders(folders, new Path(oldPath), type);
+        }
+
+        private IPath createFolders(Set<String> folders, IPath path, ERepositoryObjectType type) throws PersistenceException {
+            if (folders.contains(path.toString())) {
+                return path;
+            }
+
+            String lastSegment = path.lastSegment();
+            if (lastSegment != null) {
+                // create parent folder
+                IPath parent = createFolders(folders, path.removeLastSegments(1), type);
+                factory.createFolder(type, parent, lastSegment);
+                return path;
+            } else {
+                return new Path("");
+            }
+        }
+
+        private Set<String> getFolders(ERepositoryObjectType type) throws PersistenceException {
+            Set<String> folders = foldersMap.get(type);
+            if (folders == null) {
+                folders = new HashSet<String>(factory.getFolders(type));
+                foldersMap.put(type, folders);
+            }
+            return folders;
+        }
+
+    }
 }
