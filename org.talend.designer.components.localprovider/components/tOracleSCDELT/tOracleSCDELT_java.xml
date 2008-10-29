@@ -191,6 +191,37 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
+    <PARAMETER
+      NAME="SURROGATE_KEY"
+      FIELD="COLUMN_LIST"
+      NUM_ROW="131"
+      SHOW="true"
+    >
+      <DEFAULT></DEFAULT>
+    </PARAMETER>	
+
+    <PARAMETER
+      NAME="SK_CREATION"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="131"
+      SHOW="true"
+    >
+      <ITEMS DEFAULT="AUTO_INCREMENT">
+        <ITEM NAME="AUTO_INCREMENT"   VALUE="AUTO_INCREMENT" />
+        <ITEM NAME="DB_SEQUENCE"      VALUE="DB_SEQUENCE"/>
+      </ITEMS>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="SK_DB_SEQUENCE"
+      FIELD="TEXT"
+      NUM_ROW="131"
+      SHOW_IF="SK_CREATION == 'DB_SEQUENCE'"
+      SHOW="true"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
     
     <PARAMETER
       NAME="SOURCE_KEYS"

@@ -46,12 +46,12 @@ if(columnList != null && columnList.size() > 0) {
         String schema_<%=cid%> = (String)globalMap.get("<%=schema%>");
         <%
     } else {
-        String dbname= ElementParameterParser.getValue(node, "__DBNAME__");    
+        String dbname = ElementParameterParser.getValue(node, "__DBNAME__");    
         String schema = ElementParameterParser.getValue(node, "__SCHEMA_DB__");    
         String dbhost = ElementParameterParser.getValue(node, "__HOST__");    
         String dbport = ElementParameterParser.getValue(node, "__PORT__");  
-        String dbuser= ElementParameterParser.getValue(node, "__USER__");   
-        String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
+        String dbuser = ElementParameterParser.getValue(node, "__USER__");   
+        String dbpwd = ElementParameterParser.getValue(node, "__PASS__");
         %>
         java.lang.Class.forName("org.postgresql.Driver");
         String url_<%=cid %> = "jdbc:postgresql://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
@@ -147,6 +147,16 @@ if(columnList != null && columnList.size() > 0) {
         System.out.println("[<%=cid%>] table action <%=tableAction%> done\n");
         <%
     }
+    String surrogateKey = ElementParameterParser.getValue(node,"__SURROGATE_KEY__");
+    String surrogateKeyType = ElementParameterParser.getValue(node,"__SK_CREATION__");
+    String sequenceName = ElementParameterParser.getValue(node,"__SK_DB_SEQUENCE__");
+    boolean isEqualWithSK = false;
+    for(Map<String, String> sk : sourceKeys) {
+        if(surrogateKey.equals(sk.get("NAME"))) {
+            isEqualWithSK = true;
+            break;
+        }
+    }
     String selectColumnString = "";
     String columnNameString = "";    
     List<String> joinClause = new ArrayList<String>();
@@ -160,7 +170,13 @@ if(columnList != null && columnList.size() > 0) {
         List<String> setColumns = new ArrayList<String>();
         List<String> whereClause = new ArrayList<String>();        
         for(Map<String, String> sk : sourceKeys) {
-            columnNames.add(StringUtils.getPostgresqlProtectedColumnName(sk.get("NAME")));
+            if(isEqualWithSK) {
+                if(!sk.get("NAME").equals(surrogateKey)) {
+                    columnNames.add(StringUtils.getPostgresqlProtectedColumnName(sk.get("NAME")));
+                }
+            } else {
+                columnNames.add(StringUtils.getPostgresqlProtectedColumnName(sk.get("NAME")));                
+            }
         }
         for(Map<String, String> type1Attribute : type1Attributes) {
             columnNames.add(StringUtils.getPostgresqlProtectedColumnName(type1Attribute.get("NAME")));
@@ -211,7 +227,13 @@ if(columnList != null && columnList.size() > 0) {
         }
         List<String> columnNames = new ArrayList<String>();
         for(Map<String, String> sourceKey : sourceKeys) {
-            columnNames.add(StringUtils.getPostgresqlProtectedColumnName(sourceKey.get("NAME")));
+            if(isEqualWithSK) {
+                if(!sourceKey.get("NAME").equals(surrogateKey)) {
+                    columnNames.add(StringUtils.getPostgresqlProtectedColumnName(sourceKey.get("NAME")));
+                }
+            } else {
+                columnNames.add(StringUtils.getPostgresqlProtectedColumnName(sourceKey.get("NAME")));                
+            }
         }
         for(Map<String, String> type1Attribute : type1Attributes) {
             columnNames.add(StringUtils.getPostgresqlProtectedColumnName(type1Attribute.get("NAME")));
@@ -230,7 +252,7 @@ if(columnList != null && columnList.size() > 0) {
         }
         columnNameString = StringUtils.join(columnNames.toArray(), ", ");
         %>
-        String insertForType2_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\"(<%=columnNameString%>) SELECT t.<%=selectColumnString%>, '" + 
+        String insertForType2_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\"(<%if(surrogateKeyType.equals("DB_SEQUENCE")) {%>\"<%=surrogateKey%>\", <%}%><%=columnNameString%>) SELECT <%if(surrogateKeyType.equals("DB_SEQUENCE")) {%>NEXTVAL('" + <%=sequenceName%> + "'), <%}%>t.<%=selectColumnString%>, '" + 
         (new java.sql.Date((Long)start_Hash.get("<%=cid %>"))) + "', NULL<%if(isEnableActive) {%>, 1<%}%><%if(isEnableVersion) {%>, d.\"<%=versionField%>\" + 1<%}%> FROM \"" + 
         sourceTable_<%=cid%> + "\" t, \"" + tableName_<%=cid%> + "\" d WHERE <%=joinClauseString%> AND (<%=whereClauseString%>) AND d.\"<%=endDateField%>\" = '" + (new java.sql.Date((Long)start_Hash.get("<%=cid %>"))) + "'";
         java.sql.Statement stmtType2Insert_<%=cid%> = conn_<%=cid%>.createStatement();
@@ -250,7 +272,7 @@ if(columnList != null && columnList.size() > 0) {
     }
     String outerWhereClauseString = StringUtils.join(outerWhereClause.toArray(), " AND ");
     %>
-    String insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\"(<%=columnNameString%>) SELECT t.<%=selectColumnString%>"<%if(isEnableType2) {%> + ", '" + (new java.sql.Date((Long)start_Hash.get("<%=cid %>"))) + "', NULL"<%}%>
+    String insert_<%=cid%> = "INSERT INTO \"" + tableName_<%=cid%> + "\"(<%if(surrogateKeyType.equals("DB_SEQUENCE")) {%>\"<%=surrogateKey%>\", <%}%><%=columnNameString%>) SELECT <%if(surrogateKeyType.equals("DB_SEQUENCE")) {%>NEXTVAL('" + <%=sequenceName%> + "'), <%}%>t.<%=selectColumnString%>"<%if(isEnableType2) {%> + ", '" + (new java.sql.Date((Long)start_Hash.get("<%=cid %>"))) + "', NULL"<%}%>
     + "<%if(isEnableType2 && isEnableActive) {%>, 1<%}%><%if(isEnableType2 && isEnableVersion) {%>, 1<%}%> FROM \"" + 
     sourceTable_<%=cid%> + "\" t LEFT JOIN \"" + tableName_<%=cid%> + "\" d ON <%=joinClauseString%> WHERE (<%=outerWhereClauseString%>)";
     java.sql.Statement stmtInsert_<%=cid%> = conn_<%=cid%>.createStatement();

@@ -147,11 +147,31 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
+    <PARAMETER
+      NAME="SURROGATE_KEY"
+      FIELD="COLUMN_LIST"
+      NUM_ROW="61"
+      SHOW="true"
+    >
+      <DEFAULT></DEFAULT>
+    </PARAMETER>	
+
+    <PARAMETER
+      NAME="SK_CREATION"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="61"
+      SHOW="true"
+    >
+      <ITEMS DEFAULT="AUTO_INCREMENT">
+        <ITEM NAME="AUTO_INCREMENT"   VALUE="AUTO_INCREMENT" />
+      </ITEMS>
+    </PARAMETER>
     
     <PARAMETER
       NAME="SOURCE_KEYS"
       FIELD="TABLE"
-      NUM_ROW="61"
+      NUM_ROW="62"
       NB_LINES="2"
     >
       <ITEMS>
