@@ -172,27 +172,12 @@ if(inputConn != null) { // T_OutMain_AggR_501
 				continue next;
 			}
 		}
-		if(fun.equals("avg")){
-			String[] funin = new String[4];
-			funin[FUNCTION]="sum";
-			funin[INPUT_COLUMN]=in;
-			funin[OUTPUT_COLUMN]=out;
-			funin[IGNORE_NULL]=ignoreNull;
-			funinOperations.add(funin);
-			funin=new String[4];
-			funin[FUNCTION]="count";
-			funin[INPUT_COLUMN]=in;
-			funin[OUTPUT_COLUMN]=out;
-			funin[IGNORE_NULL]=ignoreNull;
-			funinOperations.add(funin);
-		}else{
-			String[] funin = new String[4];
-			funin[FUNCTION]=fun;
-			funin[INPUT_COLUMN]=in;
-			funin[OUTPUT_COLUMN]=out;
-			funin[IGNORE_NULL]=ignoreNull;
-			funinOperations.add(funin);
-		}
+		String[] funin = new String[4];
+		funin[FUNCTION]=fun;
+		funin[INPUT_COLUMN]=in;
+		funin[OUTPUT_COLUMN]=out;
+		funin[IGNORE_NULL]=ignoreNull;
+		funinOperations.add(funin);
 	}
 	int sizeOps = funinOperations.size();
 	String tInputColumn =null;
@@ -210,8 +195,8 @@ if(inputConn != null) { // T_OutMain_AggR_501
 		JavaType outputJavaType = JavaTypesManager.getJavaTypeFromId(outputColumn.getTalendType());
 		boolean isBasePrimitive = JavaTypesManager.isJavaPrimitiveType(outputJavaType, false);
 		boolean isSelectedPrimitive = JavaTypesManager.isJavaPrimitiveType(outputJavaType, outputColumn.isNullable());
-		boolean isNumber = JavaTypesManager.isNumberType(outputJavaType, false);
 		String primitiveTypeToGenerate = JavaTypesManager.getTypeToGenerate(outputJavaType.getId(), false);
+		boolean isNumber = JavaTypesManager.isNumberType(outputJavaType, false);
 		
 		boolean isValidTypeForOperation = 
 			isNumber && (function.equals(SUM) || function.equals(AVG)) 
@@ -227,13 +212,15 @@ if(inputConn != null) { // T_OutMain_AggR_501
 		} // T_OutMain_AggR_545
 		
 			
-		if(function.equals(COUNT)){
+		if(isNumber && (function.equals(COUNT) || function.equals(AVG))){
+				
 				
 			%>
-			operation_result_<%=cid %>.<%=outputColumnName %>_<%=function %>++;
+			operation_result_<%=cid %>.<%=outputColumnName %>_count++;
 			<%
 			
-		} else if(function.equals(MIN)){
+		}
+		if(function.equals(MIN)){
 
 			%>
 			if(<%=inputConn.getName() %>.<%=inputColumnName  %> < operation_result_<%=cid %>.<%=outputColumnName %>_<%=function %>) {
@@ -253,20 +240,17 @@ if(inputConn != null) { // T_OutMain_AggR_501
 
 			if(outputJavaType == JavaTypesManager.BIGDECIMAL) {
 
-				%>
-					operation_result_<%=cid %>.<%=outputColumnName %>_<%=function %>.add(<%=inputConn.getName() %>.<%=inputColumnName %>);
+				%>operation_result_<%=cid %>.<%=outputColumnName %>_sum = operation_result_<%=cid %>.<%=outputColumnName %>_sum.add(<%=inputConn.getName() %>.<%=inputColumnName %>);
 				<%
 		
 			} else {
 			
 				if(checkTypeOverflow || checkUlp) {
 				
-					%>
-					utilClass_<%=cid %>.checkedIADD( (<%= primitiveTypeToGenerate%>) operation_result_<%=cid %>.<%=outputColumnName %>_<%=function %>, (<%= primitiveTypeToGenerate%>) <%=inputConn.getName() %>.<%=inputColumnName %>, <%= checkTypeOverflow %>, <%= checkUlp %>);
+					%>utilClass_<%=cid %>.checkedIADD( (<%= primitiveTypeToGenerate%>) operation_result_<%=cid %>.<%=outputColumnName %>_<%=function %>, (<%= primitiveTypeToGenerate%>) <%=inputConn.getName() %>.<%=inputColumnName %>, <%= checkTypeOverflow %>, <%= checkUlp %>);
 					<%
 				}
-				%>
-					operation_result_<%=cid %>.<%=outputColumnName %>_<%=function %> += <%=inputConn.getName() %>.<%=inputColumnName %>;
+				%>operation_result_<%=cid %>.<%=outputColumnName %>_sum += <%=inputConn.getName() %>.<%=inputColumnName %>;
 				<%
 			}
 		

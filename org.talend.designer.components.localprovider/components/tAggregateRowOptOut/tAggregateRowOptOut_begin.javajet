@@ -37,6 +37,17 @@ int INPUT_COLUMN = 1;
 int OUTPUT_COLUMN = 1;
 int IGNORE_NULL = 2;
 
+String SUM = "sum";
+String COUNT = "count";
+String MAX = "max";
+String MIN = "min";
+String FIRST = "first";
+String LAST = "last";
+String AVG = "avg";
+String COUNT_DISTINCT = "distinct";
+String LIST = "list";
+String LIST_OBJECT = "list_object";
+String STD_DEV = "std_dev";
 
 int sizeOperations = operations.size();
 
@@ -72,12 +83,12 @@ for(int i=0; i<sizeOperations; i++){
 	}
 	if(fun.equals("avg")){
 		String[] funin = new String[3];
-		funin[FUNCTION]="sum";
+		funin[FUNCTION]=SUM;
 		funin[INPUT_COLUMN]=in;
 		funin[OUTPUT_COLUMN]=out;
 		funinOperations.add(funin);
 		funin=new String[3];
-		funin[FUNCTION]="count";
+		funin[FUNCTION]=AVG;
 		funin[INPUT_COLUMN]=in;
 		funin[OUTPUT_COLUMN]=out;
 		funinOperations.add(funin);
@@ -252,6 +263,7 @@ if(sizeOps>0){ // T_AggR_114
         
 		for (IMetadataColumn column: inputMetadataTable.getListColumns()) { // G_AggR_143
 			if(keysColumns.containsKey(column.getLabel())){
+
 				%>
 				<%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> <%=column.getLabel() %>;<%
 				
@@ -267,44 +279,63 @@ if(sizeOps>0){ // T_AggR_114
                		
                			JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
                		
-               		%>
-    					<%
-    					if(funin[FUNCTION].equals("sum") &&
-    						javaType == JavaTypesManager.BIGDECIMAL) {
-	    					%>
-    			   				BigDecimal <%=funin[INPUT_COLUMN] %>_sum = new BigDecimal("0.0");
-    		   				<%
-    		   			} else if(funin[FUNCTION].equals("count")){%>
-						    int <%=funin[INPUT_COLUMN] %>_count = 0;
-						    
-                   		<% } else if("distinct".equals(funin[FUNCTION])) { %> 
-                   			java.util.Set <%=funin[INPUT_COLUMN] %>_<%=funin[FUNCTION] %> = new java.util.HashSet();
-                   			 
-                   		<% } else if("list".equals(funin[FUNCTION])) {%>
-                   			String <%=funin[INPUT_COLUMN] %>_<%=funin[FUNCTION] %> = "";
-                   			
-                   		<% } else if("list_object".equals(funin[FUNCTION])) {%>
-                   			java.util.List <%=funin[INPUT_COLUMN] %>_<%=funin[FUNCTION] %> = new java.util.ArrayList();
-                   			
-                   		<% } else if("std_dev".equals(funin[FUNCTION])) {%>
-                   			java.util.List<Double> <%=funin[INPUT_COLUMN] %>_<%=funin[FUNCTION] %> = new java.util.ArrayList<Double>();
-                   			
-                   		<% } else {  // T_AggR_137
-                   		
-                   			// START OF INIT LINE
-                 			%>
-                 			<%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> <%=funin[INPUT_COLUMN] %>_<%=funin[FUNCTION] %><%
-                 			
-                   			if(column.isNullable() && JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), false) || javaType == JavaTypesManager.CHARACTER) { 
-                   				
-                   				%> = (<%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), false) %>) <%= JavaTypesManager.getDefaultValueFromJavaIdType(column.getTalendType(), false) %><%
-                   				
-	                   		}
-                   			
-                   			%>;<%
-                   			// END OF INIT LINE
-                   			
-                   		} // T_AggR_137
+						boolean isNumber = JavaTypesManager.isNumberType(javaType, false);
+						
+						String function = funin[FUNCTION];
+						
+						boolean isValidTypeForOperation = 
+							isNumber && (function.equals(SUM) || function.equals(AVG)) 
+							|| !isNumber && !(function.equals(SUM) || function.equals(AVG))
+						;
+
+						if(isValidTypeForOperation) { // T_AggR_138
+
+							if(function.equals("count") || function.equals(AVG)){
+								
+								%>int <%=funin[INPUT_COLUMN] %>_count = 0;
+	                   			<%
+	                   			 
+	                   		} else if(function.equals("sum") && javaType == JavaTypesManager.BIGDECIMAL) {
+		    					
+		    					%>BigDecimal <%=funin[INPUT_COLUMN] %>_sum = new BigDecimal("0.0");
+	    		   				<%
+	    		   				
+	                   		} else if("distinct".equals(function)) { 
+	                   			
+	                   			%>java.util.Set <%=funin[INPUT_COLUMN] %>_<%=function %> = new java.util.HashSet();
+		                   		<%
+		                   		 
+	                   		} else if("list".equals(function)) {
+	                   			
+	                   			%>String <%=funin[INPUT_COLUMN] %>_<%=function %> = "";
+	                   			<%
+	                   			
+	                   		 } else if("list_object".equals(function)) {
+	                   		 
+	                   		 	%>java.util.List <%=funin[INPUT_COLUMN] %>_<%=function %> = new java.util.ArrayList();
+	                   			<%
+	                   		} else if("std_dev".equals(function)) {
+	                   		
+	                   			%>java.util.List<Double> <%=funin[INPUT_COLUMN] %>_<%=function %> = new java.util.ArrayList<Double>();
+	                   			<%
+	                   			
+	                   		 } else {  // T_AggR_137
+	                   		
+	                   			// START OF INIT LINE
+	                 			%>
+	                 			<%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> <%=funin[INPUT_COLUMN] %>_<%=function %><%
+	                 			
+	                   			if(column.isNullable() && JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), false) || javaType == JavaTypesManager.CHARACTER) { 
+	                   				
+	                   				%> = (<%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), false) %>) <%= JavaTypesManager.getDefaultValueFromJavaIdType(column.getTalendType(), false) %><%
+	                   				
+		                   		}
+	                   			
+	                   			%>;<%
+	                   			// END OF INIT LINE
+	                   			
+	                   		} // T_AggR_137
+	                   	} // T_AggR_138
                         break;
                		} // T_AggR_136
     			} // T_AggR_135

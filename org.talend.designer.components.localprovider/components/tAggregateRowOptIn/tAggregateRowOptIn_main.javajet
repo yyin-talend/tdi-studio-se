@@ -298,14 +298,8 @@ if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_AggR_6
                 			continue next_column;
                 			
                 		} // T_AggR_616
+
                 		
-                	
-                    if(outputJavaType == JavaTypesManager.STRING){
-                        %>
-                        <%= outputConn.getName() %>.<%=outputColumnName %> = "";/*empty string for String value*/
-                        <%
-                    }
-                	
                 } // T_AggR_615
     		
     		} // T_AggR_604
