@@ -164,6 +164,12 @@ public class LoginDialog extends TrayDialog {
      * @throws Exception
      */
     protected void logIn(final Project project) {
+        
+        if (loginComposite.getConnection() == null || loginComposite.getConnection() == null || project == null
+                || project.getLabel() == null) {
+            return;
+        }
+         
         // Save last used parameters
         PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
         prefManipulator.setLastConnection(loginComposite.getConnection().getName());
