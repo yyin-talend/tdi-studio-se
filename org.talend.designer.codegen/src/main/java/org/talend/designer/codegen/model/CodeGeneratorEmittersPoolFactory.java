@@ -310,6 +310,8 @@ public final class CodeGeneratorEmittersPoolFactory {
         HashMap<String, String> globalClasspath = new HashMap<String, String>();
         for (JetBean jetBean : components) {
             globalClasspath.putAll(jetBean.getClassPath());
+            // compute the CRC
+            jetBean.setCrc(extractTemplateHashCode(jetBean));
         }
 
         emitterPool = new HashMap<JetBean, JETEmitter>();
@@ -356,8 +358,6 @@ public final class CodeGeneratorEmittersPoolFactory {
                     if (emitter.getMethod() != null) {
                         jetBean.setMethod(emitter.getMethod());
                         jetBean.setClassName(emitter.getMethod().getDeclaringClass().getName());
-                        // do it in loadEmfPersistentData(...)
-                        // jetBean.setCrc(extractTemplateHashCode(jetBean));
                         alreadyCompiledEmitters.add(jetBean);
                     } else {
                         jetFilesCompileFail.add(jetBean);
@@ -453,8 +453,7 @@ public final class CodeGeneratorEmittersPoolFactory {
                     monitorBuffer = 0;
                 }
                 unitTemplateFullURI = unit.getTemplateFullUri();
-                unitTemplateHashCode = extractTemplateHashCode(unit);
-                unit.setCrc(unitTemplateHashCode);
+                unitTemplateHashCode = unit.getCrc();
 
                 myLightJetBean = new LightJetBean(unitTemplateFullURI, unit.getVersion(), unitTemplateHashCode);
                 if (((lightBeanIndex = datas.indexOf(myLightJetBean)) > -1) || forceMethodLoad) {
