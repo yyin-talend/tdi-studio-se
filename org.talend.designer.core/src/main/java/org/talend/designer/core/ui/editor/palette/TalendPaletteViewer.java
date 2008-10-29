@@ -36,8 +36,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.utils.threading.ExecutionLimiter;
 import org.talend.core.model.components.ComponentUtilities;
+import org.talend.core.ui.images.ECoreImage;
 
 /**
  * 
@@ -111,6 +113,7 @@ public class TalendPaletteViewer extends PaletteViewer {
         gd.widthHint = 36;
         okButton.setLayoutData(gd);
         okButton.setText("OK");
+        okButton.setImage(ImageProvider.getImage(ECoreImage.CONTEXT_CONF_ICON));
         okButton.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent e) {
@@ -127,6 +130,7 @@ public class TalendPaletteViewer extends PaletteViewer {
         gd.widthHint = 36;
         clearButton.setLayoutData(gd);
         clearButton.setText("Clear");
+        clearButton.setImage(ImageProvider.getImage(ECoreImage.CONTEXT_CONF_ICON));
         clearButton.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent e) {

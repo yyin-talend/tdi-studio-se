@@ -123,16 +123,35 @@ public final class TalendEditorPaletteFactory {
             }
         }
 
+        boolean noteAeeded = false;
+        boolean needAddNote = true;
+
         for (int i = 0; i < componentList.size(); i++) {
             IComponent xmlComponent = componentList.get(i);
 
             if (xmlComponent.isTechnical()) {
                 continue;
             }
+            family = xmlComponent.getFamily();
 
             if (filter != null) {
-                String regex = "\\b.*" + filter.replaceAll("\\*", ".*") + ".*\\b";
-                regex = regex.replaceAll("\\?", ".?");
+                String regex = getFilterRegex();
+                needAddNote = "Note".toLowerCase().matches(regex);
+            }
+            if (family.equals("Misc") && !noteAeeded && needAddNote) {
+                CreationToolEntry noteCreationToolEntry = new CreationToolEntry(Messages
+                        .getString("TalendEditorPaletteFactory.Note"), //$NON-NLS-1$
+                        Messages.getString("TalendEditorPaletteFactory.CreateNote"), //$NON-NLS-1$
+                        new NoteCreationFactory(), ImageProvider.getImageDesc(ECoreImage.CODE_ICON), ImageProvider
+                                .getImageDesc(ECoreImage.CODE_ICON));
+                PaletteDrawer drawer = ht.get("Misc");
+                noteCreationToolEntry.setParent(drawer);
+                drawer.add(noteCreationToolEntry);
+                noteAeeded = true;
+            }
+
+            if (filter != null) {
+                String regex = getFilterRegex();
                 if (!xmlComponent.getTranslatedName().toLowerCase().matches(regex)) {
                     continue;
                 }
@@ -144,7 +163,6 @@ public final class TalendEditorPaletteFactory {
 
             if (xmlComponent.isLoaded()) {
                 name = xmlComponent.getTranslatedName();
-                family = xmlComponent.getFamily();
                 longName = xmlComponent.getLongName();
 
                 ImageDescriptor imageSmall = xmlComponent.getIcon16();
@@ -172,6 +190,17 @@ public final class TalendEditorPaletteFactory {
                 }
             }
         }
+    }
+
+    /**
+     * yzhang Comment method "getFilterRegex".
+     * 
+     * @return
+     */
+    private static String getFilterRegex() {
+        String regex = "\\b.*" + filter.replaceAll("\\*", ".*") + ".*\\b";
+        regex = regex.replaceAll("\\?", ".?");
+        return regex;
     }
 
     private static PaletteDrawer createComponentDrawer(Hashtable<String, PaletteDrawer> ht, String familyToCreate) {
@@ -325,18 +354,18 @@ public final class TalendEditorPaletteFactory {
         PaletteGroup toolGroup = new PaletteGroup(Messages.getString("TalendEditorPaletteFactory.Tools")); //$NON-NLS-1$
 
         // Add a selection tool to the group
-        ToolEntry tool = new PanningSelectionToolEntry();
-        toolGroup.add(tool);
-        palette.setDefaultEntry(tool);
+        // ToolEntry tool = new PanningSelectionToolEntry();
+        // toolGroup.add(tool);
+        // palette.setDefaultEntry(tool);
 
         // Add a marquee tool to the group
         // toolGroup.add(new MarqueeToolEntry());
 
-        CreationToolEntry noteCreationToolEntry = new CreationToolEntry(Messages.getString("TalendEditorPaletteFactory.Note"), //$NON-NLS-1$
-                Messages.getString("TalendEditorPaletteFactory.CreateNote"), //$NON-NLS-1$
-                new NoteCreationFactory(), ImageProvider.getImageDesc(ECoreImage.CODE_ICON), ImageProvider
-                        .getImageDesc(ECoreImage.CODE_ICON));
-        toolGroup.add(noteCreationToolEntry);
+        //        CreationToolEntry noteCreationToolEntry = new CreationToolEntry(Messages.getString("TalendEditorPaletteFactory.Note"), //$NON-NLS-1$
+        //                Messages.getString("TalendEditorPaletteFactory.CreateNote"), //$NON-NLS-1$
+        // new NoteCreationFactory(), ImageProvider.getImageDesc(ECoreImage.CODE_ICON), ImageProvider
+        // .getImageDesc(ECoreImage.CODE_ICON));
+        // toolGroup.add(noteCreationToolEntry);
 
         // Add a (unnamed) separator to the group
         toolGroup.add(new PaletteSeparator());
