@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.editparts.AbstractTreeEditPart;
+import org.eclipse.swt.widgets.Display;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodeEditPolicy;
 
@@ -38,6 +39,7 @@ public class NodeTreeEditPart extends AbstractTreeEditPart implements PropertyCh
      * 
      * @see org.eclipse.gef.editparts.AbstractEditPart#activate()
      */
+    @Override
     public void activate() {
         super.activate();
         ((Node) getModel()).addPropertyChangeListener(this);
@@ -48,6 +50,7 @@ public class NodeTreeEditPart extends AbstractTreeEditPart implements PropertyCh
      * 
      * @see org.eclipse.gef.editparts.AbstractEditPart#deactivate()
      */
+    @Override
     public void deactivate() {
         ((Node) getModel()).removePropertyChangeListener(this);
         super.deactivate();
@@ -58,6 +61,7 @@ public class NodeTreeEditPart extends AbstractTreeEditPart implements PropertyCh
      * 
      * @see org.eclipse.gef.editparts.AbstractEditPart#getModelChildren()
      */
+    @Override
     protected List getModelChildren() {
         return ((Node) getModel()).getReturns(); // Collections.EMPTY_LIST;
     }
@@ -68,7 +72,13 @@ public class NodeTreeEditPart extends AbstractTreeEditPart implements PropertyCh
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
     public void propertyChange(final PropertyChangeEvent change) {
-        refreshVisuals();
+        Display.getDefault().syncExec(new Runnable() {
+
+            public void run() {
+                refreshVisuals();
+            }
+        });
+
     }
 
     /*
@@ -76,6 +86,7 @@ public class NodeTreeEditPart extends AbstractTreeEditPart implements PropertyCh
      * 
      * @see org.eclipse.gef.editparts.AbstractTreeEditPart#createEditPolicies()
      */
+    @Override
     protected void createEditPolicies() {
         installEditPolicy(EditPolicy.COMPONENT_ROLE, new NodeEditPolicy());
     }
@@ -85,6 +96,7 @@ public class NodeTreeEditPart extends AbstractTreeEditPart implements PropertyCh
      * 
      * @see org.eclipse.gef.editparts.AbstractTreeEditPart#refreshVisuals()
      */
+    @Override
     protected void refreshVisuals() {
         Node node = (Node) getModel();
         if (node.getLabel().equals(node.getUniqueName())) {

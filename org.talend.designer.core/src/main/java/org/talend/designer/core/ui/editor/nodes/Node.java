@@ -19,6 +19,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,6 +47,7 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.process.BlockCode;
+import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
@@ -547,14 +549,66 @@ public class Node extends Element implements INode {
         firePropertyChange(MODIFY_NODELABEL, null, null);
     }
 
+    private Map<String, IElementParameter> createVariableMap(List<? extends IElementParameter> currentParams,
+            List<? extends IElementParameter> connParams) {
+        Map<String, IElementParameter> map = new HashMap<String, IElementParameter>();
+        for (IElementParameter param : currentParams) {
+            map.put(param.getVariableName(), param);
+        }
+
+        // overwrite param by existing connection
+        for (IElementParameter param : connParams) {
+            if (param.getCategory().equals(EComponentCategory.BASIC)) {
+                map.put(param.getVariableName(), param);
+            }
+        }
+        return map;
+    }
+
+    /**
+     * DOC hcw Comment method "updateVisibleDataForExistingConnection".
+     * 
+     * @param connNode
+     */
+    private void updateVisibleDataForExistingConnection(Node connNode) {
+        IElementParameter useConn = this.getElementParameter("USE_EXISTING_CONNECTION");
+        IElementParameter connParam = this.getElementParameter("CONNECTION");
+        if (useConn != null && connParam != null && Boolean.TRUE.equals(useConn.getValue())) {
+            String connName = (String) connParam.getValue();
+            if (connNode.getUniqueName().equals(connName)) {
+                String newLabel = label;
+                String newShowHintText = showHintText;
+                String newConnectionName = connectionName;
+                Map<String, IElementParameter> variableMap = createVariableMap(this.getElementParameters(), connNode
+                        .getElementParameters());
+                newLabel = ElementParameterParser.replaceWithExistingConnection(labelToParse, variableMap);
+                newShowHintText = ElementParameterParser.replaceWithExistingConnection(hintToParse, variableMap);
+                newConnectionName = ElementParameterParser.replaceWithExistingConnection(connectionToParse, variableMap);
+                if (!newLabel.equals(label)) {
+                    setLabel(newLabel);
+                }
+
+                if (!newShowHintText.equals(showHintText)) {
+                    setShowHintText(newShowHintText);
+                }
+
+                if (!newConnectionName.equals(connectionName)) {
+                    setConnectionName(newConnectionName);
+                }
+            }
+        }
+    }
+
     public void updateVisibleData() {
         String newLabel = label;
+        String newShowHintText = showHintText;
+        String newConnectionName = connectionName;
         // label may be replaced with variable from exiting connection. see 0005456: Label Format __DBNAME__ not valid
         // when using existing connection
         boolean useConnection = false;
         IElementParameter useConn = this.getElementParameter("USE_EXISTING_CONNECTION");
         IElementParameter connParam = this.getElementParameter("CONNECTION");
-        if (labelToParse != null && useConn != null && connParam != null && Boolean.TRUE.equals(useConn.getValue())) {
+        if (useConn != null && connParam != null && Boolean.TRUE.equals(useConn.getValue())) {
 
             String connName = (String) connParam.getValue();
             INode connNode = null;
@@ -565,9 +619,14 @@ public class Node extends Element implements INode {
                     break;
                 }
             }
+
             if (connNode != null) {
-                newLabel = ElementParameterParser.replaceLabelWithExistingConnection(labelToParse, this.getElementParameters(),
-                        connNode.getElementParameters());
+
+                Map<String, IElementParameter> variableMap = createVariableMap(this.getElementParameters(), connNode
+                        .getElementParameters());
+                newLabel = ElementParameterParser.replaceWithExistingConnection(labelToParse, variableMap);
+                newShowHintText = ElementParameterParser.replaceWithExistingConnection(hintToParse, variableMap);
+                newConnectionName = ElementParameterParser.replaceWithExistingConnection(connectionToParse, variableMap);
                 useConnection = true;
             }
         }
@@ -575,19 +634,31 @@ public class Node extends Element implements INode {
         if (useConnection == false) {
             // if it does not use existing connection, do as before
             newLabel = ElementParameterParser.parse(this, labelToParse);
+            newShowHintText = ElementParameterParser.parse(this, hintToParse);
+            newConnectionName = ElementParameterParser.parse(this, connectionToParse);
+
+            // this node may be connection node used by other nodes
+            if (useConn == null && connParam == null) {
+                List<? extends INode> nodeList = this.getProcess().getGraphicalNodes();
+                for (INode node : nodeList) {
+                    if (node == this || !(node instanceof Node)) {
+                        continue;
+                    }
+                    ((Node) node).updateVisibleDataForExistingConnection(this);
+                }
+            }
         }
 
         if (!newLabel.equals(label)) {
             setLabel(newLabel);
         }
-        String newshowHintText = ElementParameterParser.parse(this, hintToParse);
-        if (!newshowHintText.equals(showHintText)) {
-            setShowHintText(newshowHintText);
+
+        if (!newShowHintText.equals(showHintText)) {
+            setShowHintText(newShowHintText);
         }
 
-        String newshoConnectionText = ElementParameterParser.parse(this, connectionToParse);
-        if (!newshoConnectionText.equals(connectionName)) {
-            setConnectionName(newshoConnectionText);
+        if (!newConnectionName.equals(connectionName)) {
+            setConnectionName(newConnectionName);
         }
     }
 
