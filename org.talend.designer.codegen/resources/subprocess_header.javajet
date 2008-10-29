@@ -719,12 +719,14 @@ public void <%=subTree.getName() %>Process(final java.util.Map<String, Object> g
 
 <%
 	boolean isParallelize = false;
-	INode asyncIn = subTree.getRootNode();
-	if(asyncIn!=null && asyncIn.getComponent().getName().equals("tAsyncIn")){
-		String parallelize = ElementParameterParser.getValue(asyncIn, "__PARALLELIZE__");
-		isParallelize = (parallelize!=null&&!parallelize.equals(""))?parallelize.equals("true"):false;
-		// temporary modification : if tAsyncIn is available, this is always a parallelized process
-		isParallelize = true;
+	for (INode node : subTree.getNodes()) {
+		if(node!=null){
+			String parallelize = ElementParameterParser.getValue(node, "__PARALLELIZE__");
+			if(parallelize!=null &&parallelize.equals("true")){
+				// temporary modification : if tAsyncIn is available, this is always a parallelized process
+				isParallelize = true;
+			}
+		}
 	}
 	if(isParallelize){//isParallelize
 %>
