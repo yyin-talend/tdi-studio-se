@@ -18,6 +18,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -63,15 +64,17 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
 
         try {
             ILibrariesService jms = CorePlugin.getDefault().getLibrariesService();
-            URL systemModuleURL = jms.getTalendRoutinesFolder();
+            List<URL> urls = jms.getTalendRoutinesFolder();
 
-            String fileName = systemModuleURL.getPath();
-            if (fileName.startsWith("/")) {
-                fileName = fileName.substring(1);
-            }
-            File f = new File(systemModuleURL.getPath());
-            if (f.isDirectory()) {
-                syncModule(f.listFiles());
+            for (URL systemModuleURL : urls) {
+                String fileName = systemModuleURL.getPath();
+                if (fileName.startsWith("/")) {
+                    fileName = fileName.substring(1);
+                }
+                File f = new File(systemModuleURL.getPath());
+                if (f.isDirectory()) {
+                    syncModule(f.listFiles());
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
