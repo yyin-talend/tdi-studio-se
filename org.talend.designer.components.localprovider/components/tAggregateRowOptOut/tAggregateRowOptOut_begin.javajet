@@ -120,7 +120,7 @@ if (incomingConnections != null && !incomingConnections.isEmpty()) {
 }
 
 List<IMetadataTable> mestadataTableListOut = node.getMetadataList();
-if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_AggR_600
+if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_OutBegin_AggR_600
     outputMetadataTable = mestadataTableListOut.get(0);
 	if(outputMetadataTable != null) {
 		outputColumns = outputMetadataTable.getListColumns();
@@ -131,39 +131,39 @@ if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_AggR_6
 int groupbySize = groupbys.size();
 String[] groupby_type = new String[groupbySize];
 
-if(inputColumns != null) { // T_AggR_144
-	for (IMetadataColumn column: inputColumns) { // T_AggR_145
+if(inputColumns != null) { // T_OutBegin_AggR_144
+	for (IMetadataColumn column: inputColumns) { // T_OutBegin_AggR_145
 
-		for(int i = 0; i < groupbySize; i++){ // T_AggR_113
+		for(int i = 0; i < groupbySize; i++){ // T_OutBegin_AggR_113
 			String columnname = groupbys.get(i).get("INPUT_COLUMN");
-			if(column.getLabel().equals(columnname)){ // T_AggR_114
+			if(column.getLabel().equals(columnname)){ // T_OutBegin_AggR_114
 				keysColumns.put(columnname, column);
-        	} // T_AggR_114
-		} // T_AggR_113
+        	} // T_OutBegin_AggR_114
+		} // T_OutBegin_AggR_113
 				
-	} // T_AggR_145
-} // T_AggR_144
+	} // T_OutBegin_AggR_145
+} // T_OutBegin_AggR_144
 
 
-if(outputColumns != null) { // T_AggR_744
-	for (IMetadataColumn column: outputColumns) { // T_AggR_745
+if(outputColumns != null) { // T_OutBegin_AggR_744
+	for (IMetadataColumn column: outputColumns) { // T_OutBegin_AggR_745
 
-		for(int i = 0; i < sizeOperations; i++){ // T_AggR_713
+		for(int i = 0; i < sizeOperations; i++){ // T_OutBegin_AggR_713
 			String columnname = operations.get(i).get("OUTPUT_COLUMN");
-        	if(column.getLabel().equals(columnname)){ // T_AggR_714
+        	if(column.getLabel().equals(columnname)){ // T_OutBegin_AggR_714
        			valuesColumns.put(columnname, column);
-       		} // T_AggR_714
-		} // T_AggR_713
+       		} // T_OutBegin_AggR_714
+		} // T_OutBegin_AggR_713
 
-	} // T_AggR_745
-} // T_AggR_744
+	} // T_OutBegin_AggR_745
+} // T_OutBegin_AggR_744
 
 
-if(sizeOps>0){ // T_AggR_114
+if(sizeOps>0){ // T_OutBegin_AggR_114
 
 	%>
 
-	class UtilClass_<%=cid %> { // G_AggR_144
+	class UtilClass_<%=cid %> { // G_OutBegin_AggR_144
 
 		public double sd(Double[] data) {
 	        final int n = data.length;
@@ -247,12 +247,12 @@ if(sizeOps>0){ // T_AggR_114
 		    + ", to resolve this problem, increase the precision by using "+ advicedTypes +" type in place of "+ originalType +".";
 		}
 
-	} // G_AggR_144
+	} // G_OutBegin_AggR_144
 
 	UtilClass_<%=cid %> utilClass_<%=cid %> = new UtilClass_<%=cid %>();
 
-	
-	class AggOperationStruct_<%=cid %> { // G_AggR_100
+
+	class AggCountDistinctValuesStruct_<%=cid %> { // G_OutBegin_AggR_1100
 
 		private static final int DEFAULT_HASHCODE = 1;
 	    private static final int PRIME = 31;
@@ -261,21 +261,137 @@ if(sizeOps>0){ // T_AggR_114
 
         <%
         
-		for (IMetadataColumn column: inputMetadataTable.getListColumns()) { // G_AggR_143
+		for (IMetadataColumn column: inputMetadataTable.getListColumns()) { // G_OutBegin_AggR_1143
+			if(valuesColumns.containsKey(column.getLabel())){
+
+				%>
+				<%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> <%=column.getLabel() %>;<%
+				
+			}
+		} // G_OutBegin_AggR_1143
+        
+		%>        
+        
+	    @Override
+		public int hashCode() {
+			if (this.hashCodeDirty) {
+				final int prime = PRIME;
+				int result = DEFAULT_HASHCODE;
+		<%
+			if (inputMetadataTable !=null) {
+				for (IMetadataColumn column: inputMetadataTable.getListColumns()) {
+					if (valuesColumns.containsKey(column.getLabel())) {
+						if (JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable())) {
+						
+						 	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+						 	if("boolean".equals(typeToGenerate)) {
+							%>
+			        			result = prime * result + (this.<%=column.getLabel() %> ? 1231 : 1237);
+							<%
+							} else {	
+							%>
+								result = prime * result + (int) this.<%=column.getLabel() %>;
+							<%
+							}
+						} else {
+						%>
+							result = prime * result + ((this.<%=column.getLabel() %> == null) ? 0 : this.<%=column.getLabel() %>.hashCode());
+						<%
+						}
+					}
+				}
+			}
+	    %>
+	    		this.hashCode = result;
+	    		this.hashCodeDirty = false;		
+			}
+			return this.hashCode;
+		}
+		
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj) return true;
+			if (obj == null) return false;
+			if (getClass() != obj.getClass()) return false;
+			final AggCountDistinctValuesStruct_<%=cid %> other = (AggCountDistinctValuesStruct_<%=cid %>) obj;
+			<%	
+			if (inputMetadataTable !=null) {
+				for (IMetadataColumn column: inputMetadataTable.getListColumns()) {
+					if (valuesColumns.containsKey(column.getLabel())) {
+					
+						JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+					
+						if (JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable())) {
+					%>
+						if (this.<%=column.getLabel() %> != other.<%=column.getLabel() %>) 
+							return false;
+					<%
+						} else if(javaType == JavaTypesManager.BYTE_ARRAY) {
+					%>
+							if (this.<%=column.getLabel() %> == null) {
+								if (other.<%=column.getLabel() %> != null) 
+									return false;
+							} else {
+								if(this.<%=column.getLabel() %> != null && other.<%=column.getLabel() %> != null
+									&& other.<%=column.getLabel() %>.length != this.<%=column.getLabel() %>.length
+								) {
+									return false;
+								}
+								for(int i = 0; i < this.<%=column.getLabel() %>.length; i++) {
+									if(this.<%=column.getLabel() %>[i] != other.<%=column.getLabel() %>[i]) {
+										return false;
+									}
+								}
+								return true;
+							}
+					<%
+						} else {
+					%>
+						if (this.<%=column.getLabel() %> == null) {
+							if (other.<%=column.getLabel() %> != null) 
+								return false;
+						} else if (!this.<%=column.getLabel() %>.equals(other.<%=column.getLabel() %>)) 
+							return false;
+					<%
+						}
+					}
+				}
+			}
+			%>
+			
+			return true;
+		}
+  
+        
+	} // G_OutBegin_AggR_1100
+
+	
+	
+	class AggOperationStruct_<%=cid %> { // G_OutBegin_AggR_100
+
+		private static final int DEFAULT_HASHCODE = 1;
+	    private static final int PRIME = 31;
+	    private int hashCode = DEFAULT_HASHCODE;
+	    public boolean hashCodeDirty = true;
+
+        <%
+        
+		for (IMetadataColumn column: inputMetadataTable.getListColumns()) { // G_OutBegin_AggR_143
 			if(keysColumns.containsKey(column.getLabel())){
 
 				%>
 				<%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> <%=column.getLabel() %>;<%
 				
 			}
-		} // G_AggR_143
+		} // G_OutBegin_AggR_143
         
-        
-    	for (int i = 0; i<sizeOps; i++) { // T_AggR_131
+        boolean hasAlreadyCountProperty = false;
+        boolean hasAlreadyDistinctCountProperty = false;
+    	for (int i = 0; i<sizeOps; i++) { // T_OutBegin_AggR_131
     		String[] funin = funinOperations.get(i);
-    		if(inputColumns != null) { // T_AggR_132
-         		for (IMetadataColumn column: outputColumns) { // T_AggR_135
-               		if(column.getLabel().equals(funin[OUTPUT_COLUMN])){ // T_AggR_136
+    		if(inputColumns != null) { // T_OutBegin_AggR_132
+         		for (IMetadataColumn column: outputColumns) { // T_OutBegin_AggR_135
+               		if(column.getLabel().equals(funin[OUTPUT_COLUMN])){ // T_OutBegin_AggR_136
                		
                			JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
                		
@@ -288,9 +404,25 @@ if(sizeOps>0){ // T_AggR_114
 							|| !isNumber && !(function.equals(SUM) || function.equals(AVG))
 						;
 
-						if(isValidTypeForOperation) { // T_AggR_138
+						if(!hasAlreadyCountProperty && function.equals(COUNT)) {
+							hasAlreadyCountProperty = true;
 
-							if(function.equals("count") || function.equals(AVG)){
+							%>int count = 0;
+                   			<%
+							
+						}
+                   		
+                   		if(function.equals(COUNT_DISTINCT)) {
+                   			if(!hasAlreadyDistinctCountProperty) { 
+	                   			hasAlreadyDistinctCountProperty = true;
+                   			
+    	               			%>java.util.Set<AggCountDistinctValuesStruct_<%=cid %>> distinctValues = new java.util.HashSet<AggCountDistinctValuesStruct_<%=cid %>>();
+	                   			<%
+	                   		}
+	                   	} 
+	                   	else if(isValidTypeForOperation) { // T_OutBegin_AggR_138
+
+							if(function.equals(AVG)){
 								
 								%>int <%=funin[INPUT_COLUMN] %>_count = 0;
 	                   			<%
@@ -300,11 +432,6 @@ if(sizeOps>0){ // T_AggR_114
 		    					%>BigDecimal <%=funin[INPUT_COLUMN] %>_sum = new BigDecimal("0.0");
 	    		   				<%
 	    		   				
-	                   		} else if("distinct".equals(function)) { 
-	                   			
-	                   			%>java.util.Set <%=funin[INPUT_COLUMN] %>_<%=function %> = new java.util.HashSet();
-		                   		<%
-		                   		 
 	                   		} else if("list".equals(function)) {
 	                   			
 	                   			%>String <%=funin[INPUT_COLUMN] %>_<%=function %> = "";
@@ -314,12 +441,13 @@ if(sizeOps>0){ // T_AggR_114
 	                   		 
 	                   		 	%>java.util.List <%=funin[INPUT_COLUMN] %>_<%=function %> = new java.util.ArrayList();
 	                   			<%
+	                   			
 	                   		} else if("std_dev".equals(function)) {
 	                   		
 	                   			%>java.util.List<Double> <%=funin[INPUT_COLUMN] %>_<%=function %> = new java.util.ArrayList<Double>();
 	                   			<%
 	                   			
-	                   		 } else {  // T_AggR_137
+	                   		 } else {  // T_OutBegin_AggR_137
 	                   		
 	                   			// START OF INIT LINE
 	                 			%>
@@ -334,13 +462,13 @@ if(sizeOps>0){ // T_AggR_114
 	                   			%>;<%
 	                   			// END OF INIT LINE
 	                   			
-	                   		} // T_AggR_137
-	                   	} // T_AggR_138
+	                   		} // T_OutBegin_AggR_137
+	                   	} // T_OutBegin_AggR_138
                         break;
-               		} // T_AggR_136
-    			} // T_AggR_135
-    		} // T_AggR_132
-    	} // T_AggR_131
+               		} // T_OutBegin_AggR_136
+    			} // T_OutBegin_AggR_135
+    		} // T_OutBegin_AggR_132
+    	} // T_OutBegin_AggR_131
         %>
         
         
@@ -435,27 +563,28 @@ if(sizeOps>0){ // T_AggR_114
 		}
   
         
-	} // G_AggR_100
+	} // G_OutBegin_AggR_100
+
 
 <%
-} // T_AggR_114
+} // T_OutBegin_AggR_114
 
 
-if(sizeOps>0){ // G_AggR_191
+if(sizeOps>0){ // G_OutBegin_AggR_191
 %>
 	AggOperationStruct_<%=cid %> operation_result_<%=cid %> = null;
 	AggOperationStruct_<%=cid %> operation_finder_<%=cid %> = new AggOperationStruct_<%=cid %>();
 	java.util.Map<AggOperationStruct_<%=cid %>,AggOperationStruct_<%=cid %>> hash_<%=cid %> = new java.util.HashMap<AggOperationStruct_<%=cid %>,AggOperationStruct_<%=cid %>>();  
 <%
-} // G_AggR_191
+} // G_OutBegin_AggR_191
 %>
 
 int nb_line_<%=cid %> = 0;
 
 <%
-if(listFlag){ // G_AggR_192
+if(listFlag){ // G_OutBegin_AggR_192
 %>
 String delimiter_<%=cid %> = <%=ElementParameterParser.getValue(node, "__LIST_DELIMITER__") %>;
 <%
-} // G_AggR_192
+} // G_OutBegin_AggR_192
 %>

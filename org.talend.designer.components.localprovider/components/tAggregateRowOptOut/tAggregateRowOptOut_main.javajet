@@ -182,7 +182,8 @@ if(inputConn != null) { // T_OutMain_AggR_501
 	int sizeOps = funinOperations.size();
 	String tInputColumn =null;
 
-
+	boolean hasAlreadyCountProperty = false;
+	boolean hasAlreadyCountDistinctProperty = false;
 	for(int j = 0; j < sizeOps; j++){ // T_OutMain_AggR_546
 		String[] funin = funinOperations.get(j);
 		
@@ -211,9 +212,15 @@ if(inputConn != null) { // T_OutMain_AggR_501
 			
 		} // T_OutMain_AggR_545
 		
+		if(!hasAlreadyCountProperty && function.equals(COUNT)) {
+			hasAlreadyCountProperty = true;
+			%>
+			operation_result_<%=cid %>.count++;
+			<%
 			
-		if(isNumber && (function.equals(COUNT) || function.equals(AVG))){
-				
+		}
+			
+		if(isNumber && function.equals(AVG)){
 				
 			%>
 			operation_result_<%=cid %>.<%=outputColumnName %>_count++;
@@ -280,10 +287,22 @@ if(inputConn != null) { // T_OutMain_AggR_501
 			//operation_result_<%=cid %>.<%=outputColumnName %>_<%=function %> = <%=inputConn.getName() %>.<%=inputColumnName  %>;
 			<%
 			
-		} else if(function.equals(COUNT_DISTINCT)){
-				
+		} else if(!hasAlreadyCountDistinctProperty && function.equals(COUNT_DISTINCT)){
+				hasAlreadyCountDistinctProperty = true;
 			%>
-			//operation_result_<%=cid %>.<%=outputColumnName %>_<%=function %> = <%=inputConn.getName() %>.<%=inputColumnName  %>;
+			
+			AggCountDistinctValuesStruct_<%=cid %> countDistinctValues_<%=cid %> = new AggCountDistinctValuesStruct_<%=cid %>();
+
+			<%
+			for (IMetadataColumn column : inputColumns) {
+				if(valuesColumns.containsKey(column.getLabel())) {
+			
+					%>countDistinctValues_<%=cid %>.<%=column.getLabel()%> = <%=inputConn.getName() %>.<%=column.getLabel()%>;
+					<%
+					
+				}
+			}
+			%>operation_result_<%=cid %>.distinctValues.add(countDistinctValues_<%=cid %>);
 			<%
 			
 		} else if(function.equals(STD_DEV)){
