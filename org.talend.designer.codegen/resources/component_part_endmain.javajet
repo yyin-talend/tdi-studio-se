@@ -16,7 +16,9 @@
 <%
 if ((trace)&&(node!=null)&&(!node.isThereLinkWithHash())) {
 %>
+if(!isChildJob){	
    Thread.sleep(<%=pauseTime%>);
+}   
 <%
 }
 %>

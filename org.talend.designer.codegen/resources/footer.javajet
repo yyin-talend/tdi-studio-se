@@ -49,6 +49,7 @@
     public static String rootPid = null;
     public static String fatherPid = null;
     public static long startTime = 0;
+    public static boolean isChildJob = false;
     
     private static ThreadLocal threadLocal = new ThreadLocal();
 <%
@@ -132,8 +133,10 @@
     	if (rootPid==null) {
     		rootPid = pid;
     	}
-    	if (fatherPid==null) {
-    		fatherPid = pid;
+    	if (fatherPid==null) {    	 	
+    		fatherPid = pid;    		
+    	}else{
+    		isChildJob = true;
     	}
     	
     	try {
@@ -229,6 +232,7 @@
 		if (stats) {
 %>
 	try {
+		runStat.openSocket(!isChildJob);
 		runStat.startThreadStat(clientHost, portStats);
 	} catch (java.io.IOException ioException) {
 		ioException.printStackTrace();
@@ -241,6 +245,7 @@
 		if (trace) {
 %>
 		try {
+		runTrace.openSocket(!isChildJob);
 		runTrace.startThreadTrace(clientHost, portTraces);
 	} catch (java.io.IOException ioException) {
 		ioException.printStackTrace();
