@@ -65,6 +65,7 @@ import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.context.UpdateRunJobComponentContextHelper;
 import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.context.JobContextManager;
 import org.talend.core.model.metadata.builder.connection.Properties;
 import org.talend.core.model.process.IContextManager;
@@ -346,6 +347,10 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                 // ((ISyntaxCheckableEditor) codeEditor).validateSyntax();
             }
             codeSync();
+            // for bug 5033
+            if (codeEditor instanceof ISyntaxCheckableEditor && LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL) {
+                ((ISyntaxCheckableEditor) codeEditor).validateSyntax();
+            }
         }
     }
 

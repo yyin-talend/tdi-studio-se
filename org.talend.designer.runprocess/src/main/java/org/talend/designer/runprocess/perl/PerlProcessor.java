@@ -178,7 +178,8 @@ public class PerlProcessor extends Processor {
 
             service.createPerlRoutineSynchronizer().syncAllRoutines();
             if (checkableEditor != null) {
-                checkableEditor.validateSyntax();
+                // removed by bug 5033
+                // checkableEditor.validateSyntax();
             }
         } catch (CoreException e1) {
             if (e1.getStatus() != null && e1.getStatus().getException() != null) {
