@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.talend.core.CorePlugin;
+import org.talend.core.PluginChecker;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.IComponent;
@@ -112,6 +113,18 @@ public class JobSettingsManager {
         param.setNumRow(2);
         param.setShow(!isJoblet);
         paramList.add(param);
+
+        if (PluginChecker.isTIS()) {
+            param = new ElementParameter(process);
+            param.setName(EParameterName.PARALLILIZE_UNIT_SIZE.getName());
+            param.setValue("25000");
+            param.setDisplayName(EParameterName.PARALLILIZE_UNIT_SIZE.getDisplayName());
+            param.setField(EParameterFieldType.TEXT);
+            param.setCategory(EComponentCategory.EXTRA);
+            param.setNumRow(2);
+            param.setShow(!isJoblet);
+            paramList.add(param);
+        }
 
         // if (isJoblet) {
         // param = new ElementParameter(process);

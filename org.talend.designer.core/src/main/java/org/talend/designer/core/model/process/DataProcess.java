@@ -1017,6 +1017,12 @@ public class DataProcess {
         List incomingConnections = new ArrayList<IConnection>();
         asyncOutNode.setIncomingConnections(incomingConnections);
         asyncOutNode.setOutgoingConnections(outgoingConnections);
+        IElementParameter settingsParam = asyncOutNode.getProcess().getElementParameter(
+                EParameterName.PARALLILIZE_UNIT_SIZE.getName());
+        IElementParameter asyncParam = asyncOutNode.getElementParameter("UNIT_SIZE");
+        if (settingsParam != null && asyncParam != null) {
+            asyncParam.setValue(settingsParam.getValue());
+        }
 
         // replace target to have the tAsyncOut component
         connection.setTarget(asyncOutNode);

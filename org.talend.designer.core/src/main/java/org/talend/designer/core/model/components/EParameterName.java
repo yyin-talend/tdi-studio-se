@@ -208,7 +208,8 @@ public enum EParameterName {
     JOB_VERSION("Version"),
 
     PARALLELIZE("Parallelize"),
-    PARALLILIZE_NUMBER("Parallelize Number");
+    PARALLILIZE_NUMBER("Parallelize Number"),
+    PARALLILIZE_UNIT_SIZE("Parallelize Buffer Unit Size");
 
     private String displayName;
 
