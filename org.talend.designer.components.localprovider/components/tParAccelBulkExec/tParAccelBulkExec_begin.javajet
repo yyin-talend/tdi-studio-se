@@ -184,8 +184,8 @@ String dbName = ElementParameterParser.getValue(node, "__DBNAME__");
 String userName = ElementParameterParser.getValue(node, "__USER__");
 String password = ElementParameterParser.getValue(node, "__PASS__");
 %> 
-java.lang.Class.forName("org.postgresql.Driver").newInstance();
-java.sql.Connection con_<%=cid %> = java.sql.DriverManager.getConnection("jdbc:postgresql://" + <%=host%> + ":" + <%=port%> + "/" + <%=dbName%>, <%=userName%>, <%=password%>);
+java.lang.Class.forName("com.paraccel.Driver").newInstance();
+java.sql.Connection con_<%=cid %> = java.sql.DriverManager.getConnection("jdbc:paraccel://" + <%=host%> + ":" + <%=port%> + "/" + <%=dbName%>, <%=userName%>, <%=password%>);
 <%
 String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
 String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
