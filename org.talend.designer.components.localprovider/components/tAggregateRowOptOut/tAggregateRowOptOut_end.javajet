@@ -25,8 +25,6 @@ String destination = ElementParameterParser.getValue(node, "__DESTINATION__");
 
 %>				
 
-//}
-
 //globalMap.put("<%=destination %>",result_list_<%=cid %>);
 //globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
 

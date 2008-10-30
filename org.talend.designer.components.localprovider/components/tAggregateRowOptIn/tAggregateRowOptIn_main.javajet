@@ -166,6 +166,7 @@ if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_InMain
                 		String function = operation.get("FUNCTION");
                 		String outOperation = operation.get("OUTPUT_COLUMN");
                 		String inOperation = operation.get("INPUT_COLUMN");
+						boolean ignoreNull = operation.get("IGNORE_NULL").equals("true");
 
 						JavaType inputJavaType = null;
 
@@ -173,12 +174,28 @@ if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_InMain
 
 							boolean outputIsNumber = JavaTypesManager.isNumberType(outputJavaType, false);
 							boolean outputIsObject = outputJavaType == JavaTypesManager.OBJECT;
+							boolean outputIsList = outputJavaType == JavaTypesManager.LIST;
 							boolean outputIsString = outputJavaType == JavaTypesManager.STRING;
+							boolean outputIsDate = outputJavaType == JavaTypesManager.DATE;
 			
 							boolean isValidTypeForOperation = 
-								(function.equals(SUM) || function.equals(AVG) || function.equals(COUNT) || function.equals(COUNT_DISTINCT)) && outputIsNumber  
-								|| !function.equals(SUM) && !function.equals(AVG) && !function.equals(COUNT) && !function.equals(COUNT_DISTINCT) && !outputIsNumber 
+								(function.equals(SUM) || function.equals(AVG) || function.equals(COUNT) || function.equals(COUNT_DISTINCT) || function.equals(STD_DEV)) && outputIsNumber  
 								|| (function.equals(COUNT) || function.equals(COUNT_DISTINCT)) && !outputIsNumber && (outputIsObject || outputIsString)
+								|| (function.equals(MIN) || function.equals(MAX)) && (outputIsNumber || outputIsObject || outputIsString || outputIsDate)
+								|| 
+									!function.equals(SUM) 
+									&& !function.equals(AVG) 
+									&& !function.equals(COUNT) 
+									&& !function.equals(COUNT_DISTINCT) 
+									&& !function.equals(MIN) 
+									&& !function.equals(MAX)
+									&& !function.equals(LIST)
+									&& !function.equals(LIST_OBJECT)									 
+									&& !outputIsNumber
+								|| function.equals(FIRST)
+								|| function.equals(LAST)
+								|| function.equals(LIST_OBJECT) && (outputIsObject || outputIsList)
+								|| function.equals(LIST) && outputIsString
 							;
 	
 							if(!isValidTypeForOperation) {
@@ -282,43 +299,47 @@ if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_InMain
 								}
 									
     						} // T_InMain_AggR_618 
+    						else if(function.equals(LIST)) { // T_InMain_AggR_679
+    							%>
+    								<%= outputConn.getName() %>.<%=outOperation %> = operation_result_<%=cid %>.<%=inOperation %>_<%=function %>.toString();
+	    						<% 
+    						}  // T_InMain_AggR_679
     						else if(function.equals("list_object")) { // T_InMain_AggR_619
     							%>
     								<%= outputConn.getName() %>.<%=outOperation %> = operation_result_<%=cid %>.<%=inOperation %>_<%=function %>;
-    						<% 
+    							<% 
     						}  // T_InMain_AggR_619
     						else if(function.equals("std_dev")) { // T_InMain_AggR_620
     						
-    							if(outputJavaType == JavaTypesManager.BYTE
-    								 || outputJavaType == JavaTypesManager.SHORT
-    								 || outputJavaType == JavaTypesManager.CHARACTER
-    								 || outputJavaType == JavaTypesManager.INTEGER
-    								 || outputJavaType == JavaTypesManager.LONG
-    								 || outputJavaType == JavaTypesManager.FLOAT
-    								 || outputJavaType == JavaTypesManager.DOUBLE
-    							){ // T_InMain_AggR_621
-    								%>
-    								<%= outputConn.getName() %>.<%=outOperation %> = (<%=primitiveOutputType%>)sd_<%=cid %>.sd(operation_result_<%=cid %>.<%=inOperation %>_<%=function %>.toArray(new Double[0]));
-    								<% 		
+    						
+    							if(outputIsNumber || outputIsObject){ // T_InMain_AggR_621
+
+									if(outputJavaType == JavaTypesManager.BIGDECIMAL) {
+										
+		    							%>double result_<%=inOperation %>_<%=function %>_<%=cid %> = utilClass_<%=cid %>.sd(operation_result_<%=cid %>.<%=inOperation %>_<%=function %>.toArray(new Double[0]));
+		    							//if(((Double)result_<%=inOperation %>_<%=function %>_<%=cid %>).equals((Double)Double.NaN)) {
+										//	<%= outputConn.getName() %>.<%=outOperation %> = null;
+		    							//} else {
+											<%= outputConn.getName() %>.<%=outOperation %> = new BigDecimal(result_<%=inOperation %>_<%=function %>_<%=cid %>);
+		    							//}
+										
+										<%
+										
+									} else {
+	            			
+	    								%><%= outputConn.getName() %>.<%=outOperation %> = (<%=primitiveOutputType%>) utilClass_<%=cid %>.sd(operation_result_<%=cid %>.<%=inOperation %>_<%=function %>.toArray(new Double[0]));
+	    								<%
+    								 		
+									}
+
     							} // T_InMain_AggR_621
     							
-    							else if(
-    								outputJavaType == JavaTypesManager.STRING
-    								 || outputJavaType == JavaTypesManager.OBJECT
-    							){ // T_InMain_AggR_622
-									%><%= outputConn.getName() %>.<%=outOperation %> = String.valueOf(sd_<%=cid %>.sd(operation_result_<%=cid %>.<%=inOperation %>_<%=function %>.toArray(new Double[0])));
+    							else if(outputIsString){ // T_InMain_AggR_622
+								
+									%><%= outputConn.getName() %>.<%=outOperation %> = String.valueOf(utilClass_<%=cid %>.sd(operation_result_<%=cid %>.<%=inOperation %>_<%=function %>.toArray(new Double[0])));
 									<%
+									
     							} // T_InMain_AggR_622
-    							
-    							else { // T_InMain_AggR_623
-									%>
-									
-									if(true){
-										throw new RuntimeException("Output column's type is not applicable for standard deviation result.");
-									}
-									
-									<%
-    							} // T_InMain_AggR_623
     							
     						} // T_InMain_AggR_620
     						

@@ -55,16 +55,17 @@ int sizeOperations = operations.size();
 List<String[]> funinOperations = new java.util.ArrayList<String[]>();
 boolean listFlag = false;
 boolean haveSTD_DEV = false;
+boolean hasCountDistinctOperation = false;
 next:
 for(int i=0; i<sizeOperations; i++){
 	Map<String, String> operation = operations.get(i);
 	String fun = operation.get("FUNCTION");
 	String in = operation.get("INPUT_COLUMN");
 	String out = operation.get("OUTPUT_COLUMN");
-	if(!listFlag && fun.equals("list")){
+	if(!listFlag && fun.equals(LIST)){
 		listFlag = true;
 	}
-	if(!haveSTD_DEV && fun.equals("std_dev")){
+	if(!haveSTD_DEV && fun.equals(STD_DEV)){
 		haveSTD_DEV = true;
 	}
 	if(fun.equals("sum") || fun.equals("count")){
@@ -80,6 +81,10 @@ for(int i=0; i<sizeOperations; i++){
 		if(tOperation.get("FUNCTION").equals(fun) && tOperation.get("INPUT_COLUMN").equals(in)){
 			continue next;
 		}
+	}
+	
+	if(fun.equals(COUNT_DISTINCT)){
+		hasCountDistinctOperation = true;
 	}
 	if(fun.equals("avg")){
 		String[] funin = new String[3];
@@ -251,120 +256,126 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 
 	UtilClass_<%=cid %> utilClass_<%=cid %> = new UtilClass_<%=cid %>();
 
-
-	class AggCountDistinctValuesStruct_<%=cid %> { // G_OutBegin_AggR_1100
-
-		private static final int DEFAULT_HASHCODE = 1;
-	    private static final int PRIME = 31;
-	    private int hashCode = DEFAULT_HASHCODE;
-	    public boolean hashCodeDirty = true;
-
-        <%
-        
-		for (IMetadataColumn column: inputMetadataTable.getListColumns()) { // G_OutBegin_AggR_1143
-			if(valuesColumns.containsKey(column.getLabel())){
-
-				%>
-				<%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> <%=column.getLabel() %>;<%
-				
-			}
-		} // G_OutBegin_AggR_1143
-        
-		%>        
-        
-	    @Override
-		public int hashCode() {
-			if (this.hashCodeDirty) {
-				final int prime = PRIME;
-				int result = DEFAULT_HASHCODE;
-		<%
-			if (inputMetadataTable !=null) {
-				for (IMetadataColumn column: inputMetadataTable.getListColumns()) {
-					if (valuesColumns.containsKey(column.getLabel())) {
-						if (JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable())) {
-						
-						 	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-						 	if("boolean".equals(typeToGenerate)) {
+	<%
+	if(hasCountDistinctOperation) { // T_OutBegin_AggR_160
+	%>
+	
+		class AggCountDistinctValuesStruct_<%=cid %> { // G_OutBegin_AggR_1100
+	
+			private static final int DEFAULT_HASHCODE = 1;
+		    private static final int PRIME = 31;
+		    private int hashCode = DEFAULT_HASHCODE;
+		    public boolean hashCodeDirty = true;
+	
+	        <%
+	        
+			for (IMetadataColumn column: inputMetadataTable.getListColumns()) { // G_OutBegin_AggR_1143
+				if(valuesColumns.containsKey(column.getLabel())){
+	
+					%>
+					<%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> <%=column.getLabel() %>;<%
+					
+				}
+			} // G_OutBegin_AggR_1143
+	        
+			%>        
+	        
+		    @Override
+			public int hashCode() {
+				if (this.hashCodeDirty) {
+					final int prime = PRIME;
+					int result = DEFAULT_HASHCODE;
+			<%
+				if (inputMetadataTable !=null) {
+					for (IMetadataColumn column: inputMetadataTable.getListColumns()) {
+						if (valuesColumns.containsKey(column.getLabel())) {
+							if (JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable())) {
+							
+							 	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+							 	if("boolean".equals(typeToGenerate)) {
+								%>
+				        			result = prime * result + (this.<%=column.getLabel() %> ? 1231 : 1237);
+								<%
+								} else {	
+								%>
+									result = prime * result + (int) this.<%=column.getLabel() %>;
+								<%
+								}
+							} else {
 							%>
-			        			result = prime * result + (this.<%=column.getLabel() %> ? 1231 : 1237);
-							<%
-							} else {	
-							%>
-								result = prime * result + (int) this.<%=column.getLabel() %>;
+								result = prime * result + ((this.<%=column.getLabel() %> == null) ? 0 : this.<%=column.getLabel() %>.hashCode());
 							<%
 							}
-						} else {
-						%>
-							result = prime * result + ((this.<%=column.getLabel() %> == null) ? 0 : this.<%=column.getLabel() %>.hashCode());
-						<%
 						}
 					}
 				}
+		    %>
+		    		this.hashCode = result;
+		    		this.hashCodeDirty = false;		
+				}
+				return this.hashCode;
 			}
-	    %>
-	    		this.hashCode = result;
-	    		this.hashCodeDirty = false;		
-			}
-			return this.hashCode;
-		}
-		
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj) return true;
-			if (obj == null) return false;
-			if (getClass() != obj.getClass()) return false;
-			final AggCountDistinctValuesStruct_<%=cid %> other = (AggCountDistinctValuesStruct_<%=cid %>) obj;
-			<%	
-			if (inputMetadataTable !=null) {
-				for (IMetadataColumn column: inputMetadataTable.getListColumns()) {
-					if (valuesColumns.containsKey(column.getLabel())) {
-					
-						JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-					
-						if (JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable())) {
-					%>
-						if (this.<%=column.getLabel() %> != other.<%=column.getLabel() %>) 
-							return false;
-					<%
-						} else if(javaType == JavaTypesManager.BYTE_ARRAY) {
-					%>
+			
+			@Override
+			public boolean equals(Object obj) {
+				if (this == obj) return true;
+				if (obj == null) return false;
+				if (getClass() != obj.getClass()) return false;
+				final AggCountDistinctValuesStruct_<%=cid %> other = (AggCountDistinctValuesStruct_<%=cid %>) obj;
+				<%	
+				if (inputMetadataTable !=null) {
+					for (IMetadataColumn column: inputMetadataTable.getListColumns()) {
+						if (valuesColumns.containsKey(column.getLabel())) {
+						
+							JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+						
+							if (JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable())) {
+						%>
+							if (this.<%=column.getLabel() %> != other.<%=column.getLabel() %>) 
+								return false;
+						<%
+							} else if(javaType == JavaTypesManager.BYTE_ARRAY) {
+						%>
+								if (this.<%=column.getLabel() %> == null) {
+									if (other.<%=column.getLabel() %> != null) 
+										return false;
+								} else {
+									if(this.<%=column.getLabel() %> != null && other.<%=column.getLabel() %> != null
+										&& other.<%=column.getLabel() %>.length != this.<%=column.getLabel() %>.length
+									) {
+										return false;
+									}
+									for(int i = 0; i < this.<%=column.getLabel() %>.length; i++) {
+										if(this.<%=column.getLabel() %>[i] != other.<%=column.getLabel() %>[i]) {
+											return false;
+										}
+									}
+									return true;
+								}
+						<%
+							} else {
+						%>
 							if (this.<%=column.getLabel() %> == null) {
 								if (other.<%=column.getLabel() %> != null) 
 									return false;
-							} else {
-								if(this.<%=column.getLabel() %> != null && other.<%=column.getLabel() %> != null
-									&& other.<%=column.getLabel() %>.length != this.<%=column.getLabel() %>.length
-								) {
-									return false;
-								}
-								for(int i = 0; i < this.<%=column.getLabel() %>.length; i++) {
-									if(this.<%=column.getLabel() %>[i] != other.<%=column.getLabel() %>[i]) {
-										return false;
-									}
-								}
-								return true;
-							}
-					<%
-						} else {
-					%>
-						if (this.<%=column.getLabel() %> == null) {
-							if (other.<%=column.getLabel() %> != null) 
+							} else if (!this.<%=column.getLabel() %>.equals(other.<%=column.getLabel() %>)) 
 								return false;
-						} else if (!this.<%=column.getLabel() %>.equals(other.<%=column.getLabel() %>)) 
-							return false;
-					<%
+						<%
+							}
 						}
 					}
 				}
+				%>
+				
+				return true;
 			}
-			%>
-			
-			return true;
-		}
-  
-        
-	} // G_OutBegin_AggR_1100
+	  
+	        
+		} // G_OutBegin_AggR_1100
 
+	<%
+	} // T_OutBegin_AggR_160
+	%>
 	
 	
 	class AggOperationStruct_<%=cid %> { // G_OutBegin_AggR_100
@@ -390,18 +401,33 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
     	for (int i = 0; i<sizeOps; i++) { // T_OutBegin_AggR_131
     		String[] funin = funinOperations.get(i);
     		if(inputColumns != null) { // T_OutBegin_AggR_132
-         		for (IMetadataColumn column: outputColumns) { // T_OutBegin_AggR_135
-               		if(column.getLabel().equals(funin[OUTPUT_COLUMN])){ // T_OutBegin_AggR_136
+         		for (IMetadataColumn outputColumn: outputColumns) { // T_OutBegin_AggR_135
+               		if(outputColumn.getLabel().equals(funin[OUTPUT_COLUMN])){ // T_OutBegin_AggR_136
                		
-               			JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-               		
-						boolean isNumber = JavaTypesManager.isNumberType(javaType, false);
+               			JavaType outputJavaType = JavaTypesManager.getJavaTypeFromId(outputColumn.getTalendType());
+						boolean outputIsNumber = JavaTypesManager.isNumberType(outputJavaType, false);
+						
+						boolean outputIsObject = outputJavaType == JavaTypesManager.OBJECT;
+						boolean outputIsList = outputJavaType == JavaTypesManager.LIST;
+						boolean outputIsString = outputJavaType == JavaTypesManager.STRING;
+						boolean outputIsDate = outputJavaType == JavaTypesManager.DATE;
+						boolean outputIsBigDecimal = outputJavaType == JavaTypesManager.BIGDECIMAL;
 						
 						String function = funin[FUNCTION];
 						
 						boolean isValidTypeForOperation = 
-							isNumber && (function.equals(SUM) || function.equals(AVG)) 
-							|| !isNumber && !(function.equals(SUM) || function.equals(AVG))
+							outputIsNumber && (function.equals(SUM) || function.equals(AVG) || function.equals(STD_DEV)) 
+							|| 
+								!outputIsNumber 
+								&& !function.equals(SUM) 
+								&& !function.equals(AVG) 
+								&& !function.equals(LIST)
+								&& !function.equals(LIST_OBJECT)
+							|| (function.equals(MIN) || function.equals(MAX)) && (outputIsNumber || outputIsObject || outputIsString || outputIsDate || outputIsBigDecimal)
+							|| function.equals(FIRST)
+							|| function.equals(LAST)
+							|| function.equals(LIST_OBJECT) && (outputIsObject || outputIsList)
+							|| function.equals(LIST) && (outputIsString || outputIsObject)
 						;
 
 						if(!hasAlreadyCountProperty && function.equals(COUNT)) {
@@ -427,22 +453,22 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 								%>int <%=funin[INPUT_COLUMN] %>_count = 0;
 	                   			<%
 	                   			 
-	                   		} else if(function.equals("sum") && javaType == JavaTypesManager.BIGDECIMAL) {
+	                   		} else if(function.equals("sum") && outputJavaType == JavaTypesManager.BIGDECIMAL) {
 		    					
 		    					%>BigDecimal <%=funin[INPUT_COLUMN] %>_sum = new BigDecimal("0.0");
 	    		   				<%
 	    		   				
-	                   		} else if("list".equals(function)) {
+	                   		} else if(LIST.equals(function)) {
 	                   			
-	                   			%>String <%=funin[INPUT_COLUMN] %>_<%=function %> = "";
+	                   			%>StringBuilder <%=funin[INPUT_COLUMN] %>_<%=LIST %> = new StringBuilder();
 	                   			<%
 	                   			
-	                   		 } else if("list_object".equals(function)) {
+	                   		 } else if(LIST_OBJECT.equals(function)) {
 	                   		 
 	                   		 	%>java.util.List <%=funin[INPUT_COLUMN] %>_<%=function %> = new java.util.ArrayList();
 	                   			<%
 	                   			
-	                   		} else if("std_dev".equals(function)) {
+	                   		} else if(STD_DEV.equals(function)) {
 	                   		
 	                   			%>java.util.List<Double> <%=funin[INPUT_COLUMN] %>_<%=function %> = new java.util.ArrayList<Double>();
 	                   			<%
@@ -451,11 +477,18 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 	                   		
 	                   			// START OF INIT LINE
 	                 			%>
-	                 			<%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> <%=funin[INPUT_COLUMN] %>_<%=function %><%
+	                 			<%=JavaTypesManager.getTypeToGenerate(outputColumn.getTalendType(), outputColumn.isNullable()) %> <%=funin[INPUT_COLUMN] %>_<%=function %><%
 	                 			
-	                   			if(column.isNullable() && JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), false) || javaType == JavaTypesManager.CHARACTER) { 
+	                   			if(
+	                   				outputColumn.isNullable() 
+	                   				&& JavaTypesManager.isJavaPrimitiveType(outputColumn.getTalendType(), false) 
+	                   				&& !function.equals(MIN) 
+	                   				&& !function.equals(MAX) 
+	                   				&& !function.equals(FIRST) 
+	                   				&& !function.equals(LAST) 
+	                   				|| outputJavaType == JavaTypesManager.CHARACTER) { 
 	                   				
-	                   				%> = (<%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), false) %>) <%= JavaTypesManager.getDefaultValueFromJavaIdType(column.getTalendType(), false) %><%
+	                   				%> = (<%=JavaTypesManager.getTypeToGenerate(outputColumn.getTalendType(), false) %>) <%= JavaTypesManager.getDefaultValueFromJavaIdType(outputColumn.getTalendType(), false) %><%
 	                   				
 		                   		}
 	                   			
@@ -580,6 +613,7 @@ if(sizeOps>0){ // G_OutBegin_AggR_191
 %>
 
 int nb_line_<%=cid %> = 0;
+boolean isFirstIteration = true;
 
 <%
 if(listFlag){ // G_OutBegin_AggR_192
