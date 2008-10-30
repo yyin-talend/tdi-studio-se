@@ -113,7 +113,7 @@ public class TalendPaletteViewer extends PaletteViewer {
         gd.widthHint = 36;
         okButton.setLayoutData(gd);
         okButton.setText("OK");
-        okButton.setImage(ImageProvider.getImage(ECoreImage.CONTEXT_CONF_ICON));
+        // okButton.setImage(ImageProvider.getImage(ECoreImage.PALETTE_OK_ICON));
         okButton.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent e) {
@@ -129,12 +129,14 @@ public class TalendPaletteViewer extends PaletteViewer {
         gd = new GridData(GridData.END);
         gd.widthHint = 36;
         clearButton.setLayoutData(gd);
-        clearButton.setText("Clear");
-        clearButton.setImage(ImageProvider.getImage(ECoreImage.CONTEXT_CONF_ICON));
+        clearButton.setToolTipText("Clear");
+        clearButton.setImage(ImageProvider.getImage(ECoreImage.PALETTE_CLEAR_ICON));
         clearButton.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent e) {
                 text.setText("");
+                // Reset to default palette
+                startFiltering(text);
             }
         });
 
