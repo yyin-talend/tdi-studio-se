@@ -187,9 +187,10 @@ String dbName = ElementParameterParser.getValue(node, "__DBNAME__");
 String userName = ElementParameterParser.getValue(node, "__USER__");
 String password = ElementParameterParser.getValue(node, "__PASS__");
 %> 
-
-java.io.Writer output_<%=cid %> = new java.io.FileWriter(<%= logFile %>, true);
-java.sql.DriverManager.setLogWriter(new java.io.PrintWriter(output_<%=cid %>,true));
+if (<%= logLevel %> > 0) {
+	java.io.Writer output_<%=cid %> = new java.io.FileWriter(<%= logFile %>, true);
+	java.sql.DriverManager.setLogWriter(new java.io.PrintWriter(output_<%=cid %>,true));
+}	
 com.paraccel.Driver.setLogLevel(<%= logLevel %>);
 
 java.lang.Class.forName("com.paraccel.Driver").newInstance();
