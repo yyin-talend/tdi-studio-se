@@ -35,6 +35,9 @@ String methodFixedWidth = ElementParameterParser.getValue(node, "__METHOD_FIXED_
 boolean removeQuotes = ElementParameterParser.getValue(node, "__REMOVE_QUOTES__").equals("true");
 boolean explicitIDs = ElementParameterParser.getValue(node, "__EXPLICIT_IDS__").equals("true");
 
+String logLevel= ElementParameterParser.getValue(node, "__LOG_LEVEL__");
+String logFile= ElementParameterParser.getValue(node, "__LOG_FILE__");
+
 StringBuilder tableName = new StringBuilder();
 StringBuilder tmpTableName = new StringBuilder();
 %>
@@ -184,8 +187,14 @@ String dbName = ElementParameterParser.getValue(node, "__DBNAME__");
 String userName = ElementParameterParser.getValue(node, "__USER__");
 String password = ElementParameterParser.getValue(node, "__PASS__");
 %> 
+
+java.io.Writer output_<%=cid %> = new java.io.FileWriter(<%= logFile %>, true);
+java.sql.DriverManager.setLogWriter(new java.io.PrintWriter(output_<%=cid %>,true));
+com.paraccel.Driver.setLogLevel(<%= logLevel %>);
+
 java.lang.Class.forName("com.paraccel.Driver").newInstance();
-java.sql.Connection con_<%=cid %> = java.sql.DriverManager.getConnection("jdbc:paraccel://" + <%=host%> + ":" + <%=port%> + "/" + <%=dbName%>, <%=userName%>, <%=password%>);
+java.sql.Connection con_<%=cid %> = java.sql.DriverManager.getConnection("jdbc:paraccel://" + <%=host%> + ":" + <%=port%> + "/" + <%=dbName%>+"?prepareThreshold=100&loglevel="+<%= logLevel %>+"&protocolVersion=3", <%=userName%>, <%=password%>);
+
 <%
 String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
 String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");

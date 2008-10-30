@@ -28,6 +28,9 @@ imports="
 	String useCursor= ElementParameterParser.getValue(node, "__USE_CURSOR__");
 	String cursorSize= ElementParameterParser.getValue(node, "__CURSOR_SIZE__");
 	String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
+	String logLevel= ElementParameterParser.getValue(node, "__LOG_LEVEL__");
+	String logFile= ElementParameterParser.getValue(node, "__LOG_FILE__");
+
 	       dbquery = dbquery.replaceAll("\n"," ");
 	       dbquery = dbquery.replaceAll("\r"," ");
     boolean whetherTrimAllCol = ElementParameterParser.getValue(node, "__TRIM_ALL_COLUMN__").equals("true");
@@ -50,8 +53,13 @@ imports="
             	<%
             } else {
             	%>
+				
+				java.io.Writer output_<%=cid %> = new java.io.FileWriter(<%= logFile %>, true);
+				java.sql.DriverManager.setLogWriter(new java.io.PrintWriter(output_<%=cid %>,true));
+				com.paraccel.Driver.setLogLevel(<%= logLevel %>);
+
                 java.lang.Class.forName("com.paraccel.Driver");    
-                String url_<%=cid %> = "jdbc:paraccel://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;    
+                String url_<%=cid %> = "jdbc:paraccel://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> +"?prepareThreshold=100&loglevel="+<%= logLevel %>+"&protocolVersion=3";    
                 String dbUser_<%=cid %> = <%=dbuser%>;    
                 String dbPwd_<%=cid %> = <%=dbpwd%>;    
                 conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);	
