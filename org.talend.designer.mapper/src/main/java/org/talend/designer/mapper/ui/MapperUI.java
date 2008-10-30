@@ -51,7 +51,7 @@ import org.talend.commons.ui.swt.linking.BgDrawableComposite;
 import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.commons.utils.threading.ExecutionLimiter;
 import org.talend.commons.utils.threading.ExecutionLimiterImproved;
-import org.talend.commons.utils.time.TimeMeasure;
+import org.talend.core.PluginChecker;
 import org.talend.designer.abstractmap.model.table.IDataMapTable;
 import org.talend.designer.abstractmap.ui.visualmap.link.IMapperLink;
 import org.talend.designer.mapper.MapperComponent;
@@ -251,8 +251,13 @@ public class MapperUI {
         ExternalMapperUiProperties uiProperties = mapperManager.getUiManager().getUiProperties();
 
         mapperShell.setImage(ImageProvider.getImage(component.getComponent().getIcon32()));
-        mapperShell
-                .setText(Messages.getString("MapperMain.title", component.getComponent().getName(), component.getUniqueName())); //$NON-NLS-1$
+        if (PluginChecker.isTIS()) {
+            mapperShell.setText(Messages.getString(
+                    "MapperMain.tisTitle", component.getComponent().getName(), component.getUniqueName())); //$NON-NLS-1$
+        } else {
+            mapperShell.setText(Messages.getString(
+                    "MapperMain.tosTitle", component.getComponent().getName(), component.getUniqueName())); //$NON-NLS-1$
+        }
         Rectangle boundsMapper = uiProperties.getBoundsMapper();
 
         if (uiProperties.isShellMaximized()) {
@@ -419,6 +424,7 @@ public class MapperUI {
 
         SelectionListener scrollListener = new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 if (event.detail == SWT.NONE) {
                     mouseMoveScrollZoneHelper.mouseDownOnScroll = false;
@@ -441,7 +447,7 @@ public class MapperUI {
 
         int time = 100;
 
-        backgroundRefreshLimiter = (ExecutionLimiter) new ExecutionLimiterImproved(time, true) {
+        backgroundRefreshLimiter = new ExecutionLimiterImproved(time, true) {
 
             @Override
             public void execute(final boolean isFinalExecution, Object data) {
@@ -463,7 +469,7 @@ public class MapperUI {
 
             }
         };
-        backgroundRefreshLimiterForceRecalculate = (ExecutionLimiter) new ExecutionLimiterImproved(time, true) {
+        backgroundRefreshLimiterForceRecalculate = new ExecutionLimiterImproved(time, true) {
 
             @Override
             public void execute(final boolean isFinalExecution, Object data) {
@@ -859,7 +865,7 @@ public class MapperUI {
                 }
                 link.draw(gc, boundsOfDrawing);
             }
-            
+
         } // public void drawBackground(GC gc) {
 
         /**
