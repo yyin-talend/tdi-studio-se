@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.PluginChecker;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.components.IODataComponentContainer;
@@ -120,7 +121,11 @@ public class RowGenMain {
                 | SWT.TITLE);
         IComponent component = connector.getComponent();
         shell.setImage(ImageProvider.getImage(component.getIcon32()));
-        shell.setText(Messages.getString("RowGenMain.MainShellText", connector.getUniqueName())); //$NON-NLS-1$
+        if (PluginChecker.isTIS()) {
+            shell.setText(Messages.getString("RowGenMain.TisShellText", connector.getUniqueName())); //$NON-NLS-1$
+        } else {
+            shell.setText(Messages.getString("RowGenMain.TosShellText", connector.getUniqueName())); //$NON-NLS-1$
+        }
         Rectangle boundsRG = ExternalRowGeneratorUiProperties.getBoundsRowGen();
         if (ExternalRowGeneratorUiProperties.isShellMaximized()) {
             shell.setMaximized(ExternalRowGeneratorUiProperties.isShellMaximized());
@@ -171,6 +176,7 @@ public class RowGenMain {
              * 
              * @see org.eclipse.swt.events.KeyAdapter#keyReleased(org.eclipse.swt.events.KeyEvent)
              */
+            @Override
             public void keyReleased(KeyEvent e) {
                 if (e.keyCode == SWT.F5) {
                     MetadataTableEditorViewExt viewExt = generatorUI.getDataTableView();
