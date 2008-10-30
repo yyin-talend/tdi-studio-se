@@ -14,6 +14,7 @@ package org.talend.repository.ui.login;
 
 import java.lang.reflect.InvocationTargetException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -127,9 +128,11 @@ public class LoginComposite extends Composite {
 
     private Label statusLabel;
 
-    private Composite bottomButtons;
-
     private Composite messageImageStatus;
+
+    private ComboViewer manageViewer;
+
+    private Label manageProjectLabel1;
 
     /**
      * Constructs a new LoginComposite.
@@ -275,41 +278,98 @@ public class LoginComposite extends Composite {
         data.bottom = new FormAttachment(projectViewer.getControl(), 0, SWT.CENTER);
         existingLabel.setLayoutData(data);
 
-        // Bottom buttons:
-        bottomButtons = toolkit.createComposite(group);
-        data = new FormData();
-        data.top = new FormAttachment(projectViewer.getControl(), VERTICAL_SPACE * 2, SWT.BOTTOM);
-        data.left = new FormAttachment(0, HORIZONTAL_SPACE);
-        bottomButtons.setLayoutData(data);
-        bottomButtons.setLayout(new FormLayout());
-
-        Label manageProjectLabel1 = toolkit.createLabel(bottomButtons, Messages.getString("LoginComposite.manageProjectPre")); //$NON-NLS-1$
+        manageProjectLabel1 = toolkit.createLabel(group, Messages.getString("LoginComposite.manageProjectPre")); //$NON-NLS-1$
         FormData formData = new FormData();
-        formData.left = new FormAttachment(0);
-        formData.top = new FormAttachment(40);
+        formData.right = new FormAttachment(existingLabel, 0, SWT.RIGHT);
+        formData.top = new FormAttachment(existingLabel, 40);
         manageProjectLabel1.setLayoutData(formData);
 
-        manageProjectsButton = toolkit.createButton(bottomButtons, null, SWT.PUSH);
-        manageProjectsButton.setText("Manage");
+        manageProjectsButton = toolkit.createButton(group, null, SWT.PUSH);
+        manageProjectsButton.setText(Messages.getString("LoginComposite.manageProjectsButton")); //$NON-NLS-1$
         data = new FormData();
-        data.left = new FormAttachment(manageProjectLabel1, HORIZONTAL_SPACE_BUTTONS);
+        data.left = new FormAttachment(fillProjectsBtn, 0, SWT.LEFT);
         data.bottom = new FormAttachment(manageProjectLabel1, VERTICAL_SPACE, SWT.CENTER);
         manageProjectsButton.setLayoutData(data);
 
-        Label manageProjectLabel2 = toolkit.createLabel(bottomButtons, Messages.getString("LoginComposite.manageProjectPost")); //$NON-NLS-1$
+        manageViewer = new ComboViewer(group, SWT.BORDER | SWT.READ_ONLY);
         data = new FormData();
-        data.left = new FormAttachment(manageProjectsButton, HORIZONTAL_SPACE_BUTTONS);
-        data.bottom = new FormAttachment(manageProjectLabel1, 0, SWT.BOTTOM);
-        manageProjectLabel2.setLayoutData(data);
-
-        Label manageProjectLabel3 = toolkit.createLabel(bottomButtons, Messages.getString("LoginComposite.manageProjectDetails")); //$NON-NLS-1$
-        data = new FormData();
-        formData.left = new FormAttachment(0);
-        data.top = new FormAttachment(manageProjectsButton, VERTICAL_SPACE, SWT.BOTTOM);
-        manageProjectLabel3.setLayoutData(data);
+        data.left = new FormAttachment(projectViewer.getControl(), 0, SWT.LEFT);
+        data.right = new FormAttachment(projectViewer.getControl(), 0, SWT.RIGHT);
+        data.bottom = new FormAttachment(manageProjectLabel1, VERTICAL_SPACE, SWT.CENTER);
+        manageViewer.getControl().setLayoutData(data);
+        manageViewer.setContentProvider(new ArrayContentProvider());
+        manageViewer.setInput(getManageElements());
+        manageViewer.setSelection(new StructuredSelection(new Object[] { manageViewer.getElementAt(0) }));
 
         fillContents();
         addListeners();
+    }
+
+    private ManageItem[] getManageElements() {
+        List<ManageItem> toReturn = new ArrayList<ManageItem>();
+
+        toReturn.add(new ManageItem(ImportDemoProjectAction.getInstance().getToolTipText()) {
+
+            @Override
+            public void run() {
+                importDemoProject();
+            }
+        });
+
+        toReturn.add(new ManageItem(Messages.getString("LoginComposite.buttons.newProject.desc")) { //$NON-NLS-1$
+
+                    @Override
+                    public void run() {
+                        createNewProject();
+                    }
+
+                });
+        toReturn.add(new ManageItem(Messages.getString("LoginComposite.buttons.importProject.desc")) { //$NON-NLS-1$
+
+                    @Override
+                    public void run() {
+                        importProjects();
+                    }
+
+                });
+        toReturn.add(new ManageItem(Messages.getString("LoginComposite.buttons.deleteProject.desc")) { //$NON-NLS-1$
+
+                    @Override
+                    public void run() {
+                        deleteProject();
+                    }
+
+                });
+
+        return toReturn.toArray(new ManageItem[] {});
+    }
+
+    /**
+     * Class use to fill manage projects dialog box.
+     */
+    private abstract class ManageItem {
+
+        private String label;
+
+        public ManageItem(String label) {
+            super();
+            this.label = label;
+        }
+
+        public String getLabel() {
+            return this.label;
+        }
+
+        public void setLabel(String label) {
+            this.label = label;
+        }
+
+        @Override
+        public String toString() {
+            return getLabel();
+        }
+
+        public abstract void run();
     }
 
     /**
@@ -491,8 +551,12 @@ public class LoginComposite extends Composite {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                ManageProjectDialog manageProjectDialog = new ManageProjectDialog(getShell(), LoginComposite.this);
-                manageProjectDialog.open();
+                ManageItem item = null;
+                if (!manageViewer.getSelection().isEmpty()) {
+                    IStructuredSelection sel = (IStructuredSelection) manageViewer.getSelection();
+                    item = (ManageItem) sel.getFirstElement();
+                }
+                item.run();
             }
         });
     }
@@ -554,9 +618,13 @@ public class LoginComposite extends Composite {
 
     private void updateButtons() {
         if (isAuthenticationNeeded() || !validateFields()) {
-            bottomButtons.setVisible(false);
+            manageViewer.getControl().setVisible(false);
+            manageProjectLabel1.setVisible(false);
+            manageProjectsButton.setVisible(false);
         } else {
-            bottomButtons.setVisible(true);
+            manageViewer.getControl().setVisible(true);
+            manageProjectLabel1.setVisible(true);
+            manageProjectsButton.setVisible(true);
         }
     }
 
