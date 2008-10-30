@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.data.container.RootContainer;
 import org.talend.core.CorePlugin;
@@ -196,7 +197,7 @@ public abstract class AbstractRepositoryFactory implements IRepositoryFactory {
 		this.displayToUser = displayToUser;
 	}
 
-    public void beforeLogon(Project project) throws PersistenceException {
+    public void beforeLogon(Project project) throws PersistenceException, LoginException {
         // do nothing by default
     }
     
