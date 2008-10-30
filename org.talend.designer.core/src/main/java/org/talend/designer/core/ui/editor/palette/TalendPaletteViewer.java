@@ -29,13 +29,17 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.utils.threading.ExecutionLimiter;
 import org.talend.core.model.components.ComponentUtilities;
@@ -108,13 +112,27 @@ public class TalendPaletteViewer extends PaletteViewer {
         filters.add(text);
         initFilterTextControl(text);
 
-        final Button okButton = new Button(container, SWT.NONE);
-        GridData gd = new GridData(GridData.END);
-        gd.widthHint = 36;
-        okButton.setLayoutData(gd);
-        okButton.setText("OK");
-        // okButton.setImage(ImageProvider.getImage(ECoreImage.PALETTE_OK_ICON));
-        okButton.addSelectionListener(new SelectionAdapter() {
+        ToolBar toolbar = new ToolBar(container, SWT.NONE);
+        GridLayout toolbarLayout = new GridLayout();
+        toolbarLayout.marginLeft = 0;
+        toolbarLayout.marginRight = 0;
+        toolbarLayout.marginTop = 0;
+        toolbarLayout.marginBottom = 0;
+        toolbarLayout.marginHeight = 0;
+        toolbarLayout.marginWidth = 0;
+        toolbar.setLayout(toolbarLayout);
+
+        Image clearImage = ImageProvider.getImage(ECoreImage.PALETTE_CLEAR_ICON);
+        Rectangle bounds = clearImage.getBounds();
+        ToolItem okItem = new ToolItem(toolbar, SWT.NONE);
+
+        Image okImage = new Image(Display.getDefault(), bounds.width, bounds.height);
+        GC gc = new GC(okImage);
+        gc.setBackground(toolbar.getBackground());
+        gc.drawText("OK", 0, 0, false);
+        gc.dispose();
+        okItem.setImage(okImage);
+        okItem.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent e) {
                 startFiltering(text);
@@ -125,13 +143,9 @@ public class TalendPaletteViewer extends PaletteViewer {
             }
         });
 
-        Button clearButton = new Button(container, SWT.NONE);
-        gd = new GridData(GridData.END);
-        gd.widthHint = 36;
-        clearButton.setLayoutData(gd);
-        clearButton.setToolTipText("Clear");
-        clearButton.setImage(ImageProvider.getImage(ECoreImage.PALETTE_CLEAR_ICON));
-        clearButton.addSelectionListener(new SelectionAdapter() {
+        final ToolItem clearItem = new ToolItem(toolbar, SWT.NONE);
+        clearItem.setImage(clearImage);
+        clearItem.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent e) {
                 text.setText("");
