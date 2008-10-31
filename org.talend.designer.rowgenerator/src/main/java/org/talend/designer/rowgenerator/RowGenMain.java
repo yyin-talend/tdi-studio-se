@@ -26,12 +26,13 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.ui.image.ImageProvider;
-import org.talend.core.PluginChecker;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.IConnection;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.rowgenerator.external.data.ExternalRowGenTable;
 import org.talend.designer.rowgenerator.external.data.ExternalRowGeneratorData;
 import org.talend.designer.rowgenerator.external.data.ExternalRowGeneratorUiProperties;
@@ -121,11 +122,12 @@ public class RowGenMain {
                 | SWT.TITLE);
         IComponent component = connector.getComponent();
         shell.setImage(ImageProvider.getImage(component.getIcon32()));
-        if (PluginChecker.isTIS()) {
-            shell.setText(Messages.getString("RowGenMain.TisShellText", connector.getUniqueName())); //$NON-NLS-1$
-        } else {
-            shell.setText(Messages.getString("RowGenMain.TosShellText", connector.getUniqueName())); //$NON-NLS-1$
-        }
+
+        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+        String productName = brandingService.getFullProductName();
+        shell.setText(Messages.getString("RowGenMain.ShellTitle", productName, connector.getUniqueName())); //$NON-NLS-1$
+
         Rectangle boundsRG = ExternalRowGeneratorUiProperties.getBoundsRowGen();
         if (ExternalRowGeneratorUiProperties.isShellMaximized()) {
             shell.setMaximized(ExternalRowGeneratorUiProperties.isShellMaximized());
