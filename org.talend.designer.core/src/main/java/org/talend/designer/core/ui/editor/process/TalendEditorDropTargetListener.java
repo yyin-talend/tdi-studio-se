@@ -517,10 +517,12 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     queryParam.setValue(EmfComponent.BUILTIN);
                 }
             }
-            // && node.isELTComponent()
-            if (schemaParam != null) {
-                schemaParam.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()).setValue(EmfComponent.REPOSITORY);
+
+            if (schemaParam == null) {
+                return null;
             }
+            // && node.isELTComponent()
+            schemaParam.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()).setValue(EmfComponent.REPOSITORY);
             RepositoryChangeMetadataCommand command2 = new RepositoryChangeMetadataCommand(node, schemaParam.getName() + ":"
                     + EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), value, ConvertionHelper.convert(table), null);
             return command2;
