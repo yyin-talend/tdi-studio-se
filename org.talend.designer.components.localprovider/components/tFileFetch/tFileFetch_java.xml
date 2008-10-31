@@ -36,6 +36,7 @@ COMPATIBILITY="ALL"
       <ITEMS DEFAULT="HTTP_PROTO">
         <ITEM NAME="HTTP_PROTO"   VALUE="http" />
         <ITEM NAME="FTP_PROTO"   VALUE="ftp" />
+        <ITEM NAME="SAMBA_PROTO" VALUE="smb" />
       </ITEMS>
     </PARAMETER>
     
@@ -57,10 +58,23 @@ COMPATIBILITY="ALL"
      FIELD="TEXT"
      REQUIRED="true"
      NUM_ROW="20"
-     SHOW="true"
+     SHOW_IF="PROTO!='SAMBA_PROTO'"
   >
    <DEFAULT>"http://talendforge.org/file_fetch.txt"</DEFAULT>
   </PARAMETER>
+  
+   
+  <PARAMETER
+     NAME="SMB_URI"
+     FIELD="TEXT"
+     REQUIRED="true"
+     NUM_ROW="20"
+     SHOW_IF="PROTO=='SAMBA_PROTO'"
+  >
+   <DEFAULT>"smb://host/dir/remoteFileName.txt"</DEFAULT>
+  </PARAMETER>
+  
+  
 
   <PARAMETER
      NAME="DIRECTORY"
@@ -81,9 +95,42 @@ COMPATIBILITY="ALL"
   </PARAMETER> 
   
    <PARAMETER
+     NAME="SMB_DOMAIN"
+     FIELD="TEXT"
+     REQUIRED="true"
+     NUM_ROW="25"  
+     SHOW_IF="PROTO=='SAMBA_PROTO'"
+  >
+    <DEFAULT>"domain"</DEFAULT>
+  </PARAMETER> 
+  
+     <PARAMETER
+     NAME="SMB_USERNAME"
+     FIELD="TEXT"
+     REQUIRED="true"
+     NUM_ROW="25"  
+     SHOW_IF="PROTO=='SAMBA_PROTO'"
+  >
+    <DEFAULT>"username"</DEFAULT>
+  </PARAMETER> 
+  
+     <PARAMETER
+     NAME="SMB_PASSWORD"
+     FIELD="TEXT"
+     REQUIRED="true"
+     NUM_ROW="25"  
+     SHOW_IF="PROTO=='SAMBA_PROTO'"
+  >
+    <DEFAULT>"password"</DEFAULT>
+  </PARAMETER>
+  
+  
+  
+   <PARAMETER
      NAME="DIE_ON_ERROR"
      FIELD="CHECK"
      NUM_ROW="50"
+     SHOW_IF="PROTO!='SAMBA_PROTO'"
   >
   <DEFAULT>true</DEFAULT> 
   </PARAMETER>     
@@ -149,6 +196,7 @@ COMPATIBILITY="ALL"
        FIELD="CHECK" 
        REQUIRED="true"
 	   NUM_ROW="30" 
+	   SHOW_IF="PROTO!='SAMBA_PROTO'"
 	   REPOSITORY_VALUE="UES_PROXY">
 	   <DEFAULT>false</DEFAULT>
 	</PARAMETER>
@@ -227,6 +275,7 @@ COMPATIBILITY="ALL"
        <IMPORT NAME="COMMONS-httpclient" MODULE="commons-httpclient-3.0.1.jar" REQUIRED="true" />
        <IMPORT NAME="COMMONS-Logging" MODULE="commons-logging-1.1.jar" REQUIRED="true" />
   	   <IMPORT NAME="COMMONS-codec" MODULE="commons-codec-1.3.jar" REQUIRED="true" />
+  	   <IMPORT NAME="jcifs-samba" MODULE="jcifs-1.3.0.jar" REQUIRED="true" />
      </IMPORTS>
   </CODEGENERATION>
 

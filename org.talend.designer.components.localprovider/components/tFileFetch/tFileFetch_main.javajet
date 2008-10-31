@@ -18,29 +18,29 @@ String cid = node.getUniqueName();
 String protocol = ElementParameterParser.getValue(node,"__PROTO__");
 
 
-String uri = ElementParameterParser.getValue(node, "__URI__");
+
 
 String directory = ElementParameterParser.getValue(node, "__DIRECTORY__");
 String filename = ElementParameterParser.getValue(node, "__FILENAME__");
 
-
-
-
-boolean useProxy = ElementParameterParser.getValue(node,"__USE_PROXY__").equals("true");
-String proxyHost = ElementParameterParser.getValue(node,"__PROXY_HOST__");
-String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
-String proxyUser = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
-String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
 String dieOnError = ElementParameterParser.getValue(node,"__DIE_ON_ERROR__");
 %>   
 
 <%if(protocol.equals("http")){
+
+String uri = ElementParameterParser.getValue(node, "__URI__");
 boolean post = ElementParameterParser.getValue(node,"__POST__").equals("true");
 boolean printResponse = ElementParameterParser.getValue(node,"__PRINT__").equals("true");
 boolean needAuth = ElementParameterParser.getValue(node,"__NEED_AUTH__").equals("true");
 String username = ElementParameterParser.getValue(node,"__AUTH_USERNAME__");
 String password = ElementParameterParser.getValue(node,"__AUTH_PASSWORD__");
 String timeout = ElementParameterParser.getValue(node,"__TIMEOUT__");
+
+boolean useProxy = ElementParameterParser.getValue(node,"__USE_PROXY__").equals("true");
+String proxyHost = ElementParameterParser.getValue(node,"__PROXY_HOST__");
+String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
+String proxyUser = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
+String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
 %>
     org.apache.commons.httpclient.HttpClient client_<%=cid %> = new org.apache.commons.httpclient.HttpClient();
     boolean isContinue=true;
@@ -198,6 +198,12 @@ String timeout = ElementParameterParser.getValue(node,"__TIMEOUT__");
 if(protocol.equals("ftp")){%>
 
 <%
+String uri = ElementParameterParser.getValue(node, "__URI__");
+boolean useProxy = ElementParameterParser.getValue(node,"__USE_PROXY__").equals("true");
+String proxyHost = ElementParameterParser.getValue(node,"__PROXY_HOST__");
+String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
+String proxyUser = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
+String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
 //The following part support the socks proxy for FTP and SFTP (Socks V4 or V5, they are all OK). 
 //And it can not work with the FTP proxy directly, only support the socks proxy.
 if(useProxy){
@@ -257,4 +263,74 @@ java.io.DataInputStream in<%=cid%>=null;
     out<%=cid%>.close();
 
 
-<%}%>
+<%}
+if(protocol.equals("smb")){ //1%>
+
+<%
+  String srcurl = ElementParameterParser.getValue(node, "__SMB_URI__"); 
+  String domain = ElementParameterParser.getValue(node,"__SMB_DOMAIN__");
+  String username = ElementParameterParser.getValue(node,"__SMB_USERNAME__");
+  String password = ElementParameterParser.getValue(node,"__SMB_PASSWORD__");
+%>
+ 
+    class SambaProtoClient_<%=cid %>{
+      
+      private void copySMBFile(String domain, String username, String password, String srcURL, String destFilePath) {
+        try {
+           
+
+            jcifs.smb.NtlmPasswordAuthentication auth = new jcifs.smb.NtlmPasswordAuthentication(domain, username, password);
+
+           
+            jcifs.smb.SmbFile sf = new jcifs.smb.SmbFile(srcURL, auth);
+
+            jcifs.smb.SmbFileInputStream in = new jcifs.smb.SmbFileInputStream(sf);
+
+            java.io.File destFile = new java.io.File(destFilePath);
+            java.io.OutputStream out = new java.io.FileOutputStream(destFile);
+
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = in.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
+            in.close();
+            out.close();
+        } catch (java.io.FileNotFoundException ex) {
+            System.out.println(ex.getMessage());
+        } catch (java.io.IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
+    }
+    
+    String srcurl_<%=cid %>=<%=srcurl %>;
+    String fileName_<%=cid %>=<%=filename %>;
+    String username_<%=cid %>=<%=username %>;
+    String password_<%=cid %>=<%=password %>;
+    	if (fileName_<%=cid %>.compareTo("")==0) {
+		fileName_<%=cid %> = srcurl_<%=cid %>.substring(srcurl_<%=cid %>.lastIndexOf("/"));
+		
+	}
+	
+		if (username_<%=cid %>.compareTo("")==0) {
+		username_<%=cid %> =null;
+		
+	}
+	
+	   if (password_<%=cid %>.compareTo("")==0) {
+		password_<%=cid %> =null;
+		
+	}
+    String destFilePath_<%=cid %>=<%=directory %>+fileName_<%=cid %>;
+    
+    SambaProtoClient_<%=cid %> spc_<%=cid %>=new SambaProtoClient_<%=cid %>();
+    spc_<%=cid %>.copySMBFile(<%=domain %>, username_<%=cid %>, password_<%=cid %>, srcurl_<%=cid %>, destFilePath_<%=cid %>);
+
+
+<%
+}//1
+%>
+  
+
