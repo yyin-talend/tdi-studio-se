@@ -167,15 +167,15 @@ public class NodeContainerFigure extends Figure {
      * @param status
      */
     private void updateParallelFigure(int status) {
-        
+
         if (!PluginChecker.isTIS() || parallelFigure == null) {
             return;
         }
-        
+
         String numberParallel = "0";
         if ((status & Process.PARALLEL_STATUS) != 0) {
             IElementParameter numberParallelizeParameter = nodeContainer.getNode().getElementParameter(
-                    EParameterName.PARALLILIZE_NUMBER.getName());
+                    EParameterName.PARALLELIZE_NUMBER.getName());
             if (numberParallelizeParameter != null) {
                 numberParallel = (String) numberParallelizeParameter.getValue();
             }
@@ -196,7 +196,7 @@ public class NodeContainerFigure extends Figure {
         breakpointFigure.setLocation(nodeContainer.getBreakpointLocation());
         errorFigure.setLocation(nodeContainer.getErrorLocation());
         warningFigure.setLocation(nodeContainer.getWarningLocation());
-        if(parallelFigure != null){
+        if (parallelFigure != null) {
             parallelFigure.setLocation(nodeContainer.getParallelLocation());
         }
 

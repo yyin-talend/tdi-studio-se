@@ -116,9 +116,9 @@ public class JobSettingsManager {
 
         if (PluginChecker.isTIS()) {
             param = new ElementParameter(process);
-            param.setName(EParameterName.PARALLILIZE_UNIT_SIZE.getName());
+            param.setName(EParameterName.PARALLELIZE_UNIT_SIZE.getName());
             param.setValue("25000");
-            param.setDisplayName(EParameterName.PARALLILIZE_UNIT_SIZE.getDisplayName());
+            param.setDisplayName(EParameterName.PARALLELIZE_UNIT_SIZE.getDisplayName());
             param.setField(EParameterFieldType.TEXT);
             param.setCategory(EComponentCategory.EXTRA);
             param.setNumRow(2);

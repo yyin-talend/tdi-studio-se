@@ -1018,10 +1018,19 @@ public class DataProcess {
         asyncOutNode.setIncomingConnections(incomingConnections);
         asyncOutNode.setOutgoingConnections(outgoingConnections);
         IElementParameter settingsParam = asyncOutNode.getProcess().getElementParameter(
-                EParameterName.PARALLILIZE_UNIT_SIZE.getName());
+                EParameterName.PARALLELIZE_UNIT_SIZE.getName());
         IElementParameter asyncParam = asyncOutNode.getElementParameter("UNIT_SIZE");
         if (settingsParam != null && asyncParam != null) {
             asyncParam.setValue(settingsParam.getValue());
+        }
+        IElementParameter componentParam = graphicalNode.getElementParameter(EParameterName.PARALLELIZE_NUMBER.getName());
+        asyncParam = asyncOutNode.getElementParameter(EParameterName.PARALLELIZE_NUMBER.getName());
+        if (settingsParam != null && asyncParam != null) {
+            asyncParam.setValue(componentParam.getValue());
+        }
+        asyncParam = asyncOutNode.getElementParameter("DESTINATION");
+        if (settingsParam != null && asyncParam != null) {
+            asyncParam.setValue("tAsyncIn_" + suffix);
         }
 
         // replace target to have the tAsyncOut component

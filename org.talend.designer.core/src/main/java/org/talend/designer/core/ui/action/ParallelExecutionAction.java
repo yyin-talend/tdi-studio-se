@@ -94,7 +94,7 @@ public class ParallelExecutionAction extends SelectionAction {
         if (enableParallelizeParameter != null) {
             parallelEnable = (Boolean) enableParallelizeParameter.getValue();
         }
-        IElementParameter numberParallelizeParameter = node.getElementParameter(EParameterName.PARALLILIZE_NUMBER.getName());
+        IElementParameter numberParallelizeParameter = node.getElementParameter(EParameterName.PARALLELIZE_NUMBER.getName());
         if (numberParallelizeParameter != null) {
             numberParallel = (String) numberParallelizeParameter.getValue();
         }
@@ -187,7 +187,7 @@ public class ParallelExecutionAction extends SelectionAction {
                 enableParallelizeParameter.setValue(enableButton.getSelection());
                 parallelEnable = enableButton.getSelection();
             }
-            IElementParameter numberParallelizeParameter = node.getElementParameter(EParameterName.PARALLILIZE_NUMBER.getName());
+            IElementParameter numberParallelizeParameter = node.getElementParameter(EParameterName.PARALLELIZE_NUMBER.getName());
             if (numberParallelizeParameter != null) {
                 numberParallelizeParameter.setValue(numberText.getText());
             }

@@ -881,9 +881,9 @@ public class EmfComponent implements IComponent {
 
             param = new ElementParameter(node);
             param.setReadOnly(!defaultParalelize);
-            param.setName(EParameterName.PARALLILIZE_NUMBER.getName());
+            param.setName(EParameterName.PARALLELIZE_NUMBER.getName());
             param.setValue(compType.getHEADER().getNUMBERPARALLELIZE());
-            param.setDisplayName(EParameterName.PARALLILIZE_NUMBER.getDisplayName());
+            param.setDisplayName(EParameterName.PARALLELIZE_NUMBER.getDisplayName());
             param.setField(EParameterFieldType.TEXT);
             param.setCategory(EComponentCategory.ADVANCED);
             param.setNumRow(100);
