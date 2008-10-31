@@ -31,7 +31,9 @@ import org.osgi.framework.Bundle;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.dialogs.ProgressDialog;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.general.Project;
+import org.talend.core.prefs.PreferenceManipulator;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.ERepositoryImages;
 import org.talend.resources.ResourcesPlugin;
@@ -43,6 +45,8 @@ import org.talend.resources.ResourcesPlugin;
  * 
  */
 public final class ImportDemoProjectAction extends Action {
+
+    public static final String DEMO_ALREADY_IMPORTED = "demoProjectAlreadyImported"; //$NON-NLS-1$
 
     private static final String ACTION_TITLE = Messages.getString("ImportDemoProjectAction.actionTitle"); //$NON-NLS-1$
 
@@ -128,6 +132,9 @@ public final class ImportDemoProjectAction extends Action {
                     MessageDialog.openInformation(shell, Messages
                             .getString("ImportDemoProjectAction.messageDialogTitle.demoProject"), //$NON-NLS-1$
                             Messages.getString("ImportDemoProjectAction.messageDialogContent.demoProjectImportedSuccessfully")); //$NON-NLS-1$
+                    PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault()
+                            .getPreferenceStore());
+                    prefManipulator.setValue(DEMO_ALREADY_IMPORTED, true);
                 }
             };
 

@@ -299,7 +299,13 @@ public class LoginComposite extends Composite {
         manageViewer.getControl().setLayoutData(data);
         manageViewer.setContentProvider(new ArrayContentProvider());
         manageViewer.setInput(getManageElements());
-        manageViewer.setSelection(new StructuredSelection(new Object[] { manageViewer.getElementAt(0) }));
+
+        PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
+        if (prefManipulator.getBoolean(ImportDemoProjectAction.DEMO_ALREADY_IMPORTED)) {
+            manageViewer.setSelection(new StructuredSelection(new Object[] { manageViewer.getElementAt(1) }));
+        } else {
+            manageViewer.setSelection(new StructuredSelection(new Object[] { manageViewer.getElementAt(0) }));
+        }
 
         fillContents();
         addListeners();
