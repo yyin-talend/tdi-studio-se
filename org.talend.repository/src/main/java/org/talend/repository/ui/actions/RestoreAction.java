@@ -166,6 +166,7 @@ public class RestoreAction extends AContextualAction {
                 // create parent folder
                 IPath parent = createFolders(folders, path.removeLastSegments(1), type);
                 factory.createFolder(type, parent, lastSegment);
+                folders.add(path.toString());
                 return path;
             } else {
                 return new Path("");
