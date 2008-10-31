@@ -110,7 +110,7 @@ public class DataStringConnection {
                 "jdbc:ingres://" + host + ":" + port + "/" + sid, "II7"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         dataConnection[DBTYPE_INTERBASE] = new DataConnection("Interbase", "jdbc:interbase://<host>/<sid>",
-                "jdbc:interbase://" + host + "/" + sid); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                "jdbc:interbase://" + host + "/" + sid); //$NON-NLS-1$ //$NON-NLS-2$ 
 
         // dataConnection[11] = new DataConnection("Microsoft SQL Server", "jdbc:jtds:sqlserver://<host>:<port>/<sid>",
         // "jdbc:jtds:sqlserver://" + host + ":" + port + "/" + sid, "1433"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -118,7 +118,7 @@ public class DataStringConnection {
                 "jdbc:jtds:sqlserver://" + host + ":" + port + "/" + sid + ";" + addParam, "1433"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         dataConnection[DBTYPE_FIREBIRD] = new DataConnection("FireBird", "jdbc:firebirdsql:<host>:<filename>",
-                "jdbc:firebirdsql:" + host + ":" + file); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                "jdbc:firebirdsql:" + host + ":" + file); //$NON-NLS-1$ //$NON-NLS-2$ 
 
         dataConnection[DBTYPE_INFORMIX] = new DataConnection("Informix",
                 "jdbc:informix-sqli://<host>:<port>/<sid>:informixserver=<datasource>;<property>",
@@ -126,7 +126,7 @@ public class DataStringConnection {
 
         dataConnection[DBTYPE_ACCESS] = new DataConnection("Access",
                 "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=<filename>",
-                "jdbc:odbc:Driver={Microsoft Access Driver \\(\\*\\.mdb, \\*\\.accdb\\)};DBQ=" + file); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                "jdbc:odbc:Driver={Microsoft Access Driver \\(\\*\\.mdb, \\*\\.accdb\\)};DBQ=" + file); //$NON-NLS-1$ 
 
         dataConnection[DBTYPE_TERDATA] = new DataConnection(
                 "Teradata", "jdbc:teradata://<host>/<sid>", "jdbc:teradata://" + host + "/" + sid); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -166,19 +166,19 @@ public class DataStringConnection {
                 ":" + port + "/" + sid, "557"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         dataConnection[26] = new DataConnection("SAS", "jdbc:sasiom://<host>:<port>", "jdbc:sasiom://" + host //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                + ":" + port, "7070"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + ":" + port, "7070"); //$NON-NLS-1$ //$NON-NLS-2$ 
 
         dataConnection[27] = new DataConnection("Greenplum", "jdbc:postgresql://<host>:<port>/<sid>", "jdbc:postgresql://" + host //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + ":" + port + "/" + sid, "5432"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        dataConnection[28] = new DataConnection("ParAccel", "jdbc:postgresql://<host>:<port>/<sid>", "jdbc:postgresql://" + host //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                + ":" + port + "/" + sid, "5432"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        dataConnection[28] = new DataConnection("ParAccel", "jdbc:paraccel://<host>:<port>/<sid>", "jdbc:paraccel://" + host //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + ":" + port + "/" + sid, "5439"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         dataConnection[29] = new DataConnection("Netezza", "jdbc:netezza://<host>:<port>/<sid>", "jdbc:netezza://" + host //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + ":" + port + "/" + sid, "5480");
 
         // General jdbc
-        dataConnection[30] = new DataConnection(GENERAL_JDBC, "jdbc:xxx://<xxx>:<xxx>", "jdbc:xxx://" + host //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                + ":" + port, "xxxx"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        dataConnection[30] = new DataConnection(GENERAL_JDBC, "jdbc:xxx://<xxx>:<xxx>", "jdbc:xxx://" + host //$NON-NLS-1$ //$NON-NLS-2$ 
+                + ":" + port, "xxxx"); //$NON-NLS-1$ //$NON-NLS-2$ 
 
         // dataConnection[8] = new DataConnection("Sybase IQ", "jdbc:sybase:Tds:<host>:<port>/<sid>", "jdbc:sybase:Tds:"
         // + host + ":" + port //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
