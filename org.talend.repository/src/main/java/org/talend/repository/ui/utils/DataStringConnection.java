@@ -388,6 +388,7 @@ public class DataStringConnection {
         }
         return getStringConnectionTemplate().substring(0, 12).equals("jdbc:oracle:") //$NON-NLS-1$
                 || getStringConnectionTemplate().substring(0, 15).equals("jdbc:postgresql")
+                || getStringConnectionTemplate().startsWith("jdbc:paraccel")
                 || getStringConnectionTemplate().substring(0, 8).equals("jdbc:db2"); //$NON-NLS-1$
     }
 

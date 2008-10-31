@@ -946,6 +946,12 @@
             message="%libraryneeded.fororacleconnection"
             name="ojdbc5-11g.jar"
             required="false"/>
+	<libraryNeeded
+            context="%libraryneeded.dbconnectionwizard"
+            language="java"
+            message="%libraryneeded.forparaccelconnection"
+            name="paraccel-jdbc.jar"
+            required="false"/>            
       <libraryNeeded
             context="%libraryneeded.dbconnectionwizard"
             language="java"
