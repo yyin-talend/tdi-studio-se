@@ -63,6 +63,8 @@
         	String dieOnErrorStr = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
     		boolean dieOnError = (dieOnErrorStr!=null&&!dieOnErrorStr.equals(""))?dieOnErrorStr.equals("true"):false;
     		
+    		//if support a row with huge characters, the property (SafetySwitch) should be to send false
+    		boolean isSupportHugeCharacters = (ElementParameterParser.getValue(node, "__SUPPORT_HUGE_CHARACTERS__").equals("true")) ^ true;    		
     		String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
     		boolean advancedSeparator = (advancedSeparatorStr!=null&&!advancedSeparatorStr.equals(""))?advancedSeparatorStr.equals("true"):false;
     		String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
@@ -166,6 +168,7 @@ org.talend.fileprocess.delimited.RowParser reader_<%=cid %> = new org.talend.fil
 <%
 			}
 %>
+reader_<%=cid %>.setSafetySwitch(<%=isSupportHugeCharacters%>);
 reader_<%=cid %>.skipHeaders(<%=header %>);
 if(footer_<%=cid %> > 0){
 	int available_<%=cid %> = (int)reader_<%=cid %>.getAvailableRowCount(footer_<%=cid %>);
