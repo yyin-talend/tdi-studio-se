@@ -82,8 +82,8 @@ if(transmitWholeContext){
     java.util.Enumeration<?> propertyNames_<%=cid %> = context.propertyNames();
     while (propertyNames_<%=cid %>.hasMoreElements()) {
         String key_<%=cid %> = (String) propertyNames_<%=cid %>.nextElement();
-        String value_<%=cid %> = (String) context.getProperty(key_<%=cid %>);       
-        paraList_<%=cid %>.add("--context_param " + key_<%=cid %> + "=" + value_<%=cid %>); 
+        Object value_<%=cid %> = (Object) context.get(key_<%=cid %>);       
+        paraList_<%=cid %>.add("--context_param " + key_<%=cid %> + "=" + value_<%=cid %>);
     }
 <%
 }
