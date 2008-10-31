@@ -51,7 +51,8 @@ import org.talend.commons.ui.swt.linking.BgDrawableComposite;
 import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.commons.utils.threading.ExecutionLimiter;
 import org.talend.commons.utils.threading.ExecutionLimiterImproved;
-import org.talend.core.PluginChecker;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.abstractmap.model.table.IDataMapTable;
 import org.talend.designer.abstractmap.ui.visualmap.link.IMapperLink;
 import org.talend.designer.mapper.MapperComponent;
@@ -251,13 +252,13 @@ public class MapperUI {
         ExternalMapperUiProperties uiProperties = mapperManager.getUiManager().getUiProperties();
 
         mapperShell.setImage(ImageProvider.getImage(component.getComponent().getIcon32()));
-        if (PluginChecker.isTIS()) {
-            mapperShell.setText(Messages.getString(
-                    "MapperMain.tisTitle", component.getComponent().getName(), component.getUniqueName())); //$NON-NLS-1$
-        } else {
-            mapperShell.setText(Messages.getString(
-                    "MapperMain.tosTitle", component.getComponent().getName(), component.getUniqueName())); //$NON-NLS-1$
-        }
+
+        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+        String productName = brandingService.getFullProductName();
+        mapperShell.setText(Messages.getString(
+                "MapperMain.ShellTitle", productName, component.getComponent().getName(), component.getUniqueName())); //$NON-NLS-1$
+
         Rectangle boundsMapper = uiProperties.getBoundsMapper();
 
         if (uiProperties.isShellMaximized()) {
