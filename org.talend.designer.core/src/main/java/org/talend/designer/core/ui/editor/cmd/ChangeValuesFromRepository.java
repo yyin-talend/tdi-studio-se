@@ -47,6 +47,7 @@ import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.views.jobsettings.JobSettings;
+import org.talend.designer.core.utils.SAPParametersUtils;
 import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.ui.utils.ConnectionContextHelper;
 
@@ -105,6 +106,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         // }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void execute() {
 
@@ -230,30 +232,9 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                             table.add(map2);
                         }
                         param.setRepositoryValueUsed(true);
-                    } else if (param.getField().equals(EParameterFieldType.TABLE)
-                            && param.getRepositoryValue().equals("INPUT_PARAMS")) {
-                        // FOR SAP
-                        List<Map<String, Object>> table = (List<Map<String, Object>>) elem.getPropertyValue(param.getName());
-                        RepositoryToComponentProperty.getSAPInputAndOutputValue((SAPConnection) connection, table,
-                                getSapFunctionName(), true);
-                        param.setRepositoryValueUsed(true);
-                    } else if (param.getField().equals(EParameterFieldType.TABLE)
-                            && param.getRepositoryValue().equals("OUTPUT_PARAMS")) {
-                        // FOR SAP
-                        List<Map<String, Object>> table = (List<Map<String, Object>>) elem.getPropertyValue(param.getName());
-                        RepositoryToComponentProperty.getSAPInputAndOutputValue((SAPConnection) connection, table,
-                                getSapFunctionName(), false);
-                        param.setRepositoryValueUsed(true);
-                    } else if (param.getRepositoryValue().equals("SAP_ITERATE_OUT_TYPE")) {
-                        // FOR SAP
-                        param.setValue(RepositoryToComponentProperty.getSAPValuesForFunction((SAPConnection) connection,
-                                getSapFunctionName(), "SAP_ITERATE_OUT_TYPE"));
-                        param.setRepositoryValueUsed(true);
-                    } else if (param.getRepositoryValue().equals("SAP_ITERATE_OUT_TABLENAME")) {
-                        // FOR SAP
-                        param.setValue(RepositoryToComponentProperty.getSAPValuesForFunction((SAPConnection) connection,
-                                getSapFunctionName(), "SAP_ITERATE_OUT_TABLENAME"));
-                        param.setRepositoryValueUsed(true);
+                    } else {
+                        // For SAP
+                        SAPParametersUtils.retrieveSAPParams(elem, connection, param, getSapFunctionName());
                     }
 
                     if (param.isRepositoryValueUsed()) {
@@ -581,6 +562,14 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
     public String getSapFunctionName() {
         // Use the first function
         if (this.sapFunctionName == null) {
+
+            if (connection == null) {
+                return null;
+            }
+
+            if (!(connection instanceof SAPConnection)) {
+                return null;
+            }
             SAPConnection sapConn = (SAPConnection) connection;
             if (sapConn.getFuntions() != null && !sapConn.getFuntions().isEmpty()) {
                 return ((SAPFunctionUnit) sapConn.getFuntions().get(0)).getName();

@@ -33,6 +33,8 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.QueryUtil;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.Query;
+import org.talend.core.model.metadata.builder.connection.SAPConnection;
+import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
@@ -54,6 +56,8 @@ import org.talend.core.model.update.EUpdateResult;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.update.UpdatesConstants;
+import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.utils.SAPConnectionUtils;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
@@ -64,6 +68,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.update.UpdateCheckResult;
 import org.talend.designer.core.ui.editor.update.UpdateManagerUtils;
+import org.talend.designer.core.utils.SAPParametersUtils;
 import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.ui.utils.ConnectionContextHelper;
@@ -462,6 +467,8 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                 break;
             case NODE_QUERY:
                 nodesResults.addAll(checkNodeQueryFromRepository(node));
+            case NODE_SAP_FUNCTION:
+                nodesResults.addAll(checkNodeSAPFunctionFromRepository(node));
                 break;
             default:
                 return Collections.emptyList();
@@ -469,6 +476,87 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         }
         getSchemaRenamedMap().clear();
         return nodesResults;
+    }
+
+    /**
+     * 
+     * DOC YeXiaowei Comment method "checkNodeSAPFunctionFromRepository".
+     * 
+     * @param node
+     * @return
+     */
+    private List<UpdateResult> checkNodeSAPFunctionFromRepository(final Node node) {
+        if (node == null) {
+            return Collections.emptyList();
+        }
+        List<UpdateResult> queryResults = new ArrayList<UpdateResult>();
+        String propertyType = (String) node.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
+        if (propertyType != null) {
+            if (propertyType.equals(EmfComponent.REPOSITORY)) {
+                String propertyValue = (String) node.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+
+                ConnectionItem connectionItem = null;
+                connectionItem = UpdateRepositoryUtils.getConnectionItemByItemId(propertyValue);
+                if (connectionItem != null) {
+                    boolean same = true;
+                    IElementParameter sapNodeParam = node.getElementParameter("SAP_FUNCTION");
+
+                    if (sapNodeParam == null) {
+                        return queryResults;
+                    }
+
+                    String functioName = TalendTextUtils.removeQuotes((String) sapNodeParam.getValue());
+                    SAPConnection connection = (SAPConnection) connectionItem.getConnection();
+                    SAPFunctionUnit function = SAPConnectionUtils.findExistFunctionUnit(connection, functioName);
+                    if (function == null) {
+                        for (IElementParameter param : node.getElementParameters()) {
+                            SAPParametersUtils.setNoRepositoryParams(param);
+                        }
+                        return queryResults;
+                    }
+                    // check SAP_ITERATE_OUT_TYPE
+                    sapNodeParam = node.getElementParameter("SAP_ITERATE_OUT_TYPE");
+                    if (sapNodeParam != null && !function.getOutputType().replace(".", "_").equals(sapNodeParam.getValue())) {
+                        same = false;
+                    } else {
+                        // check SAP_ITERATE_OUT_TABLENAME
+                        sapNodeParam = node.getElementParameter("SAP_ITERATE_OUT_TABLENAME");
+                        if (sapNodeParam != null) {
+                            String source = (String) sapNodeParam.getValue();
+                            String dest = function.getOutputTableName();
+                            if (dest == null) {
+                                dest = "";
+                            }
+                            if (!TalendTextUtils.addQuotes(dest).equals(source) && !source.equals(dest)) {
+                                same = false;
+                            }
+                        }
+                    }
+                    boolean inputSame = true;
+                    sapNodeParam = node.getElementParameter("MAPPING_INPUT");
+                    if (sapNodeParam != null && sapNodeParam.getValue() != null) {
+                        inputSame = SAPConnectionUtils.sameParamterTableWith(function, (List<Map<String, Object>>) sapNodeParam
+                                .getValue(), true);
+                    }
+                    boolean outputSame = true;
+                    sapNodeParam = node.getElementParameter("MAPPING_OUTPUT");
+                    if (sapNodeParam != null && sapNodeParam.getValue() != null) {
+                        outputSame = SAPConnectionUtils.sameParamterTableWith(function, (List<Map<String, Object>>) sapNodeParam
+                                .getValue(), false);
+                    }
+
+                    if (!same || !inputSame || !outputSame) {
+                        String source = UpdateRepositoryUtils.getRepositorySourceName(connectionItem);
+                        UpdateCheckResult result = new UpdateCheckResult(node);
+                        result.setResult(EUpdateItemType.NODE_SAP_FUNCTION, EUpdateResult.UPDATE, function, source);
+                        setConfigrationForReadOnlyJob(result);
+                        queryResults.add(result);
+                    }
+                }
+
+            }
+        }
+        return queryResults;
     }
 
     /**
@@ -1007,6 +1095,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         case NODE_PROPERTY:
         case NODE_SCHEMA:
         case NODE_QUERY:
+        case NODE_SAP_FUNCTION:
             tmpResults = checkNodesParameters(type);
             break;
         case JOB_PROPERTY_EXTRA:

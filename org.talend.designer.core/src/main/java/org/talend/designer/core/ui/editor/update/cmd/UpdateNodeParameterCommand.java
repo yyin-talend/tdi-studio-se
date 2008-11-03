@@ -20,6 +20,7 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.QueryUtil;
 import org.talend.core.model.metadata.builder.connection.Query;
+import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
@@ -33,6 +34,7 @@ import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.utils.SAPParametersUtils;
 
 /**
  * ggu class global comment. Detailled comment
@@ -66,6 +68,9 @@ public class UpdateNodeParameterCommand extends Command {
         case NODE_QUERY:
             updateQuery();
             break;
+        case NODE_SAP_FUNCTION:
+            updateSAPParameters();
+            break;
         default:
             return;
         }
@@ -78,6 +83,38 @@ public class UpdateNodeParameterCommand extends Command {
                 ((IProcess2) node.getProcess()).getCommandStack().execute(pcc);
             }
         }
+    }
+
+    /**
+     * DOC YeXiaowei Comment method "updateSAPParameters".
+     */
+    private void updateSAPParameters() {
+        Object updateObject = result.getUpdateObject();
+        if (updateObject == null) {
+            return;
+        }
+        boolean builtin = true;
+        if (updateObject instanceof Node) {
+            Node node = (Node) updateObject;
+            if (result.getResultType() == EUpdateResult.UPDATE) {
+                if (result.isChecked()) {
+                    if (result.getParameter() instanceof SAPFunctionUnit) {
+                        SAPFunctionUnit unit = (SAPFunctionUnit) result.getParameter();
+                        for (IElementParameter param : node.getElementParameters()) {
+                            SAPParametersUtils.retrieveSAPParams(node, unit.getConnection(), param, unit.getName());
+                        }
+                        builtin = false;
+                    }
+                }
+            }
+            if (builtin) { // built-in
+                node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+                for (IElementParameter param : node.getElementParameters()) {
+                    SAPParametersUtils.setNoRepositoryParams(param);
+                }
+            }
+        }
+
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
@@ -160,22 +197,25 @@ public class UpdateNodeParameterCommand extends Command {
 
             if (result.getResultType() == EUpdateResult.UPDATE) {
                 if (result.isChecked()) {
-                    IMetadataTable newTable = (IMetadataTable) result.getParameter();
-                    // node.getMetadataFromConnector(newTable.getAttachedConnector()).setListColumns(newTable.getListColumns());
-                    if (newTable != null) {
-                        for (INodeConnector nodeConnector : node.getListConnector()) {
-                            if (nodeConnector.getBaseSchema().equals(newTable.getAttachedConnector())) {
-                                IElementParameter param = node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
-                                if (param != null) {
-                                    ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, param, null, newTable);
-                                    cmd.setRepositoryMode(true);
-                                    cmd.execute(true);
-                                } else {
-                                    MetadataTool.copyTable(newTable, node.getMetadataFromConnector(nodeConnector.getName()));
+                    if (result.getParameter() instanceof IMetadataTable) {
+                        IMetadataTable newTable = (IMetadataTable) result.getParameter();
+                        // node.getMetadataFromConnector(newTable.getAttachedConnector()).setListColumns(newTable.
+                        // getListColumns());
+                        if (newTable != null) {
+                            for (INodeConnector nodeConnector : node.getListConnector()) {
+                                if (nodeConnector.getBaseSchema().equals(newTable.getAttachedConnector())) {
+                                    IElementParameter param = node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
+                                    if (param != null) {
+                                        ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, param, null, newTable);
+                                        cmd.setRepositoryMode(true);
+                                        cmd.execute(true);
+                                    } else {
+                                        MetadataTool.copyTable(newTable, node.getMetadataFromConnector(nodeConnector.getName()));
+                                    }
                                 }
                             }
+                            builtIn = false;
                         }
-                        builtIn = false;
                     }
                 }
             } else if (result.getResultType() == EUpdateResult.RENAME) {
@@ -204,7 +244,9 @@ public class UpdateNodeParameterCommand extends Command {
             }
             if (builtIn) { // built-in
                 node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
-
+                for (IElementParameter param : node.getElementParameters()) {
+                    SAPParametersUtils.setNoRepositoryParams(param);
+                }
             }
         }
     }
@@ -245,5 +287,5 @@ public class UpdateNodeParameterCommand extends Command {
             }
         }
     }
-    
+
 }

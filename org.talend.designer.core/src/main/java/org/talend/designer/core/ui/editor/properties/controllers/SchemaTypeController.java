@@ -65,6 +65,7 @@ import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.cmd.RepositoryChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.utils.SAPParametersUtils;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
@@ -773,7 +774,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
             IElementParameter schemaParam = elem.getElementParameter(paramName);
 
             RepositoryReviewDialog dialog = new RepositoryReviewDialog(button.getShell(),
-                    ERepositoryObjectType.METADATA_CON_TABLE, schemaParam.getFilter());
+                    ERepositoryObjectType.METADATA_SAP_FUNCTION, schemaParam.getFilter());
             if (dialog.open() == RepositoryReviewDialog.OK) {
                 RepositoryNode node = dialog.getResult();
                 while (node.getObject().getProperty().getItem() == null
@@ -797,6 +798,15 @@ public class SchemaTypeController extends AbstractRepositoryController {
                     IMetadataTable repositoryMetadata = MetadataTool.getMetadataFromRepository(value);
                     connection = MetadataTool.getConnectionFromRepository(value);
 
+                    // For SAP see bug 5423
+                    if (((Node) elem).getUniqueName().startsWith("tSAP")) {
+                        Node sapNode = (Node) elem;
+                        String functionName = repositoryMetadata.getLabel();
+                        for (IElementParameter param : sapNode.getElementParameters()) {
+                            SAPParametersUtils.retrieveSAPParams(elem, connection, param, functionName);
+                        }
+                    }
+
                     if (repositoryMetadata == null) {
                         repositoryMetadata = new MetadataTable();
                     }
@@ -808,7 +818,6 @@ public class SchemaTypeController extends AbstractRepositoryController {
                     changeMetadataCommand.setConnection(connection);
 
                     return changeMetadataCommand;
-
                 }
 
             }

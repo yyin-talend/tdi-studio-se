@@ -68,6 +68,7 @@ public class UpdateLabelProvider implements ITableLabelProvider {
                     case NODE_PROPERTY:
                     case NODE_SCHEMA:
                     case NODE_QUERY:
+                    case NODE_SAP_FUNCTION:
                     case JOBLET_SCHEMA:
                     case JOBLET_RENAMED:
                     case RELOAD:
