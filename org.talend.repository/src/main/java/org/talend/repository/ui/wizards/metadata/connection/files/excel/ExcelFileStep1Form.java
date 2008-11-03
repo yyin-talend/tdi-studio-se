@@ -405,28 +405,57 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
 
             public void modifyText(final ModifyEvent e) {
                 if (!isContextMode()) {
-                    readAndViewExcelFile();
-                    getConnection().setSelectAllSheets(false);
-                    if (getConnection().getSheetList() != null) {
-                        getConnection().getSheetList().clear();
+                    if (isVisible()) {
+                        readAndViewExcelFile();
+                        reserverSelectedSheets();
+                        checkFieldsValue();
                     }
-                    checkFieldsValue();
                 }
             }
 
         });
 
-        sheetsCombo.addModifyListener(new ModifyListener() {
+        sheetsCombo.getCombo().addSelectionListener(new SelectionAdapter() {
 
-            public void modifyText(ModifyEvent e) {
-                String sheet = sheetsCombo.getText().trim();
-                viewExcel(sheet);
-                sheetNameOk = true;
-                checkFieldsValue();
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                if (isVisible()) {
+                    String sheet = sheetsCombo.getText().trim();
+                    viewExcel(sheet);
+                    sheetNameOk = true;
+                    checkFieldsValue();
+                }
             }
-
         });
+    }
 
+    /**
+     * DOC YeXiaowei Comment method "reserverSelectedSheets".
+     */
+    private void reserverSelectedSheets() {
+        if (!getConnection().isSelectAllSheets()) {
+            ArrayList<?> sheetList = getConnection().getSheetList();
+            List<String> removed = new ArrayList<String>();
+            if (sheetList != null && !sheetList.isEmpty()) {
+                for (int i = 0; i < sheetList.size(); i++) {
+                    String curSheet = (String) sheetList.get(i);
+                    boolean needRemove = true;
+                    for (String sheet : allsheets) {
+                        if (curSheet.equals(sheet)) {
+                            needRemove = false;
+                            break;
+                        }
+                    }
+                    if (needRemove) {
+                        removed.add(curSheet);
+                    }
+                }
+
+                if (!removed.isEmpty()) {
+                    sheetList.removeAll(removed);
+                }
+            }
+        }
     }
 
     /**
@@ -506,11 +535,11 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
 
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 
-                    monitor.beginTask("Excel Preview...", IProgressMonitor.UNKNOWN);
+                    monitor.beginTask("Excel Preview", IProgressMonitor.UNKNOWN);
 
                     getConnection().setSheetName(sheetName);
 
-                    Display.getDefault().asyncExec(new Runnable() {
+                    Display.getDefault().syncExec(new Runnable() {
 
                         public void run() {
 
@@ -539,12 +568,9 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
                                 TableColumn tableColumn = new TableColumn(viewer.getTable(), SWT.NONE);
                                 tableColumn.setText(name);
                                 tableColumn.setWidth(60);
-                                // tableColumn.pack();
                             }
-
                             viewer.setInput(input);
                         }
-
                     });
 
                     monitor.done();
@@ -664,12 +690,9 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
     }
 
     /**
-     * 
-     * Initialize value, forceFocus first field.
+     * DOC YeXiaowei Comment method "initAllParameters".
      */
-    @Override
-    protected void initialize() {
-
+    private void initAllParameters() {
         if (getConnection().getServer() == null) {
             serverCombo.select(0);
             getConnection().setServer(serverCombo.getText());
@@ -691,10 +714,14 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
 
         String sheetName = getConnection().getSheetName();
         if (sheetName != null && !sheetName.equals("")) {
-            sheetsCombo.setText(sheetName.replace("\\\\", "\\"));
+            sheetName = sheetName.replace("\\\\", "\\");
+            for (int i = 0; i < sheetsCombo.getCombo().getItems().length; i++) {
+                if (sheetName.equals(sheetsCombo.getCombo().getItems()[i])) {
+                    sheetsCombo.select(i);
+                    break;
+                }
+            }
         }
-        adaptFormToEditable();
-        readAndViewExcelFile();
     }
 
     /**
@@ -713,6 +740,7 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
                 sheetViewer.setChecked(node, true);
             }
         }
+        sheetViewer.expandAll();
     }
 
     public void setVisible(boolean visible) {
@@ -720,17 +748,11 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
         if (isReadOnly() != readOnly) {
             adaptFormToReadOnly();
         }
-
-        if (sheetViewer != null) {
-            sheetViewer.expandAll();
-            initTreeSelectStates();
-        }
-
         if (visible) {
-            initialize();
-            fillSheetList();
+            initAllParameters();
+            initTreeSelectStates();
+            checkFieldsValue();
         }
-        checkFieldsValue();
     }
 
     @Override
@@ -795,6 +817,16 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
         public void setChildren(List<SheetNode> children) {
             this.children = children;
         }
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.swt.utils.AbstractForm#initialize()
+     */
+    @Override
+    protected void initialize() {
 
     }
 }

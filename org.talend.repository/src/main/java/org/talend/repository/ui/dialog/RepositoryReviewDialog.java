@@ -126,9 +126,15 @@ public class RepositoryReviewDialog extends Dialog {
         if (type == ERepositoryObjectType.METADATA_CON_TABLE) {
             return new SchemaTypeProcessor(repositoryType);
         }
+
         if (type == ERepositoryObjectType.METADATA_CON_QUERY) {
             return new QueryTypeProcessor(repositoryType);
         }
+
+        if (type == ERepositoryObjectType.METADATA_SAP_FUNCTION) {
+            return new SAPFunctionProcessor(repositoryType);
+        }
+
         throw new IllegalArgumentException("illegal argument:" + type);
     }
 
@@ -706,9 +712,7 @@ class SchemaTypeProcessor implements ITypeProcessor {
             container.add(contentProvider.getMetadataGenericSchemaNode());
             container.add(contentProvider.getMetadataLDAPSchemaNode());
             container.add(contentProvider.getMetadataWSDLSchemaNode());
-            // Salesforce metadata node is not exist in Perl Project.
             container.add(contentProvider.getMetadataSalesforceSchemaNode());
-            // For sap
             container.add(contentProvider.getMetadataSAPConnectionNode());
 
             container.add(contentProvider.getMetadataConNode());
@@ -751,10 +755,7 @@ class SchemaTypeProcessor implements ITypeProcessor {
                         refContainer.add(refProject.getMetadataGenericSchemaNode());
                         refContainer.add(refProject.getMetadataLDAPSchemaNode());
                         refContainer.add(refProject.getMetadataWSDLSchemaNode());
-                        // Salesforce metadata node is not exist in Perl Project.
                         refContainer.add(refProject.getMetadataSalesforceSchemaNode());
-
-                        // for sap
                         refContainer.add(contentProvider.getMetadataSAPConnectionNode());
 
                         refContainer.add(refProject.getMetadataConNode());
@@ -817,6 +818,72 @@ class SchemaTypeProcessor implements ITypeProcessor {
             }
         };
     }
+}
+
+/**
+ * xye TypeProcessor for Query. <br/>
+ * 
+ * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ææäº, 29 ä¹æ 2006) nrousseau $
+ * 
+ */
+class SAPFunctionProcessor implements ITypeProcessor {
+
+    String repositoryType;
+
+    /**
+     * bqian RepositoryTypeProcessor constructor comment.
+     * 
+     * @param repositoryType
+     */
+    public SAPFunctionProcessor(String repositoryType) {
+        this.repositoryType = repositoryType;
+    }
+
+    public RepositoryNode getInputRoot(RepositoryContentProvider contentProvider) {
+        RepositoryNode metadataConNode = contentProvider.getMetadataSAPConnectionNode();
+        // referenced project.
+        if (contentProvider.getReferenceProjectNode() != null) {
+            List<RepositoryNode> refProjects = contentProvider.getReferenceProjectNode().getChildren();
+            if (refProjects != null && !refProjects.isEmpty()) {
+
+                List<RepositoryNode> nodesList = new ArrayList<RepositoryNode>();
+
+                for (RepositoryNode repositoryNode : refProjects) {
+                    ProjectRepositoryNode refProject = (ProjectRepositoryNode) repositoryNode;
+
+                    ProjectRepositoryNode newProject = new ProjectRepositoryNode(refProject);
+
+                    newProject.getChildren().add(refProject.getMetadataSAPConnectionNode());
+
+                    nodesList.add(newProject);
+                }
+                metadataConNode.getChildren().addAll(nodesList);
+            }
+        }
+        return metadataConNode;
+    }
+
+    public boolean isSelectionValid(RepositoryNode node) {
+        if (node.getObject().getType() == ERepositoryObjectType.METADATA_SAP_FUNCTION) {
+            return true;
+        }
+        return false;
+    }
+
+    public ViewerFilter makeFilter() {
+        return new ViewerFilter() {
+
+            @Override
+            public boolean select(Viewer viewer, Object parentElement, Object element) {
+                RepositoryNode node = (RepositoryNode) element;
+                if (node.getObject() != null && (node.getObject() instanceof MetadataTable)) {
+                    return false;
+                }
+                return true;
+            }
+        };
+    }
+
 }
 
 /**
