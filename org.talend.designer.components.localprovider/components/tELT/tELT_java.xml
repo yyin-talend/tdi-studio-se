@@ -127,7 +127,7 @@
 		<PARAMETER 
 			NAME="CONNECTION_PARACCEL" 
 			FIELD="COMPONENT_LIST"
-			FILTER="REGEXP:^tParaccelConnection|tJDBCConnection$" 
+			FILTER="REGEXP:^tParAccelConnection|tJDBCConnection$" 
 			NUM_ROW="3"
 			SHOW_IF="DBTYPE=='PARACCEL'" 
 		/>		
