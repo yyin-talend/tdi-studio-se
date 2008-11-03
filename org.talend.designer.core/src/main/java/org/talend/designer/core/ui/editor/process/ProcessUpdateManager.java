@@ -54,6 +54,7 @@ import org.talend.core.model.update.EUpdateResult;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.update.UpdatesConstants;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -65,8 +66,7 @@ import org.talend.designer.core.ui.editor.update.UpdateCheckResult;
 import org.talend.designer.core.ui.editor.update.UpdateManagerUtils;
 import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.model.ComponentsFactoryProvider;
-
-import org.talend.designer.core.i18n.Messages;
+import org.talend.repository.ui.utils.ConnectionContextHelper;
 
 /**
  * ggu class global comment. Detailled comment
@@ -234,7 +234,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                         if (!isOpenedProcess(getProcess())) {
                             result.setItemProcess(getProcess());
                         }
-                        
+
                         setConfigrationForReadOnlyJob(result);
                         contextResults.add(result);
                     }
@@ -424,7 +424,12 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                 param.setReadOnly(true);
                             }
                         }
-
+                        // for context mode(bug 5198)
+                        List<UpdateResult> contextResults = checkParameterContextMode(getProcess().getElementParameters(),
+                                (ConnectionItem) lastVersion.getProperty().getItem(), category);
+                        if (contextResults != null) {
+                            jobSettingsResults.addAll(contextResults);
+                        }
                     } else {
                         result = new UpdateCheckResult(getProcess());
                         result.setResult(type, EUpdateResult.BUIL_IN);
@@ -697,12 +702,17 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                             param.setReadOnly(true);
                         }
                     }
-
+                    // for context mode(bug 5198)
+                    List<UpdateResult> contextResults = checkParameterContextMode(node.getElementParameters(),
+                            (ConnectionItem) lastVersion.getProperty().getItem(), null);
+                    if (contextResults != null) {
+                        propertiesResults.addAll(contextResults);
+                    }
                 } else {
                     result = new UpdateCheckResult(node);
                     result.setResult(EUpdateItemType.NODE_PROPERTY, EUpdateResult.BUIL_IN);
                 }
-                
+
                 // add the check result to resultList, hold the value.
                 if (result != null) {
                     result.setJob(getProcess());
@@ -712,6 +722,44 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
             }
         }
         return propertiesResults;
+    }
+
+    /**
+     * ggu Comment method "checkParameterContextMode".
+     * 
+     * for bug 5198
+     */
+    private List<UpdateResult> checkParameterContextMode(final List<? extends IElementParameter> parameters,
+            ConnectionItem connItem, EComponentCategory category) {
+        List<UpdateResult> contextResults = new ArrayList<UpdateResult>();
+
+        if (connItem != null && parameters != null) {
+            ConnectionContextHelper.checkContextMode(connItem);
+            Connection connection = connItem.getConnection();
+            if (connection.isContextMode()) {
+                Set<String> neededVars = ConnectionContextHelper.retrieveContextVar(parameters, connection, category);
+                if (neededVars != null && !neededVars.isEmpty()) {
+                    ContextItem contextItem = ContextUtils.getContextItemById(connection.getContextId());
+                    if (contextItem != null) {
+                        // find added variables
+                        Set<String> addedVars = ConnectionContextHelper.checkAndAddContextVariables(contextItem, neededVars,
+                                process.getContextManager(), false);
+                        if (addedVars != null && !addedVars.isEmpty()) {
+                            UpdateCheckResult result = new UpdateCheckResult(addedVars);
+                            String remark = UpdateRepositoryUtils.getRepositorySourceName(connItem);
+                            result.setResult(EUpdateItemType.CONTEXT, EUpdateResult.ADD, contextItem, remark
+                                    + UpdatesConstants.CONTEXT_MODE);
+                            result.setJob(getProcess());
+                            result.setContextModeConnectionItem(connItem);
+                            setConfigrationForReadOnlyJob(result);
+                            contextResults.add(result);
+
+                        }
+                    }
+                }
+            }
+        }
+        return contextResults;
     }
 
     /*
@@ -763,7 +811,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                     result = new UpdateCheckResult(node);
                     result.setResult(EUpdateItemType.NODE_QUERY, EUpdateResult.BUIL_IN);
                 }
-               
+
                 if (result != null) {
                     result.setJob(getProcess());
                     setConfigrationForReadOnlyJob(result);
@@ -1022,7 +1070,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
     }
 
     private void setConfigrationForReadOnlyJob(UpdateCheckResult result) {
-        if (this.process!=null && this.process.isReadOnly()) {
+        if (this.process != null && this.process.isReadOnly()) {
             result.setChecked(false);
             result.setRemark(Messages.getString("ProcessUpdateManager.ReadOnlyProcessUpdateWarningMessages"));
             result.setReadOnlyProcess(true);

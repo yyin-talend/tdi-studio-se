@@ -19,11 +19,14 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
@@ -42,33 +45,33 @@ public class ShowAddedContextdialog extends SelectionDialog {
 
     private List<String> contextList = new ArrayList<String>();
 
+    private boolean checked = true;
+
     public ShowAddedContextdialog(Map<String, Set<String>> addedVarsMap) {
         super(PlatformUI.getWorkbench().getDisplay().getActiveShell());
         Assert.isNotNull(addedVarsMap);
         for (String lable : addedVarsMap.keySet()) {
             contextList.addAll(addedVarsMap.get(lable));
         }
-        Collections.sort(contextList);
-        setShellStyle(getShellStyle() | SWT.RESIZE);
-        setBlockOnOpen(true);
-        setDefaultImage(ImageProvider.getImage(ECoreImage.CONTEXT_ICON));
-        setTitle(TITILE);
-        String label = "";
+        String label = ""; //$NON-NLS-1$
         for (String source : addedVarsMap.keySet()) {
-            label += source + "/";
+            label += source + "/"; //$NON-NLS-1$
         }
         if (label.length() > 1) {
             label = label.substring(0, label.length() - 1);
         }
-        setMessage(Messages.getString("ShowAddedContextdialog.Messages", label)); //$NON-NLS-1$
-        setHelpAvailable(false);
 
+        init(label);
     }
 
     public ShowAddedContextdialog(Set<String> contextSet, final String label) {
         super(PlatformUI.getWorkbench().getDisplay().getActiveShell());
         Assert.isNotNull(contextSet);
         this.contextList.addAll(contextSet);
+        init(label);
+    }
+
+    private void init(String label) {
         Collections.sort(contextList);
         setShellStyle(getShellStyle() | SWT.RESIZE);
         setBlockOnOpen(true);
@@ -83,6 +86,8 @@ public class ShowAddedContextdialog extends SelectionDialog {
         Composite composite = (Composite) super.createDialogArea(parent);
         composite.setFont(parent.getFont());
         createMessageArea(composite);
+
+        //
         Group inner = new Group(composite, SWT.NONE);
         inner.setText(Messages.getString("ShowAddedContextdialog.Variables")); //$NON-NLS-1$
         inner.setFont(composite.getFont());
@@ -96,12 +101,45 @@ public class ShowAddedContextdialog extends SelectionDialog {
         listViewer.add(contextList.toArray());
 
         listViewer.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
+        // option
 
+        final Button checkBtn = new Button(inner, SWT.CHECK);
+        checkBtn.setText(Messages.getString("ShowAddedContextdialog.CheckLabel")); //$NON-NLS-1$
+        checkBtn.setSelection(checked);
+
+        checkBtn.addSelectionListener(new SelectionAdapter() {
+
+            public void widgetSelected(SelectionEvent e) {
+                checked = checkBtn.getSelection();
+                if (!checked) {
+                    String messages = Messages.getString("ShowAddedContextdialog.CheckWarningMessages"); //$NON-NLS-1$
+                    MessageDialog.openWarning(getParentShell(), Messages.getString("ShowAddedContextdialog.CheckWarningTitile"), //$NON-NLS-1$
+                            messages);
+                    checkBtn.setToolTipText(messages); //$NON-NLS-1$
+
+                } else {
+                    checkBtn.setToolTipText(""); //$NON-NLS-1$
+                }
+                //
+                Button okBtn = getOkButton();
+                if (okBtn != null) {
+                    okBtn.setEnabled(checked);
+                }
+            }
+        });
         return composite;
     }
 
     @Override
     protected void createButtonsForButtonBar(Composite parent) {
-        createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
+        super.createButtonsForButtonBar(parent);
+        if (getOkButton() != null) {
+            getOkButton().setText(Messages.getString("ShowAddedContextdialog.AddLabel")); //$NON-NLS-1$
+        }
     }
+
+    public boolean isChecked() {
+        return this.checked;
+    }
+
 }

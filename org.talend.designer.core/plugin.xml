@@ -63,12 +63,6 @@
             id="org.talend.designer.core.ui.preferences.DesignerColorsPreferencePage"
             name="Colors">
       </page>
-      <page
-            category="org.talend.designer.core.ui.preferences.TalendPreferencePage"
-            class="org.talend.designer.core.ui.preferences.DesignerContextPreferencePage"
-            id="org.talend.designer.core.ui.preferences.designer.context"
-            name="Context">
-      </page>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">

@@ -29,7 +29,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.core.CorePlugin;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.context.ContextUtils;
 import org.talend.core.model.context.JobContextParameter;
@@ -68,7 +67,6 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.utils.ContextParameterUtils;
-import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.RepositoryPlugin;
@@ -379,7 +377,7 @@ public final class ConnectionContextHelper {
      * 
      * ggu Comment method "processContextForJob".
      * 
-     * for DND repository node.
+     * @ignoreContextMode if true, only work for jobtemplate plugin(so far).
      */
     public static void addContextForNodeParameter(final INode node, final ConnectionItem connItem, final boolean ignoreContextMode) {
         if (node == null || connItem == null) {
@@ -424,13 +422,7 @@ public final class ConnectionContextHelper {
         if (connItem == null || elementParameters == null || process == null) {
             return;
         }
-        if (!ignoreContextMode) {
-            boolean auto = Boolean.parseBoolean(CorePlugin.getDefault().getDesignerCoreService().getPreferenceStore(
-                    ITalendCorePrefConstants.METADATA_AUTO_IMPORT_CONTEXT));
-            if (!auto) {
-                return;
-            }
-        }
+
         Connection connection = connItem.getConnection();
         if (connection != null && connection.isContextMode()) {
             // get the context variables from the node parameters.
@@ -438,16 +430,26 @@ public final class ConnectionContextHelper {
             if (neededVars != null && !neededVars.isEmpty()) {
                 ContextItem contextItem = ContextUtils.getContextItemById(connection.getContextId());
                 if (contextItem != null) {
-                    // add needed vars into job
-                    Set<String> addedVars = addContextVarForJob(process, contextItem, neededVars);
+                    // find added variables
+                    Set<String> addedVars = checkAndAddContextVariables(contextItem, neededVars, process.getContextManager(),
+                            false);
                     if (addedVars != null && !addedVars.isEmpty()) {
-                        // refresh context view
-                        RepositoryPlugin.getDefault().getDesignerCoreService().switchToCurContextsView();
-                        if (!ignoreContextMode) {
+                        boolean added = false;
+                        if (ignoreContextMode) {
+                            addContextVarForJob(process, contextItem, addedVars);
+                            added = true;
+                        } else {
                             // show
                             ShowAddedContextdialog showDialog = new ShowAddedContextdialog(addedVars, UpdateRepositoryUtils
                                     .getRepositorySourceName(connItem));
-                            showDialog.open();
+                            if (showDialog.open() == Window.OK && showDialog.isChecked()) {
+                                addContextVarForJob(process, contextItem, addedVars);
+                                added = true;
+                            }
+                        }
+                        // refresh context view
+                        if (added) {
+                            RepositoryPlugin.getDefault().getDesignerCoreService().switchToCurContextsView();
                         }
                     }
                 }
@@ -464,11 +466,6 @@ public final class ConnectionContextHelper {
      */
     public static void checkNodesPropertiesForAddedContextMode(final IProcess2 process) {
         if (process == null) {
-            return;
-        }
-        boolean auto = Boolean.parseBoolean(CorePlugin.getDefault().getDesignerCoreService().getPreferenceStore(
-                ITalendCorePrefConstants.METADATA_AUTO_IMPORT_CONTEXT));
-        if (!auto) {
             return;
         }
 
@@ -489,7 +486,8 @@ public final class ConnectionContextHelper {
                     ContextItem contextItem = ContextUtils.getContextItemById(connItem.getConnection().getContextId());
                     if (contextItem != null) {
                         // add needed vars into job
-                        Set<String> addedVars = addContextVarForJob(process, contextItem, varsMap.get(id));
+                        Set<String> addedVars = checkAndAddContextVariables(contextItem, varsMap.get(id), process
+                                .getContextManager(), false);
                         if (addedVars != null && !addedVars.isEmpty()) {
                             String source = UpdateRepositoryUtils.getRepositorySourceName(connItem);
                             addedVarsMap.put(source, addedVars);
@@ -498,11 +496,30 @@ public final class ConnectionContextHelper {
                 }
             }
             if (!addedVarsMap.isEmpty()) {
-                // refresh context view
-                RepositoryPlugin.getDefault().getDesignerCoreService().switchToCurContextsView();
                 // show
                 ShowAddedContextdialog showDialog = new ShowAddedContextdialog(addedVarsMap);
-                showDialog.open();
+                if (showDialog.open() == Window.OK && showDialog.isChecked()) {
+                    boolean added = false;
+                    for (String id : varsMap.keySet()) {
+                        ConnectionItem connItem = UpdateRepositoryUtils.getConnectionItemByItemId(id);
+                        if (connItem != null) {
+                            String source = UpdateRepositoryUtils.getRepositorySourceName(connItem);
+                            if (addedVarsMap.containsKey(source)) {
+                                ContextItem contextItem = ContextUtils
+                                        .getContextItemById(connItem.getConnection().getContextId());
+                                if (contextItem != null) {
+                                    addContextVarForJob(process, contextItem, addedVarsMap.get(source));
+                                    added = true;
+                                }
+                            }
+                        }
+                    }
+
+                    // refresh context view
+                    if (added) {
+                        RepositoryPlugin.getDefault().getDesignerCoreService().switchToCurContextsView();
+                    }
+                }
             }
         }
     }
@@ -557,7 +574,7 @@ public final class ConnectionContextHelper {
         }
     }
 
-    private static Set<String> retrieveContextVar(List<? extends IElementParameter> elementParameters, Connection connection,
+    public static Set<String> retrieveContextVar(List<? extends IElementParameter> elementParameters, Connection connection,
             EComponentCategory category) {
         if (elementParameters == null || connection == null) {
             return null;
@@ -583,11 +600,10 @@ public final class ConnectionContextHelper {
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    private static Set<String> addContextVarForJob(IProcess2 process, final ContextItem contextItem, final Set<String> neededVars) {
-        if (process == null || contextItem == null || neededVars == null || neededVars.isEmpty()) {
-            return null;
+    private static void addContextVarForJob(IProcess2 process, final ContextItem contextItem, final Set<String> addedVars) {
+        if (process == null || contextItem == null || addedVars == null || addedVars.isEmpty()) {
+            return;
         }
-        final Set<String> addedVars = new HashSet<String>();
         final IContextManager contextManager = process.getContextManager();
         if (contextManager != null) {
             CommandStack commandStack = process.getCommandStack();
@@ -596,31 +612,7 @@ public final class ConnectionContextHelper {
 
                 @Override
                 public void execute() {
-                    for (IContext context : contextManager.getListContext()) {
-
-                        ContextType type = ContextUtils.getContextTypeByName(contextItem.getContext(), context.getName(),
-                                contextItem.getDefaultContext());
-                        if (type != null) {
-                            for (String var : neededVars) {
-                                if (context.getContextParameter(var) != null) {
-                                    continue;
-                                }
-                                ContextParameterType param = ContextUtils.getContextParameterTypeByName(type, var);
-                                if (param != null) {
-                                    //
-                                    JobContextParameter contextParam = new JobContextParameter();
-
-                                    ContextUtils.updateParameter(param, contextParam);
-
-                                    contextParam.setSource(contextItem.getProperty().getLabel());
-                                    contextParam.setContext(context);
-
-                                    context.getContextParameterList().add(contextParam);
-                                    addedVars.add(var);
-                                }
-                            }
-                        }
-                    }
+                    checkAndAddContextVariables(contextItem, addedVars, contextManager, true);
                 }
             };
 
@@ -628,6 +620,41 @@ public final class ConnectionContextHelper {
                 cmd.execute();
             } else {
                 commandStack.execute(cmd);
+            }
+        }
+    }
+
+    /**
+     * ggu Comment method "checkAndAddContextVariables".
+     */
+    public static Set<String> checkAndAddContextVariables(final ContextItem contextItem, final Set<String> neededVars,
+            final IContextManager contextManager, boolean added) {
+        Set<String> addedVars = new HashSet<String>();
+        for (IContext context : contextManager.getListContext()) {
+
+            ContextType type = ContextUtils.getContextTypeByName(contextItem.getContext(), context.getName(), contextItem
+                    .getDefaultContext());
+            if (type != null) {
+                for (String var : neededVars) {
+                    if (context.getContextParameter(var) != null) {
+                        continue;
+                    }
+                    ContextParameterType param = ContextUtils.getContextParameterTypeByName(type, var);
+                    if (param != null) {
+                        //
+                        if (added) {
+                            JobContextParameter contextParam = new JobContextParameter();
+
+                            ContextUtils.updateParameter(param, contextParam);
+
+                            contextParam.setSource(contextItem.getProperty().getLabel());
+                            contextParam.setContext(context);
+
+                            context.getContextParameterList().add(contextParam);
+                        }
+                        addedVars.add(var);
+                    }
+                }
             }
         }
         return addedVars;

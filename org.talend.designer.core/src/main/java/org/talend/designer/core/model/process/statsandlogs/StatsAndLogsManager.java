@@ -24,6 +24,7 @@ import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
@@ -750,6 +751,9 @@ public class StatsAndLogsManager {
             if (str.contains("'")) { //$NON-NLS-1$
                 return str;
             }
+        }
+        if (ContextParameterUtils.containContextVariables(str)) {
+            return str;
         }
         return TalendTextUtils.addQuotes(str);
     }

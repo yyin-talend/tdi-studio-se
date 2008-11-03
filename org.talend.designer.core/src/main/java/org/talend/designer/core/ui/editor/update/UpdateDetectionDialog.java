@@ -12,8 +12,11 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.update;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
@@ -33,6 +36,9 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.dialogs.SelectionDialog;
 import org.eclipse.ui.internal.WorkbenchMessages;
+import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.update.EUpdateItemType;
+import org.talend.core.model.update.EUpdateResult;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.update.UpdatesConstants;
 import org.talend.designer.core.i18n.Messages;
@@ -53,8 +59,9 @@ public class UpdateDetectionDialog extends SelectionDialog {
     private static final String DEFAULT_MESSAGE = Messages.getString("UpdateDetectionDialog.Messages"); //$NON-NLS-1$
 
     private static final String WARNING_MESSAGE = Messages.getString("UpdateDetectionDialog.WarningMessage"); //$NON-NLS-1$
-    
-    private static final String READ_ONLY_JOB_WARNING_MESSAGE = Messages.getString("ProcessUpdateManager.ReadOnlyProcessUpdateWarningMessages"); //$NON-NLS-1$
+
+    private static final String READ_ONLY_JOB_WARNING_MESSAGE = Messages
+            .getString("ProcessUpdateManager.ReadOnlyProcessUpdateWarningMessages"); //$NON-NLS-1$
 
     // sizing constants
     private static final int SIZING_SELECTION_WIDGET_HEIGHT = 400;
@@ -92,10 +99,12 @@ public class UpdateDetectionDialog extends SelectionDialog {
 
     public UpdateDetectionDialog(Shell parentShell, List<UpdateResult> input, String message) {
         super(parentShell);
+        Assert.isNotNull(input);
         setHelpAvailable(false);
         setTitle(UpdatesConstants.EMPTY);
         setShellStyle(SWT.TITLE | SWT.RESIZE | SWT.APPLICATION_MODAL | getDefaultOrientation());
         inputElement = input;
+        removeDuplication();
         if (message != null) {
             setMessage(message);
         } else {
@@ -103,6 +112,40 @@ public class UpdateDetectionDialog extends SelectionDialog {
         }
         helper = new UpdateViewerHelper(this);
         checkInitialSelections();
+    }
+
+    /**
+     * 
+     * ggu Comment method "removeDuplication".
+     * 
+     * for context mode
+     */
+    private void removeDuplication() {
+        // context mode added
+        List<UpdateResult> contextResult = new ArrayList<UpdateResult>();
+        for (UpdateResult result : getInputElements()) {
+            if (result.getUpdateType() == EUpdateItemType.CONTEXT && result.getResultType() == EUpdateResult.ADD
+                    && result.getContextModeConnectionItem() != null) {
+                contextResult.add(result);
+            }
+        }
+        // filter
+        List<ConnectionItem> connItems = new ArrayList<ConnectionItem>();
+        List<UpdateResult> duplicatedResult = new ArrayList<UpdateResult>();
+        Iterator<UpdateResult> iterator = contextResult.iterator();
+        while (iterator.hasNext()) {
+            UpdateResult result = iterator.next();
+            ConnectionItem item = result.getContextModeConnectionItem();
+            if (item != null) {
+                if (connItems.contains(item)) { // duplicate
+                    duplicatedResult.add(result);
+                } else {
+                    connItems.add(item);
+                }
+            }
+        }
+        // remove
+        getInputElements().removeAll(duplicatedResult);
     }
 
     protected UpdateViewerHelper getViewerHelper() {
@@ -379,6 +422,6 @@ public class UpdateDetectionDialog extends SelectionDialog {
     public void updateReadOnlyJobWarnMessage() {
         imageLabe.setVisible(true);
         messLabel.setText(READ_ONLY_JOB_WARNING_MESSAGE);
-        
+
     }
 }

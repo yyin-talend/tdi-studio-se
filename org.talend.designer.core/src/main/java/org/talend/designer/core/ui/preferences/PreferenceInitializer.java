@@ -25,7 +25,6 @@ import org.talend.commons.CommonsPlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.utils.DesignerColorUtils;
 import org.talend.core.model.utils.TalendTextUtils;
-import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -115,6 +114,5 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
             DesignerColorUtils.initPreferenceDefault(store);
         }
 
-        store.setDefault(ITalendCorePrefConstants.METADATA_AUTO_IMPORT_CONTEXT, false);
     }
 }
