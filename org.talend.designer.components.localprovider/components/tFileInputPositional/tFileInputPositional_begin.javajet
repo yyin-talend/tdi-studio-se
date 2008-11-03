@@ -63,8 +63,8 @@
         	String dieOnErrorStr = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
     		boolean dieOnError = (dieOnErrorStr!=null&&!dieOnErrorStr.equals(""))?dieOnErrorStr.equals("true"):false;
     		
-    		//if support a row with huge characters, the property (SafetySwitch) should be to send false
-    		boolean isSupportHugeCharacters = (ElementParameterParser.getValue(node, "__SUPPORT_HUGE_CHARACTERS__").equals("true")) ^ true;    		
+    		//need to process rows longger than 100 000 characters, the property (SafetySwitch) should be to send false
+    		boolean bOpenSafetySwitch = (ElementParameterParser.getValue(node, "__SAFETY_SWITCH__").equals("true"));
     		String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
     		boolean advancedSeparator = (advancedSeparatorStr!=null&&!advancedSeparatorStr.equals(""))?advancedSeparatorStr.equals("true"):false;
     		String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
@@ -168,7 +168,7 @@ org.talend.fileprocess.delimited.RowParser reader_<%=cid %> = new org.talend.fil
 <%
 			}
 %>
-reader_<%=cid %>.setSafetySwitch(<%=isSupportHugeCharacters%>);
+reader_<%=cid %>.setSafetySwitch(<%=bOpenSafetySwitch%>);
 reader_<%=cid %>.skipHeaders(<%=header %>);
 if(footer_<%=cid %> > 0){
 	int available_<%=cid %> = (int)reader_<%=cid %>.getAvailableRowCount(footer_<%=cid %>);
@@ -345,7 +345,7 @@ while (reader_<%=cid %>.readRecord()) {
 <%
 					if(positions[i].equals("*")){
 %>
-        			substringEnd<%=cid %>=row_<%=cid %>.length();
+        			 
 <%
 					} else{
 %>
@@ -374,10 +374,10 @@ while (reader_<%=cid %>.readRecord()) {
 	///////////////
 	} else{
 	%>		
-		String arrFieldSeparator<%=cid%>[] = <%=positions[0]%>.split(",");		
+		String arrFieldSeparator<%=cid%>[] = <%=positions[0]%>.split(",");			
 		
 		for (int i = 0; i < <%=metadata.getListColumns().size()%>; i++) {
-			if (i > arrFieldSeparator<%=cid%>.length ){
+			if (i >= arrFieldSeparator<%=cid%>.length ){
 				columnValue<%=cid %>[i]="";
 				continue;
 			}
@@ -385,12 +385,20 @@ while (reader_<%=cid %>.readRecord()) {
 		    if (substringBegin<%=cid %> >= row_<%=cid %>.length()) {
 		    	columnValue<%=cid %>[i] = "";
 		    } else{
+		    
+				if (arrFieldSeparator<%=cid%>[i].equals("*")){
+					substringEnd<%=cid %> = row_<%=cid %>.length();
+				} else{
+	    			substringEnd<%=cid %> = substringEnd<%=cid %> + Integer.parseInt(arrFieldSeparator<%=cid%>[i]);
+			        if(substringEnd<%=cid %> > row_<%=cid %>.length())
+			        	substringEnd<%=cid %> = row_<%=cid %>.length();
+				}
 				
-    			substringEnd<%=cid %> = substringEnd<%=cid %> + Integer.parseInt(arrFieldSeparator<%=cid%>[i]);
-		        if(substringEnd<%=cid %> > row_<%=cid %>.length())
-		        	substringEnd<%=cid %> = row_<%=cid %>.length();
-							
-	        	columnValue<%=cid %>[i] = row_<%=cid %>.substring(substringBegin<%=cid %>, substringEnd<%=cid %>);
+	        	columnValue<%=cid %>[i] = row_<%=cid %>.substring(substringBegin<%=cid %>, substringEnd<%=cid %>);	
+	        	
+	        	if (<%=isTrimAll%>)
+	        		columnValue<%=cid %>[i] = columnValue<%=cid %>[i].trim();
+	        	
 	        	substringBegin<%=cid %> = substringEnd<%=cid %>;
 	        }
 		}
