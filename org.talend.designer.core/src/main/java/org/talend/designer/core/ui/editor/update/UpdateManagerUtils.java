@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.core.CorePlugin;
@@ -58,6 +59,8 @@ import org.talend.designer.core.ui.views.properties.ComponentSettings;
 import org.talend.designer.joblet.model.JobletProcess;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.model.RepositoryWorkUnit;
 
 /**
  * ggu class global comment. Detailled comment
@@ -165,6 +168,19 @@ public final class UpdateManagerUtils {
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public static boolean executeUpdates(final List<UpdateResult> results) {
+        RepositoryWorkUnit<Boolean> repositoryWorkUnit = new RepositoryWorkUnit<Boolean>("Update manager modification") {
+
+            @Override
+            protected void run() throws LoginException, PersistenceException {
+                result = doExecuteUpdates(results);
+            }
+
+        };
+        ProxyRepositoryFactory.getInstance().executeRepositoryWorkUnit(repositoryWorkUnit);
+        return repositoryWorkUnit.getResult();
+    }
+
+    private static boolean doExecuteUpdates(final List<UpdateResult> results) {
         if (results == null || results.isEmpty()) {
             return false;
         }
