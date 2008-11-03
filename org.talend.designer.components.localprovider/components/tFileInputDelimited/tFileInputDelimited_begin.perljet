@@ -88,6 +88,10 @@ String textEnclosure = ElementParameterParser.getValue(
     "__TEXT_ENCLOSURE__"
 );
 
+String encoding = ElementParameterParser.getValue(
+    node,
+    "__ENCODING__"
+);
 	
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -132,7 +136,22 @@ my %desc_<%=cid %> = (
 $/ = <%=rowSeparator%>;
 
 my $input_FH_<%=cid %> = new FileHandle;
-open($input_FH_<%=cid %>, '<', $desc_<%=cid %>{filename})
+open(
+    $input_FH_<%=cid %>,
+<%
+        if (!encoding.equals("")) {
+%>
+    '<:encoding('.<%=encoding%>.')',
+<%
+        }
+        else {
+%>
+    '<',
+<%
+        }
+%>
+    $desc_<%=cid %>{filename}
+)
     or die 'cannot open file "' . $desc_<%=cid %>{filename} . '"';
 
 <%
