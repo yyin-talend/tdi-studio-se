@@ -229,8 +229,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 		
 			//step 1: get the max length of all the row[] member;
 			int dataWidth = 5;		//the length of the string "value"	
-			for(int i=0;i<row.length;i++)			
-				if(row[i].length()>dataWidth) dataWidth = row[i].length();			
+			for(int i=0;i<row.length;i++) {
+				if(row[i] == null && 4 > dataWidth) {
+					dataWidth = 4;
+				}
+				else if(row[i] != null && row[i].length()>dataWidth) 
+					dataWidth = row[i].length();
+			}			
 			<%
 			int titleWidth = 3;    //the length of the string 'key'
 			for(IMetadataColumn column:columns)
@@ -277,7 +282,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 				for(int i=0; i<titleWidth -"<%=column.getLabel()%>".length()+ 1 ;i++)
 					sb.append(" ");
 				sb.append("| " + row[<%=count%>]);
-				for(int i=0; i<dataWidth -row[<%=count%>].length()+ 1 ;i++)
+				for(int i=0; row[<%=count%>] == null && i<dataWidth - 3 || row[<%=count%>] != null && i<dataWidth -row[<%=count%>].length()+ 1 ;i++)
 					sb.append(" ");
 				sb.append("|" + "\n");
 			
