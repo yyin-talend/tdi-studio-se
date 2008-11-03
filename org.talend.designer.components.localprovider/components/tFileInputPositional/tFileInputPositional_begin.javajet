@@ -328,7 +328,7 @@ while (reader_<%=cid %>.readRecord()) {
 	
 <%
 	///////////////////
-	if ( (positions[0].indexOf("context")) < 0 ){
+	if ( (pattern.indexOf(",")) > 0 ){
 	///////////////////
 	
 		for(int i=0;i <	metadata.getListColumns().size();i++){
@@ -345,7 +345,7 @@ while (reader_<%=cid %>.readRecord()) {
 <%
 					if(positions[i].equals("*")){
 %>
-        			 
+        			 	substringEnd<%=cid %>=row_<%=cid %>.length();
 <%
 					} else{
 %>
@@ -374,7 +374,7 @@ while (reader_<%=cid %>.readRecord()) {
 	///////////////
 	} else{
 	%>		
-		String arrFieldSeparator<%=cid%>[] = <%=positions[0]%>.split(",");			
+		String arrFieldSeparator<%=cid%>[] = <%=positions[0]%>.split(",");
 		
 		for (int i = 0; i < <%=metadata.getListColumns().size()%>; i++) {
 			if (i >= arrFieldSeparator<%=cid%>.length ){
