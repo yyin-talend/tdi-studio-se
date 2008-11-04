@@ -773,8 +773,15 @@ public class SchemaTypeController extends AbstractRepositoryController {
             String paramName = (String) button.getData(PARAMETER_NAME);
             IElementParameter schemaParam = elem.getElementParameter(paramName);
 
-            RepositoryReviewDialog dialog = new RepositoryReviewDialog(button.getShell(),
-                    ERepositoryObjectType.METADATA_SAP_FUNCTION, schemaParam.getFilter());
+            ERepositoryObjectType type = ERepositoryObjectType.METADATA_CON_TABLE;
+            if (elem instanceof Node) {
+                Node sapNode = (Node) elem;
+                if (sapNode.getComponent().getName().startsWith("tSAP")) {
+                    type = ERepositoryObjectType.METADATA_SAP_FUNCTION;
+                }
+            }
+
+            RepositoryReviewDialog dialog = new RepositoryReviewDialog(button.getShell(), type, schemaParam.getFilter());
             if (dialog.open() == RepositoryReviewDialog.OK) {
                 RepositoryNode node = dialog.getResult();
                 while (node.getObject().getProperty().getItem() == null

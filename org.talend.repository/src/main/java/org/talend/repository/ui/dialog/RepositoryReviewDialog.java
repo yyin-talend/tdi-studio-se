@@ -699,7 +699,7 @@ class SchemaTypeProcessor implements ITypeProcessor {
     }
 
     public RepositoryNode getInputRoot(RepositoryContentProvider contentProvider) {
-        List<RepositoryNode> container = new ArrayList<RepositoryNode>();
+        List<RepositoryNode> container = new NoNullList<RepositoryNode>();
         if (repositoryType != null && repositoryType.startsWith("DATABASE")) {
             container.add(contentProvider.getMetadataConNode());
         } else {
@@ -717,7 +717,6 @@ class SchemaTypeProcessor implements ITypeProcessor {
 
             container.add(contentProvider.getMetadataConNode());
 
-            container.remove(null); // Not allow null element
         }
         addReferencedProjectNodes(contentProvider, container);
         RepositoryNode node = new RepositoryNode(null, null, null);
@@ -735,7 +734,7 @@ class SchemaTypeProcessor implements ITypeProcessor {
             List<RepositoryNode> refProjects = contentProvider.getReferenceProjectNode().getChildren();
             if (refProjects != null && !refProjects.isEmpty()) {
 
-                List<RepositoryNode> nodesList = new ArrayList<RepositoryNode>();
+                List<RepositoryNode> nodesList = new NoNullList<RepositoryNode>();
 
                 for (RepositoryNode repositoryNode : refProjects) {
                     ProjectRepositoryNode refProject = (ProjectRepositoryNode) repositoryNode;
@@ -769,6 +768,24 @@ class SchemaTypeProcessor implements ITypeProcessor {
                 container.addAll(nodesList);
             }
         }
+    }
+
+    /**
+     * 
+     * DOC YeXiaowei SchemaTypeProcessor class global comment. Detailled comment
+     */
+    private static class NoNullList<T> extends ArrayList<T> {
+
+        private static final long serialVersionUID = 4564909079208559374L;
+
+        @Override
+        public boolean add(T t) {
+            if (t == null) {
+                return false;
+            }
+            return super.add(t);
+        }
+
     }
 
     public boolean isSelectionValid(RepositoryNode node) {
