@@ -268,22 +268,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	if(limit.equals("")){
     		limit="-1";
     	}
-    	String delim1 = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");
-    	if(delim1.equals("")){
-    		delim1 = "\"\"";
-    	}
-    	String delim = delim1.substring(1,delim1.length()-1);
-    	if(delim.equals("'")){
-    		delim = "\\'";
-    	}
+    	String delim1 = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");     	
     	String rowSeparator1 = ElementParameterParser.getValue(node, "__ROWSEPARATOR__");
-    	if(rowSeparator1.equals("")){
-    		rowSeparator1 = "\"\"";
-    	}
-    	String rowSeparator = rowSeparator1.substring(1,rowSeparator1.length()-1);
-    	if(rowSeparator.equals("'")){
-    		rowSeparator = "\\'";
-    	}
+    	
+    	
     	String escapeChar1 = ElementParameterParser.getValue(node, "__ESCAPE_CHAR__");
     	if(escapeChar1.equals("")){
     		escapeChar1 = "\"\"";
@@ -327,13 +315,32 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		int limit<%=cid %> = <%= limit %>;
 		int lastLine<%=cid %> = -1;	
 		
+		char fieldSeparator[];
+		
+		//support passing value (property: Field Separator) by 'context.fs' or 'globalMap.get("fs")'. 
+		if ( ((String)<%=delim1%>).length() > 0 ){
+			fieldSeparator = ((String)<%=delim1%>).toCharArray();
+		}else {
+			System.out.println("Field Separator must be assigned a char.");
+			return;
+		}
+		
+		char rowSeparator[];
+		
+		//support passing value (property: Row Separator) by 'context.rs' or 'globalMap.get("rs")'. 
+		if ( ((String)<%=rowSeparator1%>).length() > 0 ){
+			rowSeparator = ((String)<%=rowSeparator1%>).toCharArray();
+		}else {
+			System.out.println("Row Separator must be assigned a char.");
+			return;
+		}
+		
+		
 		com.csvreader.CsvReader csvReader<%=cid %>=new com.csvreader.CsvReader(new java.io.BufferedReader(new java.io.InputStreamReader(
-                new java.io.FileInputStream(<%=filename %>),<%=encoding %>)), '<%=delim %>');
+                new java.io.FileInputStream(<%=filename %>),<%=encoding %>)), fieldSeparator[0]);
                 
-<%          	if(!rowSeparator.equals("\\n") && !rowSeparator.equals("\\r")){%>
-          	csvReader<%=cid %>.setRecordDelimiter('<%=rowSeparator  %>');
-<%				}
-%>
+
+        csvReader<%=cid %>.setRecordDelimiter(rowSeparator[0]);
         csvReader<%=cid %>.setSkipEmptyRecords(<%=removeEmptyRow %>);
         csvReader<%=cid %>.setTextQualifier('<%=textEnclosure %>');                
 
@@ -379,14 +386,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
          
           	csvReader<%=cid %>.close();
           
-         	csvReader<%=cid %>=new com.csvreader.CsvReader(new java.io.BufferedReader(new java.io.InputStreamReader(
-                  new java.io.FileInputStream(<%=filename %>),<%=encoding %>)), '<%=delim %>');
-<%          	if(!rowSeparator.equals("\\n") && !rowSeparator.equals("\\r")){%>
-          	csvReader<%=cid %>.setRecordDelimiter('<%=rowSeparator  %>');
-<%				}
-%>
+	 	csvReader<%=cid %>=new com.csvreader.CsvReader(new java.io.BufferedReader(new java.io.InputStreamReader(
+	          new java.io.FileInputStream(<%=filename %>),<%=encoding %>)), fieldSeparator[0]);
+
+        csvReader<%=cid %>.setRecordDelimiter(rowSeparator[0]);
         csvReader<%=cid %>.setSkipEmptyRecords(<%=removeEmptyRow %>);
-        csvReader<%=cid %>.setTextQualifier('<%=textEnclosure %>');                
+        csvReader<%=cid %>.setTextQualifier('<%=textEnclosure %>');
 
 <%
         if(escapeChar.equals("\\\\")){
