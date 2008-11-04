@@ -38,8 +38,7 @@ java.util.Map hashAggreg_<%=cid %> = new java.util.HashMap();
 
 int FUNCTION = 0;
 int INPUT_COLUMN = 1;
-int OUTPUT_COLUMN = 1;
-int IGNORE_NULL = 2;
+int OUTPUT_COLUMN = 2;
 
 String SUM = "sum";
 String COUNT = "count";
@@ -504,7 +503,7 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
            		
            			// START OF INIT LINE
          			%>
-         			<%=JavaTypesManager.getTypeToGenerate(outputColumn.getTalendType(), outputColumn.isNullable()) %> <%=funin[INPUT_COLUMN] %>_<%=function %><%
+         			<%=JavaTypesManager.getTypeToGenerate(outputColumn.getTalendType(), outputColumn.isNullable()) %> <%=funin[OUTPUT_COLUMN] %>_<%=function %><%
          			
            			if(
            				outputColumn.isNullable() 
