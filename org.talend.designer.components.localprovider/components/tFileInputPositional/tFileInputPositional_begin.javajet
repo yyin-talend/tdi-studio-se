@@ -329,7 +329,8 @@ while (reader_<%=cid %>.readRecord()) {
 	
 <%
 	///////////////////
-	if ( (pattern.indexOf(",")) > 0 ){
+	//Branch: first item is a numberic, not '((String)globalMap.get("global_variable"))' or 'context.Separator'
+	if ( java.util.regex.Pattern.compile("[0-9]*").matcher(positions[0]).matches() ){
 	///////////////////
 	
 		for(int i=0;i <	metadata.getListColumns().size();i++){
