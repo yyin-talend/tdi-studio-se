@@ -63,8 +63,9 @@
         	String dieOnErrorStr = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
     		boolean dieOnError = (dieOnErrorStr!=null&&!dieOnErrorStr.equals(""))?dieOnErrorStr.equals("true"):false;
     		
-    		//need to process rows longger than 100 000 characters, the property (SafetySwitch) should be to send false
-    		boolean bOpenSafetySwitch = (ElementParameterParser.getValue(node, "__SAFETY_SWITCH__").equals("true"));
+    		//need to process rows longger than 100 000 characters, the property SafetySwitch(in talend_file_enhanced_20070724.jar) should be sent to false.(the default is true)
+    		//that means if check the option(true), the logic value of bSafetySwitch should be changed to false (XOR with 'true')
+    		boolean bSafetySwitch = (ElementParameterParser.getValue(node, "__PROCESS_LONG_ROW__").equals("true") ^ true);    		
     		String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
     		boolean advancedSeparator = (advancedSeparatorStr!=null&&!advancedSeparatorStr.equals(""))?advancedSeparatorStr.equals("true"):false;
     		String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
@@ -168,7 +169,7 @@ org.talend.fileprocess.delimited.RowParser reader_<%=cid %> = new org.talend.fil
 <%
 			}
 %>
-reader_<%=cid %>.setSafetySwitch(<%=bOpenSafetySwitch%>);
+reader_<%=cid %>.setSafetySwitch(<%=bSafetySwitch%>);
 reader_<%=cid %>.skipHeaders(<%=header %>);
 if(footer_<%=cid %> > 0){
 	int available_<%=cid %> = (int)reader_<%=cid %>.getAvailableRowCount(footer_<%=cid %>);
