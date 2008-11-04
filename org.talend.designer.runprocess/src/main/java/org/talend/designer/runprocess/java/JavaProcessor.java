@@ -1181,7 +1181,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
             }
             IFile codeFile = this.project.getFile(this.codePath);
             if (!codeFile.exists()) {
-                JDIDebugModel.removeJavaBreakpointListener((IJavaBreakpointListener) this);
+                JDIDebugModel.removeJavaBreakpointListener(this);
                 return;
             }
             LineNumberReader lineReader = new LineNumberReader(new InputStreamReader(codeFile.getContents()));
@@ -1274,6 +1274,11 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         if (listModulesReallyNeeded == null) {
             updateClasspath();
         } else {
+            // see bug 0005559: Import cannot be resolved in routine after opening Job Designer
+            for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeededForRoutines()) {
+                listModulesReallyNeeded.add(moduleNeeded.getModuleName());
+            }
+
             File externalLibDirectory = new File(CorePlugin.getDefault().getLibrariesService().getLibrariesPath());
             if ((externalLibDirectory != null) && (externalLibDirectory.isDirectory())) {
                 for (File externalLib : externalLibDirectory.listFiles(FilesUtils.getAcceptJARFilesFilter())) {
