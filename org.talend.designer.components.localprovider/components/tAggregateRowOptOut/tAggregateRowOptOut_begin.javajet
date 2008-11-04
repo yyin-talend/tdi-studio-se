@@ -10,6 +10,7 @@ imports="
     org.talend.core.model.metadata.types.JavaTypesManager
     org.talend.core.model.metadata.types.JavaType
     java.util.List
+    java.util.ArrayList
     java.util.Map
     java.util.HashMap
 "
@@ -23,6 +24,9 @@ String cid = origin;
 
 List<Map<String, String>> operations = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__OPERATIONS__");
 List<Map<String, String>> groupbys = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__GROUPBYS__");
+
+List<String> warnings = new ArrayList<String>();
+        
 
 %>
 // ------------
@@ -107,7 +111,9 @@ for(int i=0; i<sizeOperations; i++){
 }
 
 java.util.Map<String,IMetadataColumn> keysColumns = new java.util.HashMap<String,IMetadataColumn>();
-java.util.Map<String,IMetadataColumn> valuesColumns = new java.util.HashMap<String,IMetadataColumn>();
+java.util.Map<String,IMetadataColumn> inputValuesColumns = new java.util.HashMap<String,IMetadataColumn>();
+java.util.Map<String,IMetadataColumn> outputValuesColumns = new java.util.HashMap<String,IMetadataColumn>();
+java.util.Map<String,IMetadataColumn> valuesColumns = outputValuesColumns;
 IMetadataTable inputMetadataTable = null;
 IMetadataTable outputMetadataTable = null;
 java.util.List<IMetadataColumn> inputColumns = null;
@@ -133,35 +139,44 @@ if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_OutBeg
 }
 
 
-int groupbySize = groupbys.size();
-String[] groupby_type = new String[groupbySize];
+int sizeGroupbys = groupbys.size();
+String[] groupby_type = new String[sizeGroupbys];
 
-if(inputColumns != null) { // T_OutBegin_AggR_144
-	for (IMetadataColumn column: inputColumns) { // T_OutBegin_AggR_145
+if(inputColumns != null) { // T_AggR_144
+	for (IMetadataColumn column: inputColumns) { // T_AggR_145
 
-		for(int i = 0; i < groupbySize; i++){ // T_OutBegin_AggR_113
+		for(int i = 0; i < sizeGroupbys; i++){ // T_AggR_113
 			String columnname = groupbys.get(i).get("INPUT_COLUMN");
-			if(column.getLabel().equals(columnname)){ // T_OutBegin_AggR_114
+			if(column.getLabel().equals(columnname)){ // T_AggR_114
 				keysColumns.put(columnname, column);
-        	} // T_OutBegin_AggR_114
-		} // T_OutBegin_AggR_113
+				break;
+        	} // T_AggR_114
+		} // T_AggR_113
 				
-	} // T_OutBegin_AggR_145
-} // T_OutBegin_AggR_144
+		for(int i = 0; i < sizeOperations; i++){ // T_AggR_713
+			String columnname = operations.get(i).get("INPUT_COLUMN");
+        	if(column.getLabel().equals(columnname)){ // T_AggR_714
+       			inputValuesColumns.put(columnname, column);
+				break;
+       		} // T_AggR_714
+		} // T_AggR_713
+				
+	} // T_AggR_145
+} // T_AggR_144
 
+if(outputColumns != null) { // T_AggR_744
+	for (IMetadataColumn column: outputColumns) { // T_AggR_745
 
-if(outputColumns != null) { // T_OutBegin_AggR_744
-	for (IMetadataColumn column: outputColumns) { // T_OutBegin_AggR_745
-
-		for(int i = 0; i < sizeOperations; i++){ // T_OutBegin_AggR_713
+		for(int i = 0; i < sizeOperations; i++){ // T_AggR_713
 			String columnname = operations.get(i).get("OUTPUT_COLUMN");
-        	if(column.getLabel().equals(columnname)){ // T_OutBegin_AggR_714
-       			valuesColumns.put(columnname, column);
-       		} // T_OutBegin_AggR_714
-		} // T_OutBegin_AggR_713
+        	if(column.getLabel().equals(columnname)){ // T_AggR_714
+       			outputValuesColumns.put(columnname, column);
+				break;
+       		} // T_AggR_714
+		} // T_AggR_713
 
-	} // T_OutBegin_AggR_745
-} // T_OutBegin_AggR_744
+	} // T_AggR_745
+} // T_AggR_744
 
 
 if(sizeOps>0){ // T_OutBegin_AggR_114
@@ -289,23 +304,34 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 				if (inputMetadataTable !=null) {
 					for (IMetadataColumn column: inputMetadataTable.getListColumns()) {
 						if (valuesColumns.containsKey(column.getLabel())) {
+
+							JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+		
 							if (JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable())) {
 							
 							 	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-							 	if("boolean".equals(typeToGenerate)) {
-								%>
+							 	if(javaType == JavaTypesManager.BOOLEAN) {
+									%>
 				        			result = prime * result + (this.<%=column.getLabel() %> ? 1231 : 1237);
-								<%
+									<%
 								} else {	
-								%>
+									%>
 									result = prime * result + (int) this.<%=column.getLabel() %>;
-								<%
+									<%
 								}
+								
+							} else if(javaType == JavaTypesManager.BYTE_ARRAY) {
+		
+								%>
+								result = prime * result + java.util.Arrays.hashCode(this.<%=column.getLabel() %>);
+								<%
+							
 							} else {
-							%>
+								%>
 								result = prime * result + ((this.<%=column.getLabel() %> == null) ? 0 : this.<%=column.getLabel() %>.hashCode());
-							<%
+								<%
 							}
+						
 						}
 					}
 				}
@@ -330,37 +356,24 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 							JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 						
 							if (JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable())) {
-						%>
-							if (this.<%=column.getLabel() %> != other.<%=column.getLabel() %>) 
-								return false;
-						<%
+								%>
+									if (this.<%=column.getLabel() %> != other.<%=column.getLabel() %>) 
+										return false;
+								<%
 							} else if(javaType == JavaTypesManager.BYTE_ARRAY) {
-						%>
-								if (this.<%=column.getLabel() %> == null) {
-									if (other.<%=column.getLabel() %> != null) 
-										return false;
-								} else {
-									if(this.<%=column.getLabel() %> != null && other.<%=column.getLabel() %> != null
-										&& other.<%=column.getLabel() %>.length != this.<%=column.getLabel() %>.length
-									) {
+								%>
+									if(!java.util.Arrays.equals(this.<%=column.getLabel() %>, other.<%=column.getLabel() %>)) {
 										return false;
 									}
-									for(int i = 0; i < this.<%=column.getLabel() %>.length; i++) {
-										if(this.<%=column.getLabel() %>[i] != other.<%=column.getLabel() %>[i]) {
-											return false;
-										}
-									}
-									return true;
-								}
-						<%
+								<%
 							} else {
-						%>
-							if (this.<%=column.getLabel() %> == null) {
-								if (other.<%=column.getLabel() %> != null) 
-									return false;
-							} else if (!this.<%=column.getLabel() %>.equals(other.<%=column.getLabel() %>)) 
-								return false;
-						<%
+								%>
+									if (this.<%=column.getLabel() %> == null) {
+										if (other.<%=column.getLabel() %> != null) 
+											return false;
+									} else if (!this.<%=column.getLabel() %>.equals(other.<%=column.getLabel() %>)) 
+										return false;
+								<%
 							}
 						}
 					}
@@ -400,107 +413,118 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
         boolean hasAlreadyDistinctCountProperty = false;
     	for (int i = 0; i<sizeOps; i++) { // T_OutBegin_AggR_131
     		String[] funin = funinOperations.get(i);
-    		if(inputColumns != null) { // T_OutBegin_AggR_132
-         		for (IMetadataColumn outputColumn: outputColumns) { // T_OutBegin_AggR_135
-               		if(outputColumn.getLabel().equals(funin[OUTPUT_COLUMN])){ // T_OutBegin_AggR_136
                		
-               			JavaType outputJavaType = JavaTypesManager.getJavaTypeFromId(outputColumn.getTalendType());
-						boolean outputIsNumber = JavaTypesManager.isNumberType(outputJavaType, false);
-						
-						boolean outputIsObject = outputJavaType == JavaTypesManager.OBJECT;
-						boolean outputIsList = outputJavaType == JavaTypesManager.LIST;
-						boolean outputIsString = outputJavaType == JavaTypesManager.STRING;
-						boolean outputIsDate = outputJavaType == JavaTypesManager.DATE;
-						boolean outputIsBigDecimal = outputJavaType == JavaTypesManager.BIGDECIMAL;
-						
-						String function = funin[FUNCTION];
-						
-						boolean isValidTypeForOperation = 
-							outputIsNumber && (function.equals(SUM) || function.equals(AVG) || function.equals(STD_DEV)) 
-							|| 
-								!outputIsNumber 
-								&& !function.equals(SUM) 
-								&& !function.equals(AVG) 
-								&& !function.equals(LIST)
-								&& !function.equals(LIST_OBJECT)
-							|| (function.equals(MIN) || function.equals(MAX)) && (outputIsNumber || outputIsObject || outputIsString || outputIsDate || outputIsBigDecimal)
-							|| function.equals(FIRST)
-							|| function.equals(LAST)
-							|| function.equals(LIST_OBJECT) && (outputIsObject || outputIsList)
-							|| function.equals(LIST) && (outputIsString || outputIsObject)
-						;
+			String inputColumnName = funin[INPUT_COLUMN];
+			String outputColumnName = funin[OUTPUT_COLUMN];
+			String function = funin[FUNCTION];
 
-						if(!hasAlreadyCountProperty && function.equals(COUNT)) {
-							hasAlreadyCountProperty = true;
+			IMetadataColumn outputColumn = outputValuesColumns.get(outputColumnName);
+			IMetadataColumn inputColumn = inputValuesColumns.get(inputColumnName);
+			
+			JavaType outputJavaType = JavaTypesManager.getJavaTypeFromId(outputColumn.getTalendType());
+			JavaType inputJavaType = JavaTypesManager.getJavaTypeFromId(inputColumn.getTalendType());
+			boolean isBasePrimitive = JavaTypesManager.isJavaPrimitiveType(outputJavaType, false);
+			boolean isSelectedPrimitive = JavaTypesManager.isJavaPrimitiveType(outputJavaType, outputColumn.isNullable());
+			String primitiveTypeToGenerate = JavaTypesManager.getTypeToGenerate(outputJavaType.getId(), false);
+	
+			boolean outputIsNumber = JavaTypesManager.isNumberType(outputJavaType, false);
+			boolean outputIsObject = outputJavaType == JavaTypesManager.OBJECT;
+			boolean outputIsList = outputJavaType == JavaTypesManager.LIST;
+			boolean outputIsString = outputJavaType == JavaTypesManager.STRING;
+			boolean outputIsBigDecimal = outputJavaType == JavaTypesManager.BIGDECIMAL;
+			boolean outputIsDate = outputJavaType == JavaTypesManager.DATE;
+			
+			boolean inputIsNumber = JavaTypesManager.isNumberType(inputJavaType, false);
+			boolean inputIsObject = inputJavaType == JavaTypesManager.OBJECT;
+			boolean inputIsBoolean = inputJavaType == JavaTypesManager.BOOLEAN;
+			boolean inputIsList = inputJavaType == JavaTypesManager.LIST;
+			boolean inputIsString = inputJavaType == JavaTypesManager.STRING;
+			boolean inputIsDate = inputJavaType == JavaTypesManager.DATE;
+			boolean inputIsBigDecimal = inputJavaType == JavaTypesManager.BIGDECIMAL;
+			boolean inputIsByteArray = inputJavaType == JavaTypesManager.BYTE_ARRAY;
+			
+			boolean sameInOutType = outputJavaType == inputJavaType;
+	
+			boolean isValidTypeForOperation = 
+				(function.equals(SUM) || function.equals(AVG)) && inputIsNumber && outputIsNumber
+				|| function.equals(MIN) && sameInOutType && !inputIsList && !inputIsByteArray && !inputIsBoolean 
+				|| function.equals(MAX) && sameInOutType && !inputIsList && !inputIsByteArray && !inputIsBoolean
+				|| function.equals(FIRST) && sameInOutType
+				|| function.equals(LAST) && sameInOutType
+				|| function.equals(LIST) && outputIsString
+				|| function.equals(LIST_OBJECT) && outputIsList
+				|| function.equals(COUNT) && outputIsNumber
+				|| function.equals(COUNT_DISTINCT) && outputIsNumber
+				|| function.equals(STD_DEV) && inputIsNumber && outputIsNumber
+			;
+			
+			if(!isValidTypeForOperation) {
+				warnings.add("Warning:the operation '" + function + "' for the output column '"+ outputColumn.getLabel() +"' can't be processed because of incompatible input and/or output types");
+			}
+			
+			if(!hasAlreadyCountProperty && function.equals(COUNT)) {
+				hasAlreadyCountProperty = true;
 
-							%>int count = 0;
-                   			<%
-							
-						}
-                   		
-                   		if(function.equals(COUNT_DISTINCT)) {
-                   			if(!hasAlreadyDistinctCountProperty) { 
-	                   			hasAlreadyDistinctCountProperty = true;
-                   			
-    	               			%>java.util.Set<AggCountDistinctValuesStruct_<%=cid %>> distinctValues = new java.util.HashSet<AggCountDistinctValuesStruct_<%=cid %>>();
-	                   			<%
-	                   		}
-	                   	} 
-	                   	else if(isValidTypeForOperation) { // T_OutBegin_AggR_138
+				%>int count = 0;
+       			<%
+				
+			}
+       		
+       		if(function.equals(COUNT_DISTINCT)) {
+       			if(!hasAlreadyDistinctCountProperty) { 
+           			hasAlreadyDistinctCountProperty = true;
+       			
+           			%>java.util.Set<AggCountDistinctValuesStruct_<%=cid %>> distinctValues = new java.util.HashSet<AggCountDistinctValuesStruct_<%=cid %>>();
+           			<%
+           		}
+           	} 
+           	else if(isValidTypeForOperation) { // T_OutBegin_AggR_138
 
-							if(function.equals(AVG)){
-								
-								%>int <%=funin[INPUT_COLUMN] %>_count = 0;
-	                   			<%
-	                   			 
-	                   		} else if(function.equals("sum") && outputJavaType == JavaTypesManager.BIGDECIMAL) {
-		    					
-		    					%>BigDecimal <%=funin[INPUT_COLUMN] %>_sum = new BigDecimal("0.0");
-	    		   				<%
-	    		   				
-	                   		} else if(LIST.equals(function)) {
-	                   			
-	                   			%>StringBuilder <%=funin[INPUT_COLUMN] %>_<%=LIST %> = new StringBuilder();
-	                   			<%
-	                   			
-	                   		 } else if(LIST_OBJECT.equals(function)) {
-	                   		 
-	                   		 	%>java.util.List <%=funin[INPUT_COLUMN] %>_<%=function %> = new java.util.ArrayList();
-	                   			<%
-	                   			
-	                   		} else if(STD_DEV.equals(function)) {
-	                   		
-	                   			%>java.util.List<Double> <%=funin[INPUT_COLUMN] %>_<%=function %> = new java.util.ArrayList<Double>();
-	                   			<%
-	                   			
-	                   		 } else {  // T_OutBegin_AggR_137
-	                   		
-	                   			// START OF INIT LINE
-	                 			%>
-	                 			<%=JavaTypesManager.getTypeToGenerate(outputColumn.getTalendType(), outputColumn.isNullable()) %> <%=funin[INPUT_COLUMN] %>_<%=function %><%
-	                 			
-	                   			if(
-	                   				outputColumn.isNullable() 
-	                   				&& JavaTypesManager.isJavaPrimitiveType(outputColumn.getTalendType(), false) 
-	                   				&& !function.equals(MIN) 
-	                   				&& !function.equals(MAX) 
-	                   				&& !function.equals(FIRST) 
-	                   				&& !function.equals(LAST) 
-	                   				|| outputJavaType == JavaTypesManager.CHARACTER) { 
-	                   				
-	                   				%> = (<%=JavaTypesManager.getTypeToGenerate(outputColumn.getTalendType(), false) %>) <%= JavaTypesManager.getDefaultValueFromJavaIdType(outputColumn.getTalendType(), false) %><%
-	                   				
-		                   		}
-	                   			
-	                   			%>;<%
-	                   			// END OF INIT LINE
-	                   			
-	                   		} // T_OutBegin_AggR_137
-	                   	} // T_OutBegin_AggR_138
-                        break;
-               		} // T_OutBegin_AggR_136
-    			} // T_OutBegin_AggR_135
-    		} // T_OutBegin_AggR_132
+				if(function.equals(AVG)){
+					
+					%>int <%=funin[INPUT_COLUMN] %>_count = 0;
+           			<%
+           			 
+           		} else if(LIST.equals(function)) {
+           			
+           			%>StringBuilder <%=funin[INPUT_COLUMN] %>_<%=LIST %> = new StringBuilder();
+           			<%
+           			
+           		 } else if(LIST_OBJECT.equals(function)) {
+           		 
+           		 	%>java.util.List <%=funin[INPUT_COLUMN] %>_<%=function %> = new java.util.ArrayList();
+           			<%
+           			
+           		} else if(STD_DEV.equals(function)) {
+           		
+           			%>java.util.List<Double> <%=funin[INPUT_COLUMN] %>_<%=function %> = new java.util.ArrayList<Double>();
+           			<%
+           			
+           		 } else {  // T_OutBegin_AggR_137
+           		
+           			// START OF INIT LINE
+         			%>
+         			<%=JavaTypesManager.getTypeToGenerate(outputColumn.getTalendType(), outputColumn.isNullable()) %> <%=funin[INPUT_COLUMN] %>_<%=function %><%
+         			
+           			if(
+           				outputColumn.isNullable() 
+           				&& JavaTypesManager.isJavaPrimitiveType(outputColumn.getTalendType(), false) 
+           				&& !function.equals(SUM) 
+           				&& !function.equals(MIN) 
+           				&& !function.equals(MAX) 
+           				&& !function.equals(FIRST) 
+           				&& !function.equals(LAST) 
+           				|| outputJavaType == JavaTypesManager.CHARACTER) { 
+           				
+           				%> = (<%=JavaTypesManager.getTypeToGenerate(outputColumn.getTalendType(), false) %>) <%= JavaTypesManager.getDefaultValueFromJavaIdType(outputColumn.getTalendType(), false) %><%
+           				
+               		}
+           			
+           			%>;<%
+           			// END OF INIT LINE
+           			
+           		} // T_OutBegin_AggR_137
+           	} // T_OutBegin_AggR_138
     	} // T_OutBegin_AggR_131
         %>
         
@@ -514,10 +538,13 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 			if (inputMetadataTable !=null) {
 				for (IMetadataColumn column: inputMetadataTable.getListColumns()) {
 					if (keysColumns.containsKey(column.getLabel())) {
+
+						JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+
 						if (JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable())) {
 						
 						 	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-						 	if("boolean".equals(typeToGenerate)) {
+						 	if(javaType == JavaTypesManager.BOOLEAN) {
 							%>
 			        			result = prime * result + (this.<%=column.getLabel() %> ? 1231 : 1237);
 							<%
@@ -526,10 +553,19 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 								result = prime * result + (int) this.<%=column.getLabel() %>;
 							<%
 							}
+							
+						} else if(javaType == JavaTypesManager.BYTE_ARRAY) {
+
+							%>
+							result = prime * result + java.util.Arrays.hashCode(this.<%=column.getLabel() %>);
+							<%
+						
 						} else {
-						%>
+						
+							%>
 							result = prime * result + ((this.<%=column.getLabel() %> == null) ? 0 : this.<%=column.getLabel() %>.hashCode());
-						<%
+							<%
+							
 						}
 					}
 				}
@@ -555,37 +591,24 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 						JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 					
 						if (JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable())) {
-					%>
-						if (this.<%=column.getLabel() %> != other.<%=column.getLabel() %>) 
-							return false;
-					<%
+						%>
+							if (this.<%=column.getLabel() %> != other.<%=column.getLabel() %>) 
+								return false;
+						<%
 						} else if(javaType == JavaTypesManager.BYTE_ARRAY) {
-					%>
+						%>
+							if(!java.util.Arrays.equals(this.<%=column.getLabel() %>, other.<%=column.getLabel() %>)) {
+								return false;
+							}
+						<%
+						} else {
+						%>
 							if (this.<%=column.getLabel() %> == null) {
 								if (other.<%=column.getLabel() %> != null) 
 									return false;
-							} else {
-								if(this.<%=column.getLabel() %> != null && other.<%=column.getLabel() %> != null
-									&& other.<%=column.getLabel() %>.length != this.<%=column.getLabel() %>.length
-								) {
-									return false;
-								}
-								for(int i = 0; i < this.<%=column.getLabel() %>.length; i++) {
-									if(this.<%=column.getLabel() %>[i] != other.<%=column.getLabel() %>[i]) {
-										return false;
-									}
-								}
-								return true;
-							}
-					<%
-						} else {
-					%>
-						if (this.<%=column.getLabel() %> == null) {
-							if (other.<%=column.getLabel() %> != null) 
+							} else if (!this.<%=column.getLabel() %>.equals(other.<%=column.getLabel() %>)) 
 								return false;
-						} else if (!this.<%=column.getLabel() %>.equals(other.<%=column.getLabel() %>)) 
-							return false;
-					<%
+						<%
 						}
 					}
 				}
@@ -602,6 +625,20 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 <%
 } // T_OutBegin_AggR_114
 
+if(warnings.size() > 0) {
+	%>
+	System.err.println(
+	<%
+	boolean isFirst = true;
+	for(String warn : warnings) {
+		%>
+		<%= !isFirst ? " + \"\\" + "n\" + " : "" %>"<%= warn %>"<%
+		isFirst = false;
+	}%>
+	);
+	<%
+}
+
 
 if(sizeOps>0){ // G_OutBegin_AggR_191
 %>
@@ -613,7 +650,6 @@ if(sizeOps>0){ // G_OutBegin_AggR_191
 %>
 
 int nb_line_<%=cid %> = 0;
-boolean isFirstIteration = true;
 
 <%
 if(listFlag){ // G_OutBegin_AggR_192
