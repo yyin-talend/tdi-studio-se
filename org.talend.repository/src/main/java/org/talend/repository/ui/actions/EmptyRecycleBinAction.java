@@ -64,7 +64,7 @@ public class EmptyRecycleBinAction extends AContextualAction {
             message = Messages.getString("DeleteAction.dialog.messageAllElements") + "\n" + //$NON-NLS-1$ //$NON-NLS-2$
                     Messages.getString("DeleteAction.dialog.message2"); //$NON-NLS-1$;
         } else {
-            message = node.getChildren().get(0).getLabel() + " " + Messages.getString("DeleteAction.dialog.message1") + "\n" //$NON-NLS-1$ //$NON-NLS-2$
+            message = Messages.getString("DeleteAction.dialog.message1") + "\n" //$NON-NLS-1$ //$NON-NLS-2$
                     + Messages.getString("DeleteAction.dialog.message2"); //$NON-NLS-1$
         }
         if (!(MessageDialog.openQuestion(new Shell(), title, message))) {
