@@ -50,7 +50,7 @@ import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManag
  */
 public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizardPage {
 
-    public static final String EXPORTTYPE_POJO = "POJO"; //$NON-NLS-1$
+    public static final String EXPORTTYPE_POJO = "Autonomous Job"; //$NON-NLS-1$
 
     public static final String EXPORTTYPE_WSWAR = "Axis WebService (WAR)"; //$NON-NLS-1$
 
