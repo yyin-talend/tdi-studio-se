@@ -18,6 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
 import org.talend.core.model.general.Project;
@@ -104,6 +105,15 @@ public abstract class AbstractRoutineSynchronizer implements ITalendSynchronizer
             return routineItem.getProperty().getModificationDate();
         }
 
+    }
+    
+    public void forceSyncRoutine(RoutineItem routineItem) {
+        id2date.remove(routineItem.getProperty().getId());
+        try {
+            getFile(routineItem).delete(true, new NullProgressMonitor());
+        } catch (Exception e) {
+            // ignore me
+        }
     }
 
 }
