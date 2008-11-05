@@ -29,6 +29,7 @@ import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeViewerListener;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -123,6 +124,8 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
     private RepositoryContentProvider contentProvider = null;
 
+    private static List<ISelectionChangedListener> listenersNeedTobeAddedIntoTreeviewer = new ArrayList<ISelectionChangedListener>();
+
     private static ProjectRepositoryNode root = new ProjectRepositoryNode(null, null, ENodeType.STABLE_SYSTEM_FOLDER);
 
     private List<ITreeContextualAction> contextualsActions;
@@ -137,6 +140,17 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
     public RepositoryView() {
 
+    }
+
+    /**
+     * yzhang Comment method "addPreparedListeners".
+     * 
+     * @param listeners
+     */
+    public static void addPreparedListeners(ISelectionChangedListener listeners) {
+        if (listeners != null) {
+            listenersNeedTobeAddedIntoTreeviewer.add(listeners);
+        }
     }
 
     /*
@@ -241,6 +255,14 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                 }
             }
         });
+
+        if (listenersNeedTobeAddedIntoTreeviewer.size() > 0) {
+            for (ISelectionChangedListener listener : listenersNeedTobeAddedIntoTreeviewer) {
+                viewer.addSelectionChangedListener(listener);
+            }
+            listenersNeedTobeAddedIntoTreeviewer.clear();
+        }
+
         CorePlugin.getDefault().getRepositoryService().registerRepositoryChangedListenerAsFirst(this);
 
         if (!CorePlugin.getDefault().getRepositoryService().isRCPMode()) {

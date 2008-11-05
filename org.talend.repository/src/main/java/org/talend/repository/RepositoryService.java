@@ -392,6 +392,8 @@ public class RepositoryService implements IRepositoryService {
         TreeViewer treeViewer = getRepositoryTreeView();
         if (treeViewer != null) {
             treeViewer.addSelectionChangedListener(listener);
+        } else {
+            RepositoryView.addPreparedListeners(listener);
         }
     }
 
