@@ -24,6 +24,7 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
+import org.talend.core.model.metadata.builder.connection.EbcdicConnection;
 import org.talend.core.model.metadata.builder.connection.FieldSeparator;
 import org.talend.core.model.metadata.builder.connection.FileConnection;
 import org.talend.core.model.metadata.builder.connection.FileExcelConnection;
@@ -255,7 +256,8 @@ public final class FileConnectionContextUtils {
             cloneConn = ConnectionFactory.eINSTANCE.createRegexpFileConnection();
         } else if (fileConn instanceof FileExcelConnection) {
             cloneConn = ConnectionFactory.eINSTANCE.createFileExcelConnection();
-
+        } else if (fileConn instanceof EbcdicConnection) {
+            cloneConn = ConnectionFactory.eINSTANCE.createEbcdicConnection();
         }
 
         if (cloneConn != null) {

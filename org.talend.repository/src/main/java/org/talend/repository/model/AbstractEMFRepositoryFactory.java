@@ -93,6 +93,10 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         return getObjectFromFolder(project, ERepositoryObjectType.METADATA_SAPCONNECTIONS, true);
     }
 
+    public RootContainer<String, IRepositoryObject> getMetadataEBCDIC(Project project) throws PersistenceException {
+        return getObjectFromFolder(project, ERepositoryObjectType.METADATA_FILE_EBCDIC, true);
+    }
+
     public RootContainer<String, IRepositoryObject> getMetadataFileDelimited(Project project) throws PersistenceException {
         return getObjectFromFolder(project, ERepositoryObjectType.METADATA_FILE_DELIMITED, true);
     }
@@ -181,7 +185,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
                 ERepositoryObjectType.METADATA_FILE_LDIF, ERepositoryObjectType.METADATA_FILE_EXCEL,
                 ERepositoryObjectType.METADATA_LDAP_SCHEMA, ERepositoryObjectType.METADATA_GENERIC_SCHEMA,
                 ERepositoryObjectType.METADATA_WSDL_SCHEMA, ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA,
-                ERepositoryObjectType.JOBLET };
+                ERepositoryObjectType.JOBLET, ERepositoryObjectType.METADATA_FILE_EBCDIC };
 
         List<IRepositoryObject> deletedItems = new ArrayList<IRepositoryObject>();
         for (int i = 0; i < types.length; i++) {
@@ -222,7 +226,8 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
                 ERepositoryObjectType.PROCESS, ERepositoryObjectType.ROUTINES, ERepositoryObjectType.CONTEXT,
                 ERepositoryObjectType.SNIPPETS, ERepositoryObjectType.METADATA_LDAP_SCHEMA,
                 ERepositoryObjectType.METADATA_GENERIC_SCHEMA, ERepositoryObjectType.METADATA_WSDL_SCHEMA,
-                ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA, ERepositoryObjectType.JOBLET };
+                ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA, ERepositoryObjectType.JOBLET,
+                ERepositoryObjectType.METADATA_FILE_EBCDIC };
         for (ERepositoryObjectType repositoryObjectType : repositoryObjectTypeList) {
             Object folder = getFolder(project, repositoryObjectType);
             if (folder != null) {

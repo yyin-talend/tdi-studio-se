@@ -66,7 +66,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
     private RepositoryNode businessProcessNode, recBinNode, codeNode, routineNode, snippetsNode, processNode, contextNode,
             docNode, metadataConNode, sqlPatternNode, metadataFileNode, metadataFilePositionalNode, metadataFileRegexpNode,
             metadataFileXmlNode, metadataFileLdifNode, metadataGenericSchemaNode, metadataLDAPSchemaNode, metadataWSDLSchemaNode,
-            metadataFileExcelNode, metadataSalesforceSchemaNode, metadataSAPConnectionNode;
+            metadataFileExcelNode, metadataSalesforceSchemaNode, metadataSAPConnectionNode, metadataEbcdicConnectionNode;
 
     private RepositoryNode jobletNode;
 
@@ -258,7 +258,13 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             metadataSAPConnectionNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_SAPCONNECTIONS);
             metadataNode.getChildren().add(metadataSAPConnectionNode);
         }
-
+        // 7.13 EBCDIC
+        if (PluginChecker.isEBCDICPluginLoaded()) {
+            metadataEbcdicConnectionNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+            metadataEbcdicConnectionNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_EBCDIC);
+            metadataEbcdicConnectionNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_EBCDIC);
+            metadataNode.getChildren().add(metadataEbcdicConnectionNode);
+        }
         if (getParent() == null && PluginChecker.isJobLetPluginLoaded()) {
             if (CorePlugin.getDefault().useRefproject()) {
                 // 1.0 Referenced projects
@@ -300,6 +306,9 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             } else if (parent == metadataSAPConnectionNode) {
                 convert(factory.getMetadataSAPConnection(project), metadataSAPConnectionNode,
                         ERepositoryObjectType.METADATA_SAPCONNECTIONS, recBinNode);
+            } else if (parent == metadataEbcdicConnectionNode) {
+                convert(factory.getMetadataEBCDIC(project), metadataEbcdicConnectionNode,
+                        ERepositoryObjectType.METADATA_FILE_EBCDIC, recBinNode);
             } else if (parent == sqlPatternNode) {
                 convert(factory.getMetadataSQLPattern(project), sqlPatternNode, ERepositoryObjectType.SQLPATTERNS, recBinNode);
             } else if (parent == metadataFileNode) {

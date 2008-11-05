@@ -1380,7 +1380,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         monitorWrap.setTaskName(Messages.getString("ProxyRepositoryFactory.initializeProjectConnection")); //$NON-NLS-1$
         monitorWrap.worked(1);
         this.repositoryFactoryFromProvider.beforeLogon(project);
-        
+
         IMigrationToolService service = (IMigrationToolService) GlobalServiceRegister.getDefault().getService(
                 IMigrationToolService.class);
         service.executeProjectTasks(project, true, monitorWrap);
@@ -1675,10 +1675,30 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     public void checkAvailability() throws PersistenceException {
         this.repositoryFactoryFromProvider.checkAvailability();
     }
-    
+
     @SuppressWarnings("unchecked")
     public void executeRepositoryWorkUnit(RepositoryWorkUnit workUnit) {
         this.repositoryFactoryFromProvider.executeRepositoryWorkUnit(workUnit);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.talend.repository.model.IProxyRepositoryFactory#getMetadataEbcdicConnection(org.talend.core.model.general
+     * .Project)
+     */
+    public RootContainer<String, IRepositoryObject> getMetadataEBCDIC(Project project) throws PersistenceException {
+        return this.repositoryFactoryFromProvider.getMetadataEBCDIC(project);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IProxyRepositoryFactory#getMetadataEbcdicConnection()
+     */
+    public RootContainer<String, IRepositoryObject> getMetadataEBCDIC() throws PersistenceException {
+        return getMetadataEBCDIC(projectManager.getCurrentProject());
     }
 
 }
