@@ -85,19 +85,22 @@ public class CopyObjectAction {
             return true;
         }
 
-        switch (targetNode.getType()) {
-        case SIMPLE_FOLDER:
-        case SYSTEM_FOLDER:
-            return ((ERepositoryObjectType) targetNode.getProperties(EProperties.CONTENT_TYPE)) == objectToCopy
-                    .getType();
-        default:
-            return false;
+        // for bug 0005454: Copy paste with keyboard in the repository view doesn't work.
+        if (targetNode.getType() == ENodeType.REPOSITORY_ELEMENT || targetNode.getType() == ENodeType.SIMPLE_FOLDER
+                || targetNode.getType() == ENodeType.SYSTEM_FOLDER) {
+            return ((ERepositoryObjectType) targetNode.getProperties(EProperties.CONTENT_TYPE)) == objectToCopy.getType();
         }
+        return false;
     }
 
     public void execute(RepositoryNode sourceNode, RepositoryNode targetNode) throws Exception {
         if (!validateAction(sourceNode, targetNode)) {
             return;
+        }
+
+        // for bug 0005454: Copy paste with keyboard in the repository view doesn't work.
+        if (targetNode.getType() == ENodeType.REPOSITORY_ELEMENT) {
+            targetNode = targetNode.getParent();
         }
 
         IPath path = RepositoryNodeUtilities.getPath(targetNode);
