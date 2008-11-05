@@ -29,6 +29,7 @@ import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
+import org.talend.core.model.metadata.builder.connection.EbcdicConnection;
 import org.talend.core.model.metadata.builder.connection.FileExcelConnection;
 import org.talend.core.model.metadata.builder.connection.GenericSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
@@ -451,7 +452,9 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         if (parent == null) {
             return;
         }
-
+        if (type == ERepositoryObjectType.METADATA_FILE_EBCDIC) {
+            type.getAlias();
+        }
         String label = null;
 
         for (Object obj : fromModel.getSubContainer()) {
@@ -587,7 +590,11 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                     .getProperty().getItem()).getConnection();
             createTables(recBinNode, node, repositoryObject, genericSchemaConnection);
         }
-
+        if (type == ERepositoryObjectType.METADATA_FILE_EBCDIC) {
+            EbcdicConnection ebcdicConnection = (EbcdicConnection) ((ConnectionItem) repositoryObject.getProperty().getItem())
+                    .getConnection();
+            createTables(recBinNode, node, repositoryObject, ebcdicConnection);
+        }
     }
 
     /**
