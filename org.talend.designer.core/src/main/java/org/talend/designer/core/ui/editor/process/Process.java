@@ -2764,7 +2764,8 @@ public class Process extends Element implements IProcess2 {
         elem = null;
         notes = null;
         processor = null;
-        contextManager = null;
+        // don't empty the context manager, or can cause a NPE when close a read only job
+        // contextManager = null;
         mapSubjobStarts = null;
         if (this.editor != null) {
             CommandStack commandStack = (CommandStack) this.editor.getTalendEditor().getAdapter(CommandStack.class);
