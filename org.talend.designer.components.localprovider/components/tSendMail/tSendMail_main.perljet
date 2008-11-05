@@ -118,7 +118,18 @@ for (int i = 0; i < headers.size(); i++) {
 %>    
     $smtp->mail(<%=from%>);
     $smtp->to(<%=to%>);
-    
+<%
+if( ! cc.equals("") ){
+%>
+    $smtp->cc(<%= cc %>);
+<%
+}
+if( ! bcc.equals("") ){
+%>
+    $smtp->bcc(<%= bcc %>);
+<%
+}
+%>    
     $smtp->data();
     $smtp->datasend($msg->as_string());
     $smtp->dataend();
