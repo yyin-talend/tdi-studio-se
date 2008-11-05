@@ -623,7 +623,12 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         if (!isMultiNodes) {
             for (int i = 0; i <= process.length - 1; i++) {
                 process[i].removeAllMap();
+                ProcessItem processItem = (ProcessItem) process[i].getItem();
+                processItem = ItemCacheManager.getProcessItem(processItem.getProperty().getId(), version);
+                // update with the correct version.
+                process[i].setProcess(processItem);
             }
+
         }
         List<ExportFileResource> resourcesToExport = getExportResources();
 
@@ -662,7 +667,6 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = (ProcessItem) process[i].getItem();
-            processItem = ItemCacheManager.getProcessItem(processItem.getProperty().getId(), version);
             JobInfo jobInfo = new JobInfo(processItem, processItem.getProcess().getDefaultContext(), version);
             jobResources.add(new JobResource(projectName, jobInfo));
 

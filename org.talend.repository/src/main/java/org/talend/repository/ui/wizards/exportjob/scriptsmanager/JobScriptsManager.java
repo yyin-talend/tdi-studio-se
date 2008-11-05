@@ -190,10 +190,10 @@ public abstract class JobScriptsManager {
             return list;
         }
         String processId = process.getProperty().getId();
-        String windowsCmd = getCommandByTalendJob(Platform.OS_WIN32, processId, contextName, this.selectedJobVersion,
+        String windowsCmd = getCommandByTalendJob(Platform.OS_WIN32, processId, contextName, process.getProperty().getVersion(),
                 statisticPort, tracePort, codeOptions);
-        String unixCmd = getCommandByTalendJob(Platform.OS_LINUX, processId, contextName, this.selectedJobVersion, statisticPort,
-                tracePort, codeOptions);
+        String unixCmd = getCommandByTalendJob(Platform.OS_LINUX, processId, contextName, process.getProperty().getVersion(),
+                statisticPort, tracePort, codeOptions);
         String tmpFold = getTmpFolder();
 
         if (environment.equals(ALL_ENVIRONMENTS)) {

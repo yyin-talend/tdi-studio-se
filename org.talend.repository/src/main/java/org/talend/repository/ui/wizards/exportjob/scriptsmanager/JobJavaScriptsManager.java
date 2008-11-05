@@ -359,10 +359,9 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             return;
         }
         processedJob.add(process);
-        addSource(allResources, process, exportChoice.get(ExportChoice.needSource), resource, JOB_SOURCE_FOLDER_NAME,
-                selectedJobVersion);
+        addSource(allResources, process, exportChoice.get(ExportChoice.needSource), resource, JOB_SOURCE_FOLDER_NAME);
 
-        Set<JobInfo> subjobInfos = ProcessorUtilities.getChildrenJobInfo(process, selectedJobVersion);
+        Set<JobInfo> subjobInfos = ProcessorUtilities.getChildrenJobInfo(process);
         for (JobInfo subjobInfo : subjobInfos) {
             String processLabel = subjobInfo.getJobName();
             if (processLabel.equals(rootName)) {
