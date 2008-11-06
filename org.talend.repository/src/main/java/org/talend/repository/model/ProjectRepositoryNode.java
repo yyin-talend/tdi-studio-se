@@ -452,9 +452,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         if (parent == null) {
             return;
         }
-        if (type == ERepositoryObjectType.METADATA_FILE_EBCDIC) {
-            type.getAlias();
-        }
+
         String label = null;
 
         for (Object obj : fromModel.getSubContainer()) {

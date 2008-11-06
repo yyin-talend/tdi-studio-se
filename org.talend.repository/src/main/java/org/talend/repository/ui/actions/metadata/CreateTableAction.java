@@ -22,6 +22,7 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.SubscriberTable;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
+import org.talend.core.model.properties.EbcdicConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
@@ -203,6 +204,11 @@ public class CreateTableAction extends AbstractCreateTableAction {
                                     return;
                                 }
                             }
+                        }
+
+                        if (item2 instanceof EbcdicConnectionItem) {
+                            setEnabled(false);
+                            return;
                         }
                     }
                     setEnabled(true);
