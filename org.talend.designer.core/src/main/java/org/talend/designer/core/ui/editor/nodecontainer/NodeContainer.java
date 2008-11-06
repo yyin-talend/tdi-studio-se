@@ -103,8 +103,8 @@ public class NodeContainer extends Element {
         warningRectangle = new Rectangle(warningLocation, warningSize);
         statusRectangle.union(warningRectangle);
 
-        parallelLocation.x = nodeLocation.x - parallelSize.width;
-        parallelLocation.y = nodeLocation.y - parallelSize.height + 18;
+        parallelLocation.x = nodeLocation.x - nodeSize.width / 2 - parallelSize.width;
+        parallelLocation.y = nodeLocation.y - parallelSize.height;
         parallelLocationRectangle = new Rectangle(parallelLocation, parallelSize);
 
         statusRectangle.union(parallelLocationRectangle);

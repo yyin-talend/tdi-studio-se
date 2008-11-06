@@ -53,7 +53,7 @@ public class NodeContainerFigure extends Figure {
 
     public static final String BREAKPOINT_IMAGE = "icons/breakpoint.png"; //$NON-NLS-1$
 
-    private Label parallelFigure;
+    private LabelCenter parallelFigure;
 
     public NodeContainerFigure(NodeContainer nodeContainer) {
         this.nodeContainer = nodeContainer;
@@ -90,10 +90,11 @@ public class NodeContainerFigure extends Figure {
      * DOC bqian Comment method "addParallelFigure".
      */
     private void addParallelFigure() {
-        parallelFigure = new LabelTextCenterFigure();
-        parallelFigure.setIcon(ImageProvider.getImage(EImage.PARALLEL_EXECUTION));
+        parallelFigure = new LabelCenter();
+        parallelFigure.setImage(ImageProvider.getImage(EImage.PARALLEL_EXECUTION));
         parallelFigure.setFont(Display.getDefault().getSystemFont());
         parallelFigure.setText("x0");
+        parallelFigure.setToolTip(new Label("x0"));
 
         boolean visible = false;
         IElementParameter enableParallelizeParameter = nodeContainer.getNode().getElementParameter(
@@ -179,7 +180,9 @@ public class NodeContainerFigure extends Figure {
             if (numberParallelizeParameter != null) {
                 numberParallel = (String) numberParallelizeParameter.getValue();
             }
-            parallelFigure.setText("x" + numberParallel);
+            String paralString = "x" + numberParallel;
+            parallelFigure.setText(paralString);
+            parallelFigure.setToolTip(new Label(paralString));
             parallelFigure.setVisible(true);
         } else {
             parallelFigure.setVisible(false);
