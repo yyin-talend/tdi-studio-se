@@ -271,7 +271,19 @@
         <ITEM NAME="ORACLE_SID" VALUE="ORACLE_SID" />
         <ITEM NAME="ORACLE_SERVICE_NAME" VALUE="ORACLE_SERVICE_NAME"/>
       </ITEMS>
-    </PARAMETER>    
+    </PARAMETER>
+    
+	<PARAMETER NAME="DB_VERSION" FIELD="CLOSED_LIST" NUM_ROW="3"
+		REPOSITORY_VALUE="DB_VERSION" SHOW_IF="(DBTYPE=='DBORACLE') and (USE_EXISTING_CONNECTION == 'false')">
+		<ITEMS DEFAULT="ORACLE_11">
+			<ITEM NAME="ORACLE_11-6" VALUE="ojdbc6-11g.jar" SHOW_IF="false"/>
+			<ITEM NAME="ORACLE_11" VALUE="ojdbc5-11g.jar" />
+			<ITEM NAME="ORACLE_10" VALUE="ojdbc14-10g.jar" />
+			<ITEM NAME="ORACLE_9" VALUE="ojdbc14-9i.jar" />
+			<ITEM NAME="ORACLE_8" VALUE="ojdbc12-8i.jar" />
+		</ITEMS>
+	</PARAMETER>
+		        
     <PARAMETER 
       NAME="SCHEMA_DB"
       FIELD="TEXT"
@@ -387,11 +399,11 @@
 		<IMPORT NAME="Driver_MaxDB" MODULE="sapdbc.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-MSSQL" MODULE="jtds-1.2.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-MYSQL" MODULE="mysql-connector-java-5.1.0-bin.jar" REQUIRED="true" />
-        <IMPORT NAME="Driver-Oracle8i" MODULE="ojdbc12-8i.jar" REQUIRED="true" />
-        <IMPORT NAME="Driver-Oracle9i" MODULE="ojdbc14-9i.jar" REQUIRED="true" />
-        <IMPORT NAME="Driver-Oracle10g" MODULE="ojdbc14-10g.jar" REQUIRED="true" />
-        <IMPORT NAME="Driver-Oracle11g-1" MODULE="ojdbc5-11g.jar" REQUIRED="true" />
-        <IMPORT NAME="Driver-Oracle11g-2" MODULE="ojdbc6-11g.jar" REQUIRED="true" />
+        <IMPORT NAME="Driver-Oracle8i" MODULE="ojdbc12-8i.jar" REQUIRED="false" />
+        <IMPORT NAME="Driver-Oracle9i" MODULE="ojdbc14-9i.jar" REQUIRED="false" />
+        <IMPORT NAME="Driver-Oracle10g" MODULE="ojdbc14-10g.jar" REQUIRED="false" />
+        <IMPORT NAME="Driver-Oracle11g-1" MODULE="ojdbc5-11g.jar" REQUIRED="false" />
+        <IMPORT NAME="Driver-Oracle11g-2" MODULE="ojdbc6-11g.jar" REQUIRED="false" />
 		<IMPORT NAME="Driver-POSTGRESQL" MODULE="postgresql-8.3-603.jdbc3.jar" REQUIRED="true" />	
 		<IMPORT NAME="Driver-FIREBIRD" MODULE="jaybird-full-2.1.1.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-HSQLDb" MODULE="hsqldb.jar" REQUIRED="true"/>
