@@ -246,7 +246,7 @@ public class EmfComponent implements IComponent {
      */
     private void checkSchemaParameter(List<ElementParameter> listParam, INode node) {
         boolean acceptInputFlow = false;
-        List<NodeConnector> connectors = createConnectors();
+        List<NodeConnector> connectors = createConnectors(node);
         for (NodeConnector connector : connectors) {
             if (connector.getName().equals(EConnectionType.FLOW_MAIN.getName())) {
                 if (connector.getMaxLinkInput() != 0 && !connector.isBuiltIn()) {
@@ -1205,7 +1205,7 @@ public class EmfComponent implements IComponent {
                         param.setContext(EConnectionType.TABLE.getName());
                     }
                 }
-                List<NodeConnector> list = createConnectors();
+                List<NodeConnector> list = createConnectors(node);
                 boolean toShow = true;
                 for (INodeConnector nodeConnector : list) {
                     if (nodeConnector.getName().equals(param.getContext())
@@ -1667,7 +1667,7 @@ public class EmfComponent implements IComponent {
      * 
      * @see org.talend.designer.core.model.components.IComponent#createConnectors()
      */
-    public List<NodeConnector> createConnectors() {
+    public List<NodeConnector> createConnectors(INode parentNode) {
         EList listConnType;
         CONNECTORType connType;
         NodeConnector nodeConnector;
@@ -1685,7 +1685,7 @@ public class EmfComponent implements IComponent {
                 }
                 continue;
             }
-            nodeConnector = new NodeConnector();
+            nodeConnector = new NodeConnector(parentNode);
             nodeConnector.setDefaultConnectionType(currentType);
             // set the default values
             nodeConnector.setLinkName(currentType.getDefaultLinkName());
@@ -1796,7 +1796,7 @@ public class EmfComponent implements IComponent {
             }
             if (!exists) { // will add by default all connectors not defined in
                 // the xml files
-                nodeConnector = new NodeConnector();
+                nodeConnector = new NodeConnector(parentNode);
                 nodeConnector.setDefaultConnectionType(currentType);
                 nodeConnector.setName(currentType.getName());
                 nodeConnector.setBaseSchema(currentType.getName());

@@ -29,6 +29,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPart;
 import org.talend.commons.ui.swt.formtools.LabelledText;
+import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -89,6 +91,18 @@ public class ParallelExecutionAction extends SelectionAction {
      */
     @Override
     public void run() {
+        boolean hasFlowConnection = false;
+        for (IConnection connection : node.getOutgoingConnections()) {
+            if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
+                hasFlowConnection = true;
+                break;
+            }
+        }
+        if (hasFlowConnection) {
+            MessageDialog.openError(getWorkbenchPart().getSite().getShell(), "This component got link(s) on output",
+                    "To enable parallelize on the component, there should be no output link on this component.");
+            return;
+        }
 
         IElementParameter enableParallelizeParameter = node.getElementParameter(EParameterName.PARALLELIZE.getName());
         if (enableParallelizeParameter != null) {
@@ -139,9 +153,9 @@ public class ParallelExecutionAction extends SelectionAction {
             GridData data = new GridData(GridData.FILL_HORIZONTAL);
             data.horizontalSpan = 2;
             enableButton.setLayoutData(data);
-            enableButton.setText(Messages.getString("ParallelExecutionCommand.enableParallel"));
+            enableButton.setText(EParameterName.PARALLELIZE.getDisplayName());
 
-            numberText = new LabelledText(bgComposite, Messages.getString("ParallelExecutionCommand.numberParallel"), true);
+            numberText = new LabelledText(bgComposite, EParameterName.PARALLELIZE_NUMBER.getDisplayName(), true);
 
             enableButton.addSelectionListener(new SelectionAdapter() {
 

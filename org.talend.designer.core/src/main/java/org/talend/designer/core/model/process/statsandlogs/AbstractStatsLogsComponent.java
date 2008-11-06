@@ -52,7 +52,7 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
     protected List<IMultipleComponentManager> multipleComponentManagers = new ArrayList<IMultipleComponentManager>();
 
     // no use for virtual component
-    public List<? extends INodeConnector> createConnectors() {
+    public List<? extends INodeConnector> createConnectors(INode node) {
         return null;
     }
 

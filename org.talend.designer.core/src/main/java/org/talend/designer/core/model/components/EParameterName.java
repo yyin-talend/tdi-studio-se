@@ -207,8 +207,8 @@ public enum EParameterName {
     // version tab within job setting.
     JOB_VERSION("Version"),
 
-    PARALLELIZE("Parallelize"),
-    PARALLELIZE_NUMBER("Parallelize Number"),
+    PARALLELIZE("Enable parallel execution"),
+    PARALLELIZE_NUMBER("Number of parallel executions"),
     PARALLELIZE_UNIT_SIZE("Parallelize Buffer Unit Size");
 
     private String displayName;

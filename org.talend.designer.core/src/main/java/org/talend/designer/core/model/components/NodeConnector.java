@@ -18,6 +18,8 @@ import java.util.Map;
 import org.eclipse.swt.graphics.RGB;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnectionProperty;
+import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.utils.DesignerColorUtils;
 
@@ -56,6 +58,13 @@ public class NodeConnector implements INodeConnector {
     private Map<EConnectionType, IConnectionProperty> propertyMap = new HashMap<EConnectionType, IConnectionProperty>();
 
     private boolean multiSchema = false;
+
+    private INode parentNode;
+
+    public NodeConnector(INode parentNode) {
+        super();
+        this.parentNode = parentNode;
+    }
 
     /*
      * (non-Javadoc)
@@ -119,6 +128,13 @@ public class NodeConnector implements INodeConnector {
     }
 
     public int getMaxLinkOutput() {
+        if (parentNode != null) {
+            // && defaultConnectionType.equals(EConnectionType.FLOW_MAIN)) {
+            IElementParameter param = parentNode.getElementParameter(EParameterName.PARALLELIZE.getName());
+            if (param != null && ((Boolean) param.getValue())) {
+                return 0;
+            }
+        }
         return this.maxLinkOutput;
     }
 

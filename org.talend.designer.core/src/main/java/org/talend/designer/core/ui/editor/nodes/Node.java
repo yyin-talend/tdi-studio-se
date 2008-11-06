@@ -220,7 +220,7 @@ public class Node extends Element implements INode {
             nodeLabel = new NodeLabel(label, this);
         }
 
-        listConnector = this.component.createConnectors();
+        listConnector = this.component.createConnectors(this);
         metadataList = new ArrayList<IMetadataTable>();
 
         boolean hasMetadata = false;

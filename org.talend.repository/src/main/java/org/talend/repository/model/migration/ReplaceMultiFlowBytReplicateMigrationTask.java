@@ -12,9 +12,9 @@
 // ============================================================================
 package org.talend.repository.model.migration;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.draw2d.geometry.Dimension;
@@ -48,7 +48,8 @@ public class ReplaceMultiFlowBytReplicateMigrationTask extends AbstractJobMigrat
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.core.model.migration.AbstractJobMigrationTask#executeOnProcess(org.talend.core.model.properties.ProcessItem)
+     * @seeorg.talend.core.model.migration.AbstractJobMigrationTask#executeOnProcess(org.talend.core.model.properties.
+     * ProcessItem)
      */
     @Override
     public ExecutionResult executeOnProcess(ProcessItem processItem) {
@@ -92,7 +93,7 @@ public class ReplaceMultiFlowBytReplicateMigrationTask extends AbstractJobMigrat
         String nodeSourceUniqueName = ComponentUtilities.getNodeUniqueName(nodeTypeSource);
 
         ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-        List<INodeConnector> nodeConnectors = (List<INodeConnector>) component.createConnectors();
+        List<INodeConnector> nodeConnectors = (List<INodeConnector>) component.createConnectors(null);
         for (INodeConnector nodeConnector : nodeConnectors) {
             if (nodeConnector.getBaseSchema().equals("FLOW") && nodeConnector.getMaxLinkOutput() == 1) {
                 List<ConnectionType> connections = getConnectionsToMove(processItem, nodeConnector, nodeSourceUniqueName);
@@ -334,6 +335,7 @@ public class ReplaceMultiFlowBytReplicateMigrationTask extends AbstractJobMigrat
         }
         return connToMove;
     }
+
     public Date getOrder() {
         GregorianCalendar gc = new GregorianCalendar(2008, 2, 17, 12, 0, 0);
         return gc.getTime();

@@ -97,7 +97,7 @@ public class JobContextLoadComponent implements IComponent {
     }
 
     // no use for virtual component
-    public List<? extends INodeConnector> createConnectors() {
+    public List<? extends INodeConnector> createConnectors(INode node) {
         return null;
     }
 
