@@ -181,11 +181,11 @@ if(outputAction.equals("NORMAL_OUTPUT")||errorOuput.equals("NORMAL_OUTPUT")){
     		if (conns!=null && conns.size()>0) {
 				IConnection conn = conns.get(0);  
 %>
-for(String tmp:output_<%=cid%>){
+for(String tmp_<%=cid %>:output_<%=cid%>){
 <%
 				for(IMetadataColumn column:columns) {
 %>
-	<%=conn.getName()%>.<%=column.getLabel()%> = tmp;				
+	<%=conn.getName()%>.<%=column.getLabel()%> = tmp_<%=cid %>;				
 <%
 				}
 			}
