@@ -4182,9 +4182,9 @@
 			<IMPORT NAME="SOAP-logging" MODULE="commons-logging-1.1.jar"
 				REQUIRED="true" />
 			<IMPORT NAME="SOAP-JavaMail" MODULE="mail.jar"
-				REQUIRED="false" />
+				REQUIRED="true" />
 			<IMPORT NAME="SOAP-JAF" MODULE="activation.jar"
-				REQUIRED="false" />
+				REQUIRED="true" />
 		</IMPORTS>
 	</CODEGENERATION>
 
