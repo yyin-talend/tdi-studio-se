@@ -951,7 +951,13 @@
             language="java"
             message="%libraryneeded.forparaccelconnection"
             name="paraccel-jdbc.jar"
-            required="false"/>            
+            required="false"/>
+    <libraryNeeded
+            context="%libraryneeded.dbconnectionwizard"
+            language="java"
+            message="%libraryneeded.fornetezzaconnection"
+            name="nzjdbc.jar"
+            required="false"/>             
       <libraryNeeded
             context="%libraryneeded.dbconnectionwizard"
             language="java"
