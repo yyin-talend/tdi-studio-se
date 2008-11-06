@@ -87,7 +87,7 @@ public class DesignerPreferencePage extends FieldEditorPreferencePage implements
                 .getString("DesignerPreferencePage.component.defaultHint"), //$NON-NLS-1$
                 getFieldEditorParent());
         connectionField = new StringFieldEditor(TalendDesignerPrefConstants.DEFAULT_CONNECTION_FORMAT,
-                "Components default connection", getFieldEditorParent());
+                "Component default connection", getFieldEditorParent());
         showHint = new BooleanFieldEditor(TalendDesignerPrefConstants.DEFAULT_HINT_USED, Messages
                 .getString("DesignerPreferencePage.hintShowed"), //$NON-NLS-1$
                 getFieldEditorParent());

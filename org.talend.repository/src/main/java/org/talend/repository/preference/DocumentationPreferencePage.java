@@ -52,7 +52,7 @@ public class DocumentationPreferencePage extends FieldEditorPreferencePage imple
     @Override
     protected void createFieldEditors() {
         booleanFieldEditor = new BooleanFieldEditor(ITalendCorePrefConstants.DOC_GENERATION,
-                "Automatic update corresponding documentation if job/joblet is saved.", getFieldEditorParent());
+                "Automatic update of corresponding documentation if job/joblet is saved", getFieldEditorParent());
         passwordHideFieldEditor = new BooleanFieldEditor(ITalendCorePrefConstants.DOC_HIDEPASSWORDS, "Hide passwords",
                 getFieldEditorParent());
         sourceCodeGenFieldEditor = new BooleanFieldEditor(ITalendCorePrefConstants.DOC_GENERATESOURCECODE,
