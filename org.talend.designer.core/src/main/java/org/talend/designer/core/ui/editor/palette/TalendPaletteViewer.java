@@ -18,6 +18,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang.SystemUtils;
 import org.eclipse.gef.EditDomain;
 import org.eclipse.gef.palette.PaletteDrawer;
 import org.eclipse.gef.ui.palette.PaletteViewer;
@@ -126,7 +127,12 @@ public class TalendPaletteViewer extends PaletteViewer {
         Rectangle bounds = clearImage.getBounds();
         ToolItem okItem = new ToolItem(toolbar, SWT.NONE);
 
-        Image okImage = new Image(Display.getDefault(), bounds.width, bounds.height);
+        int offset = 0;
+        if (SystemUtils.IS_OS_LINUX) {
+            offset = 4;
+        }
+
+        Image okImage = new Image(Display.getDefault(), bounds.width + offset, bounds.height + offset);
         GC gc = new GC(okImage);
         gc.setBackground(toolbar.getBackground());
         gc.drawText("OK", 0, 0, false);
