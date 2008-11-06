@@ -20,13 +20,19 @@
 		<%
 	if(sftp){
 %>
-
-    session_<%=cid%>.disconnect(); 
-    
+    session_<%=cid%>.disconnect();     
 <%}else{%>
-
 	ftp_<%=cid %>.quit();
 	
+} catch (java.net.ConnectException e){
+	System.err.println("can not connect to ftp");
+} catch (com.enterprisedt.net.ftp.FTPException e){
+	System.err.println(e.getMessage());
+} catch (java.io.IOException e){
+	System.err.println("local directory not found");
+} catch (Exception e){
+	e.printStackTrace();
+}
 <%}%>
 
 

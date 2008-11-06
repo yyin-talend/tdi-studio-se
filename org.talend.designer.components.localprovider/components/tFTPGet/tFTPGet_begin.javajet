@@ -54,6 +54,8 @@ if(useProxy){
 <%
 	if(sftp){ // *** sftp *** //
 %>	
+	
+	
     class MyUserInfo implements com.jcraft.jsch.UserInfo, com.jcraft.jsch.UIKeyboardInteractive {
     
     	String passphrase_<%=cid %> = <%=passPhrase %>;
@@ -177,6 +179,9 @@ if(useProxy){
         }
     }
     
+// add a try{...}catch(){...}(the end is line 41 in tFTPGet_end.javajet) for catch the errors of tFTPGet, but not exit.
+//try{
+    
     com.jcraft.jsch.JSch jsch_<%=cid%>=new com.jcraft.jsch.JSch(); 
     
     <%if(authMethod.equals("PUBLICKEY")){%>
@@ -208,7 +213,7 @@ if(useProxy){
 <%
 	}else{ // *** ftp *** //
 %>	
-
+	
 	class FTPGetter_<%=cid%> {
 
         private com.enterprisedt.net.ftp.FTPClient ftpClient = null;
@@ -311,10 +316,15 @@ if(useProxy){
         }
     }
     
+// add a try{...}catch(){...}(the end is line 35 in tFTPGet_end.javajet) for catch the errors of tFTPGet, but not exit.
+try{
+    
 	com.enterprisedt.net.ftp.FTPClient ftp_<%=cid %> = new com.enterprisedt.net.ftp.FTPClient();
 	ftp_<%=cid %>.setRemoteHost(<%=host %>);
-	ftp_<%=cid %>.setRemotePort(<%=port %>);
-	ftp_<%=cid %>.connect();
+	ftp_<%=cid %>.setRemotePort(<%=port %>);	
+
+	ftp_<%=cid %>.connect();	
+	
     ftp_<%=cid %>.login(<%=user %>, <%=pass %>);  
     
     FTPGetter_<%=cid%> getter_<%=cid%> = new FTPGetter_<%=cid%>();
