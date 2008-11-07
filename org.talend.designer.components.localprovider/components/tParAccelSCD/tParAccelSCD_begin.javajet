@@ -173,7 +173,9 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
             }
             %>
             cache_<%=cid%>.put(sk_<%=cid%>, row_<%=cid%>);
-        }        
+        }
+        resultSet_<%=cid%>.close();
+        statement_<%=cid%>.close();
         <%
         if(debug) {
             %>
@@ -205,6 +207,8 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
         if(tmpRS_<%=cid%>.next() && tmpRS_<%=cid%>.getObject(1) != null) {
             nextSurrogateKey_<%=cid%> = tmpRS_<%=cid%>.get<%=tmpType%>(1) + 1;
         }
+        tmpRS_<%=cid%>.close();
+        tmpStmt_<%=cid%>.close();
         <%
         if(!isEnableSaveMemMode) {
             %>
@@ -216,17 +220,28 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
     String insertionSQL_<%=cid%> = "<%=scdManager.createInsertionSQL(scdConfiger)%>";
     java.sql.PreparedStatement insertionStatement_<%=cid%> = connection_<%=cid%>.prepareStatement(insertionSQL_<%=cid%>);
     <%
-    if(scdConfiger.isEnableType2() && scdConfiger.getDimensionType2Configer().getStartDateValueType().equals("JOB_START_TIME")) {
+    if(scdConfiger.isEnableType2()) {
         int paramIndex = 0;
         List<Column> insertionColumnList = getInsertionColumnList(scdConfiger);
         if(scdConfiger.isEnableType3()) {
-            paramIndex = insertionColumnList.size() - scdConfiger.getDimensionType3Configer().getDimensionAttributes().size();
+            paramIndex = insertionColumnList.size() - scdConfiger.getDimensionType3Configer().getDimensionAttributes().size() - 1;
         } else {
-            paramIndex = insertionColumnList.size();
+            paramIndex = insertionColumnList.size() - 1;
+        }       
+        if(scdConfiger.getDimensionType2Configer().getStartDateValueType().equals("JOB_START_TIME")) {
+            %>
+            insertionStatement_<%=cid%>.setTimestamp(<%=paramIndex%>, new java.sql.Timestamp(start_Hash.get("<%=cid%>")));
+            <%
         }
-        %>
-        insertionStatement_<%=cid%>.setTimestamp(<%=paramIndex%>, new java.sql.Timestamp(start_Hash.get("<%=cid%>")));
-        <%
+        if(scdConfiger.getDimensionType2Configer().getEndDateValueType().equals("NULL_VALUE")) {
+            %>
+            insertionStatement_<%=cid%>.setNull(<%=paramIndex + 1%>, java.sql.Types.DATE);
+            <%
+        } else {
+            %>
+            insertionStatement_<%=cid%>.setTimestamp(<%=paramIndex + 1%>, new java.sql.Timestamp(new java.text.SimpleDateFormat("yyyy-MM-dd").parse(<%=scdConfiger.getDimensionType2Configer().getEndDateValue()%> + "-01-01").getTime()));
+            <%
+        }
     }
     if(scdConfiger.isEnableType1()) {
         %>

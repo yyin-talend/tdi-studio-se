@@ -26,6 +26,12 @@ String cid = node.getUniqueName();
 List<IMetadataColumn> inputSchema = getInputSchema(node);
 List<IMetadataColumn> outputSchema = getOutputSchema(node);
 if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outputSchema.size() > 0) {
+    boolean isEnableSaveMemMode = ElementParameterParser.getValue(node, "__USE_SAVE_MEM_MODE__").equals("true");
+    if(isEnableSaveMemMode) {
+        %>
+        searchingStmt_<%=cid%>.close();
+        <%
+    }
     SCDConfiger scdConfiger = getSCDConfiger(node);
     %>
     insertionStatement_<%=cid%>.close();

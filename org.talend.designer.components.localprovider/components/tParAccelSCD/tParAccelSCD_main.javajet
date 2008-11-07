@@ -93,7 +93,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
                             if(tmpValue_<%=cid%>.equals("")) {
                                 lookUpValue_<%=cid%>.<%=searchingColumn.getColumnName()%> = '\0';
                             } else {
-                                throw new RuntimeException("Value is empty for column : '<%=searchingColumn.getColumnName()%>' in '<%=incomingConnections%>' connection, value is invalid or this column should be nullable or have a default value.");
+                                throw new RuntimeException("Value is empty for column : '<%=searchingColumn.getColumnName()%>' in '<%=inConnectionName%>' connection, value is invalid or this column should be nullable or have a default value.");
                             }
                             <%
                         }
@@ -119,7 +119,8 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
                 index++;
             }
             %>
-        }        
+        }
+        searchingResult_<%=cid%>.close();
         <%
     } else {
         %>
@@ -182,9 +183,11 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
                 <%=scdManager.genSetStatement("insertionStatement_" + cid, "version_" + cid, paramIndex, scdConfiger.getDimensionType2Configer().getVersionFieldType())%>
                 <%
             } else {
-                %>
-                <%=scdManager.genSetStatement("insertionStatement_" + cid, inConnectionName + "." + insertionColumn.getLabelName(), paramIndex, insertionColumn.getJavaType())%>
-                <%
+                if(!insertionColumn.getColumnName().equals(scdConfiger.getDimensionType2Configer().getEndDateField())) {
+                    %>
+                    <%=scdManager.genSetStatement("insertionStatement_" + cid, inConnectionName + "." + insertionColumn.getLabelName(), paramIndex, insertionColumn.getJavaType())%>
+                    <%
+                }
             }
             paramIndex++;
         }
@@ -321,9 +324,11 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
                         <%=scdManager.genSetStatement("insertionStatement_" + cid, "maxVersion_" + cid, paramIndex, scdConfiger.getDimensionType2Configer().getVersionFieldType())%>
                         <%
                     } else {
-                        %>
-                        <%=scdManager.genSetStatement("insertionStatement_" + cid, inConnectionName + "." + insertionColumn.getLabelName(), paramIndex, insertionColumn.getJavaType())%>
-                        <%
+                        if(!insertionColumn.getColumnName().equals(scdConfiger.getDimensionType2Configer().getEndDateField())) {
+                            %>
+                            <%=scdManager.genSetStatement("insertionStatement_" + cid, inConnectionName + "." + insertionColumn.getLabelName(), paramIndex, insertionColumn.getJavaType())%>
+                            <%
+                        }
                     }
                     paramIndex++;
                 }                

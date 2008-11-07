@@ -26,6 +26,13 @@ String cid = node.getUniqueName();
 List<IMetadataColumn> inputSchema = getInputSchema(node);
 List<IMetadataColumn> outputSchema = getOutputSchema(node);
 if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outputSchema.size() > 0) {
+    boolean useExistingConnection = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__").equals("true");
+    boolean isEnableSaveMemMode = ElementParameterParser.getValue(node, "__USE_SAVE_MEM_MODE__").equals("true");
+    if(isEnableSaveMemMode) {
+        %>
+        searchingStmt_<%=cid%>.close();
+        <%
+    }
     SCDConfiger scdConfiger = getSCDConfiger(node);
     %>
     insertionStatement_<%=cid%>.close();
@@ -45,15 +52,16 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
         updateForType3_<%=cid%>.close();
         <%
     }
-    boolean useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__").equals("true");
-    if(!useExistingConn){
-    %>
-    if(connection_<%=cid%> != null && !connection_<%=cid%>.isClosed()) {
-        connection_<%=cid%>.close();
+    if (!useExistingConnection) {
+        %>
+        if(connection_<%=cid%> != null && !connection_<%=cid%>.isClosed()) {
+            connection_<%=cid%>.close();
+        }
+        <%
     }
+    %>
     globalMap.put("<%=cid %>_NB_LINE_UPDATED", nb_line_update_<%=cid%>);
     globalMap.put("<%=cid %>_NB_LINE_INSERTED", nb_line_inserted_<%=cid%>);
     <%
-    }
 }
 %>
