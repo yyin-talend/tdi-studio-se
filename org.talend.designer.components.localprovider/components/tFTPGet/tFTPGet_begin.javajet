@@ -179,8 +179,8 @@ if(useProxy){
         }
     }
     
-// add a try{...}catch(){...}(the end is line 41 in tFTPGet_end.javajet) for catch the errors of tFTPGet, but not exit.
-//try{
+// add a try{...}catch(){...}(the end is line 30 in tFTPGet_end.javajet) for catch the errors of tFTPGet, but not exit.
+try{
     
     com.jcraft.jsch.JSch jsch_<%=cid%>=new com.jcraft.jsch.JSch(); 
     
@@ -316,7 +316,7 @@ if(useProxy){
         }
     }
     
-// add a try{...}catch(){...}(the end is line 35 in tFTPGet_end.javajet) for catch the errors of tFTPGet, but not exit.
+// add a try{...}catch(){...}(the end is line 44 in tFTPGet_end.javajet) for catch the errors of tFTPGet, but not exit.
 try{
     
 	com.enterprisedt.net.ftp.FTPClient ftp_<%=cid %> = new com.enterprisedt.net.ftp.FTPClient();
@@ -359,6 +359,12 @@ for (int i=0; i<files.size(); i++) {
  	}
 %>
 
-	String localdir_<%=cid %>  = <%=localdir%>;
+	String localdir_<%=cid %>  = <%=localdir%>;	
+	
+	//create folder if local direcotry (assigned by property) not exists
+	java.io.File dirHandle_<%=cid %> = new java.io.File(localdir_<%=cid %>);
+    if ( !dirHandle_<%=cid %>.exists() )
+        dirHandle_<%=cid %>.mkdir();
+                
 	String root_<%=cid %> = getter_<%=cid %>.pwd();
 	for (String maskStr_<%=cid%> : maskList_<%=cid%>) { 

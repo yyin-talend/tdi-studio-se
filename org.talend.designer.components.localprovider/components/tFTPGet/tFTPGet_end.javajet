@@ -20,10 +20,17 @@
 		<%
 	if(sftp){
 %>
-    session_<%=cid%>.disconnect();     
+    	session_<%=cid%>.disconnect();     
+    } catch (com.jcraft.jsch.JSchException e){
+    	// 1. host address is error - [java.net.ConnectException: Connection timed out: connect]
+        // 2. service has closed - [java.net.ConnectException: Connection refused: connect], etc.
+        System.err.println(e.getMessage());
+    } catch (Exception e){
+    	e.printStackTrace();
+    }    
+    
 <%}else{%>
 	ftp_<%=cid %>.quit();
-	
 } catch (java.net.ConnectException e){
 	System.err.println("can not connect to ftp");
 } catch (com.enterprisedt.net.ftp.FTPException e){
@@ -34,7 +41,5 @@
 	e.printStackTrace();
 }
 <%}%>
-
-
 
 globalMap.put("<%=cid %>_NB_FILE",nb_file_<%=cid%>);
