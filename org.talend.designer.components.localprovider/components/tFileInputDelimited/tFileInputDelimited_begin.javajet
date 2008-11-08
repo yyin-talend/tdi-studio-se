@@ -315,34 +315,35 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		int limit<%=cid %> = <%= limit %>;
 		int lastLine<%=cid %> = -1;	
 		
-		char fieldSeparator[];
+		char fieldSeparator[] = null;
 		
 		//support passing value (property: Field Separator) by 'context.fs' or 'globalMap.get("fs")'. 
 		if ( ((String)<%=delim1%>).length() > 0 ){
 			fieldSeparator = ((String)<%=delim1%>).toCharArray();
 		}else {
-			System.out.println("Field Separator must be assigned a char.");
-			return;
+			System.err.println("Field Separator must be assigned a char.");
+			System.exit(0);
 		}
 		
-		char rowSeparator[];
+		char rowSeparator[] = null;
 		
 		//support passing value (property: Row Separator) by 'context.rs' or 'globalMap.get("rs")'. 
 		if ( ((String)<%=rowSeparator1%>).length() > 0 ){
 			rowSeparator = ((String)<%=rowSeparator1%>).toCharArray();
 		}else {
-			System.out.println("Row Separator must be assigned a char.");
-			return;
+			System.err.println("Row Separator must be assigned a char.");
+			System.exit(0);
 		}
 		
 		
 		com.csvreader.CsvReader csvReader<%=cid %>=new com.csvreader.CsvReader(new java.io.BufferedReader(new java.io.InputStreamReader(
                 new java.io.FileInputStream(<%=filename %>),<%=encoding %>)), fieldSeparator[0]);
                 
-
-        csvReader<%=cid %>.setRecordDelimiter(rowSeparator[0]);
+		if ( (rowSeparator[0] != '\n') && (rowSeparator[0] != '\r') )
+        	csvReader<%=cid %>.setRecordDelimiter(rowSeparator[0]);
+        	
         csvReader<%=cid %>.setSkipEmptyRecords(<%=removeEmptyRow %>);
-        csvReader<%=cid %>.setTextQualifier('<%=textEnclosure %>');                
+        csvReader<%=cid %>.setTextQualifier('<%=textEnclosure %>');
 
 <%
         if(escapeChar.equals("\\\\")){
@@ -388,8 +389,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
           
 	 	csvReader<%=cid %>=new com.csvreader.CsvReader(new java.io.BufferedReader(new java.io.InputStreamReader(
 	          new java.io.FileInputStream(<%=filename %>),<%=encoding %>)), fieldSeparator[0]);
-
-        csvReader<%=cid %>.setRecordDelimiter(rowSeparator[0]);
+	          
+		if ( (rowSeparator[0] != '\n') && (rowSeparator[0] != '\r') )	
+        	csvReader<%=cid %>.setRecordDelimiter(rowSeparator[0]);
         csvReader<%=cid %>.setSkipEmptyRecords(<%=removeEmptyRow %>);
         csvReader<%=cid %>.setTextQualifier('<%=textEnclosure %>');
 
