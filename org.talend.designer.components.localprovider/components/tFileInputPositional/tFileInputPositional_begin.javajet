@@ -56,7 +56,8 @@
     		
     		String footer = ElementParameterParser.getValue(node, "__FOOTER__");
     		
-    		String limit = ElementParameterParser.getValue(node, "__LIMIT__");    		
+    		String limit = ElementParameterParser.getValue(node, "__LIMIT__");
+    		
     		
     		String removeEmptyRow = ElementParameterParser.getValue(node, "__REMOVE_EMPTY_ROW__");
     		
@@ -74,11 +75,7 @@
     		if(header.equals("")){
     			header = "0";
     		}
-    		
-    		if(limit.equals("")){
-    			limit = "-1";
-    		}
-    		
+    			
     		if(footer.equals("")){
     			footer = "0";
     		}
@@ -98,7 +95,16 @@
 %>
 int nb_line_<%=cid%> = 0;
 int footer_<%=cid %>  = <%=footer%>;
-int limit_<%=cid %> = <%=limit %>;
+int nb_limit_<%=cid %> = <%=limit%>;
+
+// not limit by default
+boolean bLimit = false;
+
+// if the value of 'limit' is a positive integer, set bLimit true.
+if ( java.util.regex.Pattern.compile("^[1-9]*[1-9][0-9]*$").matcher("<%=limit%>").matches() ){
+	bLimit = true;
+}    		
+
 <%
 		if(advanced){
 %>
@@ -186,11 +192,12 @@ if(footer_<%=cid %> > 0){
 <%
 			}
 %>	
-	reader_<%=cid %>.skipHeaders(<%=header %>);	
-	if(limit_<%=cid %> == -1){
-		limit_<%=cid %> = available_<%=cid %>; 
+	reader_<%=cid %>.skipHeaders(<%=header %>);
+	
+	if ( bLimit ){
+		nb_limit_<%=cid %> = ( nb_limit_<%=cid %> > available_<%=cid %>) ? available_<%=cid %> : nb_limit_<%=cid %>;
 	}else{
-		limit_<%=cid %> = (limit_<%=cid %> > available_<%=cid %>) ? available_<%=cid %> : limit_<%=cid %>;
+		nb_limit_<%=cid %> = available_<%=cid %>;
 	}
 }
 String row_<%=cid %> = null;   
