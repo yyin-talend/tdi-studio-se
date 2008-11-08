@@ -19,6 +19,7 @@ import java.util.Map;
 
 import org.eclipse.gef.commands.Command;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.ui.swt.advanced.dataeditor.ExtendedToolbarView;
 import org.talend.commons.ui.swt.advanced.dataeditor.button.AddAllPushButton;
 import org.talend.commons.ui.swt.advanced.dataeditor.button.AddAllPushButtonForExtendedTable;
@@ -40,6 +41,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.designer.core.ui.editor.cmd.PropertyTablePasteCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.controllers.TableController;
+import org.talend.designer.core.ui.editor.properties.macrowidgets.tableeditor.PromptDefaultValueDialog.ColumnInfo;
 
 /**
  * $Id$
@@ -125,6 +127,12 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
                 Element element = tableEditorModel.getElement();
                 if (element != null && element instanceof Node) {
                     IElementParameter param = tableEditorModel.getElemParameter();
+
+                    // diplay a dialog for setting default values. see 0005416: When click Add All in a table, add the
+                    // possibility to setup the default parameters value.
+                    List<ColumnInfo> tableInputs = promptForDefaultValue(tableEditorModel.getTableViewer().getControl()
+                            .getShell(), param);
+
                     String paramColumnsName = "COLUMN";// default name
                     String paramSizeName = "SIZE"; // default name
                     for (Object object : param.getListItemsValue()) {
@@ -160,6 +168,11 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
                                         mapObject.put(paramSizeName, Integer.toString(column.getLength()));
                                     }
                                 }
+                                // set default values
+                                for (ColumnInfo col : tableInputs) {
+                                    mapObject.put(col.parameter.getName(), col.defaultValue);
+                                }
+
                                 objects.add(entry);
                             }
                             return objects;
@@ -167,6 +180,31 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
                     }
                 }
                 return Collections.EMPTY_LIST;
+            }
+
+            private List<ColumnInfo> promptForDefaultValue(Shell shell, IElementParameter param) {
+                List<ColumnInfo> tableInputs = new ArrayList<ColumnInfo>();
+
+                Object[] listItemsValue = param.getListItemsValue();
+                String[] displayNames = param.getListItemsDisplayName();
+
+                for (int i = 0; i < listItemsValue.length; i++) {
+                    if (listItemsValue[i] instanceof IElementParameter) {
+                        IElementParameter colParam = (IElementParameter) listItemsValue[i];
+                        if (colParam.getField().equals(EParameterFieldType.COLUMN_LIST)) {
+                            continue;
+                        }
+
+                        ColumnInfo row = new ColumnInfo();
+                        row.name = displayNames[i];
+                        row.parameter = colParam;
+                        tableInputs.add(row);
+                    }
+                }
+
+                PromptDefaultValueDialog dialog = new PromptDefaultValueDialog(shell, tableInputs);
+                dialog.open();
+                return tableInputs;
             }
 
         };
