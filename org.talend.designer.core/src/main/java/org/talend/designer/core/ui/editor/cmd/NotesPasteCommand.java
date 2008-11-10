@@ -24,6 +24,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.ui.PlatformUI;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.notes.Note;
@@ -138,11 +139,11 @@ public class NotesPasteCommand extends Command {
         return newLocation;
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     private Point findLocationForNoteInProcess(final Point location, Dimension size) {
         Rectangle copiedRect = new Rectangle(location.x, location.y, size.width, size.height);
         Point newLocation = new Point(location);
-        for (Note node : (List<Note>) process.getNotes()) {
+        for (Note node : process.getNotes()) {
             Rectangle currentRect = new Rectangle(node.getLocation().x, node.getLocation().y, node.getSize().width, node
                     .getSize().height);
             if (currentRect.intersects(copiedRect)) {
@@ -189,7 +190,7 @@ public class NotesPasteCommand extends Command {
         return location;
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     private void createNoteList() {
         int firstIndex = 0;
         int index = 0;
@@ -202,6 +203,19 @@ public class NotesPasteCommand extends Command {
             pastedNote.setOpaque(copiedNote.isOpaque());
             pastedNote.setText(copiedNote.getText());
             pastedNote.setSize(copiedNote.getSize());
+
+            // see bug 0005571: Copy/Paste of Note doesn't keep Format
+            EParameterName[] params = new EParameterName[] { EParameterName.NOTE_FONT, EParameterName.FONT_SIZE,
+                    EParameterName.FONT_BOLD, EParameterName.FONT_ITALIC, EParameterName.NOTE_LINECOLOR,
+                    EParameterName.NOTE_COLOR, EParameterName.NOTETXT_COLOR, EParameterName.NOTETXT_LEFT,
+                    EParameterName.NOTETXT_RIGHT, EParameterName.NOTETXT_CENTER, EParameterName.NOTELABEL_CENTER,
+                    EParameterName.NOTETXT_TOP, EParameterName.NOTETXT_BOTTOM };
+            for (EParameterName param : params) {
+                Object value = copiedNote.getElementParameter(param.getName()).getValue();
+                pastedNote.getElementParameter(param.getName()).setValue(value);
+            }
+            pastedNote.setOpaque(copiedNote.isOpaque());
+
             pastedNote.setProcess(process);
             Point location = null;
             if (getCursorLocation() == null) {
@@ -223,7 +237,7 @@ public class NotesPasteCommand extends Command {
         }
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     @Override
     public void execute() {
         // create the note list to paste
@@ -268,7 +282,7 @@ public class NotesPasteCommand extends Command {
         process.checkProcess();
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     @Override
     public void undo() {
         // remove the current selection
