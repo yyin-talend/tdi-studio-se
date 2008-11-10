@@ -57,6 +57,7 @@
     		String footer = ElementParameterParser.getValue(node, "__FOOTER__");
     		
     		String limit = ElementParameterParser.getValue(node, "__LIMIT__");    		
+    		if ("".equals(limit.trim())) limit = "-1";
     		
     		String removeEmptyRow = ElementParameterParser.getValue(node, "__REMOVE_EMPTY_ROW__");
     		
