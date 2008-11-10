@@ -16,7 +16,7 @@
 		IMetadataTable metadata = metadatas.get(0);
 		if (metadata!=null) {
 %>	nb_line_<%=cid %>++;
-	if ( bLimit && nb_line_<%=cid %> >= nb_limit_<%=cid %> ){
+	if ( nb_limit_<%=cid %> > 0 && nb_line_<%=cid %> >= nb_limit_<%=cid %> ){
 		break;
 	}
 }

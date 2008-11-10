@@ -56,8 +56,7 @@
     		
     		String footer = ElementParameterParser.getValue(node, "__FOOTER__");
     		
-    		String limit = ElementParameterParser.getValue(node, "__LIMIT__");
-    		
+    		String limit = ElementParameterParser.getValue(node, "__LIMIT__");    		
     		
     		String removeEmptyRow = ElementParameterParser.getValue(node, "__REMOVE_EMPTY_ROW__");
     		
@@ -96,14 +95,6 @@
 int nb_line_<%=cid%> = 0;
 int footer_<%=cid %>  = <%=footer%>;
 int nb_limit_<%=cid %> = <%=limit%>;
-
-// not limit by default
-boolean bLimit = false;
-
-// if the value of 'limit' is a positive integer, set bLimit true.
-if ( java.util.regex.Pattern.compile("^[1-9]*[1-9][0-9]*$").matcher("<%=limit%>").matches() ){
-	bLimit = true;
-}    		
 
 <%
 		if(advanced){
@@ -194,7 +185,7 @@ if(footer_<%=cid %> > 0){
 %>	
 	reader_<%=cid %>.skipHeaders(<%=header %>);
 	
-	if ( bLimit ){
+	if ( nb_limit_<%=cid %> >= 0 ){
 		nb_limit_<%=cid %> = ( nb_limit_<%=cid %> > available_<%=cid %>) ? available_<%=cid %> : nb_limit_<%=cid %>;
 	}else{
 		nb_limit_<%=cid %> = available_<%=cid %>;
@@ -212,7 +203,7 @@ String[] columnValue<%=cid %>=new String[<%=metadata.getListColumns().size()%>];
 <%
 	}
 %>
-while (reader_<%=cid %>.readRecord()) {
+while (nb_limit_<%=cid %> != 0 && reader_<%=cid %>.readRecord()) {
 	row_<%=cid %> = reader_<%=cid %>.getRowRecord();
 <%
 	List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
