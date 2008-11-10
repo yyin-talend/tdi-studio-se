@@ -502,6 +502,13 @@
 <%
 	}
 %>
+<%
+        if(process.getNodesOfType("tFlowMeterCatcher").size() > 0) {
+            %>
+        MetterCatcherUtils.clearConnCountMap();    
+            <%
+        }
+%>
 		start_Hash.clear();
 		end_Hash.clear();
 		ok_Hash.clear();
