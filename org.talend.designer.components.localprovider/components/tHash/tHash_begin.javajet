@@ -19,7 +19,7 @@
 
 %>
 
-            java.util.Map<<%=connectionName%>Struct, <%=connectionName%>Struct> tHash_<%=connectionName%> = new java.util.HashMap<<%=connectionName%>Struct, <%=connectionName%>Struct>();
+            java.util.Map<<%=connectionName%>Struct, <%=connectionName%>Struct> tHash_<%=connectionName%> = new java.util.LinkedHashMap<<%=connectionName%>Struct, <%=connectionName%>Struct>();
             globalMap.put("tHash_<%=connectionName%>", tHash_<%=connectionName%>);
 
 <%
