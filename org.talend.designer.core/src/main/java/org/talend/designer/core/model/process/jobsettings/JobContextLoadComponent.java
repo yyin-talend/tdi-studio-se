@@ -233,6 +233,9 @@ public class JobContextLoadComponent implements IComponent {
                 source = self + JobSettingsConstants.getExtraParameterName(EParameterName.DBNAME.getName());
                 multipleComponentManager.addParam(source, DB_INPUT + ".DBNAME"); //$NON-NLS-1$ 
 
+                source = self + JobSettingsConstants.getExtraParameterName(EParameterName.DB_VERSION.getName());
+                multipleComponentManager.addParam(source, DB_INPUT + ".DB_VERSION"); //$NON-NLS-1$ 
+
                 source = self + JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTIES.getName());
                 multipleComponentManager.addParam(source, DB_INPUT + ".PROPERTIES"); //$NON-NLS-1$ 
 
@@ -349,6 +352,11 @@ public class JobContextLoadComponent implements IComponent {
 
         newParam = new ElementParameter(node);
         newParam.setName(JobSettingsConstants.getExtraParameterName(EParameterName.DBNAME.getName()));
+        newParam.setField(EParameterFieldType.TEXT);
+        elemParamList.add(newParam);
+
+        newParam = new ElementParameter(node);
+        newParam.setName(JobSettingsConstants.getExtraParameterName(EParameterName.DB_VERSION.getName()));
         newParam.setField(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 
