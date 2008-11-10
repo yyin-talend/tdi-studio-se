@@ -118,11 +118,12 @@ public class ProcessView extends ViewPart {
         layout.verticalSpacing = 2;
         container.setLayout(layout);
 
-        processNameLab = new Label(container, SWT.NONE);
+        processNameLab = new Label(container, SWT.NULL);
         GridData data = new GridData(GridData.FILL_HORIZONTAL);
         data.verticalIndent = 2;
-        data.horizontalAlignment = SWT.CENTER;
+        // data.horizontalAlignment = SWT.CENTER;
         processNameLab.setLayoutData(data);
+        processNameLab.setAlignment(SWT.CENTER);
         FontData[] fds = processNameLab.getFont().getFontData();
 
         for (FontData fd : fds) {
