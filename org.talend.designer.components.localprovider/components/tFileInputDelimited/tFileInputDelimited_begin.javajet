@@ -418,7 +418,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         int currentLine<%=cid %> = 0;
         int outputLine<%=cid %> = 0;
             
-        while (csvReader<%=cid %>.readRecord()) { 
+        while ( limit<%=cid%> != 0 && csvReader<%=cid %>.readRecord() ) { 
         
         	row<%=cid %>=csvReader<%=cid %>.getValues();
         	
@@ -439,7 +439,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 break;
             }
             outputLine<%=cid %>++;
-            if(limit<%=cid %>!=-1&& outputLine<%=cid %> > limit<%=cid %>){
+            if(limit<%=cid %> > 0 && outputLine<%=cid %> > limit<%=cid %>){
                 break;
             }  
                                                                       
