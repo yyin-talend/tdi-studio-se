@@ -152,7 +152,8 @@ public final class TalendEditorPaletteFactory {
 
             if (filter != null) {
                 String regex = getFilterRegex();
-                if (!xmlComponent.getTranslatedName().toLowerCase().matches(regex)) {
+                if (!xmlComponent.getTranslatedName().toLowerCase().matches(regex)
+                        && !xmlComponent.getLongName().toLowerCase().matches(regex)) {
                     continue;
                 }
             }
