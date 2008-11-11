@@ -46,6 +46,7 @@ import org.talend.commons.ui.swt.advanced.dataeditor.button.MoveDownPushButtonFo
 import org.talend.commons.ui.swt.advanced.dataeditor.button.MoveUpPushButton;
 import org.talend.commons.ui.swt.advanced.dataeditor.button.MoveUpPushButtonForExtendedTable;
 import org.talend.commons.ui.swt.advanced.dataeditor.button.PastePushButton;
+import org.talend.commons.ui.swt.advanced.dataeditor.button.PastePushButtonForExtendedTable;
 import org.talend.commons.ui.swt.advanced.dataeditor.button.RemovePushButton;
 import org.talend.commons.ui.swt.advanced.dataeditor.button.RemovePushButtonForExtendedTable;
 import org.talend.commons.ui.swt.advanced.dataeditor.button.SaveAsGenericSchemaPushButton;
@@ -141,9 +142,9 @@ public class MetadataToolbarEditorViewExt extends MetadataToolbarEditorView {
      */
     private int rowNumberWidth() {
         String widthS = Messages.getString("MetadataToolbarEditorViewExt.RowNum.Text.width");
-        if (widthS == null || widthS.equals(""))
+        if (widthS == null || widthS.equals("")) {
             return 200;
-        else {
+        } else {
             try {
                 int width = Integer.parseInt(widthS);
                 return width < 200 ? 200 : width;
@@ -204,6 +205,7 @@ public class MetadataToolbarEditorViewExt extends MetadataToolbarEditorView {
             final int j = i;
             item.addSelectionListener(new SelectionAdapter() {
 
+                @Override
                 public void widgetSelected(SelectionEvent e) {
                     MenuItem item = (MenuItem) e.widget;
                     genTableEditor2.updateHeader(ids.get(j), items.get(j), !item.getSelection());
@@ -235,6 +237,7 @@ public class MetadataToolbarEditorViewExt extends MetadataToolbarEditorView {
      * 
      * @see org.talend.commons.ui.swt.advanced.dataeditor.ExtendedToolbarView#createRemovePushButton()
      */
+    @Override
     protected RemovePushButton createRemovePushButton() {
         RemovePushButtonForExtendedTable removeButton2 = new RemovePushButtonForExtendedTable(toolbar, extendedTableViewer);
         return removeButton2;
@@ -247,8 +250,14 @@ public class MetadataToolbarEditorViewExt extends MetadataToolbarEditorView {
      */
     @Override
     public PastePushButton createPastePushButton() {
-        PastePushButton pastePushButton2 = super.createPastePushButton();
-        return pastePushButton2;
+        return new PastePushButtonForExtendedTable(toolbar, extendedTableViewer) {
+
+            @Override
+            protected Command getCommandToExecute(ExtendedTableModel extendedTableModel, Integer indexWhereInsert) {
+                return new MetadataExtPasteCommand(extendedTableModel, indexWhereInsert);
+            }
+
+        };
     }
 
     /*
