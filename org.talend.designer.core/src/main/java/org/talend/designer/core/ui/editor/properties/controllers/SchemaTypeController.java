@@ -50,13 +50,16 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IElementParameterDefaultValue;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
+import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.ui.metadata.dialog.MetadataDialog;
 import org.talend.core.ui.metadata.dialog.MetadataDialogForMerge;
+import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -66,6 +69,7 @@ import org.talend.designer.core.ui.editor.cmd.RepositoryChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.utils.SAPParametersUtils;
+import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
@@ -89,6 +93,8 @@ public class SchemaTypeController extends AbstractRepositoryController {
     private static final String FORCE_READ_ONLY = "FORCE_READ_ONLY";
 
     private static final String RESET_COLUMNS = "RESET_COLUMNS"; //$NON-NLS-1$
+
+    private static final String COPY_CHILD_COLUMNS = "COPY_CHILD_COLUMNS"; //$NON-NLS-1$
 
     private static final String SCHEMA = "SCHEMA"; //$NON-NLS-1$
 
@@ -221,28 +227,22 @@ public class SchemaTypeController extends AbstractRepositoryController {
                 }
             }
             if (flowMainInput && !multipleInput && !tableReadOnly) {
-                resetBtn = getWidgetFactory().createButton(subComposite,
-                        Messages.getString("SchemaController.syncColumns"), SWT.PUSH); //$NON-NLS-1$
-                resetBtn.setToolTipText(Messages.getString("SchemaController.resetButton.tooltip")); //$NON-NLS-1$
-
-                Point resetBtnSize = resetBtn.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-
-                resetBtn.addSelectionListener(listenerSelection);
-                data = new FormData();
-                data.left = new FormAttachment(btn, 0);
-                data.right = new FormAttachment(btn, resetBtnSize.x + ITabbedPropertyConstants.HSPACE, SWT.RIGHT);
-                data.top = new FormAttachment(0, top);
-                data.height = resetBtnSize.y;
-                resetBtn.setLayoutData(data);
+                resetBtn = createAdditionalButton(subComposite, btn, btnSize, param, Messages
+                        .getString("SchemaController.syncColumns"), Messages.getString("SchemaController.resetButton.tooltip"),
+                        top);
                 resetBtn.setData(NAME, RESET_COLUMNS);
-                resetBtn.setData(PARAMETER_NAME, param.getName());
-                resetBtn.setEnabled(!param.isReadOnly());
-
-                if (resetBtnSize.y > btnSize.y) {
-                    btnSize.y = resetBtnSize.y;
-                }
 
                 lastControlUsed = resetBtn;
+
+            }
+            // 0004322: tRunJob can import the tBufferOutput schema from the son job
+            if (node.getComponent().getName().equals("tRunJob")) {
+                Button copySchemaButton = createAdditionalButton(subComposite, btn, btnSize, param, Messages
+                        .getString("SchemaController.copyChildSchema"), Messages
+                        .getString("SchemaController.copyChildSchema.tooltip"), top);
+                copySchemaButton.setData(NAME, COPY_CHILD_COLUMNS);
+
+                lastControlUsed = copySchemaButton;
             }
         }
 
@@ -275,6 +275,65 @@ public class SchemaTypeController extends AbstractRepositoryController {
         // curRowSize = btnSize.y + ITabbedPropertyConstants.VSPACE;
         dynamicProperty.setCurRowSize(btnSize.y + ITabbedPropertyConstants.VSPACE);
         return lastControlUsed;
+    }
+
+    private Button createAdditionalButton(Composite subComposite, Button button, Point buttonSize, IElementParameter param,
+            String text, String tooltip, int top) {
+        Button subButton = getWidgetFactory().createButton(subComposite, text, SWT.PUSH);
+        subButton.setToolTipText(tooltip);
+
+        Point subButtonnSize = subButton.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+
+        subButton.addSelectionListener(listenerSelection);
+        FormData data = new FormData();
+        data.left = new FormAttachment(button, 0);
+        data.right = new FormAttachment(button, subButtonnSize.x + ITabbedPropertyConstants.HSPACE, SWT.RIGHT);
+        data.top = new FormAttachment(0, top);
+        data.height = subButtonnSize.y;
+        subButton.setLayoutData(data);
+
+        subButton.setData(PARAMETER_NAME, param.getName());
+        subButton.setEnabled(!param.isReadOnly());
+        if (subButtonnSize.y > buttonSize.y) {
+            buttonSize.y = subButtonnSize.y;
+        }
+
+        return subButton;
+
+    }
+
+    /**
+     * DOC hcw Comment method "copySchemaFromChildJob".
+     * 
+     * @param runJobNode
+     * @param item
+     */
+    private void copySchemaFromChildJob(Node runJobNode, final Item item) {
+        // 0004322: tRunJob can import the tBufferOutput schema from the son job
+        if (runJobNode != null && item instanceof ProcessItem) {
+            IDesignerCoreService service = CorePlugin.getDefault().getDesignerCoreService();
+            IProcess process = service.getProcessFromProcessItem((ProcessItem) item);
+            List<? extends INode> graphicalNodes = process.getGraphicalNodes();
+            for (INode node : graphicalNodes) {
+                if ((node != null) && node.getComponent().getName().equals("tBufferOutput")) {
+                    List<IMetadataTable> list = node.getMetadataList();
+                    if (list.size() > 0) {
+                        List<IMetadataTable> metadata = runJobNode.getMetadataList();
+                        if (metadata.size() == 0) {
+                            metadata.add(list.get(0).clone());
+                        } else {
+                            IMetadataTable table = metadata.get(0);
+
+                            List<IMetadataColumn> columns = list.get(0).getListColumns();
+                            for (IMetadataColumn col : columns) {
+                                table.getListColumns().add(col.clone());
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
     }
 
     /*
@@ -828,6 +887,14 @@ public class SchemaTypeController extends AbstractRepositoryController {
                 }
 
             }
+        } else if (button.getData(NAME).equals(COPY_CHILD_COLUMNS)) {
+            // 0004322: tRunJob can import the tBufferOutput schema from the son job
+            IElementParameter processParam = elem.getElementParameterFromField(EParameterFieldType.PROCESS_TYPE);
+            IElementParameter processIdParam = processParam.getChildParameters().get(
+                    EParameterName.PROCESS_TYPE_PROCESS.getName());
+            String id = (String) processIdParam.getValue();
+            Item item = ItemCacheManager.getProcessItem(id);
+            copySchemaFromChildJob((Node) elem, item);
         }
 
         return null;
