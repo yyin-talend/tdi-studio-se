@@ -209,8 +209,27 @@ public class Note extends Element {
     }
 
     public void setText(String text) {
+        autoAdjustFigureSize(text);
         this.text = text;
         firePropertyChange("", null, text); //$NON-NLS-1$
+    }
+
+    /**
+     * It is used for auto-adjust the size of fingure to adapt the text modification.
+     * 
+     * @param text
+     */
+    private void autoAdjustFigureSize(String text) {
+        int length = text.length() - this.text.length();
+        int adjustLength = TalendEditor.GRID_SIZE / 4;
+        if (length < 0) {
+            adjustLength = -TalendEditor.GRID_SIZE / 4;
+        }
+        if (length != 0 && text.length() != 0) {
+            this.size.width = this.size.width + length * 3 + adjustLength;
+        } else {
+            this.size = new Dimension(TalendEditor.GRID_SIZE * 3, TalendEditor.GRID_SIZE * 2);
+        }
     }
 
     public boolean isOpaque() {
