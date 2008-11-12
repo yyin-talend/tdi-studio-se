@@ -15,7 +15,9 @@ package org.talend.designer.core.ui.editor.cmd;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Priority;
 import org.eclipse.gef.commands.Command;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
 import org.talend.core.database.EDatabaseTypeName;
@@ -32,6 +34,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.core.utils.SQLFormatUtil;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -187,7 +190,15 @@ public class QueryGuessCommand extends Command {
             if (param.getField() == EParameterFieldType.MEMO_SQL) {
                 oldValue = node.getPropertyValue(param.getName());
                 this.propName = param.getName();
-                node.setPropertyValue(param.getName(), newQuery);
+                String sql = null;
+                try {
+                    sql = new SQLFormatUtil().formatSQL(newQuery);
+                    node.setPropertyValue(param.getName(), sql);
+                } catch (Exception e) {
+                    ExceptionHandler.process(e, Priority.WARN);
+                    node.setPropertyValue(param.getName(), newQuery);
+                }
+
                 param.setRepositoryValueUsed(false);
             }
         }
