@@ -47,10 +47,14 @@ public class MetadataExtPasteCommand extends MetadataPasteCommand {
             if (current instanceof IMetadataColumn) {
                 IMetadataColumn copy = ((IMetadataColumn) current).clone();
                 copy.setLabel(((MetadataTableEditor) extendedTable).getNextGeneratedColumnName(copy.getLabel()));
-                MetadataColumnExt metadataColumnExt = new MetadataColumnExt((MetadataColumn) copy);
-                metadataColumnExt.setFunction((new FunctionManagerExt()).getDefaultFunction(metadataColumnExt, metadataColumnExt
-                        .getTalendType()));
-                list.add(metadataColumnExt);
+                if (copy instanceof MetadataColumnExt) {
+                    list.add(copy);
+                } else {
+                    MetadataColumnExt metadataColumnExt = new MetadataColumnExt((MetadataColumn) copy);
+                    metadataColumnExt.setFunction((new FunctionManagerExt()).getDefaultFunction(metadataColumnExt,
+                            metadataColumnExt.getTalendType()));
+                    list.add(metadataColumnExt);
+                }
             }
         }
         return list;
