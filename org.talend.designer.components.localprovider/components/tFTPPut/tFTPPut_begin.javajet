@@ -94,6 +94,9 @@ if(useProxy){
     session<%=cid%>.setUserInfo(defaultUserInfo<%=cid%>); 
     session<%=cid%>.connect(); 
     
+    // becasue there is not the same method in JSch class as FTPClient class, define a list here
+    java.util.List msg_<%=cid%> = new java.util.ArrayList();
+    
     com.jcraft.jsch. Channel channel<%=cid%>=session<%=cid%>.openChannel("sftp"); 
     channel<%=cid%>.connect(); 
     com.jcraft.jsch.ChannelSftp c<%=cid%>=(com.jcraft.jsch.ChannelSftp)channel<%=cid%>; 
@@ -120,7 +123,12 @@ if(useProxy){
 	com.enterprisedt.net.ftp.FTPClient ftp<%=cid %> = new com.enterprisedt.net.ftp.FTPClient();
 	ftp<%=cid %>.setRemoteHost(<%=host %>);
 	ftp<%=cid %>.setRemotePort(<%=port %>);
-	ftp<%=cid %>.connect();
+	ftp<%=cid %>.connect();	
+	
+	// msg_<%=cid%> likes a String[] to save the message from transfer.	
+	com.enterprisedt.net.ftp.TransferCompleteStrings msg_<%=cid%> = ftp<%=cid %>.getTransferCompleteMessages();
+	msg_<%=cid%>.clearAll();
+	
     ftp<%=cid %>.login(<%=user %>, <%=pass %>);    
 	java.util.List<java.util.Map<String,String>> list<%=cid %> = new java.util.ArrayList<java.util.Map<String,String>>();
 <%

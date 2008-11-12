@@ -18,12 +18,19 @@
 %>
  	}
     session<%=cid%>.disconnect(); 
+    msg_<%=cid%>.add(nb_file_<%=cid%> + " files has been uploaded.");
+	globalMap.put("<%=cid%>_TRANSFER_MESSAGES", msg_<%=cid%>.toArray());
     
 <%}else{%>
 	}
 
 	ftp<%=cid %>.quit();
 	
+	msg_<%=cid%>.add(ftp<%=cid %>.getUploadCount() + " files has been uploaded.");
+	globalMap.put("<%=cid%>_TRANSFER_MESSAGES", msg_<%=cid%>.getAll());
+	
 <%}%>
-
+	
+	
 globalMap.put("<%=cid %>_NB_FILE",nb_file_<%=cid%>);
+
