@@ -323,14 +323,16 @@ public class SchemaTypeController extends AbstractRepositoryController {
                             metadata.add(list.get(0).clone());
                         } else {
                             IMetadataTable table = metadata.get(0);
-
+                            // clear schema of tRunJob, so we will replace with schema of tBufferOutput
+                            table.getListColumns().clear();
                             List<IMetadataColumn> columns = list.get(0).getListColumns();
                             for (IMetadataColumn col : columns) {
                                 table.getListColumns().add(col.clone());
                             }
                         }
+                        // skip other tBufferOutput component
+                        break;
                     }
-
                 }
             }
         }
@@ -894,7 +896,14 @@ public class SchemaTypeController extends AbstractRepositoryController {
                     EParameterName.PROCESS_TYPE_PROCESS.getName());
             String id = (String) processIdParam.getValue();
             Item item = ItemCacheManager.getProcessItem(id);
-            copySchemaFromChildJob((Node) elem, item);
+            Node node = (Node) elem;
+            copySchemaFromChildJob(node, item);
+            // pop up the schema dialog
+            MetadataDialog metaDialog = new MetadataDialog(composite.getShell(), node.getMetadataList().get(0), node,
+                    getCommandStack());
+            metaDialog.setText(Messages.getString("SchemaController.schemaOf") + node.getLabel());
+            metaDialog.open();
+
         }
 
         return null;
