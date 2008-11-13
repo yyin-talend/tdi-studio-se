@@ -594,7 +594,9 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
     private void getAppropriateComponent(Item item, boolean quickCreateInput, boolean quickCreateOutput, TempStore store,
             ERepositoryObjectType type) {
         EDatabaseComponentName name = EDatabaseComponentName.getCorrespondingComponentName(item, type);
-
+        if (name == null) {
+            return;
+        }
         List<IComponent> components = ComponentsFactoryProvider.getInstance().getComponents();
         // tRunJob is special from our rules
         if (name == EDatabaseComponentName.RunJob) {

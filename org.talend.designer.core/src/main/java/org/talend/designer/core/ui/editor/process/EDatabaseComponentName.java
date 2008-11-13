@@ -17,6 +17,7 @@ import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.DelimitedFileConnectionItem;
+import org.talend.core.model.properties.EbcdicConnectionItem;
 import org.talend.core.model.properties.ExcelFileConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.PositionalFileConnectionItem;
@@ -92,6 +93,8 @@ public enum EDatabaseComponentName {
     FILEREGEX(RegExFileConnectionItem.class, "tFileInputRegex", null, "REGEX"),
     FILEXML(XmlFileConnectionItem.class, "tFileInputXML", "tFileOutputXML", "XML"),
     SAPFFUNCTION(SAPConnectionItem.class, "tSAPInput", "tSAPOutput", "SAP"),
+
+    FILEEBCDIC(EbcdicConnectionItem.class, "tEBCDICInput", "", "EBCDIC"),
 
     WSDL(WSDLSchemaConnectionItem.class, "tWebServiceInput", null, "WSDL"),
     SALESFORCE(SalesforceSchemaConnectionItem.class, "tSalesforceInput", null, "SALESFORCE"),
