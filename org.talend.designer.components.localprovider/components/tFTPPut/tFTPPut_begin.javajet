@@ -95,7 +95,7 @@ if(useProxy){
     session<%=cid%>.connect(); 
     
     // becasue there is not the same method in JSch class as FTPClient class, define a list here
-    java.util.List msg_<%=cid%> = new java.util.ArrayList();
+    java.util.List<String> msg_<%=cid%> = new java.util.ArrayList<String>();
     
     com.jcraft.jsch. Channel channel<%=cid%>=session<%=cid%>.openChannel("sftp"); 
     channel<%=cid%>.connect(); 

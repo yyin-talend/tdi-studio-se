@@ -18,8 +18,10 @@
 %>
  	}
     session<%=cid%>.disconnect(); 
-    msg_<%=cid%>.add(nb_file_<%=cid%> + " files has been uploaded.");
-	globalMap.put("<%=cid%>_TRANSFER_MESSAGES", msg_<%=cid%>.toArray());
+    msg_<%=cid%>.add(nb_file_<%=cid%> + " files has been uploaded.");  
+    	
+    // msg_<%=cid%> (ArrayList) can store Object class item, so make conversion here.(will return String arry)
+	globalMap.put("<%=cid%>_TRANSFER_MESSAGES", (String[])msg_<%=cid%>.toArray(new String[0]));
     
 <%}else{%>
 	}
