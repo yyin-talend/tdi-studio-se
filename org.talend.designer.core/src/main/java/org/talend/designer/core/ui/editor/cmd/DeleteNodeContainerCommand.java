@@ -123,8 +123,10 @@ public class DeleteNodeContainerCommand extends Command {
                 Node prevNode = connection.getSource();
                 if (!nodeList.contains(prevNode)) {
                     prevNode.addOutput(connection);
-                    INodeConnector nodeConnector = prevNode.getConnectorFromType(connection.getLineStyle());
-                    nodeConnector.setCurLinkNbOutput(nodeConnector.getCurLinkNbOutput() + 1);
+                    // see bug 0005635: Undo after delete, doesn't set back correctly the number of connections linked.
+                    // need to undo for 4577
+                    // INodeConnector nodeConnector = prevNode.getConnectorFromType(connection.getLineStyle());
+                    // nodeConnector.setCurLinkNbOutput(nodeConnector.getCurLinkNbOutput() + 1);
                     connection.reconnect();
                     if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.UNIQUE_NAME)) {
                         process.addUniqueConnectionName(connection.getName());
