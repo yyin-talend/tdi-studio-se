@@ -41,6 +41,15 @@
    String outconnName = outConn.getName();   
    String preconnName = inMainCon.getName();
    
+   String rejectConnName = null; 
+   List<? extends IConnection> rejectConns = node.getOutgoingConnections("REJECT");
+   if(rejectConns != null && rejectConns.size() > 0) {
+    for(IConnection conn : rejectConns) {
+        rejectConnName = conn.getName();
+    }
+   }
+   
+   
    IMetadataTable preMetadata = inMainCon.getMetadataTable();   
    List<IMetadataColumn> preColumns = preMetadata.getListColumns();   
    
@@ -49,39 +58,195 @@
    List<IMetadataColumn> columns = metadata.getListColumns();   
 
 %>
+   String errorCode_<%=cid %>="";
+   String errorMessage_<%=cid %>="";
 
-<%if(autoCast){
-	for(IMetadataColumn col:columns){	
+  <%=outconnName %>=null;
+  <%=rejectConnName %>=null;
+       
+  boolean isPassed_<%=cid %>=true;
+  boolean hasException_<%=cid %>=false;
+  
+  
+<%if(autoCast){ //autoCast begin
+	for(IMetadataColumn col:columns){//col:columns	
+	
 
+     
 	 String outLabel = col.getLabel();
 	 String outPattern = col.getPattern();
 	 String outTypeWhole = JavaTypesManager.getTypeToGenerate(col.getTalendType(), col.isNullable());
 	 String outType = outTypeWhole.contains(".") ? outTypeWhole.substring(outTypeWhole.lastIndexOf(".")+1) : outTypeWhole;
 	 if(outType.equals("byte[]")){outType = "byteArray";}
-	 for(IMetadataColumn preCol:preColumns){
+	 for(IMetadataColumn preCol:preColumns){//3
 	 String preLabel = preCol.getLabel();	 
 	 	if(preLabel.equals(outLabel)){	 	
     	 	String inTypeWhole = JavaTypesManager.getTypeToGenerate(preCol.getTalendType(), preCol.isNullable());
     	 	String inType = inTypeWhole.contains(".") ? inTypeWhole.substring(inTypeWhole.lastIndexOf(".")+1) : inTypeWhole;
     	 	if(inType.equals("byte[]")){inType = "byteArray";}
 %>
+  
+<%if((outType.equals("Date") && inType.equals("String"))||(outType.equals("String")&& inType.equals("Date"))){
+%>
+try{
 
-<%if((outType.equals("Date") && inType.equals("String"))||(outType.equals("String")&& inType.equals("Date"))){%>
-	 	<%=outconnName %>.<%=outLabel %> = TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>, <%=outPattern%>);
+	 	TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>, <%=outPattern %>);
+}catch(Exception e){
+  isPassed_<%=cid %>=false;
+  if(errorMessage_<%=cid %>.equals("")){
+  errorMessage_<%=cid %>="<%=outLabel %>"+":"+e.getMessage();
+  }else{
+  errorMessage_<%=cid %>=errorMessage_<%=cid %>+";"+"<%=outLabel %>"+":"+e.getMessage();
+  }
+  
+ }
+ 
+ 
 <%}else{%>
-		<%=outconnName %>.<%=outLabel %> = TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>);
-		
+
+try{
+
+	 	TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>);
+}catch(Exception e){
+  isPassed_<%=cid %>=false;
+  if(errorMessage_<%=cid %>.equals("")){
+  errorMessage_<%=cid %>="<%=outLabel %>"+":"+e.getMessage();
+  }else{
+  errorMessage_<%=cid %>=errorMessage_<%=cid %>+";"+"<%=outLabel %>"+":"+e.getMessage();
+  }
+ }
+ 
+
+
+
+
+ 
 <%}%>
 
 <%     }
-	 }
-	}
+	 }//3
+	}//col:columns	
 %>
+  
+  if(errorMessage_<%=cid %>.length()>0){
+    if(errorMessage_<%=cid %>.contains("Can't support convert")){
+    errorCode_<%=cid %>="1"; //ConvertTypeNotSupportException
+    }else{
+    errorCode_<%=cid %>="2"; //Other Java exception
+    }
+    }
+    
 
-<%}else{%>
+<% if(outConns!=null&&outConns.size()>0){
+%>
+   if(isPassed_<%=cid %>){
+   <%=outconnName %>=new <%=outconnName %>Struct();
+<%   for(IMetadataColumn col:columns){
+	
+
+     
+	 String outLabel = col.getLabel();
+	 String outPattern = col.getPattern();
+	 String outTypeWhole = JavaTypesManager.getTypeToGenerate(col.getTalendType(), col.isNullable());
+	 String outType = outTypeWhole.contains(".") ? outTypeWhole.substring(outTypeWhole.lastIndexOf(".")+1) : outTypeWhole;
+	 if(outType.equals("byte[]")){outType = "byteArray";}
+	 for(IMetadataColumn preCol:preColumns){//3
+	 String preLabel = preCol.getLabel();	 
+	 	if(preLabel.equals(outLabel)){	 	
+    	 	String inTypeWhole = JavaTypesManager.getTypeToGenerate(preCol.getTalendType(), preCol.isNullable());
+    	 	String inType = inTypeWhole.contains(".") ? inTypeWhole.substring(inTypeWhole.lastIndexOf(".")+1) : inTypeWhole;
+    	 	if(inType.equals("byte[]")){inType = "byteArray";}
+%>
+<%if((outType.equals("Date") && inType.equals("String"))||(outType.equals("String")&& inType.equals("Date"))){
+%>
+   <%=outconnName %>.<%=outLabel %>=TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>, <%=outPattern %>);
+<%}else{
+%> 
+   <%=outconnName %>.<%=outLabel %>=TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>);  
+<%}
+}
+}
+}
+%>   
+ }
+<%}
+%> 
+<% if(rejectConnName!=null){
+%>
+ if(!isPassed_<%=cid %>){
+   <%=rejectConnName %> =new <%=rejectConnName %>Struct();
+   <%   for(IMetadataColumn col:columns){
+	
+
+     
+	 String outLabel = col.getLabel();
+	 String outPattern = col.getPattern();
+	 String outTypeWhole = JavaTypesManager.getTypeToGenerate(col.getTalendType(), col.isNullable());
+	 String outType = outTypeWhole.contains(".") ? outTypeWhole.substring(outTypeWhole.lastIndexOf(".")+1) : outTypeWhole;
+	 if(outType.equals("byte[]")){outType = "byteArray";}
+	 for(IMetadataColumn preCol:preColumns){//3
+	 String preLabel = preCol.getLabel();	 
+	 	if(preLabel.equals(outLabel)){	 	
+    	 	String inTypeWhole = JavaTypesManager.getTypeToGenerate(preCol.getTalendType(), preCol.isNullable());
+    	 	String inType = inTypeWhole.contains(".") ? inTypeWhole.substring(inTypeWhole.lastIndexOf(".")+1) : inTypeWhole;
+    	 	if(inType.equals("byte[]")){inType = "byteArray";}
+%>
+<%if((outType.equals("Date") && inType.equals("String"))||(outType.equals("String")&& inType.equals("Date"))){
+%>
+   try{
+   TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>, <%=outPattern %>);
+   }catch(Exception e){
+    hasException_<%=cid %>=true;
+   }
+   if(hasException_<%=cid %>){
+   <%=rejectConnName %>.<%=outLabel %>=null;
+   hasException_<%=cid %>=false;
+   }else{
+   <%=rejectConnName %>.<%=outLabel %>=TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>, <%=outPattern %>);
+   }
+   
+   
+   
+   
+
+<%}else{
+%> 
+   try {
+   TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>); 
+   }catch(Exception e){
+     hasException_<%=cid %>=true;
+   }
+   if(hasException_<%=cid %>){
+   <%=rejectConnName %>.<%=outLabel %>=null;
+   hasException_<%=cid %>=false;
+   }else{
+   <%=rejectConnName %>.<%=outLabel %>=TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>);
+   }
+   
+<%}
+}
+}
+}
+%>  
+   <%=rejectConnName %>.errorCode=errorCode_<%=cid %>;
+   <%=rejectConnName %>.errorMessage= errorMessage_<%=cid %>;
+   
+ 
+   }
+<%}
+%>
+   
+  errorMessage_<%=cid %>="";
+   
+
+  
+
+<%}// autoCast end.
+
+else{%>// manual cast begin
 
 <% 
-		for(Map<String, String> manualColumn : manualtable){
+		for(Map<String, String> manualColumn : manualtable){//4
 			String input = manualColumn.get("INPUT_COLUMN");
 			String output = manualColumn.get("OUTPUT_COLUMN");
 			IMetadataColumn in = preMetadata.getColumn(input);
@@ -96,13 +261,154 @@
 			String outPattern = out.getPattern();
 			String preLabel = in.getLabel();
 %>            
-<%if((outType.equals("Date") && inType.equals("String"))||(outType.equals("String")&& inType.equals("Date"))){%>
-           <%=outconnName %>.<%=outLabel %> = TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>, <%=outPattern %>);
-<%}else{%>
-		   
-		   <%=outconnName %>.<%=outLabel %> = TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>);
-<%}%>
-<%
-		}
+<%if((outType.equals("Date") && inType.equals("String"))||(outType.equals("String")&& inType.equals("Date"))){
 %>
+try{
+
+	 	TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>, <%=outPattern %>);
+}catch(Exception e){
+  isPassed_<%=cid %>=false;
+  if(errorMessage_<%=cid %>.equals("")){
+  errorMessage_<%=cid %>="<%=outLabel %>"+":"+e.getMessage();
+  }else{
+  errorMessage_<%=cid %>=errorMessage_<%=cid %>+";"+"<%=outLabel %>"+":"+e.getMessage();
+  }
+  
+ }
+ 
+ 
+<%}else{%>
+
+try{
+
+	 	TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>);
+}catch(Exception e){
+  isPassed_<%=cid %>=false;
+  if(errorMessage_<%=cid %>.equals("")){
+  errorMessage_<%=cid %>="<%=outLabel %>"+":"+e.getMessage();
+  }else{
+  errorMessage_<%=cid %>=errorMessage_<%=cid %>+";"+"<%=outLabel %>"+":"+e.getMessage();
+  }
+ }
+ 
+
+
+
+
+ 
 <%}%>
+
+<%
+		}//4
+%>
+ if(errorMessage_<%=cid %>.length()>0){
+    if(errorMessage_<%=cid %>.contains("Can't support convert")){
+    errorCode_<%=cid %>="1"; //ConvertTypeNotSupportException
+    }else{
+    errorCode_<%=cid %>="2"; //Other Java exception
+    }
+    }
+ 
+<% if(outConns!=null&&outConns.size()>0){
+%>
+   if(isPassed_<%=cid %>){
+   <%=outconnName %>=new <%=outconnName %>Struct();
+<% 
+		for(Map<String, String> manualColumn : manualtable){//4
+			String input = manualColumn.get("INPUT_COLUMN");
+			String output = manualColumn.get("OUTPUT_COLUMN");
+			IMetadataColumn in = preMetadata.getColumn(input);
+			IMetadataColumn out = metadata.getColumn(output);
+			String inTypeWhole = JavaTypesManager.getTypeToGenerate(in.getTalendType(), in.isNullable());
+			String inType = inTypeWhole.contains(".") ? inTypeWhole.substring(inTypeWhole.lastIndexOf(".")+1) : inTypeWhole;
+			String outTypeWhole = JavaTypesManager.getTypeToGenerate(out.getTalendType(), out.isNullable());
+			String outType = outTypeWhole.contains(".") ? outTypeWhole.substring(outTypeWhole.lastIndexOf(".")+1) : outTypeWhole;
+			if(outType.equals("byte[]")){outType = "byteArray";}
+			if(inType.equals("byte[]")){inType = "byteArray";}
+			String outLabel = out.getLabel();
+			String outPattern = out.getPattern();
+			String preLabel = in.getLabel();
+%> 
+<%if((outType.equals("Date") && inType.equals("String"))||(outType.equals("String")&& inType.equals("Date"))){
+%>
+   <%=outconnName %>.<%=outLabel %>=TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>, <%=outPattern %>);
+<%}else{
+%> 
+   <%=outconnName %>.<%=outLabel %>=TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>);  
+<%}
+}
+
+
+%>   
+ }
+<%}
+%>     
+
+<% if(rejectConnName!=null){
+%>
+ if(!isPassed_<%=cid %>){
+   <%=rejectConnName %> =new <%=rejectConnName %>Struct();
+<% 
+		for(Map<String, String> manualColumn : manualtable){//4
+			String input = manualColumn.get("INPUT_COLUMN");
+			String output = manualColumn.get("OUTPUT_COLUMN");
+			IMetadataColumn in = preMetadata.getColumn(input);
+			IMetadataColumn out = metadata.getColumn(output);
+			String inTypeWhole = JavaTypesManager.getTypeToGenerate(in.getTalendType(), in.isNullable());
+			String inType = inTypeWhole.contains(".") ? inTypeWhole.substring(inTypeWhole.lastIndexOf(".")+1) : inTypeWhole;
+			String outTypeWhole = JavaTypesManager.getTypeToGenerate(out.getTalendType(), out.isNullable());
+			String outType = outTypeWhole.contains(".") ? outTypeWhole.substring(outTypeWhole.lastIndexOf(".")+1) : outTypeWhole;
+			if(outType.equals("byte[]")){outType = "byteArray";}
+			if(inType.equals("byte[]")){inType = "byteArray";}
+			String outLabel = out.getLabel();
+			String outPattern = out.getPattern();
+			String preLabel = in.getLabel();
+%>
+<%if((outType.equals("Date") && inType.equals("String"))||(outType.equals("String")&& inType.equals("Date"))){
+%>
+   try{
+   TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>, <%=outPattern %>);
+   }catch(Exception e){
+    hasException_<%=cid %>=true;
+   }
+   if(hasException_<%=cid %>){
+   <%=rejectConnName %>.<%=outLabel %>=null;
+   hasException_<%=cid %>=false;
+   }else{
+   <%=rejectConnName %>.<%=outLabel %>=TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>, <%=outPattern %>);
+   }
+   
+   
+   
+   
+
+<%}else{
+%> 
+   try {
+   TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>); 
+   }catch(Exception e){
+     hasException_<%=cid %>=true;
+   }
+   if(hasException_<%=cid %>){
+   <%=rejectConnName %>.<%=outLabel %>=null;
+   hasException_<%=cid %>=false;
+   }else{
+   <%=rejectConnName %>.<%=outLabel %>=TypeConvert.<%=inType %>2<%=outType %>(<%=preconnName %>.<%=preLabel %>);
+   }
+   
+<%}
+
+}
+%>  
+   <%=rejectConnName %>.errorCode=errorCode_<%=cid %>;
+   <%=rejectConnName %>.errorMessage= errorMessage_<%=cid %>;
+   
+ 
+   }
+<%}
+%>
+   
+  errorMessage_<%=cid %>="";
+    
+
+<%}%>//manual end.
