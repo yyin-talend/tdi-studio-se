@@ -198,11 +198,6 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
             throw new ProcessorException(Messages.getString("JavaProcessor.notFoundedProjectException")); //$NON-NLS-1$
         }
 
-        try {
-            computeClasspath();
-        } catch (CoreException e) {
-            ExceptionHandler.process(e);
-        }
         initCodePath(context);
         this.context = context;
     }
@@ -995,7 +990,11 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
      */
     @Override
     public Object saveLaunchConfiguration() throws CoreException {
-        computeClasspath();
+
+        /*
+         * When launch debug progress, just share all libraries between farther job and child jobs
+         */
+        computeLibrariesPath(false);
 
         ILaunchConfiguration config = null;
         ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
@@ -1256,18 +1255,31 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
      * 
      * @throws CoreException
      */
-    public void computeClasspath() throws CoreException {
+    private void computeClasspath(boolean clearExist) throws CoreException {
 
         if (rootProject == null || javaProject == null) {
             initializeProject();
         }
 
-        IClasspathEntry jreClasspathEntry = JavaCore.newContainerEntry(new Path("org.eclipse.jdt.launching.JRE_CONTAINER")); //$NON-NLS-1$
-        IClasspathEntry classpathEntry = JavaCore.newSourceEntry(javaProject.getPath().append(JavaUtils.JAVA_SRC_DIRECTORY));
-
         List<IClasspathEntry> classpath = new ArrayList<IClasspathEntry>();
-        classpath.add(jreClasspathEntry);
-        classpath.add(classpathEntry);
+        if (clearExist) {
+            // add basic classpath
+            IClasspathEntry jreClasspathEntry = JavaCore.newContainerEntry(new Path("org.eclipse.jdt.launching.JRE_CONTAINER")); //$NON-NLS-1$
+            IClasspathEntry classpathEntry = JavaCore.newSourceEntry(javaProject.getPath().append(JavaUtils.JAVA_SRC_DIRECTORY));
+
+            classpath.add(jreClasspathEntry);
+            classpath.add(classpathEntry);
+        } else {
+            // reserve original
+            IClasspathEntry[] exists = javaProject.getRawClasspath();
+            if (exists != null && exists.length > 0) {
+                for (IClasspathEntry entry : exists) {
+                    if (!classpath.contains(entry)) {
+                        classpath.add(entry);
+                    }
+                }
+            }
+        }
 
         // Some shadow process does not implements process.getNeededLibraries(boolean true). If this, just add all jars
         Set<String> listModulesReallyNeeded = process.getNeededLibraries(true);
@@ -1283,7 +1295,10 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
             if ((externalLibDirectory != null) && (externalLibDirectory.isDirectory())) {
                 for (File externalLib : externalLibDirectory.listFiles(FilesUtils.getAcceptJARFilesFilter())) {
                     if (externalLib.isFile() && listModulesReallyNeeded.contains(externalLib.getName())) {
-                        classpath.add(JavaCore.newLibraryEntry(new Path(externalLib.getAbsolutePath()), null, null));
+                        IClasspathEntry entry = JavaCore.newLibraryEntry(new Path(externalLib.getAbsolutePath()), null, null);
+                        if (!classpath.contains(entry)) {
+                            classpath.add(entry);
+                        }
                     }
                 }
             }
@@ -1293,6 +1308,19 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
             javaProject.setRawClasspath(classpathEntryArray, null);
 
             javaProject.setOutputLocation(javaProject.getPath().append(JavaUtils.JAVA_CLASSES_DIRECTORY), null);
+        }
+    }
+
+    /*
+     * @see bug 0005633. Classpath error when current job inlcude some tRunJob-es.
+     * 
+     * @see org.talend.designer.runprocess.IProcessor#computeLibrariesPath(boolean)
+     */
+    public void computeLibrariesPath(boolean clear) {
+        try {
+            computeClasspath(clear);
+        } catch (CoreException e) {
+            ExceptionHandler.process(e);
         }
     }
 }

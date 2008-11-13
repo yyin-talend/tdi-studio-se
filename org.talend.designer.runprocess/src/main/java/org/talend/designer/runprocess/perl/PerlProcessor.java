@@ -558,4 +558,13 @@ public class PerlProcessor extends Processor {
         updateContextCode(codeGen);
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IProcessor#computeLibrariesPath(boolean)
+     */
+    public void computeLibrariesPath(boolean clear) {
+        // TODO Please improve perl library
+    }
+
 }
