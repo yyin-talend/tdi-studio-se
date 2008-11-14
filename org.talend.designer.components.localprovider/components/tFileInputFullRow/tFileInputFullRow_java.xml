@@ -34,7 +34,7 @@
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
       NUM_ROW="10"
-      READONLY="true"
+      READONLY="false"
     >
       <TABLE>
         <COLUMN NAME="line" TYPE="id_String" LENGTH="255"/>
@@ -85,7 +85,7 @@
     <PARAMETER
       NAME="REMOVE_EMPTY_ROW"
       FIELD="CHECK"
-      REQUIRED="true"
+      REQUIRED="false"
       NUM_ROW="50"
     >
       <DEFAULT>true</DEFAULT>
@@ -138,6 +138,8 @@
   </IMPORTS>
   </CODEGENERATION>
   
-  <RETURNS/>
+  <RETURNS>
+		<RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER" />
+	</RETURNS>
 
 </COMPONENT>
