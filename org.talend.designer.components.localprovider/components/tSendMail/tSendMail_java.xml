@@ -103,6 +103,20 @@ COMPATIBILITY="ALL"
     </PARAMETER>
     
     <PARAMETER
+      NAME="IMPORTANCE"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="95"
+    >
+      <ITEMS DEFAULT="NORMAL">
+        <ITEM NAME="HIGH"   VALUE="High" />
+        <ITEM NAME="NORMAL"   VALUE="Normal" />
+        <ITEM NAME="LOW" VALUE="Low" />
+      </ITEMS>
+    </PARAMETER>
+    
+    
+    
+    <PARAMETER
       NAME="NEED_AUTH"
       FIELD="CHECK"
       REQUIRED="true"

@@ -15,6 +15,8 @@
 	// component id
 	String cid = node.getUniqueName();
 	String message     = ElementParameterParser.getValue(node, "__MESSAGE__");
+	String importance=ElementParameterParser.getValue(node, "__IMPORTANCE__");
+	String priority=importance.equals("Normal")?"3":(importance.equals("High")?"1":"5");
 	boolean ifSSL = ElementParameterParser.getValue(node, "__SSL__").equals("true");
 	boolean startTLS = ElementParameterParser.getValue(node, "__STARTTLS__").equals("true");
 	boolean checkAttachementOnSend = ElementParameterParser.getValue(node, "__CHECK_ATTACHMENT__").equals("true");
@@ -79,7 +81,8 @@
 	    msg_<%=cid %>.setHeader(header_<%=cid %>.get("KEY"), header_<%=cid %>.get("VALUE"));		
 	}
 		
-     msg_<%=cid %>.setSentDate(new Date());     
+     msg_<%=cid %>.setSentDate(new Date());   
+     msg_<%=cid %>.setHeader("X-Priority","<%=priority %>"); //High->1 Normal->3 Low->5
      javax.mail.Multipart mp_<%=cid %> = new javax.mail.internet.MimeMultipart();
      javax.mail.internet.MimeBodyPart mbpText_<%=cid %> = new javax.mail.internet.MimeBodyPart();     
      mbpText_<%=cid %>.setText(message_<%=cid %>);
