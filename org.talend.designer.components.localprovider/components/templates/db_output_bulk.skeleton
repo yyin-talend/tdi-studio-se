@@ -1,3 +1,5 @@
+import org.talend.core.model.metadata.IMetadataColumn;
+
 public class CLASS {
     public static final String INSERT_COLUMN_NAME = "insertColName";
     public static final String INSERT_VALUE_STMT = "insertValueStmt";
@@ -44,6 +46,9 @@ public class CLASS {
         String value;
         boolean addCol;
         boolean isKey;
+        boolean isAutoIncrement;
+        int startValue;
+        int step;
         boolean isUpdateKey;
         boolean isDeleteKey;
         boolean insertable = true;
@@ -64,6 +69,16 @@ public class CLASS {
             this.value = "?";
             this.addCol = false;
             this.columnName = column.getOriginalDbColumnName();
+        }
+        public Column(IMetadataColumn column, boolean isKey, boolean useFieldOptions, Map<String, String> fieldOption, boolean isSpecifyIdentityKey, String identityKey, int startValue, int step) {
+            this(column, isKey, useFieldOptions, fieldOption);
+            if(isSpecifyIdentityKey) {
+                if(column.getLabel().equals(identityKey)) {
+                    isAutoIncrement = false;
+                    this.startValue = startValue;
+                    this.step = step;
+                }
+            }
         }
         public Column(IMetadataColumn column, boolean isKey, boolean useFieldOptions, Map<String, String> fieldOption) {
             this(column);
@@ -143,6 +158,24 @@ public class CLASS {
         }
         public String getOperator() {
             return operator;
+        }
+        public boolean isAutoIncrement() {
+            return this.isAutoIncrement;
+        }
+        public void setAutoIncrement(boolean isAutoIncrement) {
+            this.isAutoIncrement = isAutoIncrement;
+        }
+        public int getStartValue() {
+            return this.startValue;
+        }
+        public void setStartValue(int startValue) {
+            this.startValue = startValue;
+        }
+        public int getStep() {
+            return this.step;
+        }
+        public void setStep(int step) {
+            this.step = step;
         }
         public boolean isKey() {
             return this.isKey;
@@ -304,8 +337,12 @@ public class CLASS {
                             }
                             createSQL.append(suffix);
                         }
-                        createSQL.append(setDefaultValue(column.getColumn().getDefault(), dataType));
-                        createSQL.append(setNullable(column.getColumn().isNullable()));
+                        if(column.isAutoIncrement()) {
+                            createSQL.append(getAutoIncrement(column.getStartValue(), column.getStep()));
+                        } else {
+                            createSQL.append(setDefaultValue(column.getColumn().getDefault(), dataType));
+                            createSQL.append(setNullable(column.getColumn().isNullable()));
+                        }
                         if (count == columnList.size() - 1 && pkList.size() == 0) {
                             ending = "";
                         }
@@ -328,6 +365,9 @@ public class CLASS {
             }
             createSQL.append(")");
             return createSQL.toString();
+        }
+        protected String getAutoIncrement(int startValue, int step) {
+            return " IDENTITY (" + startValue + ", " + step + ") NOT NULL";
         }
         protected String setNullable(boolean nullable) {
             if(!nullable) {
@@ -418,6 +458,20 @@ public class CLASS {
                                 replacedCol.replace(replacementCol);
                             }
                         }                        
+                    }
+                }
+            }
+            return stmtStructure;
+        }
+        public List<Column> createColumnList(List<IMetadataColumn> columnList, boolean useFieldOptions, List<Map<String, String>> fieldOptions, List<Map<String, String>> addCols, boolean isSpecifyIdentityKey, String identityKey, int startValue, int step) {
+            List<Column> stmtStructure = createColumnList(columnList, useFieldOptions, fieldOptions, addCols);
+            if(isSpecifyIdentityKey) {
+                for(Column column : stmtStructure) {
+                    if(column.getColumnName().equals(identityKey)) {
+                        column.setAutoIncrement(true);
+                        column.setStartValue(startValue);
+                        column.setStep(step);
+                        break;
                     }
                 }
             }

@@ -54,6 +54,14 @@ skeleton="../templates/db_output_bulk.skeleton"
     
     String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
     
+    boolean isSpecifyIdentityField = ElementParameterParser.getValue(node,"__SPECIFY_IDENTITY_FIELD__").equals("true");
+    
+    String identityField = ElementParameterParser.getValue(node, "__IDENTITY_FIELD__");
+    
+    int startValue = Integer.parseInt(ElementParameterParser.getValue(node, "__START_VALUE__"));
+    
+    int step = Integer.parseInt(ElementParameterParser.getValue(node, "__STEP__"));
+    
     String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
     
     String identityInsert = ElementParameterParser.getValue(node, "__IDENTITY_INSERT__");
@@ -76,7 +84,7 @@ boolean whetherReject_<%=cid%> = false;
 List<IMetadataColumn> columnList = getColumnList(node);
 List<Column> stmtStructure = null;
 if(columnList != null && columnList.size() > 0) {
-    stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, useFieldOptions, fieldOptions, addCols);
+    stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, useFieldOptions, fieldOptions, addCols, isSpecifyIdentityField, identityField, startValue, step);
 }
 %>
 
