@@ -12,6 +12,13 @@
 // ============================================================================
 package org.talend.repository.ui.views;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.IColorProvider;
@@ -20,7 +27,11 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.widgets.Display;
+import org.osgi.framework.Bundle;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
@@ -28,6 +39,7 @@ import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.DocumentationItem;
 import org.talend.core.model.properties.InformationLevel;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.LinkDocumentationItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -127,7 +139,12 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
     public Image getImage(Property property) {
         Item item = property.getItem();
         ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(item);
-        Image img = CoreImageProvider.getImage(itemType);
+        Image img = null;
+        if (itemType == ERepositoryObjectType.JOBLET) {
+            img = getJobletCustomIcon(view.getSite().getShell().getDisplay(), property);
+        } else {
+            img = CoreImageProvider.getImage(itemType);
+        }
 
         // Manage doc extensions:
         if (itemType == ERepositoryObjectType.DOCUMENTATION) {
@@ -175,6 +192,43 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
         ERepositoryStatus informationStatus = factory.getStatus(informationLevel);
 
         return OverlayImageProvider.getImageWithStatus(image, informationStatus);
+    }
+
+    public static File getDefaultJobletImage() {
+        Bundle b = CorePlugin.getDefault().getBundle();
+        URL url = null;
+        try {
+            url = FileLocator.toFileURL(FileLocator.find(b, new Path(ECoreImage.JOBLET_ICON.getPath()), null));
+            return new File(url.getPath());
+        } catch (IOException e) {
+            throw new RuntimeException(ECoreImage.JOBLET_ICON.getPath() + " doesn't exist.");
+        }
+    }
+
+    /**
+     * DOC bqian Comment method "getJobletCustomIcon".
+     * 
+     * @param property
+     * @return
+     */
+    public static Image getJobletCustomIcon(Display display, Property property) {
+        JobletProcessItem item = (JobletProcessItem) property.getItem();
+        Image image = null;
+        if (item.getIcon() == null) {
+            // File image = RepositoryLabelProvider.getDefaultJobletImage();
+            // try {
+            // item.getIcon().setInnerContentFromFile(image);
+            // } catch (Exception e) {
+            // ExceptionHandler.process(e);
+            // }
+
+            image = ImageProvider.getImage(ECoreImage.JOBLET_ICON);
+        } else {
+            ByteArrayInputStream bis = new ByteArrayInputStream(item.getIcon().getInnerContent());
+            ImageData imageData = new ImageData(bis);
+            image = new Image(display, imageData);
+        }
+        return image;
     }
 
     public Image getImage(Object obj) {
