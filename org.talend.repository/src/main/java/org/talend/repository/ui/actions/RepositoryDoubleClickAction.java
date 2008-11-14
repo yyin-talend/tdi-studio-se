@@ -28,6 +28,7 @@ import org.talend.commons.ui.swt.actions.ITreeContextualAction;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.CDCConnection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.builder.connection.EbcdicConnection;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -121,6 +122,24 @@ public class RepositoryDoubleClickAction extends Action {
         return false;
     }
 
+    /**
+     * 
+     * ggu Comment method "isEBCDICTable".
+     * 
+     * for ebcdic
+     */
+    private boolean isEBCDICTable(RepositoryNode node) {
+        ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+        if (nodeType == ERepositoryObjectType.METADATA_CON_TABLE) {
+            node = node.getParent();
+            nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+            if (nodeType == ERepositoryObjectType.METADATA_FILE_EBCDIC) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private ITreeContextualAction getAction(RepositoryNode obj) {
         final boolean isCDC = isLinkCDCNode(obj);
         final ERepositoryObjectType nodeType = (ERepositoryObjectType) obj.getProperties(EProperties.CONTENT_TYPE);
@@ -137,6 +156,11 @@ public class RepositoryDoubleClickAction extends Action {
                 if (current.getClassForDoubleClick().equals(IMetadataTable.class)) {
                     return current;
                 }
+                // for ebcdic
+                if (isEBCDICTable(obj) && current.getClassForDoubleClick().equals(EbcdicConnection.class)) {
+                    return current;
+                }
+
                 // Added for v2.0.0
             } else if (nodeType != null && nodeType.equals(ERepositoryObjectType.METADATA_CON_QUERY)) {
                 if (current.getClassForDoubleClick().equals(QueryEMFRepositoryNode.class)) {
