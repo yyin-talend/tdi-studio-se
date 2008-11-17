@@ -629,6 +629,11 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
             listModulesReallyNeeded.add(moduleNeeded.getModuleName());
         }
 
+        // see bug 0005559: Import cannot be resolved in routine after opening Job Designer
+        for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeededForRoutines()) {
+            listModulesReallyNeeded.add(moduleNeeded.getModuleName());
+        }
+
         File externalLibDirectory = new File(CorePlugin.getDefault().getLibrariesService().getLibrariesPath());
         if ((externalLibDirectory != null) && (externalLibDirectory.isDirectory())) {
             for (File externalLib : externalLibDirectory.listFiles(FilesUtils.getAcceptJARFilesFilter())) {
@@ -643,8 +648,6 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         javaProject.setRawClasspath(classpathEntryArray, null);
 
         javaProject.setOutputLocation(javaProject.getPath().append(JavaUtils.JAVA_CLASSES_DIRECTORY), null);
-
-        // CorePlugin.getDefault().getLibrariesService().checkLibraries();
     }
 
     /**
@@ -1015,60 +1018,58 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     // // see bug 3914, make the order of the jar files consistent with the command
     // // line in run mode
-    // private void sortClasspath() throws CoreException {
-    // // get classpath from command line in run mode
-    // String[] cmd = getCommandLine(false, NO_STATISTICS, NO_TRACES, new String[0]);
-    // String[] paths = null;
-    // for (int i = 0; i < cmd.length; i++) {
-    // if (cmd[i].equals("-cp")) {
-    // paths = cmd[i + 1].split(";");
-    // break;
-    // }
-    // }
-    //
-    // List<IClasspathEntry> classpath = new ArrayList<IClasspathEntry>();
-    //
-    // // classpath of .Java project
-    // IClasspathEntry[] rawClasspath = (IClasspathEntry[]) ArrayUtils.clone(javaProject.getRawClasspath());
-    //
-    // // improve speed of looking up existing jar file in classpath
-    // Map<String, Integer> location = new HashMap<String, Integer>();
-    // for (int i = 0; i < rawClasspath.length; i++) {
-    // if (rawClasspath[i].getEntryKind() != IClasspathEntry.CPE_LIBRARY) {
-    // classpath.add(rawClasspath[i]);
-    // rawClasspath[i] = null;
-    // } else {
-    // // jar file
-    // location.put(rawClasspath[i].getPath().toOSString(), i);
-    // }
-    // }
-    //
-    // for (int i = 0; i < paths.length; i++) {
-    // if (paths[i].endsWith(".jar")) {
-    // Integer pos = location.get(new Path(paths[i]).toOSString());
-    // if (pos != null && rawClasspath[pos] != null) {
-    // // jar file is already in raw classpath, move it up
-    // classpath.add(rawClasspath[pos]);
-    // rawClasspath[pos] = null;
-    //
-    // } else {
-    // // user jar file does not exist, create new jar entry in
-    // // classpath
-    // classpath.add(JavaCore.newLibraryEntry(new Path(paths[i]), null, null));
-    // }
-    // }
-    // }
-    //
-    // // copy remaining jar file in raw classpath
-    // for (int i = 0; i < rawClasspath.length; i++) {
-    // if (rawClasspath[i] != null) {
-    // classpath.add(rawClasspath[i]);
-    // }
-    // }
-    //
-    // rawClasspath = classpath.toArray(new IClasspathEntry[classpath.size()]);
-    // javaProject.setRawClasspath(rawClasspath, null);
-    // }
+    private void sortClasspath() throws CoreException {
+        IClasspathEntry[] entries = javaProject.getRawClasspath();
+
+        Set<String> listModulesReallyNeeded = process.getNeededLibraries(true);
+        if (listModulesReallyNeeded == null) {
+            listModulesReallyNeeded = new HashSet<String>();
+        } else {
+            // see bug 0005559: Import cannot be resolved in routine after opening Job Designer
+            for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeededForRoutines()) {
+                listModulesReallyNeeded.add(moduleNeeded.getModuleName());
+            }
+        }
+
+        // sort
+        int exchange = 2; // The first,second library is JVM and SRC.
+        for (String jar : listModulesReallyNeeded) {
+            int index = indexOfEntry(entries, jar);
+            if (index >= 0 && index != exchange) {
+                // exchange
+                IClasspathEntry entry = entries[index];
+                IClasspathEntry first = entries[exchange];
+                entries[index] = first;
+                entries[exchange] = entry;
+                exchange++;
+            }
+        }
+
+        javaProject.setRawClasspath(entries, null);
+    }
+
+    private static int indexOfEntry(final IClasspathEntry[] dest, final String jarName) {
+
+        if (jarName == null) {
+            return -1;
+        }
+
+        for (int i = 0; i < dest.length; i++) {
+            IClasspathEntry entry = dest[i];
+
+            if (entry == null) {
+                continue;
+            }
+
+            if (entry.getPath() == null || entry.getPath().lastSegment() == null) {
+                continue;
+            }
+            if (entry.getPath().lastSegment().equals(jarName)) {
+                return i;
+            }
+        }
+        return -1;
+    }
 
     public static IJavaProject getJavaProject() {
         return javaProject;
@@ -1253,6 +1254,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
      * <p>
      * DOC YeXiaowei Comment method "computeClasspath".
      * 
+     * @deprecated
      * @throws CoreException
      */
     private void computeClasspath(boolean clearExist) throws CoreException {
@@ -1318,7 +1320,9 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
      */
     public void computeLibrariesPath(boolean clear) {
         try {
-            computeClasspath(clear);
+            updateClasspath();
+            // see bug 5633
+            sortClasspath();
         } catch (CoreException e) {
             ExceptionHandler.process(e);
         }
