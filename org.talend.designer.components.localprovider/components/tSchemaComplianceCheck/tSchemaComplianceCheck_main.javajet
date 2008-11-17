@@ -97,6 +97,8 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
     String anotherChecked = ElementParameterParser.getValue(node,"__CHECK_ANOTHER__");
 
     String checkAll = ElementParameterParser.getValue(node,"__CHECK_ALL__");
+    
+    final boolean bIsTrim = "true".equals( ElementParameterParser.getValue(node,"__SUB_STRING__") );
 
     List<IMetadataColumn> schemaOtherColumns = null;
 	
@@ -145,53 +147,75 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
         public void testDataLength(String incomingConnName, IMetadataColumn metadataColumn, Integer maxLength, String cid) {
 
             JavaType javaType = JavaTypesManager.getJavaTypeFromId(metadataColumn.getTalendType());
-			
-            if(javaType == JavaTypesManager.STRING) {
-                if(maxLength != null) {
+            
+            boolean bIsStringType = (javaType == JavaTypesManager.STRING), bIsIntegerType = (javaType == JavaTypesManager.INTEGER);          
+            
+            if (maxLength > 0 && ( bIsStringType || bIsIntegerType )){
+%>			
+				if ( (<%=incomingConnName%>.<%=metadataColumn.getLabel()%> != null)) {
+<%				
+					if ( bIsTrim ){
+
+						if( bIsStringType ) {
 %>
-                    //validate maxlength
-                    if(<%=incomingConnName%>.<%=metadataColumn.getLabel()%> != null) {
-                        if(<%=incomingConnName%>.<%=metadataColumn.getLabel()%>.length() > <%=maxLength%>) {
-                            ifPassed_<%=cid%> = false;
-                            errorCode_<%=cid%> += 8;
-                            errorMessage_<%=cid%> += "|exceed max length";                        
-                        }
-                    }
+							if( <%=incomingConnName%>.<%=metadataColumn.getLabel()%>.length() > <%=maxLength%> )
+								 <%=incomingConnName%>.<%=metadataColumn.getLabel()%> = <%=incomingConnName%>.<%=metadataColumn.getLabel()%>.substring(0, <%=maxLength%>);
 <%
-                }
-            } else if(javaType == JavaTypesManager.INTEGER) {
-                if(maxLength != null) {
+						} else if( bIsIntegerType ){
 
-                    String generatedType = JavaTypesManager.getTypeToGenerate(metadataColumn.getTalendType(), metadataColumn.isNullable());
+							String generatedType = JavaTypesManager.getTypeToGenerate(metadataColumn.getTalendType(), metadataColumn.isNullable());
 
-                    if(generatedType.equals("int")) {
-
-                        %>
-                        tmpContent_<%=cid%> = String.valueOf(<%=incomingConnName%>.<%=metadataColumn.getLabel()%>);
-
-                        if(tmpContent_<%=cid%>.length() > <%=maxLength%>) {
-                            ifPassed_<%=cid%> = false;
-                            errorCode_<%=cid%> += 8;
-                            errorMessage_<%=cid%> += "|exceed max length";                            
-                        }
-<%
-                    } else {
-
+							if(generatedType.equals("int")) {
 %>
-                        if(<%=incomingConnName%>.<%=metadataColumn.getLabel()%> != null) {
-
-                            tmpContent_<%=cid%> = <%=incomingConnName%>.<%=metadataColumn.getLabel()%>.toString();
-
-                            if(tmpContent_<%=cid%>.length() > <%=maxLength%>) {
-                                ifPassed_<%=cid%> = false;
-                                errorCode_<%=cid%> += 8;
-                                errorMessage_<%=cid%> += "|exceed max length";                                
-                            }
-                        }
+								tmpContent_<%=cid%> = String.valueOf(<%=incomingConnName%>.<%=metadataColumn.getLabel()%>);
 <%
-                    }
-                }
-            }
+							} else{
+%>							 
+								tmpContent_<%=cid%> = <%=incomingConnName%>.<%=metadataColumn.getLabel()%>.toString();
+<%
+							}
+%>
+							if( tmpContent_<%=cid%>.length() > <%=maxLength%> )
+									<%=incomingConnName%>.<%=metadataColumn.getLabel()%> = <%=incomingConnName%>.<%=metadataColumn.getLabel()%>.substring(0, <%=maxLength%>);
+<%
+						}
+
+					} else{
+				
+						if( bIsStringType ) {						
+%>									 
+							if(<%=incomingConnName%>.<%=metadataColumn.getLabel()%>.length() > <%=maxLength%>) {
+								ifPassed_<%=cid%> = false;
+								errorCode_<%=cid%> += 8;
+								errorMessage_<%=cid%> += "|exceed max length";                        
+							}
+<%						 
+						} else if( bIsIntegerType ) {
+
+							String generatedType = JavaTypesManager.getTypeToGenerate(metadataColumn.getTalendType(), metadataColumn.isNullable());
+
+							if(generatedType.equals("int")) {
+%>
+								tmpContent_<%=cid%> = String.valueOf(<%=incomingConnName%>.<%=metadataColumn.getLabel()%>);							
+<%
+							} else {
+%>							 
+								tmpContent_<%=cid%> = <%=incomingConnName%>.<%=metadataColumn.getLabel()%>.toString();	
+<%
+							}
+%>
+							if(tmpContent_<%=cid%>.length() > <%=maxLength%>) {
+									ifPassed_<%=cid%> = false;
+									errorCode_<%=cid%> += 8;
+									errorMessage_<%=cid%> += "|exceed max length";                                
+							}
+<%
+						}
+					}
+%>
+				}
+<%			
+			}
         }
 	
         public void  testDate(String incomingConnName, IMetadataColumn metadataColumn, String pattern, String cid) {
@@ -304,13 +328,21 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
                 		continue;
                 	}
 
-                	//if input field is nullable and output field can't nullable, it must check.
-
+                	//if input field is nullable and output field can't nullable, it must check.                	
                 	if(!columnListToTest.get(columnIndex).isNullable()){
                 		checker.testNull(incomingConnName,metadataColumn,cid);
                     }
-
-                    checker.testDataLength(incomingConnName,metadataColumn,columnListToTest.get(columnIndex).getLength(),cid);
+					
+					Object maxLength = columnListToTest.get(columnIndex).getLength();
+					
+					maxLength = (maxLength == null) ? "0" : maxLength;
+					
+					//if not an integer.
+					if (!java.util.regex.Pattern.compile("[0-9]*").matcher(maxLength.toString()).matches() ){
+						maxLength = "0";
+					}
+					
+                    checker.testDataLength(incomingConnName, metadataColumn, Integer.valueOf(maxLength.toString()), cid);
 
 
                 } else {
@@ -319,15 +351,24 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
 
                     String checkMaxLength = checkedColumn.get("MAX_LENGTH");
 
-					if(checkAll.equals("true") || !checkNullable.equals("true")) { // if the column we test is nullable, no need
+					if(checkAll.equals("true") || !checkNullable.equals("true")) {
 
                         checker.testNull(incomingConnName,metadataColumn,cid);
 
-                    }
+                    } 
 
-					if(checkAll.equals("true") || checkMaxLength.equals("true")) {
+					if(checkAll.equals("true") || checkMaxLength.equals("true")) { 
+						
+						Object maxLength = metadataColumn.getLength();
+					
+						maxLength = (maxLength == null) ? "0" : maxLength;
+						
+						//if not an integer.
+						if (!java.util.regex.Pattern.compile("[0-9]*").matcher(maxLength.toString()).matches() ){
+							maxLength = "0";
+						}
 
-                        checker.testDataLength(incomingConnName,metadataColumn, metadataColumn.getLength(),cid);
+                    	checker.testDataLength(incomingConnName, metadataColumn, Integer.valueOf(maxLength.toString()), cid);
 
                     }
                 }

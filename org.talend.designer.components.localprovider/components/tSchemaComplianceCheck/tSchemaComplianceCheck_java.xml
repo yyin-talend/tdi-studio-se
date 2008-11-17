@@ -28,16 +28,6 @@
 			NUM_ROW="1">
 		</PARAMETER>
 
-		<PARAMETER NAME="SCHEMA_REJECT" FIELD="SCHEMA_TYPE"
-			REQUIRED="true" NUM_ROW="7" CONTEXT="REJECT" SHOW="true">
-			<TABLE READONLY="true">
-				<COLUMN NAME="errorCode" TYPE="id_String" LENGTH="255"
-					READONLY="false" CUSTOM="true" />
-				<COLUMN NAME="errorMessage" TYPE="id_String"
-					LENGTH="255" READONLY="false" CUSTOM="true" />
-			</TABLE>
-		</PARAMETER>
-
 		<PARAMETER NAME="CHECK_ANOTHER" FIELD="CHECK" NUM_ROW="3">
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
@@ -72,9 +62,25 @@
 				</ITEM>
 				<ITEM NAME="DATEPATTERN" FIELD="TEXT"/>
 				<ITEM NAME="NULLABLE" FIELD="CHECK" VALUE="false" />
-				<ITEM NAME="MAX_LENGTH" FIELD="CHECK" VALUE="false" />
+				<ITEM NAME="MAX_LENGTH" FIELD="CHECK" VALUE="false" />				
 			</ITEMS>
 		</PARAMETER>
+		
+		<PARAMETER NAME="SCHEMA_REJECT" FIELD="SCHEMA_TYPE"
+			REQUIRED="true" NUM_ROW="7" CONTEXT="REJECT" SHOW="true">
+			<TABLE READONLY="true">
+				<COLUMN NAME="errorCode" TYPE="id_String" LENGTH="255"
+					READONLY="false" CUSTOM="true" />
+				<COLUMN NAME="errorMessage" TYPE="id_String"
+					LENGTH="255" READONLY="false" CUSTOM="true" />
+			</TABLE>
+		</PARAMETER>
+		
+		<PARAMETER NAME="SUB_STRING" FIELD="CHECK" NUM_ROW="8" REQUIRED="true"
+			NOT_SHOW_IF="(CHECK_ALL == 'true' or CHECK_ANOTHER == 'true')">
+			<DEFAULT>false</DEFAULT>
+		</PARAMETER>
+		
 	</PARAMETERS>
 	<CODEGENERATION></CODEGENERATION>
 
