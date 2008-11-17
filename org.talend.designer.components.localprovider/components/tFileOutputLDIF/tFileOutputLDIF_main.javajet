@@ -62,7 +62,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 					} else if (javaType == JavaTypesManager.BIGDECIMAL) {
 %>
-		String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>.doubleValue());
+		String.valueOf(<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>);
 <%
 					} else {
 %>

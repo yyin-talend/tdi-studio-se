@@ -66,7 +66,7 @@ for (int i = 0; i < columnSize; i++) {
 	        <%
 	        }else if(javaType == JavaTypesManager.BIGDECIMAL){
 	        %>
-	            row_<%=cid %>[<%=i %>] = String.valueOf(<%=incomingName %>.<%=label %>.doubleValue());
+	            row_<%=cid %>[<%=i %>] = String.valueOf(<%=column.getPrecision() == null? incomingName + "." + column.getLabel() : incomingName + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>);
 	        <%
 	        }else if(javaType == JavaTypesManager.BYTE_ARRAY){
 	        %>

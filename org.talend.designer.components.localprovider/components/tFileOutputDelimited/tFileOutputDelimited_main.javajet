@@ -106,14 +106,14 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
     							} else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
 							%>
         							<% if(javaType == JavaTypesManager.BIGDECIMAL) {%>
-        							FormatterUtils.format_Number(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>.doubleValue()), <%= thousandsSeparator %>, <%= decimalSeparator %>)					
+        							FormatterUtils.format_Number(String.valueOf(<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>), <%= thousandsSeparator %>, <%= decimalSeparator %>)					
         							<% } else { %>
         							FormatterUtils.format_Number(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>), <%= thousandsSeparator %>, <%= decimalSeparator %>)						
         							<% } %>
 							<%
 								} else if(javaType == JavaTypesManager.BIGDECIMAL){
     						%>
-    						<%=conn.getName() %>.<%=column.getLabel() %>.doubleValue()
+    						<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>
     						<%
     			        } else {
     			            %>
@@ -361,14 +361,14 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
                 			        } else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
         							%>
                 							<% if(javaType == JavaTypesManager.BIGDECIMAL) {%>
-                							row<%=cid%>[<%=i%>] = FormatterUtils.format_Number(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>.doubleValue()), <%= thousandsSeparator %>, <%= decimalSeparator %>);					
+                							row<%=cid%>[<%=i%>] = FormatterUtils.format_Number(String.valueOf(<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>), <%= thousandsSeparator %>, <%= decimalSeparator %>);					
                 							<% } else { %>
                 							row<%=cid%>[<%=i%>] = FormatterUtils.format_Number(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>), <%= thousandsSeparator %>, <%= decimalSeparator %>);						
                 							<% } %>
         							<%
         								} else if (javaType == JavaTypesManager.BIGDECIMAL) {
 										%>
-										row<%=cid%>[<%=i%>] = String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>.doubleValue());
+										row<%=cid%>[<%=i%>] = String.valueOf(<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>);
 										<%
                 			        }else{
                 			            %>

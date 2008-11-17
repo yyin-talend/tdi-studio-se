@@ -134,6 +134,7 @@ groupby_new_<%=cid %> = 0;
 			boolean isPrimitive = false;
 			boolean isBigDecimal = false;
 			boolean isAdvancedSeparator = false;
+			Integer precision = null;
 			for(IMetadataColumn column:metadata.getListColumns()) {
 				if(column.getLabel().equals(groupby[i][0])){
 					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
@@ -155,13 +156,15 @@ groupby_new_<%=cid %> = 0;
 					isPrimitive = JavaTypesManager.isJavaPrimitiveType( column.getTalendType(), column.isNullable());
 					
 					isAdvancedSeparator = advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable());
+					
+					precision = column.getPrecision();
 					break;
 				}
 			}
 %>tempSt_<%=cid %> = "<<%=groupby[i][2] %> <%=groupby[i][1] %>=\""+<%
 							if(isAdvancedSeparator){
 								if(isBigDecimal){
-								%>FormatterUtils.format_Number(String.valueOf(<%=conn.getName() %>.<%=groupby[i][0] %>.doubleValue()), <%= thousandsSeparator %>, <%= decimalSeparator %>)<%
+								%>FormatterUtils.format_Number(String.valueOf(<%=precision == null? conn.getName() + "." + groupby[i][0] : conn.getName() + "." + groupby[i][0] + ".setScale(" + precision + ", java.math.RoundingMode.HALF_UP)" %>), <%= thousandsSeparator %>, <%= decimalSeparator %>)<%
 								}else {
 								%>FormatterUtils.format_Number(String.valueOf(<%=conn.getName() %>.<%=groupby[i][0] %>), <%= thousandsSeparator %>, <%= decimalSeparator %>)<%
 								}
@@ -174,7 +177,7 @@ groupby_new_<%=cid %> = 0;
 									}else if(isByteArray){
 									%>TalendString.replaceSpecialCharForXML(java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=groupby[i][0] %>)).toString())<%
 									}else if(isBigDecimal){
-									%>TalendString.replaceSpecialCharForXML(String.valueOf(<%=conn.getName() %>.<%=tag[i][0] %>.doubleValue()))<%
+									%>TalendString.replaceSpecialCharForXML(String.valueOf(<%=precision == null? conn.getName() + "." + tag[i][0] : conn.getName() + "." + tag[i][0] + ".setScale(" + precision + ", java.math.RoundingMode.HALF_UP)" %>))<%
 									}else{
 									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%><%=conn.getName() %>.<%=groupby[i][0] %><%if(needReplace){%>)<%}%><%
 									}%>))<%
@@ -236,6 +239,7 @@ for(int i = 0; i < attribute.length; i++){
 	boolean isPrimitive = false;
 	boolean isBigDecimal = false;
 	boolean isAdvancedSeparator = false;
+	Integer precision = null;
 	for(IMetadataColumn column:metadata.getListColumns()) {
 		if(column.getLabel().equals(attribute[i][0])){
 			JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
@@ -257,13 +261,15 @@ for(int i = 0; i < attribute.length; i++){
 			isPrimitive = JavaTypesManager.isJavaPrimitiveType( column.getTalendType(), column.isNullable());
 			
 			isAdvancedSeparator = advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable());
+			
+			precision = column.getPrecision();
 			break;
 		}
 	}
 %>tempRes_<%=cid %>.append(" <%=attribute[i][1] %>=\""+<%
 							if(isAdvancedSeparator){
 								if(isBigDecimal){
-								%>FormatterUtils.format_Number(String.valueOf(<%=conn.getName() %>.<%=attribute[i][0] %>.doubleValue()), <%= thousandsSeparator %>, <%= decimalSeparator %>)<%
+								%>FormatterUtils.format_Number(String.valueOf(<%=precision == null? conn.getName() + "." + attribute[i][0] : conn.getName() + "." + attribute[i][0] + ".setScale(" + precision + ", java.math.RoundingMode.HALF_UP)" %>), <%= thousandsSeparator %>, <%= decimalSeparator %>)<%
 								}else {
 								%>FormatterUtils.format_Number(String.valueOf(<%=conn.getName() %>.<%=attribute[i][0] %>), <%= thousandsSeparator %>, <%= decimalSeparator %>)<%
 								}
@@ -276,7 +282,7 @@ for(int i = 0; i < attribute.length; i++){
 									}else if(isByteArray){
 									%>TalendString.replaceSpecialCharForXML(java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=attribute[i][0] %>)).toString())<%
 									}else if(isBigDecimal){
-									%>TalendString.replaceSpecialCharForXML(String.valueOf(<%=conn.getName() %>.<%=tag[i][0] %>.doubleValue()))<%
+									%>TalendString.replaceSpecialCharForXML(String.valueOf(<%=precision == null? conn.getName() + "." + tag[i][0] : conn.getName() + "." + tag[i][0] + ".setScale(" + precision + ", java.math.RoundingMode.HALF_UP)" %>))<%
 									}else{
 									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%><%=conn.getName() %>.<%=attribute[i][0] %><%if(needReplace){%>)<%}%><%
 									}%>))<%
@@ -307,6 +313,7 @@ for(int i = 0; i < tag.length; i++){
 	boolean isPrimitive = false;
 	boolean isBigDecimal = false;
 	boolean isAdvancedSeparator = false;
+	Integer precision = null;
 	for(IMetadataColumn column:metadata.getListColumns()) {
 		if(column.getLabel().equals(tag[i][0])){
 			JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
@@ -327,13 +334,15 @@ for(int i = 0; i < tag.length; i++){
 			}
 			isPrimitive = JavaTypesManager.isJavaPrimitiveType( column.getTalendType(), column.isNullable());
 			isAdvancedSeparator = advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable());
+						
+			precision = column.getPrecision();
 			break;
 		}
 	}
 %>out_<%=cid %>.write("<<%=tag[i][1]%>>"+<%
 							if(isAdvancedSeparator){
 								if(isBigDecimal){
-								%>FormatterUtils.format_Number(String.valueOf(<%=conn.getName() %>.<%=tag[i][0] %>.doubleValue()), <%= thousandsSeparator %>, <%= decimalSeparator %>)<%
+								%>FormatterUtils.format_Number(String.valueOf(<%=precision == null? conn.getName() + "." + tag[i][0] : conn.getName() + "." + tag[i][0] + ".setScale(" + precision + ", java.math.RoundingMode.HALF_UP)" %>), <%= thousandsSeparator %>, <%= decimalSeparator %>)<%
 								}else {
 								%>FormatterUtils.format_Number(String.valueOf(<%=conn.getName() %>.<%=tag[i][0] %>), <%= thousandsSeparator %>, <%= decimalSeparator %>)<%
 								}
@@ -346,7 +355,7 @@ for(int i = 0; i < tag.length; i++){
 									}else if(isByteArray){
 									%>TalendString.checkCDATAForXML(java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=tag[i][0] %>)).toString())<%
 									}else if(isBigDecimal){
-									%>TalendString.checkCDATAForXML(String.valueOf(<%=conn.getName() %>.<%=tag[i][0] %>.doubleValue()))<%
+									%>TalendString.checkCDATAForXML(String.valueOf(<%=precision == null? conn.getName() + "." + tag[i][0] : conn.getName() + "." + tag[i][0] + ".setScale(" + precision + ", java.math.RoundingMode.HALF_UP)" %>))<%
 									}else{
 									%><%if(needReplace){%>TalendString.checkCDATAForXML(<%}%><%=conn.getName() %>.<%=tag[i][0] %><%if(needReplace){%>)<%}%><%
 									}%>))<%
