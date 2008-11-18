@@ -112,14 +112,19 @@ SendStat(
                     if (lineStyle.equals(EConnectionType.FLOW_MAIN)
                         || lineStyle.equals(EConnectionType.FLOW_MERGE)) {
 
+                        String perlArrayRefName = node.getUniqueName();
+                        if (!conn.getConnectorName().equals("FLOW")) {
+                            perlArrayRefName = perlArrayRefName + "_" + conn.getConnectorName();
+                        }
+
                         if (componentName.equals("tReplicate")) {
 %>
-my $<%=conn.getName() %> = [@$<%=node.getUniqueName() %>];
+my $<%=conn.getName() %> = [@$<%=perlArrayRefName %>];
 <%
                         }
                         else {
 %>
-my $<%=conn.getName() %> = $<%=node.getUniqueName() %>;
+my $<%=conn.getName() %> = $<%=perlArrayRefName %>;
 <%
                         }
                     }

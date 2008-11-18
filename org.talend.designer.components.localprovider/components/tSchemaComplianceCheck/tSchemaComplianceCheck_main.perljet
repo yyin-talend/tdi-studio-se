@@ -246,12 +246,17 @@ while(1){
 <% 
                     for (IConnection outConn: node.getOutgoingConnections("FLOW")) {
 %>
-$nb_compliants_<%=cid %>++ if $branch_<%=outConn.getName()%>_is_active ;
+if ($branch_<%=outConn.getName()%>_is_active) {
+    $nb_compliants_<%=cid %>++;
+}
 <%
                     }
                     for (IConnection outConn: node.getOutgoingConnections("REJECT")) {
 %>
-$nb_rejects_<%=cid %>++ if $branch_<%=outConn.getName() %>_is_active ;
+if ($branch_<%=outConn.getName() %>_is_active) {
+    $nb_rejects_<%=cid %>++;
+    $<%=cid%>_REJECT = $<%=cid%>;
+}
 <%
                     }
      }

@@ -82,6 +82,7 @@ if (++$<%=cid%>{ md5_hex( join( $; , <%=hashKey%> ) ) } > 1) {
 <%
         }
 %>
+    $<%=cid%>_DUPLICATE = $<%=cid%>;
     $nb_duplicates_<%=cid %>++;
 }
 else {
@@ -93,6 +94,7 @@ else {
 <%
         }
 %>
+    $<%=cid%>_UNIQUE = $<%=cid%>;
     $nb_uniques_<%=cid %>++;
 }
     

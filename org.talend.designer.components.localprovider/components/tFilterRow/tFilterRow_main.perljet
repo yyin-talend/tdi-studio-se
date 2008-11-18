@@ -159,6 +159,8 @@ if (
     $nb_line_ok_<%=cid %>++ ;
 }
 else {
+    $<%=cid%>_REJECT = $<%=cid%>;
+
 <%
                     for (IConnection outConn: node.getOutgoingConnections("FLOW")) {
 %>

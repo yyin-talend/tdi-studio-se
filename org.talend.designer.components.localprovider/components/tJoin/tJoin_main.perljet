@@ -159,6 +159,7 @@ if(
        !$has_matching_row_<%=inConn.getName() %> and 
        $useInnerJoin_<%=cid%> 
   ){
+    $<%=cid%>_REJECT = $<%=cid%>;
 <%
                     for (IConnection outConn: node.getOutgoingConnections("FLOW")) {
 %>
