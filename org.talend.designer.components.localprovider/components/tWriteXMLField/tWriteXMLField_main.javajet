@@ -844,6 +844,7 @@ else if(mode.equals("Null")){
 	    preUnNullMaxIndex_<%=cid%> = -1;
         preNewTabIndex_<%=cid%> = -1;
     	startTabs_<%=cid%> = new String[endTabStrs_<%=cid%>.size()];
+    	out_<%=cid%>.newLine();
     	out_<%=cid%>.close();
 <%
 	String xmlField = ElementParameterParser.getValue(node, "__XMLFIELD__");

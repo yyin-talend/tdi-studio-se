@@ -210,6 +210,7 @@ if(currentRowCount_<%=cid %> > 0){
 			}
 		}
 %>
+	out_<%=cid%>.newLine();
 	out_<%=cid%>.close();
 	globalMap.put("<%=cid%>_XMLFIELD",strWriter_<%=cid%>.toString());
 <%
