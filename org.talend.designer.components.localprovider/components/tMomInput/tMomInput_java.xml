@@ -107,7 +107,7 @@
 
 	<PARAMETER NAME="MQ_DERVIERS" FIELD="TEXT" NUM_ROW="30" SHOW="false">
 		<DEFAULT IF="(SERVER == 'JBOSS')">jbossall-client.jar</DEFAULT>
-		<DEFAULT IF="(SERVER == 'WEBSPHERE')">com.ibm.mq.jar;com.ibm.mqjms.jar</DEFAULT>
+		<DEFAULT IF="(SERVER == 'WEBSPHERE')">com.ibm.mq.jar;com.ibm.mqjms.jar;websphere-connector-1_5.jar</DEFAULT>
 		<DEFAULT IF="(SERVER == 'ACTIVEMQ')">activemq-all-5.1.0.jar</DEFAULT>
 	</PARAMETER>
     
@@ -150,11 +150,11 @@
       REQUIRED="true"
       NUM_ROW="45"
     >
-      <TABLE IF="(IS_USE_MESSAGE_ID == 'false')" READONLY="true">
+      <TABLE IF="(SERVER == 'JBOSS') or (IS_USE_MESSAGE_ID == 'false') or (SERVER == 'ACTIVEMQ')" READONLY="true">
         <COLUMN NAME="from" TYPE="id_String" LENGTH="255"/>
         <COLUMN NAME="message" TYPE="id_String" LENGTH="255"/>
       </TABLE>
-      <TABLE IF="(IS_USE_MESSAGE_ID == 'true')" READONLY="true">
+      <TABLE IF="(SERVER == 'WEBSPHERE') and (IS_USE_MESSAGE_ID == 'true')" READONLY="true">
         <COLUMN NAME="from" TYPE="id_String" LENGTH="255"/>
         <COLUMN NAME="messageid" TYPE="id_String" LENGTH="255"/>
         <COLUMN NAME="message" TYPE="id_String" LENGTH="255"/>
@@ -179,7 +179,8 @@
     <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
-    <PARAMETER NAME="IS_USE_MESSAGE_ID" FIELD="CHECK" REQUIRED="true" NUM_ROW="60" >
+    <PARAMETER NAME="IS_USE_MESSAGE_ID" FIELD="CHECK" REQUIRED="true" NUM_ROW="60" 
+      SHOW_IF="(SERVER == 'WEBSPHERE')">
 	  <DEFAULT>false</DEFAULT>
 	</PARAMETER>
     
@@ -187,7 +188,7 @@
       NAME="MSG_ID"
       FIELD="TEXT"
       NUM_ROW="70"
-      SHOW_IF="(IS_USE_MESSAGE_ID == 'true')"
+      SHOW_IF="(SERVER == 'WEBSPHERE') and (IS_USE_MESSAGE_ID == 'true')"
     > 
     	<DEFAULT>""</DEFAULT>
 	</PARAMETER> 
@@ -197,6 +198,11 @@
   <CODEGENERATION>
      <IMPORTS>
        <IMPORT NAME="JNP-CLIENT" MODULE="jnp-client.jar" REQUIRED="true" />
+       <IMPORT NAME="JBOSS MQ LIB" MODULE="jbossall-client.jar" REQUIRED="false" />
+       <IMPORT NAME="WEBSPHERE MQ LIB" MODULE="com.ibm.mq.jar" REQUIRED="false" />
+       <IMPORT NAME="WEBSPHERE JMS LIB" MODULE="com.ibm.mqjms.jar" REQUIRED="false" />
+       <IMPORT NAME="WEBSPHERE CONNECTOR" MODULE="websphere-connector-1_5.jar" REQUIRED="false" />
+       <IMPORT NAME="ACTIVEMQ LIB" MODULE="activemq-all-5.1.0.jar" REQUIRED="false" />
      </IMPORTS>
   </CODEGENERATION>
 

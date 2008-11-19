@@ -384,6 +384,20 @@ public class ElementParameter implements IElementParameter {
         }
         return showParameter;
     }
+    
+    public boolean isCondition(String conditionShowIf, String conditionNotShowIf, List<? extends IElementParameter> listParam) {
+
+        boolean showParameter = false;
+
+        if ((conditionShowIf != null) || (conditionNotShowIf != null)) {
+            if (conditionShowIf != null) {
+                showParameter = Expression.evaluate(conditionShowIf, listParam, this);
+            } else {
+                showParameter = !Expression.evaluate(conditionNotShowIf, listParam, this);
+            }
+        }
+        return showParameter;
+    }
 
     public List<IElementParameterDefaultValue> getDefaultValues() {
         return this.defaultValues;

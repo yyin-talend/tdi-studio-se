@@ -1398,7 +1398,7 @@ public class EmfComponent implements IComponent {
                     String conditionIf = defaultValue.getIfCondition();
                     String conditionNotIf = defaultValue.getNotIfCondition();
 
-                    if (param.isShow(conditionIf, conditionNotIf, listParam)) {
+                    if (param.isCondition(conditionIf, conditionNotIf, listParam)) {
                         isSet = true;
                         if (param.getField().equals(EParameterFieldType.RADIO)
                                 || param.getField().equals(EParameterFieldType.CHECK)
