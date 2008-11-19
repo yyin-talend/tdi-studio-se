@@ -912,7 +912,7 @@ public class ScdManager {
 			for (String key : sourceKeys) {
 				IMetadataColumn column = columnsMap.get(key);
 				if (column != null
-						&& column.getComment().equals(GENERATE_COLUMN)) {
+						&& GENERATE_COLUMN.equals(column.getComment())) {
 					column.setKey(false);
 				}
 			}
