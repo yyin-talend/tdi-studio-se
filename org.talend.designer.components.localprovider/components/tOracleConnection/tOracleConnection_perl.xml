@@ -126,6 +126,11 @@
     <IMPORTS>
       <IMPORT NAME="DBI" MODULE="DBI" REQUIRED="true" />
       <IMPORT NAME="DBD-Oracle" MODULE="DBD::Oracle" REQUIRED="true" />
+      <IMPORT
+        NAME="OracleOutput"
+        MODULE="tOracleOutput::Oracle"
+        REQUIRED="true"
+      />
     </IMPORTS>
   </CODEGENERATION>
    
