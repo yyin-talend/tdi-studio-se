@@ -328,15 +328,25 @@
         %>
 
           fsi_<%= mainInputTableName %>.endPut();
-
+          
 		<%
 		} // T_TM_M_212
 	
 	} // T_TM_M_201
+	
+
+
+		if(isVirtualIn) { // T_TM_M_291
+			
+			%>
+			if(<%= mainInputTableName %> == null) {
+				<%= mainInputTableName %> = new <%= mainInputTableName %>Struct();
+			}
+    	    <%
+		} // T_TM_M_291
 		
-	%>
-
-
+		
+		%>
         // ###############################
         // # Input tables (lookups)
         <%
