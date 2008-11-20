@@ -1,0 +1,158 @@
+// ============================================================================
+//
+// Copyright (C) 2006-2007 Talend Inc. - www.talend.com
+//
+// This source code is available under agreement available at
+// %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
+//
+// You should have received a copy of the agreement
+// along with this program; if not, write to Talend SA
+// 9 rue Pages 92150 Suresnes, France
+//
+// ============================================================================
+package org.talend.designer.core.utils;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.talend.core.CorePlugin;
+import org.talend.core.model.general.ModuleNeeded;
+import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.IContext;
+import org.talend.core.model.process.IContextParameter;
+import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
+import org.talend.core.model.process.IProcess;
+import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.utils.ContextParameterUtils;
+import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.designer.runprocess.ItemCacheManager;
+import org.talend.designer.runprocess.JobInfo;
+
+/**
+ * DOC xye class global comment. Detailled comment
+ */
+public class JavaProcessUtil {
+
+    public static Set<String> getNeededLibraries(final IProcess process, boolean withChildrens) {
+        // see bug 4939: making tRunjobs work loop will cause a error of "out of memory"
+        Set<ProcessItem> searchItems = new HashSet<ProcessItem>();
+        ProcessItem processItem = null;
+        if (process.getProperty().getVersion() != null) {
+            processItem = ItemCacheManager.getProcessItem(process.getProperty().getId(), process.getProperty().getVersion());
+        } else {
+            processItem = ItemCacheManager.getProcessItem(process.getProperty().getId());
+        }
+        if (processItem != null) {
+            searchItems.add(processItem);
+        }
+        return getNeededLibraries(process, withChildrens, searchItems);
+    }
+
+    private static Set<String> getNeededLibraries(final IProcess process, boolean withChildrens, Set<ProcessItem> searchItems) {
+        Set<String> neededLibraries = new HashSet<String>();
+        List<? extends INode> nodeList = process.getGeneratingNodes();
+        for (INode node : nodeList) {
+            List<ModuleNeeded> moduleList = node.getComponent().getModulesNeeded();
+            for (ModuleNeeded needed : moduleList) {
+                if (needed.isRequired()) {
+                    neededLibraries.add(needed.getModuleName());
+                }
+            }
+            for (IElementParameter curParam : node.getElementParameters()) {
+                if (curParam.getField().equals(EParameterFieldType.MODULE_LIST)) {
+                    if (!"".equals(curParam.getValue())) { // if the parameter
+                        // is not empty.
+                        String moduleValue = (String) curParam.getValue();
+
+                        if (ContextParameterUtils.isContainContextParam(moduleValue)) {
+                            String var = ContextParameterUtils.getVariableFromCode(moduleValue);
+                            if (var != null) {
+                                IContext selectedContext = CorePlugin.getDefault().getRunProcessService().getSelectedContext();
+                                if (selectedContext == null) {
+                                    selectedContext = process.getContextManager().getDefaultContext();
+                                }
+                                IContextParameter param = selectedContext.getContextParameter(var);
+                                if (param != null) {
+                                    neededLibraries.add(param.getValue());
+                                }
+                            }
+                        } else {
+                            neededLibraries.add(moduleValue.replaceAll(TalendTextUtils.QUOTATION_MARK, "").replaceAll(
+                                    TalendTextUtils.SINGLE_QUOTE, ""));
+                        }
+                    }
+                }
+
+                // see feature 4720 Add libraries for different version DB components and tMomInput components
+                findMoreLibraries(neededLibraries, curParam);
+            }
+
+            if (withChildrens) {
+                if (node.getComponent().getName().equals("tRunJob")) {
+                    IElementParameter processIdparam = node.getElementParameter("PROCESS_TYPE_PROCESS");
+                    IElementParameter processVersionParam = node.getElementParameter(EParameterName.PROCESS_TYPE_VERSION
+                            .getName());
+
+                    ProcessItem processItem = null;
+                    if (processVersionParam != null) {
+                        processItem = ItemCacheManager.getProcessItem((String) processIdparam.getValue(),
+                                (String) processVersionParam.getValue());
+                    } else {
+                        processItem = ItemCacheManager.getProcessItem((String) processIdparam.getValue());
+                    }
+
+                    String context = (String) node.getElementParameter("PROCESS_TYPE_CONTEXT").getValue();
+                    if (processItem != null && !searchItems.contains(processItem)) {
+                        // avoid dead loop of method call
+                        searchItems.add(processItem);
+                        JobInfo subJobInfo = new JobInfo(processItem, context);
+                        Process child = new Process(subJobInfo.getProcessItem().getProperty());
+                        child.loadXmlFile();
+                        neededLibraries.addAll(JavaProcessUtil.getNeededLibraries(child, true, searchItems));
+                    }
+                }
+            }
+        }
+        return neededLibraries;
+
+    }
+
+    /**
+     * DOC YeXiaowei Comment method "findMoreLibraries".
+     * 
+     * @param neededLibraries
+     * @param curParam
+     */
+    private static void findMoreLibraries(Set<String> neededLibraries, IElementParameter curParam) {
+
+        if (curParam.getName().equals("DB_VERSION")) {
+            String jdbcName = (String) curParam.getValue();
+            if (jdbcName.contains("11g")) {
+                if (System.getProperty("java.version").startsWith("1.6")) {
+                    jdbcName = jdbcName.replace('5', '6');
+                } else {
+                    jdbcName = jdbcName.replace('6', '5');
+                }
+            }
+            neededLibraries.add((jdbcName).replaceAll(TalendTextUtils.QUOTATION_MARK, "").replaceAll(
+                    TalendTextUtils.SINGLE_QUOTE, ""));
+        }
+
+        String separator = ";";
+        if (curParam.getName().equals("MQ_DERVIERS")) {
+            String path = (String) curParam.getValue();
+
+            if (path == null || path.equals("")) {
+                return;
+            }
+
+            for (String jar : path.split(separator)) {
+                neededLibraries.add(jar);
+            }
+        }
+    }
+}

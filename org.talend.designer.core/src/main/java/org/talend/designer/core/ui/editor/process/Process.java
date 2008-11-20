@@ -111,6 +111,7 @@ import org.talend.designer.core.ui.editor.properties.controllers.ConnectionListC
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.views.problems.Problems;
+import org.talend.designer.core.utils.JavaProcessUtil;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.designer.runprocess.JobInfo;
@@ -2552,127 +2553,10 @@ public class Process extends Element implements IProcess2 {
     }
 
     public Set<String> getNeededLibraries(boolean withChildrens) {
-        // see bug 4939: making tRunjobs work loop will cause a error of "out of memory"
-        Set<ProcessItem> searchItems = new HashSet<ProcessItem>();
-        ProcessItem processItem = null;
-        if (property.getVersion() != null) {
-            processItem = ItemCacheManager.getProcessItem(property.getId(), property.getVersion());
-        } else {
-            processItem = ItemCacheManager.getProcessItem(property.getId());
-        }
-        if (processItem != null) {
-            searchItems.add(processItem);
-        }
-        return getNeededLibraries(withChildrens, searchItems);
+        return JavaProcessUtil.getNeededLibraries(this, withChildrens);
     }
 
-    private Set<String> getNeededLibraries(boolean withChildrens, Set<ProcessItem> searchItems) {
-        Set<String> neededLibraries = new HashSet<String>();
-        List<? extends INode> nodeList = getGeneratingNodes();
-        for (INode node : nodeList) {
-            List<ModuleNeeded> moduleList = node.getComponent().getModulesNeeded();
-            for (ModuleNeeded needed : moduleList) {
-                if (needed.isRequired()) {
-                    neededLibraries.add(needed.getModuleName());
-                }
-            }
-            for (IElementParameter curParam : node.getElementParameters()) {
-                if (curParam.getField().equals(EParameterFieldType.MODULE_LIST)) {
-                    if (!"".equals(curParam.getValue())) { // if the parameter
-                        // is not empty.
-                        String moduleValue = (String) curParam.getValue();
-
-                        if (ContextParameterUtils.isContainContextParam(moduleValue)) {
-                            String var = ContextParameterUtils.getVariableFromCode(moduleValue);
-                            if (var != null) {
-                                IContext selectedContext = CorePlugin.getDefault().getRunProcessService().getSelectedContext();
-                                if (selectedContext == null) {
-                                    selectedContext = getContextManager().getDefaultContext();
-                                }
-                                IContextParameter param = selectedContext.getContextParameter(var);
-                                if (param != null) {
-                                    String value = param.getValue();
-                                    if (value != null && !"".equals(value)) {
-                                        neededLibraries.add(value);
-                                    }
-                                }
-                            }
-                        } else {
-                            neededLibraries.add(moduleValue.replaceAll(TalendTextUtils.QUOTATION_MARK, "").replaceAll(
-                                    TalendTextUtils.SINGLE_QUOTE, ""));
-                        }
-                    }
-                }
-
-                // see feature 4720 Add libraries for different version DB components and tMomInput components
-                findMoreLibraries(neededLibraries, curParam);
-            }
-
-            if (withChildrens) {
-                if (node.getComponent().getName().equals("tRunJob")) {
-                    IElementParameter processIdparam = node.getElementParameter("PROCESS_TYPE_PROCESS");
-                    IElementParameter processVersionParam = node.getElementParameter(EParameterName.PROCESS_TYPE_VERSION
-                            .getName());
-
-                    ProcessItem processItem = null;
-                    if (processVersionParam != null) {
-                        processItem = ItemCacheManager.getProcessItem((String) processIdparam.getValue(),
-                                (String) processVersionParam.getValue());
-                    } else {
-                        processItem = ItemCacheManager.getProcessItem((String) processIdparam.getValue());
-                    }
-
-                    String context = (String) node.getElementParameter("PROCESS_TYPE_CONTEXT").getValue();
-                    if (processItem != null && !searchItems.contains(processItem)) {
-                        // avoid dead loop of method call
-                        searchItems.add(processItem);
-                        JobInfo subJobInfo = new JobInfo(processItem, context);
-                        Process child = new Process(subJobInfo.getProcessItem().getProperty());
-                        child.loadXmlFile();
-                        neededLibraries.addAll(child.getNeededLibraries(true, searchItems));
-                    }
-                }
-            }
-        }
-        return neededLibraries;
-
-    }
-
-    /**
-     * DOC YeXiaowei Comment method "findMoreLibraries".
-     * 
-     * @param neededLibraries
-     * @param curParam
-     */
-    private void findMoreLibraries(Set<String> neededLibraries, IElementParameter curParam) {
-
-        if (curParam.getName().equals("DB_VERSION")) {
-            String jdbcName = (String) curParam.getValue();
-            if (jdbcName.contains("11g")) {
-                if (System.getProperty("java.version").startsWith("1.6")) {
-                    jdbcName = jdbcName.replace('5', '6');
-                } else {
-                    jdbcName = jdbcName.replace('6', '5');
-                }
-            }
-            neededLibraries.add((jdbcName).replaceAll(TalendTextUtils.QUOTATION_MARK, "").replaceAll(
-                    TalendTextUtils.SINGLE_QUOTE, ""));
-        }
-
-        String separator = ";";
-        if (curParam.getName().equals("MQ_DERVIERS")) {
-            String path = (String) curParam.getValue();
-
-            if (path == null || path.equals("")) {
-                return;
-            }
-
-            for (String jar : path.split(separator)) {
-                neededLibraries.add(jar);
-            }
-        }
-    }
-
+  
     /**
      * Getter for notes.
      * 
