@@ -19,7 +19,6 @@ import java.util.List;
 
 import jxl.read.biff.BiffException;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
@@ -65,6 +64,10 @@ import org.talend.repository.ui.swt.utils.AbstractExcelFileStepForm;
  */
 public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
 
+    private static final int GROUP_WIDTH = 120;
+
+    private static final int WIDTH = 60;
+
     private LabelledCombo serverCombo = null;
 
     private LabelledFileField fileField = null;
@@ -83,10 +86,6 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
 
     private static final int WIDTH_GRIDDATA_PIXEL = 300;
 
-    private boolean filePathOk = false;
-
-    private boolean sheetNameOk = false;
-
     private List<String> allsheets = new ArrayList<String>();
 
     /**
@@ -102,8 +101,6 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
         setContextModeManager(contextModeManager);
         setupForm();
     }
-
-    private static Logger log = Logger.getLogger(ExcelFileStep1Form.class);
 
     /*
      * (non-Javadoc)
@@ -124,7 +121,7 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
      */
     @Override
     protected void addFields() {
-        Group group = Form.createGroup(this, 1, Messages.getString("FileStep2.groupDelimitedFileSettings"), 120); //$NON-NLS-1$
+        Group group = Form.createGroup(this, 1, Messages.getString("FileStep2.groupDelimitedFileSettings"), GROUP_WIDTH); //$NON-NLS-1$
         Composite compositeFileLocation = Form.startNewDimensionnedGridLayout(group, 3, WIDTH_GRIDDATA_PIXEL, 120);
 
         String[] serverLocation = { "Localhost 127.0.0.1" }; //$NON-NLS-1$
@@ -136,11 +133,11 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
 
         int numColumnForViewer = 4;
 
-        group = Form.createGroup(this, numColumnForViewer, "File Viewer and Sheets setting", 150); //$NON-NLS-1$
+        viewerGroup = Form.createGroup(this, numColumnForViewer, "File Viewer and Sheets setting", 150);
 
-        createSheetsSelectViewer(group);
+        createSheetsSelectViewer(viewerGroup);
 
-        Composite compositeExcelViewer = Form.startNewDimensionnedGridLayout(group, 2, WIDTH_GRIDDATA_PIXEL, 150);
+        Composite compositeExcelViewer = Form.startNewDimensionnedGridLayout(viewerGroup, 2, WIDTH_GRIDDATA_PIXEL, 150);
 
         sheetsCombo = new LabelledCombo(compositeExcelViewer, Messages.getString("ExcelFileStep1Form.sheet.choice"), Messages
                 .getString("ExcelFileStep1Form.sheet.tip"), new String[] { "Sheet1" }, 1, false, SWT.NONE);
@@ -153,6 +150,7 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
                     HEIGHT_BUTTON_PIXEL);
         }
 
+        makeViewerGroupAvailable(false);
         addUtilsButtonListeners();
     }
 
@@ -162,7 +160,7 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
      * @param group
      */
     private void createSheetsSelectViewer(Group group) {
-        Composite sheetsViewerComposite = Form.startNewDimensionnedGridLayout(group, 2, 80, 150);
+        sheetsViewerComposite = Form.startNewDimensionnedGridLayout(group, 2, 80, 150);
         Label label = new Label(sheetsViewerComposite, SWT.NONE);
         label.setText("Set sheets parameters");
 
@@ -170,6 +168,12 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
         place.setVisible(false);
 
         createPerlSheetsViewer(sheetsViewerComposite);
+    }
+
+    private void makeViewerGroupAvailable(boolean available) {
+        if (viewerGroup != null) {
+            viewerGroup.setEnabled(available);
+        }
     }
 
     private void createPerlSheetsViewer(Composite parent) {
@@ -243,7 +247,7 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
             }
 
         });
-        resetSheetViewer();
+        initSheetViewer();
         sheetViewer.expandAll();
 
         GridData data = new GridData(GridData.FILL_BOTH);
@@ -256,7 +260,7 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
     /**
      * DOC YeXiaowei Comment method "resetSheetViewer".
      */
-    private void resetSheetViewer() {
+    private void initSheetViewer() {
         if (sheetViewer == null) {
             return;
         }
@@ -284,9 +288,7 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
         });
     }
 
-    /**
-     * DOC YeXiaowei Comment method "fillSheetList".
-     */
+    @SuppressWarnings("unchecked")
     private void fillSheetList() {
         Object[] x = sheetViewer.getCheckedElements();
         ArrayList sl = getConnection().getSheetList();
@@ -299,14 +301,14 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
         for (Object o : x) {
             if (o instanceof SheetNode) {
                 if (o.equals(rootNode)) {
-                    if (!sheetViewer.getGrayed(o))
+                    if (!sheetViewer.getGrayed(o)) {
                         allSheets = true;
+                    }
                 } else {
                     sl.add(((SheetNode) o).getLabel());
                 }
             }
         }
-
         getConnection().setSelectAllSheets(allSheets);
     }
 
@@ -357,7 +359,7 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
             public String getColumnText(Object element, int columnIndex) {
                 if (element instanceof String[]) {
                     try {
-                        return ((String[]) element)[columnIndex];// Avoid out of Index exception
+                        return ((String[]) element)[columnIndex];
                     } catch (Exception e) {
                         return "";
                     }
@@ -406,9 +408,19 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
             public void modifyText(final ModifyEvent e) {
                 if (!isContextMode()) {
                     if (isVisible()) {
-                        readAndViewExcelFile();
-                        reserverSelectedSheets();
-                        checkFieldsValue();
+                        try {
+                            viewExcelFile();
+                            restoreSelectedSheets();
+                            checkFieldsValue();
+                        } catch (BiffException e1) {
+                            getConnection().setFilePath(null);
+                            updateErrorStatus(e1.getMessage());
+                            makeViewerGroupAvailable(false);
+                        } catch (IOException e1) {
+                            getConnection().setFilePath(null);
+                            updateErrorStatus(e1.getMessage());
+                            makeViewerGroupAvailable(false);
+                        }
                     }
                 }
             }
@@ -421,8 +433,7 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
             public void widgetSelected(SelectionEvent e) {
                 if (isVisible()) {
                     String sheet = sheetsCombo.getText().trim();
-                    viewExcel(sheet);
-                    sheetNameOk = true;
+                    viewSheet(sheet);
                     checkFieldsValue();
                 }
             }
@@ -432,7 +443,7 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
     /**
      * DOC YeXiaowei Comment method "reserverSelectedSheets".
      */
-    private void reserverSelectedSheets() {
+    private void restoreSelectedSheets() {
         if (!getConnection().isSelectAllSheets()) {
             ArrayList<?> sheetList = getConnection().getSheetList();
             List<String> removed = new ArrayList<String>();
@@ -450,7 +461,6 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
                         removed.add(curSheet);
                     }
                 }
-
                 if (!removed.isEmpty()) {
                     sheetList.removeAll(removed);
                 }
@@ -461,12 +471,11 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
     /**
      * DOC yexiaowei Comment method "readAndViewExcelFile".
      */
-    private void readAndViewExcelFile() {
-
-        excelReader = null;
+    private void viewExcelFile() throws IOException, BiffException {
 
         String fileStr = fileField.getText();
         String filePath = null;
+
         if (isContextMode() && getContextModeManager() != null) {
             fileStr = getContextModeManager().getOriginalValue(getConnection().getFilePath());
             fileStr = TalendTextUtils.removeQuotes(fileStr);
@@ -475,58 +484,27 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
             filePath = PathUtils.getPortablePath(fileStr);
         }
 
-        if (filePath == null || filePath.equals("")) {
-            updateErrorMsgAndSetNotOK(Messages.getString("ExcelFileStep2.previewFailure"));
-            return;
+        excelReader = new ExcelReader(filePath);
+
+        String[] sheets = excelReader.getSheetNames();
+
+        allsheets.clear();
+
+        for (String s : sheets) {
+            allsheets.add(s);
         }
 
-        try {
-            excelReader = new ExcelReader(filePath);
+        initSheetViewer();
+        initSheetsCombo(sheets);
+        viewSheet(sheetsCombo.getText());
 
-            String[] sheets = excelReader.getSheetNames();
-
-            allsheets.clear();
-
-            for (String s : sheets) {
-                allsheets.add(s);
-            }
-
-            resetSheetViewer();
-
-            initSheetsCombo(sheets);
-
-            viewExcel(sheetsCombo.getText());
-            if (!isContextMode()) {
-                getConnection().setFilePath(filePath);
-            }
-            getConnection().setSheetName(sheetsCombo.getText());
-
-            filePathOk = true;
-            sheetNameOk = true;
-
-            checkFieldsValue();
-
-        } catch (BiffException e1) {
-            updateErrorMsgAndSetNotOK(e1.getMessage());
-            filePathOk = false;
-            sheetNameOk = false;
-        } catch (IOException e1) {
-            updateErrorMsgAndSetNotOK(e1.getMessage());
-            filePathOk = false;
-            sheetNameOk = false;
+        if (!isContextMode()) {
+            getConnection().setFilePath(filePath);
         }
+        makeViewerGroupAvailable(true);
     }
 
-    /**
-     * DOC yexiaowei Comment method "updateErrorMsgAndSetNotOK".
-     * 
-     * @param e1
-     */
-    private void updateErrorMsgAndSetNotOK(String msg) {
-        updateStatus(IStatus.ERROR, msg);
-    }
-
-    private void viewExcel(final String sheetName) {
+    private void viewSheet(final String sheetName) {
 
         ProgressMonitorDialog dialog = new ProgressMonitorDialog(viewer.getTable().getShell());
 
@@ -541,9 +519,10 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
 
                     Display.getDefault().syncExec(new Runnable() {
 
+                        @SuppressWarnings("unchecked")
                         public void run() {
 
-                            disposeExistColumns();// Must clear before add
+                            disposeExistColumns();
 
                             final List<String[]> input = excelReader.readSheet(sheetName);
                             if (input == null) {
@@ -567,7 +546,7 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
                                 columns.add(name);
                                 TableColumn tableColumn = new TableColumn(viewer.getTable(), SWT.NONE);
                                 tableColumn.setText(name);
-                                tableColumn.setWidth(60);
+                                tableColumn.setWidth(WIDTH);
                             }
                             viewer.setInput(input);
                         }
@@ -579,9 +558,9 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
 
             });
         } catch (InvocationTargetException e) {
-            updateErrorMsgAndSetNotOK(e.getMessage());
+            updateErrorStatus(e.getMessage());
         } catch (InterruptedException e) {
-            updateErrorMsgAndSetNotOK(e.getMessage());
+            updateErrorStatus(e.getMessage());
         }
 
     }
@@ -603,6 +582,10 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
                 col.dispose();
             }
         }
+    }
+
+    private void updateErrorStatus(String msg) {
+        updateStatus(IStatus.ERROR, msg);
     }
 
     /**
@@ -665,16 +648,6 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
         }
         if (fileField.getText() == "") { //$NON-NLS-1$
             updateStatus(IStatus.ERROR, Messages.getString("FileStep1.filepathAlert")); //$NON-NLS-1$
-            return false;
-        }
-
-        if (!filePathOk) {
-            updateStatus(IStatus.ERROR, Messages.getString("FileStep1.fileIncomplete")); //$NON-NLS-1$
-            return false;
-        }
-
-        if (!sheetNameOk) {
-            updateStatus(IStatus.ERROR, Messages.getString("FileStep1.fileIncomplete")); //$NON-NLS-1$
             return false;
         }
 
@@ -759,10 +732,13 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
     protected void adaptFormToEditable() {
         super.adaptFormToEditable();
         fileField.setEditable(!isContextMode());
-
     }
 
     private final SheetNode rootNode = new SheetNode(null, "All sheets/DSelect sheet");
+
+    private Composite sheetsViewerComposite;
+
+    private Group viewerGroup;
 
     /**
      * 
