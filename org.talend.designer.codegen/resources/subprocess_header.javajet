@@ -756,13 +756,9 @@ public void <%=subTree.getName() %>Process(final java.util.Map<String, Object> g
 <%
 	}else{//isParallelize
 %>
-<%
-	if(isRunInMultiThread){
-%>
+
 	String currentComponent = "";
-<%
-	}
-%>				
+				
 	try {
 <%
 	// Call for RUN AFTER links

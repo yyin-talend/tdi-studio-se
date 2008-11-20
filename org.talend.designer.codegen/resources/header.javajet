@@ -206,23 +206,12 @@ private static RunTrace runTrace = new RunTrace();
 private class TalendException extends Exception {
 	private java.util.Map<String, Object> globalMap = null;
 	private Exception e = null;
-	private <%=process.getName() %> c = null;
-<%
-	if(isRunInMultiThread ){
-%>	
 	private String currentComponent = null;
-	private TalendException(<%=process.getName() %> c, Exception e, String errorComponent, final java.util.Map<String, Object> globalMap) {
+	
+	private TalendException(Exception e, String errorComponent, final java.util.Map<String, Object> globalMap) {
 		this.currentComponent= errorComponent;
-<%
-	}else{
-%>
-	private TalendException(<%=process.getName() %> c, Exception e, final java.util.Map<String, Object> globalMap) {
-<%
-	}
-%>
 		this.globalMap = globalMap;
 		this.e = e;
-		this.c = c;
 	}
 	
 	@Override
@@ -238,7 +227,7 @@ private class TalendException extends Exception {
 		try {
 			for (java.lang.reflect.Method m : this.getClass().getEnclosingClass().getMethods()) {
 				if (m.getName().compareTo(currentComponent + "_error") == 0) {
-					m.invoke(c, new Object[] { e , globalMap});
+					m.invoke(<%=process.getName() %>.this, new Object[] { e , globalMap});
 					break;
 				}
 			}

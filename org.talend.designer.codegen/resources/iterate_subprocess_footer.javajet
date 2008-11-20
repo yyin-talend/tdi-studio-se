@@ -62,8 +62,10 @@
 						}
 					}					
 		            talendThreadPool.setErrorThread(this);
-		            talendThreadPool.stopAllWorkers();
-		            e.printStackTrace();					
+		            talendThreadPool.stopAllWorkers();		            
+
+                    new TalendException(e, currentComponent, globalMap).printStackTrace();
+
 			}
 			this.isRunning = false;
 			
