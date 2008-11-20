@@ -281,7 +281,7 @@ String iterate_out_tablename = ElementParameterParser.getValue(node, "__SAP_ITER
         for (String key : output_single_map.keySet()) {
         startIterate = true;
 %> 
-		{//block            
+		for(int k_<%=cid %> = 0; k_<%=cid %> < 1; k_<%=cid %>++) {//block            
 <%          List<SchemaUtil.SAPSchema> oneTableNamelist = output_single_map.get(key);
             for (SchemaUtil.SAPSchema schema : oneTableNamelist) {
             IMetadataColumn column = metadata.getColumn(schema.getSchemaName());
@@ -302,7 +302,7 @@ String iterate_out_tablename = ElementParameterParser.getValue(node, "__SAP_ITER
         	startIterate = true;
 %>          
 		com.sap.mw.jco.JCO.Structure output_structure_structure_<%=cid %> = exportParameterList_<%=cid %>.getStructure(<%=key %>);
-		{//block
+		for(int k_<%=cid %> = 0; k_<%=cid %> < 1; k_<%=cid %>++) {//block
 <%          List<SchemaUtil.SAPSchema> oneTableNamelist = output_structure_map.get(key);
             for (SchemaUtil.SAPSchema schema : oneTableNamelist) {
             IMetadataColumn column = metadata.getColumn(schema.getSchemaName());
@@ -366,5 +366,5 @@ String iterate_out_tablename = ElementParameterParser.getValue(node, "__SAP_ITER
 <%}%>
 
 <% if(!startIterate){%>
-		{//block
+	for(int k_<%=cid %> = 0; k_<%=cid %> < 1; k_<%=cid %>++) {//block
 <%}%>
