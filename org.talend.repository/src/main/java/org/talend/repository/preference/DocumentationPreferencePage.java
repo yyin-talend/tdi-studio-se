@@ -20,6 +20,8 @@ import org.talend.core.CorePlugin;
 import org.talend.core.PluginChecker;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 
+import org.talend.repository.i18n.Messages;
+
 /**
  * ftang class global comment. Detailed comment <br/>
  * 
@@ -51,12 +53,12 @@ public class DocumentationPreferencePage extends FieldEditorPreferencePage imple
      */
     @Override
     protected void createFieldEditors() {
-        booleanFieldEditor = new BooleanFieldEditor(ITalendCorePrefConstants.DOC_GENERATION,
-                "Automatic update of corresponding documentation if job/joblet is saved", getFieldEditorParent());
-        passwordHideFieldEditor = new BooleanFieldEditor(ITalendCorePrefConstants.DOC_HIDEPASSWORDS, "Hide passwords",
-                getFieldEditorParent());
-        sourceCodeGenFieldEditor = new BooleanFieldEditor(ITalendCorePrefConstants.DOC_GENERATESOURCECODE,
-                "Source code to HTML generation", getFieldEditorParent());
+        booleanFieldEditor = new BooleanFieldEditor(ITalendCorePrefConstants.DOC_GENERATION, Messages
+                .getString("DocumentationPreferencePage.autoUpdateDoc"), getFieldEditorParent());
+        passwordHideFieldEditor = new BooleanFieldEditor(ITalendCorePrefConstants.DOC_HIDEPASSWORDS, Messages
+                .getString("DocumentationPreferencePage.hidePwd"), getFieldEditorParent());
+        sourceCodeGenFieldEditor = new BooleanFieldEditor(ITalendCorePrefConstants.DOC_GENERATESOURCECODE, Messages
+                .getString("DocumentationPreferencePage.sourceCodeToHTML"), getFieldEditorParent());
         addField(booleanFieldEditor);
         addField(passwordHideFieldEditor);
         addField(sourceCodeGenFieldEditor);
