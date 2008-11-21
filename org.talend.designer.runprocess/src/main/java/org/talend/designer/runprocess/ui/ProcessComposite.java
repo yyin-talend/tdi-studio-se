@@ -914,6 +914,7 @@ public class ProcessComposite extends Composite {
         checkSaveBeforeRunSelection();
 
         processContext.setSelectedContext(contextComposite.getSelectedContext());
+        processContext.setSaveBeforeRun(saveJobBeforeRunButton.getSelection());
         processContext.exec(getShell());
     }
 
