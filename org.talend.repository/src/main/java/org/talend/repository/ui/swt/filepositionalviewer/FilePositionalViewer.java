@@ -40,6 +40,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.repository.ui.swt.filepositionalviewer.GraphicRule.HorizontalMarkerEditor;
 import org.talend.repository.ui.swt.filepositionalviewer.GraphicRule.PositionMarkerEditor;
 
@@ -209,10 +210,22 @@ public class FilePositionalViewer extends Composite {
             String[] drawLine = s.split(","); //$NON-NLS-1$
             int oldToPrint = 0;
             for (int i = 0; i < drawLine.length; i++) {
-                if ("".equals(drawLine[i])) {
+                String number = drawLine[i].trim();
+                // for bug 5645
+                number = TalendTextUtils.removeQuotes(number);
+                if ("".equals(number)) {
                     continue;
                 }
-                int lineToPrint = (new Integer(drawLine[i]).intValue()) + oldToPrint;
+                int num = 0;
+                try {
+                    num = new Integer(number).intValue();
+                } catch (NumberFormatException e) {
+                    continue;
+                }
+                if (num == 0) {
+                    continue;
+                }
+                int lineToPrint = num + oldToPrint;
                 drawVerticalMarker(adjustPositionWithPixel(lineToPrint));
                 GraphicRule.drawGraphicRule(adjustPositionWithPixel(lineToPrint));
 

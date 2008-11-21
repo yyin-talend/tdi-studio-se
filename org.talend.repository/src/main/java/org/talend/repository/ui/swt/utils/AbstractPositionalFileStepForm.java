@@ -152,6 +152,9 @@ public abstract class AbstractPositionalFileStepForm extends AbstractFileStepFor
             // Check unique comma
             if ((character) == Character.valueOf(',')) {
                 if (newPosition > 0) {
+                    if (newPosition > newString.length()) {
+                        return false;
+                    }
                     if (newString.substring(newPosition - 1, newPosition).equals(",")) { //$NON-NLS-1$
                         return false;
                     }
