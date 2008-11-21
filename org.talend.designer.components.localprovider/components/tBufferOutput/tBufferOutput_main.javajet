@@ -78,6 +78,8 @@ for (int i = 0; i < columnSize; i++) {
 	        <%
 	        }
 	        %>                			    
+	    }else{
+	    	row_<%=cid %>[<%=i %>] = null;
 	    }
 <% 
 	}
