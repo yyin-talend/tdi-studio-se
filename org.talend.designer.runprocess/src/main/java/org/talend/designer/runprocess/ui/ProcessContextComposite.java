@@ -39,6 +39,7 @@ import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.designer.runprocess.i18n.Messages;
 
 /**
@@ -346,7 +347,13 @@ public class ProcessContextComposite extends Composite {
                 text = parameter.getName();
                 break;
             case 1:
-                text = parameter.getValue();
+            	if (ContextParameterUtils.isPasswordType(parameter)) {
+					// see bug 0005661: In Run, Context password fields appear
+					// in plaintext
+					text = "****";
+				} else {
+					text = parameter.getValue();
+				}
                 break;
             default:
                 text = super.getText(element);
