@@ -19,7 +19,6 @@ import java.util.List;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
@@ -49,6 +48,10 @@ public class MergeOrderDialog extends Dialog {
 
     private Node mergeNode;
 
+    private static final int WIDTH = 270;
+
+    private static final int HEIGHT = 200;
+
     /*
      * (non-Javadoc)
      * 
@@ -66,7 +69,7 @@ public class MergeOrderDialog extends Dialog {
      * @param shell
      */
     protected void configureSizeAndTitle(Shell shell) {
-        shell.setSize(new Point(300, 400));
+        // shell.setSize(new Point(300, 400));
         shell.setText(mergeNode.getUniqueName() + Messages.getString("MergeOrderDialog.ModifyMergeOrder")); //$NON-NLS-1$
     }
 
@@ -77,6 +80,7 @@ public class MergeOrderDialog extends Dialog {
      */
     protected MergeOrderDialog(Shell parentShell) {
         super(parentShell);
+        setShellStyle(getShellStyle() | SWT.RESIZE);
     }
 
     /**
@@ -85,7 +89,7 @@ public class MergeOrderDialog extends Dialog {
      * @param parentShell
      */
     public MergeOrderDialog(Shell parentShell, Node mergeNode) {
-        super(parentShell);
+        this(parentShell);
         this.mergeNode = mergeNode;
         List<Connection> currentList = (List<Connection>) mergeNode.getIncomingConnections();
 
@@ -104,8 +108,10 @@ public class MergeOrderDialog extends Dialog {
         Composite tableComposite = new Composite(composite, SWT.None);
         tableComposite.setLayout(new GridLayout());
         GridData gridData = new GridData(GridData.FILL_BOTH);
-        // gridData.minimumWidth = minimumWidth;
-        // gridData.minimumHeight = minimumHeight;
+        gridData.widthHint = WIDTH;
+        gridData.minimumWidth = WIDTH;
+        gridData.heightHint = HEIGHT;
+        gridData.minimumHeight = HEIGHT;
         tableComposite.setLayoutData(gridData);
 
         final TableViewerCreator tableViewerCreator = new TableViewerCreator(tableComposite);

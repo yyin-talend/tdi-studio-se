@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.ui.IWorkbenchPart;
+import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.designer.core.ui.dialog.mergeorder.ModifyOutputOrderDialog;
 import org.talend.designer.core.ui.editor.cmd.ChangeOutputConnectionOrderCommand;
@@ -77,9 +78,16 @@ public class ModifyOutputOrderAction extends SelectionAction {
         if (node == null) {
             return false;
         }
+        boolean isIterate = false;
         int nb = 0;
         for (Connection connection : (List<Connection>) node.getOutgoingConnections()) {
             if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+                nb++;
+
+            } else
+            // feature 4505
+            if (connection.getLineStyle() == EConnectionType.ITERATE) {
+                isIterate = true;
                 nb++;
             }
         }
@@ -90,8 +98,11 @@ public class ModifyOutputOrderAction extends SelectionAction {
             return false;
         }
         multipleOutputNode = node;
-        setText("Modify output links order");
-
+        String midStr = "output"; //$NON-NLS-1$
+        if (isIterate) {
+            midStr = "iterate"; //$NON-NLS-1$
+        }
+        setText("Modify " + midStr + " links order"); //$NON-NLS-1$ //$NON-NLS-2$
         return true;
     }
 

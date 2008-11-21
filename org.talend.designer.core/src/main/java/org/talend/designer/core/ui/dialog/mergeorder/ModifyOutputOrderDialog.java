@@ -15,8 +15,8 @@ package org.talend.designer.core.ui.dialog.mergeorder;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Shell;
+import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -29,6 +29,8 @@ public class ModifyOutputOrderDialog extends MergeOrderDialog {
     private Node multipleOutputNode;
 
     List<Connection> notDataList;
+
+    private boolean isIterate = false;
 
     /**
      * yzhang ModifyOutputOrderDialog constructor comment.
@@ -44,6 +46,10 @@ public class ModifyOutputOrderDialog extends MergeOrderDialog {
         this.connectionList = new ArrayList<Connection>();
         for (Connection connection : fullList) {
             if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+                connectionList.add(connection);
+            } else if (connection.getLineStyle() == EConnectionType.ITERATE) {
+                // feature 4505
+                isIterate = true;
                 connectionList.add(connection);
             } else {
                 notDataList.add(connection);
@@ -64,12 +70,18 @@ public class ModifyOutputOrderDialog extends MergeOrderDialog {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.dialog.mergeorder.MergeOrderDialog#configureSizeAndTitle(org.eclipse.swt.widgets.Shell)
+     * @see
+     * org.talend.designer.core.ui.dialog.mergeorder.MergeOrderDialog#configureSizeAndTitle(org.eclipse.swt.widgets.
+     * Shell)
      */
     @Override
     protected void configureSizeAndTitle(Shell shell) {
-        shell.setSize(new Point(300, 400));
-        shell.setText(multipleOutputNode.getUniqueName() + " Modify output orders");
+        // shell.setSize(new Point(300, 400));
+        String midStr = "output"; //$NON-NLS-1$
+        if (isIterate) {
+            midStr = "iterate"; //$NON-NLS-1$
+        }
+        shell.setText(multipleOutputNode.getUniqueName() + " Modify " + midStr + " orders"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /*
@@ -82,6 +94,8 @@ public class ModifyOutputOrderDialog extends MergeOrderDialog {
         int nb = 0;
         for (Connection connection : (List<Connection>) multipleOutputNode.getOutgoingConnections()) {
             if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+                nb++;
+            } else if (connection.getLineStyle().equals(EConnectionType.ITERATE)) {
                 nb++;
             }
         }

@@ -445,8 +445,20 @@ public class Connection extends Element implements IConnection, IPerformance {
         } else if (getLineStyle().equals(EConnectionType.ITERATE)) {
             IElementParameter enableParam = this.getElementParameter(ENABLE_PARALLEL);
             IElementParameter numberParam = this.getElementParameter(NUMBER_PARALLEL);
+            // for feature 4505
+            boolean special = (outputId >= 0);
+            String linkName = sourceNodeConnector.getLinkName();
+            if (getUniqueName() != null && special) {
+                linkName = getUniqueName();
+            }
             if (enableParam != null && (Boolean) enableParam.getValue()) {
-                labelText = sourceNodeConnector.getLinkName() + " (x " + (String) numberParam.getValue() + ")";
+                labelText = linkName + " (x " + (String) numberParam.getValue();
+                if (special) {
+                    labelText += " order:" + outputId;
+                }
+                labelText += ")";
+            } else if (special) {
+                labelText = linkName + " (order:" + outputId + ")";
             }
             updateName = true;
         } else if (getLineStyle().equals(EConnectionType.SYNCHRONIZE)) {
