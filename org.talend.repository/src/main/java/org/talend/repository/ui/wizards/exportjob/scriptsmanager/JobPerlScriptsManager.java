@@ -310,7 +310,8 @@ public class JobPerlScriptsManager extends JobScriptsManager {
      * 
      * @see org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager#getCurrentProjectName()
      */
-    protected String getCorrespondingProjectName(Item item) {
+    @Override
+	protected String getCorrespondingProjectName(Item item) {
         return PerlResourcesHelper.getRootProjectName(item);
     }
 
@@ -439,9 +440,9 @@ public class JobPerlScriptsManager extends JobScriptsManager {
     @Override
     protected void addSource(ExportFileResource[] allResources, ProcessItem processItem, boolean needSource,
             ExportFileResource curResource, String basePath, String... selectedJobVersion) {
-        // if (!needSource) {
-        // return;
-        // }
+		 if (!needSource) {
+			return;
+		}
 
         // getItemResource(processItem, resource, basePath, selectedJobVersion);
         // super.addSource(processItem, needSource, resource, basePath, selectedJobVersion);

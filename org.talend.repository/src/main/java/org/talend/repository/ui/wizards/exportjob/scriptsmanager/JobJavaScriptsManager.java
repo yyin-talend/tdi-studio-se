@@ -247,6 +247,9 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         // getItemResource(processItem, resource, basePath, selectedJobVersion);
         // super.addSource(processItem, needSource, resource, basePath, selectedJobVersion);
         // Get java src
+		if (!needSource) {
+			return;
+		}
         try {
             String projectName = getCorrespondingProjectName(processItem);
             String jobName = processItem.getProperty().getLabel();
@@ -277,9 +280,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                     emfFileUrls);
             String jobFolderName = JavaResourcesHelper.getJobFolderName(jobName, jobVersion);
 
-            if (!needSource) {
-                return;
-            }
+          
             IPath path = getSrcRootLocation();
             path = path.append(projectName).append(jobFolderName).append(jobName + ".java");
             List<URL> javaFileUrls = new ArrayList<URL>();
@@ -668,7 +669,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * 
      * @see org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager#getCurrentProjectName()
      */
-    protected String getCorrespondingProjectName(Item item) {
+    @Override
+	protected String getCorrespondingProjectName(Item item) {
         return JavaResourcesHelper.getProjectFolderName(item);
     }
 }
