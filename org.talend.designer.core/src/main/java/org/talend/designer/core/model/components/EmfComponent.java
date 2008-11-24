@@ -33,6 +33,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
+import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.system.EnvironmentUtils;
@@ -1282,6 +1283,10 @@ public class EmfComponent implements IComponent {
      * @param color
      */
     private Color getColor(ElementParameter param, String color) {
+        if (CommonsPlugin.isHeadless()) {
+            return null;
+        }
+        
         if (color != null && color.contains(";")) {
             String rgb[] = color.split(";");
             if (rgb.length != 3) {
