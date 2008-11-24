@@ -374,11 +374,9 @@ public class RunProcessContext {
                                         public void run() {
                                             try {
                                                 startingMessageWritten = false;
-                                                if (RunProcessContext.this.isSaveBeforeRun()) {
                                                     ProcessorUtilities.generateCode(process, context,
                                                             getStatisticsPort() != IProcessor.NO_STATISTICS,
                                                             getTracesPort() != IProcessor.NO_TRACES, true);
-                                                }
 
                                                 // see feature 0004820: The run job doesn't verify if code is correct
                                                 // before launching

@@ -910,7 +910,6 @@ public class ProcessComposite extends Composite {
         processContext.setWatchAllowed(watchBtn.getSelection());
         processContext.setMonitorPerf(perfBtn.getSelection());
         processContext.setMonitorTrace(traceBtn.getSelection());
-        processContext.setSaveBeforeRun(saveJobBeforeRunButton.getSelection());
 
         checkSaveBeforeRunSelection();
 
