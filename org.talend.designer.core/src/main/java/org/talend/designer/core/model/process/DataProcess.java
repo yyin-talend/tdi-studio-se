@@ -24,6 +24,7 @@ import org.talend.core.model.components.IMultipleComponentItem;
 import org.talend.core.model.components.IMultipleComponentManager;
 import org.talend.core.model.components.IMultipleComponentParameter;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.process.AbstractConnection;
 import org.talend.core.model.process.AbstractExternalNode;
 import org.talend.core.model.process.AbstractNode;
@@ -541,7 +542,15 @@ public class DataProcess {
                 curNode.setThereLinkWithHash(graphicalNode.isThereLinkWithHash());
                 curNode.setHasConditionalOutputs(graphicalNode.hasConditionalOutputs());
                 curNode.setIsMultiplyingOutputs(graphicalNode.isMultiplyingOutputs());
-                curNode.setComponent(graphicalNode.getComponent());
+
+                // fixed 5379 bug by xzhang
+                // curNode.setComponent(graphicalNode.getComponent());
+                curNode.setComponent(component);
+                List<IMetadataTable> metaList = new ArrayList<IMetadataTable>();
+                IMetadataTable metaTable = new MetadataTable();
+                metaTable.setTableName(uniqueName);
+                metaList.add(metaTable);
+                curNode.setMetadataList(metaList);
             }
 
             curNode.setActivate(graphicalNode.isActivate());
