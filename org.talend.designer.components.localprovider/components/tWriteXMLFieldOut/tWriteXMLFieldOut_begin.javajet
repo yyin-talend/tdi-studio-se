@@ -11,7 +11,7 @@ imports="
 	org.talend.core.model.process.IConnectionCategory
 "
 %>
-
+//tWriteXMLFieldOut_begin
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
@@ -25,7 +25,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		if(conns!=null && conns.size()>0){
     		IConnection conn = conns.get(0);
     		if(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){ 
-    		
         		String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
         		String mode = ElementParameterParser.getValue(node, "__GENERATION_MODE__");
         		List<Map<String, String>> rootTable = 
@@ -37,8 +36,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 int nb_line_<%=cid%> = 0;
 boolean needRoot_<%=cid%>  = true;
-
-int currentRowCount_<%=cid%> = 0;
 
 java.util.List<java.util.List<String>> groupbyList_<%=cid%> = new java.util.ArrayList<java.util.List<String>>();
 java.util.Map<String,String> valueMap_<%=cid%> = new java.util.HashMap<String,String>();

@@ -15,7 +15,7 @@ imports="
     org.talend.core.model.metadata.types.JavaTypesManager
 	org.talend.core.model.metadata.types.JavaType
 "
-skeleton="tWriteXMLField_java.skeleton"
+skeleton="tWriteXMLFieldOut_java.skeleton"
 %>
 
 <%
@@ -506,40 +506,6 @@ if(mode.equals("Dom4j")){
 	// build loop xml tree
 <%
 	generateToolByDom4j.generateCode(loop,"loop","subTreeRootParent");
-%>
-	//count the output
-    currentRowCount_<%=cid %>++;
-    if(currentRowCount_<%=cid %> == <%=rowNumber%>){
-    	needRoot_<%=cid%>  = true;
-        currentRowCount_<%=cid %> = 0;
-    	groupbyList_<%=cid%>.clear();
-
-       	org.dom4j.io.XMLWriter output_<%=cid%> = new org.dom4j.io.XMLWriter(strWriter_<%=cid%>, format_<%=cid%>);
-       
-        nestXMLTool_<%=cid%>.replaceDefaultNameSpace(doc_<%=cid%>.getRootElement());
-        output_<%=cid%>.write(doc_<%=cid%>);
-        output_<%=cid%>.close();
-<%
-	String xmlField = ElementParameterParser.getValue(node, "__XMLFIELD__");
-	String outConnName = null;
-	List< ? extends IConnection> outConns = node.getOutgoingConnections();
-	if(outConns!=null && outConns.size()>0){
-		IConnection outConn = outConns.get(0);
-		if(outConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){ 
-			outConnName = outConn.getName();
-%>
-		<%=outConnName%>.<%=xmlField%>=strWriter_<%=cid%>.toString();
-<%
-		}
-	}
-%>
-		strWriter_<%=cid%> = new java.io.StringWriter();
-        doc_<%=cid%>  = org.dom4j.DocumentHelper.createDocument();
-    	groupElementList_<%=cid%>.clear();
-    }
-
-	if(currentRowCount_<%=cid%> == 0){
-<%
 }
 // ------------------- *** Dom4j generation mode end *** ------------------- //
 
@@ -799,74 +765,6 @@ else if(mode.equals("Null")){
 		}
 <%
 	}
-%>
-
-    currentRowCount_<%=cid %>++;
-    if(currentRowCount_<%=cid %> == <%=rowNumber%>){
-    	needRoot_<%=cid%>  = true;
-        currentRowCount_<%=cid %> = 0;
-    	groupbyList_<%=cid%>.clear();
- 
-<%
-	if(!outputAsXSD.equals("true") && !allowEmpty.equals("true")){
-%>   	
-	if (preUnNullMaxIndex_<%=cid%> >= 0) {
-        // output all buffer
-        for (int j_<%=cid%> = 0; j_<%=cid%> <= preUnNullMaxIndex_<%=cid%>; j_<%=cid%>++) {
-            if (startTabs_<%=cid%>[j_<%=cid%>] != null)
-                out_<%=cid%>.write(startTabs_<%=cid%>[j_<%=cid%>]);
-        }
-
-        if (preUnNullMaxIndex_<%=cid%> < preNewTabIndex_<%=cid%> ) {
-			for (int i_<%=cid%> = preNewTabIndex_<%=cid%> - 1; i_<%=cid%> >= 0; i_<%=cid%>--) {
-                out_<%=cid%>.newLine();
-                out_<%=cid%>.write(endTabStrs_<%=cid%>.get(i_<%=cid%>));
-            }
-        } else {
-            for (int i_<%=cid%> = preUnNullMaxIndex_<%=cid%>; i_<%=cid%> >= 0; i_<%=cid%>--) {
-                out_<%=cid%>.newLine();
-                out_<%=cid%>.write(endTabStrs_<%=cid%>.get(i_<%=cid%>));
-            }
-        }
-    }
-<%
-	}else{
-		if(loopTable.size()>0){
-%>
-	for (int i_<%=cid%> = endTabStrs_<%=cid%>.size() - 1; i_<%=cid%> >= 0; i_<%=cid%>--) {
-        out_<%=cid%>.newLine();
-        out_<%=cid%>.write(endTabStrs_<%=cid%>.get(i_<%=cid%>));
-    }
-<%
-		}
-	}
-%>
-	    preUnNullMaxIndex_<%=cid%> = -1;
-        preNewTabIndex_<%=cid%> = -1;
-    	startTabs_<%=cid%> = new String[endTabStrs_<%=cid%>.size()];
-    	out_<%=cid%>.newLine();
-    	out_<%=cid%>.close();
-<%
-	String xmlField = ElementParameterParser.getValue(node, "__XMLFIELD__");
-	String outConnName = null;
-	List< ? extends IConnection> outConns = node.getOutgoingConnections();
-	if(outConns!=null && outConns.size()>0){
-		IConnection outConn = outConns.get(0);
-		if(outConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){ 
-			outConnName = outConn.getName();
-%>
-		<%=outConnName%>.<%=xmlField%>=strWriter_<%=cid%>.toString();
-<%
-		}
-	}
-%>
-		strWriter_<%=cid%> = new java.io.StringWriter();
-		out_<%=cid%> = new java.io.BufferedWriter(strWriter_<%=cid%>);
-        out_<%=cid%>.write("<?xml version=\"1.0\" encoding=\""+<%=encoding%>+"\"?>");
-        out_<%=cid%>.newLine();
-	}
-	if(currentRowCount_<%=cid%> == 0){
-<%
 }
 // ------------------- *** Null generation mode end *** ------------------- //
 

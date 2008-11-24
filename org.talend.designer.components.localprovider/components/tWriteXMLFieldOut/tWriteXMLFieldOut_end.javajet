@@ -13,7 +13,7 @@ imports="
     org.talend.core.model.metadata.types.JavaTypesManager
 	org.talend.core.model.metadata.types.JavaType
 "
-skeleton="tWriteXMLField_java.skeleton"
+skeleton="tWriteXMLFieldOut_java.skeleton"
 %>
 
 <%
@@ -152,9 +152,6 @@ String cid = node.getUniqueName();
 
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
-%>
-if(currentRowCount_<%=cid %> > 0){
-<%
 	if(mode.equals("Dom4j")){
 		if(outputAsXSD.equals("true")){
 %>
@@ -174,7 +171,7 @@ if(currentRowCount_<%=cid %> > 0){
 	org.dom4j.io.XMLWriter output_<%=cid%> = new org.dom4j.io.XMLWriter(strWriter_<%=cid%>, format_<%=cid%>);
 	output_<%=cid%>.write(doc_<%=cid%>);
     output_<%=cid%>.close();
-	globalMap.put("<%=cid%>_XMLFIELD",strWriter_<%=cid%>.toString());
+	globalMap.put("XMLFIELD",strWriter_<%=cid%>.toString());
 <%
 	}else if(mode.equals("Null")){
 		if(!outputAsXSD.equals("true") && !allowEmpty.equals("true")){
@@ -212,11 +209,10 @@ if(currentRowCount_<%=cid %> > 0){
 %>
 	out_<%=cid%>.newLine();
 	out_<%=cid%>.close();
-	globalMap.put("<%=cid%>_XMLFIELD",strWriter_<%=cid%>.toString());
+	globalMap.put("XMLFIELD",strWriter_<%=cid%>.toString());
 <%
 	}
 %>
-}
 
 globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
 <%
