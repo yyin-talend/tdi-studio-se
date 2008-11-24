@@ -110,7 +110,9 @@ for (int i = 0; i < headers.size(); i++) {
       or die $!;
 <%
   if (needAuth) {
-%>    
+%>
+    use Authen::SASL;
+
     $smtp->auth(<%=authUsername%>, <%=authPassword%>)
       or die "Could not authenticate $!";
 <%
