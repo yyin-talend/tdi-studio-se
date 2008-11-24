@@ -164,25 +164,26 @@ if(stat){%>
 	for (IConnection iterateConn : iterateConnSet) { 
 		parallelIterate = "true".equals(ElementParameterParser.getValue(iterateConn, "__ENABLE_PARALLEL__"));
 		if (parallelIterate) {
-			if (codePart.equals(ECodePart.END)) {			
+			if (codePart.equals(ECodePart.END)) {
+			String iterateTargetNodeName = iterateConn.getTarget().getUniqueName();				
 %>
-			mtp_<%=iterateConn.getTarget().getUniqueName() %>.waitForEndOfQueue();
+			mtp_<%=iterateTargetNodeName %>.waitForEndOfQueue();
 			
-			TalendThread errorThread = mtp_<%=iterateConn.getTarget().getUniqueName() %>.getErrorThread();
+			TalendThread errorThread_<%=iterateTargetNodeName %> = mtp_<%=iterateTargetNodeName %>.getErrorThread();
 
 <%if(!isRunInMultiThread){%>
-	if(errorThread != null) {
-		if (errorThread.errorCode != null) {
+	if(errorThread_<%=iterateTargetNodeName %> != null) {
+		if (errorThread_<%=iterateTargetNodeName %>.errorCode != null) {
 			if (errorCode == null
-					|| errorThread.errorCode.compareTo(errorCode) > 0) {
-				errorCode = errorThread.errorCode;
+					|| errorThread_<%=iterateTargetNodeName %>.errorCode.compareTo(errorCode) > 0) {
+				errorCode = errorThread_<%=iterateTargetNodeName %>.errorCode;
 			}
 		} else if (!status.equals("failure")) {
-			status = errorThread.status;
+			status = errorThread_<%=iterateTargetNodeName %>.status;
 		}
 	}else{				
-		Integer threadErrorCode = mtp_<%=iterateConn.getTarget().getUniqueName() %>.getTalendThreadResult().getErrorCode();
-		String threadStatus = mtp_<%=iterateConn.getTarget().getUniqueName() %>.getTalendThreadResult().getStatus();
+		Integer threadErrorCode = mtp_<%=iterateTargetNodeName %>.getTalendThreadResult().getErrorCode();
+		String threadStatus = mtp_<%=iterateTargetNodeName %>.getTalendThreadResult().getStatus();
 		
 		if (threadErrorCode != null) {
 			if (errorCode == null
@@ -194,20 +195,20 @@ if(stat){%>
 		}
 	 }			
 <%}else{%>
-	if(errorThread != null) {
+	if(errorThread_<%=iterateTargetNodeName %> != null) {
 		Integer localErrorCode = (Integer) (((java.util.Map) threadLocal.get()).get("errorCode"));
 		String localStatus = (String) (((java.util.Map) threadLocal.get()).get("status"));
 		
-		if (errorThread.errorCode != null) {
-			if (localErrorCode == null || errorThread.errorCode.compareTo(localErrorCode) > 0) {
-				((java.util.Map) threadLocal.get()).put("errorCode", errorThread.errorCode);
+		if (errorThread_<%=iterateTargetNodeName %>.errorCode != null) {
+			if (localErrorCode == null || errorThread_<%=iterateTargetNodeName %>.errorCode.compareTo(localErrorCode) > 0) {
+				((java.util.Map) threadLocal.get()).put("errorCode", errorThread_<%=iterateTargetNodeName %>.errorCode);
 			}
 		} else if (!localStatus.equals("failure")) {
-			((java.util.Map) threadLocal.get()).put("status", errorThread.status);
+			((java.util.Map) threadLocal.get()).put("status", errorThread_<%=iterateTargetNodeName %>.status);
 		}
 	}else{
-		Integer threadErrorCode = mtp_<%=iterateConn.getTarget().getUniqueName() %>.getTalendThreadResult().getErrorCode();
-		String threadStatus = mtp_<%=iterateConn.getTarget().getUniqueName() %>.getTalendThreadResult().getStatus();
+		Integer threadErrorCode = mtp_<%=iterateTargetNodeName %>.getTalendThreadResult().getErrorCode();
+		String threadStatus = mtp_<%=iterateTargetNodeName %>.getTalendThreadResult().getStatus();
 		
 		Integer localErrorCode = (Integer) (((java.util.Map) threadLocal
 				.get()).get("errorCode"));

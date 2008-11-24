@@ -42,13 +42,22 @@
     
 	if (codePart.equals(ECodePart.BEGIN)) {
 		boolean parallelIterate = false;
+		boolean hasParallelIterate = false;
 		for (IConnection iterateConn : iterateConnSet) { 
 			parallelIterate = "true".equals(ElementParameterParser.getValue(iterateConn, "__ENABLE_PARALLEL__"));
 	        if (parallelIterate) {
 %>
 			TalendThreadPool mtp_<%=iterateConn.getTarget().getUniqueName() %> = new TalendThreadPool(<%=ElementParameterParser.getValue(iterateConn,"__NUMBER_PARALLEL__") %>);
+
+<%
+if(!hasParallelIterate){
+	hasParallelIterate = true;
+%>
+					
 			final Object[] lockWrite = new Object[0];
 			int threadIdCounter =0;
+<%}%>			
+			
 <%
 			}
 			
