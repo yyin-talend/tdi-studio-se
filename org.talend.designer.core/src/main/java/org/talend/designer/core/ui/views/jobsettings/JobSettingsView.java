@@ -46,7 +46,7 @@ import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.views.jobsettings.tabs.MainComposite;
-import org.talend.designer.core.ui.views.jobsettings.tabs.VersionComposite;
+import org.talend.designer.core.ui.views.jobsettings.tabs.ProcessVersionComposite;
 import org.talend.designer.core.ui.views.properties.IJobSettingsView;
 import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsComposite;
 import org.talend.repository.model.RepositoryNode;
@@ -147,7 +147,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
         } else if (EComponentCategory.MAIN.equals(category)) {
             dynamicComposite = new MainComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(), (IRepositoryObject) data);
         } else if (EComponentCategory.VERSIONS.equals(category)) {
-            dynamicComposite = new VersionComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(), (IRepositoryObject) data);
+            dynamicComposite = new ProcessVersionComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(), (IRepositoryObject) data);
         }
         if (dynamicComposite != null) {
             dynamicComposite.refresh();
@@ -468,8 +468,8 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
      */
     public ISelection getSelection() {
         IDynamicProperty dc = currentSelectedTab.getPropertyComposite();
-        if (dc instanceof VersionComposite) {
-            return ((VersionComposite) dc).getSelection();
+        if (dc instanceof ProcessVersionComposite) {
+            return ((ProcessVersionComposite) dc).getSelection();
         }
         return null;
     }

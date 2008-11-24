@@ -112,7 +112,7 @@ public class EditPropertiesAction extends AContextualAction {
      * @param node
      * @param originalName
      */
-    private void processRoutineRenameOperation(String originalName, RepositoryNode node, IPath path) {
+    protected void processRoutineRenameOperation(String originalName, RepositoryNode node, IPath path) {
         if (LanguageManager.getCurrentLanguage() != ECodeLanguage.JAVA) {
             return;
         }
@@ -211,7 +211,7 @@ public class EditPropertiesAction extends AContextualAction {
      * @param node
      * @return
      */
-    private IEditorPart getCorrespondingEditor(RepositoryNode node) {
+    protected IEditorPart getCorrespondingEditor(RepositoryNode node) {
         IEditorReference[] eidtors = getActivePage().getEditorReferences();
 
         for (int i = 0; i < eidtors.length; i++) {

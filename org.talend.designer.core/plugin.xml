@@ -272,6 +272,12 @@
             level="11"
             name="Read process"/>
       <Action
+            class="org.talend.designer.core.ui.action.OpenExistVersionProcessAction"
+            id="org.talend.designer.core.ui.action.OpenExistVersionProcessAction"
+            isReadAction="true"
+            level="12"
+            name="Open an other version job"/>
+      <Action
             class="org.talend.designer.core.ui.action.CreateProcess"
             id="org.talend.designer.core.actions.createprocess"
             level="10"
