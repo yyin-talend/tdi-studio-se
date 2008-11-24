@@ -1032,6 +1032,8 @@ public class Node extends Element implements INode {
                     // ProcessorUtilities.generateCode(jobId, (String) value, null, false, false,
                     // ProcessorUtilities.GENERATE_MAIN_ONLY);
 
+                    // fix bug 0005678: tRunJob properties are very slow
+                    // commnets the following code. do not know why it's added
                     ((Process) getProcess()).getEditor().updateChildrens();
                 }
             }
