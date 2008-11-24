@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
@@ -48,13 +49,11 @@ public class SaveJobBeforeRunAction extends Action {
         if (nodes.isEmpty()) {
             return;
         }
-        IEditorReference[] references = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                .getEditorReferences();
-        for (int i = 0; i < references.length; i++) {
-            IEditorPart part = references[i].getEditor(false);
-            if (!(part instanceof AbstractMultiPageTalendEditor)) {
-                continue;
-            }
+        IEditorPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+              .getActiveEditor();
+        
+     
+        if (part!=null && part instanceof AbstractMultiPageTalendEditor) {
             AbstractMultiPageTalendEditor editor = (AbstractMultiPageTalendEditor) part;
             editor.doSave(new NullProgressMonitor());
         }
