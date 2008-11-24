@@ -106,7 +106,7 @@
       FIELD="LABEL"
       REQUIRED="true"
       NUM_ROW="29"
-      CONTEXT="0;0;0"
+      COLOR="0;0;0"
     >
       <DEFAULT>Add a dummy EOF line useful before tAggregateSortedRow</DEFAULT>
     </PARAMETER>

@@ -51,7 +51,7 @@
       FIELD="LABEL"
       REQUIRED="true"
       NUM_ROW="11"
-      CONTEXT="0;255;0"
+      COLOR="255;0;0"
     >
       <DEFAULT>The GeoIP.dat database file is available for free, updated monthly on MaxMind website: http://www.maxmind.com/download/geoip/database/</DEFAULT>
     </PARAMETER>

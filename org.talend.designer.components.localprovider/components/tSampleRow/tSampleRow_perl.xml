@@ -42,7 +42,7 @@
       FIELD="LABEL"
       REQUIRED="false"
       NUM_ROW="19"
-      CONTEXT="0;0;255">
+      COLOR="0;0;255">
       <DEFAULT>Range let you choose a list of line numbers and/or a list of ranges.
 
 - '1,5' : line 1 and 5

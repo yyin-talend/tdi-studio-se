@@ -185,7 +185,7 @@
       FIELD="LABEL"
       REQUIRED="true"
       NUM_ROW="113"
-      CONTEXT="255;0;0">
+      COLOR="255;0;0">
       <DEFAULT>Note: By default, update keys are schema keys and all columns are "insertable". This can be modified with "field options" advanced setting.</DEFAULT>
     </PARAMETER>
 

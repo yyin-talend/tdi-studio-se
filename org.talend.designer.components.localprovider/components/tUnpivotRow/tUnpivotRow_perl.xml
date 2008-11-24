@@ -36,7 +36,7 @@
       FIELD="LABEL"
       REQUIRED="true"
       NUM_ROW="10"
-      CONTEXT="0;255;0"
+      COLOR="255;0;0"
     >
       <DEFAULT>Columns outside the row keys will be unpivoted</DEFAULT>
     </PARAMETER>

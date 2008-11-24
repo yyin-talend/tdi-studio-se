@@ -23,7 +23,7 @@
 	<PARAMETERS>
 
 		<PARAMETER NAME="WARNING" FIELD="LABEL" REQUIRED="true"
-			NUM_ROW="1" CONTEXT="255;0;0">
+			NUM_ROW="1" COLOR="255;0;0">
 			<DEFAULT>
 				Notice: Last aggregation key won't be present in output.
 				Add a dummy last key (with tExternalSortRow for
