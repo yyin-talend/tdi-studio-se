@@ -109,6 +109,14 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+    
+    <PARAMETER NAME="PROTOCOL" FIELD="CLOSED_LIST" NUM_ROW="8">
+      <ITEMS DEFAULT="POP3">
+        <ITEM NAME="POP3" VALUE="pop3" />
+        <ITEM NAME="IMAP" VALUE="imap"/>
+      </ITEMS>
+    </PARAMETER> 
+    
   </PARAMETERS>
   
   <ADVANCED_PARAMETERS>

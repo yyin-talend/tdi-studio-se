@@ -23,38 +23,70 @@
 
     String maxEmails = ElementParameterParser.getValue(node, "__MAX_EMAILS__");
     String deleteFromServer = ElementParameterParser.getValue(node, "__DELETE_FROM_SERVER__");
+    String protocol = ElementParameterParser.getValue(node, "__PROTOCOL__");
     
     List<Map<String, String>> filterList = 
 		(List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ADVANCED_FILTER__");
     String condition = ElementParameterParser.getValue(node, "__FILTER_RELATION__");
-    
-	// component id
+    	
 	String cid = node.getUniqueName();
 %>	
-	String popServer_<%=cid %> = <%=host %>;
-	int popPort_<%=cid %>=<%=port %>;
-    String popUser_<%=cid %> = <%=username %>;
-    String popPassword_<%=cid %> = <%=password %>;
-    
-    java.util.Properties props_<%=cid %> = System.getProperties();
-    javax.mail.Session session_<%=cid %> = javax.mail.Session.getInstance(props_<%=cid %>, null);
-    
-    javax.mail.Store store_<%=cid %> = session_<%=cid %>.getStore("pop3");
-    store_<%=cid %>.connect(popServer_<%=cid %>, popPort_<%=cid %>, popUser_<%=cid %>, popPassword_<%=cid %>);
-    
-    int nb_email_<%=cid %> = 0;
+	String server_<%=cid %> = <%=host %>;
+	
+	String mbox_<%=cid%> = "INBOX";
 
-    javax.mail.Folder folder_<%=cid %> = store_<%=cid %>.getDefaultFolder();
-    if (folder_<%=cid %> == null)
-    throw new RuntimeException("No default folder");
+	int port_<%=cid %> = <%=port %>;
 
-    // its INBOX
-    folder_<%=cid %> = folder_<%=cid %>.getFolder("INBOX");
-    if (folder_<%=cid %> == null)
-        throw new RuntimeException("No POP3 INBOX");
+	int nb_email_<%=cid %> = 0;
+
+    String user_<%=cid %> = <%=username %>;
+
+    String password_<%=cid %> = <%=password %>;
+
+	javax.mail.Folder folder_<%=cid %>;
+
+	javax.mail.Session session_<%=cid %>;
+	
+	javax.mail.Store store_<%=cid %>;
+
+	javax.mail.URLName url_<%=cid %>;
+
+	java.util.Properties props_<%=cid %>;
+    
+	try {
+		props_<%=cid %> = System.getProperties();
+	} catch (SecurityException sex) {
+		props_<%=cid %> = new java.util.Properties();
+    }
 
 <%
-   if (deleteFromServer.equals("true")) {
+	if ("pop3".equals(protocol)){
+%>
+		session_<%=cid %> = javax.mail.Session.getInstance(props_<%=cid %>, null);
+		store_<%=cid %> = session_<%=cid %>.getStore("<%=protocol%>");
+		store_<%=cid %>.connect(server_<%=cid %>, port_<%=cid %>, user_<%=cid %>, password_<%=cid %>);
+
+		folder_<%=cid %> = store_<%=cid %>.getDefaultFolder();
+
+		if (folder_<%=cid %> == null)
+			throw new RuntimeException("No default folder");
+
+		// its INBOX
+		folder_<%=cid %> = folder_<%=cid %>.getFolder(mbox_<%=cid%>);
+		if (folder_<%=cid %> == null)
+			throw new RuntimeException("No POP3 INBOX");
+<%
+	} else{
+%>		
+		url_<%=cid %> = new javax.mail.URLName("<%=protocol%>", server_<%=cid %>, -1, mbox_<%=cid%>, user_<%=cid %>, password_<%=cid %>);
+		session_<%=cid %> = javax.mail.Session.getInstance(props_<%=cid %>, null);
+		store_<%=cid %> = new com.sun.mail.imap.IMAPStore(session_<%=cid %>, url_<%=cid %>);
+		store_<%=cid %>.connect();
+		folder_<%=cid %> = store_<%=cid %>.getFolder(mbox_<%=cid%>);
+<%
+	}
+
+	if (deleteFromServer.equals("true")) {
 %>
      folder_<%=cid %>.open(javax.mail.Folder.READ_WRITE);
 <%
@@ -120,7 +152,9 @@
 <%
 	}
 %>
-        message_<%=cid %>.setFlag(javax.mail.Flags.Flag.DELETED, true);    
+	if ("pop3".equals("<%=protocol%>"))
+        message_<%=cid %>.setFlag(javax.mail.Flags.Flag.DELETED, true);
+        
         String filename_<%=cid %> = <%=filenamePattern %>;
         java.io.File file_<%=cid %> = new java.io.File(<%=outputDirectory %>, filename_<%=cid %>);
         java.io.OutputStream os_<%=cid %> = new java.io.FileOutputStream(file_<%=cid %>);
