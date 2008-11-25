@@ -16,14 +16,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.apache.commons.lang.SystemUtils;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ColumnPixelData;
 import org.eclipse.jface.viewers.ColumnWeightData;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -35,12 +32,10 @@ import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
-import org.eclipse.jface.wizard.IWizardContainer;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.internal.gtk.OS;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -59,7 +54,6 @@ import org.talend.core.i18n.Messages;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.core.ui.action.OpenExistVersionProcessAction;
-import org.talend.designer.core.ui.action.OpenExistVersionProcessAction.PropertyManagerWizardDialog;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
@@ -348,21 +342,21 @@ public class ProcessVersionComposite extends AbstractTabComposite {
         table.setSortColumn(column1);
         table.setSortDirection(SWT.DOWN);
 
-//        tableViewer.addDoubleClickListener(new IDoubleClickListener() {
-//
-//            public void doubleClick(DoubleClickEvent event) {
-//                if (getParentWizard() != null) {
-//                    IWizardContainer container = getParentWizard().getWizard().getContainer();
-//                    if (container instanceof PropertyManagerWizardDialog) {
-//                        PropertyManagerWizardDialog dialog = (PropertyManagerWizardDialog) container;
-//                        if(SystemUtils.IS_OS_WINDOWS){
-//                          OS.SendMessage(dialog.getFinishButton().handle, OS.button_press_event, 0, 0);
-//                        }
-//                    }
-//                }
-//            }
-//
-//        });
+        // tableViewer.addDoubleClickListener(new IDoubleClickListener() {
+        //
+        // public void doubleClick(DoubleClickEvent event) {
+        // if (getParentWizard() != null) {
+        // IWizardContainer container = getParentWizard().getWizard().getContainer();
+        // if (container instanceof PropertyManagerWizardDialog) {
+        // PropertyManagerWizardDialog dialog = (PropertyManagerWizardDialog) container;
+        // if(SystemUtils.IS_OS_WINDOWS){
+        // OS.SendMessage(dialog.getFinishButton().handle, OS.button_press_event, 0, 0);
+        // }
+        // }
+        // }
+        // }
+        //
+        // });
     }
 
     /*
