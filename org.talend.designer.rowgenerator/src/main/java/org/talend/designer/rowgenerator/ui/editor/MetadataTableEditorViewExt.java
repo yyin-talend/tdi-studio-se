@@ -17,6 +17,7 @@ import java.util.Iterator;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -234,6 +235,8 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
         final TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreator);
         final ComboBoxCellEditor functComboBox = new ComboBoxCellEditor();
         functComboBox.create(tableViewerCreator.getTable());
+        CCombo functCombo = (CCombo) functComboBox.getControl();
+        functCombo.setEditable(false);
         column.setCellEditor(functComboBox, comboValueAdapter);
         // if (functComboBox.getControl() instanceof CCombo) {
         // final CCombo combo = (CCombo) functComboBox.getControl();
