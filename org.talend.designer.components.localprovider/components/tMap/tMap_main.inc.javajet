@@ -193,13 +193,11 @@
 
 							mainFilterAlreadyDone = true;
 	
-							hasMainFilter = true;
-
 		                	String key = CodeGenerationUtils.buildProblemKey(componentNameForKeyProblem,
    	                     	JavaGenerationManager.PROBLEM_KEY_FIELD.FILTER.toString(), mainInputTableName);
 					  	  	 %>
 		              
-			   	  		  	if(
+				   	  		  	if(
  				  		  			<%= checkingSyntax ? CodeGenerationUtils.buildJavaStartFieldKey(key) : "" %>
  				  		  			(
  				  		  			<%// keep this line to allow comments in filter %>
@@ -209,7 +207,13 @@
   				  		  			<%= checkingSyntax ? CodeGenerationUtils.buildJavaEndFieldKey(key) : "" %>
 	  	  		  				) { // G_TM_M_281
 
-								<%
+							<%
+							if(isVirtualOut) {
+					
+								gm.addBlocksCodeToClose(new BlockCode("G_TM_M_281 close main tMap filter for table '" + mainInputTableName +"'"));
+					
+							}
+								
 						} // T_TM_M_301
 				 	} // T_TM_M_300
 			
@@ -217,7 +221,8 @@
 
 		// exprKey(s) initialization(s) for Main flow
 		// ---------------------------------------------
-		if (sizeInputTables > 1 && inputTables.get(1).isPersistent() && !"ALL_ROWS".equals(inputTables.get(1).getMatchingMode())) { // T_TM_M_201
+		boolean isFirstTableIsLookupPersistent = sizeInputTables > 1 && inputTables.get(1).isPersistent() && !"ALL_ROWS".equals(inputTables.get(1).getMatchingMode());
+		if (isFirstTableIsLookupPersistent) { // T_TM_M_201
 			ExternalMapperTable inputTable = inputTables.get(1);
             String tableName = inputTable.getName();
             nextLookupName = inputTable.getName();
@@ -316,26 +321,18 @@
 
 
 
-				if(isVirtualOut && hasMainFilter) {
-					%>
-					} // G_TM_M_281
-					<%
-				}
-				
-
-
-		if(!isVirtualOut) { // T_TM_M_212
-        %>
-
-          fsi_<%= mainInputTableName %>.endPut();
-          
+		} // T_TM_M_201
+	
+	
+		if(isFirstTableIsLookupPersistent && !isVirtualOut) { // T_TM_M_212
+	    %>
+	
+	      fsi_<%= mainInputTableName %>.endPut();
+	      
 		<%
 		} // T_TM_M_212
 	
-	} // T_TM_M_201
 	
-
-
 		if(isVirtualIn) { // T_TM_M_291
 			
 			%>
@@ -419,7 +416,12 @@
             
             		cumulatedInputConnections.add(connection);
             
-			  	  	   if(!mainFilterAlreadyDone && externalTable.isActivateExpressionFilter() && externalTable.getExpressionFilter() != null && !externalTable.getExpressionFilter().trim().equals("")) { 
+			  	  	   if(!mainFilterAlreadyDone 
+			  	  	    && !hasPersistentLookup
+			  	  	   	&& externalTable.isActivateExpressionFilter() 
+			  	  	   	&& externalTable.getExpressionFilter() != null 
+			  	  	   	&& !externalTable.getExpressionFilter().trim().equals("")
+			  	  	   ) { 
 
 						hasMainFilter = true;
 
