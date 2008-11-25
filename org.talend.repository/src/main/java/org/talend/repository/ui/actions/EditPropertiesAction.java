@@ -44,6 +44,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
@@ -57,6 +58,7 @@ import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.IUIRefresher;
+import org.talend.designer.core.ui.views.properties.IJobSettingsView;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.i18n.Messages;
@@ -100,6 +102,13 @@ public class EditPropertiesAction extends AContextualAction {
                 ((IUIRefresher) part).refreshName();
             } else {
                 processRoutineRenameOperation(originalName, node, path);
+            }
+
+            // refresh ...
+            IViewPart jobSettingView = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
+                    IJobSettingsView.ID);
+            if (jobSettingView != null && jobSettingView instanceof IJobSettingsView) {
+                ((IJobSettingsView) jobSettingView).refreshCurrentViewTab();
             }
         }
     }
