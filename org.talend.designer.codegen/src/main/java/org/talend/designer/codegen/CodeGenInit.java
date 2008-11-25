@@ -25,7 +25,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
-import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.Timer;
@@ -50,7 +49,6 @@ public class CodeGenInit implements IApplication {
 
     public Object start(IApplicationContext context) throws Exception {
         Timer.getTimer("CodeGenInit").start();
-        CommonsPlugin.setHeadless(true);
         initLocalRepository();
         init(ECodeLanguage.JAVA);
         init(ECodeLanguage.PERL);
