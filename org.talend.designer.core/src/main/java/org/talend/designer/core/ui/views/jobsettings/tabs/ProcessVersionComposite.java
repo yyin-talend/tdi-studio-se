@@ -21,6 +21,8 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ColumnPixelData;
 import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -60,6 +62,7 @@ import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.actions.ActionsHelper;
+import org.talend.repository.ui.actions.EditPropertiesAction;
 
 /**
  * yzhang class global comment. Detailled comment
@@ -342,21 +345,18 @@ public class ProcessVersionComposite extends AbstractTabComposite {
         table.setSortColumn(column1);
         table.setSortDirection(SWT.DOWN);
 
-        // tableViewer.addDoubleClickListener(new IDoubleClickListener() {
-        //
-        // public void doubleClick(DoubleClickEvent event) {
-        // if (getParentWizard() != null) {
-        // IWizardContainer container = getParentWizard().getWizard().getContainer();
-        // if (container instanceof PropertyManagerWizardDialog) {
-        // PropertyManagerWizardDialog dialog = (PropertyManagerWizardDialog) container;
-        // if(SystemUtils.IS_OS_WINDOWS){
-        // OS.SendMessage(dialog.getFinishButton().handle, OS.button_press_event, 0, 0);
-        // }
-        // }
-        // }
-        // }
-        //
-        // });
+        tableViewer.addDoubleClickListener(new IDoubleClickListener() {
+
+            public void doubleClick(DoubleClickEvent event) {
+                if (getParentWizard() == null) {
+                    ITreeContextualAction editPropertiesAction = getEditPropertiesAction(EditPropertiesAction.class);
+                    if (editPropertiesAction != null) {
+                        editPropertiesAction.run();
+                    }
+                }
+            }
+
+        });
     }
 
     /*
@@ -374,6 +374,35 @@ public class ProcessVersionComposite extends AbstractTabComposite {
                 tableViewer.setInput(null);
             }
         }
+    }
+
+    /**
+     * 
+     * DOC xye Comment method "getEditPropertiesAction".
+     * 
+     * @return
+     */
+    public ITreeContextualAction getEditPropertiesAction(final Class<?> klazz) {
+
+        ISelection selection = tableViewer.getSelection();
+        if (selection instanceof IStructuredSelection) {
+            IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+
+            List<ITreeContextualAction> contextualsActions = ActionsHelper.getRepositoryContextualsActions();
+            for (ITreeContextualAction action : contextualsActions) {
+                if (action.getClass() == klazz) {
+                    if (action.isReadAction() || action.isEditAction() || action.isPropertiesAction()) {
+                        action.init(null, structuredSelection);
+                        if (action.isVisible()) {
+                            return action;
+                        }
+                    }
+                }
+            }
+        }
+
+        return null;
+
     }
 
     /**

@@ -147,7 +147,8 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
         } else if (EComponentCategory.MAIN.equals(category)) {
             dynamicComposite = new MainComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(), (IRepositoryObject) data);
         } else if (EComponentCategory.VERSIONS.equals(category)) {
-            dynamicComposite = new ProcessVersionComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(), (IRepositoryObject) data);
+            dynamicComposite = new ProcessVersionComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(),
+                    (IRepositoryObject) data);
         }
         if (dynamicComposite != null) {
             dynamicComposite.refresh();
@@ -472,5 +473,20 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
             return ((ProcessVersionComposite) dc).getSelection();
         }
         return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.ui.views.properties.IJobSettingsView#refreshCurrentViewTab()
+     */
+    public void refreshCurrentViewTab() {
+        if (currentSelectedTab == null) {
+            return;
+        }
+        IDynamicProperty dc = currentSelectedTab.getPropertyComposite();
+        if (dc != null) {
+            dc.refresh();
+        }
     }
 }
