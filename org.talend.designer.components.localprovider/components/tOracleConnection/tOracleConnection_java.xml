@@ -42,6 +42,7 @@
       NAME="CONNECTION_TYPE"
       FIELD="CLOSED_LIST"
       NUM_ROW="20"
+      SHOW_IF="USE_TNS_FILE == 'false'"
     >
       <ITEMS DEFAULT="ORACLE_SID">
         <ITEM NAME="ORACLE_SID" VALUE="ORACLE_SID" />
@@ -60,12 +61,26 @@
 		</ITEMS>
 	</PARAMETER>
 
+	<PARAMETER NAME="USE_TNS_FILE" FIELD="CHECK"
+		NUM_ROW="28">
+		<DEFAULT>false</DEFAULT>
+	</PARAMETER>
+
+    <PARAMETER
+      NAME="TNS_FILE"
+      FIELD="FILE"
+      NUM_ROW="29"
+      SHOW_IF="USE_TNS_FILE == 'true'"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>	
+
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
       NUM_ROW="30"
       REPOSITORY_VALUE="SERVER_NAME"
-      NOT_SHOW_IF="CONNECTION_TYPE == 'ORACLE_OCI'"
+      NOT_SHOW_IF="(CONNECTION_TYPE == 'ORACLE_OCI') or (USE_TNS_FILE == 'true')"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -85,7 +100,7 @@
       FIELD="TEXT"
       NUM_ROW="30"
       REPOSITORY_VALUE="PORT"
-      NOT_SHOW_IF="CONNECTION_TYPE == 'ORACLE_OCI'"
+      NOT_SHOW_IF="(CONNECTION_TYPE == 'ORACLE_OCI') or (USE_TNS_FILE == 'true')"
     >
       <DEFAULT>"1521"</DEFAULT>
     </PARAMETER>
@@ -96,7 +111,7 @@
       NUM_ROW="40"
       REPOSITORY_VALUE="SID"
       REQUIRED="true"
-      NOT_SHOW_IF="CONNECTION_TYPE == 'ORACLE_OCI'"
+      NOT_SHOW_IF="(CONNECTION_TYPE == 'ORACLE_OCI') or (USE_TNS_FILE == 'true')"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -107,7 +122,7 @@
       NUM_ROW="40"
       REPOSITORY_VALUE="SID"
       REQUIRED="true"
-      SHOW_IF="CONNECTION_TYPE == 'ORACLE_OCI'"
+      SHOW_IF="(CONNECTION_TYPE == 'ORACLE_OCI') and (USE_TNS_FILE == 'false')"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -153,6 +168,9 @@
    </PARAMETERS>
 
    <CODEGENERATION>
+    <IMPORTS>
+       <IMPORT NAME="TNS" MODULE="tns.jar" REQUIRED="true" />    
+    </IMPORTS>   
    </CODEGENERATION>
 
    <RETURNS/>

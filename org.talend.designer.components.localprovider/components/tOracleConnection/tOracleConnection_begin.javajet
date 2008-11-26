@@ -19,43 +19,66 @@ imports="
     String dbuser = ElementParameterParser.getValue(node, "__USER__");
     String dbpass = ElementParameterParser.getValue(node, "__PASS__");
     String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
+    boolean useTNSFile = ElementParameterParser.getValue(node, "__USE_TNS_FILE__").equals("true");
+    String tnsFile = ElementParameterParser.getValue(node, "__TNS_FILE__");
 %>
 java.lang.Class.forName("<%=javaDbDriver %>");
-<%
-String connectionType = ElementParameterParser.getValue(node, "__CONNECTION_TYPE__");
-if(connectionType.equals("ORACLE_SID")) {
-    %>
-	String url_<%=cid %> = "jdbc:oracle:thin:@" + <%=dbhost%> + ":" + <%=dbport%> + ":" + <%=dbname%>;
-	<%
-} else if(connectionType.equals("ORACLE_SERVICE_NAME")) {
-    %>
-	String url_<%=cid %> = "jdbc:oracle:thin:@(description=(address=(protocol=tcp)(host=" + <%=dbhost%> + ")(port=" + <%=dbport%> + "))(connect_data=(service_name=" + <%=dbname%> + ")))";
-	<%
-} else if(connectionType.equals("ORACLE_OCI")) {
-    %>
-    String url_<%=cid%> = "jdbc:oracle:oci8:@" + <%=localServiceName%>;
-    <%
-}
-%>
-String dbUser_<%=cid %> = <%=dbuser%>;
-String dbPwd_<%=cid %> = <%=dbpass%>;
-java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>, dbUser_<%=cid%>, dbPwd_<%=cid%>);
-conn_<%=cid%>.setAutoCommit(false);
 
-globalMap.put("conn_" + "<%=cid%>",conn_<%=cid%>);
 <%
-if(connectionType.equals("ORACLE_OCI")) {
+if(useTNSFile) {
     %>
-    globalMap.put("localServiceName_" + "<%=cid%>",<%=localServiceName%>);
+    java.sql.Connection conn_<%=cid%> = null;
+    java.util.List<org.talend.tns.TNSParser.TNSEntry> entryList_<%=cid%> = org.talend.tns.TNSParser.parse(<%=tnsFile%>);
+    if(entryList_<%=cid%> == null || entryList_<%=cid%>.size() == 0) {
+        throw new RuntimeException("Maybe there is something wrong with the tns file, please check it.");
+    } else {
+        org.talend.tns.ConnectionManager.ConnObject connObject_<%=cid%> = org.talend.tns.ConnectionManager.getFirstAvailableConnObject(entryList_<%=cid%>, <%=dbuser%>, <%=dbpass%>);
+        conn_<%=cid%> = connObject_<%=cid%>.getConn();
+        globalMap.put("host_" + "<%=cid%>", connObject_<%=cid%>.getHost());
+        globalMap.put("port_" + "<%=cid%>", connObject_<%=cid%>.getPort());
+        if(connObject_<%=cid%>.getSid() != null) {
+            globalMap.put("dbname_" + "<%=cid%>", connObject_<%=cid%>.getSid());
+        } else {
+            globalMap.put("dbname_" + "<%=cid%>", connObject_<%=cid%>.getServiceName());
+        }
+    }
     <%
 } else {
+    String connectionType = ElementParameterParser.getValue(node, "__CONNECTION_TYPE__");
+    if(connectionType.equals("ORACLE_SID")) {
+        %>
+        String url_<%=cid %> = "jdbc:oracle:thin:@" + <%=dbhost%> + ":" + <%=dbport%> + ":" + <%=dbname%>;
+        <%
+    } else if(connectionType.equals("ORACLE_SERVICE_NAME")) {
+        %>
+        String url_<%=cid %> = "jdbc:oracle:thin:@(description=(address=(protocol=tcp)(host=" + <%=dbhost%> + ")(port=" + <%=dbport%> + "))(connect_data=(service_name=" + <%=dbname%> + ")))";
+        <%
+    } else if(connectionType.equals("ORACLE_OCI")) {
+        %>
+        String url_<%=cid%> = "jdbc:oracle:oci8:@" + <%=localServiceName%>;
+        <%
+    }
     %>
-    globalMap.put("host_" + "<%=cid%>",<%=dbhost%>);
-    globalMap.put("port_" + "<%=cid%>",<%=dbport%>);    
-    globalMap.put("dbname_" + "<%=cid%>",<%=dbname%>);
+    String dbUser_<%=cid %> = <%=dbuser%>;
+    String dbPwd_<%=cid %> = <%=dbpass%>;
+    java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>, dbUser_<%=cid%>, dbPwd_<%=cid%>);
+    conn_<%=cid%>.setAutoCommit(false);
     <%
+    if(connectionType.equals("ORACLE_OCI")) {
+        %>
+        globalMap.put("localServiceName_" + "<%=cid%>",<%=localServiceName%>);
+        <%
+    } else {
+        %>
+        globalMap.put("host_" + "<%=cid%>",<%=dbhost%>);
+        globalMap.put("port_" + "<%=cid%>",<%=dbport%>);
+        globalMap.put("dbname_" + "<%=cid%>",<%=dbname%>);
+        <%
+    }
 }
 %>
+
+globalMap.put("conn_" + "<%=cid%>",conn_<%=cid%>);
 globalMap.put("dbschema_" + "<%=cid%>", <%=dbschema%>);
 globalMap.put("username_" + "<%=cid%>",<%=dbuser%>);
 globalMap.put("password_" + "<%=cid%>",<%=dbpass%>);
