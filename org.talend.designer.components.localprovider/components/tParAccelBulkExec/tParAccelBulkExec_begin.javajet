@@ -98,7 +98,7 @@ if(notNullCols != null && notNullCols.size() > 0) {
 	String gzipped = fileType.equals("GZIP") ? "GZIP " : "";
 	if(parallel.equals("PARALLEL")){
 %>
-	xpxSQL_<%=cid%> += "XPX 'LOCALIZE " + "<%=tableName.toString()%> " + <%=file%> + " <%=gzipped%>'";
+	xpxSQL_<%=cid%> += "xpx 'localize " + "<%=tableName.toString()%> " + <%=file%> + " <%=gzipped%>'";
 	bulkSQL_<%=cid%> += "COPY " + "<%=tableName.toString()%>" + 
 		" FROM 'local' WITH PARALLEL <%=gzipped%> ";
 <%
