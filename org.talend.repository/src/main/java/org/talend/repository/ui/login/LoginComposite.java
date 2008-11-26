@@ -586,6 +586,7 @@ public class LoginComposite extends Composite {
         if (newProject != null) {
             selectProject(newProject);
         }
+        validateProject();
     }
 
     public void importDemoProject() {
@@ -597,6 +598,7 @@ public class LoginComposite extends Composite {
         if (newProject != null) {
             selectProject(newProject);
         }
+        validateProject();
     }
 
     public void deleteProject() {
@@ -604,6 +606,7 @@ public class LoginComposite extends Composite {
         deleteProjectAction.run();
         populateProjectList();
         dialog.updateButtons();
+        validateProject();
     }
 
     /**
