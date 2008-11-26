@@ -34,7 +34,7 @@
 		}
 	}
 %>	
-	StringBuffer sb_<%=cid %>=new StringBuffer();
+
 <%	
 	
 	for (IConnection conn : node.getOutgoingConnections()) {
@@ -46,20 +46,14 @@
 					
 %>
 	<%=conn.getName() %>.<%=outputCol.getLabel() %> = <%=inputConnName %>.<%=outputCol.getLabel() %>;
-	if(<%=conn.getName() %>.<%=outputCol.getLabel() %>!=null)
-	{
-	sb_<%=cid %>.append(<%=conn.getName() %>.<%=outputCol.getLabel() %>);
-	}
+
 	
 <%
 					}
 				}
 			}
 %>
-    if(sb_<%=cid %>.length()>0){
-    nb_line_<%=cid %>++;
-     
- }
+    nb_line_<%=cid%>++;
 <%			
 		}
 	}
