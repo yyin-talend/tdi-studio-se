@@ -28,10 +28,15 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PartInitException;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -78,6 +83,8 @@ public class RepositoryReviewDialog extends Dialog {
     ITypeProcessor typeProcessor;
 
     private String selectedNodeName;
+
+    ViewerTextFilter textFilter = new ViewerTextFilter();
 
     /**
      * DOC bqian RepositoryReviewDialog constructor comment.
@@ -158,13 +165,38 @@ public class RepositoryReviewDialog extends Dialog {
      */
     @Override
     protected Control createDialogArea(Composite parent) {
-        Composite content = (Composite) super.createDialogArea(parent);
-        GridData data = (GridData) content.getLayoutData();
+        Composite container = (Composite) super.createDialogArea(parent);
+
+        GridData data = (GridData) container.getLayoutData();
         data.minimumHeight = 400;
         data.heightHint = 400;
         data.minimumWidth = 500;
         data.widthHint = 500;
-        content.setLayoutData(data);
+        container.setLayoutData(data);
+
+        // create text filter
+        Label label = new Label(container, SWT.NONE);
+        label.setText("Type job name prefix or pattern(*, ?, or camel case):");
+        label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+        final Text text = new Text(container, SWT.BORDER);
+        text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        text.addModifyListener(new ModifyListener() {
+
+            public void modifyText(ModifyEvent e) {
+                String pattern = text.getText();
+                pattern = pattern.replace("*", ".*");
+                pattern = pattern.replace("?", ".");
+                pattern = "(?i)" + pattern + ".*";
+                textFilter.setText(pattern);
+                repositoryView.refresh();
+                repositoryView.selectFirstOne((RepositoryNode) repositoryView.getViewer().getInput());
+            }
+        });
+
+        Composite viewContainer = new Composite(container, SWT.BORDER);
+        viewContainer.setLayout(new GridLayout());
+        viewContainer.setLayoutData(new GridData(GridData.FILL_BOTH));
 
         IRepositoryView view = RepositoryView.show();
         repositoryView = new FakeRepositoryView(typeProcessor, type, repositoryType);
@@ -174,7 +206,8 @@ public class RepositoryReviewDialog extends Dialog {
             e.printStackTrace();
         }
 
-        repositoryView.createPartControl(content);
+        repositoryView.createPartControl(viewContainer);
+        repositoryView.addFilter(textFilter);
         repositoryView.refresh();
 
         // see feature 0003664: tRunJob: When opening the tree dialog to select the job target, it could be useful to
@@ -211,7 +244,7 @@ public class RepositoryReviewDialog extends Dialog {
             }
         });
 
-        return content;
+        return container;
     }
 
     public void setSelectedNodeName(String selectionNode) {
@@ -248,7 +281,7 @@ public class RepositoryReviewDialog extends Dialog {
 }
 
 /**
- * DOC bqian class global comment. Detailled comment <br/>
+ * bqian class global comment. Detailled comment <br/>
  * 
  * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ææäº, 29 ä¹æ 2006) nrousseau $
  * 
@@ -285,10 +318,14 @@ class FakeRepositoryView extends RepositoryView {
     public void createPartControl(Composite parent) {
         super.createPartControl(parent);
         ViewerFilter filter = typeProcessor.makeFilter();
+        addFilter(filter);
+        CorePlugin.getDefault().getRepositoryService().removeRepositoryChangedListener(this);
+    }
+
+    public void addFilter(ViewerFilter filter) {
         if (filter != null) {
             getViewer().addFilter(filter);
         }
-        CorePlugin.getDefault().getRepositoryService().removeRepositoryChangedListener(this);
     }
 
     /**
@@ -306,6 +343,22 @@ class FakeRepositoryView extends RepositoryView {
                 selectNode(child, label);
             }
         }
+    }
+
+    public boolean selectFirstOne(RepositoryNode root) {
+        ENodeType nodeType = root.getType();
+        if (nodeType == ENodeType.REPOSITORY_ELEMENT) {
+            getViewer().setSelection(new StructuredSelection(root), true);
+            getViewer().expandToLevel(root, AbstractTreeViewer.ALL_LEVELS);
+            return true;
+        } else if (root.hasChildren()) {
+            for (RepositoryNode child : root.getChildren()) {
+                if (selectFirstOne(child)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /*
@@ -967,4 +1020,41 @@ class QueryTypeProcessor implements ITypeProcessor {
             }
         };
     }
+
 }
+
+/**
+ * bqian class global comment. Detailled comment
+ */
+class ViewerTextFilter extends ViewerFilter {
+
+    private String text = null;
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    @Override
+    public boolean select(Viewer viewer, Object parentElement, Object element) {
+        if (text == null || text.equals("")) {
+            return true;
+        }
+        RepositoryNode node = (RepositoryNode) element;
+        ERepositoryObjectType type = node.getContentType();
+        ENodeType nodeType = node.getType();
+        if (nodeType != ENodeType.REPOSITORY_ELEMENT) {
+            List<RepositoryNode> children = node.getChildren();
+            if (children.isEmpty()) {
+                return false;
+            }
+            for (RepositoryNode child : children) {
+                return select(viewer, null, child);
+            }
+
+            return true;
+        }
+
+        String name = node.getObject().getProperty().getLabel();
+        return name.matches(text);
+    }
+};
