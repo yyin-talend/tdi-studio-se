@@ -47,7 +47,7 @@ public class JetProxy {
      * @throws JETException
      */
     public String generate() throws CoreException, JETException {
-        JETEmitter emitter = CodeGeneratorEmittersPoolFactory.getEmitterPool().get(jetBean);
+        JETEmitter emitter = CodeGeneratorEmittersPoolFactory.getJETEmitter(jetBean);
         IProgressMonitor sub = new SubProgressMonitor(monitor, 1);
         String result = "";
         if (emitter != null) {

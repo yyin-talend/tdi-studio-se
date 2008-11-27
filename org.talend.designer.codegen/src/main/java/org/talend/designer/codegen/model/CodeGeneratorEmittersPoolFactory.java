@@ -58,6 +58,7 @@ import org.talend.core.model.temp.ECodePart;
 import org.talend.core.utils.AccessingEmfJob;
 import org.talend.designer.codegen.CodeGeneratorActivator;
 import org.talend.designer.codegen.config.CodeGeneratorProgressMonitor;
+import org.talend.designer.codegen.config.EInternalTemplate;
 import org.talend.designer.codegen.config.JetBean;
 import org.talend.designer.codegen.config.LightJetBean;
 import org.talend.designer.codegen.config.TalendJetEmitter;
@@ -84,6 +85,8 @@ public final class CodeGeneratorEmittersPoolFactory {
     private static Logger log = Logger.getLogger(CodeGeneratorEmittersPoolFactory.class);
 
     private static List<JetBean> jetFilesCompileFail = new ArrayList<JetBean>();
+
+    private static String defaultTemplate = null;
 
     /**
      * Default Constructor. Must not be used.
@@ -123,6 +126,10 @@ public final class CodeGeneratorEmittersPoolFactory {
                         RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
                                 Context.REPOSITORY_CONTEXT_KEY);
                         ECodeLanguage codeLanguage = repositoryContext.getProject().getLanguage();
+
+                        defaultTemplate = TemplateUtil.RESOURCES_DIRECTORY + TemplateUtil.DIR_SEP
+                                + EInternalTemplate.DEFAULT_TEMPLATE + TemplateUtil.EXT_SEP + codeLanguage.getExtension()
+                                + TemplateUtil.TEMPLATE_EXT;
 
                         List<JetBean> jetBeans = new ArrayList<JetBean>();
 
@@ -522,6 +529,29 @@ public final class CodeGeneratorEmittersPoolFactory {
             initialize();
         }
         return emitterPool;
+    }
+
+    /**
+     * DOC xtan Comment method "getJETEmitter".
+     * 
+     * @param jetBean
+     * @return
+     */
+    public static JETEmitter getJETEmitter(JetBean jetBean) {
+        if (!isInitialized()) {
+            initialize();
+        }
+
+        // only for components, not for /resources jet file, if it compile error, it will get the
+        // default_template.javajet
+        if (jetBean.getTemplateRelativeUri() != null && !jetBean.getTemplateRelativeUri().startsWith("resources")) {
+            if (jetFilesCompileFail.contains(jetBean)) {
+                JetBean defaultJetBean = new JetBean();
+                defaultJetBean.setTemplateRelativeUri(defaultTemplate);
+                return emitterPool.get(defaultJetBean);
+            }
+        }
+        return emitterPool.get(jetBean);
     }
 
     /**
