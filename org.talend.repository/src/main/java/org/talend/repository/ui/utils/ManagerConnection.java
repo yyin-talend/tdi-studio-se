@@ -169,6 +169,9 @@ public class ManagerConnection {
                 && metadataConnection.getDbVersionString() != null) {
             metadataConnection.setDriverJarPath(getJavaLibPath()
                     + EDatabaseDriver4Version.getDriverByVersion(metadataConnection.getDbVersionString()));
+            if (dbTypeString == null) {
+                dbTypeString = metadataConnection.getDbType();
+            }
             metadataConnection.setDriverClass(getDBJdbcDriverName());
         }
 

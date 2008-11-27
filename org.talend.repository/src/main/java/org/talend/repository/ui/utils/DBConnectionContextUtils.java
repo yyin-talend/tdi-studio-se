@@ -303,6 +303,7 @@ public final class DBConnectionContextUtils {
         cloneConn.setDivergency(dbConn.isDivergency());
         cloneConn.setDriverClass(dbConn.getDriverClass());
         cloneConn.setDriverJarPath(dbConn.getDriverJarPath());
+        cloneConn.setDbVersionString(dbConn.getDbVersionString());
         cloneConn.setId(dbConn.getId());
         cloneConn.setLabel(dbConn.getLabel());
         cloneConn.setNullChar(dbConn.getNullChar());
