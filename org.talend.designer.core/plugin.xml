@@ -320,6 +320,13 @@
          categoryId="talend"
          id="showEditorDesignerPage"
          name="Show designer code page"/>
+         
+   <command
+            name="Open Job"
+            categoryId="talend"
+            id="org.talend.designer.core.ui.open.type">
+   </command>
+      
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
@@ -359,6 +366,10 @@
          schemeId="org.talend.designer.core.delete.binding.window"
          sequence="CTRL+F3">
    </key>
+   <key
+            sequence="M1+M2+J"
+            commandId="org.talend.designer.core.ui.open.type"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
    </extension>
    <extension
          point="org.talend.core.global_actions">
@@ -614,7 +625,17 @@
                label="%RunDropDownAction.label"
                style="pulldown">
          </action>
-    
+    	
+    	 <action
+               id="org.talend.designer.core.ui.action.OpenJobAction"
+               toolbarPath="debug"
+               class="org.talend.designer.core.ui.action.OpenJobAction"
+               definitionId="org.talend.designer.core.ui.open.type"
+               icon="platform:/plugin/org.eclipse.jdt.ui/icons/full/etool16/opentype.gif"
+               label="Open Job"
+               tooltip="Open a specific job">
+         </action>
+    		
       </actionSet>
    </extension>
     <extension
@@ -645,5 +666,4 @@
              name="Synchronize schema only for perl demo">
        </projecttask>
     </extension>
-   
 </plugin>
