@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IMultipleComponentConnection;
 import org.talend.core.model.components.IMultipleComponentItem;
@@ -322,8 +323,8 @@ public class DataProcess {
      * @return
      */
     @SuppressWarnings("unchecked")
-    private void addMultipleNode(INode graphicalNode, List<IMultipleComponentManager> multipleComponentManagers) {
-        AbstractNode dataNode;
+    private void addMultipleNode(INode graphicalNode, List<IMultipleComponentManager> multipleComponentManagers) throws Exception {
+        AbstractNode dataNode = null;
         // prepare all the nodes
 
         INode previousNode = buildCheckMap.get(graphicalNode);
@@ -620,19 +621,23 @@ public class DataProcess {
         for (int i = 0; i < itemList.size(); i++) {
             targetNode = itemsMap.get(itemList.get(i));
             targetFound = false;
-            for (int j = 0; j < targetNode.getElementParameters().size() && !targetFound; j++) {
-                if (targetNode.getElementParameters().get(j).getName().equals(EParameterName.TSTATCATCHER_STATS.getName())) {
-                    IElementParameter param = targetNode.getElementParameters().get(j);
-                    boolean statsFound = false;
-                    for (int k = 0; k < graphicalNode.getElementParameters().size() && !statsFound; k++) {
-                        IElementParameter currentParam = graphicalNode.getElementParameters().get(k);
-                        if (currentParam.getName().equals(EParameterName.TSTATCATCHER_STATS.getName())) {
-                            param.setValue(currentParam.getValue());
-                            statsFound = true;
+            if (targetNode != null) {
+                for (int j = 0; j < targetNode.getElementParameters().size() && !targetFound; j++) {
+                    if (targetNode.getElementParameters().get(j).getName().equals(EParameterName.TSTATCATCHER_STATS.getName())) {
+                        IElementParameter param = targetNode.getElementParameters().get(j);
+                        boolean statsFound = false;
+                        for (int k = 0; k < graphicalNode.getElementParameters().size() && !statsFound; k++) {
+                            IElementParameter currentParam = graphicalNode.getElementParameters().get(k);
+                            if (currentParam.getName().equals(EParameterName.TSTATCATCHER_STATS.getName())) {
+                                param.setValue(currentParam.getValue());
+                                statsFound = true;
+                            }
                         }
+                        targetFound = true;
                     }
-                    targetFound = true;
                 }
+            } else {
+                return;
             }
         }
 
@@ -869,7 +874,13 @@ public class DataProcess {
         if (dataNode.isGeneratedAsVirtualComponent()) {
             List<IMultipleComponentManager> multipleComponentManagers = graphicalNode.getComponent()
                     .getMultipleComponentManagers();
-            addMultipleNode(graphicalNode, multipleComponentManagers);
+            try {
+                addMultipleNode(graphicalNode, multipleComponentManagers);
+            } catch (Exception e) {
+                Exception warpper = new Exception("The component " + graphicalNode.getLabel()
+                        + " encounters some problems. Please check.", e);
+                ExceptionHandler.process(warpper);
+            }
         }
         for (IConnection connection : graphicalNode.getOutgoingConnections()) {
             if (connection.isActivate()) {

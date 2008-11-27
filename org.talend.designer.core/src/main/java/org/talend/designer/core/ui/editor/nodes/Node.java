@@ -39,6 +39,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
+import org.talend.core.model.components.IMultipleComponentItem;
 import org.talend.core.model.components.IMultipleComponentManager;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.general.ILibrariesService;
@@ -79,6 +80,7 @@ import org.talend.designer.core.ui.editor.properties.controllers.ColumnListContr
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.core.utils.UpgradeElementHelper;
+import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ExternalNodesFactory;
 
 /**
@@ -179,6 +181,8 @@ public class Node extends Element implements INode {
     private boolean schemaSynchronized = true;
 
     private boolean reloadingComponent = false;
+
+    private List<IMultipleComponentManager> multipleComponentManagers;
 
     /**
      * This constructor is called when the node is created from the palette the unique name will be determined with the
@@ -1682,6 +1686,30 @@ public class Node extends Element implements INode {
         Problems.addAll(moduleService.getProblems(this, this));
     }
 
+    /**
+     * 
+     * DOC xye Comment method "checkMultiComponents".
+     */
+    private void checkMultiComponents() {
+        List<IMultipleComponentManager> multipleComponentManagers = getComponent().getMultipleComponentManagers();
+        if (multipleComponentManagers != null) {
+            for (IMultipleComponentManager multipleComponentManager : multipleComponentManagers) {
+                List<IMultipleComponentItem> itemList = multipleComponentManager.getItemList();
+                if (itemList != null && !itemList.isEmpty()) {
+                    for (IMultipleComponentItem curItem : itemList) {
+                        IComponent component = ComponentsFactoryProvider.getInstance().get(curItem.getComponent());
+                        if (component == null) {
+                            // Notify an error
+                            String errorMessage = "This component depend on component " + curItem.getComponent()
+                                    + ", but it's not exist.";
+                            Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public void checkLinks() {
         // check not startable components not linked
         if (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName())) {
@@ -1972,6 +2000,7 @@ public class Node extends Element implements INode {
             checkSchema();
             checkLinks();
             checkModules();
+            checkMultiComponents();
             checkStartLinks();
             checkParallelizeStates();
 
