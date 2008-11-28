@@ -23,8 +23,10 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.PlatformUI;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.context.UpdateRunJobComponentContextHelper;
+import org.talend.core.model.PasswordEncryptUtil;
 import org.talend.core.model.context.JobContextManager;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
@@ -226,8 +228,21 @@ public final class UpdateContextReferenceHelper {
                 itemParameterType.setPrompt(parameter.getPrompt());
                 itemParameterType.setPromptNeeded(parameter.isPromptNeeded());
                 itemParameterType.setType(parameter.getType());
-                itemParameterType.setValue(parameter.getValue());
+                if (PasswordEncryptUtil.isPasswordType(itemParameterType
+						.getType())) {
+					// see 0000949: Encryption of DB passwords in XMI
+					// repository files
+					try {
+						String password = PasswordEncryptUtil
+								.encryptPassword(parameter.getValue());
+						itemParameterType.setValue(password);
+					} catch (Exception e) {
+						ExceptionHandler.process(e);
+					}
 
+				} else {
+					itemParameterType.setValue(parameter.getValue());
+				}
                 return true;
 
             }

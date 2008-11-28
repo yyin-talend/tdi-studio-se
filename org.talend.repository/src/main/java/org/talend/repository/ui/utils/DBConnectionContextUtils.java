@@ -17,9 +17,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.PasswordEncryptUtil;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.types.JavaTypesManager;
@@ -366,7 +368,11 @@ public final class DBConnectionContextUtils {
         conn.setDatasourceName(datasource);
         conn.setDBRootPath(dbRootPath);
         conn.setFileFieldName(filePath);
-        conn.setPassword(password);
+        try {
+			conn.setPassword(PasswordEncryptUtil.encryptPassword(password));
+		} catch (Exception e) {
+			ExceptionHandler.process(e);
+		}
         conn.setPort(port);
         conn.setSchema(schemaOracle);
         conn.setServerName(server);

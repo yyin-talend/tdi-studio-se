@@ -913,6 +913,13 @@
             id="org.talend.repository.model.migration.FileInputRegexContextVariableMigrationTask"
             name="add quotes to FileInputRegex header/footer/limit variables.">
       </projecttask>
+      
+         <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.EncryptDbPasswordMigrationTask"
+            id="org.talend.repository.model.migration.EncryptDbPasswordMigrationTask"
+            name="encrypt database connection password">
+      </projecttask>
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">
