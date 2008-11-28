@@ -514,8 +514,7 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
         public void nonUIProcessInThread() {
             // get the XmlArray width an adapt ProcessDescription
             try {
-                csvArray = ShadowProcessHelper.getCsvArray(processDescription, "FILE_REGEXP", true); //$NON-NLS-1$
-
+                csvArray = ShadowProcessHelper.getCsvArray(processDescription, "FILE_REGEXP", false); //$NON-NLS-1$
             } catch (Exception e) {
                 setException(e);
                 log.error(Messages.getString("FileStep2.previewFailure") + " " + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
@@ -1027,7 +1026,6 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
      * (non-Javadoc)
      * 
      * @see org.eclipse.swt.widgets.Control#setVisible(boolean)
-     * 
      */
     @Override
     public void setVisible(boolean visible) {
