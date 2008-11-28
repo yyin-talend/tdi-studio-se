@@ -29,7 +29,7 @@ import org.talend.repository.preview.IProcessDescription;
  */
 public class ShadowFilePreview implements IPreview {
 
-    public ShadowProcess shadowProcess;
+    public ShadowProcess<IProcessDescription> shadowProcess;
 
     /**
      * Constructs a new ShadowPreview.
@@ -43,13 +43,12 @@ public class ShadowFilePreview implements IPreview {
      * @see org.talend.repository.preview.filedelimited.IFileDelimitedPreview#
      * preview(org.talend.repository.preview.filedelimited.ProcessDescription)
      */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public CsvArray preview(IProcessDescription description, String type) throws CoreException {
         CsvArray res = null;
 
         EShadowProcessType typeShadow = EShadowProcessType.valueOf(type);
 
-        shadowProcess = new ShadowProcess(description, typeShadow);
+        shadowProcess = new ShadowProcess<IProcessDescription>(description, typeShadow);
         try {
             res = shadowProcess.run();
         } catch (ProcessorException e) {
@@ -73,16 +72,16 @@ public class ShadowFilePreview implements IPreview {
      * @see org.talend.repository.preview.IPreview#preview(org.talend.repository.preview.IProcessDescription,
      * java.lang.String, boolean)
      */
-    public CsvArray preview(IProcessDescription description, String type, boolean errorOutputAsException) throws CoreException {
+    public CsvArray preview(IProcessDescription description, String type, boolean outputErrorAsException) throws CoreException {
 
         CsvArray res = null;
 
         EShadowProcessType typeShadow = EShadowProcessType.valueOf(type);
 
-        shadowProcess = new ShadowProcess(description, typeShadow);
+        shadowProcess = new ShadowProcess<IProcessDescription>(description, typeShadow);
 
         try {
-            res = shadowProcess.runWithErrorOutputAsException();
+            res = shadowProcess.runWithErrorOutputAsException(outputErrorAsException);
         } catch (ProcessorException e) {
             Status status = new Status(Status.ERROR, RunProcessPlugin.PLUGIN_ID, Status.OK, e.getMessage(), e);
             RunProcessPlugin.getDefault().getLog().log(status);

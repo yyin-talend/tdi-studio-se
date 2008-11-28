@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.talend.commons.ui.utils.PathUtils;
@@ -55,6 +56,8 @@ public class ShadowProcess<T extends IProcessDescription> {
     private static final String TEMP_SALEFORCE_SCHEMA_FILE_NAME = "TempSALESFORCESchema";
 
     private String currentProcessEncoding = "ISO-8859-15";
+
+    private static Logger log = Logger.getLogger(ShadowProcess.class);
 
     /**
      * Available Shadow Process Types.
@@ -285,14 +288,14 @@ public class ShadowProcess<T extends IProcessDescription> {
     }
 
     /**
-     * If the process generate any error output, throw an ProcessorException.
-     * <p>
-     * DOC YeXiaowei Comment method "runWithErrorOutputAsException".
      * 
+     * DOC xye Comment method "runWithErrorOutputAsException".
+     * 
+     * @param outputErrorAsException
      * @return
      * @throws ProcessorException
      */
-    public CsvArray runWithErrorOutputAsException() throws ProcessorException {
+    public CsvArray runWithErrorOutputAsException(final boolean outputErrorAsException) throws ProcessorException {
 
         IProcess talendProcess = buildProcess();
 
@@ -308,9 +311,14 @@ public class ShadowProcess<T extends IProcessDescription> {
         process = processor.run(IProcessor.NO_STATISTICS, IProcessor.NO_TRACES, null);
 
         String error = ProcessStreamTrashReader.readErrorStream(process);
-
-        if (error != null) {
-            throw new ProcessorException(error); //$NON-NLS-1$
+        if (outputErrorAsException) {
+            if (error != null) {
+                throw new ProcessorException(error); //$NON-NLS-1$
+            }
+        } else {
+            if (error != null) {
+                log.warn(error, new ProcessorException(error));
+            }
         }
 
         if (!outPath.toFile().exists()) {
