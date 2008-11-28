@@ -48,6 +48,8 @@ import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.JobDocumentationItem;
+import org.talend.core.model.properties.JobletDocumentationItem;
 import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -347,16 +349,33 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             } else if (parent == recBinNode) {
                 List<IRepositoryObject> objects = factory.getRecycleBinItems(project);
                 for (IRepositoryObject object : objects) {
-                    RepositoryNode node = new RepositoryNode(object, recBinNode, ENodeType.REPOSITORY_ELEMENT);
-                    node.setProperties(EProperties.CONTENT_TYPE, object.getType());
-                    node.setProperties(EProperties.LABEL, object.getLabel());
-                    recBinNode.getChildren().add(node);
-                    node.setParent(recBinNode);
+                    if (!isGeneratedJobItem(object.getProperty().getItem())) {
+                        RepositoryNode node = new RepositoryNode(object, recBinNode, ENodeType.REPOSITORY_ELEMENT);
+                        node.setProperties(EProperties.CONTENT_TYPE, object.getType());
+                        node.setProperties(EProperties.LABEL, object.getLabel());
+                        recBinNode.getChildren().add(node);
+                        node.setParent(recBinNode);
+                    }
                 }
             }
         } catch (PersistenceException e) {
             RuntimeExceptionHandler.process(e);
         }
+    }
+
+    /**
+     * 
+     * ggu Comment method "isGeneratedJobItem".
+     * 
+     * feature 4393
+     */
+    private boolean isGeneratedJobItem(Item item) {
+        if (item != null) {
+            if (item instanceof JobDocumentationItem || item instanceof JobletDocumentationItem) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
