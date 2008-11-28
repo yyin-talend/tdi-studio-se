@@ -669,6 +669,15 @@ class RepositoryTypeProcessor implements ITypeProcessor {
                     metadataNode = ((ProjectRepositoryNode) provider).getMetadataSAPConnectionNode();
                 }
             }
+            if (repositoryType.equals("EBCDIC")) {
+                if (provider instanceof RepositoryContentProvider) {
+                    metadataNode = ((RepositoryContentProvider) provider)
+                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_EBCDIC);
+                }
+                if (provider instanceof ProjectRepositoryNode) {
+                    metadataNode = ((ProjectRepositoryNode) provider).getMetadataEbcdicConnectionNode();
+                }
+            }
         }
         return metadataNode;
     }

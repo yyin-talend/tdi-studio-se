@@ -101,6 +101,8 @@ public class DetecteViewImpactAction extends AContextualAction {
                     case METADATA_FILE_XML:
                     case METADATA_FILE_LDIF:
                     case METADATA_FILE_EXCEL:
+                    case METADATA_SAPCONNECTIONS:
+                    case METADATA_FILE_EBCDIC:
                         // case METADATA_SALESFORCE_SCHEMA:
                         // case METADATA_LDAP_SCHEMA:
                         // case METADATA_WSDL_SCHEMA:

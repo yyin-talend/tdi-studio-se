@@ -1053,6 +1053,10 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         return this.metadataGenericSchemaNode;
     }
 
+    public RepositoryNode getMetadataEbcdicConnectionNode() {
+        return this.metadataEbcdicConnectionNode;
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -1115,6 +1119,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             return this.metadataFileLdifNode;
         case METADATA_FILE_EXCEL:
             return this.metadataFileExcelNode;
+        case METADATA_FILE_EBCDIC:
+            return this.metadataEbcdicConnectionNode;
         case METADATA_SALESFORCE_SCHEMA:
             return this.metadataSalesforceSchemaNode;
         case METADATA_GENERIC_SCHEMA:
@@ -1149,4 +1155,5 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
     public RepositoryNode getRecBinNode() {
         return this.recBinNode;
     }
+
 }

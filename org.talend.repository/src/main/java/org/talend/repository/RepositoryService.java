@@ -35,6 +35,8 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.SystemException;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.PluginChecker;
 import org.talend.core.context.Context;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponentsFactory;
@@ -45,6 +47,7 @@ import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.DisableLanguageActions;
+import org.talend.core.ui.IEBCDICProviderService;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -328,6 +331,14 @@ public class RepositoryService implements IRepositoryService {
                 relatedWizard = new ExcelFileWizard(PlatformUI.getWorkbench(), false, realNode, null);
             } else if (realNode.getObjectType().equals(ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA)) {
                 relatedWizard = new SalesforceSchemaWizard(PlatformUI.getWorkbench(), false, realNode, null, false);
+            } else if (realNode.getObjectType().equals(ERepositoryObjectType.METADATA_FILE_EBCDIC)) {
+                if (PluginChecker.isEBCDICPluginLoaded()) {
+                    IEBCDICProviderService service = (IEBCDICProviderService) GlobalServiceRegister.getDefault().getService(
+                            IEBCDICProviderService.class);
+                    if (service != null) {
+                        relatedWizard = service.newEbcdicWizard(PlatformUI.getWorkbench(), false, realNode, null);
+                    }
+                }
             }
             if (relatedWizard != null) {
                 // Open the Wizard

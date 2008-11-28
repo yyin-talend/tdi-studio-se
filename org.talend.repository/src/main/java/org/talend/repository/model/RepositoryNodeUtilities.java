@@ -254,6 +254,8 @@ public class RepositoryNodeUtilities {
             case METADATA_LDAP_SCHEMA:
             case METADATA_SALESFORCE_SCHEMA:
             case METADATA_WSDL_SCHEMA:
+            case METADATA_FILE_EBCDIC:
+            case METADATA_SAPCONNECTIONS:
                 tmpType = ERepositoryObjectType.METADATA;
                 break;
             // case ROUTINES:

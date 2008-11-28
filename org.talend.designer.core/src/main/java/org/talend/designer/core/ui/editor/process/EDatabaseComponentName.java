@@ -94,7 +94,7 @@ public enum EDatabaseComponentName {
     FILEXML(XmlFileConnectionItem.class, "tFileInputXML", "tFileOutputXML", "XML"),
     SAPFFUNCTION(SAPConnectionItem.class, "tSAPInput", "tSAPOutput", "SAP"),
 
-    FILEEBCDIC(EbcdicConnectionItem.class, "tEBCDICInput", "", "EBCDIC"),
+    FILEEBCDIC(EbcdicConnectionItem.class, "tFileInputEBCDIC", "tFileOutputEBCDIC", "EBCDIC"),
 
     WSDL(WSDLSchemaConnectionItem.class, "tWebServiceInput", null, "WSDL"),
     SALESFORCE(SalesforceSchemaConnectionItem.class, "tSalesforceInput", null, "SALESFORCE"),
