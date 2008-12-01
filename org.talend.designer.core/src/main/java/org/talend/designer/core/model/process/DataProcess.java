@@ -816,6 +816,7 @@ public class DataProcess {
                 // dataConnec.setName(refSource.getUniqueName() + "_to_hash_" + connection.getName());
                 dataConnec.setSource(refSource);
                 dataConnec.setTarget(hashNode);
+                dataConnec.setConnectorName("FLOW");
 
                 IElementParameter monitorParam = connection.getElementParameter("MONITOR_CONNECTION");
                 // if there is a monitor on this connection, then add the vFlowMeter and move the base lookup connection
