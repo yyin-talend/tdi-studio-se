@@ -97,6 +97,10 @@ else {
     $<%=cid%>_UNIQUE = $<%=cid%>;
     $nb_uniques_<%=cid %>++;
 }
+
+# reset $<%=cid%> to make obvious next components will use
+# either $<%=cid%>_UNIQUE or $<%=cid%>_DUPLICATE
+$<%=cid%> = undef;
     
 <%
     }
