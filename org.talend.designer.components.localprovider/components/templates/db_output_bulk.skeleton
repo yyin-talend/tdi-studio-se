@@ -674,7 +674,7 @@ public class CLASS {
             } else if(typeToGenerate.equals("byte[]")) {
                 isObject = true;
                 setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
-                if(dbType.equals("LONG RAW")) {
+                if(dbType != null && dbType.equals("LONG RAW")) {
                     setStmt.append(prefix + cid + ".setBytes(" + index + ", null);\r\n");
                 } else {
                     setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.ARRAY);\r\n");                    
@@ -686,7 +686,7 @@ public class CLASS {
             } else if(typeToGenerate.equals("String")) {
                 isObject = true;
                 setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
-                if(dbType.equals("CLOB")) {
+                if(dbType != null && dbType.equals("CLOB")) {
                     setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.CLOB);\r\n");                    
                 } else {
                     setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.VARCHAR);\r\n");                    
@@ -694,7 +694,7 @@ public class CLASS {
             } else if(typeToGenerate.equals("Object")) {
                 isObject = true;
                 setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
-                if(dbType.equals("BLOB")) {
+                if(dbType != null && dbType.equals("BLOB")) {
                     setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.BLOB);\r\n");
                 } else {
                     setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.OTHER);\r\n");                    
@@ -734,11 +734,11 @@ public class CLASS {
                 setStmt.append("} else {\r\n");
                 setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.DATE);\r\n");
                 setStmt.append("}\r\n");
-            } else if(typeToGenerate.equals("Bytes") && dbType.equals("LONG RAW")) {
+            } else if(typeToGenerate.equals("Bytes") && (dbType != null && dbType.equals("LONG RAW"))) {
                 setStmt.append(prefix + cid + ".setBytes(" + index + ", " + incomingConnName + "." + column.getName() + ");\r\n");
-            } else if(typeToGenerate.equals("String") && dbType.equals("CLOB")) {
+            } else if(typeToGenerate.equals("String") && (dbType != null && dbType.equals("CLOB"))) {
                 setStmt.append(prefix + cid + ".setStringForClob(" + index + ", " + incomingConnName + "." + column.getName() + ");\r\n");                
-            } else if(typeToGenerate.equals("Object") && dbType.equals("BLOB")) {
+            } else if(typeToGenerate.equals("Object") && (dbType != null && dbType.equals("BLOB"))) {
                 setStmt.append(prefix + cid + ".setBLOB(" + index + ", (oracle.sql.BLOB)" + incomingConnName + "." + column.getName() + ");\r\n");
             } else {
                 setStmt.append(prefix + cid + ".set" + typeToGenerate + "(" + index + ", " + incomingConnName + "." + column.getName() + ");\r\n");
