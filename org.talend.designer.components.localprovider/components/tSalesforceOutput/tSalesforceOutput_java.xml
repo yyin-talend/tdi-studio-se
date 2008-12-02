@@ -4149,14 +4149,6 @@
 			<DEFAULT>200</DEFAULT>
 		</PARAMETER>
 
-		<PARAMETER NAME="NOTE" FIELD="LABEL" NUM_ROW="6"
-			SHOW_IF="EXTENDINSERT == 'true'">
-			<DEFAULT>
-				(Maximum 200 rows. Disabled with upsert action.)
-			</DEFAULT>
-		</PARAMETER>
-
-
 		<PARAMETER NAME="CEASE_FOR_ERROR" FIELD="CHECK" NUM_ROW="10">
 			<DEFAULT>true</DEFAULT>
 		</PARAMETER>

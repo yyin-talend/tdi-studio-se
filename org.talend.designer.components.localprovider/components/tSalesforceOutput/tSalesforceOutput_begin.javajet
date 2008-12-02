@@ -20,11 +20,8 @@ imports="
 	String logFile = ElementParameterParser.getValue(node, "__LOGFILENAME__").trim();
 	boolean ceaseForError = ElementParameterParser.getValue(node, "__CEASE_FOR_ERROR__").equals("true");
 	
-	// if action is 'upsert' or the extended insert is disabled set the commit level to 1
-	if (!extendedInsert)
-		commitLevel = "1";
-	else if (action.equals("upsert"))
-		commitLevel = "1";
+	// if the extended insert is disabled set the commit level to 1
+	if (!extendedInsert) commitLevel = "1";
 %>       
         int nb_line_<%=cid %> = 0;
 
