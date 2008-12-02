@@ -21,6 +21,7 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -37,6 +38,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.PartInitException;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -77,6 +79,10 @@ public class RepositoryReviewDialog extends Dialog {
     String repositoryType;
 
     private FakeRepositoryView repositoryView;
+
+    public FakeRepositoryView getRepositoryView() {
+        return this.repositoryView;
+    }
 
     private RepositoryNode result;
 
@@ -174,25 +180,7 @@ public class RepositoryReviewDialog extends Dialog {
         data.widthHint = 500;
         container.setLayoutData(data);
 
-        // create text filter
-        Label label = new Label(container, SWT.NONE);
-        label.setText("Type job name prefix or pattern(*, ?, or camel case):");
-        label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-
-        final Text text = new Text(container, SWT.BORDER);
-        text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        text.addModifyListener(new ModifyListener() {
-
-            public void modifyText(ModifyEvent e) {
-                String pattern = text.getText();
-                pattern = pattern.replace("*", ".*");
-                pattern = pattern.replace("?", ".");
-                pattern = "(?i)" + pattern + ".*";
-                textFilter.setText(pattern);
-                repositoryView.refresh();
-                repositoryView.selectFirstOne((RepositoryNode) repositoryView.getViewer().getInput());
-            }
-        });
+        createFilterField(container);
 
         Composite viewContainer = new Composite(container, SWT.BORDER);
         viewContainer.setLayout(new GridLayout());
@@ -219,21 +207,10 @@ public class RepositoryReviewDialog extends Dialog {
         repositoryView.getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
 
             public void selectionChanged(SelectionChangedEvent event) {
-                boolean highlightOKButton = true;
-                IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-                if (selection == null || selection.size() != 1) {
-                    highlightOKButton = false;
-                } else {
-                    RepositoryNode node = (RepositoryNode) selection.getFirstElement();
-                    ERepositoryObjectType t = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
-                    if (node.getType() != ENodeType.REPOSITORY_ELEMENT) {
-                        highlightOKButton = false;
-                    } else if (!typeProcessor.isSelectionValid(node)) {
-                        highlightOKButton = false;
-                    }
-                }
+                boolean highlightOKButton = isSelectionValid(event);
                 getButton(IDialogConstants.OK_ID).setEnabled(highlightOKButton);
             }
+
         });
         repositoryView.getViewer().addDoubleClickListener(new IDoubleClickListener() {
 
@@ -245,6 +222,55 @@ public class RepositoryReviewDialog extends Dialog {
         });
 
         return container;
+    }
+
+    protected boolean isSelectionValid(SelectionChangedEvent event) {
+        boolean highlightOKButton = true;
+        IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+        if (selection == null || selection.size() != 1) {
+            highlightOKButton = false;
+        } else {
+            RepositoryNode node = (RepositoryNode) selection.getFirstElement();
+            ERepositoryObjectType t = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+            if (node.getType() != ENodeType.REPOSITORY_ELEMENT) {
+                highlightOKButton = false;
+            } else if (!typeProcessor.isSelectionValid(node)) {
+                highlightOKButton = false;
+            }
+        }
+        return highlightOKButton;
+    }
+
+    /**
+     * DOC bqian Comment method "createFilterField".
+     * 
+     * @param container
+     */
+    private void createFilterField(Composite container) {
+
+        if (type != ERepositoryObjectType.PROCESS) {
+            return;
+        }
+
+        // create text filter
+        Label label = new Label(container, SWT.NONE);
+        label.setText("Type job name prefix or pattern(*, ?, or camel case):");
+        label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+        final Text text = new Text(container, SWT.BORDER);
+        text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        text.addModifyListener(new ModifyListener() {
+
+            public void modifyText(ModifyEvent e) {
+                String pattern = text.getText();
+                pattern = pattern.replace("*", ".*");
+                pattern = pattern.replace("?", ".");
+                pattern = "(?i)" + pattern + ".*";
+                textFilter.setText(pattern);
+                repositoryView.refresh();
+                repositoryView.selectFirstOne();
+            }
+        });
     }
 
     public void setSelectedNodeName(String selectionNode) {
@@ -345,20 +371,43 @@ class FakeRepositoryView extends RepositoryView {
         }
     }
 
-    public boolean selectFirstOne(RepositoryNode root) {
-        ENodeType nodeType = root.getType();
-        if (nodeType == ENodeType.REPOSITORY_ELEMENT) {
-            getViewer().setSelection(new StructuredSelection(root), true);
-            getViewer().expandToLevel(root, AbstractTreeViewer.ALL_LEVELS);
-            return true;
-        } else if (root.hasChildren()) {
-            for (RepositoryNode child : root.getChildren()) {
-                if (selectFirstOne(child)) {
-                    return true;
-                }
+    public void printItem(TreeItem[] items) {
+        for (TreeItem treeItem : items) {
+            Object o = treeItem.getData();
+            System.out.println(o);
+
+            getViewer().setExpandedState(o, true);
+
+            printItem(treeItem.getItems());
+        }
+    }
+
+    private TreeItem getFirstMatchingItem(TreeItem[] items) {
+        for (int i = 0; i < items.length; i++) {
+            RepositoryNode node = (RepositoryNode) items[i].getData();
+            ENodeType nodeType = node.getType();
+            if (nodeType == ENodeType.REPOSITORY_ELEMENT) {
+                return items[i];
+            }
+            getViewer().setExpandedState(node, true);
+
+            TreeItem item = getFirstMatchingItem(items[i].getItems());
+            if (item != null) {
+                return item;
             }
         }
-        return false;
+        return null;
+    }
+
+    public void selectFirstOne() {
+        TreeItem item = getFirstMatchingItem(getViewer().getTree().getItems());
+
+        if (item != null) {
+            getViewer().getTree().setSelection(new TreeItem[] { item });
+            ISelection sel = getViewer().getSelection();
+            getViewer().setSelection(sel, true);
+        }
+
     }
 
     /*
@@ -1057,10 +1106,12 @@ class ViewerTextFilter extends ViewerFilter {
                 return false;
             }
             for (RepositoryNode child : children) {
-                return select(viewer, null, child);
+                if (select(viewer, null, child)) {
+                    return true;
+                }
             }
 
-            return true;
+            return false;
         }
 
         String name = node.getObject().getProperty().getLabel();
