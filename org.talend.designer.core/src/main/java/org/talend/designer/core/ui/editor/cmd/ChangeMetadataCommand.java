@@ -305,7 +305,15 @@ public class ChangeMetadataCommand extends Command {
                                 // to keep customs
                                 MetadataTool.copyTable(toCopy, tmpClone);
                                 toCopy = tmpClone;
-                                IMetadataTable copy = ((Node) targetNode).getMetadataFromConnector(baseConnector).clone(true);
+                                IMetadataTable copy;
+                                if (((Node) targetNode).getMetadataFromConnector(baseConnector) != null) {
+                                    // only if the target node have exactly the same connector
+                                    copy = ((Node) targetNode).getMetadataFromConnector(baseConnector).clone(true);
+                                } else {
+                                    // if don't have the same connector, take the main connector of the component.
+                                    final String mainConnector = "FLOW"; // can only be FLOW right now for this case.
+                                    copy = ((Node) targetNode).getMetadataFromConnector(mainConnector).clone(true);
+                                }
                                 MetadataTool.copyTable(toCopy, copy);
                                 ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) targetNode, null, null, copy);
                                 if (outputdataContainer.getOuputs().size() > 0) {

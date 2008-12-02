@@ -1286,7 +1286,7 @@ public class EmfComponent implements IComponent {
         if (CommonsPlugin.isHeadless()) {
             return null;
         }
-        
+
         if (color != null && color.contains(";")) {
             String rgb[] = color.split(";");
             if (rgb.length != 3) {
@@ -1738,6 +1738,10 @@ public class EmfComponent implements IComponent {
                 rgb = new RGB(r, g, b);
             }
             nodeConnector.addConnectionProperty(currentType, rgb, lineStyle);
+            if (connType.getCOLOR() != null) {
+                // force RGB color (need code review, as this shouldn't be needed here)
+                nodeConnector.getConnectionProperty(currentType).setRGB(rgb);
+            }
             String baseSchema = connType.getBASESCHEMA();
             if (baseSchema != null && (!baseSchema.equals(""))) {
                 nodeConnector.setBaseSchema(baseSchema);
