@@ -26,6 +26,7 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -148,7 +149,7 @@ public class TestComposite extends Composite {
 
         });
         table = variableTableViewer.getTable();
-        variableTableViewer.setCellEditors(new CellEditor[] { new TextCellEditor(table), new TextCellEditor(table) });
+        variableTableViewer.setCellEditors(new CellEditor[] { new DoubleClickTextCellEditor(table), new TextCellEditor(table) });
         variableTableViewer.setColumnProperties(new String[] { NAME_PROPERTY, VALUE_PROPERTY });
         variableTableViewer.setInput(new LinkedList<Variable>());
 
@@ -184,6 +185,41 @@ public class TestComposite extends Composite {
 
         installListener();
         //
+    }
+
+    /**
+     * DOC zhangyi TestComposite class global comment. Detailled comment <br/>
+     * 
+     * $Id: talend.epf 1 2006-09-29 17:06:40Z nrousseau $
+     * 
+     */
+    private class DoubleClickTextCellEditor extends TextCellEditor {
+
+        public DoubleClickTextCellEditor(Composite parent) {
+            super(parent);
+            text.addMouseListener(new MouseAdapter() {
+
+                /*
+                 * (non-Javadoc)
+                 * 
+                 * @see org.eclipse.swt.events.MouseAdapter#mouseDoubleClick(org.eclipse.swt.events.MouseEvent)
+                 */
+                @Override
+                public void mouseDoubleClick(MouseEvent e) {
+                    doubleClickOperation();
+                }
+            });
+        }
+
+        /**
+         * DOC zhangyi Comment method "doubleClickOperation".
+         */
+        protected void doubleClickOperation() {
+            String content = (String) doGetValue();
+            ExpressionBuilderDialog.getExpressionComposite().insertExpression(content);
+
+        }
+
     }
 
     private void installListener() {

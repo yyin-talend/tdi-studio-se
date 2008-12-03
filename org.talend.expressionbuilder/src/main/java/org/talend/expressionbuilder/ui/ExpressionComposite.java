@@ -377,7 +377,9 @@ public class ExpressionComposite extends Composite {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.expressionbuilder.ui.ExpressionController#setExpression(org.talend.designer.rowgenerator.data.Function)
+     * @see
+     * org.talend.expressionbuilder.ui.ExpressionController#setExpression(org.talend.designer.rowgenerator.data.Function
+     * )
      */
     public void setExpression(Function f) {
         String newValue = PERL_FUN_PREFIX;
@@ -481,5 +483,9 @@ public class ExpressionComposite extends Composite {
         } catch (BadLocationException e1) {
             MessageBoxExceptionHandler.process(e1);
         }
+    }
+
+    public void insertExpression(String str) {
+        textControl.insert(str);
     }
 }
