@@ -78,7 +78,7 @@ public class RepositoryReviewDialog extends Dialog {
 
     String repositoryType;
 
-    private FakeRepositoryView repositoryView;
+    protected FakeRepositoryView repositoryView;
 
     public FakeRepositoryView getRepositoryView() {
         return this.repositoryView;
@@ -146,6 +146,10 @@ public class RepositoryReviewDialog extends Dialog {
 
         if (type == ERepositoryObjectType.METADATA_SAP_FUNCTION) {
             return new SAPFunctionProcessor(repositoryType);
+        }
+
+        if (type == ERepositoryObjectType.CONTEXT) {
+            return new ContextTypeProcessor(repositoryType);
         }
 
         throw new IllegalArgumentException("illegal argument:" + type);
@@ -1005,6 +1009,66 @@ class SAPFunctionProcessor implements ITypeProcessor {
             public boolean select(Viewer viewer, Object parentElement, Object element) {
                 RepositoryNode node = (RepositoryNode) element;
                 if (node.getObject() != null && (node.getObject() instanceof MetadataTable)) {
+                    return false;
+                }
+                return true;
+            }
+        };
+    }
+
+}
+
+class ContextTypeProcessor implements ITypeProcessor {
+
+    String repositoryType;
+
+    /**
+     * xye RepositoryTypeProcessor constructor comment.
+     * 
+     * @param repositoryType
+     */
+    public ContextTypeProcessor(String repositoryType) {
+        this.repositoryType = repositoryType;
+    }
+
+    public RepositoryNode getInputRoot(RepositoryContentProvider contentProvider) {
+        RepositoryNode contextNode = contentProvider.getRootRepositoryNode(ERepositoryObjectType.CONTEXT);
+        // referenced project.
+        if (contentProvider.getReferenceProjectNode() != null) {
+            List<RepositoryNode> refProjects = contentProvider.getReferenceProjectNode().getChildren();
+            if (refProjects != null && !refProjects.isEmpty()) {
+
+                List<RepositoryNode> nodesList = new ArrayList<RepositoryNode>();
+
+                for (RepositoryNode repositoryNode : refProjects) {
+                    ProjectRepositoryNode refProject = (ProjectRepositoryNode) repositoryNode;
+
+                    ProjectRepositoryNode newProject = new ProjectRepositoryNode(refProject);
+
+                    newProject.getChildren().add(refProject.getMetadataConNode());
+
+                    nodesList.add(newProject);
+                }
+                contextNode.getChildren().addAll(nodesList);
+            }
+        }
+        return contextNode;
+    }
+
+    public boolean isSelectionValid(RepositoryNode node) {
+        if (node.getObjectType() == ERepositoryObjectType.CONTEXT) {
+            return true;
+        }
+        return false;
+    }
+
+    public ViewerFilter makeFilter() {
+        return new ViewerFilter() {
+
+            @Override
+            public boolean select(Viewer viewer, Object parentElement, Object element) {
+                RepositoryNode node = (RepositoryNode) element;
+                if (node.getContentType() == ERepositoryObjectType.CONTEXT) {
                     return false;
                 }
                 return true;

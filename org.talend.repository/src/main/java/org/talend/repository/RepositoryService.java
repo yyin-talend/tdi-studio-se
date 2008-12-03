@@ -42,6 +42,7 @@ import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.migration.IMigrationToolService;
+import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -61,6 +62,7 @@ import org.talend.repository.ui.actions.metadata.AbstractCreateTableAction;
 import org.talend.repository.ui.actions.metadata.CreateTableAction;
 import org.talend.repository.ui.actions.sqlpattern.CreateSqlpatternAction;
 import org.talend.repository.ui.actions.sqlpattern.EditSqlpatternAction;
+import org.talend.repository.ui.dialog.ContextRepositoryReviewDialog;
 import org.talend.repository.ui.login.LoginDialog;
 import org.talend.repository.ui.utils.ColumnNameValidator;
 import org.talend.repository.ui.utils.DBConnectionContextUtils;
@@ -449,5 +451,16 @@ public class RepositoryService implements IRepositoryService {
 
     public RepositoryNode getRepositoryNode(String id, boolean expanded) {
         return RepositoryNodeUtilities.getRepositoryNode(id, expanded);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @seeorg.talend.repository.model.IRepositoryService#openRepositoryReviewDialog(org.talend.core.model.repository.
+     * ERepositoryObjectType, java.lang.String)
+     */
+    public void openRepositoryReviewDialog(ERepositoryObjectType type, String repositoryType, List<IContextParameter> params) {
+        ContextRepositoryReviewDialog dialog = new ContextRepositoryReviewDialog(new Shell(), type, params);
+        dialog.open();
     }
 }

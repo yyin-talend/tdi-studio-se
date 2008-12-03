@@ -1076,6 +1076,10 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         return this.metadataEbcdicConnectionNode;
     }
 
+    public RepositoryNode getContextNode() {
+        return this.getContextNode();
+    }
+
     /*
      * (non-Javadoc)
      * 
