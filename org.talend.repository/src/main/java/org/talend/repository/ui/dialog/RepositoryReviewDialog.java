@@ -1018,6 +1018,9 @@ class SAPFunctionProcessor implements ITypeProcessor {
 
 }
 
+/**
+ * xye class global comment. Detailled comment
+ */
 class ContextTypeProcessor implements ITypeProcessor {
 
     String repositoryType;
