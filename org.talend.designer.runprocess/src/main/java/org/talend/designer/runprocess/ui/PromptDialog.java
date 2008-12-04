@@ -39,6 +39,10 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.talend.commons.ui.swt.tableviewer.celleditor.DateDialog;
 import org.talend.commons.ui.utils.PathUtils;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
+import org.talend.core.model.metadata.MetadataTalendType;
+import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.ui.context.DefaultCellEditorFactory;
@@ -202,18 +206,27 @@ public class PromptDialog extends Dialog {
 
         final Text text = new Text(child, SWT.SINGLE | SWT.BORDER);
         text.setText(parameter.getValue());
+
         text.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
                 parameter.setValue(text.getText());
             }
         });
-        if (parameter.getComment() != null) {
-            if (!parameter.getComment().equals("")) { //$NON-NLS-1$
-                label.setToolTipText(parameter.getComment());
-                text.setToolTipText(parameter.getComment());
-            }
+
+        String stringTip = "";
+        String comment = "";
+        if (parameter.getType().equalsIgnoreCase("String") && LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL) {
+            stringTip = Messages.getString("PromptDialog.stringTip");
         }
+
+        comment = parameter.getComment();
+
+        if (!stringTip.equals("")) {
+            comment = comment + " " + stringTip;
+        }
+        label.setToolTipText(comment);
+        text.setToolTipText(comment);
         GridData data = new GridData(GridData.FILL_HORIZONTAL);
         data.minimumWidth = MINIMUM_WIDTH;
         text.setLayoutData(data);
