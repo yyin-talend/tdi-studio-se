@@ -189,7 +189,7 @@ public class EmfComponent implements IComponent {
         return returnValue;
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     private void load() throws BusinessException {
         if (isLoaded == null) {
             try {
@@ -277,7 +277,7 @@ public class EmfComponent implements IComponent {
             String context = "FLOW";
             ElementParameter parentParam = new ElementParameter(node);
             parentParam.setName(EParameterName.NOT_SYNCHRONIZED_SCHEMA.getName());
-            parentParam.setDisplayName(EParameterName.SCHEMA_TYPE.getDisplayName()); //$NON-NLS-1$
+            parentParam.setDisplayName(EParameterName.SCHEMA_TYPE.getDisplayName()); 
             parentParam.setField(EParameterFieldType.SCHEMA_TYPE);
             parentParam.setCategory(EComponentCategory.BASIC);
             parentParam.setNumRow(1);
@@ -329,7 +329,7 @@ public class EmfComponent implements IComponent {
         // ****************** add standard returns ******************
         nodeRet = new NodeReturn();
         nodeRet.setAvailability("AFTER"); //$NON-NLS-1$
-        nodeRet.setType(STRING_TYPE); //$NON-NLS-1$
+        nodeRet.setType(STRING_TYPE); 
         nodeRet.setVarName("ERROR_MESSAGE"); //$NON-NLS-1$
         nodeRet.setDisplayName("Error Message"); //$NON-NLS-1$
         nodeRet.setName("ERROR_MESSAGE"); //$NON-NLS-1$
@@ -341,7 +341,7 @@ public class EmfComponent implements IComponent {
             nodeRet.setVarName("PERL_ERROR_MESSAGE"); //$NON-NLS-1$
             nodeRet.setDisplayName("Perl Error Message"); //$NON-NLS-1$
             nodeRet.setName("PERL_ERROR_MESSAGE"); //$NON-NLS-1$
-            nodeRet.setType(STRING_TYPE); //$NON-NLS-1$
+            nodeRet.setType(STRING_TYPE); 
             listReturn.add(nodeRet);
 
             nodeRet = new NodeReturn();
@@ -349,7 +349,7 @@ public class EmfComponent implements IComponent {
             nodeRet.setVarName("PERL_ERROR_CODE"); //$NON-NLS-1$
             nodeRet.setDisplayName("Perl Error Code"); //$NON-NLS-1$
             nodeRet.setName("PERL_ERROR_CODE"); //$NON-NLS-1$
-            nodeRet.setType(STRING_TYPE); //$NON-NLS-1$
+            nodeRet.setType(STRING_TYPE); 
             listReturn.add(nodeRet);
         }
         // ****************** end of standard returns ******************
@@ -943,7 +943,7 @@ public class EmfComponent implements IComponent {
             boolean useInputLinkSelection = connectorUseInputLinkSelection(context);
 
             String displayName = getTranslatedValue(xmlParam.getNAME() + "." + PROP_NAME);
-            if (displayName.startsWith("!!")) { //$NON-NLS-1$ //$NON-NLS-2$
+            if (displayName.startsWith("!!")) { //$NON-NLS-1$ 
                 displayName = EParameterName.SCHEMA_TYPE.getDisplayName();
             }
 
@@ -1085,7 +1085,7 @@ public class EmfComponent implements IComponent {
             newParam.setDisplayName(EParameterName.PROCESS_TYPE_VERSION.getDisplayName());
             newParam.setListItemsDisplayName(new String[] { ItemCacheManager.LATEST_VERSION });
             newParam.setListItemsValue(new String[] { ItemCacheManager.LATEST_VERSION });
-            newParam.setValue(ItemCacheManager.LATEST_VERSION); //$NON-NLS-1$
+            newParam.setValue(ItemCacheManager.LATEST_VERSION); 
             newParam.setNumRow(xmlParam.getNUMROW());
             newParam.setField(EParameterFieldType.TECHNICAL);
             if (xmlParam.isSetSHOW()) {
@@ -1111,7 +1111,7 @@ public class EmfComponent implements IComponent {
         }
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     private void addPropertyParameters(final List<ElementParameter> listParam, final INode node, boolean advanced) {
         EList listXmlParam;
         PARAMETERType xmlParam;
@@ -1415,7 +1415,7 @@ public class EmfComponent implements IComponent {
                     }
                 }
                 if (!isSet) {
-                    if (param.getField().equals(EParameterFieldType.CHECK)
+                    if (param.getField().equals(EParameterFieldType.RADIO) || param.getField().equals(EParameterFieldType.CHECK)
                             || param.getField().equals(EParameterFieldType.AS400_CHECK)) {
                         int index = this.computeIndex(listParam, param);
                         if (index >= 0) {
@@ -1865,7 +1865,7 @@ public class EmfComponent implements IComponent {
                 Context.REPOSITORY_CONTEXT_KEY);
         Project project = repositoryContext.getProject();
 
-        List<ComponentSetting> components = (List<ComponentSetting>) project.getEmfProject().getComponentsSettings();
+        List<ComponentSetting> components = project.getEmfProject().getComponentsSettings();
         for (ComponentSetting componentSetting : components) {
 
             if (componentSetting.getFamily() != null && componentSetting.getFamily().equals(family)
@@ -2158,7 +2158,7 @@ public class EmfComponent implements IComponent {
         return codePartList;
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     public List<String> getPluginDependencies() {
         List<String> pluginDependencyList = new ArrayList<String>();
         if (this.compType.getPLUGINDEPENDENCIES() != null) {
