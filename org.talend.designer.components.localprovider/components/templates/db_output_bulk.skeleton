@@ -737,7 +737,7 @@ public class CLASS {
             } else if(typeToGenerate.equals("Bytes") && (dbType != null && dbType.equals("LONG RAW"))) {
                 setStmt.append(prefix + cid + ".setBytes(" + index + ", " + incomingConnName + "." + column.getName() + ");\r\n");
             } else if(typeToGenerate.equals("String") && (dbType != null && dbType.equals("CLOB"))) {
-                setStmt.append(prefix + cid + ".setStringForClob(" + index + ", " + incomingConnName + "." + column.getName() + ");\r\n");                
+                setStmt.append(prefix + cid + ".setCharacterStream(" + index + ", new java.io.StringReader(" + incomingConnName + "." + column.getName() + "), " + incomingConnName + "." + column.getName() + ".length());\r\n");                
             } else if(typeToGenerate.equals("Object") && (dbType != null && dbType.equals("BLOB"))) {
                 setStmt.append(prefix + cid + ".setBLOB(" + index + ", (oracle.sql.BLOB)" + incomingConnName + "." + column.getName() + ");\r\n");
             } else {

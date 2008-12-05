@@ -186,71 +186,80 @@ imports="
                  	                <%=firstConnName%>.<%=column.getLabel()%> = (List)rs_<%=cid %>.getObject(<%=currentColNo%>);
                  	                <% 	
                  	            } else if(typeToGenerate.equals("String")) {
-                 	                %>
-                                    tmpContent_<%=cid%> = rs_<%=cid %>.getString(<%=currentColNo%>);
-                                    if(tmpContent_<%=cid%> != null) {
-                                        <%=firstConnName%>.<%=column.getLabel()%> = tmpContent_<%=cid%><%=trimMethod%>;
-                                    } else {
-                                        <%=firstConnName%>.<%=column.getLabel()%> = null;
-                                    }                 	                
-                 	                <%
-                 	            } else if(typeToGenerate.equals("Object") && columnType.equals("CLOB")) {
-                 	                %>
-                 	                if(rs_<%=cid %>.getObject(<%=currentColNo%>) != null) {
-                 	                    java.sql.Clob temp<%=column.getLabel()%> = null;
-                 	                    temp<%=column.getLabel()%> = rs_<%=cid %>.getClob(<%=currentColNo%>);
-                 	                    <%=firstConnName%>.<%=column.getLabel()%> = temp<%=column.getLabel()%>.getSubString(1, (int) temp<%=column.getLabel()%>.length());
+                 	                if(columnType != null && columnType.equals("CLOB")) {
+                 	                    %>
+                 	                    java.io.Reader reader_<%=cid%> = rs_<%=cid %>.getCharacterStream(<%=currentColNo%>);
+                 	                    java.io.BufferedReader br_<%=cid%> = null;
+                 	                    if(reader_<%=cid%> != null) {
+                 	                        br_<%=cid%> = new java.io.BufferedReader(reader_<%=cid%>);
+                 	                        String tempContent_<%=cid%> = null;
+                 	                        String content_<%=cid%> = "";
+                 	                        while((tempContent_<%=cid%> = br_<%=cid%>.readLine()) != null) {
+                 	                            content_<%=cid%> += tempContent_<%=cid%>;
+                 	                        }
+                 	                        br_<%=cid%>.close();
+                 	                        <%=firstConnName%>.<%=column.getLabel()%> = content_<%=cid%>;
+                 	                    } else {
+                 	                        <%=firstConnName%>.<%=column.getLabel()%> = null;
+                 	                    }                 	                    
+                 	                    <%
                  	                } else {
-                 	                    <%=firstConnName%>.<%=column.getLabel()%> = null;
+                 	                    %>
+                 	                    tmpContent_<%=cid%> = rs_<%=cid %>.getString(<%=currentColNo%>);
+                                        if(tmpContent_<%=cid%> != null) {
+                                            <%=firstConnName%>.<%=column.getLabel()%> = tmpContent_<%=cid%><%=trimMethod%>;
+                                        } else {
+                                            <%=firstConnName%>.<%=column.getLabel()%> = null;
+                                        }                 	                    
+                 	                    <%
                  	                }
-                 	                <%
-                 	            } else if(typeToGenerate.equals("Bytes") && columnType.equals("LONG RAW")) {
+                 	            } else if(typeToGenerate.equals("Bytes") && (columnType != null && columnType.equals("LONG RAW"))) {
                  	                %>
-                                    tmpBytes_<%=cid%> = rs_<%=cid %>.getBytes(<%=currentColNo%>);
-                                    if(tmpBytes_<%=cid%> != null) {
-                                       <%=firstConnName%>.<%=column.getLabel()%> = tmpBytes_<%=cid%>;
-                                    } else {
-                                       <%=firstConnName%>.<%=column.getLabel()%> = null;
-                                    }                 	                
+                 	                tmpBytes_<%=cid%> = rs_<%=cid %>.getBytes(<%=currentColNo%>);
+                 	                if(tmpBytes_<%=cid%> != null) {
+                 	                   <%=firstConnName%>.<%=column.getLabel()%> = tmpBytes_<%=cid%>;
+                 	                } else {
+                 	                   <%=firstConnName%>.<%=column.getLabel()%> = null;
+                 	                }
                  	                <%
                  	            } else {
                  	            	if(typeToGenerate.equals("Object")){
-                 	            	%>
-                 	            	Object tmpObj_<%=currentColNo%>_<%=cid %> = rs_<%=cid %>.getObject(<%=currentColNo%>);
-                 	            	if(tmpObj_<%=currentColNo%>_<%=cid %> != null) {
-                 	                    <%=firstConnName%>.<%=column.getLabel()%> = tmpObj_<%=currentColNo%>_<%=cid %>;
-                 	                } else {
-                 	                    <%
-                 	                    if(column.isNullable()) {
-                 	                        %>
-                 	                        <%=firstConnName%>.<%=column.getLabel()%> = null;
-                 	                        <%
-                 	                    } else {
-                 	                        %>    
-                 	                        throw new RuntimeException("Null value in non-Nullable column");
-                 	                        <%    
-                 	                    }
-                 	                    %>
-                 	                }
-                 	            	<%
+                     	            	%>
+                     	            	Object tmpObj_<%=currentColNo%>_<%=cid %> = rs_<%=cid %>.getObject(<%=currentColNo%>);
+                     	            	if(tmpObj_<%=currentColNo%>_<%=cid %> != null) {
+                     	                    <%=firstConnName%>.<%=column.getLabel()%> = tmpObj_<%=currentColNo%>_<%=cid %>;
+                     	                } else {
+                     	                    <%
+                     	                    if(column.isNullable()) {
+                     	                        %>
+                     	                        <%=firstConnName%>.<%=column.getLabel()%> = null;
+                     	                        <%
+                     	                    } else {
+                     	                        %>    
+                     	                        throw new RuntimeException("Null value in non-Nullable column");
+                     	                        <%    
+                     	                    }
+                     	                    %>
+                     	                }
+                     	            	<%
                  	            	} else {
-                 	                %>
-                 	                if(rs_<%=cid %>.getObject(<%=currentColNo%>) != null) {
-                 	                    <%=firstConnName%>.<%=column.getLabel()%> = rs_<%=cid %>.get<%=typeToGenerate%>(<%=currentColNo%>);
-                 	                } else {
-                 	                    <%
-                 	                    if(column.isNullable()) {
-                 	                        %>
-                 	                        <%=firstConnName%>.<%=column.getLabel()%> = null;
-                 	                        <%
-                 	                    } else {
-                 	                        %>    
-                 	                        throw new RuntimeException("Null value in non-Nullable column");
-                 	                        <%    
-                 	                    }
-                 	                    %>
-                 	                }
-                 	                <%
+                     	                %>
+                     	                if(rs_<%=cid %>.getObject(<%=currentColNo%>) != null) {
+                     	                    <%=firstConnName%>.<%=column.getLabel()%> = rs_<%=cid %>.get<%=typeToGenerate%>(<%=currentColNo%>);
+                     	                } else {
+                     	                    <%
+                     	                    if(column.isNullable()) {
+                     	                        %>
+                     	                        <%=firstConnName%>.<%=column.getLabel()%> = null;
+                     	                        <%
+                     	                    } else {
+                     	                        %>    
+                     	                        throw new RuntimeException("Null value in non-Nullable column");
+                     	                        <%    
+                     	                    }
+                     	                    %>
+                     	                }
+                     	                <%
                  	                }
                  	            }
                  	            %>
