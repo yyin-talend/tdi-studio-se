@@ -25,12 +25,15 @@ import org.talend.core.model.migration.AbstractJobMigrationTask;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Project;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.joblet.model.JobletProcess;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -69,7 +72,7 @@ public class SynchronizeSchemaOnlyForPerlDemoMigrationTask extends AbstractJobMi
      * ProcessItem)
      */
     @Override
-    public ExecutionResult executeOnProcess(ProcessItem item) {
+    public ExecutionResult execute(Item item) {
         ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         try {
             boolean modified = false;
@@ -78,12 +81,16 @@ public class SynchronizeSchemaOnlyForPerlDemoMigrationTask extends AbstractJobMi
                 Project project = ProjectManager.getInstance().getProject(item);
                 if (project != null && project.getTechnicalLabel().equalsIgnoreCase("TALENDDEMOSPERL")) { //$NON-NLS-1$
                     IProcess2 process = (IProcess2) RepositoryPlugin.getDefault().getDesignerCoreService()
-                            .getProcessFromProcessItem(item);
+                            .getProcessFromItem(item);
                     modified = synchronizeSchema(process);
 
                     if (modified) {
                         ProcessType processType = process.saveXmlFile();
-                        item.setProcess(processType);
+                        if (item instanceof ProcessItem) {
+                            ((ProcessItem) item).setProcess(processType);
+                        } else if (item instanceof JobletProcessItem) {
+                            ((JobletProcessItem) item).setJobletProcess((JobletProcess) processType);
+                        }
                         factory.save(item, true);
                         return ExecutionResult.SUCCESS_NO_ALERT;
                     }

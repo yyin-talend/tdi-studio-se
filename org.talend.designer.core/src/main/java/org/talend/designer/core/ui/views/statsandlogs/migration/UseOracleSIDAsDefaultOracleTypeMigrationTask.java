@@ -18,9 +18,10 @@ import java.util.GregorianCalendar;
 import org.eclipse.emf.common.util.EList;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
 import org.talend.core.model.process.EParameterFieldType;
-import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.Item;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
+import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 
 /**
  * 
@@ -46,10 +47,14 @@ public class UseOracleSIDAsDefaultOracleTypeMigrationTask extends AbstractJobMig
      */
     @SuppressWarnings("unchecked")
     @Override
-    public ExecutionResult executeOnProcess(ProcessItem item) {
+    public ExecutionResult execute(Item item) {
+        ProcessType processType = getProcessType(item);
+        if (processType == null) {
+            return ExecutionResult.NOTHING_TO_DO;
+        }   
         EList parameters = null;
         try {
-            parameters = item.getProcess().getParameters().getElementParameter();
+            parameters = processType.getParameters().getElementParameter();
         } catch (Exception e) {
             // ignore it
         }
