@@ -26,8 +26,10 @@ import org.talend.core.model.components.ModifyComponentsAction;
 import org.talend.core.model.components.conversions.IComponentConversion;
 import org.talend.core.model.components.filters.IComponentFilter;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
+import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 
 /**
  * yzhang class global comment. Detailled comment <br/>
@@ -43,8 +45,10 @@ public class UpdateDbtypeOfCreateTableTask extends AbstractJobMigrationTask {
      * @see org.talend.core.model.migration.AbstractJobMigrationTask#executeOnProcess(org.talend.core.model.properties.ProcessItem)
      */
     @Override
-    public ExecutionResult executeOnProcess(ProcessItem item) {
-        if (getProject().getLanguage().equals(ECodeLanguage.JAVA)) {
+    public ExecutionResult execute(Item item) {
+    	ProcessType processType = getProcessType(item);
+		
+        if (getProject().getLanguage().equals(ECodeLanguage.JAVA) && processType != null) {
             final Map<String, String> dbtypes = new HashMap<String, String>();
             dbtypes.put("Access", "ACCESS");
             dbtypes.put("AS400", "AS400");
@@ -98,7 +102,7 @@ public class UpdateDbtypeOfCreateTableTask extends AbstractJobMigrationTask {
             cons.add(conversion);
 
             try {
-                ModifyComponentsAction.searchAndModify(item, filert, cons);
+                ModifyComponentsAction.searchAndModify(item, processType, filert, cons);
                 return ExecutionResult.SUCCESS_NO_ALERT;
             } catch (Exception e) {
                 ExceptionHandler.process(e);

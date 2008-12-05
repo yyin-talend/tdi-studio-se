@@ -25,7 +25,9 @@ import org.talend.core.model.components.conversions.RenameComponentConversion;
 import org.talend.core.model.components.filters.IComponentFilter;
 import org.talend.core.model.components.filters.PropertyComponentFilter;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 
 /**
  * Use to rename tDB(Input|Output|SQLRow) into tOracle(Input|Output|Row).
@@ -35,30 +37,32 @@ import org.talend.core.model.properties.ProcessItem;
  */
 public class RenametFTPToFTPGetMigrationTask extends AbstractJobMigrationTask {
 
-    public ExecutionResult executeOnProcess(ProcessItem item) {
+    public ExecutionResult execute(Item item) {
+    	ProcessType processType = getProcessType(item);
+	
         try {
 
-            if (getProject().getLanguage().equals(ECodeLanguage.JAVA)) {
+            if (getProject().getLanguage().equals(ECodeLanguage.JAVA) && processType != null ) {
                 IComponentConversion removePropertyComponentConversion = new RemovePropertyComponentConversion("TYPE"); //$NON-NLS-1$
 
                 RenameComponentConversion renameComponentConversion = new RenameComponentConversion("tFTPGet"); //$NON-NLS-1$
                 IComponentFilter filter1 = new PropertyComponentFilter("tFTP", "ACTION", "get"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                ModifyComponentsAction.searchAndModify(item, filter1, Arrays.<IComponentConversion> asList(
+                ModifyComponentsAction.searchAndModify(item, processType, filter1, Arrays.<IComponentConversion> asList(
                         renameComponentConversion, removePropertyComponentConversion));
 
                 renameComponentConversion.setNewName("tFTPPut"); //$NON-NLS-1$
                 IComponentFilter filter2 = new PropertyComponentFilter("tFTP", "ACTION", "put"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                ModifyComponentsAction.searchAndModify(item, filter2, Arrays.<IComponentConversion> asList(
+                ModifyComponentsAction.searchAndModify(item, processType,filter2, Arrays.<IComponentConversion> asList(
                         renameComponentConversion, removePropertyComponentConversion));
 
                 renameComponentConversion.setNewName("tFTPDelete"); //$NON-NLS-1$
                 IComponentFilter filter3 = new PropertyComponentFilter("tFTP", "ACTION", "delete"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                ModifyComponentsAction.searchAndModify(item, filter3, Arrays.<IComponentConversion> asList(
+                ModifyComponentsAction.searchAndModify(item, processType, filter3, Arrays.<IComponentConversion> asList(
                         renameComponentConversion, removePropertyComponentConversion));
 
                 renameComponentConversion.setNewName("tFTPRename"); //$NON-NLS-1$
                 IComponentFilter filter4 = new PropertyComponentFilter("tFTP", "ACTION", "rename"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                ModifyComponentsAction.searchAndModify(item, filter4, Arrays.<IComponentConversion> asList(
+                ModifyComponentsAction.searchAndModify(item, processType, filter4, Arrays.<IComponentConversion> asList(
                         renameComponentConversion, removePropertyComponentConversion));
                 return ExecutionResult.SUCCESS_WITH_ALERT;
             } else {

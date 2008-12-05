@@ -18,7 +18,9 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.components.ModifyComponentsAction;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 
 /**
  * Migration task use to rename tXMLRPC components in tXMLRPCInput.
@@ -26,10 +28,11 @@ import org.talend.core.model.properties.ProcessItem;
 public class RenametBufferOutputMigrationTask extends AbstractJobMigrationTask {
 
     @Override
-    public ExecutionResult executeOnProcess(ProcessItem item) {
-        if (getProject().getLanguage() == ECodeLanguage.JAVA) {
+    public ExecutionResult execute(Item item) {
+    	ProcessType processType = getProcessType(item);	
+        if (getProject().getLanguage() == ECodeLanguage.JAVA && processType != null ) {
             try {
-                ModifyComponentsAction.searchAndRename(item, "tBuffer", "tBufferOutput"); //$NON-NLS-1$ //$NON-NLS-2$
+                ModifyComponentsAction.searchAndRename(item,processType, "tBuffer", "tBufferOutput"); //$NON-NLS-1$ //$NON-NLS-2$
                 return ExecutionResult.SUCCESS_WITH_ALERT;
             } catch (Exception e) {
                 ExceptionHandler.process(e);
@@ -44,4 +47,5 @@ public class RenametBufferOutputMigrationTask extends AbstractJobMigrationTask {
         GregorianCalendar gc = new GregorianCalendar(2008, 2, 17, 12, 0, 0);
         return gc.getTime();
     }
+
 }

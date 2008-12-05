@@ -17,9 +17,10 @@ import java.util.GregorianCalendar;
 
 import org.eclipse.emf.common.util.EList;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
-import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.Item;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
+import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
@@ -36,7 +37,7 @@ public class FileInputRegexContextVariableMigrationTask extends AbstractJobMigra
      * ProcessItem)
      */
     @Override
-    public ExecutionResult executeOnProcess(ProcessItem item) {
+    public ExecutionResult execute(Item item) {
         // if (getProject().getLanguage() != ECodeLanguage.JAVA) {
         // return ExecutionResult.NOTHING_TO_DO;
         // }
@@ -50,10 +51,14 @@ public class FileInputRegexContextVariableMigrationTask extends AbstractJobMigra
         return ExecutionResult.NOTHING_TO_DO;
     }
 
-    private boolean addQuote(ProcessItem item) {
+    private boolean addQuote(Item item) {
+		ProcessType processType = getProcessType(item);
+		if (processType == null) {
+			return false;
+		}
         ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         boolean modified = false;
-        EList nodes = item.getProcess().getNode();
+        EList nodes = processType.getNode();
         for (Object n : nodes) {
             NodeType type = (NodeType) n;
             if (type.getComponentName().equals("tFileInputRegex")) {

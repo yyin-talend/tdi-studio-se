@@ -25,7 +25,9 @@ import org.talend.core.model.components.conversions.RemovePropertyComponentConve
 import org.talend.core.model.components.filters.IComponentFilter;
 import org.talend.core.model.components.filters.NameComponentFilter;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 
 /**
  * Use to rename tDB(Input|Output|SQLRow) into tMysql(Input|Output|Row). Related bug 540.
@@ -35,8 +37,10 @@ import org.talend.core.model.properties.ProcessItem;
  */
 public class UpgradetUniqRowMigrationTask extends AbstractJobMigrationTask {
 
-    public ExecutionResult executeOnProcess(ProcessItem item) {
-        if (getProject().getLanguage() != ECodeLanguage.PERL) {
+    public ExecutionResult execute(Item item) {
+    	ProcessType processType = getProcessType(item);
+
+        if (getProject().getLanguage() != ECodeLanguage.PERL || processType == null) {
             return ExecutionResult.NOTHING_TO_DO;
         }
         try {
@@ -45,7 +49,7 @@ public class UpgradetUniqRowMigrationTask extends AbstractJobMigrationTask {
             IComponentConversion removeProperty = new RemovePropertyComponentConversion("CASE_SENSITIVE"); //$NON-NLS-1$
             IComponentConversion addProperty = new AddPropertyUniqueKeyFortUniqRowConversion("UNIQUE_KEY", "TABLE"); //$NON-NLS-1$ //$NON-NLS-2$
 
-            ModifyComponentsAction.searchAndModify(item, filter1, Arrays.<IComponentConversion> asList(removeProperty,
+            ModifyComponentsAction.searchAndModify(item,processType, filter1, Arrays.<IComponentConversion> asList(removeProperty,
                     addProperty));
 
             return ExecutionResult.SUCCESS_NO_ALERT;

@@ -23,7 +23,9 @@ import org.talend.core.model.components.conversions.RemoveQuotesInPropertyCompon
 import org.talend.core.model.components.filters.IComponentFilter;
 import org.talend.core.model.components.filters.NameComponentFilter;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 
 /**
  * Use to rename tDB(Input|Output|SQLRow) into tMysql(Input|Output|Row). Related bug 540.
@@ -33,14 +35,18 @@ import org.talend.core.model.properties.ProcessItem;
  */
 public class UpgradetRunJobRemoveQuotesMigrationTask extends AbstractJobMigrationTask {
 
-    public ExecutionResult executeOnProcess(ProcessItem item) {
+    public ExecutionResult execute(Item item) {
+    	ProcessType processType = getProcessType(item);
+		if (processType == null) {
+			return ExecutionResult.NOTHING_TO_DO;
+		}	
         try {
             IComponentFilter filter1 = new NameComponentFilter("tRunJob"); //$NON-NLS-1$
 
             IComponentConversion removeQuotes1 = new RemoveQuotesInPropertyComponentConversion("PROCESS_TYPE_PROCESS"); //$NON-NLS-1$
             IComponentConversion removeQuotes2 = new RemoveQuotesInPropertyComponentConversion("PROCESS_TYPE_CONTEXT"); //$NON-NLS-1$
 
-            ModifyComponentsAction.searchAndModify(item, filter1, Arrays.<IComponentConversion> asList(removeQuotes1,
+            ModifyComponentsAction.searchAndModify(item, processType, filter1, Arrays.<IComponentConversion> asList(removeQuotes1,
                     removeQuotes2));
 
             return ExecutionResult.SUCCESS_NO_ALERT;

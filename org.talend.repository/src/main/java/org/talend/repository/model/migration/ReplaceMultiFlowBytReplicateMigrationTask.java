@@ -27,7 +27,7 @@ import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
 import org.talend.core.model.process.INodeConnector;
-import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.Item;
 import org.talend.designer.core.model.utils.emf.talendfile.ColumnType;
 import org.talend.designer.core.model.utils.emf.talendfile.ConnectionType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
@@ -52,15 +52,21 @@ public class ReplaceMultiFlowBytReplicateMigrationTask extends AbstractJobMigrat
      * ProcessItem)
      */
     @Override
-    public ExecutionResult executeOnProcess(ProcessItem processItem) {
+    public ExecutionResult execute(Item processItem) {
+		ProcessType processType = getProcessType(processItem);
+		if (processType == null) {
+			return ExecutionResult.NOTHING_TO_DO;
+		}	
         IComponentsFactory componentFactory = ComponentsFactoryProvider.getInstance();
         boolean modified = false;
         try {
-            List<NodeType> initialNodes = new ArrayList<NodeType>(processItem.getProcess().getNode());
+            List<NodeType> initialNodes = new ArrayList<NodeType>(processType
+					.getNode());
             for (NodeType nodeType : initialNodes) {
                 IComponent component = componentFactory.get(nodeType.getComponentName());
                 if (component != null) {
-                    if (checkMaxOutputAndUpdate(processItem, component, nodeType)) {
+                    if (checkMaxOutputAndUpdate(processItem, processType,
+							component, nodeType)) {
                         modified = true;
                     }
                 } else {
@@ -79,14 +85,17 @@ public class ReplaceMultiFlowBytReplicateMigrationTask extends AbstractJobMigrat
         }
     }
 
-    /**
-     * DOC nrousseau Comment method "checkMaxOutputAndUpdate".
-     * 
-     * @param processItem
-     * @param component
-     */
+	/**
+	 * DOC nrousseau Comment method "checkMaxOutputAndUpdate".
+	 * 
+	 * @param processItem
+	 * @param processType
+	 * @param component
+	 */
     @SuppressWarnings("unchecked")
-    private boolean checkMaxOutputAndUpdate(ProcessItem processItem, IComponent component, NodeType nodeTypeSource)
+    private boolean checkMaxOutputAndUpdate(Item processItem,
+			ProcessType processType, IComponent component,
+			NodeType nodeTypeSource)
             throws PersistenceException {
         boolean modified = false;
 
@@ -96,10 +105,12 @@ public class ReplaceMultiFlowBytReplicateMigrationTask extends AbstractJobMigrat
         List<INodeConnector> nodeConnectors = (List<INodeConnector>) component.createConnectors(null);
         for (INodeConnector nodeConnector : nodeConnectors) {
             if (nodeConnector.getBaseSchema().equals("FLOW") && nodeConnector.getMaxLinkOutput() == 1) {
-                List<ConnectionType> connections = getConnectionsToMove(processItem, nodeConnector, nodeSourceUniqueName);
+                List<ConnectionType> connections = getConnectionsToMove(
+						processType, nodeConnector, nodeSourceUniqueName);
                 if (connections != null) {
                     List<Rectangle> targetPos = getTargetsRectangle(connections);
-                    Rectangle startPos = getNodeRectangle(processItem.getProcess(), nodeSourceUniqueName);
+                    Rectangle startPos = getNodeRectangle(processType,
+							nodeSourceUniqueName);
                     Integer tReplicateYPos = 0;
                     Integer tReplicateXPos = Integer.MAX_VALUE;
                     for (Rectangle rect : targetPos) {
@@ -114,8 +125,11 @@ public class ReplaceMultiFlowBytReplicateMigrationTask extends AbstractJobMigrat
                     tReplicateXPos = tempVar * GRID_SIZE;
                     tempVar = tReplicateYPos / GRID_SIZE;
                     tReplicateYPos = tempVar * GRID_SIZE;
-                    Point tReplicatePos = findLocationForNode(processItem, new Point(tReplicateXPos, tReplicateYPos));
-                    addtReplicateComponent(processItem, tReplicatePos, nodeTypeSource, nodeSourceUniqueName, nodeConnector,
+                    Point tReplicatePos = findLocationForNode(processType,
+							new Point(tReplicateXPos, tReplicateYPos));
+                    addtReplicateComponent(processType, tReplicatePos,
+							nodeTypeSource, nodeSourceUniqueName,
+							nodeConnector,
                             connections);
                     modified = true;
                 }
@@ -129,37 +143,41 @@ public class ReplaceMultiFlowBytReplicateMigrationTask extends AbstractJobMigrat
         return modified;
     }
 
-    /**
-     * DOC nrousseau Comment method "addtReplicateComponent".
-     * 
-     * @param processItem
-     * @param replicatePos
-     * @param connections
-     */
-    private void addtReplicateComponent(ProcessItem processItem, Point replicatePos, NodeType nodeTypeSource, String sourceName,
+	/**
+	 * DOC nrousseau Comment method "addtReplicateComponent".
+	 * 
+	 * @param processType
+	 * @param replicatePos
+	 * @param connections
+	 */
+    private void addtReplicateComponent(ProcessType processType,
+			Point replicatePos, NodeType nodeTypeSource, String sourceName,
             INodeConnector nodeConnector, List<ConnectionType> connections) {
         TalendFileFactory fileFact = TalendFileFactory.eINSTANCE;
         // create the node
-        String uniqueName = createNodeType(processItem, replicatePos, nodeTypeSource, sourceName, nodeConnector, connections,
+		String uniqueName = createNodeType(processType, replicatePos,
+				nodeTypeSource, sourceName, nodeConnector, connections,
                 fileFact);
 
         // create the connection from source component to tReplicate
-        createConnectionType(processItem, sourceName, nodeConnector, fileFact, uniqueName);
+		createConnectionType(processType, sourceName, nodeConnector, fileFact,
+				uniqueName);
     }
 
-    /**
-     * DOC nrousseau Comment method "createConnectionType".
-     * 
-     * @param processItem
-     * @param sourceName
-     * @param nodeConnector
-     * @param fileFact
-     * @param uniqueName
-     */
-    private void createConnectionType(ProcessItem processItem, String sourceName, INodeConnector nodeConnector,
+	/**
+	 * DOC nrousseau Comment method "createConnectionType".
+	 * 
+	 * @param processType
+	 * @param sourceName
+	 * @param nodeConnector
+	 * @param fileFact
+	 * @param uniqueName
+	 */
+    private void createConnectionType(ProcessType processType,
+			String sourceName, INodeConnector nodeConnector,
             TalendFileFactory fileFact, String uniqueName) {
         List<String> connectionNames = new ArrayList<String>();
-        for (Object oConnection : processItem.getProcess().getConnection()) {
+        for (Object oConnection : processType.getConnection()) {
             ConnectionType connection = (ConnectionType) oConnection;
             connectionNames.add(connection.getLabel());
         }
@@ -178,25 +196,27 @@ public class ReplaceMultiFlowBytReplicateMigrationTask extends AbstractJobMigrat
         connectionType.setSource(sourceName);
         connectionType.setTarget(uniqueName);
 
-        processItem.getProcess().getConnection().add(connectionType);
+        processType.getConnection().add(connectionType);
     }
 
-    /**
-     * DOC nrousseau Comment method "createNodeType".
-     * 
-     * @param processItem
-     * @param replicatePos
-     * @param nodeTypeSource
-     * @param sourceName
-     * @param nodeConnector
-     * @param connections
-     * @param fileFact
-     * @return
-     */
-    private String createNodeType(ProcessItem processItem, Point replicatePos, NodeType nodeTypeSource, String sourceName,
+	/**
+	 * DOC nrousseau Comment method "createNodeType".
+	 * 
+	 * @param processType
+	 * @param replicatePos
+	 * @param nodeTypeSource
+	 * @param sourceName
+	 * @param nodeConnector
+	 * @param connections
+	 * @param fileFact
+	 * @return
+	 */
+    private String createNodeType(ProcessType processType, Point replicatePos,
+			NodeType nodeTypeSource, String sourceName,
             INodeConnector nodeConnector, List<ConnectionType> connections, TalendFileFactory fileFact) {
         NodeType nodeType = fileFact.createNodeType();
-        String uniqueName = ComponentUtilities.generateUniqueNodeName("tReplicate", processItem.getProcess());
+        String uniqueName = ComponentUtilities.generateUniqueNodeName(
+				"tReplicate", processType);
         ElementParameterType elemParam = fileFact.createElementParameterType();
         elemParam.setField("TEXT");
         elemParam.setName("UNIQUE_NAME");
@@ -259,28 +279,28 @@ public class ReplaceMultiFlowBytReplicateMigrationTask extends AbstractJobMigrat
             }
         }
 
-        processItem.getProcess().getNode().add(nodeType);
+        processType.getNode().add(nodeType);
         return uniqueName;
     }
 
-    /**
-     * DOC nrousseau Comment method "findLocationForNode".
-     * 
-     * @param processItem
-     * @param point
-     * @return
-     */
-    private Point findLocationForNode(ProcessItem processItem, Point point) {
+	/**
+	 * DOC nrousseau Comment method "findLocationForNode".
+	 * 
+	 * @param processType
+	 * @param point
+	 * @return
+	 */
+    private Point findLocationForNode(ProcessType processType, Point point) {
         Rectangle newRect = new Rectangle(point, new Dimension(GRID_SIZE, GRID_SIZE));
         Point newLocation = new Point(point);
-        for (Object oNodeType : processItem.getProcess().getNode()) {
+        for (Object oNodeType : processType.getNode()) {
             NodeType node = (NodeType) oNodeType;
             String uniqueName = ComponentUtilities.getNodeUniqueName(node);
-            Rectangle currentRect = getNodeRectangle(processItem.getProcess(), uniqueName);
+            Rectangle currentRect = getNodeRectangle(processType, uniqueName);
             if (currentRect.intersects(newRect)) {
                 newLocation.x += GRID_SIZE;
                 newLocation.y += GRID_SIZE;
-                return findLocationForNode(processItem, point);
+                return findLocationForNode(processType, point);
             }
         }
         return newLocation;
@@ -312,16 +332,17 @@ public class ReplaceMultiFlowBytReplicateMigrationTask extends AbstractJobMigrat
         return targetPosList;
     }
 
-    /**
-     * DOC nrousseau Comment method "getConnectionsToMove".
-     * 
-     * @param processItem
-     * @param nodeUniqueName
-     * @return
-     */
-    private List<ConnectionType> getConnectionsToMove(ProcessItem processItem, INodeConnector connector, String nodeUniqueName) {
+	/**
+	 * DOC nrousseau Comment method "getConnectionsToMove".
+	 * 
+	 * @param processType
+	 * @param nodeUniqueName
+	 * @return
+	 */
+    private List<ConnectionType> getConnectionsToMove(ProcessType processType,
+			INodeConnector connector, String nodeUniqueName) {
         List<ConnectionType> connToMove = new ArrayList<ConnectionType>();
-        for (Object oConnection : processItem.getProcess().getConnection()) {
+        for (Object oConnection : processType.getConnection()) {
             ConnectionType connectionType = (ConnectionType) oConnection;
             if (connectionType.getSource().equals(nodeUniqueName)) {
                 if (connectionType.getConnectorName().equals(connector.getName())) {

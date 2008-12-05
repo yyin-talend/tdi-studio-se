@@ -25,8 +25,10 @@ import org.talend.core.model.components.conversions.UpdatePropertyComponentConve
 import org.talend.core.model.components.filters.IComponentFilter;
 import org.talend.core.model.components.filters.NameComponentFilter;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 
 /**
  * Use to rename tDB(Input|Output|SQLRow) into tMysql(Input|Output|Row). Related bug 540.
@@ -36,24 +38,24 @@ import org.talend.core.model.repository.ERepositoryObjectType;
  */
 public class UpgradetWarntDiePriorityMigrationTask extends AbstractJobMigrationTask {
 
-    @Override
-    public List<ERepositoryObjectType> getTypes() {
-        List<ERepositoryObjectType> toReturn = new ArrayList<ERepositoryObjectType>();
-        toReturn.add(ERepositoryObjectType.PROCESS);
-        return toReturn;
-    }
+  
 
-    public ExecutionResult executeOnProcess(ProcessItem item) {
+    public ExecutionResult execute(Item item) {
+    	
+    	ProcessType processType = getProcessType(item);
+		if (processType == null) {
+			return ExecutionResult.NOTHING_TO_DO;
+		}	
         try {
             // 1. tWarn:
             IComponentFilter filter1 = new NameComponentFilter("tWarn"); //$NON-NLS-1$
             IComponentConversion setPriorityProperty = new UpdatePropertyComponentConversion("PRIORITY", "4"); //$NON-NLS-1$
-            ModifyComponentsAction.searchAndModify(item, filter1, Arrays.<IComponentConversion> asList(setPriorityProperty));
+            ModifyComponentsAction.searchAndModify(item, processType, filter1, Arrays.<IComponentConversion> asList(setPriorityProperty));
 
             // 1. tDie:
             IComponentFilter filter2 = new NameComponentFilter("tDie"); //$NON-NLS-1$
             setPriorityProperty = new UpdatePropertyComponentConversion("PRIORITY", "5"); //$NON-NLS-1$
-            ModifyComponentsAction.searchAndModify(item, filter2, Arrays.<IComponentConversion> asList(setPriorityProperty));
+            ModifyComponentsAction.searchAndModify(item, processType,filter2, Arrays.<IComponentConversion> asList(setPriorityProperty));
 
             return ExecutionResult.SUCCESS_WITH_ALERT;
         } catch (Exception e) {

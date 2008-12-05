@@ -12,10 +12,10 @@
 // ============================================================================
 package org.talend.repository.model.migration;
 
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -37,7 +37,7 @@ import org.talend.core.model.components.conversions.IComponentConversion;
 import org.talend.core.model.components.filters.IComponentFilter;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
 import org.talend.core.model.process.EConnectionType;
-import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.Item;
 import org.talend.designer.core.model.utils.emf.talendfile.ConnectionType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementValueType;
@@ -50,17 +50,19 @@ import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
  */
 public class AddPerlRefArrayMigrationTask extends AbstractJobMigrationTask {
 
-    public ExecutionResult executeOnProcess(ProcessItem item) {
+    @Override
+	public ExecutionResult execute(Item item) {
         try {
-            if (getProject().getLanguage() == ECodeLanguage.JAVA) {
+        	ProcessType processType = getProcessType(item);
+			if (getProject().getLanguage() == ECodeLanguage.JAVA
+					|| processType == null) {
 
                 return ExecutionResult.NOTHING_TO_DO;
 
             } else {
 
                 List<String> namesList = new ArrayList<String>();
-
-                ProcessType processType = (ProcessType) item.getProcess();
+              
                 for (Object o : processType.getNode()) {
                     NodeType nt = (NodeType) o;
                     namesList.add(ComponentUtilities.getNodeUniqueName(nt));
@@ -123,7 +125,7 @@ public class AddPerlRefArrayMigrationTask extends AbstractJobMigrationTask {
 
                 };
 
-                ModifyComponentsAction.searchAndModify(item, filter1, Arrays.<IComponentConversion> asList(componentConversion));
+                ModifyComponentsAction.searchAndModify(item, processType, filter1, Arrays.<IComponentConversion> asList(componentConversion));
 
                 return ExecutionResult.SUCCESS_WITH_ALERT;
             }
@@ -214,7 +216,7 @@ public class AddPerlRefArrayMigrationTask extends AbstractJobMigrationTask {
                 if (returnedExpression != null) {
                     matcher.setMultiline(true);
                     Perl5Substitution substitution = new Perl5Substitution("@\\$" + "$1" //$NON-NLS-1$
-                    , Perl5Substitution.INTERPOLATE_ALL); //$NON-NLS-1$
+                    , Perl5Substitution.INTERPOLATE_ALL); 
                     returnedExpression = Util.substitute(matcher, pattern, substitution, returnedExpression, Util.SUBSTITUTE_ALL);
                 }
 
@@ -260,7 +262,8 @@ public class AddPerlRefArrayMigrationTask extends AbstractJobMigrationTask {
             this.columnName = tableEntryLocation.columnName;
         }
 
-        public String toString() {
+        @Override
+		public String toString() {
             return "{tableName=" + this.tableName + ", columnName=" + this.columnName + "}"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
 

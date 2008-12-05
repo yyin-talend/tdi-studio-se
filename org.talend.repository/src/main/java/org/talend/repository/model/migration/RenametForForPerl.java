@@ -25,14 +25,20 @@ import org.talend.core.model.components.conversions.RenameComponentConversion;
 import org.talend.core.model.components.filters.IComponentFilter;
 import org.talend.core.model.components.filters.NameComponentFilter;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 
 /**
  * DOC Administrator class global comment. Detailled comment
  */
 public class RenametForForPerl extends AbstractJobMigrationTask {
 
-    public ExecutionResult executeOnProcess(ProcessItem item) {
+    public ExecutionResult execute(Item item) {
+    	ProcessType processType = getProcessType(item);
+		if (processType == null) {
+			return ExecutionResult.NOTHING_TO_DO;
+		}	
         try {
             if (getProject().getLanguage().equals(ECodeLanguage.PERL)) {
                 IComponentFilter filter1 = new NameComponentFilter("tFor"); //$NON-NLS-1$
@@ -40,7 +46,7 @@ public class RenametForForPerl extends AbstractJobMigrationTask {
                 IComponentConversion addProperty = new AddPropertyLoopTypeConversion();
                 IComponentConversion renameComponent = new RenameComponentConversion("tLoop");
 
-                ModifyComponentsAction.searchAndModify(item, filter1, Arrays.<IComponentConversion> asList(addProperty,
+                ModifyComponentsAction.searchAndModify(item,processType, filter1, Arrays.<IComponentConversion> asList(addProperty,
                         renameComponent));
 
                 return ExecutionResult.SUCCESS_WITH_ALERT;

@@ -27,12 +27,14 @@ import org.talend.core.model.components.conversions.IComponentConversion;
 import org.talend.core.model.components.filters.IComponentFilter;
 import org.talend.core.model.components.filters.NameComponentFilter;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.model.utils.emf.talendfile.ColumnType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementValueType;
 import org.talend.designer.core.model.utils.emf.talendfile.MetadataType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
+import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
 
 /**
@@ -40,8 +42,9 @@ import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
  */
 public class UpgradetDenormalizeMigrationTask extends AbstractJobMigrationTask {
 
-    public ExecutionResult executeOnProcess(ProcessItem item) {
-        if (getProject().getLanguage() != ECodeLanguage.JAVA) {
+    public ExecutionResult execute(Item item) {
+    	ProcessType processType = getProcessType(item);
+        if (getProject().getLanguage() != ECodeLanguage.JAVA || processType == null) {
             return ExecutionResult.NOTHING_TO_DO;
         }
         try {
@@ -99,7 +102,7 @@ public class UpgradetDenormalizeMigrationTask extends AbstractJobMigrationTask {
                 }
             };
 
-            ModifyComponentsAction.searchAndModify(item, filter1, Arrays.<IComponentConversion> asList(conversion));
+            ModifyComponentsAction.searchAndModify(item, processType, filter1, Arrays.<IComponentConversion> asList(conversion));
 
             return ExecutionResult.SUCCESS_NO_ALERT;
         } catch (Exception e) {

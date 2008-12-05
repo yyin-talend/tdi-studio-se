@@ -23,8 +23,9 @@ import org.talend.core.model.components.conversions.IComponentConversion;
 import org.talend.core.model.components.filters.IComponentFilter;
 import org.talend.core.model.components.filters.PropertyComponentFilter;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
-import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.Item;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
+import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 
 /**
  * yzhang class global comment. Detailled comment <br/>
@@ -51,12 +52,15 @@ public class ChangeValueOfTLogRowChecks extends AbstractJobMigrationTask {
      * @see org.talend.core.model.migration.AbstractJobMigrationTask#executeOnProcess(org.talend.core.model.properties.ProcessItem)
      */
     @Override
-    public ExecutionResult executeOnProcess(ProcessItem item) {
-
+    public ExecutionResult execute(Item item) {
+    	ProcessType processType = getProcessType(item);
+		if (processType == null) {
+			return ExecutionResult.NOTHING_TO_DO;
+		}
         try {
-            ModifyComponentsAction.searchAndModify(item, filterTablePrint, Arrays.<IComponentConversion> asList(new Conversion(
+            ModifyComponentsAction.searchAndModify(item, processType, filterTablePrint, Arrays.<IComponentConversion> asList(new Conversion(
                     TABLE_PRINT)));
-            ModifyComponentsAction.searchAndModify(item, filterVertical, Arrays.<IComponentConversion> asList(new Conversion(
+            ModifyComponentsAction.searchAndModify(item, processType, filterVertical, Arrays.<IComponentConversion> asList(new Conversion(
                     VERTICAL)));
             return ExecutionResult.SUCCESS_NO_ALERT;
         } catch (Exception err) {

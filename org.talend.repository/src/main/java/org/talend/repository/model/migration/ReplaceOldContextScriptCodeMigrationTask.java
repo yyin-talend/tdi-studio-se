@@ -14,15 +14,17 @@ package org.talend.repository.model.migration;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
+
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.context.UpdateContextVariablesHelper;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
-import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.Item;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
+
 
 /**
  * ggu class global comment. Detailled comment.
@@ -36,14 +38,16 @@ public class ReplaceOldContextScriptCodeMigrationTask extends AbstractJobMigrati
      * 
      * @see org.talend.core.model.migration.AbstractJobMigrationTask#executeOnProcess(org.talend.core.model.properties.ProcessItem)
      */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     @Override
-    public ExecutionResult executeOnProcess(ProcessItem item) {
-        if (getProject().getLanguage() == ECodeLanguage.PERL) {
+    public ExecutionResult execute(Item item) {
+    	ProcessType processType = getProcessType(item);
+	
+        if (getProject().getLanguage() == ECodeLanguage.PERL ||  processType == null) {
             return ExecutionResult.NOTHING_TO_DO;
         }
 
-        boolean changed = UpdateContextVariablesHelper.updateProcessForReplacedOldScriptCode(item.getProcess());
+        boolean changed = UpdateContextVariablesHelper.updateProcessForReplacedOldScriptCode(processType);
 
         if (changed) {
             try {

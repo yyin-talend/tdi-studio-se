@@ -14,13 +14,15 @@ package org.talend.repository.model.migration;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
+
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
-import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.Item;
 import org.talend.designer.core.model.utils.emf.talendfile.ColumnType;
 import org.talend.designer.core.model.utils.emf.talendfile.MetadataType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
+import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
@@ -43,7 +45,8 @@ public class AddDdColumnMigrationTask extends AbstractJobMigrationTask {
      * 
      * @see org.talend.core.model.migration.IProjectMigrationTask#execute(org.talend.core.model.general.Project)
      */
-    public ExecutionResult executeOnProcess(ProcessItem item) {
+    @Override
+	public ExecutionResult execute(Item item) {
         try {
             removeDbColumn(item);
             return ExecutionResult.SUCCESS_NO_ALERT;
@@ -53,12 +56,16 @@ public class AddDdColumnMigrationTask extends AbstractJobMigrationTask {
         }
     }
 
-    private void removeDbColumn(ProcessItem item) throws PersistenceException {
+    private void removeDbColumn(Item item) throws PersistenceException {
+    	ProcessType processType = getProcessType(item);
+    	if (processType == null) {
+			return;
+		}
         ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
         boolean modified = false;
 
-        for (Object o : item.getProcess().getNode()) {
+        for (Object o : processType.getNode()) {
 
             NodeType node = (NodeType) o;
 

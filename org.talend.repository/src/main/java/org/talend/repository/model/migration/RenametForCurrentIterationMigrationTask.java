@@ -20,10 +20,12 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementValueType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
+import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
@@ -41,9 +43,13 @@ public class RenametForCurrentIterationMigrationTask extends AbstractJobMigratio
 
     private static final String CURRENT_VALUE = "CURRENT_VALUE";
 
-    public ExecutionResult executeOnProcess(ProcessItem item) {
+    public ExecutionResult execute(Item item) {
+    	ProcessType processType = getProcessType(item);
+		if (processType == null) {
+			return ExecutionResult.NOTHING_TO_DO;
+		}	
         try {
-            convertItem(item);
+            convertItem(item, processType);
             return ExecutionResult.SUCCESS_NO_ALERT;
         } catch (Exception e) {
             ExceptionHandler.process(e);
@@ -51,11 +57,11 @@ public class RenametForCurrentIterationMigrationTask extends AbstractJobMigratio
         }
     }
 
-    private boolean convertItem(ProcessItem item) throws PersistenceException {
+    private boolean convertItem(Item item, ProcessType processType) throws PersistenceException {
         ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         boolean modified = false;
         ECodeLanguage language = getProject().getLanguage();
-        EList node = item.getProcess().getNode();
+        EList node = processType.getNode();
         for (Object n : node) {
             NodeType type = (NodeType) n;
 

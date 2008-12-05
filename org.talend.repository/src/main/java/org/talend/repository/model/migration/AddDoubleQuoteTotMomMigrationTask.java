@@ -24,7 +24,8 @@ import org.talend.core.model.components.conversions.IComponentConversion;
 import org.talend.core.model.components.filters.IComponentFilter;
 import org.talend.core.model.components.filters.NameComponentFilter;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
-import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.Item;
+import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 
 /**
  * DOC s class global comment. Detailled comment
@@ -37,8 +38,10 @@ public class AddDoubleQuoteTotMomMigrationTask extends AbstractJobMigrationTask 
      * @see org.talend.core.model.migration.AbstractJobMigrationTask#executeOnProcess(org.talend.core.model.properties.ProcessItem)
      */
     @Override
-    public ExecutionResult executeOnProcess(ProcessItem item) {
-        if (getProject().getLanguage() != ECodeLanguage.JAVA) {
+    public ExecutionResult execute(Item item) {
+    	ProcessType processType = getProcessType(item);
+		if (getProject().getLanguage() != ECodeLanguage.JAVA
+				|| processType == null) {
             return ExecutionResult.NOTHING_TO_DO;
         }
         try {
@@ -55,10 +58,14 @@ public class AddDoubleQuoteTotMomMigrationTask extends AbstractJobMigrationTask 
             IComponentConversion addQuotes4 = new AddQuotesInPropertyComponentConversion("QM");
             IComponentConversion addQuotes5 = new AddQuotesInPropertyComponentConversion("QUEUE");
 
-            ModifyComponentsAction.searchAndModify(item, filter1, Arrays.<IComponentConversion> asList(addQuotes1, addQuotes2,
+            ModifyComponentsAction.searchAndModify(item, processType, filter1,
+					Arrays.<IComponentConversion> asList(addQuotes1,
+							addQuotes2,
                     addQuotes3, addQuotes4, addQuotes5, addQuotesFrom));
 
-            ModifyComponentsAction.searchAndModify(item, filter2, Arrays.<IComponentConversion> asList(addQuotes1, addQuotes2,
+            ModifyComponentsAction.searchAndModify(item, processType, filter2,
+					Arrays.<IComponentConversion> asList(addQuotes1,
+							addQuotes2,
                     addQuotes3, addQuotes4, addQuotes5, addQuotesTo));
             return ExecutionResult.SUCCESS_NO_ALERT;
         } catch (Exception e) {

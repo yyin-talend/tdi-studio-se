@@ -14,12 +14,14 @@ package org.talend.repository.model.migration;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
+
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
 import org.talend.core.model.process.EConnectionType;
-import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.Item;
 import org.talend.designer.core.model.utils.emf.talendfile.ConnectionType;
+import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
@@ -33,7 +35,7 @@ public class AddConnectorNameInConnections extends AbstractJobMigrationTask {
      * @see org.talend.core.model.migration.AbstractJobMigrationTask#executeOnProcess(org.talend.core.model.properties.ProcessItem)
      */
     @Override
-    public ExecutionResult executeOnProcess(ProcessItem item) {
+    public ExecutionResult execute(Item item) {
         try {
             boolean modified = addConnectorName(item);
             if (modified) {
@@ -53,12 +55,15 @@ public class AddConnectorNameInConnections extends AbstractJobMigrationTask {
      * @param item
      * @return
      */
-    private boolean addConnectorName(ProcessItem item) throws PersistenceException {
-        ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-
+    private boolean addConnectorName(Item item) throws PersistenceException {
+    	ProcessType processType = getProcessType(item);
+		if (processType == null) {
+			return false;
+		}
+		ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();        
         boolean modified = false;
 
-        for (Object o : item.getProcess().getConnection()) {
+        for (Object o : processType.getConnection()) {
 
             ConnectionType currentConnection = (ConnectionType) o;
 

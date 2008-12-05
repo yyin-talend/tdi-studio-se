@@ -24,7 +24,10 @@ import org.talend.core.model.components.conversions.RenameComponentConversion;
 import org.talend.core.model.components.filters.IComponentFilter;
 import org.talend.core.model.components.filters.PropertyComponentFilter;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
+import org.talend.core.model.migration.IProjectMigrationTask.ExecutionResult;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 
 /**
  * Use to rename tDB(Input|Output|SQLRow) into tOracle(Input|Output|Row).
@@ -34,23 +37,27 @@ import org.talend.core.model.properties.ProcessItem;
  */
 public class RenametDBInputToOracleMigrationTask extends AbstractJobMigrationTask {
 
-    public ExecutionResult executeOnProcess(ProcessItem item) {
+    public ExecutionResult execute(Item item) {
+    	ProcessType processType = getProcessType(item);
+		if (processType == null) {
+			return ExecutionResult.NOTHING_TO_DO;
+		}	
         try {
             IComponentConversion removePropertyComponentConversion = new RemovePropertyComponentConversion("TYPE"); //$NON-NLS-1$
 
             RenameComponentConversion renameComponentConversion = new RenameComponentConversion("tOracleInput"); //$NON-NLS-1$
             IComponentFilter filter1 = new PropertyComponentFilter("tDBInput", "TYPE", "oracle"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            ModifyComponentsAction.searchAndModify(item, filter1, Arrays.<IComponentConversion> asList(renameComponentConversion,
+            ModifyComponentsAction.searchAndModify(item, processType,filter1, Arrays.<IComponentConversion> asList(renameComponentConversion,
                     removePropertyComponentConversion));
 
             renameComponentConversion.setNewName("tOracleOutput"); //$NON-NLS-1$
             IComponentFilter filter2 = new PropertyComponentFilter("tDBOutput", "TYPE", "oracle"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            ModifyComponentsAction.searchAndModify(item, filter2, Arrays.<IComponentConversion> asList(renameComponentConversion,
+            ModifyComponentsAction.searchAndModify(item, processType, filter2, Arrays.<IComponentConversion> asList(renameComponentConversion,
                     removePropertyComponentConversion));
 
             renameComponentConversion.setNewName("tOracleRow"); //$NON-NLS-1$
             IComponentFilter filter3 = new PropertyComponentFilter("tDBSQLRow", "TYPE", "oracle"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            ModifyComponentsAction.searchAndModify(item, filter3, Arrays.<IComponentConversion> asList(renameComponentConversion,
+            ModifyComponentsAction.searchAndModify(item, processType, filter3, Arrays.<IComponentConversion> asList(renameComponentConversion,
                     removePropertyComponentConversion));
 
             return ExecutionResult.SUCCESS_WITH_ALERT;

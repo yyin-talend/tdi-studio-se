@@ -19,9 +19,10 @@ import org.eclipse.emf.common.util.EList;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
-import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.Item;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
+import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
@@ -36,12 +37,14 @@ public class FileInputRegexContextVariableMigrationTaskForSave extends AbstractJ
      * ProcessItem)
      */
     @Override
-    public ExecutionResult executeOnProcess(ProcessItem item) {
-        if (getProject().getLanguage() != ECodeLanguage.JAVA) {
+    public ExecutionResult execute(Item item) {
+		ProcessType processType = getProcessType(item);
+		if (getProject().getLanguage() != ECodeLanguage.JAVA
+				|| processType == null) {
             return ExecutionResult.NOTHING_TO_DO;
         }
         try {
-            removeQuote(item);
+            removeQuote(item, processType);
             return ExecutionResult.SUCCESS_NO_ALERT;
         } catch (Exception e) {
             return ExecutionResult.FAILURE;
@@ -49,11 +52,12 @@ public class FileInputRegexContextVariableMigrationTaskForSave extends AbstractJ
         }
     }
 
-    private boolean removeQuote(ProcessItem item) throws PersistenceException {
+    private boolean removeQuote(Item item, ProcessType processType)
+			throws PersistenceException {
 
         ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         boolean modified = false;
-        EList nodes = item.getProcess().getNode();
+        EList nodes = processType.getNode();
         for (Object n : nodes) {
             NodeType type = (NodeType) n;
             if (type.getComponentName().equals("tFileInputRegex")) {

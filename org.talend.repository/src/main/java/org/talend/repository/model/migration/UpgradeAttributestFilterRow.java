@@ -21,7 +21,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
-import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.Item;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.model.utils.emf.talendfile.impl.ElementParameterTypeImpl;
@@ -40,10 +40,11 @@ public class UpgradeAttributestFilterRow extends AbstractJobMigrationTask {
      * @see org.talend.core.model.migration.AbstractJobMigrationTask#executeOnProcess(org.talend.core.model.properties.ProcessItem)
      */
     @Override
-    public ExecutionResult executeOnProcess(ProcessItem item) {
+    public ExecutionResult execute(Item item) {
+		ProcessType processType = getProcessType(item);
 
-
-        if (getProject().getLanguage() == ECodeLanguage.PERL) {
+        if (getProject().getLanguage() == ECodeLanguage.PERL
+				|| processType == null) {
 
             return ExecutionResult.NOTHING_TO_DO;
 
@@ -64,9 +65,7 @@ public class UpgradeAttributestFilterRow extends AbstractJobMigrationTask {
             String[][] replaceOperator = new String[][] { { "EQ", "==" }, { "NE", "!=" }, { "GT", ">" }, { "LT", "<" },
                     { "GE", ">=" }, { "LE", "<=" }, { "MATCH", "==" }, { "NMATCH", "!=" } };
 
-            boolean isModified = false;
-
-            ProcessType processType = item.getProcess();
+            boolean isModified = false;     
 
             NodeType tFilterRow = null;
             for (Object oNodeType : processType.getNode()) {

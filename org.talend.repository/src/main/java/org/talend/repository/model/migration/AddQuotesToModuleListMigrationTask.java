@@ -19,10 +19,11 @@ import org.eclipse.emf.common.util.EList;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
-import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
+import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
@@ -37,7 +38,8 @@ public class AddQuotesToModuleListMigrationTask extends AbstractJobMigrationTask
      * 
      * @see org.talend.core.model.migration.AbstractJobMigrationTask#executeOnProcess(org.talend.core.model.properties.ProcessItem)
      */
-    public ExecutionResult executeOnProcess(ProcessItem item) {
+    @Override
+	public ExecutionResult execute(Item item) {
         try {
             addQuote(item);
             return ExecutionResult.SUCCESS_NO_ALERT;
@@ -54,12 +56,16 @@ public class AddQuotesToModuleListMigrationTask extends AbstractJobMigrationTask
      * 
      * @throws PersistenceException
      */
-    private void addQuote(ProcessItem item) throws PersistenceException {
+    private void addQuote(Item item) throws PersistenceException {
+		ProcessType processType = getProcessType(item);
+		if (processType == null) {
+			return;
+		}
         ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
         boolean modified = false;
 
-        EList node = item.getProcess().getNode();
+        EList node = processType.getNode();
         for (Object object2 : node) {
             NodeType type = (NodeType) object2;
             EList elementParameterList = type.getElementParameter();

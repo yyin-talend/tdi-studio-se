@@ -12,9 +12,9 @@
 // ============================================================================
 package org.talend.repository.model.migration;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -25,8 +25,9 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
 import org.talend.core.model.process.EConnectionType;
-import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.Item;
 import org.talend.designer.core.model.utils.emf.talendfile.ConnectionType;
+import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ProxyRepositoryFactory;
 
@@ -45,9 +46,14 @@ public class ReplaceRunBeforeAfterWithThenRunMigrationTask extends AbstractJobMi
      * 
      * @see org.talend.core.model.migration.IProjectMigrationTask#execute(org.talend.core.model.general.Project)
      */
-    public ExecutionResult executeOnProcess(ProcessItem item) {
+    @Override
+	public ExecutionResult execute(Item item) {
+		ProcessType processType = getProcessType(item);
+		if (processType == null) {
+			return ExecutionResult.NOTHING_TO_DO;
+		}	
         try {
-            replaceConnections(item);
+            replaceConnections(item, processType);
             return ExecutionResult.SUCCESS_WITH_ALERT;
         } catch (Exception e) {
             ExceptionHandler.process(e);
@@ -55,25 +61,28 @@ public class ReplaceRunBeforeAfterWithThenRunMigrationTask extends AbstractJobMi
         }
     }
 
-    /**
-     * Replace run before and after connection with then run.
-     * 
-     * yzhang Comment method "replaceConnections".
-     * 
-     * @throws PersistenceException
-     */
-    public void replaceConnections(ProcessItem item) throws PersistenceException {
+	/**
+	 * Replace run before and after connection with then run.
+	 * 
+	 * yzhang Comment method "replaceConnections".
+	 * 
+	 * @param processType
+	 * 
+	 * @throws PersistenceException
+	 */
+    public void replaceConnections(Item item, ProcessType processType)
+			throws PersistenceException {
         ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
         boolean modified = false;
 
         Map<String, List> runAfterMap = new TreeMap<String, List>();
 
-        if (isMultiJob(item.getProcess().getConnection())) {
+        if (isMultiJob(processType.getConnection())) {
             // TODO: if it's a job with muliti sub jobs an error mark need to be added in repository.
         }
 
-        for (Object o : item.getProcess().getConnection()) {
+        for (Object o : processType.getConnection()) {
 
             ConnectionType currentConnection = (ConnectionType) o;
 

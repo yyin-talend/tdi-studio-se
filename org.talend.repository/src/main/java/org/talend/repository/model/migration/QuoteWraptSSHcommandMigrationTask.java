@@ -19,10 +19,12 @@ import org.eclipse.emf.common.util.EList;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementValueType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
+import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
@@ -33,12 +35,13 @@ import org.talend.repository.model.ProxyRepositoryFactory;
  */
 public class QuoteWraptSSHcommandMigrationTask extends AbstractJobMigrationTask {
 
-    public ExecutionResult executeOnProcess(ProcessItem item) {
-        if (getProject().getLanguage() != ECodeLanguage.JAVA) {
+    public ExecutionResult execute(Item item) {
+    	ProcessType processType = getProcessType(item);
+        if (getProject().getLanguage() != ECodeLanguage.JAVA || processType == null) {
             return ExecutionResult.NOTHING_TO_DO;
         }
         try {
-            wrapQuot(item);
+            wrapQuot(item, processType);
             return ExecutionResult.SUCCESS_NO_ALERT;
         } catch (Exception e) {
             return ExecutionResult.FAILURE;
@@ -46,10 +49,10 @@ public class QuoteWraptSSHcommandMigrationTask extends AbstractJobMigrationTask 
         }
     }
 
-    private boolean wrapQuot(ProcessItem item) throws PersistenceException {
+    private boolean wrapQuot(Item item, ProcessType processType) throws PersistenceException {
         ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         boolean modified = false;
-        EList node = item.getProcess().getNode();
+        EList node = processType.getNode();
         for (Object n : node) {
             NodeType type = (NodeType) n;
             if (type.getComponentName().equals("tSSH")) {

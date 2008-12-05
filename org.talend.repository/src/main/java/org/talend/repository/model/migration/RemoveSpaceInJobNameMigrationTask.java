@@ -17,6 +17,7 @@ import java.util.GregorianCalendar;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.repository.model.ProxyRepositoryFactory;
 
@@ -35,7 +36,7 @@ public class RemoveSpaceInJobNameMigrationTask extends AbstractJobMigrationTask 
      * 
      * @see org.talend.core.model.migration.IProjectMigrationTask#execute(org.talend.core.model.general.Project)
      */
-    public ExecutionResult executeOnProcess(ProcessItem item) {
+    public ExecutionResult execute(Item item) {
 
         try {
             renameJobs(item);
@@ -53,7 +54,7 @@ public class RemoveSpaceInJobNameMigrationTask extends AbstractJobMigrationTask 
      * 
      * @throws PersistenceException
      */
-    private void renameJobs(ProcessItem item) throws PersistenceException {
+    private void renameJobs(Item item) throws PersistenceException {
         ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
         if (item.getProperty().getLabel().contains(" ")) { // if the job contain some spaces

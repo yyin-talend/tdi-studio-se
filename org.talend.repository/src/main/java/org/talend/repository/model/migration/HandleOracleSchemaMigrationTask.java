@@ -14,10 +14,11 @@ package org.talend.repository.model.migration;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
+
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
-import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.Item;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
@@ -31,9 +32,13 @@ import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
  *
  */
 public class HandleOracleSchemaMigrationTask extends AbstractJobMigrationTask {
-    public ExecutionResult executeOnProcess(ProcessItem item) {
-        if (getProject().getLanguage() == ECodeLanguage.JAVA) {
-            ProcessType processType = item.getProcess();
+	
+    @Override
+	public ExecutionResult execute(Item item) {
+    	ProcessType processType = getProcessType(item);
+		
+        if (getProject().getLanguage() == ECodeLanguage.JAVA && processType != null) {
+         
             NodeType tOracleConnection = null;
             for (Object nodeType : processType.getNode()) {
                 NodeType tmpNodeType = (NodeType) nodeType;

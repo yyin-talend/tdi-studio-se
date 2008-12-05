@@ -25,17 +25,20 @@ import org.talend.core.model.components.conversions.IComponentConversion;
 import org.talend.core.model.components.filters.IComponentFilter;
 import org.talend.core.model.components.filters.NameComponentFilter;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
-import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.Item;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
+import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 
 /**
  * DOC Administrator class global comment. Detailled comment
  */
 public class AddOutputFileNameOntJasperOutputForJava extends AbstractJobMigrationTask {
 
-    public ExecutionResult executeOnProcess(ProcessItem item) {
-
-        if (getProject().getLanguage() == ECodeLanguage.PERL) {
+    @Override
+	public ExecutionResult execute(Item item) {
+		ProcessType processType = getProcessType(item);
+		if (getProject().getLanguage() == ECodeLanguage.PERL
+				|| processType == null) {
             return ExecutionResult.NOTHING_TO_DO;
         }
 
@@ -60,7 +63,8 @@ public class AddOutputFileNameOntJasperOutputForJava extends AbstractJobMigratio
                 }
             };
 
-            ModifyComponentsAction.searchAndModify(item, filter1, Arrays.<IComponentConversion> asList(addNewProperty));
+            ModifyComponentsAction.searchAndModify(item, processType, filter1,
+					Arrays.<IComponentConversion> asList(addNewProperty));
 
             return ExecutionResult.SUCCESS_WITH_ALERT;
 

@@ -27,9 +27,11 @@ import org.talend.core.model.components.conversions.RemovePropertyComponentConve
 import org.talend.core.model.components.filters.IComponentFilter;
 import org.talend.core.model.components.filters.NameComponentFilter;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementValueType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
+import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
 
 /**
@@ -39,8 +41,9 @@ import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
 public class MoveExcelSheetnameToSheetlistForJava extends AbstractJobMigrationTask {
 
     @Override
-    public ExecutionResult executeOnProcess(ProcessItem item) {
-        if (getProject().getLanguage() == ECodeLanguage.PERL) {
+    public ExecutionResult execute(Item item) {
+    	ProcessType processType = getProcessType(item);
+        if (getProject().getLanguage() == ECodeLanguage.PERL || processType == null) {
             return ExecutionResult.NOTHING_TO_DO;
         }
         try {
@@ -62,7 +65,7 @@ public class MoveExcelSheetnameToSheetlistForJava extends AbstractJobMigrationTa
             };
             IComponentConversion removeOldProperty = new RemovePropertyComponentConversion("SHEETNAME"); //$NON-NLS-1$
 
-            ModifyComponentsAction.searchAndModify(item, filter1, Arrays.<IComponentConversion> asList(addNewProperty,
+            ModifyComponentsAction.searchAndModify(item,processType, filter1, Arrays.<IComponentConversion> asList(addNewProperty,
                     removeOldProperty));
 
             return ExecutionResult.SUCCESS_WITH_ALERT;

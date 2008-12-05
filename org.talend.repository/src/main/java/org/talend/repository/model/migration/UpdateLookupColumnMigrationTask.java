@@ -23,7 +23,9 @@ import org.talend.core.model.components.conversions.UpdateLookupColumnConversion
 import org.talend.core.model.components.filters.IComponentFilter;
 import org.talend.core.model.components.filters.NameComponentFilter;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 
 /**
  * DOC qwei class global comment. Detailled comment <br/>
@@ -39,17 +41,21 @@ public class UpdateLookupColumnMigrationTask extends AbstractJobMigrationTask {
      * @see org.talend.core.model.migration.AbstractJobMigrationTask#executeOnProcess(org.talend.core.model.properties.ProcessItem)
      */
     @Override
-    public ExecutionResult executeOnProcess(ProcessItem item) {
+    public ExecutionResult execute(Item item) {
+    	ProcessType processType = getProcessType(item);
+		if (processType == null) {
+			return ExecutionResult.NOTHING_TO_DO;
+		}	
         // TODO Auto-generated method stub
         try {
             // 1.tFuzzyMatch:
             IComponentFilter filter1 = new NameComponentFilter("tFuzzyMatch"); //$NON-NLS-1$
             IComponentConversion lookupProperty = new UpdateLookupColumnConversion("LOOKUP_COLUMN");
-            ModifyComponentsAction.searchAndModify(item, filter1, Arrays.<IComponentConversion> asList(lookupProperty));
+            ModifyComponentsAction.searchAndModify(item,processType, filter1, Arrays.<IComponentConversion> asList(lookupProperty));
 
             // 2.tIntervalMatch
             IComponentFilter filter2 = new NameComponentFilter("tIntervalMatch"); //$NON-NLS-1$
-            ModifyComponentsAction.searchAndModify(item, filter2, Arrays.<IComponentConversion> asList(lookupProperty));
+            ModifyComponentsAction.searchAndModify(item, processType, filter2, Arrays.<IComponentConversion> asList(lookupProperty));
             return ExecutionResult.SUCCESS_NO_ALERT;
         } catch (Exception e) {
             ExceptionHandler.process(e);

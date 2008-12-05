@@ -18,8 +18,10 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
 import org.talend.core.model.process.EConnectionType;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.model.utils.emf.talendfile.ConnectionType;
+import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
@@ -36,9 +38,13 @@ public class RenameConnectionThenRunToOnSubjobOkTask extends AbstractJobMigratio
      * @see org.talend.core.model.migration.AbstractJobMigrationTask#executeOnProcess(org.talend.core.model.properties.ProcessItem)
      */
     @Override
-    public ExecutionResult executeOnProcess(ProcessItem item) {
+    public ExecutionResult execute(Item item) {
+    	ProcessType processType = getProcessType(item);
+		if (processType == null) {
+			return ExecutionResult.NOTHING_TO_DO;
+		}	
         try {
-            renameConnections(item);
+            renameConnections(item, processType);
             return ExecutionResult.SUCCESS_WITH_ALERT;
         } catch (Exception e) {
             ExceptionHandler.process(e);
@@ -50,15 +56,16 @@ public class RenameConnectionThenRunToOnSubjobOkTask extends AbstractJobMigratio
      * yzhang Comment method "renameConnections".
      * 
      * @param item
+     * @param processType 
      * @throws PersistenceException
      */
-    private void renameConnections(ProcessItem item) throws PersistenceException {
+    private void renameConnections(Item item, ProcessType processType) throws PersistenceException {
 
         ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
         boolean modified = false;
 
-        for (Object o : item.getProcess().getConnection()) {
+        for (Object o : processType.getConnection()) {
 
             ConnectionType currentConnection = (ConnectionType) o;
 

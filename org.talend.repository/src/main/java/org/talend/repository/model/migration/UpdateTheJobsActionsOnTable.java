@@ -17,7 +17,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.talend.core.model.migration.AbstractJobMigrationTask;
-import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.Item;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
@@ -39,9 +39,12 @@ public class UpdateTheJobsActionsOnTable extends AbstractJobMigrationTask {
      * @see org.talend.core.model.migration.AbstractJobMigrationTask#executeOnProcess(org.talend.core.model.properties.ProcessItem)
      */
     @Override
-    public ExecutionResult executeOnProcess(ProcessItem item) {
-        // TODO Auto-generated method stub
-        ProcessType process = item.getProcess();
+    public ExecutionResult execute(Item item) {
+		ProcessType process = getProcessType(item);
+		if (process == null) {
+			return ExecutionResult.NOTHING_TO_DO;
+		}	
+      
         List<NodeType> nodeList = process.getNode();
         for (NodeType node : nodeList) {
             if (node.getComponentName().indexOf(UpdateTheJobsActionsOnTable.T_ORACLE_OUTPUT) != -1) {

@@ -19,7 +19,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
-import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.Item;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
@@ -30,10 +30,12 @@ import org.talend.repository.model.ProxyRepositoryFactory;
  */
 public class MigrationTaskForIssue4449 extends AbstractJobMigrationTask {
 
-    public ExecutionResult executeOnProcess(ProcessItem item) {
-        if (getProject().getLanguage() == ECodeLanguage.JAVA) {
-            boolean isModified = false;
-            ProcessType processType = item.getProcess();
+    @Override
+	public ExecutionResult execute(Item item) {
+    	ProcessType processType = getProcessType(item);
+   
+        if (getProject().getLanguage() == ECodeLanguage.JAVA && processType != null) {
+            boolean isModified = false;           
             for (Object nodeType : processType.getNode()) {
                 NodeType tmpNodeType = (NodeType) nodeType;
                 ElementParameterType property = ComponentUtilities.getNodeProperty(tmpNodeType, "TABLE_ACTION");

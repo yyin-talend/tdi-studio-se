@@ -26,9 +26,10 @@ import org.talend.core.model.components.conversions.IComponentConversion;
 import org.talend.core.model.components.filters.IComponentFilter;
 import org.talend.core.model.components.filters.ParameterTypeFilter;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
-import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.Item;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementValueType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
+import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
@@ -61,11 +62,16 @@ public class ChangeSqlPatternValueMigrationTask extends AbstractJobMigrationTask
      * @see org.talend.core.model.migration.AbstractJobMigrationTask#executeOnProcess(org.talend.core.model.properties.ProcessItem)
      */
     @Override
-    public ExecutionResult executeOnProcess(ProcessItem item) {
+    public ExecutionResult execute(Item item) {
+		ProcessType processType = getProcessType(item);
+		if (processType == null) {
+			return ExecutionResult.NOTHING_TO_DO;
+		}		
         List<IComponentConversion> list = new ArrayList<IComponentConversion>();
         list.add(new PropertyConversion());
         try {
-            ModifyComponentsAction.searchAndModify(item, filter, list);
+            ModifyComponentsAction.searchAndModify(item, processType, filter,
+					list);
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);
             return ExecutionResult.FAILURE;
@@ -104,7 +110,7 @@ public class ChangeSqlPatternValueMigrationTask extends AbstractJobMigrationTask
 
             for (Object objElementValue : values) {
                 ElementValueType value = (ElementValueType) objElementValue;
-                String oldValue = (String) value.getValue();
+                String oldValue = value.getValue();
                 if (!oldValue.contains("--")) {
                     String newValue = "tempid--" + oldValue;
                     value.setValue(newValue);
