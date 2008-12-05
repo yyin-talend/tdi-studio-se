@@ -149,11 +149,16 @@
 				<ITEM NAME="UserPreference" VALUE="UserPreference" />
 				<ITEM NAME="UserRole" VALUE="UserRole" />
 				<ITEM NAME="WebLink" VALUE="WebLink" />
+				<ITEM NAME="CustomModule" VALUE="CustomModule" />
 			</ITEMS>
+		</PARAMETER>
+		
+		<PARAMETER NAME="CUSTOM_MODULE_NAME" FIELD="TEXT" NUM_ROW="6" SHOW_IF="MODULENAME=='CustomModule'" REQUIRED="true" REPOSITORY_VALUE="CUSTOM_MODULE_NAME">
+			<DEFAULT>"customModuleName"</DEFAULT>
 		</PARAMETER>
 
 
-		<PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" NUM_ROW="6"
+		<PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" NUM_ROW="7"
 			REQUIRED="true">
 			<TABLE IF="MODULENAME=='Account'">
 				<COLUMN KEY="true" LENGTH="18" NAME="Id"
@@ -3262,11 +3267,11 @@
 					TYPE="id_Date"
 					PATTERN="&quot;yyyy-MM-dd&apos;T&apos;HH:mm:ss&apos;.000Z&apos;&quot;" />
 			</TABLE>
+			<TABLE IF="MODULENAME=='CustomModule'">
+			</TABLE>
 		</PARAMETER>
 
-
-
-		<PARAMETER NAME="CONDITION" FIELD="TEXT" NUM_ROW="7"
+		<PARAMETER NAME="CONDITION" FIELD="TEXT" NUM_ROW="8"
 			REQUIRED="false" REPOSITORY_VALUE="QUERY_CONDITION">
 			<DEFAULT>"name='talend'"</DEFAULT>
 		</PARAMETER>

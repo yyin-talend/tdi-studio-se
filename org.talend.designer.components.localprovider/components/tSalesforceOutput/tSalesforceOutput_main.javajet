@@ -18,6 +18,12 @@ INode node = (INode)codeGenArgument.getArgument();
 
 String action = ElementParameterParser.getValue(node, "__ACTION__");
 String modulename = ElementParameterParser.getValue(node, "__MODULENAME__");
+
+String customModulename = ElementParameterParser.getValue(node, "__CUSTOM_MODULE_NAME__");
+if ("CustomModule".equals(modulename)) {
+	modulename = customModulename; 
+}
+
 String upsertkey = ElementParameterParser.getValue(node, "__UPSERT_KEY_COLUMN__");
 boolean ceaseForError = ElementParameterParser.getValue(node, "__CEASE_FOR_ERROR__").equals("true");
 
