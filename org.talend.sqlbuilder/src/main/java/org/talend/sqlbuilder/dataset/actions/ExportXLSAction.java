@@ -69,7 +69,7 @@ public class ExportXLSAction extends AbstractDataSetTableContextAction {
         fileDialog.setFilterExtensions(filterExtensions);
 
         final String fileName = fileDialog.open();
-        if (fileName == null && fileName.trim().length() == 0) {
+        if (fileName == null || fileName.trim().length() == 0) {
             return;
         }
 
