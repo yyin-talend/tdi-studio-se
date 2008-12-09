@@ -156,7 +156,7 @@ for(IMetadataColumn column:newColumnList){
 %>
 		<%=outConn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_<%=cid %>, <%= patternValue %>);
 <%
-		}else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
+		}else if(advancedSeparator && JavaTypesManager.isNumberType(javaType)) { 
 %>
 		<%=outConn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(temp_<%=cid %>, <%= thousandsSeparator %>, <%= decimalSeparator %>));
 <%

@@ -489,7 +489,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>							
 		<%=conn.getName() %>.<%=column.getLabel() %> = str_<%=cid %>.getBytes(<%=encoding %>);
 <%
-								} else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
+								} else if(advancedSeparator && JavaTypesManager.isNumberType(javaType)) { 
 %>
 		<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(str_<%=cid %>, <%= thousandsSeparator %>, <%= decimalSeparator %>));
 <%

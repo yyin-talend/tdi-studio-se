@@ -120,7 +120,6 @@ SD_<%=cid %> sd_<%=cid %> = new SD_<%=cid %>();
     			List<? extends IConnection> incomingConnections = node.getIncomingConnections();
             	if (incomingConnections != null && !incomingConnections.isEmpty()) {
             		for (IConnection conn : incomingConnections) {
-    					if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
             				IMetadataTable inMetadata = conn.getMetadataTable();
            					for (IMetadataColumn column: inMetadata.getListColumns()) {
                 				if(column.getLabel().equals(funin[1])){
@@ -143,7 +142,6 @@ SD_<%=cid %> sd_<%=cid %> = new SD_<%=cid %>();
     								break;
                 				}
     						}
-    					}
     				}
       			}
     		}
@@ -210,20 +208,23 @@ for(int ii = 0; ii < groupbySize; ii++){
 			if(sizeOps == 0){
 //
 //end
-%>java.util.Set<<%=groupby_type[i] %> <%
+%>
+java.util.Set<<%=groupby_type[i] %> <%
 //start
 //
 			}else{
 //
 //end
-%>java.util.Map<<%=groupby_type[i] %>, OperationStruct<%=cid %><%
+%>
+java.util.Map<<%=groupby_type[i] %>, OperationStruct<%=cid %><%
 //start
 //
 			}
 		}else{
 //
 //end
-%>java.util.Map<<%=groupby_type[i] %>,<%
+%>
+java.util.Map<<%=groupby_type[i] %>,<%
 //start
 //
 		}
@@ -241,7 +242,8 @@ for(int ii = 0; ii < groupbySize; ii++){
 	if(ii != 0){
 %>null;
 <%	}else{
-%>new <%
+%>
+new <%
 //start
 //
 		for(int i = 0; i < groupbySize; i++){
@@ -249,7 +251,8 @@ for(int ii = 0; ii < groupbySize; ii++){
 				if(sizeOps == 0){
 //
 //end
-%>java.util.<%
+%>
+java.util.<%
 					if(i == 0){
 %>Hash<%
 					}
@@ -270,7 +273,8 @@ for(int ii = 0; ii < groupbySize; ii++){
 			}else{
 //
 //end
-%>java.util.<%
+%>
+java.util.<%
 				if(i == 0){
 %>Hash<%
 				}
@@ -282,7 +286,8 @@ for(int ii = 0; ii < groupbySize; ii++){
 		for(int i = 0; i < groupbySize; i++){
 //
 //end
-%>><%
+%>>
+<%
 //start
 //
 		}

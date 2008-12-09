@@ -192,7 +192,7 @@ if(columnList != null && columnList.size() > 0) {
     			if(length > 255){
     				columns += " CHAR(" + length + ")";
     			}
-    		}else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) {//add for issue
+    		}else if(advancedSeparator && JavaTypesManager.isNumberType(javaType)) {//add for issue
     			if(noThousandsSeparator){
     				columns += (" \\\"TO_NUMBER(ltrim(rtrim(:" + column.getOriginalDbColumnName() + ")), '999999999999D999999999999', 'NLS_NUMERIC_CHARACTERS=''" + decimalSeparator + thousandsSeparator + "''')\\\"");
     			}else{

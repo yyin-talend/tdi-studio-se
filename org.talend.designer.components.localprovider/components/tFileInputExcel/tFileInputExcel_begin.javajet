@@ -199,7 +199,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			}
 <%
 //start			
-			}else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
+			}else if(advancedSeparator && JavaTypesManager.isNumberType(javaType)) { 
 %>
 		<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(temp_row_<%=cid %>[<%=i%>], <%= thousandsSeparator %>, <%= decimalSeparator %>));
 <%

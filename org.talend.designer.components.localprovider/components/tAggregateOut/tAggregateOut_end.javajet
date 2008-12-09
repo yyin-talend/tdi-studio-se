@@ -144,7 +144,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             				if (incomingConnections != null && !incomingConnections.isEmpty()) {
             					loop:
             					for (IConnection conn : incomingConnections) {
-    								if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
                 						IMetadataTable inMetadata = conn.getMetadataTable();
                 						for (IMetadataColumn inColumn: inMetadata.getListColumns()) {
                 							if(inColumn.getLabel().equals(inputColumn)){
@@ -152,7 +151,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 								break loop;
                 							}
                 						}
-                					}
                 				}
             				}
             				if(sameType){
@@ -191,7 +189,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             				if (incomingConnections != null && !incomingConnections.isEmpty()) {
             					loop:
             					for (IConnection conn : incomingConnections) {
-    								if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
                 						IMetadataTable inMetadata = conn.getMetadataTable();
                 						for (IMetadataColumn inColumn: inMetadata.getListColumns()) {
                 							if(inColumn.getLabel().equals(inOperation)){
@@ -206,7 +203,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 								break loop;
                 							}
                 						}
-                					}
                 				}
             				}
             				if(function.equals("std_dev")|| function.equals("list_object")){//force to sameType
