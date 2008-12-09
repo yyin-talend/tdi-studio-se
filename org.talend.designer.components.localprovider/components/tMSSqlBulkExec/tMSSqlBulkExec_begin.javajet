@@ -34,6 +34,7 @@ String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 String user = ElementParameterParser.getValue(node, "__USER__");
 String pas = ElementParameterParser.getValue(node, "__PASS__");
 String table = ElementParameterParser.getValue(node, "__TABLE__");
+String codePage = ElementParameterParser.getValue(node, "__CODE_PAGE__");
 String data_file_type = ElementParameterParser.getValue(node, "__DATA_FILE_TYPE__");
 
 if(action.equals("EXPORT")) {
@@ -232,7 +233,7 @@ if(action.equals("EXPORT")) {
     if(action.equals("INSERT")) {
         %>
         java.sql.Statement stmtBulkInsert_<%=cid %> = conn_<%=cid %>.createStatement();
-        stmtBulkInsert_<%=cid %>.execute("BULK INSERT [" + tableName_<%=cid%> + "] FROM '" + <%=file%> + "' WITH ( DATAFILETYPE='<%=data_file_type%>',FIELDTERMINATOR='" + <%=field_separator%> + "',FIRSTROW =" + <%=first_row%> + ",ROWTERMINATOR='" + <%=row_separator%>+"')");
+        stmtBulkInsert_<%=cid %>.execute("BULK INSERT [" + tableName_<%=cid%> + "] FROM '" + <%=file%> + "' WITH ( CODEPAGE='" + <%=codePage%> + "',DATAFILETYPE='<%=data_file_type%>',FIELDTERMINATOR='" + <%=field_separator%> + "',FIRSTROW =" + <%=first_row%> + ",ROWTERMINATOR='" + <%=row_separator%>+"')");
         stmtBulkInsert_<%=cid %>.close();        
         <%
     } else if(action.equals("UPDATE")) {
@@ -254,7 +255,7 @@ if(action.equals("EXPORT")) {
             stmtCreateTmp_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
             stmtCreateTmp_<%=cid%>.close();
             java.sql.Statement stmtTmpBulk_<%=cid%> = conn_<%=cid%>.createStatement();
-            stmtTmpBulk_<%=cid%>.execute("BULK INSERT [" + tableName_<%=cid%> + "] FROM '" + <%=file%> + "' WITH ( DATAFILETYPE='<%=data_file_type%>',FIELDTERMINATOR='" + <%=field_separator%> + "',FIRSTROW =" + <%=first_row%> + ",ROWTERMINATOR='" + <%=row_separator%>+"')");
+            stmtTmpBulk_<%=cid%>.execute("BULK INSERT [" + tableName_<%=cid%> + "] FROM '" + <%=file%> + "' WITH ( CODEPAGE='" + <%=codePage%> + "',DATAFILETYPE='<%=data_file_type%>',FIELDTERMINATOR='" + <%=field_separator%> + "',FIRSTROW =" + <%=first_row%> + ",ROWTERMINATOR='" + <%=row_separator%>+"')");
             stmtTmpBulk_<%=cid%>.close();
             tableName_<%=cid%> = tmpTableName_<%=cid%>;
             tmpTableName_<%=cid%> = "tmp_<%=cid%>";

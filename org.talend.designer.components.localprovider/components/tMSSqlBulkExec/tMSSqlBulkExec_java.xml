@@ -267,6 +267,16 @@
     >
       <DEFAULT>"1"</DEFAULT>
     </PARAMETER>
+
+   <PARAMETER
+      NAME="CODE_PAGE"
+      FIELD="TEXT"
+      NUM_ROW="11"
+      REQUIRED="true"
+      SHOW_IF="(ACTION=='INSERT') or (ACTION=='UPDATE')"
+    >
+      <DEFAULT>"OEM"</DEFAULT>
+    </PARAMETER>
     
     <PARAMETER
       NAME="DATA_FILE_TYPE"
