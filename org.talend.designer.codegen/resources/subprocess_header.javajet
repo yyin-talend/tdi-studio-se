@@ -118,9 +118,16 @@ static class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines.
 	<%
 		if (metadata !=null) {
 			for (IMetadataColumn column: metadata.getListColumns()) {
-    %>
-    	<%= JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> <%=column.getLabel() %>;
-	<%
+   				JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+			    %>
+			    	<%= JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> <%=column.getLabel() %><%
+			    	
+			    	if(javaType == JavaTypesManager.CHARACTER) {
+			    		%> = ' '<%
+			    	}
+			    	
+			    	%>;<%
+			    	
 			}
 		}
     %>
@@ -138,10 +145,13 @@ static class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines.
 		if (metadata !=null) {
 			for (IMetadataColumn column: metadata.getListColumns()) {
 				if (hashableColumnsNames.contains(column.getLabel())) {
+
+					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+
 					if (JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable())) {
 					
 					 	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-					 	if("boolean".equals(typeToGenerate)) {
+					 	if(javaType == JavaTypesManager.BOOLEAN) {
 						%>
 		        			result = prime * result + (this.<%=column.getLabel() %> ? 1231 : 1237);
 						<%
@@ -150,11 +160,19 @@ static class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines.
 							result = prime * result + (int) this.<%=column.getLabel() %>;
 						<%
 						}
+						
+					} else if(javaType == JavaTypesManager.BYTE_ARRAY) {
+
+						%>
+						result = prime * result + java.util.Arrays.hashCode(this.<%=column.getLabel() %>);
+						<%
+					
 					} else {
 					%>
 						result = prime * result + ((this.<%=column.getLabel() %> == null) ? 0 : this.<%=column.getLabel() %>.hashCode());
 					<%
 					}
+					
 				}
 			}
 		}
@@ -175,20 +193,30 @@ static class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines.
 		if (metadata !=null) {
 			for (IMetadataColumn column: metadata.getListColumns()) {
 				if (hashableColumnsNames.contains(column.getLabel())) {
+
+					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+
 					if (JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable())) {
-				%>
-					if (this.<%=column.getLabel() %> != other.<%=column.getLabel() %>) 
-						return false;
-				<%
-					} else {
-				%>
-					if (this.<%=column.getLabel() %> == null) {
-						if (other.<%=column.getLabel() %> != null) 
+					%>
+						if (this.<%=column.getLabel() %> != other.<%=column.getLabel() %>) 
 							return false;
-					} else if (!this.<%=column.getLabel() %>.equals(other.<%=column.getLabel() %>)) 
-						return false;
-				<%
+					<%
+					} else if(javaType == JavaTypesManager.BYTE_ARRAY) {
+					%>
+						if(!java.util.Arrays.equals(this.<%=column.getLabel() %>, other.<%=column.getLabel() %>)) {
+							return false;
+						}
+					<%
+					} else {
+					%>
+						if (this.<%=column.getLabel() %> == null) {
+							if (other.<%=column.getLabel() %> != null) 
+								return false;
+						} else if (!this.<%=column.getLabel() %>.equals(other.<%=column.getLabel() %>)) 
+							return false;
+					<%
 					}
+
 				}
 			}
     	}
