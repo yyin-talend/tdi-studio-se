@@ -13,6 +13,7 @@
 package org.talend.repository.ui.wizards.metadata.connection.files.salesforce;
 
 import org.eclipse.jface.dialogs.IDialogPage;
+import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.metadata.IMetadataContextModeManager;
@@ -96,9 +97,11 @@ public class SalesforceWizardPage extends WizardPage {
                 }
             }
         };
-
         currentComposite.setListener(listener);
         setControl((Composite) currentComposite);
     }
 
+    public IDialogSettings getDialogSetting() {
+        return getDialogSettings();
+    }
 }

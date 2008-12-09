@@ -84,7 +84,7 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
 
     private TableViewer moduleViewer = null;
 
-    private final static int COLUMN_WIDTH = 60;
+    private static final int COLUMN_WIDTH = 60;
 
     private SWTUIThreadProcessor processor = new PreviewProcessor();
 

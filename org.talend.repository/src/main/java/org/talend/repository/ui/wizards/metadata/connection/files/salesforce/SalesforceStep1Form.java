@@ -15,7 +15,9 @@ package org.talend.repository.ui.wizards.metadata.connection.files.salesforce;
 import java.util.List;
 
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -24,10 +26,12 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.commons.ui.swt.formtools.LabelledCombo;
 import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.IMetadataContextModeManager;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
@@ -60,6 +64,12 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
     private final char pwdEhcoChar = '*';
 
     private List<String> moduleNames = null;
+
+    private CCombo customModuleCombo;
+
+    private Button clearButton;
+
+    private Button useCostomModuleButton;
 
     /**
      * DOC YeXiaowei SalesforceStep1Form constructor comment.
@@ -95,28 +105,49 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
     @Override
     protected void addFields() {
 
-        Group group = Form.createGroup(this, 2, "Salesforce parameters");
+        Group group = Form.createGroup(this, 3, "Salesforce parameters");
 
         GridData data = new GridData(GridData.FILL_HORIZONTAL);
         group.setLayoutData(data);
 
-        webServiceUrlText = new LabelledText(group, "Web service URL", true);
+        webServiceUrlText = new LabelledText(group, "Web service URL", 2, true);
 
-        userNameText = new LabelledText(group, "User name");
+        userNameText = new LabelledText(group, "User name", 2);
 
-        passwordText = new LabelledText(group, "Password ");
+        passwordText = new LabelledText(group, "Password ", 2);
         passwordText.getTextControl().setEchoChar(pwdEhcoChar);
 
-        moduleNameCombo = new LabelledCombo(group, "Module name", "Please select a module name", moduleNames);
+        moduleNameCombo = new LabelledCombo(group, "Module name", "Please select a module name", null, 2, false);
 
         initModuleNames();
+
+        new Label(group, SWT.NONE); // Pachlaer
+        useCostomModuleButton = new Button(group, SWT.CHECK);
+        useCostomModuleButton.setText("Check custom module");
+        new Label(group, SWT.NONE); // Pachlaer
+
+        Label lable = new Label(group, SWT.NONE);
+        lable.setText("Custom Module");
+
+        customModuleCombo = new CCombo(group, SWT.BORDER);
+        GridData cdata = new GridData(GridData.FILL);
+        cdata.horizontalAlignment = SWT.LEFT;
+        // cdata.grabExcessHorizontalSpace = true;
+        customModuleCombo.setLayoutData(cdata);
+        customModuleCombo.setEditable(true);
+        customModuleCombo.setEnabled(false);
+
+        clearButton = new Button(group, SWT.NONE);
+        clearButton.setText("Clear");
+
+        initCustomModules();
 
         checkButton = new Button(group, SWT.NONE);
         checkButton.setText("Check login");
         checkButton.setEnabled(false);
 
         GridData wd = new GridData();
-        wd.horizontalSpan = 2;
+        wd.horizontalSpan = 3;
         wd.horizontalAlignment = GridData.CENTER;
 
         checkButton.setLayoutData(wd);
@@ -205,10 +236,100 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
                     checkFieldsValue();
                 }
                 testSalesforceLogin();
+                if (useCostomModuleButton.getSelection()) {
+                    getConnection().setModuleName(customModuleCombo.getText().trim());
+                    appendCustomModule(customModuleCombo.getText().trim());
+                    //customModuleCombo.setText(getConnection().getModuleName());
+                }
                 checkFieldsValue();
             }
         });
 
+        clearButton.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(final SelectionEvent e) {
+                clearAllCustomModule();
+            }
+        });
+
+        customModuleCombo.addModifyListener(new ModifyListener() {
+
+            public void modifyText(ModifyEvent e) {
+                checkFieldsValue();
+                getConnection().setModuleName(customModuleCombo.getText());
+            }
+        });
+
+        useCostomModuleButton.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(final SelectionEvent e) {
+                moduleNameCombo.setEnabled(!useCostomModuleButton.getSelection());
+                customModuleCombo.setEnabled(useCostomModuleButton.getSelection());
+                getConnection().setUseCustomModuleName(useCostomModuleButton.getSelection());
+                if(useCostomModuleButton.getSelection()){
+                    getConnection().setModuleName(customModuleCombo.getText());
+                }else{
+                    getConnection().setModuleName(moduleNameCombo.getText());
+                }
+                checkFieldsValue();
+            }
+        });
+    }
+
+    private void appendCustomModule(String appendmMdule) {
+        String selectValue = customModuleCombo.getText();
+        if (appendmMdule == null || appendmMdule.equals("")) {
+            return;
+        }
+        if (getPreferenceStore() == null) {
+            return;
+        }
+
+        String cms = getPreferenceStore().getString(AbstractSalesforceStepForm.TSALESFORCE_CUSTOM_MODULE);
+
+        if (cms == null) {
+            cms = "";
+        }
+
+        String[] modules = cms.split(AbstractSalesforceStepForm.TSALESFORCE_CUSTOM_MODULE_SPILT);
+        for (String module : modules) {
+            if (module.equals(appendmMdule)) {
+                return;
+            }
+        }
+        cms = cms + "," + appendmMdule;
+        getPreferenceStore().putValue(AbstractSalesforceStepForm.TSALESFORCE_CUSTOM_MODULE, cms);
+        initCustomModules();
+        customModuleCombo.setText(selectValue);
+    }
+
+    private void clearAllCustomModule() {
+        if (getPreferenceStore() == null) {
+            return;
+        }
+        getPreferenceStore().putValue(AbstractSalesforceStepForm.TSALESFORCE_CUSTOM_MODULE, "");
+        if (customModuleCombo != null) {
+            customModuleCombo.removeAll();
+        }
+    }
+
+    private void initCustomModules() {
+        if (getPreferenceStore() == null) {
+            return;
+        }
+        String cms = getPreferenceStore().getString(AbstractSalesforceStepForm.TSALESFORCE_CUSTOM_MODULE);
+        if (cms == null || cms.equals("")) {
+            return;
+        }
+
+        customModuleCombo.removeAll();
+        String[] modules = cms.split(AbstractSalesforceStepForm.TSALESFORCE_CUSTOM_MODULE_SPILT);
+        for (String module : modules) {
+            customModuleCombo.add(module);
+        }
+        customModuleCombo.select(0);
     }
 
     private void testSalesforceLogin() {
@@ -261,7 +382,6 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
                 }
             });
         }
-
     }
 
     /*
@@ -287,9 +407,16 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
             return false;
         }
 
-        if (!isValueValid(moduleNameCombo.getText())) {
-            updateStatus(IStatus.ERROR, "Your must give module for using Salesforce service"); //$NON-NLS-1$
-            return false;
+        if (!useCostomModuleButton.getSelection()) {
+            if (!isValueValid(moduleNameCombo.getText())) {
+                updateStatus(IStatus.ERROR, "Your must give module for using Salesforce service"); //$NON-NLS-1$
+                return false;
+            }
+        } else {
+            if (!isValueValid(customModuleCombo.getText())) {
+                updateStatus(IStatus.ERROR, "Your must give module for using Salesforce service"); //$NON-NLS-1$
+                return false;
+            }
         }
 
         if (!loginOk) {
@@ -333,12 +460,26 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
 
         setTextValue(getConnection().getPassword(), passwordText);
 
-        if (getConnection().getModuleName() != null && !getConnection().getModuleName().equals("")) {
-            moduleNameCombo.setText(getConnection().getModuleName());
+        boolean useCustom = getConnection().isUseCustomModuleName();
+        if (!useCustom) {
+            if (getConnection().getModuleName() != null && !getConnection().getModuleName().equals("")) {
+                moduleNameCombo.setText(getConnection().getModuleName());
+            } else {
+                getConnection().setModuleName(moduleNameCombo.getText()); // Set defult value
+            }
         } else {
-            getConnection().setModuleName(moduleNameCombo.getText()); // Set defult value
+            if (getConnection().getModuleName() != null && !getConnection().getModuleName().equals("")) {
+                customModuleCombo.setText(getConnection().getModuleName());
+                appendCustomModule(getConnection().getModuleName());
+            } else {
+                getConnection().setModuleName(customModuleCombo.getText()); // Set defult value
+                appendCustomModule(getConnection().getModuleName());
+            }
         }
 
+        useCostomModuleButton.setSelection(useCustom);
+        customModuleCombo.setEnabled(useCustom);
+        moduleNameCombo.setEnabled(!useCustom);
     }
 
     private void initModuleNames() {
@@ -383,5 +524,9 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
         } else {
             passwordText.getTextControl().setEchoChar('*');
         }
+    }
+
+    public IPreferenceStore getPreferenceStore() {
+        return CorePlugin.getDefault().getPreferenceStore();
     }
 }

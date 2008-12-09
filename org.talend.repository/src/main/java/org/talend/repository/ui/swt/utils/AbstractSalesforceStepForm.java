@@ -64,6 +64,10 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
     // note that tSalesforceInput use a different url, if the web service is called by wizard we should use
     // DEFAULT_WEB_SERVICE_URL, if the web service is called by tSalesforceInput we should use TSALESFORCE_INPUT_URL
     public static final String DEFAULT_WEB_SERVICE_URL = "https://www.salesforce.com/services/Soap/u/8.0";
+    
+    public static final String TSALESFORCE_CUSTOM_MODULE = "org.talend.salesforce.custom.module";
+    
+    public static final String TSALESFORCE_CUSTOM_MODULE_SPILT = ",";
 
     public AbstractSalesforceStepForm(Composite parent, ConnectionItem connectionItem, String[] existingNames,
             SalesforceModuleParseAPI salesforceAPI) {
