@@ -15,6 +15,7 @@ package org.talend.designer.rowgenerator;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
@@ -40,6 +41,7 @@ import org.talend.designer.rowgenerator.external.data.IOConnection;
 import org.talend.designer.rowgenerator.i18n.Messages;
 import org.talend.designer.rowgenerator.managers.RowGeneratorManager;
 import org.talend.designer.rowgenerator.ui.RowGeneratorUI;
+import org.talend.designer.rowgenerator.ui.dialogs.RowGeneratorDialog;
 import org.talend.designer.rowgenerator.ui.editor.MetadataTableEditorViewExt;
 
 /**
@@ -87,9 +89,9 @@ public class RowGenMain {
      * @param parent
      * @return
      */
-    public void createUI(Composite parent) {
+    public void createUI(Composite parent, boolean fromDialog) {
         generatorUI = new RowGeneratorUI(parent, generatorManager);
-        generatorUI.init();
+        generatorUI.init(fromDialog);
     }
 
     /**
@@ -108,6 +110,39 @@ public class RowGenMain {
      */
     public List<IMetadataTable> getMetadataListOut() {
         return null;
+    }
+
+    /**
+     * yzhang Comment method "createRowGeneratorDialog".
+     * 
+     * @param parentShell
+     * @return
+     */
+    public Dialog createRowGeneratorDialog(Shell parentShell) {
+        RowGeneratorDialog dialog = new RowGeneratorDialog(parentShell, this);
+        IComponent component = connector.getComponent();
+
+        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+        String productName = brandingService.getFullProductName();
+
+        Rectangle boundsRG = ExternalRowGeneratorUiProperties.getBoundsRowGen();
+        if (ExternalRowGeneratorUiProperties.isShellMaximized()) {
+            dialog.setMaximized(ExternalRowGeneratorUiProperties.isShellMaximized());
+        } else {
+            boundsRG = ExternalRowGeneratorUiProperties.getBoundsRowGen();
+            if (boundsRG.x < 0) {
+                boundsRG.x = 0;
+            }
+            if (boundsRG.y < 0) {
+                boundsRG.y = 0;
+            }
+            dialog.setSize(boundsRG);
+        }
+        dialog.setIcon(ImageProvider.getImage(component.getIcon32()));
+        dialog.setTitle(Messages.getString("RowGenMain.ShellTitle", productName, connector.getUniqueName()));
+
+        return dialog;
     }
 
     /**
@@ -141,8 +176,8 @@ public class RowGenMain {
             }
             shell.setBounds(boundsRG);
         }
-        createUI(shell);
-        generatorUI.getDataTableView().getExtendedToolbar().updateComponentsSize();
+        createUI(shell, false);
+        updateTableTitleColumn();
         shell.open();
         shell.addControlListener(new ControlListener() {
 
@@ -161,6 +196,23 @@ public class RowGenMain {
         // shell.moveAbove(null);
         generatorUI.getDataTableView().updateHeader(ExternalRowGeneratorUiProperties.getShowColumnsList());
         return shell;
+    }
+
+    /**
+     * yzhang Comment method "updateComponentSize".
+     */
+    public void updateTableTitleColumn() {
+        if (generatorUI != null) {
+            generatorUI.getDataTableView().attachLabelPosition();
+            generatorUI.getDataTableView().fixedLabelSize();
+        }
+    }
+
+    /**
+     * yzhang Comment method "updateComponentsSize".
+     */
+    public void updateComponentsSize() {
+        generatorUI.getDataTableView().getExtendedToolbar().updateComponentsSize();
     }
 
     /**

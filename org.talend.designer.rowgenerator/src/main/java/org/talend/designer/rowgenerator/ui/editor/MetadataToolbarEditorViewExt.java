@@ -136,7 +136,7 @@ public class MetadataToolbarEditorViewExt extends MetadataToolbarEditorView {
 
     /**
      * 
-     * DOC yexiaowei Comment method "rowNumberWidth".
+     *  yexiaowei Comment method "rowNumberWidth".
      * 
      * @return
      */

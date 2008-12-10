@@ -17,7 +17,7 @@ import java.util.ResourceBundle;
 import org.talend.commons.i18n.MessagesCore;
 
 /**
- * DOC qzhang class global comment. Detailled comment <br/>
+ *  qzhang class global comment. Detailled comment <br/>
  * 
  * $Id: talend-code-templates.xml 1 2007-2-4 下午12:15:06 (星期五, 29 九月 2006) qzhang $
  * 

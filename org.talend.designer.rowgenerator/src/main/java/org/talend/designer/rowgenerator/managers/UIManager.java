@@ -108,19 +108,17 @@ public class UIManager {
     }
 
     /**
-     * qzhang Comment method "closeMapper".
+     * yzhang Comment method "closeRowGenerator".
      * 
      * @param response
      */
-    public void closeRowGenerator(int response) {
+    public void closeRowGenerator(int response, boolean fromDialog) {
         setRowGenResponse(response);
         Composite parent = generatorUI.getRowGenUIParent();
         saveCurrentUIProperties();
         MetadataTable table = (MetadataTable) rgManager.getRowGeneratorComponent().getMetadataList().get(0);
-        boolean hasColumns = (table != null)
-                && (table.getListColumns() != null && (table.getListColumns().size() != 0));
-        List<Map<String, Object>> originalColumnDataList = this.getRowGenManager().getRowGeneratorComponent()
-                .getMapList();
+        boolean hasColumns = (table != null) && (table.getListColumns() != null && (table.getListColumns().size() != 0));
+        List<Map<String, Object>> originalColumnDataList = this.getRowGenManager().getRowGeneratorComponent().getMapList();
         List<Map<String, Object>> currentColumnDataList = getCurrentColumnData();
         boolean containsAll1 = originalColumnDataList.containsAll(currentColumnDataList);
         boolean containsAll2 = currentColumnDataList.containsAll(originalColumnDataList);
@@ -138,7 +136,7 @@ public class UIManager {
         if (response == SWT.OK) {
             saveAllData(currentColumnDataList);
         }
-        if (parent instanceof Shell) {
+        if (parent instanceof Shell && !fromDialog) {
             ((Shell) parent).close();
         }
     }
@@ -148,8 +146,7 @@ public class UIManager {
      */
     private void saveAllData(List<Map<String, Object>> map) {
         rgManager.getRowGeneratorComponent().setTableElementParameter(map);
-        rgManager.getRowGeneratorComponent()
-                .setNumber(generatorUI.getDataTableView().getExtendedToolbar().getNumRows());
+        rgManager.getRowGeneratorComponent().setNumber(generatorUI.getDataTableView().getExtendedToolbar().getNumRows());
     }
 
     /**
@@ -182,8 +179,7 @@ public class UIManager {
      */
     private void saveCurrentUIProperties() {
         ExternalRowGeneratorUiProperties.setWeightsMainSashForm(generatorUI.getMainSashForm().getWeights());
-        ExternalRowGeneratorUiProperties.setWeightsDatasFlowViewSashForm(generatorUI.getDatasFlowViewSashForm()
-                .getWeights());
+        ExternalRowGeneratorUiProperties.setWeightsDatasFlowViewSashForm(generatorUI.getDatasFlowViewSashForm().getWeights());
         ExternalRowGeneratorUiProperties.setShellMaximized(generatorUI.getRowGenUIParent().getShell().getMaximized());
         if (!ExternalRowGeneratorUiProperties.isShellMaximized()) {
             ExternalRowGeneratorUiProperties.setBoundsRowGen(generatorUI.getRowGenUIParent().getBounds());

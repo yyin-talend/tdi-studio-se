@@ -207,7 +207,7 @@ public class TabFolderEditors extends CTabFolder {
      */
     public List<List<String>> getItemsByRunJob(String number) {
         List<List<String>> items = new ArrayList<List<String>>();
-        items = generatorUI.getGeneratorManager().getRowGeneratorComponent().getCodeGenMain().getResultsByRun(refreshButton,
+        items = generatorUI.getGeneratorManager().getRowGeneratorComponent().getCodeGenMain().run(refreshButton,
                 number);
         return items;
     }

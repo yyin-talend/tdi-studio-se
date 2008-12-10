@@ -92,9 +92,11 @@ public class RowGeneratorUI {
     }
 
     /**
-     * qzhang Comment method "init".
+     *  yzhang Comment method "init".
+     * 
+     * @param fromDialog
      */
-    public void init() {
+    public void init(boolean fromDialog) {
         final UIManager uiManager = generatorManager.getUiManager();
         final ExternalRowGeneratorUiProperties uiProperties = uiManager.getUiProperties();
         addParentListeners(uiManager, uiProperties);
@@ -127,7 +129,9 @@ public class RowGeneratorUI {
         tabFolderEditors.setRowGeneratorUI(this);
         tabFolderEditors.getProcessPreview().refreshTablePreview(outputMetaTable.getListColumns(), null, true);
 
-        new FooterComposite(this.rowGenUIParent, SWT.NONE, generatorManager);
+        if (!fromDialog) {
+            new FooterComposite(this.rowGenUIParent, SWT.NONE, generatorManager);
+        }
         dataTableView.getTable().addSelectionListener(new SelectionAdapter() {
 
             /*
@@ -178,8 +182,8 @@ public class RowGeneratorUI {
         metadataTableEditor = new MetadataTableEditorExt(outputMetaTable, ""); //$NON-NLS-1$
         metadataTableEditor.setRowGenUI(this);
         inputReadOnly = this.externalNode.getProcess().isReadOnly();
-        dataTableView = new MetadataTableEditorViewExt(datasFlowViewSashForm, SWT.BORDER, metadataTableEditor,
-                inputReadOnly, !inputReadOnly, externalNode, functionManager);
+        dataTableView = new MetadataTableEditorViewExt(datasFlowViewSashForm, SWT.BORDER, metadataTableEditor, inputReadOnly,
+                !inputReadOnly, externalNode, functionManager);
         dataTableView.getExtendedTableViewer().setCommandStack(generatorManager.getCommandStack());
         dataTableView.setGeneratorUI(this);
         dataTableView.setShowDbTypeColumn(true, true, false);
@@ -268,7 +272,7 @@ public class RowGeneratorUI {
 
             public void handleEvent(Event event) {
                 if (uiManager.getRowGenResponse() == SWT.NONE) {
-                    uiManager.closeRowGenerator(SWT.CANCEL);
+                    uiManager.closeRowGenerator(SWT.CANCEL, false);
                 }
             }
 

@@ -21,7 +21,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 
 /**
- * DOC qzhang class global comment. Detailled comment <br/>
+ *  qzhang class global comment. Detailled comment <br/>
  * 
  * $Id: ShadowConnection.java,v 1.1 2007/02/02 06:21:07 pub Exp $
  * 

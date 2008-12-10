@@ -137,7 +137,7 @@ public class RowGenContextManager implements IContextManager, Cloneable {
          * @see org.talend.core.model.process.IContext#getName()
          */
         public String getName() {
-            return RowGenPreviewCodeMain.PREVIEW;
+            return RowGenProcessMain.PREVIEW;
         }
 
         /*

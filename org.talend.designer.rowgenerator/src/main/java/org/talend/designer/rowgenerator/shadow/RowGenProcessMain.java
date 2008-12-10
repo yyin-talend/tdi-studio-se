@@ -44,12 +44,12 @@ import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 
 /**
- * qzhang class global comment. Detailled comment <br/>
+ * yzhang class global comment. Detailled comment <br/>
  * 
- * $Id: RowGenPreivewCodeMain.java,v 1.3 2007/02/02 07:59:31 pub Exp $
+ * $Id: talend.epf 1 2006-09-29 17:06:40Z nrousseau $
  * 
  */
-public class RowGenPreviewCodeMain {
+public class RowGenProcessMain {
 
     public static final String PREVIEW = "Preview"; //$NON-NLS-1$
 
@@ -74,7 +74,7 @@ public class RowGenPreviewCodeMain {
     /**
      * qzhang RowGenPreivewCodeMain constructor comment.
      */
-    public RowGenPreviewCodeMain(RowGeneratorComponent component) {
+    public RowGenProcessMain(RowGeneratorComponent component) {
         this.component = component;
         results = new ArrayList<List<String>>();
         // initPerlArray();
@@ -150,7 +150,14 @@ public class RowGenPreviewCodeMain {
         }
     }
 
-    public List<List<String>> getResultsByRun(final Button refresh, String number) {
+    /**
+     *  yzhang Comment method "run".
+     * 
+     * @param refresh
+     * @param number
+     * @return
+     */
+    public List<List<String>> run(final Button refresh, String number) {
         this.number = number;
         results.clear();
         IProgressService progressService = PlatformUI.getWorkbench().getProgressService();

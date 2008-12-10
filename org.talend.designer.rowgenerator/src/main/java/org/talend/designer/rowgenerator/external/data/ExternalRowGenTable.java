@@ -13,7 +13,7 @@
 package org.talend.designer.rowgenerator.external.data;
 
 /**
- * DOC qzhang class global comment. Detailled comment <br/>
+ *  qzhang class global comment. Detailled comment <br/>
  * 
  * $Id: talend-code-templates.xml 1 2007-2-10 下午03:25:43 (星期五, 29 九月 2006) qzhang $
  * 

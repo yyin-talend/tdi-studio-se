@@ -133,7 +133,7 @@ public class RowGeneratorComponentDocumentation implements IComponentDocumentati
     }
 
     /**
-     * DOC Administrator Comment method "generateColumnInfo".
+     *  Administrator Comment method "generateColumnInfo".
      * 
      * @param externalNodeElement
      */

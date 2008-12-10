@@ -281,7 +281,7 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
 
     /**
      * 
-     * DOC ggu Comment method "getProcessProposals".
+     *  ggu Comment method "getProcessProposals".
      * 
      * @return IContentProposalProvider
      */

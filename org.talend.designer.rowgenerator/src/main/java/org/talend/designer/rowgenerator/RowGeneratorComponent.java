@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -53,7 +54,7 @@ import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.data.FunctionManagerExt;
 import org.talend.designer.rowgenerator.external.data.ExternalRowGenTable;
 import org.talend.designer.rowgenerator.external.data.ExternalRowGeneratorData;
-import org.talend.designer.rowgenerator.shadow.RowGenPreviewCodeMain;
+import org.talend.designer.rowgenerator.shadow.RowGenProcessMain;
 import org.talend.designer.rowgenerator.ui.editor.MetadataColumnExt;
 import org.talend.designer.rowgenerator.utils.problems.ProblemsAnalyser;
 
@@ -75,7 +76,7 @@ public class RowGeneratorComponent extends AbstractExternalNode {
 
     private ExternalRowGeneratorData externalData;
 
-    private RowGenPreviewCodeMain codeGenMain;
+    private RowGenProcessMain codeGenMain;
 
     private String number;
 
@@ -87,7 +88,7 @@ public class RowGeneratorComponent extends AbstractExternalNode {
     public void initialize() {
         initRowGeneratorMain();
         rowGeneratorMain.loadInitialParamters();
-        codeGenMain = new RowGenPreviewCodeMain(this);
+        codeGenMain = new RowGenProcessMain(this);
     }
 
     /*
@@ -138,7 +139,11 @@ public class RowGeneratorComponent extends AbstractExternalNode {
      * @see org.talend.designer.core.model.components.IExternalComponent#open()
      */
     public int open(final Composite parent) {
-        return open(parent.getDisplay());
+        initRowGeneratorMain();
+        rowGeneratorMain.createModelFromExternalData(getIODataComponents(), getMetadataList(), externalData, true);
+        Dialog dialog = rowGeneratorMain.createRowGeneratorDialog(parent.getShell());
+        dialog.open();
+        return rowGeneratorMain.getMapperDialogResponse();
     }
 
     /*
@@ -223,9 +228,9 @@ public class RowGeneratorComponent extends AbstractExternalNode {
         return this.rowGeneratorMain;
     }
 
-    public RowGenPreviewCodeMain getCodeGenMain() {
+    public RowGenProcessMain getCodeGenMain() {
         if (codeGenMain == null) {
-            this.codeGenMain = new RowGenPreviewCodeMain(this);
+            this.codeGenMain = new RowGenProcessMain(this);
         }
         return this.codeGenMain;
     }
@@ -436,8 +441,8 @@ public class RowGeneratorComponent extends AbstractExternalNode {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.core.model.process.AbstractExternalNode#metadataOutputChanged(org.talend.core.model.components.IODataComponent,
-     * java.lang.String)
+     * @seeorg.talend.core.model.process.AbstractExternalNode#metadataOutputChanged(org.talend.core.model.components.
+     * IODataComponent, java.lang.String)
      */
     @Override
     public void metadataOutputChanged(IODataComponent dataComponent, String connectionToApply) {

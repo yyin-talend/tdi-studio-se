@@ -79,7 +79,7 @@ public class FooterComposite extends Composite {
             public void widgetSelected(SelectionEvent e) {
                 FunParaTableView2 editor = uiManager.getGeneratorUI().getTabFolderEditors().getParameterEditor();
                 editor.notifyOkPressed();
-                uiManager.closeRowGenerator(SWT.OK);
+                uiManager.closeRowGenerator(SWT.OK, false);
             }
 
         });
@@ -92,7 +92,7 @@ public class FooterComposite extends Composite {
             }
 
             public void widgetSelected(SelectionEvent e) {
-                uiManager.closeRowGenerator(SWT.CANCEL);
+                uiManager.closeRowGenerator(SWT.CANCEL, false);
             }
 
         });
