@@ -20,7 +20,6 @@ String source = ElementParameterParser.getValue(
 %>
 use talend::filesOp;
 use Archive::Zip;
-use File::Spec;
 
 my $zip_<%=cid%> = Archive::Zip->new(); 
 my $source_<%=cid%> = <%=source%>;

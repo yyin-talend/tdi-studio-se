@@ -75,7 +75,9 @@ else {
     # print Dumper(\@files);
 
     for my $file (@files) {
-        my $new_filename = File::Spec->abs2rel($file, $source_<%=cid%>);
+        my $new_filename = $file;
+        $new_filename =~ s{^$source_<%=cid%>}{};
+        $new_filename =~ s{^/*}{};
 
         # print $new_filename, "\n";
 
