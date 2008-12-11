@@ -48,10 +48,14 @@ globalMap.put("<%=cid%>_CURRENT_ITERATION",current_iteration_<%=cid%>);
 }else{// While type
 
 String condition = ElementParameterParser.getValue(node, "__CONDITION__");
-condition=condition.replaceAll("\"","");
+if (condition.startsWith("\"") && condition.endsWith("\"")) {
+    condition = condition.substring(1, condition.length()-1);
+}
 
 String declaration = ElementParameterParser.getValue(node, "__DECLARATION__");
-declaration=declaration.replaceAll("\"","");
+if (declaration.startsWith("\"") && declaration.endsWith("\"")) {
+    declaration = declaration.substring(1, declaration.length()-1);
+}
 
 
 

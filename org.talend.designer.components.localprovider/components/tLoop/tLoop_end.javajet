@@ -30,7 +30,9 @@ if (forLoop) {
 
 String iteration   = ElementParameterParser.getValue(node, "__ITERATION__");
 //iteration = iteration.substring(1,iteration.length()-1);
-iteration=iteration.replaceAll("\"","");
+if (iteration.startsWith("\"") && iteration.endsWith("\"")) {
+    iteration = iteration.substring(1, iteration.length()-1);
+}
 
 %>
 
