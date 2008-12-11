@@ -14,8 +14,8 @@
 		java.util.HashSet
 		java.util.Set
 		org.talend.core.model.process.EConnectionType
-		
 	"
+	skeleton="tAdvancedHash_commons.skeleton"
 %>
 
 
@@ -29,32 +29,13 @@
     
     List<INode> graphicalNodes = (List<INode>) node.getProcess().getGraphicalNodes();
     
-	if (connections != null && connections.size() > 0) {
-        for (IConnection connection : connections) {
+	if (connections != null && connections.size() > 0) { // T_AH_100
+        for (IConnection connection : connections) { // T_AH_101
         	String connectionName = connection.getName();
-
-   INode nodeSource = connection.getSource();
    
-   INode validTarget = null;
-   INode currentTarget = null;
-   
-      List<IConnection> outGraphicalConnections = (List<IConnection>) nodeSource.getOutgoingConnections(EConnectionType.FLOW_REF);
-      for(IConnection outGraphicalConnection : outGraphicalConnections) {
-       if(outGraphicalConnection.getUniqueName().equals(connection.getUniqueName())) {
-        currentTarget = outGraphicalConnection.getTarget();
-       }
-      }
+			INode validTarget = searchTargetNode(connection);
 
-			if(!(currentTarget instanceof IHashableInputConnections)) {
-				currentTarget = currentTarget.getExternalNode();
-			}
-			if(currentTarget instanceof IHashableInputConnections) {
-				validTarget = currentTarget;
-			}
-
-			// System.out.println(connectionName + " ######## " + validTarget + " " + validTarget.getClass());
-
-			if(validTarget != null) {
+			if(validTarget != null) { // T_AH_102
 					IHashableInputConnections target = (IHashableInputConnections) validTarget;
 					IHashConfiguration hashConfiguration = target.getHashConfiguration(connection.getName());
 					List<IHashableColumn> hashableColumns = null;
@@ -83,38 +64,43 @@
 				if(hashConfiguration != null && hashConfiguration.isPersistent()) {
 				%>
 
-	<%=connectionName%>Struct <%=connectionName%>_HashRow = tHash_Lookup_<%=connectionName%>.getNextFreeRow();
+					<%=connectionName%>Struct <%=connectionName%>_HashRow = tHash_Lookup_<%=connectionName%>.getNextFreeRow();
 
 	   			<%	
 	   			} else {
 	   			%>
 
-	<%=connectionName%>Struct <%=connectionName%>_HashRow = new <%=connectionName%>Struct();
+					<%=connectionName%>Struct <%=connectionName%>_HashRow = new <%=connectionName%>Struct();
 		   	   	   
 				<%
 				}
-			} else { 
-				// System.out.println(connectionName + " ######## Valid target not found" );
-			}
+			} // T_AH_103 
+            else { // T_AH_104
+				%> 
+				/*
+				 * Valid target not found for connection "<%= connectionName%>"
+				 */ 
+				<%
+            } // T_AH_104
 			
 			IMetadataTable metadataTable = connection.getMetadataTable();
 			
 			List<IMetadataColumn> listColumns = metadataTable.getListColumns();
             for (IMetadataColumn column : listColumns) {
                 String columnName = column.getLabel();
-%>
-<%=connectionName%>_HashRow.<%=columnName%> = <%=connectionName%>.<%=columnName%>;
-<%
-            }
+				%>
+				<%=connectionName%>_HashRow.<%=columnName%> = <%=connectionName%>.<%=columnName%>;
+				<%
+            } 
 
 
-%>
-tHash_Lookup_<%=connectionName%>.put(<%=connectionName%>_HashRow);
-<%
+			%>
+			tHash_Lookup_<%=connectionName%>.put(<%=connectionName%>_HashRow);
+			<%
 			
 			
-		}
-	}
+		} // T_AH_101
+	} // T_AH_100
 
 %>
             

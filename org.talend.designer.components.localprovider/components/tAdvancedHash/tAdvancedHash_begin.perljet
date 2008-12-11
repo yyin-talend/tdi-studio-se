@@ -13,13 +13,14 @@
         java.util.ArrayList
         org.talend.core.model.process.EConnectionType
     "
+	skeleton="tAdvancedHash_commons.skeleton"
 %>
 
 
 <%
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
-String cid = node.getUniqueName();
+	String cid = node.getUniqueName();
 
 
     List<IConnection> connections = (List<IConnection>) node.getIncomingConnections();
@@ -30,40 +31,8 @@ String cid = node.getUniqueName();
     if (connections != null && connections.size() > 0) {
         for (IConnection connection : connections) {
             String connectionName = connection.getName();
-            INode nodeSource = connection.getSource();
 
-            INode validTarget = null;
-            INode currentTarget = null;
-    
-            // searching the target graphic node of current tHash because no generation nodes are connected at outputs
-//            for(INode graphcalNode : graphicalNodes) {
-//		    	if(nodeSource.getUniqueName().equals(graphcalNode.getUniqueName()) || nodeSource.getUniqueName().startsWith(graphcalNode.getUniqueName() + "_")) {
-//                    List<IConnection> outGraphicalConnections = (List<IConnection>) graphcalNode.getOutgoingConnections();
-//                    for(IConnection outGraphicalConnection : outGraphicalConnections) {
-//                        if(outGraphicalConnection.getUniqueName().equals(connectionName)) {
-//                            currentTarget = outGraphicalConnection.getTarget();
-//                        }
-//                    }
-//                }
-//            }
-
-      List<IConnection> outGraphicalConnections = (List<IConnection>) nodeSource.getOutgoingConnections(EConnectionType.FLOW_REF);
-      for(IConnection outGraphicalConnection : outGraphicalConnections) {
-       if(outGraphicalConnection.getUniqueName().equals(connection.getUniqueName())) {
-        currentTarget = outGraphicalConnection.getTarget();
-       }
-      }
-
-            
-
-            if(!(currentTarget instanceof IHashableInputConnections)) {
-                currentTarget = currentTarget.getExternalNode();
-            }
-            if(currentTarget instanceof IHashableInputConnections) {
-                validTarget = currentTarget;
-            }
-
-            // System.out.println(connectionName + " ######## " + validTarget + " " + validTarget.getClass());
+			INode validTarget = searchTargetNode(connection);
 
             if(validTarget != null) {
                     IHashableInputConnections target = (IHashableInputConnections) validTarget;
@@ -93,7 +62,11 @@ String cid = node.getUniqueName();
                 our $tHash_Lookup_<%= connectionName %> = {};
                 <%
             } else { 
-                // System.out.println(connectionName + " ######## Valid target not found" );
+				%> 
+				#
+				# Valid target not found for connection "<%= connectionName%>"
+				# 
+				<%
             }
         }
     }

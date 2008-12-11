@@ -15,6 +15,7 @@
 		java.util.Set
 		org.talend.core.model.process.EConnectionType
 	"
+	skeleton="tAdvancedHash_commons.skeleton"
 %>
 
 <%
@@ -30,27 +31,8 @@
 	if (connections != null && connections.size() > 0) {
         for (IConnection connection : connections) {
         	String connectionName = connection.getName();
-
-   INode nodeSource = connection.getSource();
-   
-   INode validTarget = null;
-   INode currentTarget = null;
-   
-      List<IConnection> outGraphicalConnections = (List<IConnection>) nodeSource.getOutgoingConnections(EConnectionType.FLOW_REF);
-      for(IConnection outGraphicalConnection : outGraphicalConnections) {
-       if(outGraphicalConnection.getUniqueName().equals(connection.getUniqueName())) {
-        currentTarget = outGraphicalConnection.getTarget();
-       }
-      }
-
-			if(!(currentTarget instanceof IHashableInputConnections)) {
-				currentTarget = currentTarget.getExternalNode();
-			}
-			if(currentTarget instanceof IHashableInputConnections) {
-				validTarget = currentTarget;
-			}
-
-			// System.out.println(connectionName + " ######## " + validTarget + " " + validTarget.getClass());
+		   
+			INode validTarget = searchTargetNode(connection);
 
 			if(validTarget != null) {
 					IHashableInputConnections target = (IHashableInputConnections) validTarget;
@@ -118,8 +100,12 @@
 		   	   	   
 				<%
 				}
-			} else { 
-				// System.out.println(connectionName + " ######## Valid target not found" );
+			} else {
+				%> 
+				/*
+				 * Valid target not found for connection "<%= connectionName%>"
+				 */ 
+				<%
 			}
 		}
 	}
