@@ -90,8 +90,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 							<% } %>
 <%
 					} else if (javaType == JavaTypesManager.BIGDECIMAL) {
-%>
-								<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>
+%>		
+							(<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>).doubleValue()
 <%
 					}else {
 %>
