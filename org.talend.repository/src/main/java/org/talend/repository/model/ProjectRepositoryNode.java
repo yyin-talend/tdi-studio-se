@@ -268,7 +268,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             metadataEbcdicConnectionNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_EBCDIC);
             metadataNode.getChildren().add(metadataEbcdicConnectionNode);
         }
-        if (getParent() == null && PluginChecker.isJobLetPluginLoaded()) {
+        if (getParent() == null) {// && PluginChecker.isJobLetPluginLoaded()) {
             if (CorePlugin.getDefault().useRefproject()) {
                 // 1.0 Referenced projects
                 refProject = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
