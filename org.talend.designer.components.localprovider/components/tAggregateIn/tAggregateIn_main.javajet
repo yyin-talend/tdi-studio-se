@@ -84,11 +84,6 @@ if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_InMain
         List<Map<String, String>> groupbys = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__GROUPBYS__");
 		int sizeGroupbys = groupbys.size();
 		
-		%>
-        nb_line_<%=cid %> = 0;
-        <%
-
-
 		IConnection outputConn = null;
 		List< ? extends IConnection> outConns = node.getOutgoingSortedConnections();
 		if (outConns!=null) {
@@ -365,18 +360,9 @@ if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_InMain
                 } // T_InMain_AggR_615
     		
     		} // T_InMain_AggR_604
-			%>
-            //in the deepest end
-            nb_line_<%=cid %>++;
-            
-            <%
 
 		} // T_InMain_AggR_603
 
-		%>
-        //globalMap.put("<%=origin %>",result_list_<%=cid %>);
-        globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
-        <%
 	} // T_InMain_AggR_601
 } // T_InMain_AggR_600
 %>
