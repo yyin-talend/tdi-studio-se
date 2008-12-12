@@ -243,7 +243,9 @@ public class ShadowProcessHelper {
             while (iterate.hasNext()) {
 
                 IMetadataColumn iMetadataColumn = new MetadataColumn();
-                iMetadataColumn.setLabel(iterate.next());
+                String name = iterate.next();
+				iMetadataColumn.setLabel(name.replaceAll("-", "_"));
+				iMetadataColumn.setOriginalDbColumnName(name);
                 iMetadataColumn.setKey(false);
                 iMetadataColumn.setLength(0);
                 iMetadataColumn.setNullable(false);
@@ -376,7 +378,9 @@ public class ShadowProcessHelper {
 
             while (iterate.hasNext()) {
                 IMetadataColumn iMetadataColumn = new MetadataColumn();
-                iMetadataColumn.setLabel(iterate.next());
+                String name = iterate.next();
+				iMetadataColumn.setLabel(name.replaceAll("-", "_"));
+				iMetadataColumn.setOriginalDbColumnName(name);
                 iMetadataColumn.setKey(false);
                 iMetadataColumn.setLength(0);
                 iMetadataColumn.setNullable(false);
@@ -457,7 +461,7 @@ public class ShadowProcessHelper {
         } else {
 
             IMetadataColumn iMetadataDn = new MetadataColumn();
-            iMetadataDn.setLabel(connection.getMethodName()); //$NON-NLS-1$
+            iMetadataDn.setLabel(connection.getMethodName()); 
             iMetadataDn.setKey(false);
             iMetadataDn.setLength(0);
             iMetadataDn.setNullable(false);
@@ -487,7 +491,7 @@ public class ShadowProcessHelper {
         bean.setProxyPassword(TalendTextUtils.addQuotes(connection.getProxyPassword()));
         processDescription.setWsdlSchemaBean(bean);
         if (connection.getEncoding() != null && !connection.getEncoding().equals("")) {
-            processDescription.setEncoding(connection.getEncoding()); //$NON-NLS-1$
+            processDescription.setEncoding(connection.getEncoding()); 
         } else {
             processDescription.setEncoding(TalendTextUtils.addQuotes("UTF-8")); //$NON-NLS-1$
         }
