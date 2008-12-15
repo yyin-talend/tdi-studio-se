@@ -14,6 +14,11 @@ package org.talend.designer.core.ui.editor.properties;
 
 import java.util.regex.Matcher;
 
+import org.apache.oro.text.regex.MalformedPatternException;
+import org.apache.oro.text.regex.PatternCompiler;
+import org.apache.oro.text.regex.PatternMatcher;
+import org.apache.oro.text.regex.Perl5Compiler;
+import org.apache.oro.text.regex.Perl5Matcher;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -91,12 +96,10 @@ public final class NodeQueryCheckUtil {
         }
 
         // include function
-        java.util.regex.Pattern columnRegex = java.util.regex.Pattern.compile(SQL_FUNC_REGX, REGX_FLAG);
-        Matcher columnMatcher = columnRegex.matcher(columns);
+        boolean match = apacheRegexMatch(SQL_FUNC_REGX, REGX_FLAG, columns);
         // no functions
-        if (!columnMatcher.find()) {
+        if (!match) {
             return compareNodeTableColumns(node, columns);
-
         }
 
         return true;
@@ -117,6 +120,28 @@ public final class NodeQueryCheckUtil {
             return false;
         }
         return true;
+    }
+
+    /**
+     * See bug 5836. java.util.regex works too slow here. Use apache oro regex library instead.
+     * <p>
+     * DOC xye Comment method "apacheRegexMatch".
+     * 
+     * @param patternString
+     * @param flag
+     * @param input
+     * @return
+     */
+    private static boolean apacheRegexMatch(final String patternString, final int flag, final String input) {
+        PatternCompiler pc = new Perl5Compiler();
+        org.apache.oro.text.regex.Pattern pattern = null;
+        try {
+            pattern = pc.compile(patternString, flag);
+            PatternMatcher columnMatcher = new Perl5Matcher();
+            return columnMatcher.matches(input, pattern);
+        } catch (MalformedPatternException e) {
+            return false;
+        }
     }
 
 }
