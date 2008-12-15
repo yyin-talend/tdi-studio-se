@@ -41,6 +41,8 @@ String proxyHost = ElementParameterParser.getValue(node,"__PROXY_HOST__");
 String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
 String proxyUser = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
 String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
+boolean useProxyNTLM = ElementParameterParser.getValue(node,"__PROXY_NTLM__").equals("true");
+String proxyDomain = ElementParameterParser.getValue(node,"__PROXY_DOMAIN__");
 %>
     org.apache.commons.httpclient.HttpClient client_<%=cid %> = new org.apache.commons.httpclient.HttpClient();
     boolean isContinue=true;
@@ -51,14 +53,20 @@ String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__"
 	org.apache.commons.httpclient.methods.GetMethod get_<%=cid %> = new org.apache.commons.httpclient.methods.GetMethod(<%=uri %>);
 <%}%>
 
-<%if(useProxy){%>
-
-	client_<%=cid %>.getHostConfiguration().setProxy(<%=proxyHost %>, Integer.parseInt(<%=proxyPort%>));
-	client_<%=cid %>.getState().setProxyCredentials(
-    new org.apache.commons.httpclient.auth.AuthScope(<%=proxyHost %>, Integer.parseInt(<%=proxyPort%>), null),
-    new org.apache.commons.httpclient.UsernamePasswordCredentials(<%=proxyUser %>, <%=proxyPassword %>));
-	
+<%if(useProxy){%> 
+		client_<%=cid %>.getHostConfiguration().setProxy(<%=proxyHost %>, Integer.parseInt(<%=proxyPort%>));
+	<%if(useProxyNTLM){%>
+		client_<%=cid %>.getState().setProxyCredentials(
+						new org.apache.commons.httpclient.auth.AuthScope( <%=proxyHost %>, Integer.parseInt(<%=proxyPort%>), null ),
+						new org.apache.commons.httpclient.NTCredentials( <%=proxyUser %>,
+								<%=proxyPassword %>, <%=proxyHost %>, <%=proxyDomain %> ));			
+	<%}else{%>
+		client_<%=cid %>.getState().setProxyCredentials(
+  	  new org.apache.commons.httpclient.auth.AuthScope(<%=proxyHost %>, Integer.parseInt(<%=proxyPort%>), null),
+    	new org.apache.commons.httpclient.UsernamePasswordCredentials(<%=proxyUser %>, <%=proxyPassword %>));
+  <%}%>
 <%}%>
+
 
 <%if(needAuth){%>
     org.apache.commons.httpclient.Credentials creds_<%=cid %> = new org.apache.commons.httpclient.UsernamePasswordCredentials(<%=username %>, <%=password %>);
