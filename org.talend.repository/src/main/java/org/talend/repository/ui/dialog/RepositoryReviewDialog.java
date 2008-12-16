@@ -123,6 +123,11 @@ public class RepositoryReviewDialog extends Dialog {
         this(parentShell, type, null);
     }
 
+    public RepositoryReviewDialog(Shell parentShell,
+			ITypeProcessor typeProcessor, ERepositoryObjectType type) {
+		this(parentShell, type);
+		this.typeProcessor = typeProcessor;
+	}
     /**
      * bqian create the correct TypeProcessor according to the type.
      * 
