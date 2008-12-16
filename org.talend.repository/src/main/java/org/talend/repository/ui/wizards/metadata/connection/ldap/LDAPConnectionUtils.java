@@ -49,6 +49,9 @@ public class LDAPConnectionUtils {
     private static final String CONTEXT_FACTORY = "com.sun.jndi.ldap.LdapCtxFactory";
 
     private static InitialLdapContext ctx = null;
+    
+    //Used for customed schema attributes.
+    private static  List<String> allAttributes;
 
     /**
      * Comment method "getAttributes".
@@ -127,11 +130,13 @@ public class LDAPConnectionUtils {
         }
 
         Schema defaultSchema = new Schema().DEFAULT_SCHEMA;
+     
 
         Set<String> attributeSet = new TreeSet<String>();
 
         for (String objectClassName : allObjectClassList) {
             ObjectClassDescription objectClassDescription = defaultSchema.getObjectClassDescription(objectClassName);
+            
             String[] mustAttributeTypeDescriptionNames = objectClassDescription.getMustAttributeTypeDescriptionNames();
             String[] mayAttributeTypeDescriptionNames = objectClassDescription.getMayAttributeTypeDescriptionNames();
 
@@ -141,6 +146,14 @@ public class LDAPConnectionUtils {
             for (String string2 : mayAttributeTypeDescriptionNames) {
                 attributeSet.add(string2);
             }
+        }
+        
+        for(String attribute: allAttributes)
+        {
+           if(!attributeSet.contains(attribute))
+           {
+               attributeSet.add(attribute);
+           }
         }
 
         Object[] array = (Object[]) attributeSet.toArray();
@@ -162,7 +175,9 @@ public class LDAPConnectionUtils {
      */
     private static List<String> getAttributeList(String searchFilter, javax.naming.directory.SearchControls searchCtls,
             String searchBase) throws NamingException {
-
+        
+        allAttributes = new ArrayList<String>();
+        
         List<String> objectClassList = new ArrayList<String>();
         javax.naming.NamingEnumeration answer = ctx.search(searchBase, searchFilter, searchCtls);
 
@@ -184,6 +199,9 @@ public class LDAPConnectionUtils {
                                 objectClassList.add(next);
                             }
                         }
+                    }else
+                    {
+                        allAttributes.add(id);
                     }
                 }
             }
