@@ -315,30 +315,30 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		int limit<%=cid %> = <%= limit %>;
 		int lastLine<%=cid %> = -1;	
 		
-		char fieldSeparator[] = null;
+		char fieldSeparator_<%=cid %>[] = null;
 		
 		//support passing value (property: Field Separator) by 'context.fs' or 'globalMap.get("fs")'. 
 		if ( ((String)<%=delim1%>).length() > 0 ){
-			fieldSeparator = ((String)<%=delim1%>).toCharArray();
+			fieldSeparator_<%=cid %> = ((String)<%=delim1%>).toCharArray();
 		}else {			
 			throw new IllegalArgumentException("Field Separator must be assigned a char."); 
 		}
 		
-		char rowSeparator[] = null;
+		char rowSeparator_<%=cid %>[] = null;
 		
 		//support passing value (property: Row Separator) by 'context.rs' or 'globalMap.get("rs")'. 
 		if ( ((String)<%=rowSeparator1%>).length() > 0 ){
-			rowSeparator = ((String)<%=rowSeparator1%>).toCharArray();
+			rowSeparator_<%=cid %> = ((String)<%=rowSeparator1%>).toCharArray();
 		}else {
 			throw new IllegalArgumentException("Row Separator must be assigned a char."); 
 		}
 		
 		
 		com.csvreader.CsvReader csvReader<%=cid %>=new com.csvreader.CsvReader(new java.io.BufferedReader(new java.io.InputStreamReader(
-                new java.io.FileInputStream(<%=filename %>),<%=encoding %>)), fieldSeparator[0]);
+                new java.io.FileInputStream(<%=filename %>),<%=encoding %>)), fieldSeparator_<%=cid %>[0]);
                 
-		if ( (rowSeparator[0] != '\n') && (rowSeparator[0] != '\r') )
-        	csvReader<%=cid %>.setRecordDelimiter(rowSeparator[0]);
+		if ( (rowSeparator_<%=cid %>[0] != '\n') && (rowSeparator_<%=cid %>[0] != '\r') )
+        	csvReader<%=cid %>.setRecordDelimiter(rowSeparator_<%=cid %>[0]);
         	
         csvReader<%=cid %>.setSkipEmptyRecords(<%=removeEmptyRow %>);
         csvReader<%=cid %>.setTextQualifier('<%=textEnclosure %>');
@@ -386,10 +386,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
           	csvReader<%=cid %>.close();
           
 	 	csvReader<%=cid %>=new com.csvreader.CsvReader(new java.io.BufferedReader(new java.io.InputStreamReader(
-	          new java.io.FileInputStream(<%=filename %>),<%=encoding %>)), fieldSeparator[0]);
+	          new java.io.FileInputStream(<%=filename %>),<%=encoding %>)), fieldSeparator_<%=cid %>[0]);
 	          
-		if ( (rowSeparator[0] != '\n') && (rowSeparator[0] != '\r') )	
-        	csvReader<%=cid %>.setRecordDelimiter(rowSeparator[0]);
+		if ( (rowSeparator_<%=cid %>[0] != '\n') && (rowSeparator_<%=cid %>[0] != '\r') )	
+        	csvReader<%=cid %>.setRecordDelimiter(rowSeparator_<%=cid %>[0]);
         csvReader<%=cid %>.setSkipEmptyRecords(<%=removeEmptyRow %>);
         csvReader<%=cid %>.setTextQualifier('<%=textEnclosure %>');
 
