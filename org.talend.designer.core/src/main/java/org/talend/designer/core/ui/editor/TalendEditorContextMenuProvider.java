@@ -45,6 +45,7 @@ import org.talend.designer.core.ui.action.ModifyMergeOrderAction;
 import org.talend.designer.core.ui.action.ModifyOutputOrderAction;
 import org.talend.designer.core.ui.action.NodeBreakpointAction;
 import org.talend.designer.core.ui.action.ParallelExecutionAction;
+import org.talend.designer.core.ui.action.SearchComponentAction;
 import org.talend.designer.core.ui.action.SendBackwardAction;
 import org.talend.designer.core.ui.action.SendToBackAction;
 import org.talend.designer.core.ui.action.ShowComponentSettingViewerAction;
@@ -84,6 +85,7 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
      * 
      * @see org.eclipse.gef.ContextMenuProvider#buildContextMenu(org.eclipse.jface.action.IMenuManager)
      */
+    @Override
     public void buildContextMenu(final IMenuManager menu) {
         if (!isEnableContextMenu()) {
             return;
@@ -294,6 +296,13 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
                 menu.appendToGroup(GROUP_OTHER, action);
             }
 
+            
+            action = new SearchComponentAction(part);
+            ((SelectionAction) action).update();
+            if (action.isEnabled()) {
+                menu.appendToGroup(GROUP_OTHER, action);
+            }
+            
             action = new OpenJobHierarchyAction(part);
             ((SelectionAction) action).update();
             if (action.isEnabled()) {

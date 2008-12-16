@@ -30,7 +30,8 @@ public class TalendPaletteViewerProvider extends PaletteViewerProvider {
     public PaletteViewer createPaletteViewer(Composite parent) {
         PaletteViewer pViewer = new TalendPaletteViewer(this.getEditDomain());
         pViewer.createControl(parent);
-        configurePaletteViewer(pViewer);
+        // configurePaletteViewer(pViewer);
+        pViewer.setContextMenu(new TalendPaletteContextMenuProvider(pViewer));
         hookPaletteViewer(pViewer);
         return pViewer;
     }
