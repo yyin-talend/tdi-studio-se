@@ -1410,7 +1410,7 @@ public class Node extends Element implements INode {
         for (int i = 0; i < getOutgoingConnections().size() && targetWithRef == null; i++) {
             IConnection connection = getOutgoingConnections().get(i);
             Node nodeTmp = (Node) connection.getTarget();
-            if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_HASH)) {
+            if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_HASH) || nodeTmp.isELTComponent()) {
                 // System.out.println(" ** Ref Link Found in:" + nodeTmp + "
                 // from:" + this);
                 targetWithRef = nodeTmp;
