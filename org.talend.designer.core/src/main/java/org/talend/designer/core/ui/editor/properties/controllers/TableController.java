@@ -35,6 +35,7 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
+import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
@@ -42,6 +43,7 @@ import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
@@ -78,6 +80,23 @@ public class TableController extends AbstractElementPropertySectionController {
         super(dp);
     }
 
+    /**
+     * yzhang Comment method "checkDataExist".
+     * 
+     * @param tableContent
+     * @param columnName
+     * @param data
+     * @return
+     */
+    private boolean checkTableDataExist(List<Map<String, Object>> tableContent, String columnName, String data) {
+        for (Map<String, Object> tableRow : tableContent) {
+            if (tableRow.get(columnName).equals(data)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -88,13 +107,46 @@ public class TableController extends AbstractElementPropertySectionController {
     @Override
     public Control createControl(final Composite parentComposite, final IElementParameter param, final int numInRow,
             final int nbInRow, int top, final Control lastControlPrm) {
+
         this.curParameter = param;
         this.paramFieldType = param.getField();
         final Composite container = parentComposite;
 
         PropertiesTableEditorModel<Map<String, Object>> tableEditorModel = new PropertiesTableEditorModel<Map<String, Object>>();
-
         tableEditorModel.setData(elem, param, (Process) getProcess(elem, part));
+
+        Object[] tableColumns = param.getListItemsValue();
+        List<Map<String, Object>> tableRowsList = new ArrayList<Map<String, Object>>();
+
+        for (Object tableColumn : tableColumns) {
+            if (tableColumn instanceof IElementParameter) {
+
+                EParameterFieldType tableColumnFieldType = ((IElementParameter) tableColumn).getField();
+                String tableColumnName = ((IElementParameter) tableColumn).getName();
+
+                switch (tableColumnFieldType) {
+                case SCHEMA_TYPE:
+                    if (elem instanceof INode) {
+                        List<IMetadataTable> metaList = ((INode) elem).getMetadataList();
+                        for (IMetadataTable metadataTable : metaList) {
+                            if (!checkTableDataExist(tableRowsList, tableColumnName, metadataTable.getTableName())) {
+                                Map<String, Object> tableRow = new HashMap<String, Object>();
+                                tableRow.put(tableColumnName, metadataTable.getTableName());
+                                tableRowsList.add(tableRow);
+                            }
+                        }
+                    }
+                    break;
+                default:
+                    for (Map<String, Object> tableRow : tableRowsList) {
+                        tableRow.put(tableColumnName, null);
+                    }
+                }
+            }
+        }
+        tableEditorModel.removeAll();
+        tableEditorModel.addAll(tableRowsList);
+
         PropertiesTableEditorView<Map<String, Object>> tableEditorView = new PropertiesTableEditorView<Map<String, Object>>(
                 parentComposite, SWT.NONE, tableEditorModel, !param.isBasedOnSchema(), false);
         tableEditorView.getExtendedTableViewer().setCommandStack(getCommandStack());
