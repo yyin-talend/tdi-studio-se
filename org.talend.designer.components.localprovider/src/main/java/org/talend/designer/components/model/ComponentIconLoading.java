@@ -68,7 +68,11 @@ public class ComponentIconLoading {
             if (file24.exists()) {
                 image24 = getImage(ComponentFilesNaming.getInstance().getIcon24FileName(folder.getName()));
             } else if (image32 != null && image32.getImageData() != null) {
-                image24 = ImageDescriptor.createFromImageData(image32.getImageData().scaledTo(24, 24));
+                try {
+                    image24 = ImageDescriptor.createFromImageData(image32.getImageData().scaledTo(24, 24));
+                } catch (NullPointerException e) {
+                    image24 = image32;
+                }
             }
         }
         return image24;
