@@ -115,11 +115,8 @@ public final class JetSkeletonManager {
             return false;
         } else {
             Long lastCheckedCRC = alreadyCheckedSkeleton.get(path);
-            if (lastCheckedCRC == null) {
-                return true;
-            }
 
-            boolean isChanged = currentCRC != lastCheckedCRC;
+            boolean isChanged = lastCheckedCRC == null || currentCRC != lastCheckedCRC;
             if (isChanged) {
                 alreadyCheckedSkeleton.put(path, currentCRC);
             }
