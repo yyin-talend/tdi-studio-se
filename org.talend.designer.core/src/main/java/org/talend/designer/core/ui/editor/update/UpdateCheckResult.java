@@ -16,6 +16,8 @@ import java.beans.PropertyChangeEvent;
 import java.util.Collection;
 import java.util.List;
 
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.PluginChecker;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
@@ -23,6 +25,7 @@ import org.talend.core.model.update.EUpdateResult;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.update.UpdatesConstants;
+import org.talend.core.ui.IEBCDICProviderService;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.views.jobsettings.JobSettingsView;
@@ -54,6 +57,20 @@ public class UpdateCheckResult extends UpdateResult {
                 String display = getRenamedDisplay(oldSourceIdAndChildName[1], newSourceIdAndChildName[1]);
                 if (display != null) {
                     displayName = display;
+                }
+            } else {
+                if (getUpdateObject() instanceof INode && getParameter() instanceof List && PluginChecker.isEBCDICPluginLoaded()) {
+                    IEBCDICProviderService service = (IEBCDICProviderService) GlobalServiceRegister.getDefault().getService(
+                            IEBCDICProviderService.class);
+                    if (service != null && service.isEbcdicNode((INode) getUpdateObject())) {
+                        List<Object> paramObjs = (List<Object>) getParameter();
+                        if (paramObjs.size() >= 2) {
+                            Object schemaName = paramObjs.get(1);
+                            if (schemaName instanceof String) {
+                                displayName = displayName + UpdateManagerUtils.addBrackets((String) schemaName);
+                            }
+                        }
+                    }
                 }
             }
             break;

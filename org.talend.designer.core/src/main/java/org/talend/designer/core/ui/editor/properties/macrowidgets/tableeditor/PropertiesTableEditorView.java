@@ -36,12 +36,18 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
 import org.talend.commons.ui.swt.tableviewer.behavior.CellEditorValueAdapter;
 import org.talend.commons.ui.swt.tableviewer.behavior.IColumnColorProvider;
+import org.talend.commons.ui.swt.tableviewer.behavior.IColumnLabelProvider;
 import org.talend.commons.ui.swt.tableviewer.tableeditor.CheckboxTableEditorContent;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.PluginChecker;
+import org.talend.core.model.metadata.IEbcdicConstant;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.properties.EbcdicConnectionItem;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.ui.IEBCDICProviderService;
 import org.talend.core.ui.metadata.celleditor.SchemaCellEditor;
 import org.talend.core.ui.proposal.TalendProposalProvider;
 import org.talend.designer.core.model.components.ElementParameter;
@@ -262,11 +268,33 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                     break;
                 case SCHEMA_TYPE:
                     column.setModifiable((!param.isRepositoryValueUsed()) && (!param.isReadOnly()) && (!tmpParam.isReadOnly()));
-                    INode node = (INode) element;
+                    final INode node = (INode) element;
                     // List<IMetadataTable> tables = node.getMetadataList();
 
-                    column.setLabelProvider(null);
-                    column.setCellEditor(new SchemaCellEditor(table, node));
+                    if (isEBCDICNode(node)) { // ebcdic
+                        column.setLabelProvider(new IColumnLabelProvider() {
+
+                            public String getLabel(Object bean) {
+                                if (bean instanceof Map) {
+                                    Map<String, Object> valueMap = (Map<String, Object>) bean;
+                                    String value = (String) valueMap.get(IEbcdicConstant.FIELD_SCHEMA);
+                                    if (value != null && !"".equals(value)) { //$NON-NLS-1$
+                                        if (isRepositorySchemaLine(node, valueMap)) {
+                                            return "Repository (" + value + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+                                        } else {
+                                            return "Built-In (" + value + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+                                        }
+                                    }
+                                }
+                                return ""; //$NON-NLS-1$
+                            }
+                        });
+                    } else {
+                        column.setLabelProvider(null);
+                    }
+                    SchemaCellEditor schemaEditor = new SchemaCellEditor(table, node);
+                    schemaEditor.setTableEditorView(this);
+                    column.setCellEditor(schemaEditor);
                     break;
                 default: // TEXT
                     TextCellEditorWithProposal textCellEditor = new TextCellEditorWithProposal(table, column);
@@ -370,7 +398,7 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                         case COLOR:
                             if (value instanceof RGB) {
                                 RGB rgb = (RGB) value;
-                                finalValue = rgb.red + ";" + rgb.green + ";" + rgb.blue;
+                                finalValue = rgb.red + ";" + rgb.green + ";" + rgb.blue; //$NON-NLS-1$ //$NON-NLS-2$
                             }
                         default:
                         }
@@ -380,6 +408,29 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                 });
             }
         }
+    }
+
+    private boolean isEBCDICNode(INode node) {
+        if (PluginChecker.isEBCDICPluginLoaded()) {
+            IEBCDICProviderService service = (IEBCDICProviderService) GlobalServiceRegister.getDefault().getService(
+                    IEBCDICProviderService.class);
+            if (service != null) {
+                return service.isEbcdicNode(node);
+            }
+        }
+        return false;
+    }
+
+    private boolean isRepositorySchemaLine(INode node, Map<String, Object> lineValue) {
+        if (PluginChecker.isEBCDICPluginLoaded()) {
+            IEBCDICProviderService service = (IEBCDICProviderService) GlobalServiceRegister.getDefault().getService(
+                    IEBCDICProviderService.class);
+            if (service != null) {
+                EbcdicConnectionItem repositoryItem = service.getRepositoryItem(node);
+                return repositoryItem != null && service.isRepositorySchemaLine(node, lineValue);
+            }
+        }
+        return false;
     }
 
     public PropertiesTableToolbarEditorView getToolBar() {
@@ -414,7 +465,7 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                         if (currentDisplay != null) {
                             // if the current displayed shouldn't be used anymore, reset the value.
                             if (!ArrayUtils.contains(itemsToDisplay, currentDisplay)) {
-                                String newValue = "";
+                                String newValue = ""; //$NON-NLS-1$
                                 if (itemsToDisplay.length > 0) {
                                     int index = ArrayUtils.indexOf(curParam.getListItemsDisplayName(), itemsToDisplay[0]);
                                     newValue = (String) curParam.getListItemsValue()[index];

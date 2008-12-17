@@ -16,24 +16,31 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.gef.commands.Command;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.PluginChecker;
+import org.talend.core.model.metadata.IEbcdicConstant;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.QueryUtil;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
+import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.update.EUpdateResult;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.update.UpdatesConstants;
+import org.talend.core.ui.IEBCDICProviderService;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.editor.update.UpdateManagerUtils;
 import org.talend.designer.core.utils.SAPParametersUtils;
 
 /**
@@ -197,11 +204,33 @@ public class UpdateNodeParameterCommand extends Command {
 
             if (result.getResultType() == EUpdateResult.UPDATE) {
                 if (result.isChecked()) {
-                    if (result.getParameter() instanceof IMetadataTable) {
+                    if (result.getParameter() instanceof List) {
+                        // for ebcdic
+                        if (PluginChecker.isEBCDICPluginLoaded()) {
+                            IEBCDICProviderService service = (IEBCDICProviderService) GlobalServiceRegister.getDefault()
+                                    .getService(IEBCDICProviderService.class);
+                            if (service != null) {
+                                if (service.isEbcdicNode(node)) {
+                                    List<Object> parameter = (List<Object>) result.getParameter();
+                                    if (parameter.size() >= 2) {
+                                        IMetadataTable newTable = (IMetadataTable) parameter.get(0);
+                                        String schemaName = (String) parameter.get(1);
+                                        IMetadataTable metadataTable = MetadataTool.getMetadataTableFromNode(node, schemaName);
+                                        if (metadataTable != null) {
+                                            MetadataTool.copyTable(newTable, metadataTable);
+                                        }
+                                        syncSchemaForEBCDIC(node, metadataTable);
+                                    }
+                                    return;
+                                }
+                            }
+                        }
+                    } else if (result.getParameter() instanceof IMetadataTable) {
                         IMetadataTable newTable = (IMetadataTable) result.getParameter();
                         // node.getMetadataFromConnector(newTable.getAttachedConnector()).setListColumns(newTable.
                         // getListColumns());
                         if (newTable != null) {
+
                             for (INodeConnector nodeConnector : node.getListConnector()) {
                                 if (nodeConnector.getBaseSchema().equals(newTable.getAttachedConnector())) {
                                     IElementParameter param = node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
@@ -224,7 +253,34 @@ public class UpdateNodeParameterCommand extends Command {
                     IMetadataTable newTable = (IMetadataTable) parameter.get(0);
                     String oldSourceId = (String) parameter.get(1);
                     String newSourceId = (String) parameter.get(2);
+                    // for ebcdic
+                    if (PluginChecker.isEBCDICPluginLoaded()) {
+                        IEBCDICProviderService service = (IEBCDICProviderService) GlobalServiceRegister.getDefault().getService(
+                                IEBCDICProviderService.class);
+                        if (service != null) {
+                            if (service.isEbcdicNode(node)) {
+                                String[] sourceIdAndChildName = UpdateManagerUtils.getSourceIdAndChildName(oldSourceId);
+                                final String oldSchemaName = sourceIdAndChildName[1];
 
+                                sourceIdAndChildName = UpdateManagerUtils.getSourceIdAndChildName(newSourceId);
+                                final String newSchemaName = sourceIdAndChildName[1];
+                                Map<String, Object> lineValue = (Map<String, Object>) parameter.get(3);
+                                if (lineValue != null) {
+                                    IMetadataTable metadataTable = MetadataTool.getMetadataTableFromNode(node, oldSchemaName);
+                                    Object schemaName = lineValue.get(IEbcdicConstant.FIELD_SCHEMA);
+                                    if (metadataTable != null && schemaName != null) {
+                                        lineValue.put(IEbcdicConstant.FIELD_SCHEMA, newSchemaName);
+
+                                        MetadataTool.copyTable(newTable, metadataTable);
+                                        syncSchemaForEBCDIC(node, metadataTable);
+                                        metadataTable.setLabel(newSchemaName);
+
+                                    }
+                                }
+                                return;
+                            }
+                        }
+                    }
                     String schemaParamName = UpdatesConstants.SCHEMA + UpdatesConstants.COLON
                             + EParameterName.REPOSITORY_SCHEMA_TYPE.getName();
                     IElementParameter repositoryParam = node.getElementParameter(schemaParamName);
@@ -243,9 +299,42 @@ public class UpdateNodeParameterCommand extends Command {
                 }
             }
             if (builtIn) { // built-in
+                // for ebcdic
+                if (PluginChecker.isEBCDICPluginLoaded()) {
+                    IEBCDICProviderService service = (IEBCDICProviderService) GlobalServiceRegister.getDefault().getService(
+                            IEBCDICProviderService.class);
+                    if (service != null) {
+                        if (service.isEbcdicNode(node)) {
+                            Object parameter = result.getParameter();
+                            if (parameter instanceof Map) {
+                                Map<String, Object> lineValue = (Map<String, Object>) parameter;
+                                lineValue.remove(IEbcdicConstant.FIELD_SCHEMA + IEbcdicConstant.REF_TYPE);
+                            }
+                            return;
+                        }
+                    }
+                }
                 node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
                 for (IElementParameter param : node.getElementParameters()) {
                     SAPParametersUtils.setNoRepositoryParams(param);
+                }
+            }
+        }
+    }
+
+    /**
+     * nrousseau Comment method "synchSchemaForEBCDIC".
+     */
+    private void syncSchemaForEBCDIC(Node node, IMetadataTable metadataTable) {
+        for (IConnection conn : node.getOutgoingConnections()) {
+            if (conn.getLineStyle() == EConnectionType.FLOW_MAIN
+                    && metadataTable.getTableName().equals(conn.getMetadataTable().getTableName())) {
+                Node target = (Node) conn.getTarget();
+                IElementParameter schemaTypeParam = target.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
+                if (schemaTypeParam != null) {
+                    ChangeMetadataCommand cmd = new ChangeMetadataCommand(target, schemaTypeParam, null, metadataTable);
+                    cmd.setRepositoryMode(true);
+                    cmd.execute(true);
                 }
             }
         }

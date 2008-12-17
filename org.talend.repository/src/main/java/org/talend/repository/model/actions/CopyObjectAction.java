@@ -58,6 +58,9 @@ public class CopyObjectAction {
         // Cannot move logically deleted objects :
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         try {
+            if (objectToCopy.getId() == null) {
+                return false;
+            }
             objectToCopy = factory.getLastVersion(objectToCopy.getId());
             if (objectToCopy == null || factory.getStatus(objectToCopy) == ERepositoryStatus.DELETED) {
                 return false;

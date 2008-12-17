@@ -38,6 +38,7 @@ import org.talend.core.model.genhtml.IJobSettingConstants;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ConnectionItem;
@@ -56,6 +57,7 @@ import org.talend.designer.core.ui.action.SaveJobBeforeRunAction;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.core.ui.editor.TalendEditorPaletteFactory;
+import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.JobTemplateViewsAndProcessUtil;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -109,7 +111,7 @@ public class DesignerCoreService implements IDesignerCoreService {
 
         return process;
     }
-    
+
     public IProcess getProcessFromItem(Item item) {
         if (item instanceof ProcessItem) {
             return getProcessFromProcessItem((ProcessItem) item);
@@ -551,5 +553,27 @@ public class DesignerCoreService implements IDesignerCoreService {
             }
 
         });
+    }
+
+    /**
+     * 
+     * nrousseau Comment method "removeConnection".
+     */
+    public void removeConnection(INode node, String schemaName) {
+        for (Connection connection : (List<Connection>) node.getOutgoingConnections()) {
+            if (connection.getMetaName().equals(schemaName)) {
+                connection.disconnect();
+                Node prevNode = connection.getSource();
+                INodeConnector nodeConnectorSource, nodeConnectorTarget;
+                nodeConnectorSource = prevNode.getConnectorFromType(connection.getLineStyle());
+                nodeConnectorSource.setCurLinkNbOutput(nodeConnectorSource.getCurLinkNbOutput() - 1);
+
+                Node nextNode = connection.getTarget();
+                nodeConnectorTarget = nextNode.getConnectorFromType(connection.getLineStyle());
+                nodeConnectorTarget.setCurLinkNbInput(nodeConnectorTarget.getCurLinkNbInput() - 1);
+                break;
+            }
+        }
+        node.getProcess().removeUniqueConnectionName(schemaName);
     }
 }

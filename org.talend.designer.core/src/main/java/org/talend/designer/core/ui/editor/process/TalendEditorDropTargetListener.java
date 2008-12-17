@@ -42,7 +42,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ListDialog;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.core.PluginChecker;
 import org.talend.core.model.components.IComponent;
+import org.talend.core.model.metadata.IEbcdicConstant;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.CDCConnection;
@@ -55,11 +57,13 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
+import org.talend.core.model.properties.EbcdicConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.RepositoryObject;
+import org.talend.core.ui.metadata.command.RepositoryChangeMetadataForEBCDICCommand;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -517,7 +521,12 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     queryParam.setValue(EmfComponent.BUILTIN);
                 }
             }
-
+            // for EBCDIC (bug 5860)
+            if (PluginChecker.isEBCDICPluginLoaded() && connectionItem instanceof EbcdicConnectionItem) {
+                Command ebcdicCmd = new RepositoryChangeMetadataForEBCDICCommand(node, IEbcdicConstant.TABLE_SCHEMAS, table
+                        .getLabel(), ConvertionHelper.convert(table));
+                return ebcdicCmd;
+            }
             if (schemaParam == null) {
                 return null;
             }
@@ -550,14 +559,16 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
     private Command getChangePropertyCommand(RepositoryNode selectedNode, Node node, ConnectionItem connectionItem) {
         ERepositoryObjectType selectedNodetype = selectedNode.getObjectType();
         EDatabaseComponentName name = EDatabaseComponentName.getCorrespondingComponentName(connectionItem, selectedNodetype);
-        List<String> componentNameList = new ArrayList<String>();
-        componentNameList.add(name.getInputComponentName());
-        componentNameList.add(name.getOutPutComponentName());
-        String nodeComponentName = node.getComponent().getName();
-        if (componentNameList.contains(nodeComponentName)) {
-            IElementParameter param = node.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
-            if (param != null) {
-                return getPropertyPublicPart(selectedNode, param, node, connectionItem);
+        if (name != null) {
+            List<String> componentNameList = new ArrayList<String>();
+            componentNameList.add(name.getInputComponentName());
+            componentNameList.add(name.getOutPutComponentName());
+            String nodeComponentName = node.getComponent().getName();
+            if (componentNameList.contains(nodeComponentName)) {
+                IElementParameter param = node.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
+                if (param != null) {
+                    return getPropertyPublicPart(selectedNode, param, node, connectionItem);
+                }
             }
         }
 

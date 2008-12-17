@@ -50,12 +50,11 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.emf.EmfHelper;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.core.CorePlugin;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.context.ContextUtils;
 import org.talend.core.model.context.JobContextManager;
-import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.general.Project;
+import org.talend.core.model.metadata.IEbcdicConstant;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.process.EComponentCategory;
@@ -80,7 +79,6 @@ import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.update.IUpdateManager;
-import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
@@ -114,7 +112,6 @@ import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.core.utils.JavaProcessUtil;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ItemCacheManager;
-import org.talend.designer.runprocess.JobInfo;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -640,7 +637,7 @@ public class Process extends Element implements IProcess2 {
         if (param.getField().equals(EParameterFieldType.TABLE) && value != null) {
             List<Map<String, Object>> tableValues = (List<Map<String, Object>>) value;
             for (Map<String, Object> currentLine : tableValues) {
-                for (int i = 0; i < currentLine.size(); i++) {
+                for (int i = 0; i < param.getListItemsDisplayCodeName().length; i++) {
                     ElementValueType elementValue = fileFact.createElementValueType();
                     elementValue.setElementRef(param.getListItemsDisplayCodeName()[i]);
                     Object o = currentLine.get(param.getListItemsDisplayCodeName()[i]);
@@ -662,6 +659,11 @@ public class Process extends Element implements IProcess2 {
                         }
                     }
                     elementValue.setValue(strValue);
+                    //
+                    Object object = currentLine.get(param.getListItemsDisplayCodeName()[i] + IEbcdicConstant.REF_TYPE);
+                    if (object != null) {
+                        elementValue.setType((String) object);
+                    }
                     pType.getElementValue().add(elementValue);
                 }
             }
@@ -740,6 +742,10 @@ public class Process extends Element implements IProcess2 {
                                     tableValues.add(lineValues);
                                 }
                                 lineValues.put(elementValue.getElementRef(), elementValue.getValue());
+                                if (elementValue.getType() != null) {
+                                    lineValues
+                                            .put(elementValue.getElementRef() + IEbcdicConstant.REF_TYPE, elementValue.getType());
+                                }
                             }
                         }
                         elemParam.setPropertyValue(pType.getName(), tableValues);

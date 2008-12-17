@@ -19,15 +19,15 @@ import java.util.Map;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
-import org.talend.core.model.process.INodeConnector;
+import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.components.ElementParameter;
-import org.talend.designer.core.ui.editor.connections.Connection;
-import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.controllers.TableController;
 
@@ -193,40 +193,19 @@ public class PropertiesTableEditorModel<B> extends ExtendedTableModel<B> {
             List<IMetadataTable> metadatasToRemove = new ArrayList<IMetadataTable>();
             for (Map<String, Object> line : (List<Map<String, Object>>) c) {
                 String schemaName = (String) line.get(schemaType);
-                for (IMetadataTable metadata : node.getMetadataList()) {
-                    if (metadata.getTableName().equals(schemaName)) {
-                        metadatasToRemove.add(metadata);
-                        break;
+                IMetadataTable metadata = MetadataTool.getMetadataTableFromNode(node, schemaName);
+                if (metadata != null) {
+                    metadatasToRemove.add(metadata);
+                    IDesignerCoreService service = (IDesignerCoreService) GlobalServiceRegister.getDefault().getService(
+                            IDesignerCoreService.class);
+                    if (service != null) {
+                        service.removeConnection(node, metadata.getTableName());
                     }
                 }
-                removeConnection(node, schemaName);
             }
             node.getMetadataList().removeAll(metadatasToRemove);
         }
         return super.removeAll(c);
     }
 
-    /**
-     * DOC nrousseau Comment method "removeConnection".
-     * 
-     * @param node
-     * @param schemaName
-     */
-    private void removeConnection(INode node, String schemaName) {
-        for (Connection connection : (List<Connection>) node.getOutgoingConnections()) {
-            if (connection.getMetaName().equals(schemaName)) {
-                connection.disconnect();
-                Node prevNode = connection.getSource();
-                INodeConnector nodeConnectorSource, nodeConnectorTarget;
-                nodeConnectorSource = prevNode.getConnectorFromType(connection.getLineStyle());
-                nodeConnectorSource.setCurLinkNbOutput(nodeConnectorSource.getCurLinkNbOutput() - 1);
-
-                Node nextNode = connection.getTarget();
-                nodeConnectorTarget = nextNode.getConnectorFromType(connection.getLineStyle());
-                nodeConnectorTarget.setCurLinkNbInput(nodeConnectorTarget.getCurLinkNbInput() - 1);
-                break;
-            }
-        }
-        node.getProcess().removeUniqueConnectionName(schemaName);
-    }
 }

@@ -24,12 +24,16 @@ import java.util.Set;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.ui.IEditorReference;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.PluginChecker;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.context.ContextUtils;
 import org.talend.core.model.context.JobContextManager;
+import org.talend.core.model.metadata.IEbcdicConstant;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.QueryUtil;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.Query;
@@ -47,6 +51,7 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
+import org.talend.core.model.properties.EbcdicConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryObject;
@@ -57,6 +62,7 @@ import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.update.UpdatesConstants;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.ui.IEBCDICProviderService;
 import org.talend.core.utils.SAPConnectionUtils;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -572,8 +578,13 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
             return Collections.emptyList();
         }
         List<UpdateResult> schemaResults = new ArrayList<UpdateResult>();
-        final String uniqueName = node.getUniqueName();
 
+        if (PluginChecker.isEBCDICPluginLoaded()) {
+            List<UpdateResult> resultForEBCDIC = checkNodeSchemaFromRepositoryForEBCDIC(node);
+            if (resultForEBCDIC != null) {
+                schemaResults.addAll(resultForEBCDIC);
+            }
+        }
         // check the metadata from the repository to see if it's up to date.
         IElementParameter schemaTypeParam = node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
         if (schemaTypeParam != null) {
@@ -587,11 +598,14 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                     if (names != null) {
                         connectionItem = UpdateRepositoryUtils.getConnectionItemByItemId(names[0]);
                     }
+                    final String schemaName = names[1];
 
+                    //
                     boolean builtIn = true;
                     UpdateCheckResult result = null;
 
                     if (connectionItem != null) {
+                        final String uniqueName = node.getUniqueName();
                         String newSourceId = getSchemaRenamedMap().get(propertyValue);
                         // renamed
                         if (newSourceId != null && !newSourceId.equals(propertyValue)) {
@@ -617,7 +631,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                 }
                             }
                         } else {
-                            IMetadataTable table = UpdateRepositoryUtils.getTableByName(connectionItem, names[1]);
+                            IMetadataTable table = UpdateRepositoryUtils.getTableByName(connectionItem, schemaName);
                             if (table != null) {
                                 String source = UpdateRepositoryUtils.getRepositorySourceName(connectionItem)
                                         + UpdatesConstants.SEGMENT_LINE + table.getLabel();
@@ -655,6 +669,123 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                     }
                 }
             }
+        }
+        return schemaResults;
+    }
+
+    /**
+     * 
+     * nrousseau Comment method "checkNodeSchemaFromRepositoryForEBCDIC".
+     * 
+     * @param node
+     * @return
+     */
+    private List<UpdateResult> checkNodeSchemaFromRepositoryForEBCDIC(final Node node) {
+        if (node == null) {
+            return Collections.emptyList();
+        }
+        List<UpdateResult> schemaResults = new ArrayList<UpdateResult>();
+
+        if (PluginChecker.isEBCDICPluginLoaded()) {
+            IEBCDICProviderService service = (IEBCDICProviderService) GlobalServiceRegister.getDefault().getService(
+                    IEBCDICProviderService.class);
+            if (service != null) {
+                EbcdicConnectionItem repositoryItem = service.getRepositoryItem(node);
+                if (repositoryItem != null) {
+                    IElementParameter schemasTableParam = node.getElementParameter(IEbcdicConstant.TABLE_SCHEMAS);
+                    if (schemasTableParam != null) {
+
+                        List<Map<String, Object>> paramValues = (List<Map<String, Object>>) schemasTableParam.getValue();
+                        for (Map<String, Object> line : paramValues) {
+                            if (service.isRepositorySchemaLine(node, line)) {
+                                final String schemaName = (String) line.get(IEbcdicConstant.FIELD_SCHEMA);
+                                final String propertyValue = repositoryItem.getProperty().getId() + UpdatesConstants.SEGMENT_LINE
+                                        + schemaName;
+                                //
+                                boolean builtIn = true;
+                                UpdateCheckResult result = null;
+
+                                if (repositoryItem != null) {
+                                    String newSourceId = getSchemaRenamedMap().get(propertyValue);
+                                    // renamed
+                                    if (newSourceId != null && !newSourceId.equals(propertyValue)) {
+                                        String[] newSourceIdAndName = UpdateManagerUtils.getSourceIdAndChildName(newSourceId);
+                                        if (newSourceIdAndName != null) {
+                                            IMetadataTable table = UpdateRepositoryUtils.getTableByName(repositoryItem,
+                                                    newSourceIdAndName[1]);
+                                            if (table != null) {
+                                                String source = UpdateRepositoryUtils.getRepositorySourceName(repositoryItem);
+
+                                                final IMetadataTable copyOfrepositoryMetadata = table.clone();
+                                                // String uniqueName =
+                                                // this.getProcess().generateUniqueConnectionName(table + "_");
+                                                // copyOfrepositoryMetadata.setTableName(uniqueName);
+                                                // copyOfrepositoryMetadata.setAttachedConnector(schemaTypeParam.
+                                                // getContext());
+
+                                                List<Object> parameter = new ArrayList<Object>();
+                                                parameter.add(copyOfrepositoryMetadata);
+                                                parameter.add(propertyValue);
+                                                parameter.add(newSourceId);
+                                                parameter.add(line);
+
+                                                result = new UpdateCheckResult(node);
+                                                result.setResult(EUpdateItemType.NODE_SCHEMA, EUpdateResult.RENAME, parameter,
+                                                        source);
+                                                builtIn = false;
+                                            }
+                                        }
+                                    } else {
+                                        IMetadataTable table = UpdateRepositoryUtils.getTableByName(repositoryItem, schemaName);
+                                        if (table != null) {
+                                            String source = UpdateRepositoryUtils.getRepositorySourceName(repositoryItem)
+                                                    + UpdatesConstants.SEGMENT_LINE + table.getLabel();
+
+                                            final IMetadataTable copyOfrepositoryMetadata = table.clone();
+                                            // copyOfrepositoryMetadata.setTableName(uniqueName);
+                                            //copyOfrepositoryMetadata.setAttachedConnector(schemaTypeParam.getContext()
+                                            // );
+
+                                            IMetadataTable metadataTable = null;
+                                            // metadataTable =
+                                            // node.getMetadataFromConnector(schemaTypeParam.getContext());
+                                            metadataTable = MetadataTool.getMetadataTableFromNode(node, schemaName);
+
+                                            if (metadataTable != null
+                                                    && !metadataTable.sameMetadataAs(copyOfrepositoryMetadata,
+                                                            IMetadataColumn.OPTIONS_NONE)) {
+
+                                                List<Object> parameter = new ArrayList<Object>();
+                                                parameter.add(copyOfrepositoryMetadata);
+                                                parameter.add(schemaName);
+
+                                                result = new UpdateCheckResult(node);
+                                                result.setResult(EUpdateItemType.NODE_SCHEMA, EUpdateResult.UPDATE, parameter,
+                                                        source);
+                                            }
+                                            builtIn = false;
+                                        }
+                                    }
+                                }
+
+                                if (builtIn) {
+                                    // if the repository connection doesn't exists then set to built-in
+                                    result = new UpdateCheckResult(node);
+                                    result.setResult(EUpdateItemType.NODE_SCHEMA, EUpdateResult.BUIL_IN, line);
+                                }
+
+                                // add the check result to resultList, hold the value.
+                                if (result != null) {
+                                    result.setJob(getProcess());
+                                    setConfigrationForReadOnlyJob(result);
+                                    schemaResults.add(result);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
         }
         return schemaResults;
     }
