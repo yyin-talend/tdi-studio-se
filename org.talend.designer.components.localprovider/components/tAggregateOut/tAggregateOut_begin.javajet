@@ -22,6 +22,8 @@ INode node = (INode)codeGenArgument.getArgument();
 String origin = ElementParameterParser.getValue(node, "__DESTINATION__");
 String cid = origin;
 
+boolean useFinancialPrecision = "true".equals(ElementParameterParser.getValue(node, "__USE_FINANCIAL_PRECISION__"));
+
 List<Map<String, String>> operations = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__OPERATIONS__");
 List<Map<String, String>> groupbys = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__GROUPBYS__");
 
@@ -433,6 +435,7 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 			boolean outputIsString = outputJavaType == JavaTypesManager.STRING;
 			boolean outputIsBigDecimal = outputJavaType == JavaTypesManager.BIGDECIMAL;
 			boolean outputIsDate = outputJavaType == JavaTypesManager.DATE;
+			boolean outputIsDecimal = outputJavaType == JavaTypesManager.FLOAT || outputJavaType == JavaTypesManager.DOUBLE || outputIsBigDecimal;
 			
 			boolean inputIsNumber = JavaTypesManager.isNumberType(inputJavaType, false);
 			boolean inputIsObject = inputJavaType == JavaTypesManager.OBJECT;
@@ -442,6 +445,14 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 			boolean inputIsDate = inputJavaType == JavaTypesManager.DATE;
 			boolean inputIsBigDecimal = inputJavaType == JavaTypesManager.BIGDECIMAL;
 			boolean inputIsByteArray = inputJavaType == JavaTypesManager.BYTE_ARRAY;
+			boolean inputIsDecimal = inputJavaType == JavaTypesManager.FLOAT || inputJavaType == JavaTypesManager.DOUBLE || inputIsBigDecimal;
+
+			boolean forceUseBigDecimal = 
+				(function.equals(SUM) || function.equals(AVG)) 
+				&& inputIsDecimal
+				&& outputIsDecimal
+				&& useFinancialPrecision
+			;
 			
 			boolean sameInOutType = outputJavaType == inputJavaType;
 	
@@ -480,7 +491,12 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
            	} 
            	else if(isValidTypeForOperation) { // T_OutBegin_AggR_138
 
-				if(function.equals(AVG)){
+				if(forceUseBigDecimal && function.equals(SUM)){
+
+					%>BigDecimal <%=funin[OUTPUT_COLUMN] %>_<%=function %>;
+           			<%
+
+           		} else if(function.equals(AVG)) {
 					
 					%>int <%=funin[OUTPUT_COLUMN] %>_count = 0;
            			<%
