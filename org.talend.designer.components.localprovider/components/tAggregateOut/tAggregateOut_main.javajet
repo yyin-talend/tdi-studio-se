@@ -181,7 +181,7 @@ if(inputConn != null) { // T_OutMain_AggR_501
 	<%
 	if(hasOperationFirst) {
 	%>
-		boolean isFirstAdd = false;
+		boolean isFirstAdd_<%=cid %> = false;
 	<%
 	}
 	%>
@@ -203,7 +203,7 @@ if(inputConn != null) { // T_OutMain_AggR_501
 		<%
 		if(hasOperationFirst) {
 		%>
-			isFirstAdd = true;
+			isFirstAdd_<%=cid %> = true;
 		<%
 		}
 		%>
@@ -270,34 +270,7 @@ if(inputConn != null) { // T_OutMain_AggR_501
 			|| function.equals(STD_DEV) && inputIsNumber && outputIsNumber
 		;
 		
-		if(!hasAlreadyCountProperty && function.equals(COUNT)) {
-			hasAlreadyCountProperty = true;
-			%>
-			operation_result_<%=cid %>.count++;
-			<%
-			
-		}
-
-		if(!hasAlreadyCountDistinctProperty && function.equals(COUNT_DISTINCT)){
-				hasAlreadyCountDistinctProperty = true;
-			%>
-			
-			AggCountDistinctValuesStruct_<%=cid %> countDistinctValues_<%=cid %> = new AggCountDistinctValuesStruct_<%=cid %>();
-		
-			<%
-			for (IMetadataColumn column : inputColumns) {
-				if(inputValuesColumns.containsKey(column.getLabel())) {
-			
-					%>countDistinctValues_<%=cid %>.<%=column.getLabel()%> = <%=inputConn.getName() %>.<%=column.getLabel()%>;
-					<%
-					
-				}
-			}
-			%>operation_result_<%=cid %>.distinctValues.add(countDistinctValues_<%=cid %>);
-			<%
-		}
-		
-		if(isValidTypeForOperation && !function.equals(COUNT_DISTINCT)) { // T_OutMain_AggR_745
+		if(isValidTypeForOperation) { // T_OutMain_AggR_745
 		
 			if(ignoreNull && !isSelectedPrimitive) { // T_OutMain_AggR_545
 			
@@ -307,7 +280,33 @@ if(inputConn != null) { // T_OutMain_AggR_501
 				
 			} // T_OutMain_AggR_545
 			
+
+			if(!hasAlreadyCountDistinctProperty && function.equals(COUNT_DISTINCT)){
+					hasAlreadyCountDistinctProperty = true;
+				%>
+				
+				AggCountDistinctValuesStruct_<%=cid %> countDistinctValues_<%=cid %> = new AggCountDistinctValuesStruct_<%=cid %>();
 			
+				<%
+				for (IMetadataColumn column : inputColumns) {
+					if(inputValuesColumns.containsKey(column.getLabel())) {
+				
+						%>countDistinctValues_<%=cid %>.<%=column.getLabel()%> = <%=inputConn.getName() %>.<%=column.getLabel()%>;
+						<%
+						
+					}
+				}
+				%>operation_result_<%=cid %>.distinctValues.add(countDistinctValues_<%=cid %>);
+				<%
+			}
+
+			if(!hasAlreadyCountProperty && function.equals(COUNT)) {
+				hasAlreadyCountProperty = true;
+				%>
+				operation_result_<%=cid %>.count++;
+				<%
+				
+			}
 			
 			if(outputIsNumber && function.equals(AVG)){
 					
@@ -349,7 +348,7 @@ if(inputConn != null) { // T_OutMain_AggR_501
 						}%>
 						<%=inputConn.getName() %>.<%=inputColumnName  %> <%=operator%> operation_result_<%=cid %>.<%=outputColumnName %>_<%=function %>
 						<% if(!outputColumn.isNullable()) { 
-							%> || isFirstAdd <%
+							%> || isFirstAdd_<%=cid %> <%
 						}%>
 					) {
 						operation_result_<%=cid %>.<%=outputColumnName %>_<%=function %> = <%=inputConn.getName() %>.<%=inputColumnName  %>;
@@ -408,7 +407,7 @@ if(inputConn != null) { // T_OutMain_AggR_501
 			} else if(function.equals(FIRST)){
 					
 				%>
-				if(isFirstAdd <%if(outputColumn.isNullable()) {%> || operation_result_<%=cid %>.<%=outputColumnName %>_<%=function %> == null<%}%>) {
+				if(isFirstAdd_<%=cid %> <%if(outputColumn.isNullable()) {%> || operation_result_<%=cid %>.<%=outputColumnName %>_<%=function %> == null<%}%>) {
 					operation_result_<%=cid %>.<%=outputColumnName %>_<%=function %> = <%=inputConn.getName() %>.<%=inputColumnName  %>;
 				}
 				<%
