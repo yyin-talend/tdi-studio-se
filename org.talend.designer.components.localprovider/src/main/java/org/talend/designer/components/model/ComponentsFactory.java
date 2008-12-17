@@ -17,8 +17,10 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.apache.log4j.Level;
@@ -29,6 +31,7 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
+import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.io.FilesUtils;
@@ -53,6 +56,8 @@ public class ComponentsFactory implements IComponentsFactory {
     private static Logger log = Logger.getLogger(ComponentsFactory.class);
 
     private static List<IComponent> componentList = null;
+    
+    private static Map<String, IComponent> componentsCache = new HashMap<String, IComponent>();
 
     // 1. only the in the directory /components ,not including /resource
     // 2. include the skeleton files and external include files
@@ -192,6 +197,13 @@ public class ComponentsFactory implements IComponentsFactory {
                             currentFolder.getName(), getCodeLanguageSuffix()));
                     TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.emf1");
                     TimeMeasure.resume("ComponentsFactory.loadComponentsFromFolder.emf2");
+
+                    if (CommonsPlugin.isHeadless() && componentsCache.containsKey(xmlMainFile.getAbsolutePath())) {
+                        // In headless mode, we assume the components won't change and we will use a cache
+                        componentList.add(componentsCache.get(xmlMainFile.getAbsolutePath()));
+                        continue;
+                    }
+                    
                     EmfComponent currentComp = new EmfComponent(xmlMainFile, pathSource);
                     TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.emf2");
 
@@ -203,6 +215,10 @@ public class ComponentsFactory implements IComponentsFactory {
                         loadIcons(currentFolder, currentComp);
                         TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.loadIcons");
                         componentList.add(currentComp);
+                    }
+                    
+                    if (CommonsPlugin.isHeadless()) {
+                        componentsCache.put(xmlMainFile.getAbsolutePath(), currentComp);
                     }
                 } catch (MissingMainXMLComponentFileException e) {
                     log.trace(currentFolder.getName() + " is not a " + getCodeLanguageSuffix() + " component", e);
