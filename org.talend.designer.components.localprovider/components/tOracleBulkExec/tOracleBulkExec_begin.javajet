@@ -326,7 +326,7 @@ if(use_existing_clt_file.equals("true")) {
     %>
     String dataf_<%=cid %> = <%=dataFile %>;
     
-    String cltf_<%=cid %> = dataf_<%=cid %> + ".clt";
+    String cltf_<%=cid %> = dataf_<%=cid %> + ".ctl";
     
     String badf_<%=cid %> = dataf_<%=cid %> + ".bad";
     
