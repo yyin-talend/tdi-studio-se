@@ -74,7 +74,7 @@ public class ComponentsFactory implements IComponentsFactory {
         }
     }
 
-    public void init() {
+    private void init() {
         removeOldComponentsUserFolder(); // not used anymore
 
         TimeMeasure.measureActive = false;
@@ -366,5 +366,10 @@ public class ComponentsFactory implements IComponentsFactory {
             init();
         }
         return skeletonList;
+    }
+
+    public void reset() {
+        componentList = null;
+        skeletonList = null;
     }
 }

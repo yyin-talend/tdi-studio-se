@@ -15,6 +15,7 @@ package org.talend.designer.codegen;
 import org.eclipse.jface.action.Action;
 import org.talend.core.CorePlugin;
 import org.talend.designer.codegen.model.CodeGeneratorEmittersPoolFactory;
+import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
  * DOC mhirt class global comment. Detailled comment <br/>
@@ -36,6 +37,7 @@ public class RefreshTemplatesAction extends Action {
      */
     @Override
     public void run() {
+        ComponentsFactoryProvider.getInstance().reset();
         CodeGeneratorEmittersPoolFactory.initialize();
         CorePlugin.getDefault().getLibrariesService().syncLibraries();
     }

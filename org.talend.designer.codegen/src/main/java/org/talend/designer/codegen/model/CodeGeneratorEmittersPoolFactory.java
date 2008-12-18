@@ -80,8 +80,6 @@ public final class CodeGeneratorEmittersPoolFactory {
 
     private static boolean initialized = false;
 
-    private static boolean initInProgress = false;
-
     private static Logger log = Logger.getLogger(CodeGeneratorEmittersPoolFactory.class);
 
     private static List<JetBean> jetFilesCompileFail = new ArrayList<JetBean>();
@@ -94,142 +92,177 @@ public final class CodeGeneratorEmittersPoolFactory {
     private CodeGeneratorEmittersPoolFactory() {
     }
 
-    /**
-     * initialization of the pool.
-     * 
-     * @return
-     */
-    public static Job initialize() {
-        if (!initInProgress) {
-            // Code Generator initialisation with Progress Bar
-            Job job = new AccessingEmfJob(Messages.getString("CodeGeneratorEmittersPoolFactory.initMessage")) {
+    private static JobRunnable jobRunnable = null;
 
-                @Override
-                protected IStatus doRun(IProgressMonitor monitor) {
-                    try {
-                        ComponentsFactoryProvider.saveComponentVisibilityStatus();
+    private static IStatus status = null;
 
-                        jetFilesCompileFail.clear();
-                        initInProgress = true;
-
-                        IProgressMonitor monitorWrap = null;
-                        if (!CommonsPlugin.isHeadless()) {
-                            monitorWrap = new CodeGeneratorProgressMonitor(monitor);
-                        } else {
-                            monitorWrap = new NullProgressMonitor();
-                        }
-
-                        IComponentsFactory componentsFactory = ComponentsFactoryProvider.getInstance();
-                        componentsFactory.init();
-
-                        long startTime = System.currentTimeMillis();
-                        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
-                                Context.REPOSITORY_CONTEXT_KEY);
-                        ECodeLanguage codeLanguage = repositoryContext.getProject().getLanguage();
-
-                        defaultTemplate = TemplateUtil.RESOURCES_DIRECTORY + TemplateUtil.DIR_SEP
-                                + EInternalTemplate.DEFAULT_TEMPLATE + TemplateUtil.EXT_SEP + codeLanguage.getExtension()
-                                + TemplateUtil.TEMPLATE_EXT;
-
-                        List<JetBean> jetBeans = new ArrayList<JetBean>();
-
-                        CodeGeneratorInternalTemplatesFactory templatesFactory = CodeGeneratorInternalTemplatesFactoryProvider
-                                .getInstance();
-                        templatesFactory.init();
-
-                        List<TemplateUtil> templates = templatesFactory.getTemplates();
-                        List<IComponent> components = componentsFactory.getComponents();
-
-                        monitorWrap.beginTask(Messages.getString("CodeGeneratorEmittersPoolFactory.initMessage"), (2 * templates
-                                .size() + 5 * components.size()));
-
-                        int monitorBuffer = 0;
-                        for (TemplateUtil template : templates) {
-                            JetBean jetBean = initializeUtilTemplate(template, codeLanguage);
-                            jetBeans.add(jetBean);
-                            monitorBuffer++;
-                            if (monitorBuffer % 100 == 0) {
-                                monitorWrap.worked(100);
-                                monitorBuffer = 0;
-                            }
-                        }
-
-                        if (components != null) {
-                            ECodePart codePart = ECodePart.MAIN;
-                            for (IComponent component : components) {
-                                // if (component.isTechnical() || component.isVisible()) {
-                                if (component.getAvailableCodeParts().size() > 0) {
-                                    initComponent(codeLanguage, jetBeans, codePart, component);
-                                }
-                                // }
-                                monitorBuffer++;
-                                if (monitorBuffer % 100 == 0) {
-                                    monitorWrap.worked(100);
-                                    monitorBuffer = 0;
-                                }
-                            }
-                        }
-                        monitorWrap.worked(monitorBuffer);
-
-                        initializeEmittersPool(jetBeans, codeLanguage, monitorWrap);
-                        monitorWrap.done();
-
-                        if (!CommonsPlugin.isHeadless()) {
-                            Display.getDefault().asyncExec(new Runnable() {
-
-                                public void run() {
-                                    CorePlugin.getDefault().getDesignerCoreService().synchronizeDesignerUI(
-                                            new PropertyChangeEvent(this, ComponentUtilities.NORMAL, null, null));
-                                }
-
-                            });
-                        }
-                        log.debug("Components compiled in " + (System.currentTimeMillis() - startTime) + " ms");
-                        initialized = true;
-
-                        // remove compilations markers
-                        ComponentCompilations.deleteMarkers();
-
-                    } catch (Exception e) {
-                        log.error("Exception during Initialization", e);
-                        return new Status(IStatus.ERROR, CodeGeneratorActivator.PLUGIN_ID, "Exception during Initialization", e);
-                    } finally {
-                        initInProgress = false;
-                        try {
-                            IWorkspace workspace = ResourcesPlugin.getWorkspace();
-                            IProject project = workspace.getRoot().getProject(".JETEmitters");
-                            project.build(IncrementalProjectBuilder.AUTO_BUILD, null);
-                        } catch (CoreException e) {
-                            ExceptionHandler.process(e);
-                        }
-
-                    }
-                    if (jetFilesCompileFail.size() > 0) {
-                        StringBuilder message = new StringBuilder();
-                        for (JetBean tmpJetBean : jetFilesCompileFail) {
-                            if (message.length() > 0) {
-                                message.append(",\r\n").append(tmpJetBean.getTemplateRelativeUri());
-                            } else {
-                                message.append(tmpJetBean.getTemplateRelativeUri());
-                            }
-                        }
-                        return new Status(IStatus.ERROR, CodeGeneratorActivator.PLUGIN_ID, "Components compile fail : \r\n"
-                                + message.toString());
-                    }
-                    CorePlugin.getDefault().getRcpService().activeSwitchProjectAction();
-                    return Status.OK_STATUS;
-                }
-
-            };
-            job.setUser(true);
-            job.setPriority(Job.INTERACTIVE);
-            job.schedule();
-            job.wakeUp(); // start as soon as possible
-
-            return job;
+    private static DelegateProgressMonitor delegateMonitor = new DelegateProgressMonitor(); 
+    
+    /***/
+    private static class JobRunnable extends Thread {
+        
+        public JobRunnable(String name) {
+            super(name);
         }
 
-        return null;
+        public void run() {
+            status = doRun();
+        }
+
+        public IStatus doRun() {
+            try {
+                ComponentsFactoryProvider.saveComponentVisibilityStatus();
+
+                jetFilesCompileFail.clear();
+
+                IProgressMonitor monitorWrap = null;
+                if (!CommonsPlugin.isHeadless()) {
+                    monitorWrap = new CodeGeneratorProgressMonitor(delegateMonitor);
+                } else {
+                    monitorWrap = new NullProgressMonitor();
+                }
+
+                IComponentsFactory componentsFactory = ComponentsFactoryProvider.getInstance();
+                // do not call init because it may be already loaded by
+                // ComponentsFactoryProvider.saveComponentVisibilityStatus
+                componentsFactory.getComponents();
+
+                long startTime = System.currentTimeMillis();
+                RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
+                        Context.REPOSITORY_CONTEXT_KEY);
+                ECodeLanguage codeLanguage = repositoryContext.getProject().getLanguage();
+
+                defaultTemplate = TemplateUtil.RESOURCES_DIRECTORY + TemplateUtil.DIR_SEP + EInternalTemplate.DEFAULT_TEMPLATE
+                        + TemplateUtil.EXT_SEP + codeLanguage.getExtension() + TemplateUtil.TEMPLATE_EXT;
+
+                List<JetBean> jetBeans = new ArrayList<JetBean>();
+
+                CodeGeneratorInternalTemplatesFactory templatesFactory = CodeGeneratorInternalTemplatesFactoryProvider
+                        .getInstance();
+                templatesFactory.init();
+
+                List<TemplateUtil> templates = templatesFactory.getTemplates();
+                List<IComponent> components = componentsFactory.getComponents();
+
+                monitorWrap.beginTask(Messages.getString("CodeGeneratorEmittersPoolFactory.initMessage"),
+                        (2 * templates.size() + 5 * components.size()));
+
+                int monitorBuffer = 0;
+                for (TemplateUtil template : templates) {
+                    JetBean jetBean = initializeUtilTemplate(template, codeLanguage);
+                    jetBeans.add(jetBean);
+                    monitorBuffer++;
+                    if (monitorBuffer % 100 == 0) {
+                        monitorWrap.worked(100);
+                        monitorBuffer = 0;
+                    }
+                }
+
+                if (components != null) {
+                    ECodePart codePart = ECodePart.MAIN;
+                    for (IComponent component : components) {
+                        // if (component.isTechnical() || component.isVisible()) {
+                        if (component.getAvailableCodeParts().size() > 0) {
+                            initComponent(codeLanguage, jetBeans, codePart, component);
+                        }
+                        // }
+                        monitorBuffer++;
+                        if (monitorBuffer % 100 == 0) {
+                            monitorWrap.worked(100);
+                            monitorBuffer = 0;
+                        }
+                    }
+                }
+                monitorWrap.worked(monitorBuffer);
+
+                initializeEmittersPool(jetBeans, codeLanguage, monitorWrap);
+                monitorWrap.done();
+
+                if (!CommonsPlugin.isHeadless()) {
+                    Display.getDefault().asyncExec(new Runnable() {
+
+                        public void run() {
+                            CorePlugin.getDefault().getDesignerCoreService().synchronizeDesignerUI(
+                                    new PropertyChangeEvent(this, ComponentUtilities.NORMAL, null, null));
+                        }
+
+                    });
+                }
+                log.debug("Components compiled in " + (System.currentTimeMillis() - startTime) + " ms");
+                initialized = true;
+
+                // remove compilations markers
+                ComponentCompilations.deleteMarkers();
+
+            } catch (Exception e) {
+                log.error("Exception during Initialization", e);
+                return new Status(IStatus.ERROR, CodeGeneratorActivator.PLUGIN_ID, "Exception during Initialization", e);
+            } finally {
+                try {
+                    IWorkspace workspace = ResourcesPlugin.getWorkspace();
+                    IProject project = workspace.getRoot().getProject(".JETEmitters");
+                    project.build(IncrementalProjectBuilder.AUTO_BUILD, null);
+                } catch (CoreException e) {
+                    ExceptionHandler.process(e);
+                }
+
+            }
+            if (jetFilesCompileFail.size() > 0) {
+                StringBuilder message = new StringBuilder();
+                for (JetBean tmpJetBean : jetFilesCompileFail) {
+                    if (message.length() > 0) {
+                        message.append(",\r\n").append(tmpJetBean.getTemplateRelativeUri());
+                    } else {
+                        message.append(tmpJetBean.getTemplateRelativeUri());
+                    }
+                }
+                return new Status(IStatus.ERROR, CodeGeneratorActivator.PLUGIN_ID, "Components compile fail : \r\n"
+                        + message.toString());
+            }
+            CorePlugin.getDefault().getRcpService().activeSwitchProjectAction();
+            return Status.OK_STATUS;
+        }
+
+    };
+
+    public static Job initialize() {
+        Job job = new AccessingEmfJob(Messages.getString("CodeGeneratorEmittersPoolFactory.initMessage")) {
+
+            @Override
+            protected IStatus doRun(IProgressMonitor monitor) {
+                synchronized (delegateMonitor) {
+                    if (jobRunnable == null) {
+                        jobRunnable = new JobRunnable("Code generation background thread");
+                        jobRunnable.start();
+                    }
+                }
+
+                delegateMonitor.addDelegate(monitor);
+
+                while (jobRunnable != null && jobRunnable.isAlive()) {
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        // do nothing
+                    }
+                }
+
+                delegateMonitor.clearDelegate();
+
+                synchronized (delegateMonitor) {
+                    jobRunnable = null;
+                }
+
+                return status;
+            }
+            
+        };
+        job.setUser(true);
+        job.setPriority(Job.INTERACTIVE);
+        job.schedule();
+        job.wakeUp(); // start as soon as possible
+
+        return job;
     }
 
     /**
@@ -570,5 +603,66 @@ public final class CodeGeneratorEmittersPoolFactory {
      */
     public static void setInitialized(boolean initialized) {
         CodeGeneratorEmittersPoolFactory.initialized = initialized;
+    }
+
+    /***/
+    private static class DelegateProgressMonitor implements IProgressMonitor {
+
+        private List<IProgressMonitor> delegates = new ArrayList<IProgressMonitor>();
+        
+        private boolean cancelled;
+
+        public void addDelegate(IProgressMonitor progressMonitor) {
+            delegates.add(progressMonitor);
+        }
+
+        public void clearDelegate() {
+            delegates.clear();
+        }
+        
+        public void beginTask(String name, int totalWork) {
+            for (IProgressMonitor delegate : delegates) {
+                delegate.beginTask(name, totalWork);
+            }
+        }
+
+        public void done() {
+            for (IProgressMonitor delegate : delegates) {
+                delegate.done();
+            }
+        }
+
+        public void internalWorked(double work) {
+            for (IProgressMonitor delegate : delegates) {
+                delegate.internalWorked(work);
+            }
+        }
+
+        public boolean isCanceled() {
+            return cancelled;
+        }
+
+        public void setCanceled(boolean cancelled) {
+            this.cancelled = cancelled;
+        }
+
+        public void setTaskName(String name) {
+            for (IProgressMonitor delegate : delegates) {
+                delegate.setTaskName(name);
+            }
+        }
+
+        public void subTask(String name) {
+            for (IProgressMonitor delegate : delegates) {
+                delegate.subTask(name);
+            }
+        }
+
+        public void worked(int work) {
+            for (IProgressMonitor delegate : delegates) {
+                delegate.worked(work);
+            }
+        }
+
     }
 }
