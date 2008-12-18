@@ -1,0 +1,41 @@
+<%@ jet 
+imports="
+    	org.talend.core.model.process.INode 
+    	org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.metadata.IMetadataTable
+		org.talend.core.model.metadata.IMetadataColumn
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.IConnection
+		java.util.List
+		"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+
+String cid = node.getUniqueName();
+%>
+
+int nb_line_<%=cid%> = 0;
+
+<%
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas != null) && (metadatas.size() > 0)) {
+	IMetadataTable metadata = metadatas.get(0);
+	
+	if (metadata != null) {
+		List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
+
+		if (outgoingConns != null && outgoingConns.size() > 0){
+			String endpoint = ElementParameterParser.getValue(node, "__ENDPOINT__");
+			String username = ElementParameterParser.getValue(node, "__USER__");
+			String password = ElementParameterParser.getValue(node, "__PASS__");		
+%>
+			org.talend.salesforce.SforceManagement sfMgr_<%=cid%> = new org.talend.salesforce.SforceManagementImpl();
+			sfMgr_<%=cid%>.login(<%=username%>, <%=password%>, <%=endpoint%>);
+<%
+		}
+	}
+}
+%>
