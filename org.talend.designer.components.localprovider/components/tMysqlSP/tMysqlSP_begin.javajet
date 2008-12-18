@@ -19,7 +19,7 @@ String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
 String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 String dbuser = ElementParameterParser.getValue(node, "__USER__");
 String dbpwd  = ElementParameterParser.getValue(node, "__PASS__");
-String spName = ElementParameterParser.getValue(node, "__SP_NAME__");
+String spName = ElementParameterParser.getValue(node, "__SP_NAME__").toLowerCase().matches("(context|[a-z\\(\\)]*globalmap)\\.[a-z0-9\\(\\)\\\"]+")?ElementParameterParser.getValue(node, "__SP_NAME__"):"\""+ElementParameterParser.getValue(node, "__SP_NAME__")+"\""; //add double quote if it is not a context variable
 boolean isFunction = ElementParameterParser.getValue(node, "__IS_FUNCTION__").equals("true");
 boolean useExistingConn = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__").equals("true");
 List<Map<String, String>> spArgs = (List<Map<String,String>>) ElementParameterParser.getObjectValue(node, "__SP_ARGS__");
@@ -49,7 +49,7 @@ if(useExistingConn) {
 }
 %>
 
-java.sql.CallableStatement statement_<%=cid%> = connection_<%=cid%>.prepareCall("{<%=isFunction ? "? = " : ""%>call <%=spName%>(
+String query_<%=cid %>="{<%=isFunction ? "? = " : ""%>call "+<%=spName%>+"(
 <%
 boolean isFirstArg = true;
 for (int i = 0; i < spArgs.size(); i++) {
@@ -62,7 +62,9 @@ for (int i = 0; i < spArgs.size(); i++) {
 		}
 	}
 }
-%>)}");
+%>)}";
+java.sql.CallableStatement statement_<%=cid%> = connection_<%=cid%>.prepareCall(query_<%=cid %>);
+
 
 java.sql.Date tmpDate_<%=cid%>;
 String tmpString_<%=cid%>;
