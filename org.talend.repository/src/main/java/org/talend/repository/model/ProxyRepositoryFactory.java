@@ -1376,16 +1376,6 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      */
     public void logOnProject(Project project, IProgressMonitor monitorWrap) throws LoginException, PersistenceException,
             OperationCanceledException {
-        // remove the auto-build to enhance the build speed and application's use
-        IWorkspace workspace = ResourcesPlugin.getWorkspace();
-        IWorkspaceDescription description = workspace.getDescription();
-        description.setAutoBuilding(false);
-        try {
-            workspace.setDescription(description);
-        } catch (CoreException e) {
-            // do nothing
-        }
-
         LanguageManager.reset();
         getRepositoryContext().setProject(project);
 
@@ -1393,12 +1383,6 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         monitorWrap.worked(1);
         this.repositoryFactoryFromProvider.beforeLogon(project);
 
-        ComponentsFactoryProvider.getInstance().reset();
-        CorePlugin.getDefault().getLibrariesService().syncLibraries(monitorWrap);
-        if (!CommonsPlugin.isHeadless()) {
-            CorePlugin.getDefault().getCodeGeneratorService().initializeTemplates();
-        }
-        
         IMigrationToolService service = (IMigrationToolService) GlobalServiceRegister.getDefault().getService(
                 IMigrationToolService.class);
         service.executeProjectTasks(project, true, monitorWrap);
@@ -1417,7 +1401,24 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         monitorWrap.setTaskName(Messages.getString("ProxyRepositoryFactory.synchronizeLibraries")); //$NON-NLS-1$
         monitorWrap.worked(1);
 
+        CorePlugin.getDefault().getLibrariesService().syncLibraries(monitorWrap);
+
         service.executeProjectTasks(project, false, monitorWrap);
+
+        ComponentsFactoryProvider.getInstance().reset();
+        if (!CommonsPlugin.isHeadless()) {
+            CorePlugin.getDefault().getCodeGeneratorService().initializeTemplates();
+        }
+
+        // remove the auto-build to enhance the build speed and application's use
+        IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        IWorkspaceDescription description = workspace.getDescription();
+        description.setAutoBuilding(false);
+        try {
+            workspace.setDescription(description);
+        } catch (CoreException e) {
+            // do nothing
+        }
     }
 
     public boolean setAuthorByLogin(Item item, String login) throws PersistenceException {
