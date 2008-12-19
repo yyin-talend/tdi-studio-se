@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.CompoundSnapToHelper;
 import org.eclipse.gef.EditPolicy;
@@ -89,6 +90,11 @@ public class NodeContainerPart extends AbstractGraphicalEditPart implements Prop
             nodeContainerFigure.setAlpha(Node.ALPHA_VALUE);
         }
         nodeContainerFigure.updateStatus(node.getStatus());
+
+        // add description as the tooltip
+        if (node.getComponent() != null && node.getComponent().getLongName() != null) {
+            nodeContainerFigure.setToolTip(new Label(node.getComponent().getLongName()));
+        }
         return nodeContainerFigure;
     }
 
