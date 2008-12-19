@@ -35,6 +35,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
@@ -1393,9 +1394,11 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         this.repositoryFactoryFromProvider.beforeLogon(project);
 
         ComponentsFactoryProvider.getInstance().reset();
-        CorePlugin.getDefault().getCodeGeneratorService().initializeTemplates();
         CorePlugin.getDefault().getLibrariesService().syncLibraries(monitorWrap);
-
+        if (!CommonsPlugin.isHeadless()) {
+            CorePlugin.getDefault().getCodeGeneratorService().initializeTemplates();
+        }
+        
         IMigrationToolService service = (IMigrationToolService) GlobalServiceRegister.getDefault().getService(
                 IMigrationToolService.class);
         service.executeProjectTasks(project, true, monitorWrap);
