@@ -1933,7 +1933,8 @@ public class Process extends Element implements IProcess2 {
      * @see org.talend.core.model.process.IRepositoryProcess#setStatus(org.talend.core.model.process.EProcessStatus)
      */
     public void setStatusCode(String statusCode) {
-        if (!getProperty().getStatusCode().equals(statusCode)) {
+        if (getProperty().getStatusCode() == null && statusCode != null
+               || getProperty().getStatusCode() != null && !getProperty().getStatusCode().equals(statusCode)) {
             getProperty().setStatusCode(statusCode);
         }
         setPropertyValue(EParameterName.STATUS.getName(), statusCode);
