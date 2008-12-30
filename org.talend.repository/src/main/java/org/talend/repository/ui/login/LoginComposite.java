@@ -561,6 +561,7 @@ public class LoginComposite extends Composite {
                 if (!manageViewer.getSelection().isEmpty()) {
                     IStructuredSelection sel = (IStructuredSelection) manageViewer.getSelection();
                     item = (ManageItem) sel.getFirstElement();
+
                 }
                 item.run();
             }
@@ -577,6 +578,7 @@ public class LoginComposite extends Composite {
             populateProjectList();
             selectProject(project);
         }
+        validateProject();
     }
 
     public void importProjects() {
