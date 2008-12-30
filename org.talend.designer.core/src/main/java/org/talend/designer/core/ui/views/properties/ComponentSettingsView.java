@@ -39,7 +39,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.part.ViewPart;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
-import org.talend.core.CorePlugin;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
@@ -540,9 +539,7 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
                         && !((Node) elem).getComponent().getName().endsWith("Map")
                         && !((Node) elem).getComponent().getName().endsWith("TableList")
                         && !((Node) elem).getComponent().getName().endsWith("ColumnList")) {
-                    if (CorePlugin.getDefault().useSQLPattern()) {
-                        return EElementType.ELT_NODE.getCategories();
-                    }
+                    return EElementType.ELT_NODE.getCategories();
                 }
             }
             return EElementType.ADVANCED_NODE.getCategories();
