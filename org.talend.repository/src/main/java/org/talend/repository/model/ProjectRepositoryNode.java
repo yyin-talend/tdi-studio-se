@@ -19,7 +19,6 @@ import org.eclipse.emf.common.util.EList;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.RuntimeExceptionHandler;
 import org.talend.commons.utils.data.container.Container;
-import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.language.ECodeLanguage;
@@ -164,13 +163,11 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             codeNode.getChildren().add(snippetsNode);
         }
 
-        if (CorePlugin.getDefault().useSQLPattern()) {
-            // 5. Sql patterns
-            sqlPatternNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-            sqlPatternNode.setProperties(EProperties.LABEL, ERepositoryObjectType.SQLPATTERNS);
-            sqlPatternNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.SQLPATTERNS);
-            nodes.add(sqlPatternNode);
-        }
+        // 5. Sql patterns
+        sqlPatternNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+        sqlPatternNode.setProperties(EProperties.LABEL, ERepositoryObjectType.SQLPATTERNS);
+        sqlPatternNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.SQLPATTERNS);
+        nodes.add(sqlPatternNode);
 
         // 6. Documentation
         docNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
@@ -268,14 +265,11 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             metadataEbcdicConnectionNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_EBCDIC);
             metadataNode.getChildren().add(metadataEbcdicConnectionNode);
         }
-        if (getParent() == null) {// && PluginChecker.isJobLetPluginLoaded()) {
-            if (CorePlugin.getDefault().useRefproject()) {
-                // 1.0 Referenced projects
-                refProject = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-                refProject.setProperties(EProperties.LABEL, ERepositoryObjectType.REFERENCED_PROJECTS);
-                refProject.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.REFERENCED_PROJECTS);
-                nodes.add(refProject);
-            }
+        if (PluginChecker.isTIS()) {
+            refProject = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+            refProject.setProperties(EProperties.LABEL, ERepositoryObjectType.REFERENCED_PROJECTS);
+            refProject.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.REFERENCED_PROJECTS);
+            nodes.add(refProject);
         }
     }
 
