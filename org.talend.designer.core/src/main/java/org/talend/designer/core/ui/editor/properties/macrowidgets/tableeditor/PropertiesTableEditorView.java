@@ -42,6 +42,8 @@ import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.metadata.IEbcdicConstant;
+import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
@@ -279,10 +281,15 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                                     Map<String, Object> valueMap = (Map<String, Object>) bean;
                                     String value = (String) valueMap.get(IEbcdicConstant.FIELD_SCHEMA);
                                     if (value != null && !"".equals(value)) { //$NON-NLS-1$
-                                        if (isRepositorySchemaLine(node, valueMap)) {
-                                            return "Repository (" + value + ")"; //$NON-NLS-1$ //$NON-NLS-2$
-                                        } else {
-                                            return "Built-In (" + value + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+                                        IMetadataTable metadataTable = MetadataTool.getMetadataTableFromNode(node, value);
+                                        if (metadataTable != null) {
+                                            if (isRepositorySchemaLine(node, valueMap)) {
+                                                return "Repository (" + metadataTable.getTableName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+                                            } else {
+                                                return "Built-In (" + metadataTable.getTableName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+                                            }
+                                        }else{
+                                            return value;
                                         }
                                     }
                                 }

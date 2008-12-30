@@ -41,11 +41,15 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.PluginChecker;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
 import org.talend.core.properties.tab.IDynamicProperty;
+import org.talend.core.ui.IEBCDICProviderService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
@@ -303,6 +307,14 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
                                 Object value = curLine.get(param.getName());
                                 if (value instanceof String) {
                                     String connectionName = (String) curLine.get(param.getName());
+                                    if (PluginChecker.isEBCDICPluginLoaded() && elem instanceof INode) {
+                                        IEBCDICProviderService service = (IEBCDICProviderService) GlobalServiceRegister
+                                                .getDefault().getService(IEBCDICProviderService.class);
+                                        if (service != null && service.isEbcdicNode((INode) elem)) {
+                                            // not changed
+                                            return;
+                                        }
+                                    }
                                     if (connectionName.equals(oldConnectionName)) {
                                         curLine.put(param.getName(), newConnectionName);
                                     }
