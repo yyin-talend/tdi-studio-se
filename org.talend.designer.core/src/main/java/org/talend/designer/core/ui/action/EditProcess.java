@@ -28,6 +28,7 @@ import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.utils.VersionUtils;
+import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -88,7 +89,10 @@ public class EditProcess extends AContextualAction {
 
         Property updatedProperty = null;
         try {
-            updatedProperty = ProxyRepositoryFactory.getInstance().getUptodateProperty(property);
+
+            updatedProperty = ProxyRepositoryFactory.getInstance().getUptodateProperty(
+                    new Project(ProjectManager.getInstance().getProject(property.getItem())), property);
+
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);
         }
