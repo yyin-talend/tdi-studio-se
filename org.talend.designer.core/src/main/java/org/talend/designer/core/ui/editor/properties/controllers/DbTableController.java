@@ -125,7 +125,8 @@ public class DbTableController extends AbstractElementPropertySectionController 
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createControl()
+     * @see
+     * org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createControl()
      */
     @Override
     public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
@@ -486,7 +487,8 @@ public class DbTableController extends AbstractElementPropertySectionController 
         try {
             ConnectionStatus testConnection = ExtractMetaDataFromDataBase.testConnection(metadataConnection.getDbType(),
                     metadataConnection.getUrl(), metadataConnection.getUsername(), metadataConnection.getPassword(),
-                    metadataConnection.getSchema(), metadataConnection.getDriverClass(), metadataConnection.getDriverJarPath());
+                    metadataConnection.getSchema(), metadataConnection.getDriverClass(), metadataConnection.getDriverJarPath(),
+                    metadataConnection.getDbVersionString());
             connParameters.setConnectionComment(testConnection.getMessageException());
 
             if (EDatabaseTypeName.ACCESS.getDisplayName().equals(connParameters.getDbType())) {
@@ -503,8 +505,9 @@ public class DbTableController extends AbstractElementPropertySectionController 
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite,
-     * org.talend.core.model.process.IElementParameter)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize
+     * (org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
      */
     @Override
     public int estimateRowSize(Composite subComposite, IElementParameter param) {
