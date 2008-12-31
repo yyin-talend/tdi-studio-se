@@ -122,9 +122,15 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
     %>
         
     java.util.Calendar calendar_<%=cid %> = java.util.Calendar.getInstance();
+    java.util.Calendar calendarYear0_<%=cid%> = java.util.Calendar.getInstance();
+    
     calendar_<%=cid %>.set(1, 0, 1, 0, 0, 0);
-    final java.util.Date dateYear0_<%=cid%> = calendar_<%=cid%>.getTime();
-    final long year1_<%=cid %> = dateYear0_<%=cid%>.getTime();
+    calendarYear0_<%=cid%>.set(0,0,0,0,0,0);
+    
+    final java.util.Date dateYear0_<%=cid%> = calendarYear0_<%=cid%>.getTime();
+    final long year1_<%=cid %> = calendar_<%=cid %>.getTime().getTime();
+    
+    
     calendar_<%=cid %>.set(10000, 0, 1, 0, 0, 0);
     final long year10000_<%=cid %> = calendar_<%=cid %>.getTime().getTime();
     long date_<%=cid %> = 0;    
