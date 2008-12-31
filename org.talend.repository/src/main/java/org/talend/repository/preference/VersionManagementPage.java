@@ -10,7 +10,7 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.repository.ui.dialog;
+package org.talend.repository.preference;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -52,7 +51,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
@@ -81,14 +79,46 @@ import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.nodes.IProjectRepositoryNode;
+import org.talend.repository.ui.dialog.ItemsVersionConfirmDialog;
 import org.talend.repository.ui.views.CheckboxRepositoryTreeViewer;
 import org.talend.repository.ui.views.RepositoryCheckBoxView;
 import org.talend.repository.ui.views.RepositoryView;
 
 /**
- * ggu class global comment. Detailled comment
+ * DOC aimingchen class global comment. Detailled comment
  */
-public class VersionManagementDialog extends Dialog {
+public class VersionManagementPage extends ProjectSettingPage {
+
+    private Button versionBtn;
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.preference.PreferencePage#createContents(org.eclipse.swt.widgets.Composite)
+     */
+    @Override
+    protected Control createContents(Composite parent) {
+        Composite composite = new Composite(parent, 0);
+        ThreeCompositesSashForm compositesSachForm = new ThreeCompositesSashForm(composite, SWT.NONE);
+        GridLayout gridLayout = new GridLayout(1, false);
+        gridLayout.marginHeight = 0;
+        gridLayout.marginWidth = 0;
+        gridLayout.horizontalSpacing = 0;
+        composite.setLayout(gridLayout);
+        GridData gridData = new GridData(GridData.FILL_BOTH);
+        gridData.heightHint = 400;
+        gridData.widthHint = 570;
+        composite.setLayoutData(gridData);
+
+        //
+        addRepositoryTreeViewer(compositesSachForm.getLeftComposite());
+
+        addButtons(compositesSachForm.getMidComposite());
+
+        addItemTableViewer(compositesSachForm.getRightComposite());
+
+        return composite;
+    }
 
     private static final String TITLE = Messages.getString("VersionManagementDialog.Title"); //$NON-NLS-1$
 
@@ -119,42 +149,6 @@ public class VersionManagementDialog extends Dialog {
     private Button eachVersionBtn;
 
     private List<ItemVersionObject> checkedObjects = new ArrayList<ItemVersionObject>();
-
-    public VersionManagementDialog(Shell parentShell, Project project) {
-        super(parentShell);
-        setShellStyle(getShellStyle() | SWT.RESIZE | SWT.MAX);
-        this.project = project;
-    }
-
-    @Override
-    protected void configureShell(Shell newShell) {
-        super.configureShell(newShell);
-        newShell.setText(TITLE);
-    }
-
-    @Override
-    protected Control createDialogArea(Composite parent) {
-        Composite composite = (Composite) super.createDialogArea(parent);
-        ThreeCompositesSashForm compositesSachForm = new ThreeCompositesSashForm(composite, SWT.NONE);
-        GridLayout gridLayout = new GridLayout(1, false);
-        gridLayout.marginHeight = 0;
-        gridLayout.marginWidth = 0;
-        gridLayout.horizontalSpacing = 0;
-        composite.setLayout(gridLayout);
-        GridData gridData = new GridData(GridData.FILL_BOTH);
-        gridData.heightHint = 400;
-        gridData.widthHint = 570;
-        composite.setLayoutData(gridData);
-
-        //
-        addRepositoryTreeViewer(compositesSachForm.getLeftComposite());
-
-        addButtons(compositesSachForm.getMidComposite());
-
-        addItemTableViewer(compositesSachForm.getRightComposite());
-
-        return composite;
-    }
 
     /**
      * repository tree viewer.
@@ -705,7 +699,18 @@ public class VersionManagementDialog extends Dialog {
         return this.checkedObjects;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.preference.PreferencePage#performApply()
+     */
     @Override
+    protected void performApply() {
+        // TODO Auto-generated method stub
+        super.performApply();
+        okPressed();
+    }
+
     protected void okPressed() {
         boolean modified = false;
         String newVersion = maxVersionText.getText();
@@ -736,14 +741,14 @@ public class VersionManagementDialog extends Dialog {
 
             if (confirm) {
                 updateItemsVersion();
-                super.okPressed();
+
             }
         } else {
             if (!getModifiedVersionItems().isEmpty()) {
                 MessageDialog.openWarning(getShell(), Messages.getString("VersionManagementDialog.WarningTitle"), //$NON-NLS-1$
                         Messages.getString("VersionManagementDialog.WarningMessages")); //$NON-NLS-1$
             }
-            super.okPressed();
+
         }
 
     }

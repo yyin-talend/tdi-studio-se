@@ -16,17 +16,10 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
-import org.talend.core.CorePlugin;
-import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
-import org.talend.core.model.properties.User;
-import org.talend.core.model.properties.UserRole;
 import org.talend.repository.ui.actions.AContextualAction;
-import org.talend.repository.ui.wizards.ProjectSettingsWizard;
+import org.talend.repository.ui.dialog.ProjectSettingDialog;
 
 /**
  * DOC qwei class global comment. Detailled comment
@@ -78,6 +71,7 @@ public class ProjectSettingsAction extends AContextualAction implements IWorkben
     public void run(IAction action) {
         // TODO Auto-generated method stub
         run();
+
     }
 
     /*
@@ -91,21 +85,32 @@ public class ProjectSettingsAction extends AContextualAction implements IWorkben
     }
 
     public void run() {
-        User user = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getUser();
-        UserRole role = user.getRole();
+        // User user = ((RepositoryContext)
+        // CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getUser();
+        // UserRole role = user.getRole();
+        //
+        // // TODO decide if the current user can execute this action, you can also use the method selectionChanged() to
+        // // set the IAction enable or not
+        //
+        // // if(isTIS && !isAdmin){
+        // // tell the user he has no right to execute this;
+        // // return;
+        // // }
+        //
+        // ProjectSettingsWizard wizard = new ProjectSettingsWizard();
+        // WizardDialog dialog = new WizardDialog(Display.getCurrent().getActiveShell(), wizard);
+        // dialog.open();
 
-        // TODO decide if the current user can execute this action, you can also use the method selectionChanged() to
-        // set the IAction enable or not
-
-        // if(isTIS && !isAdmin){
-        // tell the user he has no right to execute this;
-        // return;
-        // }
-
-        ProjectSettingsWizard wizard = new ProjectSettingsWizard();
-        WizardDialog dialog = new WizardDialog(Display.getCurrent().getActiveShell(), wizard);
-        dialog.open();
-
+        // modify by achen fix bug 0005990
+        run2();
     }
 
+    /**
+     * 
+     * DOC aimingchen Comment method "run2".
+     */
+    public void run2() {
+        ProjectSettingDialog dialog = new ProjectSettingDialog();
+        dialog.open();
+    }
 }

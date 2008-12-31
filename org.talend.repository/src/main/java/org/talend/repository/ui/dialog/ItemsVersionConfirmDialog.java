@@ -34,7 +34,7 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.ui.dialog.VersionManagementDialog.ItemVersionObject;
+import org.talend.repository.model.ItemVersionObject;
 
 /**
  * ggu class global comment. Detailled comment
@@ -45,7 +45,7 @@ public class ItemsVersionConfirmDialog extends Dialog {
 
     private List<ItemVersionObject> modifiedVersionItems;
 
-    protected ItemsVersionConfirmDialog(Shell parentShell, List<ItemVersionObject> modifiedVersionItems) {
+    public ItemsVersionConfirmDialog(Shell parentShell, List<ItemVersionObject> modifiedVersionItems) {
         super(parentShell);
         this.modifiedVersionItems = modifiedVersionItems;
     }

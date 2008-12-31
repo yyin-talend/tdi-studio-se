@@ -2,6 +2,7 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension-point id="toolbar_creation" name="toolbar creation action" schema="schema/toolbar_creation.exsd"/>
+   <extension-point id="projectsetting_page" name="Project Setting Page" schema="schema/projectsetting_page.exsd"/>
    <extension
          point="org.eclipse.ui.views">
       <view
@@ -1064,6 +1065,33 @@
       <initializer
             class="org.talend.repository.preference.RepositoryPreferenceInitializer">
       </initializer>
+   </extension>
+   <extension
+         point="org.talend.repository.projectsetting_page">
+      <page
+            class="org.talend.repository.preference.GeneralProjectSettingPage"
+            id="general"
+            order="0"
+            title="%projectsetting.General">
+      </page>
+      <page
+            category="general"
+            class="org.talend.repository.preference.VersionManagementPage"
+            id="org.talend.repository.preference.VersionManagementPage"
+            title="%projectsetting.VersionManagement">
+      </page>
+      <page
+            class="org.talend.repository.preference.BlankProjectSettingPage"
+            id="designer"
+            order="1"
+            title="%projectsetting.Designer">
+      </page>
+      <page
+            category="designer"
+            class="org.talend.repository.preference.PaletteSettingPage"
+            id="org.talend.repository.preference.PaletteSettingPage"
+            title="%projectsetting.PaletteSettings">
+      </page>
    </extension>
 
 </plugin>
