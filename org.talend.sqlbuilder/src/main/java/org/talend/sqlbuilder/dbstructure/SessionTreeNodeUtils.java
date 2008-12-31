@@ -144,7 +144,8 @@ public class SessionTreeNodeUtils {
         IMetadataConnection iMetadataConnection = ConvertionHelper.convert(con);
         ExtractMetaDataUtils.getConnection(iMetadataConnection.getDbType(), iMetadataConnection.getUrl(), iMetadataConnection
                 .getUsername(), iMetadataConnection.getPassword(), iMetadataConnection.getDatabase(), iMetadataConnection
-                .getSchema(), iMetadataConnection.getDriverClass(), iMetadataConnection.getDriverJarPath());
+                .getSchema(), iMetadataConnection.getDriverClass(), iMetadataConnection.getDriverJarPath(), iMetadataConnection
+                .getDbVersionString());
         SQLConnection sqlConnection = new SQLConnection(ExtractMetaDataUtils.conn, null);
         return sqlConnection;
     }

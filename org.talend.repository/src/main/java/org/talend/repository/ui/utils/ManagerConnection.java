@@ -12,15 +12,10 @@
 // ============================================================================
 package org.talend.repository.ui.utils;
 
-import java.io.File;
-
 import org.apache.log4j.Logger;
-import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.builder.database.ConnectionStatus;
-import org.talend.core.model.metadata.builder.database.EDatabaseDriver4Version;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
-import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.repository.i18n.Messages;
 
 /**
@@ -122,36 +117,14 @@ public class ManagerConnection {
     public boolean check() {
         messageException = null;
         try {
-            // see feature 4720&4722
-            if ((driverJarPath == null || driverJarPath.equals("")) && this.dbVersionString != null) {
-                driverJarPath = getJavaLibPath() + EDatabaseDriver4Version.getDriverByVersion(dbVersionString);
-                driverClassName = getDBJdbcDriverName();
-            }
-
             ConnectionStatus testConnection = ExtractMetaDataFromDataBase.testConnection(dbTypeString, urlConnectionString,
-                    username, password, schemaOracle, driverClassName, driverJarPath);
+                    username, password, schemaOracle, driverClassName, driverJarPath, dbVersionString);
             isValide = testConnection.getResult();
             messageException = testConnection.getMessageException();
         } catch (Exception e) {
             log.error(Messages.getString("CommonWizard.exception") + "\n" + e.toString()); //$NON-NLS-1$ //$NON-NLS-2$
         }
         return isValide;
-    }
-
-    private String getDBJdbcDriverName() {
-        return ExtractMetaDataUtils.getDriverClassByDbType(dbTypeString);
-    }
-
-    /**
-     * 
-     * DOC YeXiaowei Comment method "getJavaLibPath".
-     * 
-     * @return
-     */
-    private String getJavaLibPath() {
-        String separator = File.separator;
-        String javaLibPath = CorePlugin.getDefault().getLibrariesService().getJavaLibrariesPath();
-        return javaLibPath + separator;
     }
 
     /**
@@ -165,20 +138,11 @@ public class ManagerConnection {
             setDbRootPath(metadataConnection.getDbRootPath());
         }
 
-        if ((metadataConnection.getDriverJarPath() == null || metadataConnection.getDriverJarPath().equals(""))
-                && metadataConnection.getDbVersionString() != null) {
-            metadataConnection.setDriverJarPath(getJavaLibPath()
-                    + EDatabaseDriver4Version.getDriverByVersion(metadataConnection.getDbVersionString()));
-            if (dbTypeString == null) {
-                dbTypeString = metadataConnection.getDbType();
-            }
-            metadataConnection.setDriverClass(getDBJdbcDriverName());
-        }
-
         try {
             ConnectionStatus testConnection = ExtractMetaDataFromDataBase.testConnection(metadataConnection.getDbType(),
                     metadataConnection.getUrl(), metadataConnection.getUsername(), metadataConnection.getPassword(),
-                    metadataConnection.getSchema(), metadataConnection.getDriverClass(), metadataConnection.getDriverJarPath());
+                    metadataConnection.getSchema(), metadataConnection.getDriverClass(), metadataConnection.getDriverJarPath(),
+                    metadataConnection.getDbVersionString());
             isValide = testConnection.getResult();
             messageException = testConnection.getMessageException();
         } catch (Exception e) {
