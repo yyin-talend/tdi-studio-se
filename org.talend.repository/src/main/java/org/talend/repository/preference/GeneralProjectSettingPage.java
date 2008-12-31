@@ -94,11 +94,12 @@ public class GeneralProjectSettingPage extends ProjectSettingPage {
     }
 
     protected void apply() {
-        if (descriptionText.getText().equals(pro.getEmfProject().getDescription())) {
-            return;
+        if (descriptionText != null) {
+            if (descriptionText.getText().equals(pro.getEmfProject().getDescription())) {
+                return;
+            }
+            pro.getEmfProject().setDescription(descriptionText.getText());
         }
-
-        pro.getEmfProject().setDescription(descriptionText.getText());
         IProxyRepositoryFactory prf = CorePlugin.getDefault().getProxyRepositoryFactory();
 
         try {

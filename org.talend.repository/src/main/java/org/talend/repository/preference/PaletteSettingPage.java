@@ -61,13 +61,13 @@ public class PaletteSettingPage extends ProjectSettingPage {
 
     private static final String FAMILY_SPEARATOR = "--FAMILY--";
 
-    private static final String DIALOG_TITLE = "Palette Settings";
+    // private static final String DIALOG_TITLE = "Palette Settings";
 
     private static final boolean RESTORE = true;
 
     private TreeViewer hiddenViewer, displayViewer;
 
-    private Project project;
+    private Project project = pro;
 
     private Button leftButton;
 
@@ -106,7 +106,7 @@ public class PaletteSettingPage extends ProjectSettingPage {
     }
 
     private void init() {
-        this.project = pro;
+        // this.project = pro;
         List<ComponentSetting> c = getComponentsFromProject();
         for (ComponentSetting componentSetting : c) {
             statusBackup.put(componentSetting.getFamily() + FAMILY_SPEARATOR + componentSetting.getName(), !componentSetting
@@ -383,6 +383,18 @@ public class PaletteSettingPage extends ProjectSettingPage {
         // TODO Auto-generated method stub
         super.performApply();
         okPressed();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.preference.PreferencePage#performOk()
+     */
+    @Override
+    public boolean performOk() {
+        // TODO Auto-generated method stub
+        okPressed();
+        return super.performOk();
     }
 
     protected void okPressed() {

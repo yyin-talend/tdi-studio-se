@@ -711,7 +711,21 @@ public class VersionManagementPage extends ProjectSettingPage {
         okPressed();
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.preference.PreferencePage#performOk()
+     */
+    @Override
+    public boolean performOk() {
+        okPressed();
+        return super.performOk();
+    }
+
     protected void okPressed() {
+        if (maxVersionText == null) {
+            return;
+        }
         boolean modified = false;
         String newVersion = maxVersionText.getText();
         for (ItemVersionObject object : getModifiedVersionItems()) {
