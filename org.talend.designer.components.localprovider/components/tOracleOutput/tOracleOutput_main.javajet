@@ -96,6 +96,9 @@ skeleton="../templates/db_output_bulk.skeleton"
                 if(column.isInsertable()) {
                     String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
                     String dbType = column.getColumn().getType();
+                    if( null == dbType) {
+                    	dbType="";
+                    }
                     %>
                     <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, dbType, column, counter, incomingConnName, cid, NORMAL_TYPE)%>
                     <%
