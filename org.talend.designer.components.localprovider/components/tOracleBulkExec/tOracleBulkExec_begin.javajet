@@ -82,7 +82,6 @@ if(data_action.equals("UPDATE")) {
 java.sql.Connection conn_<%=cid %> = null;
 String serviceUrl_<%=cid %> = null;
 String host_<%=cid %> = null;
-String port_<%=cid %> = null;
 String dbname_<%=cid %> = null;
 String dbschema_<%=cid %> = null;
 String username_<%=cid %> = null;
@@ -100,29 +99,27 @@ if(useExistingConn.equals("true")) {
     String existPassword = "password_" + connection;
     %>
     host_<%=cid%> = (String)globalMap.get("<%=existHost%>");
-    port_<%=cid%> = (String)globalMap.get("<%=existPort%>");
     dbname_<%=cid%> = (String)globalMap.get("<%=existDbName%>");
     dbschema_<%=cid%> = (String)globalMap.get("<%=existDbSchema%>");
     username_<%=cid%> = (String)globalMap.get("<%=existUsername%>");
     password_<%=cid%> = (String)globalMap.get("<%=existPassword%>");
-    serviceUrl_<%=cid%> = "(description=(address=(protocol=tcp)(host=" + host_<%=cid%> + ")(port=" + port_<%=cid%> + "))(connect_data=(service_name=" + dbname_<%=cid%> + ")))";
+    serviceUrl_<%=cid%> = "(description=(address=(protocol=tcp)(host=" + host_<%=cid%> + ")(port=" + <%=port%> + "))(connect_data=(service_name=" + dbname_<%=cid%> + ")))";
     conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
     <%
 } else {
     %>
     String url_<%=cid%> = null;
     host_<%=cid%> = <%=host%>;
-    port_<%=cid%> = <%=port%>;
     dbname_<%=cid%> = <%=dbname%>;
     dbschema_<%=cid%> = <%=dbschema%>;
     username_<%=cid%> = <%=dbuser%>;
     password_<%=cid%> = <%=dbpass%>;
-    serviceUrl_<%=cid%> = "(description=(address=(protocol=tcp)(host=" + host_<%=cid%> + ")(port=" + port_<%=cid%> + "))(connect_data=(service_name=" + dbname_<%=cid%> + ")))";    
+    serviceUrl_<%=cid%> = "(description=(address=(protocol=tcp)(host=" + host_<%=cid%> + ")(port=" + <%=port%> + "))(connect_data=(service_name=" + dbname_<%=cid%> + ")))";    
     <%
     String connectionType = ElementParameterParser.getValue(node, "__CONNECTION_TYPE__");
     if(connectionType.equals("ORACLE_SID")) {
         %>
-        url_<%=cid%> = "jdbc:oracle:thin:@" + host_<%=cid%> + ":" + port_<%=cid%> + ":" + dbname_<%=cid%>;
+        url_<%=cid%> = "jdbc:oracle:thin:@" + host_<%=cid%> + ":" + <%=port%> + ":" + dbname_<%=cid%>;
         <%
     } else if(connectionType.equals("ORACLE_SERVICE_NAME")) {
         %>
@@ -326,7 +323,7 @@ if(use_existing_clt_file.equals("true")) {
     %>
     String dataf_<%=cid %> = <%=dataFile %>;
     
-    String cltf_<%=cid %> = dataf_<%=cid %> + ".ctl";
+    String cltf_<%=cid %> = dataf_<%=cid %> + ".clt";
     
     String badf_<%=cid %> = dataf_<%=cid %> + ".bad";
     
