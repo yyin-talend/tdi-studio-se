@@ -19,8 +19,12 @@
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
+
+String host=ElementParameterParser.getValue(node, "__SERVER__");
+String batchRow=ElementParameterParser.getValue(node,"__BATCHROW__");
+
 String bcpUtility  = ElementParameterParser.getValue(node, "__BCP_UTILITY__");
-String server = ElementParameterParser.getValue(node, "__SERVER__");
+String server = ElementParameterParser.getValue(node, "__SERVERNAME__");
 String port = ElementParameterParser.getValue(node, "__PORT__");
 String database = ElementParameterParser.getValue(node, "__DBNAME__");
 String user = ElementParameterParser.getValue(node, "__USER__");
@@ -71,7 +75,7 @@ if(useExistingConn) {
 	<%
 } else {       
     %>
-    String host_<%=cid%> = <%=server%>;
+    String host_<%=cid%> = <%=host%>;
     String port_<%=cid%> = <%=port%>;
     String db_<%=cid%> = <%=database%>;
     String user_<%=cid%> = <%=user%>;
@@ -174,12 +178,22 @@ String headRow_<%=cid%> = <%=headRow%>;
 if(headRow_<%=cid%> != null && headRow_<%=cid%>.trim().length() > 0) {
     command_<%=cid %>.append(" -F " + headRow_<%=cid%>);
 }
+
+<%if(batchRow!=null && !batchRow.trim().equals("")){%>
+	command_<%=cid %>.append(" -b " + <%=batchRow %>);
+<%
+}
+%>
+
 command_<%=cid %>.append(" -t " + <%=fieldTerminator%>);
 command_<%=cid %>.append(" -r " + <%=rowTerminator%>);
 command_<%=cid %>.append(" -c -U " + user_<%=cid%> + " -P " + pass_<%=cid%>);
-if(host_<%=cid%> != null && host_<%=cid%>.trim().length() > 0) {
-    command_<%=cid %>.append(" -S " + host_<%=cid%>);
-}
+
+<% if(server != null && server.trim().length() > 0) {%>
+    command_<%=cid %>.append(" -S " + <%=server %>);
+<%}else{%>
+	command_<%=cid %>.append(" -S " + host_<%=cid %>);
+<%}%>
 String encoding_<%=cid%> = "<%=encoding%>";
 if(encoding_<%=cid%> != null && encoding_<%=cid%>.trim().length() > 0) {
     command_<%=cid %>.append(" -J " + encoding_<%=cid%>);
