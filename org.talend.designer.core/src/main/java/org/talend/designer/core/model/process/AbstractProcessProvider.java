@@ -176,6 +176,17 @@ public abstract class AbstractProcessProvider {
     }
 
     /**
+     * DOC qli Comment method "isExtensionProcess".
+     * 
+     * @param process
+     * 
+     * @return
+     */
+    public boolean isJobletInputOrOutputComponent(Node node) {
+        return false;
+    }
+
+    /**
      * DOC qzhang Comment method "isExtensionProcess".
      * 
      * @param process

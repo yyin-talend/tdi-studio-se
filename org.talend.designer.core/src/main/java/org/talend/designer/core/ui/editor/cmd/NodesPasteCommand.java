@@ -44,6 +44,7 @@ import org.talend.core.model.process.IProcess;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
+import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.connections.Connection;
@@ -285,6 +286,26 @@ public class NodesPasteCommand extends Command {
         if (curNodeProcess != null) {
             for (INode node : curNodeProcess.getGraphicalNodes()) {
                 if (node == copiedNode) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * DOC qli Comment method "isForbidden".
+     * 
+     * @param process
+     * @return
+     */
+    private boolean isForbidden() {
+        AbstractProcessProvider findProcessProviderFromPID = AbstractProcessProvider
+                .findProcessProviderFromPID(IComponent.JOBLET_PID);
+        if (findProcessProviderFromPID != null) {
+            for (NodePart copiedNodePart : nodeParts) {
+                Node copiedNode = (Node) copiedNodePart.getModel();
+                if (findProcessProviderFromPID.isJobletInputOrOutputComponent(copiedNode)) {
                     return true;
                 }
             }
@@ -654,6 +675,15 @@ public class NodesPasteCommand extends Command {
     @SuppressWarnings("unchecked")
     @Override
     public void execute() {
+        // qli comment
+        // Call the method "isForbidden",if the result is true,create a messageBox and return.
+        if (isForbidden()) {
+            MessageBox messagebox = new MessageBox(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.ICON_WARNING);
+            messagebox.setText("Warning!");
+            messagebox.setMessage("Can't paste the Joblet specal component(INPUT/OUTPUT).");
+            messagebox.open();
+            return;
+        }
         // create the node container list to paste
         createNodeContainerList();
         AbstractMultiPageTalendEditor multiPageTalendEditor = (AbstractMultiPageTalendEditor) PlatformUI.getWorkbench()
