@@ -520,6 +520,7 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
             image = ImageProvider.getImage(EImage.PASTE_ICON);
         }
         tabFactory.setTitle(label, image);
+        super.setTitleToolTip(label);
     }
 
     /**
