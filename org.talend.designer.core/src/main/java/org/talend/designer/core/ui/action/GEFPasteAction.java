@@ -19,20 +19,26 @@ import java.util.List;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.ui.actions.Clipboard;
 import org.eclipse.gef.ui.actions.SelectionAction;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
+import org.talend.core.model.components.IComponent;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.MultiplePasteCommand;
 import org.talend.designer.core.ui.editor.cmd.NodesPasteCommand;
 import org.talend.designer.core.ui.editor.cmd.NotesPasteCommand;
 import org.talend.designer.core.ui.editor.connections.ConnLabelEditPart;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
+import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodeLabelEditPart;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.notes.NoteEditPart;
@@ -150,6 +156,7 @@ public class GEFPasteAction extends SelectionAction {
             List<NodePart> nodeParts = new ArrayList<NodePart>();
             List<NoteEditPart> noteParts = new ArrayList<NoteEditPart>();
             List<SubjobContainerPart> subjobParts = new ArrayList<SubjobContainerPart>();
+
             for (Object o : partsList) {
                 if (o instanceof NodePart) {
                     if (!nodeParts.contains(o)) {
@@ -169,6 +176,24 @@ public class GEFPasteAction extends SelectionAction {
                             }
                             subjobParts.add(subjob);
                         }
+                    }
+                }
+            }
+
+            // qli comment
+            // if the components instanceof JobletInputOutputComponent,just create a messageBox and return.
+            AbstractProcessProvider findProcessProviderFromPID = AbstractProcessProvider
+                    .findProcessProviderFromPID(IComponent.JOBLET_PID);
+            if (findProcessProviderFromPID != null) {
+                for (NodePart copiedNodePart : nodeParts) {
+                    Node copiedNode = (Node) copiedNodePart.getModel();
+                    if (findProcessProviderFromPID.isJobletInputOrOutputComponent(copiedNode)) {
+                        MessageBox messagebox = new MessageBox(PlatformUI.getWorkbench().getDisplay().getActiveShell(),
+                                SWT.ICON_WARNING);
+                        messagebox.setText("Warning!");
+                        messagebox.setMessage(Messages.getString("GEFPasteAction.warningMessages"));
+                        messagebox.open();
+                        return;
                     }
                 }
             }
