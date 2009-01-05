@@ -54,13 +54,29 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 		java.util.List<jxl.Sheet> sheetList_<%= cid %> = new java.util.ArrayList<jxl.Sheet>();
 		jxl.Sheet sh_<%=cid%> = null;
+		
+		java.util.List<jxl.Sheet> sheets_<%= cid %> = null;
+		class RegexUtil {
+	    	public List<jxl.Sheet> getSheets(jxl.Workbook workbook, String regex) {
+		        jxl.Sheet[] sheets = workbook.getSheets();
+		        java.util.List<jxl.Sheet> list = new java.util.ArrayList<jxl.Sheet>();
+		        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(regex);
+		        for (int i = 0; i < sheets.length; i++) {
+		            String sheetName = sheets[i].getName();
+		            java.util.regex.Matcher matcher = pattern.matcher(sheetName);
+		            if (matcher.matches()) {
+		                list.add(workbook.getSheet(sheetName));
+		            }
+		        }
+		        return list;
+		    }
+		}
 <%
 			for(Map<String, String> tmp:sheetNameList){
 %>
-		sh_<%=cid%> = workbook_<%= cid %>.getSheet(<%=tmp.get("SHEETNAME")%>);
-        if (sh_<%=cid%> != null) {
-            sheetList_<%= cid %>.add(sh_<%=cid%>);
-        }
+				sheets_<%= cid %> = new java.util.ArrayList<jxl.Sheet>();
+				sheets_<%= cid %> = new RegexUtil().getSheets(workbook_<%= cid %>,<%=tmp.get("SHEETNAME")%>);
+				sheetList_<%= cid %>.addAll(sheets_<%= cid %>);
 <%
 			}
 		}
