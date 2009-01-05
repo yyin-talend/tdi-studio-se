@@ -19,6 +19,7 @@ import java.net.URL;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.IColorProvider;
@@ -34,6 +35,7 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
+import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.DocumentationItem;
@@ -44,10 +46,13 @@ import org.talend.core.model.properties.LinkDocumentationItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.IRepositoryPrefConstants;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.ICDCProviderService;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.images.OverlayImageProvider;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.model.ECDCStatus;
 import org.talend.repository.model.ERepositoryStatus;
@@ -75,6 +80,8 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
     private static final Color LOCKED_ENTRY = new Color(null, 200, 0, 0);
 
     private IRepositoryView view;
+
+    private boolean mergeRefProject = false;
 
     public RepositoryLabelProvider(IRepositoryView view) {
         super();
@@ -129,10 +136,21 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
             default:
                 break;
             }
+            String label = getText(object.getProperty());
 
-            return getText(object.getProperty());
+            org.talend.core.model.general.Project mainProject = ProjectManager.getInstance().getCurrentProject();
+            org.talend.core.model.properties.Project emfproject = ProjectManager.getInstance().getProject(
+                    object.getProperty().getItem());
+
+            if (!mainProject.getLabel().equals(emfproject.getLabel()) && getMergeRefProject()) {
+                Project project = new Project(emfproject);
+                label = label + " (@" + project.getLabel() + ")";
+            }
+
+            return label;
         } else {
-            return node.getLabel();
+            String label = node.getLabel();
+            return label;
         }
     }
 
@@ -346,5 +364,11 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
         default:
             return JFaceResources.getFontRegistry().defaultFont();
         }
+    }
+
+    public boolean getMergeRefProject() {
+        IPreferenceStore preferenceStore = RepositoryManager.getPreferenceStore();
+        this.mergeRefProject = preferenceStore.getBoolean(IRepositoryPrefConstants.MERGE_REFERENCE_PROJECT);
+        return this.mergeRefProject;
     }
 }

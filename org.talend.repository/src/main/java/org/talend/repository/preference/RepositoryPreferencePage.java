@@ -18,6 +18,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.IWorkbench;
@@ -26,6 +27,7 @@ import org.talend.commons.ui.swt.preferences.CheckBoxFieldEditor;
 import org.talend.core.model.repository.IRepositoryPrefConstants;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.ui.views.IRepositoryView;
 
 /**
  * ggu class global comment. Detailled comment
@@ -40,6 +42,8 @@ public class RepositoryPreferencePage extends FieldEditorPreferencePage implemen
 
     private CheckBoxFieldEditor deletingRefreshEditor;
 
+    private CheckBoxFieldEditor mergingReferenceProject;
+
     public RepositoryPreferencePage() {
         super(GRID);
     }
@@ -51,7 +55,10 @@ public class RepositoryPreferencePage extends FieldEditorPreferencePage implemen
      */
     @Override
     protected void createFieldEditors() {
-        Group refreshGroup = new Group(getFieldEditorParent(), SWT.NULL);
+        Composite comp = new Composite(getFieldEditorParent(), SWT.NULL);
+        comp.setLayout(new GridLayout());
+
+        Group refreshGroup = new Group(comp, SWT.NULL);
         refreshGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         refreshGroup.setText(Messages.getString("RepositoryPreferencePage.RefreshTitle")); //$NON-NLS-1$
 
@@ -79,10 +86,16 @@ public class RepositoryPreferencePage extends FieldEditorPreferencePage implemen
                 childGroup);
         GridDataFactory.swtDefaults().indent(10, 0).applyTo(deletingRefreshEditor.getButton());
 
+        mergingReferenceProject = new CheckBoxFieldEditor(IRepositoryPrefConstants.MERGE_REFERENCE_PROJECT, Messages
+                .getString("RepositoryPreferencePage.ReferenceProjectMerged"), //$NON-NLS-1$
+                comp);
+        GridDataFactory.swtDefaults().indent(10, 0).applyTo(mergingReferenceProject.getButton());
+
         addField(manuallyRefreshEditor);
         addField(creatingRefreshEditor);
         addField(savingRefreshEditor);
         addField(deletingRefreshEditor);
+        addField(mergingReferenceProject);
 
         addListeners();
     }
@@ -120,4 +133,10 @@ public class RepositoryPreferencePage extends FieldEditorPreferencePage implemen
         setPreferenceStore(RepositoryManager.getPreferenceStore());
     }
 
+    @Override
+    public void dispose() {
+        super.dispose();
+        IRepositoryView view = RepositoryManager.getRepositoryView();
+        view.refresh();
+    }
 }

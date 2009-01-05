@@ -34,6 +34,7 @@ public class RepositoryPreferenceInitializer extends AbstractPreferenceInitializ
         preferenceStore.setDefault(IRepositoryPrefConstants.CREATING_REFRESH, true);
         preferenceStore.setDefault(IRepositoryPrefConstants.SAVING_REFRESH, true);
         preferenceStore.setDefault(IRepositoryPrefConstants.DELETING_REFRESH, true);
+        preferenceStore.setDefault(IRepositoryPrefConstants.MERGE_REFERENCE_PROJECT, true);
     }
 
 }

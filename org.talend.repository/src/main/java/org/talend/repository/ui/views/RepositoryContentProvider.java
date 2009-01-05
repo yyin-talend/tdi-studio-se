@@ -78,6 +78,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
 
         if (!repositoryNode.isInitialized()) {
             if (repositoryNode.getParent() instanceof ProjectRepositoryNode) {
+                // initialize repository from main project
                 ((ProjectRepositoryNode) repositoryNode.getParent()).initializeChildren(parent);
             }
             repositoryNode.setInitialized(true);
