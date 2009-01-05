@@ -38,6 +38,24 @@
     />
 
     <PARAMETER
+      NAME="INCLUDE"
+      FIELD="RADIO"
+      NUM_ROW="11"
+      GROUP="MODE"
+    >
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="EXCLUDE"
+      FIELD="RADIO"
+      NUM_ROW="12"
+      GROUP="MODE"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
       NAME="INFO_RANGE"
       FIELD="LABEL"
       REQUIRED="false"
