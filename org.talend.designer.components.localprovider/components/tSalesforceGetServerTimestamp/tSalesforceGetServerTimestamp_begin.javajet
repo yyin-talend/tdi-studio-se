@@ -14,10 +14,29 @@ imports="
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 
+	boolean useProxy = ElementParameterParser.getValue(node,"__USE_PROXY__").equals("true");
+	String proxyHost = ElementParameterParser.getValue(node,"__PROXY_HOST__");
+   	String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
+   	String proxyUsername = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
+   	String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
+
 String cid = node.getUniqueName();
 %>
 
 int nb_line_<%=cid%> = 0;
+
+<%
+if(useProxy){
+%>
+    java.util.Properties props = System.getProperties();
+    props.put("socksProxyHost",<%=proxyHost %>);  
+    props.put("socksProxyPort",<%=proxyPort %>);
+    props.put("java.net.socks.username", <%=proxyUsername %>);
+    props.put("java.net.socks.password", <%=proxyPassword %>); 
+    
+<%
+}
+%>
 
 <%
 List<IMetadataTable> metadatas = node.getMetadataList();
