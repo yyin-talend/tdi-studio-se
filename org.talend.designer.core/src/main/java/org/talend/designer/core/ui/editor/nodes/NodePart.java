@@ -2,7 +2,7 @@
 //
 // Copyright (C) 2006-2007 Talend Inc. - www.talend.com
 //
-// This source code is available under agreement available at
+// This source code is available under agreement availe at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
 //
 // You should have received a copy of the agreement
@@ -207,9 +207,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
         } else {
             nodeFigure.setStart(false);
         }
-        if (((Node) getModel()).isSetShowHint()) {
-            nodeFigure.setHint(((Node) getModel()).getShowHintText());
-        }
+        nodeFigure.setHint(((Node) getModel()).getShowHintText());
 
         nodeFigure.setDummy(((Node) getModel()).isDummy());
         if (((INode) getModel()).isActivate()) {
@@ -287,11 +285,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                 refreshVisuals();
             }
         } else if (changeEvent.getPropertyName().equals(EParameterName.HINT.getName())) {
-            if (((Node) getModel()).isSetShowHint()) {
-                ((NodeFigure) figure).setHint(((Node) getModel()).getShowHintText());
-            } else {
-                ((NodeFigure) figure).setHint(""); //$NON-NLS-1$
-            }
+            ((NodeFigure) figure).setHint(((Node) getModel()).getShowHintText());
             needUpdateSubjob = true;
         } else if (changeEvent.getPropertyName().equals(EParameterName.CONNECTION_FORMAT.getName())) {
             Node node = (Node) getModel();

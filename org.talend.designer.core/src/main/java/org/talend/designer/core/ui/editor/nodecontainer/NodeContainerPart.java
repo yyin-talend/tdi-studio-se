@@ -90,11 +90,6 @@ public class NodeContainerPart extends AbstractGraphicalEditPart implements Prop
             nodeContainerFigure.setAlpha(Node.ALPHA_VALUE);
         }
         nodeContainerFigure.updateStatus(node.getStatus());
-
-        // add description as the tooltip
-        if (node.getComponent() != null && node.getComponent().getLongName() != null) {
-            nodeContainerFigure.setToolTip(new Label(node.getComponent().getLongName()));
-        }
         return nodeContainerFigure;
     }
 

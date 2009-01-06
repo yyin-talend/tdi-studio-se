@@ -138,8 +138,6 @@ public class Node extends Element implements INode {
 
     private IComponent component;
 
-    private boolean showHint;
-
     private String showHintText;
 
     private String connectionName;
@@ -218,8 +216,6 @@ public class Node extends Element implements INode {
         labelToParse = store.getString(TalendDesignerPrefConstants.DEFAULT_LABEL);
         hintToParse = store.getString(TalendDesignerPrefConstants.DEFAULT_HINT);
         connectionToParse = store.getString(TalendDesignerPrefConstants.DEFAULT_CONNECTION_FORMAT);
-        showHint = store.getBoolean(TalendDesignerPrefConstants.DEFAULT_HINT_USED);
-
         if (nodeLabel == null) {
             nodeLabel = new NodeLabel(label, this);
         }
@@ -327,7 +323,6 @@ public class Node extends Element implements INode {
             setPropertyValue(EParameterName.LABEL.getName(), labelToParse);
             setPropertyValue(EParameterName.HINT.getName(), hintToParse);
             setPropertyValue(EParameterName.CONNECTION_FORMAT.getName(), connectionToParse);
-            setPropertyValue(EParameterName.SHOW_HINT.getName(), new Boolean(showHint));
         }
         pluginFullName = newComponent.getPluginFullName();
         if (pluginFullName != IComponentsFactory.COMPONENTS_LOCATION) {
@@ -436,20 +431,9 @@ public class Node extends Element implements INode {
         return listConnectors;
     }
 
-    public void setShowHint(final Boolean showHint) {
-        this.showHint = showHint;
-        firePropertyChange(EParameterName.HINT.getName(), null, null);
-
-        IElementParameter param = getElementParameter(EParameterName.SHOW_HINT.getName());
-        param.setValue(new Boolean(showHint));
-    }
-
-    public boolean isSetShowHint() {
-        return showHint;
-    }
-
     public void setShowHintText(final String showHintText) {
         this.showHintText = showHintText;
+
         firePropertyChange(EParameterName.HINT.getName(), null, null);
     }
 
@@ -1020,9 +1004,6 @@ public class Node extends Element implements INode {
         if (id.equals(EParameterName.UNIQUE_NAME.getName())) {
             parameter.setValue(value);
             setUniqueName((String) value);
-        }
-        if (id.equals(EParameterName.SHOW_HINT.getName())) {
-            setShowHint((Boolean) value);
         }
 
         final String processPrefix = "PROCESS:";
