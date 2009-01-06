@@ -179,27 +179,29 @@ public class GEFPasteAction extends SelectionAction {
                     }
                 }
             }
+            AbstractTalendEditor editor = (AbstractTalendEditor) this.getWorkbenchPart();
+            org.eclipse.draw2d.geometry.Point gefPoint = getCursorLocation();
 
             // qli comment
-            // if the components instanceof JobletInputOutputComponent,just create a messageBox and return.
+            // if the components instanceof JobletInputOutputComponent and current process instanceof not
+            // JobletGEFProcess,just create a messageBox and return.
             AbstractProcessProvider findProcessProviderFromPID = AbstractProcessProvider
                     .findProcessProviderFromPID(IComponent.JOBLET_PID);
             if (findProcessProviderFromPID != null) {
                 for (NodePart copiedNodePart : nodeParts) {
                     Node copiedNode = (Node) copiedNodePart.getModel();
                     if (findProcessProviderFromPID.isJobletInputOrOutputComponent(copiedNode)) {
-                        MessageBox messagebox = new MessageBox(PlatformUI.getWorkbench().getDisplay().getActiveShell(),
-                                SWT.ICON_WARNING);
-                        messagebox.setText("Warning!");
-                        messagebox.setMessage(Messages.getString("GEFPasteAction.warningMessages"));
-                        messagebox.open();
-                        return;
+                        if (!findProcessProviderFromPID.isExtensionProcess(editor.getProcess())) {
+                            MessageBox messagebox = new MessageBox(PlatformUI.getWorkbench().getDisplay().getActiveShell(),
+                                    SWT.ICON_WARNING);
+                            messagebox.setText("Warning!");
+                            messagebox.setMessage(Messages.getString("GEFPasteAction.warningMessages"));
+                            messagebox.open();
+                            return;
+                        }
                     }
                 }
             }
-
-            AbstractTalendEditor editor = (AbstractTalendEditor) this.getWorkbenchPart();
-            org.eclipse.draw2d.geometry.Point gefPoint = getCursorLocation();
 
             if (nodeParts.size() != 0 && noteParts.size() != 0) {
                 MultiplePasteCommand mpc = new MultiplePasteCommand(nodeParts, noteParts,

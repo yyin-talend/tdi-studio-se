@@ -187,13 +187,13 @@ public abstract class AbstractProcessProvider {
     }
 
     /**
-     * DOC qzhang Comment method "isExtensionProcess".
+     * DOC qli Comment method "isExtensionProcess".
      * 
      * @param process
      * 
      * @return
      */
-    protected boolean isExtensionProcess(IProcess process) {
+    public boolean isExtensionProcess(IProcess process) {
         return false;
     }
 
