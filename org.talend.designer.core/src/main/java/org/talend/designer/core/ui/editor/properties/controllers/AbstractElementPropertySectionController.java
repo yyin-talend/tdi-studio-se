@@ -800,8 +800,11 @@ public abstract class AbstractElementPropertySectionController implements Proper
                     String text;
                     if (textControl instanceof StyledText) {
                         text = ((StyledText) textControl).getText() + (String) event.data;
+                        ((StyledText) textControl).setText(text);
+
                     } else {
                         text = ((Text) textControl).getText() + (String) event.data;
+                        ((Text) textControl).setText(text);
                     }
                     Command cmd = new PropertyChangeCommand(elem, propertyName, text);
                     // getCommandStack().execute(cmd);

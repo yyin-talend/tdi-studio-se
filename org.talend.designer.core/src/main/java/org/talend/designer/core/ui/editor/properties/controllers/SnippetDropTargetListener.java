@@ -73,17 +73,22 @@ public class SnippetDropTargetListener implements TransferDropTargetListener {
 
     public void dragOver(DropTargetEvent event) {
         RepositoryNode sourceNode = getSelection();
-        ENodeType type = sourceNode.getType();
-        if (type.equals(ENodeType.SIMPLE_FOLDER)) {
-            event.detail = DND.DROP_NONE;
+        if (sourceNode != null) {
+            ENodeType type = sourceNode.getType();
+            if (type.equals(ENodeType.SIMPLE_FOLDER)) {
+                event.detail = DND.DROP_NONE;
+            }
         }
     }
 
     private RepositoryNode getSelection() {
         LocalSelectionTransfer transfer = (LocalSelectionTransfer) getTransfer();
         IStructuredSelection selection = (IStructuredSelection) transfer.getSelection();
-        RepositoryNode node = (RepositoryNode) selection.getFirstElement();
-        return node;
+        if (selection != null) {
+            RepositoryNode node = (RepositoryNode) selection.getFirstElement();
+            return node;
+        }
+        return null;
     }
 
     public void drop(DropTargetEvent event) {

@@ -65,7 +65,7 @@ public class NodeReturnsTreeEditPart extends AbstractTreeEditPart {
         // }
         // }
         currentEditPart = this;
-        super.setSelected(0);
+        super.setSelected(value);
     }
 
     TransferDragSourceListener dragDropListener = new TransferDragSourceListener() {
@@ -122,8 +122,8 @@ public class NodeReturnsTreeEditPart extends AbstractTreeEditPart {
      * 
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      *//*
-         * public void propertyChange(PropertyChangeEvent change) { refreshVisuals(); }
-         */
+        * public void propertyChange(PropertyChangeEvent change) { refreshVisuals(); }
+        */
 
     /*
      * (non-Javadoc)
