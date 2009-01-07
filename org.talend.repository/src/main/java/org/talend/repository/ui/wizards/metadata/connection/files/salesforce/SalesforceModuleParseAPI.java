@@ -88,7 +88,7 @@ public class SalesforceModuleParseAPI {
         this.url = endPoint;
     }
 
-    private void doLogin(String endPoint, String userName, String pwd) throws RemoteException, ServiceException,
+    protected SoapBindingStub couldLogin(String endPoint, String userName, String pwd) throws RemoteException, ServiceException,
             MalformedURLException {
 
         URL soapAddress = new java.net.URL(endPoint);
@@ -97,11 +97,24 @@ public class SalesforceModuleParseAPI {
         loginResult = binding.login(userName, pwd);
         setLogin(true);
 
-        // System.out.println("Login was successfull.");
-        // System.out.print("The returned session id is: ");
-        // System.out.println(loginResult.getSessionId());
-        // System.out.print("Your logged in user id is: ");
-        // System.out.println(loginResult.getUserId() + " \n\n");
+        binding._setProperty(SoapBindingStub.ENDPOINT_ADDRESS_PROPERTY, loginResult.getServerUrl());
+
+        SessionHeader sh = new SessionHeader();
+
+        sh.setSessionId(loginResult.getSessionId());
+        String sforceURI = new SforceServiceLocator().getServiceName().getNamespaceURI();
+        binding.setHeader(sforceURI, "SessionHeader", sh);
+        return binding;
+    }
+
+    protected void doLogin(String endPoint, String userName, String pwd) throws RemoteException, ServiceException,
+            MalformedURLException {
+
+        URL soapAddress = new java.net.URL(endPoint);
+        binding = (SoapBindingStub) new SforceServiceLocator().getSoap(soapAddress);
+
+        loginResult = binding.login(userName, pwd);
+        setLogin(true);
 
         // on a successful login, you should always set up your session id
         // and the url for subsequent calls
@@ -353,4 +366,5 @@ public class SalesforceModuleParseAPI {
     public void setCurrentMetadataColumns(List<IMetadataColumn> currentMetadataColumns) {
         this.currentMetadataColumns = currentMetadataColumns;
     }
+
 }
