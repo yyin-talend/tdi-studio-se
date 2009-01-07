@@ -19,7 +19,6 @@ import java.net.URL;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.IColorProvider;
@@ -46,9 +45,8 @@ import org.talend.core.model.properties.LinkDocumentationItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
-import org.talend.core.model.repository.IRepositoryPrefConstants;
-import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.ICDCProviderService;
+import org.talend.core.ui.IReferencedProjectService;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.images.OverlayImageProvider;
@@ -81,8 +79,6 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
 
     private IRepositoryView view;
 
-    private boolean mergeRefProject = false;
-
     public RepositoryLabelProvider(IRepositoryView view) {
         super();
         this.view = view;
@@ -95,7 +91,7 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
         if (ERepositoryObjectType.getItemType(property.getItem()) != ERepositoryObjectType.FOLDER) {
             string.append(" " + property.getVersion()); //$NON-NLS-1$
         }
-
+        // nodes in the recycle bin
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         if (factory.getStatus(property.getItem()) == ERepositoryStatus.DELETED) {
             String oldPath = property.getItem().getState().getPath();
@@ -106,7 +102,6 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
         // if (object.getType() != ERepositoryObjectType.FOLDER) {
         // string.append(" [" + factory.getStatus(object.getProperty().getItem()) + "]");
         // }
-
         return string.toString();
     }
 
@@ -122,6 +117,10 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
             if (object == null) {
                 return node.getLabel();
             }
+            org.talend.core.model.properties.Project mainProject = ProjectManager.getInstance().getCurrentProject()
+                    .getEmfProject();
+            org.talend.core.model.properties.Project emfproject = ProjectManager.getInstance().getProject(
+                    object.getProperty().getItem());
 
             // TODO SML remove this table rustine
             switch (object.getType()) {
@@ -132,19 +131,30 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
             case METADATA_CON_VIEW:
             case METADATA_CON_CDC:
             case METADATA_SAP_FUNCTION:
-                return object.getLabel();
+                String label = object.getLabel();
+                if (!mainProject.equals(emfproject) && PluginChecker.isRefProjectLoaded()) {
+
+                    IReferencedProjectService service = (IReferencedProjectService) GlobalServiceRegister.getDefault()
+                            .getService(IReferencedProjectService.class);
+                    if (service != null && service.isMergeRefProject()) {
+                        Project project = new Project(emfproject);
+                        label = label + " (@" + project.getLabel() + ")";
+                    }
+
+                }
+                return label;
             default:
                 break;
             }
             String label = getText(object.getProperty());
+            if (!mainProject.equals(emfproject) && PluginChecker.isRefProjectLoaded()) {
+                IReferencedProjectService service = (IReferencedProjectService) GlobalServiceRegister.getDefault().getService(
+                        IReferencedProjectService.class);
+                if (service != null && service.isMergeRefProject()) {
+                    Project project = new Project(emfproject);
+                    label = label + " (@" + project.getLabel() + ")";
+                }
 
-            org.talend.core.model.general.Project mainProject = ProjectManager.getInstance().getCurrentProject();
-            org.talend.core.model.properties.Project emfproject = ProjectManager.getInstance().getProject(
-                    object.getProperty().getItem());
-
-            if (!mainProject.getLabel().equals(emfproject.getLabel()) && getMergeRefProject()) {
-                Project project = new Project(emfproject);
-                label = label + " (@" + project.getLabel() + ")";
             }
 
             return label;
@@ -366,9 +376,4 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
         }
     }
 
-    public boolean getMergeRefProject() {
-        IPreferenceStore preferenceStore = RepositoryManager.getPreferenceStore();
-        this.mergeRefProject = preferenceStore.getBoolean(IRepositoryPrefConstants.MERGE_REFERENCE_PROJECT);
-        return this.mergeRefProject;
-    }
 }

@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.talend.commons.ui.swt.preferences.CheckBoxFieldEditor;
+import org.talend.core.PluginChecker;
 import org.talend.core.model.repository.IRepositoryPrefConstants;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.repository.i18n.Messages;
@@ -86,16 +87,17 @@ public class RepositoryPreferencePage extends FieldEditorPreferencePage implemen
                 childGroup);
         GridDataFactory.swtDefaults().indent(10, 0).applyTo(deletingRefreshEditor.getButton());
 
-        mergingReferenceProject = new CheckBoxFieldEditor(IRepositoryPrefConstants.MERGE_REFERENCE_PROJECT, Messages
-                .getString("RepositoryPreferencePage.ReferenceProjectMerged"), //$NON-NLS-1$
-                comp);
-        GridDataFactory.swtDefaults().indent(10, 0).applyTo(mergingReferenceProject.getButton());
-
+        if (PluginChecker.isRefProjectLoaded()) {
+            mergingReferenceProject = new CheckBoxFieldEditor(IRepositoryPrefConstants.MERGE_REFERENCE_PROJECT, Messages
+                    .getString("RepositoryPreferencePage.ReferenceProjectMerged"), //$NON-NLS-1$
+                    comp);
+            GridDataFactory.swtDefaults().indent(10, 0).applyTo(mergingReferenceProject.getButton());
+            addField(mergingReferenceProject);
+        }
         addField(manuallyRefreshEditor);
         addField(creatingRefreshEditor);
         addField(savingRefreshEditor);
         addField(deletingRefreshEditor);
-        addField(mergingReferenceProject);
 
         addListeners();
     }

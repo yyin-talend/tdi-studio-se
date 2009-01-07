@@ -272,8 +272,9 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             metadataNode.getChildren().add(metadataEbcdicConnectionNode);
         }
 
-        // hide this one if preference on Standard view (not tree of ref projects)
-        if (PluginChecker.isTIS() && getParent() == null && !getMergeRefProject()) {
+        // Reference Projects
+        if (PluginChecker.isTIS() && getParent() == null && !getMergeRefProject()
+                && project.getEmfProject().getReferencedProjects().size() > 0) {
             refProject = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
             refProject.setProperties(EProperties.LABEL, ERepositoryObjectType.REFERENCED_PROJECTS);
             refProject.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.REFERENCED_PROJECTS);
@@ -641,10 +642,6 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         // not folder
         for (Object obj : fromModel.getMembers()) {
             IRepositoryObject repositoryObject = (IRepositoryObject) obj;
-            Project pp = ProjectManager.getInstance().getProject(repositoryObject.getProperty().getItem());
-            if (!pp.equals(this.project.getEmfProject())) {
-                pp.toString();
-            }
             addNode(parent, type, recBinNode, repositoryObject);
         }
     }
