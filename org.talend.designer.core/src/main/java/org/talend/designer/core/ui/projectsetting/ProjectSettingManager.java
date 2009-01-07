@@ -1,0 +1,677 @@
+// ============================================================================
+//
+// Copyright (C) 2006-2007 Talend Inc. - www.talend.com
+//
+// This source code is available under agreement available at
+// %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
+//
+// You should have received a copy of the agreement
+// along with this program; if not, write to Talend SA
+// 9 rue Pages 92150 Suresnes, France
+//
+// ============================================================================
+package org.talend.designer.core.ui.projectsetting;
+
+import java.util.List;
+import java.util.Map;
+
+import org.eclipse.gef.commands.CommandStack;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.CorePlugin;
+import org.talend.core.context.Context;
+import org.talend.core.context.RepositoryContext;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
+import org.talend.core.model.general.Project;
+import org.talend.core.model.metadata.builder.connection.Connection;
+import org.talend.core.model.process.EComponentCategory;
+import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.Element;
+import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.ImplicitContextSettings;
+import org.talend.core.model.properties.PropertiesFactory;
+import org.talend.core.model.properties.StatAndLogsSettings;
+import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.model.components.ElementParameter;
+import org.talend.designer.core.model.components.EmfComponent;
+import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants;
+import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants.ContextLoadInfo;
+import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
+import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
+import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
+import org.talend.designer.core.ui.preferences.StatsAndLogsConstants;
+import org.talend.designer.core.ui.views.jobsettings.ExtraComposite;
+import org.talend.designer.core.ui.views.jobsettings.ImplicitContextLoadHelper;
+import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsComposite;
+import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.ui.views.RepositoryContentProvider;
+import org.talend.repository.ui.views.RepositoryView;
+
+/**
+ * DOC aimingchen class global comment. Detailled comment
+ */
+public class ProjectSettingManager extends Utils {
+
+    private static final String IMPLICIT_GROUP = "IMPLICIT_GROUP";
+
+    // public static final String CONNECTION_ITEM_LABEL = "_CONNECTION_ITEM_LABEL";
+
+    private static final String CONTEXTLOAD_CONDITION = EParameterName.IMPLICIT_TCONTEXTLOAD.getName() + " == 'true'"; //$NON-NLS-1$
+
+    private static IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
+
+    private static String languagePrefix = LanguageManager.getCurrentLanguage().toString() + "_";
+
+    public static void saveProject() {
+        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
+                Context.REPOSITORY_CONTEXT_KEY);
+        IProxyRepositoryFactory prf = CorePlugin.getDefault().getProxyRepositoryFactory();
+        try {
+            prf.saveProject(repositoryContext.getProject());
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+    }
+
+    /**
+     * 
+     * Load ImplicitContextLoad Preference setting to Project only Load Once
+     * 
+     * @param pro
+     */
+    private static void loadImplicitContextLoadPreferenceToProject(Project pro) {
+
+        TalendFileFactory talendF = TalendFileFactory.eINSTANCE;
+
+        ImplicitContextSettings implicit = PropertiesFactory.eINSTANCE.createImplicitContextSettings();
+        pro.getEmfProject().setImplicitContextSettings(implicit);
+        implicit.setParameters(talendF.createParametersType());
+
+        ParametersType pType = implicit.getParameters();
+        Element elem = pro.getInitialContextLoad();
+        if (elem == null) {
+            elem = new ImplicitContextLoadElement();
+            ProjectSettingManager.createImplicitContextLoadParameters((ImplicitContextLoadElement) elem);
+            pro.setInitialContextLoad(elem);
+        }
+        ElementParameter2ParameterType.saveElementParameters(elem, pType);
+    }
+
+    /**
+     * 
+     * create implicitContextLoad Element for project
+     * 
+     * @param pro
+     * @return
+     */
+    public static Element createImplicitContextLoadElement(Project pro) {
+        ImplicitContextSettings implicit = pro.getEmfProject().getImplicitContextSettings();
+        if (implicit == null) {
+            loadImplicitContextLoadPreferenceToProject(pro);
+        }
+        Element elem = pro.getInitialContextLoad();
+        if (elem == null) {
+            elem = new ImplicitContextLoadElement();
+            ProjectSettingManager.createImplicitContextLoadParameters((ImplicitContextLoadElement) elem);
+            pro.setInitialContextLoad(elem);
+        }
+        return elem;
+    }
+
+    /**
+     * 
+     * create StatsAndLogsElement for project
+     * 
+     * @param pro
+     * @return
+     */
+    public static Element createStatsAndLogsElement(Project pro) {
+        StatAndLogsSettings stats = pro.getEmfProject().getStatAndLogsSettings();
+        // load Project's StatsAndLogsSetting to StatsAndLogsElement
+        if (stats == null) {
+            StatsAndLogsHelper.loadPreferenceToProject(pro);
+        }
+        Element elem = pro.getStatsAndLog();
+        if (elem == null) {
+            elem = new StatsAndLogsElement();
+            StatsAndLogsHelper.createStatsAndLogsParameters((StatsAndLogsElement) elem);
+            pro.setStatsAndLog(elem);
+        }
+        return elem;
+    }
+
+    public static void saveStatsAndLogToProjectSettings(Element process, Project pro) {
+        createStatsAndLogsElement(pro);
+        ParametersType stats = pro.getEmfProject().getStatAndLogsSettings().getParameters();
+        // load the project settings to process
+        ElementParameter2ParameterType.saveElementParameters(process, stats);
+        saveProject();
+    }
+
+    public static void saveImplicitValuesToProjectSettings(Element process, Project pro) {
+        createImplicitContextLoadElement(pro);
+        ParametersType implicitType = pro.getEmfProject().getImplicitContextSettings().getParameters();
+        // load the project settings to process
+        ElementParameter2ParameterType.saveElementParameters(process, implicitType);
+        saveProject();
+    }
+
+    public static void reloadStatsAndLogFromProjectSettings(Element process, Project pro, StatsAndLogsComposite statsComposite) {
+        createStatsAndLogsElement(pro);
+        ParametersType stats = pro.getEmfProject().getStatAndLogsSettings().getParameters();
+        // load the project settings to process
+        ElementParameter2ParameterType.loadElementParameters(process, stats);
+        // change repository item
+        // TODO
+        // StatsAndLogsHelper.changeRepositoryConnection(process, statsComposite);
+    }
+
+    public static void reloadImplicitValuesFromProjectSettings(Element process, Project pro, ExtraComposite extraComposite) {
+
+        createImplicitContextLoadElement(pro);
+        ParametersType implicitType = pro.getEmfProject().getImplicitContextSettings().getParameters();
+
+        // load the project settings to process
+        ElementParameter2ParameterType.loadElementParameters(process, implicitType);
+        // TODO
+        // changeImplicitContextRepositoryItem(process, extraComposite);
+    }
+
+    static void changeImplicitContextRepositoryItem(Element process, ExtraComposite extraComposite) {
+        // change repository item
+        String propertyType = (String) ElementParameter2ParameterType.getParameterValue(process, JobSettingsConstants
+                .getExtraParameterName(EParameterName.PROPERTY_TYPE.getName()));
+
+        String id = (String) (ElementParameter2ParameterType.getParameterValue(process, EParameterName.PROPERTY_TYPE.getName()));
+
+        String connectionLabel = (String) (ElementParameter2ParameterType.getParameterValue(process,
+                EParameterName.REPOSITORY_PROPERTY_TYPE.getName()));
+
+        RepositoryContentProvider contentProvider = (RepositoryContentProvider) RepositoryView.show().getViewer()
+                .getContentProvider();
+        RepositoryNode repositoryNode = (contentProvider).getMetadataConNode();
+        IElementParameter elementParameter = process.getElementParameter(ImplicitContextLoadHelper
+                .getExtraParameterName(EParameterName.PROPERTY_TYPE));
+        IElementParameter parameterRepositoryType = elementParameter.getChildParameters().get(
+                EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+        if (parameterRepositoryType != null) {
+            parameterRepositoryType.setLinkedRepositoryItem(ImplicitContextLoadHelper.findConnectionItemByLabel(contentProvider,
+                    repositoryNode, connectionLabel));
+        }
+
+        Connection repositoryConnection = null;
+        Map<String, ConnectionItem> repositoryConnectionItemMap = extraComposite.getRepositoryConnectionItemMap();
+
+        if (repositoryConnectionItemMap.containsKey(id)) {
+            repositoryConnection = repositoryConnectionItemMap.get(id).getConnection();
+        } else {
+            repositoryConnection = null;
+        }
+        ChangeValuesFromRepository cmd1 = new ChangeValuesFromRepository(process, repositoryConnection, ImplicitContextLoadHelper
+                .getExtraParameterName(EParameterName.PROPERTY_TYPE)
+                + ":" + EParameterName.PROPERTY_TYPE.getName(), propertyType);
+
+        ChangeValuesFromRepository cmd2 = new ChangeValuesFromRepository(process, repositoryConnection, ImplicitContextLoadHelper
+                .getExtraParameterName(EParameterName.PROPERTY_TYPE)
+                + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), id);
+        cmd2.setMaps(extraComposite.getRepositoryTableMap());
+
+        AbstractMultiPageTalendEditor part = ((org.talend.designer.core.ui.editor.process.Process) process).getEditor();
+        if (part instanceof AbstractMultiPageTalendEditor) {
+            Object adapter = (part).getTalendEditor().getAdapter(CommandStack.class);
+            if (adapter != null) {
+                CommandStack commandStack = ((CommandStack) adapter);
+                commandStack.execute(cmd1);
+                commandStack.execute(cmd2);
+            }
+        }
+    }
+
+    /**
+     * 
+     * create parameter for ImplicitContextLoad.
+     */
+    private static void createImplicitContextLoadParameters(Element elem) {
+        ElementParameter param;
+        List<IElementParameter> paramList = (List<IElementParameter>) elem.getElementParameters();
+
+        param = new ElementParameter(elem);
+        param.setName(EParameterName.UPDATE_COMPONENTS.getName());
+        param.setValue(Boolean.FALSE);
+        param.setDisplayName(EParameterName.UPDATE_COMPONENTS.getDisplayName());
+        param.setField(EParameterFieldType.CHECK);
+        param.setCategory(EComponentCategory.STATSANDLOGS);
+        param.setNumRow(1);
+        param.setReadOnly(true);
+        param.setRequired(false);
+        param.setShow(false);
+        paramList.add(param);
+
+        param = new ElementParameter(elem);
+        param.setName(EParameterName.IMPLICIT_TCONTEXTLOAD.getName());
+        param.setValue(preferenceStore.getBoolean(getPreferenceName(EParameterName.IMPLICIT_TCONTEXTLOAD)));
+        param.setGroupDisplayName(EParameterName.IMPLICIT_TCONTEXTLOAD.getDisplayName());
+        param.setDisplayName(EParameterName.IMPLICIT_TCONTEXTLOAD.getDisplayName());
+        param.setField(EParameterFieldType.CHECK);
+        param.setCategory(EComponentCategory.EXTRA);
+        param.setGroup(IMPLICIT_GROUP);
+        param.setNumRow(3);
+        param.setShow(true);
+        paramList.add(param);
+
+        // on files
+        param = new ElementParameter(elem);
+        param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.FROM_FILE_FLAG.getName()));
+        param.setValue(preferenceStore.getBoolean(getPreferenceName(EParameterName.FROM_FILE_FLAG)));
+        param.setDisplayName(EParameterName.FROM_FILE_FLAG.getDisplayName());
+        param.setField(EParameterFieldType.RADIO);
+        param.setCategory(EComponentCategory.EXTRA);
+        param.setNumRow(4);
+        param.setShowIf(JobSettingsConstants.addBrackets(CONTEXTLOAD_CONDITION));
+        param.setGroup(IMPLICIT_GROUP);
+        paramList.add(param);
+
+        // on database
+        param = new ElementParameter(elem);
+        param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.FROM_DATABASE_FLAG.getName()));
+        param.setValue(preferenceStore.getBoolean(getPreferenceName(EParameterName.FROM_DATABASE_FLAG)));
+        param.setDisplayName(EParameterName.FROM_DATABASE_FLAG.getDisplayName());
+        param.setField(EParameterFieldType.RADIO);
+        param.setCategory(EComponentCategory.EXTRA);
+        param.setNumRow(5);
+        param.setShowIf(JobSettingsConstants.addBrackets(CONTEXTLOAD_CONDITION));
+        param.setGroup(IMPLICIT_GROUP);
+        paramList.add(param);
+
+        // on file
+        createExtraOnFileParameters(elem);
+        // on database
+        createExtraOnDBParameters(elem);
+        // tContextLoad
+        createExtraContextLoadParameters(elem);
+
+    }
+
+    private static void createExtraOnFileParameters(Element elem) {
+        ElementParameter param;
+        List<IElementParameter> paramList = (List<IElementParameter>) elem.getElementParameters();
+        // // set Implicit tContextLoad file
+        //        String fileName = ElementParameterParser.parse(elem, "__COMP_DEFAULT_FILE_DIR__/in.csv"); //$NON-NLS-1$
+        // IPath path = Path.fromOSString(fileName);
+        // fileName = TalendTextUtils.addQuotes(path.toPortableString());
+        // set Implicit tContextLoad file
+        param = new ElementParameter(elem);
+        param.setName(EParameterName.IMPLICIT_TCONTEXTLOAD_FILE.getName());
+        param.setValue(addQuotes(replaceSlash(preferenceStore
+                .getString(getPreferenceName(EParameterName.IMPLICIT_TCONTEXTLOAD_FILE)))));
+        param.setDisplayName(EParameterName.IMPLICIT_TCONTEXTLOAD_FILE.getDisplayName());
+        param.setField(EParameterFieldType.FILE);
+        param.setCategory(EComponentCategory.EXTRA);
+        param.setGroup(IMPLICIT_GROUP);
+        param.setNumRow(31);
+        String condition = JobSettingsConstants.addBrackets(CONTEXTLOAD_CONDITION)
+                + " and " //$NON-NLS-1$ 
+                + JobSettingsConstants.addBrackets(JobSettingsConstants.getExtraParameterName(EParameterName.FROM_FILE_FLAG
+                        .getName())
+                        + " == 'true'"); //$NON-NLS-1$
+
+        param.setShowIf(condition);
+        paramList.add(param);
+
+        param = new ElementParameter(elem);
+        param.setName(EParameterName.FIELDSEPARATOR.getName());
+        param.setValue(addQuotes(preferenceStore.getString(getPreferenceName(EParameterName.FIELDSEPARATOR))));
+        param.setDisplayName(EParameterName.FIELDSEPARATOR.getDisplayName());
+        param.setField(EParameterFieldType.TEXT);
+        param.setCategory(EComponentCategory.EXTRA);
+        param.setGroup(IMPLICIT_GROUP);
+        param.setNumRow(32);
+        param.setShowIf(condition);
+        paramList.add(param);
+
+    }
+
+    private static void createExtraOnDBParameters(Element elem) {
+        ElementParameter param;
+        List<IElementParameter> paramList = (List<IElementParameter>) elem.getElementParameters();
+        // checks current language, if it is perl, set languageType to 0(default value), otherwise to 1.
+        int languageType = 0;
+        if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
+            languageType = 1;
+        }
+        final String onDBCondition = JobSettingsConstants.getExtraParameterName(EParameterName.FROM_DATABASE_FLAG.getName())
+                + " == 'true'"; //$NON-NLS-1$
+        final String dbCondition = JobSettingsConstants.addBrackets(CONTEXTLOAD_CONDITION)
+                + " and " + JobSettingsConstants.addBrackets(onDBCondition); //$NON-NLS-1$
+
+        // property type
+        ElementParameter parentPropertyType = new ElementParameter(elem);
+        parentPropertyType.setName(JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTY_TYPE.getName()));
+        parentPropertyType.setDisplayName(EParameterName.PROPERTY_TYPE.getDisplayName());
+        parentPropertyType.setValue(preferenceStore.getString(getPreferenceName(EParameterName.PROPERTY_TYPE)));
+        parentPropertyType.setCategory(EComponentCategory.EXTRA);
+        parentPropertyType.setField(EParameterFieldType.PROPERTY_TYPE);
+        parentPropertyType.setRepositoryValue("DATABASE"); //$NON-NLS-1$
+        parentPropertyType.setNumRow(41);
+        parentPropertyType.setShowIf(dbCondition);
+        parentPropertyType.setGroup(IMPLICIT_GROUP);
+        paramList.add(parentPropertyType);
+
+        param = new ElementParameter(elem);
+        param.setName(EParameterName.PROPERTY_TYPE.getName());
+        param.setDisplayName(EParameterName.PROPERTY_TYPE.getDisplayName());
+        param.setListItemsDisplayName(new String[] { EmfComponent.TEXT_BUILTIN, EmfComponent.TEXT_REPOSITORY });
+        param.setListItemsDisplayCodeName(new String[] { EmfComponent.BUILTIN, EmfComponent.REPOSITORY });
+        param.setListItemsValue(new String[] { EmfComponent.BUILTIN, EmfComponent.REPOSITORY });
+        param.setValue(preferenceStore.getString(getPreferenceName(EParameterName.PROPERTY_TYPE)));
+        param.setCategory(EComponentCategory.EXTRA);
+        param.setField(EParameterFieldType.TECHNICAL);
+        param.setRepositoryValue("DATABASE"); //$NON-NLS-1$
+        param.setNumRow(41);
+        param.setShowIf(dbCondition);
+        param.setGroup(IMPLICIT_GROUP);
+        param.setParentParameter(parentPropertyType);
+        // paramList.add(param);
+
+        // repository property type
+        param = new ElementParameter(elem);
+        param.setName(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+        param.setDisplayName(EParameterName.REPOSITORY_PROPERTY_TYPE.getDisplayName());
+        param.setListItemsDisplayName(new String[] {});
+        param.setListItemsValue(new String[] {});
+        param.setValue(preferenceStore.getString(getPreferenceName(EParameterName.REPOSITORY_PROPERTY_TYPE)// +
+                // CONNECTION_ITEM_LABEL
+                )); //$NON-NLS-1$
+        param.setCategory(EComponentCategory.EXTRA);
+        param.setField(EParameterFieldType.TECHNICAL);
+        param.setShow(false);
+        param.setRequired(true);
+        param.setNumRow(41);
+        param.setGroup(IMPLICIT_GROUP);
+        param.setParentParameter(parentPropertyType);
+        // paramList.add(param);
+
+        // dbType
+        final String dbTypeName = JobSettingsConstants.getExtraParameterName(EParameterName.DB_TYPE.getName());
+        param = new ElementParameter(elem);
+        param.setName(dbTypeName);
+        param.setDisplayName(EParameterName.DB_TYPE.getDisplayName());
+        param.setField(EParameterFieldType.CLOSED_LIST);
+        param.setCategory(EComponentCategory.EXTRA);
+        param.setListItemsDisplayName(StatsAndLogsConstants.DISPLAY_DBNAMES[languageType]);
+        param.setListItemsValue(JobSettingsConstants.DB_INPUT_COMPONENTS[languageType]);
+        param.setListRepositoryItems(StatsAndLogsConstants.REPOSITORY_ITEMS[languageType]);
+        param.setListItemsDisplayCodeName(StatsAndLogsConstants.CODE_LIST[languageType]);
+        param.setValue(preferenceStore.getString(getPreferenceName(EParameterName.DB_TYPE)));
+        param.setNumRow(42);
+        param.setRepositoryValue("TYPE"); //$NON-NLS-1$
+        param.setRequired(true);
+        param.setShowIf(dbCondition);
+        param.setGroup(IMPLICIT_GROUP);
+        paramList.add(param);
+
+        // dbVersion
+        final String dbVersionName = JobSettingsConstants.getExtraParameterName(EParameterName.DB_VERSION.getName());
+        param = new ElementParameter(elem);
+        param.setName(dbVersionName);
+        param.setValue(preferenceStore.getString(getPreferenceName(EParameterName.DB_VERSION)));
+        param.setDisplayName(EParameterName.DB_VERSION.getDisplayName());
+        param.setField(EParameterFieldType.CLOSED_LIST);
+        param.setCategory(EComponentCategory.EXTRA);
+        param.setListItemsDisplayName(StatsAndLogsConstants.ORACLE_VERSION_DISPLAY);
+        param.setListItemsValue(StatsAndLogsConstants.ORACLE_VERSION_DRIVER);
+        // param.setListRepositoryItems(StatsAndLogsConstants.REPOSITORY_ITEMS[languageType]);
+        param.setListItemsDisplayCodeName(StatsAndLogsConstants.ORACLE_VERSION_CODE);
+        param.setNumRow(42);
+        param.setRepositoryValue("DB_VERSION"); //$NON-NLS-1$
+        param.setRequired(true);
+        param.setShowIf(dbCondition + " and (" + dbTypeName + " == 'OCLE')");
+        param.setGroup(IMPLICIT_GROUP);
+        paramList.add(param);
+
+        // host
+        param = new ElementParameter(elem);
+        param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.HOST.getName()));
+        param.setValue(addQuotes(preferenceStore.getString(getPreferenceName(EParameterName.HOST)))); //$NON-NLS-1$
+        param.setDisplayName(EParameterName.HOST.getDisplayName());
+        param.setField(EParameterFieldType.TEXT);
+        param.setCategory(EComponentCategory.EXTRA);
+        param.setNumRow(43);
+        param.setRepositoryValue("SERVER_NAME"); //$NON-NLS-1$
+        String dbCon = dbTypeName + " != 'SQLITE'" + " and " + dbTypeName + " != 'ACCESS'";
+        param.setShowIf(JobSettingsConstants.addBrackets(dbCon) + " and " + dbCondition);
+        param.setGroup(IMPLICIT_GROUP);
+        paramList.add(param);
+
+        // port
+        param = new ElementParameter(elem);
+        param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.PORT.getName()));
+        param.setValue(addQuotes(preferenceStore.getString(getPreferenceName(EParameterName.PORT)))); //$NON-NLS-1$
+        param.setDisplayName(EParameterName.PORT.getDisplayName());
+        param.setField(EParameterFieldType.TEXT);
+        param.setCategory(EComponentCategory.EXTRA);
+        param.setNumRow(43);
+        param.setRepositoryValue("PORT"); //$NON-NLS-1$
+        dbCon = dbTypeName + " != 'SQLITE'" + " and " + dbTypeName + " != 'ACCESS'" + " and " + dbTypeName + " != 'FIREBIRD'";
+        param.setShowIf(JobSettingsConstants.addBrackets(dbCon) + " and " + dbCondition);
+        param.setGroup(IMPLICIT_GROUP);
+        paramList.add(param);
+
+        // dbName
+        param = new ElementParameter(elem);
+        param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.DBNAME.getName()));
+        param.setValue(addQuotes(preferenceStore.getString(getPreferenceName(EParameterName.DBNAME)))); //$NON-NLS-1$
+        param.setDisplayName(EParameterName.DBNAME.getDisplayName());
+        param.setField(EParameterFieldType.TEXT);
+        param.setCategory(EComponentCategory.EXTRA);
+        param.setNumRow(44);
+        param.setRepositoryValue("SID"); //$NON-NLS-1$
+        dbCon = dbTypeName + " != 'SQLITE'" + " and " + dbTypeName + " != 'ACCESS'" + " and " + dbTypeName + " != 'FIREBIRD'";
+        param.setShowIf(JobSettingsConstants.addBrackets(dbCon) + " and " + dbCondition);
+        param.setGroup(IMPLICIT_GROUP);
+        paramList.add(param);
+
+        if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
+
+            // additional parameters
+            param = new ElementParameter(elem);
+            param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTIES.getName()));
+            param.setValue(addQuotes(preferenceStore.getString(getPreferenceName(EParameterName.PROPERTIES)))); //$NON-NLS-1$
+            param.setDisplayName(EParameterName.PROPERTIES.getDisplayName());
+            param.setField(EParameterFieldType.TEXT);
+            param.setCategory(EComponentCategory.EXTRA);
+            param.setNumRow(44);
+            param.setRepositoryValue("PROPERTIES_STRING"); //$NON-NLS-1$
+            dbCon = dbTypeName + " == 'SQL_SERVER'" + " or " + dbTypeName + " == 'MYSQL'" + " or " + dbTypeName
+                    + " == 'INFORMIX'";
+
+            param.setShowIf(JobSettingsConstants.addBrackets(dbCon) + " and " + dbCondition); //$NON-NLS-1$ 
+            param.setGroup(IMPLICIT_GROUP);
+            paramList.add(param);
+        }
+        // schema
+        param = new ElementParameter(elem);
+        param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.SCHEMA_DB.getName()));
+        param.setValue(addQuotes(preferenceStore.getString(getPreferenceName(EParameterName.SCHEMA_DB)))); //$NON-NLS-1$
+        param.setDisplayName(EParameterName.SCHEMA_DB.getDisplayName());
+        param.setField(EParameterFieldType.TEXT);
+        param.setCategory(EComponentCategory.EXTRA);
+        param.setNumRow(44);
+        param.setRepositoryValue("SCHEMA"); //$NON-NLS-1$
+        final String schemaCondition = JobSettingsConstants.addBrackets(dbTypeName + " =='OCLE' or " + dbTypeName
+                + " =='POSTGRESQL'");
+        param.setShowIf(schemaCondition + " and " + dbCondition);
+        param.setGroup(IMPLICIT_GROUP);
+        paramList.add(param);
+
+        // username
+        param = new ElementParameter(elem);
+        param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.USER.getName()));
+        param.setValue(addQuotes(preferenceStore.getString(getPreferenceName(EParameterName.USER)))); //$NON-NLS-1$
+        param.setDisplayName(EParameterName.USER.getDisplayName());
+        param.setField(EParameterFieldType.TEXT);
+        param.setCategory(EComponentCategory.EXTRA);
+        param.setNumRow(45);
+        param.setRequired(true);
+        param.setRepositoryValue("USERNAME"); //$NON-NLS-1$
+        dbCon = dbTypeName + " != 'SQLITE'";
+        param.setShowIf(JobSettingsConstants.addBrackets(dbCon) + " and " + dbCondition);
+        param.setGroup(IMPLICIT_GROUP);
+        paramList.add(param);
+
+        // password
+        param = new ElementParameter(elem);
+        param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.PASS.getName()));
+        param.setValue(addQuotes(preferenceStore.getString(getPreferenceName(EParameterName.PASS)))); //$NON-NLS-1$
+        param.setDisplayName(EParameterName.PASS.getDisplayName());
+        param.setField(EParameterFieldType.TEXT);
+        param.setCategory(EComponentCategory.EXTRA);
+        param.setNumRow(45);
+        param.setRequired(true);
+        param.setRepositoryValue("PASSWORD"); //$NON-NLS-1$
+        dbCon = dbTypeName + " != 'SQLITE'";
+        param.setShowIf(JobSettingsConstants.addBrackets(dbCon) + " and " + dbCondition);
+        param.setGroup(IMPLICIT_GROUP);
+        paramList.add(param);
+        // databse file path
+        param = new ElementParameter(elem);
+        param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.DBFILE.getName()));
+        param.setValue(addQuotes(preferenceStore.getString(getPreferenceName(EParameterName.DBFILE))));
+        param.setDisplayName(EParameterName.DBFILE.getDisplayName());
+        param.setField(EParameterFieldType.FILE);
+        param.setCategory(EComponentCategory.EXTRA);
+        param.setNumRow(46);
+        param.setRepositoryValue("FILE"); //$NON-NLS-1$
+        dbCon = dbTypeName + " == 'SQLITE'" + " or " + dbTypeName + " == 'ACCESS'" + " or " + dbTypeName + " == 'FIREBIRD'";
+        param.setShowIf(JobSettingsConstants.addBrackets(dbCon) + " and " + dbCondition); //$NON-NLS-1$ 
+        param.setGroup(IMPLICIT_GROUP);
+        paramList.add(param);
+
+        // table
+        param = new ElementParameter(elem);
+        param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.DBTABLE.getName()));
+        param.setValue(addQuotes(preferenceStore.getString(getPreferenceName(EParameterName.DBTABLE)))); //$NON-NLS-1$
+        param.setDisplayName(EParameterName.DBTABLE.getDisplayName());
+        param.setField(EParameterFieldType.DBTABLE);
+        param.setCategory(EComponentCategory.EXTRA);
+        param.setNumRow(47);
+        param.setShowIf(dbCondition);
+        param.setGroup(IMPLICIT_GROUP);
+        paramList.add(param);
+
+        // query condition
+        param = new ElementParameter(elem);
+        param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.QUERY_CONDITION.getName()));
+        param.setValue(addQuotes(preferenceStore.getString(getPreferenceName(EParameterName.QUERY_CONDITION))));
+        param.setDisplayName(EParameterName.QUERY_CONDITION.getDisplayName());
+        param.setField(EParameterFieldType.TEXT);
+        param.setCategory(EComponentCategory.EXTRA);
+        param.setNumRow(48);
+        param.setShowIf(dbCondition);
+        param.setGroup(IMPLICIT_GROUP);
+        paramList.add(param);
+
+    }
+
+    private static void createExtraContextLoadParameters(Element elem) {
+        ElementParameter param;
+        List<IElementParameter> paramList = (List<IElementParameter>) elem.getElementParameters();
+
+        if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
+            final String[] itemValues = new String[] { ContextLoadInfo.ERROR.getDisplayName(),
+                    ContextLoadInfo.WARNING.getDisplayName(), ContextLoadInfo.INFO.getDisplayName() };
+
+            //
+            param = new ElementParameter(elem);
+            param.setName(EParameterName.LOAD_NEW_VARIABLE.getName());
+            param.setDisplayName(EParameterName.LOAD_NEW_VARIABLE.getDisplayName());
+            param.setValue(preferenceStore.getString(getPreferenceName(EParameterName.LOAD_NEW_VARIABLE)));
+            param.setListItemsDisplayName(itemValues);
+            param.setListItemsValue(itemValues);
+            param.setField(EParameterFieldType.CLOSED_LIST);
+            param.setCategory(EComponentCategory.EXTRA);
+            param.setNumRow(80);
+            param.setShowIf(CONTEXTLOAD_CONDITION);
+            param.setGroup(IMPLICIT_GROUP);
+            paramList.add(param);
+            //
+            param = new ElementParameter(elem);
+            param.setName(EParameterName.NOT_LOAD_OLD_VARIABLE.getName());
+            param.setDisplayName(EParameterName.NOT_LOAD_OLD_VARIABLE.getDisplayName());
+            param.setValue(preferenceStore.getString(getPreferenceName(EParameterName.NOT_LOAD_OLD_VARIABLE)));
+            param.setListItemsDisplayName(itemValues);
+            param.setListItemsValue(itemValues);
+            param.setField(EParameterFieldType.CLOSED_LIST);
+            param.setCategory(EComponentCategory.EXTRA);
+            param.setNumRow(81);
+            param.setShowIf(CONTEXTLOAD_CONDITION);
+            param.setGroup(IMPLICIT_GROUP);
+            paramList.add(param);
+        }
+        // print operations
+        param = new ElementParameter(elem);
+        param.setName(EParameterName.PRINT_OPERATIONS.getName());
+        param.setValue(preferenceStore.getBoolean(getPreferenceName(EParameterName.PRINT_OPERATIONS)));
+        param.setDisplayName(EParameterName.PRINT_OPERATIONS.getDisplayName());
+        param.setField(EParameterFieldType.CHECK);
+        param.setCategory(EComponentCategory.EXTRA);
+        param.setNumRow(82);
+        param.setRequired(true);
+        param.setShowIf(CONTEXTLOAD_CONDITION);
+        param.setGroup(IMPLICIT_GROUP);
+        paramList.add(param);
+
+        if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
+            // disable error
+            param = new ElementParameter(elem);
+            param.setName(EParameterName.DISABLE_ERROR.getName());
+            param.setValue(preferenceStore.getBoolean(getPreferenceName(EParameterName.DISABLE_ERROR)));
+            param.setDisplayName(EParameterName.DISABLE_ERROR.getDisplayName());
+            param.setField(EParameterFieldType.CHECK);
+            param.setCategory(EComponentCategory.EXTRA);
+            param.setNumRow(83);
+            param.setRequired(true);
+            param.setShowIf(CONTEXTLOAD_CONDITION);
+            param.setGroup(IMPLICIT_GROUP);
+            paramList.add(param);
+        }
+
+        // disable warnings
+        param = new ElementParameter(elem);
+        param.setName(EParameterName.DISABLE_WARNINGS.getName());
+        param.setValue(preferenceStore.getBoolean(getPreferenceName(EParameterName.DISABLE_WARNINGS)));
+        param.setDisplayName(EParameterName.DISABLE_WARNINGS.getDisplayName());
+        param.setField(EParameterFieldType.CHECK);
+        param.setCategory(EComponentCategory.EXTRA);
+        param.setNumRow(83);
+        param.setRequired(true);
+        param.setShowIf(CONTEXTLOAD_CONDITION);
+        param.setGroup(IMPLICIT_GROUP);
+        paramList.add(param);
+
+        if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
+            // disable info
+            param = new ElementParameter(elem);
+            param.setName(EParameterName.DISABLE_INFO.getName());
+            param.setValue(preferenceStore.getBoolean(getPreferenceName(EParameterName.DISABLE_INFO)));
+            param.setDisplayName(EParameterName.DISABLE_INFO.getDisplayName());
+            param.setField(EParameterFieldType.CHECK);
+            param.setCategory(EComponentCategory.EXTRA);
+            param.setNumRow(83);
+            param.setRequired(true);
+            param.setShowIf(CONTEXTLOAD_CONDITION);
+            param.setGroup(IMPLICIT_GROUP);
+            paramList.add(param);
+        }
+
+    }
+
+    private static String getPreferenceName(EParameterName param) {
+        return languagePrefix + ImplicitContextLoadHelper.getExtraParameterName(param);
+    }
+}

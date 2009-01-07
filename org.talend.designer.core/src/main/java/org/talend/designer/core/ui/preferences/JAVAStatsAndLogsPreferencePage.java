@@ -17,6 +17,8 @@ import org.talend.core.language.ECodeLanguage;
 /**
  * DOC Administrator class global comment. Detailled comment <br/>
  * 
+ * @deprecated
+ * 
  */
 public class JAVAStatsAndLogsPreferencePage extends StatsAndLogsPreferencePage {
 

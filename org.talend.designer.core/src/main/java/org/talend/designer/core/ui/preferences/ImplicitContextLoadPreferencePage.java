@@ -62,6 +62,8 @@ import org.talend.repository.ui.utils.DataStringConnection;
 
 /**
  * DOC hcw class global comment. Detailled comment
+ * 
+ * @deprecated see ImplicitContextLoadProjectSettingPage
  */
 public class ImplicitContextLoadPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 

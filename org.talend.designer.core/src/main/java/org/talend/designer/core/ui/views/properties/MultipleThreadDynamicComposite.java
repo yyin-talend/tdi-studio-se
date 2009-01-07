@@ -72,6 +72,7 @@ import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
+import org.talend.designer.core.ui.ActiveProcessTracker;
 import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -79,6 +80,8 @@ import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySectio
 import org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController;
 import org.talend.designer.core.ui.editor.properties.controllers.GroupController;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
+import org.talend.designer.core.ui.projectsetting.ImplicitContextLoadElement;
+import org.talend.designer.core.ui.projectsetting.StatsAndLogsElement;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
@@ -332,8 +335,8 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
      * Initialize all components for the defined section for this node.
      */
     public synchronized void addComponents(boolean forceRedraw, boolean reInitialize, int height) {
-
-        if (elem == null) {
+        // achen modifed to fix feature 0005991 if composite.isDisposed return
+        if (elem == null || composite.isDisposed()) {
             return;
         }
 
@@ -867,6 +870,11 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
         if (elem instanceof Process) {
             process = (Process) elem;
         }
+        // added by achen fix 0005991 & 0005993
+        if (elem instanceof StatsAndLogsElement || elem instanceof ImplicitContextLoadElement) {
+            process = ActiveProcessTracker.getCurrentProcess();
+        }
+        // end
         if (process != null) {
             part = process.getEditor();
         }

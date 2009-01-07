@@ -16,7 +16,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.ui.projectsetting.ProjectSettingManager;
 import org.talend.designer.core.ui.views.jobsettings.AbstractPreferenceComposite;
+import org.talend.repository.ProjectManager;
 
 /**
  * ftang class global comment. Detailled comment <br/>
@@ -37,16 +39,23 @@ public class StatsAndLogsComposite extends AbstractPreferenceComposite {
     public StatsAndLogsComposite(Composite parentComposite, int styles, EComponentCategory section, Element element) {
         super(parentComposite, styles, section, element, true);
         setDialogTitle(Messages.getString("StatsAndLogsComposite.StatsLogsSettings"));
+        // achen modify to fix 0005993 change button's text
+        isUsingProjectSetting = true;
     }
 
     @Override
     protected void onReloadPreference() {
-        StatsAndLogsViewHelper.reloadValuesFromPreferencePage(elem, StatsAndLogsComposite.this);
+        // StatsAndLogsViewHelper.reloadValuesFromPreferencePage(elem, StatsAndLogsComposite.this);
+        // achen modify to fix 0005991
+        ProjectSettingManager.reloadStatsAndLogFromProjectSettings(elem, ProjectManager.getInstance().getCurrentProject(),
+                StatsAndLogsComposite.this);
     }
 
     @Override
     protected void onSavePreference() {
-        StatsAndLogsViewHelper.saveValuesToPreferencePage(elem, StatsAndLogsComposite.this);
+        // StatsAndLogsViewHelper.saveValuesToPreferencePage(elem, StatsAndLogsComposite.this);
+        // achen modify to fix 0005991
+        ProjectSettingManager.saveStatsAndLogToProjectSettings(elem, ProjectManager.getInstance().getCurrentProject());
     }
 
     /*

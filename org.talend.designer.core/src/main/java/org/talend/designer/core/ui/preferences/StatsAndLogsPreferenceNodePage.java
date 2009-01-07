@@ -17,6 +17,7 @@ import org.talend.core.language.LanguageManager;
 /**
  * DOC Administrator class global comment. Detailled comment <br/>
  * 
+ * @deprecated see StatLogsProjectSettingPage
  */
 public class StatsAndLogsPreferenceNodePage extends StatsAndLogsPreferencePage {
 

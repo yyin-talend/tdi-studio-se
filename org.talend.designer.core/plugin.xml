@@ -41,18 +41,6 @@
       </page>
       <page
             category="org.talend.core.prefs"
-            class="org.talend.designer.core.ui.preferences.ImplicitContextLoadPreferencePage"
-            id="org.talend.designer.core.ui.preferences.ImplicitContextLoadPreferencePage"
-            name="%implicitContextLoad">
-      </page>
-      <page
-            category="org.talend.core.prefs"
-            class="org.talend.designer.core.ui.preferences.StatsAndLogsPreferenceNodePage"
-            id="org.talend.designer.core.ui.preferences.StatsAndLogsPreferenceNodePage"
-            name="%statsAndLogs">
-      </page>
-      <page
-            category="org.talend.core.prefs"
             class="org.talend.designer.core.ui.preferences.PropertiesPreferencePage"
             id="org.talend.designer.core.properties.memo.text.font"
             name="Memo Text Font">
@@ -665,5 +653,26 @@
              id="org.talend.designer.core.model.process.migration.SynchronizeSchemaOnlyForPerlDemo"
              name="Synchronize schema only for perl demo">
        </projecttask>
+    </extension>
+    <extension
+          point="org.talend.repository.projectsetting_page">
+       <page
+             class="org.talend.repository.preference.BlankProjectSettingPage"
+             id="jobsettings"
+             order="3"
+             title="%jobSettings">
+       </page>
+       <page
+             category="jobsettings"
+             class="org.talend.designer.core.ui.projectsetting.StatLogsProjectSettingPage"
+             id="jobsettings.statusAndLogs"
+             title="%statsAndLogs">
+       </page>
+       <page
+             category="jobsettings"
+             class="org.talend.designer.core.ui.projectsetting.ImplicitContextLoadProjectSettingPage"
+             id="jobsettings.implicitcontextload"
+             title="%implicitContextLoad">
+       </page>
     </extension>
 </plugin>

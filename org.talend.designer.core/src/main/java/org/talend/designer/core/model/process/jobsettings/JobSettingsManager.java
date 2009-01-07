@@ -101,6 +101,19 @@ public class JobSettingsManager {
         // param.setRequired(false);
         // param.setShow(false);
         // paramList.add(param);
+
+        // use project settings
+        param = new ElementParameter(process);
+        param.setName(EParameterName.USE_PROJECT_SETTINGS.getName());
+        param.setValue(Boolean.FALSE);
+        param.setDisplayName(EParameterName.USE_PROJECT_SETTINGS.getDisplayName());
+        param.setField(EParameterFieldType.CHECK);
+        param.setCategory(EComponentCategory.EXTRA);
+        param.setNumRow(2);
+        param.setShow(false);
+        paramList.add(param);
+        // end
+
         boolean isJoblet = AbstractProcessProvider.isExtensionProcessForJoblet(process);
         IPreferenceStore preferenceStore = CorePlugin.getDefault().getPreferenceStore();
 

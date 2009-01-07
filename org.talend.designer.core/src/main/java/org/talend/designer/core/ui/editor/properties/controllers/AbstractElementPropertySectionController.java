@@ -322,7 +322,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
         if (obj instanceof IMultiPageTalendEditor) {
             part = (AbstractMultiPageTalendEditor) obj;
         } else {
-            throw new RuntimeException("Type IMultiPageTalendEditor is requried.");
+            // throw new RuntimeException("Type IMultiPageTalendEditor is requried.");
         }
         section = dp.getSection();
         composite = dp.getComposite();
@@ -1336,7 +1336,10 @@ public abstract class AbstractElementPropertySectionController implements Proper
     protected IProcess getProcess(final Element elem, final AbstractMultiPageTalendEditor part) {
         IProcess process = null;
         if (part == null) {
-            process = ((Node) elem).getProcess();
+            // achen modify to fix 0005991 part is null
+            if (elem instanceof Node) {
+                process = ((Node) elem).getProcess();
+            }
         } else {
             process = part.getTalendEditor().getProcess();
         }

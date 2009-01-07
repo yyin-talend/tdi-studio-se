@@ -18,12 +18,14 @@ import java.util.List;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
@@ -42,6 +44,8 @@ import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
+import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
+import org.talend.designer.core.ui.projectsetting.ElementParameter2ParameterType;
 import org.talend.designer.core.ui.views.properties.MultipleThreadDynamicComposite;
 import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsViewHelper;
 import org.talend.designer.core.utils.DesignerUtilities;
@@ -63,6 +67,13 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
     private List<INode> tRunJobNodes;
 
     private static final String PROCESS = "PROCESS";
+
+    // achen added to fix 0005991 & 0005993
+    protected boolean isUsingProjectSetting;
+
+    private Button useProjectSetting;
+
+    private Composite topComposite;
 
     /**
      * DOC chuang AbstractPreferenceComposite constructor comment.
@@ -88,9 +99,9 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
     public void addComponents(boolean forceRedraw, boolean reInitialize, int height) {
         if (forceRedraw || isNeedRedraw()) {
             disposeChildren();
-            Composite topComposite = new Composite(getComposite(), SWT.NONE);
+            topComposite = new Composite(getComposite(), SWT.NONE);
 
-            if (hasRunJobNode(false) && needApplyToChildren()) {
+            if (hasRunJobNode(false) && needApplyToChildren() || isUsingProjectSetting) {
                 topComposite.setLayout(new GridLayout(3, false));
             } else {
                 topComposite.setLayout(new GridLayout(2, false));
@@ -104,7 +115,21 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
             saveBtn = new Button(topComposite, SWT.PUSH);
             saveBtn.setText(Messages.getString("StatsAndLogsComposite.Save")); //$NON-NLS-1$
             saveBtn.setToolTipText(Messages.getString("StatsAndLogsComposite.SaveToolTipText")); //$NON-NLS-1$
+            // achen modify to fix 0005993
+            if (isUsingProjectSetting) {
+                saveBtn.setText(Messages.getString("SaveToProjectSettings")); //$NON-NLS-1$
+                saveBtn.setToolTipText(Messages.getString("SaveToProjectSettingsToolTipText")); //$NON-NLS-1$
 
+                reloadBtn.setText(Messages.getString("ReloadFromProjectSettings")); //$NON-NLS-1$
+                reloadBtn.setToolTipText(Messages.getString("ReloadFromProjectSettingsToolTipText")); //$NON-NLS-1$
+
+                // add useprojectsetting button
+                useProjectSetting = new Button(topComposite, SWT.CHECK);
+                useProjectSetting.setText(Messages.getString("UseProjectSettings"));
+                useProjectSetting.setToolTipText(Messages.getString("UseProjectSettings"));
+                useProjectSetting.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
+            }
+            // end
             if (hasRunJobNode(false) && needApplyToChildren()) {
                 applyToChildrenJob = new Button(topComposite, SWT.PUSH);
                 applyToChildrenJob.setText("Apply to sub jobs");
@@ -116,6 +141,34 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
             addButtonListeners();
             refresh();
             super.addComponents(true, false, initialSize.y + ITabbedPropertyConstants.VSPACE);
+
+            // achen add to fix 0005991 & 0005993 when reload
+            Object value = ElementParameter2ParameterType.getParameterValue(elem, EParameterName.USE_PROJECT_SETTINGS.getName());
+            if (value != null && value instanceof Boolean) {
+                Boolean v = (Boolean) value;
+                useProjectSetting.setSelection(v.booleanValue());
+                setMainCompositeEnable(!v.booleanValue());
+                topComposite.setEnabled(true);
+                // if (v.booleanValue()) {
+                // onReloadPreference();
+                // }
+            }
+
+        }
+    }
+
+    /**
+     * 
+     * DOC aimingchen Comment method "setMainCompositeEnable".
+     * 
+     * @param enabled
+     */
+    private void setMainCompositeEnable(boolean enabled) {
+        Control[] controls = getComposite().getChildren();
+        for (int i = 0; i < controls.length; i++) {
+            if (controls[i] != topComposite) {
+                controls[i].setEnabled(enabled);
+            }
         }
     }
 
@@ -145,7 +198,27 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
             }
 
         });
+        if (useProjectSetting != null) {
+            useProjectSetting.addSelectionListener(new SelectionAdapter() {
 
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    boolean flag = useProjectSetting.getSelection();
+                    setMainCompositeEnable(!flag);
+                    topComposite.setEnabled(true);
+                    // ElementParameter2ParameterType.setParameterValue(elem,
+                    // EParameterName.USE_PROJECT_SETTINGS.getName(), Boolean
+                    // .valueOf(flag));
+                    PropertyChangeCommand cmd = new PropertyChangeCommand(elem, EParameterName.USE_PROJECT_SETTINGS.getName(),
+                            Boolean.valueOf(flag));
+                    getCommandStack().execute(cmd);
+                    if (flag) {
+                        useProjectSetting();
+                        // onReloadPreference();
+                    }
+                }
+            });
+        }
         if (hasRunJobNode(false) && needApplyToChildren()) {
 
             applyToChildrenJob.addSelectionListener(new SelectionListener() {
@@ -225,6 +298,28 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
     }
 
     /**
+     * 
+     * DOC aimingchen Comment method "useProjectSetting".
+     */
+    private void useProjectSetting() {
+        if (elem == null) {
+            return;
+        }
+        // achen modify to fix 0005991& 0005993
+        onReloadPreference();
+
+        IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+
+        if (activeEditor != null) {
+            AbstractTalendEditor workbenchPart = ((AbstractMultiPageTalendEditor) activeEditor).getTalendEditor();
+            workbenchPart.setDirty(true);
+        }
+
+        addComponents(true);
+        refresh();
+    }
+
+    /**
      * yzhang Comment method "getElementParameterType".
      * 
      * @param paraName
@@ -287,8 +382,14 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
         if (elem == null) {
             return;
         }
-        boolean isOK = MessageDialog.openConfirm(Display.getDefault().getActiveShell(), dialogTitle, Messages
-                .getString("StatsAndLogsComposite.ReloadMessages")); //$NON-NLS-1$
+        // achen modify to fix 0005991& 0005993
+        String message = "";
+        if (!isUsingProjectSetting) {
+            message = Messages.getString("StatsAndLogsComposite.ReloadMessages");
+        } else {
+            message = Messages.getString("ReloadFromProjectSettingsMessages");
+        }
+        boolean isOK = MessageDialog.openConfirm(Display.getDefault().getActiveShell(), dialogTitle, message); //$NON-NLS-1$
         if (isOK) {
             onReloadPreference();
 
@@ -314,8 +415,14 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
         if (elem == null) {
             return;
         }
-        boolean isOK = MessageDialog.openConfirm(Display.getDefault().getActiveShell(), dialogTitle, Messages
-                .getString("StatsAndLogsComposite.SavePreferenceMessages")); //$NON-NLS-1$
+        // achen modify to fix 0005991& 0005993
+        String message = "";
+        if (!isUsingProjectSetting) {
+            message = Messages.getString("StatsAndLogsComposite.SavePreferenceMessages");
+        } else {
+            message = Messages.getString("SaveToProjectSettingsMessage");
+        }
+        boolean isOK = MessageDialog.openConfirm(Display.getDefault().getActiveShell(), dialogTitle, message); //$NON-NLS-1$       
         if (isOK) {
             onSavePreference();
         }

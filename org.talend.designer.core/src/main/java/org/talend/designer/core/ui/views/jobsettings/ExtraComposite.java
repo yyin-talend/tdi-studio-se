@@ -16,6 +16,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.ui.projectsetting.ProjectSettingManager;
+import org.talend.repository.ProjectManager;
 
 /**
  * DOC chuang class global comment. Detailled comment
@@ -35,16 +37,24 @@ public class ExtraComposite extends AbstractPreferenceComposite {
             boolean isCompactView) {
         super(parentComposite, styles, section, element, isCompactView);
         setDialogTitle(Messages.getString("ExtraComposite.ImplicitContextSettings"));
+
+        // achen modify to fix 0005993
+        isUsingProjectSetting = true;
     }
 
     @Override
     protected void onReloadPreference() {
-        ImplicitContextLoadHelper.reloadValuesFromPreferencePage(elem, ExtraComposite.this);
+        // ImplicitContextLoadHelper.reloadValuesFromPreferencePage(elem, ExtraComposite.this);
+        // achen modify to fix 0005993
+        ProjectSettingManager.reloadImplicitValuesFromProjectSettings(elem, ProjectManager.getInstance().getCurrentProject(),
+                ExtraComposite.this);
     }
 
     @Override
     protected void onSavePreference() {
-        ImplicitContextLoadHelper.saveValuesToPreferencePage(elem, ExtraComposite.this);
+        // ImplicitContextLoadHelper.saveValuesToPreferencePage(elem, ExtraComposite.this);
+        // achen modify to fix 0005993
+        ProjectSettingManager.saveImplicitValuesToProjectSettings(elem, ProjectManager.getInstance().getCurrentProject());
     }
 
     /*

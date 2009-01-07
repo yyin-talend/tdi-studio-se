@@ -63,6 +63,8 @@ import org.talend.repository.ui.views.RepositoryView;
 /**
  * DOC Administrator class global comment. Detailled comment <br/>
  * 
+ * @deprecated see StatLogsProjectSettingPage
+ * 
  */
 public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
@@ -680,7 +682,8 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
             /*
              * (non-Javadoc)
              * 
-             * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
+             * @see
+             * org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
              */
             public void widgetDefaultSelected(SelectionEvent e) {
 
@@ -709,7 +712,8 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
             /*
              * (non-Javadoc)
              * 
-             * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
+             * @see
+             * org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
              */
             public void widgetDefaultSelected(SelectionEvent e) {
 

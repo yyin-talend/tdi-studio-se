@@ -210,7 +210,10 @@ public enum EParameterName {
 
     PARALLELIZE("Enable parallel execution"),
     PARALLELIZE_NUMBER("Number of parallel executions"),
-    PARALLELIZE_UNIT_SIZE("Parallelize Buffer Unit Size");
+    PARALLELIZE_UNIT_SIZE("Parallelize Buffer Unit Size"),
+
+    // use project setting
+    USE_PROJECT_SETTINGS(Messages.getString("UseProjectSettings"));
 
     private String displayName;
 
