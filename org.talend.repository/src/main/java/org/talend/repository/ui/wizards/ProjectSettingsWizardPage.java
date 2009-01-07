@@ -33,6 +33,8 @@ import org.talend.repository.ui.dialog.VersionManagementDialog;
 
 /**
  * DOC qwei class global comment. Detailled comment
+ * 
+ * @deprecated see ProjectSettingDialog
  */
 public class ProjectSettingsWizardPage extends WizardPage {
 

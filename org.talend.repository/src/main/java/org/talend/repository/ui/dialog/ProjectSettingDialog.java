@@ -24,6 +24,7 @@ import org.eclipse.jface.preference.IPreferencePage;
 import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.preference.PreferenceManager;
 import org.eclipse.swt.custom.BusyIndicator;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
@@ -36,6 +37,8 @@ import org.talend.repository.model.ProjectSettingNode;
  */
 public class ProjectSettingDialog {
 
+    private static final Point DEFAULT_SIZE = new Point(1000, 600);
+
     private static final String TITLE = Messages.getString("ProjectSettingDialog.Title"); //$NON-NLS-1$
 
     public ProjectSettingDialog() {
@@ -43,7 +46,6 @@ public class ProjectSettingDialog {
     }
 
     /**
-     * 
      * get all projectsettingPage node
      * 
      * @return PreferenceManager
@@ -107,6 +109,7 @@ public class ProjectSettingDialog {
             public void run() {
                 dialog.create();
                 dialog.getShell().setText(TITLE);
+                dialog.getShell().setSize(DEFAULT_SIZE);
                 dialog.open();
             }
         });

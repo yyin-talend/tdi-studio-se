@@ -87,6 +87,8 @@ import org.talend.repository.ui.views.RepositoryView;
 
 /**
  * ggu class global comment. Detailled comment
+ * 
+ * @deprecated see ProjectSettingDialog
  */
 public class VersionManagementDialog extends Dialog {
 

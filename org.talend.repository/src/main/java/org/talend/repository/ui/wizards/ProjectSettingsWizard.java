@@ -19,6 +19,8 @@ import org.talend.repository.ProjectManager;
 
 /**
  * DOC qwei class global comment. Detailled comment
+ * 
+ * @deprecated see ProjectSettingDialog
  */
 public class ProjectSettingsWizard extends Wizard {
 

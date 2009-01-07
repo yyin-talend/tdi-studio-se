@@ -59,6 +59,8 @@ import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
  * DOC qwei class global comment. Detailled comment
+ * 
+ * @deprecated see ProjectSettingDialog
  */
 public class PaletteSettingsDialog extends Dialog {
 
