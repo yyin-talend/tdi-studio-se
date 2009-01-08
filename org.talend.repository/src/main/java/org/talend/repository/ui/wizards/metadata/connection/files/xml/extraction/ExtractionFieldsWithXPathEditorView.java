@@ -252,28 +252,31 @@ public class ExtractionFieldsWithXPathEditorView extends AbstractDataTableEditor
             TableViewerCreatorColumn column) {
         final TextCellEditorWithProposal tagNameCellEditor = new TextCellEditorWithProposal(tableViewerCreator.getTable(),
                 SWT.NONE, column);
-        tagNameCellEditor.addListener(new DialogErrorForCellEditorListener(tagNameCellEditor, column) {
+        // (bug 6038) zywang disabled method "newValidValueTyped" to removed duplicate dialog.
 
-            @Override
-            public void newValidValueTyped(int itemIndex, Object previousValue, Object newValue, CELL_EDITOR_STATE state) {
-            }
-
-            @Override
-            public String validateValue(String newValue, int beanPosition) {
-                List<SchemaTarget> list = getModel().getBeansList();
-                String errorMessage = null;
-                int lstSize = list.size();
-                for (int i = 0; i < lstSize; i++) {
-                    if (newValue.equals(list.get(i).getTagName()) && i != beanPosition) {
-                        errorMessage = "The column name '" + newValue + "' already exists."; //$NON-NLS-1$
-                        break;
-                    }
-
-                }
-                return errorMessage;
-            }
-
-        });
+        // tagNameCellEditor.addListener(new DialogErrorForCellEditorListener(tagNameCellEditor, column) {
+        //
+        // @Override
+        // public void newValidValueTyped(int itemIndex, Object previousValue, Object newValue, CELL_EDITOR_STATE state)
+        // {
+        // }
+        //
+        // @Override
+        // public String validateValue(String newValue, int beanPosition) {
+        // List<SchemaTarget> list = getModel().getBeansList();
+        // String errorMessage = null;
+        // int lstSize = list.size();
+        // for (int i = 0; i < lstSize; i++) {
+        // if (newValue.equals(list.get(i).getTagName()) && i != beanPosition) {
+        //                        errorMessage = "The column name '" + newValue + "' already exists."; //$NON-NLS-1$
+        // break;
+        // }
+        //
+        // }
+        // return errorMessage;
+        // }
+        //
+        // });
         return tagNameCellEditor;
     }
 
