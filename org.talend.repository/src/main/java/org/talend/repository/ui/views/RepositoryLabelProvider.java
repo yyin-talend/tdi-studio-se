@@ -77,6 +77,8 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
 
     private static final Color LOCKED_ENTRY = new Color(null, 200, 0, 0);
 
+    private static final Color MERGED_REFERENCED_ITEMS_COLOR = new Color(null, 120, 120, 120);
+
     private IRepositoryView view;
 
     public RepositoryLabelProvider(IRepositoryView view) {
@@ -357,6 +359,22 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
             if (repositoryStatus == ERepositoryStatus.LOCK_BY_OTHER) {
                 return LOCKED_ENTRY;
             } else {
+                if (PluginChecker.isRefProjectLoaded()) {
+                    IReferencedProjectService service = (IReferencedProjectService) GlobalServiceRegister.getDefault()
+                            .getService(IReferencedProjectService.class);
+                    if (service != null && service.isMergeRefProject()) {
+                        IRepositoryObject object = node.getObject();
+                        if (object != null) {
+                            org.talend.core.model.properties.Project project = ProjectManager.getInstance().getProject(
+                                    object.getProperty().getItem());
+                            org.talend.core.model.properties.Project curProject = ProjectManager.getInstance()
+                                    .getCurrentProject().getEmfProject();
+                            if (!curProject.equals(project)) {
+                                return MERGED_REFERENCED_ITEMS_COLOR;
+                            }
+                        }
+                    }
+                }
                 return null;
             }
         }

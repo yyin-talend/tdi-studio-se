@@ -289,7 +289,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
      */
     public void initializeChildren(Object parent) {
         initializeChildren(project, parent);
-        if (getMergeRefProject()) {
+        if (PluginChecker.isTIS() && getMergeRefProject()) {
 
             for (Object o : project.getEmfProject().getReferencedProjects()) {
                 if (o instanceof ProjectReference) {
