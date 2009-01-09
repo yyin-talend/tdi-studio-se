@@ -134,12 +134,17 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
 
         new Label(group, SWT.NONE); // Pachlaer
         useCostomModuleButton = new Button(group, SWT.CHECK);
-        useCostomModuleButton.setText("Check custom module");
+        useCostomModuleButton.setText("fetch module list");
         new Label(group, SWT.NONE); // Pachlaer
-        customModuleCombo = new LabelledCombo(group, "Custom Module", "Please select a Custommodule", null, 2, false);
-        // String endPoint = webServiceUrlText.getText();
-        // String username = userNameText.getText();
-        // String pwd = passwordText.getText();
+        // useCostomModuleButton.set
+        // useCostomModuleButton = new Button(group, SWT.NONE);
+        // useCostomModuleButton.setText("fetch module list");
+
+        customModuleCombo = new LabelledCombo(group, "Custom module", "Please select a Custommodule", null, 1, false);
+
+        GridData gd = new GridData();
+        gd.widthHint = 140;
+        customModuleCombo.getCombo().setLayoutData(gd);
 
         // binding = salesforceModuleParseAPI.couldLogin(endPoint, username, pwd);
         // initCustomModules();
@@ -252,15 +257,11 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
                     checkFieldsValue();
                 }
                 testSalesforceLogin();
-                preparModuleInit();
-                initCustomModules();
-
+                loginOk = checkSalesfoceLogin(endPoint, username, pwd);
                 if (useCostomModuleButton.getSelection()) {
                     getConnection().setModuleName(customModuleCombo.getText().trim());
                     // // appendCustomModule(customModuleCombo.getText().trim());
                     customModuleCombo.setText(getConnection().getModuleName());
-                    // preparModuleInit();
-                    // initCustomModules();
                 }
                 checkFieldsValue();
             }
@@ -291,12 +292,16 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
                 getConnection().setUseCustomModuleName(useCostomModuleButton.getSelection());
                 if (useCostomModuleButton.getSelection()) {
                     getConnection().setModuleName(customModuleCombo.getText());
-                } else {
-                    getConnection().setModuleName(moduleNameCombo.getText());
                 }
                 checkFieldsValue();
+
+                testSalesforceLogin();
+                loginOk = checkSalesfoceLogin2(endPoint, username, pwd);
+                preparModuleInit();
+                initCustomModules();
             }
         });
+
     }
 
     // private void appendCustomModule(String appendmMdule) {
@@ -457,19 +462,19 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
     // }
 
     private void testSalesforceLogin() {
-        String webUrl = webServiceUrlText.getText();
-        String username = userNameText.getText();
-        String password = passwordText.getText();
+        endPoint = webServiceUrlText.getText();
+        username = userNameText.getText();
+        pwd = passwordText.getText();
         if (isContextMode() && getContextModeManager() != null) {
-            webUrl = getContextModeManager().getOriginalValue(webUrl);
+            endPoint = getContextModeManager().getOriginalValue(endPoint);
             username = getContextModeManager().getOriginalValue(username);
-            password = getContextModeManager().getOriginalValue(password);
+            pwd = getContextModeManager().getOriginalValue(pwd);
         }
         // TSALESFORCE_INPUT_URL is only used by tSalesForceInput, the logic doesn't work with this url
-        if (webUrl.equals(TSALESFORCE_INPUT_URL)) {
-            webUrl = DEFAULT_WEB_SERVICE_URL;
+        if (endPoint.equals(TSALESFORCE_INPUT_URL)) {
+            endPoint = DEFAULT_WEB_SERVICE_URL;
         }
-        loginOk = checkSalesfoceLogin(webUrl, username, password);
+        // loginOk = checkSalesfoceLogin(webUrl, username, password);
     }
 
     @Override
@@ -584,7 +589,8 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
 
         setTextValue(getConnection().getPassword(), passwordText);
 
-        boolean useCustom = getConnection().isUseCustomModuleName();
+        boolean useCustom = false;
+        useCustom = getConnection().isUseCustomModuleName();
         if (!useCustom) {
             if (getConnection().getModuleName() != null && !getConnection().getModuleName().equals("")) {
                 moduleNameCombo.setText(getConnection().getModuleName());
