@@ -60,6 +60,7 @@ import org.talend.repository.ui.actions.ActionsHelper;
 
 /**
  * 
+ * @deprecated
  */
 public class VersionSection extends AbstractSection implements ISelectionProvider {
 
@@ -200,6 +201,8 @@ public class VersionSection extends AbstractSection implements ISelectionProvide
                 case 3:
                     if (repositoryNode.getObject().getStatusCode() != null) {
                         return repositoryNode.getObject().getStatusCode();
+                    } else {
+                        return null;
                     }
                 default:
                     return null;
