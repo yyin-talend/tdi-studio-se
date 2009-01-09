@@ -41,8 +41,9 @@ import org.talend.repository.model.ProxyRepositoryFactory;
 /**
  * ggu class global comment. Detailled comment.
  * 
- * work for such as tFileCompare, tLogCatcher, tStatCatcher.
+ * @deprecated work for such as tFileCompare, tLogCatcher, tStatCatcher.
  */
+// Bug : 5640 have deleted this class's extensions
 public class SynchronizeSchemaOnlyForPerlDemoMigrationTask extends AbstractJobMigrationTask {
 
     private static List<String> syncComponents = new ArrayList<String>();
@@ -80,8 +81,8 @@ public class SynchronizeSchemaOnlyForPerlDemoMigrationTask extends AbstractJobMi
             if (language == ECodeLanguage.PERL) {
                 Project project = ProjectManager.getInstance().getProject(item);
                 if (project != null && project.getTechnicalLabel().equalsIgnoreCase("TALENDDEMOSPERL")) { //$NON-NLS-1$
-                    IProcess2 process = (IProcess2) RepositoryPlugin.getDefault().getDesignerCoreService()
-                            .getProcessFromItem(item);
+                    IProcess2 process = (IProcess2) RepositoryPlugin.getDefault().getDesignerCoreService().getProcessFromItem(
+                            item);
                     modified = synchronizeSchema(process);
 
                     if (modified) {

@@ -646,13 +646,6 @@
              id="org.talend.designer.core.ui.preferences.migration.AddQuotesForStatLogsPreference"
              name="Add quotes for stats and logs preference page.">
        </workspacetask>
-       <projecttask
-             beforeLogon="false"
-             class="org.talend.designer.core.model.process.migration.SynchronizeSchemaOnlyForPerlDemoMigrationTask"
-             description="Synchronize schema only for perl demo"
-             id="org.talend.designer.core.model.process.migration.SynchronizeSchemaOnlyForPerlDemo"
-             name="Synchronize schema only for perl demo">
-       </projecttask>
     </extension>
     <extension
           point="org.talend.repository.projectsetting_page">
