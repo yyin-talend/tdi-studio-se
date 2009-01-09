@@ -296,7 +296,7 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
                 checkFieldsValue();
 
                 testSalesforceLogin();
-                loginOk = checkSalesfoceLogin2(endPoint, username, pwd);
+                loginOk = toCheckSalesfoceLogin(endPoint, username, pwd);
                 preparModuleInit();
                 initCustomModules();
             }

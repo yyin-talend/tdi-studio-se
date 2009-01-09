@@ -64,9 +64,9 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
     // note that tSalesforceInput use a different url, if the web service is called by wizard we should use
     // DEFAULT_WEB_SERVICE_URL, if the web service is called by tSalesforceInput we should use TSALESFORCE_INPUT_URL
     public static final String DEFAULT_WEB_SERVICE_URL = "https://www.salesforce.com/services/Soap/u/8.0";
-    
+
     public static final String TSALESFORCE_CUSTOM_MODULE = "org.talend.salesforce.custom.module";
-    
+
     public static final String TSALESFORCE_CUSTOM_MODULE_SPILT = ",";
 
     public AbstractSalesforceStepForm(Composite parent, ConnectionItem connectionItem, String[] existingNames,
@@ -76,8 +76,7 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
         this.salesforceAPI = salesforceAPI;
     }
 
-    public AbstractSalesforceStepForm(Composite parent, ConnectionItem connectionItem,
-            SalesforceModuleParseAPI salesforceAPI) {
+    public AbstractSalesforceStepForm(Composite parent, ConnectionItem connectionItem, SalesforceModuleParseAPI salesforceAPI) {
         this(parent, connectionItem, null, salesforceAPI);
     }
 
@@ -107,8 +106,7 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
         return RepositoryPlugin.getDefault().getDesignerCoreService().getRefrenceNode(tSalesforceUniqueName);
     }
 
-    public IMetadataTable getMetadatasForSalesforce(String endPoint, String user, String pass, String moduleName,
-            boolean update) {
+    public IMetadataTable getMetadatasForSalesforce(String endPoint, String user, String pass, String moduleName, boolean update) {
         // TSALESFORCE_INPUT_URL is only used by tSalesForceInput, the wizard doesn't work with this url
         if (endPoint.equals(TSALESFORCE_INPUT_URL)) {
             endPoint = DEFAULT_WEB_SERVICE_URL;
@@ -137,12 +135,11 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
 
     }
 
-    private IMetadataTable getMetadataTableBySalesforceServerAPI(final String endPoint, final String user,
-            final String pass, final String moduleName) {
+    private IMetadataTable getMetadataTableBySalesforceServerAPI(final String endPoint, final String user, final String pass,
+            final String moduleName) {
         IMetadataTable metadataTable = new org.talend.core.model.metadata.MetadataTable();
 
-        if (user == null || pass == null || user.equals("") || pass.equals("") || moduleName == null
-                || moduleName.equals("")) {
+        if (user == null || pass == null || user.equals("") || pass.equals("") || moduleName == null || moduleName.equals("")) {
             return null;
         }
 
@@ -152,8 +149,8 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
 
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 
-                    monitor.beginTask("Connection to Salesforce service to fetch module '" + moduleName
-                            + "'data column", IProgressMonitor.UNKNOWN);
+                    monitor.beginTask("Connection to Salesforce service to fetch module '" + moduleName + "'data column",
+                            IProgressMonitor.UNKNOWN);
 
                     try {
                         salesforceAPI.login(endPoint, user, pass);
@@ -176,6 +173,24 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
 
         metadataTable.setListColumns(salesforceAPI.getCurrentMetadataColumns());
         return metadataTable;
+    }
+
+    protected boolean toCheckSalesfoceLogin(final String endPoint, final String username, final String password) {
+        final List<String> errors = new ArrayList<String>();
+        salesforceAPI.setLogin(false);
+        try {
+            salesforceAPI.login(endPoint, username, password);
+            salesforceAPI.setLogin(true);
+        } catch (Throwable e) {
+            // MessageDialog.openInformation(getShell(), Messages.getString("SalesforceForm.checkCustomModuleTitle"),
+            // Messages
+            // .getString("SalesforceForm.getCustomModule"));
+            // errors.add(e.getMessage());
+            ExceptionHandler.process(e);
+        }
+
+        return salesforceAPI.isLogin();
+
     }
 
     protected boolean checkSalesfoceLogin(final String endPoint, final String username, final String password) {
@@ -204,6 +219,8 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
                         salesforceAPI.setLogin(true);
 
                     } catch (Throwable e) {
+                        MessageDialog.openInformation(getShell(), Messages.getString("SalesforceForm.checkConnectionTitle"),
+                                password);
                         errors.add(e.getMessage());
                         ExceptionHandler.process(e);
                     }
