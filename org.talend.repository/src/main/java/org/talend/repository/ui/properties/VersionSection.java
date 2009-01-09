@@ -91,8 +91,9 @@ public class VersionSection extends AbstractSection implements ISelectionProvide
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
 
-        final String[] columnProperties = new String[] {
-                Messages.getString("VersionSection.Version"), Messages.getString("VersionSection.CreationDate"), Messages.getString("VersionSection.ModificationDate") }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        final String[] columnProperties = new String[] { Messages.getString("VersionSection.Version"),
+                Messages.getString("VersionSection.CreationDate"),
+                Messages.getString("VersionSection.ModificationDate"), Messages.getString("VersionSection.Status") }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         final TableColumn column1 = new TableColumn(table, SWT.NONE);
         tableLayout.addColumnData(new ColumnPixelData(125, true));
@@ -103,8 +104,12 @@ public class VersionSection extends AbstractSection implements ISelectionProvide
         column2.setText(columnProperties[1]);
 
         final TableColumn column3 = new TableColumn(table, SWT.NONE);
-        tableLayout.addColumnData(new ColumnWeightData(1, 150, true));
+        tableLayout.addColumnData(new ColumnPixelData(125, true));
         column3.setText(columnProperties[2]);
+
+        final TableColumn column4 = new TableColumn(table, SWT.NONE);
+        tableLayout.addColumnData(new ColumnWeightData(1, 150, true));
+        column4.setText(columnProperties[3]);
 
         tableViewer.setColumnProperties(columnProperties);
 
@@ -182,6 +187,7 @@ public class VersionSection extends AbstractSection implements ISelectionProvide
                 case 1:
                     if (repositoryNode.getObject().getCreationDate() != null) {
                         return FORMATTER.format(repositoryNode.getObject().getCreationDate());
+
                     } else {
                         return null;
                     }
@@ -190,6 +196,10 @@ public class VersionSection extends AbstractSection implements ISelectionProvide
                         return FORMATTER.format(repositoryNode.getObject().getModificationDate());
                     } else {
                         return null;
+                    }
+                case 3:
+                    if (repositoryNode.getObject().getStatusCode() != null) {
+                        return repositoryNode.getObject().getStatusCode();
                     }
                 default:
                     return null;
@@ -278,6 +288,7 @@ public class VersionSection extends AbstractSection implements ISelectionProvide
         column1.addListener(SWT.Selection, sortListener);
         column2.addListener(SWT.Selection, sortListener);
         column3.addListener(SWT.Selection, sortListener);
+        column4.addListener(SWT.Selection, sortListener);
         table.setSortColumn(column1);
         table.setSortDirection(SWT.DOWN);
 
