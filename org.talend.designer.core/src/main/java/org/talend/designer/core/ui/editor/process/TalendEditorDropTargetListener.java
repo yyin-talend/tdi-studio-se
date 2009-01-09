@@ -69,6 +69,7 @@ import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
+import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
 import org.talend.designer.core.ui.editor.cmd.CreateNodeContainerCommand;
@@ -175,11 +176,26 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
 
         // if drop a node on the job, create new component,
         // else just update the schema or something of the target component.
+
+        // if (getTargetEditPart() instanceof NodeContainerPart) {
+
+        // IEditorPart iep = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+        // IEditorInput iei = iep.getEditorInput();
+        // iei
+        // EditPart ep = getTargetEditPart();
+        Object obj = editor.getEditorInput();
+        ProcessEditorInput pi = null;
+        if (obj != null && obj instanceof ProcessEditorInput) {
+            pi = (ProcessEditorInput) obj;
+        }
+
         if (!(getTargetEditPart() instanceof NodeContainerPart)) {
-            try {
-                createNewComponent(getCurrentEvent());
-            } catch (OperationCanceledException e) {
-                return;
+            if ((pi == null) || (pi != null && !pi.isReadOnly())) {
+                try {
+                    createNewComponent(getCurrentEvent());
+                } catch (OperationCanceledException e) {
+                    return;
+                }
             }
         } else {
             createSchema(getSelection().getFirstElement(), getTargetEditPart());
@@ -187,6 +203,8 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             createProperty(getSelection().getFirstElement(), getTargetEditPart());
             createChildJob(getSelection().getFirstElement(), getTargetEditPart());
         }
+
+        return;
     }
 
     /**

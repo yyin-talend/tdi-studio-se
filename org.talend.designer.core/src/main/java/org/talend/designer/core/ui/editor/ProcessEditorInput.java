@@ -44,7 +44,8 @@ public class ProcessEditorInput extends RepositoryEditorInput {
     }
 
     public ProcessEditorInput(ProcessItem processItem, boolean load, Boolean readonly) throws PersistenceException {
-        super(initFile(processItem.getProperty().getId()), processItem);
+        
+        super(initFile(processItem.getProperty().getId()), processItem, readonly == null ? false : readonly.booleanValue());
 
         loadedProcess = new Process(getProcessItem().getProperty());
         if (load) {
