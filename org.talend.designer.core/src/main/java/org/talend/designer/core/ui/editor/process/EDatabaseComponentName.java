@@ -22,6 +22,7 @@ import org.talend.core.model.properties.ExcelFileConnectionItem;
 import org.talend.core.model.properties.GenericSchemaConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.LDAPSchemaConnectionItem;
+import org.talend.core.model.properties.LdifFileConnectionItem;
 import org.talend.core.model.properties.PositionalFileConnectionItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.RegExFileConnectionItem;
@@ -30,7 +31,6 @@ import org.talend.core.model.properties.SalesforceSchemaConnectionItem;
 import org.talend.core.model.properties.WSDLSchemaConnectionItem;
 import org.talend.core.model.properties.XmlFileConnectionItem;
 import org.talend.core.model.properties.impl.ConnectionItemImpl;
-import org.talend.core.model.properties.impl.LdifFileConnectionItemImpl;
 import org.talend.core.model.repository.ERepositoryObjectType;
 
 /**
@@ -90,7 +90,7 @@ public enum EDatabaseComponentName {
     FILEARFF(FakeFileConnectionItem.class, "tFileInputARFF", "tFileOutputARFF", "DELIMITED"),
     FILEDELIMITED(DelimitedFileConnectionItem.class, "tFileInputDelimited", "tFileOutputDelimited", "DELIMITED"),
     FILEEXCEL(ExcelFileConnectionItem.class, "tFileInputExcel", "tFileOutputExcel", "EXCEL"),
-    FILELDIF(LdifFileConnectionItemImpl.class, "tFileInputLDIF", "tFileOutputLDIF", "LDIF"),
+    FILELDIF(LdifFileConnectionItem.class, "tFileInputLDIF", "tFileOutputLDIF", "LDIF"),
     FILEPOSITIONAL(PositionalFileConnectionItem.class, "tFileInputPositional", "tFileOutputPositional", "POSITIONAL"),
     FILEREGEX(RegExFileConnectionItem.class, "tFileInputRegex", null, "REGEX"),
     FILEXML(XmlFileConnectionItem.class, "tFileInputXML", "tFileOutputXML", "XML"),
