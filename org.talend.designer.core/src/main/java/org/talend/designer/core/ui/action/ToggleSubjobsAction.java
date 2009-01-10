@@ -53,7 +53,6 @@ public class ToggleSubjobsAction extends Action {
 
     @Override
     public void run() {
-
         boolean display = isChecked();
         getGlobalStore().setValue(TalendDesignerPrefConstants.DISPLAY_SUBJOBS, display);
 

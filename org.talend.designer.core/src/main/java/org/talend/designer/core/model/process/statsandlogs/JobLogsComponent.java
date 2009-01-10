@@ -48,7 +48,9 @@ public class JobLogsComponent extends AbstractStatsLogsComponent {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.model.process.statsandlogs.AbstractStatsLogsComponent#createElementParameters(org.talend.core.model.process.INode)
+     * @see
+     * org.talend.designer.core.model.process.statsandlogs.AbstractStatsLogsComponent#createElementParameters(org.talend
+     * .core.model.process.INode)
      */
     @Override
     public List<? extends IElementParameter> createElementParameters(INode node) {
@@ -78,7 +80,9 @@ public class JobLogsComponent extends AbstractStatsLogsComponent {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.model.process.statsandlogs.AbstractStatsLogsComponent#createMultipleComponentsParameters()
+     * @see
+     * org.talend.designer.core.model.process.statsandlogs.AbstractStatsLogsComponent#createMultipleComponentsParameters
+     * ()
      */
     @Override
     protected void createMultipleComponentsParameters() {
@@ -99,5 +103,15 @@ public class JobLogsComponent extends AbstractStatsLogsComponent {
      */
     public EComponentType getComponentType() {
         return EComponentType.JOB_LOGS;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#getFavoriteFlag()
+     */
+    public boolean getFavoriteFlag() {
+        // TODO Auto-generated method stub
+        return false;
     }
 }

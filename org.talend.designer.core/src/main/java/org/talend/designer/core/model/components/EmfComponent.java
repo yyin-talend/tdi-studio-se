@@ -277,7 +277,7 @@ public class EmfComponent implements IComponent {
             String context = "FLOW";
             ElementParameter parentParam = new ElementParameter(node);
             parentParam.setName(EParameterName.NOT_SYNCHRONIZED_SCHEMA.getName());
-            parentParam.setDisplayName(EParameterName.SCHEMA_TYPE.getDisplayName()); 
+            parentParam.setDisplayName(EParameterName.SCHEMA_TYPE.getDisplayName());
             parentParam.setField(EParameterFieldType.SCHEMA_TYPE);
             parentParam.setCategory(EComponentCategory.BASIC);
             parentParam.setNumRow(1);
@@ -329,7 +329,7 @@ public class EmfComponent implements IComponent {
         // ****************** add standard returns ******************
         nodeRet = new NodeReturn();
         nodeRet.setAvailability("AFTER"); //$NON-NLS-1$
-        nodeRet.setType(STRING_TYPE); 
+        nodeRet.setType(STRING_TYPE);
         nodeRet.setVarName("ERROR_MESSAGE"); //$NON-NLS-1$
         nodeRet.setDisplayName("Error Message"); //$NON-NLS-1$
         nodeRet.setName("ERROR_MESSAGE"); //$NON-NLS-1$
@@ -341,7 +341,7 @@ public class EmfComponent implements IComponent {
             nodeRet.setVarName("PERL_ERROR_MESSAGE"); //$NON-NLS-1$
             nodeRet.setDisplayName("Perl Error Message"); //$NON-NLS-1$
             nodeRet.setName("PERL_ERROR_MESSAGE"); //$NON-NLS-1$
-            nodeRet.setType(STRING_TYPE); 
+            nodeRet.setType(STRING_TYPE);
             listReturn.add(nodeRet);
 
             nodeRet = new NodeReturn();
@@ -349,7 +349,7 @@ public class EmfComponent implements IComponent {
             nodeRet.setVarName("PERL_ERROR_CODE"); //$NON-NLS-1$
             nodeRet.setDisplayName("Perl Error Code"); //$NON-NLS-1$
             nodeRet.setName("PERL_ERROR_CODE"); //$NON-NLS-1$
-            nodeRet.setType(STRING_TYPE); 
+            nodeRet.setType(STRING_TYPE);
             listReturn.add(nodeRet);
         }
         // ****************** end of standard returns ******************
@@ -1085,7 +1085,7 @@ public class EmfComponent implements IComponent {
             newParam.setDisplayName(EParameterName.PROCESS_TYPE_VERSION.getDisplayName());
             newParam.setListItemsDisplayName(new String[] { ItemCacheManager.LATEST_VERSION });
             newParam.setListItemsValue(new String[] { ItemCacheManager.LATEST_VERSION });
-            newParam.setValue(ItemCacheManager.LATEST_VERSION); 
+            newParam.setValue(ItemCacheManager.LATEST_VERSION);
             newParam.setNumRow(xmlParam.getNUMROW());
             newParam.setField(EParameterFieldType.TECHNICAL);
             if (xmlParam.isSetSHOW()) {
@@ -2342,5 +2342,15 @@ public class EmfComponent implements IComponent {
 
     public boolean canParallelize() {
         return compType.getHEADER().isPARALLELIZE();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#getFavoriteFlag()
+     */
+    public boolean getFavoriteFlag() {
+        // TODO Auto-generated method stub
+        return false;
     }
 }

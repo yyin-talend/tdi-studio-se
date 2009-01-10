@@ -515,4 +515,14 @@ public class JobContextLoadComponent implements IComponent {
     public boolean canParallelize() {
         return false;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#getFavoriteFlag()
+     */
+    public boolean getFavoriteFlag() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 }

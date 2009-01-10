@@ -260,6 +260,7 @@ public class SubjobContainer extends Element implements ISubjobContainer {
         } else {
             size.width = ((size.width / TalendEditor.GRID_SIZE) + 1) * TalendEditor.GRID_SIZE;
         }
+
         totalRectangle.setSize(size);
         return totalRectangle;
     }

@@ -52,6 +52,8 @@ public class ProjectSettingsWizardPage extends WizardPage {
 
     private Project pro;
 
+    private static boolean setState = false;
+
     protected ProjectSettingsWizardPage(String pageName, Project pro) {
         super(pageName);
         this.pro = pro;
@@ -133,6 +135,7 @@ public class ProjectSettingsWizardPage extends WizardPage {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
+                setState = true;
                 VersionManagementDialog dialog = new VersionManagementDialog(getShell(), pro);
                 dialog.open();
             }

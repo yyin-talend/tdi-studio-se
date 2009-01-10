@@ -47,7 +47,6 @@ import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.advanced.composite.ThreeCompositesSashForm;
 import org.talend.core.CorePlugin;
-import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ComponentSetting;
@@ -56,6 +55,7 @@ import org.talend.designer.components.preference.labelformat.TalendPaletteLabelP
 import org.talend.designer.components.preference.labelformat.TalendPaletteTreeProvider;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.ui.actions.ShowStandardAction;
 
 /**
  * DOC qwei class global comment. Detailled comment
@@ -421,7 +421,8 @@ public class PaletteSettingsDialog extends Dialog {
         IProxyRepositoryFactory prf = CorePlugin.getDefault().getProxyRepositoryFactory();
         try {
             prf.saveProject(project);
-            ComponentUtilities.updatePalette();
+            // ComponentUtilities.updatePalette(false);
+            ShowStandardAction.getInstance().doRun();
         } catch (Exception ex) {
             ExceptionHandler.process(ex);
         }

@@ -91,6 +91,10 @@ public class TalendPaletteViewer extends PaletteViewer {
         executor = new ThreadPoolExecutor(1, 2, 0, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(3));
     }
 
+    private void initToolBar() {
+        // getViewSite().getActionBars().getToolBarManager();
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -321,4 +325,5 @@ public class TalendPaletteViewer extends PaletteViewer {
 
         filters.removeAll(disposed);
     }
+
 }

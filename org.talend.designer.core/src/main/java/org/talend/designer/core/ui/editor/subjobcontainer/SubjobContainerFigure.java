@@ -152,7 +152,7 @@ public class SubjobContainerFigure extends Figure {
 
         outlineFigure.setLocation(location);
         outlineFigure.setVisible(showTitle);
-        outlineFigure.setBackgroundColor(new Color(Display.getDefault(), subjobTitleColor));
+        outlineFigure.setBackgroundColor(new Color(Display.getDefault(), subjobTitleColor));// //////////////////////
         outlineFigure.setForegroundColor(new Color(Display.getDefault(), subjobTitleColor));
         outlineFigure.setSize(rectangle.width, preferedSize.height);
 
@@ -162,7 +162,7 @@ public class SubjobContainerFigure extends Figure {
 
         rectFig.setLocation(new Point(location.x, /* preferedSize.height + */location.y));
         rectFig.setSize(new Dimension(rectangle.width, rectangle.height /*- preferedSize.height*/));
-        rectFig.setBackgroundColor(new Color(Display.getDefault(), mainColor));
+        rectFig.setBackgroundColor(new Color(Display.getDefault(), mainColor));// //////////////////////////
         rectFig.setForegroundColor(new Color(Display.getDefault(), subjobTitleColor));
     }
 

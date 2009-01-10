@@ -45,4 +45,14 @@ public class JobMetterComponent extends AbstractStatsLogsComponent {
     public EComponentType getComponentType() {
         return EComponentType.JOB_METTER;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#getFavoriteFlag()
+     */
+    public boolean getFavoriteFlag() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 }

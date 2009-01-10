@@ -157,6 +157,7 @@ import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.outline.NodeTreeEditPart;
 import org.talend.designer.core.ui.editor.outline.ProcessTreePartFactory;
 import org.talend.designer.core.ui.editor.palette.TalendDrawerEditPart;
+import org.talend.designer.core.ui.editor.palette.TalendFlyoutPaletteComposite;
 import org.talend.designer.core.ui.editor.palette.TalendPaletteDrawer;
 import org.talend.designer.core.ui.editor.palette.TalendPaletteViewerProvider;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -180,6 +181,21 @@ import org.talend.repository.model.RepositoryConstants;
  */
 public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPalette implements
         ITabbedPropertySheetPageContributor, IJobResourceProtection {
+
+    // @Override
+    public void createPartControl(Composite parent) {
+        // TODO Auto-generated method stub
+        // super.createPartControl(parent);
+
+        splitter = new TalendFlyoutPaletteComposite(parent, SWT.NONE, getSite().getPage(), getPaletteViewerProvider(),
+                getPalettePreferences());
+        super.createPartControl(splitter);
+        splitter.setGraphicalControl(getGraphicalControl());
+        if (page != null) {
+            splitter.setExternalViewer(page.getPaletteViewer());
+            page = null;
+        }
+    }
 
     private OutlinePage outlinePage;
 
@@ -1022,7 +1038,8 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         // set the factory to use for creating EditParts for elements in the model
         getGraphicalViewer().setEditPartFactory(partFactory);
         getGraphicalViewer().setKeyHandler(new GraphicalViewerKeyHandler(getGraphicalViewer()).setParent(getCommonKeyHandler()));
-
+        // GraphicalViewer graViewer = getGraphicalViewer();
+        // graViewer.setKeyHandler(new GraphicalViewerKeyHandler(graViewer));
         initializeActivationCodeTrigger();
 
         /** * Management of the context menu ** */
@@ -1615,7 +1632,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
         @Override
         public void keyDown(org.eclipse.swt.events.KeyEvent keyEvent, EditPartViewer viewer) {
-            int keyCode = keyEvent.keyCode;
+            int keyCode = keyEvent.keyCode;// 
 
             if (keyEvent.stateMask == SWT.CTRL
                     && (keyCode == SWT.ARROW_UP || keyCode == SWT.ARROW_DOWN || keyCode == SWT.ARROW_LEFT || keyCode == SWT.ARROW_RIGHT)) {
@@ -1626,7 +1643,9 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                 for (EditPart part : parts) {
                     if (part instanceof NodePart) {
                         Node node = (Node) part.getModel();
-                        moveShape(keyCode, node, moveOffset);
+                        if (node != null) {
+                            moveShape(keyCode, node, moveOffset);
+                        }
                     }
                 }
                 moveOffset++;
@@ -1655,7 +1674,10 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
          * @param shape
          */
         private void moveShape(int keyCode, Node node, int offset) {
+
             Point location = node.getLocation().getCopy();
+            if (location == null)
+                return;
             switch (keyCode) {
             case SWT.ARROW_UP:
                 location.y = location.y - offset;
@@ -1820,22 +1842,24 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                 @Override
                 public void run() {
                     ISelection selection = getGraphicalViewer().getSelection();
-                    if (selection instanceof IStructuredSelection) {
+                    if (selection != null) {
+                        if (selection instanceof IStructuredSelection) {
 
-                        Object input = ((IStructuredSelection) selection).getFirstElement();
-                        Node node = null;
-                        if (input instanceof NodeTreeEditPart) {
-                            NodeTreeEditPart nTreePart = (NodeTreeEditPart) input;
-                            node = (Node) nTreePart.getModel();
-                        } else {
-                            if (input instanceof NodePart) {
-                                EditPart editPart = (EditPart) input;
-                                node = (Node) editPart.getModel();
+                            Object input = ((IStructuredSelection) selection).getFirstElement();
+                            Node node = null;
+                            if (input instanceof NodeTreeEditPart) {
+                                NodeTreeEditPart nTreePart = (NodeTreeEditPart) input;
+                                node = (Node) nTreePart.getModel();
+                            } else {
+                                if (input instanceof NodePart) {
+                                    EditPart editPart = (EditPart) input;
+                                    node = (Node) editPart.getModel();
+                                }
                             }
-                        }
-                        if (node != null) {
-                            String helpLink = (String) node.getPropertyValue(EParameterName.HELP.getName());
-                            PlatformUI.getWorkbench().getHelpSystem().displayHelp(helpLink);
+                            if (node != null) {
+                                String helpLink = (String) node.getPropertyValue(EParameterName.HELP.getName());
+                                PlatformUI.getWorkbench().getHelpSystem().displayHelp(helpLink);
+                            }
                         }
                     }
                 }

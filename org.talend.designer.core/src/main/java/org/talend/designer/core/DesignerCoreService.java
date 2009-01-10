@@ -340,6 +340,10 @@ public class DesignerCoreService implements IDesignerCoreService {
         return TalendEditorPaletteFactory.createPalette(factory);
     }
 
+    public PaletteRoot createPalette(IComponentsFactory factory, boolean isFavorite) {
+        return TalendEditorPaletteFactory.createPalette(factory, isFavorite);
+    }
+
     public PaletteRoot getAllNodeStructure(IComponentsFactory factory) {
         return TalendEditorPaletteFactory.getAllNodeStructure(factory);
     }
@@ -353,6 +357,10 @@ public class DesignerCoreService implements IDesignerCoreService {
      */
     public PaletteRoot createPalette(IComponentsFactory compFac, PaletteRoot root) {
         return TalendEditorPaletteFactory.createPalette(compFac, root);
+    }
+
+    public PaletteRoot createPalette(IComponentsFactory compFac, PaletteRoot root, boolean isFavorite) {
+        return TalendEditorPaletteFactory.createPalette(compFac, root, isFavorite);
     }
 
     /*
