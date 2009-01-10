@@ -419,10 +419,10 @@ public class Problems {
                     status = ProblemStatus.ERROR;
                     information.setLevel(InformationLevel.ERROR_LITERAL);
                     break;
-                case IMarker.SEVERITY_WARNING:
-                    status = ProblemStatus.WARNING;
-                    information.setLevel(InformationLevel.WARN_LITERAL);
-                    break;
+                // case IMarker.SEVERITY_WARNING:
+                // status = ProblemStatus.WARNING;
+                // information.setLevel(InformationLevel.WARN_LITERAL);
+                // break;
                 case IMarker.SEVERITY_INFO:
                     status = ProblemStatus.INFO;
                     information.setLevel(InformationLevel.INFO_LITERAL);
