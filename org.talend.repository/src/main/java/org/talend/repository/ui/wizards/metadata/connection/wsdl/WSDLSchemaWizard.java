@@ -212,7 +212,7 @@ public class WSDLSchemaWizard extends RepositoryWizard implements INewWizard {
             connectionProperty.setVersion(VersionUtils.DEFAULT_VERSION);
             connectionProperty.setStatusCode(""); //$NON-NLS-1$
 
-            connectionItem = PropertiesFactory.eINSTANCE.createLDAPSchemaConnectionItem();
+            connectionItem = PropertiesFactory.eINSTANCE.createWSDLSchemaConnectionItem();
             connectionItem.setProperty(connectionProperty);
             connectionItem.setConnection(connection);
             break;
@@ -408,6 +408,15 @@ public class WSDLSchemaWizard extends RepositoryWizard implements INewWizard {
         } else {
             return false;
         }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.wizards.RepositoryWizard#getConnectionItem()
+     */
+    public ConnectionItem getConnectionItem() {
+        return this.connectionItem;
     }
 
 }

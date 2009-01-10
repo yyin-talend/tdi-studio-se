@@ -316,4 +316,13 @@ public class RegexpFileWizard extends RepositoryWizard implements INewWizard {
     public void setToolbar(boolean isToolbar) {
         this.isToolbar = isToolbar;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.wizards.RepositoryWizard#getConnectionItem()
+     */
+    public ConnectionItem getConnectionItem() {
+        return this.connectionItem;
+    }
 }

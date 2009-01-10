@@ -423,4 +423,13 @@ public class LDAPSchemaWizard extends RepositoryWizard implements INewWizard {
         return this.connectionProperty;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.wizards.RepositoryWizard#getConnectionItem()
+     */
+    public ConnectionItem getConnectionItem() {
+        return this.connectionItem;
+    }
+
 }

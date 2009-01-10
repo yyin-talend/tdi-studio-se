@@ -317,4 +317,13 @@ public class LdifFileWizard extends RepositoryWizard implements INewWizard {
     public void init(final IWorkbench workbench, final IStructuredSelection selection2) {
         this.selection = selection2;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.wizards.RepositoryWizard#getConnectionItem()
+     */
+    public ConnectionItem getConnectionItem() {
+        return this.connectionItem;
+    }
 }

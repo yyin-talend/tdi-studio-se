@@ -318,4 +318,13 @@ public class DelimitedFileWizard extends RepositoryWizard implements INewWizard 
         this.selection = selection2;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.wizards.RepositoryWizard#getConnectionItem()
+     */
+    public ConnectionItem getConnectionItem() {
+        return this.connectionItem;
+    }
+
 }

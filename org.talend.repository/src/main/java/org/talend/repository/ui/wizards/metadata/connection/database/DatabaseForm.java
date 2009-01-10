@@ -13,8 +13,6 @@
 package org.talend.repository.ui.wizards.metadata.connection.database;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -536,32 +534,9 @@ public class DatabaseForm extends AbstractForm {
     private void addDBSelectCombo() {
         // PTODO cantoine : HIDDEN some Database connection in function of
         // project MODE (Perl/Java).
-        if (LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL) {
-            Collection<String> databasePerl = new ArrayList<String>(Arrays.asList(urlDataStringConnection.getItem()));
-            databasePerl.remove("Microsoft SQL Server"); //$NON-NLS-1$
-            databasePerl.remove("Ingres"); //$NON-NLS-1$
-            databasePerl.remove("Interbase"); //$NON-NLS-1$
-            databasePerl.remove("FireBird"); //$NON-NLS-1$
-            databasePerl.remove("Informix"); //$NON-NLS-1$
-            databasePerl.remove("Access"); //$NON-NLS-1$
-            databasePerl.remove("Teradata"); //$NON-NLS-1$
-            databasePerl.remove("AS400"); //$NON-NLS-1$
 
-            databasePerl.remove("JavaDB Embeded"); //$NON-NLS-1$
-            databasePerl.remove("JavaDB JCCJDBC"); //$NON-NLS-1$
-            databasePerl.remove(Messages.getString("DatabaseForm.10")); //$NON-NLS-1$
-
-            databasePerl.remove("HSQLDB Server"); //$NON-NLS-1$
-            databasePerl.remove("HSQLDB WebServer"); //$NON-NLS-1$
-            databasePerl.remove("HSQLDB In-Process"); //$NON-NLS-1$
-
-            String[] dbPerl = databasePerl.toArray(new String[databasePerl.size()]);
-            dbTypeCombo = new LabelledCombo(compositeDbSettings, Messages.getString("DatabaseForm.dbType"), Messages //$NON-NLS-1$
-                    .getString("DatabaseForm.dbTypeTip"), dbPerl, 2, true); //$NON-NLS-1$
-        } else {
-            dbTypeCombo = new LabelledCombo(compositeDbSettings, Messages.getString("DatabaseForm.dbType"), Messages //$NON-NLS-1$
-                    .getString("DatabaseForm.dbTypeTip"), urlDataStringConnection.getItem(), 2, true); //$NON-NLS-1$
-        }
+        dbTypeCombo = new LabelledCombo(compositeDbSettings, Messages.getString("DatabaseForm.dbType"), Messages //$NON-NLS-1$
+                .getString("DatabaseForm.dbTypeTip"), urlDataStringConnection.getDBTypes().toArray(new String[0]), 2, true); //$NON-NLS-1$
 
         // configure the visible item of database combo
         int visibleItemCount = dbTypeCombo.getCombo().getItemCount();
@@ -882,14 +857,13 @@ public class DatabaseForm extends AbstractForm {
             public void modifyText(final ModifyEvent e) {
                 if (!isContextMode()) {
                     if (!urlConnectionStringText.getEditable()) {
-						try {
-							String password = PasswordEncryptUtil
-									.encryptPassword(passwordText.getText());
-							getConnection().setPassword(password);
-						} catch (Exception ex) {
-							ExceptionHandler.process(ex);
-						}
-					}
+                        try {
+                            String password = PasswordEncryptUtil.encryptPassword(passwordText.getText());
+                            getConnection().setPassword(password);
+                        } catch (Exception ex) {
+                            ExceptionHandler.process(ex);
+                        }
+                    }
                 }
             }
         });
@@ -1205,14 +1179,12 @@ public class DatabaseForm extends AbstractForm {
             public void modifyText(final ModifyEvent e) {
                 if (!isContextMode()) {
                     if (validText(generalJdbcPasswordText.getText())) {
-                    	try {
-							String password = PasswordEncryptUtil
-									.encryptPassword(generalJdbcPasswordText
-											.getText());
-							getConnection().setPassword(password);
-						} catch (Exception ex) {
-							ExceptionHandler.process(ex);
-						}                       
+                        try {
+                            String password = PasswordEncryptUtil.encryptPassword(generalJdbcPasswordText.getText());
+                            getConnection().setPassword(password);
+                        } catch (Exception ex) {
+                            ExceptionHandler.process(ex);
+                        }
                         checkFieldsValue();
                     }
                 }
@@ -1605,6 +1577,12 @@ public class DatabaseForm extends AbstractForm {
         if (isReadOnly() != readOnly) {
             adaptFormToReadOnly();
         }
+        /**
+         * add by wzhang. Estimate the status
+         */
+        if (visible) {
+            updateStatus(getStatusLevel(), getStatus());
+        }
     }
 
     protected DatabaseConnection getConnection() {
@@ -1649,4 +1627,7 @@ public class DatabaseForm extends AbstractForm {
         }
     }
 
+    public boolean isDbTypenull() {
+        return dbTypeCombo.getText().trim().length() == 0;
+    }
 }

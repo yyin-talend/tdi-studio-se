@@ -12,11 +12,19 @@
 // ============================================================================
 package org.talend.repository.ui.utils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.oro.text.regex.MalformedPatternException;
 import org.apache.oro.text.regex.MatchResult;
 import org.apache.oro.text.regex.Pattern;
 import org.apache.oro.text.regex.Perl5Compiler;
 import org.apache.oro.text.regex.Perl5Matcher;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
+import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.repository.i18n.Messages;
 
 /**
  * @author ocarbone
@@ -211,6 +219,32 @@ public class DataStringConnection {
     }
 
     /**
+     * DOC wzhang Comment method "getDBTypes". Extract method form addDBSelectCombo()
+     */
+    public List<String> getDBTypes() {
+        List<String> databaseType = new ArrayList<String>(Arrays.asList(getItem()));
+        if (LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL) {
+            databaseType.remove("Microsoft SQL Server"); //$NON-NLS-1$
+            databaseType.remove("Ingres"); //$NON-NLS-1$
+            databaseType.remove("Interbase"); //$NON-NLS-1$
+            databaseType.remove("FireBird"); //$NON-NLS-1$
+            databaseType.remove("Informix"); //$NON-NLS-1$
+            databaseType.remove("Access"); //$NON-NLS-1$
+            databaseType.remove("Teradata"); //$NON-NLS-1$
+            databaseType.remove("AS400"); //$NON-NLS-1$
+
+            databaseType.remove("JavaDB Embeded"); //$NON-NLS-1$
+            databaseType.remove("JavaDB JCCJDBC"); //$NON-NLS-1$
+            databaseType.remove(Messages.getString("DatabaseForm.10")); //$NON-NLS-1$
+
+            databaseType.remove("HSQLDB Server"); //$NON-NLS-1$
+            databaseType.remove("HSQLDB WebServer"); //$NON-NLS-1$
+            databaseType.remove("HSQLDB In-Process"); //$NON-NLS-1$
+        }
+        return databaseType;
+    }
+
+    /**
      * SetVisible fields : Serveur, Login, Password.
      * 
      * @param int dbTypeItemIndex
@@ -226,6 +260,7 @@ public class DataStringConnection {
      */
     public String getString(final int dbTypeItemIndex, final String host, final String login, final String password,
             final String port, final String sid, final String filename, final String datasource) {
+        this.selectionIndex = dbTypeItemIndex;
         String s = getStringConnectionTemplate();
         if (s == null) {
             return ""; //$NON-NLS-1$
@@ -480,6 +515,24 @@ public class DataStringConnection {
 
     public String getUrlConnectionStr() {
         return this.urlConnectionStr;
+    }
+
+    /**
+     * 
+     * DOC wzhang Comment method "getUrlConnectionStr".
+     * 
+     * @param conn
+     * @return
+     */
+    public String getUrlConnectionStr(DatabaseConnection conn) {
+        if (conn == null || conn.getDatabaseType() == null) {
+            return null;
+        }
+        DataStringConnection dataStrConn = new DataStringConnection();
+        dataStrConn.getString(getDBTypes().indexOf(conn.getDatabaseType()), conn.getServerName(), conn.getUsername(), conn
+                .getPassword(), conn.getPort(), conn.getSID(), conn.getFileFieldName(), conn.getDatasourceName(), conn
+                .getDBRootPath(), conn.getAdditionalParams());
+        return dataStrConn.getUrlConnectionStr();
     }
 
 }

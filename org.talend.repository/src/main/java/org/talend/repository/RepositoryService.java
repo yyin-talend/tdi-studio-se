@@ -41,18 +41,23 @@ import org.talend.core.context.Context;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.designerproperties.ComponentToRepositoryProperty;
 import org.talend.core.model.migration.IMigrationToolService;
 import org.talend.core.model.process.IContextParameter;
+import org.talend.core.model.process.INode;
+import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.DisableLanguageActions;
 import org.talend.core.ui.IEBCDICProviderService;
+import org.talend.core.ui.ISAPProviderService;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
+import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
@@ -66,7 +71,10 @@ import org.talend.repository.ui.dialog.ContextRepositoryReviewDialog;
 import org.talend.repository.ui.login.LoginDialog;
 import org.talend.repository.ui.utils.ColumnNameValidator;
 import org.talend.repository.ui.utils.DBConnectionContextUtils;
+import org.talend.repository.ui.utils.DataStringConnection;
+import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryView;
+import org.talend.repository.ui.wizards.RepositoryWizard;
 import org.talend.repository.ui.wizards.metadata.connection.database.DatabaseWizard;
 import org.talend.repository.ui.wizards.metadata.connection.files.delimited.DelimitedFileWizard;
 import org.talend.repository.ui.wizards.metadata.connection.files.excel.ExcelFileWizard;
@@ -88,6 +96,7 @@ import org.talend.repository.utils.RepositoryPathProvider;
  * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40 +0000 (星期五, 29 九月 2006) nrousseau $
  * 
  */
+
 public class RepositoryService implements IRepositoryService {
 
     private GenericSchemaWizard genericSchemaWizard = null;
@@ -305,51 +314,81 @@ public class RepositoryService implements IRepositoryService {
     }
 
     public void openMetadataConnection(IRepositoryObject o) {
-
         final RepositoryNode realNode = RepositoryNodeUtilities.getRepositoryNode(o);
+        openMetadataConnection(false, realNode, null);
+    }
+
+    public ConnectionItem openMetadataConnection(boolean creation, RepositoryNode realNode, INode node) {
 
         if (realNode != null) {
-
             IWizard relatedWizard = null;
-            if (realNode.getObjectType().equals(ERepositoryObjectType.METADATA_CONNECTIONS)) {
-                relatedWizard = new DatabaseWizard(PlatformUI.getWorkbench(), false, realNode, null);
-            } else if (realNode.getObjectType().equals(ERepositoryObjectType.METADATA_FILE_DELIMITED)) {
-                relatedWizard = new DelimitedFileWizard(PlatformUI.getWorkbench(), false, realNode, null);
-            } else if (realNode.getObjectType().equals(ERepositoryObjectType.METADATA_FILE_LDIF)) {
-                relatedWizard = new LdifFileWizard(PlatformUI.getWorkbench(), false, realNode, null);
-            } else if (realNode.getObjectType().equals(ERepositoryObjectType.METADATA_FILE_POSITIONAL)) {
-                relatedWizard = new FilePositionalWizard(PlatformUI.getWorkbench(), false, realNode, null);
-            } else if (realNode.getObjectType().equals(ERepositoryObjectType.METADATA_FILE_REGEXP)) {
-                relatedWizard = new RegexpFileWizard(PlatformUI.getWorkbench(), false, realNode, null);
-            } else if (realNode.getObjectType().equals(ERepositoryObjectType.METADATA_FILE_XML)) {
-                relatedWizard = new XmlFileWizard(PlatformUI.getWorkbench(), false, realNode, null);
-            } else if (realNode.getObjectType().equals(ERepositoryObjectType.METADATA_GENERIC_SCHEMA)) {
-                relatedWizard = new GenericSchemaWizard(PlatformUI.getWorkbench(), false, realNode, null, true);
-            } else if (realNode.getObjectType().equals(ERepositoryObjectType.METADATA_WSDL_SCHEMA)) {
-                relatedWizard = new WSDLSchemaWizard(PlatformUI.getWorkbench(), false, realNode, null, false);
-            } else if (realNode.getObjectType().equals(ERepositoryObjectType.METADATA_LDAP_SCHEMA)) {
-                relatedWizard = new LDAPSchemaWizard(PlatformUI.getWorkbench(), false, realNode, null, false);
-            } else if (realNode.getObjectType().equals(ERepositoryObjectType.METADATA_FILE_EXCEL)) {
-                relatedWizard = new ExcelFileWizard(PlatformUI.getWorkbench(), false, realNode, null);
-            } else if (realNode.getObjectType().equals(ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA)) {
-                relatedWizard = new SalesforceSchemaWizard(PlatformUI.getWorkbench(), false, realNode, null, false);
-            } else if (realNode.getObjectType().equals(ERepositoryObjectType.METADATA_FILE_EBCDIC)) {
+            ERepositoryObjectType objectType = null;
+            if (creation) {
+                objectType = realNode.getContentType();
+            } else {
+                objectType = realNode.getObjectType();
+            }
+            if (objectType.equals(ERepositoryObjectType.METADATA_CONNECTIONS)) {
+                relatedWizard = new DatabaseWizard(PlatformUI.getWorkbench(), creation, realNode, null);
+            } else if (objectType.equals(ERepositoryObjectType.METADATA_FILE_DELIMITED)) {
+                relatedWizard = new DelimitedFileWizard(PlatformUI.getWorkbench(), creation, realNode, null);
+            } else if (objectType.equals(ERepositoryObjectType.METADATA_FILE_LDIF)) {
+                relatedWizard = new LdifFileWizard(PlatformUI.getWorkbench(), creation, realNode, null);
+            } else if (objectType.equals(ERepositoryObjectType.METADATA_FILE_POSITIONAL)) {
+                relatedWizard = new FilePositionalWizard(PlatformUI.getWorkbench(), creation, realNode, null);
+            } else if (objectType.equals(ERepositoryObjectType.METADATA_FILE_REGEXP)) {
+                relatedWizard = new RegexpFileWizard(PlatformUI.getWorkbench(), creation, realNode, null);
+            } else if (objectType.equals(ERepositoryObjectType.METADATA_FILE_XML)) {
+                relatedWizard = new XmlFileWizard(PlatformUI.getWorkbench(), creation, realNode, null);
+            } else if (objectType.equals(ERepositoryObjectType.METADATA_GENERIC_SCHEMA)) {
+                relatedWizard = new GenericSchemaWizard(PlatformUI.getWorkbench(), creation, realNode, null, true);
+            } else if (objectType.equals(ERepositoryObjectType.METADATA_WSDL_SCHEMA)) {
+                relatedWizard = new WSDLSchemaWizard(PlatformUI.getWorkbench(), creation, realNode, null, false);
+            } else if (objectType.equals(ERepositoryObjectType.METADATA_LDAP_SCHEMA)) {
+                relatedWizard = new LDAPSchemaWizard(PlatformUI.getWorkbench(), creation, realNode, null, false);
+            } else if (objectType.equals(ERepositoryObjectType.METADATA_FILE_EXCEL)) {
+                relatedWizard = new ExcelFileWizard(PlatformUI.getWorkbench(), creation, realNode, null);
+            } else if (objectType.equals(ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA)) {
+                relatedWizard = new SalesforceSchemaWizard(PlatformUI.getWorkbench(), creation, realNode, null, false);
+            } else if (objectType.equals(ERepositoryObjectType.METADATA_FILE_EBCDIC)) {
                 if (PluginChecker.isEBCDICPluginLoaded()) {
                     IEBCDICProviderService service = (IEBCDICProviderService) GlobalServiceRegister.getDefault().getService(
                             IEBCDICProviderService.class);
                     if (service != null) {
-                        relatedWizard = service.newEbcdicWizard(PlatformUI.getWorkbench(), false, realNode, null);
+                        relatedWizard = service.newEbcdicWizard(PlatformUI.getWorkbench(), creation, realNode, null);
+                    }
+                }
+            } else if (objectType.equals(ERepositoryObjectType.METADATA_SAPCONNECTIONS)) {
+                if (PluginChecker.isSAPWizardPluginLoaded()) {
+                    ISAPProviderService service = (ISAPProviderService) GlobalServiceRegister.getDefault().getService(
+                            ISAPProviderService.class);
+                    if (service != null) {
+                        relatedWizard = service.newSAPWizard(PlatformUI.getWorkbench(), creation, realNode, null);
                     }
                 }
             }
+            boolean changed = false;
             if (relatedWizard != null) {
-                // Open the Wizard
-                WizardDialog wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), relatedWizard);
-                wizardDialog.setPageSize(600, 500);
-                wizardDialog.create();
-                wizardDialog.open();
+                ConnectionItem connItem = null;
+                if (creation && node != null && relatedWizard instanceof RepositoryWizard) {
+                    connItem = ((RepositoryWizard) relatedWizard).getConnectionItem();
+                    if (connItem != null) {
+                        changed = ComponentToRepositoryProperty.setValue(connItem.getConnection(), node);
+                    }
+                }
+                if (connItem != null && changed) {
+                    // Open the Wizard
+                    WizardDialog wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), relatedWizard);
+
+                    wizardDialog.setPageSize(600, 500);
+                    wizardDialog.create();
+                    if (wizardDialog.open() == wizardDialog.OK) {
+                        return connItem;
+                    }
+                }
             }
         }
+        return null;
     }
 
     public void openEditSchemaWizard(String value) {
@@ -462,5 +501,31 @@ public class RepositoryService implements IRepositoryService {
     public void openRepositoryReviewDialog(ERepositoryObjectType type, String repositoryType, List<IContextParameter> params) {
         ContextRepositoryReviewDialog dialog = new ContextRepositoryReviewDialog(new Shell(), type, params);
         dialog.open();
+    }
+
+    /**
+     * wzhang Comment method "getRootRepositoryNode".
+     * 
+     * @param type
+     * @return
+     */
+    public RepositoryNode getRootRepositoryNode(ERepositoryObjectType type) {
+        IRepositoryView view = RepositoryView.show();
+        if (view != null) {
+            ProjectRepositoryNode root = (ProjectRepositoryNode) view.getRoot();
+            return root.getRootRepositoryNode(type);
+        }
+        return null;
+    }
+
+    /**
+     * wzhang Comment method "getDatabaseStringURL".
+     * 
+     * @param conn
+     * @return
+     */
+    public String getDatabaseStringURL(DatabaseConnection conn) {
+        DataStringConnection dataStrConn = new DataStringConnection();
+        return dataStrConn.getUrlConnectionStr(conn);
     }
 }

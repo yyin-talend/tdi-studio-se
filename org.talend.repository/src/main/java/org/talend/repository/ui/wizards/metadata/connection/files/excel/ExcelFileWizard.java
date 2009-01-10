@@ -244,6 +244,15 @@ public class ExcelFileWizard extends RepositoryWizard implements INewWizard {
         this.selection = selection;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.wizards.RepositoryWizard#getConnectionItem()
+     */
+    public ConnectionItem getConnectionItem() {
+        return this.connectionItem;
+    }
+
     @Override
     public void addPages() {
 

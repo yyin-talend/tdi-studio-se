@@ -308,4 +308,8 @@ public class XmlFileWizard extends RepositoryWizard implements INewWizard {
     public void init(final IWorkbench workbench, final IStructuredSelection selection2) {
         this.selection = selection2;
     }
+
+    public ConnectionItem getConnectionItem() {
+        return this.connectionItem;
+    }
 }

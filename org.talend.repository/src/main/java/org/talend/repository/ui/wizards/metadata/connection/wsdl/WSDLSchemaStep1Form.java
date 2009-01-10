@@ -721,7 +721,7 @@ public class WSDLSchemaStep1Form extends AbstractWSDLSchemaStepForm {
             updateStatus(IStatus.ERROR, "Proxy password must be specified."); //$NON-NLS-1$
             return false;
         } else {
-            updateStatus(IStatus.ERROR, null);
+            updateStatus(IStatus.OK, null);
             return true;
         }
 
@@ -738,7 +738,7 @@ public class WSDLSchemaStep1Form extends AbstractWSDLSchemaStepForm {
             updateStatus(IStatus.ERROR, "Method must be specified."); //$NON-NLS-1$
             return false;
         } else {
-            updateStatus(IStatus.ERROR, null);
+            updateStatus(IStatus.OK, null);
             return true;
         }
     }
@@ -876,6 +876,10 @@ public class WSDLSchemaStep1Form extends AbstractWSDLSchemaStepForm {
             initialize();
             adaptFormToEditable();
         }
+        if (visible) {
+            updateStatus(getStatusLevel(), getStatus());
+        }
+
     }
 
     @Override
