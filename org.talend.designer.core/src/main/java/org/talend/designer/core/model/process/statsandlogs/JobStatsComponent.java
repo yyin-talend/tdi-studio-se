@@ -47,13 +47,4 @@ public class JobStatsComponent extends AbstractStatsLogsComponent {
         return EComponentType.JOB_STATS;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.components.IComponent#getFavoriteFlag()
-     */
-    public boolean getFavoriteFlag() {
-        // TODO Auto-generated method stub
-        return false;
-    }
 }

@@ -2344,13 +2344,4 @@ public class EmfComponent implements IComponent {
         return compType.getHEADER().isPARALLELIZE();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.components.IComponent#getFavoriteFlag()
-     */
-    public boolean getFavoriteFlag() {
-        // TODO Auto-generated method stub
-        return false;
-    }
 }
