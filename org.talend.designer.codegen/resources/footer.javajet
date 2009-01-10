@@ -39,25 +39,25 @@
     	exist_tParallelize = true;
     }
 %>
-    public static boolean watch = false;
-    public static int portStats = 3334;
-    public static int portTraces = 4334;
-    public static String clientHost;
-    public static String defaultClientHost = "localhost";
-    public static String contextStr = "<%=codeGenArgument.getContextName() %>";
-    public static String pid = "0";
-    public static String rootPid = null;
-    public static String fatherPid = null;
-    public static long startTime = 0;
-    public static boolean isChildJob = false;
+    public boolean watch = false;
+    public int portStats = 3334;
+    public int portTraces = 4334;
+    public String clientHost;
+    public String defaultClientHost = "localhost";
+    public String contextStr = "<%=codeGenArgument.getContextName() %>";
+    public String pid = "0";
+    public String rootPid = null;
+    public String fatherPid = null;
+    public long startTime = 0;
+    public boolean isChildJob = false;
     
-    private static ThreadLocal threadLocal = new ThreadLocal();
+    private ThreadLocal threadLocal = new ThreadLocal();
 <%
 	if(isRunInMultiThread || exist_tParallelize){
 %>  
-	private static SyncInt runningThreadCount =new SyncInt();
+	private SyncInt runningThreadCount =new SyncInt();
 	
-	private static class SyncInt
+	private class SyncInt
 	{
 		private int count = 0;
 	    public synchronized void add(int i)
@@ -74,21 +74,22 @@
 	}
 %>
   
-    private static java.util.Properties context_param = new java.util.Properties();
+    private java.util.Properties context_param = new java.util.Properties();
     
-    public static String status= "";
+    public String status= "";
     
     public static void main(String[] args){
-    
-        int exitCode = runJobInTOS(args);
+    	final <%=process.getName() %> <%=process.getName() %>Class = new <%=process.getName() %>();
+    	
+        int exitCode = <%=process.getName() %>Class.runJobInTOS(args);
         
-        globalBuffer.clear();
+        //globalBuffer.clear();
         
         System.exit(exitCode);
     }    
    
  
-    public static String[][] runJob(String[] args) {
+    public String[][] runJob(String[] args) {  
     
 		int exitCode = runJobInTOS(args);
     <%	
@@ -103,12 +104,13 @@
 	<%
 		}
 	%>	
-		globalBuffer.clear();
+		//globalBuffer.clear();
 		
 		return bufferValue;
-    }
+    }   
+
     
-    public static synchronized int runJobInTOS(String[] args) {
+    private int runJobInTOS(String[] args) {
     
 		init();
     
@@ -260,12 +262,11 @@
 	long end = 0;
 	
 	startTime = System.currentTimeMillis();
-	final <%=process.getName() %> <%=process.getName() %>Class = new <%=process.getName() %>(); 
 <%
 		//1. send the begin msg
 		for (INode statCatcherNode : process.getNodesOfType("tStatCatcher")) {
 %>
-		<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>.addMessage("begin");			
+		<%=statCatcherNode.getUniqueName() %>.addMessage("begin");			
 <%
     	}
 	
@@ -318,7 +319,7 @@
 		for (INode statCatcherNode : process.getNodesOfType("tStatCatcher")) {
 %>
 		try {
-			<%=process.getName() %>Class.<%=statCatcherNode.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
+			<%=statCatcherNode.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}		
@@ -367,7 +368,7 @@
 			}
 		}
 %>
-	while(<%=process.getName() %>Class.runningThreadCount.getCount()>0)
+	while(runningThreadCount.getCount()>0)
     {
         try {
             Thread.sleep(10);
@@ -416,9 +417,9 @@
 	//7. send & flush the end msg to statcatcher
 	for (INode statCatcherNode : process.getNodesOfType("tStatCatcher")) {
 %>
-		<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>.addMessage(status==""?"end":status, (end-startTime));
+		<%=statCatcherNode.getUniqueName() %>.addMessage(status==""?"end":status, (end-startTime));
 		try {
-			<%=process.getName() %>Class.<%=statCatcherNode.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
+			<%=statCatcherNode.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -449,7 +450,7 @@
     }
   }
 	
-	public static void evalParam(String arg) {	   
+	private void evalParam(String arg) {	   
 		if (arg.startsWith("--watch")) {
     		watch = true;
     	} else if (arg.startsWith("--stat_port=")) {
@@ -474,7 +475,7 @@
     	
 	}
 
-	private static void init() {
+	private void init() {
 		errorCode = null;
 		status = "";
 		java.util.Map threadRunResultMap = new java.util.HashMap();
@@ -483,7 +484,7 @@
 		threadLocal.set(threadRunResultMap);		
 	}
 	
-	private static void reset() {
+	private void reset() {
 
 		defaultProps.clear();
 		context.clear();
@@ -524,5 +525,14 @@
 		fatherPid = null;
 		context_param.clear();
 		System.gc();		
-	}	
+	}
+	
+	public Integer getErrorCode() {
+		return errorCode;
+	}
+
+
+	public String getStatus() {
+		return status;
+	}		
 }

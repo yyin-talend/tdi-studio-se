@@ -97,8 +97,9 @@ for (int i=0; i<contextParams.size(); i++) {
 <% 
 }
 %>
+    <%=childJob %> childJob_<%=cid %> = new <%=childJob %>();
        
-	String[][] childReturn_<%=cid %> = <%=childJob %>.runJob((String[]) paraList_<%=cid %>.toArray(new String[paraList_<%=cid %>.size()]));
+	String[][] childReturn_<%=cid %> = childJob_<%=cid %>.runJob((String[]) paraList_<%=cid %>.toArray(new String[paraList_<%=cid %>.size()]));
 
 <%
     if (childJob!=null) {
@@ -107,25 +108,25 @@ for (int i=0; i<contextParams.size(); i++) {
     <%
         if(isRunInMultiThread ){
     %>
-        ((java.util.Map)threadLocal.get()).put("errorCode", <%=childJob %>.errorCode);
+        ((java.util.Map)threadLocal.get()).put("errorCode", childJob_<%=cid %>.getErrorCode());
     <%
         }else {
     %>
-        errorCode = <%=childJob %>.errorCode;
+        errorCode = childJob_<%=cid %>.getErrorCode();
     <%
         }
     %>
         
-	if(<%=childJob %>.errorCode == null){
-		globalMap.put("<%=cid %>_CHILD_RETURN_CODE", <%=childJob %>.status != null && <%=childJob %>.status.equals("failure") ? 1 : 0);
+	if(childJob_<%=cid %>.getErrorCode() == null){
+		globalMap.put("<%=cid %>_CHILD_RETURN_CODE", childJob_<%=cid %>.getStatus() != null && childJob_<%=cid %>.getStatus().equals("failure") ? 1 : 0);
 	}else{
-		globalMap.put("<%=cid %>_CHILD_RETURN_CODE", <%=childJob %>.errorCode);
+		globalMap.put("<%=cid %>_CHILD_RETURN_CODE", childJob_<%=cid %>.getErrorCode());
 	}
     
     <% 
     	if (dieOnError) {
     %> 
-            if (<%=childJob %>.errorCode != null || <%=childJob %>.status.equals("failure")) {
+            if (childJob_<%=cid %>.getErrorCode() != null || childJob_<%=cid %>.getStatus().equals("failure")) {
                 throw new RuntimeException("Child job running failed");
             }
     <%  

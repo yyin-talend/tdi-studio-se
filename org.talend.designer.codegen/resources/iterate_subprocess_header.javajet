@@ -68,9 +68,9 @@ for (IConnection iterateConn : iterateConnSet) { //1
 
 			@Override
 			public Object put(String key, Object value) {
-				synchronized (<%=process.getName()%>.obj) {
+				synchronized (<%=process.getName()%>.this.obj) {
 					super.put(key, value);
-					return <%=process.getName()%>.globalMap.put(key, value);
+					return <%=process.getName()%>.this.globalMap.put(key, value);
 				}
 			}
 		}	
@@ -115,7 +115,7 @@ for (IConnection iterateConn : iterateConnSet) { //1
 			<% for (IConnection conn : allSubProcessConnection) { %>
 			this.<%=conn.getUniqueName() %> = <%=conn.getUniqueName() %>;
 			<% } %>
-			synchronized (<%=process.getName()%>.obj) {
+			synchronized (<%=process.getName()%>.this.obj) {
 				this.globalMap = java.util.Collections.synchronizedMap(new ThreadedMap(globalMap));
 			}
 			this.globalMap.put("PARALLEL_ITERATOR_THREAD_ID",Integer.toString(threadID));
