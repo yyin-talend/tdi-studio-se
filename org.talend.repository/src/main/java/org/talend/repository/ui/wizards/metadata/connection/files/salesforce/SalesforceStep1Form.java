@@ -12,6 +12,9 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.connection.files.salesforce;
 
+import java.lang.reflect.InvocationTargetException;
+
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
@@ -22,9 +25,13 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.MessageBoxExceptionHandler;
+import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.commons.ui.swt.formtools.LabelledCombo;
 import org.talend.commons.ui.swt.formtools.LabelledText;
@@ -136,9 +143,6 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
         useCostomModuleButton = new Button(group, SWT.CHECK);
         useCostomModuleButton.setText("fetch module list");
         new Label(group, SWT.NONE); // Pachlaer
-        // useCostomModuleButton.set
-        // useCostomModuleButton = new Button(group, SWT.NONE);
-        // useCostomModuleButton.setText("fetch module list");
 
         customModuleCombo = new LabelledCombo(group, "Custom module", "Please select a Custommodule", null, 1, false);
 
@@ -146,22 +150,8 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
         gd.widthHint = 140;
         customModuleCombo.getCombo().setLayoutData(gd);
 
-        // binding = salesforceModuleParseAPI.couldLogin(endPoint, username, pwd);
-        // initCustomModules();
-
-        // Label lable = new Label(group, SWT.NONE);
-        // lable.setText("Custom Module");
-
-        // customModuleCombo = new CCombo(group, SWT.BORDER);
         GridData cdata = new GridData(GridData.FILL);
         cdata.horizontalAlignment = SWT.LEFT;
-        // cdata.grabExcessHorizontalSpace = true;
-        // customModuleCombo.setLayoutData(cdata);
-        // customModuleCombo.setEditable(true);
-        // customModuleCombo.setEnabled(false);
-
-        // clearButton = new Button(group, SWT.NONE);
-        // clearButton.setText("Clear");
 
         checkButton = new Button(group, SWT.NONE);
         checkButton.setText("Check login");
@@ -209,7 +199,6 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
                     setCheckEnable();
                 }
             }
-
         });
 
         userNameText.addModifyListener(new ModifyListener() {
@@ -267,14 +256,6 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
             }
         });
 
-        // clearButton.addSelectionListener(new SelectionAdapter() {
-        //
-        // @Override
-        // public void widgetSelected(final SelectionEvent e) {
-        // clearAllCustomModule();
-        // }
-        // });
-
         customModuleCombo.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
@@ -287,6 +268,7 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
 
             @Override
             public void widgetSelected(final SelectionEvent e) {
+                connectFromCustomModuleName();
                 moduleNameCombo.setEnabled(!useCostomModuleButton.getSelection());
                 customModuleCombo.setEnabled(useCostomModuleButton.getSelection());
                 getConnection().setUseCustomModuleName(useCostomModuleButton.getSelection());
@@ -294,52 +276,11 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
                     getConnection().setModuleName(customModuleCombo.getText());
                 }
                 checkFieldsValue();
-
-                testSalesforceLogin();
-                loginOk = toCheckSalesfoceLogin(endPoint, username, pwd);
-                preparModuleInit();
-                initCustomModules();
             }
         });
 
     }
 
-    // private void appendCustomModule(String appendmMdule) {
-    // String selectValue = customModuleCombo.getText();
-    // if (appendmMdule == null || appendmMdule.equals("")) {
-    // return;
-    // }
-    // if (getPreferenceStore() == null) {
-    // return;
-    // }
-    //
-    // String cms = getPreferenceStore().getString(AbstractSalesforceStepForm.TSALESFORCE_CUSTOM_MODULE);
-    //
-    // if (cms == null) {
-    // cms = "";
-    // }
-    //
-    // String[] modules = cms.split(AbstractSalesforceStepForm.TSALESFORCE_CUSTOM_MODULE_SPILT);
-    // for (String module : modules) {
-    // if (module.equals(appendmMdule)) {
-    // return;
-    // }
-    // }
-    // cms = cms + "," + appendmMdule;
-    // getPreferenceStore().putValue(AbstractSalesforceStepForm.TSALESFORCE_CUSTOM_MODULE, cms);
-    // initCustomModules();
-    // customModuleCombo.setText(selectValue);
-    // }
-
-    // private void clearAllCustomModule() {
-    // if (getPreferenceStore() == null) {
-    // return;
-    // }
-    // getPreferenceStore().putValue(AbstractSalesforceStepForm.TSALESFORCE_CUSTOM_MODULE, "");
-    // if (customModuleCombo != null) {
-    // customModuleCombo.removeAll();
-    // }
-    // }
     Object[] modulename = null;
 
     private void initModuleNames() {
@@ -355,42 +296,13 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
             if (modulename == null || modulename.length <= 0) {
                 return;
             }
-
             moduleNameCombo.removeAll(); // First clear
 
             for (Object module : modulename) {
                 moduleNameCombo.add(module.toString());
             }
-
             moduleNameCombo.select(0);
         }
-    }
-
-    private void initCustomModules() {
-        String[] types = null;
-        DescribeGlobalResult describeGlobalResult = null;
-        try {
-            describeGlobalResult = binding.describeGlobal();
-            types = describeGlobalResult.getTypes();
-            customModuleCombo.removeAll();
-            for (int i = 0; i < types.length; i++) {
-                boolean is = false;
-
-                for (int j = 0; j < modulename.length; j++) {
-
-                    if (types[i].equals(modulename[j])) {
-                        is = true;
-                    }
-                }
-                if (!is) {
-                    customModuleCombo.add(types[i]);
-                }
-            }
-
-        } catch (Exception ex) {
-            ExceptionHandler.process(ex);
-        }
-        customModuleCombo.select(0);
     }
 
     private void preparModuleInit() {
@@ -418,48 +330,63 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
         } catch (Exception e) {
 
             e.printStackTrace();
-
         }
     }
 
-    // private void initCustomModules() {
-    // INode node = getSalesforceNode();
-    // if (node == null) {
-    // customModuleCombo.add("");
-    // } else {
-    // IElementParameter modulesNameParam = node.getElementParameter("MODULENAME");
-    // Object[] modules = modulesNameParam.getListItemsValue();
-    //
-    // if (modules == null || modules.length <= 0) {
-    // return;
-    // }
-    //
-    // customModuleCombo.removeAll(); // First clear
-    //
-    // for (Object module : modules) {
-    // customModuleCombo.add(module.toString());
-    // }
-    //
-    // customModuleCombo.select(0);
-    // }
-    // }
+    private void connectFromCustomModuleName() {
+        ProgressDialog progressDialog = new ProgressDialog(Display.getCurrent().getActiveShell(), 0) {
 
-    // private void initCustomModules() {
-    // if (getPreferenceStore() == null) {
-    // return;
-    // }
-    // String cms = getPreferenceStore().getString(AbstractSalesforceStepForm.TSALESFORCE_CUSTOM_MODULE);
-    // if (cms == null || cms.equals("")) {
-    // return;
-    // }
-    //
-    // customModuleCombo.removeAll();
-    // String[] modules = cms.split(AbstractSalesforceStepForm.TSALESFORCE_CUSTOM_MODULE_SPILT);
-    // for (String module : modules) {
-    // customModuleCombo.add(module);
-    // }
-    // customModuleCombo.select(0);
-    // }
+            private IProgressMonitor monitorWrap;
+
+            @SuppressWarnings("restriction")
+            @Override
+            public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                monitorWrap = new EventLoopProgressMonitor(monitor);
+                monitorWrap.beginTask("Connection to Salesforce service to fetch custom modules ...", IProgressMonitor.UNKNOWN);
+                testSalesforceLogin();
+                loginOk = toCheckSalesfoceLogin(endPoint, username, pwd);
+                preparModuleInit();
+                String[] types = null;
+                DescribeGlobalResult describeGlobalResult = null;
+                monitorWrap.worked(50);
+
+                try {
+                    describeGlobalResult = binding.describeGlobal();
+                    types = describeGlobalResult.getTypes();
+                    customModuleCombo.removeAll();
+                    for (int i = 0; i < types.length; i++) {
+                        boolean is = false;
+
+                        for (int j = 0; j < modulename.length; j++) {
+
+                            if (types[i].equals(modulename[j])) {
+                                is = true;
+                            }
+                        }
+                        if (!is) {
+                            customModuleCombo.add(types[i]);
+                        }
+                    }
+                    monitorWrap.done();
+                } catch (Exception ex) {
+                    ExceptionHandler.process(ex);
+                }
+                customModuleCombo.select(0);
+
+            }
+
+        };
+
+        try {
+            progressDialog.executeProcess();
+        } catch (InvocationTargetException e) {
+            ExceptionHandler.process(e);
+            return;
+        } catch (Exception e) {
+            MessageBoxExceptionHandler.process(e);
+            return;
+        }
+    }
 
     private void testSalesforceLogin() {
         endPoint = webServiceUrlText.getText();
@@ -474,7 +401,6 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
         if (endPoint.equals(TSALESFORCE_INPUT_URL)) {
             endPoint = DEFAULT_WEB_SERVICE_URL;
         }
-        // loginOk = checkSalesfoceLogin(webUrl, username, password);
     }
 
     @Override
@@ -600,10 +526,8 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
         } else {
             if (getConnection().getModuleName() != null && !getConnection().getModuleName().equals("")) {
                 customModuleCombo.setText(getConnection().getModuleName());
-                // appendCustomModule(getConnection().getModuleName());
             } else {
                 getConnection().setModuleName(customModuleCombo.getText()); // Set defult value
-                // appendCustomModule(getConnection().getModuleName());
             }
         }
 

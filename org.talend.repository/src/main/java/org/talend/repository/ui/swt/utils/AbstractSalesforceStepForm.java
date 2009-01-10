@@ -176,21 +176,14 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
     }
 
     protected boolean toCheckSalesfoceLogin(final String endPoint, final String username, final String password) {
-        final List<String> errors = new ArrayList<String>();
         salesforceAPI.setLogin(false);
         try {
             salesforceAPI.login(endPoint, username, password);
             salesforceAPI.setLogin(true);
         } catch (Throwable e) {
-            // MessageDialog.openInformation(getShell(), Messages.getString("SalesforceForm.checkCustomModuleTitle"),
-            // Messages
-            // .getString("SalesforceForm.getCustomModule"));
-            // errors.add(e.getMessage());
             ExceptionHandler.process(e);
         }
-
         return salesforceAPI.isLogin();
-
     }
 
     protected boolean checkSalesfoceLogin(final String endPoint, final String username, final String password) {
