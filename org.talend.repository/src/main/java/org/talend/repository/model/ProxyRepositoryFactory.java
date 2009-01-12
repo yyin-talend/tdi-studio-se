@@ -1401,11 +1401,10 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         monitorWrap.setTaskName(Messages.getString("ProxyRepositoryFactory.synchronizeLibraries")); //$NON-NLS-1$
         monitorWrap.worked(1);
 
-        CorePlugin.getDefault().getLibrariesService().syncLibraries(monitorWrap);
-
         service.executeProjectTasks(project, false, monitorWrap);
 
         ComponentsFactoryProvider.getInstance().reset();
+        // CorePlugin.getDefault().getLibrariesService().syncLibraries(monitorWrap);
         if (!CommonsPlugin.isHeadless()) {
             CorePlugin.getDefault().getCodeGeneratorService().initializeTemplates();
         }
