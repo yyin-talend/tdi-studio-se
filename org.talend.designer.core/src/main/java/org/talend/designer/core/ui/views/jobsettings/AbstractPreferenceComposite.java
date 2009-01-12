@@ -18,7 +18,6 @@ import java.util.List;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
@@ -44,8 +43,6 @@ import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
-import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
-import org.talend.designer.core.ui.projectsetting.ElementParameter2ParameterType;
 import org.talend.designer.core.ui.views.properties.MultipleThreadDynamicComposite;
 import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsViewHelper;
 import org.talend.designer.core.utils.DesignerUtilities;
@@ -71,9 +68,9 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
     // achen added to fix 0005991 & 0005993
     protected boolean isUsingProjectSetting;
 
-    private Button useProjectSetting;
+    protected Button useProjectSetting;
 
-    private Composite topComposite;
+    protected Composite topComposite;
 
     /**
      * DOC chuang AbstractPreferenceComposite constructor comment.
@@ -125,8 +122,8 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
 
                 // add useprojectsetting button
                 useProjectSetting = new Button(topComposite, SWT.CHECK);
-                useProjectSetting.setText(Messages.getString("UseProjectSettings"));
-                useProjectSetting.setToolTipText(Messages.getString("UseProjectSettings"));
+                useProjectSetting.setText(Messages.getString("StatsAndLogs.UseProjectSettings"));
+                useProjectSetting.setToolTipText(Messages.getString("StatsAndLogs.UseProjectSettings"));
                 useProjectSetting.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
             }
             // end
@@ -142,18 +139,6 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
             refresh();
             super.addComponents(true, false, initialSize.y + ITabbedPropertyConstants.VSPACE);
 
-            // achen add to fix 0005991 & 0005993 when reload
-            Object value = ElementParameter2ParameterType.getParameterValue(elem, EParameterName.USE_PROJECT_SETTINGS.getName());
-            if (value != null && value instanceof Boolean) {
-                Boolean v = (Boolean) value;
-                useProjectSetting.setSelection(v.booleanValue());
-                setMainCompositeEnable(!v.booleanValue());
-                topComposite.setEnabled(true);
-                // if (v.booleanValue()) {
-                // onReloadPreference();
-                // }
-            }
-
         }
     }
 
@@ -163,7 +148,7 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
      * 
      * @param enabled
      */
-    private void setMainCompositeEnable(boolean enabled) {
+    protected void setMainCompositeEnable(boolean enabled) {
         Control[] controls = getComposite().getChildren();
         for (int i = 0; i < controls.length; i++) {
             if (controls[i] != topComposite) {
@@ -198,27 +183,7 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
             }
 
         });
-        if (useProjectSetting != null) {
-            useProjectSetting.addSelectionListener(new SelectionAdapter() {
 
-                @Override
-                public void widgetSelected(SelectionEvent e) {
-                    boolean flag = useProjectSetting.getSelection();
-                    setMainCompositeEnable(!flag);
-                    topComposite.setEnabled(true);
-                    // ElementParameter2ParameterType.setParameterValue(elem,
-                    // EParameterName.USE_PROJECT_SETTINGS.getName(), Boolean
-                    // .valueOf(flag));
-                    PropertyChangeCommand cmd = new PropertyChangeCommand(elem, EParameterName.USE_PROJECT_SETTINGS.getName(),
-                            Boolean.valueOf(flag));
-                    getCommandStack().execute(cmd);
-                    if (flag) {
-                        useProjectSetting();
-                        // onReloadPreference();
-                    }
-                }
-            });
-        }
         if (hasRunJobNode(false) && needApplyToChildren()) {
 
             applyToChildrenJob.addSelectionListener(new SelectionListener() {
@@ -301,7 +266,7 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
      * 
      * DOC aimingchen Comment method "useProjectSetting".
      */
-    private void useProjectSetting() {
+    protected void useProjectSetting() {
         if (elem == null) {
             return;
         }

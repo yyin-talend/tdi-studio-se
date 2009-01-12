@@ -104,11 +104,21 @@ public class JobSettingsManager {
 
         // use project settings
         param = new ElementParameter(process);
-        param.setName(EParameterName.USE_PROJECT_SETTINGS.getName());
+        param.setName(EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS.getName());
         param.setValue(Boolean.FALSE);
-        param.setDisplayName(EParameterName.USE_PROJECT_SETTINGS.getDisplayName());
+        param.setDisplayName(EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS.getDisplayName());
         param.setField(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.EXTRA);
+        param.setNumRow(2);
+        param.setShow(false);
+        paramList.add(param);
+
+        param = new ElementParameter(process);
+        param.setName(EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName());
+        param.setValue(Boolean.FALSE);
+        param.setDisplayName(EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getDisplayName());
+        param.setField(EParameterFieldType.CHECK);
+        param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(2);
         param.setShow(false);
         paramList.add(param);

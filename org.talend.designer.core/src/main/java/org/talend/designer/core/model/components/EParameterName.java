@@ -213,7 +213,8 @@ public enum EParameterName {
     PARALLELIZE_UNIT_SIZE("Parallelize Buffer Unit Size"),
 
     // use project setting
-    USE_PROJECT_SETTINGS(Messages.getString("UseProjectSettings"));
+    IMPLICITCONTEXT_USE_PROJECT_SETTINGS(Messages.getString("Extra.UseProjectSettings")),
+    STATANDLOG_USE_PROJECT_SETTINGS(Messages.getString("StatsAndLogs.UseProjectSettings"));
 
     private String displayName;
 
