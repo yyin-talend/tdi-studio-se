@@ -68,131 +68,132 @@ public final class TalendEditorPaletteFactory {
 
     private static boolean paletteState = true;
 
-    // /** Create the "Shapes" drawer. */
-    // private static void createComponentsDrawer(final IComponentsFactory compFac, boolean needHiddenComponent) {
-    // PaletteDrawer componentsDrawer;
-    // String name, longName;
-    // String family;
-    // List<String> families = new ArrayList<String>();
-    // CombinedTemplateCreationEntry component;
-    // Hashtable<String, PaletteDrawer> ht = new Hashtable<String, PaletteDrawer>();
-    //
-    //        componentsDrawer = new PaletteDrawer(Messages.getString("TalendEditorPaletteFactory.Default")); //$NON-NLS-1$
-    // List<IComponent> componentList = compFac.getComponents();
-    //
-    // Collections.sort(componentList, new Comparator<IComponent>() {
-    //
-    // public int compare(IComponent component1, IComponent component2) {
-    // return component1.getTranslatedName().compareTo(component2.getTranslatedName());
-    // }
-    //
-    // });
-    //
-    // for (int i = 0; i < componentList.size(); i++) {
-    // IComponent xmlComponent = componentList.get(i);
-    //
-    // if (xmlComponent.isTechnical()) {
-    // continue;
-    // }
-    //
-    // // if (xmlComponent.isTechnical() || !xmlComponent.isVisible()) {
-    // // continue;
-    // // }
-    //
-    // if (xmlComponent.isLoaded()) {
-    // family = xmlComponent.getFamily();
-    // String[] strings = family.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
-    // for (int j = 0; j < strings.length; j++) {
-    // if (!needHiddenComponent && !xmlComponent.isVisible(strings[j])) {
-    // continue;
-    // }
-    // families.add(strings[j]);
-    // }
-    // }
-    // }
-    //
-    // Collections.sort(families);
-    //
-    // for (Iterator iter = families.iterator(); iter.hasNext();) {
-    // family = (String) iter.next();
-    //
-    // componentsDrawer = ht.get(family);
-    // if (componentsDrawer == null) {
-    // componentsDrawer = createComponentDrawer(ht, family);
-    // }
-    // }
-    //
-    // boolean noteAeeded = false;
-    // boolean needAddNote = true;
-    //
-    // for (int i = 0; i < componentList.size(); i++) {
-    // IComponent xmlComponent = componentList.get(i);
-    //
-    // if (xmlComponent.isTechnical()) {
-    // continue;
-    // }
-    // family = xmlComponent.getFamily();
-    // if (filter != null) {
-    // String regex = getFilterRegex();
-    // needAddNote = "Note".toLowerCase().matches(regex);
-    // }
-    // if (family.equals("Misc") && !noteAeeded && needAddNote) {
-    // CreationToolEntry noteCreationToolEntry = new CreationToolEntry(Messages
-    //                        .getString("TalendEditorPaletteFactory.Note"), //$NON-NLS-1$
-    //                        Messages.getString("TalendEditorPaletteFactory.CreateNote"), //$NON-NLS-1$
-    // new NoteCreationFactory(), ImageProvider.getImageDesc(ECoreImage.CODE_ICON), ImageProvider
-    // .getImageDesc(ECoreImage.CODE_ICON));
-    // PaletteDrawer drawer = ht.get("Misc");
-    // noteCreationToolEntry.setParent(drawer);
-    // drawer.add(noteCreationToolEntry);
-    // noteAeeded = true;
-    // }
-    //
-    // if (filter != null) {
-    // String regex = getFilterRegex();
-    // if (!xmlComponent.getTranslatedName().toLowerCase().matches(regex)
-    // && !xmlComponent.getLongName().toLowerCase().matches(regex)) {
-    // continue;
-    // }
-    // }
-    //
-    // if (!needHiddenComponent && !xmlComponent.isVisible()) {
-    // continue;
-    // }
-    //
-    // if (xmlComponent.isLoaded()) {
-    // name = xmlComponent.getTranslatedName();
-    // longName = xmlComponent.getLongName();
-    //
-    // ImageDescriptor imageSmall = xmlComponent.getIcon16();
-    // IPreferenceStore store = DesignerPlugin.getDefault().getPreferenceStore();
-    // ImageDescriptor imageLarge;
-    // final String string = store.getString(TalendDesignerPrefConstants.LARGE_ICONS_SIZE);
-    // if (string.equals("24")) {
-    // imageLarge = xmlComponent.getIcon24();
-    // } else {
-    // imageLarge = xmlComponent.getIcon32();
-    // }
-    //
-    // String[] strings = family.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
-    // for (int j = 0; j < strings.length; j++) {
-    // if (!needHiddenComponent && !xmlComponent.isVisible(strings[j])) {
-    // continue;
-    // }
-    //
-    // component = new CombinedTemplateCreationEntry(name, name, Node.class, new PaletteComponentFactory(
-    // xmlComponent), imageSmall, imageLarge);
-    //
-    // component.setDescription(longName);
-    //
-    // componentsDrawer = ht.get(strings[j]);
-    // component.setParent(componentsDrawer);
-    // componentsDrawer.add(component);
-    //
-    // }
-    // }
-    // }
-    // }
+    /** Create the "Shapes" drawer. */
+    private static void createComponentsDrawer(final IComponentsFactory compFac, boolean needHiddenComponent) {
+        PaletteDrawer componentsDrawer;
+        String name, longName;
+        String family;
+        List<String> families = new ArrayList<String>();
+        CombinedTemplateCreationEntry component;
+        Hashtable<String, PaletteDrawer> ht = new Hashtable<String, PaletteDrawer>();
+
+        componentsDrawer = new PaletteDrawer(Messages.getString("TalendEditorPaletteFactory.Default")); //$NON-NLS-1$
+        List<IComponent> componentList = compFac.getComponents();
+
+        Collections.sort(componentList, new Comparator<IComponent>() {
+
+            public int compare(IComponent component1, IComponent component2) {
+                return component1.getTranslatedName().compareTo(component2.getTranslatedName());
+            }
+
+        });
+
+        for (int i = 0; i < componentList.size(); i++) {
+            IComponent xmlComponent = componentList.get(i);
+
+            if (xmlComponent.isTechnical()) {
+                continue;
+            }
+
+            // if (xmlComponent.isTechnical() || !xmlComponent.isVisible()) {
+            // continue;
+            // }
+
+            if (xmlComponent.isLoaded()) {
+                family = xmlComponent.getFamily();
+                String[] strings = family.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
+                for (int j = 0; j < strings.length; j++) {
+                    if (!needHiddenComponent && !xmlComponent.isVisible(strings[j])) {
+                        continue;
+                    }
+                    families.add(strings[j]);
+                }
+            }
+        }
+
+        Collections.sort(families);
+
+        for (Iterator iter = families.iterator(); iter.hasNext();) {
+            family = (String) iter.next();
+
+            componentsDrawer = ht.get(family);
+            if (componentsDrawer == null) {
+                componentsDrawer = createComponentDrawer(ht, family);
+            }
+        }
+
+        boolean noteAeeded = false;
+        boolean needAddNote = true;
+
+        for (int i = 0; i < componentList.size(); i++) {
+            IComponent xmlComponent = componentList.get(i);
+
+            if (xmlComponent.isTechnical()) {
+                continue;
+            }
+            family = xmlComponent.getFamily();
+            if (filter != null) {
+                String regex = getFilterRegex();
+                needAddNote = "Note".toLowerCase().matches(regex);
+            }
+            if (family.equals("Misc") && !noteAeeded && needAddNote) {
+                CreationToolEntry noteCreationToolEntry = new CreationToolEntry(Messages
+                        .getString("TalendEditorPaletteFactory.Note"), //$NON-NLS-1$
+                        Messages.getString("TalendEditorPaletteFactory.CreateNote"), //$NON-NLS-1$
+                        new NoteCreationFactory(), ImageProvider.getImageDesc(ECoreImage.CODE_ICON), ImageProvider
+                                .getImageDesc(ECoreImage.CODE_ICON));
+                PaletteDrawer drawer = ht.get("Misc");
+                noteCreationToolEntry.setParent(drawer);
+                drawer.add(noteCreationToolEntry);
+                noteAeeded = true;
+            }
+
+            if (filter != null) {
+
+                String regex = getFilterRegex();
+                if (!xmlComponent.getTranslatedName().toLowerCase().matches(regex)
+                        && !xmlComponent.getLongName().toLowerCase().matches(regex)) {
+                    continue;
+                }
+            }
+
+            if (!needHiddenComponent && !xmlComponent.isVisible()) {
+                continue;
+            }
+
+            if (xmlComponent.isLoaded()) {
+                name = xmlComponent.getTranslatedName();
+                longName = xmlComponent.getLongName();
+
+                ImageDescriptor imageSmall = xmlComponent.getIcon16();
+                IPreferenceStore store = DesignerPlugin.getDefault().getPreferenceStore();
+                ImageDescriptor imageLarge;
+                final String string = store.getString(TalendDesignerPrefConstants.LARGE_ICONS_SIZE);
+                if (string.equals("24")) {
+                    imageLarge = xmlComponent.getIcon24();
+                } else {
+                    imageLarge = xmlComponent.getIcon32();
+                }
+
+                String[] strings = family.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
+                for (int j = 0; j < strings.length; j++) {
+                    if (!needHiddenComponent && !xmlComponent.isVisible(strings[j])) {
+                        continue;
+                    }
+
+                    component = new CombinedTemplateCreationEntry(name, name, Node.class, new PaletteComponentFactory(
+                            xmlComponent), imageSmall, imageLarge);
+
+                    component.setDescription(longName);
+
+                    componentsDrawer = ht.get(strings[j]);
+                    component.setParent(componentsDrawer);
+                    componentsDrawer.add(component);
+
+                }
+            }
+        }
+    }
 
     /** Create the "Shapes" drawer. */
     private static void createComponentsDrawer(final IComponentsFactory compFac, boolean needHiddenComponent, boolean isFavorite) {
@@ -288,6 +289,7 @@ public final class TalendEditorPaletteFactory {
             }
 
             if (filter != null) {
+                System.out.println("filter=====" + filter);
                 String regex = getFilterRegex();
                 if (!xmlComponent.getTranslatedName().toLowerCase().matches(regex)
                         && !xmlComponent.getLongName().toLowerCase().matches(regex)) {
@@ -346,6 +348,7 @@ public final class TalendEditorPaletteFactory {
                 }
             }
         }
+        setFilter("");
     }
 
     /**
@@ -470,7 +473,7 @@ public final class TalendEditorPaletteFactory {
      * @param root
      * @return
      */
-    public static PaletteRoot createPalette(final IComponentsFactory compFac, PaletteRoot root) {
+    public static PaletteRoot createPalette(final IComponentsFactory compFac, PaletteRoot root) {// ing
         palette = root;
         AbstractProcessProvider.loadComponentsFromProviders();
         // if (paletteState == true) {
@@ -481,7 +484,7 @@ public final class TalendEditorPaletteFactory {
         return palette;
     }
 
-    public static PaletteRoot createPalette(final IComponentsFactory compFac, PaletteRoot root, boolean isFavorite) {
+    public static PaletteRoot createPalette(final IComponentsFactory compFac, PaletteRoot root, boolean isFavorite) {// after
         palette = root;
         AbstractProcessProvider.loadComponentsFromProviders();
         createComponentsDrawer(compFac, false, isFavorite);
