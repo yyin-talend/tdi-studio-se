@@ -54,11 +54,19 @@
       REPOSITORY_VALUE="DATABASE:AS400"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     />
+    
+    <PARAMETER NAME="DB_VERSION" FIELD="CLOSED_LIST" NUM_ROW="3"
+			REPOSITORY_VALUE="DB_VERSION" SHOW_IF="(USE_EXISTING_CONNECTION == 'false')">
+			<ITEMS DEFAULT="V5R3_V6R1">
+				<ITEM NAME="V5R2_V5R4" VALUE="jt400_V5R2.jar"/>
+				<ITEM NAME="V5R3_V6R1" VALUE="jt400_V5R3.jar" />
+			</ITEMS>
+	</PARAMETER>
 
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="4"
       REPOSITORY_VALUE="SERVER_NAME"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
@@ -68,7 +76,7 @@
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="4"
       REPOSITORY_VALUE="SID"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
@@ -79,7 +87,7 @@
 	<PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="5"
       SHOW="false"
       REPOSITORY_VALUE="TYPE"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
@@ -90,7 +98,7 @@
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="5"
       REPOSITORY_VALUE="USERNAME"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
@@ -101,7 +109,7 @@
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="5"
       REPOSITORY_VALUE="PASSWORD"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
@@ -112,21 +120,21 @@
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
-      NUM_ROW="5"
+      NUM_ROW="6"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
     <PARAMETER
       NAME="TABLE"
       FIELD="DBTABLE"
-      NUM_ROW="6"
+      NUM_ROW="7"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
     <PARAMETER
       NAME="QUERYSTORE"
       FIELD="QUERYSTORE_TYPE"
-      NUM_ROW="7"
+      NUM_ROW="8"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -134,7 +142,7 @@
  	<PARAMETER
       NAME="GUESS_SCHEMA"
       FIELD="GUESS_SCHEMA"
-      NUM_ROW="7"
+      NUM_ROW="8"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -142,7 +150,7 @@
     <PARAMETER
       NAME="QUERY"
       FIELD="MEMO_SQL"
-      NUM_ROW="8"
+      NUM_ROW="9"
       REQUIRED="true"
     >
       <DEFAULT>"select * from sysobjects "</DEFAULT>
@@ -177,9 +185,10 @@
 	
    <CODEGENERATION>
      <IMPORTS>
-		<IMPORT NAME="Driver-Informix" MODULE="jt400.jar" REQUIRED="true" />
-     </IMPORTS>
-   </CODEGENERATION>
+       <IMPORT NAME="Driver-V5R2_V5R4" MODULE="jt400_V5R2.jar" REQUIRED="false" />
+       <IMPORT NAME="Driver-V5R3_V6R1" MODULE="jt400_V5R3.jar" REQUIRED="false" />
+     </IMPORTS>	
+	</CODEGENERATION>
 
    <RETURNS>
       <RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER"/>

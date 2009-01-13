@@ -37,11 +37,19 @@
       NUM_ROW="1"
       REPOSITORY_VALUE="DATABASE:AS400"
     />
+    
+    <PARAMETER NAME="DB_VERSION" FIELD="CLOSED_LIST" NUM_ROW="2"
+			REPOSITORY_VALUE="DB_VERSION">
+			<ITEMS DEFAULT="V5R3_V6R1">
+				<ITEM NAME="V5R2_V5R4" VALUE="jt400_V5R2.jar"/>
+				<ITEM NAME="V5R3_V6R1" VALUE="jt400_V5R3.jar" />
+			</ITEMS>
+	</PARAMETER>
 
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
-      NUM_ROW="2"
+      NUM_ROW="3"
       REPOSITORY_VALUE="SERVER_NAME"
     >
       <DEFAULT>""</DEFAULT>
@@ -50,7 +58,7 @@
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
-      NUM_ROW="2"
+      NUM_ROW="3"
       REPOSITORY_VALUE="SID"
       REQUIRED="true"
     >
@@ -60,7 +68,7 @@
 	<PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="4"
       SHOW="false"
       REPOSITORY_VALUE="TYPE"
     >
@@ -70,7 +78,7 @@
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="4"
       REPOSITORY_VALUE="PASSWORD"
       REQUIRED="true"
     >
@@ -80,7 +88,7 @@
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="4"
       REPOSITORY_VALUE="USERNAME"
       REQUIRED="true"
     >
@@ -90,7 +98,7 @@
     <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
-      NUM_ROW="4"
+      NUM_ROW="5"
       REQUIRED="true"
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>

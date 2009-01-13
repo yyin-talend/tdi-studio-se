@@ -363,12 +363,8 @@ public class DatabaseForm extends AbstractForm {
         layout2.marginTop = 0;
         layout2.marginBottom = 0;
 
-        List<String> items = getVersionDrivers();
-        String[] versions = new String[items.size()];
-        items.toArray(versions);
         dbVersionCombo = new LabelledCombo(typeDbCompositeParent, Messages.getString("DatabaseForm.dbversion"), Messages
-                .getString("DatabaseForm.dbversion.tip"), versions, 2, true);
-        dbVersionCombo.select(0);
+                .getString("DatabaseForm.dbversion.tip"), new String[0], 2, true);
 
         // Field connectionString
         urlDataStringConnection.setSelectionIndex(dbTypeCombo.getSelectionIndex());
@@ -398,12 +394,20 @@ public class DatabaseForm extends AbstractForm {
      * 
      * DOC YeXiaowei Comment method "getVersionDrivers".
      * 
+     * DOC qli modify method "getVersionDrivers",just add a parameter "dbType".
+     * 
      * @return
      */
-    private List<String> getVersionDrivers() {
+    private List<String> getVersionDrivers(String dbType) {
         List<String> result = new ArrayList<String>();
         for (EDatabaseDriver4Version d4v : EDatabaseDriver4Version.values()) {
-            result.add(d4v.getDbVersionName());
+            if (dbType.equals("Oracle with SID") || dbType.equals("Oracle with service name")) {
+                if (d4v.getDbType().equals("Oracle")) {
+                    result.add(d4v.getDbVersionName());
+                }
+            } else if (dbType.equals("AS400") && d4v.getDbType().equals("AS400")) {
+                result.add(d4v.getDbVersionName());
+            }
         }
         return result;
     }
@@ -1128,9 +1132,28 @@ public class DatabaseForm extends AbstractForm {
      * DOC YeXiaowei Comment method "hideDbVersion".
      */
     private void hideDbVersion() {
+        // qli comment
         // Just layout version combo when choose db type
+        String dbType = dbTypeCombo.getText();
+        List<String> items = getVersionDrivers(dbType);
+        String[] versions = new String[items.size()];
+        items.toArray(versions);
+
         boolean isOracle = oracleVersionEnable();
-        dbVersionCombo.setHideWidgets(!isOracle);
+        boolean isAS400 = as400VersionEnable();
+
+        dbVersionCombo.removeAll();
+        dbVersionCombo.setHideWidgets(true);
+        if (dbTypeCombo.getText().startsWith("Oracle")) {
+            dbVersionCombo.getCombo().setItems(versions);
+            dbVersionCombo.select(0);
+            dbVersionCombo.setHideWidgets(!isOracle);
+        } else if (dbTypeCombo.getText().startsWith("AS400")) {
+            dbVersionCombo.getCombo().setItems(versions);
+            dbVersionCombo.select(0);
+            dbVersionCombo.setHideWidgets(!isAS400);
+        }
+
     }
 
     /**
@@ -1447,8 +1470,9 @@ public class DatabaseForm extends AbstractForm {
         // update the UI Fields
 
         boolean isOracle = visible && oracleVersionEnable();
+        boolean isAS400 = visible && as400VersionEnable();
 
-        dbVersionCombo.setEnabled(isOracle);
+        dbVersionCombo.setEnabled(isOracle || isAS400);
         usernameText.setEditable(visible);
         passwordText.setEditable(visible);
         serverText.setEditable(false);
@@ -1555,6 +1579,21 @@ public class DatabaseForm extends AbstractForm {
         }
 
         return dbTypeCombo.getText().startsWith("Oracle") && LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA);
+    }
+
+    /**
+     * 
+     * DOC qli Comment method "as400VersionEnable".
+     * 
+     * @return
+     */
+    private boolean as400VersionEnable() {
+
+        if (dbTypeCombo == null) {
+            return false;
+        }
+
+        return dbTypeCombo.getText().startsWith("AS400") && LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA);
     }
 
     /*
