@@ -151,8 +151,9 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
             boolean bIsStringType = (javaType == JavaTypesManager.STRING), bIsIntegerType = (javaType == JavaTypesManager.INTEGER);          
             
             if (maxLength > 0 && ( bIsStringType || bIsIntegerType )){
-%>			
-				if ( (<%=incomingConnName%>.<%=metadataColumn.getLabel()%> != null)) {
+%>				///-------------------lihan--------------------		
+				if ( String.valueOf(<%=incomingConnName%>.<%=metadataColumn.getLabel()%>) != null) {
+				///--------------------------------------------
 <%				
 					if ( bIsTrim ){
 
