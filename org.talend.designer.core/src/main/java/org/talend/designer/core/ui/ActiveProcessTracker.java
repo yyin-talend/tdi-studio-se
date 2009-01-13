@@ -74,10 +74,14 @@ public class ActiveProcessTracker implements IPartListener {
      * @see org.eclipse.ui.IPartListener#partActivated(org.eclipse.ui.IWorkbenchPart)
      */
     public void partActivated(final IWorkbenchPart part) {
-
         if (part instanceof AbstractMultiPageTalendEditor) {
             ComponentUtilities.setExtraEntryVisible(((AbstractMultiPageTalendEditor) part).showExtraPaletteEntry());
         }
+        // else if (part instanceof TalendPaletteView) {
+        // ComponentUtilities.updatePalette(true);
+        // } else if (part instanceof PaletteView) {
+        // ComponentUtilities.updatePalette(false);
+        // }
 
         // IProcess process = getJobFromActivatedEditor(part);
         // if (process != null) {
