@@ -46,6 +46,15 @@
     <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="25">
       <DEFAULT/> 
     </PARAMETER>
+    
+      <PARAMETER
+      NAME="MAPPING"
+      FIELD="MAPPING_TYPE"
+      NUM_ROW="90"
+      SHOW="false"
+    >       
+      <DEFAULT>oracle_id</DEFAULT>
+    </PARAMETER>
 
    </PARAMETERS>
    
@@ -78,4 +87,5 @@
    <RETURNS>
      <RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER"/>
    </RETURNS>
+   
 </COMPONENT>

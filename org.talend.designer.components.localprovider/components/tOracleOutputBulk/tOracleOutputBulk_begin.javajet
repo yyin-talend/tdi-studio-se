@@ -64,6 +64,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		
 		final String OUT_DELIM_ROWSEP_<%=cid %> = "\r\n";
 		
+		final String OUT_DELIM_ROWSEP_WITH_LOB_<%=cid %> = "|";
+				
+		
 		final java.io.BufferedWriter out<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
         		new java.io.FileOutputStream(fileName_<%=cid%>, <%= isAppend%>),<%= encoding%>));
 <%
