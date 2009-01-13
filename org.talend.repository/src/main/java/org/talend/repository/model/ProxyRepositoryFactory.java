@@ -1404,7 +1404,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         service.executeProjectTasks(project, false, monitorWrap);
 
         ComponentsFactoryProvider.getInstance().reset();
-        // CorePlugin.getDefault().getLibrariesService().syncLibraries(monitorWrap);
+        CorePlugin.getDefault().getLibrariesService().syncLibraries(monitorWrap);
         if (!CommonsPlugin.isHeadless()) {
             CorePlugin.getDefault().getCodeGeneratorService().initializeTemplates();
         }
