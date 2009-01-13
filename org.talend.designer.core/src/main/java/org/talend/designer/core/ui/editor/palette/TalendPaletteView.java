@@ -35,7 +35,9 @@ public class TalendPaletteView extends PaletteView {
         showSf.setShowS(showSt);
         toolMana.add(showSt);
         toolMana.add(showSf);
-
+        if (showSf.state == true) {
+            showSt.doSetEnable();
+        }
     }
 
 }

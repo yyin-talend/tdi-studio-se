@@ -289,7 +289,6 @@ public final class TalendEditorPaletteFactory {
             }
 
             if (filter != null) {
-                System.out.println("filter=====" + filter);
                 String regex = getFilterRegex();
                 if (!xmlComponent.getTranslatedName().toLowerCase().matches(regex)
                         && !xmlComponent.getLongName().toLowerCase().matches(regex)) {
@@ -444,7 +443,7 @@ public final class TalendEditorPaletteFactory {
         AbstractProcessProvider.loadComponentsFromProviders();
         palette.add(createToolsGroup());
 
-        createComponentsDrawer(compFac, false, true);
+        createComponentsDrawer(compFac, false);
 
         return palette;
     }
@@ -460,7 +459,7 @@ public final class TalendEditorPaletteFactory {
     public static PaletteRoot getAllNodeStructure(final IComponentsFactory compFac) {
         palette = new PaletteRoot();
         AbstractProcessProvider.loadComponentsFromProviders();
-        createComponentsDrawer(compFac, true, false);
+        createComponentsDrawer(compFac, true);
         return palette;
     }
 
@@ -476,11 +475,7 @@ public final class TalendEditorPaletteFactory {
     public static PaletteRoot createPalette(final IComponentsFactory compFac, PaletteRoot root) {// ing
         palette = root;
         AbstractProcessProvider.loadComponentsFromProviders();
-        // if (paletteState == true) {
-        createComponentsDrawer(compFac, false, true);
-        // } else {
-        // createComponentsDrawer(compFac, false, false);
-        // }
+        createComponentsDrawer(compFac, false);
         return palette;
     }
 

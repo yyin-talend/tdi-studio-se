@@ -123,7 +123,7 @@ public class TalendFlyoutPaletteComposite extends FlyoutPaletteComposite {
             showSf.setShowS(showSt);
             manager.add(showSt);
             manager.add(showSf);
-
+            showSt.doSetEnable();
             manager.add(mgr);
             setMenu(manager.createContextMenu(this));
             mgr.addMenuListener(new IMenuListener() {

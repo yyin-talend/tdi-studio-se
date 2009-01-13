@@ -58,6 +58,11 @@ public class ShowStandardAction extends Action {
     public void doRun() {
         ComponentUtilities.updatePalette(false);
         ShowFavoriteAction.state = true;
+        doSetEnable();
+    }
+
+    public void doSetEnable() {
+
         setEnabled(false);
         getShowF().setEnabled(true);
     }
