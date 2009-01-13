@@ -52,14 +52,30 @@ imports="
 
 
     /* Create a connection instance */
+    ch.ethz.ssh2.Connection conn_<%=cid %>=null;
+	<%
+	String useExistingConn = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__");
+	
+	if(useExistingConn.equals("true")){
+		String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
+		String conn= "conn_" + connection;
+	%>
+	
+	conn_<%=cid %> = (ch.ethz.ssh2.Connection)globalMap.get("<%=conn %>");
+	
+<%}else{%>
+
+    String hostname_<%=cid%> = <%=host%>;
+    String username_<%=cid%> = <%=user%>;
+    
 <%
         if(port.equals("")){
 %>
-              ch.ethz.ssh2.Connection conn_<%=cid%> = new ch.ethz.ssh2.Connection(hostname_<%=cid%>);
+              conn_<%=cid%> = new ch.ethz.ssh2.Connection(hostname_<%=cid%>);
 <%
         } else {
 %>
-              ch.ethz.ssh2.Connection conn_<%=cid%> = new ch.ethz.ssh2.Connection(hostname_<%=cid%>,<%=port%>);
+              conn_<%=cid%> = new ch.ethz.ssh2.Connection(hostname_<%=cid%>,<%=port%>);
 <%
         }
 %>
@@ -103,5 +119,6 @@ imports="
         if (isAuthenticated_<%=cid%> == false)
             throw new RuntimeException("Authentication failed.");
 <%
-        }        
+        }
+	}//if(isExistingConn)        
 %>     

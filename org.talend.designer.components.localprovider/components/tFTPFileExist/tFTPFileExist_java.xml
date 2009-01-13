@@ -28,20 +28,55 @@ COMPATIBILITY="ALL"
   </CONNECTORS>
 
   <PARAMETERS>
-  
-    <PARAMETER NAME="HOST" FIELD="TEXT" REQUIRED="true" NUM_ROW="10">
+ 
+   
+      <PARAMETER
+      NAME="USE_EXISTING_CONNECTION"
+      FIELD="CHECK"
+      NUM_ROW="1"
+      >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>   
+    
+    <PARAMETER
+      NAME="CONNECTION"
+      FIELD="COMPONENT_LIST"
+      FILTER="tFTPConnection"
+      NUM_ROW="1"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
+    /> 
+ 
+    <PARAMETER 
+    	NAME="HOST" 
+    	FIELD="TEXT" 
+    	REQUIRED="true" 
+    	NUM_ROW="10"
+    	SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+    	>
       <DEFAULT>"localhost"</DEFAULT>
     </PARAMETER>
     
-    <PARAMETER NAME="PORT" FIELD="TEXT" REQUIRED="true" NUM_ROW="10">
+    <PARAMETER 
+    	NAME="PORT" 
+    	FIELD="TEXT" 
+    	REQUIRED="true" 
+    	NUM_ROW="10"
+    	SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+    	>
       <DEFAULT>21</DEFAULT>
     </PARAMETER>
 
-    <PARAMETER NAME="USERNAME" FIELD="TEXT" REQUIRED="true" NUM_ROW="20">
+    <PARAMETER 
+    	NAME="USERNAME" 
+    	FIELD="TEXT" 
+    	REQUIRED="true" 
+    	NUM_ROW="20"
+    	SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+    	>
       <DEFAULT>"anonymous"</DEFAULT>
     </PARAMETER>
     
-    <PARAMETER NAME="PASSWORD" FIELD="TEXT" REQUIRED="true" NUM_ROW="20" NOT_SHOW_IF="(SFTP=='true') AND (AUTH_METHOD == 'PUBLICKEY')">
+    <PARAMETER NAME="PASSWORD" FIELD="TEXT" REQUIRED="true" NUM_ROW="20" NOT_SHOW_IF="((SFTP=='true') AND (AUTH_METHOD == 'PUBLICKEY')) OR (USE_EXISTING_CONNECTION == 'true')">
       <DEFAULT>"suomynona"</DEFAULT>
     </PARAMETER>
     

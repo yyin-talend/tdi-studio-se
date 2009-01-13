@@ -29,10 +29,28 @@
   </CONNECTORS>
 
   <PARAMETERS>
+
+    <PARAMETER
+      NAME="USE_EXISTING_CONNECTION"
+      FIELD="CHECK"
+      NUM_ROW="1"
+      >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>   
+    
+    <PARAMETER
+      NAME="CONNECTION"
+      FIELD="COMPONENT_LIST"
+      FILTER="tSCPConnection"
+      NUM_ROW="1"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
+    /> 
+  
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
       NUM_ROW="10"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>"127.0.0.1"</DEFAULT>
     </PARAMETER>
@@ -41,6 +59,7 @@
       NAME="PORT"
       FIELD="TEXT"
       NUM_ROW="20"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>22</DEFAULT>
     </PARAMETER>
@@ -49,6 +68,7 @@
       NAME="USERNAME"
       FIELD="TEXT"
       NUM_ROW="30"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>"username"</DEFAULT>
     </PARAMETER>
@@ -57,6 +77,7 @@
       NAME="AUTH_METHOD"
       FIELD="CLOSED_LIST"
       NUM_ROW="40"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <ITEMS DEFAULT="PASSWORD">
         <ITEM NAME="PUBLICKEY"  VALUE="PUBLICKEY"/>
@@ -69,7 +90,7 @@
       NAME="PASSWORD"
       FIELD="TEXT"
       NUM_ROW="50"
-      SHOW_IF="(AUTH_METHOD == 'PASSWORD') or (AUTH_METHOD == 'KEYBOARDINTERACTIVE')"
+      SHOW_IF="(USE_EXISTING_CONNECTION == 'false') and ((AUTH_METHOD == 'PASSWORD') or (AUTH_METHOD == 'KEYBOARDINTERACTIVE'))"
     >
       <DEFAULT>"password"</DEFAULT>
     </PARAMETER>
@@ -78,7 +99,7 @@
       NAME="PRIVATEKEY"
       FIELD="FILE"
       NUM_ROW="70"
-      SHOW_IF="AUTH_METHOD == 'PUBLICKEY'"
+      SHOW_IF="(USE_EXISTING_CONNECTION == 'false') and AUTH_METHOD == 'PUBLICKEY'"
     >
       <DEFAULT>"/.ssh/id_dsa"</DEFAULT>
     </PARAMETER>
@@ -87,7 +108,7 @@
       NAME="PASSPHRASE"
       FIELD="TEXT"
       NUM_ROW="50"
-      SHOW_IF="AUTH_METHOD == 'PUBLICKEY'"
+      SHOW_IF="(USE_EXISTING_CONNECTION == 'false') and AUTH_METHOD == 'PUBLICKEY'"
     >
       <DEFAULT>"secret"</DEFAULT>
     </PARAMETER>

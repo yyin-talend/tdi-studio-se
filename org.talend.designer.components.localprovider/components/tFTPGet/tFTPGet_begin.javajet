@@ -336,15 +336,28 @@ try{
     
 // add a try{...}catch(){...}(the end is line 44 in tFTPGet_end.javajet) for catch the errors of tFTPGet, but not exit.
 try{
-    
-	com.enterprisedt.net.ftp.FTPClient ftp_<%=cid %> = new com.enterprisedt.net.ftp.FTPClient();
-	ftp_<%=cid %>.setRemoteHost(<%=host %>);
-	ftp_<%=cid %>.setRemotePort(<%=port %>);	
 
-	ftp_<%=cid %>.connect();	
-	msg_<%=cid%>.clearAll();
+	com.enterprisedt.net.ftp.FTPClient ftp_<%=cid %> =null;
 	
-    ftp_<%=cid %>.login(<%=user %>, <%=pass %>);  
+	<%
+	String useExistingConn = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__");
+	
+	if(useExistingConn.equals("true")){
+		String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
+		String conn= "conn_" + connection;
+	%>
+	
+	ftp_<%=cid %> = (com.enterprisedt.net.ftp.FTPClient)globalMap.get("<%=conn %>");
+	
+	<%}else{%>		
+	ftp_<%=cid %> = new com.enterprisedt.net.ftp.FTPClient();
+	ftp_<%=cid %>.setRemoteHost(<%=host %>);
+	ftp_<%=cid %>.setRemotePort(<%=port %>);
+	ftp_<%=cid %>.connect();
+	ftp_<%=cid %>.login(<%=user %>, <%=pass %>);  
+	<%} %>	 
+			
+	msg_<%=cid%>.clearAll();
     
     FTPGetter_<%=cid%> getter_<%=cid%> = new FTPGetter_<%=cid%>();
     getter_<%=cid%>.ftpClient = ftp_<%=cid %>;

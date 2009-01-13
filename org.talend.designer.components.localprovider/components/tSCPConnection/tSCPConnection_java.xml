@@ -8,18 +8,18 @@
     
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
-    RELEASE_DATE="20050320A"
+    RELEASE_DATE="20090112A"
     STARTABLE="true"
   >
-    <SIGNATURE />
+    <SIGNATURE/>
   </HEADER>
 
   <DOCUMENTATION>
-    <URL />
+    <URL/>
   </DOCUMENTATION>
 
-   <CONNECTORS>
-    <CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1"/>
+  <CONNECTORS>
+    <CONNECTOR CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="0"/>
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="1"/>
     <CONNECTOR CTYPE="SUBJOB_OK" MAX_INPUT="1" />
     <CONNECTOR CTYPE="SUBJOB_ERROR" MAX_INPUT="1" />
@@ -29,29 +29,10 @@
   </CONNECTORS>
 
   <PARAMETERS>
-
-  
-      <PARAMETER
-      NAME="USE_EXISTING_CONNECTION"
-      FIELD="CHECK"
-      NUM_ROW="1"
-      >
-      <DEFAULT>false</DEFAULT>
-    </PARAMETER>   
-    
-    <PARAMETER
-      NAME="CONNECTION"
-      FIELD="COMPONENT_LIST"
-      FILTER="tSCPConnection"
-      NUM_ROW="1"
-      SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
-    />
-
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
       NUM_ROW="10"
-      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>"127.0.0.1"</DEFAULT>
     </PARAMETER>
@@ -60,7 +41,6 @@
       NAME="PORT"
       FIELD="TEXT"
       NUM_ROW="20"
-      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>22</DEFAULT>
     </PARAMETER>
@@ -69,7 +49,6 @@
       NAME="USERNAME"
       FIELD="TEXT"
       NUM_ROW="30"
-      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>"username"</DEFAULT>
     </PARAMETER>
@@ -78,7 +57,6 @@
       NAME="AUTH_METHOD"
       FIELD="CLOSED_LIST"
       NUM_ROW="40"
-      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <ITEMS DEFAULT="PASSWORD">
         <ITEM NAME="PUBLICKEY"  VALUE="PUBLICKEY"/>
@@ -91,7 +69,7 @@
       NAME="PASSWORD"
       FIELD="TEXT"
       NUM_ROW="50"
-     SHOW_IF="(USE_EXISTING_CONNECTION == 'false') and ((AUTH_METHOD == 'PASSWORD') or (AUTH_METHOD == 'KEYBOARDINTERACTIVE'))"
+     SHOW_IF="(AUTH_METHOD == 'PASSWORD') or (AUTH_METHOD == 'KEYBOARDINTERACTIVE')"
     >
       <DEFAULT>"password"</DEFAULT>
     </PARAMETER>
@@ -100,7 +78,7 @@
       NAME="PRIVATEKEY"
       FIELD="FILE"
       NUM_ROW="70"
-      SHOW_IF="(USE_EXISTING_CONNECTION == 'false') and AUTH_METHOD == 'PUBLICKEY'"
+      SHOW_IF="AUTH_METHOD == 'PUBLICKEY'"
     >
       <DEFAULT>"/.ssh/id_dsa"</DEFAULT>
     </PARAMETER>
@@ -109,35 +87,18 @@
       NAME="PASSPHRASE"
       FIELD="TEXT"
       NUM_ROW="50"
-      SHOW_IF="(USE_EXISTING_CONNECTION == 'false') and AUTH_METHOD == 'PUBLICKEY'"
+      SHOW_IF="AUTH_METHOD == 'PUBLICKEY'"
     >
       <DEFAULT>"secret"</DEFAULT>
     </PARAMETER>
-    
-    <PARAMETER NAME="REMOTEDIR" FIELD="DIRECTORY" REQUIRED="false" NUM_ROW="80">
-      <DEFAULT>"home"</DEFAULT>
-    </PARAMETER>
 
-    <PARAMETER
-      NAME="FILELIST"
-      FIELD="TABLE"
-      REQUIRED="true"
-      NUM_ROW="100"
-    >
-      <ITEMS>
-     	<ITEM NAME="DESTINATION" />
-      </ITEMS>
-    </PARAMETER>    
-
-  </PARAMETERS>
+   </PARAMETERS>
 
   <CODEGENERATION>
-    <IMPORTS>
+     <IMPORTS>
     	<IMPORT  NAME="Java_SCP"  MODULE="ganymed-ssh2-build211beta4.jar" REQUIRED="true"/>
-    </IMPORTS>
-  </CODEGENERATION>
-  <RETURNS>
-	<RETURN NAME="STATUS" TYPE="id_String" AVAILABILITY="AFTER"/>
-	<RETURN NAME="NB_FILE" TYPE="id_Integer" AVAILABILITY="AFTER"/>
-  </RETURNS>
+     </IMPORTS>
+   </CODEGENERATION>
+
+   <RETURNS/>
 </COMPONENT>

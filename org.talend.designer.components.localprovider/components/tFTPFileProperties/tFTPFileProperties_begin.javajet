@@ -136,11 +136,28 @@ if(useProxy){
 	}    
     	
 <%}else{%>
-	com.enterprisedt.net.ftp.FTPClient ftp_<%=cid %> = new com.enterprisedt.net.ftp.FTPClient();
+
+
+	com.enterprisedt.net.ftp.FTPClient ftp_<%=cid %> =null;
+	
+	<%
+	String useExistingConn = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__");
+	
+	if(useExistingConn.equals("true")){
+		String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
+		String conn= "conn_" + connection;
+	%>
+	
+	ftp_<%=cid %> = (com.enterprisedt.net.ftp.FTPClient)globalMap.get("<%=conn %>");
+	
+	<%}else{%>		
+	ftp_<%=cid %> = new com.enterprisedt.net.ftp.FTPClient();
 	ftp_<%=cid %>.setRemoteHost(<%=host %>);
 	ftp_<%=cid %>.setRemotePort(<%=port %>);
 	ftp_<%=cid %>.connect();
 	ftp_<%=cid %>.login(<%=username %>, <%=password %>);
+	<%} %>	
+	
 	String remoteDir_<%=cid %> = <%=remoteDir %>.replaceAll("\\\\","/");
 	<%=outputConnName %> = new <%=outputConnName %>Struct();
 	String remoteFile_<%=cid %> = <%=remoteDir %> + "/" + <%=filename%>;

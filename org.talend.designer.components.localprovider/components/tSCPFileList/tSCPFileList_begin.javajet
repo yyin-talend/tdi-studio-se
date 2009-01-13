@@ -53,11 +53,23 @@ imports="
         
         List<Map<String, String>> filelist = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FILELIST__");       
  %>
-    String hostname_<%=cid%> = <%=host%>;
-    String username_<%=cid%> = <%=user%>;
-
 
     /* Create a connection instance */
+	<%
+	String useExistingConn = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__");
+	
+	if(useExistingConn.equals("true")){
+		String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
+		String conn= "conn_" + connection;
+	%>
+	
+	ch.ethz.ssh2.Connection conn_<%=cid %> = (ch.ethz.ssh2.Connection)globalMap.get("<%=conn %>");
+	
+<%}else{%>
+
+    String hostname_<%=cid%> = <%=host%>;
+    String username_<%=cid%> = <%=user%>;
+    
 <%
         if(port.equals("")){
 %>
@@ -109,7 +121,8 @@ imports="
         if (isAuthenticated_<%=cid%> == false)
             throw new RuntimeException("Authentication failed.");
 <%
-        }        
+        } 
+	}//if(useExistingConn)       
 %>     
 
 		//initial the command

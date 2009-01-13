@@ -115,11 +115,28 @@ for (java.util.Map<String, String> map<%=cid %> : list<%=cid %>)
 	{
 
 <%}else{%>
-	com.enterprisedt.net.ftp.FTPClient ftp<%=cid %> = new com.enterprisedt.net.ftp.FTPClient();
+
+
+	com.enterprisedt.net.ftp.FTPClient ftp<%=cid %> =null;
+	
+	<%
+	String useExistingConn = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__");
+	
+	if(useExistingConn.equals("true")){
+		String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
+		String conn= "conn_" + connection;
+	%>
+	
+	ftp<%=cid %> = (com.enterprisedt.net.ftp.FTPClient)globalMap.get("<%=conn %>");
+	
+	<%}else{%>		
+	ftp<%=cid %> = new com.enterprisedt.net.ftp.FTPClient();
 	ftp<%=cid %>.setRemoteHost(<%=host %>);
 	ftp<%=cid %>.setRemotePort(<%=port %>);
-	ftp<%=cid %>.connect();
-    ftp<%=cid %>.login(<%=user %>, <%=pass %>);    
+	ftp<%=cid %>.connect();	
+	ftp<%=cid %>.login(<%=user %>, <%=pass %>); 
+	<%} %>	
+	 
 	java.util.List<java.util.Map<String,String>> list<%=cid %> = new java.util.ArrayList<java.util.Map<String,String>>();
 	
 <%

@@ -11,11 +11,21 @@
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
+	String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
+	
 	boolean sftp = ElementParameterParser.getValue(node, "__SFTP__").equals("true");
 %>
 
 <% if(sftp){%>
 	session<%=cid%>.disconnect(); 
 <%}else{%>
-	ftp_<%=cid %>.quit();	
+
+<%
+	if(!useExistingConn.equals("true"))
+	{
+		%>
+
+	ftp_<%=cid %>.quit();
+	<%}%>
+
 <%}%>

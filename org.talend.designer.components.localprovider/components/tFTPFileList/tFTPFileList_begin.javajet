@@ -120,21 +120,36 @@ if(useProxy){
     	
 <%}else{%>
 	int nb_file_<%=cid%> = 0;
-	com.enterprisedt.net.ftp.FTPClient ftp_<%=cid %> = new com.enterprisedt.net.ftp.FTPClient();
-	ftp_<%=cid %>.setRemoteHost(<%=host %>);
-	ftp_<%=cid %>.setRemotePort(<%=port %>);
-	ftp_<%=cid %>.connect();
-    ftp_<%=cid %>.login(<%=user %>, <%=pass %>);    
+	
+	com.enterprisedt.net.ftp.FTPClient ftp<%=cid %> =null;
+	
+	<%
+	String useExistingConn = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__");
+	
+	if(useExistingConn.equals("true")){
+		String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
+		String conn= "conn_" + connection;
+	%>
+	
+	ftp<%=cid %> = (com.enterprisedt.net.ftp.FTPClient)globalMap.get("<%=conn %>");
+	
+	<%}else{%>		
+	ftp<%=cid %> = new com.enterprisedt.net.ftp.FTPClient();
+	ftp<%=cid %>.setRemoteHost(<%=host %>);
+	ftp<%=cid %>.setRemotePort(<%=port %>);
+	ftp<%=cid %>.connect();	
+	ftp<%=cid %>.login(<%=user %>, <%=pass %>); 
+	<%} %>	    
 	
 	String remotedir_<%=cid %> = <%=remotedir%>;
 	//ftp_<%=cid %>.chdir(remotedir_<%=cid %>);
     
     String[] fileList_<%=cid %>;
     if (<%=dirFull %>) {
-        fileList_<%=cid %> = ftp_<%=cid %>.dir(remotedir_<%=cid %>, true);
+        fileList_<%=cid %> = ftp<%=cid %>.dir(remotedir_<%=cid %>, true);
     }
     else {
-        fileList_<%=cid %> = ftp_<%=cid %>.dir(remotedir_<%=cid %>, false);
+        fileList_<%=cid %> = ftp<%=cid %>.dir(remotedir_<%=cid %>, false);
     }
     
     int i<%=cid %> = -1;

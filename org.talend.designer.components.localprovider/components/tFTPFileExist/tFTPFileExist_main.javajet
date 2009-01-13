@@ -110,13 +110,30 @@ if(useProxy){
 		
     	
 <%}else{%>
-		com.enterprisedt.net.ftp.FTPClient ftp_<%=cid %> = new com.enterprisedt.net.ftp.FTPClient();
-		ftp_<%=cid %>.setRemoteHost(<%=host %>);
-		ftp_<%=cid %>.setRemotePort(<%=port %>);
-		ftp_<%=cid %>.connect();
-    	ftp_<%=cid %>.login(<%=username %>, <%=password %>);
+
+
+		com.enterprisedt.net.ftp.FTPClient ftp<%=cid %> =null;
+		
+		<%
+		String useExistingConn = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__");
+		
+		if(useExistingConn.equals("true")){
+			String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
+			String conn= "conn_" + connection;
+		%>
+		
+		ftp<%=cid %> = (com.enterprisedt.net.ftp.FTPClient)globalMap.get("<%=conn %>");
+		
+		<%}else{%>		
+		ftp<%=cid %> = new com.enterprisedt.net.ftp.FTPClient();
+		ftp<%=cid %>.setRemoteHost(<%=host %>);
+		ftp<%=cid %>.setRemotePort(<%=port %>);
+		ftp<%=cid %>.connect();	
+    	ftp<%=cid %>.login(<%=username %>, <%=password %>);
+		<%} %>	
+
     	String remoteDir_<%=cid %> = <%=remoteDir %>.replaceAll("\\\\","/");
-    	if(ftp_<%=cid %>.exists(<%=remoteDir %> + "/" + <%=filename%>)){
+    	if(ftp<%=cid %>.exists(<%=remoteDir %> + "/" + <%=filename%>)){
     		globalMap.put("<%=cid %>_EXISTS", true);
     	}else{
     		globalMap.put("<%=cid %>_EXISTS", false);
