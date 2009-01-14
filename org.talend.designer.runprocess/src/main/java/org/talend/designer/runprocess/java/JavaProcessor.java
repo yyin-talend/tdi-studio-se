@@ -148,10 +148,6 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     private static IProject rootProject;
 
-    // achen added to fix bug 0001268
-    private static final String EXE_BASE = "exedir";
-
-    // end
     /**
      * Matchs placeholder in subprocess_header.javajet, it will be replaced by the size of method code.
      */
@@ -883,25 +879,14 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
                 neededLibraries.add(moduleNeeded.getModuleName());
             }
         }
-        // achen modify to fix bug 0001268
-        String exebase = "";
-        if (":".equalsIgnoreCase(classPathSeparator)) {
-            exebase = "${" + EXE_BASE + "}/";
-        } else {
-            exebase = "%" + EXE_BASE + "%";
-            // exebase = "";
-        }
-        // end
+
         StringBuffer libPath = new StringBuffer();
         File externalLibDirectory = new File(CorePlugin.getDefault().getLibrariesService().getLibrariesPath());
         if ((externalLibDirectory != null) && (externalLibDirectory.isDirectory())) {
             for (File externalLib : externalLibDirectory.listFiles(FilesUtils.getAcceptJARFilesFilter())) {
                 if (externalLib.isFile() && neededLibraries.contains(externalLib.getName())) {
                     if (ProcessorUtilities.isExportConfig()) {
-                        // achen modify to fix bug 0001268
-                        String exterlib = exebase + new Path(this.getLibraryPath()).append(externalLib.getName());
-                        libPath.append(exterlib + classPathSeparator);
-
+                        libPath.append(new Path(this.getLibraryPath()).append(externalLib.getName()) + classPathSeparator);
                     } else {
                         libPath.append(new Path(externalLib.getAbsolutePath()).toPortableString() + classPathSeparator);
                     }
@@ -915,16 +900,6 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
             projectPath = getCodeLocation();
             if (projectPath != null) {
                 projectPath = projectPath.replace(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR, classPathSeparator);
-                // achen modify to fix bug 0001268
-                String[] splits = projectPath.split(classPathSeparator);
-                StringBuffer sb = new StringBuffer(1024);
-                for (int i = 0; i < splits.length; i++) {
-                    if (splits[i].length() > 0) {
-                        sb.append(exebase + splits[i] + classPathSeparator);
-                    }
-                }
-                projectPath = sb.toString();
-                // end
             }
         } else {
             IFolder classesFolder = javaProject.getProject().getFolder(JavaUtils.JAVA_CLASSES_DIRECTORY);
@@ -945,60 +920,40 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
                 version = version.replace(".", "_");
             }
 
-            // achen modify to fix bug 0001268
-            exportJar = exebase + process.getName().toLowerCase() + version + ".jar" + classPathSeparator;
-
+            exportJar = classPathSeparator + process.getName().toLowerCase() + version + ".jar" + classPathSeparator;
             Set<JobInfo> jobInfos = ProcessorUtilities.getChildrenJobInfo((ProcessItem) process.getProperty().getItem());
             for (JobInfo jobInfo : jobInfos) {
                 if (jobInfo.getJobVersion() != null) {
                     version = "_" + jobInfo.getJobVersion();
                     version = version.replace(".", "_");
                 }
-                // achen modify to fix bug 0001268
-                exportJar += exebase + jobInfo.getJobName().toLowerCase() + version + ".jar" + classPathSeparator;
+                exportJar += jobInfo.getJobName().toLowerCase() + version + ".jar" + classPathSeparator;
             }
         }
 
         String libFolder = "";
         if (ProcessorUtilities.isExportConfig()) {
-            libFolder = exebase + new Path(this.getLibraryPath()) + classPathSeparator;
+            libFolder = new Path(this.getLibraryPath()) + classPathSeparator;
         } else {
             libFolder = new Path(externalLibDirectory.getAbsolutePath()).toPortableString() + classPathSeparator;
         }
-        // achen modify to fix bug 0001268
-        String execmd = "";
-        if (":".equalsIgnoreCase(classPathSeparator)) {
-            execmd = EXE_BASE + "=`dirname $0`\n";
-
+        String[] strings = new String[] { new Path(command).toPortableString(), "-cp",
+                libPath.toString() + new Path(projectPath).toPortableString() + exportJar + libFolder, className };
+        String[] cmd2 = addVMArguments(strings);
+        // achen modify to fix 0001268
+        if (!ProcessorUtilities.isExportConfig()) {
+            return cmd2;
+        } else {
+            List<String> list = new ArrayList<String>();
+            if (":".equals(classPathSeparator)) {
+                list.add("cd `dirname $0`\n");
+            } else {
+                list.add("cd %~dp0\r\n");
+            }
+            list.addAll(Arrays.asList(cmd2));
+            return list.toArray(new String[0]);
         }
-        if (";".equalsIgnoreCase(classPathSeparator)) {
-            execmd = "set " + EXE_BASE + "=%~dp0\r\n";
-            // execmd = "";
-        }
-        List<String> cmdResult = new ArrayList<String>();
-
-        if (ProcessorUtilities.isExportConfig() && execmd.length() > 0) {
-            cmdResult.add(execmd);
-        }
-        // add command
-        cmdResult.add(new Path(command).toPortableString());
-        // add vmarguments
-        String string = RunProcessPlugin.getDefault().getPreferenceStore().getString(RunProcessPrefsConstants.VMARGUMENTS);
-        String replaceAll = string.trim();
-        String[] vmargs = replaceAll.split(" ");
-        cmdResult.addAll(Arrays.asList(vmargs));
-        // add cp
-        cmdResult.add("-cp");
-        // add classpath
-        String cp = libPath.toString() + projectPath + exportJar + libFolder;
-        cmdResult.add(cp);
-        // add classname
-        cmdResult.add(className);
-        return (String[]) cmdResult.toArray(new String[0]);
-        // String[] strings = new String[] { new Path(command).toPortableString(), "-cp",
-        // libPath.toString() + new Path(projectPath).toPortableString() + exportJar + libFolder, className };
-        // // end
-        // return addVMArguments(strings);
+        // end
     }
 
     private String[] addVMArguments(String[] strings) {
@@ -1006,9 +961,9 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         String replaceAll = string.trim();
         String[] vmargs = replaceAll.split(" ");
         String[] lines = new String[strings.length + vmargs.length];
-        System.arraycopy(strings, 0, lines, 0, 1); // copy java
-        System.arraycopy(vmargs, 0, lines, 1, vmargs.length); // copy vmargs
-        System.arraycopy(strings, 1, lines, vmargs.length + 1, strings.length - 1); // copy the left strings
+        System.arraycopy(strings, 0, lines, 0, 1);
+        System.arraycopy(vmargs, 0, lines, 1, vmargs.length);
+        System.arraycopy(strings, 1, lines, vmargs.length + 1, strings.length - 1);
         return lines;
     }
 

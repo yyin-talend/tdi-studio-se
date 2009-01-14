@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -77,9 +78,6 @@ public class PerlProcessor extends Processor {
 
     /** Tells if filename is based on id or label of the process. */
     private boolean filenameFromLabel;
-
-    // achen added to fix bug 0001268
-    private static final String EXE_BASE = "exedir";
 
     /**
      * Constructs a new PerlProcessor.
@@ -545,41 +543,25 @@ public class PerlProcessor extends Processor {
         String perlInterpreterLibOption = null;
         String perlModuleDirectoryOption = null;
         String perlLib = getLibraryPath();
-        // achen modify to fix bug 0001268
-        String exedir = "";
-        String cmdExedir = "";
-        if (Platform.OS_LINUX.equals(getTargetPlatform())) {
-            exedir = "${" + EXE_BASE + "}/";
-            cmdExedir = EXE_BASE + "=`dirname $0`\n";
-        } else if (Platform.OS_WIN32.equals(getTargetPlatform())) {
-            exedir = "%" + EXE_BASE + "%";
-            cmdExedir = "set " + EXE_BASE + "=%~dp0\r\n";
-        }
-        String codepath = Path.fromOSString(getCodeLocation()).append(this.getCodePath()).toOSString();
-        if (ProcessorUtilities.isExportConfig()) {
-            codepath = exedir + codepath;
-            perlInterpreterLibOption = perlLib != null && perlLib.length() > 0 ? "-I" + exedir + perlLib : ""; //$NON-NLS-1$ //$NON-NLS-2$    
-        } else {
-            perlInterpreterLibOption = perlLib != null && perlLib.length() > 0 ? "-I" + perlLib : ""; //$NON-NLS-1$ //$NON-NLS-2$
-        }
+        perlInterpreterLibOption = perlLib != null && perlLib.length() > 0 ? "-I" + perlLib : ""; //$NON-NLS-1$ //$NON-NLS-2$
 
-        // IPath absCodePath = Path.fromOSString(codepath);
-        // String[] cmd = getCommandLineByCondition(interpreter, absCodePath, perlInterpreterLibOption,
-        // perlModuleDirectoryOption);
-        // achen add to fix bug 0001268 add cmdExedir to cmd
-        ArrayList<String> result = new ArrayList<String>();
-        if (cmdExedir.length() > 0) {
-            result.add(cmdExedir);
+        IPath absCodePath = Path.fromOSString(getCodeLocation()).append(this.getCodePath());
+        String[] cmd = getCommandLineByCondition(interpreter, absCodePath, perlInterpreterLibOption, perlModuleDirectoryOption);
+        // achen modify to fix 0001268
+        if (!ProcessorUtilities.isExportConfig()) {
+            return cmd;
+        } else {
+            List<String> list = new ArrayList<String>();
+            if (Platform.OS_LINUX.equals(getTargetPlatform())) {
+                list.add("cd `dirname $0`\n");
+            } else {
+                list.add("cd %~dp0\r\n");
+            }
+            list.addAll(Arrays.asList(cmd));
+            return list.toArray(new String[0]);
         }
-        result.add(interpreter);
-        result.add(perlInterpreterLibOption);
-        if (perlModuleDirectoryOption != null) {
-            result.add(perlModuleDirectoryOption);
-        }
-        result.add(codepath);
-        String[] cmd = (String[]) result.toArray(new String[0]);
         // end
-        return cmd;
+
     }
 
     /*
