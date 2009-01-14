@@ -29,6 +29,8 @@ import org.talend.repository.ProjectManager;
  */
 public class ExtraComposite extends AbstractPreferenceComposite {
 
+    boolean isClicked;
+
     /**
      * DOC chuang ExtraComposite constructor comment.
      * 
@@ -64,9 +66,14 @@ public class ExtraComposite extends AbstractPreferenceComposite {
             useProjectSetting.setSelection(v.booleanValue());
             setMainCompositeEnable(!v.booleanValue());
             topComposite.setEnabled(true);
-            // if (v.booleanValue()) {
-            // onReloadPreference();
-            // }
+            if (v.booleanValue() && !isClicked) {
+                if (elem == null) {
+                    return;
+                }
+                // achen modify to fix 0005991& 0005993
+                onReloadPreference();
+                refresh();
+            }
         }
         if (useProjectSetting != null) {
             useProjectSetting.addSelectionListener(new SelectionAdapter() {
@@ -83,6 +90,7 @@ public class ExtraComposite extends AbstractPreferenceComposite {
                             EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS.getName(), Boolean.valueOf(flag));
                     getCommandStack().execute(cmd);
                     if (flag) {
+                        isClicked = true;
                         useProjectSetting();
                     }
                 }

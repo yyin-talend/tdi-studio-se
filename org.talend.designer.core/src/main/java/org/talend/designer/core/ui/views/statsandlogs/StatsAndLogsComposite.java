@@ -33,6 +33,8 @@ import org.talend.repository.ProjectManager;
  */
 public class StatsAndLogsComposite extends AbstractPreferenceComposite {
 
+    boolean isClicked;
+
     /**
      * ftang StatAndLogsComposite constructor comment.
      * 
@@ -65,9 +67,15 @@ public class StatsAndLogsComposite extends AbstractPreferenceComposite {
             useProjectSetting.setSelection(v.booleanValue());
             setMainCompositeEnable(!v.booleanValue());
             topComposite.setEnabled(true);
-            // if (v.booleanValue()) {
-            // onReloadPreference();
-            // }
+            if (v.booleanValue() && !isClicked) {
+                if (elem == null) {
+                    return;
+                }
+                // achen modify to fix 0005991& 0005993
+                onReloadPreference();
+                refresh();
+            }
+
         }
         if (useProjectSetting != null) {
             useProjectSetting.addSelectionListener(new SelectionAdapter() {
@@ -84,6 +92,7 @@ public class StatsAndLogsComposite extends AbstractPreferenceComposite {
                             .getName(), Boolean.valueOf(flag));
                     getCommandStack().execute(cmd);
                     if (flag) {
+                        isClicked = true;
                         useProjectSetting();
                     }
                 }

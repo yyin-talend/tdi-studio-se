@@ -22,6 +22,7 @@ import org.eclipse.swt.widgets.Control;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.properties.ImplicitContextSettings;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.views.properties.MultipleThreadDynamicComposite;
 import org.talend.designer.core.ui.views.properties.WidgetFactory;
 import org.talend.repository.preference.ProjectSettingPage;
@@ -46,8 +47,7 @@ public class ImplicitContextLoadProjectSettingPage extends ProjectSettingPage {
         composite.setLayoutData(data);
         if (pro.getEmfProject().getImplicitContextSettings() == null) {
             // display one message box to tell the user the settings is get from old preference page.
-            MessageDialog.openInformation(getShell(), getTitle(),
-                    "The ImplicitContextLoad setting will be loaded from old preference page.");
+            MessageDialog.openInformation(getShell(), getTitle(), Messages.getString("ImplicitContextLoad.LoadOldPreferences"));
         }
         Element elem = ProjectSettingManager.createImplicitContextLoadElement(pro);
         ImplicitContextSettings implicit = pro.getEmfProject().getImplicitContextSettings();

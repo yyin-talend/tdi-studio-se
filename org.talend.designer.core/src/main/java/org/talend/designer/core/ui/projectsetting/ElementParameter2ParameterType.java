@@ -62,6 +62,30 @@ public class ElementParameter2ParameterType {
         }
     }
 
+    public static String getParameterValue(ParametersType paType, String paramName) {
+        EList listParamType = paType.getElementParameter();
+        for (int j = 0; j < listParamType.size(); j++) {
+            ElementParameterType pType = (ElementParameterType) listParamType.get(j);
+            if (pType != null && paramName.equals(pType.getName())) {
+                return pType.getValue();
+            }
+        }
+        return null;
+    }
+
+    public static void setParameterValue(ParametersType paType, String paramName, Object value) {
+        if (value == null)
+            return;
+        EList listParamType = paType.getElementParameter();
+        for (int j = 0; j < listParamType.size(); j++) {
+            ElementParameterType pType = (ElementParameterType) listParamType.get(j);
+            if (pType != null && paramName.equals(pType.getName())) {
+                pType.setValue(value.toString());
+                return;
+            }
+        }
+    }
+
     public static Object getParameterValue(Element elem, String paramName) {
         IElementParameter param = elem.getElementParameter(paramName);
         if (param != null) {
