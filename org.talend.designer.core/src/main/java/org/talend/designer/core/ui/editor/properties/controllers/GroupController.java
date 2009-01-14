@@ -45,8 +45,10 @@ public class GroupController extends AbstractElementPropertySectionController {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#createControl(org.eclipse.swt.widgets.Composite,
-     * org.talend.core.model.process.IElementParameter, int, int, int, org.eclipse.swt.widgets.Control)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#createControl
+     * (org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter, int, int, int,
+     * org.eclipse.swt.widgets.Control)
      */
     @Override
     public Control createControl(Composite subComposite, final IElementParameter param, int numInRow, int nbInRow, int top,
@@ -55,7 +57,8 @@ public class GroupController extends AbstractElementPropertySectionController {
         final DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new IControlCreator() {
 
             public Control createControl(Composite parent, int style) {
-                return getWidgetFactory().createGroup(parent, param.getGroupDisplayName());
+                return getWidgetFactory().createGroup(parent,
+                        param.getGroupDisplayName() == null ? "" : param.getGroupDisplayName());
             }
 
         });
@@ -85,8 +88,9 @@ public class GroupController extends AbstractElementPropertySectionController {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite,
-     * org.talend.core.model.process.IElementParameter)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize
+     * (org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
      */
     @Override
     public int estimateRowSize(Composite subComposite, final IElementParameter param) {
@@ -107,8 +111,9 @@ public class GroupController extends AbstractElementPropertySectionController {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#refresh(org.talend.core.model.process.IElementParameter,
-     * boolean)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#refresh(org
+     * .talend.core.model.process.IElementParameter, boolean)
      */
     @Override
     public void refresh(IElementParameter param, boolean check) {
