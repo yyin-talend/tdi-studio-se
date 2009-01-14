@@ -748,7 +748,7 @@ public class SQLBuilderRepositoryNodeManager {
             query3.setComment(query.getComment());
             query3.setLabel(query.getLabel());
             query3.setValue(query.getValue());
-
+            query3.setContextMode(query.isContextMode()); // Add by hyWang
             Connection connection = item.getConnection();
             QueriesConnection queriesConnection = connection.getQueries();
             if (queriesConnection == null) {
@@ -765,6 +765,8 @@ public class SQLBuilderRepositoryNodeManager {
                         query2.setId(query3.getId());
                         query2.setValue(query3.getValue());
                         query2.setLabel(query3.getLabel());
+                        // add by hywang
+                        query2.setContextMode(query3.isContextMode());
                         isModify = true;
                     }
                     assignQueryId(query2, queriesConnection); // assign id to old query without id
@@ -781,6 +783,7 @@ public class SQLBuilderRepositoryNodeManager {
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public void saveQuery(RepositoryNode repositoryNode, Query query, String oldQuery) {
+
         saveEMFQuery(repositoryNode.getObject().getId(), query, oldQuery);
         DatabaseConnectionItem item = getItem(repositoryNode);
         if (query != null) {
@@ -799,6 +802,7 @@ public class SQLBuilderRepositoryNodeManager {
                         query2.setComment(query.getComment());
                         query2.setId(query.getId());
                         query2.setValue(query.getValue());
+                        query2.setContextMode(query.isContextMode()); // add by hywang
                         isModify = true;
                     }
                     assignQueryId(query2, queriesConnection); // assign id to old query without id

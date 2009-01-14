@@ -41,6 +41,17 @@ import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
  */
 public class ConnectionParameters {
 
+    // to check the button contextmode when use built-in mode in designer,add by hyWang
+    private Boolean ifContextButtonCheckedFromBuiltIn = new Boolean(false);
+
+    public Boolean getIfContextButtonCheckedFromBuiltIn() {
+        return this.ifContextButtonCheckedFromBuiltIn;
+    }
+
+    public void setIfContextButtonCheckedFromBuiltIn(Boolean ifContextButtonCheckedFromBuiltIn) {
+        this.ifContextButtonCheckedFromBuiltIn = ifContextButtonCheckedFromBuiltIn;
+    }
+
     /**
      * qzhang ConnectionParameters class global comment. Detailled comment <br/>
      * 
@@ -57,6 +68,7 @@ public class ConnectionParameters {
 
         EFrameworkKeyName(String displayName) {
             this.displayName = displayName;
+
         }
 
         /**

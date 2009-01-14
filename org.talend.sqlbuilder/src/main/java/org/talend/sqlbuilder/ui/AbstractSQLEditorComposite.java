@@ -34,6 +34,8 @@ import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.actions.AbstractEditorAction;
 import org.talend.sqlbuilder.actions.ClearTextAction;
+import org.talend.sqlbuilder.actions.ContextModeAction;
+import org.talend.sqlbuilder.actions.ContextModeSessionSwitcher;
 import org.talend.sqlbuilder.actions.ExecSQLAction;
 import org.talend.sqlbuilder.actions.GUIModificationQueryAction;
 import org.talend.sqlbuilder.actions.OpenFileAction;
@@ -64,6 +66,8 @@ public abstract class AbstractSQLEditorComposite extends Composite implements IS
 
     public static final String QUERY_PREFIX = Messages.getString("SQLBuilderEditorComposite.titleQuery");
 
+    private boolean ifcontext;
+
     /**
      * qzhang AbstractSQLEditorComposite constructor comment.
      * 
@@ -72,8 +76,11 @@ public abstract class AbstractSQLEditorComposite extends Composite implements IS
      */
     public AbstractSQLEditorComposite(Composite parent, int style, ISQLBuilderDialog d, ConnectionParameters connParam) {
         super(parent, style);
-        this.dialog = d;
         this.connParam = connParam;
+        if (dialog instanceof ISQLBuilderDialog) {
+            this.dialog = (ISQLBuilderDialog) d;
+        }
+        this.dialog = d;
     }
 
     private String title2 = "";
@@ -169,12 +176,17 @@ public abstract class AbstractSQLEditorComposite extends Composite implements IS
      * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#saveSQL()
      */
     public Query doSaveSQL(Query query2, boolean as) {
+        // gain the button status ,then passing the value to saveSQLDialog,add by hyWang
+        ifcontext = this.getContextmode().getContextmodeaction().isChecked();
         SQLBuilderRepositoryNodeManager repositoryNodeManager = new SQLBuilderRepositoryNodeManager();
         List<String> existingName = repositoryNodeManager.getALLQueryLabels(getRepositoryNode());
+
         if (!as) {
             if (query2 != null && existingName.contains(query2.getLabel())) {
                 query2.setValue(getSQLToBeExecuted());
-                repositoryNodeManager.saveQuery(getRepositoryNode(), query2,null);
+                query2.setContextMode(ifcontext);
+
+                repositoryNodeManager.saveQuery(getRepositoryNode(), query2, null);
                 dialog.refreshNode(getRepositoryNode());
                 getMultiPageEditor().updateEditorTitle(QUERY_PREFIX + query2.getLabel());
                 getDialog().notifySQLBuilder(getRepositoryNode().getObject());
@@ -184,16 +196,18 @@ public abstract class AbstractSQLEditorComposite extends Composite implements IS
         SQLPropertyDialog.setDialogTitle(getMultiPageEditor().getTitle());
         SQLPropertyDialog saveSQLDialog = new SQLPropertyDialog(this.getShell(), existingName);
         saveSQLDialog.setSql(getSQLToBeExecuted());
-        // saveSQLDialog.setQuery(connParam.getQueryObject());
+        // add by hyWang
+        saveSQLDialog.setIfcontext(ifcontext);
         if (Window.OK == saveSQLDialog.open()) {
             Query query = saveSQLDialog.getQuery();
-            repositoryNodeManager.saveQuery(getRepositoryNode(), query,null);
+            repositoryNodeManager.saveQuery(getRepositoryNode(), query, null);
             dialog.refreshNode(getRepositoryNode());
             getMultiPageEditor().updateEditorTitle(QUERY_PREFIX + query.getLabel());
             getMultiPageEditor().getDeactivePageSaveSQLAction().setQuery(query);
             getMultiPageEditor().setItemData(query);
             getDialog().notifySQLBuilder(getRepositoryNode().getObject());
             return query;
+
         }
         return null;
     }
@@ -203,6 +217,14 @@ public abstract class AbstractSQLEditorComposite extends Composite implements IS
      * 
      * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#getRepositoryName()
      */
+
+    public boolean isIfcontext() {
+        return this.ifcontext;
+    }
+
+    public ConnectionParameters getConnParam() {
+        return this.connParam;
+    }
 
     public String getRepositoryName() {
         if (getRepositoryNode() == null) {
@@ -234,16 +256,27 @@ public abstract class AbstractSQLEditorComposite extends Composite implements IS
 
     protected AbstractEditorAction explainAction;
 
+    protected ContextModeAction contextModeAction; // Action add by hyWang
+
     protected SQLEditorSessionSwitcher sessionSwitcher;
 
     protected GUIModificationQueryAction guiModificationQueryAction;
 
     protected ToolBarManager sessionToolBarMgr;
 
+    protected ContextModeSessionSwitcher contextmode; // button add by hyWang
+
+    public ContextModeSessionSwitcher getContextmode() {
+        return this.contextmode;
+    }
+
+    protected ToolBarManager contextToolBarMgr; // toolbar add by hyWang
+
     /**
      * qzhang Comment method "createToolBar".
      */
     protected void createToolBar() {
+
         // create coolbar
         coolBar = new CoolBar(this, SWT.NONE);
         coolBarMgr = new CoolBarManager(coolBar);
@@ -275,6 +308,8 @@ public abstract class AbstractSQLEditorComposite extends Composite implements IS
         guiModificationQueryAction = new GUIModificationQueryAction(getRepositoryNode(), connParam, dialog);
         guiModificationQueryAction.setEditor(this);
 
+        contextModeAction = new ContextModeAction(getRepositoryNode(), connParam); // initialize hyWang's ACTION
+
         addDefaultActions();
 
         // initialize session actions
@@ -283,10 +318,16 @@ public abstract class AbstractSQLEditorComposite extends Composite implements IS
         sessionSwitcher = new SQLEditorSessionSwitcher(this);
         sessionToolBarMgr.add(sessionSwitcher);
 
+        // initialize hyWang's BUTTON and TOOLBAR
+        contextToolBarMgr = new ToolBarManager(SWT.NONE);
+        contextmode = new ContextModeSessionSwitcher(this, contextModeAction);
+        contextToolBarMgr.add(contextmode);
+
         // add all toolbars to parent coolbar
         coolBar.setLocked(true);
         coolBarMgr.add(new ToolBarContributionItem(defaultToolBarMgr));
         coolBarMgr.add(new ToolBarContributionItem(sessionToolBarMgr));
+        coolBarMgr.add(new ToolBarContributionItem(contextToolBarMgr)); // add hyWang's toolbar to coolbar
 
         coolBarMgr.update(true);
     }
@@ -306,6 +347,7 @@ public abstract class AbstractSQLEditorComposite extends Composite implements IS
         defaultToolBarMgr.add(saveAsSQLAction);
         defaultToolBarMgr.add(exportAction);
         defaultToolBarMgr.add(clearTextAction);
+
         explainAction = addExplainPlanAction(getRepositoryNode());
         if (explainAction != null) {
             defaultToolBarMgr.add(explainAction);

@@ -75,6 +75,7 @@ import org.talend.sqlbuilder.util.UIUtils;
  */
 public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepositoryChangedListener {
 
+    // ends
     private boolean isFromRepositoryView = false;
 
     private DBDetailsComposite dbDetailsComposite;
@@ -251,6 +252,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
         new RefreshDetailCompositeAction(structureComposite.getTreeViewer());
 
         return container;
+
     }
 
     /*
@@ -334,7 +336,9 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
         Label l = new Label(parent, SWT.NONE);
         l.setLayoutData(gd);
 
+        // OK and Cancel buttons
         createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, false);
+
         createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
     }
 
@@ -417,6 +421,24 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
      * @see org.eclipse.jface.dialogs.Dialog#okPressed()
      */
     public void okPressed() {
+        // gain the contextmode from sqlbuilder,and set it in connParameters,add by hyWang
+        MultiPageSqlBuilderEditor editor = null;
+        CTabFolder folder = getEditorComposite().getTabFolder();
+        CTabItem[] a = folder.getItems();
+        for (int i = 0; i < a.length; i++) {
+            CTabItem itm = a[i];
+            Object obj = itm.getData("KEY");
+            if (obj instanceof MultiPageSqlBuilderEditor) {
+                editor = (MultiPageSqlBuilderEditor) obj;
+            }
+            if (editor != null) {
+                if (itm.getData() instanceof Query) {
+                    Query q = (Query) itm.getData();
+                    connParameters.setIfContextButtonCheckedFromBuiltIn(q.isContextMode());
+                }
+
+            }
+        }
 
         if (EParameterFieldType.DBTABLE.equals(connParameters.getFieldType())) {
             final IStructuredSelection selection = (IStructuredSelection) structureComposite.getTreeViewer().getSelection();
@@ -439,7 +461,10 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
             // sql = sql.replace("'", "\\'");
             // }
 
+            // sql = QueryUtil.checkAndAddQuotes(sql);
+
             connParameters.setQuery(sql);
+
             if (connParameters.isFromRepository() && !connParameters.isNodeReadOnly()) {
                 List<Query> qs = new ArrayList<Query>();
                 boolean isInfo = false;
@@ -475,6 +500,9 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
                                         if (item.getData() instanceof Query) {
                                             Query q = (Query) item.getData();
                                             q.setValue(meditor.getActivePageSqlString());
+                                            // add by hyWang
+                                            q.setContextMode(meditor.getActiveEditors().getContextmode().getContextmodeaction()
+                                                    .isChecked());
                                             qs.add(q);
                                             if (node != null && q != null) {
                                                 manager.saveQuery(node, q, null);
@@ -493,6 +521,9 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
                 }
             }
         }
+
+        //
+
         super.okPressed();
     }
 
@@ -526,7 +557,9 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
         /*
          * (non-Java)
          * 
-         * @see org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse.jface.viewers.IStructuredSelection)
+         * @see
+         * org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse.jface.viewers.IStructuredSelection
+         * )
          */
         public void selectionChanged(final IStructuredSelection selection) {
             IRunnableWithProgress progress = new IRunnableWithProgress() {
@@ -600,9 +633,11 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
             boolean isDefaultEditor, List<RepositoryNode> nodeSel) {
         editorComposite.setNodesSel(nodeSel);
         editorComposite.openNewEditor(node, repositoryName, connParam, isDefaultEditor);
+
     }
 
     public DBStructureComposite getStructureComposite() {
         return this.structureComposite;
     }
+
 }

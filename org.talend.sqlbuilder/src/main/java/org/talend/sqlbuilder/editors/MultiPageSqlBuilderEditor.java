@@ -50,6 +50,14 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
 
     private SQLBuilderDesignerComposite sqlDesigner;
 
+    public SQLBuilderEditorComposite getSqlEdit() {
+        return this.sqlEdit;
+    }
+
+    public SQLBuilderDesignerComposite getSqlDesigner() {
+        return this.sqlDesigner;
+    }
+
     private List<RepositoryNode> nodes;
 
     /**
@@ -78,6 +86,10 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
 
     private ISQLBuilderDialog dialog;
 
+    public ISQLBuilderDialog getDialog() {
+        return this.dialog;
+    }
+
     private ErDiagramComposite erDiagramComposite;
 
     /*
@@ -102,7 +114,6 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
                     dialog, nodes);
             sqlDesigner.setSqlText(sqlEdit.getSQLToBeExecuted());
             sqlDesigner.setEditorContent(connParam);
-
             // sqlDesigner.setQueryObject(dialog.getConnParameters().getQueryObject());
             sqlDesigner.setMaxResult(sqlEdit.getMaxResult());
             sqlDesigner.setIfLimit(sqlEdit.getIfLimit());

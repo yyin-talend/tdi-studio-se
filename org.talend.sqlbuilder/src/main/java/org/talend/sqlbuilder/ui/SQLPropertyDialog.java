@@ -53,6 +53,12 @@ public class SQLPropertyDialog extends TitleAreaDialog {
 
     private String sql;
 
+    private boolean ifcontext; // add by hyWang
+
+    public void setIfcontext(boolean ifcontext) {
+        this.ifcontext = ifcontext;
+    }
+
     /**
      * Sets the sql.
      * 
@@ -128,10 +134,10 @@ public class SQLPropertyDialog extends TitleAreaDialog {
         }
         query.setComment(this.commentText.getText());
         query.setLabel(this.nameText.getText());
+        query.setContextMode(ifcontext); // add by hyWang
         if (sql != null) {
             query.setValue(sql);
         }
-
         super.okPressed();
     }
 

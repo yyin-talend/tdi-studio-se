@@ -46,26 +46,24 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
-import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog;
 import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog.EEditSelection;
 import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog.ESelectionType;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.metadata.QueryUtil;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
-import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.cmd.RepositoryChangeQueryCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
-import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.ui.SQLBuilderDialog;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 import org.talend.sqlbuilder.util.TextUtil;
@@ -115,20 +113,31 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
 
     private ColorStyledText queryText;
 
+    // built-in open query
     private Command createCommand() {
         initConnectionParameters();
         String repositoryType = (String) elem.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
         String propertyName = (String) openSQLEditorButton.getData(PARAMETER_NAME);
         String query = (String) elem.getPropertyValue(propertyName);
+        if (!TalendTextUtils.isCommonString(query) || QueryUtil.checkIfIsNoQuotesAtAll(query)) {// if the input query is in context mode
+            // String pid = SqlBuilderPlugin.PLUGIN_ID;
+            // String mainMsg = Messages.getString("SqlMemoController.QueryError.mainMsg");
+            // String infoMsg = Messages.getString("SqlMemoController.QueryError.infoMsg",
+            // TalendTextUtils.getQuoteChar());
+            // new ErrorDialogWidthDetailArea(composite.getShell(), pid, mainMsg, infoMsg);
+            // return null;
 
-        if (!TalendTextUtils.isCommonString(query)) {
-            String pid = SqlBuilderPlugin.PLUGIN_ID;
-            String mainMsg = Messages.getString("SqlMemoController.QueryError.mainMsg");
-            String infoMsg = Messages.getString("SqlMemoController.QueryError.infoMsg", TalendTextUtils.getQuoteChar());
-            new ErrorDialogWidthDetailArea(composite.getShell(), pid, mainMsg, infoMsg);
+            // pass the value to Initializing the contextmode button
+            connParameters.setIfContextButtonCheckedFromBuiltIn(true);
+            String contextSql = openSQLBuilder(repositoryType, propertyName, query);
+            if (contextSql != null) {
+                queryText.setText(contextSql);
+                return new PropertyChangeCommand(elem, propertyName, contextSql);
+            }
             return null;
+            // return null;
         }
-
+        // if the input query isn't contextmode
         query = this.removeStrInQuery(query);
         initConnectionParametersWithContext(elem, part == null ? new EmptyContextManager().getDefaultContext() : part
                 .getTalendEditor().getProcess().getContextManager().getDefaultContext());
@@ -165,8 +174,10 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createControl(org.eclipse.swt.widgets.Composite,
-     * org.talend.core.model.process.IElementParameter, int, int, int, org.eclipse.swt.widgets.Control)
+     * @see
+     * org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createControl
+     * (org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter, int, int, int,
+     * org.eclipse.swt.widgets.Control)
      */
     @Override
     public Control createControl(Composite subComposite, IElementParameter param, int numInRow, int nbInRow, int top,
@@ -184,6 +195,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
 
         Control buttonControl = dField1.getLayoutControl();
         openSQLEditorButton = (Button) dField1.getControl();
+
         openSQLEditorButton.computeSize(SWT.DEFAULT, SWT.DEFAULT);
         openSQLEditorButton.setImage(ImageProvider.getImage(CorePlugin.getImageDescriptor(DOTS_BUTTON)));
         buttonControl.setBackground(subComposite.getBackground());
@@ -303,8 +315,9 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite,
-     * org.talend.core.model.process.IElementParameter)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize
+     * (org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
      */
     @Override
     public int estimateRowSize(Composite subComposite, IElementParameter param) {
@@ -335,7 +348,9 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#hasDynamicRowSize()
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#hasDynamicRowSize
+     * ()
      */
     @Override
     public boolean hasDynamicRowSize() {
@@ -399,8 +414,10 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         connParameters.setFromRepository(true);
         sqlBuilder.setConnParameters(connParameters);
         String sql = null;
+
         if (Window.OK == sqlBuilder.open()) {
             sql = connParameters.getQuery();
+
         }
         if (sql != null && !queryText.isDisposed()) {
             queryText.setText(sql);
@@ -505,4 +522,5 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
             createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
         }
     }
+
 }

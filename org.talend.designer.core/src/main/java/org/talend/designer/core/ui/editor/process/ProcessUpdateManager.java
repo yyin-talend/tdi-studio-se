@@ -999,6 +999,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                 String[] names = UpdateManagerUtils.getSourceIdAndChildName(propertyValue);
                 if (names != null) {
                     connectionItem = UpdateRepositoryUtils.getConnectionItemByItemId(names[0]);
+
                 }
                 Query query = null;
                 String source = null;
@@ -1017,8 +1018,11 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                     IElementParameter sqlParam = node.getElementParameterFromField(EParameterFieldType.MEMO_SQL);
                     if (sqlParam != null && UpdatesConstants.QUERY.equals(sqlParam.getName())) {
                         String paramValue = (String) sqlParam.getValue();
+                        // modefied by hywang , to see if there is contextmode
+                        if (!query.isContextMode()) {
+                            connectQuery = QueryUtil.checkAndAddQuotes(connectQuery);
+                        }
 
-                        connectQuery = QueryUtil.checkAndAddQuotes(connectQuery);
                         if (!connectQuery.equals(paramValue)) {
                             result = new UpdateCheckResult(node);
                             result.setResult(EUpdateItemType.NODE_QUERY, EUpdateResult.UPDATE, query, source);

@@ -356,7 +356,11 @@ public class UpdateNodeParameterCommand extends Command {
                         for (IElementParameter param : node.getElementParameters()) {
                             if (param.getField() == EParameterFieldType.MEMO_SQL
                                     && UpdatesConstants.QUERY.equals(param.getName())) {
-                                String value = QueryUtil.checkAndAddQuotes(query.getValue());
+                                // modefied by hyWang
+                                String value = query.getValue();
+                                if (!query.isContextMode()) {
+                                    value = QueryUtil.checkAndAddQuotes(value);
+                                }
                                 param.setValue(value);
                                 param.setRepositoryValueUsed(true);
                                 param.setReadOnly(true);

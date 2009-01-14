@@ -130,6 +130,7 @@ public class OpenSQLBuilderDialogJob extends Job {
                         }
                         SQLBuilderDialog dial = new SQLBuilderDialog(parentShell);
                         UIUtils.addSqlBuilderDialog(process.getName(), dial);
+
                         dial.setConnParameters(connectionParameters);
                         if (Window.OK == dial.open()) {
                             if (!composite.isDisposed() && !connectionParameters.isNodeReadOnly()) {

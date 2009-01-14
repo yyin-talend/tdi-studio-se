@@ -1001,7 +1001,6 @@ public abstract class AbstractElementPropertySectionController implements Proper
         }
         connParameters.setSchemaName(QueryUtil.getTableName(elem, connParameters.getMetadataTable(), TalendTextUtils
                 .removeQuotes(schema), type, realTableName));
-
     }
 
     protected void initConnectionParametersWithContext(IElement element, IContext context) {
@@ -1190,6 +1189,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 initConnectionParametersWithContext(elem, part.getTalendEditor().getProcess().getContextManager()
                         .getDefaultContext());
             }
+
             openSqlBuilderBuildIn(connParameters, propertyName);
 
         } else if (repositoryType.equals(EmfComponent.REPOSITORY)) {
@@ -1205,10 +1205,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 String value = (String) itemFromRepository.getValue();
                 repositoryId = value;
                 for (String key : this.dynamicProperty.getRepositoryConnectionItemMap().keySet()) {
-
                     if (key.equals(value)) {
                         repositoryName2 = this.dynamicProperty.getRepositoryConnectionItemMap().get(key).getProperty().getLabel();
-
                     }
                 }
             }
@@ -1238,13 +1236,18 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
                 SQLBuilderDialog sqlBuilder = new SQLBuilderDialog(parentShell);
                 UIUtils.addSqlBuilderDialog(((Node) elem).getProcess().getName(), sqlBuilder);
+
                 connParameters.setQuery(query);
+
                 sqlBuilder.setConnParameters(connParameters);
                 sqlbuilers.put(key, sqlBuilder);
                 if (Window.OK == sqlBuilder.open()) {
                     if (!composite.isDisposed() && !connParameters.isNodeReadOnly()) {
                         String sql = connParameters.getQuery();
-                        sql = QueryUtil.checkAndAddQuotes(sql);
+                        // modified by hyWang
+                        if (!connParameters.getIfContextButtonCheckedFromBuiltIn()) {
+                            sql = QueryUtil.checkAndAddQuotes(sql);
+                        }
                         return sql;
                     }
                 }
