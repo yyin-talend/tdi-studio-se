@@ -368,7 +368,7 @@ java.util.List<Comparable<%=rowName %>Struct> list_<%=cid %> = new java.util.Arr
 		//sort in memory end
 		}else{
 		//sort out of memory begin
-			String tempFile = ElementParameterParser.getValue(node, "__TEMPFILE__");
+			String tempDirectory = ElementParameterParser.getValue(node, "__TEMPFILE__");
 %>
 ////////////////////////////////////
 class <%=rowName %>StructILightSerializable extends <%=rowName %>Struct implements
@@ -817,9 +817,9 @@ class <%=rowName %>StructILightSerializable extends <%=rowName %>Struct implemen
 // /////////////////////////////////
 
 org.talend.designer.components.thash.io.hashimpl.FlowSorterIterator<<%=rowName %>StructILightSerializable> iterator_<%=cid %> = new org.talend.designer.components.thash.io.hashimpl.FlowSorterIterator<<%=rowName %>StructILightSerializable>();
-iterator_<%=cid %>.setBufferSize(100000);
+iterator_<%=cid %>.setBufferSize(1000000);
 iterator_<%=cid %>.setILightSerializable(new <%=rowName %>StructILightSerializable());
-iterator_<%=cid %>.workDirectory = <%=tempFile %>;
+iterator_<%=cid %>.workDirectory = <%=tempDirectory %> + "/" + jobName + "<%=cid %> _" + pid;
 iterator_<%=cid %>.initPut("");
 
 <%
