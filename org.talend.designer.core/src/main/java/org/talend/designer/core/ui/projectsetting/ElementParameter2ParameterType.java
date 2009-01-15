@@ -63,6 +63,8 @@ public class ElementParameter2ParameterType {
     }
 
     public static String getParameterValue(ParametersType paType, String paramName) {
+        if (paType == null)
+            return null;
         EList listParamType = paType.getElementParameter();
         for (int j = 0; j < listParamType.size(); j++) {
             ElementParameterType pType = (ElementParameterType) listParamType.get(j);

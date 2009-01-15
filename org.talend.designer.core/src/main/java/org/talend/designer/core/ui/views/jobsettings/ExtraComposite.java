@@ -17,9 +17,12 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
+import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
+import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.projectsetting.ElementParameter2ParameterType;
 import org.talend.designer.core.ui.projectsetting.ProjectSettingManager;
 import org.talend.repository.ProjectManager;
@@ -83,9 +86,13 @@ public class ExtraComposite extends AbstractPreferenceComposite {
                     boolean flag = useProjectSetting.getSelection();
                     setMainCompositeEnable(!flag);
                     topComposite.setEnabled(true);
-                    // ElementParameter2ParameterType.setParameterValue(elem,
-                    // EParameterName.USE_PROJECT_SETTINGS.getName(), Boolean
-                    // .valueOf(flag));
+                    if (elem instanceof Process) {
+                        Process process = (Process) elem;
+                        ProcessItem pItem = (ProcessItem) process.getProperty().getItem();
+                        ParametersType pType = pItem.getProcess().getParameters();
+                        ElementParameter2ParameterType.setParameterValue(pType,
+                                EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS.getName(), Boolean.valueOf(flag));
+                    }
                     PropertyChangeCommand cmd = new PropertyChangeCommand(elem,
                             EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS.getName(), Boolean.valueOf(flag));
                     getCommandStack().execute(cmd);

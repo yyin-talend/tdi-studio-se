@@ -690,7 +690,7 @@
        <page
              category="jobsettings"
              class="org.talend.designer.core.ui.projectsetting.StatLogsAndImplicitcontextTreeViewPage"
-             description="The selected Item will Use Project Settings in both ImplicitContextLoad and StatsAndLogs"
+             description="%selectitem.useprojectsettings"
              id="jobsettings.treeview"
              title="%useProjectSetting">
        </page>
