@@ -743,8 +743,8 @@ public class Process extends Element implements IProcess2 {
                                 }
                                 lineValues.put(elementValue.getElementRef(), elementValue.getValue());
                                 if (elementValue.getType() != null) {
-                                    lineValues
-                                            .put(elementValue.getElementRef() + IEbcdicConstant.REF_TYPE, elementValue.getType());
+                                    lineValues.put(elementValue.getElementRef() + IEbcdicConstant.REF_TYPE, elementValue
+                                            .getType());
                                 }
                             }
                         }
@@ -1197,25 +1197,33 @@ public class Process extends Element implements IProcess2 {
         listMetaType = nType.getMetadata();
         IMetadataTable metadataTable;
         listMetaData = new ArrayList<IMetadataTable>();
+        // bug 6086
+        Set<String> listNames = new HashSet<String>();
 
         for (int j = 0; j < listMetaType.size(); j++) {
             mType = (MetadataType) listMetaType.get(j);
             factory.setMetadataType(mType);
             metadataTable = factory.getMetadataTable();
-            listMetaData.add(metadataTable);
-            if (nc.getConnectorFromType(EConnectionType.FLOW_MAIN).isMultiSchema()
-                    && checkValidConnectionName(metadataTable.getTableName())) {
-                addUniqueConnectionName(metadataTable.getTableName());
-            } else {
-                if (metadataTable.getTableName() == null) {
-                    metadataTable.setTableName(nc.getUniqueName());
+            // add by wzhang
+            // if a schema exist in node,won't add it again
+            if (!listNames.contains(metadataTable.getTableName())) {
+                listNames.add(metadataTable.getTableName());
+                listMetaData.add(metadataTable);
+                if (nc.getConnectorFromType(EConnectionType.FLOW_MAIN).isMultiSchema()
+                        && checkValidConnectionName(metadataTable.getTableName())) {
+                    addUniqueConnectionName(metadataTable.getTableName());
+                } else {
+                    if (metadataTable.getTableName() == null) {
+                        metadataTable.setTableName(nc.getUniqueName());
+                    }
                 }
+                MetadataTool.initilializeSchemaFromElementParameters(metadataTable, (List<IElementParameter>) nc
+                        .getElementParameters());
             }
-            MetadataTool.initilializeSchemaFromElementParameters(metadataTable, (List<IElementParameter>) nc
-                    .getElementParameters());
         }
         List<IMetadataTable> oldComponentMetadataList = new ArrayList<IMetadataTable>(nc.getMetadataList());
         nc.setMetadataList(listMetaData);
+
         for (IMetadataTable table : oldComponentMetadataList) {
             if (nc.getMetadataFromConnector(table.getAttachedConnector()) == null) {
                 // if there is any new connector, then add the table to the
@@ -1933,8 +1941,8 @@ public class Process extends Element implements IProcess2 {
      * @see org.talend.core.model.process.IRepositoryProcess#setStatus(org.talend.core.model.process.EProcessStatus)
      */
     public void setStatusCode(String statusCode) {
-        if (getProperty().getStatusCode() == null && statusCode != null
-               || getProperty().getStatusCode() != null && !getProperty().getStatusCode().equals(statusCode)) {
+        if (getProperty().getStatusCode() == null && statusCode != null || getProperty().getStatusCode() != null
+                && !getProperty().getStatusCode().equals(statusCode)) {
             getProperty().setStatusCode(statusCode);
         }
         setPropertyValue(EParameterName.STATUS.getName(), statusCode);
@@ -2563,7 +2571,6 @@ public class Process extends Element implements IProcess2 {
         return JavaProcessUtil.getNeededLibraries(this, withChildrens);
     }
 
-  
     /**
      * Getter for notes.
      * 
