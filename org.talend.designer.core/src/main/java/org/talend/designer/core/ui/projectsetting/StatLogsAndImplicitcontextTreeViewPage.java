@@ -26,6 +26,8 @@ import org.eclipse.jface.viewers.ITreeViewerListener;
 import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
@@ -115,7 +117,14 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
     @Override
     protected Control createContents(Composite parent) {
         Composite composite = widgetFactory.createComposite(parent, SWT.NONE);
-        composite.setLayout(new FillLayout());
+        // composite.setLayout(new FillLayout());
+        GridLayout layout = new GridLayout();
+        layout.marginLeft = 5;
+        layout.marginRight = 5;
+        layout.numColumns = 2;
+        layout.makeColumnsEqualWidth = true;
+        composite.setLayout(layout);
+
         repositoryView = RepositoryManager.getRepositoryView();
         createImplicitcontextTree(composite);
         createStatTree(composite);
@@ -124,6 +133,8 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
 
     private void createImplicitcontextTree(Composite composite) {
         Group g = widgetFactory.createGroup(composite, Messages.getString("ExtraComposite.ImplicitContextSettings"));
+        GridData gd = new GridData(GridData.FILL_BOTH);
+        g.setLayoutData(gd);
         g.setLayout(new FillLayout());
         viewer = new CheckboxRepositoryTreeViewer(g, SWT.MULTI | SWT.V_SCROLL);
         contentProvider = new AllJobContentProvider(repositoryView);
@@ -206,6 +217,8 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
 
     private void createStatTree(Composite composite) {
         Group g = widgetFactory.createGroup(composite, Messages.getString("StatsAndLogsComposite.StatsLogsSettings"));
+        GridData gd = new GridData(GridData.FILL_BOTH);
+        g.setLayoutData(gd);
         g.setLayout(new FillLayout());
         statViewer = new CheckboxRepositoryTreeViewer(g, SWT.MULTI | SWT.V_SCROLL);
         statContentProvider = new AllJobContentProvider(repositoryView);
