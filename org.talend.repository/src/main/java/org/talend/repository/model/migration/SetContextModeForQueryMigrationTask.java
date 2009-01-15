@@ -46,13 +46,17 @@ public class SetContextModeForQueryMigrationTask extends AbstractItemMigrationTa
         if (item instanceof DatabaseConnectionItem) {
             DatabaseConnectionItem connItem = (DatabaseConnectionItem) item;
             DatabaseConnection conn = (DatabaseConnection) connItem.getConnection();
+            if (conn.getQueries() == null)
+                return ExecutionResult.NOTHING_TO_DO;
             for (Query query : (List<Query>) conn.getQueries().getQuery()) {
                 String value = query.getValue();
                 if (value != null && (value.startsWith(TalendTextUtils.getQuoteChar()) || !TalendTextUtils.isCommonString(value))) {
                     query.setContextMode(true);
                     changed = true;
+
                 }
             }
+
         }
         if (changed) {
             try {
