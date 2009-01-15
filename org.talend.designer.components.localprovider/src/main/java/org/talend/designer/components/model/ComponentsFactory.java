@@ -56,7 +56,7 @@ public class ComponentsFactory implements IComponentsFactory {
     private static Logger log = Logger.getLogger(ComponentsFactory.class);
 
     private static List<IComponent> componentList = null;
-    
+
     private static Map<String, IComponent> componentsCache = new HashMap<String, IComponent>();
 
     // 1. only the in the directory /components ,not including /resource
@@ -165,6 +165,11 @@ public class ComponentsFactory implements IComponentsFactory {
             }
 
         };
+        if (source == null) {
+            ExceptionHandler.process(new Exception("Component folder not found:" + pathSource));
+            return;
+        }
+
         childDirectories = source.listFiles(fileFilter);
 
         FileFilter skeletonFilter = new FileFilter() {
@@ -203,7 +208,7 @@ public class ComponentsFactory implements IComponentsFactory {
                         componentList.add(componentsCache.get(xmlMainFile.getAbsolutePath()));
                         continue;
                     }
-                    
+
                     EmfComponent currentComp = new EmfComponent(xmlMainFile, pathSource);
                     TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.emf2");
 
@@ -216,7 +221,7 @@ public class ComponentsFactory implements IComponentsFactory {
                         TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.loadIcons");
                         componentList.add(currentComp);
                     }
-                    
+
                     if (CommonsPlugin.isHeadless()) {
                         componentsCache.put(xmlMainFile.getAbsolutePath(), currentComp);
                     }
