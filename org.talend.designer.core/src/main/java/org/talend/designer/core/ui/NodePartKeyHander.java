@@ -22,6 +22,7 @@ import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
+import org.talend.designer.core.ui.editor.notes.NoteEditPart;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
@@ -45,18 +46,24 @@ public class NodePartKeyHander extends GraphicalViewerKeyHandler {
     protected void navigateTo(EditPart part, KeyEvent event) {
         // PTODO need be removed
         SubjobContainerPart subPart = null;
+        NoteEditPart noPart = null;
         boolean displayVa = true;
         if (part instanceof SubjobContainerPart) {
-            // check the flag for display subjobcontainer at first.
             // NodeContainerPart
             SubjobContainerPart focusPart = (SubjobContainerPart) part;
             List subList = focusPart.getParent().getChildren();
             for (int j = 0; j < subList.size(); j++) {
-                subPart = (SubjobContainerPart) subList.get(j);
-                SubjobContainer subContainer = (SubjobContainer) subPart.getModel();
-                if (subContainer.isDisplayed() == false) {
+
+                if (subList.get(j) instanceof SubjobContainerPart) {
+                    subPart = (SubjobContainerPart) subList.get(j);
+                    SubjobContainer subContainer = (SubjobContainer) subPart.getModel();
+                    if (subContainer.isDisplayed() == false) {
+                        displayVa = false;
+                    }
+                } else if (subList.get(j) instanceof NoteEditPart) {
                     displayVa = false;
                 }
+
             }
             if (displayVa == false) {
                 part = (EditPart) part.getChildren().get(0);
@@ -81,16 +88,24 @@ public class NodePartKeyHander extends GraphicalViewerKeyHandler {
         if (focusPart.getParent() != null) {
 
             if (focusPart instanceof SubjobContainerPart) {
-                // TODO check flag for subjob.
                 // return getNodePart((SubjobContainerPart) focusPart);
                 SubjobContainerPart subConPart = (SubjobContainerPart) focusPart;
                 List subList = focusPart.getParent().getChildren();
                 for (int j = 0; j < subList.size(); j++) {
-                    subConPart = (SubjobContainerPart) subList.get(j);
-                    SubjobContainer subContainer = (SubjobContainer) subConPart.getModel();
-                    if (subContainer.isDisplayed() == false) {
-                        displayVa = false;
+                    if (subList.get(j) instanceof SubjobContainerPart) {
+                        subConPart = (SubjobContainerPart) subList.get(j);
+                        SubjobContainer subContainer = (SubjobContainer) subConPart.getModel();
+                        if (subContainer.isDisplayed() == false) {
+                            displayVa = false;
+                        }
+                    } else if (subList.get(j) instanceof NoteEditPart) {
+                        NoteEditPart notePart = (NoteEditPart) subList.get(j);
+                        return getNodePart((ProcessPart) notePart.getParent());
+                    } else if (subList.get(j) instanceof NodePart) {
+                        NodePart node = (NodePart) subList.get(j);
+                        return getNodePart((ProcessPart) node.getParent().getParent().getParent());
                     }
+
                 }
                 if (displayVa == false) {
                     return getNodePart((ProcessPart) focusPart.getParent());
@@ -102,6 +117,8 @@ public class NodePartKeyHander extends GraphicalViewerKeyHandler {
 
                 // return getNodePart((SubjobContainerPart) focusPart.getParent().getParent());
 
+            } else if (focusPart instanceof NoteEditPart) {
+                return getNodePart((ProcessPart) focusPart.getParent());
             }
 
             return focusPart.getParent().getChildren();
@@ -114,6 +131,9 @@ public class NodePartKeyHander extends GraphicalViewerKeyHandler {
     private List<EditPart> getNodePart(ProcessPart part) {
         List<EditPart> nodePartList = new ArrayList<EditPart>();
         for (EditPart child : (List<EditPart>) part.getChildren()) {
+            if (child instanceof NoteEditPart) {
+                nodePartList.add(child);
+            }
             for (EditPart c : (List<EditPart>) child.getChildren()) {
                 for (EditPart n : (List<EditPart>) c.getChildren()) {
                     if (n instanceof NodePart) {
@@ -184,92 +204,6 @@ public class NodePartKeyHander extends GraphicalViewerKeyHandler {
                 return true;
         }
         return super.keyPressed(event);
-        // return super.keyPressed(event);
     }
-
-    //
-    // @Override
-    // protected void navigateIntoContainer(KeyEvent event) {
-    // // TODO Auto-generated method stub
-    // super.navigateIntoContainer(event);
-    //
-    // GraphicalEditPart focus = getFocusEditPart();
-    // List childList = focus.getChildren();
-    // Point tl = focus.getContentPane().getBounds().getTopLeft();
-    // Rectangle childBounds = null;
-    // int minimum = Integer.MAX_VALUE;
-    // int current;
-    // GraphicalEditPart closestPart = null;
-    // NodePart part = null;
-    // for (int i = 0; i < childList.size(); i++) {
-    // System.out.println("NNNNNNNNNNNNN" + childList.get(i).getClass());// SubjobContainerPart
-    // SubjobContainerPart subPart = (SubjobContainerPart) childList.get(i);
-    // SubjobContainer subContainer = (SubjobContainer) subPart.getModel();
-    //
-    // if (!subPart.isSelectable())
-    // continue;
-    //
-    // boolean diaplay = subContainer.isDisplayed();
-    // if (diaplay == false) {
-    // List subjobList = subPart.getChildren();
-    //
-    // NodeContainerPart noteContain = (NodeContainerPart) subjobList.get(0);
-    // // childBounds = noteContain.getFigure().getBounds();
-    // List nodeList = noteContain.getChildren();
-    // part = (NodePart) nodeList.get(0);
-    // childBounds = part.getFigure().getBounds();
-    // } else {
-    // childBounds = subPart.getFigure().getBounds();
-    // }
-    // current = (childBounds.x - tl.x) + (childBounds.y - tl.y);
-    // if (current < minimum) {
-    // minimum = current;
-    // if (diaplay == false) {
-    // closestPart = part;
-    // } else {
-    // closestPart = subPart;
-    // }
-    // }
-    // }
-    // if (closestPart != null)
-    // navigateTo(closestPart, event);
-    //
-    // }
-    //
-    // @Override
-    // protected List getNavigationSiblings() {
-    // // TODO Auto-generated method stub
-    // // return super.getNavigationSiblings();
-    // NodePart part = null;
-    // boolean display = true;
-    // List list = new ArrayList();
-    // SubjobContainerPart subPart = null;
-    // EditPart focusPart = getFocusEditPart();
-    // List subList = focusPart.getParent().getChildren();
-    // for (int j = 0; j < subList.size(); j++) {
-    // System.out.println("GGGGGGGGGGGGG" + subList.get(j).getClass());// NodePart//SubjobContainerPart
-    // subPart = (SubjobContainerPart) subList.get(j);
-    // SubjobContainer subContainer = (SubjobContainer) subPart.getModel();
-    // if (subContainer.isDisplayed() == false) {
-    // display = false;
-    // }
-    // }
-    //
-    // if (display == false) {
-    // List nodejobList = focusPart.getChildren();
-    // for (int i = 0; i < nodejobList.size(); i++) {
-    // NodeContainerPart noteContain = (NodeContainerPart) nodejobList.get(i);
-    // List nodeList = noteContain.getChildren();
-    // part = (NodePart) nodeList.get(0);
-    // list.add(part);
-    // }
-    // } else {
-    // if (focusPart.getParent() != null)
-    // return focusPart.getParent().getChildren();
-    // list.add(focusPart);
-    // }
-    //
-    // return list;
-    // }
 
 }
