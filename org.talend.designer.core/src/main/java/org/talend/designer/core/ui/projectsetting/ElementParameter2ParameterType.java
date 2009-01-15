@@ -75,10 +75,26 @@ public class ElementParameter2ParameterType {
         return null;
     }
 
+    public static boolean isContains(ParametersType paType, String paramName) {
+        EList listParamType = paType.getElementParameter();
+        for (int j = 0; j < listParamType.size(); j++) {
+            ElementParameterType pType = (ElementParameterType) listParamType.get(j);
+            if (pType != null && paramName.equals(pType.getName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static void setParameterValue(ParametersType paType, String paramName, Object value) {
         if (value == null)
             return;
         EList listParamType = paType.getElementParameter();
+        if (!isContains(paType, paramName)) {
+            ElementParameterType etype = TalendFileFactory.eINSTANCE.createElementParameterType();
+            etype.setName(paramName);
+            listParamType.add(etype);
+        }
         for (int j = 0; j < listParamType.size(); j++) {
             ElementParameterType pType = (ElementParameterType) listParamType.get(j);
             if (pType != null && paramName.equals(pType.getName())) {
