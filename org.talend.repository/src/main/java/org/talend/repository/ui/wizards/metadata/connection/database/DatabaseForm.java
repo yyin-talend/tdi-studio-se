@@ -597,7 +597,7 @@ public class DatabaseForm extends AbstractForm {
                     isGeneralJDBC() ? generalJdbcPasswordText.getText() : passwordText.getText(), sidOrDatabaseText.getText(),
                     portText.getText(), fileField.getText(), datasourceText.getText(), isGeneralJDBC() ? "" : schemaText
                             .getText(), additionParamText.getText(), generalJdbcClassNameText.getText(), generalJdbcDriverjarText
-                            .getText(), oracleVersionEnable() ? dbVersionCombo.getText() : null);
+                            .getText(), oracleVersionEnable() || as400VersionEnable() ? dbVersionCombo.getText() : null);
 
             managerConnection.setDbRootPath(directoryField.getText());
 
