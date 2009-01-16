@@ -103,7 +103,7 @@ public enum EParameterName {
     FONT_BOLD("Bold"),
     FONT_ITALIC("Italic"),
     NOTE_LINECOLOR("Note Line Color"),
-
+    SCHEMAS("Schema(s)"),
     /**
      * For stats & logs parameters.
      */
@@ -113,6 +113,7 @@ public enum EParameterName {
     ON_CONSOLE_FLAG(Messages.getString("EParameterName.onConsoleFlag")), //$NON-NLS-1$
     ON_FILES_FLAG(Messages.getString("EParameterName.onFileFlag")), //$NON-NLS-1$
     FILE_PATH(Messages.getString("EParameterName.filePath")), //$NON-NLS-1$
+    FILENAME(Messages.getString("EParameterName.FileName")), //$NON-NLS-1$
     FILENAME_STATS(Messages.getString("EParameterName.fileNameStats")), //$NON-NLS-1$
     FILENAME_LOGS(Messages.getString("EParameterName.fileNameLogs")), //$NON-NLS-1$
     FILENAME_METTER(Messages.getString("EParameterName.MeterFileName")), //$NON-NLS-1$
@@ -142,6 +143,7 @@ public enum EParameterName {
     IMPLICIT_TCONTEXTLOAD(Messages.getString("EParameterName.ImplicitContextLoad")), //$NON-NLS-1$
     IMPLICIT_TCONTEXTLOAD_FILE(Messages.getString("EParameterName.FromFile")), //$NON-NLS-1$
     FIELDSEPARATOR(Messages.getString("EParameterName.FieldSeparator")),
+    ROWSEPARATOR(Messages.getString("EParameterName.RowSeparator")),
     FROM_FILE_FLAG(Messages.getString("EParameterName.fromFileFlag")), //$NON-NLS-1$
     FROM_DATABASE_FLAG(Messages.getString("EParameterName.fromDatabaseFlag")), //$NON-NLS-1$
     // implict tConextLoad parameters.

@@ -44,6 +44,7 @@ import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.views.CodeView;
+import org.talend.designer.core.ui.views.properties.ComponentSettings;
 
 /**
  * Command that will change the datas stored for an external node.
@@ -216,6 +217,7 @@ public class ExternalNodeChangeCommand extends Command {
         }
         ((Process) node.getProcess()).checkProcess();
         refreshCodeView();
+        ComponentSettings.switchToCurComponentSettingsView();
     }
 
     @Override

@@ -273,32 +273,36 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                     final INode node = (INode) element;
                     // List<IMetadataTable> tables = node.getMetadataList();
 
-                    if (isEBCDICNode(node)) { // ebcdic
-                        column.setLabelProvider(new IColumnLabelProvider() {
+                    // if (isEBCDICNode(node)) { // ebcdic
+                    column.setLabelProvider(new IColumnLabelProvider() {
 
-                            public String getLabel(Object bean) {
-                                if (bean instanceof Map) {
-                                    Map<String, Object> valueMap = (Map<String, Object>) bean;
-                                    String value = (String) valueMap.get(IEbcdicConstant.FIELD_SCHEMA);
-                                    if (value != null && !"".equals(value)) { //$NON-NLS-1$
-                                        IMetadataTable metadataTable = MetadataTool.getMetadataTableFromNode(node, value);
-                                        if (metadataTable != null) {
+                        public String getLabel(Object bean) {
+                            if (bean instanceof Map) {
+                                Map<String, Object> valueMap = (Map<String, Object>) bean;
+                                String value = (String) valueMap.get(IEbcdicConstant.FIELD_SCHEMA);
+                                if (value != null && !"".equals(value)) { //$NON-NLS-1$
+                                    IMetadataTable metadataTable = MetadataTool.getMetadataTableFromNode(node, value);
+                                    if (metadataTable != null) {
+                                        if (isEBCDICNode(node)) {
                                             if (isRepositorySchemaLine(node, valueMap)) {
                                                 return "Repository (" + metadataTable.getTableName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
                                             } else {
                                                 return "Built-In (" + metadataTable.getTableName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
                                             }
-                                        }else{
-                                            return value;
+                                        } else {
+                                            return metadataTable.getTableName();
                                         }
+                                    } else {
+                                        return value;
                                     }
                                 }
-                                return ""; //$NON-NLS-1$
                             }
-                        });
-                    } else {
-                        column.setLabelProvider(null);
-                    }
+                            return ""; //$NON-NLS-1$
+                        }
+                    });
+                    // } else {
+                    // column.setLabelProvider(null);
+                    // }
                     SchemaCellEditor schemaEditor = new SchemaCellEditor(table, node);
                     schemaEditor.setTableEditorView(this);
                     column.setCellEditor(schemaEditor);
