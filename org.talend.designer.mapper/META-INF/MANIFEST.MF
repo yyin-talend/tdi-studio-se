@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.talend.designer.mapper;singleton:=true
 Bundle-Version: 2.2.0.qualifier
 Bundle-Activator: org.talend.designer.mapper.Activator
 Bundle-Localization: plugin
-Require-Bundle: org.talend.libraries.logging,
+Require-Bundle: org.apache.log4j;bundle-version="1.2.13",
  org.eclipse.ui,
  org.eclipse.core.runtime,
  org.talend.libraries,

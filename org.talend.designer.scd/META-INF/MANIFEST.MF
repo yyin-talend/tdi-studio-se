@@ -7,8 +7,7 @@ Bundle-Localization: plugin
 Bundle-ClassPath: .
 Bundle-Vendor: .Talend SA.
 Bundle-Activator: org.talend.designer.scd.ScdPlugin
-Require-Bundle: org.talend.libraries.logging,
- org.eclipse.ui,
+Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.talend.libraries,
  org.talend.commons,
@@ -19,5 +18,6 @@ Require-Bundle: org.talend.libraries.logging,
  org.talend.commons.ui,
  org.eclipse.help,
  org.eclipse.help.ui,
- org.eclipse.ui.forms
+ org.eclipse.ui.forms,
+ org.apache.log4j;bundle-version="1.2.13"
 Eclipse-LazyStart: true
