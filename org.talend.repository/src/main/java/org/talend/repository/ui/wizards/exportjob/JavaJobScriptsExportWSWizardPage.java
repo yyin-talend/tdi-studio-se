@@ -269,17 +269,45 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             dialog.setFilterExtensions(new String[] { "*.zip", "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
         }
         dialog.setText(""); //$NON-NLS-1$
-        dialog.setFileName(getDefaultFileName());
+        // this is changed by me shenhaize
+        dialog.setFileName((String) this.getDefaultFileName().get(0));
         String currentSourceString = getDestinationValue();
         int lastSeparatorIndex = currentSourceString.lastIndexOf(File.separator);
         if (lastSeparatorIndex != -1) {
             dialog.setFilterPath(currentSourceString.substring(0, lastSeparatorIndex));
         }
-        String selectedFileName = dialog.open();
 
+        String selectedFileName = dialog.open();
+        // when user change the name of job,will add the version auto
+        if (!selectedFileName.endsWith(this.getSelectedJobVersion() + this.getOutputSuffix())) {
+            // String b = selectedFileName.substring(0, (selectedFileName.length() - 4));
+            // if (this.getSelectedJobVersion() != null) O{
+            // selectedFileName = b + this.getSelectedJobVersion() + this.getOutputSuffix();
+            // } else {
+            //
+            // // String version = processItem.getProperty().getVersion();
+            // selectedFileName = b + this.getOutputSuffix();
+            //
+            // }
+
+            String b = selectedFileName.substring(0, (selectedFileName.length() - 4));
+            File file = new File(b);
+
+            String str = file.getName();
+
+            String s = (String) this.getDefaultFileName().get(0);
+
+            if (str.equals(s)) {
+                selectedFileName = b + "_" + this.getDefaultFileName().get(1) + this.getOutputSuffix();
+            } else {
+                selectedFileName = b + this.getOutputSuffix();
+            }
+
+        }
         if (selectedFileName != null) {
             setErrorMessage(null);
             setDestinationValue(selectedFileName);
+
         }
     }
 
@@ -300,6 +328,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                 for (int i = 0; i < directoryNames.length; i++) {
                     if (directoryNames[i].toLowerCase().endsWith(filterName)) {
                         addDestinationItem(directoryNames[i]);
+
                     }
                 }
             }

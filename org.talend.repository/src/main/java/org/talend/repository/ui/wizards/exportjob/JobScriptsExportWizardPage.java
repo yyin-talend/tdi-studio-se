@@ -112,7 +112,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     private boolean isMultiNodes;
 
-    private String allVersions = "All";
+    private String allVersions = "all";
 
     private String outputFileSuffix = ".zip";
 
@@ -129,7 +129,6 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      */
     public JobScriptsExportWizardPage(String name, IStructuredSelection selection) {
         super(name, null);
-
         manager = createJobScriptsManager();
 
         nodes = (RepositoryNode[]) selection.toList().toArray(new RepositoryNode[selection.size()]);
@@ -202,9 +201,12 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         IPath path = new Path(userDir);
         int length = nodes.length;
         if (length == 1) {
-            path = path.append(getDefaultFileName() + getOutputSuffix());
+            // TODOthis is changed by shenhaize first open ,it show contains in the combo
+
+            path = path.append(this.getDefaultFileName().get(0) + "_" + this.getDefaultFileName().get(1) + getOutputSuffix());
         } else if (length > 1) {
-            path = path.append(this.allVersions + this.outputFileSuffix);
+            // i changed here ..
+            path = path.append(this.getDefaultFileName().get(0) + "_" + this.getDefaultFileName().get(1) + this.outputFileSuffix);
         }
         setDestinationValue(path.toOSString());
     }
@@ -212,10 +214,33 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     /**
      * yzhang Comment method "getDefaultFileName".
      */
-    protected String getDefaultFileName() {
+    // protected String getDefaultFileVersion() {
+    // if (nodes.length >= 1) {
+    // String label = null;
+    // String version = null;
+    // RepositoryNode node = nodes[0];
+    // if (node.getType() == ENodeType.SYSTEM_FOLDER || node.getType() == ENodeType.SIMPLE_FOLDER) {
+    // label = node.getProperties(EProperties.LABEL).toString();
+    // } else if (node.getType() == ENodeType.REPOSITORY_ELEMENT) {
+    // IRepositoryObject repositoryObject = node.getObject();
+    // if (repositoryObject.getProperty().getItem() instanceof ProcessItem) {
+    // ProcessItem processItem = (ProcessItem) repositoryObject.getProperty().getItem();
+    // label = processItem.getProperty().getLabel();
+    // System.out.println(label);
+    // version = processItem.getProperty().getVersion();
+    // }
+    // }
+    //
+    // return label;
+    // }
+    // return "";
+    //
+    // }
+    protected List getDefaultFileName() {
+        List list = null;
         if (nodes.length >= 1) {
             String label = null;
-            // String version = null;
+            String version = null;
             RepositoryNode node = nodes[0];
             if (node.getType() == ENodeType.SYSTEM_FOLDER || node.getType() == ENodeType.SIMPLE_FOLDER) {
                 label = node.getProperties(EProperties.LABEL).toString();
@@ -224,14 +249,17 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                 if (repositoryObject.getProperty().getItem() instanceof ProcessItem) {
                     ProcessItem processItem = (ProcessItem) repositoryObject.getProperty().getItem();
                     label = processItem.getProperty().getLabel();
-                    // version = processItem.getProperty().getVersion();
+                    version = processItem.getProperty().getVersion();
+                    list = new ArrayList();
+                    list.add(label);
+                    list.add(version);
                 }
             }
 
-            return label;
-            // + "_" + version;
+            // return label;
+            return list;
         }
-        return "";
+        return null;
 
     }
 
@@ -742,7 +770,6 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         if (regexMatcher.find()) {
             subjectString = regexMatcher.group(0);
         }
-
         return subjectString.trim();
     }
 
@@ -802,7 +829,6 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     protected String getDestinationValue() {
         String idealSuffix = getOutputSuffix();
         String destinationText = super.getDestinationValue();
-
         // only append a suffix if the destination doesn't already have a . in
         // its last path segment.
         // Also prevent the user from selecting a directory. Allowing this will
@@ -819,8 +845,16 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                 destinationText += idealSuffix;
             }
         }
-
+        // this is the entrance to the answer .. shenhaize.
+        // System.out.println(destinationText);
+        // String b = destinationText.substring(0, (destinationText.length() - 4));
+        // return (b + destinationText.subSequence((destinationText.length() - 4), destinationText.length()));
+        // System.out.println(destinationText + "  " + idealSuffix);
+        if (destinationText.endsWith(this.getSelectedJobVersion() + this.getOutputSuffix())) {
+            return destinationText;
+        }
         return destinationText;
+
     }
 
     /**
@@ -839,14 +873,13 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         FileDialog dialog = new FileDialog(getContainer().getShell(), SWT.SAVE);
         dialog.setFilterExtensions(new String[] { "*.zip", "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
         dialog.setText(""); //$NON-NLS-1$
-        dialog.setFileName(getDefaultFileName());
+        dialog.setFileName((String) this.getDefaultFileName().get(0));
         String currentSourceString = getDestinationValue();
         int lastSeparatorIndex = currentSourceString.lastIndexOf(File.separator);
         if (lastSeparatorIndex != -1) {
             dialog.setFilterPath(currentSourceString.substring(0, lastSeparatorIndex));
         }
         String selectedFileName = dialog.open();
-
         if (selectedFileName != null) {
             setErrorMessage(null);
             setDestinationValue(selectedFileName);
