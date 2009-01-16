@@ -7,6 +7,7 @@
         org.talend.core.model.metadata.IMetadataColumn 
         org.talend.core.model.process.IConnection
         org.talend.core.model.process.IConnectionCategory
+        org.talend.core.model.process.IContextParameter
 		java.util.List
 		java.util.Enumeration
 	"
@@ -14,6 +15,7 @@
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
+	List<IContextParameter> params = node.getProcess().getContextManager().getDefaultContext().getContextParameterList();
 	boolean hidePassword = ElementParameterParser.getValue(node,"__HIDE_PASSWORD__").equals("true");
 	String cid = node.getUniqueName();
     List<IMetadataColumn> columnList = null;
@@ -37,11 +39,19 @@
             for(IConnection outgoingConn : outgoingConns) {
                 if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
                     %>
-                    <%if(hidePassword == true){%>
+                    <%if(hidePassword){%>
 		                <%=outgoingConn.getName()%>.<%=columnList.get(0).getLabel()%> = key_<%=cid %>.toString();
-                    	if(key_<%=cid %>.toString().equals("password")){
-		                    <%=outgoingConn.getName()%>.<%=columnList.get(1).getLabel()%> = value_<%=cid %>.toString().replaceAll(".","*");
-	                    }
+                   		<%=outgoingConn.getName()%>.<%=columnList.get(1).getLabel()%> = value_<%=cid %>.toString();
+		                <%for (IContextParameter param :params){
+	                    	if(param.getType().equals("id_Password")){
+	                    		String str = param.getName(); 
+	                    %>
+								if(key_<%=cid %>.toString().equals("<%=str%>")){
+			                    	<%=outgoingConn.getName()%>.<%=columnList.get(1).getLabel()%> = value_<%=cid %>.toString().replaceAll(".","*");
+			                    }
+		                    <%}%>
+		                  <%
+		                  }%>
                     <%}else{%>
                     	<%=outgoingConn.getName()%>.<%=columnList.get(0).getLabel()%> = key_<%=cid %>.toString();
                     	<%=outgoingConn.getName()%>.<%=columnList.get(1).getLabel()%> = value_<%=cid %>.toString();
