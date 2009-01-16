@@ -78,7 +78,6 @@ import org.eclipse.gef.ui.palette.FlyoutPaletteComposite.FlyoutPreferences;
 import org.eclipse.gef.ui.parts.ContentOutlinePage;
 import org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette;
 import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer;
-import org.eclipse.gef.ui.parts.SelectionSynchronizer;
 import org.eclipse.gef.ui.parts.TreeViewer;
 import org.eclipse.gef.ui.rulers.RulerComposite;
 import org.eclipse.jface.action.Action;
@@ -2019,7 +2018,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         }
 
         protected void hookOutlineViewer() {
-            getSelectionSynchronizer().addViewer(getViewer());
+            // getSelectionSynchronizer().addViewer(getViewer());
         }
 
         protected void initializeOutlineViewer() {
@@ -2072,34 +2071,10 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         }
 
         protected void unhookOutlineViewer() {
-            getSelectionSynchronizer().removeViewer(getViewer());
+            // getSelectionSynchronizer().removeViewer(getViewer());
             if (disposeListener != null && getEditor() != null && !getEditor().isDisposed()) {
                 getEditor().removeDisposeListener(disposeListener);
             }
         }
     }
-
-    private SelectionSynchronizer synchronizer;
-
-    @Override
-    protected SelectionSynchronizer getSelectionSynchronizer() {
-        if (synchronizer == null)
-            synchronizer = new SelectionSynchronizer() {
-
-                @Override
-                protected EditPart convert(EditPartViewer viewer, EditPart part) {
-                    EditPart editPart = super.convert(viewer, part);
-                    if (editPart == null) {
-                        // maybe, not good, should be only for outline.
-                        editPart = super.convert(viewer, part.getParent());
-                    }
-                    return editPart;
-                }
-
-            };
-
-        return synchronizer;
-
-    }
-
 }
