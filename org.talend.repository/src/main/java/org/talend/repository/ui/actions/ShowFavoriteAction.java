@@ -25,7 +25,7 @@ public class ShowFavoriteAction extends Action {
 
     private static ShowFavoriteAction showFavorite = null;
 
-    public static boolean state = false;
+    public static boolean state = true;
 
     private ShowFavoriteAction() {
         super(PaletteMessages.FAVORITE_LABEL);

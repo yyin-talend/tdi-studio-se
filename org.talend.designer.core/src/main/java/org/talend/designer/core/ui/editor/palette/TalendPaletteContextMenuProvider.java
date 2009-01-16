@@ -46,7 +46,7 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
      * 
      * @param palette
      */
-    // public static boolean state = true;
+
     public TalendPaletteContextMenuProvider(PaletteViewer palette) {
         super(palette);
     }
@@ -64,6 +64,8 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
         } else {
             menu.appendToGroup(GEFActionConstants.GROUP_COPY, new RemoveFavoriteComponentAction(getPaletteViewer()));
         }
+        menu.appendToGroup(GEFActionConstants.GROUP_COPY, new HiddenFloderAction(getPaletteViewer()));
+        menu.appendToGroup(GEFActionConstants.GROUP_COPY, new DisplayFloderAction(getPaletteViewer()));
     }
 
     class SearchComponentAction extends Action {
@@ -174,6 +176,62 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
             ComponentUtilities.updatePalette(true);
         }
 
+    }
+
+    class HiddenFloderAction extends Action {
+
+        private Shell shell;
+
+        private PaletteViewer paletteViewer;
+
+        /**
+         * DOC hcw SearchComponentAction constructor comment.
+         * 
+         * @param paletteViewer
+         */
+        public HiddenFloderAction(PaletteViewer paletteViewer) {
+            this.paletteViewer = paletteViewer;
+            shell = paletteViewer.getControl().getShell();
+            setText("Hidden Floder");
+            setToolTipText("Hidden Floder");
+            setDescription("Hidden Floder");
+        }
+
+        @Override
+        public void run() {
+            ComponentUtilities.histate = 1;
+            DesignerPlugin.getDefault().getPreferenceStore().setValue("HiddenState", 1);
+            ComponentUtilities.updatePalette(!ShowFavoriteAction.state);
+
+        }
+    }
+
+    class DisplayFloderAction extends Action {
+
+        private Shell shell;
+
+        private PaletteViewer paletteViewer;
+
+        /**
+         * DOC hcw SearchComponentAction constructor comment.
+         * 
+         * @param paletteViewer
+         */
+        public DisplayFloderAction(PaletteViewer paletteViewer) {
+            this.paletteViewer = paletteViewer;
+            shell = paletteViewer.getControl().getShell();
+            setText("Display Floder");
+            setToolTipText("Display Floder");
+            setDescription("Display Floder");
+        }
+
+        @Override
+        public void run() {
+            ComponentUtilities.histate = 0;
+            DesignerPlugin.getDefault().getPreferenceStore().setValue("HiddenState", 0);
+            ComponentUtilities.updatePalette(!ShowFavoriteAction.state);
+
+        }
     }
 
     public void addNotes(PaletteEntry element, Project project) {
