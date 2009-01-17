@@ -246,7 +246,7 @@
       NUM_ROW="5"
       SHOW_IF="USE_EXISTING_CLT_FILE == 'true'"
     >
-      <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/sqlldr.clt"</DEFAULT>
+      <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/sqlldr.ctl"</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
