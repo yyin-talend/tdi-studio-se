@@ -20,18 +20,18 @@ package org.talend.designer.codegen.config;
  */
 public class TemplateUtil {
 
-    public static final String RESOURCES_DIRECTORY = "resources";
+    public static final String RESOURCES_DIRECTORY = "resources"; //$NON-NLS-1$
 
     // TODO SML Replace by File.separator
-    public static final String DIR_SEP = "/";
+    public static final String DIR_SEP = "/"; //$NON-NLS-1$
 
-    public static final String EXT_SEP = ".";
+    public static final String EXT_SEP = "."; //$NON-NLS-1$
 
-    public static final String TEMPLATE_EXT = "jet";
+    public static final String TEMPLATE_EXT = "jet"; //$NON-NLS-1$
 
-    private String resourceName = "";
+    private String resourceName = ""; //$NON-NLS-1$
 
-    private String version = "";
+    private String version = ""; //$NON-NLS-1$
 
     /**
      * Constructor.

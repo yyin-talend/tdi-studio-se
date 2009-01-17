@@ -31,7 +31,7 @@ import org.talend.repository.model.IRepositoryService;
 public class CodeGeneratorActivator extends AbstractUIPlugin {
 
     // The plug-in ID
-    public static final String PLUGIN_ID = "org.talend.designer.codegen";
+    public static final String PLUGIN_ID = "org.talend.designer.codegen"; //$NON-NLS-1$
 
     // The shared instance
     private static CodeGeneratorActivator plugin;

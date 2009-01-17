@@ -49,7 +49,7 @@ public final class EmfEmittersPersistenceFactory {
             final IProject project = getJetProject();
             IFile iFile = null;
             if (project != null) {
-                iFile = project.getFile("JetPersistence" + language);
+                iFile = project.getFile("JetPersistence" + language); //$NON-NLS-1$
             }
             File file = iFile.getLocation().toFile();
 
@@ -72,10 +72,10 @@ public final class EmfEmittersPersistenceFactory {
             IProgressMonitor progressMonitor = new SubProgressMonitor(monitor, 1);
 
             IWorkspace workspace = ResourcesPlugin.getWorkspace();
-            project = workspace.getRoot().getProject(".JETEmitters");
+            project = workspace.getRoot().getProject(".JETEmitters"); //$NON-NLS-1$
             if (!project.exists()) {
                 project.create(new SubProgressMonitor(progressMonitor, 1));
-                progressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_JETCreatingProject_message",
+                progressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_JETCreatingProject_message", //$NON-NLS-1$
                         new Object[] { project.getName() }));
                 IProjectDescription description = workspace.newProjectDescription(project.getName());
                 description.setNatureIds(new String[] { JavaCore.NATURE_ID });

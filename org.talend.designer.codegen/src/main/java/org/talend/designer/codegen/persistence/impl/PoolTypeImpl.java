@@ -9,6 +9,7 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
+import org.talend.designer.codegen.i18n.Messages;
 import org.talend.designer.codegen.persistence.EmittersPoolPackage;
 import org.talend.designer.codegen.persistence.PoolType;
 
@@ -150,7 +151,7 @@ public class PoolTypeImpl extends EObjectImpl implements PoolType {
             return super.toString();
 
         StringBuffer result = new StringBuffer(super.toString());
-        result.append(" (persistentPool: ");
+        result.append(Messages.getString("PoolTypeImpl.persistentPool")); //$NON-NLS-1$
         result.append(persistentPool);
         result.append(')');
         return result.toString();

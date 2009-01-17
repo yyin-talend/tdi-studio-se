@@ -55,8 +55,8 @@ public class JavaSQLPatternSynchronizer extends AbstractSQLPatternSynchronizer {
             Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
                     .getProject();
             initSQLPatternFolder(javaProject, item);
-            IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/" + JavaUtils.JAVA_SQLPATTERNS_DIRECTORY
-                    + "/" + item.getEltName() + "/" + JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY + "/"
+            IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/" + JavaUtils.JAVA_SQLPATTERNS_DIRECTORY //$NON-NLS-1$
+                    + "/" + item.getEltName() + "/" + JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY + "/" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                     + item.getProperty().getLabel() + JavaUtils.JAVA_SQLPATTERN_EXTENSION);
             return file;
         } catch (CoreException e) {
@@ -65,7 +65,7 @@ public class JavaSQLPatternSynchronizer extends AbstractSQLPatternSynchronizer {
     }
 
     private void initSQLPatternFolder(IProject javaProject, SQLPatternItem item) throws CoreException {
-        IPath path = new Path(JavaUtils.JAVA_SRC_DIRECTORY + "/" + JavaUtils.JAVA_SQLPATTERNS_DIRECTORY);
+        IPath path = new Path(JavaUtils.JAVA_SRC_DIRECTORY + "/" + JavaUtils.JAVA_SQLPATTERNS_DIRECTORY); //$NON-NLS-1$
         IFolder rep = javaProject.getFolder(path);
         if (!rep.exists()) {
             rep.create(true, true, null);

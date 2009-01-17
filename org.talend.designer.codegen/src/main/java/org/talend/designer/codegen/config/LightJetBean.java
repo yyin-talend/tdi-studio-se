@@ -24,15 +24,15 @@ public class LightJetBean implements Serializable {
 
     private static final long serialVersionUID = 2549445027941196550L;
 
-    private String templateRelativeUri = "";
+    private String templateRelativeUri = ""; //$NON-NLS-1$
 
-    private String className = "";
+    private String className = ""; //$NON-NLS-1$
 
-    private String methodName = "";
+    private String methodName = ""; //$NON-NLS-1$
 
-    private String version = "";
+    private String version = ""; //$NON-NLS-1$
 
-    private String language = "";
+    private String language = ""; //$NON-NLS-1$
 
     private long crc = 0;
 

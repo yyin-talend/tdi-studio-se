@@ -31,21 +31,21 @@ public interface EmittersPoolPackage extends EPackage {
      * 
      * @generated
      */
-    String eNAME = "org.talend.designer.codegen.persistence";
+    String eNAME = "org.talend.designer.codegen.persistence"; //$NON-NLS-1$
 
     /**
      * The package namespace URI. <!-- begin-user-doc --> <!-- end-user-doc -->
      * 
      * @generated
      */
-    String eNS_URI = "platform:/resource/org.talend.designer.codegen/src/main/java/org/talend/designer/codegen/utils/emf/EmittersPool.xsd";
+    String eNS_URI = "platform:/resource/org.talend.designer.codegen/src/main/java/org/talend/designer/codegen/utils/emf/EmittersPool.xsd"; //$NON-NLS-1$
 
     /**
      * The package namespace name. <!-- begin-user-doc --> <!-- end-user-doc -->
      * 
      * @generated
      */
-    String eNS_PREFIX = "EmittersPool";
+    String eNS_PREFIX = "EmittersPool"; //$NON-NLS-1$
 
     /**
      * The singleton instance of the package. <!-- begin-user-doc --> <!-- end-user-doc -->

@@ -27,7 +27,7 @@ public class RefreshTemplatesAction extends Action {
 
     public RefreshTemplatesAction() {
         super();
-        this.setActionDefinitionId("refreshTemplates");
+        this.setActionDefinitionId("refreshTemplates"); //$NON-NLS-1$
     }
 
     /*

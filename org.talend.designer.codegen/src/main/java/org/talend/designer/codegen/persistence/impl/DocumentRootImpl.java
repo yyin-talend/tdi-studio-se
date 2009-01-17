@@ -17,6 +17,7 @@ import org.eclipse.emf.ecore.util.BasicFeatureMap;
 import org.eclipse.emf.ecore.util.EcoreEMap;
 import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.InternalEList;
+import org.talend.designer.codegen.i18n.Messages;
 import org.talend.designer.codegen.persistence.DocumentRoot;
 import org.talend.designer.codegen.persistence.EmittersPoolPackage;
 import org.talend.designer.codegen.persistence.PoolType;
@@ -273,7 +274,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
             return super.toString();
 
         StringBuffer result = new StringBuffer(super.toString());
-        result.append(" (mixed: ");
+        result.append(Messages.getString("DocumentRootImpl.mixed")); //$NON-NLS-1$
         result.append(mixed);
         result.append(')');
         return result.toString();

@@ -38,7 +38,7 @@ public class JetBean {
 
     private ClassLoader loader = null;
 
-    private String className = "";
+    private String className = ""; //$NON-NLS-1$
 
     private Method method = null;
 
@@ -48,7 +48,7 @@ public class JetBean {
 
     private String codePart = null;
 
-    private String family = "common";
+    private String family = "common"; //$NON-NLS-1$
 
     private long crc = 0;
 
@@ -90,9 +90,9 @@ public class JetBean {
         this.jetPluginRepository = jetPluginRepository;
         this.templateRelativeUri = templateRelativeUri;
         this.version = version;
-        String tmpClassName = "";
-        if (className.lastIndexOf(".") > -1) {
-            tmpClassName = className.substring(className.lastIndexOf("."));
+        String tmpClassName = ""; //$NON-NLS-1$
+        if (className.lastIndexOf(".") > -1) { //$NON-NLS-1$
+            tmpClassName = className.substring(className.lastIndexOf(".")); //$NON-NLS-1$
         } else {
             tmpClassName = className;
         }
@@ -101,7 +101,7 @@ public class JetBean {
         if ((codePart != null) && (codePart.length() != 0)) {
             this.codePart = StringUtils.capitalize(codePart);
         } else {
-            this.codePart = "";
+            this.codePart = ""; //$NON-NLS-1$
         }
     }
 
@@ -204,7 +204,7 @@ public class JetBean {
      * @return
      */
     private String getUri(String pluginId, String relativeUri) {
-        String base = Platform.getBundle(pluginId).getEntry("/").toString();
+        String base = Platform.getBundle(pluginId).getEntry("/").toString(); //$NON-NLS-1$
         String result = base + relativeUri;
         return result;
     }

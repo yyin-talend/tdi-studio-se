@@ -82,7 +82,7 @@ public class NodesTree {
     public void buildRootNodes(IProcess process) {
         rootNodes = new ArrayList<INode>();
 
-        List<INode> preJobsNode = (List<INode>) process.getNodesOfType("tPrejob");
+        List<INode> preJobsNode = (List<INode>) process.getNodesOfType("tPrejob"); //$NON-NLS-1$
         for (INode node : preJobsNode) {
             if (node.isActivate()) {
                 rootNodes.add(node);
@@ -91,13 +91,13 @@ public class NodesTree {
 
         for (INode node : nodes) {
             String componentName = node.getComponent().getName();
-            if ((node.isStart()) && (node.isActivate()) && (!componentName.equals("tPrejob"))
-                    && (!componentName.equals("tPostjob"))) {
+            if ((node.isStart()) && (node.isActivate()) && (!componentName.equals("tPrejob")) //$NON-NLS-1$
+                    && (!componentName.equals("tPostjob"))) { //$NON-NLS-1$
                 rootNodes.add(node);
             }
         }
 
-        List<INode> postJobsNode = (List<INode>) process.getNodesOfType("tPostjob");
+        List<INode> postJobsNode = (List<INode>) process.getNodesOfType("tPostjob"); //$NON-NLS-1$
         for (INode node : postJobsNode) {
             if (node.isActivate()) {
                 rootNodes.add(node);

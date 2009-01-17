@@ -49,7 +49,7 @@ public class JetProxy {
     public String generate() throws CoreException, JETException {
         JETEmitter emitter = CodeGeneratorEmittersPoolFactory.getJETEmitter(jetBean);
         IProgressMonitor sub = new SubProgressMonitor(monitor, 1);
-        String result = "";
+        String result = ""; //$NON-NLS-1$
         if (emitter != null) {
             result = emitter.generate(sub, new Object[] { jetBean.getArgument() });
             sub.worked(1);

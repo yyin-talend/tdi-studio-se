@@ -236,22 +236,22 @@ public class EmittersPoolPackageImpl extends EPackageImpl implements EmittersPoo
         // Add supertypes to classes
 
         // Initialize classes and features; add operations and parameters
-        initEClass(documentRootEClass, DocumentRoot.class, "DocumentRoot", !IS_ABSTRACT, !IS_INTERFACE,
+        initEClass(documentRootEClass, DocumentRoot.class, "DocumentRoot", !IS_ABSTRACT, !IS_INTERFACE, //$NON-NLS-1$
                 IS_GENERATED_INSTANCE_CLASS);
-        initEAttribute(getDocumentRoot_Mixed(), ecorePackage.getEFeatureMapEntry(), "mixed", null, 0, -1, null,
+        initEAttribute(getDocumentRoot_Mixed(), ecorePackage.getEFeatureMapEntry(), "mixed", null, 0, -1, null, //$NON-NLS-1$
                 !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEReference(getDocumentRoot_XMLNSPrefixMap(), ecorePackage.getEStringToStringMapEntry(), null,
-                "xMLNSPrefixMap", null, 0, -1, null, IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
+                "xMLNSPrefixMap", null, 0, -1, null, IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, //$NON-NLS-1$
                 !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEReference(getDocumentRoot_XSISchemaLocation(), ecorePackage.getEStringToStringMapEntry(), null,
-                "xSISchemaLocation", null, 0, -1, null, IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
+                "xSISchemaLocation", null, 0, -1, null, IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, //$NON-NLS-1$
                 !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEReference(getDocumentRoot_Pool(), this.getPoolType(), null, "pool", null, 0, -2, null, IS_TRANSIENT,
+        initEReference(getDocumentRoot_Pool(), this.getPoolType(), null, "pool", null, 0, -2, null, IS_TRANSIENT, //$NON-NLS-1$
                 IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED,
                 IS_ORDERED);
 
-        initEClass(poolTypeEClass, PoolType.class, "PoolType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-        initEAttribute(getPoolType_PersistentPool(), theXMLTypePackage.getBase64Binary(), "persistentPool", null, 1, 1,
+        initEClass(poolTypeEClass, PoolType.class, "PoolType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS); //$NON-NLS-1$
+        initEAttribute(getPoolType_PersistentPool(), theXMLTypePackage.getBase64Binary(), "persistentPool", null, 1, 1, //$NON-NLS-1$
                 PoolType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE,
                 !IS_DERIVED, IS_ORDERED);
 
@@ -270,19 +270,19 @@ public class EmittersPoolPackageImpl extends EPackageImpl implements EmittersPoo
      * @generated
      */
     protected void createExtendedMetaDataAnnotations() {
-        String source = "http:///org/eclipse/emf/ecore/util/ExtendedMetaData";
-        addAnnotation(this, source, new String[] { "qualified", "false" });
-        addAnnotation(documentRootEClass, source, new String[] { "name", "", "kind", "mixed" });
-        addAnnotation(getDocumentRoot_Mixed(), source, new String[] { "kind", "elementWildcard", "name", ":mixed" });
-        addAnnotation(getDocumentRoot_XMLNSPrefixMap(), source, new String[] { "kind", "attribute", "name",
-                "xmlns:prefix" });
-        addAnnotation(getDocumentRoot_XSISchemaLocation(), source, new String[] { "kind", "attribute", "name",
-                "xsi:schemaLocation" });
-        addAnnotation(getDocumentRoot_Pool(), source, new String[] { "kind", "element", "name", "Pool", "namespace",
-                "##targetNamespace" });
-        addAnnotation(poolTypeEClass, source, new String[] { "name", "Pool_._type", "kind", "elementOnly" });
-        addAnnotation(getPoolType_PersistentPool(), source, new String[] { "kind", "element", "name", "PersistentPool",
-                "namespace", "##targetNamespace" });
+        String source = "http:///org/eclipse/emf/ecore/util/ExtendedMetaData"; //$NON-NLS-1$
+        addAnnotation(this, source, new String[] { "qualified", "false" }); //$NON-NLS-1$ //$NON-NLS-2$
+        addAnnotation(documentRootEClass, source, new String[] { "name", "", "kind", "mixed" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        addAnnotation(getDocumentRoot_Mixed(), source, new String[] { "kind", "elementWildcard", "name", ":mixed" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        addAnnotation(getDocumentRoot_XMLNSPrefixMap(), source, new String[] { "kind", "attribute", "name", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                "xmlns:prefix" }); //$NON-NLS-1$
+        addAnnotation(getDocumentRoot_XSISchemaLocation(), source, new String[] { "kind", "attribute", "name", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                "xsi:schemaLocation" }); //$NON-NLS-1$
+        addAnnotation(getDocumentRoot_Pool(), source, new String[] { "kind", "element", "name", "Pool", "namespace", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+                "##targetNamespace" }); //$NON-NLS-1$
+        addAnnotation(poolTypeEClass, source, new String[] { "name", "Pool_._type", "kind", "elementOnly" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        addAnnotation(getPoolType_PersistentPool(), source, new String[] { "kind", "element", "name", "PersistentPool", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                "namespace", "##targetNamespace" }); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
 } // EmittersPoolPackageImpl

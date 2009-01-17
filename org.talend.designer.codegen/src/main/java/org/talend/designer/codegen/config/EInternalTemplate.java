@@ -19,21 +19,21 @@ package org.talend.designer.codegen.config;
  * 
  */
 public enum EInternalTemplate {
-    HEADER("header", "0.0.1"),
-    FOOTER("footer", "0.0.1"),
-    CONTEXT("context", "0.0.1"),
-    SUBPROCESS_HEADER("subprocess_header", "0.0.1"),
-    SUBPROCESS_FOOTER("subprocess_footer", "0.0.1"),
-    SUBTREE_BEGIN("subtree_begin", "0.0.1"),
-    SUBTREE_END("subtree_end", "0.0.1"),
-    CLOSE_BLOCKS_CODE("close_blocks_code", "0.0.1"),
-    PART_HEADER("component_part_header", "0.0.1"),
-    PART_FOOTER("component_part_footer", "0.0.1"),
-    PART_ENDMAIN("component_part_endmain", "0.0.1"),
-    PROCESSINFO("footer_process_info", "0.0.1"),
-    ITERATE_SUBPROCESS_HEADER("iterate_subprocess_header", "0.0.1"),
-    ITERATE_SUBPROCESS_FOOTER("iterate_subprocess_footer", "0.0.1"),
-    DEFAULT_TEMPLATE("default_template", "0.0.1");
+    HEADER("header", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
+    FOOTER("footer", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
+    CONTEXT("context", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
+    SUBPROCESS_HEADER("subprocess_header", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
+    SUBPROCESS_FOOTER("subprocess_footer", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
+    SUBTREE_BEGIN("subtree_begin", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
+    SUBTREE_END("subtree_end", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
+    CLOSE_BLOCKS_CODE("close_blocks_code", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
+    PART_HEADER("component_part_header", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
+    PART_FOOTER("component_part_footer", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
+    PART_ENDMAIN("component_part_endmain", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
+    PROCESSINFO("footer_process_info", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
+    ITERATE_SUBPROCESS_HEADER("iterate_subprocess_header", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
+    ITERATE_SUBPROCESS_FOOTER("iterate_subprocess_footer", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
+    DEFAULT_TEMPLATE("default_template", "0.0.1"); //$NON-NLS-1$ //$NON-NLS-2$
 
     private String templateName;
 

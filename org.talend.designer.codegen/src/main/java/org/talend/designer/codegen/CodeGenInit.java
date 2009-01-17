@@ -39,6 +39,7 @@ import org.talend.core.model.components.ComponentCompilations;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.User;
+import org.talend.designer.codegen.i18n.Messages;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryFactoryProvider;
 
@@ -48,32 +49,32 @@ public class CodeGenInit implements IApplication {
     ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
 
     public Object start(IApplicationContext context) throws Exception {
-        Timer.getTimer("CodeGenInit").start();
+        Timer.getTimer("CodeGenInit").start(); //$NON-NLS-1$
         initLocalRepository();
         init(ECodeLanguage.JAVA);
         init(ECodeLanguage.PERL);
         removeLinkedResources();
         addMarkersForTemplatesNextInitialization();
         saveWorkspace();
-        Timer.getTimer("CodeGenInit").stop();
-        Timer.getTimer("CodeGenInit").print();
+        Timer.getTimer("CodeGenInit").stop(); //$NON-NLS-1$
+        Timer.getTimer("CodeGenInit").print(); //$NON-NLS-1$
         return EXIT_OK;
     }
 
     private void addMarkersForTemplatesNextInitialization() {
-        info("Adding markers to workspace");
+        info(Messages.getString("CodeGenInit.addMarkers")); //$NON-NLS-1$
         ComponentCompilations.addMarkers();
     }
 
     private void saveWorkspace() throws CoreException {
-        info("Saving workspace");
+        info(Messages.getString("CodeGenInit.saveWorkspace")); //$NON-NLS-1$
         ResourcesPlugin.getWorkspace().save(true, new NullProgressMonitor());
     }
 
     private void removeLinkedResources() throws CoreException {
-        info("Remove linked resources");
+        info(Messages.getString("CodeGenInit.removeLink")); //$NON-NLS-1$
 
-        IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(".JETEmitters");
+        IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(".JETEmitters"); //$NON-NLS-1$
         project.accept(new IResourceVisitor() {
 
             public boolean visit(IResource resource) throws CoreException {
@@ -86,11 +87,11 @@ public class CodeGenInit implements IApplication {
     }
 
     private void init(ECodeLanguage language) throws Exception, InterruptedException {
-        info("create " + language.getName() + " project");
+        info(Messages.getString("CodeGenInit.createProject") + language.getName()); //$NON-NLS-1$
         createAndLogonProject(language);
-        info("init Templates");
+        info(Messages.getString("CodeGenInit.initTemplate")); //$NON-NLS-1$
         new CodeGeneratorManager().initTemplate();
-        info("delete " + language + " project");
+        info(Messages.getString("CodeGenInit.deleteProject") + language); //$NON-NLS-1$
         deleteProject(language);
     }
 
@@ -113,7 +114,7 @@ public class CodeGenInit implements IApplication {
     private void createAndLogonProject(ECodeLanguage language) throws Exception {
         Project project = getProject(language);
         if (project == null) {
-            project = repositoryFactory.createProject(getProjectName(language), "", language, createUser());
+            project = repositoryFactory.createProject(getProjectName(language), "", language, createUser()); //$NON-NLS-1$
         }
         repositoryFactory.logOnProject(project, new NullProgressMonitor());
     }
@@ -126,7 +127,7 @@ public class CodeGenInit implements IApplication {
     }
 
     private String getProjectName(ECodeLanguage language) {
-        return "codegen_" + language.getName() + "_temp_project";
+        return Messages.getString("CodeGenInit.codegenProject") + language.getName(); //$NON-NLS-1$
     }
 
     private Project getProject(ECodeLanguage language) throws PersistenceException, BusinessException {
@@ -146,13 +147,13 @@ public class CodeGenInit implements IApplication {
         Context ctx = CorePlugin.getContext();
         ctx.putProperty(Context.REPOSITORY_CONTEXT_KEY, repositoryContext);
 
-        repositoryFactory.setRepositoryFactoryFromProvider(RepositoryFactoryProvider.getRepositoriyById("local"));
+        repositoryFactory.setRepositoryFactoryFromProvider(RepositoryFactoryProvider.getRepositoriyById("local")); //$NON-NLS-1$
         repositoryFactory.initialize();
     }
 
     private User createUser() {
         User user = PropertiesFactory.eINSTANCE.createUser();
-        user.setLogin("user@talend.com");
+        user.setLogin("user@talend.com"); //$NON-NLS-1$
         return user;
     }
 

@@ -16,6 +16,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.IProcess;
+import org.talend.designer.codegen.i18n.Messages;
 import org.talend.designer.codegen.model.CodeGeneratorEmittersPoolFactory;
 
 /**
@@ -71,7 +72,7 @@ public class CodeGeneratorService implements ICodeGeneratorService {
         } else if (lan.equals(ECodeLanguage.JAVA)) {
             return createJavaRoutineSynchronizer();
         }
-        throw new IllegalArgumentException("invalid language type.");
+        throw new IllegalArgumentException(Messages.getString("CodeGeneratorService.invalidLanguage1")); //$NON-NLS-1$
     }
 
     public ISQLPatternSynchronizer getSQLPatternSynchronizer() {
@@ -81,7 +82,7 @@ public class CodeGeneratorService implements ICodeGeneratorService {
         } else if (lan.equals(ECodeLanguage.JAVA)) {
             return new JavaSQLPatternSynchronizer();
         }
-        throw new IllegalArgumentException("invalid language type.");
+        throw new IllegalArgumentException(Messages.getString("CodeGeneratorService.invalidLanguage2")); //$NON-NLS-1$
     }
 
     /*

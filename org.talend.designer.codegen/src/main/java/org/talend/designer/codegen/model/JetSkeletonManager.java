@@ -44,6 +44,7 @@ import org.talend.core.model.components.ComponentCompilations;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.designer.codegen.CodeGeneratorActivator;
 import org.talend.designer.codegen.config.TemplateUtil;
+import org.talend.designer.codegen.i18n.Messages;
 import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
@@ -66,9 +67,9 @@ public final class JetSkeletonManager {
 
     private final boolean forceSkeletonAlreadyChecked = ComponentCompilations.getMarkers();
 
-    private static final String SKELETON_SUFFIX = ".skeleton";
+    private static final String SKELETON_SUFFIX = ".skeleton"; //$NON-NLS-1$
 
-    private static final String INCLUDEFILEINJET_SUFFIX = ".inc.javajet";
+    private static final String INCLUDEFILEINJET_SUFFIX = ".inc.javajet"; //$NON-NLS-1$
 
     private JetSkeletonManager() {
     }
@@ -85,7 +86,7 @@ public final class JetSkeletonManager {
             deserializeAlreadyChecked();
         } catch (Exception e) {
             IStatus status = new Status(IStatus.WARNING, CodeGeneratorActivator.PLUGIN_ID,
-                    "unable to load skeleton update cache file", e);
+                    Messages.getString("JetSkeletonManager.unableLoad"), e); //$NON-NLS-1$
             CodeGeneratorActivator.getDefault().getLog().log(status);
         }
     }
@@ -95,7 +96,7 @@ public final class JetSkeletonManager {
             serializeAlreadyChecked();
         } catch (Exception e) {
             IStatus status = new Status(IStatus.WARNING, CodeGeneratorActivator.PLUGIN_ID,
-                    "unable to save skeleton update cache file", e);
+                    Messages.getString("JetSkeletonManager.unableSave"), e); //$NON-NLS-1$
             CodeGeneratorActivator.getDefault().getLog().log(status);
         }
     }
@@ -126,12 +127,12 @@ public final class JetSkeletonManager {
     }
 
     private File getSerializationFilePath() throws CoreException {
-        IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(".JETEmitters");
+        IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(".JETEmitters"); //$NON-NLS-1$
         if (!project.exists()) {
             project.create(new NullProgressMonitor());
         }
         project.open(new NullProgressMonitor());
-        IFile file = project.getFile("SkeletonUpdateCache");
+        IFile file = project.getFile("SkeletonUpdateCache"); //$NON-NLS-1$
         if (!file.exists()) {
             file.create(null, true, new NullProgressMonitor());
         }
@@ -219,7 +220,7 @@ public final class JetSkeletonManager {
                 }
             } catch (Exception e) {
                 IStatus status = new Status(IStatus.WARNING, CodeGeneratorActivator.PLUGIN_ID,
-                        "when update skeleton persistence data, there have some problems", e);
+                        Messages.getString("JetSkeletonManager.updateProblem"), e); //$NON-NLS-1$
                 CodeGeneratorActivator.getDefault().getLog().log(status);
                 localInstance.save();
                 return true;

@@ -111,13 +111,13 @@ public class CodeGenerator implements ICodeGenerator {
 			this.statistics = statistics;
 			this.trace = trace;
 			this.jobName = process.getLabel();
-			this.jobVersion = "";
+			this.jobVersion = ""; //$NON-NLS-1$
 			if (process.getProperty() != null
 					&& process.getProperty().getVersion() != null) {
 				this.jobVersion = process.getProperty().getVersion().replace(
-						".", "_");
+						".", "_"); //$NON-NLS-1$ //$NON-NLS-2$
 			} else if (process.getVersion() != null) {
-				this.jobVersion = process.getVersion().replace(".", "_");
+				this.jobVersion = process.getVersion().replace(".", "_"); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 
 			this.contextName = process.getContextManager().getDefaultContext()
@@ -130,22 +130,22 @@ public class CodeGenerator implements ICodeGenerator {
 				this.runtimeFilePath = options[2];
 				this.currentProjectName = options[3];
 			} else {
-				this.interpreterPath = "";
-				this.libPath = "";
-				this.runtimeFilePath = "";
-				this.currentProjectName = "";
+				this.interpreterPath = ""; //$NON-NLS-1$
+				this.libPath = ""; //$NON-NLS-1$
+				this.runtimeFilePath = ""; //$NON-NLS-1$
+				this.currentProjectName = ""; //$NON-NLS-1$
 			}
 
 			if (DEBUG) {
 				nodes = process.getGraphicalNodes();
-				System.out.println("------process.getGraphicalNodes()------");
+				System.out.println(Messages.getString("CodeGenerator.getGraphicalNode1")); //$NON-NLS-1$
 				printForDebug();
 			}
 
 			nodes = process.getGeneratingNodes();
 
 			if (DEBUG) {
-				System.out.println("------process.getGeneratingNodes()------");
+				System.out.println(Messages.getString("CodeGenerator.getGraphicalNode2")); //$NON-NLS-1$
 				printForDebug();
 			}
 
@@ -172,7 +172,7 @@ public class CodeGenerator implements ICodeGenerator {
 		// must match TalendDesignerPrefConstants.DISPLAY_METHOD_SIZE
 		boolean displayMethodSize = Boolean.parseBoolean(CorePlugin
 				.getDefault().getDesignerCoreService().getPreferenceStore(
-						"displayMethodSize"));
+						"displayMethodSize")); //$NON-NLS-1$
 		return displayMethodSize;
 	}
 
@@ -367,7 +367,7 @@ public class CodeGenerator implements ICodeGenerator {
 				return content;
 			}
 		}
-		return "";
+		return ""; //$NON-NLS-1$
 	}
 
 	/**
@@ -775,8 +775,8 @@ public class CodeGenerator implements ICodeGenerator {
 					subProcess));
 		} catch (JETException jetException) {
 			log.error(jetException.getMessage(), jetException);
-			throw new CodeGeneratorException(jetException.toString() + " in "
-					+ argument.getJobName() + " job", jetException);
+			throw new CodeGeneratorException(jetException.toString() + " in " //$NON-NLS-1$
+					+ argument.getJobName() + " job", jetException); //$NON-NLS-1$
 		} catch (CoreException coreException) {
 			log.error(coreException.getMessage(), coreException);
 			throw new CodeGeneratorException(coreException);
@@ -1051,6 +1051,6 @@ public class CodeGenerator implements ICodeGenerator {
 			}
 		}
 
-		System.out.println("\n\n\n\n");
+		System.out.println(Messages.getString("CodeGenerator.newLine")); //$NON-NLS-1$
 	}
 }

@@ -31,7 +31,7 @@ public class EmittersPoolFactoryImpl extends EFactoryImpl implements EmittersPoo
     public static EmittersPoolFactory init() {
         try {
             EmittersPoolFactory theEmittersPoolFactory = (EmittersPoolFactory) EPackage.Registry.INSTANCE
-                    .getEFactory("platform:/resource/org.talend.designer.codegen/src/main/java/org/talend/designer/codegen/utils/emf/EmittersPool.xsd");
+                    .getEFactory("platform:/resource/org.talend.designer.codegen/src/main/java/org/talend/designer/codegen/utils/emf/EmittersPool.xsd"); //$NON-NLS-1$
             if (theEmittersPoolFactory != null) {
                 return theEmittersPoolFactory;
             }

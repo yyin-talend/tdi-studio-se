@@ -96,11 +96,11 @@ public final class CodeGeneratorEmittersPoolFactory {
 
     private static IStatus status = null;
 
-    private static DelegateProgressMonitor delegateMonitor = new DelegateProgressMonitor(); 
-    
+    private static DelegateProgressMonitor delegateMonitor = new DelegateProgressMonitor();
+
     /***/
     private static class JobRunnable extends Thread {
-        
+
         public JobRunnable(String name) {
             super(name);
         }
@@ -144,7 +144,7 @@ public final class CodeGeneratorEmittersPoolFactory {
                 List<TemplateUtil> templates = templatesFactory.getTemplates();
                 List<IComponent> components = componentsFactory.getComponents();
 
-                monitorWrap.beginTask(Messages.getString("CodeGeneratorEmittersPoolFactory.initMessage"),
+                monitorWrap.beginTask(Messages.getString("CodeGeneratorEmittersPoolFactory.initMessage"), //$NON-NLS-1$
                         (2 * templates.size() + 5 * components.size()));
 
                 int monitorBuffer = 0;
@@ -188,19 +188,20 @@ public final class CodeGeneratorEmittersPoolFactory {
 
                     });
                 }
-                log.debug("Components compiled in " + (System.currentTimeMillis() - startTime) + " ms");
+                log.debug(Messages.getString("CodeGeneratorEmittersPoolFactory.componentCompiled") + (System.currentTimeMillis() - startTime)); //$NON-NLS-1$
                 initialized = true;
 
                 // remove compilations markers
                 ComponentCompilations.deleteMarkers();
 
             } catch (Exception e) {
-                log.error("Exception during Initialization", e);
-                return new Status(IStatus.ERROR, CodeGeneratorActivator.PLUGIN_ID, "Exception during Initialization", e);
+                log.error(Messages.getString("CodeGeneratorEmittersPoolFactory.initialException"), e); //$NON-NLS-1$
+                return new Status(IStatus.ERROR, CodeGeneratorActivator.PLUGIN_ID, Messages
+                        .getString("CodeGeneratorEmittersPoolFactory.initialException"), e); //$NON-NLS-1$
             } finally {
                 try {
                     IWorkspace workspace = ResourcesPlugin.getWorkspace();
-                    IProject project = workspace.getRoot().getProject(".JETEmitters");
+                    IProject project = workspace.getRoot().getProject(".JETEmitters"); //$NON-NLS-1$
                     project.build(IncrementalProjectBuilder.AUTO_BUILD, null);
                 } catch (CoreException e) {
                     ExceptionHandler.process(e);
@@ -211,12 +212,13 @@ public final class CodeGeneratorEmittersPoolFactory {
                 StringBuilder message = new StringBuilder();
                 for (JetBean tmpJetBean : jetFilesCompileFail) {
                     if (message.length() > 0) {
-                        message.append(",\r\n").append(tmpJetBean.getTemplateRelativeUri());
+                        message.append(",\r\n").append(tmpJetBean.getTemplateRelativeUri()); //$NON-NLS-1$
                     } else {
                         message.append(tmpJetBean.getTemplateRelativeUri());
                     }
                 }
-                return new Status(IStatus.ERROR, CodeGeneratorActivator.PLUGIN_ID, "Components compile fail : \r\n"
+                return new Status(IStatus.ERROR, CodeGeneratorActivator.PLUGIN_ID, Messages
+                        .getString("CodeGeneratorEmittersPoolFactory.failCompail") //$NON-NLS-1$
                         + message.toString());
             }
             CorePlugin.getDefault().getRcpService().activeSwitchProjectAction();
@@ -226,13 +228,13 @@ public final class CodeGeneratorEmittersPoolFactory {
     };
 
     public static Job initialize() {
-        Job job = new AccessingEmfJob(Messages.getString("CodeGeneratorEmittersPoolFactory.initMessage")) {
+        Job job = new AccessingEmfJob(Messages.getString("CodeGeneratorEmittersPoolFactory.initMessage")) { //$NON-NLS-1$
 
             @Override
             protected IStatus doRun(IProgressMonitor monitor) {
                 synchronized (delegateMonitor) {
                     if (jobRunnable == null) {
-                        jobRunnable = new JobRunnable("Code generation background thread");
+                        jobRunnable = new JobRunnable(Messages.getString("CodeGeneratorEmittersPoolFactory.codeThread")); //$NON-NLS-1$
                         jobRunnable.start();
                     }
                 }
@@ -255,7 +257,7 @@ public final class CodeGeneratorEmittersPoolFactory {
 
                 return status;
             }
-            
+
         };
         job.setUser(true);
         job.setPriority(Job.INTERACTIVE);
@@ -275,10 +277,10 @@ public final class CodeGeneratorEmittersPoolFactory {
     private static JetBean initializeUtilTemplate(TemplateUtil template, ECodeLanguage codeLanguage) {
         JetBean jetBean = new JetBean(CodeGeneratorActivator.PLUGIN_ID, TemplateUtil.RESOURCES_DIRECTORY + TemplateUtil.DIR_SEP
                 + template.getResourceName() + TemplateUtil.EXT_SEP + codeLanguage.getExtension() + TemplateUtil.TEMPLATE_EXT,
-                template.getResourceName(), template.getVersion(), codeLanguage.getName(), "");
-        jetBean.addClassPath("CORE_LIBRARIES", CorePlugin.PLUGIN_ID);
-        jetBean.addClassPath("CODEGEN_LIBRARIES", CodeGeneratorActivator.PLUGIN_ID);
-        jetBean.addClassPath("COMMON_LIBRARIES", CommonsPlugin.PLUGIN_ID);
+                template.getResourceName(), template.getVersion(), codeLanguage.getName(), ""); //$NON-NLS-1$
+        jetBean.addClassPath("CORE_LIBRARIES", CorePlugin.PLUGIN_ID); //$NON-NLS-1$
+        jetBean.addClassPath("CODEGEN_LIBRARIES", CodeGeneratorActivator.PLUGIN_ID); //$NON-NLS-1$
+        jetBean.addClassPath("COMMON_LIBRARIES", CommonsPlugin.PLUGIN_ID); //$NON-NLS-1$
         jetBean.setClassLoader(new CodeGeneratorEmittersPoolFactory().getClass().getClassLoader());
         return jetBean;
     }
@@ -300,22 +302,22 @@ public final class CodeGeneratorEmittersPoolFactory {
 
             JetBean jetBean = new JetBean(IComponentsFactory.COMPONENTS_LOCATION, templateURI, component.getName(), component
                     .getVersion(), codeLanguage.getName(), codePart.getName());
-            jetBean.addClassPath("CORE_LIBRARIES", CorePlugin.PLUGIN_ID);
-            jetBean.addClassPath("CODEGEN_LIBRARIES", CodeGeneratorActivator.PLUGIN_ID);
-            jetBean.addClassPath("COMMON_LIBRARIES", CommonsPlugin.PLUGIN_ID);
+            jetBean.addClassPath("CORE_LIBRARIES", CorePlugin.PLUGIN_ID); //$NON-NLS-1$
+            jetBean.addClassPath("CODEGEN_LIBRARIES", CodeGeneratorActivator.PLUGIN_ID); //$NON-NLS-1$
+            jetBean.addClassPath("COMMON_LIBRARIES", CommonsPlugin.PLUGIN_ID); //$NON-NLS-1$
 
             for (String pluginDependency : component.getPluginDependencies()) {
-                jetBean.addClassPath(pluginDependency.toUpperCase().replaceAll("\\.", "_") + "_LIBRARIES", pluginDependency);
+                jetBean.addClassPath(pluginDependency.toUpperCase().replaceAll("\\.", "_") + "_LIBRARIES", pluginDependency); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             }
 
             String familyName = component.getFamily();
-            if (familyName.contains("|")) {
-                familyName = component.getFamily().substring(0, component.getFamily().indexOf("|"));
+            if (familyName.contains("|")) { //$NON-NLS-1$
+                familyName = component.getFamily().substring(0, component.getFamily().indexOf("|")); //$NON-NLS-1$
             }
             jetBean.setFamily(StringUtils.removeSpecialCharsForPackage(familyName.toLowerCase()));
 
             if (component.getPluginFullName().compareTo(IComponentsFactory.COMPONENTS_LOCATION) != 0) {
-                jetBean.addClassPath("EXTERNAL_COMPONENT_" + component.getPluginFullName().toUpperCase().replaceAll("\\.", "_"),
+                jetBean.addClassPath("EXTERNAL_COMPONENT_" + component.getPluginFullName().toUpperCase().replaceAll("\\.", "_"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                         component.getPluginFullName());
                 jetBean.setClassLoader(ExternalNodesFactory.getInstance(component.getPluginFullName()).getClass()
                         .getClassLoader());
@@ -412,7 +414,7 @@ public final class CodeGeneratorEmittersPoolFactory {
             }
             monitorWrap.worked(monitorBuffer);
         } catch (JETException e) {
-            log.error("Error during JetEmitter initalization " + e.getMessage(), e);
+            log.error(Messages.getString("CodeGeneratorEmittersPoolFactory.jetEmitterInitialException") + e.getMessage(), e); //$NON-NLS-1$
         }
         try {
             EmfEmittersPersistenceFactory.getInstance(codeLanguage).saveEmittersPool(
@@ -467,14 +469,14 @@ public final class CodeGeneratorEmittersPoolFactory {
             IProgressMonitor monitorWrap) throws BusinessException {
         List<JetBean> toReturn = new ArrayList<JetBean>();
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
-        IProject project = workspace.getRoot().getProject(".JETEmitters");
+        IProject project = workspace.getRoot().getProject(".JETEmitters"); //$NON-NLS-1$
         URL url;
         try {
-            url = new File(project.getLocation() + "/runtime").toURL();
+            url = new File(project.getLocation() + "/runtime").toURL(); //$NON-NLS-1$
             int lightBeanIndex = 0;
             LightJetBean lightBean = null;
             LightJetBean myLightJetBean = null;
-            String unitTemplateFullURI = "";
+            String unitTemplateFullURI = ""; //$NON-NLS-1$
             long unitTemplateHashCode = 0;
 
             HashMap<String, LightJetBean> mapOnName = new HashMap<String, LightJetBean>();
@@ -482,7 +484,7 @@ public final class CodeGeneratorEmittersPoolFactory {
             if (forceMethodLoad) {
                 // init specific map based on component name : mapOnName
                 for (LightJetBean ljb : datas) {
-                    mapOnName.put(ljb.getTemplateRelativeUri().substring(ljb.getTemplateRelativeUri().lastIndexOf("/")), ljb);
+                    mapOnName.put(ljb.getTemplateRelativeUri().substring(ljb.getTemplateRelativeUri().lastIndexOf("/")), ljb); //$NON-NLS-1$
                 }
             }
             int monitorBuffer = 0;
@@ -501,7 +503,7 @@ public final class CodeGeneratorEmittersPoolFactory {
                         lightBean = datas.get(lightBeanIndex);
                     } else {
                         lightBean = mapOnName.get(myLightJetBean.getTemplateRelativeUri().substring(
-                                myLightJetBean.getTemplateRelativeUri().lastIndexOf("/")));
+                                myLightJetBean.getTemplateRelativeUri().lastIndexOf("/"))); //$NON-NLS-1$
                     }
                     if (lightBean != null) {
                         unit.setClassName(lightBean.getClassName());
@@ -512,7 +514,7 @@ public final class CodeGeneratorEmittersPoolFactory {
                                 toReturn.add(unit);
                             }
                         } catch (ClassNotFoundException e) {
-                            log.info(Messages.getString("CodeGeneratorEmittersPoolFactory.Class.NotFound", unit.getClassName()));
+                            log.info(Messages.getString("CodeGeneratorEmittersPoolFactory.Class.NotFound", unit.getClassName())); //$NON-NLS-1$
                         }
                     }
                 }
@@ -577,7 +579,7 @@ public final class CodeGeneratorEmittersPoolFactory {
 
         // only for components, not for /resources jet file, if it compile error, it will get the
         // default_template.javajet
-        if (jetBean.getTemplateRelativeUri() != null && !jetBean.getTemplateRelativeUri().startsWith("resources")) {
+        if (jetBean.getTemplateRelativeUri() != null && !jetBean.getTemplateRelativeUri().startsWith("resources")) { //$NON-NLS-1$
             if (jetFilesCompileFail.contains(jetBean)) {
                 JetBean defaultJetBean = new JetBean();
                 defaultJetBean.setTemplateRelativeUri(defaultTemplate);
@@ -609,7 +611,7 @@ public final class CodeGeneratorEmittersPoolFactory {
     private static class DelegateProgressMonitor implements IProgressMonitor {
 
         private List<IProgressMonitor> delegates = new ArrayList<IProgressMonitor>();
-        
+
         private boolean cancelled;
 
         public void addDelegate(IProgressMonitor progressMonitor) {
@@ -619,7 +621,7 @@ public final class CodeGeneratorEmittersPoolFactory {
         public void clearDelegate() {
             delegates.clear();
         }
-        
+
         public void beginTask(String name, int totalWork) {
             for (IProgressMonitor delegate : delegates) {
                 delegate.beginTask(name, totalWork);

@@ -70,7 +70,7 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
 
 			for (URL systemModuleURL : urls) {
 				String fileName = systemModuleURL.getPath();
-				if (fileName.startsWith("/")) {
+				if (fileName.startsWith("/")) { //$NON-NLS-1$
 					fileName = fileName.substring(1);
 				}
 				File f = new File(systemModuleURL.getPath());
@@ -140,10 +140,10 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
 			org.talend.core.model.properties.Project project = pManager
 					.getProject(routineItem);
 			// for create new routine
-			String oldPackage = "package(\\s)+"
-					+ JavaUtils.JAVA_ROUTINES_DIRECTORY + "(\\s)*;";
-			String newPackage = "package " + JavaUtils.JAVA_ROUTINES_DIRECTORY
-					+ "." + project.getTechnicalLabel().toLowerCase() + ";";
+			String oldPackage = "package(\\s)+" //$NON-NLS-1$
+					+ JavaUtils.JAVA_ROUTINES_DIRECTORY + "(\\s)*;"; //$NON-NLS-1$
+			String newPackage = "package " + JavaUtils.JAVA_ROUTINES_DIRECTORY //$NON-NLS-1$
+					+ "." + project.getTechnicalLabel().toLowerCase() + ";"; //$NON-NLS-1$ //$NON-NLS-2$
 
 			routineContent = routineContent.replaceAll(oldPackage, newPackage);
 		}
@@ -164,7 +164,7 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
 			if (!routineItem.isBuiltIn()) {
 				routinesFolder = getRoutinesFolder(project);
 			}
-			IFile file = javaProject.getFile(routinesFolder + "/"
+			IFile file = javaProject.getFile(routinesFolder + "/" //$NON-NLS-1$
 					+ routineItem.getProperty().getLabel()
 					+ JavaUtils.JAVA_EXTENSION);
 			return file;
@@ -184,8 +184,8 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
 
 			String folderName = JavaResourcesHelper.getJobFolderName(item
 					.getProperty().getLabel(), item.getProperty().getVersion());
-			IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/"
-					+ projectFolderName + "/" + folderName + "/"
+			IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/" //$NON-NLS-1$
+					+ projectFolderName + "/" + folderName + "/" //$NON-NLS-1$ //$NON-NLS-2$
 					+ item.getProperty().getLabel() + JavaUtils.JAVA_EXTENSION);
 			return file;
 		} catch (CoreException e) {
@@ -218,7 +218,7 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
 
 	private String getRoutinesFolder(
 			org.talend.core.model.properties.Project project) {
-		String routinesPath = JavaUtils.JAVA_SRC_DIRECTORY + "/"
+		String routinesPath = JavaUtils.JAVA_SRC_DIRECTORY + "/" //$NON-NLS-1$
 				+ JavaUtils.JAVA_ROUTINES_DIRECTORY;
 		// if (project != null) {
 		// // add project name in package path
@@ -229,8 +229,8 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
 
 	private void initModuleFolder(IProject javaProject, Project project)
 			throws CoreException {
-		IFolder rep = javaProject.getFolder(JavaUtils.JAVA_SRC_DIRECTORY + "/"
-				+ JavaUtils.JAVA_ROUTINES_DIRECTORY + "/"
+		IFolder rep = javaProject.getFolder(JavaUtils.JAVA_SRC_DIRECTORY + "/" //$NON-NLS-1$
+				+ JavaUtils.JAVA_ROUTINES_DIRECTORY + "/" //$NON-NLS-1$
 				+ JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY);
 		if (!rep.exists()) {
 			rep.create(true, true, null);
@@ -267,10 +267,10 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
 			for (File module : modules) {
 				if (!module.isDirectory()) {
 					IFile file = javaProject
-							.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/"
-									+ JavaUtils.JAVA_ROUTINES_DIRECTORY + "/"
+							.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/" //$NON-NLS-1$
+									+ JavaUtils.JAVA_ROUTINES_DIRECTORY + "/" //$NON-NLS-1$
 									+ JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY
-									+ "/" + module.getName());
+									+ "/" + module.getName()); //$NON-NLS-1$
 
 					copyFile(module, file);
 				}
