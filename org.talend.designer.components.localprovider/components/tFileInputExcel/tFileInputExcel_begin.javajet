@@ -33,8 +33,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		
 		String allSheets = ElementParameterParser.getValue(node, "__ALL_SHEETS__");
 		boolean isAllSheets = (allSheets!=null&&!allSheets.equals(""))?allSheets.equals("true"):false;
-		List<Map<String, String>> sheetNameList = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__SHEETLIST__");
-		boolean useRegex = ElementParameterParser.getValue(node,"__USE_REGEX__").equals("true");
+		List<Map<String, String>> sheetList = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__SHEETLIST__");
 		
 		boolean affect = ElementParameterParser.getValue(node,"__AFFECT__").equals("true");
 		boolean endOfFile = ElementParameterParser.getValue(node,"__END_OF_FILE__").equals("true");
@@ -76,36 +75,31 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		        }
 		        return list;
 		    }
+		    public List<jxl.Sheet> getSheets(jxl.Workbook workbook, int index) {
+		    	List<jxl.Sheet> list =  new java.util.ArrayList<jxl.Sheet>();
+		    	list.add(workbook.getSheet(index));
+		    	return list;
+		    }
 		}
 <%
-			for(Map<String, String> tmp:sheetNameList){
-				if(useRegex){
+			for(Map<String, String> tmp : sheetList){
+				if(tmp.get("USE_REGEX").equals("true")){
+				System.out.println("if");
 %>
-					 if(<%=tmp.get("SHEETNAME")%>.contains(",")){
-		        		String[] positions = <%=tmp.get("SHEETNAME")%>.split(",");
-		        		for(int i=0;i<positions.length;i++){
-		        			sheetList_<%= cid %>.add(workbook_<%= cid %>.getSheet(Integer.parseInt(positions[i])-1));
-		        		}
-		        	}else{
-						sheets_<%= cid %> = new java.util.ArrayList<jxl.Sheet>();
-						sheets_<%= cid %> = new RegexUtil().getSheets(workbook_<%= cid %>,<%=tmp.get("SHEETNAME")%>);
-						sheetList_<%= cid %>.addAll(sheets_<%= cid %>);
-					}
-<%
+					sheets_<%= cid %> = new java.util.ArrayList<jxl.Sheet>();
+					sheets_<%= cid %> = new RegexUtil().getSheets(workbook_<%= cid %>,<%=tmp.get("SHEETNAME")%>);
+					sheetList_<%= cid %>.addAll(sheets_<%= cid %>);
+<%				
 				}else{
+				System.out.println("else");
 %>
-					if(<%=tmp.get("SHEETNAME")%>.contains(",")){
-		        		String[] positions = <%=tmp.get("SHEETNAME")%>.split(",");
-		        		for(int i=0;i<positions.length;i++){
-		        			sheetList_<%= cid %>.add(workbook_<%= cid %>.getSheet(Integer.parseInt(positions[i])-1));
-		        		}
-		        	}else{
+					if(workbook_<%= cid %>.getSheet(<%=tmp.get("SHEETNAME")%>) != null){
 						sheetList_<%= cid %>.add(workbook_<%= cid %>.getSheet(<%=tmp.get("SHEETNAME")%>));
-					}
+					}					
 <%
-				}
 			}
 			}
+		}
 %>
         if(sheetList_<%= cid %>.size() <= 0){
         	throw new RuntimeException("Special sheets not exist!");
