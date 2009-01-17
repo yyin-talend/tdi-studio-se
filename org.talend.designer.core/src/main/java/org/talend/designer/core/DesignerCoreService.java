@@ -14,6 +14,7 @@ package org.talend.designer.core;
 
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -77,6 +78,9 @@ import org.talend.designer.runprocess.ProcessorUtilities;
  */
 public class DesignerCoreService implements IDesignerCoreService {
 
+    // achen add to store created process
+    private Map<String, IProcess> createdProcessMap = new HashMap<String, IProcess>();
+
     public List<IProcess> getOpenedProcess(IEditorReference[] reference) {
         List<IProcess> list = new ArrayList<IProcess>();
         // IEditorReference[] reference =
@@ -105,10 +109,15 @@ public class DesignerCoreService implements IDesignerCoreService {
      * )
      */
     public IProcess getProcessFromProcessItem(ProcessItem processItem) {
+        // achen modify to fix 0006107
         Process process = null;
-        process = new Process(processItem.getProperty());
-        process.loadXmlFile();
-
+        String id = processItem.getProperty().getModificationDate() + processItem.getProperty().getId();
+        if (createdProcessMap.get(id) == null) {
+            process = new Process(processItem.getProperty());
+            process.loadXmlFile();
+            createdProcessMap.put(id, process);
+        }
+        process = (Process) createdProcessMap.get(id);
         return process;
     }
 

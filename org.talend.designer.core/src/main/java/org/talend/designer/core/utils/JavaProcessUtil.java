@@ -27,8 +27,8 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.components.EParameterName;
-import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.designer.runprocess.JobInfo;
 
@@ -110,8 +110,11 @@ public class JavaProcessUtil {
                         // avoid dead loop of method call
                         searchItems.add(processItem);
                         JobInfo subJobInfo = new JobInfo(processItem, context);
-                        Process child = new Process(subJobInfo.getProcessItem().getProperty());
-                        child.loadXmlFile();
+                        // achen modify to fix 0006107
+                        IDesignerCoreService service = CorePlugin.getDefault().getDesignerCoreService();
+                        IProcess child = service.getProcessFromItem(subJobInfo.getProcessItem());
+                        // Process child = new Process(subJobInfo.getProcessItem().getProperty());
+                        // child.loadXmlFile();
                         neededLibraries.addAll(JavaProcessUtil.getNeededLibraries(child, true, searchItems));
                     }
                 }

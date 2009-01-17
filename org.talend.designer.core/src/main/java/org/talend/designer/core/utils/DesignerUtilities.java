@@ -20,10 +20,12 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.PlatformUI;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -54,8 +56,11 @@ public class DesignerUtilities {
                 ProcessItem processItem = ItemCacheManager.getProcessItem(processId);
                 if (processItem != null) {
                     // TODO should use a fake Process here to replace the real Process.
-                    Process loadedProcess = new Process(processItem.getProperty());
-                    loadedProcess.loadXmlFile();
+                    // achen modify to fix 0006107
+                    IDesignerCoreService service = CorePlugin.getDefault().getDesignerCoreService();
+                    Process loadedProcess = (Process) service.getProcessFromItem(processItem);
+                    // Process loadedProcess = new Process(processItem.getProperty());
+                    // loadedProcess.loadXmlFile();
                     return loadedProcess;
                 }
             }
@@ -72,7 +77,7 @@ public class DesignerUtilities {
         }
         return matchingNodes;
     }
-    
+
     /**
      * DOC bqian Comment method "findProcessFromEditors".
      * 
