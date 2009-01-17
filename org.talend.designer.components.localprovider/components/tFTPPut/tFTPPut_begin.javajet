@@ -110,7 +110,7 @@ if(useProxy){
        Map<String, String> line = files.get(i);
 %>    
 	java.util.Map<String,String> map<%=cid %><%=i %> = new java.util.HashMap<String,String>();
-	map<%=cid %><%=i %>.put(<%= line.get("FILEMASK") %>,"");
+	map<%=cid %><%=i %>.put(<%= line.get("FILEMASK") %>,<%= line.get("NEWNAME") %>);		
  	list<%=cid %>.add(map<%=cid %><%=i %>);       
 <%
   }
@@ -154,7 +154,7 @@ if(useProxy){
        Map<String, String> line = files.get(i);
 %>    
 	java.util.Map<String,String> map<%=cid %><%=i %> = new java.util.HashMap<String,String>();
-	map<%=cid %><%=i %>.put(<%= line.get("FILEMASK") %>,"");	
+	map<%=cid %><%=i %>.put(<%= line.get("FILEMASK") %>,<%= line.get("NEWNAME") %>);	
 	list<%=cid %>.add(map<%=cid %><%=i %>);       
 <%
   }

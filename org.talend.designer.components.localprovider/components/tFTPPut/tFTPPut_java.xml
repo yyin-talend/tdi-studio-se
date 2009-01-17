@@ -153,6 +153,7 @@ COMPATIBILITY="ALL"
     <PARAMETER NAME="FILES" FIELD="TABLE" REQUIRED="false" NUM_ROW="8" NB_LINES="5">
       <ITEMS>
         <ITEM NAME="FILEMASK" />
+        <ITEM NAME="NEWNAME" VALUE="&quot;&quot;"/>
       </ITEMS>
     </PARAMETER>
     
