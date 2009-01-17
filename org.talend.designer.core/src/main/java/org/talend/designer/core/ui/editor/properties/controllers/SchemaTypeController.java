@@ -975,7 +975,8 @@ public class SchemaTypeController extends AbstractRepositoryController {
                 String schemaSelected = (String) repositorySchemaType.getValue();
                 if (repositoryTableMap.containsKey(schemaSelected)) {
                     repositoryMetadata = repositoryTableMap.get(schemaSelected);
-                    newRepositoryIdValue = schemaSelected + " - " + repositoryMetadata.getLabel();
+                    // bug 6028, Display the parameter of REPOSITORY_SCHEMA_TYPE
+                    newRepositoryIdValue = schemaSelected;// + " - " + repositoryMetadata.getLabel();
                 } else {
                     if (repositoryTableMap.keySet().size() == 0) {
                         repositoryMetadata = new MetadataTable();
@@ -983,7 +984,8 @@ public class SchemaTypeController extends AbstractRepositoryController {
                         newRepositoryIdValue = repositoryTableMap.keySet().iterator().next();
                         // Gets the schema of the first item in repository schema type combo.
                         repositoryMetadata = repositoryTableMap.get(newRepositoryIdValue);
-                        newRepositoryIdValue = newRepositoryIdValue + " - " + repositoryMetadata.getLabel();
+                        // bug 6028, Display the parameter of REPOSITORY_SCHEMA_TYPE
+                        // newRepositoryIdValue = newRepositoryIdValue + " - " + repositoryMetadata.getLabel();
                     }
                 }
             } else {

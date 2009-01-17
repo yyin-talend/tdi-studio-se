@@ -335,7 +335,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                         setSAPFunctionName(node, table.getLabel());
                                         table.setTableName(node.getMetadataList().get(0).getTableName());
                                         if (!table.sameMetadataAs(node.getMetadataList().get(0))) {
-                                            ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, param, null, table);
+                                            ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, param, null, table, param);
                                             cmd.setConnection(connection);
                                             cmd.setRepositoryMode(true);
                                             cmd.execute(true);
@@ -351,7 +351,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                             && elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName()) != null;
                                     if (isTake && getTake()) {
                                         ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) elem, param, null,
-                                                sourceMetadataTable);
+                                                sourceMetadataTable, param);
                                         cmd.setConnection(connection);
                                         cmd.execute(true);
                                         elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), sourceSchema);

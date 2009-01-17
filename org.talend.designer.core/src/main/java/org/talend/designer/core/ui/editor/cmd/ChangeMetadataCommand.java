@@ -78,6 +78,8 @@ public class ChangeMetadataCommand extends Command {
 
     private IElementParameter schemaParam;
 
+    private IElementParameter inputSchemaParam;
+
     private String currentConnector;
 
     // Default constructor.
@@ -117,6 +119,17 @@ public class ChangeMetadataCommand extends Command {
     }
 
     public ChangeMetadataCommand(Node node, IElementParameter schemaParam, IMetadataTable currentOutputMetadata,
+            IMetadataTable newOutputMetadata, IElementParameter inputSchemaParam) {
+        this.inputSchemaParam = inputSchemaParam;
+        init(node, schemaParam, currentOutputMetadata, newOutputMetadata);
+    }
+
+    public ChangeMetadataCommand(Node node, IElementParameter schemaParam, IMetadataTable currentOutputMetadata,
+            IMetadataTable newOutputMetadata) {
+        init(node, schemaParam, currentOutputMetadata, newOutputMetadata);
+    }
+
+    public void init(Node node, IElementParameter schemaParam, IMetadataTable currentOutputMetadata,
             IMetadataTable newOutputMetadata) {
         this.node = node;
         this.schemaParam = schemaParam;
@@ -315,7 +328,8 @@ public class ChangeMetadataCommand extends Command {
                                     copy = ((Node) targetNode).getMetadataFromConnector(mainConnector).clone(true);
                                 }
                                 MetadataTool.copyTable(toCopy, copy);
-                                ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) targetNode, null, null, copy);
+                                ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) targetNode, null, null, copy,
+                                        inputSchemaParam);
                                 if (outputdataContainer.getOuputs().size() > 0) {
                                     List<ColumnNameChanged> columnNameChanged = outputdataContainer.getOuputs().get(0)
                                             .getColumnNameChanged();
@@ -405,6 +419,14 @@ public class ChangeMetadataCommand extends Command {
                 outputWasRepository = true;
                 node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
             }
+        }
+
+        if (inputSchemaParam != null
+                && inputSchemaParam.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()).getValue().equals(
+                        EmfComponent.REPOSITORY)) {
+            schemaParam.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()).setValue(EmfComponent.REPOSITORY);
+            schemaParam.getChildParameters().get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName()).setValue(
+                    inputSchemaParam.getChildParameters().get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName()).getValue());
         }
 
         for (INodeConnector connector : node.getListConnector()) {

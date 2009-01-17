@@ -708,6 +708,15 @@ public class Node extends Element implements INode {
                         }
                     }
                 }
+                IElementParameter inputSchemaParam = null;
+                for (IElementParameter param : conn.getSource().getElementParameters()) {
+                    if ((param.getField().equals(EParameterFieldType.SCHEMA_TYPE))
+                            && (param.getContext().equals(mainConnector.getName()))) {
+                        inputSchemaParam = param;
+                        break;
+                    }
+                }
+
                 IMetadataTable inputTable = connection.getMetadataTable();
 
                 if (component.isSchemaAutoPropagated() && !repositoryMode && (inputTable.getListColumns().size() != 0)) {
@@ -738,7 +747,8 @@ public class Node extends Element implements INode {
                                 // For the auto propagate.
                                 MetadataTool.copyTable(inputTable, targetTable);
 
-                                ChangeMetadataCommand cmc = new ChangeMetadataCommand(this, null, null, targetTable);
+                                ChangeMetadataCommand cmc = new ChangeMetadataCommand(this, null, null, targetTable,
+                                        inputSchemaParam);
                                 CommandStack cmdStack = getCommandStack();
                                 if (cmdStack != null) {
                                     cmdStack.execute(cmc);

@@ -23,7 +23,6 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.designer.core.model.components.EParameterName;
-import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.controllers.ColumnListController;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
@@ -47,7 +46,8 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
     public RepositoryChangeMetadataCommand(Node node, String propName, Object propValue, IMetadataTable newOutputMetadata,
             String newRepositoryIdValue) {
         super(node, node.getElementParameter(propName) == null ? null : node.getElementParameter(propName).getParentParameter(),
-                null, newOutputMetadata);
+                null, newOutputMetadata, node.getElementParameter(propName) == null ? null : node.getElementParameter(propName)
+                        .getParentParameter());
         this.propName = propName;
         oldPropValue = node.getPropertyValue(propName);
         newPropValue = propValue;
@@ -74,15 +74,16 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
         IElementParameter repositorySchemaTypeParameter = node.getElementParameter(propName).getParentParameter()
                 .getChildParameters().get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
         String schemaType = (String) schemaTypeParameter.getValue();
-        if (schemaType != null && schemaType.equals(EmfComponent.REPOSITORY)) {
-            repositorySchemaTypeParameter.setShow(true);
-            if (newRepositoryIdValue != null) {
-                oldRepositoryIdValue = (String) repositorySchemaTypeParameter.getValue();
-                repositorySchemaTypeParameter.setValue(newRepositoryIdValue);
-            }
-        } else {
-            repositorySchemaTypeParameter.setShow(false);
-        }
+        // bug 6028, Display the parameter of REPOSITORY_SCHEMA_TYPE
+        // if (schemaType != null && schemaType.equals(EmfComponent.REPOSITORY)) {
+        // repositorySchemaTypeParameter.setShow(true);
+        // if (newRepositoryIdValue != null) {
+        // oldRepositoryIdValue = (String) repositorySchemaTypeParameter.getValue();
+        // repositorySchemaTypeParameter.setValue(newRepositoryIdValue);
+        // }
+        // } else {
+        // repositorySchemaTypeParameter.setShow(false);
+        // }
 
         node.getElementParameter(EParameterName.UPDATE_COMPONENTS.getName()).setValue(true);
         setDBTableFieldValue(node, newOutputMetadata.getTableName(), oldOutputMetadata.getTableName());
