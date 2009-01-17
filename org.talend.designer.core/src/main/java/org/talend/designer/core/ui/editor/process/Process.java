@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.oro.text.regex.MalformedPatternException;
 import org.apache.oro.text.regex.Pattern;
 import org.apache.oro.text.regex.Perl5Compiler;
@@ -87,7 +86,6 @@ import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.metadata.MetadataEmfFactory;
-import org.talend.designer.core.model.process.DataNode;
 import org.talend.designer.core.model.process.DataProcess;
 import org.talend.designer.core.model.process.jobsettings.JobSettingsManager;
 import org.talend.designer.core.model.utils.emf.talendfile.ConnectionType;
@@ -622,78 +620,9 @@ public class Process extends Element implements IProcess2 {
     private void saveElementParameter(IElementParameter param, ProcessType process, TalendFileFactory fileFact,
             List<? extends IElementParameter> paramList, EList listParamType) {
         ElementParameterType pType;
-        // if parent of parameter is PROPERTY_TYPE or SCHEMA_TYPE And that it use builtin mode, then don't save
-        // if (param.getParentParameter !=null ....
-        // if (param.getValue().equals(EmfComponent.BUILTIN))
-        if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)
-                || param.getField().equals(EParameterFieldType.PROPERTY_TYPE)) {
+
+        if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
             return;
-        }
-        if (param.getParentParameter() != null) {
-            if (param.getParentParameter().getField().equals(EParameterFieldType.PROPERTY_TYPE)) {
-                IElementParameter paramBuiltInRepository = param.getParentParameter().getChildParameters().get(
-                        EParameterName.PROPERTY_TYPE.getName());
-                if (paramBuiltInRepository.getValue().equals(EmfComponent.BUILTIN)) {
-                    return;
-                }
-            }
-            if (param.getParentParameter().getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
-                IElementParameter paramBuiltInRepository = param.getParentParameter().getChildParameters().get(
-                        EParameterName.SCHEMA_TYPE.getName());
-                if (paramBuiltInRepository.getValue().equals(EmfComponent.BUILTIN)) {
-                    return;
-                }
-            }
-        }
-
-        if (param.getElement() instanceof Process) {
-            Process tempProcess = new Process(this.property);
-            IElementParameter tmpParam = tempProcess.getElementParameter(param.getName());
-            if (tmpParam != null && tmpParam.getValue() != null && tmpParam.getValue().equals(param.getValue())) {
-                return;
-            }
-            if (param != null && param.getName().equals("UPDATE_COMPONENTS")) {
-                return;
-            }
-        }
-        if (param.getElement() instanceof Node) {
-            Node curNode = (Node) param.getElement();
-            IComponent component = ComponentsFactoryProvider.getInstance().get(curNode.getComponent().getName());
-            if (param != null && param.getName().equals("REPOSITORY_ALLOW_AUTO_SWITCH")) {
-                return;
-            }
-            if (component instanceof EmfComponent) {
-                DataNode tempNode = new DataNode();
-                tempNode.setElementParameters(new ArrayList<IElementParameter>());
-                ((EmfComponent) component).addMainParameters((List<ElementParameter>) tempNode.getElementParameters(), tempNode);
-                ((EmfComponent) component).addViewParameters((List<ElementParameter>) tempNode.getElementParameters(), tempNode);
-                IElementParameter tmpParam1 = tempNode.getElementParameter(param.getName());
-                if (tmpParam1 != null && tmpParam1.getValue() != null && tmpParam1.getValue().equals(param.getValue())) {
-                    return;
-                }
-                if (tmpParam1 != null
-                        && StringUtils.equals(tmpParam1.getValue() == null ? null : tmpParam1.getValue().toString(), param
-                                .getValue() == null ? null : param.getValue().toString())) {
-
-                    return;
-                }
-            }
-        }
-        if (param.getElement() instanceof SubjobContainer) {
-            SubjobContainer subjob = new SubjobContainer(this);
-            IElementParameter subjobParam = subjob.getElementParameter(param.getName());
-            if (subjobParam != null && subjobParam.getValue() != null && subjobParam.getValue().equals(param.getValue())) {
-                // don't save this parameter as this parameter got the default value for the component
-                return;
-            }
-        }
-        if (param.getElement() instanceof Connection) {
-            Connection connection = (Connection) param.getElement();
-            IElementParameter connectionParam = connection.getElementParameter(param.getName());
-            if (connectionParam != null && connectionParam.getValue() != null
-                    && connectionParam.getValue().equals(param.getValue())) {
-                return;
-            }
         }
         pType = fileFact.createElementParameterType();
         if (param.getParentParameter() != null) {
@@ -745,11 +674,7 @@ public class Process extends Element implements IProcess2 {
                     pType.setValue(((Boolean) value).toString());
                 } else {
                     if (value instanceof String) {
-                        if (param.getField().equals(EParameterFieldType.DIRECTORY)
-                                && param.getName().equals("TEMPORARY_DATA_DIRECTORY")) {
-                            pType.setValue("");
-                        } else
-                            pType.setValue((String) value);
+                        pType.setValue((String) value);
                     }
                 }
             }
