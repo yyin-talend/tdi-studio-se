@@ -33,7 +33,7 @@ int limitvalue;
 if (limit.equals("")) 
 {
 	%>
-	limitvalue = "-1";
+	limitvalue = -1;
 	<%
 }
 else
