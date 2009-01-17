@@ -84,14 +84,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 			for(Map<String, String> tmp : sheetList){
 				if(tmp.get("USE_REGEX").equals("true")){
-				System.out.println("if");
 %>
 					sheets_<%= cid %> = new java.util.ArrayList<jxl.Sheet>();
 					sheets_<%= cid %> = new RegexUtil().getSheets(workbook_<%= cid %>,<%=tmp.get("SHEETNAME")%>);
 					sheetList_<%= cid %>.addAll(sheets_<%= cid %>);
 <%				
 				}else{
-				System.out.println("else");
 %>
 					if(workbook_<%= cid %>.getSheet(<%=tmp.get("SHEETNAME")%>) != null){
 						sheetList_<%= cid %>.add(workbook_<%= cid %>.getSheet(<%=tmp.get("SHEETNAME")%>));
