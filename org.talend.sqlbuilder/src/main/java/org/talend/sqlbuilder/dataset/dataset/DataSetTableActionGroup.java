@@ -79,12 +79,12 @@ public class DataSetTableActionGroup extends ActionGroup {
             for (int j = 0; j < ces.length; j++) {
                 try {
                     
-                    String group = ces[j].getAttribute("group");
-                    if (group == null || !group.equalsIgnoreCase("export")) {
+                    String group = ces[j].getAttribute("group"); //$NON-NLS-1$
+                    if (group == null || !group.equalsIgnoreCase("export")) { //$NON-NLS-1$
                     
                         // check if the action thinks it is suitable..
                         AbstractDataSetTableContextAction action = (AbstractDataSetTableContextAction) ces[j]
-                                .createExecutableExtension("class");
+                                .createExecutableExtension("class"); //$NON-NLS-1$
                         action.setTable(ptable);
                         action.setTableCursor(pcursor);
                         if (action.isAvailable()) {
@@ -114,12 +114,12 @@ public class DataSetTableActionGroup extends ActionGroup {
             for (int j = 0; j < ces.length; j++) {
                 try {
                     
-                    String group = ces[j].getAttribute("group");
-                    if (group != null && group.equalsIgnoreCase("export")) {
+                    String group = ces[j].getAttribute("group"); //$NON-NLS-1$
+                    if (group != null && group.equalsIgnoreCase("export")) { //$NON-NLS-1$
                     
                         // check if the action thinks it is suitable..
                         AbstractDataSetTableContextAction action = (AbstractDataSetTableContextAction) ces[j]
-                                .createExecutableExtension("class");
+                                .createExecutableExtension("class"); //$NON-NLS-1$
                         action.setTable(ptable);
                         action.setTableCursor(pcursor);
                         if (action.isAvailable()) {

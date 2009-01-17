@@ -52,7 +52,7 @@ public class SqlEditDialog extends Dialog {
 
     private StyledText colorText;
 
-    private final String language = "tsql";
+    private final String language = Messages.getString("SqlEditDialog.language"); //$NON-NLS-1$
 
     private String sql;
 
@@ -71,7 +71,7 @@ public class SqlEditDialog extends Dialog {
 
     protected void configureShell(Shell newShell) {
         super.configureShell(newShell);
-        newShell.setText(Messages.getString("GUIModificationQueryAction.TextDialog.TitleText"));
+        newShell.setText(Messages.getString("GUIModificationQueryAction.TextDialog.TitleText")); //$NON-NLS-1$
         if (title != null) {
             newShell.setText(title);
         }

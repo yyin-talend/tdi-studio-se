@@ -77,9 +77,9 @@ public class GUIModificationQueryAction extends AbstractEditorAction {
     @Override
     public String getToolTipText() {
         if (isDesigner) {
-            return Messages.getString("GUIModificationQueryAction.TextDialog.TitleText");
+            return Messages.getString("GUIModificationQueryAction.TextDialog.TitleText"); //$NON-NLS-1$
         }
-        return Messages.getString("GUIModificationQueryAction.ButtonText");
+        return Messages.getString("GUIModificationQueryAction.ButtonText"); //$NON-NLS-1$
     }
 
     /*
@@ -100,9 +100,9 @@ public class GUIModificationQueryAction extends AbstractEditorAction {
     @Override
     public String getText() {
         if (isDesigner) {
-            return Messages.getString("GUIModificationQueryAction.TextDialog.TitleText");
+            return Messages.getString("GUIModificationQueryAction.TextDialog.TitleText"); //$NON-NLS-1$
         }
-        return Messages.getString("GUIModificationQueryAction.ButtonText");
+        return Messages.getString("GUIModificationQueryAction.ButtonText"); //$NON-NLS-1$
     }
 
     /*
@@ -142,8 +142,8 @@ public class GUIModificationQueryAction extends AbstractEditorAction {
         if (dialog instanceof SQLBuilderDialog) {
             SQLBuilderDialog d = (SQLBuilderDialog) dialog;
             final CTabItem selection = d.getEditorComposite().getTabFolder().getSelection();
-            if (selection.getData("KEY") instanceof MultiPageSqlBuilderEditor) {
-                MultiPageSqlBuilderEditor editor = (MultiPageSqlBuilderEditor) selection.getData("KEY");
+            if (selection.getData("KEY") instanceof MultiPageSqlBuilderEditor) { //$NON-NLS-1$
+                MultiPageSqlBuilderEditor editor = (MultiPageSqlBuilderEditor) selection.getData("KEY"); //$NON-NLS-1$
                 switch (editor.getActivePage()) {
                 case 1:
                     isDesigner = true;
@@ -158,7 +158,7 @@ public class GUIModificationQueryAction extends AbstractEditorAction {
         String query = null;
         if (isDesigner) {
             SqlEditDialog textDialog = new SqlEditDialog(dialog.getShell(), Messages
-                    .getString("GUIModificationQueryAction.TextDialog.TitleText"), currentSql, currentNode);
+                    .getString("GUIModificationQueryAction.TextDialog.TitleText"), currentSql, currentNode); //$NON-NLS-1$
             if (Window.OK == textDialog.open()) {
                 query = textDialog.getSql();
             }
@@ -193,16 +193,16 @@ public class GUIModificationQueryAction extends AbstractEditorAction {
         if (query == null) {
             return;
         }
-        if (!query.endsWith(";\n") && !query.endsWith(";")) {
-            query += ";\n";
+        if (!query.endsWith(";\n") && !query.endsWith(";")) { //$NON-NLS-1$ //$NON-NLS-2$
+            query += ";\n"; //$NON-NLS-1$
         }
-        String targetSql = "";
+        String targetSql = ""; //$NON-NLS-1$
         boolean isfirst = true;
         QueryTokenizer qt = new QueryTokenizer(currentSql, queryDelimiter, alternateDelimiter, commentDelimiter);
         while (qt.hasQuery()) {
             String querySql = qt.nextQuery();
             if (querySql.startsWith("--") || !isfirst) { //$NON-NLS-1$
-                targetSql += querySql + ";\n";
+                targetSql += querySql + ";\n"; //$NON-NLS-1$
             } else {
                 targetSql += query;
                 isfirst = false;

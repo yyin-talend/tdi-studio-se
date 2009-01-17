@@ -62,8 +62,8 @@ public class MetadataRefreshAction extends SelectionProviderAction {
         init();
         setImageDescriptor(img);
         setHoverImageDescriptor(img);
-        setText(Messages.getString("MetadataRefreshAction.textSynchronize"));
-        setToolTipText(Messages.getString("MetadataRefreshAction.textSynchronize"));
+        setText(Messages.getString("MetadataRefreshAction.textSynchronize")); //$NON-NLS-1$
+        setToolTipText(Messages.getString("MetadataRefreshAction.textSynchronize")); //$NON-NLS-1$
     }
 
     /*

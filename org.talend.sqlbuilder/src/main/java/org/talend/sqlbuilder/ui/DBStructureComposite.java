@@ -339,7 +339,7 @@ public class DBStructureComposite extends Composite {
             if (connectionParameters.isRepository()) {
                 repositoryNodeManager.removeRepositoryNodeExceptNodeByName(connectionParameters.getRepositoryName());
             } else {
-                repositoryNodeManager.removeRepositoryNodeExceptNodeByName("Built-In");
+                repositoryNodeManager.removeRepositoryNodeExceptNodeByName("Built-In"); //$NON-NLS-1$
             }
         }
 
@@ -499,7 +499,7 @@ public class DBStructureComposite extends Composite {
         @Override
         public void run() {
             if (!MessageDialog.openConfirm(getShell(), Messages.getString("DBStructureComposite.Refresh"), Messages //$NON-NLS-1$
-                    .getString("DBStructureComposite.TakeALongTime"))) { //$NON-NLS-2$ //$NON-NLS-1$
+                    .getString("DBStructureComposite.TakeALongTime"))) { //$NON-NLS-1$
                 return;
             }
             final IRunnableWithProgress r = new IRunnableWithProgress() {

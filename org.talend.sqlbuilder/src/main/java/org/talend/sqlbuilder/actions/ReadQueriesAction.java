@@ -55,7 +55,7 @@ public class ReadQueriesAction extends AContextualAction {
         if (node.getObjectType() == ERepositoryObjectType.METADATA_CONNECTIONS) {
             connParameters.setRepositoryName(node.getObject().getLabel());
             connParameters.setRepositoryId(node.getObject().getId());
-            connParameters.setQuery("");
+            connParameters.setQuery(""); //$NON-NLS-1$
         } else if (node.getObjectType() == ERepositoryObjectType.METADATA_CON_QUERY) {
             QueryRepositoryObject queryRepositoryObject = (QueryRepositoryObject) node.getObject();
             DatabaseConnectionItem parent = (DatabaseConnectionItem) queryRepositoryObject.getProperty().getItem();

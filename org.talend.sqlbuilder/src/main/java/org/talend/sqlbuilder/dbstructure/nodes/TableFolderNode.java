@@ -13,6 +13,7 @@
 package org.talend.sqlbuilder.dbstructure.nodes;
 
 import net.sourceforge.squirrel_sql.fw.sql.ITableInfo;
+
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
@@ -51,13 +52,13 @@ public class TableFolderNode extends AbstractFolderNode {
         }
         pname = pname.trim();
 
-        if (pname.equals("View")) {
+        if (pname.equals("View")) { //$NON-NLS-1$
             pname = Messages.getString("DatabaseStructureView.view"); //$NON-NLS-1$
         }
-        if (pname.equals("Table")) {
+        if (pname.equals("Table")) { //$NON-NLS-1$
             pname = Messages.getString("DatabaseStructureView.table"); //$NON-NLS-1$
         }
-        if (pname.equals("Synonym")) {
+        if (pname.equals("Synonym")) { //$NON-NLS-1$
             pname = Messages.getString("DatabaseStructureView.synonym"); //$NON-NLS-1$
         }
     }

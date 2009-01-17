@@ -125,8 +125,8 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
             setPageText(index, Messages.getString("MultiPageSqlBuilderEditor.DesignerTab.Text")); //$NON-NLS-1$
             attachListeners();
         } catch (Exception e) {
-            MessageDialog.openError(getContainer().getShell(), Messages.getString("MultiPageSqlBuilderEditor.ErrorTitle"),
-                    Messages.getString("MultiPageSqlBuilderEditor.ErrorInfo") + e.getMessage());
+            MessageDialog.openError(getContainer().getShell(), Messages.getString("MultiPageSqlBuilderEditor.ErrorTitle"), //$NON-NLS-1$
+                    Messages.getString("MultiPageSqlBuilderEditor.ErrorInfo") + e.getMessage()); //$NON-NLS-1$
         }
 
     }
@@ -216,10 +216,10 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
     }
 
     public boolean isModified() {
-        if ("".equals(erDiagramComposite.getSqlText())) {
-            return (!"".equals(sqlEdit.getSQLToBeExecuted()));
+        if ("".equals(erDiagramComposite.getSqlText())) { //$NON-NLS-1$
+            return (!"".equals(sqlEdit.getSQLToBeExecuted())); //$NON-NLS-1$
         } else {
-            if ("".equals(sqlEdit.getSQLToBeExecuted())) {
+            if ("".equals(sqlEdit.getSQLToBeExecuted())) { //$NON-NLS-1$
                 return true;
             } else {
                 EMFRepositoryNodeManager.getInstance().setPrompt(false);
@@ -304,8 +304,8 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
                 String toSql = sqlEdit.getSQLToBeExecuted();
                 EMFRepositoryNodeManager.getInstance().updateErDiagram(isModified(), erDiagramComposite, toSql, rootNode);
             } catch (Exception e) {
-                MessageDialog.openError(getContainer().getShell(), Messages.getString("MultiPageSqlBuilderEditor.ErrorTitle"),
-                        Messages.getString("MultiPageSqlBuilderEditor.ErrorInfo") + e.getMessage());
+                MessageDialog.openError(getContainer().getShell(), Messages.getString("MultiPageSqlBuilderEditor.ErrorTitle"), //$NON-NLS-1$
+                        Messages.getString("MultiPageSqlBuilderEditor.ErrorInfo") + e.getMessage()); //$NON-NLS-1$
             }
         } else if (newPageIndex == 0) {
             if (isModified()) {
@@ -341,8 +341,8 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
     public void updateEditorTitle(String text) {
         if (text == null) {
             text = this.tabItem.getText();
-            if (!text.substring(0, 1).equals("*")) {
-                text = "*" + text;
+            if (!text.substring(0, 1).equals("*")) { //$NON-NLS-1$
+                text = "*" + text; //$NON-NLS-1$
             }
             tabItem.setText(text);
         } else {

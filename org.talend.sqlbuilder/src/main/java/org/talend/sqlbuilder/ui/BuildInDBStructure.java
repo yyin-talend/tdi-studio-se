@@ -60,9 +60,9 @@ import org.talend.sqlbuilder.util.TextUtil;
  */
 public class BuildInDBStructure extends SashForm {
 
-    private final Image tableImage = ImageUtil.getImage("Images.TableNodeIcon");
+    private final Image tableImage = ImageUtil.getImage("Images.TableNodeIcon"); //$NON-NLS-1$
 
-    private final Image columnImage = ImageUtil.getImage("Images.ColumnNodeIcon");
+    private final Image columnImage = ImageUtil.getImage("Images.ColumnNodeIcon"); //$NON-NLS-1$
 
     private final SQLBuilderDialog dialog;
 
@@ -98,15 +98,15 @@ public class BuildInDBStructure extends SashForm {
      * @return
      */
     private String getTableName(ConnectionParameters connectionParameters) {
-        String string = (connectionParameters.getSchemaName() != null && !connectionParameters.getSchemaName().equals("")) ? connectionParameters
+        String string = (connectionParameters.getSchemaName() != null && !connectionParameters.getSchemaName().equals("")) ? connectionParameters //$NON-NLS-1$
                 .getSchemaName()
                 : schema;
         string = TalendTextUtils.removeQuotes(string);
-        int indexOf = string.lastIndexOf(".");
+        int indexOf = string.lastIndexOf("."); //$NON-NLS-1$
         if (indexOf > -1) { // schema
             string = string.substring(indexOf + 1);
         }
-        string = string.replaceAll("\\\\", "");
+        string = string.replaceAll("\\\\", ""); //$NON-NLS-1$ //$NON-NLS-2$
         string = TalendTextUtils.removeQuotes(string);
         return string;
     }
@@ -195,8 +195,8 @@ public class BuildInDBStructure extends SashForm {
          * @param text
          */
         protected GenerateSqlAction(ISelectionProvider provider) {
-            super(provider, Messages.getString("GenerateSelectSQLAction.textCenerateSelectStatement"));
-            setImageDescriptor(ImageUtil.getDescriptor("Images.SqlEditorIcon"));
+            super(provider, Messages.getString("GenerateSelectSQLAction.textCenerateSelectStatement")); //$NON-NLS-1$
+            setImageDescriptor(ImageUtil.getDescriptor("Images.SqlEditorIcon")); //$NON-NLS-1$
             init();
         }
 
@@ -249,15 +249,15 @@ public class BuildInDBStructure extends SashForm {
          * @return
          */
         private String getSchemaSql() {
-            String sql = "select ";
+            String sql = "select "; //$NON-NLS-1$
             String newschema = TalendTextUtils.addQuotesWithSpaceField(schema, connectionParameters.getDbType());
             for (IMetadataColumn column : selectedNodes) {
                 sql += TextUtil.addSqlQuots(connectionParameters.getDbType(), TalendTextUtils.addQuotesWithSpaceField(column
                         .getOriginalDbColumnName(), connectionParameters.getDbType()), newschema)
-                        + ", ";
+                        + ", "; //$NON-NLS-1$
             }
             sql = sql.substring(0, sql.length() - 2);
-            sql += "\nfrom "
+            sql += "\nfrom " //$NON-NLS-1$
                     + TextUtil.addSqlQuots(connectionParameters.getDbType(), newschema, connectionParameters.getSchema());
             return sql;
         }

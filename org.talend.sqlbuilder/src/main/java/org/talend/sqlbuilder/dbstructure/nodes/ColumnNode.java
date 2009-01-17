@@ -139,7 +139,7 @@ public class ColumnNode extends AbstractNode {
      */
     public String getType() {
 
-        return "column";
+        return "column"; //$NON-NLS-1$
     }
 
     /**

@@ -175,7 +175,7 @@ class DoublyLinkedList {
         public Object next() {
             if (currentNextNode == null) {
                 throw new NoSuchElementException("Attempt to retrieve next value from " + //$NON-NLS-1$
-                        "DoublyLinkedList after all values have already been retrieved. Verify hasNext method returns true "
+                        "DoublyLinkedList after all values have already been retrieved. Verify hasNext method returns true "//$NON-NLS-1$
                         + //$NON-NLS-1$
                         "before calling next method."); //$NON-NLS-1$
             }
@@ -219,10 +219,12 @@ class DoublyLinkedList {
         }
     }
 
-    // ******************************************************************************************************************************
+    //******************************************************************************************************************
+    // ************
     // ***************************************** from here on down is test code
     // *******************************************
-    // ******************************************************************************************************************************
+    //******************************************************************************************************************
+    // ************
 
     /*
      * public static class Test { public static void main(String[] args) { DoublyLinkedList testListOne = new

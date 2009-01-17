@@ -25,7 +25,7 @@ import org.talend.sqlbuilder.util.ImageUtil;
  */
 public class SaveSQLAction extends AbstractEditorAction {
 
-    private ImageDescriptor image = ImageUtil.getDescriptor("Images.SaveSQLIcon");
+    private ImageDescriptor image = ImageUtil.getDescriptor("Images.SaveSQLIcon"); //$NON-NLS-1$
 
     private RepositoryNode repositoryNode;
 
@@ -52,7 +52,7 @@ public class SaveSQLAction extends AbstractEditorAction {
     @Override
     public String getText() {
 
-        return "Save";
+        return "Save"; //$NON-NLS-1$
     }
 
     /*

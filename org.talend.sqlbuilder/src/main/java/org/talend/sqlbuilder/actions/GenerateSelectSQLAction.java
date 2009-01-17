@@ -127,7 +127,7 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
             // }
             List<String> repositoryNames = repositoryNodeManager.getALLReposotoryNodeNames();
             ConnectionParameters connParam = new ConnectionParameters();
-            connParam.setQuery("");
+            connParam.setQuery(""); //$NON-NLS-1$
             connParam.setNeedTakePrompt(false);
             connParam.setShowDesignerPage(true);
             connParam.setEditorTitle(TextUtil.getNewQueryLabel()); //$NON-NLS-1$

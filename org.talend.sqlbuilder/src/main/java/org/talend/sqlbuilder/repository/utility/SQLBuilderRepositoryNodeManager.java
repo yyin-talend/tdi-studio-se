@@ -572,7 +572,7 @@ public class SQLBuilderRepositoryNodeManager {
 
         } else {
             if (parameters != null) {
-                parameters.setConnectionComment(managerConnection.getMessageException() == null ? "" : managerConnection
+                parameters.setConnectionComment(managerConnection.getMessageException() == null ? "" : managerConnection //$NON-NLS-1$
                         .getMessageException());
             }
         }
@@ -609,8 +609,8 @@ public class SQLBuilderRepositoryNodeManager {
         String productName = EDatabaseTypeName.getTypeFromDisplayName(dbType).getProduct();
         boolean isOralceWithSid = productName.equals(EDatabaseTypeName.ORACLEFORSID.getProduct());
         String schema = parameters.getSchema();
-        boolean isSchemaInValid = (schema == null) || (schema.equals("\'\'")) || (schema.equals("\"\""))
-                || (schema.trim().equals(""));
+        boolean isSchemaInValid = (schema == null) || (schema.equals("\'\'")) || (schema.equals("\"\"")) //$NON-NLS-1$ //$NON-NLS-2$
+                || (schema.trim().equals("")); //$NON-NLS-1$
         if (isNeedSchema && isSchemaInValid && !isOralceWithSid) { //$NON-NLS-1$
             parameters.setConnectionComment(Messages.getString("SQLBuilderRepositoryNodeManager.connectionComment")); //$NON-NLS-1$
             return null;
@@ -625,7 +625,7 @@ public class SQLBuilderRepositoryNodeManager {
         connection.setSID(parameters.getDbName());
         connection.setLabel(parameters.getDbName());
         connection.setDatasourceName(parameters.getDatasource());
-        if ("".equals(connection.getLabel())) {
+        if ("".equals(connection.getLabel())) { //$NON-NLS-1$
             connection.setLabel(parameters.getDatasource());
         }
         final String product = EDatabaseTypeName.getTypeFromDisplayName(connection.getDatabaseType()).getProduct();
@@ -634,8 +634,8 @@ public class SQLBuilderRepositoryNodeManager {
         connection.setDbmsId(mapping);
 
         if (!isSchemaInValid && isNeedSchema) {
-            schema = schema.replaceAll("\'", "");
-            schema = schema.replaceAll("\"", "");
+            schema = schema.replaceAll("\'", ""); //$NON-NLS-1$ //$NON-NLS-2$
+            schema = schema.replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
             connection.setSchema(schema); //$NON-NLS-1$ //$NON-NLS-2$
         }
         connection.setServerName(parameters.getHost());
@@ -915,7 +915,7 @@ public class SQLBuilderRepositoryNodeManager {
         // if (((SqlBuilderRepositoryObject) oldNode.getObject()).getRepositoryName().equals("Built-In")) {
 
         for (MetadataTable metadataTable : removeEmfDB) {
-            if (metadataTable.getLabel() == null || "".equals(metadataTable.getLabel())) {
+            if (metadataTable.getLabel() == null || "".equals(metadataTable.getLabel())) { //$NON-NLS-1$
                 metaFromEMF.remove(metadataTable);
             }
         }
@@ -1223,7 +1223,7 @@ public class SQLBuilderRepositoryNodeManager {
                     data2.setValue(activeQuery.getValue());
                     data2.setComment(activeQuery.getComment());
                     data2.setLabel(activeQuery.getLabel());
-                    updateEditor(activeQuery, (MultiPageSqlBuilderEditor) item.getData("KEY"));
+                    updateEditor(activeQuery, (MultiPageSqlBuilderEditor) item.getData("KEY")); //$NON-NLS-1$
                 }
             }
         }
@@ -1269,7 +1269,7 @@ class MetadataTableComparator implements Comparator<MetadataTable> {
 class MetadataColumnComparator implements Comparator<MetadataColumn> {
 
     public int compare(MetadataColumn o1, MetadataColumn o2) {
-        if (o1.getOriginalField() == null || "".equals(o1.getOriginalField()) || " ".equals(o1.getOriginalField())
+        if (o1.getOriginalField() == null || "".equals(o1.getOriginalField()) || " ".equals(o1.getOriginalField()) //$NON-NLS-1$ //$NON-NLS-2$
                 || o2.getOriginalField() == null) {
             return -1;
         } else {

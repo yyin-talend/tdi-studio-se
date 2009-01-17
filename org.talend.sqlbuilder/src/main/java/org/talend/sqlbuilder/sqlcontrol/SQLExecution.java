@@ -78,7 +78,7 @@ public class SQLExecution extends AbstractSQLExecution {
                     }
                     new DataSetTable(composite, sqlResult.getDataSet(), statusMessage, true);
 
-                    composite.setData("parenttab", parentTab);
+                    composite.setData("parenttab", parentTab); //$NON-NLS-1$
 
                 } catch (Exception e) {
 

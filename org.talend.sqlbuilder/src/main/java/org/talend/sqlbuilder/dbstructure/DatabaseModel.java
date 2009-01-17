@@ -122,7 +122,7 @@ public class DatabaseModel implements INode {
      */
     public String getQualifiedName() {
 
-        return "databaseModel";
+        return "databaseModel"; //$NON-NLS-1$
     }
 
     /**
@@ -160,7 +160,7 @@ public class DatabaseModel implements INode {
      */
     public String getType() {
 
-        return "model";
+        return "model"; //$NON-NLS-1$
     }
 
     /**

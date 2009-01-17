@@ -89,7 +89,7 @@ public class DataSetTableKeyListener implements KeyListener {
         pparent = parent;
         pcursor = cursor;
         
-        Object o = pparent.getData("IDetailTab");
+        Object o = pparent.getData("IDetailTab"); //$NON-NLS-1$
         if (o != null) {
             ptab = (IDetailTab) o;
         }        
@@ -158,7 +158,7 @@ public class DataSetTableKeyListener implements KeyListener {
 
             // refresh SQL Results
             try {
-                Object o = pparent.getData("parenttab");
+                Object o = pparent.getData("parenttab"); //$NON-NLS-1$
                 if (o != null) {
                     SQLExecution sqlExec = (SQLExecution) ((TabItem) o).getData();
                     if (sqlExec != null) {

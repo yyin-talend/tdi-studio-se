@@ -179,7 +179,7 @@ public class SQLEditorProposalUtil {
                 } else {
                     tempStr = str.replace(originalStr, aliasStr);
                 }
-                needChangedList.add("alias: " + tempStr + "\n" + "Description: This is alias of " + str); //$NON-NLS-2$
+                needChangedList.add(Messages.getString("SQLEditorProposalUtil.needChanged", tempStr, str)); //$NON-NLS-1$
 
                 // Sets key and values into tablesAndColums.
                 String newElement = ""; //$NON-NLS-1$
@@ -375,7 +375,7 @@ public class SQLEditorProposalUtil {
             if (before.lastIndexOf(";") == -1) { //$NON-NLS-1$
                 curSql[0] = before.replaceAll("\n", ""); //$NON-NLS-1$ //$NON-NLS-2$
             } else {
-                curSql[0] = before.substring(before.lastIndexOf(";") + 1, position).replaceAll("\n", "");
+                curSql[0] = before.substring(before.lastIndexOf(";") + 1, position).replaceAll("\n", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             }
         } else {
             curSql[0] = ""; //$NON-NLS-1$
@@ -434,7 +434,7 @@ public class SQLEditorProposalUtil {
         }
     }
 
-    String hasInput = "";
+    String hasInput = ""; //$NON-NLS-1$
 
     /**
      * dev Comment method "hasSQLQueryProposal".
@@ -469,8 +469,8 @@ public class SQLEditorProposalUtil {
      * @return
      */
     private int checkTableName(String[] curSql) {
-        int seqIndex = curSql[0].lastIndexOf(" ");
-        int quoteIndex = curSql[0].lastIndexOf(",");
+        int seqIndex = curSql[0].lastIndexOf(" "); //$NON-NLS-1$
+        int quoteIndex = curSql[0].lastIndexOf(","); //$NON-NLS-1$
         if (quoteIndex > seqIndex) {
             seqIndex = quoteIndex;
         }
@@ -524,7 +524,7 @@ public class SQLEditorProposalUtil {
                 } else {
                     tmp2 = string;
                 }
-                int index3 = string.indexOf("alias: ");
+                int index3 = string.indexOf("alias: "); //$NON-NLS-1$
                 if (index3 != -1) {
                     String string2 = string.substring(index3 + 7, string.indexOf("\n")); //$NON-NLS-1$
                     index = string2.indexOf("."); //$NON-NLS-1$

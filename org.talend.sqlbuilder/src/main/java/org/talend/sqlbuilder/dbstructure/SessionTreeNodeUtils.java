@@ -88,7 +88,7 @@ public class SessionTreeNodeUtils {
     public static SessionTreeNode getSessionTreeNode(DatabaseConnection dbconnection, RepositoryNode repositoryNode)
             throws Exception {
         SQLConnection connection = createSQLConnection(dbconnection);
-        ISQLAlias alias = createSQLAlias("Repository Name", dbconnection.getURL(), dbconnection.getUsername(), dbconnection
+        ISQLAlias alias = createSQLAlias("Repository Name", dbconnection.getURL(), dbconnection.getUsername(), dbconnection //$NON-NLS-1$
                 .getPassword(), dbconnection.getSID().length() == 0 ? dbconnection.getDatasourceName() : dbconnection.getSID());
         SessionTreeModel stm = new SessionTreeModel();
         SessionTreeNode session;
@@ -114,7 +114,7 @@ public class SessionTreeNodeUtils {
             alias.setUserName(userName);
             alias.setPassword(password);
             alias.setSchemaFilterExpression(databaseName);
-            alias.setFolderFilterExpression("Tables,Views,Synonyms");
+            alias.setFolderFilterExpression("Tables,Views,Synonyms"); //$NON-NLS-1$
         } catch (Exception e) {
             SqlBuilderPlugin.log(e.getMessage(), e);
         }

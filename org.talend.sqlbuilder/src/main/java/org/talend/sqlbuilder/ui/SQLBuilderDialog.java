@@ -427,7 +427,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
         CTabItem[] a = folder.getItems();
         for (int i = 0; i < a.length; i++) {
             CTabItem itm = a[i];
-            Object obj = itm.getData("KEY");
+            Object obj = itm.getData("KEY"); //$NON-NLS-1$
             if (obj instanceof MultiPageSqlBuilderEditor) {
                 editor = (MultiPageSqlBuilderEditor) obj;
             }
@@ -474,7 +474,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
                 for (int i = 0; i < items.length; i++) {
                     CTabItem item = items[i];
                     final String text = item.getText();
-                    boolean isInfo2 = text.length() > 1 && text.substring(0, 1).equals("*");
+                    boolean isInfo2 = text.length() > 1 && text.substring(0, 1).equals("*"); //$NON-NLS-1$
                     if (isInfo2) {
                         isInfo = true;
                     }
@@ -486,10 +486,10 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
                     if (openQuestion) {
                         for (CTabItem item : items) {
                             final String text = item.getText();
-                            boolean isInfo2 = text.length() > 1 && text.substring(0, 1).equals("*");
+                            boolean isInfo2 = text.length() > 1 && text.substring(0, 1).equals("*"); //$NON-NLS-1$
                             if (isInfo2) {
                                 MultiPageSqlBuilderEditor meditor = null;
-                                Object control = item.getData("KEY");
+                                Object control = item.getData("KEY"); //$NON-NLS-1$
                                 if (control instanceof MultiPageSqlBuilderEditor) {
                                     meditor = (MultiPageSqlBuilderEditor) control;
                                 }
@@ -551,7 +551,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
          * @param provider
          */
         public RefreshDetailCompositeAction(ISelectionProvider provider) {
-            super(provider, "Refresh DetailComposite");
+            super(provider, "Refresh DetailComposite"); //$NON-NLS-1$
         }
 
         /*

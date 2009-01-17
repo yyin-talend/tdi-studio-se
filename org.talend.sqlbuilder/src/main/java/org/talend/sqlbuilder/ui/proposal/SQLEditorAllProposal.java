@@ -58,16 +58,16 @@ public class SQLEditorAllProposal implements IContentProposal {
 
         if (!TextUtil.isDoubleQuotesNeededDbType(dbType)) { //$NON-NLS-1$
             hasString = initHasString(hasString);
-            if (!label.contains(" ")) {
+            if (!label.contains(" ")) { //$NON-NLS-1$
                 label = label.replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
             }
         } else {
             hasString = initHasStringForPostgres(hasString);
         }
         if (label.length() < hasString.length()) {
-            label = "";
-            content = "";
-            description = "";
+            label = ""; //$NON-NLS-1$
+            content = ""; //$NON-NLS-1$
+            description = ""; //$NON-NLS-1$
             this.position = position;
             return;
         }
@@ -91,8 +91,8 @@ public class SQLEditorAllProposal implements IContentProposal {
      */
     private String initContent(String hasString, String[] contents, String dbType, int position2) {
         String tmp = initLabel(dbType);
-        String c1 = "";
-        if (label.contains(" ") && !TextUtil.isDoubleQuotesNeededDbType(dbType)) {
+        String c1 = ""; //$NON-NLS-1$
+        if (label.contains(" ") && !TextUtil.isDoubleQuotesNeededDbType(dbType)) { //$NON-NLS-1$
             tmp = TalendTextUtils.addQuotesWithSpaceField(tmp, dbType);
             c1 = contents[0].substring(0, contents[0].length() - hasString.length());
             // contents[0] += tmp.substring(0, tmp.indexOf(hasString) + hasString.length());
@@ -118,7 +118,7 @@ public class SQLEditorAllProposal implements IContentProposal {
                 image = ImageUtil.getImage("Images.ColumnIcon"); //$NON-NLS-1$
             }
         }
-        if (allString.indexOf("alias: ") != -1) {
+        if (allString.indexOf("alias: ") != -1) { //$NON-NLS-1$
             image = ImageUtil.getImage("Image.sqlAliasIcon"); //$NON-NLS-1$
             this.allString = this.allString.substring(0, this.allString.indexOf("\n")); //$NON-NLS-1$
         }
@@ -209,18 +209,18 @@ public class SQLEditorAllProposal implements IContentProposal {
                 String newHasString = hasString; //$NON-NLS-1$ //$NON-NLS-2$
 
                 String newQualityName = qualityName; //$NON-NLS-1$ //$NON-NLS-2$
-                if (!hasString.contains(" ")) {
-                    newQualityName = newQualityName.replaceAll("\"", "");
+                if (!hasString.contains(" ")) { //$NON-NLS-1$
+                    newQualityName = newQualityName.replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
                 }
                 index3 = newQualityName.indexOf("."); //$NON-NLS-1$
-                boolean b = qualityName.replaceAll("\"", "").toLowerCase().startsWith(
+                boolean b = qualityName.replaceAll("\"", "").toLowerCase().startsWith( //$NON-NLS-1$ //$NON-NLS-2$
                         TalendTextUtils.removeQuotesForField(hasString, dbType).toLowerCase());
                 b = b
-                        || newQualityName.replaceAll("\"", "").toLowerCase().startsWith(
+                        || newQualityName.replaceAll("\"", "").toLowerCase().startsWith( //$NON-NLS-1$ //$NON-NLS-2$
                                 TalendTextUtils.removeQuotesForField(newHasString, dbType).toLowerCase());
                 b = b || qualityName.toLowerCase().startsWith(hasString.toLowerCase())
                         || newQualityName.toLowerCase().startsWith(newHasString.toLowerCase());
-                if (!"".equals(hasString) && b) {
+                if (!"".equals(hasString) && b) { //$NON-NLS-1$
                     if (hasString.indexOf(".") > -1) { //$NON-NLS-1$
                         hasString = hasString.substring(index3 + 1);
                     }

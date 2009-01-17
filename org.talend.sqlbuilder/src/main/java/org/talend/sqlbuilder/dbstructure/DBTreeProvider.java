@@ -313,7 +313,7 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
         } else {
             connectionRepositoryObject.setRepositoryName(repositoryObject.getLabel());
         }
-        connectionRepositoryObject.setSourceName((sid == null || sid.trim().equals("")) ? connection.getDatasourceName() : sid);
+        connectionRepositoryObject.setSourceName((sid == null || sid.trim().equals("")) ? connection.getDatasourceName() : sid); //$NON-NLS-1$
         if (!isBuildIn) {
             connectionRepositoryObject.setImage(IMAGES_CONNECTION_ICON);
         } else {

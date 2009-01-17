@@ -151,7 +151,7 @@ public class SQLTextViewer extends SourceViewer {
 
             public String getHoverInfo(ISourceViewer sourceViewer, int lineNumber) {
 
-                return "hover info";
+                return "hover info"; //$NON-NLS-1$
             }
         });
         setHoverControlCreator(new IInformationControlCreator() {

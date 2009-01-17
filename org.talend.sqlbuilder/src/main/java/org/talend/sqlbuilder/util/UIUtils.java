@@ -169,7 +169,7 @@ public class UIUtils {
                 if (dialog != null && dialog.getShell() != null && !dialog.getShell().isDisposed()) {
                     if (dialog.getShell().getText().contains(uniqueName)) {
                         String title = TalendTextUtils.SQL_BUILDER_TITLE_COMP_MODPREFIX + jobName;
-                        title += TalendTextUtils.SQL_BUILDER_TITLE_COMP_NAME + newLabel + "(" + uniqueName + ")";
+                        title += TalendTextUtils.SQL_BUILDER_TITLE_COMP_NAME + newLabel + "(" + uniqueName + ")"; //$NON-NLS-1$ //$NON-NLS-2$
                         dialog.getShell().setText(title);
                     }
                 }

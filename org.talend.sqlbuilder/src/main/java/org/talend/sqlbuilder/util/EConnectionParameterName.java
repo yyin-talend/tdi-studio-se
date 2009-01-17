@@ -27,11 +27,11 @@ public enum EConnectionParameterName {
     PASSWORD(Messages.getString("ConnectionParameterName.PasswordLabel")), //$NON-NLS-1$
     FILE(Messages.getString("ConnectionParameterName.DbfileLabel")), //$NON-NLS-1$
     DIRECTORY(Messages.getString("ConnectionParameterName.DbPathLabel")), //$NON-NLS-1$
-    PROPERTIES_STRING("Additional JDBC Parameters"),
+    PROPERTIES_STRING("Additional JDBC Parameters"), //$NON-NLS-1$
     DATASOURCE("DataSource"), //$NON-NLS-1$
-    DRIVER_JAR("Driver jar"),
-    DRIVER_CLASS("Driver class"),
-    URL("Url");
+    DRIVER_JAR("Driver jar"), //$NON-NLS-1$
+    DRIVER_CLASS("Driver class"), //$NON-NLS-1$
+    URL("Url"); //$NON-NLS-1$
 
     private String displayName;
 

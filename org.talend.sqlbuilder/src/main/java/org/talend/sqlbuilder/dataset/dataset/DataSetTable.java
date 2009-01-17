@@ -102,7 +102,7 @@ public class DataSetTable {
                 }
 
                 // sort the data based on column and direction
-                dataSet.sort(((Integer) currentColumn.getData("orignalColumnIndex")).intValue(), dir);
+                dataSet.sort(((Integer) currentColumn.getData("orignalColumnIndex")).intValue(), dir); //$NON-NLS-1$
 
                 // update data displayed in table
                 table.setSortDirection(dir);
@@ -135,7 +135,7 @@ public class DataSetTable {
             column.setMoveable(true);
             column.setResizable(true);
             column.addListener(SWT.Selection, sortListener);
-            column.setData("orignalColumnIndex", new Integer(i));
+            column.setData("orignalColumnIndex", new Integer(i)); //$NON-NLS-1$
         }
 
         tableViewer.setContentProvider(new DataSetTableContentProvider());

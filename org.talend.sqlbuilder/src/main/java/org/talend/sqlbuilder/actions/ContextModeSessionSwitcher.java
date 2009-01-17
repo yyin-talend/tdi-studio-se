@@ -22,6 +22,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.impl.QueryImpl;
+import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.editors.MultiPageSqlBuilderEditor;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.ui.editor.ISQLEditor;
@@ -54,7 +55,7 @@ public class ContextModeSessionSwitcher extends ControlContribution {
     }
 
     public ContextModeSessionSwitcher(ISQLEditor editor, ContextModeAction contextmodeaction) {
-        super("org.talend.sqlbuilder.ContextModeSessionSwitcher");
+        super("org.talend.sqlbuilder.ContextModeSessionSwitcher"); //$NON-NLS-1$
         this.editor = editor;
         this.contextmodeaction = contextmodeaction;
     }
@@ -64,7 +65,7 @@ public class ContextModeSessionSwitcher extends ControlContribution {
     @Override
     protected Control createControl(Composite parent) {
         button = new Button(parent, SWT.CHECK);
-        button.setText("context mode");
+        button.setText(Messages.getString("ContextModeSessionSwitcher.buttonText")); //$NON-NLS-1$
         final Query query = (QueryImpl) contextmodeaction.getQuery();
         // judge from repository node
         if (query != null) {

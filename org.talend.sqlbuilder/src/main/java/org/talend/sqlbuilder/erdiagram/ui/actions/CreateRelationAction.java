@@ -36,7 +36,7 @@ public class CreateRelationAction extends SelectionAction {
 
     private IWorkbenchPart part;
 
-    private static final String NEW_RELATION = "Equal"; 
+    private static final String NEW_RELATION = "Equal";  //$NON-NLS-1$
 
     public static final String ID = "org.talend.sqlbuider.erdiagram.ui.actions.CreateRelationAction"; //$NON-NLS-1$
 

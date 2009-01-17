@@ -58,13 +58,13 @@ import org.talend.sqlbuilder.util.UIUtils;
 public abstract class AbstractSQLEditorComposite extends Composite implements ISQLEditor {
 
     public static final String[] SUPPORTED_FILETYPES = new String[] { "*.txt", //$NON-NLS-1$
-            "*.sql", "*.*" };
+            "*.sql", "*.*" }; //$NON-NLS-1$ //$NON-NLS-2$
 
     public ISQLBuilderDialog dialog;
 
     protected ConnectionParameters connParam;
 
-    public static final String QUERY_PREFIX = Messages.getString("SQLBuilderEditorComposite.titleQuery");
+    public static final String QUERY_PREFIX = Messages.getString("SQLBuilderEditorComposite.titleQuery"); //$NON-NLS-1$
 
     private boolean ifcontext;
 
@@ -83,17 +83,17 @@ public abstract class AbstractSQLEditorComposite extends Composite implements IS
         this.dialog = d;
     }
 
-    private String title2 = "";
+    private String title2 = ""; //$NON-NLS-1$
 
     protected void setEditorTitle(RepositoryNode node, ConnectionParameters connParam, CTabItem tabItem) {
         String dbName = SQLBuilderRepositoryNodeManager.getDatabaseNameByRepositoryNode(node);
-        String title = "";
+        String title = ""; //$NON-NLS-1$
         if (connParam.isFromDBNode()) {
             String selectedComponentName = connParam.getSelectedComponentName();
             if (selectedComponentName != null && selectedComponentName.length() != 0) {
                 title = selectedComponentName + "."; //$NON-NLS-1$
             }
-            title = dbName + "(" + getRepositoryName() + ").sql";
+            title = dbName + "(" + getRepositoryName() + ").sql"; //$NON-NLS-1$ //$NON-NLS-2$
             tabItem.setText(title);
         } else {
             if (connParam.getQueryObject() != null) {
@@ -234,7 +234,7 @@ public abstract class AbstractSQLEditorComposite extends Composite implements IS
         return repositoryName;
     }
 
-    public static final String ID = "sqlbuilder.sqleditor.designer";
+    public static final String ID = "sqlbuilder.sqleditor.designer"; //$NON-NLS-1$
 
     protected ToolBarManager defaultToolBarMgr;
 

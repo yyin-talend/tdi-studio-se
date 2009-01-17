@@ -68,7 +68,7 @@ public class ContextModeAction extends AbstractEditorAction {
 
     @Override
     public String getText() {
-        return "context mode";
+        return "context mode"; //$NON-NLS-1$
     }
 
     public boolean isChecked() {

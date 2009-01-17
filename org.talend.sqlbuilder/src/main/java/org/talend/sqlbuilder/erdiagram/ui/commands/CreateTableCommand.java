@@ -75,7 +75,7 @@ public class CreateTableCommand extends Command {
         IRunnableWithProgress progress = new IRunnableWithProgress() {
 
             public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                monitor.beginTask("", IProgressMonitor.UNKNOWN);
+                monitor.beginTask("", IProgressMonitor.UNKNOWN); //$NON-NLS-1$
                 try {
                     fks = EMFRepositoryNodeManager.getInstance().getPKFromTables(erDiagram.getMetadataTables());
                 } finally {

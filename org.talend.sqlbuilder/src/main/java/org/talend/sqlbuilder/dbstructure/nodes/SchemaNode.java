@@ -243,7 +243,7 @@ public class SchemaNode extends AbstractNode {
      */
     public String getType() {
 
-        return "schema";
+        return "schema"; //$NON-NLS-1$
     }
 
     /**

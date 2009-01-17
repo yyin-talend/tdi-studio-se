@@ -57,9 +57,9 @@ public class ConnectionParameters {
      * 
      */
     public enum EFrameworkKeyName {
-        EMBEDED("Embeded"),
-        JCCJDBC("JCCJDBC"),
-        DERBYCLIENT("DerbyClient");
+        EMBEDED("Embeded"), //$NON-NLS-1$
+        JCCJDBC("JCCJDBC"), //$NON-NLS-1$
+        DERBYCLIENT("DerbyClient"); //$NON-NLS-1$
 
         /**
          * qzhang ConnectionParameters.EFrameworkKeyName constructor comment.
@@ -100,43 +100,43 @@ public class ConnectionParameters {
 
     private IMetadataTable metadataTable;
 
-    private String schemaName = "";
+    private String schemaName = ""; //$NON-NLS-1$
 
-    private String query = "";
+    private String query = ""; //$NON-NLS-1$
 
-    private String port = "";
+    private String port = ""; //$NON-NLS-1$
 
-    private String userName = "";
+    private String userName = ""; //$NON-NLS-1$
 
-    private String password = "";
+    private String password = ""; //$NON-NLS-1$
 
-    private String host = "";
+    private String host = ""; //$NON-NLS-1$
 
-    private String dbName = "";
+    private String dbName = ""; //$NON-NLS-1$
 
-    private String dbType = "";
+    private String dbType = ""; //$NON-NLS-1$
 
-    private String datasource = "";
+    private String datasource = ""; //$NON-NLS-1$
 
-    private String filename = "";
+    private String filename = ""; //$NON-NLS-1$
 
-    private String directory = "";
+    private String directory = ""; //$NON-NLS-1$
 
-    private String repositoryName = "";
+    private String repositoryName = ""; //$NON-NLS-1$
 
-    private String repositoryId = "";
+    private String repositoryId = ""; //$NON-NLS-1$
 
-    private String selectedComponentName = "";
+    private String selectedComponentName = ""; //$NON-NLS-1$
 
     private Query queryObject;
 
     private RepositoryNode repositoryNodeBuiltIn;
 
-    private String connectionComment = "";
+    private String connectionComment = ""; //$NON-NLS-1$
 
     private boolean status = true;
 
-    private String schema = "";
+    private String schema = ""; //$NON-NLS-1$
 
     private boolean isShowDialog = false;
 
@@ -148,9 +148,9 @@ public class ConnectionParameters {
 
     private EParameterFieldType fieldType;
 
-    private String selectDBTable = "";
+    private String selectDBTable = ""; //$NON-NLS-1$
 
-    private String jdbcProperties = "";
+    private String jdbcProperties = ""; //$NON-NLS-1$
 
     /*
      * Use for general jdbc connection.
@@ -265,7 +265,7 @@ public class ConnectionParameters {
      */
     public void setFilename(String filename) {
         this.filename = TextUtil.removeQuots(filename);
-        if (filename != null && !"".equals(this.filename)) {
+        if (filename != null && !"".equals(this.filename)) { //$NON-NLS-1$
             IPath path = new Path(this.filename);
             path = path.removeFileExtension();
             this.dbName = path.segment(path.segmentCount() - 1);
@@ -315,12 +315,12 @@ public class ConnectionParameters {
         if (dbType != null) {
             this.dbType = TextUtil.removeQuots(EDatabaseTypeName.getTypeFromDbType(dbType).getDisplayName());
         } else {
-            this.dbType = "";
+            this.dbType = ""; //$NON-NLS-1$
         }
     }
 
     public boolean isRepository() {
-        return repositoryName != null && !"".equals(repositoryName);
+        return repositoryName != null && !"".equals(repositoryName); //$NON-NLS-1$
     }
 
     /**
@@ -693,11 +693,11 @@ public class ConnectionParameters {
      */
     public void setFrameworkType(String frameworkType) {
         frameworkType = TextUtil.removeQuots(frameworkType);
-        if (!frameworkType.equals("")) {
+        if (!frameworkType.equals("")) { //$NON-NLS-1$
             for (EFrameworkKeyName keyname : EFrameworkKeyName.values()) {
                 if (frameworkType.equals(keyname.toString())) {
                     frameworkType = keyname.getDisplayName();
-                    setDbType(getDbType() + " " + frameworkType);
+                    setDbType(getDbType() + " " + frameworkType); //$NON-NLS-1$
                     break;
                 }
             }

@@ -123,7 +123,7 @@ public class SQLBuilderTabComposite extends Composite {
      * @param isDefaultEditor
      */
     private void createTabItem(RepositoryNode node, ConnectionParameters connParam, boolean isDefaultEditor) {
-        String queryStr = "";
+        String queryStr = ""; //$NON-NLS-1$
         if (node != null) {
             CTabItem[] tabItems = tabFolder.getItems();
             for (int i = 0; i < tabItems.length; i++) {
@@ -175,12 +175,12 @@ public class SQLBuilderTabComposite extends Composite {
         // builderEditorComposite.setQueryObject(dialog.getConnParameters().getQueryObject());
         // builderEditorComposite.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
 
-        if (!"".equals(queryStr)) {
+        if (!"".equals(queryStr)) { //$NON-NLS-1$
             try {
                 nodesSel = EMFRepositoryNodeManager.getInstance().parseSqlStatement(queryStr, node);
             } catch (Exception e) {
-                MessageDialog.openError(new Shell(), Messages.getString("SQLBuilderTabComposite.Notice.title"), Messages
-                        .getString("SQLBuilderTabComposite.Notice.Info"));
+                MessageDialog.openError(new Shell(), Messages.getString("SQLBuilderTabComposite.Notice.title"), Messages //$NON-NLS-1$
+                        .getString("SQLBuilderTabComposite.Notice.Info")); //$NON-NLS-1$
             }
         }
         MultiPageSqlBuilderEditor builderEditor = new MultiPageSqlBuilderEditor(nodesSel, tabItem, isDefaultEditor, connParam,
@@ -233,7 +233,7 @@ public class SQLBuilderTabComposite extends Composite {
                 return editorComposite.getSQLToBeExecuted();
             }
         }
-        return "";
+        return ""; //$NON-NLS-1$
     }
 
     public CTabFolder getTabFolder() {

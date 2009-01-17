@@ -789,7 +789,7 @@ public class SQLEditorProposalAdapter {
         private void updateIntialFilterText() {
             if (controlContentAdapter instanceof IControlContentAdapterExtended && filterStyle == FILTER_CUMULATIVE) {
                 filterText = ((IControlContentAdapterExtended) controlContentAdapter).getFilterValue(getControl());
-                System.out.println("Update initialfilter: " + filterText);
+                System.out.println(Messages.getString("SQLEditorProposalAdapter.updateFilter", filterText)); //$NON-NLS-1$
             }
         }
 
@@ -1134,7 +1134,7 @@ public class SQLEditorProposalAdapter {
          * Show the proposal description in a secondary popup.
          */
         private void showProposalDescription(String description) {
-            // If we do not already have a pending update, then
+            // If we do not already have a pending , then
             // create a thread now that will show the proposal description
             if (!pendingDescriptionUpdate && description != null) {
                 // Create a thread that will sleep for the specified delay
@@ -1459,9 +1459,9 @@ public class SQLEditorProposalAdapter {
      * then proposals will be activated automatically when any of the auto activation characters are typed.
      * @param autoActivationCharacters An array of characters that trigger auto-activation of content proposal. If
      * specified, these characters will trigger auto-activation of the proposal popup, regardless of whether an explicit
-     * invocation keyStroke was specified. If this parameter is <code>null</code>, then only a specified keyStroke
-     * will invoke content proposal. If this parameter is <code>null</code> and the keyStroke parameter is
-     * <code>null</code>, then all alphanumeric characters will auto-activate content proposal.
+     * invocation keyStroke was specified. If this parameter is <code>null</code>, then only a specified keyStroke will
+     * invoke content proposal. If this parameter is <code>null</code> and the keyStroke parameter is <code>null</code>,
+     * then all alphanumeric characters will auto-activate content proposal.
      */
     public SQLEditorProposalAdapter(Control control, IControlContentAdapter controlContentAdapter,
             IContentProposalProvider proposalProvider, KeyStroke keyStroke, char[] autoActivationCharacters) {
@@ -1543,9 +1543,9 @@ public class SQLEditorProposalAdapter {
      * 
      * @return An array of characters that trigger auto-activation of content proposal. If specified, these characters
      * will trigger auto-activation of the proposal popup, regardless of whether an explicit invocation keyStroke was
-     * specified. If this parameter is <code>null</code>, then only a specified keyStroke will invoke content
-     * proposal. If this value is <code>null</code> and the keyStroke value is <code>null</code>, then all
-     * alphanumeric characters will auto-activate content proposal.
+     * specified. If this parameter is <code>null</code>, then only a specified keyStroke will invoke content proposal.
+     * If this value is <code>null</code> and the keyStroke value is <code>null</code>, then all alphanumeric characters
+     * will auto-activate content proposal.
      */
     public char[] getAutoActivationCharacters() {
         if (autoActivateString == null) {
@@ -1559,9 +1559,9 @@ public class SQLEditorProposalAdapter {
      * 
      * @param autoActivationCharacters An array of characters that trigger auto-activation of content proposal. If
      * specified, these characters will trigger auto-activation of the proposal popup, regardless of whether an explicit
-     * invocation keyStroke was specified. If this parameter is <code>null</code>, then only a specified keyStroke
-     * will invoke content proposal. If this parameter is <code>null</code> and the keyStroke value is
-     * <code>null</code>, then all alphanumeric characters will auto-activate content proposal.
+     * invocation keyStroke was specified. If this parameter is <code>null</code>, then only a specified keyStroke will
+     * invoke content proposal. If this parameter is <code>null</code> and the keyStroke value is <code>null</code>,
+     * then all alphanumeric characters will auto-activate content proposal.
      * 
      */
     public void setAutoActivationCharacters(char[] autoActivationCharacters) {
@@ -1592,8 +1592,8 @@ public class SQLEditorProposalAdapter {
      * Get the integer style that indicates how an accepted proposal affects the control's content.
      * 
      * @return a constant indicating how an accepted proposal should affect the control's content. Should be one of
-     * <code>PROPOSAL_INSERT</code>, <code>PROPOSAL_REPLACE</code>, or <code>PROPOSAL_IGNORE</code>. (Default
-     * is <code>PROPOSAL_INSERT</code>).
+     * <code>PROPOSAL_INSERT</code>, <code>PROPOSAL_REPLACE</code>, or <code>PROPOSAL_IGNORE</code>. (Default is
+     * <code>PROPOSAL_INSERT</code>).
      */
     public int getProposalAcceptanceStyle() {
         return proposalAcceptanceStyle;
@@ -1689,8 +1689,8 @@ public class SQLEditorProposalAdapter {
     /**
      * Set the boolean flag that determines whether the adapter is enabled.
      * 
-     * @param enabled <code>true</code> if the adapter is enabled and responding to user input, <code>false</code>
-     * if it is ignoring user input.
+     * @param enabled <code>true</code> if the adapter is enabled and responding to user input, <code>false</code> if it
+     * is ignoring user input.
      * 
      */
     public void setEnabled(boolean enabled) {

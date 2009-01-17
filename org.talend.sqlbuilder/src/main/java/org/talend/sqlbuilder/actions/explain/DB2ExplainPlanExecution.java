@@ -134,7 +134,7 @@ public class DB2ExplainPlanExecution extends AbstractSQLExecution {
                 composite.setLayout(gLayout);
 
                 try {
-                    composite.setData("parenttab", parentTab);
+                    composite.setData("parenttab", parentTab); //$NON-NLS-1$
 
                     Composite pp = new Composite(composite, SWT.NULL);
                     pp.setLayout(new FillLayout());
@@ -217,7 +217,7 @@ public class DB2ExplainPlanExecution extends AbstractSQLExecution {
 
                                 // refresh SQL Results
                                 try {
-                                    Object o = parent.getData("parenttab");
+                                    Object o = parent.getData("parenttab"); //$NON-NLS-1$
                                     if (o != null) {
                                         AbstractSQLExecution sqlExec = (AbstractSQLExecution) ((TabItem) o).getData();
                                         if (sqlExec != null) {

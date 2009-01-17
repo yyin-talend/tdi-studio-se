@@ -41,7 +41,7 @@ import org.talend.sqlbuilder.Messages;
  */
 public class SQLPropertyDialog extends TitleAreaDialog {
 
-    private static String dialogTitle = "";
+    private static String dialogTitle = ""; //$NON-NLS-1$
 
     private Text commentText;
 
@@ -246,10 +246,10 @@ public class SQLPropertyDialog extends TitleAreaDialog {
     }
 
     public static void setDialogTitle(String dialogTitle) {
-        if (dialogTitle.substring(0, 1).equals("*")) {
+        if (dialogTitle.substring(0, 1).equals("*")) { //$NON-NLS-1$
             dialogTitle = dialogTitle.substring(1);
         }
-        SQLPropertyDialog.dialogTitle = "\"" + dialogTitle + "\" ";
-        SQLPropertyDialog.dialogTitle += Messages.getString("SQLEditor.SaveSQLDialog.Title");
+        SQLPropertyDialog.dialogTitle = "\"" + dialogTitle + "\" "; //$NON-NLS-1$ //$NON-NLS-2$
+        SQLPropertyDialog.dialogTitle += Messages.getString("SQLEditor.SaveSQLDialog.Title"); //$NON-NLS-1$
     }
 }

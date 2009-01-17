@@ -50,7 +50,7 @@ public abstract class AbstractDataSetTab extends AbstractTab {
             }
 
             // store for later use in dataset table
-            composite.setData("IDetailTab", this);
+            composite.setData("IDetailTab", this); //$NON-NLS-1$
 
             new DataSetTable(composite, dataSet, getStatusMessage(), false);
 

@@ -37,7 +37,7 @@ public class TextUtil {
 
     private static String dialogTitle;
 
-    public static final String KEY = "KEY";
+    public static final String KEY = "KEY"; //$NON-NLS-1$
 
     /**
      * qzhang TextUtil constructor comment.
@@ -46,7 +46,7 @@ public class TextUtil {
     }
 
     public static String getNewQueryLabel() {
-        return Messages.getString("GenerateSelectSQLAction.NewQuery") + num++;
+        return Messages.getString("GenerateSelectSQLAction.NewQuery", num++); //$NON-NLS-1$
     }
 
     /**
@@ -174,15 +174,15 @@ public class TextUtil {
 
     public static String addSqlQuots(String dbType, String sql, String schema) {
         if (isDoubleQuotesNeededDbType(dbType)) {
-            if (schema != null && !"".equals(schema)) {
-                sql = "\"" + schema + "\".\"" + sql + "\"";
+            if (schema != null && !"".equals(schema)) { //$NON-NLS-1$
+                sql = "\"" + schema + "\".\"" + sql + "\""; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             } else {
-                sql = "\"" + sql + "\"";
+                sql = "\"" + sql + "\""; //$NON-NLS-1$ //$NON-NLS-2$
             }
 
         } else {
-            if (schema != null && !"".equals(schema)) {
-                sql = schema + "." + sql;
+            if (schema != null && !"".equals(schema)) { //$NON-NLS-1$
+                sql = schema + "." + sql; //$NON-NLS-1$
             }
         }
         return sql;
@@ -190,16 +190,16 @@ public class TextUtil {
 
     public static String removeQuots(String query) {
         if (query == null) {
-            return "";
+            return ""; //$NON-NLS-1$
         }
         if (ConnectionParameters.isJavaProject()) {
-            if (query.startsWith("\"") && query.endsWith("\"") && query.length() > 1) {
+            if (query.startsWith("\"") && query.endsWith("\"") && query.length() > 1) { //$NON-NLS-1$ //$NON-NLS-2$
                 return query.substring(1, query.length() - 1);
             } else {
                 return query;
             }
         } else {
-            if (query.startsWith("\'") && query.endsWith("\'") && query.length() > 1) {
+            if (query.startsWith("\'") && query.endsWith("\'") && query.length() > 1) { //$NON-NLS-1$ //$NON-NLS-2$
                 return query.substring(1, query.length() - 1);
             } else {
                 return query;
@@ -217,15 +217,15 @@ public class TextUtil {
     }
 
     public static void setDialogTitle(String jobName, String nodeLabel, String uniqueName) {
-        String title = "";
+        String title = ""; //$NON-NLS-1$
         if (nodeLabel == null || uniqueName == null) {
             title = TalendTextUtils.SQL_BUILDER_TITLE_COMP_PREFIX + jobName;
-        } else if (nodeLabel.indexOf("__UNIQUE_NAME__") != -1) {
+        } else if (nodeLabel.indexOf("__UNIQUE_NAME__") != -1) { //$NON-NLS-1$
             title = TalendTextUtils.SQL_BUILDER_TITLE_COMP_PREFIX + jobName;
             title += TalendTextUtils.SQL_BUILDER_TITLE_COMP_NAME + uniqueName;
         } else {
             title = TalendTextUtils.SQL_BUILDER_TITLE_COMP_MODPREFIX + jobName;
-            title += TalendTextUtils.SQL_BUILDER_TITLE_COMP_NAME + nodeLabel + "(" + uniqueName + ")";
+            title += TalendTextUtils.SQL_BUILDER_TITLE_COMP_NAME + nodeLabel + "(" + uniqueName + ")"; //$NON-NLS-1$ //$NON-NLS-2$
         }
         dialogTitle = title;
     }

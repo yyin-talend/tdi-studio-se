@@ -59,9 +59,9 @@ public final class EMFRepositoryNodeManager {
 
     private String commentDelimiter = prefs.getString(IConstants.COMMENT_DELIMITER);
 
-    public static final String TABLE_ALIAS_PREFIX = "TableAlias:";
+    public static final String TABLE_ALIAS_PREFIX = "TableAlias:"; //$NON-NLS-1$
 
-    public static final String COLUMN_ALIAS_PREFIX = "ColumnAlias:";
+    public static final String COLUMN_ALIAS_PREFIX = "ColumnAlias:"; //$NON-NLS-1$
 
     private static EMFRepositoryNodeManager instance = new EMFRepositoryNodeManager();
 
@@ -192,7 +192,7 @@ public final class EMFRepositoryNodeManager {
             try {
                 if (dbMetaData != null && table.getSourceName() != null) {
                     ResultSet resultSet;
-                    if (dbMetaData.supportsSchemasInDataManipulation() && !"".equals(iMetadataConnection.getSchema())) {
+                    if (dbMetaData.supportsSchemasInDataManipulation() && !"".equals(iMetadataConnection.getSchema())) { //$NON-NLS-1$
                         resultSet = dbMetaData.getExportedKeys("", iMetadataConnection.getSchema(), table.getSourceName()); //$NON-NLS-1$
                     } else {
                         resultSet = dbMetaData.getExportedKeys("", null, table.getSourceName()); //$NON-NLS-1$
@@ -262,15 +262,15 @@ public final class EMFRepositoryNodeManager {
             isForce = MessageDialog.openQuestion(new Shell(), Messages.getString("EMFRepositoryNodeManager.Notice.Title2"), //$NON-NLS-1$
                     Messages.getString("EMFRepositoryNodeManager.Notice.info2")); //$NON-NLS-1$
         }
-        String string = queryStrings.get(0).toLowerCase().replaceAll("\n", " ");
-        string = string.replaceAll("\t", " ");
-        string = string.replaceAll("\r", " ");
-        string = string.replaceAll("\"", "");
-        string = string.replaceAll("\'", "");
-        if (!string.startsWith("select ")) {
+        String string = queryStrings.get(0).toLowerCase().replaceAll("\n", " "); //$NON-NLS-1$ //$NON-NLS-2$
+        string = string.replaceAll("\t", " "); //$NON-NLS-1$ //$NON-NLS-2$
+        string = string.replaceAll("\r", " "); //$NON-NLS-1$ //$NON-NLS-2$
+        string = string.replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
+        string = string.replaceAll("\'", ""); //$NON-NLS-1$ //$NON-NLS-2$
+        if (!string.startsWith("select ")) { //$NON-NLS-1$
             if (isPrompt) {
-                MessageDialog.openWarning(new Shell(), Messages.getString("EMFRepositoryNodeManager.Notice.title3"), Messages
-                        .getString("EMFRepositoryNodeManager.Notice.info3"));
+                MessageDialog.openWarning(new Shell(), Messages.getString("EMFRepositoryNodeManager.Notice.title3"), Messages //$NON-NLS-1$
+                        .getString("EMFRepositoryNodeManager.Notice.info3")); //$NON-NLS-1$
             }
         }
         if (isForce != null && !isForce.booleanValue()) {
@@ -291,7 +291,7 @@ public final class EMFRepositoryNodeManager {
      */
     public void updateErDiagram(boolean isModified, ErDiagramComposite editor, String toSql, RepositoryNode rootNode)
             throws Exception {
-        if (toSql != null && !"".equals(toSql) && isModified) {
+        if (toSql != null && !"".equals(toSql) && isModified) { //$NON-NLS-1$
             // String info = Messages.getString("MultiPageSqlBuilderEditor.Notice.InformationNotFull");
             // MessageDialog.openInformation(new Shell(),
             // Messages.getString("MultiPageSqlBuilderEditor.NoticeTitle.Text"), info);
@@ -309,7 +309,7 @@ public final class EMFRepositoryNodeManager {
     @SuppressWarnings("unchecked")
     public List<RepositoryNode> parseSqlStatement(String sql, RepositoryNode currRoot) throws Exception {
         sql = initSqlStatement(sql);
-        if (sql == null || "".equals(sql) || !sql.startsWith("select ")) {
+        if (sql == null || "".equals(sql) || !sql.startsWith("select ")) { //$NON-NLS-1$ //$NON-NLS-2$
             return Collections.EMPTY_LIST;
         }
         List<String> tableNames = new ArrayList<String>();
@@ -320,7 +320,7 @@ public final class EMFRepositoryNodeManager {
         List<RepositoryNode> nodes = new ArrayList<RepositoryNode>();
         for (RepositoryNode tableNode : currRoot.getChildren()) {
             for (int i = 0; i < tableNames.size(); i++) {
-                String tableLabel = "";
+                String tableLabel = ""; //$NON-NLS-1$
                 if (tableNode.getObject() instanceof MetadataTableRepositoryObject) {
                     MetadataTableRepositoryObject object = (MetadataTableRepositoryObject) tableNode.getObject();
                     tableLabel = object.getSourceName();
@@ -329,7 +329,7 @@ public final class EMFRepositoryNodeManager {
                 }
 
                 boolean isNeed = false;
-                if (cols.length == 1 && cols[0].equals("*")) {
+                if (cols.length == 1 && cols[0].equals("*")) { //$NON-NLS-1$
                     for (String string : tableNames) {
                         if (string.equals(tableLabel.toLowerCase())) {
                             nodes.add(tableNode);
@@ -346,7 +346,7 @@ public final class EMFRepositoryNodeManager {
                 }
                 if (isNeed) {
                     for (RepositoryNode colNode : tableNode.getChildren()) {
-                        String collabel = "";
+                        String collabel = ""; //$NON-NLS-1$
                         if (colNode.getObject() instanceof MetadataColumnRepositoryObject) {
                             MetadataColumnRepositoryObject object2 = (MetadataColumnRepositoryObject) colNode.getObject();
                             collabel = object2.getSourceName();
@@ -358,7 +358,7 @@ public final class EMFRepositoryNodeManager {
                                 if (string.equals(collabel.toLowerCase())) {
                                     nodes.add(colNode);
                                 }
-                                if (string.equals(tableLabel.toLowerCase() + "." + collabel.toLowerCase())) {
+                                if (string.equals(tableLabel.toLowerCase() + "." + collabel.toLowerCase())) { //$NON-NLS-1$
                                     if (!nodes.contains(colNode)) {
                                         nodes.add(colNode);
                                     }
@@ -370,24 +370,24 @@ public final class EMFRepositoryNodeManager {
                                     boolean isSet = false;
                                     if (pk.equals(collabel.toLowerCase())) {
                                         isSet = true;
-                                        pk = tableLabel.toLowerCase() + "." + collabel.toLowerCase();
+                                        pk = tableLabel.toLowerCase() + "." + collabel.toLowerCase(); //$NON-NLS-1$
                                         if (!nodes.contains(colNode)) {
                                             nodes.add(colNode);
                                         }
                                     }
                                     if (fk.equals(collabel.toLowerCase())) {
                                         isSet = true;
-                                        fk = tableLabel.toLowerCase() + "." + collabel.toLowerCase();
+                                        fk = tableLabel.toLowerCase() + "." + collabel.toLowerCase(); //$NON-NLS-1$
                                         if (!nodes.contains(colNode)) {
                                             nodes.add(colNode);
                                         }
                                     }
-                                    if (pk.equals(tableLabel.toLowerCase() + "." + collabel.toLowerCase())) {
+                                    if (pk.equals(tableLabel.toLowerCase() + "." + collabel.toLowerCase())) { //$NON-NLS-1$
                                         if (!nodes.contains(colNode)) {
                                             nodes.add(colNode);
                                         }
                                     }
-                                    if (fk.equals(tableLabel.toLowerCase() + "." + collabel.toLowerCase())) {
+                                    if (fk.equals(tableLabel.toLowerCase() + "." + collabel.toLowerCase())) { //$NON-NLS-1$
                                         if (!nodes.contains(colNode)) {
                                             nodes.add(colNode);
                                         }
@@ -407,13 +407,13 @@ public final class EMFRepositoryNodeManager {
     }
 
     public String addComment(String fullSql) {
-        String commentSql = "";
-        String[] cs = fullSql.split("\n");
+        String commentSql = ""; //$NON-NLS-1$
+        String[] cs = fullSql.split("\n"); //$NON-NLS-1$
         for (String string : cs) {
-            if (string.startsWith("--")) {
+            if (string.startsWith("--")) { //$NON-NLS-1$
                 commentSql += string;
             } else {
-                commentSql += "--" + string;
+                commentSql += "--" + string; //$NON-NLS-1$
             }
         }
         if (!commentSql.endsWith(queryDelimiter)) {
@@ -431,22 +431,22 @@ public final class EMFRepositoryNodeManager {
      */
     private String[] parseSqlToNameList(String sql, List<String> tableNames, List<String> columnsNames) throws Exception {
         String lcSql = sql.toLowerCase();
-        String select = lcSql.split("select ")[1];
-        String[] s = select.split(" from ");
-        String[] columns = s[0].split(",");
+        String select = lcSql.split("select ")[1]; //$NON-NLS-1$
+        String[] s = select.split(" from "); //$NON-NLS-1$
+        String[] columns = s[0].split(","); //$NON-NLS-1$
         if (s.length > 1) {
             String fromStr = s[1];
-            String whereStr = "";
-            int indexWhere = s[1].indexOf(" where ");
+            String whereStr = ""; //$NON-NLS-1$
+            int indexWhere = s[1].indexOf(" where "); //$NON-NLS-1$
             if (indexWhere != -1) {
-                fromStr = s[1].split(" where ")[0];
-                whereStr = s[1].split(" where ")[1];
+                fromStr = s[1].split(" where ")[0]; //$NON-NLS-1$
+                whereStr = s[1].split(" where ")[1]; //$NON-NLS-1$
             }
-            String[] tables = fromStr.split(",");
-            String[] rel = whereStr.split(" and ");
+            String[] tables = fromStr.split(","); //$NON-NLS-1$
+            String[] rel = whereStr.split(" and "); //$NON-NLS-1$
 
             for (String string : columns) {
-                int dotIndex = string.indexOf(".");
+                int dotIndex = string.indexOf("."); //$NON-NLS-1$
                 if (dotIndex != -1) {
                     tableNames.add(string.substring(0, dotIndex).trim());
                 }
@@ -454,15 +454,15 @@ public final class EMFRepositoryNodeManager {
             }
             for (String string : tables) {
                 String tableName = string;
-                if (string.contains(".")) {
-                    tableName = string.substring(string.indexOf(".") + 1);
+                if (string.contains(".")) { //$NON-NLS-1$
+                    tableName = string.substring(string.indexOf(".") + 1); //$NON-NLS-1$
                 }
                 if (!tableNames.contains(tableName.trim())) {
                     tableNames.add(tableName);
                 }
             }
             for (int i = 0; i < rel.length; i++) {
-                String[] strs = rel[i].split("=");
+                String[] strs = rel[i].split("="); //$NON-NLS-1$
                 if (strs.length == 2) {
                     strs[0] = strs[0].trim();
                     strs[1] = strs[1].trim();
@@ -488,8 +488,8 @@ public final class EMFRepositoryNodeManager {
             // replace table's alias with table real name in columnsNames.
             for (int i = 0; i < columnsNames.size(); i++) {
                 String string = columnsNames.get(i);
-                if (string.contains(".")) {
-                    columnsNames.set(i, string.substring(string.indexOf(".") + 1));
+                if (string.contains(".")) { //$NON-NLS-1$
+                    columnsNames.set(i, string.substring(string.indexOf(".") + 1)); //$NON-NLS-1$
 
                 }
             }
@@ -499,13 +499,13 @@ public final class EMFRepositoryNodeManager {
                 String s0 = strs[0];
                 String s1 = strs[1];
                 for (String string : tableNames) {
-                    int di = s0.indexOf(".");
+                    int di = s0.indexOf("."); //$NON-NLS-1$
                     if (di > -1 && string.startsWith(TABLE_ALIAS_PREFIX) && string.endsWith(s0.substring(0, di))) {
-                        s0 = string.substring(TABLE_ALIAS_PREFIX.length(), string.indexOf("=")) + s0.substring(di);
+                        s0 = string.substring(TABLE_ALIAS_PREFIX.length(), string.indexOf("=")) + s0.substring(di); //$NON-NLS-1$
                     }
-                    di = s1.indexOf(".");
+                    di = s1.indexOf("."); //$NON-NLS-1$
                     if (di > -1 && string.startsWith(TABLE_ALIAS_PREFIX) && string.endsWith(s1.substring(0, di))) {
-                        s1 = string.substring(TABLE_ALIAS_PREFIX.length(), string.indexOf("=")) + s1.substring(di);
+                        s1 = string.substring(TABLE_ALIAS_PREFIX.length(), string.indexOf("=")) + s1.substring(di); //$NON-NLS-1$
                     }
                 }
                 relations.set(i, new String[] { s0, s1 });
@@ -523,13 +523,13 @@ public final class EMFRepositoryNodeManager {
     private void fixedNamesContainAlias(List<String> tableNames, String prefix) throws Exception {
         for (int i = 0; i < tableNames.size(); i++) {
             String name = tableNames.get(i);
-            String[] aliasNames = name.split(" ");
+            String[] aliasNames = name.split(" "); //$NON-NLS-1$
             List<String> tableContainAlias = new ArrayList<String>();
-            String aliasName = "";
-            String realName = "";
+            String aliasName = ""; //$NON-NLS-1$
+            String realName = ""; //$NON-NLS-1$
             for (int j = 0; j < aliasNames.length; j++) {
                 String string = aliasNames[j];
-                if (!string.equals("")) {
+                if (!string.equals("")) { //$NON-NLS-1$
                     tableContainAlias.add(string);
                 }
             }
@@ -538,18 +538,18 @@ public final class EMFRepositoryNodeManager {
                 realName = tableContainAlias.get(0);
                 aliasName = tableContainAlias.get(2);
                 if (!tableNames.contains(aliasName)) {
-                    tableNames.add(prefix + realName + "=" + aliasName);
+                    tableNames.add(prefix + realName + "=" + aliasName); //$NON-NLS-1$
                 } else {
-                    tableNames.set(tableNames.indexOf(aliasName), prefix + realName + "=" + aliasName);
+                    tableNames.set(tableNames.indexOf(aliasName), prefix + realName + "=" + aliasName); //$NON-NLS-1$
                 }
                 tableNames.set(i, realName);
             } else if (tableContainAlias.size() == 2) {
                 realName = tableContainAlias.get(0);
                 aliasName = tableContainAlias.get(1);
                 if (!tableNames.contains(aliasName)) {
-                    tableNames.add(prefix + realName + "=" + aliasName);
+                    tableNames.add(prefix + realName + "=" + aliasName); //$NON-NLS-1$
                 } else {
-                    tableNames.set(tableNames.indexOf(aliasName), prefix + realName + "=" + aliasName);
+                    tableNames.set(tableNames.indexOf(aliasName), prefix + realName + "=" + aliasName); //$NON-NLS-1$
                 }
                 tableNames.set(i, realName);
             } else if (tableContainAlias.size() == 1) {

@@ -60,7 +60,7 @@ public class EditQueriesAction extends AContextualAction {
         if (node.getObjectType() == ERepositoryObjectType.METADATA_CONNECTIONS) {
             connParameters.setRepositoryName(node.getObject().getLabel());
             connParameters.setRepositoryId(node.getObject().getId());
-            connParameters.setQuery("");
+            connParameters.setQuery(""); //$NON-NLS-1$
         } else if (node.getObjectType() == ERepositoryObjectType.METADATA_CON_QUERY) {
             QueryRepositoryObject queryRepositoryObject = (QueryRepositoryObject) node.getObject();
             DatabaseConnectionItem parent = (DatabaseConnectionItem) queryRepositoryObject.getProperty().getItem();
@@ -73,7 +73,7 @@ public class EditQueriesAction extends AContextualAction {
             connParameters.setRepositoryName(connectionItem.getProperty().getLabel());
             connParameters.setRepositoryId(connectionItem.getProperty().getId());
             connParameters.setMetadataTable((MetadataTableRepositoryObject) node.getObject());
-            connParameters.setQuery("");
+            connParameters.setQuery(""); //$NON-NLS-1$
         }
 
         Shell parentShell = new Shell(getViewPart().getViewer().getControl().getDisplay());

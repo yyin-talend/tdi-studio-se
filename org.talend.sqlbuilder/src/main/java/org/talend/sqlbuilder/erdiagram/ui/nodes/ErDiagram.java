@@ -32,7 +32,7 @@ public class ErDiagram extends Element {
 
     public static final String PROP_RELATIONS = "relation"; //$NON-NLS-1$
 
-    public static final String PROP_ISDIRTY = "isDirty";
+    public static final String PROP_ISDIRTY = "isDirty"; //$NON-NLS-1$
 
     private List<Table> tables;
 
@@ -138,7 +138,7 @@ public class ErDiagram extends Element {
             for (Column column : (List<Column>) table.getColumns()) {
                 String columnName = table.getElementName();
                 allColumns.put(
-                        columnName != null ? columnName.toLowerCase() : "" + "." + column.getElementName().toLowerCase(), column); //$NON-NLS-1$
+                        columnName != null ? columnName.toLowerCase() : "" + "." + column.getElementName().toLowerCase(), column); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
 

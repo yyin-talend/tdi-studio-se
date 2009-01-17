@@ -66,7 +66,7 @@ public class ErDiagramComposite extends SashForm {
 
     private final String language = "tsql"; //$NON-NLS-1$
 
-    private String sqlString = "";
+    private String sqlString = ""; //$NON-NLS-1$
 
     /**
      * admin ErDiagramComposite constructor comment.
@@ -119,7 +119,7 @@ public class ErDiagramComposite extends SashForm {
         int textstyle = SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL;
         sqlText = new ColorStyledText(this, textstyle, CorePlugin.getDefault().getPreferenceStore(), language);
         sqlText.setLayoutData(gridData);
-        sqlText.setText("");
+        sqlText.setText(""); //$NON-NLS-1$
         sqlText.setBackground(getBackground());
         sqlText.addModifyListener(new ModifyListener() {
 
@@ -142,8 +142,8 @@ public class ErDiagramComposite extends SashForm {
      * @return the sqlText
      */
     public String getSqlText() {
-        if ("".equals(sqlString)) {
-            if (!"".equals(getSqlStatement())) {
+        if ("".equals(sqlString)) { //$NON-NLS-1$
+            if (!"".equals(getSqlStatement())) { //$NON-NLS-1$
                 sqlString = getSqlStatement();
             }
         }
@@ -181,7 +181,7 @@ public class ErDiagramComposite extends SashForm {
             IRunnableWithProgress progress = new IRunnableWithProgress() {
 
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                    monitor.beginTask("", IProgressMonitor.UNKNOWN);
+                    monitor.beginTask("", IProgressMonitor.UNKNOWN); //$NON-NLS-1$
                     try {
                         List<MetadataColumn> selectedColumns = new ArrayList<MetadataColumn>();
                         List<MetadataTable> tables = EMFRepositoryNodeManager.getInstance()
@@ -242,8 +242,8 @@ public class ErDiagramComposite extends SashForm {
                         TablePart tablePart = (TablePart) object;
                         Table table = (Table) tablePart.getModel();
                         if (TextUtil.isDoubleQuotesNeededDbType(getCurrentDbType())) { //$NON-NLS-1$
-                            if (!"".equals(getSchema())) {
-                                tables.add("\"" + getSchema() + "\".\"" + table.getElementName() + "\""); //$NON-NLS-1$ //$NON-NLS-2$
+                            if (!"".equals(getSchema())) { //$NON-NLS-1$
+                                tables.add("\"" + getSchema() + "\".\"" + table.getElementName() + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                             } else {
                                 tables.add("\"" + table.getElementName() + "\""); //$NON-NLS-1$ //$NON-NLS-2$
                             }
@@ -257,11 +257,11 @@ public class ErDiagramComposite extends SashForm {
                                 CheckBox isSelected = columnPart.getPrimativeFigure().getFigureCustomColumnIsSelectedFigure();
                                 if (isSelected != null && isSelected.isSelected() && !column.getElementName().equals("*")) { //$NON-NLS-1$
                                     if (TextUtil.isDoubleQuotesNeededDbType(getCurrentDbType())) { //$NON-NLS-1$
-                                        columns.add("\"" + table.getElementName() + "\".\"" + column.getElementName() + "\"");
+                                        columns.add("\"" + table.getElementName() + "\".\"" + column.getElementName() + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                                     } else {
                                         columns.add(TalendTextUtils.addQuotesWithSpaceField(table.getElementName(),
                                                 getCurrentDbType())
-                                                + "."
+                                                + "." //$NON-NLS-1$
                                                 + TalendTextUtils.addQuotesWithSpaceField(column.getElementName(),
                                                         getCurrentDbType()));
                                     }
@@ -270,22 +270,22 @@ public class ErDiagramComposite extends SashForm {
                                     Column source = rel.getSource();
                                     Column target = rel.getTarget();
                                     if (TextUtil.isDoubleQuotesNeededDbType(getCurrentDbType())) {
-                                        String where1 = "\"" + source.getTable().getElementName() + "\".\""
-                                                + source.getElementName() + "\"=\"" + target.getTable().getElementName()
-                                                + "\".\"" + target.getElementName() + "\"";
+                                        String where1 = "\"" + source.getTable().getElementName() + "\".\"" //$NON-NLS-1$ //$NON-NLS-2$
+                                                + source.getElementName() + "\"=\"" + target.getTable().getElementName() //$NON-NLS-1$
+                                                + "\".\"" + target.getElementName() + "\""; //$NON-NLS-1$ //$NON-NLS-2$
                                         if (!wheres.contains(where1)) {
                                             wheres.add(where1);
                                         }
                                     } else {
                                         String where1 = TalendTextUtils.addQuotesWithSpaceField(source.getTable()
                                                 .getElementName(), getCurrentDbType())
-                                                + "."
+                                                + "." //$NON-NLS-1$
                                                 + TalendTextUtils.addQuotesWithSpaceField(source.getElementName(),
                                                         getCurrentDbType())
-                                                + "="
+                                                + "=" //$NON-NLS-1$
                                                 + TalendTextUtils.addQuotesWithSpaceField(target.getTable().getElementName(),
                                                         getCurrentDbType())
-                                                + "."
+                                                + "." //$NON-NLS-1$
                                                 + TalendTextUtils.addQuotesWithSpaceField(target.getElementName(),
                                                         getCurrentDbType());
                                         if (!wheres.contains(where1)) {
@@ -400,7 +400,7 @@ public class ErDiagramComposite extends SashForm {
         for (Table table : tables) {
             erDiagram.removeTable(table);
         }
-        this.sqlText.setText("");
+        this.sqlText.setText(""); //$NON-NLS-1$
     }
 
     /**

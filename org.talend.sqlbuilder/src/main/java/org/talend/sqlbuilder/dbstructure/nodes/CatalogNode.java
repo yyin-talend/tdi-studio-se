@@ -78,7 +78,7 @@ public class CatalogNode extends AbstractNode {
      */
     public String getType() {
 
-        return "catalog";
+        return "catalog"; //$NON-NLS-1$
     }
 
     /**
@@ -128,7 +128,7 @@ public class CatalogNode extends AbstractNode {
     public void loadChildren() {
 
         if (psessionNode.getInteractiveConnection() == null) {
-            TableFolderNode node = new TableFolderNode(this, "TABLE", psessionNode, new ITableInfo[0]);
+            TableFolderNode node = new TableFolderNode(this, "TABLE", psessionNode, new ITableInfo[0]); //$NON-NLS-1$
             addChildNode(node);
             return;
         }
@@ -139,7 +139,7 @@ public class CatalogNode extends AbstractNode {
 
             ITableInfo[] tables = null;
             // String[] tableTypes = psessionNode.getMetaData().getTableTypes();
-            String[] tableTypes = { "TABLE", "VIEW", "SYNONYM" };
+            String[] tableTypes = { "TABLE", "VIEW", "SYNONYM" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
             try {
                 tables = psessionNode.getMetaData().getTables(null, getSchemaName(), "%", tableTypes); //$NON-NLS-1$
@@ -148,7 +148,7 @@ public class CatalogNode extends AbstractNode {
                 SqlBuilderPlugin.log(Messages.getString("CatalogNode.logMessage1"), e); //$NON-NLS-1$
             }
 
-            TableFolderNode node = new TableFolderNode(this, "TABLE", psessionNode, tables);
+            TableFolderNode node = new TableFolderNode(this, "TABLE", psessionNode, tables); //$NON-NLS-1$
             pchildNames.add(node.getLabelText());
             if (!isExcludedByFilter(node.getLabelText())) {
                 addChildNode(node);
