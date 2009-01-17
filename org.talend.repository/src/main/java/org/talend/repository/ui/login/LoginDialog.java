@@ -61,7 +61,7 @@ public class LoginDialog extends TrayDialog {
 
     private static final int INNER_LOGIN_COMPOSITE_WIDTH = 350;
 
-    private static final int DIALOG_HEIGHT = 278;
+    private static final int DIALOG_HEIGHT = 300;
 
     private static final int DIALOG_WIDTH = 215 + INNER_LOGIN_COMPOSITE_WIDTH + 1;
 
@@ -83,7 +83,7 @@ public class LoginDialog extends TrayDialog {
     }
 
     protected Point getInitialSize() {
-        return getShell().computeSize(DIALOG_WIDTH, DIALOG_HEIGHT, true);
+        return super.getInitialSize();
     }
 
     /**
@@ -164,12 +164,12 @@ public class LoginDialog extends TrayDialog {
      * @throws Exception
      */
     protected void logIn(final Project project) {
-        
+
         if (loginComposite.getConnection() == null || loginComposite.getConnection() == null || project == null
                 || project.getLabel() == null) {
             return;
         }
-         
+
         // Save last used parameters
         PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
         prefManipulator.setLastConnection(loginComposite.getConnection().getName());
