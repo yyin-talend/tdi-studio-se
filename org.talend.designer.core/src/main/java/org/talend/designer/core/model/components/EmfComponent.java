@@ -584,7 +584,7 @@ public class EmfComponent implements IComponent {
         return null;
     }
 
-    private void addViewParameters(final List<ElementParameter> listParam, INode node) {
+    public void addViewParameters(final List<ElementParameter> listParam, INode node) {
         ElementParameter param;
 
         FORMATType formatTypeInXML = compType.getHEADER().getFORMAT();
@@ -664,7 +664,7 @@ public class EmfComponent implements IComponent {
         // listParam.add(param);
     }
 
-    private void addMainParameters(final List<ElementParameter> listParam, INode node) {
+    public void addMainParameters(final List<ElementParameter> listParam, INode node) {
         ElementParameter param;
         param = new ElementParameter(node);
         param.setName(EParameterName.UNIQUE_NAME.getName());
