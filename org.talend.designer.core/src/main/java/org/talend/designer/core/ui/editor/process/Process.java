@@ -624,7 +624,6 @@ public class Process extends Element implements IProcess2 {
         if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
             return;
         }
-
         pType = fileFact.createElementParameterType();
         if (param.getParentParameter() != null) {
             pType.setName(param.getParentParameter().getName() + ":" + param.getName());
@@ -675,11 +674,16 @@ public class Process extends Element implements IProcess2 {
                     pType.setValue(((Boolean) value).toString());
                 } else {
                     if (value instanceof String) {
-                        pType.setValue((String) value);
+                        if (param.getField().equals(EParameterFieldType.DIRECTORY)
+                                && param.getName().equals("TEMPORARY_DATA_DIRECTORY")) {
+                            pType.setValue("");
+                        } else
+                            pType.setValue((String) value);
                     }
                 }
             }
         }
+
         listParamType.add(pType);
     }
 
