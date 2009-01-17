@@ -385,18 +385,20 @@ public class NodesPasteCommand extends Command {
                 }
                 pastedNode.setMetadataList(copyOfMetadataList);
                 IExternalNode externalNode = pastedNode.getExternalNode();
-                if (copiedNode.getExternalData() != null) {
-                    try {
-                        externalNode.setExternalData(copiedNode.getExternalData().clone());
-                    } catch (CloneNotSupportedException e) {
-                        ExceptionHandler.process(e);
+                if (externalNode != null) {
+                    if (copiedNode.getExternalData() != null) {
+                        try {
+                            externalNode.setExternalData(copiedNode.getExternalData().clone());
+                        } catch (CloneNotSupportedException e) {
+                            ExceptionHandler.process(e);
+                        }
+                        pastedNode.setExternalData(externalNode.getExternalData());
                     }
-                    pastedNode.setExternalData(externalNode.getExternalData());
-                }
-                for (IMetadataTable metaTable : copiedNode.getMetadataList()) {
-                    String oldName = metaTable.getTableName();
-                    String newName = oldMetaToNewMeta.get(pastedNode.getUniqueName() + ":" + metaTable.getTableName()); //$NON-NLS-1$
-                    externalNode.renameOutputConnection(oldName, newName);
+                    for (IMetadataTable metaTable : copiedNode.getMetadataList()) {
+                        String oldName = metaTable.getTableName();
+                        String newName = oldMetaToNewMeta.get(pastedNode.getUniqueName() + ":" + metaTable.getTableName()); //$NON-NLS-1$
+                        externalNode.renameOutputConnection(oldName, newName);
+                    }
                 }
             }
             pastedNode.getNodeLabel().setOffset(new Point(copiedNode.getNodeLabel().getOffset()));
