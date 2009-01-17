@@ -1349,7 +1349,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         return getMetadataLDAPSchema(projectManager.getCurrentProject());
     }
 
-    public List<ModuleNeeded> getModulesNeededForJobs() throws PersistenceException {
+    public synchronized List<ModuleNeeded> getModulesNeededForJobs() throws PersistenceException {
         return this.repositoryFactoryFromProvider.getModulesNeededForJobs();
     }
 

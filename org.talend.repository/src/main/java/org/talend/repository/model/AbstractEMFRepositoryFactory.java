@@ -537,7 +537,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         return toReturn;
     }
 
-    public IRepositoryObject getLastVersion(Project project, String id) throws PersistenceException {
+    public synchronized IRepositoryObject getLastVersion(Project project, String id) throws PersistenceException {
         List<IRepositoryObject> serializableAllVersion = getSerializable(project, id, false);
 
         if (serializableAllVersion.size() > 1) {
