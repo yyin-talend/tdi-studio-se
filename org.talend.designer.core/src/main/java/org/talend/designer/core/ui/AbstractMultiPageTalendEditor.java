@@ -73,6 +73,7 @@ import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.PropertiesPackage;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.RepositoryManager;
@@ -435,6 +436,9 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
      * DOC bqian Comment method "generateCode".
      */
     protected void generateCode() {
+        if (!(process.getProperty().getItem() instanceof ProcessItem)) { // shouldn't work for joblet
+            return;
+        }
         if (process.getGeneratingNodes().size() != 0) {
             Job job = new AccessingEmfJob("Generating code") {
 
@@ -526,7 +530,9 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
     }
 
     public void codeSync() {
-
+        if (!(process.getProperty().getItem() instanceof ProcessItem)) { // shouldn't work for joblet
+            return;
+        }
         // if some code has been generated already, for the editor we should need only the main job, not the childs.
         try {
             if (processor.isCodeGenerated()) {
