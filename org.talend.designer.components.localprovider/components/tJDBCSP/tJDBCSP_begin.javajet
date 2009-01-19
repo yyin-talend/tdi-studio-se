@@ -40,7 +40,7 @@ java.sql.Connection connection_<%=cid %> = java.sql.DriverManager.getConnection(
 	}
 %>
 
-java.sql.CallableStatement statement_<%=cid%> = connection_<%=cid%>.prepareCall("{<%=isFunction ? "? = " : ""%>call <%=spName%>(
+java.sql.CallableStatement statement_<%=cid%> = connection_<%=cid%>.prepareCall("{<%=isFunction ? "? = " : ""%>call " + <%=spName%> + "(
 <%
 boolean isFirstArg = true;
 for (int i = 0; i < spArgs.size(); i++) {

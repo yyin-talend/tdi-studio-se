@@ -935,6 +935,13 @@
                id="org.talend.repository.model.migration.SetContextMode"
                name="set context mode for query">
          </projecttask>
+         <projecttask
+               beforeLogon="false"
+               class="org.talend.repository.model.migration.AddDoubleQuoteToAllDBSPNameMigrationTask"
+               description="add double quote to DB SP name"
+               id="org.talend.repository.model.migration.AddDoubleQuoteToAllDBSPNameMigrationTask"
+               name="add double quote to DB SP name">
+         </projecttask>
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">

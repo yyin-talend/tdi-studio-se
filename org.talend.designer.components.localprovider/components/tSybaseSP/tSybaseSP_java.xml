@@ -129,7 +129,7 @@
       NUM_ROW="8"
       REQUIRED="true"
     >
-      <DEFAULT>myfunction</DEFAULT>
+      <DEFAULT>"myfunction"</DEFAULT>
     </PARAMETER>
 	
     <PARAMETER

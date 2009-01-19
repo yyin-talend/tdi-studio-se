@@ -58,7 +58,7 @@ for (int i = 0; i < spArgs.size(); i++) {
 
 //stmt_<%=cid%>.execute("SET NOCOUNT ON");
 
-java.sql.CallableStatement statement_<%=cid%> = connection_<%=cid%>.prepareCall("{<%=isFunction ? "? = " : ""%>call <%=spName%>(<%=parameters.toString()%>)}"
+java.sql.CallableStatement statement_<%=cid%> = connection_<%=cid%>.prepareCall("{<%=isFunction ? "? = " : ""%>call " + <%=spName%> + "(<%=parameters.toString()%>)}"
 <%
 if(hasOutput){
 %>
