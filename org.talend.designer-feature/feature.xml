@@ -338,7 +338,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="org.eclipse.jdt.debug.ui"
          download-size="0"
@@ -515,6 +515,13 @@
 
    <plugin
          id="org.eclipse.ui.views.log"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.talend.designer.filemultischemas"
          download-size="0"
          install-size="0"
          version="0.0.0"
