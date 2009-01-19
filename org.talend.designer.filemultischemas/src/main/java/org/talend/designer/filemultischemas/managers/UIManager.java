@@ -21,20 +21,19 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TreeEditor;
+import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
-import org.talend.core.language.ECodeLanguage;
-import org.talend.core.language.LanguageManager;
-import org.talend.core.model.metadata.types.JavaTypesManager;
-import org.talend.core.model.metadata.types.PerlTypesManager;
+import org.talend.core.model.metadata.MultiSchemasUtil;
 import org.talend.designer.filemultischemas.data.EPropertyName;
 import org.talend.designer.filemultischemas.data.ExternalMultiSchemasUIProperties;
 import org.talend.designer.filemultischemas.data.MultiMetadataColumn;
-import org.talend.designer.filemultischemas.data.MultiSchemasMetadataColumn;
 import org.talend.designer.filemultischemas.data.SchemasKeyData;
 import org.talend.designer.filemultischemas.ui.provider.SchemaDetailsProvider;
-import org.talend.designer.filemultischemas.ui.provider.column.SchemaDetailsColumnSelectionLestener;
+import org.talend.designer.filemultischemas.ui.provider.column.ColumnLineData;
+import org.talend.designer.filemultischemas.ui.provider.column.SchemaDetailsColumnMouseAdapter;
 import org.talend.designer.filemultischemas.ui.provider.column.SchemaDetailsColumnsProvider;
 import org.talend.designer.filemultischemas.ui.provider.property.SchemaDetailsPropertiesCellModifier;
 import org.talend.designer.filemultischemas.ui.provider.property.SchemaDetailsPropertiesProvider;
@@ -52,7 +51,7 @@ public class UIManager {
 
     private TreeEditor columnTreeEditor;
 
-    private SchemaDetailsColumnSelectionLestener columnSelectionLestener;
+    private MouseListener columnMouseListener;
 
     private int dialogResponse = SWT.NONE;
 
@@ -87,11 +86,15 @@ public class UIManager {
         }
         if (columnTreeEditor != null) {
             columnTreeEditor.dispose();
+            final Control editor = columnTreeEditor.getEditor();
+            if (editor != null && !editor.isDisposed()) {
+                editor.dispose();
+            }
             columnTreeEditor = null;
         }
-        if (columnSelectionLestener != null) {
-            tree.removeSelectionListener(columnSelectionLestener);
-            columnSelectionLestener = null;
+        if (columnMouseListener != null) {
+            tree.removeMouseListener(columnMouseListener);
+            columnMouseListener = null;
         }
 
         SchemaDetailsProvider provider = null;
@@ -121,13 +124,7 @@ public class UIManager {
                 // case NULL:
                 // break;
                 case TYPE:
-                    String[] typeLabels = null;
-                    if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
-                        typeLabels = JavaTypesManager.getJavaTypesLabels();
-                    } else {
-                        typeLabels = PerlTypesManager.getPerlTypes();
-                    }
-                    cellEditor = new ComboBoxCellEditor(tree, typeLabels, SWT.READ_ONLY);
+                    cellEditor = new ComboBoxCellEditor(tree, MultiSchemasUtil.getTalendTypeLabel(), SWT.READ_ONLY);
                     break;
                 default:
                     cellEditor = null;
@@ -161,8 +158,8 @@ public class UIManager {
             columnTreeEditor.horizontalAlignment = SWT.LEFT;
             columnTreeEditor.grabHorizontal = true;
 
-            columnSelectionLestener = new SchemaDetailsColumnSelectionLestener(tree, columnTreeEditor);
-            tree.addSelectionListener(columnSelectionLestener);
+            columnMouseListener = new SchemaDetailsColumnMouseAdapter(schemaDetailsViewer, columnTreeEditor);
+            tree.addMouseListener(columnMouseListener);
 
         }
         schemaDetailsViewer.setContentProvider(provider);
@@ -214,9 +211,9 @@ public class UIManager {
                         dataColumn = new TreeColumn(tree, SWT.NONE);
                         dataColumn.setWidth(100);
                     }
-                    MultiSchemasMetadataColumn metadataColumn = metadataColumns.get(i);
-                    dataColumn.setText(metadataColumn.getLabel());
-                    dataColumn.setData(metadataColumn);
+                    // MultiSchemasMetadataColumn metadataColumn = metadataColumns.get(i);
+                    // dataColumn.setText(metadataColumn.getLabel());
+                    // dataColumn.setData(metadataColumn);
 
                     columnProperties.add(new Integer(i).toString());
                 }
@@ -254,44 +251,78 @@ public class UIManager {
         }
     }
 
-    public static String validSchemaDetailsColumns(final TreeViewer schemaDetailsViewer, final EPropertyName property,
-            final Object input) {
+    public static boolean checkSchemaDetailsValue(TreeViewer schemaDetailsViewer, MultiMetadataColumn multiMetadataColumn,
+            EPropertyName property, Object input) {
+        return validSchemaDetailsColumns(schemaDetailsViewer, multiMetadataColumn, property, input) == null;
+    }
+
+    public static String validSchemaDetailsColumns(final TreeViewer schemaDetailsViewer,
+            final MultiMetadataColumn multiMetadataColumn, final EPropertyName property, final Object input) {
         String mess = null;
         if (input != null && input instanceof String) {
             final String value = (String) input;
-            switch (property) {
-            case NAME:
+            final String existedMessage = "The column name have existed.";
+
+            if (isFirstForColumnModel(property)) { // for column model
                 IStructuredSelection selection = (IStructuredSelection) schemaDetailsViewer.getSelection();
                 if (selection != null) {
                     final Object firstElement = selection.getFirstElement();
-                    if (firstElement != null && firstElement instanceof MultiMetadataColumn) {
-                        MultiMetadataColumn column = (MultiMetadataColumn) firstElement;
-
-                        for (TreeItem item : schemaDetailsViewer.getTree().getItems()) {
-                            final Object data = item.getData();
-                            if (data != column && data instanceof MultiMetadataColumn) {
-                                MultiMetadataColumn other = (MultiMetadataColumn) data;
-                                if (value.equals(other.getLabel())) {
-                                    mess = "The column name have existed.";
-                                    break;
-                                }
+                    if (firstElement != null && firstElement instanceof ColumnLineData) {
+                        ColumnLineData lineData = (ColumnLineData) firstElement;
+                        for (MultiMetadataColumn column : lineData.getKeyData().getMetadataColumns()) {
+                            if (multiMetadataColumn != column && value.equals(column.getLabel())) {
+                                mess = existedMessage;
+                                break;
                             }
                         }
 
                     }
                 }
-                if (mess == null && !value.matches(RepositoryConstants.CONTEXT_AND_VARIABLE_PATTERN)) {
-                    mess = "Invalid input.";
+            } else {
+                final String invalidInput = "Invalid input.";
+                switch (property) {
+                case NAME: // for property model.
+                    IStructuredSelection selection = (IStructuredSelection) schemaDetailsViewer.getSelection();
+                    if (selection != null) {
+                        final Object firstElement = selection.getFirstElement();
+                        if (firstElement != null && firstElement instanceof MultiMetadataColumn) {
+                            MultiMetadataColumn column = (MultiMetadataColumn) firstElement;
+
+                            for (TreeItem item : schemaDetailsViewer.getTree().getItems()) {
+                                final Object data = item.getData();
+                                if (data != column && data instanceof MultiMetadataColumn) {
+                                    MultiMetadataColumn other = (MultiMetadataColumn) data;
+                                    if (value.equals(other.getLabel())) {
+                                        mess = existedMessage;
+                                        break;
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                    if (mess == null && !value.matches(RepositoryConstants.CONTEXT_AND_VARIABLE_PATTERN)) {
+                        mess = invalidInput;
+                    }
+                    break;
+                case LENGTH:
+                    if (!value.matches(ExternalMultiSchemasUIProperties.NUMBER_PATTERN)) {
+                        mess = invalidInput;
+                    }
+                    break;
                 }
-                break;
-            case LENGTH:
-                if (!value.matches(ExternalMultiSchemasUIProperties.NUMBER_PATTERN)) {
-                    mess = "Invalid input.";
-                }
-                break;
             }
         }
         return mess;
     }
 
+    /**
+     * 
+     * cLi Comment method "isFirstForColumnModel".
+     * 
+     * for column model.
+     */
+    public static boolean isFirstForColumnModel(EPropertyName property) {
+        return property == null;
+    }
 }

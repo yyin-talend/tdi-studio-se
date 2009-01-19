@@ -16,7 +16,11 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -29,6 +33,8 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
@@ -39,8 +45,14 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.ui.internal.IWorkbenchGraphicConstants;
+import org.eclipse.ui.internal.WorkbenchImages;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.commons.ui.swt.formtools.LabelledFileField;
@@ -77,6 +89,14 @@ public class MultiSchemasUI {
     private MultiSchemasManager multiSchemaManager;
 
     /**
+     * for schema details viewer.
+     */
+
+    private SchameDetailsPropertyAction propertyAction;
+
+    private SchameDetailsColumnAction columnAction;
+
+    /**
      * 
      */
     private Composite uiParent;
@@ -90,8 +110,6 @@ public class MultiSchemasUI {
     private Button previewBtn;
 
     private Button fetchBtn;
-
-    private Button changeModelBtn;
 
     private TreeViewer schemaTreeViewer;
 
@@ -234,16 +252,61 @@ public class MultiSchemasUI {
         allContentForm.setSashWidth(ExternalMultiSchemasUIProperties.SASHFORM_WIDTH);
 
         createHeader(allContentForm);
+        creatButtom(allContentForm);
+
+        allContentForm.setWeights(ExternalMultiSchemasUIProperties.getAllSashformWeights());
+
+    }
+
+    private void creatButtom(SashForm allContentForm) {
         //
-        schemaDetailsViewer = new TreeViewer(allContentForm, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
+        Composite composite = new Composite(allContentForm, SWT.NONE);
+        composite.setLayout(new GridLayout(2, false));
+
+        schemaDetailsViewer = new TreeViewer(composite, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
         final Tree tree = schemaDetailsViewer.getTree();
         tree.setHeaderVisible(true);
         tree.setLinesVisible(true);
         tree.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        getUIManager().changeSchemasDetailView(schemaDetailsViewer, getSchemaDetailModel());
-        allContentForm.setWeights(ExternalMultiSchemasUIProperties.getAllSashformWeights());
+        final ToolBar menuBar = new ToolBar(composite, SWT.FLAT | SWT.NO_BACKGROUND);
+        GridDataFactory.swtDefaults().align(SWT.RIGHT, SWT.TOP).applyTo(menuBar);
+        createMenuBar(menuBar);
 
+        getUIManager().changeSchemasDetailView(schemaDetailsViewer, getSchemaDetailModel());
+    }
+
+    @SuppressWarnings("restriction")
+    private void createMenuBar(final ToolBar menuBar) {
+        ToolItem pullDownButton = new ToolItem(menuBar, SWT.PUSH);
+        Image hoverImage = WorkbenchImages.getImage(IWorkbenchGraphicConstants.IMG_LCL_RENDERED_VIEW_MENU);
+        pullDownButton.setDisabledImage(hoverImage);
+        pullDownButton.setImage(hoverImage);
+        pullDownButton.setToolTipText("Menu");
+        pullDownButton.setWidth(5);
+
+        MenuManager menuManager = new MenuManager("MultiSchema");//$NON-NLS-1$
+
+        columnAction = new SchameDetailsColumnAction(schemaDetailsViewer);
+        columnAction.setChecked(!ExternalMultiSchemasUIProperties.isSchemaDetailsModel());
+        menuManager.add(columnAction);
+
+        propertyAction = new SchameDetailsPropertyAction(schemaDetailsViewer);
+        propertyAction.setChecked(ExternalMultiSchemasUIProperties.isSchemaDetailsModel());
+        menuManager.add(propertyAction);
+
+        final Menu aMenu = menuManager.createContextMenu(menuBar.getParent());
+
+        pullDownButton.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                Point toolbarSize = menuBar.getSize();
+                toolbarSize = menuBar.toDisplay(0, toolbarSize.y);
+                aMenu.setLocation(toolbarSize);
+                aMenu.setVisible(true);
+            }
+        });
     }
 
     private void createHeader(SashForm allContentForm) {
@@ -313,11 +376,6 @@ public class MultiSchemasUI {
         fetchBtn.setText(ExternalMultiSchemasUIProperties.FETCH_LABEL);
         fetchBtn.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
 
-        // PTODO only for test it. changed the schema details viewer model.
-        // changeModelBtn = new Button(struComp, SWT.CHECK);
-        // changeModelBtn.setText("Change model");
-        // changeModelBtn.setSelection(true);
-
         //
         schemaTreeViewer = new TreeViewer(struComp, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
         schemaTreeViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -383,23 +441,6 @@ public class MultiSchemasUI {
                 fetchCodes();
             }
         });
-        if (changeModelBtn != null) {
-            changeModelBtn.addSelectionListener(new SelectionAdapter() {
-
-                @Override
-                public void widgetSelected(SelectionEvent e) {
-                    final Object input = schemaDetailsViewer.getInput();
-                    schemaDetailsViewer.getTree().setRedraw(false);
-                    schemaDetailsViewer.setInput(null);
-
-                    getUIManager().changeSchemasDetailView(schemaDetailsViewer, getSchemaDetailModel());
-
-                    schemaDetailsViewer.getTree().setRedraw(true);
-                    schemaDetailsViewer.setInput(input);
-                }
-
-            });
-        }
     }
 
     @SuppressWarnings("restriction")
@@ -438,16 +479,6 @@ public class MultiSchemasUI {
             ExceptionHandler.process(e);
         }
 
-    }
-
-    /**
-     * true, is properties model; false, is column model.
-     */
-    protected boolean getSchemaDetailModel() {
-        if (changeModelBtn != null) {
-            return changeModelBtn.getSelection();
-        }
-        return true;
     }
 
     /**
@@ -643,7 +674,61 @@ public class MultiSchemasUI {
             ExternalMultiSchemasUIProperties.setBoundsMapper(getShell().getBounds());
             ExternalMultiSchemasUIProperties.setAllSashformWeights(this.allContentForm.getWeights());
             ExternalMultiSchemasUIProperties.setHeaderSashformWeights(this.headerSashForm.getWeights());
+            ExternalMultiSchemasUIProperties.setSchemaDetailsModel(getSchemaDetailModel());
         }
 
+    }
+
+    private boolean getSchemaDetailModel() {
+        if (propertyAction != null) {
+            return propertyAction.isChecked();
+        }
+        return ExternalMultiSchemasUIProperties.isSchemaDetailsModel(); // default
+    }
+
+    class SchameDetailsPropertyAction extends Action {
+
+        private final TreeViewer schemaDetailsViewer;
+
+        public SchameDetailsPropertyAction(final TreeViewer schemaDetailsViewer) {
+            super("Property model", IAction.AS_RADIO_BUTTON);
+            this.schemaDetailsViewer = schemaDetailsViewer;
+        }
+
+        @Override
+        public void run() {
+            if (isChecked()) {
+                changeSchemaDetailsView();
+            }
+        }
+
+    }
+
+    class SchameDetailsColumnAction extends Action {
+
+        private final TreeViewer schemaDetailsViewer;
+
+        public SchameDetailsColumnAction(final TreeViewer schemaDetailsViewer) {
+            super("Column model", IAction.AS_RADIO_BUTTON);
+            this.schemaDetailsViewer = schemaDetailsViewer;
+        }
+
+        @Override
+        public void run() {
+            if (isChecked()) {
+                changeSchemaDetailsView();
+            }
+        }
+    }
+
+    private void changeSchemaDetailsView() {
+        final Tree tree = schemaDetailsViewer.getTree();
+        for (TreeItem item : tree.getItems()) {
+            item.dispose();
+        }
+        schemaDetailsViewer.setInput(null);
+
+        getUIManager().changeSchemasDetailView(schemaDetailsViewer, getSchemaDetailModel());
+        getUIManager().refreshSchemasDetailView(schemaTreeViewer, schemaDetailsViewer, getSchemaDetailModel());
     }
 }

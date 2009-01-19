@@ -39,7 +39,7 @@ public class SchemaDetailsTextCellEditor extends TextCellEditor {
         setValidator(new ICellEditorValidator() {
 
             public String isValid(Object input) {
-                String mess = UIManager.validSchemaDetailsColumns(schemaDetailsViewer, property, input);
+                String mess = UIManager.validSchemaDetailsColumns(schemaDetailsViewer, null, property, input);
                 validate(mess == null);
                 return mess;
             }

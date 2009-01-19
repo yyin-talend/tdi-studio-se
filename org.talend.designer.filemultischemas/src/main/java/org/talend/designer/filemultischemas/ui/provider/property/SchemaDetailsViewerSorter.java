@@ -45,6 +45,7 @@ public class SchemaDetailsViewerSorter extends ViewerSorter {
      * @see org.eclipse.jface.viewers.ViewerComparator#compare(org.eclipse.jface.viewers.Viewer, java.lang.Object,
      * java.lang.Object)
      */
+    @SuppressWarnings("unchecked")
     @Override
     public int compare(Viewer viewer, Object e1, Object e2) {
         if (sortViewer != null) {
@@ -53,7 +54,7 @@ public class SchemaDetailsViewerSorter extends ViewerSorter {
             final String text1 = labelProvider.getColumnText(e1, index);
             final String text2 = labelProvider.getColumnText(e2, index);
 
-            return getComparator().compare((text1 != null ? text1 : ""), (text2 != null ? text2 : "")) * direction;
+            return getComparator().compare((text1 != null ? text1 : ""), (text2 != null ? text2 : "")) * direction; //$NON-NLS-1$ //$NON-NLS-2$
         }
         return 0;
     }

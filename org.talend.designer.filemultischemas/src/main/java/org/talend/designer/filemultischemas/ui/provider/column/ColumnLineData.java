@@ -18,7 +18,6 @@ import org.talend.designer.filemultischemas.data.SchemasKeyData;
 /**
  * cLi class global comment. Detailled comment
  * 
- * @deprecated not used so far.
  */
 public class ColumnLineData {
 

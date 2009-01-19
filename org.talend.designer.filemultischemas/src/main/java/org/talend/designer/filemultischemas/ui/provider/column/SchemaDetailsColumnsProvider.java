@@ -24,12 +24,12 @@ import org.talend.designer.filemultischemas.data.EPropertyName;
 import org.talend.designer.filemultischemas.data.MultiMetadataColumn;
 import org.talend.designer.filemultischemas.data.MultiSchemasMetadataColumn;
 import org.talend.designer.filemultischemas.data.SchemasKeyData;
+import org.talend.designer.filemultischemas.managers.UIManager;
 import org.talend.designer.filemultischemas.ui.provider.SchemaDetailsProvider;
 
 /**
  * cLi class global comment. Detailled comment
  * 
- * @deprecated not used so far.
  */
 public class SchemaDetailsColumnsProvider extends SchemaDetailsProvider {
 
@@ -43,8 +43,12 @@ public class SchemaDetailsColumnsProvider extends SchemaDetailsProvider {
             SchemasKeyData keyData = (SchemasKeyData) inputElement;
 
             List<ColumnLineData> lineDatas = new ArrayList<ColumnLineData>();
+            // fist column name
+            ColumnLineData line = new ColumnLineData(null, keyData);
+            lineDatas.add(line);
+
             for (EPropertyName property : EPropertyName.values()) {
-                ColumnLineData line = new ColumnLineData(property, keyData);
+                line = new ColumnLineData(property, keyData);
                 lineDatas.add(line);
             }
             return lineDatas.toArray();
@@ -71,14 +75,23 @@ public class SchemaDetailsColumnsProvider extends SchemaDetailsProvider {
         if (element instanceof ColumnLineData) {
             ColumnLineData lineData = (ColumnLineData) element;
 
+            final EPropertyName property = lineData.getProperty();
             if (columnIndex == 0) {
-                return lineData.getProperty().getName();
+                if (UIManager.isFirstForColumnModel(property)) { // first column name
+                    return EPropertyName.NAME.getName(); //$NON-NLS-1$
+                } else if (property == EPropertyName.NAME) { // for data.
+                    return "";
+                }
+                return property.getName();
             }
             List<MultiMetadataColumn> columnsData = lineData.getKeyData().getMetadataColumns();
             if (columnsData.size() >= columnIndex) {
                 MultiMetadataColumn columnData = columnsData.get(columnIndex - 1);
                 if (columnData != null) {
-                    switch (lineData.getProperty()) {
+                    if (UIManager.isFirstForColumnModel(property)) {
+                        return columnData.getLabel();
+                    }
+                    switch (property) {
                     case NAME:
                         List<MultiSchemasMetadataColumn> dataColumns = columnData.getDataColumns();
                         if (dataColumns.size() > 0) {
@@ -120,15 +133,20 @@ public class SchemaDetailsColumnsProvider extends SchemaDetailsProvider {
      * @see org.eclipse.jface.viewers.ITableColorProvider#getBackground(java.lang.Object, int)
      */
     public Color getBackground(Object element, int columnIndex) {
-        if (columnIndex == 0) {
-            if (element instanceof ColumnLineData) {
-                ColumnLineData lineData = (ColumnLineData) element;
-                final int index = EPropertyName.indexOf(lineData.getProperty());
+        if (element instanceof ColumnLineData) {
+            ColumnLineData lineData = (ColumnLineData) element;
+            final EPropertyName property = lineData.getProperty();
+            if (UIManager.isFirstForColumnModel(property)) {
+                return Display.getDefault().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND);
+            }
+            if (columnIndex == 0) {
+                final int index = EPropertyName.indexOf(property);
                 if (index > -1 && index % 2 == 0) {
                     return Display.getDefault().getSystemColor(SWT.COLOR_INFO_BACKGROUND);
+                } else {
+                    return Display.getDefault().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND);
                 }
             }
-            return Display.getDefault().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND);
         }
         return null;
     }

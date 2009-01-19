@@ -109,7 +109,7 @@ public class MultiSchemasManager {
                 return (String) value;
             }
         }
-        return TalendTextUtils.addQuotes("");
+        return TalendTextUtils.addQuotes(""); //$NON-NLS-1$
     }
 
     public Object getParameterObjectValue(EParameterName paramName) {
@@ -135,7 +135,7 @@ public class MultiSchemasManager {
             return null;
         }
         final int columnIndex = 2;
-        final SchemasKeyData rootSchemasKeyData = new SchemasKeyData("");
+        final SchemasKeyData rootSchemasKeyData = new SchemasKeyData(""); //$NON-NLS-1$
 
         for (String[] line : csvArray.getRows()) {
             if (line.length < columnIndex) { // must contain 2 columns
@@ -168,7 +168,7 @@ public class MultiSchemasManager {
     private String precessString(String str) {
         if (str != null) {
             str = str.trim();
-            if (!"".equals(str)) {
+            if (!"".equals(str)) { //$NON-NLS-1$
                 return str;
             }
         }
@@ -177,7 +177,7 @@ public class MultiSchemasManager {
 
     private SchemasKeyData findSchemasKeyData(SchemasKeyData schemaKeyData, String key) {
         key = key.trim();
-        if (schemaKeyData != null || !"".equals(key)) {
+        if (schemaKeyData != null || !"".equals(key)) { //$NON-NLS-1$
             if (schemaKeyData.getKeyName().equals(key)) {
                 return schemaKeyData;
             }
@@ -214,7 +214,7 @@ public class MultiSchemasManager {
         for (int i = line.length - 1; i > -1; i--) {
             String data = line[i];
             // find the last un-empty data.
-            if (!"".equals(data) && isEndEmpty) {
+            if (!"".equals(data) && isEndEmpty) { //$NON-NLS-1$
                 isEndEmpty = false;
             }
             if (!isEndEmpty) {
@@ -252,7 +252,7 @@ public class MultiSchemasManager {
 
     private MultiSchemasMetadataColumn guessDataProperties(String data) {
         if (data == null) {
-            data = "";
+            data = ""; //$NON-NLS-1$
         }
         String talendType = null;
         int lengthValue = 0;
@@ -268,7 +268,7 @@ public class MultiSchemasManager {
             lengthValue = data.length();
         }
         // precision
-        if (!data.equals("")) {
+        if (!data.equals("")) { //$NON-NLS-1$
             int positionDecimal = 0;
             if (data.indexOf(',') > -1) {
                 positionDecimal = data.lastIndexOf(',');
@@ -310,7 +310,7 @@ public class MultiSchemasManager {
             valueDefaultType = MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_TYPE;
         }
         String defaultType = CorePlugin.getDefault().getPreferenceStore().getString(valueDefaultType);
-        if (defaultType != null && !"".equals(defaultType.trim())) {
+        if (defaultType != null && !"".equals(defaultType.trim())) { //$NON-NLS-1$
             return defaultType;
         }
         return null;
@@ -322,7 +322,7 @@ public class MultiSchemasManager {
             valueDefaultLength = MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_LENGTH;
         }
         String defaultLength = CorePlugin.getDefault().getPreferenceStore().getString(valueDefaultLength);
-        if (defaultLength != null && !"".equals(defaultLength.trim())) {
+        if (defaultLength != null && !"".equals(defaultLength.trim())) { //$NON-NLS-1$
             return Integer.parseInt(defaultLength);
         }
         return 0;
@@ -378,7 +378,7 @@ public class MultiSchemasManager {
      */
     @SuppressWarnings("unchecked")
     public SchemasKeyData retrievePropertiesFromNode() {
-        SchemasKeyData rootData = new SchemasKeyData("");
+        SchemasKeyData rootData = new SchemasKeyData(""); //$NON-NLS-1$
 
         IElementParameter elementParameter = getMultiSchemasComponent().getElementParameter(EParameterName.SCHEMAS.getName());
         final Object value = elementParameter.getValue();
@@ -402,7 +402,7 @@ public class MultiSchemasManager {
                     if (codeParent != null) {
                         codeParent = TalendTextUtils.removeQuotes(codeParent);
                     }
-                    if (codeParent == null || "".equals(codeParent.trim())) { // root
+                    if (codeParent == null || "".equals(codeParent.trim())) { // root //$NON-NLS-1$
                         rootData.addChild(currentData);
                     } else {
                         SchemasKeyData parentData = findKeyData(rootData, codeParent.trim());
@@ -535,11 +535,11 @@ public class MultiSchemasManager {
                 return null;
             }
             Set<String> uniqueKey = new HashSet<String>();
-            String currentRowKey = "";
+            String currentRowKey = ""; //$NON-NLS-1$
 
             while (fileInputDelimited.nextRecord()) {
                 final String first = fileInputDelimited.get(0);
-                if ("".equals(first.trim())) { // must be contain first
+                if ("".equals(first.trim())) { // must be contain first //$NON-NLS-1$
                     continue;
                 }
                 currentRowKey = first.toLowerCase();

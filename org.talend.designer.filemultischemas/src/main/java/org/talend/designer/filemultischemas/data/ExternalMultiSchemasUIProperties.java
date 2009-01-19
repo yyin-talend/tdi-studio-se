@@ -58,6 +58,8 @@ public class ExternalMultiSchemasUIProperties {
 
     private static boolean shellMaximized = false;
 
+    private static boolean schemaDetailsModel = false;
+
     public static Rectangle getBoundsMapper() {
         return boundsMapper;
     }
@@ -88,6 +90,14 @@ public class ExternalMultiSchemasUIProperties {
 
     public static void setHeaderSashformWeights(int[] headerSashformWeights) {
         HEADER_SASHFORM_WEIGHTS = headerSashformWeights;
+    }
+
+    public static boolean isSchemaDetailsModel() {
+        return schemaDetailsModel;
+    }
+
+    public static void setSchemaDetailsModel(boolean schemaDetailsModel) {
+        ExternalMultiSchemasUIProperties.schemaDetailsModel = schemaDetailsModel;
     }
 
 }

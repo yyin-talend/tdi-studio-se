@@ -14,8 +14,10 @@ package org.talend.designer.filemultischemas.ui.provider.property;
 
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.TreeItem;
+import org.talend.core.model.metadata.MultiSchemasUtil;
 import org.talend.designer.filemultischemas.data.EPropertyName;
 import org.talend.designer.filemultischemas.data.MultiMetadataColumn;
+import org.talend.designer.filemultischemas.managers.UIManager;
 import org.talend.designer.filemultischemas.ui.provider.SchemaDetailsCellModifier;
 
 /**
@@ -50,7 +52,7 @@ public class SchemaDetailsPropertiesCellModifier extends SchemaDetailsCellModifi
         if (element instanceof MultiMetadataColumn) {
             MultiMetadataColumn column = (MultiMetadataColumn) element;
             if (EPropertyName.NAME.name().equals(property)) {
-                return validateValue(column.getLabel());
+                return MultiSchemasUtil.validateValue(column.getLabel());
             } else if (EPropertyName.TAGLEVEL.name().equals(property)) {
                 // if (column.getTagLevel() != null) {
                 // return column.getTagLevel().toString();
@@ -58,13 +60,13 @@ public class SchemaDetailsPropertiesCellModifier extends SchemaDetailsCellModifi
                 // return "";
                 // }
             } else if (EPropertyName.TYPE.name().equals(property)) {
-                return getTalendTypeIndex(column.getTalendType());
+                return MultiSchemasUtil.getTalendTypeIndex(column.getTalendType());
             } else if (EPropertyName.LENGTH.name().equals(property)) {
-                return getAndCheckIntgerValue(column.getLength());
+                return MultiSchemasUtil.getAndCheckIntgerValue(column.getLength());
             } else if (EPropertyName.CARD.name().equals(property)) {
-                return validateValue(column.getCard());
+                return MultiSchemasUtil.validateValue(column.getCard());
             } else if (EPropertyName.PATTERN.name().equals(property)) {
-                return validateValue(column.getPattern());
+                return MultiSchemasUtil.validateValue(column.getPattern());
             }
         }
         return null;
@@ -81,19 +83,20 @@ public class SchemaDetailsPropertiesCellModifier extends SchemaDetailsCellModifi
             if (data != null && data instanceof MultiMetadataColumn) {
                 MultiMetadataColumn column = (MultiMetadataColumn) data;
                 if (EPropertyName.NAME.name().equals(property)) {
-                    if (value != null && validateColumnName(EPropertyName.NAME, value)) {
+                    if (value != null
+                            && UIManager.checkSchemaDetailsValue(getSchemaDetailsViewer(), null, EPropertyName.NAME, value)) {
                         column.setLabel((String) value);
                     }
                 } else if (EPropertyName.TAGLEVEL.name().equals(property)) {
                     // column.setTagLevel(Integer.parseInt((String) value));
                 } else if (EPropertyName.TYPE.name().equals(property)) {
-                    final String talendType = getTalendTypeByIndex((Integer) value);
+                    final String talendType = MultiSchemasUtil.getTalendTypeByIndex((Integer) value);
                     if (talendType != null) {
                         column.setTalendType(talendType);
                     }
                 } else if (EPropertyName.LENGTH.name().equals(property)) {
-                    if (!"".equals(value)) {
-                        if (validateColumnName(EPropertyName.LENGTH, value)) {
+                    if (!"".equals(value)) { //$NON-NLS-1$
+                        if (UIManager.checkSchemaDetailsValue(getSchemaDetailsViewer(), null, EPropertyName.LENGTH, value)) {
                             column.setLength(Integer.parseInt((String) value));
                         }// else, don't change it.
                     } else {

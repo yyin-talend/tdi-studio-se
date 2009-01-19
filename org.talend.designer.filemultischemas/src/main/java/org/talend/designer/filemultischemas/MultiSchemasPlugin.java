@@ -9,7 +9,7 @@ import org.osgi.framework.BundleContext;
 public class MultiSchemasPlugin extends AbstractUIPlugin {
 
 	// The plug-in ID
-	public static final String PLUGIN_ID = "org.talend.designer.filemultischema";
+	public static final String PLUGIN_ID = "org.talend.designer.filemultischema"; //$NON-NLS-1$
 
 	// The shared instance
 	private static MultiSchemasPlugin plugin;
