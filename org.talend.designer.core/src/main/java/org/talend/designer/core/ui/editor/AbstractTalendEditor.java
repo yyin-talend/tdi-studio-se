@@ -1287,13 +1287,14 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         ProcessorUtilities.editorClosed(this);
         talendPaletteViewerProvider = null;
 
-        if (!getParent().isKeepPropertyLocked()) {
-            JobResourceManager manager = JobResourceManager.getInstance();
-            manager.removeProtection(this);
-            for (JobResource r : protectedJobs.values()) {
-                manager.deleteResource(r);
-            }
-        }
+        // achen modify to fix bug 0006107
+        // if (!getParent().isKeepPropertyLocked()) {
+        // JobResourceManager manager = JobResourceManager.getInstance();
+        // manager.removeProtection(this);
+        // for (JobResource r : protectedJobs.values()) {
+        // manager.deleteResource(r);
+        // }
+        // }
         ComponentSettingsView viewer = (ComponentSettingsView) PlatformUI.getWorkbench().getActiveWorkbenchWindow()
                 .getActivePage().findView(ComponentSettingsView.ID);
         if (viewer != null) {

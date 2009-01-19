@@ -36,7 +36,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
 import org.eclipse.ui.progress.IProgressService;
@@ -48,7 +47,6 @@ import org.talend.core.model.process.IPerformance;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.ITargetExecutionConfig;
-import org.talend.core.properties.tab.IMultiPageTalendEditor;
 import org.talend.designer.runprocess.ProcessMessage.MsgType;
 import org.talend.designer.runprocess.data.PerformanceData;
 import org.talend.designer.runprocess.data.TraceData;
@@ -316,20 +314,6 @@ public class RunProcessContext {
     }
 
     /**
-     * 
-     * DOC achen Comment method "isJobModified".
-     * 
-     * @return
-     */
-    private boolean isJobModified() {
-        IEditorPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-        if (part != null && part instanceof IMultiPageTalendEditor) {
-            return part.isDirty();
-        }
-        return false;
-    }
-
-    /**
      * Launch the process.
      */
     public void exec(final Shell shell) {
@@ -390,12 +374,11 @@ public class RunProcessContext {
                                         public void run() {
                                             try {
                                                 startingMessageWritten = false;
-                                                // achen modify to fix bug 0006107
-                                                if (isJobModified()) {
-                                                    ProcessorUtilities.generateCode(process, context,
-                                                            getStatisticsPort() != IProcessor.NO_STATISTICS,
-                                                            getTracesPort() != IProcessor.NO_TRACES, true);
-                                                }
+
+                                                ProcessorUtilities.generateCode(process, context,
+                                                        getStatisticsPort() != IProcessor.NO_STATISTICS,
+                                                        getTracesPort() != IProcessor.NO_TRACES, true);
+
                                                 // see feature 0004820: The run
                                                 // job doesn't verify if code is
                                                 // correct
