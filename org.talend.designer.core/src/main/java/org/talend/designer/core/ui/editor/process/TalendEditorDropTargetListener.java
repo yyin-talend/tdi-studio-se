@@ -42,6 +42,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ListDialog;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.core.CorePlugin;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IEbcdicConstant;
@@ -359,9 +360,30 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             RepositoryNode selectedNode = store.seletetedNode;
             IComponent element = store.component;
             Node node = new Node(element);
+            // for bug4564(metadata label format)
+            // IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
+            // if (preferenceStore.getBoolean(TalendDesignerPrefConstants.USE_REPOSITORY_NAME)) {
+            // node.setPropertyValue(EParameterName.LABEL.getName(), selectedNode.getObject().getLabel());
+            // }
             IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
             if (preferenceStore.getBoolean(TalendDesignerPrefConstants.USE_REPOSITORY_NAME)) {
-                node.setPropertyValue(EParameterName.LABEL.getName(), selectedNode.getObject().getLabel());
+                String LabelValue = null;
+                RepositoryNode repositoryNode = null;
+                repositoryNode = (RepositoryNode) getSelection().getFirstElement();
+                // dnd a table
+                if (repositoryNode.getObjectType() == ERepositoryObjectType.METADATA_CON_TABLE
+                        && repositoryNode.getObject() != null
+                        && repositoryNode.getObject().getProperty().getItem() instanceof DatabaseConnectionItem) {
+                    LabelValue = "__TABLE__"; //$NON-NLS-1$
+                } else if (repositoryNode.getObjectType() == ERepositoryObjectType.PROCESS) { // dnd a job
+                    LabelValue = "__PROCESS__"; //$NON-NLS-1$
+                } else if (CorePlugin.getDefault().getDesignerCoreService().getPreferenceStore("defaultLabel").equals( //$NON-NLS-1$
+                        node.getPropertyValue(EParameterName.LABEL.getName()))) {// dnd a default
+                    LabelValue = selectedNode.getObject().getLabel();
+                }
+                if (LabelValue != null) {
+                    node.setPropertyValue(EParameterName.LABEL.getName(), LabelValue);
+                }
             }
             processSpecificDBTypeIfSameProduct(store.componentName, node);
             NodeContainer nc = new NodeContainer(node);
