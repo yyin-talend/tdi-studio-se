@@ -32,6 +32,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.talend.core.model.components.ComponentCompilations;
 import org.talend.designer.components.ComponentsLocalProviderPlugin;
+import org.talend.designer.components.i18n.Messages;
 
 /**
  * tfeng class global comment. Detailled comment <br/>
@@ -62,7 +63,7 @@ public class XsdValidationCacheManager {
             deserializeAlreadyChecked();
         } catch (Exception e) {
             IStatus status = new Status(IStatus.WARNING, ComponentsLocalProviderPlugin.PLUGIN_ID,
-                    "unable to load xsd validation cache file", e);
+                    Messages.getString("XsdValidationCacheManager.unableLoadxsd"), e); //$NON-NLS-1$
             ComponentsLocalProviderPlugin.getDefault().getLog().log(status);
         }
     }
@@ -72,7 +73,7 @@ public class XsdValidationCacheManager {
             serializeAlreadyChecked();
         } catch (Exception e) {
             IStatus status = new Status(IStatus.WARNING, ComponentsLocalProviderPlugin.PLUGIN_ID,
-                    "unable to save xsd validation cache file", e);
+                    Messages.getString("XsdValidationCacheManager.unableSavexsd"), e); //$NON-NLS-1$
             ComponentsLocalProviderPlugin.getDefault().getLog().log(status);
         }
     }
@@ -102,12 +103,12 @@ public class XsdValidationCacheManager {
     }
 
     private File getSerializationFilePath() throws CoreException {
-        IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(".JETEmitters");
+        IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(".JETEmitters"); //$NON-NLS-1$
         if (!project.exists()) {
             project.create(new NullProgressMonitor());
         }
         project.open(new NullProgressMonitor());
-        IFile file = project.getFile("XsdValidationCache");
+        IFile file = project.getFile("XsdValidationCache"); //$NON-NLS-1$
         if (!file.exists()) {
             file.create(null, true, new NullProgressMonitor());
         }

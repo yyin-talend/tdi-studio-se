@@ -24,14 +24,14 @@ import org.talend.designer.components.ComponentsLocalProviderPlugin;
  */
 public enum EComponentsImage implements IImage {
 
-    DEFAULT_COMPONENT_ICON("/icons/default-32.png"),
+    DEFAULT_COMPONENT_ICON("/icons/default-32.png"), //$NON-NLS-1$
 
     ;
 
     private String path;
 
     EComponentsImage() {
-        this.path = "/icons/unknown.gif";
+        this.path = "/icons/unknown.gif"; //$NON-NLS-1$
     }
 
     EComponentsImage(String path) {

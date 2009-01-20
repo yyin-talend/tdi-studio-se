@@ -41,6 +41,7 @@ import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.AbstractComponentsProvider;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
+import org.talend.designer.components.i18n.Messages;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
 
@@ -51,7 +52,7 @@ import org.talend.designer.core.model.process.AbstractProcessProvider;
  */
 public class ComponentsFactory implements IComponentsFactory {
 
-    private static final String OLD_COMPONENTS_USER_INNER_FOLDER = "user";
+    private static final String OLD_COMPONENTS_USER_INNER_FOLDER = "user"; //$NON-NLS-1$
 
     private static Logger log = Logger.getLogger(ComponentsFactory.class);
 
@@ -63,13 +64,13 @@ public class ComponentsFactory implements IComponentsFactory {
     // 2. include the skeleton files and external include files
     private static List<String> skeletonList = null;
 
-    private static final String SKELETON_SUFFIX = ".skeleton";
+    private static final String SKELETON_SUFFIX = ".skeleton"; //$NON-NLS-1$
 
-    private static final String INCLUDEFILEINJET_SUFFIX = ".inc.javajet";
+    private static final String INCLUDEFILEINJET_SUFFIX = ".inc.javajet"; //$NON-NLS-1$
 
     public ComponentsFactory() {
-        if (!INCLUDEFILEINJET_SUFFIX.equals(".inc.javajet")) {
-            ExceptionHandler.process(new IllegalStateException("Warning: parents of *.inc.javajet are not recompiled !"),
+        if (!INCLUDEFILEINJET_SUFFIX.equals(".inc.javajet")) { //$NON-NLS-1$
+            ExceptionHandler.process(new IllegalStateException(Messages.getString("ComponentsFactory.parentNotRecompiled")), //$NON-NLS-1$
                     Priority.WARN);
         }
     }
@@ -78,7 +79,7 @@ public class ComponentsFactory implements IComponentsFactory {
         removeOldComponentsUserFolder(); // not used anymore
 
         TimeMeasure.measureActive = false;
-        TimeMeasure.begin("ComponentsFactory.init");
+        TimeMeasure.begin("ComponentsFactory.init"); //$NON-NLS-1$
         long startTime = System.currentTimeMillis();
         componentList = new ArrayList<IComponent>();
         skeletonList = new ArrayList<String>();
@@ -87,7 +88,7 @@ public class ComponentsFactory implements IComponentsFactory {
 
         // 1. Load system components:
         loadComponentsFromFolder(IComponentsFactory.COMPONENTS_INNER_FOLDER);
-        TimeMeasure.step("ComponentsFactory.init", "after system component");
+        TimeMeasure.step("ComponentsFactory.init", Messages.getString("ComponentsFactory.afterSystemComponent")); //$NON-NLS-1$ //$NON-NLS-2$
 
         // 3.Load Component from extension point: components_provider
         loadComponentsFromComponentsProviderExtension();
@@ -97,7 +98,7 @@ public class ComponentsFactory implements IComponentsFactory {
 
         XsdValidationCacheManager.getInstance().save();
 
-        TimeMeasure.end("ComponentsFactory.init");
+        TimeMeasure.end("ComponentsFactory.init"); //$NON-NLS-1$
         log.debug(componentList.size() + " components loaded in " + (System.currentTimeMillis() - startTime) + " ms"); //$NON-NLS-1$ //$NON-NLS-2$
 
         try {
@@ -138,19 +139,19 @@ public class ComponentsFactory implements IComponentsFactory {
     }
 
     private void loadComponentsFromFolder(String pathSource) {
-        TimeMeasure.begin("ComponentsFactory.loadComponentsFromFolder");
+        TimeMeasure.begin("ComponentsFactory.loadComponentsFromFolder"); //$NON-NLS-1$
 
-        TimeMeasure.begin("ComponentsFactory.loadComponentsFromFolder.checkFiles");
-        TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.checkFiles");
+        TimeMeasure.begin("ComponentsFactory.loadComponentsFromFolder.checkFiles"); //$NON-NLS-1$
+        TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.checkFiles"); //$NON-NLS-1$
 
-        TimeMeasure.begin("ComponentsFactory.loadComponentsFromFolder.emf1");
-        TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.emf1");
+        TimeMeasure.begin("ComponentsFactory.loadComponentsFromFolder.emf1"); //$NON-NLS-1$
+        TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.emf1"); //$NON-NLS-1$
 
-        TimeMeasure.begin("ComponentsFactory.loadComponentsFromFolder.emf2");
-        TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.emf2");
+        TimeMeasure.begin("ComponentsFactory.loadComponentsFromFolder.emf2"); //$NON-NLS-1$
+        TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.emf2"); //$NON-NLS-1$
 
-        TimeMeasure.begin("ComponentsFactory.loadComponentsFromFolder.loadIcons");
-        TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.loadIcons");
+        TimeMeasure.begin("ComponentsFactory.loadComponentsFromFolder.loadIcons"); //$NON-NLS-1$
+        TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.loadIcons"); //$NON-NLS-1$
 
         // TimeMeasure.display=false;
 
@@ -166,7 +167,7 @@ public class ComponentsFactory implements IComponentsFactory {
 
         };
         if (source == null) {
-            ExceptionHandler.process(new Exception("Component folder not found:" + pathSource));
+            ExceptionHandler.process(new Exception(Messages.getString("ComponentsFactory.componentNotFound") + pathSource)); //$NON-NLS-1$
             return;
         }
 
@@ -194,14 +195,14 @@ public class ComponentsFactory implements IComponentsFactory {
                 }
 
                 try {
-                    TimeMeasure.resume("ComponentsFactory.loadComponentsFromFolder.checkFiles");
+                    TimeMeasure.resume("ComponentsFactory.loadComponentsFromFolder.checkFiles"); //$NON-NLS-1$
                     ComponentFileChecker.checkComponentFolder(currentFolder, getCodeLanguageSuffix());
-                    TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.checkFiles");
-                    TimeMeasure.resume("ComponentsFactory.loadComponentsFromFolder.emf1");
+                    TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.checkFiles"); //$NON-NLS-1$
+                    TimeMeasure.resume("ComponentsFactory.loadComponentsFromFolder.emf1"); //$NON-NLS-1$
                     File xmlMainFile = new File(currentFolder, ComponentFilesNaming.getInstance().getMainXMLFileName(
                             currentFolder.getName(), getCodeLanguageSuffix()));
-                    TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.emf1");
-                    TimeMeasure.resume("ComponentsFactory.loadComponentsFromFolder.emf2");
+                    TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.emf1"); //$NON-NLS-1$
+                    TimeMeasure.resume("ComponentsFactory.loadComponentsFromFolder.emf2"); //$NON-NLS-1$
 
                     if (CommonsPlugin.isHeadless() && componentsCache.containsKey(xmlMainFile.getAbsolutePath())) {
                         // In headless mode, we assume the components won't change and we will use a cache
@@ -210,15 +211,15 @@ public class ComponentsFactory implements IComponentsFactory {
                     }
 
                     EmfComponent currentComp = new EmfComponent(xmlMainFile, pathSource);
-                    TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.emf2");
+                    TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.emf2"); //$NON-NLS-1$
 
                     if (componentList.contains(currentComp)) {
                         log.warn("Component " + currentComp.getName() + " already exists. Cannot load user version."); //$NON-NLS-1$ //$NON-NLS-2$
                     } else {
                         currentComp.setResourceBundle(getComponentResourceBundle(currentComp, pathSource));
-                        TimeMeasure.resume("ComponentsFactory.loadComponentsFromFolder.loadIcons");
+                        TimeMeasure.resume("ComponentsFactory.loadComponentsFromFolder.loadIcons"); //$NON-NLS-1$
                         loadIcons(currentFolder, currentComp);
-                        TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.loadIcons");
+                        TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.loadIcons"); //$NON-NLS-1$
                         componentList.add(currentComp);
                     }
 
@@ -226,7 +227,7 @@ public class ComponentsFactory implements IComponentsFactory {
                         componentsCache.put(xmlMainFile.getAbsolutePath(), currentComp);
                     }
                 } catch (MissingMainXMLComponentFileException e) {
-                    log.trace(currentFolder.getName() + " is not a " + getCodeLanguageSuffix() + " component", e);
+                    log.trace(currentFolder.getName() + " is not a " + getCodeLanguageSuffix() + " component", e); //$NON-NLS-1$ //$NON-NLS-2$
                 } catch (BusinessException e) {
                     BusinessException ex = new BusinessException("Cannot load component \"" + currentFolder.getName() + "\": " //$NON-NLS-1$ //$NON-NLS-2$
                             + e.getMessage(), e);
@@ -235,11 +236,11 @@ public class ComponentsFactory implements IComponentsFactory {
             }
         }
         // TimeMeasure.display=true;
-        TimeMeasure.end("ComponentsFactory.loadComponentsFromFolder.checkFiles");
-        TimeMeasure.end("ComponentsFactory.loadComponentsFromFolder.emf1");
-        TimeMeasure.end("ComponentsFactory.loadComponentsFromFolder.emf2");
-        TimeMeasure.end("ComponentsFactory.loadComponentsFromFolder.loadIcons");
-        TimeMeasure.end("ComponentsFactory.loadComponentsFromFolder");
+        TimeMeasure.end("ComponentsFactory.loadComponentsFromFolder.checkFiles"); //$NON-NLS-1$
+        TimeMeasure.end("ComponentsFactory.loadComponentsFromFolder.emf1"); //$NON-NLS-1$
+        TimeMeasure.end("ComponentsFactory.loadComponentsFromFolder.emf2"); //$NON-NLS-1$
+        TimeMeasure.end("ComponentsFactory.loadComponentsFromFolder.loadIcons"); //$NON-NLS-1$
+        TimeMeasure.end("ComponentsFactory.loadComponentsFromFolder"); //$NON-NLS-1$
     }
 
     /**

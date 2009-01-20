@@ -29,9 +29,9 @@ public class ComponenttRunJobPreferencePage extends FieldEditorPreferencePage im
 
     private CheckBoxFieldEditor doNotShowJobAfterDoubleClickCheckBoxField;
 
-    public static final String IS_AVOID = "isAvoidShowJobAfterDoulbleClick";
+    public static final String IS_AVOID = "isAvoidShowJobAfterDoulbleClick"; //$NON-NLS-1$
 
-    private static final String TITLE = "tRunJob";
+    private static final String TITLE = "tRunJob"; //$NON-NLS-1$
 
     public ComponenttRunJobPreferencePage() {
         super(TITLE, GRID);
@@ -42,7 +42,7 @@ public class ComponenttRunJobPreferencePage extends FieldEditorPreferencePage im
     public void createFieldEditors() {
 
         doNotShowJobAfterDoubleClickCheckBoxField = new CheckBoxFieldEditor(IS_AVOID, Messages
-                .getString("ComponenttRunJobPreferencePage.label"), getFieldEditorParent());
+                .getString("ComponenttRunJobPreferencePage.label"), getFieldEditorParent()); //$NON-NLS-1$
 
         addField(doNotShowJobAfterDoubleClickCheckBoxField);
     }

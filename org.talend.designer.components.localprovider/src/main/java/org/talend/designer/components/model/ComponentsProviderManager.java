@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.talend.core.model.components.AbstractComponentsProvider;
+import org.talend.designer.components.i18n.Messages;
 
 /***/
 public final class ComponentsProviderManager {
@@ -51,21 +52,21 @@ public final class ComponentsProviderManager {
         providers = new ArrayList<AbstractComponentsProvider>();
 
         IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
-        IExtensionPoint extensionPoint = extensionRegistry.getExtensionPoint("org.talend.core.components_provider");
+        IExtensionPoint extensionPoint = extensionRegistry.getExtensionPoint("org.talend.core.components_provider"); //$NON-NLS-1$
         IExtension[] extensions = extensionPoint.getExtensions();
         for (IExtension extension : extensions) {
             IConfigurationElement[] configurationElements = extension.getConfigurationElements();
             for (IConfigurationElement configurationElement : configurationElements) {
-                String id = configurationElement.getAttribute("id");
-                String folderName = configurationElement.getAttribute("folderName");
+                String id = configurationElement.getAttribute("id"); //$NON-NLS-1$
+                String folderName = configurationElement.getAttribute("folderName"); //$NON-NLS-1$
                 try {
                     AbstractComponentsProvider componentsProvider = (AbstractComponentsProvider) configurationElement
-                            .createExecutableExtension("class");
+                            .createExecutableExtension("class"); //$NON-NLS-1$
                     componentsProvider.setId(id);
                     componentsProvider.setFolderName(folderName);
                     providers.add(componentsProvider);
                 } catch (CoreException e) {
-                    log.error("unable to load component provider " + id, e);
+                    log.error(Messages.getString("ComponentsProviderManager.unableLoad") + id, e); //$NON-NLS-1$
                 }
             }
         }
