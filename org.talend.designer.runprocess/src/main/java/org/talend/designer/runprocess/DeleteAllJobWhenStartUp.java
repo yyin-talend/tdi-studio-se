@@ -70,7 +70,7 @@ public class DeleteAllJobWhenStartUp implements IStartup {
                 IResource[] perlProResrouces = perlProject.members();
                 for (int i = 0; i < perlProResrouces.length; i++) {
                     if (perlProResrouces[i].getType() == IResource.FILE
-                            && "pl".equalsIgnoreCase(perlProResrouces[i].getFileExtension())) {
+                            && "pl".equalsIgnoreCase(perlProResrouces[i].getFileExtension())) { //$NON-NLS-1$
                         perlProResrouces[i].delete(true, null);
                     }
                 }

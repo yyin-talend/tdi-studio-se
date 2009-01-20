@@ -553,9 +553,9 @@ public class PerlProcessor extends Processor {
         } else {
             List<String> list = new ArrayList<String>();
             if (Platform.OS_LINUX.equals(getTargetPlatform())) {
-                list.add("cd `dirname $0`\n");
+                list.add("cd `dirname $0`\n"); //$NON-NLS-1$
             } else {
-                list.add("cd %~dp0\r\n");
+                list.add("cd %~dp0\r\n"); //$NON-NLS-1$
             }
             list.addAll(Arrays.asList(cmd));
             return list.toArray(new String[0]);

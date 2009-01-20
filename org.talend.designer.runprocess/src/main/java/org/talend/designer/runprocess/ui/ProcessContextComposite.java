@@ -302,7 +302,7 @@ public class ProcessContextComposite extends Composite {
                 continue;
             }
             if (list.length == 0) {
-                contextParameter.setInternalValue("");
+                contextParameter.setInternalValue(""); //$NON-NLS-1$
             } else {
                 contextParameter.setInternalValue(list[0]);
             }
@@ -350,7 +350,7 @@ public class ProcessContextComposite extends Composite {
             	if (ContextParameterUtils.isPasswordType(parameter)) {
 					// see bug 0005661: In Run, Context password fields appear
 					// in plaintext
-					text = "****";
+					text = "****"; //$NON-NLS-1$
 				} else {
 					text = parameter.getValue();
 				}

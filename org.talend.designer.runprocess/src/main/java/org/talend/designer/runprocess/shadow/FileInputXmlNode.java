@@ -32,13 +32,13 @@ public class FileInputXmlNode extends FileInputNode {
             String encoding) {
         super("tFileInputXML", mapping.size()); //$NON-NLS-1$
 
-        String limitLoop = "";
+        String limitLoop = ""; //$NON-NLS-1$
         if (loopLimit != null && loopLimit != 0) {
             limitLoop = Integer.toString(loopLimit);
         }
 
-        String[] paramNames = new String[] { "FILENAME", "LOOP_QUERY", "MAPPING", "LIMIT", "ENCODING", "GENERATION_MODE" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-        Object[] paramValues = new Object[] { filename, loopQuery, mapping, limitLoop, encoding, "Xerces" };
+        String[] paramNames = new String[] { "FILENAME", "LOOP_QUERY", "MAPPING", "LIMIT", "ENCODING", "GENERATION_MODE" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+        Object[] paramValues = new Object[] { filename, loopQuery, mapping, limitLoop, encoding, "Xerces" }; //$NON-NLS-1$
 
         for (int i = 0; i < paramNames.length; i++) {
             if (paramValues[i] != null) {

@@ -432,7 +432,7 @@ public class ProcessComposite extends Composite {
 		composite.setLayout(formLayout);
 
 		enableLineLimitButton = new Button(composite, SWT.CHECK);
-		enableLineLimitButton.setText("Line limit");
+		enableLineLimitButton.setText(Messages.getString("ProcessComposite.lineLimited")); //$NON-NLS-1$
 		FormData formData = new FormData();
 		enableLineLimitButton.setLayoutData(formData);
 		enableLineLimitButton.addSelectionListener(new SelectionAdapter() {
@@ -456,7 +456,7 @@ public class ProcessComposite extends Composite {
 			// this text only receive number here.
 			public void handleEvent(Event e) {
 				String s = e.text;
-				if (!s.equals("")) {
+				if (!s.equals("")) { //$NON-NLS-1$
 					try {
 						Integer.parseInt(s);
 						RunProcessPlugin
@@ -486,8 +486,8 @@ public class ProcessComposite extends Composite {
 		lineLimitText.setEditable(enable);
 		String count = RunProcessPlugin.getDefault().getPluginPreferences()
 				.getString(RunprocessConstants.CONSOLE_LINE_LIMIT_COUNT);
-		if (count.equals("")) {
-			count = "100";
+		if (count.equals("")) { //$NON-NLS-1$
+			count = "100"; //$NON-NLS-1$
 		}
 		lineLimitText.setText(count);
 	}
@@ -521,7 +521,7 @@ public class ProcessComposite extends Composite {
 		StyledText text = new StyledText(composite, SWT.NONE);
 		text
 				.setText(Messages
-						.getString("ProcessComposite.targetExecutionTabTooltipAvailable"));
+						.getString("ProcessComposite.targetExecutionTabTooltipAvailable")); //$NON-NLS-1$
 		text.setWordWrap(true);
 		text.setEditable(false);
 		text.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -656,8 +656,8 @@ public class ProcessComposite extends Composite {
 		boolean isPause = id == ProcessView.PAUSE_ID;
 		setExecBtn(isPause);
 		if (isPause) {
-			execBtn.setText("Resume");
-			execBtn.setToolTipText("Resume");
+			execBtn.setText(Messages.getString("ProcessComposite.textContent")); //$NON-NLS-1$
+			execBtn.setToolTipText(Messages.getString("ProcessComposite.tipTextContent")); //$NON-NLS-1$
 			execBtn.setData(ProcessView.RESUME_ID);
 		} else {
 			execBtn.setData(ProcessView.PAUSE_ID);
@@ -707,7 +707,7 @@ public class ProcessComposite extends Composite {
 		IPreferenceStore preferenceStore = DesignerPlugin.getDefault()
 				.getPreferenceStore();
 		String languagePrefix = LanguageManager.getCurrentLanguage().toString()
-				+ "_";
+				+ "_"; //$NON-NLS-1$
 		if (this.processContext != null) {
 			this.processContext.removePropertyChangeListener(pcl);
 		}
@@ -791,8 +791,8 @@ public class ProcessComposite extends Composite {
 		if (traceBtn.getSelection()) {
 			boolean b = processContext != null;
 			if (!runnable && b) {
-				execBtn.setText("Pause");
-				execBtn.setToolTipText("Pause the Job");
+				execBtn.setText(Messages.getString("ProcessComposite.pause")); //$NON-NLS-1$
+				execBtn.setToolTipText(Messages.getString("ProcessComposite.pauseJob")); //$NON-NLS-1$
 				execBtn.setImage(ImageProvider
 						.getImage(ERunprocessImages.PAUSE_PROCESS_ACTION));
 			} else {
@@ -851,7 +851,7 @@ public class ProcessComposite extends Composite {
 		// see feature 0004895: Font size of the output console are very small
 		setConsoleFont();
 
-		String[] rows = message.getContent().split("\n");
+		String[] rows = message.getContent().split("\n"); //$NON-NLS-1$
 		int rowLimit = getConsoleRowLimit();
 		String content = null;
 		if (rowLimit != SWT.DEFAULT) {
@@ -866,7 +866,7 @@ public class ProcessComposite extends Composite {
 			} else {
 				StringBuilder sb = new StringBuilder();
 				for (int i = 0; i < rowLimit - currentRows; i++) {
-					sb.append(rows[i]).append("\n");
+					sb.append(rows[i]).append("\n"); //$NON-NLS-1$
 				}
 				content = sb.toString();
 			}
@@ -1133,7 +1133,7 @@ public class ProcessComposite extends Composite {
 													endingPattern);
 											String byeMsg;
 											try {
-												byeMsg = "\n"
+												byeMsg = "\n" //$NON-NLS-1$
 														+ mf
 																.format(new Object[] {
 																		processContext

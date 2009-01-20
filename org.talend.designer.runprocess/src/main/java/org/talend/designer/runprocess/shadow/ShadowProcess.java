@@ -49,13 +49,13 @@ public class ShadowProcess<T extends IProcessDescription> {
     /**
      * 
      */
-    private static final String TEMP_LDAP_SCHEMA_FILE_NAME = "TempLDAPSchema";
+    private static final String TEMP_LDAP_SCHEMA_FILE_NAME = "TempLDAPSchema"; //$NON-NLS-1$
 
-    private static final String TEMP_WSDL_SCHEMA_FILE_NAME = "TempWSDLSchema";
+    private static final String TEMP_WSDL_SCHEMA_FILE_NAME = "TempWSDLSchema"; //$NON-NLS-1$
 
-    private static final String TEMP_SALEFORCE_SCHEMA_FILE_NAME = "TempSALESFORCESchema";
+    private static final String TEMP_SALEFORCE_SCHEMA_FILE_NAME = "TempSALESFORCESchema"; //$NON-NLS-1$
 
-    private String currentProcessEncoding = "ISO-8859-15";
+    private String currentProcessEncoding = "ISO-8859-15"; //$NON-NLS-1$
 
     private static Logger log = Logger.getLogger(ShadowProcess.class);
 
@@ -108,18 +108,18 @@ public class ShadowProcess<T extends IProcessDescription> {
         if (filePath != null) {
             this.inPath = new Path(filePath);
             this.outPath = buildTempCSVFilename(this.inPath);
-        } else if (type.name().equals("LDAP_SCHEMA")) {
+        } else if (type.name().equals("LDAP_SCHEMA")) { //$NON-NLS-1$
             IPath tempPath = Path.fromOSString(CorePlugin.getDefault().getPreferenceStore().getString(
                     ITalendCorePrefConstants.FILE_PATH_TEMP));
-            this.outPath = tempPath.append(TEMP_LDAP_SCHEMA_FILE_NAME + "." + CSV_EXT);
-        } else if (type.name().equals("WSDL_SCHEMA")) {
+            this.outPath = tempPath.append(TEMP_LDAP_SCHEMA_FILE_NAME + "." + CSV_EXT); //$NON-NLS-1$
+        } else if (type.name().equals("WSDL_SCHEMA")) { //$NON-NLS-1$
             IPath tempPath = Path.fromOSString(CorePlugin.getDefault().getPreferenceStore().getString(
                     ITalendCorePrefConstants.FILE_PATH_TEMP));
-            this.outPath = tempPath.append(TEMP_WSDL_SCHEMA_FILE_NAME + "." + CSV_EXT);
-        } else if (type.name().equals("SALESFORCE_SCHEMA")) {
+            this.outPath = tempPath.append(TEMP_WSDL_SCHEMA_FILE_NAME + "." + CSV_EXT); //$NON-NLS-1$
+        } else if (type.name().equals("SALESFORCE_SCHEMA")) { //$NON-NLS-1$
             IPath tempPath = Path.fromOSString(CorePlugin.getDefault().getPreferenceStore().getString(
                     ITalendCorePrefConstants.FILE_PATH_TEMP));
-            this.outPath = tempPath.append(TEMP_SALEFORCE_SCHEMA_FILE_NAME + "." + CSV_EXT);
+            this.outPath = tempPath.append(TEMP_SALEFORCE_SCHEMA_FILE_NAME + "." + CSV_EXT); //$NON-NLS-1$
         }
 
         this.type = type;
@@ -170,7 +170,7 @@ public class ShadowProcess<T extends IProcessDescription> {
             List<Map<String, String>> oldmappings = description.getMapping();
             for (int i = 0; i < oldmappings.size(); i++) {
                 Map<String, String> map = oldmappings.get(i);
-                map.put("SCHEMA_COLUMN", "row" + i);
+                map.put("SCHEMA_COLUMN", "row" + i); //$NON-NLS-1$ //$NON-NLS-2$
                 newmappings.add(map);
             }
             FileInputXmlNode inXmlNode = new FileInputXmlNode(PathUtils.getPortablePath(inPath.toOSString()), description
@@ -184,7 +184,7 @@ public class ShadowProcess<T extends IProcessDescription> {
             ExcelSchemaBean excelBean = description.getExcelSchemaBean();
 
             excelNode = new FileInputExcelNode(PathUtils.getPortablePath(inPath.toOSString()), description.getSchema(),
-                    description.getEncoding() == null ? TalendTextUtils.addQuotes("ISO-8859-1") : description.getEncoding(),
+                    description.getEncoding() == null ? TalendTextUtils.addQuotes("ISO-8859-1") : description.getEncoding(), //$NON-NLS-1$
                     Integer.toString(description.getLimitRows()), Integer.toString(description.getHeaderRow()), Integer
                             .toString(description.getFooterRow()), Boolean.toString(description.getRemoveEmptyRowsToSkip()),
                     excelBean);
@@ -194,7 +194,7 @@ public class ShadowProcess<T extends IProcessDescription> {
             ps = new FileinToDelimitedProcess<FileInputExcelNode>(excelNode, outNode);
             break;
         case FILE_LDIF:
-            outNode = new FileOutputDelimitedForLDIF(TalendTextUtils.addQuotes(""
+            outNode = new FileOutputDelimitedForLDIF(TalendTextUtils.addQuotes("" //$NON-NLS-1$
                     + PathUtils.getPortablePath(outPath.toOSString())), description.getEncoding());
 
             FileInputLdifNode inLdifNode = new FileInputLdifNode(PathUtils.getPortablePath(inPath.toOSString()), description
@@ -206,7 +206,7 @@ public class ShadowProcess<T extends IProcessDescription> {
             // outNode = new FileOutputDelimitedForLDIF(TalendTextUtils.addQuotes(""
             // + PathUtils.getPortablePath(outPath.toOSString())), description.getEncoding());
 
-            LDAPSchemaInputNode inLDAPSchemaNode = new LDAPSchemaInputNode(TalendTextUtils.addQuotes(""
+            LDAPSchemaInputNode inLDAPSchemaNode = new LDAPSchemaInputNode(TalendTextUtils.addQuotes("" //$NON-NLS-1$
                     + PathUtils.getPortablePath(outPath.toOSString())), description.getSchema(), description.getEncoding(),
                     description.getLdapSchemaBean());
 
@@ -217,7 +217,7 @@ public class ShadowProcess<T extends IProcessDescription> {
             // outNode = new FileOutputDelimitedForLDIF(TalendTextUtils.addQuotes(""
             // + PathUtils.getPortablePath(outPath.toOSString())), description.getEncoding());
 
-            WSDLSchemaInputNode inWSDLSchemaNode = new WSDLSchemaInputNode(TalendTextUtils.addQuotes(""
+            WSDLSchemaInputNode inWSDLSchemaNode = new WSDLSchemaInputNode(TalendTextUtils.addQuotes("" //$NON-NLS-1$
                     + PathUtils.getPortablePath(outPath.toOSString())), description.getEncoding(), description.getSchema(),
                     description.getWsdlSchemaBean(), description.getWsdlSchemaBean().getParameters());
 
@@ -244,7 +244,7 @@ public class ShadowProcess<T extends IProcessDescription> {
         } else // Check if file has no suffix.
         {
             int length = filename.length();
-            filename = filename.substring(0, length - 1) + ".";
+            filename = filename.substring(0, length - 1) + "."; //$NON-NLS-1$
         }
 
         filename += CSV_EXT;

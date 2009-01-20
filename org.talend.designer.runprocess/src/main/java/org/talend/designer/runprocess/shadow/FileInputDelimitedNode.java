@@ -61,7 +61,7 @@ public class FileInputDelimitedNode extends FileInputNode {
         case FILE_DELIMITED:
             csvoption = false;
 
-            if (languageName.equals("perl")) {
+            if (languageName.equals("perl")) { //$NON-NLS-1$
                 int max = getColumnCount(filename, rowSep, fieldSep, limitRows, headerRows, escapeChar, textEnclosure,
                         EShadowProcessType.FILE_DELIMITED);
                 this.setColumnNumber(max);
@@ -87,7 +87,7 @@ public class FileInputDelimitedNode extends FileInputNode {
 
         case FILE_CSV:
             csvoption = true;
-            if (languageName.equals("perl")) {
+            if (languageName.equals("perl")) { //$NON-NLS-1$
                 int max = getColumnCount(filename, rowSep, fieldSep, limitRows, headerRows, escapeChar, textEnclosure,
                         EShadowProcessType.FILE_CSV);
                 this.setColumnNumber(max);
@@ -96,7 +96,7 @@ public class FileInputDelimitedNode extends FileInputNode {
                 try {
                     cr = new CsvReader(new BufferedReader(new InputStreamReader(new FileInputStream(trimParameter(filename)),
                             trimParameter(encoding))), trimParameter(StringUtils.loadConvert(fieldSep, languageName)).charAt(0));
-                    if (!rowSep.equals("\"\\n\"") && !rowSep.equals("\"\\r\"")) {
+                    if (!rowSep.equals("\"\\n\"") && !rowSep.equals("\"\\r\"")) { //$NON-NLS-1$ //$NON-NLS-2$
                         cr.setRecordDelimiter(trimParameter(StringUtils.loadConvert(rowSep, languageName)).charAt(0));
                     }
                     cr.setSkipEmptyRecords(true);
@@ -106,7 +106,7 @@ public class FileInputDelimitedNode extends FileInputNode {
                     } else {
                         cr.setUseTextQualifier(false);
                     }
-                    if (escapeChar.equals("\"\\\\\"") || escapeChar.equals("\"\"")) {
+                    if (escapeChar.equals("\"\\\\\"") || escapeChar.equals("\"\"")) { //$NON-NLS-1$ //$NON-NLS-2$
                         cr.setEscapeMode(CsvReader.ESCAPE_MODE_BACKSLASH);
                     } else {
                         cr.setEscapeMode(CsvReader.ESCAPE_MODE_DOUBLED);
@@ -144,7 +144,7 @@ public class FileInputDelimitedNode extends FileInputNode {
         }
 
         String[] paramNames = new String[] { "FILENAME", "ROWSEPARATOR", "FIELDSEPARATOR", "LIMIT", "HEADER", "FOOTER", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
-                "ESCAPE_CHAR", "TEXT_ENCLOSURE", "REMOVE_EMPTY_ROW", "ENCODING", "CSV_OPTION", "SPLITRECORD" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                "ESCAPE_CHAR", "TEXT_ENCLOSURE", "REMOVE_EMPTY_ROW", "ENCODING", "CSV_OPTION", "SPLITRECORD" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
         String[] paramValues = new String[] { filename, rowSep, fieldSep, Integer.toString(limitRows),
                 Integer.toString(headerRows), Integer.toString(footerRows), escapeChar, textEnclosure,
                 Boolean.toString(removeEmptyRow), encoding, Boolean.toString(csvoption), Boolean.toString(spitRecord) };
@@ -161,16 +161,16 @@ public class FileInputDelimitedNode extends FileInputNode {
             String textEnclosure, EShadowProcessType fileType) {
 
         File config = new File(CorePlugin.getDefault().getPreferenceStore().getString(ITalendCorePrefConstants.FILE_PATH_TEMP)
-                + "/conf.pl");
+                + "/conf.pl"); //$NON-NLS-1$
         if (config.exists()) {
             config.delete();
         }
         String modulepath = PreferencesUtilities.getLibrariesPath(ECodeLanguage.PERL);
         FileWriter filewriter;
-        String str = "0";
+        String str = "0"; //$NON-NLS-1$
         File resultFile = new File(CorePlugin.getDefault().getPreferenceStore()
                 .getString(ITalendCorePrefConstants.FILE_PATH_TEMP)
-                + "/result.txt");
+                + "/result.txt"); //$NON-NLS-1$
 
         if (resultFile.exists()) {
             resultFile.delete();
@@ -180,37 +180,37 @@ public class FileInputDelimitedNode extends FileInputNode {
             filewriter = new FileWriter(config, true);
             switch (fileType) {
             case FILE_DELIMITED:
-                filewriter.write("$conf{filename} = " + filename + ";");
-                filewriter.write("$conf{row_separator} = " + rowSep + ";");
-                filewriter.write("$conf{field_separator} = " + fieldSep + ";");
-                filewriter.write("$conf{header} = " + headerRows + ";");
-                filewriter.write("$conf{limit} = " + limitRows + ";");
-                filewriter.write("$conf{result_file} =\'" + resultFile.toString() + "\';");
-                filewriter.write("$conf{type} = \'delimited\';");
+                filewriter.write("$conf{filename} = " + filename + ";"); //$NON-NLS-1$ //$NON-NLS-2$
+                filewriter.write("$conf{row_separator} = " + rowSep + ";"); //$NON-NLS-1$ //$NON-NLS-2$
+                filewriter.write("$conf{field_separator} = " + fieldSep + ";"); //$NON-NLS-1$ //$NON-NLS-2$
+                filewriter.write("$conf{header} = " + headerRows + ";"); //$NON-NLS-1$ //$NON-NLS-2$
+                filewriter.write("$conf{limit} = " + limitRows + ";"); //$NON-NLS-1$ //$NON-NLS-2$
+                filewriter.write("$conf{result_file} =\'" + resultFile.toString() + "\';"); //$NON-NLS-1$ //$NON-NLS-2$
+                filewriter.write("$conf{type} = \'delimited\';"); //$NON-NLS-1$
                 break;
             case FILE_CSV:
-                filewriter.write("$conf{filename} = " + filename + ";");
-                filewriter.write("$conf{row_separator} = " + rowSep + ";");
-                filewriter.write("$conf{field_separator} = " + fieldSep + ";");
-                filewriter.write("$conf{escape_char} = " + escapeChar + ";");
-                filewriter.write("$conf{text_enclosure} = " + textEnclosure + ";");
-                filewriter.write("$conf{header} = " + headerRows + ";");
-                filewriter.write("$conf{limit} = " + limitRows + ";");
-                filewriter.write("$conf{result_file} =\'" + resultFile.toString() + "\';");
-                filewriter.write("$conf{type} = \'CSV\';");
+                filewriter.write("$conf{filename} = " + filename + ";"); //$NON-NLS-1$ //$NON-NLS-2$
+                filewriter.write("$conf{row_separator} = " + rowSep + ";"); //$NON-NLS-1$ //$NON-NLS-2$
+                filewriter.write("$conf{field_separator} = " + fieldSep + ";"); //$NON-NLS-1$ //$NON-NLS-2$
+                filewriter.write("$conf{escape_char} = " + escapeChar + ";"); //$NON-NLS-1$ //$NON-NLS-2$
+                filewriter.write("$conf{text_enclosure} = " + textEnclosure + ";"); //$NON-NLS-1$ //$NON-NLS-2$
+                filewriter.write("$conf{header} = " + headerRows + ";"); //$NON-NLS-1$ //$NON-NLS-2$
+                filewriter.write("$conf{limit} = " + limitRows + ";"); //$NON-NLS-1$ //$NON-NLS-2$
+                filewriter.write("$conf{result_file} =\'" + resultFile.toString() + "\';"); //$NON-NLS-1$ //$NON-NLS-2$
+                filewriter.write("$conf{type} = \'CSV\';"); //$NON-NLS-1$
                 break;
             default:
                 break;
             }
 
             filewriter.close();
-            modulepath = modulepath + "/column_counter_delimited.pl";
+            modulepath = modulepath + "/column_counter_delimited.pl"; //$NON-NLS-1$
             StringBuffer out = new StringBuffer();
             StringBuffer err = new StringBuffer();
 
             IRunProcessService service = (IRunProcessService) GlobalServiceRegister.getDefault().getService(
                     IRunProcessService.class);
-            service.perlExec(out, err, new Path(modulepath), null, Level.DEBUG, "", null, -1, -1, new String[] { "--conf="
+            service.perlExec(out, err, new Path(modulepath), null, Level.DEBUG, "", null, -1, -1, new String[] { "--conf=" //$NON-NLS-1$ //$NON-NLS-2$
                     + config });
 
             FileReader filereader = new FileReader(resultFile);

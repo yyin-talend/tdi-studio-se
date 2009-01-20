@@ -214,16 +214,16 @@ public class PromptDialog extends Dialog {
             }
         });
 
-        String stringTip = "";
-        String comment = "";
-        if (parameter.getType().equalsIgnoreCase("String") && LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL) {
-            stringTip = Messages.getString("PromptDialog.stringTip");
+        String stringTip = ""; //$NON-NLS-1$
+        String comment = ""; //$NON-NLS-1$
+        if (parameter.getType().equalsIgnoreCase("String") && LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL) { //$NON-NLS-1$
+            stringTip = Messages.getString("PromptDialog.stringTip"); //$NON-NLS-1$
         }
 
         comment = parameter.getComment();
 
-        if (!stringTip.equals("")) {
-            comment = comment + " " + stringTip;
+        if (!stringTip.equals("")) { //$NON-NLS-1$
+            comment = comment + " " + stringTip; //$NON-NLS-1$
         }
         label.setToolTipText(comment);
         text.setToolTipText(comment);
@@ -233,7 +233,7 @@ public class PromptDialog extends Dialog {
         if (DefaultCellEditorFactory.isDate(parameter.getType())) {
             text.setEditable(false);
             final Button b = new Button(child, SWT.NONE);
-            b.setText("...");
+            b.setText("..."); //$NON-NLS-1$
             b.addSelectionListener(new SelectionAdapter() {
 
                 /*
@@ -254,7 +254,7 @@ public class PromptDialog extends Dialog {
         } else if (DefaultCellEditorFactory.isFile(parameter.getType())) {
             text.setEditable(false);
             final Button b = new Button(child, SWT.NONE);
-            b.setText("...");
+            b.setText("..."); //$NON-NLS-1$
             b.addSelectionListener(new SelectionAdapter() {
 
                 /*
@@ -278,7 +278,7 @@ public class PromptDialog extends Dialog {
         } else if (DefaultCellEditorFactory.isDirectory(parameter.getType())) {
             text.setEditable(false);
             final Button b = new Button(child, SWT.NONE);
-            b.setText("...");
+            b.setText("..."); //$NON-NLS-1$
             b.addSelectionListener(new SelectionAdapter() {
 
                 /*

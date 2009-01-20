@@ -50,7 +50,7 @@ public class ClearPerformanceAction extends Action {
         IConnection[] conns = process.getAllConnections(null);
         for (int i = 0; i < conns.length; i++) {
             if (conns[i] instanceof IPerformance) {
-                ((IPerformance) conns[i]).setPerformanceData("");
+                ((IPerformance) conns[i]).setPerformanceData(""); //$NON-NLS-1$
             }
         }
     }

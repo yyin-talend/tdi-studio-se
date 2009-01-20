@@ -352,12 +352,12 @@ public class RunProcessContext {
                             final IContext context = getSelectedContext();
                             if (monitorPerf) {
                                 perfMonitor = new PerformanceMonitor();
-                                new Thread(perfMonitor, "PerfMonitor_" + process.getLabel()).start();
+                                new Thread(perfMonitor, "PerfMonitor_" + process.getLabel()).start(); //$NON-NLS-1$
                             }
                             // findNewTracesPort();
                             if (monitorTrace) {
                                 traceMonitor = new TraceMonitor();
-                                new Thread(traceMonitor, "TraceMonitor_" + process.getLabel()).start();
+                                new Thread(traceMonitor, "TraceMonitor_" + process.getLabel()).start(); //$NON-NLS-1$
                             }
 
                             final String watchParam = RunProcessContext.this.isWatchAllowed() ? WATCH_PARAM : null;
@@ -425,7 +425,7 @@ public class RunProcessContext {
                                         }
                                     });
                                 }
-                            }, "RunProcess_" + process.getLabel()).start();
+                            }, "RunProcess_" + process.getLabel()).start(); //$NON-NLS-1$
                             while (refreshUiAndWait[0] && !progressMonitor.isCanceled()) {
                                 if (!display.readAndDispatch()) {
                                     display.sleep();
@@ -690,7 +690,7 @@ public class RunProcessContext {
             try {
                 messageErr = extractMessage(errIs, MsgType.STD_ERR, flush);
                 if (messageErr != null) {
-                    if (messageErr.getContent().contains("Unresolved compilation problem")) {
+                    if (messageErr.getContent().contains("Unresolved compilation problem")) { //$NON-NLS-1$
                         hasCompilationError = true;
                     }
                     processMessageManager.addMessage(messageErr);
@@ -729,7 +729,7 @@ public class RunProcessContext {
                     if (data == null) {
                         break;
                     }
-                    sb.append(data).append("\n");
+                    sb.append(data).append("\n"); //$NON-NLS-1$
                     if (sb.length() > 1024 || System.currentTimeMillis() - timeStart > 100) {
                         break;
                     }
@@ -800,7 +800,7 @@ public class RunProcessContext {
                             final PerformanceData perfData = new PerformanceData(data);
                             String connectionId = perfData.getConnectionId();
                             // handle connectionId as row1.1 and row1
-                            connectionId = connectionId.split("\\.")[0];
+                            connectionId = connectionId.split("\\.")[0]; //$NON-NLS-1$
                             final IConnection conn = findConnection(connectionId);
                             if (conn != null && conn instanceof IPerformance) {
                                 final IPerformance performance = (IPerformance) conn;
@@ -1101,12 +1101,12 @@ public class RunProcessContext {
                         final IContext context = getSelectedContext();
                         if (monitorPerf) {
                             perfMonitor = new PerformanceMonitor();
-                            new Thread(perfMonitor, "PerfMonitor_" + process.getLabel()).start();
+                            new Thread(perfMonitor, "PerfMonitor_" + process.getLabel()).start(); //$NON-NLS-1$
                         }
                         // findNewTracesPort();
                         if (monitorTrace) {
                             traceMonitor = new TraceMonitor();
-                            new Thread(traceMonitor, "TraceMonitor_" + process.getLabel()).start();
+                            new Thread(traceMonitor, "TraceMonitor_" + process.getLabel()).start(); //$NON-NLS-1$
                         }
                     } catch (Throwable e) {
                         ExceptionHandler.process(e);

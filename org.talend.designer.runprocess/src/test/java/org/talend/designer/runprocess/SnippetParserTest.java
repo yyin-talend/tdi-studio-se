@@ -32,9 +32,9 @@ public class SnippetParserTest {
 
     static String perlTestCode = null;
 
-    static String snippetID = "_34ejdsfy8768sdf79";
+    static String snippetID = "_34ejdsfy8768sdf79"; //$NON-NLS-1$
 
-    static String snippetName = "SnippetAA";
+    static String snippetName = "SnippetAA"; //$NON-NLS-1$
 
     /**
      * format is: <br>
@@ -53,35 +53,35 @@ public class SnippetParserTest {
         // Java comment format
         StringBuilder sb = new StringBuilder();
         {
-            String para = "Var1=xxx" + systemEOL + "Var2=yyy";
-            String code = "String.valueof(${Var1})";
-            sb.append("other code start");
+            String para = "Var1=xxx" + systemEOL + "Var2=yyy"; //$NON-NLS-1$ //$NON-NLS-2$
+            String code = "String.valueof(${Var1})"; //$NON-NLS-1$
+            sb.append("other code start"); //$NON-NLS-1$
             sb.append(systemEOL);
-            sb.append("/*SNIPPET_START:").append(snippetName).append(systemEOL).append(para).append(systemEOL).append(
-                    "{ID}=" + snippetID).append("*/");
+            sb.append("/*SNIPPET_START:").append(snippetName).append(systemEOL).append(para).append(systemEOL).append( //$NON-NLS-1$
+                    "{ID}=" + snippetID).append("*/"); //$NON-NLS-1$ //$NON-NLS-2$
             sb.append(systemEOL);
             sb.append(code);
             sb.append(systemEOL);
-            sb.append("/*SNIPPET_END*/");
+            sb.append("/*SNIPPET_END*/"); //$NON-NLS-1$
             sb.append(systemEOL);
-            sb.append("other code end");
+            sb.append("other code end"); //$NON-NLS-1$
             javaTestCode = sb.toString();
         }
 
         sb = new StringBuilder();
         {
-            String para = "#Var1=xxx" + systemEOL + "#Var2=yyy";
-            String code = "my $foo = \'bar\';";
-            sb.append("other code start");
+            String para = "#Var1=xxx" + systemEOL + "#Var2=yyy"; //$NON-NLS-1$ //$NON-NLS-2$
+            String code = "my $foo = \'bar\';"; //$NON-NLS-1$
+            sb.append("other code start"); //$NON-NLS-1$
             sb.append(systemEOL);
-            sb.append("#SNIPPET_START:").append(snippetName).append(systemEOL).append(para).append(systemEOL).append(
-                    "#{ID}=" + snippetID);
+            sb.append("#SNIPPET_START:").append(snippetName).append(systemEOL).append(para).append(systemEOL).append( //$NON-NLS-1$
+                    "#{ID}=" + snippetID); //$NON-NLS-1$
             sb.append(systemEOL);
             sb.append(code);
             sb.append(systemEOL);
-            sb.append("#SNIPPET_END");
+            sb.append("#SNIPPET_END"); //$NON-NLS-1$
             sb.append(systemEOL);
-            sb.append("other code end");
+            sb.append("other code end"); //$NON-NLS-1$
             perlTestCode = sb.toString();
         }
 
@@ -127,8 +127,8 @@ public class SnippetParserTest {
         Assert.assertEquals(4, result.length);
         Assert.assertEquals(result[0], snippetID);
         Assert.assertEquals(result[1], snippetName);
-        Assert.assertEquals(result[2], "Var1=xxx");
-        Assert.assertEquals(result[3], "Var2=yyy");
+        Assert.assertEquals(result[2], "Var1=xxx"); //$NON-NLS-1$
+        Assert.assertEquals(result[3], "Var2=yyy"); //$NON-NLS-1$
 
     }
 
@@ -140,15 +140,15 @@ public class SnippetParserTest {
         Assert.assertEquals(4, result.length);
         Assert.assertEquals(result[0], snippetID);
         Assert.assertEquals(result[1], snippetName);
-        Assert.assertEquals(result[2], "Var1=xxx");
-        Assert.assertEquals(result[3], "Var2=yyy");
+        Assert.assertEquals(result[2], "Var1=xxx"); //$NON-NLS-1$
+        Assert.assertEquals(result[3], "Var2=yyy"); //$NON-NLS-1$
 
     }
 
     @Test
     public void testFindFirstSnippetIdNoResult() {
         SnippetParser sp = new SnippetParser();
-        String[] result = sp.findFirstSnippetId("sdfsdf").toArray(new String[0]);
+        String[] result = sp.findFirstSnippetId("sdfsdf").toArray(new String[0]); //$NON-NLS-1$
         Assert.assertEquals(result.length, 0);
     }
 
@@ -160,19 +160,19 @@ public class SnippetParserTest {
     public void testReplaceFristSnippet4Java() {
         SnippetParser sp = new SnippetParser();
 
-        String result = sp.replaceFristSnippet("mycode", javaTestCode);
-        Assert.assertEquals("other code start" + systemEOL + "mycode" + systemEOL + "other code end", result);
+        String result = sp.replaceFristSnippet("mycode", javaTestCode); //$NON-NLS-1$
+        Assert.assertEquals("other code start" + systemEOL + "mycode" + systemEOL + "other code end", result); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     @Test
     public void testReplaceFristSnippet4Perl() {
         SnippetParser sp = new SnippetParser();
         System.out.println(perlTestCode);
-        String myCode = "$foo";
+        String myCode = "$foo"; //$NON-NLS-1$
         // myCode = StringUtils.replace(myCode, "$", "\\$");
 
         String result = sp.replaceFristSnippet(myCode, perlTestCode);
         System.out.println(result);
-        Assert.assertEquals("other code start" + systemEOL + "$foo" + systemEOL + "other code end", result);
+        Assert.assertEquals("other code start" + systemEOL + "$foo" + systemEOL + "other code end", result); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 }

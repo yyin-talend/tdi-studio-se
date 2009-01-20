@@ -135,9 +135,9 @@ public abstract class ShadowNode extends AbstractNode {
         List<IMetadataColumn> columns = new ArrayList<IMetadataColumn>();
         for (int i = 0; i < columnNumber; i++) {
             MetadataColumn col = new MetadataColumn();
-            col.setLabel("row" + i);
-            col.setTalendType("id_String");
-            col.setType("String");
+            col.setLabel("row" + i); //$NON-NLS-1$
+            col.setTalendType("id_String"); //$NON-NLS-1$
+            col.setType("String"); //$NON-NLS-1$
             columns.add(col);
         }
         metadata.setListColumns(columns);

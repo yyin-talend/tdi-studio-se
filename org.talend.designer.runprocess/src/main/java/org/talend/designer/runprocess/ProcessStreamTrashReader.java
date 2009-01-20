@@ -40,7 +40,7 @@ public final class ProcessStreamTrashReader {
      */
     public static String readErrorStream(final Process process) {
 
-        String lineSep = System.getProperty("line.separator");
+        String lineSep = System.getProperty("line.separator"); //$NON-NLS-1$
 
         StringBuilder builder = new StringBuilder();
 
@@ -62,7 +62,7 @@ public final class ProcessStreamTrashReader {
             }
         }
 
-        if (builder.toString().equals("")) {
+        if (builder.toString().equals("")) { //$NON-NLS-1$
             return null;
         }
 
@@ -80,7 +80,7 @@ public final class ProcessStreamTrashReader {
                     try {
                         String line = null;
                         while ((line = reader.readLine()) != null) {
-                            System.out.println("getInputStream " + line);
+                            System.out.println("getInputStream " + line); //$NON-NLS-1$
                         }
                     } catch (Exception ex) {
                         ex.getMessage();
@@ -108,7 +108,7 @@ public final class ProcessStreamTrashReader {
                     try {
                         String line = null;
                         while ((line = reader.readLine()) != null) {
-                            System.out.println("getErrorStream " + line);
+                            System.out.println("getErrorStream " + line); //$NON-NLS-1$
                         }
                     } catch (Exception ex) {
                         ex.getMessage();

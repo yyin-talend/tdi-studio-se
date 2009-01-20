@@ -28,19 +28,19 @@ public class FileOutputDelimitedNode extends ShadowNode {
     public FileOutputDelimitedNode(String filename, String encoding) {
         super("tFileOutputDelimited"); //$NON-NLS-1$
 
-        TextElementParameter param0 = new TextElementParameter("CSV_OPTION", "true"); //$NON-NLS-1$
+        TextElementParameter param0 = new TextElementParameter("CSV_OPTION", "true"); //$NON-NLS-1$ //$NON-NLS-2$
         TextElementParameter param1 = new TextElementParameter("FILENAME", filename); //$NON-NLS-1$
         TextElementParameter param2 = new TextElementParameter("ENCODING", encoding); //$NON-NLS-1$
-        TextElementParameter param3 = new TextElementParameter("ROWSEPARATOR", "\"\\n\""); //$NON-NLS-1$
+        TextElementParameter param3 = new TextElementParameter("ROWSEPARATOR", "\"\\n\""); //$NON-NLS-1$ //$NON-NLS-2$
         TextElementParameter param4 = new TextElementParameter("FIELDSEPARATOR", TalendTextUtils.addQuotes(";")); //$NON-NLS-1$ //$NON-NLS-2$
         TextElementParameter param5 = new TextElementParameter("LIMIT", ""); //$NON-NLS-1$ //$NON-NLS-2$
         TextElementParameter param6 = new TextElementParameter("HEADER", ""); //$NON-NLS-1$ //$NON-NLS-2$
         TextElementParameter param7 = new TextElementParameter("FOOTER", ""); //$NON-NLS-1$ //$NON-NLS-2$
         TextElementParameter param8 = new TextElementParameter("ESCAPE_CHAR", TalendTextUtils.addQuotes("\"")); //$NON-NLS-1$ //$NON-NLS-2$
-        TextElementParameter param9 = new TextElementParameter("TEXT_ENCLOSURE", TalendTextUtils.addQuotes("\""));
-        TextElementParameter param10 = new TextElementParameter("REMOVE_EMPTY_ROW", "true");
-        TextElementParameter param11 = new TextElementParameter("SPLIT", "false");
-        TextElementParameter param12 = new TextElementParameter("SPLIT_EVERY", "1000");
+        TextElementParameter param9 = new TextElementParameter("TEXT_ENCLOSURE", TalendTextUtils.addQuotes("\"")); //$NON-NLS-1$ //$NON-NLS-2$
+        TextElementParameter param10 = new TextElementParameter("REMOVE_EMPTY_ROW", "true"); //$NON-NLS-1$ //$NON-NLS-2$
+        TextElementParameter param11 = new TextElementParameter("SPLIT", "false"); //$NON-NLS-1$ //$NON-NLS-2$
+        TextElementParameter param12 = new TextElementParameter("SPLIT_EVERY", "1000"); //$NON-NLS-1$ //$NON-NLS-2$
 
         addParameter(param0);
         addParameter(param1);

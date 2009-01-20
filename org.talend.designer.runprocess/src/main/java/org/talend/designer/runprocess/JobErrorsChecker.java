@@ -129,7 +129,7 @@ public class JobErrorsChecker {
      * @return
      */
     private static String getSourceCode(InputStream contents) {
-        String sourceCode = "";
+        String sourceCode = ""; //$NON-NLS-1$
         InputStreamReader in = null;
         try {
             in = new InputStreamReader(new BufferedInputStream(contents));

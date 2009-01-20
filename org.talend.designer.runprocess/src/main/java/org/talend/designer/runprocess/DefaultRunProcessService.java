@@ -24,6 +24,7 @@ import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
 import org.talend.designer.runprocess.data.PerformanceData;
+import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.java.JavaProcessor;
 import org.talend.designer.runprocess.language.SyntaxCheckerFactory;
 import org.talend.designer.runprocess.perl.PerlProcessor;
@@ -165,7 +166,7 @@ public class DefaultRunProcessService implements IRunProcessService {
      * IRunProcessService)
      */
     public void setDelegateService(IRunProcessService delegateService) {
-        throw new UnsupportedOperationException("This method should'nt be called here, use it on RunProcessService class.");
+        throw new UnsupportedOperationException(Messages.getString("DefaultRunProcessService.methodCalledError")); //$NON-NLS-1$
     }
 
     public void updateLibraries() throws CoreException {

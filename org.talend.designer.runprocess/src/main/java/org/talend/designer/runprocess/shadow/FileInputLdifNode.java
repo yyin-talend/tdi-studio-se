@@ -60,7 +60,7 @@ public class FileInputLdifNode extends FileInputNode {
             // e.printStackTrace();
         }
 
-        String[] paramNames = new String[] { "FILENAME", "ENCODING" }; //$NON-NLS-1$
+        String[] paramNames = new String[] { "FILENAME", "ENCODING" }; //$NON-NLS-1$ //$NON-NLS-2$
         String[] paramValues = new String[] { filename, encoding };
 
         for (int i = 0; i < paramNames.length; i++) {

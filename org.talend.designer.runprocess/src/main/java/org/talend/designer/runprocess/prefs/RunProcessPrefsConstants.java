@@ -18,27 +18,27 @@ package org.talend.designer.runprocess.prefs;
  */
 public class RunProcessPrefsConstants {
 
-    public static final String CLIENT_STATS_PORT_BOUND1 = "CLIENT_STATS_PORT_BOUND1";
+    public static final String CLIENT_STATS_PORT_BOUND1 = "CLIENT_STATS_PORT_BOUND1"; //$NON-NLS-1$
 
-    public static final String CLIENT_STATS_PORT_BOUND2 = "CLIENT_STATS_PORT_BOUND2";
+    public static final String CLIENT_STATS_PORT_BOUND2 = "CLIENT_STATS_PORT_BOUND2"; //$NON-NLS-1$
 
-    public static final String CLIENT_TRACE_PORT_BOUND1 = "CLIENT_TRACE_PORT_BOUND1";
+    public static final String CLIENT_TRACE_PORT_BOUND1 = "CLIENT_TRACE_PORT_BOUND1"; //$NON-NLS-1$
 
-    public static final String CLIENT_TRACE_PORT_BOUND2 = "CLIENT_TRACE_PORT_BOUND2";
+    public static final String CLIENT_TRACE_PORT_BOUND2 = "CLIENT_TRACE_PORT_BOUND2"; //$NON-NLS-1$
 
-    public static final String ISSAVEBEFORERUN = "saveBeforeRun";
+    public static final String ISSAVEBEFORERUN = "saveBeforeRun"; //$NON-NLS-1$
 
-    public static final String ISCLEARBEFORERUN = "clearBeforeRun";
+    public static final String ISCLEARBEFORERUN = "clearBeforeRun"; //$NON-NLS-1$
 
-    public static final String ISEXECTIMERUN = "execTimeRun";
+    public static final String ISEXECTIMERUN = "execTimeRun"; //$NON-NLS-1$
 
-    public static final String ISSTATISTICSRUN = "statisticsRun";
+    public static final String ISSTATISTICSRUN = "statisticsRun"; //$NON-NLS-1$
 
-    public static final String ISTRACESRUN = "tracesRun";
+    public static final String ISTRACESRUN = "tracesRun"; //$NON-NLS-1$
 
-    public static final String STRACESTIME = "tracesTime";
+    public static final String STRACESTIME = "tracesTime"; //$NON-NLS-1$
 
-    public static final String VMARGUMENTS = "vmarguments";
+    public static final String VMARGUMENTS = "vmarguments"; //$NON-NLS-1$
 
-    public static final String CONSOLE_FONT = "talendOutputConsoleFont";
+    public static final String CONSOLE_FONT = "talendOutputConsoleFont"; //$NON-NLS-1$
 }

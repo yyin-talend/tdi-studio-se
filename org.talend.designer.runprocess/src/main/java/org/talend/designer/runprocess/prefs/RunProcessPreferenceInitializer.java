@@ -31,13 +31,13 @@ public class RunProcessPreferenceInitializer extends AbstractPreferenceInitializ
     public void initializeDefaultPreferences() {
         IPreferenceStore prefs = getPluginPreferenceStore();
 
-        prefs.putValue(RunProcessPrefsConstants.CLIENT_STATS_PORT_BOUND1, "3334");
-        prefs.putValue(RunProcessPrefsConstants.CLIENT_STATS_PORT_BOUND2, "4333");
-        prefs.putValue(RunProcessPrefsConstants.CLIENT_TRACE_PORT_BOUND1, "4334");
-        prefs.putValue(RunProcessPrefsConstants.CLIENT_TRACE_PORT_BOUND2, "5333");
+        prefs.putValue(RunProcessPrefsConstants.CLIENT_STATS_PORT_BOUND1, "3334"); //$NON-NLS-1$
+        prefs.putValue(RunProcessPrefsConstants.CLIENT_STATS_PORT_BOUND2, "4333"); //$NON-NLS-1$
+        prefs.putValue(RunProcessPrefsConstants.CLIENT_TRACE_PORT_BOUND1, "4334"); //$NON-NLS-1$
+        prefs.putValue(RunProcessPrefsConstants.CLIENT_TRACE_PORT_BOUND2, "5333"); //$NON-NLS-1$
         prefs.setDefault(RunProcessPrefsConstants.ISCLEARBEFORERUN, true);
         prefs.setDefault(RunProcessPrefsConstants.STRACESTIME, 1000);
-        prefs.setDefault(RunProcessPrefsConstants.VMARGUMENTS, " -Xms256M -Xmx1024M");
+        prefs.setDefault(RunProcessPrefsConstants.VMARGUMENTS, " -Xms256M -Xmx1024M"); //$NON-NLS-1$
     }
 
     /**

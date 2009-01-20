@@ -22,6 +22,7 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
+import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.ui.actions.RunProcessAction;
 
 /**
@@ -151,7 +152,7 @@ public class RunProcessService implements IRunProcessService {
         if (isValidDelegate) {
             this.delegateService = delegateService;
         } else {
-            throw new IllegalArgumentException("delegateService can't be null and can't inherit from RunProcessService");
+            throw new IllegalArgumentException(Messages.getString("RunProcessService.delegateServiceError")); //$NON-NLS-1$
         }
     }
 

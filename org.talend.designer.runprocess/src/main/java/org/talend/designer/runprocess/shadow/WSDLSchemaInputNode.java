@@ -36,7 +36,7 @@ public class WSDLSchemaInputNode extends FileInputNode {
      */
     private List<IMetadataTable> metadatas = null;
 
-    private String encoding = "";
+    private String encoding = ""; //$NON-NLS-1$
 
     /**
      * Constructs a new WSDLSchemaInputNode.
@@ -59,62 +59,62 @@ public class WSDLSchemaInputNode extends FileInputNode {
      * @param parameters
      */
     private void addParameters(WSDLSchemaBean schemaBean, ArrayList parameters) {
-        IElementParameter param = new TextElementParameter("ENDPOINT", schemaBean.getWslUrl());
+        IElementParameter param = new TextElementParameter("ENDPOINT", schemaBean.getWslUrl()); //$NON-NLS-1$
         addParameter(param);
         if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
             addJavaParameters(schemaBean);
         } else if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.PERL)) {
             addPerlParameters(schemaBean);
         }
-        param = new TextElementParameter("METHOD", schemaBean.getMethod());
+        param = new TextElementParameter("METHOD", schemaBean.getMethod()); //$NON-NLS-1$
         addParameter(param);        
         
      // fix preview
-        param = new TextElementParameter("ADVANCED_USE", Boolean.toString(false));
+        param = new TextElementParameter("ADVANCED_USE", Boolean.toString(false)); //$NON-NLS-1$
         addParameter(param);
 
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
         for (Object string : parameters) {
             Map<String, Object> map = new HashMap<String, Object>();
-            map.put("VALUE", TalendTextUtils.addQuotes(string.toString()));
+            map.put("VALUE", TalendTextUtils.addQuotes(string.toString())); //$NON-NLS-1$
             list.add(map);
         }
-        param = new ObjectElementParameter("PARAMS", list);
-        param.setListItemsDisplayCodeName(new String[] { "VALUE" });
+        param = new ObjectElementParameter("PARAMS", list); //$NON-NLS-1$
+        param.setListItemsDisplayCodeName(new String[] { "VALUE" }); //$NON-NLS-1$
         addParameter(param);
 
     }
 
     private void addJavaParameters(WSDLSchemaBean schemaBean) {
-        IElementParameter param = new TextElementParameter("NEED_AUTH", "" + schemaBean.isNeedAuth());
+        IElementParameter param = new TextElementParameter("NEED_AUTH", "" + schemaBean.isNeedAuth()); //$NON-NLS-1$ //$NON-NLS-2$
         addParameter(param);
 
-        param = new TextElementParameter("AUTH_USERNAME", schemaBean.getUserName());
+        param = new TextElementParameter("AUTH_USERNAME", schemaBean.getUserName()); //$NON-NLS-1$
         addParameter(param);
 
-        param = new TextElementParameter("AUTH_PASSWORD", schemaBean.getPassword());
+        param = new TextElementParameter("AUTH_PASSWORD", schemaBean.getPassword()); //$NON-NLS-1$
         addParameter(param);
 
-        param = new TextElementParameter("UES_PROXY", "" + schemaBean.isUseProxy());
+        param = new TextElementParameter("UES_PROXY", "" + schemaBean.isUseProxy()); //$NON-NLS-1$ //$NON-NLS-2$
         addParameter(param);
 
-        param = new TextElementParameter("PROXY_HOST", schemaBean.getProxyHost());
+        param = new TextElementParameter("PROXY_HOST", schemaBean.getProxyHost()); //$NON-NLS-1$
         addParameter(param);
 
-        param = new TextElementParameter("PROXY_PORT", schemaBean.getProxyPort());
+        param = new TextElementParameter("PROXY_PORT", schemaBean.getProxyPort()); //$NON-NLS-1$
         addParameter(param);
 
-        param = new TextElementParameter("PROXY_USERNAME", schemaBean.getProxyUser());
+        param = new TextElementParameter("PROXY_USERNAME", schemaBean.getProxyUser()); //$NON-NLS-1$
         addParameter(param);
 
-        param = new TextElementParameter("PROXY_PASSWORD", schemaBean.getProxyPassword());
+        param = new TextElementParameter("PROXY_PASSWORD", schemaBean.getProxyPassword()); //$NON-NLS-1$
         addParameter(param);
     }
 
     private void addPerlParameters(WSDLSchemaBean schemaBean) {
-        IElementParameter param = new TextElementParameter("WSDL", schemaBean.getEndpointURI());
+        IElementParameter param = new TextElementParameter("WSDL", schemaBean.getEndpointURI()); //$NON-NLS-1$
         addParameter(param);
-        param = new TextElementParameter("ENCODING", this.encoding);
+        param = new TextElementParameter("ENCODING", this.encoding); //$NON-NLS-1$
         addParameter(param);
     }
 

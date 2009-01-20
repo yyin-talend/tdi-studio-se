@@ -59,7 +59,7 @@ public class SnippetParser {
         String vString = null;
         try {
             Pattern regex = Pattern.compile(
-                    "(?:/\\*|#)SNIPPET_START:(\\w+)(?:\\r\\n|\\n)((?:#*\\w+=.+(?:\\r\\n|\\n))+)#*\\{ID\\}=(\\w+)",
+                    "(?:/\\*|#)SNIPPET_START:(\\w+)(?:\\r\\n|\\n)((?:#*\\w+=.+(?:\\r\\n|\\n))+)#*\\{ID\\}=(\\w+)", //$NON-NLS-1$
                     Pattern.CANON_EQ);
             Matcher regexMatcher = regex.matcher(allSnippetString);
             regexMatcher.find();
@@ -70,7 +70,7 @@ public class SnippetParser {
             resultList.add(snippetName);
             String[] multiVarible = vString.split(systemEOL);
             for (int i = 0; i < multiVarible.length; i++) {
-                resultList.add(StringUtils.replace(multiVarible[i], "#", ""));
+                resultList.add(StringUtils.replace(multiVarible[i], "#", "")); //$NON-NLS-1$ //$NON-NLS-2$
             }
         } catch (RuntimeException ex) {
         }
@@ -81,10 +81,10 @@ public class SnippetParser {
         StringBuffer resultString = new StringBuffer();
         try {
             Pattern regex = Pattern
-                    .compile("(/\\*|#)SNIPPET_START(.*(\\r\\n|\\n))+?(/\\*|#)SNIPPET_END(\\*/)*", Pattern.CANON_EQ);
+                    .compile("(/\\*|#)SNIPPET_START(.*(\\r\\n|\\n))+?(/\\*|#)SNIPPET_END(\\*/)*", Pattern.CANON_EQ); //$NON-NLS-1$
             Matcher regexMatcher = regex.matcher(allSnappetString);
             regexMatcher.find();
-            replaceString = StringUtils.replace(replaceString, "$", "\\$");
+            replaceString = StringUtils.replace(replaceString, "$", "\\$"); //$NON-NLS-1$ //$NON-NLS-2$
             try {
                 regexMatcher.appendReplacement(resultString, replaceString);
             } catch (IllegalStateException ex) {
@@ -108,7 +108,7 @@ public class SnippetParser {
         list.remove(0);
         list.remove(0);
         for (String string : list) {
-            String[] para = string.split("=");
+            String[] para = string.split("="); //$NON-NLS-1$
             snippet.variables.put(para[0].trim(), para[1].trim());
         }
         return snippet;
@@ -129,7 +129,7 @@ public class SnippetParser {
             if (snippetString != null) {
                 processCode = replaceFristSnippet(snippetString, processCode);
             } else {
-                processCode = replaceFristSnippet("", processCode);
+                processCode = replaceFristSnippet("", processCode); //$NON-NLS-1$
             }
         }
         return processCode;
@@ -146,18 +146,18 @@ public class SnippetParser {
         String code = getInsertSnippetCode(item, store);
         StringBuilder sb = new StringBuilder();
         if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.PERL)) {
-            sb.append("#SNIPPET_GENERATED_START:{0}");
+            sb.append("#SNIPPET_GENERATED_START:{0}"); //$NON-NLS-1$
             sb.append(systemEOL);
-            sb.append("{1}");
+            sb.append("{1}"); //$NON-NLS-1$
             sb.append(systemEOL);
-            sb.append("#SNIPPET_GENERATED_END");
+            sb.append("#SNIPPET_GENERATED_END"); //$NON-NLS-1$
         } else {
             // Java comment format
-            sb.append("/*SNIPPET_GENERATED_START:{0}*/");
+            sb.append("/*SNIPPET_GENERATED_START:{0}*/"); //$NON-NLS-1$
             sb.append(systemEOL);
-            sb.append("{1}");
+            sb.append("{1}"); //$NON-NLS-1$
             sb.append(systemEOL);
-            sb.append("/*SNIPPET_GENERATED_END*/");
+            sb.append("/*SNIPPET_GENERATED_END*/"); //$NON-NLS-1$
         }
         // StringBuilder b = new StringBuilder();
         // b.append("(");
@@ -166,7 +166,7 @@ public class SnippetParser {
         // }
         // b.deleteCharAt(b.length() - 1);
         // b.append(")");
-        String snippetDefinition = item.getProperty().getLabel() + " ID=" + item.getProperty().getId();
+        String snippetDefinition = item.getProperty().getLabel() + " ID=" + item.getProperty().getId(); //$NON-NLS-1$
 
         String msg = sb.toString();
         MessageFormat format = new MessageFormat(msg);

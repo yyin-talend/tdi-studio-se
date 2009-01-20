@@ -208,22 +208,22 @@ public abstract class Processor implements IProcessor {
 					"Context is empty, context must be set before call"); //$NON-NLS-1$
 		}
 
-		StringBuilder parameterStr = new StringBuilder(" ");
+		StringBuilder parameterStr = new StringBuilder(" "); //$NON-NLS-1$
 		if (codeOptions != null) {
 			for (int i = 0; i < codeOptions.length; i++) {
 				String string = codeOptions[i];
 				if (string != null) {
-					parameterStr.append(string).append(" ");
+					parameterStr.append(string).append(" "); //$NON-NLS-1$
 				}
 			}
 		}
 		if (statOption != -1) {
 			parameterStr = parameterStr.append(STAT_PORT_ARG + statOption)
-					.append(" ");
+					.append(" "); //$NON-NLS-1$
 		}
 		if (traceOption != -1) {
 			parameterStr = parameterStr.append(TRACE_PORT_ARG + traceOption)
-					.append(" ");
+					.append(" "); //$NON-NLS-1$
 		}
 
 		ILaunchConfiguration config = null;

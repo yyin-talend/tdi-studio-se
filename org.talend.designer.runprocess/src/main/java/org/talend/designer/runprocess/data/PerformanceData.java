@@ -112,7 +112,7 @@ public final class PerformanceData implements IPerformanceData {
 
         if (sepIndex1 != -1 && data.length() == sepIndex1 + 6) {
             String clearStr = data.substring(sepIndex1 + 1, sepIndex1 + 6); // "clear"
-            if ("clear".equals(clearStr)) {
+            if ("clear".equals(clearStr)) { //$NON-NLS-1$
                 return true;
             }
         }

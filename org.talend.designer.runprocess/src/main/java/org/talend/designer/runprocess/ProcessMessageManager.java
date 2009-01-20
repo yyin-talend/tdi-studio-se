@@ -33,7 +33,7 @@ public class ProcessMessageManager implements IProcessMessageManager {
 
     public static final String PROP_MESSAGE_ADD = "RunProcessContext.Message.Added"; //$NON-NLS-1$
 
-    public static final String PROP_DEBUG_MESSAGE_ADD = "RunProcessContext.DebugMessage.Added";
+    public static final String PROP_DEBUG_MESSAGE_ADD = "RunProcessContext.DebugMessage.Added"; //$NON-NLS-1$
 
     public static final String PROP_MESSAGE_CLEAR = "RunProcessContext.Message.Cleared"; //$NON-NLS-1$
 
@@ -96,7 +96,7 @@ public class ProcessMessageManager implements IProcessMessageManager {
         int i = messages.size() - 1;
         if (i >= 0) {
             IProcessMessage processMessage = (IProcessMessage) messages.toArray()[i];
-            return processMessage.getContent().endsWith("\n");
+            return processMessage.getContent().endsWith("\n"); //$NON-NLS-1$
         } else {
             return false;
         }

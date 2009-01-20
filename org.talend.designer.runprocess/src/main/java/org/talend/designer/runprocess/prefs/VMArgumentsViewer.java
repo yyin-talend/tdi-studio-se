@@ -33,6 +33,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.talend.commons.ui.swt.preferences.TableEditor;
+import org.talend.designer.runprocess.i18n.Messages;
 
 /**
  * qzhang class global comment. Detailled comment <br/>
@@ -42,7 +43,7 @@ public class VMArgumentsViewer extends TableEditor {
 
     private static final List<String> EMPTY_STRING_LIST = Collections.unmodifiableList(new ArrayList<String>());
 
-    private static final String ARG_DELIMITER = " -";
+    private static final String ARG_DELIMITER = " -"; //$NON-NLS-1$
 
     /**
      * qzhang VMArgumentsViewer constructor comment.
@@ -130,7 +131,7 @@ public class VMArgumentsViewer extends TableEditor {
         contextTable.setHeaderVisible(true);
 
         TableColumn engineName = new TableColumn(contextTable, SWT.NONE);
-        engineName.setText("Argument");
+        engineName.setText(Messages.getString("VMArgumentsViewer.argument")); //$NON-NLS-1$
         engineName.setWidth(350);
         return contextTable;
     }
@@ -175,7 +176,7 @@ public class VMArgumentsViewer extends TableEditor {
         }
         ArrayList<String> result = new ArrayList<String>(50);
         for (String tmp : stringList.split(ARG_DELIMITER)) {
-            if (tmp != null && !"".equals(tmp)) {
+            if (tmp != null && !"".equals(tmp)) { //$NON-NLS-1$
                 result.add(tmp);
             }
         }
@@ -199,7 +200,7 @@ public class VMArgumentsViewer extends TableEditor {
                 if (!items.get(i + 1).trim().startsWith(trim)) {
                     buf.append(ARG_DELIMITER);
                 } else {
-                    buf.append(" ");
+                    buf.append(" "); //$NON-NLS-1$
                 }
             }
         }
@@ -225,8 +226,8 @@ public class VMArgumentsViewer extends TableEditor {
          */
         protected VMArgumentDialog(Shell parentShell, String item) {
             super(parentShell);
-            if (item == null || "".equals(item)) {
-                arg = "";
+            if (item == null || "".equals(item)) { //$NON-NLS-1$
+                arg = ""; //$NON-NLS-1$
             } else {
                 arg = item;
             }
@@ -240,7 +241,7 @@ public class VMArgumentsViewer extends TableEditor {
         @Override
         protected void configureShell(Shell newShell) {
             super.configureShell(newShell);
-            newShell.setText("Set the VM Argument");
+            newShell.setText(Messages.getString("VMArgumentsViewer.vmArgument")); //$NON-NLS-1$
         }
 
         /*
@@ -253,7 +254,7 @@ public class VMArgumentsViewer extends TableEditor {
             Composite container = (Composite) super.createDialogArea(parent);
             container.setLayout(new GridLayout(2, false));
             Label addLabel = new Label(container, SWT.NONE);
-            addLabel.setText("Argument:");
+            addLabel.setText(Messages.getString("VMArgumentsViewer.argumentcolon")); //$NON-NLS-1$
             argText = new Text(container, SWT.BORDER);
             GridData gridData = new GridData(GridData.FILL_BOTH);
             argText.setLayoutData(gridData);

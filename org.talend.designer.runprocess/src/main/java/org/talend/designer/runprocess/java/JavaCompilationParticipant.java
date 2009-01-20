@@ -119,9 +119,9 @@ public class JavaCompilationParticipant extends CompilationParticipant {
     }
 
     private boolean isRoutineFile(String filePath) {
-        int endIndex = filePath.lastIndexOf("/");
+        int endIndex = filePath.lastIndexOf("/"); //$NON-NLS-1$
         String javaFileCatalog = filePath.substring(0, endIndex);
-        if (javaFileCatalog.contains("src/routines")) {
+        if (javaFileCatalog.contains("src/routines")) { //$NON-NLS-1$
             return true;
         }
         return false;

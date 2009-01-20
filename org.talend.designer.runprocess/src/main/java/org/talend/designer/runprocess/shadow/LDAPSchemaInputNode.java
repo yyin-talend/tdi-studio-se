@@ -38,11 +38,11 @@ public class LDAPSchemaInputNode extends FileInputNode {
         int limit = 50;
         this.setColumnNumber(limit);
 
-        String[] paramNames = new String[] { "FILENAME", "ENCODING", "HOST", "PORT", "PROTOCOL", "AUTHENTIFICATION",
-                "USER", "PASSWD", "FILTER", "BASEDN",
-                "MULTI_VALUE_SEPARATOR", "LIMIT", "TIMEOUT", "ALIASES", "REFERRALS" }; //$NON-NLS-1$
+        String[] paramNames = new String[] { "FILENAME", "ENCODING", "HOST", "PORT", "PROTOCOL", "AUTHENTIFICATION", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+                "USER", "PASSWD", "FILTER", "BASEDN", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                "MULTI_VALUE_SEPARATOR", "LIMIT", "TIMEOUT", "ALIASES", "REFERRALS" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
         String[] paramValues = new String[] { fileName, encoding, schemaBean.getHost(), schemaBean.getPort(),
-                schemaBean.getEncryMethod(), schemaBean.isAuthen() + "", schemaBean.getUser(), schemaBean.getPasswd(),
+                schemaBean.getEncryMethod(), schemaBean.isAuthen() + "", schemaBean.getUser(), schemaBean.getPasswd(), //$NON-NLS-1$
                 schemaBean.getFilter(), schemaBean.getBaseDN(), schemaBean.getMultiValueSeparator(),
                 schemaBean.getCountLimit(), schemaBean.getTimeOutLimit(), schemaBean.getAliasDereferenring(),
                 schemaBean.getReferrals() };

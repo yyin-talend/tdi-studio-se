@@ -26,6 +26,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.talend.core.CorePlugin;
 import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.designer.runprocess.i18n.Messages;
 
 /**
  * ftang class global comment. Detailled comment <br/>
@@ -55,7 +56,7 @@ public class ShellSettingPreferencePage extends FieldEditorPreferencePage implem
 
         org.eclipse.swt.widgets.Label cmdLbl = new Label(parent, SWT.NONE);
 
-        cmdLbl.setText("Command");
+        cmdLbl.setText(Messages.getString("ShellSettingPreferencePage.command")); //$NON-NLS-1$
         cmdLbl.setLayoutData(new GridData());
 
         final StyledText cmdTxt = new StyledText(parent, SWT.MULTI | SWT.WRAP | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);

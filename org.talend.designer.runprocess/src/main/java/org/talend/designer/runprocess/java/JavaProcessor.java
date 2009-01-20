@@ -151,11 +151,11 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
     /**
      * Matchs placeholder in subprocess_header.javajet, it will be replaced by the size of method code.
      */
-    private static final String SIZE_COMMENT = "?SIZE?";
+    private static final String SIZE_COMMENT = "?SIZE?"; //$NON-NLS-1$
 
-    private static final String METHOD_END_COMMENT = "End of Function:";
+    private static final String METHOD_END_COMMENT = "End of Function:"; //$NON-NLS-1$
 
-    private static final String METHOD_START_COMMENT = "Start of Function:";
+    private static final String METHOD_START_COMMENT = "Start of Function:"; //$NON-NLS-1$
 
     /**
      * Set current status.
@@ -252,7 +252,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
     private String computeMethodSizeIfNeeded(String processCode) {
         // must match TalendDesignerPrefConstants.DISPLAY_METHOD_SIZE
         boolean displayMethodSize = Boolean.parseBoolean(CorePlugin.getDefault().getDesignerCoreService().getPreferenceStore(
-                "displayMethodSize"));
+                "displayMethodSize")); //$NON-NLS-1$
         if (displayMethodSize) {
             StringBuffer code = new StringBuffer(processCode);
             int fromIndex = 0;
@@ -264,7 +264,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
                 int sizeCommentPos = code.indexOf(SIZE_COMMENT, fromIndex);
 
                 // move ahead to the start position of source code
-                methodStartPos = code.indexOf("*/", sizeCommentPos) + 2;
+                methodStartPos = code.indexOf("*/", sizeCommentPos) + 2; //$NON-NLS-1$
 
                 int methodEndPos = code.indexOf(METHOD_END_COMMENT, fromIndex);
                 if (methodEndPos < 0) {
@@ -273,7 +273,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
                 // start position for next search
                 fromIndex = methodEndPos + METHOD_END_COMMENT.length();
                 // go back to the end position of source code
-                methodEndPos = code.lastIndexOf("/*", methodEndPos);
+                methodEndPos = code.lastIndexOf("/*", methodEndPos); //$NON-NLS-1$
                 int size = methodEndPos - methodStartPos;
                 code.replace(sizeCommentPos, sizeCommentPos + SIZE_COMMENT.length(), String.valueOf(size));
 
@@ -342,7 +342,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
             // updateContextCode(codeGen);
             syntaxCheck();
 
-            codeFile.getProject().deleteMarkers("org.eclipse.jdt.debug.javaLineBreakpointMarker", true, IResource.DEPTH_INFINITE);
+            codeFile.getProject().deleteMarkers("org.eclipse.jdt.debug.javaLineBreakpointMarker", true, IResource.DEPTH_INFINITE); //$NON-NLS-1$
 
             List<INode> breakpointNodes = CorePlugin.getContext().getBreakpointNodes(process);
             if (!breakpointNodes.isEmpty()) {
@@ -724,10 +724,10 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
         IPackageFragmentRoot root = getJavaProject().getPackageFragmentRoot(
                 getJavaProject().getProject().getFolder(JavaUtils.JAVA_SRC_DIRECTORY));
-        IPackageFragment leave = root.getPackageFragment("internal");
+        IPackageFragment leave = root.getPackageFragment("internal"); //$NON-NLS-1$
         if (!leave.exists()) {
             try {
-                root.createPackageFragment("internal", true, null);
+                root.createPackageFragment("internal", true, null); //$NON-NLS-1$
             } catch (JavaModelException e) {
                 throw new RuntimeException(Messages.getString("JavaProcessor.notFoundedFolderException")); //$NON-NLS-1$
             }
@@ -859,9 +859,9 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
             classPathSeparator = JavaUtils.JAVA_CLASSPATH_SEPARATOR;
         } else {
             if (targetPlatform.equals(Platform.OS_WIN32)) {
-                classPathSeparator = ";";
+                classPathSeparator = ";"; //$NON-NLS-1$
             } else {
-                classPathSeparator = ":";
+                classPathSeparator = ":"; //$NON-NLS-1$
             }
         }
 
@@ -912,32 +912,32 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         IPath classPath = getCodePath().removeFirstSegments(1);
         String className = classPath.toString().replace('/', '.');
 
-        String exportJar = "";
+        String exportJar = ""; //$NON-NLS-1$
         if (ProcessorUtilities.isExportConfig()) {
-            String version = "";
+            String version = ""; //$NON-NLS-1$
             if (process.getVersion() != null) {
-                version = "_" + process.getVersion();
-                version = version.replace(".", "_");
+                version = "_" + process.getVersion(); //$NON-NLS-1$
+                version = version.replace(".", "_"); //$NON-NLS-1$ //$NON-NLS-2$
             }
 
-            exportJar = classPathSeparator + process.getName().toLowerCase() + version + ".jar" + classPathSeparator;
+            exportJar = classPathSeparator + process.getName().toLowerCase() + version + ".jar" + classPathSeparator; //$NON-NLS-1$
             Set<JobInfo> jobInfos = ProcessorUtilities.getChildrenJobInfo((ProcessItem) process.getProperty().getItem());
             for (JobInfo jobInfo : jobInfos) {
                 if (jobInfo.getJobVersion() != null) {
-                    version = "_" + jobInfo.getJobVersion();
-                    version = version.replace(".", "_");
+                    version = "_" + jobInfo.getJobVersion(); //$NON-NLS-1$
+                    version = version.replace(".", "_"); //$NON-NLS-1$ //$NON-NLS-2$
                 }
-                exportJar += jobInfo.getJobName().toLowerCase() + version + ".jar" + classPathSeparator;
+                exportJar += jobInfo.getJobName().toLowerCase() + version + ".jar" + classPathSeparator; //$NON-NLS-1$
             }
         }
 
-        String libFolder = "";
+        String libFolder = ""; //$NON-NLS-1$
         if (ProcessorUtilities.isExportConfig()) {
             libFolder = new Path(this.getLibraryPath()) + classPathSeparator;
         } else {
             libFolder = new Path(externalLibDirectory.getAbsolutePath()).toPortableString() + classPathSeparator;
         }
-        String[] strings = new String[] { new Path(command).toPortableString(), "-cp",
+        String[] strings = new String[] { new Path(command).toPortableString(), "-cp", //$NON-NLS-1$
                 libPath.toString() + new Path(projectPath).toPortableString() + exportJar + libFolder, className };
         String[] cmd2 = addVMArguments(strings);
         // achen modify to fix 0001268
@@ -945,10 +945,10 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
             return cmd2;
         } else {
             List<String> list = new ArrayList<String>();
-            if (":".equals(classPathSeparator)) {
-                list.add("cd `dirname $0`\n");
+            if (":".equals(classPathSeparator)) { //$NON-NLS-1$
+                list.add("cd `dirname $0`\n"); //$NON-NLS-1$
             } else {
-                list.add("cd %~dp0\r\n");
+                list.add("cd %~dp0\r\n"); //$NON-NLS-1$
             }
             list.addAll(Arrays.asList(cmd2));
             return list.toArray(new String[0]);
@@ -959,7 +959,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
     private String[] addVMArguments(String[] strings) {
         String string = RunProcessPlugin.getDefault().getPreferenceStore().getString(RunProcessPrefsConstants.VMARGUMENTS);
         String replaceAll = string.trim();
-        String[] vmargs = replaceAll.split(" ");
+        String[] vmargs = replaceAll.split(" "); //$NON-NLS-1$
         String[] lines = new String[strings.length + vmargs.length];
         System.arraycopy(strings, 0, lines, 0, 1);
         System.arraycopy(vmargs, 0, lines, 1, vmargs.length);
@@ -1229,8 +1229,8 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
             while (lineReader.getLineNumber() < breakLineNumber - 3) {
                 content = lineReader.readLine();
             }
-            int startIndex = content.indexOf("[") + 1;
-            int endIndex = content.indexOf(" main ] start");
+            int startIndex = content.indexOf("[") + 1; //$NON-NLS-1$
+            int endIndex = content.indexOf(" main ] start"); //$NON-NLS-1$
             if (startIndex != -1 && endIndex != -1) {
                 String nodeUniqueName = content.substring(startIndex, endIndex);
                 List<? extends INode> breakpointNodes = CorePlugin.getContext().getBreakpointNodes(process);

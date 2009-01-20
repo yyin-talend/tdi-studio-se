@@ -35,6 +35,7 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.process.Problem;
 import org.talend.designer.runprocess.ErrorDetailTreeBuilder.IContainerEntry;
 import org.talend.designer.runprocess.ErrorDetailTreeBuilder.JobErrorEntry;
+import org.talend.designer.runprocess.i18n.Messages;
 
 /**
  * DOC chuang class global comment. Detailled comment
@@ -54,15 +55,15 @@ public class ErrorDetailDialog extends SelectionDialog {
         super(parentShell);
         setShellStyle(SWT.TITLE | SWT.RESIZE | SWT.APPLICATION_MODAL | getDefaultOrientation());
         setHelpAvailable(false);
-        setTitle("Find Errors in Jobs");
-        setMessage("  Warning! Some errors exist in jobs. Would you like to continue?");
+        setTitle(Messages.getString("ErrorDetailDialog.findError")); //$NON-NLS-1$
+        setMessage(Messages.getString("ErrorDetailDialog.errorExist")); //$NON-NLS-1$
         this.errors = errors;
     }
 
     @Override
     protected void createButtonsForButtonBar(Composite parent) {
         createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, true);
-        createButton(parent, IDialogConstants.OK_ID, "Continue", false);
+        createButton(parent, IDialogConstants.OK_ID, "Continue", false); //$NON-NLS-1$
     }
 
     @Override
@@ -100,11 +101,11 @@ public class ErrorDetailDialog extends SelectionDialog {
 
         // create tree column
         TreeColumn column = new TreeColumn(tree, SWT.NONE);
-        column.setText("Resource");
+        column.setText("Resource"); //$NON-NLS-1$
         column.setWidth(150);
 
         column = new TreeColumn(tree, SWT.NONE);
-        column.setText("Description");
+        column.setText("Description"); //$NON-NLS-1$
         column.setWidth(300);
 
         viewer.setContentProvider(new ErrorDetailContentProvider());

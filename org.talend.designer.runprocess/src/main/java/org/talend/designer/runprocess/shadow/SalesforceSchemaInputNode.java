@@ -38,15 +38,15 @@ public class SalesforceSchemaInputNode extends FileInputNode {
      * @param schemaBean
      */
     private void addParameters(SalesforceSchemaBean schemaBean) {
-        String[] parameters = new String[] { "ENDPOINT", "USER", "PASS", "MODULENAME", "CONDITION" };
+        String[] parameters = new String[] { "ENDPOINT", "USER", "PASS", "MODULENAME", "CONDITION" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
         String[] values = new String[] { schemaBean.getWebServerUrl(), schemaBean.getUserName(),
                 schemaBean.getPassword(), schemaBean.getModuleName(), schemaBean.getQueryCondition() };
         for (int i = 0, n = values.length; i < n; i++) {
-            if (values[i] == null || values[i].equals("")) {
+            if (values[i] == null || values[i].equals("")) { //$NON-NLS-1$
                 continue;
             }
             TextElementParameter param = null;
-            if (parameters[i].equals("MODULENAME")) {
+            if (parameters[i].equals("MODULENAME")) { //$NON-NLS-1$
                 param = new TextElementParameter(parameters[i], values[i]);
             } else {
                 param = new TextElementParameter(parameters[i], TalendTextUtils.addQuotes(values[i]));

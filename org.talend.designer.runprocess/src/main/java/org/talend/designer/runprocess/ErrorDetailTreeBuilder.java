@@ -31,7 +31,7 @@ import org.talend.core.ui.images.ECoreImage;
  */
 public class ErrorDetailTreeBuilder {
 
-    private static final String GENERAL_ERROR = "General";
+    private static final String GENERAL_ERROR = "General"; //$NON-NLS-1$
 
     Map<String, JobErrorEntry> jobs = new HashMap<String, JobErrorEntry>();
 
