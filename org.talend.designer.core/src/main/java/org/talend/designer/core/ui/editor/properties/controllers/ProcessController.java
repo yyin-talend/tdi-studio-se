@@ -624,7 +624,7 @@ public class ProcessController extends AbstractElementPropertySectionController 
             // }
         } else {
             final String parentName = processParam.getName() + ":"; //$NON-NLS-1$
-            elem.setPropertyValue(parentName + jobNameParam.getName(), "");
+            elem.setPropertyValue(parentName + jobNameParam.getName(), ""); //$NON-NLS-1$
         }
         jobNameParam.setLinkedRepositoryItem(item);
         jobNameParam.setLabelFromRepository(label);
@@ -666,7 +666,7 @@ public class ProcessController extends AbstractElementPropertySectionController 
         IElementParameter jobNameParam = parentParam.getChildParameters().get(EParameterName.PROCESS_TYPE_PROCESS.getName());
         if (jobNameParam != null) {
             String value = (String) jobNameParam.getValue();
-            if (value == null || "".equals(value)) {
+            if (value == null || "".equals(value)) { //$NON-NLS-1$
                 childParam.setValue(null);
             }
         }

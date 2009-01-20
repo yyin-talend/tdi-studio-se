@@ -22,6 +22,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartSite;
+import org.talend.designer.core.i18n.Messages;
 
 /**
  * DOC bqian class global comment. Detailled comment
@@ -76,7 +77,7 @@ public abstract class JobHierarchyViewer extends ProblemTreeViewer {
      * @param viewSite the view site
      */
     public void initContextMenu(IMenuListener menuListener, IWorkbenchPartSite viewSite) {
-        String popupId = "JobHierarchyViewer_ContextMenu";
+        String popupId = "JobHierarchyViewer_ContextMenu"; //$NON-NLS-1$
         MenuManager menuMgr = new MenuManager();
         menuMgr.setRemoveAllWhenShown(true);
         menuMgr.addMenuListener(menuListener);
@@ -100,7 +101,7 @@ public abstract class JobHierarchyViewer extends ProblemTreeViewer {
      * @return the title
      */
     public String getTitle() {
-        return "Job Hierarchy";
+        return Messages.getString("JobHierarchyViewer.hirarchy"); //$NON-NLS-1$
     }
 
     /*

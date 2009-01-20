@@ -48,8 +48,8 @@ public class EncodingTypeChangeCommand extends PropertyChangeCommand {
         oldType = (String) paramEncoding.getValue();
 
         String tempValue = newRealValue;
-        tempValue = tempValue.replaceAll("'", "");
-        tempValue = tempValue.replaceAll("\"", "");
+        tempValue = tempValue.replaceAll("'", ""); //$NON-NLS-1$ //$NON-NLS-2$
+        tempValue = tempValue.replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
 
         boolean newIsCustomAndoldIsNotCustom = tempValue.equals(EmfComponent.ENCODING_TYPE_CUSTOM)
                 && !paramEncoding.getValue().equals(EmfComponent.ENCODING_TYPE_CUSTOM);

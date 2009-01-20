@@ -52,7 +52,7 @@ import org.talend.repository.model.ComponentsFactoryProvider;
  */
 public final class TalendEditorPaletteFactory {
 
-    private static final String FAMILY_HIER_SEPARATOR = "/";
+    private static final String FAMILY_HIER_SEPARATOR = "/"; //$NON-NLS-1$
 
     /** Preference ID used to persist the palette location. */
     public static final String PALETTE_DOCK_LOCATION = "TalendEditorPaletteFactory.Location"; //$NON-NLS-1$
@@ -69,7 +69,7 @@ public final class TalendEditorPaletteFactory {
 
     private static boolean paletteState = true;
 
-    private static PaletteGroup paGroup = new PaletteGroup("");
+    private static PaletteGroup paGroup = new PaletteGroup(""); //$NON-NLS-1$
 
     /** Create the "Shapes" drawer. */
     private static void createComponentsDrawer(final IComponentsFactory compFac, boolean needHiddenComponent, int a) {
@@ -141,16 +141,16 @@ public final class TalendEditorPaletteFactory {
             family = xmlComponent.getFamily();
             if (filter != null) {
                 String regex = getFilterRegex();
-                needAddNote = "Note".toLowerCase().matches(regex);
+                needAddNote = "Note".toLowerCase().matches(regex); //$NON-NLS-1$
             }
-            if (family.equals("Misc") && !noteAeeded && needAddNote) {
+            if (family.equals("Misc") && !noteAeeded && needAddNote) { //$NON-NLS-1$
                 CreationToolEntry noteCreationToolEntry = new CreationToolEntry(Messages
                         .getString("TalendEditorPaletteFactory.Note"), //$NON-NLS-1$
                         Messages.getString("TalendEditorPaletteFactory.CreateNote"), //$NON-NLS-1$
                         new NoteCreationFactory(), ImageProvider.getImageDesc(ECoreImage.CODE_ICON), ImageProvider
                                 .getImageDesc(ECoreImage.CODE_ICON));
                 if (a == 0) {
-                    PaletteDrawer drawer = ht.get("Misc");
+                    PaletteDrawer drawer = ht.get("Misc"); //$NON-NLS-1$
                     if (drawer != null) {
                         noteCreationToolEntry.setParent(drawer);
                         drawer.add(noteCreationToolEntry);
@@ -184,7 +184,7 @@ public final class TalendEditorPaletteFactory {
                 IPreferenceStore store = DesignerPlugin.getDefault().getPreferenceStore();
                 ImageDescriptor imageLarge;
                 final String string = store.getString(TalendDesignerPrefConstants.LARGE_ICONS_SIZE);
-                if (string.equals("24")) {
+                if (string.equals("24")) { //$NON-NLS-1$
                     imageLarge = xmlComponent.getIcon24();
                 } else {
                     imageLarge = xmlComponent.getIcon32();
@@ -272,7 +272,7 @@ public final class TalendEditorPaletteFactory {
                     if (!needHiddenComponent && !xmlComponent.isVisible(strings[j])) {
                         continue;
                     }
-                    String key = xmlComponent.getName() + "#" + strings[j];
+                    String key = xmlComponent.getName() + "#" + strings[j]; //$NON-NLS-1$
                     if (isFavorite && !DesignerPlugin.getDefault().getPreferenceStore().getBoolean(key)) {
 
                         continue;
@@ -306,17 +306,17 @@ public final class TalendEditorPaletteFactory {
 
             if (filter != null) {
                 String regex = getFilterRegex();
-                needAddNote = "Note".toLowerCase().matches(regex);
+                needAddNote = "Note".toLowerCase().matches(regex); //$NON-NLS-1$
             }
             if (isFavorite == false) {
-                if (family.equals("Misc") && !noteAeeded && needAddNote) {
+                if (family.equals("Misc") && !noteAeeded && needAddNote) { //$NON-NLS-1$
                     CreationToolEntry noteCreationToolEntry = new CreationToolEntry(Messages
                             .getString("TalendEditorPaletteFactory.Note"), //$NON-NLS-1$
                             Messages.getString("TalendEditorPaletteFactory.CreateNote"), //$NON-NLS-1$
                             new NoteCreationFactory(), ImageProvider.getImageDesc(ECoreImage.CODE_ICON), ImageProvider
                                     .getImageDesc(ECoreImage.CODE_ICON));
                     if (a == 0) {
-                        PaletteDrawer drawer = ht.get("Misc");
+                        PaletteDrawer drawer = ht.get("Misc"); //$NON-NLS-1$
                         if (drawer != null) {
                             noteCreationToolEntry.setParent(drawer);
                             drawer.add(noteCreationToolEntry);
@@ -345,7 +345,7 @@ public final class TalendEditorPaletteFactory {
             String[] keys = family.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
             for (int j = 0; j < keys.length; j++) {
 
-                String key = xmlComponent.getName() + "#" + keys[j];
+                String key = xmlComponent.getName() + "#" + keys[j]; //$NON-NLS-1$
                 if (isFavorite && !DesignerPlugin.getDefault().getPreferenceStore().getBoolean(key)) {
 
                     continue;
@@ -361,7 +361,7 @@ public final class TalendEditorPaletteFactory {
                 IPreferenceStore store = DesignerPlugin.getDefault().getPreferenceStore();
                 ImageDescriptor imageLarge;
                 final String string = store.getString(TalendDesignerPrefConstants.LARGE_ICONS_SIZE);
-                if (string.equals("24")) {
+                if (string.equals("24")) { //$NON-NLS-1$
                     imageLarge = xmlComponent.getIcon24();
                 } else {
                     imageLarge = xmlComponent.getIcon32();
@@ -372,7 +372,7 @@ public final class TalendEditorPaletteFactory {
                     if (!needHiddenComponent && !xmlComponent.isVisible(strings[j])) {
                         continue;
                     }
-                    String key = xmlComponent.getName() + "#" + strings[j];
+                    String key = xmlComponent.getName() + "#" + strings[j]; //$NON-NLS-1$
                     if (isFavorite && !DesignerPlugin.getDefault().getPreferenceStore().getBoolean(key)) {
                         continue;
                     }
@@ -404,7 +404,7 @@ public final class TalendEditorPaletteFactory {
         }
         if (a == 1)
             palette.add(paGroup);
-        setFilter("");
+        setFilter(""); //$NON-NLS-1$
     }
 
     /**
@@ -413,8 +413,8 @@ public final class TalendEditorPaletteFactory {
      * @return
      */
     private static String getFilterRegex() {
-        String regex = "\\b.*" + filter.replaceAll("\\*", ".*") + ".*\\b";
-        regex = regex.replaceAll("\\?", ".?");
+        String regex = "\\b.*" + filter.replaceAll("\\*", ".*") + ".*\\b"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        regex = regex.replaceAll("\\?", ".?"); //$NON-NLS-1$ //$NON-NLS-2$
         return regex;
     }
 
@@ -496,7 +496,7 @@ public final class TalendEditorPaletteFactory {
      * @return a new PaletteRoot
      */
     public static PaletteRoot createPalette(final IComponentsFactory compFac) {
-        int histate = DesignerPlugin.getDefault().getPreferenceStore().getInt("HiddenState");
+        int histate = DesignerPlugin.getDefault().getPreferenceStore().getInt("HiddenState"); //$NON-NLS-1$
         palette = new PaletteRoot();
         AbstractProcessProvider.loadComponentsFromProviders();
         palette.add(createToolsGroup());
@@ -507,7 +507,7 @@ public final class TalendEditorPaletteFactory {
     }
 
     public static PaletteRoot createPalette(final IComponentsFactory compFac, boolean isFavorite) {
-        int histate = DesignerPlugin.getDefault().getPreferenceStore().getInt("HiddenState");
+        int histate = DesignerPlugin.getDefault().getPreferenceStore().getInt("HiddenState"); //$NON-NLS-1$
         palette = new PaletteRoot();
         AbstractProcessProvider.loadComponentsFromProviders();
         palette.add(createToolsGroup());
@@ -532,7 +532,7 @@ public final class TalendEditorPaletteFactory {
      * @return
      */
     public static PaletteRoot createPalette(final IComponentsFactory compFac, PaletteRoot root) {// ing
-        int histate = DesignerPlugin.getDefault().getPreferenceStore().getInt("HiddenState");
+        int histate = DesignerPlugin.getDefault().getPreferenceStore().getInt("HiddenState"); //$NON-NLS-1$
         palette = root;
         AbstractProcessProvider.loadComponentsFromProviders();
         createComponentsDrawer(compFac, false, histate);
@@ -540,7 +540,7 @@ public final class TalendEditorPaletteFactory {
     }
 
     public static PaletteRoot createPalette(final IComponentsFactory compFac, PaletteRoot root, boolean isFavorite) {// after
-        int histate = DesignerPlugin.getDefault().getPreferenceStore().getInt("HiddenState");
+        int histate = DesignerPlugin.getDefault().getPreferenceStore().getInt("HiddenState"); //$NON-NLS-1$
         palette = root;
         AbstractProcessProvider.loadComponentsFromProviders();
         createComponentsDrawer(compFac, false, isFavorite, histate);

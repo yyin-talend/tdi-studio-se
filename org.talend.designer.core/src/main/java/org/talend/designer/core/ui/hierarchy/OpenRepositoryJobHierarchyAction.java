@@ -38,9 +38,9 @@ public class OpenRepositoryJobHierarchyAction extends AContextualAction {
 
     public OpenRepositoryJobHierarchyAction() {
         super();
-        setText("Open Job Hierarchy");
-        setToolTipText("Open a Job Hierarchy on the Selected Element");
-        setDescription("Open a job hierarchy on the selected element");
+        setText(Messages.getString("OpenRepositoryJobHierarchyAction.textOpen")); //$NON-NLS-1$
+        setToolTipText(Messages.getString("OpenRepositoryJobHierarchyAction.tipOpen")); //$NON-NLS-1$
+        setDescription(Messages.getString("OpenRepositoryJobHierarchyAction.descriptionOpen")); //$NON-NLS-1$
         this.setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.PROCESS_ICON));
     }
 

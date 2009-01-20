@@ -115,14 +115,14 @@ public class QueryGuessCommand extends Command {
         if (propertyType != null && !propertyType.equals(EmfComponent.REPOSITORY)) {
             for (IElementParameter param : this.node.getElementParameters()) {
                 if (param.getRepositoryValue() != null) {
-                    if ((!isTeradata && param.getRepositoryValue().equals("SCHEMA"))
-                            || (isTeradata && param.getRepositoryValue().equals("SID"))) {// check if dbtype is
+                    if ((!isTeradata && param.getRepositoryValue().equals("SCHEMA")) //$NON-NLS-1$
+                            || (isTeradata && param.getRepositoryValue().equals("SID"))) {// check if dbtype is //$NON-NLS-1$
                         // Teradata, always keep the
                         // query style like
                         // "dbname.tablename.columnname" on build-in mode
                         schema = (String) param.getValue();
-                        schema = schema.replace("\"", "");
-                        schema = schema.replace("\'", "");
+                        schema = schema.replace("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
+                        schema = schema.replace("\'", ""); //$NON-NLS-1$ //$NON-NLS-2$
                         break;
                     }
                 }
@@ -139,10 +139,10 @@ public class QueryGuessCommand extends Command {
 
                             if (isTeradata) {
                                 schema = (String) RepositoryToComponentProperty.getValue(((DatabaseConnectionItem) item)
-                                        .getConnection(), "SID");
+                                        .getConnection(), "SID"); //$NON-NLS-1$
                             } else {
                                 schema = (String) RepositoryToComponentProperty.getValue(((DatabaseConnectionItem) item)
-                                        .getConnection(), "SCHEMA");
+                                        .getConnection(), "SCHEMA"); //$NON-NLS-1$
                             }
                             schema = TalendTextUtils.removeQuotes(schema);
                         }
@@ -155,7 +155,7 @@ public class QueryGuessCommand extends Command {
         }
         // about AS400 generation sql query
         String newQuery = null;
-        if (dbType.equals("AS400")) {
+        if (dbType.equals("AS400")) { //$NON-NLS-1$
             if (propertyType.equals(EmfComponent.REPOSITORY)) {
                 IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
                 List<ConnectionItem> metadataConnectionsItem = null;

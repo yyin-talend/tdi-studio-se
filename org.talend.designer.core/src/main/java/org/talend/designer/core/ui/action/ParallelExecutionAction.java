@@ -46,11 +46,11 @@ public class ParallelExecutionAction extends SelectionAction {
 
     public static final String ID = "org.talend.designer.core.ui.editor.action.ParallelExecutionAction"; //$NON-NLS-1$
 
-    private static final String TEXT_PARALLEL = Messages.getString("ParallelExecutionCommand.Parallel");
+    private static final String TEXT_PARALLEL = Messages.getString("ParallelExecutionCommand.Parallel"); //$NON-NLS-1$
 
     private boolean parallelEnable;
 
-    private String numberParallel = "0";
+    private String numberParallel = "0"; //$NON-NLS-1$
 
     private Node node;
 
@@ -99,8 +99,8 @@ public class ParallelExecutionAction extends SelectionAction {
             }
         }
         if (hasFlowConnection) {
-            MessageDialog.openError(getWorkbenchPart().getSite().getShell(), "This component got link(s) on output",
-                    "To enable parallelize on the component, there should be no output link on this component.");
+            MessageDialog.openError(getWorkbenchPart().getSite().getShell(), Messages.getString("ParallelExecutionAction.gotLink"), //$NON-NLS-1$
+                    Messages.getString("ParallelExecutionAction.noOutputLink")); //$NON-NLS-1$
             return;
         }
 
@@ -188,7 +188,7 @@ public class ParallelExecutionAction extends SelectionAction {
                 setParametersValue();
                 super.okPressed();
             } else {
-                MessageDialog.openError(null, "Talend", Messages.getString("ParallelExecutionCommand.numberInvalid"));
+                MessageDialog.openError(null, Messages.getString("ParallelExecutionAction.talend"), Messages.getString("ParallelExecutionCommand.numberInvalid")); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
 
@@ -214,7 +214,7 @@ public class ParallelExecutionAction extends SelectionAction {
          */
         private boolean numberTextValid() {
             String text = numberText.getText().trim();
-            if (text == null || text.equals("")) {
+            if (text == null || text.equals("")) { //$NON-NLS-1$
                 return false;
             }
             try {

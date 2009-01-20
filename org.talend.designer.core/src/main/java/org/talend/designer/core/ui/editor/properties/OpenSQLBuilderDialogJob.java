@@ -111,7 +111,7 @@ public class OpenSQLBuilderDialogJob extends Job {
         if (obj instanceof IMultiPageTalendEditor) {
             p = (Process) ((AbstractMultiPageTalendEditor) obj).getTalendEditor().getProcess();
         } else {
-            throw new RuntimeException("Type IMultiPageTalendEditor is requried.");
+            throw new RuntimeException(Messages.getString("OpenSQLBuilderDialogJob.typeRequried")); //$NON-NLS-1$
         }
         final Process process = p;
         try {
@@ -123,7 +123,7 @@ public class OpenSQLBuilderDialogJob extends Job {
                     public void run() {
                         Shell parentShell = new Shell(composite.getShell().getDisplay());
                         if (elem instanceof Node) {
-                            TextUtil.setDialogTitle(process.getName(), (String) ((Node) elem).getElementParameter("LABEL")
+                            TextUtil.setDialogTitle(process.getName(), (String) ((Node) elem).getElementParameter("LABEL") //$NON-NLS-1$
                                     .getValue(), elem.getElementName());
                         } else {
                             TextUtil.setDialogTitle(process.getName(), null, null);

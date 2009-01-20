@@ -29,7 +29,7 @@ public class ElementParameterTest {
     private static boolean testParam(String expression, ElementParameter paramToTest, List<IElementParameter> listParams) {
         boolean returnValue;
         paramToTest.setShowIf(expression);
-        System.out.println("Test OK: " + expression);
+        System.out.println("Test OK: " + expression); //$NON-NLS-1$
         returnValue = paramToTest.isShow(listParams);
         return returnValue;
     }
@@ -42,76 +42,76 @@ public class ElementParameterTest {
     public static void main(String[] args) {
         List<IElementParameter> listParams = new ArrayList<IElementParameter>();
         ElementParameter param = new ElementParameter(null);
-        param.setName("VAR1");
-        param.setValue("value1");
-        param.setListItemsDisplayCodeName(new String[] { "VALUE1", "VALUE2", "VALUE3", "VALUE4", "VALUE5", "VALUE5_6" });
-        param.setListItemsValue(new String[] { "value1", "value2", "value3", "value4", "value5", "value5;value6" });
+        param.setName("VAR1"); //$NON-NLS-1$
+        param.setValue("value1"); //$NON-NLS-1$
+        param.setListItemsDisplayCodeName(new String[] { "VALUE1", "VALUE2", "VALUE3", "VALUE4", "VALUE5", "VALUE5_6" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+        param.setListItemsValue(new String[] { "value1", "value2", "value3", "value4", "value5", "value5;value6" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
         listParams.add(param);
 
         param = new ElementParameter(null);
-        param.setName("VAR2");
-        param.setValue("value2");
-        param.setListItemsDisplayCodeName(new String[] { "VALUE1", "VALUE2", "VALUE3", "VALUE4", "VALUE5", "VALUE5_6" });
-        param.setListItemsValue(new String[] { "value1", "value2", "value3", "value4", "value5", "value5;value6" });
+        param.setName("VAR2"); //$NON-NLS-1$
+        param.setValue("value2"); //$NON-NLS-1$
+        param.setListItemsDisplayCodeName(new String[] { "VALUE1", "VALUE2", "VALUE3", "VALUE4", "VALUE5", "VALUE5_6" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+        param.setListItemsValue(new String[] { "value1", "value2", "value3", "value4", "value5", "value5;value6" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
         listParams.add(param);
 
         param = new ElementParameter(null);
-        param.setName("VAR3");
-        param.setValue("value3");
-        param.setListItemsDisplayCodeName(new String[] { "VALUE1", "VALUE2", "VALUE3", "VALUE4", "VALUE5", "VALUE5_6" });
-        param.setListItemsValue(new String[] { "value1", "value2", "value3", "value4", "value5", "value5;value6" });
+        param.setName("VAR3"); //$NON-NLS-1$
+        param.setValue("value3"); //$NON-NLS-1$
+        param.setListItemsDisplayCodeName(new String[] { "VALUE1", "VALUE2", "VALUE3", "VALUE4", "VALUE5", "VALUE5_6" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+        param.setListItemsValue(new String[] { "value1", "value2", "value3", "value4", "value5", "value5;value6" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
         listParams.add(param);
 
         param = new ElementParameter(null);
-        param.setName("VAR4");
-        param.setValue("value4");
-        param.setListItemsDisplayCodeName(new String[] { "VALUE1", "VALUE2", "VALUE3", "VALUE4", "VALUE5", "VALUE5_6" });
-        param.setListItemsValue(new String[] { "value1", "value2", "value3", "value4", "value5", "value5;value6" });
+        param.setName("VAR4"); //$NON-NLS-1$
+        param.setValue("value4"); //$NON-NLS-1$
+        param.setListItemsDisplayCodeName(new String[] { "VALUE1", "VALUE2", "VALUE3", "VALUE4", "VALUE5", "VALUE5_6" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+        param.setListItemsValue(new String[] { "value1", "value2", "value3", "value4", "value5", "value5;value6" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
         listParams.add(param);
 
         param = new ElementParameter(null);
-        param.setName("VAR5");
-        param.setValue("value5;value6");
-        param.setListItemsDisplayCodeName(new String[] { "VALUE1", "VALUE2", "VALUE3", "VALUE4", "VALUE5", "VALUE5_6" });
-        param.setListItemsValue(new String[] { "value1", "value2", "value3", "value4", "value5", "value5;value6" });
+        param.setName("VAR5"); //$NON-NLS-1$
+        param.setValue("value5;value6"); //$NON-NLS-1$
+        param.setListItemsDisplayCodeName(new String[] { "VALUE1", "VALUE2", "VALUE3", "VALUE4", "VALUE5", "VALUE5_6" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+        param.setListItemsValue(new String[] { "value1", "value2", "value3", "value4", "value5", "value5;value6" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
         listParams.add(param);
         
         param = new ElementParameter(null);
-        param.setName("VAR6");
+        param.setName("VAR6"); //$NON-NLS-1$
         param.setValue(new Boolean(true));
         listParams.add(param);
 
         param = new ElementParameter(null);
-        param.setName("VAR7");
-        param.setValue("value1");
-        param.setListItemsDisplayCodeName(new String[] { "POSTGRESQL", "ORACLE" });
-        param.setListItemsValue(new String[] { "value1", "value2" });
+        param.setName("VAR7"); //$NON-NLS-1$
+        param.setValue("value1"); //$NON-NLS-1$
+        param.setListItemsDisplayCodeName(new String[] { "POSTGRESQL", "ORACLE" }); //$NON-NLS-1$ //$NON-NLS-2$
+        param.setListItemsValue(new String[] { "value1", "value2" }); //$NON-NLS-1$ //$NON-NLS-2$
         listParams.add(param);
 
         
         ElementParameter paramToTest = new ElementParameter(null);
-        paramToTest.setName("VAR_TEST");
+        paramToTest.setName("VAR_TEST"); //$NON-NLS-1$
 
         Assert.assertTrue(testParam(
-                "((VAR1 == 'VALUE1' and VAR2 == 'VALUE2') or (VAR3 != 'VALUE3')) or (VAR4 == 'VALUE4')", paramToTest,
+                "((VAR1 == 'VALUE1' and VAR2 == 'VALUE2') or (VAR3 != 'VALUE3')) or (VAR4 == 'VALUE4')", paramToTest, //$NON-NLS-1$
                 listParams));
         Assert.assertTrue(testParam(
-                "((VAR1 == 'VALUE1' AND VAR2 == 'VALUE2') OR (VAR3 != 'VALUE3')) OR (VAR4 == 'VALUE4')", paramToTest,
+                "((VAR1 == 'VALUE1' AND VAR2 == 'VALUE2') OR (VAR3 != 'VALUE3')) OR (VAR4 == 'VALUE4')", paramToTest, //$NON-NLS-1$
                 listParams));
         Assert.assertTrue(testParam(
-                "(VAR4 == 'VALUE4') or ((VAR1 == 'VALUE1' and VAR2 == 'VALUE2') or VAR3 != 'VALUE3')", paramToTest,
+                "(VAR4 == 'VALUE4') or ((VAR1 == 'VALUE1' and VAR2 == 'VALUE2') or VAR3 != 'VALUE3')", paramToTest, //$NON-NLS-1$
                 listParams));
         Assert.assertTrue(testParam(
-                "((VAR1 == 'VALUE1' and VAR2 == 'VALUE2') and (VAR3 != 'VALUE3' or VAR4 == 'VALUE4'))", paramToTest,
+                "((VAR1 == 'VALUE1' and VAR2 == 'VALUE2') and (VAR3 != 'VALUE3' or VAR4 == 'VALUE4'))", paramToTest, //$NON-NLS-1$
                 listParams));
-        Assert.assertFalse(testParam("VAR4 != 'VALUE4' and (VAR2 == 'VALUE2' or VAR1 == 'VALUE1')", paramToTest,
+        Assert.assertFalse(testParam("VAR4 != 'VALUE4' and (VAR2 == 'VALUE2' or VAR1 == 'VALUE1')", paramToTest, //$NON-NLS-1$
                 listParams));
 
-        Assert.assertTrue(testParam("(VAR5 == 'VALUE5_6') and (VAR6 == 'true')", paramToTest, listParams));
+        Assert.assertTrue(testParam("(VAR5 == 'VALUE5_6') and (VAR6 == 'true')", paramToTest, listParams)); //$NON-NLS-1$
         
-        Assert.assertTrue(testParam("VAR6 == 'true'", paramToTest, listParams));
+        Assert.assertTrue(testParam("VAR6 == 'true'", paramToTest, listParams)); //$NON-NLS-1$
 
-        Assert.assertTrue(testParam("(VAR7 == 'POSTGRESQL') or (VAR7 == 'ORACLE')", paramToTest, listParams));
+        Assert.assertTrue(testParam("(VAR7 == 'POSTGRESQL') or (VAR7 == 'ORACLE')", paramToTest, listParams)); //$NON-NLS-1$
     }
 
 }

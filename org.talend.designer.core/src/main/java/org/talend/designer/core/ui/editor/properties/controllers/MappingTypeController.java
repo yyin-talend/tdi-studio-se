@@ -263,7 +263,7 @@ public class MappingTypeController extends AbstractElementPropertySectionControl
         boolean toAdd;
         for (int i = 0; i < dbms.length; i++) {
             toAdd = true;
-            if (param.getFilter() != null && !param.getFilter().equals("")
+            if (param.getFilter() != null && !param.getFilter().equals("") //$NON-NLS-1$
                     && !param.getFilter().equals(dbms.clone()[i].getProduct())) {
                 toAdd = false;
             }

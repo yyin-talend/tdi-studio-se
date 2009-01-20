@@ -59,7 +59,7 @@ import org.talend.sqlbuilder.util.EConnectionParameterName;
  */
 public class ConfigureConnParamDialog extends Dialog {
 
-    private static final String TEXT_CONTROL = "TEXT";
+    private static final String TEXT_CONTROL = "TEXT"; //$NON-NLS-1$
 
     private static final String CONTEXT_WITH = Messages.getString("ConfigureConnParamDialog.ContextText"); //$NON-NLS-1$
 
@@ -207,7 +207,7 @@ public class ConfigureConnParamDialog extends Dialog {
         hostComposite.setLayout(gridLayout);
         hostComposite.setLayoutData(gridData);
         Label hostLabel = new Label(hostComposite, SWT.NONE);
-        hostLabel.setText(key.getDisplayName() + ":");
+        hostLabel.setText(key.getDisplayName() + ":"); //$NON-NLS-1$
         GridDataFactory.swtDefaults().hint(LABEL_DEFAULT_X, DEFAULT_HEIGHT).applyTo(hostLabel);
 
         Composite fileComposite = new Composite(hostComposite, SWT.NONE);
@@ -235,7 +235,7 @@ public class ConfigureConnParamDialog extends Dialog {
         gridData = new GridData(GridData.FILL_HORIZONTAL);
         host.setLayoutData(gridData);
         Button button = new Button(fileComposite, SWT.PUSH);
-        button.setText("...");
+        button.setText("..."); //$NON-NLS-1$
         button.addSelectionListener(new SelectionListener() {
 
             /*
@@ -258,7 +258,7 @@ public class ConfigureConnParamDialog extends Dialog {
                 dialog.setFilterPath(PathUtils.getOSPath(path));
                 String file = dialog.open();
                 if (file != null) {
-                    if (!file.equals("")) {
+                    if (!file.equals("")) { //$NON-NLS-1$
                         host.setText(PathUtils.getPortablePath(file));
                     }
                 }
@@ -321,7 +321,7 @@ public class ConfigureConnParamDialog extends Dialog {
         hostComposite.setLayout(gridLayout);
         hostComposite.setLayoutData(gridData);
         Label hostLabel = new Label(hostComposite, SWT.NONE);
-        hostLabel.setText(key.getDisplayName() + ":");
+        hostLabel.setText(key.getDisplayName() + ":"); //$NON-NLS-1$
         GridDataFactory.swtDefaults().hint(LABEL_DEFAULT_X, DEFAULT_HEIGHT).applyTo(hostLabel);
 
         Composite fileComposite = new Composite(hostComposite, SWT.NONE);
@@ -349,7 +349,7 @@ public class ConfigureConnParamDialog extends Dialog {
         gridData = new GridData(GridData.FILL_HORIZONTAL);
         host.setLayoutData(gridData);
         Button button = new Button(fileComposite, SWT.PUSH);
-        button.setText("...");
+        button.setText("..."); //$NON-NLS-1$
         button.addSelectionListener(new SelectionListener() {
 
             /*
@@ -372,7 +372,7 @@ public class ConfigureConnParamDialog extends Dialog {
                 dialog.setFileName(PathUtils.getOSPath(path));
                 String file = dialog.open();
                 if (file != null) {
-                    if (!file.equals("")) {
+                    if (!file.equals("")) { //$NON-NLS-1$
                         host.setText(PathUtils.getPortablePath(file));
                     }
                 }
@@ -442,7 +442,7 @@ public class ConfigureConnParamDialog extends Dialog {
         hostComposite.setLayoutData(gridData);
 
         Label hostLabel = new Label(hostComposite, SWT.NONE);
-        hostLabel.setText(key.getDisplayName() + ":");
+        hostLabel.setText(key.getDisplayName() + ":"); //$NON-NLS-1$
         GridData data = new GridData(GridData.FILL_HORIZONTAL);
         // GridDataFactory.swtDefaults().hint(LABEL_DEFAULT_X, DEFAULT_HEIGHT).applyTo(hostLabel);
         hostLabel.setLayoutData(data);

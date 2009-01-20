@@ -155,8 +155,8 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
     }
 
     private void placeCursorToSelection() {
-        String mainPart = "[" + currentSelection + " main ] start";
-        String assignmentPart = "currentComponent = \"" + currentSelection + "\";";
+        String mainPart = "[" + currentSelection + " main ] start"; //$NON-NLS-1$ //$NON-NLS-2$
+        String assignmentPart = "currentComponent = \"" + currentSelection + "\";"; //$NON-NLS-1$ //$NON-NLS-2$
         if (getDocumentProvider() == null) {
             return;
         }

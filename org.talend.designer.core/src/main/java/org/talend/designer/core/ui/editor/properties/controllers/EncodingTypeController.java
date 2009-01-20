@@ -80,7 +80,7 @@ public class EncodingTypeController extends AbstractElementPropertySectionContro
      */
     private Command createComboCommand(CCombo combo) {
         String value = new String(""); //$NON-NLS-1$
-        String paramName = "";
+        String paramName = ""; //$NON-NLS-1$
         for (int i = 0; i < elem.getElementParameters().size(); i++) {
             IElementParameter param = elem.getElementParameters().get(i);
             if (param.getField().equals(EParameterFieldType.ENCODING_TYPE)) {
@@ -93,14 +93,14 @@ public class EncodingTypeController extends AbstractElementPropertySectionContro
                 }
             }
         }
-        if ("".equals(paramName)) {
+        if ("".equals(paramName)) { //$NON-NLS-1$
             return null;
         }
 
         String tempValue = (String) value;
         if (!EmfComponent.ENCODING_TYPE_CUSTOM.equals(value)) {
-            tempValue = tempValue.replaceAll("'", "");
-            tempValue = tempValue.replaceAll("\"", "");
+            tempValue = tempValue.replaceAll("'", ""); //$NON-NLS-1$ //$NON-NLS-2$
+            tempValue = tempValue.replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
             tempValue = TalendTextUtils.addQuotes(tempValue);
         }
 
@@ -184,8 +184,8 @@ public class EncodingTypeController extends AbstractElementPropertySectionContro
             lastControlUsed = combo;
 
             String tempValue = (String) param.getValue();
-            tempValue = tempValue.replaceAll("'", "");
-            tempValue = tempValue.replaceAll("\"", "");
+            tempValue = tempValue.replaceAll("'", ""); //$NON-NLS-1$ //$NON-NLS-2$
+            tempValue = tempValue.replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
 
             if (!ArrayUtils.contains(encodingTypeParameter.getListItemsValue(), tempValue)) {
                 encodingTypeParameter.setValue(EmfComponent.ENCODING_TYPE_CUSTOM);

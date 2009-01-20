@@ -93,8 +93,8 @@ public class NodeContainerFigure extends Figure {
         parallelFigure = new LabelCenter();
         parallelFigure.setImage(ImageProvider.getImage(EImage.PARALLEL_EXECUTION));
         parallelFigure.setFont(Display.getDefault().getSystemFont());
-        parallelFigure.setText("x0");
-        parallelFigure.setToolTip(new Label("x0"));
+        parallelFigure.setText("x0"); //$NON-NLS-1$
+        parallelFigure.setToolTip(new Label("x0")); //$NON-NLS-1$
 
         boolean visible = false;
         IElementParameter enableParallelizeParameter = nodeContainer.getNode().getElementParameter(
@@ -173,14 +173,14 @@ public class NodeContainerFigure extends Figure {
             return;
         }
 
-        String numberParallel = "0";
+        String numberParallel = "0"; //$NON-NLS-1$
         if ((status & Process.PARALLEL_STATUS) != 0) {
             IElementParameter numberParallelizeParameter = nodeContainer.getNode().getElementParameter(
                     EParameterName.PARALLELIZE_NUMBER.getName());
             if (numberParallelizeParameter != null) {
                 numberParallel = (String) numberParallelizeParameter.getValue();
             }
-            String paralString = "x" + numberParallel;
+            String paralString = "x" + numberParallel; //$NON-NLS-1$
             parallelFigure.setText(paralString);
             parallelFigure.setToolTip(new Label(paralString));
             parallelFigure.setVisible(true);

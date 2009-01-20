@@ -23,9 +23,9 @@ import org.talend.designer.runprocess.IPerformanceData;
  */
 public class IterateConnectionPerformance extends ConnectionPerformance {
 
-    private static final String COLOR_FINISHED = "#229922";
+    private static final String COLOR_FINISHED = "#229922"; //$NON-NLS-1$
 
-    private static final String COLOR_RUNNING = "#AA3322";
+    private static final String COLOR_RUNNING = "#AA3322"; //$NON-NLS-1$
 
     /**
      * store the ids of exec that have already stopped.
@@ -59,7 +59,7 @@ public class IterateConnectionPerformance extends ConnectionPerformance {
             super.setLabel(msg);
             return;
         }
-        String[] part = msg.split("\\|");
+        String[] part = msg.split("\\|"); //$NON-NLS-1$
         if (part != null && part.length == 3) {
             // update process status
             if (part[2].equals(IPerformanceData.ACTION_START)) {
@@ -91,22 +91,22 @@ public class IterateConnectionPerformance extends ConnectionPerformance {
     private String createHtmlText() {
         StringBuilder html = new StringBuilder(150);
 
-        String pattern = "<font color='%1$s'>%2$s %3$s</font><br>";
+        String pattern = "<font color='%1$s'>%2$s %3$s</font><br>"; //$NON-NLS-1$
         if (runningExecutionId.size() > 0) {
             if (runningExecutionId.size() == 1) {
-                html.append(String.format(pattern, COLOR_RUNNING, runningExecutionId.size(), "exec running"));
+                html.append(String.format(pattern, COLOR_RUNNING, runningExecutionId.size(), "exec running")); //$NON-NLS-1$
             } else {
                 // plural forms
-                html.append(String.format(pattern, COLOR_RUNNING, runningExecutionId.size(), "execs running"));
+                html.append(String.format(pattern, COLOR_RUNNING, runningExecutionId.size(), "execs running")); //$NON-NLS-1$
             }
         }
 
         if (stoppeddExecutionId.size() > 0) {
             if (stoppeddExecutionId.size() == 1) {
-                html.append(String.format(pattern, COLOR_FINISHED, stoppeddExecutionId.size(), "exec finished"));
+                html.append(String.format(pattern, COLOR_FINISHED, stoppeddExecutionId.size(), "exec finished")); //$NON-NLS-1$
             } else {
                 // plural forms
-                html.append(String.format(pattern, COLOR_FINISHED, stoppeddExecutionId.size(), "execs finished"));
+                html.append(String.format(pattern, COLOR_FINISHED, stoppeddExecutionId.size(), "execs finished")); //$NON-NLS-1$
             }
         }
 

@@ -21,7 +21,7 @@ public class BringForwardAction extends ZorderAction {
 
     public static final String ID = "org.talend.designer.core.ui.editor.action.BringForwardAction"; //$NON-NLS-1$
 
-    private static final String TEXT = "Bring forward";
+    private static final String TEXT = "Bring forward"; //$NON-NLS-1$
 
     public BringForwardAction(IWorkbenchPart part) {
         super(part);

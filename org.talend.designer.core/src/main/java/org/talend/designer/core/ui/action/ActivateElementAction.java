@@ -103,13 +103,13 @@ public class ActivateElementAction extends SelectionAction {
             if (nodeList.size() != 0) {
                 if (nodeList.get(0).isActivate()) {
                     if (nodeList.size() == 1) {
-                        setText(TEXT_REM_ACTIVATE + " " + nodeList.get(0).getLabel());
+                        setText(TEXT_REM_ACTIVATE + " " + nodeList.get(0).getLabel()); //$NON-NLS-1$
                     } else {
                         setText(TEXT_REM_ACTIVATE);
                     }
                 } else {
                     if (nodeList.size() == 1) {
-                        setText(TEXT_SET_ACTIVATE + " " + nodeList.get(0).getLabel());
+                        setText(TEXT_SET_ACTIVATE + " " + nodeList.get(0).getLabel()); //$NON-NLS-1$
                     } else {
                         setText(TEXT_SET_ACTIVATE);
                     }
@@ -118,13 +118,13 @@ public class ActivateElementAction extends SelectionAction {
             } else { // connections only
                 if (connectionList.get(0).isActivate()) {
                     if (connectionList.size() == 1) {
-                        setText(TEXT_REM_ACTIVATE + " " + connectionList.get(0).getName());
+                        setText(TEXT_REM_ACTIVATE + " " + connectionList.get(0).getName()); //$NON-NLS-1$
                     } else {
                         setText(TEXT_REM_ACTIVATE);
                     }
                 } else {
                     if (connectionList.size() == 1) {
-                        setText(TEXT_SET_ACTIVATE + " " + connectionList.get(0).getName());
+                        setText(TEXT_SET_ACTIVATE + " " + connectionList.get(0).getName()); //$NON-NLS-1$
                     } else {
                         setText(TEXT_SET_ACTIVATE);
                     }

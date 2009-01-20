@@ -45,7 +45,7 @@ public class TalendLaunchToolbarAction extends AbstractLaunchToolbarAction {
 
     private ISelection selection;
 
-    private final static String RUN_LABEL = Messages.getString("MultiPageEditorContributor.runMenu");
+    private final static String RUN_LABEL = Messages.getString("MultiPageEditorContributor.runMenu"); //$NON-NLS-1$
 
     /**
      * DOC bqian TalendLaunchToolbarAction constructor comment.
@@ -124,7 +124,7 @@ public class TalendLaunchToolbarAction extends AbstractLaunchToolbarAction {
             if ((o instanceof RepositoryNode)) {
                 RepositoryNode node = (RepositoryNode) o;
                 if (node.getObject() != null && node.getObject().getType().equals(ERepositoryObjectType.PROCESS)) {
-                    action.setToolTipText(RUN_LABEL + " current job " + node.getObject().getProperty().getLabel());
+                    action.setToolTipText(RUN_LABEL + " current job " + node.getObject().getProperty().getLabel()); //$NON-NLS-1$
                     return;
                 }
             }
@@ -141,7 +141,7 @@ public class TalendLaunchToolbarAction extends AbstractLaunchToolbarAction {
                     IEditorInput input = editor.getEditorInput();
                     if (input instanceof RepositoryEditorInput) {
                         RepositoryEditorInput rInput = (RepositoryEditorInput) input;
-                        action.setToolTipText(RUN_LABEL + " current job " + rInput.getItem().getProperty().getLabel());
+                        action.setToolTipText(RUN_LABEL + " current job " + rInput.getItem().getProperty().getLabel()); //$NON-NLS-1$
                         return;
                     }
                 }
@@ -153,7 +153,7 @@ public class TalendLaunchToolbarAction extends AbstractLaunchToolbarAction {
             action.setToolTipText(RUN_LABEL);
         } else {
             try {
-                action.setToolTipText(RUN_LABEL + " " + configuration.getAttribute(TalendDebugUIConstants.JOB_NAME, ""));
+                action.setToolTipText(RUN_LABEL + " " + configuration.getAttribute(TalendDebugUIConstants.JOB_NAME, "")); //$NON-NLS-1$ //$NON-NLS-2$
             } catch (Exception e) {
             }
         }
@@ -215,7 +215,7 @@ public class TalendLaunchToolbarAction extends AbstractLaunchToolbarAction {
         ILaunchConfiguration configuration = getLastLaunch();
 
         if (configuration == null) {
-            MessageDialog.openInformation(DebugUIPlugin.getShell(), "Infomation", "There is no running item available.");
+            MessageDialog.openInformation(DebugUIPlugin.getShell(), Messages.getString("TalendLaunchToolbarAction.information"), Messages.getString("TalendLaunchToolbarAction.noAvailableItem")); //$NON-NLS-1$ //$NON-NLS-2$
             // DebugUITools.openLaunchConfigurationDialogOnGroup(DebugUIPlugin.getShell(), new StructuredSelection(),
             // getLaunchGroupIdentifier());
         } else {

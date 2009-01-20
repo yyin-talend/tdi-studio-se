@@ -39,7 +39,7 @@ public final class SAPParametersUtils {
         if (param.getRepositoryValue() == null) {
             return;
         }
-        if (param.getField().equals(EParameterFieldType.TEXT) && param.getRepositoryValue().equals("SAP_FUNCTION")) {
+        if (param.getField().equals(EParameterFieldType.TEXT) && param.getRepositoryValue().equals("SAP_FUNCTION")) { //$NON-NLS-1$
             if (connection != null && sapFunctionName != null) {
                 param.setValue(TalendTextUtils.addQuotes(sapFunctionName));
                 param.setRepositoryValueUsed(true);
@@ -48,7 +48,7 @@ public final class SAPParametersUtils {
                 param.setRepositoryValueUsed(false);
                 param.setReadOnly(false);
             }
-        } else if (param.getField().equals(EParameterFieldType.TABLE) && param.getRepositoryValue().equals("INPUT_PARAMS")) {
+        } else if (param.getField().equals(EParameterFieldType.TABLE) && param.getRepositoryValue().equals("INPUT_PARAMS")) { //$NON-NLS-1$
             if (connection != null && sapFunctionName != null) {
                 List<Map<String, Object>> table = (List<Map<String, Object>>) elem.getPropertyValue(param.getName());
                 RepositoryToComponentProperty.getSAPInputAndOutputValue((SAPConnection) connection, table, sapFunctionName, true);
@@ -58,7 +58,7 @@ public final class SAPParametersUtils {
                 param.setRepositoryValueUsed(false);
                 param.setReadOnly(false);
             }
-        } else if (param.getField().equals(EParameterFieldType.TABLE) && param.getRepositoryValue().equals("OUTPUT_PARAMS")) {
+        } else if (param.getField().equals(EParameterFieldType.TABLE) && param.getRepositoryValue().equals("OUTPUT_PARAMS")) { //$NON-NLS-1$
             if (connection != null && sapFunctionName != null) {
                 List<Map<String, Object>> table = (List<Map<String, Object>>) elem.getPropertyValue(param.getName());
                 RepositoryToComponentProperty
@@ -69,20 +69,20 @@ public final class SAPParametersUtils {
                 param.setRepositoryValueUsed(false);
                 param.setReadOnly(false);
             }
-        } else if (param.getRepositoryValue().equals("SAP_ITERATE_OUT_TYPE")) {
+        } else if (param.getRepositoryValue().equals("SAP_ITERATE_OUT_TYPE")) { //$NON-NLS-1$
             if (connection != null && sapFunctionName != null) {
                 param.setValue(RepositoryToComponentProperty.getSAPValuesForFunction((SAPConnection) connection, sapFunctionName,
-                        "SAP_ITERATE_OUT_TYPE"));
+                        "SAP_ITERATE_OUT_TYPE")); //$NON-NLS-1$
                 param.setRepositoryValueUsed(true);
                 param.setReadOnly(true);
             } else {
                 param.setRepositoryValueUsed(false);
                 param.setReadOnly(false);
             }
-        } else if (param.getRepositoryValue().equals("SAP_ITERATE_OUT_TABLENAME")) {
+        } else if (param.getRepositoryValue().equals("SAP_ITERATE_OUT_TABLENAME")) { //$NON-NLS-1$
             if (connection != null && sapFunctionName != null) {
                 param.setValue(RepositoryToComponentProperty.getSAPValuesForFunction((SAPConnection) connection, sapFunctionName,
-                        "SAP_ITERATE_OUT_TABLENAME"));
+                        "SAP_ITERATE_OUT_TABLENAME")); //$NON-NLS-1$
                 param.setRepositoryValueUsed(true);
                 param.setReadOnly(true);
             } else {
@@ -96,10 +96,10 @@ public final class SAPParametersUtils {
         if (param == null) {
             return;
         }
-        if ((param.getField().equals(EParameterFieldType.TABLE) && param.getName().equals("MAPPING_INPUT"))
-                || (param.getField().equals(EParameterFieldType.TABLE) && param.getName().equals("MAPPING_OUTPUT"))
-                || (param.getName().equals("SAP_ITERATE_OUT_TYPE")) || param.getName().equals("SAP_ITERATE_OUT_TABLENAME")
-                || param.getName().equals("SAP_FUNCTION")) {
+        if ((param.getField().equals(EParameterFieldType.TABLE) && param.getName().equals("MAPPING_INPUT")) //$NON-NLS-1$
+                || (param.getField().equals(EParameterFieldType.TABLE) && param.getName().equals("MAPPING_OUTPUT")) //$NON-NLS-1$
+                || (param.getName().equals("SAP_ITERATE_OUT_TYPE")) || param.getName().equals("SAP_ITERATE_OUT_TABLENAME") //$NON-NLS-1$ //$NON-NLS-2$
+                || param.getName().equals("SAP_FUNCTION")) { //$NON-NLS-1$
             param.setRepositoryValueUsed(false);
             param.setReadOnly(false);
         }

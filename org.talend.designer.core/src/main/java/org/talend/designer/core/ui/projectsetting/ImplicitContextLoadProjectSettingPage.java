@@ -47,7 +47,7 @@ public class ImplicitContextLoadProjectSettingPage extends ProjectSettingPage {
         composite.setLayoutData(data);
         if (pro.getEmfProject().getImplicitContextSettings() == null) {
             // display one message box to tell the user the settings is get from old preference page.
-            MessageDialog.openInformation(getShell(), getTitle(), Messages.getString("ImplicitContextLoad.LoadOldPreferences"));
+            MessageDialog.openInformation(getShell(), getTitle(), Messages.getString("ImplicitContextLoad.LoadOldPreferences")); //$NON-NLS-1$
         }
         Element elem = ProjectSettingManager.createImplicitContextLoadElement(pro);
         ImplicitContextSettings implicit = pro.getEmfProject().getImplicitContextSettings();

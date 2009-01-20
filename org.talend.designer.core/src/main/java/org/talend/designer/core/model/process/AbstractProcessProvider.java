@@ -32,11 +32,11 @@ import org.talend.designer.core.ui.editor.process.Process;
  */
 public abstract class AbstractProcessProvider {
 
-    public static final String EXTENSION_ID = "org.talend.designer.core.process_provider";
+    public static final String EXTENSION_ID = "org.talend.designer.core.process_provider"; //$NON-NLS-1$
 
-    public static final String ATTR_CLASS = "class";
+    public static final String ATTR_CLASS = "class"; //$NON-NLS-1$
 
-    public static final String ATTR_PID = "pluginId";
+    public static final String ATTR_PID = "pluginId"; //$NON-NLS-1$
 
     // public abstract List<Node> buildReplaceNodesInDataProcess(Node node, Map<INode, INode> buildCheckMap,
     // DataProcess currDataProcess);

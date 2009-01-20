@@ -67,7 +67,7 @@ import org.talend.repository.ui.utils.DataStringConnection;
  */
 public class ImplicitContextLoadPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
-    public static final String CONNECTION_ITEM_LABEL = "_CONNECTION_ITEM_LABEL";
+    public static final String CONNECTION_ITEM_LABEL = "_CONNECTION_ITEM_LABEL"; //$NON-NLS-1$
 
     private ECodeLanguage language;
 
@@ -148,8 +148,8 @@ public class ImplicitContextLoadPreferencePage extends FieldEditorPreferencePage
     public ImplicitContextLoadPreferencePage() {
         super(GRID);
         language = LanguageManager.getCurrentLanguage();
-        languagePrefix = language.toString() + "_";
-        this.setTitle(getTitle() + " (" + language.getCaseName() + ")");
+        languagePrefix = language.toString() + "_"; //$NON-NLS-1$
+        this.setTitle(getTitle() + " (" + language.getCaseName() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
         setPreferenceStore(DesignerPlugin.getDefault().getPreferenceStore());
     }
 
@@ -181,7 +181,7 @@ public class ImplicitContextLoadPreferencePage extends FieldEditorPreferencePage
      */
     private void updateDbType() {
         // update db type
-        Object value = RepositoryToComponentProperty.getValue(connectionItem.getConnection(), "TYPE");
+        Object value = RepositoryToComponentProperty.getValue(connectionItem.getConnection(), "TYPE"); //$NON-NLS-1$
         int languageType = (language.equals(ECodeLanguage.JAVA)) ? 1 : 0;
         String[] list = StatsAndLogsConstants.REPOSITORY_ITEMS[languageType];
         for (int i = 0; i < list.length; i++) {
@@ -207,7 +207,7 @@ public class ImplicitContextLoadPreferencePage extends FieldEditorPreferencePage
             @Override
             public void widgetSelected(SelectionEvent e) {
                 RepositoryReviewDialog dialog = new RepositoryReviewDialog(Display.getCurrent().getActiveShell(),
-                        ERepositoryObjectType.METADATA, "DATABASE");
+                        ERepositoryObjectType.METADATA, "DATABASE"); //$NON-NLS-1$
 
                 if (dialog.open() == RepositoryReviewDialog.OK) {
                     dbId = dialog.getResult().getObject().getId();
@@ -300,17 +300,17 @@ public class ImplicitContextLoadPreferencePage extends FieldEditorPreferencePage
         dbTypeField.setEnabled(isBuiltIn, dbTypeComposite);
 
         if (isBuiltIn) {
-            hostField.setEnabled(!isMatch(dbValue, "tAccessOutput", "tSQLiteOutput"), parent);
-            portField.setEnabled(!isMatch(dbValue, "tAccessOutput", "tSQLiteOutput", "tFirebirdOutput"), parent);
+            hostField.setEnabled(!isMatch(dbValue, "tAccessOutput", "tSQLiteOutput"), parent); //$NON-NLS-1$ //$NON-NLS-2$
+            portField.setEnabled(!isMatch(dbValue, "tAccessOutput", "tSQLiteOutput", "tFirebirdOutput"), parent); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-            dbNameField.setEnabled(!isMatch(dbValue, "tAccessOutput", "tSQLiteOutput", "tFirebirdOutput"), parent);
+            dbNameField.setEnabled(!isMatch(dbValue, "tAccessOutput", "tSQLiteOutput", "tFirebirdOutput"), parent); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             if (language == ECodeLanguage.JAVA) {
-                additionParamField.setEnabled(isMatch(dbValue, "tMSSqlOutput", "tInformixOutput", "tMysqlOutput"), parent);
+                additionParamField.setEnabled(isMatch(dbValue, "tMSSqlOutput", "tInformixOutput", "tMysqlOutput"), parent); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             }
-            schemaField.setEnabled(isMatch(dbValue, "tOracleOutput", "tPostgresqlOutput"), parent);
-            userField.setEnabled(!isMatch(dbValue, "tSQLiteOutput"), parent);
-            passwordField.setEnabled(!isMatch(dbValue, "tSQLiteOutput"), parent);
-            dabasePathField.setEnabled(isMatch(dbValue, "tAccessOutput", "tSQLiteOutput", "tFirebirdOutput"), parent);
+            schemaField.setEnabled(isMatch(dbValue, "tOracleOutput", "tPostgresqlOutput"), parent); //$NON-NLS-1$ //$NON-NLS-2$
+            userField.setEnabled(!isMatch(dbValue, "tSQLiteOutput"), parent); //$NON-NLS-1$
+            passwordField.setEnabled(!isMatch(dbValue, "tSQLiteOutput"), parent); //$NON-NLS-1$
+            dabasePathField.setEnabled(isMatch(dbValue, "tAccessOutput", "tSQLiteOutput", "tFirebirdOutput"), parent); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         } else if (!isBuiltIn && connectionItem != null) {
             // check connection url
             DatabaseConnection conn = (DatabaseConnection) connectionItem.getConnection();
@@ -341,7 +341,7 @@ public class ImplicitContextLoadPreferencePage extends FieldEditorPreferencePage
                 portField.setEnabled(visible, parent);
             }
 
-            if (stringConnection.contains("<filename>")) { // &&
+            if (stringConnection.contains("<filename>")) { // && //$NON-NLS-1$
                 if (EDatabaseTypeName.getTypeFromDisplayName(conn.getDatabaseType()).equals(EDatabaseTypeName.SQLITE)) {
                     userField.setEnabled(false, parent);
                     passwordField.setEnabled(false, parent);
@@ -371,16 +371,16 @@ public class ImplicitContextLoadPreferencePage extends FieldEditorPreferencePage
             processDbField(userField, processQuotes(conn.getUsername()));
             processDbField(passwordField, processQuotes(conn.getPassword()));
 
-            processDbField(dabasePathField, conn.getDBRootPath() == null ? "" : processQuotes(conn.getFileFieldName()));
+            processDbField(dabasePathField, conn.getDBRootPath() == null ? "" : processQuotes(conn.getFileFieldName())); //$NON-NLS-1$
 
             if (additionParamField != null) {
-                processDbField(additionParamField, conn.getAdditionalParams() == null ? "" : processQuotes(conn
+                processDbField(additionParamField, conn.getAdditionalParams() == null ? "" : processQuotes(conn //$NON-NLS-1$
                         .getAdditionalParams()));
             }
-            if (stringConnection != null && stringConnection.startsWith("jdbc:jtds:sqlserver:")) {
+            if (stringConnection != null && stringConnection.startsWith("jdbc:jtds:sqlserver:")) { //$NON-NLS-1$
                 schemaField.getTextControl(parent).setEditable(true);
-                if (schemaField.getTextControl(parent).getText().equals("")) {
-                    schemaField.getTextControl(parent).setText(TalendTextUtils.addQuotes("dbo"));
+                if (schemaField.getTextControl(parent).getText().equals("")) { //$NON-NLS-1$
+                    schemaField.getTextControl(parent).setText(TalendTextUtils.addQuotes("dbo")); //$NON-NLS-1$
                 }
             }
 
@@ -392,7 +392,7 @@ public class ImplicitContextLoadPreferencePage extends FieldEditorPreferencePage
             field.getTextControl(parent).setText(value);
             field.getTextControl(parent).setEnabled(false);
         } else {
-            field.getTextControl(parent).setText("");
+            field.getTextControl(parent).setText(""); //$NON-NLS-1$
         }
     }
 
@@ -420,9 +420,9 @@ public class ImplicitContextLoadPreferencePage extends FieldEditorPreferencePage
             if (e instanceof StringFieldEditor) {
                 Text text = ((StringFieldEditor) e).getTextControl(parent);
                 if (text.isEnabled()) {
-                    text.setText(TalendTextUtils.addQuotes(""));
+                    text.setText(TalendTextUtils.addQuotes("")); //$NON-NLS-1$
                 } else {
-                    text.setText("");
+                    text.setText(""); //$NON-NLS-1$
                 }
             }
         }
@@ -612,7 +612,7 @@ public class ImplicitContextLoadPreferencePage extends FieldEditorPreferencePage
         comboTypePanel.setLayout(rowLayout);
 
         repositoryTypeLabel = new Label(comboTypePanel, SWT.NONE);
-        repositoryTypeLabel.setText("Repository Type");
+        repositoryTypeLabel.setText("Repository Type"); //$NON-NLS-1$
 
         repositoryTypeCombo = new Combo(comboTypePanel, SWT.READ_ONLY);
         repositoryTypeCombo.setItems(repositoryTypes);
@@ -635,7 +635,7 @@ public class ImplicitContextLoadPreferencePage extends FieldEditorPreferencePage
         textRepositoryType.setText(ImplicitContextLoadHelper.getRepositoryTypeLabel(connectionItem));
 
         buttonShowRepository = new Button(comboTypePanel, SWT.NONE);
-        buttonShowRepository.setText("...");
+        buttonShowRepository.setText("..."); //$NON-NLS-1$
         buttonShowRepository.setVisible(currentType.equals(EmfComponent.REPOSITORY));
     }
 
@@ -661,7 +661,7 @@ public class ImplicitContextLoadPreferencePage extends FieldEditorPreferencePage
 
     private String processQuotes(String text) {
         if (text == null) {
-            return "";
+            return ""; //$NON-NLS-1$
         }
         if (ContextParameterUtils.isContainContextParam(text)) {
             return text;
@@ -731,8 +731,8 @@ public class ImplicitContextLoadPreferencePage extends FieldEditorPreferencePage
         getPreferenceStore().setValue(getPreferenceName(EParameterName.PROPERTY_TYPE), value);
 
         getPreferenceStore().setValue(getPreferenceName(EParameterName.REPOSITORY_PROPERTY_TYPE),
-                this.dbId == null ? "" : this.dbId);
-        String itemLabel = (connectionItem == null) ? "" : connectionItem.getProperty().getLabel();
+                this.dbId == null ? "" : this.dbId); //$NON-NLS-1$
+        String itemLabel = (connectionItem == null) ? "" : connectionItem.getProperty().getLabel(); //$NON-NLS-1$
 
         getPreferenceStore().setValue(getPreferenceName(EParameterName.REPOSITORY_PROPERTY_TYPE) + CONNECTION_ITEM_LABEL,
                 itemLabel);

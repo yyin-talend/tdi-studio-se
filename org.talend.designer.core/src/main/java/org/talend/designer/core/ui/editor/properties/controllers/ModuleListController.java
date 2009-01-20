@@ -65,7 +65,7 @@ public class ModuleListController extends AbstractElementPropertySectionControll
 
     private static final String MODULE = "MODULE"; //$NON-NLS-1$
 
-    private static final String BUTTON_EDIT = "buttonEdit";
+    private static final String BUTTON_EDIT = "buttonEdit"; //$NON-NLS-1$
 
     /**
      * DOC dev ColumnListController constructor comment.
@@ -165,7 +165,7 @@ public class ModuleListController extends AbstractElementPropertySectionControll
     @Override
     public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
             final int nbInRow, final int top, final Control lastControl) {
-        if (param.getDisplayName().startsWith("!!")) {
+        if (param.getDisplayName().startsWith("!!")) { //$NON-NLS-1$
             if (param.getField() == EParameterFieldType.MODULE_LIST) {
                 param.setDisplayName(EParameterName.MODULE_LIST.getDisplayName());
             }

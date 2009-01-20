@@ -68,8 +68,8 @@ public class ContextRenameParameterCommand extends Command {
                     String scriptCode = listParams.get(j).getScriptCode().replaceAll(oldName, newName);
                     listParams.get(j).setScriptCode(scriptCode);
                     // if the user haven't modified prompt, change it
-                    if (listParams.get(j).getPrompt().equals(oldName + "?")) {
-                        listParams.get(j).setPrompt(newName + "?");
+                    if (listParams.get(j).getPrompt().equals(oldName + "?")) { //$NON-NLS-1$
+                        listParams.get(j).setPrompt(newName + "?"); //$NON-NLS-1$
                     }
 
                     found = true;
@@ -100,8 +100,8 @@ public class ContextRenameParameterCommand extends Command {
                     String scriptCode = listParams.get(j).getScriptCode().replaceAll(newName, oldName);
                     listParams.get(j).setScriptCode(scriptCode);
                     // if the user haven't modified prompt, change it
-                    if (listParams.get(j).getPrompt().equals(newName + "?")) {
-                        listParams.get(j).setPrompt(oldName + "?");
+                    if (listParams.get(j).getPrompt().equals(newName + "?")) { //$NON-NLS-1$
+                        listParams.get(j).setPrompt(oldName + "?"); //$NON-NLS-1$
                     }
                     found = true;
                 }

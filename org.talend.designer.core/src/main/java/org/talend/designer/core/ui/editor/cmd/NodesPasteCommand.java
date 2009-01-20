@@ -419,7 +419,7 @@ public class NodesPasteCommand extends Command {
                     } else {
                         if (param.getParentParameter() != null) {
                             String parentName = param.getParentParameter().getName();
-                            pastedNode.setPropertyValue(parentName + ":" + param.getName(), param.getValue());
+                            pastedNode.setPropertyValue(parentName + ":" + param.getName(), param.getValue()); //$NON-NLS-1$
                         } else {
                             pastedNode.setPropertyValue(param.getName(), param.getValue());
 
@@ -479,7 +479,7 @@ public class NodesPasteCommand extends Command {
                             String baseName = Process.DEFAULT_ROW_CONNECTION_NAME;
                             if (formatParam != null) {
                                 String value = (String) formatParam.getValue();
-                                if (value != null && !"".equals(value)) {
+                                if (value != null && !"".equals(value)) { //$NON-NLS-1$
                                     baseName = value;
                                 }
                             }

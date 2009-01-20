@@ -87,7 +87,7 @@ public class PropertyChangeCommand extends Command {
         for (IElementParameter param : elem.getElementParameters()) {
             if (param.getField().equals(EParameterFieldType.PROPERTY_TYPE)
                     && param.getCategory().equals(currentParam.getCategory())) {
-                propertyTypeName = param.getName() + ":" + EParameterName.PROPERTY_TYPE.getName();
+                propertyTypeName = param.getName() + ":" + EParameterName.PROPERTY_TYPE.getName(); //$NON-NLS-1$
                 break;
             }
         }
@@ -257,7 +257,7 @@ public class PropertyChangeCommand extends Command {
 
             // if the field is not a schema type, then use standard "set value".
             if (!testedParam.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
-                String oldMapping = "";
+                String oldMapping = ""; //$NON-NLS-1$
                 if (!testedParam.getField().equals(EParameterFieldType.CHECK)
                         && !testedParam.getField().equals(EParameterFieldType.RADIO)) {
                     oldMapping = (String) testedParam.getValue();

@@ -60,7 +60,7 @@ public enum EParameterName {
     UPDATE_COMPONENTS("Update components"), //$NON-NLS-1$  Hidden parameter so no translation needed
     PROCESS_TYPE(Messages.getString("EParameterName.generateCode")), //$NON-NLS-1$
     PROCESS_TYPE_PROCESS(Messages.getString("EParameterName.process")), //$NON-NLS-1$
-    PROCESS_TYPE_VERSION(Messages.getString("EParameterName.Version")),
+    PROCESS_TYPE_VERSION(Messages.getString("EParameterName.Version")), //$NON-NLS-1$
     PROCESS_TYPE_CONTEXT(Messages.getString("EParameterName.context")), //$NON-NLS-1$
     PREVIEW(Messages.getString("EParameterName.preview")), //$NON-NLS-1$
     COLUMN_LIST(Messages.getString("EParameterName.columnList")), //$NON-NLS-1$
@@ -75,35 +75,35 @@ public enum EParameterName {
     MAPPING_TYPE(Messages.getString("EParameterName.mapping")), //$NON-NLS-1$
     DUMMY("DUMMY"), //$NON-NLS-1$ Hidden parameter so no translation needed
     DBTABLE(Messages.getString("EParameterName.TableName")), //$NON-NLS-1$
-    QUERY_CONDITION("Query Condition"),
+    QUERY_CONDITION("Query Condition"), //$NON-NLS-1$
     MODULE_LIST(Messages.getString("EParameterName.ModuleList")), //$NON-NLS-1$
     CURRENT_OS(Messages.getString("EParameterName.CurrentOS")), //$NON-NLS-1$
     IREPORT_PATH("IREPORT_PATH"), //$NON-NLS-1$  Hidden parameter so no translation needed
     CONNECTION("CONNECTION"), //$NON-NLS-1$  Parameter without label displayed so no translation needed
     NOT_SYNCHRONIZED_SCHEMA("NOT_SYNCHRONIZED_SCHEMA"), //$NON-NLS-1$  not displayed so no translation needed
-    SCHEMA_OPTIONS(Messages.getString("EParameterName.schemaOptions")),
+    SCHEMA_OPTIONS(Messages.getString("EParameterName.schemaOptions")), //$NON-NLS-1$
     COLLAPSED("COLLAPSED"), //$NON-NLS-1$  Hidden parameter so no translation needed
     SUBJOB_DISPLAYED("DISPLAY_SUBJOB"), //$NON-NLS-1$  Hidden parameter so no translation needed
-    SHOW_SUBJOB_TITLE("Show subjob title"),
-    SUBJOB_TITLE("Title"),
-    SUBJOB_TITLE_COLOR("Title color"),
-    SUBJOB_COLOR("Subjob color"),
-    SQLPATTERN_DB_NAME("SQL Pattern DB"),
-    SQLPATTERN_VALUE("SQL Pattern"),
-    NOTE_COLOR("Note color"),
-    NOTETXT_COLOR("Font color"),
-    NOTETXT_LEFT("left"),
-    NOTETXT_RIGHT("right"),
-    NOTETXT_CENTER("center"),
-    NOTETXT_TOP("top"),
-    NOTETXT_BOTTOM("bottom"),
-    NOTELABEL_CENTER("center"),
-    NOTE_FONT("Font"),
-    FONT_SIZE("Font Size"),
-    FONT_BOLD("Bold"),
-    FONT_ITALIC("Italic"),
-    NOTE_LINECOLOR("Note Line Color"),
-    SCHEMAS("Schema(s)"),
+    SHOW_SUBJOB_TITLE(Messages.getString("EParameterName.showSubjob")), //$NON-NLS-1$
+    SUBJOB_TITLE(Messages.getString("EParameterName.title")), //$NON-NLS-1$
+    SUBJOB_TITLE_COLOR("Title color"), //$NON-NLS-1$
+    SUBJOB_COLOR("Subjob color"), //$NON-NLS-1$
+    SQLPATTERN_DB_NAME("SQL Pattern DB"), //$NON-NLS-1$
+    SQLPATTERN_VALUE("SQL Pattern"), //$NON-NLS-1$
+    NOTE_COLOR("Note color"), //$NON-NLS-1$
+    NOTETXT_COLOR("Font color"), //$NON-NLS-1$
+    NOTETXT_LEFT("left"), //$NON-NLS-1$
+    NOTETXT_RIGHT("right"), //$NON-NLS-1$
+    NOTETXT_CENTER("center"), //$NON-NLS-1$
+    NOTETXT_TOP("top"), //$NON-NLS-1$
+    NOTETXT_BOTTOM("bottom"), //$NON-NLS-1$
+    NOTELABEL_CENTER("center"), //$NON-NLS-1$
+    NOTE_FONT("Font"), //$NON-NLS-1$
+    FONT_SIZE("Font Size"), //$NON-NLS-1$
+    FONT_BOLD("Bold"), //$NON-NLS-1$
+    FONT_ITALIC("Italic"), //$NON-NLS-1$
+    NOTE_LINECOLOR("Note Line Color"), //$NON-NLS-1$
+    SCHEMAS("Schema(s)"), //$NON-NLS-1$
     /**
      * For stats & logs parameters.
      */
@@ -142,8 +142,8 @@ public enum EParameterName {
     MULTI_THREAD_EXECATION(Messages.getString("EParameterName.MultiThread")), //$NON-NLS-1$
     IMPLICIT_TCONTEXTLOAD(Messages.getString("EParameterName.ImplicitContextLoad")), //$NON-NLS-1$
     IMPLICIT_TCONTEXTLOAD_FILE(Messages.getString("EParameterName.FromFile")), //$NON-NLS-1$
-    FIELDSEPARATOR(Messages.getString("EParameterName.FieldSeparator")),
-    ROWSEPARATOR(Messages.getString("EParameterName.RowSeparator")),
+    FIELDSEPARATOR(Messages.getString("EParameterName.FieldSeparator")), //$NON-NLS-1$
+    ROWSEPARATOR(Messages.getString("EParameterName.RowSeparator")), //$NON-NLS-1$
     FROM_FILE_FLAG(Messages.getString("EParameterName.fromFileFlag")), //$NON-NLS-1$
     FROM_DATABASE_FLAG(Messages.getString("EParameterName.fromDatabaseFlag")), //$NON-NLS-1$
     // implict tConextLoad parameters.
@@ -198,25 +198,25 @@ public enum EParameterName {
      */
 
     // main tab within job setting.
-    JOB_MAIN_NAME("Name"),
-    JOB_MAIN_AUTHOR("Author"),
-    JOB_MAIN_VERSION("Version"),
-    JOB_MAIN_PURPOSE("Purpose"),
-    JOB_MAIN_STATUS("Status"),
-    JOB_MAIN_DESCRIPTION("Description"),
-    JOB_MAIN_CREATION("Creation"),
-    JOB_MAIN_MODIFICATION("Modification"),
+    JOB_MAIN_NAME(Messages.getString("EParameterName.name")), //$NON-NLS-1$
+    JOB_MAIN_AUTHOR(Messages.getString("EParameterName.author")), //$NON-NLS-1$
+    JOB_MAIN_VERSION(Messages.getString("EParameterName.jobMainversion")), //$NON-NLS-1$
+    JOB_MAIN_PURPOSE(Messages.getString("EParameterName.purpose")), //$NON-NLS-1$
+    JOB_MAIN_STATUS(Messages.getString("EParameterName.status")), //$NON-NLS-1$
+    JOB_MAIN_DESCRIPTION(Messages.getString("EParameterName.description")), //$NON-NLS-1$
+    JOB_MAIN_CREATION(Messages.getString("EParameterName.creation")), //$NON-NLS-1$
+    JOB_MAIN_MODIFICATION(Messages.getString("EParameterName.modification")), //$NON-NLS-1$
 
     // version tab within job setting.
-    JOB_VERSION("Version"),
+    JOB_VERSION(Messages.getString("EParameterName.jobVersion")), //$NON-NLS-1$
 
-    PARALLELIZE("Enable parallel execution"),
-    PARALLELIZE_NUMBER("Number of parallel executions"),
-    PARALLELIZE_UNIT_SIZE("Parallelize Buffer Unit Size"),
+    PARALLELIZE(Messages.getString("EParameterName.parallelize")), //$NON-NLS-1$
+    PARALLELIZE_NUMBER(Messages.getString("EParameterName.parallelizeNumber")), //$NON-NLS-1$
+    PARALLELIZE_UNIT_SIZE(Messages.getString("EParameterName.parallelizeUnitSize")), //$NON-NLS-1$
 
     // use project setting
-    IMPLICITCONTEXT_USE_PROJECT_SETTINGS(Messages.getString("Extra.UseProjectSettings")),
-    STATANDLOG_USE_PROJECT_SETTINGS(Messages.getString("StatsAndLogs.UseProjectSettings"));
+    IMPLICITCONTEXT_USE_PROJECT_SETTINGS(Messages.getString("Extra.UseProjectSettings")), //$NON-NLS-1$
+    STATANDLOG_USE_PROJECT_SETTINGS(Messages.getString("StatsAndLogs.UseProjectSettings")); //$NON-NLS-1$
 
     private String displayName;
 

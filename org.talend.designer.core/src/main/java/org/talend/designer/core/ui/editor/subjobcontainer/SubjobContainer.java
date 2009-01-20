@@ -41,15 +41,15 @@ import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
  */
 public class SubjobContainer extends Element implements ISubjobContainer {
 
-    public static final String UPDATE_SUBJOB_CONTENT = "UPDATE_SUBJOB_CONTENT";
+    public static final String UPDATE_SUBJOB_CONTENT = "UPDATE_SUBJOB_CONTENT"; //$NON-NLS-1$
 
-    public static final String UPDATE_SUBJOB_DATA = "UPDATE_SUBJOB_DATA";
+    public static final String UPDATE_SUBJOB_DATA = "UPDATE_SUBJOB_DATA"; //$NON-NLS-1$
 
-    public static final String UPDATE_SUBJOB_CONNECTIONS = "UPDATE_SUBJOB_CONNECTIONS";
+    public static final String UPDATE_SUBJOB_CONNECTIONS = "UPDATE_SUBJOB_CONNECTIONS"; //$NON-NLS-1$
 
-    public static final String UPDATE_SUBJOB_TITLE_COLOR = "UPDATE_SUBJOB_TITLE_COLOR";
+    public static final String UPDATE_SUBJOB_TITLE_COLOR = "UPDATE_SUBJOB_TITLE_COLOR"; //$NON-NLS-1$
 
-    public static final String UPDATE_SUBJOB_DISPLAY = "UPDATE_SUBJOB_DISPLAY";
+    public static final String UPDATE_SUBJOB_DISPLAY = "UPDATE_SUBJOB_DISPLAY"; //$NON-NLS-1$
 
     protected List<NodeContainer> nodeContainers = new ArrayList<NodeContainer>();
 
@@ -88,7 +88,7 @@ public class SubjobContainer extends Element implements ISubjobContainer {
         // Unique name of the the start linked with this subjob.
         param = new ElementParameter(this);
         param.setName(EParameterName.UNIQUE_NAME.getName());
-        param.setValue("");
+        param.setValue(""); //$NON-NLS-1$
         param.setDisplayName(EParameterName.UNIQUE_NAME.getDisplayName());
         param.setField(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.TECHNICAL);
@@ -101,14 +101,14 @@ public class SubjobContainer extends Element implements ISubjobContainer {
         // Name of the subjob (title)
         param = new ElementParameter(this);
         param.setName(EParameterName.SUBJOB_TITLE.getName());
-        param.setValue("");
+        param.setValue(""); //$NON-NLS-1$
         param.setDisplayName(EParameterName.SUBJOB_TITLE.getDisplayName());
         param.setField(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.BASIC);
         param.setNumRow(3);
         param.setReadOnly(false);
         param.setRequired(false);
-        param.setShowIf(EParameterName.SHOW_SUBJOB_TITLE.getName() + " == 'true'");
+        param.setShowIf(EParameterName.SHOW_SUBJOB_TITLE.getName() + " == 'true'"); //$NON-NLS-1$
         addElementParameter(param);
 
         param = new ElementParameter(this);
@@ -120,7 +120,7 @@ public class SubjobContainer extends Element implements ISubjobContainer {
         param.setNumRow(4);
         param.setReadOnly(false);
         param.setRequired(false);
-        param.setShowIf(EParameterName.SHOW_SUBJOB_TITLE.getName() + " == 'true'");
+        param.setShowIf(EParameterName.SHOW_SUBJOB_TITLE.getName() + " == 'true'"); //$NON-NLS-1$
         addElementParameter(param);
 
         param = new ElementParameter(this);
@@ -298,7 +298,7 @@ public class SubjobContainer extends Element implements ISubjobContainer {
     public void setSubjobStartNode(Node node) {
         setPropertyValue(EParameterName.UNIQUE_NAME.getName(), node.getUniqueName());
 
-        if (node.getComponent().getName().equals("tPrejob") || node.getComponent().getName().equals("tPostjob")) {
+        if (node.getComponent().getName().equals("tPrejob") || node.getComponent().getName().equals("tPostjob")) { //$NON-NLS-1$ //$NON-NLS-2$
             setPropertyValue(EParameterName.SHOW_SUBJOB_TITLE.getName(), Boolean.TRUE);
             getElementParameter(EParameterName.SHOW_SUBJOB_TITLE.getName()).setShow(false);
         } else {
@@ -401,14 +401,14 @@ public class SubjobContainer extends Element implements ISubjobContainer {
      */
     @Override
     public String toString() {
-        String nodes = "";
+        String nodes = ""; //$NON-NLS-1$
         for (NodeContainer nodeContainer : nodeContainers) {
             nodes += nodeContainer.getNode().toString();
             if (nodeContainers.indexOf(nodeContainer) != (nodeContainers.size() - 1)) {
-                nodes += ", ";
+                nodes += ", "; //$NON-NLS-1$
             }
         }
-        return "SubjobContainer [" + nodes + "]";
+        return "SubjobContainer [" + nodes + "]"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     public List<? extends IConnection> getOutgoingConnections() {

@@ -103,7 +103,7 @@ public class ColorController extends AbstractElementPropertySectionController {
         final DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new IControlCreator() {
 
             public Control createControl(Composite parent, int style) {
-                return getWidgetFactory().createButton(parent, "", SWT.FLAT);
+                return getWidgetFactory().createButton(parent, "", SWT.FLAT); //$NON-NLS-1$
             }
 
         });
@@ -179,7 +179,7 @@ public class ColorController extends AbstractElementPropertySectionController {
         final DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new IControlCreator() {
 
             public Control createControl(Composite parent, int style) {
-                return getWidgetFactory().createButton(parent, "", SWT.FLAT);
+                return getWidgetFactory().createButton(parent, "", SWT.FLAT); //$NON-NLS-1$
             }
 
         });

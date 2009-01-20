@@ -302,10 +302,10 @@ public class ExecuteSystemCommandCommand extends Command {
             super();
 
             if (type == null) {
-                ExceptionHandler.process(new IllegalArgumentException("Type is null"));
+                ExceptionHandler.process(new IllegalArgumentException(Messages.getString("ExecuteSystemCommandCommand.typeNull"))); //$NON-NLS-1$
             }
             if (content == null) {
-                ExceptionHandler.process(new IllegalArgumentException("Content is null"));
+                ExceptionHandler.process(new IllegalArgumentException(Messages.getString("ExecuteSystemCommandCommand.contentNull"))); //$NON-NLS-1$
             }
 
             this.type = type;

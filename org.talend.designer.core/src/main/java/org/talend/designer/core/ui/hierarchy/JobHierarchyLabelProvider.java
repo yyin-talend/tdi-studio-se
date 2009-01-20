@@ -48,7 +48,7 @@ public class JobHierarchyLabelProvider extends LabelProvider {
 
             String label = process.getLabel();
             if (isTIS) {
-                label += "     [" + getProjectLabel(process) + "]";
+                label += "     [" + getProjectLabel(process) + "]"; //$NON-NLS-1$ //$NON-NLS-2$
             }
 
             return label;

@@ -46,7 +46,7 @@ public class ExtraComposite extends AbstractPreferenceComposite {
     public ExtraComposite(Composite parentComposite, int styles, EComponentCategory section, Element element,
             boolean isCompactView) {
         super(parentComposite, styles, section, element, isCompactView);
-        setDialogTitle(Messages.getString("ExtraComposite.ImplicitContextSettings"));
+        setDialogTitle(Messages.getString("ExtraComposite.ImplicitContextSettings")); //$NON-NLS-1$
 
         // achen modify to fix 0005993
         isUsingProjectSetting = true;

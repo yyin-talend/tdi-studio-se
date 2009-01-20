@@ -369,7 +369,7 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
                 multipleComponentManager.addParam("self.PORT", "DB.PORT"); //$NON-NLS-1$ //$NON-NLS-2$
                 multipleComponentManager.addParam("self.DBNAME", "DB.DBNAME"); //$NON-NLS-1$ //$NON-NLS-2$
                 multipleComponentManager.addParam("self.DB_VERSION", "DB.DB_VERSION"); //$NON-NLS-1$ //$NON-NLS-2$
-                multipleComponentManager.addParam("self.PROPERTIES", "DB.PROPERTIES");
+                multipleComponentManager.addParam("self.PROPERTIES", "DB.PROPERTIES"); //$NON-NLS-1$ //$NON-NLS-2$
                 multipleComponentManager.addParam("self.USER", "DB.USER"); //$NON-NLS-1$ //$NON-NLS-2$
                 multipleComponentManager.addParam("self.PASS", "DB.PASS"); //$NON-NLS-1$ //$NON-NLS-2$
                 multipleComponentManager.addParam("self.TABLE", "DB.TABLE"); //$NON-NLS-1$ //$NON-NLS-2$

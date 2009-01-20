@@ -133,15 +133,15 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
                     List<ColumnInfo> tableInputs = promptForDefaultValue(tableEditorModel.getTableViewer().getControl()
                             .getShell(), param);
 
-                    String paramColumnsName = "COLUMN";// default name
-                    String paramSizeName = "SIZE"; // default name
+                    String paramColumnsName = "COLUMN";// default name //$NON-NLS-1$
+                    String paramSizeName = "SIZE"; // default name //$NON-NLS-1$
                     for (Object object : param.getListItemsValue()) {
                         if (object instanceof IElementParameter) {
                             IElementParameter tableParameter = (IElementParameter) object;
                             if (tableParameter.getField().equals(EParameterFieldType.COLUMN_LIST)) {
                                 paramColumnsName = tableParameter.getName();
                             }
-                            if (tableParameter.getContext() != null && tableParameter.getContext().equals("LENGTH")) {
+                            if (tableParameter.getContext() != null && tableParameter.getContext().equals("LENGTH")) { //$NON-NLS-1$
                                 paramSizeName = tableParameter.getName();
                             }
                         }

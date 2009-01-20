@@ -139,13 +139,13 @@ public class DbTableController extends AbstractElementPropertySectionController 
         this.curParameter = param;
         Control lastDbControl = null;
         Button openListTable = null;
-        if (!"DATABASE:CDC".equals(param.getFilter())) {
+        if (!"DATABASE:CDC".equals(param.getFilter())) { //$NON-NLS-1$
             openListTable = addListTablesButton(subComposite, param, top, numInRow, nbInRow);
             lastDbControl = openListTable;
         }
 
         Control openSqlBuilder = null;
-        if (!isContainSqlMemo() && !"DATABASE:CDC".equals(param.getFilter())) {
+        if (!isContainSqlMemo() && !"DATABASE:CDC".equals(param.getFilter())) { //$NON-NLS-1$
             openSqlBuilder = addOpenSqlBulderButton(subComposite, param, top, numInRow, nbInRow);
             FormData data1 = new FormData();
             data1.right = new FormAttachment(100, -ITabbedPropertyConstants.HSPACE);
@@ -153,7 +153,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
             data1.top = new FormAttachment(0, top);
             data1.height = STANDARD_HEIGHT - 2;
             openSqlBuilder.setLayoutData(data1);
-            openSqlBuilder.setToolTipText("Open the SQLBuilder on this connection");
+            openSqlBuilder.setToolTipText(Messages.getString("DbTableController.openSQLBuilder")); //$NON-NLS-1$
             lastDbControl = openSqlBuilder;
         }
         data = new FormData();
@@ -171,7 +171,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
             openListTable.setData(PARAMETER_NAME, param.getName());
             openListTable.setEnabled(!param.isReadOnly());
             openListTable.addSelectionListener(openTablesListener);
-            openListTable.setToolTipText("Show the table list for the current conection");
+            openListTable.setToolTipText(Messages.getString("DbTableController.showTableList")); //$NON-NLS-1$
         }
         Text labelText;
 
@@ -261,7 +261,10 @@ public class DbTableController extends AbstractElementPropertySectionController 
             initConnectionParametersWithContext(elem, manager.getDefaultContext());
             openSQLBuilderWithParamer(button);
         } else {
-            MessageDialog.openWarning(button.getShell(), "Connection error", "Please set connection parameters");
+            MessageDialog
+                    .openWarning(
+                            button.getShell(),
+                            Messages.getString("DbTableController.connectionError"), Messages.getString("DbTableController.setParameter")); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 
@@ -273,7 +276,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
     private void openSQLBuilderWithParamer(Button button) {
         String repositoryType = (String) elem.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
         String propertyName = (String) button.getData(PARAMETER_NAME);
-        openSQLBuilder(repositoryType, propertyName, "");
+        openSQLBuilder(repositoryType, propertyName, ""); //$NON-NLS-1$
     }
 
     /**
@@ -349,7 +352,10 @@ public class DbTableController extends AbstractElementPropertySectionController 
             initConnectionParametersWithContext(elem, manager.getDefaultContext());
             openDbTableSelectorJob(button);
         } else {
-            MessageDialog.openWarning(button.getShell(), "Connection error", "Please set connection parameters");
+            MessageDialog
+                    .openWarning(
+                            button.getShell(),
+                            Messages.getString("DbTableController.connectionError"), Messages.getString("DbTableController.setParameter")); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
     }
@@ -360,11 +366,11 @@ public class DbTableController extends AbstractElementPropertySectionController 
      * @param openListTable
      */
     private void openDbTableSelectorJob(final Button openListTable) {
-        Job job = new Job("Open Database Table Selector Dialog") {
+        Job job = new Job(Messages.getString("DbTableController.openSelectionDialog")) { //$NON-NLS-1$
 
             @Override
             protected IStatus run(final IProgressMonitor monitor) {
-                monitor.beginTask("Waiting for opening Database Table Selector Dialog...", IProgressMonitor.UNKNOWN);
+                monitor.beginTask(Messages.getString("DbTableController.waitingForOpen"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
                 SQLBuilderRepositoryNodeManager manager = new SQLBuilderRepositoryNodeManager();
                 if (connParameters == null) {
                     initConnectionParameters();
@@ -386,7 +392,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
                                 public void run() {
                                     final DbTableSelectorObject object = new DbTableSelectorObject();
                                     DbTableSelectorObject connO = new DbTableSelectorObject();
-                                    if ("".equals(connParameters.getDbName())) {
+                                    if ("".equals(connParameters.getDbName())) { //$NON-NLS-1$
                                         connO.setLabel(connParameters.getDatasource());
                                     } else {
                                         connO.setLabel(connParameters.getDbName());
@@ -394,7 +400,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
 
                                     // for general jdbc, there will always no db name and data source as the label, So
                                     // ...
-                                    if (connO.getLabel() == null || connO.getLabel().equals("")) {
+                                    if (connO.getLabel() == null || connO.getLabel().equals("")) { //$NON-NLS-1$
                                         connO.setLabel(elem.getElementName());
                                     }
 
@@ -473,7 +479,10 @@ public class DbTableController extends AbstractElementPropertySectionController 
                 openDbTableSelectorJob(button);
             }
         } else {
-            MessageDialog.openWarning(button.getShell(), "Connection error", "Please set connection parameters");
+            MessageDialog
+                    .openWarning(
+                            button.getShell(),
+                            Messages.getString("DbTableController.connectionError"), Messages.getString("DbTableController.setParameter")); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
     }
@@ -497,7 +506,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
 
             return testConnection.getResult();
         } catch (Exception e) {
-            log.error(Messages.getString("CommonWizard.exception") + "\n" + e.toString());
+            log.error(Messages.getString("CommonWizard.exception") + "\n" + e.toString()); //$NON-NLS-1$ //$NON-NLS-2$
         }
         return false;
     }

@@ -69,7 +69,7 @@ public class PerformanceJavaTHash {
     @Before
     public void init() {
 
-        System.out.println("\n########################################################\n");
+        System.out.println("\n########################################################\n"); //$NON-NLS-1$
 
         if (rowsLookup == null) {
 
@@ -79,7 +79,7 @@ public class PerformanceJavaTHash {
             strings = new ArrayList<String>();
 
             for (int i = 0; i < TOTAL_ROWS; i++) {
-                localRowsLookup.add(new RowStruct(i, i, String.valueOf(i), String.valueOf(i), "line" + i));
+                localRowsLookup.add(new RowStruct(i, i, String.valueOf(i), String.valueOf(i), "line" + i)); //$NON-NLS-1$
                 integers.add(new Integer(i));
                 strings.add(String.valueOf(i));
             }
@@ -124,37 +124,37 @@ public class PerformanceJavaTHash {
         // }
         // TimeMeasure.end("testWithIntegerKeys LoadReadExecutorWithoutMultiKey");
 
-        TimeMeasure.begin("testWithIntegerKeys LoadReadExecutorWithEqualsHashCode");
+        TimeMeasure.begin("testWithIntegerKeys LoadReadExecutorWithEqualsHashCode"); //$NON-NLS-1$
         LoadReadExecutorWithEqualsHashCode executorEqualsHashCode = new LoadReadExecutorWithEqualsHashCode(
                 ITERATIONS_FOR_QUICK);
 
         {
             for (int i = 0; i < 5; i++) {
-                System.out.println("executeWithIntegerAndHashMap " + i);
+                System.out.println("executeWithIntegerAndHashMap " + i); //$NON-NLS-1$
                 executorEqualsHashCode.executeWithIntegerAndHashMap();
             }
 
         }
-        TimeMeasure.end("testWithIntegerKeys LoadReadExecutorWithEqualsHashCode");
+        TimeMeasure.end("testWithIntegerKeys LoadReadExecutorWithEqualsHashCode"); //$NON-NLS-1$
 
         System.gc();
 
-        TimeMeasure.begin("testWithIntegerKeys LoadReadExecutorWithEqualsHashCode TreeMap");
+        TimeMeasure.begin("testWithIntegerKeys LoadReadExecutorWithEqualsHashCode TreeMap"); //$NON-NLS-1$
         LoadReadExecutorWithEqualsHashCodeTreeMap executorEqualsHashCodeTreeMap = new LoadReadExecutorWithEqualsHashCodeTreeMap(
                 ITERATIONS_FOR_QUICK);
 
         {
             for (int i = 0; i < 5; i++) {
-                System.out.println("executeWithIntegerAndTreeMap  " + i);
+                System.out.println("executeWithIntegerAndTreeMap  " + i); //$NON-NLS-1$
                 executorEqualsHashCodeTreeMap.executeWithIntegerAndTreeMap();
             }
 
         }
-        TimeMeasure.end("testWithIntegerKeys LoadReadExecutorWithEqualsHashCode TreeMap");
+        TimeMeasure.end("testWithIntegerKeys LoadReadExecutorWithEqualsHashCode TreeMap"); //$NON-NLS-1$
 
         System.gc();
 
-        TimeMeasure.begin("testWithIntegerKeys executeWithMultiKey");
+        TimeMeasure.begin("testWithIntegerKeys executeWithMultiKey"); //$NON-NLS-1$
         LoadReadExecutorWithMultiKey executor = new LoadReadExecutorWithMultiKey(ITERATIONS_FOR_QUICK) {
 
             @Override
@@ -170,14 +170,14 @@ public class PerformanceJavaTHash {
         };
         executeWithMultiKey(executor);
 
-        TimeMeasure.end("testWithIntegerKeys executeWithMultiKey");
+        TimeMeasure.end("testWithIntegerKeys executeWithMultiKey"); //$NON-NLS-1$
 
     }
 
     @Test
     public void testWithIntAndMultiKeys() {
 
-        TimeMeasure.begin("testWithIntAndMultiKeys");
+        TimeMeasure.begin("testWithIntAndMultiKeys"); //$NON-NLS-1$
         LoadReadExecutorWithMultiKey executor = new LoadReadExecutorWithMultiKey(ITERATIONS_FOR_QUICK) {
 
             @Override
@@ -193,14 +193,14 @@ public class PerformanceJavaTHash {
         };
         executeWithMultiKey(executor);
 
-        TimeMeasure.end("testWithIntAndMultiKeys");
+        TimeMeasure.end("testWithIntAndMultiKeys"); //$NON-NLS-1$
 
     }
 
     @Test
     public void testWithIntKey() {
 
-        TimeMeasure.begin("testWithIntKeys");
+        TimeMeasure.begin("testWithIntKeys"); //$NON-NLS-1$
         LoadReadExecutorWithMultiKey executor = new LoadReadExecutorWithMultiKey(ITERATIONS_FOR_QUICK) {
 
             @Override
@@ -216,14 +216,14 @@ public class PerformanceJavaTHash {
         };
         executeWithMultiKey(executor);
 
-        TimeMeasure.end("testWithIntKeys");
+        TimeMeasure.end("testWithIntKeys"); //$NON-NLS-1$
 
     }
 
     @Test
     public void testWithStringIntKeys() {
 
-        TimeMeasure.begin("testWithStringIntKeys");
+        TimeMeasure.begin("testWithStringIntKeys"); //$NON-NLS-1$
         LoadReadExecutorWithMultiKey executor = new LoadReadExecutorWithMultiKey(ITERATIONS_FOR_QUICK) {
 
             @Override
@@ -239,14 +239,14 @@ public class PerformanceJavaTHash {
         };
         executeWithMultiKey(executor);
 
-        TimeMeasure.end("testWithStringIntKeys");
+        TimeMeasure.end("testWithStringIntKeys"); //$NON-NLS-1$
 
     }
 
     @Test
     public void testWithIntStringKeys() {
 
-        TimeMeasure.begin("testWithIntStringKeys");
+        TimeMeasure.begin("testWithIntStringKeys"); //$NON-NLS-1$
         LoadReadExecutorWithMultiKey executor = new LoadReadExecutorWithMultiKey(ITERATIONS_FOR_QUICK) {
 
             @Override
@@ -262,14 +262,14 @@ public class PerformanceJavaTHash {
         };
         executeWithMultiKey(executor);
 
-        TimeMeasure.end("testWithIntStringKeys");
+        TimeMeasure.end("testWithIntStringKeys"); //$NON-NLS-1$
 
     }
 
     @Test
     public void testWithIntIntegerKeysAndDefinedArray() {
 
-        TimeMeasure.begin("testWithIntIntegerKeysAndDefinedArray");
+        TimeMeasure.begin("testWithIntIntegerKeysAndDefinedArray"); //$NON-NLS-1$
         LoadReadExecutorWithMultiKey executor = new LoadReadExecutorWithMultiKey(ITERATIONS_FOR_SLOW) {
 
             @Override
@@ -291,14 +291,14 @@ public class PerformanceJavaTHash {
         };
         executeWithMultiKey(executor);
 
-        TimeMeasure.end("testWithIntIntegerKeysAndDefinedArray");
+        TimeMeasure.end("testWithIntIntegerKeysAndDefinedArray"); //$NON-NLS-1$
 
     }
 
     @Test
     public void testWithIntIntegerKeys() {
 
-        TimeMeasure.begin("testWithIntIntegerKeys");
+        TimeMeasure.begin("testWithIntIntegerKeys"); //$NON-NLS-1$
         LoadReadExecutorWithMultiKey executor = new LoadReadExecutorWithMultiKey(ITERATIONS_FOR_SLOW) {
 
             @Override
@@ -314,14 +314,14 @@ public class PerformanceJavaTHash {
         };
         executeWithMultiKey(executor);
 
-        TimeMeasure.end("testWithIntIntegerKeys");
+        TimeMeasure.end("testWithIntIntegerKeys"); //$NON-NLS-1$
 
     }
 
     @Test
     public void testWithIntegerIntegerKeys() {
 
-        TimeMeasure.begin("testWithIntegerIntegerKeys");
+        TimeMeasure.begin("testWithIntegerIntegerKeys"); //$NON-NLS-1$
         LoadReadExecutorWithMultiKey executor = new LoadReadExecutorWithMultiKey(ITERATIONS_FOR_SLOW) {
 
             @Override
@@ -338,14 +338,14 @@ public class PerformanceJavaTHash {
         };
         executeWithMultiKey(executor);
 
-        TimeMeasure.end("testWithIntegerIntegerKeys");
+        TimeMeasure.end("testWithIntegerIntegerKeys"); //$NON-NLS-1$
 
     }
 
     @Test
     public void testWithIntIntKeys() {
 
-        TimeMeasure.begin("testWithIntIntKeys");
+        TimeMeasure.begin("testWithIntIntKeys"); //$NON-NLS-1$
         LoadReadExecutorWithMultiKey executor = new LoadReadExecutorWithMultiKey(ITERATIONS_FOR_SLOW) {
 
             @Override
@@ -361,14 +361,14 @@ public class PerformanceJavaTHash {
         };
         executeWithMultiKey(executor);
 
-        TimeMeasure.end("testWithIntIntKeys");
+        TimeMeasure.end("testWithIntIntKeys"); //$NON-NLS-1$
 
     }
 
     @Test
     public void testWithIntegerIntKeys() {
 
-        TimeMeasure.begin("testWithIntegerIntKeys");
+        TimeMeasure.begin("testWithIntegerIntKeys"); //$NON-NLS-1$
         LoadReadExecutorWithMultiKey executor = new LoadReadExecutorWithMultiKey(ITERATIONS_FOR_SLOW) {
 
             @Override
@@ -384,25 +384,25 @@ public class PerformanceJavaTHash {
         };
         executeWithMultiKey(executor);
 
-        TimeMeasure.end("testWithIntegerIntKeys");
+        TimeMeasure.end("testWithIntegerIntKeys"); //$NON-NLS-1$
 
     }
 
     @Test
     public void testWithStringStringKeys() {
 
-        TimeMeasure.begin("testWithStringStringKeys LoadReadExecutorWithEqualsHashCode");
+        TimeMeasure.begin("testWithStringStringKeys LoadReadExecutorWithEqualsHashCode"); //$NON-NLS-1$
         LoadReadExecutorWithEqualsHashCode executorEqualsHashCode = new LoadReadExecutorWithEqualsHashCode(
                 ITERATIONS_FOR_QUICK);
 
         {
             for (int i = 0; i < 10; i++) {
-                System.out.println("executeWithStringStringAndHashMap " + i);
+                System.out.println("executeWithStringStringAndHashMap " + i); //$NON-NLS-1$
                 executorEqualsHashCode.executeWithStringStringAndHashMap();
             }
 
         }
-        TimeMeasure.end("testWithStringStringKeys LoadReadExecutorWithEqualsHashCode");
+        TimeMeasure.end("testWithStringStringKeys LoadReadExecutorWithEqualsHashCode"); //$NON-NLS-1$
 
         // TimeMeasure.begin("testWithStringStringKeys executeWithMultiKey");
         // LoadReadExecutorWithMultiKey executor = new LoadReadExecutorWithMultiKey(ITERATIONS_FOR_QUICK) {
@@ -424,13 +424,13 @@ public class PerformanceJavaTHash {
         //
         // TimeMeasure.end("testWithStringStringKeys executeWithMultiKey");
 
-        TimeMeasure.begin("testWithStringStringKeys executeWithoutMultiKey");
+        TimeMeasure.begin("testWithStringStringKeys executeWithoutMultiKey"); //$NON-NLS-1$
         LoadReadExecutorWithoutMultiKey executorWithout = new LoadReadExecutorWithoutMultiKey(ITERATIONS_FOR_QUICK);
 
-        System.out.println("executeStringStringAndMultiKeyMap");
+        System.out.println("executeStringStringAndMultiKeyMap"); //$NON-NLS-1$
         executorWithout.executeStringStringAndMultiKeyMap();
 
-        TimeMeasure.end("testWithStringStringKeys executeWithoutMultiKey");
+        TimeMeasure.end("testWithStringStringKeys executeWithoutMultiKey"); //$NON-NLS-1$
 
     }
 
@@ -467,10 +467,10 @@ public class PerformanceJavaTHash {
      */
     private void executeWithMultiKey(LoadReadExecutorWithMultiKey executor) {
 
-        System.out.println("\nWithMultiKeyAndHashMap :");
+        System.out.println("\nWithMultiKeyAndHashMap :"); //$NON-NLS-1$
         executor.executeWithMultiKeyAndHashMap();
 
-        System.out.println("\nWithMultiKey :");
+        System.out.println("\nWithMultiKey :"); //$NON-NLS-1$
         executor.executeWithMultiKey();
 
         // System.out.println("\nWith reuse :");
@@ -561,7 +561,7 @@ public class PerformanceJavaTHash {
             TimeMeasure.measureActive = true;
 
             int lstSize = nIterations;
-            TimeMeasure.begin("loading");
+            TimeMeasure.begin("loading"); //$NON-NLS-1$
             for (int i = 0; i < lstSize; i++) {
                 RowStruct row = (RowStruct) rowsLookup.get(i);
 
@@ -570,9 +570,9 @@ public class PerformanceJavaTHash {
                 tHash.put(multiKey, row);
 
             }
-            TimeMeasure.end("loading");
+            TimeMeasure.end("loading"); //$NON-NLS-1$
 
-            TimeMeasure.begin("reading");
+            TimeMeasure.begin("reading"); //$NON-NLS-1$
             int nRowsFound = 0;
             for (int i = 0; i < lstSize; i++) {
 
@@ -584,10 +584,10 @@ public class PerformanceJavaTHash {
                 }
                 // System.out.println(row.name);
             }
-            TimeMeasure.end("reading");
+            TimeMeasure.end("reading"); //$NON-NLS-1$
             tHash.clear();
 
-            System.out.println("nRowsFound=" + nRowsFound);
+            System.out.println("nRowsFound=" + nRowsFound); //$NON-NLS-1$
 
         }
 
@@ -597,7 +597,7 @@ public class PerformanceJavaTHash {
             TimeMeasure.measureActive = true;
 
             int lstSize = nIterations;
-            TimeMeasure.begin("loading");
+            TimeMeasure.begin("loading"); //$NON-NLS-1$
             for (int i = 0; i < lstSize; i++) {
                 RowStruct row = (RowStruct) rowsLookup.get(i);
 
@@ -606,9 +606,9 @@ public class PerformanceJavaTHash {
                 tHash.put(multiKey, row);
 
             }
-            TimeMeasure.end("loading");
+            TimeMeasure.end("loading"); //$NON-NLS-1$
 
-            TimeMeasure.begin("reading");
+            TimeMeasure.begin("reading"); //$NON-NLS-1$
             int nRowsFound = 0;
             for (int i = 0; i < lstSize; i++) {
 
@@ -620,10 +620,10 @@ public class PerformanceJavaTHash {
                 }
                 // System.out.println(row.name);
             }
-            TimeMeasure.end("reading");
+            TimeMeasure.end("reading"); //$NON-NLS-1$
             tHash.clear();
 
-            System.out.println("nRowsFound=" + nRowsFound);
+            System.out.println("nRowsFound=" + nRowsFound); //$NON-NLS-1$
 
         }
 
@@ -634,16 +634,16 @@ public class PerformanceJavaTHash {
 
             int lstSize = nIterations;
             ArrayList<RowStruct> localRowsLookup = rowsLookup;
-            TimeMeasure.begin("loading");
+            TimeMeasure.begin("loading"); //$NON-NLS-1$
             for (int i = 0; i < lstSize; i++) {
                 RowStruct row = localRowsLookup.get(i);
 
                 tHash.put(row.stringKey, row.stringKey, row);
 
             }
-            TimeMeasure.end("loading");
+            TimeMeasure.end("loading"); //$NON-NLS-1$
 
-            TimeMeasure.begin("reading");
+            TimeMeasure.begin("reading"); //$NON-NLS-1$
             int nRowsFound = 0;
             for (int i = 0; i < lstSize; i++) {
 
@@ -655,10 +655,10 @@ public class PerformanceJavaTHash {
                 }
                 // System.out.println(row.name);
             }
-            TimeMeasure.end("reading");
+            TimeMeasure.end("reading"); //$NON-NLS-1$
             tHash.clear();
 
-            System.out.println("nRowsFound=" + nRowsFound);
+            System.out.println("nRowsFound=" + nRowsFound); //$NON-NLS-1$
 
         }
 
@@ -669,16 +669,16 @@ public class PerformanceJavaTHash {
 
             int lstSize = nIterations;
             ArrayList<RowStruct> localRowsLookup = rowsLookup;
-            TimeMeasure.begin("executeWithoutMultiKeyWithLocalRowsForeach loading");
+            TimeMeasure.begin("executeWithoutMultiKeyWithLocalRowsForeach loading"); //$NON-NLS-1$
             for (RowStruct row : localRowsLookup) {
                 tHash.put(row.stringKey, row.stringKey, row);
                 if (row.intKey == 10000) {
                     break;
                 }
             }
-            TimeMeasure.end("executeWithoutMultiKeyWithLocalRowsForeach loading");
+            TimeMeasure.end("executeWithoutMultiKeyWithLocalRowsForeach loading"); //$NON-NLS-1$
 
-            TimeMeasure.begin("reading");
+            TimeMeasure.begin("reading"); //$NON-NLS-1$
             int nRowsFound = 0;
             for (int i = 0; i < lstSize; i++) {
 
@@ -690,10 +690,10 @@ public class PerformanceJavaTHash {
                 }
                 // System.out.println(row.name);
             }
-            TimeMeasure.end("reading");
+            TimeMeasure.end("reading"); //$NON-NLS-1$
             tHash.clear();
 
-            System.out.println("nRowsFound=" + nRowsFound);
+            System.out.println("nRowsFound=" + nRowsFound); //$NON-NLS-1$
 
         }
 
@@ -745,7 +745,7 @@ public class PerformanceJavaTHash {
 
             ArrayList<RowStruct> localRowsLookup = rowsLookup;
 
-            TimeMeasure.begin("loading");
+            TimeMeasure.begin("loading"); //$NON-NLS-1$
             for (int i = 0; i < lstSize; i++) {
                 RowStruct row = (RowStruct) localRowsLookup.get(i);
 
@@ -759,9 +759,9 @@ public class PerformanceJavaTHash {
                 tHash.put(row, row);
                 // TimeMeasure.step("loading", "end of loop block");
             }
-            TimeMeasure.end("loading");
+            TimeMeasure.end("loading"); //$NON-NLS-1$
 
-            TimeMeasure.begin("reading");
+            TimeMeasure.begin("reading"); //$NON-NLS-1$
             int nRowsFound = 0;
 
             RowStruct rowStructKey = new RowStruct();
@@ -790,10 +790,10 @@ public class PerformanceJavaTHash {
                     // System.out.println(row.name);
                 }
             }
-            TimeMeasure.end("reading");
+            TimeMeasure.end("reading"); //$NON-NLS-1$
             tHash.clear();
 
-            System.out.println("nRowsFound=" + nRowsFound);
+            System.out.println("nRowsFound=" + nRowsFound); //$NON-NLS-1$
 
         }
 
@@ -810,16 +810,16 @@ public class PerformanceJavaTHash {
             RowStruct.stringKeyIsKey = false;
             RowStruct.stringKey2IsKey = false;
 
-            TimeMeasure.begin("loading");
+            TimeMeasure.begin("loading"); //$NON-NLS-1$
             for (int i = 0; i < lstSize; i++) {
                 RowStruct row = (RowStruct) localRowsLookup.get(i);
 
                 tHash.put(row, row);
                 // TimeMeasure.step("loading", "end of loop block");
             }
-            TimeMeasure.end("loading");
+            TimeMeasure.end("loading"); //$NON-NLS-1$
 
-            TimeMeasure.begin("reading");
+            TimeMeasure.begin("reading"); //$NON-NLS-1$
             int nRowsFound = 0;
 
             RowStruct rowStructKey = new RowStruct();
@@ -844,10 +844,10 @@ public class PerformanceJavaTHash {
                     // System.out.println(row.name);
                 }
             }
-            TimeMeasure.end("reading");
+            TimeMeasure.end("reading"); //$NON-NLS-1$
             tHash.clear();
 
-            System.out.println("nRowsFound=" + nRowsFound);
+            System.out.println("nRowsFound=" + nRowsFound); //$NON-NLS-1$
 
         }
 
@@ -915,7 +915,7 @@ public class PerformanceJavaTHash {
             int lstSize = nIterations;
             PutThread putThread1 = new PutThread(tHash, localRowsLookup, 0, nIterations / 2);
             PutThread putThread2 = new PutThread(tHash, localRowsLookup, nIterations / 2, nIterations);
-            TimeMeasure.begin("loading");
+            TimeMeasure.begin("loading"); //$NON-NLS-1$
 
             putThread1.start();
             putThread2.start();
@@ -923,9 +923,9 @@ public class PerformanceJavaTHash {
             while (putThread1.isAlive() || putThread2.isAlive())
                 ;
 
-            TimeMeasure.end("loading");
+            TimeMeasure.end("loading"); //$NON-NLS-1$
 
-            TimeMeasure.begin("reading");
+            TimeMeasure.begin("reading"); //$NON-NLS-1$
             int nRowsFound = 0;
             for (int i = 0; i < lstSize; i++) {
 
@@ -935,10 +935,10 @@ public class PerformanceJavaTHash {
                 }
                 // System.out.println(row.name);
             }
-            TimeMeasure.end("reading");
+            TimeMeasure.end("reading"); //$NON-NLS-1$
             tHash.clear();
 
-            System.out.println("nRowsFound=" + nRowsFound);
+            System.out.println("nRowsFound=" + nRowsFound); //$NON-NLS-1$
 
         }
 
@@ -974,7 +974,7 @@ public class PerformanceJavaTHash {
 
             ArrayList<RowStruct> localRowsLookup = rowsLookup;
 
-            TimeMeasure.begin("loading");
+            TimeMeasure.begin("loading"); //$NON-NLS-1$
             for (int i = 0; i < lstSize; i++) {
                 RowStruct row = (RowStruct) localRowsLookup.get(i);
 
@@ -988,9 +988,9 @@ public class PerformanceJavaTHash {
                 tHash.put(row, row);
                 // TimeMeasure.step("loading", "end of loop block");
             }
-            TimeMeasure.end("loading");
+            TimeMeasure.end("loading"); //$NON-NLS-1$
 
-            TimeMeasure.begin("reading");
+            TimeMeasure.begin("reading"); //$NON-NLS-1$
             int nRowsFound = 0;
 
             RowStruct rowStructKey = new RowStruct();
@@ -1019,10 +1019,10 @@ public class PerformanceJavaTHash {
                     // System.out.println(row.name);
                 }
             }
-            TimeMeasure.end("reading");
+            TimeMeasure.end("reading"); //$NON-NLS-1$
             tHash.clear();
 
-            System.out.println("nRowsFound=" + nRowsFound);
+            System.out.println("nRowsFound=" + nRowsFound); //$NON-NLS-1$
 
         }
 
@@ -1042,16 +1042,16 @@ public class PerformanceJavaTHash {
                 RowStruct.stringKey2IsKey = false;
             }
 
-            TimeMeasure.begin("loading");
+            TimeMeasure.begin("loading"); //$NON-NLS-1$
             for (int i = 0; i < lstSize; i++) {
                 RowStruct row = (RowStruct) localRowsLookup.get(i);
 
                 tHash.put(row, row);
                 // TimeMeasure.step("loading", "end of loop block");
             }
-            TimeMeasure.end("loading");
+            TimeMeasure.end("loading"); //$NON-NLS-1$
 
-            TimeMeasure.begin("reading");
+            TimeMeasure.begin("reading"); //$NON-NLS-1$
             int nRowsFound = 0;
 
             RowStruct rowStructKey = new RowStruct();
@@ -1079,10 +1079,10 @@ public class PerformanceJavaTHash {
                     // System.out.println(row.name);
                 }
             }
-            TimeMeasure.end("reading");
+            TimeMeasure.end("reading"); //$NON-NLS-1$
             tHash.clear();
 
-            System.out.println("nRowsFound=" + nRowsFound);
+            System.out.println("nRowsFound=" + nRowsFound); //$NON-NLS-1$
 
         }
 
@@ -1150,7 +1150,7 @@ public class PerformanceJavaTHash {
             int lstSize = nIterations;
             PutThread putThread1 = new PutThread(tHash, localRowsLookup, 0, nIterations / 2);
             PutThread putThread2 = new PutThread(tHash, localRowsLookup, nIterations / 2, nIterations);
-            TimeMeasure.begin("loading");
+            TimeMeasure.begin("loading"); //$NON-NLS-1$
 
             putThread1.start();
             putThread2.start();
@@ -1158,9 +1158,9 @@ public class PerformanceJavaTHash {
             while (putThread1.isAlive() || putThread2.isAlive())
                 ;
 
-            TimeMeasure.end("loading");
+            TimeMeasure.end("loading"); //$NON-NLS-1$
 
-            TimeMeasure.begin("reading");
+            TimeMeasure.begin("reading"); //$NON-NLS-1$
             int nRowsFound = 0;
             for (int i = 0; i < lstSize; i++) {
 
@@ -1170,10 +1170,10 @@ public class PerformanceJavaTHash {
                 }
                 // System.out.println(row.name);
             }
-            TimeMeasure.end("reading");
+            TimeMeasure.end("reading"); //$NON-NLS-1$
             tHash.clear();
 
-            System.out.println("nRowsFound=" + nRowsFound);
+            System.out.println("nRowsFound=" + nRowsFound); //$NON-NLS-1$
 
         }
 
@@ -1206,16 +1206,16 @@ public class PerformanceJavaTHash {
             int lstSize = nIterations;
             ArrayList<RowStruct> localRowsLookup = rowsLookup;
 
-            TimeMeasure.begin("loading");
+            TimeMeasure.begin("loading"); //$NON-NLS-1$
             for (int i = 0; i < lstSize; i++) {
                 RowStruct row = (RowStruct) localRowsLookup.get(i);
 
                 tHash.put(i, row);
 
             }
-            TimeMeasure.end("loading");
+            TimeMeasure.end("loading"); //$NON-NLS-1$
 
-            TimeMeasure.begin("reading");
+            TimeMeasure.begin("reading"); //$NON-NLS-1$
             int nRowsFound = 0;
             for (int i = 0; i < lstSize; i++) {
 
@@ -1225,10 +1225,10 @@ public class PerformanceJavaTHash {
                 }
                 // System.out.println(row.name);
             }
-            TimeMeasure.end("reading");
+            TimeMeasure.end("reading"); //$NON-NLS-1$
             tHash.clear();
 
-            System.out.println("nRowsFound=" + nRowsFound);
+            System.out.println("nRowsFound=" + nRowsFound); //$NON-NLS-1$
 
         }
 
@@ -1241,15 +1241,15 @@ public class PerformanceJavaTHash {
             ArrayList<RowStruct> localRowsLookup = rowsLookup;
             ArrayList<Integer> localIntegers = integers;
 
-            TimeMeasure.begin("loading");
+            TimeMeasure.begin("loading"); //$NON-NLS-1$
             for (int i = 0; i < lstSize; i++) {
                 RowStruct row = (RowStruct) localRowsLookup.get(i);
                 tHash.put(row.integerKey, row);
 
             }
-            TimeMeasure.end("loading");
+            TimeMeasure.end("loading"); //$NON-NLS-1$
 
-            TimeMeasure.begin("reading");
+            TimeMeasure.begin("reading"); //$NON-NLS-1$
             int nRowsFound = 0;
             for (int i = 0; i < lstSize; i++) {
 
@@ -1259,10 +1259,10 @@ public class PerformanceJavaTHash {
                 }
                 // System.out.println(row.name);
             }
-            TimeMeasure.end("reading");
+            TimeMeasure.end("reading"); //$NON-NLS-1$
             tHash.clear();
 
-            System.out.println("nRowsFound=" + nRowsFound);
+            System.out.println("nRowsFound=" + nRowsFound); //$NON-NLS-1$
 
         }
 
@@ -1275,15 +1275,15 @@ public class PerformanceJavaTHash {
             ArrayList<RowStruct> localRowsLookup = rowsLookup;
             ArrayList<Integer> localIntegers = integers;
 
-            TimeMeasure.begin("loading");
+            TimeMeasure.begin("loading"); //$NON-NLS-1$
             for (int i = 0; i < lstSize; i++) {
                 RowStruct row = (RowStruct) localRowsLookup.get(i);
                 tHash.put(row.integerKey, row);
 
             }
-            TimeMeasure.end("loading");
+            TimeMeasure.end("loading"); //$NON-NLS-1$
 
-            TimeMeasure.begin("reading");
+            TimeMeasure.begin("reading"); //$NON-NLS-1$
             int nRowsFound = 0;
             for (int i = 0; i < lstSize; i++) {
 
@@ -1293,10 +1293,10 @@ public class PerformanceJavaTHash {
                 }
                 // System.out.println(row.name);
             }
-            TimeMeasure.end("reading");
+            TimeMeasure.end("reading"); //$NON-NLS-1$
             tHash.clear();
 
-            System.out.println("nRowsFound=" + nRowsFound);
+            System.out.println("nRowsFound=" + nRowsFound); //$NON-NLS-1$
 
         }
 
@@ -1309,15 +1309,15 @@ public class PerformanceJavaTHash {
             ArrayList<RowStruct> localRowsLookup = rowsLookup;
             ArrayList<Integer> localIntegers = integers;
 
-            TimeMeasure.begin("loading");
+            TimeMeasure.begin("loading"); //$NON-NLS-1$
             for (int i = 0; i < lstSize; i++) {
                 RowStruct row = (RowStruct) localRowsLookup.get(i);
                 tHash.put(row.integerKey, row);
 
             }
-            TimeMeasure.end("loading");
+            TimeMeasure.end("loading"); //$NON-NLS-1$
 
-            TimeMeasure.begin("reading");
+            TimeMeasure.begin("reading"); //$NON-NLS-1$
             int nRowsFound = 0;
             for (int i = 0; i < lstSize; i++) {
 
@@ -1327,10 +1327,10 @@ public class PerformanceJavaTHash {
                 }
                 // System.out.println(row.name);
             }
-            TimeMeasure.end("reading");
+            TimeMeasure.end("reading"); //$NON-NLS-1$
             tHash.clear();
 
-            System.out.println("nRowsFound=" + nRowsFound);
+            System.out.println("nRowsFound=" + nRowsFound); //$NON-NLS-1$
 
         }
 
@@ -1398,7 +1398,7 @@ public class PerformanceJavaTHash {
             int lstSize = nIterations;
             PutThread putThread1 = new PutThread(tHash, localRowsLookup, 0, nIterations / 2);
             PutThread putThread2 = new PutThread(tHash, localRowsLookup, nIterations / 2, nIterations);
-            TimeMeasure.begin("loading");
+            TimeMeasure.begin("loading"); //$NON-NLS-1$
 
             putThread1.start();
             putThread2.start();
@@ -1406,9 +1406,9 @@ public class PerformanceJavaTHash {
             while (putThread1.isAlive() || putThread2.isAlive())
                 ;
 
-            TimeMeasure.end("loading");
+            TimeMeasure.end("loading"); //$NON-NLS-1$
 
-            TimeMeasure.begin("reading");
+            TimeMeasure.begin("reading"); //$NON-NLS-1$
             int nRowsFound = 0;
             for (int i = 0; i < lstSize; i++) {
 
@@ -1418,10 +1418,10 @@ public class PerformanceJavaTHash {
                 }
                 // System.out.println(row.name);
             }
-            TimeMeasure.end("reading");
+            TimeMeasure.end("reading"); //$NON-NLS-1$
             tHash.clear();
 
-            System.out.println("nRowsFound=" + nRowsFound);
+            System.out.println("nRowsFound=" + nRowsFound); //$NON-NLS-1$
 
         }
 
@@ -1432,16 +1432,16 @@ public class PerformanceJavaTHash {
 
             int lstSize = nIterations;
             ArrayList<RowStruct> localRowsLookup = rowsLookup;
-            TimeMeasure.begin("loading");
+            TimeMeasure.begin("loading"); //$NON-NLS-1$
             for (int i = 0; i < lstSize; i++) {
                 RowStruct row = localRowsLookup.get(i);
                 tHash.put(row.stringKey, row.stringKey, row);
             }
-            TimeMeasure.end("loading");
+            TimeMeasure.end("loading"); //$NON-NLS-1$
 
             ArrayList<String> localStrings = strings;
 
-            TimeMeasure.begin("reading");
+            TimeMeasure.begin("reading"); //$NON-NLS-1$
             int nRowsFound = 0;
             for (int i = 0; i < lstSize; i++) {
 
@@ -1454,10 +1454,10 @@ public class PerformanceJavaTHash {
                 }
                 // System.out.println(row.name);
             }
-            TimeMeasure.end("reading");
+            TimeMeasure.end("reading"); //$NON-NLS-1$
             tHash.clear();
 
-            System.out.println("nRowsFound=" + nRowsFound);
+            System.out.println("nRowsFound=" + nRowsFound); //$NON-NLS-1$
 
         }
 
@@ -1468,16 +1468,16 @@ public class PerformanceJavaTHash {
 
             int lstSize = nIterations;
             ArrayList<RowStruct> localRowsLookup = rowsLookup;
-            TimeMeasure.begin("loading");
+            TimeMeasure.begin("loading"); //$NON-NLS-1$
             for (int i = 0; i < lstSize; i++) {
                 RowStruct row = localRowsLookup.get(i);
 
                 tHash.put(row.intKey, row);
 
             }
-            TimeMeasure.end("loading");
+            TimeMeasure.end("loading"); //$NON-NLS-1$
 
-            TimeMeasure.begin("reading");
+            TimeMeasure.begin("reading"); //$NON-NLS-1$
             int nRowsFound = 0;
             for (int i = 0; i < lstSize; i++) {
 
@@ -1489,10 +1489,10 @@ public class PerformanceJavaTHash {
                 }
                 // System.out.println(row.name);
             }
-            TimeMeasure.end("reading");
+            TimeMeasure.end("reading"); //$NON-NLS-1$
             tHash.clear();
 
-            System.out.println("nRowsFound=" + nRowsFound);
+            System.out.println("nRowsFound=" + nRowsFound); //$NON-NLS-1$
 
         }
 

@@ -83,7 +83,7 @@ public class ImplicitContextLoadHelper {
 
     public static String getRepositoryTypeLabel(ConnectionItem connectionItem) {
         if (connectionItem == null) {
-            return "";
+            return ""; //$NON-NLS-1$
         }
         ERepositoryObjectType repositoryObjectType = ERepositoryObjectType.getItemType(connectionItem);
         String aliasName = repositoryObjectType.getAlias();
@@ -92,7 +92,7 @@ public class ImplicitContextLoadHelper {
             String currentDbType = (String) RepositoryToComponentProperty.getValue(connection, "TYPE"); //$NON-NLS-1$
             aliasName += " (" + currentDbType + ")"; //$NON-NLS-1$ //$NON-NLS-2$
         }
-        return aliasName + ":" + connectionItem.getProperty().getLabel();
+        return aliasName + ":" + connectionItem.getProperty().getLabel(); //$NON-NLS-1$
     }
 
     public static Object getPreferenceValue(String prefix, EParameterName param, Class type) {
@@ -102,7 +102,7 @@ public class ImplicitContextLoadHelper {
         } else if (type == String.class) {
             return PREFERENCE_STORE.getString(name);
         }
-        return "";
+        return ""; //$NON-NLS-1$
     }
 
     /**
@@ -113,7 +113,7 @@ public class ImplicitContextLoadHelper {
      */
     public static void reloadValuesFromPreferencePage(Element element, ExtraComposite extraComposite) {
         ECodeLanguage language = LanguageManager.getCurrentLanguage();
-        String languagePrefix = language.toString() + "_";
+        String languagePrefix = language.toString() + "_"; //$NON-NLS-1$
 
         Map values = loadPreferenceValues();
         List<? extends IElementParameter> elementParameters = element.getElementParameters();
@@ -169,10 +169,10 @@ public class ImplicitContextLoadHelper {
         }
 
         ChangeValuesFromRepository cmd1 = new ChangeValuesFromRepository(element, repositoryConnection,
-                getExtraParameterName(EParameterName.PROPERTY_TYPE) + ":" + EParameterName.PROPERTY_TYPE.getName(), propertyType);
+                getExtraParameterName(EParameterName.PROPERTY_TYPE) + ":" + EParameterName.PROPERTY_TYPE.getName(), propertyType); //$NON-NLS-1$
 
         ChangeValuesFromRepository cmd2 = new ChangeValuesFromRepository(element, repositoryConnection,
-                getExtraParameterName(EParameterName.PROPERTY_TYPE) + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), id);
+                getExtraParameterName(EParameterName.PROPERTY_TYPE) + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), id); //$NON-NLS-1$
         cmd2.setMaps(extraComposite.getRepositoryTableMap());
 
         AbstractMultiPageTalendEditor part = ((Process) element).getEditor();
@@ -191,7 +191,7 @@ public class ImplicitContextLoadHelper {
      */
     private static String addQuote(String value) {
         if (value == null) {
-            return TalendTextUtils.addQuotes("");
+            return TalendTextUtils.addQuotes(""); //$NON-NLS-1$
         }
         value = value.trim();
         return value;
@@ -199,7 +199,7 @@ public class ImplicitContextLoadHelper {
 
     private static String removeQuote(String value) {
         if (value == null) {
-            return "";
+            return ""; //$NON-NLS-1$
         }
         value = value.trim();
         return value;
@@ -214,7 +214,7 @@ public class ImplicitContextLoadHelper {
     private static Map loadPreferenceValues() {
         Map values = new HashMap();
         ECodeLanguage language = LanguageManager.getCurrentLanguage();
-        String languagePrefix = language.toString() + "_";
+        String languagePrefix = language.toString() + "_"; //$NON-NLS-1$
 
         EParameterName[] params = { EParameterName.IMPLICIT_TCONTEXTLOAD, EParameterName.FROM_FILE_FLAG,
                 EParameterName.FROM_DATABASE_FLAG, EParameterName.PRINT_OPERATIONS, EParameterName.DISABLE_WARNINGS,
@@ -266,7 +266,7 @@ public class ImplicitContextLoadHelper {
      */
     public static void saveValuesToPreferencePage(Element element, ExtraComposite extraComposite) {
         ECodeLanguage language = LanguageManager.getCurrentLanguage();
-        String languagePrefix = language.toString() + "_";
+        String languagePrefix = language.toString() + "_"; //$NON-NLS-1$
         EParameterName[] params = { EParameterName.IMPLICIT_TCONTEXTLOAD, EParameterName.FROM_FILE_FLAG,
                 EParameterName.FROM_DATABASE_FLAG, EParameterName.IMPLICIT_TCONTEXTLOAD_FILE, EParameterName.FIELDSEPARATOR,
                 EParameterName.DB_TYPE, EParameterName.HOST, EParameterName.PORT, EParameterName.DBNAME,
@@ -307,8 +307,8 @@ public class ImplicitContextLoadHelper {
      */
     private static void savePropertyTypeToPreference(ExtraComposite extraComposite, String languagePrefix,
             IElementParameter elementParameter) {
-        String itemId = (String) elementParameter.getChildParameters().get("REPOSITORY_PROPERTY_TYPE").getValue();
-        String propertyType = (String) elementParameter.getChildParameters().get("PROPERTY_TYPE").getValue();
+        String itemId = (String) elementParameter.getChildParameters().get("REPOSITORY_PROPERTY_TYPE").getValue(); //$NON-NLS-1$
+        String propertyType = (String) elementParameter.getChildParameters().get("PROPERTY_TYPE").getValue(); //$NON-NLS-1$
 
         Item item = elementParameter.getLinkedRepositoryItem();
         if (item == null || (item != null && !item.getProperty().getId().equals(itemId))) {

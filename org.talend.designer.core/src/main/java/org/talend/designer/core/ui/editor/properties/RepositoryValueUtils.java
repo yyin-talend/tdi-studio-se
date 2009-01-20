@@ -134,7 +134,7 @@ public class RepositoryValueUtils {
                                     String dbType = ((DatabaseConnection) connection).getDatabaseType();
                                     String schema = ((DatabaseConnection) connection).getSchema();
                                     tableIdAndDbTypeMap.put(newTable.getId(), dbType);
-                                    if (schema != null && !schema.equals("")) {
+                                    if (schema != null && !schema.equals("")) { //$NON-NLS-1$
                                         tableIdAndDbSchemaMap.put(newTable.getId(), schema);
                                     }
                                 }
@@ -227,8 +227,8 @@ public class RepositoryValueUtils {
         if ((propertyValue == null || !(propertyValue instanceof String)) && defaultPropertyValue != null) {
             propertyValue = defaultPropertyValue;
         }
-        if (propertyValue == null || propertyValue.equals("")) {
-            return "";
+        if (propertyValue == null || propertyValue.equals("")) { //$NON-NLS-1$
+            return ""; //$NON-NLS-1$
         }
         if (istable) {
             List<String> list = tablesMap.get(propertyValue);
@@ -245,7 +245,7 @@ public class RepositoryValueUtils {
                 }
             }
         }
-        return "";
+        return ""; //$NON-NLS-1$
     }
 
     /**

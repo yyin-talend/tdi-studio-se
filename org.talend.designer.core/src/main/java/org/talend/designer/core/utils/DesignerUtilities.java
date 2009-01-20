@@ -52,7 +52,7 @@ public class DesignerUtilities {
         if (DesignerUtilities.isTRunJobComponent(node)) {
             Node concreteNode = (Node) node;
             String processId = (String) concreteNode.getPropertyValue(EParameterName.PROCESS_TYPE_PROCESS.getName());
-            if (processId != null && !"".equals(processId)) {
+            if (processId != null && !"".equals(processId)) { //$NON-NLS-1$
                 ProcessItem processItem = ItemCacheManager.getProcessItem(processId);
                 if (processItem != null) {
                     // TODO should use a fake Process here to replace the real Process.

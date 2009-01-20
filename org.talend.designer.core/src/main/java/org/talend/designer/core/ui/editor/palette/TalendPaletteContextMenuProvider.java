@@ -82,9 +82,9 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
         public SearchComponentAction(PaletteViewer paletteViewer) {
             this.paletteViewer = paletteViewer;
             shell = paletteViewer.getControl().getShell();
-            setText(Messages.getString("SearchComponentInJobs.Title"));
-            setToolTipText(Messages.getString("SearchComponentInJobs.Tooltip"));
-            setDescription(Messages.getString("SearchComponentInJobs.Tooltip"));
+            setText(Messages.getString("SearchComponentInJobs.Title")); //$NON-NLS-1$
+            setToolTipText(Messages.getString("SearchComponentInJobs.Tooltip")); //$NON-NLS-1$
+            setDescription(Messages.getString("SearchComponentInJobs.Tooltip")); //$NON-NLS-1$
         }
 
         @Override
@@ -116,9 +116,9 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
         public FavoriteComponentAction(PaletteViewer paletteViewer) {
             this.paletteViewer = paletteViewer;
             shell = paletteViewer.getControl().getShell();
-            setText("Add To Favorite");
-            setToolTipText("Add To Favorite");
-            setDescription("Add To Favorite");
+            setText(Messages.getString("TalendPaletteContextMenuProvider.textAdd")); //$NON-NLS-1$
+            setToolTipText(Messages.getString("TalendPaletteContextMenuProvider.tipAdd")); //$NON-NLS-1$
+            setDescription(Messages.getString("TalendPaletteContextMenuProvider.descriptionAdd")); //$NON-NLS-1$
         }
 
         @Override
@@ -154,9 +154,9 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
         public RemoveFavoriteComponentAction(PaletteViewer paletteViewer) {
             this.paletteViewer = paletteViewer;
             shell = paletteViewer.getControl().getShell();
-            setText("Remove From Favorite");
-            setToolTipText("Remove From Favorite");
-            setDescription("Remove From Favorite");
+            setText(Messages.getString("TalendPaletteContextMenuProvider.textRemove")); //$NON-NLS-1$
+            setToolTipText(Messages.getString("TalendPaletteContextMenuProvider.tipRemove")); //$NON-NLS-1$
+            setDescription(Messages.getString("TalendPaletteContextMenuProvider.descriptionRemove")); //$NON-NLS-1$
         }
 
         @Override
@@ -192,15 +192,15 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
         public HiddenFloderAction(PaletteViewer paletteViewer) {
             this.paletteViewer = paletteViewer;
             shell = paletteViewer.getControl().getShell();
-            setText("Hidden Floder");
-            setToolTipText("Hidden Floder");
-            setDescription("Hidden Floder");
+            setText(Messages.getString("TalendPaletteContextMenuProvider.textHidden")); //$NON-NLS-1$
+            setToolTipText(Messages.getString("TalendPaletteContextMenuProvider.tipHidden")); //$NON-NLS-1$
+            setDescription(Messages.getString("TalendPaletteContextMenuProvider.descriptionHidden")); //$NON-NLS-1$
         }
 
         @Override
         public void run() {
             ComponentUtilities.histate = 1;
-            DesignerPlugin.getDefault().getPreferenceStore().setValue("HiddenState", 1);
+            DesignerPlugin.getDefault().getPreferenceStore().setValue("HiddenState", 1); //$NON-NLS-1$
             ComponentUtilities.updatePalette(!ShowFavoriteAction.state);
 
         }
@@ -220,15 +220,15 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
         public DisplayFloderAction(PaletteViewer paletteViewer) {
             this.paletteViewer = paletteViewer;
             shell = paletteViewer.getControl().getShell();
-            setText("Display Floder");
-            setToolTipText("Display Floder");
-            setDescription("Display Floder");
+            setText(Messages.getString("TalendPaletteContextMenuProvider.textDisplay")); //$NON-NLS-1$
+            setToolTipText(Messages.getString("TalendPaletteContextMenuProvider.tipDisplay")); //$NON-NLS-1$
+            setDescription(Messages.getString("TalendPaletteContextMenuProvider.descriptionDisplay")); //$NON-NLS-1$
         }
 
         @Override
         public void run() {
             ComponentUtilities.histate = 0;
-            DesignerPlugin.getDefault().getPreferenceStore().setValue("HiddenState", 0);
+            DesignerPlugin.getDefault().getPreferenceStore().setValue("HiddenState", 0); //$NON-NLS-1$
             ComponentUtilities.updatePalette(!ShowFavoriteAction.state);
 
         }
@@ -237,7 +237,7 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
     public void addNotes(PaletteEntry element, Project project) {
         String label = element.getLabel();
 
-        String family = ComponentsFactoryProvider.getPaletteEntryFamily(element.getParent()).replaceFirst("/", "");
+        String family = ComponentsFactoryProvider.getPaletteEntryFamily(element.getParent()).replaceFirst("/", ""); //$NON-NLS-1$ //$NON-NLS-2$
         RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
                 Context.REPOSITORY_CONTEXT_KEY);
         project = repositoryContext.getProject();
@@ -250,7 +250,7 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
                 // componentSetting.setFavoriteFlag(true);
                 // );
                 // family.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX
-                String key = componentSetting.getName() + "#" + family;
+                String key = componentSetting.getName() + "#" + family; //$NON-NLS-1$
                 DesignerPlugin.getDefault().getPreferenceStore().setValue(key, true);
             }
 
@@ -273,7 +273,7 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
     public void removeNotes(PaletteEntry element, Project project) {
         String label = element.getLabel();
 
-        String family = ComponentsFactoryProvider.getPaletteEntryFamily(element.getParent()).replaceFirst("/", "");
+        String family = ComponentsFactoryProvider.getPaletteEntryFamily(element.getParent()).replaceFirst("/", ""); //$NON-NLS-1$ //$NON-NLS-2$
 
         RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
                 Context.REPOSITORY_CONTEXT_KEY);
@@ -283,7 +283,7 @@ public class TalendPaletteContextMenuProvider extends PaletteContextMenuProvider
 
         for (ComponentSetting componentSetting : components) {
             if (componentSetting.getName().equals(label) && componentSetting.getFamily().equals(family)) {
-                String key = componentSetting.getName() + "#" + family;
+                String key = componentSetting.getName() + "#" + family; //$NON-NLS-1$
                 // componentSetting.setFavoriteFlag(false);
                 DesignerPlugin.getDefault().getPreferenceStore().setValue(key, false);
             }

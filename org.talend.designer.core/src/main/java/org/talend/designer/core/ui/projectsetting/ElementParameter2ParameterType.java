@@ -136,7 +136,7 @@ public class ElementParameter2ParameterType {
                     }
                     String value = pType.getValue();
                     if (param.getField().equals(EParameterFieldType.CHECK) || param.getField().equals(EParameterFieldType.RADIO)) {
-                        if ("false".equalsIgnoreCase(value) || "true".equalsIgnoreCase(value) || !pType.isContextMode()) {
+                        if ("false".equalsIgnoreCase(value) || "true".equalsIgnoreCase(value) || !pType.isContextMode()) { //$NON-NLS-1$ //$NON-NLS-2$
                             Boolean boolean1 = new Boolean(value);
                             elemParam.setPropertyValue(pType.getName(), boolean1);
                         } else {
@@ -187,14 +187,14 @@ public class ElementParameter2ParameterType {
                         // fix for bug 2193
                         boolean setToCustom = false;
                         if (EmfComponent.REPOSITORY.equals(elemParam.getPropertyValue(EParameterName.PROPERTY_TYPE.getName()))
-                                && param.getRepositoryValue() != null && param.getRepositoryValue().equals("ENCODING")) {
+                                && param.getRepositoryValue() != null && param.getRepositoryValue().equals("ENCODING")) { //$NON-NLS-1$
                             setToCustom = true;
                         }
                         String tempValue = (String) param.getChildParameters().get(EParameterName.ENCODING_TYPE.getName())
                                 .getValue();
                         if (!tempValue.equals(EmfComponent.ENCODING_TYPE_CUSTOM)) {
-                            tempValue = tempValue.replaceAll("'", "");
-                            tempValue = tempValue.replaceAll("\"", "");
+                            tempValue = tempValue.replaceAll("'", ""); //$NON-NLS-1$ //$NON-NLS-2$
+                            tempValue = tempValue.replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
                             tempValue = TalendTextUtils.addQuotes(tempValue);
                             if (!tempValue.equals(value)) {
                                 setToCustom = true;
@@ -210,10 +210,10 @@ public class ElementParameter2ParameterType {
                     } else if (!param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
                         elemParam.setPropertyValue(pType.getName(), value);
                     }
-                } else if (UpdateTheJobsActionsOnTable.isClear && "CLEAR_TABLE".equals(pType.getName())
-                        && "true".equals(pType.getValue())
-                        && "NONE".equals(elemParam.getElementParameter(Process.TABLE_ACTION).getValue())) {
-                    elemParam.setPropertyValue(Process.TABLE_ACTION, "CLEAR");
+                } else if (UpdateTheJobsActionsOnTable.isClear && "CLEAR_TABLE".equals(pType.getName()) //$NON-NLS-1$
+                        && "true".equals(pType.getValue()) //$NON-NLS-1$
+                        && "NONE".equals(elemParam.getElementParameter(Process.TABLE_ACTION).getValue())) { //$NON-NLS-1$
+                    elemParam.setPropertyValue(Process.TABLE_ACTION, "CLEAR"); //$NON-NLS-1$
                     UpdateTheJobsActionsOnTable.isClear = false;
                 }
             }
@@ -230,7 +230,7 @@ public class ElementParameter2ParameterType {
 
         pType = fileFact.createElementParameterType();
         if (param.getParentParameter() != null) {
-            pType.setName(param.getParentParameter().getName() + ":" + param.getName());
+            pType.setName(param.getParentParameter().getName() + ":" + param.getName()); //$NON-NLS-1$
         } else {
             pType.setName(param.getName());
         }

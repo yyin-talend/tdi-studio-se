@@ -48,7 +48,7 @@ public class StatsAndLogsComposite extends AbstractPreferenceComposite {
      */
     public StatsAndLogsComposite(Composite parentComposite, int styles, EComponentCategory section, Element element) {
         super(parentComposite, styles, section, element, true);
-        setDialogTitle(Messages.getString("StatsAndLogsComposite.StatsLogsSettings"));
+        setDialogTitle(Messages.getString("StatsAndLogsComposite.StatsLogsSettings")); //$NON-NLS-1$
         // achen modify to fix 0005993 change button's text
         isUsingProjectSetting = true;
     }

@@ -19,19 +19,15 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IEditorReference;
-import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.core.utils.DesignerUtilities;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.ItemCacheManager;
-import org.talend.repository.editor.RepositoryEditorInput;
 
 /**
  * bqian A launch delegate for launching local job. <br/>
@@ -67,7 +63,7 @@ public class JobLaunchConfigurationDelegate extends org.eclipse.debug.core.model
         }
 
         if (process == null) {
-            ExceptionHandler.log("Job " + jobName + " can not be found. Maybe it is removed.");
+            ExceptionHandler.log(Messages.getString("JobLaunchConfigurationDelegate.jobNotFound", jobName)); //$NON-NLS-1$
             return;
         }
 

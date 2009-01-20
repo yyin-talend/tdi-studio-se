@@ -165,8 +165,8 @@ public class TalendPerlEditor extends PerlEditor implements ISyntaxCheckableEdit
     }
 
     private void placeCursorToSelection() {
-        String mainPart = "[" + currentSelection + " main ] start";
-        String assignmentPart = "$current_component=\"" + currentSelection + "\";";
+        String mainPart = "[" + currentSelection + " main ] start"; //$NON-NLS-1$ //$NON-NLS-2$
+        String assignmentPart = "$current_component=\"" + currentSelection + "\";"; //$NON-NLS-1$ //$NON-NLS-2$
         IDocument doc = getDocumentProvider().getDocument(getEditorInput());
         FindReplaceDocumentAdapter frda = new FindReplaceDocumentAdapter(doc);
         try {

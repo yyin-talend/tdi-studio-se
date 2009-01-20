@@ -17,6 +17,7 @@ import java.util.List;
 import org.eclipse.gef.commands.Command;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 
@@ -48,12 +49,12 @@ public final class JavaSampleCodeFactory implements ISampleCodeFactory {
         String uniqueName = node.getUniqueName();
 
         // see feature 4131
-        if (uniqueName.startsWith("tJavaRow_")) {
+        if (uniqueName.startsWith("tJavaRow_")) { //$NON-NLS-1$
             // Generate code for tJavaRow component
             String codeString = generateJavaRowCode(node);
 
             if (codeString != null) {
-                return new PropertyChangeCommand(node, "CODE", codeString);
+                return new PropertyChangeCommand(node, "CODE", codeString); //$NON-NLS-1$
             }
         }
 
@@ -88,13 +89,13 @@ public final class JavaSampleCodeFactory implements ISampleCodeFactory {
             return null;
         }
 
-        String javaEnding = ";";
-        String lineSeparator = System.getProperty("line.separator");
+        String javaEnding = ";"; //$NON-NLS-1$
+        String lineSeparator = System.getProperty("line.separator"); //$NON-NLS-1$
 
         StringBuilder builder = new StringBuilder();
 
         // Add simple comment
-        builder.append("//Code generate accord to input schema and output schmea").append(lineSeparator);
+        builder.append(Messages.getString("JavaSampleCodeFactory.schema")).append(lineSeparator); //$NON-NLS-1$
 
         int inputRowsLength = inputColumns.size();
         int ouputRowsLength = outputColumns.size();
@@ -116,7 +117,7 @@ public final class JavaSampleCodeFactory implements ISampleCodeFactory {
                     outputLabel = outputColumns.get(i).getLabel();
                 }
 
-                builder.append("output_row.").append(outputLabel).append(" = ").append("input_row.").append(inputLabel).append(
+                builder.append("output_row.").append(outputLabel).append(" = ").append("input_row.").append(inputLabel).append( //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                         javaEnding);
 
                 builder.append(lineSeparator);
@@ -133,7 +134,7 @@ public final class JavaSampleCodeFactory implements ISampleCodeFactory {
                     inputLabel = inputColumns.get(i).getLabel();
                 }
 
-                builder.append("output_row.").append(outputLabel).append(" = ").append("input_row.").append(inputLabel).append(
+                builder.append("output_row.").append(outputLabel).append(" = ").append("input_row.").append(inputLabel).append( //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                         javaEnding);
                 builder.append(lineSeparator);
             }

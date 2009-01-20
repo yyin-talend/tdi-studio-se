@@ -246,6 +246,6 @@ public class NodeContainer extends Element {
      */
     @Override
     public String toString() {
-        return "NodeContainer{" + node.toString() + "}";
+        return "NodeContainer{" + node.toString() + "}"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 }

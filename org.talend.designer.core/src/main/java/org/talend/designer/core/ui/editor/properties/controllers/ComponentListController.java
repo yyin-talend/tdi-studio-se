@@ -238,14 +238,14 @@ public class ComponentListController extends AbstractElementPropertySectionContr
                 if (uniqueName.equals(currentNode.getUniqueName())) {
                     continue;
                 }
-                String displayName = (String) node.getElementParameter("LABEL").getValue();
-                if (displayName.indexOf("__UNIQUE_NAME__") != -1) {
-                    displayName = displayName.replaceAll("__UNIQUE_NAME__", uniqueName);
+                String displayName = (String) node.getElementParameter("LABEL").getValue(); //$NON-NLS-1$
+                if (displayName.indexOf("__UNIQUE_NAME__") != -1) { //$NON-NLS-1$
+                    displayName = displayName.replaceAll("__UNIQUE_NAME__", uniqueName); //$NON-NLS-1$
                 } else {
-                    displayName = uniqueName + " - " + displayName;
+                    displayName = uniqueName + " - " + displayName; //$NON-NLS-1$
                 }
-                if ("tHashOutput".equals(param.getFilter())) {
-                    IElementParameter clearDataParam = node.getElementParameter("CLEAR_DATA");
+                if ("tHashOutput".equals(param.getFilter())) { //$NON-NLS-1$
+                    IElementParameter clearDataParam = node.getElementParameter("CLEAR_DATA"); //$NON-NLS-1$
                     // Only allow hashOutput "CLEAR_DATA" is enable.
                     if (clearDataParam != null && clearDataParam.getValue() != null
                             && (Boolean) clearDataParam.getValue() == true) {
@@ -266,7 +266,7 @@ public class ComponentListController extends AbstractElementPropertySectionContr
 
             Object value = param.getValue();
             if (!componentUniqueNames.contains(value) && (componentUniqueNames.size() > 0)) {
-                if (value == null || value.equals("")) {
+                if (value == null || value.equals("")) { //$NON-NLS-1$
                     elem.setPropertyValue(param.getName(), componentValueList[0]);
                     if (elem instanceof Node) {
                         ((IProcess2) ((Node) elem).getProcess()).setProcessModified(true);

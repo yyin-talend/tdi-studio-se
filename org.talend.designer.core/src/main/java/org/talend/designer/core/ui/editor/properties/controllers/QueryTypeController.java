@@ -36,6 +36,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.properties.tab.IDynamicProperty;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
@@ -142,7 +143,7 @@ public class QueryTypeController extends AbstractRepositoryController {
                 String id = node.getObject().getProperty().getId();
                 String name = dialog.getResult().getObject().getLabel();
                 String paramName = (String) button.getData(PARAMETER_NAME);
-                String value = id + " - " + name;
+                String value = id + " - " + name; //$NON-NLS-1$
 
                 Query query = MetadataTool.getQueryFromRepository(value);
                 if (query != null) {
@@ -223,7 +224,7 @@ public class QueryTypeController extends AbstractRepositoryController {
             if (repositoryTableMap != null && schemaSelected != null && repositoryTableMap.containsKey(schemaSelected)) {
                 // repositoryMetadata = repositoryTableMap.get(schemaSelected);
             } else if (newRepositoryMetadata == null) {
-                MessageDialog.openWarning(new Shell(), "Alert", "Nothing to guess.");
+                MessageDialog.openWarning(new Shell(), Messages.getString("QueryTypeController.alert"), Messages.getString("QueryTypeController.nothingToGuess")); //$NON-NLS-1$ //$NON-NLS-2$
                 return cmd;
             }
         }

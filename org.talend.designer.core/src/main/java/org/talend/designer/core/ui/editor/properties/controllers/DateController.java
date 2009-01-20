@@ -125,7 +125,7 @@ public class DateController extends AbstractElementPropertySectionController {
         Point labelSize = gc.stringExtent(param.getDisplayName());
         gc.dispose();
         gc = new GC(dateText);
-        Point defaultDateDateSize = gc.stringExtent("\"2007-06-22 00:00:00\""); // just an example of date
+        Point defaultDateDateSize = gc.stringExtent("\"2007-06-22 00:00:00\""); // just an example of date //$NON-NLS-1$
         Point currentDateSize = gc.stringExtent((String) param.getValue()); // current value
         gc.dispose();
         int currentDateWidth = defaultDateDateSize.x + ITabbedPropertyConstants.HSPACE + STANDARD_TEXT_WIDTH_ADDITION;

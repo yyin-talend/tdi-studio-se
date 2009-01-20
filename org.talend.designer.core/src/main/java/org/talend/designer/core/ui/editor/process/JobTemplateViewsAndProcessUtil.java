@@ -21,6 +21,7 @@ import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
 
 /**
@@ -30,7 +31,7 @@ public class JobTemplateViewsAndProcessUtil {
 
     private static JobTemplateViewsAndProcessUtil instance = null;
 
-    private static final String DEFAULT_JOB_NAME = "Mock job for job template wizard";
+    private static final String DEFAULT_JOB_NAME = Messages.getString("JobTemplateViewsAndProcessUtil.jobName"); //$NON-NLS-1$
 
     private JobTemplateViewsAndProcessUtil() {
         processInstance = new org.talend.designer.core.ui.editor.process.Process(getNewMockProperty());
@@ -87,7 +88,7 @@ public class JobTemplateViewsAndProcessUtil {
         property.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getUser());
         property.setVersion(VersionUtils.DEFAULT_VERSION);
         property.setStatusCode(""); //$NON-NLS-1$
-        property.setId("ID");
+        property.setId("ID"); //$NON-NLS-1$
         property.setLabel(DEFAULT_JOB_NAME);
 
         return property;

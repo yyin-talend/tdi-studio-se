@@ -57,7 +57,7 @@ import org.talend.repository.ui.views.RepositoryView;
  */
 public class ProjectSettingManager extends Utils {
 
-    private static final String IMPLICIT_GROUP = "IMPLICIT_GROUP";
+    private static final String IMPLICIT_GROUP = "IMPLICIT_GROUP"; //$NON-NLS-1$
 
     // public static final String CONNECTION_ITEM_LABEL = "_CONNECTION_ITEM_LABEL";
 
@@ -65,7 +65,7 @@ public class ProjectSettingManager extends Utils {
 
     private static IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
 
-    private static String languagePrefix = LanguageManager.getCurrentLanguage().toString() + "_";
+    private static String languagePrefix = LanguageManager.getCurrentLanguage().toString() + "_"; //$NON-NLS-1$
 
     public static void saveProject() {
         RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
@@ -214,11 +214,11 @@ public class ProjectSettingManager extends Utils {
         }
         ChangeValuesFromRepository cmd1 = new ChangeValuesFromRepository(process, repositoryConnection, ImplicitContextLoadHelper
                 .getExtraParameterName(EParameterName.PROPERTY_TYPE)
-                + ":" + EParameterName.PROPERTY_TYPE.getName(), propertyType);
+                + ":" + EParameterName.PROPERTY_TYPE.getName(), propertyType); //$NON-NLS-1$
 
         ChangeValuesFromRepository cmd2 = new ChangeValuesFromRepository(process, repositoryConnection, ImplicitContextLoadHelper
                 .getExtraParameterName(EParameterName.PROPERTY_TYPE)
-                + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), id);
+                + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), id); //$NON-NLS-1$
         cmd2.setMaps(extraComposite.getRepositoryTableMap());
 
         AbstractMultiPageTalendEditor part = ((org.talend.designer.core.ui.editor.process.Process) process).getEditor();
@@ -430,7 +430,7 @@ public class ProjectSettingManager extends Utils {
         param.setNumRow(42);
         param.setRepositoryValue("DB_VERSION"); //$NON-NLS-1$
         param.setRequired(true);
-        param.setShowIf(dbCondition + " and (" + dbTypeName + " == 'OCLE')");
+        param.setShowIf(dbCondition + " and (" + dbTypeName + " == 'OCLE')"); //$NON-NLS-1$ //$NON-NLS-2$
         param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);
 
@@ -443,8 +443,8 @@ public class ProjectSettingManager extends Utils {
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(43);
         param.setRepositoryValue("SERVER_NAME"); //$NON-NLS-1$
-        String dbCon = dbTypeName + " != 'SQLITE'" + " and " + dbTypeName + " != 'ACCESS'";
-        param.setShowIf(JobSettingsConstants.addBrackets(dbCon) + " and " + dbCondition);
+        String dbCon = dbTypeName + " != 'SQLITE'" + " and " + dbTypeName + " != 'ACCESS'"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        param.setShowIf(JobSettingsConstants.addBrackets(dbCon) + " and " + dbCondition); //$NON-NLS-1$
         param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);
 
@@ -457,8 +457,8 @@ public class ProjectSettingManager extends Utils {
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(43);
         param.setRepositoryValue("PORT"); //$NON-NLS-1$
-        dbCon = dbTypeName + " != 'SQLITE'" + " and " + dbTypeName + " != 'ACCESS'" + " and " + dbTypeName + " != 'FIREBIRD'";
-        param.setShowIf(JobSettingsConstants.addBrackets(dbCon) + " and " + dbCondition);
+        dbCon = dbTypeName + " != 'SQLITE'" + " and " + dbTypeName + " != 'ACCESS'" + " and " + dbTypeName + " != 'FIREBIRD'"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+        param.setShowIf(JobSettingsConstants.addBrackets(dbCon) + " and " + dbCondition); //$NON-NLS-1$
         param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);
 
@@ -471,8 +471,8 @@ public class ProjectSettingManager extends Utils {
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(44);
         param.setRepositoryValue("SID"); //$NON-NLS-1$
-        dbCon = dbTypeName + " != 'SQLITE'" + " and " + dbTypeName + " != 'ACCESS'" + " and " + dbTypeName + " != 'FIREBIRD'";
-        param.setShowIf(JobSettingsConstants.addBrackets(dbCon) + " and " + dbCondition);
+        dbCon = dbTypeName + " != 'SQLITE'" + " and " + dbTypeName + " != 'ACCESS'" + " and " + dbTypeName + " != 'FIREBIRD'"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+        param.setShowIf(JobSettingsConstants.addBrackets(dbCon) + " and " + dbCondition); //$NON-NLS-1$
         param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);
 
@@ -487,8 +487,8 @@ public class ProjectSettingManager extends Utils {
             param.setCategory(EComponentCategory.EXTRA);
             param.setNumRow(44);
             param.setRepositoryValue("PROPERTIES_STRING"); //$NON-NLS-1$
-            dbCon = dbTypeName + " == 'SQL_SERVER'" + " or " + dbTypeName + " == 'MYSQL'" + " or " + dbTypeName
-                    + " == 'INFORMIX'";
+            dbCon = dbTypeName + " == 'SQL_SERVER'" + " or " + dbTypeName + " == 'MYSQL'" + " or " + dbTypeName //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                    + " == 'INFORMIX'"; //$NON-NLS-1$
 
             param.setShowIf(JobSettingsConstants.addBrackets(dbCon) + " and " + dbCondition); //$NON-NLS-1$ 
             param.setGroup(IMPLICIT_GROUP);
@@ -503,9 +503,9 @@ public class ProjectSettingManager extends Utils {
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(44);
         param.setRepositoryValue("SCHEMA"); //$NON-NLS-1$
-        final String schemaCondition = JobSettingsConstants.addBrackets(dbTypeName + " =='OCLE' or " + dbTypeName
-                + " =='POSTGRESQL'");
-        param.setShowIf(schemaCondition + " and " + dbCondition);
+        final String schemaCondition = JobSettingsConstants.addBrackets(dbTypeName + " =='OCLE' or " + dbTypeName //$NON-NLS-1$
+                + " =='POSTGRESQL'"); //$NON-NLS-1$
+        param.setShowIf(schemaCondition + " and " + dbCondition); //$NON-NLS-1$
         param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);
 
@@ -519,8 +519,8 @@ public class ProjectSettingManager extends Utils {
         param.setNumRow(45);
         param.setRequired(true);
         param.setRepositoryValue("USERNAME"); //$NON-NLS-1$
-        dbCon = dbTypeName + " != 'SQLITE'";
-        param.setShowIf(JobSettingsConstants.addBrackets(dbCon) + " and " + dbCondition);
+        dbCon = dbTypeName + " != 'SQLITE'"; //$NON-NLS-1$
+        param.setShowIf(JobSettingsConstants.addBrackets(dbCon) + " and " + dbCondition); //$NON-NLS-1$
         param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);
 
@@ -534,8 +534,8 @@ public class ProjectSettingManager extends Utils {
         param.setNumRow(45);
         param.setRequired(true);
         param.setRepositoryValue("PASSWORD"); //$NON-NLS-1$
-        dbCon = dbTypeName + " != 'SQLITE'";
-        param.setShowIf(JobSettingsConstants.addBrackets(dbCon) + " and " + dbCondition);
+        dbCon = dbTypeName + " != 'SQLITE'"; //$NON-NLS-1$
+        param.setShowIf(JobSettingsConstants.addBrackets(dbCon) + " and " + dbCondition); //$NON-NLS-1$
         param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);
         // databse file path
@@ -547,7 +547,7 @@ public class ProjectSettingManager extends Utils {
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(46);
         param.setRepositoryValue("FILE"); //$NON-NLS-1$
-        dbCon = dbTypeName + " == 'SQLITE'" + " or " + dbTypeName + " == 'ACCESS'" + " or " + dbTypeName + " == 'FIREBIRD'";
+        dbCon = dbTypeName + " == 'SQLITE'" + " or " + dbTypeName + " == 'ACCESS'" + " or " + dbTypeName + " == 'FIREBIRD'"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
         param.setShowIf(JobSettingsConstants.addBrackets(dbCon) + " and " + dbCondition); //$NON-NLS-1$ 
         param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);

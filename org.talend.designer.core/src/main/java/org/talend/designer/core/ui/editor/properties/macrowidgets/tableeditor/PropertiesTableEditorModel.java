@@ -27,6 +27,7 @@ import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.designer.core.IDesignerCoreService;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.controllers.TableController;
@@ -179,8 +180,8 @@ public class PropertiesTableEditorModel<B> extends ExtendedTableModel<B> {
                 ElementParameter param = (ElementParameter) object;
                 if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
                     schemaType = param.getName();
-                    cancel = !MessageDialog.openQuestion(this.getTableViewer().getTable().getShell(), "Remove Schema",
-                            "The schema(s) on the selected line(s) will be deleted, are you sure?");
+                    cancel = !MessageDialog.openQuestion(this.getTableViewer().getTable().getShell(), Messages.getString("PropertiesTableEditorModel.removeSchema"), //$NON-NLS-1$
+                            Messages.getString("PropertiesTableEditorModel.popWindow")); //$NON-NLS-1$
                 }
             }
         }

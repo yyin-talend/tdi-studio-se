@@ -33,6 +33,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -50,7 +51,7 @@ import org.talend.repository.model.ComponentsFactoryProvider;
  */
 public class JobSettingsManager {
 
-    private static final String IMPLICIT_GROUP = "IMPLICIT_GROUP";
+    private static final String IMPLICIT_GROUP = "IMPLICIT_GROUP"; //$NON-NLS-1$
 
     public static void createJobSettingsParemeters(IProcess process) {
         // not used, only for hiding the table sql-builder button.
@@ -78,9 +79,9 @@ public class JobSettingsManager {
 
     private static final String CONTEXTLOAD_CONDITION = EParameterName.IMPLICIT_TCONTEXTLOAD.getName() + " == 'true'"; //$NON-NLS-1$
 
-    private static final String QUOTE = LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA ? "\"" : "'";
+    private static final String QUOTE = LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA ? "\"" : "'"; //$NON-NLS-1$ //$NON-NLS-2$
 
-    private static final String CONNECTOR = LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA ? "+" : ".";
+    private static final String CONNECTOR = LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA ? "+" : "."; //$NON-NLS-1$ //$NON-NLS-2$
 
     /**
      * 
@@ -140,7 +141,7 @@ public class JobSettingsManager {
         if (PluginChecker.isTIS()) {
             param = new ElementParameter(process);
             param.setName(EParameterName.PARALLELIZE_UNIT_SIZE.getName());
-            param.setValue("25000");
+            param.setValue("25000"); //$NON-NLS-1$
             param.setDisplayName(EParameterName.PARALLELIZE_UNIT_SIZE.getDisplayName());
             param.setField(EParameterFieldType.TEXT);
             param.setCategory(EComponentCategory.EXTRA);
@@ -163,7 +164,7 @@ public class JobSettingsManager {
         param = new ElementParameter(process);
         param.setName(EParameterName.IMPLICIT_TCONTEXTLOAD.getName());
         param.setValue(false);
-        param.setGroupDisplayName("Implicit Context load");
+        param.setGroupDisplayName(Messages.getString("JobSettingsManager.groupName")); //$NON-NLS-1$
         param.setDisplayName(EParameterName.IMPLICIT_TCONTEXTLOAD.getDisplayName());
         param.setField(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.EXTRA);
@@ -233,7 +234,7 @@ public class JobSettingsManager {
         param = new ElementParameter(process);
         param.setName(EParameterName.FIELDSEPARATOR.getName());
 
-        String value = ";";
+        String value = ";"; //$NON-NLS-1$
         value = TalendTextUtils.addQuotes(value);
 
         param.setValue(value);
@@ -271,7 +272,7 @@ public class JobSettingsManager {
         ElementParameter parentPropertyType = new ElementParameter(process);
         parentPropertyType.setName(JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTY_TYPE.getName()));
         parentPropertyType.setDisplayName(EParameterName.PROPERTY_TYPE.getDisplayName());
-        parentPropertyType.setValue("");
+        parentPropertyType.setValue(""); //$NON-NLS-1$
         parentPropertyType.setCategory(EComponentCategory.EXTRA);
         parentPropertyType.setField(EParameterFieldType.PROPERTY_TYPE);
         parentPropertyType.setRepositoryValue("DATABASE"); //$NON-NLS-1$
@@ -346,7 +347,7 @@ public class JobSettingsManager {
         param.setNumRow(42);
         param.setRepositoryValue("DB_VERSION"); //$NON-NLS-1$
         param.setRequired(true);
-        param.setShowIf(dbCondition + " and (" + dbTypeName + " == 'OCLE')");
+        param.setShowIf(dbCondition + " and (" + dbTypeName + " == 'OCLE')"); //$NON-NLS-1$ //$NON-NLS-2$
         param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);
 
@@ -359,8 +360,8 @@ public class JobSettingsManager {
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(43);
         param.setRepositoryValue("SERVER_NAME"); //$NON-NLS-1$
-        String dbCon = dbTypeName + " != 'SQLITE'" + " and " + dbTypeName + " != 'ACCESS'";
-        param.setShowIf(JobSettingsConstants.addBrackets(dbCon) + " and " + dbCondition);
+        String dbCon = dbTypeName + " != 'SQLITE'" + " and " + dbTypeName + " != 'ACCESS'";  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+        param.setShowIf(JobSettingsConstants.addBrackets(dbCon) + " and " + dbCondition); //$NON-NLS-1$
         param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);
 
@@ -373,8 +374,8 @@ public class JobSettingsManager {
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(43);
         param.setRepositoryValue("PORT"); //$NON-NLS-1$
-        dbCon = dbTypeName + " != 'SQLITE'" + " and " + dbTypeName + " != 'ACCESS'" + " and " + dbTypeName + " != 'FIREBIRD'";
-        param.setShowIf(JobSettingsConstants.addBrackets(dbCon) + " and " + dbCondition);
+        dbCon = dbTypeName + " != 'SQLITE'" + " and " + dbTypeName + " != 'ACCESS'" + " and " + dbTypeName + " != 'FIREBIRD'"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+        param.setShowIf(JobSettingsConstants.addBrackets(dbCon) + " and " + dbCondition); //$NON-NLS-1$
         param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);
 
@@ -387,8 +388,8 @@ public class JobSettingsManager {
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(44);
         param.setRepositoryValue("SID"); //$NON-NLS-1$
-        dbCon = dbTypeName + " != 'SQLITE'" + " and " + dbTypeName + " != 'ACCESS'" + " and " + dbTypeName + " != 'FIREBIRD'";
-        param.setShowIf(JobSettingsConstants.addBrackets(dbCon) + " and " + dbCondition);
+        dbCon = dbTypeName + " != 'SQLITE'" + " and " + dbTypeName + " != 'ACCESS'" + " and " + dbTypeName + " != 'FIREBIRD'"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+        param.setShowIf(JobSettingsConstants.addBrackets(dbCon) + " and " + dbCondition); //$NON-NLS-1$
         param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);
 
@@ -403,8 +404,8 @@ public class JobSettingsManager {
             param.setCategory(EComponentCategory.EXTRA);
             param.setNumRow(44);
             param.setRepositoryValue("PROPERTIES_STRING"); //$NON-NLS-1$
-            dbCon = dbTypeName + " == 'SQL_SERVER'" + " or " + dbTypeName + " == 'MYSQL'" + " or " + dbTypeName
-                    + " == 'INFORMIX'";
+            dbCon = dbTypeName + " == 'SQL_SERVER'" + " or " + dbTypeName + " == 'MYSQL'" + " or " + dbTypeName //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                    + " == 'INFORMIX'"; //$NON-NLS-1$
 
             param.setShowIf(JobSettingsConstants.addBrackets(dbCon) + " and " + dbCondition); //$NON-NLS-1$ 
             param.setGroup(IMPLICIT_GROUP);
@@ -419,9 +420,9 @@ public class JobSettingsManager {
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(44);
         param.setRepositoryValue("SCHEMA"); //$NON-NLS-1$
-        final String schemaCondition = JobSettingsConstants.addBrackets(dbTypeName + " =='OCLE' or " + dbTypeName
-                + " =='POSTGRESQL'");
-        param.setShowIf(schemaCondition + " and " + dbCondition);
+        final String schemaCondition = JobSettingsConstants.addBrackets(dbTypeName + " =='OCLE' or " + dbTypeName //$NON-NLS-1$
+                + " =='POSTGRESQL'"); //$NON-NLS-1$
+        param.setShowIf(schemaCondition + " and " + dbCondition); //$NON-NLS-1$
         param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);
 
@@ -435,8 +436,8 @@ public class JobSettingsManager {
         param.setNumRow(45);
         param.setRequired(true);
         param.setRepositoryValue("USERNAME"); //$NON-NLS-1$
-        dbCon = dbTypeName + " != 'SQLITE'";
-        param.setShowIf(JobSettingsConstants.addBrackets(dbCon) + " and " + dbCondition);
+        dbCon = dbTypeName + " != 'SQLITE'"; //$NON-NLS-1$
+        param.setShowIf(JobSettingsConstants.addBrackets(dbCon) + " and " + dbCondition); //$NON-NLS-1$
         param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);
 
@@ -450,20 +451,20 @@ public class JobSettingsManager {
         param.setNumRow(45);
         param.setRequired(true);
         param.setRepositoryValue("PASSWORD"); //$NON-NLS-1$
-        dbCon = dbTypeName + " != 'SQLITE'";
-        param.setShowIf(JobSettingsConstants.addBrackets(dbCon) + " and " + dbCondition);
+        dbCon = dbTypeName + " != 'SQLITE'"; //$NON-NLS-1$
+        param.setShowIf(JobSettingsConstants.addBrackets(dbCon) + " and " + dbCondition); //$NON-NLS-1$
         param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);
         // databse file path
         param = new ElementParameter(process);
         param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.DBFILE.getName()));
-        param.setValue(StatsAndLogsManager.addQuotes(""));
+        param.setValue(StatsAndLogsManager.addQuotes("")); //$NON-NLS-1$
         param.setDisplayName(EParameterName.DBFILE.getDisplayName());
         param.setField(EParameterFieldType.FILE);
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(46);
         param.setRepositoryValue("FILE"); //$NON-NLS-1$
-        dbCon = dbTypeName + " == 'SQLITE'" + " or " + dbTypeName + " == 'ACCESS'" + " or " + dbTypeName + " == 'FIREBIRD'";
+        dbCon = dbTypeName + " == 'SQLITE'" + " or " + dbTypeName + " == 'ACCESS'" + " or " + dbTypeName + " == 'FIREBIRD'"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
         param.setShowIf(JobSettingsConstants.addBrackets(dbCon) + " and " + dbCondition); //$NON-NLS-1$ 
         param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);
@@ -639,7 +640,7 @@ public class JobSettingsManager {
         } else {
             dbInput = (String) process.getElementParameter(
                     JobSettingsConstants.getExtraParameterName(EParameterName.DB_TYPE.getName())).getValue();
-            if (dbInput == null || dbInput.equals("")) {
+            if (dbInput == null || dbInput.equals("")) { //$NON-NLS-1$
                 dbInput = null;
                 dbFlag = false;
             }
@@ -681,7 +682,7 @@ public class JobSettingsManager {
             dbInput = (String) process.getElementParameter(
                     JobSettingsConstants.getExtraParameterName(EParameterName.DB_TYPE.getName())).getValue();
             dbInput = OracleComponentHelper.filterOracleComponentName(dbInput);
-            if (dbInput == null || dbInput.equals("")) {
+            if (dbInput == null || dbInput.equals("")) { //$NON-NLS-1$
                 dbInput = null;
                 dbFlag = false;
             }
@@ -772,8 +773,8 @@ public class JobSettingsManager {
                         .generateNewQuery(null, table, dbType, schema, realTableName));
                 paramName = JobSettingsConstants.getExtraParameterName(EParameterName.QUERY_CONDITION.getName());
                 String conditionStatement = (String) process.getElementParameter(paramName).getValue();
-                if (!("\"\"".equals(conditionStatement) || "".equals(conditionStatement) || "''".equals(conditionStatement))) {
-                    query = query + CONNECTOR + QUOTE + " WHERE " + QUOTE + CONNECTOR + conditionStatement;
+                if (!("\"\"".equals(conditionStatement) || "".equals(conditionStatement) || "''".equals(conditionStatement))) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    query = query + CONNECTOR + QUOTE + " WHERE " + QUOTE + CONNECTOR + conditionStatement; //$NON-NLS-1$
                 }
                 tContextLoadNode.getElementParameter(JobSettingsConstants.QUERY).setValue(query);
             }

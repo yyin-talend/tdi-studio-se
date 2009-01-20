@@ -47,6 +47,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.update.UpdateResult;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
@@ -126,7 +127,7 @@ public class DesignerCoreService implements IDesignerCoreService {
             return getProcessFromProcessItem((ProcessItem) item);
         } else if (item instanceof JobletProcessItem) {
             AbstractProcessProvider processProvider = AbstractProcessProvider
-                    .findProcessProviderFromPID("org.talend.designer.joblet");
+                    .findProcessProviderFromPID("org.talend.designer.joblet"); //$NON-NLS-1$
             if (processProvider != null) {
                 return processProvider.buildNewGraphicProcess(item);
             }
@@ -461,10 +462,10 @@ public class DesignerCoreService implements IDesignerCoreService {
 
         for (EParameterName param : EParameterName.values()) {
             String keyName = name;
-            String suffix = "";
-            if (name.endsWith("_IMPLICIT_CONTEXT")) {
-                keyName = name.substring(0, name.indexOf("_IMPLICIT_CONTEXT"));
-                suffix = " (implict context)";
+            String suffix = ""; //$NON-NLS-1$
+            if (name.endsWith("_IMPLICIT_CONTEXT")) { //$NON-NLS-1$
+                keyName = name.substring(0, name.indexOf("_IMPLICIT_CONTEXT")); //$NON-NLS-1$
+                suffix = " (implict context)"; //$NON-NLS-1$
             }
             if (param.name().equals(keyName)) {
                 return param.getDisplayName() + suffix;
@@ -472,13 +473,13 @@ public class DesignerCoreService implements IDesignerCoreService {
         }
 
         if (name.equals(IJobSettingConstants.PROPERTY_TYPE_IMPLICIT_CONTEXT_PROPERTY_TYPE)) {
-            return "Property";
+            return Messages.getString("DesignerCoreService.property"); //$NON-NLS-1$
         } else if (name.equals(IJobSettingConstants.PROPERTY_TYPE_IMPLICIT_CONTEXT_REPOSITORY_PROPERTY_TYPE)) {
-            return "Property:source";
+            return Messages.getString("DesignerCoreService.propertySource"); //$NON-NLS-1$
         } else if (name.equals(IJobSettingConstants.PROPERTY_TYPE_PROPERTY_TYPE)) {
-            return "Property";
+            return Messages.getString("DesignerCoreService.property"); //$NON-NLS-1$
         } else if (name.equals(IJobSettingConstants.PROPERTY_TYPE_REPOSITORY_PROPERTY_TYPE)) {
-            return "Property:source";
+            return Messages.getString("DesignerCoreService.propertySource"); //$NON-NLS-1$
         }
 
         return name;
@@ -527,7 +528,7 @@ public class DesignerCoreService implements IDesignerCoreService {
                 if (value.equals(EmfComponent.REPOSITORY)) {
                     IElementParameter schema = param.getChildParameters().get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
                     if (schema != null && schema.getValue() != null) {
-                        String[] names = ((String) schema.getValue()).split(" - ");
+                        String[] names = ((String) schema.getValue()).split(" - "); //$NON-NLS-1$
                         if (names.length > 0) {
                             if (names[0].equals(item.getProperty().getId())) {
                                 repositoryParam.add(schema);

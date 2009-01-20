@@ -70,7 +70,7 @@ import org.talend.repository.ui.views.IRepositoryView;
  */
 public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements IUIRefresher {
 
-    public static final String ID = "org.talend.designer.core.ui.editor.StandAloneTalendJavaEditor";
+    public static final String ID = "org.talend.designer.core.ui.editor.StandAloneTalendJavaEditor"; //$NON-NLS-1$
 
     private RepositoryEditorInput rEditorInput;
 
@@ -355,13 +355,13 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
             PlatformUI.getWorkbench().getProgressService().run(true, true, r);
             RefactoringStatus conditionStatus = operation.getConditionStatus();
             if (conditionStatus.hasError()) {
-                String errorMessage = "Rename " + unit.getElementName() + " to " + newName + " has errors!";
+                String errorMessage = "Rename " + unit.getElementName() + " to " + newName + " has errors!"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 RefactoringStatusEntry[] entries = conditionStatus.getEntries();
                 for (int i = 0; i < entries.length; i++) {
                     RefactoringStatusEntry entry = entries[i];
-                    errorMessage += "\n>>>" + entry.getMessage();
+                    errorMessage += "\n>>>" + entry.getMessage(); //$NON-NLS-1$
                 }
-                MessageDialog.openError(this.getSite().getShell(), "Warning", errorMessage);
+                MessageDialog.openError(this.getSite().getShell(), "Warning", errorMessage); //$NON-NLS-1$
             } else {
                 doSave(null);
             }

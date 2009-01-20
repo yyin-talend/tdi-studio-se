@@ -235,7 +235,7 @@ public final class DowngradeParameterHelper {
         }
         if (hasParent(repositoryParam.getName(), parentName)) {
             String id = repositoryParam.getValue();
-            if (id != null && !id.equals("")) {
+            if (id != null && !id.equals("")) { //$NON-NLS-1$
                 String label = getOldLabelFromId(id, type);
                 if (label != null) {
                     repositoryParam.setValue(label);

@@ -42,11 +42,11 @@ public class Note extends Element {
 
     private List elementParameter;
 
-    private String noteColor = "255;255;203";
+    private String noteColor = "255;255;203"; //$NON-NLS-1$
 
-    private String textColor = "0;0;0";
+    private String textColor = "0;0;0"; //$NON-NLS-1$
 
-    private String noteLineColor = "237;201;122";
+    private String noteLineColor = "237;201;122"; //$NON-NLS-1$
 
     private IProcess2 process;
 
@@ -128,7 +128,7 @@ public class Note extends Element {
         addElementParameter(param);
         param = new ElementParameter(this);
         param.setName(EParameterName.NOTE_FONT.getName());
-        param.setValue("Time New Roman");
+        param.setValue("Time New Roman"); //$NON-NLS-1$
         param.setDisplayName(EParameterName.NOTE_FONT.getDisplayName());
         param.setField(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.BASIC);
@@ -137,7 +137,7 @@ public class Note extends Element {
 
         param = new ElementParameter(this);
         param.setName(EParameterName.FONT_SIZE.getName());
-        param.setValue("10");
+        param.setValue("10"); //$NON-NLS-1$
         param.setDisplayName(EParameterName.FONT_SIZE.getDisplayName());
         param.setField(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.BASIC);
@@ -268,7 +268,7 @@ public class Note extends Element {
     // return this.process;
     // }
     public void refresh() {
-        firePropertyChange("", null, "");
+        firePropertyChange("", null, ""); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     public IProcess2 getProcess() {

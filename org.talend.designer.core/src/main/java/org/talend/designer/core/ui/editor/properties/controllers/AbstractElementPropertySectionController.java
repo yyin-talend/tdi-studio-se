@@ -162,16 +162,16 @@ public abstract class AbstractElementPropertySectionController implements Proper
     public static Map<String, String> connKeyMap = new HashMap<String, String>(10);
 
     static {
-        connKeyMap.put("SERVER_NAME", "HOST");
-        connKeyMap.put("PORT", "PORT");
-        connKeyMap.put("SID", "DBNAME");
-        connKeyMap.put("SCHEMA", "SCHEMA_DB");
-        connKeyMap.put("USERNAME", "USER");
-        connKeyMap.put("PASSWORD", "PASS");
-        connKeyMap.put("PROPERTIES_STRING", "PROPERTIES");
-        connKeyMap.put("DIRECTORY", "DIRECTORY");
-        connKeyMap.put("FILE", "FILE");
-        connKeyMap.put("DATASOURCE", "DATASOURCE");
+        connKeyMap.put("SERVER_NAME", "HOST"); //$NON-NLS-1$ //$NON-NLS-2$
+        connKeyMap.put("PORT", "PORT"); //$NON-NLS-1$ //$NON-NLS-2$
+        connKeyMap.put("SID", "DBNAME"); //$NON-NLS-1$ //$NON-NLS-2$
+        connKeyMap.put("SCHEMA", "SCHEMA_DB"); //$NON-NLS-1$ //$NON-NLS-2$
+        connKeyMap.put("USERNAME", "USER"); //$NON-NLS-1$ //$NON-NLS-2$
+        connKeyMap.put("PASSWORD", "PASS"); //$NON-NLS-1$ //$NON-NLS-2$
+        connKeyMap.put("PROPERTIES_STRING", "PROPERTIES"); //$NON-NLS-1$ //$NON-NLS-2$
+        connKeyMap.put("DIRECTORY", "DIRECTORY"); //$NON-NLS-1$ //$NON-NLS-2$
+        connKeyMap.put("FILE", "FILE"); //$NON-NLS-1$ //$NON-NLS-2$
+        connKeyMap.put("DATASOURCE", "DATASOURCE"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
@@ -243,7 +243,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 return originalList[i];
             }
         }
-        return "";
+        return ""; //$NON-NLS-1$
     }
 
     protected String getValueFromRepositoryName(String repositoryName) {
@@ -257,7 +257,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 }
             }
         }
-        return "";
+        return ""; //$NON-NLS-1$
     }
 
     protected String getValueFromRepositoryName(Element elem2, String repositoryName) {
@@ -276,7 +276,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 }
             }
         }
-        return "";
+        return ""; //$NON-NLS-1$
     }
 
     protected String getParaNameFromRepositoryName(String repositoryName) {
@@ -1020,7 +1020,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
         connParameters.setDriverJar(TalendTextUtils.removeQuotesIfExist(getParameterValueWithContext(element,
                 EConnectionParameterName.DRIVER_JAR.getName(), context)));
 
-        if (!(EDatabaseTypeName.ACCESS.getDisplayName().equals(connParameters.getDbType()) && ""
+        if (!(EDatabaseTypeName.ACCESS.getDisplayName().equals(connParameters.getDbType()) && "" //$NON-NLS-1$
                 .equals(getParameterValueWithContext(element, EConnectionParameterName.FILE.getName(), context)))) {
             connParameters.setFilename(getParameterValueWithContext(element, EConnectionParameterName.FILE.getName(), context));
         }
@@ -1033,7 +1033,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
     private String getParameterValueWithContext(IElement elem, String key, IContext context) {
         if (elem == null || key == null)
-            return "";
+            return ""; //$NON-NLS-1$
 
         String actualKey = this.getParaNameFromRepositoryName(key); // connKeyMap.get(key);
         if (actualKey != null) {
@@ -1058,9 +1058,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
             if (value != null)
                 return ContextParameterUtils.parseScriptContextCode(value, context);
             else
-                return "";
+                return ""; //$NON-NLS-1$
         } else {
-            return "";
+            return ""; //$NON-NLS-1$
         }
     }
 
@@ -1084,7 +1084,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 .getName())));
         connParameters.setFromDBNode(true);
 
-        connParameters.setQuery("");
+        connParameters.setQuery(""); //$NON-NLS-1$
 
         List<? extends IElementParameter> list = elem.getElementParameters();
         boolean end = false;
@@ -1097,12 +1097,12 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
         }
 
-        Object value = elem.getPropertyValue("USE_EXISTING_CONNECTION");
+        Object value = elem.getPropertyValue("USE_EXISTING_CONNECTION"); //$NON-NLS-1$
         IElementParameter compList = elem.getElementParameterFromField(EParameterFieldType.COMPONENT_LIST);
         if (value != null && (value instanceof Boolean) && ((Boolean) value) && compList != null) {
             Object compValue = compList.getValue();
             Node connectionNode = null;
-            if (compValue != null && !compValue.equals("")) {
+            if (compValue != null && !compValue.equals("")) { //$NON-NLS-1$
                 List<? extends INode> nodes = part.getProcess().getGraphicalNodes();
                 for (INode node : nodes) {
                     if (node.getUniqueName().equals(compValue) && (node instanceof Node)) {
@@ -1231,7 +1231,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
                     connParameters.setRepositoryId(repositoryId);
                 }
                 Shell parentShell = new Shell(composite.getShell().getDisplay());
-                TextUtil.setDialogTitle(((Node) elem).getProcess().getName(), (String) ((Node) elem).getElementParameter("LABEL")
+                TextUtil.setDialogTitle(((Node) elem).getProcess().getName(), (String) ((Node) elem).getElementParameter("LABEL") //$NON-NLS-1$
                         .getValue(), elem.getElementName());
 
                 SQLBuilderDialog sqlBuilder = new SQLBuilderDialog(parentShell);
@@ -1301,7 +1301,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
     };
 
     private Command changeToBuildInCommand(Control control) {
-        final String typeName = ":" + EParameterName.PROPERTY_TYPE.getName();
+        final String typeName = ":" + EParameterName.PROPERTY_TYPE.getName(); //$NON-NLS-1$
 
         if (curParameter != null) {
             String parentName = null;

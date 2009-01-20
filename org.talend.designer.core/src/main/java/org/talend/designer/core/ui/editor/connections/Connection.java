@@ -30,6 +30,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IPerformance;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -49,11 +50,11 @@ public class Connection extends Element implements IConnection, IPerformance {
 
     public static final String LINESTYLE_PROP = "LineStyle"; //$NON-NLS-1$
 
-    public static final String MONITOR_CONNECTION = "MONITOR_CONNECTION";
+    public static final String MONITOR_CONNECTION = "MONITOR_CONNECTION"; //$NON-NLS-1$
 
-    public static final String ENABLE_PARALLEL = "ENABLE_PARALLEL";
+    public static final String ENABLE_PARALLEL = "ENABLE_PARALLEL"; //$NON-NLS-1$
 
-    public static final String NUMBER_PARALLEL = "NUMBER_PARALLEL";
+    public static final String NUMBER_PARALLEL = "NUMBER_PARALLEL"; //$NON-NLS-1$
 
     private EConnectionType lineStyle = EConnectionType.FLOW_MAIN;
 
@@ -202,7 +203,7 @@ public class Connection extends Element implements IConnection, IPerformance {
             param.setCategory(EComponentCategory.BASIC);
             param.setValue(Boolean.FALSE);
             param.setName(ENABLE_PARALLEL);
-            param.setDisplayName("Enable parallel execution");
+            param.setDisplayName(Messages.getString("Connection.enableParallel")); //$NON-NLS-1$
             param.setShow(true);
             param.setNumRow(1);
             addElementParameter(param);
@@ -215,9 +216,9 @@ public class Connection extends Element implements IConnection, IPerformance {
             // param.setListItemsValue(new String[] { "2", "3", "4" });
             param.setValue("2"); //$NON-NLS-1$
             param.setName(NUMBER_PARALLEL);
-            param.setDisplayName("Number of parallel execution");
+            param.setDisplayName(Messages.getString("Connection.numberParallel")); //$NON-NLS-1$
             param.setShow(true);
-            param.setShowIf("ENABLE_PARALLEL == 'true'");
+            param.setShowIf("ENABLE_PARALLEL == 'true'"); //$NON-NLS-1$
             param.setNumRow(1);
             param.setRequired(true);
             addElementParameter(param);
@@ -263,7 +264,7 @@ public class Connection extends Element implements IConnection, IPerformance {
 
         IElementParameter param = new ElementParameter(this);
         param.setName(MONITOR_CONNECTION);
-        param.setDisplayName("Monitor this connection");
+        param.setDisplayName(Messages.getString("Connection.monitorConnection")); //$NON-NLS-1$
         param.setField(EParameterFieldType.CHECK);
         param.setValue(monitorConnection);
         param.setCategory(EComponentCategory.ADVANCED);
@@ -271,16 +272,16 @@ public class Connection extends Element implements IConnection, IPerformance {
         param.setNumRow(1);
         addElementParameter(param);
 
-        Node meterAttached = new Node(ComponentsFactoryProvider.getInstance().get("tFlowMeter"), process);
+        Node meterAttached = new Node(ComponentsFactoryProvider.getInstance().get("tFlowMeter"), process); //$NON-NLS-1$
         for (IElementParameter curParam : meterAttached.getElementParameters()) {
             if (curParam.getCategory() == EComponentCategory.BASIC
                     && !curParam.getName().equals(EParameterName.NOT_SYNCHRONIZED_SCHEMA.getName())) {
                 curParam.setCategory(EComponentCategory.ADVANCED);
                 curParam.setNumRow(curParam.getNumRow() + 1);
-                if (curParam.getShowIf() == null || curParam.getShowIf().equals("")) {
-                    curParam.setShowIf("MONITOR_CONNECTION == 'true'");
+                if (curParam.getShowIf() == null || curParam.getShowIf().equals("")) { //$NON-NLS-1$
+                    curParam.setShowIf("MONITOR_CONNECTION == 'true'"); //$NON-NLS-1$
                 } else {
-                    curParam.setShowIf("(" + curParam.getShowIf() + " and MONITOR_CONNECTION == 'true')");
+                    curParam.setShowIf("(" + curParam.getShowIf() + " and MONITOR_CONNECTION == 'true')"); //$NON-NLS-1$ //$NON-NLS-2$
                 }
                 curParam.setElement(this);
                 addElementParameter(curParam);
@@ -401,7 +402,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         boolean updateName = false;
         if (getLineStyle().equals(EConnectionType.TABLE)) {
             if (outputId >= 0) {
-                labelText += " (" + metaName + ", order:" + outputId + ")";
+                labelText += " (" + metaName + ", order:" + outputId + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             } else {
                 labelText += " (" + sourceNodeConnector.getLinkName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
             }
@@ -410,37 +411,37 @@ public class Connection extends Element implements IConnection, IPerformance {
             if (sourceNodeConnector.getDefaultConnectionType().equals(getLineStyle())) { // if it's the standard
                 // link
                 if (outputId >= 0) {
-                    labelText += " (" + sourceNodeConnector.getLinkName() + " order:" + outputId + ")";
+                    labelText += " (" + sourceNodeConnector.getLinkName() + " order:" + outputId + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 } else {
-                    labelText += " (" + sourceNodeConnector.getLinkName() + ")";
+                    labelText += " (" + sourceNodeConnector.getLinkName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
                 }
             } else if (sourceNodeConnector.getName().equals(EConnectionType.FLOW_MAIN.getName())) {
                 // link
                 if (outputId >= 0) {
-                    labelText += " (" + getLineStyle().getDefaultLinkName() + " order:" + outputId + ")";
+                    labelText += " (" + getLineStyle().getDefaultLinkName() + " order:" + outputId + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 } else {
-                    labelText += " (" + getLineStyle().getDefaultLinkName() + ")";
+                    labelText += " (" + getLineStyle().getDefaultLinkName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
                 }
             } else {
                 if (outputId >= 0) {
-                    labelText += " (" + getLineStyle().getDefaultLinkName() + ", " + sourceNodeConnector.getLinkName()
-                            + " order:" + outputId + ")";
+                    labelText += " (" + getLineStyle().getDefaultLinkName() + ", " + sourceNodeConnector.getLinkName() //$NON-NLS-1$ //$NON-NLS-2$
+                            + " order:" + outputId + ")"; //$NON-NLS-1$ //$NON-NLS-2$
                 } else {
-                    labelText += " (" + getLineStyle().getDefaultLinkName() + ", " + sourceNodeConnector.getLinkName() + ")";
+                    labelText += " (" + getLineStyle().getDefaultLinkName() + ", " + sourceNodeConnector.getLinkName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 }
             }
             updateName = true;
         } else if (getLineStyle().equals(EConnectionType.FLOW_MERGE)) {
             int inputId = getInputId();
             if (outputId >= 0) {
-                labelText += " (Main order:" + outputId + ", " + getLineStyle().getDefaultLinkName() + " order:" + inputId + ")";
+                labelText += " (Main order:" + outputId + ", " + getLineStyle().getDefaultLinkName() + " order:" + inputId + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
             } else {
-                labelText += " (" + getLineStyle().getDefaultLinkName() + " order:" + inputId + ")";
+                labelText += " (" + getLineStyle().getDefaultLinkName() + " order:" + inputId + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             }
             updateName = true;
         } else if (getLineStyle().equals(EConnectionType.RUN_IF) && (!sourceNodeConnector.getLinkName().equals(name))) {
             // if "RunIf" got a custom name
-            labelText = sourceNodeConnector.getLinkName() + " (" + name + ")";
+            labelText = sourceNodeConnector.getLinkName() + " (" + name + ")"; //$NON-NLS-1$ //$NON-NLS-2$
             updateName = true;
         } else if (getLineStyle().equals(EConnectionType.ITERATE)) {
             IElementParameter enableParam = this.getElementParameter(ENABLE_PARALLEL);
@@ -452,28 +453,28 @@ public class Connection extends Element implements IConnection, IPerformance {
                 linkName = getUniqueName();
             }
             if (enableParam != null && (Boolean) enableParam.getValue()) {
-                labelText = linkName + " (x " + (String) numberParam.getValue();
+                labelText = linkName + " (x " + (String) numberParam.getValue(); //$NON-NLS-1$
                 if (special) {
-                    labelText += " order:" + outputId;
+                    labelText += " order:" + outputId; //$NON-NLS-1$
                 }
-                labelText += ")";
+                labelText += ")"; //$NON-NLS-1$
             } else if (special) {
-                labelText = linkName + " (order:" + outputId + ")";
+                labelText = linkName + " (order:" + outputId + ")"; //$NON-NLS-1$ //$NON-NLS-2$
             }
             updateName = true;
         } else if (getLineStyle().equals(EConnectionType.SYNCHRONIZE)) {
-            IElementParameter synchroType = this.getSource().getElementParameter("WAIT_FOR");
+            IElementParameter synchroType = this.getSource().getElementParameter("WAIT_FOR"); //$NON-NLS-1$
             if (synchroType != null) {
-                if ("All".equals(synchroType.getValue())) {
-                    labelText += " (Wait for all)";
-                } else if ("First".equals(synchroType.getValue())) {
-                    labelText += " (Wait for first)";
+                if ("All".equals(synchroType.getValue())) { //$NON-NLS-1$
+                    labelText += " (Wait for all)"; //$NON-NLS-1$
+                } else if ("First".equals(synchroType.getValue())) { //$NON-NLS-1$
+                    labelText += " (Wait for first)"; //$NON-NLS-1$
                 }
             }
             updateName = true;
         } else {
             if (outputId >= 0 && !getLineStyle().equals(EConnectionType.PARALLELIZE)) {
-                labelText += " (" + "order:" + outputId + ")";
+                labelText += " (" + "order:" + outputId + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             }
             updateName = true;
         } /*
@@ -859,7 +860,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         int curId = 0;
         if (target != null) {
             if (target.getIncomingConnections().size() < newId) {
-                throw new IllegalArgumentException("Input Id is not valid");
+                throw new IllegalArgumentException(Messages.getString("Connection.inputInvalid")); //$NON-NLS-1$
             }
             if (target.getIncomingConnections().get(newId).equals(this)) {
                 return; // id is already set
@@ -938,17 +939,17 @@ public class Connection extends Element implements IConnection, IPerformance {
 
     public boolean isUseByMetter() {
         INode sourceNode = this.getSource();
-        List<INode> metterNodes = (List<INode>) sourceNode.getProcess().getNodesOfType("tFlowMeter");
+        List<INode> metterNodes = (List<INode>) sourceNode.getProcess().getNodesOfType("tFlowMeter"); //$NON-NLS-1$
         if (metterNodes.size() > 0) {
 
             Iterator<INode> it = metterNodes.iterator();
             while (it.hasNext()) {
                 INode node = it.next();
 
-                String absolute = (String) node.getElementParameter("ABSOLUTE").getValue();
-                String reference = (String) node.getElementParameter("CONNECTIONS").getValue();
+                String absolute = (String) node.getElementParameter("ABSOLUTE").getValue(); //$NON-NLS-1$
+                String reference = (String) node.getElementParameter("CONNECTIONS").getValue(); //$NON-NLS-1$
 
-                if (absolute.equals("false") && reference.equals(this.getUniqueName())) {
+                if (absolute.equals("false") && reference.equals(this.getUniqueName())) { //$NON-NLS-1$
                     return true;
                 }
             }

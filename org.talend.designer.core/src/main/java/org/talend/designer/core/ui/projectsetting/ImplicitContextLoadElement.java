@@ -19,7 +19,7 @@ import org.talend.core.model.process.Element;
  */
 public class ImplicitContextLoadElement extends Element {
 
-    private static final String IMPLICIT_CONTEXT_LOAD_ELEMENT_NAME = "implicitContextLoad";
+    private static final String IMPLICIT_CONTEXT_LOAD_ELEMENT_NAME = "implicitContextLoad"; //$NON-NLS-1$
 
     /*
      * (non-Javadoc)

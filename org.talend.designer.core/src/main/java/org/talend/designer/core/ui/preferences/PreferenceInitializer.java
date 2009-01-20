@@ -38,11 +38,11 @@ import org.talend.designer.core.ui.editor.TalendEditorPaletteFactory;
  */
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
-    public static final String DEFAULT_LOGS_FILE_NAME = "logs_file.txt";
+    public static final String DEFAULT_LOGS_FILE_NAME = "logs_file.txt"; //$NON-NLS-1$
 
-    public static final String DEFAULT_STATS_FILE_NAME = "stats_file.txt";
+    public static final String DEFAULT_STATS_FILE_NAME = "stats_file.txt"; //$NON-NLS-1$
 
-    public static final String DEFAULT_METER_FILE_NAME = "meter_file.txt";
+    public static final String DEFAULT_METER_FILE_NAME = "meter_file.txt"; //$NON-NLS-1$
 
     /*
      * (non-Javadoc)
@@ -67,45 +67,45 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         store.setDefault(TalendEditorPaletteFactory.PALETTE_STATE, FlyoutPaletteComposite.STATE_PINNED_OPEN);
         store.setDefault(TalendDesignerPrefConstants.COMP_DEFAULT_FILE_DIR, Platform.getLocation().toOSString());
         store.setDefault(TalendDesignerPrefConstants.PROPERTY_CODE_CHECK, false);
-        store.setDefault(TalendDesignerPrefConstants.LARGE_ICONS_SIZE, "24");
-        store.setDefault(TalendDesignerPrefConstants.SCHEMA_OPTIONS, "none");
-        store.setDefault(TalendDesignerPrefConstants.VIEW_OPTIONS, "default");
+        store.setDefault(TalendDesignerPrefConstants.LARGE_ICONS_SIZE, "24"); //$NON-NLS-1$
+        store.setDefault(TalendDesignerPrefConstants.SCHEMA_OPTIONS, "none"); //$NON-NLS-1$
+        store.setDefault(TalendDesignerPrefConstants.VIEW_OPTIONS, "default"); //$NON-NLS-1$
         store.setDefault(TalendDesignerPrefConstants.DISPLAY_SUBJOBS, true);
         store.setDefault(TalendDesignerPrefConstants.GENERATE_CODE_WHEN_OPEN_JOB, false);
         // When updating jobs or joblets, check only the last version, and checked by default
         store.setDefault(TalendDesignerPrefConstants.CHECK_ONLY_LAST_VERSION, true);
 
         // defaults for the stats preferences for java
-        store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN);
-        store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.CATCH_REALTIME_STATS.getName(), false);
-        store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.CATCH_RUNTIME_ERRORS.getName(), true);
-        store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.CATCH_USER_ERRORS.getName(), true);
-        store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.CATCH_USER_WARNING.getName(), true);
+        store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN); //$NON-NLS-1$
+        store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.CATCH_REALTIME_STATS.getName(), false); //$NON-NLS-1$
+        store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.CATCH_RUNTIME_ERRORS.getName(), true); //$NON-NLS-1$
+        store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.CATCH_USER_ERRORS.getName(), true); //$NON-NLS-1$
+        store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.CATCH_USER_WARNING.getName(), true); //$NON-NLS-1$
 
-        store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.FILE_PATH.getName(), logPath);
-        store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.FILENAME_LOGS.getName(), TalendTextUtils
+        store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.FILE_PATH.getName(), logPath); //$NON-NLS-1$
+        store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.FILENAME_LOGS.getName(), TalendTextUtils //$NON-NLS-1$
                 .addQuotes(DEFAULT_LOGS_FILE_NAME));
-        store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.FILENAME_STATS.getName(), TalendTextUtils
+        store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.FILENAME_STATS.getName(), TalendTextUtils //$NON-NLS-1$
                 .addQuotes(DEFAULT_STATS_FILE_NAME));
-        store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.FILENAME_METTER.getName(), TalendTextUtils
+        store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.FILENAME_METTER.getName(), TalendTextUtils //$NON-NLS-1$
                 .addQuotes(DEFAULT_METER_FILE_NAME));
 
         // defaults for the stats preferences for perl
-        store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN);
-        store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.CATCH_REALTIME_STATS.getName(), false);
-        store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.CATCH_RUNTIME_ERRORS.getName(), true);
-        store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.CATCH_USER_ERRORS.getName(), true);
-        store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.CATCH_USER_WARNING.getName(), true);
-        store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.FILE_PATH.getName(), logPath);
-        store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.FILENAME_LOGS.getName(), TalendTextUtils
+        store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN); //$NON-NLS-1$
+        store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.CATCH_REALTIME_STATS.getName(), false); //$NON-NLS-1$
+        store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.CATCH_RUNTIME_ERRORS.getName(), true); //$NON-NLS-1$
+        store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.CATCH_USER_ERRORS.getName(), true); //$NON-NLS-1$
+        store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.CATCH_USER_WARNING.getName(), true); //$NON-NLS-1$
+        store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.FILE_PATH.getName(), logPath); //$NON-NLS-1$
+        store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.FILENAME_LOGS.getName(), TalendTextUtils //$NON-NLS-1$
                 .addQuotes(DEFAULT_LOGS_FILE_NAME));
-        store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.FILENAME_STATS.getName(), TalendTextUtils
+        store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.FILENAME_STATS.getName(), TalendTextUtils //$NON-NLS-1$
                 .addQuotes(DEFAULT_STATS_FILE_NAME));
-        store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.FILENAME_METTER.getName(), TalendTextUtils
+        store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.FILENAME_METTER.getName(), TalendTextUtils //$NON-NLS-1$
                 .addQuotes(DEFAULT_METER_FILE_NAME));
 
         if (!CommonsPlugin.isHeadless()) {
-            Font font = new Font(Display.getDefault(), "courier", 10, SWT.NONE);
+            Font font = new Font(Display.getDefault(), "courier", 10, SWT.NONE); //$NON-NLS-1$
             store.setDefault(TalendDesignerPrefConstants.MEMO_TEXT_FONT, font.getFontData()[0].toString());
             store.setDefault(TalendDesignerPrefConstants.EDITOR_ANTIALIASING, false);
             // store.setDefault(TalendDesignerPrefConstants.EDITOR_INTERPOLATION, false);

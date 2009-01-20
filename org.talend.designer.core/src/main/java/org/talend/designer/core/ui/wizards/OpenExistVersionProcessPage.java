@@ -65,9 +65,9 @@ public class OpenExistVersionProcessPage extends WizardPage {
      * @param pageName
      */
     protected OpenExistVersionProcessPage(final boolean alreadyLockedByUser, final IRepositoryObject processObject) {
-        super("OpenExistVersionProcessPage");
+        super("OpenExistVersionProcessPage"); //$NON-NLS-1$
         setTitle(TITLE);
-        setMessage("If this job is locked by user, then you can't create new version job!");
+        setMessage(Messages.getString("OpenExistVersionProcessPage.messageCreated")); //$NON-NLS-1$
         this.processObject = processObject;
         originVersion = getProperty().getVersion();
         this.alreadyLockedByUser = alreadyLockedByUser;
@@ -87,7 +87,7 @@ public class OpenExistVersionProcessPage extends WizardPage {
         versionListComposite.refresh();
 
         createNewVersionButton = new Button(parent, SWT.CHECK);
-        createNewVersionButton.setText("Create new version and open it?");
+        createNewVersionButton.setText(Messages.getString("OpenExistVersionProcessPage.textContent")); //$NON-NLS-1$
         createNewVersionButton.setEnabled(!alreadyLockedByUser);
 
         Composite bc = new Composite(parent, SWT.NULL);
@@ -174,7 +174,7 @@ public class OpenExistVersionProcessPage extends WizardPage {
         if (createNewVersionButton.getSelection()) {
             setPageComplete(!versionText.getText().equals(getOriginVersion()));
             if (!isPageComplete()) {
-                setErrorMessage("Please set new version");
+                setErrorMessage(Messages.getString("OpenExistVersionProcessPage.errorMessage")); //$NON-NLS-1$
             } else {
                 setErrorMessage(null);
             }

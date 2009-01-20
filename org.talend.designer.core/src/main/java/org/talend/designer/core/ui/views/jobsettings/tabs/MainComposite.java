@@ -72,7 +72,7 @@ public class MainComposite extends AbstractTabComposite {
         data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
         nameText.setLayoutData(data);
         String nameContent = repositoryObject.getLabel();
-        nameText.setText(nameContent != null ? nameContent : "");
+        nameText.setText(nameContent != null ? nameContent : ""); //$NON-NLS-1$
         nameText.setEnabled(enableControl);
 
         CLabel nameLabel = widgetFactory.createCLabel(composite, Messages.getString("NameSection.Name")); //$NON-NLS-1$
@@ -92,7 +92,7 @@ public class MainComposite extends AbstractTabComposite {
         User user = repositoryObject.getAuthor();
         if (user != null) {
             String author = user.getLogin();
-            authorText.setText(author != null ? author : "");
+            authorText.setText(author != null ? author : ""); //$NON-NLS-1$
         } else {
             authorText.setText(nameContent);
         }
@@ -127,7 +127,7 @@ public class MainComposite extends AbstractTabComposite {
         data.top = new FormAttachment(authorText, 0, SWT.CENTER);
         versionText.setLayoutData(data);
         String version = repositoryObject.getVersion();
-        versionText.setText(version != null ? version : "");
+        versionText.setText(version != null ? version : ""); //$NON-NLS-1$
         versionText.setEnabled(enableControl);
 
         CLabel versionLabel = widgetFactory.createCLabel(composite, Messages.getString("VersionAuthorSection.versionLabel")); //$NON-NLS-1$
@@ -144,7 +144,7 @@ public class MainComposite extends AbstractTabComposite {
         data.top = new FormAttachment(authorLabel, ITabbedPropertyConstants.VSPACE);
         purposeText.setLayoutData(data);
         String content = repositoryObject.getPurpose();
-        purposeText.setText(content != null ? content : "");
+        purposeText.setText(content != null ? content : ""); //$NON-NLS-1$
         purposeText.setEnabled(enableControl);
 
         CLabel purposeLabel = widgetFactory.createCLabel(composite, Messages.getString("PurposeStatusSection.purposeLabel")); //$NON-NLS-1$
@@ -161,7 +161,7 @@ public class MainComposite extends AbstractTabComposite {
         data.top = new FormAttachment(authorLabel, ITabbedPropertyConstants.VSPACE);
         statusText.setLayoutData(data);
         String status = repositoryObject.getStatusCode();
-        statusText.setText(status != null ? status : "");
+        statusText.setText(status != null ? status : ""); //$NON-NLS-1$
         statusText.setEnabled(enableControl);
 
         CLabel statusLabel = widgetFactory.createCLabel(composite, Messages.getString("PurposeStatusSection.statusLabel")); //$NON-NLS-1$
@@ -180,7 +180,7 @@ public class MainComposite extends AbstractTabComposite {
         descriptionText.setLayoutData(data);
 
         String description = repositoryObject.getDescription();
-        descriptionText.setText(description != null ? description : "");
+        descriptionText.setText(description != null ? description : ""); //$NON-NLS-1$
         descriptionText.setEnabled(enableControl);
 
         CLabel descriptionLabel = widgetFactory.createCLabel(composite, Messages.getString("DescriptionSection.Label")); //$NON-NLS-1$
@@ -198,7 +198,7 @@ public class MainComposite extends AbstractTabComposite {
         creationDate.setLayoutData(data);
         creationDate.setEnabled(false);
         Date cDate = repositoryObject.getCreationDate();
-        creationDate.setText(cDate != null ? FORMATTER.format(cDate) : "");
+        creationDate.setText(cDate != null ? FORMATTER.format(cDate) : ""); //$NON-NLS-1$
         creationDate.setEnabled(enableControl);
 
         CLabel creationLabel = widgetFactory.createCLabel(composite, Messages.getString("DateSection.creationLabel")); //$NON-NLS-1$
@@ -216,7 +216,7 @@ public class MainComposite extends AbstractTabComposite {
         modificationDate.setLayoutData(data);
         modificationDate.setEnabled(false);
         Date mDate = repositoryObject.getModificationDate();
-        modificationDate.setText(mDate != null ? FORMATTER.format(mDate) : "");
+        modificationDate.setText(mDate != null ? FORMATTER.format(mDate) : ""); //$NON-NLS-1$
         modificationDate.setEnabled(enableControl);
 
         CLabel modificationLabel = widgetFactory.createCLabel(composite, Messages.getString("DateSection.ModificationLabel")); //$NON-NLS-1$

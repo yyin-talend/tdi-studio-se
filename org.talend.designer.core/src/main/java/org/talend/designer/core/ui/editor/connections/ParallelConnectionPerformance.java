@@ -37,9 +37,9 @@ public class ParallelConnectionPerformance extends ConnectionPerformance {
      */
     private static final int DISPLAY_LIMIT = 4;
 
-    private static final String COLOR_FINISHED = "#229922";
+    private static final String COLOR_FINISHED = "#229922"; //$NON-NLS-1$
 
-    private static final String COLOR_RUNNING = "#AA3322";
+    private static final String COLOR_RUNNING = "#AA3322"; //$NON-NLS-1$
 
     /**
      * store the ids of exec that will be displayed on current row link.
@@ -129,11 +129,11 @@ public class ParallelConnectionPerformance extends ConnectionPerformance {
     private void checkOtherRunningExecution(StringBuilder builder) {
         int otherExecution = runningExecutionId.size() - DISPLAY_LIMIT;
         if (otherExecution > 0) {
-            String execString = "exec";
+            String execString = "exec"; //$NON-NLS-1$
             if (otherExecution > 1) {
-                execString = "execs";
+                execString = "execs"; //$NON-NLS-1$
             }
-            builder.append(String.format("<font color='#AA3322'>             %1$s other %2$s   </font>", otherExecution,
+            builder.append(String.format("<font color='#AA3322'>             %1$s other %2$s   </font>", otherExecution, //$NON-NLS-1$
                     execString));
         }
     }
@@ -189,7 +189,7 @@ public class ParallelConnectionPerformance extends ConnectionPerformance {
         long processingTime = data.getProcessingTime();
         double avg = processingTime > 0 ? lineCount * 1000.0 / processingTime : 0.0;
         String color = COLOR_RUNNING;
-        String pattern = "<font color='%1$s'>exec %2$s : %3$5d rows, %4$5.0f rows/second</font><br>";
+        String pattern = "<font color='%1$s'>exec %2$s : %3$5d rows, %4$5.0f rows/second</font><br>"; //$NON-NLS-1$
         if (data.getAction().equals(IPerformanceData.ACTION_STOP)) {
             color = COLOR_FINISHED;
         }

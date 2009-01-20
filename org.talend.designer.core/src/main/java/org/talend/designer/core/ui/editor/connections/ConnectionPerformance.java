@@ -31,9 +31,9 @@ import org.talend.designer.runprocess.IRunProcessService;
  */
 public class ConnectionPerformance extends Element {
 
-    public static final String LABEL_PROP = "label.prop";
+    public static final String LABEL_PROP = "label.prop"; //$NON-NLS-1$
 
-    protected String label = "";
+    protected String label = ""; //$NON-NLS-1$
 
     protected Point offset;
 
@@ -154,7 +154,7 @@ public class ConnectionPerformance extends Element {
      * DOC xtan After every iterate, there should clear the last data on the link lable.(If/OnComponentOK/row/...).
      */
     public void clearPerformanceDataOnUI() {
-        setLabel("");
+        setLabel(""); //$NON-NLS-1$
     }
 
 }

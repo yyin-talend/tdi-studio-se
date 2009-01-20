@@ -34,9 +34,9 @@ public class DisplaySubjobAction extends SelectionAction {
 
     public static final String ID = "org.talend.designer.core.ui.editor.action.DisplaySubjobAction"; //$NON-NLS-1$
 
-    private static final String TEXT_DISPLAY_SUBJOB = Messages.getString("DisplaySubjobCommand.DisplaySubjob");
+    private static final String TEXT_DISPLAY_SUBJOB = Messages.getString("DisplaySubjobCommand.DisplaySubjob"); //$NON-NLS-1$
 
-    private static final String TEXT_HIDE_SUBJOB = Messages.getString("DisplaySubjobCommand.HideSubjob");
+    private static final String TEXT_HIDE_SUBJOB = Messages.getString("DisplaySubjobCommand.HideSubjob"); //$NON-NLS-1$
 
     public DisplaySubjobAction(IWorkbenchPart part) {
         super(part);

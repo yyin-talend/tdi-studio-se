@@ -505,7 +505,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                 connectionItem = UpdateRepositoryUtils.getConnectionItemByItemId(propertyValue);
                 if (connectionItem != null) {
                     boolean same = true;
-                    IElementParameter sapNodeParam = node.getElementParameter("SAP_FUNCTION");
+                    IElementParameter sapNodeParam = node.getElementParameter("SAP_FUNCTION"); //$NON-NLS-1$
 
                     if (sapNodeParam == null) {
                         return queryResults;
@@ -521,17 +521,17 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                         return queryResults;
                     }
                     // check SAP_ITERATE_OUT_TYPE
-                    sapNodeParam = node.getElementParameter("SAP_ITERATE_OUT_TYPE");
-                    if (sapNodeParam != null && !function.getOutputType().replace(".", "_").equals(sapNodeParam.getValue())) {
+                    sapNodeParam = node.getElementParameter("SAP_ITERATE_OUT_TYPE"); //$NON-NLS-1$
+                    if (sapNodeParam != null && !function.getOutputType().replace(".", "_").equals(sapNodeParam.getValue())) { //$NON-NLS-1$ //$NON-NLS-2$
                         same = false;
                     } else {
                         // check SAP_ITERATE_OUT_TABLENAME
-                        sapNodeParam = node.getElementParameter("SAP_ITERATE_OUT_TABLENAME");
+                        sapNodeParam = node.getElementParameter("SAP_ITERATE_OUT_TABLENAME"); //$NON-NLS-1$
                         if (sapNodeParam != null) {
                             String source = (String) sapNodeParam.getValue();
                             String dest = function.getOutputTableName();
                             if (dest == null) {
-                                dest = "";
+                                dest = ""; //$NON-NLS-1$
                             }
                             if (!TalendTextUtils.addQuotes(dest).equals(source) && !source.equals(dest)) {
                                 same = false;
@@ -539,13 +539,13 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                         }
                     }
                     boolean inputSame = true;
-                    sapNodeParam = node.getElementParameter("MAPPING_INPUT");
+                    sapNodeParam = node.getElementParameter("MAPPING_INPUT"); //$NON-NLS-1$
                     if (sapNodeParam != null && sapNodeParam.getValue() != null) {
                         inputSame = SAPConnectionUtils.sameParamterTableWith(function, (List<Map<String, Object>>) sapNodeParam
                                 .getValue(), true);
                     }
                     boolean outputSame = true;
-                    sapNodeParam = node.getElementParameter("MAPPING_OUTPUT");
+                    sapNodeParam = node.getElementParameter("MAPPING_OUTPUT"); //$NON-NLS-1$
                     if (sapNodeParam != null && sapNodeParam.getValue() != null) {
                         outputSame = SAPConnectionUtils.sameParamterTableWith(function, (List<Map<String, Object>>) sapNodeParam
                                 .getValue(), false);
@@ -1296,7 +1296,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
     private void setConfigrationForReadOnlyJob(UpdateCheckResult result) {
         if (this.process != null && this.process.isReadOnly()) {
             result.setChecked(false);
-            result.setRemark(Messages.getString("ProcessUpdateManager.ReadOnlyProcessUpdateWarningMessages"));
+            result.setRemark(Messages.getString("ProcessUpdateManager.ReadOnlyProcessUpdateWarningMessages")); //$NON-NLS-1$
             result.setReadOnlyProcess(true);
         }
 

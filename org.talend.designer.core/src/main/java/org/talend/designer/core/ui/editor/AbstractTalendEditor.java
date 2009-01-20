@@ -1167,10 +1167,10 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
         IRepositoryService service = CorePlugin.getDefault().getRepositoryService();
         String outlinePicturePath = getOutlinePicturePath();
-        IPath filePath = service.getPathFileName(outlinePicturePath, "");
+        IPath filePath = service.getPathFileName(outlinePicturePath, ""); //$NON-NLS-1$
         String outlineFileName = process.getName();
         String outlineFileVersion = process.getVersion();
-        filePath = filePath.append(outlineFileName + "_" + outlineFileVersion + ".png");
+        filePath = filePath.append(outlineFileName + "_" + outlineFileVersion + ".png"); //$NON-NLS-1$ //$NON-NLS-2$
 
         // filePath.toFile().deleteOnExit();
 

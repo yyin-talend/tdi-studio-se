@@ -62,7 +62,7 @@ import org.talend.repository.model.IProxyRepositoryFactory;
  */
 public abstract class AbstractRepositoryController extends AbstractElementPropertySectionController {
 
-    protected static final String REPOSITORY_CHOICE = "REPOSITORY_CHOICE";
+    protected static final String REPOSITORY_CHOICE = "REPOSITORY_CHOICE"; //$NON-NLS-1$
 
     private static final int STANDARD_REPOSITORY_WIDTH = 250;
 
@@ -149,7 +149,7 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
         data.top = new FormAttachment(0, top);
         combo.setLayoutData(data);
         combo.addSelectionListener(listenerSelection);
-        combo.setData(PARAMETER_NAME, param.getName() + ":" + propertyTypeParameter.getName());
+        combo.setData(PARAMETER_NAME, param.getName() + ":" + propertyTypeParameter.getName()); //$NON-NLS-1$
         lastControlUsed = combo;
 
         String propertyType = (String) propertyTypeParameter.getValue();
@@ -159,7 +159,7 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
         }
 
         // **********************
-        hashCurControls.put(param.getName() + ":" + propertyTypeParameter.getName(), combo);
+        hashCurControls.put(param.getName() + ":" + propertyTypeParameter.getName(), combo); //$NON-NLS-1$
 
         Point initialSize = combo.computeSize(SWT.DEFAULT, SWT.DEFAULT);
         dynamicProperty.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
@@ -220,7 +220,7 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
 
         // **********************
 
-        hashCurControls.put(param.getName() + ":" + repositoryParameter.getName(), labelText);
+        hashCurControls.put(param.getName() + ":" + repositoryParameter.getName(), labelText); //$NON-NLS-1$
 
         return btn;
     }
@@ -306,7 +306,7 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
     private void fastRepositoryUpdateSchema(IElementParameter schemaParam) {
         IElementParameter param = schemaParam.getChildParameters().get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
         if (param != null && param.getValue() != null) {
-            String[] names = ((String) param.getValue()).split(" - ");
+            String[] names = ((String) param.getValue()).split(" - "); //$NON-NLS-1$
             if (names.length != 2) {
                 return;
             }
@@ -351,7 +351,7 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
         }
         param = param.getChildParameters().get(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName());
         if (param != null && param.getValue() != null) {
-            String[] names = ((String) param.getValue()).split(" - ");
+            String[] names = ((String) param.getValue()).split(" - "); //$NON-NLS-1$
             if (names.length != 2) {
                 return;
             }
@@ -423,11 +423,11 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
             fastInitializeRepositoryNames();
             // if even after the initialize there is nothing, just return an empty string
             if (param.getListItemsDisplayName().length == 0) {
-                return "";
+                return ""; //$NON-NLS-1$
             }
             index = param.getIndexOfItemFromList(value);
             if (index == -1) {
-                return "";
+                return ""; //$NON-NLS-1$
             }
         }
 
@@ -443,7 +443,7 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
     @Override
     public void refresh(IElementParameter param, boolean check) {
         IElementParameter propertyTypeParameter = param.getChildParameters().get(getRepositoryTypeParamName());
-        CCombo combo = (CCombo) hashCurControls.get(param.getName() + ":" + propertyTypeParameter.getName());
+        CCombo combo = (CCombo) hashCurControls.get(param.getName() + ":" + propertyTypeParameter.getName()); //$NON-NLS-1$
 
         if (combo == null || combo.isDisposed()) {
             return;
@@ -469,7 +469,7 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
         }
 
         IElementParameter repositoryChoiceParameter = param.getChildParameters().get(getRepositoryChoiceParamName());
-        Text text = (Text) hashCurControls.get(param.getName() + ":" + repositoryChoiceParameter.getName());
+        Text text = (Text) hashCurControls.get(param.getName() + ":" + repositoryChoiceParameter.getName()); //$NON-NLS-1$
 
         if (text == null || text.isDisposed()) {
             return;
@@ -478,8 +478,8 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
 
         if (value instanceof String) {
             String toDisplay = getDisplayNameFromValue(repositoryChoiceParameter, (String) value);
-            if (toDisplay == null || "".equals(value)) {
-                text.setText("");
+            if (toDisplay == null || "".equals(value)) { //$NON-NLS-1$
+                text.setText(""); //$NON-NLS-1$
             } else {
                 text.setText(toDisplay);
             }

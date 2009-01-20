@@ -23,6 +23,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.talend.core.model.process.EComponentCategory;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -34,9 +35,9 @@ import org.talend.designer.core.ui.editor.process.Process;
  */
 public class StatsAndLogsView extends ViewPart {
 
-    public static final String ID = "org.talend.designer.core.ui.views.statsandlogs.statsAndLogsView";
+    public static final String ID = "org.talend.designer.core.ui.views.statsandlogs.statsAndLogsView"; //$NON-NLS-1$
 
-    private static final String VIEW_NAME = "Stats/Logs";;
+    private static final String VIEW_NAME = "Stats/Logs";; //$NON-NLS-1$
 
     private Process process;
 
@@ -88,7 +89,7 @@ public class StatsAndLogsView extends ViewPart {
         alertComposite.setLayout(new GridLayout());
         alertComposite.setLayoutData(new GridData());
         Text alertText = new Text(alertComposite, SWT.NONE);
-        alertText.setText("A Stats/Logs is not available.");
+        alertText.setText(Messages.getString("StatsAndLogsView.dataNotAvailable")); //$NON-NLS-1$
         alertText.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
         parent.layout();
     }

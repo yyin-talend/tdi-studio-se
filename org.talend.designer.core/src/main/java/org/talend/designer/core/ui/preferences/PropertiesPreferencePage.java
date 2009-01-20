@@ -20,6 +20,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.i18n.Messages;
 
 /**
  * yzhang class global comment. Detailled comment <br/>
@@ -29,7 +30,7 @@ import org.talend.designer.core.DesignerPlugin;
  */
 public class PropertiesPreferencePage extends AbstractPreferencePage {
 
-    private final String groupName = "Font";
+    private final String groupName = "Font"; //$NON-NLS-1$
 
     private FontFieldEditor memoFontEditor = null;
 
@@ -97,7 +98,7 @@ public class PropertiesPreferencePage extends AbstractPreferencePage {
     }
 
     protected void addFontAndColorFields(Composite composite) {
-        memoFontEditor = new FontFieldEditor(TalendDesignerPrefConstants.MEMO_TEXT_FONT, "Memo text font:", composite);
+        memoFontEditor = new FontFieldEditor(TalendDesignerPrefConstants.MEMO_TEXT_FONT, Messages.getString("PropertiesPreferencePage.textFont"), composite); //$NON-NLS-1$
         addField(memoFontEditor);
     }
 

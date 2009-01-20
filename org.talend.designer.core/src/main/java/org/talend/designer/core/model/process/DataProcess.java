@@ -41,6 +41,7 @@ import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.model.process.jobsettings.JobSettingsManager;
@@ -179,7 +180,7 @@ public class DataProcess {
             if (!connection.isActivate()) {
                 continue;
             }
-            IElementParameter monitorParam = connection.getElementParameter("MONITOR_CONNECTION");
+            IElementParameter monitorParam = connection.getElementParameter("MONITOR_CONNECTION"); //$NON-NLS-1$
             if (monitorParam != null && (!connection.getLineStyle().equals(EConnectionType.FLOW_REF))
                     && ((Boolean) monitorParam.getValue())) {
                 addvFlowMeterBetween(dataNode, buildDataNodeFromNode((Node) connection.getTarget(), prefix), connection,
@@ -213,8 +214,8 @@ public class DataProcess {
                     param.setField(EParameterFieldType.CHECK);
                     param.setCategory(EComponentCategory.BASIC);
                     param.setValue(Boolean.FALSE);
-                    param.setName("ENABLE_PARALLEL");
-                    param.setDisplayName("Enable parallel execution");
+                    param.setName("ENABLE_PARALLEL"); //$NON-NLS-1$
+                    param.setDisplayName(Messages.getString("DataProcess.enableParallel")); //$NON-NLS-1$
                     param.setShow(true);
                     param.setNumRow(1);
                     ((List<IElementParameter>) dataConnec.getElementParameters()).add(param);
@@ -226,10 +227,10 @@ public class DataProcess {
                     // param.setListItemsDisplayCodeName(new String[] { "2", "3", "4" });
                     // param.setListItemsValue(new String[] { "2", "3", "4" });
                     param.setValue("2"); //$NON-NLS-1$
-                    param.setName("NUMBER_PARALLEL");
-                    param.setDisplayName("Number of parallel execution");
+                    param.setName("NUMBER_PARALLEL"); //$NON-NLS-1$
+                    param.setDisplayName(Messages.getString("DataProcess.numberParallel")); //$NON-NLS-1$
                     param.setShow(true);
-                    param.setShowIf("ENABLE_PARALLEL == 'true'");
+                    param.setShowIf("ENABLE_PARALLEL == 'true'"); //$NON-NLS-1$
                     param.setNumRow(1);
                     ((List<IElementParameter>) dataConnec.getElementParameters()).add(param);
                     copyElementParametersValue(connection, dataConnec);
@@ -280,7 +281,7 @@ public class DataProcess {
         dataConnec.setCondition(connection.getCondition());
         dataConnec.setConnectorName(connection.getConnectorName());
         dataConnec.setInputId(connection.getInputId());
-        DataNode meterNode = new DataNode(ComponentsFactoryProvider.getInstance().get("tFlowMeter"), "vFlowMeter_"
+        DataNode meterNode = new DataNode(ComponentsFactoryProvider.getInstance().get("tFlowMeter"), "vFlowMeter_" //$NON-NLS-1$ //$NON-NLS-2$
                 + connection.getUniqueName());
         meterNode.getMetadataList().get(0).setListColumns(connection.getMetadataTable().getListColumns());
         meterNode.setActivate(connection.isActivate());
@@ -303,7 +304,7 @@ public class DataProcess {
         dataConnec.setLineStyle(connection.getLineStyle());
         dataConnec.setMetadataTable(meterNode.getMetadataList().get(0));
         dataConnec.setName(connection.getName());
-        dataConnec.setUniqueName("meterRow" + connection.getUniqueName());
+        dataConnec.setUniqueName("meterRow" + connection.getUniqueName()); //$NON-NLS-1$
         dataConnec.setSource(meterNode);
         dataConnec.setCondition(connection.getCondition());
         dataConnec.setConnectorName(connection.getConnectorName());
@@ -345,7 +346,7 @@ public class DataProcess {
             for (IConnection connection : previousNode.getIncomingConnections()) {
                 if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
                     if (multipleComponentManager.isSetConnector()) {
-                        String parameterString = "SCHEMA_" + multipleComponentManager.getConnector() + ":CONNECTION";
+                        String parameterString = "SCHEMA_" + multipleComponentManager.getConnector() + ":CONNECTION"; //$NON-NLS-1$ //$NON-NLS-2$
                         String tempLinkName = (String) previousNode.getElementParameter(parameterString).getValue();
                         if (!connection.getName().equals(tempLinkName)) {
                             continue;
@@ -573,7 +574,7 @@ public class DataProcess {
             // propagate metadataLists for output component. only apply to multi-input virtual component
             if (multipleComponentManager.isSetConnector() && multipleComponentManager.getOutputName().equals(curItem.getName())) {
                 // deactivate dummy component
-                if (curNode.getComponentName().equals("tDummyRow")) {// or use
+                if (curNode.getComponentName().equals("tDummyRow")) {// or use //$NON-NLS-1$
                     // "!multipleComponentManager.existsLinkTo()"
                     curNode.setActivate(false);
                 } else {
@@ -687,8 +688,8 @@ public class DataProcess {
 
                         // adjust destination value based on the connector name.(only apply to multi-input virtual
                         // component)
-                        if (multipleComponentManager.isSetConnector() && param.getSourceComponent().equals("self")
-                                && param.getSourceValue().equals("UNIQUE_NAME") && param.getTargetValue().equals("DESTINATION")) {
+                        if (multipleComponentManager.isSetConnector() && param.getSourceComponent().equals("self") //$NON-NLS-1$
+                                && param.getSourceValue().equals("UNIQUE_NAME") && param.getTargetValue().equals("DESTINATION")) { //$NON-NLS-1$ //$NON-NLS-2$
                             paramTarget.setValue(paramSource.getValue() + multipleComponentManager.getConnector());
                         } else {
                             paramTarget.setValue(paramSource.getValue());
@@ -696,7 +697,7 @@ public class DataProcess {
                     }
                     if ((paramSource == null) && (paramTarget != null)) {
                         // set connection name to paramTarget
-                        if (param.getSourceValue().endsWith(":CONNECTION")) {
+                        if (param.getSourceValue().endsWith(":CONNECTION")) { //$NON-NLS-1$
                             paramTarget.setValue(sourceNode.getElementParameter(param.getSourceValue()).getValue());
                         }
                     }
@@ -818,7 +819,7 @@ public class DataProcess {
                 dataConnec.setTarget(hashNode);
                 dataConnec.setConnectorName(connection.getConnectorName());
 
-                IElementParameter monitorParam = connection.getElementParameter("MONITOR_CONNECTION");
+                IElementParameter monitorParam = connection.getElementParameter("MONITOR_CONNECTION"); //$NON-NLS-1$
                 // if there is a monitor on this connection, then add the vFlowMeter and move the base lookup connection
                 // source from "graphicalNode" to the new meterNode.
                 if (monitorParam != null && ((Boolean) monitorParam.getValue())) {
@@ -839,7 +840,7 @@ public class DataProcess {
                         ((List<IConnection>) meterNode.getOutgoingConnections()).add(0, connecToMove);
                         ((DataConnection) connecToMove).setSource(meterNode);
                         ((DataConnection) connecToMove).setName(connecToMove.getName());
-                        ((DataConnection) connecToMove).setUniqueName("meterRow" + connecToMove.getUniqueName());
+                        ((DataConnection) connecToMove).setUniqueName("meterRow" + connecToMove.getUniqueName()); //$NON-NLS-1$
                     }
                 } else {
                     outgoingConnections = (List<IConnection>) refSource.getOutgoingConnections();
@@ -878,8 +879,7 @@ public class DataProcess {
             try {
                 addMultipleNode(graphicalNode, multipleComponentManagers);
             } catch (Exception e) {
-                Exception warpper = new Exception("The component " + graphicalNode.getLabel()
-                        + " encounters some problems. Please check.", e);
+                Exception warpper = new Exception(Messages.getString("DataProcess.checkComponent", graphicalNode.getLabel()), e); //$NON-NLS-1$
                 ExceptionHandler.process(warpper);
             }
         }
@@ -1023,13 +1023,13 @@ public class DataProcess {
         String suffix = graphicalNode.getUniqueName();
 
         // create tAsyncOut component
-        IComponent component = ComponentsFactoryProvider.getInstance().get("tAsyncOut");
-        DataNode asyncOutNode = new DataNode(component, "tAsyncOut_" + suffix);
+        IComponent component = ComponentsFactoryProvider.getInstance().get("tAsyncOut"); //$NON-NLS-1$
+        DataNode asyncOutNode = new DataNode(component, "tAsyncOut_" + suffix); //$NON-NLS-1$
         asyncOutNode.setActivate(connection.isActivate());
         asyncOutNode.setStart(false);
         asyncOutNode.setDesignSubjobStartNode(refNode.getDesignSubjobStartNode());
         IMetadataTable newMetadata = connection.getMetadataTable().clone();
-        newMetadata.setTableName("tAsyncOut_" + suffix);
+        newMetadata.setTableName("tAsyncOut_" + suffix); //$NON-NLS-1$
         asyncOutNode.getMetadataList().remove(0);
         asyncOutNode.getMetadataList().add(newMetadata);
         asyncOutNode.setSubProcessStart(false);
@@ -1040,7 +1040,7 @@ public class DataProcess {
         asyncOutNode.setOutgoingConnections(outgoingConnections);
         IElementParameter settingsParam = asyncOutNode.getProcess().getElementParameter(
                 EParameterName.PARALLELIZE_UNIT_SIZE.getName());
-        IElementParameter asyncParam = asyncOutNode.getElementParameter("UNIT_SIZE");
+        IElementParameter asyncParam = asyncOutNode.getElementParameter("UNIT_SIZE"); //$NON-NLS-1$
         if (settingsParam != null && asyncParam != null) {
             asyncParam.setValue(settingsParam.getValue());
         }
@@ -1049,9 +1049,9 @@ public class DataProcess {
         if (settingsParam != null && asyncParam != null) {
             asyncParam.setValue(componentParam.getValue());
         }
-        asyncParam = asyncOutNode.getElementParameter("DESTINATION");
+        asyncParam = asyncOutNode.getElementParameter("DESTINATION"); //$NON-NLS-1$
         if (settingsParam != null && asyncParam != null) {
-            asyncParam.setValue("tAsyncIn_" + suffix);
+            asyncParam.setValue("tAsyncIn_" + suffix); //$NON-NLS-1$
         }
 
         // replace target to have the tAsyncOut component
@@ -1059,13 +1059,13 @@ public class DataProcess {
         incomingConnections.add(connection);
 
         // create tAsyncIn component
-        component = ComponentsFactoryProvider.getInstance().get("tAsyncIn");
-        DataNode asyncInNode = new DataNode(component, "tAsyncIn_" + suffix);
+        component = ComponentsFactoryProvider.getInstance().get("tAsyncIn"); //$NON-NLS-1$
+        DataNode asyncInNode = new DataNode(component, "tAsyncIn_" + suffix); //$NON-NLS-1$
         asyncInNode.setActivate(connection.isActivate());
         asyncInNode.setStart(true);
         asyncInNode.setDesignSubjobStartNode(asyncInNode);
         newMetadata = connection.getMetadataTable().clone();
-        newMetadata.setTableName("tAsyncIn_" + suffix);
+        newMetadata.setTableName(Messages.getString("DataProcess.tableName") + suffix); //$NON-NLS-1$
         asyncInNode.getMetadataList().remove(0);
         asyncInNode.getMetadataList().add(newMetadata);
         asyncInNode.setSubProcessStart(true);
@@ -1080,7 +1080,7 @@ public class DataProcess {
         dataConnec.setActivate(connection.isActivate());
         dataConnec.setLineStyle(EConnectionType.FLOW_MAIN);
         dataConnec.setMetadataTable(newMetadata);
-        dataConnec.setName("pRow_" + connection.getName());
+        dataConnec.setName("pRow_" + connection.getName()); //$NON-NLS-1$
         dataConnec.setSource(asyncInNode);
         dataConnec.setTarget(refNode);
 

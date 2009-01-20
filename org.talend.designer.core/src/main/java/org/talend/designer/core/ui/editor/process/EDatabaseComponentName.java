@@ -41,71 +41,71 @@ import org.talend.core.model.repository.ERepositoryObjectType;
  */
 public enum EDatabaseComponentName {
     // DATABASES
-    DBMYSQL(DatabaseConnectionItem.class, EDatabaseTypeName.MYSQL, "tMysqlInput", "tMysqlOutput", true),
-    DBPSQL(DatabaseConnectionItem.class, EDatabaseTypeName.PSQL, "tPostgresqlInput", "tPostgresqlOutput", true),
-    PARACCEL(DatabaseConnectionItem.class, EDatabaseTypeName.PARACCEL, "tParAccelInput", "tParAccelOutput", true),
-    GREENPLUM(DatabaseConnectionItem.class, EDatabaseTypeName.GREENPLUM, "tGreenplumInput", "tGreenplumOutput", true),
+    DBMYSQL(DatabaseConnectionItem.class, EDatabaseTypeName.MYSQL, "tMysqlInput", "tMysqlOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
+    DBPSQL(DatabaseConnectionItem.class, EDatabaseTypeName.PSQL, "tPostgresqlInput", "tPostgresqlOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
+    PARACCEL(DatabaseConnectionItem.class, EDatabaseTypeName.PARACCEL, "tParAccelInput", "tParAccelOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
+    GREENPLUM(DatabaseConnectionItem.class, EDatabaseTypeName.GREENPLUM, "tGreenplumInput", "tGreenplumOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
 
-    NETEZZA(DatabaseConnectionItem.class, EDatabaseTypeName.NETEZZA, "tNetezzaInput", "tNetezzaOutput", true),
+    NETEZZA(DatabaseConnectionItem.class, EDatabaseTypeName.NETEZZA, "tNetezzaInput", "tNetezzaOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
 
-    DBPLUSPSQL(DatabaseConnectionItem.class, EDatabaseTypeName.PLUSPSQL, "tPostgresPlusInput", "tPostgresPlusOutput", true),
-    DBORACLEFORSID(DatabaseConnectionItem.class, EDatabaseTypeName.ORACLEFORSID, "tOracleInput", "tOracleOutput", true),
+    DBPLUSPSQL(DatabaseConnectionItem.class, EDatabaseTypeName.PLUSPSQL, "tPostgresPlusInput", "tPostgresPlusOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
+    DBORACLEFORSID(DatabaseConnectionItem.class, EDatabaseTypeName.ORACLEFORSID, "tOracleInput", "tOracleOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
 
-    DBORACLESN(DatabaseConnectionItem.class, EDatabaseTypeName.ORACLESN, "tOracleInput", "tOracleOutput", true),
+    DBORACLESN(DatabaseConnectionItem.class, EDatabaseTypeName.ORACLESN, "tOracleInput", "tOracleOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
 
-    DBGODBC(DatabaseConnectionItem.class, EDatabaseTypeName.GODBC, "tDBInput", "tDBOutput", true),
-    MSODBC(DatabaseConnectionItem.class, EDatabaseTypeName.MSODBC, "tDBInput", "tDBOutput", true),
-    IBMDB2(DatabaseConnectionItem.class, EDatabaseTypeName.IBMDB2, "tDB2Input", "tDB2Output", true),
-    SYBASEASE(DatabaseConnectionItem.class, EDatabaseTypeName.SYBASEASE, "tSybaseInput", "tSybaseOutput", true),
-    AS400(DatabaseConnectionItem.class, EDatabaseTypeName.AS400, "tAS400Input", "tAS400Output", true),
+    DBGODBC(DatabaseConnectionItem.class, EDatabaseTypeName.GODBC, "tDBInput", "tDBOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
+    MSODBC(DatabaseConnectionItem.class, EDatabaseTypeName.MSODBC, "tDBInput", "tDBOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
+    IBMDB2(DatabaseConnectionItem.class, EDatabaseTypeName.IBMDB2, "tDB2Input", "tDB2Output", true), //$NON-NLS-1$ //$NON-NLS-2$
+    SYBASEASE(DatabaseConnectionItem.class, EDatabaseTypeName.SYBASEASE, "tSybaseInput", "tSybaseOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
+    AS400(DatabaseConnectionItem.class, EDatabaseTypeName.AS400, "tAS400Input", "tAS400Output", true), //$NON-NLS-1$ //$NON-NLS-2$
 
     // General JDBC
-    GENERAL_JDBC(DatabaseConnectionItem.class, EDatabaseTypeName.GENERAL_JDBC, "tJDBCInput", "tJDBCOutput", true),
+    GENERAL_JDBC(DatabaseConnectionItem.class, EDatabaseTypeName.GENERAL_JDBC, "tJDBCInput", "tJDBCOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
     // this Sybase IQ not used.
     // SYBASEIQ(DatabaseConnectionItem.class,"SYBASE", "Sybase IQ", new Boolean(false), "SYBASE"),
-    MSSQLODBC(DatabaseConnectionItem.class, EDatabaseTypeName.MSSQL, "tMSSqlInput", "tMSSqlOutput", true),
+    MSSQLODBC(DatabaseConnectionItem.class, EDatabaseTypeName.MSSQL, "tMSSqlInput", "tMSSqlOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
     // this don't use in Branch 2.0
-    HSQL(DatabaseConnectionItem.class, EDatabaseTypeName.HSQLDB, "tHSQLDbInput", "tHSQLDbOutput", true),
-    JAVADB(DatabaseConnectionItem.class, EDatabaseTypeName.JAVADB, "tJavaDBInput", "tJavaDBOutput", true),
-    INGRES(DatabaseConnectionItem.class, EDatabaseTypeName.INGRES, "tIngresInput", "tIngresOutput", true), // "INGRES"),
-    INTERBASE(DatabaseConnectionItem.class, EDatabaseTypeName.INTERBASE, "tInterbaseInput", "tInterbaseOutput", true), // "INTERBASE"
+    HSQL(DatabaseConnectionItem.class, EDatabaseTypeName.HSQLDB, "tHSQLDbInput", "tHSQLDbOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
+    JAVADB(DatabaseConnectionItem.class, EDatabaseTypeName.JAVADB, "tJavaDBInput", "tJavaDBOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
+    INGRES(DatabaseConnectionItem.class, EDatabaseTypeName.INGRES, "tIngresInput", "tIngresOutput", true), // "INGRES"), //$NON-NLS-1$ //$NON-NLS-2$
+    INTERBASE(DatabaseConnectionItem.class, EDatabaseTypeName.INTERBASE, "tInterbaseInput", "tInterbaseOutput", true), // "INTERBASE" //$NON-NLS-1$ //$NON-NLS-2$
     // )
     // ,
-    SQLITE(DatabaseConnectionItem.class, EDatabaseTypeName.SQLITE, "tSQLiteInput", "tSQLiteOutput", true), // "SQLITE"),
-    FIREBIRD(DatabaseConnectionItem.class, EDatabaseTypeName.FIREBIRD, "tFirebirdInput", "tFirebirdOutput", true), // "FIREBIRD"
+    SQLITE(DatabaseConnectionItem.class, EDatabaseTypeName.SQLITE, "tSQLiteInput", "tSQLiteOutput", true), // "SQLITE"), //$NON-NLS-1$ //$NON-NLS-2$
+    FIREBIRD(DatabaseConnectionItem.class, EDatabaseTypeName.FIREBIRD, "tFirebirdInput", "tFirebirdOutput", true), // "FIREBIRD" //$NON-NLS-1$ //$NON-NLS-2$
     // ),
-    INFORMIX(DatabaseConnectionItem.class, EDatabaseTypeName.INFORMIX, "tInformixInput", "tInformixOutput", true), // "INFORMIX"
+    INFORMIX(DatabaseConnectionItem.class, EDatabaseTypeName.INFORMIX, "tInformixInput", "tInformixOutput", true), // "INFORMIX" //$NON-NLS-1$ //$NON-NLS-2$
     // );
-    ACCESS(DatabaseConnectionItem.class, EDatabaseTypeName.ACCESS, "tAccessInput", "tAccessOutput", true), // "ACCESS");
+    ACCESS(DatabaseConnectionItem.class, EDatabaseTypeName.ACCESS, "tAccessInput", "tAccessOutput", true), // "ACCESS"); //$NON-NLS-1$ //$NON-NLS-2$
 
-    TERADATA(DatabaseConnectionItem.class, EDatabaseTypeName.TERADATA, "tELTTeradataMap", "tELTTeradataMap"), // "TERADATA"
+    TERADATA(DatabaseConnectionItem.class, EDatabaseTypeName.TERADATA, "tELTTeradataMap", "tELTTeradataMap"), // "TERADATA" //$NON-NLS-1$ //$NON-NLS-2$
     // );
-    TERADATA_TABLE(DatabaseConnectionItem.class, EDatabaseTypeName.TERADATA, "tELTTeradataInput", "tELTTeradataOutput", true), // "TERADATA"
+    TERADATA_TABLE(DatabaseConnectionItem.class, EDatabaseTypeName.TERADATA, "tELTTeradataInput", "tELTTeradataOutput", true), // "TERADATA" //$NON-NLS-1$ //$NON-NLS-2$
     // )
     // ;
 
-    MAXDB(DatabaseConnectionItem.class, EDatabaseTypeName.MAXDB, "tMaxDBInput", "tMaxDBOutput", true), // "MAXDB");
+    MAXDB(DatabaseConnectionItem.class, EDatabaseTypeName.MAXDB, "tMaxDBInput", "tMaxDBOutput", true), // "MAXDB"); //$NON-NLS-1$ //$NON-NLS-2$
 
     // FILES
-    FILEARFF(FakeFileConnectionItem.class, "tFileInputARFF", "tFileOutputARFF", "DELIMITED"),
-    FILEDELIMITED(DelimitedFileConnectionItem.class, "tFileInputDelimited", "tFileOutputDelimited", "DELIMITED"),
-    FILEEXCEL(ExcelFileConnectionItem.class, "tFileInputExcel", "tFileOutputExcel", "EXCEL"),
-    FILELDIF(LdifFileConnectionItem.class, "tFileInputLDIF", "tFileOutputLDIF", "LDIF"),
-    FILEPOSITIONAL(PositionalFileConnectionItem.class, "tFileInputPositional", "tFileOutputPositional", "POSITIONAL"),
-    FILEREGEX(RegExFileConnectionItem.class, "tFileInputRegex", null, "REGEX"),
-    FILEXML(XmlFileConnectionItem.class, "tFileInputXML", "tFileOutputXML", "XML"),
-    SAPFFUNCTION(SAPConnectionItem.class, "tSAPInput", "tSAPOutput", "SAP"),
-    GENERICSCHEMA(GenericSchemaConnectionItem.class, (String) null, null, "GENERICSCHEMA"),
+    FILEARFF(FakeFileConnectionItem.class, "tFileInputARFF", "tFileOutputARFF", "DELIMITED"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    FILEDELIMITED(DelimitedFileConnectionItem.class, "tFileInputDelimited", "tFileOutputDelimited", "DELIMITED"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    FILEEXCEL(ExcelFileConnectionItem.class, "tFileInputExcel", "tFileOutputExcel", "EXCEL"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    FILELDIF(LdifFileConnectionItem.class, "tFileInputLDIF", "tFileOutputLDIF", "LDIF"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    FILEPOSITIONAL(PositionalFileConnectionItem.class, "tFileInputPositional", "tFileOutputPositional", "POSITIONAL"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    FILEREGEX(RegExFileConnectionItem.class, "tFileInputRegex", null, "REGEX"), //$NON-NLS-1$ //$NON-NLS-2$
+    FILEXML(XmlFileConnectionItem.class, "tFileInputXML", "tFileOutputXML", "XML"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    SAPFFUNCTION(SAPConnectionItem.class, "tSAPInput", "tSAPOutput", "SAP"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    GENERICSCHEMA(GenericSchemaConnectionItem.class, (String) null, null, "GENERICSCHEMA"), //$NON-NLS-1$
 
-    FILEEBCDIC(EbcdicConnectionItem.class, "tFileInputEBCDIC", "tFileOutputEBCDIC", "EBCDIC"),
+    FILEEBCDIC(EbcdicConnectionItem.class, "tFileInputEBCDIC", "tFileOutputEBCDIC", "EBCDIC"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-    LDAP(LDAPSchemaConnectionItem.class, "tLDAPInput", "tLDAPOutput", "LDAP"),
+    LDAP(LDAPSchemaConnectionItem.class, "tLDAPInput", "tLDAPOutput", "LDAP"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-    WSDL(WSDLSchemaConnectionItem.class, "tWebServiceInput", null, "WSDL"),
-    SALESFORCE(SalesforceSchemaConnectionItem.class, "tSalesforceInput", null, "SALESFORCE"),
+    WSDL(WSDLSchemaConnectionItem.class, "tWebServiceInput", null, "WSDL"), //$NON-NLS-1$ //$NON-NLS-2$
+    SALESFORCE(SalesforceSchemaConnectionItem.class, "tSalesforceInput", null, "SALESFORCE"), //$NON-NLS-1$ //$NON-NLS-2$
 
     // RunJob
-    RunJob(ProcessItem.class, "tRunJob", "tRunJob");
+    RunJob(ProcessItem.class, "tRunJob", "tRunJob"); //$NON-NLS-1$ //$NON-NLS-2$
 
     // DBORACLESN("ORACLE", "Oracle with service name", new Boolean(true), "ORACLE"),
     // DBGODBC(DatabaseConnectionItem.class,"MSODBC", "Generic ODBC", new Boolean(false), "MSODBC"),
@@ -161,7 +161,7 @@ public enum EDatabaseComponentName {
 
     public String getProductName() {
         if (dbTypeName != null) {
-            return "DATABASE:" + dbTypeName.getProduct();
+            return "DATABASE:" + dbTypeName.getProduct(); //$NON-NLS-1$
         }
 
         return this.productName;

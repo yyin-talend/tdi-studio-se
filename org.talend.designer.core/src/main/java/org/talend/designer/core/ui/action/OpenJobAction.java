@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.IActionDelegate2;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.repository.ui.dialog.OpenJobSelectionDialog;
 import org.talend.repository.ui.dialog.RepositoryReviewDialog;
 
@@ -29,8 +30,8 @@ public class OpenJobAction extends Action implements IWorkbenchWindowActionDeleg
 
     public OpenJobAction() {
         super();
-        setDescription("Open a job in the editor");
-        setToolTipText("Open a Job");
+        setDescription(Messages.getString("OpenJobAction.description")); //$NON-NLS-1$
+        setToolTipText(Messages.getString("OpenJobAction.tipText")); //$NON-NLS-1$
     }
 
     public void run() {

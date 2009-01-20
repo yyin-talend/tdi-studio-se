@@ -133,7 +133,7 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
         CCombo combo = (CCombo) dField.getControl();
         FormData data;
         if (param.getParentParameter() != null) {
-            combo.setData(PARAMETER_NAME, param.getParentParameter().getName() + ":" + param.getName());
+            combo.setData(PARAMETER_NAME, param.getParentParameter().getName() + ":" + param.getName()); //$NON-NLS-1$
         } else {
             combo.setData(PARAMETER_NAME, param.getName());
         }
@@ -350,10 +350,10 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
         }
         String filter = param.getFilter();
 
-        if (filter.startsWith("INPUT:")) {
+        if (filter.startsWith("INPUT:")) { //$NON-NLS-1$
             Set<IConnection> conns = new HashSet<IConnection>();
             conns.addAll(source.getIncomingConnections());
-            String[] f = filter.substring("INPUT:".length()).split("\\|"); //$NON-NLS-1$
+            String[] f = filter.substring("INPUT:".length()).split("\\|"); //$NON-NLS-1$ //$NON-NLS-2$
             List<String> filterArray = new ArrayList<String>(f.length);
             for (int i = 0; i < f.length; i++) {
                 filterArray.add(f[i].trim());
@@ -384,7 +384,7 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
         param.setListItemsValue(connectionValueList);
 
         if (!ArrayUtils.contains(connectionValueList, param.getValue())) {
-            param.setValue("");
+            param.setValue(""); //$NON-NLS-1$
         }
     }
 }

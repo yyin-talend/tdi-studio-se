@@ -70,6 +70,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.ActiveProcessTracker;
@@ -163,7 +164,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                 }
 
                 int total = repositoryObjects.size(); // + elem.getElementParameters().size();
-                monitorWrap.beginTask("Gathering informations from repository", total);
+                monitorWrap.beginTask(Messages.getString("MultipleThreadDynamicComposite.gatherInformation"), total); //$NON-NLS-1$
 
                 IElementParameter propertyParam = elem.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE, section);
                 String repositoryValue = null;
@@ -245,13 +246,13 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                                 if (factory.getStatus(connectionItem) != ERepositoryStatus.DELETED) {
                                     if (!factory.isDeleted(table)) {
                                         IMetadataTable newTable = ConvertionHelper.convert(table);
-                                        repositoryTableMap.put(connectionItem.getProperty().getId() + " - " + table.getLabel(),
+                                        repositoryTableMap.put(connectionItem.getProperty().getId() + " - " + table.getLabel(), //$NON-NLS-1$
                                                 newTable);
                                         if (connection instanceof DatabaseConnection) {
                                             String dbType = ((DatabaseConnection) connection).getDatabaseType();
                                             String schema = ((DatabaseConnection) connection).getSchema();
                                             tableIdAndDbTypeMap.put(newTable.getId(), dbType);
-                                            if (schema != null && !schema.equals("")) {
+                                            if (schema != null && !schema.equals("")) { //$NON-NLS-1$
                                                 tableIdAndDbSchemaMap.put(newTable.getId(), schema);
                                             }
                                         }
@@ -264,7 +265,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                                 if (queriesConnection != null) {
                                     List<Query> qs = queriesConnection.getQuery();
                                     for (Query query : qs) {
-                                        repositoryQueryStoreMap.put(connectionItem.getProperty().getId() + " - "
+                                        repositoryQueryStoreMap.put(connectionItem.getProperty().getId() + " - " //$NON-NLS-1$
                                                 + query.getLabel(), query);
                                     }
                                 }
@@ -413,7 +414,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
             additionalHeightSize = estimatePropertyHeightSize(maxRow, listParam);
         }
 
-        long lastTime = TimeMeasure.timeSinceBegin("DC:refresh:" + getCurrentComponent());
+        long lastTime = TimeMeasure.timeSinceBegin("DC:refresh:" + getCurrentComponent()); //$NON-NLS-1$
         for (int curRow = 1; curRow <= maxRow; curRow++) {
             maxRowSize = 0;
             nbInRow = 0;
@@ -480,10 +481,10 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                                 }
                             }
 
-                            lastTime = TimeMeasure.timeSinceBegin("DC:refresh:" + getCurrentComponent()) - lastTime;
+                            lastTime = TimeMeasure.timeSinceBegin("DC:refresh:" + getCurrentComponent()) - lastTime; //$NON-NLS-1$
                             if (DynamicTabbedPropertySection.DEBUG_TIME) {
-                                System.out.println("DC;create:" + curParam.getField().getName() + ";" + getCurrentComponent()
-                                        + ";" + lastTime);
+                                System.out.println("DC;create:" + curParam.getField().getName() + ";" + getCurrentComponent() //$NON-NLS-1$ //$NON-NLS-2$
+                                        + ";" + lastTime); //$NON-NLS-1$
                             }
 
                             // System.out.println("param:" + curParam.getName()
@@ -586,7 +587,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                 if (elementParameter.getParentParameter() == null) {
                     control = hashCurControls.get(elementParameter.getName());
                 } else {
-                    control = hashCurControls.get(elementParameter.getParentParameter().getName() + ":"
+                    control = hashCurControls.get(elementParameter.getParentParameter().getName() + ":" //$NON-NLS-1$
                             + elementParameter.getName());
                 }
                 if ((control == null && show) || (control != null && !show)) {
@@ -691,7 +692,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
     private void operationInThread() {
         TimeMeasure.display = false;
         TimeMeasure.measureActive = true;
-        TimeMeasure.begin("DC:refresh:" + getCurrentComponent());
+        TimeMeasure.begin("DC:refresh:" + getCurrentComponent()); //$NON-NLS-1$
 
         if (elem == null) {
             return;
@@ -764,10 +765,10 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
 
         }
         checkErrorsWhenViewRefreshed = false;
-        long time = TimeMeasure.timeSinceBegin("DC:refresh:" + getCurrentComponent());
-        TimeMeasure.end("DC:refresh:" + getCurrentComponent());
+        long time = TimeMeasure.timeSinceBegin("DC:refresh:" + getCurrentComponent()); //$NON-NLS-1$
+        TimeMeasure.end("DC:refresh:" + getCurrentComponent()); //$NON-NLS-1$
         if (DynamicTabbedPropertySection.DEBUG_TIME) {
-            System.out.println("DC;total;" + getCurrentComponent() + ";" + time);
+            System.out.println("DC;total;" + getCurrentComponent() + ";" + time); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         isRefreshing = false;
@@ -1048,15 +1049,15 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
         if ((propertyValue == null || !(propertyValue instanceof String)) && defaultPropertyValue != null) {
             propertyValue = defaultPropertyValue;
         }
-        if (propertyValue == null || propertyValue.equals("")) {
-            return "";
+        if (propertyValue == null || propertyValue.equals("")) { //$NON-NLS-1$
+            return ""; //$NON-NLS-1$
         }
         if (istable) {
             //
         } else {
             //
         }
-        return "";
+        return ""; //$NON-NLS-1$
     }
 
     /**

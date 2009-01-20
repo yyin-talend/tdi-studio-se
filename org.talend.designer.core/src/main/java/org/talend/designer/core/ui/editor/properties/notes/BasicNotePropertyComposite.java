@@ -152,13 +152,13 @@ public class BasicNotePropertyComposite extends AbstractNotePropertyComposite {
      * DOC qwei Comment method "createTextcontrol".
      */
     private void createTextControl(Composite parent) {
-        CLabel textLabel = getWidgetFactory().createCLabel(composite, Messages.getString("TextNoteSection.Label"));
+        CLabel textLabel = getWidgetFactory().createCLabel(composite, Messages.getString("TextNoteSection.Label")); //$NON-NLS-1$
         //$NON-NLS-1$
         FormData data = new FormData();
         data.left = new FormAttachment(0, 0);
         data.top = new FormAttachment(colorsAndFontsGroup, 30);
         textLabel.setLayoutData(data);
-        text = getWidgetFactory().createText(composite, "", SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
+        text = getWidgetFactory().createText(composite, "", SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL); //$NON-NLS-1$
         //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
@@ -204,35 +204,35 @@ public class BasicNotePropertyComposite extends AbstractNotePropertyComposite {
      * DOC qwei Comment method "createAlignGroups".
      */
     private void createAlignGroups(Composite parent) {
-        adjustLabelGroup = getWidgetFactory().createGroup(composite, "Adjust horizontal");
+        adjustLabelGroup = getWidgetFactory().createGroup(composite, "Adjust horizontal"); //$NON-NLS-1$
         FormData data = new FormData();
         adjustLabelGroup.setLayout(new GridLayout(3, false));
         data.left = new FormAttachment(colorsAndFontsGroup, 10);
         data.top = new FormAttachment(check, 30);
         adjustLabelGroup.setLayoutData(data);
-        leftBtn = getWidgetFactory().createButton(adjustLabelGroup, "left", SWT.RADIO);
+        leftBtn = getWidgetFactory().createButton(adjustLabelGroup, "left", SWT.RADIO); //$NON-NLS-1$
         leftBtn.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         leftBtn.setSelection((Boolean) note.getPropertyValue(EParameterName.NOTETXT_LEFT.getName()));
-        rightBtn = getWidgetFactory().createButton(adjustLabelGroup, "right", SWT.RADIO);
+        rightBtn = getWidgetFactory().createButton(adjustLabelGroup, "right", SWT.RADIO); //$NON-NLS-1$
         rightBtn.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         rightBtn.setSelection((Boolean) note.getPropertyValue(EParameterName.NOTETXT_RIGHT.getName()));
-        centreBtn = getWidgetFactory().createButton(adjustLabelGroup, "centre", SWT.RADIO);
+        centreBtn = getWidgetFactory().createButton(adjustLabelGroup, "centre", SWT.RADIO); //$NON-NLS-1$
         centreBtn.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         centreBtn.setSelection((Boolean) note.getPropertyValue(EParameterName.NOTETXT_CENTER.getName()));
 
-        adjustTextGroup = getWidgetFactory().createGroup(composite, "Adjust vertical");
+        adjustTextGroup = getWidgetFactory().createGroup(composite, "Adjust vertical"); //$NON-NLS-1$
         data = new FormData();
         adjustTextGroup.setLayout(new GridLayout(3, false));
         data.left = new FormAttachment(adjustLabelGroup, 10);
         data.top = new FormAttachment(check, 30);
         adjustTextGroup.setLayoutData(data);
-        topBtn = getWidgetFactory().createButton(adjustTextGroup, "top", SWT.RADIO);
+        topBtn = getWidgetFactory().createButton(adjustTextGroup, "top", SWT.RADIO); //$NON-NLS-1$
         topBtn.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         topBtn.setSelection((Boolean) note.getPropertyValue(EParameterName.NOTETXT_TOP.getName()));
-        bottomBtn = getWidgetFactory().createButton(adjustTextGroup, "bottom", SWT.RADIO);
+        bottomBtn = getWidgetFactory().createButton(adjustTextGroup, "bottom", SWT.RADIO); //$NON-NLS-1$
         bottomBtn.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         bottomBtn.setSelection((Boolean) note.getPropertyValue(EParameterName.NOTETXT_BOTTOM.getName()));
-        centreLabelBtn = getWidgetFactory().createButton(adjustTextGroup, "centre", SWT.RADIO);
+        centreLabelBtn = getWidgetFactory().createButton(adjustTextGroup, "centre", SWT.RADIO); //$NON-NLS-1$
         centreLabelBtn.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         centreLabelBtn.setSelection((Boolean) note.getPropertyValue(EParameterName.NOTELABEL_CENTER.getName()));
         addListener();
@@ -242,7 +242,7 @@ public class BasicNotePropertyComposite extends AbstractNotePropertyComposite {
      * DOC qwei Comment method "createFontsAndColorsGroups".
      */
     protected Group createFontsAndColorsGroups(Composite parent) {
-        colorsAndFontsGroup = getWidgetFactory().createGroup(parent, "Fonts and Colors");
+        colorsAndFontsGroup = getWidgetFactory().createGroup(parent, "Fonts and Colors"); //$NON-NLS-1$
         FormData data = new FormData();
         data.left = new FormAttachment(0, 0);
         data.top = new FormAttachment(check, 10);
@@ -356,7 +356,7 @@ public class BasicNotePropertyComposite extends AbstractNotePropertyComposite {
                     selectedColor = new RGB(0, 0, 0);
                 }
                 if (selectedColor != null) {
-                    String value = selectedColor.red + ";" + selectedColor.green + ";" + selectedColor.blue;
+                    String value = selectedColor.red + ";" + selectedColor.green + ";" + selectedColor.blue; //$NON-NLS-1$ //$NON-NLS-2$
                     Command cmd = new PropertyChangeCommand(note, EParameterName.NOTETXT_COLOR.getName(), value);
                     getCommandStack().execute(cmd);
                     note.refresh();
@@ -398,7 +398,7 @@ public class BasicNotePropertyComposite extends AbstractNotePropertyComposite {
                     selectedColor = new RGB(237, 201, 122);
                 }
                 if (selectedColor != null) {
-                    String value = selectedColor.red + ";" + selectedColor.green + ";" + selectedColor.blue;
+                    String value = selectedColor.red + ";" + selectedColor.green + ";" + selectedColor.blue; //$NON-NLS-1$ //$NON-NLS-2$
                     Command cmd = new PropertyChangeCommand(note, EParameterName.NOTE_LINECOLOR.getName(), value);
                     getCommandStack().execute(cmd);
                     note.refresh();
@@ -437,7 +437,7 @@ public class BasicNotePropertyComposite extends AbstractNotePropertyComposite {
                     selectedColor = new RGB(255, 255, 203);
                 }
                 if (selectedColor != null) {
-                    String value = selectedColor.red + ";" + selectedColor.green + ";" + selectedColor.blue;
+                    String value = selectedColor.red + ";" + selectedColor.green + ";" + selectedColor.blue; //$NON-NLS-1$ //$NON-NLS-2$
                     Command cmd = new PropertyChangeCommand(note, EParameterName.NOTE_COLOR.getName(), value);
                     getCommandStack().execute(cmd);
                     note.refresh();

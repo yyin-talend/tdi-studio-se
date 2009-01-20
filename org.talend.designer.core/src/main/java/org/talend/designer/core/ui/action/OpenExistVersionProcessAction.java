@@ -59,7 +59,7 @@ public class OpenExistVersionProcessAction extends EditPropertiesAction {
         OpenExistVersionProcessWizard wizard = new OpenExistVersionProcessWizard(node.getObject());
         PropertyManagerWizardDialog dialog = new PropertyManagerWizardDialog(Display.getCurrent().getActiveShell(), wizard);
         dialog.setPageSize(300, 250);
-        dialog.setTitle(Messages.getString("OpenExistVersionProcess.open.dialog"));
+        dialog.setTitle(Messages.getString("OpenExistVersionProcess.open.dialog")); //$NON-NLS-1$
         if (dialog.open() == Dialog.OK) {
             refresh(node);
             // refresh the corresponding editor's name

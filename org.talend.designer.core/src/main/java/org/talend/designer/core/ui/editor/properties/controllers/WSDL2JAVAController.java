@@ -97,7 +97,8 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#createControl
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#createControl
      * (org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter, int, int, int,
      * org.eclipse.swt.widgets.Control)
      */
@@ -166,7 +167,8 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize
      * (org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
      */
     @Override
@@ -216,7 +218,8 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createCommand()
+     * @see
+     * org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createCommand()
      */
     private void generateJavaFile() {
         Node node = (Node) elem;
@@ -234,11 +237,16 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
 
         // give some info about the generate stub.jar result to GUI.
         if (hasError) {
-            MessageDialog.openError(Display.getDefault().getActiveShell(), "Talend Open Studio", "Generate java files failed.\n"
-                    + java2WSDL.getException().getClass().getCanonicalName() + " : " + java2WSDL.getException().getMessage()); //$NON-NLS-1$
+            MessageDialog
+                    .openError(
+                            Display.getDefault().getActiveShell(),
+                            org.talend.designer.core.i18n.Messages.getString("WSDL2JAVAController.TOS"), org.talend.designer.core.i18n.Messages.getString("WSDL2JAVAController.generateFileFailed" //$NON-NLS-1$ //$NON-NLS-2$
+                                            , java2WSDL.getException().getClass().getCanonicalName(), java2WSDL.getException()
+                                                    .getMessage()));
         } else {
-            MessageDialog.openInformation(Display.getDefault().getActiveShell(), "Talend Open Studio", //$NON-NLS-1$
-                    "Generate java files from the wsdl file: " + wsdlfile + " successfully."); //$NON-NLS-1$ //$NON-NLS-2$
+            MessageDialog.openInformation(Display.getDefault().getActiveShell(), org.talend.designer.core.i18n.Messages
+                    .getString("WSDL2JAVAController.TOS"), //$NON-NLS-1$
+                    org.talend.designer.core.i18n.Messages.getString("WSDL2JAVAController.generateFileFailedFromWSDL", wsdlfile)); //$NON-NLS-1$
         }
 
         IPath path = new Path(jobName + "/" + nodeName); //$NON-NLS-1$
@@ -324,7 +332,7 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
             Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
                     .getProject();
 
-            IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/" + JavaUtils.JAVA_ROUTINES_DIRECTORY + "/"
+            IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/" + JavaUtils.JAVA_ROUTINES_DIRECTORY + "/" //$NON-NLS-1$ //$NON-NLS-2$
                     + routineItem.getProperty().getLabel() + JavaUtils.JAVA_EXTENSION);
 
             if (copyToTemp) {

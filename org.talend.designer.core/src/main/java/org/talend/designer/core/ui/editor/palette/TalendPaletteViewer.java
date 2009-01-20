@@ -45,15 +45,16 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.utils.threading.ExecutionLimiter;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.designer.core.i18n.Messages;
 
 /**
  * 
  */
 public class TalendPaletteViewer extends PaletteViewer {
 
-    private static final String TOOL_TIP = "Enter component prefix or pattern (*, ?)";
+    private static final String TOOL_TIP = Messages.getString("TalendPaletteViewer.tooltipValue"); //$NON-NLS-1$
 
-    private static final String SEARCH_COMPONENT = "search component...";
+    private static final String SEARCH_COMPONENT = Messages.getString("TalendPaletteViewer.searchComponent"); //$NON-NLS-1$
 
     private static List<Text> filters = new ArrayList<Text>();
 
@@ -76,7 +77,7 @@ public class TalendPaletteViewer extends PaletteViewer {
                         runnable.stopExpand();
                     }
                     filterPalette(text);
-                    if (!text.getText().equals("")) {
+                    if (!text.getText().equals("")) { //$NON-NLS-1$
                         executor.execute(new ExpandPaletteRunnable());
                     }
                 }
@@ -139,7 +140,7 @@ public class TalendPaletteViewer extends PaletteViewer {
         Image okImage = new Image(Display.getDefault(), bounds.width + offset, bounds.height + offset);
         GC gc = new GC(okImage);
         gc.setBackground(toolbar.getBackground());
-        gc.drawText("OK", 0, 0, false);
+        gc.drawText("OK", 0, 0, false); //$NON-NLS-1$
         gc.dispose();
         okItem.setImage(okImage);
         okItem.addSelectionListener(new SelectionAdapter() {
@@ -158,7 +159,7 @@ public class TalendPaletteViewer extends PaletteViewer {
         clearItem.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent e) {
-                text.setText("");
+                text.setText(""); //$NON-NLS-1$
                 // Reset to default palette
                 startFiltering(text);
             }
@@ -198,7 +199,7 @@ public class TalendPaletteViewer extends PaletteViewer {
 
             public void mouseDown(MouseEvent e) {
                 if (text.getText().equals(SEARCH_COMPONENT)) {
-                    text.setText("");
+                    text.setText(""); //$NON-NLS-1$
                 }
             }
 
@@ -214,7 +215,7 @@ public class TalendPaletteViewer extends PaletteViewer {
             }
 
             public void focusLost(FocusEvent e) {
-                if (text.getText() == "") {
+                if (text.getText() == "") { //$NON-NLS-1$
                     text.setText(SEARCH_COMPONENT);
                 }
             }

@@ -34,7 +34,7 @@ import org.talend.designer.core.ui.MultiPageTalendEditor;
  */
 public class SaveJobBeforeRunAction extends Action {
 
-    private static final String T_RUN_JOB_NAME = "tRunJob";
+    private static final String T_RUN_JOB_NAME = "tRunJob"; //$NON-NLS-1$
 
     IProcess activeProcess;
 
@@ -74,8 +74,8 @@ public class SaveJobBeforeRunAction extends Action {
     private void saveJob(List<? extends INode> nodes, MultiPageTalendEditor editor) {
         for (Iterator<? extends INode> iter = nodes.iterator(); iter.hasNext();) {
             INode node = iter.next();
-            boolean saveBeforeRun = Boolean.parseBoolean(ElementParameterParser.getValue(node, "__SAVE_BEFORE_RUN__"));
-            String process = ElementParameterParser.getValue(node, "__PROCESS_TYPE_PROCESS__");
+            boolean saveBeforeRun = Boolean.parseBoolean(ElementParameterParser.getValue(node, "__SAVE_BEFORE_RUN__")); //$NON-NLS-1$
+            String process = ElementParameterParser.getValue(node, "__PROCESS_TYPE_PROCESS__"); //$NON-NLS-1$
             String editorName = editor.getProcess().getName();
             if (saveBeforeRun && process.indexOf(editorName) > -1) {
                 editor.doSave(new NullProgressMonitor());

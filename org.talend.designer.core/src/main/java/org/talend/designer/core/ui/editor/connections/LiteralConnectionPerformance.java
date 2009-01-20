@@ -20,13 +20,13 @@ import org.apache.commons.lang.StringUtils;
  */
 public class LiteralConnectionPerformance extends ConnectionPerformance {
 
-    private static final String COLOR_OK = "#229922";
+    private static final String COLOR_OK = "#229922"; //$NON-NLS-1$
 
-    private static final String COLOR_ERROR = "#AA3322";
+    private static final String COLOR_ERROR = "#AA3322"; //$NON-NLS-1$
 
-    private static final String COLOR_TRUE = "#229922";
+    private static final String COLOR_TRUE = "#229922"; //$NON-NLS-1$
 
-    private static final String COLOR_FALSE = "#AA3322";
+    private static final String COLOR_FALSE = "#AA3322"; //$NON-NLS-1$
 
     /**
      * DOC xtan LiteralConnectionPerformance constructor comment.
@@ -53,7 +53,7 @@ public class LiteralConnectionPerformance extends ConnectionPerformance {
             return;
         }
 
-        String[] part = msg.split("\\|");
+        String[] part = msg.split("\\|"); //$NON-NLS-1$
         if (part != null && part.length == 3) {
             // update label
             String oldLabel = label;
@@ -66,19 +66,19 @@ public class LiteralConnectionPerformance extends ConnectionPerformance {
 
     private String createHtmlText(String literal) {
         StringBuilder html = new StringBuilder();
-        String pattern = "<font color='%1$s'>%2$s</font><br>";
+        String pattern = "<font color='%1$s'>%2$s</font><br>"; //$NON-NLS-1$
         html.append(String.format(pattern, getColorStatus(literal), literal));
         return html.toString();
     }
 
     private String getColorStatus(String status) {
-        if ("true".equalsIgnoreCase(status)) {
+        if ("true".equalsIgnoreCase(status)) { //$NON-NLS-1$
             return COLOR_TRUE;
-        } else if ("false".equalsIgnoreCase(status)) {
+        } else if ("false".equalsIgnoreCase(status)) { //$NON-NLS-1$
             return COLOR_FALSE;
-        } else if ("ok".equalsIgnoreCase(status)) {
+        } else if ("ok".equalsIgnoreCase(status)) { //$NON-NLS-1$
             return COLOR_OK;
-        } else if ("error".equalsIgnoreCase(status)) {
+        } else if ("error".equalsIgnoreCase(status)) { //$NON-NLS-1$
             return COLOR_ERROR;
         }
 

@@ -194,8 +194,8 @@ public class GEFPasteAction extends SelectionAction {
                         if (!findProcessProviderFromPID.isExtensionProcess(editor.getProcess())) {
                             MessageBox messagebox = new MessageBox(PlatformUI.getWorkbench().getDisplay().getActiveShell(),
                                     SWT.ICON_WARNING);
-                            messagebox.setText("Warning!");
-                            messagebox.setMessage(Messages.getString("GEFPasteAction.warningMessages"));
+                            messagebox.setText(Messages.getString("GEFPasteAction.textWarning")); //$NON-NLS-1$
+                            messagebox.setMessage(Messages.getString("GEFPasteAction.warningMessages")); //$NON-NLS-1$
                             messagebox.open();
                             return;
                         }

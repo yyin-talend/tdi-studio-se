@@ -68,7 +68,7 @@ import org.talend.repository.ProjectManager;
  */
 public class JobHierarchyViewPart extends ViewPart implements IJobHierarchyViewPart {
 
-    public static final String ID = "org.talend.designer.core.ui.hierarchy.JobHierarchyViewPart";
+    public static final String ID = "org.talend.designer.core.ui.hierarchy.JobHierarchyViewPart"; //$NON-NLS-1$
 
     private static final String GROUP_FOCUS = "group.focus"; //$NON-NLS-1$
 
@@ -137,7 +137,7 @@ public class JobHierarchyViewPart extends ViewPart implements IJobHierarchyViewP
         focusOnTypeAction = new FocusOnJobAction(this);
     }
 
-    String showEmptyLabel = "To display the job hierarchy, select a job, and select the \'Open Job Hierarchy\' menu option. Alternatively, you can drag and drop an job from repository view onto this view.";
+    String showEmptyLabel = Messages.getString("JobHierarchyViewPart.showDecription"); //$NON-NLS-1$
 
     private int fCurrentLayout;
 
@@ -237,7 +237,7 @@ public class JobHierarchyViewPart extends ViewPart implements IJobHierarchyViewP
         dependencyViewer.setLabelProvider(provider);
         Control control = dependencyViewer.getTable();
 
-        String popupId = "DependencyViewer_ContextMenu";
+        String popupId = "DependencyViewer_ContextMenu"; //$NON-NLS-1$
         MenuManager menuMgr = new MenuManager();
         menuMgr.setRemoveAllWhenShown(true);
         menuMgr.addMenuListener(new IMenuListener() {
@@ -358,7 +358,7 @@ public class JobHierarchyViewPart extends ViewPart implements IJobHierarchyViewP
                     setViewerVisibility(true);
                 }
             } else {
-                fEmptyTypesViewer.setText("there is some reason.");
+                fEmptyTypesViewer.setText(Messages.getString("JobHierarchyViewPart.reason")); //$NON-NLS-1$
                 setViewerVisibility(false);
             }
         }
@@ -437,7 +437,7 @@ public class JobHierarchyViewPart extends ViewPart implements IJobHierarchyViewP
             clearInput();
         } else {
             inputProcess = newProcess;
-            fNoHierarchyShownLabel.setText(Messages.getString("JobHierarchyMessages.JobHierarchyViewPart_createinput",
+            fNoHierarchyShownLabel.setText(Messages.getString("JobHierarchyMessages.JobHierarchyViewPart_createinput", //$NON-NLS-1$
                     getJobLabel()));
             try {
                 fHierarchyLifeCycle.ensureRefreshedTypeHierarchy(inputProcess, PlatformUI.getWorkbench()
@@ -488,8 +488,8 @@ public class JobHierarchyViewPart extends ViewPart implements IJobHierarchyViewP
         String title;
         if (inputProcess != null) {
             String[] args = new String[] { viewerTitle, getJobLabel(), getProjectLabel() };
-            title = Messages.getString("JobHierarchyMessages.JobHierarchyViewPart_title", args);
-            tooltip = Messages.getString("JobHierarchyMessages.JobHierarchyViewPart_tooltip", args);
+            title = Messages.getString("JobHierarchyMessages.JobHierarchyViewPart_title", args); //$NON-NLS-1$
+            tooltip = Messages.getString("JobHierarchyMessages.JobHierarchyViewPart_tooltip", args); //$NON-NLS-1$
 
         } else {
             title = ""; //$NON-NLS-1$

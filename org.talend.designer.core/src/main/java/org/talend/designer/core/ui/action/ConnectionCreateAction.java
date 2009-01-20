@@ -238,12 +238,12 @@ public class ConnectionCreateAction extends SelectionAction {
     private String getDefaultTableName() {
         Node node = (Node) nodePart.getModel();
         String removeQuotes = null;
-        IElementParameter elementParam = node.getElementParameter("ELT_TABLE_NAME");
+        IElementParameter elementParam = node.getElementParameter("ELT_TABLE_NAME"); //$NON-NLS-1$
         if (node.isELTComponent() && elementParam != null && elementParam.getField().equals(EParameterFieldType.TEXT)) {
             String name2 = elementParam.getValue().toString();
             if (name2 != null) {
                 name2 = TalendTextUtils.removeQuotes(name2);
-                if (!"".equals(name2)) {
+                if (!"".equals(name2)) { //$NON-NLS-1$
                     removeQuotes = name2 + " (" + curNodeConnector.getMenuName() + ")"; //$NON-NLS-1$ // //$NON-NLS-2$
                 }
             }

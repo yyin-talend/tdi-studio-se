@@ -78,6 +78,7 @@ import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.utils.SQLPatternUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
@@ -90,7 +91,7 @@ import org.talend.repository.model.RepositoryConstants;
  */
 public class SQLPatternComposite extends ScrolledComposite implements IDynamicProperty, IResourceChangeListener {
 
-    private static final String NAME_PROPERTY = "nameProperty";
+    private static final String NAME_PROPERTY = "nameProperty"; //$NON-NLS-1$
 
     private static final int ADD_COLUMN = 0;
 
@@ -151,7 +152,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
         table.setLinesVisible(true);
 
         TableColumn columnName = new TableColumn(table, SWT.NONE, ADD_COLUMN);
-        columnName.setText("SQLPattern List");
+        columnName.setText(Messages.getString("SQLPatternComposite.sqlPattern")); //$NON-NLS-1$
         columnName.setWidth(200);
         columnName.setResizable(true);
         columnName.setMoveable(true);
@@ -160,7 +161,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
         Image removeImage = ImageProvider.getImage(EImage.DELETE_ICON);
 
         buttonAdd = new Button(panel, SWT.NONE);
-        buttonAdd.setText("Add");
+        buttonAdd.setText(Messages.getString("SQLPatternComposite.add")); //$NON-NLS-1$
         buttonAdd.setImage(addImage);
 
         FormData buttonAddData = new FormData();
@@ -169,7 +170,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
         buttonAdd.setLayoutData(buttonAddData);
 
         buttonRemove = new Button(panel, SWT.NONE);
-        buttonRemove.setText("Delete");
+        buttonRemove.setText(Messages.getString("SQLPatternComposite.delete")); //$NON-NLS-1$
         buttonRemove.setImage(removeImage);
 
         FormData buttonRemoveData = new FormData();
@@ -178,7 +179,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
         buttonRemove.setLayoutData(buttonRemoveData);
 
         upButton = new Button(panel, SWT.NONE);
-        upButton.setText("Up");
+        upButton.setText(Messages.getString("SQLPatternComposite.up")); //$NON-NLS-1$
         upButton.setImage(ImageProvider.getImage(EImage.UP_ICON));
         FormData upFormData = new FormData();
         upFormData.left = new FormAttachment(buttonRemove, 1, SWT.RIGHT);
@@ -186,7 +187,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
         upButton.setLayoutData(upFormData);
 
         downButton = new Button(panel, SWT.NONE);
-        downButton.setText("down");
+        downButton.setText(Messages.getString("SQLPatternComposite.down")); //$NON-NLS-1$
         downButton.setImage(ImageProvider.getImage(EImage.DOWN_ICON));
         FormData downFormData = new FormData();
         downFormData.left = new FormAttachment(upButton, 1, SWT.RIGHT);
@@ -232,7 +233,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
                     dynamicComboBoxCellEditor.refresh();
                     return infor;
                 }
-                return "";
+                return ""; //$NON-NLS-1$
             }
 
             public void modify(Object elem, String property, Object value) {
@@ -507,8 +508,8 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
                 String sqlpatternName = item.getText();
                 SQLPatternItem patternItem = SQLPatternUtils.getSQLPatternItem(SQLPatternComposite.this.element, sqlpatternName);
                 if (patternItem.isSystem()) {
-                    boolean answer = MessageDialog.openQuestion(getShell(), "Talend Open Studio",
-                            "Forbid modification on system sql pattern, do you want to create a new  one? ");
+                    boolean answer = MessageDialog.openQuestion(getShell(), Messages.getString("SQLPatternComposite.TOS"), //$NON-NLS-1$
+                            Messages.getString("SQLPatternComposite.forbidModification")); //$NON-NLS-1$
 
                     if (!answer) {
                         return;
@@ -519,12 +520,12 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
 
                     IElementParameter parameter = element.getElementParameter(EParameterName.SQLPATTERN_DB_NAME.getName());
                     String dbName = (String) parameter.getValue();
-                    String path = dbName + "/" + RepositoryConstants.USER_DEFINED;
+                    String path = dbName + "/" + RepositoryConstants.USER_DEFINED; //$NON-NLS-1$
 
                     repositoryService.createSqlpattern(path, true);
                 } else {
-                    boolean answer = MessageDialog.openQuestion(getShell(), "Talend Open Studio",
-                            "Do you want to modify this sql pattern? ");
+                    boolean answer = MessageDialog.openQuestion(getShell(), Messages.getString("SQLPatternComposite.TOS"), //$NON-NLS-1$
+                            Messages.getString("SQLPatternComposite.modifySQLPattern")); //$NON-NLS-1$
 
                     if (!answer) {
                         return;
@@ -627,7 +628,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
         }
 
         public void refresh() {
-            refreshItems("");
+            refreshItems(""); //$NON-NLS-1$
         }
 
     }

@@ -48,14 +48,14 @@ import org.talend.repository.ui.views.RepositoryView;
  */
 public class StatsAndLogsViewHelper {
 
-    private static final String LANGUAGE_PREFIX = LanguageManager.getCurrentLanguage().toString() + "_";
+    private static final String LANGUAGE_PREFIX = LanguageManager.getCurrentLanguage().toString() + "_"; //$NON-NLS-1$
 
     private static final IPreferenceStore PREFERENCE_STORE = DesignerPlugin.getDefault().getPreferenceStore();
 
-    public static final String FILE_NAME_REGEX = "[^\\>\\<\\\\\\/\\!\\:\\|\\?\\\"\\'\\s\\.]"
-            + "+[\\.][^\\>\\<\\\\\\/\\!\\:\\|\\?\\\"\\'\\s\\.]+";
+    public static final String FILE_NAME_REGEX = "[^\\>\\<\\\\\\/\\!\\:\\|\\?\\\"\\'\\s\\.]" //$NON-NLS-1$
+            + "+[\\.][^\\>\\<\\\\\\/\\!\\:\\|\\?\\\"\\'\\s\\.]+"; //$NON-NLS-1$
 
-    public static final String OTHER_FILE_NAME_REGEX = "[^\\\"\\'\\s]*";
+    public static final String OTHER_FILE_NAME_REGEX = "[^\\\"\\'\\s]*"; //$NON-NLS-1$
 
     public static ConnectionItem findConnectionItem(RepositoryContentProvider contentProvider, RepositoryNode repositoryNode,
             String connectionLabel) {
@@ -160,10 +160,10 @@ public class StatsAndLogsViewHelper {
                 // EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.PROPERTY_TYPE.getName()).getValue());
 
                 String id = (String) element.getElementParameter(
-                        EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName())
+                        EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName()) //$NON-NLS-1$
                         .getValue();
                 String propertyType = (String) element.getElementParameter(
-                        EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.PROPERTY_TYPE.getName()).getValue();
+                        EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.PROPERTY_TYPE.getName()).getValue(); //$NON-NLS-1$
                 // String connectionLabel = null;
                 //
                 // RepositoryContentProvider contentProvider = (RepositoryContentProvider)
@@ -189,10 +189,10 @@ public class StatsAndLogsViewHelper {
                 }
 
                 ChangeValuesFromRepository cmd1 = new ChangeValuesFromRepository((Element) applyTo, repositoryConnection,
-                        EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.PROPERTY_TYPE.getName(), propertyType);
+                        EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.PROPERTY_TYPE.getName(), propertyType); //$NON-NLS-1$
 
                 ChangeValuesFromRepository cmd2 = new ChangeValuesFromRepository((Element) applyTo, repositoryConnection,
-                        EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), id);
+                        EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), id); //$NON-NLS-1$
                 cmd2.setMaps(dynamicProperty.getRepositoryTableMap());
 
                 AbstractMultiPageTalendEditor part = ((Process) element).getEditor();
@@ -361,21 +361,21 @@ public class StatsAndLogsViewHelper {
                 continue;
             }
 
-            if (parameterTypeName.equals(EParameterName.PROPERTY_TYPE.getName() + ":"
+            if (parameterTypeName.equals(EParameterName.PROPERTY_TYPE.getName() + ":" //$NON-NLS-1$
                     + EParameterName.REPOSITORY_PROPERTY_TYPE.getName())) {
                 elementParameterType.setValue(String.valueOf(elem.getElementParameter(
-                        EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName())
+                        EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName()) //$NON-NLS-1$
                         .getValue()));
                 continue;
             }
 
-            if (parameterTypeName.equals(EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.PROPERTY_TYPE.getName())) {
+            if (parameterTypeName.equals(EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.PROPERTY_TYPE.getName())) { //$NON-NLS-1$
                 elementParameterType.setValue(String.valueOf(elem.getElementParameter(
-                        EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.PROPERTY_TYPE.getName()).getValue()));
+                        EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.PROPERTY_TYPE.getName()).getValue())); //$NON-NLS-1$
                 continue;
             }
 
-            if (elem.getElementParameter(EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.PROPERTY_TYPE.getName())
+            if (elem.getElementParameter(EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.PROPERTY_TYPE.getName()) //$NON-NLS-1$
                     .getValue().equals(EmfComponent.BUILTIN)) {
                 if (parameterTypeName.equals(EParameterName.DB_TYPE.getName())) {
                     elementParameterType.setValue(String.valueOf(elem.getElementParameter(EParameterName.DB_TYPE.getName())
@@ -566,10 +566,10 @@ public class StatsAndLogsViewHelper {
                 }
 
                 ChangeValuesFromRepository cmd1 = new ChangeValuesFromRepository(element, repositoryConnection,
-                        EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.PROPERTY_TYPE.getName(), propertyType);
+                        EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.PROPERTY_TYPE.getName(), propertyType); //$NON-NLS-1$
 
                 ChangeValuesFromRepository cmd2 = new ChangeValuesFromRepository(element, repositoryConnection,
-                        EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), id);
+                        EParameterName.PROPERTY_TYPE.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), id); //$NON-NLS-1$
                 cmd2.setMaps(propertyComposite.getRepositoryTableMap());
 
                 AbstractMultiPageTalendEditor part = ((Process) element).getEditor();
@@ -838,8 +838,8 @@ public class StatsAndLogsViewHelper {
             }
 
             if (name.equals(EParameterName.PROPERTY_TYPE.getName())) {
-                String itemId = (String) elementParameter.getChildParameters().get("REPOSITORY_PROPERTY_TYPE").getValue();
-                String propertyType = (String) elementParameter.getChildParameters().get("PROPERTY_TYPE").getValue();
+                String itemId = (String) elementParameter.getChildParameters().get("REPOSITORY_PROPERTY_TYPE").getValue(); //$NON-NLS-1$
+                String propertyType = (String) elementParameter.getChildParameters().get("PROPERTY_TYPE").getValue(); //$NON-NLS-1$
 
                 Item item = elementParameter.getLinkedRepositoryItem();
                 if (item == null || (item != null && !item.getProperty().getId().equals(itemId))) {
@@ -864,7 +864,7 @@ public class StatsAndLogsViewHelper {
      */
     private static String checkAndAddQuote(String value) {
         if (value == null) {
-            return TalendTextUtils.addQuotes("");
+            return TalendTextUtils.addQuotes(""); //$NON-NLS-1$
         }
         value = value.trim();
         return value;
@@ -875,7 +875,7 @@ public class StatsAndLogsViewHelper {
      */
     private static String checkAndRemoveQuote(String value) {
         if (value == null) {
-            return "";
+            return ""; //$NON-NLS-1$
         }
         value = value.trim();
         return value;

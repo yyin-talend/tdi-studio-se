@@ -206,7 +206,7 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
             if (action.isEnabled()) {
                 subMenu.add(action);
             }
-            subMenu = new MenuManager("Link");
+            subMenu = new MenuManager("Link"); //$NON-NLS-1$
             menu.appendToGroup(GROUP_CONNECTIONS, subMenu);
             action = new ConnectionCreateAction(part, EConnectionType.TABLE);
             ((ConnectionCreateAction) action).update();

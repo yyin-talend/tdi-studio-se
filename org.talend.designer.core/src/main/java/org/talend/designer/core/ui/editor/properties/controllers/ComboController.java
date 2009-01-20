@@ -371,14 +371,14 @@ public class ComboController extends AbstractElementPropertySectionController {
             if (repositoryTableMap != null && schemaSelected != null && repositoryTableMap.containsKey(schemaSelected)) {
                 repositoryMetadata = repositoryTableMap.get(schemaSelected);
             } else if (newRepositoryMetadata == null) {
-                MessageDialog.openWarning(new Shell(), "Alert", "Nothing to guess.");
+                MessageDialog.openWarning(new Shell(), Messages.getString("ComboController.alert"), Messages.getString("ComboController.nothingGuess")); //$NON-NLS-1$ //$NON-NLS-2$
                 return cmd;
             }
         }
         cmd = new QueryGuessCommand(node, newRepositoryMetadata);
 
         cmd.setMaps(dynamicProperty.getTableIdAndDbTypeMap(), dynamicProperty.getTableIdAndDbSchemaMap(), repositoryTableMap);
-        String type = getValueFromRepositoryName("TYPE");
+        String type = getValueFromRepositoryName("TYPE"); //$NON-NLS-1$
         cmd.setParameters(realTableId, realTableName, type);
 
         return cmd;

@@ -221,7 +221,7 @@ public class EmfComponent implements IComponent {
                 isLoaded = true;
             } catch (Exception e) {
                 isLoaded = false;
-                throw new BusinessException("Cannot load component " + file.getName(), e); //$NON-NLS-1$
+                throw new BusinessException(Messages.getString("EmfComponent.0", file.getName()), e); //$NON-NLS-1$
             }
         }
     }
@@ -274,7 +274,7 @@ public class EmfComponent implements IComponent {
                 }
             }
 
-            String context = "FLOW";
+            String context = "FLOW"; //$NON-NLS-1$
             ElementParameter parentParam = new ElementParameter(node);
             parentParam.setName(EParameterName.NOT_SYNCHRONIZED_SCHEMA.getName());
             parentParam.setDisplayName(EParameterName.SCHEMA_TYPE.getDisplayName());
@@ -448,16 +448,16 @@ public class EmfComponent implements IComponent {
         String[] listField = new String[1];
 
         listItemsDisplayCodeValue[0] = SQLPatternUtils.SQLPATTERNLIST;
-        listItemsDisplayValue[0] = "SQLPattern List";
+        listItemsDisplayValue[0] = "SQLPattern List"; //$NON-NLS-1$
 
         ElementParameter newParam = new ElementParameter(node);
         newParam = new ElementParameter(node);
         newParam.setName(SQLPatternUtils.SQLPATTERNLIST);
-        newParam.setFilter("");
+        newParam.setFilter(""); //$NON-NLS-1$
         newParam.setDisplayName(""); //$NON-NLS-1$
         newParam.setField(EParameterFieldType.CLOSED_LIST);
-        newParam.setContext("");
-        newParam.setValue("");
+        newParam.setContext(""); //$NON-NLS-1$
+        newParam.setValue(""); //$NON-NLS-1$
         {
             String[] allPatternNames = getSqlPatternsByDB(patterns.getDB());
 
@@ -552,7 +552,7 @@ public class EmfComponent implements IComponent {
 
         String ids = store.getString(IComponentsLocalProviderService.FORMAT_IDS);
         String[] idArray = null;
-        if (ids != "") {
+        if (ids != "") { //$NON-NLS-1$
             idArray = ids.split(IComponentsLocalProviderService.IDS_SEPARATOR);
 
             String label = nodeLabel + IComponentsLocalProviderService.PALETTE_ENTRY_TYPE;
@@ -569,8 +569,8 @@ public class EmfComponent implements IComponent {
                 }
             }
 
-            if (nodeFamily.contains("/")) {
-                String rootFamily = nodeFamily.split("/")[0];
+            if (nodeFamily.contains("/")) { //$NON-NLS-1$
+                String rootFamily = nodeFamily.split("/")[0]; //$NON-NLS-1$
                 label = rootFamily + IComponentsLocalProviderService.PALETTE_CONTAINER_TYPE;
                 for (String id : idArray) {
                     if (id.contains(label)) {
@@ -604,7 +604,7 @@ public class EmfComponent implements IComponent {
             param.setValue(formatTypeInXML.getLABEL());
         } else if (formatId != null) {
             String label = store.getString(formatId + IComponentsLocalProviderService.PREFERENCE_TYPE_LABEL);
-            if (!"".equals(label)) {
+            if (!"".equals(label)) { //$NON-NLS-1$
                 param.setValue(label);
             }
         }
@@ -624,7 +624,7 @@ public class EmfComponent implements IComponent {
             param.setValue(formatTypeInXML.getHINT());
         } else if (formatId != null) {
             String label = store.getString(formatId + IComponentsLocalProviderService.PREFERENCE_TYPE_HINT);
-            if (!"".equals(label)) {
+            if (!"".equals(label)) { //$NON-NLS-1$
                 param.setValue(label);
             }
         }
@@ -644,7 +644,7 @@ public class EmfComponent implements IComponent {
             param.setValue(formatTypeInXML.getCONNECTION());
         } else if (formatId != null) {
             String label = store.getString(formatId + IComponentsLocalProviderService.PREFERENCE_TYPE_CONNECTION);
-            if (!"".equals(label)) {
+            if (!"".equals(label)) { //$NON-NLS-1$
                 param.setValue(label);
             }
         }
@@ -701,7 +701,7 @@ public class EmfComponent implements IComponent {
 
         param = new ElementParameter(node);
         param.setName(EParameterName.VERSION.getName());
-        param.setValue(compType.getHEADER().getVERSION() + " (" + compType.getHEADER().getSTATUS() + ")");
+        param.setValue(compType.getHEADER().getVERSION() + " (" + compType.getHEADER().getSTATUS() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
         //$NON-NLS-1$ //$NON-NLS-2$
         param.setDisplayName(EParameterName.VERSION.getDisplayName());
         param.setField(EParameterFieldType.TEXT);
@@ -888,7 +888,7 @@ public class EmfComponent implements IComponent {
             param.setField(EParameterFieldType.TEXT);
             param.setCategory(EComponentCategory.ADVANCED);
             param.setNumRow(100);
-            param.setShowIf(EParameterName.PARALLELIZE.getName() + " == 'true'");
+            param.setShowIf(EParameterName.PARALLELIZE.getName() + " == 'true'"); //$NON-NLS-1$
             listParam.add(param);
         }
 
@@ -935,14 +935,14 @@ public class EmfComponent implements IComponent {
             if (context == null) {
                 // by default the schema will be set to the "FLOW" connector.
                 context = EConnectionType.FLOW_MAIN.getName();
-                if (getFamily().startsWith("ELT")) {
+                if (getFamily().startsWith("ELT")) { //$NON-NLS-1$
                     context = EConnectionType.TABLE.getName();
                 }
             }
 
             boolean useInputLinkSelection = connectorUseInputLinkSelection(context);
 
-            String displayName = getTranslatedValue(xmlParam.getNAME() + "." + PROP_NAME);
+            String displayName = getTranslatedValue(xmlParam.getNAME() + "." + PROP_NAME); //$NON-NLS-1$
             if (displayName.startsWith("!!")) { //$NON-NLS-1$ 
                 displayName = EParameterName.SCHEMA_TYPE.getDisplayName();
             }
@@ -958,7 +958,7 @@ public class EmfComponent implements IComponent {
             newParam.setNumRow(xmlParam.getNUMROW());
             newParam.setField(EParameterFieldType.TECHNICAL);
             newParam.setShow(xmlParam.isSHOW());
-            newParam.setShowIf(parentParam.getName() + " =='" + REPOSITORY + "'");
+            newParam.setShowIf(parentParam.getName() + " =='" + REPOSITORY + "'"); //$NON-NLS-1$ //$NON-NLS-2$
             newParam.setReadOnly(xmlParam.isREADONLY() || useInputLinkSelection);
             newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
 
@@ -986,7 +986,7 @@ public class EmfComponent implements IComponent {
                 newParam = new ElementParameter(node);
                 newParam.setCategory(EComponentCategory.BASIC);
                 newParam.setName(EParameterName.CONNECTION.getName());
-                newParam.setDisplayName("Attached connection");
+                newParam.setDisplayName(Messages.getString("EmfComponent.attachedConnection")); //$NON-NLS-1$
                 newParam.setListItemsDisplayName(new String[] {});
                 newParam.setListItemsValue(new String[] {});
                 newParam.setNumRow(xmlParam.getNUMROW());
@@ -994,7 +994,7 @@ public class EmfComponent implements IComponent {
                 newParam.setValue(""); //$NON-NLS-1$
                 newParam.setShow(true);
                 newParam.setRequired(true);
-                newParam.setFilter("INPUT:FLOW_MAIN|FLOW_REF|FLOW_MERGE");
+                newParam.setFilter("INPUT:FLOW_MAIN|FLOW_REF|FLOW_MERGE"); //$NON-NLS-1$
                 newParam.setReadOnly(xmlParam.isREADONLY());
                 newParam.setShowIf(xmlParam.getSHOWIF());
                 newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
@@ -1202,7 +1202,7 @@ public class EmfComponent implements IComponent {
                     // by default the schema will be set to the "FLOW"
                     // connector.
                     param.setContext(EConnectionType.FLOW_MAIN.getName());
-                    if (getFamily().startsWith("ELT")) {
+                    if (getFamily().startsWith("ELT")) { //$NON-NLS-1$
                         param.setContext(EConnectionType.TABLE.getName());
                     }
                 }
@@ -1287,11 +1287,11 @@ public class EmfComponent implements IComponent {
             return null;
         }
 
-        if (color != null && color.contains(";")) {
-            String rgb[] = color.split(";");
+        if (color != null && color.contains(";")) { //$NON-NLS-1$
+            String rgb[] = color.split(";"); //$NON-NLS-1$
             if (rgb.length != 3) {
-                throw new RuntimeException("RGB defination in label controller not correct, component " + param.getDisplayName()
-                        + ".");
+                throw new RuntimeException(Messages.getString("EmfComponent.RGBNotCorrect" //$NON-NLS-1$
+                        , param.getDisplayName()));
             }
             return new Color(null, TalendTextUtils.stringToRGB(color));
         }
@@ -1598,7 +1598,7 @@ public class EmfComponent implements IComponent {
                     newParam.setValue(new Boolean(item.getVALUE()));
                     break;
                 case SCHEMA_TYPE:
-                    newParam.setValue("");
+                    newParam.setValue(""); //$NON-NLS-1$
                     break;
                 default: // TEXT by default
                     newParam.setField(EParameterFieldType.TEXT);
@@ -1683,10 +1683,10 @@ public class EmfComponent implements IComponent {
         for (int i = 0; i < listConnType.size(); i++) {
             connType = (CONNECTORType) listConnType.get(i);
             EConnectionType currentType = EConnectionType.getTypeFromName(connType.getCTYPE());
-            if (currentType == null || connType.getCTYPE().equals("LOOKUP") || connType.getCTYPE().equals("MERGE")) {
+            if (currentType == null || connType.getCTYPE().equals("LOOKUP") || connType.getCTYPE().equals("MERGE")) { //$NON-NLS-1$ //$NON-NLS-2$
                 if (currentType == null) {
-                    log.warn("<Component:" + this.getName() + "> Connector \"" + connType.getCTYPE()
-                            + "\" defined in the xml, but doesn't exist.");
+                    log.warn(Messages.getString("EmfComponent.componentNotExist", this.getName() //$NON-NLS-1$
+                            , connType.getCTYPE()));
                 }
                 continue;
             }
@@ -1743,14 +1743,14 @@ public class EmfComponent implements IComponent {
                 nodeConnector.getConnectionProperty(currentType).setRGB(rgb);
             }
             String baseSchema = connType.getBASESCHEMA();
-            if (baseSchema != null && (!baseSchema.equals(""))) {
+            if (baseSchema != null && (!baseSchema.equals(""))) { //$NON-NLS-1$
                 nodeConnector.setBaseSchema(baseSchema);
             } else {
                 nodeConnector.setBaseSchema(nodeConnector.getName());
             }
 
             listConnector.add(nodeConnector);
-            if (connType.getCTYPE().equals("FLOW")) {
+            if (connType.getCTYPE().equals("FLOW")) { //$NON-NLS-1$
                 // if kind is "flow" (main type), then add the same for the lookup and merge.
                 currentType = EConnectionType.FLOW_REF;
 
@@ -1780,9 +1780,9 @@ public class EmfComponent implements IComponent {
             if (currentType == null) {
                 continue;
             }
-            if (connType.getCTYPE().equals("LOOKUP") && (connType.getCOMPONENT() != null)) {
+            if (connType.getCTYPE().equals("LOOKUP") && (connType.getCOMPONENT() != null)) { //$NON-NLS-1$
                 for (INodeConnector connector : listConnector) {
-                    if (connector.getName().equals("FLOW")) {
+                    if (connector.getName().equals("FLOW")) { //$NON-NLS-1$
                         IConnectionProperty property = connector.getConnectionProperty(EConnectionType.FLOW_REF);
                         property.setLinkedComponent(connType.getCOMPONENT());
                         break;
@@ -1973,7 +1973,7 @@ public class EmfComponent implements IComponent {
                 continue;
             }
             IMultipleComponentManager multipleComponentManager = null;
-            if (connector == null || connector.equals("")) {
+            if (connector == null || connector.equals("")) { //$NON-NLS-1$
                 multipleComponentManager = new MultipleComponentManager(input, output);
             } else {
                 multipleComponentManager = new MultipleComponentManager(input, output, connector);
@@ -2333,7 +2333,7 @@ public class EmfComponent implements IComponent {
      */
     public String getRepositoryType() {
         for (PARAMETERType pType : (List<PARAMETERType>) compType.getPARAMETERS().getPARAMETER()) {
-            if (pType.getFIELD().equals("PROPERTY_TYPE")) {
+            if (pType.getFIELD().equals("PROPERTY_TYPE")) { //$NON-NLS-1$
                 return pType.getREPOSITORYVALUE();
             }
         }

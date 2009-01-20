@@ -51,6 +51,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.properties.tab.IDynamicProperty;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -148,7 +149,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
     @Override
     public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
             final int nbInRow, final int top, final Control lastControl) {
-        if (param.getDisplayName().startsWith("!!")) {
+        if (param.getDisplayName().startsWith("!!")) { //$NON-NLS-1$
             if (param.getField() == EParameterFieldType.COLUMN_LIST) {
                 param.setDisplayName(EParameterName.COLUMN_LIST.getDisplayName());
             } else if (param.getField() == EParameterFieldType.PREV_COLUMN_LIST) {
@@ -323,7 +324,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
         List<String> refColumnListNamesTmp = new ArrayList<String>();
         List<String> refColumnListValuesTmp = new ArrayList<String>();
         for (IConnection connection : refColumnLists.keySet()) {
-            String name = connection.getName() + ".";
+            String name = connection.getName() + "."; //$NON-NLS-1$
             for (String column : refColumnLists.get(connection)) {
                 refColumnListNamesTmp.add(name + column);
                 refColumnListValuesTmp.add(column);
@@ -467,7 +468,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
     private static void setColumnSize(Map<String, Object> newLine, INode node, String[] codes, IElementParameter param) {
         if (node.getMetadataList().size() > 0) {
             IMetadataTable table = node.getMetadataList().get(0);
-            String lineName = (String) newLine.get("SCHEMA_COLUMN");
+            String lineName = (String) newLine.get("SCHEMA_COLUMN"); //$NON-NLS-1$
             for (IMetadataColumn column : table.getListColumns()) {
 
                 if (lineName.equals(column.getLabel())) {
@@ -481,9 +482,9 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                     if (column.getLength() != null && column.getLength().intValue() > 0) {
 
                         // codes[1] is "SIZE"
-                        newLine.put("SIZE", column.getLength().toString());
+                        newLine.put("SIZE", column.getLength().toString()); //$NON-NLS-1$
                     } else {
-                        newLine.put("SIZE", null);
+                        newLine.put("SIZE", null); //$NON-NLS-1$
                     }
                     break;
                 }
@@ -503,7 +504,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
         Object[] paras = param.getListItemsValue();
         for (Object object : paras) {
             IElementParameter pamameter = (IElementParameter) object;
-            if ("LENGTH".equals(pamameter.getContext())) {
+            if ("LENGTH".equals(pamameter.getContext())) { //$NON-NLS-1$
                 // if (pamameter.getName().equals("SIZE")) {
                 find = true;
                 // }
@@ -517,8 +518,11 @@ public class ColumnListController extends AbstractElementPropertySectionControll
         if (synLengthTipFlag == null) {
             Node node = (Node) param.getElement();
 
-            boolean ok = MessageDialog.openConfirm(null, "Confirm", "Length column in " + node.getLabel()
-                    + " schema has been modified. Do you want to propagate the change?");
+            boolean ok = MessageDialog
+                    .openConfirm(
+                            null,
+                            Messages.getString("ColumnListController.confirm"), Messages.getString("ColumnListController.saveChange", node.getLabel()) //$NON-NLS-1$ //$NON-NLS-2$
+                    );
             synLengthTipFlag = new Boolean(ok);
         }
         return synLengthTipFlag.booleanValue();
@@ -609,13 +613,13 @@ public class ColumnListController extends AbstractElementPropertySectionControll
         if (!isUpdateColumnEnable(param, columnsChanged, tmpParam)) {
             return;
         }
-        String componentUniqueName = "";
-        String preRowLookup = "";
-        if (tmpParam.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST && columnNameList[0].indexOf(".") > 0) {
+        String componentUniqueName = ""; //$NON-NLS-1$
+        String preRowLookup = ""; //$NON-NLS-1$
+        if (tmpParam.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST && columnNameList[0].indexOf(".") > 0) { //$NON-NLS-1$
             ColumnNameChanged tmpChanged = columnsChanged.get(0);
             if (tmpChanged instanceof ColumnNameChangedExt) {
-                componentUniqueName = ((ColumnNameChangedExt) tmpChanged).getChangedNode().getUniqueName() + ".";
-                preRowLookup = columnNameList[0].substring(0, columnNameList[0].indexOf(".") + 1);
+                componentUniqueName = ((ColumnNameChangedExt) tmpChanged).getChangedNode().getUniqueName() + "."; //$NON-NLS-1$
+                preRowLookup = columnNameList[0].substring(0, columnNameList[0].indexOf(".") + 1); //$NON-NLS-1$
             }
         }
         for (ColumnNameChanged colChanged : columnsChanged) {
@@ -660,13 +664,13 @@ public class ColumnListController extends AbstractElementPropertySectionControll
         if (!isUpdateColumnEnable(param, columnsChanged, param)) {
             return;
         }
-        String componentUniqueName = "";
-        String preRowLookup = "";
-        if (param.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST && columnNameList[0].indexOf(".") > 0) {
+        String componentUniqueName = ""; //$NON-NLS-1$
+        String preRowLookup = ""; //$NON-NLS-1$
+        if (param.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST && columnNameList[0].indexOf(".") > 0) { //$NON-NLS-1$
             ColumnNameChanged tmpChanged = columnsChanged.get(0);
             if (tmpChanged instanceof ColumnNameChangedExt) {
-                componentUniqueName = ((ColumnNameChangedExt) tmpChanged).getChangedNode().getUniqueName() + ".";
-                preRowLookup = columnNameList[0].substring(0, columnNameList[0].indexOf(".") + 1);
+                componentUniqueName = ((ColumnNameChangedExt) tmpChanged).getChangedNode().getUniqueName() + "."; //$NON-NLS-1$
+                preRowLookup = columnNameList[0].substring(0, columnNameList[0].indexOf(".") + 1); //$NON-NLS-1$
             }
         }
 

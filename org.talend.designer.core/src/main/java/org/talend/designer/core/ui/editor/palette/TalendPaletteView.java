@@ -23,7 +23,7 @@ import org.talend.repository.ui.actions.ShowStandardAction;
  */
 public class TalendPaletteView extends PaletteView {
 
-    public static final String ID = "org.eclipse.gef.ui.palette_view";
+    public static final String ID = "org.eclipse.gef.ui.palette_view"; //$NON-NLS-1$
 
     @Override
     public void createPartControl(Composite parent) {

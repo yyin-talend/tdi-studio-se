@@ -34,9 +34,9 @@ public class SearchComponentAction extends SelectionAction {
      */
     public SearchComponentAction(IWorkbenchPart part) {
         super(part);
-        setText(Messages.getString("SearchComponentInJobs.Title"));
-        setToolTipText(Messages.getString("SearchComponentInJobs.Tooltip"));
-        setDescription(Messages.getString("SearchComponentInJobs.Tooltip"));
+        setText(Messages.getString("SearchComponentInJobs.Title")); //$NON-NLS-1$
+        setToolTipText(Messages.getString("SearchComponentInJobs.Tooltip")); //$NON-NLS-1$
+        setDescription(Messages.getString("SearchComponentInJobs.Tooltip")); //$NON-NLS-1$
     }
 
     /*

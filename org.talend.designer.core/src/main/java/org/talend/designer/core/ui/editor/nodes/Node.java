@@ -66,6 +66,7 @@ import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.ActiveProcessTracker;
@@ -116,7 +117,7 @@ public class Node extends Element implements INode {
 
     public static final String UPDATE_STATUS = "addStatus"; //$NON-NLS-1$
 
-    public static final String MODIFY_NODELABEL = "modifyNodeLabel";
+    public static final String MODIFY_NODELABEL = "modifyNodeLabel"; //$NON-NLS-1$
 
     public static final int DEFAULT_SIZE = 32;
 
@@ -164,9 +165,9 @@ public class Node extends Element implements INode {
 
     private boolean readOnly = false;
 
-    private static final String COMPARE_STR1 = "tDBInput";
+    private static final String COMPARE_STR1 = "tDBInput"; //$NON-NLS-1$
 
-    private static final String COMPARE_STR2 = "_MySchema_";
+    private static final String COMPARE_STR2 = "_MySchema_"; //$NON-NLS-1$
 
     private Dimension size;
 
@@ -237,7 +238,7 @@ public class Node extends Element implements INode {
 
         String uniqueName2 = null;
         IElementParameter unparam = getElementParameter(EParameterName.UNIQUE_NAME.getName());
-        if (unparam != null && !"".equals(unparam.getValue())) {
+        if (unparam != null && !"".equals(unparam.getValue())) { //$NON-NLS-1$
             uniqueName2 = (String) unparam.getValue();
         }
         setElementParameters(component.createElementParameters(this));
@@ -267,7 +268,7 @@ public class Node extends Element implements INode {
         // }
         listReturn = this.component.createReturns();
 
-        if (!reloadingComponent && (uniqueName2 == null || "".equals(uniqueName2))) {
+        if (!reloadingComponent && (uniqueName2 == null || "".equals(uniqueName2))) { //$NON-NLS-1$
             uniqueName2 = ((Process) getProcess()).generateUniqueNodeName(this);
             ((Process) getProcess()).addUniqueNodeName(uniqueName2);
         }
@@ -285,7 +286,7 @@ public class Node extends Element implements INode {
                 table.setTableName(table.getAttachedConnector());
             }
             if (mappingParameter != null) {
-                if (mappingParameter.getValue() != null && (!mappingParameter.getValue().equals(""))) {
+                if (mappingParameter.getValue() != null && (!mappingParameter.getValue().equals(""))) { //$NON-NLS-1$
                     table.setDbms((String) mappingParameter.getValue());
                 }
             }
@@ -559,8 +560,8 @@ public class Node extends Element implements INode {
      * @param connNode
      */
     private void updateVisibleDataForExistingConnection(Node connNode) {
-        IElementParameter useConn = this.getElementParameter("USE_EXISTING_CONNECTION");
-        IElementParameter connParam = this.getElementParameter("CONNECTION");
+        IElementParameter useConn = this.getElementParameter("USE_EXISTING_CONNECTION"); //$NON-NLS-1$
+        IElementParameter connParam = this.getElementParameter("CONNECTION"); //$NON-NLS-1$
         if (useConn != null && connParam != null && Boolean.TRUE.equals(useConn.getValue())) {
             String connName = (String) connParam.getValue();
             if (connNode.getUniqueName().equals(connName)) {
@@ -594,8 +595,8 @@ public class Node extends Element implements INode {
         // label may be replaced with variable from exiting connection. see 0005456: Label Format __DBNAME__ not valid
         // when using existing connection
         boolean useConnection = false;
-        IElementParameter useConn = this.getElementParameter("USE_EXISTING_CONNECTION");
-        IElementParameter connParam = this.getElementParameter("CONNECTION");
+        IElementParameter useConn = this.getElementParameter("USE_EXISTING_CONNECTION"); //$NON-NLS-1$
+        IElementParameter connParam = this.getElementParameter("CONNECTION"); //$NON-NLS-1$
         if (useConn != null && connParam != null && Boolean.TRUE.equals(useConn.getValue())) {
 
             String connName = (String) connParam.getValue();
@@ -790,10 +791,10 @@ public class Node extends Element implements INode {
                         if (takeSchema.booleanValue()) {
                             MetadataTool.copyTable(mainTargetTable, connection.getMetadataTable());
                             if (connection.getTarget().isELTComponent()) {
-                                IElementParameter elemParam = connection.getTarget().getElementParameter("ELT_TABLE_NAME");
+                                IElementParameter elemParam = connection.getTarget().getElementParameter("ELT_TABLE_NAME"); //$NON-NLS-1$
                                 if (elemParam != null && elemParam.getField().equals(EParameterFieldType.TEXT)) {
                                     String removeQuotes = TalendTextUtils.removeQuotes(elemParam.getValue().toString());
-                                    if (!removeQuotes.equals("") && "Default".equals(connection.getName())) {
+                                    if (!removeQuotes.equals("") && "Default".equals(connection.getName())) { //$NON-NLS-1$ //$NON-NLS-2$
                                         connection.setName(removeQuotes);
                                     }
                                 }
@@ -809,7 +810,7 @@ public class Node extends Element implements INode {
     }
 
     private boolean getTakeSchema() {
-        return MessageDialog.openQuestion(new Shell(), "", "Do you want to get the schema of the target component?");
+        return MessageDialog.openQuestion(new Shell(), "", Messages.getString("Node.getSchemaOrNot")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     public IElementParameter getSchemaParameterFromConnector(String connector) {
@@ -920,7 +921,7 @@ public class Node extends Element implements INode {
                             }
                         }
                         // statement cause added for major 2635.
-                        if (!originTable.getTableName().equals("REJECT")) {
+                        if (!originTable.getTableName().equals("REJECT")) { //$NON-NLS-1$
                             originTable.getListColumns().clear();
                             originTable.getListColumns().addAll(columnToSave);
                         }
@@ -1016,7 +1017,7 @@ public class Node extends Element implements INode {
             setUniqueName((String) value);
         }
 
-        final String processPrefix = "PROCESS:";
+        final String processPrefix = "PROCESS:"; //$NON-NLS-1$
         if (id.equals(processPrefix + EParameterName.PROCESS_TYPE_CONTEXT.getName())) { // is child
             if (!CommonsPlugin.isHeadless()) {
                 if (((Process) getProcess()).getEditor() != null && (!((Process) getProcess()).isDuplicate())) {
@@ -1043,7 +1044,7 @@ public class Node extends Element implements INode {
         parameter.setValue(value);
         updateVisibleData();
 
-        if (id.equals("WAIT_FOR") && this.getComponent().getName().equals("tParallelize")) {
+        if (id.equals("WAIT_FOR") && this.getComponent().getName().equals("tParallelize")) { //$NON-NLS-1$ //$NON-NLS-2$
             List<Connection> synchroConnList = (List<Connection>) this.getOutgoingConnections(EConnectionType.SYNCHRONIZE);
             for (Connection synchroConn : synchroConnList) {
                 synchroConn.updateName();
@@ -1546,7 +1547,7 @@ public class Node extends Element implements INode {
                 if (param.getField().equals(EParameterFieldType.TABLE)) {
                     List<Map<String, String>> tableValues = (List<Map<String, String>>) param.getValue();
                     if (tableValues.size() == 0) {
-                        String errorMessage = "Parameter (" + param.getDisplayName() + ") must have at least one value.";
+                        String errorMessage = Messages.getString("Node.needOneValue") + param.getDisplayName(); //$NON-NLS-1$
                         Problems.add(ProblemStatus.ERROR, this, errorMessage);
                     }
                 }
@@ -1558,7 +1559,7 @@ public class Node extends Element implements INode {
                 case TABLE:
                     List<Map<String, String>> tableValues = (List<Map<String, String>>) param.getValue();
                     if (tableValues.size() == 0) {
-                        String errorMessage = "Parameter (" + param.getDisplayName() + ") must have at least one value.";
+                        String errorMessage = Messages.getString("Node.needOneValue", param.getDisplayName()); //$NON-NLS-1$
                         Problems.add(ProblemStatus.ERROR, this, errorMessage);
                     }
                     break;
@@ -1569,7 +1570,7 @@ public class Node extends Element implements INode {
                 case SCHEMA_TYPE:
                     break;
                 case MEMO_SQL:
-                    String errMessage = "Parameter (" + param.getDisplayName() + "): schema is different from the query.";
+                    String errMessage = Messages.getString("Node.schemaDifferent", param.getDisplayName()); //$NON-NLS-1$
                     String currentQuery = param.getValue().toString();
 
                     // Checks if current query is empty.
@@ -1592,7 +1593,7 @@ public class Node extends Element implements INode {
                 case CLOSED_LIST:
                     value = (String) param.getValue();
                     if (value.equals("")) { //$NON-NLS-1$
-                        String errorMessage = "Parameter (" + param.getDisplayName() + ") is empty but is required.";
+                        String errorMessage = Messages.getString("Node.parameterEmpty", param.getDisplayName()); //$NON-NLS-1$
                         Problems.add(ProblemStatus.ERROR, this, errorMessage);
                     } else {
                         if (param.getListItemsValue().length != 0) {
@@ -1603,8 +1604,7 @@ public class Node extends Element implements INode {
                                 }
                             }
                             if (!found) {
-                                String errorMessage = "Parameter (" + param.getDisplayName() + ") has a value (" + value
-                                        + ") that doesn't exist anymore.";
+                                String errorMessage = Messages.getString("Node.parameterNotExist", param.getDisplayName(), value); //$NON-NLS-1$
                                 Problems.add(ProblemStatus.ERROR, this, errorMessage);
                             }
                         }
@@ -1616,7 +1616,7 @@ public class Node extends Element implements INode {
                     }
                     value = (String) param.getValue();
                     if (value.equals("")) { //$NON-NLS-1$
-                        String errorMessage = "Parameter (" + param.getDisplayName() + ") is empty but is required.";
+                        String errorMessage = Messages.getString("Node.parameterEmpty", param.getDisplayName()); //$NON-NLS-1$
                         Problems.add(ProblemStatus.ERROR, this, errorMessage);
                     }
                 }
@@ -1691,8 +1691,7 @@ public class Node extends Element implements INode {
                         IComponent component = ComponentsFactoryProvider.getInstance().get(curItem.getComponent());
                         if (component == null) {
                             // Notify an error
-                            String errorMessage = "This component depend on component " + curItem.getComponent()
-                                    + ", but it's not exist.";
+                            String errorMessage = Messages.getString("Node.componentNotExist", curItem.getComponent()); //$NON-NLS-1$
                             Problems.add(ProblemStatus.ERROR, this, errorMessage);
                         }
                     }
@@ -1707,12 +1706,12 @@ public class Node extends Element implements INode {
             if ((getCurrentActiveLinksNbInput(EConnectionType.FLOW_MAIN) == 0)
                     && (getConnectorFromType(EConnectionType.FLOW_MAIN).getMinLinkInput() == 0)
                     & (getConnectorFromType(EConnectionType.FLOW_MAIN).getMaxLinkInput() != 0)) {
-                String errorMessage = "This component should have input link(s).";
+                String errorMessage = Messages.getString("Node.noInputLink"); //$NON-NLS-1$
                 Problems.add(ProblemStatus.WARNING, this, errorMessage);
             }
             if ((getCurrentActiveLinksNbInput(EConnectionType.FLOW_MAIN) == 0)
                     && (getCurrentActiveLinksNbInput(EConnectionType.FLOW_REF) > 0)) {
-                String errorMessage = "This component should have at least a Row Main link.";
+                String errorMessage = Messages.getString("Node.noRowMainLink"); //$NON-NLS-1$
                 Problems.add(ProblemStatus.WARNING, this, errorMessage);
             }
         }
@@ -1724,7 +1723,7 @@ public class Node extends Element implements INode {
                     && (getCurrentActiveLinksNbOutput(EConnectionType.FLOW_MERGE) == 0)
                     && (getCurrentActiveLinksNbOutput(EConnectionType.FLOW_REF) == 0)
                     && (getCurrentActiveLinksNbOutput(EConnectionType.ITERATE) == 0)) {
-                String errorMessage = "This component should have outputs linked.";
+                String errorMessage = Messages.getString("Node.noOutputLink"); //$NON-NLS-1$
                 Problems.add(ProblemStatus.WARNING, this, errorMessage);
             }
         }
@@ -1734,7 +1733,7 @@ public class Node extends Element implements INode {
         if (!isSubProcessStart() || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
             if ((getCurrentActiveLinksNbOutput(EConnectionType.ON_SUBJOB_OK) > 0)
                     || getCurrentActiveLinksNbOutput(EConnectionType.ON_SUBJOB_ERROR) > 0) {
-                String errorMessage = "A component that is not a sub process start can not have any link on sub job ok / on sub job error in input.";
+                String errorMessage = Messages.getString("Node.errorMessage1"); //$NON-NLS-1$
                 Problems.add(ProblemStatus.ERROR, this, errorMessage);
             }
         }
@@ -1752,7 +1751,7 @@ public class Node extends Element implements INode {
                     || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_OK) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_ERROR) > 0)) {
-                String errorMessage = "A component that is not a sub process start can only have a data link or iterate link in input.";
+                String errorMessage = Messages.getString("Node.errorMessage2"); //$NON-NLS-1$
                 Problems.add(ProblemStatus.ERROR, this, errorMessage);
             }
         }
@@ -1774,33 +1773,33 @@ public class Node extends Element implements INode {
                 curLinkIn = nodeConnector.getCurLinkNbInput();
                 String typeName = nodeConnector.getMenuName();
                 if (nodeConnector.getDefaultConnectionType() == EConnectionType.FLOW_MAIN) {
-                    typeName = "Row";
+                    typeName = "Row"; //$NON-NLS-1$
                 }
 
                 if (nbMaxOut != -1) {
                     if (curLinkOut > nbMaxOut) {
-                        String errorMessage = "This component has too much \"" + typeName + "\" type outputs.";
+                        String errorMessage = Messages.getString("Node.tooMuchTypeOutput", typeName); //$NON-NLS-1$
                         Problems.add(ProblemStatus.WARNING, this, errorMessage);
                     }
                 }
 
                 if (nbMaxIn != -1) {
                     if (curLinkIn > nbMaxIn) {
-                        String errorMessage = "This component has too much \"" + typeName + "\" type inputs.";
+                        String errorMessage = Messages.getString("Node.tooMuchTypeInput", typeName); //$NON-NLS-1$
                         Problems.add(ProblemStatus.WARNING, this, errorMessage);
                     }
                 }
 
                 if (nbMinOut != 0) {
                     if (curLinkOut < nbMinOut) {
-                        String errorMessage = "This component has not enough \"" + typeName + "\" type outputs.";
+                        String errorMessage = Messages.getString("Node.notEnoughTypeOutput", typeName); //$NON-NLS-1$
                         Problems.add(ProblemStatus.WARNING, this, errorMessage);
                     }
                 }
 
                 if (nbMinIn != 0) {
                     if (curLinkIn < nbMinIn) {
-                        String errorMessage = "This component has not enough \"" + typeName + "\" type inputs.";
+                        String errorMessage = Messages.getString("Node.notEnoughTypeInput", typeName); //$NON-NLS-1$
                         Problems.add(ProblemStatus.WARNING, this, errorMessage);
                     }
                 }
@@ -1831,7 +1830,7 @@ public class Node extends Element implements INode {
             if (canEditSchema) {
                 if ((mainConnector.getMaxLinkInput() == 0) && (mainConnector.getMaxLinkOutput() != 0)) {
                     if (getMetadataFromConnector(mainConnector.getName()).getListColumns().size() == 0) {
-                        String errorMessage = "No schema has been defined yet.";
+                        String errorMessage = Messages.getString("Node.noSchemaDefined"); //$NON-NLS-1$
                         Problems.add(ProblemStatus.ERROR, this, errorMessage);
                         noSchema = true;
                     }
@@ -1845,7 +1844,7 @@ public class Node extends Element implements INode {
                 if (getCurrentActiveLinksNbInput(EConnectionType.FLOW_MAIN) == 0 && noSchema) {
                     if ((getCurrentActiveLinksNbOutput(EConnectionType.FLOW_MAIN) > 0)
                             || (getCurrentActiveLinksNbOutput(EConnectionType.FLOW_REF) > 0)) {
-                        String errorMessage = "If this component has output, there must be an input link to propagate the data.";
+                        String errorMessage = Messages.getString("Node.outputNeedInputLink"); //$NON-NLS-1$
                         Problems.add(ProblemStatus.ERROR, this, errorMessage);
                     }
                 }
@@ -1863,8 +1862,7 @@ public class Node extends Element implements INode {
                             if (meta.getLabel() != null) {
                                 tableLabel = meta.getLabel();
                             }
-                            String errorMessage = "The output schema/link named \"" + tableLabel
-                                    + "\" has no column defined, please check it.";
+                            String errorMessage = Messages.getString("Node.noColumnDefined", tableLabel); //$NON-NLS-1$
                             Problems.add(ProblemStatus.ERROR, this, errorMessage);
                         }
                     }
@@ -1902,8 +1900,7 @@ public class Node extends Element implements INode {
                                     | IMetadataColumn.OPTIONS_IGNORE_DBTYPE | IMetadataColumn.OPTIONS_IGNORE_DEFAULT
                                     | IMetadataColumn.OPTIONS_IGNORE_BIGGER_SIZE))) {
                         schemaSynchronized = false;
-                        String errorMessage = "The schema from the input link \"" + inputConnecion.getName()
-                                + "\" is different from the schema defined in the component.";
+                        String errorMessage = Messages.getString("Node.differentFromSchemaDefined", inputConnecion.getName()); //$NON-NLS-1$
                         Problems.add(ProblemStatus.ERROR, this, errorMessage);
                     }
                 }
@@ -1927,8 +1924,8 @@ public class Node extends Element implements INode {
                                                     | IMetadataColumn.OPTIONS_IGNORE_DEFAULT
                                                     | IMetadataColumn.OPTIONS_IGNORE_BIGGER_SIZE)) {
                                         schemaSynchronized = false;
-                                        String errorMessage = "The schema from the input link \"" + connection.getName()
-                                                + "\" is different from the schema defined in the component.";
+                                        String errorMessage = Messages.getString(
+                                                "Node.differentFromSchemaDefined", connection.getName()); //$NON-NLS-1$
                                         Problems.add(ProblemStatus.ERROR, this, errorMessage);
                                     }
                                 }
@@ -1941,7 +1938,7 @@ public class Node extends Element implements INode {
 
         if (component.useMerge()) {
             if (getMetadataList().get(0).getListColumns().size() == 0) {
-                String errorMessage = "No schema has been defined yet.";
+                String errorMessage = Messages.getString("Node.noSchemaDefined"); //$NON-NLS-1$
                 Problems.add(ProblemStatus.ERROR, this, errorMessage);
             } else {
                 // see bug 0004139: Schema check error on tUnite.
@@ -1949,8 +1946,7 @@ public class Node extends Element implements INode {
                     IMetadataTable firstSchema = inputs.get(0).getMetadataTable();
                     boolean isSame = firstSchema.sameMetadataAs(getMetadataList().get(0));
                     if (!isSame) {
-                        String warningMessage = "The schema on the first input link of the merge component \"" + getUniqueName()
-                                + "\" is different from the schema defined in the component.";
+                        String warningMessage = Messages.getString("Node.inputLinkDifferentFromSchemaDefined", getUniqueName()); //$NON-NLS-1$
                         Problems.add(ProblemStatus.WARNING, this, warningMessage);
                     }
                 }
@@ -1970,8 +1966,7 @@ public class Node extends Element implements INode {
                     }
                 }
                 if (!isSame) {
-                    String warningMessage = "The schemas on the input links of the merge component \"" + getUniqueName()
-                            + "\" are different, they should be the same.";
+                    String warningMessage = Messages.getString("Node.schemaNotSame", getUniqueName()); //$NON-NLS-1$
                     Problems.add(ProblemStatus.WARNING, this, warningMessage);
                 }
             }
@@ -2101,23 +2096,23 @@ public class Node extends Element implements INode {
     @Override
     public String toString() {
         StringBuffer buff = new StringBuffer();
-        buff.append(getUniqueName() + " - ");
-        buff.append("inputs:(");
+        buff.append(getUniqueName() + " - "); //$NON-NLS-1$
+        buff.append(Messages.getString("Node.input")); //$NON-NLS-1$
         for (int i = 0; i < inputs.size(); i++) {
             buff.append(inputs.get(i).getName());
             if (i < (inputs.size() - 1)) {
-                buff.append(",");
+                buff.append(","); //$NON-NLS-1$
             }
         }
-        buff.append(") ");
-        buff.append("outputs:(");
+        buff.append(") "); //$NON-NLS-1$
+        buff.append(Messages.getString("Node.output")); //$NON-NLS-1$
         for (int i = 0; i < outputs.size(); i++) {
             buff.append(outputs.get(i).getName());
             if (i < (outputs.size() - 1)) {
-                buff.append(",");
+                buff.append(","); //$NON-NLS-1$
             }
         }
-        buff.append(")");
+        buff.append(")"); //$NON-NLS-1$
         return buff.toString();
     }
 
@@ -2142,7 +2137,7 @@ public class Node extends Element implements INode {
     }
 
     public boolean isELTComponent() {
-        return getComponent().getFamily().startsWith("ELT");
+        return getComponent().getFamily().startsWith("ELT"); //$NON-NLS-1$
     }
 
     /*
@@ -2282,7 +2277,7 @@ public class Node extends Element implements INode {
      * @param name
      */
     public void setConnectionName(String name) {
-        this.connectionName = name.replaceAll("\"", "").replaceAll(" ", "");
+        this.connectionName = name.replaceAll("\"", "").replaceAll(" ", ""); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         firePropertyChange(EParameterName.CONNECTION_FORMAT.getName(), null, this.connectionName);
     }
 
@@ -2326,7 +2321,7 @@ public class Node extends Element implements INode {
                     for (String name : targetParam.getChildParameters().keySet()) {
                         IElementParameter targetChildParam = targetParam.getChildParameters().get(name);
                         IElementParameter sourceChildParam = sourceParam.getChildParameters().get(name);
-                        setPropertyValue(sourceParam.getName() + ":" + sourceChildParam.getName(), sourceChildParam.getValue());
+                        setPropertyValue(sourceParam.getName() + ":" + sourceChildParam.getName(), sourceChildParam.getValue()); //$NON-NLS-1$
                         if (targetChildParam.getField() == EParameterFieldType.TABLE) {
                             targetChildParam.setListItemsValue(sourceChildParam.getListItemsValue());
                         }
@@ -2401,14 +2396,14 @@ public class Node extends Element implements INode {
         boolean isFirstLinkOrder = process.getMergelinkOrder(this) > 1;
         if ((getCurrentActiveLinksNbInput(EConnectionType.ON_SUBJOB_OK) > 0 || getCurrentActiveLinksNbInput(EConnectionType.ON_SUBJOB_ERROR) > 0)
                 && isFirstLinkOrder) {
-            String errorMessage = "A component that is not a sub process start can not have any link on sub job ok / on sub job error in input.";
+            String errorMessage = Messages.getString("Node.errorMessage1"); //$NON-NLS-1$
             Problems.add(ProblemStatus.ERROR, this, errorMessage);
         } else if ((getCurrentActiveLinksNbInput(EConnectionType.RUN_IF) > 0) && isFirstLinkOrder) {
-            String errorMessage = "A component that is not a sub process start can not have any link on run if in input.";
+            String errorMessage = Messages.getString("Node.errorMessage3"); //$NON-NLS-1$
             Problems.add(ProblemStatus.ERROR, this, errorMessage);
         } else if ((getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_OK) > 0 || getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_ERROR) > 0)
                 && isFirstLinkOrder) {
-            String errorMessage = "A component that is not a sub process start can not have any link on component ok / on component error in input.";
+            String errorMessage = Messages.getString("Node.errorMessage4"); //$NON-NLS-1$
             Problems.add(ProblemStatus.ERROR, this, errorMessage);
         }
     }

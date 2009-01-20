@@ -22,7 +22,7 @@ public class LabelCenter extends Figure {
 
     private int alignment;
 
-    private String text = "";
+    private String text = ""; //$NON-NLS-1$
 
     /**
      * Constructor<br>
@@ -110,7 +110,7 @@ public class LabelCenter extends Figure {
         }
         graphics.drawImage(getImage(), x, y);
 
-        if (!getText().equals("")) {
+        if (!getText().equals("")) { //$NON-NLS-1$
             // Draw String here
             String displayText = getFinalDisplayText();
             Dimension textSize = calculateTextSize(displayText);

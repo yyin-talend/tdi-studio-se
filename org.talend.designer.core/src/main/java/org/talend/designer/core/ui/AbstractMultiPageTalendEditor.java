@@ -390,7 +390,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
     protected void createPage0() {
         try {
             int index = addPage(designerEditor, getEditorInput());
-            setPageText(index, "Designer");
+            setPageText(index, "Designer"); //$NON-NLS-1$
             designerEditor.setParent(this);
         } catch (PartInitException e) {
             e.printStackTrace();
@@ -421,7 +421,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             if (getCurrentLang() == ECodeLanguage.PERL) {
                 PerlEditorPlugin.getDefault().setSyntaxValidationPreference(true);
             }
-            setPageText(index, "Code");
+            setPageText(index, "Code"); //$NON-NLS-1$
 
         } catch (PartInitException pie) {
             pie.printStackTrace();
@@ -440,7 +440,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             return;
         }
         if (process.getGeneratingNodes().size() != 0) {
-            Job job = new AccessingEmfJob("Generating code") {
+            Job job = new AccessingEmfJob("Generating code") { //$NON-NLS-1$
 
                 @Override
                 protected IStatus doRun(IProgressMonitor monitor) {
@@ -620,7 +620,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
     private boolean isVirtualNode(final INode node) {
         boolean isVirtualNode = false;
 
-        if (node.getUniqueName().startsWith("tMap")) {
+        if (node.getUniqueName().startsWith("tMap")) { //$NON-NLS-1$
             isVirtualNode = CorePlugin.getDefault().getMapperService().isVirtualComponent(node);
         } else {
             isVirtualNode = node.getComponent().getMultipleComponentManagers().size() > 0;

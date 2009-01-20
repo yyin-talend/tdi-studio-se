@@ -67,7 +67,7 @@ public class TableController extends AbstractElementPropertySectionController {
      */
     private static final int MIN_NUMBER_ROWS = 8;
 
-    private static final String TOOLBAR_NAME = "_TABLE_VIEW_TOOLBAR_NAME_";
+    private static final String TOOLBAR_NAME = "_TABLE_VIEW_TOOLBAR_NAME_"; //$NON-NLS-1$
 
     /**
      * DOC yzhang TableController constructor comment.
@@ -269,7 +269,7 @@ public class TableController extends AbstractElementPropertySectionController {
                                 || columnParam.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
                             for (Map<String, Object> columnMap : values) {
                                 Object column = columnMap.get(columnParam.getName());
-                                if (column == null || "".equals(column)) {
+                                if (column == null || "".equals(column)) { //$NON-NLS-1$
                                     columnMap.put(columnParam.getName(), columnParam.getDefaultClosedListValue());
                                 }
                                 if (columnParam.getListItemsValue() != null) {

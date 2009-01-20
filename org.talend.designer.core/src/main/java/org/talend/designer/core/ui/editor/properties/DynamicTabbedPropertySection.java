@@ -224,7 +224,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
 
         for (String string : tempProcessNameList) {
             // Put jobs which in a folder into a new list.s
-            if (string.lastIndexOf("/") != 0) {
+            if (string.lastIndexOf("/") != 0) { //$NON-NLS-1$
                 tempFolderList.add(string);
                 processNameList.remove(string);
             }
@@ -269,8 +269,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
 
                 // For example: avoid job name "a_b_c" before "a_b" in the job
                 // list.
-                String newStr1 = str1.replaceAll("_", " ");
-                String newStr2 = str2.replaceAll("_", " ");
+                String newStr1 = str1.replaceAll("_", " "); //$NON-NLS-1$ //$NON-NLS-2$
+                String newStr2 = str2.replaceAll("_", " "); //$NON-NLS-1$ //$NON-NLS-2$
                 return newStr1.compareToIgnoreCase(newStr2);
             }
         });
@@ -408,7 +408,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
                                     String dbType = ((DatabaseConnection) connection).getDatabaseType();
                                     String schema = ((DatabaseConnection) connection).getSchema();
                                     tableIdAndDbTypeMap.put(newTable.getId(), dbType);
-                                    if (schema != null && !schema.equals("")) {
+                                    if (schema != null && !schema.equals("")) { //$NON-NLS-1$
                                         tableIdAndDbSchemaMap.put(newTable.getId(), schema);
                                     }
                                 }
@@ -528,7 +528,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
 
                 if ((connection instanceof DatabaseConnection) && (repositoryValue.startsWith("DATABASE"))) { //$NON-NLS-1$
                     String currentDbType = (String) RepositoryToComponentProperty.getValue(connection, "TYPE"); //$NON-NLS-1$
-                    if (repositoryValue.contains(":")) { // database
+                    if (repositoryValue.contains(":")) { // database //$NON-NLS-1$
                         // is
                         // specified
                         // //$NON-NLS-1$
@@ -686,7 +686,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
                     if (elementParameter.getParentParameter() == null) {
                         control = this.hashCurControls.get(elementParameter.getName());
                     } else {
-                        control = this.hashCurControls.get(elementParameter.getParentParameter().getName() + ":"
+                        control = this.hashCurControls.get(elementParameter.getParentParameter().getName() + ":" //$NON-NLS-1$
                                 + elementParameter.getName());
                     }
                     if ((control == null && show) || (control != null && !show)) {
@@ -766,7 +766,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
             }
         }
 
-        long lastTime = TimeMeasure.timeSinceBegin("DTP:refresh:" + getCurrentComponent());
+        long lastTime = TimeMeasure.timeSinceBegin("DTP:refresh:" + getCurrentComponent()); //$NON-NLS-1$
         curRowSize = 0;
         for (int curRow = 1; curRow <= maxRow; curRow++) {
             maxRowSize = 0;
@@ -804,10 +804,10 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
 
                             lastControl = controller.createControl(composite, curParam, numInRow, nbInRow, heightSize,
                                     lastControl);
-                            lastTime = TimeMeasure.timeSinceBegin("DTP:refresh:" + getCurrentComponent()) - lastTime;
-                            if ((DynamicTabbedPropertySection.DEBUG_TIME) && !getCurrentComponent().equals("Job")) {
-                                System.out.println("DTP;create:" + curParam.getField().getName() + ";" + getCurrentComponent()
-                                        + ";" + lastTime);
+                            lastTime = TimeMeasure.timeSinceBegin("DTP:refresh:" + getCurrentComponent()) - lastTime; //$NON-NLS-1$
+                            if ((DynamicTabbedPropertySection.DEBUG_TIME) && !getCurrentComponent().equals("Job")) { //$NON-NLS-1$
+                                System.out.println("DTP;create:" + curParam.getField().getName() + ";" + getCurrentComponent() //$NON-NLS-1$ //$NON-NLS-2$
+                                        + ";" + lastTime); //$NON-NLS-1$
                             }
 
                             // System.out.println("param:" + curParam.getName()
@@ -947,7 +947,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
     public void refresh() {
         TimeMeasure.display = false;
         TimeMeasure.measureActive = true;
-        TimeMeasure.begin("DTP:refresh:" + getCurrentComponent());
+        TimeMeasure.begin("DTP:refresh:" + getCurrentComponent()); //$NON-NLS-1$
         if (elem == null) {
             return;
         }
@@ -989,10 +989,10 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
             propertyResized = false;
         }
         checkErrorsWhenViewRefreshed = false;
-        long time = TimeMeasure.timeSinceBegin("DTP:refresh:" + getCurrentComponent());
-        TimeMeasure.end("DTP:refresh:" + getCurrentComponent());
-        if ((DEBUG_TIME) && !getCurrentComponent().equals("Job")) {
-            System.out.println("DTP;total;" + getCurrentComponent() + ";" + time);
+        long time = TimeMeasure.timeSinceBegin("DTP:refresh:" + getCurrentComponent()); //$NON-NLS-1$
+        TimeMeasure.end("DTP:refresh:" + getCurrentComponent()); //$NON-NLS-1$
+        if ((DEBUG_TIME) && !getCurrentComponent().equals("Job")) { //$NON-NLS-1$
+            System.out.println("DTP;total;" + getCurrentComponent() + ";" + time); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 
@@ -1251,7 +1251,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
     @SuppressWarnings("unchecked")
     private void updateQuery() {
         Object propertyValue = elem.getPropertyValue(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName());
-        if (propertyValue == null || !(propertyValue instanceof String) || "".equals(propertyValue)
+        if (propertyValue == null || !(propertyValue instanceof String) || "".equals(propertyValue) //$NON-NLS-1$
                 || elem.getPropertyValue(EParameterName.QUERYSTORE_TYPE.getName()).equals(EmfComponent.BUILTIN)) {
             return;
         }
@@ -1268,7 +1268,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
 
     private String convertSQL(String sql) {
 
-        if (sql.startsWith("'") || sql.startsWith("\"")) { //$NON-NLS-1$
+        if (sql.startsWith("'") || sql.startsWith("\"")) { //$NON-NLS-1$ //$NON-NLS-2$
             return sql;
         }
         return TalendTextUtils.addQuotes(sql); //$NON-NLS-1$ //$NON-NLS-2$
@@ -1294,8 +1294,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
         if ((propertyValue == null || !(propertyValue instanceof String)) && defaultPropertyValue != null) {
             propertyValue = defaultPropertyValue;
         }
-        if (propertyValue == null || propertyValue.equals("")) {
-            return "";
+        if (propertyValue == null || propertyValue.equals("")) { //$NON-NLS-1$
+            return ""; //$NON-NLS-1$
         }
         if (istable) {
             List<String> list = tablesMap.get(propertyValue);
@@ -1312,7 +1312,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
                 }
             }
         }
-        return "";
+        return ""; //$NON-NLS-1$
     }
 
     /**

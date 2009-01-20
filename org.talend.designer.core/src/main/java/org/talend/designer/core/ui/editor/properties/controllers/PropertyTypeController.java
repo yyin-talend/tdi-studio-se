@@ -42,6 +42,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.properties.tab.IDynamicProperty;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
@@ -75,7 +76,7 @@ public class PropertyTypeController extends AbstractRepositoryController {
         Control lastControlUsed = lastControl;
         lastControlUsed = super.createControl(subComposite, param, numInRow, nbInRow, top, lastControl);
         // add a button if the value is Built-In
-        if (EmfComponent.BUILTIN.equals(param.getChildParameters().get("PROPERTY_TYPE").getValue())) {
+        if (EmfComponent.BUILTIN.equals(param.getChildParameters().get("PROPERTY_TYPE").getValue())) { //$NON-NLS-1$
             if (param.getElement() instanceof INode) {
                 if (canSaveProperty(param)) {
                     lastControlUsed = addButton(subComposite, param, lastControlUsed, numInRow, top);
@@ -107,7 +108,7 @@ public class PropertyTypeController extends AbstractRepositoryController {
              * @author wzhang. For the property in EdatabaseComponentName class is "tELTTeradataInput" and
              * "tELTTeradataOutput". So define the String variable custom.
              */
-            if (componentName.equals("tTeradataInput") || componentName.equals("tTeradataOutput")) {
+            if (componentName.equals("tTeradataInput") || componentName.equals("tTeradataOutput")) { //$NON-NLS-1$ //$NON-NLS-2$
                 canSaved = true;
             }
         }
@@ -136,7 +137,7 @@ public class PropertyTypeController extends AbstractRepositoryController {
         button = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
         buttonSize = button.computeSize(SWT.DEFAULT, SWT.DEFAULT);
         button.setImage(ImageProvider.getImage(EImage.SAVE_ICON));
-        button.setToolTipText("Save the property to Metadata");
+        button.setToolTipText(Messages.getString("PropertyTypeController.saveToMetadata")); //$NON-NLS-1$
         button.setData(PARAMETER_NAME, param.getName());
 
         lastControlUsed = button;
@@ -240,56 +241,56 @@ public class PropertyTypeController extends AbstractRepositoryController {
                 if (param != null) {
                     RepositoryNode realNode = null;
                     String repositoryValue = param.getRepositoryValue();
-                    if (repositoryValue != null && repositoryValue.startsWith("DATABASE")) {
+                    if (repositoryValue != null && repositoryValue.startsWith("DATABASE")) { //$NON-NLS-1$
                         realNode = repositoryService.getRootRepositoryNode(ERepositoryObjectType.METADATA_CONNECTIONS);
                     } else
 
                     // file delimited
-                    if ("DELIMITED".equals(repositoryValue)) {
+                    if ("DELIMITED".equals(repositoryValue)) { //$NON-NLS-1$
                         realNode = repositoryService.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_DELIMITED);
                     }
                     // file positional
-                    if ("POSITIONAL".equals(repositoryValue)) {
+                    if ("POSITIONAL".equals(repositoryValue)) { //$NON-NLS-1$
                         realNode = repositoryService.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_POSITIONAL);
                     }
                     // file regexp
-                    if ("REGEX".equals(repositoryValue)) {
+                    if ("REGEX".equals(repositoryValue)) { //$NON-NLS-1$
                         realNode = repositoryService.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_REGEXP);
                     }
                     // file xml
-                    if ("XML".equals(repositoryValue)) {
+                    if ("XML".equals(repositoryValue)) { //$NON-NLS-1$
                         realNode = repositoryService.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_XML);
                     }
                     // file ldif
-                    if ("LDIF".equals(repositoryValue)) {
+                    if ("LDIF".equals(repositoryValue)) { //$NON-NLS-1$
                         realNode = repositoryService.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_LDIF);
                     }
                     // excel
-                    if ("EXCEL".equals(repositoryValue)) {
+                    if ("EXCEL".equals(repositoryValue)) { //$NON-NLS-1$
                         realNode = repositoryService.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_EXCEL);
                     }
                     // generic schema
-                    if ("GENERIC".equals(repositoryValue)) {
+                    if ("GENERIC".equals(repositoryValue)) { //$NON-NLS-1$
                         realNode = repositoryService.getRootRepositoryNode(ERepositoryObjectType.METADATA_GENERIC_SCHEMA);
                     }
                     // ldap
-                    if ("LDAP".equals(repositoryValue)) {
+                    if ("LDAP".equals(repositoryValue)) { //$NON-NLS-1$
                         realNode = repositoryService.getRootRepositoryNode(ERepositoryObjectType.METADATA_LDAP_SCHEMA);
                     }
                     // wsdl
-                    if ("WSDL".equals(repositoryValue)) {
+                    if ("WSDL".equals(repositoryValue)) { //$NON-NLS-1$
                         realNode = repositoryService.getRootRepositoryNode(ERepositoryObjectType.METADATA_WSDL_SCHEMA);
                     }
                     // salesforce
-                    if ("SALESFORCE".equals(repositoryValue)) {
+                    if ("SALESFORCE".equals(repositoryValue)) { //$NON-NLS-1$
                         realNode = repositoryService.getRootRepositoryNode(ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA);
                     }
                     // ebcdic
-                    if ("EBCDIC".equals(repositoryValue)) {
+                    if ("EBCDIC".equals(repositoryValue)) { //$NON-NLS-1$
                         realNode = repositoryService.getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_EBCDIC);
                     }
                     // sap
-                    if ("SAP".equals(repositoryValue)) {
+                    if ("SAP".equals(repositoryValue)) { //$NON-NLS-1$
                         realNode = repositoryService.getRootRepositoryNode(ERepositoryObjectType.METADATA_SAPCONNECTIONS);
                     }
 
@@ -307,7 +308,7 @@ public class PropertyTypeController extends AbstractRepositoryController {
                             // 2. commnd
                             Command cmd = new ChangeValuesFromRepository((Element) node, connItem.getConnection(), propertyParam
                                     .getName()
-                                    + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), connItem.getProperty().getId());
+                                    + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), connItem.getProperty().getId()); //$NON-NLS-1$
                             executeCommand(cmd);
                         }
                     }
@@ -327,7 +328,7 @@ public class PropertyTypeController extends AbstractRepositoryController {
         if (!(repositoryConnection instanceof DatabaseConnection)) {
             return;
         }
-        final String property = "DBTYPE";
+        final String property = "DBTYPE"; //$NON-NLS-1$
         if (elem.getElementParameter(property) == null) {
             return;
         }
@@ -395,7 +396,7 @@ public class PropertyTypeController extends AbstractRepositoryController {
         cc.add(changeValuesFromRepository1);
         if (repositoryConnection != null) {
             ChangeValuesFromRepository changeValuesFromRepository2 = new ChangeValuesFromRepository(elem, repositoryConnection,
-                    repositoryParam.getParentParameter().getName() + ":" + repositoryParam.getName(), repositoryConnectionItem
+                    repositoryParam.getParentParameter().getName() + ":" + repositoryParam.getName(), repositoryConnectionItem //$NON-NLS-1$
                             .getProperty().getId());
             changeValuesFromRepository2.setMaps(dynamicProperty.getRepositoryTableMap());
             cc.add(changeValuesFromRepository2);

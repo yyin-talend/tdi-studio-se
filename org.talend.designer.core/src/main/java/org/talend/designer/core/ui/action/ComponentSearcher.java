@@ -5,7 +5,7 @@
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
 //
-// You should have received a copy of the  agreement
+// You should have received a copy of the agreement
 // along with this program; if not, write to Talend SA
 // 9 rue Pages 92150 Suresnes, France
 //
@@ -35,15 +35,16 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.IDesignerCoreService;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.ui.dialog.JobSearchResultProcessor;
 import org.talend.repository.ui.dialog.RepositoryReviewDialog;
 
-
 /**
- * DOC hcw  class global comment. Detailled comment
+ * DOC hcw class global comment. Detailled comment
  */
 public class ComponentSearcher {
+
     private String componentName;
 
     private Shell shell;
@@ -95,7 +96,10 @@ public class ComponentSearcher {
 
             });
         } else {
-            MessageDialog.openInformation(shell, "Search Results for Component " + componentName, "no existing jobs are found.");
+            MessageDialog
+                    .openInformation(
+                            shell,
+                            Messages.getString("ComponentSearcher.searchResult", componentName), Messages.getString("ComponentSearcher.noJobsFound")); //$NON-NLS-1$//$NON-NLS-2$
         }
     }
 
@@ -112,12 +116,12 @@ public class ComponentSearcher {
 
         try {
             List<IRepositoryObject> repositoryObjectList = factory.getAll(ERepositoryObjectType.PROCESS, false);
-            monitor.beginTask("Searching Component in Jobs ", repositoryObjectList.size());
+            monitor.beginTask("Searching Component in Jobs ", repositoryObjectList.size()); //$NON-NLS-1$
             for (IRepositoryObject rObject : repositoryObjectList) {
                 if (monitor.isCanceled()) {
                     break;
                 }
-                monitor.setTaskName("Search " + rObject.getLabel());
+                monitor.setTaskName("Search " + rObject.getLabel()); //$NON-NLS-1$
                 monitor.worked(1);
                 Item item = rObject.getProperty().getItem();
                 if (item instanceof ProcessItem) {
@@ -126,13 +130,13 @@ public class ComponentSearcher {
                     List<INode> nodes = (List<INode>) process.getGraphicalNodes();
                     for (INode node : nodes) {
                         if (node.getComponent().getName().equals(nodeName)) {
-                            found.add(rObject);                           
+                            found.add(rObject);
                             break;
                         }
                     }
                 }
             }
-            monitor.done();            
+            monitor.done();
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);
         }

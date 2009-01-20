@@ -58,6 +58,7 @@ import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.cmd.RepositoryChangeQueryCommand;
@@ -390,7 +391,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
 
     private Command changeToBuildInCommand() {
 
-        return new RepositoryChangeQueryCommand(this.elem, null, "QUERYSTORE_TYPE", "BUILT_IN");
+        return new RepositoryChangeQueryCommand(this.elem, null, "QUERYSTORE_TYPE", "BUILT_IN"); //$NON-NLS-1$ //$NON-NLS-2$
 
     }
 
@@ -435,7 +436,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
      */
     private DatabaseConnectionItem findRepositoryItem(String queryId) {
         try {
-            String[] names = queryId.split(" - ");
+            String[] names = queryId.split(" - "); //$NON-NLS-1$
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             IRepositoryObject node = factory.getLastVersion(names[0]);
             DatabaseConnectionItem item = (DatabaseConnectionItem) node.getProperty().getItem();
@@ -496,7 +497,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         @Override
         protected void configureShell(Shell newShell) {
             super.configureShell(newShell);
-            newShell.setText("Query");
+            newShell.setText(Messages.getString("SqlMemoController.query")); //$NON-NLS-1$
         }
 
         @Override

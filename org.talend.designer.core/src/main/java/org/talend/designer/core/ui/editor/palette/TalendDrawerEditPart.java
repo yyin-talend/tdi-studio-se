@@ -33,7 +33,7 @@ public class TalendDrawerEditPart extends DrawerEditPart {
         if (getParent() instanceof TalendDrawerEditPart) {
             TalendDrawerEditPart parent = (TalendDrawerEditPart) getParent();
             childLevel = parent.childLevel + 1;
-            getViewer().getControl().setData("ANIMATE", Boolean.FALSE);
+            getViewer().getControl().setData("ANIMATE", Boolean.FALSE); //$NON-NLS-1$
 
             TalendDrawerFigure fig = new TalendDrawerFigure(getViewer().getControl(), childLevel) {
 
@@ -41,7 +41,7 @@ public class TalendDrawerEditPart extends DrawerEditPart {
                     return createToolTip();
                 }
             };
-            getViewer().getControl().setData("ANIMATE", Boolean.TRUE);
+            getViewer().getControl().setData("ANIMATE", Boolean.TRUE); //$NON-NLS-1$
             fig.setExpanded(getDrawer().isInitiallyOpen());
             fig.setPinned(getDrawer().isInitiallyPinned());
 

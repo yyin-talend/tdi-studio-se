@@ -84,24 +84,24 @@ public class ConnectionCreateCommand extends Command {
     private String askForConnectionName(String nodeLabel, String oldName) {
 
         // check if the source got the ELT Table parameter, if yes, take the name by default
-        IElementParameter elementParam = source.getElementParameter("ELT_TABLE_NAME");
+        IElementParameter elementParam = source.getElementParameter("ELT_TABLE_NAME"); //$NON-NLS-1$
         if (source.isELTComponent() && elementParam != null && elementParam.getField().equals(EParameterFieldType.TEXT)) {
             String name2 = elementParam.getValue().toString();
             if (name2 != null) {
                 name2 = TalendTextUtils.removeQuotes(name2);
-                if (!name2.equals("")) {
+                if (!name2.equals("")) { //$NON-NLS-1$
                     return name2;
                 }
             }
         }
 
         // check if the target got the ELT Table parameter, if yes, take the name by default
-        elementParam = target.getElementParameter("ELT_TABLE_NAME");
+        elementParam = target.getElementParameter("ELT_TABLE_NAME"); //$NON-NLS-1$
         if (target.isELTComponent() && elementParam != null && elementParam.getField().equals(EParameterFieldType.TEXT)) {
             String name2 = elementParam.getValue().toString();
             if (name2 != null) {
                 name2 = TalendTextUtils.removeQuotes(name2);
-                if (!name2.equals("")) {
+                if (!name2.equals("")) { //$NON-NLS-1$
                     return name2;
                 }
             }
@@ -148,7 +148,7 @@ public class ConnectionCreateCommand extends Command {
                 boolean connectionOk = false;
                 while (!connectionOk) {
                     connectionName = askForConnectionName(source.getLabel(), connectionName);
-                    if (connectionName.equals("")) {
+                    if (connectionName.equals("")) { //$NON-NLS-1$
                         creatingConnection = false;
                         dispose();
                         return;

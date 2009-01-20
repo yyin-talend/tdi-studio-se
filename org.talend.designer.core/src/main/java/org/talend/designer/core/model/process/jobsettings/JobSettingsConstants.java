@@ -17,9 +17,9 @@ package org.talend.designer.core.model.process.jobsettings;
  */
 public final class JobSettingsConstants {
 
-    public static final String ORACLE_INPUT_SID_ALIAS = "tOracleInput_sid";
+    public static final String ORACLE_INPUT_SID_ALIAS = "tOracleInput_sid"; //$NON-NLS-1$
 
-    public static final String ORACLE_INOUT_SN_ALIAS = "tOracleInput_servername";
+    public static final String ORACLE_INOUT_SN_ALIAS = "tOracleInput_servername"; //$NON-NLS-1$
 
     /**
      * 
@@ -45,13 +45,13 @@ public final class JobSettingsConstants {
 
     }
 
-    private static final String[] PERL_DB_INPUT_COMPONENTS = new String[] { "tDBInput", "tMysqlInput", "tDBInput",
-            ORACLE_INPUT_SID_ALIAS, ORACLE_INOUT_SN_ALIAS, "tPostgresqlInput", "tDB2Input", "tSybaseInput", "tIngresInput",
-            "tInterbaseInput", "tSQLiteInput", "tFirebirdInput", "tInformixInput", "tAccessInput", "tTeradataInput" };
+    private static final String[] PERL_DB_INPUT_COMPONENTS = new String[] { "tDBInput", "tMysqlInput", "tDBInput", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            ORACLE_INPUT_SID_ALIAS, ORACLE_INOUT_SN_ALIAS, "tPostgresqlInput", "tDB2Input", "tSybaseInput", "tIngresInput", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            "tInterbaseInput", "tSQLiteInput", "tFirebirdInput", "tInformixInput", "tAccessInput", "tTeradataInput" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
 
-    private static final String[] JAVA_DB_INPUT_COMPONENTS = new String[] { "tDBInput", "tMysqlInput", "tMSSqlInput",
-            ORACLE_INPUT_SID_ALIAS, ORACLE_INOUT_SN_ALIAS, "tPostgresqlInput", "tDB2Input", "tSybaseInput", "tIngresInput",
-            "tInterbaseInput", "tSQLiteInput", "tFirebirdInput", "tInformixInput", "tAccessInput", "tTeradataInput" };
+    private static final String[] JAVA_DB_INPUT_COMPONENTS = new String[] { "tDBInput", "tMysqlInput", "tMSSqlInput", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            ORACLE_INPUT_SID_ALIAS, ORACLE_INOUT_SN_ALIAS, "tPostgresqlInput", "tDB2Input", "tSybaseInput", "tIngresInput", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            "tInterbaseInput", "tSQLiteInput", "tFirebirdInput", "tInformixInput", "tAccessInput", "tTeradataInput" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
 
     public static final String[][] DB_INPUT_COMPONENTS = new String[][] { PERL_DB_INPUT_COMPONENTS, JAVA_DB_INPUT_COMPONENTS };
 
@@ -61,7 +61,7 @@ public final class JobSettingsConstants {
 
     public static String getExtraParameterName(final String name) {
         if (name == null) {
-            return "";
+            return ""; //$NON-NLS-1$
         }
         return name + EXTRA;
         // return name;

@@ -222,7 +222,7 @@ public class ChangeMetadataCommand extends Command {
             }
             propagate = MessageDialog.openQuestion(new Shell(), Messages
                     .getString("ChangeMetadataCommand.messageDialog.propagate"), //$NON-NLS-1$
-                    Messages.getString("ChangeMetadataCommand.messageDialog.questionMessage")); //$NON-NLS-2$
+                    Messages.getString("ChangeMetadataCommand.messageDialog.questionMessage")); //$NON-NLS-1$ 
         }
         return propagate;
     }
@@ -324,7 +324,7 @@ public class ChangeMetadataCommand extends Command {
                                     copy = ((Node) targetNode).getMetadataFromConnector(baseConnector).clone(true);
                                 } else {
                                     // if don't have the same connector, take the main connector of the component.
-                                    final String mainConnector = "FLOW"; // can only be FLOW right now for this case.
+                                    final String mainConnector = "FLOW"; // can only be FLOW right now for this case. //$NON-NLS-1$
                                     copy = ((Node) targetNode).getMetadataFromConnector(mainConnector).clone(true);
                                 }
                                 MetadataTool.copyTable(toCopy, copy);
@@ -486,7 +486,7 @@ public class ChangeMetadataCommand extends Command {
         if (getConnection() != null) {
             for (IElementParameter parameter : node.getElementParameters()) {
                 if (parameter.getField() == EParameterFieldType.TABLE && parameter.getRepositoryValue() != null
-                        && parameter.getRepositoryValue().equals("XML_MAPPING")) {
+                        && parameter.getRepositoryValue().equals("XML_MAPPING")) { //$NON-NLS-1$
                     List<Map<String, Object>> value2 = (List<Map<String, Object>>) parameter.getValue();
                     RepositoryToComponentProperty.getTableXMLMappingValue(getConnection(), value2, newOutputMetadata);
                     parameter.setRepositoryValueUsed(true);
@@ -561,7 +561,7 @@ public class ChangeMetadataCommand extends Command {
             IElementParameter dbTableElementField = curNode.getElementParameterFromField(EParameterFieldType.DBTABLE);
             changeTableNameParameter(newdbTableName, olddbTableName, uniqueName, dbTableElementField);
             if (((Node) curNode).isELTComponent()) {
-                IElementParameter eltTablename = curNode.getElementParameter("ELT_TABLE_NAME");
+                IElementParameter eltTablename = curNode.getElementParameter("ELT_TABLE_NAME"); //$NON-NLS-1$
                 changeTableNameParameter(newdbTableName, olddbTableName, uniqueName, eltTablename);
             }
         }
@@ -572,7 +572,7 @@ public class ChangeMetadataCommand extends Command {
             return;
         }
 
-        IElementParameter parameter = curNode.getElementParameter("SAP_FUNCTION");
+        IElementParameter parameter = curNode.getElementParameter("SAP_FUNCTION"); //$NON-NLS-1$
         if (parameter != null) {
             parameter.setValue(TalendTextUtils.addQuotes(functionName));
         }
@@ -591,13 +591,13 @@ public class ChangeMetadataCommand extends Command {
         if (dbTableElementField != null) {
             Object value = dbTableElementField.getValue();
             String removeQuotes = TalendTextUtils.removeQuotes((String) value);
-            boolean b = value == null || removeQuotes.equals("");
+            boolean b = value == null || removeQuotes.equals(""); //$NON-NLS-1$
             // add the code for table name equals uniqueName
             b = b || uniqueName.equals(olddbTableName);
             b = b || value != null && removeQuotes.toString().equals(olddbTableName);
 
             if (b) {
-                newdbTableName = newdbTableName == null ? "" : newdbTableName;
+                newdbTableName = newdbTableName == null ? "" : newdbTableName; //$NON-NLS-1$
                 dbTableElementField.setValue(TalendTextUtils.addQuotes(newdbTableName));
             }
         }

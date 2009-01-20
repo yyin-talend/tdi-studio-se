@@ -102,7 +102,7 @@ public class NodeTreeEditPart extends AbstractTreeEditPart implements PropertyCh
         if (node.getLabel().equals(node.getUniqueName())) {
             setWidgetText(node.getUniqueName());
         } else {
-            setWidgetText(node.getUniqueName() + " (" + node.getLabel() + ")");
+            setWidgetText(node.getUniqueName() + " (" + node.getLabel() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 }

@@ -319,23 +319,23 @@ public class DbTypeListController extends AbstractElementPropertySectionControll
         }
 
         if (!hasMappingType) { // if there is no mapping type, then check if a db repository schema is used
-            IElementParameter schemaTypeParameter = node.getElementParameter("SCHEMA_TYPE");
+            IElementParameter schemaTypeParameter = node.getElementParameter("SCHEMA_TYPE"); //$NON-NLS-1$
             if (schemaTypeParameter == null) {
                 return null;
             }
             String schemaType = (String) schemaTypeParameter.getValue();
-            if (schemaType.equals("REPOSITORY")) {
+            if (schemaType.equals("REPOSITORY")) { //$NON-NLS-1$
                 // repository mode
-                String metaRepositoryName = (String) node.getElementParameter("REPOSITORY_SCHEMA_TYPE").getValue();
+                String metaRepositoryName = (String) node.getElementParameter("REPOSITORY_SCHEMA_TYPE").getValue(); //$NON-NLS-1$
                 Connection connection = MetadataTool.getConnectionFromRepository(metaRepositoryName);
                 if (connection instanceof DatabaseConnection) {
                     currentDbms = ((DatabaseConnection) connection).getDbmsId();
                 }
             } else {
-                String componentDbType = "";
+                String componentDbType = ""; //$NON-NLS-1$
                 for (IElementParameter param : (List<IElementParameter>) node.getElementParameters()) {
                     if (param.getRepositoryValue() != null) {
-                        if (param.getRepositoryValue().equals("TYPE")) {
+                        if (param.getRepositoryValue().equals("TYPE")) { //$NON-NLS-1$
                             componentDbType = (String) param.getValue();
                         }
                     }

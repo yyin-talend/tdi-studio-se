@@ -90,7 +90,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
     /**
      * 
      */
-    private static final String FORCE_READ_ONLY = "FORCE_READ_ONLY";
+    private static final String FORCE_READ_ONLY = "FORCE_READ_ONLY"; //$NON-NLS-1$
 
     private static final String RESET_COLUMNS = "RESET_COLUMNS"; //$NON-NLS-1$
 
@@ -228,7 +228,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
             }
             if (flowMainInput && !multipleInput && !tableReadOnly) {
                 resetBtn = createAdditionalButton(subComposite, btn, btnSize, param, Messages
-                        .getString("SchemaController.syncColumns"), Messages.getString("SchemaController.resetButton.tooltip"),
+                        .getString("SchemaController.syncColumns"), Messages.getString("SchemaController.resetButton.tooltip"), //$NON-NLS-1$ //$NON-NLS-2$
                         top);
                 resetBtn.setData(NAME, RESET_COLUMNS);
 
@@ -236,10 +236,10 @@ public class SchemaTypeController extends AbstractRepositoryController {
 
             }
             // 0004322: tRunJob can import the tBufferOutput schema from the son job
-            if (node.getComponent().getName().equals("tRunJob")) {
+            if (node.getComponent().getName().equals("tRunJob")) { //$NON-NLS-1$
                 Button copySchemaButton = createAdditionalButton(subComposite, btn, btnSize, param, Messages
-                        .getString("SchemaController.copyChildSchema"), Messages
-                        .getString("SchemaController.copyChildSchema.tooltip"), top);
+                        .getString("SchemaController.copyChildSchema"), Messages //$NON-NLS-1$
+                        .getString("SchemaController.copyChildSchema.tooltip"), top); //$NON-NLS-1$
                 copySchemaButton.setData(NAME, COPY_CHILD_COLUMNS);
 
                 lastControlUsed = copySchemaButton;
@@ -315,7 +315,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
             IProcess process = service.getProcessFromProcessItem((ProcessItem) item);
             List<? extends INode> graphicalNodes = process.getGraphicalNodes();
             for (INode node : graphicalNodes) {
-                if ((node != null) && node.getComponent().getName().equals("tBufferOutput")) {
+                if ((node != null) && node.getComponent().getName().equals("tBufferOutput")) { //$NON-NLS-1$
                     List<IMetadataTable> list = node.getMetadataList();
                     if (list.size() > 0) {
                         List<IMetadataTable> metadata = runJobNode.getMetadataList();
@@ -425,7 +425,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
      */
     private IRepositoryObject findRepositoryObject(String schemaId) {
         try {
-            String[] names = schemaId.split(" - ");
+            String[] names = schemaId.split(" - "); //$NON-NLS-1$
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             IRepositoryObject node = factory.getLastVersion(names[0]);
             return node;
@@ -442,12 +442,12 @@ public class SchemaTypeController extends AbstractRepositoryController {
      */
     private void updateRepositorySchema(Button button) {
         String paramName = (String) button.getData(PARAMETER_NAME);
-        String fullParamName = paramName + ":" + getRepositoryChoiceParamName();
+        String fullParamName = paramName + ":" + getRepositoryChoiceParamName(); //$NON-NLS-1$
         IElementParameter schemaParam = elem.getElementParameter(fullParamName);
         String schemaId = (String) schemaParam.getValue();
         org.talend.core.model.metadata.builder.connection.Connection connection = MetadataTool
                 .getConnectionFromRepository(schemaId);
-        String[] names = schemaId.split(" - ");
+        String[] names = schemaId.split(" - "); //$NON-NLS-1$
 
         if (connection == null || names == null || names.length != 2) {
             // When no repository avaiable on "Repository" mode, open a MessageDialog.
@@ -622,8 +622,8 @@ public class SchemaTypeController extends AbstractRepositoryController {
             }
 
             if (connectionParam != null && inputMetadata == null) {
-                MessageDialog.openError(button.getShell(), "Input connection not set",
-                        "Connection has not been set or not correctly in the component");
+                MessageDialog.openError(button.getShell(), Messages.getString("SchemaTypeController.inputNotSet"), //$NON-NLS-1$
+                        Messages.getString("SchemaTypeController.connectionNotAvaliable")); //$NON-NLS-1$
                 return null;
             }
 
@@ -639,7 +639,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
             }
             outputMetaCopy.setReadOnly(originaleOutputTable.isReadOnly());
 
-            IElementParameter schemaTypeParam = param.getChildParameters().get("SCHEMA_TYPE");
+            IElementParameter schemaTypeParam = param.getChildParameters().get("SCHEMA_TYPE"); //$NON-NLS-1$
             List<IElementParameterDefaultValue> defaultValues = schemaTypeParam.getDefaultValues();
             for (IElementParameterDefaultValue elementParameterDefaultValue : defaultValues) {
                 if (elementParameterDefaultValue.getDefaultValue() instanceof MetadataTable) {
@@ -837,7 +837,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
             ERepositoryObjectType type = ERepositoryObjectType.METADATA_CON_TABLE;
             if (elem instanceof Node) {
                 Node sapNode = (Node) elem;
-                if (sapNode.getComponent().getName().startsWith("tSAP")) {
+                if (sapNode.getComponent().getName().startsWith("tSAP")) { //$NON-NLS-1$
                     type = ERepositoryObjectType.METADATA_SAP_FUNCTION;
                 }
             }
@@ -851,7 +851,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
                 }
                 String id = dialog.getResult().getObject().getProperty().getId();
                 String name = dialog.getResult().getObject().getLabel();
-                String value = id + " - " + name;
+                String value = id + " - " + name; //$NON-NLS-1$
 
                 String fullParamName = paramName + ":" + getRepositoryChoiceParamName(); //$NON-NLS-1$
                 IElementParameter repostoryParam = elem.getElementParameter(fullParamName);
@@ -867,7 +867,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
                     connection = MetadataTool.getConnectionFromRepository(value);
 
                     // For SAP see bug 5423
-                    if (((Node) elem).getUniqueName().startsWith("tSAP")) {
+                    if (((Node) elem).getUniqueName().startsWith("tSAP")) { //$NON-NLS-1$
                         Node sapNode = (Node) elem;
                         String functionName = repositoryMetadata.getLabel();
                         for (IElementParameter param : sapNode.getElementParameters()) {
@@ -901,7 +901,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
             // pop up the schema dialog
             MetadataDialog metaDialog = new MetadataDialog(composite.getShell(), node.getMetadataList().get(0), node,
                     getCommandStack());
-            metaDialog.setText(Messages.getString("SchemaController.schemaOf") + node.getLabel());
+            metaDialog.setText(Messages.getString("SchemaController.schemaOf") + node.getLabel()); //$NON-NLS-1$
             metaDialog.open();
 
         }
@@ -1078,10 +1078,10 @@ public class SchemaTypeController extends AbstractRepositoryController {
             // Force redraw of Commponents propoerties
             elem.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), new Boolean(true));
             IElementParameter param = elem.getElementParameter(propertyName);
-            IElementParameter schemaTypeParam = param.getChildParameters().get("SCHEMA_TYPE");
+            IElementParameter schemaTypeParam = param.getChildParameters().get("SCHEMA_TYPE"); //$NON-NLS-1$
             schemaTypeParam.setRepositoryValueUsed(false);
             schemaTypeParam.setReadOnly(false);
-            elem.setPropertyValue(param.getName() + ":SCHEMA_TYPE", EmfComponent.BUILTIN);
+            elem.setPropertyValue(param.getName() + ":SCHEMA_TYPE", EmfComponent.BUILTIN); //$NON-NLS-1$
         }
 
         @Override
@@ -1089,10 +1089,10 @@ public class SchemaTypeController extends AbstractRepositoryController {
             // Force redraw of Commponents propoerties
             elem.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), new Boolean(true));
             IElementParameter param = elem.getElementParameter(propertyName);
-            IElementParameter schemaTypeParam = param.getChildParameters().get("SCHEMA_TYPE");
+            IElementParameter schemaTypeParam = param.getChildParameters().get("SCHEMA_TYPE"); //$NON-NLS-1$
             schemaTypeParam.setRepositoryValueUsed(true);
             schemaTypeParam.setReadOnly(true);
-            elem.setPropertyValue(param.getName() + ":SCHEMA_TYPE", EmfComponent.REPOSITORY);
+            elem.setPropertyValue(param.getName() + ":SCHEMA_TYPE", EmfComponent.REPOSITORY); //$NON-NLS-1$
         }
 
     }

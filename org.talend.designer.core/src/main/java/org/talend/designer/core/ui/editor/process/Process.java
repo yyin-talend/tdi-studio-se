@@ -695,7 +695,7 @@ public class Process extends Element implements IProcess2 {
         }
         pType = fileFact.createElementParameterType();
         if (param.getParentParameter() != null) {
-            pType.setName(param.getParentParameter().getName() + ":" + param.getName());
+            pType.setName(param.getParentParameter().getName() + ":" + param.getName()); //$NON-NLS-1$
         } else {
             pType.setName(param.getName());
         }
@@ -771,7 +771,7 @@ public class Process extends Element implements IProcess2 {
                     }
                     String value = pType.getValue();
                     if (param.getField().equals(EParameterFieldType.CHECK) || param.getField().equals(EParameterFieldType.RADIO)) {
-                        if ("false".equalsIgnoreCase(value) || "true".equalsIgnoreCase(value) || !pType.isContextMode()) {
+                        if ("false".equalsIgnoreCase(value) || "true".equalsIgnoreCase(value) || !pType.isContextMode()) { //$NON-NLS-1$ //$NON-NLS-2$
                             Boolean boolean1 = new Boolean(value);
                             elemParam.setPropertyValue(pType.getName(), boolean1);
                         } else {
@@ -822,14 +822,14 @@ public class Process extends Element implements IProcess2 {
                         // fix for bug 2193
                         boolean setToCustom = false;
                         if (EmfComponent.REPOSITORY.equals(elemParam.getPropertyValue(EParameterName.PROPERTY_TYPE.getName()))
-                                && param.getRepositoryValue() != null && param.getRepositoryValue().equals("ENCODING")) {
+                                && param.getRepositoryValue() != null && param.getRepositoryValue().equals("ENCODING")) { //$NON-NLS-1$
                             setToCustom = true;
                         }
                         String tempValue = (String) param.getChildParameters().get(EParameterName.ENCODING_TYPE.getName())
                                 .getValue();
                         if (!tempValue.equals(EmfComponent.ENCODING_TYPE_CUSTOM)) {
-                            tempValue = tempValue.replaceAll("'", "");
-                            tempValue = tempValue.replaceAll("\"", "");
+                            tempValue = tempValue.replaceAll("'", ""); //$NON-NLS-1$ //$NON-NLS-2$
+                            tempValue = tempValue.replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
                             tempValue = TalendTextUtils.addQuotes(tempValue);
                             if (!tempValue.equals(value)) {
                                 setToCustom = true;
@@ -845,10 +845,10 @@ public class Process extends Element implements IProcess2 {
                     } else if (!param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
                         elemParam.setPropertyValue(pType.getName(), value);
                     }
-                } else if (UpdateTheJobsActionsOnTable.isClear && "CLEAR_TABLE".equals(pType.getName())
-                        && "true".equals(pType.getValue())
-                        && "NONE".equals(elemParam.getElementParameter(Process.TABLE_ACTION).getValue())) {
-                    elemParam.setPropertyValue(Process.TABLE_ACTION, "CLEAR");
+                } else if (UpdateTheJobsActionsOnTable.isClear && "CLEAR_TABLE".equals(pType.getName()) //$NON-NLS-1$
+                        && "true".equals(pType.getValue()) //$NON-NLS-1$
+                        && "NONE".equals(elemParam.getElementParameter(Process.TABLE_ACTION).getValue())) { //$NON-NLS-1$
+                    elemParam.setPropertyValue(Process.TABLE_ACTION, "CLEAR"); //$NON-NLS-1$
                     UpdateTheJobsActionsOnTable.isClear = false;
                 }
             }
@@ -1082,7 +1082,7 @@ public class Process extends Element implements IProcess2 {
                                         || columnParam.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
                                     for (Map<String, Object> columnMap : values) {
                                         Object column = columnMap.get(columnParam.getName());
-                                        if (column == null || "".equals(column)) {
+                                        if (column == null || "".equals(column)) { //$NON-NLS-1$
                                             columnMap.put(columnParam.getName(), columnParam.getDefaultClosedListValue());
                                         }
                                     }
@@ -1747,7 +1747,7 @@ public class Process extends Element implements IProcess2 {
 
             // fix to correct the bug of the metaname after renaming the output of a tMap
             String metaname = cType.getMetaname();
-            if ((source.getComponent().getName().equals("tMap")) && (source.getMetadataTable(metaname) == null)) {
+            if ((source.getComponent().getName().equals("tMap")) && (source.getMetadataTable(metaname) == null)) { //$NON-NLS-1$
                 metaname = cType.getLabel();
                 // the label should be the original name of the metadata
                 if (source.getMetadataTable(metaname) == null) {
@@ -1866,7 +1866,7 @@ public class Process extends Element implements IProcess2 {
      * 
      */
     private void updateContextBefore(IContextManager contextManager) {
-        if (repositoryId != null && !"".equals(repositoryId)) {
+        if (repositoryId != null && !"".equals(repositoryId)) { //$NON-NLS-1$
 
             ContextItem item = ContextUtils.getContextItemById(ContextUtils.getAllContextItem(), repositoryId);
 
@@ -2510,17 +2510,17 @@ public class Process extends Element implements IProcess2 {
                 if (componentName == null) { // means all nodes will be
                     // returned
                     matchingNodes.add(node);
-                } else if (componentName.startsWith("FAMILY:")) {
-                    String familly = componentName.substring("FAMILY:".length());
+                } else if (componentName.startsWith("FAMILY:")) { //$NON-NLS-1$
+                    String familly = componentName.substring("FAMILY:".length()); //$NON-NLS-1$
                     if (node.getComponent().getFamily().startsWith(familly)) {
                         matchingNodes.add(node);
                     }
-                } else if (componentName.startsWith("REGEXP:")) {
+                } else if (componentName.startsWith("REGEXP:")) { //$NON-NLS-1$
                     Perl5Matcher matcher = new Perl5Matcher();
                     Perl5Compiler compiler = new Perl5Compiler();
                     Pattern pattern;
 
-                    String regexp = componentName.substring("REGEXP:".length());
+                    String regexp = componentName.substring("REGEXP:".length()); //$NON-NLS-1$
                     try {
                         pattern = compiler.compile(regexp);
                         if (matcher.matches(node.getComponent().getName(), pattern)) {
@@ -2555,9 +2555,9 @@ public class Process extends Element implements IProcess2 {
             }
         }
 
-        if ((filter != null) && (filter.startsWith("TYPE:"))) {
+        if ((filter != null) && (filter.startsWith("TYPE:"))) { //$NON-NLS-1$
             // construct filter array
-            String[] f = filter.substring("TYPE:".length()).split("\\|"); //$NON-NLS-1$
+            String[] f = filter.substring("TYPE:".length()).split("\\|"); //$NON-NLS-1$ //$NON-NLS-2$
             List<String> filterArray = new ArrayList<String>(f.length);
             for (int i = 0; i < f.length; i++) {
                 filterArray.add(f[i].trim());

@@ -147,7 +147,7 @@ public class UpdateLabelProvider implements ITableLabelProvider {
         case 2:
             if (isJob || isCategory) {
                 if (isJob && ((Job) element).isReadOnlyProcess()) {
-                    return Messages.getString("ProcessUpdateManager.ReadOnlyProcessUpdateWarningMessages");
+                    return Messages.getString("ProcessUpdateManager.ReadOnlyProcessUpdateWarningMessages"); //$NON-NLS-1$
                 }
                 return UpdatesConstants.SEGMENT_LINE;
 

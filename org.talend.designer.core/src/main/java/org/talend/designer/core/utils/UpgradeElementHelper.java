@@ -130,11 +130,11 @@ public final class UpgradeElementHelper {
         PatternCompiler compiler = new Perl5Compiler();
         Perl5Matcher matcher = new Perl5Matcher();
         matcher.setMultiline(true);
-        Perl5Substitution substitution = new Perl5Substitution(newName + "$2", Perl5Substitution.INTERPOLATE_ALL);
+        Perl5Substitution substitution = new Perl5Substitution(newName + "$2", Perl5Substitution.INTERPOLATE_ALL); //$NON-NLS-1$
 
         Pattern pattern;
         try {
-            pattern = compiler.compile("\\b(" + UpdateContextVariablesHelper.replaceSpecialChar(oldName) + ")(\\b|\\_)");
+            pattern = compiler.compile("\\b(" + UpdateContextVariablesHelper.replaceSpecialChar(oldName) + ")(\\b|\\_)"); //$NON-NLS-1$ //$NON-NLS-2$
         } catch (MalformedPatternException e) {
             return value; // keep original value
         }
@@ -157,7 +157,7 @@ public final class UpgradeElementHelper {
      * @return
      */
     private static boolean isSQLQueryParameter(final IElementParameter parameter) {
-        return parameter.getField().equals(EParameterFieldType.MEMO_SQL) && parameter.getName().equals("QUERY");
+        return parameter.getField().equals(EParameterFieldType.MEMO_SQL) && parameter.getName().equals("QUERY"); //$NON-NLS-1$
     }
 
     /**
@@ -172,8 +172,8 @@ public final class UpgradeElementHelper {
      */
     private static boolean isJavaRowCodeParameter(final Element node, final IElementParameter parameter) {
         if (node instanceof Node) {
-            if (((Node) node).getUniqueName().contains("tJavaRow")) {
-                return parameter.getField().equals(EParameterFieldType.MEMO_JAVA) && parameter.getName().equals("CODE");
+            if (((Node) node).getUniqueName().contains("tJavaRow")) { //$NON-NLS-1$
+                return parameter.getField().equals(EParameterFieldType.MEMO_JAVA) && parameter.getName().equals("CODE"); //$NON-NLS-1$
             }
         }
         return false;
@@ -186,7 +186,7 @@ public final class UpgradeElementHelper {
             Pattern pattern;
 
             try {
-                pattern = compiler.compile("\\b(" + UpdateContextVariablesHelper.replaceSpecialChar(toTest) + ")(\\b|\\_)"); //$NON-NLS-1$
+                pattern = compiler.compile("\\b(" + UpdateContextVariablesHelper.replaceSpecialChar(toTest) + ")(\\b|\\_)"); //$NON-NLS-1$ //$NON-NLS-2$
                 if (matcher.contains(value, pattern)) {
                     return true;
                 }

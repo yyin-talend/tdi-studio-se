@@ -200,7 +200,7 @@ public class JobLaunchShortcut implements ILaunchShortcut {
         String jobVersion = file.getProperty().getVersion();
         ILaunchConfigurationType type = getLaunchManager().getLaunchConfigurationType(
                 TalendDebugUIConstants.JOB_DEBUG_LAUNCH_CONFIGURATION_TYPE);
-        String displayName = jobName + " " + jobVersion;
+        String displayName = jobName + " " + jobVersion; //$NON-NLS-1$
 
         try {
             if (type != null) {

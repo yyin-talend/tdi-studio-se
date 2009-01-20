@@ -84,9 +84,9 @@ import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
  */
 public class GuessSchemaController extends AbstractElementPropertySectionController {
 
-    private static final String GUESS_SCHEMA_NAME = "Guess schema";
+    private static final String GUESS_SCHEMA_NAME = "Guess schema"; //$NON-NLS-1$
 
-    private static final String SCHEMA = "SCHEMA";
+    private static final String SCHEMA = "SCHEMA"; //$NON-NLS-1$
 
     private static Logger log = Logger.getLogger(GuessSchemaController.class);
 
@@ -214,7 +214,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
 
             MetadataDialog metaDialog = new MetadataDialog(composite.getShell(), tempMetatable, node, getCommandStack());
             if (metaDialog != null) {
-                metaDialog.setText(Messages.getString("SchemaController.schemaOf") + node.getLabel());
+                metaDialog.setText(Messages.getString("SchemaController.schemaOf") + node.getLabel()); //$NON-NLS-1$
 
                 if (metaDialog.open() == MetadataDialog.OK) {
                     outputMetaCopy = metaDialog.getOutputMetaData();
@@ -257,7 +257,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                     if (columns != null) {
                         columns.clear();
                     }
-                    monitor.beginTask("Waiting for opening Database ...", IProgressMonitor.UNKNOWN);
+                    monitor.beginTask(Messages.getString("GuessSchemaController.waitingForDatabase"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
                     SQLBuilderRepositoryNodeManager manager = new SQLBuilderRepositoryNodeManager();
                     if (connParameters == null) {
                         initConnectionParameters();
@@ -308,7 +308,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
 
                                     public void run() {
                                         String pid = SqlBuilderPlugin.PLUGIN_ID;
-                                        String mainMsg = "Database connection is failed. "; //$NON-NLS-1$
+                                        String mainMsg = Messages.getString("GuessSchemaController.connectionFailed"); //$NON-NLS-1$
                                         ErrorDialogWithDetailAreaAndContinueButton dialog = new ErrorDialogWithDetailAreaAndContinueButton(
                                                 composite.getShell(), pid, mainMsg, connParameters.getConnectionComment());
                                         if (dialog.getCodeOfButton() == Window.OK) {
@@ -321,12 +321,13 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                         } catch (Exception e) {
                             ExtractMetaDataUtils.closeConnection();
 
-                            final String strExcepton = "Connect to DB error ,or some errors in SQL query string, or 'Guess Schema' not compatible with current SQL query string."
-                                    + System.getProperty("line.separator");
+                            final String strExcepton = Messages.getString(
+                                    "GuessSchemaController.0", System.getProperty("line.separator")); //$NON-NLS-1$ //$NON-NLS-2$
                             Display.getDefault().asyncExec(new Runnable() {
 
                                 public void run() {
-                                    MessageDialog.openWarning(composite.getShell(), "Connection error", strExcepton);
+                                    MessageDialog.openWarning(composite.getShell(), Messages
+                                            .getString("GuessSchemaController.connectionError"), strExcepton); //$NON-NLS-1$
                                 }
                             });
                         }
@@ -523,7 +524,10 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                 runShadowProcess();
             }
         } else {
-            MessageDialog.openWarning(shell, "Connection error", "Please set connection parameters");
+            MessageDialog
+                    .openWarning(
+                            shell,
+                            Messages.getString("GuessSchemaController.connectionError"), Messages.getString("GuessSchemaController.setParameter")); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
     }
@@ -542,7 +546,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
             connParameters.setConnectionComment(testConnection.getMessageException());
             return testConnection.getResult();
         } catch (Exception e) {
-            log.error(Messages.getString("CommonWizard.exception") + "\n" + e.toString());
+            log.error(Messages.getString("CommonWizard.exception") + "\n" + e.toString()); //$NON-NLS-1$ //$NON-NLS-2$
         }
         return false;
     }

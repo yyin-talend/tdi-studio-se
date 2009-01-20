@@ -23,6 +23,6 @@ public class StatsAndLogsPreferenceNodePage extends StatsAndLogsPreferencePage {
 
     public StatsAndLogsPreferenceNodePage() {
         super(LanguageManager.getCurrentLanguage());
-        this.setTitle(getTitle() + " (" + LanguageManager.getCurrentLanguage().getCaseName() + ")");
+        this.setTitle(getTitle() + " (" + LanguageManager.getCurrentLanguage().getCaseName() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 }

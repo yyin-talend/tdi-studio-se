@@ -21,7 +21,7 @@ public class BringToFrontAction extends ZorderAction {
 
     public static final String ID = "org.talend.designer.core.ui.editor.action.BringtoFrontAction"; //$NON-NLS-1$
 
-    private static final String TEXT = "Bring to front";
+    private static final String TEXT = "Bring to front"; //$NON-NLS-1$
 
     public BringToFrontAction(IWorkbenchPart part) {
         super(part);

@@ -19,7 +19,7 @@ import org.talend.core.model.process.Element;
  */
 public class StatsAndLogsElement extends Element {
 
-    private static final String STATSANDLOGS_ELEMENT_NAME = "statsAndLogs";
+    private static final String STATSANDLOGS_ELEMENT_NAME = "statsAndLogs"; //$NON-NLS-1$
 
     /*
      * (non-Javadoc)

@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.designer.core.i18n.Messages;
 
 /**
  * DOC hcw class global comment. Detailled comment
@@ -51,13 +52,13 @@ public class PromptDefaultValueDialog extends Dialog {
         super(parentShell);
         setShellStyle(SWT.TITLE | SWT.RESIZE | SWT.APPLICATION_MODAL | getDefaultOrientation());
         super.create();
-        getShell().setText("Set Column Default Value");
+        getShell().setText(Messages.getString("PromptDefaultValueDialog.columnValue")); //$NON-NLS-1$
         setInput(inputs);
     }
 
     @Override
     protected void createButtonsForButtonBar(Composite parent) {
-        createButton(parent, IDialogConstants.OK_ID, "OK", true);
+        createButton(parent, IDialogConstants.OK_ID, "OK", true); //$NON-NLS-1$
     }
 
     @Override
@@ -95,11 +96,11 @@ public class PromptDefaultValueDialog extends Dialog {
 
         TableColumn nameColumn = new TableColumn(table, SWT.NONE);
         nameColumn.setWidth(120);
-        nameColumn.setText("Column");
+        nameColumn.setText(Messages.getString("PromptDefaultValueDialog.column")); //$NON-NLS-1$
 
         TableColumn defaultColumn = new TableColumn(table, SWT.NONE);
         defaultColumn.setWidth(108);
-        defaultColumn.setText("Default Value");
+        defaultColumn.setText(Messages.getString("PromptDefaultValueDialog.defaultValue")); //$NON-NLS-1$
         editors = new ArrayList<TableEditor>();
     }
 
@@ -107,7 +108,7 @@ public class PromptDefaultValueDialog extends Dialog {
         table.setRedraw(false);
         for (ColumnInfo row : inputs) {
             final TableItem item = new TableItem(table, SWT.NONE);
-            item.setText(new String[] { row.name, "" });
+            item.setText(new String[] { row.name, "" }); //$NON-NLS-1$
             IElementParameter param = row.parameter;
             Object defaultValue = param.getValue();
             item.setData(row);

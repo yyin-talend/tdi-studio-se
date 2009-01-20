@@ -64,7 +64,7 @@ public class JavaProcessUtil {
             }
             for (IElementParameter curParam : node.getElementParameters()) {
                 if (curParam.getField().equals(EParameterFieldType.MODULE_LIST)) {
-                    if (!"".equals(curParam.getValue())) { // if the parameter
+                    if (!"".equals(curParam.getValue())) { // if the parameter //$NON-NLS-1$
                         // is not empty.
                         String moduleValue = (String) curParam.getValue();
 
@@ -81,8 +81,8 @@ public class JavaProcessUtil {
                                 }
                             }
                         } else {
-                            neededLibraries.add(moduleValue.replaceAll(TalendTextUtils.QUOTATION_MARK, "").replaceAll(
-                                    TalendTextUtils.SINGLE_QUOTE, ""));
+                            neededLibraries.add(moduleValue.replaceAll(TalendTextUtils.QUOTATION_MARK, "").replaceAll( //$NON-NLS-1$
+                                    TalendTextUtils.SINGLE_QUOTE, "")); //$NON-NLS-1$
                         }
                     }
                 }
@@ -92,8 +92,8 @@ public class JavaProcessUtil {
             }
 
             if (withChildrens) {
-                if (node.getComponent().getName().equals("tRunJob")) {
-                    IElementParameter processIdparam = node.getElementParameter("PROCESS_TYPE_PROCESS");
+                if (node.getComponent().getName().equals("tRunJob")) { //$NON-NLS-1$
+                    IElementParameter processIdparam = node.getElementParameter("PROCESS_TYPE_PROCESS"); //$NON-NLS-1$
                     IElementParameter processVersionParam = node.getElementParameter(EParameterName.PROCESS_TYPE_VERSION
                             .getName());
 
@@ -105,7 +105,7 @@ public class JavaProcessUtil {
                         processItem = ItemCacheManager.getProcessItem((String) processIdparam.getValue());
                     }
 
-                    String context = (String) node.getElementParameter("PROCESS_TYPE_CONTEXT").getValue();
+                    String context = (String) node.getElementParameter("PROCESS_TYPE_CONTEXT").getValue(); //$NON-NLS-1$
                     if (processItem != null && !searchItems.contains(processItem)) {
                         // avoid dead loop of method call
                         searchItems.add(processItem);
@@ -132,24 +132,24 @@ public class JavaProcessUtil {
      */
     private static void findMoreLibraries(Set<String> neededLibraries, IElementParameter curParam) {
 
-        if (curParam.getName().equals("DB_VERSION")) {
+        if (curParam.getName().equals("DB_VERSION")) { //$NON-NLS-1$
             String jdbcName = (String) curParam.getValue();
-            if (jdbcName.contains("11g")) {
-                if (System.getProperty("java.version").startsWith("1.6")) {
+            if (jdbcName.contains("11g")) { //$NON-NLS-1$
+                if (System.getProperty("java.version").startsWith("1.6")) { //$NON-NLS-1$ //$NON-NLS-2$
                     jdbcName = jdbcName.replace('5', '6');
                 } else {
                     jdbcName = jdbcName.replace('6', '5');
                 }
             }
-            neededLibraries.add((jdbcName).replaceAll(TalendTextUtils.QUOTATION_MARK, "").replaceAll(
-                    TalendTextUtils.SINGLE_QUOTE, ""));
+            neededLibraries.add((jdbcName).replaceAll(TalendTextUtils.QUOTATION_MARK, "").replaceAll( //$NON-NLS-1$
+                    TalendTextUtils.SINGLE_QUOTE, "")); //$NON-NLS-1$
         }
 
-        String separator = ";";
-        if (curParam.getName().equals("MQ_DERVIERS")) {
+        String separator = ";"; //$NON-NLS-1$
+        if (curParam.getName().equals("MQ_DERVIERS")) { //$NON-NLS-1$
             String path = (String) curParam.getValue();
 
-            if (path == null || path.equals("")) {
+            if (path == null || path.equals("")) { //$NON-NLS-1$
                 return;
             }
 

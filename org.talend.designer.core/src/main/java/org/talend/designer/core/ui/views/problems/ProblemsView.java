@@ -365,14 +365,14 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
         public boolean matchRoutine(String routineID, String routineLabel, String resourceName) {
             if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
                 try {
-                    Boolean foundMatch = resourceName.matches(routineLabel + ".java");
+                    Boolean foundMatch = resourceName.matches(routineLabel + ".java"); //$NON-NLS-1$
                     return foundMatch.booleanValue();
                 } catch (PatternSyntaxException ex) {
                     // Syntax error in the regular expression
                 }
             } else if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.PERL)) {
                 try {
-                    Boolean foundMatch = resourceName.matches("tempRoutine" + routineID);
+                    Boolean foundMatch = resourceName.matches("tempRoutine" + routineID); //$NON-NLS-1$
                     return foundMatch.booleanValue();
                 } catch (PatternSyntaxException ex) {
                     // Syntax error in the regular expression

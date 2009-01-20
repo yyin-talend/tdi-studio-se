@@ -54,6 +54,7 @@ import org.talend.core.ui.viewer.ReconcilerViewer;
 import org.talend.core.ui.viewer.java.TalendJavaSourceViewer;
 import org.talend.core.ui.viewer.perl.TalendPerlSourceViewer;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.TalendJavaEditor;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -122,10 +123,10 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
         FormData data;
         viewer = null;
         if (param.getNbLines() != 1) {
-            if (language.equals("java")) {
+            if (language.equals("java")) { //$NON-NLS-1$
                 String context = param.getContext();
                 if (!param.isNoCheck() && context != null
-                        && (context.equals("begin") || context.equals("main") || context.equals("end"))) {
+                        && (context.equals("begin") || context.equals("main") || context.equals("end"))) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                     Composite a = new Composite(subComposite, SWT.NO_FOCUS);
                     a.setLayout(new FormLayout());
                     Composite b = new Composite(a, SWT.NO_FOCUS);
@@ -311,8 +312,8 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
     private void addCodeGenerateButton(final Composite parent) {
 
         codeGenereateButton = new Button(parent, SWT.CENTER);
-        codeGenereateButton.setText("Generate code");
-        codeGenereateButton.setToolTipText("Try to generate sample code for this component");
+        codeGenereateButton.setText(Messages.getString("AbstractLanguageMemoController.generateCode")); //$NON-NLS-1$
+        codeGenereateButton.setToolTipText(Messages.getString("AbstractLanguageMemoController.generateSampleCode")); //$NON-NLS-1$
 
         GridData layoutData = new GridData();
         layoutData.horizontalAlignment = SWT.CENTER;
@@ -336,7 +337,7 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
 
     private boolean isNeedToAddCodeGenerateButton() {
         if (elem instanceof Node) {
-            return ((Node) elem).getUniqueName().startsWith("tJavaRow");
+            return ((Node) elem).getUniqueName().startsWith("tJavaRow"); //$NON-NLS-1$
         }
         return false;
     }
@@ -347,8 +348,8 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
      * @param viewer
      */
     private void addSnippetDropTarget(ISourceViewer viewer) {
-        if (viewer.getTextWidget().getData("DropTarget") != null) {
-            DropTarget dropTarget = (DropTarget) viewer.getTextWidget().getData("DropTarget");
+        if (viewer.getTextWidget().getData("DropTarget") != null) { //$NON-NLS-1$
+            DropTarget dropTarget = (DropTarget) viewer.getTextWidget().getData("DropTarget"); //$NON-NLS-1$
             Transfer[] transfers = dropTarget.getTransfer();
             if (!(transfers[transfers.length - 1] instanceof LocalSelectionTransfer)) {
                 Transfer[] newTransfers = new Transfer[transfers.length + 1];

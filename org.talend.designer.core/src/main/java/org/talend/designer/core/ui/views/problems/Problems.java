@@ -476,11 +476,11 @@ public class Problems {
 
     private static String getFileName(IFile file) {
         if (file == null) {
-            return "";
+            return ""; //$NON-NLS-1$
         }
         String fileName = file.getName();
         String ext = file.getFileExtension();
-        if (ext == null || "".equals(ext)) {
+        if (ext == null || "".equals(ext)) { //$NON-NLS-1$
             return fileName;
         }
         fileName = fileName.substring(0, fileName.lastIndexOf(ext) - 1);

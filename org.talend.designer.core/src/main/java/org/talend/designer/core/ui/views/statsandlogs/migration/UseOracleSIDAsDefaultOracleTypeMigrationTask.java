@@ -62,11 +62,11 @@ public class UseOracleSIDAsDefaultOracleTypeMigrationTask extends AbstractJobMig
             for (int i = 0; i < parameters.size(); i++) {
                 ElementParameterType parameter = (ElementParameterType) parameters.get(i);
                 if ((parameter.getName().equals(EParameterName.DB_TYPE.getName()) || parameter.getName().equals(
-                        "DB_TYPE_IMPLICIT_CONTEXT"))
+                        "DB_TYPE_IMPLICIT_CONTEXT")) //$NON-NLS-1$
                         && parameter.getField().equals(EParameterFieldType.CLOSED_LIST.getName())) {
                     String value = parameter.getValue();
-                    if (value.equalsIgnoreCase("tOracleOutput")) {
-                        parameter.setValue("tOracleOutput_sid"); // Default set to Orace SID(see bug 5315)
+                    if (value.equalsIgnoreCase("tOracleOutput")) { //$NON-NLS-1$
+                        parameter.setValue("tOracleOutput_sid"); // Default set to Orace SID(see bug 5315) //$NON-NLS-1$
                     }
                 }
             }

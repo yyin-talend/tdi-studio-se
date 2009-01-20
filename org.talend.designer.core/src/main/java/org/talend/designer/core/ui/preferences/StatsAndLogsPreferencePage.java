@@ -50,6 +50,7 @@ import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.ui.proposal.TalendProposalUtils;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.properties.ContextParameterExtractor;
@@ -68,11 +69,11 @@ import org.talend.repository.ui.views.RepositoryView;
  */
 public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
-    public static final String CONNECTION_ITEM_LABEL = "_CONNECTION_ITEM_LABEL";
+    public static final String CONNECTION_ITEM_LABEL = "_CONNECTION_ITEM_LABEL"; //$NON-NLS-1$
 
-    private static final String REPOSITORY = "Repository";
+    private static final String REPOSITORY = "Repository"; //$NON-NLS-1$
 
-    private static final String BUILT_IN = "Built-In";
+    private static final String BUILT_IN = "Built-In"; //$NON-NLS-1$
 
     private ECodeLanguage language;
 
@@ -154,7 +155,7 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
      */
     @Override
     public void createFieldEditors() {
-        languagePrefix = language.toString() + "_";
+        languagePrefix = language.toString() + "_"; //$NON-NLS-1$
         createFields();
         updateEnableStateFromPreferences();
         addListeners();
@@ -190,7 +191,7 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         if (stringConnection.contains("<sid>") || stringConnection.contains("<service_name>")) { //$NON-NLS-1$ //$NON-NLS-2$
             // sidOrDatabaseText.setEditable(visible);
         }
-        if (stringConnection.contains("<filename>")) { // &&
+        if (stringConnection.contains("<filename>")) { // && //$NON-NLS-1$
             if (EDatabaseTypeName.getTypeFromDisplayName(conn.getDatabaseType()).equals(EDatabaseTypeName.SQLITE)) {
                 userField.setEnabled(false, parent);
                 passwordField.setEnabled(false, parent);
@@ -217,64 +218,64 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
             hostField.getTextControl(parent).setText(processQuotes(conn.getServerName()));
             hostField.getTextControl(parent).setEnabled(false);
         } else {
-            hostField.getTextControl(parent).setText("");
+            hostField.getTextControl(parent).setText(""); //$NON-NLS-1$
         }
 
         if (portField.getTextControl(parent).isEnabled()) {
             portField.getTextControl(parent).setText(processQuotes(conn.getPort()));
             portField.getTextControl(parent).setEnabled(false);
         } else {
-            portField.getTextControl(parent).setText("");
+            portField.getTextControl(parent).setText(""); //$NON-NLS-1$
         }
 
         if (dbNameField.getTextControl(parent).isEnabled()) {
             dbNameField.getTextControl(parent).setText(processQuotes(conn.getSID()));
             dbNameField.getTextControl(parent).setEditable(false);
         } else {
-            dbNameField.getTextControl(parent).setText("");
+            dbNameField.getTextControl(parent).setText(""); //$NON-NLS-1$
         }
 
         if (schemaField.getTextControl(parent).isEnabled()) {
             schemaField.getTextControl(parent).setText(processQuotes(conn.getSchema()));
             schemaField.getTextControl(parent).setEditable(false);
         } else {
-            schemaField.getTextControl(parent).setText("");
+            schemaField.getTextControl(parent).setText(""); //$NON-NLS-1$
         }
 
         if (userField.getTextControl(parent).isEnabled()) {
             userField.getTextControl(parent).setText(processQuotes(conn.getUsername()));
             userField.getTextControl(parent).setEditable(false);
         } else {
-            userField.getTextControl(parent).setText("");
+            userField.getTextControl(parent).setText(""); //$NON-NLS-1$
         }
 
         if (passwordField.getTextControl(parent).isEnabled()) {
             passwordField.getTextControl(parent).setText(processQuotes(conn.getPassword()));
             passwordField.getTextControl(parent).setEditable(false);
         } else {
-            passwordField.getTextControl(parent).setText("");
+            passwordField.getTextControl(parent).setText(""); //$NON-NLS-1$
         }
 
         if (dabasePathField.getTextControl(parent).isEnabled()) {
             dabasePathField.getTextControl(parent).setText(
-                    conn.getDBRootPath() == null ? "" : processQuotes(conn.getFileFieldName()));
+                    conn.getDBRootPath() == null ? "" : processQuotes(conn.getFileFieldName())); //$NON-NLS-1$
             dabasePathField.getTextControl(parent).setEditable(false);
         } else {
-            dabasePathField.getTextControl(parent).setText("");
+            dabasePathField.getTextControl(parent).setText(""); //$NON-NLS-1$
         }
         if (additionParamField != null) {
             if (additionParamField.getTextControl(parent).isEnabled()) {
                 additionParamField.getTextControl(parent).setText(
-                        conn.getAdditionalParams() == null ? "" : processQuotes(conn.getAdditionalParams()));
+                        conn.getAdditionalParams() == null ? "" : processQuotes(conn.getAdditionalParams())); //$NON-NLS-1$
                 additionParamField.getTextControl(parent).setEditable(false);
             } else {
-                additionParamField.getTextControl(parent).setText("");
+                additionParamField.getTextControl(parent).setText(""); //$NON-NLS-1$
             }
         }
-        if (stringConnection != null && stringConnection.startsWith("jdbc:jtds:sqlserver:")) {
+        if (stringConnection != null && stringConnection.startsWith("jdbc:jtds:sqlserver:")) { //$NON-NLS-1$
             schemaField.getTextControl(parent).setEditable(true);
-            if (schemaField.getTextControl(parent).getText().equals("")) {
-                schemaField.getTextControl(parent).setText(TalendTextUtils.addQuotes("dbo"));
+            if (schemaField.getTextControl(parent).getText().equals("")) { //$NON-NLS-1$
+                schemaField.getTextControl(parent).setText(TalendTextUtils.addQuotes("dbo")); //$NON-NLS-1$
             }
         }
 
@@ -288,7 +289,7 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
      */
     private String processQuotes(String text) {
         if (text == null) {
-            return "";
+            return ""; //$NON-NLS-1$
         }
         if (ContextParameterUtils.isContainContextParam(text)) {
             return text;
@@ -314,9 +315,9 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
 
         for (Text text : texts) {
             if (text.isEnabled()) {
-                text.setText(TalendTextUtils.addQuotes(""));
+                text.setText(TalendTextUtils.addQuotes("")); //$NON-NLS-1$
             } else {
-                text.setText("");
+                text.setText(""); //$NON-NLS-1$
             }
         }
     }
@@ -350,7 +351,7 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
      */
     private String formRepositoryTypeText(ConnectionItem connectionItem) {
         if (connectionItem == null) {
-            return "";
+            return ""; //$NON-NLS-1$
         }
         ERepositoryObjectType repositoryObjectType = ERepositoryObjectType.getItemType(connectionItem);
         String aliasName = repositoryObjectType.getAlias();
@@ -359,7 +360,7 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
             String currentDbType = (String) RepositoryToComponentProperty.getValue(connection, "TYPE"); //$NON-NLS-1$
             aliasName += " (" + currentDbType + ")"; //$NON-NLS-1$ //$NON-NLS-2$
         }
-        return aliasName + ":" + connectionItem.getProperty().getLabel();
+        return aliasName + ":" + connectionItem.getProperty().getLabel(); //$NON-NLS-1$
     }
 
     private void createFields() {
@@ -419,7 +420,7 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         rowLayout.spacing = 5;
         comboTypePanel.setLayout(rowLayout);
         Label labelRepositoryType = new Label(comboTypePanel, SWT.NONE);
-        labelRepositoryType.setText("Repository Type ");
+        labelRepositoryType.setText(Messages.getString("StatsAndLogsPreferencePage.repositoryType")); //$NON-NLS-1$
 
         comboRepositoryType = new Combo(comboTypePanel, SWT.READ_ONLY);
 
@@ -453,7 +454,7 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         textRepositoryType.setText(formRepositoryTypeText(connectionItem));
 
         buttonShowRepository = new Button(comboTypePanel, SWT.NONE);
-        buttonShowRepository.setText("...");
+        buttonShowRepository.setText("..."); //$NON-NLS-1$
         buttonShowRepository.setVisible(currentType.equals(REPOSITORY));
 
         dbTypeComposite = new Composite(parent, SWT.NONE);
@@ -626,28 +627,28 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         dbTypeField.getComboBoxControl(dbTypeComposite).setEnabled(
                 isBuildin && onDatabase && (onStatCatcher || onLogCatcher || onMetterCatcher));
         dbTypeField.setEnabled(isBuildin && onDatabase && (onStatCatcher || onLogCatcher || onMetterCatcher), dbTypeComposite);
-        hostField.setEnabled((!dbValue.equals("tAccessOutput") && !dbValue.equals("tSQLiteOutput")) && onDatabase
+        hostField.setEnabled((!dbValue.equals("tAccessOutput") && !dbValue.equals("tSQLiteOutput")) && onDatabase //$NON-NLS-1$ //$NON-NLS-2$
                 && (onStatCatcher || onLogCatcher || onMetterCatcher), parent);
-        portField.setEnabled((!dbValue.equals("tAccessOutput") && !dbValue.equals("tSQLiteOutput") && !dbValue
-                .equals("tFirebirdOutput"))
+        portField.setEnabled((!dbValue.equals("tAccessOutput") && !dbValue.equals("tSQLiteOutput") && !dbValue //$NON-NLS-1$ //$NON-NLS-2$
+                .equals("tFirebirdOutput")) //$NON-NLS-1$
                 && onDatabase && (onStatCatcher || onLogCatcher || onMetterCatcher), parent);
 
-        dbNameField.setEnabled((!dbValue.equals("tAccessOutput") && !dbValue.equals("tSQLiteOutput") && !dbValue
-                .equals("tFirebirdOutput"))
+        dbNameField.setEnabled((!dbValue.equals("tAccessOutput") && !dbValue.equals("tSQLiteOutput") && !dbValue //$NON-NLS-1$ //$NON-NLS-2$
+                .equals("tFirebirdOutput")) //$NON-NLS-1$
                 && onDatabase && (onStatCatcher || onLogCatcher || onMetterCatcher), parent);
         if (language == ECodeLanguage.JAVA) {
-            additionParamField.setEnabled((dbValue.equals("tMSSqlOutput") || dbValue.equals("tInformixOutput") || dbValue
-                    .equals("tMysqlOutput"))
+            additionParamField.setEnabled((dbValue.equals("tMSSqlOutput") || dbValue.equals("tInformixOutput") || dbValue //$NON-NLS-1$ //$NON-NLS-2$
+                    .equals("tMysqlOutput")) //$NON-NLS-1$
                     && onDatabase && (onStatCatcher || onLogCatcher || onMetterCatcher), parent);
         }
-        schemaField.setEnabled((dbValue.equals("tOracleOutput") || dbValue.equals("tPostgresqlOutput")) && onDatabase
+        schemaField.setEnabled((dbValue.equals("tOracleOutput") || dbValue.equals("tPostgresqlOutput")) && onDatabase //$NON-NLS-1$ //$NON-NLS-2$
                 && (onStatCatcher || onLogCatcher || onMetterCatcher), parent);
-        userField.setEnabled((!dbValue.equals("tSQLiteOutput")) && onDatabase
+        userField.setEnabled((!dbValue.equals("tSQLiteOutput")) && onDatabase //$NON-NLS-1$
                 && (onStatCatcher || onLogCatcher || onMetterCatcher), parent);
-        passwordField.setEnabled((!dbValue.equals("tSQLiteOutput")) && onDatabase
+        passwordField.setEnabled((!dbValue.equals("tSQLiteOutput")) && onDatabase //$NON-NLS-1$
                 && (onStatCatcher || onLogCatcher || onMetterCatcher), parent);
-        dabasePathField.setEnabled((dbValue.equals("tAccessOutput") || dbValue.equals("tSQLiteOutput") || dbValue
-                .equals("tFirebirdOutput"))
+        dabasePathField.setEnabled((dbValue.equals("tAccessOutput") || dbValue.equals("tSQLiteOutput") || dbValue //$NON-NLS-1$ //$NON-NLS-2$
+                .equals("tFirebirdOutput")) //$NON-NLS-1$
                 && onDatabase && (onStatCatcher || onLogCatcher || onMetterCatcher), parent);
         statsTableField.setEnabled(onDatabase && onStatCatcher, parent);
         logsTableField.setEnabled(onDatabase && onLogCatcher, parent);
@@ -691,7 +692,7 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
 
             public void widgetSelected(SelectionEvent e) {
                 RepositoryReviewDialog dialog = new RepositoryReviewDialog(Display.getCurrent().getActiveShell(),
-                        ERepositoryObjectType.METADATA, "DATABASE");
+                        ERepositoryObjectType.METADATA, "DATABASE"); //$NON-NLS-1$
 
                 if (dialog.open() == RepositoryReviewDialog.OK) {
                     setDbId(dialog.getResult().getObject().getId());
@@ -777,8 +778,8 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         }
 
         getPreferenceStore().setValue(languagePrefix + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(),
-                this.id == null ? "" : this.id);
-        String itemLabel = "";
+                this.id == null ? "" : this.id); //$NON-NLS-1$
+        String itemLabel = ""; //$NON-NLS-1$
         if (connectionItem != null) {
             itemLabel = connectionItem.getProperty().getLabel();
         }

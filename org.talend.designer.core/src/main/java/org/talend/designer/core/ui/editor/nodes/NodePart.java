@@ -297,7 +297,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                 if (node.getProcess().checkValidConnectionName(node.getConnectionName(), false)) {
                     connIdName = node.getProcess().generateUniqueConnectionName(node.getConnectionName());
                 } else {
-                    connIdName = node.getProcess().generateUniqueConnectionName("row");
+                    connIdName = node.getProcess().generateUniqueConnectionName("row"); //$NON-NLS-1$
                 }
                 if (conn instanceof Connection && conn.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)
                         && node.getProcess().checkValidConnectionName(connIdName)) {
@@ -433,7 +433,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                 boolean isAvoidShowJobAfterDoubleClick = CorePlugin.getDefault().getComponentsLocalProviderService()
                         .isAvoidToShowJobAfterDoubleClick();
 
-                if (processName != null && !"".equals(processName) && !isAvoidShowJobAfterDoubleClick) {
+                if (processName != null && !"".equals(processName) && !isAvoidShowJobAfterDoubleClick) { //$NON-NLS-1$
                     try {
                         ItemCacheManager.clearCache();
                         ProcessItem processItem = ItemCacheManager.getProcessItem(processName);

@@ -63,7 +63,7 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
 
     private List<INode> tRunJobNodes;
 
-    private static final String PROCESS = "PROCESS";
+    private static final String PROCESS = "PROCESS"; //$NON-NLS-1$
 
     // achen added to fix 0005991 & 0005993
     protected boolean isUsingProjectSetting;
@@ -122,15 +122,15 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
 
                 // add useprojectsetting button
                 useProjectSetting = new Button(topComposite, SWT.CHECK);
-                useProjectSetting.setText(Messages.getString("StatsAndLogs.UseProjectSettings"));
-                useProjectSetting.setToolTipText(Messages.getString("StatsAndLogs.UseProjectSettings"));
+                useProjectSetting.setText(Messages.getString("StatsAndLogs.UseProjectSettings")); //$NON-NLS-1$
+                useProjectSetting.setToolTipText(Messages.getString("StatsAndLogs.UseProjectSettings")); //$NON-NLS-1$
                 useProjectSetting.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
             }
             // end
             if (hasRunJobNode(false) && needApplyToChildren()) {
                 applyToChildrenJob = new Button(topComposite, SWT.PUSH);
-                applyToChildrenJob.setText("Apply to sub jobs");
-                applyToChildrenJob.setToolTipText("Apply to sub jobs");
+                applyToChildrenJob.setText(Messages.getString("AbstractPreferenceComposite.textContent")); //$NON-NLS-1$
+                applyToChildrenJob.setToolTipText(Messages.getString("AbstractPreferenceComposite.tipContent")); //$NON-NLS-1$
             }
 
             Point initialSize = topComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT);
@@ -210,9 +210,10 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
                                 .getValue();
                         String version = (String) runjobNode.getElementParameter(EParameterName.PROCESS_TYPE_VERSION.getName())
                                 .getValue();
-                        if ("".equals(id) || id == null) {
-                            MessageDialog.openWarning(getShell(), "Warning: " + runjobNode.getUniqueName(),
-                                    "Child job should be assigned to " + runjobNode.getUniqueName());
+                        if ("".equals(id) || id == null) { //$NON-NLS-1$
+                            MessageDialog.openWarning(getShell(), Messages.getString(
+                                    "AbstractPreferenceComposite.warning", runjobNode.getUniqueName()), //$NON-NLS-1$
+                                    Messages.getString("AbstractPreferenceComposite.jobAssigned", runjobNode.getUniqueName())); //$NON-NLS-1$
                             return;
                         }
                         IEditorReference[] editorReferences = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
@@ -247,9 +248,9 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
                     for (NodeType nodeType : nodes) {
                         EList<ElementParameterType> list = nodeType.getElementParameter();
 
-                        ElementParameterType idParam = getElementParameterType(list, PROCESS + ":"
+                        ElementParameterType idParam = getElementParameterType(list, PROCESS + ":" //$NON-NLS-1$
                                 + EParameterName.PROCESS_TYPE_PROCESS.getName());
-                        ElementParameterType versionParam = getElementParameterType(list, PROCESS + ":"
+                        ElementParameterType versionParam = getElementParameterType(list, PROCESS + ":" //$NON-NLS-1$
                                 + EParameterName.PROCESS_TYPE_VERSION.getName());
 
                         String subId = idParam.getValue();
@@ -348,11 +349,11 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
             return;
         }
         // achen modify to fix 0005991& 0005993
-        String message = "";
+        String message = ""; //$NON-NLS-1$
         if (!isUsingProjectSetting) {
-            message = Messages.getString("StatsAndLogsComposite.ReloadMessages");
+            message = Messages.getString("StatsAndLogsComposite.ReloadMessages"); //$NON-NLS-1$
         } else {
-            message = Messages.getString("ReloadFromProjectSettingsMessages");
+            message = Messages.getString("ReloadFromProjectSettingsMessages"); //$NON-NLS-1$
         }
         boolean isOK = MessageDialog.openConfirm(Display.getDefault().getActiveShell(), dialogTitle, message); //$NON-NLS-1$
         if (isOK) {
@@ -381,11 +382,11 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
             return;
         }
         // achen modify to fix 0005991& 0005993
-        String message = "";
+        String message = ""; //$NON-NLS-1$
         if (!isUsingProjectSetting) {
-            message = Messages.getString("StatsAndLogsComposite.SavePreferenceMessages");
+            message = Messages.getString("StatsAndLogsComposite.SavePreferenceMessages"); //$NON-NLS-1$
         } else {
-            message = Messages.getString("SaveToProjectSettingsMessage");
+            message = Messages.getString("SaveToProjectSettingsMessage"); //$NON-NLS-1$
         }
         boolean isOK = MessageDialog.openConfirm(Display.getDefault().getActiveShell(), dialogTitle, message); //$NON-NLS-1$       
         if (isOK) {

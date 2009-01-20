@@ -132,7 +132,7 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
     }
 
     private void createImplicitcontextTree(Composite composite) {
-        Group g = widgetFactory.createGroup(composite, Messages.getString("ExtraComposite.ImplicitContextSettings"));
+        Group g = widgetFactory.createGroup(composite, Messages.getString("ExtraComposite.ImplicitContextSettings")); //$NON-NLS-1$
         GridData gd = new GridData(GridData.FILL_BOTH);
         g.setLayoutData(gd);
         g.setLayout(new FillLayout());
@@ -216,7 +216,7 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
     }
 
     private void createStatTree(Composite composite) {
-        Group g = widgetFactory.createGroup(composite, Messages.getString("StatsAndLogsComposite.StatsLogsSettings"));
+        Group g = widgetFactory.createGroup(composite, Messages.getString("StatsAndLogsComposite.StatsLogsSettings")); //$NON-NLS-1$
         GridData gd = new GridData(GridData.FILL_BOTH);
         g.setLayoutData(gd);
         g.setLayout(new FillLayout());
@@ -306,7 +306,7 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
 
         String implictB = ElementParameter2ParameterType.getParameterValue(pType,
                 EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS.getName());
-        if (implictB != null && "true".equals(implictB)) {
+        if (implictB != null && "true".equals(implictB)) { //$NON-NLS-1$
             return true;
         } else {
             return false;
@@ -320,7 +320,7 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
 
         String statB = ElementParameter2ParameterType.getParameterValue(pType, EParameterName.STATANDLOG_USE_PROJECT_SETTINGS
                 .getName());
-        if (statB != null && "true".equals(statB)) {
+        if (statB != null && "true".equals(statB)) { //$NON-NLS-1$
             return true;
         } else {
             return false;

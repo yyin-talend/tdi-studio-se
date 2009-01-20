@@ -222,8 +222,8 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
 
                 // For example: avoid job name "a_b_c" before "a_b" in the job
                 // list.
-                String newStr1 = str1.replaceAll("_", " ");
-                String newStr2 = str2.replaceAll("_", " ");
+                String newStr1 = str1.replaceAll("_", " "); //$NON-NLS-1$ //$NON-NLS-2$
+                String newStr2 = str2.replaceAll("_", " "); //$NON-NLS-1$ //$NON-NLS-2$
                 return newStr1.compareToIgnoreCase(newStr2);
             }
         });
@@ -399,7 +399,7 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
                                     String dbType = ((DatabaseConnection) connection).getDatabaseType();
                                     String schema = ((DatabaseConnection) connection).getSchema();
                                     tableIdAndDbTypeMap.put(newTable.getId(), dbType);
-                                    if (schema != null && !schema.equals("")) {
+                                    if (schema != null && !schema.equals("")) { //$NON-NLS-1$
                                         tableIdAndDbSchemaMap.put(newTable.getId(), schema);
                                     }
                                 }
@@ -598,7 +598,7 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
                 }
                 if ((connection instanceof DatabaseConnection) && (repositoryValue.startsWith("DATABASE"))) { //$NON-NLS-1$
                     String currentDbType = (String) RepositoryToComponentProperty.getValue(connection, "TYPE"); //$NON-NLS-1$
-                    if (repositoryValue.contains(":")) { // database
+                    if (repositoryValue.contains(":")) { // database //$NON-NLS-1$
                         // is
                         // specified
                         // //$NON-NLS-1$
@@ -779,7 +779,7 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
             additionalHeightSize = estimatePropertyHeightSize(maxRow, listParam);
         }
 
-        long lastTime = TimeMeasure.timeSinceBegin("DC:refresh:" + getCurrentComponent());
+        long lastTime = TimeMeasure.timeSinceBegin("DC:refresh:" + getCurrentComponent()); //$NON-NLS-1$
         for (int curRow = 1; curRow <= maxRow; curRow++) {
             nbInRow = 0;
             for (int i = 0; i < listParam.size(); i++) {
@@ -845,10 +845,10 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
                                 }
                             }
 
-                            lastTime = TimeMeasure.timeSinceBegin("DC:refresh:" + getCurrentComponent()) - lastTime;
+                            lastTime = TimeMeasure.timeSinceBegin("DC:refresh:" + getCurrentComponent()) - lastTime; //$NON-NLS-1$
                             if (DynamicTabbedPropertySection.DEBUG_TIME) {
-                                System.out.println("DC;create:" + curParam.getField().getName() + ";" + getCurrentComponent()
-                                        + ";" + lastTime);
+                                System.out.println("DC;create:" + curParam.getField().getName() + ";" + getCurrentComponent() //$NON-NLS-1$ //$NON-NLS-2$
+                                        + ";" + lastTime); //$NON-NLS-1$
                             }
 
                             // System.out.println("param:" + curParam.getName()
@@ -951,7 +951,7 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
                 if (elementParameter.getParentParameter() == null) {
                     control = hashCurControls.get(elementParameter.getName());
                 } else {
-                    control = hashCurControls.get(elementParameter.getParentParameter().getName() + ":"
+                    control = hashCurControls.get(elementParameter.getParentParameter().getName() + ":" //$NON-NLS-1$
                             + elementParameter.getName());
                 }
                 if ((control == null && show) || (control != null && !show)) {
@@ -1040,7 +1040,7 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
     public void refresh() {
         TimeMeasure.display = false;
         TimeMeasure.measureActive = true;
-        TimeMeasure.begin("DC:refresh:" + getCurrentComponent());
+        TimeMeasure.begin("DC:refresh:" + getCurrentComponent()); //$NON-NLS-1$
 
         if (elem == null) {
             return;
@@ -1084,10 +1084,10 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
             addListener(SWT.Resize, resizeListener);
         }
         checkErrorsWhenViewRefreshed = false;
-        long time = TimeMeasure.timeSinceBegin("DC:refresh:" + getCurrentComponent());
-        TimeMeasure.end("DC:refresh:" + getCurrentComponent());
+        long time = TimeMeasure.timeSinceBegin("DC:refresh:" + getCurrentComponent()); //$NON-NLS-1$
+        TimeMeasure.end("DC:refresh:" + getCurrentComponent()); //$NON-NLS-1$
         if (DynamicTabbedPropertySection.DEBUG_TIME) {
-            System.out.println("DC;total;" + getCurrentComponent() + ";" + time);
+            System.out.println("DC;total;" + getCurrentComponent() + ";" + time); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 
@@ -1376,8 +1376,8 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
         if ((propertyValue == null || !(propertyValue instanceof String)) && defaultPropertyValue != null) {
             propertyValue = defaultPropertyValue;
         }
-        if (propertyValue == null || propertyValue.equals("")) {
-            return "";
+        if (propertyValue == null || propertyValue.equals("")) { //$NON-NLS-1$
+            return ""; //$NON-NLS-1$
         }
         if (istable) {
             List<String> list = tablesMap.get(propertyValue);
@@ -1394,7 +1394,7 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
                 }
             }
         }
-        return "";
+        return ""; //$NON-NLS-1$
     }
 
     /**

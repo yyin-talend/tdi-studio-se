@@ -57,7 +57,7 @@ public class LabelController extends AbstractElementPropertySectionController {
         // TODO Auto-generated method stub
         FormData data;
         CLabel labelLabel;
-        if (param.getValue().equals("")) {
+        if (param.getValue().equals("")) { //$NON-NLS-1$
             labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName(), SWT.SHADOW_NONE);
         } else {
             labelLabel = getWidgetFactory().createCLabel(subComposite, (String) param.getValue(), SWT.SHADOW_NONE);
@@ -124,7 +124,7 @@ public class LabelController extends AbstractElementPropertySectionController {
             return;
         }
         Object value = param.getValue();
-        if (value.equals("")) {
+        if (value.equals("")) { //$NON-NLS-1$
             labelText.setText(param.getDisplayName());
         } else {
             labelText.setText((String) value);
@@ -152,7 +152,7 @@ public class LabelController extends AbstractElementPropertySectionController {
     public int estimateRowSize(Composite subComposite, IElementParameter param) {
         CLabel labelLabel;
 
-        if (param.getValue().equals("")) {
+        if (param.getValue().equals("")) { //$NON-NLS-1$
             labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName(), SWT.SHADOW_NONE);
         } else {
             labelLabel = getWidgetFactory().createCLabel(subComposite, (String) param.getValue(), SWT.SHADOW_NONE);

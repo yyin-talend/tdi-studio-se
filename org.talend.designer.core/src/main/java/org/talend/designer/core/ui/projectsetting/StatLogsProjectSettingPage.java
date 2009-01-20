@@ -47,7 +47,7 @@ public class StatLogsProjectSettingPage extends ProjectSettingPage {
         composite.setLayoutData(data);
         if (pro.getEmfProject().getStatAndLogsSettings() == null) {
             // display one message box to tell the user the settings is get from old preference page.
-            MessageDialog.openInformation(getShell(), getTitle(), Messages.getString("StatLogs.LoadOldPreferences"));
+            MessageDialog.openInformation(getShell(), getTitle(), Messages.getString("StatLogs.LoadOldPreferences")); //$NON-NLS-1$
         }
         Element elem = ProjectSettingManager.createStatsAndLogsElement(pro);
         StatAndLogsSettings stats = pro.getEmfProject().getStatAndLogsSettings();

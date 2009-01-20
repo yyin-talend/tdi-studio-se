@@ -46,6 +46,7 @@ import org.talend.core.properties.tab.HorizontalTabFactory;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.properties.tab.TalendPropertyTabDescriptor;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.notes.Note;
@@ -62,15 +63,15 @@ import org.talend.designer.core.ui.views.subjob.SubjobBasicComposite;
  */
 public class ComponentSettingsView extends ViewPart implements IComponentSettingsView {
 
-    private static final String PARENT = "parent";
+    private static final String PARENT = "parent"; //$NON-NLS-1$
 
-    private static final String CATEGORY = "category";
+    private static final String CATEGORY = "category"; //$NON-NLS-1$
 
-    private static final String DEFAULT = "default";
+    private static final String DEFAULT = "default"; //$NON-NLS-1$
 
-    private static final String TABLEVIEW = "table view";
+    private static final String TABLEVIEW = "table view"; //$NON-NLS-1$
 
-    public static final String ID = "org.talend.designer.core.ui.views.properties.ComponentSettingsView";
+    public static final String ID = "org.talend.designer.core.ui.views.properties.ComponentSettingsView"; //$NON-NLS-1$
 
     private HorizontalTabFactory tabFactory = null;
 
@@ -286,7 +287,7 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
             composite.setLayoutData(d);
 
             Label alertText = new Label(composite, SWT.NONE);
-            alertText.setText("No advanced settings.");
+            alertText.setText(Messages.getString("ComponentSettingsView.noAdvancedSetting")); //$NON-NLS-1$
             alertText.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
             parent.layout();
         }
@@ -505,7 +506,7 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
 
             String uniqueName = ((Node) elem).getUniqueName();
             if (!label.equals(uniqueName)) {
-                label = label + "(" + uniqueName + ")";
+                label = label + "(" + uniqueName + ")"; //$NON-NLS-1$ //$NON-NLS-2$
             }
 
             image = new Image(Display.getDefault(), ((Node) elem).getComponent().getIcon24().getImageData());
@@ -513,10 +514,10 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
             label = ((Connection) elem).getElementName();
             image = ImageProvider.getImage(EImage.RIGHT_ICON);
         } else if (elem instanceof Note) {
-            label = "Note";
+            label = Messages.getString("ComponentSettingsView.note"); //$NON-NLS-1$
             image = ImageProvider.getImage(EImage.PASTE_ICON);
         } else if (elem instanceof SubjobContainer) {
-            label = "Subjob";
+            label = Messages.getString("ComponentSettingsView.subjob"); //$NON-NLS-1$
             image = ImageProvider.getImage(EImage.PASTE_ICON);
         }
         tabFactory.setTitle(label, image);
@@ -535,11 +536,11 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
         } else if (elem instanceof Node) {
             // if (isAdvancedType(elem)) {
             if (((Node) elem).isELTComponent()) {
-                if (!((Node) elem).getComponent().getName().endsWith("Output")
-                        && !((Node) elem).getComponent().getName().endsWith("Input")
-                        && !((Node) elem).getComponent().getName().endsWith("Map")
-                        && !((Node) elem).getComponent().getName().endsWith("TableList")
-                        && !((Node) elem).getComponent().getName().endsWith("ColumnList")) {
+                if (!((Node) elem).getComponent().getName().endsWith("Output") //$NON-NLS-1$
+                        && !((Node) elem).getComponent().getName().endsWith("Input") //$NON-NLS-1$
+                        && !((Node) elem).getComponent().getName().endsWith("Map") //$NON-NLS-1$
+                        && !((Node) elem).getComponent().getName().endsWith("TableList") //$NON-NLS-1$
+                        && !((Node) elem).getComponent().getName().endsWith("ColumnList")) { //$NON-NLS-1$
                     return EElementType.ELT_NODE.getCategories();
                 }
             }

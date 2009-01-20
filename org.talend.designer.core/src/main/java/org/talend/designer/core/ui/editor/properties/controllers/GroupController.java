@@ -58,7 +58,7 @@ public class GroupController extends AbstractElementPropertySectionController {
 
             public Control createControl(Composite parent, int style) {
                 return getWidgetFactory().createGroup(parent,
-                        param.getGroupDisplayName() == null ? "" : param.getGroupDisplayName());
+                        param.getGroupDisplayName() == null ? "" : param.getGroupDisplayName()); //$NON-NLS-1$
             }
 
         });

@@ -60,11 +60,11 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
     /**
      * 
      */
-    private static final String SEPARATOR = "->";
+    private static final String SEPARATOR = "->"; //$NON-NLS-1$
 
     public static final String VIEW_NAME = Messages.getString("JobSettingsView.JobSettings"); //$NON-NLS-1$
 
-    public static final String VIEW_NAME_JOBLET = "Joblet";
+    public static final String VIEW_NAME_JOBLET = "Joblet"; //$NON-NLS-1$
 
     private HorizontalTabFactory tabFactory = null;
 
@@ -454,7 +454,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                     repositoryObject = new EmptyRepositoryObject();
                     return;
                 }
-                String title = repositoryObject.getLabel() + " " + repositoryObject.getVersion();
+                String title = repositoryObject.getLabel() + " " + repositoryObject.getVersion(); //$NON-NLS-1$
 
                 setElement(repositoryObject, type + SEPARATOR + title, ImageProvider.getImage(repositoryNode.getIcon()));
             }

@@ -419,7 +419,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             Connection originalConnection = connectionItem.getConnection();
             Connection connection = connectionItem.getConnection();
             // if component is CDC, replace by the CDC connection.
-            if (node.getComponent().getName().contains("CDC")) { // to replace by a flag CDC in component?
+            if (node.getComponent().getName().contains("CDC")) { // to replace by a flag CDC in component? //$NON-NLS-1$
                 if (selectedNode.getObject().getProperty().getItem() instanceof DatabaseConnectionItem) {
                     CDCConnection cdcConn = ((DatabaseConnection) connection).getCdcConns();
                     if (cdcConn != null) {
@@ -475,7 +475,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             if (propertyParam != null) {
                 // command used to set property type
                 ChangeValuesFromRepository command1 = new ChangeValuesFromRepository(node, connection, propertyParam.getName()
-                        + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), propertyId);
+                        + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), propertyId); //$NON-NLS-1$
 
                 command1.setMaps(repositoryTableMap);
                 if (selectedNode.getProperties(EProperties.CONTENT_TYPE) != ERepositoryObjectType.METADATA_CON_QUERY) {
@@ -499,10 +499,10 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
 
                 RepositoryObject object = (RepositoryObject) selectedNode.getObject();
                 Query query = (Query) object.getAdapter(Query.class);
-                String value = originalConnectionItem.getProperty().getId() + " - " + query.getLabel();
+                String value = originalConnectionItem.getProperty().getId() + " - " + query.getLabel(); //$NON-NLS-1$
                 if (queryParam != null) {
                     RepositoryChangeQueryCommand command3 = new RepositoryChangeQueryCommand(node, query, queryParam.getName()
-                            + ":" + EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName(), value);
+                            + ":" + EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName(), value); //$NON-NLS-1$
                     list.add(command3);
                 }
             } else {
@@ -545,7 +545,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 || selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_SAP_FUNCTION) {
             RepositoryObject object = (RepositoryObject) selectedNode.getObject();
             MetadataTable table = (MetadataTable) object.getAdapter(MetadataTable.class);
-            String value = connectionItem.getProperty().getId() + " - " + table.getLabel();
+            String value = connectionItem.getProperty().getId() + " - " + table.getLabel(); //$NON-NLS-1$
             IElementParameter schemaParam = node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
             IElementParameter queryParam = node.getElementParameterFromField(EParameterFieldType.QUERYSTORE_TYPE);
             if (queryParam != null) {
@@ -565,7 +565,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             }
             // && node.isELTComponent()
             schemaParam.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()).setValue(EmfComponent.REPOSITORY);
-            RepositoryChangeMetadataCommand command2 = new RepositoryChangeMetadataCommand(node, schemaParam.getName() + ":"
+            RepositoryChangeMetadataCommand command2 = new RepositoryChangeMetadataCommand(node, schemaParam.getName() + ":" //$NON-NLS-1$
                     + EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), value, ConvertionHelper.convert(table), null);
             return command2;
         }
@@ -576,11 +576,11 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
         if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_CON_QUERY) {
             RepositoryObject object = (RepositoryObject) selectedNode.getObject();
             Query query = (Query) object.getAdapter(Query.class);
-            String value = connectionItem.getProperty().getId() + " - " + query.getLabel();
+            String value = connectionItem.getProperty().getId() + " - " + query.getLabel(); //$NON-NLS-1$
             IElementParameter queryParam = node.getElementParameterFromField(EParameterFieldType.QUERYSTORE_TYPE);
             if (queryParam != null) {
                 queryParam.getChildParameters().get(EParameterName.QUERYSTORE_TYPE.getName()).setValue(EmfComponent.REPOSITORY);
-                RepositoryChangeQueryCommand command2 = new RepositoryChangeQueryCommand(node, query, queryParam.getName() + ":"
+                RepositoryChangeQueryCommand command2 = new RepositoryChangeQueryCommand(node, query, queryParam.getName() + ":" //$NON-NLS-1$
                         + EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName(), value);
                 return command2;
             }
@@ -613,7 +613,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
         param.getChildParameters().get(EParameterName.PROPERTY_TYPE.getName()).setValue(EmfComponent.REPOSITORY);
         ChangeValuesFromRepository command2 = new ChangeValuesFromRepository(node, connectionItem.getConnection(), param
                 .getName()
-                + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), selectedNode.getObject().getProperty().getId());
+                + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), selectedNode.getObject().getProperty().getId()); //$NON-NLS-1$
         return command2;
 
     }
@@ -702,7 +702,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             return dialog.getResultComponent();
         }
 
-        throw new OperationCanceledException("cancel this operation");
+        throw new OperationCanceledException(Messages.getString("TalendEditorDropTargetListener.cancelOperation")); //$NON-NLS-1$
     }
 
     private IComponent getComponentByName(String name, boolean loop, List<IComponent> neededComponents) {
@@ -735,7 +735,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
     private void processSpecificDBTypeIfSameProduct(EDatabaseComponentName name, Node node) {
         // process "Oracle with service name"
         if (name == EDatabaseComponentName.DBORACLESN) {
-            IElementParameter p = node.getElementParameter("CONNECTION_TYPE");
+            IElementParameter p = node.getElementParameter("CONNECTION_TYPE"); //$NON-NLS-1$
             // set value to "ORACLE_SERVICE_NAME"
             p.setValue(p.getListItemsValue()[1]);
         }
@@ -771,8 +771,8 @@ class ComponentChooseDialog extends ListDialog {
      */
     public ComponentChooseDialog(Shell parentShell, List<IComponent> input) {
         super(parentShell);
-        setTitle("Components");
-        setMessage("Choose one component to create.");
+        setTitle(Messages.getString("TalendEditorDropTargetListener.title")); //$NON-NLS-1$
+        setMessage(Messages.getString("TalendEditorDropTargetListener.chooseComponent")); //$NON-NLS-1$
         setInput(input);
         setContentProvider(new ArrayContentProvider());
         setLabelProvider(new LabelProvider() {

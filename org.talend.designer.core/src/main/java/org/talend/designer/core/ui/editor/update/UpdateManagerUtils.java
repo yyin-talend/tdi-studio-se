@@ -168,7 +168,7 @@ public final class UpdateManagerUtils {
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public static boolean executeUpdates(final List<UpdateResult> results) {
-        RepositoryWorkUnit<Boolean> repositoryWorkUnit = new RepositoryWorkUnit<Boolean>("Update manager modification") {
+        RepositoryWorkUnit<Boolean> repositoryWorkUnit = new RepositoryWorkUnit<Boolean>(Messages.getString("UpdateManagerUtils.updateMOfification")) { //$NON-NLS-1$
 
             @Override
             protected void run() throws LoginException, PersistenceException {

@@ -358,7 +358,7 @@ public class ConnectionReconnectCommand extends Command {
     private boolean getPropagateDialog() {
         return MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), Messages
                 .getString("ChangeMetadataCommand.messageDialog.propagate"), //$NON-NLS-1$
-                Messages.getString("ChangeMetadataCommand.messageDialog.questionMessage")); //$NON-NLS-2$
+                Messages.getString("ChangeMetadataCommand.messageDialog.questionMessage")); //$NON-NLS-1$
 
     }
 }

@@ -27,7 +27,7 @@ import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
  */
 public class ContextsView extends ViewPart {
 
-    public static final String ID = "org.talend.designer.core.ui.views.ContextsView";
+    public static final String ID = "org.talend.designer.core.ui.views.ContextsView"; //$NON-NLS-1$
 
     private AbstractMultiPageTalendEditor part;
 

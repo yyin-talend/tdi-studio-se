@@ -56,7 +56,7 @@ import org.talend.repository.ui.views.IRepositoryView;
  */
 public class StandAloneTalendPerlEditor extends PerlEditor implements IUIRefresher {
 
-    public static final String ID = "org.talend.designer.core.ui.editor.StandAloneTalendPerlEditor";
+    public static final String ID = "org.talend.designer.core.ui.editor.StandAloneTalendPerlEditor"; //$NON-NLS-1$
 
     private RepositoryEditorInput rEditorInput;
 

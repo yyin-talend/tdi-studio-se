@@ -251,7 +251,7 @@ public class TextController extends AbstractElementPropertySectionController {
                     setTextErrorInfo(labelText, red);
                 } else {
                     labelText.setBackground(null);
-                    labelText.setToolTipText("");
+                    labelText.setToolTipText(""); //$NON-NLS-1$
                 }
             }
         }
@@ -265,7 +265,7 @@ public class TextController extends AbstractElementPropertySectionController {
      */
     private void setTextErrorInfo(Text labelText, Color red) {
         labelText.setBackground(red);
-        labelText.setToolTipText("Value is invalid.");
+        labelText.setToolTipText(Messages.getString("TextController.valueInvalid")); //$NON-NLS-1$
     }
 
     /**
@@ -277,6 +277,6 @@ public class TextController extends AbstractElementPropertySectionController {
      */
     private boolean isPasswordParam(final IElementParameter parameter) {
         return parameter.getName().equals(EParameterName.PASS.getName())
-                || (parameter.getRepositoryValue() != null && parameter.getRepositoryValue().equals("PASSWORD"));
+                || (parameter.getRepositoryValue() != null && parameter.getRepositoryValue().equals("PASSWORD")); //$NON-NLS-1$
     }
 }

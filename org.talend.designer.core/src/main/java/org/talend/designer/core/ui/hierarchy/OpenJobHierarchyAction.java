@@ -22,6 +22,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.process.IProcess2;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
@@ -53,9 +54,9 @@ public class OpenJobHierarchyAction extends SelectionAction {
      */
     public OpenJobHierarchyAction(IWorkbenchPart part) {
         super(part);
-        setText("Open Job Hierarchy");
-        setToolTipText("Open a Job Hierarchy on the Selected Element");
-        setDescription("Open a job hierarchy on the selected element");
+        setText(Messages.getString("OpenJobHierarchyAction.textContent")); //$NON-NLS-1$
+        setToolTipText(Messages.getString("OpenJobHierarchyAction.tipTextContent")); //$NON-NLS-1$
+        setDescription(Messages.getString("OpenJobHierarchyAction.description")); //$NON-NLS-1$
     }
 
     @Override

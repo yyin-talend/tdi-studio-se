@@ -28,9 +28,9 @@ import org.talend.designer.core.model.components.EParameterName;
  */
 public class AddQuotesForStatLogsPreference extends AbstractMigrationTask implements IWorkspaceMigrationTask {
 
-    private String javaPrefix = ECodeLanguage.JAVA + "_";
+    private String javaPrefix = ECodeLanguage.JAVA + "_"; //$NON-NLS-1$
 
-    private String perlPrefix = ECodeLanguage.PERL + "_";
+    private String perlPrefix = ECodeLanguage.PERL + "_"; //$NON-NLS-1$
 
     private String javaQuoteType = TalendTextUtils.QUOTATION_MARK;
 

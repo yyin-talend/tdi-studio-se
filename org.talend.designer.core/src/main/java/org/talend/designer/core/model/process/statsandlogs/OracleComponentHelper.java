@@ -29,10 +29,10 @@ public final class OracleComponentHelper {
      */
     public static String filterOracleConnectionType(final String dbType) {
         if (dbType != null) {
-            if (dbType.startsWith("tOracle")) {
-                if (dbType.contains("sid")) {
+            if (dbType.startsWith("tOracle")) { //$NON-NLS-1$
+                if (dbType.contains("sid")) { //$NON-NLS-1$
                     return StatsAndLogsConstants.ORACLE_WITH_SID_CONN_TYPE;
-                } else if (dbType.contains("servername")) {
+                } else if (dbType.contains("servername")) { //$NON-NLS-1$
                     return StatsAndLogsConstants.ORACLE_WITH_SERVICE_CONN_TYPE;
                 } else {
                     return StatsAndLogsConstants.ORACLE_OCI;
@@ -52,12 +52,12 @@ public final class OracleComponentHelper {
     public static String filterOracleComponentName(String components) {
 
         if (components.equals(StatsAndLogsConstants.ORACLE_SID_ALIAS) || components.equals(StatsAndLogsConstants.ORACLE_SN_ALIAS)) {
-            return "tOracleOutput";
+            return "tOracleOutput"; //$NON-NLS-1$
         }
 
         if (components.equals(JobSettingsConstants.ORACLE_INOUT_SN_ALIAS)
                 || components.equals(JobSettingsConstants.ORACLE_INPUT_SID_ALIAS)) {
-            return "tOracleInput";
+            return "tOracleInput"; //$NON-NLS-1$
         }
 
         return components;

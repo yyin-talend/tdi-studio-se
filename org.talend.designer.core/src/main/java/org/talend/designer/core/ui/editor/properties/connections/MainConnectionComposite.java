@@ -89,8 +89,8 @@ public class MainConnectionComposite extends MultipleThreadDynamicComposite {
                     // Composite compositeEditorView = new Composite(composite, SWT.BORDER);
                     // compositeEditorView.setLayoutData(data);
 
-                    metadataTableEditor = new MetadataTableEditor(outputMetaTable, "Schema from "
-                            + ((Connection) elem).getSource().getElementName() + " output ");
+                    metadataTableEditor = new MetadataTableEditor(outputMetaTable, "Schema from " //$NON-NLS-1$
+                            + ((Connection) elem).getSource().getElementName() + " output "); //$NON-NLS-1$
                     metadataTableEditorView = new MetadataTableEditorView(composite, SWT.NONE, metadataTableEditor, true, false,
                             true, false);
                     MetadataDialog.initializeMetadataTableView(metadataTableEditorView, ((Connection) elem).getSource(),

@@ -186,7 +186,7 @@ public class CodeView extends ViewPart {
                 text.setWordWrap(isChecked());
             }
         };
-        wrapAction.setToolTipText("wrap");
+        wrapAction.setToolTipText("wrap"); //$NON-NLS-1$
         wrapAction.setChecked(false);
         wrapAction.setImageDescriptor(ImageDescriptor.createFromFile(DesignerPlugin.class, "/icons/wrap.gif")); //$NON-NLS-1$
         tbm.add(wrapAction);

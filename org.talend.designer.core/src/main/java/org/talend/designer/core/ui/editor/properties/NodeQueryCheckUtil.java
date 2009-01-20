@@ -44,13 +44,13 @@ public final class NodeQueryCheckUtil {
             : TalendTextUtils.SINGLE_QUOTE;
 
     // reg: "(\s)*(select)(\s)+(.*?)(\s)+(from)(\s)+(.*)"
-    private static final String SQL_REGX = "^" + QUOTE + "(\\s)*(" + SELECT + ")" + NL_REGX_ONE + "(.*?)" + NL_REGX_ONE + "("
-            + FROM + ")" + NL_REGX_ONE + "(.*)" + QUOTE + "$";
+    private static final String SQL_REGX = "^" + QUOTE + "(\\s)*(" + SELECT + ")" + NL_REGX_ONE + "(.*?)" + NL_REGX_ONE + "(" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+            + FROM + ")" + NL_REGX_ONE + "(.*)" + QUOTE + "$"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
     private static final String NL_REGX = "(\\s)*"; //$NON-NLS-1$   
 
     // reg:(.+?)(\s)*\((\s)*(.*)(\s)*\)
-    private static final String SQL_FUNC_REGX = "(.+?)" + NL_REGX + "\\(" + NL_REGX + "(.*)" + NL_REGX + "\\)";
+    private static final String SQL_FUNC_REGX = "(.+?)" + NL_REGX + "\\(" + NL_REGX + "(.*)" + NL_REGX + "\\)"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
     /**
      * 
@@ -67,12 +67,12 @@ public final class NodeQueryCheckUtil {
             return false;
         }
         // replace the new line char
-        sql = sql.replaceAll("\r", " ");
-        sql = sql.replaceAll("\n", " ");
+        sql = sql.replaceAll("\r", " "); //$NON-NLS-1$ //$NON-NLS-2$
+        sql = sql.replaceAll("\n", " "); //$NON-NLS-1$ //$NON-NLS-2$
 
         // empty
         sql = sql.trim();
-        if ("".equals(sql)) {
+        if ("".equals(sql)) { //$NON-NLS-1$
             return false;
         }
 
@@ -87,11 +87,11 @@ public final class NodeQueryCheckUtil {
         // get the columns
         matcher.lookingAt();
         String columns = matcher.group(4).trim();
-        if ("".equals(columns)) {
+        if ("".equals(columns)) { //$NON-NLS-1$
             return false;
         }
         //
-        if ("*".equals(columns)) {
+        if ("*".equals(columns)) { //$NON-NLS-1$
             return true;
         }
 
@@ -114,7 +114,7 @@ public final class NodeQueryCheckUtil {
             return true;
         }
         int originColumnSize = metaTable.getListColumns().size();
-        String[] columnArray = columns.split(",");
+        String[] columnArray = columns.split(","); //$NON-NLS-1$
         // columns not match
         if (columnArray.length != originColumnSize) {
             return false;

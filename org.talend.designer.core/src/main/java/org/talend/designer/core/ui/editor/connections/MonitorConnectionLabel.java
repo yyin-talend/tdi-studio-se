@@ -19,7 +19,7 @@ import org.talend.core.model.process.Element;
  */
 public class MonitorConnectionLabel extends Element {
 
-    private String labelText = "Monitored";
+    private String labelText = "Monitored"; //$NON-NLS-1$
 
     private Connection parent = null;
 

@@ -51,18 +51,18 @@ public class TalendDesignerPrefConstants {
 
     public static final String EDITOR_INTERPOLATION = "editorInterpolation "; //$NON-NLS-1$
 
-    public static final String SCHEMA_OPTIONS = "schemaOptions";
+    public static final String SCHEMA_OPTIONS = "schemaOptions"; //$NON-NLS-1$
 
-    public static final String VIEW_OPTIONS = "viewOptions";
+    public static final String VIEW_OPTIONS = "viewOptions"; //$NON-NLS-1$
 
-    public static final String DISPLAY_SUBJOBS = "displaySubjobs";
+    public static final String DISPLAY_SUBJOBS = "displaySubjobs"; //$NON-NLS-1$
 
-    public static final String GENERATE_CODE_WHEN_OPEN_JOB = "generateCodeWhenOpenJob";
+    public static final String GENERATE_CODE_WHEN_OPEN_JOB = "generateCodeWhenOpenJob"; //$NON-NLS-1$
 
-    public static final String CHECK_ONLY_LAST_VERSION = "checkOnlyLastVersion";
+    public static final String CHECK_ONLY_LAST_VERSION = "checkOnlyLastVersion"; //$NON-NLS-1$
 
-    public static final String PROPAGATE_CONTEXT_VARIABLE = "propagateContextVariable";
+    public static final String PROPAGATE_CONTEXT_VARIABLE = "propagateContextVariable"; //$NON-NLS-1$
 
-    public static final String DISPLAY_METHOD_SIZE = "displayMethodSize";
+    public static final String DISPLAY_METHOD_SIZE = "displayMethodSize"; //$NON-NLS-1$
 
 }
