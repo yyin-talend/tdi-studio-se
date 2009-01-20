@@ -44,7 +44,7 @@ public class RenametParseXMLRowTotExtractXMLFieldMigrationTask extends AbstractJ
 		
         if (getProject().getLanguage() == ECodeLanguage.JAVA && processType != null) {
             try {
-                IComponentFilter filter1 = new NameComponentFilter("tParseXMLRow");
+                IComponentFilter filter1 = new NameComponentFilter("tParseXMLRow"); //$NON-NLS-1$
                 IComponentConversion changeNodeNameConversion = new IComponentConversion() {
 
                     public void transform(NodeType node) {
@@ -56,8 +56,8 @@ public class RenametParseXMLRowTotExtractXMLFieldMigrationTask extends AbstractJ
                                 ElementParameterType t = (ElementParameterType) o1;
                                 String value = t.getValue();
                                 if (value != null) {
-                                    if (value.contains("tParseXMLRow")) {
-                                        String replaceAll = value.replaceAll("tParseXMLRow", "tExtractXMLField");
+                                    if (value.contains("tParseXMLRow")) { //$NON-NLS-1$
+                                        String replaceAll = value.replaceAll("tParseXMLRow", "tExtractXMLField"); //$NON-NLS-1$ //$NON-NLS-2$
                                         t.setValue(replaceAll);
                                     }
                                 }
@@ -66,7 +66,7 @@ public class RenametParseXMLRowTotExtractXMLFieldMigrationTask extends AbstractJ
 
                     }
                 };
-                IComponentConversion renameComponentConversion = new RenameComponentConversion("tExtractXMLField");
+                IComponentConversion renameComponentConversion = new RenameComponentConversion("tExtractXMLField"); //$NON-NLS-1$
 
                 ModifyComponentsAction.searchAndModify(item, processType, filter1, Arrays.<IComponentConversion> asList(
                         renameComponentConversion, changeNodeNameConversion));

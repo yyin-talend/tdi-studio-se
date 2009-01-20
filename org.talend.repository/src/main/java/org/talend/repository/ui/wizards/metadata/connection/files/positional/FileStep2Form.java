@@ -307,9 +307,9 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
         tabFolder.setLayoutData(new GridData(GridData.FILL_BOTH));
 
         previewTabItem = new CTabItem(tabFolder, SWT.BORDER);
-        previewTabItem.setText("Preview");
+        previewTabItem.setText(Messages.getString("FileStep2Form.preview")); //$NON-NLS-1$
         outputTabItem = new CTabItem(tabFolder, SWT.BORDER);
-        outputTabItem.setText("Output");
+        outputTabItem.setText(Messages.getString("FileStep2Form.output")); //$NON-NLS-1$
 
         Composite previewComposite = Form.startNewGridLayout(tabFolder, 1);
         outputComposite = Form.startNewGridLayout(tabFolder, 1);
@@ -432,7 +432,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
         ProcessDescription processDescription = null;
 
         public boolean preProcessStart() {
-            previewButton.setText(Messages.getString("FileStep2.stop"));
+            previewButton.setText(Messages.getString("FileStep2.stop")); //$NON-NLS-1$
 
             clearPreview();
             String filePath = getConnection().getFilePath();
@@ -486,7 +486,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
 
         public void updateUIInThreadIfThreadIsCanceled() {
             if (!previewInformationLabel.isDisposed()) {
-                previewInformationLabel.setText("");
+                previewInformationLabel.setText(""); //$NON-NLS-1$
             }
         }
 
@@ -518,7 +518,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
 
         public void updateUIInThreadIfThreadFinally() {
             if (!previewButton.isDisposed()) {
-                previewButton.setText(Messages.getString("FileStep2.refreshPreview"));
+                previewButton.setText(Messages.getString("FileStep2.refreshPreview")); //$NON-NLS-1$
                 previewButton.setEnabled(true);
             }
         }
@@ -562,7 +562,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
                         if (rowsToSkipHeaderCheckboxCombo.isEmpty()) {
                             // at least, rowsToSkipHeader = 1
                             rowsToSkipHeaderCheckboxCombo.setText("1"); //$NON-NLS-1$
-                            getConnection().setHeaderValue("" + 1);
+                            getConnection().setHeaderValue("" + 1); //$NON-NLS-1$
                         } else {
                             // rowsToSkipHeader ++
                             int value = new Integer(rowsToSkipHeaderCheckboxCombo.getText());
@@ -576,7 +576,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
                         if (rowsToSkipHeaderCheckboxCombo.getText().equals("1")) { //$NON-NLS-1$
                             // rowsToSkipHeader is unusable
                             rowsToSkipHeaderCheckboxCombo.deselectAll();
-                            getConnection().setHeaderValue("" + 0);
+                            getConnection().setHeaderValue("" + 0); //$NON-NLS-1$
                         } else {
                             // rowsToSkipHeader --
                             int value = new Integer(rowsToSkipHeaderCheckboxCombo.getText());
@@ -644,7 +644,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
                     if (!isContextMode()) {
                         String string = String.valueOf(e.character);
                         // Check if input is number, backspace key and delete key of keyboard.
-                        if (!(string.matches("[0-9]*")) && e.keyCode != 8 && e.keyCode != SWT.DEL) {
+                        if (!(string.matches("[0-9]*")) && e.keyCode != 8 && e.keyCode != SWT.DEL) { //$NON-NLS-1$
                             e.doit = false;
                         }
                     }
@@ -660,11 +660,11 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
                         if (!rowsToSkipHeaderCheckboxCombo.isInteger() || rowsToSkipHeaderCheckboxCombo.getText().equals("0")) { //$NON-NLS-1$
                             rowsToSkipHeaderCheckboxCombo.deselectAll();
                             getConnection().setUseHeader(rowsToSkipHeaderCheckboxCombo.isChecked());
-                            getConnection().setHeaderValue("" + 0);
+                            getConnection().setHeaderValue("" + 0); //$NON-NLS-1$
                             // if rowsHeaderToSkip isn't integer or is equals to 0, the firstRowIsCaptionCheckbox is
                             // unusable.
 
-                            updateStatus(IStatus.ERROR, "Number allowed only.");
+                            updateStatus(IStatus.ERROR, Messages.getString("FileStep2Form.onlyNumber")); //$NON-NLS-1$
                             rowsToSkipHeaderCheckboxCombo.getCombo().setFocus();
 
                             firstRowIsCaptionCheckbox.setSelection(false);
@@ -675,7 +675,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
                         }
                     } else {
                         getConnection().setUseHeader(rowsToSkipHeaderCheckboxCombo.isChecked());
-                        getConnection().setHeaderValue("" + 0);
+                        getConnection().setHeaderValue("" + 0); //$NON-NLS-1$
                     }
                     checkFieldsValue();
 
@@ -691,9 +691,9 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
                         if (!rowsToSkipFooterCheckboxCombo.isInteger() || rowsToSkipFooterCheckboxCombo.getText().equals("0")) { //$NON-NLS-1$
                             rowsToSkipFooterCheckboxCombo.deselectAll();
                             getConnection().setUseFooter(rowsToSkipFooterCheckboxCombo.isChecked());
-                            getConnection().setFooterValue("" + 0);
+                            getConnection().setFooterValue("" + 0); //$NON-NLS-1$
 
-                            updateStatus(IStatus.ERROR, "Number allowed only.");
+                            updateStatus(IStatus.ERROR, Messages.getString("FileStep2Form.onlyNumber")); //$NON-NLS-1$
                             rowsToSkipFooterCheckboxCombo.getCombo().setFocus();
 
                         } else {
@@ -701,7 +701,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
                         }
                     } else {
                         getConnection().setUseFooter(rowsToSkipFooterCheckboxCombo.isChecked());
-                        getConnection().setFooterValue("" + 0);
+                        getConnection().setFooterValue("" + 0); //$NON-NLS-1$
                     }
                     checkFieldsValue();
                 }
@@ -716,9 +716,9 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
                         if (!rowsToSkipLimitCheckboxCombo.isInteger() || rowsToSkipLimitCheckboxCombo.getText().equals("0")) { //$NON-NLS-1$
                             rowsToSkipLimitCheckboxCombo.deselectAll();
                             getConnection().setUseLimit(rowsToSkipLimitCheckboxCombo.isChecked());
-                            getConnection().setLimitValue("" + 0);
+                            getConnection().setLimitValue("" + 0); //$NON-NLS-1$
 
-                            updateStatus(IStatus.ERROR, "Number allowed only.");
+                            updateStatus(IStatus.ERROR, Messages.getString("FileStep2Form.onlyNumber")); //$NON-NLS-1$
                             rowsToSkipLimitCheckboxCombo.getCombo().setFocus();
 
                         } else {
@@ -726,7 +726,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
                         }
                     } else {
                         getConnection().setUseLimit(rowsToSkipLimitCheckboxCombo.isChecked());
-                        getConnection().setLimitValue("" + 0);
+                        getConnection().setLimitValue("" + 0); //$NON-NLS-1$
                     }
                     checkFieldsValue();
                 }
@@ -964,7 +964,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
             if (labelledCheckboxCombo.getCheckbox().getSelection()) {
                 if (labelledCheckboxCombo.getText() == "") { //$NON-NLS-1$
                     updateStatus(IStatus.ERROR, labelledCheckboxCombo.getLabelText()
-                            + " " + Messages.getString("FileStep2.mustBePrecised")); //$NON-NLS-1$
+                            + " " + Messages.getString("FileStep2.mustBePrecised")); //$NON-NLS-1$ //$NON-NLS-2$
                     return false;
                 }
             }

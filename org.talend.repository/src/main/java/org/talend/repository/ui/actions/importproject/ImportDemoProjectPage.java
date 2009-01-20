@@ -64,8 +64,8 @@ public class ImportDemoProjectPage extends WizardFileSystemResourceExportPage1 i
      */
     public ImportDemoProjectPage(IStructuredSelection selection) {
         super(selection);
-        this.setMessage(Messages.getString("ImportDemoProjectPage.message"));
-        this.setTitle(Messages.getString("ImportDemoProjectPage.title"));
+        this.setMessage(Messages.getString("ImportDemoProjectPage.message")); //$NON-NLS-1$
+        this.setTitle(Messages.getString("ImportDemoProjectPage.title")); //$NON-NLS-1$
     }
 
     /*
@@ -81,7 +81,7 @@ public class ImportDemoProjectPage extends WizardFileSystemResourceExportPage1 i
         container.setLayoutData(new GridData(GridData.FILL_BOTH));
 
         Label label = new Label(container, SWT.NONE);
-        label.setText(Messages.getString("ImportDemoProjectPage.availableProjectsPrompt"));
+        label.setText(Messages.getString("ImportDemoProjectPage.availableProjectsPrompt")); //$NON-NLS-1$
         GridData gd = new GridData();
         label.setLayoutData(gd);
 
@@ -145,12 +145,12 @@ public class ImportDemoProjectPage extends WizardFileSystemResourceExportPage1 i
      */
     private Image[] getFullImagePath(String languageName) {
         String relatedImagePath = null;
-        if (languageName.equalsIgnoreCase(ECodeLanguage.getCodeLanguage("java").getName())) {
-            relatedImagePath = "icons/java.png";
-        } else if (languageName.equalsIgnoreCase(ECodeLanguage.getCodeLanguage("perl").getName())) {
-            relatedImagePath = "icons/perl.gif";
+        if (languageName.equalsIgnoreCase(ECodeLanguage.getCodeLanguage("java").getName())) { //$NON-NLS-1$
+            relatedImagePath = "icons/java.png"; //$NON-NLS-1$
+        } else if (languageName.equalsIgnoreCase(ECodeLanguage.getCodeLanguage("perl").getName())) { //$NON-NLS-1$
+            relatedImagePath = "icons/perl.gif"; //$NON-NLS-1$
         } else {
-            relatedImagePath = "icons/perl.gif";
+            relatedImagePath = "icons/perl.gif"; //$NON-NLS-1$
         }
         Bundle bundle = Platform.getBundle(RepositoryPlugin.PLUGIN_ID);
         URL url = null;

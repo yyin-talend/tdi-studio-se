@@ -89,8 +89,8 @@ public class ContextRepositoryComposite extends ContextComposite {
                     listParams.get(j).setScriptCode(scriptCode);
 
                     // if the user haven't modified prompt, change it
-                    if (listParams.get(j).getPrompt().equals(oldName + "?")) {
-                        listParams.get(j).setPrompt(newName + "?");
+                    if (listParams.get(j).getPrompt().equals(oldName + "?")) { //$NON-NLS-1$
+                        listParams.get(j).setPrompt(newName + "?"); //$NON-NLS-1$
                     }
 
                     found = true;

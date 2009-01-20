@@ -353,9 +353,9 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
         tabFolder.setLayoutData(new GridData(GridData.FILL_BOTH));
 
         previewTabItem = new CTabItem(tabFolder, SWT.BORDER);
-        previewTabItem.setText("Preview");
+        previewTabItem.setText("Preview"); //$NON-NLS-1$
         outputTabItem = new CTabItem(tabFolder, SWT.BORDER);
-        outputTabItem.setText("Output");
+        outputTabItem.setText("Output"); //$NON-NLS-1$
 
         Composite previewComposite = Form.startNewGridLayout(tabFolder, 1);
         outputComposite = Form.startNewGridLayout(tabFolder, 1);
@@ -675,8 +675,8 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
         text.setLayoutData(gridData);
         outputComposite.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WHITE));
 
-        String errorInfo = Messages.getString("FileStep2.noresult") + "\n";
-        errorInfo = errorInfo + Messages.getString("FileStep2.noresultDetailMessage") + "\n";
+        String errorInfo = Messages.getString("FileStep2.noresult") + "\n"; //$NON-NLS-1$ //$NON-NLS-2$
+        errorInfo = errorInfo + Messages.getString("FileStep2.noresultDetailMessage") + "\n"; //$NON-NLS-1$ //$NON-NLS-2$
 
         text.setText(errorInfo);
         text.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_RED));

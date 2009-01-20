@@ -41,10 +41,10 @@ public class ColumnNameValidator {
         org.apache.oro.text.regex.Pattern validPatternColumnNameRegexp = null;
         PatternCompiler compiler = new Perl5Compiler();
         try {
-            Pattern regex = Pattern.compile("^[0-9]", Pattern.CANON_EQ);
+            Pattern regex = Pattern.compile("^[0-9]", Pattern.CANON_EQ); //$NON-NLS-1$
             Matcher regexMatcher = regex.matcher(columnName);
             if (regexMatcher.find()) {
-                columnName = "_" + columnName;// TODO
+                columnName = "_" + columnName;// TODO //$NON-NLS-1$
             }
         } catch (PatternSyntaxException ex) {
             throw new RuntimeException(ex);//  
@@ -60,7 +60,7 @@ public class ColumnNameValidator {
         Perl5Matcher matcher = new Perl5Matcher();
         boolean match = matcher.matches(columnName, validPatternColumnNameRegexp);
         if (!match) {
-            columnName = "Column" + index;
+            columnName = "Column" + index; //$NON-NLS-1$
         }
         return columnName;
     }

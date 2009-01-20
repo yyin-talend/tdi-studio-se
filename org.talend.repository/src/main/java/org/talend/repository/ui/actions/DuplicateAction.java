@@ -56,7 +56,7 @@ public class DuplicateAction extends AContextualAction {
 
     private IStructuredSelection selection = null;
 
-    private static final String JOB_INIT_VERSION = "0.1";
+    private static final String JOB_INIT_VERSION = "0.1"; //$NON-NLS-1$
 
     public DuplicateAction() {
         super();
@@ -117,7 +117,7 @@ public class DuplicateAction extends AContextualAction {
             return;
         }
 
-        String initNameValue = "Copy_of_" + sourceNode.getObject().getProperty().getItem().getProperty().getLabel();
+        String initNameValue = "Copy_of_" + sourceNode.getObject().getProperty().getItem().getProperty().getLabel(); //$NON-NLS-1$
 
         CopyObjectAction copyObjectAction = CopyObjectAction.getInstance();
 
@@ -131,11 +131,11 @@ public class DuplicateAction extends AContextualAction {
         try {
             jobNameValue = getDuplicateName(initNameValue, selectionInClipboard);
         } catch (BusinessException e) {
-            jobNameValue = "";
+            jobNameValue = ""; //$NON-NLS-1$
         }
 
-        InputDialog jobNewNameDialog = new InputDialog(null, Messages.getString("DuplicateAction.dialog.title"), Messages
-                .getString("DuplicateAction.dialog.message"), jobNameValue, new IInputValidator() {
+        InputDialog jobNewNameDialog = new InputDialog(null, Messages.getString("DuplicateAction.dialog.title"), Messages //$NON-NLS-1$
+                .getString("DuplicateAction.dialog.message"), jobNameValue, new IInputValidator() { //$NON-NLS-1$
 
             public String isValid(String newText) {
                 return validJobName(newText, selectionInClipboard);
@@ -164,9 +164,9 @@ public class DuplicateAction extends AContextualAction {
             String temp = value;
             while (validJobName(temp, selectionInClipboard) != null) {
                 if (j > 'z') {
-                    throw new BusinessException("Cannot generate pasted item label.");
+                    throw new BusinessException(Messages.getString("DuplicateAction.cannotGenerateItem")); //$NON-NLS-1$
                 }
-                temp = value + "_" + (j++) + "";
+                temp = value + "_" + (j++) + ""; //$NON-NLS-1$ //$NON-NLS-2$
             }
             return temp;
         }
@@ -185,24 +185,24 @@ public class DuplicateAction extends AContextualAction {
         IRepositoryService service = (IRepositoryService) GlobalServiceRegister.getDefault().getService(IRepositoryService.class);
         IProxyRepositoryFactory repositoryFactory = service.getProxyRepositoryFactory();
         if (itemName.length() == 0) {
-            return org.talend.core.i18n.Messages.getString("PropertiesWizardPage.NameEmptyError");
+            return org.talend.core.i18n.Messages.getString("PropertiesWizardPage.NameEmptyError"); //$NON-NLS-1$
         } else if (!Pattern.matches(RepositoryConstants.getPattern(((RepositoryNode) selectionInClipboard.toArray()[0])
                 .getObject().getType()), itemName)) {
             /*
              * maybe Messages.getString("PropertiesWizardPage.KeywordsError")
              */
-            return org.talend.core.i18n.Messages.getString("PropertiesWizardPage.NameFormatError");
+            return org.talend.core.i18n.Messages.getString("PropertiesWizardPage.NameFormatError"); //$NON-NLS-1$
         } else {
             try {
                 if (!repositoryFactory.isNameAvailable(createNewItem(), itemName)) {
-                    return org.talend.core.i18n.Messages.getString("PropertiesWizardPage.ItemExistsError");
+                    return org.talend.core.i18n.Messages.getString("PropertiesWizardPage.ItemExistsError"); //$NON-NLS-1$
                 }
             } catch (PersistenceException e) {
-                return org.talend.core.i18n.Messages.getString("PropertiesWizardPage.ItemExistsError");
+                return org.talend.core.i18n.Messages.getString("PropertiesWizardPage.ItemExistsError"); //$NON-NLS-1$
             }
             // see bug 0004157: Using specific name for (main) tream
             if (isKeyword(itemName)) {
-                return org.talend.core.i18n.Messages.getString("PropertiesWizardPage.KeywordsError");
+                return org.talend.core.i18n.Messages.getString("PropertiesWizardPage.KeywordsError"); //$NON-NLS-1$
             }
         }
 

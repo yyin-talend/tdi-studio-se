@@ -299,7 +299,7 @@ public class DatabaseForm extends AbstractForm {
     protected void addFields() {
         int width = getSize().x;
         GridLayout layout2;
-        databaseSettingGroup = Form.createGroup(this, 1, Messages.getString("DatabaseForm.groupDatabaseSettings"), 310);
+        databaseSettingGroup = Form.createGroup(this, 1, Messages.getString("DatabaseForm.groupDatabaseSettings"), 310); //$NON-NLS-1$
         compositeGroupDbSettings = Form.startNewGridLayout(databaseSettingGroup, 1);
         layout2 = (GridLayout) compositeGroupDbSettings.getLayout();
         layout2.marginHeight = 0;
@@ -363,8 +363,8 @@ public class DatabaseForm extends AbstractForm {
         layout2.marginTop = 0;
         layout2.marginBottom = 0;
 
-        dbVersionCombo = new LabelledCombo(typeDbCompositeParent, Messages.getString("DatabaseForm.dbversion"), Messages
-                .getString("DatabaseForm.dbversion.tip"), new String[0], 2, true);
+        dbVersionCombo = new LabelledCombo(typeDbCompositeParent, Messages.getString("DatabaseForm.dbversion"), Messages //$NON-NLS-1$
+                .getString("DatabaseForm.dbversion.tip"), new String[0], 2, true); //$NON-NLS-1$
 
         // Field connectionString
         urlDataStringConnection.setSelectionIndex(dbTypeCombo.getSelectionIndex());
@@ -401,11 +401,11 @@ public class DatabaseForm extends AbstractForm {
     private List<String> getVersionDrivers(String dbType) {
         List<String> result = new ArrayList<String>();
         for (EDatabaseDriver4Version d4v : EDatabaseDriver4Version.values()) {
-            if (dbType.equals("Oracle with SID") || dbType.equals("Oracle with service name")) {
-                if (d4v.getDbType().equals("Oracle")) {
+            if (dbType.equals("Oracle with SID") || dbType.equals("Oracle with service name")) { //$NON-NLS-1$ //$NON-NLS-2$
+                if (d4v.getDbType().equals("Oracle")) { //$NON-NLS-1$
                     result.add(d4v.getDbVersionName());
                 }
-            } else if (dbType.equals("AS400") && d4v.getDbType().equals("AS400")) {
+            } else if (dbType.equals("AS400") && d4v.getDbType().equals("AS400")) { //$NON-NLS-1$ //$NON-NLS-2$
                 result.add(d4v.getDbVersionName());
             }
         }
@@ -425,12 +425,12 @@ public class DatabaseForm extends AbstractForm {
 
         generalJdbcUrlText = new LabelledText(generalDbCompositeParent, Messages.getString("DatabaseForm.general.url"), 2); //$NON-NLS-1$
 
-        generalJdbcDriverjarText = new LabelledText(generalDbCompositeParent, Messages.getString("DatabaseForm.general.jarfile"),
+        generalJdbcDriverjarText = new LabelledText(generalDbCompositeParent, Messages.getString("DatabaseForm.general.jarfile"), //$NON-NLS-1$
                 1);
 
         browseJarFilesButton = new Button(generalDbCompositeParent, SWT.NONE);
-        browseJarFilesButton.setText("...");
-        browseJarFilesButton.setToolTipText("Select jar file");
+        browseJarFilesButton.setText("..."); //$NON-NLS-1$
+        browseJarFilesButton.setToolTipText(Messages.getString("DatabaseForm.selectJar")); //$NON-NLS-1$
 
         generalJdbcClassNameText = new LabelledText(generalDbCompositeParent, Messages
                 .getString("DatabaseForm.general.classname"), 2); //$NON-NLS-1$
@@ -444,11 +444,11 @@ public class DatabaseForm extends AbstractForm {
         // 3629 hide
         // password
 
-        generalMappingFileText = new LabelledText(generalDbCompositeParent, Messages.getString("DatabaseForm.general.mapping"), 1);
+        generalMappingFileText = new LabelledText(generalDbCompositeParent, Messages.getString("DatabaseForm.general.mapping"), 1); //$NON-NLS-1$
 
         mappingSelectButton = new Button(generalDbCompositeParent, SWT.NONE);
-        mappingSelectButton.setText("...");
-        mappingSelectButton.setToolTipText("Select mapping rule");
+        mappingSelectButton.setText("..."); //$NON-NLS-1$
+        mappingSelectButton.setToolTipText(Messages.getString("DatabaseForm.selectRule")); //$NON-NLS-1$
 
     }
 
@@ -595,7 +595,7 @@ public class DatabaseForm extends AbstractForm {
                     isGeneralJDBC() ? generalJdbcUrlText.getText() : urlConnectionStringText.getText(), serverText.getText(),
                     isGeneralJDBC() ? generalJdbcUserText.getText() : usernameText.getText(),
                     isGeneralJDBC() ? generalJdbcPasswordText.getText() : passwordText.getText(), sidOrDatabaseText.getText(),
-                    portText.getText(), fileField.getText(), datasourceText.getText(), isGeneralJDBC() ? "" : schemaText
+                    portText.getText(), fileField.getText(), datasourceText.getText(), isGeneralJDBC() ? "" : schemaText //$NON-NLS-1$
                             .getText(), additionParamText.getText(), generalJdbcClassNameText.getText(), generalJdbcDriverjarText
                             .getText(), oracleVersionEnable() || as400VersionEnable() ? dbVersionCombo.getText() : null);
 
@@ -734,7 +734,7 @@ public class DatabaseForm extends AbstractForm {
                         }
 
                         index = 5;
-                        if (s[index] != "") {
+                        if (s[index] != "") { //$NON-NLS-1$
                             additionParamText.setText(s[index]);
                             getConnection().setAdditionalParams(s[index]);
                         }
@@ -981,7 +981,7 @@ public class DatabaseForm extends AbstractForm {
 
                     String mapping = null;
 
-                    if (product == null || product.equals("General JDBC")) {
+                    if (product == null || product.equals("General JDBC")) { //$NON-NLS-1$
                         mapping = generalMappingFileText.getText();
                     } else {
                         if (MetadataTalendType.getDefaultDbmsFromProduct(product) != null) {
@@ -989,7 +989,7 @@ public class DatabaseForm extends AbstractForm {
                         }
                     }
                     if (mapping == null) {
-                        mapping = "mysql_id";// default value
+                        mapping = "mysql_id";// default value //$NON-NLS-1$
                     }
 
                     getConnection().setDbmsId(mapping);
@@ -1008,7 +1008,7 @@ public class DatabaseForm extends AbstractForm {
 
                     // see bug 0005237: Create DB Connection issue.
                     if (!schemaText.getEditable()) {
-                        schemaText.setText("");
+                        schemaText.setText(""); //$NON-NLS-1$
                     }
                 }
             }
@@ -1144,11 +1144,11 @@ public class DatabaseForm extends AbstractForm {
 
         dbVersionCombo.removeAll();
         dbVersionCombo.setHideWidgets(true);
-        if (dbTypeCombo.getText().startsWith("Oracle")) {
+        if (dbTypeCombo.getText().startsWith("Oracle")) { //$NON-NLS-1$
             dbVersionCombo.getCombo().setItems(versions);
             dbVersionCombo.select(0);
             dbVersionCombo.setHideWidgets(!isOracle);
-        } else if (dbTypeCombo.getText().startsWith("AS400")) {
+        } else if (dbTypeCombo.getText().startsWith("AS400")) { //$NON-NLS-1$
             dbVersionCombo.getCombo().setItems(versions);
             dbVersionCombo.select(0);
             dbVersionCombo.setHideWidgets(!isAS400);
@@ -1243,10 +1243,10 @@ public class DatabaseForm extends AbstractForm {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 FileDialog dialog = new FileDialog(getShell());
-                dialog.setFilterExtensions(new String[] { "*.jar", "*.zip", "*.*", "*" });
-                String userDir = System.getProperty("user.dir");
-                String pathSeparator = System.getProperty("path.separator");
-                dialog.setFilterPath(userDir + pathSeparator + "lib" + pathSeparator + "java");
+                dialog.setFilterExtensions(new String[] { "*.jar", "*.zip", "*.*", "*" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                String userDir = System.getProperty("user.dir"); //$NON-NLS-1$
+                String pathSeparator = System.getProperty("path.separator"); //$NON-NLS-1$
+                dialog.setFilterPath(userDir + pathSeparator + "lib" + pathSeparator + "java"); //$NON-NLS-1$ //$NON-NLS-2$
                 String path = dialog.open();
                 if (path == null) {
                     return;
@@ -1374,7 +1374,7 @@ public class DatabaseForm extends AbstractForm {
     }
 
     private boolean validText(final String value) {
-        return value != null && !value.equals("");
+        return value != null && !value.equals(""); //$NON-NLS-1$
     }
 
     private boolean checkTypeDBFieldValues() {
@@ -1578,7 +1578,7 @@ public class DatabaseForm extends AbstractForm {
             return false;
         }
 
-        return dbTypeCombo.getText().startsWith("Oracle") && LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA);
+        return dbTypeCombo.getText().startsWith("Oracle") && LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA); //$NON-NLS-1$
     }
 
     /**
@@ -1593,7 +1593,7 @@ public class DatabaseForm extends AbstractForm {
             return false;
         }
 
-        return dbTypeCombo.getText().startsWith("AS400") && LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA);
+        return dbTypeCombo.getText().startsWith("AS400") && LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA); //$NON-NLS-1$
     }
 
     /*

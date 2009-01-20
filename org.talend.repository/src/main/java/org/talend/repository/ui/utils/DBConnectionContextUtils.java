@@ -338,7 +338,7 @@ public final class DBConnectionContextUtils {
         dataStringConn.setSelectionIndex(dbIndex);
         dataStringConn.getString(dbIndex, server, username, password, port, sidOrDatabase, filePath.toLowerCase(), datasource,
                 dbRootPath, additionParam);
-        if (dbConn.getURL() != null && !dbConn.getURL().equals("")) {
+        if (dbConn.getURL() != null && !dbConn.getURL().equals("")) { //$NON-NLS-1$
             // for general db, url is given directly.
             cloneConn.setURL(dbConn.getURL());
         } else {

@@ -43,13 +43,13 @@ public class DieOnErrorDefaultValueMigrationTask extends AbstractJobMigrationTas
 		if (processType == null) {
 			return ExecutionResult.NOTHING_TO_DO;
 		}
-        String[] componentsName = new String[] { "tAccessOutput", "tAccessRow", "tDB2Output", "tDB2Row", "tDBOutput",
-                "tDBSQLRow", "tFileInputDelimited", "tFileInputExcel", "tFileInputLDIF", "tFileInputPositional",
-                "tFileInputRegex", "tFirebirdOutput", "tFirebirdRow", "tHSQLDbOutput", "tHSQLDbRow", "tInformixOutput",
-                "tInformixRow", "tIngresOutput", "tIngresRow", "tInterbaseOutput", "tInterbaseRow", "tJDBCOutput", "tJDBCRow",
-                "tJavaDBOutput", "tJavaDBRow", "tMSSqlOutput", "tMSSqlRow", "tMysqlOutput", "tMysqlRow", "tOracleOutput",
-                "tOracleRow", "tPostgresqlOutput", "tPostgresqlRow", "tSQLiteOutput", "tSQLiteRow", "tSybaseOutput",
-                "tSybaseRow", "tTeradataFastLoad", "tTeradataOutput", "tFileInputCSV" };
+        String[] componentsName = new String[] { "tAccessOutput", "tAccessRow", "tDB2Output", "tDB2Row", "tDBOutput", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+                "tDBSQLRow", "tFileInputDelimited", "tFileInputExcel", "tFileInputLDIF", "tFileInputPositional", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+                "tFileInputRegex", "tFirebirdOutput", "tFirebirdRow", "tHSQLDbOutput", "tHSQLDbRow", "tInformixOutput", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+                "tInformixRow", "tIngresOutput", "tIngresRow", "tInterbaseOutput", "tInterbaseRow", "tJDBCOutput", "tJDBCRow", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
+                "tJavaDBOutput", "tJavaDBRow", "tMSSqlOutput", "tMSSqlRow", "tMysqlOutput", "tMysqlRow", "tOracleOutput", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
+                "tOracleRow", "tPostgresqlOutput", "tPostgresqlRow", "tSQLiteOutput", "tSQLiteRow", "tSybaseOutput", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+                "tSybaseRow", "tTeradataFastLoad", "tTeradataOutput", "tFileInputCSV" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
         try {
 

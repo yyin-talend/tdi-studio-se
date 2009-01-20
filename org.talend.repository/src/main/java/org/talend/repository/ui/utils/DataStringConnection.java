@@ -36,9 +36,9 @@ public class DataStringConnection {
 
     private final String[] defaultTable;
 
-    public static String mySQlDefaultValue = "noDatetimeStringSync=true";
+    public static String mySQlDefaultValue = "noDatetimeStringSync=true"; //$NON-NLS-1$
 
-    public static String as400DefaultValue = "prompt=false";
+    public static String as400DefaultValue = "prompt=false"; //$NON-NLS-1$
 
     public final static int DBTYPE_GENERIC_ODBC = 4;
 
@@ -62,7 +62,7 @@ public class DataStringConnection {
 
     public final static int DBTYPE_HSQLDB_IN_PROCESS = 22;
 
-    public final static String GENERAL_JDBC = "General JDBC";
+    public final static String GENERAL_JDBC = "General JDBC"; //$NON-NLS-1$
 
     // private Combo combo;
 
@@ -85,7 +85,7 @@ public class DataStringConnection {
 
         dataConnection[0] = new DataConnection(
                 "MySQL", "jdbc:mysql://<host>:<port>/<sid>?<property>", "jdbc:mysql://" + host + ":" + port //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-                        + "/" + sid + "\\?" + addParam, "3306"); //$NON-NLS-1$ //$NON-NLS-2$
+                        + "/" + sid + "\\?" + addParam, "3306"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         dataConnection[1] = new DataConnection("PostgreSQL", "jdbc:postgresql://<host>:<port>/<sid>", "jdbc:postgresql://" + host //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + ":" + port + "/" + sid, "5432"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -114,57 +114,57 @@ public class DataStringConnection {
 
         dataConnection[DBTYPE_SQLITE] = new DataConnection("SQLite", "jdbc:sqlite:/<filename>", "jdbc:sqlite:/" + file); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-        dataConnection[9] = new DataConnection("Ingres", "jdbc:ingres://<host>:<port>/<sid>",
-                "jdbc:ingres://" + host + ":" + port + "/" + sid, "II7"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        dataConnection[9] = new DataConnection("Ingres", "jdbc:ingres://<host>:<port>/<sid>", //$NON-NLS-1$ //$NON-NLS-2$
+                "jdbc:ingres://" + host + ":" + port + "/" + sid, "II7"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
-        dataConnection[DBTYPE_INTERBASE] = new DataConnection("Interbase", "jdbc:interbase://<host>/<sid>",
+        dataConnection[DBTYPE_INTERBASE] = new DataConnection("Interbase", "jdbc:interbase://<host>/<sid>", //$NON-NLS-1$ //$NON-NLS-2$
                 "jdbc:interbase://" + host + "/" + sid); //$NON-NLS-1$ //$NON-NLS-2$ 
 
         // dataConnection[11] = new DataConnection("Microsoft SQL Server", "jdbc:jtds:sqlserver://<host>:<port>/<sid>",
         // "jdbc:jtds:sqlserver://" + host + ":" + port + "/" + sid, "1433"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        dataConnection[11] = new DataConnection("Microsoft SQL Server", "jdbc:jtds:sqlserver://<host>:<port>/<sid>;<property>",
-                "jdbc:jtds:sqlserver://" + host + ":" + port + "/" + sid + ";" + addParam, "1433"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        dataConnection[11] = new DataConnection("Microsoft SQL Server", "jdbc:jtds:sqlserver://<host>:<port>/<sid>;<property>", //$NON-NLS-1$ //$NON-NLS-2$
+                "jdbc:jtds:sqlserver://" + host + ":" + port + "/" + sid + ";" + addParam, "1433"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 
-        dataConnection[DBTYPE_FIREBIRD] = new DataConnection("FireBird", "jdbc:firebirdsql:<host>:<filename>",
+        dataConnection[DBTYPE_FIREBIRD] = new DataConnection("FireBird", "jdbc:firebirdsql:<host>:<filename>", //$NON-NLS-1$ //$NON-NLS-2$
                 "jdbc:firebirdsql:" + host + ":" + file); //$NON-NLS-1$ //$NON-NLS-2$ 
 
-        dataConnection[DBTYPE_INFORMIX] = new DataConnection("Informix",
-                "jdbc:informix-sqli://<host>:<port>/<sid>:informixserver=<datasource>;<property>",
-                "jdbc:informix-sqli://" + host + ":" + port + "/" + sid + ":informixserver=" + word + ";" + addParam); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        dataConnection[DBTYPE_INFORMIX] = new DataConnection("Informix", //$NON-NLS-1$
+                "jdbc:informix-sqli://<host>:<port>/<sid>:informixserver=<datasource>;<property>", //$NON-NLS-1$
+                "jdbc:informix-sqli://" + host + ":" + port + "/" + sid + ":informixserver=" + word + ";" + addParam); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 
-        dataConnection[DBTYPE_ACCESS] = new DataConnection("Access",
-                "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=<filename>",
+        dataConnection[DBTYPE_ACCESS] = new DataConnection("Access", //$NON-NLS-1$
+                "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=<filename>", //$NON-NLS-1$
                 "jdbc:odbc:Driver={Microsoft Access Driver \\(\\*\\.mdb, \\*\\.accdb\\)};DBQ=" + file); //$NON-NLS-1$ 
 
         dataConnection[DBTYPE_TERDATA] = new DataConnection(
-                "Teradata", "jdbc:teradata://<host>/<sid>", "jdbc:teradata://" + host + "/" + sid); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                "Teradata", "jdbc:teradata://<host>/<sid>", "jdbc:teradata://" + host + "/" + sid); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
         // dataConnection[16] = new DataConnection("AS400", "jdbc:as400://<host>/<sid>;prompt=false;libraries=<sid>",
         // "jdbc:as400://" + host + "/" + sid + ";prompt=false;libraries=" + sid);
-        dataConnection[DBTYPE_AS400] = new DataConnection("AS400", "jdbc:as400://<host>/<sid>;libraries=<sid>;<property>",
-                "jdbc:as400://" + host + "/" + sid + ";libraries=" + sid + ";" + addParam);
+        dataConnection[DBTYPE_AS400] = new DataConnection("AS400", "jdbc:as400://<host>/<sid>;libraries=<sid>;<property>", //$NON-NLS-1$ //$NON-NLS-2$
+                "jdbc:as400://" + host + "/" + sid + ";libraries=" + sid + ";" + addParam); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
-        dataConnection[DBTYPE_JAVADB_EMBEDED] = new DataConnection("JavaDB Embeded", "jdbc:derby:<dbRootPath>", "jdbc:derby:"
+        dataConnection[DBTYPE_JAVADB_EMBEDED] = new DataConnection("JavaDB Embeded", "jdbc:derby:<dbRootPath>", "jdbc:derby:" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + word);
         //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-        dataConnection[18] = new DataConnection("JavaDB JCCJDBC", "jdbc:derby:net://<host>:<port>/<sid>",
-                "jdbc:derby:net://" + host + ":" + port + "/" + sid, "1527"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        dataConnection[18] = new DataConnection("JavaDB JCCJDBC", "jdbc:derby:net://<host>:<port>/<sid>", //$NON-NLS-1$ //$NON-NLS-2$
+                "jdbc:derby:net://" + host + ":" + port + "/" + sid, "1527"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
-        dataConnection[19] = new DataConnection("JavaDB DerbyClient", "jdbc:derby://<host>:<port>/<sid>",
-                "jdbc:derby://" + host + ":" + port + "/" + sid, "1527"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        dataConnection[19] = new DataConnection("JavaDB DerbyClient", "jdbc:derby://<host>:<port>/<sid>", //$NON-NLS-1$ //$NON-NLS-2$
+                "jdbc:derby://" + host + ":" + port + "/" + sid, "1527"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
-        dataConnection[20] = new DataConnection("HSQLDB Server", "jdbc:hsqldb:hsql://<host>:<port>/<sid>",
-                "jdbc:hsqldb:hsql://" + host + ":" + port + "/" + sid, "9001"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        dataConnection[20] = new DataConnection("HSQLDB Server", "jdbc:hsqldb:hsql://<host>:<port>/<sid>", //$NON-NLS-1$ //$NON-NLS-2$
+                "jdbc:hsqldb:hsql://" + host + ":" + port + "/" + sid, "9001"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
-        dataConnection[21] = new DataConnection("HSQLDB WebServer", "jdbc:hsqldb:http://<host>:<port>/<sid>",
-                "jdbc:hsqldb:http://" + host + ":" + port + "/" + sid, "9001"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        dataConnection[21] = new DataConnection("HSQLDB WebServer", "jdbc:hsqldb:http://<host>:<port>/<sid>", //$NON-NLS-1$ //$NON-NLS-2$
+                "jdbc:hsqldb:http://" + host + ":" + port + "/" + sid, "9001"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
-        dataConnection[DBTYPE_HSQLDB_IN_PROCESS] = new DataConnection("HSQLDB In-Process",
-                "jdbc:hsqldb:file:<dbRootPath>/<sid>;ifexists=true", "jdbc:hsqldb:file:" + file + "/" + sid + ";ifexists=true"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        dataConnection[DBTYPE_HSQLDB_IN_PROCESS] = new DataConnection("HSQLDB In-Process", //$NON-NLS-1$
+                "jdbc:hsqldb:file:<dbRootPath>/<sid>;ifexists=true", "jdbc:hsqldb:file:" + file + "/" + sid + ";ifexists=true"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
-        dataConnection[23] = new DataConnection("MaxDB", "jdbc:sapdb://<host>:<port>/<sid>",
-                "jdbc:sapdb://" + host + ":" + port + "/" + sid, "7210"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        dataConnection[23] = new DataConnection("MaxDB", "jdbc:sapdb://<host>:<port>/<sid>", //$NON-NLS-1$ //$NON-NLS-2$
+                "jdbc:sapdb://" + host + ":" + port + "/" + sid, "7210"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
         dataConnection[24] = new DataConnection(
                 "PostgresPlus", "jdbc:postgresql://<host>:<port>/<sid>", "jdbc:postgresql://" + host //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -182,7 +182,7 @@ public class DataStringConnection {
                 + ":" + port + "/" + sid, "5439"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         dataConnection[29] = new DataConnection("Netezza", "jdbc:netezza://<host>:<port>/<sid>", "jdbc:netezza://" + host //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                + ":" + port + "/" + sid, "5480");
+                + ":" + port + "/" + sid, "5480"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         // General jdbc
         dataConnection[30] = new DataConnection(GENERAL_JDBC, "jdbc:xxx://<xxx>:<xxx>", "jdbc:xxx://" + host //$NON-NLS-1$ //$NON-NLS-2$ 
@@ -322,7 +322,7 @@ public class DataStringConnection {
      */
     public String[] getAnalyse(final String stringConnection) {
         Integer selectionIndex = getSelectionIndex();
-        String[] s = { selectionIndex.toString(), "", "", "", "", "" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        String[] s = { selectionIndex.toString(), "", "", "", "", "" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
         String regex = getRegex();
         if (stringConnection == "") { //$NON-NLS-1$
             return s;
@@ -422,8 +422,8 @@ public class DataStringConnection {
             return false;
         }
         return getStringConnectionTemplate().substring(0, 12).equals("jdbc:oracle:") //$NON-NLS-1$
-                || getStringConnectionTemplate().substring(0, 15).equals("jdbc:postgresql")
-                || getStringConnectionTemplate().startsWith("jdbc:paraccel")
+                || getStringConnectionTemplate().substring(0, 15).equals("jdbc:postgresql") //$NON-NLS-1$
+                || getStringConnectionTemplate().startsWith("jdbc:paraccel") //$NON-NLS-1$
                 || getStringConnectionTemplate().substring(0, 8).equals("jdbc:db2"); //$NON-NLS-1$
     }
 
@@ -436,17 +436,17 @@ public class DataStringConnection {
         if (selectionIndex < 0) {
             return false;
         }
-        return getStringConnectionTemplate().substring(0, 19).equals("jdbc:jtds:sqlserver")
-                || getStringConnectionTemplate().substring(0, 18).equals("jdbc:informix-sqli")
-                || getStringConnectionTemplate().substring(0, 10).equals("jdbc:mysql")
+        return getStringConnectionTemplate().substring(0, 19).equals("jdbc:jtds:sqlserver") //$NON-NLS-1$
+                || getStringConnectionTemplate().substring(0, 18).equals("jdbc:informix-sqli") //$NON-NLS-1$
+                || getStringConnectionTemplate().substring(0, 10).equals("jdbc:mysql") //$NON-NLS-1$
                 || getStringConnectionTemplate().substring(0, 10).equals("jdbc:as400"); //$NON-NLS-1$
 
     }
 
-    private static String[] dataBaseNeededList = { "jdbc:mysql", "jdbc:sybase", "jdbc:db2", "jdbc:ingres", "jdbc:interbase",
-            "jdbc:jtds:sqlserver", "jdbc:informix-sqli", "jdbc:teradata", "jdbc:as400", "jdbc:derby", "jdbc:derby:net",
-            "jdbc:hsqldb:hsql", "jdbc:hsqldb:http", "jdbc:hsqldb:file", "jdbc:sapdb", "jdbc:postgresql", "jdbc:db2",
-            "jdbc:netezza" };
+    private static String[] dataBaseNeededList = { "jdbc:mysql", "jdbc:sybase", "jdbc:db2", "jdbc:ingres", "jdbc:interbase", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+            "jdbc:jtds:sqlserver", "jdbc:informix-sqli", "jdbc:teradata", "jdbc:as400", "jdbc:derby", "jdbc:derby:net", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+            "jdbc:hsqldb:hsql", "jdbc:hsqldb:http", "jdbc:hsqldb:file", "jdbc:sapdb", "jdbc:postgresql", "jdbc:db2", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+            "jdbc:netezza" }; //$NON-NLS-1$
 
     public boolean isDatabaseNeeded() {
         if (selectionIndex < 0) {
@@ -482,13 +482,13 @@ public class DataStringConnection {
     public String getString(final int dbTypeItemIndex, final String host, final String login, final String password,
             final String port, final String sid, final String filename, final String datasource, String dbrootPath) {
         String string = getString(dbTypeItemIndex, host, login, password, port, sid, filename, datasource);
-        if (string.equals("")) {
+        if (string.equals("")) { //$NON-NLS-1$
             return ""; //$NON-NLS-1$
         }
         if (dbTypeItemIndex == 22) {
-            string = getStringReplace(string, "<dbRootPath>", dbrootPath);
+            string = getStringReplace(string, "<dbRootPath>", dbrootPath); //$NON-NLS-1$
         } else {
-            string = getStringReplace(string, "<dbRootPath>", sid);
+            string = getStringReplace(string, "<dbRootPath>", sid); //$NON-NLS-1$
         }
         this.urlConnectionStr = string;
         return string;
@@ -498,16 +498,16 @@ public class DataStringConnection {
             final String port, final String sid, final String filename, final String datasource, String dbrootPath,
             String addParams) {
         String string = getString(dbTypeItemIndex, host, login, password, port, sid, filename, datasource);
-        if (string.equals("")) {
+        if (string.equals("")) { //$NON-NLS-1$
             return ""; //$NON-NLS-1$
         }
         if (dbTypeItemIndex == 22) {
-            string = getStringReplace(string, "<dbRootPath>", dbrootPath);
+            string = getStringReplace(string, "<dbRootPath>", dbrootPath); //$NON-NLS-1$
         } else {
-            string = getStringReplace(string, "<dbRootPath>", sid);
+            string = getStringReplace(string, "<dbRootPath>", sid); //$NON-NLS-1$
         }
         if (dbTypeItemIndex == 11 || dbTypeItemIndex == 13 || dbTypeItemIndex == 0 || dbTypeItemIndex == 16) {
-            string = getStringReplace(string, "<property>", addParams);
+            string = getStringReplace(string, "<property>", addParams); //$NON-NLS-1$
         }
         this.urlConnectionStr = string;
         return string;

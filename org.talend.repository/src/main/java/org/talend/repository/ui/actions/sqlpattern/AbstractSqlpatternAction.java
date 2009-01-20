@@ -60,7 +60,7 @@ public abstract class AbstractSqlpatternAction extends AContextualAction {
         IWorkbenchPage page = getActivePage();
 
         IEditorReference[] editorParts = page.getEditorReferences();
-        String talendEditorID = "org.talend.designer.core.ui.editor.StandAloneTalend" + lang.getCaseName() + "Editor";
+        String talendEditorID = "org.talend.designer.core.ui.editor.StandAloneTalend" + lang.getCaseName() + "Editor"; //$NON-NLS-1$ //$NON-NLS-2$
         boolean found = false;
         IEditorPart talendEditor = null;
         for (IEditorReference reference : editorParts) {

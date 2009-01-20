@@ -198,7 +198,7 @@ public class GenericSchemaStep2Form extends AbstractForm {
             tableEditorView.initGraphicComponents();
         }
 
-        mappingTypeCombo.setText(mappingTypeLabel == null ? "" : mappingTypeLabel);
+        mappingTypeCombo.setText(mappingTypeLabel == null ? "" : mappingTypeLabel); //$NON-NLS-1$
 
         metadataEditor.setMetadataTable(metadataTable);
 
@@ -292,7 +292,7 @@ public class GenericSchemaStep2Form extends AbstractForm {
 
         mappingTypeCombo = new Combo(mappingTypeComposite, SWT.NONE);
         mappingTypeCombo.setItems(dbmsItems);
-        groupMetaData = Form.createGroup(this, 1, Messages.getString("FileStep3.groupMetadata"), 280);
+        groupMetaData = Form.createGroup(this, 1, Messages.getString("FileStep3.groupMetadata"), 280); //$NON-NLS-1$
         compositeMetaData = Form.startNewGridLayout(groupMetaData, 1);
 
         // Composite Guess
@@ -375,7 +375,7 @@ public class GenericSchemaStep2Form extends AbstractForm {
 
                     getConnection().setMappingTypeUsed(true);
                     String mappingTypeId = null;
-                    if (tableEditorView.getCurrentDbms() != null && tableEditorView.getCurrentDbms().trim() != "") {
+                    if (tableEditorView.getCurrentDbms() != null && tableEditorView.getCurrentDbms().trim() != "") { //$NON-NLS-1$
                         mappingTypeId = getMappingTypeLabelById(tableEditorView.getCurrentDbms().trim());
                     } else {
                         mappingTypeId = mappingTypeCombo.getText().trim();
@@ -661,13 +661,13 @@ public class GenericSchemaStep2Form extends AbstractForm {
                                 if (CorePlugin.getDefault().getPreferenceStore().getString(
                                         MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE) != null
                                         && !CorePlugin.getDefault().getPreferenceStore().getString(
-                                                MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE).equals("")) {
+                                                MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE).equals("")) { //$NON-NLS-1$
                                     globalType = CorePlugin.getDefault().getPreferenceStore().getString(
                                             MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE);
                                     if (CorePlugin.getDefault().getPreferenceStore().getString(
                                             MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH) != null
                                             && !CorePlugin.getDefault().getPreferenceStore().getString(
-                                                    MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH).equals("")) {
+                                                    MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH).equals("")) { //$NON-NLS-1$
                                         lengthValue = Integer.parseInt(CorePlugin.getDefault().getPreferenceStore().getString(
                                                 MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH));
                                     }
@@ -676,13 +676,13 @@ public class GenericSchemaStep2Form extends AbstractForm {
                                 if (CorePlugin.getDefault().getPreferenceStore().getString(
                                         MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_TYPE) != null
                                         && !CorePlugin.getDefault().getPreferenceStore().getString(
-                                                MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_TYPE).equals("")) {
+                                                MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_TYPE).equals("")) { //$NON-NLS-1$
                                     globalType = CorePlugin.getDefault().getPreferenceStore().getString(
                                             MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_TYPE);
                                     if (CorePlugin.getDefault().getPreferenceStore().getString(
                                             MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_LENGTH) != null
                                             && !CorePlugin.getDefault().getPreferenceStore().getString(
-                                                    MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_LENGTH).equals("")) {
+                                                    MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_LENGTH).equals("")) { //$NON-NLS-1$
                                         lengthValue = Integer.parseInt(CorePlugin.getDefault().getPreferenceStore().getString(
                                                 MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_LENGTH));
                                     }

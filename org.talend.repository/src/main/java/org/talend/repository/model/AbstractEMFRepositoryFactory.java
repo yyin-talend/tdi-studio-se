@@ -329,7 +329,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
             char j = 'a';
             while (!isNameAvailable(getRepositoryContext().getProject(), copiedProperty.getItem(), null)) {
                 if (j > 'z') {
-                    throw new BusinessException("Cannot generate pasted item label.");
+                    throw new BusinessException(Messages.getString("AbstractEMFRepositoryFactory.cannotGenerateItem")); //$NON-NLS-1$
                 }
                 String nextTry = initialTry + "_" + (j++) + ""; //$NON-NLS-1$ //$NON-NLS-2$
                 copiedProperty.setLabel(nextTry);
@@ -345,7 +345,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         List<URL> routines = service.getSystemRoutines();
         Path path = new Path(RepositoryConstants.SYSTEM_DIRECTORY);
         // will automatically set the children folders
-        folderHelper.createFolder("code/routines/system");
+        folderHelper.createFolder("code/routines/system"); //$NON-NLS-1$
 
         for (URL url : routines) {
             createRoutine(url, path);
@@ -357,7 +357,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         Project project = getRepositoryContext().getProject();
         FolderHelper folderHelper = getFolderHelper(project.getEmfProject());
         // will automatically set the children folders
-        folderHelper.createFolder("sqlPatterns/system");
+        folderHelper.createFolder("sqlPatterns/system"); //$NON-NLS-1$
 
         List<URL> routines = service.getSystemSQLPatterns();
 
@@ -457,7 +457,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
             FolderHelper folderHelper = getFolderHelper(getRepositoryContext().getProject().getEmfProject());
             IPath parentPath = new Path(ERepositoryObjectType.getFolderName(ERepositoryObjectType.SQLPATTERNS));
             if (folderHelper.getFolder(parentPath.append(categoryPath)) == null) {
-                createFolder(getRepositoryContext().getProject(), ERepositoryObjectType.SQLPATTERNS, new Path(""), categoryPath
+                createFolder(getRepositoryContext().getProject(), ERepositoryObjectType.SQLPATTERNS, new Path(""), categoryPath //$NON-NLS-1$
                         .lastSegment());
             }
             if (folderHelper.getFolder(parentPath.append(systemPath)) == null) {
@@ -492,7 +492,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
 
         String productBranding = brandingService.getFullProductName();
 
-        project.getEmfProject().setProductVersion(productBranding + "-" + productVersion);
+        project.getEmfProject().setProductVersion(productBranding + "-" + productVersion); //$NON-NLS-1$
 
         saveProject();
     }
@@ -512,8 +512,8 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
                     for (ElementParameterType elementParam : elementParameter) {
                         if (elementParam.getField().equals(EParameterFieldType.MODULE_LIST.getName())) {
                             String uniquename = ElementParameterParser.getUNIQUENAME(node);
-                            ModuleNeeded toAdd = new ModuleNeeded("Job " + item.getProperty().getLabel(),
-                                    elementParam.getValue(), "Required for using component : " + uniquename + ".", true);
+                            ModuleNeeded toAdd = new ModuleNeeded(Messages.getString("AbstractEMFRepositoryFactory.job") + item.getProperty().getLabel(), //$NON-NLS-1$
+                                    elementParam.getValue(), Messages.getString("AbstractEMFRepositoryFactory.requiredComponent") + uniquename + ".", true); //$NON-NLS-1$ //$NON-NLS-2$
                             importNeedsList.add(toAdd);
                         }
                     }

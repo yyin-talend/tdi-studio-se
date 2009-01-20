@@ -554,7 +554,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
 
                 label = container.getLabel();
 
-                boolean isJobDocRootFolder = ((label.indexOf("_") != -1) && (label.indexOf(".") != -1));
+                boolean isJobDocRootFolder = ((label.indexOf("_") != -1) && (label.indexOf(".") != -1)); //$NON-NLS-1$ //$NON-NLS-2$
                 boolean isPicFolderName = label.equals(IHTMLDocConstants.PIC_FOLDER_NAME);
 
                 // Do not show job documentation root folder and Foder "pictures" on the repository view.
@@ -566,7 +566,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                     List list = parent.getChildren();
                     boolean existSystemFolder = false;
                     for (RepositoryNode node : parent.getChildren()) {
-                        if ("system".equalsIgnoreCase(node.getLabel())) {
+                        if ("system".equalsIgnoreCase(node.getLabel())) { //$NON-NLS-1$
                             existSystemFolder = true;
                             break;
                         }
@@ -583,7 +583,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                     convertDocumentation(fromModel, parent, type, recBinNode);
                     continue;
                 } else {
-                    if (label.equalsIgnoreCase("userDefined")) {
+                    if (label.equalsIgnoreCase("userDefined")) { //$NON-NLS-1$
                         label.toCharArray();
                     }
                     String a = parent.getProperties(EProperties.LABEL).toString();
@@ -612,7 +612,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
 
                 label = container.getLabel();
 
-                boolean isJobDocRootFolder = ((label.indexOf("_") != -1) && (label.indexOf(".") != -1));
+                boolean isJobDocRootFolder = ((label.indexOf("_") != -1) && (label.indexOf(".") != -1)); //$NON-NLS-1$ //$NON-NLS-2$
                 boolean isPicFolderName = label.equals(IHTMLDocConstants.PIC_FOLDER_NAME);
 
                 // Do not show job documentation root folder and Foder "pictures" on the repository view.
@@ -810,17 +810,17 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
 
             // 1.Tables:
             RepositoryNode tablesNode = new StableRepositoryNode(node, Messages
-                    .getString("RepositoryContentProvider.repositoryLabel.TableSchemas"), ECoreImage.FOLDER_CLOSE_ICON);
+                    .getString("RepositoryContentProvider.repositoryLabel.TableSchemas"), ECoreImage.FOLDER_CLOSE_ICON); //$NON-NLS-1$
             node.getChildren().add(tablesNode);
 
             // 2.VIEWS:
             RepositoryNode viewsNode = new StableRepositoryNode(node, Messages
-                    .getString("RepositoryContentProvider.repositoryLabel.ViewSchemas"), ECoreImage.FOLDER_CLOSE_ICON);
+                    .getString("RepositoryContentProvider.repositoryLabel.ViewSchemas"), ECoreImage.FOLDER_CLOSE_ICON); //$NON-NLS-1$
             node.getChildren().add(viewsNode);
 
             // 3.SYNONYMS:
             RepositoryNode synonymsNode = new StableRepositoryNode(node, Messages
-                    .getString("RepositoryContentProvider.repositoryLabel.SynonymSchemas"), ECoreImage.FOLDER_CLOSE_ICON);
+                    .getString("RepositoryContentProvider.repositoryLabel.SynonymSchemas"), ECoreImage.FOLDER_CLOSE_ICON); //$NON-NLS-1$
             node.getChildren().add(synonymsNode);
 
             Iterator metadataTables = metadataConnection.getTables().iterator();
@@ -831,13 +831,13 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                 String typeTable = null;
                 if (metadataTable.getTableType() != null) {
                     typeTable = metadataTable.getTableType();
-                    if (typeTable.equals("TABLE")) {
+                    if (typeTable.equals("TABLE")) { //$NON-NLS-1$
                         createTable(recBinNode, tablesNode, repObj, metadataTable, ERepositoryObjectType.METADATA_CON_TABLE);
 
-                    } else if (typeTable.equals("VIEW")) {
+                    } else if (typeTable.equals("VIEW")) { //$NON-NLS-1$
                         createTable(recBinNode, viewsNode, repObj, metadataTable, ERepositoryObjectType.METADATA_CON_TABLE);
 
-                    } else if (typeTable.equals("SYNONYM")) {
+                    } else if (typeTable.equals("SYNONYM")) { //$NON-NLS-1$
                         createTable(recBinNode, synonymsNode, repObj, metadataTable, ERepositoryObjectType.METADATA_CON_TABLE);
                     }
 
@@ -859,7 +859,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
 
             // 4.Queries:
             RepositoryNode queriesNode = new StableRepositoryNode(node, Messages
-                    .getString("RepositoryContentProvider.repositoryLabel.Queries"), ECoreImage.FOLDER_CLOSE_ICON);
+                    .getString("RepositoryContentProvider.repositoryLabel.Queries"), ECoreImage.FOLDER_CLOSE_ICON); //$NON-NLS-1$
             node.getChildren().add(queriesNode);
             QueriesConnection queriesConnection = (metadataConnection).getQueries();
             if (queriesConnection != null) {
@@ -877,7 +877,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                             ICDCProviderService.class);
                     if (service != null && service.canCreateCDCConnection(connection)) {
                         RepositoryNode cdcNode = new StableRepositoryNode(node, Messages
-                                .getString("RepositoryContentProvider.repositoryLabel.CDCFoundation"),
+                                .getString("RepositoryContentProvider.repositoryLabel.CDCFoundation"), //$NON-NLS-1$
                                 ECoreImage.FOLDER_CLOSE_ICON);
                         node.getChildren().add(cdcNode);
                         service.createCDCTypes(recBinNode, cdcNode, connection.getCdcConns());
@@ -888,7 +888,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             // The sap wizard plugin is loaded
             // 1.Tables:
             RepositoryNode functionNode = new StableRepositoryNode(node, Messages
-                    .getString("RepositoryContentProvider.repositoryLabel.sapFunction"), ECoreImage.FOLDER_CLOSE_ICON);
+                    .getString("RepositoryContentProvider.repositoryLabel.sapFunction"), ECoreImage.FOLDER_CLOSE_ICON); //$NON-NLS-1$
             node.getChildren().add(functionNode);
             // add functions
             createSAPFunctionNodes(recBinNode, repObj, metadataConnection, functionNode);

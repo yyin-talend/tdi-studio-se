@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class CustomWizardDialog extends WizardDialog {
 
-    private String finishLabel = "Finish";
+    private String finishLabel = "Finish"; //$NON-NLS-1$
 
     /**
      * Constructor WizardDialog.

@@ -151,7 +151,7 @@ public class DeleteAction extends AContextualAction {
 
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                     try {
-                        monitor.beginTask("Delete Running", 100);
+                        monitor.beginTask("Delete Running", 100); //$NON-NLS-1$
                         IPath path = RepositoryNodeUtilities.getPath(node);
                         ERepositoryObjectType objectType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
                         List<RepositoryNode> repositoryList = node.getChildren();
@@ -364,7 +364,7 @@ public class DeleteAction extends AContextualAction {
                 if (confirm == null) {
                     String title = Messages.getString("DeleteAction.dialog.title"); //$NON-NLS-1$
                     String message = currentJobNode.getProperties(EProperties.LABEL)
-                            + " " + Messages.getString("DeleteAction.dialog.message0") + "\n" //$NON-NLS-1$ //$NON-NLS-2$
+                            + " " + Messages.getString("DeleteAction.dialog.message0") + "\n" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                             + Messages.getString("DeleteAction.dialog.message2"); //$NON-NLS-1$
                     confirm = (MessageDialog.openQuestion(new Shell(), title, message));
                 }
@@ -373,7 +373,7 @@ public class DeleteAction extends AContextualAction {
                     IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
                     for (IEditorReference editors : page.getEditorReferences()) {
                         String nameInEditor = editors.getName();
-                        if (objToDelete.getLabel().equals(nameInEditor.substring(nameInEditor.indexOf(" ") + 1))) {
+                        if (objToDelete.getLabel().equals(nameInEditor.substring(nameInEditor.indexOf(" ") + 1))) { //$NON-NLS-1$
                             page.closeEditor(editors.getEditor(false), false);
                         }
                     }

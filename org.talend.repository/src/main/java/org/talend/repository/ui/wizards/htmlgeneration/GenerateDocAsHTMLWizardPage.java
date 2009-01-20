@@ -448,7 +448,7 @@ public class GenerateDocAsHTMLWizardPage extends WizardFileSystemResourceExportP
     protected void setDefaultDestination() {
 
         if (nodes.length >= 1) {
-            String userDir = System.getProperty("user.dir");
+            String userDir = System.getProperty("user.dir"); //$NON-NLS-1$
             IPath path = new Path(userDir).append(getDefaultFileName() + getOutputSuffix());
             setDestinationValue(path.toOSString());
         }
@@ -473,12 +473,12 @@ public class GenerateDocAsHTMLWizardPage extends WizardFileSystemResourceExportP
                 }
             }
             if (version != null) {
-                return label + "_" + version;
+                return label + "_" + version; //$NON-NLS-1$
             } else {
                 return label;
             }
         }
-        return "";
+        return ""; //$NON-NLS-1$
 
     }
 }

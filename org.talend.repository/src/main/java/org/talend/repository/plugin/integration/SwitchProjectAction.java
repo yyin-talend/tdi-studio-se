@@ -24,9 +24,9 @@ public class SwitchProjectAction extends Action {
 
     public static final boolean PLUGIN_MODEL = true;
 
-    private static final String COMMAND_ID = "org.talend.repository.integration.bootTalend";
+    private static final String COMMAND_ID = "org.talend.repository.integration.bootTalend"; //$NON-NLS-1$
 
-    private static final String CATEGORY_ID = "org.talend.repository.integration";
+    private static final String CATEGORY_ID = "org.talend.repository.integration"; //$NON-NLS-1$
 
     private IPreferenceStore store;
 

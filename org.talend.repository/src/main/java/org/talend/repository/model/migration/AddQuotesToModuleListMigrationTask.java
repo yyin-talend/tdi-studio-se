@@ -71,7 +71,7 @@ public class AddQuotesToModuleListMigrationTask extends AbstractJobMigrationTask
             EList elementParameterList = type.getElementParameter();
             for (Object object3 : elementParameterList) {
                 ElementParameterType elemType = (ElementParameterType) object3;
-                if (elemType.getField().equals("MODULE_LIST")) {
+                if (elemType.getField().equals("MODULE_LIST")) { //$NON-NLS-1$
                     String value = elemType.getValue();
                     if (!isWithinQuote(value)) {
                         elemType.setValue(TalendTextUtils.addQuotes(value));
@@ -115,9 +115,9 @@ public class AddQuotesToModuleListMigrationTask extends AbstractJobMigrationTask
             return true;
         }
         boolean isWithin = false;
-        if (string.startsWith("\"") && string.endsWith("\"")) {
+        if (string.startsWith("\"") && string.endsWith("\"")) { //$NON-NLS-1$ //$NON-NLS-2$
             isWithin = true;
-        } else if (string.startsWith("\'") && string.endsWith("\'")) {
+        } else if (string.startsWith("\'") && string.endsWith("\'")) { //$NON-NLS-1$ //$NON-NLS-2$
             isWithin = true;
         }
         return isWithin;

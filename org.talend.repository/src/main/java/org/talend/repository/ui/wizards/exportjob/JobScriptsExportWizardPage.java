@@ -112,9 +112,9 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     private boolean isMultiNodes;
 
-    private String allVersions = "all";
+    private String allVersions = "all"; //$NON-NLS-1$
 
-    private String outputFileSuffix = ".zip";
+    private String outputFileSuffix = ".zip"; //$NON-NLS-1$
 
     private String selectedJobVersion;
 
@@ -197,16 +197,16 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      */
     protected void setDefaultDestination() {
 
-        String userDir = System.getProperty("user.dir");
+        String userDir = System.getProperty("user.dir"); //$NON-NLS-1$
         IPath path = new Path(userDir);
         int length = nodes.length;
         if (length == 1) {
             // TODOthis is changed by shenhaize first open ,it show contains in the combo
 
-            path = path.append(this.getDefaultFileName().get(0) + "_" + this.getDefaultFileName().get(1) + getOutputSuffix());
+            path = path.append(this.getDefaultFileName().get(0) + "_" + this.getDefaultFileName().get(1) + getOutputSuffix()); //$NON-NLS-1$
         } else if (length > 1) {
             // i changed here ..
-            path = path.append(this.getDefaultFileName().get(0) + "_" + this.getDefaultFileName().get(1) + this.outputFileSuffix);
+            path = path.append(this.getDefaultFileName().get(0) + "_" + this.getDefaultFileName().get(1) + this.outputFileSuffix); //$NON-NLS-1$
         }
         setDestinationValue(path.toOSString());
     }
@@ -363,7 +363,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         left.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false));
         left.setLayout(new GridLayout(3, false));
         chkButton = new Button(left, SWT.CHECK);
-        chkButton.setText("Extract the zip file");
+        chkButton.setText(Messages.getString("JobScriptsExportWizardPage.extractZipFile")); //$NON-NLS-1$
         chkButton.setSelection(false);
         chkButton.addSelectionListener(new SelectionAdapter() {
 
@@ -675,7 +675,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         boolean ok = executeExportOperation(exporterOperation);
 
         // if zip optin is true,create unzip file.
-        if (zipOption != null && zipOption.equals("true")) {
+        if (zipOption != null && zipOption.equals("true")) { //$NON-NLS-1$
             FileSystemExporterFullPath exporter = getUnzipExporterOperation(resourcesToExport);
             try {
                 exporter.exportSpecifiedResources();
@@ -744,8 +744,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      * @return
      */
     public FileSystemExporterFullPath getUnzipExporterOperation(List<ExportFileResource> resourcesToExport) {
-        String currentUnzipFile = getDestinationValue().replace("/", "\\");
-        currentUnzipFile = currentUnzipFile.substring(0, currentUnzipFile.lastIndexOf("\\"));
+        String currentUnzipFile = getDestinationValue().replace("/", "\\"); //$NON-NLS-1$ //$NON-NLS-2$
+        currentUnzipFile = currentUnzipFile.substring(0, currentUnzipFile.lastIndexOf("\\")); //$NON-NLS-1$
         FileSystemExporterFullPath exporterOperation = null;
         try {
             exporterOperation = new FileSystemExporterFullPath(resourcesToExport, currentUnzipFile);

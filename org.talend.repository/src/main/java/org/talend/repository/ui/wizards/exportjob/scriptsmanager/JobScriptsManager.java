@@ -66,13 +66,13 @@ import org.talend.repository.model.IProxyRepositoryFactory;
  */
 public abstract class JobScriptsManager {
 
-    protected static final String UNIX_LAUNCHER = "run.sh";
+    protected static final String UNIX_LAUNCHER = "run.sh"; //$NON-NLS-1$
 
-    protected static final String WINDOWS_LAUNCHER = "run.bat";
+    protected static final String WINDOWS_LAUNCHER = "run.bat"; //$NON-NLS-1$
 
     protected static final String LIBRARY_FOLDER_NAME = "lib"; //$NON-NLS-1$
 
-    protected static final String PATH_SEPARATOR = "/";
+    protected static final String PATH_SEPARATOR = "/"; //$NON-NLS-1$
 
     public static final String ALL_ENVIRONMENTS = Messages.getString("JobPerlScriptsManager.allInterpreter"); //$NON-NLS-1$
 
@@ -82,7 +82,7 @@ public abstract class JobScriptsManager {
 
     protected static final String JOB_SOURCE_FOLDER_NAME = "src"; //$NON-NLS-1$
 
-    public static final String JOB_CONTEXT_FOLDER = "contexts";
+    public static final String JOB_CONTEXT_FOLDER = "contexts"; //$NON-NLS-1$
 
     private String selectedJobVersion; //$NON-NLS-1$
 
@@ -541,22 +541,22 @@ public abstract class JobScriptsManager {
             for (INode node : nodes) {
                 List<IElementParameter> eleParams = (List<IElementParameter>) node.getElementParameters();
                 for (IElementParameter elementParameter : eleParams) {
-                    String repositoryMetadataId = "";
-                    if (elementParameter.getName().equals("PROPERTY")) {
-                        repositoryMetadataId = (String) elementParameter.getChildParameters().get("REPOSITORY_PROPERTY_TYPE")
+                    String repositoryMetadataId = ""; //$NON-NLS-1$
+                    if (elementParameter.getName().equals("PROPERTY")) { //$NON-NLS-1$
+                        repositoryMetadataId = (String) elementParameter.getChildParameters().get("REPOSITORY_PROPERTY_TYPE") //$NON-NLS-1$
                                 .getValue();
                     }
-                    if (elementParameter.getName().equals("SCHEMA")) {
-                        repositoryMetadataId = (String) elementParameter.getChildParameters().get("REPOSITORY_SCHEMA_TYPE")
+                    if (elementParameter.getName().equals("SCHEMA")) { //$NON-NLS-1$
+                        repositoryMetadataId = (String) elementParameter.getChildParameters().get("REPOSITORY_SCHEMA_TYPE") //$NON-NLS-1$
                                 .getValue();
                     }
-                    if (elementParameter.getName().equals("QUERYSTORE")) {
-                        repositoryMetadataId = (String) elementParameter.getChildParameters().get("REPOSITORY_QUERYSTORE_TYPE")
+                    if (elementParameter.getName().equals("QUERYSTORE")) { //$NON-NLS-1$
+                        repositoryMetadataId = (String) elementParameter.getChildParameters().get("REPOSITORY_QUERYSTORE_TYPE") //$NON-NLS-1$
                                 .getValue();
                     }
 
-                    if (repositoryMetadataId != null && !repositoryMetadataId.equals("")) {
-                        String[] id = repositoryMetadataId.split(" - ");
+                    if (repositoryMetadataId != null && !repositoryMetadataId.equals("")) { //$NON-NLS-1$
+                        String[] id = repositoryMetadataId.split(" - "); //$NON-NLS-1$
                         if (id.length > 0) {
                             repositoryMetadataId = id[0];
                             try {
@@ -571,7 +571,7 @@ public abstract class JobScriptsManager {
                                         String metadataVersion = item2.getProperty().getVersion();
                                         String metadataPath = item2.getState().getPath();
 
-                                        metadataPath = metadataPath == null || metadataPath.equals("") ? "" : metadataPath;
+                                        metadataPath = metadataPath == null || metadataPath.equals("") ? "" : metadataPath; //$NON-NLS-1$ //$NON-NLS-2$
                                         IPath projectRootPath = getCorrespondingProjectRootPath(item2);
                                         String projectName = getCorrespondingProjectName(item2);
                                         // project file
@@ -582,10 +582,10 @@ public abstract class JobScriptsManager {
                                                 .toURL()));
 
                                         IPath itemFilePath = projectRootPath.append(typeFolderPath).append(metadataPath).append(
-                                                metadataName + "_" + metadataVersion + "." + FileConstants.ITEM_EXTENSION);
+                                                metadataName + "_" + metadataVersion + "." + FileConstants.ITEM_EXTENSION); //$NON-NLS-1$ //$NON-NLS-2$
                                         IPath propertiesFilePath = projectRootPath.append(typeFolderPath).append(metadataPath)
                                                 .append(
-                                                        metadataName + "_" + metadataVersion + "."
+                                                        metadataName + "_" + metadataVersion + "." //$NON-NLS-1$ //$NON-NLS-2$
                                                                 + FileConstants.PROPERTIES_EXTENSION);
                                         List<URL> metadataNameFileUrls = new ArrayList<URL>();
                                         metadataNameFileUrls.add(FileLocator.toFileURL(itemFilePath.toFile().toURL()));
@@ -621,7 +621,7 @@ public abstract class JobScriptsManager {
             ContextType contextType = (ContextType) process.getContext().get(0);
             for (ContextParameterType param : (List<ContextParameterType>) contextType.getContextParameter()) {
                 String repositoryContextId = param.getRepositoryContextId();
-                if (repositoryContextId != null && !"".equals(repositoryContextId)) {
+                if (repositoryContextId != null && !"".equals(repositoryContextId)) { //$NON-NLS-1$
                     try {
                         IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
                         IRepositoryObject lastVersion = factory.getLastVersion(repositoryContextId);
@@ -631,7 +631,7 @@ public abstract class JobScriptsManager {
                             String contextVersion = item2.getProperty().getVersion();
                             String contextPath = item2.getState().getPath();
 
-                            contextPath = contextPath == null || contextPath.equals("") ? "" : contextPath;
+                            contextPath = contextPath == null || contextPath.equals("") ? "" : contextPath; //$NON-NLS-1$ //$NON-NLS-2$
                             IPath emfContextRootPath = getEmfContextRootPath(item2);
                             String projectName = getCorrespondingProjectName(item2);
                             // project file
@@ -641,9 +641,9 @@ public abstract class JobScriptsManager {
                                     + projectName, FileLocator.toFileURL(projectFilePath.toFile().toURL()));
 
                             IPath itemFilePath = emfContextRootPath.append(contextPath).append(
-                                    contextName + "_" + contextVersion + "." + FileConstants.ITEM_EXTENSION);
+                                    contextName + "_" + contextVersion + "." + FileConstants.ITEM_EXTENSION); //$NON-NLS-1$ //$NON-NLS-2$
                             IPath propertiesFilePath = emfContextRootPath.append(contextPath).append(
-                                    contextName + "_" + contextVersion + "." + FileConstants.PROPERTIES_EXTENSION);
+                                    contextName + "_" + contextVersion + "." + FileConstants.PROPERTIES_EXTENSION); //$NON-NLS-1$ //$NON-NLS-2$
                             List<URL> contextFileUrls = new ArrayList<URL>();
                             contextFileUrls.add(FileLocator.toFileURL(itemFilePath.toFile().toURL()));
                             contextFileUrls.add(FileLocator.toFileURL(propertiesFilePath.toFile().toURL()));
@@ -667,7 +667,7 @@ public abstract class JobScriptsManager {
             return;
         }
         if (relativePath == null) {
-            relativePath = "";
+            relativePath = ""; //$NON-NLS-1$
         }
         boolean found = false;
         for (ExportFileResource res : allResources) {

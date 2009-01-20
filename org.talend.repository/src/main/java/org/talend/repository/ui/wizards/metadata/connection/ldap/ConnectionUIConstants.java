@@ -20,12 +20,12 @@ package org.talend.repository.ui.wizards.metadata.connection.ldap;
  */
 public class ConnectionUIConstants {
 
-    public static final String DIALOGSETTING_KEY_HOST_HISTORY = "hostHistory";
+    public static final String DIALOGSETTING_KEY_HOST_HISTORY = "hostHistory"; //$NON-NLS-1$
 
-    public static final String DIALOGSETTING_KEY_PORT_HISTORY = "portHistory";
+    public static final String DIALOGSETTING_KEY_PORT_HISTORY = "portHistory"; //$NON-NLS-1$
 
-    public static final String DIALOGSETTING_KEY_PRINCIPAL_HISTORY = "principalHistory";
+    public static final String DIALOGSETTING_KEY_PRINCIPAL_HISTORY = "principalHistory"; //$NON-NLS-1$
 
-    public static final String DEFAULT_FILTER = "(&(objectClass=*))";
+    public static final String DEFAULT_FILTER = "(&(objectClass=*))"; //$NON-NLS-1$
 
 }

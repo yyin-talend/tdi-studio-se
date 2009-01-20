@@ -306,9 +306,9 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm implements IRefr
         tabFolder.setLayoutData(new GridData(GridData.FILL_BOTH));
 
         previewTabItem = new CTabItem(tabFolder, SWT.BORDER);
-        previewTabItem.setText("Preview");
+        previewTabItem.setText(Messages.getString("LdifFileStep2Form.preview")); //$NON-NLS-1$
         outputTabItem = new CTabItem(tabFolder, SWT.BORDER);
-        outputTabItem.setText("Output");
+        outputTabItem.setText(Messages.getString("LdifFileStep2Form.output")); //$NON-NLS-1$
 
         Composite previewComposite = Form.startNewGridLayout(tabFolder, 1);
         outputComposite = Form.startNewGridLayout(tabFolder, 1);
@@ -394,7 +394,7 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm implements IRefr
         ProcessDescription processDescription = null;
 
         public boolean preProcessStart() {
-            previewButton.setText(Messages.getString("FileStep2.stop"));
+            previewButton.setText(Messages.getString("FileStep2.stop")); //$NON-NLS-1$
 
             clearPreview();
 
@@ -440,7 +440,7 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm implements IRefr
 
         public void updateUIInThreadIfThreadIsCanceled() {
             if (!previewInformationLabel.isDisposed()) {
-                previewInformationLabel.setText("");
+                previewInformationLabel.setText(""); //$NON-NLS-1$
             }
         }
 
@@ -474,7 +474,7 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm implements IRefr
 
         public void updateUIInThreadIfThreadFinally() {
             if (!previewButton.isDisposed()) {
-                previewButton.setText(Messages.getString("FileStep2.refreshPreview"));
+                previewButton.setText(Messages.getString("FileStep2.refreshPreview")); //$NON-NLS-1$
                 previewButton.setEnabled(true);
             }
         }

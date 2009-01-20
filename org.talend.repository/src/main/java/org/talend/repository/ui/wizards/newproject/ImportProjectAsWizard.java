@@ -134,10 +134,10 @@ public class ImportProjectAsWizard extends Wizard {
 												monitor, 1));
 							} catch (TarException e) {
 								throw new InvocationTargetException(e,
-										"Encoutering problems opening archive file");
+										Messages.getString("ImportProjectAsWizard.encouteringProblem")); //$NON-NLS-1$
 							} catch (IOException e) {
 								throw new InvocationTargetException(e,
-										"Encoutering problems opening archive file");
+										Messages.getString("ImportProjectAsWizard.encouteringProblem")); //$NON-NLS-1$
 							}
 						}
 
@@ -196,7 +196,7 @@ public class ImportProjectAsWizard extends Wizard {
 
 	}
 
-	public final static String EXTERNAL_LIB_JAVA_PATH = "external_lib_java_path";
+	public final static String EXTERNAL_LIB_JAVA_PATH = "external_lib_java_path"; //$NON-NLS-1$
 
-	public final static String EXTERNAL_LIB_PERL_PATH = "external_lib_perl_path";
+	public final static String EXTERNAL_LIB_PERL_PATH = "external_lib_perl_path"; //$NON-NLS-1$
 }

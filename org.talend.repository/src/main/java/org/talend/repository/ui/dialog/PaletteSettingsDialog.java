@@ -64,9 +64,9 @@ import org.talend.repository.ui.actions.ShowStandardAction;
  */
 public class PaletteSettingsDialog extends Dialog {
 
-    private static final String FAMILY_SPEARATOR = "--FAMILY--";
+    private static final String FAMILY_SPEARATOR = "--FAMILY--"; //$NON-NLS-1$
 
-    private static final String DIALOG_TITLE = "Palette Settings";
+    private static final String DIALOG_TITLE = "Palette Settings"; //$NON-NLS-1$
 
     private static final boolean RESTORE = true;
 
@@ -336,7 +336,7 @@ public class PaletteSettingsDialog extends Dialog {
                 retreiveAllEntry(list, en);
             }
         } else {
-            String family = ComponentsFactoryProvider.getPaletteEntryFamily(entry.getParent()).replaceFirst("/", "");
+            String family = ComponentsFactoryProvider.getPaletteEntryFamily(entry.getParent()).replaceFirst("/", ""); //$NON-NLS-1$ //$NON-NLS-2$
             list.add(family + FAMILY_SPEARATOR + entry.getLabel());
         }
 
@@ -350,7 +350,7 @@ public class PaletteSettingsDialog extends Dialog {
 
     public boolean isComponentVisible(PaletteEntry entry) {
         String label = entry.getLabel();
-        String family = ComponentsFactoryProvider.getPaletteEntryFamily(entry.getParent()).replaceFirst("/", "");
+        String family = ComponentsFactoryProvider.getPaletteEntryFamily(entry.getParent()).replaceFirst("/", ""); //$NON-NLS-1$ //$NON-NLS-2$
         List<ComponentSetting> components = getComponentsFromProject();
 
         for (ComponentSetting componentSetting : components) {
@@ -403,9 +403,9 @@ public class PaletteSettingsDialog extends Dialog {
      */
     @Override
     protected void createButtonsForButtonBar(Composite parent) {
-        createButton(parent, IDialogConstants.YES_ID, "Restore &Defaults", false);
+        createButton(parent, IDialogConstants.YES_ID, "Restore &Defaults", false); //$NON-NLS-1$
         super.createButtonsForButtonBar(parent);
-        getButton(IDialogConstants.OK_ID).setText("&Apply");
+        getButton(IDialogConstants.OK_ID).setText("&Apply"); //$NON-NLS-1$
         getButton(IDialogConstants.OK_ID).setEnabled(false);
     }
 

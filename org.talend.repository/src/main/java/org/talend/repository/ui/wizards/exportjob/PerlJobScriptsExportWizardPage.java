@@ -79,7 +79,7 @@ public class PerlJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
     @Override
     public ArchiveFileExportOperationFullPath getExporterOperation(List<ExportFileResource> resourcesToExport) {
         ArchiveFileExportOperationFullPath operation = super.getExporterOperation(resourcesToExport);
-        operation.setRegEx(".*.pl$|.*.pm$|.*.bat$|.*.sh$");
+        operation.setRegEx(".*.pl$|.*.pm$|.*.bat$|.*.sh$"); //$NON-NLS-1$
         return operation;
     }
 
@@ -92,7 +92,7 @@ public class PerlJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
     public FileSystemExporterFullPath getUnzipExporterOperation(List<ExportFileResource> resourcesToExport) {
 
         FileSystemExporterFullPath exporterOperation = super.getUnzipExporterOperation(resourcesToExport);
-        exporterOperation.setRegEx(".*.pl$|.*.pm$|.*.bat$|.*.sh$");
+        exporterOperation.setRegEx(".*.pl$|.*.pm$|.*.bat$|.*.sh$"); //$NON-NLS-1$
         return exporterOperation;
     }
 

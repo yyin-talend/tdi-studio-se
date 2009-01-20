@@ -52,6 +52,7 @@ import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryPlugin;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ECDCStatus;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -140,7 +141,7 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
                             .getService(IReferencedProjectService.class);
                     if (service != null && service.isMergeRefProject()) {
                         Project project = new Project(emfproject);
-                        label = label + " (@" + project.getLabel() + ")";
+                        label = label + " (@" + project.getLabel() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
                     }
 
                 }
@@ -154,7 +155,7 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
                         IReferencedProjectService.class);
                 if (service != null && service.isMergeRefProject()) {
                     Project project = new Project(emfproject);
-                    label = label + " (@" + project.getLabel() + ")";
+                    label = label + " (@" + project.getLabel() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
                 }
 
             }
@@ -231,7 +232,7 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
             url = FileLocator.toFileURL(FileLocator.find(b, new Path(ECoreImage.JOBLET_ICON.getPath()), null));
             return new File(url.getPath());
         } catch (IOException e) {
-            throw new RuntimeException(ECoreImage.JOBLET_ICON.getPath() + " doesn't exist.");
+            throw new RuntimeException(ECoreImage.JOBLET_ICON.getPath() + Messages.getString("RepositoryLabelProvider.notExist")); //$NON-NLS-1$
         }
     }
 
@@ -302,7 +303,7 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
                                 if (node.getObject() instanceof MetadataTableRepositoryObject) {
                                     MetadataTable table = ((MetadataTableRepositoryObject) node.getObject()).getTable();
                                     String tableType = table.getTableType();
-                                    if (tableType != null && "TABLE".equals(tableType)) {
+                                    if (tableType != null && "TABLE".equals(tableType)) { //$NON-NLS-1$
                                         ECDCStatus status = ECDCStatus.NONE;
                                         if (table.isActivatedCDC()) {
                                             status = ECDCStatus.ACTIVATED;
@@ -319,7 +320,7 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
                 return tableImage;
             case METADATA_CON_CDC:
                 ImageDescriptor idf = RepositoryPlugin.imageDescriptorFromPlugin(RepositoryPlugin.PLUGIN_ID,
-                        "icons/subscriber.jpg");
+                        "icons/subscriber.jpg"); //$NON-NLS-1$
                 return idf.createImage();
             default:
                 break;

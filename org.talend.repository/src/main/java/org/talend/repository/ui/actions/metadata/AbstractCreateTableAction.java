@@ -704,7 +704,7 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
 
     private void openDatabaseTableWizard(final DatabaseConnectionItem item, final MetadataTable metadataTable,
             final boolean forceReadOnly, final RepositoryNode node, final boolean creation) {
-        Job job = new Job(Messages.getString("CreateTableAction.action.createTitle")) {
+        Job job = new Job(Messages.getString("CreateTableAction.action.createTitle")) { //$NON-NLS-1$
 
             /*
              * (non-Javadoc)
@@ -714,7 +714,7 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
             @Override
             protected IStatus run(IProgressMonitor monitor) {
 
-                monitor.beginTask(Messages.getString("CreateTableAction.action.createTitle"), IProgressMonitor.UNKNOWN);
+                monitor.beginTask(Messages.getString("CreateTableAction.action.createTitle"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
 
                 if (!monitor.isCanceled()) {
                     try {

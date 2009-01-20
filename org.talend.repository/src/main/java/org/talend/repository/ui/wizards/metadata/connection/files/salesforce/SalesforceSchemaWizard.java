@@ -72,7 +72,7 @@ public class SalesforceSchemaWizard extends RepositoryWizard implements INewWiza
 
     private boolean isSinglePageOnly = false;
 
-    private static final String ALL_STEPS = " 4";
+    private static final String ALL_STEPS = " 4"; //$NON-NLS-1$
 
     private IMetadataContextModeManager contextModeManager;
 

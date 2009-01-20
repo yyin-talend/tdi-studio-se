@@ -151,7 +151,7 @@ public class EditPropertiesAction extends AContextualAction {
                 String projectFolderName = p.getTechnicalLabel();
                 projectName = projectFolderName.toLowerCase();
             }
-            IPackageFragment routinesPkg = root.getPackageFragment(JavaUtils.JAVA_ROUTINES_DIRECTORY + "." + projectName);
+            IPackageFragment routinesPkg = root.getPackageFragment(JavaUtils.JAVA_ROUTINES_DIRECTORY + "." + projectName); //$NON-NLS-1$
 
             ICompilationUnit unit = routinesPkg.getCompilationUnit(originalName + SuffixConstants.SUFFIX_STRING_java);
             if (unit == null) {
@@ -183,13 +183,14 @@ public class EditPropertiesAction extends AContextualAction {
             PlatformUI.getWorkbench().getProgressService().run(true, true, r);
             RefactoringStatus conditionStatus = operation.getConditionStatus();
             if (conditionStatus.hasError()) {
-                String errorMessage = "Rename " + unit.getElementName() + " to " + newName + " has errors!";
+                String errorMessage = Messages.getString("EditPropertiesAction.renameError", unit.getElementName(), newName); //$NON-NLS-1$
                 RefactoringStatusEntry[] entries = conditionStatus.getEntries();
                 for (int i = 0; i < entries.length; i++) {
                     RefactoringStatusEntry entry = entries[i];
-                    errorMessage += "\n>>>" + entry.getMessage();
+                    errorMessage += "\n>>>" + entry.getMessage(); //$NON-NLS-1$
                 }
-                MessageDialog.openError(this.getViewPart().getViewSite().getShell(), "Warning", errorMessage);
+                MessageDialog.openError(this.getViewPart().getViewSite().getShell(), Messages
+                        .getString("EditPropertiesAction.warning"), errorMessage); //$NON-NLS-1$
                 return;
             }
 

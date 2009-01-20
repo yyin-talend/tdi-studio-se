@@ -74,7 +74,7 @@ public class JarBuilder {
 
         if (includeDirs == null) {
             includeDirs = new ArrayList<String>();
-            includeDirs.add("");
+            includeDirs.add(""); //$NON-NLS-1$
         }
         List<File> includeFiles = getAllFiles(includeDirs);
 
@@ -114,8 +114,8 @@ public class JarBuilder {
         Manifest manifest = new Manifest();
         Map<String, Attributes> m = manifest.getEntries();
         Attributes a = new Attributes();
-        a.put(Attributes.Name.IMPLEMENTATION_VERSION, "1.0");
-        a.put(Attributes.Name.IMPLEMENTATION_VENDOR, "Talend Open Studio");
+        a.put(Attributes.Name.IMPLEMENTATION_VERSION, "1.0"); //$NON-NLS-1$
+        a.put(Attributes.Name.IMPLEMENTATION_VENDOR, "Talend Open Studio"); //$NON-NLS-1$
         m.put(jarname, a);
         return manifest;
     }

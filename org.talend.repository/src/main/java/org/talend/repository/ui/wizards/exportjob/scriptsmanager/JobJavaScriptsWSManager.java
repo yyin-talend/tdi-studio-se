@@ -302,7 +302,7 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
             }
 
             StringBuffer libPaths = new StringBuffer();
-            char pathSeparator = System.getProperty("path.separator").charAt(0);
+            char pathSeparator = System.getProperty("path.separator").charAt(0); //$NON-NLS-1$
             if (externalLibs != null) {
                 for (URL libUrl : externalLibs) {
                     libPaths.append(libUrl.getFile());
@@ -310,9 +310,9 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
                 }
             }
 
-            TalendJava2WSDL.generateWSDL(new String[] { "-T1.2", "-yDOCUMENT", "-uLITERAL", "-o" + wsdlFilePath, "-d",
-                    "-lhttp://localhost:8080/" + jobName, "-nhttp://talend.org", "-X" + classRoot + pathSeparator + libPaths,
-                    "-m" + EXPORT_METHOD, projectName + "." + jobFolderName + "." + jobName });
+            TalendJava2WSDL.generateWSDL(new String[] { "-T1.2", "-yDOCUMENT", "-uLITERAL", "-o" + wsdlFilePath, "-d", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+                    "-lhttp://localhost:8080/" + jobName, "-nhttp://talend.org", "-X" + classRoot + pathSeparator + libPaths, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    "-m" + EXPORT_METHOD, projectName + "." + jobFolderName + "." + jobName }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
             wsdlUrlList.add(new File(wsdlFilePath).toURL());
 
@@ -399,7 +399,7 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
 
         File deployFile = new File(deployFileName);
         if (!deployFile.exists()) {
-            log.error("JAVA2WSDL fail, the deploy.wsdd file don't exist. So, the server-config.wsdd file will be invalid");
+            log.error(org.talend.repository.i18n.Messages.getString("JobJavaScriptsWSManager.errorMessage")); //$NON-NLS-1$
             return;
         }
         // edit the server-config.wsdd file
@@ -415,13 +415,13 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
             SAXReader wsdlsaxReader = new SAXReader();
             Document wsdldoc = wsdlsaxReader.read(wsdlreader);
             Element wsdlroot = wsdldoc.getRootElement();
-            Element element = wsdlroot.element("service");
+            Element element = wsdlroot.element("service"); //$NON-NLS-1$
 
-            List<Element> elements = element.elements("arrayMapping");
+            List<Element> elements = element.elements("arrayMapping"); //$NON-NLS-1$
             for (Element item : elements) {
-                Attribute attribute = item.attribute("qname");
+                Attribute attribute = item.attribute("qname"); //$NON-NLS-1$
                 item.remove(attribute);
-                attribute.setValue(attribute.getValue().replaceFirst(">", ""));
+                attribute.setValue(attribute.getValue().replaceFirst(">", "")); //$NON-NLS-1$ //$NON-NLS-2$
                 item.add(attribute);
             }
 
@@ -552,7 +552,7 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
 
             // Print parser errors, if any
             if (null != argsParser.getErrorString()) {
-                System.err.println(Messages.getMessage("j2werror00", argsParser.getErrorString()));
+                System.err.println(Messages.getMessage("j2werror00", argsParser.getErrorString())); //$NON-NLS-1$
                 printUsage();
 
                 return (1);
@@ -647,7 +647,7 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
                 if (!j2w.getCls().isInterface()) {
                     w2j.setImplementationClassName(j2w.getCls().getName());
                 } else {
-                    throw new Exception("implementation class is not specified.");
+                    throw new Exception(org.talend.repository.i18n.Messages.getString("JobJavaScriptsWSManager.impClassNotSpecified")); //$NON-NLS-1$
                 }
             }
             // w2j.run(wsdlFileName);

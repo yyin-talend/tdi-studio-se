@@ -56,7 +56,7 @@ public class ExcelReader {
 
     private void init() throws BiffException, IOException {
         WorkbookSettings worksetting = new WorkbookSettings();
-        worksetting.setEncoding("ISO-8859-15");
+        worksetting.setEncoding("ISO-8859-15"); //$NON-NLS-1$
         workbook = Workbook.getWorkbook(new File(excelPath));
     }
 
@@ -98,8 +98,8 @@ public class ExcelReader {
     }
 
     public static String[] getColumnsTitle(int rows) {
-        String[] x = new String[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R",
-                "S", "T", "U", "V", "W", "X", "Y", "Z" };
+        String[] x = new String[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$ //$NON-NLS-11$ //$NON-NLS-12$ //$NON-NLS-13$ //$NON-NLS-14$ //$NON-NLS-15$ //$NON-NLS-16$ //$NON-NLS-17$ //$NON-NLS-18$
+                "S", "T", "U", "V", "W", "X", "Y", "Z" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$
         if (rows <= 0) {
             return null;
         } else if (rows <= 26) {
@@ -129,8 +129,8 @@ public class ExcelReader {
     @Test
     public void testReadSheet() {
         try {
-            ExcelReader reader = new ExcelReader("/home/yexiaowei/testdata/test.xls");
-            List res = reader.readSheet("Sheet1");
+            ExcelReader reader = new ExcelReader("/home/yexiaowei/testdata/test.xls"); //$NON-NLS-1$
+            List res = reader.readSheet("Sheet1"); //$NON-NLS-1$
             Assert.assertEquals(7, res.size());
 
         } catch (BiffException e) {
@@ -143,10 +143,10 @@ public class ExcelReader {
     @Test
     public void testRowNamesGenerators() {
         String[] res = ExcelReader.getColumnsTitle(26);
-        Assert.assertEquals("Z", res[25]);
+        Assert.assertEquals("Z", res[25]); //$NON-NLS-1$
 
         res = ExcelReader.getColumnsTitle(27);
-        Assert.assertEquals("AA", res[26]);
+        Assert.assertEquals("AA", res[26]); //$NON-NLS-1$
 
         res = ExcelReader.getColumnsTitle(100);
         for (String name : res) {

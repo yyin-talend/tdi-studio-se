@@ -122,7 +122,7 @@ public class DatabaseTableWizard extends RepositoryWizard implements INewWizard 
         tableFilterWizardPage = new DatabaseTableFilterWizardPage(tableInfoParameters);
         if (creation && !skipStep) {
 
-            tableFilterWizardPage.setDescription("Filter for the Table.");
+            tableFilterWizardPage.setDescription(Messages.getString("DatabaseTableWizard.description")); //$NON-NLS-1$
             tableFilterWizardPage.setPageComplete(true);
             selectorWizardPage
                     .setTitle(Messages.getString("TableWizardPage.titleCreate") + " \"" + connectionItem.getProperty().getLabel() //$NON-NLS-1$ //$NON-NLS-2$

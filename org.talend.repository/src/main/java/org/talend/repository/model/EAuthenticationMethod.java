@@ -21,8 +21,8 @@ import org.talend.repository.i18n.Messages;
  * 
  */
 public enum EAuthenticationMethod {
-    ANONYMOUS("EAuthenticationMethod.anonymousAuth"),
-    SIMPLE("EAuthenticationMethod.simpleAuth");
+    ANONYMOUS("EAuthenticationMethod.anonymousAuth"), //$NON-NLS-1$
+    SIMPLE("EAuthenticationMethod.simpleAuth"); //$NON-NLS-1$
 
     /**
      * 

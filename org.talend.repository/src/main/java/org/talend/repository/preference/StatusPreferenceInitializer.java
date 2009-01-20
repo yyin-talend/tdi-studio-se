@@ -34,7 +34,7 @@ public class StatusPreferenceInitializer extends AbstractPreferenceInitializer {
             preferenceStore.load();
             String statusString = preferenceStore.getString(Status.TECHNICAL_STATUS)
                     + preferenceStore.getString(Status.DOCUMENTATION_STATUS);
-            if (statusString.equals("")) {
+            if (statusString.equals("")) { //$NON-NLS-1$
                 preferenceStore.setToDefault(Status.TECHNICAL_STATUS);
                 preferenceStore.setToDefault(Status.DOCUMENTATION_STATUS);
                 preferenceStore.save();

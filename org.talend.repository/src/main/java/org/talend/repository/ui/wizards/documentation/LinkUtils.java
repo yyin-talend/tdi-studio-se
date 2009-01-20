@@ -37,17 +37,17 @@ public final class LinkUtils {
 
     public static final String DOT = "."; //$NON-NLS-1$
 
-    public static final String NETWORK_PAGE_PATTERN = "(html|htm|php|asp|jsp|shtml)";
+    public static final String NETWORK_PAGE_PATTERN = "(html|htm|php|asp|jsp|shtml)"; //$NON-NLS-1$
 
-    public static final String COMPRESSION_FILE_PATTERN = "(rar|zip|jar|arj|arc|cab)|(tar|Z|tgz|gz|bz2|bz|deb|rpm|lha)";
+    public static final String COMPRESSION_FILE_PATTERN = "(rar|zip|jar|arj|arc|cab)|(tar|Z|tgz|gz|bz2|bz|deb|rpm|lha)"; //$NON-NLS-1$
 
-    public static final String EXEC_FILE_PATTERN = "(exe|com)";
+    public static final String EXEC_FILE_PATTERN = "(exe|com)"; //$NON-NLS-1$
 
     /*
      * match "/file.html" or "/file"
      */
-    public static final String NET_FILE_PATTERN = "(/\\w+(\\.(" + NETWORK_PAGE_PATTERN + "|" + COMPRESSION_FILE_PATTERN + "|"
-            + EXEC_FILE_PATTERN + "))?)$";
+    public static final String NET_FILE_PATTERN = "(/\\w+(\\.(" + NETWORK_PAGE_PATTERN + "|" + COMPRESSION_FILE_PATTERN + "|" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            + EXEC_FILE_PATTERN + "))?)$"; //$NON-NLS-1$
 
     /*
      * such as: "http://www.talend.com/..." or "http://193.189.143.143/..."
@@ -330,11 +330,11 @@ public final class LinkUtils {
             if (file != null) {
                 if (file.equals(url.getPath())) {
                     // match "http://xx.xx.xx"
-                    if ("".equals(file)) {
+                    if ("".equals(file)) { //$NON-NLS-1$
                         return true;
                     }
                     // match "http://xx.xx.xx/" or "http://xx.xx.xx/yy/"
-                    if (file.endsWith("/")) {
+                    if (file.endsWith("/")) { //$NON-NLS-1$
                         return true;
                     }
                     Perl5Matcher matcher = new Perl5Matcher();

@@ -38,13 +38,13 @@ public class ChangeValueOfTLogRowChecks extends AbstractJobMigrationTask {
     /**
      * 
      */
-    private static final String VERTICAL = "VERTICAL";
+    private static final String VERTICAL = "VERTICAL"; //$NON-NLS-1$
 
-    private static final String TABLE_PRINT = "TABLE_PRINT";
+    private static final String TABLE_PRINT = "TABLE_PRINT"; //$NON-NLS-1$
 
-    IComponentFilter filterTablePrint = new PropertyComponentFilter("tLogRow", TABLE_PRINT, "true");
+    IComponentFilter filterTablePrint = new PropertyComponentFilter("tLogRow", TABLE_PRINT, "true"); //$NON-NLS-1$ //$NON-NLS-2$
 
-    IComponentFilter filterVertical = new PropertyComponentFilter("tLogRow", VERTICAL, "true");
+    IComponentFilter filterVertical = new PropertyComponentFilter("tLogRow", VERTICAL, "true"); //$NON-NLS-1$ //$NON-NLS-2$
 
     /*
      * (non-Javadoc)
@@ -102,7 +102,7 @@ public class ChangeValueOfTLogRowChecks extends AbstractJobMigrationTask {
          * @see org.talend.core.model.components.conversions.IComponentConversion#transform(org.talend.designer.core.model.utils.emf.talendfile.NodeType)
          */
         public void transform(NodeType node) {
-            ComponentUtilities.setNodeValue(node, propertyName, "false");
+            ComponentUtilities.setNodeValue(node, propertyName, "false"); //$NON-NLS-1$
         }
     }
 }

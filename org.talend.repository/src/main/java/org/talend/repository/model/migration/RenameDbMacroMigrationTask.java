@@ -59,8 +59,8 @@ public class RenameDbMacroMigrationTask extends AbstractJobMigrationTask {
             EList elementParameterList = type.getElementParameter();
             for (Object elem : elementParameterList) {
                 ElementParameterType elemType = (ElementParameterType) elem;
-                if (elemType.getName().equals("DBTABLE")) {
-                    elemType.setName("TABLE");
+                if (elemType.getName().equals("DBTABLE")) { //$NON-NLS-1$
+                    elemType.setName("TABLE"); //$NON-NLS-1$
                     modified = true;
 
                 }

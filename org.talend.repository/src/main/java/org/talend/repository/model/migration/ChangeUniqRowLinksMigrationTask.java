@@ -35,9 +35,9 @@ import org.talend.repository.model.ProxyRepositoryFactory;
  */
 public class ChangeUniqRowLinksMigrationTask extends AbstractJobMigrationTask {
 
-    private static final String STANDARD_CONNECTOR_NAME = "FLOW";
+    private static final String STANDARD_CONNECTOR_NAME = "FLOW"; //$NON-NLS-1$
 
-    private static final String NEW_CONNECTOR_NAME = "UNIQUE";
+    private static final String NEW_CONNECTOR_NAME = "UNIQUE"; //$NON-NLS-1$
 
     /*
      * (non-Javadoc)
@@ -97,7 +97,7 @@ public class ChangeUniqRowLinksMigrationTask extends AbstractJobMigrationTask {
         for (Object o : processType.getNode()) {
             NodeType currentNode = (NodeType) o;
 
-            if (currentNode.getComponentName().equals("tUniqRow")) {
+            if (currentNode.getComponentName().equals("tUniqRow")) { //$NON-NLS-1$
                 if (sourceName.equals(ComponentUtilities.getNodeUniqueName(currentNode))) {
                     tUniqRow = true;
                 }

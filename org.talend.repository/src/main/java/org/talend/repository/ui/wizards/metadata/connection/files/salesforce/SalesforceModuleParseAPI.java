@@ -21,6 +21,7 @@ import java.util.List;
 import javax.xml.rpc.ServiceException;
 
 import org.talend.core.model.metadata.IMetadataColumn;
+import org.talend.repository.i18n.Messages;
 
 import com.sforce.soap.enterprise.DescribeGlobalResult;
 import com.sforce.soap.enterprise.DescribeSObjectResult;
@@ -65,10 +66,10 @@ public class SalesforceModuleParseAPI {
      */
     public void login(String endPoint, String username, String password) throws Exception {
         if (endPoint == null) {
-            throw new RemoteException("The URL is invalid.");
+            throw new RemoteException(Messages.getString("SalesforceModuleParseAPI.URLInvalid")); //$NON-NLS-1$
         }
         if (username == null || password == null) {
-            throw new Exception("Lost username or password");
+            throw new Exception(Messages.getString("SalesforceModuleParseAPI.lostUsernameOrPass")); //$NON-NLS-1$
         }
 
         if (name != null && pwd != null && url != null) {
@@ -103,7 +104,7 @@ public class SalesforceModuleParseAPI {
 
         sh.setSessionId(loginResult.getSessionId());
         String sforceURI = new SforceServiceLocator().getServiceName().getNamespaceURI();
-        binding.setHeader(sforceURI, "SessionHeader", sh);
+        binding.setHeader(sforceURI, "SessionHeader", sh); //$NON-NLS-1$
         return binding;
     }
 
@@ -130,28 +131,28 @@ public class SalesforceModuleParseAPI {
         sh.setSessionId(loginResult.getSessionId());
         // add the header to the binding stub
         String sforceURI = new SforceServiceLocator().getServiceName().getNamespaceURI();
-        binding.setHeader(sforceURI, "SessionHeader", sh);
+        binding.setHeader(sforceURI, "SessionHeader", sh); //$NON-NLS-1$
         return;
     }
 
     private void doGetAccounts() {
         // check to see if we are already logged in
         if (loginResult == null) {
-            System.out.println("Run the login sample before the others.\n");
-            System.out.println("\n");
+            System.out.println("Run the login sample before the others.\n"); //$NON-NLS-1$
+            System.out.println("\n"); //$NON-NLS-1$
             return;
         }
         // create a variable to hold the query result
         QueryResult qr = null;
         // call the query saving the results in qr
         try {
-            qr = binding.query("select Name, numberOfEmployees, Id, Industry from Account");
+            qr = binding.query("select Name, numberOfEmployees, Id, Industry from Account"); //$NON-NLS-1$
         } catch (UnexpectedErrorFault uef) {
-            System.out.println(uef.getExceptionMessage() + "\n\n");
+            System.out.println(uef.getExceptionMessage() + "\n\n"); //$NON-NLS-1$
             return;
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("\n\n");
+            System.out.println("\n\n"); //$NON-NLS-1$
             return;
         }
         // always a good idea
@@ -166,11 +167,11 @@ public class SalesforceModuleParseAPI {
                 accounts[i] = account;
                 // Now we can access any of the fields we had in the query
                 // select clause directly from the account variable
-                System.out.print(new Integer(i).toString() + ". ");
-                System.out.print(account.getName() + " - ");
+                System.out.print(new Integer(i).toString() + ". "); //$NON-NLS-1$
+                System.out.print(account.getName() + " - "); //$NON-NLS-1$
                 System.out.println(account.getId());
             }
-            System.out.println("");
+            System.out.println(""); //$NON-NLS-1$
         }
     }
 
@@ -181,9 +182,9 @@ public class SalesforceModuleParseAPI {
             String[] types = describeGlobalResult.getTypes();
             for (int i = 0; i < types.length; i++)
                 System.out.println(types[i]);
-            System.out.println("\nDescribe global was successful...\r\n");
+            System.out.println("\nDescribe global was successful...\r\n"); //$NON-NLS-1$
         } catch (Exception ex) {
-            System.out.println("\nFailed to return types, error message was: \n" + ex.getMessage());
+            System.out.println("\nFailed to return types, error message was: \n" + ex.getMessage()); //$NON-NLS-1$
         }
     }
 
@@ -282,26 +283,26 @@ public class SalesforceModuleParseAPI {
         // public static final java.lang.String _value19 = "anyType";
 
         String type = field.getType().toString();
-        String talendType = "String";
-        if (type.equals("boolean")) {
-            talendType = "Boolean";
-        } else if (type.equals("int")) {
-            talendType = "Integer";
-        } else if (type.equals("date") || type.equals("datetime")) {
-            talendType = "Date";
-        } else if (type.equals("double")) {
-            talendType = "Double";
+        String talendType = "String"; //$NON-NLS-1$
+        if (type.equals("boolean")) { //$NON-NLS-1$
+            talendType = "Boolean"; //$NON-NLS-1$
+        } else if (type.equals("int")) { //$NON-NLS-1$
+            talendType = "Integer"; //$NON-NLS-1$
+        } else if (type.equals("date") || type.equals("datetime")) { //$NON-NLS-1$ //$NON-NLS-2$
+            talendType = "Date"; //$NON-NLS-1$
+        } else if (type.equals("double")) { //$NON-NLS-1$
+            talendType = "Double"; //$NON-NLS-1$
         } else {
-            talendType = "String";
+            talendType = "String"; //$NON-NLS-1$
         }
         // mdColumn.setType(talendType);
-        mdColumn.setTalendType("id_" + talendType); // How to transfer type? TODO
+        mdColumn.setTalendType("id_" + talendType); // How to transfer type? TODO //$NON-NLS-1$
         mdColumn.setNullable(field.isNillable());
 
-        if (type.equals("date")) {
-            mdColumn.setPattern("\"yyyy-MM-dd\"");
-        } else if (type.equals("datetime")) {
-            mdColumn.setPattern("\"yyyy-MM-dd\'T\'HH:mm:ss\'.000Z\'\"");
+        if (type.equals("date")) { //$NON-NLS-1$
+            mdColumn.setPattern("\"yyyy-MM-dd\""); //$NON-NLS-1$
+        } else if (type.equals("datetime")) { //$NON-NLS-1$
+            mdColumn.setPattern("\"yyyy-MM-dd\'T\'HH:mm:ss\'.000Z\'\""); //$NON-NLS-1$
         } else {
             mdColumn.setPattern(null);
         }

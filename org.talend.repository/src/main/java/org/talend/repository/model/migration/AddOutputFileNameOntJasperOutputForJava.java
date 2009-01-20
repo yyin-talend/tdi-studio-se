@@ -44,22 +44,22 @@ public class AddOutputFileNameOntJasperOutputForJava extends AbstractJobMigratio
 
         try {
 
-            IComponentFilter filter1 = new NameComponentFilter("tJasperOutput");
+            IComponentFilter filter1 = new NameComponentFilter("tJasperOutput"); //$NON-NLS-1$
 
             IComponentConversion addNewProperty = new IComponentConversion() {
 
                 public void transform(NodeType node) {
-                    ComponentUtilities.addNodeProperty(node, "FILE_NAME", "TEXT");
+                    ComponentUtilities.addNodeProperty(node, "FILE_NAME", "TEXT"); //$NON-NLS-1$ //$NON-NLS-2$
 
                     // List<ElementValueType> values = new ArrayList<ElementValueType>();
                     // ElementValueType eValue = TalendFileFactory.eINSTANCE.createElementValueType();
                     // eValue.setElementRef("FILEMASK");
                     // eValue.setValue(ComponentUtilities.getNodePropertyValue(node, "FILEMASK"));
                     // values.add(eValue);
-                    String fileName = ComponentUtilities.getNodePropertyValue(node, "JRXML_FILE");
-                    String value = fileName.substring((fileName.lastIndexOf("/") + 1), fileName.lastIndexOf("."));
+                    String fileName = ComponentUtilities.getNodePropertyValue(node, "JRXML_FILE"); //$NON-NLS-1$
+                    String value = fileName.substring((fileName.lastIndexOf("/") + 1), fileName.lastIndexOf(".")); //$NON-NLS-1$ //$NON-NLS-2$
 
-                    ComponentUtilities.setNodeValue(node, "FILE_NAME", "\"" + value + "\"");
+                    ComponentUtilities.setNodeValue(node, "FILE_NAME", "\"" + value + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 }
             };
 

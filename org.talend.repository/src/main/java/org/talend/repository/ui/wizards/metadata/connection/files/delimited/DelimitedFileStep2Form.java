@@ -419,7 +419,7 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
         // split record
         splitwayRecordForJavaFID = new Button(compositeEscapeChar, SWT.CHECK);
         splitwayRecordForJavaFID.setText(Messages.getString("FileStep2.splitwayRecordForJavaFID")); //$NON-NLS-1$
-        splitwayRecordForJavaFID.setToolTipText(Messages.getString("FileStep2.splitwayRecordForJavaFIDTip"));
+        splitwayRecordForJavaFID.setToolTipText(Messages.getString("FileStep2.splitwayRecordForJavaFIDTip")); //$NON-NLS-1$
         splitwayRecordForJavaFID.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent e) {
@@ -428,7 +428,7 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
         });
 
         String languageName = LanguageManager.getCurrentLanguage().getName();
-        if (languageName.equals("perl")) {
+        if (languageName.equals("perl")) { //$NON-NLS-1$
             splitwayRecordForJavaFID.setVisible(false);
         }
 
@@ -476,9 +476,9 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
         tabFolder.setLayoutData(new GridData(GridData.FILL_BOTH));
 
         previewTabItem = new CTabItem(tabFolder, SWT.BORDER);
-        previewTabItem.setText("Preview");
+        previewTabItem.setText("Preview"); //$NON-NLS-1$
         outputTabItem = new CTabItem(tabFolder, SWT.BORDER);
-        outputTabItem.setText("Output");
+        outputTabItem.setText("Output"); //$NON-NLS-1$
 
         Composite previewComposite = Form.startNewGridLayout(tabFolder, 1);
         outputComposite = Form.startNewGridLayout(tabFolder, 1);
@@ -625,7 +625,7 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
                         if (rowsToSkipHeaderCheckboxCombo.isEmpty()) {
                             // at least, rowsToSkipHeader = 1
                             rowsToSkipHeaderCheckboxCombo.setText("1"); //$NON-NLS-1$
-                            getConnection().setHeaderValue("" + 1);
+                            getConnection().setHeaderValue("" + 1); //$NON-NLS-1$
                         } else {
                             // rowsToSkipHeader ++
                             int value = new Integer(rowsToSkipHeaderCheckboxCombo.getText());
@@ -639,7 +639,7 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
                         if (rowsToSkipHeaderCheckboxCombo.getText().equals("1")) { //$NON-NLS-1$
                             // rowsToSkipHeader is unusable
                             rowsToSkipHeaderCheckboxCombo.deselectAll();
-                            getConnection().setHeaderValue("" + 0);
+                            getConnection().setHeaderValue("" + 0); //$NON-NLS-1$
                         } else {
                             // rowsToSkipHeader --
                             int value = new Integer(rowsToSkipHeaderCheckboxCombo.getText());
@@ -780,7 +780,7 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
                     if (!isContextMode()) {
                         String string = String.valueOf(e.character);
                         // Check if input is number, backspace key and delete key of keyboard.
-                        if (!(string.matches("[0-9]*")) && e.keyCode != 8 && e.keyCode != SWT.DEL) {
+                        if (!(string.matches("[0-9]*")) && e.keyCode != 8 && e.keyCode != SWT.DEL) { //$NON-NLS-1$
                             e.doit = false;
                         }
                     }
@@ -798,9 +798,9 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
                                 || rowsToSkipHeaderCheckboxCombo.getText().trim().equals("0")) { //$NON-NLS-1$
                             rowsToSkipHeaderCheckboxCombo.deselectAll();
                             getConnection().setUseHeader(rowsToSkipHeaderCheckboxCombo.isChecked());
-                            getConnection().setHeaderValue("" + 0);
+                            getConnection().setHeaderValue("" + 0); //$NON-NLS-1$
 
-                            updateStatus(IStatus.ERROR, "Number allowed only.");
+                            updateStatus(IStatus.ERROR, Messages.getString("DelimitedFileStep2Form.onlyNumber")); //$NON-NLS-1$
                             rowsToSkipHeaderCheckboxCombo.getCombo().setFocus();
 
                             // if rowsHeaderToSkip isn't integer or is equals to 0, the firstRowIsCaptionCheckbox is
@@ -815,7 +815,7 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
                         }
                     } else {
                         getConnection().setUseHeader(rowsToSkipHeaderCheckboxCombo.isChecked());
-                        getConnection().setHeaderValue("" + 0);
+                        getConnection().setHeaderValue("" + 0); //$NON-NLS-1$
                         checkFieldsValue();
                     }
 
@@ -832,16 +832,16 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
                                 || rowsToSkipFooterCheckboxCombo.getText().trim().equals("0")) { //$NON-NLS-1$
                             rowsToSkipFooterCheckboxCombo.deselectAll();
                             getConnection().setUseFooter(rowsToSkipFooterCheckboxCombo.isChecked());
-                            getConnection().setFooterValue("" + 0);
+                            getConnection().setFooterValue("" + 0); //$NON-NLS-1$
 
-                            updateStatus(IStatus.ERROR, "Number allowed only.");
+                            updateStatus(IStatus.ERROR, Messages.getString("DelimitedFileStep2Form.onlyNumber")); //$NON-NLS-1$
                             rowsToSkipFooterCheckboxCombo.getCombo().setFocus();
                         } else {
                             getConnection().setFooterValue(rowsToSkipFooterCheckboxCombo.getText().trim());
                         }
                     } else {
                         getConnection().setUseFooter(rowsToSkipFooterCheckboxCombo.isChecked());
-                        getConnection().setFooterValue("" + 0);
+                        getConnection().setFooterValue("" + 0); //$NON-NLS-1$
                     }
                     checkFieldsValue();
                 }
@@ -857,16 +857,16 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
                                 || rowsToSkipLimitCheckboxCombo.getText().trim().equals("0")) { //$NON-NLS-1$
                             rowsToSkipLimitCheckboxCombo.deselectAll();
                             getConnection().setUseLimit(rowsToSkipLimitCheckboxCombo.isChecked());
-                            getConnection().setLimitValue("" + 0);
+                            getConnection().setLimitValue("" + 0); //$NON-NLS-1$
 
-                            updateStatus(IStatus.ERROR, "Number allowed only.");
+                            updateStatus(IStatus.ERROR, Messages.getString("DelimitedFileStep2Form.14")); //$NON-NLS-1$
                             rowsToSkipLimitCheckboxCombo.getCombo().setFocus();
                         } else {
                             getConnection().setLimitValue(rowsToSkipLimitCheckboxCombo.getText());
                         }
                     } else {
                         getConnection().setUseLimit(rowsToSkipLimitCheckboxCombo.isChecked());
-                        getConnection().setLimitValue("" + 0);
+                        getConnection().setLimitValue("" + 0); //$NON-NLS-1$
                     }
                     checkFieldsValue();
                 }
@@ -1127,7 +1127,7 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
             if (labelledCheckboxCombo.getCheckbox().getSelection()) {
                 if (labelledCheckboxCombo.getText() == "") { //$NON-NLS-1$
                     updateStatus(IStatus.ERROR, labelledCheckboxCombo.getLabelText()
-                            + " " + Messages.getString("FileStep2.mustBePrecised")); //$NON-NLS-1$
+                            + " " + Messages.getString("FileStep2.mustBePrecised")); //$NON-NLS-1$ //$NON-NLS-2$
                     return false;
                 }
             }
@@ -1168,7 +1168,7 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
         boolean firstRowIsCatption = false;
 
         public boolean preProcessStart() {
-            previewButton.setText(Messages.getString("FileStep2.stop"));
+            previewButton.setText(Messages.getString("FileStep2.stop")); //$NON-NLS-1$
 
             clearPreview();
             String filePath = getConnection().getFilePath();
@@ -1246,7 +1246,7 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
 
         public void updateUIInThreadIfThreadIsCanceled() {
             if (!previewInformationLabel.isDisposed()) {
-                previewInformationLabel.setText("");
+                previewInformationLabel.setText(""); //$NON-NLS-1$
             }
         }
 
@@ -1275,7 +1275,7 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
 
         public void updateUIInThreadIfThreadFinally() {
             if (!previewButton.isDisposed()) {
-                previewButton.setText(Messages.getString("FileStep2.refreshPreview"));
+                previewButton.setText(Messages.getString("FileStep2.refreshPreview")); //$NON-NLS-1$
                 previewButton.setEnabled(true);
 
             }

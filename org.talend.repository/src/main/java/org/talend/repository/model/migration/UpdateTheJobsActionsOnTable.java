@@ -27,9 +27,9 @@ import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
  */
 public class UpdateTheJobsActionsOnTable extends AbstractJobMigrationTask {
 
-    private static final String T_ORACLE_OUTPUT = "tOracleOutput";
+    private static final String T_ORACLE_OUTPUT = "tOracleOutput"; //$NON-NLS-1$
 
-    private static final String CLEAR_TABLE = "CLEAR_TABLE";
+    private static final String CLEAR_TABLE = "CLEAR_TABLE"; //$NON-NLS-1$
 
     public static boolean isClear;
 
@@ -50,7 +50,7 @@ public class UpdateTheJobsActionsOnTable extends AbstractJobMigrationTask {
             if (node.getComponentName().indexOf(UpdateTheJobsActionsOnTable.T_ORACLE_OUTPUT) != -1) {
                 for (ElementParameterType elementParameterType : (List<ElementParameterType>) node.getElementParameter()) {
                     if (UpdateTheJobsActionsOnTable.CLEAR_TABLE.equals(elementParameterType.getName())) {
-                        if ("true".equals(elementParameterType.getValue())) {
+                        if ("true".equals(elementParameterType.getValue())) { //$NON-NLS-1$
                             UpdateTheJobsActionsOnTable.isClear = true;
                             return ExecutionResult.SUCCESS_NO_ALERT;
                         }

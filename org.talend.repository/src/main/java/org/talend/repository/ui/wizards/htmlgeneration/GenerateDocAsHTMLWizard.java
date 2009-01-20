@@ -70,7 +70,7 @@ public class GenerateDocAsHTMLWizard extends Wizard implements IExportWizard {
             this.selection = new StructuredSelection(selectedResources);
         }
 
-        setWindowTitle(Messages.getString("GenerateDocAsHTMLWizard.GenerateDocumentation"));
+        setWindowTitle(Messages.getString("GenerateDocAsHTMLWizard.GenerateDocumentation")); //$NON-NLS-1$
         setDefaultPageImageDescriptor(IDEWorkbenchPlugin.getIDEImageDescriptor("wizban/exportzip_wiz.png"));//$NON-NLS-1$
         setNeedsProgressMonitor(true);
     }

@@ -14,11 +14,11 @@ package org.talend.repository.model.migration;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
+
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.components.ModifyComponentsAction;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
 import org.talend.core.model.properties.Item;
-import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 
 /**
@@ -30,13 +30,13 @@ import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 public class RenametFileZipUnzipMigrationTask extends AbstractJobMigrationTask {
 
     public ExecutionResult execute(Item item) {
-    	ProcessType processType = getProcessType(item);
-		if (processType == null) {
-			return ExecutionResult.NOTHING_TO_DO;
-		}	
+        ProcessType processType = getProcessType(item);
+        if (processType == null) {
+            return ExecutionResult.NOTHING_TO_DO;
+        }
         try {
             ModifyComponentsAction.searchAndRename(item, processType, "tFileZip", "tFileArchive"); //$NON-NLS-1$ //$NON-NLS-2$
-            ModifyComponentsAction.searchAndRename(item, processType,"tFileUnzip", "tFileUnarchive"); //$NON-NLS-3$ //$NON-NLS-4$
+            ModifyComponentsAction.searchAndRename(item, processType, "tFileUnzip", "tFileUnarchive"); //$NON-NLS-1$ //$NON-NLS-2$
             return ExecutionResult.SUCCESS_WITH_ALERT;
         } catch (Exception e) {
             ExceptionHandler.process(e);

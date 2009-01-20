@@ -19,8 +19,8 @@ package org.talend.repository.model;
  */
 public enum EReferrals {
 
-    IGNORE("Ignore","ignore"),
-    FOLLOW("Follow","follow");
+    IGNORE("Ignore","ignore"), //$NON-NLS-1$ //$NON-NLS-2$
+    FOLLOW("Follow","follow"); //$NON-NLS-1$ //$NON-NLS-2$
 
     /**
      * 

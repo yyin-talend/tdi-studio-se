@@ -35,13 +35,13 @@ import org.talend.repository.model.ProxyRepositoryFactory;
 
 public class RenametForCurrentIterationMigrationTask extends AbstractJobMigrationTask {
 
-    private static final String TFOR = "tFor_";
+    private static final String TFOR = "tFor_"; //$NON-NLS-1$
 
-    private static final String TLOOP = "tLoop_";
+    private static final String TLOOP = "tLoop_"; //$NON-NLS-1$
 
-    private static final String CURRENT_ITER = "CURRENT_ITERATION";
+    private static final String CURRENT_ITER = "CURRENT_ITERATION"; //$NON-NLS-1$
 
-    private static final String CURRENT_VALUE = "CURRENT_VALUE";
+    private static final String CURRENT_VALUE = "CURRENT_VALUE"; //$NON-NLS-1$
 
     public ExecutionResult execute(Item item) {
     	ProcessType processType = getProcessType(item);
@@ -68,7 +68,7 @@ public class RenametForCurrentIterationMigrationTask extends AbstractJobMigratio
             EList elementParameterList = type.getElementParameter();
             for (Object elem : elementParameterList) {
                 ElementParameterType elemType = (ElementParameterType) elem;
-                if (!elemType.getField().equals("CHECK")) {
+                if (!elemType.getField().equals("CHECK")) { //$NON-NLS-1$
                     if (language.equals(ECodeLanguage.JAVA)) {
                         if (elemType.getValue() != null && elemType.getValue().contains(TFOR)
                                 && elemType.getValue().contains(CURRENT_ITER)) {

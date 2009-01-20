@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.repository.ui.actions.importproject;
 
+import org.talend.repository.i18n.Messages;
+
 /**
  * DOC Administrator class global comment. Detailled comment <br/>
  * 
@@ -19,8 +21,8 @@ package org.talend.repository.ui.actions.importproject;
  * 
  */
 public enum EDemoProjectFileType {
-    FOLDER("folder"),
-    ARCHIVE("archive");
+    FOLDER("folder"), //$NON-NLS-1$
+    ARCHIVE("archive"); //$NON-NLS-1$
 
     private String name;
 
@@ -38,6 +40,6 @@ public enum EDemoProjectFileType {
                 return demoProjectFileType;
             }
         }
-        throw new UnsupportedOperationException("Unknown file type");
+        throw new UnsupportedOperationException(Messages.getString("EDemoProjectFileType.unknowType")); //$NON-NLS-1$
     }
 }

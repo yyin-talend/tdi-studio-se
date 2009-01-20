@@ -22,6 +22,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.core.prefs.ui.MetadataTalendTypeEditor;
+import org.talend.repository.i18n.Messages;
 
 /**
  * DOC YeXiaowei class global comment. Detailled comment <br/>
@@ -57,11 +58,11 @@ public class MappingFileSelectDialog extends TitleAreaDialog {
 
         bgComposite.setLayout(new GridLayout());
 
-        editor = new MetadataTalendTypeEditor("Name", "Mapping file list", bgComposite);
+        editor = new MetadataTalendTypeEditor(Messages.getString("MappingFileSelectDialog.name"), Messages.getString("MappingFileSelectDialog.mappingFileList"), bgComposite); //$NON-NLS-1$ //$NON-NLS-2$
         editor.forceLoad();
 
-        setTitle("Select a mapping file for your database");
-        setMessage("You can set mapping files by Talend preference 'Metadata of Talend type' page.");
+        setTitle(Messages.getString("MappingFileSelectDialog.selectMappingFile")); //$NON-NLS-1$
+        setMessage(Messages.getString("MappingFileSelectDialog.setMessage")); //$NON-NLS-1$
 
         return bgComposite;
     }

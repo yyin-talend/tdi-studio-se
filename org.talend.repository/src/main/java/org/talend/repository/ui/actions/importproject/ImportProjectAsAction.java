@@ -38,11 +38,11 @@ import org.talend.repository.ui.wizards.newproject.ImportProjectWizardDialog;
  */
 public final class ImportProjectAsAction extends Action {
 
-    private static final String LIB = "lib";
+    private static final String LIB = "lib"; //$NON-NLS-1$
 
     private static final String ACTION_TITLE = Messages.getString("ImportProjectAsAction.actionTitle"); //$NON-NLS-1$
 
-    private static final String ACTION_TOOLTIP = Messages.getString("ImportProjectAsAction.actionTooltip",
+    private static final String ACTION_TOOLTIP = Messages.getString("ImportProjectAsAction.actionTooltip", //$NON-NLS-1$
             ((IBrandingService) GlobalServiceRegister.getDefault().getService(IBrandingService.class)).getShortProductName()); //$NON-NLS-1$
 
     private static ImportProjectAsAction singleton;

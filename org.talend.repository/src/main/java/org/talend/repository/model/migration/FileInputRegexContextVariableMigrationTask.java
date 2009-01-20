@@ -61,22 +61,22 @@ public class FileInputRegexContextVariableMigrationTask extends AbstractJobMigra
         EList nodes = processType.getNode();
         for (Object n : nodes) {
             NodeType type = (NodeType) n;
-            if (type.getComponentName().equals("tFileInputRegex")) {
+            if (type.getComponentName().equals("tFileInputRegex")) { //$NON-NLS-1$
                 EList elementParameterList = type.getElementParameter();
                 for (Object elem : elementParameterList) {
                     ElementParameterType elemType = (ElementParameterType) elem;
-                    if (elemType.getName().equals("HEADER") || elemType.getName().equals("FOOTER")
-                            || elemType.getName().equals("LIMIT")) {
+                    if (elemType.getName().equals("HEADER") || elemType.getName().equals("FOOTER") //$NON-NLS-1$ //$NON-NLS-2$
+                            || elemType.getName().equals("LIMIT")) { //$NON-NLS-1$
                         String oldV = elemType.getValue();
                         if (oldV == null || oldV.length() == 0) {
-                            if (elemType.getName().equals("LIMIT")) {
-                                oldV = "-1";
+                            if (elemType.getName().equals("LIMIT")) { //$NON-NLS-1$
+                                oldV = "-1"; //$NON-NLS-1$
                             } else {
-                                oldV = "0";
+                                oldV = "0"; //$NON-NLS-1$
                             }
                         }
-                        if (!oldV.contains("\"")) {
-                            elemType.setValue("\"" + oldV + "\"");
+                        if (!oldV.contains("\"")) { //$NON-NLS-1$
+                            elemType.setValue("\"" + oldV + "\""); //$NON-NLS-1$ //$NON-NLS-2$
                         }
                         modified = true;
                     }

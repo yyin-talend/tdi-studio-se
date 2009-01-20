@@ -185,7 +185,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
         exportTypeCombo.setText(getCurrentExportType());
         chkButton = new Button(left, SWT.CHECK);
-        chkButton.setText("Extract the zip file");
+        chkButton.setText(Messages.getString("JavaJobScriptsExportWSWizardPage.extractZipFile")); //$NON-NLS-1$
         if (exportTypeCombo.getText().equals(EXPORTTYPE_WSWAR)) {
             chkButton.setVisible(false);
             zipOption = null;
@@ -298,7 +298,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             String s = (String) this.getDefaultFileName().get(0);
 
             if (str.equals(s)) {
-                selectedFileName = b + "_" + this.getDefaultFileName().get(1) + this.getOutputSuffix();
+                selectedFileName = b + "_" + this.getDefaultFileName().get(1) + this.getOutputSuffix(); //$NON-NLS-1$
             } else {
                 selectedFileName = b + this.getOutputSuffix();
             }

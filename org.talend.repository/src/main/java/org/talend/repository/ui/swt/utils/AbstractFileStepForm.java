@@ -56,7 +56,7 @@ public abstract class AbstractFileStepForm extends AbstractForm {
     }
 
     protected boolean initRowsToSkip(LabelledCheckboxCombo combo, String value) {
-        if (value != null && !"".equals(value.trim()) && ContextParameterUtils.isContainContextParam(value)) {
+        if (value != null && !"".equals(value.trim()) && ContextParameterUtils.isContainContextParam(value)) { //$NON-NLS-1$
             combo.setText(value);
         } else {
             int i = ConnectionContextHelper.convertValue(value);
@@ -64,7 +64,7 @@ public abstract class AbstractFileStepForm extends AbstractForm {
                 combo.setText(value);
                 // combo.select(i); //the value will be added one number.
             } else {
-                combo.setText("");
+                combo.setText(""); //$NON-NLS-1$
                 combo.getCombo().setEnabled(false);
                 combo.getCheckbox().setSelection(false);
                 return false; // not checked

@@ -59,7 +59,7 @@ import org.talend.repository.model.ComponentsFactoryProvider;
  */
 public class JobPerlScriptsManager extends JobScriptsManager {
 
-    private static final String SYSTEM_ROUTINES_FOLDER_NAME = "system";
+    private static final String SYSTEM_ROUTINES_FOLDER_NAME = "system"; //$NON-NLS-1$
 
     /**
      * Gets the export resources.
@@ -77,7 +77,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
     public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Boolean> exportChoice,
             String contextName, String launcher, int statisticPort, int tracePort, String... codeOptions) {
 
-        ProcessorUtilities.setExportConfig("perl", "", LIBRARY_FOLDER_NAME);
+        ProcessorUtilities.setExportConfig("perl", "", LIBRARY_FOLDER_NAME); //$NON-NLS-1$ //$NON-NLS-2$
 
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = (ProcessItem) process[i].getItem();
@@ -116,7 +116,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
                     JOB_SOURCE_FOLDER_NAME, selectedJobVersion);
             List<URL> talendLibraries = getTalendLibraries(exportChoice.get(ExportChoice.needTalendLibraries));
             if (talendLibraries.size() > 0) {
-                process[i].addResources(LIBRARY_FOLDER_NAME + PATH_SEPARATOR + "talend", talendLibraries);
+                process[i].addResources(LIBRARY_FOLDER_NAME + PATH_SEPARATOR + "talend", talendLibraries); //$NON-NLS-1$
             }
             resources.addAll(getJobScripts(processItem, exportChoice.get(ExportChoice.needJob)));
             addDepencies(process, processItem, BooleanUtils.isTrue(exportChoice.get(ExportChoice.needDependencies)), process[i]);
@@ -195,12 +195,12 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             // get the modules that this component depends on.
             for (ModuleNeeded module : component.getModulesNeeded()) {
                 // for intance, split the "DtMysqlOutput::Mysql" to {"DtMysqlOutput","Mysql"}
-                String[] string = module.getModuleName().split("::");
+                String[] string = module.getModuleName().split("::"); //$NON-NLS-1$
                 if (string.length != 2) {
                     continue;
                 }
-                resource.addResources(LIBRARY_FOLDER_NAME + PATH_SEPARATOR + string[0], getComponentModules(string[0] + "/"
-                        + string[1] + ".pm"));
+                resource.addResources(LIBRARY_FOLDER_NAME + PATH_SEPARATOR + string[0], getComponentModules(string[0] + "/" //$NON-NLS-1$
+                        + string[1] + ".pm")); //$NON-NLS-1$
             }
         }
     }
@@ -458,14 +458,14 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             IPath projectFilePath = getCorrespondingProjectRootPath(processItem).append(FileConstants.LOCAL_PROJECT_FILENAME);
 
             String processPath = processItem.getState().getPath();
-            processPath = processPath == null || processPath.equals("") ? "" : processPath;
+            processPath = processPath == null || processPath.equals("") ? "" : processPath; //$NON-NLS-1$ //$NON-NLS-2$
             ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(processItem);
             IPath typeFolderPath = new Path(ERepositoryObjectType.getFolderName(itemType));
             IPath emfFileRootPath = getEmfFileRootPath(processItem);
             IPath itemFilePath = emfFileRootPath.append(processPath).append(
-                    jobName + "_" + jobVersion + "." + FileConstants.ITEM_EXTENSION);
+                    jobName + "_" + jobVersion + "." + FileConstants.ITEM_EXTENSION); //$NON-NLS-1$ //$NON-NLS-2$
             IPath propertiesFilePath = emfFileRootPath.append(processPath).append(
-                    jobName + "_" + jobVersion + "." + FileConstants.PROPERTIES_EXTENSION);
+                    jobName + "_" + jobVersion + "." + FileConstants.PROPERTIES_EXTENSION); //$NON-NLS-1$ //$NON-NLS-2$
             // project file
             checkAndAddProjectResource(allResources, curResource, basePath + PATH_SEPARATOR + projectName, FileLocator
                     .toFileURL(projectFilePath.toFile().toURL()));

@@ -39,7 +39,7 @@ public class JobVersionUtils {
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);
         }
-        return "";
+        return ""; //$NON-NLS-1$
     }
 
     /**

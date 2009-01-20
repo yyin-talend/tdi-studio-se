@@ -62,7 +62,7 @@ public class RepositoryNodeUtilities {
                 && (node.getContentType() == ERepositoryObjectType.JOBS || node.getContentType() == ERepositoryObjectType.JOBLETS)) {
             String nodeLabel = (String) node.getProperties(EProperties.LABEL);
             if (nodeLabel.equalsIgnoreCase(ERepositoryObjectType.JOBS.toString())) {
-                return new Path("");
+                return new Path(""); //$NON-NLS-1$
             } else {
                 return getPath(node.getParent()).append(label);
             }
@@ -119,7 +119,7 @@ public class RepositoryNodeUtilities {
      * get path by repository item id. can't get the folders.
      */
     public static IPath getPath(final String id) {
-        if (id == null || "".equals(id) || RepositoryNode.NO_ID.equals(id)) {
+        if (id == null || "".equals(id) || RepositoryNode.NO_ID.equals(id)) { //$NON-NLS-1$
             return null;
         }
         IProxyRepositoryFactory factory = RepositoryPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();
@@ -155,7 +155,7 @@ public class RepositoryNodeUtilities {
     }
 
     public static RepositoryNode getRepositoryNode(final String id, boolean expanded) {
-        if (id == null || "".equals(id) || RepositoryNode.NO_ID.equals(id)) {
+        if (id == null || "".equals(id) || RepositoryNode.NO_ID.equals(id)) { //$NON-NLS-1$
             return null;
         }
         IProxyRepositoryFactory factory = RepositoryPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();
@@ -309,7 +309,7 @@ public class RepositoryNodeUtilities {
     }
 
     public static RepositoryNode getSchemeFromConnection(String schemaValue) {
-        String[] values = schemaValue.split(" - ");
+        String[] values = schemaValue.split(" - "); //$NON-NLS-1$
         String repositoryID = values[0];
         String tableName = values[1];
 

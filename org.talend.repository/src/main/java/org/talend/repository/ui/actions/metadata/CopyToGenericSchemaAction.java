@@ -111,7 +111,7 @@ public class CopyToGenericSchemaAction extends AContextualAction {
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             try {
                 CopyToGenericSchemaHelper.copyToGenericSchema(factory, (MetadataTableRepositoryObject) this.sourceNode
-                        .getObject(), new Path(""));
+                        .getObject(), new Path("")); //$NON-NLS-1$
                 RepositoryManager.refreshCreatedNode(ERepositoryObjectType.METADATA_GENERIC_SCHEMA);
             } catch (PersistenceException e) {
                 e.printStackTrace();

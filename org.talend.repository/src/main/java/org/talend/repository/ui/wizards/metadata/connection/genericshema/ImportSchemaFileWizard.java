@@ -171,7 +171,7 @@ public class ImportSchemaFileWizard extends RepositoryWizard implements INewWiza
         }
         if (selection == null || existingNames == null) {
             initConnection();
-            pathToSave = new Path("");
+            pathToSave = new Path(""); //$NON-NLS-1$
         } else {
 
             Object obj = ((IStructuredSelection) selection).getFirstElement();
@@ -200,14 +200,14 @@ public class ImportSchemaFileWizard extends RepositoryWizard implements INewWiza
         connectionItem.setConnection(connection);
 
         String dbmsId = metadataColumnsAndDbmsId.getDbmsId();
-        if (dbmsId != null && dbmsId.trim() != "") {
+        if (dbmsId != null && dbmsId.trim() != "") { //$NON-NLS-1$
             GenericSchemaConnection gsConnection = (GenericSchemaConnection) connection;
             gsConnection.setMappingTypeUsed(true);
             gsConnection.setMappingTypeId(dbmsId);
         }
         MetadataTable metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
         metadataTable.setId(factory.getNextId());
-        metadataTable.setLabel("metadata");
+        metadataTable.setLabel("metadata"); //$NON-NLS-1$
         metadataTable.setConnection(connection);
 
         metadataTable.getColumns().addAll(metadataColumnsAndDbmsId.getMetadataColumns());
@@ -223,8 +223,8 @@ public class ImportSchemaFileWizard extends RepositoryWizard implements INewWiza
         connectionProperty.setVersion(VersionUtils.DEFAULT_VERSION);
         connectionProperty.setStatusCode(""); //$NON-NLS-1$ 
         String name = file.getName();
-        if (name.indexOf(".") > 0) {
-            name = name.substring(0, name.indexOf("."));
+        if (name.indexOf(".") > 0) { //$NON-NLS-1$
+            name = name.substring(0, name.indexOf(".")); //$NON-NLS-1$
         }
         connectionProperty.setLabel(name);
         connectionProperty.setId(factory.getNextId());

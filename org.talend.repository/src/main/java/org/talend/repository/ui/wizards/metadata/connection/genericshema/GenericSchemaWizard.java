@@ -236,7 +236,7 @@ public class GenericSchemaWizard extends RepositoryWizard implements INewWizard 
         }
 
         if (creation) {
-            setWindowTitle(Messages.getString("GenericSchemaWizard.CreateNewGenericSchema"));// Messages.getString(
+            setWindowTitle(Messages.getString("GenericSchemaWizard.CreateNewGenericSchema"));// Messages.getString( //$NON-NLS-1$
             // "DelimitedFileWizard.windowTitleCreate"
             // ));
             // //$NON-NLS-1$
@@ -249,7 +249,7 @@ public class GenericSchemaWizard extends RepositoryWizard implements INewWizard 
             addPage(genericSchemaWizardPage0);
 
             genericSchemaWizardPage1 = new GenericSchemaWizardPage(2, connectionItem, isRepositoryObjectEditable(), null);
-            genericSchemaWizardPage1.setTitle(Messages.getString("GenericSchemaWizard.CreateNewGenericSchema") // Messages
+            genericSchemaWizardPage1.setTitle(Messages.getString("GenericSchemaWizard.CreateNewGenericSchema") // Messages //$NON-NLS-1$
                     // .
                     // getString
                     // (
@@ -265,7 +265,7 @@ public class GenericSchemaWizard extends RepositoryWizard implements INewWizard 
 
         } else if (this.isSinglePageOnly == false) {
 
-            setWindowTitle(Messages.getString("GenericSchemaWizard.UpdateGenericSchema"));// Messages.getString(
+            setWindowTitle(Messages.getString("GenericSchemaWizard.UpdateGenericSchema"));// Messages.getString( //$NON-NLS-1$
             // "DelimitedFileWizard.windowTitleUpdate"
             // ));
             // //$NON-NLS-1$
@@ -288,7 +288,7 @@ public class GenericSchemaWizard extends RepositoryWizard implements INewWizard 
             genericSchemaWizardPage0.setPageComplete(true);
             genericSchemaWizardPage1.setPageComplete(isRepositoryObjectEditable());
         } else {
-            setWindowTitle(Messages.getString("GenericSchemaWizard.SaveAsGenericSchema"));// Messages.getString(
+            setWindowTitle(Messages.getString("GenericSchemaWizard.SaveAsGenericSchema"));// Messages.getString( //$NON-NLS-1$
             // "DelimitedFileWizard.windowTitleUpdate"
             // ));
             // //$NON-NLS-1$

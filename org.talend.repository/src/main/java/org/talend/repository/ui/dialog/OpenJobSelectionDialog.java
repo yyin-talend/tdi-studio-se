@@ -41,7 +41,7 @@ public class OpenJobSelectionDialog extends RepositoryReviewDialog {
      */
     @Override
     protected void createButtonsForButtonBar(Composite parent) {
-        createButton(parent, SELECTINREPOSITORY, "Link Repository", false);
+        createButton(parent, SELECTINREPOSITORY, "Link Repository", false); //$NON-NLS-1$
         super.createButtonsForButtonBar(parent);
     }
 

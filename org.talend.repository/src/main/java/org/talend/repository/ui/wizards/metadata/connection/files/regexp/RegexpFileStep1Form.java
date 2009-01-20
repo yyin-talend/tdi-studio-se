@@ -279,7 +279,7 @@ public class RegexpFileStep1Form extends AbstractRegexpFileStepForm {
 
                 File file = new File(fileStr);
                 Charset guessedCharset = CharsetToolkit.guessEncoding(file, 4096);
-                if (getConnection().getEncoding() == null || getConnection().getEncoding().equals("")) {
+                if (getConnection().getEncoding() == null || getConnection().getEncoding().equals("")) { //$NON-NLS-1$
                     getConnection().setEncoding(guessedCharset.displayName());
                 }
 

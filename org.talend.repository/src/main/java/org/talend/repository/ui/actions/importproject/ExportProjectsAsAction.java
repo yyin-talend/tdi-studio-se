@@ -72,11 +72,11 @@ import org.talend.repository.ui.wizards.newproject.copyfromeclipse.TalendZipFile
  */
 public class ExportProjectsAsAction extends Action implements IWorkbenchWindowActionDelegate {
 
-    private static final String LIB = "lib";
+    private static final String LIB = "lib"; //$NON-NLS-1$
 
-    private static final String CODE = "code";
+    private static final String CODE = "code"; //$NON-NLS-1$
 
-    private static final String TYPE = "FOLDER";
+    private static final String TYPE = "FOLDER"; //$NON-NLS-1$
 
     private IWorkbenchWindow window;
 
@@ -110,7 +110,7 @@ public class ExportProjectsAsAction extends Action implements IWorkbenchWindowAc
         Shell activeShell = Display.getCurrent().getActiveShell();
         TalendZipFileExportWizard docWizard = new TalendZipFileExportWizard();
         WizardDialog dialog = new WizardDialog(activeShell, docWizard);
-        docWizard.setWindowTitle(Messages.getString("ExportProjectsAsAction.actionTitle"));
+        docWizard.setWindowTitle(Messages.getString("ExportProjectsAsAction.actionTitle")); //$NON-NLS-1$
         dialog.create();
         dialog.open();
 
@@ -157,10 +157,10 @@ public class ExportProjectsAsAction extends Action implements IWorkbenchWindowAc
 
             public void run(IProgressMonitor monitor) {
                 Set<Project> projects = map.keySet();
-                monitor.beginTask("Create external libraries' links", projects.size());
+                monitor.beginTask(Messages.getString("ExportProjectsAsAction.createLiberariesLink"), projects.size()); //$NON-NLS-1$
 
                 for (Project project : projects) {
-                    monitor.setTaskName("Process project" + project.getLabel());
+                    monitor.setTaskName(Messages.getString("ExportProjectsAsAction.processProject") + project.getLabel()); //$NON-NLS-1$
                     List<LinkTargetStore> links = map.get(project);
 
                     for (LinkTargetStore store : links) {
@@ -273,9 +273,9 @@ public class ExportProjectsAsAction extends Action implements IWorkbenchWindowAc
 
     }
 
-    public final static String EXTERNAL_LIB_JAVA_PATH = "external_lib_java_path";
+    public final static String EXTERNAL_LIB_JAVA_PATH = "external_lib_java_path"; //$NON-NLS-1$
 
-    public final static String EXTERNAL_LIB_PERL_PATH = "external_lib_perl_path";
+    public final static String EXTERNAL_LIB_PERL_PATH = "external_lib_perl_path"; //$NON-NLS-1$
 
     /**
      * DOC bqian Comment method "initializeLibPath".
@@ -285,8 +285,8 @@ public class ExportProjectsAsAction extends Action implements IWorkbenchWindowAc
         ILibrariesService libService = CorePlugin.getDefault().getLibrariesService();
         String libPath = libService.getLibrariesPath();
         try {
-            Pattern javaPattern = Pattern.compile("(.*)java$");
-            Pattern perlPattern = Pattern.compile("(.*)perl$");
+            Pattern javaPattern = Pattern.compile("(.*)java$"); //$NON-NLS-1$
+            Pattern perlPattern = Pattern.compile("(.*)perl$"); //$NON-NLS-1$
             Matcher javaMatcher = javaPattern.matcher(libPath);
             Matcher perlMatcher = perlPattern.matcher(libPath);
             if (javaMatcher.find()) {

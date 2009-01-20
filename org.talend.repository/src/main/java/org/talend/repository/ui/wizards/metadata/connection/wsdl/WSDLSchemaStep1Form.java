@@ -315,9 +315,9 @@ public class WSDLSchemaStep1Form extends AbstractWSDLSchemaStepForm {
         tabFolder.setLayoutData(new GridData(GridData.FILL_BOTH));
 
         previewTabItem = new CTabItem(tabFolder, SWT.BORDER);
-        previewTabItem.setText("Preview");
+        previewTabItem.setText(Messages.getString("WSDLSchemaStep1Form.preview")); //$NON-NLS-1$
         outputTabItem = new CTabItem(tabFolder, SWT.BORDER);
-        outputTabItem.setText("Output");
+        outputTabItem.setText(Messages.getString("WSDLSchemaStep1Form.output")); //$NON-NLS-1$
 
         Composite previewComposite = Form.startNewGridLayout(tabFolder, 1);
         outputComposite = Form.startNewGridLayout(tabFolder, 1);

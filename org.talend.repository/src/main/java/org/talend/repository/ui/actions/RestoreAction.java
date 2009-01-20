@@ -169,7 +169,7 @@ public class RestoreAction extends AContextualAction {
                 folders.add(path.toString());
                 return path;
             } else {
-                return new Path("");
+                return new Path(""); //$NON-NLS-1$
             }
         }
 

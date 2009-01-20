@@ -32,6 +32,7 @@ import org.talend.core.model.properties.GenericSchemaConnectionItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.MetadataTableRepositoryObject;
 
@@ -41,7 +42,7 @@ import org.talend.repository.model.MetadataTableRepositoryObject;
  */
 public class CopyToGenericSchemaHelper {
 
-    private static final String DEFAULT_TABLE_NAME = "metadata";
+    private static final String DEFAULT_TABLE_NAME = "metadata"; //$NON-NLS-1$
 
     private static IProxyRepositoryFactory repositoryFactory;
 
@@ -75,7 +76,7 @@ public class CopyToGenericSchemaHelper {
         } else {
             connectionLabel = tableToMove.getProperty().getItem().getProperty().getLabel();
         }
-        connectionLabel = connectionLabel.replace(" ", "_");
+        connectionLabel = connectionLabel.replace(" ", "_"); //$NON-NLS-1$ //$NON-NLS-2$
 
         GenericSchemaConnectionItem connectionItem = PropertiesFactory.eINSTANCE.createGenericSchemaConnectionItem();
         GenericSchemaConnection connection = ConnectionFactory.eINSTANCE.createGenericSchemaConnection();
@@ -117,7 +118,7 @@ public class CopyToGenericSchemaHelper {
             metadataColumn.setPattern(column.getPattern());
             metadataColumn.setNullable(column.isNullable());
             String originalField = column.getOriginalField();
-            if (originalField == null || "".equals(originalField)) {
+            if (originalField == null || "".equals(originalField)) { //$NON-NLS-1$
                 originalField = column.getLabel();
             }
             metadataColumn.setOriginalField(originalField);
@@ -190,7 +191,7 @@ public class CopyToGenericSchemaHelper {
             char j = 'a';
             while (!repositoryFactory.isNameAvailable(copiedProperty.getItem(), null)) {
                 if (j > 'z') {
-                    throw new BusinessException("Cannot generate pasted item label.");
+                    throw new BusinessException(Messages.getString("CopyToGenericSchemaHelper.cannotGenarateItem")); //$NON-NLS-1$
                 }
                 String nextTry = initialTry + "_" + (j++) + ""; //$NON-NLS-1$ //$NON-NLS-2$
                 copiedProperty.setLabel(nextTry);

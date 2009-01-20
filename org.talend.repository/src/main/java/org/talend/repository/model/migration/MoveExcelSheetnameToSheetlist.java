@@ -51,15 +51,15 @@ public class MoveExcelSheetnameToSheetlist extends AbstractJobMigrationTask {
             IComponentConversion addNewProperty = new IComponentConversion() {
 
                 public void transform(NodeType node) {
-                    ComponentUtilities.addNodeProperty(node, "SHEETLIST", "TABLE");
+                    ComponentUtilities.addNodeProperty(node, "SHEETLIST", "TABLE"); //$NON-NLS-1$ //$NON-NLS-2$
 
                     List<ElementValueType> values = new ArrayList<ElementValueType>();
                     ElementValueType eValue = TalendFileFactory.eINSTANCE.createElementValueType();
-                    eValue.setElementRef("SHEETNAME");
-                    eValue.setValue(ComponentUtilities.getNodePropertyValue(node, "SHEETNAME"));
+                    eValue.setElementRef("SHEETNAME"); //$NON-NLS-1$
+                    eValue.setValue(ComponentUtilities.getNodePropertyValue(node, "SHEETNAME")); //$NON-NLS-1$
                     values.add(eValue);
 
-                    ComponentUtilities.setNodeProperty(node, "SHEETLIST", values);
+                    ComponentUtilities.setNodeProperty(node, "SHEETLIST", values); //$NON-NLS-1$
                 }
             };
             IComponentConversion removeOldProperty = new RemovePropertyComponentConversion("SHEETNAME"); //$NON-NLS-1$

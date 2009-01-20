@@ -90,13 +90,13 @@ public class ShadowProcessHelper {
         processDescription.setFooterRow(getFilePropertyValue(connection.getFooterValue()));
         processDescription.setLimitRows(getFilePropertyValue(connection.getLimitValue()));
         if (connection.getEscapeChar() != null
-                && !connection.getEscapeChar().equals("") && !connection.getEscapeChar().equals("Empty")) { //$NON-NLS-1$
+                && !connection.getEscapeChar().equals("") && !connection.getEscapeChar().equals("Empty")) { //$NON-NLS-1$ //$NON-NLS-2$
             processDescription.setEscapeCharacter(connection.getEscapeChar());
         } else {
             processDescription.setEscapeCharacter(TalendTextUtils.addQuotes("")); //$NON-NLS-1$
         }
         if (connection.getTextEnclosure() != null
-                && !connection.getTextEnclosure().equals("") && !connection.getTextEnclosure().equals("Empty")) { //$NON-NLS-1$
+                && !connection.getTextEnclosure().equals("") && !connection.getTextEnclosure().equals("Empty")) { //$NON-NLS-1$ //$NON-NLS-2$
             processDescription.setTextEnclosure(connection.getTextEnclosure());
         } else {
             processDescription.setTextEnclosure(TalendTextUtils.addQuotes("")); //$NON-NLS-1$
@@ -244,7 +244,7 @@ public class ShadowProcessHelper {
 
                 IMetadataColumn iMetadataColumn = new MetadataColumn();
                 String name = iterate.next();
-				iMetadataColumn.setLabel(name.replaceAll("-", "_"));
+				iMetadataColumn.setLabel(name.replaceAll("-", "_")); //$NON-NLS-1$ //$NON-NLS-2$
 				iMetadataColumn.setOriginalDbColumnName(name);
                 iMetadataColumn.setKey(false);
                 iMetadataColumn.setLength(0);
@@ -379,7 +379,7 @@ public class ShadowProcessHelper {
             while (iterate.hasNext()) {
                 IMetadataColumn iMetadataColumn = new MetadataColumn();
                 String name = iterate.next();
-				iMetadataColumn.setLabel(name.replaceAll("-", "_"));
+				iMetadataColumn.setLabel(name.replaceAll("-", "_")); //$NON-NLS-1$ //$NON-NLS-2$
 				iMetadataColumn.setOriginalDbColumnName(name);
                 iMetadataColumn.setKey(false);
                 iMetadataColumn.setLength(0);
@@ -422,7 +422,7 @@ public class ShadowProcessHelper {
         bean.setReferrals(connection.getReferrals());
         bean.setAliasDereferenring(connection.getAliases());
 
-        bean.setMultiValueSeparator(TalendTextUtils.addQuotes(","));
+        bean.setMultiValueSeparator(TalendTextUtils.addQuotes(",")); //$NON-NLS-1$
 
         bean.setFilter(TalendTextUtils.addQuotes(connection.getFilter()));
 
@@ -490,7 +490,7 @@ public class ShadowProcessHelper {
         bean.setProxyUser(TalendTextUtils.addQuotes(connection.getProxyUser()));
         bean.setProxyPassword(TalendTextUtils.addQuotes(connection.getProxyPassword()));
         processDescription.setWsdlSchemaBean(bean);
-        if (connection.getEncoding() != null && !connection.getEncoding().equals("")) {
+        if (connection.getEncoding() != null && !connection.getEncoding().equals("")) { //$NON-NLS-1$
             processDescription.setEncoding(connection.getEncoding()); 
         } else {
             processDescription.setEncoding(TalendTextUtils.addQuotes("UTF-8")); //$NON-NLS-1$

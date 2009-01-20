@@ -312,13 +312,13 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
             schema.add(column.clone());
         }
 
-        table.setTableName("tSalesforceInput");
+        table.setTableName("tSalesforceInput"); //$NON-NLS-1$
         table.setListColumns(schema);
         tableSchema.add(table);
 
         processDescription.setSchema(tableSchema);
 
-        processDescription.setEncoding(TalendTextUtils.addQuotes("ISO-8859-15"));
+        processDescription.setEncoding(TalendTextUtils.addQuotes("ISO-8859-15")); //$NON-NLS-1$
 
         return processDescription;
     }
@@ -458,13 +458,13 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
                                 if (CorePlugin.getDefault().getPreferenceStore().getString(
                                         MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE) != null
                                         && !CorePlugin.getDefault().getPreferenceStore().getString(
-                                                MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE).equals("")) {
+                                                MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE).equals("")) { //$NON-NLS-1$
                                     globalType = CorePlugin.getDefault().getPreferenceStore().getString(
                                             MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE);
                                     if (CorePlugin.getDefault().getPreferenceStore().getString(
                                             MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH) != null
                                             && !CorePlugin.getDefault().getPreferenceStore().getString(
-                                                    MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH).equals("")) {
+                                                    MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH).equals("")) { //$NON-NLS-1$
                                         lengthValue = Integer.parseInt(CorePlugin.getDefault().getPreferenceStore().getString(
                                                 MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH));
                                     }
@@ -473,13 +473,13 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
                                 if (CorePlugin.getDefault().getPreferenceStore().getString(
                                         MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_TYPE) != null
                                         && !CorePlugin.getDefault().getPreferenceStore().getString(
-                                                MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_TYPE).equals("")) {
+                                                MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_TYPE).equals("")) { //$NON-NLS-1$
                                     globalType = CorePlugin.getDefault().getPreferenceStore().getString(
                                             MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_TYPE);
                                     if (CorePlugin.getDefault().getPreferenceStore().getString(
                                             MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_LENGTH) != null
                                             && !CorePlugin.getDefault().getPreferenceStore().getString(
-                                                    MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_LENGTH).equals("")) {
+                                                    MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_LENGTH).equals("")) { //$NON-NLS-1$
                                         lengthValue = Integer.parseInt(CorePlugin.getDefault().getPreferenceStore().getString(
                                                 MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_LENGTH));
                                     }

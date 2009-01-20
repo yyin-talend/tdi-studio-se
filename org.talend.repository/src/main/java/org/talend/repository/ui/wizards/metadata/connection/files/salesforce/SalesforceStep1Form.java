@@ -112,7 +112,7 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
     @Override
     protected void adaptFormToReadOnly() {
         readOnly = isReadOnly();
-        updateStatus(IStatus.OK, "");
+        updateStatus(IStatus.OK, ""); //$NON-NLS-1$
     }
 
     /*
@@ -123,28 +123,28 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
     @Override
     protected void addFields() {
 
-        Group group = Form.createGroup(this, 3, "Salesforce parameters");
+        Group group = Form.createGroup(this, 3, "Salesforce parameters"); //$NON-NLS-1$
 
         GridData data = new GridData(GridData.FILL_HORIZONTAL);
         group.setLayoutData(data);
 
-        webServiceUrlText = new LabelledText(group, "Web service URL", 2, true);
+        webServiceUrlText = new LabelledText(group, "Web service URL", 2, true); //$NON-NLS-1$
 
-        userNameText = new LabelledText(group, "User name", 2);
+        userNameText = new LabelledText(group, "User name", 2); //$NON-NLS-1$
 
-        passwordText = new LabelledText(group, "Password ", 2);
+        passwordText = new LabelledText(group, "Password ", 2); //$NON-NLS-1$
         passwordText.getTextControl().setEchoChar(pwdEhcoChar);
 
-        moduleNameCombo = new LabelledCombo(group, "Module name", "Please select a module name", null, 2, false);
+        moduleNameCombo = new LabelledCombo(group, "Module name", Messages.getString("SalesforceStep1Form.selectModuleName"), null, 2, false); //$NON-NLS-1$ //$NON-NLS-2$
 
         initModuleNames();
 
         new Label(group, SWT.NONE); // Pachlaer
         useCostomModuleButton = new Button(group, SWT.CHECK);
-        useCostomModuleButton.setText("fetch module list");
+        useCostomModuleButton.setText(Messages.getString("SalesforceStep1Form.fetchModuleList")); //$NON-NLS-1$
         new Label(group, SWT.NONE); // Pachlaer
 
-        customModuleCombo = new LabelledCombo(group, "Custom module", "Please select a Custommodule", null, 1, false);
+        customModuleCombo = new LabelledCombo(group, Messages.getString("SalesforceStep1Form.customModule"), Messages.getString("SalesforceStep1Form.selectCustomModule"), null, 1, false); //$NON-NLS-1$ //$NON-NLS-2$
 
         GridData gd = new GridData();
         gd.widthHint = 140;
@@ -154,7 +154,7 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
         cdata.horizontalAlignment = SWT.LEFT;
 
         checkButton = new Button(group, SWT.NONE);
-        checkButton.setText("Check login");
+        checkButton.setText(Messages.getString("SalesforceStep1Form.checkLogin")); //$NON-NLS-1$
         checkButton.setEnabled(false);
 
         GridData wd = new GridData();
@@ -288,9 +288,9 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
         INode node = getSalesforceNode();
 
         if (node == null) {
-            moduleNameCombo.add("Account");
+            moduleNameCombo.add(Messages.getString("SalesforceStep1Form.account")); //$NON-NLS-1$
         } else {
-            IElementParameter modulesNameParam = node.getElementParameter("MODULENAME");
+            IElementParameter modulesNameParam = node.getElementParameter("MODULENAME"); //$NON-NLS-1$
             modulename = modulesNameParam.getListItemsValue();
 
             if (modulename == null || modulename.length <= 0) {
@@ -342,7 +342,7 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
             @Override
             public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                 monitorWrap = new EventLoopProgressMonitor(monitor);
-                monitorWrap.beginTask("Connection to Salesforce service to fetch custom modules ...", IProgressMonitor.UNKNOWN);
+                monitorWrap.beginTask(Messages.getString("SalesforceStep1Form.connection"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
                 testSalesforceLogin();
                 loginOk = toCheckSalesfoceLogin(endPoint, username, pwd);
                 preparModuleInit();
@@ -484,7 +484,7 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
     }
 
     private boolean isValueValid(String value) {
-        return value != null && !value.equals("");
+        return value != null && !value.equals(""); //$NON-NLS-1$
     }
 
     /*
@@ -499,15 +499,15 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
             return;
         }
 
-        if (getConnection().getWebServiceUrl() != null && !getConnection().getWebServiceUrl().equals("")) {
+        if (getConnection().getWebServiceUrl() != null && !getConnection().getWebServiceUrl().equals("")) { //$NON-NLS-1$
             webServiceUrlText.setText(getConnection().getWebServiceUrl());
         }
 
-        if (getConnection().getWebServiceUrl() == null || getConnection().getWebServiceUrl().equals("")) {
+        if (getConnection().getWebServiceUrl() == null || getConnection().getWebServiceUrl().equals("")) { //$NON-NLS-1$
             getConnection().setWebServiceUrl(TSALESFORCE_INPUT_URL);
         } // Give a default value
 
-        if (webServiceUrlText.getText() == null || webServiceUrlText.getText().equals("")) {
+        if (webServiceUrlText.getText() == null || webServiceUrlText.getText().equals("")) { //$NON-NLS-1$
             webServiceUrlText.setText(TSALESFORCE_INPUT_URL);
         }
 
@@ -518,13 +518,13 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
         boolean useCustom = false;
         useCustom = getConnection().isUseCustomModuleName();
         if (!useCustom) {
-            if (getConnection().getModuleName() != null && !getConnection().getModuleName().equals("")) {
+            if (getConnection().getModuleName() != null && !getConnection().getModuleName().equals("")) { //$NON-NLS-1$
                 moduleNameCombo.setText(getConnection().getModuleName());
             } else {
                 getConnection().setModuleName(moduleNameCombo.getText()); // Set defult value
             }
         } else {
-            if (getConnection().getModuleName() != null && !getConnection().getModuleName().equals("")) {
+            if (getConnection().getModuleName() != null && !getConnection().getModuleName().equals("")) { //$NON-NLS-1$
                 customModuleCombo.setText(getConnection().getModuleName());
             } else {
                 getConnection().setModuleName(customModuleCombo.getText()); // Set defult value
@@ -537,7 +537,7 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
     }
 
     private void setTextValue(String value, LabelledText control) {
-        if (value != null && !value.equals("")) {
+        if (value != null && !value.equals("")) { //$NON-NLS-1$
             control.setText(value);
         }
     }

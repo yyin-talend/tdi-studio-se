@@ -54,12 +54,13 @@ import org.talend.repository.constants.FileConstants;
 import org.talend.repository.documentation.IFileExporterFullPath;
 import org.talend.repository.documentation.TarFileExporterFullPath;
 import org.talend.repository.documentation.ZipFileExporterFullPath;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ProxyRepositoryFactory;
 
 /***/
 public class ExportItemUtil {
 
-    private static final String EXPORTUSER_TALEND_COM = "exportuser@talend.com";
+    private static final String EXPORTUSER_TALEND_COM = "exportuser@talend.com"; //$NON-NLS-1$
 
     private ResourceSet resourceSet;
 
@@ -100,13 +101,13 @@ public class ExportItemUtil {
         File tmpDirectory = null;
         Map<File, IPath> toExport;
 
-        if (destination.getName().endsWith(".tar")) {
+        if (destination.getName().endsWith(".tar")) { //$NON-NLS-1$
             createFolder(destination.getParentFile());
             exporter = new TarFileExporterFullPath(destination.getAbsolutePath(), false);
-        } else if (destination.getName().endsWith(".tar.gz")) {
+        } else if (destination.getName().endsWith(".tar.gz")) { //$NON-NLS-1$
             createFolder(destination.getParentFile());
             exporter = new TarFileExporterFullPath(destination.getAbsolutePath(), true);
-        } else if (destination.getName().endsWith(".zip")) {
+        } else if (destination.getName().endsWith(".zip")) { //$NON-NLS-1$
             createFolder(destination.getParentFile());
             exporter = new ZipFileExporterFullPath(destination.getAbsolutePath(), true);
         } else {
@@ -207,12 +208,11 @@ public class ExportItemUtil {
     }
 
     private Map<File, IPath> exportItems(Collection<Item> items, File destinationDirectory, boolean projectFolderStructure,
-            IProgressMonitor progressMonitor)
-            throws Exception {
+            IProgressMonitor progressMonitor) throws Exception {
         Map<File, IPath> toExport = new HashMap<File, IPath>();
 
-        progressMonitor.beginTask("Export Items", items.size() + 1);
-        
+        progressMonitor.beginTask("Export Items", items.size() + 1); //$NON-NLS-1$
+
         try {
             init();
             // store item and its corresponding project
@@ -259,12 +259,12 @@ public class ExportItemUtil {
         File tmpDirectory = null;
         int suffix = 0;
         while (tmpDirectory == null || tmpDirectory.exists()) {
-            tmpDirectory = new File(SystemUtils.getJavaIoTmpDir(), "talendExportItems" + suffix);
+            tmpDirectory = new File(SystemUtils.getJavaIoTmpDir(), "talendExportItems" + suffix); //$NON-NLS-1$
             suffix++;
         }
 
         if (!tmpDirectory.mkdir()) {
-            throw new IOException("cannot create " + tmpDirectory);
+            throw new IOException(Messages.getString("ExportItemUtil.cannotCreate", tmpDirectory)); //$NON-NLS-1$
         }
 
         return tmpDirectory;
@@ -451,7 +451,7 @@ public class ExportItemUtil {
     private void createFolder(File folder) throws IOException {
         folder.mkdirs();
         if (!folder.exists()) {
-            throw new IOException("unable to create directory '" + folder + "'");
+            throw new IOException(Messages.getString("ExportItemUtil.cannotCreateDir", folder)); //$NON-NLS-1$
         }
     }
 }

@@ -515,7 +515,7 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
 
                 File file = new File(fileStr);
                 Charset guessedCharset = CharsetToolkit.guessEncoding(file, 4096);
-                if (getConnection().getEncoding() == null || getConnection().getEncoding().equals("")) {
+                if (getConnection().getEncoding() == null || getConnection().getEncoding().equals("")) { //$NON-NLS-1$
                     getConnection().setEncoding(guessedCharset.displayName());
                 }
                 String str;
@@ -523,7 +523,7 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
                 // read the file
                 in = new BufferedReader(new InputStreamReader(new FileInputStream(fileStr), guessedCharset.displayName()));
 
-                previewRows.append("\n");
+                previewRows.append("\n"); //$NON-NLS-1$
                 while (((str = in.readLine()) != null) && (numberLine <= maximumRowsToPreview)) {
                     numberLine++;
                     // replace Tabulation by a CaretChar

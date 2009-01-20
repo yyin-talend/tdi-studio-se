@@ -463,13 +463,13 @@ public class LDAPSchemaStep4Form extends AbstractLDAPSchemaStepForm {
                                 if (CorePlugin.getDefault().getPreferenceStore().getString(
                                         MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE) != null
                                         && !CorePlugin.getDefault().getPreferenceStore().getString(
-                                                MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE).equals("")) {
+                                                MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE).equals("")) { //$NON-NLS-1$
                                     globalType = CorePlugin.getDefault().getPreferenceStore().getString(
                                             MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE);
                                     if (CorePlugin.getDefault().getPreferenceStore().getString(
                                             MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH) != null
                                             && !CorePlugin.getDefault().getPreferenceStore().getString(
-                                                    MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH).equals("")) {
+                                                    MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH).equals("")) { //$NON-NLS-1$
                                         lengthValue = Integer.parseInt(CorePlugin.getDefault().getPreferenceStore().getString(
                                                 MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH));
                                     }
@@ -478,13 +478,13 @@ public class LDAPSchemaStep4Form extends AbstractLDAPSchemaStepForm {
                                 if (CorePlugin.getDefault().getPreferenceStore().getString(
                                         MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_TYPE) != null
                                         && !CorePlugin.getDefault().getPreferenceStore().getString(
-                                                MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_TYPE).equals("")) {
+                                                MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_TYPE).equals("")) { //$NON-NLS-1$
                                     globalType = CorePlugin.getDefault().getPreferenceStore().getString(
                                             MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_TYPE);
                                     if (CorePlugin.getDefault().getPreferenceStore().getString(
                                             MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_LENGTH) != null
                                             && !CorePlugin.getDefault().getPreferenceStore().getString(
-                                                    MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_LENGTH).equals("")) {
+                                                    MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_LENGTH).equals("")) { //$NON-NLS-1$
                                         lengthValue = Integer.parseInt(CorePlugin.getDefault().getPreferenceStore().getString(
                                                 MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_LENGTH));
                                     }

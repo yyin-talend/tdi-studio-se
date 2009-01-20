@@ -81,7 +81,7 @@ public class WSDLSchemaWizardPage extends WizardPage {
             currentComposite = new WSDLSchemaStep2Form(parent, connectionItem, contextModeManager);
             break;
         default:
-            System.out.println("error...");
+            System.out.println("error..."); //$NON-NLS-1$
         }
 
         currentComposite.setReadOnly(!isRepositoryObjectEditable);

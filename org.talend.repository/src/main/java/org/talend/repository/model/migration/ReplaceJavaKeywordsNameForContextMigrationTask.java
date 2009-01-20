@@ -225,7 +225,7 @@ public class ReplaceJavaKeywordsNameForContextMigrationTask extends AbstractItem
             return null;
         }
         int i = 0;
-        final String tmpName = oldName + "_";
+        final String tmpName = oldName + "_"; //$NON-NLS-1$
         String newName = tmpName + i;
 
         if (varNames != null) {

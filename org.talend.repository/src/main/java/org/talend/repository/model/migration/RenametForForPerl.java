@@ -44,7 +44,7 @@ public class RenametForForPerl extends AbstractJobMigrationTask {
                 IComponentFilter filter1 = new NameComponentFilter("tFor"); //$NON-NLS-1$
 
                 IComponentConversion addProperty = new AddPropertyLoopTypeConversion();
-                IComponentConversion renameComponent = new RenameComponentConversion("tLoop");
+                IComponentConversion renameComponent = new RenameComponentConversion("tLoop"); //$NON-NLS-1$
 
                 ModifyComponentsAction.searchAndModify(item,processType, filter1, Arrays.<IComponentConversion> asList(addProperty,
                         renameComponent));

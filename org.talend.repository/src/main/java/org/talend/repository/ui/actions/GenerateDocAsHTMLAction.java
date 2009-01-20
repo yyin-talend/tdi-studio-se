@@ -33,7 +33,7 @@ import org.talend.repository.ui.wizards.htmlgeneration.GenerateDocAsHTMLWizard;
  */
 public class GenerateDocAsHTMLAction extends AContextualAction {
 
-    private static final String GENERATE_DOC_AS_HTML = Messages.getString("GenerateDocAsHTMLAction.GenerateDocAsHTML");
+    private static final String GENERATE_DOC_AS_HTML = Messages.getString("GenerateDocAsHTMLAction.GenerateDocAsHTML"); //$NON-NLS-1$
 
     /*
      * (non-Javadoc)

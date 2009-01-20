@@ -32,14 +32,14 @@ public class Test4 {
     public static void main(String[] args) {
         Display display = new Display();
         Shell shell = new Shell(display);
-        shell.setText("Test");
+        shell.setText("Test"); //$NON-NLS-1$
 
         regleTest = new RegleTest(shell, SWT.NONE);
         regleTest.setBounds(3, 0, 500, 25);
         
         positionalText = new PositionalTextTest(shell, SWT.NONE);
         positionalText.setBounds(0, 25, 500, 500);
-        positionalText.setText("\n123456789\niin texte\nsalut le test\ntoto");
+        positionalText.setText("\n123456789\niin texte\nsalut le test\ntoto"); //$NON-NLS-1$
 //        positionalText.setFieldSeparatorValue("1,1");
         regleTest.moveAbove(positionalText);
         

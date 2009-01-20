@@ -73,7 +73,7 @@ public class ContextRepositoryReviewDialog extends RepositoryReviewDialog {
 
     private Button createNewButton;
 
-    private String msg = org.talend.core.i18n.Messages.getString("PropertiesWizardPage.NameFormatError");
+    private String msg = org.talend.core.i18n.Messages.getString("PropertiesWizardPage.NameFormatError"); //$NON-NLS-1$
 
     /**
      * DOC xye ContextRepositoryReviewDialog constructor comment.
@@ -102,13 +102,13 @@ public class ContextRepositoryReviewDialog extends RepositoryReviewDialog {
         bg.setLayout(layout);
 
         Label label = new Label(bg, SWT.NONE);
-        label.setText(Messages.getString("BuiltinToContext.newContextName"));
+        label.setText(Messages.getString("BuiltinToContext.newContextName")); //$NON-NLS-1$
         contextNameText = new Text(bg, SWT.BORDER);
         contextNameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         contextNameText.setEnabled(false);
 
         createNewButton = new Button(bg, SWT.CHECK);
-        createNewButton.setText(Messages.getString("BuiltinToContext.createNewContext"));
+        createNewButton.setText(Messages.getString("BuiltinToContext.createNewContext")); //$NON-NLS-1$
         createNewButton.addSelectionListener(new SelectionAdapter() {
 
             @Override
@@ -125,7 +125,7 @@ public class ContextRepositoryReviewDialog extends RepositoryReviewDialog {
     private boolean nameInvalid(Text nameText) {
         return nameText.getText().length() == 0
                 || !Pattern.matches(RepositoryConstants.getPattern(ERepositoryObjectType.CONTEXT), nameText.getText())
-                || nameText.getText().trim().contains(" ");
+                || nameText.getText().trim().contains(" "); //$NON-NLS-1$
     }
 
     /*
@@ -144,7 +144,7 @@ public class ContextRepositoryReviewDialog extends RepositoryReviewDialog {
 
         if (createNewButton.getSelection()) {
             if (nameInvalid(contextNameText)) {
-                MessageDialog.openError(getShell(), "Context", msg);
+                MessageDialog.openError(getShell(), "Context", msg); //$NON-NLS-1$
             } else {
                 item = PropertiesFactory.eINSTANCE.createContextItem();
                 Property createProperty = PropertiesFactory.eINSTANCE.createProperty();
@@ -169,15 +169,15 @@ public class ContextRepositoryReviewDialog extends RepositoryReviewDialog {
                         boolean nameAvaliabe = repositoryFactory.isNameAvailable(createProperty.getItem(), contextNameText
                                 .getText());
                         if (!nameAvaliabe) {
-                            MessageDialog.openError(getShell(), "Context", org.talend.core.i18n.Messages
-                                    .getString("PropertiesWizardPage.ItemExistsError"));
+                            MessageDialog.openError(getShell(), "Context", org.talend.core.i18n.Messages //$NON-NLS-1$
+                                    .getString("PropertiesWizardPage.ItemExistsError")); //$NON-NLS-1$
                             return;
                         }
                     } catch (PersistenceException e) {
                         ExceptionHandler.process(e);
                         super.okPressed();
                     }
-                    factory.create(item, new Path(""));
+                    factory.create(item, new Path("")); //$NON-NLS-1$
                 } catch (PersistenceException e) {
                     ExceptionHandler.process(e);
                     super.okPressed();

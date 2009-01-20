@@ -55,16 +55,16 @@ public class QuoteWraptSSHcommandMigrationTask extends AbstractJobMigrationTask 
         EList node = processType.getNode();
         for (Object n : node) {
             NodeType type = (NodeType) n;
-            if (type.getComponentName().equals("tSSH")) {
+            if (type.getComponentName().equals("tSSH")) { //$NON-NLS-1$
                 EList elementParameterList = type.getElementParameter();
                 for (Object elem : elementParameterList) {
                     ElementParameterType elemType = (ElementParameterType) elem;
-                    if (elemType.getName().equals("COMMANDS")) {
+                    if (elemType.getName().equals("COMMANDS")) { //$NON-NLS-1$
                         EList elemValue = elemType.getElementValue();
                         for (Object eVal : elemValue) {
                             ElementValueType elemVal = (ElementValueType) eVal;
                             String originV = elemVal.getValue();
-                            elemVal.setValue("\"" + originV + "\"");
+                            elemVal.setValue("\"" + originV + "\""); //$NON-NLS-1$ //$NON-NLS-2$
                             modified = true;
                         }
                     }

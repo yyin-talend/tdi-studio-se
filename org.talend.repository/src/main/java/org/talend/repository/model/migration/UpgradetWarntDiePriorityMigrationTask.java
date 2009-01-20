@@ -49,12 +49,12 @@ public class UpgradetWarntDiePriorityMigrationTask extends AbstractJobMigrationT
         try {
             // 1. tWarn:
             IComponentFilter filter1 = new NameComponentFilter("tWarn"); //$NON-NLS-1$
-            IComponentConversion setPriorityProperty = new UpdatePropertyComponentConversion("PRIORITY", "4"); //$NON-NLS-1$
+            IComponentConversion setPriorityProperty = new UpdatePropertyComponentConversion("PRIORITY", "4"); //$NON-NLS-1$ //$NON-NLS-2$
             ModifyComponentsAction.searchAndModify(item, processType, filter1, Arrays.<IComponentConversion> asList(setPriorityProperty));
 
             // 1. tDie:
             IComponentFilter filter2 = new NameComponentFilter("tDie"); //$NON-NLS-1$
-            setPriorityProperty = new UpdatePropertyComponentConversion("PRIORITY", "5"); //$NON-NLS-1$
+            setPriorityProperty = new UpdatePropertyComponentConversion("PRIORITY", "5"); //$NON-NLS-1$ //$NON-NLS-2$
             ModifyComponentsAction.searchAndModify(item, processType,filter2, Arrays.<IComponentConversion> asList(setPriorityProperty));
 
             return ExecutionResult.SUCCESS_WITH_ALERT;

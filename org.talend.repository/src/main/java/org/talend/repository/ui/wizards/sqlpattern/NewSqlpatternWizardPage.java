@@ -21,6 +21,7 @@ import org.talend.core.model.properties.ItemState;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.wizards.PropertiesWizardPage;
 
 /**
@@ -37,8 +38,8 @@ public class NewSqlpatternWizardPage extends PropertiesWizardPage {
      */
     public NewSqlpatternWizardPage(Property property, IPath destinationPath) {
         super("WizardPage", property, destinationPath); //$NON-NLS-1$
-        setTitle("New SQLPattern"); //$NON-NLS-1$
-        setDescription("Add a new SQLPattern to repository");
+        setTitle(Messages.getString("NewSqlpatternWizardPage.title")); //$NON-NLS-1$
+        setDescription(Messages.getString("NewSqlpatternWizardPage.description")); //$NON-NLS-1$
     }
 
     /**

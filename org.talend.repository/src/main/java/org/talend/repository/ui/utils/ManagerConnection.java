@@ -134,7 +134,7 @@ public class ManagerConnection {
      */
     public boolean check(IMetadataConnection metadataConnection) {
         messageException = null;
-        if (metadataConnection.getDbRootPath() != null && !metadataConnection.getDbRootPath().equals("")) {
+        if (metadataConnection.getDbRootPath() != null && !metadataConnection.getDbRootPath().equals("")) { //$NON-NLS-1$
             setDbRootPath(metadataConnection.getDbRootPath());
         }
 
@@ -194,7 +194,7 @@ public class ManagerConnection {
      */
     public void setDbRootPath(String dbRootPath) {
         if (dbRootPath != null) {
-            System.setProperty("derby.system.home", dbRootPath);
+            System.setProperty("derby.system.home", dbRootPath); //$NON-NLS-1$
         }
         this.dbRootPath = dbRootPath;
     }

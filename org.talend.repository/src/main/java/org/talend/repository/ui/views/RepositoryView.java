@@ -116,7 +116,7 @@ import org.talend.repository.ui.actions.RepositoryDoubleClickAction;
 public class RepositoryView extends ViewPart implements IRepositoryView, ITabbedPropertySheetPageContributor,
         IRepositoryChangedListener, ISelectionListener {
 
-    public final static String ID = "org.talend.repository.views.repository";
+    public final static String ID = "org.talend.repository.views.repository"; //$NON-NLS-1$
 
     private static Logger log = Logger.getLogger(RepositoryView.class);
 
@@ -282,8 +282,8 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                 public void partActivated(IWorkbenchPart part) {
                     if (part instanceof RepositoryView) {
                         String title = activedWorkbenchWindow.getShell().getText();
-                        if (!title.contains("|")) {
-                            title += " | " + repositoryContext.getUser() + " | " + project.getLabel();
+                        if (!title.contains("|")) { //$NON-NLS-1$
+                            title += " | " + repositoryContext.getUser() + " | " + project.getLabel(); //$NON-NLS-1$ //$NON-NLS-2$
                             activedWorkbenchWindow.getShell().setText(title);
                         }
                     }
@@ -304,8 +304,8 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                 public void partOpened(IWorkbenchPart part) {
                     if (part instanceof RepositoryView) {
                         String title = activedWorkbenchWindow.getShell().getText();
-                        if (!title.contains("|")) {
-                            title += " | " + repositoryContext.getUser() + " | " + project.getLabel();
+                        if (!title.contains("|")) { //$NON-NLS-1$
+                            title += " | " + repositoryContext.getUser() + " | " + project.getLabel(); //$NON-NLS-1$ //$NON-NLS-2$
                             activedWorkbenchWindow.getShell().setText(title);
                         }
                     }
@@ -348,7 +348,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                     return null;
                 }
                 String content = node.getObject().getDescription();
-                if (content == null || content.equals("")) {
+                if (content == null || content.equals("")) { //$NON-NLS-1$
                     return null;
                 }
 
@@ -688,7 +688,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         RepositoryNode container = findContainer(root, type);
 
         if (container == null) {
-            throw new IllegalArgumentException(type + " not found");
+            throw new IllegalArgumentException(type + Messages.getString("RepositoryView.notfound")); //$NON-NLS-1$
         }
 
         List<IRepositoryObject> result = new ArrayList<IRepositoryObject>();

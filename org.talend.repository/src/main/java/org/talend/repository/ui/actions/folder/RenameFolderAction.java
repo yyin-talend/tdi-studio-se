@@ -75,8 +75,8 @@ public class RenameFolderAction extends AContextualAction {
         // Check if some jobs in the folder are currently opened:
         String firstChildOpen = getFirstOpenedChild(node);
         if (firstChildOpen != null) {
-            MessageDialog.openWarning(new Shell(), Messages.getString("RenameFolderAction.warning.editorOpen.title"), Messages
-                    .getString("RenameFolderAction.warning.editorOpen.message", firstChildOpen, node
+            MessageDialog.openWarning(new Shell(), Messages.getString("RenameFolderAction.warning.editorOpen.title"), Messages //$NON-NLS-1$
+                    .getString("RenameFolderAction.warning.editorOpen.message", firstChildOpen, node //$NON-NLS-1$
                             .getProperties(EProperties.LABEL)));
             return;
         }

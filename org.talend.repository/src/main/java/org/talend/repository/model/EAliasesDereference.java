@@ -19,10 +19,10 @@ package org.talend.repository.model;
  */
 public enum EAliasesDereference {
 
-    ALWAYS("Always","always"),
-    NEVER("Never","never"),
-    FINDING("Finding","finding"),
-    SEARCHING("Searching","searching");
+    ALWAYS("Always","always"), //$NON-NLS-1$ //$NON-NLS-2$
+    NEVER("Never","never"), //$NON-NLS-1$ //$NON-NLS-2$
+    FINDING("Finding","finding"), //$NON-NLS-1$ //$NON-NLS-2$
+    SEARCHING("Searching","searching"); //$NON-NLS-1$ //$NON-NLS-2$
 
     private String displayName;
     

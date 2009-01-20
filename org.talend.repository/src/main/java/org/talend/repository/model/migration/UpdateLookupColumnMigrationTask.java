@@ -50,7 +50,7 @@ public class UpdateLookupColumnMigrationTask extends AbstractJobMigrationTask {
         try {
             // 1.tFuzzyMatch:
             IComponentFilter filter1 = new NameComponentFilter("tFuzzyMatch"); //$NON-NLS-1$
-            IComponentConversion lookupProperty = new UpdateLookupColumnConversion("LOOKUP_COLUMN");
+            IComponentConversion lookupProperty = new UpdateLookupColumnConversion("LOOKUP_COLUMN"); //$NON-NLS-1$
             ModifyComponentsAction.searchAndModify(item,processType, filter1, Arrays.<IComponentConversion> asList(lookupProperty));
 
             // 2.tIntervalMatch

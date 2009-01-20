@@ -229,7 +229,7 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
 
                 String str = commonNodesLimitation.getText();
 
-                if ((!str.matches("\\d+")) || (Integer.valueOf(str) < 0)) {
+                if ((!str.matches("\\d+")) || (Integer.valueOf(str) < 0)) { //$NON-NLS-1$
                     commonNodesLimitation.setText(String.valueOf(treePopulator.getLimit()));
                 } else {
                     treePopulator.setLimit(Integer.valueOf(str));
@@ -393,7 +393,7 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
             return false;
         }
         if (!valid) {
-            updateStatus(IStatus.ERROR, Messages.getString("dataset.error.populateXMLTree"));
+            updateStatus(IStatus.ERROR, Messages.getString("dataset.error.populateXMLTree")); //$NON-NLS-1$
             return false;
         }
         updateStatus(IStatus.OK, null);

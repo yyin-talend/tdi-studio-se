@@ -57,8 +57,8 @@ public class RemoveSpaceInJobNameMigrationTask extends AbstractJobMigrationTask 
     private void renameJobs(Item item) throws PersistenceException {
         ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
-        if (item.getProperty().getLabel().contains(" ")) { // if the job contain some spaces
-            item.getProperty().setLabel(item.getProperty().getLabel().replaceAll(" ", "_"));
+        if (item.getProperty().getLabel().contains(" ")) { // if the job contain some spaces //$NON-NLS-1$
+            item.getProperty().setLabel(item.getProperty().getLabel().replaceAll(" ", "_")); //$NON-NLS-1$ //$NON-NLS-2$
             factory.save(item,true);
         }
     }

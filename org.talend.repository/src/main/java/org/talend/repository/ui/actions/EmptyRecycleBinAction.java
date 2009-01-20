@@ -85,7 +85,7 @@ public class EmptyRecycleBinAction extends AContextualAction {
                     IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
                     for (IEditorReference editors : page.getEditorReferences()) {
                         String nameInEditor = editors.getName();
-                        if (objToDelete.getLabel().equals(nameInEditor.substring(nameInEditor.indexOf(" ") + 1))) {
+                        if (objToDelete.getLabel().equals(nameInEditor.substring(nameInEditor.indexOf(" ") + 1))) { //$NON-NLS-1$
                             page.closeEditor(editors.getEditor(false), false);
                         }
                     }

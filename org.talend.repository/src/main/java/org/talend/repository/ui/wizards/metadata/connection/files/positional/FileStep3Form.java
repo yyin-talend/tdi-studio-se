@@ -400,7 +400,7 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
 		if (fieldSeparatorValues != null && fieldSeparatorValues.length() > 0) {
 			fieldSeparatorValues = fieldSeparatorValues.substring(1,
 					fieldSeparatorValues.length() - 1);
-			fieldSeparatorValueArray = fieldSeparatorValues.split(",");
+			fieldSeparatorValueArray = fieldSeparatorValues.split(","); //$NON-NLS-1$
 		}
 
 		List<String[]> csvRows = csvArray.getRows();
@@ -502,7 +502,7 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
 											.getPreferenceStore()
 											.getString(
 													MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE)
-											.equals("")) {
+											.equals("")) { //$NON-NLS-1$
 								globalType = CorePlugin
 										.getDefault()
 										.getPreferenceStore()
@@ -518,7 +518,7 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
 												.getPreferenceStore()
 												.getString(
 														MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH)
-												.equals("")) {
+												.equals("")) { //$NON-NLS-1$
 									lengthValue = Integer
 											.parseInt(CorePlugin
 													.getDefault()
@@ -540,7 +540,7 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
 											.getPreferenceStore()
 											.getString(
 													MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_TYPE)
-											.equals("")) {
+											.equals("")) { //$NON-NLS-1$
 								globalType = CorePlugin
 										.getDefault()
 										.getPreferenceStore()
@@ -556,7 +556,7 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
 												.getPreferenceStore()
 												.getString(
 														MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_LENGTH)
-												.equals("")) {
+												.equals("")) { //$NON-NLS-1$
 									lengthValue = Integer
 											.parseInt(CorePlugin
 													.getDefault()
@@ -598,7 +598,7 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
 			metadataColumn.setTalendType(talendType);
 
 			if (fieldSeparatorValueArray[i] != null) {
-				if (fieldSeparatorValueArray[i].equals("*")) {
+				if (fieldSeparatorValueArray[i].equals("*")) { //$NON-NLS-1$
 					metadataColumn.setLength(lengthValue);
 				} else {
 					metadataColumn.setLength(Integer.valueOf(

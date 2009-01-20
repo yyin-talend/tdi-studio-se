@@ -152,7 +152,7 @@ public class LDAPSchemaStep1Form extends AbstractLDAPSchemaStepForm {
 
             public void verifyText(VerifyEvent event) {
                 if (!isContextMode()) {
-                    if (!event.text.matches("[0-9]*")) {
+                    if (!event.text.matches("[0-9]*")) { //$NON-NLS-1$
                         event.doit = false;
                     }
                     if (portCombo.getText().length() > 6 && event.text.length() > 0) {
@@ -214,12 +214,12 @@ public class LDAPSchemaStep1Form extends AbstractLDAPSchemaStepForm {
                     }
                     MessageDialog.openInformation(Display.getDefault().getActiveShell(), Messages
                             .getString("LDAPSchemaStep1Form.CheckNetWorkParameter"), //$NON-NLS-1$
-                            "The connection succeeded.");
+                            Messages.getString("LDAPSchemaStep1Form.connnectionSuccessed")); //$NON-NLS-1$
                     updateStatus(IStatus.OK, null);
                 } else {
                     MessageDialog.openError(Display.getDefault().getActiveShell(), Messages
                             .getString("LDAPSchemaStep1Form.CheckNetWorkParameter"), //$NON-NLS-1$
-                            "The connection failed.");
+                            Messages.getString("LDAPSchemaStep1Form.connectionFailed")); //$NON-NLS-1$
                     updateStatus(IStatus.ERROR, null);
                 }
             }
@@ -244,11 +244,11 @@ public class LDAPSchemaStep1Form extends AbstractLDAPSchemaStepForm {
      */
     @Override
     protected boolean checkFieldsValue() {
-        if (hostCombo.getText() == null || hostCombo.getText().equals("")) {
+        if (hostCombo.getText() == null || hostCombo.getText().equals("")) { //$NON-NLS-1$
             this.checkConnectionButton.setEnabled(false);
             updateStatus(IStatus.ERROR, "Host name must be specified."); //$NON-NLS-1$
             return false;
-        } else if (portCombo.getText() == null || portCombo.getText().equals("")) {
+        } else if (portCombo.getText() == null || portCombo.getText().equals("")) { //$NON-NLS-1$
             this.checkConnectionButton.setEnabled(false);
             updateStatus(IStatus.ERROR, "Port must be specified."); //$NON-NLS-1$
             return false;
@@ -269,12 +269,12 @@ public class LDAPSchemaStep1Form extends AbstractLDAPSchemaStepForm {
         LDAPSchemaConnection connection = (LDAPSchemaConnection) this.connectionItem.getConnection();
         String host = connection.getHost();
         this.hostCombo.setItems(HistoryUtils.load(ConnectionUIConstants.DIALOGSETTING_KEY_HOST_HISTORY));
-        this.hostCombo.setText(host == null ? "" : host);
+        this.hostCombo.setText(host == null ? "" : host); //$NON-NLS-1$
         String port = connection.getPort();
         this.portCombo.setItems(HistoryUtils.load(ConnectionUIConstants.DIALOGSETTING_KEY_PORT_HISTORY));
-        this.portCombo.setText(port == null ? "" : port);
+        this.portCombo.setText(port == null ? "" : port); //$NON-NLS-1$
         String encryptionMethodName = connection.getEncryptionMethodName();
-        this.encryptionMethodCombo.setText(encryptionMethodName == null ? "" : encryptionMethodName);
+        this.encryptionMethodCombo.setText(encryptionMethodName == null ? "" : encryptionMethodName); //$NON-NLS-1$
 
         if (connection.getEncryptionMethodName() == null) {
             connection.setEncryptionMethodName(EEncryptionMethod.NO_ENCRYPTION_METHOD.getName());
@@ -282,7 +282,7 @@ public class LDAPSchemaStep1Form extends AbstractLDAPSchemaStepForm {
             updateStatus(IStatus.OK, null);
         }
 
-        boolean flag = (host == null || port.equals("") || encryptionMethodName == null);
+        boolean flag = (host == null || port.equals("") || encryptionMethodName == null); //$NON-NLS-1$
         this.checkConnectionButton.setEnabled(false);
         checkFieldsValue();
     }

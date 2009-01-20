@@ -228,7 +228,7 @@ public class OpenDocumentationAction extends AContextualAction {
         WebBrowserEditorInput input = new WebBrowserEditorInput(url);
 
         input.setName(item.getProperty().getLabel());
-        input.setToolTipText(item.getProperty().getLabel() + " " + item.getProperty().getVersion());
+        input.setToolTipText(item.getProperty().getLabel() + " " + item.getProperty().getVersion()); //$NON-NLS-1$
         browser.open(input);
     }
 }

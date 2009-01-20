@@ -56,6 +56,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.ICDCProviderService;
 import org.talend.repository.ProjectManager;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.MetadataTableRepositoryObject;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
@@ -123,11 +124,11 @@ public class RepositoryReviewDialog extends Dialog {
         this(parentShell, type, null);
     }
 
-    public RepositoryReviewDialog(Shell parentShell,
-			ITypeProcessor typeProcessor, ERepositoryObjectType type) {
-		this(parentShell, type);
-		this.typeProcessor = typeProcessor;
-	}
+    public RepositoryReviewDialog(Shell parentShell, ITypeProcessor typeProcessor, ERepositoryObjectType type) {
+        this(parentShell, type);
+        this.typeProcessor = typeProcessor;
+    }
+
     /**
      * bqian create the correct TypeProcessor according to the type.
      * 
@@ -157,7 +158,7 @@ public class RepositoryReviewDialog extends Dialog {
             return new ContextTypeProcessor(repositoryType);
         }
 
-        throw new IllegalArgumentException("illegal argument:" + type);
+        throw new IllegalArgumentException(Messages.getString("RepositoryReviewDialog.0", type)); //$NON-NLS-1$
     }
 
     /**
@@ -169,7 +170,7 @@ public class RepositoryReviewDialog extends Dialog {
     protected void configureShell(Shell shell) {
         super.configureShell(shell);
         // Set the title bar text and the size
-        shell.setText("Repository Content");
+        shell.setText(Messages.getString("RepositoryReviewDialog.repositoryContent")); //$NON-NLS-1$
         // shell.setSize(500, 400);
     }
 
@@ -263,7 +264,7 @@ public class RepositoryReviewDialog extends Dialog {
 
         // create text filter
         Label label = new Label(container, SWT.NONE);
-        label.setText("Type job name prefix or pattern(*, ?, or camel case):");
+        label.setText(Messages.getString("RepositoryReviewDialog.jobNameFormat")); //$NON-NLS-1$
         label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         final Text text = new Text(container, SWT.BORDER);
@@ -272,9 +273,9 @@ public class RepositoryReviewDialog extends Dialog {
 
             public void modifyText(ModifyEvent e) {
                 String pattern = text.getText();
-                pattern = pattern.replace("*", ".*");
-                pattern = pattern.replace("?", ".");
-                pattern = "(?i)" + pattern + ".*";
+                pattern = pattern.replace("*", ".*"); //$NON-NLS-1$ //$NON-NLS-2$
+                pattern = pattern.replace("?", "."); //$NON-NLS-1$ //$NON-NLS-2$
+                pattern = "(?i)" + pattern + ".*"; //$NON-NLS-1$ //$NON-NLS-2$
                 textFilter.setText(pattern);
                 repositoryView.refresh();
                 repositoryView.selectFirstOne();
@@ -630,7 +631,7 @@ class RepositoryTypeProcessor implements ITypeProcessor {
                     metadataNode = ((ProjectRepositoryNode) provider).getMetadataNode();
                 }
             }
-            if (repositoryType.equals("DELIMITED")) {
+            if (repositoryType.equals("DELIMITED")) { //$NON-NLS-1$
                 if (provider instanceof RepositoryContentProvider) {
                     metadataNode = ((RepositoryContentProvider) provider).getMetadataFileNode();
                 }
@@ -638,7 +639,7 @@ class RepositoryTypeProcessor implements ITypeProcessor {
                     metadataNode = ((ProjectRepositoryNode) provider).getMetadataFileNode();
                 }
             }
-            if (repositoryType.equals("POSITIONAL")) {
+            if (repositoryType.equals("POSITIONAL")) { //$NON-NLS-1$
                 if (provider instanceof RepositoryContentProvider) {
                     metadataNode = ((RepositoryContentProvider) provider).getMetadataFilePositionalNode();
                 }
@@ -646,7 +647,7 @@ class RepositoryTypeProcessor implements ITypeProcessor {
                     metadataNode = ((ProjectRepositoryNode) provider).getMetadataFilePositionalNode();
                 }
             }
-            if (repositoryType.equals("REGEX")) {
+            if (repositoryType.equals("REGEX")) { //$NON-NLS-1$
                 if (provider instanceof RepositoryContentProvider) {
                     metadataNode = ((RepositoryContentProvider) provider).getMetadataFileRegexpNode();
                 }
@@ -654,7 +655,7 @@ class RepositoryTypeProcessor implements ITypeProcessor {
                     metadataNode = ((ProjectRepositoryNode) provider).getMetadataFileRegexpNode();
                 }
             }
-            if (repositoryType.equals("XML")) {
+            if (repositoryType.equals("XML")) { //$NON-NLS-1$
                 if (provider instanceof RepositoryContentProvider) {
                     metadataNode = ((RepositoryContentProvider) provider).getMetadataFileXmlNode();
                 }
@@ -662,7 +663,7 @@ class RepositoryTypeProcessor implements ITypeProcessor {
                     metadataNode = ((ProjectRepositoryNode) provider).getMetadataFileXmlNode();
                 }
             }
-            if (repositoryType.equals("LDIF")) {
+            if (repositoryType.equals("LDIF")) { //$NON-NLS-1$
                 if (provider instanceof RepositoryContentProvider) {
                     metadataNode = ((RepositoryContentProvider) provider).getMetadataFileLdifNode();
                 }
@@ -670,7 +671,7 @@ class RepositoryTypeProcessor implements ITypeProcessor {
                     metadataNode = ((ProjectRepositoryNode) provider).getMetadataFileLdifNode();
                 }
             }
-            if (repositoryType.equals("EXCEL")) {
+            if (repositoryType.equals("EXCEL")) { //$NON-NLS-1$
                 if (provider instanceof RepositoryContentProvider) {
                     metadataNode = ((RepositoryContentProvider) provider).getMetadataFileExcelNode();
                 }
@@ -678,7 +679,7 @@ class RepositoryTypeProcessor implements ITypeProcessor {
                     metadataNode = ((ProjectRepositoryNode) provider).getMetadataFileExcelNode();
                 }
             }
-            if (repositoryType.equals("GENERIC")) {
+            if (repositoryType.equals("GENERIC")) { //$NON-NLS-1$
                 if (provider instanceof RepositoryContentProvider) {
                     metadataNode = ((RepositoryContentProvider) provider).getMetadataGenericSchemaNode();
                 }
@@ -686,7 +687,7 @@ class RepositoryTypeProcessor implements ITypeProcessor {
                     metadataNode = ((ProjectRepositoryNode) provider).getMetadataGenericSchemaNode();
                 }
             }
-            if (repositoryType.equals("LDAP")) {
+            if (repositoryType.equals("LDAP")) { //$NON-NLS-1$
                 if (provider instanceof RepositoryContentProvider) {
                     metadataNode = ((RepositoryContentProvider) provider).getMetadataLDAPSchemaNode();
                 }
@@ -694,7 +695,7 @@ class RepositoryTypeProcessor implements ITypeProcessor {
                     metadataNode = ((ProjectRepositoryNode) provider).getMetadataLDAPSchemaNode();
                 }
             }
-            if (repositoryType.equals("WSDL")) {
+            if (repositoryType.equals("WSDL")) { //$NON-NLS-1$
                 if (provider instanceof RepositoryContentProvider) {
                     metadataNode = ((RepositoryContentProvider) provider).getMetadataWSDLSchemaNode();
                 }
@@ -702,7 +703,7 @@ class RepositoryTypeProcessor implements ITypeProcessor {
                     metadataNode = ((ProjectRepositoryNode) provider).getMetadataWSDLSchemaNode();
                 }
             }
-            if (repositoryType.equals("SALESFORCE")) {
+            if (repositoryType.equals("SALESFORCE")) { //$NON-NLS-1$
                 if (provider instanceof RepositoryContentProvider) {
                     metadataNode = ((RepositoryContentProvider) provider).getMetadataSalesforceSchemaNode();
                 }
@@ -711,7 +712,7 @@ class RepositoryTypeProcessor implements ITypeProcessor {
                 }
             }
 
-            if (repositoryType.startsWith("DATABASE")) {
+            if (repositoryType.startsWith("DATABASE")) { //$NON-NLS-1$
                 if (provider instanceof RepositoryContentProvider) {
                     metadataNode = ((RepositoryContentProvider) provider).getMetadataConNode();
                 }
@@ -719,7 +720,7 @@ class RepositoryTypeProcessor implements ITypeProcessor {
                     metadataNode = ((ProjectRepositoryNode) provider).getMetadataConNode();
                 }
             }
-            if (repositoryType.startsWith("SAP")) {
+            if (repositoryType.startsWith("SAP")) { //$NON-NLS-1$
                 if (provider instanceof RepositoryContentProvider) {
                     metadataNode = ((RepositoryContentProvider) provider).getMetadataSAPConnectionNode();
                 }
@@ -727,7 +728,7 @@ class RepositoryTypeProcessor implements ITypeProcessor {
                     metadataNode = ((ProjectRepositoryNode) provider).getMetadataSAPConnectionNode();
                 }
             }
-            if (repositoryType.equals("EBCDIC")) {
+            if (repositoryType.equals("EBCDIC")) { //$NON-NLS-1$
                 if (provider instanceof RepositoryContentProvider) {
                     metadataNode = ((RepositoryContentProvider) provider)
                             .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_EBCDIC);
@@ -783,7 +784,7 @@ class RepositoryTypeProcessor implements ITypeProcessor {
                     ConnectionItem connectionItem = (ConnectionItem) item;
                     Connection connection = connectionItem.getConnection();
                     String currentDbType = (String) RepositoryToComponentProperty.getValue(connection, "TYPE"); //$NON-NLS-1$
-                    if (repositoryType.contains(":")) { // database
+                    if (repositoryType.contains(":")) { // database //$NON-NLS-1$
                         // is
                         // specified
                         // //$NON-NLS-1$
@@ -820,7 +821,7 @@ class SchemaTypeProcessor implements ITypeProcessor {
 
     public RepositoryNode getInputRoot(RepositoryContentProvider contentProvider) {
         List<RepositoryNode> container = new NoNullList<RepositoryNode>();
-        if (repositoryType != null && repositoryType.startsWith("DATABASE")) {
+        if (repositoryType != null && repositoryType.startsWith("DATABASE")) { //$NON-NLS-1$
             container.add(contentProvider.getMetadataConNode());
         } else {
             container.add(contentProvider.getMetadataFileNode());
@@ -862,7 +863,7 @@ class SchemaTypeProcessor implements ITypeProcessor {
                     ProjectRepositoryNode newProject = new ProjectRepositoryNode(refProject);
 
                     List<RepositoryNode> refContainer = new ArrayList<RepositoryNode>();
-                    if (repositoryType != null && repositoryType.startsWith("DATABASE")) {
+                    if (repositoryType != null && repositoryType.startsWith("DATABASE")) { //$NON-NLS-1$
                         refContainer.add(refProject.getMetadataConNode());
                     } else {
                         refContainer.add(refProject.getMetadataFileNode());
@@ -937,7 +938,7 @@ class SchemaTypeProcessor implements ITypeProcessor {
                     }
                 }
 
-                if ("DATABASE:CDC".equals(repositoryType) && (node.getObject() != null)) {
+                if ("DATABASE:CDC".equals(repositoryType) && (node.getObject() != null)) { //$NON-NLS-1$
                     if (node.getObject().getType() == ERepositoryObjectType.METADATA_CONNECTIONS) {
                         DatabaseConnectionItem item = (DatabaseConnectionItem) node.getObject().getProperty().getItem();
                         DatabaseConnection connection = (DatabaseConnection) item.getConnection();
@@ -1166,7 +1167,7 @@ class ViewerTextFilter extends ViewerFilter {
 
     @Override
     public boolean select(Viewer viewer, Object parentElement, Object element) {
-        if (text == null || text.equals("")) {
+        if (text == null || text.equals("")) { //$NON-NLS-1$
             return true;
         }
         RepositoryNode node = (RepositoryNode) element;

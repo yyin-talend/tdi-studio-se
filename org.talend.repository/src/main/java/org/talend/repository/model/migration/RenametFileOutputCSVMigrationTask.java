@@ -43,7 +43,7 @@ public class RenametFileOutputCSVMigrationTask extends AbstractJobMigrationTask 
             IComponentFilter filter1 = new NameComponentFilter("tFileOutputCSV"); //$NON-NLS-1$
 
             IComponentConversion addProperty = new AddPropertyCSVOptionConversion();
-            IComponentConversion renameComponent = new RenameComponentConversion("tFileOutputDelimited");
+            IComponentConversion renameComponent = new RenameComponentConversion("tFileOutputDelimited"); //$NON-NLS-1$
 
             ModifyComponentsAction.searchAndModify(item, processType, filter1, Arrays.<IComponentConversion> asList(addProperty,
                     renameComponent));

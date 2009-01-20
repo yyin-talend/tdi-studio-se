@@ -54,11 +54,11 @@ public class DocumentationPreferencePage extends FieldEditorPreferencePage imple
     @Override
     protected void createFieldEditors() {
         booleanFieldEditor = new BooleanFieldEditor(ITalendCorePrefConstants.DOC_GENERATION, Messages
-                .getString("DocumentationPreferencePage.autoUpdateDoc"), getFieldEditorParent());
+                .getString("DocumentationPreferencePage.autoUpdateDoc"), getFieldEditorParent()); //$NON-NLS-1$
         passwordHideFieldEditor = new BooleanFieldEditor(ITalendCorePrefConstants.DOC_HIDEPASSWORDS, Messages
-                .getString("DocumentationPreferencePage.hidePwd"), getFieldEditorParent());
+                .getString("DocumentationPreferencePage.hidePwd"), getFieldEditorParent()); //$NON-NLS-1$
         sourceCodeGenFieldEditor = new BooleanFieldEditor(ITalendCorePrefConstants.DOC_GENERATESOURCECODE, Messages
-                .getString("DocumentationPreferencePage.sourceCodeToHTML"), getFieldEditorParent());
+                .getString("DocumentationPreferencePage.sourceCodeToHTML"), getFieldEditorParent()); //$NON-NLS-1$
         addField(booleanFieldEditor);
         addField(passwordHideFieldEditor);
         addField(sourceCodeGenFieldEditor);

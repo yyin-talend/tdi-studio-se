@@ -109,7 +109,7 @@ public class LDAPSchemaStep2Form extends AbstractLDAPSchemaStepForm {
     /** The time limit text. */
     private Text timeLimitText;
 
-    private String alertForFetchBaseDNs = "Base DNs are required. Click the Fetch button to get them.";
+    private String alertForFetchBaseDNs = Messages.getString("LDAPSchemaStep2Form.alertMessage"); //$NON-NLS-1$
 
     public LDAPSchemaStep2Form(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable, String[] tableNames,
             IMetadataContextModeManager contextModeManager) {
@@ -164,7 +164,7 @@ public class LDAPSchemaStep2Form extends AbstractLDAPSchemaStepForm {
         bindPrincipalCombo = BaseWidgetUtils.createCombo(composite, dnHistory, -1, 2);
 
         BaseWidgetUtils.createLabel(composite, Messages.getString("LDAPSchemaStep2Form.BindPassword"), 1); //$NON-NLS-1$
-        bindPasswordText = BaseWidgetUtils.createPasswordText(composite, "", 2);
+        bindPasswordText = BaseWidgetUtils.createPasswordText(composite, "", 2); //$NON-NLS-1$
 
         BaseWidgetUtils.createSpacer(composite, 1);
         saveBindPasswordButton = BaseWidgetUtils.createCheckbox(composite,
@@ -322,13 +322,13 @@ public class LDAPSchemaStep2Form extends AbstractLDAPSchemaStepForm {
                     if (!isContextMode()) {
                         saveDialogSettings();
                     }
-                    MessageDialog.openInformation(Display.getDefault().getActiveShell(), "Check Authentication Parameter",
-                            "The authentication check succeeded.");
+                    MessageDialog.openInformation(Display.getDefault().getActiveShell(), Messages.getString("LDAPSchemaStep2Form.checkPara"), //$NON-NLS-1$
+                            Messages.getString("LDAPSchemaStep2Form.checkSuccessful")); //$NON-NLS-1$
                     updateStatus(IStatus.ERROR, alertForFetchBaseDNs);
                 } else {
 
-                    MessageDialog.openError(Display.getDefault().getActiveShell(), "Check Authentication Parameter",
-                            "The authentication check failed.");
+                    MessageDialog.openError(Display.getDefault().getActiveShell(), Messages.getString("LDAPSchemaStep2Form.checkPara"), //$NON-NLS-1$
+                            Messages.getString("LDAPSchemaStep2Form.checkFailed")); //$NON-NLS-1$
                     updateStatus(IStatus.ERROR, null);
                 }
             }
@@ -384,12 +384,12 @@ public class LDAPSchemaStep2Form extends AbstractLDAPSchemaStepForm {
                     if (!isContextMode()) {
                         saveDialogSettings();
                     }
-                    MessageDialog.openInformation(Display.getDefault().getActiveShell(), "Fetch base DNs",
-                            "Base DNs was fetched successfully.");
+                    MessageDialog.openInformation(Display.getDefault().getActiveShell(), Messages.getString("LDAPSchemaStep2Form.fetchDNS"), //$NON-NLS-1$
+                            Messages.getString("LDAPSchemaStep2Form.fetchSuccessful")); //$NON-NLS-1$
                     updateStatus(IStatus.OK, null);
                 } else {
-                    MessageDialog.openError(Display.getDefault().getActiveShell(), "Fetch base DNs",
-                            "Base DNs was fetched failed.");
+                    MessageDialog.openError(Display.getDefault().getActiveShell(), Messages.getString("LDAPSchemaStep2Form.fetchDNS"), //$NON-NLS-1$
+                            Messages.getString("LDAPSchemaStep2Form.fetchFailed")); //$NON-NLS-1$
                     updateStatus(IStatus.ERROR, null);
                 }
             }
@@ -472,7 +472,7 @@ public class LDAPSchemaStep2Form extends AbstractLDAPSchemaStepForm {
 
             public void verifyText(VerifyEvent e) {
                 if (!isContextMode()) {
-                    if (!e.text.matches("[0-9]*")) {
+                    if (!e.text.matches("[0-9]*")) { //$NON-NLS-1$
                         e.doit = false;
                     }
                 }
@@ -494,7 +494,7 @@ public class LDAPSchemaStep2Form extends AbstractLDAPSchemaStepForm {
 
             public void verifyText(VerifyEvent e) {
                 if (!isContextMode()) {
-                    if (!e.text.matches("[0-9]*")) {
+                    if (!e.text.matches("[0-9]*")) { //$NON-NLS-1$
                         e.doit = false;
                     }
                 }
@@ -535,7 +535,7 @@ public class LDAPSchemaStep2Form extends AbstractLDAPSchemaStepForm {
 
         boolean isSampleAuthMethod = authenticationMethodCombo.getText().equals(EAuthenticationMethod.SIMPLE.getName());
 
-        if (isSampleAuthMethod && (bindPrincipalCombo.getText() == null || bindPrincipalCombo.getText().equals(""))) {
+        if (isSampleAuthMethod && (bindPrincipalCombo.getText() == null || bindPrincipalCombo.getText().equals(""))) { //$NON-NLS-1$
             // bindPrincipalCombo.forceFocus();
             this.checkPrincipalPasswordAuthButton.setEnabled(false);
             this.fetchBaseDnsButton.setEnabled(false);
@@ -551,7 +551,7 @@ public class LDAPSchemaStep2Form extends AbstractLDAPSchemaStepForm {
         // return false;
         // }
         else if (isSampleAuthMethod && (bindPasswordText.getText() == null || bindPasswordText.getText().length() > 0)) {
-            updateStatus(IStatus.ERROR, "Please click \"Check Authentication\" button to verify Authentication.");
+            updateStatus(IStatus.ERROR, Messages.getString("LDAPSchemaStep2Form.verifyAuthentication")); //$NON-NLS-1$
             checkPrincipalPasswordAuthButton.setEnabled(true);
             return false;
         } else {
@@ -650,16 +650,16 @@ public class LDAPSchemaStep2Form extends AbstractLDAPSchemaStepForm {
 
         String timeOutLimit = connection.getTimeOutLimit();
         if (timeOutLimit == null) {
-            connection.setTimeOutLimit("0");
-            this.timeLimitText.setText("0");
+            connection.setTimeOutLimit("0"); //$NON-NLS-1$
+            this.timeLimitText.setText("0"); //$NON-NLS-1$
         } else {
             this.timeLimitText.setText(timeOutLimit);
         }
 
         String countLimit = connection.getCountLimit();
         if (countLimit == null) {
-            connection.setCountLimit("100");
-            this.countLimitText.setText("100");
+            connection.setCountLimit("100"); //$NON-NLS-1$
+            this.countLimitText.setText("100"); //$NON-NLS-1$
         } else {
             this.countLimitText.setText(countLimit);
         }
@@ -686,7 +686,7 @@ public class LDAPSchemaStep2Form extends AbstractLDAPSchemaStepForm {
      */
     public void addAliasDereferenceGroupInput(Composite parent) {
 
-        Group aliasesDereferenceGroup = BaseWidgetUtils.createGroup(parent, "Aliases Dereferencing", 1);
+        Group aliasesDereferenceGroup = BaseWidgetUtils.createGroup(parent, "Aliases Dereferencing", 1); //$NON-NLS-1$
         Composite groupComposite = BaseWidgetUtils.createColumnContainer(aliasesDereferenceGroup, 1, 1);
 
         findingButton = BaseWidgetUtils.createRadiobutton(groupComposite, EAliasesDereference.FINDING.getDisplayName(), 1);
@@ -708,7 +708,7 @@ public class LDAPSchemaStep2Form extends AbstractLDAPSchemaStepForm {
      */
     public void addReferralsGroupInput(Composite parent) {
 
-        Group referralsGroup = BaseWidgetUtils.createGroup(parent, "Referrals Handling", 1);
+        Group referralsGroup = BaseWidgetUtils.createGroup(parent, "Referrals Handling", 1); //$NON-NLS-1$
         Composite groupComposite = BaseWidgetUtils.createColumnContainer(referralsGroup, 1, 1);
 
         ignoreButton = BaseWidgetUtils.createRadiobutton(groupComposite, EReferrals.IGNORE.getDisplayName(), 1);
@@ -725,17 +725,17 @@ public class LDAPSchemaStep2Form extends AbstractLDAPSchemaStepForm {
      */
     public void addLimitGroupInput(Composite parent) {
 
-        Group limitGroup = BaseWidgetUtils.createGroup(parent, "Limits", 1);
+        Group limitGroup = BaseWidgetUtils.createGroup(parent, "Limits", 1); //$NON-NLS-1$
         GridLayout gl = new GridLayout(2, false);
         limitGroup.setLayout(gl);
 
         // Count limit
-        Label countLimitLabel = BaseWidgetUtils.createLabel(limitGroup, "&Count Limit:", 1);
-        countLimitText = BaseWidgetUtils.createText(limitGroup, "", 1);
+        Label countLimitLabel = BaseWidgetUtils.createLabel(limitGroup, "&Count Limit:", 1); //$NON-NLS-1$
+        countLimitText = BaseWidgetUtils.createText(limitGroup, "", 1); //$NON-NLS-1$
 
         // Time limit
-        Label timeLimitLabel = BaseWidgetUtils.createLabel(limitGroup, "&Time Limit:", 1);
-        timeLimitText = BaseWidgetUtils.createText(limitGroup, "", 1);
+        Label timeLimitLabel = BaseWidgetUtils.createLabel(limitGroup, "&Time Limit:", 1); //$NON-NLS-1$
+        timeLimitText = BaseWidgetUtils.createText(limitGroup, "", 1); //$NON-NLS-1$
     }
 
     /**

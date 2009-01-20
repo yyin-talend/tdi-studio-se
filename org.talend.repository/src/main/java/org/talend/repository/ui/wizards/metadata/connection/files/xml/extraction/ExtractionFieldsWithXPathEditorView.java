@@ -305,13 +305,13 @@ public class ExtractionFieldsWithXPathEditorView extends AbstractDataTableEditor
 
             // create error message
             StringBuffer buf = new StringBuffer();
-            buf.append("The column names ");
+            buf.append(Messages.getString("ExtractionFieldsWithXPathEditorView.columnName")); //$NON-NLS-1$
             for (String name : conflictNames) {
                 buf.append(name);
-                buf.append(",");
+                buf.append(","); //$NON-NLS-1$
             }
             buf.deleteCharAt(buf.length() - 1);
-            buf.append(" already exists.");
+            buf.append(Messages.getString("ExtractionFieldsWithXPathEditorView.exist")); //$NON-NLS-1$
             return buf.toString();
         }
     }

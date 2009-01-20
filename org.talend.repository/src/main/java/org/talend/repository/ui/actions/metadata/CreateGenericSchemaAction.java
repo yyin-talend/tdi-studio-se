@@ -24,6 +24,7 @@ import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.repository.ProjectManager;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
@@ -56,9 +57,9 @@ public class CreateGenericSchemaAction extends AbstractCreateAction {
 
     public CreateGenericSchemaAction() {
         super();
-        createLabel = "Create generic schema";
-        editLabel = "Edit generic schema";
-        openLabel = "Open generic schema";
+        createLabel = Messages.getString("CreateGenericSchemaAction.createGeneric"); //$NON-NLS-1$
+        editLabel = Messages.getString("CreateGenericSchemaAction.editGeneric"); //$NON-NLS-1$
+        openLabel = Messages.getString("CreateGenericSchemaAction.openGeneric"); //$NON-NLS-1$
 
         defaultImage = ImageProvider.getImageDesc(ECoreImage.METADATA_GENERIC_ICON);
         createImage = OverlayImageProvider.getImageWithNew(ImageProvider.getImage(ECoreImage.METADATA_GENERIC_ICON));

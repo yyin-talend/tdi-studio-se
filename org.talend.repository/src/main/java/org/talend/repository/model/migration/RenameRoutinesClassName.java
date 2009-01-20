@@ -56,7 +56,7 @@ public class RenameRoutinesClassName extends AbstractItemMigrationTask {
                 ByteArray content = routineItem.getContent();
                 String str = new String(content.getInnerContent());
                 String string = item.getProperty().getLabel();
-                str = str.replaceAll("__CLASS_NAME__", string);
+                str = str.replaceAll("__CLASS_NAME__", string); //$NON-NLS-1$
                 content.setInnerContent(str.getBytes());
                 routineItem.setContent(content);
                 factory.save(routineItem);

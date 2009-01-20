@@ -24,6 +24,7 @@ import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.repository.ProjectManager;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
@@ -55,9 +56,9 @@ public class CreateWSDLSchemaAction extends AbstractCreateAction {
         super();
 
         // TODO: should to fix the I18N issue.
-        createLabel = "Create WSDL schema";
-        editLabel = "Edit WSDL schema";
-        openLabel = "Open WSDL schema";
+        createLabel = Messages.getString("CreateWSDLSchemaAction.createWSDL"); //$NON-NLS-1$
+        editLabel = Messages.getString("CreateWSDLSchemaAction.editWSDL"); //$NON-NLS-1$
+        openLabel = Messages.getString("CreateWSDLSchemaAction.openWSDL"); //$NON-NLS-1$
         // TODO: should change to another icon.
         defaultImage = ImageProvider.getImageDesc(ECoreImage.METADATA_WSDL_SCHEMA_ICON);
         createImage = OverlayImageProvider.getImageWithNew(ImageProvider.getImage(ECoreImage.METADATA_WSDL_SCHEMA_ICON));

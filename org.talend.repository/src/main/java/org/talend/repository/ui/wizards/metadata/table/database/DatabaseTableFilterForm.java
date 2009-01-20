@@ -33,6 +33,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.builder.database.TableInfoParameters;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase.ETableTypes;
 import org.talend.repository.RepositoryPlugin;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.swt.utils.AbstractForm;
 
 /**
@@ -41,9 +42,9 @@ import org.talend.repository.ui.swt.utils.AbstractForm;
  */
 public class DatabaseTableFilterForm extends AbstractForm {
 
-    public static final String PREFS_NAMEFILTER = "DatabaseTableFilterForm.NameFilter";
+    public static final String PREFS_NAMEFILTER = "DatabaseTableFilterForm.NameFilter"; //$NON-NLS-1$
 
-    public static final String PREFS_SEQ = ";";
+    public static final String PREFS_SEQ = ";"; //$NON-NLS-1$
 
     protected static Logger log = Logger.getLogger(DatabaseTableFilterForm.class);
 
@@ -152,10 +153,10 @@ public class DatabaseTableFilterForm extends AbstractForm {
         sqlcomposite.setLayoutData(gridData);
 
         sqllabel = new Label(sqlcomposite, SWT.NONE);
-        sqllabel.setText("Set the Sql Filter: ");
+        sqllabel.setText(Messages.getString("DatabaseTableFilterForm.setSqlFilter")); //$NON-NLS-1$
         sqlFilter = new Text(sqlcomposite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
         sqlFilter.setEditable(true);
-        sqlFilter.setText("SELECT TNAME FROM TAB WHERE TNAME LIKE \'BAL%\'");
+        sqlFilter.setText("SELECT TNAME FROM TAB WHERE TNAME LIKE \'BAL%\'"); //$NON-NLS-1$
         gridData = new GridData(GridData.FILL_BOTH);
         gridData.heightHint = 60;
         sqlFilter.setLayoutData(gridData);
@@ -171,7 +172,7 @@ public class DatabaseTableFilterForm extends AbstractForm {
         GridLayout gridLayout;
         GridData gridData;
         Group switchcomposite = new Group(composite, SWT.NONE);
-        switchcomposite.setText("Select Filter Conditions");
+        switchcomposite.setText(Messages.getString("DatabaseTableFilterForm.selectCondition")); //$NON-NLS-1$
         gridLayout = new GridLayout(2, false);
         gridLayout.marginBottom = 0;
         gridLayout.marginWidth = 0;
@@ -186,7 +187,7 @@ public class DatabaseTableFilterForm extends AbstractForm {
         gridData = new GridData(GridData.FILL_HORIZONTAL);
         switchcomposite.setLayoutData(gridData);
         usedName = new Button(switchcomposite, SWT.RADIO);
-        usedName.setText("Use the Name Filter");
+        usedName.setText(Messages.getString("DatabaseTableFilterForm.useNameFilter")); //$NON-NLS-1$
         SelectionAdapter selectionAdapter = new SelectionAdapter() {
 
             @Override
@@ -198,7 +199,7 @@ public class DatabaseTableFilterForm extends AbstractForm {
         };
         usedName.addSelectionListener(selectionAdapter);
         usedSql = new Button(switchcomposite, SWT.RADIO);
-        usedSql.setText("Use the Sql Filter");
+        usedSql.setText(Messages.getString("DatabaseTableFilterForm.useSqlFilter")); //$NON-NLS-1$
         usedSql.addSelectionListener(selectionAdapter);
     }
 
@@ -227,7 +228,7 @@ public class DatabaseTableFilterForm extends AbstractForm {
         composite2.setLayoutData(gridData);
 
         Group typesFilter = new Group(composite2, SWT.NONE);
-        typesFilter.setText("Select Types");
+        typesFilter.setText(Messages.getString("DatabaseTableFilterForm.selectType")); //$NON-NLS-1$
         gridLayout = new GridLayout();
         gridLayout.numColumns = 3;
 
@@ -238,12 +239,12 @@ public class DatabaseTableFilterForm extends AbstractForm {
 
         tableCheck = new Button(typesFilter, SWT.CHECK);
         tableCheck.setSelection(true);
-        tableCheck.setText("TABLE");
+        tableCheck.setText(Messages.getString("DatabaseTableFilterForm.table")); //$NON-NLS-1$
         viewCheck = new Button(typesFilter, SWT.CHECK);
-        viewCheck.setText("VIEW");
+        viewCheck.setText(Messages.getString("DatabaseTableFilterForm.view")); //$NON-NLS-1$
         viewCheck.setSelection(true);
         synonymCheck = new Button(typesFilter, SWT.CHECK);
-        synonymCheck.setText("SYNONYM");
+        synonymCheck.setText(Messages.getString("DatabaseTableFilterForm.synonym")); //$NON-NLS-1$
         synonymCheck.setSelection(true);
 
         Composite namecomposite = new Composite(composite2, SWT.NONE);
@@ -254,7 +255,7 @@ public class DatabaseTableFilterForm extends AbstractForm {
         namecomposite.setLayoutData(gridData);
 
         setNamelabel = new Label(namecomposite, SWT.NONE);
-        setNamelabel.setText("Set the Name Filter: ");
+        setNamelabel.setText(Messages.getString("DatabaseTableFilterForm.setNameFilter")); //$NON-NLS-1$
 
         Composite nameFiltercomposite = new Composite(namecomposite, SWT.NONE);
         gridLayout = new GridLayout(2, false);
@@ -298,13 +299,13 @@ public class DatabaseTableFilterForm extends AbstractForm {
         newButton = new Button(nameFilterBtncomposite, SWT.PUSH);
         gridData = new GridData(GridData.FILL_BOTH);
         newButton.setLayoutData(gridData);
-        newButton.setText("New...");
+        newButton.setText(Messages.getString("DatabaseTableFilterForm.new")); //$NON-NLS-1$
         editButton = new Button(nameFilterBtncomposite, SWT.PUSH);
-        editButton.setText("Edit...");
+        editButton.setText(Messages.getString("DatabaseTableFilterForm.edit")); //$NON-NLS-1$
         gridData = new GridData(GridData.FILL_BOTH);
         editButton.setLayoutData(gridData);
         removeButton = new Button(nameFilterBtncomposite, SWT.PUSH);
-        removeButton.setText("Remove...");
+        removeButton.setText(Messages.getString("DatabaseTableFilterForm.remove")); //$NON-NLS-1$
         gridData = new GridData(GridData.FILL_BOTH);
         removeButton.setLayoutData(gridData);
     }
@@ -317,7 +318,7 @@ public class DatabaseTableFilterForm extends AbstractForm {
     private String[] getNameFilters() {
         String[] items = null;
         String string = CorePlugin.getDefault().getPreferenceStore().getString(PREFS_NAMEFILTER);
-        if (string == null || "".equals(string)) {
+        if (string == null || "".equals(string)) { //$NON-NLS-1$
             items = new String[] { TableInfoParameters.DEFAULT_FILTER };
         } else {
             items = string.split(PREFS_SEQ);
@@ -325,7 +326,7 @@ public class DatabaseTableFilterForm extends AbstractForm {
         return items;
     }
 
-    String addName = "";
+    String addName = ""; //$NON-NLS-1$
 
     /**
      * addButtonControls.
@@ -363,7 +364,7 @@ public class DatabaseTableFilterForm extends AbstractForm {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                addName = "";
+                addName = ""; //$NON-NLS-1$
                 Dialog dialog = new Dialog(getShell()) {
 
                     Text addText;
@@ -372,7 +373,7 @@ public class DatabaseTableFilterForm extends AbstractForm {
                     protected Control createDialogArea(Composite parent) {
                         Composite createDialogArea = (Composite) super.createDialogArea(parent);
                         Label addLabel = new Label(createDialogArea, SWT.NONE);
-                        addLabel.setText("Filter Name:");
+                        addLabel.setText(Messages.getString("DatabaseTableFilterForm.filterName")); //$NON-NLS-1$
                         addText = new Text(createDialogArea, SWT.BORDER);
                         GridData gridData = new GridData(GridData.FILL_BOTH);
                         addText.setLayoutData(gridData);
@@ -388,7 +389,7 @@ public class DatabaseTableFilterForm extends AbstractForm {
                     @Override
                     protected void configureShell(Shell newShell) {
                         super.configureShell(newShell);
-                        newShell.setText("New Filter Name");
+                        newShell.setText(Messages.getString("DatabaseTableFilterForm.newFilterName")); //$NON-NLS-1$
                     }
 
                     /*
@@ -429,7 +430,7 @@ public class DatabaseTableFilterForm extends AbstractForm {
                     protected Control createDialogArea(Composite parent) {
                         Composite createDialogArea = (Composite) super.createDialogArea(parent);
                         Label addLabel = new Label(createDialogArea, SWT.NONE);
-                        addLabel.setText("Filter Name:");
+                        addLabel.setText(Messages.getString("DatabaseTableFilterForm.filterName")); //$NON-NLS-1$
                         addText = new Text(createDialogArea, SWT.BORDER);
                         GridData gridData = new GridData(GridData.FILL_BOTH);
                         addText.setLayoutData(gridData);
@@ -445,7 +446,7 @@ public class DatabaseTableFilterForm extends AbstractForm {
                     @Override
                     protected void configureShell(Shell newShell) {
                         super.configureShell(newShell);
-                        newShell.setText("Edit Filter Name");
+                        newShell.setText(Messages.getString("DatabaseTableFilterForm.editFilterName")); //$NON-NLS-1$
                     }
 
                     /*

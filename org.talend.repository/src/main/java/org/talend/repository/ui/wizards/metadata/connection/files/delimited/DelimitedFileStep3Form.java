@@ -563,7 +563,7 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
 												.getPreferenceStore()
 												.getString(
 														MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE)
-												.equals("")) {
+												.equals("")) { //$NON-NLS-1$
 									globalType = CorePlugin
 											.getDefault()
 											.getPreferenceStore()
@@ -579,7 +579,7 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
 													.getPreferenceStore()
 													.getString(
 															MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH)
-													.equals("")) {
+													.equals("")) { //$NON-NLS-1$
 										lengthValue = Integer
 												.parseInt(CorePlugin
 														.getDefault()
@@ -599,7 +599,7 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
 												.getPreferenceStore()
 												.getString(
 														MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_TYPE)
-												.equals("")) {
+												.equals("")) { //$NON-NLS-1$
 									globalType = CorePlugin
 											.getDefault()
 											.getPreferenceStore()
@@ -615,7 +615,7 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
 													.getPreferenceStore()
 													.getString(
 															MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_LENGTH)
-													.equals("")) {
+													.equals("")) { //$NON-NLS-1$
 										lengthValue = Integer
 												.parseInt(CorePlugin
 														.getDefault()

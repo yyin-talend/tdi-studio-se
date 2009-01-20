@@ -39,7 +39,7 @@ public class JobSearchResultProcessor extends JobTypeProcessor {
 		super(null);
 		jobIds = new HashSet<String>();
 		folders = new HashSet<String>();
-		folders.contains(new Path("").toString());
+		folders.contains(new Path("").toString()); //$NON-NLS-1$
 		for (IRepositoryObject obj : jobs) {
 			String path = obj.getProperty().getItem().getState().getPath();
 			if (path != null && path.length() > 0) {

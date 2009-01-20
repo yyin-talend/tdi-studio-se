@@ -111,7 +111,7 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
     protected void adaptFormToReadOnly() {
         readOnly = isReadOnly();
         fileField.setReadOnly(isReadOnly());
-        updateStatus(IStatus.OK, "");
+        updateStatus(IStatus.OK, ""); //$NON-NLS-1$
     }
 
     /*
@@ -133,14 +133,14 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
 
         int numColumnForViewer = 4;
 
-        viewerGroup = Form.createGroup(this, numColumnForViewer, "File Viewer and Sheets setting", 150);
+        viewerGroup = Form.createGroup(this, numColumnForViewer, Messages.getString("ExcelFileStep1Form.fileSetting"), 150); //$NON-NLS-1$
 
         createSheetsSelectViewer(viewerGroup);
 
         Composite compositeExcelViewer = Form.startNewDimensionnedGridLayout(viewerGroup, 2, WIDTH_GRIDDATA_PIXEL, 150);
 
-        sheetsCombo = new LabelledCombo(compositeExcelViewer, Messages.getString("ExcelFileStep1Form.sheet.choice"), Messages
-                .getString("ExcelFileStep1Form.sheet.tip"), new String[] { "Sheet1" }, 1, false, SWT.NONE);
+        sheetsCombo = new LabelledCombo(compositeExcelViewer, Messages.getString("ExcelFileStep1Form.sheet.choice"), Messages //$NON-NLS-1$
+                .getString("ExcelFileStep1Form.sheet.tip"), new String[] { "Sheet1" }, 1, false, SWT.NONE); //$NON-NLS-1$ //$NON-NLS-2$
 
         createTableViewer(compositeExcelViewer);
 
@@ -162,7 +162,7 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
     private void createSheetsSelectViewer(Group group) {
         sheetsViewerComposite = Form.startNewDimensionnedGridLayout(group, 2, 80, 150);
         Label label = new Label(sheetsViewerComposite, SWT.NONE);
-        label.setText("Set sheets parameters");
+        label.setText(Messages.getString("ExcelFileStep1Form.sheetPara")); //$NON-NLS-1$
 
         Combo place = new Combo(sheetsViewerComposite, SWT.NONE);
         place.setVisible(false);
@@ -361,10 +361,10 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
                     try {
                         return ((String[]) element)[columnIndex];
                     } catch (Exception e) {
-                        return "";
+                        return ""; //$NON-NLS-1$
                     }
                 }
-                return "";
+                return ""; //$NON-NLS-1$
             }
 
             public void addListener(ILabelProviderListener listener) {
@@ -513,7 +513,7 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
 
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 
-                    monitor.beginTask("Excel Preview", IProgressMonitor.UNKNOWN);
+                    monitor.beginTask("Excel Preview", IProgressMonitor.UNKNOWN); //$NON-NLS-1$
 
                     getConnection().setSheetName(sheetName);
 
@@ -603,7 +603,7 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
             sheetsCombo.add(sheet);
         }
 
-        if (sheetOrigin == null || sheetOrigin.equals("") || !containsSheet(sheets, sheetOrigin)) {
+        if (sheetOrigin == null || sheetOrigin.equals("") || !containsSheet(sheets, sheetOrigin)) { //$NON-NLS-1$
             sheetsCombo.select(0);
         } else {
             sheetsCombo.setText(sheetOrigin);
@@ -686,8 +686,8 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
         }
 
         String sheetName = getConnection().getSheetName();
-        if (sheetName != null && !sheetName.equals("")) {
-            sheetName = sheetName.replace("\\\\", "\\");
+        if (sheetName != null && !sheetName.equals("")) { //$NON-NLS-1$
+            sheetName = sheetName.replace("\\\\", "\\"); //$NON-NLS-1$ //$NON-NLS-2$
             for (int i = 0; i < sheetsCombo.getCombo().getItems().length; i++) {
                 if (sheetName.equals(sheetsCombo.getCombo().getItems()[i])) {
                     sheetsCombo.select(i);
@@ -734,7 +734,7 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
         fileField.setEditable(!isContextMode());
     }
 
-    private final SheetNode rootNode = new SheetNode(null, "All sheets/DSelect sheet");
+    private final SheetNode rootNode = new SheetNode(null, "All sheets/DSelect sheet"); //$NON-NLS-1$
 
     private Composite sheetsViewerComposite;
 

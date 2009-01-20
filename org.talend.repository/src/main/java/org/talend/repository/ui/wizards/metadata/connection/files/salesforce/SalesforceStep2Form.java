@@ -70,7 +70,7 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
 
     private LabelledText queryConditionText = null;
 
-    private String defaultQueryString = ""; // 'name == talend'
+    private String defaultQueryString = ""; // 'name == talend' //$NON-NLS-1$
 
     private Button previewButton = null;
 
@@ -149,9 +149,9 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
         tabFolder.setLayoutData(new GridData(GridData.FILL_BOTH));
 
         previewTabItem = new CTabItem(tabFolder, SWT.BORDER);
-        previewTabItem.setText("Preview");
+        previewTabItem.setText(Messages.getString("SalesforceStep2Form.preview")); //$NON-NLS-1$
         outputTabItem = new CTabItem(tabFolder, SWT.BORDER);
-        outputTabItem.setText("Output");
+        outputTabItem.setText(Messages.getString("SalesforceStep2Form.output")); //$NON-NLS-1$
 
         Composite previewComposite = Form.startNewGridLayout(tabFolder, 1);
         outputComposite = Form.startNewGridLayout(tabFolder, 1);
@@ -179,9 +179,9 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
      * DOC YeXiaowei Comment method "addQueryConditionGroup".
      */
     private void addQueryConditionGroup() {
-        Group queryConditionGroup = Form.createGroup(this, 2, "Browse data column and set query condition");
+        Group queryConditionGroup = Form.createGroup(this, 2, Messages.getString("SalesforceStep2Form.queryCondition")); //$NON-NLS-1$
 
-        queryConditionText = new LabelledText(queryConditionGroup, "Query Condition", true);
+        queryConditionText = new LabelledText(queryConditionGroup, "Query Condition", true); //$NON-NLS-1$
         queryConditionText.setText(defaultQueryString);
 
         Composite moduleViewerComposite = new Composite(queryConditionGroup, SWT.NONE);
@@ -193,7 +193,7 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
         moduleViewerComposite.setLayout(new GridLayout());
 
         Label label = new Label(moduleViewerComposite, SWT.NONE);
-        label.setText("Salesforce Module field detail");
+        label.setText(Messages.getString("SalesforceStep2Form.saleforceDetail")); //$NON-NLS-1$
         label.setLayoutData(new GridData(GridData.FILL | GridData.CENTER));
 
         createModuleDetailViewer(moduleViewerComposite);
@@ -206,7 +206,7 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
 
         String moduleName = getConnection().getModuleName();
 
-        if (moduleName == null || moduleName.equals("")) {
+        if (moduleName == null || moduleName.equals("")) { //$NON-NLS-1$
             return;
         }
 
@@ -302,10 +302,10 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
     protected void initialize() {
 
         String queryCondition = getConnection().getQueryCondition();
-        if (queryCondition != null && !queryCondition.equals("")) {
+        if (queryCondition != null && !queryCondition.equals("")) { //$NON-NLS-1$
             queryConditionText.setText(queryCondition);
         } else {
-            queryConditionText.setText("");
+            queryConditionText.setText(""); //$NON-NLS-1$
         }
 
         checkFieldsValue();
@@ -357,7 +357,7 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
 
         @Override
         public boolean preProcessStart() {
-            previewButton.setText(Messages.getString("FileStep2.stop"));
+            previewButton.setText(Messages.getString("FileStep2.stop")); //$NON-NLS-1$
 
             clearPreview();
             String webServiceUrl = getConnection().getWebServiceUrl();
@@ -423,7 +423,7 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
         @Override
         public void updateUIInThreadIfThreadIsCanceled() {
             if (!previewInformationLabel.isDisposed()) {
-                previewInformationLabel.setText("");
+                previewInformationLabel.setText(""); //$NON-NLS-1$
             }
         }
 
@@ -456,7 +456,7 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
         @Override
         public void updateUIInThreadIfThreadFinally() {
             if (!previewButton.isDisposed()) {
-                previewButton.setText(Messages.getString("FileStep2.refreshPreview"));
+                previewButton.setText(Messages.getString("FileStep2.refreshPreview")); //$NON-NLS-1$
                 previewButton.setEnabled(true);
 
             }
@@ -501,13 +501,13 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
             schema.add(column.clone());
         }
 
-        table.setTableName("tSalesforceInput");
+        table.setTableName("tSalesforceInput"); //$NON-NLS-1$
         table.setListColumns(schema);
         tableSchema.add(table);
 
         processDescription.setSchema(tableSchema);
 
-        processDescription.setEncoding(TalendTextUtils.addQuotes("ISO-8859-15"));
+        processDescription.setEncoding(TalendTextUtils.addQuotes("ISO-8859-15")); //$NON-NLS-1$
         if (tableGet != null) {
             moduleViewer.getTable().clearAll();
             moduleViewer.setInput(tableGet.getListColumns());
@@ -564,13 +564,13 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
                         title = metadataColumn.getLabel();
                         break;
                     case 1:
-                        title = metadataColumn.isKey() ? "true" : "false";
+                        title = metadataColumn.isKey() ? "true" : "false"; //$NON-NLS-1$ //$NON-NLS-2$
                         break;
                     case 2:
                         title = metadataColumn.getType();
                         break;
                     case 3:
-                        title = metadataColumn.isNullable() ? "true" : "false";
+                        title = metadataColumn.isNullable() ? "true" : "false"; //$NON-NLS-1$ //$NON-NLS-2$
                         break;
                     case 4:
                         title = metadataColumn.getPattern();
@@ -588,7 +588,7 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
                         title = metadataColumn.getComment();
                         break;
                     default:
-                        title = "Other column title";
+                        title = Messages.getString("SalesforceStep2Form.otherTitle"); //$NON-NLS-1$
                     }
 
                     return title;
@@ -600,7 +600,7 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
                 try {
                     return Integer.toString(x);
                 } catch (Error e) {
-                    return "";
+                    return ""; //$NON-NLS-1$
                 }
             }
 
@@ -622,12 +622,12 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
 
         });
 
-        String[] titles = new String[] { "Column", "Key", "Type", "Nullable", "Data Pattern", "Length", "Precision", "Default",
-                "Comment" };
+        String[] titles = new String[] { "Column", "Key", "Type", "Nullable", "Data Pattern", "Length", "Precision", "Default", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$
+                "Comment" }; //$NON-NLS-1$
 
         for (String title : titles) {
             int width = COLUMN_WIDTH;
-            if (title.equals("Column") || title.equals("Data Pattern") || title.equals("Comment")) {
+            if (title.equals("Column") || title.equals("Data Pattern") || title.equals("Comment")) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 width = COLUMN_WIDTH * 2;
             }
             createTableColumn(title, width);

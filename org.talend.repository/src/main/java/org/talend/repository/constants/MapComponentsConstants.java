@@ -12,16 +12,18 @@
 // ============================================================================
 package org.talend.repository.constants;
 
+import org.talend.repository.i18n.Messages;
+
 /**
  * This class is stored the kind of Map components. <br/>
  * 
  */
 public class MapComponentsConstants {
 
-    public static final String TMAP = "tMap";
+    public static final String TMAP = "tMap"; //$NON-NLS-1$
 
-    public static final String TELTMYSQLMAP = "tELTMysqlMap";
+    public static final String TELTMYSQLMAP = "tELTMysqlMap"; //$NON-NLS-1$
 
-    public static final String TELTORACLEMAP = "tELTOracleMap";
+    public static final String TELTORACLEMAP = "tELTOracleMap"; //$NON-NLS-1$
 
 }

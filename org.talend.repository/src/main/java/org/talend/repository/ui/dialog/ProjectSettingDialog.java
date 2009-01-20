@@ -59,10 +59,10 @@ public class ProjectSettingDialog {
             IConfigurationElement element = configurationElements[i];
             ProjectSettingNode node = new ProjectSettingNode(element);
             try {
-                IPreferencePage page = (IPreferencePage) element.createExecutableExtension("class");
+                IPreferencePage page = (IPreferencePage) element.createExecutableExtension("class"); //$NON-NLS-1$
                 node.setPage(page);
-                page.setDescription(element.getAttribute("description"));
-                page.setTitle(element.getAttribute("title"));
+                page.setDescription(element.getAttribute("description")); //$NON-NLS-1$
+                page.setTitle(element.getAttribute("title")); //$NON-NLS-1$
             } catch (CoreException e) {
                 ExceptionHandler.process(e);
             }

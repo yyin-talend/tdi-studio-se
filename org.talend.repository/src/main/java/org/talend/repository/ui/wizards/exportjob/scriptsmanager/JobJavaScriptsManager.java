@@ -63,13 +63,13 @@ import org.talend.repository.documentation.ExportFileResource;
  */
 public class JobJavaScriptsManager extends JobScriptsManager {
 
-    private static final String USER_ROUTINES_PATH = "routines";
+    private static final String USER_ROUTINES_PATH = "routines"; //$NON-NLS-1$
 
-    private static final String SYSTEM_ROUTINES_PATH = "routines/system";
+    private static final String SYSTEM_ROUTINES_PATH = "routines/system"; //$NON-NLS-1$
 
-    protected static final String SYSTEMROUTINE_JAR = "systemRoutines.jar";
+    protected static final String SYSTEMROUTINE_JAR = "systemRoutines.jar"; //$NON-NLS-1$
 
-    protected static final String USERROUTINE_JAR = "userRoutines.jar";
+    protected static final String USERROUTINE_JAR = "userRoutines.jar"; //$NON-NLS-1$
 
     /*
      * (non-Javadoc)
@@ -92,8 +92,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             String libPath = calculateLibraryPathFromDirectory(process[i].getDirectoryName());
             // use character @ as temporary classpath separator, this one will be replaced during the export.
             String standardJars = libPath + PATH_SEPARATOR + SYSTEMROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR
-                    + libPath + PATH_SEPARATOR + USERROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR + ".";
-            ProcessorUtilities.setExportConfig("java", standardJars, libPath);
+                    + libPath + PATH_SEPARATOR + USERROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR + "."; //$NON-NLS-1$
+            ProcessorUtilities.setExportConfig("java", standardJars, libPath); //$NON-NLS-1$
 
             if (!BooleanUtils.isTrue(exportChoice.get(ExportChoice.doNotCompileCode))) {
                 generateJobFiles(processItem, contextName, selectedJobVersion, statisticPort != IProcessor.NO_STATISTICS,
@@ -217,7 +217,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             for (Object o : processItem.getProcess().getContext()) {
                 if (o instanceof ContextType) {
                     ContextType context = (ContextType) o;
-                    contextNames.add(context.getName().replace(" ", ""));
+                    contextNames.add(context.getName().replace(" ", "")); //$NON-NLS-1$ //$NON-NLS-2$
                 }
             }
             for (File file : listFiles) {
@@ -261,14 +261,14 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             IPath projectFilePath = getCorrespondingProjectRootPath(processItem).append(FileConstants.LOCAL_PROJECT_FILENAME);
 
             String processPath = processItem.getState().getPath();
-            processPath = processPath == null || processPath.equals("") ? "" : processPath;
+            processPath = processPath == null || processPath.equals("") ? "" : processPath; //$NON-NLS-1$ //$NON-NLS-2$
             IPath emfFileRootPath = getEmfFileRootPath(processItem);
             ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(processItem);
             IPath typeFolderPath = new Path(ERepositoryObjectType.getFolderName(itemType));
             IPath itemFilePath = emfFileRootPath.append(processPath).append(
-                    jobName + "_" + jobVersion + "." + FileConstants.ITEM_EXTENSION);
+                    jobName + "_" + jobVersion + "." + FileConstants.ITEM_EXTENSION); //$NON-NLS-1$ //$NON-NLS-2$
             IPath propertiesFilePath = emfFileRootPath.append(processPath).append(
-                    jobName + "_" + jobVersion + "." + FileConstants.PROPERTIES_EXTENSION);
+                    jobName + "_" + jobVersion + "." + FileConstants.PROPERTIES_EXTENSION); //$NON-NLS-1$ //$NON-NLS-2$
             // project file
             checkAndAddProjectResource(allResources, resource, JOB_SOURCE_FOLDER_NAME + PATH_SEPARATOR + projectName, FileLocator
                     .toFileURL(projectFilePath.toFile().toURL()));
@@ -282,7 +282,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
           
             IPath path = getSrcRootLocation();
-            path = path.append(projectName).append(jobFolderName).append(jobName + ".java");
+            path = path.append(projectName).append(jobFolderName).append(jobName + ".java"); //$NON-NLS-1$
             List<URL> javaFileUrls = new ArrayList<URL>();
             javaFileUrls.add(FileLocator.toFileURL(path.toFile().toURL()));
             resource.addResources(basePath + PATH_SEPARATOR + projectName + PATH_SEPARATOR + jobFolderName, javaFileUrls);
@@ -310,9 +310,9 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
     protected String calculateLibraryPathFromDirectory(String directory) {
         int nb = directory.split(PATH_SEPARATOR).length - 1;
-        String path = "../";
+        String path = "../"; //$NON-NLS-1$
         for (int i = 0; i < nb; i++) {
-            path = path.concat("../");
+            path = path.concat("../"); //$NON-NLS-1$
         }
         return path + LIBRARY_FOLDER_NAME;
     }
@@ -396,8 +396,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         File[] files = file.listFiles(new FilenameFilter() {
 
             public boolean accept(File dir, String name) {
-                return name.toLowerCase().endsWith(".jar") || name.toLowerCase().endsWith(".properties")
-                        || name.toLowerCase().endsWith(".zip") ? true : false;
+                return name.toLowerCase().endsWith(".jar") || name.toLowerCase().endsWith(".properties") //$NON-NLS-1$ //$NON-NLS-2$
+                        || name.toLowerCase().endsWith(".zip") ? true : false; //$NON-NLS-1$
             }
         });
         // Lists all the needed jar files
@@ -497,7 +497,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
         try {
             String classRoot = getClassRootLocation();
-            String jarPath = getTmpFolder() + PATH_SEPARATOR + jobFolderName + ".jar";
+            String jarPath = getTmpFolder() + PATH_SEPARATOR + jobFolderName + ".jar"; //$NON-NLS-1$
             // Exports the jar file
             JarBuilder jarbuilder = new JarBuilder(classRoot, jarPath);
 

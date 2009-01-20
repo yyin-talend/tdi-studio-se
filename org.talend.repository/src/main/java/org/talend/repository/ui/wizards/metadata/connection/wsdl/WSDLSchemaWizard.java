@@ -73,7 +73,7 @@ public class WSDLSchemaWizard extends RepositoryWizard implements INewWizard {
 
     private boolean isSinglePageOnly;
 
-    private static final String ALL_STEPS = "3";
+    private static final String ALL_STEPS = "3"; //$NON-NLS-1$
 
     private Map<String, String> oldTableMap;
 
@@ -261,7 +261,7 @@ public class WSDLSchemaWizard extends RepositoryWizard implements INewWizard {
         }
 
         if (creation) {
-            setWindowTitle(Messages.getString("WSDLSchemaWizard.CreateNewWSDLSchema"));// Messages.getString(
+            setWindowTitle(Messages.getString("WSDLSchemaWizard.CreateNewWSDLSchema"));// Messages.getString( //$NON-NLS-1$
             // "DelimitedFileWizard.windowTitleCreate"
             // ));
             // //$NON-NLS-1$
@@ -290,7 +290,7 @@ public class WSDLSchemaWizard extends RepositoryWizard implements INewWizard {
 
         } else if (this.isSinglePageOnly == false) {
 
-            setWindowTitle(Messages.getString("WSDLSchemaWizard.UpdateWSDLSchema"));// Messages.getString(
+            setWindowTitle(Messages.getString("WSDLSchemaWizard.UpdateWSDLSchema"));// Messages.getString( //$NON-NLS-1$
             // "DelimitedFileWizard.windowTitleUpdate"
             // ));
             // //$NON-NLS-1$
@@ -318,7 +318,7 @@ public class WSDLSchemaWizard extends RepositoryWizard implements INewWizard {
             addPage(wsdlSchemaWizardPage2);
 
         } else {
-            setWindowTitle(Messages.getString("WSDLSchemaWizard.SaveAsWSDLSchema"));// Messages.getString(
+            setWindowTitle(Messages.getString("WSDLSchemaWizard.SaveAsWSDLSchema"));// Messages.getString( //$NON-NLS-1$
             // "DelimitedFileWizard.windowTitleUpdate"
             // ));
             // //$NON-NLS-1$

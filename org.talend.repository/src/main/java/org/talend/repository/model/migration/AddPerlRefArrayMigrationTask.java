@@ -103,7 +103,7 @@ public class AddPerlRefArrayMigrationTask extends AbstractJobMigrationTask {
 
                         for (Object o : node.getElementParameter()) {
                             ElementParameterType pType = (ElementParameterType) o;
-                            if (pType.getField().equals("TABLE")) {
+                            if (pType.getField().equals("TABLE")) { //$NON-NLS-1$
                                 for (ElementValueType elementValue : (List<ElementValueType>) pType.getElementValue()) {
                                     elementValue.getValue();
                                     String value = elementValue.getValue();
@@ -203,19 +203,19 @@ public class AddPerlRefArrayMigrationTask extends AbstractJobMigrationTask {
             for (int i = 0; i < tableNames.length; i++) {
                 String connectionName = tableNames[i];
 
-                recompilePatternIfNecessary(StringHelper.replacePrms("\\$[\\s\\r\\n]*({0})[\\s\\r\\n]*\\[",
+                recompilePatternIfNecessary(StringHelper.replacePrms("\\$[\\s\\r\\n]*({0})[\\s\\r\\n]*\\[", //$NON-NLS-1$
                         new Object[] { connectionName }));
                 if (returnedExpression != null) {
                     matcher.setMultiline(true);
-                    Perl5Substitution substitution = new Perl5Substitution("\\$" + "$1->" //$NON-NLS-1$
+                    Perl5Substitution substitution = new Perl5Substitution("\\$" + "$1->" //$NON-NLS-1$ //$NON-NLS-2$
                             + "[", Perl5Substitution.INTERPOLATE_ALL); //$NON-NLS-1$
                     returnedExpression = Util.substitute(matcher, pattern, substitution, returnedExpression, Util.SUBSTITUTE_ALL);
                 }
 
-                recompilePatternIfNecessary(StringHelper.replacePrms("@[\\s\\r\\n]*({0})\\b", new Object[] { connectionName }));
+                recompilePatternIfNecessary(StringHelper.replacePrms("@[\\s\\r\\n]*({0})\\b", new Object[] { connectionName })); //$NON-NLS-1$
                 if (returnedExpression != null) {
                     matcher.setMultiline(true);
-                    Perl5Substitution substitution = new Perl5Substitution("@\\$" + "$1" //$NON-NLS-1$
+                    Perl5Substitution substitution = new Perl5Substitution("@\\$" + "$1" //$NON-NLS-1$ //$NON-NLS-2$
                     , Perl5Substitution.INTERPOLATE_ALL); 
                     returnedExpression = Util.substitute(matcher, pattern, substitution, returnedExpression, Util.SUBSTITUTE_ALL);
                 }

@@ -198,9 +198,9 @@ public class SelectorTableForm extends AbstractForm {
         GridData gridData2 = new GridData(GridData.FILL_HORIZONTAL);
         filterComposite.setLayoutData(gridData2);
         Label label = new Label(filterComposite, SWT.NONE);
-        label.setText("Name Filter:");
+        label.setText(Messages.getString("SelectorTableForm.nameFilter")); //$NON-NLS-1$
         nameFilter = new Text(filterComposite, SWT.BORDER);
-        nameFilter.setToolTipText("Enter type name prefix or pattern(*,?,or camel case).");
+        nameFilter.setToolTipText(Messages.getString("SelectorTableForm.enterType")); //$NON-NLS-1$
         nameFilter.setEditable(true);
         gridData2 = new GridData(GridData.FILL_HORIZONTAL);
         nameFilter.setLayoutData(gridData2);
@@ -461,7 +461,7 @@ public class SelectorTableForm extends AbstractForm {
             parentWizardPage.getWizard().getContainer().run(true, true, new IRunnableWithProgress() {
 
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                    monitor.beginTask(Messages.getString("CreateTableAction.action.createTitle"), IProgressMonitor.UNKNOWN);
+                    monitor.beginTask(Messages.getString("CreateTableAction.action.createTitle"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
 
                     managerConnection.check(getIMetadataConnection());
 
@@ -528,7 +528,7 @@ public class SelectorTableForm extends AbstractForm {
                 restoreCheckItems();
                 if (displayMessageBox) {
                     String msg = Messages.getString("DatabaseTableForm.connectionIsDone"); //$NON-NLS-1$
-                    openInfoDialogInUIThread(getShell(), Messages.getString("DatabaseTableForm.checkConnection"), msg, false);
+                    openInfoDialogInUIThread(getShell(), Messages.getString("DatabaseTableForm.checkConnection"), msg, false); //$NON-NLS-1$
                 }
             }
         });

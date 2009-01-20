@@ -181,23 +181,23 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
 
         } else {
             int firstColumn = ConnectionContextHelper.convertValue(getConnection().getFirstColumn());
-            firstColumnText.setText(firstColumn < 0 ? "1" : getConnection().getFirstColumn());
+            firstColumnText.setText(firstColumn < 0 ? "1" : getConnection().getFirstColumn()); //$NON-NLS-1$
             getConnection().setFirstColumn(firstColumnText.getText());
 
             int lastColumn = ConnectionContextHelper.convertValue(getConnection().getLastColumn());
-            lastColumnText.setText(lastColumn < 0 ? "" : getConnection().getLastColumn());
+            lastColumnText.setText(lastColumn < 0 ? "" : getConnection().getLastColumn()); //$NON-NLS-1$
 
             String ts = this.getConnection().getThousandSeparator();
-            if (ts == null || ts.equals("")) {
-                thousandSeparaotrText.setText("\',\'");
+            if (ts == null || ts.equals("")) { //$NON-NLS-1$
+                thousandSeparaotrText.setText("\',\'"); //$NON-NLS-1$
                 getConnection().setThousandSeparator(thousandSeparaotrText.getText());
             } else {
                 thousandSeparaotrText.setText(ts);
             }
 
             String ds = this.getConnection().getDecimalSeparator();
-            if (ds == null || ds.equals("")) {
-                decimalSeparatorText.setText("\'.\'");
+            if (ds == null || ds.equals("")) { //$NON-NLS-1$
+                decimalSeparatorText.setText("\'.\'"); //$NON-NLS-1$
                 getConnection().setDecimalSeparator(decimalSeparatorText.getText());
             } else {
                 decimalSeparatorText.setText(ds);
@@ -244,15 +244,15 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
                 .getString("FileStep2.encodingTip"), encodingData, 3, true, SWT.NONE); //$NON-NLS-1$
 
         advanceSeparatorCheckbox = new Button(compositeFileDelimitor, SWT.CHECK);
-        advanceSeparatorCheckbox.setText("Advanced separator(for number)");
+        advanceSeparatorCheckbox.setText(Messages.getString("ExcelFileStep2Form.advancesSeparator")); //$NON-NLS-1$
 
         GridData data = new GridData(GridData.FILL_HORIZONTAL);
         data.horizontalSpan = 4;
         advanceSeparatorCheckbox.setLayoutData(data);
 
-        thousandSeparaotrText = new LabelledText(compositeFileDelimitor, "Thousands separator:", 3);
+        thousandSeparaotrText = new LabelledText(compositeFileDelimitor, Messages.getString("ExcelFileStep2Form.thousandsSeparator"), 3); //$NON-NLS-1$
 
-        decimalSeparatorText = new LabelledText(compositeFileDelimitor, "Decimal separator:", 3);
+        decimalSeparatorText = new LabelledText(compositeFileDelimitor, Messages.getString("ExcelFileStep2Form.decimalSeparator"), 3); //$NON-NLS-1$
 
         // Only visible if current project is not perl project
         advanceSeparatorCheckbox.setVisible(!isPerlProject());
@@ -261,13 +261,13 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
     }
 
     private void addGroupDieOnErrorSettings(final Composite mainComposite, final int width, final int height) {
-        Group group = Form.createGroup(mainComposite, 2, "Metadata column setting");
+        Group group = Form.createGroup(mainComposite, 2, Messages.getString("ExcelFileStep2Form.metadataSetting")); //$NON-NLS-1$
         Composite compositeExt = Form.startNewDimensionnedGridLayout(group, 4, width, height);
 
-        firstColumnText = new LabelledText(compositeExt, "First column:", 3);
-        firstColumnText.setText("1"); // Default 1
+        firstColumnText = new LabelledText(compositeExt, Messages.getString("ExcelFileStep2Form.firstColumn"), 3); //$NON-NLS-1$
+        firstColumnText.setText("1"); // Default 1 //$NON-NLS-1$
 
-        lastColumnText = new LabelledText(compositeExt, "Last column:", 3); // Default no value
+        lastColumnText = new LabelledText(compositeExt, Messages.getString("ExcelFileStep2Form.lastColumn"), 3); // Default no value //$NON-NLS-1$
     }
 
     private void addGroupRowsToSkip(final Composite mainComposite, final int width, final int height) {
@@ -331,9 +331,9 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
         tabFolder.setLayoutData(new GridData(GridData.FILL_BOTH));
 
         previewTabItem = new CTabItem(tabFolder, SWT.BORDER);
-        previewTabItem.setText("Preview");
+        previewTabItem.setText(Messages.getString("ExcelFileStep2Form.preview")); //$NON-NLS-1$
         outputTabItem = new CTabItem(tabFolder, SWT.BORDER);
-        outputTabItem.setText("Output");
+        outputTabItem.setText(Messages.getString("ExcelFileStep2Form.output")); //$NON-NLS-1$
 
         Composite previewComposite = Form.startNewGridLayout(tabFolder, 1);
         outputComposite = Form.startNewGridLayout(tabFolder, 1);
@@ -494,7 +494,7 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
                         if (rowsToSkipHeaderCheckboxCombo.isEmpty()) {
                             // at least, rowsToSkipHeader = 1
                             rowsToSkipHeaderCheckboxCombo.setText("1"); //$NON-NLS-1$
-                            getConnection().setHeaderValue("" + 1);
+                            getConnection().setHeaderValue("" + 1); //$NON-NLS-1$
                         } else {
                             // rowsToSkipHeader ++
                             int value = new Integer(rowsToSkipHeaderCheckboxCombo.getText());
@@ -508,7 +508,7 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
                         if (rowsToSkipHeaderCheckboxCombo.getText().equals("1")) { //$NON-NLS-1$
                             // rowsToSkipHeader is unusable
                             rowsToSkipHeaderCheckboxCombo.deselectAll();
-                            getConnection().setHeaderValue("" + 0);
+                            getConnection().setHeaderValue("" + 0); //$NON-NLS-1$
                         } else {
                             // rowsToSkipHeader --
                             int value = new Integer(rowsToSkipHeaderCheckboxCombo.getText());
@@ -608,7 +608,7 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
                     if (!isContextMode()) {
                         String string = String.valueOf(e.character);
                         // Check if input is number, backspace key and delete key of keyboard.
-                        if (!(string.matches("[0-9]*")) && e.keyCode != 8 && e.keyCode != SWT.DEL) {
+                        if (!(string.matches("[0-9]*")) && e.keyCode != 8 && e.keyCode != SWT.DEL) { //$NON-NLS-1$
                             e.doit = false;
                         }
                     }
@@ -626,9 +626,9 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
                                 || rowsToSkipHeaderCheckboxCombo.getText().trim().equals("0")) { //$NON-NLS-1$
                             rowsToSkipHeaderCheckboxCombo.deselectAll();
                             getConnection().setUseHeader(rowsToSkipHeaderCheckboxCombo.isChecked());
-                            getConnection().setHeaderValue("" + 0);
+                            getConnection().setHeaderValue("" + 0); //$NON-NLS-1$
 
-                            updateStatus(IStatus.ERROR, "Number allowed only.");
+                            updateStatus(IStatus.ERROR, Messages.getString("ExcelFileStep2Form.onlyNumber")); //$NON-NLS-1$
                             rowsToSkipHeaderCheckboxCombo.getCombo().setFocus();
 
                             // if rowsHeaderToSkip isn't integer or is equals to 0, the firstRowIsCaptionCheckbox is
@@ -643,7 +643,7 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
                         }
                     } else {
                         getConnection().setUseHeader(rowsToSkipHeaderCheckboxCombo.isChecked());
-                        getConnection().setHeaderValue("" + 0);
+                        getConnection().setHeaderValue("" + 0); //$NON-NLS-1$
                         checkFieldsValue();
                     }
                 }
@@ -659,16 +659,16 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
                                 || rowsToSkipFooterCheckboxCombo.getText().trim().equals("0")) { //$NON-NLS-1$
                             rowsToSkipFooterCheckboxCombo.deselectAll();
                             getConnection().setUseFooter(rowsToSkipFooterCheckboxCombo.isChecked());
-                            getConnection().setFooterValue("" + 0);
+                            getConnection().setFooterValue("" + 0); //$NON-NLS-1$
 
-                            updateStatus(IStatus.ERROR, "Number allowed only.");
+                            updateStatus(IStatus.ERROR, Messages.getString("ExcelFileStep2Form.onlyNumber")); //$NON-NLS-1$
                             rowsToSkipFooterCheckboxCombo.getCombo().setFocus();
                         } else {
                             getConnection().setFooterValue(rowsToSkipFooterCheckboxCombo.getText().trim());
                         }
                     } else {
                         getConnection().setUseFooter(rowsToSkipFooterCheckboxCombo.isChecked());
-                        getConnection().setFooterValue("" + 0);
+                        getConnection().setFooterValue("" + 0); //$NON-NLS-1$
                     }
                     checkFieldsValue();
                 }
@@ -684,16 +684,16 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
                                 || rowsToSkipLimitCheckboxCombo.getText().trim().equals("0")) { //$NON-NLS-1$
                             rowsToSkipLimitCheckboxCombo.deselectAll();
                             getConnection().setUseLimit(rowsToSkipLimitCheckboxCombo.isChecked());
-                            getConnection().setLimitValue("" + 0);
+                            getConnection().setLimitValue("" + 0); //$NON-NLS-1$
 
-                            updateStatus(IStatus.ERROR, "Number allowed only.");
+                            updateStatus(IStatus.ERROR, Messages.getString("ExcelFileStep2Form.onlyNumber")); //$NON-NLS-1$
                             rowsToSkipLimitCheckboxCombo.getCombo().setFocus();
                         } else {
                             getConnection().setLimitValue(rowsToSkipLimitCheckboxCombo.getText());
                         }
                     } else {
                         getConnection().setUseLimit(rowsToSkipLimitCheckboxCombo.isChecked());
-                        getConnection().setLimitValue("" + 0);
+                        getConnection().setLimitValue("" + 0); //$NON-NLS-1$
                     }
                     checkFieldsValue();
                 }
@@ -823,7 +823,7 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
             if (labelledCheckboxCombo.getCheckbox().getSelection()) {
                 if (labelledCheckboxCombo.getText() == "") { //$NON-NLS-1$
                     updateStatus(IStatus.ERROR, labelledCheckboxCombo.getLabelText()
-                            + " " + Messages.getString("FileStep2.mustBePrecised")); //$NON-NLS-1$
+                            + " " + Messages.getString("FileStep2.mustBePrecised")); //$NON-NLS-1$ //$NON-NLS-2$
                     return false;
                 }
             }
@@ -887,13 +887,13 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
         }
         String thouandsSeparator = thousandSeparaotrText.getText();
         if (thouandsSeparator == null) {
-            updateStatus(IStatus.ERROR, "Thousand Separator" + " " + Messages.getString("FileStep2.mustBePrecised")); //$NON-NLS-1$
+            updateStatus(IStatus.ERROR, "Thousand Separator" + " " + Messages.getString("FileStep2.mustBePrecised")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             return false;
         }
 
         String decimalSeparator = decimalSeparatorText.getText();
         if (decimalSeparator == null) {
-            updateStatus(IStatus.ERROR, "Decimal Separator" + " " + Messages.getString("FileStep2.mustBePrecised")); //$NON-NLS-1$
+            updateStatus(IStatus.ERROR, "Decimal Separator" + " " + Messages.getString("FileStep2.mustBePrecised")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             return false;
         }
 
@@ -918,7 +918,7 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
 
         @Override
         public boolean preProcessStart() {
-            previewButton.setText(Messages.getString("FileStep2.stop"));
+            previewButton.setText(Messages.getString("FileStep2.stop")); //$NON-NLS-1$
 
             clearPreview();
             String filePath = getConnection().getFilePath();
@@ -985,7 +985,7 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
         @Override
         public void updateUIInThreadIfThreadIsCanceled() {
             if (!previewInformationLabel.isDisposed()) {
-                previewInformationLabel.setText("");
+                previewInformationLabel.setText(""); //$NON-NLS-1$
             }
         }
 
@@ -1019,7 +1019,7 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
         @Override
         public void updateUIInThreadIfThreadFinally() {
             if (!previewButton.isDisposed()) {
-                previewButton.setText(Messages.getString("FileStep2.refreshPreview"));
+                previewButton.setText(Messages.getString("FileStep2.refreshPreview")); //$NON-NLS-1$
                 previewButton.setEnabled(true);
 
             }
@@ -1166,7 +1166,7 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
             String[] sheets = excelReader.getSheetNames();
 
             String sheetOrigin = getConnection().getSheetName();
-            if (sheetOrigin == null || sheetOrigin.equals("") || !Arrays.asList(sheets).contains(sheetOrigin)) {
+            if (sheetOrigin == null || sheetOrigin.equals("") || !Arrays.asList(sheets).contains(sheetOrigin)) { //$NON-NLS-1$
                 getConnection().setSheetName(sheets[0]);
             }
 

@@ -39,7 +39,7 @@ public class TalendWizardProjectsImportPage extends WizardProjectsImportPage {
         String destinationPerlPath = null;
 
         try {
-            if (!("".equals(sourcePath))) {
+            if (!("".equals(sourcePath))) { //$NON-NLS-1$
                 destinationJavaPath = CorePlugin.getDefault().getLibrariesService().getJavaLibrariesPath();
                 destinationPerlPath = CorePlugin.getDefault().getLibrariesService().getPerlLibrariesPath();
 
@@ -55,8 +55,8 @@ public class TalendWizardProjectsImportPage extends WizardProjectsImportPage {
         }
     }
 
-    public final static String EXTERNAL_LIB_JAVA_PATH = "external_lib_java_path";
+    public final static String EXTERNAL_LIB_JAVA_PATH = "external_lib_java_path"; //$NON-NLS-1$
 
-    public final static String EXTERNAL_LIB_PERL_PATH = "external_lib_perl_path";
+    public final static String EXTERNAL_LIB_PERL_PATH = "external_lib_perl_path"; //$NON-NLS-1$
 
 }

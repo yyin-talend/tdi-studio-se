@@ -47,20 +47,20 @@ public class MoveFileListFilemaskToFilemaskListForJava extends AbstractJobMigrat
 
         try {
 
-            IComponentFilter filter1 = new NameComponentFilter("tFileList");
+            IComponentFilter filter1 = new NameComponentFilter("tFileList"); //$NON-NLS-1$
 
             IComponentConversion addNewProperty = new IComponentConversion() {
 
                 public void transform(NodeType node) {
-                    ComponentUtilities.addNodeProperty(node, "FILES", "TABLE");
+                    ComponentUtilities.addNodeProperty(node, "FILES", "TABLE"); //$NON-NLS-1$ //$NON-NLS-2$
 
                     List<ElementValueType> values = new ArrayList<ElementValueType>();
                     ElementValueType eValue = TalendFileFactory.eINSTANCE.createElementValueType();
-                    eValue.setElementRef("FILEMASK");
-                    eValue.setValue(ComponentUtilities.getNodePropertyValue(node, "FILEMASK"));
+                    eValue.setElementRef("FILEMASK"); //$NON-NLS-1$
+                    eValue.setValue(ComponentUtilities.getNodePropertyValue(node, "FILEMASK")); //$NON-NLS-1$
                     values.add(eValue);
 
-                    ComponentUtilities.setNodeProperty(node, "FILES", values);
+                    ComponentUtilities.setNodeProperty(node, "FILES", values); //$NON-NLS-1$
                 }
             };
 

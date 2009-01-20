@@ -27,6 +27,7 @@ import org.talend.core.model.properties.RoutineItem;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.repository.editor.RepositoryEditorInput;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.actions.AContextualAction;
 
 /**
@@ -62,14 +63,14 @@ public abstract class AbstractRoutineAction extends AContextualAction {
             routineSynchronizer = service.createPerlRoutineSynchronizer();
             break;
         default:
-            throw new UnsupportedOperationException("Unknow language " + lang);
+            throw new UnsupportedOperationException(Messages.getString("AbstractRoutineAction.unknowLanguage") + lang); //$NON-NLS-1$
         }
 
         // check if the related editor is open.
         IWorkbenchPage page = getActivePage();
 
         IEditorReference[] editorParts = page.getEditorReferences();
-        String talendEditorID = "org.talend.designer.core.ui.editor.StandAloneTalend" + lang.getCaseName() + "Editor";
+        String talendEditorID = "org.talend.designer.core.ui.editor.StandAloneTalend" + lang.getCaseName() + "Editor"; //$NON-NLS-1$ //$NON-NLS-2$
         boolean found = false;
         IEditorPart talendEditor = null;
         for (IEditorReference reference : editorParts) {

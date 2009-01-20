@@ -213,7 +213,7 @@ public class FilePositionalViewer extends Composite {
                 String number = drawLine[i].trim();
                 // for bug 5645
                 number = TalendTextUtils.removeQuotes(number);
-                if ("".equals(number)) {
+                if ("".equals(number)) { //$NON-NLS-1$
                     continue;
                 }
                 int num = 0;

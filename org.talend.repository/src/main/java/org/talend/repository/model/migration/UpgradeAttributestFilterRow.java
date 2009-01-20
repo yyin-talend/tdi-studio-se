@@ -50,27 +50,27 @@ public class UpgradeAttributestFilterRow extends AbstractJobMigrationTask {
 
         } else {
 
-            String functionName = "FUNCTION";
-            String operatorName = "OPERATOR";
+            String functionName = "FUNCTION"; //$NON-NLS-1$
+            String operatorName = "OPERATOR"; //$NON-NLS-1$
 
-            String[][] replaceFuntions = new String[][] { { "S_VALUE_OF", "" }, { "N_VALUE_OF_FLOAT", "" },
-                    { "N_VALUE_OF_INTEGER", "" }, { "ABS_VALUE_FLOAT", "Math.abs($source) $operator $target" },
-                    { "ABS_VALUE_INTEGER", "Math.abs($source) $operator $target" },
-                    { "LC", "$source == null? false : $source.toLowerCase().compareTo($target) $operator 0" },
-                    { "UC", "$source == null? false : $source.toUpperCase().compareTo($target) $operator 0" },
-                    { "LCFIRST", "$source == null? false : $source.toLowerCase().charAt(0).compareTo($target) $operator 0" },
-                    { "UCFIRST", "$source == null? false : $source.toUpperCase().charAt(0).compareTo($target) $operator 0" },
-                    { "LENGTH", "$source == null? false : $source.length() $operator $target" } };
+            String[][] replaceFuntions = new String[][] { { "S_VALUE_OF", "" }, { "N_VALUE_OF_FLOAT", "" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                    { "N_VALUE_OF_INTEGER", "" }, { "ABS_VALUE_FLOAT", "Math.abs($source) $operator $target" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                    { "ABS_VALUE_INTEGER", "Math.abs($source) $operator $target" }, //$NON-NLS-1$ //$NON-NLS-2$
+                    { "LC", "$source == null? false : $source.toLowerCase().compareTo($target) $operator 0" }, //$NON-NLS-1$ //$NON-NLS-2$
+                    { "UC", "$source == null? false : $source.toUpperCase().compareTo($target) $operator 0" }, //$NON-NLS-1$ //$NON-NLS-2$
+                    { "LCFIRST", "$source == null? false : $source.toLowerCase().charAt(0).compareTo($target) $operator 0" }, //$NON-NLS-1$ //$NON-NLS-2$
+                    { "UCFIRST", "$source == null? false : $source.toUpperCase().charAt(0).compareTo($target) $operator 0" }, //$NON-NLS-1$ //$NON-NLS-2$
+                    { "LENGTH", "$source == null? false : $source.length() $operator $target" } }; //$NON-NLS-1$ //$NON-NLS-2$
 
-            String[][] replaceOperator = new String[][] { { "EQ", "==" }, { "NE", "!=" }, { "GT", ">" }, { "LT", "<" },
-                    { "GE", ">=" }, { "LE", "<=" }, { "MATCH", "==" }, { "NMATCH", "!=" } };
+            String[][] replaceOperator = new String[][] { { "EQ", "==" }, { "NE", "!=" }, { "GT", ">" }, { "LT", "<" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$
+                    { "GE", ">=" }, { "LE", "<=" }, { "MATCH", "==" }, { "NMATCH", "!=" } }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$
 
             boolean isModified = false;     
 
             NodeType tFilterRow = null;
             for (Object oNodeType : processType.getNode()) {
                 NodeType nodeType = (NodeType) oNodeType;
-                if (nodeType.getComponentName().equals("tFilterRow")) {
+                if (nodeType.getComponentName().equals("tFilterRow")) { //$NON-NLS-1$
                     tFilterRow = nodeType;
                     break;
                 }
@@ -81,7 +81,7 @@ public class UpgradeAttributestFilterRow extends AbstractJobMigrationTask {
                 EList elementParameter = tFilterRow.getElementParameter();
                 for (Object object : elementParameter) {
                     ElementParameterTypeImpl parameter = (ElementParameterTypeImpl) object;
-                    if (parameter.getName().equals("CONDITIONS")) {
+                    if (parameter.getName().equals("CONDITIONS")) { //$NON-NLS-1$
                         EList elementValue = parameter.getElementValue();
                         ElementValueTypeImpl lastFunctionForMatch = null;
                         for (Object object2 : elementValue) {
@@ -101,10 +101,10 @@ public class UpgradeAttributestFilterRow extends AbstractJobMigrationTask {
                                 for (String[] element : replaceOperator) {
                                     // the old version "MATCH" belong to "operator list", now it belong to "function
                                     // list"
-                                    if ("MATCH".equals(tableElement.getValue()) || "NMATCH".equals(tableElement.getValue())) {
+                                    if ("MATCH".equals(tableElement.getValue()) || "NMATCH".equals(tableElement.getValue())) { //$NON-NLS-1$ //$NON-NLS-2$
                                         if (lastFunctionForMatch != null) {
                                             lastFunctionForMatch
-                                                    .setValue("$source == null? false : $source.matches($target) $operator true");
+                                                    .setValue("$source == null? false : $source.matches($target) $operator true"); //$NON-NLS-1$
                                             isModified = true;
                                         }
                                     }
@@ -118,12 +118,12 @@ public class UpgradeAttributestFilterRow extends AbstractJobMigrationTask {
                             }
 
                         }
-                    } else if (parameter.getName().equals("LOGICAL_OP")) {
-                        if (parameter.getValue().equals("AND")) {
-                            parameter.setValue("&&");
+                    } else if (parameter.getName().equals("LOGICAL_OP")) { //$NON-NLS-1$
+                        if (parameter.getValue().equals("AND")) { //$NON-NLS-1$
+                            parameter.setValue("&&"); //$NON-NLS-1$
                             isModified = true;
-                        } else if (parameter.getValue().equals("OR")) {
-                            parameter.setValue("||");
+                        } else if (parameter.getValue().equals("OR")) { //$NON-NLS-1$
+                            parameter.setValue("||"); //$NON-NLS-1$
                             isModified = true;
                         }
                     }

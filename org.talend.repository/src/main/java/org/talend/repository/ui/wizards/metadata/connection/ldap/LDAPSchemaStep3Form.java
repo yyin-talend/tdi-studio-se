@@ -259,18 +259,18 @@ public class LDAPSchemaStep3Form extends AbstractLDAPSchemaStepForm implements I
         ProcessDescription processDescription = null;
 
         public boolean preProcessStart() {
-            previewButton.setText(Messages.getString("FileStep2.stop"));
+            previewButton.setText(Messages.getString("FileStep2.stop")); //$NON-NLS-1$
 
             clearPreview();
 
             // if incomplete settings, , the process don't be executed
             if (!checkFieldsValue()) {
-                previewInformationLabel.setText(" " + Messages.getString("FileStep2.settingsIncomplete")); //$NON-NLS-1$
+                previewInformationLabel.setText(" " + Messages.getString("FileStep2.settingsIncomplete")); //$NON-NLS-1$ //$NON-NLS-2$
                 //$NON-NLS-2$
                 return false;
             }
 
-            previewInformationLabel.setText(" " + Messages.getString("FileStep2.previewProgress")); //$NON-NLS-1$
+            previewInformationLabel.setText(" " + Messages.getString("FileStep2.previewProgress")); //$NON-NLS-1$ //$NON-NLS-2$
             //$NON-NLS-2$
             processDescription = getProcessDescription();
             return true;
@@ -289,7 +289,7 @@ public class LDAPSchemaStep3Form extends AbstractLDAPSchemaStepForm implements I
 
         public void updateUIInThreadIfThreadIsCanceled() {
             if (!previewInformationLabel.isDisposed()) {
-                previewInformationLabel.setText("");
+                previewInformationLabel.setText(""); //$NON-NLS-1$
             }
         }
 
@@ -299,7 +299,7 @@ public class LDAPSchemaStep3Form extends AbstractLDAPSchemaStepForm implements I
             }
             // LDAPSchemaConnection connection = (LDAPSchemaConnection) connectionItem.getConnection();
             if (getException() != null) {
-                previewInformationLabel.setText(" " + Messages.getString("FileStep2.previewFailure")); //$NON-NLS-1$
+                previewInformationLabel.setText(" " + Messages.getString("FileStep2.previewFailure")); //$NON-NLS-1$ //$NON-NLS-2$
                 //$NON-NLS-2$
                 Display.getDefault().asyncExec(new Runnable() {
 
@@ -312,11 +312,11 @@ public class LDAPSchemaStep3Form extends AbstractLDAPSchemaStepForm implements I
             }
 
             if (csvArray == null || csvArray.getRows() == null || csvArray.getRows().size() == 0) {
-                previewInformationLabel.setText(" " + Messages.getString("FileStep2.previewFailure")); //$NON-NLS-1$
+                previewInformationLabel.setText(" " + Messages.getString("FileStep2.previewFailure")); //$NON-NLS-1$ //$NON-NLS-2$
                 // MessageDialog.openError(getShell(), "Error", "Preview refresh failed, please check attributes and
                 // filter.");
 
-                String errorInfo = "Error!" + "\n" + "Preview refresh failed, please check attributes and filter.";
+                String errorInfo = Messages.getString("LDAPSchemaStep3Form.errorMessage"); //$NON-NLS-1$
 
                 final RuntimeException e = new RuntimeException(errorInfo);
 
@@ -333,7 +333,7 @@ public class LDAPSchemaStep3Form extends AbstractLDAPSchemaStepForm implements I
                     connection.setFilter(ConnectionUIConstants.DEFAULT_FILTER);
                 }
             } else {
-                previewInformationLabel.setText(" " + Messages.getString("FileStep2.previewIsDone")); //$NON-NLS-1$
+                previewInformationLabel.setText(" " + Messages.getString("FileStep2.previewIsDone")); //$NON-NLS-1$ //$NON-NLS-2$
                 //$NON-NLS-2$
 
                 // refresh TablePreview on this step
@@ -359,7 +359,7 @@ public class LDAPSchemaStep3Form extends AbstractLDAPSchemaStepForm implements I
 
         public void updateUIInThreadIfThreadFinally() {
             if (!previewButton.isDisposed()) {
-                previewButton.setText(Messages.getString("FileStep2.refreshPreview"));
+                previewButton.setText(Messages.getString("FileStep2.refreshPreview")); //$NON-NLS-1$
                 previewButton.setEnabled(true);
             }
         }
@@ -384,7 +384,9 @@ public class LDAPSchemaStep3Form extends AbstractLDAPSchemaStepForm implements I
             /*
              * (non-Javadoc)
              * 
-             * @see org.talend.commons.ui.swt.extended.macrotable.AbstractExtendedTableViewer#setTableViewerCreatorOptions(org.talend.commons.ui.swt.tableviewer.TableViewerCreator)
+             * @see
+             * org.talend.commons.ui.swt.extended.macrotable.AbstractExtendedTableViewer#setTableViewerCreatorOptions
+             * (org.talend.commons.ui.swt.tableviewer.TableViewerCreator)
              */
             @Override
             protected void setTableViewerCreatorOptions(TableViewerCreator<String> newTableViewerCreator) {
@@ -431,9 +433,9 @@ public class LDAPSchemaStep3Form extends AbstractLDAPSchemaStepForm implements I
         tabFolder.setLayoutData(new GridData(GridData.FILL_BOTH));
 
         previewTabItem = new CTabItem(tabFolder, SWT.BORDER);
-        previewTabItem.setText("Preview");
+        previewTabItem.setText(Messages.getString("LDAPSchemaStep3Form.preview")); //$NON-NLS-1$
         outputTabItem = new CTabItem(tabFolder, SWT.BORDER);
-        outputTabItem.setText("Output");
+        outputTabItem.setText(Messages.getString("LDAPSchemaStep3Form.output")); //$NON-NLS-1$
 
         Composite previewComposite = Form.startNewGridLayout(tabFolder, 1);
         outputComposite = Form.startNewGridLayout(tabFolder, 1);
@@ -477,7 +479,7 @@ public class LDAPSchemaStep3Form extends AbstractLDAPSchemaStepForm implements I
      */
     private void addFilter(final Composite mainComposite, final int width, final int height) {
         // Composite filter rows
-        Group group = Form.createGroup(mainComposite, 1, "Filter", height);
+        Group group = Form.createGroup(mainComposite, 1, "Filter", height); //$NON-NLS-1$
         Composite compositeFilter = Form.startNewDimensionnedGridLayout(group, 3, width, height);
 
         // Information Text
@@ -551,7 +553,6 @@ public class LDAPSchemaStep3Form extends AbstractLDAPSchemaStepForm implements I
      * (non-Javadoc)
      * 
      * @see org.eclipse.swt.widgets.Control#setVisible(boolean)
-     * 
      */
     public void setVisible(boolean visible) {
         super.setVisible(visible);

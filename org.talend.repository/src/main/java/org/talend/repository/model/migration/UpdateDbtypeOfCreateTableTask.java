@@ -50,24 +50,24 @@ public class UpdateDbtypeOfCreateTableTask extends AbstractJobMigrationTask {
 		
         if (getProject().getLanguage().equals(ECodeLanguage.JAVA) && processType != null) {
             final Map<String, String> dbtypes = new HashMap<String, String>();
-            dbtypes.put("Access", "ACCESS");
-            dbtypes.put("AS400", "AS400");
-            dbtypes.put("DB2", "DB2");
-            dbtypes.put("FireBird", "FIREBIRD");
-            dbtypes.put("Hsql", "HSQLDB");
-            dbtypes.put("Informix", "INFORMIX");
-            dbtypes.put("Ingres", "INGRES");
-            dbtypes.put("Interbase", "INTERBASE");
-            dbtypes.put("JavaDb", "JAVADB");
-            dbtypes.put("MSSQLServer", "MSSQL");
-            dbtypes.put("Oracle", "DBORACLE");
-            dbtypes.put("Postgre", "POSTGRE");
-            dbtypes.put("SQLite", "SQLITE");
-            dbtypes.put("Sybase", "SYBASE");
-            dbtypes.put("ODBC", "ODBC");
+            dbtypes.put("Access", "ACCESS"); //$NON-NLS-1$ //$NON-NLS-2$
+            dbtypes.put("AS400", "AS400"); //$NON-NLS-1$ //$NON-NLS-2$
+            dbtypes.put("DB2", "DB2"); //$NON-NLS-1$ //$NON-NLS-2$
+            dbtypes.put("FireBird", "FIREBIRD"); //$NON-NLS-1$ //$NON-NLS-2$
+            dbtypes.put("Hsql", "HSQLDB"); //$NON-NLS-1$ //$NON-NLS-2$
+            dbtypes.put("Informix", "INFORMIX"); //$NON-NLS-1$ //$NON-NLS-2$
+            dbtypes.put("Ingres", "INGRES"); //$NON-NLS-1$ //$NON-NLS-2$
+            dbtypes.put("Interbase", "INTERBASE"); //$NON-NLS-1$ //$NON-NLS-2$
+            dbtypes.put("JavaDb", "JAVADB"); //$NON-NLS-1$ //$NON-NLS-2$
+            dbtypes.put("MSSQLServer", "MSSQL"); //$NON-NLS-1$ //$NON-NLS-2$
+            dbtypes.put("Oracle", "DBORACLE"); //$NON-NLS-1$ //$NON-NLS-2$
+            dbtypes.put("Postgre", "POSTGRE"); //$NON-NLS-1$ //$NON-NLS-2$
+            dbtypes.put("SQLite", "SQLITE"); //$NON-NLS-1$ //$NON-NLS-2$
+            dbtypes.put("Sybase", "SYBASE"); //$NON-NLS-1$ //$NON-NLS-2$
+            dbtypes.put("ODBC", "ODBC"); //$NON-NLS-1$ //$NON-NLS-2$
 
-            final String name = "tCreateTable";
-            final String property = "DBTYPE";
+            final String name = "tCreateTable"; //$NON-NLS-1$
+            final String property = "DBTYPE"; //$NON-NLS-1$
 
             IComponentFilter filert = new IComponentFilter() {
 
@@ -94,7 +94,7 @@ public class UpdateDbtypeOfCreateTableTask extends AbstractJobMigrationTask {
                     if (value != null) {
                         ComponentUtilities.setNodeValue(node, property, value);
                     } else {
-                        ComponentUtilities.setNodeValue(node, property, "MYSQL");
+                        ComponentUtilities.setNodeValue(node, property, "MYSQL"); //$NON-NLS-1$
                     }
                 }
             };

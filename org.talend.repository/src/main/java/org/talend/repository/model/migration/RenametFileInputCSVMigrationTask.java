@@ -43,7 +43,7 @@ public class RenametFileInputCSVMigrationTask extends AbstractJobMigrationTask {
             IComponentFilter filter1 = new NameComponentFilter("tFileInputCSV"); //$NON-NLS-1$
 
             IComponentConversion addProperty = new AddPropertyCSVOptionConversion();
-            IComponentConversion renameComponent = new RenameComponentConversion("tFileInputDelimited");
+            IComponentConversion renameComponent = new RenameComponentConversion("tFileInputDelimited"); //$NON-NLS-1$
 
             ModifyComponentsAction.searchAndModify(item,processType, filter1, Arrays.<IComponentConversion> asList(addProperty,
                     renameComponent));

@@ -49,7 +49,7 @@ public class RegleTest extends Composite {
                 for (int i = 0; i < 500; i++) {
                     if (i % 9 == 0) {
                         if (uniteRAZ == 5) {
-                            String num = "" + unite;
+                            String num = "" + unite; //$NON-NLS-1$
                             if (num.length() < 2) {
                                 gc.drawText(num, i - 2, 2);
                             } else if (num.length() < 3) {

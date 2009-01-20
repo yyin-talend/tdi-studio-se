@@ -277,9 +277,9 @@ public class DatabaseTableForm extends AbstractForm {
         nameText.setText(metadataTable.getLabel());
         commentText.setText(metadataTable.getComment());
         if (metadataTable.getTableType() != null) {
-            typeText.setText(Messages.getString("DatabaseTableForm.type") + " : " + metadataTable.getTableType());
+            typeText.setText(Messages.getString("DatabaseTableForm.type", metadataTable.getTableType())); //$NON-NLS-1$
         } else {
-            typeText.setText(Messages.getString("DatabaseTableForm.type") + " : " + "TABLE");
+            typeText.setText(Messages.getString("DatabaseTableForm.typeTable")); //$NON-NLS-1$
         }
         tableCombo.setText(metadataTable.getSourceName());
         nameText.forceFocus();
@@ -309,15 +309,15 @@ public class DatabaseTableForm extends AbstractForm {
         switch (LanguageManager.getCurrentLanguage()) {
         case JAVA:
             String returnValue = bean.getDefaultValue();
-            if (bean.getTalendType().equals("id_String") || bean.getTalendType().equals("id_Date")) {
+            if (bean.getTalendType().equals("id_String") || bean.getTalendType().equals("id_Date")) { //$NON-NLS-1$ //$NON-NLS-2$
                 if (returnValue == null || returnValue.length() == 0) {
                     returnValue = null;
-                } else if (returnValue.equalsIgnoreCase("null")) {
-                    returnValue = "null";
+                } else if (returnValue.equalsIgnoreCase("null")) { //$NON-NLS-1$
+                    returnValue = "null"; //$NON-NLS-1$
                 } else {
-                    returnValue = returnValue.replaceAll("\"", "");
-                    returnValue = returnValue.replaceAll("\'", "");
-                    returnValue = "\"" + returnValue + "\"";
+                    returnValue = returnValue.replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
+                    returnValue = returnValue.replaceAll("\'", ""); //$NON-NLS-1$ //$NON-NLS-2$
+                    returnValue = "\"" + returnValue + "\""; //$NON-NLS-1$ //$NON-NLS-2$
                 }
                 bean.setDefaultValue(returnValue);
             }
@@ -568,7 +568,7 @@ public class DatabaseTableForm extends AbstractForm {
             parentWizardPage.getWizard().getContainer().run(true, true, new IRunnableWithProgress() {
 
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                    monitor.beginTask(Messages.getString("CreateTableAction.action.createTitle"), IProgressMonitor.UNKNOWN);
+                    monitor.beginTask(Messages.getString("CreateTableAction.action.createTitle"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
 
                     managerConnection.check(getIMetadataConnection());
 
@@ -580,7 +580,7 @@ public class DatabaseTableForm extends AbstractForm {
                             if (displayMessageBox) {
                                 SelectorTableForm.openInfoDialogInUIThread(getShell(), Messages
                                         .getString("DatabaseTableForm.checkConnection"), Messages //$NON-NLS-1$
-                                        .getString("DatabaseTableForm.tableNoExist"), true);
+                                        .getString("DatabaseTableForm.tableNoExist"), true); //$NON-NLS-1$
                             }
                         } else {
                             Display.getDefault().asyncExec(new Runnable() {
@@ -834,7 +834,6 @@ public class DatabaseTableForm extends AbstractForm {
      * (non-Javadoc)
      * 
      * @see org.eclipse.swt.widgets.Control#setVisible(boolean)
-     * 
      */
     public void setVisible(boolean visible) {
         super.setVisible(visible);

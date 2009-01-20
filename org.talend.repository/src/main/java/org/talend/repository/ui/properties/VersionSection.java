@@ -92,9 +92,9 @@ public class VersionSection extends AbstractSection implements ISelectionProvide
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
 
-        final String[] columnProperties = new String[] { Messages.getString("VersionSection.Version"),
-                Messages.getString("VersionSection.CreationDate"),
-                Messages.getString("VersionSection.ModificationDate"), Messages.getString("VersionSection.Status") }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        final String[] columnProperties = new String[] { Messages.getString("VersionSection.Version"), //$NON-NLS-1$
+                Messages.getString("VersionSection.CreationDate"), //$NON-NLS-1$
+                Messages.getString("VersionSection.ModificationDate"), Messages.getString("VersionSection.Status") }; //$NON-NLS-1$ //$NON-NLS-2$ 
 
         final TableColumn column1 = new TableColumn(table, SWT.NONE);
         tableLayout.addColumnData(new ColumnPixelData(125, true));
@@ -280,9 +280,9 @@ public class VersionSection extends AbstractSection implements ISelectionProvide
                     public int compare(Viewer viewer, Object e1, Object e2) {
                         ITableLabelProvider labelProvider = (ITableLabelProvider) tableViewer.getLabelProvider();
                         String columnText = labelProvider.getColumnText(e1, index) != null ? labelProvider.getColumnText(e1,
-                                index) : "";
+                                index) : ""; //$NON-NLS-1$
                         String columnText2 = labelProvider.getColumnText(e2, index) != null ? labelProvider.getColumnText(e2,
-                                index) : "";
+                                index) : ""; //$NON-NLS-1$
                         return getComparator().compare(columnText, columnText2) * direction;
                     }
                 });
@@ -328,7 +328,7 @@ public class VersionSection extends AbstractSection implements ISelectionProvide
     }
 
     public void setSelection(ISelection selection) {
-        System.out.println("set");
+        System.out.println("set"); //$NON-NLS-1$
     }
 
     @Override

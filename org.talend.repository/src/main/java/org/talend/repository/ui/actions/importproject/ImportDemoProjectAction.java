@@ -99,8 +99,8 @@ public final class ImportDemoProjectAction extends Action {
 
                         if (checkProjectIsExisting(techName)) {
                             boolean reImportFlag = MessageDialog.openQuestion(shell, Messages
-                                    .getString("ImportDemoProjectAction.alertDialog.messageTitle"), Messages
-                                    .getString("ImportDemoProjectAction.alertDialog.message"));
+                                    .getString("ImportDemoProjectAction.alertDialog.messageTitle"), Messages //$NON-NLS-1$
+                                    .getString("ImportDemoProjectAction.alertDialog.message")); //$NON-NLS-1$
                             if (!reImportFlag) {
                                 return;
                             }
@@ -114,7 +114,7 @@ public final class ImportDemoProjectAction extends Action {
 
                         String filePath = new Path(url.getFile()).toOSString();
 
-                        if (demoProjectFileType.getName().equalsIgnoreCase("folder")) {
+                        if (demoProjectFileType.getName().equalsIgnoreCase("folder")) { //$NON-NLS-1$
                             ImportProjectsUtilities.importProjectAs(shell, techName, techName, filePath, monitorWrap);
                         } else {// type.equalsIgnoreCase("archive")
                             ImportProjectsUtilities.importArchiveProject(shell, techName, filePath, monitorWrap);

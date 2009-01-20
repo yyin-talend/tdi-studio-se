@@ -60,14 +60,14 @@ public class FileInputRegexContextVariableMigrationTaskForSave extends AbstractJ
         EList nodes = processType.getNode();
         for (Object n : nodes) {
             NodeType type = (NodeType) n;
-            if (type.getComponentName().equals("tFileInputRegex")) {
+            if (type.getComponentName().equals("tFileInputRegex")) { //$NON-NLS-1$
                 EList elementParameterList = type.getElementParameter();
                 for (Object elem : elementParameterList) {
                     ElementParameterType elemType = (ElementParameterType) elem;
-                    if (elemType.getName().equals("HEADER") || elemType.getName().equals("FOOTER")
-                            || elemType.getName().equals("LIMIT")) {
+                    if (elemType.getName().equals("HEADER") || elemType.getName().equals("FOOTER") //$NON-NLS-1$ //$NON-NLS-2$
+                            || elemType.getName().equals("LIMIT")) { //$NON-NLS-1$
                         String oldV = elemType.getValue();
-                        if (oldV != null && oldV.startsWith("\"") && oldV.endsWith("\"")) {
+                        if (oldV != null && oldV.startsWith("\"") && oldV.endsWith("\"")) { //$NON-NLS-1$ //$NON-NLS-2$
                             elemType.setValue(oldV.substring(1, oldV.length() - 1));
                             modified = true;
                         }

@@ -38,9 +38,9 @@ public class MigrationTaskForIssue4449 extends AbstractJobMigrationTask {
             boolean isModified = false;           
             for (Object nodeType : processType.getNode()) {
                 NodeType tmpNodeType = (NodeType) nodeType;
-                ElementParameterType property = ComponentUtilities.getNodeProperty(tmpNodeType, "TABLE_ACTION");
-                if (property != null && property.getValue().equals("CLEAR")) {
-                    property.setValue("TRUNCATE");
+                ElementParameterType property = ComponentUtilities.getNodeProperty(tmpNodeType, "TABLE_ACTION"); //$NON-NLS-1$
+                if (property != null && property.getValue().equals("CLEAR")) { //$NON-NLS-1$
+                    property.setValue("TRUNCATE"); //$NON-NLS-1$
                     isModified = true;
                 }
             }

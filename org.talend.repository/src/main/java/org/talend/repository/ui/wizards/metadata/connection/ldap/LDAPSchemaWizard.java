@@ -80,7 +80,7 @@ public class LDAPSchemaWizard extends RepositoryWizard implements INewWizard {
 
     private boolean isSinglePageOnly;
 
-    private static final String ALL_STEPS = "5";
+    private static final String ALL_STEPS = "5"; //$NON-NLS-1$
 
     private Map<String, String> oldTableMap;
 
@@ -267,7 +267,7 @@ public class LDAPSchemaWizard extends RepositoryWizard implements INewWizard {
         ldapSchemaWizardPage4 = null;
 
         if (creation) {
-            setWindowTitle(Messages.getString("LDAPSchemaWizard.CreateNewLdapSchema"));// Messages.getString(
+            setWindowTitle(Messages.getString("LDAPSchemaWizard.CreateNewLdapSchema"));// Messages.getString( //$NON-NLS-1$
             // "DelimitedFileWizard.windowTitleCreate"
             // ));
             // //$NON-NLS-1$
@@ -318,7 +318,7 @@ public class LDAPSchemaWizard extends RepositoryWizard implements INewWizard {
 
         } else {
 
-            setWindowTitle(Messages.getString("LDAPSchemaWizard.UpdateLdapSchema"));// Messages.getString(
+            setWindowTitle(Messages.getString("LDAPSchemaWizard.UpdateLdapSchema"));// Messages.getString( //$NON-NLS-1$
             // "DelimitedFileWizard.windowTitleUpdate"
             // ));
             // //$NON-NLS-1$

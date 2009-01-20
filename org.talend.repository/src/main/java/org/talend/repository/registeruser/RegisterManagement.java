@@ -50,7 +50,7 @@ public class RegisterManagement {
             System.setProperty("http.proxyPort", proxyPort); //$NON-NLS-1$
 
             // override automatic update parameters
-            if (proxyPort != null && proxyPort.trim().equals("")) {
+            if (proxyPort != null && proxyPort.trim().equals("")) { //$NON-NLS-1$
                 proxyPort = null;
             }
             CorePreferenceInitializer.setProxy(proxyHost, proxyPort);
@@ -62,8 +62,8 @@ public class RegisterManagement {
             IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
                     IBrandingService.class);
             result = proxy.registerUserWithAllUserInformations(email, country, designerVersion, brandingService
-                    .getShortProductName(), projectLanguage, osName, osVersion, javaVersion, totalMemory + "", memRAM
-                    + "", nbProc + "");
+                    .getShortProductName(), projectLanguage, osName, osVersion, javaVersion, totalMemory + "", memRAM //$NON-NLS-1$
+                    + "", nbProc + ""); //$NON-NLS-1$ //$NON-NLS-2$
             if (result) {
                 PlatformUI.getPreferenceStore().setValue("REGISTRATION_DONE", 1); //$NON-NLS-1$
                 PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault()

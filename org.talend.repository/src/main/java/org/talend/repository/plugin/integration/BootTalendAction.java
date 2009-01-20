@@ -20,6 +20,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
 import org.talend.core.CorePlugin;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryView;
 
@@ -28,9 +29,9 @@ import org.talend.repository.ui.views.RepositoryView;
  */
 public class BootTalendAction implements IWorkbenchWindowActionDelegate {
 
-    public final static String TALEND_PERSPECTIVE_ID = "org.talend.rcp.perspective";
+    public final static String TALEND_PERSPECTIVE_ID = "org.talend.rcp.perspective"; //$NON-NLS-1$
 
-    public static final String LOGIN_COUNTER = "loginCounter";
+    public static final String LOGIN_COUNTER = "loginCounter"; //$NON-NLS-1$
 
     private IPreferenceStore store;
 
@@ -93,7 +94,7 @@ public class BootTalendAction implements IWorkbenchWindowActionDelegate {
                 return perspectiveDescriptor;
             }
         }
-        throw new RuntimeException("plugin org.talend.rcp is not loaded.");
+        throw new RuntimeException(Messages.getString("BootTalendAction.pluginNotLoaded")); //$NON-NLS-1$
     }
 
 }

@@ -24,6 +24,7 @@ import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.repository.ProjectManager;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
@@ -58,9 +59,9 @@ public class CreateLDAPSchemaAction extends AbstractCreateAction {
         super();
 
         // TODO: should to fix the I18N issue.
-        createLabel = "Create LDAP schema";
-        editLabel = "Edit LDAP schema";
-        openLabel = "Open LDAP schema";
+        createLabel = Messages.getString("CreateLDAPSchemaAction.createLDAP"); //$NON-NLS-1$
+        editLabel = Messages.getString("CreateLDAPSchemaAction.editLDAP"); //$NON-NLS-1$
+        openLabel = Messages.getString("CreateLDAPSchemaAction.openLDAP"); //$NON-NLS-1$
 
         // TODO: should change to another icon.
         defaultImage = ImageProvider.getImageDesc(ECoreImage.METADATA_LDAP_SCHEMA_ICON);

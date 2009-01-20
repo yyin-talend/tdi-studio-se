@@ -42,11 +42,11 @@ public class LDAPConnectionUtils {
 
     private static java.util.Hashtable<String, String> env = null;
 
-    private static final String LDAP_URL_PREFIX = "ldap://";
+    private static final String LDAP_URL_PREFIX = "ldap://"; //$NON-NLS-1$
 
-    private static final String LDAPS_URL_PREFIX = "ldaps://";
+    private static final String LDAPS_URL_PREFIX = "ldaps://"; //$NON-NLS-1$
 
-    private static final String CONTEXT_FACTORY = "com.sun.jndi.ldap.LdapCtxFactory";
+    private static final String CONTEXT_FACTORY = "com.sun.jndi.ldap.LdapCtxFactory"; //$NON-NLS-1$
 
     private static InitialLdapContext ctx = null;
     
@@ -79,16 +79,16 @@ public class LDAPConnectionUtils {
             javax.naming.directory.SearchControls searchCtls = new javax.naming.directory.SearchControls();
             searchCtls.setSearchScope(javax.naming.directory.SearchControls.SUBTREE_SCOPE);
 
-            javax.naming.directory.Attributes namingContexts = ctx.getAttributes("", new String[] { "namingContexts" });
-            javax.naming.directory.Attribute namingContextValue = namingContexts.get("namingContexts");
+            javax.naming.directory.Attributes namingContexts = ctx.getAttributes("", new String[] { "namingContexts" }); //$NON-NLS-1$ //$NON-NLS-2$
+            javax.naming.directory.Attribute namingContextValue = namingContexts.get("namingContexts"); //$NON-NLS-1$
             if (namingContextValue == null) {
-                namingContextValue = namingContexts.get("namingcontexts");
+                namingContextValue = namingContexts.get("namingcontexts"); //$NON-NLS-1$
             }
             String searchBase = null;
             if (baseDN == null) {
                 searchBase = ((namingContextValue == null) || ((namingContextValue != null)
                         && (namingContextValue.get().toString() != null) && (namingContextValue.get().toString().length() > 0) && (Character
-                        .isIdentifierIgnorable(namingContextValue.get().toString().charAt(0))))) ? "" : namingContextValue.get()
+                        .isIdentifierIgnorable(namingContextValue.get().toString().charAt(0))))) ? "" : namingContextValue.get() //$NON-NLS-1$
                         .toString();
             } else {
                 searchBase = baseDN;
@@ -191,7 +191,7 @@ public class LDAPConnectionUtils {
                 for (NamingEnumeration ae = attrs.getAll(); ae.hasMore();) {
                     Attribute attr = (Attribute) ae.next();
                     String id = attr.getID();
-                    if (id.equals("objectClass")) {
+                    if (id.equals("objectClass")) { //$NON-NLS-1$
                         NamingEnumeration<?> all = attr.getAll();
                         while (all.hasMore()) {
                             String next = (String) all.next();
@@ -224,12 +224,12 @@ public class LDAPConnectionUtils {
 
         javax.naming.directory.Attributes namingContexts;
         try {
-            namingContexts = ctx.getAttributes("", new String[] { "namingContexts" });
+            namingContexts = ctx.getAttributes("", new String[] { "namingContexts" }); //$NON-NLS-1$ //$NON-NLS-2$
 
-            javax.naming.directory.Attribute namingContextValue = namingContexts.get("namingContexts");
+            javax.naming.directory.Attribute namingContextValue = namingContexts.get("namingContexts"); //$NON-NLS-1$
 
             if (namingContextValue == null) {
-                namingContextValue = namingContexts.get("namingcontexts");
+                namingContextValue = namingContexts.get("namingcontexts"); //$NON-NLS-1$
             }
 
             NamingEnumeration<Object> namingEnumeration = (NamingEnumeration<Object>) namingContextValue.getAll();
@@ -275,9 +275,9 @@ public class LDAPConnectionUtils {
         if (protocol.equals(EAuthenticationMethod.SIMPLE.getName())) {
             // env.put(javax.naming.Context.SECURITY_AUTHENTICATION, protocol.equals(EAuthenticationMethod.SIMPLE
             // .getName()) ? "none" : "simple");// "none","simple","strong"
-            env.put(javax.naming.Context.SECURITY_AUTHENTICATION, "simple");// 
+            env.put(javax.naming.Context.SECURITY_AUTHENTICATION, "simple");//  //$NON-NLS-1$
         } else {
-            env.put(javax.naming.Context.SECURITY_AUTHENTICATION, "none");
+            env.put(javax.naming.Context.SECURITY_AUTHENTICATION, "none"); //$NON-NLS-1$
         }
 
         if (isAuthUsed && userOrBindId != null && userOrBindId.length() > 0) {
@@ -288,21 +288,21 @@ public class LDAPConnectionUtils {
         }
 
         if (aliasesDereference != null && aliasesDereference.length() > 0) {
-            env.put("java.naming.ldap.derefAliases", aliasesDereference);
+            env.put("java.naming.ldap.derefAliases", aliasesDereference); //$NON-NLS-1$
         }
 
         if (referral != null && referral.length() > 0) {
             env.put(javax.naming.Context.REFERRAL, referral);
         }
 
-        String hostUrl = "";
+        String hostUrl = ""; //$NON-NLS-1$
         if (encryptionMethod.equals(EEncryptionMethod.SSL_ENCRYPTION_METHOD.getName())
                 || (encryptionMethod.equals(EEncryptionMethod.STARTTSL_EXTENSION_METHOD.getName()))) {
-            hostUrl = LDAPS_URL_PREFIX + hostName + ":" + port;
-            env.put(javax.naming.Context.SECURITY_PROTOCOL, "ssl");
-            env.put("java.naming.ldap.factory.socket", "org.talend.core.ldap.AdvancedSocketFactory");
+            hostUrl = LDAPS_URL_PREFIX + hostName + ":" + port; //$NON-NLS-1$
+            env.put(javax.naming.Context.SECURITY_PROTOCOL, "ssl"); //$NON-NLS-1$
+            env.put("java.naming.ldap.factory.socket", "org.talend.core.ldap.AdvancedSocketFactory"); //$NON-NLS-1$ //$NON-NLS-2$
         } else if (encryptionMethod.equals(EEncryptionMethod.NO_ENCRYPTION_METHOD.getName())) {
-            hostUrl = LDAP_URL_PREFIX + hostName + ":" + port;
+            hostUrl = LDAP_URL_PREFIX + hostName + ":" + port; //$NON-NLS-1$
             env.remove(javax.naming.Context.SECURITY_PROTOCOL);
         }
         env.put(javax.naming.Context.PROVIDER_URL, hostUrl);

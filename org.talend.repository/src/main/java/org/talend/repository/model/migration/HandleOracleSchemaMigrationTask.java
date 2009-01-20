@@ -42,19 +42,19 @@ public class HandleOracleSchemaMigrationTask extends AbstractJobMigrationTask {
             NodeType tOracleConnection = null;
             for (Object nodeType : processType.getNode()) {
                 NodeType tmpNodeType = (NodeType) nodeType;
-                if (tmpNodeType.getComponentName().equals("tOracleConnection")) {
+                if (tmpNodeType.getComponentName().equals("tOracleConnection")) { //$NON-NLS-1$
                     tOracleConnection = tmpNodeType;
                     break;
                 }
             }
             if (tOracleConnection != null) {
-                if (ComponentUtilities.getNodeProperty(tOracleConnection, "SCHEMA_DB") == null) {
-                    ComponentUtilities.addNodeProperty(tOracleConnection, "SCHEMA_DB", "TEXT");
-                    ComponentUtilities.setNodeValue(tOracleConnection, "SCHEMA_DB", "\"\"");
+                if (ComponentUtilities.getNodeProperty(tOracleConnection, "SCHEMA_DB") == null) { //$NON-NLS-1$
+                    ComponentUtilities.addNodeProperty(tOracleConnection, "SCHEMA_DB", "TEXT"); //$NON-NLS-1$ //$NON-NLS-2$
+                    ComponentUtilities.setNodeValue(tOracleConnection, "SCHEMA_DB", "\"\""); //$NON-NLS-1$ //$NON-NLS-2$
                 } else {
-                    ElementParameterType elementParameter = ComponentUtilities.getNodeProperty(tOracleConnection, "SCHEMA_DB");
-                    if (elementParameter.getValue().equals("ROOT")) {
-                        elementParameter.setValue("\"\"");
+                    ElementParameterType elementParameter = ComponentUtilities.getNodeProperty(tOracleConnection, "SCHEMA_DB"); //$NON-NLS-1$
+                    if (elementParameter.getValue().equals("ROOT")) { //$NON-NLS-1$
+                        elementParameter.setValue("\"\""); //$NON-NLS-1$
                     }
                 }
             }

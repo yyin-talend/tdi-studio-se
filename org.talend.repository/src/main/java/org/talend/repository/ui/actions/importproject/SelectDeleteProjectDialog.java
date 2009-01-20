@@ -140,7 +140,7 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
         optionsGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         chkButton = new Button(optionsGroup, SWT.CHECK);
-        chkButton.setText("Do not delete projects physically");
+        chkButton.setText(Messages.getString("SelectDeleteProjectDialog.deleteWarning")); //$NON-NLS-1$
         chkButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         chkButton.addSelectionListener(new SelectionAdapter() {
 
@@ -167,7 +167,7 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
 
             public final String getText(Object element) {
                 // query the element for its label
-                String label = "";
+                String label = ""; //$NON-NLS-1$
                 if (element instanceof IProject) {
                     IProject project = (IProject) element;
                     label = project.getName();

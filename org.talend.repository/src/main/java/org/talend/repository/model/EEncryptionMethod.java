@@ -20,9 +20,9 @@ package org.talend.repository.model;
  */
 public enum EEncryptionMethod {
 
-    NO_ENCRYPTION_METHOD("LDAP"),
-    SSL_ENCRYPTION_METHOD("LDAPS(SSL)"),
-    STARTTSL_EXTENSION_METHOD("TLS");
+    NO_ENCRYPTION_METHOD("LDAP"), //$NON-NLS-1$
+    SSL_ENCRYPTION_METHOD("LDAPS(SSL)"), //$NON-NLS-1$
+    STARTTSL_EXTENSION_METHOD("TLS"); //$NON-NLS-1$
 
     /**
      * 

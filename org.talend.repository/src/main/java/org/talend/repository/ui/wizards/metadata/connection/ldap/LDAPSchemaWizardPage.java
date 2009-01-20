@@ -89,7 +89,7 @@ public class LDAPSchemaWizardPage extends WizardPage {
             currentComposite = new LDAPSchemaStep4Form(parent, connectionItem, contextModeManager);
             break;
         default:
-            System.out.println("error...");
+            System.out.println("error..."); //$NON-NLS-1$
         }
 
         currentComposite.setReadOnly(!isRepositoryObjectEditable);

@@ -74,15 +74,15 @@ public class JobletReferenceBean {
         StringBuffer sb = new StringBuffer();
 
         sb.append(checkValue(jobName));
-        sb.append(" ");
+        sb.append(" "); //$NON-NLS-1$
         sb.append(checkValue(jobVersion));
-        sb.append(" ");
+        sb.append(" "); //$NON-NLS-1$
         sb.append(checkValue(jobPath));
 
         return sb.toString();
     }
 
     private String checkValue(String value) {
-        return value == null ? "" : value;
+        return value == null ? "" : value; //$NON-NLS-1$
     }
 }

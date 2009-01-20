@@ -47,16 +47,16 @@ public class AddDoubleQuoteTotMomMigrationTask extends AbstractJobMigrationTask 
         try {
 
             IComponentFilter filter1 = new NameComponentFilter("tMomInput"); //$NON-NLS-1$
-            IComponentFilter filter2 = new NameComponentFilter("tMomOutput");
+            IComponentFilter filter2 = new NameComponentFilter("tMomOutput"); //$NON-NLS-1$
 
-            IComponentConversion addQuotesFrom = new AddQuotesInPropertyComponentConversion("FROM");
-            IComponentConversion addQuotesTo = new AddQuotesInPropertyComponentConversion("TO");
+            IComponentConversion addQuotesFrom = new AddQuotesInPropertyComponentConversion("FROM"); //$NON-NLS-1$
+            IComponentConversion addQuotesTo = new AddQuotesInPropertyComponentConversion("TO"); //$NON-NLS-1$
 
             IComponentConversion addQuotes1 = new AddQuotesInPropertyComponentConversion("SERVERADDRESS"); //$NON-NLS-1$
-            IComponentConversion addQuotes2 = new AddQuotesInPropertyComponentConversion("SERVERPORT");
-            IComponentConversion addQuotes3 = new AddQuotesInPropertyComponentConversion("CHANNEL");
-            IComponentConversion addQuotes4 = new AddQuotesInPropertyComponentConversion("QM");
-            IComponentConversion addQuotes5 = new AddQuotesInPropertyComponentConversion("QUEUE");
+            IComponentConversion addQuotes2 = new AddQuotesInPropertyComponentConversion("SERVERPORT"); //$NON-NLS-1$
+            IComponentConversion addQuotes3 = new AddQuotesInPropertyComponentConversion("CHANNEL"); //$NON-NLS-1$
+            IComponentConversion addQuotes4 = new AddQuotesInPropertyComponentConversion("QM"); //$NON-NLS-1$
+            IComponentConversion addQuotes5 = new AddQuotesInPropertyComponentConversion("QUEUE"); //$NON-NLS-1$
 
             ModifyComponentsAction.searchAndModify(item, processType, filter1,
 					Arrays.<IComponentConversion> asList(addQuotes1,

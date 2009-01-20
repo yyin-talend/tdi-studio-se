@@ -72,8 +72,8 @@ public class RepositoryFactoryProvider {
                         DynamicChoiceBean key = new DynamicChoiceBean(currentLoginField.getAttribute("id"), //$NON-NLS-1$
                                 currentLoginField.getAttribute("name")); //$NON-NLS-1$
                         for (IConfigurationElement currentChoice : currentLoginField.getChildren("choice")) { //$NON-NLS-1$
-                            String value = currentChoice.getAttribute("value");
-                            String label = currentChoice.getAttribute("label");
+                            String value = currentChoice.getAttribute("value"); //$NON-NLS-1$
+                            String label = currentChoice.getAttribute("label"); //$NON-NLS-1$
                             key.addChoice(value, label);
                         }
                         currentAction.getChoices().add(key);

@@ -40,7 +40,7 @@ import org.talend.repository.model.ProxyRepositoryFactory;
  */
 public class ChangeSqlPatternValueMigrationTask extends AbstractJobMigrationTask {
 
-    private static final String SQLPATTERN_VALUE = "SQLPATTERN_VALUE";
+    private static final String SQLPATTERN_VALUE = "SQLPATTERN_VALUE"; //$NON-NLS-1$
 
     private IComponentFilter filter = new ParameterTypeFilter(SQLPATTERN_VALUE);
 
@@ -111,8 +111,8 @@ public class ChangeSqlPatternValueMigrationTask extends AbstractJobMigrationTask
             for (Object objElementValue : values) {
                 ElementValueType value = (ElementValueType) objElementValue;
                 String oldValue = value.getValue();
-                if (!oldValue.contains("--")) {
-                    String newValue = "tempid--" + oldValue;
+                if (!oldValue.contains("--")) { //$NON-NLS-1$
+                    String newValue = "tempid--" + oldValue; //$NON-NLS-1$
                     value.setValue(newValue);
                     modified = true;
                 }

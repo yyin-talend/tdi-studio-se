@@ -45,7 +45,7 @@ public class ProjectSettingsWizard extends Wizard {
     public void addPages() {
         Project pro = ProjectManager.getInstance().getCurrentProject();
 
-        mainPage = new ProjectSettingsWizardPage("WizardPage", pro);
+        mainPage = new ProjectSettingsWizardPage("WizardPage", pro); //$NON-NLS-1$
         addPage(mainPage);
         setWindowTitle(Messages.getString("ProjectSettingsWizard.EditProjectPageTitle")); //$NON-NLS-1$
     }

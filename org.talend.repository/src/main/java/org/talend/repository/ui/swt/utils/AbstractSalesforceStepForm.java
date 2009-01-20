@@ -53,21 +53,21 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
 
     protected AbstractNode fakeSalesforceNode = null;
 
-    private final String tSalesforceUniqueName = "tSalesforceInput";
+    private final String tSalesforceUniqueName = "tSalesforceInput"; //$NON-NLS-1$
 
     private SalesforceModuleParseAPI salesforceAPI = null;
 
     private IMetadataContextModeManager contextModeManager;
 
-    public static final String TSALESFORCE_INPUT_URL = "https://www.salesforce.com/services/Soap/u/10.0";
+    public static final String TSALESFORCE_INPUT_URL = "https://www.salesforce.com/services/Soap/u/10.0"; //$NON-NLS-1$
 
     // note that tSalesforceInput use a different url, if the web service is called by wizard we should use
     // DEFAULT_WEB_SERVICE_URL, if the web service is called by tSalesforceInput we should use TSALESFORCE_INPUT_URL
-    public static final String DEFAULT_WEB_SERVICE_URL = "https://www.salesforce.com/services/Soap/u/8.0";
+    public static final String DEFAULT_WEB_SERVICE_URL = "https://www.salesforce.com/services/Soap/u/8.0"; //$NON-NLS-1$
 
-    public static final String TSALESFORCE_CUSTOM_MODULE = "org.talend.salesforce.custom.module";
+    public static final String TSALESFORCE_CUSTOM_MODULE = "org.talend.salesforce.custom.module"; //$NON-NLS-1$
 
-    public static final String TSALESFORCE_CUSTOM_MODULE_SPILT = ",";
+    public static final String TSALESFORCE_CUSTOM_MODULE_SPILT = ","; //$NON-NLS-1$
 
     public AbstractSalesforceStepForm(Composite parent, ConnectionItem connectionItem, String[] existingNames,
             SalesforceModuleParseAPI salesforceAPI) {
@@ -139,7 +139,7 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
             final String moduleName) {
         IMetadataTable metadataTable = new org.talend.core.model.metadata.MetadataTable();
 
-        if (user == null || pass == null || user.equals("") || pass.equals("") || moduleName == null || moduleName.equals("")) {
+        if (user == null || pass == null || user.equals("") || pass.equals("") || moduleName == null || moduleName.equals("")) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             return null;
         }
 
@@ -149,7 +149,7 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
 
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 
-                    monitor.beginTask("Connection to Salesforce service to fetch module '" + moduleName + "'data column",
+                    monitor.beginTask(Messages.getString("AbstractSalesforceStepForm.fetchModule", moduleName), //$NON-NLS-1$
                             IProgressMonitor.UNKNOWN);
 
                     try {
@@ -197,7 +197,7 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
 
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 
-                    monitor.beginTask("Connection to Salesforce server and try to login ...", IProgressMonitor.UNKNOWN);
+                    monitor.beginTask(Messages.getString("AbstractSalesforceStepForm.tryToLogin"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
 
                     if (salesforceAPI == null) {
                         try {
@@ -212,7 +212,7 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
                         salesforceAPI.setLogin(true);
 
                     } catch (Throwable e) {
-                        MessageDialog.openInformation(getShell(), Messages.getString("SalesforceForm.checkConnectionTitle"),
+                        MessageDialog.openInformation(getShell(), Messages.getString("SalesforceForm.checkConnectionTitle"), //$NON-NLS-1$
                                 password);
                         errors.add(e.getMessage());
                         ExceptionHandler.process(e);
@@ -232,7 +232,7 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
         } else {
             String mainMsg = Messages.getString("SalesforceForm.checkFailure") + " " //$NON-NLS-1$ //$NON-NLS-2$
                     + Messages.getString("SalesforceForm.checkFailureTip"); //$NON-NLS-1$
-            String error = errors.size() > 0 ? errors.get(0) : "";
+            String error = errors.size() > 0 ? errors.get(0) : ""; //$NON-NLS-1$
             new ErrorDialogWidthDetailArea(getShell(), PID, mainMsg, error);
         }
         return salesforceAPI.isLogin();
@@ -242,12 +242,12 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
 
         INode node = getSalesforceNode();
 
-        IElementParameter currentModuleNameParam = node.getElementParameter("MODULENAME");
+        IElementParameter currentModuleNameParam = node.getElementParameter("MODULENAME"); //$NON-NLS-1$
         currentModuleNameParam.setValue(moduleName);
 
         node.getComponent().createElementParameters(node);
 
-        IElementParameter schemaParam = node.getElementParameter("SCHEMA");
+        IElementParameter schemaParam = node.getElementParameter("SCHEMA"); //$NON-NLS-1$
 
         if (schemaParam == null) {
             return null;

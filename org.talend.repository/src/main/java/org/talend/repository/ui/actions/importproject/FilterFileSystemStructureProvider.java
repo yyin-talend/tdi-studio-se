@@ -28,7 +28,7 @@ import org.eclipse.ui.wizards.datatransfer.IImportStructureProvider;
  */
 public class FilterFileSystemStructureProvider implements IImportStructureProvider {
 
-    private static final String SVN_FOLDER = ".svn";
+    private static final String SVN_FOLDER = ".svn"; //$NON-NLS-1$
 
     /**
      * Holds a singleton instance of this class.

@@ -122,9 +122,9 @@ public class AddQuoteMarkMigrationTask extends AbstractItemMigrationTask {
             return true;
         }
         boolean isWithin = false;
-        if (string.startsWith("\"") && string.endsWith("\"")) {
+        if (string.startsWith("\"") && string.endsWith("\"")) { //$NON-NLS-1$ //$NON-NLS-2$
             isWithin = true;
-        } else if (string.startsWith("\'") && string.endsWith("\'")) {
+        } else if (string.startsWith("\'") && string.endsWith("\'")) { //$NON-NLS-1$ //$NON-NLS-2$
             isWithin = true;
         }
         return isWithin;
@@ -139,7 +139,7 @@ public class AddQuoteMarkMigrationTask extends AbstractItemMigrationTask {
      * @return
      */
     private String surroundDQuote(String old) {
-        return "\"" + old + "\"";
+        return "\"" + old + "\""; //$NON-NLS-1$ //$NON-NLS-2$
     }
     public Date getOrder() {
         GregorianCalendar gc = new GregorianCalendar(2008, 2, 17, 12, 0, 0);
