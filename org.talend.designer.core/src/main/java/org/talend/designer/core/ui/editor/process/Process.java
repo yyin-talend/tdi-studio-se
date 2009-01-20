@@ -2691,63 +2691,76 @@ public class Process extends Element implements IProcess2 {
     }
 
     public void dispose() {
-        for (Node curNode : nodes) {
-            List<Connection> connList = new ArrayList<Connection>((List<Connection>) curNode.getOutgoingConnections());
-            for (Connection curConnection : connList) {
-                curConnection.disconnect();
-                for (IElementParameter param : curConnection.getElementParametersWithChildrens()) {
-                    param.setElement(null);
-                }
-                curConnection.setElementParameters(null);
-            }
-        }
-        for (Node curNode : new ArrayList<Node>(nodes)) {
-            removeNodeContainer(curNode.getNodeContainer());
-            curNode.getNodeContainer().setSubjobContainer(null);
-            curNode.getNodeContainer().setNode(null);
-            curNode.getNodeContainer().setNodeLabel(null);
-        }
-
-        for (Node curNode : nodes) {
-            for (IElementParameter param : curNode.getElementParametersWithChildrens()) {
-                param.setElement(null);
-            }
-            curNode.setElementParameters(null);
-            curNode.setProcess(null);
-        }
-        for (SubjobContainer curSubjob : subjobContainers) {
-            curSubjob.dispose();
-        }
-        for (IElementParameter param : getElementParametersWithChildrens()) {
-            param.setElement(null);
-        }
-        if (copySubjobMap != null) {
-            copySubjobMap.clear();
-        }
-        mapSubjobStarts.clear();
-        setElementParameters(null);
-        subjobContainers = null;
-        nodes = null;
-        elem = null;
-        notes = null;
-        processor = null;
-        // don't empty the context manager, or can cause a NPE when close a read only job
-        // contextManager = null;
-        mapSubjobStarts = null;
-        if (this.editor != null) {
-            CommandStack commandStack = (CommandStack) this.editor.getTalendEditor().getAdapter(CommandStack.class);
-            if (commandStack != null) {
-                commandStack.removeCommandStackEventListener(commandStackEventListener);
-            }
-        }
-        if ((generatingProcess != null) && (generatingProcess.getDuplicatedProcess() != null)
-                && (generatingProcess.getDuplicatedProcess().getGraphicalNodes() != null)) {
-            generatingProcess.getDuplicatedProcess().dispose();
-        }
         generatingProcess = null;
         editor = null;
         viewer = null;
     }
+
+    // public void dispose() {
+    // for (Node curNode : nodes) {
+    // List<Connection> connList = new ArrayList<Connection>((List<Connection>) curNode.getOutgoingConnections());
+    // for (Connection curConnection : connList) {
+    // curConnection.disconnect();
+    // for (IElementParameter param : curConnection.getElementParametersWithChildrens()) {
+    // param.setElement(null);
+    // }
+    // curConnection.setElementParameters(null);
+    // }
+    // }
+    // for (Node curNode : new ArrayList<Node>(nodes)) {
+    // // removeNodeContainer(curNode.getNodeContainer());
+    // curNode.getNodeContainer().setSubjobContainer(null);
+    // curNode.getNodeContainer().setNode(null);
+    // curNode.getNodeContainer().setNodeLabel(null);
+    // }
+    //
+    // for (Node curNode : nodes) {
+    // if (curNode.getElementParametersWithChildrens() != null) {
+    // for (IElementParameter param : curNode.getElementParametersWithChildrens()) {
+    // param.setElement(null);
+    // }
+    // }
+    // curNode.setElementParameters(null);
+    // curNode.setProcess(null);
+    // }
+    // // for (SubjobContainer curSubjob : subjobContainers) {
+    // // // curSubjob.dispose();
+    // // }
+    // if (getElementParametersWithChildrens() != null) {
+    // for (IElementParameter param : getElementParametersWithChildrens()) {
+    // param.setElement(null);
+    // }
+    // }
+    // if (copySubjobMap != null) {
+    // copySubjobMap.clear();
+    // }
+    // // if (mapSubjobStarts != null) {
+    // // mapSubjobStarts.clear();
+    // // }
+    // setElementParameters(null);
+    // // subjobContainers = null;
+    // // nodes = null;
+    //
+    // elem = null;
+    // notes = null;
+    // processor = null;
+    // // don't empty the context manager, or can cause a NPE when close a read only job
+    // // contextManager = null;
+    // // mapSubjobStarts = null;
+    // if (this.editor != null) {
+    // CommandStack commandStack = (CommandStack) this.editor.getTalendEditor().getAdapter(CommandStack.class);
+    // if (commandStack != null) {
+    // commandStack.removeCommandStackEventListener(commandStackEventListener);
+    // }
+    // }
+    // // if ((generatingProcess != null) && (generatingProcess.getDuplicatedProcess() != null)
+    // // // && (generatingProcess.getDuplicatedProcess().getGraphicalNodes() != null )
+    // // ) {
+    // // generatingProcess.getDuplicatedProcess().dispose();
+    // // }
+    //
+    //       
+    // }
 
     /*
      * (non-Javadoc)

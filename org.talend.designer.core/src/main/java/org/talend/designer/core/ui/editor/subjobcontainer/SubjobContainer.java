@@ -285,13 +285,13 @@ public class SubjobContainer extends Element implements ISubjobContainer {
 
     public Node getSubjobStartNode() {
         String subjobStartUniqueName = (String) getPropertyValue(EParameterName.UNIQUE_NAME.getName());
-
-        for (Node node : (List<Node>) process.getGraphicalNodes()) {
-            if (node.getUniqueName().equals(subjobStartUniqueName)) {
-                return node;
+        if (process != null && (List<Node>) process.getGraphicalNodes() != null) {
+            for (Node node : (List<Node>) process.getGraphicalNodes()) {
+                if (node.getUniqueName() != null && node.getUniqueName().equals(subjobStartUniqueName)) {
+                    return node;
+                }
             }
         }
-
         return null;
     }
 

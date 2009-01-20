@@ -283,9 +283,12 @@ public class NodesPasteCommand extends Command {
         }
         IProcess curNodeProcess = copiedNode.getProcess();
         if (curNodeProcess != null) {
-            for (INode node : curNodeProcess.getGraphicalNodes()) {
-                if (node == copiedNode) {
-                    return true;
+            List<? extends INode> graphicalNodes = curNodeProcess.getGraphicalNodes();
+            if (graphicalNodes != null) {
+                for (INode node : graphicalNodes) {
+                    if (node == copiedNode) {
+                        return true;
+                    }
                 }
             }
         }
@@ -403,31 +406,32 @@ public class NodesPasteCommand extends Command {
             }
             pastedNode.getNodeLabel().setOffset(new Point(copiedNode.getNodeLabel().getOffset()));
             oldNameTonewNameMap.put(copiedNode.getUniqueName(), pastedNode.getUniqueName());
-
-            for (ElementParameter param : (List<ElementParameter>) copiedNode.getElementParametersWithChildrens()) {
-                if (!EParameterName.UNIQUE_NAME.getName().equals(param.getName())) {
-                    IElementParameter elementParameter = pastedNode.getElementParameter(param.getName());
-                    if (param.getField() == EParameterFieldType.TABLE) {
-                        List<Map<String, Object>> tableValues = (List<Map<String, Object>>) param.getValue();
-                        ArrayList newValues = new ArrayList();
-                        for (Map<String, Object> map : tableValues) {
-                            Map<String, Object> newMap = new HashMap<String, Object>();
-                            newMap.putAll(map);
-                            newValues.add(newMap);
-                        }
-                        elementParameter.setValue(newValues);
-                    } else {
-                        if (param.getParentParameter() != null) {
-                            String parentName = param.getParentParameter().getName();
-                            pastedNode.setPropertyValue(parentName + ":" + param.getName(), param.getValue()); //$NON-NLS-1$
+            if (copiedNode.getElementParametersWithChildrens() != null) {
+                for (ElementParameter param : (List<ElementParameter>) copiedNode.getElementParametersWithChildrens()) {
+                    if (!EParameterName.UNIQUE_NAME.getName().equals(param.getName())) {
+                        IElementParameter elementParameter = pastedNode.getElementParameter(param.getName());
+                        if (param.getField() == EParameterFieldType.TABLE) {
+                            List<Map<String, Object>> tableValues = (List<Map<String, Object>>) param.getValue();
+                            ArrayList newValues = new ArrayList();
+                            for (Map<String, Object> map : tableValues) {
+                                Map<String, Object> newMap = new HashMap<String, Object>();
+                                newMap.putAll(map);
+                                newValues.add(newMap);
+                            }
+                            elementParameter.setValue(newValues);
                         } else {
-                            pastedNode.setPropertyValue(param.getName(), param.getValue());
+                            if (param.getParentParameter() != null) {
+                                String parentName = param.getParentParameter().getName();
+                                pastedNode.setPropertyValue(parentName + ":" + param.getName(), param.getValue()); //$NON-NLS-1$
+                            } else {
+                                pastedNode.setPropertyValue(param.getName(), param.getValue());
 
-                            // See Bug 0005722: the pasted component don't keep the same read-only mode and didn;t hide
-                            // the password.
-                            elementParameter.setReadOnly(param.isReadOnly());
-                            elementParameter.setRepositoryValueUsed(param.isRepositoryValueUsed());
-
+                                // See Bug 0005722: the pasted component don't keep the same read-only mode and didn;t
+                                // hide
+                                // the password.
+                                elementParameter.setReadOnly(param.isReadOnly());
+                                elementParameter.setRepositoryValueUsed(param.isRepositoryValueUsed());
+                            }
                         }
                     }
                 }
@@ -582,7 +586,8 @@ public class NodesPasteCommand extends Command {
             Node currentNode = nodeContainer.getNode();
             String uniqueName = currentNode.getUniqueName();
             for (String oldName : oldNameTonewNameMap.keySet()) {
-                if (!oldName.equals(oldNameTonewNameMap.get(oldName)) && currentNode.useData(oldName)) {
+                if (usedDataMap != null && usedDataMap.get(uniqueName) != null
+                        && !oldName.equals(oldNameTonewNameMap.get(oldName)) && currentNode.useData(oldName)) {
                     Set<String> oldNameSet = usedDataMap.get(uniqueName);
                     if (oldNameSet == null) {
                         oldNameSet = new HashSet<String>();
@@ -598,7 +603,9 @@ public class NodesPasteCommand extends Command {
         for (Connection connection : connections) {
             String uniqueName = connection.getUniqueName();
             for (String oldName : oldNameTonewNameMap.keySet()) {
-                if (!oldName.equals(oldNameTonewNameMap.get(oldName)) && UpgradeElementHelper.isUseData(connection, oldName)) {
+                if (oldNameTonewNameMap != null && oldNameTonewNameMap.get(oldName) != null && oldName != null
+                        && !oldName.equals(oldNameTonewNameMap.get(oldName))
+                        && UpgradeElementHelper.isUseData(connection, oldName)) {
                     Set<String> oldNameSet = usedDataMapForConnections.get(uniqueName);
                     if (oldNameSet == null) {
                         oldNameSet = new HashSet<String>();
@@ -647,7 +654,7 @@ public class NodesPasteCommand extends Command {
     private void makeCopyNodeAndSubjobMapping(Node copiedNode, Node pastedNode, Map<Node, SubjobContainer> mapping) {
         for (SubjobContainerPart subjobPart : subjobParts) {
             SubjobContainer subjob = (SubjobContainer) subjobPart.getModel();
-            if (subjob.getSubjobStartNode().equals(copiedNode)) {
+            if (subjob != null && subjob.getSubjobStartNode() != null && subjob.getSubjobStartNode().equals(copiedNode)) {
                 mapping.put(pastedNode, subjob);
             }
         }

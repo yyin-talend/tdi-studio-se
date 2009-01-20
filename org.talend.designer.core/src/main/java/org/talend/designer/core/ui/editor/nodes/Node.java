@@ -463,7 +463,9 @@ public class Node extends Element implements INode {
     public String getUniqueName() {
         String uniqueName = null;
         IElementParameter param = getElementParameter(EParameterName.UNIQUE_NAME.getName());
-        uniqueName = (String) param.getValue();
+        if (param != null) {
+            uniqueName = (String) param.getValue();
+        }
         return uniqueName;
     }
 
