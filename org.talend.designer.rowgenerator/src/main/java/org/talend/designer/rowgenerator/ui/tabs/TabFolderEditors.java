@@ -43,7 +43,7 @@ import org.talend.designer.rowgenerator.ui.editor.MetadataTableEditorViewExt;
  */
 public class TabFolderEditors extends CTabFolder {
 
-    public static final String PREVIEW_NUMBER_ROWS = "10";
+    public static final String PREVIEW_NUMBER_ROWS = "10"; //$NON-NLS-1$
 
     private TabFolderEditors tabFolderEditors;
 
@@ -162,7 +162,7 @@ public class TabFolderEditors extends CTabFolder {
         // if (number == null || "".equals(number)) {
         // number = "10";
         // }
-        rowText.setText("10");
+        rowText.setText("10"); //$NON-NLS-1$
         GridDataFactory.swtDefaults().hint(50, SWT.DEFAULT).applyTo(rowText);
 
         // rowText.getBounds().width = 100;

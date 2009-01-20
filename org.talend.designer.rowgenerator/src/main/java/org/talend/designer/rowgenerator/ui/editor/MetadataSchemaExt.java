@@ -50,9 +50,9 @@ public class MetadataSchemaExt extends MetadataSchema {
             Node preview = nodeMap.getNamedItem("preview"); //$NON-NLS-1$
             Function function2 = new FunctionManagerExt().getCurrentFunction(function.getNodeValue(), columnExt);
             List<Parameter> parms = function2.getParameters();
-            String[] paraStr = parameter.getNodeValue().split(";");
+            String[] paraStr = parameter.getNodeValue().split(";"); //$NON-NLS-1$
             for (String string : paraStr) {
-                String[] nv = string.split("=>");
+                String[] nv = string.split("=>"); //$NON-NLS-1$
                 for (Parameter para : parms) {
                     if (para.getName().equals(nv[0].trim())) {
                         para.setValue(nv[1]);
@@ -65,7 +65,7 @@ public class MetadataSchemaExt extends MetadataSchema {
         } else {
             Function function2 = new FunctionManagerExt().getDefaultFunction(columnExt, columnExt.getTalendType());
             columnExt.setFunction(function2);
-            columnExt.setPreview("");
+            columnExt.setPreview(""); //$NON-NLS-1$
         }
         return columnExt;
     }

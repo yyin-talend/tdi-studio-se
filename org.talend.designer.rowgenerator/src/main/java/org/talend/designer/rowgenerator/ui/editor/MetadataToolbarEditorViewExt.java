@@ -94,8 +94,8 @@ public class MetadataToolbarEditorViewExt extends MetadataToolbarEditorView {
         ids = new ArrayList<String>();
         List<TableViewerCreatorColumn> columns = genTableEditor2.getTableViewerCreator().getColumns();
         for (TableViewerCreatorColumn column : columns) {
-            if ((column.getId() != null && !"".equals(column.getId()))
-                    && (column.getTitle() != null && !"".equals(column.getTitle()))) {
+            if ((column.getId() != null && !"".equals(column.getId())) //$NON-NLS-1$
+                    && (column.getTitle() != null && !"".equals(column.getTitle()))) { //$NON-NLS-1$
                 ids.add(column.getId());
                 items.add(column.getTitle());
             }
@@ -122,7 +122,7 @@ public class MetadataToolbarEditorViewExt extends MetadataToolbarEditorView {
         gridData.verticalAlignment = GridData.CENTER;
         numRowComposite.setLayout(layout);
         final Label numRowLabel = new Label(numRowComposite, SWT.NONE);
-        numRowLabel.setText(Messages.getString("MetadataToolbarEditorViewExt.RowNum.LabelText"));
+        numRowLabel.setText(Messages.getString("MetadataToolbarEditorViewExt.RowNum.LabelText")); //$NON-NLS-1$
         numRowText = new Text(numRowComposite, SWT.BORDER);
 
         GridDataFactory.swtDefaults().hint(rowNumberWidth(), SWT.DEFAULT).applyTo(numRowText);
@@ -141,8 +141,8 @@ public class MetadataToolbarEditorViewExt extends MetadataToolbarEditorView {
      * @return
      */
     private int rowNumberWidth() {
-        String widthS = Messages.getString("MetadataToolbarEditorViewExt.RowNum.Text.width");
-        if (widthS == null || widthS.equals("")) {
+        String widthS = Messages.getString("MetadataToolbarEditorViewExt.RowNum.Text.width"); //$NON-NLS-1$
+        if (widthS == null || widthS.equals("")) { //$NON-NLS-1$
             return 200;
         } else {
             try {
@@ -361,13 +361,13 @@ public class MetadataToolbarEditorViewExt extends MetadataToolbarEditorView {
      */
     public void updateComponentsSize() {
         String number = genTableEditor2.getGeneratorUI().getGeneratorManager().getRowGeneratorComponent().getNumber();
-        if (number == null || "".equals(number)) {
-            number = "100";
+        if (number == null || "".equals(number)) { //$NON-NLS-1$
+            number = "100"; //$NON-NLS-1$
         }
-        if (number.startsWith("'")) {
+        if (number.startsWith("'")) { //$NON-NLS-1$
             number = number.substring(1);
         }
-        if (number.endsWith("'")) {
+        if (number.endsWith("'")) { //$NON-NLS-1$
             number = number.substring(0, number.length() - 1);
         }
         numRowText.setText(number);

@@ -309,7 +309,7 @@ public class RowGeneratorComponent extends AbstractExternalNode {
         boolean end = false;
         List<IElementParameter> eps = (List<IElementParameter>) this.getElementParameters();
         if (eps == null) {
-            return "10";
+            return "10"; //$NON-NLS-1$
         }
         for (int i = 0; i < eps.size() && !end; i++) {
             IElementParameter parameter = eps.get(i);
@@ -390,7 +390,7 @@ public class RowGeneratorComponent extends AbstractExternalNode {
 
     public String getColumnValue(IMetadataColumn ext, int index) {
         List<Map<String, Object>> map = getMapList();
-        String arrayValue = "";
+        String arrayValue = ""; //$NON-NLS-1$
         if (map.size() > index) {
             arrayValue = (String) map.get(index).get(ARRAY); //$NON-NLS-1$
             for (int i = 0; i < map.size(); i++) {
@@ -454,7 +454,7 @@ public class RowGeneratorComponent extends AbstractExternalNode {
 
         List<ColumnNameChanged> newColumns = dataComponent.getNewMetadataColumns();
         for (ColumnNameChanged changed : newColumns) {
-            if ("".equals(changed.getOldName())) {
+            if ("".equals(changed.getOldName())) { //$NON-NLS-1$
                 Map<String, Object> map2 = new HashMap<String, Object>();
                 map2.put(COLUMN_NAME, changed.getNewName());
                 newMap.add(map2);
@@ -463,7 +463,7 @@ public class RowGeneratorComponent extends AbstractExternalNode {
 
         List<ColumnNameChanged> removeColumns = dataComponent.getRemoveMetadataColumns();
         for (ColumnNameChanged changed : removeColumns) {
-            if ("".equals(changed.getNewName())) {
+            if ("".equals(changed.getNewName())) { //$NON-NLS-1$
                 for (Map<String, Object> map : oldMap) {
                     if (changed.getOldName().equals(map.get(COLUMN_NAME))) {
                         notuseMap.remove(map);
@@ -543,8 +543,8 @@ public class RowGeneratorComponent extends AbstractExternalNode {
                 if (columnValue != null && columnValue.length() > 0)
 
                 {
-                    columnValue = columnValue.replaceAll("\"", "");
-                    columnValue = columnValue.substring(columnValue.lastIndexOf(".") + 1);
+                    columnValue = columnValue.replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
+                    columnValue = columnValue.substring(columnValue.lastIndexOf(".") + 1); //$NON-NLS-1$
                     Function function = new Function();
                     function.setName(columnValue);
                     ext.setFunction(function);

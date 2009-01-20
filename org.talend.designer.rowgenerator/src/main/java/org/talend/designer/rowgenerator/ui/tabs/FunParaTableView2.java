@@ -92,7 +92,7 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
 
         TableViewerCreatorColumn column;
         column = new TableViewerCreatorColumn(tableViewerCreator);
-        column.setTitle(Messages.getString("FunParaTableView2.Parameter"));
+        column.setTitle(Messages.getString("FunParaTableView2.Parameter")); //$NON-NLS-1$
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<Parameter, Object>() {
 
             public String get(Parameter bean) {
@@ -109,7 +109,7 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
         // TextCellEditor(tableViewerCreator.getTable()));
         // ////////////////////////////////////////////////////////
         column = new TableViewerCreatorColumn(tableViewerCreator);
-        column.setTitle(Messages.getString("FunParaTableView2.Value"));
+        column.setTitle(Messages.getString("FunParaTableView2.Value")); //$NON-NLS-1$
         column.setId(VALUE_PROPERTY);
 
         CellEditorDialogBehavior behavior = new CellEditorDialogBehavior();
@@ -120,11 +120,11 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
 
             public String get(Parameter bean) {
                 StringBuffer id = new StringBuffer();
-                id.append(component.getLabel() + "=>");
+                id.append(component.getLabel() + "=>"); //$NON-NLS-1$
 
                 TableItem[] item = rowGenTableEditor2.getTable().getSelection();
                 if (item.length == 1) {
-                    id.append(((MetadataColumnExt) item[0].getData()).getLabel() + "=>");
+                    id.append(((MetadataColumnExt) item[0].getData()).getLabel() + "=>"); //$NON-NLS-1$
                 }
 
                 cellEditor.setOwnerId(id.append(bean.getName()).toString());
@@ -157,13 +157,13 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
         behavior.setCellEditorDialog(dialog);
 
         cellEditor.setContentProposalProvider(getProcessProposals());
-        cellEditor.setExpressionType("String");
+        cellEditor.setExpressionType("String"); //$NON-NLS-1$
         column.setCellEditor(cellEditor);
 
         // ////////////////////////////////////////////////////////
 
         column = new TableViewerCreatorColumn(tableViewerCreator);
-        column.setTitle(Messages.getString("FunParaTableView2.Comment"));
+        column.setTitle(Messages.getString("FunParaTableView2.Comment")); //$NON-NLS-1$
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<Parameter, Object>() {
 
             public String get(Parameter bean) {

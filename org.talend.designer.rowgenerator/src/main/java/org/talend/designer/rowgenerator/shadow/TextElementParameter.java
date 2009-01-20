@@ -111,7 +111,7 @@ public class TextElementParameter implements IElementParameter {
 	 * @see org.talend.core.model.process.IElementParameter#getMetadataType()
 	 */
 	public String getMetadataType() {
-		return "String";
+		return "String"; //$NON-NLS-1$
 	}
 
 	/*

@@ -125,7 +125,7 @@ public class UIManager {
         boolean containsAll = containsAll1 && containsAll2;
         if (hasColumns && !containsAll && response == SWT.CANCEL) {
             boolean isNotSaveSetting = MessageDialog.openQuestion(parent.getShell(), Messages
-                    .getString("UIManager.MessageBox.title"), Messages.getString("UIManager.MessageBox.Content"));
+                    .getString("UIManager.MessageBox.title"), Messages.getString("UIManager.MessageBox.Content")); //$NON-NLS-1$ //$NON-NLS-2$
             if (isNotSaveSetting) {
                 reductAllData();
             } else {

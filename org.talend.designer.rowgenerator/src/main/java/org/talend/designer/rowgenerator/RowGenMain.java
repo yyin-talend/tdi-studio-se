@@ -140,7 +140,7 @@ public class RowGenMain {
             dialog.setSize(boundsRG);
         }
         dialog.setIcon(ImageProvider.getImage(component.getIcon32()));
-        dialog.setTitle(Messages.getString("RowGenMain.ShellTitle", productName, connector.getUniqueName()));
+        dialog.setTitle(Messages.getString("RowGenMain.ShellTitle", productName, connector.getUniqueName())); //$NON-NLS-1$
 
         return dialog;
     }

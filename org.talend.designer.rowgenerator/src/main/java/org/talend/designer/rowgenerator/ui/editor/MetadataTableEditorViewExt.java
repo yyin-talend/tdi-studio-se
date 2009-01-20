@@ -472,7 +472,7 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
 
         setHeaderText(titleLabel, funLabel, previewLabel);
         empty = new Label(headerTable, SWT.NONE);
-        empty.setText("");
+        empty.setText(""); //$NON-NLS-1$
         empty.setLayoutData(new GridData(GridData.FILL_BOTH));
     }
 
@@ -657,7 +657,7 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
             if (tableEditorContent != null && tableEditorContent instanceof CheckboxTableEditorContent) {
                 funColumn.setTableEditorContent(null);
             }
-            funColumn.getTableColumn().setText("");
+            funColumn.getTableColumn().setText(""); //$NON-NLS-1$
             funColumn.getTableColumn().setWidth(0);
             funColumn.setWidth(0);
             funColumn.getTableColumn().setResizable(false);

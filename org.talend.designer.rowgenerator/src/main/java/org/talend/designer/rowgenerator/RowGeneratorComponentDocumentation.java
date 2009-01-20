@@ -125,9 +125,9 @@ public class RowGeneratorComponentDocumentation implements IComponentDocumentati
      */
     private void generateXMLInfo() {
         document = DocumentHelper.createDocument();
-        Element externalNodeElement = document.addElement("externalNode");
-        externalNodeElement.addAttribute("name", HTMLDocUtils.checkString(this.componentName));
-        externalNodeElement.addAttribute("preview", HTMLDocUtils.checkString(this.previewPicPath));
+        Element externalNodeElement = document.addElement("externalNode"); //$NON-NLS-1$
+        externalNodeElement.addAttribute("name", HTMLDocUtils.checkString(this.componentName)); //$NON-NLS-1$
+        externalNodeElement.addAttribute("preview", HTMLDocUtils.checkString(this.previewPicPath)); //$NON-NLS-1$
 
         generateColumnInfo(externalNodeElement);
     }
@@ -145,40 +145,40 @@ public class RowGeneratorComponentDocumentation implements IComponentDocumentati
             // rowGeneratorMain.getGeneratorUI().convert(metadataTable);
             for (IMetadataColumn tempColumn : metadataTable.getListColumns()) {
                 MetadataColumnExt column = (MetadataColumnExt) tempColumn;
-                Element columnElement = externalNodeElement.addElement("column");
-                columnElement.addAttribute("name", HTMLDocUtils.checkString(column.getLabel()));
-                columnElement.addAttribute("key", String.valueOf(column.isKey()));
+                Element columnElement = externalNodeElement.addElement("column"); //$NON-NLS-1$
+                columnElement.addAttribute("name", HTMLDocUtils.checkString(column.getLabel())); //$NON-NLS-1$
+                columnElement.addAttribute("key", String.valueOf(column.isKey())); //$NON-NLS-1$
                 String type = HTMLDocUtils.checkString(column.getTalendType());
                 if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
                     type = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
                 }
-                columnElement.addAttribute("type", type);
-                columnElement.addAttribute("nullable", String.valueOf(column.isNullable()));
+                columnElement.addAttribute("type", type); //$NON-NLS-1$
+                columnElement.addAttribute("nullable", String.valueOf(column.isNullable())); //$NON-NLS-1$
                 String length;
                 if ((column.getLength() == null) || (column.getLength() == 0)) {
-                    length = "";
+                    length = ""; //$NON-NLS-1$
                 } else {
                     length = String.valueOf(column.getLength());
                 }
 
-                columnElement.addAttribute("length", length);
+                columnElement.addAttribute("length", length); //$NON-NLS-1$
                 String precision;
                 if ((column.getPrecision() == null) || (column.getPrecision() == 0)) {
-                    precision = "";
+                    precision = ""; //$NON-NLS-1$
                 } else {
                     precision = String.valueOf(column.getPrecision());
                 }
-                columnElement.addAttribute("precision", precision);
-                columnElement.addAttribute("default", HTMLDocUtils.checkString(column.getDefault()));
-                columnElement.addAttribute("comment", HTMLDocUtils.checkString(column.getComment()));
+                columnElement.addAttribute("precision", precision); //$NON-NLS-1$
+                columnElement.addAttribute("default", HTMLDocUtils.checkString(column.getDefault())); //$NON-NLS-1$
+                columnElement.addAttribute("comment", HTMLDocUtils.checkString(column.getComment())); //$NON-NLS-1$
 
-                String functionName = "";
+                String functionName = ""; //$NON-NLS-1$
                 if (column.getFunction() != null) {
                     functionName = column.getFunction().getName();
                 }
 
-                columnElement.addAttribute("functions", HTMLDocUtils.checkString(functionName));
-                columnElement.addAttribute("parameters", HTMLDocUtils.checkString(column.getParameter()));
+                columnElement.addAttribute("functions", HTMLDocUtils.checkString(functionName)); //$NON-NLS-1$
+                columnElement.addAttribute("parameters", HTMLDocUtils.checkString(column.getParameter())); //$NON-NLS-1$
                 // columnElement.addAttribute("preview",
                 // HTMLDocUtils.checkString(column.getPreview()));
             }

@@ -27,7 +27,7 @@ import org.talend.designer.rowgenerator.ui.editor.MetadataColumnExt;
  */
 public class FunctionManagerExt extends FunctionManager {
 
-    private static final String DEFAULT_SELECTED_METHOD = "getAsciiRandomString";
+    private static final String DEFAULT_SELECTED_METHOD = "getAsciiRandomString"; //$NON-NLS-1$
 
     private static boolean addPreSuffix = true;
 
@@ -134,7 +134,7 @@ public class FunctionManagerExt extends FunctionManager {
             boolean isPure = true;
             int paramLength = value.length() - 2;
             if (UIManager.isJavaProject()) {
-                isPure = value.indexOf(".") != -1 && value.indexOf("(") > value.indexOf(".") && value.endsWith(")");
+                isPure = value.indexOf(".") != -1 && value.indexOf("(") > value.indexOf(".") && value.endsWith(")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 paramLength = value.length() - 1;
             } else {
                 isPure = value.startsWith(PERL_FUN_PREFIX) && value.endsWith(PERL_FUN_SUFFIX);
@@ -144,7 +144,7 @@ public class FunctionManagerExt extends FunctionManager {
                     int indexOf = value.indexOf(function.getName());
                     if (indexOf != -1) {
                         String para = value.substring(indexOf + function.getName().length() + 1, paramLength);
-                        if ("".equals(para)) {
+                        if ("".equals(para)) { //$NON-NLS-1$
                             if (function.getParameters().size() == 0) {
                                 currentFun = (Function) function.clone();
                             }
@@ -185,7 +185,7 @@ public class FunctionManagerExt extends FunctionManager {
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public static String getOneColData(MetadataColumnExt bean) {
         if (bean != null && bean.getFunction() != null) {
-            String newValue = addPreSuffix ? PERL_FUN_PREFIX : "";
+            String newValue = addPreSuffix ? PERL_FUN_PREFIX : ""; //$NON-NLS-1$
             if (bean.getFunction().getName().equals(PURE_PERL_NAME)) {
                 newValue = ((StringParameter) bean.getFunction().getParameters().get(0)).getValue();
             } else {
@@ -195,8 +195,8 @@ public class FunctionManagerExt extends FunctionManager {
                 final List<Parameter> parameters = bean.getFunction().getParameters();
                 if (UIManager.isJavaProject()) {
                     String fullName = JavaFunctionParser.getTypeMethods().get(
-                            bean.getTalendType() + "." + bean.getFunction().getName());
-                    newValue = fullName + "(";
+                            bean.getTalendType() + "." + bean.getFunction().getName()); //$NON-NLS-1$
+                    newValue = fullName + "("; //$NON-NLS-1$
                     for (Parameter pa : parameters) {
                         newValue += pa.getValue() + FUN_PARAM_SEPARATED; //$NON-NLS-1$
                     }

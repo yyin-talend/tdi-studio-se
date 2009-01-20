@@ -74,15 +74,15 @@ public class LogRowNode extends AbstractNode {
         TextElementParameter param5 = null;
         TextElementParameter param6 = null;
         if (UIManager.isJavaProject()) {
-            param = new TextElementParameter("FIELDSEPARATOR", "\"|\"");
+            param = new TextElementParameter("FIELDSEPARATOR", "\"|\""); //$NON-NLS-1$ //$NON-NLS-2$
         } else {
             param = new TextElementParameter("FIELDSEPARATOR", "\'|\'"); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        param2 = new TextElementParameter("TABLE_PRINT", "false");
-        param3 = new TextElementParameter("PRINT_HEADER", "false");
-        param4 = new TextElementParameter("PRINT_UNIQUE_NAME", "false");
-        param5 = new TextElementParameter("PRINT_COLNAMES", "false");
-        param6 = new TextElementParameter("USE_FIXED_LENGTH", "false");
+        param2 = new TextElementParameter("TABLE_PRINT", "false"); //$NON-NLS-1$ //$NON-NLS-2$
+        param3 = new TextElementParameter("PRINT_HEADER", "false"); //$NON-NLS-1$ //$NON-NLS-2$
+        param4 = new TextElementParameter("PRINT_UNIQUE_NAME", "false"); //$NON-NLS-1$ //$NON-NLS-2$
+        param5 = new TextElementParameter("PRINT_COLNAMES", "false"); //$NON-NLS-1$ //$NON-NLS-2$
+        param6 = new TextElementParameter("USE_FIXED_LENGTH", "false"); //$NON-NLS-1$ //$NON-NLS-2$
 
         ((List<IElementParameter>) getElementParameters()).add(param);
         ((List<IElementParameter>) getElementParameters()).add(param2);
