@@ -28,6 +28,8 @@ boolean advancedSeparator = (advancedSeparatorStr!=null&&!advancedSeparatorStr.e
 String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
 String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER);
 
+boolean stringTrim = ElementParameterParser.getValue(node, "__STRING_TRIM__").equals("true");
+
 IConnection inConn = null;
 List< ? extends IConnection> inConns = node.getIncomingConnections();
 if(inConns!=null){
@@ -97,9 +99,15 @@ for(int i=0; i<newColumnList.size();i++){
 	JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 	String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();%><%
 	if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){
+		if(stringTrim){
+%>
+	<%=outConn.getName()%>.<%=column.getLabel() %> = <%=i%>>=length_<%=cid%>?"":(newFields_<%=cid%>[<%=i%>]).trim();
+<%
+		}else{
 %>
 	<%=outConn.getName()%>.<%=column.getLabel() %> = <%=i%>>=length_<%=cid%>?"":newFields_<%=cid%>[<%=i%>];
 <%
+		}
 	}else{ 
 %>
 	temp_<%=cid %> = <%=i%>>=length_<%=cid%>?"":newFields_<%=cid%>[<%=i%>];
