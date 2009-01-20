@@ -99,7 +99,7 @@ public class AliasDialog {
 
         aliasInternalDialog = new AliasInternalDialog(mapperManager.getUiManager().getShell(), Messages
                 .getString("AliasDialog.addNewAlias"), //$NON-NLS-1$
-                Messages.getString("AliasDialog.typeAliasOfTable"), proposedAlias, inputValidator);
+                Messages.getString("AliasDialog.typeAliasOfTable"), proposedAlias, inputValidator); //$NON-NLS-1$
 
         int response = aliasInternalDialog.open();
         if (response == InputDialog.OK) {

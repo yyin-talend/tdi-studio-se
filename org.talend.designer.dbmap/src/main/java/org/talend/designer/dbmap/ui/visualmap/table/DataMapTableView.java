@@ -646,7 +646,7 @@ public abstract class DataMapTableView extends Composite {
 
                     String defaultToolTip = null;
                     if (WindowSystem.isGTK() && table.getToolTipText() != null) {
-                        defaultToolTip = " ";
+                        defaultToolTip = " "; //$NON-NLS-1$
                     }
 
                     Point cursorPositionFromTableOrigin = TableUtils.getCursorPositionFromTableOrigin(table, event);
@@ -1329,7 +1329,7 @@ public abstract class DataMapTableView extends Composite {
             if (!MapperMain.isStandAloneMode()) {
                 contentProposalProviders = new IContentProposalProvider[] {
                 // new ProcessProposalProvider(mapperManager.getComponent().getProcess())
-                new KeyWordProposalProvider("tsql", "KEYWORD1") };
+                new KeyWordProposalProvider("tsql", "KEYWORD1") }; //$NON-NLS-1$ //$NON-NLS-2$
             }
             this.expressionProposalProvider = new ExpressionProposalProvider(mapperManager, contentProposalProviders);
         }
@@ -1703,9 +1703,9 @@ public abstract class DataMapTableView extends Composite {
             if (tableEntry instanceof InputColumnTableEntry) {
                 InputColumnTableEntry inputEntry = (InputColumnTableEntry) tableEntry;
                 if (inputEntry.getExpression() == null || inputEntry.getExpression().trim().length() == 0) {
-                    inputEntry.setOperator("");
+                    inputEntry.setOperator(""); //$NON-NLS-1$
                 } else if (inputEntry.getOperator() == null || inputEntry.getOperator().trim().length() == 0) {
-                    inputEntry.setOperator("=");
+                    inputEntry.setOperator("="); //$NON-NLS-1$
                 }
                 mapperManager.getProblemsManager().checkProblemsForTableEntry(tableEntry, true);
                 tableViewerCreator.getTableViewer().refresh(tableEntry);

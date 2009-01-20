@@ -35,12 +35,12 @@ public abstract class AbstractDbLanguage implements IDbLanguage {
      * 
      */
     public static enum JOIN implements IJoinType {
-        NO_JOIN("(IMPLICIT JOIN)"),
-        INNER_JOIN("INNER JOIN"),
-        LEFT_OUTER_JOIN("LEFT OUTER JOIN"),
-        RIGHT_OUTER_JOIN("RIGHT OUTER JOIN"),
-        FULL_OUTER_JOIN("FULL OUTER JOIN"),
-        CROSS_JOIN("CROSS JOIN");
+        NO_JOIN("(IMPLICIT JOIN)"), //$NON-NLS-1$
+        INNER_JOIN("INNER JOIN"), //$NON-NLS-1$
+        LEFT_OUTER_JOIN("LEFT OUTER JOIN"), //$NON-NLS-1$
+        RIGHT_OUTER_JOIN("RIGHT OUTER JOIN"), //$NON-NLS-1$
+        FULL_OUTER_JOIN("FULL OUTER JOIN"), //$NON-NLS-1$
+        CROSS_JOIN("CROSS JOIN"); //$NON-NLS-1$
 
         String label;
 

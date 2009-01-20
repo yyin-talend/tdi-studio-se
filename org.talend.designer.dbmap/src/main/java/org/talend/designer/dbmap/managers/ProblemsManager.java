@@ -56,7 +56,7 @@ public class ProblemsManager {
 
     public static final String KEY_INPUT_EXPRESSION_EMPTY = "KEY_INPUT_EXPRESSION_EMPTY"; //$NON-NLS-1$
 
-    public static final String KEY_OPERATOR_EMPTY = "KEY_OPERATOR_EMPTY";
+    public static final String KEY_OPERATOR_EMPTY = "KEY_OPERATOR_EMPTY"; //$NON-NLS-1$
 
     private MapperManager mapperManager;
 

@@ -156,7 +156,7 @@ public class OutputTable extends AbstractInOutTable {
      */
     @Override
     public String getTitle() {
-        return getTableName() + " (" + getUniqueName() + ")";
+        return getTableName() + " (" + getUniqueName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
 }

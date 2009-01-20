@@ -151,7 +151,7 @@ public class EntryContentProposal implements IContentProposal {
     public String getLabel() {
         String label = language.getLocation(entry.getParentName(), entry.getName());
         if (entry instanceof OutputColumnTableEntry) {
-            label += "            " + Messages.getString("EntryContentProposal.onlyAvailable");
+            label += "            " + Messages.getString("EntryContentProposal.onlyAvailable"); //$NON-NLS-1$ //$NON-NLS-2$
         }
         return label;
 

@@ -23,6 +23,7 @@ import org.talend.designer.dbmap.DbMapComponent;
 import org.talend.designer.dbmap.external.data.ExternalDbMapData;
 import org.talend.designer.dbmap.external.data.ExternalDbMapEntry;
 import org.talend.designer.dbmap.external.data.ExternalDbMapTable;
+import org.talend.designer.dbmap.i18n.Messages;
 import org.talend.designer.dbmap.language.AbstractDbLanguage;
 import org.talend.designer.dbmap.language.IDbOperator;
 import org.talend.designer.dbmap.language.IJoinType;
@@ -52,8 +53,7 @@ public class TeradataGenerationManager extends DbGenerationManager {
      * @param expressionParser
      * @return
      */
-    public String buildConditions(List<ExternalDbMapEntry> constraintTableEntries,
-            DataMapExpressionParser expressionParser) {
+    public String buildConditions(List<ExternalDbMapEntry> constraintTableEntries, DataMapExpressionParser expressionParser) {
         int lstSize = constraintTableEntries.size();
         StringBuilder stringBuilder = new StringBuilder();
         String and = null;
@@ -115,7 +115,7 @@ public class TeradataGenerationManager extends DbGenerationManager {
             // .getMetadataTable());
             // }
 
-            sb.append("SELECT\n");
+            sb.append("SELECT\n"); //$NON-NLS-1$
 
             List<ExternalDbMapEntry> metadataTableEntries = outputTable.getMetadataTableEntries();
             if (metadataTableEntries != null) {
@@ -124,19 +124,19 @@ public class TeradataGenerationManager extends DbGenerationManager {
                     ExternalDbMapEntry dbMapEntry = metadataTableEntries.get(i);
                     String expression = dbMapEntry.getExpression();
                     if (i > 0) {
-                        sb.append(", ");
+                        sb.append(", "); //$NON-NLS-1$
                     }
                     if (expression != null && expression.trim().length() > 0) {
                         sb.append(dbMapEntry.getExpression());
                     } else {
-                        sb.append("/* Expression of output entry '" + outputTable.getName() + "."
-                                + dbMapEntry.getName() + "' is not set */");
+                        sb.append(Messages.getString("TeradataGenerationManager.outputExpresionNotSet", outputTable.getName(), //$NON-NLS-1$
+                                dbMapEntry.getName()));
                     }
                 }
             }
 
             List<ExternalDbMapTable> inputTables = data.getInputTables();
-            sb.append("\nFROM");
+            sb.append("\nFROM"); //$NON-NLS-1$
 
             // load input table in hash
             boolean explicitJoin = false;
@@ -161,7 +161,7 @@ public class TeradataGenerationManager extends DbGenerationManager {
                 }
             }
 
-            sb.append("\n");
+            sb.append("\n"); //$NON-NLS-1$
 
             IJoinType previousJoinType = null;
 
@@ -184,12 +184,12 @@ public class TeradataGenerationManager extends DbGenerationManager {
                             buildTableDeclaration(sb, inputTables.get(i - 1), commaCouldBeAdded, crCouldBeAdded, true);
                             previousJoinType = joinType;
                         } else {
-                            sb.append("\n");
+                            sb.append("\n"); //$NON-NLS-1$
                         }
-                        sb.append(" ");
+                        sb.append(" "); //$NON-NLS-1$
                     }
                     String labelJoinType = joinType.getLabel();
-                    sb.append(labelJoinType).append(" ");
+                    sb.append(labelJoinType).append(" "); //$NON-NLS-1$
                     if (joinType == AbstractDbLanguage.JOIN.CROSS_JOIN) {
                         ExternalDbMapTable nextTable = null;
                         if (i < lstSizeInputTables) {
@@ -205,12 +205,12 @@ public class TeradataGenerationManager extends DbGenerationManager {
                         // } else {
                         // sb.append(" <!! NO JOIN CLAUSES FOR '" + inputTable.getName() + "' !!> ");
                         // }
-                        sb.append(" ");
-                        sb.append("ON( ");
+                        sb.append(" "); //$NON-NLS-1$
+                        sb.append(Messages.getString("TeradataGenerationManager.on")); //$NON-NLS-1$
                         if (!buildConditions(sb, inputTable, true, true)) {
-                            sb.append("/* Conditions of joint are not set */");
+                            sb.append(Messages.getString("TeradataGenerationManager.conditionNotSet")); //$NON-NLS-1$
                         }
-                        sb.append(" )");
+                        sb.append(" )"); //$NON-NLS-1$
                     }
 
                 }
@@ -226,7 +226,7 @@ public class TeradataGenerationManager extends DbGenerationManager {
                         ExternalDbMapEntry dbMapEntry = customConditionsEntries.get(i);
                         if (dbMapEntry.getExpression() != null) {
                             if (!isFirstClause) {
-                                sbAddClauses.append("\n AND ");
+                                sbAddClauses.append(Messages.getString("TeradataGenerationManager.and")); //$NON-NLS-1$
                             }
                             sbAddClauses.append(dbMapEntry.getExpression());
                             isFirstClause = false;
@@ -239,10 +239,10 @@ public class TeradataGenerationManager extends DbGenerationManager {
             String addClauses = sbAddClauses.toString();
 
             if (whereClauses.trim().length() > 0 || addClauses.trim().length() > 0) {
-                sb.append("\nWHERE ");
+                sb.append(Messages.getString("TeradataGenerationManager.where")); //$NON-NLS-1$
                 sb.append(whereClauses);
                 if (whereClauses.trim().length() > 0 && addClauses.trim().length() > 0) {
-                    sb.append("\n AND ");
+                    sb.append(Messages.getString("TeradataGenerationManager.and")); //$NON-NLS-1$
                 }
 
                 sb.append(addClauses);
@@ -259,8 +259,7 @@ public class TeradataGenerationManager extends DbGenerationManager {
      * @param writeForJoin TODO
      * @param isFirstClause TODO
      */
-    private boolean buildConditions(StringBuilder sb, ExternalDbMapTable inputTable, boolean writeForJoin,
-            boolean isFirstClause) {
+    private boolean buildConditions(StringBuilder sb, ExternalDbMapTable inputTable, boolean writeForJoin, boolean isFirstClause) {
         List<ExternalDbMapEntry> inputEntries = inputTable.getMetadataTableEntries();
         int lstSizeEntries = inputEntries.size();
         boolean atLeastOneConditionWritten = false;
@@ -300,23 +299,23 @@ public class TeradataGenerationManager extends DbGenerationManager {
         if (operatorIsSet) {
 
             if (writeCr) {
-                sbWhere.append("\n ");
+                sbWhere.append("\n "); //$NON-NLS-1$
             }
             if (!isFirstClause) {
-                sbWhere.append(" AND ");
+                sbWhere.append(Messages.getString("TeradataGenerationManager.and1")); //$NON-NLS-1$
             }
             String locationInputEntry = language.getLocation(table.getName(), dbMapEntry.getName());
-            sbWhere.append(" ");
+            sbWhere.append(" "); //$NON-NLS-1$
             sbWhere.append(locationInputEntry);
-            sbWhere.append(" ");
+            sbWhere.append(" "); //$NON-NLS-1$
             if (operatorIsSet) {
-                sbWhere.append(dbOperator.getOperator()).append(" ");
+                sbWhere.append(dbOperator.getOperator()).append(" "); //$NON-NLS-1$
             } else if (!operatorIsSet && expressionIsSet) {
-                sbWhere.append("/* Operator of input entry '" + dbMapEntry.getName() + "' is not set */ ");
+                sbWhere.append(Messages.getString("TeradataGenerationManager.operationNotSet", dbMapEntry.getName())); //$NON-NLS-1$
             }
             if (operatorIsSet && !expressionIsSet && !dbOperator.isMonoOperand()) {
-                sbWhere.append("/* Expression of input entry '" + table.getName() + "." + dbMapEntry.getName()
-                        + "' is not set */");
+                sbWhere.append(Messages.getString(
+                        "TeradataGenerationManager.iutputExpresionNotSet", table.getName(), dbMapEntry.getName())); //$NON-NLS-1$
             } else if (expressionIsSet) {
                 sbWhere.append(dbMapEntry.getExpression());
             }
@@ -338,18 +337,18 @@ public class TeradataGenerationManager extends DbGenerationManager {
      */
     private void buildTableDeclaration(StringBuilder sb, ExternalDbMapTable inputTable, boolean commaCouldBeAdded,
             boolean crCouldBeAdded, boolean writingInJoin) {
-        sb.append(" ");
+        sb.append(" "); //$NON-NLS-1$
         String alias = inputTable.getAlias();
         if (alias != null) {
             if (!aliasAlreadyDeclared.contains(inputTable.getName())) {
                 if (crCouldBeAdded) {
-                    sb.append("\n");
+                    sb.append("\n"); //$NON-NLS-1$
                 }
                 if (commaCouldBeAdded) {
-                    sb.append(", ");
+                    sb.append(", "); //$NON-NLS-1$
                 }
                 sb.append(inputTable.getTableName());
-                sb.append(" ");
+                sb.append(" "); //$NON-NLS-1$
                 sb.append(alias);
                 aliasAlreadyDeclared.add(alias);
             } else {
@@ -359,10 +358,10 @@ public class TeradataGenerationManager extends DbGenerationManager {
             }
         } else {
             if (crCouldBeAdded) {
-                sb.append("\n");
+                sb.append("\n"); //$NON-NLS-1$
             }
             if (commaCouldBeAdded) {
-                sb.append(", ");
+                sb.append(", "); //$NON-NLS-1$
             }
             sb.append(inputTable.getName());
         }

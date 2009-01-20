@@ -73,7 +73,7 @@ public class InputDataMapTableView extends DataMapTableView {
     public void initColumnsOfTableColumns(final TableViewerCreator tableViewerCreatorForColumns) {
         TableViewerCreatorColumn column = null;
 
-        String useInJoinTitle = Messages.getString("InputDataMapTableView.columnTitle.ExplicitJoin");
+        String useInJoinTitle = Messages.getString("InputDataMapTableView.columnTitle.ExplicitJoin"); //$NON-NLS-1$
         column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
         column.setTitle(useInJoinTitle);
         column.setId(ID_EXPLICIT_JOIN);
@@ -91,7 +91,7 @@ public class InputDataMapTableView extends DataMapTableView {
         column.setModifiable(true);
         // column.setWidth(12);
         column.setWidth(65);
-        column.setDisplayedValue("");
+        column.setDisplayedValue(""); //$NON-NLS-1$
         // column.setResizable(false);
         CheckboxTableEditorContent checkboxTableEditorContent = new CheckboxTableEditorContent();
         checkboxTableEditorContent.setToolTipText(useInJoinTitle);
@@ -115,7 +115,7 @@ public class InputDataMapTableView extends DataMapTableView {
         column.setWeight(COLUMN_NAME_SIZE_WEIGHT);
 
         final TableViewerCreatorColumn columnOperator = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
-        columnOperator.setTitle(Messages.getString("InputDataMapTableView.columnTitle.Operator"));
+        columnOperator.setTitle(Messages.getString("InputDataMapTableView.columnTitle.Operator")); //$NON-NLS-1$
         columnOperator.setId(DataMapTableView.ID_OPERATOR);
         columnOperator.setToolTipHeader(Messages.getString("InputDataMapTableView.Operator")); //$NON-NLS-1$
         columnOperator.setBeanPropertyAccessors(new IBeanPropertyAccessors<InputColumnTableEntry, String>() {
@@ -135,7 +135,7 @@ public class InputDataMapTableView extends DataMapTableView {
         final IDbOperatorManager operatorsManager = mapperManager.getCurrentLanguage().getOperatorsManager();
         IDbOperator[] operators = operatorsManager.getOperators();
         String[] arrayOperators = new String[operators.length + 1];
-        arrayOperators[0] = "";
+        arrayOperators[0] = ""; //$NON-NLS-1$
         for (int i = 0; i < operators.length; i++) {
             arrayOperators[i + 1] = operators[i].getOperator();
         }
@@ -152,7 +152,7 @@ public class InputDataMapTableView extends DataMapTableView {
                 String selectedText = combo.getText();
                 IDbOperator operatorFromValue = operatorsManager.getOperatorFromValue(selectedText);
                 if (operatorFromValue != null && operatorFromValue.isMonoOperand()) {
-                    currentInputEntry.setExpression("");
+                    currentInputEntry.setExpression(""); //$NON-NLS-1$
                 }
             }
 
@@ -174,7 +174,7 @@ public class InputDataMapTableView extends DataMapTableView {
                     }
                     CCombo combo = (CCombo) typeComboEditor.getControl();
                     String selectedText = combo.getText();
-                    if (!selectedText.equals("")
+                    if (!selectedText.equals("") //$NON-NLS-1$
                             && (currentInputEntry.getExpression() == null || currentInputEntry.getExpression().trim()
                                     .length() == 0)) {
                         IDbOperator operatorFromValue = operatorsManager.getOperatorFromValue(selectedText);

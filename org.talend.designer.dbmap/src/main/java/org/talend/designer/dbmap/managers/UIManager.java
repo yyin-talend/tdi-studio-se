@@ -1743,7 +1743,7 @@ public class UIManager extends AbstractUIManager {
             String sql = mapperManager.getComponent().getGenerationManager().buildSqlSelect(mapperManager.getComponent(),
                     tableName);
             getTabFolderEditors().getItem(2).setText(
-                    Messages.getString("TabFolderEditors.SqlSelectQuery", new Object[] { tableName }));
+                    Messages.getString("TabFolderEditors.SqlSelectQuery", new Object[] { tableName })); //$NON-NLS-1$
             getTabFolderEditors().getStyledSqlText().setText(sql);
         }
     }

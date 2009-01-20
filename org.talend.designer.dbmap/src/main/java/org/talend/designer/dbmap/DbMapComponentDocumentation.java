@@ -110,10 +110,10 @@ public class DbMapComponentDocumentation implements IComponentDocumentation {
      */
     private void generateXMLInfo() {
         document = DocumentHelper.createDocument();
-        Element externalNodeElement = document.addElement("externalNode");
-        externalNodeElement.addAttribute("name", HTMLDocUtils.checkString(this.componentName));
+        Element externalNodeElement = document.addElement("externalNode"); //$NON-NLS-1$
+        externalNodeElement.addAttribute("name", HTMLDocUtils.checkString(this.componentName)); //$NON-NLS-1$
 
-        externalNodeElement.addAttribute("preview", HTMLDocUtils.checkString(this.previewPicPath));
+        externalNodeElement.addAttribute("preview", HTMLDocUtils.checkString(this.previewPicPath)); //$NON-NLS-1$
 
         List<ExternalDbMapTable> inputTables = externalData.getInputTables();
         List<ExternalDbMapTable> outputTables = externalData.getOutputTables();
@@ -147,11 +147,11 @@ public class DbMapComponentDocumentation implements IComponentDocumentation {
      */
     private void generateMapperTablesInfo(Element externalNodeElement, List<ExternalDbMapTable> tables,
             String mapperTableType) {
-        Element mapperTableElement = externalNodeElement.addElement("mapperTable");
-        mapperTableElement.addAttribute("type", HTMLDocUtils.checkString(mapperTableType));
+        Element mapperTableElement = externalNodeElement.addElement("mapperTable"); //$NON-NLS-1$
+        mapperTableElement.addAttribute("type", HTMLDocUtils.checkString(mapperTableType)); //$NON-NLS-1$
         Element tableElement = null;
         for (ExternalDbMapTable table : tables) {
-            tableElement = mapperTableElement.addElement("table");
+            tableElement = mapperTableElement.addElement("table"); //$NON-NLS-1$
             generateTableSummaryInfo(mapperTableElement, tableElement, table);
 
             List<ExternalDbMapEntry> metadataTableEntries = table.getMetadataTableEntries();
@@ -159,7 +159,7 @@ public class DbMapComponentDocumentation implements IComponentDocumentation {
                 continue;
             }
 
-            Element metadataTableEntriesElement = tableElement.addElement("metadataTableEntries");
+            Element metadataTableEntriesElement = tableElement.addElement("metadataTableEntries"); //$NON-NLS-1$
             for (ExternalDbMapEntry entry : metadataTableEntries) {
                 generateTablesEntriesInfo(metadataTableEntriesElement, entry);
             }
@@ -168,7 +168,7 @@ public class DbMapComponentDocumentation implements IComponentDocumentation {
             if (!HTMLDocUtils.checkList(customConditionsEntries)) {
                 continue;
             }
-            Element customConditionsEntriesElement = tableElement.addElement("customConditionsEntries");
+            Element customConditionsEntriesElement = tableElement.addElement("customConditionsEntries"); //$NON-NLS-1$
             for (ExternalDbMapEntry entry : customConditionsEntries) {
                 generateTablesEntriesInfo(customConditionsEntriesElement, entry);
             }
@@ -182,11 +182,11 @@ public class DbMapComponentDocumentation implements IComponentDocumentation {
      * @param entry
      */
     private void generateTablesEntriesInfo(Element metadataTableEntriesElement, ExternalDbMapEntry entry) {
-        Element entryElement = metadataTableEntriesElement.addElement("entry");
-        entryElement.addAttribute("name", HTMLDocUtils.checkString(entry.getName()));
-        entryElement.addAttribute("expression", HTMLDocUtils.checkString(entry.getExpression()));
-        entryElement.addAttribute("operator", HTMLDocUtils.checkString(entry.getOperator()));
-        entryElement.addAttribute("isJoin", String.valueOf(entry.isJoin()));
+        Element entryElement = metadataTableEntriesElement.addElement("entry"); //$NON-NLS-1$
+        entryElement.addAttribute("name", HTMLDocUtils.checkString(entry.getName())); //$NON-NLS-1$
+        entryElement.addAttribute("expression", HTMLDocUtils.checkString(entry.getExpression())); //$NON-NLS-1$
+        entryElement.addAttribute("operator", HTMLDocUtils.checkString(entry.getOperator())); //$NON-NLS-1$
+        entryElement.addAttribute("isJoin", String.valueOf(entry.isJoin())); //$NON-NLS-1$
     }
 
     /**
@@ -198,12 +198,12 @@ public class DbMapComponentDocumentation implements IComponentDocumentation {
      */
     private void generateTableSummaryInfo(Element mapperTableElement, Element tableElement, ExternalDbMapTable table) {
 
-        tableElement.addAttribute("name", HTMLDocUtils.checkString(table.getName()));
-        tableElement.addAttribute("tableName", HTMLDocUtils.checkString(table.getTableName()));
-        tableElement.addAttribute("alias", HTMLDocUtils.checkString(table.getAlias()));
-        tableElement.addAttribute("joinType", HTMLDocUtils.checkString(table.getJoinType()));
-        tableElement.addAttribute("alias", HTMLDocUtils.checkString(table.getAlias()));
-        tableElement.addAttribute("isMinimized", String.valueOf(table.isMinimized()));
+        tableElement.addAttribute("name", HTMLDocUtils.checkString(table.getName())); //$NON-NLS-1$
+        tableElement.addAttribute("tableName", HTMLDocUtils.checkString(table.getTableName())); //$NON-NLS-1$
+        tableElement.addAttribute("alias", HTMLDocUtils.checkString(table.getAlias())); //$NON-NLS-1$
+        tableElement.addAttribute("joinType", HTMLDocUtils.checkString(table.getJoinType())); //$NON-NLS-1$
+        tableElement.addAttribute("alias", HTMLDocUtils.checkString(table.getAlias())); //$NON-NLS-1$
+        tableElement.addAttribute("isMinimized", String.valueOf(table.isMinimized())); //$NON-NLS-1$
     }
 
     /**

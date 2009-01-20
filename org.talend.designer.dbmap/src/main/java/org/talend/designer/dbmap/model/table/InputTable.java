@@ -244,9 +244,9 @@ public class InputTable extends AbstractInOutTable {
         String alias = this.getAlias();
         String tableName = this.getTableName();
         if (alias != null) {
-            return alias + "  (alias of table '" + tableName + "')";
+            return alias + "  (alias of table '" + tableName + "')"; //$NON-NLS-1$ //$NON-NLS-2$
         } else {
-            return tableName + "  (table)";
+            return tableName + "  (table)"; //$NON-NLS-1$
         }
     }
 

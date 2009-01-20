@@ -444,7 +444,7 @@ public class MapperManager extends AbstractMapperManager {
         }
 
         IProcess process = mapperComponent.getProcess();
-        String uniqueName = process.generateUniqueConnectionName("table");
+        String uniqueName = process.generateUniqueConnectionName("table"); //$NON-NLS-1$
         process.addUniqueConnectionName(uniqueName);
 
         MetadataTable metadataTable = new MetadataTable();
@@ -798,7 +798,7 @@ public class MapperManager extends AbstractMapperManager {
         }
 
         String alias = aliasDialog.getAlias();
-        boolean isPhysicalTable = alias.equals("") || alias.equalsIgnoreCase(aliasDialog.getTableName());
+        boolean isPhysicalTable = alias.equals("") || alias.equalsIgnoreCase(aliasDialog.getTableName()); //$NON-NLS-1$
         String aliasOrTableName = isPhysicalTable ? aliasDialog.getTableName() : alias;
 
         IMetadataTable metadataTable = isPhysicalTable ? connectionFound.getTable() : connectionFound.getTable()

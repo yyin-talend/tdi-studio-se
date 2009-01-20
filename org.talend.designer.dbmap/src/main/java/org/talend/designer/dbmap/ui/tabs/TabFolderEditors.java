@@ -149,7 +149,7 @@ public class TabFolderEditors extends CTabFolder {
         } else {
             IPreferenceStore preferenceStore = CorePlugin.getDefault().getPreferenceStore();
             styledText = new UnnotifiableColorStyledText(tabFolderEditors, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL,
-                    preferenceStore, "tsql");
+                    preferenceStore, "tsql"); //$NON-NLS-1$
         }
         styledText.setEnabled(false);
         item.setControl(styledText);

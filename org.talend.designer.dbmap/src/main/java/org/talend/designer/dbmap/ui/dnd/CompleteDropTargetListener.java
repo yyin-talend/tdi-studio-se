@@ -547,7 +547,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
      * @param dataMapTableEntry
      */
     private void setDefaultOperator(InputColumnTableEntry inputEntry) {
-        if (inputEntry.getOperator() == null || inputEntry.getOperator().equals("")) {
+        if (inputEntry.getOperator() == null || inputEntry.getOperator().equals("")) { //$NON-NLS-1$
             inputEntry.setOperator(mapperManager.getCurrentLanguage().getOperatorsManager().getDefaultEqualOperator()
                     .getOperator());
         }

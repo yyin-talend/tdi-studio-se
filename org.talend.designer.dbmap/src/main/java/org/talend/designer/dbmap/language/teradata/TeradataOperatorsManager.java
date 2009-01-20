@@ -31,22 +31,22 @@ public class TeradataOperatorsManager implements IDbOperatorManager {
      * 
      */
     public enum DB_OPERATOR implements IDbOperator {
-        EQUAL("EQ"),
-        DIFFERENT("NE"),
-        STRICTLY_INFERIOR("LT"),
-        INFERIOR_OR_EQUAL("LE"),
-        SUPERIOR("GT"),
-        SUPERIOR_OR_EQUAL("GE"),
+        EQUAL("EQ"), //$NON-NLS-1$
+        DIFFERENT("NE"), //$NON-NLS-1$
+        STRICTLY_INFERIOR("LT"), //$NON-NLS-1$
+        INFERIOR_OR_EQUAL("LE"), //$NON-NLS-1$
+        SUPERIOR("GT"), //$NON-NLS-1$
+        SUPERIOR_OR_EQUAL("GE"), //$NON-NLS-1$
 
-        IS_NULL("IS NULL", null, true),
-        IS_NOT_NULL("IS NOT NULL", null, true),
-        BETWEEN("BETWEEN", " AND ", false),
-        NOT_BETWEEN("NOT BETWEEN", " AND ", false),
-        IN("IN", "( , )", false),
-        NOT_IN("NOT IN", "( , )", false),
-        LIKE("LIKE", "'%'", false),
-        NOT_LIKE("NOT LIKE", "'%'", false),
-        EXISTS("EXISTS", "(SELECT * FROM MyTable)", false), ;
+        IS_NULL("IS NULL", null, true), //$NON-NLS-1$
+        IS_NOT_NULL("IS NOT NULL", null, true), //$NON-NLS-1$
+        BETWEEN("BETWEEN", " AND ", false), //$NON-NLS-1$ //$NON-NLS-2$
+        NOT_BETWEEN("NOT BETWEEN", " AND ", false), //$NON-NLS-1$ //$NON-NLS-2$
+        IN("IN", "( , )", false), //$NON-NLS-1$ //$NON-NLS-2$
+        NOT_IN("NOT IN", "( , )", false), //$NON-NLS-1$ //$NON-NLS-2$
+        LIKE("LIKE", "'%'", false), //$NON-NLS-1$ //$NON-NLS-2$
+        NOT_LIKE("NOT LIKE", "'%'", false), //$NON-NLS-1$ //$NON-NLS-2$
+        EXISTS("EXISTS", "(SELECT * FROM MyTable)", false), ; //$NON-NLS-1$ //$NON-NLS-2$
 
         private String operator;
 

@@ -44,6 +44,7 @@ import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.dbmap.external.data.ExternalDbMapData;
 import org.talend.designer.dbmap.external.data.ExternalDbMapEntry;
 import org.talend.designer.dbmap.external.data.ExternalDbMapTable;
+import org.talend.designer.dbmap.i18n.Messages;
 import org.talend.designer.dbmap.language.generation.DbGenerationManager;
 import org.talend.designer.dbmap.language.teradata.TeradataGenerationManager;
 import org.talend.designer.dbmap.model.tableentry.TableEntryLocation;
@@ -443,13 +444,13 @@ public class DbMapComponent extends AbstractMapComponent {
     }
 
     public DbGenerationManager getGenerationManager() {
-        IElementParameter elementParameter = getElementParameter("COMPONENT_NAME");
+        IElementParameter elementParameter = getElementParameter("COMPONENT_NAME"); //$NON-NLS-1$
         String value = (String) elementParameter.getValue();
         DbGenerationManager dbGenerationManager = null;
-        if ("tELTTeradataMap".equals(value)) {
+        if ("tELTTeradataMap".equals(value)) { //$NON-NLS-1$
             dbGenerationManager = new TeradataGenerationManager();
         } else {
-            throw new IllegalArgumentException("Value of element parameter NAME is unknown :" + value);
+            throw new IllegalArgumentException(Messages.getString("DbMapComponent.unknowValue") + value); //$NON-NLS-1$
         }
         return dbGenerationManager;
     }
