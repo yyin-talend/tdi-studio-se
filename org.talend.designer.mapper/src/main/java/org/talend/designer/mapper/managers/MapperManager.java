@@ -853,7 +853,7 @@ public class MapperManager extends AbstractMapperManager {
         boolean atLeastOneHashKey = false;
         List<IColumnEntry> columnEntries = inputTable.getColumnEntries();
         for (IColumnEntry entry : columnEntries) {
-            if (entry.getExpression() != null && !entry.getExpression().trim().equals("")) {
+            if (entry.getExpression() != null && !entry.getExpression().trim().equals("")) { //$NON-NLS-1$
                 atLeastOneHashKey = true;
                 break;
             }

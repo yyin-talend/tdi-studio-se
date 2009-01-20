@@ -78,7 +78,7 @@ public class OutputTable extends AbstractInOutTable {
                     DataMapExpressionParser expressionParser = new DataMapExpressionParser(currentLanguage);
                     String expressionFilter = javaGenerationManager.buildConditions(externalConstraintTableEntries,
                             expressionParser);
-                    if (!expressionFilter.trim().equals("")) {
+                    if (!expressionFilter.trim().equals("")) { //$NON-NLS-1$
                         this.getExpressionFilter().setExpression(expressionFilter);
                         this.setActivateExpressionFilter(true);
                     }

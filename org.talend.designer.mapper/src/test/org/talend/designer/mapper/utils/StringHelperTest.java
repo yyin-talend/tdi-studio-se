@@ -31,8 +31,8 @@ public class StringHelperTest {
      */
     @Test
     public void testReplacePrms() {
-        assertEquals("abcdef", StringHelper.replacePrms("a{0}{1}d{2}f", new Object[] { "b", "c", "e" }));
-        assertEquals("ab\\{c\\}def", StringHelper.replacePrms("a{0}\\{{1}\\}d{2}f", new Object[] { "b", "c", "e" }));
+        assertEquals("abcdef", StringHelper.replacePrms("a{0}{1}d{2}f", new Object[] { "b", "c", "e" })); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+        assertEquals("ab\\{c\\}def", StringHelper.replacePrms("a{0}\\{{1}\\}d{2}f", new Object[] { "b", "c", "e" })); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
     }
 
 }

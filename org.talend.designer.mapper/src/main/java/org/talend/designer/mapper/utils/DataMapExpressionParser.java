@@ -108,9 +108,9 @@ public class DataMapExpressionParser {
             if (returnedExpression != null) {
                 matcher.setMultiline(true);
                 Perl5Substitution substitution = new Perl5Substitution(language.getPrefixTableRegexp()
-                        + (prefixTableNameWithComponentName ? uniqueNameComponent + "__" : "") + "$1->" //$NON-NLS-1$
+                        + (prefixTableNameWithComponentName ? uniqueNameComponent + "__" : "") + "$1->" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                         + language.getPrefixFieldRegexp()
-                        + (validColumnEntryLocations.contains(location) ? uniqueNameComponent + "__$1__" : "")
+                        + (validColumnEntryLocations.contains(location) ? uniqueNameComponent + "__$1__" : "") //$NON-NLS-1$ //$NON-NLS-2$
                         + "$2" + language.getSuffixFieldRegexp(), Perl5Substitution.INTERPOLATE_ALL); //$NON-NLS-1$
                 returnedExpression = Util.substitute(matcher, pattern, substitution, returnedExpression,
                         Util.SUBSTITUTE_ALL);

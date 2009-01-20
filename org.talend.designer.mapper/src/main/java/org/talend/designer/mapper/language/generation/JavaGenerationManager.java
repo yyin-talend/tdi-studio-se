@@ -87,7 +87,7 @@ public class JavaGenerationManager extends GenerationManager {
         for (int i = 0; i < lstSize; i++) {
 
             String constraintExpression = ((ExternalMapperTableEntry) constraintTableEntries.get(i)).getExpression();
-            if (constraintExpression == null || constraintExpression.trim().equals("")) {
+            if (constraintExpression == null || constraintExpression.trim().equals("")) { //$NON-NLS-1$
                 continue;
             }
             if (and != null && constraintExpression.trim().length() > 0) {

@@ -134,7 +134,7 @@ public class InputDataMapTableView extends DataMapTableView {
             column.setImageProvider(new IColumnImageProvider<InputColumnTableEntry>() {
 
                 public Image getImage(InputColumnTableEntry bean) {
-                    if (bean.getExpression() != null && !bean.getExpression().trim().equals("")) {
+                    if (bean.getExpression() != null && !bean.getExpression().trim().equals("")) { //$NON-NLS-1$
                         if (mapperManager.isAdvancedMap()) {
                             return ImageProviderMapper.getImage(ImageInfo.LOOKUP_KEY_ICON);
                         } else {
@@ -445,7 +445,7 @@ public class InputDataMapTableView extends DataMapTableView {
          * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
          */
         public void widgetDefaultSelected(SelectionEvent e) {
-            System.out.println("widgetDefaultSelected");
+            System.out.println("widgetDefaultSelected"); //$NON-NLS-1$
         }
     }
 

@@ -134,7 +134,7 @@ public class PerlGenerationManager extends GenerationManager {
         for (int i = 0; i < lstSize; i++) {
 
             String constraintExpression = ((ExternalMapperTableEntry) constraintTableEntries.get(i)).getExpression();
-            if (constraintExpression == null || constraintExpression.trim().equals("")) {
+            if (constraintExpression == null || constraintExpression.trim().equals("")) { //$NON-NLS-1$
                 continue;
             }
             if (and != null && constraintExpression.trim().length() > 0) {
@@ -173,7 +173,7 @@ public class PerlGenerationManager extends GenerationManager {
      * @return
      */
     public String buildNewArrayDeclaration(String uniqueNameComponent, String name, int indent) {
-        return "my $" + uniqueNameComponent + "__" + name + " = [];"; //$NON-NLS-1$ //$NON-NLS-2$
+        return "my $" + uniqueNameComponent + "__" + name + " = [];"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     /**
@@ -187,7 +187,7 @@ public class PerlGenerationManager extends GenerationManager {
         // string += "my @" + name + "ArrayFromLookup = $tHash_" + name + "{"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         for (int i = 0; i < keysValues.length; i++) {
             if (i > 0) {
-                string += ".'|'.";
+                string += ".'|'."; //$NON-NLS-1$
             }
             string += keysValues[i]; //$NON-NLS-1$ //$NON-NLS-2$
         }

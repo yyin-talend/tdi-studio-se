@@ -42,17 +42,17 @@ public class DataMapExpressionParserTest {
         DataMapExpressionParser expressionParser = new DataMapExpressionParser(language);
         PerlGenerationManager gen = (PerlGenerationManager) GenerationManagerFactory.getInstance()
                 .getGenerationManager(language);
-        TableEntryLocation[] stringCouples = expressionParser.parseTableEntryLocations("abc * "
-                + gen.getTableColumnVariable("table1", "col1") + " + " + gen.getTableColumnVariable("ta_ble2", "co_l2")
-                + " - " + gen.getTableColumnVariable("$table1", "col2"));
-        assertEquals(stringCouples[0].tableName, "table1");
-        assertEquals(stringCouples[0].columnName, "col1");
+        TableEntryLocation[] stringCouples = expressionParser.parseTableEntryLocations("abc * " //$NON-NLS-1$
+                + gen.getTableColumnVariable("table1", "col1") + " + " + gen.getTableColumnVariable("ta_ble2", "co_l2") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+                + " - " + gen.getTableColumnVariable("$table1", "col2")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        assertEquals(stringCouples[0].tableName, "table1"); //$NON-NLS-1$
+        assertEquals(stringCouples[0].columnName, "col1"); //$NON-NLS-1$
 
-        assertEquals(stringCouples[1].tableName, "ta_ble2");
-        assertEquals(stringCouples[1].columnName, "co_l2");
+        assertEquals(stringCouples[1].tableName, "ta_ble2"); //$NON-NLS-1$
+        assertEquals(stringCouples[1].columnName, "co_l2"); //$NON-NLS-1$
 
-        assertEquals(stringCouples[2].tableName, "table1");
-        assertEquals(stringCouples[2].columnName, "col2");
+        assertEquals(stringCouples[2].tableName, "table1"); //$NON-NLS-1$
+        assertEquals(stringCouples[2].columnName, "col2"); //$NON-NLS-1$
 
     }
 
@@ -87,23 +87,23 @@ public class DataMapExpressionParserTest {
         PerlGenerationManager gen = (PerlGenerationManager) GenerationManagerFactory.getInstance()
                 .getGenerationManager(language);
 
-        TableEntryLocation[] locations = new TableEntryLocation[] { new TableEntryLocation("page", "content"),
-                new TableEntryLocation("book", "id_book"), };
+        TableEntryLocation[] locations = new TableEntryLocation[] { new TableEntryLocation("page", "content"), //$NON-NLS-1$ //$NON-NLS-2$
+                new TableEntryLocation("book", "id_book"), }; //$NON-NLS-1$ //$NON-NLS-2$
 
         HashSet<TableEntryLocation> validLocations = new HashSet<TableEntryLocation>();
         validLocations.addAll(Arrays.asList(locations));
 
         String result = expressionParser
-                .addTablePrefixToColumnName("UNIQUE_COMPONENT_NAME", "uc "
-                        + gen.getTableColumnVariable("page", "content") + " + "
-                        + gen.getTableColumnVariable("book", "id_book") + " - 2 * " + language.getPrefixTable()
-                        + " book " + language.getSuffixTable() + language.getPrefixField() + "  id_book "
+                .addTablePrefixToColumnName("UNIQUE_COMPONENT_NAME", "uc " //$NON-NLS-1$ //$NON-NLS-2$
+                        + gen.getTableColumnVariable("page", "content") + " + " //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                        + gen.getTableColumnVariable("book", "id_book") + " - 2 * " + language.getPrefixTable() //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                        + " book " + language.getSuffixTable() + language.getPrefixField() + "  id_book " //$NON-NLS-1$ //$NON-NLS-2$
                         + language.getSuffixField(), locations, true, validLocations);
-        assertEquals("uc " + gen.getTableColumnVariable("page", "page__content") + " + "
-                + gen.getTableColumnVariable("book", "book__id_book") + " - 2 * "
-                + gen.getTableColumnVariable("book", "book__id_book"), result);
+        assertEquals("uc " + gen.getTableColumnVariable("page", "page__content") + " + " //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                + gen.getTableColumnVariable("book", "book__id_book") + " - 2 * " //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + gen.getTableColumnVariable("book", "book__id_book"), result); //$NON-NLS-1$ //$NON-NLS-2$
 
-        locations = new TableEntryLocation[] { new TableEntryLocation("book", "id_book"), };
+        locations = new TableEntryLocation[] { new TableEntryLocation("book", "id_book"), }; //$NON-NLS-1$ //$NON-NLS-2$
 
         // result = expressionParser.addTablePrefixToColumnName("uc $page{content} + $book{id_book} - 2 * $ book {
         // id_book }", locations);
@@ -122,10 +122,10 @@ public class DataMapExpressionParserTest {
         DataMapExpressionParser expressionParser = new DataMapExpressionParser(language);
         // GenerationManager gen = new GenerationManager(language);
 
-        String result = expressionParser.replaceLocation(" $ book [ id_book ] ", new TableEntryLocation("book",
-                "id_book"), new TableEntryLocation("book", "id_book_changed"));
+        String result = expressionParser.replaceLocation(" $ book [ id_book ] ", new TableEntryLocation("book", //$NON-NLS-1$ //$NON-NLS-2$
+                "id_book"), new TableEntryLocation("book", "id_book_changed")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         System.out.println(result);
-        assertEquals(" $ book [ id_book_changed ] ", result);
+        assertEquals(" $ book [ id_book_changed ] ", result); //$NON-NLS-1$
 
         // String result = expressionParser.replaceLocation("uc "
         // + "$page[content] + $book[id_book] - 2 * $ book [ id_book ]", new TableEntryLocation("book", "id_book"),

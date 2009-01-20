@@ -110,7 +110,7 @@ public class ProblemsAnalyser {
                 rejectTables.add(outputTable);
             } else if (!outputTable.isRejectInnerJoin()) {
                 if (outputTable.getExpressionFilter() != null && outputTable.isActivateExpressionFilter()
-                        && !outputTable.getExpressionFilter().trim().equals("")
+                        && !outputTable.getExpressionFilter().trim().equals("") //$NON-NLS-1$
                         || outputTable.getConstraintTableEntries() != null
                         && outputTable.getConstraintTableEntries().size() > 0) {
                     normalTablesWithFilter.add(outputTable);
@@ -120,14 +120,14 @@ public class ProblemsAnalyser {
             }
         }
         if (rejectTables.size() > 0 && normalTables.size() > 0) {
-            String tables = "";
+            String tables = ""; //$NON-NLS-1$
             int normalTablesListSize = normalTables.size();
             for (int i = 0; i < normalTablesListSize; i++) {
                 ExternalMapperTable normalOutputTable = normalTables.get(i);
                 if (i > 0) {
-                    tables += ", ";
+                    tables += ", "; //$NON-NLS-1$
                 }
-                tables += "\"" + normalOutputTable.getName() + "\"";
+                tables += "\"" + normalOutputTable.getName() + "\""; //$NON-NLS-1$ //$NON-NLS-2$
             }
             String description = Messages.getString("Problem.warning.unusableReject", new Object[] { tables }); //$NON-NLS-1$
             addProblem(new Problem(null, description, ProblemStatus.WARNING));
@@ -158,7 +158,7 @@ public class ProblemsAnalyser {
 
             if (!atLeastOneExpressionFilled) {
                 if (mapperManager.isAdvancedMap()) {
-                    addProblem(new Problem(null, Messages.getString("Problem.warning.setExpressionKey",
+                    addProblem(new Problem(null, Messages.getString("Problem.warning.setExpressionKey", //$NON-NLS-1$
                             new Object[] { table.getName() }), ProblemStatus.WARNING));
                 } else {
                     addProblem(new Problem(
@@ -248,7 +248,7 @@ public class ProblemsAnalyser {
             }
 
             if (table.getConstraintTableEntries() != null || table.isActivateExpressionFilter()
-                    && table.getExpressionFilter() != null && !table.getExpressionFilter().trim().equals("")) {
+                    && table.getExpressionFilter() != null && !table.getExpressionFilter().trim().equals("")) { //$NON-NLS-1$
                 String prefix = "Filter invalid in table " + table.getName() + " : "; //$NON-NLS-1$ //$NON-NLS-2$
                 if (table.getConstraintTableEntries() != null) {
                     for (ExternalMapperTableEntry entry : table.getConstraintTableEntries()) {
@@ -258,7 +258,7 @@ public class ProblemsAnalyser {
                     }
                 }
                 if (table.isActivateExpressionFilter() && table.getExpressionFilter() != null
-                        && !table.getExpressionFilter().trim().equals("")) {
+                        && !table.getExpressionFilter().trim().equals("")) { //$NON-NLS-1$
                     checkFilterEntry(codeChecker, keyLanguageCheckerIsUsed, table, prefix, table.getExpressionFilter());
                 }
             }

@@ -136,7 +136,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
                         variables.add(new Variable(variable, JavaTypesManager.getDefaultValueFromJavaIdType(talendType,
                                 nullable).toString(), talendType, nullable));
                     } else {
-                        variables.add(new Variable(variable, "", talendType, nullable));
+                        variables.add(new Variable(variable, "", talendType, nullable)); //$NON-NLS-1$
                     }
                 }
             }

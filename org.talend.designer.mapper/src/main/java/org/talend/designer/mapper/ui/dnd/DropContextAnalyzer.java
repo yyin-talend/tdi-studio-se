@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.ws.WindowSystem;
+import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.UIManager;
 import org.talend.designer.mapper.model.table.InputTable;
@@ -104,7 +105,7 @@ public class DropContextAnalyzer {
         } else if (controlTarget instanceof StyledText) {
             currentStyledTextTarget = (StyledText) dropTarget.getControl();
         } else {
-            throw new IllegalArgumentException("This type of Control is unsupported for DND :" + controlTarget.toString());
+            throw new IllegalArgumentException(Messages.getString("DropContextAnalyzer.0", controlTarget.toString())); //$NON-NLS-1$
         }
         zoneTarget = dataMapTableViewTarget.getZone();
         draggedData = TableEntriesTransfer.getInstance().getDraggedData();
@@ -170,7 +171,7 @@ public class DropContextAnalyzer {
                     return true;
                 }
             } else {
-                throw new IllegalStateException("Case not found");
+                throw new IllegalStateException(Messages.getString("DropContextAnalyzer.notFound")); //$NON-NLS-1$
             }
 
         }
@@ -247,12 +248,12 @@ public class DropContextAnalyzer {
             isCursorOverExpressionCell = false;
             return;
         }
-        
-        int maxY = (WindowSystem.isWIN32() && currentTableTarget.getHeaderVisible() ? currentTableTarget.getHeaderHeight() : 0) + (currentTableTarget.getItemCount()
-        * (currentTableTarget.getItemHeight() + currentTableTarget.getBorderWidth() + (WindowSystem.isGTK() ? 2 : 0)));
-        
-        if (pointCursor.y < 0
-                || pointCursor.y >= maxY) {
+
+        int maxY = (WindowSystem.isWIN32() && currentTableTarget.getHeaderVisible() ? currentTableTarget.getHeaderHeight() : 0)
+                + (currentTableTarget.getItemCount() * (currentTableTarget.getItemHeight() + currentTableTarget.getBorderWidth() + (WindowSystem
+                        .isGTK() ? 2 : 0)));
+
+        if (pointCursor.y < 0 || pointCursor.y >= maxY) {
             isCursorOverExpressionCell = false;
             return;
         }

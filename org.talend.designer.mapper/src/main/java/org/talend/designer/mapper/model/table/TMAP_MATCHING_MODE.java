@@ -22,11 +22,11 @@ import org.talend.designer.components.commons.AdvancedLookup.MATCHING_MODE;
  * 
  */
 public enum TMAP_MATCHING_MODE implements ILookupType {
-    ALL_ROWS(MATCHING_MODE.ALL_ROWS, "All rows"),
-    UNIQUE_MATCH(MATCHING_MODE.UNIQUE_MATCH, "Unique match"),
-    FIRST_MATCH(MATCHING_MODE.FIRST_MATCH, "First match"),
-    LAST_MATCH(MATCHING_MODE.LAST_MATCH, "Last match"),
-    ALL_MATCHES(MATCHING_MODE.ALL_MATCHES, "All matches"), ;
+    ALL_ROWS(MATCHING_MODE.ALL_ROWS, "All rows"), //$NON-NLS-1$
+    UNIQUE_MATCH(MATCHING_MODE.UNIQUE_MATCH, "Unique match"), //$NON-NLS-1$
+    FIRST_MATCH(MATCHING_MODE.FIRST_MATCH, "First match"), //$NON-NLS-1$
+    LAST_MATCH(MATCHING_MODE.LAST_MATCH, "Last match"), //$NON-NLS-1$
+    ALL_MATCHES(MATCHING_MODE.ALL_MATCHES, "All matches"), ; //$NON-NLS-1$
 
     private String label;
 

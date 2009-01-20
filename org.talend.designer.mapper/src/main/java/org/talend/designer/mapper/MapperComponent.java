@@ -58,6 +58,7 @@ import org.talend.designer.components.commons.AdvancedLookup.MATCHING_MODE;
 import org.talend.designer.mapper.external.data.ExternalMapperData;
 import org.talend.designer.mapper.external.data.ExternalMapperTable;
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
+import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.language.generation.GenerationManager;
 import org.talend.designer.mapper.language.generation.GenerationManagerFactory;
@@ -523,7 +524,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
 
     public List<BlockCode> getBlocksCodeToClose() {
         if (generationManager == null) {
-            throw new IllegalStateException("generationManager is not initialized by the perljet/javajet!");
+            throw new IllegalStateException(Messages.getString("MapperComponent.generationNotInitial")); //$NON-NLS-1$
         }
         return this.generationManager.getBlocksCodeToClose();
     }
@@ -546,7 +547,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
                     int metadataTableEntriesListSize = metadataTableEntries.size();
                     for (int i = 0; i < metadataTableEntriesListSize; i++) {
                         ExternalMapperTableEntry entry = metadataTableEntries.get(i);
-                        if (entry.getExpression() != null && !entry.getExpression().trim().equals("")) {
+                        if (entry.getExpression() != null && !entry.getExpression().trim().equals("")) { //$NON-NLS-1$
                             hashableColumns.add(new HashableColumn(entry.getName(), i));
                         }
                     }
@@ -557,13 +558,13 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
                     matchingMode = MATCHING_MODE.UNIQUE_MATCH;
                 }
 
-                IElementParameter tempFolderElem = getElementParameter("TEMPORARY_DATA_DIRECTORY");
+                IElementParameter tempFolderElem = getElementParameter("TEMPORARY_DATA_DIRECTORY"); //$NON-NLS-1$
                 String tempFolder = null;
                 if (tempFolderElem != null) {
                     tempFolder = (String) tempFolderElem.getValue();
                 }
 
-                IElementParameter rowsBufferSizeElem = getElementParameter("ROWS_BUFFER_SIZE");
+                IElementParameter rowsBufferSizeElem = getElementParameter("ROWS_BUFFER_SIZE"); //$NON-NLS-1$
                 String rowsBufferSize = null;
                 if (rowsBufferSizeElem != null) {
                     rowsBufferSize = (String) rowsBufferSizeElem.getValue();

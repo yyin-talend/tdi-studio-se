@@ -187,7 +187,7 @@ public class PerformanceJavaTMap extends TestCase {
 
         PrimitiveBean beanInput = new PrimitiveBean();
 
-        TimeMeasure.begin("testPrimitiveIntPropertiesCopyWithLocalBeansWithOperations");
+        TimeMeasure.begin("testPrimitiveIntPropertiesCopyWithLocalBeansWithOperations"); //$NON-NLS-1$
 
         for (int i = 0; i < N_ITERATION; i++) {
 
@@ -204,7 +204,7 @@ public class PerformanceJavaTMap extends TestCase {
 
         }
 
-        TimeMeasure.end("testPrimitiveIntPropertiesCopyWithLocalBeansWithOperations");
+        TimeMeasure.end("testPrimitiveIntPropertiesCopyWithLocalBeansWithOperations"); //$NON-NLS-1$
         System.out.println();
 
     }
@@ -213,7 +213,7 @@ public class PerformanceJavaTMap extends TestCase {
 
         beanInput = new PrimitiveBean();
 
-        TimeMeasure.begin("testPrimitiveIntPropertiesCopyWithLocalBeansWithOperations");
+        TimeMeasure.begin("testPrimitiveIntPropertiesCopyWithLocalBeansWithOperations"); //$NON-NLS-1$
 
         for (int i = 0; i < N_ITERATION; i++) {
 
@@ -230,7 +230,7 @@ public class PerformanceJavaTMap extends TestCase {
 
         }
 
-        TimeMeasure.end("testPrimitiveIntPropertiesCopyWithLocalBeansWithOperations");
+        TimeMeasure.end("testPrimitiveIntPropertiesCopyWithLocalBeansWithOperations"); //$NON-NLS-1$
         System.out.println();
 
     }
@@ -240,7 +240,7 @@ public class PerformanceJavaTMap extends TestCase {
         PrimitiveBean row1 = new PrimitiveBean();
         PrimitiveBean row2;
 
-        TimeMeasure.begin("testBeansReferenceCopy");
+        TimeMeasure.begin("testBeansReferenceCopy"); //$NON-NLS-1$
 
         for (int i = 0; i < N_ITERATION; i++) {
 
@@ -248,7 +248,7 @@ public class PerformanceJavaTMap extends TestCase {
 
         }
 
-        TimeMeasure.end("testBeansReferenceCopy");
+        TimeMeasure.end("testBeansReferenceCopy"); //$NON-NLS-1$
         System.out.println();
 
     }
@@ -258,7 +258,7 @@ public class PerformanceJavaTMap extends TestCase {
         PrimitiveBean beanInput = new PrimitiveBean();
         PrimitiveBean beanOutput = new PrimitiveBean();
 
-        TimeMeasure.begin("testPrimitiveIntPropertiesCopyWithLocalBeans");
+        TimeMeasure.begin("testPrimitiveIntPropertiesCopyWithLocalBeans"); //$NON-NLS-1$
 
         for (int i = 0; i < N_ITERATION; i++) {
 
@@ -275,7 +275,7 @@ public class PerformanceJavaTMap extends TestCase {
 
         }
 
-        TimeMeasure.end("testPrimitiveIntPropertiesCopyWithLocalBeans");
+        TimeMeasure.end("testPrimitiveIntPropertiesCopyWithLocalBeans"); //$NON-NLS-1$
         System.out.println();
 
     }
@@ -285,7 +285,7 @@ public class PerformanceJavaTMap extends TestCase {
         IntegerBean beanInput = new IntegerBean();
         IntegerBean beanOutput = new IntegerBean();
 
-        TimeMeasure.begin("testIntegerPropertiesCopyWithLocalBeans");
+        TimeMeasure.begin("testIntegerPropertiesCopyWithLocalBeans"); //$NON-NLS-1$
 
         for (int i = 0; i < N_ITERATION; i++) {
 
@@ -302,14 +302,14 @@ public class PerformanceJavaTMap extends TestCase {
 
         }
 
-        TimeMeasure.end("testIntegerPropertiesCopyWithLocalBeans");
+        TimeMeasure.end("testIntegerPropertiesCopyWithLocalBeans"); //$NON-NLS-1$
         System.out.println();
 
     }
 
     public void testPrimitivePropertiesCopyWithStaticBeans() {
 
-        TimeMeasure.begin("testPrimitivePropertiesCopyWithStaticBeans");
+        TimeMeasure.begin("testPrimitivePropertiesCopyWithStaticBeans"); //$NON-NLS-1$
 
         for (int i = 0; i < N_ITERATION; i++) {
 
@@ -326,7 +326,7 @@ public class PerformanceJavaTMap extends TestCase {
 
         }
 
-        TimeMeasure.end("testPrimitivePropertiesCopyWithStaticBeans");
+        TimeMeasure.end("testPrimitivePropertiesCopyWithStaticBeans"); //$NON-NLS-1$
         System.out.println();
 
     }
@@ -336,7 +336,7 @@ public class PerformanceJavaTMap extends TestCase {
         int[] intArrayInput = new int[10];
         int[] intArrayOutput = new int[10];
 
-        TimeMeasure.begin("testPrimitiveIntArrayCopyWithLocalBeans");
+        TimeMeasure.begin("testPrimitiveIntArrayCopyWithLocalBeans"); //$NON-NLS-1$
 
         for (int i = 0; i < N_ITERATION; i++) {
 
@@ -353,7 +353,7 @@ public class PerformanceJavaTMap extends TestCase {
 
         }
 
-        TimeMeasure.end("testPrimitiveIntArrayCopyWithLocalBeans");
+        TimeMeasure.end("testPrimitiveIntArrayCopyWithLocalBeans"); //$NON-NLS-1$
         System.out.println();
 
     }
@@ -363,7 +363,7 @@ public class PerformanceJavaTMap extends TestCase {
         NullablePrimitiveBean beanInput = new NullablePrimitiveBean();
         NullablePrimitiveBean beanOutput = new NullablePrimitiveBean();
 
-        TimeMeasure.begin("testCopyFirstPrimitiveArrayValueInFirstPrimitiveArrayValue");
+        TimeMeasure.begin("testCopyFirstPrimitiveArrayValueInFirstPrimitiveArrayValue"); //$NON-NLS-1$
 
         for (int i = 0; i < N_ITERATION; i++) {
 
@@ -380,7 +380,7 @@ public class PerformanceJavaTMap extends TestCase {
 
         }
 
-        TimeMeasure.end("testCopyFirstPrimitiveArrayValueInFirstPrimitiveArrayValue");
+        TimeMeasure.end("testCopyFirstPrimitiveArrayValueInFirstPrimitiveArrayValue"); //$NON-NLS-1$
         System.out.println();
 
     }

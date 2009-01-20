@@ -66,7 +66,7 @@ public class MapperHelper {
                         continue;
                     }
 
-                    if (inputTable.isPersistent() && !"ALL_ROWS".equals(inputTable.getMatchingMode())) {
+                    if (inputTable.isPersistent() && !"ALL_ROWS".equals(inputTable.getMatchingMode())) { //$NON-NLS-1$
                         hasPersistentSortedLookup = true;
                     }
 

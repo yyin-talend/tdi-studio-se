@@ -128,10 +128,10 @@ public class MapperComponentDocumentation implements IComponentDocumentation {
      */
     private void generateXMLInfo() {
         document = DocumentHelper.createDocument();
-        Element externalNodeElement = document.addElement("externalNode");
-        externalNodeElement.addAttribute("name", HTMLDocUtils.checkString(this.componentName));
+        Element externalNodeElement = document.addElement("externalNode"); //$NON-NLS-1$
+        externalNodeElement.addAttribute("name", HTMLDocUtils.checkString(this.componentName)); //$NON-NLS-1$
 
-        externalNodeElement.addAttribute("preview", HTMLDocUtils.checkString(this.previewPicPath));
+        externalNodeElement.addAttribute("preview", HTMLDocUtils.checkString(this.previewPicPath)); //$NON-NLS-1$
 
         List<ExternalMapperTable> inputTables = externalData.getInputTables();
         List<ExternalMapperTable> outputTables = externalData.getOutputTables();
@@ -165,11 +165,11 @@ public class MapperComponentDocumentation implements IComponentDocumentation {
      */
     private void generateMapperTablesInfo(Element externalNodeElement, List<ExternalMapperTable> tables,
             String mapperTableType) {
-        Element mapperTableElement = externalNodeElement.addElement("mapperTable");
-        mapperTableElement.addAttribute("type", HTMLDocUtils.checkString(mapperTableType));
+        Element mapperTableElement = externalNodeElement.addElement("mapperTable"); //$NON-NLS-1$
+        mapperTableElement.addAttribute("type", HTMLDocUtils.checkString(mapperTableType)); //$NON-NLS-1$
         Element tableElement = null;
         for (ExternalMapperTable table : tables) {
-            tableElement = mapperTableElement.addElement("table");
+            tableElement = mapperTableElement.addElement("table"); //$NON-NLS-1$
             generateTableSummaryInfo(mapperTableElement, tableElement, table);
 
             List<ExternalMapperTableEntry> metadataTableEntries = table.getMetadataTableEntries();
@@ -177,7 +177,7 @@ public class MapperComponentDocumentation implements IComponentDocumentation {
                 continue;
             }
 
-            Element metadataTableEntriesElement = tableElement.addElement("metadataTableEntries");
+            Element metadataTableEntriesElement = tableElement.addElement("metadataTableEntries"); //$NON-NLS-1$
             for (ExternalMapperTableEntry entry : metadataTableEntries) {
                 generateTablesEntriesInfo(metadataTableEntriesElement, entry);
             }
@@ -186,7 +186,7 @@ public class MapperComponentDocumentation implements IComponentDocumentation {
             if (!HTMLDocUtils.checkList(constraintTableEntries)) {
                 continue;
             }
-            Element constraintTableEntriesElement = tableElement.addElement("constraintTableEntries");
+            Element constraintTableEntriesElement = tableElement.addElement("constraintTableEntries"); //$NON-NLS-1$
             for (ExternalMapperTableEntry entry : constraintTableEntries) {
                 generateTablesEntriesInfo(constraintTableEntriesElement, entry);
             }
@@ -200,16 +200,16 @@ public class MapperComponentDocumentation implements IComponentDocumentation {
      * @param entry
      */
     private void generateTablesEntriesInfo(Element metadataTableEntriesElement, ExternalMapperTableEntry entry) {
-        Element entryElement = metadataTableEntriesElement.addElement("entry");
-        entryElement.addAttribute("name", HTMLDocUtils.checkString(entry.getName()));
+        Element entryElement = metadataTableEntriesElement.addElement("entry"); //$NON-NLS-1$
+        entryElement.addAttribute("name", HTMLDocUtils.checkString(entry.getName())); //$NON-NLS-1$
         String type = HTMLDocUtils.checkString(entry.getType());
-        if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA) && type != "") {
+        if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA) && type != "") { //$NON-NLS-1$
             type = JavaTypesManager.getTypeToGenerate(type, entry.isNullable());
         }
 
-        entryElement.addAttribute("type", type);
-        entryElement.addAttribute("expression", HTMLDocUtils.checkString(entry.getExpression()));
-        entryElement.addAttribute("isNullable", String.valueOf(entry.isNullable()));
+        entryElement.addAttribute("type", type); //$NON-NLS-1$
+        entryElement.addAttribute("expression", HTMLDocUtils.checkString(entry.getExpression())); //$NON-NLS-1$
+        entryElement.addAttribute("isNullable", String.valueOf(entry.isNullable())); //$NON-NLS-1$
     }
 
     /**
@@ -221,15 +221,15 @@ public class MapperComponentDocumentation implements IComponentDocumentation {
      */
     private void generateTableSummaryInfo(Element mapperTableElement, Element tableElement, ExternalMapperTable table) {
 
-        tableElement.addAttribute("name", table.getName());
-        tableElement.addAttribute("matching-mode", table.getMatchingMode());
-        tableElement.addAttribute("isMinimized", String.valueOf(table.isMinimized()));
-        tableElement.addAttribute("isReject", String.valueOf(table.isReject()));
-        tableElement.addAttribute("isRejectInnerJoin", String.valueOf(table.isRejectInnerJoin()));
-        tableElement.addAttribute("isInnerJoin", String.valueOf(table.isInnerJoin()));
-        tableElement.addAttribute("isPersistent", String.valueOf(table.isPersistent()));
-        tableElement.addAttribute("expressionFilter", String.valueOf(table.getExpressionFilter()));
-        tableElement.addAttribute("activateExpressionFilter", String.valueOf(table.isActivateExpressionFilter()));
+        tableElement.addAttribute("name", table.getName()); //$NON-NLS-1$
+        tableElement.addAttribute("matching-mode", table.getMatchingMode()); //$NON-NLS-1$
+        tableElement.addAttribute("isMinimized", String.valueOf(table.isMinimized())); //$NON-NLS-1$
+        tableElement.addAttribute("isReject", String.valueOf(table.isReject())); //$NON-NLS-1$
+        tableElement.addAttribute("isRejectInnerJoin", String.valueOf(table.isRejectInnerJoin())); //$NON-NLS-1$
+        tableElement.addAttribute("isInnerJoin", String.valueOf(table.isInnerJoin())); //$NON-NLS-1$
+        tableElement.addAttribute("isPersistent", String.valueOf(table.isPersistent())); //$NON-NLS-1$
+        tableElement.addAttribute("expressionFilter", String.valueOf(table.getExpressionFilter())); //$NON-NLS-1$
+        tableElement.addAttribute("activateExpressionFilter", String.valueOf(table.isActivateExpressionFilter())); //$NON-NLS-1$
     }
 
     /**

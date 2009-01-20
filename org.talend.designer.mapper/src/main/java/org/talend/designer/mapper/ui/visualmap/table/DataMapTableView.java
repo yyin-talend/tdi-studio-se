@@ -226,9 +226,9 @@ public abstract class DataMapTableView extends Composite {
 
     private UnnotifiableColorStyledText expressionFilterText;
 
-    public static final String DEFAULT_EXPRESSION_FILTER = "<Type your filter expression>";
+    public static final String DEFAULT_EXPRESSION_FILTER = "<Type your filter expression>"; //$NON-NLS-1$
 
-    private static final String EXPRESSION_FILTER_ENTRY = "EXPRESSION_FILTER_ENTRY";
+    private static final String EXPRESSION_FILTER_ENTRY = "EXPRESSION_FILTER_ENTRY"; //$NON-NLS-1$
 
     private String previousTextForExpressionFilter;
 
@@ -635,7 +635,7 @@ public abstract class DataMapTableView extends Composite {
 
                     String defaultToolTip = null;
                     if (WindowSystem.isGTK() && table.getToolTipText() != null) {
-                        defaultToolTip = " ";
+                        defaultToolTip = " "; //$NON-NLS-1$
                     }
 
                     Point cursorPositionFromTableOrigin = TableUtils.getCursorPositionFromTableOrigin(table, event);
@@ -1008,7 +1008,7 @@ public abstract class DataMapTableView extends Composite {
             StyledText styledText = mapperManager.getUiManager().getTabFolderEditors().getStyledTextHandler().getStyledText();
             styledText.setEnabled(true);
             styledText.setEditable(false);
-            styledText.setText(tableEntry.getExpression() == null ? "" : tableEntry.getExpression());
+            styledText.setText(tableEntry.getExpression() == null ? "" : tableEntry.getExpression()); //$NON-NLS-1$
         }
     }
 
@@ -1426,18 +1426,18 @@ public abstract class DataMapTableView extends Composite {
 
         StringBuffer id = new StringBuffer();
 
-        id.append(mapperManager.getAbstractMapComponent().getLabel() + "=>");
+        id.append(mapperManager.getAbstractMapComponent().getLabel() + "=>"); //$NON-NLS-1$
 
         TableItem[] items = tableViewerCreator.getTable().getSelection();
         if (items.length == 1) {
             Object item = items[0].getData();
             if (item instanceof AbstractInOutTableEntry) {
                 AbstractInOutTableEntry entry = (AbstractInOutTableEntry) item;
-                id.append(entry.getParent().getName() + "=>");
+                id.append(entry.getParent().getName() + "=>"); //$NON-NLS-1$
                 id.append(entry.getMetadataColumn().getLabel());
             } else if (item instanceof VarTableEntry) {
                 VarTableEntry entry = (VarTableEntry) item;
-                id.append(entry.getParent().getName() + "=>");
+                id.append(entry.getParent().getName() + "=>"); //$NON-NLS-1$
                 id.append(entry.getName());
             }
 
@@ -1919,7 +1919,7 @@ public abstract class DataMapTableView extends Composite {
 
             final String defaultText = DEFAULT_EXPRESSION_FILTER;
             String expressionFilter = table.getExpressionFilter().getExpression();
-            if (expressionFilter != null && !"".equals(expressionFilter.trim())) {
+            if (expressionFilter != null && !"".equals(expressionFilter.trim())) { //$NON-NLS-1$
                 expressionFilterText.setText(expressionFilter);
             } else {
                 expressionFilterText.setText(defaultText);
@@ -1936,7 +1936,7 @@ public abstract class DataMapTableView extends Composite {
                     redrawExpressionFilter();
                     Control text = (Control) e.getSource();
                     if (defaultText.equals(ControlUtils.getText(text))) {
-                        ControlUtils.setText(text, "");
+                        ControlUtils.setText(text, ""); //$NON-NLS-1$
                     }
 
                     ExpressionFilterEntry currentExpressionFilterEntry = table.getExpressionFilter();
@@ -1965,7 +1965,7 @@ public abstract class DataMapTableView extends Composite {
 
                 public void focusLost(FocusEvent e) {
                     Control text = (Control) e.getSource();
-                    if ("".equals(ControlUtils.getText(text).trim())) {
+                    if ("".equals(ControlUtils.getText(text).trim())) { //$NON-NLS-1$
                         ControlUtils.setText(text, defaultText);
                     }
                     setExpressionFilterFromStyledText(table, text);
@@ -2351,9 +2351,9 @@ public abstract class DataMapTableView extends Composite {
             new AsynchronousThreading(50, false, mapperManager.getUiManager().getDisplay(), new Runnable() {
 
                 public void run() {
-                    TimeMeasure.begin("checkProblemsForExpressionFilter");
+                    TimeMeasure.begin(Messages.getString("DataMapTableView.checkProblem")); //$NON-NLS-1$
                     checkProblemsForExpressionFilter(expressionFilterText.isFocusControl(), false);
-                    TimeMeasure.end("checkProblemsForExpressionFilter");
+                    TimeMeasure.end(Messages.getString("DataMapTableView.checkProblem")); //$NON-NLS-1$
                 }
 
             }).start();
@@ -2416,7 +2416,7 @@ public abstract class DataMapTableView extends Composite {
         public void modifyText(ExtendedModifyEvent event) {
             // if (modifyListenerAllowed) {
             if (DEFAULT_EXPRESSION_FILTER.equals(ControlUtils.getText(textWidget))) {
-                textTarget.setTextWithoutNotifyListeners("");
+                textTarget.setTextWithoutNotifyListeners(""); //$NON-NLS-1$
             } else {
                 textTarget.setTextWithoutNotifyListeners(ControlUtils.getText(textWidget));
             }

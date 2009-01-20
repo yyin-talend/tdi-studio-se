@@ -219,7 +219,7 @@ public class CompleteDropTargetStyledTextListener extends DefaultDropTargetListe
 
         boolean overwrite = false;
         if (analyzer.isOverwriteExpression()) {
-            currentEntryTarget.setExpression("");
+            currentEntryTarget.setExpression(""); //$NON-NLS-1$
         }
         for (TransferableEntry transferableEntry : transferableEntryList) {
             ITableEntry tableEntrySource = transferableEntry.getTableEntrySource();

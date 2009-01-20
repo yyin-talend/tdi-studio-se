@@ -217,7 +217,7 @@ public class VarsDataMapTableView extends DataMapTableView {
                     comboValueAdapter);
 
             column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
-            column.setTitle("Nullable");
+            column.setTitle("Nullable"); //$NON-NLS-1$
             column.setBeanPropertyAccessors(new IBeanPropertyAccessors<VarTableEntry, Boolean>() {
 
                 public Boolean get(VarTableEntry bean) {
@@ -232,12 +232,12 @@ public class VarsDataMapTableView extends DataMapTableView {
             });
             column.setModifiable(!mapperManager.componentIsReadOnly());
             column.setWidth(12);
-            column.setDisplayedValue("");
+            column.setDisplayedValue(""); //$NON-NLS-1$
             column.setResizable(false);
             CheckboxTableEditorContent checkboxTableEditorContent = new CheckboxTableEditorContent();
-            checkboxTableEditorContent.setToolTipText("Nullable");
+            checkboxTableEditorContent.setToolTipText("Nullable"); //$NON-NLS-1$
             column.setTableEditorContent(checkboxTableEditorContent);
-            column.setToolTipHeader("Nullable");
+            column.setToolTipHeader("Nullable"); //$NON-NLS-1$
 
         }
 
