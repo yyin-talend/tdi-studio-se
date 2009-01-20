@@ -271,13 +271,13 @@ public class Schema2XMLDragAndDropHandler {
                 if (dialog.getSelectValue().equals(DragAndDrogDialog.CREATE_AS_TEXT)) {
                     if (targetNode.hasChildren()) {
                         MessageDialog.openConfirm(control.getShell(), Messages.getString("CreateElementAction.0"), //$NON-NLS-1$
-                                "\"" + targetNode.getLabel() + "\" "
+                                "\"" + targetNode.getLabel() + "\" " //$NON-NLS-1$ //$NON-NLS-2$
                                         + Messages.getString("Schema2XMLDragAndDropHandler.HasChildrenWarning")); //$NON-NLS-1$
                         return;
 
                     } else if (targetNode.getParent() == null) {
                         MessageDialog.openConfirm(control.getShell(), Messages.getString("CreateElementAction.0"), //$NON-NLS-1$
-                                "\"" + targetNode.getLabel() + "\" "
+                                "\"" + targetNode.getLabel() + "\" " //$NON-NLS-1$ //$NON-NLS-2$
                                         + Messages.getString("Schema2XMLDragAndDropHandler.IsRootWarning")); //$NON-NLS-1$
                         return;
                     }
@@ -311,7 +311,7 @@ public class Schema2XMLDragAndDropHandler {
                 } else if (dialog.getSelectValue().equals(DragAndDrogDialog.CREATE_AS_ATTRIBUTE)) {
                     if (!(targetNode instanceof Element)) {
                         MessageDialog.openConfirm(control.getShell(), Messages.getString("CreateElementAction.0"), //$NON-NLS-1$
-                                "\"" + targetNode.getLabel() + "\" "
+                                "\"" + targetNode.getLabel() + "\" " //$NON-NLS-1$ //$NON-NLS-2$
                                         + Messages.getString("Schema2XMLDragAndDropHandler.IsNotElementWarning")); //$NON-NLS-1$
                         return;
                     }

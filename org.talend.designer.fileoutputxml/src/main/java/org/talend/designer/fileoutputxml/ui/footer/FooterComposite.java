@@ -101,7 +101,7 @@ public class FooterComposite extends Composite {
         cancelButton.setLayoutData(cancelFormData);
 
         Button autoMapButton = new Button(this, SWT.NONE);
-        autoMapButton.setToolTipText(Messages.getString("FooterComposite.AutoMapTip"));
+        autoMapButton.setToolTipText(Messages.getString("FooterComposite.AutoMapTip")); //$NON-NLS-1$
         autoMapButton.setText(Messages.getString("FooterComposite.AutoMap")); //$NON-NLS-1$
         autoMapButton.addSelectionListener(new SelectionListener() {
 

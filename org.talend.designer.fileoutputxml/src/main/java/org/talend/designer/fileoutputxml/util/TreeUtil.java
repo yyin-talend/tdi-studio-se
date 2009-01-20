@@ -358,7 +358,7 @@ public class TreeUtil {
         StringBuffer path = new StringBuffer();
         FOXTreeNode tmp = treeNode;
         while (tmp != null) {
-            path.insert(0, "/" + tmp.getLabel());
+            path.insert(0, "/" + tmp.getLabel()); //$NON-NLS-1$
             tmp = tmp.getParent();
         }
         return path.toString();

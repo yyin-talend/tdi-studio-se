@@ -108,10 +108,10 @@ public class FOXManager {
         List<Map<String, String>> rootTable = (List<Map<String, String>>) foxComponent.getTableList(FileOutputXMLComponent.ROOT);
         for (Map<String, String> rootMap : rootTable) {
             String newPath = rootMap.get(FileOutputXMLComponent.PATH);
-            if (rootMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("attri")) {
+            if (rootMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("attri")) { //$NON-NLS-1$
                 temp = new Attribute(newPath);
                 current.addChild(temp);
-            } else if (rootMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("ns")) {
+            } else if (rootMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("ns")) { //$NON-NLS-1$
                 temp = new NameSpaceNode(newPath);
                 current.addChild(temp);
             } else {
@@ -119,7 +119,7 @@ public class FOXManager {
                 if (rootNode == null) {
                     rootNode = temp;
                 }
-                if (rootMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("main")) {
+                if (rootMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("main")) { //$NON-NLS-1$
                     temp.setMain(true);
                     mainNode = temp;
                     mainPath = newPath;
@@ -141,15 +141,15 @@ public class FOXManager {
                 .getTableList(FileOutputXMLComponent.GROUP);
         for (Map<String, String> groupMap : groupTable) {
             String newPath = groupMap.get(FileOutputXMLComponent.PATH);
-            if (groupMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("attri")) {
+            if (groupMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("attri")) { //$NON-NLS-1$
                 temp = new Attribute(newPath);
                 current.addChild(temp);
-            } else if (groupMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("ns")) {
+            } else if (groupMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("ns")) { //$NON-NLS-1$
                 temp = new NameSpaceNode(newPath);
                 current.addChild(temp);
             } else {
                 temp = this.addElement(current, currentPath, newPath);
-                if (groupMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("main")) {
+                if (groupMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("main")) { //$NON-NLS-1$
                     temp.setMain(true);
                     mainNode = temp;
                     mainPath = newPath;
@@ -174,15 +174,15 @@ public class FOXManager {
         List<Map<String, String>> loopTable = (List<Map<String, String>>) foxComponent.getTableList(FileOutputXMLComponent.LOOP);
         for (Map<String, String> loopMap : loopTable) {
             String newPath = loopMap.get(FileOutputXMLComponent.PATH);
-            if (loopMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("attri")) {
+            if (loopMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("attri")) { //$NON-NLS-1$
                 temp = new Attribute(newPath);
                 current.addChild(temp);
-            } else if (loopMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("ns")) {
+            } else if (loopMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("ns")) { //$NON-NLS-1$
                 temp = new NameSpaceNode(newPath);
                 current.addChild(temp);
             } else {
                 temp = this.addElement(current, currentPath, newPath);
-                if (loopMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("main")) {
+                if (loopMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("main")) { //$NON-NLS-1$
                     temp.setMain(true);
                 }
                 if (isFirst) {
@@ -213,7 +213,7 @@ public class FOXManager {
         Element loopNode = (Element) TreeUtil.getLoopNode(this.treeData.get(0));
         if (loopNode != null) {
             String path = TreeUtil.getPath(loopNode);
-            tableLoader(loopNode, path.substring(0, path.lastIndexOf("/")), result);
+            tableLoader(loopNode, path.substring(0, path.lastIndexOf("/")), result); //$NON-NLS-1$
         }
         return result;
     }
@@ -223,7 +223,7 @@ public class FOXManager {
         Element groupNode = (Element) TreeUtil.getGroupNode(this.treeData.get(0));
         if (groupNode != null) {
             String path = TreeUtil.getPath(groupNode);
-            tableLoader(groupNode, path.substring(0, path.lastIndexOf("/")), result);
+            tableLoader(groupNode, path.substring(0, path.lastIndexOf("/")), result); //$NON-NLS-1$
         }
         return result;
     }
@@ -232,17 +232,17 @@ public class FOXManager {
         List<Map<String, String>> result = new ArrayList<Map<String, String>>();
         FOXTreeNode rootNode = treeData.get(0);
         if (rootNode != null) {
-            this.tableLoader((Element) rootNode, "", result);
+            this.tableLoader((Element) rootNode, "", result); //$NON-NLS-1$
         }
         return result;
     }
 
     private void tableLoader(Element element, String parentPath, List<Map<String, String>> table) {
         Map<String, String> newMap = new HashMap<String, String>();
-        String currentPath = parentPath + "/" + element.getLabel();
+        String currentPath = parentPath + "/" + element.getLabel(); //$NON-NLS-1$
         newMap.put(FileOutputXMLComponent.PATH, currentPath);
         newMap.put(FileOutputXMLComponent.COLUMN, element.getColumnLabel());
-        newMap.put(FileOutputXMLComponent.ATTRIBUTE, element.isMain() ? "main" : "branch"); //$NON-NLS-1$
+        newMap.put(FileOutputXMLComponent.ATTRIBUTE, element.isMain() ? "main" : "branch"); //$NON-NLS-1$ //$NON-NLS-2$
         newMap.put(FileOutputXMLComponent.VALUE, ""); //$NON-NLS-1$
         table.add(newMap);
         for (FOXTreeNode att : element.getAttributeChildren()) {
@@ -296,8 +296,8 @@ public class FOXManager {
     }
 
     private FOXTreeNode addElement(FOXTreeNode current, String currentPath, String newPath) {
-        String name = newPath.substring(newPath.lastIndexOf("/") + 1);
-        String parentPath = newPath.substring(0, newPath.lastIndexOf("/"));
+        String name = newPath.substring(newPath.lastIndexOf("/") + 1); //$NON-NLS-1$
+        String parentPath = newPath.substring(0, newPath.lastIndexOf("/")); //$NON-NLS-1$
         FOXTreeNode temp = new Element(name);
 
         if (current == null) {// root node
@@ -307,8 +307,8 @@ public class FOXManager {
         if (currentPath.equals(parentPath)) {
             current.addChild(temp);
         } else {
-            String[] nods = currentPath.split("/");
-            String[] newNods = parentPath.split("/");
+            String[] nods = currentPath.split("/"); //$NON-NLS-1$
+            String[] newNods = parentPath.split("/"); //$NON-NLS-1$
             int parentLevel = 0;
             int checkLength = nods.length < newNods.length ? nods.length : newNods.length;
             for (int i = 1; i < checkLength; i++) {

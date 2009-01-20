@@ -45,7 +45,7 @@ public class NameSpaceNode extends FOXTreeNode {
         if (super.getLabel() != null && super.getLabel().length() > 0) {
             return "xmlns:" + super.getLabel(); //$NON-NLS-1$
         } else {
-            return "xmlns:(default)";
+            return "xmlns:(default)"; //$NON-NLS-1$
         }
     }
 

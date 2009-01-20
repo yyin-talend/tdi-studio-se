@@ -78,7 +78,7 @@ public class DeleteNodeAction extends SelectionProviderAction {
         // xmlViewer.refresh();
         // }
         if (node.isLoop()) {
-            foxui.updateStatus(Messages.getString("FOXUI.NoLoop"));
+            foxui.updateStatus(Messages.getString("FOXUI.NoLoop")); //$NON-NLS-1$
         }
 
         xmlViewer.refresh(parent);

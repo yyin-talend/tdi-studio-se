@@ -142,7 +142,7 @@ public class FOXUI {
 
         header = new HeaderComposite(mainComposite, SWT.NONE);
         if (this.foxManager.isNoLoopInComponent()) {
-            header.updateStatus(Messages.getString("FOXUI.NoLoop"));
+            header.updateStatus(Messages.getString("FOXUI.NoLoop")); //$NON-NLS-1$
         }
         // Splitter
         xmlToSchemaSash = new SashForm(mainComposite, SWT.HORIZONTAL | SWT.SMOOTH);
@@ -342,7 +342,7 @@ public class FOXUI {
     private void createAction() {
         createAction = new CreateElementAction(xmlViewer, this, Messages.getString("FOXUI.10")); //$NON-NLS-1$
         createAttributeAction = new CreateAttributeAction(xmlViewer, this, Messages.getString("FOXUI.11")); //$NON-NLS-1$
-        createNamespaceAction = new CreateNameSpaceAction(xmlViewer, this, Messages.getString("FOXUI.22"));
+        createNamespaceAction = new CreateNameSpaceAction(xmlViewer, this, Messages.getString("FOXUI.22")); //$NON-NLS-1$
         // editAction = new EditLabelAction(xmlViewer, "Edit Label");
         deleteAction = new DeleteNodeAction(xmlViewer, this, Messages.getString("FOXUI.12")); //$NON-NLS-1$
         disconnectAction = new DisconnectAction(xmlViewer, this, Messages.getString("FOXUI.13")); //$NON-NLS-1$

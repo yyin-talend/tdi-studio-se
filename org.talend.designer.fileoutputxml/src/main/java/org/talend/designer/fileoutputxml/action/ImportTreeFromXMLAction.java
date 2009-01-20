@@ -68,7 +68,7 @@ public class ImportTreeFromXMLAction extends SelectionProviderAction {
             ATreeNode treeNode = SchemaPopulationUtil.getSchemaTree(file, true, 0);
             FOXTreeNode root = cloneATreeNode(treeNode);
 
-            if (!file.toUpperCase().endsWith(".XSD")) {
+            if (!file.toUpperCase().endsWith(".XSD")) { //$NON-NLS-1$
                 root = ((Element) root).getElementChildren().get(0);
             }
             root.setParent(null);
@@ -116,7 +116,7 @@ public class ImportTreeFromXMLAction extends SelectionProviderAction {
         // TreeUtil.guessAndSetLoopNode((FOXTreeNode) xmlViewer.getTree().getItem(0).getData());
         xmlViewer.refresh();
         xmlViewer.expandAll();
-        foxui.updateStatus(Messages.getString("FOXUI.NoLoop"));
+        foxui.updateStatus(Messages.getString("FOXUI.NoLoop")); //$NON-NLS-1$
         foxui.redrawLinkers();
     }
 

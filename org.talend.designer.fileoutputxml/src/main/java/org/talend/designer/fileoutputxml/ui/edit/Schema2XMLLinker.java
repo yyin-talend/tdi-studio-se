@@ -43,13 +43,10 @@ import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.dialogs.ProgressDialog;
-import org.talend.commons.ui.swt.drawing.link.BezierHorizontalLink;
-import org.talend.commons.ui.swt.drawing.link.ExtremityEastArrow;
 import org.talend.commons.ui.swt.drawing.link.ExtremityLink;
 import org.talend.commons.ui.swt.drawing.link.IExtremityLink;
 import org.talend.commons.ui.swt.drawing.link.IStyleLink;
 import org.talend.commons.ui.swt.drawing.link.ItemExtremityDescriptor;
-import org.talend.commons.ui.swt.drawing.link.LineLinkWithHorizontalConnectors;
 import org.talend.commons.ui.swt.drawing.link.LinkDescriptor;
 import org.talend.commons.ui.swt.drawing.link.StyleLink;
 import org.talend.commons.ui.swt.linking.TableToTreeLinker;
@@ -176,7 +173,7 @@ public class Schema2XMLLinker extends TableToTreeLinker<Object, Object> {
 
                     TreeItem treeItem = allItems.get(i);
                     FOXTreeNode node = (FOXTreeNode) treeItem.getData();
-                    if (node.getColumnLabel() == null || node.getColumnLabel().equals("")) {
+                    if (node.getColumnLabel() == null || node.getColumnLabel().equals("")) { //$NON-NLS-1$
                         continue;
                     }
                     createLoopLinks(node.getColumnLabel(), treeItem, monitorWrap);
@@ -233,8 +230,7 @@ public class Schema2XMLLinker extends TableToTreeLinker<Object, Object> {
      * @param tree
      * @param dataItem2
      */
-    private LinkDescriptor<Item, Object, Tree, Object> addLink(Item tableItem, Object dataItem1, Tree tree,
-            Object dataItem2) {
+    private LinkDescriptor<Item, Object, Tree, Object> addLink(Item tableItem, Object dataItem1, Tree tree, Object dataItem2) {
         LinkDescriptor<Item, Object, Tree, Object> link = new LinkDescriptor<Item, Object, Tree, Object>(
                 new ItemExtremityDescriptor(tableItem, dataItem1), new ExtremityLink<Tree, Object>(tree, dataItem2));
 
@@ -295,8 +291,8 @@ public class Schema2XMLLinker extends TableToTreeLinker<Object, Object> {
 
         TableItem treeItemFromAbsoluteXPath = getItem(xPathExpression);
         if (treeItemFromAbsoluteXPath != null) {
-            addLoopLink(treeItemFromAbsoluteXPath, (Object) treeItemFromAbsoluteXPath.getData(), tableItemTarget
-                    .getParent(), (FOXTreeNode) tableItemTarget.getData());
+            addLoopLink(treeItemFromAbsoluteXPath, (Object) treeItemFromAbsoluteXPath.getData(), tableItemTarget.getParent(),
+                    (FOXTreeNode) tableItemTarget.getData());
         }
     }
 

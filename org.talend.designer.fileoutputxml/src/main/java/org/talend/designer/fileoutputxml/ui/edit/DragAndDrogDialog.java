@@ -30,11 +30,11 @@ import org.talend.designer.fileoutputxml.i18n.Messages;
  */
 public class DragAndDrogDialog extends Dialog {
 
-    public static final String CREATE_AS_SUBELEMENT = "sub-element";
+    public static final String CREATE_AS_SUBELEMENT = "sub-element"; //$NON-NLS-1$
 
-    public static final String CREATE_AS_ATTRIBUTE = "attribute";
+    public static final String CREATE_AS_ATTRIBUTE = "attribute"; //$NON-NLS-1$
 
-    public static final String CREATE_AS_TEXT = "text";
+    public static final String CREATE_AS_TEXT = "text"; //$NON-NLS-1$
 
     private String value = CREATE_AS_SUBELEMENT;
 
@@ -54,10 +54,10 @@ public class DragAndDrogDialog extends Dialog {
         Composite composite = (Composite) super.createDialogArea(parent);
         // composite.setLayout(new GridLayout());
         String[][] namevalues = new String[][] {
-                { Messages.getString("DragAndDrogDialog.AddSubElements"), CREATE_AS_SUBELEMENT },
-                { Messages.getString("DragAndDrogDialog.AddAttributes"), CREATE_AS_ATTRIBUTE },
-                { Messages.getString("DragAndDrogDialog.AddText"), CREATE_AS_TEXT } };
-        RadioGroupFieldEditor rgfe = new RadioGroupFieldEditor("", Messages.getString("DragAndDrogDialog.GroupTitle"), 1,
+                { Messages.getString("DragAndDrogDialog.AddSubElements"), CREATE_AS_SUBELEMENT }, //$NON-NLS-1$
+                { Messages.getString("DragAndDrogDialog.AddAttributes"), CREATE_AS_ATTRIBUTE }, //$NON-NLS-1$
+                { Messages.getString("DragAndDrogDialog.AddText"), CREATE_AS_TEXT } }; //$NON-NLS-1$
+        RadioGroupFieldEditor rgfe = new RadioGroupFieldEditor("", Messages.getString("DragAndDrogDialog.GroupTitle"), 1, //$NON-NLS-1$ //$NON-NLS-2$
                 namevalues, composite, true);
         GridLayout layout = new GridLayout();
         layout.marginWidth = 12;
@@ -76,6 +76,6 @@ public class DragAndDrogDialog extends Dialog {
 
     protected void configureShell(Shell newShell) {
         super.configureShell(newShell);
-        newShell.setText(Messages.getString("DragAndDrogDialog.DialogTitle"));
+        newShell.setText(Messages.getString("DragAndDrogDialog.DialogTitle")); //$NON-NLS-1$
     }
 }

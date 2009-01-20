@@ -44,7 +44,7 @@ public class HeaderComposite extends Composite {
 
     public void clearStatus() {
         iconLabel.setImage(null);
-        statusLabel.setText("");
+        statusLabel.setText(""); //$NON-NLS-1$
     }
 
     private void createComponents() {
@@ -69,6 +69,6 @@ public class HeaderComposite extends Composite {
         labelFormData.width = Math.max(1000, iconminSize.x);
         labelFormData.left = new FormAttachment(iconLabel, 5);
         statusLabel.setLayoutData(labelFormData);
-        statusLabel.setText("");
+        statusLabel.setText(""); //$NON-NLS-1$
     }
 }
