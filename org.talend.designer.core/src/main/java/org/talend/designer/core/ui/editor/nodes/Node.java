@@ -2323,6 +2323,9 @@ public class Node extends Element implements INode {
                     for (String name : targetParam.getChildParameters().keySet()) {
                         IElementParameter targetChildParam = targetParam.getChildParameters().get(name);
                         IElementParameter sourceChildParam = sourceParam.getChildParameters().get(name);
+                        if (sourceChildParam == null) {
+                            continue;
+                        }
                         setPropertyValue(sourceParam.getName() + ":" + sourceChildParam.getName(), sourceChildParam.getValue()); //$NON-NLS-1$
                         if (targetChildParam.getField() == EParameterFieldType.TABLE) {
                             targetChildParam.setListItemsValue(sourceChildParam.getListItemsValue());
