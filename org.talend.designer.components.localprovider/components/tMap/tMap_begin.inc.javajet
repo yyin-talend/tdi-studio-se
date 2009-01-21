@@ -83,16 +83,16 @@
 		%>
 		
 			Integer currentThreadNumber_<%= uniqueNameComponent %> = null;  
-			synchronized(<%= node.getProcess().getName() %>.globalMap) {
+			synchronized(<%= node.getProcess().getName() %>.this.globalMap) {
 				
-				currentThreadNumber_<%= uniqueNameComponent %> = (Integer) <%= node.getProcess().getName() %>.globalMap.get("currentThreadNumber_<%= uniqueNameComponent %>");
+				currentThreadNumber_<%= uniqueNameComponent %> = (Integer) <%= node.getProcess().getName() %>.this.globalMap.get("currentThreadNumber_<%= uniqueNameComponent %>");
 			
 				if(currentThreadNumber_<%= uniqueNameComponent %> == null) {
 					currentThreadNumber_<%= uniqueNameComponent %> = 1;
 				} else {
 					currentThreadNumber_<%= uniqueNameComponent %>++;
 				}
-				<%= node.getProcess().getName() %>.globalMap.put("currentThreadNumber_<%= uniqueNameComponent %>", currentThreadNumber_<%= uniqueNameComponent %>);
+				<%= node.getProcess().getName() %>.this.globalMap.put("currentThreadNumber_<%= uniqueNameComponent %>", currentThreadNumber_<%= uniqueNameComponent %>);
 			
 			}
 		<%
