@@ -108,6 +108,9 @@ public class SchemaTypeController extends AbstractRepositoryController {
 
     private boolean prepareReadOnlyTable(IMetadataTable table, boolean readOnlyParam, boolean readOnlyElement) {
         boolean isCustom = false;
+        if (table.isReadOnly()) {
+            return true;
+        }
         for (IMetadataColumn column : table.getListColumns()) {
             if (column.isCustom() && !column.isReadOnly()) {
                 isCustom = true;
