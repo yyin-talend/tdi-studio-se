@@ -284,6 +284,7 @@ public class PropertyChangeCommand extends Command {
                     IMetadataTable newMetadataTable = (IMetadataTable) testedParam.getValue();
                     newMetadataTable.setTableName(metadataTable.getTableName());
                     newMetadataTable.setAttachedConnector(metadataTable.getAttachedConnector());
+                    metadataTable.setReadOnly(newMetadataTable.isReadOnly());
 
                     metadataTable.setListColumns(newMetadataTable.clone(true).getListColumns());
 
