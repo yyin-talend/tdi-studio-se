@@ -52,7 +52,6 @@ import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryPlugin;
-import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ECDCStatus;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -173,6 +172,7 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
         Image img = null;
         if (itemType == ERepositoryObjectType.JOBLET) {
             img = getJobletCustomIcon(view.getSite().getShell().getDisplay(), property);
+            img = getScaleImage(img, 16, 16);
         } else {
             img = CoreImageProvider.getImage(itemType);
         }
@@ -229,10 +229,10 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
         Bundle b = CorePlugin.getDefault().getBundle();
         URL url = null;
         try {
-            url = FileLocator.toFileURL(FileLocator.find(b, new Path(ECoreImage.JOBLET_ICON.getPath()), null));
+            url = FileLocator.toFileURL(FileLocator.find(b, new Path(ECoreImage.JOBLET_COMPONENT_ICON.getPath()), null));
             return new File(url.getPath());
         } catch (IOException e) {
-            throw new RuntimeException(ECoreImage.JOBLET_ICON.getPath() + Messages.getString("RepositoryLabelProvider.notExist")); //$NON-NLS-1$
+            throw new RuntimeException(ECoreImage.JOBLET_COMPONENT_ICON.getPath() + " doesn't exist.");
         }
     }
 
@@ -253,12 +253,19 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
             // ExceptionHandler.process(e);
             // }
 
-            image = ImageProvider.getImage(ECoreImage.JOBLET_ICON);
+            image = ImageProvider.getImage(ECoreImage.JOBLET_COMPONENT_ICON);
         } else {
             ByteArrayInputStream bis = new ByteArrayInputStream(item.getIcon().getInnerContent());
             ImageData imageData = new ImageData(bis);
             image = new Image(display, imageData);
         }
+        return image;
+    }
+
+    public static Image getScaleImage(Image image, int width, int height) {
+        ImageDescriptor icon32 = ImageDescriptor.createFromImage(image);
+        ImageDescriptor icon16 = ImageDescriptor.createFromImageData(icon32.getImageData().scaledTo(width, height));
+        image = icon16.createImage();
         return image;
     }
 
