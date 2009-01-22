@@ -704,6 +704,8 @@ public class LoginComposite extends Composite {
 
                 setErrorMessage(Messages.getString("LoginComposite.refreshFailure1") + e.getMessage() //$NON-NLS-1$
                         + Messages.getString("LoginComposite.refreshFailure2")); //$NON-NLS-1$
+                MessageDialog.openError(getShell(),
+                        "Enable to retrieve projects", "Enable to retrieve projects:\n" + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
             } catch (BusinessException e) {
                 projects = new Project[0];
 
