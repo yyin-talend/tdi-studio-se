@@ -80,7 +80,7 @@
     
     public static void main(String[] args){
     	final <%=process.getName() %> <%=process.getName() %>Class = new <%=process.getName() %>();
-    	
+    
         int exitCode = <%=process.getName() %>Class.runJobInTOS(args);
         
         //globalBuffer.clear();
@@ -107,8 +107,8 @@
 		//globalBuffer.clear();
 		
 		return bufferValue;
-    }   
-
+    }
+    
     
     private int runJobInTOS(String[] args) {
     
@@ -130,8 +130,10 @@
     		clientHost = defaultClientHost;
     	}
     	
-    	
-    	pid = TalendString.getAsciiRandomString(6);
+    	if(pid == null || "0".equals(pid)) {
+	    	pid = TalendString.getAsciiRandomString(6);
+	    }
+
     	if (rootPid==null) {
     		rootPid = pid;
     	}
@@ -465,6 +467,8 @@
     		fatherPid = arg.substring(13);
     	} else if (arg.startsWith("--root_pid=")) {
     		rootPid = arg.substring(11);
+    	} else if (arg.startsWith("--pid=")) {
+    		pid = arg.substring(6);
     	} else if (arg.startsWith("--context_param")) {   		 
             String keyValue = arg.substring(16);           
             int index = -1;
@@ -525,7 +529,7 @@
 		fatherPid = null;
 		context_param.clear();
 		System.gc();		
-	}
+	}	
 	
 	public Integer getErrorCode() {
 		return errorCode;
