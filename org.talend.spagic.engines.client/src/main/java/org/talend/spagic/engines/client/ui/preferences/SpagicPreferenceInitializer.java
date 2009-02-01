@@ -24,7 +24,7 @@ import org.talend.spagic.engines.client.Activator;
  */
 public class SpagicPreferenceInitializer extends AbstractPreferenceInitializer {
 
-    public static final String SPAGIC_STATUS = "SpagicPreferencePage.spagoBiCheckButton";
+    public static final String SPAGIC_STATUS = "SpagicPreferencePage.spagoBiCheckButton"; //$NON-NLS-1$
 
     /*
      * (non-Javadoc)

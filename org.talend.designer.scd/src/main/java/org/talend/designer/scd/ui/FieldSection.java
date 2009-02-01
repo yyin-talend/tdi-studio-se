@@ -229,7 +229,7 @@ public class FieldSection extends ScdSection implements IDragDropDelegate {
      * @see org.talend.designer.scd.ui.IDragDrop#onDropItems(java.lang.String, org.eclipse.swt.graphics.Point)
      */
     public void onDropItems(String data, Point position) {
-        String[] items = data.split("\\|");
+        String[] items = data.split("\\|"); //$NON-NLS-1$
         // skip items[0], which is the number of selected elements
         for (int i = 1; i < items.length; i++) {
             tableModel.add(items[i]);

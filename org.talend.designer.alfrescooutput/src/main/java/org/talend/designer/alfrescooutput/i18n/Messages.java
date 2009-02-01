@@ -26,7 +26,7 @@ import org.talend.commons.i18n.MessagesCore;
  */
 public class Messages extends MessagesCore {
 
-    private static final String BUNDLE_NAME = "messages";
+    private static final String BUNDLE_NAME = "messages"; //$NON-NLS-1$
 
     private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
 

@@ -79,8 +79,8 @@ public class AlfrescoOutputManager {
         if (inConn != null) {
             if (!inConn.getMetadataTable().sameMetadataAs(connector.getMetadataList().get(0))) {
                 MessageBox messageBox = new MessageBox(parent.getShell(), SWT.APPLICATION_MODAL | SWT.OK);
-                messageBox.setText(Messages.getString("AlfrescoOutputManager.schemaError.title"));
-                messageBox.setMessage(Messages.getString("AlfrescoOutputManager.schemaError.msg"));
+                messageBox.setText(Messages.getString("AlfrescoOutputManager.schemaError.title")); //$NON-NLS-1$
+                messageBox.setMessage(Messages.getString("AlfrescoOutputManager.schemaError.msg")); //$NON-NLS-1$
                 if (messageBox.open() == SWT.OK) {
                     ((Shell) parent).close();
                     return null;
@@ -93,7 +93,7 @@ public class AlfrescoOutputManager {
 			modelManager.load(); // NB. or when modelManager is created
 		} catch (AlfrescoOutputException aoex) {
 			MessageDialog.openError(new Shell(Display.getCurrent(), SWT.APPLICATION_MODAL),
-					"Failed to load model from component metadata, reinitializing", aoex.getMessage());
+					Messages.getString("AlfrescoOutputManager.failedLoadModel"), aoex.getMessage()); //$NON-NLS-1$
 			modelManager.clear();
 		}
         

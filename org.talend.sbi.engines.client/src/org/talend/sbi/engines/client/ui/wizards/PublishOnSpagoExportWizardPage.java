@@ -258,13 +258,13 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
                 Messages.getString("PublishOnSpagoExportWizardPage.SpagoBI.Server"), Messages.getString("PublishOnSpagoExportWizardPage.SpecifyServer.PublishJob"), listEngine); //$NON-NLS-1$ //$NON-NLS-2$
         serverSpagoBi.select(0);
 
-        jobLabel = new LabelledText(optionsGroup, Messages.getString("PublishOnSpagoExportWizardPage.jobLabel"), true);
+        jobLabel = new LabelledText(optionsGroup, Messages.getString("PublishOnSpagoExportWizardPage.jobLabel"), true); //$NON-NLS-1$
         jobLabel.setText(jobLabelName);
 
-        jobName = new LabelledText(optionsGroup, Messages.getString("PublishOnSpagoExportWizardPage.jobName"), true);
+        jobName = new LabelledText(optionsGroup, Messages.getString("PublishOnSpagoExportWizardPage.jobName"), true); //$NON-NLS-1$
         jobName.setText(jobLabelName);
 
-        jobDescription = new LabelledText(optionsGroup, Messages.getString("PublishOnSpagoExportWizardPage.jobDescription"), true);
+        jobDescription = new LabelledText(optionsGroup, Messages.getString("PublishOnSpagoExportWizardPage.jobDescription"), true); //$NON-NLS-1$
         jobDescription.setText(jobPurposeDescription);
 
         contextButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
@@ -454,11 +454,11 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
             String port = spagoBiServer.getPort();
 
             // create the client
-            ISpagoBITalendEngineClient client = new SpagoBITalendEngineClient(user, password, host, port, "SpagoBITalendEngine");
+            ISpagoBITalendEngineClient client = new SpagoBITalendEngineClient(user, password, host, port, "SpagoBITalendEngine"); //$NON-NLS-1$
 
             // get some informations about the engine instance referenced by the client
-            System.out.println("Engine version: " + client.getEngineVersion());
-            System.out.println("Engine fullname: " + client.getEngineName());
+            System.out.println("Engine version: " + client.getEngineVersion()); //$NON-NLS-1$
+            System.out.println("Engine fullname: " + client.getEngineName()); //$NON-NLS-1$
 
             // prepare parameters used during deployment
             JobDeploymentDescriptor jobDeploymentDescriptor = new JobDeploymentDescriptor(project.getLabel(), project
@@ -468,23 +468,23 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
             // deploy job on engine runtime
             boolean result = client.deployJob(jobDeploymentDescriptor, zipFile);
             if (result)
-                System.out.println("Jobs deployed succesfully");
+                System.out.println("Jobs deployed succesfully"); //$NON-NLS-1$
             else
-                System.out.println("Jobs not deployed");
+                System.out.println("Jobs not deployed"); //$NON-NLS-1$
 
         } catch (EngineUnavailableException e) {
-            System.err.println("ERROR: " + e.getMessage());
+            System.err.println("ERROR: " + e.getMessage()); //$NON-NLS-1$
         } catch (AuthenticationFailedException e) {
-            System.err.println("ERROR: " + e.getMessage());
+            System.err.println("ERROR: " + e.getMessage()); //$NON-NLS-1$
         } catch (UnsupportedEngineVersionException e) {
-            System.err.println("ERROR: Unsupported engine version");
-            System.err.println("You are using TalendEngineClientAPI version "
-                    + SpagoBITalendEngineClient.CLIENTAPI_VERSION_NUMBER + ". "
-                    + "The TalendEngine instance you are trying to connect to require TalendEngineClientAPI version "
-                    + e.getComplianceVersion() + " or grater.");
+            System.err.println("ERROR: Unsupported engine version"); //$NON-NLS-1$
+            System.err.println("You are using TalendEngineClientAPI version " //$NON-NLS-1$
+                    + SpagoBITalendEngineClient.CLIENTAPI_VERSION_NUMBER + ". " //$NON-NLS-1$
+                    + "The TalendEngine instance you are trying to connect to require TalendEngineClientAPI version " //$NON-NLS-1$
+                    + e.getComplianceVersion() + " or grater."); //$NON-NLS-1$
         } catch (ServiceInvocationFailedException e) {
-            System.err.println("ERROR: " + e.getMessage());
-            System.err.println("StatusLine: " + e.getStatusLine() + "responseBody: " + e.getResponseBody());
+            System.err.println("ERROR: " + e.getMessage()); //$NON-NLS-1$
+            System.err.println("StatusLine: " + e.getStatusLine() + "responseBody: " + e.getResponseBody()); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         return ok;
@@ -544,7 +544,7 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
      */
     protected List<ExportFileResource> getExportResources() {
         Map<ExportChoice, Boolean> exportChoiceMap = getExportChoiceMap();
-        return manager.getExportResources(process, exportChoiceMap, contextCombo.getText(), "All", IProcessor.NO_STATISTICS,
+        return manager.getExportResources(process, exportChoiceMap, contextCombo.getText(), "All", IProcessor.NO_STATISTICS, //$NON-NLS-1$
                 IProcessor.NO_TRACES);
     }
 
@@ -577,7 +577,7 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
     protected String getDestinationValue() {
         String idealSuffix = getOutputSuffix();
 
-        String filename = "SpagoBi" + idealSuffix;
+        String filename = "SpagoBi" + idealSuffix; //$NON-NLS-1$
         IPath tempPath;
         tempPath = Path.fromOSString(CorePlugin.getDefault().getPreferenceStore().getString(
                 ITalendCorePrefConstants.FILE_PATH_TEMP));
@@ -642,7 +642,7 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
         GridLayout layout = new GridLayout();
         optionsGroup.setLayout(layout);
         optionsGroup.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
-        optionsGroup.setText(Messages.getString("PublishOnSpagoExportWizardPage.Settings"));
+        optionsGroup.setText(Messages.getString("PublishOnSpagoExportWizardPage.Settings")); //$NON-NLS-1$
         optionsGroup.setFont(parent.getFont());
         createOptionsGroupButtons(optionsGroup);
 

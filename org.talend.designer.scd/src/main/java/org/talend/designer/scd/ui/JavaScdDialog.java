@@ -22,6 +22,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.designer.scd.ScdManager;
+import org.talend.designer.scd.i18n.Messages;
 import org.talend.designer.scd.model.Versioning;
 import org.talend.designer.scd.util.SWTResourceManager;
 
@@ -63,7 +64,7 @@ public class JavaScdDialog extends AbstractScdDialog {
 
 		unusedFields = new FieldSection(filterUnusedComposite,
 				SECTION_WIDTH - 5, SECTION_HEIGHT, scdManager, false, false);
-		unusedFields.setTitle("Unused", SWTResourceManager.getColor(198, 195,
+		unusedFields.setTitle(Messages.getString("JavaScdDialog.unUsed"), SWTResourceManager.getColor(198, 195, //$NON-NLS-1$
 				198));
 		unusedFields.setTableInput(scdManager.getUnusedFields());
 		unusedFields.getTableViewer().addFilter(filter);
@@ -71,41 +72,41 @@ public class JavaScdDialog extends AbstractScdDialog {
 		GridDataFactory.swtDefaults().hint(SECTION_WIDTH - 5,
 				SECTION_HEIGHT * 2 - 20).applyTo(unusedFields.getControl());
 		addContextHelp(unusedFields.getTableViewer().getTable(),
-				"org.talend.designer.scd.unused");
+				"org.talend.designer.scd.unused"); //$NON-NLS-1$
 
 		type0Fields = new FieldSection(composite, SECTION_WIDTH,
 				SECTION_HEIGHT, scdManager, false, false);
-		type0Fields.setTitle("Type 0 fields", SWTResourceManager.getColor(255,
+		type0Fields.setTitle(Messages.getString("JavaScdDialog.type0Field"), SWTResourceManager.getColor(255, //$NON-NLS-1$
 				146, 0));
 		// GridDataFactory.swtDefaults().hint(SECTION_WIDTH,
 		// SECTION_HEIGHT).applyTo(type0Fields.getControl());
 		type0Fields.setTableInput(scdManager.getType0Table());
 		addContextHelp(type0Fields.getTableViewer().getTable(),
-				"org.talend.designer.scd.type0");
+				"org.talend.designer.scd.type0"); //$NON-NLS-1$
 
 		type1Fields = new FieldSection(composite, SECTION_WIDTH,
 				SECTION_HEIGHT, scdManager, false, false);
-		type1Fields.setTitle("Type 1 fields", SWTResourceManager.getColor(255,
+		type1Fields.setTitle(Messages.getString("JavaScdDialog.type1Field"), SWTResourceManager.getColor(255, //$NON-NLS-1$
 				203, 0));
 		// GridDataFactory.swtDefaults().hint(SECTION_WIDTH,
 		// SECTION_HEIGHT).applyTo(type1Fields.getControl());
 		type1Fields.setTableInput(scdManager.getType1Table());
 		addContextHelp(type1Fields.getTableViewer().getTable(),
-				"org.talend.designer.scd.type1");
+				"org.talend.designer.scd.type1"); //$NON-NLS-1$
 
 		sourceKeys = new FieldSection(composite, SECTION_WIDTH, SECTION_HEIGHT,
 				scdManager, false, false);
-		sourceKeys.setTitle("Source keys", SWTResourceManager.getColor(156, 0,
+		sourceKeys.setTitle(Messages.getString("JavaScdDialog.sourceKey"), SWTResourceManager.getColor(156, 0, //$NON-NLS-1$
 				255));
 		// GridDataFactory.swtDefaults().hint(SECTION_WIDTH,
 		// SECTION_HEIGHT).applyTo(sourceKeys.getControl());
 		sourceKeys.setTableInput(scdManager.getSourceKeys());
 		addContextHelp(sourceKeys.getTableViewer().getTable(),
-				"org.talend.designer.scd.sourceKey");
+				"org.talend.designer.scd.sourceKey"); //$NON-NLS-1$
 
 		type2Fields = new Type2Section(composite, SECTION_WIDTH,
 				SECTION_HEIGHT * 2 + 40, scdManager);
-		type2Fields.setTitle("Type 2 fields", SWTResourceManager.getColor(255,
+		type2Fields.setTitle(Messages.getString("JavaScdDialog.type2Field"), SWTResourceManager.getColor(255, //$NON-NLS-1$
 				255, 0));
 		GridDataFactory.swtDefaults().span(1, 2).hint(SECTION_WIDTH,
 				SECTION_HEIGHT * 2 + 40).applyTo(type2Fields.getControl());
@@ -116,11 +117,11 @@ public class JavaScdDialog extends AbstractScdDialog {
 			type2Fields.setVersionInput(new Versioning());
 		}
 		addContextHelp(type2Fields.getTableViewer().getTable(),
-				"org.talend.designer.scd.type2");
+				"org.talend.designer.scd.type2"); //$NON-NLS-1$
 
 		surrogateKeys = new SurrogateSection(composite, SECTION_WIDTH,
 				SECTION_HEIGHT + 30, scdManager);
-		surrogateKeys.setTitle("Surrogate keys", SWTResourceManager.getColor(
+		surrogateKeys.setTitle(Messages.getString("JavaScdDialog.surrogateKey"), SWTResourceManager.getColor( //$NON-NLS-1$
 				214, 40, 255));
 		GridDataFactory.swtDefaults().hint(SECTION_WIDTH, SECTION_HEIGHT + 30)
 				.applyTo(surrogateKeys.getControl());
@@ -133,12 +134,12 @@ public class JavaScdDialog extends AbstractScdDialog {
 
 		type3Fields = new Type3Section(composite, SECTION_WIDTH,
 				SECTION_HEIGHT, scdManager);
-		type3Fields.setTitle("Type 3 fields", SWTResourceManager.getColor(24,
+		type3Fields.setTitle(Messages.getString("JavaScdDialog.type3Key"), SWTResourceManager.getColor(24, //$NON-NLS-1$
 				182, 255));
 		GridDataFactory.swtDefaults().hint(SECTION_WIDTH, SECTION_HEIGHT + 20)
 				.applyTo(type3Fields.getControl());
 		type3Fields.setTableInput(scdManager.getType3Table());
-		addContextHelp(type3Fields.getTable(), "org.talend.designer.scd.type3");
+		addContextHelp(type3Fields.getTable(), "org.talend.designer.scd.type3"); //$NON-NLS-1$
 
 		scdManager.setUnusedFieldsSource(unusedFields);
 		ScdSection[] sections = { surrogateKeys, sourceKeys, type0Fields,

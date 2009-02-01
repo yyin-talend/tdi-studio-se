@@ -68,10 +68,8 @@ public class SpagicPreferencePage extends FieldEditorPreferencePage implements I
     protected void createFieldEditors() {
         parent = getFieldEditorParent();
 
-        spagicCheckButton = new CheckBoxFieldEditor(SpagicPreferenceInitializer.SPAGIC_STATUS, Messages
-                .getString("SpagicPreferencePage.spagicBiCheckButton"), parent);
-        editor = new SpagicServerEditor(SpagoBiServer.SPAGOBI_SERVER, Messages
-                .getString("SpagicPreferencePage.technicalStatusLabel"), parent); //$NON-NLS-1$
+        spagicCheckButton = new CheckBoxFieldEditor(SpagicPreferenceInitializer.SPAGIC_STATUS, "Enable/Disable Deploy on Spagic", parent); //$NON-NLS-1$
+        editor = new SpagicServerEditor(SpagoBiServer.SPAGOBI_SERVER, "Spagic server", parent); //$NON-NLS-1$
         addField(editor);
 
         updateEnableStateFromPreferences();

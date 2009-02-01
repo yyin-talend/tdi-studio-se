@@ -24,7 +24,7 @@ import org.talend.sbi.engines.client.Activator;
  */
 public class SpagoPreferenceInitializer extends AbstractPreferenceInitializer {
 
-    public static final String SPAGO_STATUS = "SpagoBiPreferencePage.spagoBiCheckButton";
+    public static final String SPAGO_STATUS = "SpagoBiPreferencePage.spagoBiCheckButton"; //$NON-NLS-1$
 
     /*
      * (non-Javadoc)

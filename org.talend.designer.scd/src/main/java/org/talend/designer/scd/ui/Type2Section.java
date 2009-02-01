@@ -79,7 +79,7 @@ public class Type2Section extends FieldSection {
 		Label subTitle = new Label(composite, SWT.NONE); // SWT.BORDER
 		subTitle.setAlignment(SWT.CENTER);
 		subTitle.setFont(titleFont);
-		subTitle.setText("Versioning");
+		subTitle.setText("Versioning"); //$NON-NLS-1$
 		// subTitle.setBackground(SWTResourceManager.getColor(IColorConstants.
 		// DARK_GREEN));
 		subTitle.setBackground(SWTResourceManager.getColor(255, 255, 0));
@@ -106,19 +106,19 @@ public class Type2Section extends FieldSection {
 
 		TableColumn typeColumn = new TableColumn(versionTable, SWT.NONE);
 		typeColumn.setWidth(60);
-		typeColumn.setText("type");
+		typeColumn.setText("type"); //$NON-NLS-1$
 
 		TableColumn nameColumn = new TableColumn(versionTable, SWT.NONE);
 		nameColumn.setWidth(95);
-		nameColumn.setText("name");
+		nameColumn.setText("name"); //$NON-NLS-1$
 
 		TableColumn creationColumn = new TableColumn(versionTable, SWT.NONE);
 		creationColumn.setWidth(120);
-		creationColumn.setText("creation");
+		creationColumn.setText("creation"); //$NON-NLS-1$
 
 		TableColumn complementColumn = new TableColumn(versionTable, SWT.NONE);
 		complementColumn.setWidth(95);
-		complementColumn.setText("complement");
+		complementColumn.setText("complement"); //$NON-NLS-1$
 	}
 
 	// for Perl, to disable some controls
@@ -132,8 +132,8 @@ public class Type2Section extends FieldSection {
 		final TableItem startItem = new TableItem(versionTable, SWT.NONE);
 		// startItem.setBackground(SWTResourceManager.getColor(IColorConstants.
 		// LIGHT_GREEN));
-		startItem.setText(new String[] { "", Versioning.START_LABEL,
-				ver.getStartName(), "" });
+		startItem.setText(new String[] { "", Versioning.START_LABEL, //$NON-NLS-1$
+				ver.getStartName(), "" }); //$NON-NLS-1$
 
 		// combo editor
 		// final List<String> outputColumns = scdManager.getOutputColumnNames();
@@ -180,8 +180,8 @@ public class Type2Section extends FieldSection {
 		final TableItem endItem = new TableItem(versionTable, SWT.NONE);
 		// endItem.setBackground(SWTResourceManager.getColor(IColorConstants.
 		// LIGHT_GREEN));
-		endItem.setText(new String[] { "", Versioning.END_LABEL,
-				ver.getEndName(), "" });
+		endItem.setText(new String[] { "", Versioning.END_LABEL, //$NON-NLS-1$
+				ver.getEndName(), "" }); //$NON-NLS-1$
 
 		// combo editor
 		// index = editorManager.getComboIndex(outputColumns, ver.getEndName());
@@ -223,8 +223,8 @@ public class Type2Section extends FieldSection {
 		TableItem versionItem = new TableItem(versionTable, SWT.NONE);
 		//versionItem.setBackground(SWTResourceManager.getColor(IColorConstants.
 		// LIGHT_GREEN));
-		versionItem.setText(new String[] { "", Versioning.VERSION_LABEL,
-				ver.getVersionName(), "" });
+		versionItem.setText(new String[] { "", Versioning.VERSION_LABEL, //$NON-NLS-1$
+				ver.getVersionName(), "" }); //$NON-NLS-1$
 		editorManager.createCheckboxEditor(versionTable,
 				ver.isVersionChecked(), versionItem, CHECKBOX_COLUMN_INDEX,
 				new IPropertySetter<Boolean>() {
@@ -259,8 +259,8 @@ public class Type2Section extends FieldSection {
 		TableItem activeItem = new TableItem(versionTable, SWT.NONE);
 		// activeItem.setBackground(SWTResourceManager.getColor(IColorConstants.
 		// LIGHT_GREEN));
-		activeItem.setText(new String[] { "", Versioning.ACTIVE_LABEL,
-				ver.getActiveName(), "" });
+		activeItem.setText(new String[] { "", Versioning.ACTIVE_LABEL, //$NON-NLS-1$
+				ver.getActiveName(), "" }); //$NON-NLS-1$
 		editorManager.createCheckboxEditor(versionTable, ver.isActiveChecked(),
 				activeItem, CHECKBOX_COLUMN_INDEX,
 				new IPropertySetter<Boolean>() {
@@ -317,7 +317,7 @@ public class Type2Section extends FieldSection {
 	 */
 	protected void onEndCreationChange(Integer value,
 			final Versioning versioning, TableItem item) {
-		versioning.setEndComplement("");
+		versioning.setEndComplement(""); //$NON-NLS-1$
 
 		// dispose editor
 		TableEditor editor = editorManager.getEditor(item, COMPLEMENT_INDEX);
@@ -358,7 +358,7 @@ public class Type2Section extends FieldSection {
 	 */
 	protected void onStartCreationChange(Integer value,
 			final Versioning versioning, TableItem item) {
-		versioning.setStartComplement("");
+		versioning.setStartComplement(""); //$NON-NLS-1$
 		scdManager.fireFieldChange();
 		// dispose editor
 		TableEditor editor = editorManager.getEditor(item, COMPLEMENT_INDEX);
@@ -430,11 +430,11 @@ public class Type2Section extends FieldSection {
 		IDragDropDelegate delegate = new IDragDropDelegate() {
 
 			public String getDragItemsAsText() {
-				return "1|" + text.getText();
+				return "1|" + text.getText(); //$NON-NLS-1$
 			}
 
 			public void onDropItems(String data, Point position) {
-				String[] items = data.split("\\|");
+				String[] items = data.split("\\|"); //$NON-NLS-1$
 				if (items.length < 2) {
 					return;
 				}
@@ -444,8 +444,8 @@ public class Type2Section extends FieldSection {
 			}
 
 			public void removeDragItems() {
-				versioning.setStartComplement("");
-				text.setText("");
+				versioning.setStartComplement(""); //$NON-NLS-1$
+				text.setText(""); //$NON-NLS-1$
 				// display as error status, this field must not be null
 				text.setBackground(ERROR_COLOR);
 				// don't remove table item here, it can be removed by the delete
@@ -455,7 +455,7 @@ public class Type2Section extends FieldSection {
 			public boolean isDropAllowed(String data) {
 				// only allow single selection
 				return StringUtils.isEmpty(versioning.getStartComplement())
-						&& data.startsWith("1|");
+						&& data.startsWith("1|"); //$NON-NLS-1$
 			}
 
 		};

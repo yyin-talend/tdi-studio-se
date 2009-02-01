@@ -123,7 +123,7 @@ public class MapPreferencePage extends FieldEditorPreferencePage implements IWor
         }
 
         ComboFieldEditor dbTypeField = new ComboFieldEditor(MapPrefsConstants.LINK_STYLE, Messages
-                .getString("prefs.configuration.LINK_STYLE"), strComboValues, getFieldEditorParent());
+                .getString("prefs.configuration.LINK_STYLE"), strComboValues, getFieldEditorParent()); //$NON-NLS-1$
 
         addField(dbTypeField);
 

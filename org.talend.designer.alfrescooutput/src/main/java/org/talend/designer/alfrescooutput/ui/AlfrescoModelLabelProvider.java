@@ -33,11 +33,11 @@ public class AlfrescoModelLabelProvider implements ILabelProvider {
 
 	public String getText(Object element) {
 		if (element == null) {
-			return "";
+			return ""; //$NON-NLS-1$
 		}
 	    Element alfrescoModelElement = (Element) element;
-		return alfrescoModelElement.elementText("title") + " ("
-			+ alfrescoModelElement.attributeValue("name") + ")";
+		return alfrescoModelElement.elementText("title") + " (" //$NON-NLS-1$ //$NON-NLS-2$
+			+ alfrescoModelElement.attributeValue("name") + ")"; //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	public void dispose() {

@@ -18,6 +18,6 @@ package org.talend.designer.abstractmap.ui.prefs;
  */
 public class MapPrefsConstants {
 
-    public static final String LINK_STYLE = "LINK_STYLE";
+    public static final String LINK_STYLE = "LINK_STYLE"; //$NON-NLS-1$
 
 }

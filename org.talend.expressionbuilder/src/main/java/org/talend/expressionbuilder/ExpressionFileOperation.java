@@ -120,12 +120,12 @@ public class ExpressionFileOperation {
             value.setNodeValue(variable.getValue());
             variableElement.setAttributeNode(value);
 
-            Attr talendType = document.createAttribute(Messages.getString("ExpressionFileOperation.talendType"));
+            Attr talendType = document.createAttribute(Messages.getString("ExpressionFileOperation.talendType")); //$NON-NLS-1$
             //$NON-NLS-1$
             talendType.setNodeValue(variable.getTalendType());
             variableElement.setAttributeNode(talendType);
 
-            Attr nullable = document.createAttribute(Messages.getString("ExpressionFileOperation.nullable"));
+            Attr nullable = document.createAttribute(Messages.getString("ExpressionFileOperation.nullable")); //$NON-NLS-1$
             //$NON-NLS-1$
             nullable.setNodeValue(String.valueOf(variable.isNullable()));
             variableElement.setAttributeNode(nullable);
@@ -218,8 +218,8 @@ public class ExpressionFileOperation {
 
     private void openDialog(Shell shell) {
         MessageBox box = new MessageBox(shell, SWT.ICON_WARNING);
-        box.setText("warn");
-        box.setMessage(Messages.getString("OpenDialog.Warn"));
+        box.setText(Messages.getString("ExpressionFileOperation.warn")); //$NON-NLS-1$
+        box.setMessage(Messages.getString("OpenDialog.Warn")); //$NON-NLS-1$
         int count = box.open();
     }
 

@@ -91,7 +91,7 @@ public class ExpressionTestMain {
                 }
 
                 PerlRowNode inNode = new PerlRowNode(expression);
-                LogRowNode outNode = new LogRowNode("tLogRow", inNode.getMetadataList().get(0));
+                LogRowNode outNode = new LogRowNode("tLogRow", inNode.getMetadataList().get(0)); //$NON-NLS-1$
 
                 expressionBuilderTestProcess = new AnyIntoLogRowProcess<PerlRowNode>(inNode, outNode);
 
@@ -154,12 +154,12 @@ public class ExpressionTestMain {
             boolean ready = readerOut.ready();
             // System.out.println(ready);
             if (ready) {
-                testResult.append(readerOut.readLine() + "\n");
+                testResult.append(readerOut.readLine() + "\n"); //$NON-NLS-1$
             }
             Thread.sleep(500);
             text.setText(testResult.toString());
             if (readerError.ready()) {
-                testResult.append(readerError.readLine() + "\n");
+                testResult.append(readerError.readLine() + "\n"); //$NON-NLS-1$
                 text.setText(testResult.toString());
                 Color red = new Color(text.getDisplay(), new RGB(255, 0, 0));
                 StyleRange style = new StyleRange(0, testResult.length(), red, null, SWT.NORMAL);

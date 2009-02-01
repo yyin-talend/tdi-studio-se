@@ -35,9 +35,9 @@ public class PerlRowNode extends ShadowNode {
      * @param componentName
      */
     public PerlRowNode(String expression) {
-        super("tPerlRow");
+        super("tPerlRow"); //$NON-NLS-1$
 
-        TextElementParameter parameter = new TextElementParameter("CODE", "$output_row[id] =" + expression + ";");
+        TextElementParameter parameter = new TextElementParameter("CODE", "$output_row[id] =" + expression + ";"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         addParameter(parameter);
 
         IMetadataTable metadataTable = new MetadataTable();

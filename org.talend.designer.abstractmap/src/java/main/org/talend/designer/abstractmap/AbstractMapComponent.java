@@ -55,7 +55,7 @@ public abstract class AbstractMapComponent extends AbstractExternalNode {
      */
     private void initElementParameters() {
         IElementParameter elementParameter = getElementParameter(MapPrefsConstants.LINK_STYLE);
-        if (elementParameter != null && ((String) elementParameter.getValue()).trim().equals("")) {
+        if (elementParameter != null && ((String) elementParameter.getValue()).trim().equals("")) { //$NON-NLS-1$
             elementParameter.setValue(MapPlugin.getDefault().getPreferenceStore().getString(MapPrefsConstants.LINK_STYLE));
         }
     }
@@ -114,7 +114,7 @@ public abstract class AbstractMapComponent extends AbstractExternalNode {
         PatternCompiler compiler = new Perl5Compiler();
         Pattern pattern = null;
         try {
-            pattern = compiler.compile("\\b(" + UpdateContextVariablesHelper.replaceSpecialChar(oldName) + ")(\\b|\\_)");
+            pattern = compiler.compile("\\b(" + UpdateContextVariablesHelper.replaceSpecialChar(oldName) + ")(\\b|\\_)"); //$NON-NLS-1$ //$NON-NLS-2$
             return pattern;
         } catch (MalformedPatternException e) {
             ExceptionHandler.process(e);
@@ -123,7 +123,7 @@ public abstract class AbstractMapComponent extends AbstractExternalNode {
     }
 
     protected final Perl5Substitution getRenameSubstitution(String newName) {
-        return new Perl5Substitution(newName + "$2", Perl5Substitution.INTERPOLATE_ALL);
+        return new Perl5Substitution(newName + "$2", Perl5Substitution.INTERPOLATE_ALL); //$NON-NLS-1$
     }
 
     /**

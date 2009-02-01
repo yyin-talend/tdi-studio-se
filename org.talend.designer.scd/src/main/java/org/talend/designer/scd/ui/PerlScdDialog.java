@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.designer.scd.ScdManager;
+import org.talend.designer.scd.i18n.Messages;
 import org.talend.designer.scd.model.Versioning;
 import org.talend.designer.scd.util.SWTResourceManager;
 
@@ -58,26 +59,26 @@ public class PerlScdDialog extends AbstractScdDialog {
         ViewerFilter filter = createFilter(filterUnusedComposite);
 
         unusedFields = new FieldSection(filterUnusedComposite, SECTION_WIDTH, SECTION_HEIGHT, scdManager, false, false);
-        unusedFields.setTitle("Unused", SWTResourceManager.getColor(198, 195, 198));
+        unusedFields.setTitle("Unused", SWTResourceManager.getColor(198, 195, 198)); //$NON-NLS-1$
         unusedFields.setTableInput(scdManager.getUnusedFields());
         unusedFields.getTableViewer().addFilter(filter);
         GridDataFactory.swtDefaults().hint(SECTION_WIDTH - 3, SECTION_HEIGHT * 2 - 30).applyTo(unusedFields.getControl());
-        addContextHelp(unusedFields.getTableViewer().getTable(), "org.talend.designer.scd.unused");
+        addContextHelp(unusedFields.getTableViewer().getTable(), "org.talend.designer.scd.unused"); //$NON-NLS-1$
 
         type1Fields = new FieldSection(composite, SECTION_WIDTH, SECTION_HEIGHT * 2, scdManager, false, false);
-        type1Fields.setTitle("Type 1 fields", SWTResourceManager.getColor(255, 203, 0));
+        type1Fields.setTitle("Type 1 fields", SWTResourceManager.getColor(255, 203, 0)); //$NON-NLS-1$
         // GridDataFactory.swtDefaults().hint(SECTION_WIDTH, SECTION_HEIGHT).applyTo(type1Fields.getControl());
         type1Fields.setTableInput(scdManager.getType1Table());
-        addContextHelp(type1Fields.getTableViewer().getTable(), "org.talend.designer.scd.type1");
+        addContextHelp(type1Fields.getTableViewer().getTable(), "org.talend.designer.scd.type1"); //$NON-NLS-1$
 
         sourceKeys = new FieldSection(composite, SECTION_WIDTH, SECTION_HEIGHT * 2 + 40, scdManager, false, false);
-        sourceKeys.setTitle("Source keys", SWTResourceManager.getColor(156, 0, 255));
+        sourceKeys.setTitle(Messages.getString("PerlScdDialog.sourceKey"), SWTResourceManager.getColor(156, 0, 255)); //$NON-NLS-1$
         // GridDataFactory.swtDefaults().hint(SECTION_WIDTH, SECTION_HEIGHT).applyTo(sourceKeys.getControl());
         sourceKeys.setTableInput(scdManager.getSourceKeys());
-        addContextHelp(sourceKeys.getTableViewer().getTable(), "org.talend.designer.scd.sourceKey");
+        addContextHelp(sourceKeys.getTableViewer().getTable(), "org.talend.designer.scd.sourceKey"); //$NON-NLS-1$
 
         type2Fields = new Type2Section(composite, SECTION_WIDTH, SECTION_HEIGHT * 2 + 40, scdManager);
-        type2Fields.setTitle("Type 2 fields", SWTResourceManager.getColor(255, 255, 0));
+        type2Fields.setTitle(Messages.getString("PerlScdDialog.typeField"), SWTResourceManager.getColor(255, 255, 0)); //$NON-NLS-1$
         // GridDataFactory.swtDefaults().hint(SECTION_WIDTH, SECTION_HEIGHT).applyTo(type2Fields.getControl());
         type2Fields.setTableInput(scdManager.getType2Table());
         type2Fields.setSupportCreationType(false);
@@ -86,7 +87,7 @@ public class PerlScdDialog extends AbstractScdDialog {
         } else {
             type2Fields.setVersionInput(new Versioning());
         }
-        addContextHelp(type2Fields.getTableViewer().getTable(), "org.talend.designer.scd.type2");
+        addContextHelp(type2Fields.getTableViewer().getTable(), "org.talend.designer.scd.type2"); //$NON-NLS-1$
 
         scdManager.setUnusedFieldsSource(unusedFields);
         ScdSection[] sections = { sourceKeys, type1Fields, type2Fields };

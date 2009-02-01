@@ -44,7 +44,7 @@ import org.talend.repository.model.RepositoryNode;
  */
 public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
 
-    private String name = "IntoLogRow";
+    private String name = "IntoLogRow"; //$NON-NLS-1$
 
     private K inNode;
 
@@ -261,7 +261,7 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
      * @see org.talend.core.model.repository.IRepositoryObject#getId()
      */
     public String getId() {
-        return "";
+        return ""; //$NON-NLS-1$
     }
 
     /*

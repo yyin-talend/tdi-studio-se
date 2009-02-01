@@ -66,7 +66,7 @@ public class PerlPublishOnSpagoExportWizardPage extends PublishOnSpagoExportWiza
     @Override
     protected ArchiveFileExportOperationFullPath getExporterOperation(List<ExportFileResource> resourcesToExport) {
         ArchiveFileExportOperationFullPath operation = super.getExporterOperation(resourcesToExport);
-        operation.setRegEx(".*.pl$|.*.pm$|.*.bat$|.*.sh$");
+        operation.setRegEx(".*.pl$|.*.pm$|.*.bat$|.*.sh$"); //$NON-NLS-1$
         return operation;
     }
 

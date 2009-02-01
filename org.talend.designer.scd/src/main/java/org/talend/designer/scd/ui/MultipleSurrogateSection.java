@@ -93,15 +93,15 @@ public class MultipleSurrogateSection extends ScdSection {
 
         TableColumn column = new TableColumn(table, SWT.NONE);
         column.setWidth(100);
-        column.setText("column");
+        column.setText("column"); //$NON-NLS-1$
 
         TableColumn creation = new TableColumn(table, SWT.NONE);
         creation.setWidth(100);
-        creation.setText("creation");
+        creation.setText("creation"); //$NON-NLS-1$
 
         TableColumn complement = new TableColumn(table, SWT.NONE);
         complement.setWidth(150);
-        complement.setText("complement");
+        complement.setText("complement"); //$NON-NLS-1$
 
         TableColumn empty = new TableColumn(table, SWT.NONE);
         empty.setWidth(100);
@@ -119,7 +119,7 @@ public class MultipleSurrogateSection extends ScdSection {
         toolBar.setLayoutData(new GridData(157, SWT.DEFAULT));
 
         ToolItem addToolItem = new ToolItem(toolBar, SWT.PUSH);
-        addToolItem.setImage(SWTResourceManager.getPluginImage(ScdPlugin.getDefault(), "icons/add.gif"));
+        addToolItem.setImage(SWTResourceManager.getPluginImage(ScdPlugin.getDefault(), "icons/add.gif")); //$NON-NLS-1$
         addToolItem.addSelectionListener(new SelectionAdapter() {
 
             @Override
@@ -129,7 +129,7 @@ public class MultipleSurrogateSection extends ScdSection {
         });
 
         ToolItem removeToolItem = new ToolItem(toolBar, SWT.PUSH);
-        removeToolItem.setImage(SWTResourceManager.getPluginImage(ScdPlugin.getDefault(), "icons/delete.gif"));
+        removeToolItem.setImage(SWTResourceManager.getPluginImage(ScdPlugin.getDefault(), "icons/delete.gif")); //$NON-NLS-1$
         removeToolItem.addSelectionListener(new SelectionAdapter() {
 
             @Override
@@ -140,7 +140,7 @@ public class MultipleSurrogateSection extends ScdSection {
         });
 
         ToolItem moveUpToolItem = new ToolItem(toolBar, SWT.PUSH);
-        moveUpToolItem.setImage(SWTResourceManager.getPluginImage(ScdPlugin.getDefault(), "icons/up.gif"));
+        moveUpToolItem.setImage(SWTResourceManager.getPluginImage(ScdPlugin.getDefault(), "icons/up.gif")); //$NON-NLS-1$
         moveUpToolItem.addSelectionListener(new SelectionAdapter() {
 
             @Override
@@ -151,7 +151,7 @@ public class MultipleSurrogateSection extends ScdSection {
         });
 
         ToolItem moveDownToolItem = new ToolItem(toolBar, SWT.PUSH);
-        moveDownToolItem.setImage(SWTResourceManager.getPluginImage(ScdPlugin.getDefault(), "icons/down.gif"));
+        moveDownToolItem.setImage(SWTResourceManager.getPluginImage(ScdPlugin.getDefault(), "icons/down.gif")); //$NON-NLS-1$
         moveDownToolItem.addSelectionListener(new SelectionAdapter() {
 
             @Override
@@ -311,7 +311,7 @@ public class MultipleSurrogateSection extends ScdSection {
                     public void set(Integer value) {
                         key.setCreation(SurrogateCreationType.getTypeByIndex(value));
                         // remove value from model
-                        key.setComplement("");
+                        key.setComplement(""); //$NON-NLS-1$
                         creationComplement(value, key, item);
                     }
                 });
@@ -481,19 +481,19 @@ public class MultipleSurrogateSection extends ScdSection {
         return new IDragDropDelegate() {
 
             public String getDragItemsAsText() {
-                return "1|" + text.getText();
+                return "1|" + text.getText(); //$NON-NLS-1$
             }
 
             public void onDropItems(String data, Point position) {
-                String[] items = data.split("\\|");
+                String[] items = data.split("\\|"); //$NON-NLS-1$
                 text.setText(items[1]);
                 key.setComplement(items[1]);
                 text.setBackground(null);
             }
 
             public void removeDragItems() {
-                text.setText("");
-                key.setComplement("");
+                text.setText(""); //$NON-NLS-1$
+                key.setComplement(""); //$NON-NLS-1$
                 // display as error status, this field must not be null
                 text.setBackground(ERROR_COLOR);
                 // don't remove table item here, it can be removed by the delete button
@@ -501,7 +501,7 @@ public class MultipleSurrogateSection extends ScdSection {
 
             public boolean isDropAllowed(String data) {
                 // only allow single selection
-                return StringUtils.isEmpty(key.getComplement()) && data.startsWith("1|");
+                return StringUtils.isEmpty(key.getComplement()) && data.startsWith("1|"); //$NON-NLS-1$
             }
 
         };
@@ -514,7 +514,7 @@ public class MultipleSurrogateSection extends ScdSection {
      * @param scdDialog
      */
     public void addContextHelp(AbstractScdDialog scdDialog) {
-        scdDialog.addContextHelp(getTable(), "org.talend.designer.scd.surrogateKey");
+        scdDialog.addContextHelp(getTable(), "org.talend.designer.scd.surrogateKey"); //$NON-NLS-1$
     }
 
 }

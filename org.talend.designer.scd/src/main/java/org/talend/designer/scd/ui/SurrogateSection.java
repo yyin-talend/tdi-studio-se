@@ -90,7 +90,7 @@ public class SurrogateSection extends ScdSection {
 
         // row 1
         Label nameLabel = new Label(composite, SWT.NONE);
-        nameLabel.setText("name");
+        nameLabel.setText("name"); //$NON-NLS-1$
         nameLabel.setBackground(white);
         GridDataFactory.swtDefaults().applyTo(nameLabel);
         nameText = new Text(composite, SWT.BORDER);
@@ -111,7 +111,7 @@ public class SurrogateSection extends ScdSection {
 
         // row 2
         Label creationLabel = new Label(composite, SWT.NONE);
-        creationLabel.setText("creation");
+        creationLabel.setText("creation"); //$NON-NLS-1$
         creationLabel.setBackground(white);
         GridDataFactory.swtDefaults().applyTo(creationLabel);
 
@@ -121,7 +121,7 @@ public class SurrogateSection extends ScdSection {
 
         // row 3
         Label complementLabel = new Label(composite, SWT.NONE);
-        complementLabel.setText("complement");
+        complementLabel.setText("complement"); //$NON-NLS-1$
         complementLabel.setBackground(white);
         GridDataFactory.swtDefaults().applyTo(complementLabel);
 
@@ -177,27 +177,27 @@ public class SurrogateSection extends ScdSection {
                     stack.topControl = routineFieldComp; // routineText;
                     if (StringUtils.isEmpty(routineText.getText())) {
                         routineText.setBackground(ERROR_COLOR);
-                        key.setComplement("");
+                        key.setComplement(""); //$NON-NLS-1$
                     } else {
                         routineText.setBackground(white);
                     }
 
-                    inputFieldLabel.setText("");
+                    inputFieldLabel.setText(""); //$NON-NLS-1$
 
                 } else if (type == SurrogateCreationType.INPUT_FIELD) {
                     stack.topControl = inputFieldComp; // inputFieldLabel;
                     if (StringUtils.isEmpty(inputFieldLabel.getText())) {
                         inputFieldLabel.setBackground(ERROR_COLOR);
-                        key.setComplement("");
+                        key.setComplement(""); //$NON-NLS-1$
                     } else {
                         inputFieldLabel.setBackground(null);
                     }
-                    routineText.setText("");
+                    routineText.setText(""); //$NON-NLS-1$
                 } else {
                     stack.topControl = emptyLabel;
-                    routineText.setText("");
-                    inputFieldLabel.setText("");
-                    key.setComplement("");
+                    routineText.setText(""); //$NON-NLS-1$
+                    inputFieldLabel.setText(""); //$NON-NLS-1$
+                    key.setComplement(""); //$NON-NLS-1$
                 }
                 scdManager.fireFieldChange();
                 complementComp.layout();
@@ -261,19 +261,19 @@ public class SurrogateSection extends ScdSection {
         return new IDragDropDelegate() {
 
             public String getDragItemsAsText() {
-                return "1|" + text.getText();
+                return "1|" + text.getText(); //$NON-NLS-1$
             }
 
             public void onDropItems(String data, Point position) {
-                String[] items = data.split("\\|");
+                String[] items = data.split("\\|"); //$NON-NLS-1$
                 text.setText(items[1]);
                 key.setComplement(items[1]);
                 text.setBackground(null);
             }
 
             public void removeDragItems() {
-                text.setText("");
-                key.setComplement("");
+                text.setText(""); //$NON-NLS-1$
+                key.setComplement(""); //$NON-NLS-1$
                 // display as error status, this field must not be null
                 text.setBackground(ERROR_COLOR);
                 // don't remove table item here, it can be removed by the delete
@@ -282,7 +282,7 @@ public class SurrogateSection extends ScdSection {
 
             public boolean isDropAllowed(String data) {
                 // only allow single selection
-                return StringUtils.isEmpty(key.getComplement()) && data.startsWith("1|");
+                return StringUtils.isEmpty(key.getComplement()) && data.startsWith("1|"); //$NON-NLS-1$
             }
 
         };
@@ -295,7 +295,7 @@ public class SurrogateSection extends ScdSection {
      * @param scdDialog
      */
     public void addContextHelp(AbstractScdDialog scdDialog) {
-        scdDialog.addContextHelp(getControl(), "org.talend.designer.scd.surrogateKey");
+        scdDialog.addContextHelp(getControl(), "org.talend.designer.scd.surrogateKey"); //$NON-NLS-1$
     }
 
 }

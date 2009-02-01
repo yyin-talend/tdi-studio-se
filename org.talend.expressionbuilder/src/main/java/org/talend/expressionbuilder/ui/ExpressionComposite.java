@@ -61,9 +61,9 @@ import org.talend.expressionbuilder.i18n.Messages;
  */
 public class ExpressionComposite extends Composite {
 
-    private static final String TEXT_OPEN_SNIPPETS = "Open Snippets";
+    private static final String TEXT_OPEN_SNIPPETS = "Open Snippets"; //$NON-NLS-1$
 
-    private static final String TEXT_CLOSE_SNIPPETS = "Close Snippets";
+    private static final String TEXT_CLOSE_SNIPPETS = "Close Snippets"; //$NON-NLS-1$
 
     private final IDocument document;
 
@@ -163,7 +163,7 @@ public class ExpressionComposite extends Composite {
         }
 
         final Button wrapButton = new Button(upperOperationButtonBar, SWT.CHECK);
-        wrapButton.setText("Wrap");
+        wrapButton.setText("Wrap"); //$NON-NLS-1$
         wrapButton.setSelection(true);
         wrapButton.addSelectionListener(new SelectionAdapter() {
 
@@ -173,7 +173,7 @@ public class ExpressionComposite extends Composite {
 
         });
         final Button undoButton = new Button(upperOperationButtonBar, SWT.NONE);
-        undoButton.setText("Undo(Ctrl + Z)");
+        undoButton.setText("Undo(Ctrl + Z)"); //$NON-NLS-1$
         undoButton.setEnabled(false);
         modificationRecord = new ExpressionRecorder(undoButton);
         undoButton.addMouseListener(new MouseAdapter() {
@@ -207,7 +207,7 @@ public class ExpressionComposite extends Composite {
             public void mouseUp(MouseEvent e) {
                 IRegion region = viewer.getViewerRegion();
                 try {
-                    document.replace(region.getOffset(), region.getLength(), "");
+                    document.replace(region.getOffset(), region.getLength(), ""); //$NON-NLS-1$
                 } catch (BadLocationException ex) {
                     MessageBoxExceptionHandler.process(ex);
                 }

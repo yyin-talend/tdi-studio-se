@@ -17,15 +17,15 @@ package org.talend.designer.scd.model;
  */
 public class Versioning {
 
-    public static final String ACTIVE_LABEL = "active";
+    public static final String ACTIVE_LABEL = "active"; //$NON-NLS-1$
 
-    public static final String VERSION_LABEL = "version";
+    public static final String VERSION_LABEL = "version"; //$NON-NLS-1$
 
-    public static final String END_LABEL = "end";
+    public static final String END_LABEL = "end"; //$NON-NLS-1$
 
-    public static final String START_LABEL = "start";
+    public static final String START_LABEL = "start"; //$NON-NLS-1$
 
-    public static final String PREFIX = "scd_";
+    public static final String PREFIX = "scd_"; //$NON-NLS-1$
 
     public static final String DEFAULT_START_NAME = PREFIX + START_LABEL;
 

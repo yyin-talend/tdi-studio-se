@@ -24,7 +24,6 @@ import it.eng.spagobi.engines.talend.client.exception.ServiceInvocationFailedExc
 import it.eng.spagobi.engines.talend.client.exception.UnsupportedEngineVersionException;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
@@ -33,10 +32,8 @@ import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.multipart.FilePart;
-import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
-import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.talend.sbi.engines.client.i18n.Messages;
 
 /**
  * @author Andrea Gioia
@@ -50,21 +47,24 @@ public class SpagoBITalendEngineClient implements ISpagoBITalendEngineClient {
 
     public static final int CLIENTAPI_REVISION_VERSION_NUMBER = 0;
 
-    public static final String CLIENTAPI_VERSION_NUMBER = CLIENTAPI_MAJOR_VERSION_NUMBER + "."
-            + CLIENTAPI_MINOR_VERSION_NUMBER + "." + CLIENTAPI_REVISION_VERSION_NUMBER;
+    public static final String CLIENTAPI_VERSION_NUMBER = CLIENTAPI_MAJOR_VERSION_NUMBER
+            + Messages.getString("SpagoBITalendEngineClient.0") //$NON-NLS-1$
+            + CLIENTAPI_MINOR_VERSION_NUMBER
+            + Messages.getString("SpagoBITalendEngineClient.1") + CLIENTAPI_REVISION_VERSION_NUMBER; //$NON-NLS-1$
 
     private ISpagoBITalendEngineClient client;
 
     public SpagoBITalendEngineClient(String usr, String pwd, String host, String port, String appContext)
             throws EngineUnavailableException, ServiceInvocationFailedException, UnsupportedEngineVersionException {
-        String url = "http://" + host + ":" + port + "/" + appContext + "/EngineInfoService";
+        String url = Messages.getString("SpagoBITalendEngineClient.2") + host + Messages.getString("SpagoBITalendEngineClient.3") + port + Messages.getString("SpagoBITalendEngineClient.4") + appContext + "/EngineInfoService"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         String complianceVersion = getEngineComplianceVersion(url);
-        String[] versionChunks = complianceVersion.split("\\.");
+        String[] versionChunks = complianceVersion.split("\\."); //$NON-NLS-1$
         int major = 0;// Integer.parseInt(versionChunks[0]);
         int minor = 5;// Integer.parseInt(versionChunks[1]);
         if (major > CLIENTAPI_MAJOR_VERSION_NUMBER
                 || (major == CLIENTAPI_MAJOR_VERSION_NUMBER && minor > CLIENTAPI_MINOR_VERSION_NUMBER)) {
-            throw new UnsupportedEngineVersionException("Unsupported engine version", complianceVersion);
+            throw new UnsupportedEngineVersionException(
+                    Messages.getString("SpagoBITalendEngineClient.unsupportEngineer"), complianceVersion); //$NON-NLS-1$
         }
 
         if (major == 0 && minor == 5) {
@@ -103,7 +103,7 @@ public class SpagoBITalendEngineClient implements ISpagoBITalendEngineClient {
         // Provide custom retry handler is necessary
         method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
 
-        nameValuePairs = new NameValuePair[] { new NameValuePair("infoType", "complianceVersion") };
+        nameValuePairs = new NameValuePair[] { new NameValuePair("infoType", "complianceVersion") }; //$NON-NLS-1$ //$NON-NLS-2$
 
         method.setRequestBody(nameValuePairs);
 
@@ -112,16 +112,17 @@ public class SpagoBITalendEngineClient implements ISpagoBITalendEngineClient {
             int statusCode = client.executeMethod(method);
 
             if (statusCode != HttpStatus.SC_OK) {
-                throw new ServiceInvocationFailedException("Service failed", method.getStatusLine().toString(), method
-                        .getResponseBodyAsString());
+                throw new ServiceInvocationFailedException(
+                        Messages.getString("SpagoBITalendEngineClient.serviceFailed"), method.getStatusLine().toString(), method //$NON-NLS-1$
+                                .getResponseBodyAsString());
             } else {
                 version = method.getResponseBodyAsString();
             }
 
         } catch (HttpException e) {
-            throw new EngineUnavailableException("Fatal protocol violation: " + e.getMessage());
+            throw new EngineUnavailableException(Messages.getString("SpagoBITalendEngineClient.5", e.getMessage())); //$NON-NLS-1$
         } catch (IOException e) {
-            throw new EngineUnavailableException("Fatal transport error: " + e.getMessage());
+            throw new EngineUnavailableException(Messages.getString("SpagoBITalendEngineClient.6", e.getMessage())); //$NON-NLS-1$
         } finally {
             // Release the connection.
             method.releaseConnection();

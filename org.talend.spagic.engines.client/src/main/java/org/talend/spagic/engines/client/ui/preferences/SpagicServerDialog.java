@@ -298,7 +298,7 @@ public class SpagicServerDialog extends Dialog {
 
     protected void validateInput() {
         String errorMessage = null;
-        if (creation && engineNameText.getText().equals("")) {
+        if (creation && engineNameText.getText().equals("")) { //$NON-NLS-1$
             errorMessage = Messages.getString("SpagicServerDialog.errorMessage.engineNameLetters"); //$NON-NLS-1$
         } else if (creation && existingServers.contains(engineNameText.getText())) {
             errorMessage = Messages.getString("SpagicServerDialog.errorMessage.engineNameUsed"); //$NON-NLS-1$

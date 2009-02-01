@@ -155,14 +155,14 @@ public class RowStruct3 {
          */
         public String toString() {
             StringBuffer buffer = new StringBuffer();
-            buffer.append("RowStruct3[");
-            buffer.append("endRange = ").append(endRange);
-            buffer.append(" hashCodeDirty = ").append(hashCodeDirty);
-            buffer.append(" name = ").append(name);
-            buffer.append(" startRange = ").append(startRange);
-            buffer.append(" stringKey = ").append(stringKey);
-            buffer.append(" stringKey2 = ").append(stringKey2);
-            buffer.append("]");
+            buffer.append("RowStruct3["); //$NON-NLS-1$
+            buffer.append("endRange = ").append(endRange); //$NON-NLS-1$
+            buffer.append(" hashCodeDirty = ").append(hashCodeDirty); //$NON-NLS-1$
+            buffer.append(" name = ").append(name); //$NON-NLS-1$
+            buffer.append(" startRange = ").append(startRange); //$NON-NLS-1$
+            buffer.append(" stringKey = ").append(stringKey); //$NON-NLS-1$
+            buffer.append(" stringKey2 = ").append(stringKey2); //$NON-NLS-1$
+            buffer.append("]"); //$NON-NLS-1$
             return buffer.toString();
         }
 

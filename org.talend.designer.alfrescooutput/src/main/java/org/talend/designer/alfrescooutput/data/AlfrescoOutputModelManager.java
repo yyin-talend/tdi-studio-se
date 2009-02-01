@@ -37,43 +37,43 @@ import org.talend.designer.alfrescooutput.util.AlfrescoOutputException;
 public class AlfrescoOutputModelManager {
 
     // alfresco typing
-    public static final String PARAM_AVAILABLE_MODELS = "AVAILABLE_ALFRESCO_MODELS";
+    public static final String PARAM_AVAILABLE_MODELS = "AVAILABLE_ALFRESCO_MODELS"; //$NON-NLS-1$
 
-    public static final String PARAM_AVAILABLE_NAMESPACES = "AVAILABLE_ALFRESCO_NAMESPACES";
+    public static final String PARAM_AVAILABLE_NAMESPACES = "AVAILABLE_ALFRESCO_NAMESPACES"; //$NON-NLS-1$
 
-    public static final String PARAM_ITEM_FILEPATH = "FILEPATH";
+    public static final String PARAM_ITEM_FILEPATH = "FILEPATH"; //$NON-NLS-1$
 
-    public static final String PARAM_ITEM_PREFIX = "PREFIX";
+    public static final String PARAM_ITEM_PREFIX = "PREFIX"; //$NON-NLS-1$
 
-    public static final String PARAM_ITEM_URI = "URI";
+    public static final String PARAM_ITEM_URI = "URI"; //$NON-NLS-1$
 
-    public static final String PARAM_TYPE_NAME = "ALFRESCO_TYPE_NAME";
+    public static final String PARAM_TYPE_NAME = "ALFRESCO_TYPE_NAME"; //$NON-NLS-1$
 
-    public static final String PARAM_ASPECT_NAMES = "ALFRESCO_ASPECT_NAMES";
+    public static final String PARAM_ASPECT_NAMES = "ALFRESCO_ASPECT_NAMES"; //$NON-NLS-1$
 
-    public static final String PARAM_ITEM_NAME = "NAME";
+    public static final String PARAM_ITEM_NAME = "NAME"; //$NON-NLS-1$
 
     // property mapping and additional items
-    public static final String PARAM_PROPERTY_MAPPING = "PROPERTY_MAPPING";
+    public static final String PARAM_PROPERTY_MAPPING = "PROPERTY_MAPPING"; //$NON-NLS-1$
 
-    public static final String PARAM_ITEM_TITLE = "TITLE";
+    public static final String PARAM_ITEM_TITLE = "TITLE"; //$NON-NLS-1$
 
-    public static final String PARAM_ITEM_TYPE = "TYPE";
+    public static final String PARAM_ITEM_TYPE = "TYPE"; //$NON-NLS-1$
 
-    public static final String PARAM_ITEM_MANDATORY = "MANDATORY";
+    public static final String PARAM_ITEM_MANDATORY = "MANDATORY"; //$NON-NLS-1$
 
-    public static final String PARAM_ITEM_VALUE = "VALUE";
+    public static final String PARAM_ITEM_VALUE = "VALUE"; //$NON-NLS-1$
 
-    public static final String PARAM_ITEM_COLUMN = "COLUMN";
+    public static final String PARAM_ITEM_COLUMN = "COLUMN"; //$NON-NLS-1$
 
-    public static final String PARAM_ITEM_DEFAULT = "DEFAULT";
+    public static final String PARAM_ITEM_DEFAULT = "DEFAULT"; //$NON-NLS-1$
 
     // association mapping and additional items
-    public static final String PARAM_ASSOCIATION_MAPPING = "ASSOCIATION_MAPPING";
+    public static final String PARAM_ASSOCIATION_MAPPING = "ASSOCIATION_MAPPING"; //$NON-NLS-1$
 
-    public static final String PARAM_ITEM_CHILD = "CHILD";
+    public static final String PARAM_ITEM_CHILD = "CHILD"; //$NON-NLS-1$
 
-    public static final String PARAM_ITEM_MANY = "MANY";
+    public static final String PARAM_ITEM_MANY = "MANY"; //$NON-NLS-1$
 
     // association mapping and additional items
     private AlfrescoOutputComponent alfrescoOutputComponent;
@@ -158,7 +158,7 @@ public class AlfrescoOutputModelManager {
      */
     public void addModel(String newModelFilePath) throws AlfrescoOutputException {
         if (this.availableModels.contains(newModelFilePath)) {
-            throw new AlfrescoOutputException(Messages.getString("AlfrescoOutputModelManager.alreadyAdded"));
+            throw new AlfrescoOutputException(Messages.getString("AlfrescoOutputModelManager.alreadyAdded")); //$NON-NLS-1$
         }
 
         this.availableModels.add(newModelFilePath);
@@ -168,37 +168,37 @@ public class AlfrescoOutputModelManager {
         try {
             modelDoc = new SAXReader().read(new File(newModelFilePath));
         } catch (DocumentException dex) {
-            throw new AlfrescoOutputException(Messages.getString("AlfrescoOutputModelManager.errorReadingModel") + " "
+            throw new AlfrescoOutputException(Messages.getString("AlfrescoOutputModelManager.errorReadingModel") + " " //$NON-NLS-1$ //$NON-NLS-2$
                     + newModelFilePath, dex);
         }
 
         Element modelElt = modelDoc.getRootElement();
 
-        Element namespacesElt = modelElt.element("namespaces");
+        Element namespacesElt = modelElt.element("namespaces"); //$NON-NLS-1$
         if (namespacesElt != null) {
-            List<Element> namespaces = (List<Element>) namespacesElt.elements("namespace");
+            List<Element> namespaces = (List<Element>) namespacesElt.elements("namespace"); //$NON-NLS-1$
             HashMap<String, String> availablePrefixToNamespaceMapTmp = new HashMap<String, String>(3);
             for (Element namespace : namespaces) {
-                String namespacePrefix = namespace.attributeValue("prefix");
+                String namespacePrefix = namespace.attributeValue("prefix"); //$NON-NLS-1$
                 if (this.availablePrefixToNamespaceMap.containsKey(namespacePrefix)) {
-                    throw new AlfrescoOutputException(Messages.getString("AlfrescoOutputModelManager.prefixConflict") + " "
-                            + namespacePrefix + " " + this.availablePrefixToNamespaceMap.get(namespacePrefix));
+                    throw new AlfrescoOutputException(Messages.getString("AlfrescoOutputModelManager.prefixConflict") + " " //$NON-NLS-1$ //$NON-NLS-2$
+                            + namespacePrefix + " " + this.availablePrefixToNamespaceMap.get(namespacePrefix)); //$NON-NLS-1$
                 }
-                String namespaceUri = namespace.attributeValue("uri");
+                String namespaceUri = namespace.attributeValue("uri"); //$NON-NLS-1$
                 availablePrefixToNamespaceMapTmp.put(namespacePrefix, namespaceUri);
             }
             this.availablePrefixToNamespaceMap.putAll(availablePrefixToNamespaceMapTmp);
         }
 
-        Element typesElt = modelElt.element("types");
+        Element typesElt = modelElt.element("types"); //$NON-NLS-1$
         if (typesElt != null) {
-            List<Element> types = (List<Element>) typesElt.elements("type");
+            List<Element> types = (List<Element>) typesElt.elements("type"); //$NON-NLS-1$
             this.availableTypes.addAllAlfrescoModelElement(types);
         }
 
-        Element aspectsElt = modelElt.element("aspects");
+        Element aspectsElt = modelElt.element("aspects"); //$NON-NLS-1$
         if (aspectsElt != null) {
-            List<Element> aspects = (List<Element>) aspectsElt.elements("aspect");
+            List<Element> aspects = (List<Element>) aspectsElt.elements("aspect"); //$NON-NLS-1$
             this.availableAspects.addAllAlfrescoModelElement(aspects);
         }
     }
@@ -211,7 +211,7 @@ public class AlfrescoOutputModelManager {
      */
     public void removeModel(String oldModelFilePath) throws AlfrescoOutputException {
         if (!this.availableModels.remove(oldModelFilePath)) {
-            throw new AlfrescoOutputException(Messages.getString("AlfrescoOutputModelManager.notYetAdded"));
+            throw new AlfrescoOutputException(Messages.getString("AlfrescoOutputModelManager.notYetAdded")); //$NON-NLS-1$
         }
 
         // parsing the model
@@ -219,30 +219,30 @@ public class AlfrescoOutputModelManager {
         try {
             modelDoc = new SAXReader().read(new File(oldModelFilePath));
         } catch (DocumentException dex) {
-            throw new AlfrescoOutputException(Messages.getString("AlfrescoOutputModelManager.errorReadingModel") + " "
+            throw new AlfrescoOutputException(Messages.getString("AlfrescoOutputModelManager.errorReadingModel") + " " //$NON-NLS-1$ //$NON-NLS-2$
                     + oldModelFilePath, dex);
         }
 
         Element modelElt = modelDoc.getRootElement();
 
-        Element namespacesElt = modelElt.element("namespaces");
+        Element namespacesElt = modelElt.element("namespaces"); //$NON-NLS-1$
         if (namespacesElt != null) {
-            List<Element> namespaces = (List<Element>) namespacesElt.elements("namespace");
+            List<Element> namespaces = (List<Element>) namespacesElt.elements("namespace"); //$NON-NLS-1$
             for (Element namespace : namespaces) {
-                String namespacePrefix = namespace.attributeValue("prefix");
+                String namespacePrefix = namespace.attributeValue("prefix"); //$NON-NLS-1$
                 this.availablePrefixToNamespaceMap.remove(namespacePrefix);
             }
         }
 
-        Element typesElt = modelElt.element("types");
+        Element typesElt = modelElt.element("types"); //$NON-NLS-1$
         if (typesElt != null) {
-            List<Element> types = (List<Element>) typesElt.elements("type");
+            List<Element> types = (List<Element>) typesElt.elements("type"); //$NON-NLS-1$
             this.availableTypes.removeAllAlfrescoModelElement(types);
         }
 
-        Element aspectsElt = modelElt.element("aspects");
+        Element aspectsElt = modelElt.element("aspects"); //$NON-NLS-1$
         if (aspectsElt != null) {
-            List<Element> aspects = (List<Element>) aspectsElt.elements("aspect");
+            List<Element> aspects = (List<Element>) aspectsElt.elements("aspect"); //$NON-NLS-1$
             this.availableAspects.removeAllAlfrescoModelElement(aspects);
         }
     }
@@ -344,7 +344,7 @@ public class AlfrescoOutputModelManager {
         alfrescoOutputComponent.getElementParameter(PARAM_AVAILABLE_NAMESPACES).setValue(availableNamespacesTable);
 
         // chosen type :
-        String typeName = (type == null) ? "" : type.attributeValue("name");
+        String typeName = (type == null) ? "" : type.attributeValue("name"); //$NON-NLS-1$ //$NON-NLS-2$
         alfrescoOutputComponent.getElementParameter(PARAM_TYPE_NAME).setValue(typeName); // TEXT
 
         // chosen aspects :
@@ -353,7 +353,7 @@ public class AlfrescoOutputModelManager {
         aspectNamesTable.clear();
         for (Element aspect : aspects.getOrderedAlfrescoModelElements()) {
             HashMap<String, String> aspectRow = new HashMap<String, String>(1);
-            String aspectName = aspect.attributeValue("name");
+            String aspectName = aspect.attributeValue("name"); //$NON-NLS-1$
             aspectRow.put(PARAM_ITEM_NAME, aspectName);
             aspectNamesTable.add(aspectRow);
         }
@@ -363,7 +363,7 @@ public class AlfrescoOutputModelManager {
         this.saveMetadatas(PARAM_PROPERTY_MAPPING, this.metadataManager.getPropertyMap());
         this.saveMetadatas(PARAM_ASSOCIATION_MAPPING, this.metadataManager.getAssociationMap());
 
-        alfrescoOutputComponent.getElementParameter("UPDATE_COMPONENTS").setValue(Boolean.TRUE);
+        alfrescoOutputComponent.getElementParameter("UPDATE_COMPONENTS").setValue(Boolean.TRUE); //$NON-NLS-1$
     }
 
     /**
@@ -421,11 +421,11 @@ public class AlfrescoOutputModelManager {
     protected void fillPropertyMappingRow(Map<String, String> metadataMappingRow, Element metadata) {
         // NB. reputting PARAM_ITEM_NAME is not required if the metadata with
         // such a name already existed, but not a problem either
-        metadataMappingRow.put(PARAM_ITEM_NAME, metadata.attributeValue("name"));
-        metadataMappingRow.put(PARAM_ITEM_TITLE, metadata.elementText("title"));
-        metadataMappingRow.put(PARAM_ITEM_TYPE, metadata.elementText("type"));
-        metadataMappingRow.put(PARAM_ITEM_MANDATORY, metadata.elementText("mandatory"));
-        metadataMappingRow.put(PARAM_ITEM_DEFAULT, metadata.elementText("default"));
+        metadataMappingRow.put(PARAM_ITEM_NAME, metadata.attributeValue("name")); //$NON-NLS-1$
+        metadataMappingRow.put(PARAM_ITEM_TITLE, metadata.elementText("title")); //$NON-NLS-1$
+        metadataMappingRow.put(PARAM_ITEM_TYPE, metadata.elementText("type")); //$NON-NLS-1$
+        metadataMappingRow.put(PARAM_ITEM_MANDATORY, metadata.elementText("mandatory")); //$NON-NLS-1$
+        metadataMappingRow.put(PARAM_ITEM_DEFAULT, metadata.elementText("default")); //$NON-NLS-1$
         // NB. no default for VALUE
     }
 
@@ -435,14 +435,14 @@ public class AlfrescoOutputModelManager {
     protected void fillAssociationMappingRow(Map<String, String> metadataMappingRow, Element metadata) {
         // NB. reputting PARAM_ITEM_NAME is not required if the metadata with
         // such a name already existed, but not a problem either
-        metadataMappingRow.put(PARAM_ITEM_NAME, metadata.attributeValue("name"));
-        metadataMappingRow.put(PARAM_ITEM_CHILD, String.valueOf("child-association".equals(metadata.getName())));
-        metadataMappingRow.put(PARAM_ITEM_TITLE, metadata.elementText("title"));
-        Element associationTarget = metadata.element("target");
+        metadataMappingRow.put(PARAM_ITEM_NAME, metadata.attributeValue("name")); //$NON-NLS-1$
+        metadataMappingRow.put(PARAM_ITEM_CHILD, String.valueOf("child-association".equals(metadata.getName()))); //$NON-NLS-1$
+        metadataMappingRow.put(PARAM_ITEM_TITLE, metadata.elementText("title")); //$NON-NLS-1$
+        Element associationTarget = metadata.element("target"); //$NON-NLS-1$
         if (associationTarget != null) {
-            metadataMappingRow.put(PARAM_ITEM_TYPE, associationTarget.elementText("class"));
-            metadataMappingRow.put(PARAM_ITEM_MANDATORY, associationTarget.elementText("mandatory"));
-            metadataMappingRow.put(PARAM_ITEM_MANY, associationTarget.elementText("many"));
+            metadataMappingRow.put(PARAM_ITEM_TYPE, associationTarget.elementText("class")); //$NON-NLS-1$
+            metadataMappingRow.put(PARAM_ITEM_MANDATORY, associationTarget.elementText("mandatory")); //$NON-NLS-1$
+            metadataMappingRow.put(PARAM_ITEM_MANY, associationTarget.elementText("many")); //$NON-NLS-1$
         }
     }
 

@@ -41,8 +41,8 @@ public abstract class AbstractUIManager {
     public LINK_STYLE getLinkStyle() {
         if (linkStyle == null) {
 
-            String elementParameterValue = (String) getAbstractMapperManager().getElementParameterValue("LINK_STYLE");
-            if ("AUTO".equals(elementParameterValue)) {
+            String elementParameterValue = (String) getAbstractMapperManager().getElementParameterValue("LINK_STYLE"); //$NON-NLS-1$
+            if ("AUTO".equals(elementParameterValue)) { //$NON-NLS-1$
                 if (getCountLinks() > 50) {
                     linkStyle = LINK_STYLE.LINE;
                 } else {

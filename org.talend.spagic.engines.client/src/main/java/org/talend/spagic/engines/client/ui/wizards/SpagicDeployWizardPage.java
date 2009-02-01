@@ -275,7 +275,7 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
         contextCombo = new Combo(optionsGroup, SWT.PUSH);
 
         applyToChildrenButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
-        applyToChildrenButton.setText(Messages.getString("SpagicDeployWizardPage.ApplyToChildren"));
+        applyToChildrenButton.setText(Messages.getString("SpagicDeployWizardPage.ApplyToChildren")); //$NON-NLS-1$
         applyToChildrenButton.setSelection(true);
         // genCodeButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
         // genCodeButton.setText(Messages.getString("JobScriptsExportWizardPage.generatePerlFiles")); //$NON-NLS-1$
@@ -496,7 +496,7 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
      */
     protected String getDestinationLabel() {
         // return DataTransferMessages.ArchiveExport_destinationLabel;
-        return Messages.getString("SapgicDeployWizard.FileLabel");
+        return Messages.getString("SapgicDeployWizard.FileLabel"); //$NON-NLS-1$
     }
 
     /**

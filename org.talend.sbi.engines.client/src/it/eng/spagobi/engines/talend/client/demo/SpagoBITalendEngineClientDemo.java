@@ -37,7 +37,7 @@ import java.util.zip.ZipException;
 public class SpagoBITalendEngineClientDemo {
 
     private static void usage() {
-        System.out.println("cmdName usr pwd host port context file");
+        System.out.println("cmdName usr pwd host port context file"); //$NON-NLS-1$
     }
 
     public static void main(String[] args) throws ZipException, IOException {
@@ -61,33 +61,33 @@ public class SpagoBITalendEngineClientDemo {
                     applicationContext);
 
             // get some informations about the engine instance referenced by the client
-            System.out.println("Engine version: " + client.getEngineVersion());
-            System.out.println("Engine fullname: " + client.getEngineName());
+            System.out.println("Engine version: " + client.getEngineVersion()); //$NON-NLS-1$
+            System.out.println("Engine fullname: " + client.getEngineName()); //$NON-NLS-1$
 
             // prepare parameters used during deployment
-            JobDeploymentDescriptor jobDeploymentDescriptor = new JobDeploymentDescriptor("Test", "perl");
+            JobDeploymentDescriptor jobDeploymentDescriptor = new JobDeploymentDescriptor("Test", "perl"); //$NON-NLS-1$ //$NON-NLS-2$
             File zipFile = new File(deploymentFile);
 
             // deploy job on engine runtime
             boolean result = client.deployJob(jobDeploymentDescriptor, zipFile);
             if (result)
-                System.out.println("Jobs deployed succesfully");
+                System.out.println("Jobs deployed succesfully"); //$NON-NLS-1$
             else
-                System.out.println("Jobs not deployed");
+                System.out.println("Jobs not deployed"); //$NON-NLS-1$
 
         } catch (EngineUnavailableException e) {
-            System.err.println("ERRORE: " + e.getMessage());
+            System.err.println("ERRORE: " + e.getMessage()); //$NON-NLS-1$
         } catch (AuthenticationFailedException e) {
-            System.err.println("ERRORE: " + e.getMessage());
+            System.err.println("ERRORE: " + e.getMessage()); //$NON-NLS-1$
         } catch (UnsupportedEngineVersionException e) {
-            System.err.println("ERROR: Unsupported engine version");
-            System.err.println("You are using TalendEngineClientAPI version "
-                    + SpagoBITalendEngineClient.CLIENTAPI_VERSION_NUMBER + ". "
-                    + "The TalendEngine instance you are trying to connect to require TalendEngineClientAPI version "
-                    + e.getComplianceVersion() + " or grater.");
+            System.err.println("ERROR: Unsupported engine version"); //$NON-NLS-1$
+            System.err.println("You are using TalendEngineClientAPI version " //$NON-NLS-1$
+                    + SpagoBITalendEngineClient.CLIENTAPI_VERSION_NUMBER + ". " //$NON-NLS-1$
+                    + "The TalendEngine instance you are trying to connect to require TalendEngineClientAPI version " //$NON-NLS-1$
+                    + e.getComplianceVersion() + " or grater."); //$NON-NLS-1$
         } catch (ServiceInvocationFailedException e) {
-            System.err.println("ERRORE: " + e.getMessage());
-            System.err.println("StatusLine: " + e.getStatusLine() + "responseBody: " + e.getResponseBody());
+            System.err.println("ERRORE: " + e.getMessage()); //$NON-NLS-1$
+            System.err.println("StatusLine: " + e.getStatusLine() + "responseBody: " + e.getResponseBody()); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 

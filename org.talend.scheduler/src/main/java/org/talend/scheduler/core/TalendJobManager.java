@@ -271,8 +271,8 @@ public class TalendJobManager {
      */
     public String getCommandByTalendJob(String project, String jobName, String context) throws ProcessorException {
         project = project.replace("/", ""); //$NON-NLS-1$ //$NON-NLS-2$
-        if (jobName.split("/").length > 2) {
-            jobName = jobName.substring(jobName.lastIndexOf("/") + 1, jobName.length());
+        if (jobName.split("/").length > 2) { //$NON-NLS-1$
+            jobName = jobName.substring(jobName.lastIndexOf("/") + 1, jobName.length()); //$NON-NLS-1$
         } else {
             jobName = jobName.replace("/", ""); //$NON-NLS-1$ //$NON-NLS-2$
         }

@@ -61,7 +61,7 @@ import org.talend.repository.model.ComponentsFactoryProvider;
  */
 public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobPerlScriptsManager {
 
-    private static final String SYSTEM_ROUTINES_FOLDER_NAME = "system";
+    private static final String SYSTEM_ROUTINES_FOLDER_NAME = "system"; //$NON-NLS-1$
 
     /**
      * Gets the export resources.
@@ -79,7 +79,7 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
     public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Boolean> exportChoice,
             String contextName, String launcher, int statisticPort, int tracePort, String... codeOptions) {
 
-        ProcessorUtilities.setExportConfig("perl", "", LIBRARY_FOLDER_NAME);
+        ProcessorUtilities.setExportConfig("perl", "", LIBRARY_FOLDER_NAME); //$NON-NLS-1$ //$NON-NLS-2$
 
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = (ProcessItem) process[i].getItem();
@@ -110,7 +110,7 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
 
             List<URL> talendLibraries = getTalendLibraries(exportChoice.get(ExportChoice.needTalendLibraries));
             if (talendLibraries.size() > 0) {
-                process[i].addResources(LIBRARY_FOLDER_NAME + PATH_SEPARATOR + "talend", talendLibraries);
+                process[i].addResources(LIBRARY_FOLDER_NAME + PATH_SEPARATOR + "talend", talendLibraries); //$NON-NLS-1$
             }
             resources.addAll(getJobScripts(processItem, exportChoice.get(ExportChoice.needJob)));
             resources.addAll(getContextScripts(processItem, exportChoice.get(ExportChoice.needContext)));
@@ -329,12 +329,12 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
             // get the modules that this component depends on.
             for (ModuleNeeded module : component.getModulesNeeded()) {
                 // for intance, split the "DtMysqlOutput::Mysql" to {"DtMysqlOutput","Mysql"}
-                String[] string = module.getModuleName().split("::");
+                String[] string = module.getModuleName().split("::"); //$NON-NLS-1$
                 if (string.length != 2) {
                     continue;
                 }
-                resource.addResources(LIBRARY_FOLDER_NAME + PATH_SEPARATOR + string[0], getComponentModules(string[0] + "/"
-                        + string[1] + ".pm"));
+                resource.addResources(LIBRARY_FOLDER_NAME + PATH_SEPARATOR + string[0], getComponentModules(string[0] + "/" //$NON-NLS-1$
+                        + string[1] + ".pm")); //$NON-NLS-1$
             }
         }
     }
@@ -387,7 +387,7 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
             while (buff.readLine() != null) {
                 nbLine++;
             }
-            File file = new File(getTmpFolder() + PATH_SEPARATOR + "spagic.properties");
+            File file = new File(getTmpFolder() + PATH_SEPARATOR + "spagic.properties"); //$NON-NLS-1$
             out = new FileOutputStream(file);
             PrintStream ps = new PrintStream(out);
             IDesignerCoreService service = CorePlugin.getDefault().getDesignerCoreService();
@@ -396,13 +396,13 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
             for (IContextParameter ctxParam : ctxParams) {
                 p.put(ctxParam.getName(), ctxParam.getValue());
             }
-            p.put("JobClassName", getCorrespondingProjectName(null)
-                    + "."
+            p.put("JobClassName", getCorrespondingProjectName(null) //$NON-NLS-1$
+                    + "." //$NON-NLS-1$
                     + JavaResourcesHelper.getJobFolderName(processItem.getProperty().getLabel(), processItem.getProperty()
-                            .getVersion()) + "." + processItem.getProperty().getLabel());
-            p.put("talendJobClassDescription", HTMLDocUtils.checkString(processItem.getProperty().getDescription()));
-            p.put("rowNumber", Integer.toString(nbLine));
-            p.put("host", "localhost");
+                            .getVersion()) + "." + processItem.getProperty().getLabel()); //$NON-NLS-1$
+            p.put("talendJobClassDescription", HTMLDocUtils.checkString(processItem.getProperty().getDescription())); //$NON-NLS-1$
+            p.put("rowNumber", Integer.toString(nbLine)); //$NON-NLS-1$
+            p.put("host", "localhost"); //$NON-NLS-1$ //$NON-NLS-2$
             p.list(ps);
             ps.flush();
             list.add(file.toURI().toURL());

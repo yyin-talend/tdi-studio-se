@@ -1276,7 +1276,7 @@ public class ColorCombo extends Composite {
              * arrow button hide the popup. In Windows, hiding the popup during the deactivate causes the deactivate to
              * be called twice and the selection event to be disappear.
              */
-            if (!"carbon".equals(SWT.getPlatform())) {
+            if (!"carbon".equals(SWT.getPlatform())) { //$NON-NLS-1$
                 Point point = arrow.toControl(getDisplay().getCursorLocation());
                 Point size = arrow.getSize();
                 Rectangle rect = new Rectangle(0, 0, size.x, size.y);

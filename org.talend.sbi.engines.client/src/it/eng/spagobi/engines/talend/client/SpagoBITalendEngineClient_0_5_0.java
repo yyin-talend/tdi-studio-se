@@ -36,6 +36,7 @@ import org.apache.commons.httpclient.methods.multipart.FilePart;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.talend.sbi.engines.client.i18n.Messages;
 
 /**
  * @author Andrea Gioia
@@ -49,12 +50,12 @@ class SpagoBITalendEngineClient_0_5_0 implements ISpagoBITalendEngineClient {
 
     String appContext;
 
-    private static final String JOB_UPLOAD_SERVICE = "JobUploadService";
+    private static final String JOB_UPLOAD_SERVICE = "JobUploadService"; //$NON-NLS-1$
 
-    private static final String ENGINE_INFO_SERVICE = "EngineInfoService";
+    private static final String ENGINE_INFO_SERVICE = "EngineInfoService"; //$NON-NLS-1$
 
     private String getServiceUrl(String serviceName) {
-        return ("http://" + host + ":" + port + "/" + appContext + "/" + serviceName);
+        return ("http://" + host + ":" + port + "/" + appContext + "/" + serviceName); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     }
 
     public SpagoBITalendEngineClient_0_5_0(String usr, String pwd, String host, String port, String appContext) {
@@ -69,7 +70,7 @@ class SpagoBITalendEngineClient_0_5_0 implements ISpagoBITalendEngineClient {
      * @see it.eng.spagobi.engines.talend.client.ISpagoBITalendEngineClient#getEngineVersion()
      */
     public String getEngineVersion() throws EngineUnavailableException, ServiceInvocationFailedException {
-        return getEngineInfo("version");
+        return getEngineInfo("version"); //$NON-NLS-1$
     }
 
     /*
@@ -78,7 +79,7 @@ class SpagoBITalendEngineClient_0_5_0 implements ISpagoBITalendEngineClient {
      * @see it.eng.spagobi.engines.talend.client.ISpagoBITalendEngineClient#getEngineName()
      */
     public String getEngineName() throws EngineUnavailableException, ServiceInvocationFailedException {
-        return getEngineInfo("name");
+        return getEngineInfo("name"); //$NON-NLS-1$
     }
 
     /*
@@ -89,7 +90,7 @@ class SpagoBITalendEngineClient_0_5_0 implements ISpagoBITalendEngineClient {
     public boolean isEngineAvailible() {
 
         try {
-            getEngineInfo("version");
+            getEngineInfo("version"); //$NON-NLS-1$
         } catch (EngineUnavailableException e) {
             return false;
         } catch (ServiceInvocationFailedException e) {
@@ -112,7 +113,7 @@ class SpagoBITalendEngineClient_0_5_0 implements ISpagoBITalendEngineClient {
         // Provide custom retry handler is necessary
         method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
 
-        nameValuePairs = new NameValuePair[] { new NameValuePair("infoType", infoType) };
+        nameValuePairs = new NameValuePair[] { new NameValuePair("infoType", infoType) }; //$NON-NLS-1$
 
         method.setRequestBody(nameValuePairs);
 
@@ -121,16 +122,16 @@ class SpagoBITalendEngineClient_0_5_0 implements ISpagoBITalendEngineClient {
             int statusCode = client.executeMethod(method);
 
             if (statusCode != HttpStatus.SC_OK) {
-                throw new ServiceInvocationFailedException("Service '" + ENGINE_INFO_SERVICE + "' execution failed",
-                        method.getStatusLine().toString(), method.getResponseBodyAsString());
+                throw new ServiceInvocationFailedException(Messages.getString("SpagoBITalendEngineClient_0_5_0.serviceExcFailed") + ENGINE_INFO_SERVICE, method //$NON-NLS-1$
+                        .getStatusLine().toString(), method.getResponseBodyAsString());
             } else {
                 version = method.getResponseBodyAsString();
             }
 
         } catch (HttpException e) {
-            throw new EngineUnavailableException("Fatal protocol violation: " + e.getMessage());
+            throw new EngineUnavailableException(Messages.getString("SpagoBITalendEngineClient_0_5_0.protocolViolation") + e.getMessage()); //$NON-NLS-1$
         } catch (IOException e) {
-            throw new EngineUnavailableException("Fatal transport error: " + e.getMessage());
+            throw new EngineUnavailableException(Messages.getString("SpagoBITalendEngineClient_0_5_0.transportError") + e.getMessage()); //$NON-NLS-1$
         } finally {
             // Release the connection.
             method.releaseConnection();
@@ -142,8 +143,9 @@ class SpagoBITalendEngineClient_0_5_0 implements ISpagoBITalendEngineClient {
     /*
      * (non-Javadoc)
      * 
-     * @see it.eng.spagobi.engines.talend.client.ISpagoBITalendEngineClient#deployJob(it.eng.spagobi.engines.talend.client.JobDeploymentDescriptor,
-     * java.io.File)
+     * @see
+     * it.eng.spagobi.engines.talend.client.ISpagoBITalendEngineClient#deployJob(it.eng.spagobi.engines.talend.client
+     * .JobDeploymentDescriptor, java.io.File)
      */
     public boolean deployJob(JobDeploymentDescriptor jobDeploymentDescriptor, File executableJobFiles)
             throws EngineUnavailableException, AuthenticationFailedException, ServiceInvocationFailedException {
@@ -158,14 +160,14 @@ class SpagoBITalendEngineClient_0_5_0 implements ISpagoBITalendEngineClient {
         deploymentDescriptorFile = null;
 
         try {
-            deploymentDescriptorFile = File.createTempFile("deploymentDescriptor", ".xml");
+            deploymentDescriptorFile = File.createTempFile("deploymentDescriptor", ".xml"); //$NON-NLS-1$ //$NON-NLS-2$
             FileWriter writer = new FileWriter(deploymentDescriptorFile);
             writer.write(jobDeploymentDescriptor.toXml());
             writer.flush();
             writer.close();
 
             Part[] parts = { new FilePart(executableJobFiles.getName(), executableJobFiles),
-                    new FilePart("deploymentDescriptor", deploymentDescriptorFile) };
+                    new FilePart("deploymentDescriptor", deploymentDescriptorFile) }; //$NON-NLS-1$
 
             method.setRequestEntity(new MultipartRequestEntity(parts, method.getParams()));
 
@@ -173,16 +175,16 @@ class SpagoBITalendEngineClient_0_5_0 implements ISpagoBITalendEngineClient {
 
             int status = client.executeMethod(method);
             if (status == HttpStatus.SC_OK) {
-                if (method.getResponseBodyAsString().equalsIgnoreCase("OK"))
+                if (method.getResponseBodyAsString().equalsIgnoreCase("OK")) //$NON-NLS-1$
                     result = true;
             } else {
-                throw new ServiceInvocationFailedException("Service '" + JOB_UPLOAD_SERVICE + "' execution failed",
-                        method.getStatusLine().toString(), method.getResponseBodyAsString());
+                throw new ServiceInvocationFailedException(Messages.getString("SpagoBITalendEngineClient_0_5_0.serviceExcFailed") + JOB_UPLOAD_SERVICE, method //$NON-NLS-1$
+                        .getStatusLine().toString(), method.getResponseBodyAsString());
             }
         } catch (HttpException e) {
-            throw new EngineUnavailableException("Fatal protocol violation: " + e.getMessage());
+            throw new EngineUnavailableException(Messages.getString("SpagoBITalendEngineClient_0_5_0.protocolViolation") + e.getMessage()); //$NON-NLS-1$
         } catch (IOException e) {
-            throw new EngineUnavailableException("Fatal transport error: " + e.getMessage());
+            throw new EngineUnavailableException(Messages.getString("SpagoBITalendEngineClient_0_5_0.transportError") + e.getMessage()); //$NON-NLS-1$
         } finally {
             method.releaseConnection();
             if (deploymentDescriptorFile != null)

@@ -18,5 +18,5 @@ package org.talend.componentdesigner.rcp;
  */
 public class RCPConstant {
 
-    public static final String FIRSTLOGIN_FLAG = "FIRSTLOGIN_FLAG";
+    public static final String FIRSTLOGIN_FLAG = "FIRSTLOGIN_FLAG"; //$NON-NLS-1$
 }

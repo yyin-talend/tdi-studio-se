@@ -33,16 +33,16 @@ public class AlfrescoModelTableLabelProvider implements ITableLabelProvider {
 
 	public String getColumnText(Object element, int columnIndex) {
 		if (element == null) {
-			return "";
+			return ""; //$NON-NLS-1$
 		}
 	    Element alfrescoModelElement = (Element) element;
 	    switch (columnIndex) {
         case 0:
-        	return alfrescoModelElement.elementText("title");
+        	return alfrescoModelElement.elementText("title"); //$NON-NLS-1$
         case 1 :
-        	return alfrescoModelElement.attributeValue("name");
+        	return alfrescoModelElement.attributeValue("name"); //$NON-NLS-1$
         default :
-        	return "";
+        	return ""; //$NON-NLS-1$
         }
 	}
 

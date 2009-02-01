@@ -60,7 +60,7 @@ public class AlfrescoModelElements {
 	}
 
 	public void addAlfrescoModelElement(Element alfrescoModelElement) {
-		alfrescoModelElementMap.put(alfrescoModelElement.attributeValue("name"), alfrescoModelElement);
+		alfrescoModelElementMap.put(alfrescoModelElement.attributeValue("name"), alfrescoModelElement); //$NON-NLS-1$
 		orderedAlfrescoModelElements.add(alfrescoModelElement);
 		for (AlfrescoModelElementsChangeListener listener : listeners) {
 			listener.alfrescoModelElementAdded(alfrescoModelElement);
@@ -68,7 +68,7 @@ public class AlfrescoModelElements {
 	}
 
 	public void removeAlfrescoModelElement(Element alfrescoModelElement) {
-		Element existing = alfrescoModelElementMap.remove(alfrescoModelElement.attributeValue("name"));
+		Element existing = alfrescoModelElementMap.remove(alfrescoModelElement.attributeValue("name")); //$NON-NLS-1$
 		if (existing != null) {
 			orderedAlfrescoModelElements.remove(existing);
 		}

@@ -45,9 +45,9 @@ public class GenerateSpagoBIXML {
 
     private String contextName;
 
-    public static final String SPAGOBI_FILE = "spagobi.xml";
+    public static final String SPAGOBI_FILE = "spagobi.xml"; //$NON-NLS-1$
 
-    public static final String SPAGOBI_FOLDER = "_spagobi";
+    public static final String SPAGOBI_FOLDER = "_spagobi"; //$NON-NLS-1$
 
     /**
      * qzhang GenerateSpagoBIXML constructor comment.
@@ -101,19 +101,19 @@ public class GenerateSpagoBIXML {
                 Element projectElement = document.createElement("job"); //$NON-NLS-1$
                 spagobi.appendChild(projectElement);
 
-                Attr attr = document.createAttribute("project");
+                Attr attr = document.createAttribute("project"); //$NON-NLS-1$
                 attr.setNodeValue(project.getEmfProject().getLabel());
                 projectElement.setAttributeNode(attr);
 
-                attr = document.createAttribute("jobName");
+                attr = document.createAttribute("jobName"); //$NON-NLS-1$
                 attr.setNodeValue(item.getProperty().getLabel());
                 projectElement.setAttributeNode(attr);
 
-                attr = document.createAttribute("context");
+                attr = document.createAttribute("context"); //$NON-NLS-1$
                 attr.setNodeValue(contextName);
                 projectElement.setAttributeNode(attr);
 
-                attr = document.createAttribute("language");
+                attr = document.createAttribute("language"); //$NON-NLS-1$
                 attr.setNodeValue(project.getLanguage().getName());
                 projectElement.setAttributeNode(attr);
 

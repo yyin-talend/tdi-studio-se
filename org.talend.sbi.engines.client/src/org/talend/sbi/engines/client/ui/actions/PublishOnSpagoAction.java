@@ -40,7 +40,7 @@ import org.talend.sbi.engines.client.ui.wizards.PublishOnSpagoExportWizard;
  */
 public final class PublishOnSpagoAction extends AContextualAction {
 
-    private static final String EXPORTJOBSCRIPTS = Messages.getString("PublishOnSpagoAction.actionLabel"); //$NON-NLS-1$
+    private static final String EXPORTJOBSCRIPTS = "Deploy on SpagoBI"; //$NON-NLS-1$
 
     /*
      * (non-Javadoc)
@@ -81,7 +81,7 @@ public final class PublishOnSpagoAction extends AContextualAction {
     public void run() {
         PublishOnSpagoExportWizard publishWizard = new PublishOnSpagoExportWizard();
         IWorkbench workbench = this.getViewPart().getViewSite().getWorkbenchWindow().getWorkbench();
-        publishWizard.setWindowTitle(EXPORTJOBSCRIPTS + " (SpagoBI)");
+        publishWizard.setWindowTitle(EXPORTJOBSCRIPTS + " (SpagoBI)"); //$NON-NLS-1$
         publishWizard.init(workbench, (IStructuredSelection) this.getSelection());
 
         Shell activeShell = Display.getCurrent().getActiveShell();

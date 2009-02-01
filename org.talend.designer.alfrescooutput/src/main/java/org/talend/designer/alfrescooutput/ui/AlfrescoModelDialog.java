@@ -113,7 +113,7 @@ public class AlfrescoModelDialog extends Dialog {
         GridData typeLabelGridData = new GridData(GridData.FILL_BOTH);
         typeLabelGridData.horizontalSpan = 3;
         typeLabel.setLayoutData(typeLabelGridData);
-        typeLabel.setText(Messages.getString("AlfrescoModelDialog.type"));
+        typeLabel.setText(Messages.getString("AlfrescoModelDialog.type")); //$NON-NLS-1$
         typeCombo = new Combo(alfrescoModelComposite, SWT.NULL);
         GridData typeComboGridData = new GridData(GridData.FILL_BOTH);
         typeComboGridData.horizontalSpan = 3;
@@ -140,7 +140,7 @@ public class AlfrescoModelDialog extends Dialog {
                     if (selected instanceof Element) {
                         Element newType = (Element) selected;
                         if (modelManager.getType() == null
-                                || !newType.attributeValue("name").equals(modelManager.getType().attributeValue("name"))) {
+                                || !newType.attributeValue("name").equals(modelManager.getType().attributeValue("name"))) { //$NON-NLS-1$ //$NON-NLS-2$
                             modelManager.setType(newType);
                             AlfrescoModelDialog.this.updateMetadata();
                         }
@@ -153,12 +153,12 @@ public class AlfrescoModelDialog extends Dialog {
         });
 
         Label aspectsLabel = new Label(alfrescoModelComposite, SWT.NULL);
-        aspectsLabel.setText(Messages.getString("AlfrescoModelDialog.aspects"));
+        aspectsLabel.setText(Messages.getString("AlfrescoModelDialog.aspects")); //$NON-NLS-1$
 
         new Composite(alfrescoModelComposite, SWT.NULL); // filler
 
         Label availableAspectsLabel = new Label(alfrescoModelComposite, SWT.NULL);
-        availableAspectsLabel.setText(Messages.getString("AlfrescoModelDialog.availableAspects"));
+        availableAspectsLabel.setText(Messages.getString("AlfrescoModelDialog.availableAspects")); //$NON-NLS-1$
 
         // create table
         aspectsTable = createAlfrescoModelElementTable(alfrescoModelComposite, modelManager.getAspects());
@@ -174,7 +174,7 @@ public class AlfrescoModelDialog extends Dialog {
         aspectButtonsComposite.setLayout(aspectButtonsLayout);
 
         Button addAspectButton = new Button(aspectButtonsComposite, SWT.NULL);
-        addAspectButton.setText("+");
+        addAspectButton.setText("+"); //$NON-NLS-1$
         addAspectButton.addListener(SWT.Selection, new Listener() {
 
             public void handleEvent(Event e) {
@@ -190,7 +190,7 @@ public class AlfrescoModelDialog extends Dialog {
             }
         });
         Button removeAspectButton = new Button(aspectButtonsComposite, SWT.NULL);
-        removeAspectButton.setText("-");
+        removeAspectButton.setText("-"); //$NON-NLS-1$
         removeAspectButton.addListener(SWT.Selection, new Listener() {
 
             public void handleEvent(Event e) {
@@ -221,7 +221,7 @@ public class AlfrescoModelDialog extends Dialog {
         GridData availableModelsLabelGridData = new GridData(GridData.FILL_BOTH);
         availableModelsLabelGridData.horizontalSpan = 3;
         availableModelsLabel.setLayoutData(availableModelsLabelGridData);
-        availableModelsLabel.setText("Available Models");
+        availableModelsLabel.setText("Available Models"); //$NON-NLS-1$
         availableModelsList = new org.eclipse.swt.widgets.List(alfrescoModelComposite, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
         GridData availableModelsListGridData = new GridData(GridData.FILL_BOTH);
         // availableModelsListGridData.grabExcessVerticalSpace = true;
@@ -232,14 +232,14 @@ public class AlfrescoModelDialog extends Dialog {
         availableModelsList.setItems(new String[0]); // init
 
         Button addAvailableModelButton = new Button(alfrescoModelComposite, SWT.NULL);
-        addAvailableModelButton.setText(Messages.getString("AlfrescoModelDialog.add"));
+        addAvailableModelButton.setText(Messages.getString("AlfrescoModelDialog.add")); //$NON-NLS-1$
         addAvailableModelButton.addListener(SWT.Selection, new Listener() {
 
             public void handleEvent(Event e) {
                 // opens a dialog to select the model file
                 FileDialog dialog = new FileDialog(alfrescoModelComposite.getShell(), SWT.OPEN); // shell
                 dialog.setFileName(AlfrescoModelDialog.this.chosenModelFilePath);
-                dialog.setFilterExtensions(new String[] { "*.xml", "*.*" });
+                dialog.setFilterExtensions(new String[] { "*.xml", "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
                 AlfrescoModelDialog.this.chosenModelFilePath = dialog.open();
                 if (AlfrescoModelDialog.this.chosenModelFilePath == null) {
                     return;
@@ -248,7 +248,7 @@ public class AlfrescoModelDialog extends Dialog {
                     modelManager.addModel(AlfrescoModelDialog.this.chosenModelFilePath);
                 } catch (AlfrescoOutputException aoex) {
                     MessageDialog.openError(new Shell(Display.getCurrent(), SWT.APPLICATION_MODAL), Messages
-                            .getString("AlfrescoModelDialog.addModelFailed"), aoex.getMessage());
+                            .getString("AlfrescoModelDialog.addModelFailed"), aoex.getMessage()); //$NON-NLS-1$
                     return;
                 }
                 // let's refresh the list :
@@ -257,7 +257,7 @@ public class AlfrescoModelDialog extends Dialog {
             }
         });
         Button removeAvailableModelButton = new Button(alfrescoModelComposite, SWT.NULL);
-        removeAvailableModelButton.setText(Messages.getString("AlfrescoModelDialog.remove"));
+        removeAvailableModelButton.setText(Messages.getString("AlfrescoModelDialog.remove")); //$NON-NLS-1$
         removeAvailableModelButton.addListener(SWT.Selection, new Listener() {
 
             public void handleEvent(Event e) {
@@ -267,7 +267,7 @@ public class AlfrescoModelDialog extends Dialog {
                         modelManager.removeModel(selectedItem);
                     } catch (AlfrescoOutputException aoex) {
                         MessageDialog.openError(new Shell(Display.getCurrent(), SWT.APPLICATION_MODAL), Messages
-                                .getString("AlfrescoModelDialog.removeModelFailed"), aoex.getMessage());
+                                .getString("AlfrescoModelDialog.removeModelFailed"), aoex.getMessage()); //$NON-NLS-1$
                         return;
                     }
                     // let's refresh the list :
@@ -303,13 +303,13 @@ public class AlfrescoModelDialog extends Dialog {
         List<String> missingAspectNames = modelManager.getMetadataManager().getMissingAspectNames();
         if (!missingTypeNames.isEmpty()) {
             MessageDialog.openError(new Shell(Display.getCurrent(), SWT.APPLICATION_MODAL), Messages
-                    .getString("AlfrescoModelDialog.missingTypeDefinitions.title"), Messages.getString(
-                    "AlfrescoModelDialog.missingTypeDefinitions.msg", missingTypeNames));
+                    .getString("AlfrescoModelDialog.missingTypeDefinitions.title"), Messages.getString( //$NON-NLS-1$
+                    "AlfrescoModelDialog.missingTypeDefinitions.msg", missingTypeNames)); //$NON-NLS-1$
         }
         if (!missingAspectNames.isEmpty()) {
             MessageDialog.openError(new Shell(Display.getCurrent(), SWT.APPLICATION_MODAL), Messages
-                    .getString("AlfrescoModelDialog.missingAspectDefinitions.title"), Messages.getString(
-                    "AlfrescoModelDialog.missingAspectDefinitions.msg", missingAspectNames));
+                    .getString("AlfrescoModelDialog.missingAspectDefinitions.title"), Messages.getString( //$NON-NLS-1$
+                    "AlfrescoModelDialog.missingAspectDefinitions.msg", missingAspectNames)); //$NON-NLS-1$
         }
         // NB. model is only saved on closing the dialog with OK
     }
@@ -321,17 +321,17 @@ public class AlfrescoModelDialog extends Dialog {
         table.setHeaderVisible(true);
 
         TableColumn titleColumn = new TableColumn(table, SWT.LEFT, 0);
-        titleColumn.setText(Messages.getString("AlfrescoModelDialog.modelTable.title"));
+        titleColumn.setText(Messages.getString("AlfrescoModelDialog.modelTable.title")); //$NON-NLS-1$
         titleColumn.setWidth(300);
         TableColumn nameColumn = new TableColumn(table, SWT.LEFT, 1);
-        nameColumn.setText(Messages.getString("AlfrescoModelDialog.modelTable.name"));
+        nameColumn.setText(Messages.getString("AlfrescoModelDialog.modelTable.name")); //$NON-NLS-1$
         nameColumn.setWidth(300);
 
         // createTableViewer
         final TableViewer tableViewer = new TableViewer(table);
         tableViewer.setUseHashlookup(true);
-        String[] tableColumnNames = new String[] { Messages.getString("AlfrescoModelDialog.modelTable.title"),
-                Messages.getString("AlfrescoModelDialog.modelTable.name") };
+        String[] tableColumnNames = new String[] { Messages.getString("AlfrescoModelDialog.modelTable.title"), //$NON-NLS-1$
+                Messages.getString("AlfrescoModelDialog.modelTable.name") }; //$NON-NLS-1$
         tableViewer.setColumnProperties(tableColumnNames);
 
         // NB. no cell editors for tableViewer

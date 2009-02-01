@@ -342,7 +342,7 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
     @Override
     protected void okPressed() {
         String expression = expressionComposite.getExpression();
-        dataBean.setConsumerExpression(expression + " ");
+        dataBean.setConsumerExpression(expression + " "); //$NON-NLS-1$
 
         ExpressionPersistance.getInstance().saveExpression(new Expression(expression, testComposite.getVariableList()));
 
@@ -436,7 +436,7 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
         }
 
         String jobName = component.getProcess().getLabel();
-        IPath path = expressionFolder.getLocation().append(jobName + ".xml");
+        IPath path = expressionFolder.getLocation().append(jobName + ".xml"); //$NON-NLS-1$
         return path.toOSString();
     }
 }

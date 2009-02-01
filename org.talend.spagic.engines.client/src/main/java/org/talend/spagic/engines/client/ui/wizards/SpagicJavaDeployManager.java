@@ -56,8 +56,8 @@ public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.ex
             String libPath = calculateLibraryPathFromDirectory(process[i].getDirectoryName());
             // use character @ as temporary classpath separator, this one will be replaced during the export.
             String standardJars = libPath + PATH_SEPARATOR + SYSTEMROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR
-                    + libPath + PATH_SEPARATOR + USERROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR + ".";
-            ProcessorUtilities.setExportConfig("java", standardJars, libPath);
+                    + libPath + PATH_SEPARATOR + USERROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR + "."; //$NON-NLS-1$
+            ProcessorUtilities.setExportConfig("java", standardJars, libPath); //$NON-NLS-1$
 
             if (!BooleanUtils.isTrue(exportChoice.get(ExportChoice.doNotCompileCode))) {
                 generateJobFiles(processItem, contextName, statisticPort != IProcessor.NO_STATISTICS,
@@ -91,7 +91,7 @@ public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.ex
         List<ExportFileResource> list = new ArrayList<ExportFileResource>(Arrays.asList(process));
         // Add the java system libraries
         ExportFileResource rootResource = new ExportFileResource(null, LIBRARY_FOLDER_NAME);
-        ExportFileResource spagicResource = new ExportFileResource(null, "");
+        ExportFileResource spagicResource = new ExportFileResource(null, ""); //$NON-NLS-1$
         list.add(rootResource);
 
         list.add(spagicResource);
@@ -156,8 +156,8 @@ public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.ex
             // }
             // }
             IPath path = getSrcRootLocation();
-            File file = new File(getTmpFolder() + PATH_SEPARATOR + "spagic.properties");
-            path = path.append(projectName).append(jobFolderName).append(jobName + ".java");
+            File file = new File(getTmpFolder() + PATH_SEPARATOR + "spagic.properties"); //$NON-NLS-1$
+            path = path.append(projectName).append(jobFolderName).append(jobName + ".java"); //$NON-NLS-1$
             BufferedReader buff = new BufferedReader(new FileReader(path.toPortableString()));
             int nbLine = 0;
             while (buff.readLine() != null) {
@@ -171,13 +171,13 @@ public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.ex
             for (IContextParameter ctxParam : ctxParams) {
                 p.put(ctxParam.getName(), ctxParam.getValue());
             }
-            p.put("JobClassName", getCorrespondingProjectName(null)
-                    + "."
+            p.put("JobClassName", getCorrespondingProjectName(null) //$NON-NLS-1$
+                    + "." //$NON-NLS-1$
                     + JavaResourcesHelper.getJobFolderName(processItem.getProperty().getLabel(), processItem.getProperty()
-                            .getVersion()) + "." + processItem.getProperty().getLabel());
-            p.put("talendJobClassDescription", HTMLDocUtils.checkString(processItem.getProperty().getDescription()));
-            p.put("rowNumber", Integer.toString(nbLine));
-            p.put("host", "localhost");
+                            .getVersion()) + "." + processItem.getProperty().getLabel()); //$NON-NLS-1$
+            p.put("talendJobClassDescription", HTMLDocUtils.checkString(processItem.getProperty().getDescription())); //$NON-NLS-1$
+            p.put("rowNumber", Integer.toString(nbLine)); //$NON-NLS-1$
+            p.put("host", "localhost"); //$NON-NLS-1$ //$NON-NLS-2$
             p.list(ps);
             ps.flush();
             list.add(file.toURI().toURL());

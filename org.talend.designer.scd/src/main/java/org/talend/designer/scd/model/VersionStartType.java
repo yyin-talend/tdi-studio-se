@@ -21,8 +21,8 @@ import org.talend.designer.scd.ScdParameterConstants;
  * DOC hcw class global comment. Detailled comment
  */
 public enum VersionStartType {
-    JOB_START_TIME(0, "Job start time", ScdParameterConstants.JOB_START_TIME),
-    INPUT_FIELD(1, "Input field", ScdParameterConstants.INPUT_FIELD);
+    JOB_START_TIME(0, "Job start time", ScdParameterConstants.JOB_START_TIME), //$NON-NLS-1$
+    INPUT_FIELD(1, "Input field", ScdParameterConstants.INPUT_FIELD); //$NON-NLS-1$
 
     int index;
 

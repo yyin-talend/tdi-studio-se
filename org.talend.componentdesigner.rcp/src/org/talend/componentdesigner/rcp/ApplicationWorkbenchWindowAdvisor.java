@@ -23,6 +23,7 @@ import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 import org.talend.componentdesigner.ComponentDesigenerPlugin;
 import org.talend.componentdesigner.manager.ComponentProjectManager;
+import org.talend.componentdesigner.rcp.i18n.Messages;
 import org.talend.componentdesigner.ui.ProjectSelectionDialog;
 
 /**
@@ -48,7 +49,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		configurer.setInitialSize(new Point(1000, 750));
 		configurer.setShowCoolBar(false);
 		configurer.setShowStatusLine(false);
-		configurer.setTitle("RCP Application");
+		configurer.setTitle(Messages.getString("ApplicationWorkbenchWindowAdvisor.rcpApp")); //$NON-NLS-1$
 		chooseProjectLocation();
 	}
 	

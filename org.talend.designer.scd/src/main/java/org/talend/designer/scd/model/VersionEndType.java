@@ -21,8 +21,8 @@ import org.talend.designer.scd.ScdParameterConstants;
  * DOC hcw class global comment. Detailled comment
  */
 public enum VersionEndType {
-    NULL(0, "NULL", ScdParameterConstants.NULL_VALUE),
-    FIXED_YEAR(1, "Fixed year value", ScdParameterConstants.FIXED_VALUE);
+    NULL(0, "NULL", ScdParameterConstants.NULL_VALUE), //$NON-NLS-1$
+    FIXED_YEAR(1, "Fixed year value", ScdParameterConstants.FIXED_VALUE); //$NON-NLS-1$
 
     int index;
 

@@ -15,7 +15,7 @@ import org.talend.repository.model.IRepositoryService;
 public class ScdPlugin extends AbstractUIPlugin {
 
     // The plug-in ID
-    public static final String PLUGIN_ID = "org.talend.designer.scd";
+    public static final String PLUGIN_ID = "org.talend.designer.scd"; //$NON-NLS-1$
 
     // The shared instance
     private static ScdPlugin plugin;

@@ -32,7 +32,7 @@ import org.talend.expressionbuilder.i18n.Messages;
  */
 public class CategoryManager {
 
-    private static final String DEFAULT_CATEGORY = "_default_category";
+    private static final String DEFAULT_CATEGORY = "_default_category"; //$NON-NLS-1$
 
     private Category defaultCategory;
 

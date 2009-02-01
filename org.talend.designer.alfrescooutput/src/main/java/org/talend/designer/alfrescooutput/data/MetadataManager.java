@@ -85,10 +85,10 @@ public class MetadataManager {
      */
     protected void fillMetadatas(Element alfrescoModelElement,
     		List<String> missingTypeNames, List<String> missingAspectNames) {
-    	String parentName = alfrescoModelElement.elementText("parent");
+    	String parentName = alfrescoModelElement.elementText("parent"); //$NON-NLS-1$
     	if (parentName != null
-    			&& !parentName.equals("sys:base")) { // avoiding system metadata : base and referenceable
-    		boolean isType = "type".equals(alfrescoModelElement.getName());
+    			&& !parentName.equals("sys:base")) { // avoiding system metadata : base and referenceable //$NON-NLS-1$
+    		boolean isType = "type".equals(alfrescoModelElement.getName()); //$NON-NLS-1$
     		Element parent = ((isType) ? modelManager.getAvailableTypes() : modelManager.getAvailableAspects())
     			.getAlfrescoModelElementMap().get(parentName);
     		if (parent != null) {
@@ -98,9 +98,9 @@ public class MetadataManager {
     		}
     	}
     	
-    	Element mandatoryAspectsElt = alfrescoModelElement.element("mandatory-aspects");
+    	Element mandatoryAspectsElt = alfrescoModelElement.element("mandatory-aspects"); //$NON-NLS-1$
     	if (mandatoryAspectsElt != null) {
-	    	for (Element aspectElt : (List<Element>) mandatoryAspectsElt.elements("aspect")) {
+	    	for (Element aspectElt : (List<Element>) mandatoryAspectsElt.elements("aspect")) { //$NON-NLS-1$
 	    		String aspectName = aspectElt.getText();
 	    		Element aspect = modelManager.getAvailableAspects().getAlfrescoModelElementMap().get(aspectName);
 	    		if (aspect != null) {
@@ -112,20 +112,20 @@ public class MetadataManager {
     	}
 		
 		// properties :
-    	Element propertiesElt = alfrescoModelElement.element("properties");
+    	Element propertiesElt = alfrescoModelElement.element("properties"); //$NON-NLS-1$
     	if (propertiesElt != null) {
     		for (Element property : (List<Element>) propertiesElt.elements()) {
-    			if (!"true".equals(property.elementText("protected"))) {
-    				propertyMap.put(property.attributeValue("name"), property);
+    			if (!"true".equals(property.elementText("protected"))) { //$NON-NLS-1$ //$NON-NLS-2$
+    				propertyMap.put(property.attributeValue("name"), property); //$NON-NLS-1$
     			} // else filtering out protected
     		}
     	}
     	
     	// associations and child-associations :
-    	Element associationsElt = alfrescoModelElement.element("associations");
+    	Element associationsElt = alfrescoModelElement.element("associations"); //$NON-NLS-1$
     	if (associationsElt != null) {
     		for (Element association : (List<Element>) associationsElt.elements()) {
-    			associationMap.put(association.attributeValue("name"), association);
+    			associationMap.put(association.attributeValue("name"), association); //$NON-NLS-1$
     		}
     	}
     	

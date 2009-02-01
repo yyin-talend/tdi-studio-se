@@ -98,7 +98,7 @@ public class PublishOnSpagoExportWizard extends Wizard implements IExportWizard 
             this.selection = new StructuredSelection(selectedResources);
         }
 
-        setWindowTitle(Messages.getString("PublishOnSpagoExportWizard.publishJob"));
+        setWindowTitle(Messages.getString("PublishOnSpagoExportWizard.publishJob")); //$NON-NLS-1$
         setDefaultPageImageDescriptor(IDEWorkbenchPlugin.getIDEImageDescriptor("wizban/exportzip_wiz.png"));//$NON-NLS-1$
         setNeedsProgressMonitor(true);
     }

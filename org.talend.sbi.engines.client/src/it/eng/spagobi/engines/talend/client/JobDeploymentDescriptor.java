@@ -56,19 +56,19 @@ public class JobDeploymentDescriptor {
 
         document = reader.read(is);
 
-        Node job = document.selectSingleNode("//etl/job");
+        Node job = document.selectSingleNode("//etl/job"); //$NON-NLS-1$
         if (job != null) {
-            this.project = job.valueOf("@project");
-            this.language = job.valueOf("@language");
+            this.project = job.valueOf("@project"); //$NON-NLS-1$
+            this.language = job.valueOf("@language"); //$NON-NLS-1$
         }
     }
 
     public boolean isPerlJob() {
-        return (language != null && language.equalsIgnoreCase("perl"));
+        return (language != null && language.equalsIgnoreCase("perl")); //$NON-NLS-1$
     }
 
     public boolean isJavaJob() {
-        return (language != null && language.equalsIgnoreCase("java"));
+        return (language != null && language.equalsIgnoreCase("java")); //$NON-NLS-1$
     }
 
     public String getProject() {
@@ -89,14 +89,14 @@ public class JobDeploymentDescriptor {
 
     public String toXml() {
         StringBuffer buffer = new StringBuffer();
-        buffer.append("<etl>");
-        buffer.append("<job");
-        if (project != null && !project.trim().equalsIgnoreCase(""))
-            buffer.append(" project=\"" + project + "\"");
-        if (language != null && !language.trim().equalsIgnoreCase(""))
-            buffer.append(" language=\"" + language + "\"");
-        buffer.append("/>");
-        buffer.append("</etl>");
+        buffer.append("<etl>"); //$NON-NLS-1$
+        buffer.append("<job"); //$NON-NLS-1$
+        if (project != null && !project.trim().equalsIgnoreCase("")) //$NON-NLS-1$
+            buffer.append(" project=\"" + project + "\""); //$NON-NLS-1$ //$NON-NLS-2$
+        if (language != null && !language.trim().equalsIgnoreCase("")) //$NON-NLS-1$
+            buffer.append(" language=\"" + language + "\""); //$NON-NLS-1$ //$NON-NLS-2$
+        buffer.append("/>"); //$NON-NLS-1$
+        buffer.append("</etl>"); //$NON-NLS-1$
 
         return buffer.toString();
     }

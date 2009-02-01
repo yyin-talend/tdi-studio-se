@@ -100,12 +100,12 @@ public class ScheduleTask implements IJobResourceProtection {
     public void initProtectionIdAndResource() {
         // String[] splited = job.split(String.valueOf(IPath.SEPARATOR));
         // String absJobName = splited[(splited.length - 1)];
-        protectionId = "schedule_taks" + taskNo + "_" + project + "_" + jobInfo.getJobName(); //$NON-NLS-1$
+        protectionId = "schedule_taks" + taskNo + "_" + project + "_" + jobInfo.getJobName(); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         currentResource = new JobResource(project, jobInfo);
         idAndResource.put(protectionId, currentResource);
         if (subJobs != null) {
             for (JobInfo subJob : subJobs) {
-                String subJobId = "sub_job_of_" + jobInfo.getJobName() + taskNo + "_" + project + "_" + subJob.getJobName();
+                String subJobId = "sub_job_of_" + jobInfo.getJobName() + taskNo + "_" + project + "_" + subJob.getJobName(); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 idAndResource.put(subJobId, new JobResource(project, subJob));
             }
         }
@@ -227,23 +227,23 @@ public class ScheduleTask implements IJobResourceProtection {
         }
 
         String minuteTmp = list.get(0);
-        checkFormat(minuteTmp, "([0-9]+(,[0-9])*)+", "Minute");
+        checkFormat(minuteTmp, "([0-9]+(,[0-9])*)+", "Minute"); //$NON-NLS-1$ //$NON-NLS-2$
         setMinute(minuteTmp);
 
         String hourTmp = list.get(1);
-        checkFormat(hourTmp, "([0-9]((,|-)[0-9])*)+", "Hour");
+        checkFormat(hourTmp, "([0-9]((,|-)[0-9])*)+", "Hour"); //$NON-NLS-1$ //$NON-NLS-2$
         setHour(hourTmp);
 
         String monthTmp = list.get(2);
-        checkFormat(monthTmp, "([0-9]((,|-)[0-9])*)+|\\*", "Month");
+        checkFormat(monthTmp, "([0-9]((,|-)[0-9])*)+|\\*", "Month"); //$NON-NLS-1$ //$NON-NLS-2$
         setMonth(monthTmp);
 
         String dayTmp = list.get(3);
-        checkFormat(dayTmp, "([0-9]((,|-)[0-9])*)+|\\*", "Day");
+        checkFormat(dayTmp, "([0-9]((,|-)[0-9])*)+|\\*", "Day"); //$NON-NLS-1$ //$NON-NLS-2$
         setDay(dayTmp);
 
         String weekDayTmp = list.get(4);
-        checkFormat(weekDayTmp, "([0-9](,[0-9])*)+|\\*", "Day of week");
+        checkFormat(weekDayTmp, "([0-9](,[0-9])*)+|\\*", "Day of week"); //$NON-NLS-1$ //$NON-NLS-2$
         setWeekly(weekDayTmp);
 
         setCommand(getCommand(plainCommand));

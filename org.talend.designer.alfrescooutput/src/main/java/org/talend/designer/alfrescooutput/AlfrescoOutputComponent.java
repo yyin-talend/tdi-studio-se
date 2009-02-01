@@ -170,7 +170,7 @@ public class AlfrescoOutputComponent extends AbstractExternalNode {
         } catch (SystemException e) {
             ExceptionHandler.process(e);
         }
-        return "";
+        return ""; //$NON-NLS-1$
     }
 
     public void renameInputConnection(String oldName, String newName) {

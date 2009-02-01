@@ -53,7 +53,7 @@ public class SnippetsDialogTray extends DialogTray {
         content.setLayout(new GridLayout());
 
         Button refreshButton = new Button(content, SWT.NONE);
-        refreshButton.setText("Refresh");
+        refreshButton.setText("Refresh"); //$NON-NLS-1$
         refreshButton.setImage(ImageProvider.getImage(EImage.REFRESH_ICON));
 
         IRepositoryView view = RepositoryView.show();

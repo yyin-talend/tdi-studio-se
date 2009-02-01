@@ -44,7 +44,7 @@ import org.talend.spagic.engines.client.i18n.Messages;
 /**
  * Job scripts export wizard. <br/>
  * 
- * $Id: JobScriptsExportWizard.java 1 2006-12-13 涓嬪�?3:13:18 bqian
+ * $Id: JobScriptsExportWizard.java 1 2006-12-13 涓嬪�?3:13:18 bqian
  * 
  */
 public class SpagicDeployWizard extends Wizard implements IExportWizard {
@@ -110,7 +110,7 @@ public class SpagicDeployWizard extends Wizard implements IExportWizard {
             this.selection = new StructuredSelection(selectedResources);
         }
 
-        setWindowTitle(Messages.getString("SapgicDeployWizard.exporttospagic"));
+        setWindowTitle(Messages.getString("SapgicDeployWizard.exporttospagic")); //$NON-NLS-1$
         setDefaultPageImageDescriptor(IDEWorkbenchPlugin.getIDEImageDescriptor("wizban/exportzip_wiz.png"));//$NON-NLS-1$
         setNeedsProgressMonitor(true);
 

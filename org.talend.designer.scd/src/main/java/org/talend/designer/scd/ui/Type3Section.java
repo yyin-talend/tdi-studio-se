@@ -52,15 +52,15 @@ import org.talend.designer.scd.util.TableEditorManager;
  */
 public class Type3Section extends ScdSection implements IDragDropDelegate {
 
-    private static final String PREVIOUS_HEADER = "previous value";
+    private static final String PREVIOUS_HEADER = "previous value"; //$NON-NLS-1$
 
-    private static final String CURRENT_HEADER = "current value";
+    private static final String CURRENT_HEADER = "current value"; //$NON-NLS-1$
 
     private static final int CURRENT_COLUMN_INDEX = 0;
 
     private static final int PREVIOUS_COLUMN_INDEX = 1;
 
-    private static final String PREVIOUS_NAME_PREFIX = "previous_";
+    private static final String PREVIOUS_NAME_PREFIX = "previous_"; //$NON-NLS-1$
 
     private static final Color ERROR_COLOR = SWTResourceManager.getColor(IColorConstants.RED);
 
@@ -255,7 +255,7 @@ public class Type3Section extends ScdSection implements IDragDropDelegate {
      */
     public void onDropItems(String data, Point position) {
 
-        String[] items = data.split("\\|");
+        String[] items = data.split("\\|"); //$NON-NLS-1$
         // skip items[0], which is the number of selected elements
         for (int i = 1; i < items.length; i++) {
             Type3Field field = new Type3Field();
@@ -314,7 +314,7 @@ public class Type3Section extends ScdSection implements IDragDropDelegate {
             case PREVIOUS_COLUMN_INDEX:
                 return ((Type3Field) element).getPreviousValue();
             }
-            return "";
+            return ""; //$NON-NLS-1$
         }
 
         public Image getColumnImage(Object element, int columnIndex) {

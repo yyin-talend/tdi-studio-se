@@ -90,7 +90,7 @@ public abstract class AbstractScdDialog extends TrayDialog {
     protected Control createDialogArea(Composite parent) {
         Composite container = (Composite) super.createDialogArea(parent);
         GridLayoutFactory.swtDefaults().applyTo(container);
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(container, "org.talend.designer.scd.scdDialog");
+        PlatformUI.getWorkbench().getHelpSystem().setHelp(container, "org.talend.designer.scd.scdDialog"); //$NON-NLS-1$
         // getShell().addListener(SWT.Close, new Listener() {
         //
         // public void handleEvent(Event event) {
@@ -112,8 +112,8 @@ public abstract class AbstractScdDialog extends TrayDialog {
      * Prompt the user for saving before closing the dialog.
      */
     protected void showWarningDialog() {
-        boolean isNotSaveSetting = MessageDialog.openQuestion(getShell(), Messages.getString("UIManager.MessageBox.title"),
-                Messages.getString("UIManager.MessageBox.Content"));
+        boolean isNotSaveSetting = MessageDialog.openQuestion(getShell(), Messages.getString("UIManager.MessageBox.title"), //$NON-NLS-1$
+                Messages.getString("UIManager.MessageBox.Content")); //$NON-NLS-1$
         if (!isNotSaveSetting) {
             setReturnCode(OK);
             saveState();
@@ -137,7 +137,7 @@ public abstract class AbstractScdDialog extends TrayDialog {
         filterText = new Text(composite, SWT.BORDER);
         GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.FILL).hint(SECTION_WIDTH - 100, SWT.DEFAULT).applyTo(filterText);
         Button filterButton = new Button(composite, SWT.PUSH);
-        filterButton.setText("filter");
+        filterButton.setText(Messages.getString("AbstractScdDialog.filter")); //$NON-NLS-1$
         filterButton.addSelectionListener(new SelectionListener() {
 
             public void widgetDefaultSelected(SelectionEvent e) {
@@ -185,7 +185,7 @@ public abstract class AbstractScdDialog extends TrayDialog {
     @Override
     protected void configureShell(Shell newShell) {
         super.configureShell(newShell);
-        newShell.setText("SCD component editor");
+        newShell.setText(Messages.getString("AbstractScdDialog.SCDEditor")); //$NON-NLS-1$
     }
 
     public void addContextHelp(Control control, final String contextId) {

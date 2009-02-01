@@ -52,7 +52,7 @@ public class ExpressionRecorder {
     public void pushRecored(String expression) {
         if (!isUndo) {
             if (stack.size() == 0) {
-                stack.push("");
+                stack.push(""); //$NON-NLS-1$
             }
             stack.push(expression);
             if (!button.isEnabled()) {
@@ -95,7 +95,7 @@ public class ExpressionRecorder {
             }
             return expression;
         }
-        return "";
+        return ""; //$NON-NLS-1$
     }
 
     /**

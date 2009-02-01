@@ -59,7 +59,7 @@ public class ScdComponentDocumentation implements IComponentDocumentation {
 
         URL xslFileUrl = null;
         try {
-            xslFileUrl = FileLocator.toFileURL(FileLocator.find(b, new Path("resources/tScd.xsl"), null));
+            xslFileUrl = FileLocator.toFileURL(FileLocator.find(b, new Path("resources/tScd.xsl"), null)); //$NON-NLS-1$
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -105,9 +105,9 @@ public class ScdComponentDocumentation implements IComponentDocumentation {
      */
     private void generateXMLInfo() {
         document = DocumentHelper.createDocument();
-        Element externalNodeElement = document.addElement("externalNode");
-        externalNodeElement.addAttribute("name", HTMLDocUtils.checkString(this.componentName));
-        externalNodeElement.addAttribute("preview", HTMLDocUtils.checkString(this.previewPicPath));
+        Element externalNodeElement = document.addElement("externalNode"); //$NON-NLS-1$
+        externalNodeElement.addAttribute("name", HTMLDocUtils.checkString(this.componentName)); //$NON-NLS-1$
+        externalNodeElement.addAttribute("preview", HTMLDocUtils.checkString(this.previewPicPath)); //$NON-NLS-1$
 
     }
 

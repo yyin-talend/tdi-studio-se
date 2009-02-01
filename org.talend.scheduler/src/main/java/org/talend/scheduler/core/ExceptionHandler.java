@@ -15,6 +15,7 @@ package org.talend.scheduler.core;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.scheduler.SchedulerPlugin;
+import org.talend.scheduler.i18n.Messages;
 
 /**
  * Detailled comment for this class. <br/> $Id$
@@ -30,15 +31,15 @@ public class ExceptionHandler {
 
     public static void handleErrorWithDialog(Shell shell, Exception e, String message) {
         handleErrorWithLog(e);
-        MessageDialog.openError(shell, "Warn", message);
+        MessageDialog.openError(shell, Messages.getString("ExceptionHandler.warn"), message); //$NON-NLS-1$
     }
 
     public static void handleErrorWithDialog(Shell shell, Exception e) {
         handleErrorWithLog(e);
-        MessageDialog.openError(shell, "Warn", e.getMessage());
+        MessageDialog.openError(shell, Messages.getString("ExceptionHandler.warn"), e.getMessage()); //$NON-NLS-1$
     }
 
     public static void handleErrorWithDialog(Shell shell, String message) {
-        MessageDialog.openError(shell, "Warn", message);
+        MessageDialog.openError(shell, Messages.getString("ExceptionHandler.warn"), message); //$NON-NLS-1$
     }
 }

@@ -24,8 +24,8 @@ public class SurrogateKey {
     private String complement;
 
     public SurrogateKey() {
-        column = "";
-        complement = "";
+        column = ""; //$NON-NLS-1$
+        complement = ""; //$NON-NLS-1$
         creation = SurrogateCreationType.AUTO_INCREMENT;
     }
 
@@ -50,7 +50,7 @@ public class SurrogateKey {
     }
 
     public void setComplement(String complement) {
-        this.complement = complement == null ? "" : complement;
+        this.complement = complement == null ? "" : complement; //$NON-NLS-1$
     }
 
 }

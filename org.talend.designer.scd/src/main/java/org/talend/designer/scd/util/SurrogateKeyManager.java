@@ -24,7 +24,7 @@ import org.talend.designer.scd.model.SurrogateKey;
  */
 public class SurrogateKeyManager {
 
-    private static final String PREFIX = "sk";
+    private static final String PREFIX = "sk"; //$NON-NLS-1$
 
     private int index = 1;
 
@@ -38,7 +38,7 @@ public class SurrogateKeyManager {
         SurrogateKey key = new SurrogateKey();
         key.setColumn(generateKeyName());
         key.setCreation(SurrogateCreationType.AUTO_INCREMENT);
-        key.setComplement("");
+        key.setComplement(""); //$NON-NLS-1$
         return key;
     }
 
