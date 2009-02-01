@@ -213,7 +213,7 @@ imports="
                                         }                 	                    
                  	                    <%
                  	                }
-                 	            } else if(typeToGenerate.equals("Bytes") && (columnType != null && columnType.equals("LONG RAW"))) {
+                 	            } else if(typeToGenerate.equals("Bytes") && (columnType != null && (columnType.equals("LONG RAW") || columnType.equals("RAW")))) {
                  	                %>
                  	                tmpBytes_<%=cid%> = rs_<%=cid %>.getBytes(<%=currentColNo%>);
                  	                if(tmpBytes_<%=cid%> != null) {
