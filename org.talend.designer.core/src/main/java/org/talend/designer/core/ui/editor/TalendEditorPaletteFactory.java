@@ -34,6 +34,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
+import org.talend.core.model.components.TalendPaletteGroup;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
@@ -585,7 +586,7 @@ public final class TalendEditorPaletteFactory {
 
     /** Create the "Tools" group. */
     private static PaletteContainer createToolsGroup() {
-        PaletteGroup toolGroup = new PaletteGroup(Messages.getString("TalendEditorPaletteFactory.Tools")); //$NON-NLS-1$
+        TalendPaletteGroup toolGroup = new TalendPaletteGroup(Messages.getString("TalendEditorPaletteFactory.Tools")); //$NON-NLS-1$
         // Add a selection tool to the group
         // ToolEntry tool = new PanningSelectionToolEntry();
         // toolGroup.add(tool);
@@ -627,6 +628,9 @@ public final class TalendEditorPaletteFactory {
             for (int i = 0; i < list.size(); i++) {
                 if (list.get(i) instanceof PaletteGroup) {
                     PaletteGroup entry = (PaletteGroup) list.get(i);
+                    if (entry instanceof TalendPaletteGroup) {
+                        continue;
+                    }
                     palette.remove(entry);
                 }
 
