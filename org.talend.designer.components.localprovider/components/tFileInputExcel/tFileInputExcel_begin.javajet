@@ -40,7 +40,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER);
 		boolean bReadRealValue = ElementParameterParser.getValue(node, "__READ_REAL_VALUE__").equals("true");
 		
-		boolean affect = ElementParameterParser.getValue(node,"__AFFECT_EACH_SHEET__").equals("true");		    	
+		boolean affect = ElementParameterParser.getValue(node,"__AFFECT_EACH_SHEET__").equals("true");
+		boolean stopOnEmptyRow = ElementParameterParser.getValue(node,"__STOPREAD_ON_EMPTYROW__").equals("true");				    	
 %>
 		
 		final jxl.WorkbookSettings workbookSettings_<%= cid %> = new jxl.WorkbookSettings();
@@ -93,6 +94,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         int currentRows_<%= cid %> = sheetList_<%= cid %>.get(0).getRows();
         
         for(int i_<%= cid %> = begin_line_<%= cid %>; i_<%= cid %> < end_line_<%= cid %>; i_<%= cid %>++){
+        
+        	int emptyColumnCount_<%= cid %> = 0;
 
         	if (limit_<%= cid %> != -1 && nb_line_<%= cid %> >= limit_<%= cid %>) {
         		break;
@@ -251,6 +254,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 //
 //end%>
 				<%=firstConnName %>.<%=column.getLabel() %> = <%=defaultValue%>;
+				emptyColumnCount_<%= cid %>++;
 <%
 //start
 //
@@ -264,6 +268,16 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					}%>
 					
 <%if(rejectConnName.equals(firstConnName)) {%> <%=firstConnName %> = null; <%}%>
+
+<%
+	if(stopOnEmptyRow){
+%>
+        if(emptyColumnCount_<%= cid %> == <%=size %>){
+        	break; //if meet the empty row, there will break the iterate.
+        }
+<%
+	}
+%>  
 					
     } catch (Exception e) {
         whetherReject_<%=cid%> = true;
