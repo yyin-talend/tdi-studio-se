@@ -24,7 +24,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	String header = ElementParameterParser.getValue(node, "__HEADER__");
     	String limit = ElementParameterParser.getValue(node, "__LIMIT__");
     	String footer = ElementParameterParser.getValue(node, "__FOOTER__");
-    	String stop = ElementParameterParser.getValue(node, "__STOP__");
     	String firstColumn = ElementParameterParser.getValue(node, "__FIRST_COLUMN__");
     	String lastColumn = ElementParameterParser.getValue(node, "__LAST_COLUMN__");
     	String dieOnErrorStr = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
@@ -33,10 +32,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		
 		String allSheets = ElementParameterParser.getValue(node, "__ALL_SHEETS__");
 		boolean isAllSheets = (allSheets!=null&&!allSheets.equals(""))?allSheets.equals("true"):false;
-		List<Map<String, String>> sheetList = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__SHEETLIST__");
-		
-		boolean affect = ElementParameterParser.getValue(node,"__AFFECT__").equals("true");
-		boolean endOfFile = ElementParameterParser.getValue(node,"__END_OF_FILE__").equals("true");
+		List<Map<String, String>> sheetNameList = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__SHEETLIST__");
 		
 		String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
 		boolean advancedSeparator = (advancedSeparatorStr!=null&&!advancedSeparatorStr.equals(""))?advancedSeparatorStr.equals("true"):false;
@@ -58,44 +54,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 		java.util.List<jxl.Sheet> sheetList_<%= cid %> = new java.util.ArrayList<jxl.Sheet>();
 		jxl.Sheet sh_<%=cid%> = null;
-		
-		java.util.List<jxl.Sheet> sheets_<%= cid %> = null;
-		class RegexUtil {
-	    	public List<jxl.Sheet> getSheets(jxl.Workbook workbook, String regex) {
-		        jxl.Sheet[] sheets = workbook.getSheets();
-		        java.util.List<jxl.Sheet> list = new java.util.ArrayList<jxl.Sheet>();
-		        
-		        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(regex);
-		        for (int i = 0; i < sheets.length; i++) {
-		            String sheetName = sheets[i].getName();
-		            java.util.regex.Matcher matcher = pattern.matcher(sheetName);
-		            if (matcher.matches()) {
-		                list.add(workbook.getSheet(sheetName));
-		            }
-		        }
-		        return list;
-		    }
-		    public List<jxl.Sheet> getSheets(jxl.Workbook workbook, int index) {
-		    	List<jxl.Sheet> list =  new java.util.ArrayList<jxl.Sheet>();
-		    	list.add(workbook.getSheet(index));
-		    	return list;
-		    }
-		}
 <%
-			for(Map<String, String> tmp : sheetList){
-				if(tmp.get("USE_REGEX").equals("true")){
+			for(Map<String, String> tmp:sheetNameList){
 %>
-					sheets_<%= cid %> = new java.util.ArrayList<jxl.Sheet>();
-					sheets_<%= cid %> = new RegexUtil().getSheets(workbook_<%= cid %>,<%=tmp.get("SHEETNAME")%>);
-					sheetList_<%= cid %>.addAll(sheets_<%= cid %>);
-<%				
-				}else{
-%>
-					if(workbook_<%= cid %>.getSheet(<%=tmp.get("SHEETNAME")%>) != null){
-						sheetList_<%= cid %>.add(workbook_<%= cid %>.getSheet(<%=tmp.get("SHEETNAME")%>));
-					}					
+		sh_<%=cid%> = workbook_<%= cid %>.getSheet(<%=tmp.get("SHEETNAME")%>);
+        if (sh_<%=cid%> != null) {
+            sheetList_<%= cid %>.add(sh_<%=cid%>);
+        }
 <%
-			}
 			}
 		}
 %>
@@ -120,18 +86,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         int rowCount_<%= cid %> = 0;
         int sheetIndex_<%= cid %> = 0;
         int currentRows_<%= cid %> = sheetList_<%= cid %>.get(0).getRows();
-        label1:
-<%
-	if(affect){
-%>
-        for(int i_<%= cid %> = 0; i_<%= cid %> < (end_line_<%= cid %> + <%=footer%>); i_<%= cid %>++){
-<%
-	}else{
-%>
+        
         for(int i_<%= cid %> = begin_line_<%= cid %>; i_<%= cid %> < end_line_<%= cid %>; i_<%= cid %>++){
-<%
-	}
-%>
 
         	if (limit_<%= cid %> != -1 && nb_line_<%= cid %> >= limit_<%= cid %>) {
         		break;
@@ -142,24 +98,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 sheet_<%= cid %> = sheetList_<%= cid %>.get(++sheetIndex_<%= cid %>);
                 currentRows_<%= cid %> = sheet_<%= cid %>.getRows();
             }
-				int rowNum = i_<%= cid %> - rowCount_<%= cid %>;
-<%
-	if(affect){
-%>
-				if (rowCount_<%= cid %> <= i_<%= cid %> && rowNum >= begin_line_<%= cid %> && rowNum < (sheet_<%= cid %>.getRows() - <%=footer%>)) {
-                row_<%= cid %> = sheet_<%= cid %>.getRow(rowNum);
-            }else{
-            	continue;
-            }
-<%
-	}else{
-%>
+
             if (rowCount_<%= cid %> <= i_<%= cid %>) {
-                row_<%= cid %> = sheet_<%= cid %>.getRow(rowNum);
+                row_<%= cid %> = sheet_<%= cid %>.getRow(i_<%= cid %> - rowCount_<%= cid %>);
             }   
-<%
-	}
-%>
+        
 <%
 //begin
 //
@@ -203,15 +146,17 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			String[] temp_row_<%= cid %> = new String[<%=listColumns.size()%>];
 			int actual_end_column_<%= cid %> = end_column_<%= cid %> >	row_<%= cid %>.length ? row_<%= cid %>.length : end_column_<%= cid %>;
 			for(int i=0;i<<%=size%>;i++){
+				
 				if(i + start_column_<%= cid %> < actual_end_column_<%= cid %>){
+				
 				  jxl.Cell cell_<%=cid%> = row_<%= cid %>[i + start_column_<%= cid %>];
-	
+				  
 				  if (<%=bReadRealValue%> && jxl.CellType.NUMBER == cell_<%=cid%>.getType()){				   
 				  	temp_row_<%= cid %>[i] = String.valueOf(((jxl.NumberCell)cell_<%=cid%>).getValue());
 				  } else{
 				    temp_row_<%= cid %>[i] = cell_<%=cid%>.getContents();
 				  }
-		
+					
 				}else{
 					temp_row_<%= cid %>[i]="";
 				}								
@@ -219,34 +164,25 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			
 			boolean whetherReject_<%=cid %> = false;
 			<%=firstConnName %> = new <%=conn.getName() %>Struct();
-			try {		
+			try {			
 <%
 //start
-//				
+//
 					for (int i=0; i<size; i++) {
 						IMetadataColumn column = listColumns.get(i);
 						String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 						JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 						String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
 //
-//end%>	
-<%			
-					if(endOfFile){
-%>					
-						if(temp_row_<%=cid %>[<%=i%>].equals(<%=stop%>)){
-							break label1;
-						}
-<%						
-					}
-%>	
+//end%>					
 			if(temp_row_<%=cid %>[<%=i%>].length() > 0) {
 <%
 //start
 //
-					if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
+
+						if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
 //
 //end%>
-
 			<%=firstConnName %>.<%=column.getLabel() %> = temp_row_<%=cid %>[<%=i%>];
 <%		
 //start
@@ -308,6 +244,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 //start
 //
 					}%>
+					
 <%if(rejectConnName.equals(firstConnName)) {%> <%=firstConnName %> = null; <%}%>
 					
     } catch (Exception e) {
@@ -342,7 +279,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             <%}
         } 
         %>
-        
     }					
 					
 					<%
