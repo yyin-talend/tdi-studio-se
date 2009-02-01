@@ -38,7 +38,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		boolean advancedSeparator = (advancedSeparatorStr!=null&&!advancedSeparatorStr.equals(""))?advancedSeparatorStr.equals("true"):false;
 		String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
 		String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER);
-		boolean bReadRealValue = ElementParameterParser.getValue(node, "__READ_REAL_VALUE__").equals("true");		    	
+		boolean bReadRealValue = ElementParameterParser.getValue(node, "__READ_REAL_VALUE__").equals("true");
+		
+		boolean affect = ElementParameterParser.getValue(node,"__AFFECT_EACH_SHEET__").equals("true");		    	
 %>
 		
 		final jxl.WorkbookSettings workbookSettings_<%= cid %> = new jxl.WorkbookSettings();
@@ -72,11 +74,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         int nb_line_<%= cid %> = 0;            
 
         int begin_line_<%= cid %> = <%if(header.trim().equals("")){%>0<%}else{%><%= header %><%}%>;
+        
+        int footer_input_<%= cid %> = <%if(footer.trim().equals("")){%>0<%}else{%><%=footer%><%}%>;
+        
         int end_line_<%= cid %>=0;
         for(jxl.Sheet sheet_<%=cid%>:sheetList_<%= cid %>){
         	end_line_<%= cid %>+=sheet_<%=cid%>.getRows();
         }
-        end_line_<%= cid %> -= <%if(footer.trim().equals("")){%>0<%}else{%><%=footer%><%}%>;
+        end_line_<%= cid %> -= footer_input_<%= cid %>;
         int limit_<%= cid %> = <%if(limit.trim().equals("")){%>-1<%}else{%><%=limit%><%}%>;
         int start_column_<%= cid %> = <%if(firstColumn.trim().equals("")){%>0<%}else{%><%=firstColumn%>-1<%}%>;
         int end_column_<%= cid %> = <%if(lastColumn.trim().equals("")){%>sheetList_<%= cid %>.get(0).getColumns()<%}else{%><%=lastColumn%><%}%>;
@@ -98,10 +103,23 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 sheet_<%= cid %> = sheetList_<%= cid %>.get(++sheetIndex_<%= cid %>);
                 currentRows_<%= cid %> = sheet_<%= cid %>.getRows();
             }
-
+<%
+	if(!affect){
+%>
             if (rowCount_<%= cid %> <= i_<%= cid %>) {
                 row_<%= cid %> = sheet_<%= cid %>.getRow(i_<%= cid %> - rowCount_<%= cid %>);
-            }   
+            }
+<%
+	}else{
+%>
+            if (rowCount_<%= cid %> <= i_<%= cid %> && i_<%= cid %> - rowCount_<%= cid %> >= begin_line_<%= cid %> && currentRows_<%= cid %> - footer_input_<%= cid %> > i_<%= cid %> - rowCount_<%= cid %>) {
+                row_<%= cid %> = sheet_<%= cid %>.getRow(i_<%= cid %> - rowCount_<%= cid %>);
+            }else{
+            	continue;
+            }
+<%
+    }
+%>               
         
 <%
 //begin
