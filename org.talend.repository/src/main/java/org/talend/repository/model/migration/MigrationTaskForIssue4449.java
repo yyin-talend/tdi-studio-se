@@ -12,18 +12,21 @@
 // ============================================================================
 package org.talend.repository.model.migration;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.language.ECodeLanguage;
-import org.talend.core.model.components.ComponentUtilities;
+import org.talend.core.model.components.ModifyComponentsAction;
+import org.talend.core.model.components.conversions.IComponentConversion;
+import org.talend.core.model.components.conversions.UpdatePropertyTruncateOptionConversion;
+import org.talend.core.model.components.filters.IComponentFilter;
+import org.talend.core.model.components.filters.NameComponentFilter;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
 import org.talend.core.model.properties.Item;
-import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
-import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
-import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
  * DOC Administrator class global comment. Detailled comment
@@ -31,31 +34,30 @@ import org.talend.repository.model.ProxyRepositoryFactory;
 public class MigrationTaskForIssue4449 extends AbstractJobMigrationTask {
 
     @Override
-	public ExecutionResult execute(Item item) {
-    	ProcessType processType = getProcessType(item);
-   
-        if (getProject().getLanguage() == ECodeLanguage.JAVA && processType != null) {
-            boolean isModified = false;           
-            for (Object nodeType : processType.getNode()) {
-                NodeType tmpNodeType = (NodeType) nodeType;
-                ElementParameterType property = ComponentUtilities.getNodeProperty(tmpNodeType, "TABLE_ACTION"); //$NON-NLS-1$
-                if (property != null && property.getValue().equals("CLEAR")) { //$NON-NLS-1$
-                    property.setValue("TRUNCATE"); //$NON-NLS-1$
-                    isModified = true;
-                }
-            }
-            if (isModified) {
-                ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-                try {
-                    factory.save(item, true);
-                } catch (PersistenceException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            return ExecutionResult.SUCCESS_WITH_ALERT;
-        } else {
+    public ExecutionResult execute(Item item) {
+        ProcessType processType = getProcessType(item);
+        if (getProject().getLanguage() != ECodeLanguage.JAVA || processType == null) {
             return ExecutionResult.NOTHING_TO_DO;
         }
+
+        String[] componentsName = new String[] { "tMSSqlOutput", "tMaxDBOutput", "tMysqlOutput", "tInformixOutput",
+                "tOracleOutput", "tPostgresqlOutput", "tPostgresPlusOutput", "tSybaseOutput" };
+        IComponentConversion updateTableActionOption = new UpdatePropertyTruncateOptionConversion();
+
+        for (String name : componentsName) {
+            IComponentFilter filter = new NameComponentFilter(name); //$NON-NLS-1$
+            try {
+                ModifyComponentsAction.searchAndModify(item, processType, filter, Arrays
+                        .<IComponentConversion> asList(updateTableActionOption));
+            } catch (PersistenceException e) {
+                // TODO Auto-generated catch block
+                ExceptionHandler.process(e);
+                return ExecutionResult.FAILURE;
+            }
+        }
+
+        return ExecutionResult.SUCCESS_WITH_ALERT;
+
     }
 
     public Date getOrder() {
