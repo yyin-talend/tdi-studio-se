@@ -186,8 +186,6 @@ public class Process extends Element implements IProcess2 {
 
     protected IUpdateManager updateManager;
 
-    private Map<String, Date> jobModificationDateMap = new HashMap<String, Date>();
-
     public Process(Property property) {
         contextManager = new JobContextManager();
         updateManager = new ProcessUpdateManager(this);
@@ -2993,15 +2991,6 @@ public class Process extends Element implements IProcess2 {
      */
     public void setNeedRegenerateCode(boolean regenerateCode) {
         this.needRegenerateCode = regenerateCode;
-    }
-
-    /**
-     * ftang Comment method "getJobModificationDateMap".
-     * 
-     * @return
-     */
-    public Map<String, Date> getJobModificationDateMap() {
-        return this.jobModificationDateMap;
     }
 
     /*

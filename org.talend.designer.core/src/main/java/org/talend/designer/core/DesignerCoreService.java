@@ -82,6 +82,8 @@ public class DesignerCoreService implements IDesignerCoreService {
     // achen add to store created process
     private Map<String, IProcess> createdProcessMap = new HashMap<String, IProcess>();
 
+    private Map<String, java.util.Date> lastGeneratedJobs = new HashMap<String, java.util.Date>();
+
     public List<IProcess> getOpenedProcess(IEditorReference[] reference) {
         List<IProcess> list = new ArrayList<IProcess>();
         // IEditorReference[] reference =
@@ -441,14 +443,10 @@ public class DesignerCoreService implements IDesignerCoreService {
     /*
      * (non-Javadoc)
      * 
-     * @see
-     * org.talend.designer.core.IDesignerCoreService#getJobModificationDateMap(org.talend.core.model.process.IProcess)
+     * @see org.talend.designer.core.IDesignerCoreService#getLastGeneratedJobsDateMap()
      */
-    public Map<String, java.util.Date> getJobModificationDateMap(IProcess process) {
-        if (process instanceof Process) {
-            return ((Process) process).getJobModificationDateMap();
-        }
-        return null;
+    public Map<String, java.util.Date> getLastGeneratedJobsDateMap() {
+        return lastGeneratedJobs;
     }
 
     /**

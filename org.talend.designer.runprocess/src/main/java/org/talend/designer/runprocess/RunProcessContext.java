@@ -377,7 +377,7 @@ public class RunProcessContext {
 
                                                 ProcessorUtilities.generateCode(process, context,
                                                         getStatisticsPort() != IProcessor.NO_STATISTICS,
-                                                        getTracesPort() != IProcessor.NO_TRACES, true);
+                                                        getTracesPort() != IProcessor.NO_TRACES, true, progressMonitor);
 
                                                 // see feature 0004820: The run
                                                 // job doesn't verify if code is
