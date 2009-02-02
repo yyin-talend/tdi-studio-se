@@ -55,6 +55,10 @@ public class MultiplePasteCommand extends CompoundCommand {
         add(noteCmd);
     }
 
+    public void setJobletRefactor(boolean isJobletRefactor) {
+        nodeCmd.setJobletRefactor(isJobletRefactor);
+    }
+
     /*
      * (non-Javadoc)
      * 

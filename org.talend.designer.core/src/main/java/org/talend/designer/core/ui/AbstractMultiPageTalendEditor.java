@@ -76,12 +76,14 @@ import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.PropertiesPackage;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.properties.tab.IMultiPageTalendEditor;
 import org.talend.core.ui.IUIRefresher;
 import org.talend.core.utils.AccessingEmfJob;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ISyntaxCheckableEditor;
+import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.CodeEditorFactory;
 import org.talend.designer.core.ui.editor.TalendJavaEditor;
@@ -873,6 +875,12 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                 RepositoryManager.refreshDeletedNode(null);
             } else {
                 RepositoryManager.refreshSavedNode(repositoryNode);
+            }
+        } else {
+            if (AbstractProcessProvider.isExtensionProcessForJoblet(process)) {
+                RepositoryManager.refresh(ERepositoryObjectType.JOBLET);
+            } else {
+                RepositoryManager.refresh(ERepositoryObjectType.PROCESS);
             }
         }
         processEditorInput.setLoadedProcess(null);

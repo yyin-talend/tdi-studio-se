@@ -86,6 +86,11 @@ public class NodesPasteCommand extends Command {
 
     private List<SubjobContainerPart> subjobParts;
 
+    /*
+     * if true, all of properties will keep originally. feature 6131
+     */
+    private boolean isJobletRefactor = false;
+
     /**
      * Getter for cursorLocation.
      * 
@@ -102,6 +107,20 @@ public class NodesPasteCommand extends Command {
      */
     public void setCursorLocation(Point cursorLocation) {
         this.cursorLocation = cursorLocation;
+    }
+
+    /**
+     * 
+     * cLi Comment method "setJobletRefactor".
+     * 
+     * feature 6131, refactor nodes to joblet.
+     */
+    public void setJobletRefactor(boolean isJobletRefactor) {
+        this.isJobletRefactor = isJobletRefactor;
+    }
+
+    public boolean isJobletRefactor() {
+        return this.isJobletRefactor;
     }
 
     public NodesPasteCommand(List<NodePart> nodeParts, Process process, Point cursorLocation) {
@@ -318,6 +337,11 @@ public class NodesPasteCommand extends Command {
                 component = copiedNode.getComponent();
             }
             Node pastedNode = new Node(component, process);
+            if (isJobletRefactor()) { // keep original for joblet refactor.
+                process.removeUniqueNodeName(pastedNode.getUniqueName());
+                pastedNode.setPropertyValue(EParameterName.UNIQUE_NAME.getName(), copiedNode.getUniqueName());
+                process.addUniqueNodeName(copiedNode.getUniqueName());
+            }
             // for bug 0004882: Subjob title is not copied when copying/pasting subjobs from one job to another
             makeCopyNodeAndSubjobMapping(copiedNode, pastedNode, mapping);
 
