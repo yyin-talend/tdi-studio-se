@@ -48,6 +48,7 @@ import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.views.jobsettings.tabs.MainComposite;
 import org.talend.designer.core.ui.views.jobsettings.tabs.ProcessVersionComposite;
 import org.talend.designer.core.ui.views.properties.IJobSettingsView;
+import org.talend.designer.core.ui.views.properties.MultipleThreadDynamicComposite;
 import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsComposite;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
@@ -135,7 +136,14 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
         IDynamicProperty dynamicComposite = null;
 
         if (EComponentCategory.EXTRA.equals(category)) {
-            dynamicComposite = new ExtraComposite(parent, style, category, (Element) data, true);
+            // achen modify to fix bug 0006241
+            Process process = getElement();
+            boolean isJoblet = AbstractProcessProvider.isExtensionProcessForJoblet(process);
+            if (isJoblet) {
+                dynamicComposite = new MultipleThreadDynamicComposite(parent, style, category, (Element) data, true);
+            } else {
+                dynamicComposite = new ExtraComposite(parent, style, category, (Element) data, true);
+            }
 
         } else if (EComponentCategory.STATSANDLOGS.equals(category)) {
             dynamicComposite = new StatsAndLogsComposite(parent, style, category, (Element) data);

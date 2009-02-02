@@ -33,7 +33,6 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
-import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -72,7 +71,10 @@ public class JobSettingsManager {
         // for extra
         createExtraParameters(process);
         // for stats & logs
-        StatsAndLogsManager.createStatsAndLogsParameters(process);
+        boolean isJoblet = AbstractProcessProvider.isExtensionProcessForJoblet(process);
+        if (!isJoblet) {
+            StatsAndLogsManager.createStatsAndLogsParameters(process);
+        }
         // for context
         createContextParameters(process);
     }
@@ -149,22 +151,34 @@ public class JobSettingsManager {
             param.setShow(!isJoblet);
             paramList.add(param);
         }
+        // achen modify to fix bug 0006241
+        if (isJoblet) {
+            param = new ElementParameter(process);
+            param.setName(EParameterName.STARTABLE.getName());
+            param.setValue(false);
+            param.setDisplayName(EParameterName.STARTABLE.getDisplayName());
+            param.setField(EParameterFieldType.CHECK);
+            param.setCategory(EComponentCategory.EXTRA);
+            param.setNumRow(2);
+            paramList.add(param);
 
-        // if (isJoblet) {
-        // param = new ElementParameter(process);
-        // param.setName(EParameterName.STARTABLE.getName());
-        // param.setValue(false);
-        // param.setDisplayName(EParameterName.STARTABLE.getDisplayName());
-        // param.setField(EParameterFieldType.CHECK);
-        // param.setCategory(EComponentCategory.EXTRA);
-        // param.setNumRow(2);
-        // paramList.add(param);
-        // }
+            param = new ElementParameter(process);
+            param.setName(EParameterName.UPDATE_COMPONENTS.getName());
+            param.setValue(Boolean.FALSE);
+            param.setDisplayName(EParameterName.UPDATE_COMPONENTS.getDisplayName());
+            param.setField(EParameterFieldType.CHECK);
+            param.setCategory(EComponentCategory.EXTRA);
+            param.setNumRow(1);
+            param.setReadOnly(true);
+            param.setRequired(false);
+            param.setShow(false);
+            paramList.add(param);
+        }
 
         param = new ElementParameter(process);
         param.setName(EParameterName.IMPLICIT_TCONTEXTLOAD.getName());
         param.setValue(false);
-        param.setGroupDisplayName(Messages.getString("JobSettingsManager.groupName")); //$NON-NLS-1$
+        param.setGroupDisplayName(EParameterName.IMPLICIT_TCONTEXTLOAD.getDisplayName()); //$NON-NLS-1$
         param.setDisplayName(EParameterName.IMPLICIT_TCONTEXTLOAD.getDisplayName());
         param.setField(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.EXTRA);
@@ -360,7 +374,7 @@ public class JobSettingsManager {
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(43);
         param.setRepositoryValue("SERVER_NAME"); //$NON-NLS-1$
-        String dbCon = dbTypeName + " != 'SQLITE'" + " and " + dbTypeName + " != 'ACCESS'";  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+        String dbCon = dbTypeName + " != 'SQLITE'" + " and " + dbTypeName + " != 'ACCESS'"; //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
         param.setShowIf(JobSettingsConstants.addBrackets(dbCon) + " and " + dbCondition); //$NON-NLS-1$
         param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);
