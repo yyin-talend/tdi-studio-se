@@ -815,6 +815,16 @@ public class Process extends Element implements IProcess2 {
                                 }
                             }
                         }
+                        // check missing codes in the table to have the default values.
+                        for (Map<String, Object> line : tableValues) {
+                            for (int i = 0; i < codeList.length; i++) {
+                                if (!line.containsKey(codeList[i])) {
+                                    IElementParameter itemParam = (IElementParameter) param.getListItemsValue()[i];
+                                    line.put(codeList[i], itemParam.getValue());
+                                }
+                            }
+                        }
+
                         elemParam.setPropertyValue(pType.getName(), tableValues);
                     } else if (param.getField().equals(EParameterFieldType.ENCODING_TYPE)) {
                         // fix for bug 2193

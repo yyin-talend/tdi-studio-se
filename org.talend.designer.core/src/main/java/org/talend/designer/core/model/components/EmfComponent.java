@@ -1588,21 +1588,28 @@ public class EmfComponent implements IComponent {
                     addItemsPropertyParameters(paramName + ".ITEM." + item.getNAME(), item.getITEMS(), newParam, currentField, //$NON-NLS-1$
                             node);
                     break;
-                case CHECK:
-                    newParam.setValue(new Boolean(item.getVALUE()));
-                    break;
                 case COLOR:
                     newParam.setValue(DEFAULT_COLOR);
                     break;
+                case CHECK:
                 case RADIO:
-                    newParam.setValue(new Boolean(item.getVALUE()));
+                    if (item.getVALUE() == null || item.getVALUE().equals("")) {
+                        newParam.setValue(Boolean.FALSE);
+                    } else {
+                        newParam.setValue(new Boolean(item.getVALUE()));
+                    }
                     break;
                 case SCHEMA_TYPE:
                     newParam.setValue(""); //$NON-NLS-1$
                     break;
                 default: // TEXT by default
                     newParam.setField(EParameterFieldType.TEXT);
-                    newParam.setValue(item.getVALUE());
+                    if (item.getVALUE() == null || item.getVALUE().equals("")) {
+                        newParam.setValue("");
+                    } else {
+                        newParam.setValue(item.getVALUE());
+                    }
+
                 }
                 listItemsValue[k] = newParam;
             }
