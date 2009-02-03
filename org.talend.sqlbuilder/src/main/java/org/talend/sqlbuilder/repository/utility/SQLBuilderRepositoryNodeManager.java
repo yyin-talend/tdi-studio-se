@@ -709,7 +709,8 @@ public class SQLBuilderRepositoryNodeManager {
                 .getUsername(), iMetadataConnection.getPassword(), iMetadataConnection.getDatabase(), iMetadataConnection
                 .getSchema(), iMetadataConnection.getDriverClass(), iMetadataConnection.getDriverJarPath(), iMetadataConnection
                 .getDbVersionString());
-        DatabaseMetaData dbMetaData = ExtractMetaDataUtils.getDatabaseMetaData(ExtractMetaDataUtils.conn);
+        String dbType = iMetadataConnection.getDbType();
+        DatabaseMetaData dbMetaData = ExtractMetaDataUtils.getDatabaseMetaData(ExtractMetaDataUtils.conn, dbType);
         return dbMetaData;
     }
 
