@@ -5,6 +5,9 @@ imports="
    org.talend.core.model.process.IConnection
    org.talend.core.model.process.IConnectionCategory    
    org.talend.designer.codegen.config.CodeGeneratorArgument
+   org.talend.core.model.metadata.IMetadataTable 
+   org.talend.core.model.metadata.IMetadataColumn
+   org.talend.core.model.metadata.types.JavaTypesManager
    java.util.List
    java.util.Map
 " 
@@ -24,6 +27,10 @@ imports="
     );
     
 	List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
+	
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	IMetadataTable metadata = metadatas.get(0);
+
 	if(tableValues != null && tableValues.size() > 0 && conns != null && conns.size() > 0) {
 	    %>
 	    globalMap.put("NB_LINE", <%=nbRows%>);
@@ -32,9 +39,30 @@ imports="
     	    for(IConnection conn : conns) {
     	        if(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
     	            for(Map<String, String> tableValue : tableValues) {
-        	            %>
-        	            <%=conn.getName()%>.<%=tableValue.get("SCHEMA_COLUMN")%> = <%=tableValue.get("VALUE")%>;
+    	            	if(tableValue.get("VALUE") == ""){
+    	            		IMetadataColumn column = metadata.getColumn(tableValue.get("SCHEMA_COLUMN"));
+    	            		String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+    	            		String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
+    	            		if(JavaTypesManager.getJavaTypeFromId(column.getTalendType()) == JavaTypesManager.INTEGER){
+    	            			if(defaultValue != null){
+        	%>
+        	            			<%=conn.getName()%>.<%=tableValue.get("SCHEMA_COLUMN")%> = <%=defaultValue%>;
+        	            		<%
+        	            		}else{
+        	            		%>
+        	            			<%=conn.getName()%>.<%=tableValue.get("SCHEMA_COLUMN")%> = Integer.parseInt("<%=defaultValue%>");
+        	            	<%
+        	            		}
+        	            	}else{
+        	            	%>
+        	            		<%=conn.getName()%>.<%=tableValue.get("SCHEMA_COLUMN")%> = <%=defaultValue%>;
         	            <%
+        	            	}
+        	            }else{
+        	            %>
+        	            	<%=conn.getName()%>.<%=tableValue.get("SCHEMA_COLUMN")%> = <%=tableValue.get("VALUE")%>;
+        	            <%
+        	            }
     	            }
     	        }
     	    }
