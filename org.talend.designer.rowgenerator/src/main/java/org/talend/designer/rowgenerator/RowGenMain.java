@@ -177,6 +177,7 @@ public class RowGenMain {
             shell.setBounds(boundsRG);
         }
         createUI(shell, false);
+        updateComponentsSize();
         updateTableTitleColumn();
         shell.open();
         shell.addControlListener(new ControlListener() {
@@ -212,7 +213,9 @@ public class RowGenMain {
      * yzhang Comment method "updateComponentsSize".
      */
     public void updateComponentsSize() {
-        generatorUI.getDataTableView().getExtendedToolbar().updateComponentsSize();
+        if (generatorUI != null) {
+            generatorUI.getDataTableView().getExtendedToolbar().updateComponentsSize();
+        }
     }
 
     /**
