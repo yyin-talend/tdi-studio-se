@@ -209,7 +209,7 @@ public class Note extends Element {
     }
 
     public void setText(String text) {
-        autoAdjustFigureSize(text);
+        // autoAdjustFigureSize(text);
         this.text = text;
         firePropertyChange("", null, text); //$NON-NLS-1$
     }
