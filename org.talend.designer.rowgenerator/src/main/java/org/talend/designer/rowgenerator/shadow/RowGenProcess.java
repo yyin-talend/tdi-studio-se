@@ -21,6 +21,7 @@ import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.SnapToGeometry;
 import org.eclipse.gef.SnapToGrid;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IContext;
@@ -671,14 +672,17 @@ public class RowGenProcess extends Element implements IProcess {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.core.model.repository.IRepositoryObject#setRepositoryNode(org.talend.repository.model.RepositoryNode)
+     * @see
+     * org.talend.core.model.repository.IRepositoryObject#setRepositoryNode(org.talend.repository.model.RepositoryNode)
      */
     public void setRepositoryNode(RepositoryNode node) {
         // TODO Auto-generated method stub
 
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.process.IProcess#isNeedRegenerateCode()
      */
     public boolean isNeedRegenerateCode() {
@@ -686,11 +690,23 @@ public class RowGenProcess extends Element implements IProcess {
         return false;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.process.IProcess#setNeedRegenerateCode(boolean)
      */
     public void setNeedRegenerateCode(boolean regenerateCode) {
         // TODO Auto-generated method stub
-        
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IProcess#getOutputMetadataTable()
+     */
+    public IMetadataTable getOutputMetadataTable() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

@@ -3034,4 +3034,21 @@ public class Process extends Element implements IProcess2 {
         copySubjobMap = mapping;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IProcess#getOutputMetadataTable()
+     */
+    // this function is create for feature 0006265
+    public IMetadataTable getOutputMetadataTable() {
+        List<? extends INode> nodes = this.getGraphicalNodes();
+        for (INode node : nodes) {
+            String name = node.getComponent().getName();
+            if (name.equals("tBufferOutput")) {
+                return (IMetadataTable) node.getMetadataList();
+            }
+        }
+        return null;
+
+    }
 }

@@ -24,6 +24,7 @@ import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextListener;
@@ -399,7 +400,9 @@ public class FileinToXmlProcess<K extends FileInputNode> extends RepositoryObjec
         /*
          * (non-Javadoc)
          * 
-         * @see org.talend.core.model.process.IContextManager#addContextListener(org.talend.core.model.process.IContextListener)
+         * @see
+         * org.talend.core.model.process.IContextManager#addContextListener(org.talend.core.model.process.IContextListener
+         * )
          */
         public void addContextListener(IContextListener listener) {
         }
@@ -433,7 +436,8 @@ public class FileinToXmlProcess<K extends FileInputNode> extends RepositoryObjec
         /*
          * (non-Javadoc)
          * 
-         * @see org.talend.core.model.process.IContextManager#removeContextListener(org.talend.core.model.process.IContextListener)
+         * @seeorg.talend.core.model.process.IContextManager#removeContextListener(org.talend.core.model.process.
+         * IContextListener)
          */
         public void removeContextListener(IContextListener listener) {
         }
@@ -496,8 +500,7 @@ public class FileinToXmlProcess<K extends FileInputNode> extends RepositoryObjec
      */
     public List<? extends INode> getNodesOfType(String componentName) {
         List<ShadowNode> matchingNodes = new ArrayList<ShadowNode>();
-        if ((inNode != null) && (inNode.getComponentName() != null)
-                && (inNode.getComponentName().compareTo(componentName) == 0)) {
+        if ((inNode != null) && (inNode.getComponentName() != null) && (inNode.getComponentName().compareTo(componentName) == 0)) {
             matchingNodes.add(inNode);
         }
         if ((outNode != null) && (outNode.getComponentName() != null)
@@ -622,7 +625,9 @@ public class FileinToXmlProcess<K extends FileInputNode> extends RepositoryObjec
         return true;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.process.IProcess#isNeedRegenerateCode()
      */
     public boolean isNeedRegenerateCode() {
@@ -630,11 +635,23 @@ public class FileinToXmlProcess<K extends FileInputNode> extends RepositoryObjec
         return false;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.process.IProcess#setNeedRegenerateCode(boolean)
      */
     public void setNeedRegenerateCode(boolean regenerateCode) {
         // TODO Auto-generated method stub
-        
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IProcess#getOutputMetadataTable()
+     */
+    public IMetadataTable getOutputMetadataTable() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
@@ -559,14 +560,17 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.core.model.repository.IRepositoryObject#setRepositoryNode(org.talend.repository.model.RepositoryNode)
+     * @see
+     * org.talend.core.model.repository.IRepositoryObject#setRepositoryNode(org.talend.repository.model.RepositoryNode)
      */
     public void setRepositoryNode(RepositoryNode node) {
         // TODO Auto-generated method stub
 
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.process.IProcess#isNeedRegenerateCode()
      */
     public boolean isNeedRegenerateCode() {
@@ -574,12 +578,24 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
         return false;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.process.IProcess#setNeedRegenerateCode(boolean)
      */
     public void setNeedRegenerateCode(boolean regenerateCode) {
         // TODO Auto-generated method stub
-        
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IProcess#getOutputMetadataTable()
+     */
+    public IMetadataTable getOutputMetadataTable() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }
