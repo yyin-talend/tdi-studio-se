@@ -164,7 +164,7 @@
       NAME="LINES_TERMINATED_BY"
       FIELD="TEXT"
       NUM_ROW="70"
-      REQUIRED="true"
+      REQUIRED="true" 
     >
       <DEFAULT>"\n"</DEFAULT>
     </PARAMETER>
@@ -174,6 +174,7 @@
       FIELD="TEXT"
       NUM_ROW="70"
       REQUIRED="true"
+      SHOW_IF="FIXED_LENGTH=='false'"
     >
       <DEFAULT>";"</DEFAULT>
     </PARAMETER>
@@ -182,10 +183,21 @@
       NAME="ENCLOSED"
       FIELD="CHECK"
       NUM_ROW="70"
-      REQUIRED="true"
+      REQUIRED="true" 
+      SHOW_IF="FIXED_LENGTH=='false'"
     >
       <DEFAULT>false</DEFAULT>
-    </PARAMETER>    
+    </PARAMETER>  
+    
+    <PARAMETER
+    	NAME="FIXED_LENGTH"
+    	FIELD="CHECK"
+    	NUM_ROW="80"
+    	REQUIRED="false"
+    >
+    	<DEFAULT>false</DEFAULT>
+    </PARAMETER>
+      
    </ADVANCED_PARAMETERS>
 
    <CODEGENERATION>
