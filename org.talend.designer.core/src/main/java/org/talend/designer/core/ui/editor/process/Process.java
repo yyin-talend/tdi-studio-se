@@ -3041,11 +3041,11 @@ public class Process extends Element implements IProcess2 {
      */
     // this function is create for feature 0006265
     public IMetadataTable getOutputMetadataTable() {
-        List<? extends INode> nodes = this.getGraphicalNodes();
-        for (INode node : nodes) {
+        List<? extends Node> nodes = (List<? extends Node>) this.getGraphicalNodes();
+        for (Node node : nodes) {
             String name = node.getComponent().getName();
             if (name.equals("tBufferOutput")) {
-                return (IMetadataTable) node.getMetadataList();
+                return node.getMetadataTable(node.getUniqueName());
             }
         }
         return null;
