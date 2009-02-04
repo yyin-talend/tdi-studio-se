@@ -49,6 +49,8 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.runprocess.IProcessor;
@@ -719,6 +721,16 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                 } catch (Exception e) {
                     ExceptionHandler.process(e);
                 }
+            }
+        }
+        // achen modify to fix bug 0006108
+        // rearchieve the jobscript zip file
+        ECodeLanguage curLanguage = LanguageManager.getCurrentLanguage();
+        if (curLanguage == ECodeLanguage.JAVA) {
+            if (process[0] != null) {
+                String jobFolderName = process[0].getDirectoryName();
+                JavaJobExportReArchieveCreator creator = new JavaJobExportReArchieveCreator(getDestinationValue(), jobFolderName);
+                creator.createArchieve();
             }
         }
         return ok;
