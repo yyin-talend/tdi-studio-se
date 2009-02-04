@@ -594,11 +594,12 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                     String propertyValue = (String) schemaTypeParam.getChildParameters().get(
                             EParameterName.REPOSITORY_SCHEMA_TYPE.getName()).getValue();
                     ConnectionItem connectionItem = null;
+                    String schemaName = null;
                     String[] names = UpdateManagerUtils.getSourceIdAndChildName(propertyValue);
-                    if (names != null) {
+                    if (names != null && names.length > 1) {
                         connectionItem = UpdateRepositoryUtils.getConnectionItemByItemId(names[0]);
+                        schemaName = names[1];
                     }
-                    final String schemaName = names[1];
 
                     //
                     boolean builtIn = true;
@@ -1121,6 +1122,8 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
      * ggu Comment method "checkNodesPropertyChanger".
      * 
      * If this is not relational joblet node to update. filter it.
+     * 
+     * @deprecated seems have unused it.
      */
     private List<UpdateResult> checkJobletNodesPropertyChanger() {
         if (getProcess() == null || getNodePropertyChanger() == null) {
