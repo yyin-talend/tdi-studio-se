@@ -52,6 +52,12 @@
     public boolean isChildJob = false;
     
     private ThreadLocal threadLocal = new ThreadLocal();
+	{
+		java.util.Map threadRunResultMap = new java.util.HashMap();
+		threadRunResultMap.put("errorCode", null);
+		threadRunResultMap.put("status", "");
+		threadLocal.set(threadRunResultMap);
+	}    
 <%
 	if(isRunInMultiThread || exist_tParallelize){
 %>  
@@ -82,9 +88,7 @@
     	final <%=process.getName() %> <%=process.getName() %>Class = new <%=process.getName() %>();
     
         int exitCode = <%=process.getName() %>Class.runJobInTOS(args);
-        
-        //globalBuffer.clear();
-        
+         
         System.exit(exitCode);
     }    
    
@@ -103,16 +107,13 @@
 		String[][] bufferValue = new String[][] { { Integer.toString(exitCode) } };
 	<%
 		}
-	%>	
-		//globalBuffer.clear();
-		
+	%>
+			
 		return bufferValue;
     }
     
     
     private int runJobInTOS(String[] args) {
-    
-		init();
     
         String lastStr = "";
         for (String arg : args) {
@@ -443,8 +444,6 @@
 	}	
 %>
 	
-	reset();
-	
     if(errorCode == null) {
          return status != null && status.equals("failure") ? 1 : 0;	
     } else {   
@@ -477,57 +476,6 @@
             }
     	}
     	
-	}
-
-	private void init() {
-		errorCode = null;
-		status = "";
-		java.util.Map threadRunResultMap = new java.util.HashMap();
-		threadRunResultMap.put("errorCode", null);
-		threadRunResultMap.put("status", "");
-		threadLocal.set(threadRunResultMap);		
-	}
-	
-	private void reset() {
-
-		defaultProps.clear();
-		context.clear();
-		
-		threadLocal = new ThreadLocal();	
-<%
-	if(!isRunInMultiThread ){
-%>
-	currentComponent = "";
-<%
-	}
-	
-	if(isRunInMultiThread || exist_tParallelize){
-%>	
-	runningThreadCount = new SyncInt();
-<%
-	}
-%>
-<%
-        if(process.getNodesOfType("tFlowMeterCatcher").size() > 0) {
-            %>
-        MetterCatcherUtils.clearConnCountMap();    
-            <%
-        }
-%>
-		start_Hash.clear();
-		end_Hash.clear();
-		ok_Hash.clear();
-		globalMap.clear();		
-		watch = false;
-		portStats = 3334;
-		portTraces = 4334;
-		clientHost = null;
-		defaultClientHost = "localhost";
-		contextStr = "<%=codeGenArgument.getContextName() %>";
-		pid = "0";
-		rootPid = null;
-		fatherPid = null;
-		context_param.clear();				
 	}	
 	
 	public Integer getErrorCode() {
