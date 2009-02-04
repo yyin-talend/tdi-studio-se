@@ -3041,7 +3041,7 @@ public class Process extends Element implements IProcess2 {
      */
     // this function is create for feature 0006265
     public IMetadataTable getOutputMetadataTable() {
-        List<? extends Node> nodes = (List<? extends Node>) this.getGraphicalNodes();
+        List<? extends Node> nodes = (List<? extends Node>) this.getGeneratingNodes();
         for (Node node : nodes) {
             String name = node.getComponent().getName();
             if (name.equals("tBufferOutput")) {
