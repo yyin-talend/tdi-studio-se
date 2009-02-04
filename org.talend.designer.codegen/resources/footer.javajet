@@ -527,8 +527,7 @@
 		pid = "0";
 		rootPid = null;
 		fatherPid = null;
-		context_param.clear();
-		System.gc();		
+		context_param.clear();				
 	}	
 	
 	public Integer getErrorCode() {
