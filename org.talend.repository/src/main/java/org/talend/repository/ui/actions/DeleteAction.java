@@ -14,10 +14,12 @@ package org.talend.repository.ui.actions;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.collections.map.MultiKeyMap;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.common.util.EList;
@@ -26,6 +28,7 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
@@ -36,9 +39,12 @@ import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.SubscriberTable;
+import org.talend.core.model.process.INode;
+import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
@@ -163,7 +169,7 @@ public class DeleteAction extends AContextualAction {
                         }
                         factory.deleteFolder(objectType, path);
                     } catch (Exception e) {
-
+                        e.printStackTrace();
                     }
                     monitor.done();
                 }
@@ -200,80 +206,150 @@ public class DeleteAction extends AContextualAction {
      * @param currentJobNode
      * @return
      */
+
+    public static IEditorReference[] getEditors() {
+        final List<IEditorReference> list = new ArrayList<IEditorReference>();
+        Display.getDefault().syncExec(new Runnable() {
+
+            public void run() {
+                IEditorReference[] reference = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                        .getEditorReferences();
+                list.addAll(Arrays.asList(reference));
+            }
+        });
+        return list.toArray(new IEditorReference[0]);
+    }
+
+    private static boolean isOpenedItem(Item openedItem, MultiKeyMap openProcessMap) {
+        if (openedItem == null) {
+            return false;
+        }
+        Property property = openedItem.getProperty();
+        return (openProcessMap.get(property.getId(), property.getLabel(), property.getVersion()) != null);
+    }
+
+    private static MultiKeyMap createOpenProcessMap(List<IProcess> openedProcessList) {
+        MultiKeyMap map = new MultiKeyMap();
+        if (openedProcessList != null) {
+            for (IProcess process : openedProcessList) {
+                map.put(process.getId(), process.getLabel(), process.getVersion(), process);
+            }
+        }
+        return map;
+    }
+
     public static List<JobletReferenceBean> checkRepositoryNodeFromProcess(IProxyRepositoryFactory factory,
             RepositoryNode currentJobNode) {
         IRepositoryObject object = currentJobNode.getObject();
         List<JobletReferenceBean> list = new ArrayList<JobletReferenceBean>();
+
+        List<IProcess> openedProcessList = CorePlugin.getDefault().getDesignerCoreService().getOpenedProcess(getEditors());
+        MultiKeyMap openProcessMap = createOpenProcessMap(openedProcessList);
+        Item item = null;
         if (object != null) {
             Property property = object.getProperty();
             if (property != null) {
-                Item item = property.getItem();
-                if (item instanceof JobletProcessItem) {
-                    String label = property.getLabel();
-                    String version = property.getVersion();
-                    try {
-                        List<IRepositoryObject> repositoryObjects = new ArrayList<IRepositoryObject>();
-                        List<IRepositoryObject> all = factory.getAll(ERepositoryObjectType.PROCESS, true);
-                        repositoryObjects.addAll(all);
-                        all = factory.getAll(ERepositoryObjectType.JOBLET, true);
-                        repositoryObjects.addAll(all);
-                        // String prefix = "";
-                        for (IRepositoryObject repositoryObject : repositoryObjects) {
-                            Property property2 = repositoryObject.getProperty();
-                            EList node = null;
+                item = property.getItem();
 
-                            boolean isDelete = factory.getStatus(repositoryObject) == ERepositoryStatus.DELETED;
-                            boolean isJob = true;
+                String label = property.getLabel();
+                String version = property.getVersion();
 
-                            if (property2.getItem() instanceof ProcessItem) {
-                                ProcessItem item2 = (ProcessItem) property2.getItem();
-                                node = item2.getProcess().getNode();
-                                // prefix = ERepositoryObjectType.PROCESS.toString();
-                            } else if (property2.getItem() instanceof JobletProcessItem) {
-                                JobletProcessItem item2 = (JobletProcessItem) property2.getItem();
-                                node = item2.getJobletProcess().getNode();
-                                // prefix = ERepositoryObjectType.JOBLET.toString();
-                                isJob = false;
-                            }
+                // List<UpdateResult> resultList = new ArrayList<UpdateResult>();
+                List<IRepositoryObject> processList = null;
+                try {
+                    processList = factory.getAll(ERepositoryObjectType.PROCESS, true);
+                    if (processList == null) {
+                        processList = new ArrayList<IRepositoryObject>();
+                    }
+                    List<IRepositoryObject> jobletList = factory.getAll(ERepositoryObjectType.JOBLET, true);
+                    if (jobletList != null) {
+                        processList.addAll(jobletList);
+                    }
+                } catch (PersistenceException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                EList nodesList = null;
+                for (IRepositoryObject process : processList) {
+                    // node = (EList) process.getGraphicalNodes();
+                    Property property2 = process.getProperty();
 
-                            if (node != null) {
-                                for (Object object2 : node) {
-                                    if (object2 instanceof NodeType) {
-                                        NodeType nodeType = (NodeType) object2;
-                                        nodeType.getElementParameter();
-                                        boolean equals = nodeType.getComponentName().equals(label)
-                                                && nodeType.getComponentVersion().equals(version);
-                                        if (equals) {
-                                            String path = property2.getItem().getState().getPath();
-                                            // if (path.length() > 0) {
-                                            // path = path + File.separator;
-                                            // }
-                                            boolean found = false;
-                                            JobletReferenceBean bean = new JobletReferenceBean(property2.getLabel(), property2
-                                                    .getVersion(), path);
-                                            bean.setJobFlag(isJob, isDelete);
+                    boolean isDelete = factory.getStatus(process) == ERepositoryStatus.DELETED;
+                    boolean isJob = true;
 
-                                            for (JobletReferenceBean b : list) {
-                                                if (b.toString().equals(bean.toString())) {
-                                                    found = true;
-                                                    b.addNodeNum();
-                                                    break;
-                                                }
-                                            }
-                                            if (!found) {
-                                                list.add(bean);
-                                            }
+                    Item item2 = property2.getItem();
+                    if (!isOpenedItem(item2, openProcessMap)) {
+                        if (item2 instanceof ProcessItem) {
+                            nodesList = ((ProcessItem) item2).getProcess().getNode();
+                        } else if (item2 instanceof JobletProcessItem) {
+                            nodesList = ((JobletProcessItem) item2).getJobletProcess().getNode();
+                        }
+                    }
+                    if (nodesList != null) {
+                        // isExtensionComponent(node);
+                        for (Object object2 : nodesList) {
+                            if (object2 instanceof NodeType) {
+                                NodeType nodeType = (NodeType) object2;
+                                nodeType.getElementParameter();
+                                boolean equals = nodeType.getComponentName().equals(label)
+                                        && nodeType.getComponentVersion().equals(version);
+                                if (equals) {
+                                    String path = item2.getState().getPath();
+
+                                    boolean found = false;
+                                    JobletReferenceBean bean = new JobletReferenceBean(property2.getLabel(), property2
+                                            .getVersion(), path);
+                                    bean.setJobFlag(isJob, isDelete);
+
+                                    for (JobletReferenceBean b : list) {
+                                        if (b.toString().equals(bean.toString())) {
+                                            found = true;
+                                            b.addNodeNum();
+                                            break;
                                         }
+                                    }
+                                    if (!found) {
+                                        list.add(bean);
                                     }
                                 }
                             }
                         }
-                    } catch (PersistenceException ex) {
-                        ex.printStackTrace();
                     }
-
                 }
+                for (IProcess openedProcess : openedProcessList) {
+                    for (INode node : openedProcess.getGraphicalNodes()) {
+                        boolean equals = node.getComponent().getName().equals(label)
+                                && node.getComponent().getVersion().equals(version);
+
+                        boolean isDelete = factory.getStatus(openedProcess) == ERepositoryStatus.DELETED;
+                        boolean isJob = true;
+                        Property property2 = openedProcess.getProperty();
+                        Item item2 = property2.getItem();
+                        String path = item2.getState().getPath();
+
+                        if (equals) {
+
+                            boolean found = false;
+                            JobletReferenceBean bean = new JobletReferenceBean(property2.getLabel(), property2.getVersion(), path);
+                            bean.setJobFlag(isJob, isDelete);
+
+                            for (JobletReferenceBean b : list) {
+                                if (b.toString().equals(bean.toString())) {
+                                    found = true;
+                                    b.addNodeNum();
+                                    break;
+                                }
+                            }
+                            if (!found) {
+                                list.add(bean);
+                            }
+                        }
+
+                    }
+                }
+
             }
+
         }
         return list;
     }
