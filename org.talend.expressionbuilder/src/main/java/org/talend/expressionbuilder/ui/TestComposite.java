@@ -12,12 +12,17 @@
 // ============================================================================
 package org.talend.expressionbuilder.ui;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.ICellModifier;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
@@ -26,7 +31,6 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -140,7 +144,19 @@ public class TestComposite extends Composite {
             public void modify(Object element, String property, Object value) {
                 Variable var = (Variable) ((TableItem) element).getData();
                 if (NAME_PROPERTY.equals(property)) {
-                    var.setName((String) value);
+                    List<String> nameList = new ArrayList<String>();
+                    TableItem[] items = table.getItems();
+                    for (TableItem item : items) {
+                        if (item == (TableItem) element) {
+                            continue;
+                        }
+                        nameList.add(((Variable) item.getData()).getName());
+                    }
+                    if (nameList.contains(value)) {
+                        MessageDialog.openError(getShell(), Messages.getString("TestComposite.error"), Messages
+                                .getString("TestComposite.message"));
+                        return;
+                    }
                 } else if (VALUE_PROPERTY.equals(property)) {
                     var.setValue((String) value);
                 }
@@ -152,6 +168,16 @@ public class TestComposite extends Composite {
         variableTableViewer.setCellEditors(new CellEditor[] { new DoubleClickTextCellEditor(table), new TextCellEditor(table) });
         variableTableViewer.setColumnProperties(new String[] { NAME_PROPERTY, VALUE_PROPERTY });
         variableTableViewer.setInput(new LinkedList<Variable>());
+
+        variableTableViewer.addDoubleClickListener(new IDoubleClickListener() {
+
+            public void doubleClick(DoubleClickEvent event) {
+                Variable var = (Variable) (((IStructuredSelection) event.getSelection()).getFirstElement());
+                ExpressionComposite expressionComposite = ExpressionBuilderDialog.getExpressionComposite();
+                expressionComposite.setExpression(var.getName(), true);
+            }
+
+        });
 
         table.setHeaderVisible(true);
         GridData gd = new GridData(GridData.FILL_BOTH);

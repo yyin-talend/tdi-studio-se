@@ -54,6 +54,7 @@ import org.talend.designer.rowgenerator.data.FunctionManager;
 import org.talend.designer.rowgenerator.data.Parameter;
 import org.talend.expressionbuilder.IExpressionDataBean;
 import org.talend.expressionbuilder.i18n.Messages;
+import org.talend.expressionbuilder.test.shadow.Variable;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -423,7 +424,13 @@ public class ExpressionComposite extends Composite {
         if (document != null) {
             IRegion region = viewer.getViewerRegion();
             try {
-                return document.get(region.getOffset(), region.getLength());
+                String doc = document.get(region.getOffset(), region.getLength());
+                List<Variable> variables = ExpressionBuilderDialog.getTestComposite().getVariableList();
+                for (Variable variable : variables) {
+                    doc = doc.replaceAll(variable.getName(), variable.getValue());
+                }
+                return doc;
+                // return document.get(region.getOffset(), region.getLength());
             } catch (BadLocationException e) {
                 MessageBoxExceptionHandler.process(e);
             }
