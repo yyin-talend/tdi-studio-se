@@ -88,6 +88,7 @@ String dbname_<%=cid %> = null;
 String dbschema_<%=cid %> = null;
 String username_<%=cid %> = null;
 String password_<%=cid %> = null;
+String port_<%=cid%> = null;
 <%       
 String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
 if(useExistingConn.equals("true")) {
@@ -105,7 +106,8 @@ if(useExistingConn.equals("true")) {
     dbschema_<%=cid%> = (String)globalMap.get("<%=existDbSchema%>");
     username_<%=cid%> = (String)globalMap.get("<%=existUsername%>");
     password_<%=cid%> = (String)globalMap.get("<%=existPassword%>");
-    serviceUrl_<%=cid%> = "(description=(address=(protocol=tcp)(host=" + host_<%=cid%> + ")(port=" + <%=port%> + "))(connect_data=(service_name=" + dbname_<%=cid%> + ")))";
+    port_<%=cid%> = (String)globalMap.get("<%=existPort%>");
+    serviceUrl_<%=cid%> = "(description=(address=(protocol=tcp)(host=" + host_<%=cid%> + ")(port=" + port_<%=cid%> + "))(connect_data=(service_name=" + dbname_<%=cid%> + ")))";
     conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
     <%
 } else {
