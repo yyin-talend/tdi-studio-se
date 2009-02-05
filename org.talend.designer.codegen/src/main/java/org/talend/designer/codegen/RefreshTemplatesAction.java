@@ -15,6 +15,7 @@ package org.talend.designer.codegen;
 import org.eclipse.jface.action.Action;
 import org.talend.core.CorePlugin;
 import org.talend.designer.codegen.model.CodeGeneratorEmittersPoolFactory;
+import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
@@ -40,6 +41,8 @@ public class RefreshTemplatesAction extends Action {
         ComponentsFactoryProvider.getInstance().reset();
         CodeGeneratorEmittersPoolFactory.initialize();
         CorePlugin.getDefault().getLibrariesService().syncLibraries();
+        // achen modify to record ctrl+shift+f3 is pressed to fix bug 0006107
+        ProcessorUtilities.isRefreshComponents = true;
     }
 
 }
