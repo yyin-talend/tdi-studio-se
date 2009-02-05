@@ -15,6 +15,7 @@ package org.talend.designer.business.diagram.custom.util;
 import java.util.Iterator;
 
 import org.eclipse.emf.ecore.EClass;
+import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.business.model.business.BusinessAssignment;
@@ -23,6 +24,7 @@ import org.talend.designer.business.model.business.BusinessPackage;
 import org.talend.designer.business.model.business.BusinessProcess;
 import org.talend.designer.business.model.business.Repository;
 import org.talend.designer.business.model.business.TalendItem;
+import org.talend.repository.model.MetadataTableRepositoryObject;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
 
@@ -60,9 +62,13 @@ public class RepositoryHelper {
                 ERepositoryObjectType nodeType = (ERepositoryObjectType) repositoryNode.getProperties(EProperties.CONTENT_TYPE);
 
                 result = (TalendItem) BusinessFactory.eINSTANCE.create(getEClass(nodeType));
-
                 result.setRepository(repository);
-                result.setId(repositoryObject.getId());
+                if ("METADATA_CON_TABLE".equals(repositoryObject.getType().name())) {
+                    Property property = ((MetadataTableRepositoryObject) repositoryObject).getProperty();
+                    result.setId(property.getId() + " - " + repositoryObject.getLabel());
+                } else {
+                    result.setId(repositoryObject.getId());
+                }
                 result.setLabel(repositoryObject.getLabel());
             }
         }

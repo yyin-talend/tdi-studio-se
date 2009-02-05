@@ -8,6 +8,8 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.image.OverlayImage;
 import org.talend.commons.ui.image.OverlayImage.EPosition;
+import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.business.diagram.custom.commands.ChangeTalendItemLabelCommand;
@@ -25,15 +27,24 @@ public class RepositoryFactoryProxyLabelProvider extends AdapterFactoryLabelProv
     @Override
     public Image getColumnImage(Object object, int columnIndex) {
         Image image = super.getColumnImage(object, columnIndex);
-
+        BusinessAssignment assignment = (BusinessAssignment) object;
         if (columnIndex == 0) {
             IRepositoryObject lastVersion = getLastVersion(object);
             if (lastVersion == null) {
-                return new OverlayImage(image, ImageProvider.getImageDesc(ECoreImage.DELETED_OVERLAY),
-                        EPosition.BOTTOM_RIGHT).createImage();
+                if ("metadata".startsWith(assignment.getTalendItem().getLabel())) {
+                    IMetadataTable table = MetadataTool.getMetadataFromRepository(assignment.getTalendItem().getId());
+                    if (table == null) {
+                        return new OverlayImage(image, ImageProvider.getImageDesc(ECoreImage.DELETED_OVERLAY),
+                                EPosition.BOTTOM_RIGHT).createImage();
+                    }
+                } else {
+                    return new OverlayImage(image, ImageProvider.getImageDesc(ECoreImage.DELETED_OVERLAY), EPosition.BOTTOM_RIGHT)
+                            .createImage();
+                }
+
             } else if (isDeleted(lastVersion)) {
-                return new OverlayImage(image, ImageProvider.getImageDesc(ECoreImage.RECYCLE_BIN_OVERLAY),
-                        EPosition.BOTTOM_RIGHT).createImage();
+                return new OverlayImage(image, ImageProvider.getImageDesc(ECoreImage.RECYCLE_BIN_OVERLAY), EPosition.BOTTOM_RIGHT)
+                        .createImage();
             }
         }
 
@@ -43,23 +54,30 @@ public class RepositoryFactoryProxyLabelProvider extends AdapterFactoryLabelProv
     @Override
     public String getColumnText(Object object, int columnIndex) {
         String columnText = super.getColumnText(object, columnIndex);
-
+        BusinessAssignment assignment = (BusinessAssignment) object;
+        IRepositoryObject lastVersion = getLastVersion(object);
         if (columnIndex == 0) {
-            IRepositoryObject lastVersion = getLastVersion(object);
             if (lastVersion == null) {
-                columnText += Messages.getString("RepositoryFactoryProxyLabelProvider.NotFound"); //$NON-NLS-1$
+                if ("metadata".startsWith(assignment.getTalendItem().getLabel())) {
+                    IMetadataTable table = MetadataTool.getMetadataFromRepository(assignment.getTalendItem().getId());
+                    if (table == null) {
+                        columnText += Messages.getString("RepositoryFactoryProxyLabelProvider.NotFound"); //$NON-NLS-1$
+                    }
+                } else {
+                    columnText += Messages.getString("RepositoryFactoryProxyLabelProvider.NotFound"); //$NON-NLS-1$
+                }
             } else if (isDeleted(lastVersion)) {
                 columnText += Messages.getString("RepositoryFactoryProxyLabelProvider.Deleted"); //$NON-NLS-1$
             }
         }
 
         if (columnIndex == 1) {
-            IRepositoryObject lastVersion = getLastVersion(object);
+
             if (lastVersion != null) {
                 String label = lastVersion.getProperty().getLabel();
                 if (!label.equals(columnText)) {
-                    ChangeTalendItemLabelCommand command = new ChangeTalendItemLabelCommand(
-                            ((BusinessAssignment) object).getTalendItem(), label);
+                    ChangeTalendItemLabelCommand command = new ChangeTalendItemLabelCommand(((BusinessAssignment) object)
+                            .getTalendItem(), label);
                     try {
                         command.execute(null, null);
                     } catch (ExecutionException e) {
