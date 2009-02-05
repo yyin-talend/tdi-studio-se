@@ -24,11 +24,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -43,8 +46,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
+import org.eclipse.ui.progress.IProgressService;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
@@ -124,6 +129,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     private String originalRootFolderName;
 
     protected Button exportDependencies;
+
+    boolean ok;
 
     /**
      * Create an instance of this class.
@@ -563,12 +570,12 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      * Export the passed resource and recursively export all of its child resources (iff it's a container). Answer a
      * boolean indicating success.
      */
-    protected boolean executeExportOperation(ArchiveFileExportOperationFullPath op) {
+    protected boolean executeExportOperation(ArchiveFileExportOperationFullPath op, IProgressMonitor monitor) {
         op.setCreateLeadupStructure(true);
         op.setUseCompression(true);
-
         try {
-            getContainer().run(true, true, op);
+            // getContainer().run(true, true, op);
+            op.run(monitor);
         } catch (InterruptedException e) {
             return false;
         } catch (InvocationTargetException e) {
@@ -597,20 +604,37 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     public boolean finish() {
         manager = createJobScriptsManager();
         manager.setMultiNodes(isMultiNodes());
+        // achen modify to fix bug 0006222
+        IRunnableWithProgress worker = new IRunnableWithProgress() {
 
-        boolean ok = false;
-        if (this.selectedJobVersion != null && this.selectedJobVersion.equals(this.allVersions)) {
-            String[] allVersions = JobVersionUtils.getAllVersions(this.nodes[0]);
-            for (String version : allVersions) {
-                ok = exportJobScript(version);
-                if (!ok) {
-                    return false;
+            public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+
+                if (selectedJobVersion != null && selectedJobVersion.equals(allVersions)) {
+                    String[] allVersions = JobVersionUtils.getAllVersions(nodes[0]);
+                    for (String version : allVersions) {
+                        monitor.subTask("Export job: " + nodes[0].getLabel() + "_" + version);
+                        ok = exportJobScript(version, monitor);
+                        if (!ok) {
+                            return;
+                        }
+                    }
+                } else {
+                    monitor.subTask("Export job: " + nodes[0].getLabel() + "_" + selectedJobVersion);
+                    ok = exportJobScript(selectedJobVersion, monitor);
                 }
+                monitor.subTask("Export job: " + nodes[0].getLabel() + "_" + selectedJobVersion + " sucessfully!");
             }
-        } else {
-            ok = exportJobScript(selectedJobVersion);
+        };
+        IProgressService progressService = PlatformUI.getWorkbench().getProgressService();
+        try {
+            progressService.runInUI(PlatformUI.getWorkbench().getProgressService(), worker, ResourcesPlugin.getWorkspace()
+                    .getRoot());
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
-
+        // end
         return ok;
     }
 
@@ -619,9 +643,9 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      * 
      * @return
      */
-    private boolean exportJobScript(String version) {
+    private boolean exportJobScript(String version, IProgressMonitor monitor) {
         manager.setJobVersion(version);
-
+        monitor.subTask("Init export choices...");
         Map<ExportChoice, Boolean> exportChoiceMap = getExportChoiceMap();
         boolean canExport = false;
         for (ExportChoice choice : ExportChoice.values()) {
@@ -661,6 +685,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             }
 
         }
+        monitor.subTask("Generate the job export resources...");
         List<ExportFileResource> resourcesToExport = getExportResources();
 
         if (isNotFirstTime) {
@@ -675,7 +700,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         saveWidgetValues();
         // boolean ok =executeExportOperation(new ArchiveFileExportOperationFullPath(process));
         ArchiveFileExportOperationFullPath exporterOperation = getExporterOperation(resourcesToExport);
-        boolean ok = executeExportOperation(exporterOperation);
+        monitor.subTask("Export the job resources...");
+        ok = executeExportOperation(exporterOperation, monitor);
 
         // if zip optin is true,create unzip file.
         if (zipOption != null && zipOption.equals("true")) { //$NON-NLS-1$
@@ -724,41 +750,50 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                 }
             }
         }
+        monitor.subTask("Compress the job files...");
         // achen modify to fix bug 0006108
         // rearchieve the jobscript zip file
         ECodeLanguage curLanguage = LanguageManager.getCurrentLanguage();
         if (curLanguage == ECodeLanguage.JAVA) {
-            JavaJobExportReArchieveCreator creator = null;
-            String zipFile = getDestinationValue();
-            String tmpFolder = JavaJobExportReArchieveCreator.getTmpFolder();
-            try {
-                // unzip to tmpFolder
-                ZipToFile.unZipFile(zipFile, tmpFolder);
-                // build new jar
-                for (int i = 0; i < process.length; i++) {
-                    if (process[i] != null) {
-                        String jobFolderName = process[i].getDirectoryName();
-                        int pos = jobFolderName.indexOf("/");
-                        if (pos != -1) {
-                            jobFolderName = jobFolderName.substring(pos + 1);
-                        }
-                        if (creator == null) {
-                            creator = new JavaJobExportReArchieveCreator(zipFile, jobFolderName);
-                        } else {
-                            creator.setJobFolerName(jobFolderName);
-                        }
-                        creator.buildNewJar();
-                    }
-                }
-                // rezip the tmpFolder to zipFile
-                ZipToFile.zipFile(tmpFolder, zipFile);
-            } catch (Exception e) {
-                ExceptionHandler.process(e);
-            } finally {
-                JavaJobExportReArchieveCreator.deleteTempFiles();
-            }
+            reBuildJobZipFile();
         }
         return ok;
+    }
+
+    /**
+     * 
+     * DOC aiming Comment method "reBuildJobZipFile".
+     */
+    private void reBuildJobZipFile() {
+        JavaJobExportReArchieveCreator creator = null;
+        String zipFile = getDestinationValue();
+        String tmpFolder = JavaJobExportReArchieveCreator.getTmpFolder();
+        try {
+            // unzip to tmpFolder
+            ZipToFile.unZipFile(zipFile, tmpFolder);
+            // build new jar
+            for (int i = 0; i < process.length; i++) {
+                if (process[i] != null) {
+                    String jobFolderName = process[i].getDirectoryName();
+                    int pos = jobFolderName.indexOf("/");
+                    if (pos != -1) {
+                        jobFolderName = jobFolderName.substring(pos + 1);
+                    }
+                    if (creator == null) {
+                        creator = new JavaJobExportReArchieveCreator(zipFile, jobFolderName);
+                    } else {
+                        creator.setJobFolerName(jobFolderName);
+                    }
+                    creator.buildNewJar();
+                }
+            }
+            // rezip the tmpFolder to zipFile
+            ZipToFile.zipFile(tmpFolder, zipFile);
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        } finally {
+            JavaJobExportReArchieveCreator.deleteTempFiles();
+        }
     }
 
     /**
