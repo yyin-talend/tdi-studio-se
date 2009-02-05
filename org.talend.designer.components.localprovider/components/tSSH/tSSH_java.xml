@@ -40,7 +40,7 @@
       FIELD="TEXT"
       NUM_ROW="20"
     >
-      <DEFAULT>"22"</DEFAULT>
+      <DEFAULT>22</DEFAULT>
     </PARAMETER>
 
     <PARAMETER

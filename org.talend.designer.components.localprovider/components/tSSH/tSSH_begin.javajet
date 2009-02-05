@@ -77,7 +77,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
         } else {
 %>
-			  ch.ethz.ssh2.Connection conn_<%=cid%> = new ch.ethz.ssh2.Connection(hostname_<%=cid%>,Integer.parseInt(<%=port%>));
+			  ch.ethz.ssh2.Connection conn_<%=cid%> = new ch.ethz.ssh2.Connection(hostname_<%=cid%>,<%=port%>);
 <%
         }
 %>
