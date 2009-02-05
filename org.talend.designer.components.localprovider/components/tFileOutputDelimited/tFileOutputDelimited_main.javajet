@@ -300,16 +300,30 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
         	
         	List< ? extends IConnection> conns = node.getIncomingConnections();
 				%>
-				
-            final String field_Delim1<%=cid %>= <%=delim %>;
-            char field_Delim<%=cid %>=field_Delim1<%=cid %>.charAt(0);
-            final String row_Delim1<%=cid %>= <%=rowSeparator %>;
-            char row_Delim<%=cid %>= row_Delim1<%=cid %>.charAt(0);
+   
+    		char field_Delim<%=cid %>[] = null;
+     	                 
+    		//support passing value (property: Field Separator) by 'context.fs' or 'globalMap.get("fs")'.
+    		if ( ((String)<%=delim %>).length() > 0 ){
+    			field_Delim<%=cid %> = ((String)<%=delim %>).toCharArray();
+    		}else { 
+    			throw new IllegalArgumentException("Field Separator must be assigned a char.");
+    		}
+    		    
+    		char row_Delim<%=cid %>[] = null;
+         
+    		//support passing value (property: Row Separator) by 'context.rs' or 'globalMap.get("rs")'.  
+    		if ( ((String)<%=rowSeparator %>).length() > 0 ){ 
+    			row_Delim<%=cid %> = ((String)<%=rowSeparator %>).toCharArray();
+    		}else {
+    			throw new IllegalArgumentException("Row Separator must be assigned a char.");
+    		}
+		
             
 				<%
           	if(!rowSeparator.equals("\\n") && !rowSeparator.equals("\\r")){
           	    %>
-              	CsvWriter<%=cid %>.setRecordDelimiter(row_Delim<%=cid %>);
+              	CsvWriter<%=cid %>.setRecordDelimiter(row_Delim<%=cid %>[0]);
               	<%				
           	}
             if(escapeChar.equals("\\\\")){
@@ -417,10 +431,10 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
             			        out<%=cid %> = new routines.system.BufferedOutput(new java.io.OutputStreamWriter(
 									new java.io.FileOutputStream(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>, <%=isAppend%>),<%=encoding%>));
 								strWriter<%=cid%> = new java.io.StringWriter();
-            	                CsvWriter<%=cid%> = new com.csvreader.CsvWriter(strWriter<%=cid%>, field_Delim<%=cid %>);
+            	                CsvWriter<%=cid%> = new com.csvreader.CsvWriter(strWriter<%=cid%>, field_Delim<%=cid %>[0]);
             	                <%}else{%>
             	                CsvWriter<%=cid%> = new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
-									new java.io.FileOutputStream(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>, <%=isAppend%>),<%=encoding%>)), field_Delim<%=cid %>);
+									new java.io.FileOutputStream(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>, <%=isAppend%>),<%=encoding%>)), field_Delim<%=cid %>[0]);
             	                <%}%>
             			        //set header.
             			        <%
@@ -449,7 +463,7 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
         						<%
         						if(!rowSeparator.equals("\\n") && !rowSeparator.equals("\\r")){
         						    %>
-        						    CsvWriter<%=cid %>.setRecordDelimiter(row_Delim<%=cid %>);
+        						    CsvWriter<%=cid %>.setRecordDelimiter(row_Delim<%=cid %>[0]);
         						    <%
         						}
         						if(escapeChar.equals("\\\\")){
