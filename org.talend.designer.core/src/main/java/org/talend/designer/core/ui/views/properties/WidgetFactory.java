@@ -18,11 +18,18 @@ import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 
@@ -77,8 +84,52 @@ public class WidgetFactory extends FormToolkit {
 
     public Composite createComposite(Composite parent, int style) {
         Composite c = super.createComposite(parent, style);
+        adapt(c);
         paintBordersFor(c);
         return c;
+    }
+
+    @Override
+    public void adapt(Composite composite) {
+        composite.setBackground(getColors().getBackground());
+        MouseAdapter listener = new MouseAdapter() {
+
+            public void mouseDown(MouseEvent e) {
+                Control control = (Control) e.widget;
+                if (control instanceof Composite) {
+                    Composite parent = (Composite) control;
+                    setChildFocus(parent);
+
+                } else {
+                    control.setFocus();
+                }
+
+            }
+        };
+        composite.addMouseListener(listener);
+        composite.getParent().addMouseListener(listener);
+        composite.setMenu(composite.getParent().getMenu());
+    }
+
+    private boolean setChildFocus(Composite parent) {
+        if (parent == null) {
+            return false;
+        }
+        for (Control control : parent.getChildren()) {
+            if ((control instanceof Combo) || (control instanceof Button)) {
+                continue;
+            } else if ((control instanceof Text) || (control instanceof StyledText)) {
+                control.setFocus();
+                return true;
+            } else {
+                if (control instanceof Composite) {
+                    if (setChildFocus((Composite) control)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     public Composite createComposite(Composite parent) {
@@ -201,4 +252,5 @@ public class WidgetFactory extends FormToolkit {
             super.dispose();
         }
     }
+
 }
