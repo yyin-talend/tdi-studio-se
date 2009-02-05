@@ -52,17 +52,13 @@ public class JavaJobExportReArchieveCreator {
 
     public JavaJobExportReArchieveCreator(String zipFile, String jobFolderName) {
         this.zipFile = zipFile;
-        int pos = jobFolderName.indexOf("/");
-        if (pos != -1) {
-            jobFolderName = jobFolderName.substring(pos + 1);
-        }
         this.jobFolerName = jobFolderName;
     }
 
-    public void createArchieve() {
+    public void buildNewJar() {
         try {
             String tmpFoler = getTmpFolder();
-            ZipToFile.unZipFile(zipFile, tmpFoler);
+            // ZipToFile.unZipFile(zipFile, tmpFoler);
             // init jobFolder File
             initJobFolder();
             if (jobFolder == null) {
@@ -73,21 +69,39 @@ public class JavaJobExportReArchieveCreator {
             jarBuilder.buildJar();
 
             // change the .bat file & .sh file
-            changeScriptFile(batFile);
-            changeScriptFile(shFile);
+            if (batFile != null) {
+                changeScriptFile(batFile);
+            }
+            if (shFile != null) {
+                changeScriptFile(shFile);
+            }
 
             // delete non used jar files
             // deleteNonUsedJar();
 
-            // zip jobFolder
-            ZipToFile.zipFile(jobFolder.getParentFile().getParentFile().getAbsolutePath(), zipFile);
-
         } catch (Exception e) {
             ExceptionHandler.process(e);
-        } finally {
-            // delete tmp file
-            deleteTempFiles();
         }
+    }
+
+    /**
+     * 
+     * DOC aiming Comment method "getJobFolerName".
+     * 
+     * @return
+     */
+    public String getJobFolerName() {
+        return this.jobFolerName;
+    }
+
+    /**
+     * 
+     * DOC aiming Comment method "setJobFolerName".
+     * 
+     * @param jobFolerName
+     */
+    public void setJobFolerName(String jobFolerName) {
+        this.jobFolerName = jobFolerName;
     }
 
     /**
@@ -115,7 +129,8 @@ public class JavaJobExportReArchieveCreator {
             if (pos != -1) {
                 if (file.getName().endsWith(".sh")) {
                     strs[pos + 1] = CLASSPATH_JAR + ":";
-                } else {
+                }
+                if (file.getName().endsWith(".bat")) {
                     strs[pos + 1] = CLASSPATH_JAR + ";";
                 }
             }
@@ -180,6 +195,10 @@ public class JavaJobExportReArchieveCreator {
         return filenames;
     }
 
+    /**
+     * 
+     * get jobFolder, libFolder, batFile, shFile
+     */
     private void initJobFolder() {
         String tmpFoler = getTmpFolder();
         File tmpFile = new File(tmpFoler);
@@ -218,7 +237,7 @@ public class JavaJobExportReArchieveCreator {
         return sb.toString();
     }
 
-    private String getTmpFolder() {
+    public static String getTmpFolder() {
         String tmp = System.getProperty("user.dir") + "/newjarFolder";
         tmp = tmp.replace('\\', '/');
         File f = new File(tmp);
@@ -231,7 +250,7 @@ public class JavaJobExportReArchieveCreator {
     /**
      * Deletes the temporary files.
      */
-    public void deleteTempFiles() {
+    public static void deleteTempFiles() {
         String tmpFold = getTmpFolder();
         File file = new File(tmpFold);
         if (!file.exists() && !file.isDirectory()) {

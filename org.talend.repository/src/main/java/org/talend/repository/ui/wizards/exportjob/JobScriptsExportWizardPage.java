@@ -67,6 +67,7 @@ import org.talend.repository.job.deletion.JobResourceManager;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.repository.ui.utils.ZipToFile;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager.ExportChoice;
 import org.talend.repository.utils.JobVersionUtils;
@@ -727,10 +728,34 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         // rearchieve the jobscript zip file
         ECodeLanguage curLanguage = LanguageManager.getCurrentLanguage();
         if (curLanguage == ECodeLanguage.JAVA) {
-            if (process[0] != null) {
-                String jobFolderName = process[0].getDirectoryName();
-                JavaJobExportReArchieveCreator creator = new JavaJobExportReArchieveCreator(getDestinationValue(), jobFolderName);
-                creator.createArchieve();
+            JavaJobExportReArchieveCreator creator = null;
+            String zipFile = getDestinationValue();
+            String tmpFolder = JavaJobExportReArchieveCreator.getTmpFolder();
+            try {
+                // unzip to tmpFolder
+                ZipToFile.unZipFile(zipFile, tmpFolder);
+                // build new jar
+                for (int i = 0; i < process.length; i++) {
+                    if (process[i] != null) {
+                        String jobFolderName = process[i].getDirectoryName();
+                        int pos = jobFolderName.indexOf("/");
+                        if (pos != -1) {
+                            jobFolderName = jobFolderName.substring(pos + 1);
+                        }
+                        if (creator == null) {
+                            creator = new JavaJobExportReArchieveCreator(zipFile, jobFolderName);
+                        } else {
+                            creator.setJobFolerName(jobFolderName);
+                        }
+                        creator.buildNewJar();
+                    }
+                }
+                // rezip the tmpFolder to zipFile
+                ZipToFile.zipFile(tmpFolder, zipFile);
+            } catch (Exception e) {
+                ExceptionHandler.process(e);
+            } finally {
+                JavaJobExportReArchieveCreator.deleteTempFiles();
             }
         }
         return ok;
