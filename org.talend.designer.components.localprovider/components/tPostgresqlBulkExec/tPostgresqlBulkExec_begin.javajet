@@ -12,7 +12,7 @@ imports="
     java.util.Map
     java.util.HashMap
 " 
-skeleton="../templates/db_output_bulk.skeleton"
+skeleton="../templates/db_output_bulk.skeleton" 
 %>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
@@ -39,7 +39,7 @@ if(dbSchema == null || dbSchema.equals("") || dbSchema.equals("\"\"")) {
 }
 if(dataAction.equals("UPDATE")) {
     tmpTableName = tableName;
-    tableName = new StringBuilder("\\\"tmp_" + cid + "\\\"");
+    tableName = new StringBuilder("\\\"tmp_" + cid ); //tableName not end. will add pid when create a temp table for update.
 }
 String file = ElementParameterParser.getValue(node, "__FILENAME__");
 List<IMetadataColumn> columnList = getColumnList(node);
@@ -74,7 +74,9 @@ if(notNullCols != null && notNullCols.size() > 0) {
     }
 }
 %>
-String bulkSQL_<%=cid%> = "COPY " + "<%=tableName.toString()%>" + "<%=copyColumns.toString()%>FROM '" + <%=file%> + "' WITH ";
+String bulkSQL_<%=cid%> = "COPY " + "<%=tableName.toString()%>" 
+ <%if (dataAction.equals("UPDATE")) {%>+ "_"+ pid + "\""<%}%>
+ +"<%=copyColumns.toString()%>FROM '" + <%=file%> + "' WITH ";
 <%
 String fileType = ElementParameterParser.getValue(node, "__FILETYPE__");
 String oids = (ElementParameterParser.getValue(node, "__OIDS__").equals("true") ? "OIDS" : "");
@@ -163,6 +165,7 @@ if(columnList != null && columnList.size() > 0) {
     }    
 }
 if(dataAction.equals("UPDATE")) {
+
     if(columnList != null && columnList.size() > 0) {
         int keyCount = 0;
         for(IMetadataColumn column : columnList) {
@@ -176,19 +179,24 @@ if(dataAction.equals("UPDATE")) {
             throw new RuntimeException("For bulk update, Schema must have a key at least."); 
         }
         String tmpTableName_<%=cid%> = tableName_<%=cid%>;
-        tableName_<%=cid%> = "tmp_<%=cid%>";
+        tableName_<%=cid%> = "tmp_<%=cid%>" + "_" + pid ;        
         java.sql.Statement stmtCreateTmp_<%=cid%> = con_<%=cid%>.createStatement();
         stmtCreateTmp_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
         stmtCreateTmp_<%=cid%>.close();
+        
         java.sql.Statement stmtTmpBulk_<%=cid%> = con_<%=cid%>.createStatement();
         stmtTmpBulk_<%=cid%>.execute(bulkSQL_<%=cid%>);
         stmtTmpBulk_<%=cid%>.close();
+        
         tableName_<%=cid%> = tmpTableName_<%=cid%>;
         tmpTableName_<%=cid%> = "tmp_<%=cid%>";
+        
         java.sql.Statement stmtUpdateBulk_<%=cid%> = con_<%=cid%>.createStatement();
+        
         stmtUpdateBulk_<%=cid%>.executeUpdate("<%=manager.getUpdateBulkSQL(columnList)%>");
         stmtUpdateBulk_<%=cid%>.close();
         tableName_<%=cid%> = tmpTableName_<%=cid%>;
+        
         java.sql.Statement stmtTmpDrop_<%=cid%> = con_<%=cid%>.createStatement();
         stmtTmpDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
         stmtTmpDrop_<%=cid%>.close();
