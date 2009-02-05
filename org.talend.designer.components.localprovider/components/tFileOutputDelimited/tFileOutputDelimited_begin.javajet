@@ -175,8 +175,8 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
         IMetadataTable metadata = metadatas.get(0);
         if (metadata!=null) {                        
             String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
-    		String delim1 = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");
-        	String delim = delim1.substring(1,delim1.length()-1);
+    		String delim = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");
+//        	String delim = delim1.substring(1,delim1.length()-1);
         	boolean isAppend = ElementParameterParser.getValue(node,"__APPEND__").equals("true");
         	boolean isIncludeHeader = ElementParameterParser.getValue(node,"__INCLUDEHEADER__").equals("true");
         	boolean split = ElementParameterParser.getValue(node, "__SPLIT__").equals("true");
@@ -187,6 +187,8 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
             int splitEvery_<%=cid%> = <%=splitEvery %>;
             int splitedFileNo_<%=cid%> =0;
             int currentRow_<%=cid%> = 0;
+            final String field_Delim1_<%=cid %>= <%=delim %>;
+            char field_Delim_<%=cid %>=field_Delim1_<%=cid %>.charAt(0);
             <%
             if(ElementParameterParser.getValue(node,"__CREATE__").equals("true")){
                 %>         
@@ -206,12 +208,12 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
                 java.io.Writer out<%=cid %> = new routines.system.BufferedOutput(new java.io.OutputStreamWriter(
                     new java.io.FileOutputStream(fileName_<%=cid%>, <%=isAppend%>), <%=encoding%>));
 				java.io.StringWriter strWriter<%=cid%> = new java.io.StringWriter();
-                com.csvreader.CsvWriter CsvWriter<%=cid%> = new com.csvreader.CsvWriter(strWriter<%=cid%>, '<%=delim%>');  
+                com.csvreader.CsvWriter CsvWriter<%=cid%> = new com.csvreader.CsvWriter(strWriter<%=cid%>, field_Delim_<%=cid %>);  
                 <%
                 }else{
 				%>
 				com.csvreader.CsvWriter CsvWriter<%=cid%> = new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
-                    new java.io.FileOutputStream(fileName_<%=cid%>, <%=isAppend%>), <%=encoding%>)), '<%=delim%>');  
+                    new java.io.FileOutputStream(fileName_<%=cid%>, <%=isAppend%>), <%=encoding%>)), field_Delim_<%=cid %>);  
 				<%
                 }
                 %>      
@@ -224,12 +226,12 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
                         new java.io.FileOutputStream(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>, <%=isAppend%>),<%=encoding%>));
                 java.io.StringWriter strWriter<%=cid%> = new java.io.StringWriter();    
                   
-                com.csvreader.CsvWriter CsvWriter<%=cid%> = new com.csvreader.CsvWriter(strWriter<%=cid%>, '<%=delim%>');
+                com.csvreader.CsvWriter CsvWriter<%=cid%> = new com.csvreader.CsvWriter(strWriter<%=cid%>, field_Delim_<%=cid %>);
                 <%
                 }else{
                 %>
                 com.csvreader.CsvWriter CsvWriter<%=cid%> = new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
-                        new java.io.FileOutputStream(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>, <%=isAppend%>),<%=encoding%>)), '<%=delim%>');
+                        new java.io.FileOutputStream(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>, <%=isAppend%>),<%=encoding%>)), field_Delim_<%=cid %>);
                 <%
                 }
                 %>

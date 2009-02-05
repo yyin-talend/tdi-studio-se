@@ -272,12 +272,12 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
         IMetadataTable metadata = metadatas.get(0);
         if (metadata!=null) {                                    
             String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
-    		String delim1 = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");
-        	String delim = delim1.substring(1,delim1.length()-1);
+    		String delim = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");
+ //       	String delim = delim1.substring(1,delim1.length()-1);
         	boolean isIncludeHeader = ElementParameterParser.getValue(node,"__INCLUDEHEADER__").equals("true");
         	boolean isAppend = ElementParameterParser.getValue(node,"__APPEND__").equals("true");
-        	String rowSeparator1 = ElementParameterParser.getValue(node, "__ROWSEPARATOR__");
-        	String rowSeparator = rowSeparator1.substring(1,rowSeparator1.length()-1);
+        	String rowSeparator = ElementParameterParser.getValue(node, "__ROWSEPARATOR__");
+//        	String rowSeparator = rowSeparator1.substring(1,rowSeparator1.length()-1);
         	String escapeChar1 = ElementParameterParser.getValue(node, "__ESCAPE_CHAR__");
         	String escapeChar = escapeChar1.substring(1,escapeChar1.length()-1);
         	String textEnclosure1 = ElementParameterParser.getValue(node, "__TEXT_ENCLOSURE__");
@@ -299,9 +299,17 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
 			boolean isParallelize = (parallelize!=null&&!parallelize.equals(""))?parallelize.equals("true"):false;
         	
         	List< ? extends IConnection> conns = node.getIncomingConnections();
+				%>
+				
+            final String field_Delim1<%=cid %>= <%=delim %>;
+            char field_Delim<%=cid %>=field_Delim1<%=cid %>.charAt(0);
+            final String row_Delim1<%=cid %>= <%=rowSeparator %>;
+            char row_Delim<%=cid %>= row_Delim1<%=cid %>.charAt(0);
+            
+				<%
           	if(!rowSeparator.equals("\\n") && !rowSeparator.equals("\\r")){
           	    %>
-              	CsvWriter<%=cid %>.setRecordDelimiter('<%=rowSeparator%>');
+              	CsvWriter<%=cid %>.setRecordDelimiter(row_Delim<%=cid %>);
               	<%				
           	}
             if(escapeChar.equals("\\\\")){
@@ -409,10 +417,10 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
             			        out<%=cid %> = new routines.system.BufferedOutput(new java.io.OutputStreamWriter(
 									new java.io.FileOutputStream(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>, <%=isAppend%>),<%=encoding%>));
 								strWriter<%=cid%> = new java.io.StringWriter();
-            	                CsvWriter<%=cid%> = new com.csvreader.CsvWriter(strWriter<%=cid%>, '<%=delim%>');
+            	                CsvWriter<%=cid%> = new com.csvreader.CsvWriter(strWriter<%=cid%>, field_Delim<%=cid %>);
             	                <%}else{%>
             	                CsvWriter<%=cid%> = new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
-									new java.io.FileOutputStream(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>, <%=isAppend%>),<%=encoding%>)), '<%=delim%>');
+									new java.io.FileOutputStream(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>, <%=isAppend%>),<%=encoding%>)), field_Delim<%=cid %>);
             	                <%}%>
             			        //set header.
             			        <%
@@ -441,7 +449,7 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
         						<%
         						if(!rowSeparator.equals("\\n") && !rowSeparator.equals("\\r")){
         						    %>
-        						    CsvWriter<%=cid %>.setRecordDelimiter('<%=rowSeparator%>');
+        						    CsvWriter<%=cid %>.setRecordDelimiter(row_Delim<%=cid %>);
         						    <%
         						}
         						if(escapeChar.equals("\\\\")){
