@@ -85,10 +85,12 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             if (selectedJobVersion == null) {
                 selectedJobVersion = process[i].getItem().getProperty().getVersion();
             }
-
+            if (progressMonitor != null) {
+                progressMonitor.subTask("Export job:" + process[i].getNode().getObject().getLabel() + selectedJobVersion);
+            }
             if (!BooleanUtils.isTrue(exportChoice.get(ExportChoice.doNotCompileCode))) {
                 generateJobFiles(processItem, contextName, selectedJobVersion, statisticPort != IProcessor.NO_STATISTICS,
-                        statisticPort != IProcessor.NO_TRACES, exportChoice.get(ExportChoice.applyToChildren));
+                        statisticPort != IProcessor.NO_TRACES, exportChoice.get(ExportChoice.applyToChildren), progressMonitor);
             }
             List<URL> resources = new ArrayList<URL>();
             resources.addAll(getLauncher(exportChoice.get(ExportChoice.needLauncher), processItem, escapeSpace(contextName),
@@ -311,7 +313,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
      * @see org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager#getCurrentProjectName()
      */
     @Override
-	protected String getCorrespondingProjectName(Item item) {
+    protected String getCorrespondingProjectName(Item item) {
         return PerlResourcesHelper.getRootProjectName(item);
     }
 
@@ -440,9 +442,9 @@ public class JobPerlScriptsManager extends JobScriptsManager {
     @Override
     protected void addSource(ExportFileResource[] allResources, ProcessItem processItem, boolean needSource,
             ExportFileResource curResource, String basePath, String... selectedJobVersion) {
-		 if (!needSource) {
-			return;
-		}
+        if (!needSource) {
+            return;
+        }
 
         // getItemResource(processItem, resource, basePath, selectedJobVersion);
         // super.addSource(processItem, needSource, resource, basePath, selectedJobVersion);

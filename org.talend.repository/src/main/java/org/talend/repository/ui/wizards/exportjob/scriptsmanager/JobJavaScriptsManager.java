@@ -88,7 +88,9 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             if (!isMultiNodes() && this.getSelectedJobVersion() != null) {
                 selectedJobVersion = this.getSelectedJobVersion();
             }
-
+            if (progressMonitor != null) {
+                progressMonitor.subTask("Export job:" + process[i].getNode().getObject().getLabel() + "_" + selectedJobVersion);
+            }
             String libPath = calculateLibraryPathFromDirectory(process[i].getDirectoryName());
             // use character @ as temporary classpath separator, this one will be replaced during the export.
             String standardJars = libPath + PATH_SEPARATOR + SYSTEMROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR
@@ -97,7 +99,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
             if (!BooleanUtils.isTrue(exportChoice.get(ExportChoice.doNotCompileCode))) {
                 generateJobFiles(processItem, contextName, selectedJobVersion, statisticPort != IProcessor.NO_STATISTICS,
-                        tracePort != IProcessor.NO_TRACES, BooleanUtils.isTrue(exportChoice.get(ExportChoice.applyToChildren)));
+                        tracePort != IProcessor.NO_TRACES, BooleanUtils.isTrue(exportChoice.get(ExportChoice.applyToChildren)),
+                        progressMonitor);
             }
             List<URL> resources = new ArrayList<URL>();
             resources.addAll(getLauncher(BooleanUtils.isTrue(exportChoice.get(ExportChoice.needLauncher)), processItem,
@@ -247,9 +250,9 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         // getItemResource(processItem, resource, basePath, selectedJobVersion);
         // super.addSource(processItem, needSource, resource, basePath, selectedJobVersion);
         // Get java src
-		if (!needSource) {
-			return;
-		}
+        if (!needSource) {
+            return;
+        }
         try {
             String projectName = getCorrespondingProjectName(processItem);
             String jobName = processItem.getProperty().getLabel();
@@ -280,7 +283,6 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                     emfFileUrls);
             String jobFolderName = JavaResourcesHelper.getJobFolderName(jobName, jobVersion);
 
-          
             IPath path = getSrcRootLocation();
             path = path.append(projectName).append(jobFolderName).append(jobName + ".java"); //$NON-NLS-1$
             List<URL> javaFileUrls = new ArrayList<URL>();
@@ -670,7 +672,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * @see org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager#getCurrentProjectName()
      */
     @Override
-	protected String getCorrespondingProjectName(Item item) {
+    protected String getCorrespondingProjectName(Item item) {
         return JavaResourcesHelper.getProjectFolderName(item);
     }
 }

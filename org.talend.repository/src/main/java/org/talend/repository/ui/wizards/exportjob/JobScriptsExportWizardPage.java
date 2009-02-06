@@ -24,7 +24,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -47,6 +46,7 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
 import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
 import org.eclipse.ui.progress.IProgressService;
@@ -570,17 +570,17 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      * Export the passed resource and recursively export all of its child resources (iff it's a container). Answer a
      * boolean indicating success.
      */
-    protected boolean executeExportOperation(ArchiveFileExportOperationFullPath op, IProgressMonitor monitor) {
+    protected boolean executeExportOperation(ArchiveFileExportOperationFullPath op) {
         op.setCreateLeadupStructure(true);
         op.setUseCompression(true);
+
         try {
-            // getContainer().run(true, true, op);
-            op.run(monitor);
-        } catch (InterruptedException e) {
-            return false;
+            getContainer().run(true, true, op);
         } catch (InvocationTargetException e) {
-            displayErrorDialog(e.getTargetException());
-            return false;
+            ExceptionHandler.process(e);
+        } catch (InterruptedException e) {
+            ExceptionHandler.process(e);
+
         }
 
         IStatus status = op.getStatus();
@@ -608,31 +608,33 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         IRunnableWithProgress worker = new IRunnableWithProgress() {
 
             public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                final EventLoopProgressMonitor progressMonitor = new EventLoopProgressMonitor(monitor);
 
+                progressMonitor.beginTask("Exporting job script", IProgressMonitor.UNKNOWN); //$NON-NLS-1$
                 if (selectedJobVersion != null && selectedJobVersion.equals(allVersions)) {
                     String[] allVersions = JobVersionUtils.getAllVersions(nodes[0]);
                     for (String version : allVersions) {
                         monitor.subTask("Export job: " + nodes[0].getLabel() + "_" + version);
-                        ok = exportJobScript(version, monitor);
+                        ok = exportJobScript(version, progressMonitor);
                         if (!ok) {
                             return;
                         }
                     }
                 } else {
                     monitor.subTask("Export job: " + nodes[0].getLabel() + "_" + selectedJobVersion);
-                    ok = exportJobScript(selectedJobVersion, monitor);
+                    ok = exportJobScript(selectedJobVersion, progressMonitor);
                 }
                 monitor.subTask("Export job: " + nodes[0].getLabel() + "_" + selectedJobVersion + " sucessfully!");
+                progressMonitor.done();
             }
         };
         IProgressService progressService = PlatformUI.getWorkbench().getProgressService();
         try {
-            progressService.runInUI(PlatformUI.getWorkbench().getProgressService(), worker, ResourcesPlugin.getWorkspace()
-                    .getRoot());
+            progressService.run(false, true, worker);
         } catch (InvocationTargetException e) {
-            e.printStackTrace();
+            ExceptionHandler.process(e);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            ExceptionHandler.process(e);
         }
         // end
         return ok;
@@ -645,7 +647,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      */
     private boolean exportJobScript(String version, IProgressMonitor monitor) {
         manager.setJobVersion(version);
-        monitor.subTask("Init export choices...");
+        // monitor.subTask("Init export choices...");
         Map<ExportChoice, Boolean> exportChoiceMap = getExportChoiceMap();
         boolean canExport = false;
         for (ExportChoice choice : ExportChoice.values()) {
@@ -685,7 +687,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             }
 
         }
-        monitor.subTask("Generate the job export resources...");
+
+        manager.setProgressMonitor(monitor);
         List<ExportFileResource> resourcesToExport = getExportResources();
 
         if (isNotFirstTime) {
@@ -700,8 +703,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         saveWidgetValues();
         // boolean ok =executeExportOperation(new ArchiveFileExportOperationFullPath(process));
         ArchiveFileExportOperationFullPath exporterOperation = getExporterOperation(resourcesToExport);
-        monitor.subTask("Export the job resources...");
-        ok = executeExportOperation(exporterOperation, monitor);
+
+        ok = executeExportOperation(exporterOperation);
 
         // if zip optin is true,create unzip file.
         if (zipOption != null && zipOption.equals("true")) { //$NON-NLS-1$
@@ -738,7 +741,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             if (reManager.isProtected(r)) {
                 try {
                     ProcessorUtilities.generateCode(r.getJobInfo().getJobId(), r.getJobInfo().getContextName(), r.getJobInfo()
-                            .getJobVersion(), false, false);
+                            .getJobVersion(), false, false, monitor);
                 } catch (ProcessorException e) {
                     ExceptionHandler.process(e);
                 }
@@ -750,7 +753,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                 }
             }
         }
-        monitor.subTask("Compress the job files...");
+        monitor.subTask("Export job sucessfully!");
         // achen modify to fix bug 0006108
         // rearchieve the jobscript zip file
         ECodeLanguage curLanguage = LanguageManager.getCurrentLanguage();

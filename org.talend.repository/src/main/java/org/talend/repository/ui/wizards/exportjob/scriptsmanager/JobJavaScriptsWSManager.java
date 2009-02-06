@@ -135,7 +135,8 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
 
             if (!BooleanUtils.isTrue(exportChoice.get(ExportChoice.doNotCompileCode))) {
                 generateJobFiles(processItem, contextName, selectedJobVersion, statisticPort != IProcessor.NO_STATISTICS,
-                        tracePort != IProcessor.NO_TRACES, BooleanUtils.isTrue(exportChoice.get(ExportChoice.applyToChildren)));
+                        tracePort != IProcessor.NO_TRACES, BooleanUtils.isTrue(exportChoice.get(ExportChoice.applyToChildren)),
+                        progressMonitor);
             }
             // generate the WSDL file
             ExportFileResource wsdlFile = getWSDLFile(processItem, BooleanUtils.isTrue(exportChoice.get(ExportChoice.needWSDL)),
@@ -647,7 +648,8 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
                 if (!j2w.getCls().isInterface()) {
                     w2j.setImplementationClassName(j2w.getCls().getName());
                 } else {
-                    throw new Exception(org.talend.repository.i18n.Messages.getString("JobJavaScriptsWSManager.impClassNotSpecified")); //$NON-NLS-1$
+                    throw new Exception(org.talend.repository.i18n.Messages
+                            .getString("JobJavaScriptsWSManager.impClassNotSpecified")); //$NON-NLS-1$
                 }
             }
             // w2j.run(wsdlFileName);

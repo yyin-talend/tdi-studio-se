@@ -31,6 +31,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.talend.commons.exception.ExceptionHandler;
@@ -86,6 +87,8 @@ public abstract class JobScriptsManager {
 
     private String selectedJobVersion; //$NON-NLS-1$
 
+    protected IProgressMonitor progressMonitor; // achen added to fix bug 0006222
+
     public Map<ExportChoice, Boolean> getDefaultExportChoiseMap() {
         Map<ExportChoice, Boolean> exportChoiceMap = new EnumMap<ExportChoice, Boolean>(ExportChoice.class);
         exportChoiceMap.put(ExportChoice.needLauncher, true);
@@ -98,6 +101,10 @@ public abstract class JobScriptsManager {
         exportChoiceMap.put(ExportChoice.applyToChildren, false);
         exportChoiceMap.put(ExportChoice.doNotCompileCode, false);
         return exportChoiceMap;
+    }
+
+    public void setProgressMonitor(IProgressMonitor progressMonitor) {
+        this.progressMonitor = progressMonitor;
     }
 
     /**
@@ -350,16 +357,16 @@ public abstract class JobScriptsManager {
     }
 
     /**
-     * Generates the perl files.
+     * Generates the job files.
      * 
      * @param needGenerateCode
      * @param contextName
      * @param process
      */
     protected void generateJobFiles(ProcessItem process, String contextName, String version, boolean statistics, boolean trace,
-            boolean applyContextToChildren) {
+            boolean applyContextToChildren, IProgressMonitor monitor) {
         try {
-            ProcessorUtilities.generateCode(process, contextName, version, statistics, trace, applyContextToChildren);
+            ProcessorUtilities.generateCode(process, contextName, version, statistics, trace, applyContextToChildren, monitor);
         } catch (ProcessorException e) {
             ExceptionHandler.process(e);
         }
@@ -584,9 +591,8 @@ public abstract class JobScriptsManager {
                                         IPath itemFilePath = projectRootPath.append(typeFolderPath).append(metadataPath).append(
                                                 metadataName + "_" + metadataVersion + "." + FileConstants.ITEM_EXTENSION); //$NON-NLS-1$ //$NON-NLS-2$
                                         IPath propertiesFilePath = projectRootPath.append(typeFolderPath).append(metadataPath)
-                                                .append(
-                                                        metadataName + "_" + metadataVersion + "." //$NON-NLS-1$ //$NON-NLS-2$
-                                                                + FileConstants.PROPERTIES_EXTENSION);
+                                                .append(metadataName + "_" + metadataVersion + "." //$NON-NLS-1$ //$NON-NLS-2$
+                                                        + FileConstants.PROPERTIES_EXTENSION);
                                         List<URL> metadataNameFileUrls = new ArrayList<URL>();
                                         metadataNameFileUrls.add(FileLocator.toFileURL(itemFilePath.toFile().toURL()));
                                         metadataNameFileUrls.add(FileLocator.toFileURL(propertiesFilePath.toFile().toURL()));
