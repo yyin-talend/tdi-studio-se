@@ -41,5 +41,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.talend.commons,
  org.talend.repository,
  org.talend.model.edit,
- org.talend.commons.ui
+ org.talend.commons.ui,
+ org.talend.designer.core
 Eclipse-LazyStart: true

@@ -8,8 +8,10 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.image.OverlayImage;
 import org.talend.commons.ui.image.OverlayImage.EPosition;
-import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.core.model.metadata.builder.connection.Query;
+import org.talend.core.model.metadata.builder.connection.SubItemHelper;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.business.diagram.custom.commands.ChangeTalendItemLabelCommand;
@@ -31,16 +33,16 @@ public class RepositoryFactoryProxyLabelProvider extends AdapterFactoryLabelProv
         if (columnIndex == 0) {
             IRepositoryObject lastVersion = getLastVersion(object);
             if (lastVersion == null) {
-                if ("metadata".startsWith(assignment.getTalendItem().getLabel())) {
-                    IMetadataTable table = MetadataTool.getMetadataFromRepository(assignment.getTalendItem().getId());
-                    if (table == null) {
-                        return new OverlayImage(image, ImageProvider.getImageDesc(ECoreImage.DELETED_OVERLAY),
-                                EPosition.BOTTOM_RIGHT).createImage();
-                    }
-                } else {
-                    return new OverlayImage(image, ImageProvider.getImageDesc(ECoreImage.DELETED_OVERLAY), EPosition.BOTTOM_RIGHT)
-                            .createImage();
+                MetadataTable table = MetadataTool.getMetadataTableFromRepository(assignment.getTalendItem().getId());
+                if (table != null) {
+                    return image;
                 }
+                Query query = MetadataTool.getQueryFromRepository(assignment.getTalendItem().getId());
+                if (query != null) {
+                    return image;
+                }
+                return new OverlayImage(image, ImageProvider.getImageDesc(ECoreImage.DELETED_OVERLAY), EPosition.BOTTOM_RIGHT)
+                        .createImage();
 
             } else if (isDeleted(lastVersion)) {
                 return new OverlayImage(image, ImageProvider.getImageDesc(ECoreImage.RECYCLE_BIN_OVERLAY), EPosition.BOTTOM_RIGHT)
@@ -58,14 +60,20 @@ public class RepositoryFactoryProxyLabelProvider extends AdapterFactoryLabelProv
         IRepositoryObject lastVersion = getLastVersion(object);
         if (columnIndex == 0) {
             if (lastVersion == null) {
-                if ("metadata".startsWith(assignment.getTalendItem().getLabel())) {
-                    IMetadataTable table = MetadataTool.getMetadataFromRepository(assignment.getTalendItem().getId());
-                    if (table == null) {
-                        columnText += Messages.getString("RepositoryFactoryProxyLabelProvider.NotFound"); //$NON-NLS-1$
-                    }
-                } else {
-                    columnText += Messages.getString("RepositoryFactoryProxyLabelProvider.NotFound"); //$NON-NLS-1$
+                MetadataTable table = MetadataTool.getMetadataTableFromRepository(assignment.getTalendItem().getId());
+                if (table != null) {
+                    if (SubItemHelper.isDeleted(table))
+                        columnText += Messages.getString("RepositoryFactoryProxyLabelProvider.Deleted"); //$NON-NLS-1$
+                    return columnText;
                 }
+                Query query = MetadataTool.getQueryFromRepository(assignment.getTalendItem().getId());
+                if (query != null) {
+                    if (SubItemHelper.isDeleted(query))
+                        columnText += Messages.getString("RepositoryFactoryProxyLabelProvider.Deleted"); //$NON-NLS-1$
+                    return columnText;
+                }
+                columnText += Messages.getString("RepositoryFactoryProxyLabelProvider.NotFound"); //$NON-NLS-1$
+
             } else if (isDeleted(lastVersion)) {
                 columnText += Messages.getString("RepositoryFactoryProxyLabelProvider.Deleted"); //$NON-NLS-1$
             }

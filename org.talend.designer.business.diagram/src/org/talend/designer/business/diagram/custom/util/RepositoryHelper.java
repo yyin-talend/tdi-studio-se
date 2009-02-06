@@ -25,6 +25,7 @@ import org.talend.designer.business.model.business.BusinessProcess;
 import org.talend.designer.business.model.business.Repository;
 import org.talend.designer.business.model.business.TalendItem;
 import org.talend.repository.model.MetadataTableRepositoryObject;
+import org.talend.repository.model.QueryRepositoryObject;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
 
@@ -65,6 +66,9 @@ public class RepositoryHelper {
                 result.setRepository(repository);
                 if ("METADATA_CON_TABLE".equals(repositoryObject.getType().name())) {
                     Property property = ((MetadataTableRepositoryObject) repositoryObject).getProperty();
+                    result.setId(property.getId() + " - " + repositoryObject.getLabel());
+                } else if ("METADATA_CON_QUERY".equals(repositoryObject.getType().name())) {
+                    Property property = ((QueryRepositoryObject) repositoryObject).getProperty();
                     result.setId(property.getId() + " - " + repositoryObject.getLabel());
                 } else {
                     result.setId(repositoryObject.getId());
@@ -123,6 +127,10 @@ public class RepositoryHelper {
             return BusinessPackage.eINSTANCE.getContext();
         } else if (type == ERepositoryObjectType.METADATA_GENERIC_SCHEMA) {
             return BusinessPackage.eINSTANCE.getGenericSchemaMetadata();
+        } else if (type == ERepositoryObjectType.METADATA_CON_QUERY) {
+            return BusinessPackage.eINSTANCE.getQuery();
+        } else if (type == ERepositoryObjectType.JOBLET) {
+            return BusinessPackage.eINSTANCE.getJoblet();
         }
         return null;
     }
