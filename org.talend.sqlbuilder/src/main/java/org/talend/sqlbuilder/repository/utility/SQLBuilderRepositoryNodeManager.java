@@ -30,6 +30,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.database.EDatabaseTypeName;
+import org.talend.core.model.PasswordEncryptUtil;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
@@ -615,13 +616,20 @@ public class SQLBuilderRepositoryNodeManager {
             parameters.setConnectionComment(Messages.getString("SQLBuilderRepositoryNodeManager.connectionComment")); //$NON-NLS-1$
             return null;
         }
-
         DatabaseConnection connection = ConnectionFactory.eINSTANCE.createDatabaseConnection();
         connection.setFileFieldName(parameters.getFilename());
         connection.setDatabaseType(dbType);
         connection.setUsername(parameters.getUserName());
         connection.setPort(parameters.getPort());
-        connection.setPassword(parameters.getPassword());
+        // added by hyWang,to let repository node has encrypted password
+        try {
+            String encryptedPassword = null;
+            encryptedPassword = PasswordEncryptUtil.encryptPassword(parameters.getPassword());
+            connection.setPassword(encryptedPassword);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         connection.setSID(parameters.getDbName());
         connection.setLabel(parameters.getDbName());
         connection.setDatasourceName(parameters.getDatasource());
