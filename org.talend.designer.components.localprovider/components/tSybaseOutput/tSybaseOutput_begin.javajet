@@ -58,6 +58,9 @@ skeleton="../templates/db_output_bulk.skeleton"
 	String identityInsert = ElementParameterParser.getValue(node, "__IDENTITY_INSERT__");
 	
 	boolean isEnableDebug = ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__").equals("true");
+	
+	String dbschema = ElementParameterParser.getValue(node, "__DB_SCHEMA__");
+	
 %>
 
 int nb_line_<%=cid%> = 0;
@@ -71,6 +74,8 @@ int insertedCount_<%=cid%>=0;
 
 String tableName_<%=cid%> = <%=tableName%>;
 boolean whetherReject_<%=cid%> = false;
+String dbschema_<%=cid%>= <%=dbschema%>; 
+
 
 <%
 List<IMetadataColumn> columnList = getColumnList(node);
@@ -139,6 +144,9 @@ if(!useExistingConn) {
     }
 }
 %>
+if(dbschema_<%=cid%> != null && dbschema_<%=cid%>.trim().length() != 0) {
+	tableName_<%=cid%> = dbschema_<%=cid%> + "." + <%=tableName%>;
+} 
 <%
 if(columnList != null && columnList.size()>0) {    
     if(!tableAction.equals("NONE")) {
@@ -214,40 +222,40 @@ if(columnList != null && columnList.size()>0) {
         }
     }    
     Map<String, StringBuilder> actionSQLMap = getManager(dbmsId, cid).createProcessSQL(stmtStructure);
-    StringBuilder insertColName = actionSQLMap.get(INSERT_COLUMN_NAME);   
-    StringBuilder insertValueStmt = actionSQLMap.get(INSERT_VALUE_STMT);    
-    StringBuilder updateSetStmt = actionSQLMap.get(UPDATE_SET_STMT);    
+    StringBuilder insertColName = actionSQLMap.get(INSERT_COLUMN_NAME);
+    StringBuilder insertValueStmt = actionSQLMap.get(INSERT_VALUE_STMT); 
+    StringBuilder updateSetStmt = actionSQLMap.get(UPDATE_SET_STMT);
     StringBuilder updateWhereStmt = actionSQLMap.get(UPDATE_WHERE_STMT);
     StringBuilder deleteWhereStmt = actionSQLMap.get(DELETE_WHERE_STMT);
 
 	if(dataAction.equals("INSERT")) {
 	    %>
-	    String insert_<%=cid%> = "INSERT INTO " + <%=tableName%> + " (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)";
+	    String insert_<%=cid%> = "INSERT INTO " + tableName_<%=cid%> + " (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)";
 	    java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
 	    <%
 	} else if (dataAction.equals("UPDATE")) {
 	    %>
-	    String update_<%=cid%> = "UPDATE " + <%=tableName%> + " SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>";
+	    String update_<%=cid%> = "UPDATE " + tableName_<%=cid%> + " SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>";
 	    java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(update_<%=cid%>);
 	    <%		
 	} else if (dataAction.equals("INSERT_OR_UPDATE")) {
 	    %>
-	    java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("SELECT COUNT(1) FROM " + <%=tableName%> + " WHERE <%=updateWhereStmt.toString()%>");
-	    String insert_<%=cid%> = "INSERT INTO " + <%=tableName%> + " (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)";
+	    java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("SELECT COUNT(1) FROM " + tableName_<%=cid%> + " WHERE <%=updateWhereStmt.toString()%>");
+	    String insert_<%=cid%> = "INSERT INTO " + tableName_<%=cid%> + " (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)";
 	    java.sql.PreparedStatement pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
-	    String update_<%=cid%> = "UPDATE " + <%=tableName%> + " SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>";
+	    String update_<%=cid%> = "UPDATE " + tableName_<%=cid%> + " SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>";
 	    java.sql.PreparedStatement pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement(update_<%=cid%>);	
 	    <%
 	} else if (dataAction.equals("UPDATE_OR_INSERT")) {
 	    %>
-	    String update_<%=cid%> = "UPDATE " + <%=tableName%> + " SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>";
+	    String update_<%=cid%> = "UPDATE " + tableName_<%=cid%> + " SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>";
 	    java.sql.PreparedStatement pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement(update_<%=cid%>);
-	    String insert_<%=cid%> = "INSERT INTO " + <%=tableName%> + " (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)";
+	    String insert_<%=cid%> = "INSERT INTO " + tableName_<%=cid%> + " (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)";
 	    java.sql.PreparedStatement pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);		
 	    <%			
 	} else if (dataAction.equals("DELETE")) {
 	    %>
-	    String delete_<%=cid%> = "DELETE  FROM " + <%=tableName%> + " WHERE <%=deleteWhereStmt.toString()%>";
+	    String delete_<%=cid%> = "DELETE  FROM " + tableName_<%=cid%> + " WHERE <%=deleteWhereStmt.toString()%>";
 	    java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(delete_<%=cid%>);
 	    <%		
 	}
@@ -259,7 +267,7 @@ if(columnList != null && columnList.size()>0) {
 	if(identityInsert.equals("true")) {
 	    %>
 	    java.sql.Statement stmt_<%=cid %> = conn_<%=cid%>.createStatement();
-	    stmt_<%=cid %>.execute("SET IDENTITY_INSERT "+ <%=tableName%> +" ON");
+	    stmt_<%=cid %>.execute("SET IDENTITY_INSERT "+ tableName_<%=cid%> +" ON");
 	    <%
 	}	
 }

@@ -97,6 +97,17 @@
     </PARAMETER>
 
     <PARAMETER
+      NAME="DB_SCHEMA"
+      FIELD="TEXT"
+      NUM_ROW="3"
+      REPOSITORY_VALUE="SCHEMA"
+      REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+    >
+      <DEFAULT>"sa"</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
       NAME="USER"
       FIELD="TEXT"
       NUM_ROW="4"

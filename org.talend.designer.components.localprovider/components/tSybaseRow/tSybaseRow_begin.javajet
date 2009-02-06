@@ -21,6 +21,7 @@ String dbencoding= ElementParameterParser.getValue(node, "__ENCODING__");
 String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 String tableName = ElementParameterParser.getValue(node,"__TABLE__");
 String identityInsert = ElementParameterParser.getValue(node, "__IDENTITY_INSERT__");
+String dbschema = ElementParameterParser.getValue(node, "__DB_SCHEMA__");
 boolean useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__").equals("true");
 if(useExistingConn) {
 	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
@@ -38,7 +39,8 @@ if(useExistingConn) {
     <%
 }
 %>
-
+String tableName_<%=cid%> = <%=tableName%> ;
+String dbschema_<%=cid%> = <%=dbschema%>;
 <%
 if(!useExistingConn) {
     if(!commitEvery.equals("") && !commitEvery.equals("0")){
@@ -50,11 +52,16 @@ if(!useExistingConn) {
     }
 }
 %>
+
+if (dbschema_<%=cid%> != null && dbschema_<%=cid%>.trim().length() != 0) {
+	tableName_<%=cid%> = dbschema_<%=cid%> + "." + <%=tableName%>;
+}
+
 java.sql.Statement stmt_<%=cid %> = conn_<%=cid %>.createStatement();
 <%
 if(identityInsert.equals("true")){
     %>
-    stmt_<%=cid %>.execute("SET IDENTITY_INSERT "+ <%=tableName %> +" ON");
+    stmt_<%=cid %>.execute("SET IDENTITY_INSERT "+ tableName_<%=cid%> +" ON");
     <%
 }
 %>
