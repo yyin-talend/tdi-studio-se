@@ -88,8 +88,10 @@ public class JavaProcessUtil {
                 }
 
                 // see feature 4720 Add libraries for different version DB components and tMomInput components
-                if (node.getElementParameter("USE_EXISTING_CONNECTION") != null
-                        && Boolean.TRUE.equals(node.getElementParameter("USE_EXISTING_CONNECTION").getValue())) {
+                // IElementParameter elementParameter = node.getElementParameter("USE_EXISTING_CONNECTION");
+                // if (elementParameter != null && elementParameter.isShow(node.getElementParameters())
+                // && Boolean.TRUE.equals(elementParameter.getValue())) {
+                if (curParam.isShow(node.getElementParameters())) {
                     findMoreLibraries(neededLibraries, curParam, true);
                 } else {
                     findMoreLibraries(neededLibraries, curParam, false);
@@ -147,7 +149,7 @@ public class JavaProcessUtil {
                 }
             }
 
-            if (flag == false) {
+            if (flag == true) {
                 neededLibraries.add((jdbcName).replaceAll(TalendTextUtils.QUOTATION_MARK, "").replaceAll(
                         TalendTextUtils.SINGLE_QUOTE, ""));//$NON-NLS-1$
             }
