@@ -585,8 +585,8 @@ public class SchemaTypeController extends AbstractRepositoryController {
             for (Connection connec : (List<Connection>) node.getIncomingConnections()) {
                 if (connec.isActivate()
                         && (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)
-                                || connec.getLineStyle().equals(EConnectionType.TABLE) || connec.getLineStyle().equals(
-                                EConnectionType.FLOW_MERGE))) {
+                                || connec.getLineStyle().equals(EConnectionType.TABLE)
+                                || connec.getLineStyle().equals(EConnectionType.FLOW_MERGE) || connec.getLineStyle() == EConnectionType.FLOW_REF)) {
                     if (connectionName != null && !connec.getName().equals(connectionName)) {
                         continue;
                     }
