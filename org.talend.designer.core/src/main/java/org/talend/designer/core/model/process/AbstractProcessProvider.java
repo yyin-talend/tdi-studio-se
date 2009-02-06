@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.gef.palette.PaletteEntry;
+import org.eclipse.swt.graphics.Image;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.Item;
@@ -159,6 +160,10 @@ public abstract class AbstractProcessProvider {
     public abstract List<UpdateResult> checkJobletNodeSchema(Process process);
 
     public abstract boolean hasJobletComponent(Process process);
+
+    public abstract Image getIcons(IProcess process);
+
+    public abstract void setIcons(IProcess process, Image image);
 
     /**
      * DOC qzhang Comment method "canCreate".

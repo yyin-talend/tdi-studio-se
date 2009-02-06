@@ -546,6 +546,11 @@
            class="org.talend.designer.core.ui.editor.properties.controllers.generator.WSDL2JAVAGenerator"
            mapping="WSDL2JAVA"
            name="WSDL2Java launcher">
+     </generator>
+     <generator
+           class="org.talend.designer.core.ui.editor.properties.controllers.generator.IconSelectionGenerator"
+           mapping="ICON_SELECTION"
+           name="Icon Selection">
      </generator>     
    </extension>
    

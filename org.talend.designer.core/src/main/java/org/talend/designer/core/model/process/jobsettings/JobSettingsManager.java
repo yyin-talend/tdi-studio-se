@@ -173,6 +173,17 @@ public class JobSettingsManager {
             param.setRequired(false);
             param.setShow(false);
             paramList.add(param);
+            // zywang added to fix feature 5545
+            param = new ElementParameter(process);
+            param.setName(EParameterName.ICONSELECTION.getName());
+            param.setValue("");
+            param.setDisplayName(EParameterName.ICONSELECTION.getDisplayName());
+            param.setField(EParameterFieldType.ICON_SELECTION);
+            param.setCategory(EComponentCategory.EXTRA);
+            param.setNumRow(3);
+            param.setReadOnly(false);
+            param.setRequired(false);
+            paramList.add(param);
         }
 
         param = new ElementParameter(process);
