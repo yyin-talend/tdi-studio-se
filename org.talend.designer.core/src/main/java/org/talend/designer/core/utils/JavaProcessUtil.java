@@ -88,7 +88,12 @@ public class JavaProcessUtil {
                 }
 
                 // see feature 4720 Add libraries for different version DB components and tMomInput components
-                findMoreLibraries(neededLibraries, curParam);
+                if (node.getElementParameter("USE_EXISTING_CONNECTION") != null
+                        && Boolean.TRUE.equals(node.getElementParameter("USE_EXISTING_CONNECTION").getValue())) {
+                    findMoreLibraries(neededLibraries, curParam, true);
+                } else {
+                    findMoreLibraries(neededLibraries, curParam, false);
+                }
             }
 
             if (withChildrens) {
@@ -130,7 +135,7 @@ public class JavaProcessUtil {
      * @param neededLibraries
      * @param curParam
      */
-    private static void findMoreLibraries(Set<String> neededLibraries, IElementParameter curParam) {
+    private static void findMoreLibraries(Set<String> neededLibraries, IElementParameter curParam, boolean flag) {
 
         if (curParam.getName().equals("DB_VERSION")) { //$NON-NLS-1$
             String jdbcName = (String) curParam.getValue();
@@ -141,8 +146,11 @@ public class JavaProcessUtil {
                     jdbcName = jdbcName.replace('6', '5');
                 }
             }
-            neededLibraries.add((jdbcName).replaceAll(TalendTextUtils.QUOTATION_MARK, "").replaceAll( //$NON-NLS-1$
-                    TalendTextUtils.SINGLE_QUOTE, "")); //$NON-NLS-1$
+
+            if (flag == false) {
+                neededLibraries.add((jdbcName).replaceAll(TalendTextUtils.QUOTATION_MARK, "").replaceAll(
+                        TalendTextUtils.SINGLE_QUOTE, ""));//$NON-NLS-1$
+            }
         }
 
         String separator = ";"; //$NON-NLS-1$
