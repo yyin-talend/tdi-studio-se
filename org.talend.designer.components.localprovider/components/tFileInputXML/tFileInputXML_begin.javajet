@@ -524,7 +524,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		if (limit.compareTo("-1")!=0) {
 %>
 	
-	if (nb_line_<%=cid %>><%=Integer.parseInt(limit)%>) {
+	if (nb_line_<%=cid %>><%=limit %>) {
 		break;
 	}
 <%
