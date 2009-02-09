@@ -106,7 +106,7 @@
 
 <%}else{%>
 
-		String currentStatus_<%=cid %> = "";
+		String currentStatus_<%=cid %> = "No file transfered.";
    		java.util.Set<String> keySet<%=cid %> = map<%=cid %>.keySet();
       	for (String key<%=cid %> : keySet<%=cid %>){     
 			String tempdir<%=cid %> =  localdir<%=cid %>;
@@ -162,7 +162,7 @@
 						 	msg_<%=cid%>.add("file: " + file_in_localDir.getAbsolutePath() + ", size: "
 	                                        + file_in_localDir.length() + " byte uploaded sucessfully");
 								 	
-						 	currentStatus_<%=cid %> = "Y";
+						 	currentStatus_<%=cid %> = "File rename OK.";
 	        				globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS", remoteExistsFiles_<%=cid%>.contains(file_in_localDir.getName()));
 		            				
 							<%}else if(overwrite.equals("never")){%>
@@ -173,7 +173,7 @@
 						 		msg_<%=cid%>.add("file: " + file_in_localDir.getAbsolutePath() + ", size: "
 	                                        + file_in_localDir.length() + " byte uploaded sucessfully"); 
 	                            
-	        					currentStatus_<%=cid %> = "Y";
+	        					currentStatus_<%=cid %> = "File rename OK.";
 	        					globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS", remoteExistsFiles_<%=cid%>.contains(file_in_localDir.getName()));
 		            		}
 		            		<%}else if(overwrite.equals("always")){%>
@@ -183,7 +183,7 @@
 						 	msg_<%=cid%>.add("file: " + file_in_localDir.getAbsolutePath() + ", size: "
 	                                        + file_in_localDir.length() + " byte uploaded sucessfully"); 
 	                        
-	        				currentStatus_<%=cid %> = "Y";
+	        				currentStatus_<%=cid %> = "File rename OK.";
 							globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS", remoteExistsFiles_<%=cid%>.contains(file_in_localDir.getName()));
 		            				 
 		            		<%}else if(overwrite.equals("size_differ")){%>
@@ -198,7 +198,7 @@
 						 			msg_<%=cid%>.add("file: " + file_in_localDir.getAbsolutePath() + ", size: "
 	                                        	+ file_in_localDir.length() + " byte uploaded sucessfully"); 
 	                                        
-	        						currentStatus_<%=cid %> = "Y";
+	        						currentStatus_<%=cid %> = "File rename OK.";
 	        						globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS", remoteExistsFiles_<%=cid%>.contains(file_in_localDir.getName()));
 	        					}
 		            		}else{
@@ -208,7 +208,7 @@
 						 		msg_<%=cid%>.add("file: " + file_in_localDir.getAbsolutePath() + ", size: "
 	                                        + file_in_localDir.length() + " byte uploaded sucessfully"); 
 	                                        
-	        					currentStatus_<%=cid %> = "Y";
+	        					currentStatus_<%=cid %> = "File rename OK.";
 	        					globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS", remoteExistsFiles_<%=cid%>.contains(file_in_localDir.getName()));
 		            		}
 		            		<%}%>
@@ -218,7 +218,7 @@
 		      				
 	  					msg_<%=cid%>.add("file " + listings<%=cid %>[m<%=cid %>].getAbsolutePath() + " not found?");
 	  					
-	  					currentStatus_<%=cid %> = "N";
+	  					currentStatus_<%=cid %> = "File rename fail.";
 	  					globalMap.put("<%=cid %>_CURRENT_FILE_EXISTS", remoteExistsFiles_<%=cid%>.contains(listings<%=cid %>[m<%=cid %>].getName()));
 	  					
 	  					throw e;
