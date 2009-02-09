@@ -18,11 +18,13 @@ import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
-import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DropTarget;
+import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.DropTargetListener;
+import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -48,7 +50,6 @@ import org.talend.core.language.LanguageManager;
 import org.talend.core.ui.viewer.ReconcilerViewer;
 import org.talend.core.ui.viewer.java.TalendJavaSourceViewer;
 import org.talend.core.ui.viewer.perl.TalendPerlSourceViewer;
-import org.talend.designer.core.ui.editor.properties.controllers.SnippetDropTargetListener;
 import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.data.FunctionManager;
 import org.talend.designer.rowgenerator.data.Parameter;
@@ -81,6 +82,8 @@ public class ExpressionComposite extends Composite {
     private IEditorPart editorPart;
 
     private Button insertSnippetsButton;
+
+    private TextTransfer textTransfer = TextTransfer.getInstance();
 
     /**
      * DOC yzhang ExpressionComposite class global comment. Detailled comment <br/>
@@ -237,9 +240,9 @@ public class ExpressionComposite extends Composite {
         }
 
         textControl = viewer.getTextWidget();
-        int ops = DND.DROP_COPY | DND.DROP_MOVE;
-        DropTargetListener dropLisenter = new SnippetDropTargetListener(viewer, null, null, null);
-        viewer.addDropSupport(ops, new Transfer[] { LocalSelectionTransfer.getTransfer() }, dropLisenter);
+        // int ops = DND.DROP_COPY | DND.DROP_MOVE;
+        // DropTargetListener dropLisenter = new SnippetDropTargetListener(viewer, null, null, null);
+        // viewer.addDropSupport(ops, new Transfer[] { LocalSelectionTransfer.getTransfer() }, dropLisenter);
 
         document = viewer.getDocument();
         textControl.setWordWrap(wrapButton.getSelection());
@@ -254,6 +257,48 @@ public class ExpressionComposite extends Composite {
                 modificationRecord.setCursorPosition(cursorPos);
             }
 
+        });
+
+        // gcui create DND in Expression Editor.
+        // This is ExpressionComposite drop.
+
+        DropTarget target = new DropTarget(textControl, DND.DROP_DEFAULT | DND.DROP_COPY);
+        target.setTransfer(new Transfer[] { textTransfer });
+        target.addDropListener(new DropTargetListener() {
+
+            public void dragEnter(DropTargetEvent event) {
+
+                if (event.detail == DND.DROP_DEFAULT)
+                    event.detail = DND.DROP_COPY;
+
+            }
+
+            public void dragOver(DropTargetEvent event) {
+                // event.feedback = DND.FEEDBACK_NONE;
+            }
+
+            public void dragOperationChanged(DropTargetEvent event) {
+
+                if (event.detail == DND.DROP_DEFAULT)
+
+                    event.detail = DND.DROP_COPY;
+            }
+
+            public void dragLeave(DropTargetEvent event) {
+            }
+
+            public void dropAccept(DropTargetEvent event) {
+            }
+
+            public void drop(DropTargetEvent event) {
+
+                if (textTransfer.isSupportedType(event.currentDataType)) {
+                    String str = (String) event.data;
+
+                    ExpressionComposite expressionComposite = ExpressionBuilderDialog.getExpressionComposite();
+                    expressionComposite.setExpression(str, true);
+                }
+            }
         });
 
         final Composite lowerOperationButtonBar = new Composite(expressionGroup, SWT.NONE);

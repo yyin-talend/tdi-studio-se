@@ -31,6 +31,12 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DragSource;
+import org.eclipse.swt.dnd.DragSourceEvent;
+import org.eclipse.swt.dnd.DragSourceListener;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -59,6 +65,8 @@ public class CategoryComposite extends Composite {
     private final List functionList;
 
     final ListViewer functionViewer;
+
+    private TextTransfer textTransfer = TextTransfer.getInstance();
 
     CategoryManager manager = null;
 
@@ -138,6 +146,36 @@ public class CategoryComposite extends Composite {
         functionViewer.setSorter(new ViewerSorter());
         functionList = functionViewer.getList();
         functionList.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+        // gcui create DND in Expression Editor.
+        // This is CategoryComposite drag.
+
+        DragSource source = new DragSource(functionList, DND.DROP_MOVE | DND.DROP_COPY);
+        source.setTransfer(new Transfer[] { textTransfer });
+        source.addDragListener(new DragSourceListener() {
+
+            public void dragStart(DragSourceEvent event) {
+                // CLabel functionLabel = getSource(event);
+                if (functionList.getSelection().equals(""))
+                    event.doit = false;
+            }
+
+            public void dragSetData(DragSourceEvent event) {
+                if (textTransfer.isSupportedType(event.dataType)) {
+                    Function function = (Function) ((IStructuredSelection) functionViewer.getSelection()).getFirstElement();
+                    VirtualMetadataColumn column = new VirtualMetadataColumn();
+                    column.setTalendType(function.getTalendType().getName());
+                    column.setFunction(function);
+
+                    event.data = (FunctionManagerExt.getOneColData(column, false));
+                }
+            }
+
+            public void dragFinished(DragSourceEvent event) {
+
+            }
+        });
+
         sashForm1.setWeights(new int[] { 1, 1 });
 
         Composite docComposite = new Composite(sashForm, SWT.BORDER);
@@ -350,4 +388,5 @@ public class CategoryComposite extends Composite {
             return o1.getContent().compareToIgnoreCase(o2.getContent());
         }
     }
+
 }

@@ -29,6 +29,12 @@ import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DragSource;
+import org.eclipse.swt.dnd.DragSourceEvent;
+import org.eclipse.swt.dnd.DragSourceListener;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.layout.FillLayout;
@@ -70,6 +76,8 @@ public class TestComposite extends Composite {
     private static final String VALUE_PROPERTY = "Value"; //$NON-NLS-1$
 
     private final JavaTestShadow shadow;
+
+    private TextTransfer textTransfer = TextTransfer.getInstance();
 
     /**
      * Create the composite
@@ -177,6 +185,29 @@ public class TestComposite extends Composite {
                 expressionComposite.setExpression(var.getName(), true);
             }
 
+        });
+
+        // gcui create DND in Expression Editor.
+        // This is TestComposite drag.
+
+        DragSource source = new DragSource(table, DND.DROP_MOVE | DND.DROP_COPY);
+        source.setTransfer(new Transfer[] { textTransfer });
+        source.addDragListener(new DragSourceListener() {
+
+            public void dragStart(DragSourceEvent event) {
+                if (table.getSelectionCount() == 0)
+                    event.doit = false;
+            }
+
+            public void dragSetData(DragSourceEvent event) {
+                if (textTransfer.isSupportedType(event.dataType)) {
+                    event.data = table.getSelection()[0].getText();
+                }
+            }
+
+            public void dragFinished(DragSourceEvent event) {
+
+            }
         });
 
         table.setHeaderVisible(true);
