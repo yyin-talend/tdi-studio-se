@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2007 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2009 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -12,13 +12,6 @@
 // ============================================================================
 package org.talend.repository.ui.views;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-
-import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.IColorProvider;
@@ -27,11 +20,10 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Display;
-import org.osgi.framework.Bundle;
 import org.talend.commons.ui.image.ImageProvider;
-import org.talend.core.CorePlugin;
+import org.talend.commons.utils.image.ImageUtils;
+import org.talend.commons.utils.image.ImageUtils.ICON_SIZE;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.general.Project;
@@ -172,7 +164,7 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
         Image img = null;
         if (itemType == ERepositoryObjectType.JOBLET) {
             img = getJobletCustomIcon(view.getSite().getShell().getDisplay(), property);
-            img = getScaleImage(img, 16, 16);
+            img = ImageUtils.scale(img, ICON_SIZE.ICON_16);
         } else {
             img = CoreImageProvider.getImage(itemType);
         }
@@ -225,16 +217,16 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
         return OverlayImageProvider.getImageWithStatus(image, informationStatus);
     }
 
-    public static File getDefaultJobletImage() {
-        Bundle b = CorePlugin.getDefault().getBundle();
-        URL url = null;
-        try {
-            url = FileLocator.toFileURL(FileLocator.find(b, new Path(ECoreImage.JOBLET_COMPONENT_ICON.getPath()), null));
-            return new File(url.getPath());
-        } catch (IOException e) {
-            throw new RuntimeException(ECoreImage.JOBLET_COMPONENT_ICON.getPath() + " doesn't exist.");
-        }
-    }
+    // public static File getDefaultJobletImage() {
+    // Bundle b = CorePlugin.getDefault().getBundle();
+    // URL url = null;
+    // try {
+    // url = FileLocator.toFileURL(FileLocator.find(b, new Path(ECoreImage.JOBLET_COMPONENT_ICON.getPath()), null));
+    // return new File(url.getPath());
+    // } catch (IOException e) {
+    // throw new RuntimeException(ECoreImage.JOBLET_COMPONENT_ICON.getPath() + " doesn't exist.");
+    // }
+    // }
 
     /**
      * DOC bqian Comment method "getJobletCustomIcon".
@@ -255,17 +247,10 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
 
             image = ImageProvider.getImage(ECoreImage.JOBLET_COMPONENT_ICON);
         } else {
-            ByteArrayInputStream bis = new ByteArrayInputStream(item.getIcon().getInnerContent());
-            ImageData imageData = new ImageData(bis);
-            image = new Image(display, imageData);
+            ImageDescriptor imageDesc = ImageUtils.createImageFromData(item.getIcon().getInnerContent());
+            imageDesc = ImageUtils.scale(imageDesc, ICON_SIZE.ICON_32);
+            image = imageDesc.createImage();
         }
-        return image;
-    }
-
-    public static Image getScaleImage(Image image, int width, int height) {
-        ImageDescriptor icon32 = ImageDescriptor.createFromImage(image);
-        ImageDescriptor icon16 = ImageDescriptor.createFromImageData(icon32.getImageData().scaledTo(width, height));
-        image = icon16.createImage();
         return image;
     }
 

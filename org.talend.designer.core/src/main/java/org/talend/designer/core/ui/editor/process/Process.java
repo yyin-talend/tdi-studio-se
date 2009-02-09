@@ -650,14 +650,16 @@ public class Process extends Element implements IProcess2 {
             if (tmpParam != null && tmpParam.getValue() != null && tmpParam.getValue().equals(param.getValue())) {
                 return;
             }
-            if (param != null && param.getName().equals("UPDATE_COMPONENTS")) {
+            if (param != null
+                    && (param.getName().equals(EParameterName.UPDATE_COMPONENTS.getName()) || param.getName().equals(
+                            EParameterName.ICONSELECTION.getName()))) {
                 return;
             }
         }
         if (param.getElement() instanceof Node) {
             Node curNode = (Node) param.getElement();
             IComponent component = ComponentsFactoryProvider.getInstance().get(curNode.getComponent().getName());
-            if (param != null && param.getName().equals("REPOSITORY_ALLOW_AUTO_SWITCH")) {
+            if (param != null && param.getName().equals(EParameterName.REPOSITORY_ALLOW_AUTO_SWITCH.getName())) {
                 return;
             }
             if (component instanceof EmfComponent) {

@@ -16,6 +16,7 @@ import java.beans.PropertyChangeEvent;
 
 import org.eclipse.core.runtime.Path;
 import org.eclipse.gef.commands.Command;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.fieldassist.DecoratedField;
 import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
@@ -37,6 +38,7 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.commons.utils.image.ImageUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.process.IElement;
@@ -93,7 +95,7 @@ public class IconSelectionController extends AbstractElementPropertySectionContr
      */
     public Command createCommand(Button button) {
         FileDialog dial = new FileDialog(composite.getShell(), SWT.NONE);
-        dial.setFilterExtensions(new String[] { "*.jpg", "*.png", "*.gif" });
+        dial.setFilterExtensions(new String[] { "*.jpg", "*.png", "*.gif" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         String propertyName = (String) button.getData(PARAMETER_NAME);
         String file = dial.open();
         if (file != null) {
@@ -101,7 +103,7 @@ public class IconSelectionController extends AbstractElementPropertySectionContr
                 if (!elem.getPropertyValue(propertyName).equals(file)) {
                     imageData = new ImageData(file);
                     image = new Image(composite.getShell().getDisplay(), imageData);
-                    if (image.getImageData().width * image.getImageData().height == 1024) {
+                    if (ImageUtils.checkSize(image, ImageUtils.ICON_SIZE.ICON_32)) {
                         filePathText.setImage(image);
                         AbstractProcessProvider findProcessProvider = AbstractProcessProvider
                                 .findProcessProviderFromPID(IComponent.JOBLET_PID);
@@ -109,6 +111,10 @@ public class IconSelectionController extends AbstractElementPropertySectionContr
 
                         String portableValue = Path.fromOSString(file).toPortableString();
                         return new PropertyChangeCommand(elem, propertyName, TalendTextUtils.addQuotes(portableValue));
+                    } else {
+                        MessageDialog.openError(composite.getShell(), Messages.getString("IconSelectionController.MessageTitle"), //$NON-NLS-1$ 
+                                Messages.getString("IconSelectionController.Messages")); //$NON-NLS-1$ 
+
                     }
 
                 }
@@ -146,7 +152,7 @@ public class IconSelectionController extends AbstractElementPropertySectionContr
 
             public Control createControl(Composite parent, int style) {
 
-                return new Label(parent, 0);
+                return new Label(parent, style);
             }
 
         });
@@ -227,7 +233,7 @@ public class IconSelectionController extends AbstractElementPropertySectionContr
 
             public Control createControl(Composite parent, int style) {
 
-                return new Label(parent, 0);
+                return new Label(parent, style);
             }
 
         });
