@@ -643,8 +643,10 @@ public class Process extends Element implements IProcess2 {
         }
 
         if (param.getElement() instanceof Process) {
-            Process tempProcess = new Process(this.property);
-            IElementParameter tmpParam = tempProcess.getElementParameter(param.getName());
+            // achen modify to fix bug 0006107
+            // Process tempProcess = new Process(this.property);
+            // IElementParameter tmpParam = tempProcess.getElementParameter(param.getName());
+            IElementParameter tmpParam = param.getElement().getElementParameter(param.getName());
             if (tmpParam != null && tmpParam.getValue() != null && tmpParam.getValue().equals(param.getValue())) {
                 return;
             }

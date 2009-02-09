@@ -35,6 +35,7 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
@@ -45,6 +46,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
+import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -526,8 +528,11 @@ public class TableController extends AbstractElementPropertySectionController {
         Process process = null;
         String[] contextParameterNames = null;
         if (processItem != null) {
-            process = new Process(processItem.getProperty());
-            process.loadXmlFile();
+            // achen modify to fix bug 0006107
+            IDesignerCoreService service = CorePlugin.getDefault().getDesignerCoreService();
+            process = (Process) service.getProcessFromItem(processItem);
+            // process = new Process(processItem.getProperty());
+            // process.loadXmlFile();
             IContext context = process.getContextManager().getContext(contextName);
 
             for (IContextParameter contextParam : context.getContextParameterList()) {
