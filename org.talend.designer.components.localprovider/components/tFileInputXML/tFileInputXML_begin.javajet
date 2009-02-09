@@ -26,23 +26,9 @@ String loopQuery = ElementParameterParser.getValue(node, "__LOOP_QUERY__");
 
 String filename = ElementParameterParser.getValue(node, "__FILENAME__");
 String limit = ElementParameterParser.getValue(node, "__LIMIT__");
-///----------------lihan--------------------------------------------
-%>
-int limitvalue;
-<%
-if (limit.equals("")) 
-{
-	%>
-	limitvalue = -1;
-	<%
+if (limit.equals("")) {
+	limit = "-1";
 }
-else
-{
-	%>
-	limitvalue = Integer.parseInt(<%=limit%>);
-	<%
-}
-///-----------------------------------------------------------------
 
 String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
 boolean advancedSeparator = (advancedSeparatorStr!=null&&!advancedSeparatorStr.equals(""))?advancedSeparatorStr.equals("true"):false;
@@ -534,17 +520,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			}
 		}
 		
+		// limit
+		if (limit.compareTo("-1")!=0) {
 %>
-	///-------------lihan-------------------------------
-	if(limitvalue != -1)
-	{
-		if (nb_line_<%=cid %>>limitvalue) 
-		{
-			break;
-		}
+	
+	if (nb_line_<%=cid %>><%=Integer.parseInt(limit)%>) {
+		break;
 	}
-	///----------------lihan--------------------
 <%
+		}
 	}
 }
 %>
