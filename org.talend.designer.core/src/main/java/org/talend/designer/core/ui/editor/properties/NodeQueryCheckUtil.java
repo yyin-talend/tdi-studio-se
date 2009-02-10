@@ -138,7 +138,8 @@ public final class NodeQueryCheckUtil {
         try {
             pattern = pc.compile(patternString, flag);
             PatternMatcher columnMatcher = new Perl5Matcher();
-            return columnMatcher.matches(input, pattern);
+            // see bug 6268
+            return columnMatcher.contains(input, pattern);
         } catch (MalformedPatternException e) {
             return false;
         }
