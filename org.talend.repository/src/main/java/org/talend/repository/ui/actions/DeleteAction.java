@@ -146,6 +146,10 @@ public class DeleteAction extends AContextualAction {
             ComponentUtilities.updatePalette();
         }
         RepositoryManager.refreshDeletedNode(types);
+        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        for (IEditorReference editors : page.getEditorReferences()) {
+           CorePlugin.getDefault().getDiagramModelService().refreshBusinessModel(editors);
+        }
     }
 
     /**

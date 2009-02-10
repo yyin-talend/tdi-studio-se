@@ -12,10 +12,42 @@
 // ============================================================================
 package org.talend.designer.business.diagram.custom.edit.parts;
 
+import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.draw2d.Label;
+import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.gmf.runtime.diagram.ui.editparts.ShapeNodeEditPart;
 import org.eclipse.gmf.runtime.diagram.ui.editpolicies.EditPolicyRoles;
+import org.eclipse.gmf.runtime.gef.ui.figures.NodeFigure;
+import org.eclipse.gmf.runtime.notation.Node;
 import org.eclipse.gmf.runtime.notation.View;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
+import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.image.ImageProvider;
+import org.talend.commons.ui.image.OverlayImage;
+import org.talend.commons.ui.image.OverlayImage.EPosition;
+import org.talend.core.CorePlugin;
+import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.core.model.metadata.builder.connection.Query;
+import org.talend.core.model.properties.ByteArray;
+import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.JobletProcessItem;
+import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.ui.images.CoreImageProvider;
+import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.business.diagram.custom.edit.policies.BusinessItemDragDropEditPolicy;
+import org.talend.designer.business.diagram.custom.figures.BusinessTooltipFigure;
+import org.talend.designer.business.model.business.BusinessAssignment;
+import org.talend.designer.business.model.business.BusinessItem;
+import org.talend.designer.business.model.business.TalendItem;
+import org.talend.designer.business.model.business.provider.BusinessAssignmentItemProvider;
+import org.talend.designer.business.model.business.provider.BusinessItemProviderAdapterFactory;
 
 /**
  * DOC mhelleboid class global comment. Detailled comment <br/>
@@ -25,6 +57,8 @@ import org.talend.designer.business.diagram.custom.edit.policies.BusinessItemDra
  */
 public abstract class BusinessItemShapeEditPart extends ShapeNodeEditPart {
 
+    private BusinessTooltipFigure tooltipFigure;
+
     /**
      * DOC mhelleboid BusinessItemShapeEditPart constructor comment.
      * 
@@ -32,6 +66,7 @@ public abstract class BusinessItemShapeEditPart extends ShapeNodeEditPart {
      */
     public BusinessItemShapeEditPart(View view) {
         super(view);
+        tooltipFigure = new BusinessTooltipFigure();
     }
 
     /*
@@ -44,4 +79,93 @@ public abstract class BusinessItemShapeEditPart extends ShapeNodeEditPart {
         super.createDefaultEditPolicies();
         installEditPolicy(EditPolicyRoles.DRAG_DROP_ROLE, new BusinessItemDragDropEditPolicy());
     }
+
+    /**
+     * DOC Administrator Comment method "getTooltipFigure".
+     * 
+     * @param figure
+     */
+    private void getTooltipFigure(NodeFigure figure) {
+        List assignements = ((BusinessItem) ((Node) getModel()).getElement()).getAssignments();
+        BusinessItemProviderAdapterFactory adapterFactory = new BusinessItemProviderAdapterFactory();
+        BusinessAssignmentItemProvider provider = (BusinessAssignmentItemProvider) adapterFactory
+                .createBusinessAssignmentAdapter();
+        Image img = null;
+        Label label = null;
+        List<Label> labels = new ArrayList();
+        try {
+            for (Object assignment : assignements) {
+                if (assignment instanceof BusinessAssignment) {
+                    TalendItem talendItem = ((BusinessAssignment) assignment).getTalendItem();
+                    IRepositoryObject obj = CorePlugin.getDefault().getProxyRepositoryFactory()
+                            .getLastVersion(talendItem.getId());
+                    if (obj != null) {
+                        ERepositoryObjectType type = obj.getType();
+                        Item item = obj.getProperty().getItem();
+                        if (item instanceof JobletProcessItem) {
+                            JobletProcessItem jobletItem = (JobletProcessItem) item;
+                            ByteArray icon = jobletItem.getIcon();
+                            if (icon != null) {
+                                ByteArrayInputStream bis = new ByteArrayInputStream(icon.getInnerContent());
+                                ImageData imageData = new ImageData(bis);
+                                img = ImageDescriptor.createFromImageData(imageData.scaledTo(16, 16)).createImage();
+                            }
+
+                        } else {
+                            img = CoreImageProvider.getImage(type);
+                        }
+                        label = new Label(talendItem.getLabel() + " (" + provider.getColumnText(assignment, 0) + ")", img);
+                        labels.add(label);
+                    } else {
+                        MetadataTable table = MetadataTool.getMetadataTableFromRepository(talendItem.getId());
+                        Query query = MetadataTool.getQueryFromRepository(talendItem.getId());
+                        if (table != null) {
+                            img = ImageDescriptor.createFromFile(ECoreImage.class, ECoreImage.METADATA_TABLE_ICON.getPath())
+                                    .createImage();
+                            label = new Label(talendItem.getLabel() + " (" + provider.getColumnText(assignment, 0) + ")", img);
+                            labels.add(label);
+                        } else if (query != null) {
+                            img = ImageDescriptor.createFromFile(ECoreImage.class, ECoreImage.METADATA_QUERY_ICON.getPath())
+                                    .createImage();
+                            label = new Label(talendItem.getLabel() + " (" + provider.getColumnText(assignment, 0) + ")", img);
+                            labels.add(label);
+                        } else {
+                            img = (Image) provider.getImage(assignment);
+                            img = new OverlayImage(img, ImageProvider.getImageDesc(ECoreImage.DELETED_OVERLAY),
+                                    EPosition.BOTTOM_RIGHT).createImage();
+                            String text = provider.getText(assignment) + " (" + provider.getColumnText(assignment, 0) + ")";
+                            label = new Label(text, img);
+                            labels.add(label);
+
+                        }
+
+                    }
+                }
+
+            }
+            if (labels.size() > 0) {
+                if (tooltipFigure == null) {
+                    tooltipFigure = new BusinessTooltipFigure();
+                }
+                tooltipFigure.buildFigures(labels);
+                figure.setToolTip(tooltipFigure);
+            }
+        } catch (PersistenceException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void handleNotificationEvent(Notification notification) {
+        super.handleNotificationEvent(notification);
+        getTooltipFigure(getNodeFigure());
+    }
+
+    @Override
+    protected void refreshVisuals() {
+        super.refreshVisuals();
+        getTooltipFigure(getNodeFigure());
+    }
+
 }

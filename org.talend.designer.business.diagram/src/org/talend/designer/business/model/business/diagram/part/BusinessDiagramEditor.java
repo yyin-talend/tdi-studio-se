@@ -1,5 +1,7 @@
 package org.talend.designer.business.model.business.diagram.part;
 
+import java.util.List;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.draw2d.DelegatingLayout;
@@ -10,6 +12,7 @@ import org.eclipse.emf.common.notify.impl.AdapterImpl;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.gef.LayerConstants;
 import org.eclipse.gmf.runtime.diagram.core.preferences.PreferencesHint;
+import org.eclipse.gmf.runtime.diagram.ui.editparts.DiagramEditPart;
 import org.eclipse.gmf.runtime.diagram.ui.editparts.DiagramRootEditPart;
 import org.eclipse.gmf.runtime.diagram.ui.resources.editor.ide.document.StorageDiagramDocumentProvider;
 import org.eclipse.gmf.runtime.diagram.ui.resources.editor.ide.editor.FileDiagramEditor;
@@ -25,6 +28,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.designer.business.diagram.custom.actions.DiagramResourceManager;
 import org.talend.designer.business.diagram.custom.dnd.BusinessDiagramDropTargetListener;
+import org.talend.designer.business.diagram.custom.edit.parts.BusinessItemShapeEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.BusinessEditPartFactory;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.model.ERepositoryStatus;
@@ -192,5 +196,17 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
             }
         }
     };
+
+    public void refresh() {
+        DiagramEditPart diagramEditPart = this.getDiagramEditPart();
+        List list = diagramEditPart.getChildren();
+        for (Object o : list) {
+            if (o instanceof BusinessItemShapeEditPart) {
+                BusinessItemShapeEditPart element = (BusinessItemShapeEditPart) o;
+                element.refresh();
+
+            }
+        }
+    }
 
 }
