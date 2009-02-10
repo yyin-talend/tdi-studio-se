@@ -168,7 +168,8 @@ public final class UpdateManagerUtils {
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public static boolean executeUpdates(final List<UpdateResult> results) {
-        RepositoryWorkUnit<Boolean> repositoryWorkUnit = new RepositoryWorkUnit<Boolean>(Messages.getString("UpdateManagerUtils.updateMOfification")) { //$NON-NLS-1$
+        RepositoryWorkUnit<Boolean> repositoryWorkUnit = new RepositoryWorkUnit<Boolean>(Messages
+                .getString("UpdateManagerUtils.updateMOfification")) { //$NON-NLS-1$
 
             @Override
             protected void run() throws LoginException, PersistenceException {
@@ -200,6 +201,8 @@ public final class UpdateManagerUtils {
                         executeUpdates(results, monitor);
                         // save repository item
                         saveModifiedItem(results, monitor);
+                        // update joblet reference
+                        upadateJobletReferenceInfor();
                         // refresh
                         refreshRelatedViewers(results);
                         monitor.worked(1 * UpdatesConstants.SCALE);
@@ -327,11 +330,10 @@ public final class UpdateManagerUtils {
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     private static void executeUpdates(List selectResult, IProgressMonitor monitor) {
-        
+
         Command command = null;
         for (UpdateResult result : (List<UpdateResult>) selectResult) {
-            if(result.isReadOnlyProcess())
-            {
+            if (result.isReadOnlyProcess()) {
                 continue;
             }
             switch (result.getUpdateType()) {
@@ -428,4 +430,14 @@ public final class UpdateManagerUtils {
         return null;
     }
 
+    private static void upadateJobletReferenceInfor() {
+        List<IProcess> openedProcessList = CorePlugin.getDefault().getDesignerCoreService().getOpenedProcess(
+                RepositoryUpdateManager.getEditors());
+
+        for (IProcess proc : openedProcessList) {
+            if (proc instanceof IProcess2) {
+                ((IProcess2) proc).getUpdateManager().retrieveRefInformation();
+            }
+        }
+    }
 }

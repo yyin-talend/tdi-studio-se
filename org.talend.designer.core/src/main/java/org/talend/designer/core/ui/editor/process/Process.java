@@ -1074,6 +1074,8 @@ public class Process extends Element implements IProcess2 {
         checkStartNodes();
         // (bug 5365)
         checkNodeTableParameters();
+        // bug 6158
+        this.updateManager.retrieveRefInformation();
     }
 
     @SuppressWarnings("unchecked")

@@ -26,6 +26,7 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.repository.ProjectManager;
@@ -108,6 +109,7 @@ public class DetecteViewImpactAction extends AContextualAction {
                         // case METADATA_WSDL_SCHEMA:
 
                     case CONTEXT:
+                    case JOBLET:
                         canWork = true;
                         break;
                     default:
@@ -162,7 +164,12 @@ public class DetecteViewImpactAction extends AContextualAction {
                         } else {
                             RepositoryUpdateManager.updateFileConnection(connection, false);
                         }
+                    } else
+                    // joblet
+                    if (item instanceof JobletProcessItem) {
+                        RepositoryUpdateManager.updateJoblet((JobletProcessItem) item, false);
                     }
+
                 }
             }
         }

@@ -15,6 +15,7 @@ package org.talend.designer.core.ui.editor.process;
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -84,6 +85,14 @@ import org.talend.repository.ui.utils.ConnectionContextHelper;
  */
 public class ProcessUpdateManager extends AbstractUpdateManager {
 
+    /**
+     * for joblet
+     */
+    private AbstractProcessProvider jobletProcessProvider = AbstractProcessProvider
+            .findProcessProviderFromPID(IComponent.JOBLET_PID);
+
+    private Map<String, Date> jobletReferenceMap = new HashMap<String, Date>();
+
     private Process process = null;
 
     public ProcessUpdateManager(org.talend.designer.core.ui.editor.process.Process process) {
@@ -93,6 +102,20 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         }
         this.process = process;
 
+    }
+
+    public void retrieveRefInformation() {
+        jobletReferenceMap.clear();
+
+        if (jobletProcessProvider == null) {
+            return;
+        }
+        for (INode node : this.getProcess().getGraphicalNodes()) {
+            Item jobletItem = jobletProcessProvider.getJobletItem(node);
+            if (jobletItem != null) {
+                jobletReferenceMap.put(jobletItem.getProperty().getId(), jobletItem.getProperty().getModificationDate());
+            }
+        }
     }
 
     public CommandStack getCommandStack() {
@@ -1117,6 +1140,39 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         return str.trim();
     }
 
+    private List<UpdateResult> checkJobletNodeReload() {
+        if (getProcess() == null || jobletProcessProvider == null) {
+            return Collections.emptyList();
+        }
+
+        List<UpdateResult> nodeResults = new ArrayList<UpdateResult>();
+        for (INode node : this.getProcess().getGraphicalNodes()) {
+            final Item jobletItem = jobletProcessProvider.getJobletItem(node);
+            if (jobletItem != null) {
+                final Property property = jobletItem.getProperty();
+                final String id = property.getId();
+                final Date modificationDate = property.getModificationDate();
+
+                final Date oldDate = this.jobletReferenceMap.get(id);
+
+                if (!modificationDate.equals(oldDate) && !getProcess().getId().equals(id)) {
+                    List<INode> jobletNodes = findRelatedJobletNode(getProcess(), property.getLabel(), null);
+                    if (jobletNodes != null && !jobletNodes.isEmpty()) {
+                        String source = UpdatesConstants.JOBLET + UpdatesConstants.COLON + property.getLabel();
+                        UpdateCheckResult result = new UpdateCheckResult(jobletNodes);
+                        result.setResult(EUpdateItemType.RELOAD, EUpdateResult.RELOAD, jobletItem, source);
+
+                        result.setJob(getProcess());
+                        setConfigrationForReadOnlyJob(result);
+
+                        nodeResults.add(result);
+                    }
+                }
+            }
+        }
+        return nodeResults;
+    }
+
     /**
      * 
      * ggu Comment method "checkNodesPropertyChanger".
@@ -1135,9 +1191,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
 
             String propertyName = event.getPropertyName();
             if (propertyName.equals(ComponentUtilities.NORMAL)) {
-                AbstractProcessProvider processProvider = AbstractProcessProvider
-                        .findProcessProviderFromPID(IComponent.JOBLET_PID);
-                if (processProvider != null && !processProvider.hasJobletComponent(getProcess())) {
+                if (jobletProcessProvider != null && !jobletProcessProvider.hasJobletComponent(getProcess())) {
                     break;
 
                 }
@@ -1216,9 +1270,8 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
     }
 
     private List<UpdateResult> checkJobletNodeSchema() {
-        AbstractProcessProvider processProvider = AbstractProcessProvider.findProcessProviderFromPID(IComponent.JOBLET_PID);
-        if (processProvider != null) {
-            return processProvider.checkJobletNodeSchema(getProcess());
+        if (jobletProcessProvider != null) {
+            return jobletProcessProvider.checkJobletNodeSchema(getProcess());
         }
         return null;
     }
@@ -1247,8 +1300,11 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
             tmpResults = checkJobletNodeSchema();
             break;
         case JOBLET_RENAMED: // unused
-        case RELOAD:
+            // case RELOAD:
             tmpResults = checkJobletNodesPropertyChanger();
+            break;
+        case RELOAD:
+            tmpResults = checkJobletNodeReload();
             break;
         case JOBLET_CONTEXT:
             tmpResults = checkJobletNodesContext();
