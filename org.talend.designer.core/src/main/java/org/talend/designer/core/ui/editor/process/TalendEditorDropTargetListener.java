@@ -60,6 +60,7 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.EbcdicConnectionItem;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
@@ -317,7 +318,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
 
             Item item = sourceNode.getObject().getProperty().getItem();
             ERepositoryObjectType type = sourceNode.getObjectType();
-            if (!(item instanceof ConnectionItem) && !(item instanceof ProcessItem)) {
+            if (!(item instanceof ConnectionItem) && !(item instanceof ProcessItem) && !(item instanceof JobletProcessItem)) {
                 return;
             }
             TempStore store = new TempStore();
@@ -637,14 +638,21 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
 
     private void getAppropriateComponent(Item item, boolean quickCreateInput, boolean quickCreateOutput, TempStore store,
             ERepositoryObjectType type) {
+
         EDatabaseComponentName name = EDatabaseComponentName.getCorrespondingComponentName(item, type);
-        if (name == null) {
+        String componentName = null;
+        if (item instanceof JobletProcessItem) { // joblet
+            componentName = item.getProperty().getLabel();
+        } else if (name == null) {
             return;
+        } else { // tRunjob
+            componentName = name.getDefaultComponentName();
         }
+
         List<IComponent> components = ComponentsFactoryProvider.getInstance().getComponents();
         // tRunJob is special from our rules
-        if (name == EDatabaseComponentName.RunJob) {
-            store.component = ComponentsFactoryProvider.getInstance().get(name.getDefaultComponentName());
+        if (name == EDatabaseComponentName.RunJob || item instanceof JobletProcessItem) {
+            store.component = ComponentsFactoryProvider.getInstance().get(componentName);
         } else {
             // for database, file, webservices, saleforce ...
             String productNameWanted = name.getProductName();
