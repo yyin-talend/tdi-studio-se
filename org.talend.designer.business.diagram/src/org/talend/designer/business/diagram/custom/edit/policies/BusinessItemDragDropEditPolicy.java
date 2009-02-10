@@ -12,8 +12,6 @@
 // ============================================================================
 package org.talend.designer.business.diagram.custom.edit.policies;
 
-import java.util.Iterator;
-
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.UnexecutableCommand;
 import org.eclipse.gmf.runtime.diagram.ui.commands.ICommandProxy;
@@ -35,22 +33,20 @@ public class BusinessItemDragDropEditPolicy extends DiagramDragDropEditPolicy {
     /*
      * (non-Javadoc)
      * 
-     * @see org.eclipse.gmf.runtime.diagram.ui.editpolicies.DiagramDragDropEditPolicy#getDropObjectsCommand(org.eclipse.gmf.runtime.diagram.ui.requests.DropObjectsRequest)
+     * @see
+     * org.eclipse.gmf.runtime.diagram.ui.editpolicies.DiagramDragDropEditPolicy#getDropObjectsCommand(org.eclipse.gmf
+     * .runtime.diagram.ui.requests.DropObjectsRequest)
      */
     @Override
     public Command getDropObjectsCommand(DropObjectsRequest dropObjectsRequest) {
         BusinessItem businessItem = new ElementHelper().getElement(getHost());
 
         if (businessItem != null) {
-            CreateAssignmentCommand createAssignmentCommand = new CreateAssignmentCommand(
-                    ((IGraphicalEditPart) getHost()).getEditingDomain());
+            CreateAssignmentCommand createAssignmentCommand = new CreateAssignmentCommand(((IGraphicalEditPart) getHost())
+                    .getEditingDomain());
             createAssignmentCommand.setBusinessItem(businessItem);
 
-            // PTODO mhelleboid create multiples commands
-            for (Iterator iter = dropObjectsRequest.getObjects().iterator(); iter.hasNext();) {
-                Object talendItem = (Object) iter.next();
-                createAssignmentCommand.setItem(talendItem);
-            }
+            createAssignmentCommand.setItems(dropObjectsRequest.getObjects());
 
             return new ICommandProxy(createAssignmentCommand);
         }

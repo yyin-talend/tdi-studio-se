@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.designer.business.diagram.custom.commands;
 
+import java.util.List;
+
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -28,7 +30,7 @@ import org.talend.designer.business.model.business.TalendItem;
 
 public class CreateAssignmentCommand extends AbstractTransactionalCommand {
 
-    private Object item;
+    List items;
 
     private BusinessItem businessItem;
 
@@ -44,15 +46,6 @@ public class CreateAssignmentCommand extends AbstractTransactionalCommand {
     }
 
     /**
-     * DOC mhelleboid Comment method "setTalendItem".
-     * 
-     * @param item
-     */
-    public void setItem(Object item) {
-        this.item = item;
-    }
-
-    /**
      * DOC mhelleboid Comment method "setBusinessItem".
      * 
      * @param businessItem
@@ -64,31 +57,34 @@ public class CreateAssignmentCommand extends AbstractTransactionalCommand {
     /*
      * (non-Javadoc)
      * 
-     * @see org.eclipse.gmf.runtime.emf.commands.core.command.AbstractTransactionalCommand#doExecuteWithResult(org.eclipse.core.runtime.IProgressMonitor,
-     * org.eclipse.core.runtime.IAdaptable)
+     * @see
+     * org.eclipse.gmf.runtime.emf.commands.core.command.AbstractTransactionalCommand#doExecuteWithResult(org.eclipse
+     * .core.runtime.IProgressMonitor, org.eclipse.core.runtime.IAdaptable)
      */
     @Override
     protected CommandResult doExecuteWithResult(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
         // PTODO mhelleboid check if assignment already exist
-        BusinessAssignment assignment = BusinessFactory.eINSTANCE.createBusinessAssignment();
 
         RepositoryHelper repositoryHelper = new RepositoryHelper();
         Repository repository = businessItem.getBusinessProcess().getLocalRepositoryCopy();
+        TalendItem talendItem = null;
         if (repository == null) {
             repository = repositoryHelper.createLocalRepositoryCopy(businessItem.getBusinessProcess());
         }
+        for (Object item : getItems()) {
+            BusinessAssignment assignment = BusinessFactory.eINSTANCE.createBusinessAssignment();
+            talendItem = repositoryHelper.getTalendItem(repository, item);
+            if (talendItem == null) {
+                talendItem = repositoryHelper.createTalendItem(repository, item);
+            }
 
-        TalendItem talendItem = repositoryHelper.getTalendItem(repository, item);
-        if (talendItem == null) {
-            talendItem = repositoryHelper.createTalendItem(repository, item);
+            if (talendItem == null) {
+                return CommandResult.newErrorCommandResult(Messages.getString("CreateAssignmentCommand.CannotAssign")); //$NON-NLS-1$
+            }
+            assignment.setBusinessItem(businessItem);
+            assignment.setTalendItem(talendItem);
+
         }
-
-        if (talendItem == null) {
-            return CommandResult.newErrorCommandResult(Messages.getString("CreateAssignmentCommand.CannotAssign")); //$NON-NLS-1$
-        }
-
-        assignment.setBusinessItem(businessItem);
-        assignment.setTalendItem(talendItem);
 
         return CommandResult.newOKCommandResult();
     }
@@ -108,6 +104,14 @@ public class CreateAssignmentCommand extends AbstractTransactionalCommand {
         // return false;
         // }
         return true;
+    }
+
+    public List getItems() {
+        return this.items;
+    }
+
+    public void setItems(List items) {
+        this.items = items;
     }
 
 }
