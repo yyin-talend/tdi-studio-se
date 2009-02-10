@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.gef.palette.PaletteEntry;
 import org.eclipse.swt.graphics.Image;
 import org.talend.core.model.components.IComponent;
+import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
@@ -203,4 +204,12 @@ public abstract class AbstractProcessProvider {
     }
 
     public abstract IProcess getProcessFromJobletProcessItem(JobletProcessItem jobletProcessItem);
+
+    /**
+     * 
+     * cLi Comment method "getJobletItem".
+     * 
+     * bug 6158
+     */
+    public abstract Item getJobletItem(INode node);
 }

@@ -20,7 +20,6 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Display;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.utils.image.ImageUtils;
 import org.talend.commons.utils.image.ImageUtils.ICON_SIZE;
@@ -163,7 +162,7 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
         ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(item);
         Image img = null;
         if (itemType == ERepositoryObjectType.JOBLET) {
-            img = getJobletCustomIcon(view.getSite().getShell().getDisplay(), property);
+            img = getJobletCustomIcon(property);
             img = ImageUtils.scale(img, ICON_SIZE.ICON_16);
         } else {
             img = CoreImageProvider.getImage(itemType);
@@ -234,10 +233,10 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
      * @param property
      * @return
      */
-    public static Image getJobletCustomIcon(Display display, Property property) {
+    public static Image getJobletCustomIcon(Property property) {
         JobletProcessItem item = (JobletProcessItem) property.getItem();
         Image image = null;
-        if (item.getIcon() == null) {
+        if (item.getIcon() == null || item.getIcon().getInnerContent() == null || item.getIcon().getInnerContent().length == 0) {
             // File image = RepositoryLabelProvider.getDefaultJobletImage();
             // try {
             // item.getIcon().setInnerContentFromFile(image);
