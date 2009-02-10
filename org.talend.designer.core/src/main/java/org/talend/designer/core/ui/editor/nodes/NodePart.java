@@ -207,8 +207,9 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
         } else {
             nodeFigure.setStart(false);
         }
-        nodeFigure.setHint(((Node) getModel()).getShowHintText());
-
+        if (((Node) getModel()).isSetShowHint()) {
+            nodeFigure.setHint(((Node) getModel()).getShowHintText());
+        }
         nodeFigure.setDummy(((Node) getModel()).isDummy());
         if (((INode) getModel()).isActivate()) {
             nodeFigure.setAlpha(-1);
@@ -285,7 +286,11 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                 refreshVisuals();
             }
         } else if (changeEvent.getPropertyName().equals(EParameterName.HINT.getName())) {
-            ((NodeFigure) figure).setHint(((Node) getModel()).getShowHintText());
+            if (((Node) getModel()).isSetShowHint()) {
+                ((NodeFigure) figure).setHint(((Node) getModel()).getShowHintText());
+            } else {
+                ((NodeFigure) figure).setHint(""); //$NON-NLS-1$ 
+            }
             needUpdateSubjob = true;
         } else if (changeEvent.getPropertyName().equals(EParameterName.CONNECTION_FORMAT.getName())) {
             Node node = (Node) getModel();
