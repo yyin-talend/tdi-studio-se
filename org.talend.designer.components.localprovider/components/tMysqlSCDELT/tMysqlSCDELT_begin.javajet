@@ -178,7 +178,7 @@ if(columnList != null && columnList.size() > 0) {
         }
         for(Map<String, String> type1Attribute : type1Attributes) {
             columnNames.add(StringUtils.getMysqlProtectedColumnName(type1Attribute.get("NAME")));
-            setColumns.add(" d." + StringUtils.getMysqlProtectedColumnName(type1Attribute.get("NAME")) + " == t." + StringUtils.getMysqlProtectedColumnName(type1Attribute.get("NAME")));
+            setColumns.add(" d." + StringUtils.getMysqlProtectedColumnName(type1Attribute.get("NAME")) + " = t." + StringUtils.getMysqlProtectedColumnName(type1Attribute.get("NAME")));
             whereClause.add(" d." + StringUtils.getMysqlProtectedColumnName(type1Attribute.get("NAME")) + " <> t." + StringUtils.getMysqlProtectedColumnName(type1Attribute.get("NAME")));            
         }
         selectColumnString = StringUtils.join(columnNames.toArray(), ", t.");
