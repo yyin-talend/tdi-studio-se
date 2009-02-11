@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <jardesc>
-    <jar path="/home/amaumont/data/dev/eclipse/workspaces/workspace-talend-linux-branch_2_4/org.talend.designer.components.localprovider/components/tAdvancedHash/advancedPersistentLookupLib.jar"/>
+    <jar path="/home/amaumont/data/dev/eclipse/workspaces/workspace-talend-e34-linux-trunk/org.talend.designer.components.localprovider/components/tAdvancedHash/advancedPersistentLookupLib.jar"/>
     <options buildIfNeeded="true" compress="true" descriptionLocation="/org.talend.designer.components.localprovider/components/tAdvancedHash/export_advancedPersistentLookupLib.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
     <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
     <selectedProjects/>
@@ -25,13 +25,13 @@
         <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.thash.io{IMapHashFile.java"/>
         <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{DataContainer.java"/>
         <javaElement handleIdentifier="=org.talend.core/src\/main\/java&lt;org.talend.core.model.process{IMatchingMode.java"/>
-        <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{PersistentSortedLookupManager.java"/>
         <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{MemoryHelper.java"/>
+        <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{PersistentSortedLookupManager.java"/>
         <javaElement handleIdentifier="=org.talend.commons/src\/main\/java&lt;org.talend.commons.utils.time"/>
         <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{RowProvider.java"/>
         <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.thash.io.beans{KeyForMap.java"/>
-        <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{IPersistentLookupManager.java"/>
         <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{AbstractPersistentLookup.java"/>
+        <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{IPersistentLookupManager.java"/>
         <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.thash.io.hashimpl{DataContainer.java"/>
         <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent.utils"/>
         <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.thash.io.hashimpl{FlowSorterIterator.java"/>
@@ -42,4 +42,5 @@
         <javaElement handleIdentifier="=org.talend.commons/src\/main\/java&lt;org.talend.commons.utils.data.map{MultiLazyValuesMap.java"/>
         <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.thash.io.beans{ILightSerializable.java"/>
     </selectedElements>
+    <fatjar builder="org.eclipse.jdt.ui.plain_jar_builder" launchConfig=""/>
 </jardesc>
