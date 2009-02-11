@@ -420,11 +420,13 @@ public class DataStringConnection {
     public boolean isSchemaNeeded() {
         if (selectionIndex < 0) {
             return false;
+
         }
         return getStringConnectionTemplate().substring(0, 12).equals("jdbc:oracle:") //$NON-NLS-1$
                 || getStringConnectionTemplate().substring(0, 15).equals("jdbc:postgresql") //$NON-NLS-1$
                 || getStringConnectionTemplate().startsWith("jdbc:paraccel") //$NON-NLS-1$
-                || getStringConnectionTemplate().substring(0, 8).equals("jdbc:db2"); //$NON-NLS-1$
+                || getStringConnectionTemplate().substring(0, 8).equals("jdbc:db2") //$NON-NLS-1$
+                || getStringConnectionTemplate().substring(0, 11).equals("jdbc:sybase");//$NON-NLS-1$
     }
 
     /**
