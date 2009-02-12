@@ -130,6 +130,6 @@ public class SnippetDropTargetListener implements TransferDropTargetListener {
     }
 
     public boolean isEnabled(DropTargetEvent event) {
-        return true;
+        return false;
     }
 }
