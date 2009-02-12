@@ -192,6 +192,8 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
         inituncheckedObjects.addAll(uncheckedObjects);
 
         viewer.setCheckedElements(checkedObjects.toArray());
+        viewer.setExpandedElements(contentProvider.getContents());
+
     }
 
     private void init() {
@@ -276,6 +278,7 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
         statInituncheckedObjects.addAll(statUncheckedObjects);
 
         statViewer.setCheckedElements(statCheckedObjects.toArray());
+        statViewer.setExpandedElements(statContentProvider.getContents());
     }
 
     private void initstat() {
@@ -396,8 +399,10 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
 
         RepositoryNode[] getContents() {
             ProjectRepositoryNode systemFolders = (ProjectRepositoryNode) view.getRoot();
-            return (RepositoryNode[]) systemFolders.getRootRepositoryNode(ERepositoryObjectType.PROCESS).getChildren().toArray(
-                    new RepositoryNode[0]);
+            return new RepositoryNode[] { systemFolders.getRootRepositoryNode(ERepositoryObjectType.PROCESS) };
+            // return (RepositoryNode[])
+            // systemFolders.getRootRepositoryNode(ERepositoryObjectType.PROCESS).getChildren().toArray(
+            // new RepositoryNode[0]);
         }
     }
 
