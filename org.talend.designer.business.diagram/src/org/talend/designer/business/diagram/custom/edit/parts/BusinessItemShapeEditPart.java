@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.designer.business.diagram.custom.edit.parts;
 
-import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,16 +24,16 @@ import org.eclipse.gmf.runtime.notation.Node;
 import org.eclipse.gmf.runtime.notation.View;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageData;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.image.OverlayImage;
 import org.talend.commons.ui.image.OverlayImage.EPosition;
+import org.talend.commons.utils.image.ImageUtils;
+import org.talend.commons.utils.image.ImageUtils.ICON_SIZE;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.Query;
-import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -48,6 +47,7 @@ import org.talend.designer.business.model.business.BusinessItem;
 import org.talend.designer.business.model.business.TalendItem;
 import org.talend.designer.business.model.business.provider.BusinessAssignmentItemProvider;
 import org.talend.designer.business.model.business.provider.BusinessItemProviderAdapterFactory;
+import org.talend.repository.ui.views.RepositoryLabelProvider;
 
 /**
  * DOC mhelleboid class global comment. Detailled comment <br/>
@@ -104,11 +104,9 @@ public abstract class BusinessItemShapeEditPart extends ShapeNodeEditPart {
                         Item item = obj.getProperty().getItem();
                         if (item instanceof JobletProcessItem) {
                             JobletProcessItem jobletItem = (JobletProcessItem) item;
-                            ByteArray icon = jobletItem.getIcon();
-                            if (icon != null) {
-                                ByteArrayInputStream bis = new ByteArrayInputStream(icon.getInnerContent());
-                                ImageData imageData = new ImageData(bis);
-                                img = ImageDescriptor.createFromImageData(imageData.scaledTo(16, 16)).createImage();
+                            Image jobletCustomIcon = RepositoryLabelProvider.getJobletCustomIcon(jobletItem.getProperty());
+                            if (jobletCustomIcon != null) {
+                                img = ImageUtils.scale(jobletCustomIcon, ICON_SIZE.ICON_16);
                             }
 
                         } else {

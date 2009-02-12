@@ -22,6 +22,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.RepositoryManager;
@@ -98,6 +99,10 @@ public class EmptyRecycleBinAction extends AContextualAction {
             }
         }
         RepositoryManager.refreshDeletedNode(null);
+        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        for (IEditorReference editors : page.getEditorReferences()) {
+            CorePlugin.getDefault().getDiagramModelService().refreshBusinessModel(editors);
+        }
     }
 
     /**

@@ -148,7 +148,7 @@ public class DeleteAction extends AContextualAction {
         RepositoryManager.refreshDeletedNode(types);
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         for (IEditorReference editors : page.getEditorReferences()) {
-           CorePlugin.getDefault().getDiagramModelService().refreshBusinessModel(editors);
+            CorePlugin.getDefault().getDiagramModelService().refreshBusinessModel(editors);
         }
     }
 
@@ -369,7 +369,7 @@ public class DeleteAction extends AContextualAction {
         IRepositoryObject nodeObject = node.getObject();
         // Avoid to delete node which is locked.
         if (nodeObject != null && nodeObject.getProperty().getItem().getState().isLocked()
-                && !(getText().equals(DELETE_FOREVER_TITLE))) {
+                && !(DELETE_FOREVER_TITLE.equals(getText()))) {
             return true;
         }
 
