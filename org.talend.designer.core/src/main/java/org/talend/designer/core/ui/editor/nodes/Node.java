@@ -992,7 +992,8 @@ public class Node extends Element implements INode {
         IElementParameter parameter = getElementParameter(id);
         if (id.contains(EParameterName.SCHEMA_TYPE.getName()) || id.contains(EParameterName.QUERYSTORE_TYPE.getName())
                 || id.contains(EParameterName.PROPERTY_TYPE.getName())
-                || id.contains(EParameterName.PROCESS_TYPE_PROCESS.getName())) {
+                || id.contains(EParameterName.PROCESS_TYPE_PROCESS.getName())
+                || id.contains(EParameterName.INFORMATION.getName())) {
             setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
         }
         if (parameter == null) { // in case we try to set a value to a
@@ -1063,6 +1064,9 @@ public class Node extends Element implements INode {
         }
 
         parameter.setValue(value);
+        if (id.equals(EParameterName.INFORMATION.getName())) {
+            firePropertyChange(UPDATE_STATUS, null, new Integer(this.currentStatus));
+        }
         updateVisibleData();
 
         if (id.equals("WAIT_FOR") && this.getComponent().getName().equals("tParallelize")) { //$NON-NLS-1$ //$NON-NLS-2$
@@ -1563,6 +1567,12 @@ public class Node extends Element implements INode {
     @SuppressWarnings("unchecked")
     private void checkParameters() {
         for (IElementParameter param : this.getElementParametersWithChildrens()) {
+            if (param.getName().equals(EParameterName.COMMENT.getName())) {
+                String infoValue = (String) param.getValue();
+                if (!infoValue.equals("") && !(infoValue == null)) {
+                    Problems.add(ProblemStatus.INFO, this, infoValue);
+                }
+            }
             // if the parameter is required but empty, an error will be added
             if (param.isRequired() && !param.isShow(getElementParameters()) && this.externalNode != null) {
                 if (param.getField().equals(EParameterFieldType.TABLE)) {

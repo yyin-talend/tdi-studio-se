@@ -40,6 +40,7 @@ public enum EParameterName {
     HINT(Messages.getString("EParameterName.HintFormat")), //$NON-NLS-1$
     CONNECTION_FORMAT(Messages.getString("EParameterName.ConnectionFormat")), //$NON-NLS-1$
     SHOW_HINT(Messages.getString("EParameterName.ShowHint")), //$NON-NLS-1$
+    INFORMATION(Messages.getString("EParameterName.Information")), //$NON-NLS-1$
     COMMENT(Messages.getString("EParameterName.Comment")), //$NON-NLS-1$
     LOG_FILENAME(Messages.getString("EParameterName.FileName")), //$NON-NLS-1$
     LEVEL_LOG_TO_FILE(Messages.getString("EParameterName.Level.Log.File")), //$NON-NLS-1$

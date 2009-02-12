@@ -19,7 +19,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.CompoundSnapToHelper;
 import org.eclipse.gef.EditPolicy;
@@ -28,6 +27,7 @@ import org.eclipse.gef.SnapToGrid;
 import org.eclipse.gef.SnapToHelper;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.rulers.RulerProvider;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
@@ -89,7 +89,9 @@ public class NodeContainerPart extends AbstractGraphicalEditPart implements Prop
         } else {
             nodeContainerFigure.setAlpha(Node.ALPHA_VALUE);
         }
-        nodeContainerFigure.updateStatus(node.getStatus());
+        IElementParameter param = node.getElementParameter(EParameterName.INFORMATION.getName());
+        boolean showInfoFlag = Boolean.TRUE.equals(param.getValue());
+        nodeContainerFigure.updateStatus(node.getStatus(), showInfoFlag);
         return nodeContainerFigure;
     }
 
@@ -118,9 +120,14 @@ public class NodeContainerPart extends AbstractGraphicalEditPart implements Prop
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
     public void propertyChange(PropertyChangeEvent changeEvent) {
+
         if (changeEvent.getPropertyName().equals(Node.UPDATE_STATUS)) {
+            Node node = ((NodeContainer) getModel()).getNode();
+            IElementParameter param = node.getElementParameter(EParameterName.INFORMATION.getName());
+            boolean showInfoFlag = Boolean.TRUE.equals(param.getValue());
             Integer status = (Integer) changeEvent.getNewValue();
-            ((NodeContainerFigure) this.getFigure()).updateStatus(status);
+
+            ((NodeContainerFigure) this.getFigure()).updateStatus(status, showInfoFlag);
             refreshVisuals();
         }
         if (changeEvent.getPropertyName().equals(EParameterName.ACTIVATE.getName())) {

@@ -170,6 +170,8 @@ public class Process extends Element implements IProcess2 {
 
     public static final int WARNING_STATUS = 4;
 
+    public static final int INFO_STATUS = 16;
+
     public static final int PARALLEL_STATUS = 8;
 
     private Property property;

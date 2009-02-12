@@ -49,6 +49,8 @@ public class NodeContainer extends Element {
 
     private Point warningLocation = new Point();
 
+    private Point infoLocation = new Point();
+
     private Point errorLocation = new Point();
 
     private Point parallelLocation = new Point();
@@ -60,6 +62,8 @@ public class NodeContainer extends Element {
     private Dimension errorSize;
 
     private Dimension warningSize;
+
+    private Dimension infoSize;
 
     private Dimension parallelSize;
 
@@ -79,6 +83,8 @@ public class NodeContainer extends Element {
             errorSize = new Dimension(image.getImageData().width, image.getImageData().height);
             image = ImageProvider.getImage(EImage.WARNING_SMALL);
             warningSize = new Dimension(image.getImageData().width, image.getImageData().height);
+            image = ImageProvider.getImage(EImage.INFORMATION_SMALL);
+            infoSize = new Dimension(image.getImageData().width, image.getImageData().height);
             image = ImageProvider.getImage(EImage.PARALLEL_EXECUTION);
             parallelSize = new Dimension(image.getImageData().width, image.getImageData().height);
         }
@@ -86,7 +92,7 @@ public class NodeContainer extends Element {
 
     private Rectangle prepareStatus(Point nodeLocation, Dimension nodeSize) {
         Rectangle statusRectangle = new Rectangle();
-        Rectangle breakpointRectangle, warningRectangle, errorRectangle, parallelLocationRectangle;
+        Rectangle breakpointRectangle, warningRectangle, errorRectangle, infoRectangle, parallelLocationRectangle;
 
         breakpointLocation.x = nodeLocation.x - breakpointSize.width;
         breakpointLocation.y = nodeLocation.y - breakpointSize.height;
@@ -102,6 +108,11 @@ public class NodeContainer extends Element {
         warningLocation.y = nodeLocation.y - warningSize.height;
         warningRectangle = new Rectangle(warningLocation, warningSize);
         statusRectangle.union(warningRectangle);
+
+        infoLocation.x = nodeLocation.x + nodeSize.width;
+        infoLocation.y = nodeLocation.y - infoSize.height;
+        infoRectangle = new Rectangle(infoLocation, infoSize);
+        statusRectangle.union(infoRectangle);
 
         parallelLocation.x = nodeLocation.x - nodeSize.width / 2 - parallelSize.width;
         parallelLocation.y = nodeLocation.y - parallelSize.height;
@@ -201,6 +212,15 @@ public class NodeContainer extends Element {
      */
     public Point getWarningLocation() {
         return this.warningLocation;
+    }
+
+    /**
+     * Getter for warningLocation.
+     * 
+     * @return the warningLocation
+     */
+    public Point getInfoLocation() {
+        return this.infoLocation;
     }
 
     /**

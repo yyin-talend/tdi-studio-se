@@ -49,6 +49,8 @@ public class NodeContainerFigure extends Figure {
 
     private ImageFigure warningFigure;
 
+    private ImageFigure infoFigure;
+
     private SimpleHtmlFigure htmlStatusHint;
 
     public static final String BREAKPOINT_IMAGE = "icons/breakpoint.png"; //$NON-NLS-1$
@@ -79,6 +81,12 @@ public class NodeContainerFigure extends Figure {
         warningFigure.setSize(warningFigure.getPreferredSize());
         this.add(warningFigure);
 
+        infoFigure = new ImageFigure();
+        infoFigure.setImage(ImageProvider.getImage(EImage.INFORMATION_SMALL));
+        infoFigure.setVisible(false);
+        infoFigure.setSize(infoFigure.getPreferredSize());
+        this.add(infoFigure);
+
         if (PluginChecker.isTIS()) {
             addParallelFigure();
         }
@@ -107,7 +115,7 @@ public class NodeContainerFigure extends Figure {
         this.add(parallelFigure);
     }
 
-    public void updateStatus(int status) {
+    public void updateStatus(int status, boolean showInfoFlag) {
         if ((status & Process.BREAKPOINT_STATUS) != 0) {
             breakpointFigure.setVisible(true);
         } else {
@@ -127,6 +135,14 @@ public class NodeContainerFigure extends Figure {
         } else {
             warningFigure.setVisible(false);
             warningFigure.setToolTip(null);
+        }
+
+        if (((status & Process.INFO_STATUS) != 0) && !errorFigure.isVisible() && !warningFigure.isVisible() && showInfoFlag) {
+            warningFigure.setVisible(false);
+            errorFigure.setVisible(false);
+            infoFigure.setVisible(true);
+        } else {
+            infoFigure.setVisible(false);
         }
 
         if (errorFigure.isVisible() || warningFigure.isVisible()) {
@@ -198,6 +214,7 @@ public class NodeContainerFigure extends Figure {
         }
         breakpointFigure.setLocation(nodeContainer.getBreakpointLocation());
         errorFigure.setLocation(nodeContainer.getErrorLocation());
+        infoFigure.setLocation(nodeContainer.getInfoLocation());
         warningFigure.setLocation(nodeContainer.getWarningLocation());
         if (parallelFigure != null) {
             parallelFigure.setLocation(nodeContainer.getParallelLocation());

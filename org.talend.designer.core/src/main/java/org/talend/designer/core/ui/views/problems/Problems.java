@@ -298,6 +298,7 @@ public class Problems {
 
         boolean hasWarning = false;
         boolean hasError = false;
+        boolean hasInfo = false;
 
         for (Problem problem : problemList) {
             if (problem.getElement() == null) {
@@ -305,7 +306,10 @@ public class Problems {
             } else if (problem.getElement() != null && (!problem.getElement().equals(node))) {
                 continue;
             }
-            if (problem.getStatus().equals(ProblemStatus.WARNING)) {
+            if (problem.getStatus().equals(ProblemStatus.INFO)) {
+                hasInfo = true;
+                node.addStatus(Process.INFO_STATUS);
+            } else if (problem.getStatus().equals(ProblemStatus.WARNING)) {
                 hasWarning = true;
                 node.addStatus(Process.WARNING_STATUS);
             } else if (problem.getStatus().equals(ProblemStatus.ERROR)) {
@@ -319,6 +323,9 @@ public class Problems {
         }
         if (!hasError) {
             node.removeStatus(Process.ERROR_STATUS);
+        }
+        if (!hasInfo) {
+            node.removeStatus(Process.INFO_STATUS);
         }
 
         node.updateStatus();

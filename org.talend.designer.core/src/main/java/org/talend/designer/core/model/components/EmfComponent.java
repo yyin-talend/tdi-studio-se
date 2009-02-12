@@ -372,13 +372,25 @@ public class EmfComponent implements IComponent {
         ElementParameter param;
 
         param = new ElementParameter(node);
+        param.setName(EParameterName.INFORMATION.getName());
+        param.setValue(new Boolean(false));
+        param.setDisplayName(EParameterName.INFORMATION.getDisplayName());
+        param.setField(EParameterFieldType.CHECK);
+        param.setCategory(EComponentCategory.DOC);
+        param.setNumRow(1);
+        param.setReadOnly(false);
+        param.setRequired(false);
+        param.setShow(true);
+        listParam.add(param);
+
+        param = new ElementParameter(node);
         param.setName(EParameterName.COMMENT.getName());
         param.setValue(""); //$NON-NLS-1$
         param.setDisplayName(EParameterName.COMMENT.getDisplayName());
         param.setField(EParameterFieldType.MEMO);
         param.setNbLines(10);
         param.setCategory(EComponentCategory.DOC);
-        param.setNumRow(1);
+        param.setNumRow(2);
         param.setReadOnly(false);
         param.setRequired(false);
         param.setShow(true);
