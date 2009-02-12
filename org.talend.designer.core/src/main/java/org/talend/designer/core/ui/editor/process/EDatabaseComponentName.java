@@ -41,6 +41,16 @@ import org.talend.core.model.repository.ERepositoryObjectType;
  */
 public enum EDatabaseComponentName {
     // DATABASES
+    DBIBMDB2ZOS(DatabaseConnectionItem.class, EDatabaseTypeName.IBMDB2ZOS, "tDB2Input", "tDB2Output", true), //$NON-NLS-1$ //$NON-NLS-2$
+    DBJAVADBEMBEDED(DatabaseConnectionItem.class, EDatabaseTypeName.JAVADB_EMBEDED, "tJavaDBInput", "tJavaDBOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
+
+    // SAS(DatabaseConnectionItem.class, EDatabaseTypeName.SAS, "tSASInput", "tSASOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
+    HSQLDB_IN_PROGRESS(DatabaseConnectionItem.class, EDatabaseTypeName.HSQLDB_IN_PROGRESS, "tHSQLDbInput", "tHSQLDbOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
+    HSQLDB_WEBSERVER(DatabaseConnectionItem.class, EDatabaseTypeName.HSQLDB_WEBSERVER, "tHSQLDbInput", "tHSQLDbOutput", true), //$NON-NLS-1$ //$NON-NLS-2$    
+
+    HSQLDB_SERVER(DatabaseConnectionItem.class, EDatabaseTypeName.HSQLDB_SERVER, "tHSQLDbInput", "tHSQLDbOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
+    JAVADB_DERBYCLIENT(DatabaseConnectionItem.class, EDatabaseTypeName.JAVADB_DERBYCLIENT, "tJavaDBInput", "tJavaDBOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
+    JAVADB_JCCJDBC(DatabaseConnectionItem.class, EDatabaseTypeName.JAVADB_JCCJDBC, "tJavaDBInput", "tJavaDBOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
     DBMYSQL(DatabaseConnectionItem.class, EDatabaseTypeName.MYSQL, "tMysqlInput", "tMysqlOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
     DBPSQL(DatabaseConnectionItem.class, EDatabaseTypeName.PSQL, "tPostgresqlInput", "tPostgresqlOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
     PARACCEL(DatabaseConnectionItem.class, EDatabaseTypeName.PARACCEL, "tParAccelInput", "tParAccelOutput", true), //$NON-NLS-1$ //$NON-NLS-2$
