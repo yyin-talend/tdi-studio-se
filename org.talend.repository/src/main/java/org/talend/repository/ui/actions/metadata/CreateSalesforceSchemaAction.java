@@ -15,7 +15,7 @@ package org.talend.repository.ui.actions.metadata;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.SalesforceSchemaConnectionItem;
@@ -90,11 +90,11 @@ public class CreateSalesforceSchemaAction extends AbstractCreateAction {
             SalesforceSchemaWizard salesForceSchemaWizard = new SalesforceSchemaWizard(PlatformUI.getWorkbench(), creation,
                     salesforceSchema, getExistingNames(), false);
             salesForceSchemaWizard.setToolbar(true);
-            wizardDialog = new WizardDialog(new Shell(), salesForceSchemaWizard);// TODO send schema
+            wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), salesForceSchemaWizard);// TODO send
         } else {
             selection = getSelection();
-            wizardDialog = new WizardDialog(new Shell(), new SalesforceSchemaWizard(PlatformUI.getWorkbench(), creation,
-                    selection, getExistingNames(), false));
+            wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), new SalesforceSchemaWizard(PlatformUI
+                    .getWorkbench(), creation, selection, getExistingNames(), false));
         }
 
         wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);

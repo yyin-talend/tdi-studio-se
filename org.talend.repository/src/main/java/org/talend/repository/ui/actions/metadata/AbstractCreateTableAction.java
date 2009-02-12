@@ -20,7 +20,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.metadata.IMetadataConnection;
@@ -223,7 +222,7 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
                     creation, item, metadataTable, forceReadOnly);
             filePositionalTableWizard.setRepositoryObject(node.getObject());
 
-            WizardDialog wizardDialog = new WizardDialog(new Shell(), filePositionalTableWizard);
+            WizardDialog wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), filePositionalTableWizard);
             handleWizard(node, wizardDialog);
         }
     }
@@ -271,7 +270,7 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
                     metadataTable, forceReadOnly);
             fileRegexpTableWizard.setRepositoryObject(node.getObject());
 
-            WizardDialog wizardDialog = new WizardDialog(new Shell(), fileRegexpTableWizard);
+            WizardDialog wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), fileRegexpTableWizard);
             handleWizard(node, wizardDialog);
         }
     }
@@ -319,7 +318,7 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
                     metadataTable, forceReadOnly);
             fileXmlTableWizard.setRepositoryObject(node.getObject());
 
-            WizardDialog wizardDialog = new WizardDialog(new Shell(), fileXmlTableWizard);
+            WizardDialog wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), fileXmlTableWizard);
             handleWizard(node, wizardDialog);
         }
     }
@@ -367,7 +366,7 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
                     item, metadataTable, forceReadOnly);
             fileDelimitedTableWizard.setRepositoryObject(node.getObject());
 
-            WizardDialog wizardDialog = new WizardDialog(new Shell(), fileDelimitedTableWizard);
+            WizardDialog wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), fileDelimitedTableWizard);
             handleWizard(node, wizardDialog);
         }
     }
@@ -415,7 +414,7 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
                     metadataTable, forceReadOnly);
             fileLdifTableWizard.setRepositoryObject(node.getObject());
 
-            WizardDialog wizardDialog = new WizardDialog(new Shell(), fileLdifTableWizard);
+            WizardDialog wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), fileLdifTableWizard);
             handleWizard(node, wizardDialog);
         }
     }
@@ -464,7 +463,7 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
                     metadataTable, forceReadOnly);
             fileExcelTableWizard.setRepositoryObject(node.getObject());
 
-            WizardDialog wizardDialog = new WizardDialog(new Shell(), fileExcelTableWizard);
+            WizardDialog wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), fileExcelTableWizard);
             handleWizard(node, wizardDialog);
         }
     }
@@ -505,7 +504,7 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
                     item, metadataTable, forceReadOnly);
             genericSchemaWizard.setRepositoryObject(node.getObject());
 
-            WizardDialog wizardDialog = new WizardDialog(new Shell(), genericSchemaWizard);
+            WizardDialog wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), genericSchemaWizard);
             handleWizard(node, wizardDialog);
         }
     }
@@ -552,7 +551,7 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
                     metadataTable, forceReadOnly);
             ldapSchemaWizard.setRepositoryObject(node.getObject());
 
-            WizardDialog wizardDialog = new WizardDialog(new Shell(), ldapSchemaWizard);
+            WizardDialog wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), ldapSchemaWizard);
             handleWizard(node, wizardDialog);
         }
 
@@ -601,7 +600,7 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
                     creation, item, metadataTable, forceReadOnly);
             salesforceSchemaWizard.setRepositoryObject(node.getObject());
 
-            WizardDialog wizardDialog = new WizardDialog(new Shell(), salesforceSchemaWizard);
+            WizardDialog wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), salesforceSchemaWizard);
             handleWizard(node, wizardDialog);
         }
     }
@@ -648,7 +647,7 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
                     metadataTable, forceReadOnly);
             ldapSchemaWizard.setRepositoryObject(node.getObject());
 
-            WizardDialog wizardDialog = new WizardDialog(new Shell(), ldapSchemaWizard);
+            WizardDialog wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), ldapSchemaWizard);
             handleWizard(node, wizardDialog);
         }
 

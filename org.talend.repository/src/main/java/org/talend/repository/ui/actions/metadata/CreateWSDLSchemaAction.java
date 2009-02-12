@@ -15,7 +15,7 @@ package org.talend.repository.ui.actions.metadata;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.WSDLSchemaConnectionItem;
@@ -139,11 +139,11 @@ public class CreateWSDLSchemaAction extends AbstractCreateAction {
             init(wsdlSchemaNode);
             WSDLSchemaWizard wsdlSchemaWizard = new WSDLSchemaWizard(PlatformUI.getWorkbench(), creation, wsdlSchemaNode,
                     getExistingNames(), false);
-            wizardDialog = new WizardDialog(new Shell(), wsdlSchemaWizard);
+            wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), wsdlSchemaWizard);
         } else {
             selection = getSelection();
-            wizardDialog = new WizardDialog(new Shell(), new WSDLSchemaWizard(PlatformUI.getWorkbench(), creation, selection,
-                    getExistingNames(), false));
+            wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), new WSDLSchemaWizard(
+                    PlatformUI.getWorkbench(), creation, selection, getExistingNames(), false));
         }
 
         wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);

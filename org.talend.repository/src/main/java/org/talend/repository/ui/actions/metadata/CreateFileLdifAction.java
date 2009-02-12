@@ -15,7 +15,7 @@ package org.talend.repository.ui.actions.metadata;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.LdifFileConnectionItem;
@@ -92,11 +92,11 @@ public class CreateFileLdifAction extends AbstractCreateAction {
             LdifFileWizard ldifFileWizard = new LdifFileWizard(PlatformUI.getWorkbench(), creation, fileLdifNode,
                     getExistingNames());
             ldifFileWizard.setToolbar(true);
-            wizardDialog = new WizardDialog(new Shell(), ldifFileWizard);
+            wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), ldifFileWizard);
         } else {
             selection = getSelection();
-            wizardDialog = new WizardDialog(new Shell(), new LdifFileWizard(PlatformUI.getWorkbench(), creation, selection,
-                    getExistingNames()));
+            wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), new LdifFileWizard(PlatformUI.getWorkbench(),
+                    creation, selection, getExistingNames()));
         }
 
         wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);

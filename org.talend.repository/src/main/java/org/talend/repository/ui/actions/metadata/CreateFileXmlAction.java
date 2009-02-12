@@ -15,7 +15,7 @@ package org.talend.repository.ui.actions.metadata;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.XmlFileConnectionItem;
@@ -95,11 +95,11 @@ public class CreateFileXmlAction extends AbstractCreateAction {
             init(fileXMLNode);
             XmlFileWizard xmlFileWizard = new XmlFileWizard(PlatformUI.getWorkbench(), creation, fileXMLNode, getExistingNames());
             xmlFileWizard.setToolbar(true);
-            wizardDialog = new WizardDialog(new Shell(), xmlFileWizard);
+            wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), xmlFileWizard);
         } else {
             selection = getSelection();
-            wizardDialog = new WizardDialog(new Shell(), new XmlFileWizard(PlatformUI.getWorkbench(), creation, selection,
-                    getExistingNames()));
+            wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), new XmlFileWizard(PlatformUI.getWorkbench(),
+                    creation, selection, getExistingNames()));
         }
 
         //        

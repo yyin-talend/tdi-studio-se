@@ -15,7 +15,7 @@ package org.talend.repository.ui.actions.metadata;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.GenericSchemaConnectionItem;
@@ -96,11 +96,11 @@ public class CreateGenericSchemaAction extends AbstractCreateAction {
             GenericSchemaWizard genericSchemaWizard = new GenericSchemaWizard(PlatformUI.getWorkbench(), creation,
                     fileGenericSchemaNode, getExistingNames(), false);
             genericSchemaWizard.setToolbar(true);
-            wizardDialog = new WizardDialog(new Shell(), genericSchemaWizard);
+            wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), genericSchemaWizard);
         } else {
             selection = getSelection();
-            wizardDialog = new WizardDialog(new Shell(), new GenericSchemaWizard(PlatformUI.getWorkbench(), creation, selection,
-                    getExistingNames(), false));
+            wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), new GenericSchemaWizard(PlatformUI
+                    .getWorkbench(), creation, selection, getExistingNames(), false));
         }
         wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);
         wizardDialog.create();

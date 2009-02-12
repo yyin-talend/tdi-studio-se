@@ -17,8 +17,8 @@ import java.io.File;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -131,7 +131,7 @@ public class ImportSchemaFileAction extends CreateGenericSchemaAction {
             wizard.dispose();
             return;
         }
-        WizardDialog wizardDialog = new WizardDialog(new Shell(), wizard);
+        WizardDialog wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), wizard);
         wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);
         wizardDialog.create();
         wizardDialog.open();

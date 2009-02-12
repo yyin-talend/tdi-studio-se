@@ -21,7 +21,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Display;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
@@ -107,7 +107,7 @@ public class DeleteTableAction extends AContextualAction {
                                 String title = Messages.getString("DeleteAction.dialog.title"); //$NON-NLS-1$
                                 String message = Messages.getString("DeleteAction.dialog.message1") + "\n" //$NON-NLS-1$ //$NON-NLS-2$
                                         + Messages.getString("DeleteAction.dialog.message2"); //$NON-NLS-1$
-                                confirm = (MessageDialog.openQuestion(new Shell(), title, message));
+                                confirm = (MessageDialog.openQuestion(Display.getCurrent().getActiveShell(), title, message));
                             }
                             if (confirm) {
                                 subRepositoryObject.removeFromParent();

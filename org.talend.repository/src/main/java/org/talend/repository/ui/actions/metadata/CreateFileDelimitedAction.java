@@ -15,7 +15,7 @@ package org.talend.repository.ui.actions.metadata;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.DelimitedFileConnectionItem;
@@ -93,11 +93,11 @@ public class CreateFileDelimitedAction extends AbstractCreateAction {
             DelimitedFileWizard delimitedFileWizard = new DelimitedFileWizard(PlatformUI.getWorkbench(), creation,
                     fileDelimitedNode, getExistingNames());
             delimitedFileWizard.setToolbar(true);
-            wizardDialog = new WizardDialog(new Shell(), delimitedFileWizard);
+            wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), delimitedFileWizard);
         } else {
             selection = getSelection();
-            wizardDialog = new WizardDialog(new Shell(), new DelimitedFileWizard(PlatformUI.getWorkbench(), creation, selection,
-                    getExistingNames()));
+            wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), new DelimitedFileWizard(PlatformUI
+                    .getWorkbench(), creation, selection, getExistingNames()));
         }
 
         wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);
