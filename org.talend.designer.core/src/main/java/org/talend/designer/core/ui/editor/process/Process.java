@@ -1746,6 +1746,11 @@ public class Process extends Element implements IProcess2 {
             cType = (ConnectionType) connecList.get(i);
             source = nodesHashtable.get(cType.getSource());
             target = nodesHashtable.get(cType.getTarget());
+            // see the feature 6294
+            // qli
+            if (source == null || target == null) {
+                continue;
+            }
             Integer lineStyleId = new Integer(cType.getLineStyle());
             String connectorName = cType.getConnectorName();
             boolean connectionTypeFound = false;
