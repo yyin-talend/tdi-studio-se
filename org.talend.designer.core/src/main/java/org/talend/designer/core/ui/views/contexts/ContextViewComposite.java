@@ -268,6 +268,8 @@ public class ContextViewComposite extends ContextComposite {
             setReadOnly(process.isReadOnly());
         }
         super.refresh();
+        super.refreshTableTab();
+        super.refreshTreeTab();
         DesignerPlugin.getDefault().getRunProcessService().refreshView();
     }
 
@@ -333,8 +335,8 @@ public class ContextViewComposite extends ContextComposite {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.core.ui.context.IContextModelManager#onContextRemoveParameter(org.talend.core.model.process.IContextManager,
-     * java.util.List)
+     * @seeorg.talend.core.ui.context.IContextModelManager#onContextRemoveParameter(org.talend.core.model.process.
+     * IContextManager, java.util.List)
      */
     public void onContextRemoveParameter(IContextManager contextManager, Set<String> paramNames) {
         // record the modified operation.
