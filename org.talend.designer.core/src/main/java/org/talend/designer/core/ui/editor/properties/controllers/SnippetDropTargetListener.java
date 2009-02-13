@@ -94,7 +94,7 @@ public class SnippetDropTargetListener implements TransferDropTargetListener {
     public void drop(DropTargetEvent event) {
 
         RepositoryNode node = getSelection();
-        if (node.getProperties(EProperties.CONTENT_TYPE).equals(ERepositoryObjectType.SNIPPETS)) {
+        if (node != null && node.getProperties(EProperties.CONTENT_TYPE).equals(ERepositoryObjectType.SNIPPETS)) {
             SnippetItem snippetItem = (SnippetItem) node.getObject().getProperty().getItem();
             Shell shell = viewer.getTextWidget().getShell();
             SnippetManager manager = new SnippetManager();

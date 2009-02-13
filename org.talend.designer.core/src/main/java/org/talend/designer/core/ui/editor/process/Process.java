@@ -624,7 +624,8 @@ public class Process extends Element implements IProcess2 {
         ElementParameterType pType;
 
         if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)
-                || param.getField().equals(EParameterFieldType.PROPERTY_TYPE)) {
+                || param.getField().equals(EParameterFieldType.PROPERTY_TYPE)
+                || param.getName().equals(EParameterName.UPDATE_COMPONENTS.getName())) {
             return;
         }
         if (param.getParentParameter() != null) {
@@ -652,9 +653,7 @@ public class Process extends Element implements IProcess2 {
             if (tmpParam != null && tmpParam.getValue() != null && tmpParam.getValue().equals(param.getValue())) {
                 return;
             }
-            if (param != null
-                    && (param.getName().equals(EParameterName.UPDATE_COMPONENTS.getName()) || param.getName().equals(
-                            EParameterName.ICONSELECTION.getName()))) {
+            if (param != null && (param.getName().equals(EParameterName.ICONSELECTION.getName()))) {
                 return;
             }
         }
@@ -689,14 +688,16 @@ public class Process extends Element implements IProcess2 {
                 return;
             }
         }
-        if (param.getElement() instanceof Connection) {
-            Connection connection = (Connection) param.getElement();
-            IElementParameter connectionParam = connection.getElementParameter(param.getName());
-            if (connectionParam != null && connectionParam.getValue() != null
-                    && connectionParam.getValue().equals(param.getValue())) {
-                return;
-            }
-        }
+        // always save the connections parameters.
+        
+        // if (param.getElement() instanceof Connection) {
+        // Connection connection = (Connection) param.getElement();
+        // IElementParameter connectionParam = connection.getElementParameter(param.getName());
+        // if (connectionParam != null && connectionParam.getValue() != null
+        // && connectionParam.getValue().equals(param.getValue())) {
+        // return;
+        // }
+        // }
         pType = fileFact.createElementParameterType();
         if (param.getParentParameter() != null) {
             pType.setName(param.getParentParameter().getName() + ":" + param.getName()); //$NON-NLS-1$
