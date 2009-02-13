@@ -20,6 +20,8 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.osgi.framework.Bundle;
+import org.talend.core.ui.branding.DefaultBrandingConfiguration;
+import org.talend.core.ui.branding.IBrandingConfiguration;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.rcp.branding.tos.i18n.Messages;
 
@@ -28,6 +30,8 @@ import org.talend.rcp.branding.tos.i18n.Messages;
  * 
  */
 public class TosBrandingService implements IBrandingService {
+
+    protected IBrandingConfiguration brandingConfigure;
 
     public String getFullProductName() {
         return Messages.getString("productfullname"); //$NON-NLS-1$
@@ -53,6 +57,18 @@ public class TosBrandingService implements IBrandingService {
         final Bundle b = Platform.getBundle(Activator.PLUGIN_ID);
         final URL url = FileLocator.toFileURL(FileLocator.find(b, new Path("resources/license.txt"), null)); //$NON-NLS-1$
         return url;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.ui.branding.IBrandingService#getBrandingConfiguration()
+     */
+    public IBrandingConfiguration getBrandingConfiguration() {
+        if (brandingConfigure == null) {
+            brandingConfigure = new DefaultBrandingConfiguration();
+        }
+        return brandingConfigure;
     }
 
 }

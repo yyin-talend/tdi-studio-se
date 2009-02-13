@@ -59,6 +59,7 @@ import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.IRepositoryPrefConstants;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.ui.ICDCProviderService;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
@@ -116,6 +117,27 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         setRoot(this);
     }
 
+    private void hideHiddenNodes() {
+        IBrandingService service = (IBrandingService) GlobalServiceRegister.getDefault().getService(IBrandingService.class);
+        List<RepositoryNode> hiddens = service.getBrandingConfiguration().getHiddenRepositoryCategory(this);
+        // this.getChildren().removeAll(hiddens);
+        for (RepositoryNode node : hiddens) {
+            removeNode(this, node);
+        }
+    }
+
+    private void removeNode(RepositoryNode container, RepositoryNode node) {
+        List<RepositoryNode> nodes = container.getChildren();
+
+        if (nodes.contains(node)) {
+            nodes.remove(node);
+        } else {
+            for (RepositoryNode n : nodes) {
+                removeNode(n, node);
+            }
+        }
+    }
+
     public void initialize() {
         List<RepositoryNode> nodes = getChildren();
 
@@ -135,13 +157,13 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         processNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.PROCESS);
         nodes.add(processNode);
 
-        if (PluginChecker.isJobLetPluginLoaded()) {
-            // 2.1 Joblet
-            jobletNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-            jobletNode.setProperties(EProperties.LABEL, ERepositoryObjectType.JOBLET);
-            jobletNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.JOBLET);
-            nodes.add(jobletNode);
-        }
+        // if (PluginChecker.isJobLetPluginLoaded()) {
+        // 2.1 Joblet
+        jobletNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+        jobletNode.setProperties(EProperties.LABEL, ERepositoryObjectType.JOBLET);
+        jobletNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.JOBLET);
+        nodes.add(jobletNode);
+        // }
 
         // 3. Context
         contextNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
@@ -162,12 +184,12 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         codeNode.getChildren().add(routineNode);
 
         // 4.2. Snippets
-        if (PluginChecker.isSnippetsPluginLoaded()) {
-            snippetsNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-            snippetsNode.setProperties(EProperties.LABEL, ERepositoryObjectType.SNIPPETS);
-            snippetsNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.SNIPPETS);
-            codeNode.getChildren().add(snippetsNode);
-        }
+        // if (PluginChecker.isSnippetsPluginLoaded()) {
+        // snippetsNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+        // snippetsNode.setProperties(EProperties.LABEL, ERepositoryObjectType.SNIPPETS);
+        // snippetsNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.SNIPPETS);
+        // codeNode.getChildren().add(snippetsNode);
+        // }
 
         // 5. Sql patterns
         sqlPatternNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
@@ -258,19 +280,19 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         }
 
         // 7.12 SAP
-        if (PluginChecker.isSAPWizardPluginLoaded() && LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
+        if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
             metadataSAPConnectionNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
             metadataSAPConnectionNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_SAPCONNECTIONS);
             metadataSAPConnectionNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_SAPCONNECTIONS);
             metadataNode.getChildren().add(metadataSAPConnectionNode);
         }
         // 7.13 EBCDIC
-        if (PluginChecker.isEBCDICPluginLoaded()) {
-            metadataEbcdicConnectionNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-            metadataEbcdicConnectionNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_EBCDIC);
-            metadataEbcdicConnectionNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_EBCDIC);
-            metadataNode.getChildren().add(metadataEbcdicConnectionNode);
-        }
+        // if (PluginChecker.isEBCDICPluginLoaded()) {
+        metadataEbcdicConnectionNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+        metadataEbcdicConnectionNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_EBCDIC);
+        metadataEbcdicConnectionNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_EBCDIC);
+        metadataNode.getChildren().add(metadataEbcdicConnectionNode);
+        // }
 
         // Reference Projects
         if (PluginChecker.isTIS() && getParent() == null && !getMergeRefProject()
@@ -280,6 +302,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             refProject.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.REFERENCED_PROJECTS);
             nodes.add(refProject);
         }
+        // hide hidden nodes;
+        hideHiddenNodes();
     }
 
     /**

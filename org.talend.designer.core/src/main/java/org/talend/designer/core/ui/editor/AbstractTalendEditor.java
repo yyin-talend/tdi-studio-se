@@ -137,6 +137,7 @@ import org.talend.core.model.process.ISubjobContainer;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.Property;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
@@ -665,6 +666,17 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         currentJobResource = new JobResource();
         protectedJobs = new HashMap<String, JobResource>();
         initializeKeyBindingScopes();
+        // achen added to init components visible
+        hideComposites();
+    }
+
+    /**
+     * 
+     * DOC achen Comment method "hideComposites".
+     */
+    private void hideComposites() {
+        IBrandingService service = (IBrandingService) GlobalServiceRegister.getDefault().getService(IBrandingService.class);
+        service.getBrandingConfiguration().hideComponents();
     }
 
     @Override
