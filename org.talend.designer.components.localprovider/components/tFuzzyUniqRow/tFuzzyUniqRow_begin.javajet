@@ -19,8 +19,10 @@ for(Map<String, String> keyColumn:keyColumns){
 	if(keyColumn.get("KEY_ATTRIBUTE").equals("true")){
 		String colName = keyColumn.get("SCHEMA_COLUMN");
 %>
-		java.util.Set<String> <%=colName %>_keys_<%=cid %> = new java.util.HashSet<String>();
+		java.util.List<String> <%=colName %>_keys_<%=cid %> = new java.util.ArrayList<String>();
 		String <%=colName %>_currentRowKey<%=cid %> = "";
+		String <%=colName %>_temp_<%=cid %> = "";
+		
 <%
 	}
 }
@@ -29,3 +31,5 @@ for(Map<String, String> keyColumn:keyColumns){
 int nb_uniques_<%=cid %> = 0;
 int nb_duplicates_<%=cid %> = 0;
 
+int uId_<%=cid %> = 0;
+int dId_<%=cid %> = 0;

@@ -59,7 +59,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			}
 %>	
 			Boolean isMatch_<%=cid %> = false;
-			int closeValue_<%=cid %> = -1;
+			
 <%
 			for (IMetadataColumn column: metadata.getListColumns()) {
 				Map<String, String> keyColumn = keyColumns.get(ii);
@@ -68,97 +68,162 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					Integer minDistance = Integer.parseInt(keyColumn.get("MIN_DISTANCE"));
 					Integer maxDistance = Integer.parseInt(keyColumn.get("MAX_DISTANCE"));
 					String colName = keyColumn.get("SCHEMA_COLUMN");
-					
-					if(matchingType.equals("EXACT_MATCH")){
-					%>
-						<%=colName %>_currentRowKey<%=cid %> = (<%=connName %>.<%=column.getLabel() %>!=null)?<%=connName %>.<%=column.getLabel() %>.toString()<%=((!keyColumn.get("CASE_SENSITIVE").equals("true"))?".toLowerCase()":"")%>:null;
-						if(!<%=colName %>_keys_<%=cid %>.contains(<%=colName %>_currentRowKey<%=cid %>)){
-							<%=colName %>_keys_<%=cid %>.add(<%=colName %>_currentRowKey<%=cid %>);
-						}else{
-							isMatch_<%=cid %> = true;
+%>
+					if(!isMatch_<%=cid %>){
+<%				
+						if(matchingType.equals("EXACT_MATCH")){
+%>
+							<%=colName %>_currentRowKey<%=cid %> = (<%=connName %>.<%=column.getLabel() %>!=null)?<%=connName %>.<%=column.getLabel() %>.toString()<%=((!keyColumn.get("CASE_SENSITIVE").equals("true"))?".toLowerCase()":"")%>:null;
+							java.util.Iterator<String> <%=colName %>_it_<%=cid %> = <%=colName %>_keys_<%=cid %>.iterator();
+							int <%=colName %>_time_<%=cid %> = 0;
+							while(<%=colName %>_it_<%=cid %>.hasNext()){
+								String str_<%=cid %> = <%=colName %>_it_<%=cid %>.next();
+								if(str_<%=cid %> == null){
+									if(str_<%=cid %> == (<%=colName %>_currentRowKey<%=cid %>)){
+										isMatch_<%=cid %> = true;
+										dId_<%=cid %> = <%=colName %>_time_<%=cid %>;
+										break;
+									}else{
+										<%=colName %>_time_<%=cid %>++;
+									}
+								}else {
+									if(str_<%=cid %>.equals(<%=colName %>_currentRowKey<%=cid %>)){
+										isMatch_<%=cid %> = true;
+										dId_<%=cid %> = <%=colName %>_time_<%=cid %>;
+										break;
+									}else{
+										<%=colName %>_time_<%=cid %>++;
+									}
+								}
+							}
+							<%=colName %>_temp_<%=cid %> = <%=colName %>_currentRowKey<%=cid %>;
+<%
+						}else if(matchingType.equals("LEVENSHTEIN")){
+%>
+							<%=colName %>_currentRowKey<%=cid %> = (<%=connName %>.<%=column.getLabel() %>!=null)?<%=connName %>.<%=column.getLabel() %>.toString()<%=((!keyColumn.get("CASE_SENSITIVE").equals("true"))?".toLowerCase()":"")%>:null;
+							java.util.Iterator<String> <%=colName %>_it_<%=cid %> = <%=colName %>_keys_<%=cid %>.iterator();
+							int <%=colName %>_time_<%=cid %> = 0;
+							while(<%=colName %>_it_<%=cid %>.hasNext()){
+								String lookUpValue_<%=cid%> = <%=colName %>_it_<%=cid %>.next();
+								if(lookUpValue_<%=cid%> == null || <%=colName %>_currentRowKey<%=cid %> == null){
+									if(<%=colName %>_currentRowKey<%=cid %> == lookUpValue_<%=cid%>){
+		                        		isMatch_<%=cid %> = true;
+		                        		dId_<%=cid %> = <%=colName %>_time_<%=cid %>;                        		
+		                            	break;       
+		                        	}else{
+		                        		<%=colName %>_time_<%=cid %>++;
+		                        	}
+								}else{
+									int distance_<%=cid%> = org.apache.commons.lang.StringUtils.getLevenshteinDistance(<%=colName %>_currentRowKey<%=cid %>, lookUpValue_<%=cid%><%if(!keyColumn.get("CASE_SENSITIVE").equals("true")){%>.toLowerCase()<%}%>);
+									if(<%=minDistance%> <= distance_<%=cid%> && distance_<%=cid%> <= <%=maxDistance%>){
+		                        		isMatch_<%=cid %> = true;
+		                        		dId_<%=cid %> = <%=colName %>_time_<%=cid %>;                        		
+		                            	break;       
+		                        	}else{
+		                        		<%=colName %>_time_<%=cid %>++;
+		                        	}
+								}
+							}
+							<%=colName %>_temp_<%=cid %> = <%=colName %>_currentRowKey<%=cid %>;
+							
+<%
+						}else if(matchingType.equals("METAPHONE")){
+%>
+							org.apache.commons.codec.language.Metaphone <%=colName %>_metaphone_<%=cid %> = new org.apache.commons.codec.language.Metaphone();
+							<%=colName %>_currentRowKey<%=cid %> = (<%=connName %>.<%=column.getLabel() %>!=null)?<%=connName %>.<%=column.getLabel() %>.toString()<%=((!keyColumn.get("CASE_SENSITIVE").equals("true"))?".toLowerCase()":"")%>:null;
+							java.util.Iterator<String> <%=colName %>_it_<%=cid %> = <%=colName %>_keys_<%=cid %>.iterator();
+							int <%=colName %>_time_<%=cid %> = 0;
+							while(<%=colName %>_it_<%=cid %>.hasNext()){
+	                        	String lookUpValue_<%=cid%> = <%=colName %>_it_<%=cid %>.next();
+	                        	
+	                        	if(lookUpValue_<%=cid%> == null){
+		                        	if(lookUpValue_<%=cid%> == <%=colName %>_currentRowKey<%=cid %>){
+		                        		isMatch_<%=cid %> = true;
+		                        		dId_<%=cid %> = <%=colName %>_time_<%=cid %>;
+		                        		break;
+		                        	}else{
+		                        		<%=colName %>_time_<%=cid %>++;
+		                        	}
+		                        }else if("".equals(lookUpValue_<%=cid%>) || "".equals(<%=colName %>_currentRowKey<%=cid %>)){
+		                        	if((lookUpValue_<%=cid%>).equals(<%=colName %>_currentRowKey<%=cid %>)){
+	                        			isMatch_<%=cid %> = true;
+	                        			dId_<%=cid %> = <%=colName %>_time_<%=cid %>;
+	                        			break;
+	                        		}else{
+	                        			<%=colName %>_time_<%=cid %>++;
+	                        		}
+	                        	}else{
+		                        	if(<%=colName %>_metaphone_<%=cid %>.metaphone(lookUpValue_<%=cid%>).equals(<%=colName %>_metaphone_<%=cid %>.metaphone(<%=colName %>_currentRowKey<%=cid %>))){
+		                        		isMatch_<%=cid %> = true;
+		                        		dId_<%=cid %> = <%=colName %>_time_<%=cid %>;
+		                        		break;
+		                        	}else{
+		                        		<%=colName %>_time_<%=cid %>++;
+		                        	}
+	                        	}
+	                        }
+	                        <%=colName %>_temp_<%=cid %> = <%=colName %>_currentRowKey<%=cid %>;
+<%
+						}else if(matchingType.equals("DOUBLE_METAPHONE")){
+%>
+							org.apache.commons.codec.language.DoubleMetaphone <%=colName %>_doublemetaphone_<%=cid %> = new org.apache.commons.codec.language.DoubleMetaphone();
+							<%=colName %>_currentRowKey<%=cid %> = (<%=connName %>.<%=column.getLabel() %>!=null)?<%=connName %>.<%=column.getLabel() %>.toString()<%=((!keyColumn.get("CASE_SENSITIVE").equals("true"))?".toLowerCase()":"")%>:null;
+							java.util.Iterator<String> <%=colName %>_it_<%=cid %> = <%=colName %>_keys_<%=cid %>.iterator();
+							int <%=colName %>_time_<%=cid %> = 0;
+							while(<%=colName %>_it_<%=cid %>.hasNext()){
+	                        	String lookUpValue_<%=cid%> = <%=colName %>_it_<%=cid %>.next();
+	                        	if(lookUpValue_<%=cid%> == null){
+	                        		if(lookUpValue_<%=cid%> == <%=colName %>_currentRowKey<%=cid %>){
+	                        			isMatch_<%=cid %> = true;
+	                        			dId_<%=cid %> = <%=colName %>_time_<%=cid %>;
+	                        			break;
+	                        		}else{
+	                        			<%=colName %>_time_<%=cid %>++;
+	                        		}
+	                        	}else if("".equals(lookUpValue_<%=cid%>) || "".equals(<%=colName %>_currentRowKey<%=cid %>)){
+	                        		if((lookUpValue_<%=cid%>).equals(<%=colName %>_currentRowKey<%=cid %>)){
+	                        			isMatch_<%=cid %> = true;
+	                        			dId_<%=cid %> = <%=colName %>_time_<%=cid %>;
+	                        			break;
+	                        		}else{
+	                        			<%=colName %>_time_<%=cid %>++;
+	                        		}
+	                        	}else{
+		                        	if((<%=colName %>_doublemetaphone_<%=cid %>.doubleMetaphone(lookUpValue_<%=cid%>)).equals(<%=colName %>_doublemetaphone_<%=cid %>.doubleMetaphone(<%=colName %>_currentRowKey<%=cid %>))){
+		                        		isMatch_<%=cid %> = true;
+		                        		dId_<%=cid %> = <%=colName %>_time_<%=cid %>;
+		                        		break;
+		                        	}else{
+		                        		<%=colName %>_time_<%=cid %>++;
+		                        	}
+	                        	}
+	                        }
+	                        <%=colName %>_temp_<%=cid %> = <%=colName %>_currentRowKey<%=cid %>;
+<%
 						}
-					<%
-					}else if(matchingType.equals("LEVENSHTEIN")){
-					%>
-						closeValue_<%=cid %> = -1;
-						<%=colName %>_currentRowKey<%=cid %> = (<%=connName %>.<%=column.getLabel() %>!=null)?<%=connName %>.<%=column.getLabel() %>.toString()<%=((!keyColumn.get("CASE_SENSITIVE").equals("true"))?".toLowerCase()":"")%>:null;
-						
-						java.util.Iterator <%=colName %>_it_<%=cid %> = <%=colName %>_keys_<%=cid %>.iterator();
-						while(<%=colName %>_it_<%=cid %>.hasNext()){
-							String lookUpValue_<%=cid%> = "" + <%=colName %>_it_<%=cid %>.next();
-							int distance_<%=cid%> = org.apache.commons.lang.StringUtils.getLevenshteinDistance(<%=colName %>_currentRowKey<%=cid %>, lookUpValue_<%=cid%><%if(!keyColumn.get("CASE_SENSITIVE").equals("true")){%>.toLowerCase()<%}%>);
-							if(<%=minDistance%> <= distance_<%=cid%> && distance_<%=cid%> <= <%=maxDistance%>){
-                        		
-                        		if(closeValue_<%=cid %> == -1 || distance_<%=cid%> < closeValue_<%=cid %>){
-                        		
-                        			closeValue_<%=cid %> = distance_<%=cid%>;
-                        			
-                        			if(closeValue_<%=cid %> == <%=minDistance%>){                            		
-                            			break;                            							
-                            		}
-                        		}
-                        	}
-						}
-
-						if(closeValue_<%=cid %> != -1){                        
-                    
-                        	isMatch_<%=cid %> = true;
-                        	
-                        }else{
-                        	<%=colName %>_keys_<%=cid %>.add(<%=colName %>_currentRowKey<%=cid %>);
-                        }
-					<%
-					}else if(matchingType.equals("METAPHONE")){
-					%>
-						org.apache.commons.codec.language.Metaphone <%=colName %>_metaphone_<%=cid %> = new org.apache.commons.codec.language.Metaphone();
-						<%=colName %>_currentRowKey<%=cid %> = (<%=connName %>.<%=column.getLabel() %>!=null)?<%=connName %>.<%=column.getLabel() %>.toString()<%=((!keyColumn.get("CASE_SENSITIVE").equals("true"))?".toLowerCase()":"")%>:null;
-						java.util.Iterator <%=colName %>_it_<%=cid %> = <%=colName %>_keys_<%=cid %>.iterator();
-						while(<%=colName %>_it_<%=cid %>.hasNext()){
-                        
-                        	String lookUpValue_<%=cid%> = "" + <%=colName %>_it_<%=cid %>.next();
-                        	
-                        	if(<%=colName %>_metaphone_<%=cid %>.metaphone(lookUpValue_<%=cid%>).equals(<%=colName %>_metaphone_<%=cid %>.metaphone(<%=colName %>_currentRowKey<%=cid %>))){
-                        	
-                        		isMatch_<%=cid %> = true;
-                        		
-                        		break;
-                        	
-                        	}
-                        	
-                        }
-                        if(!isMatch_<%=cid %>){
-                        	<%=colName %>_keys_<%=cid %>.add(<%=colName %>_currentRowKey<%=cid %>);
-                        }
-                    <%
-					}else if(matchingType.equals("DOUBLE_METAPHONE")){
-					%>
-						org.apache.commons.codec.language.DoubleMetaphone <%=colName %>_doublemetaphone_<%=cid %> = new org.apache.commons.codec.language.DoubleMetaphone();
-						<%=colName %>_currentRowKey<%=cid %> = (<%=connName %>.<%=column.getLabel() %>!=null)?<%=connName %>.<%=column.getLabel() %>.toString()<%=((!keyColumn.get("CASE_SENSITIVE").equals("true"))?".toLowerCase()":"")%>:null;
-						java.util.Iterator <%=colName %>_it_<%=cid %> = <%=colName %>_keys_<%=cid %>.iterator();
-						while(<%=colName %>_it_<%=cid %>.hasNext()){
-                        
-                        	String lookUpValue_<%=cid%> = "" + <%=colName %>_it_<%=cid %>.next();
-                        	
-                        	if(<%=colName %>_doublemetaphone_<%=cid %>.doubleMetaphone(lookUpValue_<%=cid%>).equals(<%=colName %>_doublemetaphone_<%=cid %>.doubleMetaphone(<%=colName %>_currentRowKey<%=cid %>))){
-                        	
-                        		isMatch_<%=cid %> = true;
-                        		
-                        		break;
-                        	
-                        	}
-                        	
-                        }
-                        if(!isMatch_<%=cid %>){
-                        	<%=colName %>_keys_<%=cid %>.add(<%=colName %>_currentRowKey<%=cid %>);
-                        }
-					<%
+%>
 					}
+<%					
 				}
 				ii++;
 			} 
 %>
+			
 			if (!isMatch_<%=cid %>) {
+			
 <%
+				for(Map<String, String> keyColumn:keyColumns){
+					if(keyColumn.get("KEY_ATTRIBUTE").equals("true")){
+						String colName = keyColumn.get("SCHEMA_COLUMN");
+%>
+						<%=colName %>_keys_<%=cid %>.add(<%=colName %>_temp_<%=cid %>);
+
+<%
+					}
+				}
+
+				
+				
 				if (connsUnique!=null) {
 					if (connsUnique.size()>0) {
 						for (int i=0;i<connsUnique.size();i++) {
@@ -168,9 +233,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 								if(<%=conn.getName() %> == null){ 
 									<%=conn.getName() %> = new <%=conn.getName() %>Struct();
 								}
+								<%=conn.getName() %>.UID = new String().valueOf(uId_<%=cid %>);
 <%
 			    	 			for (IMetadataColumn column: metadata.getListColumns()) {
-%>
+			    	 				
+%>			
 		    	 					<%=conn.getName() %>.<%=column.getLabel() %> = <%=connName %>.<%=column.getLabel() %>;			
 <%					 
 								}
@@ -179,6 +246,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					}
 				}
 %>		
+				uId_<%=cid %>++;
 				nb_uniques_<%=cid %>++;
 			} else {
 <%
@@ -190,9 +258,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 								if(<%=conn.getName() %> == null){ 
 									<%=conn.getName() %> = new <%=conn.getName() %>Struct();
-								}				
+								}
+								<%=conn.getName() %>.FID = new String().valueOf(dId_<%=cid %>);
 <%
 			    	 			for (IMetadataColumn column: metadata.getListColumns()) {
+			    	 				
 %>
 			    	 				<%=conn.getName() %>.<%=column.getLabel() %> = <%=connName %>.<%=column.getLabel() %>;			
 <%					 
