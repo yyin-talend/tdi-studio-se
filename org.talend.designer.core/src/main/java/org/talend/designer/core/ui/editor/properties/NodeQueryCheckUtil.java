@@ -49,8 +49,14 @@ public final class NodeQueryCheckUtil {
 
     private static final String NL_REGX = "(\\s)*"; //$NON-NLS-1$   
 
-    // reg:(.+?)(\s)*\((\s)*(.*)(\s)*\)
-    private static final String SQL_FUNC_REGX = "(.+?)" + NL_REGX + "\\(" + NL_REGX + "(.*)" + NL_REGX + "\\)"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+    /*
+     * add by wzhang
+     */
+    // field contains function
+    private static final String SQL_FUNC_REGX = "(.+?)(\\s)*\\((\\s)*(.*)(\\s)*\\)(\\s)*(.*)"; //$NON-NLS-1$  
+
+    // split the function
+    private static final String FUNC_SPLIT = "(\\s)*(\\w*)\\((.*?)\\)(\\s+\\w*){0,1}"; //$NON-NLS-1$  
 
     /**
      * 
@@ -62,7 +68,6 @@ public final class NodeQueryCheckUtil {
      */
     public static boolean checkQueryOK(Node node, String sql) {
 
-        //
         if (sql == null) {
             return false;
         }
@@ -94,18 +99,56 @@ public final class NodeQueryCheckUtil {
         if ("*".equals(columns)) { //$NON-NLS-1$
             return true;
         }
-
-        // include function
+        /*
+         * add by wzhang
+         */
         boolean match = apacheRegexMatch(SQL_FUNC_REGX, REGX_FLAG, columns);
-        // no functions
         if (!match) {
-            return compareNodeTableColumns(node, columns);
+            // no function
+            return compareNodeTableColumnsNoFunc(node, columns);
+        } else {
+            // contains function
+            return compareNodeTableColumnsWithFunc(node, columns);
         }
 
+    }
+
+    /**
+     * 
+     * DOC wzhang Comment method "compareNodeTableColumnsWithFunc".
+     * 
+     * @param node
+     * @param columns
+     * @return
+     */
+    private static boolean compareNodeTableColumnsWithFunc(Node node, String columns) {
+        if (node.getMetadataList().size() == 0) {
+            return true;
+        }
+        IMetadataTable metaTable = node.getMetadataList().get(0);
+        if (metaTable == null || metaTable.getListColumns() == null) {
+            return true;
+        }
+        int originColumnSize = metaTable.getListColumns().size();
+        // modified by wzhang. replace the field to one String if it contains function
+        columns = columns.replaceAll(FUNC_SPLIT, "column"); //$NON-NLS-1$  
+        String[] columnArray = columns.split(","); //$NON-NLS-1$
+        // columns not match
+        if (columnArray.length != originColumnSize) {
+            return false;
+        }
         return true;
     }
 
-    private static boolean compareNodeTableColumns(Node node, String columns) {
+    /**
+     * 
+     * DOC wzhang Comment method "compareNodeTableColumnsNoFunc".
+     * 
+     * @param node
+     * @param columns
+     * @return
+     */
+    private static boolean compareNodeTableColumnsNoFunc(Node node, String columns) {
         if (node.getMetadataList().size() == 0) {
             return true;
         }
@@ -138,8 +181,7 @@ public final class NodeQueryCheckUtil {
         try {
             pattern = pc.compile(patternString, flag);
             PatternMatcher columnMatcher = new Perl5Matcher();
-            // see bug 6268
-            return columnMatcher.contains(input, pattern);
+            return columnMatcher.matches(input, pattern);
         } catch (MalformedPatternException e) {
             return false;
         }
