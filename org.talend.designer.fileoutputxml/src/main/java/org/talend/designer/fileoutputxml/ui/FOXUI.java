@@ -31,13 +31,10 @@ import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -47,9 +44,10 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 import org.talend.commons.ui.swt.formtools.Form;
-import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.process.EConnectionType;
+import org.talend.core.model.process.IConnection;
 import org.talend.designer.fileoutputxml.FileOutputXMLComponent;
 import org.talend.designer.fileoutputxml.action.CreateAttributeAction;
 import org.talend.designer.fileoutputxml.action.CreateElementAction;
@@ -207,13 +205,32 @@ public class FOXUI {
     }
 
     protected void initSchemaTable() {
-        IMetadataTable metadataTable = this.externalNode.getMetadataTable();
-        if (metadataTable != null) {
-            List<IMetadataColumn> columnList = metadataTable.getListColumns();
-            schemaViewer.setInput(columnList);
+        if (!externalNode.getComponent().getName().equals("tWriteXMLField")) {
+            IMetadataTable metadataTable = this.externalNode.getMetadataTable();
+            if (metadataTable != null) {
+                List<IMetadataColumn> columnList = metadataTable.getListColumns();
+                schemaViewer.setInput(columnList);
+            } else {
+                schemaViewer.setInput(new ArrayList<IMetadataColumn>());
+            }
+
         } else {
-            schemaViewer.setInput(new ArrayList<IMetadataColumn>());
+            IConnection inConn = null;
+            for (IConnection conn : externalNode.getIncomingConnections()) {
+                if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))
+                        || (conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {
+                    inConn = conn;
+                    break;
+                }
+            }
+            if (inConn != null) {
+                List<IMetadataColumn> columnList = inConn.getMetadataTable().getListColumns();
+                schemaViewer.setInput(columnList);
+            } else {
+                schemaViewer.setInput(new ArrayList<IMetadataColumn>());
+            }
         }
+
     }
 
     /**

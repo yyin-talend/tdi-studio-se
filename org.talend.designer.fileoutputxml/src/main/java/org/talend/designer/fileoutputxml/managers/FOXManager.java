@@ -20,6 +20,8 @@ import java.util.Map;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
+import org.talend.core.model.process.EConnectionType;
+import org.talend.core.model.process.IConnection;
 import org.talend.designer.fileoutputxml.FileOutputXMLComponent;
 import org.talend.designer.fileoutputxml.data.Attribute;
 import org.talend.designer.fileoutputxml.data.Element;
@@ -90,10 +92,23 @@ public class FOXManager {
     }
 
     public void initModel() {
-
         IMetadataTable metadataTable = foxComponent.getMetadataTable();
         if (metadataTable == null) {
             metadataTable = new MetadataTable();
+        }
+
+        if (foxComponent.getComponent().getName().equals("tWriteXMLField")) {
+            IConnection inConn = null;
+            for (IConnection conn : foxComponent.getIncomingConnections()) {
+                if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))
+                        || (conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {
+                    inConn = conn;
+                    break;
+                }
+            }
+            if (inConn != null) {
+                metadataTable = inConn.getMetadataTable();
+            }
         }
 
         treeData = new ArrayList<FOXTreeNode>();

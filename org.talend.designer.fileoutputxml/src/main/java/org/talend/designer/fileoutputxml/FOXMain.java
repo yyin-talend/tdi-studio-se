@@ -55,22 +55,25 @@ public class FOXMain {
      * @return
      */
     public void createUI(Composite parent) {
-        IConnection inConn = null;
-        for (IConnection conn : connector.getIncomingConnections()) {
-            if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))
-                    || (conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {
-                inConn = conn;
-                break;
+        if (!connector.getComponent().getName().equals("tWriteXMLField")) {
+            IConnection inConn = null;
+            for (IConnection conn : connector.getIncomingConnections()) {
+                if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))
+                        || (conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {
+                    inConn = conn;
+                    break;
+                }
             }
-        }
-        if (inConn != null) {
-            if (!inConn.getMetadataTable().sameMetadataAs(connector.getMetadataList().get(0))) {
-                MessageBox messageBox = new MessageBox(parent.getShell(), SWT.APPLICATION_MODAL | SWT.OK);
-                messageBox.setText(Messages.getString("FOXMain.0")); //$NON-NLS-1$
-                messageBox.setMessage(Messages.getString("FOXMain.1")); //$NON-NLS-1$
-                if (messageBox.open() == SWT.OK) {
-                    ((Shell) parent).close();
-                    return;
+
+            if (inConn != null) {
+                if (!inConn.getMetadataTable().sameMetadataAs(connector.getMetadataList().get(0))) {
+                    MessageBox messageBox = new MessageBox(parent.getShell(), SWT.APPLICATION_MODAL | SWT.OK);
+                    messageBox.setText(Messages.getString("FOXMain.0")); //$NON-NLS-1$
+                    messageBox.setMessage(Messages.getString("FOXMain.1")); //$NON-NLS-1$
+                    if (messageBox.open() == SWT.OK) {
+                        ((Shell) parent).close();
+                        return;
+                    }
                 }
             }
         }
@@ -85,8 +88,8 @@ public class FOXMain {
      * @return
      */
     public Shell createUI(Display display) {
-        Shell shell = new Shell(display, SWT.APPLICATION_MODAL | SWT.BORDER | SWT.RESIZE | SWT.CLOSE | SWT.MIN
-                | SWT.MAX | SWT.TITLE);
+        Shell shell = new Shell(display, SWT.APPLICATION_MODAL | SWT.BORDER | SWT.RESIZE | SWT.CLOSE | SWT.MIN | SWT.MAX
+                | SWT.TITLE);
         IComponent component = connector.getComponent();
         ImageDescriptor imageDescriptor = component.getIcon32();
         Image createImage = imageDescriptor.createImage();
