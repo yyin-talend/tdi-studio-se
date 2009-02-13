@@ -119,7 +119,23 @@ if(dataAction.equals("UPDATE") || dataAction.equals("INSERT_OR_UPDATE") || dataA
         }
         <%
     }
+} else if (dataAction.equals("INSERT_IF_NOT_EXIST")){
+	int insertKeyCount = 0;
+    if(stmtStructure != null) {
+        for(Column column : stmtStructure) {
+            if(column.isUpdateKey()) {
+                insertKeyCount++;
+            }
+        }
+       %>
+        int insertKeyCount_<%=cid%> = <%=insertKeyCount%>;
+        if(insertKeyCount_<%=cid%> < 1) {
+            throw new RuntimeException("For insert if not exist, Schema must have a key");
+        }      	
+       <%
+    }	
 }
+
 String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
 if(useExistingConn.equals("true")) {
     String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
@@ -240,7 +256,7 @@ if(columnList != null && columnList.size()>0) {
     StringBuilder updateSetStmt = actionSQLMap.get(UPDATE_SET_STMT);    
     StringBuilder updateWhereStmt = actionSQLMap.get(UPDATE_WHERE_STMT);
     StringBuilder deleteWhereStmt = actionSQLMap.get(DELETE_WHERE_STMT);
-
+    
     if(dataAction.equals("INSERT")) {
         %>  
         String insert_<%=cid%> = "INSERT INTO [" + tableName_<%=cid%> + "] (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)";
@@ -271,6 +287,12 @@ if(columnList != null && columnList.size()>0) {
         String delete_<%=cid%> = "DELETE FROM [" + tableName_<%=cid%> + "] WHERE <%=deleteWhereStmt.toString()%>";
         java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(delete_<%=cid%>);
         <%      
+    } else if (dataAction.equals("INSERT_IF_NOT_EXIST")) {
+    	%>
+        java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("SELECT COUNT(1) FROM [" + tableName_<%=cid%> + "] WHERE <%=updateWhereStmt.toString()%>"); 
+        String insert_<%=cid%> = "INSERT INTO [" + tableName_<%=cid%> + "] (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)";
+        java.sql.PreparedStatement pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
+    <%
     }
     if(isEnableDebug) {
         %>

@@ -47,7 +47,6 @@ skeleton="../templates/db_output_bulk.skeleton"
         IConnection conn = conns.get(0);
         incomingConnName = conn.getName();
     }
-        
     String rejectConnName = null;
     List<? extends IConnection> rejectConns = node.getOutgoingConnections("REJECT");
     if(rejectConns != null && rejectConns.size() > 0) {
@@ -218,7 +217,6 @@ skeleton="../templates/db_output_bulk.skeleton"
             <%
         } else if (dataAction.equals("INSERT_OR_UPDATE")) {
             %>
-    
             <%
             int columnIndex = 1;
             for(Column column : colStruct) {
@@ -569,7 +567,87 @@ skeleton="../templates/db_output_bulk.skeleton"
             }
             nb_line_<%=cid%>++;
         <%
+        } else if (dataAction.equals("INSERT_IF_NOT_EXIST")) { 
+        %>
+        <%
+        int columnIndex = 1;
+        for(Column column : colStruct) {
+            if(column.isUpdateKey()) {
+                String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
+                %>
+                <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, column, columnIndex, incomingConnName, cid, NORMAL_TYPE)%>
+                <%
+                columnIndex++;
+            }
         }
+        %>
+        
+        java.sql.ResultSet rs_<%=cid%> = pstmt_<%=cid %>.executeQuery();
+        int checkCount_<%=cid%> = -1;
+        while(rs_<%=cid%>.next()) {
+            checkCount_<%=cid%> = rs_<%=cid%>.getInt(1);
+        }
+                
+        if (checkCount_<%=cid%> < 1) {
+             <%
+            if(isEnableDebug) {
+                %>
+                query_<%=cid%> = new String(insert_<%=cid%>);
+                <%
+            } 
+            int counterInsert = 1;
+            for(Column columnInsert : colStruct) {
+                if(columnInsert.isInsertable()) {
+                    String typeToGenerate = JavaTypesManager.getTypeToGenerate(columnInsert.getColumn().getTalendType(), columnInsert.getColumn().isNullable());
+                    %>
+                    <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, columnInsert, counterInsert, incomingConnName, cid, INSERT_TYPE)%>
+                    <%
+                    if(isEnableDebug) {
+                        %>
+                        query_<%=cid%> = <%=getManager(dbmsId, cid).retrieveSQL(typeToGenerate, columnInsert, incomingConnName, cid, "query_")%>;
+                        <%
+                    }                        
+                    counterInsert++;
+                }
+            }
+            if(isEnableDebug) {%>
+                globalMap.put("<%=cid %>_QUERY", query_<%=cid%>);
+                <%
+            }%>
+	        try {
+                insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmtInsert_<%=cid %>.executeUpdate();
+            } catch(Exception e) {
+				whetherReject_<%=cid%> = true;
+                <%
+            if (dieOnError.equals("true")) {
+                %>
+                throw(e);
+                <%
+            } else {
+                if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
+			 %>
+	            <%=rejectConnName %> = new <%=rejectConnName %>Struct();
+                <%
+                for(IMetadataColumn column : columnList) {
+                    %>
+                    <%=rejectConnName%>.<%=column.getLabel()%> = <%=incomingConnName%>.<%=column.getLabel()%>;
+                    <%
+                }
+                %>
+                    <%=rejectConnName%>.errorMessage = e.getMessage();
+                            <%
+                        } else {
+                            %>
+                            System.err.print(e.getMessage());
+                            <%
+                        }
+                    } 
+                    %>
+                }
+            }
+            nb_line_<%=cid%>++;
+        <%
+        }  // end of insert if not exist 
         
         if(outgoingConns != null && outgoingConns.size() > 0) {
             %>
@@ -593,7 +671,7 @@ skeleton="../templates/db_output_bulk.skeleton"
             %>
             }
             <%
-        }    
+        }
         
         ////////////commit every////////////
         if(!useExistingConn.equals("true")) {

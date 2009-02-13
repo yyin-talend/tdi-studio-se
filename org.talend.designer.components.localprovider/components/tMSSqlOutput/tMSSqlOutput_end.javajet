@@ -51,6 +51,15 @@ imports="
             
         }        
         <%
+    }else if (dataAction.equals("INSERT_IF_NOT_EXIST")) {
+    %>
+        if(pstmtInsert_<%=cid %> != null){
+            pstmtInsert_<%=cid %>.close();
+        }
+        if(pstmt_<%=cid %> != null) {
+            pstmt_<%=cid %>.close();
+        }            	
+    <%
     } else {
         %>
         if(pstmt_<%=cid %> != null) {
