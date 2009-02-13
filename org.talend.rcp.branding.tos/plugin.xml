@@ -74,6 +74,6 @@
             point="org.talend.core.service">
          <Service
                class="org.talend.rcp.branding.tos.TosBrandingService"
-               serviceId="org.talend.rcp.branding.tos.product"/>
+               serviceId="org.talend.core.ui.branding.IBrandingService"/>
       </extension>
 </plugin>

@@ -157,13 +157,13 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         processNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.PROCESS);
         nodes.add(processNode);
 
-        // if (PluginChecker.isJobLetPluginLoaded()) {
-        // 2.1 Joblet
-        jobletNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-        jobletNode.setProperties(EProperties.LABEL, ERepositoryObjectType.JOBLET);
-        jobletNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.JOBLET);
-        nodes.add(jobletNode);
-        // }
+        if (PluginChecker.isJobLetPluginLoaded()) {
+            // 2.1 Joblet
+            jobletNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+            jobletNode.setProperties(EProperties.LABEL, ERepositoryObjectType.JOBLET);
+            jobletNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.JOBLET);
+            nodes.add(jobletNode);
+        }
 
         // 3. Context
         contextNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
@@ -280,19 +280,19 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         }
 
         // 7.12 SAP
-        if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
+        if (PluginChecker.isTIS() && LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
             metadataSAPConnectionNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
             metadataSAPConnectionNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_SAPCONNECTIONS);
             metadataSAPConnectionNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_SAPCONNECTIONS);
             metadataNode.getChildren().add(metadataSAPConnectionNode);
         }
         // 7.13 EBCDIC
-        // if (PluginChecker.isEBCDICPluginLoaded()) {
-        metadataEbcdicConnectionNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
-        metadataEbcdicConnectionNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_EBCDIC);
-        metadataEbcdicConnectionNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_EBCDIC);
-        metadataNode.getChildren().add(metadataEbcdicConnectionNode);
-        // }
+        if (PluginChecker.isEBCDICPluginLoaded()) {
+            metadataEbcdicConnectionNode = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
+            metadataEbcdicConnectionNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_EBCDIC);
+            metadataEbcdicConnectionNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_EBCDIC);
+            metadataNode.getChildren().add(metadataEbcdicConnectionNode);
+        }
 
         // Reference Projects
         if (PluginChecker.isTIS() && getParent() == null && !getMergeRefProject()
