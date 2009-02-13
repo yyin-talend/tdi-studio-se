@@ -216,16 +216,9 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
         return OverlayImageProvider.getImageWithStatus(image, informationStatus);
     }
 
-    // public static File getDefaultJobletImage() {
-    // Bundle b = CorePlugin.getDefault().getBundle();
-    // URL url = null;
-    // try {
-    // url = FileLocator.toFileURL(FileLocator.find(b, new Path(ECoreImage.JOBLET_COMPONENT_ICON.getPath()), null));
-    // return new File(url.getPath());
-    // } catch (IOException e) {
-    // throw new RuntimeException(ECoreImage.JOBLET_COMPONENT_ICON.getPath() + " doesn't exist.");
-    // }
-    // }
+    public static Image getDefaultJobletImage() {
+        return ImageProvider.getImage(ECoreImage.JOBLET_COMPONENT_ICON);
+    }
 
     /**
      * DOC bqian Comment method "getJobletCustomIcon".
@@ -244,7 +237,7 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
             // ExceptionHandler.process(e);
             // }
 
-            image = ImageProvider.getImage(ECoreImage.JOBLET_COMPONENT_ICON);
+            image = getDefaultJobletImage();
         } else {
             ImageDescriptor imageDesc = ImageUtils.createImageFromData(item.getIcon().getInnerContent());
             imageDesc = ImageUtils.scale(imageDesc, ICON_SIZE.ICON_32);
