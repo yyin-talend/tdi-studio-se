@@ -359,9 +359,16 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
-List<IMetadataTable> metadatas = node.getMetadataList();
-if ((metadatas!=null)&&(metadatas.size()>0)) {
-	IMetadataTable metadata = metadatas.get(0);
+IMetadataTable metadata = null;
+IConnection inConn = null;
+for (IConnection conn : node.getIncomingConnections()) {
+	if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
+		inConn = conn;
+		break;
+	}
+}
+if (inConn != null) {
+	metadata = inConn.getMetadataTable();
     if (metadata!=null) {
     	List< ? extends IConnection> conns = node.getIncomingConnections();
     	if(conns!=null && conns.size()>0){
@@ -375,11 +382,17 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 List<Map<String, String>> loopTable = 
                 	(List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__LOOP__");
                 
+                IMetadataTable inputMetadataTable= conn.getMetadataTable();
+                List<IMetadataColumn> inputColumns= inputMetadataTable.getListColumns();
+                
+                List<Map<String,String>> groupbys = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__GROUPBYS__");
+
                 String allowEmpty = ElementParameterParser.getValue(node, "__CREATE_EMPTY_ELEMENT__");
                 String outputAsXSD = ElementParameterParser.getValue(node, "__OUTPUT_AS_XSD__");
-                String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
+                String fileNameXSD = ElementParameterParser.getValue(node, "__XSD_FILE__");
+                String encoding = ElementParameterParser.getValue(node, "__ENCODING__");                
                 
-                String rowNumber = ElementParameterParser.getValue(node, "__ROW_NUMBER__");
+	            String rowNumber = ElementParameterParser.getValue(node, "__ROW_NUMBER__");
                 
                 String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
         		boolean advancedSeparator = (advancedSeparatorStr!=null&&!advancedSeparatorStr.equals(""))?advancedSeparatorStr.equals("true"):false;
@@ -387,6 +400,21 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         		String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER); 
         		
         		String mode = ElementParameterParser.getValue(node, "__GENERATION_MODE__");
+        		
+        		                
+                java.util.Map<String,IMetadataColumn> inputKeysColumns = new java.util.HashMap<String,IMetadataColumn>();
+                if(inputColumns!=null){
+                	for(IMetadataColumn column :inputColumns){
+                		for(int i=0;i<groupbys.size();i++){
+                			String columnName=groupbys.get(i).get("INPUT_COLUMN");
+                			if(column.getLabel().equals(columnName)){
+                				inputKeysColumns.put(columnName,column);
+                				break;
+                			}
+                		}
+                	}
+                }
+        		
         		
         		// init tool
                 XMLTool tool = new XMLTool();
@@ -415,16 +443,70 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	nb_line_<%=cid%>++;
 	valueMap_<%=cid%>.clear();
 <%
-				for(IMetadataColumn column :metadata.getListColumns()){
+				for(IMetadataColumn column :inputColumns){
 %>
 	valueMap_<%=cid%>.put("<%=column.getLabel()%>",<%tool.getValue(column);%>);
 <%
 				}
+%>
+		String strTemp_<%=cid %> = "";
+<%
+	if(inputKeysColumns.size() !=0){
+		for (IMetadataColumn column : inputColumns) {
+			if(inputKeysColumns.containsKey(column.getLabel())) {
+%>		strTemp_<%=cid %> = strTemp_<%=cid %> + valueMap_<%=cid %>.get("<%=column.getLabel() %>")
+							+ valueMap_<%=cid %>.get("<%=column.getLabel() %>").length();
+<%			}
+		}
+	}
+%>
+	if(strCompCache_<%=cid %>==null){
+		strCompCache_<%=cid %>=strTemp_<%=cid %>;
+	}else{
+<%
 // ------------------- *** Common code end *** ------------------- //
 
 // ------------------- *** Dom4j generation mode start *** ------------------- //
 if(mode.equals("Dom4j")){
+		if(inputKeysColumns.size() !=0){
+%>
+		//the data read is different from the data read last time. 
+		if(strCompCache_<%=cid %>.equals(strTemp_<%=cid %>)==false){	
+<%		}
+		if(outputAsXSD.equals("true")){
+%>
+			doc_<%=cid%>.getRootElement().addAttribute("xsi:noNamespaceSchemaLocation", <%=fileNameXSD%>);
+		    doc_<%=cid%>.getRootElement().addNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+<%
+		}
+%>  
+    		nestXMLTool_<%=cid%>.replaceDefaultNameSpace(doc_<%=cid%>.getRootElement());
+<%
+		if(!outputAsXSD.equals("true") && !allowEmpty.equals("true")){
+%>
+    		nestXMLTool_<%=cid%>.removeEmptyElement(doc_<%=cid%>.getRootElement());
+<%
+		}
+%>			
+			java.io.StringWriter strWriter_<%=cid %> = new java.io.StringWriter();	
+			org.dom4j.io.XMLWriter output_<%=cid%> = new org.dom4j.io.XMLWriter(strWriter_<%=cid%>, format_<%=cid%>);
+			output_<%=cid%>.write(doc_<%=cid%>);
+		    output_<%=cid%>.close();
+		    
+		    listGroupby_<%=cid %>.add(strWriter_<%=cid %>.toString());
+		    doc_<%=cid%>.clearContent();
+			needRoot_<%=cid %> = true;
+			strCompCache_<%=cid %>=strTemp_<%=cid %>;
+<%
+		if(inputKeysColumns.size() !=0){
+%>
+		}
+<%
+		}
+%>
+	}
 
+<%
 	//init the generate tool.
 	GenerateToolByDom4j generateToolByDom4j = new GenerateToolByDom4j();
     if(outputAsXSD.equals("true")){
@@ -441,8 +523,8 @@ if(mode.equals("Dom4j")){
 	org.dom4j.Element subTreeRootParent_<%=cid%> = null;
 	
 	// build root xml tree 
-	if (needRoot_<%=cid%>) {
-		needRoot_<%=cid%>=false;
+	if (needRoot_<%=cid %>) {
+		needRoot_<%=cid %>=false;
 <%
 	generateToolByDom4j.generateCode(root,"root","doc");
 %>
@@ -511,7 +593,7 @@ if(mode.equals("Dom4j")){
 
 // ------------------- *** Null generation mode start *** ------------------- //
 else if(mode.equals("Null")){
-	String fileNameXSD = ElementParameterParser.getValue(node, "__XSD_FILE__");
+//	String fileNameXSD = ElementParameterParser.getValue(node, "__XSD_FILE__");
 	//init the generate tool.
 	GenerateToolByNull generateToolByNull = new GenerateToolByNull();
     if(outputAsXSD.equals("true")){
@@ -523,7 +605,70 @@ else if(mode.equals("Null")){
     }
     generateToolByNull.cid = cid;
     generateToolByNull.tool = tool;
+
+	if(inputKeysColumns.size() !=0){
+	%>
+		//the data read is different from the data read last time. 
+		if(strCompCache_<%=cid %>.equals(strTemp_<%=cid %>)==false){
+<%	}%>
+<%
+		if(!outputAsXSD.equals("true") && !allowEmpty.equals("true")){
 %>
+
+		 // write the endtag to the StringWriter:strWriter_tWriteXMLField_1_Out
+		 // close the bufferWriter
+		 // add the data in strWriter_tWriteXMLField_1_Out to listGroupby							 
+
+		if (preUnNullMaxIndex_<%=cid %> >= 0) {
+	        // output all buffer
+	        for (int j_<%=cid %> = 0; j_<%=cid%> <= preUnNullMaxIndex_<%=cid %>; j_<%=cid%>++) {
+	            if (startTabs_<%=cid %>[j_<%=cid %>] != null)
+	                out_<%=cid %>.write(startTabs_<%=cid %>[j_<%=cid %>]);
+	        }
+	
+	        if (preUnNullMaxIndex_<%=cid%> < preNewTabIndex_<%=cid %> ) {
+				for (int i_<%=cid %> = preNewTabIndex_<%=cid%> - 1; i_<%=cid%> >= 0; i_<%=cid%>--) {
+	                out_<%=cid %>.newLine();
+	                out_<%=cid %>.write(endTabStrs_<%=cid%>.get(i_<%=cid%>));
+	            }
+	        } else {
+	            for (int i_<%=cid %> = preUnNullMaxIndex_<%=cid %>; i_<%=cid%> >= 0; i_<%=cid%>--) {
+	                out_<%=cid%>.newLine();
+	                out_<%=cid%>.write(endTabStrs_<%=cid%>.get(i_<%=cid%>));
+	            }
+	        }
+	    }
+<%
+		}else{
+			if(loopTable.size()>0){
+%>
+		for (int i_<%=cid%> = endTabStrs_<%=cid%>.size() - 1; i_<%=cid%> >= 0; i_<%=cid%>--) {
+	        out_<%=cid%>.newLine();
+	        out_<%=cid%>.write(endTabStrs_<%=cid%>.get(i_<%=cid%>));
+	    }
+<%
+			}
+		}
+%>
+		out_<%=cid%>.newLine();
+		out_<%=cid%>.close();
+		listGroupby_<%=cid %>.add(strWriter_<%=cid %>.toString());
+
+		//create a new StringWriter and BufferWriter
+		//write the head title to the StringWriter		
+		strWriter_<%=cid %> = new java.io.StringWriter();
+		out_<%=cid %> = new java.io.BufferedWriter(strWriter_<%=cid %>);
+		out_<%=cid %>.write("<?xml version=\"1.0\" encoding=\""+<%=encoding %>+"\"?>");
+		out_<%=cid %>.newLine();
+
+		needRoot_<%=cid %> = true;
+		strCompCache_<%=cid %>=strTemp_<%=cid %>;
+		
+<%	if(inputKeysColumns.size() !=0){%>
+		}
+<%	}%>	
+	}	
+	
 	StringBuffer buf_<%=cid%> = new StringBuffer();
 	//init value is 0 not -1, because it will output the root tab when all the row value is null.
 	int unNullMaxIndex_<%=cid%> = 0;

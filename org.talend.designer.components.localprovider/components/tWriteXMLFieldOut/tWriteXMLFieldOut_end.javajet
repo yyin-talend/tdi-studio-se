@@ -168,10 +168,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 		}
 %>
+	java.io.StringWriter strWriter_<%=cid %> = new java.io.StringWriter();
 	org.dom4j.io.XMLWriter output_<%=cid%> = new org.dom4j.io.XMLWriter(strWriter_<%=cid%>, format_<%=cid%>);
 	output_<%=cid%>.write(doc_<%=cid%>);
     output_<%=cid%>.close();
-	globalMap.put("XMLFIELD",strWriter_<%=cid%>.toString());
+    
+    listGroupby_<%=cid %>.add(strWriter_<%=cid %>.toString());
+	globalMap.put("XMLFIELD",listGroupby_<%=cid %>);
 <%
 	}else if(mode.equals("Null")){
 		if(!outputAsXSD.equals("true") && !allowEmpty.equals("true")){
@@ -209,7 +212,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 	out_<%=cid%>.newLine();
 	out_<%=cid%>.close();
-	globalMap.put("XMLFIELD",strWriter_<%=cid%>.toString());
+	
+	listGroupby_<%=cid %>.add(strWriter_<%=cid %>.toString());
+	globalMap.put("XMLFIELD",listGroupby_<%=cid %>);
 <%
 	}
 %>

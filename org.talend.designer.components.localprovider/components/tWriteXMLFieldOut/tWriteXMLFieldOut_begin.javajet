@@ -37,6 +37,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 int nb_line_<%=cid%> = 0;
 boolean needRoot_<%=cid%>  = true;
 
+String  strCompCache_<%=cid %>= null;		
+List<String> listGroupby_<%=cid %>=new java.util.ArrayList<String>();
+
 java.util.List<java.util.List<String>> groupbyList_<%=cid%> = new java.util.ArrayList<java.util.List<String>>();
 java.util.Map<String,String> valueMap_<%=cid%> = new java.util.HashMap<String,String>();
 <%
@@ -101,7 +104,7 @@ org.dom4j.io.OutputFormat format_<%=cid%> = org.dom4j.io.OutputFormat.createPret
 format_<%=cid%>.setTrimText(false);
 format_<%=cid%>.setEncoding(<%=encoding%>);
 
-java.io.StringWriter strWriter_<%=cid%> = new java.io.StringWriter();
+//java.io.StringWriter strWriter_<%=cid%> = new java.io.StringWriter();
 <%
 				}else if(mode.equals("Null")){
 %>

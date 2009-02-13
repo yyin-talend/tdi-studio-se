@@ -28,12 +28,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     		IConnection conn = conns.get(0);
 %>
 	int nb_line_<%=cid%> = 0;
-	String xmlField_<%=cid%> = (String)globalMap.get("XMLFIELD");
-	if(xmlField_<%=cid%>!=null){
-		<%=conn.getName()%>.<%=xmlField%> = xmlField_<%=cid%>;
+	List<String> xmlFieldList_<%=cid%> = (List<String>)globalMap.get("XMLFIELD");
+
+	if(xmlFieldList_<%=cid%>!=null){
+		for(String strXmlField_<%=cid %> :xmlFieldList_<%=cid %>){
+//			<%=conn.getName()%>.<%=xmlField%> = strField_<%=cid %>;   //move to the main code
 <%
 		}
 	}
 }
 %>
-	
