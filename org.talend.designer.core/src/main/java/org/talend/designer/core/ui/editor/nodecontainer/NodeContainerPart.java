@@ -90,8 +90,10 @@ public class NodeContainerPart extends AbstractGraphicalEditPart implements Prop
             nodeContainerFigure.setAlpha(Node.ALPHA_VALUE);
         }
         IElementParameter param = node.getElementParameter(EParameterName.INFORMATION.getName());
-        boolean showInfoFlag = Boolean.TRUE.equals(param.getValue());
-        nodeContainerFigure.updateStatus(node.getStatus(), showInfoFlag);
+        if (param != null) {
+            boolean showInfoFlag = Boolean.TRUE.equals(param.getValue());
+            nodeContainerFigure.updateStatus(node.getStatus(), showInfoFlag);
+        }
         return nodeContainerFigure;
     }
 
@@ -124,11 +126,13 @@ public class NodeContainerPart extends AbstractGraphicalEditPart implements Prop
         if (changeEvent.getPropertyName().equals(Node.UPDATE_STATUS)) {
             Node node = ((NodeContainer) getModel()).getNode();
             IElementParameter param = node.getElementParameter(EParameterName.INFORMATION.getName());
-            boolean showInfoFlag = Boolean.TRUE.equals(param.getValue());
-            Integer status = (Integer) changeEvent.getNewValue();
+            if (param != null) {
+                boolean showInfoFlag = Boolean.TRUE.equals(param.getValue());
+                Integer status = (Integer) changeEvent.getNewValue();
 
-            ((NodeContainerFigure) this.getFigure()).updateStatus(status, showInfoFlag);
-            refreshVisuals();
+                ((NodeContainerFigure) this.getFigure()).updateStatus(status, showInfoFlag);
+                refreshVisuals();
+            }
         }
         if (changeEvent.getPropertyName().equals(EParameterName.ACTIVATE.getName())) {
             Node node = ((NodeContainer) getModel()).getNode();
