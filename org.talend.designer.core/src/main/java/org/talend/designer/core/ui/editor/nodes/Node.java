@@ -992,8 +992,7 @@ public class Node extends Element implements INode {
         IElementParameter parameter = getElementParameter(id);
         if (id.contains(EParameterName.SCHEMA_TYPE.getName()) || id.contains(EParameterName.QUERYSTORE_TYPE.getName())
                 || id.contains(EParameterName.PROPERTY_TYPE.getName())
-                || id.contains(EParameterName.PROCESS_TYPE_PROCESS.getName())
-                || id.contains(EParameterName.INFORMATION.getName())) {
+                || id.contains(EParameterName.PROCESS_TYPE_PROCESS.getName())) {
             setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
         }
         if (parameter == null) { // in case we try to set a value to a

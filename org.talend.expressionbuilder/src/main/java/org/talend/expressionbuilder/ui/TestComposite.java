@@ -164,6 +164,8 @@ public class TestComposite extends Composite {
                         MessageDialog.openError(getShell(), Messages.getString("TestComposite.error"), Messages
                                 .getString("TestComposite.message"));
                         return;
+                    } else {
+                        var.setName((String) value);
                     }
                 } else if (VALUE_PROPERTY.equals(property)) {
                     var.setValue((String) value);
