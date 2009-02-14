@@ -29,7 +29,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     if (metadata!=null) {
     
     	%>        
-      fr.openwide.talendalfresco.acpxml.TalendAcpXmlWriter talendAcpXmlWriter_<%=cid%> = new fr.openwide.talendalfresco.acpxml.TalendAcpXmlWriter();
+      fr.talend.talendalfresco.acpxml.TalendAcpXmlWriter talendAcpXmlWriter_<%=cid%> = new fr.talend.talendalfresco.acpxml.TalendAcpXmlWriter();
     	<%
     	
 	    // getting useful parameters
@@ -94,18 +94,18 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	         <%
          }
          %> 
-      } catch (fr.openwide.talendalfresco.acpxml.AcpXmlException e) {
-         throw new fr.openwide.talendalfresco.rest.client.RestClientException("Error creating XML result", e);
+      } catch (fr.talend.talendalfresco.acpxml.AcpXmlException e) {
+         throw new fr.talend.talendalfresco.rest.client.RestClientException("Error creating XML result", e);
       }
       
-	  fr.openwide.talendalfresco.rest.client.AlfrescoRestClient alfrescoRestClient_<%=cid%> = null;
+	  fr.talend.talendalfresco.rest.client.AlfrescoRestClient alfrescoRestClient_<%=cid%> = null;
       try {
-	      alfrescoRestClient_<%=cid%> = new fr.openwide.talendalfresco.rest.client.AlfrescoRestClient("<%=alfrescoServerUrl%>", <%=restEncodingString%>);
+	      alfrescoRestClient_<%=cid%> = new fr.talend.talendalfresco.rest.client.AlfrescoRestClient("<%=alfrescoServerUrl%>", <%=restEncodingString%>);
 	      alfrescoRestClient_<%=cid%>.setTimeout(5000);
 	      // default server : localhost
           alfrescoRestClient_<%=cid%>.login("<%=alfrescoUserLogin%>", "<%=alfrescoUserPassword%>");
-      } catch (fr.openwide.talendalfresco.rest.client.RestClientException e) {
-         throw new fr.openwide.talendalfresco.rest.client.RestClientException("Error initing client", e);
+      } catch (fr.talend.talendalfresco.rest.client.RestClientException e) {
+         throw new fr.talend.talendalfresco.rest.client.RestClientException("Error initing client", e);
       }
       
       int nbLine_<%=cid%> = 0;
