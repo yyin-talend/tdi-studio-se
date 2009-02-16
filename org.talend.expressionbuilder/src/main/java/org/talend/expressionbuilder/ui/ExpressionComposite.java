@@ -465,7 +465,7 @@ public class ExpressionComposite extends Composite {
      * 
      * @return
      */
-    public String getExpression() {
+    public String getReplaceExpression() {
         if (document != null) {
             IRegion region = viewer.getViewerRegion();
             try {
@@ -476,6 +476,18 @@ public class ExpressionComposite extends Composite {
                 }
                 return doc;
                 // return document.get(region.getOffset(), region.getLength());
+            } catch (BadLocationException e) {
+                MessageBoxExceptionHandler.process(e);
+            }
+        }
+        return null;
+    }
+
+    public String getExpression() {
+        if (document != null) {
+            IRegion region = viewer.getViewerRegion();
+            try {
+                return document.get(region.getOffset(), region.getLength());
             } catch (BadLocationException e) {
                 MessageBoxExceptionHandler.process(e);
             }

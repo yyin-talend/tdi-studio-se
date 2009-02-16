@@ -89,6 +89,8 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
 
     private INode component;
 
+    private String nodeStyle;
+
     /**
      * Create the dialog
      * 
@@ -96,6 +98,8 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
      */
     public ExpressionBuilderDialog(Shell parentShell, IExpressionDataBean dataBean, INode component) {
         super(parentShell);
+        this.nodeStyle = parentShell.toString();
+
         setShellStyle(this.getShellStyle() | SWT.RESIZE);
         this.dataBean = dataBean;
         this.component = component;
@@ -341,9 +345,14 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
      */
     @Override
     protected void okPressed() {
-        String expression = expressionComposite.getExpression();
+        String expression = null;
+        String sub = nodeStyle.substring(nodeStyle.indexOf("-") + 2, nodeStyle.lastIndexOf("-") - 1);
+        if (sub.equals("tRowGenerator")) {
+            expression = expressionComposite.getReplaceExpression();
+        } else {
+            expression = expressionComposite.getExpression();
+        }
         dataBean.setConsumerExpression(expression + " "); //$NON-NLS-1$
-
         ExpressionPersistance.getInstance().saveExpression(new Expression(expression, testComposite.getVariableList()));
 
         super.okPressed();

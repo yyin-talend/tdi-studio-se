@@ -231,6 +231,8 @@ public class RunProcessContext {
      * @param monitorTrace the monitorTraceto set
      */
     public void setMonitorTrace(boolean monitorTrace) {
+        int i = 0;
+        System.out.println("i==" + i++);
         if (this.monitorTrace != monitorTrace) {
             this.monitorTrace = monitorTrace;
             if (process instanceof IProcess2) {
