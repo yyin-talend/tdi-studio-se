@@ -841,4 +841,20 @@
          version="1.5.1.v200806030408"
          unpack="false"/>
 
+   <plugin
+         id="org.talend.componentdesigner.nl"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.talend.componentdesigner.rcp.nl"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
 </feature>
