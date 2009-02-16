@@ -137,7 +137,7 @@ public class JavaProcessUtil {
      * @param neededLibraries
      * @param curParam
      */
-    private static void findMoreLibraries(Set<String> neededLibraries, IElementParameter curParam, boolean flag) {
+    public static void findMoreLibraries(Set<String> neededLibraries, IElementParameter curParam, boolean flag) {
 
         if (curParam.getName().equals("DB_VERSION")) { //$NON-NLS-1$
             String jdbcName = (String) curParam.getValue();

@@ -14,10 +14,6 @@ package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.beans.PropertyChangeEvent;
 import java.lang.reflect.InvocationTargetException;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,7 +42,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWithDetailAreaAndContinueButton;
-import org.talend.commons.utils.data.list.UniqueStringGenerator;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.IMetadataColumn;
@@ -54,28 +49,29 @@ import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
-import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.database.ConnectionStatus;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.metadata.types.JavaDataTypeHelper;
-import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.metadata.types.PerlDataTypeHelper;
-import org.talend.core.model.metadata.types.PerlTypesManager;
 import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.properties.Property;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.ui.metadata.dialog.MetadataDialog;
+import org.talend.core.utils.CsvArray;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.ConfigureConnParamDialog;
-import org.talend.repository.ui.utils.ColumnNameValidator;
+import org.talend.designer.core.ui.editor.properties.controllers.uidialog.OpenContextChooseComboDialog;
+import org.talend.designer.runprocess.ProcessorException;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 
@@ -83,6 +79,8 @@ import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
  * DOC zqin class global comment. Detailled comment
  */
 public class GuessSchemaController extends AbstractElementPropertySectionController {
+
+    private static final String CONTEXT_CHOOSE_DIALOG_TITLE = "Choose a context for query :";//$NON-NLS-1$
 
     private static final String GUESS_SCHEMA_NAME = "Guess schema"; //$NON-NLS-1$
 
@@ -92,7 +90,14 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
 
     private Map<IElementParameter, Button> queryButton = new HashMap<IElementParameter, Button>();
 
-    /**
+    // added by hyWang
+    private DbInfo info;
+
+    private Button btn;
+
+    private ChangeMetadataCommand changeMetadataCommand;
+
+    /*
      * DOC zqin GuessSchemaController constructor comment.
      * 
      * @param dp
@@ -178,44 +183,136 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
      * 
      * @return
      */
+
+    // modified by hyWang
     private Command createButtonCommand(Button btn, IContextManager manager) {
-
-        ArrayList<String> metaParameter = null;
+        this.btn = btn;
         IElementParameter elementParameterFromField = elem.getElementParameterFromField(EParameterFieldType.MEMO_SQL);
-        IElementParameter switchParam = elem.getElementParameter(EParameterName.REPOSITORY_ALLOW_AUTO_SWITCH.getName());
+
         memoSQL = (String) elementParameterFromField.getValue();
-
-        memoSQL = memoSQL.substring(1, memoSQL.length() - 1).trim();
-
         initConnectionParameters();
         if (this.connParameters != null && memoSQL != null) {
             initConnectionParametersWithContext(elem, manager.getDefaultContext());
-            runShadowProcess();
+            // runShadowProcess();
+            useMockJob();
+            if (changeMetadataCommand != null) {
+                return changeMetadataCommand;
+            }
         }
 
-        if (columns != null && columns.size() > 0) {
-            Node node = (Node) elem;
-            IMetadataTable tempMetatable = new MetadataTable();
-            IMetadataTable inputMetaCopy, inputMetadata, outputMetaCopy, originaleOutputTable;
+        // if (columns != null && columns.size() > 0) {
+        // Node node = (Node) elem;
+        // IMetadataTable tempMetatable = new MetadataTable();
+        // IMetadataTable inputMetaCopy, inputMetadata, outputMetaCopy, originaleOutputTable;
+        //
+        // String propertyName = (String) btn.getData(PARAMETER_NAME);
+        // IElementParameter param = node.getElementParameter(propertyName);
+        // for (IElementParameter eParam : elem.getElementParameters()) {
+        // if (eParam.getContext() != null) {
+        // param = eParam;
+        // }
+        // }
+        // originaleOutputTable = node.getMetadataFromConnector(param.getContext());
+        // if (originaleOutputTable != null) {
+        // outputMetaCopy = originaleOutputTable.clone();
+        // }
+        //
+        // tempMetatable.setListColumns(columns);
+        //
+        // MetadataDialog metaDialog = new MetadataDialog(composite.getShell(), tempMetatable, node, getCommandStack());
+        // if (metaDialog != null) {
+        //                metaDialog.setText(Messages.getString("SchemaController.schemaOf") + node.getLabel()); //$NON-NLS-1$
+        //
+        // if (metaDialog.open() == MetadataDialog.OK) {
+        // outputMetaCopy = metaDialog.getOutputMetaData();
+        // boolean modified = false;
+        // if (!outputMetaCopy.sameMetadataAs(originaleOutputTable, IMetadataColumn.OPTIONS_NONE)) {
+        // modified = true;
+        // }
+        //
+        // if (modified) {
+        // if (switchParam != null) {
+        // switchParam.setValue(Boolean.FALSE);
+        // }
+        //
+        // ChangeMetadataCommand changeMetadataCommand = new ChangeMetadataCommand(node, param,
+        // originaleOutputTable, outputMetaCopy);
+        //
+        // return changeMetadataCommand;
+        //
+        // }
+        // }
+        // }
+        // }
 
-            String propertyName = (String) btn.getData(PARAMETER_NAME);
-            IElementParameter param = node.getElementParameter(propertyName);
-            for (IElementParameter eParam : elem.getElementParameters()) {
-                if (eParam.getContext() != null) {
-                    param = eParam;
+        return null;
+    }
+
+    private String memoSQL = null;
+
+    private List<IMetadataColumn> columns = new ArrayList<IMetadataColumn>();
+
+    private void runShadowProcess(final Property property, final Node inputNode, final IContext selectContext,
+            final IElementParameter switchParam) {
+
+        GuessSchemaProcess gsp = new GuessSchemaProcess(property, inputNode, selectContext, memoSQL, info);
+        try {
+            CsvArray array = gsp.run();
+            List<String[]> schemaContent = array.getRows();
+
+            if (columns != null) {
+                columns.clear();
+            }
+            if (!schemaContent.isEmpty()) {
+                int numbOfColumn = schemaContent.get(0).length;
+                for (int i = 1; i <= numbOfColumn; i++) {
+                    IMetadataColumn oneColum = new MetadataColumn();
+                    // get the column name from the temp file genenrated by GuessSchemaProcess.java
+                    String labelName = (schemaContent.get(0))[i - 1];
+                    oneColum.setLabel(labelName);
+                    oneColum.setOriginalDbColumnName(labelName);
+                    // get if a column is nullable from the temp file genenrated by
+                    // GuessSchemaProcess.java
+                    oneColum.setNullable((schemaContent.get(1))[i - 1].equals(Boolean.TRUE.toString()) ? true : false);
+                    String talendType = null;
+                    // to see if the language is java or perl
+                    try {
+                        if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
+                            talendType = JavaDataTypeHelper.getTalendTypeOfValue(schemaContent.get(2)[i - 1]);
+                        } else {
+                            talendType = PerlDataTypeHelper.getNewTalendTypeOfValue(schemaContent.get(2)[i - 1]);
+                        }
+                        oneColum.setTalendType(talendType);
+                        // oneColum.setTalendType(JavaTypesManager.STRING.getId());
+                        columns.add(oneColum);
+                    } catch (Exception e) {
+                        /*
+                         * the table have no data at all ,to do nothing
+                         */
+                    }
                 }
-            }
-            originaleOutputTable = node.getMetadataFromConnector(param.getContext());
-            if (originaleOutputTable != null) {
-                outputMetaCopy = originaleOutputTable.clone();
-            }
+                IMetadataTable tempMetatable = new MetadataTable();
+                IMetadataTable outputMetaCopy, originaleOutputTable;
 
-            tempMetatable.setListColumns(columns);
+                String propertyName = (String) btn.getData(PARAMETER_NAME);
+                IElementParameter param = inputNode.getElementParameter(propertyName);
+                for (IElementParameter eParam : elem.getElementParameters()) {
+                    if (eParam.getContext() != null) {
+                        param = eParam;
+                    }
+                }
+                originaleOutputTable = inputNode.getMetadataFromConnector(param.getContext());
+                if (originaleOutputTable != null) {
+                    outputMetaCopy = originaleOutputTable.clone();
+                }
 
-            MetadataDialog metaDialog = new MetadataDialog(composite.getShell(), tempMetatable, node, getCommandStack());
-            if (metaDialog != null) {
-                metaDialog.setText(Messages.getString("SchemaController.schemaOf") + node.getLabel()); //$NON-NLS-1$
+                tempMetatable.setListColumns(columns);
+                MetadataDialog metaDialog = new MetadataDialog(composite.getShell(), tempMetatable, inputNode, getCommandStack());
+                if (metaDialog != null) {
+                    metaDialog.setText(Messages.getString("SchemaController.schemaOf") + inputNode.getLabel()); //$NON-NLS-1$
+                }
 
+                // ok pressed
                 if (metaDialog.open() == MetadataDialog.OK) {
                     outputMetaCopy = metaDialog.getOutputMetaData();
                     boolean modified = false;
@@ -228,80 +325,248 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                             switchParam.setValue(Boolean.FALSE);
                         }
 
-                        ChangeMetadataCommand changeMetadataCommand = new ChangeMetadataCommand(node, param,
-                                originaleOutputTable, outputMetaCopy);
-
-                        return changeMetadataCommand;
-
+                        changeMetadataCommand = new ChangeMetadataCommand(inputNode, param, originaleOutputTable, outputMetaCopy);
                     }
                 }
             }
+        } catch (ProcessorException e) {
+            ExtractMetaDataUtils.closeConnection();
+            final String strExcepton = Messages.getString("GuessSchemaController.0", System.getProperty("line.separator")); //$NON-NLS-1$ //$NON-NLS-2$
+            Display.getDefault().asyncExec(new Runnable() {
+
+                public void run() {
+                    MessageDialog.openWarning(composite.getShell(),
+                            Messages.getString("GuessSchemaController.connectionError"), strExcepton); //$NON-NLS-1$
+                }
+            });
+            e.printStackTrace();
         }
 
-        return null;
     }
 
-    private String memoSQL = null;
+    /**
+     * DOC ocarbone Comment method "refreshMetaData".
+     * 
+     * @param csvArray
+     */
+    // public void refreshMetaDataTable(ResultSetMetaData rsmd, final List<String[]> csvRows) throws SQLException {
+    //
+    // if (csvRows == null) {
+    // return;
+    // } else {
+    //
+    // List<String> allNames = new ArrayList<String>();
+    //
+    // if (csvRows.isEmpty()) {
+    // int numbOfColumn = rsmd.getColumnCount();
+    // for (int i = 1; i <= numbOfColumn; i++) {
+    // IMetadataColumn oneColum = new MetadataColumn();
+    // String labelName = rsmd.getColumnLabel(i);
+    // labelName = ColumnNameValidator.validateColumnNameFormat(labelName, i);
+    // oneColum.setLabel(getNextGeneratedColumnName(labelName, allNames));
+    // oneColum.setOriginalDbColumnName(rsmd.getColumnName(i));
+    // oneColum.setNullable(rsmd.isNullable(i) == 0 ? false : true);
+    // oneColum.setTalendType(JavaTypesManager.STRING.getId());
+    // columns.add(oneColum);
+    // }
+    // return;
+    // }
+    // String[] fields = csvRows.get(0);
+    //
+    // Integer numberOfCol = getRightFirstRow(csvRows);
+    //
+    // // define the label to the metadata width the content of the first row
+    // int firstRowToExtractMetadata = 0;
+    //
+    // for (int i = 0; i < numberOfCol.intValue(); i++) {
+    // // define the first currentType and assimile it to globalType
+    // String globalType = null;
+    // int lengthValue = 0;
+    // int precisionValue = 0;
+    //
+    // int current = firstRowToExtractMetadata;
+    // while (globalType == null) {
+    // if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
+    // if (i >= csvRows.get(current).length) {
+    //                            globalType = "id_String"; //$NON-NLS-1$
+    // } else {
+    // globalType = JavaDataTypeHelper.getTalendTypeOfValue(csvRows.get(current)[i]);
+    // current++;
+    //
+    // }
+    // } else {
+    // if (i >= csvRows.get(current).length) {
+    //                            globalType = "String"; //$NON-NLS-1$
+    // } else {
+    // globalType = PerlDataTypeHelper.getTalendTypeOfValue(csvRows.get(current)[i]);
+    // current++;
+    //
+    // }
+    // }
+    // }
+    //
+    // // for another lines
+    // for (int f = firstRowToExtractMetadata; f < csvRows.size(); f++) {
+    // fields = csvRows.get(f);
+    // if (fields.length > i) {
+    // String value = fields[i];
+    //                        if (!value.equals("")) { //$NON-NLS-1$
+    // if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
+    // if (!JavaDataTypeHelper.getTalendTypeOfValue(value).equals(globalType)) {
+    // globalType = JavaDataTypeHelper.getCommonType(globalType, JavaDataTypeHelper
+    // .getTalendTypeOfValue(value));
+    // }
+    // } else {
+    // if (!PerlDataTypeHelper.getTalendTypeOfValue(value).equals(globalType)) {
+    // globalType = PerlDataTypeHelper.getCommonType(globalType, PerlDataTypeHelper
+    // .getTalendTypeOfValue(value));
+    // }
+    // }
+    // if (lengthValue < value.length()) {
+    // lengthValue = value.length();
+    // }
+    // int positionDecimal = 0;
+    // if (value.indexOf(',') > -1) {
+    // positionDecimal = value.lastIndexOf(',');
+    // precisionValue = lengthValue - positionDecimal;
+    // } else if (value.indexOf('.') > -1) {
+    // positionDecimal = value.lastIndexOf('.');
+    // precisionValue = lengthValue - positionDecimal;
+    // }
+    // }
+    // }
+    // }
+    //
+    // IMetadataColumn oneColum = new MetadataColumn();
+    // // Convert javaType to TalendType
+    // String talendType = null;
+    // if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
+    // talendType = globalType;
+    // if (globalType.equals(JavaTypesManager.FLOAT.getId()) || globalType.equals(JavaTypesManager.DOUBLE.getId())) {
+    // oneColum.setPrecision(precisionValue);
+    // } else {
+    // oneColum.setPrecision(0);
+    // }
+    // } else {
+    // talendType = PerlTypesManager.getNewTypeName(MetadataTalendType.loadTalendType(globalType,
+    //                            "TALENDDEFAULT", false)); //$NON-NLS-1$
+    //                    if (globalType.equals("FLOAT") || globalType.equals("DOUBLE")) { //$NON-NLS-1$ //$NON-NLS-2$
+    // oneColum.setPrecision(precisionValue);
+    // } else {
+    // oneColum.setPrecision(0);
+    // }
+    // }
+    //
+    // String labelName = rsmd.getColumnLabel(i + 1);
+    // labelName = ColumnNameValidator.validateColumnNameFormat(labelName, i);
+    //
+    // oneColum.setTalendType(talendType);
+    // oneColum.setLength(lengthValue);
+    //
+    // oneColum.setLabel(getNextGeneratedColumnName(labelName, allNames));
+    // oneColum.setOriginalDbColumnName(rsmd.getColumnName(i + 1));
+    // oneColum.setNullable(rsmd.isNullable(i + 1) == 0 ? false : true);
+    //
+    // columns.add(oneColum);
+    //
+    // }
+    // }
+    // }
+    // private String getNextGeneratedColumnName(String oldName, List<String> allNames) {
+    //
+    // String uniqueString;
+    //
+    // UniqueStringGenerator<String> uniqueStringGenerator = new UniqueStringGenerator<String>(oldName, allNames) {
+    //
+    // /*
+    // * (non-Javadoc)
+    // *
+    // * @see org.talend.commons.utils.data.list.UniqueStringGenerator#getBeanString(java.lang.Object)
+    // */
+    // @Override
+    // protected String getBeanString(String bean) {
+    // return bean;
+    // }
+    //
+    // };
+    //
+    // uniqueString = uniqueStringGenerator.getUniqueString();
+    //
+    // allNames.add(oldName);
+    //
+    // return uniqueString;
+    // }
+    // CALCULATE THE NULBER OF COLUMNS IN THE PREVIEW
+    // private Integer getRightFirstRow(List<String[]> csvRows) {
+    //
+    // Integer numbersOfColumns = null;
+    // int parserLine = csvRows.size();
+    // if (parserLine > 50) {
+    // parserLine = 50;
+    // }
+    // for (int i = 0; i < parserLine; i++) {
+    // if (csvRows.get(i) != null) {
+    // String[] nbRow = csvRows.get(i);
+    // // List<XmlField> nbRowFields = nbRow.getFields();
+    // if (numbersOfColumns == null || nbRow.length >= numbersOfColumns) {
+    // numbersOfColumns = nbRow.length;
+    // }
+    // }
+    // }
+    // return numbersOfColumns;
+    // }
+    private void useMockJob() {
+        /*
+         * get the select node,it's the input node of the process. then transfer selected context varriable to
+         * openContextChooseDialog, added by hyWang
+         */
+        final IElementParameter switchParam = elem.getElementParameter(EParameterName.REPOSITORY_ALLOW_AUTO_SWITCH.getName());
 
-    private List<IMetadataColumn> columns = new ArrayList<IMetadataColumn>();
-
-    private void runShadowProcess() {
-
+        final Shell parentShell = this.composite.getShell();
+        final Node inputNode = (Node) this.curParameter.getElement();
+        SQLBuilderRepositoryNodeManager sqlManager = new SQLBuilderRepositoryNodeManager();
+        if (connParameters == null) {
+            initConnectionParameters();
+        }
+        final String tmpMemoSql = this.memoSQL;
+        final DatabaseConnection connt = sqlManager.createConnection(connParameters);
+        //
         final ProgressMonitorDialog pmd = new ProgressMonitorDialog(this.composite.getShell());
-
         try {
             pmd.run(true, true, new IRunnableWithProgress() {
 
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                    Display.getDefault().asyncExec(new Runnable() {
 
-                    if (columns != null) {
-                        columns.clear();
-                    }
-                    monitor.beginTask(Messages.getString("GuessSchemaController.waitingForDatabase"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
-                    SQLBuilderRepositoryNodeManager manager = new SQLBuilderRepositoryNodeManager();
-                    if (connParameters == null) {
-                        initConnectionParameters();
-                    }
+                        public void run() {
+                            IMetadataConnection iMetadataConnection = null;
+                            boolean isStatus = false;
 
-                    DatabaseConnection connt = manager.createConnection(connParameters);
-                    IMetadataConnection iMetadataConnection = null;
-                    boolean isStatus = false;
-                    if (connt != null) {
-                        iMetadataConnection = ConvertionHelper.convert(connt);
-                        isStatus = checkConnection(iMetadataConnection);
-                    }
-                    if (!monitor.isCanceled()) {
-                        try {
+                            if (connt != null) {
+                                iMetadataConnection = ConvertionHelper.convert(connt);
+                                isStatus = checkConnection(iMetadataConnection);
+                            }
+
                             if (isStatus) {
-                                ExtractMetaDataUtils.getConnection(iMetadataConnection.getDbType(), iMetadataConnection.getUrl(),
-                                        iMetadataConnection.getUsername(), iMetadataConnection.getPassword(), iMetadataConnection
-                                                .getDatabase(), iMetadataConnection.getSchema(), iMetadataConnection
-                                                .getDriverClass(), iMetadataConnection.getDriverJarPath(), iMetadataConnection
-                                                .getDbVersionString());
-                                if (ExtractMetaDataUtils.conn != null) {
-                                    Statement smst = ExtractMetaDataUtils.conn.createStatement();
-                                    ExtractMetaDataUtils.setQueryStatementTimeout(smst);
-                                    ResultSet rs = smst.executeQuery(memoSQL);
-                                    ResultSetMetaData rsmd = rs.getMetaData();
-                                    int numbOfColumn = rsmd.getColumnCount();
+                                info = new DbInfo(iMetadataConnection.getDbType(), iMetadataConnection.getUsername(),
+                                        iMetadataConnection.getPassword(), iMetadataConnection.getDbVersionString(),
+                                        iMetadataConnection.getUrl());
+                                Property property = (Property) GuessSchemaProcess.getNewmockProperty();
+                                List<IContext> allcontexts = inputNode.getProcess().getContextManager().getListContext();
 
-                                    int count = 0;
-                                    List<String[]> cvsArrays = new ArrayList<String[]>();
-                                    while (rs.next() && count < 50) {
+                                OpenContextChooseComboDialog dialog = new OpenContextChooseComboDialog(parentShell, allcontexts);
+                                dialog.create();
+                                dialog.getShell().setText(CONTEXT_CHOOSE_DIALOG_TITLE);
+                                IContext selectContext = null;
+                                // job only have defoult context,or the query isn't context mode
+                                if (allcontexts.size() == 1 || TalendTextUtils.isCommonString(tmpMemoSql)) {
+                                    selectContext = inputNode.getProcess().getContextManager().getDefaultContext();
+                                } else if (Window.OK == dialog.open()) {
+                                    selectContext = dialog.getSelectedContext();
+                                }
 
-                                        String[] dataOneRow = new String[numbOfColumn];
-                                        for (int i = 1; i <= numbOfColumn; i++) {
-                                            String tempStr = rs.getString(i);
-                                            dataOneRow[i - 1] = tempStr;
-                                        }
-
-                                        cvsArrays.add(dataOneRow);
-                                        count++;
-                                    }
-
-                                    refreshMetaDataTable(rsmd, cvsArrays);
-
-                                    ExtractMetaDataUtils.closeConnection();
+                                if (selectContext != null) {
+                                    runShadowProcess(property, inputNode, selectContext, switchParam);
                                 }
                             } else {
                                 Display.getDefault().asyncExec(new Runnable() {
@@ -318,202 +583,41 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                                     }
                                 });
                             }
-                        } catch (Exception e) {
-                            ExtractMetaDataUtils.closeConnection();
 
-                            final String strExcepton = Messages.getString(
-                                    "GuessSchemaController.0", System.getProperty("line.separator")); //$NON-NLS-1$ //$NON-NLS-2$
-                            Display.getDefault().asyncExec(new Runnable() {
-
-                                public void run() {
-                                    MessageDialog.openWarning(composite.getShell(), Messages
-                                            .getString("GuessSchemaController.connectionError"), strExcepton); //$NON-NLS-1$
-                                }
-                            });
                         }
-                    }
 
+                    });
                 }
 
             });
+
         } catch (Exception e) {
             ExceptionHandler.process(e);
         }
-    }
 
-    /**
-     * DOC ocarbone Comment method "refreshMetaData".
-     * 
-     * @param csvArray
-     */
-    public void refreshMetaDataTable(ResultSetMetaData rsmd, final List<String[]> csvRows) throws SQLException {
+        // else {
+        // try {
+        // pmd2.run(true, true, new IRunnableWithProgress() {
 
-        if (csvRows == null) {
-            return;
-        } else {
-
-            List<String> allNames = new ArrayList<String>();
-
-            if (csvRows.isEmpty()) {
-                int numbOfColumn = rsmd.getColumnCount();
-                for (int i = 1; i <= numbOfColumn; i++) {
-                    IMetadataColumn oneColum = new MetadataColumn();
-                    String labelName = rsmd.getColumnLabel(i);
-                    labelName = ColumnNameValidator.validateColumnNameFormat(labelName, i);
-                    oneColum.setLabel(getNextGeneratedColumnName(labelName, allNames));
-                    oneColum.setOriginalDbColumnName(rsmd.getColumnName(i));
-                    oneColum.setNullable(rsmd.isNullable(i) == 0 ? false : true);
-                    oneColum.setTalendType(JavaTypesManager.STRING.getId());
-
-                    columns.add(oneColum);
-                }
-                return;
-            }
-            String[] fields = csvRows.get(0);
-
-            Integer numberOfCol = getRightFirstRow(csvRows);
-
-            // define the label to the metadata width the content of the first row
-            int firstRowToExtractMetadata = 0;
-
-            for (int i = 0; i < numberOfCol.intValue(); i++) {
-                // define the first currentType and assimile it to globalType
-                String globalType = null;
-                int lengthValue = 0;
-                int precisionValue = 0;
-
-                int current = firstRowToExtractMetadata;
-                while (globalType == null) {
-                    if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
-                        if (i >= csvRows.get(current).length) {
-                            globalType = "id_String"; //$NON-NLS-1$
-                        } else {
-                            globalType = JavaDataTypeHelper.getTalendTypeOfValue(csvRows.get(current)[i]);
-                            current++;
-
-                        }
-                    } else {
-                        if (i >= csvRows.get(current).length) {
-                            globalType = "String"; //$NON-NLS-1$
-                        } else {
-                            globalType = PerlDataTypeHelper.getTalendTypeOfValue(csvRows.get(current)[i]);
-                            current++;
-
-                        }
-                    }
-                }
-
-                // for another lines
-                for (int f = firstRowToExtractMetadata; f < csvRows.size(); f++) {
-                    fields = csvRows.get(f);
-                    if (fields.length > i) {
-                        String value = fields[i];
-                        if (!value.equals("")) { //$NON-NLS-1$
-                            if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
-                                if (!JavaDataTypeHelper.getTalendTypeOfValue(value).equals(globalType)) {
-                                    globalType = JavaDataTypeHelper.getCommonType(globalType, JavaDataTypeHelper
-                                            .getTalendTypeOfValue(value));
-                                }
-                            } else {
-                                if (!PerlDataTypeHelper.getTalendTypeOfValue(value).equals(globalType)) {
-                                    globalType = PerlDataTypeHelper.getCommonType(globalType, PerlDataTypeHelper
-                                            .getTalendTypeOfValue(value));
-                                }
-                            }
-                            if (lengthValue < value.length()) {
-                                lengthValue = value.length();
-                            }
-                            int positionDecimal = 0;
-                            if (value.indexOf(',') > -1) {
-                                positionDecimal = value.lastIndexOf(',');
-                                precisionValue = lengthValue - positionDecimal;
-                            } else if (value.indexOf('.') > -1) {
-                                positionDecimal = value.lastIndexOf('.');
-                                precisionValue = lengthValue - positionDecimal;
-                            }
-                        }
-                    }
-                }
-
-                IMetadataColumn oneColum = new MetadataColumn();
-                // Convert javaType to TalendType
-                String talendType = null;
-                if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
-                    talendType = globalType;
-                    if (globalType.equals(JavaTypesManager.FLOAT.getId()) || globalType.equals(JavaTypesManager.DOUBLE.getId())) {
-                        oneColum.setPrecision(precisionValue);
-                    } else {
-                        oneColum.setPrecision(0);
-                    }
-                } else {
-                    talendType = PerlTypesManager.getNewTypeName(MetadataTalendType.loadTalendType(globalType,
-                            "TALENDDEFAULT", false)); //$NON-NLS-1$
-                    if (globalType.equals("FLOAT") || globalType.equals("DOUBLE")) { //$NON-NLS-1$ //$NON-NLS-2$
-                        oneColum.setPrecision(precisionValue);
-                    } else {
-                        oneColum.setPrecision(0);
-                    }
-                }
-
-                String labelName = rsmd.getColumnLabel(i + 1);
-                labelName = ColumnNameValidator.validateColumnNameFormat(labelName, i);
-
-                oneColum.setTalendType(talendType);
-                oneColum.setLength(lengthValue);
-
-                oneColum.setLabel(getNextGeneratedColumnName(labelName, allNames));
-                oneColum.setOriginalDbColumnName(rsmd.getColumnName(i + 1));
-                oneColum.setNullable(rsmd.isNullable(i + 1) == 0 ? false : true);
-
-                columns.add(oneColum);
-
-            }
-        }
-    }
-
-    private String getNextGeneratedColumnName(String oldName, List<String> allNames) {
-
-        String uniqueString;
-
-        UniqueStringGenerator<String> uniqueStringGenerator = new UniqueStringGenerator<String>(oldName, allNames) {
-
-            /*
-             * (non-Javadoc)
-             * 
-             * @see org.talend.commons.utils.data.list.UniqueStringGenerator#getBeanString(java.lang.Object)
-             */
-            @Override
-            protected String getBeanString(String bean) {
-                return bean;
-            }
-
-        };
-
-        uniqueString = uniqueStringGenerator.getUniqueString();
-
-        allNames.add(oldName);
-
-        return uniqueString;
-    }
-
-    // CALCULATE THE NULBER OF COLUMNS IN THE PREVIEW
-    private Integer getRightFirstRow(List<String[]> csvRows) {
-
-        Integer numbersOfColumns = null;
-        int parserLine = csvRows.size();
-        if (parserLine > 50) {
-            parserLine = 50;
-        }
-        for (int i = 0; i < parserLine; i++) {
-            if (csvRows.get(i) != null) {
-                String[] nbRow = csvRows.get(i);
-                // List<XmlField> nbRowFields = nbRow.getFields();
-                if (numbersOfColumns == null || nbRow.length >= numbersOfColumns) {
-                    numbersOfColumns = nbRow.length;
-                }
-            }
-        }
-        return numbersOfColumns;
+        // public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+        // Display.getDefault().asyncExec(new Runnable() {
+        //
+        // public void run() {
+        // String pid = SqlBuilderPlugin.PLUGIN_ID;
+        //                    String mainMsg = Messages.getString("GuessSchemaController.connectionFailed"); //$NON-NLS-1$
+        // ErrorDialogWithDetailAreaAndContinueButton dialog = new ErrorDialogWithDetailAreaAndContinueButton(composite
+        // .getShell(), pid, mainMsg, connParameters.getConnectionComment());
+        // if (dialog.getCodeOfButton() == Window.OK) {
+        // openParamemerDialog(composite.getShell(), part.getTalendEditor().getProcess().getContextManager());
+        // }
+        // }
+        // });
+        // }
+        // });
+        // } catch (Exception e) {
+        // e.printStackTrace();
+        // }
+        // }
     }
 
     private void openParamemerDialog(Shell shell, IContextManager manager) {
@@ -521,7 +625,8 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
         if (connParameters != null) {
             ConfigureConnParamDialog paramDialog = new ConfigureConnParamDialog(shell, connParameters, manager, elem);
             if (paramDialog.open() == Window.OK) {
-                runShadowProcess();
+                // runShadowProcess();
+                useMockJob();
             }
         } else {
             MessageDialog
@@ -560,7 +665,6 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
      */
     @Override
     public int estimateRowSize(Composite subComposite, IElementParameter param) {
-        // TODO Auto-generated method stub
         return 0;
     }
 

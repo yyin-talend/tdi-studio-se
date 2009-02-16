@@ -125,6 +125,11 @@ public class Node extends Element implements INode {
 
     protected String name, label, componentName;
 
+    // add setter for componentName by hyWang
+    public String getComponentName() {
+        return this.componentName;
+    }
+
     private final List<IConnection> outputs = new ArrayList<IConnection>();
 
     private final List<IConnection> inputs = new ArrayList<IConnection>();

@@ -608,11 +608,17 @@ public class SQLBuilderRepositoryNodeManager {
         String dbType = parameters.getDbType();
         boolean isNeedSchema = EDatabaseTypeName.getTypeFromDbType(dbType).isNeedSchema();
         String productName = EDatabaseTypeName.getTypeFromDisplayName(dbType).getProduct();
-        boolean isOralceWithSid = productName.equals(EDatabaseTypeName.ORACLEFORSID.getProduct());
+        // boolean isOralceWithSid = productName.equals(EDatabaseTypeName.ORACLEFORSID.getProduct());
+
         String schema = parameters.getSchema();
         boolean isSchemaInValid = (schema == null) || (schema.equals("\'\'")) || (schema.equals("\"\"")) //$NON-NLS-1$ //$NON-NLS-2$
                 || (schema.trim().equals("")); //$NON-NLS-1$
-        if (isNeedSchema && isSchemaInValid && !isOralceWithSid) { //$NON-NLS-1$
+        // from 616 till line 622 modified by hyWang
+        NotReallyNeedSchemaDBS dbs = new NotReallyNeedSchemaDBS();
+        dbs.init();
+        List<String> names = dbs.getNeedSchemaDBNames();
+        boolean ifNeedSchemaDB = names.contains(productName);
+        if (isNeedSchema && isSchemaInValid && !ifNeedSchemaDB) { //$NON-NLS-1$
             parameters.setConnectionComment(Messages.getString("SQLBuilderRepositoryNodeManager.connectionComment")); //$NON-NLS-1$
             return null;
         }

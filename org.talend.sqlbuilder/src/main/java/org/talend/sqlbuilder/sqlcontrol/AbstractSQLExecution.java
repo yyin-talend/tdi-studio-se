@@ -12,9 +12,6 @@
 // ============================================================================
 package org.talend.sqlbuilder.sqlcontrol;
 
-import org.talend.sqlbuilder.Messages;
-import org.talend.sqlbuilder.SqlBuilderPlugin;
-import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
 import net.sourceforge.squirrel_sql.fw.sql.SQLConnection;
 
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -28,6 +25,9 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.ProgressBar;
+import org.talend.sqlbuilder.Messages;
+import org.talend.sqlbuilder.SqlBuilderPlugin;
+import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
 
 /**
  * Abstract Class : Execute SQL Statement. <br/>
@@ -89,10 +89,8 @@ public abstract class AbstractSQLExecution {
                 });
 
             } finally {
-
                 session.releaseQueuedConnection(connectionNumber);
                 connection = null;
-
             }
         }
     }

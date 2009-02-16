@@ -120,7 +120,8 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         String repositoryType = (String) elem.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
         String propertyName = (String) openSQLEditorButton.getData(PARAMETER_NAME);
         String query = (String) elem.getPropertyValue(propertyName);
-        if (!TalendTextUtils.isCommonString(query) || QueryUtil.checkIfIsNoQuotesAtAll(query)) {// if the input query is in context mode
+        if (!TalendTextUtils.isCommonString(query) || QueryUtil.checkIfIsNoQuotesAtAll(query)) {// if the input query is
+                                                                                                // in context mode
             // String pid = SqlBuilderPlugin.PLUGIN_ID;
             // String mainMsg = Messages.getString("SqlMemoController.QueryError.mainMsg");
             // String infoMsg = Messages.getString("SqlMemoController.QueryError.infoMsg",

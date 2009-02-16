@@ -241,7 +241,8 @@ public class ConfigureConnParamDialog extends Dialog {
             /*
              * (non-Javadoc)
              * 
-             * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
+             * @see
+             * org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
              */
             public void widgetDefaultSelected(SelectionEvent e) {
 
@@ -355,7 +356,8 @@ public class ConfigureConnParamDialog extends Dialog {
             /*
              * (non-Javadoc)
              * 
-             * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
+             * @see
+             * org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
              */
             public void widgetDefaultSelected(SelectionEvent e) {
 

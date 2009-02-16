@@ -14,6 +14,7 @@ package org.talend.sqlbuilder.actions;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -143,6 +144,7 @@ public class ExecSQLAction extends AbstractEditorAction {
         RepositoryNode node = editor.getRepositoryNode();
         SessionTreeNodeManager nodeManager = new SessionTreeNodeManager();
         SessionTreeNode runNode = null;
+
         try {
             runNode = nodeManager.getSessionTreeNode(node);
         } catch (Exception e) {
