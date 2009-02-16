@@ -70,6 +70,8 @@ public class ManagerConnection {
 
     private String driverJarPath;
 
+    IMetadataConnection oldConnection;
+
     /**
      * setValue.
      * 
@@ -132,8 +134,19 @@ public class ManagerConnection {
      * 
      * @return isValide
      */
-    public boolean check(IMetadataConnection metadataConnection) {
+    public boolean check(IMetadataConnection metadataConnection, boolean... onlyIfNeeded) {
         messageException = null;
+        // qli
+        // check the same connection.
+        // if same. just return true.
+        if (metadataConnection == null) {
+            return false;
+        }
+        if (onlyIfNeeded != null && onlyIfNeeded.length > 0 && onlyIfNeeded[0] == true) {
+            if (metadataConnection.equals(oldConnection)) {
+                return true;
+            }
+        }
         if (metadataConnection.getDbRootPath() != null && !metadataConnection.getDbRootPath().equals("")) { //$NON-NLS-1$
             setDbRootPath(metadataConnection.getDbRootPath());
         }
@@ -143,6 +156,10 @@ public class ManagerConnection {
                     metadataConnection.getUrl(), metadataConnection.getUsername(), metadataConnection.getPassword(),
                     metadataConnection.getSchema(), metadataConnection.getDriverClass(), metadataConnection.getDriverJarPath(),
                     metadataConnection.getDbVersionString());
+            // qli
+            // record this metadataConnection as old connection.
+            oldConnection = metadataConnection;
+
             isValide = testConnection.getResult();
             messageException = testConnection.getMessageException();
         } catch (Exception e) {
@@ -198,4 +215,5 @@ public class ManagerConnection {
         }
         this.dbRootPath = dbRootPath;
     }
+
 }

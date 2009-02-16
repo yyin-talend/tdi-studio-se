@@ -555,7 +555,7 @@ public class SelectorTableForm extends AbstractForm {
     protected void createTable(TableItem tableItem) {
         String tableString = tableItem.getText(0);
 
-        boolean checkConnectionIsDone = managerConnection.check(getIMetadataConnection());
+        boolean checkConnectionIsDone = managerConnection.check(getIMetadataConnection(), true);
         if (!checkConnectionIsDone) {
             updateStatus(IStatus.WARNING, Messages.getString("DatabaseTableForm.connectionFailure")); //$NON-NLS-1$
             new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("DatabaseTableForm.connectionFailure"), //$NON-NLS-1$
@@ -752,7 +752,7 @@ public class SelectorTableForm extends AbstractForm {
             if (isCanceled()) {
                 return;
             }
-            checkConnectionIsDone = managerConnection.check(getIMetadataConnection());
+            checkConnectionIsDone = managerConnection.check(getIMetadataConnection(), true);
             if (checkConnectionIsDone) {
                 if (isCanceled()) {
                     return;
@@ -955,7 +955,6 @@ public class SelectorTableForm extends AbstractForm {
      * (non-Javadoc)
      * 
      * @see org.eclipse.swt.widgets.Control#setVisible(boolean)
-     * 
      */
     @Override
     public void setVisible(boolean visible) {
