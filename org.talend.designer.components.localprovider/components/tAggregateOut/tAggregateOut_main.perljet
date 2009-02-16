@@ -96,20 +96,20 @@ if (inMetadata != null && metadata != null) {
 
     if (groupbys.size() == 0) {
 %>
-my $key = join($;, $<%=inputRowName%>->[<%=hashKeyIndexesString%>]);
+my $key = "dummy key";
 <%
         }
         else {
 %>
 my $key = join($;, @{$<%=inputRowName%>}[<%=hashKeyIndexesString%>]);
+<%
+        }
+%>
 $current_string = $<%=destination%>{$key};
 my @current = ();
 if (defined $current_string) {
   @current = split($;, $current_string);
 }
-<%
-        }
-%>
 $<%=destination%>{$key} = join(
     $;,
 <%
