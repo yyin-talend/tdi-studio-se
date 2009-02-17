@@ -110,7 +110,7 @@ public class ProcessComposite extends Composite {
 
     private static final int MINIMUM_WIDTH = 530;
 
-    private static RunProcessContext processContext;
+    private RunProcessContext processContext;
 
     /** Context composite. */
     private ProcessContextComposite contextComposite;
@@ -1176,7 +1176,7 @@ public class ProcessComposite extends Composite {
         return this.leftTabFolder;
     }
 
-    protected static RunProcessContext getProcessContext() {
+    protected RunProcessContext getProcessContext() {
         return processContext;
     }
 

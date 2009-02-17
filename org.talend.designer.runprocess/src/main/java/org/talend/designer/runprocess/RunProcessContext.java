@@ -231,8 +231,6 @@ public class RunProcessContext {
      * @param monitorTrace the monitorTraceto set
      */
     public void setMonitorTrace(boolean monitorTrace) {
-        int i = 0;
-        System.out.println("i==" + i++);
         if (this.monitorTrace != monitorTrace) {
             this.monitorTrace = monitorTrace;
             if (process instanceof IProcess2) {
@@ -943,6 +941,8 @@ public class RunProcessContext {
                         } else {
                             TraceData traceData = new TraceData(data);
                             String connectionId = traceData.getElementId();
+                            System.out.println(connectionId);
+                            System.out.println(data);
                             final IConnection connection = findConnection(connectionId);
                             if (connection != null) {
                                 Display.getDefault().syncExec(new Runnable() {
@@ -1106,6 +1106,7 @@ public class RunProcessContext {
                             new Thread(perfMonitor, "PerfMonitor_" + process.getLabel()).start(); //$NON-NLS-1$
                         }
                         // findNewTracesPort();
+                        // PTODO
                         if (monitorTrace) {
                             traceMonitor = new TraceMonitor();
                             new Thread(traceMonitor, "TraceMonitor_" + process.getLabel()).start(); //$NON-NLS-1$
