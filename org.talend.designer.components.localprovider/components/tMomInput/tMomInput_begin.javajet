@@ -389,8 +389,14 @@ else{
 <%
 	if(kListen.equals("false")){
 %>
-		if(Integer.valueOf(remoteQ<%=cid%>.getCurrentDepth()).equals(0)) 
+		if(Integer.valueOf(remoteQ<%=cid%>.getCurrentDepth()).equals(0))
+		{
+			System.out.println("Closing connection");
+			remoteQ<%=cid%>.close();
+			qMgr<%=cid%>.disconnect();		
 			break;
+		} 
+			
 <%
 	}
 %>
