@@ -31,6 +31,7 @@ import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ImplicitContextSettings;
+import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.StatAndLogsSettings;
 import org.talend.designer.core.DesignerPlugin;
@@ -230,6 +231,26 @@ public class ProjectSettingManager extends Utils {
                 commandStack.execute(cmd2);
             }
         }
+    }
+
+    /**
+     * 
+     * when create a new job default use project settings
+     * 
+     * @param pItem
+     */
+    public static void defaultUseProjectSetting(org.talend.designer.core.ui.editor.process.Process process) {
+        if (process == null)
+            return;
+        ProcessItem pItem = (ProcessItem) process.getProperty().getItem();
+        ElementParameter2ParameterType.setParameterValue(process, EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS.getName(),
+                Boolean.TRUE);
+        ElementParameter2ParameterType.setParameterValue(pItem.getProcess().getParameters(),
+                EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS.getName(), Boolean.TRUE);
+        ElementParameter2ParameterType.setParameterValue(process, EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName(),
+                Boolean.TRUE);
+        ElementParameter2ParameterType.setParameterValue(pItem.getProcess().getParameters(),
+                EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName(), Boolean.TRUE);
     }
 
     /**

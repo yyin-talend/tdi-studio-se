@@ -38,6 +38,8 @@ public class StatsAndLogsComposite extends AbstractPreferenceComposite {
 
     boolean isClicked;
 
+    private ParametersType pType;
+
     /**
      * ftang StatAndLogsComposite constructor comment.
      * 
@@ -51,6 +53,9 @@ public class StatsAndLogsComposite extends AbstractPreferenceComposite {
         setDialogTitle(Messages.getString("StatsAndLogsComposite.StatsLogsSettings")); //$NON-NLS-1$
         // achen modify to fix 0005993 change button's text
         isUsingProjectSetting = true;
+        Process process = (Process) elem;
+        ProcessItem pItem = (ProcessItem) process.getProperty().getItem();
+        pType = pItem.getProcess().getParameters();
     }
 
     /*
@@ -81,29 +86,37 @@ public class StatsAndLogsComposite extends AbstractPreferenceComposite {
 
         }
         if (useProjectSetting != null) {
-            useProjectSetting.addSelectionListener(new SelectionAdapter() {
+            useProjectSetting.removeSelectionListener(selectionListener);
+            useProjectSetting.addSelectionListener(selectionListener);
+        }
+    }
 
-                @Override
-                public void widgetSelected(SelectionEvent e) {
-                    boolean flag = useProjectSetting.getSelection();
-                    setMainCompositeEnable(!flag);
-                    topComposite.setEnabled(true);
-                    if (elem instanceof Process) {
-                        Process process = (Process) elem;
-                        ProcessItem pItem = (ProcessItem) process.getProperty().getItem();
-                        ParametersType pType = pItem.getProcess().getParameters();
-                        ElementParameter2ParameterType.setParameterValue(pType, EParameterName.STATANDLOG_USE_PROJECT_SETTINGS
-                                .getName(), Boolean.valueOf(flag));
-                    }
-                    PropertyChangeCommand cmd = new PropertyChangeCommand(elem, EParameterName.STATANDLOG_USE_PROJECT_SETTINGS
-                            .getName(), Boolean.valueOf(flag));
-                    getCommandStack().execute(cmd);
-                    if (flag) {
-                        isClicked = true;
-                        useProjectSetting();
-                    }
-                }
-            });
+    SelectionAdapter selectionListener = new SelectionAdapter() {
+
+        @Override
+        public void widgetSelected(SelectionEvent e) {
+            useProjectSettingButtonClick();
+        }
+    };
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.ui.views.jobsettings.AbstractPreferenceComposite#useProjectSettingButtonClick()
+     */
+    @Override
+    protected void useProjectSettingButtonClick() {
+        boolean flag = useProjectSetting.getSelection();
+        setMainCompositeEnable(!flag);
+        topComposite.setEnabled(true);
+        ElementParameter2ParameterType.setParameterValue(pType, EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName(), Boolean
+                .valueOf(flag));
+        PropertyChangeCommand cmd = new PropertyChangeCommand(elem, EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName(),
+                Boolean.valueOf(flag));
+        getCommandStack().execute(cmd);
+        if (flag) {
+            isClicked = true;
+            useProjectSetting();
         }
     }
 

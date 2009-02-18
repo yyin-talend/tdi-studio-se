@@ -353,11 +353,6 @@
          point="org.eclipse.ui.preferencePages">
       <page
             category="org.talend.core.prefs"
-            class="org.talend.repository.preference.StatusPreferencePage"
-            id="org.talend.repository.prefs.status"
-            name="%prefsStatusName"/>
-      <page
-            category="org.talend.core.prefs"
             class="org.talend.repository.preference.DocumentationPreferencePage"
             id="org.talend.repository.prefs.documentation"
             name="Documentation">
@@ -1106,6 +1101,12 @@
             id="org.talend.repository.preference.PaletteSettingPage"
             title="%projectsetting.PaletteSettings">
       </page>
+      <page    
+            class="org.talend.repository.preference.StatusProjectSettingPage"
+            id="status"
+            order="4"
+            title="%prefsStatusName">
+      </page>        
    </extension>
 
 </plugin>

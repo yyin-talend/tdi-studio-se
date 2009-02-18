@@ -27,24 +27,20 @@ import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryPreferenceStore;
 
 /**
- * Preference for the status values.
- * 
- * $Id$
- * 
- * @deprecated
+ * DOC achen class global comment. Detailled comment
  */
-public class StatusPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
+public class StatusProjectSettingPage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
-    protected static Logger log = Logger.getLogger(StatusPreferencePage.class);
+    protected static Logger log = Logger.getLogger(StatusProjectSettingPage.class);
 
     /**
      * StatusListEditor.
      * 
-     * $Id$
+     * $Id: StatusPreferencePage.java 21728 2009-02-09 10:23:23Z plegall $
      * 
      */
 
-    public StatusPreferencePage() {
+    public StatusProjectSettingPage() {
         super(FLAT);
     }
 
@@ -92,5 +88,4 @@ public class StatusPreferencePage extends FieldEditorPreferencePage implements I
 
     public void init(IWorkbench workbench) {
     }
-
 }

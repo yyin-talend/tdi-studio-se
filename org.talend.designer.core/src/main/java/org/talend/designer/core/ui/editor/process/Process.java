@@ -87,6 +87,7 @@ import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.metadata.MetadataEmfFactory;
+import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.model.process.DataNode;
 import org.talend.designer.core.model.process.DataProcess;
 import org.talend.designer.core.model.process.jobsettings.JobSettingsManager;
@@ -189,10 +190,10 @@ public class Process extends Element implements IProcess2 {
     protected IUpdateManager updateManager;
 
     public Process(Property property) {
+        this.property = property;
         contextManager = new JobContextManager();
         updateManager = new ProcessUpdateManager(this);
         createProcessParameters();
-        this.property = property;
         init();
     }
 
@@ -649,12 +650,15 @@ public class Process extends Element implements IProcess2 {
             // achen modify to fix bug 0006107
             // Process tempProcess = new Process(this.property);
             // IElementParameter tmpParam = tempProcess.getElementParameter(param.getName());
-            IElementParameter tmpParam = param.getElement().getElementParameter(param.getName());
-            if (tmpParam != null && tmpParam.getValue() != null && tmpParam.getValue().equals(param.getValue())) {
-                return;
-            }
-            if (param != null && (param.getName().equals(EParameterName.ICONSELECTION.getName()))) {
-                return;
+            // IElementParameter tmpParam = param.getElement().getElementParameter(param.getName());
+            // if (tmpParam != null && tmpParam.getValue() != null && tmpParam.getValue().equals(param.getValue())) {
+            // return;
+            // }
+            boolean isJoblet = AbstractProcessProvider.isExtensionProcessForJoblet(this);
+            if (isJoblet) {
+                if (param != null && !(param.getName().equals(EParameterName.STARTABLE.getName()))) {
+                    return;
+                }
             }
         }
         if (param.getElement() instanceof Node) {
@@ -689,7 +693,7 @@ public class Process extends Element implements IProcess2 {
             }
         }
         // always save the connections parameters.
-        
+
         // if (param.getElement() instanceof Connection) {
         // Connection connection = (Connection) param.getElement();
         // IElementParameter connectionParam = connection.getElementParameter(param.getName());

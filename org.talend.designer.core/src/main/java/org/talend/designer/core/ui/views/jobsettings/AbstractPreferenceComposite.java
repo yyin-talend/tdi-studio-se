@@ -18,17 +18,26 @@ import java.util.List;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.dialogs.SelectionDialog;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
@@ -142,6 +151,11 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
         }
     }
 
+    // protected ProcessItem getItem() {
+    // Process process = (Process) elem;
+    // return (ProcessItem) process.getProperty().getItem();
+    // }
+
     /**
      * 
      * DOC aimingchen Comment method "setMainCompositeEnable".
@@ -152,14 +166,69 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
         Control[] controls = getComposite().getChildren();
         for (int i = 0; i < controls.length; i++) {
             if (controls[i] != topComposite) {
-                controls[i].setEnabled(enabled);
+                if (controls[i] instanceof Composite) {
+                    setEditable((Composite) controls[i], enabled);
+                } else {
+                    if (controls[i] instanceof Text) {
+                        Text t = (Text) controls[i];
+                        t.setEditable(enabled);
+                        if (!t.getEditable()) {
+                            t.removeMouseListener(listenerSelection);
+                            t.addMouseListener(listenerSelection);
+                        } else {
+                            t.removeMouseListener(listenerSelection);
+                        }
+                    } else {
+                        controls[i].setEnabled(enabled);
+                    }
+                }
             }
         }
     }
 
-    /**
-     * ftang Comment method "addButtonListeners".
-     */
+    private void setEditable(Composite parent, boolean editable) {
+        Control[] children = parent.getChildren();
+        for (int i = 0; i < children.length; i++) {
+            if (children[i] instanceof Composite) {
+                setEditable((Composite) children[i], editable);
+            } else {
+                if (children[i] instanceof Text) {
+                    Text t = (Text) children[i];
+                    t.setEditable(editable);
+                    if (!t.getEditable()) {
+                        t.removeMouseListener(listenerSelection);
+                        t.addMouseListener(listenerSelection);
+                    } else {
+                        t.removeMouseListener(listenerSelection);
+                    }
+                } else {
+                    children[i].setEnabled(true);
+                }
+            }
+        }
+    }
+
+    MouseListener listenerSelection = new MouseAdapter() {
+
+        public void mouseDown(MouseEvent e) {
+
+            UseProjectSettingDialog modelSelect = new UseProjectSettingDialog(PlatformUI.getWorkbench()
+                    .getActiveWorkbenchWindow().getShell());
+
+            if (modelSelect.open() == UseProjectSettingDialog.OK) {
+                if (modelSelect.getOptionValue().equals("noUseProjectSettings")) { //$NON-NLS-1$
+                    useProjectSetting.setSelection(false);
+                    useProjectSettingButtonClick();
+                }
+                if (modelSelect.getOptionValue().equals("updateProjectSettings")) {//$NON-NLS-1$
+                    useProjectSetting.setSelection(true);
+                    useProjectSettingButtonClick();
+                }
+
+            }
+        }
+    };
+
     private void addButtonListeners() {
         reloadBtn.addSelectionListener(new SelectionListener() {
 
@@ -355,6 +424,7 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
         } else {
             message = Messages.getString("ReloadFromProjectSettingsMessages"); //$NON-NLS-1$
         }
+
         boolean isOK = MessageDialog.openConfirm(Display.getDefault().getActiveShell(), dialogTitle, message); //$NON-NLS-1$
         if (isOK) {
             onReloadPreference();
@@ -368,6 +438,14 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
         }
         addComponents(true);
         refresh();
+    }
+
+    /**
+     * Override by subclass
+     * 
+     */
+    protected void useProjectSettingButtonClick() {
+
     }
 
     /**
@@ -419,4 +497,97 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
         }
     }
 
+    /**
+     * 
+     * DOC Administrator AbstractPreferenceComposite class global comment. Detailled comment
+     */
+    class UseProjectSettingDialog extends SelectionDialog {
+
+        private final String TITLE = "Edit parameter"; //$NON-NLS-1$
+
+        private final String MESSAGE = "Plese choose one option."; //$NON-NLS-1$
+
+        private String str;
+
+        private Button noUseProjectSettingsButton, updateProjectSettingsButton;
+
+        private Boolean readOnlyJob;
+
+        public UseProjectSettingDialog(Shell parentShell) {
+            this(parentShell, false);
+        }
+
+        public UseProjectSettingDialog(Shell parentShell, boolean isReadOnly) {
+            super(parentShell);
+            setHelpAvailable(false);
+            setTitle(TITLE);
+            setMessage(MESSAGE);
+
+            this.readOnlyJob = isReadOnly;
+
+        }
+
+        @Override
+        protected Control createDialogArea(Composite parent) {
+            Composite composite = (Composite) super.createDialogArea(parent);
+            createMessageArea(composite);
+            Label titleBarSeparator = new Label(composite, SWT.HORIZONTAL | SWT.SEPARATOR);
+            titleBarSeparator.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+            createOptionArea(composite);
+            return composite;
+        }
+
+        protected Control createOptionArea(Composite composite) {
+            Composite inner = new Composite(composite, SWT.NONE);
+            GridLayout gridLayout = new GridLayout();
+            gridLayout.marginHeight = 0;
+            inner.setLayout(gridLayout);
+            GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
+            gridData.minimumWidth = 300;
+            inner.setLayoutData(gridData);
+
+            Group group = new Group(inner, SWT.NONE);
+            group.setText("Option"); //$NON-NLS-1$
+            gridLayout = new GridLayout();
+            gridLayout.horizontalSpacing = 10;
+            group.setLayout(gridLayout);
+            group.setLayoutData(gridData);
+
+            noUseProjectSettingsButton = new Button(group, SWT.RADIO);
+            noUseProjectSettingsButton.setText("Don't use project settings"); //$NON-NLS-1$
+
+            updateProjectSettingsButton = new Button(group, SWT.RADIO);
+            updateProjectSettingsButton.setText("Update project settings"); //$NON-NLS-1$
+
+            configControlStatus();
+
+            return inner;
+        }
+
+        private void configControlStatus() {
+            if (readOnlyJob) {
+                noUseProjectSettingsButton.setEnabled(false);
+                updateProjectSettingsButton.setEnabled(false);
+            }
+        }
+
+        @Override
+        protected void okPressed() {
+            if (noUseProjectSettingsButton.getSelection())
+                setOptionValue("noUseProjectSettings"); //$NON-NLS-1$
+            if (updateProjectSettingsButton.getSelection())
+                setOptionValue("updateProjectSettings");//$NON-NLS-1$
+
+            super.okPressed();
+        }
+
+        public String getOptionValue() {
+            return this.str;
+        }
+
+        public void setOptionValue(String str) {
+            this.str = str;
+        }
+
+    }
 }
