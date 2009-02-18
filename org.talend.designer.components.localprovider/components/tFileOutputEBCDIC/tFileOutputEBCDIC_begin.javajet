@@ -29,8 +29,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		%>
 
 // write file
-        javax.xml.bind.JAXBContext contextW = javax.xml.bind.JAXBContext.newInstance("net.sf.cobol2j");
-        javax.xml.bind.Unmarshaller unmarshallerW = contextW.createUnmarshaller();
+        javax.xml.bind.JAXBContext jaxbContextW = javax.xml.bind.JAXBContext.newInstance("net.sf.cobol2j");
+        javax.xml.bind.Unmarshaller unmarshallerW = jaxbContextW.createUnmarshaller();
         Object oW = unmarshallerW.unmarshal(new java.io.FileInputStream(<%= copybook %>));
         net.sf.cobol2j.FileFormat fFW = (net.sf.cobol2j.FileFormat) oW;
         net.sf.cobol2j.RecordWriter rwriter = new net.sf.cobol2j.RecordWriter( new java.io.FileOutputStream(<%= filename %>), fFW );

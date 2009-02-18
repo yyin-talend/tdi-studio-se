@@ -28,7 +28,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		String filename = ElementParameterParser.getValue(node,"__FILENAME__");
 		String copybook = ElementParameterParser.getValue(node,"__COPYBOOK__");
 		
-    	String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
     	String header = ElementParameterParser.getValue(node, "__HEADER__");
     	if(header.equals("")){
     		header="0";

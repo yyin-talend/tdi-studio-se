@@ -27,7 +27,6 @@
 			String filename = ElementParameterParser.getValue(node,"__FILENAME__");
 			String copybook = ElementParameterParser.getValue(node,"__COPYBOOK__");
 			
-	    	String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
 	    	String header = ElementParameterParser.getValue(node, "__HEADER__");
 	    	if(header.equals("")){
 	    		header="0";
@@ -56,8 +55,8 @@
 %>
 
 	// open file
-	javax.xml.bind.JAXBContext context = javax.xml.bind.JAXBContext.newInstance("net.sf.cobol2j");
-	javax.xml.bind.Unmarshaller unmarshaller = context.createUnmarshaller();
+	javax.xml.bind.JAXBContext jaxbContext = javax.xml.bind.JAXBContext.newInstance("net.sf.cobol2j");
+	javax.xml.bind.Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 	Object o = unmarshaller.unmarshal(new java.io.FileInputStream(<%= copybook %>));
 	net.sf.cobol2j.FileFormat fF = (net.sf.cobol2j.FileFormat) o;
 	net.sf.cobol2j.RecordSet rset = new net.sf.cobol2j.RecordSet(new java.io.FileInputStream(<%= filename %>), fF);
@@ -94,7 +93,7 @@
 				}
     		}
 			if (conns!=null && conns.size()>0) {
-				List<IConnection> connections = new java.util.ArrayList<IConnection>();
+				List<String> connections = new java.util.ArrayList<String>();
 				Map<String, List<IMetadataColumn>> connectionMapColumnList = new java.util.HashMap<String, List<IMetadataColumn>>();
 				Map<String, String> connectionMapRecordType = new java.util.HashMap<String, String>();
 				for(int i=0;i<conns.size();i++){
@@ -102,15 +101,15 @@
 		            if (connTemp.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 		               IMetadataTable tempMetadataTable = connTemp.getMetadataTable();
 		               List<IMetadataColumn> listColumns = tempMetadataTable.getListColumns();
-		               connections.add(connTemp);
+		               connections.add(connTemp.getName());
 		               connectionMapColumnList.put(connTemp.getName(), listColumns);
 					}
 				}
 				List<Map<String, String>> schemas = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__SCHEMAS__");
-				for(IConnection connection : connections){
+				for(String connection : connections){
 		            for(Map<String, String> schemaMap : schemas){
-		               if(schemaMap.get("SCHEMA").equals(connection.getMetadataTable().getLabel())){
-		                   connectionMapRecordType.put(connection.getName(), schemaMap.get("CODE"));
+		               if(schemaMap.get("SCHEMA").equals(connection)){
+		                   connectionMapRecordType.put(connection, schemaMap.get("CODE"));
 		                   break;
 		               } else {
 		                   continue;
