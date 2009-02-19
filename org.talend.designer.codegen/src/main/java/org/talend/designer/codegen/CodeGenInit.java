@@ -133,7 +133,7 @@ public class CodeGenInit implements IApplication {
     }
 
     private String getProjectName(ECodeLanguage language) {
-        return Messages.getString("CodeGenInit.codegenProject") + language.getName(); //$NON-NLS-1$
+        return "codegen_" + language.getName() + "_temp_project"; //$NON-NLS-1$
     }
 
     private Project getProject(ECodeLanguage language) throws PersistenceException, BusinessException {
