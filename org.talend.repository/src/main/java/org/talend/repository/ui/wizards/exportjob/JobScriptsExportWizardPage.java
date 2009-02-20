@@ -614,17 +614,20 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                 if (selectedJobVersion != null && selectedJobVersion.equals(allVersions)) {
                     String[] allVersions = JobVersionUtils.getAllVersions(nodes[0]);
                     for (String version : allVersions) {
-                        monitor.subTask("Export job: " + nodes[0].getLabel() + "_" + version);
+                        monitor
+                                .subTask(Messages.getString("JobScriptsExportWizardPage.exportJob") + nodes[0].getLabel() + "_" + version); //$NON-NLS-1$ //$NON-NLS-2$
                         ok = exportJobScript(version, progressMonitor);
                         if (!ok) {
                             return;
                         }
                     }
                 } else {
-                    monitor.subTask("Export job: " + nodes[0].getLabel() + "_" + selectedJobVersion);
+                    monitor
+                            .subTask(Messages.getString("JobScriptsExportWizardPage.exportJob") + nodes[0].getLabel() + "_" + selectedJobVersion); //$NON-NLS-1$ //$NON-NLS-2$
                     ok = exportJobScript(selectedJobVersion, progressMonitor);
                 }
-                monitor.subTask("Export job: " + nodes[0].getLabel() + "_" + selectedJobVersion + " sucessfully!");
+                monitor.subTask(Messages.getString(
+                        "JobScriptsExportWizardPage.exportJobWithParam", nodes[0].getLabel() + "_" + selectedJobVersion)); //$NON-NLS-1$ //$NON-NLS-2$
                 progressMonitor.done();
             }
         };
@@ -753,7 +756,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                 }
             }
         }
-        monitor.subTask("Export job sucessfully!");
+        monitor.subTask(Messages.getString("JobScriptsExportWizardPage.exportFinished")); //$NON-NLS-1$
         // achen modify to fix bug 0006108
         // rearchieve the jobscript zip file
         ECodeLanguage curLanguage = LanguageManager.getCurrentLanguage();
@@ -778,7 +781,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             for (int i = 0; i < process.length; i++) {
                 if (process[i] != null) {
                     String jobFolderName = process[i].getDirectoryName();
-                    int pos = jobFolderName.indexOf("/");
+                    int pos = jobFolderName.indexOf("/"); //$NON-NLS-1$
                     if (pos != -1) {
                         jobFolderName = jobFolderName.substring(pos + 1);
                     }

@@ -49,6 +49,7 @@ import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.constants.FileConstants;
 import org.talend.repository.documentation.ExportFileResource;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
@@ -86,7 +87,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
                 selectedJobVersion = process[i].getItem().getProperty().getVersion();
             }
             if (progressMonitor != null) {
-                progressMonitor.subTask("Export job:" + process[i].getNode().getObject().getLabel() + selectedJobVersion);
+                progressMonitor.subTask(Messages.getString("JobPerlScriptsManager.exportJob") + process[i].getNode().getObject().getLabel() + selectedJobVersion); //$NON-NLS-1$
             }
             if (!BooleanUtils.isTrue(exportChoice.get(ExportChoice.doNotCompileCode))) {
                 generateJobFiles(processItem, contextName, selectedJobVersion, statisticPort != IProcessor.NO_STATISTICS,

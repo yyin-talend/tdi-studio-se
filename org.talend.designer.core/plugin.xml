@@ -646,7 +646,7 @@
                definitionId="org.talend.designer.core.ui.open.type"
                icon="platform:/plugin/org.eclipse.jdt.ui/icons/full/etool16/opentype.gif"
                label="Open Job"
-               tooltip="Open a specific job">
+               tooltip="Find a specific job">
          </action>
     		
       </actionSet>

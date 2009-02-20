@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.views.RepositoryView;
 
 /**
@@ -30,6 +31,17 @@ public class OpenJobSelectionDialog extends RepositoryReviewDialog {
 
     public OpenJobSelectionDialog(Shell parentShell) {
         super(parentShell, ERepositoryObjectType.PROCESS, null);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.dialog.RepositoryReviewDialog#configureShell(org.eclipse.swt.widgets.Shell)
+     */
+    @Override
+    protected void configureShell(Shell shell) {
+        super.configureShell(shell);
+        shell.setText(Messages.getString("OpenJobSelectionDialog.findJob")); //$NON-NLS-1$
     }
 
     /*

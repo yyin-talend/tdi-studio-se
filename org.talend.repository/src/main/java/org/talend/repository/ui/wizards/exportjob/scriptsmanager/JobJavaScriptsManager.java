@@ -54,6 +54,7 @@ import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.constants.FileConstants;
 import org.talend.repository.documentation.ExportFileResource;
+import org.talend.repository.i18n.Messages;
 
 /**
  * Manages the job scripts to be exported. <br/>
@@ -89,7 +90,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                 selectedJobVersion = this.getSelectedJobVersion();
             }
             if (progressMonitor != null) {
-                progressMonitor.subTask("Export job:" + process[i].getNode().getObject().getLabel() + "_" + selectedJobVersion);
+                progressMonitor.subTask(Messages.getString("JobJavaScriptsManager.exportJob") + process[i].getNode().getObject().getLabel() + "_" + selectedJobVersion); //$NON-NLS-1$ //$NON-NLS-2$
             }
             String libPath = calculateLibraryPathFromDirectory(process[i].getDirectoryName());
             // use character @ as temporary classpath separator, this one will be replaced during the export.

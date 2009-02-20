@@ -94,7 +94,7 @@ public class ZipToFile {
             if (real.equals(base))
                 break;
             else
-                ret = real.getName() + "/" + ret;
+                ret = real.getName() + "/" + ret; //$NON-NLS-1$
         }
         return ret;
     }
@@ -145,8 +145,8 @@ public class ZipToFile {
             // OutputStream os = new BufferedOutputStream(new FileOutputStream(getRealFileName(unzipdir,
             // ze.getName())));
             unzipdir = unzipdir.replace('\\', '/');
-            if (!unzipdir.endsWith("/")) {
-                unzipdir = unzipdir + "/";
+            if (!unzipdir.endsWith("/")) { //$NON-NLS-1$
+                unzipdir = unzipdir + "/"; //$NON-NLS-1$
             }
             String filename = unzipdir + ze.getName();
             File zeF = new File(filename);
@@ -168,8 +168,8 @@ public class ZipToFile {
 
     public static void main(String[] args) {
         try {
-            zipFile("C:\\zipfile\\", "C:\\new.jar");
-            unZipFile("C:\\new.jar", "c:/unzipf/");
+            zipFile("C:\\zipfile\\", "C:\\new.jar"); //$NON-NLS-1$ //$NON-NLS-2$
+            unZipFile("C:\\new.jar", "c:/unzipf/"); //$NON-NLS-1$ //$NON-NLS-2$
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

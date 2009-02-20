@@ -40,8 +40,8 @@ public class MigrationTaskForIssue4449 extends AbstractJobMigrationTask {
             return ExecutionResult.NOTHING_TO_DO;
         }
 
-        String[] componentsName = new String[] { "tMSSqlOutput", "tMaxDBOutput", "tMysqlOutput", "tInformixOutput",
-                "tOracleOutput", "tPostgresqlOutput", "tPostgresPlusOutput", "tSybaseOutput" };
+        String[] componentsName = new String[] { "tMSSqlOutput", "tMaxDBOutput", "tMysqlOutput", "tInformixOutput", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                "tOracleOutput", "tPostgresqlOutput", "tPostgresPlusOutput", "tSybaseOutput" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         IComponentConversion updateTableActionOption = new UpdatePropertyTruncateOptionConversion();
 
         for (String name : componentsName) {

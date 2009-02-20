@@ -46,8 +46,8 @@ public class AddDoubleQuoteToAllDBSPNameMigrationTask extends AbstractJobMigrati
 
         try {
 
-            String[] componentsName = new String[] { "tOracleSP", "tMSSqlSP", "tDB2SP", "tSybaseSP", "tMysqlSP", "tJDBCSP" };
-            IComponentConversion addQuotesSPName = new AddQuotesInPropertyComponentConversion("SP_NAME");
+            String[] componentsName = new String[] { "tOracleSP", "tMSSqlSP", "tDB2SP", "tSybaseSP", "tMysqlSP", "tJDBCSP" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+            IComponentConversion addQuotesSPName = new AddQuotesInPropertyComponentConversion("SP_NAME"); //$NON-NLS-1$
 
             for (String name : componentsName) {
                 IComponentFilter filter = new NameComponentFilter(name); //$NON-NLS-1$
