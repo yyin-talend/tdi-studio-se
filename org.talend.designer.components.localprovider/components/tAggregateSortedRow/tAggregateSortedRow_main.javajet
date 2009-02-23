@@ -162,8 +162,14 @@ if(column_gr.length > 0){//while loop
 while(true){
 <%	for(int i = 0; i < column_gr.length; i++){
 		JavaType javaType = JavaTypesManager.getJavaTypeFromId(column_gr[i][0].getTalendType());
-		if(javaType == JavaTypesManager.BYTE_ARRAY || javaType == JavaTypesManager.OBJECT || javaType == JavaTypesManager.STRING || 
-			javaType == JavaTypesManager.DATE || javaType == JavaTypesManager.LIST || javaType == JavaTypesManager.BIGDECIMAL){
+		if(JavaTypesManager.isNumberType(javaType) && javaType != JavaTypesManager.BIGDECIMAL && !column_gr[i][0].isNullable()){
+%>
+if(group_<%=column_gr[i][0].getLabel() %>_<%=cid %> != <%=connName %>.<%=column_gr[i][0].getLabel() %>){
+	sameGroup_<%=cid %> = false;
+	break;
+}
+<%
+		} else {
 %>if(group_<%=column_gr[i][0].getLabel() %>_<%=cid %> == null){
 	if(<%=connName %>.<%=column_gr[i][0].getLabel() %> != null){
 		sameGroup_<%=cid %> = false;
@@ -175,12 +181,8 @@ while(true){
 		break;
 	}
 }
-<%		}else{
-%>if(group_<%=column_gr[i][0].getLabel() %>_<%=cid %> != <%=connName %>.<%=column_gr[i][0].getLabel() %>){
-	sameGroup_<%=cid %> = false;
-	break;
-}
 <%		}
+		
 		if(i+1 == column_gr.length){
 %>break;
 <%		}
