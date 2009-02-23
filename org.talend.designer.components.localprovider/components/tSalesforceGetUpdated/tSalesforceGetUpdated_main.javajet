@@ -21,10 +21,11 @@ String cid = node.getUniqueName();
 String username = ElementParameterParser.getValue(node, "__USER__");
 String password = ElementParameterParser.getValue(node, "__PASS__");
 String module = ElementParameterParser.getValue(node, "__MODULENAME__");
+String endPoint = ElementParameterParser.getValue(node, "__ENDPOINT__");
 %>
 
 try {
-    binding_<%=cid%> = (com.sforce.soap.partner.SoapBindingStub) new com.sforce.soap.partner.SforceServiceLocator().getSoap();
+    binding_<%=cid%> = (com.sforce.soap.partner.SoapBindingStub) new com.sforce.soap.partner.SforceServiceLocator().getSoap(new java.net.URL(<%=endPoint%>));
     loginResult_<%=cid%> = binding_<%=cid%>.login(<%=username%>, <%=password%>);
     binding_<%=cid%>._setProperty(com.sforce.soap.partner.SoapBindingStub.ENDPOINT_ADDRESS_PROPERTY, loginResult_<%=cid%>.getServerUrl());
 } catch (javax.xml.rpc.ServiceException ex) {

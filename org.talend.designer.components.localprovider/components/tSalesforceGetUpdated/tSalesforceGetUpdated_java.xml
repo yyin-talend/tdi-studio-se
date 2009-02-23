@@ -29,7 +29,10 @@
   </CONNECTORS>
 
 <PARAMETERS>
-    
+    <PARAMETER NAME="ENDPOINT" FIELD="TEXT" NUM_ROW="1"
+		REQUIRED="true">
+		<DEFAULT>"https://www.salesforce.com/services/Soap/u/10.0"</DEFAULT>
+	</PARAMETER>
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
@@ -51,7 +54,7 @@
 	<PARAMETER
       NAME="START_DATE"
       FIELD="TEXT"
-      NUM_ROW="9"
+      NUM_ROW="8"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -59,7 +62,7 @@
 	<PARAMETER
       NAME="END_DATE"
       FIELD="TEXT"
-      NUM_ROW="9"
+      NUM_ROW="8"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -918,8 +921,8 @@
       <IMPORT NAME="SOAP-wsdl" MODULE="wsdl4j-1.5.1.jar" REQUIRED="true" />
       <IMPORT NAME="SOAP-discovery" MODULE="commons-discovery-0.2.jar" REQUIRED="true" />
       <IMPORT NAME="SOAP-logging" MODULE="commons-logging-1.1.jar" REQUIRED="true" />
-      <IMPORT NAME="SOAP-JavaMail" MODULE="mail.jar" REQUIRED="false" />
-      <IMPORT NAME="SOAP-JAF" MODULE="activation.jar" REQUIRED="false" />      
+      <IMPORT NAME="SOAP-JavaMail" MODULE="mail.jar" REQUIRED="true" />
+      <IMPORT NAME="SOAP-JAF" MODULE="activation.jar" REQUIRED="true" />      
     </IMPORTS>
   </CODEGENERATION>
 
