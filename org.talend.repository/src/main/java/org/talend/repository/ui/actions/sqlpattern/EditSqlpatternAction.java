@@ -39,8 +39,8 @@ public class EditSqlpatternAction extends AbstractSqlpatternAction {
     public EditSqlpatternAction() {
         super();
 
-        setText("Edit SQLPattern"); //$NON-NLS-1$
-        setToolTipText("Edit SQLPattern"); //$NON-NLS-1$
+        setText("Edit SQLTemplate"); //$NON-NLS-1$
+        setToolTipText("Edit SQLTemplate"); //$NON-NLS-1$
         setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.METADATA_SQLPATTERN_ICON));
     }
 

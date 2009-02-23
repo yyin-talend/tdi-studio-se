@@ -21,9 +21,9 @@
     <CONNECTOR CTYPE="RUN_IF"/>
   </CONNECTORS>
   
-  	<SQLPATTERNS DB="Generic">
-		<SQLPATTERN NAME="Aggregate"/>
-	</SQLPATTERNS>
+  	<SQLTEMPLATES DB="Generic">
+		<SQLTEMPLATE NAME="Aggregate"/>
+	</SQLTEMPLATES>
   
 	<PARAMETERS>
 

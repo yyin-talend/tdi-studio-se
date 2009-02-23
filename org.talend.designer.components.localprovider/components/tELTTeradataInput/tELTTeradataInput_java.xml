@@ -20,12 +20,12 @@
 		<CONNECTOR CTYPE="RUN_IF" />
 	</CONNECTORS>
 
-	<SQLPATTERNS DB="Teradata">
-		<SQLPATTERN NAME="TeradataLoadFile"
+	<SQLTEMPLATES DB="Teradata">
+		<SQLTEMPLATE NAME="TeradataLoadFile"
 			CONTENT="Teradata's loadFile's content"/>
-		<SQLPATTERN NAME="TeradataNormalize"
+		<SQLTEMPLATE NAME="TeradataNormalize"
 			CONTENT="Teradata's Normalize's content"/>
-	</SQLPATTERNS>
+	</SQLTEMPLATES>
 
 	<PARAMETERS>
 

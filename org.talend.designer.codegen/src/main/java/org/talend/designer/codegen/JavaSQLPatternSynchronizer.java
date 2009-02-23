@@ -46,7 +46,9 @@ public class JavaSQLPatternSynchronizer extends AbstractSQLPatternSynchronizer {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.codegen.ISQLPatternSynchronizer#getSQLPattern(org.talend.core.model.properties.SQLPatternItem)
+     * @see
+     * org.talend.designer.codegen.ISQLPatternSynchronizer#getSQLPattern(org.talend.core.model.properties.SQLPatternItem
+     * )
      */
     public IFile getSQLPatternFile(SQLPatternItem item) throws SystemException {
         try {
@@ -93,8 +95,9 @@ public class JavaSQLPatternSynchronizer extends AbstractSQLPatternSynchronizer {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.codegen.ISQLPatternSynchronizer#syncSQLPattern(org.talend.core.model.properties.SQLPatternItem,
-     * boolean)
+     * @see
+     * org.talend.designer.codegen.ISQLPatternSynchronizer#syncSQLPattern(org.talend.core.model.properties.SQLPatternItem
+     * , boolean)
      */
     public void syncSQLPattern(SQLPatternItem routineItem, boolean copyToTemp) throws SystemException {
         FileOutputStream fos = null;

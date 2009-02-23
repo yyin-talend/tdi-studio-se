@@ -67,8 +67,8 @@ public class NewSqlpatternWizard extends Wizard {
         this.path = path;
 
         this.property = PropertiesFactory.eINSTANCE.createProperty();
-        this.property.setAuthor(((RepositoryContext) CorePlugin.getContext()
-                .getProperty(Context.REPOSITORY_CONTEXT_KEY)).getUser());
+        this.property.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                .getUser());
         this.property.setVersion(VersionUtils.DEFAULT_VERSION);
         this.property.setStatusCode(""); //$NON-NLS-1$
 
@@ -103,7 +103,7 @@ public class NewSqlpatternWizard extends Wizard {
     public void addPages() {
         mainPage = new NewSqlpatternWizardPage(property, path);
         addPage(mainPage);
-        setWindowTitle("New SQLPattern"); //$NON-NLS-1$
+        setWindowTitle("New SQLTemplate"); //$NON-NLS-1$
         setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.METADATA_SQLPATTERN_WIZ));
     }
 
@@ -117,10 +117,9 @@ public class NewSqlpatternWizard extends Wizard {
             property.setId(repositoryFactory.getNextId());
             repositoryFactory.create(sqlpatternItem, mainPage.getDestinationPath());
         } catch (PersistenceException e) {
-            MessageDialog.openError(getShell(), Messages.getString("NewProcessWizard.failureTitle"), ""); //$NON-NLS-1$ //$NON-NLS-2$
+            MessageDialog.openError(getShell(), Messages.getString(Messages.getString("NewSqlpatternWizard.failureTitle")), ""); //$NON-NLS-1$//$NON-NLS-2$
             ExceptionHandler.process(e);
         }
-
         return sqlpatternItem != null;
     }
 

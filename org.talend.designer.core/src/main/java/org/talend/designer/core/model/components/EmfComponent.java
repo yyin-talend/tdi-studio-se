@@ -90,8 +90,8 @@ import org.talend.designer.core.model.utils.emf.component.ITEMType;
 import org.talend.designer.core.model.utils.emf.component.LINKTOType;
 import org.talend.designer.core.model.utils.emf.component.PARAMETERType;
 import org.talend.designer.core.model.utils.emf.component.RETURNType;
-import org.talend.designer.core.model.utils.emf.component.SQLPATTERNSType;
-import org.talend.designer.core.model.utils.emf.component.SQLPATTERNType;
+import org.talend.designer.core.model.utils.emf.component.SQLTEMPLATESType;
+import org.talend.designer.core.model.utils.emf.component.SQLTEMPLATEType;
 import org.talend.designer.core.model.utils.emf.component.TABLEType;
 import org.talend.designer.core.model.utils.emf.component.TEMPLATEPARAMType;
 import org.talend.designer.core.model.utils.emf.component.TEMPLATESType;
@@ -402,7 +402,7 @@ public class EmfComponent implements IComponent {
             return;
         }
         ElementParameter param;
-        SQLPATTERNSType patterns = compType.getSQLPATTERNS();
+        SQLTEMPLATESType patterns = compType.getSQLTEMPLATES();
         if (patterns == null) {
             return;
         }
@@ -430,13 +430,13 @@ public class EmfComponent implements IComponent {
         param.setRequired(false);
         param.setShow(true);
 
-        EList patternList = patterns.getSQLPATTERN();
+        EList patternList = patterns.getSQLTEMPLATE();
 
         // this is the sql patterns defined in the node's xml
         List<String> patternNames = new ArrayList<String>();
         List<Map> value = new ArrayList<Map>();
         for (Iterator iterator = patternList.iterator(); iterator.hasNext();) {
-            SQLPATTERNType pattern = (SQLPATTERNType) iterator.next();
+            SQLTEMPLATEType pattern = (SQLTEMPLATEType) iterator.next();
             Map map = new HashMap();
             SQLPatternItem sqlItem = getSQLPatternItem(pattern.getNAME(), patterns.getDB());
             if (sqlItem == null) {
@@ -460,7 +460,7 @@ public class EmfComponent implements IComponent {
         String[] listField = new String[1];
 
         listItemsDisplayCodeValue[0] = SQLPatternUtils.SQLPATTERNLIST;
-        listItemsDisplayValue[0] = "SQLPattern List"; //$NON-NLS-1$
+        listItemsDisplayValue[0] = "SQLTemplate List"; //$NON-NLS-1$
 
         ElementParameter newParam = new ElementParameter(node);
         newParam = new ElementParameter(node);
@@ -1350,7 +1350,7 @@ public class EmfComponent implements IComponent {
                 isReadOnly = param.isReadOnly();
             }
 
-            String readOnlyColumnPosition = tableType.getREAD_ONLY_COLUMN_POSITION();
+            String readOnlyColumnPosition = tableType.getREADONLYCOLUMNPOSITION();
             if (readOnlyColumnPosition == null) {
                 readOnlyColumnPosition = EReadOnlyComlumnPosition.BOTTOM.toString();
             }

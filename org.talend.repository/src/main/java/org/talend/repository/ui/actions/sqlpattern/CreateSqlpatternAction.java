@@ -53,8 +53,8 @@ public class CreateSqlpatternAction extends AbstractSqlpatternAction {
     public CreateSqlpatternAction() {
         super();
 
-        setText("Create SQLPattern"); //$NON-NLS-1$
-        setToolTipText("Create SQLPattern"); //$NON-NLS-1$
+        setText("Create SQLTemplate"); //$NON-NLS-1$
+        setToolTipText("Create SQLtempalte"); //$NON-NLS-1$
 
         Image folderImg = ImageProvider.getImage(ECoreImage.METADATA_SQLPATTERN_ICON);
         this.setImageDescriptor(OverlayImageProvider.getImageWithNew(folderImg));

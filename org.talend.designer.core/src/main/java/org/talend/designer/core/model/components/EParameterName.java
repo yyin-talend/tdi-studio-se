@@ -90,8 +90,8 @@ public enum EParameterName {
     SUBJOB_TITLE(Messages.getString("EParameterName.title")), //$NON-NLS-1$
     SUBJOB_TITLE_COLOR("Title color"), //$NON-NLS-1$
     SUBJOB_COLOR("Subjob color"), //$NON-NLS-1$
-    SQLPATTERN_DB_NAME("SQL Pattern DB"), //$NON-NLS-1$
-    SQLPATTERN_VALUE("SQL Pattern"), //$NON-NLS-1$
+    SQLPATTERN_DB_NAME("SQL Template DB"), //$NON-NLS-1$
+    SQLPATTERN_VALUE("SQL Template"), //$NON-NLS-1$
     NOTE_COLOR("Note color"), //$NON-NLS-1$
     NOTETXT_COLOR("Font color"), //$NON-NLS-1$
     NOTETXT_LEFT("left"), //$NON-NLS-1$
