@@ -6,6 +6,7 @@
 		org.talend.core.model.metadata.IMetadataTable 
     	org.talend.core.model.metadata.IMetadataColumn 
     	org.talend.core.model.process.IConnection
+    	org.talend.core.model.process.EConnectionType
     	java.util.List
     	java.util.Map
 	"
@@ -177,7 +178,7 @@ if(outputAction.equals("NORMAL_OUTPUT")||errorOuput.equals("NORMAL_OUTPUT")){
     	IMetadataTable metadata = metadatas.get(0);
     	if (metadata!=null) {
     		List<IMetadataColumn> columns=metadata.getListColumns();
-    		List<? extends IConnection> conns = node.getOutgoingSortedConnections();
+    		List<? extends IConnection> conns = node.getOutgoingConnections(EConnectionType.FLOW_MAIN);
     		if (conns!=null && conns.size()>0) {
 				IConnection conn = conns.get(0);  
 %>
