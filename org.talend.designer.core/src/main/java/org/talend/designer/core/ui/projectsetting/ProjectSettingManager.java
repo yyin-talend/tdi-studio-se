@@ -48,6 +48,7 @@ import org.talend.designer.core.ui.preferences.StatsAndLogsConstants;
 import org.talend.designer.core.ui.views.jobsettings.ExtraComposite;
 import org.talend.designer.core.ui.views.jobsettings.ImplicitContextLoadHelper;
 import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsComposite;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.views.RepositoryContentProvider;
@@ -242,15 +243,36 @@ public class ProjectSettingManager extends Utils {
     public static void defaultUseProjectSetting(org.talend.designer.core.ui.editor.process.Process process) {
         if (process == null)
             return;
+        ImplicitContextSettings implicit = ProjectManager.getInstance().getCurrentProject().getEmfProject()
+                .getImplicitContextSettings();
+        Boolean bImplicit = true;
+        if (implicit != null) {
+            String v = ElementParameter2ParameterType.getParameterValue(implicit.getParameters(),
+                    EParameterName.IMPLICT_DEFAULT_PROJECTSETTING.getName());
+            if (v != null) {
+                bImplicit = Boolean.valueOf(v);
+            }
+        }
         ProcessItem pItem = (ProcessItem) process.getProperty().getItem();
         ElementParameter2ParameterType.setParameterValue(process, EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS.getName(),
-                Boolean.TRUE);
+                bImplicit);
         ElementParameter2ParameterType.setParameterValue(pItem.getProcess().getParameters(),
-                EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS.getName(), Boolean.TRUE);
-        ElementParameter2ParameterType.setParameterValue(process, EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName(),
-                Boolean.TRUE);
+                EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS.getName(), bImplicit);
+
+        // stat and log
+        StatAndLogsSettings stat = ProjectManager.getInstance().getCurrentProject().getEmfProject().getStatAndLogsSettings();
+        Boolean bStat = true;
+        if (stat != null) {
+            String v = ElementParameter2ParameterType.getParameterValue(stat.getParameters(),
+                    EParameterName.STATS_DEFAULT_PROJECTSETTING.getName());
+            if (v != null) {
+                bStat = Boolean.valueOf(v);
+            }
+        }
+        ElementParameter2ParameterType
+                .setParameterValue(process, EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName(), bStat);
         ElementParameter2ParameterType.setParameterValue(pItem.getProcess().getParameters(),
-                EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName(), Boolean.TRUE);
+                EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName(), bStat);
     }
 
     /**
@@ -283,6 +305,18 @@ public class ProjectSettingManager extends Utils {
         param.setGroup(IMPLICIT_GROUP);
         param.setNumRow(3);
         param.setShow(true);
+        paramList.add(param);
+
+        param = new ElementParameter(elem);
+        param.setName(EParameterName.IMPLICT_DEFAULT_PROJECTSETTING.getName());
+        param.setValue(Boolean.TRUE);
+        param.setGroupDisplayName(EParameterName.IMPLICT_DEFAULT_PROJECTSETTING.getDisplayName());
+        param.setDisplayName(EParameterName.IMPLICT_DEFAULT_PROJECTSETTING.getDisplayName());
+        param.setField(EParameterFieldType.CHECK);
+        param.setCategory(EComponentCategory.EXTRA);
+        param.setGroup(IMPLICIT_GROUP);
+        param.setNumRow(3);
+        param.setShow(false);
         paramList.add(param);
 
         // on files

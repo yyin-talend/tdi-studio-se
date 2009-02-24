@@ -97,6 +97,17 @@ public class StatsAndLogsHelper extends Utils {
         paramList.add(param);
 
         param = new ElementParameter(elem);
+        param.setName(EParameterName.STATS_DEFAULT_PROJECTSETTING.getName());
+        param.setValue(Boolean.TRUE);
+        param.setGroupDisplayName(EParameterName.STATS_DEFAULT_PROJECTSETTING.getDisplayName());
+        param.setDisplayName(EParameterName.STATS_DEFAULT_PROJECTSETTING.getDisplayName());
+        param.setField(EParameterFieldType.CHECK);
+        param.setCategory(EComponentCategory.STATSANDLOGS);
+        param.setNumRow(3);
+        param.setShow(false);
+        paramList.add(param);
+
+        param = new ElementParameter(elem);
         param.setName(EParameterName.ON_STATCATCHER_FLAG.getName());
         param.setValue(preferenceStore.getBoolean(languagePrefix + EParameterName.ON_STATCATCHER_FLAG.getName()));
         param.setDisplayName(EParameterName.ON_STATCATCHER_FLAG.getDisplayName());

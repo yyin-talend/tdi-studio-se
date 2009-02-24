@@ -675,7 +675,7 @@
     <extension
           point="org.talend.repository.projectsetting_page">
        <page
-             class="org.talend.repository.preference.BlankProjectSettingPage"
+             class="org.talend.designer.core.ui.projectsetting.JobSettingProjectSettingPage"
              id="jobsettings"
              order="3"
              title="%jobSettings">

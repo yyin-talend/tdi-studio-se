@@ -138,11 +138,12 @@ public enum EParameterName {
     PROPERTIES(Messages.getString("EParameterName.additionParam")), //$NON-NLS-1$
     DBFILE(Messages.getString("EParameterName.database")), //$NON-NLS-1$
     DB_VERSION(Messages.getString("EParameterName.dbVersion")), //$NON-NLS-1$
+    STATS_DEFAULT_PROJECTSETTING(Messages.getString("EParameterName.StatDefaultProjectsetting")), //$NON-NLS-1$
     /**
      * For Job Settings extra parameters.
      */
     MULTI_THREAD_EXECATION(Messages.getString("EParameterName.MultiThread")), //$NON-NLS-1$
-    IMPLICIT_TCONTEXTLOAD(Messages.getString("EParameterName.ImplicitContextLoad")), //$NON-NLS-1$
+    IMPLICIT_TCONTEXTLOAD(Messages.getString("EParameterName.ImplicitContextLoad")), //$NON-NLS-1$    
     IMPLICIT_TCONTEXTLOAD_FILE(Messages.getString("EParameterName.FromFile")), //$NON-NLS-1$
     FIELDSEPARATOR(Messages.getString("EParameterName.FieldSeparator")), //$NON-NLS-1$
     ROWSEPARATOR(Messages.getString("EParameterName.RowSeparator")), //$NON-NLS-1$
@@ -155,6 +156,7 @@ public enum EParameterName {
     DISABLE_ERROR(Messages.getString("EParameterName.DisableErrors")), //$NON-NLS-1$
     DISABLE_INFO(Messages.getString("EParameterName.DisableInfos")), //$NON-NLS-1$
     DISABLE_WARNINGS(Messages.getString("EParameterName.DisableWarnings")), //$NON-NLS-1$
+    IMPLICT_DEFAULT_PROJECTSETTING(Messages.getString("EParameterName.ImplictDefaultProjectsetting")),
     /*
      * PERL_ON_FILES_FLAG(Messages.getString("EParameterName.onFileFlag")), //$NON-NLS-1$
      * PERL_FILE_PATH(Messages.getString("EParameterName.filePath")), //$NON-NLS-1$
