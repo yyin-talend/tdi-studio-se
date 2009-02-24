@@ -95,7 +95,7 @@ imports="
 <%
 					for(IMetadataColumn column:columnList){		
 %>
-		"<%=column.getLabel()%>",
+		"<%=column.getOriginalDbColumnName()%>",
 <%
                 	}
 %>    
@@ -189,7 +189,7 @@ imports="
 <%
 					for(IMetadataColumn column:columnList){//5		
 %>        	
-			javax.naming.directory.Attribute attr_<%=column.getLabel()%>_<%=cid%> = attrs_<%=cid%>.get("<%=column.getLabel()%>");
+			javax.naming.directory.Attribute attr_<%=column.getLabel()%>_<%=cid%> = attrs_<%=cid%>.get("<%=column.getOriginalDbColumnName()%>");
 			if(attr_<%=column.getLabel()%>_<%=cid%> != null)
 			{
     			StringBuilder attrStr_<%=cid%> = new StringBuilder();
