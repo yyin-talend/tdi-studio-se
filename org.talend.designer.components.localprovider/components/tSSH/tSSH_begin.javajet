@@ -64,6 +64,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             node,
             "__TIMEOUT__"
         );
+        
+        String standardOutput  = ElementParameterParser.getValue(node, "__STANDARDOUTPUT__");
+		String errorOuput  = ElementParameterParser.getValue(node, "__ERROROUTPUT__");
+		if (standardOutput.equals("NORMAL_OUTPUT")||errorOuput.equals("NORMAL_OUTPUT")) {
+%>
+			final java.util.Vector<String> output_<%=cid%> = new java.util.Vector<String>();
+<%
+		}
 %>
     String hostname_<%=cid%> = <%=host%>;
     String username_<%=cid%> = <%=user%>;
