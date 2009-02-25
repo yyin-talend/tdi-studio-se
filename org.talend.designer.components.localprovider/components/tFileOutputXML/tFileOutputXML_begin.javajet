@@ -111,19 +111,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     //**
     String fileNewname = ElementParameterParser.getValue(node,"__FILENAME__");
 %>
-  <%if(ElementParameterParser.getValue(node,"__CREATE__").equals("true"))
-  {
-    //-------------------lihan----------------------------------------------------------------
-   	String fileNewpathname = fileNewname.substring(0, fileNewname.lastIndexOf("/")) + "\"";
-  	%> 
-  	//create directory only if not exists
- 	String fileNewName_<%=cid%> = <%=fileNewpathname%>;
- 	java.io.File createFile<%=cid%> = new java.io.File(fileNewName_<%=cid%>);
- 	if(!createFile<%=cid%>.isDirectory())
- 	{
- 		(new java.io.File(fileNewName_<%=cid%>)).mkdirs();
- 	}
-<%} //---------------------------------------------------------------------------------------- %>
+  <%if(ElementParameterParser.getValue(node,"__CREATE__").equals("true")){%>
+//create directory only if not exists
+ String fileNewName_<%=cid%> = <%=fileNewname%>;
+ java.io.File createFile<%=cid%> = new java.io.File(fileNewName_<%=cid%>);
+ if(!createFile<%=cid%>.exists()){
+ 	(new java.io.File(fileNewName_<%=cid%>.substring(0,fileNewName_<%=cid%>.lastIndexOf("/")))).mkdirs();
+ }
+	<%}%>
 
 String[] headers_<%=cid %> = new String[<%=headers %>];
     
