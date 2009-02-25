@@ -83,8 +83,6 @@ public class Connection extends Element implements IConnection, IPerformance {
 
     private String traceData;
 
-    private INodeConnector sourceNodeConnector;
-
     private String connectorName;
 
     private ConnectionPerformance performance;
@@ -162,7 +160,6 @@ public class Connection extends Element implements IConnection, IPerformance {
             performance = new ParallelConnectionPerformance(this);
         }
 
-        sourceNodeConnector = source.getConnectorFromName(connectorName);
         this.connectorName = connectorName;
         this.lineStyle = lineStyle;
         this.metaName = metaName;
@@ -366,7 +363,8 @@ public class Connection extends Element implements IConnection, IPerformance {
             }
 
             if (source != null && lineStyle.hasConnectionCategory(IConnectionCategory.FLOW)) {
-                if (sourceNodeConnector.isMultiSchema()) {
+                // see the bug "6397",the different NodeConnector's instances produce the link's missing.
+                if (getSourceNodeConnector().isMultiSchema()) {
                     IMetadataTable table = getMetadataTable();
                     table.setTableName(name);
                     metaName = name;
@@ -404,18 +402,18 @@ public class Connection extends Element implements IConnection, IPerformance {
             if (outputId >= 0) {
                 labelText += " (" + metaName + ", order:" + outputId + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             } else {
-                labelText += " (" + sourceNodeConnector.getLinkName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+                labelText += " (" + getSourceNodeConnector().getLinkName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
             }
             updateName = true;
         } else if (getLineStyle().equals(EConnectionType.FLOW_MAIN) || getLineStyle().equals(EConnectionType.FLOW_REF)) {
-            if (sourceNodeConnector.getDefaultConnectionType().equals(getLineStyle())) { // if it's the standard
+            if (getSourceNodeConnector().getDefaultConnectionType().equals(getLineStyle())) { // if it's the standard
                 // link
                 if (outputId >= 0) {
-                    labelText += " (" + sourceNodeConnector.getLinkName() + " order:" + outputId + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    labelText += " (" + getSourceNodeConnector().getLinkName() + " order:" + outputId + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 } else {
-                    labelText += " (" + sourceNodeConnector.getLinkName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+                    labelText += " (" + getSourceNodeConnector().getLinkName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
                 }
-            } else if (sourceNodeConnector.getName().equals(EConnectionType.FLOW_MAIN.getName())) {
+            } else if (getSourceNodeConnector().getName().equals(EConnectionType.FLOW_MAIN.getName())) {
                 // link
                 if (outputId >= 0) {
                     labelText += " (" + getLineStyle().getDefaultLinkName() + " order:" + outputId + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -424,10 +422,10 @@ public class Connection extends Element implements IConnection, IPerformance {
                 }
             } else {
                 if (outputId >= 0) {
-                    labelText += " (" + getLineStyle().getDefaultLinkName() + ", " + sourceNodeConnector.getLinkName() //$NON-NLS-1$ //$NON-NLS-2$
+                    labelText += " (" + getLineStyle().getDefaultLinkName() + ", " + getSourceNodeConnector().getLinkName() //$NON-NLS-1$ //$NON-NLS-2$
                             + " order:" + outputId + ")"; //$NON-NLS-1$ //$NON-NLS-2$
                 } else {
-                    labelText += " (" + getLineStyle().getDefaultLinkName() + ", " + sourceNodeConnector.getLinkName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    labelText += " (" + getLineStyle().getDefaultLinkName() + ", " + getSourceNodeConnector().getLinkName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 }
             }
             updateName = true;
@@ -439,16 +437,16 @@ public class Connection extends Element implements IConnection, IPerformance {
                 labelText += " (" + getLineStyle().getDefaultLinkName() + " order:" + inputId + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             }
             updateName = true;
-        } else if (getLineStyle().equals(EConnectionType.RUN_IF) && (!sourceNodeConnector.getLinkName().equals(name))) {
+        } else if (getLineStyle().equals(EConnectionType.RUN_IF) && (!getSourceNodeConnector().getLinkName().equals(name))) {
             // if "RunIf" got a custom name
-            labelText = sourceNodeConnector.getLinkName() + " (" + name + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+            labelText = getSourceNodeConnector().getLinkName() + " (" + name + ")"; //$NON-NLS-1$ //$NON-NLS-2$
             updateName = true;
         } else if (getLineStyle().equals(EConnectionType.ITERATE)) {
             IElementParameter enableParam = this.getElementParameter(ENABLE_PARALLEL);
             IElementParameter numberParam = this.getElementParameter(NUMBER_PARALLEL);
             // for feature 4505
             boolean special = (outputId >= 0);
-            String linkName = sourceNodeConnector.getLinkName();
+            String linkName = getSourceNodeConnector().getLinkName();
             if (getUniqueName() != null && special) {
                 linkName = getUniqueName();
             }
@@ -561,7 +559,7 @@ public class Connection extends Element implements IConnection, IPerformance {
                     uniqueName = source.getProcess().generateUniqueConnectionName(lineStyle.getDefaultLinkName());
                 }
             }
-            if ((lineStyle.equals(EConnectionType.TABLE) && sourceNodeConnector.isMultiSchema())
+            if ((lineStyle.equals(EConnectionType.TABLE) && getSourceNodeConnector().isMultiSchema())
                     || lineStyle.hasConnectionCategory(IConnectionCategory.UNIQUE_NAME)) {
                 if (source.getProcess().checkValidConnectionName(uniqueName)) {
                     source.getProcess().addUniqueConnectionName(uniqueName);
@@ -587,7 +585,7 @@ public class Connection extends Element implements IConnection, IPerformance {
      */
     public void disconnect() {
         if (isConnected) {
-            if (!sourceNodeConnector.isMultiSchema()) {
+            if (!getSourceNodeConnector().isMultiSchema()) {
                 if (lineStyle.hasConnectionCategory(IConnectionCategory.CUSTOM_NAME)
                         || isInTypes(lineStyle, EConnectionType.ITERATE, EConnectionType.ON_COMPONENT_OK,
                                 EConnectionType.ON_COMPONENT_ERROR, EConnectionType.ON_SUBJOB_OK,
@@ -621,7 +619,6 @@ public class Connection extends Element implements IConnection, IPerformance {
         this.source = newSource;
         this.target = newTarget;
         this.lineStyle = newLineStyle;
-        sourceNodeConnector = source.getConnectorFromName(connectorName);
 
         if ((lineStyle == EConnectionType.SYNCHRONIZE) || (lineStyle == EConnectionType.PARALLELIZE)) {
             ((Process) source.getProcess()).setPropertyValue(EParameterName.MULTI_THREAD_EXECATION.getName(), Boolean.TRUE);
@@ -708,10 +705,10 @@ public class Connection extends Element implements IConnection, IPerformance {
      */
     public IMetadataTable getMetadataTable() {
         if (source != null && this.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-            if (sourceNodeConnector.isMultiSchema()) {
+            if (getSourceNodeConnector().isMultiSchema()) {
                 return source.getMetadataTable(metaName);
             } else {
-                return source.getMetadataFromConnector(sourceNodeConnector.getName());
+                return source.getMetadataFromConnector(getSourceNodeConnector().getName());
             }
         }
         return null;
@@ -881,7 +878,7 @@ public class Connection extends Element implements IConnection, IPerformance {
      * @return the nodeConnector
      */
     public INodeConnector getSourceNodeConnector() {
-        return sourceNodeConnector;
+        return source.getConnectorFromName(connectorName);
     }
 
     public INodeConnector getTargetNodeConnector() {
@@ -909,7 +906,6 @@ public class Connection extends Element implements IConnection, IPerformance {
      */
     public void setConnectorName(String connectorName) {
         this.connectorName = connectorName;
-        sourceNodeConnector = source.getConnectorFromName(connectorName);
         updateName();
         firePropertyChange(LINESTYLE_PROP, null, connectorName);
     }
