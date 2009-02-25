@@ -139,7 +139,9 @@ public class LDAPSchemaStep4Form extends AbstractLDAPSchemaStepForm {
         Composite compositeTable = Form.startNewDimensionnedGridLayout(compositeMetaData, 1, WIDTH_GRIDDATA_PIXEL, 200);
         compositeTable.setLayout(new FillLayout());
         metadataEditor = new MetadataEmfTableEditor(Messages.getString("FileStep3.metadataDescription")); //$NON-NLS-1$
-        tableEditorView = new MetadataEmfTableEditorView(compositeTable, SWT.NONE);
+        tableEditorView = new MetadataEmfTableEditorView(compositeTable, SWT.NONE, false);
+        tableEditorView.setShowDbColumnName(true, true);
+        tableEditorView.initGraphicComponents();
 
         if (!isInWizard()) {
             // Bottom Button
@@ -392,10 +394,12 @@ public class LDAPSchemaStep4Form extends AbstractLDAPSchemaStepForm {
 
             // the first rows is used to define the label of any metadata
             String[] label = new String[numberOfCol.intValue()];
+            String[] originalName = new String[numberOfCol.intValue()];
             for (int i = 0; i < numberOfCol; i++) {
                 label[i] = DEFAULT_LABEL + i; //$NON-NLS-1$
                 if (firstRowToExtractMetadata == 0) {
-                    label[i] = "" + processDescription.getSchema().get(0).getListColumns().get(i); //$NON-NLS-1$
+                    label[i] = processDescription.getSchema().get(0).getListColumns().get(i).getLabel();
+                    originalName[i] = processDescription.getSchema().get(0).getListColumns().get(i).getOriginalDbColumnName();
                 }
             }
 
@@ -513,6 +517,7 @@ public class LDAPSchemaStep4Form extends AbstractLDAPSchemaStepForm {
                 }
                 // Check the label and add it to the table
                 metadataColumn.setLabel(tableEditorView.getMetadataEditor().getNextGeneratedColumnName(label[i]));
+                metadataColumn.setOriginalField(originalName[i]);
                 columns.add(i, metadataColumn);
             }
         }
