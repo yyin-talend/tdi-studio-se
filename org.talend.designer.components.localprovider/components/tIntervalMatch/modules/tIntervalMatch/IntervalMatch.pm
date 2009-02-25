@@ -15,7 +15,6 @@ sub search {
 
     my $i = 0;
     while(1) {
-        
         $bCurrent = $bInf + int (($bSup - $bInf) / 2);
         if ($searched > ${params{lookup_inf}}->[$bCurrent]) {
             $bInf = $bCurrent;
@@ -31,8 +30,10 @@ sub search {
 
         # found
         if( $searched >= ${params{lookup_inf}}->[$bInf] and $searched < ${params{lookup_inf}}->[$bInf+1] ){
-            $result = $bInf ;
-            last ;
+            if ($searched <= ${params{lookup_sup}}->[$bInf]) {
+                $result = $bInf ;
+                last ;
+            }
         }
 
         # found
