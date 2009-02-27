@@ -19,7 +19,8 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 
 String cid = node.getUniqueName();
-        
+
+
 //List<Map<String, String>> mapping = (List<Map<String,String>>)ElementParameterParser.getObjectValueXML(node, "__MAPPING__");
 String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
 //String loopQuery = ElementParameterParser.getValue(node, "__LOOP_QUERY__"); 
@@ -36,28 +37,56 @@ String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__D
 
 //=============================add by wliu==================================================================
 class ConnectNode{
-	public List<Map<String,String>> mapping=null;
-	public boolean isChecked=false;
+	public List<Map<String,String>> mapping=new java.util.ArrayList<Map<String,String>>();
 	public String loopPath=null;
-	public char strConnCtgr;
+	public String strConnCtgr;
 	public boolean hasEmptyRow;
 }
 List<Map<String, String>> map=null;
 List<List<Map<String, String>>> listMapping = new java.util.ArrayList<List<Map<String, String>>>();
 
 List<ConnectNode> listSchemaNodes= new java.util.ArrayList<ConnectNode>();
-for(int i='A';i<'P';i++){
-	boolean isChecked = ElementParameterParser.getValue(node, "__HAS_SCHEMA_"+(char)i+"__").equals("true");
-	if(isChecked){
-		ConnectNode connectNode = new ConnectNode();
-		connectNode.strConnCtgr = (char)i;
-		connectNode.hasEmptyRow=ElementParameterParser.getValue(node, "__CREATE_EMPTY_ROW_" + (char)i + "__").equals("true");
-		connectNode.mapping=(List<Map<String,String>>)ElementParameterParser.getObjectValueXML(node, "__MAPPING_"+ (char)i + "__");
-		connectNode.loopPath = ElementParameterParser.getValue(node, "__LOOP_PATH_"+ (char)i + "__");
-		listSchemaNodes.add(connectNode);
-	}
+
+			List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
+			List<IConnection> connections = new java.util.ArrayList<IConnection>();
+			if (conns!=null && conns.size()>0) {
+				
+				for(int i=0;i<conns.size();i++){
+					IConnection connTemp = conns.get(i);
+					if (connTemp.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+						connections.add(connTemp);
+					}
+				}
+				
+				List<Map<String, String>> schemas = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__SCHEMAS__");
+				for(IConnection connection : connections){
+		            for(Map<String, String> schemaMap : schemas){
+		               if(schemaMap.get("SCHEMA").equals(connection.getMetadataTable().getLabel())){
+							ConnectNode connectNode = new ConnectNode();
+							connectNode.strConnCtgr = connection.getUniqueName();
+							connectNode.hasEmptyRow=schemaMap.get("CREATE_EMPTY_ROW").equals("true");
+							connectNode.loopPath=(String)schemaMap.get("LOOP_PATH");
+							String strMapping=(String)schemaMap.get("MAPPING");
+							
+	                        String[] arrXpath = strMapping.split(",");
+	                        int j = 0;
+	                        for (IMetadataColumn column : connection.getMetadataTable().getListColumns()) {
+	                            Map<String, String> tempmap = new java.util.HashMap<String, String>();
+	                            tempmap.put("SCHEMA_COLUMN", column.getLabel());
+	                            tempmap.put("QUERY", arrXpath[j]);
 	
-}
+	                            j++;
+	                            connectNode.mapping.add(tempmap);
+	                        }						
+
+							listSchemaNodes.add(connectNode);
+		                   break;
+		               }
+		            }
+				}				
+				
+			}
+
 
 //=================================end=======================================================================
 %>
@@ -92,7 +121,7 @@ XML_API_<%=cid%> xml_api_<%=strType %>_<%=cid%> = new XML_API_<%=cid%>();
 String[] queryPaths_<%=connNode.strConnCtgr %>_<%=cid%> = new String[]{
 <%
 		boolean first = true;
-		for(Map<String,String> path:connNode.mapping){
+		for(Map<String,String> path : connNode.mapping){
 %>	
 	<%=first?"":","%><%=path.get("QUERY")%>
 <%
@@ -129,21 +158,19 @@ while (
 
 <%
 
-List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
 String firstConnName = "";
 //===========================modify by wliu====================================
-if(conns!=null && conns.size()>0){
+if(connections!=null && connections.size()>0){
 	
 	boolean isMetadata=false;
 
-	for(IConnection conn : conns){
-		if(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
+	for(IConnection conn : connections){
 			
 			List<Map<String, String>> mapping=null;
 			String strType="";
 			boolean hasEmptyRow = false;
 			for(ConnectNode connNode: listSchemaNodes){
-				if(conn.getConnectorName().charAt(0)==connNode.strConnCtgr){
+				if(conn.getUniqueName().equals(connNode.strConnCtgr)){
 					isMetadata=true;
 					mapping=connNode.mapping;
 					strType=connNode.strConnCtgr + "";
@@ -271,7 +298,6 @@ if(conns!=null && conns.size()>0){
 	}
 <%
 			}	//if(metadata!=null)	
-		}	//if(conn.category)
 		
 		isMetadata=false;
 	}	//for(IConnection)
