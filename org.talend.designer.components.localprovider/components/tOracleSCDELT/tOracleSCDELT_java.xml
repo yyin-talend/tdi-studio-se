@@ -153,7 +153,7 @@
 
     <PARAMETER
       NAME="TABLE_SRC"
-      FIELD="DBTABLE"
+      FIELD="TEXT"
       NUM_ROW="100"
       REQUIRED="true"
     >
