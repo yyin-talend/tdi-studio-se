@@ -42,6 +42,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IWorkbenchPart;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.connections.ConnectionPart;
 import org.talend.designer.core.ui.editor.connections.ConnectionTraceEditPart;
@@ -97,7 +98,7 @@ public class FilterTraceColumnAction extends SelectionAction {
 
     @Override
     public void run() {
-        FilterColumnDialog dialog = new FilterColumnDialog(part.getSite().getShell(), connection);
+        FilterColumnDialog dialog = new FilterColumnDialog(new Shell(part.getSite().getShell()), connection);
         dialog.open();
     }
 
@@ -254,6 +255,9 @@ public class FilterTraceColumnAction extends SelectionAction {
                                     checkedElements.contains(bean));
                         }
                     }
+                    // fire property change and refresh
+                    Object value = conn.getPropertyValue(EParameterName.TRACES_CONNECTION_FILTER.getName());
+                    conn.setPropertyValue(EParameterName.TRACES_CONNECTION_FILTER.getName(), value);
                 }
             });
             super.okPressed();

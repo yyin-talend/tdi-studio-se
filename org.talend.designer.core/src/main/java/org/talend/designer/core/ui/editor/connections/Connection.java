@@ -738,6 +738,13 @@ public class Connection extends Element implements IConnection, IPerformance {
         if (EParameterName.TRACES_CONNECTION_ENABLE.getName().equals(id) && value instanceof Boolean) {
             setTraceConnection((Boolean) value);
         }
+        if (EParameterName.TRACES_CONNECTION_FILTER.getName().equals(id)) {
+            if (this.trace != null) {
+                this.trace.setPropertyValue(id, value);
+            }
+            firePropertyChange(id, null, value);
+            setProcessStates();
+        }
         if (id.equals(LINESTYLE_PROP)) {
             // setLineStyle((EConnectionType) value);
             setConnectorName((String) value);
@@ -1073,18 +1080,25 @@ public class Connection extends Element implements IConnection, IPerformance {
     }
 
     public void setTraceConnection(boolean traceConnection) {
-        Object propertyValue = this.getPropertyValue(EParameterName.TRACES_CONNECTION_ENABLE.getName());
+        final String parameterName = EParameterName.TRACES_CONNECTION_ENABLE.getName();
+        Object propertyValue = this.getPropertyValue(parameterName);
 
         if (propertyValue == null || !propertyValue.equals(new Boolean(traceConnection))) {
-            super.setPropertyValue(EParameterName.TRACES_CONNECTION_ENABLE.getName(), traceConnection);
-
-            IProcess process = this.getSource().getProcess();
-            process.setNeedRegenerateCode(true); // generate code again.
-            if (process instanceof IProcess2) {
-                ((IProcess2) process).setProcessModified(true); // generate data node again.
+            super.setPropertyValue(parameterName, traceConnection);
+            if (this.trace != null) {
+                this.trace.setPropertyValue(parameterName, traceConnection);
             }
+            setProcessStates();
 
-            // firePropertyChange(EParameterName.TRACES_CONNECTION_ENABLE.getName(), null, null);
+            firePropertyChange(parameterName, null, traceConnection);
+        }
+    }
+
+    private void setProcessStates() {
+        IProcess process = this.getSource().getProcess();
+        process.setNeedRegenerateCode(true); // generate code again.
+        if (process instanceof IProcess2) {
+            ((IProcess2) process).setProcessModified(true); // generate data node again.
         }
     }
 

@@ -81,10 +81,13 @@ public class ConnectionTrace extends Element {
      * @see org.talend.designer.core.ui.editor.Element#setPropertyValue(java.lang.Object, java.lang.Object)
      */
     public void setPropertyValue(String id, Object value) {
-        connection.setPropertyValue(id, value);
-        if (id.equals(EParameterName.TRACES_SHOW_ENABLE.getName()) && value instanceof Boolean) {
-            refreshTraceIcon((Boolean) value);
+        if (id.equals(EParameterName.TRACES_SHOW_ENABLE.getName())
+                || id.equals(EParameterName.TRACES_CONNECTION_ENABLE.getName())
+                || id.equals(EParameterName.TRACES_CONNECTION_FILTER.getName())) {
+            firePropertyChange(id, null, value);
+            return; // else, it will loop.
         }
+        connection.setPropertyValue(id, value);
     }
 
     /*
