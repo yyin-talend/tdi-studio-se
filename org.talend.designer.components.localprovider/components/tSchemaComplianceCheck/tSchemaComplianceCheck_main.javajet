@@ -239,9 +239,7 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
 %>
 					try{
 
-						java.text.DateFormat df_<%=cid%> = new java.text.SimpleDateFormat(<%=pattern%>);
-						df_<%=cid%>.setLenient(false);
-						df_<%=cid%>.parse(<%=incomingConnName%>.<%=metadataColumn.getLabel()%>);
+						FastDateParser.getInstance(<%=pattern%>, false).parse(<%=incomingConnName%>.<%=metadataColumn.getLabel()%>);						
 
 					} catch(Exception e){
 
