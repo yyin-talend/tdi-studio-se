@@ -42,11 +42,13 @@ import org.eclipse.ui.progress.IProgressService;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IContext;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IPerformance;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.ITargetExecutionConfig;
+import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.runprocess.ProcessMessage.MsgType;
 import org.talend.designer.runprocess.data.PerformanceData;
 import org.talend.designer.runprocess.data.TraceData;
@@ -303,6 +305,7 @@ public class RunProcessContext {
             }
             if (getTracesPort() == IProcessor.NO_TRACES) {
                 showErrorMassage(Messages.getString("RunProcessContext.PortErrorTraces")); //$NON-NLS-1$
+                this.monitorTrace = false;
                 // disable the check.
                 setMonitorTrace(false);
 
@@ -314,6 +317,41 @@ public class RunProcessContext {
     }
 
     /**
+     * 
+     * cLi Comment method "allowMonitorTrace".
+     * 
+     * feature 6355, enable trace.
+     * 
+     * about the variable "monitorTrace", It used for a global trace.
+     */
+    public boolean allowMonitorTrace() {
+        return this.monitorTrace;
+    }
+
+    /**
+     * 
+     * cLi Comment method "checkTraces".
+     * 
+     * feature 6355
+     */
+    private void checkTraces() {
+        // connection settings for traces.
+        boolean found = false;
+        if (this.monitorTrace) {
+            for (IConnection conn : this.getProcess().getAllConnections(null)) {
+                IElementParameter param = conn.getElementParameter(EParameterName.TRACES_CONNECTION_ENABLE.getName());
+                if (param != null && Boolean.TRUE.equals(param.getValue())) {
+                    found = true;
+                    break;
+                }
+            }
+        }
+        if (found) {
+            this.monitorTrace = true;
+        }
+    }
+
+    /**
      * Launch the process.
      */
     public void exec(final Shell shell) {
@@ -321,6 +359,7 @@ public class RunProcessContext {
             org.talend.designer.core.ui.editor.process.Process prs = (org.talend.designer.core.ui.editor.process.Process) process;
             prs.checkDifferenceWithRepository();
         }
+        checkTraces();
         setRunning(true);
 
         if (ProcessContextComposite.promptConfirmLauch(shell, getSelectedContext(), process)) {
@@ -941,8 +980,6 @@ public class RunProcessContext {
                         } else {
                             TraceData traceData = new TraceData(data);
                             String connectionId = traceData.getElementId();
-                            System.out.println(connectionId);
-                            System.out.println(data);
                             final IConnection connection = findConnection(connectionId);
                             if (connection != null) {
                                 Display.getDefault().syncExec(new Runnable() {
@@ -1106,7 +1143,6 @@ public class RunProcessContext {
                             new Thread(perfMonitor, "PerfMonitor_" + process.getLabel()).start(); //$NON-NLS-1$
                         }
                         // findNewTracesPort();
-                        // PTODO
                         if (monitorTrace) {
                             traceMonitor = new TraceMonitor();
                             new Thread(traceMonitor, "TraceMonitor_" + process.getLabel()).start(); //$NON-NLS-1$

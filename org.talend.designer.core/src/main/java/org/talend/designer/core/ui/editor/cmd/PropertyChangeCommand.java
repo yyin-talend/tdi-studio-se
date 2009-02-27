@@ -230,7 +230,7 @@ public class PropertyChangeCommand extends Command {
     private boolean needUpdateMonitorConnection() {
 
         if (elem instanceof Connection) {
-            if (propName.equals(Connection.MONITOR_CONNECTION)) {
+            if (propName.equals(EParameterName.MONITOR_CONNECTION.getName())) {
                 return true;
             }
         }
@@ -347,9 +347,11 @@ public class PropertyChangeCommand extends Command {
             changeMetadataCommand.undo();
         }
         CodeView.refreshCodeView(elem);
+        refreshTraceConnections();
         if (elem instanceof Node) {
             ((Node) elem).checkAndRefreshNode();
         }
+
     }
 
     @Override
@@ -399,8 +401,15 @@ public class PropertyChangeCommand extends Command {
             changeMetadataCommand.redo();
         }
         CodeView.refreshCodeView(elem);
+        refreshTraceConnections();
         if (elem instanceof Node) {
             ((Node) elem).checkAndRefreshNode();
+        }
+    }
+
+    private void refreshTraceConnections() {
+        if (propName.equals(EParameterName.TRACES_CONNECTION_ENABLE.getName()) || this.elem instanceof Connection) {
+            ((Connection) this.elem).getConnectionTrace().setPropertyValue(EParameterName.TRACES_SHOW_ENABLE.getName(), true);
         }
     }
 

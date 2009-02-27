@@ -19,6 +19,7 @@
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
+	String startNodeCid=node.getDesignSubjobStartNode().getUniqueName();
 	ECodePart codePart = codeGenArgument.getCodePart();
 	boolean trace = codeGenArgument.isTrace();
 	boolean stat = codeGenArgument.isStatistics();
@@ -73,7 +74,9 @@ if(!hasParallelIterate){
 <%
 	if (codePart.equals(ECodePart.BEGIN)) {
 %>
-
+<% if(trace){ %>
+globalMap.put("ENABLE_TRACES_CONNECTION_<%=startNodeCid%>",Boolean.FALSE);
+<% } %>
 ok_Hash.put("<%=node.getUniqueName() %>", false);
 start_Hash.put("<%=node.getUniqueName() %>", System.currentTimeMillis());
 <%

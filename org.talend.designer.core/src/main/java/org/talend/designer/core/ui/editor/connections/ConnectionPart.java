@@ -171,35 +171,31 @@ public class ConnectionPart extends AbstractConnectionEditPart implements Proper
      */
     public void propertyChange(final PropertyChangeEvent event) {
         String property = event.getPropertyName();
+        ConnectionFigure connectionFigure = (ConnectionFigure) figure;
         if (Connection.LINESTYLE_PROP.equals(property)) {
-            ((ConnectionFigure) figure).setConnectionProperty(((Connection) getModel()).getSourceNodeConnector()
-                    .getConnectionProperty(((Connection) getModel()).getLineStyle()));
+            connectionFigure.setConnectionProperty(((Connection) getModel()).getSourceNodeConnector().getConnectionProperty(
+                    ((Connection) getModel()).getLineStyle()));
             refreshChildren();
         }
         if (Connection.NAME.equals(property)) {
             refreshChildren();
         }
 
-        if (Connection.MONITOR_CONNECTION.equals(property)) {
-            ((ConnectionFigure) figure).repaint();
+        if (EParameterName.MONITOR_CONNECTION.getName().equals(property)) {
+            connectionFigure.repaint();
             refreshChildren();
         }
 
         if (property.equals(EParameterName.ACTIVATE.getName())) {
             if (((Connection) getModel()).isActivate()) {
-                ((ConnectionFigure) figure).setAlpha(-1);
-                ((ConnectionFigure) figure).repaint();
+                connectionFigure.setAlpha(-1);
+                connectionFigure.repaint();
                 refreshVisuals();
             } else {
-                ((ConnectionFigure) figure).setAlpha(Connection.ALPHA_VALUE);
-                ((ConnectionFigure) figure).repaint();
+                connectionFigure.setAlpha(Connection.ALPHA_VALUE);
+                connectionFigure.repaint();
                 refreshVisuals();
             }
-        }
-
-        if (Connection.MONITOR_CONNECTION.equals(property)) {
-            ((ConnectionFigure) figure).repaint();
-            refreshVisuals();
         }
 
     }

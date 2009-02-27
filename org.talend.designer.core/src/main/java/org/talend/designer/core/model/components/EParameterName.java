@@ -88,24 +88,28 @@ public enum EParameterName {
     SUBJOB_DISPLAYED("DISPLAY_SUBJOB"), //$NON-NLS-1$  Hidden parameter so no translation needed
     SHOW_SUBJOB_TITLE(Messages.getString("EParameterName.showSubjob")), //$NON-NLS-1$
     SUBJOB_TITLE(Messages.getString("EParameterName.title")), //$NON-NLS-1$
-    SUBJOB_TITLE_COLOR("Title color"), //$NON-NLS-1$
-    SUBJOB_COLOR("Subjob color"), //$NON-NLS-1$
+    SUBJOB_TITLE_COLOR(Messages.getString("EParameterName.SubjobTitleColor")), //$NON-NLS-1$
+    SUBJOB_COLOR(Messages.getString("EParameterName.SubjobColor")), //$NON-NLS-1$
     SQLPATTERN_DB_NAME("SQL Template DB"), //$NON-NLS-1$
     SQLPATTERN_VALUE("SQL Template"), //$NON-NLS-1$
-    NOTE_COLOR("Note color"), //$NON-NLS-1$
-    NOTETXT_COLOR("Font color"), //$NON-NLS-1$
-    NOTETXT_LEFT("left"), //$NON-NLS-1$
-    NOTETXT_RIGHT("right"), //$NON-NLS-1$
-    NOTETXT_CENTER("center"), //$NON-NLS-1$
-    NOTETXT_TOP("top"), //$NON-NLS-1$
-    NOTETXT_BOTTOM("bottom"), //$NON-NLS-1$
-    NOTELABEL_CENTER("center"), //$NON-NLS-1$
-    NOTE_FONT("Font"), //$NON-NLS-1$
-    FONT_SIZE("Font Size"), //$NON-NLS-1$
-    FONT_BOLD("Bold"), //$NON-NLS-1$
-    FONT_ITALIC("Italic"), //$NON-NLS-1$
-    NOTE_LINECOLOR("Note Line Color"), //$NON-NLS-1$
+    NOTE_COLOR(Messages.getString("EParameterName.NoteColor")), //$NON-NLS-1$
+    NOTETXT_COLOR(Messages.getString("EParameterName.NoteTextColor")), //$NON-NLS-1$
+    NOTETXT_LEFT(Messages.getString("EParameterName.NoteTextLeft")), //$NON-NLS-1$
+    NOTETXT_RIGHT(Messages.getString("EParameterName.NoteTextRight")), //$NON-NLS-1$
+    NOTETXT_CENTER(Messages.getString("EParameterName.NoteTextCenter")), //$NON-NLS-1$
+    NOTETXT_TOP(Messages.getString("EParameterName.NoteTextTop")), //$NON-NLS-1$
+    NOTETXT_BOTTOM(Messages.getString("EParameterName.NoteTextBottom")), //$NON-NLS-1$
+    NOTELABEL_CENTER(Messages.getString("EParameterName.NoteLabelCenter")), //$NON-NLS-1$
+    NOTE_FONT(Messages.getString("EParameterName.NoteFont")), //$NON-NLS-1$
+    FONT_SIZE(Messages.getString("EParameterName.FontSize")), //$NON-NLS-1$
+    FONT_BOLD(Messages.getString("EParameterName.FontBold")), //$NON-NLS-1$
+    FONT_ITALIC(Messages.getString("EParameterName.FontItalic")), //$NON-NLS-1$
+    NOTE_LINECOLOR(Messages.getString("EParameterName.NoteLineColor")), //$NON-NLS-1$
     SCHEMAS("Schema(s)"), //$NON-NLS-1$
+    MONITOR_CONNECTION(Messages.getString("Connection.monitorConnection")), //$NON-NLS-1$
+    TRACES_CONNECTION_ENABLE(Messages.getString("EParameterName.TracesConnection")), //$NON-NLS-1$
+    TRACES_CONNECTION_FILTER("Filter the traces"), //$NON-NLS-1$ Hidden parameter so no translation needed
+    TRACES_SHOW_ENABLE("Traces show"), //$NON-NLS-1$ Hidden parameter so no translation needed
     /**
      * For stats & logs parameters.
      */

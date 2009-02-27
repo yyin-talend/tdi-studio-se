@@ -203,4 +203,12 @@ public class RunProcessService implements IRunProcessService {
     public IAction getRunProcessAction() {
         return new RunProcessAction();
     }
+
+    public boolean enableTraceForActiveRunProcess() {
+        RunProcessContext activeContext = RunProcessPlugin.getDefault().getRunProcessContextManager().getActiveContext();
+        if (activeContext != null) {
+            return activeContext.isMonitorTrace();
+        }
+        return false;
+    }
 }

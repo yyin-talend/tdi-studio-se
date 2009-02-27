@@ -18,6 +18,7 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.designer.core.model.components.EParameterName;
 
 /**
  * Label object of a connection. This is the model part of the Gef item. <br/>
@@ -69,6 +70,11 @@ public class ConnectionTrace extends Element {
         return connection;
     }
 
+    private void refreshTraceIcon(boolean traceFlag) {
+        super.setPropertyValue(EParameterName.TRACES_SHOW_ENABLE.getName(), traceFlag); // maybe, not used.
+        firePropertyChange(EParameterName.TRACES_SHOW_ENABLE.getName(), null, traceFlag);
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -76,6 +82,9 @@ public class ConnectionTrace extends Element {
      */
     public void setPropertyValue(String id, Object value) {
         connection.setPropertyValue(id, value);
+        if (id.equals(EParameterName.TRACES_SHOW_ENABLE.getName()) && value instanceof Boolean) {
+            refreshTraceIcon((Boolean) value);
+        }
     }
 
     /*

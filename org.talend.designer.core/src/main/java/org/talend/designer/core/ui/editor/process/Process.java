@@ -1861,7 +1861,7 @@ public class Process extends Element implements IProcess2 {
         for (int i = 0, size = params.size(); i < size; i++) {
             ElementParameterType param = (ElementParameterType) params.get(i);
             if (param != null) {
-                if (param.getName().equals(Connection.MONITOR_CONNECTION)) {
+                if (param.getName().equals(EParameterName.MONITOR_CONNECTION.getName())) {
                     return Boolean.valueOf(param.getValue());
                 }
             }

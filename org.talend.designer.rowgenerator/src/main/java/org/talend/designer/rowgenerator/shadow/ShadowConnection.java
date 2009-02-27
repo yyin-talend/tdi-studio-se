@@ -21,7 +21,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 
 /**
- *  qzhang class global comment. Detailled comment <br/>
+ * qzhang class global comment. Detailled comment <br/>
  * 
  * $Id: ShadowConnection.java,v 1.1 2007/02/02 06:21:07 pub Exp $
  * 
@@ -139,12 +139,10 @@ public class ShadowConnection implements IConnection {
     }
 
     public boolean isReadOnly() {
-        // TODO Auto-generated method stub
         return false;
     }
 
     public void setReadOnly(boolean readOnly) {
-        // TODO Auto-generated method stub
 
     }
 
@@ -153,12 +151,10 @@ public class ShadowConnection implements IConnection {
     }
 
     public IElementParameter getElementParameter(String name) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public String getConnectorName() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -173,4 +169,17 @@ public class ShadowConnection implements IConnection {
     public List<? extends IElementParameter> getElementParametersWithChildrens() {
         return getElementParameters();
     }
+
+    public List<String> getEnabledTraceColumns() {
+        return null;
+    }
+
+    public String getTracesCondition() {
+        return null;
+    }
+
+    public boolean isTraceConnection() {
+        return false;
+    }
+
 }

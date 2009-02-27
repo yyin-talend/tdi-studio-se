@@ -180,7 +180,7 @@ public class DataProcess {
             if (!connection.isActivate()) {
                 continue;
             }
-            IElementParameter monitorParam = connection.getElementParameter("MONITOR_CONNECTION"); //$NON-NLS-1$
+            IElementParameter monitorParam = connection.getElementParameter(EParameterName.MONITOR_CONNECTION.getName()); //$NON-NLS-1$
             if (monitorParam != null && (!connection.getLineStyle().equals(EConnectionType.FLOW_REF))
                     && ((Boolean) monitorParam.getValue())) {
                 addvFlowMeterBetween(dataNode, buildDataNodeFromNode((Node) connection.getTarget(), prefix), connection,
@@ -189,6 +189,9 @@ public class DataProcess {
                 dataConnec = new DataConnection();
                 dataConnec.setActivate(connection.isActivate());
                 dataConnec.setLineStyle(connection.getLineStyle());
+                dataConnec.setTraceConnection(connection.isTraceConnection());
+                dataConnec.setTracesCondition(connection.getTracesCondition());
+                dataConnec.setEnabledTraceColumns(connection.getEnabledTraceColumns());
                 if ((connection.getLineStyle().hasConnectionCategory(IConnectionCategory.EXECUTION_ORDER))
                         && (connection.getTarget().getMetadataList().size() > 0)) {
                     dataConnec.setMetadataTable(connection.getTarget().getMetadataList().get(0));
@@ -264,6 +267,7 @@ public class DataProcess {
         return buildDataNodeFromNode(graphicalNode, null);
     }
 
+    @SuppressWarnings("unchecked")
     private INode addvFlowMeterBetween(INode sourceNode, INode targetNode, IConnection connection, IProcess process,
             List<? extends IElementParameter> parameters) {
         // from current node to vFlowMeter node.
@@ -274,6 +278,9 @@ public class DataProcess {
         } else {
             dataConnec.setLineStyle(connection.getLineStyle());
         }
+        dataConnec.setTraceConnection(connection.isTraceConnection());
+        dataConnec.setTracesCondition(connection.getTracesCondition());
+        dataConnec.setEnabledTraceColumns(connection.getEnabledTraceColumns());
         dataConnec.setMetadataTable(connection.getMetadataTable());
         dataConnec.setName(connection.getName());
         dataConnec.setUniqueName(connection.getUniqueName());
@@ -302,6 +309,9 @@ public class DataProcess {
         dataConnec = new DataConnection();
         dataConnec.setActivate(connection.isActivate());
         dataConnec.setLineStyle(connection.getLineStyle());
+        dataConnec.setTraceConnection(connection.isTraceConnection());
+        dataConnec.setTracesCondition(connection.getTracesCondition());
+        dataConnec.setEnabledTraceColumns(connection.getEnabledTraceColumns());
         dataConnec.setMetadataTable(meterNode.getMetadataList().get(0));
         dataConnec.setName(connection.getName());
         dataConnec.setUniqueName("meterRow" + connection.getUniqueName()); //$NON-NLS-1$
@@ -317,7 +327,7 @@ public class DataProcess {
     }
 
     /**
-     * DOC nrousseau Comment method "addMultipleNode".
+     * nrousseau Comment method "addMultipleNode".
      * 
      * @param graphicalNode
      * @param multipleComponentManager
@@ -390,13 +400,14 @@ public class DataProcess {
     }
 
     /**
-     * DOC nrousseau Comment method "addAllMultipleComponentConnections".
+     * nrousseau Comment method "addAllMultipleComponentConnections".
      * 
      * @param itemsMap
      * @param multipleComponentManager
      * @param graphicalNode
      * @param dataNode
      */
+    @SuppressWarnings("unchecked")
     private void addAllMultipleComponentConnections(Map<IMultipleComponentItem, AbstractNode> itemsMap,
             IMultipleComponentManager multipleComponentManager, INode graphicalNode, AbstractNode dataNode, INode previousNode) {
         List<IConnection> incomingConnections, outgoingConnections;
@@ -503,7 +514,7 @@ public class DataProcess {
     }
 
     /**
-     * DOC nrousseau Comment method "prepareAllMultipleComponentNodes".
+     * nrousseau Comment method "prepareAllMultipleComponentNodes".
      * 
      * @param itemsMap
      * @param multipleComponentManager
@@ -607,7 +618,7 @@ public class DataProcess {
     }
 
     /**
-     * DOC nrousseau Comment method "setMultipleComponentParameters".
+     * nrousseau Comment method "setMultipleComponentParameters".
      * 
      * @param multipleComponentManager
      * @param itemsMap
@@ -755,6 +766,9 @@ public class DataProcess {
                 DataConnection dataConnec = new DataConnection();
                 dataConnec.setActivate(connection.isActivate());
                 dataConnec.setLineStyle(EConnectionType.RUN_AFTER);
+                dataConnec.setTraceConnection(connection.isTraceConnection());
+                dataConnec.setTracesCondition(connection.getTracesCondition());
+                dataConnec.setEnabledTraceColumns(connection.getEnabledTraceColumns());
                 // dataConnec.setLineStyle(EConnectionType.THEN_RUN);
                 if (!subDataNodeStartSource.getMetadataList().isEmpty()) {
                     dataConnec.setMetadataTable(subDataNodeStartSource.getMetadataList().get(0));
@@ -813,13 +827,16 @@ public class DataProcess {
                 dataConnec.setActivate(connection.isActivate());
                 dataConnec.setLineStyle(EConnectionType.FLOW_MAIN);
                 dataConnec.setMetadataTable(newMetadata);
+                dataConnec.setTraceConnection(connection.isTraceConnection());
+                dataConnec.setTracesCondition(connection.getTracesCondition());
+                dataConnec.setEnabledTraceColumns(connection.getEnabledTraceColumns());
                 dataConnec.setName(connection.getName());
                 // dataConnec.setName(refSource.getUniqueName() + "_to_hash_" + connection.getName());
                 dataConnec.setSource(refSource);
                 dataConnec.setTarget(hashNode);
                 dataConnec.setConnectorName(connection.getConnectorName());
 
-                IElementParameter monitorParam = connection.getElementParameter("MONITOR_CONNECTION"); //$NON-NLS-1$
+                IElementParameter monitorParam = connection.getElementParameter(EParameterName.MONITOR_CONNECTION.getName()); //$NON-NLS-1$
                 // if there is a monitor on this connection, then add the vFlowMeter and move the base lookup connection
                 // source from "graphicalNode" to the new meterNode.
                 if (monitorParam != null && ((Boolean) monitorParam.getValue())) {
@@ -856,7 +873,7 @@ public class DataProcess {
     }
 
     /**
-     * DOC nrousseau Comment method "replaceMultipleComponents".
+     * nrousseau Comment method "replaceMultipleComponents".
      * 
      * @param node
      */
@@ -992,10 +1009,11 @@ public class DataProcess {
     }
 
     /**
-     * DOC nrousseau Comment method "checkUseParallelize".
+     * nrousseau Comment method "checkUseParallelize".
      * 
      * @param node
      */
+    @SuppressWarnings("unchecked")
     private void checkUseParallelize(Node graphicalNode) {
         // check if the component can use Parallelize first
         if (!graphicalNode.getComponent().canParallelize()) {
@@ -1080,6 +1098,9 @@ public class DataProcess {
         dataConnec.setActivate(connection.isActivate());
         dataConnec.setLineStyle(EConnectionType.FLOW_MAIN);
         dataConnec.setMetadataTable(newMetadata);
+        dataConnec.setTraceConnection(connection.isTraceConnection());
+        dataConnec.setTracesCondition(connection.getTracesCondition());
+        dataConnec.setEnabledTraceColumns(connection.getEnabledTraceColumns());
         dataConnec.setName("pRow_" + connection.getName()); //$NON-NLS-1$
         dataConnec.setSource(asyncInNode);
         dataConnec.setTarget(refNode);
@@ -1093,6 +1114,7 @@ public class DataProcess {
         dataNodeList.add(asyncOutNode);
     }
 
+    @SuppressWarnings("unchecked")
     public INode buildNodeFromNode(final Node graphicalNode, final Process process) {
         if (buildCheckMap.containsKey(graphicalNode)) {
             return buildCheckMap.get(graphicalNode);
@@ -1132,6 +1154,8 @@ public class DataProcess {
             // outgoingConnections.add(dataConnec);
             // incomingConnections.add(dataConnec);
             copyElementParametersValue(connection, dataConnec);
+            dataConnec.setTraceConnection(connection.isTraceConnection());
+
         }
         newGraphicalNode.setActivate(graphicalNode.isActivate());
 
@@ -1139,14 +1163,14 @@ public class DataProcess {
     }
 
     /**
-     * DOC nrousseau Comment method "buildCopyOfGraphicalNodeList".
+     * nrousseau Comment method "buildCopyOfGraphicalNodeList".
      * 
      * @param graphicalNodeList
      * @return
      */
     private List<Node> buildCopyOfGraphicalNodeList(List<Node> graphicalNodeList) {
         if (graphicalNodeList.size() == 0) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
 
         duplicatedProcess = new Process(process.getProperty());
@@ -1196,7 +1220,7 @@ public class DataProcess {
     }
 
     /**
-     * DOC qzhang Comment method "replaceJoblets".
+     * qzhang Comment method "replaceJoblets".
      * 
      * @param graphicalNodeList
      * @return

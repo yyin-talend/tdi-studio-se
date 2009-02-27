@@ -19,6 +19,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -72,8 +73,12 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.CorePlugin;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.IContext;
+import org.talend.core.model.process.INode;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.debug.JobLaunchShortcutManager;
+import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.ui.editor.connections.Connection;
+import org.talend.designer.core.ui.editor.connections.ConnectionTrace;
 import org.talend.designer.runprocess.IProcessMessage;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.JobErrorsChecker;
@@ -110,7 +115,7 @@ public class ProcessComposite extends Composite {
 
     private static final int MINIMUM_WIDTH = 530;
 
-    private RunProcessContext processContext;
+    private static RunProcessContext processContext;
 
     /** Context composite. */
     private ProcessContextComposite contextComposite;
@@ -514,6 +519,18 @@ public class ProcessComposite extends Composite {
             @Override
             public void widgetSelected(final SelectionEvent e) {
                 processContext.setMonitorTrace(traceBtn.getSelection());
+                org.talend.core.model.process.IProcess process = processContext.getProcess();
+                List<INode> nodeList = (List<INode>) process.getGraphicalNodes();
+                for (INode node : nodeList) {
+                    for (Connection connection : (List<Connection>) node.getOutgoingConnections()) {
+                        ConnectionTrace traceNode = connection.getConnectionTrace();
+                        if (traceNode == null) {
+                            continue;
+                        }
+                        traceNode.setPropertyValue(EParameterName.TRACES_SHOW_ENABLE.getName(), traceBtn.getSelection());
+                    }
+                }
+
             }
         });
 
@@ -1176,7 +1193,7 @@ public class ProcessComposite extends Composite {
         return this.leftTabFolder;
     }
 
-    protected RunProcessContext getProcessContext() {
+    protected static RunProcessContext getProcessContext() {
         return processContext;
     }
 

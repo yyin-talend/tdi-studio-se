@@ -26,6 +26,8 @@ import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.talend.core.model.process.Element;
+import org.talend.core.model.process.IElementParameter;
+import org.talend.designer.core.model.components.EParameterName;
 
 /**
  * EditPart of the NodeTrace.
@@ -115,11 +117,26 @@ public class ConnectionTraceEditPart extends AbstractGraphicalEditPart implement
         ConnectionPart connectionPart;
         connectionPart = (ConnectionPart) getParent();
 
+        Connection conn = (Connection) connectionPart.getModel();
+        IElementParameter element = conn.getElementParameter(EParameterName.TRACES_CONNECTION_ENABLE.getName());
+        Boolean flag = false;
+        if (element != null) {
+            flag = (Boolean) element.getValue();
+        }
+
         ConnectionTraceFigure htmlFigure = (ConnectionTraceFigure) getFigure();
 
         ConnectionTrace connectionTrace = (ConnectionTrace) getModel();
         String trace = connectionTrace.getTrace();
-        htmlFigure.setTraceData(trace);
+        if (trace == null) {
+            Point offset = conn.getConnectionLabel().getOffset();
+            connectionTrace.getOffset().x = offset.x;
+            connectionTrace.getOffset().y = offset.y;
+            this.removeEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE);
+        } else {
+            this.installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, new ConnTextMovePolicy());
+        }
+        htmlFigure.setTraceData(trace, flag, conn.checkTraceShowEnable());
 
         Dimension size = htmlFigure.getPreferredSize();
         connectionTrace.setSize(size);
@@ -141,6 +158,9 @@ public class ConnectionTraceEditPart extends AbstractGraphicalEditPart implement
         String request = evt.getPropertyName();
         if (request.equals("positionChange") || request.equals(ConnectionTrace.TRACE_PROP)) { //$NON-NLS-1$ //$NON-NLS-2$
             refreshVisuals();
+        } else if (request.equals(EParameterName.TRACES_SHOW_ENABLE.getName())) {
+            refreshVisuals();
         }
+
     }
 }

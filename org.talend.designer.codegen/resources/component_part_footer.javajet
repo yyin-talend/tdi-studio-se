@@ -23,6 +23,7 @@
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 IProcess process = node.getProcess();
+String startNodeCid=node.getDesignSubjobStartNode().getUniqueName();
  
 NodesSubTree subTree = (NodesSubTree) codeGenArgument.getSubTree();
 ECodePart codePart = codeGenArgument.getCodePart();
@@ -55,9 +56,16 @@ if((codePart.equals(ECodePart.END))&&(stat)&&connSet.size()>0){
    IMetadataTable metadata = conn.getMetadataTable();
    if (metadata!=null) {
     if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
-     if (trace) {    
-%>
-  if (<%=conn.getName() %> !=null) {
+     if (trace && conn.isTraceConnection()) { 
+        List<String> enableTraceColumns=  conn.getEnabledTraceColumns();
+        if(enableTraceColumns!=null&&!enableTraceColumns.isEmpty()){
+  %>
+  if (<%=conn.getName() %> !=null 
+  <% if(conn.getTracesCondition()!=null){ %>
+    && <%=conn.getTracesCondition()%> 
+  <% } %>
+  ) {
+  globalMap.put("ENABLE_TRACES_CONNECTION_<%=startNodeCid%>",Boolean.TRUE);
   runTrace.isPause();
   if (runTrace.isPause()) {
    while (runTrace.isPause()) {
@@ -68,12 +76,17 @@ if((codePart.equals(ECodePart.END))&&(stat)&&connSet.size()>0){
    // here we dump the line content for trace purpose
    runTrace.sendTrace("<%=conn.getName() %>","<%
          for (IMetadataColumn column : metadata.getListColumns()) {
-   %><%=column.getLabel() %>="+<%=conn.getName() %>.<%=column.getLabel() %>+"|<%
+           if(enableTraceColumns.contains(column.getLabel())){
+   %> <%=column.getLabel() %>="+<%=conn.getName() %>.<%=column.getLabel() %>+"|<%
+           }
          }
 %>");
 	}
+  }else{
+    globalMap.put("ENABLE_TRACES_CONNECTION_<%=startNodeCid%>",Boolean.FALSE);
   }
 <%
+      }
      }
     }
    }

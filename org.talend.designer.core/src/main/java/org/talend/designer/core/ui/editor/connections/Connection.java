@@ -14,11 +14,14 @@ package org.talend.designer.core.ui.editor.connections;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
@@ -30,6 +33,9 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IPerformance;
+import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
+import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
@@ -49,8 +55,6 @@ public class Connection extends Element implements IConnection, IPerformance {
     public static final String NAME = "name"; //$NON-NLS-1$
 
     public static final String LINESTYLE_PROP = "LineStyle"; //$NON-NLS-1$
-
-    public static final String MONITOR_CONNECTION = "MONITOR_CONNECTION"; //$NON-NLS-1$
 
     public static final String ENABLE_PARALLEL = "ENABLE_PARALLEL"; //$NON-NLS-1$
 
@@ -166,6 +170,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         this.monitorConnection = monitorConnection;
         if (lineStyle.hasConnectionCategory(IConnectionCategory.FLOW)) {
             trace = new ConnectionTrace(this);
+            createTraceParamters();
             createMeterParameters((Process) source.getProcess());
         }
         setName(linkName);
@@ -254,19 +259,80 @@ public class Connection extends Element implements IConnection, IPerformance {
         // param.setRequired(false);
         // param.setShow(false);
         // addElementParameter(param);
+        if (lineStyle.hasConnectionCategory(IConnectionCategory.FLOW)) {
+            initTraceParamters();
+        }
+    }
 
+    /**
+     * 
+     * cLi Comment method "createTraceParamters".
+     * 
+     * feature 6355
+     */
+    private void createTraceParamters() {
+        IElementParameter param = new ElementParameter(this);
+        param.setName(EParameterName.TRACES_CONNECTION_ENABLE.getName());
+        param.setDisplayName(EParameterName.TRACES_CONNECTION_ENABLE.getDisplayName());
+        param.setField(EParameterFieldType.CHECK);
+        param.setValue(Boolean.FALSE);
+        param.setCategory(EComponentCategory.ADVANCED);
+        param.setShow(false);
+        param.setNumRow(1);
+        addElementParameter(param);
+
+        param = new ElementParameter(this);
+        param.setName(EParameterName.TRACES_CONNECTION_FILTER.getName());
+        param.setDisplayName(EParameterName.TRACES_CONNECTION_FILTER.getDisplayName());
+        param.setField(EParameterFieldType.TABLE);
+        String[] columns = new String[] { IConnection.TRACE_SCHEMA_COLUMN, IConnection.TRACE_SCHEMA_COLUMN_CHECKED,
+                IConnection.TRACE_SCHEMA_COLUMN_CONDITION };
+        param.setListItemsDisplayCodeName(columns);
+        param.setListItemsDisplayName(columns);
+        param.setListItemsValue(new ElementParameter[0]);
+        param.setValue(new ArrayList<Map<String, Object>>());
+        param.setCategory(EComponentCategory.ADVANCED);
+        param.setShow(false);
+        param.setNumRow(2);
+
+        addElementParameter(param);
+    }
+
+    private void initTraceParamters() {
+        List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
+        IMetadataTable metadataTable = this.getMetadataTable();
+        if (metadataTable != null) {
+            for (IMetadataColumn metaColumn : metadataTable.getListColumns()) {
+                Map<String, Object> line = new HashMap<String, Object>();
+
+                line.put(IConnection.TRACE_SCHEMA_COLUMN, metaColumn.getLabel());
+                line.put(IConnection.TRACE_SCHEMA_COLUMN_CHECKED, true);
+                line.put(IConnection.TRACE_SCHEMA_COLUMN_CONDITION, null);
+
+                values.add(line);
+            }
+        }
+        setPropertyValue(EParameterName.TRACES_CONNECTION_FILTER.getName(), values);
+
+        this.trace.setPropertyValue(EParameterName.TRACES_SHOW_ENABLE.getName(), checkTraceShowEnable());
+    }
+
+    public boolean checkTraceShowEnable() {
+        // enable
+        boolean enabled = DesignerPlugin.getDefault().getRunProcessService().enableTraceForActiveRunProcess();
+        return enabled;
     }
 
     private void createMeterParameters(Process process) {
 
         IElementParameter param = new ElementParameter(this);
-        param.setName(MONITOR_CONNECTION);
-        param.setDisplayName(Messages.getString("Connection.monitorConnection")); //$NON-NLS-1$
+        param.setName(EParameterName.MONITOR_CONNECTION.getName());
+        param.setDisplayName(EParameterName.MONITOR_CONNECTION.getDisplayName());
         param.setField(EParameterFieldType.CHECK);
         param.setValue(monitorConnection);
         param.setCategory(EComponentCategory.ADVANCED);
         param.setShow(true);
-        param.setNumRow(1);
+        param.setNumRow(10);
         addElementParameter(param);
 
         Node meterAttached = new Node(ComponentsFactoryProvider.getInstance().get("tFlowMeter"), process); //$NON-NLS-1$
@@ -292,12 +358,12 @@ public class Connection extends Element implements IConnection, IPerformance {
     }
 
     /**
-     * DOC YeXiaowei Comment method "updateMonitorLabel".
+     * YeXiaowei Comment method "updateMonitorLabel".
      * 
      * @param param
      */
     private void updateMonitorLabel(IElementParameter param) {
-        firePropertyChange(MONITOR_CONNECTION, null, (param.getValue()));
+        firePropertyChange(EParameterName.MONITOR_CONNECTION.getName(), null, (param.getValue()));
     }
 
     @Override
@@ -578,6 +644,7 @@ public class Connection extends Element implements IConnection, IPerformance {
                 }
             }
         }
+
     }
 
     /**
@@ -667,7 +734,10 @@ public class Connection extends Element implements IConnection, IPerformance {
         if (id.equals(EParameterName.ACTIVATE.getName())) {
             setActivate((Boolean) value);
         }
-
+        // feature 6355
+        if (EParameterName.TRACES_CONNECTION_ENABLE.getName().equals(id) && value instanceof Boolean) {
+            setTraceConnection((Boolean) value);
+        }
         if (id.equals(LINESTYLE_PROP)) {
             // setLineStyle((EConnectionType) value);
             setConnectorName((String) value);
@@ -681,6 +751,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         if (id.equals(NUMBER_PARALLEL) || id.equals(ENABLE_PARALLEL) || id.equals(EParameterName.LABEL.getName())) {
             updateName();
         }
+
     }
 
     /*
@@ -945,7 +1016,7 @@ public class Connection extends Element implements IConnection, IPerformance {
                 String absolute = (String) node.getElementParameter("ABSOLUTE").getValue(); //$NON-NLS-1$
                 String reference = (String) node.getElementParameter("CONNECTIONS").getValue(); //$NON-NLS-1$
 
-                if (absolute.equals("false") && reference.equals(this.getUniqueName())) { //$NON-NLS-1$
+                if (absolute.equals(Boolean.FALSE.toString()) && reference.equals(this.getUniqueName())) { //$NON-NLS-1$
                     return true;
                 }
             }
@@ -987,7 +1058,47 @@ public class Connection extends Element implements IConnection, IPerformance {
      */
     public void setMonitorConnection(boolean monitorConnection) {
         this.monitorConnection = monitorConnection;
-        firePropertyChange(MONITOR_CONNECTION, null, name);
+        firePropertyChange(EParameterName.MONITOR_CONNECTION.getName(), null, name);
+    }
+
+    /**
+     * feature 6355
+     */
+    public boolean isTraceConnection() {
+        Object propertyValue = this.getPropertyValue(EParameterName.TRACES_CONNECTION_ENABLE.getName());
+        if (propertyValue != null && propertyValue instanceof Boolean) {
+            return (Boolean) propertyValue;
+        }
+        return false;
+    }
+
+    public void setTraceConnection(boolean traceConnection) {
+        Object propertyValue = this.getPropertyValue(EParameterName.TRACES_CONNECTION_ENABLE.getName());
+
+        if (propertyValue == null || !propertyValue.equals(new Boolean(traceConnection))) {
+            super.setPropertyValue(EParameterName.TRACES_CONNECTION_ENABLE.getName(), traceConnection);
+
+            IProcess process = this.getSource().getProcess();
+            process.setNeedRegenerateCode(true); // generate code again.
+            if (process instanceof IProcess2) {
+                ((IProcess2) process).setProcessModified(true); // generate data node again.
+            }
+
+            // firePropertyChange(EParameterName.TRACES_CONNECTION_ENABLE.getName(), null, null);
+        }
+    }
+
+    public boolean enableTraces() {
+        IElementParameter element = this.getElementParameter(EParameterName.TRACES_CONNECTION_ENABLE.getName());
+        return element != null;
+    }
+
+    public List<String> getEnabledTraceColumns() {
+        return TracesConnectionUtils.getEnabledTraceColumns(this);
+    }
+
+    public String getTracesCondition() {
+        return TracesConnectionUtils.getTracesConditionSet(this);
     }
 
     /**
@@ -1007,4 +1118,5 @@ public class Connection extends Element implements IConnection, IPerformance {
     public void setMonitorLabel(MonitorConnectionLabel monitorLabel) {
         this.monitorLabel = monitorLabel;
     }
+
 }

@@ -218,7 +218,15 @@ public class DefaultRunProcessService implements IRunProcessService {
      * @see org.talend.designer.runprocess.IRunProcessService#getRunProcessAction()
      */
     public IAction getRunProcessAction() {
-        // TODO Auto-generated method stub
         return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IRunProcessService#enableTraceForActiveRunProcess()
+     */
+    public boolean enableTraceForActiveRunProcess() {
+        return false;
     }
 }

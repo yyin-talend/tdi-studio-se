@@ -12,6 +12,9 @@
 // ============================================================================
 package org.talend.designer.core.model.process;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.talend.core.model.process.AbstractConnection;
 
 /**
@@ -21,5 +24,40 @@ import org.talend.core.model.process.AbstractConnection;
  * 
  */
 public class DataConnection extends AbstractConnection {
+
+    /**
+     * feature 6355.
+     */
+    private boolean trace; // trace on connection.
+
+    private String tracesCondition; // if null, all will be enabled for traces.
+
+    private List<String> enabledTraceColumns = new ArrayList<String>();
+
+    public boolean isTraceConnection() {
+        return this.trace;
+    }
+
+    public void setTraceConnection(boolean trace) {
+        this.trace = trace;
+    }
+
+    public void setEnabledTraceColumns(List<String> enabledTraceColumns) {
+        this.enabledTraceColumns = enabledTraceColumns;
+    }
+
+    @Override
+    public List<String> getEnabledTraceColumns() {
+        return this.enabledTraceColumns;
+    }
+
+    public void setTracesCondition(String tracesCondition) {
+        this.tracesCondition = tracesCondition;
+    }
+
+    @Override
+    public String getTracesCondition() {
+        return this.tracesCondition;
+    }
 
 }

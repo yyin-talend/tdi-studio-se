@@ -22,12 +22,17 @@ import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.ImageFigure;
 import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
+import org.talend.commons.ui.image.EImage;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.utils.workbench.gef.SimpleHtmlFigure;
 import org.talend.commons.utils.workbench.preferences.GlobalConstant;
+import org.talend.core.ui.images.ECoreImage;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
@@ -78,7 +83,7 @@ public class ConnectionTraceFigure extends Figure {
         super.paint(graphics);
     }
 
-    public void setTraceData(String data) {
+    public void setTraceData(String data, boolean flag, boolean traceFlag) {
         if (data != null) {
             List childrens = this.getChildren();
             childrens.clear();
@@ -106,15 +111,32 @@ public class ConnectionTraceFigure extends Figure {
             sepIndex = dataWithoutRowName.indexOf(FIELD_SEP);
             String lineNumber = dataWithoutRowName.substring(0, sepIndex);
             SimpleHtmlFigure titleFigure = new SimpleHtmlFigure();
+
             titleFigure.setText(""); //$NON-NLS-1$
             titleFigure.setText("<font color='#0000FF'> <b> " + connection.getConnectionLabel().getLabelText() //$NON-NLS-1$
-                    + "</b></font>            <font color='#808080'>Current row : " + lineNumber + "</font>"); //$NON-NLS-1$ //$NON-NLS-2$
+                    + "</b></font>"); //$NON-NLS-1$ //$NON-NLS-2$
             if (tooltip != null) {
                 titleFigure.setBackgroundColor(ColorConstants.white);
                 titleFigure.setOpaque(false);
             }
             titleFigure.getPreferredSize().expand(20, 2);
+
+            SimpleHtmlFigure titleFigureSe = new SimpleHtmlFigure();
+
+            titleFigureSe.setText(" <font color='#808080'>Current row : " + lineNumber + "</font>"); //$NON-NLS-1$ //$NON-NLS-2$
+            if (tooltip != null) {
+                titleFigureSe.setBackgroundColor(ColorConstants.white);
+                titleFigureSe.setOpaque(false);
+            }
+            titleFigureSe.getPreferredSize().expand(20, 2);
+
             outlineFigure.add(titleFigure);
+
+            ImageFigure figure = new ImageFigure(getTraceConnectionImage(flag));
+            outlineFigure.add(figure);
+
+            outlineFigure.add(titleFigureSe);
+
             outlineFigure.setBorder(new LineBorder(ColorConstants.darkGray, SWT.LEFT | SWT.RIGHT | SWT.TOP | SWT.BOTTOM));
             add(outlineFigure);
 
@@ -257,19 +279,56 @@ public class ConnectionTraceFigure extends Figure {
             if (size.width < titleFigure.getPreferredSize().width) {
                 size.width = titleFigure.getPreferredSize().width;
             }
+            size.width = size.width * 2;
             size.expand(5, 3);
             setPreferredSize(size);
             setVisible(true);
 
         } else {
-            setPreferredSize(0, 0);
-            setVisible(false);
+
+            if (traceFlag) {
+                Image enableImage = getTraceConnectionImage(flag);
+
+                setPreferredSize(enableImage.getImageData().width, enableImage.getImageData().height);
+
+                this.getChildren().clear();
+                ImageFigure figure = new ImageFigure(enableImage);
+                add(figure);
+
+                setVisible(true);
+            } else {
+                setPreferredSize(0, 0);
+                setVisible(false);
+            }
+            tooltip = null;
+
         }
         if (tooltip != null) {
-            tooltip.setTraceData(data);
+            tooltip.setTraceData(data, flag, traceFlag);
         }
         contents = new ArrayList(getChildren());
         refreshCollapseStatus();
+    }
+
+    /**
+     * 
+     * cLi Comment method "getTraceConnectionImage".
+     * 
+     * feature 6355.
+     */
+    private Image getTraceConnectionImage(boolean enable) {
+        Image image = null;
+        if (enable) {
+            if (connection.getTracesCondition() == null) {
+                image = ImageProvider.getImage(ECoreImage.LOCKED_USER_OVERLAY);
+            } else {
+                image = ImageProvider.getImage(EImage.INFORMATION_SMALL);
+            }
+
+        } else {
+            image = ImageProvider.getImage(ECoreImage.LOCKED_OTHER_OVERLAY);
+        }
+        return image;
     }
 
     private List contents = null;
