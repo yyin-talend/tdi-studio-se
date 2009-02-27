@@ -89,6 +89,8 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
 
     private String editorID;
 
+    private Composite parent;
+
     public static ProblemsView show() {
         IViewPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(ID);
         try {
@@ -107,6 +109,7 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
 
     @Override
     public void createPartControl(Composite parent) {
+        this.parent = parent;
         CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().addPropertyChangeListener(this);
         parent.setLayout(new FillLayout());
 
@@ -211,7 +214,8 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
 
     @Override
     public void setFocus() {
-        viewer.getTree().setFocus();
+        // viewer.getTree().setFocus();
+        this.parent.setFocus();
     }
 
     /**

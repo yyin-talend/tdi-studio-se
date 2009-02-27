@@ -79,6 +79,8 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
 
     private Process process;
 
+    private Composite parent;
+
     public JobSettingsView() {
         tabFactory = new HorizontalTabFactory();
         CorePlugin.getDefault().getRepositoryService().addRepositoryTreeViewListener(this);
@@ -87,6 +89,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
     @Override
     public void createPartControl(Composite parent) {
         // tabFactory = new HorizontalTabFactory();
+        this.parent = parent;
         tabFactory.initComposite(parent);
         tabFactory.addSelectionChangedListener(new ISelectionChangedListener() {
 
@@ -393,15 +396,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
 
     @Override
     public void setFocus() {
-        if (selectedPrimary) {
-            if (getViewSite() != null) {
-                getViewSite().getShell().setFocus();
-            }
-        } else {
-            if (tabFactory.getTabComposite() != null) {
-                tabFactory.getTabComposite().setFocus();
-            }
-        }
+        this.parent.setFocus();
     }
 
     /*

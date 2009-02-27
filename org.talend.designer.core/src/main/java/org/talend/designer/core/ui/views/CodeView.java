@@ -87,6 +87,8 @@ public class CodeView extends ViewPart {
 
     public static final String ID = "org.talend.designer.core.codeView"; //$NON-NLS-1$
 
+    private Composite parent;
+
     IAction viewStartAction = new Action() {
 
         @Override
@@ -151,7 +153,8 @@ public class CodeView extends ViewPart {
     }
 
     @Override
-    public void createPartControl(final Composite parent) {
+    public void createPartControl(Composite parent) {
+        this.parent = parent;
         parent.setLayout(new FillLayout());
         ECodeLanguage language = LanguageManager.getCurrentLanguage();
         ISourceViewer viewer;
@@ -288,5 +291,6 @@ public class CodeView extends ViewPart {
      */
     @Override
     public void setFocus() {
+        this.parent.setFocus();
     }
 }

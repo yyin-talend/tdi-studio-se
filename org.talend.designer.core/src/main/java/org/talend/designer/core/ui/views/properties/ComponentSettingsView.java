@@ -370,16 +370,7 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
      */
     @Override
     public void setFocus() {
-        // if (selectedPrimary) {
-        // if (getViewSite() != null) {
-        // getViewSite().getShell().setFocus();
-        // }
-        // } else {
-        // if (tabFactory.getTabComposite() != null) {
-        // tabFactory.getTabComposite().setFocus();
-        // }
-        // }
-        return;
+        this.parent.setFocus();
     }
 
     public boolean isCleaned() {
