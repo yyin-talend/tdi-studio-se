@@ -43,6 +43,7 @@ import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.designerproperties.ComponentToRepositoryProperty;
 import org.talend.core.model.migration.IMigrationToolService;
+import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.ConnectionItem;
@@ -498,8 +499,9 @@ public class RepositoryService implements IRepositoryService {
      * @seeorg.talend.repository.model.IRepositoryService#openRepositoryReviewDialog(org.talend.core.model.repository.
      * ERepositoryObjectType, java.lang.String)
      */
-    public void openRepositoryReviewDialog(ERepositoryObjectType type, String repositoryType, List<IContextParameter> params) {
-        ContextRepositoryReviewDialog dialog = new ContextRepositoryReviewDialog(new Shell(), type, params);
+    public void openRepositoryReviewDialog(ERepositoryObjectType type, String repositoryType, List<IContextParameter> params,
+            IContextManager contextManager) {
+        ContextRepositoryReviewDialog dialog = new ContextRepositoryReviewDialog(new Shell(), type, params, contextManager);
         dialog.open();
     }
 

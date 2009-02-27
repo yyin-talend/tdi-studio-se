@@ -189,7 +189,6 @@ public class GuessSchemaProcess {
         IProcessor processor = ProcessorUtilities.getProcessor(process);
         processor.setContext(selectContext);
         File previousFile = temppath.toFile();
-
         if (previousFile.exists()) {
             previousFile.delete();
         }

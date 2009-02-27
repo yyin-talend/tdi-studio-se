@@ -41,11 +41,14 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.context.JobContextManager;
+import org.talend.core.model.process.IContext;
+import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
@@ -67,6 +70,9 @@ import org.talend.repository.ui.views.IRepositoryView;
  */
 public class ContextRepositoryReviewDialog extends RepositoryReviewDialog {
 
+    // added by hyWang
+    private IContextManager contextManager;
+
     private final List<IContextParameter> params;
 
     private Text contextNameText;
@@ -75,15 +81,21 @@ public class ContextRepositoryReviewDialog extends RepositoryReviewDialog {
 
     private String msg = org.talend.core.i18n.Messages.getString("PropertiesWizardPage.NameFormatError"); //$NON-NLS-1$
 
+    private String title = Messages.getString("ContextRepositoryReviewDialog.conflictError"); //$NON-NLS-1$
+
+    private String errorMsg = Messages.getString("ContextRepositoryReviewDialog.contextSameNameError"); //$NON-NLS-1$
+
     /**
      * DOC xye ContextRepositoryReviewDialog constructor comment.
      * 
      * @param parentShell
      * @param type
      */
-    public ContextRepositoryReviewDialog(Shell parentShell, ERepositoryObjectType type, final List<IContextParameter> params) {
+    public ContextRepositoryReviewDialog(Shell parentShell, ERepositoryObjectType type, final List<IContextParameter> params,
+            IContextManager contextManager) {
         super(parentShell, type);
         this.params = params;
+        this.contextManager = contextManager;
     }
 
     /*
@@ -142,6 +154,7 @@ public class ContextRepositoryReviewDialog extends RepositoryReviewDialog {
 
         ContextItem item = null;
 
+        ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         if (createNewButton.getSelection()) {
             if (nameInvalid(contextNameText)) {
                 MessageDialog.openError(getShell(), "Context", msg); //$NON-NLS-1$
@@ -154,12 +167,14 @@ public class ContextRepositoryReviewDialog extends RepositoryReviewDialog {
                 createProperty.setVersion(VersionUtils.DEFAULT_VERSION);
                 createProperty.setStatusCode(""); //$NON-NLS-1$
                 try {
-                    ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
                     String nextId = factory.getNextId();
                     createProperty.setId(nextId);
                     item.setProperty(createProperty);
-                    JobContextManager contextManager = new JobContextManager();
-                    contextManager.saveToEmf(item.getContext());
+                    for (IContext context : contextManager.getListContext()) {
+                        ContextType contextType = TalendFileFactory.eINSTANCE.createContextType();
+                        contextType.setName(context.getName());
+                        item.getContext().add(contextType);
+                    }
                     item.setDefaultContext(contextManager.getDefaultContext().getName());
                     item.getProperty().setLabel(contextNameText.getText().trim());
                     IRepositoryService service = (IRepositoryService) GlobalServiceRegister.getDefault().getService(
@@ -186,39 +201,101 @@ public class ContextRepositoryReviewDialog extends RepositoryReviewDialog {
         } else {
             IStructuredSelection selection = (IStructuredSelection) repositoryView.getViewer().getSelection();
             RepositoryNode context = (RepositoryNode) selection.getFirstElement();
-            item = (ContextItem) context.getObject().getProperty().getItem();
+            try { // get the item from file
+                IRepositoryObject contextObj = factory.getLastVersion(context.getObject().getProperty().getId());
+                item = (ContextItem) contextObj.getProperty().getItem();
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+                super.okPressed();
+            }
         }
+
+        IContext jobDefaultContext = contextManager.getDefaultContext(); // get default context from job
+        List<IContext> jobContextlist = contextManager.getListContext(); // get all context from job
+        List<String> jobContextNames = getJobContextGroupNames(jobContextlist);
 
         EList contextList = item.getContext();
-        if (contextList.isEmpty()) {
-            ContextType contextType = TalendFileFactory.eINSTANCE.createContextType();
-            contextList.add(contextType);
-        }
 
-        ContextType type = (ContextType) contextList.get(0);
-        if (type == null) {
-            super.okPressed();
-        }
+        // if (contextList.isEmpty()) {
+        // ContextType contextType = TalendFileFactory.eINSTANCE.createContextType();
+        // contextList.add(contextType);
+        // }
+        boolean conflictflag = false;
 
-        // Update some parameters
-        EList contextParameters = type.getContextParameter();
-        List<IContextParameter> updateParams = new ArrayList<IContextParameter>();
-        for (int i = 0, n = contextParameters.size(); i < n; i++) {
-            ContextParameterType parameter = (ContextParameterType) contextParameters.get(i);
-            for (IContextParameter param : params) {
-                if (parameter.getName().equals(param.getName())) {
-                    copyContextParameter(item, contextParameters, parameter, param);
-                    updateParams.add(param);
+        JobContextManager itemManager = new JobContextManager();
+        itemManager.loadFromEmf(contextList, item.getDefaultContext());
+        // this loop is used to get all context groups
+        for (int i = 0, n = contextList.size(); i < n; i++) {
+            ContextType type = (ContextType) contextList.get(i);
+            if (type == null) {
+                super.okPressed();
+            }
+            EList contextParameters = type.getContextParameter(); // parameters from current contextType
+            List<IContextParameter> allParameters = getAllExistContextParameters(contextParameters, params);
+            // find one same context group,this group will get the
+            // values from the same group of designer
+            if (jobContextNames.contains(type.getName())) {
+                int index = jobContextNames.indexOf(type.getName());
+                IContext currentContext = jobContextlist.get(index);
+                for (IContextParameter param : params) {
+                    if (!allParameters.contains(param)) {
+                        IContextParameter selectedParam = currentContext.getContextParameter(param.getName());
+                        ContextParameterType parameter = TalendFileFactory.eINSTANCE.createContextParameterType();
+                        copyContextParameter(item, contextParameters, parameter, selectedParam);
+                    } else {
+                        for (int k = 0; k < contextParameters.size(); k++) {
+                            ContextParameterType parameter = (ContextParameterType) contextParameters.get(k);
+                            if (parameter.getName().equals(param.getName())) {
+                                conflictflag = true;
+                                break;
+                            }
+                        }
+
+                    }
+                }
+                // this group will get the vaules from default group of designer
+            } else if (!jobContextNames.contains(type.getName()) && type.getName() != null) {
+                for (IContextParameter param : params) {
+                    if (!allParameters.contains(param)) {
+                        IContextParameter selectedParam = jobDefaultContext.getContextParameter(param.getName());
+                        ContextParameterType parameter = TalendFileFactory.eINSTANCE.createContextParameterType();
+                        copyContextParameter(item, contextParameters, parameter, selectedParam);
+                    } else {
+                        for (int k = 0; k < contextParameters.size(); k++) {
+                            ContextParameterType parameter = (ContextParameterType) contextParameters.get(k);
+                            if (parameter.getName().equals(param.getName())) {
+                                conflictflag = true;
+                                break;
+                            }
+                        }
+                    }
                 }
             }
-        }
 
-        // Add parameter to group
-        for (IContextParameter param : params) {
-            if (!updateParams.contains(param)) {
-                ContextParameterType parameter = TalendFileFactory.eINSTANCE.createContextParameterType();
-                copyContextParameter(item, contextParameters, parameter, param);
-            }
+            // Update some parameters
+            // EList contextParameters = type.getContextParameter();
+            // List<IContextParameter> updateParams = new ArrayList<IContextParameter>();
+            // for (int j = 0, m = contextParameters.size(); j < m; j++) {
+            // ContextParameterType parameter = (ContextParameterType) contextParameters.get(j);
+            // for (IContextParameter param : params) {
+            // if (parameter.getName().equals(param.getName())) {
+            // copyContextParameter(item, contextParameters, parameter, param);
+            // updateParams.add(param);
+            // }
+            // }
+            // }
+
+            // Add parameter to group
+            // for (IContextParameter param : params) {
+            // if (!updateParams.contains(param)) {
+            // ContextParameterType parameter = TalendFileFactory.eINSTANCE.createContextParameterType();
+            // copyContextParameter(item, contextParameters, parameter, param);
+            // }
+            // }
+
+        }
+        if (conflictflag) {
+            MessageDialog.openError(getShell(), title, errorMsg);
         }
 
         // Save
@@ -228,8 +305,20 @@ public class ContextRepositoryReviewDialog extends RepositoryReviewDialog {
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);
         }
-
         super.okPressed();
+    }
+
+    private List<IContextParameter> getAllExistContextParameters(EList contextParameters, List<IContextParameter> params) {
+        List<IContextParameter> allParameters = new ArrayList<IContextParameter>();
+        for (int i = 0; i < contextParameters.size(); i++) {
+            ContextParameterType parameter = (ContextParameterType) contextParameters.get(i);
+            for (IContextParameter param : params) {
+                if (parameter.getName().equals(param.getName())) {
+                    allParameters.add(param);
+                }
+            }
+        }
+        return allParameters;
     }
 
     /**
@@ -243,16 +332,16 @@ public class ContextRepositoryReviewDialog extends RepositoryReviewDialog {
      */
     @SuppressWarnings("unchecked")
     private void copyContextParameter(ContextItem item, EList contextParameters, ContextParameterType parameter,
-            IContextParameter param) {
-        parameter.setName(param.getName());
-        parameter.setComment(param.getComment());
-        parameter.setPrompt(param.getPrompt());
-        parameter.setPromptNeeded(param.isPromptNeeded());
-        parameter.setRepositoryContextId(item.getProperty().getId());
-        parameter.setType(param.getType());
-        parameter.setValue(param.getValue());
+            IContextParameter selectedParam) {
+        parameter.setName(selectedParam.getName());
+        parameter.setComment(selectedParam.getComment());
+        parameter.setPrompt(selectedParam.getPrompt());
+        parameter.setPromptNeeded(selectedParam.isPromptNeeded());
+        // parameter.setRepositoryContextId(item.getProperty().getId());
+        parameter.setType(selectedParam.getType());
+        parameter.setValue(selectedParam.getValue());
         contextParameters.add(parameter);
-        param.setSource(item.getProperty().getLabel());
+        selectedParam.setSource(item.getProperty().getLabel());
     }
 
     /**
@@ -264,7 +353,6 @@ public class ContextRepositoryReviewDialog extends RepositoryReviewDialog {
         designerCoreService.switchToCurContextsView();
         designerCoreService.switchToCurComponentSettingsView();
         designerCoreService.switchToCurJobSettingsView();
-
         // refresh repository view
         IRepositoryView view = (IRepositoryView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
                 IRepositoryView.VIEW_ID);
@@ -276,4 +364,17 @@ public class ContextRepositoryReviewDialog extends RepositoryReviewDialog {
             getRepositoryView().refresh();
         }
     }
+
+    /**
+     * DOC hyWang Comment method "getJobContextGroupNames".
+     */
+    private List<String> getJobContextGroupNames(List<IContext> jobContextlist) {
+        List<String> jobContextNames = new ArrayList<String>();
+        // parameters from designer of default context
+        for (int k = 0; k < jobContextlist.size(); k++) {
+            jobContextNames.add(k, jobContextlist.get(k).getName());
+        }
+        return jobContextNames;
+    }
+
 }
