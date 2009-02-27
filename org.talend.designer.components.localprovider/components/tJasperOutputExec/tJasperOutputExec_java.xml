@@ -36,7 +36,12 @@
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/test.csv"</DEFAULT>
     </PARAMETER>
     
-    <PARAMETER NAME="DESTINATION" FIELD="DIRECTORY" NUM_ROW="7" >
+	<PARAMETER NAME="RECORD_DELIMITER" FIELD="TEXT" NUM_ROW="7" REQUIRED="true" REPOSITORY_VALUE="RECORD_DELIMITER">
+		<DEFAULT>"\r\n"</DEFAULT>
+	</PARAMETER> 
+
+    
+    <PARAMETER NAME="DESTINATION" FIELD="DIRECTORY" NUM_ROW="9" >
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/"</DEFAULT>
     </PARAMETER>
     
@@ -61,14 +66,14 @@
   <CODEGENERATION>
 	<IMPORTS>
       <IMPORT NAME="CsvWriter" MODULE="javacsv.jar" REQUIRED="true" />
-      <IMPORT NAME="Jasper" MODULE="jasperreports-2.0.1.jar" REQUIRED="true" />
+      <IMPORT NAME="Jasper" MODULE="jasperreports-3.1.3.jar" REQUIRED="true" />
 	  <IMPORT NAME="CommonsDigester" MODULE="commons-digester-1.7.jar" REQUIRED="true" />
-	  <IMPORT NAME="JdtCompiler" MODULE="jdt-compiler-3.1.1.jar" REQUIRED="true" />
+	  <IMPORT NAME="JdtCompiler" MODULE="jdt-compiler-2.0.1.jar" REQUIRED="true" />
 	  <IMPORT NAME="CommonsCollections" MODULE="commons-collections-3.2.jar" REQUIRED="true" />
 	  <IMPORT NAME="CommonsLogging" MODULE="commons-logging-1.1.jar" REQUIRED="true" />
 	  <IMPORT NAME="CommonsBeanutils" MODULE="commons-beanutils-1.7.jar" REQUIRED="true" />
-	  <IMPORT NAME="Itext" MODULE="itext-1.3.1.jar" REQUIRED="true" />
-	  <IMPORT NAME="Poi" MODULE="poi-2.0-final-20040126.jar" REQUIRED="true" />
+	  <IMPORT NAME="Itext" MODULE="iText-2.1.4.jar" REQUIRED="true" />
+	  <IMPORT NAME="Poi" MODULE="poi-3.2-FINAL-20081019.jar" REQUIRED="true" />
     </IMPORTS>
   </CODEGENERATION>
 

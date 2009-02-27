@@ -22,5 +22,5 @@ String reportType = ElementParameterParser.getValue(node,"__REPORT_TYPE__");
     String jrxmlName_<%=cid%> = fileName_<%=cid%>.substring(fileName_<%=cid%>.lastIndexOf("/"),fileName_<%=cid%>.lastIndexOf("."));
 	String jrxmlPath_<%=cid%> = fileName_<%=cid%>.substring(0,fileName_<%=cid%>.lastIndexOf("/"));
     String sourceFile_<%=cid%> = <%=sourceFile%>;
-	String jasperFile_<%=cid%> = jrxmlPath_<%=cid%>+"/"+jrxmlName_<%=cid%> + ".jasper";
+	String jasperFile_<%=cid%> = jrxmlPath_<%=cid%>+jrxmlName_<%=cid%> + ".jasper";
     String reportFile_<%=cid%> = <%=destinationDirectory%>+jrxmlName_<%=cid%>+".<%=reportType%>";
