@@ -295,7 +295,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         }
 
         // Reference Projects
-        if (PluginChecker.isTIS() && getParent() == null && !getMergeRefProject()
+        if (PluginChecker.isTIS() && getParent() != this && !getMergeRefProject()
                 && project.getEmfProject().getReferencedProjects().size() > 0) {
             refProject = new RepositoryNode(null, this, ENodeType.SYSTEM_FOLDER);
             refProject.setProperties(EProperties.LABEL, ERepositoryObjectType.REFERENCED_PROJECTS);
@@ -314,15 +314,18 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
     public void initializeChildren(Object parent) {
         initializeChildren(project, parent);
         if (PluginChecker.isTIS() && getMergeRefProject()) {
+            getRefProject(project.getEmfProject(), parent);
 
-            for (Object o : project.getEmfProject().getReferencedProjects()) {
-                if (o instanceof ProjectReference) {
-                    org.talend.core.model.general.Project p = new org.talend.core.model.general.Project(((ProjectReference) o)
-                            .getReferencedProject());
-                    initializeChildren(p, parent);
-                }
-            }
         }
+    }
+
+    private void getRefProject(Project project, Object parent) {
+        for (ProjectReference refProject : (List<ProjectReference>) (List<ProjectReference>) project.getReferencedProjects()) {
+            Project p = refProject.getReferencedProject();
+            initializeChildren(new org.talend.core.model.general.Project(p), parent);
+            getRefProject(p, parent);
+        }
+
     }
 
     public void initializeChildren(org.talend.core.model.general.Project newProject, Object parent) {
@@ -672,8 +675,10 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
 
     private void handleReferenced(RepositoryNode parent) {
         if (parent.getType().equals(ENodeType.SYSTEM_FOLDER)) {
-            for (Iterator iter = factory.getReferencedProjects().iterator(); iter.hasNext();) {
-                Project emfProject = (Project) iter.next();
+            for (ProjectReference refProject : (List<ProjectReference>) (List<ProjectReference>) project.getEmfProject()
+                    .getReferencedProjects()) {
+
+                Project emfProject = refProject.getReferencedProject();
 
                 ProjectRepositoryNode referencedProjectNode = new ProjectRepositoryNode(
                         new org.talend.core.model.general.Project(emfProject), null, parent, this, ENodeType.REFERENCED_PROJECT);
@@ -681,8 +686,10 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                 referencedProjectNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.REFERENCED_PROJECTS);
                 parent.getChildren().add(referencedProjectNode);
                 referencedProjectNode.initialize();
+
             }
         }
+
     }
 
     private void addNode(RepositoryNode parent, ERepositoryObjectType type, RepositoryNode recBinNode,
