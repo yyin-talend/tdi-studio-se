@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.CLabel;
@@ -367,11 +369,13 @@ public class TableController extends AbstractElementPropertySectionController {
                             break;
                         }
                         TableViewerCreatorColumn column = (TableViewerCreatorColumn) colList.get(j + 1);
-
-                        CCombo combo = (CCombo) column.getCellEditor().getControl();
-                        String[] oldItems = combo.getItems();
-                        combo.setItems(tmpParam.getListItemsDisplayName());
-
+                        CellEditor cellEditor = column.getCellEditor();
+                        String[] oldItems = null;
+                        if (cellEditor instanceof ComboBoxCellEditor) {
+                            CCombo combo = (CCombo) cellEditor.getControl();
+                            oldItems = combo.getItems();
+                            combo.setItems(tmpParam.getListItemsDisplayName());
+                        }
                         List<Map<String, Object>> paramValues = (List<Map<String, Object>>) param.getValue();
                         String[] items = param.getListItemsDisplayCodeName();
 

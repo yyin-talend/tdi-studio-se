@@ -152,13 +152,16 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
         for (int i = 0; i < titles.length; i++) {
             final int curCol = i;
             if (param.isShow(model.getItemsShowIf()[i], model.getItemsNotShowIf()[i], element.getElementParameters())) {
+                IElementParameter tmpParam = (IElementParameter) itemsValue[i];
+                if (!tmpParam.isShow(model.getItemsShowIf()[i], model.getItemsNotShowIf()[i], element.getElementParameters())) {
+                    continue;
+                }
                 TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreator);
                 column.setTitle(titles[i]);
                 column.setModifiable(true);
                 column.setMinimumWidth(100);
                 column.setWeight(20);
 
-                IElementParameter tmpParam = (IElementParameter) itemsValue[i];
                 switch (tmpParam.getField()) {
                 case CONTEXT_PARAM_NAME_LIST:
                 case CLOSED_LIST:

@@ -170,6 +170,20 @@ public class PropertyChangeCommand extends Command {
                         }
                     }
                 }
+                if (testedParam.getField() == EParameterFieldType.TABLE) {
+                    String[] tmpShowIfs = testedParam.getListItemsShowIf();
+                    for (String show : tmpShowIfs) {
+                        if (show != null && show.contains(currentParam.getName())) {
+                            toUpdate = true;
+                        }
+                    }
+                    tmpShowIfs = testedParam.getListItemsNotShowIf();
+                    for (String show : tmpShowIfs) {
+                        if (show != null && show.contains(currentParam.getName())) {
+                            toUpdate = true;
+                        }
+                    }
+                }
                 if (currentParam.getField().equals(EParameterFieldType.CLOSED_LIST)) {
                     if (testedParam.getListItemsShowIf() != null) {
                         for (int j = 0; j < testedParam.getListItemsShowIf().length && !toUpdate; j++) {
