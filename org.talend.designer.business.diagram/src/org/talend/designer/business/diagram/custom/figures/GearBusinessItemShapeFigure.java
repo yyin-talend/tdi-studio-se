@@ -16,8 +16,6 @@ import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * DOC mhelleboid class global comment. Detailled comment <br/>
@@ -34,7 +32,7 @@ public class GearBusinessItemShapeFigure extends BusinessItemShapeFigure {
      */
     @Override
     protected void paintFigure(Graphics graphics) {
-        setBackgroundColor(new Color(Display.getCurrent(), 224, 166, 155));
+
         if (getDrawFrame()) {
             setDefaultSize(60, 60);
             setBorder(border);

@@ -246,6 +246,9 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
         if (view == null) {
             return;
         }
+        if (!(selection instanceof IStructuredSelection)) {
+            return;
+        }
         Object firstElement = ((IStructuredSelection) selection).getFirstElement();
         if (!(selection instanceof IStructuredSelection)) {
             return;

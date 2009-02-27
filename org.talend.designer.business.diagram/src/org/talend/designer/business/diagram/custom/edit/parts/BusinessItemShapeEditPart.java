@@ -17,13 +17,19 @@ import java.util.List;
 
 import org.eclipse.draw2d.Label;
 import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.ecore.ENamedElement;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.gmf.runtime.diagram.ui.editparts.ShapeNodeEditPart;
 import org.eclipse.gmf.runtime.diagram.ui.editpolicies.EditPolicyRoles;
+import org.eclipse.gmf.runtime.diagram.ui.internal.properties.Properties;
+import org.eclipse.gmf.runtime.draw2d.ui.figures.FigureUtilities;
+import org.eclipse.gmf.runtime.emf.core.util.PackageUtil;
 import org.eclipse.gmf.runtime.gef.ui.figures.NodeFigure;
 import org.eclipse.gmf.runtime.notation.Node;
 import org.eclipse.gmf.runtime.notation.View;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.RGB;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.image.OverlayImage;
@@ -45,6 +51,7 @@ import org.talend.designer.business.diagram.custom.figures.BusinessTooltipFigure
 import org.talend.designer.business.model.business.BusinessAssignment;
 import org.talend.designer.business.model.business.BusinessItem;
 import org.talend.designer.business.model.business.TalendItem;
+import org.talend.designer.business.model.business.diagram.edit.parts.BusinessProcessEditPart;
 import org.talend.designer.business.model.business.provider.BusinessAssignmentItemProvider;
 import org.talend.designer.business.model.business.provider.BusinessItemProviderAdapterFactory;
 import org.talend.repository.ui.views.RepositoryLabelProvider;
@@ -166,4 +173,15 @@ public abstract class BusinessItemShapeEditPart extends ShapeNodeEditPart {
         getTooltipFigure(getNodeFigure());
     }
 
+    protected void setDefaultColor(Object model, RGB color) {
+        if (getModel() == ((BusinessProcessEditPart) getParent()).getLastAddedItem()) {
+            ENamedElement element = PackageUtil.getElement(Properties.ID_FILLCOLOR);
+            EStructuralFeature feature = (EStructuralFeature) PackageUtil.getElement(Properties.ID_FILLCOLOR);
+            if (element instanceof EStructuralFeature) {
+                setStructuralFeatureValue(feature, FigureUtilities.RGBToInteger(color));
+            }
+        }
+        ((BusinessProcessEditPart) getParent()).setLastAddedItem(null);
+
+    }
 }

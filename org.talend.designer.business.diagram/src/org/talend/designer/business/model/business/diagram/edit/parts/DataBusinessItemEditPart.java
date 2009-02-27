@@ -14,6 +14,7 @@ import org.eclipse.gmf.runtime.draw2d.ui.figures.ConstrainedToolbarLayout;
 import org.eclipse.gmf.runtime.gef.ui.figures.DefaultSizeNodeFigure;
 import org.eclipse.gmf.runtime.gef.ui.figures.NodeFigure;
 import org.eclipse.gmf.runtime.notation.View;
+import org.eclipse.swt.graphics.RGB;
 import org.talend.designer.business.diagram.custom.edit.parts.BusinessItemShapeEditPart;
 import org.talend.designer.business.model.business.diagram.edit.policies.DataBusinessItemCanonicalEditPolicy;
 import org.talend.designer.business.model.business.diagram.edit.policies.DataBusinessItemGraphicalNodeEditPolicy;
@@ -103,8 +104,7 @@ public class DataBusinessItemEditPart extends BusinessItemShapeEditPart {
      */
     protected boolean addFixedChild(EditPart childEditPart) {
         if (childEditPart instanceof DataBusinessItemNameEditPart) {
-            ((DataBusinessItemNameEditPart) childEditPart).setLabel(getPrimaryShape()
-                    .getFigureDataBusinessItemNameFigure());
+            ((DataBusinessItemNameEditPart) childEditPart).setLabel(getPrimaryShape().getFigureDataBusinessItemNameFigure());
             return true;
         }
         return false;
@@ -127,8 +127,8 @@ public class DataBusinessItemEditPart extends BusinessItemShapeEditPart {
     /**
      * Creates figure for this edit part.
      * 
-     * Body of this method does not depend on settings in generation model so you may safely remove <i>generated</i>
-     * tag and modify it.
+     * Body of this method does not depend on settings in generation model so you may safely remove <i>generated</i> tag
+     * and modify it.
      * 
      * @generated
      */
@@ -138,6 +138,9 @@ public class DataBusinessItemEditPart extends BusinessItemShapeEditPart {
         IFigure shape = createNodeShape();
         figure.add(shape);
         contentPane = setupContentPane(shape);
+
+        RGB finalColor = new RGB(184, 152, 193);
+        setDefaultColor(getModel(), finalColor);
         return figure;
     }
 
@@ -197,8 +200,7 @@ public class DataBusinessItemEditPart extends BusinessItemShapeEditPart {
     /**
      * @generated
      */
-    public class DataBusinessItemFigure extends
-            org.talend.designer.business.diagram.custom.figures.DataBusinessItemShapeFigure {
+    public class DataBusinessItemFigure extends org.talend.designer.business.diagram.custom.figures.DataBusinessItemShapeFigure {
 
         /**
          * @generated

@@ -14,6 +14,7 @@ import org.eclipse.gmf.runtime.draw2d.ui.figures.ConstrainedToolbarLayout;
 import org.eclipse.gmf.runtime.gef.ui.figures.DefaultSizeNodeFigure;
 import org.eclipse.gmf.runtime.gef.ui.figures.NodeFigure;
 import org.eclipse.gmf.runtime.notation.View;
+import org.eclipse.swt.graphics.RGB;
 import org.talend.designer.business.diagram.custom.edit.parts.BusinessItemShapeEditPart;
 import org.talend.designer.business.model.business.diagram.edit.policies.DecisionBusinessItemCanonicalEditPolicy;
 import org.talend.designer.business.model.business.diagram.edit.policies.DecisionBusinessItemGraphicalNodeEditPolicy;
@@ -127,8 +128,8 @@ public class DecisionBusinessItemEditPart extends BusinessItemShapeEditPart {
     /**
      * Creates figure for this edit part.
      * 
-     * Body of this method does not depend on settings in generation model so you may safely remove <i>generated</i>
-     * tag and modify it.
+     * Body of this method does not depend on settings in generation model so you may safely remove <i>generated</i> tag
+     * and modify it.
      * 
      * @generated
      */
@@ -138,6 +139,8 @@ public class DecisionBusinessItemEditPart extends BusinessItemShapeEditPart {
         IFigure shape = createNodeShape();
         figure.add(shape);
         contentPane = setupContentPane(shape);
+        RGB finalColor = new RGB(135, 206, 235);
+        setDefaultColor(getModel(), finalColor);
         return figure;
     }
 
