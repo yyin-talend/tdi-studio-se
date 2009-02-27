@@ -116,9 +116,23 @@ if(isRunInMultiThread){
 	    }
 	    
 		public void synchronizeContext(){
-			<% for (IContextParameter ctxParam :params){%>
-			if(<%=ctxParam.getName()%> != null){
-				this.setProperty("<%=ctxParam.getName()%>", <%=ctxParam.getName()%>.toString());	
+			<% for (IContextParameter ctxParam :params){
+			 	String cParaName = ctxParam.getName(); 	
+			%>
+			if(<%=cParaName %> != null){				
+				<%if(ctxParam.getType().equals("id_Date")){%>
+					String pattern_<%=cParaName %> = "yyyy-MM-dd HH:mm:ss";
+					String value_<%=cParaName %> = "<%=ctxParam.getValue() %>";
+					String[] parts_<%=cParaName %> = value_<%=cParaName %>.split(";");					 
+					if(parts_<%=cParaName %>.length > 1){
+						pattern_<%=cParaName %> = parts_<%=cParaName %>[0];
+						this.setProperty("<%=cParaName %>", pattern_<%=cParaName %> + ";" + FormatterUtils.format_Date(<%=cParaName %>, pattern_<%=cParaName %>));
+					}else{
+						this.setProperty("<%=cParaName %>", FormatterUtils.format_Date(<%=cParaName %>, pattern_<%=cParaName %>));					
+					}					
+				<%}else{%>
+					this.setProperty("<%=cParaName %>", <%=cParaName %>.toString());
+				<%}%>					
 			}
 			<% } %>
 		}
