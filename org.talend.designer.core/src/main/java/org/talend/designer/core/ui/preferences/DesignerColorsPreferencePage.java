@@ -49,6 +49,7 @@ public class DesignerColorsPreferencePage extends FieldEditorPreferencePage impl
         GridData data = new GridData(GridData.FILL_BOTH);
         parent.setLayoutData(data);
 
+        createEditorFieldEditors(parent);
         createSubjobFieldEditors(parent);
         createConnectionFieldEditors(parent);
     }
@@ -66,6 +67,19 @@ public class DesignerColorsPreferencePage extends FieldEditorPreferencePage impl
         GridLayout layout = new GridLayout(2, false);
         layout.marginLeft = 10;
         subjobGroup.setLayout(layout);
+    }
+
+    private void createEditorFieldEditors(Composite parent) {
+        Group jobBackgroundGroup = new Group(parent, SWT.NULL);
+        jobBackgroundGroup.setText(Messages.getString("DesignerPreferencePage.JobDesignerEditorBackgroundColorLabel")); //$NON-NLS-1$
+        jobBackgroundGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+        addField(new ColorFieldEditor(DesignerColorUtils.JOBDESIGNER_EGITOR_BACKGROUND_COLOR_NAME, Messages
+                .getString("DesignerPreferencePage.DesignerEditorBackgroundColor"), jobBackgroundGroup)); //$NON-NLS-1$
+
+        GridLayout layout = new GridLayout(2, false);
+        layout.marginLeft = 10;
+        jobBackgroundGroup.setLayout(layout);
     }
 
     private void createConnectionFieldEditors(Composite parent) {

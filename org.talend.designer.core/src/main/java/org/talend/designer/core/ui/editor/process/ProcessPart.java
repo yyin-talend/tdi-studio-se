@@ -37,6 +37,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.IEditorInput;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.utils.DesignerColorUtils;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.core.ui.editor.TalendScalableFreeformRootEditPart;
@@ -56,7 +57,8 @@ public class ProcessPart extends AbstractGraphicalEditPart implements PropertyCh
 
     private RepositoryNode node;
 
-    private static final Color READ_WRITE_COLOR = new Color(null, new RGB(255, 255, 255));
+    private static final Color READ_WRITE_COLOR = new Color(null, DesignerColorUtils.getPreferenceDesignerEditorRGB(
+            DesignerColorUtils.JOBDESIGNER_EGITOR_BACKGROUND_COLOR_NAME, DesignerColorUtils.DEAULT_EDIOR_COLOR));
 
     private static final Color READ_ONLY_COLOR = new Color(null, new RGB(0xE7, 0xE7, 0xE7));
 
