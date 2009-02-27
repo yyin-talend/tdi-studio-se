@@ -281,7 +281,7 @@
                 id="org.talend.designer.core.ui.hierarchy.JobHierarchyViewPart"
                 relationship="stack"
                 relative="org.talend.scheduler.views.Scheduler"
-                visible="true">
+                visible="false">
          </view>
          <view
 					ratio="0.16"

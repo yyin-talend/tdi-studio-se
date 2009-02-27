@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.zip.ZipFile;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
@@ -55,7 +56,9 @@ import org.eclipse.ui.wizards.datatransfer.ImportOperation;
 import org.osgi.framework.Bundle;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.io.FilesUtils;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.repository.i18n.Messages;
 import org.talend.resources.ResourcesPlugin;
 
@@ -355,11 +358,21 @@ public class ImportProjectsUtilities {
 
         Element demoProjectsInfo = doc.getRootElement();
 
+        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+        String[] availableLanguages = brandingService.getBrandingConfiguration().getAvailableLanguages();
+
         for (Iterator<DemoProjectBean> i = demoProjectsInfo.elementIterator("project"); i.hasNext();) { //$NON-NLS-1$
             Element demoProjectElement = (Element) i.next();
             demoProject = new DemoProjectBean();
             demoProject.setProjectName(demoProjectElement.attributeValue("name")); //$NON-NLS-1$
             String language = demoProjectElement.attributeValue("language"); //$NON-NLS-1$
+
+            if (!ArrayUtils.contains(availableLanguages, language)) {
+                // if the language is not available in current branding, don't display this demo project
+                continue;
+            }
+
             demoProject.setLanguage(ECodeLanguage.getCodeLanguage(language));
             String demoProjectFileType = demoProjectElement.attributeValue("demoProjectFileType"); //$NON-NLS-1$
             demoProject.setDemoProjectFileType(EDemoProjectFileType.getDemoProjectFileTypeName(demoProjectFileType));

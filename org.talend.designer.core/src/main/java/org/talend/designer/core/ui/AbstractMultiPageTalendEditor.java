@@ -39,6 +39,8 @@ import org.eclipse.jdt.debug.core.IJavaBreakpointListener;
 import org.eclipse.jdt.debug.core.JDIDebugModel;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -61,6 +63,7 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.context.UpdateRunJobComponentContextHelper;
@@ -80,6 +83,8 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.properties.tab.IMultiPageTalendEditor;
 import org.talend.core.ui.IUIRefresher;
+import org.talend.core.ui.branding.IBrandingConfiguration;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.utils.AccessingEmfJob;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ISyntaxCheckableEditor;
@@ -162,6 +167,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
     private List propertyInformation;
 
+    protected boolean useCodeView = true;
+
     private IPartListener partListener = new IPartListener() {
 
         public void partOpened(IWorkbenchPart part) {
@@ -215,6 +222,12 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         // });
 
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
+        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+        Map<String, Object> settings = brandingService.getBrandingConfiguration().getJobEditorSettings();
+        if (settings.containsKey(IBrandingConfiguration.DISPLAY_CODE_VIEW)) {
+            useCodeView = (Boolean) settings.get(IBrandingConfiguration.DISPLAY_CODE_VIEW);
+        }
     }
 
     @Override
@@ -387,6 +400,14 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
     protected void createPages() {
         createPage0();
         createPage1();
+
+        if (getPageCount() == 1) {
+            Composite container = getContainer();
+            if (container instanceof CTabFolder) {
+                ((CTabFolder) container).setTabHeight(0);
+            }
+        }
+
     }
 
     protected void createPage0() {
@@ -417,16 +438,18 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             processor.setSyntaxCheckableEditor((ISyntaxCheckableEditor) codeEditor);
         }
 
-        try {
-            int index = addPage(codeEditor, createFileEditorInput());
-            // init Syntax Validation.
-            if (getCurrentLang() == ECodeLanguage.PERL) {
-                PerlEditorPlugin.getDefault().setSyntaxValidationPreference(true);
-            }
-            setPageText(index, "Code"); //$NON-NLS-1$
+        if (useCodeView) {
+            try {
+                int index = addPage(codeEditor, createFileEditorInput());
+                // init Syntax Validation.
+                if (getCurrentLang() == ECodeLanguage.PERL) {
+                    PerlEditorPlugin.getDefault().setSyntaxValidationPreference(true);
+                }
+                setPageText(index, "Code"); //$NON-NLS-1$
 
-        } catch (PartInitException pie) {
-            pie.printStackTrace();
+            } catch (PartInitException pie) {
+                pie.printStackTrace();
+            }
         }
 
         if (DesignerPlugin.getDefault().getPreferenceStore().getBoolean(TalendDesignerPrefConstants.GENERATE_CODE_WHEN_OPEN_JOB)) {
@@ -581,7 +604,9 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
     }
 
     public void showCodePage() {
-        setActivePage(1);
+        if (useCodeView) {
+            setActivePage(1);
+        }
     }
 
     /**

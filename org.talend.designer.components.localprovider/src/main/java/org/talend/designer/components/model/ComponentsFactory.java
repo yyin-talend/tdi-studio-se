@@ -23,6 +23,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
@@ -37,10 +38,12 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.AbstractComponentsProvider;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.components.i18n.Messages;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
@@ -173,6 +176,10 @@ public class ComponentsFactory implements IComponentsFactory {
 
         childDirectories = source.listFiles(fileFilter);
 
+        IBrandingService service = (IBrandingService) GlobalServiceRegister.getDefault().getService(IBrandingService.class);
+
+        String[] availableComponents = service.getBrandingConfiguration().getAvailableComponents();
+
         FileFilter skeletonFilter = new FileFilter() {
 
             public boolean accept(final File file) {
@@ -211,6 +218,11 @@ public class ComponentsFactory implements IComponentsFactory {
                     }
 
                     EmfComponent currentComp = new EmfComponent(xmlMainFile, pathSource);
+
+                    if (availableComponents != null && !ArrayUtils.contains(availableComponents, currentComp.getName())) {
+                        continue;
+                    }
+
                     TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.emf2"); //$NON-NLS-1$
 
                     if (componentList.contains(currentComp)) {

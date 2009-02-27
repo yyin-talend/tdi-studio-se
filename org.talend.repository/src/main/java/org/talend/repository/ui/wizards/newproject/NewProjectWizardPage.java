@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.wizard.WizardPage;
@@ -34,10 +35,12 @@ import org.eclipse.swt.widgets.Text;
 import org.talend.commons.ui.swt.colorstyledtext.jedit.KeywordMap;
 import org.talend.commons.ui.swt.colorstyledtext.jedit.Mode;
 import org.talend.commons.ui.swt.colorstyledtext.jedit.Modes;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.Project;
 import org.talend.core.prefs.GeneralParametersProvider;
 import org.talend.core.prefs.GeneralParametersProvider.GeneralParameters;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -142,6 +145,24 @@ public class NewProjectWizardPage extends WizardPage {
 
         languageJavaRadio = new Button(radioContainer, SWT.RADIO);
         languageJavaRadio.setText(ECodeLanguage.JAVA.getName());
+
+        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+        String[] availableLanguages = brandingService.getBrandingConfiguration().getAvailableLanguages();
+        if (availableLanguages.length != 2) {
+            if (ArrayUtils.contains(availableLanguages, ECodeLanguage.JAVA.getName())) {
+                languagePerlRadio.setVisible(false);
+                languageJavaRadio.setVisible(false);
+                languageJavaRadio.setSelection(true);
+                languageLab.setVisible(false);
+            }
+            if (ArrayUtils.contains(availableLanguages, ECodeLanguage.PERL.getName())) {
+                languagePerlRadio.setSelection(true);
+                languageJavaRadio.setVisible(false);
+                languageJavaRadio.setVisible(false);
+                languageLab.setVisible(false);
+            }
+        }
 
         // languageCombo = new Combo(container, SWT.BORDER | SWT.READ_ONLY);
         // languageCombo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
