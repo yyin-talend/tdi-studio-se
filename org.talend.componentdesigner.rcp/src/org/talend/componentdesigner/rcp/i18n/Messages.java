@@ -26,6 +26,8 @@ public final class Messages extends MessagesCore {
 
     private static final String BUNDLE_NAME = "messages"; //$NON-NLS-1$
 
+    //    private static final String PLUGIN_ID = "org.talend.componentdesigner.rcp"; //$NON-NLS-1$
+
     private static ResourceBundle resourceBundle = ResourceBundle.getBundle(BUNDLE_NAME);
 
     /**

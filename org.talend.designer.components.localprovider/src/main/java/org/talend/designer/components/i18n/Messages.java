@@ -16,15 +16,16 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 /**
- *  class global comment. Detailled comment
- * <br/>
- *
- * $Id: Messages.java 2007-2-3ионГ11:36:26 bqian $
- *
+ * class global comment. Detailled comment <br/>
+ * 
+ * $Id: Messages.java 2007-2-3О©╫О©╫О©╫О©╫11:36:26 bqian $
+ * 
  */
 public class Messages {
 
     private static final String BUNDLE_NAME = "messages"; //$NON-NLS-1$
+
+    private static final String PLUGIN_ID = "org.talend.designer.components.localprovider"; //$NON-NLS-1$
 
     private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
 

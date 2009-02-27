@@ -19,12 +19,14 @@ import org.talend.commons.i18n.MessagesCore;
 /**
  * class global comment. Detailled comment <br/>
  * 
- * $Id: Messages.java 2007-2-3ä¸‹å?ˆ03:03:12 bqian $
+ * $Id: Messages.java 2007-2-3ä¸‹ï¿½?ï¿½03:03:12 bqian $
  * 
  */
 public class Messages extends MessagesCore {
 
     private static final String BUNDLE_NAME = "messages"; //$NON-NLS-1$
+
+    private static final String PLUGIN_ID = "org.talend.designer.abstractmap"; //$NON-NLS-1$
 
     private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
 
@@ -51,6 +53,6 @@ public class Messages extends MessagesCore {
      * @see MessagesCore#getString(String, ResourceBundle, Object[])
      */
     public static String getString(final String key, final Object... args) {
-        return getString(key, RESOURCE_BUNDLE, args);
+        return MessagesCore.getString(key, PLUGIN_ID, RESOURCE_BUNDLE, args);
     }
 }

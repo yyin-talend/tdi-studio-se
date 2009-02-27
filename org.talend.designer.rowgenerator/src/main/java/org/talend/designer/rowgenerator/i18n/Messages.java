@@ -17,7 +17,7 @@ import java.util.ResourceBundle;
 import org.talend.commons.i18n.MessagesCore;
 
 /**
- *  qzhang class global comment. Detailled comment <br/>
+ * qzhang class global comment. Detailled comment <br/>
  * 
  * $Id: talend-code-templates.xml 1 2007-2-4 下午12:15:06 (星期五, 29 九月 2006) qzhang $
  * 
@@ -25,6 +25,8 @@ import org.talend.commons.i18n.MessagesCore;
 public final class Messages extends MessagesCore {
 
     private static final String BUNDLE_NAME = "messages"; //$NON-NLS-1$
+
+    private static final String PLUGIN_ID = "org.talend.designer.rowgenerator"; //$NON-NLS-1$
 
     private static ResourceBundle resourceBundle = ResourceBundle.getBundle(BUNDLE_NAME);
 
@@ -48,6 +50,6 @@ public final class Messages extends MessagesCore {
      * @see MessagesCore#getString(String, ResourceBundle, Object[])
      */
     public static String getString(final String key, final Object... args) {
-        return getString(key, resourceBundle, args);
+        return MessagesCore.getString(key, PLUGIN_ID, resourceBundle, args);
     }
 }

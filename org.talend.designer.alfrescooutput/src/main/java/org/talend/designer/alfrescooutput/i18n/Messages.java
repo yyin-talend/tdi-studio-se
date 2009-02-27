@@ -28,6 +28,8 @@ public class Messages extends MessagesCore {
 
     private static final String BUNDLE_NAME = "messages"; //$NON-NLS-1$
 
+    private static final String PLUGIN_ID = "org.talend.designer.alfrescooutput"; //$NON-NLS-1$
+
     private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
 
     private Messages() {
@@ -53,6 +55,6 @@ public class Messages extends MessagesCore {
      * @see MessagesCore#getString(String, ResourceBundle, Object[])
      */
     public static String getString(final String key, final Object... args) {
-        return getString(key, RESOURCE_BUNDLE, args);
+        return MessagesCore.getString(key, PLUGIN_ID, RESOURCE_BUNDLE, args);
     }
 }

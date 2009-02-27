@@ -26,7 +26,9 @@ public class Messages extends MessagesCore {
 
     private static final String BUNDLE_NAME = "messages"; //$NON-NLS-1$
 
-    private static ResourceBundle resourceBundle = ResourceBundle.getBundle(BUNDLE_NAME);
+    private static final String PLUGIN_ID = "org.talend.designer.core"; //$NON-NLS-1$
+
+    private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
 
     /**
      * Returns the i18n formatted message for <i>key</i> in the class bundle.
@@ -36,7 +38,7 @@ public class Messages extends MessagesCore {
      * @see MessagesCore#getString(String, ResourceBundle)
      */
     public static String getString(final String key) {
-        return getString(key, resourceBundle);
+        return getString(key, PLUGIN_ID, RESOURCE_BUNDLE);
     }
 
     /**
@@ -48,6 +50,7 @@ public class Messages extends MessagesCore {
      * @see MessagesCore#getString(String, ResourceBundle, Object[])
      */
     public static String getString(final String key, final Object... args) {
-        return getString(key, resourceBundle, args);
+        return MessagesCore.getString(key, PLUGIN_ID, RESOURCE_BUNDLE, args);
     }
+
 }

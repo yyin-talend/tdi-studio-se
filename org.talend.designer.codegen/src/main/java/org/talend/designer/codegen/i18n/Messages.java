@@ -31,7 +31,9 @@ public class Messages extends MessagesCore {
 
     private static final String BUNDLE_NAME = "messages"; //$NON-NLS-1$
 
-    private static ResourceBundle resourceBundle;
+    private static final String PLUGIN_ID = "org.talend.designer.codegen"; //$NON-NLS-1$
+
+    private static ResourceBundle resourceBundle = ResourceBundle.getBundle(BUNDLE_NAME);
 
     private static ResourceBundle getBundle() {
         if (resourceBundle == null) {
@@ -64,6 +66,6 @@ public class Messages extends MessagesCore {
      * @see MessagesCore#getString(String, ResourceBundle, Object[])
      */
     public static String getString(String key, Object... args) {
-        return getString(key, getBundle(), args);
+        return MessagesCore.getString(key, PLUGIN_ID, getBundle(), args);
     }
 }

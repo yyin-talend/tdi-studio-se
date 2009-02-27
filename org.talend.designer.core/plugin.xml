@@ -93,6 +93,13 @@
             id="org.talend.designer.core.ui.preferences.OutputConsolePreferencePage"
             name="Output Console">
       </page>
+      <page
+            category="org.talend.core.prefs"
+            class="org.talend.designer.core.ui.preferences.I18nPreferencePage"
+            id="org.talend.designer.core.internationalization"
+            name="Internationalization">
+      </page>
+      
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">

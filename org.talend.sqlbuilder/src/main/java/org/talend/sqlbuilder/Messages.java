@@ -13,6 +13,7 @@
 package org.talend.sqlbuilder;
 
 import java.util.ResourceBundle;
+
 import org.talend.commons.i18n.MessagesCore;
 
 /**
@@ -21,6 +22,8 @@ import org.talend.commons.i18n.MessagesCore;
 public class Messages extends MessagesCore {
 
     private static final String BUNDLE_NAME = "messages"; //$NON-NLS-1$
+
+    private static final String PLUGIN_ID = "org.talend.sqlbuilder"; //$NON-NLS-1$
 
     private static ResourceBundle resourceBundle = ResourceBundle.getBundle(BUNDLE_NAME);
 
@@ -44,6 +47,6 @@ public class Messages extends MessagesCore {
      * @see MessagesCore#getString(String, ResourceBundle, Object[])
      */
     public static String getString(final String key, final Object... args) {
-        return getString(key, resourceBundle, args);
+        return MessagesCore.getString(key, PLUGIN_ID, resourceBundle, args);
     }
 }

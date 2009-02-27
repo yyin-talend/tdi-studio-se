@@ -185,7 +185,8 @@ public class EmfComponent implements IComponent {
 
     private String getTranslatedValue(final String nameValue) {
         String returnValue = nameValue;
-        returnValue = Messages.getString(nameValue, getResourceBundle());
+        //modified by wzhang. set the pluginId null
+        returnValue = Messages.getString(nameValue, null, getResourceBundle());
         return returnValue;
     }
 
