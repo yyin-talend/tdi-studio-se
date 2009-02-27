@@ -19,7 +19,6 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.talend.core.CorePlugin;
 import org.talend.core.PluginChecker;
 import org.talend.core.prefs.ITalendCorePrefConstants;
-
 import org.talend.repository.i18n.Messages;
 
 /**
@@ -28,7 +27,7 @@ import org.talend.repository.i18n.Messages;
  */
 public class DocumentationPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
-    private BooleanFieldEditor booleanFieldEditor;
+    // private BooleanFieldEditor booleanFieldEditor;
 
     private boolean isDocumentationPluginLoaded = true;
 
@@ -53,16 +52,16 @@ public class DocumentationPreferencePage extends FieldEditorPreferencePage imple
      */
     @Override
     protected void createFieldEditors() {
-        booleanFieldEditor = new BooleanFieldEditor(ITalendCorePrefConstants.DOC_GENERATION, Messages
-                .getString("DocumentationPreferencePage.autoUpdateDoc"), getFieldEditorParent()); //$NON-NLS-1$
+        // booleanFieldEditor = new BooleanFieldEditor(ITalendCorePrefConstants.DOC_GENERATION, Messages
+        //                .getString("DocumentationPreferencePage.autoUpdateDoc"), getFieldEditorParent()); //$NON-NLS-1$
         passwordHideFieldEditor = new BooleanFieldEditor(ITalendCorePrefConstants.DOC_HIDEPASSWORDS, Messages
                 .getString("DocumentationPreferencePage.hidePwd"), getFieldEditorParent()); //$NON-NLS-1$
         sourceCodeGenFieldEditor = new BooleanFieldEditor(ITalendCorePrefConstants.DOC_GENERATESOURCECODE, Messages
                 .getString("DocumentationPreferencePage.sourceCodeToHTML"), getFieldEditorParent()); //$NON-NLS-1$
-        addField(booleanFieldEditor);
+        // addField(booleanFieldEditor);
         addField(passwordHideFieldEditor);
         addField(sourceCodeGenFieldEditor);
-        booleanFieldEditor.setEnabled(isDocumentationPluginLoaded, getFieldEditorParent());
+        // booleanFieldEditor.setEnabled(isDocumentationPluginLoaded, getFieldEditorParent());
 
     }
 

@@ -14,14 +14,9 @@ package org.talend.sqlbuilder.ui.prefs;
 
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
-import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.jface.preference.RadioGroupFieldEditor;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.talend.commons.ui.swt.preferences.CheckBoxFieldEditor;
 import org.talend.core.CorePlugin;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.sqlbuilder.Messages;
@@ -41,9 +36,9 @@ public class SqlBuilderPreferencePage extends FieldEditorPreferencePage implemen
 
     private RadioGroupFieldEditor choiceAS4Sql;
 
-    private CheckBoxFieldEditor dbConnTimeoutActive;
+    // private CheckBoxFieldEditor dbConnTimeoutActive;
 
-    private IntegerFieldEditor dbConnTimeout;
+    // private IntegerFieldEditor dbConnTimeout;
 
     private static final String STANDARD_MODE = "true"; //$NON-NLS-1$
 
@@ -66,40 +61,41 @@ public class SqlBuilderPreferencePage extends FieldEditorPreferencePage implemen
                 { Messages.getString("SqlBuilderPreferencePage.StandardSQL"), STANDARD_MODE }, //$NON-NLS-1$
                         { Messages.getString("SqlBuilderPreferencePage.SystemSQL"), SYSTEM_MODE }, }, getFieldEditorParent()); //$NON-NLS-1$
 
-        dbConnTimeoutActive = new CheckBoxFieldEditor(ITalendCorePrefConstants.DB_CONNECTION_TIMEOUT_ACTIVED, Messages
-                .getString("SqlBuilderPreferencePage.ActivedTimeoutSetting"), getFieldEditorParent()); //$NON-NLS-1$
-        dbConnTimeoutActive.getButton().addSelectionListener(new SelectionAdapter() {
-
-            public void widgetSelected(SelectionEvent e) {
-                checkDBTimeout();
-            }
-        });
-        dbConnTimeout = new IntegerFieldEditor(ITalendCorePrefConstants.DB_CONNECTION_TIMEOUT, Messages
-                .getString("SqlBuilderPreferencePage.ConnectionTimeout"), //$NON-NLS-1$
-                getFieldEditorParent());
-        Text textControl = dbConnTimeout.getTextControl(getFieldEditorParent());
-        textControl.setToolTipText(Messages.getString("SqlBuilderPreferencePage.ConnectionTimeoutTip")); //$NON-NLS-1$
-        dbConnTimeout.setValidRange(0, Short.MAX_VALUE);
+        // dbConnTimeoutActive = new CheckBoxFieldEditor(ITalendCorePrefConstants.DB_CONNECTION_TIMEOUT_ACTIVED,
+        // Messages
+        //                .getString("SqlBuilderPreferencePage.ActivedTimeoutSetting"), getFieldEditorParent()); //$NON-NLS-1$
+        // dbConnTimeoutActive.getButton().addSelectionListener(new SelectionAdapter() {
+        //
+        // public void widgetSelected(SelectionEvent e) {
+        // checkDBTimeout();
+        // }
+        // });
+        // dbConnTimeout = new IntegerFieldEditor(ITalendCorePrefConstants.DB_CONNECTION_TIMEOUT, Messages
+        //                .getString("SqlBuilderPreferencePage.ConnectionTimeout"), //$NON-NLS-1$
+        // getFieldEditorParent());
+        // Text textControl = dbConnTimeout.getTextControl(getFieldEditorParent());
+        //        textControl.setToolTipText(Messages.getString("SqlBuilderPreferencePage.ConnectionTimeoutTip")); //$NON-NLS-1$
+        // dbConnTimeout.setValidRange(0, Short.MAX_VALUE);
 
         addField(booleanFieldEditor);
         addField(choiceAS4Sql);
-        addField(dbConnTimeoutActive);
-        addField(dbConnTimeout);
+        // addField(dbConnTimeoutActive);
+        // addField(dbConnTimeout);
 
     }
 
     @Override
     protected void initialize() {
         super.initialize();
-        checkDBTimeout();
+        // checkDBTimeout();
     }
 
-    private void checkDBTimeout() {
-        if (dbConnTimeout != null) {
-            Text textControl = dbConnTimeout.getTextControl(getFieldEditorParent());
-            if (textControl != null && dbConnTimeoutActive != null) {
-                textControl.setEnabled(dbConnTimeoutActive.getBooleanValue());
-            }
-        }
-    }
+    // private void checkDBTimeout() {
+    // if (dbConnTimeout != null) {
+    // Text textControl = dbConnTimeout.getTextControl(getFieldEditorParent());
+    // if (textControl != null && dbConnTimeoutActive != null) {
+    // textControl.setEnabled(dbConnTimeoutActive.getBooleanValue());
+    // }
+    // }
+    // }
 }

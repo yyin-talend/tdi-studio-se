@@ -111,7 +111,7 @@
           id="org.talend.designer.runprocess"
           name="Run/Debug"/>
     <page
-          category="org.talend.core.prefs"
+          category="org.talend.designer.core.ui.preferences.ImportExportPreferencePage"
           class="org.talend.designer.runprocess.prefs.ShellSettingPreferencePage"
           id="org.talend.designer.runprocess.prefs.ShellSettingPreferencePage"
           name="Shell Setting">

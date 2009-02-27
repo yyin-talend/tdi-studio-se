@@ -34,13 +34,13 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            category="org.talend.core.prefs"
+            category="org.talend.designer.core.ui.preferences.AppearancePreferencePage"
             class="org.talend.designer.core.ui.preferences.DesignerPreferencePage"
             id="org.talend.designer.core.ui.preferences.TalendPreferencePage"
             name="%designer">
       </page>
       <page
-            category="org.talend.core.prefs"
+            category="org.talend.designer.core.ui.preferences.FontPreferencePage"
             class="org.talend.designer.core.ui.preferences.PropertiesPreferencePage"
             id="org.talend.designer.core.properties.memo.text.font"
             name="Memo Text Font">
@@ -50,6 +50,48 @@
             class="org.talend.designer.core.ui.preferences.DesignerColorsPreferencePage"
             id="org.talend.designer.core.ui.preferences.DesignerColorsPreferencePage"
             name="Colors">
+      </page>
+      <page
+            category="org.talend.core.prefs"
+            class="org.talend.designer.core.ui.preferences.PerformancePreferencePage"
+            id="org.talend.designer.core.ui.preferences.PerformancePreferencePage"
+            name="Performance">
+      </page>
+      <page
+            category="org.talend.core.prefs"
+            class="org.talend.designer.core.ui.preferences.SpecificSettingPreferencePage"
+            id="org.talend.designer.core.ui.preferences.SpecificSettingPreferencePage"
+            name="Specific Setting">
+      </page>
+      <page
+            category="org.talend.core.prefs"
+            class="org.talend.designer.core.ui.preferences.ImportExportPreferencePage"
+            id="org.talend.designer.core.ui.preferences.ImportExportPreferencePage"
+            name="Import/Export">
+      </page>
+      <page
+            category="org.talend.core.prefs"
+            class="org.talend.designer.core.ui.preferences.AppearancePreferencePage"
+            id="org.talend.designer.core.ui.preferences.AppearancePreferencePage"
+            name="Appearance">
+      </page>
+      <page
+            category="org.talend.designer.core.ui.preferences.AppearancePreferencePage"
+            class="org.talend.designer.core.ui.preferences.ContextPreferencePage"
+            id="org.talend.designer.core.ui.preferences.ContextPreferencePage"
+            name="Context">
+      </page>
+      <page
+            category="org.talend.designer.core.ui.preferences.AppearancePreferencePage"
+            class="org.talend.designer.core.ui.preferences.FontPreferencePage"
+            id="org.talend.designer.core.ui.preferences.FontPreferencePage"
+            name="Font">
+      </page>
+      <page
+            category="org.talend.designer.core.ui.preferences.FontPreferencePage"
+            class="org.talend.designer.core.ui.preferences.OutputConsolePreferencePage"
+            id="org.talend.designer.core.ui.preferences.OutputConsolePreferencePage"
+            name="Output Console">
       </page>
    </extension>
    <extension

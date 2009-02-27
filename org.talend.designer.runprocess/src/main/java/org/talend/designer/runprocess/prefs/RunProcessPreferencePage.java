@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.designer.runprocess.prefs;
 
-import org.eclipse.gmf.runtime.common.ui.preferences.FontFieldEditor;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
@@ -104,7 +103,7 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
 
     private Composite parent;
 
-    private FontFieldEditor consoleFontField = null;
+    // private FontFieldEditor consoleFontField = null;
 
     /**
      * Create the console page.
@@ -136,22 +135,22 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
     /**
      * DOC chuang Comment method "addConsoleFont".
      */
-    private void addConsoleFont() {
-        Group group = new Group(parent, SWT.NONE);
-        group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        group.setLayout(new GridLayout(1, false));
-        group.setText(Messages.getString("RunProcessPreferencePage.outputConsole")); //$NON-NLS-1$
-
-        Composite composite = new Composite(group, SWT.NONE);
-        composite.setLayout(new GridLayout(3, false));
-        GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
-        gridData.grabExcessHorizontalSpace = true;
-        gridData.horizontalSpan = 3;
-        composite.setLayoutData(gridData);
-        consoleFontField = new FontFieldEditor(RunProcessPrefsConstants.CONSOLE_FONT, Messages.getString("RunProcessPreferencePage.consoleFont"), composite); //$NON-NLS-1$
-
-    }
-
+    // private void addConsoleFont() {
+    // Group group = new Group(parent, SWT.NONE);
+    // group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+    // group.setLayout(new GridLayout(1, false));
+    //        group.setText(Messages.getString("RunProcessPreferencePage.outputConsole")); //$NON-NLS-1$
+    //
+    // Composite composite = new Composite(group, SWT.NONE);
+    // composite.setLayout(new GridLayout(3, false));
+    // GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
+    // gridData.grabExcessHorizontalSpace = true;
+    // gridData.horizontalSpan = 3;
+    // composite.setLayoutData(gridData);
+    // consoleFontField = new FontFieldEditor(RunProcessPrefsConstants.CONSOLE_FONT, Messages
+    //                .getString("RunProcessPreferencePage.consoleFont"), composite); //$NON-NLS-1$
+    //
+    // }
     /**
      * Create all field editors for this page.
      */
@@ -245,7 +244,8 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
         compositeSaveBeforeRun.setLayoutData(new GridData(GridData.FILL_BOTH));
         GridLayout gridLayoutSaveBeforeRun = new GridLayout(1, true);
         compositeSaveBeforeRun.setLayout(gridLayoutSaveBeforeRun);
-        onSavebeforeField = new BooleanFieldEditor(RunProcessPrefsConstants.ISSAVEBEFORERUN, Messages.getString("RunProcessPreferencePage.save"), SWT.NONE, //$NON-NLS-1$
+        onSavebeforeField = new BooleanFieldEditor(RunProcessPrefsConstants.ISSAVEBEFORERUN, Messages
+                .getString("RunProcessPreferencePage.save"), SWT.NONE, //$NON-NLS-1$
                 compositeSaveBeforeRun);
         addField(onSavebeforeField);
 
@@ -253,7 +253,8 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
         compositeClearBeforeRun.setLayoutData(new GridData(GridData.FILL_BOTH));
         GridLayout gridLayoutClearBeforeRun = new GridLayout(1, true);
         compositeClearBeforeRun.setLayout(gridLayoutClearBeforeRun);
-        onClearbeforeField = new BooleanFieldEditor(RunProcessPrefsConstants.ISCLEARBEFORERUN, Messages.getString("RunProcessPreferencePage.clear"), SWT.NONE, //$NON-NLS-1$
+        onClearbeforeField = new BooleanFieldEditor(RunProcessPrefsConstants.ISCLEARBEFORERUN, Messages
+                .getString("RunProcessPreferencePage.clear"), SWT.NONE, //$NON-NLS-1$
                 compositeClearBeforeRun);
 
         addField(onClearbeforeField);
@@ -261,7 +262,8 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
         compositeExecTimeRun.setLayoutData(new GridData(GridData.FILL_BOTH));
         GridLayout gridLayoutExecTimeRun = new GridLayout(1, true);
         compositeExecTimeRun.setLayout(gridLayoutExecTimeRun);
-        onExecTimeField = new BooleanFieldEditor(RunProcessPrefsConstants.ISEXECTIMERUN, Messages.getString("RunProcessPreferencePage.execTime"), SWT.NONE, //$NON-NLS-1$
+        onExecTimeField = new BooleanFieldEditor(RunProcessPrefsConstants.ISEXECTIMERUN, Messages
+                .getString("RunProcessPreferencePage.execTime"), SWT.NONE, //$NON-NLS-1$
                 compositeExecTimeRun);
         addField(onExecTimeField);
 
@@ -269,7 +271,8 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
         compositeStatisticsRun.setLayoutData(new GridData(GridData.FILL_BOTH));
         GridLayout gridLayoutStatisticsRun = new GridLayout(1, true);
         compositeStatisticsRun.setLayout(gridLayoutStatisticsRun);
-        onStatisticsField = new BooleanFieldEditor(RunProcessPrefsConstants.ISSTATISTICSRUN, Messages.getString("RunProcessPreferencePage.statistics"), SWT.NONE, //$NON-NLS-1$
+        onStatisticsField = new BooleanFieldEditor(RunProcessPrefsConstants.ISSTATISTICSRUN, Messages
+                .getString("RunProcessPreferencePage.statistics"), SWT.NONE, //$NON-NLS-1$
                 compositeStatisticsRun);
         addField(onStatisticsField);
 
@@ -277,24 +280,27 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
         compositeTracesRun.setLayoutData(new GridData(GridData.FILL_BOTH));
         GridLayout gridLayoutTracesRun = new GridLayout(1, false);
         compositeTracesRun.setLayout(gridLayoutTracesRun);
-        onTracesField = new BooleanFieldEditor(RunProcessPrefsConstants.ISTRACESRUN, Messages.getString("RunProcessPreferencePage.traces"), SWT.NONE, compositeTracesRun); //$NON-NLS-1$
+        onTracesField = new BooleanFieldEditor(RunProcessPrefsConstants.ISTRACESRUN, Messages
+                .getString("RunProcessPreferencePage.traces"), SWT.NONE, compositeTracesRun); //$NON-NLS-1$
         addField(onTracesField);
 
         Composite compositeTracesTime = new Composite(compositeStateTraceRun, SWT.NONE);
         compositeTracesTime.setLayoutData(new GridData(GridData.FILL_BOTH));
         GridLayout gridLayoutTracesTime = new GridLayout(1, false);
         compositeTracesTime.setLayout(gridLayoutTracesTime);
-        tracesTime = new IntegerFieldEditor(RunProcessPrefsConstants.STRACESTIME, Messages.getString("RunProcessPreferencePage.pauseTime"), compositeTracesTime); //$NON-NLS-1$
+        tracesTime = new IntegerFieldEditor(RunProcessPrefsConstants.STRACESTIME, Messages
+                .getString("RunProcessPreferencePage.pauseTime"), compositeTracesTime); //$NON-NLS-1$
         addField(tracesTime);
 
         // 0004895: Font size of the output console are very small
-        addConsoleFont();
+        // addConsoleFont();
 
         Composite argumentsComposite = new Composite(parent, SWT.NONE);
         argumentsComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
         GridLayout gridLayoutArguments = new GridLayout(1, false);
         argumentsComposite.setLayout(gridLayoutArguments);
-        VMArgumentsViewer argumentsViewer = new VMArgumentsViewer(RunProcessPrefsConstants.VMARGUMENTS, Messages.getString("RunProcessPreferencePage.vmArgument"), //$NON-NLS-1$
+        VMArgumentsViewer argumentsViewer = new VMArgumentsViewer(RunProcessPrefsConstants.VMARGUMENTS, Messages
+                .getString("RunProcessPreferencePage.vmArgument"), //$NON-NLS-1$
                 argumentsComposite);
         addField(argumentsViewer);
     }
@@ -321,7 +327,8 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
     @Override
     public boolean performOk() {
         boolean ok = super.performOk();
-        consoleFontField.store();
+        // consoleFontField.store();
+
         // update high water mark to be (about) 100 lines (100 * 80 chars) greater than low water mark
         // IPreferenceStore store = RunRemoteProcessPlugin.getDefault().getPreferenceStore();
         // int low = store.getInt(IDebugPreferenceConstants.CONSOLE_LOW_WATER_MARK);
@@ -339,22 +346,22 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
     @Override
     protected void initialize() {
         super.initialize();
-        if (consoleFontField != null) {
-            consoleFontField.setPage(this);
-            consoleFontField.setPropertyChangeListener(this);
-            consoleFontField.setPreferenceStore(getPreferenceStore());
-            consoleFontField.load();
-        }
+        // if (consoleFontField != null) {
+        // consoleFontField.setPage(this);
+        // consoleFontField.setPropertyChangeListener(this);
+        // consoleFontField.setPreferenceStore(getPreferenceStore());
+        // consoleFontField.load();
+        // }
     }
 
     @Override
     public void dispose() {
         super.dispose();
-        if (consoleFontField != null) {
-            consoleFontField.setPage(null);
-            consoleFontField.setPropertyChangeListener(null);
-            consoleFontField.setPreferenceStore(null);
-        }
+        // if (consoleFontField != null) {
+        // consoleFontField.setPage(null);
+        // consoleFontField.setPropertyChangeListener(null);
+        // consoleFontField.setPreferenceStore(null);
+        // }
     }
 
     /**
@@ -364,7 +371,7 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
     protected void performDefaults() {
         RunProcessPlugin.getDefault().getPreferenceStore().setDefault(RunProcessPrefsConstants.ISCLEARBEFORERUN, true);
         super.performDefaults();
-        consoleFontField.loadDefault();
+        // consoleFontField.loadDefault();
     }
 
     protected boolean canClearErrorMessage() {

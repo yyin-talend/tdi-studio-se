@@ -20,7 +20,6 @@ import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.talend.core.model.components.ComponentUtilities;
-import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 
@@ -78,7 +77,7 @@ public class DesignerPreferencePage extends FieldEditorPreferencePage implements
         BooleanFieldEditor showHint;
         // BooleanFieldEditor displayComponent;
         BooleanFieldEditor useRepositoryName;
-        BooleanFieldEditor deactiveRepositoryUpdate;
+        // BooleanFieldEditor deactiveRepositoryUpdate;
 
         labelField = new StringFieldEditor(TalendDesignerPrefConstants.DEFAULT_LABEL, Messages
                 .getString("DesignerPreferencePage.component.defaultLabel"), //$NON-NLS-1$
@@ -86,8 +85,8 @@ public class DesignerPreferencePage extends FieldEditorPreferencePage implements
         hintField = new StringFieldEditor(TalendDesignerPrefConstants.DEFAULT_HINT, Messages
                 .getString("DesignerPreferencePage.component.defaultHint"), //$NON-NLS-1$
                 getFieldEditorParent());
-        connectionField = new StringFieldEditor(TalendDesignerPrefConstants.DEFAULT_CONNECTION_FORMAT,
-                Messages.getString("DesignerPreferencePage.defaultConnection"), getFieldEditorParent()); //$NON-NLS-1$
+        connectionField = new StringFieldEditor(TalendDesignerPrefConstants.DEFAULT_CONNECTION_FORMAT, Messages
+                .getString("DesignerPreferencePage.defaultConnection"), getFieldEditorParent()); //$NON-NLS-1$
         showHint = new BooleanFieldEditor(TalendDesignerPrefConstants.DEFAULT_HINT_USED, Messages
                 .getString("DesignerPreferencePage.hintShowed"), //$NON-NLS-1$
                 getFieldEditorParent());
@@ -96,8 +95,9 @@ public class DesignerPreferencePage extends FieldEditorPreferencePage implements
         useRepositoryName = new BooleanFieldEditor(TalendDesignerPrefConstants.USE_REPOSITORY_NAME, Messages
                 .getString("DesignerPreferencePage.display.useRepositoryName"), getFieldEditorParent()); //$NON-NLS-1$
 
-        deactiveRepositoryUpdate = new BooleanFieldEditor(ITalendCorePrefConstants.DEACTIVE_REPOSITORY_UPDATE, Messages
-                .getString("DesignerPreferencePage.display.deactiveRepositoryUpdate"), getFieldEditorParent()); //$NON-NLS-1$
+        // deactiveRepositoryUpdate = new BooleanFieldEditor(ITalendCorePrefConstants.DEACTIVE_REPOSITORY_UPDATE,
+        // Messages
+        //                .getString("DesignerPreferencePage.display.deactiveRepositoryUpdate"), getFieldEditorParent()); //$NON-NLS-1$
 
         addField(labelField);
         addField(hintField);
@@ -105,10 +105,10 @@ public class DesignerPreferencePage extends FieldEditorPreferencePage implements
         addField(showHint);
         // addField(displayComponent);
         addField(useRepositoryName);
-        addField(deactiveRepositoryUpdate);
+        // addField(deactiveRepositoryUpdate);
 
-        addField(new BooleanFieldEditor(TalendDesignerPrefConstants.PROPERTY_CODE_CHECK, Messages
-                .getString("DesignerPreferencePage.propertyCodeCheck"), getFieldEditorParent())); //$NON-NLS-1$
+        // addField(new BooleanFieldEditor(TalendDesignerPrefConstants.PROPERTY_CODE_CHECK, Messages
+        //                .getString("DesignerPreferencePage.propertyCodeCheck"), getFieldEditorParent())); //$NON-NLS-1$
 
         BooleanFieldEditor antialiasing;
         antialiasing = new BooleanFieldEditor(TalendDesignerPrefConstants.EDITOR_ANTIALIASING,
@@ -142,23 +142,25 @@ public class DesignerPreferencePage extends FieldEditorPreferencePage implements
         // BooleanFieldEditor viewSubjobs = new BooleanFieldEditor(TalendDesignerPrefConstants.DISPLAY_SUBJOBS,
         // "Highlight subjobs in the job designs", getFieldEditorParent());
         // addField(viewSubjobs);
-        BooleanFieldEditor generateCodeWhenOpenJob = new BooleanFieldEditor(
-                TalendDesignerPrefConstants.GENERATE_CODE_WHEN_OPEN_JOB, Messages.getString("DesignerPreferencePage.generateCode"), //$NON-NLS-1$
-                getFieldEditorParent());
-        addField(generateCodeWhenOpenJob);
+        // BooleanFieldEditor generateCodeWhenOpenJob = new BooleanFieldEditor(
+        // TalendDesignerPrefConstants.GENERATE_CODE_WHEN_OPEN_JOB, Messages
+        //                        .getString("DesignerPreferencePage.generateCode"), //$NON-NLS-1$
+        // getFieldEditorParent());
+        // addField(generateCodeWhenOpenJob);
 
         // When updating jobs or joblets, check only the last version, and checked by default
-        BooleanFieldEditor checkOnlyLastVersion = new BooleanFieldEditor(TalendDesignerPrefConstants.CHECK_ONLY_LAST_VERSION,
-                Messages.getString("DesignerPreferencePage.checkVersion"), getFieldEditorParent()); //$NON-NLS-1$
-        addField(checkOnlyLastVersion);
+        // BooleanFieldEditor checkOnlyLastVersion = new
+        // BooleanFieldEditor(TalendDesignerPrefConstants.CHECK_ONLY_LAST_VERSION,
+        //                Messages.getString("DesignerPreferencePage.checkVersion"), getFieldEditorParent()); //$NON-NLS-1$
+        // addField(checkOnlyLastVersion);
 
-        BooleanFieldEditor propagateContextVariable = new BooleanFieldEditor(
-                TalendDesignerPrefConstants.PROPAGATE_CONTEXT_VARIABLE,
-                Messages.getString("DesignerPreferencePage.addOrDeleteVariable"), getFieldEditorParent()); //$NON-NLS-1$
-        addField(propagateContextVariable);
+        // BooleanFieldEditor propagateContextVariable = new BooleanFieldEditor(
+        // TalendDesignerPrefConstants.PROPAGATE_CONTEXT_VARIABLE, Messages
+        //                        .getString("DesignerPreferencePage.addOrDeleteVariable"), getFieldEditorParent()); //$NON-NLS-1$
+        // addField(propagateContextVariable);
 
-        BooleanFieldEditor displayMethodSize = new BooleanFieldEditor(TalendDesignerPrefConstants.DISPLAY_METHOD_SIZE,
-                Messages.getString("DesignerPreferencePage.computeLength"), getFieldEditorParent()); //$NON-NLS-1$
+        BooleanFieldEditor displayMethodSize = new BooleanFieldEditor(TalendDesignerPrefConstants.DISPLAY_METHOD_SIZE, Messages
+                .getString("DesignerPreferencePage.computeLength"), getFieldEditorParent()); //$NON-NLS-1$
         addField(displayMethodSize);
 
     }

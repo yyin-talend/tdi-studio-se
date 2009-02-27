@@ -4,7 +4,7 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            category="org.talend.core.prefs"
+            category="org.talend.designer.core.ui.preferences.ImportExportPreferencePage"
             class="org.talend.sbi.engines.client.ui.preferences.SpagoBiPreferencePage"
             id="org.talend.repository.prefs.spagobi"
             name="SpagoBi Server"/>

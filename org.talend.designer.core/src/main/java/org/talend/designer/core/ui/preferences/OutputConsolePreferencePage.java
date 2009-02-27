@@ -22,43 +22,22 @@ import org.eclipse.swt.widgets.Group;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 
-/**
- * yzhang class global comment. Detailled comment <br/>
- * 
- * $Id: PropertiesPreferencePage.java 下午02:13:35 2007-8-24 +0000 (2007-8-24) yzhang $
- * 
- */
-public class PropertiesPreferencePage extends AbstractPreferencePage {
+public class OutputConsolePreferencePage extends AbstractPreferencePage {
 
-    private final String groupName = "Memo Text Font"; //$NON-NLS-1$
+    private FontFieldEditor consoleFontField = null;
 
-    private FontFieldEditor memoFontEditor = null;
+    public static final String CONSOLE_FONT = "talendOutputConsoleFont"; //$NON-NLS-1$
 
-    /**
-     * yzhang PropertiesPreferencePage constructor comment.
-     */
-    public PropertiesPreferencePage() {
+    public OutputConsolePreferencePage() {
         setPreferenceStore(DesignerPlugin.getDefault().getPreferenceStore());
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.gmf.runtime.common.ui.preferences.AbstractPreferencePage#addFields(org.eclipse.swt.widgets.Composite)
-     */
     @Override
     protected void addFields(Composite parent) {
         Composite main = createPageLayout(parent);
         createFontAndColorGroup(main);
     }
 
-    /**
-     * yzhang Comment method "createPageLayout".
-     * 
-     * @param parent
-     * @return
-     */
     private Composite createPageLayout(Composite parent) {
         Composite main = new Composite(parent, SWT.NULL);
         main.setLayout(new GridLayout());
@@ -66,12 +45,6 @@ public class PropertiesPreferencePage extends AbstractPreferencePage {
         return main;
     }
 
-    /**
-     * yzhang Comment method "createFontAndColorGroup".
-     * 
-     * @param parent
-     * @return
-     */
     protected Composite createFontAndColorGroup(Composite parent) {
 
         Group group = new Group(parent, SWT.NONE);
@@ -84,7 +57,7 @@ public class PropertiesPreferencePage extends AbstractPreferencePage {
         gridData.grabExcessHorizontalSpace = true;
         gridData.horizontalSpan = 3;
         composite.setLayoutData(gridData);
-        group.setText(groupName);
+        group.setText(Messages.getString("OutputConsolePreferencePage.outputConsole"));
 
         addFontAndColorFields(composite);
 
@@ -96,19 +69,16 @@ public class PropertiesPreferencePage extends AbstractPreferencePage {
         composite.setLayout(layout);
 
         return group;
+
     }
 
     protected void addFontAndColorFields(Composite composite) {
-        memoFontEditor = new FontFieldEditor(TalendDesignerPrefConstants.MEMO_TEXT_FONT, Messages
-                .getString("PropertiesPreferencePage.textFont"), composite); //$NON-NLS-1$
-        addField(memoFontEditor);
+
+        consoleFontField = new FontFieldEditor(OutputConsolePreferencePage.CONSOLE_FONT, Messages
+                .getString("OutputConsolePreferencePage.consoleFont"), composite); //$NON-NLS-1$
+        addField(consoleFontField);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.gmf.runtime.common.ui.preferences.AbstractPreferencePage#initHelp()
-     */
     @Override
     protected void initHelp() {
         // do nothing.
