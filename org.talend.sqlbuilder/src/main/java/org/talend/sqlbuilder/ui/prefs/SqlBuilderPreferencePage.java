@@ -12,12 +12,17 @@
 // ============================================================================
 package org.talend.sqlbuilder.ui.prefs;
 
+import java.util.List;
+
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.sqlbuilder.Messages;
 
@@ -35,6 +40,8 @@ public class SqlBuilderPreferencePage extends FieldEditorPreferencePage implemen
     private BooleanFieldEditor booleanFieldEditor;
 
     private RadioGroupFieldEditor choiceAS4Sql;
+
+    private BooleanFieldEditor sqlwarn;
 
     // private CheckBoxFieldEditor dbConnTimeoutActive;
 
@@ -60,6 +67,8 @@ public class SqlBuilderPreferencePage extends FieldEditorPreferencePage implemen
                 .getString("SqlBuilderPreferencePage.AS400SqlGen"), 1, new String[][] { //$NON-NLS-1$
                 { Messages.getString("SqlBuilderPreferencePage.StandardSQL"), STANDARD_MODE }, //$NON-NLS-1$
                         { Messages.getString("SqlBuilderPreferencePage.SystemSQL"), SYSTEM_MODE }, }, getFieldEditorParent()); //$NON-NLS-1$
+        sqlwarn = new BooleanFieldEditor(ITalendCorePrefConstants.SQL_ADD_WARNING, Messages.getString("SqlBuilderPreferencePage.sql"), //$NON-NLS-1$
+                getFieldEditorParent());
 
         // dbConnTimeoutActive = new CheckBoxFieldEditor(ITalendCorePrefConstants.DB_CONNECTION_TIMEOUT_ACTIVED,
         // Messages
@@ -79,9 +88,33 @@ public class SqlBuilderPreferencePage extends FieldEditorPreferencePage implemen
 
         addField(booleanFieldEditor);
         addField(choiceAS4Sql);
+        addField(sqlwarn);
         // addField(dbConnTimeoutActive);
         // addField(dbConnTimeout);
 
+    }
+
+    @Override
+    public boolean performOk() {
+        boolean performOk = super.performOk();
+        refreshProblems();
+        return performOk;
+    }
+
+    @Override
+    protected void performApply() {
+        super.performApply();
+        refreshProblems();
+    }
+
+    private void refreshProblems() {
+        List<IProcess> openedProcessList = CorePlugin.getDefault().getDesignerCoreService().getOpenedProcess(
+                RepositoryUpdateManager.getEditors());
+        for (IProcess process : openedProcessList) {
+            if (process instanceof IProcess2) {
+                ((IProcess2) process).checkProcess();
+            }
+        }
     }
 
     @Override
