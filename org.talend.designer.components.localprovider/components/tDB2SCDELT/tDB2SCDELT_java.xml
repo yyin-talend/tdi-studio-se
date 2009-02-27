@@ -128,7 +128,7 @@
     
     <PARAMETER
       NAME="TABLE"
-      FIELD="TEXT"
+      FIELD="DBTABLE"
       NUM_ROW="51"
       REQUIRED="true"
     >

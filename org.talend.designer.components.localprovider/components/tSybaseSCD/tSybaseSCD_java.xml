@@ -110,7 +110,7 @@
 
     <PARAMETER
       NAME="TABLE"
-      FIELD="TEXT"
+      FIELD="DBTABLE"
       NUM_ROW="50"
       REQUIRED="true"
     >
