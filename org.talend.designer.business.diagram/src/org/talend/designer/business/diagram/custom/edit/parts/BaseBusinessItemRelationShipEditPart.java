@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.business.diagram.custom.edit.parts;
 
+import org.eclipse.draw2d.Connection;
 import org.eclipse.gmf.runtime.diagram.ui.editparts.ConnectionNodeEditPart;
 import org.eclipse.gmf.runtime.diagram.ui.editpolicies.EditPolicyRoles;
 import org.eclipse.gmf.runtime.notation.View;
@@ -44,4 +45,11 @@ public abstract class BaseBusinessItemRelationShipEditPart extends ConnectionNod
         super.createDefaultEditPolicies();
         installEditPolicy(EditPolicyRoles.DRAG_DROP_ROLE, new BusinessItemDragDropEditPolicy());
     }
+
+    @Override
+    protected Connection createConnectionFigure() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

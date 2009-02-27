@@ -131,6 +131,16 @@ public class RepositoryHelper {
             return BusinessPackage.eINSTANCE.getQuery();
         } else if (type == ERepositoryObjectType.JOBLET) {
             return BusinessPackage.eINSTANCE.getJoblet();
+        } else if (type == ERepositoryObjectType.METADATA_LDAP_SCHEMA) {
+            return BusinessPackage.eINSTANCE.getLdap();
+        } else if (type == ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA) {
+            return BusinessPackage.eINSTANCE.getSalesforce();
+        } else if (type == ERepositoryObjectType.METADATA_WSDL_SCHEMA) {
+            return BusinessPackage.eINSTANCE.getWsdl();
+        } else if (type == ERepositoryObjectType.SQLPATTERNS) {
+            return BusinessPackage.eINSTANCE.getSQLPattern();
+        } else if (type == ERepositoryObjectType.METADATA_FILE_EBCDIC) {
+            return BusinessPackage.eINSTANCE.getCopybook();
         }
         return null;
     }

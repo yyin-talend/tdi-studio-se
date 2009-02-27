@@ -33,6 +33,13 @@ public class JobSettings {
         }
     }
 
+    public static void switchToCurJobSettingsView(Object object) {
+        JobSettingsView jobSettingsView = getView();
+        if (jobSettingsView != null) {
+            jobSettingsView.refresh(true, object);
+        }
+    }
+
     /**
      * ggu Comment method "refreshView".
      */

@@ -21,6 +21,8 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * DOC Administrator class global comment. Detailled comment
@@ -33,7 +35,6 @@ public class BusinessTooltipFigure extends Figure {
 
     public BusinessTooltipFigure() {
         super();
-
         setLayoutManager(new FlowLayout(false));
 
     }
@@ -84,6 +85,8 @@ public class BusinessTooltipFigure extends Figure {
         } else {
             graphics.setAlpha(255);
         }
+        graphics.setBackgroundColor(new Color(Display.getCurrent(), 255, 255, 180));
+        graphics.fillRectangle(getBounds());
         super.paint(graphics);
     }
 
@@ -98,4 +101,5 @@ public class BusinessTooltipFigure extends Figure {
     public String getText() {
         return this.text;
     }
+
 }

@@ -19,6 +19,7 @@ import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.process.IProcess;
 import org.talend.designer.core.DesignerPlugin;
@@ -115,6 +116,7 @@ public class ActiveProcessTracker implements IPartListener {
             // }
             // }
         }
+
     }
 
     /**
@@ -158,6 +160,7 @@ public class ActiveProcessTracker implements IPartListener {
      * @see org.eclipse.ui.IPartListener#partClosed(org.eclipse.ui.IWorkbenchPart)
      */
     public void partClosed(IWorkbenchPart part) {
+
         if (part instanceof AbstractMultiPageTalendEditor && currentProcess != null) {
             AbstractMultiPageTalendEditor mpte = (AbstractMultiPageTalendEditor) part;
             if (mpte.isKeepPropertyLocked()) {
@@ -184,6 +187,21 @@ public class ActiveProcessTracker implements IPartListener {
                 UIUtils.closeSqlBuilderDialogs(process.getName());
             }
 
+        } else if (part instanceof IEditorPart) {
+            if (CorePlugin.getDefault().getDiagramModelService().isBusinessDiagramEditor((IEditorPart) part)) {
+                Contexts.setTitle(""); //$NON-NLS-1$
+                Contexts.clearAll();
+
+            }
+
+        }
+        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        if (page != null) {
+            if (page.getActiveEditor() != null) {
+                JobSettings.switchToCurJobSettingsView();
+            } else {
+                JobSettings.cleanDisplay();
+            }
         }
 
     }
@@ -224,8 +242,8 @@ public class ActiveProcessTracker implements IPartListener {
         if (process != null && currentProcess != process && lastProcessOpened != process) {
             lastProcessOpened = process;
             addJobInProblemView(process);
-            // JobSettings.switchToCurJobSettingsView();
         }
+
     }
 
     /**

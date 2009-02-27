@@ -12,8 +12,14 @@
 // ============================================================================
 package org.talend.designer.business.diagram.custom.figures;
 
+import org.eclipse.draw2d.Graphics;
+import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.LineBorder;
+import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gmf.runtime.gef.ui.figures.DefaultSizeNodeFigure;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * DOC mhelleboid class global comment. Detailled comment <br/>
@@ -23,12 +29,26 @@ import org.eclipse.gmf.runtime.gef.ui.figures.DefaultSizeNodeFigure;
  */
 public class BusinessItemShapeFigure extends DefaultSizeNodeFigure {
 
+    private boolean drawFrame;
+
+    protected LineBorder border = new LineBorder() {
+
+        @Override
+        public void paint(IFigure figure, Graphics graphics, Insets insets) {
+            graphics.setLineStyle(Graphics.LINE_DOT);
+            super.paint(figure, graphics, insets);
+            graphics.restoreState();
+        }
+
+    };
+
     /**
      * DOC mhelleboid BusinessItemShapeFigure constructor comment.
      */
     public BusinessItemShapeFigure() {
-        // PTODO mhelleboid 50
         super(50, 50);
+        border.setColor(new Color(Display.getCurrent(), 255, 110, 0));
+        border.setWidth(3);
     }
 
     /**
@@ -43,5 +63,23 @@ public class BusinessItemShapeFigure extends DefaultSizeNodeFigure {
         innerBounds.height = bounds.height - 1;
 
         return innerBounds;
+    }
+
+    protected Rectangle getSmallBounds() {
+        Rectangle outerBounds = getInnerBounds();
+        Rectangle smallBounds = new Rectangle();
+        smallBounds.x = outerBounds.x + 5;
+        smallBounds.y = outerBounds.y + 5;
+        smallBounds.width = outerBounds.width - 10;
+        smallBounds.height = outerBounds.height - 10;
+        return smallBounds;
+    }
+
+    public boolean getDrawFrame() {
+        return this.drawFrame;
+    }
+
+    public void setDrawFrame(boolean drawFrame) {
+        this.drawFrame = drawFrame;
     }
 }

@@ -36,7 +36,8 @@ Require-Bundle: org.eclipse.core.expressions,
  org.apache.axis,
  org.eclipse.gmf.runtime.diagram.ui.properties,
  org.eclipse.jdt.debug;bundle-version="3.4.0",
- org.apache.log4j;bundle-version="1.2.13"
+ org.apache.log4j;bundle-version="1.2.13",
+ org.eclipse.gmf.runtime.diagram.ui.resources.editor.ide;bundle-version="1.1.0"
 Eclipse-LazyStart: true
 Plugin-Class: org.talend.designer.core.DesignerPlugin
 Export-Package: org.talend.designer.core;

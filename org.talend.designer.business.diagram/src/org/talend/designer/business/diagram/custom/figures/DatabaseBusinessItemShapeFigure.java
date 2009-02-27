@@ -14,6 +14,8 @@ package org.talend.designer.business.diagram.custom.figures;
 
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * DOC mhelleboid class global comment. Detailled comment <br/>
@@ -29,8 +31,20 @@ public class DatabaseBusinessItemShapeFigure extends BusinessItemShapeFigure {
      * @see org.eclipse.gmf.runtime.gef.ui.figures.NodeFigure#paintFigure(org.eclipse.draw2d.Graphics)
      */
     @Override
-    protected void paintFigure(Graphics g) {
-        Rectangle r = getInnerBounds();
+    protected void paintFigure(Graphics graphics) {
+        setBackgroundColor(new Color(Display.getCurrent(), 157, 198, 204));
+        if (getDrawFrame()) {
+            setDefaultSize(60, 60);
+            setBorder(border);
+            drawFigure(getSmallBounds(), graphics);
+        } else {
+            setBorder(null);
+            drawFigure(getInnerBounds(), graphics);
+        }
+
+    }
+
+    private void drawFigure(Rectangle r, Graphics graphics) {
 
         int ellipseHeight = (int) (r.height * 0.25);
 
@@ -38,14 +52,13 @@ public class DatabaseBusinessItemShapeFigure extends BusinessItemShapeFigure {
         Rectangle middle = new Rectangle(r.x, r.y + (ellipseHeight / 2), r.width, r.height - ellipseHeight);
         Rectangle lowerArc = new Rectangle(r.x, r.y + r.height - ellipseHeight, r.width, ellipseHeight);
 
-        g.fillOval(ellipse);
-        g.fillRectangle(middle);
-        g.fillArc(lowerArc, 180, 180);
+        graphics.fillOval(ellipse);
+        graphics.fillRectangle(middle);
+        graphics.fillArc(lowerArc, 180, 180);
 
-        g.drawOval(ellipse.x, ellipse.y, ellipse.width, ellipse.height);
-        g.drawLine(middle.x, middle.y, middle.x, middle.y + middle.height);
-        g.drawLine(middle.x + middle.width, middle.y, middle.x + middle.width, middle.y + middle.height);
-        g.drawArc(lowerArc, 180, 180);
+        graphics.drawOval(ellipse.x, ellipse.y, ellipse.width, ellipse.height);
+        graphics.drawLine(middle.x, middle.y, middle.x, middle.y + middle.height);
+        graphics.drawLine(middle.x + middle.width, middle.y, middle.x + middle.width, middle.y + middle.height);
+        graphics.drawArc(lowerArc, 180, 180);
     }
-
 }

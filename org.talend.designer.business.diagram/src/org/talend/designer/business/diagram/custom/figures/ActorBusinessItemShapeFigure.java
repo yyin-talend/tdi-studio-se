@@ -14,6 +14,8 @@ package org.talend.designer.business.diagram.custom.figures;
 
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * DOC mhelleboid class global comment. Detailled comment <br/>
@@ -30,7 +32,19 @@ public class ActorBusinessItemShapeFigure extends BusinessItemShapeFigure {
      */
     @Override
     protected void paintFigure(Graphics graphics) {
-        Rectangle r = getInnerBounds();
+        setBackgroundColor(new Color(Display.getCurrent(), 202, 143, 135));
+        if (getDrawFrame()) {
+            setDefaultSize(60, 60);
+            setBorder(border);
+            drawFigure(getSmallBounds(), graphics);
+        } else {
+            setBorder(null);
+            drawFigure(getInnerBounds(), graphics);
+        }
+
+    }
+
+    private void drawFigure(Rectangle r, Graphics graphics) {
 
         int headHeight = (int) (r.height * 0.25);
 
@@ -50,15 +64,11 @@ public class ActorBusinessItemShapeFigure extends BusinessItemShapeFigure {
         graphics.drawLine(r.x + r.width / 2, r.y + headHeight, r.x + r.width / 2, r.y + r.height - legsHeight);
 
         // legs
-        graphics
-                .drawLine(r.x + r.width / 2, r.y + r.height - legsHeight, r.x + r.width / 2 + legsSpace, r.y + r.height);
-        graphics
-                .drawLine(r.x + r.width / 2, r.y + r.height - legsHeight, r.x + r.width / 2 - legsSpace, r.y + r.height);
+        graphics.drawLine(r.x + r.width / 2, r.y + r.height - legsHeight, r.x + r.width / 2 + legsSpace, r.y + r.height);
+        graphics.drawLine(r.x + r.width / 2, r.y + r.height - legsHeight, r.x + r.width / 2 - legsSpace, r.y + r.height);
 
         // arms
-        graphics.drawLine(r.x + r.width / 2, r.y + armsHeigth, r.x + r.width / 2 - armsLength, r.y + armsHeigth
-                - armsOffset);
-        graphics.drawLine(r.x + r.width / 2, r.y + armsHeigth, r.x + r.width / 2 + armsLength, r.y + armsHeigth
-                - armsOffset);
+        graphics.drawLine(r.x + r.width / 2, r.y + armsHeigth, r.x + r.width / 2 - armsLength, r.y + armsHeigth - armsOffset);
+        graphics.drawLine(r.x + r.width / 2, r.y + armsHeigth, r.x + r.width / 2 + armsLength, r.y + armsHeigth - armsOffset);
     }
 }

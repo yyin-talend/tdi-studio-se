@@ -16,6 +16,8 @@ import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * DOC mhelleboid class global comment. Detailled comment <br/>
@@ -32,7 +34,19 @@ public class GearBusinessItemShapeFigure extends BusinessItemShapeFigure {
      */
     @Override
     protected void paintFigure(Graphics graphics) {
-        Rectangle r = getInnerBounds();
+        setBackgroundColor(new Color(Display.getCurrent(), 224, 166, 155));
+        if (getDrawFrame()) {
+            setDefaultSize(60, 60);
+            setBorder(border);
+            drawFigure(getSmallBounds(), graphics);
+        } else {
+            setBorder(null);
+            drawFigure(getInnerBounds(), graphics);
+        }
+
+    }
+
+    private void drawFigure(Rectangle r, Graphics graphics) {
 
         int nbTeeth = 8;
         double teethAngle = 0.23;
@@ -49,8 +63,8 @@ public class GearBusinessItemShapeFigure extends BusinessItemShapeFigure {
         boolean externalFirst = false;
         for (double i = 0; i < 2 * Math.PI; i = i + Math.PI * 2 / (nbTeeth * 2)) {
             double j = (externalFirst ? i - Math.PI / nbTeeth * teethAngle : i + Math.PI / nbTeeth * teethAngle);
-            Point externalPoint = center.getTranslated((int) (Math.cos(j) * horizontalExternalRadius), (int) (Math
-                    .sin(j) * verticalExternalRadius));
+            Point externalPoint = center.getTranslated((int) (Math.cos(j) * horizontalExternalRadius),
+                    (int) (Math.sin(j) * verticalExternalRadius));
             Point internalPoint = center.getTranslated((int) (Math.cos(i) * horizontalInnerRadius),
                     (int) (Math.sin(i) * verticalInnerRadius));
             if (externalFirst) {
@@ -65,6 +79,5 @@ public class GearBusinessItemShapeFigure extends BusinessItemShapeFigure {
 
         graphics.drawPolygon(pointList);
         graphics.fillPolygon(pointList);
-
     }
 }

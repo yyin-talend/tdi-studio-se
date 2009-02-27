@@ -18,6 +18,8 @@ import java.util.Map;
 import org.apache.commons.collections.BidiMap;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.Query;
@@ -51,6 +53,10 @@ public class AbstractTabComposite extends Composite implements IDynamicProperty 
         super(parent, style);
         this.widgetFactory = widgetFactory;
         this.repositoryObject = obj;
+    }
+
+    public IEditorPart getEditor() {
+        return PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
     }
 
     /*
@@ -101,7 +107,9 @@ public class AbstractTabComposite extends Composite implements IDynamicProperty 
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getRepositoryAliasName(org.talend.core.model.properties.ConnectionItem)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getRepositoryAliasName(org
+     * .talend.core.model.properties.ConnectionItem)
      */
     public String getRepositoryAliasName(ConnectionItem connectionItem) {
         return null;
@@ -110,7 +118,9 @@ public class AbstractTabComposite extends Composite implements IDynamicProperty 
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getRepositoryConnectionItemMap()
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getRepositoryConnectionItemMap
+     * ()
      */
     public Map<String, ConnectionItem> getRepositoryConnectionItemMap() {
         return null;
@@ -119,7 +129,8 @@ public class AbstractTabComposite extends Composite implements IDynamicProperty 
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getRepositoryQueryStoreMap()
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getRepositoryQueryStoreMap()
      */
     public Map<String, Query> getRepositoryQueryStoreMap() {
         return null;
@@ -146,7 +157,8 @@ public class AbstractTabComposite extends Composite implements IDynamicProperty 
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getTableIdAndDbSchemaMap()
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getTableIdAndDbSchemaMap()
      */
     public Map<String, String> getTableIdAndDbSchemaMap() {
         return null;
@@ -155,7 +167,8 @@ public class AbstractTabComposite extends Composite implements IDynamicProperty 
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getTableIdAndDbTypeMap()
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getTableIdAndDbTypeMap()
      */
     public Map<String, String> getTableIdAndDbTypeMap() {
         return null;

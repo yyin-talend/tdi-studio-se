@@ -468,7 +468,7 @@ public class RepositoryService implements IRepositoryService {
      * 
      * @return
      */
-    private TreeViewer getRepositoryTreeView() {
+    public TreeViewer getRepositoryTreeView() {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         if (page != null) {
             IViewPart view = page.findView(RepositoryView.ID);

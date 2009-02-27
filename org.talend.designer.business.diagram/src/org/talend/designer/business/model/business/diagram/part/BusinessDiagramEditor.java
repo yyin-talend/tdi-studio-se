@@ -10,16 +10,26 @@ import org.eclipse.draw2d.LayeredPane;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.impl.AdapterImpl;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
+import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.LayerConstants;
 import org.eclipse.gmf.runtime.diagram.core.preferences.PreferencesHint;
+import org.eclipse.gmf.runtime.diagram.ui.actions.ActionIds;
+import org.eclipse.gmf.runtime.diagram.ui.editparts.CompartmentEditPart;
 import org.eclipse.gmf.runtime.diagram.ui.editparts.DiagramEditPart;
 import org.eclipse.gmf.runtime.diagram.ui.editparts.DiagramRootEditPart;
+import org.eclipse.gmf.runtime.diagram.ui.editparts.NoteEditPart;
+import org.eclipse.gmf.runtime.diagram.ui.parts.IDiagramGraphicalViewer;
 import org.eclipse.gmf.runtime.diagram.ui.resources.editor.ide.document.StorageDiagramDocumentProvider;
 import org.eclipse.gmf.runtime.diagram.ui.resources.editor.ide.editor.FileDiagramEditor;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IGotoMarker;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.properties.BusinessProcessItem;
@@ -28,8 +38,13 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.designer.business.diagram.custom.actions.DiagramResourceManager;
 import org.talend.designer.business.diagram.custom.dnd.BusinessDiagramDropTargetListener;
+import org.talend.designer.business.diagram.custom.edit.parts.BaseBusinessItemRelationShipEditPart;
 import org.talend.designer.business.diagram.custom.edit.parts.BusinessItemShapeEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.BusinessEditPartFactory;
+import org.talend.designer.business.model.business.diagram.edit.parts.BusinessProcessEditPart;
+import org.talend.designer.business.model.business.diagram.providers.BusinessDiagramActionProvider;
+import org.talend.designer.core.ui.ActiveProcessTracker;
+import org.talend.designer.core.ui.views.jobsettings.JobSettingsView;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -51,6 +66,7 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
      */
     public BusinessDiagramEditor() {
         super(true);
+        ActiveProcessTracker.initialize();
     }
 
     /**
@@ -85,6 +101,13 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
      */
     protected void configureGraphicalViewer() {
         super.configureGraphicalViewer();
+
+        IDiagramGraphicalViewer viewer = getDiagramGraphicalViewer();
+        /* customize popup menu */
+        ContextMenuProvider provider = new BusinessDiagramActionProvider(this, viewer);
+        viewer.setContextMenu(provider);
+        getSite().registerContextMenu(ActionIds.DIAGRAM_EDITOR_CONTEXT_MENU, provider, viewer);
+
         DiagramRootEditPart root = (DiagramRootEditPart) getDiagramGraphicalViewer().getRootEditPart();
         LayeredPane printableLayers = (LayeredPane) root.getLayer(LayerConstants.PRINTABLE_LAYERS);
         FreeformLayer extLabelsLayer = new FreeformLayer();
@@ -209,4 +232,43 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
         }
     }
 
+    public RepositoryEditorInput getDiagramEditorInput() {
+        return this.repositoryEditorInput;
+
+    }
+
+    @Override
+    public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+        super.selectionChanged(part, selection);
+        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        JobSettingsView view = (JobSettingsView) page.findView(JobSettingsView.ID);
+
+        if (view == null) {
+            return;
+        }
+        Object firstElement = ((IStructuredSelection) selection).getFirstElement();
+        if (!(selection instanceof IStructuredSelection)) {
+            return;
+        } else if (firstElement instanceof RepositoryNode) {
+            return;
+        }
+
+        if (((IStructuredSelection) selection).size() > 1) {
+            view.cleanDisplay();
+        } else {
+
+            if (firstElement instanceof BusinessItemShapeEditPart || firstElement instanceof BaseBusinessItemRelationShipEditPart
+                    || firstElement instanceof NoteEditPart) {
+
+                view.refresh(false, firstElement);
+            } else if (firstElement instanceof BusinessProcessEditPart || firstElement instanceof CompartmentEditPart) {
+                view.refresh(false, this);
+            }
+
+        }
+    }
+
+    public ISelection getSelection() {
+        return this.getDiagramGraphicalViewer().getSelection();
+    }
 }

@@ -27,9 +27,13 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.business.BusinessType;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IProcess;
@@ -40,6 +44,7 @@ import org.talend.core.properties.tab.HorizontalTabFactory;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.properties.tab.TalendPropertyTabDescriptor;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.designer.business.diagram.custom.IDiagramModelService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
@@ -50,6 +55,7 @@ import org.talend.designer.core.ui.views.jobsettings.tabs.ProcessVersionComposit
 import org.talend.designer.core.ui.views.properties.IJobSettingsView;
 import org.talend.designer.core.ui.views.properties.MultipleThreadDynamicComposite;
 import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsComposite;
+import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
 
@@ -67,6 +73,8 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
 
     public static final String VIEW_NAME_JOBLET = "Joblet"; //$NON-NLS-1$
 
+    public static final String MODEL = "Model"; //$NON-NLS-1$
+
     private HorizontalTabFactory tabFactory = null;
 
     private TalendPropertyTabDescriptor currentSelectedTab;
@@ -80,6 +88,8 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
     private Process process;
 
     private Composite parent;
+
+    private ISelection selectedModel;
 
     public JobSettingsView() {
         tabFactory = new HorizontalTabFactory();
@@ -120,18 +130,59 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                         IDynamicProperty propertyComposite = createTabComposite(tabFactory.getTabComposite(), element, descriptor
                                 .getCategory());
 
-                    } else if (data instanceof IRepositoryObject && currentSelectedTab != descriptor) {
+                    } else if (data instanceof IRepositoryObject) {
 
                         currentSelectedTab = descriptor;
                         IDynamicProperty propertyComposite = createTabComposite(tabFactory.getTabComposite(), data, descriptor
                                 .getCategory());
 
+                    } else if (data instanceof IEditorPart) {
+                        currentSelectedTab = descriptor;
+                        IRepositoryObject repObj = retrieveBusiness((IEditorPart) data);
+                        if (repObj != null) {
+                            IDynamicProperty propertyComposite = createTabComposite(tabFactory.getTabComposite(), repObj,
+                                    descriptor.getCategory());
+                        }
+
+                    } else {
+                        currentSelectedTab = descriptor;
+                        IDynamicProperty propertyComposite = createTabComposite(tabFactory.getTabComposite(), null, descriptor
+                                .getCategory());
                     }
                     selectedPrimary = false;
                 }
+
             }
         });
 
+    }
+
+    private IRepositoryObject retrieveBusiness(IEditorPart businessPart) {
+        if (CorePlugin.getDefault().getDiagramModelService().isBusinessDiagramEditor(businessPart)) {
+            IRepositoryObject lastVersion = null;
+            selectedModel = CorePlugin.getDefault().getDiagramModelService().getBusinessEditorSelection(
+                    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor());
+
+            try {
+
+                RepositoryEditorInput input = CorePlugin.getDefault().getDiagramModelService().getBusinessDiagramEditorInput(
+                        businessPart);
+
+                if (input != null) {
+                    RepositoryNode node = input.getRepositoryNode();
+                    if (node != null) {
+                        lastVersion = node.getObject();
+                    } else {
+                        lastVersion = CorePlugin.getDefault().getProxyRepositoryFactory().getLastVersion(
+                                input.getItem().getProperty().getId());
+                    }
+                }
+                return lastVersion;
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+            }
+        }
+        return null;
     }
 
     private IDynamicProperty createTabComposite(Composite parent, Object data, EComponentCategory category) {
@@ -160,7 +211,14 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
         } else if (EComponentCategory.VERSIONS.equals(category)) {
             dynamicComposite = new ProcessVersionComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(),
                     (IRepositoryObject) data);
+        } else if (EComponentCategory.APPEARANCE.equals(category)) {
+            dynamicComposite = new BusinessAppearanceComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(), selectedModel);
+        } else if (EComponentCategory.RULERS_AND_GRID.equals(category)) {
+            dynamicComposite = new BusinessRulersAndGridComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(), null);
+        } else if (EComponentCategory.ASSIGNMENT.equals(category)) {
+            dynamicComposite = new BusinessAssignmentComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(), selectedModel);
         }
+
         if (dynamicComposite != null) {
             dynamicComposite.refresh();
         }
@@ -187,9 +245,19 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
             categories = getCategories(process);
         } else if (obj != null && obj instanceof IRepositoryObject) {
             categories = getCategories(obj);
+        } else if (obj instanceof IEditorPart) {
+            if (CorePlugin.getDefault().getDiagramModelService().isBusinessDiagramEditor((IEditorPart) obj)) {
+                categories = getCategories(obj);
+            }
+
         } else {
-            cleanDisplay();
-            return;
+            BusinessType type = CorePlugin.getDefault().getDiagramModelService().getBusinessModelType(obj);
+            if (BusinessType.NOTE.equals(type) || BusinessType.SHAP.equals(type) || BusinessType.CONNECTION.equals(type)) {
+                categories = getCategories(obj);
+            } else {
+                cleanDisplay();
+                return;
+            }
         }
 
         final List<TalendPropertyTabDescriptor> descriptors = new ArrayList<TalendPropertyTabDescriptor>();
@@ -323,7 +391,23 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
         } else if (obj instanceof IRepositoryObject) {
             category.add(EComponentCategory.MAIN);
             category.add(EComponentCategory.VERSIONS);
+        } else if (obj instanceof IEditorPart) {
+            if (CorePlugin.getDefault().getDiagramModelService().isBusinessDiagramEditor((IEditorPart) obj)) {
+                category.add(EComponentCategory.MAIN);
+                category.add(EComponentCategory.APPEARANCE);
+                category.add(EComponentCategory.RULERS_AND_GRID);
+                category.add(EComponentCategory.VERSIONS);
+            }
+        } else {
+            BusinessType type = CorePlugin.getDefault().getDiagramModelService().getBusinessModelType(obj);
+            if (BusinessType.SHAP.equals(type) || BusinessType.CONNECTION.equals(type)) {
+                category.add(EComponentCategory.APPEARANCE);
+                category.add(EComponentCategory.ASSIGNMENT);
+            } else if (BusinessType.NOTE.equals(type)) {
+                category.add(EComponentCategory.APPEARANCE);
+            }
         }
+
         return category.toArray(new EComponentCategory[0]);
     }
 
@@ -359,9 +443,9 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
         if (force) {
             cleanDisplay();
         }
+        final IEditorPart activeEditor = getSite().getPage().getActiveEditor();
 
         if (obj == null) {
-            final IEditorPart activeEditor = getSite().getPage().getActiveEditor();
             if (activeEditor != null && activeEditor instanceof AbstractMultiPageTalendEditor) {
                 AbstractTalendEditor talendEditor = ((AbstractMultiPageTalendEditor) activeEditor).getTalendEditor();
                 IProcess process = talendEditor.getProcess();
@@ -382,12 +466,29 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                     setElement(element, title, null);
                     return;
                 }
+            } else {
+                IDiagramModelService diagramModelService = CorePlugin.getDefault().getDiagramModelService();
+                if (diagramModelService.isBusinessDiagramEditor(activeEditor)) {
+                    this.selectedPrimary = true;
+                    this.cleaned = force;
+                    IRepositoryObject object = retrieveBusiness(activeEditor);
+                    String title = object.getLabel() + " " + object.getVersion();
+                    Object type = object.getType();
+                    setElement(activeEditor, type + SEPARATOR + title, null);
+                    return;
+                }
             }
-        } else {
-            if (obj instanceof IRepositoryObject) {
-                IRepositoryObject repositoryObject = (IRepositoryObject) obj;
 
-            }
+        } else {
+
+            this.selectedPrimary = true;
+            this.cleaned = force;
+            IRepositoryObject object = retrieveBusiness(activeEditor);
+            String title = object.getLabel() + " " + object.getVersion();
+            Object type = object.getType();
+            setElement(obj, type + SEPARATOR + title, null);
+            return;
+
         }
 
         cleanDisplay();
@@ -474,7 +575,10 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
         IDynamicProperty dc = currentSelectedTab.getPropertyComposite();
         if (dc instanceof ProcessVersionComposite) {
             return ((ProcessVersionComposite) dc).getSelection();
+        } else if (dc instanceof BusinessAssignmentComposite) {
+            return CorePlugin.getDefault().getRepositoryService().getRepositoryTreeView().getSelection();
         }
+
         return null;
     }
 
@@ -492,4 +596,9 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
             dc.refresh();
         }
     }
+
+    public void setISelection(ISelection selection) {
+        this.selectedModel = selection;
+    }
+
 }

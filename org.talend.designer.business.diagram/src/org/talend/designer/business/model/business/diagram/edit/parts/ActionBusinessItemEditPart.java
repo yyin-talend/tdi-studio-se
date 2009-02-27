@@ -103,8 +103,7 @@ public class ActionBusinessItemEditPart extends BusinessItemShapeEditPart {
      */
     protected boolean addFixedChild(EditPart childEditPart) {
         if (childEditPart instanceof ActionBusinessItemNameEditPart) {
-            ((ActionBusinessItemNameEditPart) childEditPart).setLabel(getPrimaryShape()
-                    .getFigureActionBusinessItemNameFigure());
+            ((ActionBusinessItemNameEditPart) childEditPart).setLabel(getPrimaryShape().getFigureActionBusinessItemNameFigure());
             return true;
         }
         return false;
@@ -127,8 +126,8 @@ public class ActionBusinessItemEditPart extends BusinessItemShapeEditPart {
     /**
      * Creates figure for this edit part.
      * 
-     * Body of this method does not depend on settings in generation model so you may safely remove <i>generated</i>
-     * tag and modify it.
+     * Body of this method does not depend on settings in generation model so you may safely remove <i>generated</i> tag
+     * and modify it.
      * 
      * @generated
      */

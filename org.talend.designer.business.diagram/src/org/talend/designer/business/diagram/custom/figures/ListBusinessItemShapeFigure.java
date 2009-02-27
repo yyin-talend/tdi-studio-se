@@ -15,6 +15,8 @@ package org.talend.designer.business.diagram.custom.figures;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * DOC mhelleboid class global comment. Detailled comment <br/>
@@ -31,8 +33,19 @@ public class ListBusinessItemShapeFigure extends BusinessItemShapeFigure {
      */
     @Override
     protected void paintFigure(Graphics graphics) {
+        setBackgroundColor(new Color(Display.getCurrent(), 250, 235, 215));
         Rectangle r = getInnerBounds();
+        if (getDrawFrame()) {
+            setDefaultSize(60, 60);
+            setBorder(border);
+            drawFigure(getSmallBounds(), graphics);
+        } else {
+            setBorder(null);
+            drawFigure(getInnerBounds(), graphics);
+        }
+    }
 
+    private void drawFigure(Rectangle r, Graphics graphics) {
         int height = (int) (r.height * 0.25);
 
         graphics.fillRectangle(r);

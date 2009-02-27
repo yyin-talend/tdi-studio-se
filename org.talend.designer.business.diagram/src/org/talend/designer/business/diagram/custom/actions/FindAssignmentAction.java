@@ -27,6 +27,7 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.designer.business.diagram.custom.edit.parts.BaseBusinessItemRelationShipEditPart;
 import org.talend.designer.business.diagram.custom.edit.parts.BusinessItemShapeEditPart;
+import org.talend.designer.business.diagram.custom.figures.BusinessItemShapeFigure;
 import org.talend.designer.business.diagram.i18n.Messages;
 import org.talend.designer.business.model.business.BusinessAssignment;
 import org.talend.designer.business.model.business.BusinessItem;
@@ -96,6 +97,20 @@ public class FindAssignmentAction extends AContextualAction {
             diagramGraphicalViewer.deselectAll();
             for (Iterator iter = editParts.iterator(); iter.hasNext();) {
                 EditPart editPart = (EditPart) iter.next();
+                if (editPart instanceof BusinessItemShapeEditPart) {
+                    BusinessItemShapeEditPart shapEditPart = (BusinessItemShapeEditPart) editPart;
+                    IFigure figure = shapEditPart.getFigure();
+
+                    for (Object child : figure.getChildren()) {
+                        if (child instanceof BusinessItemShapeFigure) {
+                            BusinessItemShapeFigure shapFigure = (BusinessItemShapeFigure) child;
+                            shapFigure.setDrawFrame(true);
+                            shapFigure.revalidate();
+                            shapFigure.repaint();
+                        }
+                    }
+
+                }
                 diagramGraphicalViewer.getSelectionManager().appendSelection(editPart);
             }
 
@@ -105,8 +120,7 @@ public class FindAssignmentAction extends AContextualAction {
     }
 
     // PTODO mhelleboid bug for org.eclipse.gmf.runtime.diagram.ui.internal.actions.ZoomContributionItem
-    private void zoomFitSelection(ZoomManager zoomManager, List editParts, DiagramEditPart diagramEditPart,
-            boolean zoomOutOnly) {
+    private void zoomFitSelection(ZoomManager zoomManager, List editParts, DiagramEditPart diagramEditPart, boolean zoomOutOnly) {
         Rectangle rectangle = null;
         for (Iterator iter = editParts.iterator(); iter.hasNext();) {
             EditPart editPart = (EditPart) iter.next();
@@ -190,8 +204,7 @@ public class FindAssignmentAction extends AContextualAction {
             Object object = selection.getFirstElement();
             if (object instanceof RepositoryNode) {
                 RepositoryNode repositoryNode = (RepositoryNode) object;
-                ERepositoryObjectType nodeType = (ERepositoryObjectType) repositoryNode
-                        .getProperties(EProperties.CONTENT_TYPE);
+                ERepositoryObjectType nodeType = (ERepositoryObjectType) repositoryNode.getProperties(EProperties.CONTENT_TYPE);
                 if (repositoryNode.getType() == RepositoryNode.ENodeType.REPOSITORY_ELEMENT) {
                     IEditorPart activeEditor = getActiveEditor();
                     if (activeEditor != null && activeEditor.getSite().getId().equals(BusinessDiagramEditor.ID)) {
