@@ -30,7 +30,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         		String split = ElementParameterParser.getValue(node, "__SPLIT__");
         		String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
         		String fileName = ElementParameterParser.getValue(node, "__FILENAME__");
+        		//======================add by wliu============================
+        		boolean isMerge=ElementParameterParser.getValue(node, "__MERGE__").equals("true");
         		
+        		//==========================end================================
         		String mode = ElementParameterParser.getValue(node, "__GENERATION_MODE__");
         		List<Map<String, String>> rootTable = 
                 	(List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ROOT__");
@@ -40,7 +43,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 	(List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__LOOP__");
 %>
 int nb_line_<%=cid%> = 0;
-boolean needRoot_<%=cid%>  = true;
+boolean needRoot_<%=cid%>  = false;
 String fileName_<%=cid%> = <%=fileName%>;
 String file_<%=cid%> = fileName_<%=cid%>.substring(0,fileName_<%=cid%>.lastIndexOf(".xml"));
 <%
@@ -49,7 +52,16 @@ String file_<%=cid%> = fileName_<%=cid%>.substring(0,fileName_<%=cid%>.lastIndex
 java.io.File createFile<%=cid%> = new java.io.File(fileName_<%=cid%>); 
 if(!createFile<%=cid%>.exists()){ 
 	(new java.io.File(fileName_<%=cid%>.substring(0,fileName_<%=cid%>.lastIndexOf("/")))).mkdirs(); 
-} 
+	needRoot_<%=cid%>=true;
+}<%					if(isMerge==true){%>else{
+				if(createFile<%=cid %>.isFile()){
+					if(createFile<%=cid %>.length()<1){
+						needRoot_<%=cid %> = true;
+					}
+				}
+			}
+				 <%}%>
+
 <%
 				}
 				if(split.equals("true")){
@@ -113,15 +125,39 @@ class NestXMLTool_<%=cid%>{
 		}
 	}
 }
+
 NestXMLTool_<%=cid%> nestXMLTool_<%=cid%> = new NestXMLTool_<%=cid%>();
 
 // sort group root element for judgement of group
 java.util.List<org.dom4j.Element> groupElementList_<%=cid%> = new java.util.ArrayList<org.dom4j.Element>();
 org.dom4j.Element root4Group_<%=cid%> = null;
-org.dom4j.Document doc_<%=cid%>  = org.dom4j.DocumentHelper.createDocument();
 
+org.dom4j.Document doc_<%=cid %>=null;
+<%
+					if(isMerge==true){//append mode
+%>
+if(needRoot_<%=cid %> ==false){
+	try{
+		org.dom4j.io.SAXReader saxReader_<%=cid %>= new org.dom4j.io.SAXReader();
+		doc_<%=cid %> = saxReader_<%=cid %>.read(createFile<%=cid %>);
+	} catch (Exception ex) {
+	    ex.printStackTrace();
+	    throw new Exception("can not find the file:" + fileName_<%=cid %>);
+	}
+}else{
+	doc_<%=cid %>=org.dom4j.DocumentHelper.createDocument();
+}
+<%
+					}else{
+%>
+	needRoot_<%=cid %>=true;
+	doc_<%=cid %>=org.dom4j.DocumentHelper.createDocument();
+<%
+					}
+%>
 org.dom4j.io.OutputFormat format_<%=cid%> = org.dom4j.io.OutputFormat.createPrettyPrint();
-format_<%=cid%>.setEncoding(<%=encoding%>);
+format_<%=cid %>.setEncoding(<%=encoding%>);
+
 <%
 				}else if(mode.equals("Null")){
 %>

@@ -166,7 +166,7 @@ class GenerateToolByDom4j{
 			JavaType javaType = JavaTypesManager.getJavaTypeFromId(node.relatedColumn.getTalendType());
 			if(javaType == JavaTypesManager.OBJECT){
 %>
-		if(<%tool.getValue(node);%>!=null){
+		if(<%tool.getValue(node); %>!=null){
 			nestXMLTool_<%=cid%> .parseAndAdd(<%=currEleName%>_<%=cid%>,<%tool.getValue(node);%>);
 		}
 <%
@@ -390,6 +390,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         		
         		String mode = ElementParameterParser.getValue(node, "__GENERATION_MODE__");
         		
+        		//======================add by wliu============================
+        		boolean isMerge=ElementParameterParser.getValue(node, "__MERGE__").equals("true");        		
+        		//==========================end================================
+        		
         		// init tool
                 XMLTool tool = new XMLTool();
                 tool.connName = conn.getName();
@@ -402,8 +406,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				Object[] treeObjs = getTree(rootTable, groupTable, loopTable, metadata.getListColumns());
             	List<XMLNode> mainList = (ArrayList<XMLNode>)treeObjs[0];
                 List<XMLNode> groupList = (ArrayList<XMLNode>)treeObjs[1];
-                XMLNode root = mainList.get(0);
+                XMLNode root = mainList.get(0);                
             	XMLNode loop = (XMLNode)treeObjs[2];
+            	
+            	//=================add by wliu===============================
+//            	groupList.add(loop);//temporarily set the loop element as a group element.
+            	//=====================end===================================
                 
                 if(!allowEmpty.equals("true")){
                 	removeEmptyElement(root);
@@ -445,7 +453,7 @@ if(mode.equals("Dom4j")){
 	// build root xml tree 
 	if (needRoot_<%=cid%>) {
 		needRoot_<%=cid%>=false;
-<%
+<% 
 	generateToolByDom4j.generateCode(root,"root","doc");
 %>
 		root4Group_<%=cid%> = subTreeRootParent_<%=cid%>;
@@ -454,43 +462,98 @@ if(mode.equals("Dom4j")){
 	}
 	// build group xml tree 
 <%
-	if(groupTable.size()>0){
+//==================================add by wliu======================================
+if(groupTable.size()>0){					//init the generate tool.
+	if(isMerge==true){//merge into the file
+	    String firstGroupPath = groupList.get(0).path;
+%>
+		
+		subTreeRootParent_<%=cid %>=(org.dom4j.Element)doc_<%=cid %>.selectSingleNode("<%=firstGroupPath %>");
+		
+		if(subTreeRootParent_<%=cid %>==null){
+			subTreeRootParent_<%=cid %> = (org.dom4j.Element)doc_<%=cid %>.selectSingleNode("<%=firstGroupPath.substring(0,firstGroupPath.lastIndexOf("/")) %>");
+		}else{
+			subTreeRootParent_<%=cid %> =subTreeRootParent_<%=cid %>.getParent();
+		}
+		
+		boolean bl_<%=cid %>= false;//true:find the insert node;false:not
+<%
+		for( int i=0; i<groupList.size();i++){
+			XMLNode groupNode= groupList.get(i);
+%>
+		if(bl_<%=cid %>==false){
+			java.util.List<org.dom4j.Element> listNodes= subTreeRootParent_<%=cid %>.elements();
+			if(listNodes!=null && listNodes.size()>0){
+				int j=0;
+				for(j=0;j<listNodes.size();j++){
+					org.dom4j.Element tempElem =listNodes.get(j);
+					if(tempElem.attributes()!=null && tempElem.attributes().size()>0){
+						if(true 
+<%	
+			for(int j=0;j<groupbyNodeList.get(i).size();j++){
+				XMLNode attri = groupbyNodeList.get(i).get(j);
+				if(attri.relatedColumn!=null){
+%> && tempElem.attribute("<%=attri.name%>")!=null && tempElem.attribute("<%=attri.name%>").getText()!=null
+ && tempElem.attribute("<%=attri.name%>").getText().equals(<%tool.getValue(attri); %>)
+<%
+				}
+			}
+%>){
+						subTreeRootParent_<%=cid %> =  tempElem;
+						break;
+						}
+					}
+				}
+				if(j>=listNodes.size()){
+					bl_<%=cid %>=true;
+				}
+			}else{
+				bl_<%=cid %>=true;
+			}
+		}
+		if(bl_<%=cid %>==true){
+<% 
+			generateToolByDom4j.generateCode(groupList.get(i),"group"+i+"_","subTreeRootParent");
+%>
+		}
+<%
+ 		}//for
+ 	}else{//last group code
 %>
 	boolean isNewElememt = false;
-<%
-	}
-	for(int i=0;i<groupList.size();i++){
-		XMLNode groupRootNode = groupList.get(i);
+<% 
+		for(int i=0;i<groupList.size();i++){
+			XMLNode groupRootNode = groupList.get(i);
 %>
 	if(isNewElememt || groupbyList_<%=cid%>.size()<=<%=i%> || groupbyList_<%=cid%>.get(<%=i%>)==null
-<%
-		for(int j=0;j<groupbyNodeList.get(i).size();j++){
-			XMLNode attr = groupbyNodeList.get(i).get(j);
-			if(attr.relatedColumn!=null){
+<% 
+			for(int j=0;j<groupbyNodeList.get(i).size();j++){
+				XMLNode attr = groupbyNodeList.get(i).get(j);
+				if(attr.relatedColumn!=null){
 %>
 	|| ( groupbyList_<%=cid%>.get(<%=i%>).get(<%=j%>)!=null 
 		? !groupbyList_<%=cid%>.get(<%=i%>).get(<%=j%>).equals(<%tool.getValue(attr);%>) 
 		: <%tool.getValue(attr);%>!=null )
-<%
+<% 
+				}
 			}
-		}
 %>
 	){
-<%
-		generateToolByDom4j.generateCode(groupList.get(i),"group"+i+"_","subTreeRootParent");
+<% 
+			generateToolByDom4j.generateCode(groupList.get(i),"group"+i+"_","subTreeRootParent");
 %>
 		if(groupbyList_<%=cid%>.size()<=<%=i%>){
         	groupbyList_<%=cid%>.add(new java.util.ArrayList<String>());
         }else{
         	groupbyList_<%=cid%>.get(<%=i%>).clear();
         }
-<%
-		for(int j=0;j<groupbyNodeList.get(i).size();j++){
-			XMLNode attr = groupbyNodeList.get(i).get(j);
+<% 
+			for(int j=0;j<groupbyNodeList.get(i).size();j++){
+				XMLNode attr = groupbyNodeList.get(i).get(j);
 %>
 		groupbyList_<%=cid%>.get(<%=i%>).add(<%tool.getValue(attr);%>);
-<%
-		}
+<% 
+			}
 %>
         isNewElememt=true;
         if(groupElementList_<%=cid%>.size()<=<%=i%>){
@@ -502,13 +565,18 @@ if(mode.equals("Dom4j")){
 	}else{
 		subTreeRootParent_<%=cid%>=groupElementList_<%=cid%>.get(<%=i%>);
 	}
+
 <%
-	}
+		}//for
+ 	}//if merge=true 	
+}
+//=============================================end=================================================
 %>
 	// build loop xml tree
 <%
-	generateToolByDom4j.generateCode(loop,"loop","subTreeRootParent");
-	
+	if(loopTable!=null && loopTable.size()>0){
+		generateToolByDom4j.generateCode(loop,"loop","subTreeRootParent");
+	}
 	//file split
 	if(split.equals("true")){
 %>
@@ -687,11 +755,11 @@ else if(mode.equals("Null")){
 		if(!outputAsXSD.equals("true") && !allowEmpty.equals("true")){
 %>
 		// output unNull tabs in start tabs buffer
-        if (preUnNullMaxIndex_<%=cid%> >= 0) {
-            for (int i_<%=cid%> = 0; i_<%=cid%> < startTabs_<%=cid%>.length; i_<%=cid%>++) {
+        if (preUnNullMaxIndex_<%=cid %> >= 0) {
+            for (int i_<%=cid%> = 0; i_<%=cid %> < startTabs_<%=cid%>.length; i_<%=cid%>++) {
                 if (i_<%=cid%> <= preUnNullMaxIndex_<%=cid%>) {
-                    if (startTabs_<%=cid%>[i_<%=cid%>] != null) {
-                        out_<%=cid%>.write(startTabs_<%=cid%>[i_<%=cid%>]);
+                    if (startTabs_<%=cid %>[i_<%=cid %>] != null) {
+                        out_<%=cid %>.write(startTabs_<%=cid%>[i_<%=cid%>]);
                     }
                     startTabs_<%=cid%>[i_<%=cid%>] = null;
                 }
