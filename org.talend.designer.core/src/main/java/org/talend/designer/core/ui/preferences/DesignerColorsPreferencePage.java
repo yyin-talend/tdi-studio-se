@@ -86,6 +86,9 @@ public class DesignerColorsPreferencePage extends FieldEditorPreferencePage impl
         Group connGroup = new Group(parent, SWT.NULL);
         connGroup.setText(Messages.getString("DesignerColorsPreferencePage.ConnectionColorGroup")); //$NON-NLS-1$
         connGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        GridLayout layout = new GridLayout(2, true);
+        layout.marginLeft = 10;
+        connGroup.setLayout(layout);
 
         Label message = new Label(connGroup, SWT.NULL);
         GridData data = new GridData(GridData.FILL_HORIZONTAL);
@@ -95,13 +98,21 @@ public class DesignerColorsPreferencePage extends FieldEditorPreferencePage impl
         message.setLayoutData(data);
         message.setText(Messages.getString("DesignerColorsPreferencePage.ConnectionColorMessages")); //$NON-NLS-1$
 
-        for (EConnectionType connType : EConnectionType.values()) {
-            addField(new ColorFieldEditor(DesignerColorUtils.getPreferenceConnectionName(connType),
-                    connType.getDefaultMenuName(), connGroup));
+        Composite left = new Composite(connGroup, SWT.NULL);
+        left.setLayoutData(new GridData(GridData.FILL_BOTH));
+        Composite right = new Composite(connGroup, SWT.NULL);
+        right.setLayoutData(new GridData(GridData.FILL_BOTH));
+
+        EConnectionType[] values = EConnectionType.values();
+        for (int i = 0; i < values.length; i++) {
+            Composite comp = left;
+            if (i % 2 > 0) {
+                comp = right;
+            }
+            addField(new ColorFieldEditor(DesignerColorUtils.getPreferenceConnectionName(values[i]), values[i]
+                    .getDefaultMenuName(), comp));
         }
-        GridLayout layout = new GridLayout(2, false);
-        layout.marginLeft = 10;
-        connGroup.setLayout(layout);
+
     }
 
     /*
