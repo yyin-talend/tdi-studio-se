@@ -44,6 +44,7 @@ import org.talend.core.PluginChecker;
 import org.talend.core.model.metadata.IEbcdicConstant;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
@@ -51,6 +52,7 @@ import org.talend.core.model.properties.EbcdicConnectionItem;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.ui.IEBCDICProviderService;
 import org.talend.core.ui.metadata.celleditor.SchemaCellEditor;
+import org.talend.core.ui.metadata.celleditor.SchemaXPathQuerysCellEditor;
 import org.talend.core.ui.proposal.TalendProposalProvider;
 import org.talend.designer.core.model.components.ElementParameter;
 
@@ -161,7 +163,7 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                 column.setModifiable(true);
                 column.setMinimumWidth(100);
                 column.setWeight(20);
-
+                
                 switch (tmpParam.getField()) {
                 case CONTEXT_PARAM_NAME_LIST:
                 case CLOSED_LIST:
@@ -309,6 +311,16 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                     SchemaCellEditor schemaEditor = new SchemaCellEditor(table, node);
                     schemaEditor.setTableEditorView(this);
                     column.setCellEditor(schemaEditor);
+                    break;
+
+                case SCHEMA_XPATH_QUERYS:
+
+                    column.setModifiable((!param.isRepositoryValueUsed()) && (!param.isReadOnly()) && (!tmpParam.isReadOnly()));
+                    final INode node2 = (INode) element;
+                    SchemaXPathQuerysCellEditor schemaXPathEditor = new SchemaXPathQuerysCellEditor(table, node2);
+                    schemaXPathEditor.setTableEditorView(this);
+                    column.setCellEditor(schemaXPathEditor);
+
                     break;
                 default: // TEXT
                     TextCellEditorWithProposal textCellEditor = new TextCellEditorWithProposal(table, column);
@@ -526,4 +538,5 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
         String[] listToDisplay = stringToDisplay.toArray(new String[0]);
         return listToDisplay;
     }
+
 }

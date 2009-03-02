@@ -223,6 +223,9 @@ public class ElementParameter implements IElementParameter {
     }
 
     public void setListItemsValue(final Object[] list) {
+        if (this.getField() == EParameterFieldType.TABLE) {
+            EParameterFieldType.AS400_CHECK.getClass();
+        }
         itemsValue = list;
     }
 
@@ -384,7 +387,7 @@ public class ElementParameter implements IElementParameter {
         }
         return showParameter;
     }
-    
+
     public boolean isCondition(String conditionShowIf, String conditionNotShowIf, List<? extends IElementParameter> listParam) {
 
         boolean showParameter = false;

@@ -1615,6 +1615,9 @@ public class EmfComponent implements IComponent {
                 case SCHEMA_TYPE:
                     newParam.setValue(""); //$NON-NLS-1$
                     break;
+                case SCHEMA_XPATH_QUERYS:
+                    newParam.setValue(""); //$NON-NLS-1$
+                    break;
                 default: // TEXT by default
                     newParam.setField(EParameterFieldType.TEXT);
                     if (item.getVALUE() == null || item.getVALUE().equals("")) {
