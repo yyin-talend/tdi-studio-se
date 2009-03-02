@@ -102,7 +102,7 @@ my $nb_rows = 0;
 <%
         if (dataAction.equals("UPDATE")) {
 %>
-$nb_rows = $usth_<%=cid %>->execute(@$<%=cid%>[<%=positionsString%>])
+$nb_rows = $usth_<%=cid %>->execute(map { (defined($_) and !length($_)) ? undef : $_ } @$<%=cid%>[<%=positionsString%>])
     or die "can't execute update query\n";
 
 if ($nb_rows) {
@@ -113,7 +113,7 @@ if ($nb_rows) {
         else if (dataAction.equals("INSERT")) {
 %>
 
-$isth_<%=cid %>->execute(@$<%=cid %>)
+$isth_<%=cid %>->execute(map { (defined($_) and !length($_)) ? undef : $_ } @$<%=cid %>)
     or die "can't execute insert query\n";
 
 $nb_line_inserted_<%=cid%>++;
@@ -128,7 +128,7 @@ my $key_exists = exists $table_keys_<%=cid %>{$key};
             if (dataAction.equals("INSERT_OR_UPDATE")) {
 %>
 if ($key_exists) {
-    $nb_rows = $usth_<%=cid %>->execute(@$<%=cid%>[<%=positionsString%>])
+    $nb_rows = $usth_<%=cid %>->execute(map { (defined($_) and !length($_)) ? undef : $_ } @$<%=cid%>[<%=positionsString%>])
         or die "can't execute update query\n";
 
     if ($nb_rows) {
@@ -137,7 +137,7 @@ if ($key_exists) {
 
 }
 else {
-    $isth_<%=cid %>->execute(@$<%=cid%>)
+    $isth_<%=cid %>->execute(map { (defined($_) and !length($_)) ? undef : $_ } @$<%=cid%>)
         or die "can't execute insert query\n";
     $nb_line_inserted_<%=cid%>++;
     $table_keys_<%=cid %>{$key} = 1;
@@ -147,7 +147,7 @@ else {
             else if (dataAction.equals("DELETE")) {
 %>
 if ($key_exists) {
-    $nb_rows = $dsth_<%=cid %>->execute(@$<%=cid%>[<%=keyPositionsString%>])
+    $nb_rows = $dsth_<%=cid %>->execute(map { (defined($_) and !length($_)) ? undef : $_ } @$<%=cid%>[<%=keyPositionsString%>])
         or die "can't execute delete query\n";
 
     if ($nb_rows) {
