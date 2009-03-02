@@ -1450,15 +1450,15 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         if (!(process.getProperty().getItem() instanceof ProcessItem)) {
             return new String[] {};
         }
-
-        Set<JobInfo> subJobs = ProcessorUtilities.getChildrenJobInfo((ProcessItem) process.getProperty().getItem());
+        // achen modify to fix bug 6462
+        // Set<JobInfo> subJobs = ProcessorUtilities.getChildrenJobInfo((ProcessItem) process.getProperty().getItem());
 
         String projectName = rootProject.getLabel();
-        for (JobInfo jobInfo : subJobs) {
-            String protectedJob = "subjob_of_" + process.getLabel() + "_" + //$NON-NLS-1$ //$NON-NLS-2$ 
-                    projectName + "_" + jobInfo.getJobName() + "_" + jobInfo.getJobVersion(); //$NON-NLS-1$ //$NON-NLS-2$
-            protectedJobs.put(protectedJob, new JobResource(projectName, jobInfo));
-        }
+        // for (JobInfo jobInfo : subJobs) {
+        //            String protectedJob = "subjob_of_" + process.getLabel() + "_" + //$NON-NLS-1$ //$NON-NLS-2$ 
+        //                    projectName + "_" + jobInfo.getJobName() + "_" + jobInfo.getJobVersion(); //$NON-NLS-1$ //$NON-NLS-2$
+        // protectedJobs.put(protectedJob, new JobResource(projectName, jobInfo));
+        // }
         String currentJobId = "talend_editor_" + projectName + "_" + process.getLabel() //$NON-NLS-1$ //$NON-NLS-2$
                 + "_" + process.getVersion(); //$NON-NLS-1$
         protectedJobs.put(currentJobId, currentJobResource);
