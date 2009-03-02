@@ -139,7 +139,7 @@ String[] queryPaths_<%=connNode.strConnCtgr %>_<%=cid%> = new String[]{
 String str_<%=connNode.strConnCtgr %>_<%=cid %> = "";
 String[] node_<%=connNode.strConnCtgr %>_<%=cid%> = null;
 org.talend.xml.sax.SAXLooper looper_<%=connNode.strConnCtgr %>_<%=cid%> = new org.talend.xml.sax.SAXLooper(<%=rootpath%>+<%=connNode.loopPath %>,queryPaths_<%=connNode.strConnCtgr %>_<%=cid%>);
-looper_<%=connNode.strConnCtgr %>_<%=cid%>.parse(<%=filename %>);
+looper_<%=connNode.strConnCtgr %>_<%=cid%>.parse(new java.io.File(<%=filename %>).toURI().toString());
 java.util.Iterator<java.util.Map<String, String>> it_<%=connNode.strConnCtgr %>_<%=cid%>  = looper_<%=connNode.strConnCtgr %>_<%=cid%>.iterator();
 <%
 	}//for(connNode)
