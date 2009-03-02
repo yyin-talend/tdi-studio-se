@@ -18,8 +18,10 @@ import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.ui.views.navigator.LocalSelectionTransfer;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.ui.IJobHierarchyViewPart;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.repository.model.RepositoryNode;
@@ -91,8 +93,11 @@ public class JobHierarchyTransferDropAdapter implements TransferDropTargetListen
                 Item item = sourceNode.getObject().getProperty().getItem();
 
                 if (item instanceof ProcessItem) {
-                    Process loadedProcess = new Process(((ProcessItem) item).getProperty());
-                    loadedProcess.loadXmlFile();
+                    // Process loadedProcess = new Process(((ProcessItem) item).getProperty());
+                    // loadedProcess.loadXmlFile();
+                    IDesignerCoreService designerCoreService = CorePlugin.getDefault().getDesignerCoreService();
+                    Process loadedProcess = (Process) designerCoreService.getProcessFromProcessItem((ProcessItem) item);
+
                     part.setInputProcess(loadedProcess);
                 }
             }

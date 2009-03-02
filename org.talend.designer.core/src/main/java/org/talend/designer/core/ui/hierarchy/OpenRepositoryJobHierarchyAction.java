@@ -17,10 +17,12 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.repository.model.RepositoryNode;
@@ -59,8 +61,10 @@ public class OpenRepositoryJobHierarchyAction extends AContextualAction {
         Assert.isTrue(property.getItem() instanceof ProcessItem);
 
         // TODO should use a fake Process here to replace the real Process.
-        Process loadedProcess = new Process(property);
-        loadedProcess.loadXmlFile();
+        // Process loadedProcess = new Process(property);
+        // loadedProcess.loadXmlFile();
+        IDesignerCoreService designerCoreService = CorePlugin.getDefault().getDesignerCoreService();
+        Process loadedProcess = (Process) designerCoreService.getProcessFromProcessItem((ProcessItem) property.getItem());
 
         OpenJobHierarchyAction openAction = new OpenJobHierarchyAction(this.getViewPart());
         openAction.run(loadedProcess);

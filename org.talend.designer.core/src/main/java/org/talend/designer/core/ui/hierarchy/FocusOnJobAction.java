@@ -15,9 +15,11 @@ package org.talend.designer.core.ui.hierarchy;
 import org.eclipse.jdt.internal.ui.typehierarchy.TypeHierarchyMessages;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.widgets.Shell;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.ui.IJobHierarchyViewPart;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.repository.ui.dialog.RepositoryReviewDialog;
@@ -48,8 +50,10 @@ public class FocusOnJobAction extends Action {
         if (dialog.open() == RepositoryReviewDialog.OK) {
             Item item = dialog.getResult().getObject().getProperty().getItem();
             if (item instanceof ProcessItem) {
-                Process loadedProcess = new Process(((ProcessItem) item).getProperty());
-                loadedProcess.loadXmlFile();
+                // Process loadedProcess = new Process(((ProcessItem) item).getProperty());
+                // loadedProcess.loadXmlFile();
+                IDesignerCoreService designerCoreService = CorePlugin.getDefault().getDesignerCoreService();
+                Process loadedProcess = (Process) designerCoreService.getProcessFromProcessItem((ProcessItem) item);
                 fViewPart.setInputProcess(loadedProcess);
             }
         }
