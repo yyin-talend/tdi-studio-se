@@ -164,6 +164,9 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
                         int pos = pluginId.indexOf("/"); //$NON-NLS-1$
                         if (pos != -1) {
                             pluginId = pluginId.substring(0, pos);
+                            if (pluginId.endsWith(".nl")) {
+                                pluginId = pluginId.replace(".nl", "");
+                            }
                         }
                         BabiliTool.storeBabiliTranslation(info.getKey(), pluginId, info.getLabel());
                     }
