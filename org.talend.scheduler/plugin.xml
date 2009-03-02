@@ -22,7 +22,7 @@
                 id="org.talend.scheduler.views.Scheduler"
                 relationship="stack"
                 relative="org.talend.designer.codegen.perlmodule.ModulesView"
-                visible="true">
+                visible="false">
          </view>
         
           <showInPart
