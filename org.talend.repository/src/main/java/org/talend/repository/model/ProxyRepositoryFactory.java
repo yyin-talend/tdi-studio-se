@@ -40,6 +40,7 @@ import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.exception.SystemException;
 import org.talend.commons.utils.data.container.RootContainer;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.workbench.resources.ResourceUtils;
@@ -77,6 +78,7 @@ import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.model.utils.PerlResourcesHelper;
+import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.documentation.ERepositoryActionName;
 import org.talend.repository.i18n.Messages;
@@ -1405,6 +1407,14 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
 
         ComponentsFactoryProvider.getInstance().reset();
         CorePlugin.getDefault().getLibrariesService().syncLibraries(monitorWrap);
+
+        ICodeGeneratorService codeGenService = (ICodeGeneratorService) GlobalServiceRegister.getDefault().getService(
+                ICodeGeneratorService.class);
+        try {
+            codeGenService.createRoutineSynchronizer().syncAllRoutines();
+        } catch (SystemException e1) {
+            //
+        }
         if (!CommonsPlugin.isHeadless()) {
             CorePlugin.getDefault().getCodeGeneratorService().initializeTemplates();
         }
