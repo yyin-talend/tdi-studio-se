@@ -73,10 +73,21 @@ skeleton="../templates/db_output_bulk.skeleton"
     ////////////////////////////////////////////////////////////
     List<Column> colStruct =  new ArrayList();
     for(Column colStmt : stmtStructure) {
-        if(!colStmt.isReplaced() && !colStmt.isAddCol()){
-            colStruct.add(colStmt);
-        }
+	    if (!colStmt.isReplaced()&&!colStmt.isAddCol()) { 
+	 		 colStruct.add(colStmt);                  
+	 	} else if ( colStmt.isReplaced() ) { 
+ 		     List <Column> replacements = colStmt.getReplacement() ;          
+	 		 for (int i=0; i < replacements.size() ; i++) { 
+	 		      Column columnTest =columnTest = replacements.get(i); 
+	 		      String sqlExpression = columnTest.getSqlStmt(); 
+	 		      if (sqlExpression.contains("?")) { 
+	 		            colStruct.add(colStmt); 
+	 		      } 
+	 		 } 
+	 	}  
+
     }
+    
 
     if(incomingConnName != null && columnList != null){
         %>
