@@ -20,6 +20,13 @@ import org.eclipse.ui.part.PluginDropAdapter;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
+import org.talend.core.CorePlugin;
+import org.talend.core.model.business.BusinessType;
+import org.talend.core.model.properties.Property;
+import org.talend.core.model.properties.RoutineItem;
+import org.talend.core.model.properties.SQLPatternItem;
+import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.actions.CopyObjectAction;
 import org.talend.repository.model.actions.MoveObjectAction;
@@ -81,6 +88,33 @@ public class RepositoryDropAdapter extends PluginDropAdapter {
         boolean isValid = true;
         for (Object obj : ((StructuredSelection) getViewer().getSelection()).toArray()) {
             RepositoryNode sourceNode = (RepositoryNode) obj;
+
+            if (sourceNode != null) {
+                IRepositoryObject object = sourceNode.getObject();
+                if (object == null) {
+                    return false;
+                }
+                if (object.getType() == ERepositoryObjectType.JOB_DOC || object.getType() == ERepositoryObjectType.JOBLET_DOC) {
+                    if (BusinessType.SHAP == CorePlugin.getDefault().getDiagramModelService().getBusinessModelType(target)) {
+                        return true;
+                    }
+                    return false;
+                } else if (object.getType() == ERepositoryObjectType.ROUTINES) {
+                    Property property = object.getProperty();
+                    RoutineItem item = (RoutineItem) property.getItem();
+                    if (item.isBuiltIn() && target instanceof RepositoryNode) {
+                        return false;
+                    }
+                } else if (object.getType() == ERepositoryObjectType.SQLPATTERNS) {
+                    Property property = object.getProperty();
+                    SQLPatternItem item = (SQLPatternItem) property.getItem();
+                    if (item.isSystem() && target instanceof RepositoryNode) {
+                        return false;
+                    }
+                }
+
+            }
+
             switch (operation) {
             case DND.DROP_COPY:
                 isValid = CopyObjectAction.getInstance().validateAction(sourceNode, (RepositoryNode) target);
@@ -101,5 +135,4 @@ public class RepositoryDropAdapter extends PluginDropAdapter {
 
         return isValid;
     }
-
 }

@@ -21,9 +21,6 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.workbench.resources.ResourceUtils;
-import org.talend.core.model.properties.Property;
-import org.talend.core.model.properties.RoutineItem;
-import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.RepositoryManager;
@@ -79,23 +76,23 @@ public class MoveObjectAction {
         IRepositoryObject objectToCopy = sourceNode.getObject();
 
         // Cannot move system routines:
-        if (objectToCopy != null && objectToCopy.getType() == ERepositoryObjectType.ROUTINES) {
-            Property property = objectToCopy.getProperty();
-            RoutineItem item = (RoutineItem) property.getItem();
-            return !item.isBuiltIn();
-        }
+        // if (objectToCopy != null && objectToCopy.getType() == ERepositoryObjectType.ROUTINES) {
+        // Property property = objectToCopy.getProperty();
+        // RoutineItem item = (RoutineItem) property.getItem();
+        // return !item.isBuiltIn();
+        // }
 
         // Cannot move system sql pattern:
-        if (objectToCopy != null && objectToCopy.getType() == ERepositoryObjectType.SQLPATTERNS) {
-            Property property = objectToCopy.getProperty();
-            SQLPatternItem item = (SQLPatternItem) property.getItem();
-            return !item.isSystem();
-        }
+        // if (objectToCopy != null && objectToCopy.getType() == ERepositoryObjectType.SQLPATTERNS) {
+        // Property property = objectToCopy.getProperty();
+        // SQLPatternItem item = (SQLPatternItem) property.getItem();
+        // return !item.isSystem();
+        // }
 
         // cannot move job html documentation node:
-        if (objectToCopy != null && objectToCopy.getType() == ERepositoryObjectType.JOB_DOC) {
-            return false;
-        }
+        // if (objectToCopy != null && objectToCopy.getType() == ERepositoryObjectType.JOB_DOC) {
+        // return false;
+        // }
 
         // Cannot move folder in job documentation node:
         if (sourceNode.getType() == ENodeType.SIMPLE_FOLDER && sourceNode.getContentType() == ERepositoryObjectType.JOB_DOC) {

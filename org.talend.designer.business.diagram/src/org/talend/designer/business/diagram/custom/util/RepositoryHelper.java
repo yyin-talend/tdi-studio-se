@@ -101,7 +101,8 @@ public class RepositoryHelper {
             return BusinessPackage.eINSTANCE.getProcess();
         } else if (type == ERepositoryObjectType.ROUTINES) {
             return BusinessPackage.eINSTANCE.getRoutine();
-        } else if (type == ERepositoryObjectType.DOCUMENTATION) {
+        } else if (type == ERepositoryObjectType.DOCUMENTATION || type == ERepositoryObjectType.JOB_DOC
+                || type == ERepositoryObjectType.JOBLET_DOC) {
             return BusinessPackage.eINSTANCE.getDocumentation();
         } else if (type == ERepositoryObjectType.METADATA_CONNECTIONS) {
             return BusinessPackage.eINSTANCE.getDatabaseMetadata();
