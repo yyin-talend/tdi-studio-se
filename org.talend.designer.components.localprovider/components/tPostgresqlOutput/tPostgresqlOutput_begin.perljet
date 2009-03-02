@@ -301,6 +301,7 @@ if ((dataAction.equals("INSERT"))
     || (dataAction.equals("INSERT_OR_UPDATE"))) {
     List keys = new ArrayList();
     List parameters = new ArrayList();
+    List binaryparam = new ArrayList();
 
     for (IMetadataColumn column: metadata.getListColumns()) {
         for(int i = 0; i < addCols.size(); i++) {
@@ -326,6 +327,9 @@ if ((dataAction.equals("INSERT"))
         }
         keys.add(currentKey);
         parameters.add(currentParameter);
+        if (column.getType().equals("BYTEA")) {
+            binaryparam.add(keys.size());
+        }
 
         for(int i = 0; i < addCols.size(); i++) {
             Map<String, String> addCol = addCols.get(i);
@@ -341,6 +345,7 @@ if ((dataAction.equals("INSERT"))
     // String keyString = StringUtils.join(keys.toArray(), ".','.");
     String keyString = StringUtils.join(keys.toArray(), ", ");
     String parametersString = StringUtils.join(parameters.toArray(), ", ");
+    String binaryparamString = StringUtils.join(binaryparam.toArray(), ", ");
 %>
 
 $query = '
@@ -352,6 +357,17 @@ INSERT
 ';
 
 my $isth_<%=cid %> = $<%=dbh%>->prepare($query);
+
+my @binary_column_pos_<%=cid%> = (<%=binaryparamString%>);
+foreach (@binary_column_pos_<%=cid%>) {
+    $isth_<%=cid %>->bind_param(
+        $_,
+        undef,
+        {
+            pg_type => DBD::Pg->PG_BYTEA
+        }
+    );
+}
 
 <%
 }
