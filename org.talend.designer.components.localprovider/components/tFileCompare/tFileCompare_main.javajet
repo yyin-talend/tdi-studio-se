@@ -41,8 +41,8 @@ if (result_<%=cid%>)
 	if(cmpMode.equals("TEXT_CMP"))
 	{
 		%>
-		java.io.BufferedReader file_<%=cid%> = new java.io.BufferedReader(new java.io.FileReader(<%=file%>));
-		java.io.BufferedReader fileRef_<%=cid%> = new java.io.BufferedReader(new java.io.FileReader(<%=fileRef%>));
+		java.io.BufferedReader file_<%=cid%> = new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(<%=file%>)));
+		java.io.BufferedReader fileRef_<%=cid%> = new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(<%=fileRef%>)));
 		String content_<%=cid%> = null,contentRef_<%=cid%> = null;
 		while((content_<%=cid%> = file_<%=cid%>.readLine()) != null && (contentRef_<%=cid%> = fileRef_<%=cid%>.readLine()) != null)
 		{
