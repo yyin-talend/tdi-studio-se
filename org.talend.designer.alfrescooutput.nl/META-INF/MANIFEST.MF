@@ -3,4 +3,4 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Nl Fragment
 Bundle-SymbolicName: org.talend.designer.alfrescooutput.nl
 Bundle-Version: 2.2.0.qualifier
-Fragment-Host: org.talend.designer.alfrescooutput;bundle-version="1.0.0"
+Fragment-Host: org.talend.designer.alfrescooutput

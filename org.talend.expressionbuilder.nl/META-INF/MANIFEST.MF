@@ -3,6 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Expression Builder Nl Fragment
 Bundle-SymbolicName: org.talend.expressionbuilder.nl
 Bundle-Version: 2.2.0.qualifier
-Fragment-Host: org.talend.expressionbuilder;bundle-version="1.0.0"
+Fragment-Host: org.talend.expressionbuilder
 Bundle-Localization: plugin
 Bundle-Vendor: .Talend SA.
