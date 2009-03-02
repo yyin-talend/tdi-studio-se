@@ -455,6 +455,7 @@ if(mode.equals("Dom4j")){
 		needRoot_<%=cid%>=false;
 <% 
 	generateToolByDom4j.generateCode(root,"root","doc");
+	if(isMerge==false){
 %>
 		root4Group_<%=cid%> = subTreeRootParent_<%=cid%>;
 	}else{
@@ -462,6 +463,11 @@ if(mode.equals("Dom4j")){
 	}
 	// build group xml tree 
 <%
+	}else{
+%>
+	}
+<%
+	}
 //==================================add by wliu======================================
 if(groupTable.size()>0){					//init the generate tool.
 	if(isMerge==true){//merge into the file
