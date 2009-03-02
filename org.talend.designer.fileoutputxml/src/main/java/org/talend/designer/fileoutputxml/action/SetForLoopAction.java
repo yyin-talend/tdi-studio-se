@@ -83,7 +83,9 @@ public class SetForLoopAction extends SelectionProviderAction {
             node.setGroup(false);
         }
         node.setLoop(true);
-        foxui.updateStatus(null);
+        if (foxui != null) {
+            foxui.updateStatus(null);
+        }
         TreeUtil.upsetMainNode(node);
         xmlViewer.refresh();
     }
@@ -91,7 +93,8 @@ public class SetForLoopAction extends SelectionProviderAction {
     /*
      * (non-Javadoc)
      * 
-     * @see org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse.jface.viewers.IStructuredSelection)
+     * @see
+     * org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse.jface.viewers.IStructuredSelection)
      */
     @Override
     public void selectionChanged(IStructuredSelection selection) {

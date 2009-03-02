@@ -18,6 +18,7 @@ import org.eclipse.ui.actions.SelectionProviderAction;
 import org.talend.designer.fileoutputxml.data.Attribute;
 import org.talend.designer.fileoutputxml.data.FOXTreeNode;
 import org.talend.designer.fileoutputxml.data.NameSpaceNode;
+import org.talend.designer.fileoutputxml.ui.FOXUI;
 import org.talend.designer.fileoutputxml.util.TreeUtil;
 
 /**
@@ -31,15 +32,18 @@ public class SetGroupAction extends SelectionProviderAction {
     // the xml viewer, see FOXUI.
     private TreeViewer xmlViewer;
 
+    private FOXUI foxui;
+
     /**
      * CreateNode constructor comment.
      * 
      * @param provider
      * @param text
      */
-    public SetGroupAction(TreeViewer xmlViewer, String text) {
+    public SetGroupAction(TreeViewer xmlViewer, FOXUI foxui, String text) {
         super(xmlViewer, text);
         this.xmlViewer = xmlViewer;
+        this.foxui = foxui;
     }
 
     /*
@@ -57,13 +61,15 @@ public class SetGroupAction extends SelectionProviderAction {
         // old TreeUtil.clearLoopNode((FOXTreeNode) xmlViewer.getTree().getItem(0).getData());
         node.setGroup(true);
         // old TreeUtil.guessLoopWithGroup(node);
+        foxui.updateStatus(null);
         xmlViewer.refresh();
     }
 
     /*
      * (non-Javadoc)
      * 
-     * @see org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse.jface.viewers.IStructuredSelection)
+     * @see
+     * org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse.jface.viewers.IStructuredSelection)
      */
     @Override
     public void selectionChanged(IStructuredSelection selection) {
@@ -73,7 +79,7 @@ public class SetGroupAction extends SelectionProviderAction {
             return;
         }
         if ((node instanceof Attribute) || node.hasLink()) {
-            this.setEnabled(false);
+            this.setEnabled(true);
             return;
         }
 

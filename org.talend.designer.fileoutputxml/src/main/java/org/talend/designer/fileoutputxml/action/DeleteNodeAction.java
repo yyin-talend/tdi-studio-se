@@ -77,10 +77,9 @@ public class DeleteNodeAction extends SelectionProviderAction {
         // if (TreeUtil.refreshTree((FOXTreeNode) xmlViewer.getTree().getItem(0).getData())) {
         // xmlViewer.refresh();
         // }
-        if (node.isLoop()) {
+        if (node.isLoop() || node.isGroup()) {
             foxui.updateStatus(Messages.getString("FOXUI.NoLoop")); //$NON-NLS-1$
         }
-
         xmlViewer.refresh(parent);
         xmlViewer.expandAll();
         foxui.redrawLinkers();
@@ -114,7 +113,8 @@ public class DeleteNodeAction extends SelectionProviderAction {
     /*
      * (non-Javadoc)
      * 
-     * @see org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse.jface.viewers.IStructuredSelection)
+     * @see
+     * org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse.jface.viewers.IStructuredSelection)
      */
     @Override
     public void selectionChanged(IStructuredSelection selection) {

@@ -369,7 +369,7 @@ public class FOXUI {
         // .setToolTipText("Discard the current tree and then import a hierachy tree from an existing xml file.");
         // guessLoopAction = new GuessLoopAction(xmlViewer, Messages.getString("FOXUI.15")); //$NON-NLS-1$
         setLoopAction = new SetForLoopAction(xmlViewer, this, Messages.getString("FOXUI.16")); //$NON-NLS-1$
-        setGroupAction = new SetGroupAction(xmlViewer, Messages.getString("FOXUI.17")); //$NON-NLS-1$
+        setGroupAction = new SetGroupAction(xmlViewer, this, Messages.getString("FOXUI.17")); //$NON-NLS-1$
         removeGroupAction = new RemoveGroupAction(xmlViewer, Messages.getString("FOXUI.18")); //$NON-NLS-1$
 
     }
