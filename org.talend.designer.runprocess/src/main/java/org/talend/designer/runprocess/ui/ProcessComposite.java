@@ -303,7 +303,7 @@ public class ProcessComposite extends Composite {
 
             public void widgetSelected(SelectionEvent event) {
                 String currentText = itemDropDown.getText();
-                if (!currentText.equals("Pause") && !currentText.equals("Resume")) {//$NON-NLS-1$//$NON-NLS-2$
+                if (!currentText.equals(" Pause") && !currentText.equals("Resume")) {//$NON-NLS-1$//$NON-NLS-2$
                     itemDropDown.setText(menuItem1.getText());
                     itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.RUN_PROCESS_ACTION));
                     itemDropDown.setToolTipText(Messages.getString("ProcessComposite.execHint"));//$NON-NLS-1$
@@ -320,7 +320,7 @@ public class ProcessComposite extends Composite {
 
             public void widgetSelected(SelectionEvent event) {
                 String currentText = itemDropDown.getText();
-                if (!currentText.equals("Pause") && !currentText.equals("Resume")) {//$NON-NLS-1$//$NON-NLS-2$
+                if (!currentText.equals(" Pause") && !currentText.equals("Resume")) {//$NON-NLS-1$//$NON-NLS-2$
                     itemDropDown.setText(menuItem2.getText());
                     itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_PROCESS_ACTION));
                     itemDropDown.setToolTipText(Messages.getString("ProcessComposite.debugHint"));//$NON-NLS-1$
