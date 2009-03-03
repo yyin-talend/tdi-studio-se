@@ -43,7 +43,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 	(List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__LOOP__");
 %>
 int nb_line_<%=cid%> = 0;
+<%if(isMerge==true){%>
 boolean needRoot_<%=cid%>  = false;
+<%}else{%>
+boolean	needRoot_<%=cid%> = true;
+<%}%>
 String fileName_<%=cid%> = <%=fileName%>;
 String file_<%=cid%> = fileName_<%=cid%>.substring(0,fileName_<%=cid%>.lastIndexOf(".xml"));
 <%
@@ -150,7 +154,6 @@ if(needRoot_<%=cid %> ==false){
 <%
 					}else{
 %>
-	needRoot_<%=cid %>=true;
 	doc_<%=cid %>=org.dom4j.DocumentHelper.createDocument();
 <%
 					}
