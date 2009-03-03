@@ -79,6 +79,7 @@ import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.model.utils.PerlResourcesHelper;
 import org.talend.designer.codegen.ICodeGeneratorService;
+import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.documentation.ERepositoryActionName;
 import org.talend.repository.i18n.Messages;
@@ -1404,6 +1405,11 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         monitorWrap.worked(1);
 
         service.executeProjectTasks(project, false, monitorWrap);
+
+        // clean workspace
+        IRunProcessService runProcessService = (IRunProcessService) GlobalServiceRegister.getDefault().getService(
+                IRunProcessService.class);
+        runProcessService.deleteAllJobs(false);
 
         ComponentsFactoryProvider.getInstance().reset();
         CorePlugin.getDefault().getLibrariesService().syncLibraries(monitorWrap);
