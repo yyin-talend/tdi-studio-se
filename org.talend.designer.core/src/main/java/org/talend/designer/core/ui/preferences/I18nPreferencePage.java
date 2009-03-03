@@ -29,6 +29,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.adaptor.EclipseStarter;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.preference.FieldEditor;
@@ -40,6 +41,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.epic.core.preferences.LabelFieldEditor;
@@ -68,6 +70,8 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
     private static final Pattern VERSION_PATTERN = Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)(\\.(RC|M)\\d+)?_r\\d+"); //$NON-NLS-1$
 
     private static final Pattern DEFAULT_PATTERN = Pattern.compile("(\\d+)\\.(\\d+)\\.*(\\d*)"); //$NON-NLS-1$
+
+    private boolean updateCompleted;
 
     /**
      * Construct a new I18nPreferencePage.
@@ -148,6 +152,7 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
      * @param validated
      */
     public void runProgressMonitorDialog(final boolean validated) {
+        updateCompleted = false;
         ProgressMonitorDialog progressDialog = new ProgressMonitorDialog(getFieldEditorParent().getShell());
         IRunnableWithProgress runnable = new IRunnableWithProgress() {
 
@@ -164,8 +169,8 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
                         int pos = pluginId.indexOf("/"); //$NON-NLS-1$
                         if (pos != -1) {
                             pluginId = pluginId.substring(0, pos);
-                            if (pluginId.endsWith(".nl")) {
-                                pluginId = pluginId.replace(".nl", "");
+                            if (pluginId.endsWith(".nl")) { //$NON-NLS-1$
+                                pluginId = pluginId.replace(".nl", ""); //$NON-NLS-1$ //$NON-NLS-2$
                             }
                         }
                         BabiliTool.storeBabiliTranslation(info.getKey(), pluginId, info.getLabel());
@@ -177,12 +182,14 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
                             ExceptionHandler.process(e);
                         }
                     }
+
+                    updateCompleted = true;
+
                 } catch (Exception e1) {
                     ExceptionHandler.process(e1);
                 } finally {
                     monitor.done();
                 }
-
             }
         };
         try {
@@ -191,6 +198,19 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
             ExceptionHandler.process(e1);
         } catch (InterruptedException e1) {
             ExceptionHandler.process(e1);
+        }
+
+        if (updateCompleted) {
+            Display.getDefault().asyncExec(new Runnable() {
+
+                public void run() {
+                    MessageDialog
+                            .openInformation(
+                                    Display.getDefault().getActiveShell(),
+                                    Messages.getString("I18nPreferencePage.title"), //$NON-NLS-1$
+                                    Messages.getString("I18nPreferencePage.completeInfo")); //$NON-NLS-1$
+                }
+            });
         }
     }
 
