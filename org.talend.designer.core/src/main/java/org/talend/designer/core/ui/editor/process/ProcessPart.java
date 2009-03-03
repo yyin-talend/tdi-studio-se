@@ -34,7 +34,6 @@ import org.eclipse.gef.editpolicies.SnapFeedbackPolicy;
 import org.eclipse.gef.rulers.RulerProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.IEditorInput;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.utils.DesignerColorUtils;
@@ -60,7 +59,8 @@ public class ProcessPart extends AbstractGraphicalEditPart implements PropertyCh
     private static final Color READ_WRITE_COLOR = new Color(null, DesignerColorUtils.getPreferenceDesignerEditorRGB(
             DesignerColorUtils.JOBDESIGNER_EGITOR_BACKGROUND_COLOR_NAME, DesignerColorUtils.DEAULT_EDIOR_COLOR));
 
-    private static final Color READ_ONLY_COLOR = new Color(null, new RGB(0xE7, 0xE7, 0xE7));
+    private static final Color READ_ONLY_COLOR = new Color(null, DesignerColorUtils.getPreferenceReadonlyRGB(
+            DesignerColorUtils.READONLY_BACKGROUND_COLOR_NAME, DesignerColorUtils.DEAULT_READONLY_COLOR));
 
     /*
      * (non-Javadoc)
