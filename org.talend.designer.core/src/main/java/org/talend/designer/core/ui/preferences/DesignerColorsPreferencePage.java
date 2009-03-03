@@ -77,6 +77,8 @@ public class DesignerColorsPreferencePage extends FieldEditorPreferencePage impl
         addField(new ColorFieldEditor(DesignerColorUtils.JOBDESIGNER_EGITOR_BACKGROUND_COLOR_NAME, Messages
                 .getString("DesignerPreferencePage.DesignerEditorBackgroundColor"), jobBackgroundGroup)); //$NON-NLS-1$
 
+        addField(new ColorFieldEditor(DesignerColorUtils.READONLY_BACKGROUND_COLOR_NAME, Messages
+                .getString("DesignerPreferencePage.ReadonlyBackgroundColor"), jobBackgroundGroup)); //$NON-NLS-1$
         GridLayout layout = new GridLayout(2, false);
         layout.marginLeft = 10;
         jobBackgroundGroup.setLayout(layout);
