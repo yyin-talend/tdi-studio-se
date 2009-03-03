@@ -31,9 +31,9 @@ public class DocumentationPreferencePage extends FieldEditorPreferencePage imple
 
     private boolean isDocumentationPluginLoaded = true;
 
-    private boolean isHidePassords = true, isGenerateSourcecode = false;
+    // private boolean isHidePassords = true, isGenerateSourcecode = false;
 
-    private BooleanFieldEditor passwordHideFieldEditor;
+    // private BooleanFieldEditor passwordHideFieldEditor;
 
     private BooleanFieldEditor sourceCodeGenFieldEditor;
 
@@ -54,12 +54,12 @@ public class DocumentationPreferencePage extends FieldEditorPreferencePage imple
     protected void createFieldEditors() {
         // booleanFieldEditor = new BooleanFieldEditor(ITalendCorePrefConstants.DOC_GENERATION, Messages
         //                .getString("DocumentationPreferencePage.autoUpdateDoc"), getFieldEditorParent()); //$NON-NLS-1$
-        passwordHideFieldEditor = new BooleanFieldEditor(ITalendCorePrefConstants.DOC_HIDEPASSWORDS, Messages
-                .getString("DocumentationPreferencePage.hidePwd"), getFieldEditorParent()); //$NON-NLS-1$
+        // passwordHideFieldEditor = new BooleanFieldEditor(ITalendCorePrefConstants.DOC_HIDEPASSWORDS, Messages
+        //                .getString("DocumentationPreferencePage.hidePwd"), getFieldEditorParent()); //$NON-NLS-1$
         sourceCodeGenFieldEditor = new BooleanFieldEditor(ITalendCorePrefConstants.DOC_GENERATESOURCECODE, Messages
                 .getString("DocumentationPreferencePage.sourceCodeToHTML"), getFieldEditorParent()); //$NON-NLS-1$
         // addField(booleanFieldEditor);
-        addField(passwordHideFieldEditor);
+        // addField(passwordHideFieldEditor);
         addField(sourceCodeGenFieldEditor);
         // booleanFieldEditor.setEnabled(isDocumentationPluginLoaded, getFieldEditorParent());
 

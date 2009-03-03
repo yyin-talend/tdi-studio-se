@@ -1100,6 +1100,11 @@
             id="status"
             order="4"
             title="%prefsStatusName">
+      </page>
+      <page
+            class="org.talend.repository.preference.SecurityProjectSettingPage"
+            id="org.talend.repository.securityPage"
+            title="Security">
       </page>        
    </extension>
 
