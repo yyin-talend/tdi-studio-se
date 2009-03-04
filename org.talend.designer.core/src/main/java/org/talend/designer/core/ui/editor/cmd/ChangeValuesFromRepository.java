@@ -21,6 +21,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.QueryUtil;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
@@ -245,7 +246,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                     }
 
                     if (param.isRepositoryValueUsed()) {
-                        param.setReadOnly(true);
+                        param.setReadOnly(false);
                     }
                 }
             }
@@ -330,26 +331,29 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                     repositoryTable = item.getProperty().getId() + " - " + getFirstRepositoryTable(item); //$NON-NLS-1$
                                     repositorySchemaTypeParameter.setValue(repositoryTable);
                                 }
-                                //                                if (!"".equals(repositoryTable)) { //$NON-NLS-1$
-                                // param.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()).setValue(
-                                // EmfComponent.REPOSITORY);
-                                //
-                                // IMetadataTable table = MetadataTool.getMetadataFromRepository(repositoryTable);
-                                // // repositoryTableMap.get(repositoryTable);
-                                // if (table != null) {
-                                // table = table.clone();
-                                // setDBTableFieldValue(node, table.getTableName(), null);
-                                // setSAPFunctionName(node, table.getLabel());
-                                // table.setTableName(node.getMetadataList().get(0).getTableName());
-                                // if (!table.sameMetadataAs(node.getMetadataList().get(0))) {
-                                // ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, param, null, table,
-                                // param);
-                                // cmd.setConnection(connection);
-                                // cmd.setRepositoryMode(true);
-                                // cmd.execute(true);
-                                // }
-                                // }
-                                // }
+                                if (UpdateRepositoryUtils.getMetadataTablesFromItem(item).size() == 1) {
+                                    if (!"".equals(repositoryTable)) { //$NON-NLS-1$
+                                        param.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()).setValue(
+                                                EmfComponent.REPOSITORY);
+
+                                        IMetadataTable table = MetadataTool.getMetadataFromRepository(repositoryTable);
+                                        // repositoryTableMap.get(repositoryTable);
+                                        if (table != null) {
+                                            table = table.clone();
+                                            setDBTableFieldValue(node, table.getTableName(), null);
+                                            setSAPFunctionName(node, table.getLabel());
+                                            table.setTableName(node.getMetadataList().get(0).getTableName());
+                                            if (!table.sameMetadataAs(node.getMetadataList().get(0))) {
+                                                ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, param, null, table,
+                                                        param);
+                                                cmd.setConnection(connection);
+                                                cmd.setRepositoryMode(true);
+                                                cmd.execute(true);
+                                            }
+                                        }
+                                    }
+                                }
+
                             } else {
                                 Node sourceNode = getRealSourceNode((INode) elem);
                                 if (sourceNode != null) {
