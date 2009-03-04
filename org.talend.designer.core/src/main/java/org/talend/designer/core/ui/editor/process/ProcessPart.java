@@ -56,11 +56,11 @@ public class ProcessPart extends AbstractGraphicalEditPart implements PropertyCh
 
     private RepositoryNode node;
 
-    private static final Color READ_WRITE_COLOR = new Color(null, DesignerColorUtils.getPreferenceDesignerEditorRGB(
-            DesignerColorUtils.JOBDESIGNER_EGITOR_BACKGROUND_COLOR_NAME, DesignerColorUtils.DEAULT_EDIOR_COLOR));
-
-    private static final Color READ_ONLY_COLOR = new Color(null, DesignerColorUtils.getPreferenceReadonlyRGB(
-            DesignerColorUtils.READONLY_BACKGROUND_COLOR_NAME, DesignerColorUtils.DEAULT_READONLY_COLOR));
+    // private static final Color READ_WRITE_COLOR = new Color(null, DesignerColorUtils.getPreferenceDesignerEditorRGB(
+    // DesignerColorUtils.JOBDESIGNER_EGITOR_BACKGROUND_COLOR_NAME, DesignerColorUtils.DEAULT_EDITOR_COLOR));
+    //
+    // private static final Color READ_ONLY_COLOR = new Color(null, DesignerColorUtils.getPreferenceReadonlyRGB(
+    // DesignerColorUtils.READONLY_BACKGROUND_COLOR_NAME, DesignerColorUtils.DEAULT_READONLY_COLOR));
 
     /*
      * (non-Javadoc)
@@ -125,10 +125,12 @@ public class ProcessPart extends AbstractGraphicalEditPart implements PropertyCh
      */
     public void ajustReadOnly() {
         if (((Process) getModel()).isReadOnly()) {
-            fig2.setBackgroundColor(READ_ONLY_COLOR);
+            fig2.setBackgroundColor(new Color(null, DesignerColorUtils.getPreferenceReadonlyRGB(
+                    DesignerColorUtils.READONLY_BACKGROUND_COLOR_NAME, DesignerColorUtils.DEFAULT_READONLY_COLOR)));
             fig2.setOpaque(true);
         } else {
-            fig2.setBackgroundColor(READ_WRITE_COLOR);
+            fig2.setBackgroundColor(new Color(null, DesignerColorUtils.getPreferenceDesignerEditorRGB(
+                    DesignerColorUtils.JOBDESIGNER_EGITOR_BACKGROUND_COLOR_NAME, DesignerColorUtils.DEFAULT_EDITOR_COLOR)));
             fig2.setOpaque(true);
         }
     }

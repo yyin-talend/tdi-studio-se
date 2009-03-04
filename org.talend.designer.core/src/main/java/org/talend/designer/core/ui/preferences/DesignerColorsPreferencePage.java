@@ -20,12 +20,20 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.utils.DesignerColorUtils;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
+import org.talend.designer.core.ui.editor.AbstractTalendEditor;
+import org.talend.designer.core.ui.editor.process.ProcessPart;
 
 /**
  * ggu class global comment. Detailled comment
@@ -115,6 +123,40 @@ public class DesignerColorsPreferencePage extends FieldEditorPreferencePage impl
                     .getDefaultMenuName(), comp));
         }
 
+    }
+
+    @Override
+    public boolean performOk() {
+        boolean performOk = super.performOk();
+        switchToCurrentColor();
+        return performOk;
+    }
+
+    @Override
+    protected void performApply() {
+        super.performApply();
+        switchToCurrentColor();
+    }
+
+    /**
+     * zli Comment method "switchToCurrentColor".
+     */
+    private void switchToCurrentColor() {
+        IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+        if (activeWorkbenchWindow != null) {
+            IWorkbenchPage activePage = activeWorkbenchWindow.getActivePage();
+            if (activePage != null) {
+                for (IEditorReference ref : activePage.getEditorReferences()) {
+                    IEditorPart editor = ref.getEditor(true);
+                    if (editor instanceof AbstractMultiPageTalendEditor) {
+                        AbstractMultiPageTalendEditor pageEditor = (AbstractMultiPageTalendEditor) editor;
+                        AbstractTalendEditor talendEditor = pageEditor.getTalendEditor();
+                        ProcessPart processPart = talendEditor.getProcessPart();
+                        processPart.ajustReadOnly();
+                    }
+                }
+            }
+        }
     }
 
     /*
