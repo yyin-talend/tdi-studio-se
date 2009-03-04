@@ -20,6 +20,7 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.talend.commons.utils.VersionUtils;
@@ -210,9 +211,15 @@ public abstract class FolderHelper {
             } else {
                 children = project.getFolders();
             }
+            // see the bug "6458".
+            EList list = new BasicEList(children);
 
-            for (Iterator it = children.iterator(); it.hasNext();) {
+            for (Iterator it = list.iterator(); it.hasNext();) {
                 Item item = (Item) it.next();
+                if (item.getProperty() == null) { // invalid folder
+                    children.remove(item);
+                    continue;
+                }
                 if (item instanceof FolderItem && item.getProperty().getLabel().equals(name)) {
                     return (FolderItem) item;
                 }
@@ -224,8 +231,8 @@ public abstract class FolderHelper {
     }
 
     /**
-     * Returns <code>true</code> if a folder at the same level of <code>folder</code> with a different id and wich
-     * label is <code>label</code> exists.
+     * Returns <code>true</code> if a folder at the same level of <code>folder</code> with a different id and wich label
+     * is <code>label</code> exists.
      * 
      * @param folder
      * @param label
