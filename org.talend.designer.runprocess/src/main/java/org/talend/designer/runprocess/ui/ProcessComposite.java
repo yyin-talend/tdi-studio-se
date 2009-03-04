@@ -313,15 +313,15 @@ public class ProcessComposite extends Composite {
         });
 
         // Debug
-        final MenuItem menuItem2 = new MenuItem(menu, SWT.PUSH);
-        menuItem2.setText(" " + Messages.getString("ProcessDebugDialog.debugBtn")); //$NON-NLS-1$//$NON-NLS-2$
-        menuItem2.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_PROCESS_ACTION));
-        menuItem2.addSelectionListener(new SelectionAdapter() {
+        debugMenuItem = new MenuItem(menu, SWT.PUSH);
+        debugMenuItem.setText(" " + Messages.getString("ProcessDebugDialog.debugBtn")); //$NON-NLS-1$//$NON-NLS-2$
+        debugMenuItem.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_PROCESS_ACTION));
+        debugMenuItem.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent event) {
                 String currentText = itemDropDown.getText();
                 if (!currentText.equals(" Pause") && !currentText.equals("Resume")) {//$NON-NLS-1$//$NON-NLS-2$
-                    itemDropDown.setText(menuItem2.getText());
+                    itemDropDown.setText(debugMenuItem.getText());
                     itemDropDown.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_PROCESS_ACTION));
                     itemDropDown.setToolTipText(Messages.getString("ProcessComposite.debugHint"));//$NON-NLS-1$
                     toolBar.getParent().layout();
@@ -1014,6 +1014,8 @@ public class ProcessComposite extends Composite {
 
     boolean debugMode = false;
 
+    private MenuItem debugMenuItem;
+
     public void debug() {
 
         setHideconsoleLine(false);
@@ -1280,4 +1282,7 @@ public class ProcessComposite extends Composite {
         this.hideConsoleLine = infoview;
     }
 
+    public void setDebugEnabled(boolean enabled) {
+        debugMenuItem.setEnabled(enabled);
+    }
 }
