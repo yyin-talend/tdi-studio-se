@@ -135,7 +135,8 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
         passwordText = new LabelledText(group, "Password ", 2); //$NON-NLS-1$
         passwordText.getTextControl().setEchoChar(pwdEhcoChar);
 
-        moduleNameCombo = new LabelledCombo(group, "Module name", Messages.getString("SalesforceStep1Form.selectModuleName"), null, 2, false); //$NON-NLS-1$ //$NON-NLS-2$
+        moduleNameCombo = new LabelledCombo(group,
+                "Module name", Messages.getString("SalesforceStep1Form.selectModuleName"), null, 2, false); //$NON-NLS-1$ //$NON-NLS-2$
 
         initModuleNames();
 
@@ -144,7 +145,9 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
         useCostomModuleButton.setText(Messages.getString("SalesforceStep1Form.fetchModuleList")); //$NON-NLS-1$
         new Label(group, SWT.NONE); // Pachlaer
 
-        customModuleCombo = new LabelledCombo(group, Messages.getString("SalesforceStep1Form.customModule"), Messages.getString("SalesforceStep1Form.selectCustomModule"), null, 1, false); //$NON-NLS-1$ //$NON-NLS-2$
+        customModuleCombo = new LabelledCombo(
+                group,
+                Messages.getString("SalesforceStep1Form.customModule"), Messages.getString("SalesforceStep1Form.selectCustomModule"), null, 1, false); //$NON-NLS-1$ //$NON-NLS-2$
 
         GridData gd = new GridData();
         gd.widthHint = 140;
@@ -250,7 +253,7 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
                 if (useCostomModuleButton.getSelection()) {
                     getConnection().setModuleName(customModuleCombo.getText().trim());
                     // // appendCustomModule(customModuleCombo.getText().trim());
-                    customModuleCombo.setText(getConnection().getModuleName());
+                    setCustomModuleCombo(getConnection().getModuleName());
                 }
                 checkFieldsValue();
             }
@@ -364,7 +367,7 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
                             }
                         }
                         if (!is) {
-                            customModuleCombo.add(types[i]);
+                            setCustomModuleCombo(types[i]);
                         }
                     }
                     monitorWrap.done();
@@ -525,15 +528,20 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
             }
         } else {
             if (getConnection().getModuleName() != null && !getConnection().getModuleName().equals("")) { //$NON-NLS-1$
-                customModuleCombo.setText(getConnection().getModuleName());
+                setCustomModuleCombo(getConnection().getModuleName());
             } else {
                 getConnection().setModuleName(customModuleCombo.getText()); // Set defult value
             }
         }
-
         useCostomModuleButton.setSelection(useCustom);
         customModuleCombo.setEnabled(useCustom);
         moduleNameCombo.setEnabled(!useCustom);
+    }
+
+    private void setCustomModuleCombo(String moduleName) {
+        customModuleCombo.removeAll();
+        customModuleCombo.add(moduleName);
+        customModuleCombo.select(0);
     }
 
     private void setTextValue(String value, LabelledText control) {
