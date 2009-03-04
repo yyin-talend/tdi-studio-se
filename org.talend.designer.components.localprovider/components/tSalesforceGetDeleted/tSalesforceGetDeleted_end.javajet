@@ -1,0 +1,43 @@
+<%@ jet 
+imports="
+    	org.talend.core.model.process.INode 
+    	org.talend.core.model.process.ElementParameterParser
+    	org.talend.core.model.metadata.IMetadataTable
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.IConnectionCategory
+		java.util.List
+		"
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+
+String cid = node.getUniqueName();
+%>
+<%
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas != null) && (metadatas.size() > 0)) {
+	IMetadataTable metadata = metadatas.get(0);
+	if (metadata != null) {		
+		List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
+		for(IConnection outgoingConn : outgoingConns) {
+			if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+%>
+				}
+				}
+				}
+			} catch (com.sforce.soap.partner.fault.ApiFault af) {
+            	System.out.println("\nApiFault Failed to get updated records, error message was: \n" + af.getExceptionMessage());
+            	af.printStackTrace();
+        	} catch (Exception ex) {
+            	System.out.println("\nException Failed to get updated records, error message was: \n" + ex.getMessage());
+            	ex.printStackTrace();
+        	}
+<%
+			}
+		}
+	}
+}
+%>
+globalMap.put("<%=cid%>_NB_LINE", nb_line_<%=cid%>);

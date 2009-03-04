@@ -1,0 +1,125 @@
+<%@ jet 
+imports="
+    	org.talend.core.model.process.INode 
+    	org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.IMetadataColumn
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.types.JavaType
+		org.talend.core.model.process.IConnectionCategory
+		java.util.List		
+		"
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+
+String cid = node.getUniqueName();
+
+String username = ElementParameterParser.getValue(node, "__USER__");
+String password = ElementParameterParser.getValue(node, "__PASS__");
+String module = ElementParameterParser.getValue(node, "__MODULENAME__");
+String endPoint = ElementParameterParser.getValue(node, "__ENDPOINT__");
+%>
+ 
+try {
+    binding_<%=cid%> = (com.sforce.soap.partner.SoapBindingStub) new com.sforce.soap.partner.SforceServiceLocator().getSoap(new java.net.URL(<%=endPoint%>));
+    loginResult_<%=cid%> = binding_<%=cid%>.login(<%=username%>, <%=password%>);
+    binding_<%=cid%>._setProperty(com.sforce.soap.partner.SoapBindingStub.ENDPOINT_ADDRESS_PROPERTY, loginResult_<%=cid%>.getServerUrl());
+} catch (javax.xml.rpc.ServiceException ex) {
+    System.out.println("ERROR: createing binding to soap service, error was: \n" + ex.getMessage());
+} catch (com.sforce.soap.partner.fault.UnexpectedErrorFault e) {
+    System.out.println("error: " + e.getMessage());
+} catch (com.sforce.soap.partner.fault.InvalidIdFault e) {
+    System.out.println("error: " + e.getMessage());
+} catch (com.sforce.soap.partner.fault.LoginFault e) {
+    System.out.println("error: " + e.getMessage());
+} catch (java.rmi.RemoteException e) {
+    System.out.println("error: " + e.getMessage());
+}
+com.sforce.soap.partner.SessionHeader sh_<%=cid%> = new com.sforce.soap.partner.SessionHeader();
+sh_<%=cid%>.setSessionId(loginResult_<%=cid%>.getSessionId());
+binding_<%=cid%>.setHeader(new com.sforce.soap.partner.SforceServiceLocator().getServiceName().getNamespaceURI(), "SessionHeader", sh_<%=cid%>);
+<%
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas != null) && (metadatas.size() > 0)) {
+	IMetadataTable metadata = metadatas.get(0);
+	if (metadata != null) {
+		List<IMetadataColumn> columnList = metadata.getListColumns(); 
+		List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
+		
+		java.lang.StringBuilder sb = new java.lang.StringBuilder();
+		for (IMetadataColumn column: columnList){
+			if(sb.length() == 0){
+				sb.append(column.getLabel());
+			}else{
+				sb.append(","+column.getLabel());
+			}
+		}
+		String fieldlist = sb.toString();
+		
+		for(IConnection outgoingConn : outgoingConns) {
+			if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { // start 1
+%>				
+				try {
+					com.sforce.soap.partner.GetDeletedResult gdr_<%=cid%> = binding_<%=cid%>.getDeleted("<%=module%>", startDate_<%=cid%>, endDate_<%=cid%>);
+            		com.sforce.soap.partner.sobject.SObject[] so_<%=cid%> = null;
+            		com.sforce.soap.partner.QueryResult qr_<%=cid%> = null;
+            		com.sforce.soap.partner.DeletedRecord[] drs_<%=cid%> = gdr_<%=cid%>.getDeletedRecords();
+                	java.util.List<String> idlist_<%=cid%> = new java.util.ArrayList<String>();
+            		if (drs_<%=cid%> != null && drs_<%=cid%>.length > 0) {
+                		for(com.sforce.soap.partner.DeletedRecord dr_<%=cid%> : drs_<%=cid%>){
+                			idlist_<%=cid%>.add(dr_<%=cid%>.getId());
+                		}
+                		qr_<%=cid%> = binding_<%=cid%>.queryAll("SELECT " + "<%=fieldlist%>" + " FROM " + "<%=module%>" + " WHERE isDeleted = true");
+                		so_<%=cid%> = qr_<%=cid%>.getRecords();
+            		}
+            		if(so_<%=cid%> != null){
+					for (int i=0;i<so_<%=cid%>.length;i++){
+						if(idlist_<%=cid%>.contains(so_<%=cid%>[i].getId())){
+						nb_line_<%=cid%> ++;
+						org.apache.axis.message.MessageElement[] fields = so_<%=cid%>[i].get_any();
+						int len_<%=cid%> = fields.length;
+<%
+						for( int i = 0; i < columnList.size(); i++) {
+						
+							IMetadataColumn column = columnList.get(i);
+							
+							String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+							
+							JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+							
+							String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+%>						
+								if (<%=i %> < len_<%=cid%> && fields[<%=i%>].getValue() != null){
+<%
+									if (javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) { // String or Object
+%>
+										<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = fields[<%=i%>].getValue();
+<%
+									} else if(javaType == JavaTypesManager.DATE) { // Date
+%>
+										<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = ParserUtils.parseTo_Date(fields[<%=i%>].getValue(), <%= patternValue %>);
+<%
+									} else if(javaType == JavaTypesManager.BYTE_ARRAY) { // byte[]
+%>
+										<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = fields[<%=i%>].getValue().getBytes();
+<%
+									} else  { // other
+%>						
+										<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = ParserUtils.parseTo_<%= typeToGenerate %>(fields[<%=i%>].getValue());
+<%
+									}
+%>			
+								} else {
+									<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
+								}
+<%
+						}
+			}
+		}
+	}
+}
+%>

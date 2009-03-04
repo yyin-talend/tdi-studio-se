@@ -1,0 +1,72 @@
+<%@ jet 
+imports="
+    	org.talend.core.model.process.INode 
+    	org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.metadata.IMetadataTable
+		org.talend.core.model.metadata.IMetadataColumn
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.IConnection
+		java.util.List
+		"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+
+	boolean useProxy = ElementParameterParser.getValue(node,"__USE_PROXY__").equals("true");
+	String proxyHost = ElementParameterParser.getValue(node,"__PROXY_HOST__");
+   	String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
+   	String proxyUsername = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
+   	String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
+
+String cid = node.getUniqueName();
+%>
+
+int nb_line_<%=cid%> = 0;
+
+<%
+if(useProxy){
+%>
+    java.util.Properties props_<%=cid%> = System.getProperties();
+    props_<%=cid%>.put("socksProxyHost",<%=proxyHost %>);  
+    props_<%=cid%>.put("socksProxyPort",<%=proxyPort %>);
+    props_<%=cid%>.put("java.net.socks.username", <%=proxyUsername %>);
+    props_<%=cid%>.put("java.net.socks.password", <%=proxyPassword %>); 
+    
+<%
+}
+%>
+
+<%
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas != null) && (metadatas.size() > 0)) {
+	IMetadataTable metadata = metadatas.get(0);
+	
+	if (metadata != null) {
+		List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
+
+		if (outgoingConns != null && outgoingConns.size() > 0){
+			
+			String sd = ElementParameterParser.getValue(node, "__START_DATE__");
+			String ed = ElementParameterParser.getValue(node, "__END_DATE__");
+%>
+			java.text.SimpleDateFormat startdf_<%=cid%> = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            java.text.SimpleDateFormat enddf_<%=cid%> = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			
+			startdf_<%=cid%>.parse(<%=sd%>);
+            enddf_<%=cid%>.parse(<%=ed%>);
+            
+            java.util.Calendar startCal_<%=cid%> = startdf_<%=cid%>.getCalendar();
+            java.util.Calendar endCal_<%=cid%> = enddf_<%=cid%>.getCalendar();
+			
+	        java.util.GregorianCalendar startDate_<%=cid%> = (java.util.GregorianCalendar) startCal_<%=cid%>;
+            java.util.GregorianCalendar endDate_<%=cid%> = (java.util.GregorianCalendar) endCal_<%=cid%>;
+	        
+			com.sforce.soap.partner.SoapBindingStub binding_<%=cid%> = null;
+        	com.sforce.soap.partner.LoginResult loginResult_<%=cid%> = null;
+<%
+		}
+	}
+}
+%>
