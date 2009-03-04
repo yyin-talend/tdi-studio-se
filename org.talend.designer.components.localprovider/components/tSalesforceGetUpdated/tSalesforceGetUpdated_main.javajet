@@ -21,6 +21,8 @@ String cid = node.getUniqueName();
 String username = ElementParameterParser.getValue(node, "__USER__");
 String password = ElementParameterParser.getValue(node, "__PASS__");
 String module = ElementParameterParser.getValue(node, "__MODULENAME__");
+String customModulename = ElementParameterParser.getValue(node, "__CUSTOM_MODULE_NAME__").trim();
+module = (module.equals("CustomModule")) ? customModulename.replaceAll("\"","") : module;
 String endPoint = ElementParameterParser.getValue(node, "__ENDPOINT__");
 %>
 

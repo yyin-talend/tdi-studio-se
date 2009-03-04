@@ -158,9 +158,13 @@
 		<ITEM NAME="UserPreference"   VALUE="UserPreference" />
 		<ITEM NAME="UserRole"   VALUE="UserRole" />
 		<ITEM NAME="WebLink"   VALUE="WebLink" />
+		<ITEM NAME="CustomModule" VALUE="CustomModule" />
        </ITEMS>
     </PARAMETER>
   
+	<PARAMETER NAME="CUSTOM_MODULE_NAME" FIELD="TEXT" NUM_ROW="5" SHOW_IF="MODULENAME=='CustomModule'" REQUIRED="true" REPOSITORY_VALUE="CUSTOM_MODULE_NAME">
+			<DEFAULT>"customModuleName__c"</DEFAULT>
+	</PARAMETER>
 	
     <PARAMETER
       NAME="SCHEMA"
