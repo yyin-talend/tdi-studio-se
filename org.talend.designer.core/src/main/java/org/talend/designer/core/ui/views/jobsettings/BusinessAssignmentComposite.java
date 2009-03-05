@@ -53,15 +53,25 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.actions.ITreeContextualAction;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.business.BusinessType;
+import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.core.model.properties.RoutineItem;
+import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.business.model.business.BusinessAssignment;
 import org.talend.designer.business.model.business.BusinessFactory;
 import org.talend.designer.business.model.business.BusinessPackage;
+import org.talend.designer.business.model.business.Query;
+import org.talend.designer.business.model.business.Routine;
+import org.talend.designer.business.model.business.SQLPattern;
+import org.talend.designer.business.model.business.TableMetadata;
+import org.talend.designer.business.model.business.TalendItem;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.views.jobsettings.tabs.AbstractTabComposite;
 import org.talend.designer.core.utils.EmfPropertyHelper;
@@ -207,6 +217,7 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
         tableViewer.addDoubleClickListener(new IDoubleClickListener() {
 
             public void doubleClick(DoubleClickEvent event) {
+
                 BusinessAssignment businessAssignment = getBusinessAssignment(event.getSelection());
                 if (businessAssignment != null) {
                     repositoryNode = createRepositoryNode(businessAssignment);
@@ -215,14 +226,16 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
                         for (ITreeContextualAction action : contextualsActions) {
                             if (action.isReadAction() || action.isEditAction() || action.isPropertiesAction()) {
                                 action.init(null, new StructuredSelection(repositoryNode));
-                                if (action.isVisible() && action.isDoubleClickAction()) {
+                                if (action.isVisible() && action.isEnabled() && action.isDoubleClickAction()) {
                                     action.run();
+                                    return;
                                 }
                             }
                         }
                     }
                 }
             }
+
         });
     }
 
@@ -232,28 +245,113 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
             public void selectionChanged(SelectionChangedEvent event) {
                 BusinessAssignment businessAssignment = getBusinessAssignment(event.getSelection());
                 if (businessAssignment != null) {
-                    String id = businessAssignment.getTalendItem().getId();
                     RepositoryNode rootRepositoryNode = getRepositoryView().getRoot();
-                    selectChild(id, rootRepositoryNode);
+
+                    selectChild(businessAssignment.getTalendItem(), rootRepositoryNode);
                 }
             }
 
-            private void selectChild(String id, RepositoryNode rootRepositoryNode) {
-                for (RepositoryNode repositoryNode : rootRepositoryNode.getChildren()) {
+            private void selectChild(TalendItem item, RepositoryNode rootRepositoryNode) {
+
+                try {
+                    RepositoryNode curNode = null;
                     JobSettingsView viewer = (JobSettingsView) PlatformUI.getWorkbench().getActiveWorkbenchWindow()
                             .getActivePage().findView(JobSettingsView.ID);
-                    if (repositoryNode.getId() != null && repositoryNode.getId().equals(id)) {
-                        if (viewer == null) {
-                            return;
-                        }
-                        CorePlugin.getDefault().getRepositoryService().removeRepositoryTreeViewListener(viewer);
-                        getRepositoryView().getViewer().setSelection(new StructuredSelection(repositoryNode));
-                        CorePlugin.getDefault().getRepositoryService().addRepositoryTreeViewListener(viewer);
+                    IRepositoryObject lastVersion = ProxyRepositoryFactory.getInstance().getLastVersion(item.getId());
+                    if (lastVersion != null) {
+                        curNode = RepositoryNodeUtilities.getRepositoryNode(lastVersion);
+                        select(viewer, curNode);
                     } else {
-                        selectChild(id, repositoryNode);
+
+                        for (RepositoryNode repositoryNode : rootRepositoryNode.getChildren()) {
+
+                            if (item instanceof SQLPattern
+                                    && repositoryNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.SQLPATTERNS) {
+                                if (repositoryNode.getType() == ENodeType.REPOSITORY_ELEMENT) {
+                                    SQLPatternItem sqlItem = (SQLPatternItem) repositoryNode.getObject().getProperty().getItem();
+                                    if (sqlItem.isSystem() && item.getLabel().equals(repositoryNode.getObject().getLabel())) {
+                                        select(viewer, repositoryNode);
+                                    }
+                                } else {
+                                    selectChild(item, repositoryNode);
+                                }
+                            } else if (item instanceof Routine
+                                    && repositoryNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.ROUTINES) {
+                                if (repositoryNode.getType() == ENodeType.REPOSITORY_ELEMENT) {
+                                    RoutineItem sqlItem = (RoutineItem) repositoryNode.getObject().getProperty().getItem();
+                                    if (sqlItem.isBuiltIn() && item.getLabel().equals(repositoryNode.getObject().getLabel())) {
+                                        select(viewer, repositoryNode);
+                                    }
+                                } else {
+                                    selectChild(item, repositoryNode);
+                                }
+                            } else if (item instanceof TableMetadata) {
+                                MetadataTable table = MetadataTool.getMetadataTableFromRepository(item.getId());
+                                if (table != null) {
+                                    String id = item.getId().split(" - ")[0];
+                                    if (repositoryNode.getId() != null && repositoryNode.getId().equals(id)) {
+                                        if (ERepositoryObjectType.METADATA_CONNECTIONS == repositoryNode
+                                                .getProperties(EProperties.CONTENT_TYPE)) {
+                                            for (RepositoryNode node : repositoryNode.getChildren()) {
+                                                for (RepositoryNode metadata : node.getChildren()) {
+                                                    if (item.getLabel().equals(metadata.getProperties(EProperties.LABEL))) {
+                                                        select(viewer, metadata);
+                                                    }
+                                                }
+                                            }
+                                        } else {
+                                            for (RepositoryNode node : repositoryNode.getChildren()) {
+                                                if (item.getLabel().equals(node.getProperties(EProperties.LABEL))) {
+                                                    select(viewer, node);
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        selectChild(item, repositoryNode);
+                                    }
+
+                                }
+                            } else if (item instanceof Query) {
+                                org.talend.core.model.metadata.builder.connection.Query query = MetadataTool
+                                        .getQueryFromRepository(item.getId());
+                                if (query != null) {
+                                    String id = item.getId().split(" - ")[0];
+                                    if (repositoryNode.getId() != null && repositoryNode.getId().equals(id)) {
+                                        for (RepositoryNode node : repositoryNode.getChildren()) {
+                                            if ("Queries".equals(node.getLabel())) {
+                                                for (RepositoryNode querie : node.getChildren()) {
+                                                    if (item.getLabel().equals(querie.getProperties(EProperties.LABEL))) {
+                                                        select(viewer, querie);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        selectChild(item, repositoryNode);
+                                    }
+
+                                }
+                            }
+
+                        }
                     }
+
+                } catch (PersistenceException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
                 }
+
             }
+
+            private void select(JobSettingsView viewer, RepositoryNode repositoryNode) {
+                if (viewer == null) {
+                    return;
+                }
+                CorePlugin.getDefault().getRepositoryService().removeRepositoryTreeViewListener(viewer);
+                getRepositoryView().getViewer().setSelection(new StructuredSelection(repositoryNode));
+                CorePlugin.getDefault().getRepositoryService().addRepositoryTreeViewListener(viewer);
+            }
+
         });
     }
 
@@ -300,7 +398,8 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
     private RepositoryNode createRepositoryNode(BusinessAssignment businessAssignment) {
         IRepositoryObject lastVersion;
         try {
-            lastVersion = ProxyRepositoryFactory.getInstance().getLastVersion(businessAssignment.getTalendItem().getId());
+            TalendItem item = businessAssignment.getTalendItem();
+            lastVersion = ProxyRepositoryFactory.getInstance().getLastVersion(item.getId());
 
             if (lastVersion != null) {
                 ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(lastVersion.getProperty().getItem());
@@ -309,8 +408,52 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
                 repositoryNode.setProperties(EProperties.CONTENT_TYPE, itemType);
 
                 return repositoryNode;
+            } else if (item instanceof SQLPattern) {
+                IRepositoryObject object = getObjectFromSystem(item, ERepositoryObjectType.SQLPATTERNS);
+                if (object != null) {
+                    RepositoryNode repositoryNode = new RepositoryNode(object, RepositoryNodeUtilities
+                            .getParentRepositoryNodeFromSelection(object), ENodeType.REPOSITORY_ELEMENT);
+                    repositoryNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.SQLPATTERNS);
+
+                    return repositoryNode;
+                }
+            } else if (item instanceof Routine) {
+                IRepositoryObject object = getObjectFromSystem(item, ERepositoryObjectType.ROUTINES);
+                if (object != null) {
+                    RepositoryNode repositoryNode = new RepositoryNode(object, RepositoryNodeUtilities
+                            .getParentRepositoryNodeFromSelection(object), ENodeType.REPOSITORY_ELEMENT);
+                    repositoryNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.ROUTINES);
+
+                    return repositoryNode;
+                }
+            } else if (item instanceof TableMetadata) {
+                MetadataTable table = MetadataTool.getMetadataTableFromRepository(item.getId());
+                if (table != null) {
+                    return RepositoryNodeUtilities.getSchemeFromConnection(item.getId());
+                }
+
+            } else if (item instanceof Query) {
+                org.talend.core.model.metadata.builder.connection.Query query = MetadataTool.getQueryFromRepository(item.getId());
+                if (query != null) {
+                    return RepositoryNodeUtilities.getQueryFromConnection(item.getId());
+                }
+            }
+
+        } catch (PersistenceException e) {
+        }
+        return null;
+    }
+
+    private IRepositoryObject getObjectFromSystem(TalendItem item, ERepositoryObjectType type) {
+        try {
+            List<IRepositoryObject> list = ProxyRepositoryFactory.getInstance().getAll(type);
+            for (IRepositoryObject object : list) {
+                if (item.getLabel().equals(object.getLabel())) {
+                    return object;
+                }
             }
         } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
         }
         return null;
     }

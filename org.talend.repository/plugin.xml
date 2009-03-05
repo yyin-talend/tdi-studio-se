@@ -37,6 +37,7 @@
       <Action
             class="org.talend.repository.ui.actions.metadata.CreateTableAction"
             id="org.talend.repository.actions.createtable"
+            isEditAction="true"
             level="15"
             name="Metadata/Create table"/>
       <Action
@@ -269,6 +270,7 @@
        <Action
              class="org.talend.repository.ui.actions.sqlpattern.EditSqlpatternAction"
              id="org.talend.repository.ui.actions.sqlpattern.editsqlpatternaction"
+             isEditAction="true"
              level="11"
              name="Edit Sql Pattern">
        </Action>

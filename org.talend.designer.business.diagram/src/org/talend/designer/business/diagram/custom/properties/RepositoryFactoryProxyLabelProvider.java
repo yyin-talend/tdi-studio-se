@@ -1,5 +1,7 @@
 package org.talend.designer.business.diagram.custom.properties;
 
+import java.util.List;
+
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
@@ -12,11 +14,15 @@ import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.SubItemHelper;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.business.diagram.custom.commands.ChangeTalendItemLabelCommand;
 import org.talend.designer.business.diagram.i18n.Messages;
 import org.talend.designer.business.model.business.BusinessAssignment;
+import org.talend.designer.business.model.business.Routine;
+import org.talend.designer.business.model.business.SQLPattern;
+import org.talend.designer.business.model.business.TalendItem;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.ProxyRepositoryFactory;
 
@@ -30,26 +36,49 @@ public class RepositoryFactoryProxyLabelProvider extends AdapterFactoryLabelProv
     public Image getColumnImage(Object object, int columnIndex) {
         Image image = super.getColumnImage(object, columnIndex);
         BusinessAssignment assignment = (BusinessAssignment) object;
-        if (columnIndex == 0) {
-            IRepositoryObject lastVersion = getLastVersion(object);
-            if (lastVersion == null) {
-                MetadataTable table = MetadataTool.getMetadataTableFromRepository(assignment.getTalendItem().getId());
-                if (table != null) {
-                    return image;
-                }
-                Query query = MetadataTool.getQueryFromRepository(assignment.getTalendItem().getId());
-                if (query != null) {
-                    return image;
-                }
-                return new OverlayImage(image, ImageProvider.getImageDesc(ECoreImage.DELETED_OVERLAY), EPosition.BOTTOM_RIGHT)
-                        .createImage();
+        try {
+            if (columnIndex == 0) {
+                IRepositoryObject lastVersion = getLastVersion(object);
+                if (lastVersion == null) {
+                    MetadataTable table = MetadataTool.getMetadataTableFromRepository(assignment.getTalendItem().getId());
+                    if (table != null) {
+                        return image;
+                    }
+                    Query query = MetadataTool.getQueryFromRepository(assignment.getTalendItem().getId());
+                    if (query != null) {
+                        return image;
+                    }
+                    TalendItem item = assignment.getTalendItem();
+                    if (item instanceof SQLPattern) {
 
-            } else if (isDeleted(lastVersion)) {
-                return new OverlayImage(image, ImageProvider.getImageDesc(ECoreImage.RECYCLE_BIN_OVERLAY), EPosition.BOTTOM_RIGHT)
-                        .createImage();
+                        List<IRepositoryObject> list = ProxyRepositoryFactory.getInstance().getAll(
+                                ERepositoryObjectType.SQLPATTERNS);
+                        for (IRepositoryObject obj : list) {
+                            if (item.getLabel().equals(obj.getLabel())) {
+                                return image;
+                            }
+                        }
+
+                    } else if (item instanceof Routine) {
+                        List<IRepositoryObject> list = ProxyRepositoryFactory.getInstance()
+                                .getAll(ERepositoryObjectType.ROUTINES);
+                        for (IRepositoryObject obj : list) {
+                            if (item.getLabel().equals(obj.getLabel())) {
+                                return image;
+                            }
+                        }
+                    }
+                    return new OverlayImage(image, ImageProvider.getImageDesc(ECoreImage.DELETED_OVERLAY), EPosition.BOTTOM_RIGHT)
+                            .createImage();
+
+                } else if (isDeleted(lastVersion)) {
+                    return new OverlayImage(image, ImageProvider.getImageDesc(ECoreImage.RECYCLE_BIN_OVERLAY),
+                            EPosition.BOTTOM_RIGHT).createImage();
+                }
             }
+        } catch (PersistenceException e) {
+            e.printStackTrace();
         }
-
         return image;
     }
 
@@ -58,27 +87,51 @@ public class RepositoryFactoryProxyLabelProvider extends AdapterFactoryLabelProv
         String columnText = super.getColumnText(object, columnIndex);
         BusinessAssignment assignment = (BusinessAssignment) object;
         IRepositoryObject lastVersion = getLastVersion(object);
-        if (columnIndex == 0) {
-            if (lastVersion == null) {
-                MetadataTable table = MetadataTool.getMetadataTableFromRepository(assignment.getTalendItem().getId());
-                if (table != null) {
-                    if (SubItemHelper.isDeleted(table))
-                        columnText += Messages.getString("RepositoryFactoryProxyLabelProvider.Deleted"); //$NON-NLS-1$
-                    return columnText;
-                }
-                Query query = MetadataTool.getQueryFromRepository(assignment.getTalendItem().getId());
-                if (query != null) {
-                    if (SubItemHelper.isDeleted(query))
-                        columnText += Messages.getString("RepositoryFactoryProxyLabelProvider.Deleted"); //$NON-NLS-1$
-                    return columnText;
-                }
-                columnText += Messages.getString("RepositoryFactoryProxyLabelProvider.NotFound"); //$NON-NLS-1$
+        try {
+            if (columnIndex == 0) {
+                if (lastVersion == null) {
+                    MetadataTable table = MetadataTool.getMetadataTableFromRepository(assignment.getTalendItem().getId());
+                    if (table != null) {
+                        if (SubItemHelper.isDeleted(table))
+                            columnText += Messages.getString("RepositoryFactoryProxyLabelProvider.Deleted"); //$NON-NLS-1$
+                        return columnText;
+                    }
+                    Query query = MetadataTool.getQueryFromRepository(assignment.getTalendItem().getId());
+                    if (query != null) {
+                        if (SubItemHelper.isDeleted(query))
+                            columnText += Messages.getString("RepositoryFactoryProxyLabelProvider.Deleted"); //$NON-NLS-1$
+                        return columnText;
+                    }
+                    TalendItem item = assignment.getTalendItem();
+                    if (item instanceof SQLPattern) {
 
-            } else if (isDeleted(lastVersion)) {
-                columnText += Messages.getString("RepositoryFactoryProxyLabelProvider.Deleted"); //$NON-NLS-1$
+                        List<IRepositoryObject> list = ProxyRepositoryFactory.getInstance().getAll(
+                                ERepositoryObjectType.SQLPATTERNS);
+                        for (IRepositoryObject obj : list) {
+                            if (item.getLabel().equals(obj.getLabel())) {
+                                return columnText;
+                            }
+                        }
+
+                    } else if (item instanceof Routine) {
+                        List<IRepositoryObject> list = ProxyRepositoryFactory.getInstance()
+                                .getAll(ERepositoryObjectType.ROUTINES);
+                        for (IRepositoryObject obj : list) {
+                            if (item.getLabel().equals(obj.getLabel())) {
+                                return columnText;
+                            }
+                        }
+                    }
+
+                    columnText += Messages.getString("RepositoryFactoryProxyLabelProvider.NotFound"); //$NON-NLS-1$
+
+                } else if (isDeleted(lastVersion)) {
+                    columnText += Messages.getString("RepositoryFactoryProxyLabelProvider.Deleted"); //$NON-NLS-1$
+                }
             }
+        } catch (PersistenceException e) {
+            e.printStackTrace();
         }
-
         if (columnIndex == 1) {
 
             if (lastVersion != null) {

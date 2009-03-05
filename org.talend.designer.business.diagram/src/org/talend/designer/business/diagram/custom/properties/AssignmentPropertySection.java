@@ -177,6 +177,7 @@ public class AssignmentPropertySection extends AbstractModelerPropertySection im
                                 action.init(null, new StructuredSelection(repositoryNode));
                                 if (action.isVisible() && action.isDoubleClickAction()) {
                                     action.run();
+                                    return;
                                 }
                             }
                         }

@@ -289,7 +289,7 @@ public class RepositoryNodeUtilities {
         }
     }
 
-    private static void expandParentNode(IRepositoryView view, RepositoryNode node) {
+    public static void expandParentNode(IRepositoryView view, RepositoryNode node) {
         if (view == null || node == null) {
             return;
         }
@@ -315,24 +315,48 @@ public class RepositoryNodeUtilities {
 
         try {
             final RepositoryNode realNode = getRepositoryNode(repositoryID);
-            return getSchemeFromConnection(realNode, tableName);
+            return getSchemeFromConnection(realNode, tableName, ERepositoryObjectType.METADATA_CON_TABLE);
         } catch (Exception e) {
             ExceptionHandler.process(e);
         }
         return null;
     }
 
-    private static RepositoryNode getSchemeFromConnection(RepositoryNode connection, String tableName) {
-        ERepositoryObjectType type = connection.getObject().getType();
-        if (type == ERepositoryObjectType.METADATA_CONNECTIONS) {
-            connection = connection.getChildren().get(0);
+    public static RepositoryNode getQueryFromConnection(String schemaValue) {
+        String[] values = schemaValue.split(" - "); //$NON-NLS-1$
+        String repositoryID = values[0];
+        String tableName = values[1];
+
+        try {
+            final RepositoryNode realNode = getRepositoryNode(repositoryID);
+            return getSchemeFromConnection(realNode, tableName, ERepositoryObjectType.METADATA_CON_QUERY);
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
         }
-        // if(connection.getObject().getProperty().getItem() instanceof ConnectionItem){
-        //            
-        // }
-        for (RepositoryNode node : connection.getChildren()) {
-            if (node.getObject().getLabel().equals(tableName)) {
-                return node;
+        return null;
+    }
+
+    private static RepositoryNode getSchemeFromConnection(RepositoryNode connection, String tableName,
+            ERepositoryObjectType repType) {
+        ERepositoryObjectType type = connection.getObject().getType();
+        if (repType == ERepositoryObjectType.METADATA_CON_QUERY) {
+            for (RepositoryNode node : connection.getChildren()) {
+                if ("Queries".equals(node.getLabel())) {
+                    for (RepositoryNode query : node.getChildren()) {
+                        if (tableName.equals(query.getProperties(EProperties.LABEL))) {
+                            return query;
+                        }
+                    }
+                }
+            }
+        } else {
+            if (type == ERepositoryObjectType.METADATA_CONNECTIONS) {
+                connection = connection.getChildren().get(0);
+            }
+            for (RepositoryNode node : connection.getChildren()) {
+                if (node.getObject().getLabel().equals(tableName)) {
+                    return node;
+                }
             }
         }
         return null;
@@ -351,8 +375,10 @@ public class RepositoryNodeUtilities {
             RepositoryNode selectedRepositoryNode = (RepositoryNode) ((IStructuredSelection) repositoryViewSelection)
                     .getFirstElement();
             // fixed for the opened job and lost the selected node.
-            if (object != null && selectedRepositoryNode == null) {
+            if (object != null) {
+
                 selectedRepositoryNode = getRepositoryNode(object);
+
             }
             if (selectedRepositoryNode != null) {
                 return selectedRepositoryNode.getParent();

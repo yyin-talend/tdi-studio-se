@@ -81,9 +81,14 @@ public class DatabaseWizard extends RepositoryWizard implements INewWizard {
         this.selection = selection;
         this.existingNames = existingNames;
         setNeedsProgressMonitor(true);
-
+        RepositoryNode node = null;
         Object obj = ((IStructuredSelection) selection).getFirstElement();
-        RepositoryNode node = (RepositoryNode) obj;
+        if (obj instanceof RepositoryNode) {
+            node = (RepositoryNode) obj;
+        } else {
+            return;
+        }
+
         switch (node.getType()) {
         case SIMPLE_FOLDER:
         case REPOSITORY_ELEMENT:

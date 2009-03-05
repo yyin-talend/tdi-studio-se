@@ -50,10 +50,13 @@ import org.talend.designer.business.diagram.custom.edit.policies.BusinessItemDra
 import org.talend.designer.business.diagram.custom.figures.BusinessTooltipFigure;
 import org.talend.designer.business.model.business.BusinessAssignment;
 import org.talend.designer.business.model.business.BusinessItem;
+import org.talend.designer.business.model.business.Routine;
+import org.talend.designer.business.model.business.SQLPattern;
 import org.talend.designer.business.model.business.TalendItem;
 import org.talend.designer.business.model.business.diagram.edit.parts.BusinessProcessEditPart;
 import org.talend.designer.business.model.business.provider.BusinessAssignmentItemProvider;
 import org.talend.designer.business.model.business.provider.BusinessItemProviderAdapterFactory;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.views.RepositoryLabelProvider;
 
 /**
@@ -122,6 +125,7 @@ public abstract class BusinessItemShapeEditPart extends ShapeNodeEditPart {
                         label = new Label(talendItem.getLabel() + " (" + provider.getColumnText(assignment, 0) + ")", img); //$NON-NLS-1$ //$NON-NLS-2$
                         labels.add(label);
                     } else {
+
                         MetadataTable table = MetadataTool.getMetadataTableFromRepository(talendItem.getId());
                         Query query = MetadataTool.getQueryFromRepository(talendItem.getId());
                         if (table != null) {
@@ -134,6 +138,32 @@ public abstract class BusinessItemShapeEditPart extends ShapeNodeEditPart {
                                     .createImage();
                             label = new Label(talendItem.getLabel() + " (" + provider.getColumnText(assignment, 0) + ")", img); //$NON-NLS-1$ //$NON-NLS-2$
                             labels.add(label);
+                        } else if (talendItem instanceof SQLPattern) {
+
+                            List<IRepositoryObject> list = ProxyRepositoryFactory.getInstance().getAll(
+                                    ERepositoryObjectType.SQLPATTERNS);
+                            for (IRepositoryObject object : list) {
+                                if (talendItem.getLabel().equals(object.getLabel())) {
+                                    img = ImageDescriptor.createFromFile(ECoreImage.class,
+                                            ECoreImage.METADATA_SQLPATTERN_ICON.getPath()).createImage();
+                                    label = new Label(talendItem.getLabel() + " (" + provider.getColumnText(assignment, 0) + ")",
+                                            img);
+                                    labels.add(label);
+                                }
+                            }
+
+                        } else if (talendItem instanceof Routine) {
+                            List<IRepositoryObject> list = ProxyRepositoryFactory.getInstance().getAll(
+                                    ERepositoryObjectType.ROUTINES);
+                            for (IRepositoryObject object : list) {
+                                if (talendItem.getLabel().equals(object.getLabel())) {
+                                    img = ImageDescriptor.createFromFile(ECoreImage.class, ECoreImage.ROUTINE_ICON.getPath())
+                                            .createImage();
+                                    label = new Label(talendItem.getLabel() + " (" + provider.getColumnText(assignment, 0) + ")",
+                                            img);
+                                    labels.add(label);
+                                }
+                            }
                         } else {
                             img = (Image) provider.getImage(assignment);
                             img = new OverlayImage(img, ImageProvider.getImageDesc(ECoreImage.DELETED_OVERLAY),
