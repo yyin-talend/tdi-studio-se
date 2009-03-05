@@ -49,9 +49,13 @@
      		    	if(ftp<%=cid%>.exists(toFile + ".tmp")){
      		    		ftp<%=cid%>.delete(toFile + ".tmp");
      		    	}
-	     			ftp<%=cid %>.rename(toFile, toFile + ".tmp");
+     		    	if(ftp<%=cid%>.exists(toFile)){
+		     			ftp<%=cid %>.rename(toFile, toFile + ".tmp");
+     		    	}
 	     			ftp<%=cid %>.rename(fromFile, toFile);
-	     			ftp<%=cid%>.delete(toFile + ".tmp");
+	     			if(ftp<%=cid%>.exists(toFile + ".tmp")){
+		     			ftp<%=cid%>.delete(toFile + ".tmp");
+	     			}
 	     			globalMap.put("<%=cid %>_CURRENT_STATUS", "File rename OK.");
 	     			nb_file_<%=cid%>++;
      			}
