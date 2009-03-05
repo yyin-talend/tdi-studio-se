@@ -51,7 +51,7 @@ public class GuessSchemaProcess {
     protected static final int maximumRowsToPreview = CorePlugin.getDefault().getPreferenceStore().getInt(
             ITalendCorePrefConstants.PREVIEW_LIMIT);
 
-    private static final String DEFAULT_JOB_NAME = "Mock_job_for_Guess_schema";
+    private static final String DEFAULT_JOB_NAME = "Mock_job_for_Guess_schema"; //$NON-NLS-1$
 
     private String memoSQL;
 
@@ -63,13 +63,13 @@ public class GuessSchemaProcess {
 
     private IComponent outputComponent;
 
-    private static final String CSV_EXT = "csv";
+    private static final String CSV_EXT = "csv"; //$NON-NLS-1$
 
     private IPath outpath;
 
     private IPath temppath;
 
-    private String currentProcessEncoding = "ISO-8859-15";
+    private String currentProcessEncoding = "ISO-8859-15"; //$NON-NLS-1$
 
     private IContext selectContext;
 
@@ -77,15 +77,15 @@ public class GuessSchemaProcess {
 
     private DbInfo info;
 
-    private static String LIB_NODE = "tLibraryLoad";
+    private static String LIB_NODE = "tLibraryLoad"; //$NON-NLS-1$
 
-    private static String TEMPFILE_APPEND_NAME = "GuessSchemaDelimitedFile";
+    private static String TEMPFILE_APPEND_NAME = "GuessSchemaDelimitedFile"; //$NON-NLS-1$
 
     public GuessSchemaProcess(Property property, INode node, IContext selectContext, String memoSQL, DbInfo info) {
         this.property = property;
         this.node = node;
         this.selectContext = selectContext;
-        this.memoSQL = memoSQL.replace("\r\n", " ");
+        this.memoSQL = memoSQL.replace("\r\n", " "); //$NON-NLS-1$ //$NON-NLS-2$
         this.info = info;
         this.conn = info.getConn();
         initOutpath();
@@ -106,7 +106,7 @@ public class GuessSchemaProcess {
         for (ModuleNeeded module : node.getComponent().getModulesNeeded()) {
             if (module.isRequired()) {
                 Node libNode1 = new Node(ComponentsFactoryProvider.getInstance().get(LIB_NODE), process);
-                libNode1.setPropertyValue("LIBRARY", "\"" + module.getModuleName() + "\"");
+                libNode1.setPropertyValue("LIBRARY", "\"" + module.getModuleName() + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 process.addNodeContainer(new NodeContainer(libNode1));
             }
         }
@@ -115,7 +115,7 @@ public class GuessSchemaProcess {
             JavaProcessUtil.findMoreLibraries(neededLibraries, param, true);
             for (String lib : neededLibraries) {
                 Node libNode1 = new Node(ComponentsFactoryProvider.getInstance().get(LIB_NODE), process);
-                libNode1.setPropertyValue("LIBRARY", "\"" + lib + "\"");
+                libNode1.setPropertyValue("LIBRARY", "\"" + lib + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 process.addNodeContainer(new NodeContainer(libNode1));
             }
         }
@@ -123,42 +123,42 @@ public class GuessSchemaProcess {
         // create the tLibraryLoad for the output component which is "tFileOutputDelimited"
         for (ModuleNeeded module : outputComponent.getModulesNeeded()) {
             Node libNode2 = new Node(ComponentsFactoryProvider.getInstance().get(LIB_NODE), process);
-            libNode2.setPropertyValue("LIBRARY", "\"" + module.getModuleName() + "\"");
+            libNode2.setPropertyValue("LIBRARY", "\"" + module.getModuleName() + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             process.addNodeContainer(new NodeContainer(libNode2));
         }
 
         String codeStart, codeMain, codeEnd;
         temppath = (Path) buildTempCSVFilename();
-        codeStart = "java.lang.Class.forName(\"" + info.getDriverClassName() + "\");\r\n" + "String url = \"" + info.getUrl()
-                + "\";\r\n" + "java.sql.Connection conn = java.sql.DriverManager.getConnection(url, \"" + info.getUsername()
-                + "\", \"" + info.getPwd() + "\");\r\n" + "java.sql.Statement stm = conn.createStatement();\r\n"
-                + "java.sql.ResultSet rs = stm.executeQuery(" + memoSQL + ");\r\n"
-                + "java.sql.ResultSetMetaData rsmd = rs.getMetaData();\r\n" + "int numbOfColumn = rsmd.getColumnCount();\r\n"
-                + "\r\n" + "String fileName = (new java.io.File(\r\n" + "                    \"" + temppath
-                + "\")).getAbsolutePath().replace(\r\n" + "                    \"\\\\\", \"/\");\r\n"
-                + "com.csvreader.CsvWriter csvWriter = new com.csvreader.CsvWriter(\r\n"
-                + "                    new java.io.BufferedWriter(new java.io.OutputStreamWriter(\r\n"
-                + "                            new java.io.FileOutputStream(\r\n"
-                + "                                    fileName, false),\r\n"
-                + "                            \"ISO-8859-15\")), ';');\r\n" + "                            \r\n"
-                + "csvWriter.setEscapeMode(com.csvreader.CsvWriter.ESCAPE_MODE_DOUBLED);\r\n"
-                + "csvWriter.setTextQualifier('\"');\r\n" + "csvWriter.setForceQualifier(true);\r\n" + "int nbRows = 0;\r\n"
-                + "String[] columnNames = new String[numbOfColumn];\r\n" + "String[] nullables = new String[numbOfColumn];"
-                + "for(int i = 1;i<=numbOfColumn;i++){\r\n" + "columnNames[i-1] = rsmd.getColumnName(i);\r\n"
-                + "nullables[i-1] = rsmd.isNullable(i) == 0? \"false\" : \"true\";" + "}\r\n"
-                + "csvWriter.writeRecord(columnNames);" + "csvWriter.writeRecord(nullables);" + "while (rs.next()) {";
+        codeStart = "java.lang.Class.forName(\"" + info.getDriverClassName() + "\");\r\n" + "String url = \"" + info.getUrl() //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + "\";\r\n" + "java.sql.Connection conn = java.sql.DriverManager.getConnection(url, \"" + info.getUsername() //$NON-NLS-1$ //$NON-NLS-2$
+                + "\", \"" + info.getPwd() + "\");\r\n" + "java.sql.Statement stm = conn.createStatement();\r\n" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + "java.sql.ResultSet rs = stm.executeQuery(" + memoSQL + ");\r\n" //$NON-NLS-1$ //$NON-NLS-2$
+                + "java.sql.ResultSetMetaData rsmd = rs.getMetaData();\r\n" + "int numbOfColumn = rsmd.getColumnCount();\r\n" //$NON-NLS-1$ //$NON-NLS-2$
+                + "\r\n" + "String fileName = (new java.io.File(\r\n" + "                    \"" + temppath //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + "\")).getAbsolutePath().replace(\r\n" + "                    \"\\\\\", \"/\");\r\n" //$NON-NLS-1$ //$NON-NLS-2$
+                + "com.csvreader.CsvWriter csvWriter = new com.csvreader.CsvWriter(\r\n" //$NON-NLS-1$
+                + "                    new java.io.BufferedWriter(new java.io.OutputStreamWriter(\r\n" //$NON-NLS-1$
+                + "                            new java.io.FileOutputStream(\r\n" //$NON-NLS-1$
+                + "                                    fileName, false),\r\n" //$NON-NLS-1$
+                + "                            \"ISO-8859-15\")), ';');\r\n" + "                            \r\n" //$NON-NLS-1$ //$NON-NLS-2$
+                + "csvWriter.setEscapeMode(com.csvreader.CsvWriter.ESCAPE_MODE_DOUBLED);\r\n" //$NON-NLS-1$
+                + "csvWriter.setTextQualifier('\"');\r\n" + "csvWriter.setForceQualifier(true);\r\n" + "int nbRows = 0;\r\n" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + "String[] columnNames = new String[numbOfColumn];\r\n" + "String[] nullables = new String[numbOfColumn];" //$NON-NLS-1$ //$NON-NLS-2$
+                + "for(int i = 1;i<=numbOfColumn;i++){\r\n" + "columnNames[i-1] = rsmd.getColumnName(i);\r\n" //$NON-NLS-1$ //$NON-NLS-2$
+                + "nullables[i-1] = rsmd.isNullable(i) == 0? \"false\" : \"true\";" + "}\r\n" //$NON-NLS-1$ //$NON-NLS-2$
+                + "csvWriter.writeRecord(columnNames);" + "csvWriter.writeRecord(nullables);" + "while (rs.next()) {"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-        codeMain = "String[] dataOneRow = new String[numbOfColumn];\r\n" + "for (int i = 1; i <= numbOfColumn; i++) {\r\n"
-                + "    \r\n" + "    String tempStr = rs.getString(i);\r\n" + "    dataOneRow[i-1] = tempStr;\r\n" + "}\r\n"
-                + "csvWriter.writeRecord(dataOneRow);";
+        codeMain = "String[] dataOneRow = new String[numbOfColumn];\r\n" + "for (int i = 1; i <= numbOfColumn; i++) {\r\n" //$NON-NLS-1$ //$NON-NLS-2$
+                + "    \r\n" + "    String tempStr = rs.getString(i);\r\n" + "    dataOneRow[i-1] = tempStr;\r\n" + "}\r\n" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                + "csvWriter.writeRecord(dataOneRow);"; //$NON-NLS-1$
 
-        codeEnd = "nbRows++;\r\n" + "    if (nbRows > " + maximumRowsToPreview + ") break;\r\n" + "}\r\n" + "stm.close();\r\n"
-                + "conn.close();\r\n" + "csvWriter.close();\r\n";
+        codeEnd = "nbRows++;\r\n" + "    if (nbRows > " + maximumRowsToPreview + ") break;\r\n" + "}\r\n" + "stm.close();\r\n" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+                + "conn.close();\r\n" + "csvWriter.close();\r\n"; //$NON-NLS-1$ //$NON-NLS-2$
 
-        Node flexNode = new Node(ComponentsFactoryProvider.getInstance().get("tJavaFlex"), process);
-        flexNode.setPropertyValue("CODE_START", codeStart);
-        flexNode.setPropertyValue("CODE_MAIN", codeMain);
-        flexNode.setPropertyValue("CODE_END", codeEnd);
+        Node flexNode = new Node(ComponentsFactoryProvider.getInstance().get("tJavaFlex"), process); //$NON-NLS-1$
+        flexNode.setPropertyValue("CODE_START", codeStart); //$NON-NLS-1$
+        flexNode.setPropertyValue("CODE_MAIN", codeMain); //$NON-NLS-1$
+        flexNode.setPropertyValue("CODE_END", codeEnd); //$NON-NLS-1$
 
         process.addNodeContainer(new NodeContainer(flexNode));
     }
@@ -172,7 +172,7 @@ public class GuessSchemaProcess {
         } else // Check if file has no suffix.
         {
             int length = filename.length();
-            filename = filename.substring(0, length) + TEMPFILE_APPEND_NAME + ".";
+            filename = filename.substring(0, length) + TEMPFILE_APPEND_NAME + "."; //$NON-NLS-1$
         }
 
         filename += CSV_EXT;
@@ -211,8 +211,8 @@ public class GuessSchemaProcess {
         mockProperty.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
                 .getUser());
         mockProperty.setVersion(VersionUtils.DEFAULT_VERSION);
-        mockProperty.setStatusCode("");
-        mockProperty.setId("ID");
+        mockProperty.setStatusCode(""); //$NON-NLS-1$
+        mockProperty.setId("ID"); //$NON-NLS-1$
         mockProperty.setLabel(DEFAULT_JOB_NAME);
 
         return mockProperty;

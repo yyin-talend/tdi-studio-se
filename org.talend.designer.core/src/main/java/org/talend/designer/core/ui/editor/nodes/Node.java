@@ -1574,7 +1574,7 @@ public class Node extends Element implements INode {
         for (IElementParameter param : this.getElementParametersWithChildrens()) {
             if (param.getName().equals(EParameterName.COMMENT.getName())) {
                 String infoValue = (String) param.getValue();
-                if (!infoValue.equals("") && !(infoValue == null)) {
+                if (!infoValue.equals("") && !(infoValue == null)) { //$NON-NLS-1$
                     Problems.add(ProblemStatus.INFO, this, infoValue);
                 }
             }

@@ -3062,7 +3062,7 @@ public class Process extends Element implements IProcess2 {
         List<? extends Node> nodes = (List<? extends Node>) this.getGeneratingNodes();
         for (Node node : nodes) {
             String name = node.getComponent().getName();
-            if (name.equals("tBufferOutput")) {
+            if (name.equals("tBufferOutput")) { //$NON-NLS-1$
                 return node.getMetadataTable(node.getUniqueName());
             }
         }

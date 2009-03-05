@@ -29,24 +29,24 @@ package org.talend.designer.components.localprovider.test;
  */
 public class TestParameter {
 
-    public static final String INPUT_PATH = "input_path";
+    public static final String INPUT_PATH = "input_path"; //$NON-NLS-1$
 
-    public static final String OUTPUT_PATH = "output_path";
+    public static final String OUTPUT_PATH = "output_path"; //$NON-NLS-1$
 
-    public static final String TEST_DIR = "talendAutoTest";
+    public static final String TEST_DIR = "talendAutoTest"; //$NON-NLS-1$
 
-    public static final String VERSION = "0.1";
+    public static final String VERSION = "0.1"; //$NON-NLS-1$
 
-    public static final String RUN_SUCCESS = "RUN SUCCESS";
+    public static final String RUN_SUCCESS = "RUN SUCCESS"; //$NON-NLS-1$
 
-    public static final String RUN_FAIL = "RUN FAIL";
+    public static final String RUN_FAIL = "RUN FAIL"; //$NON-NLS-1$
 
-    public static final String RUN_START = "RUN START";
+    public static final String RUN_START = "RUN START"; //$NON-NLS-1$
 
-    public static final String GENERATE_START = "GENERATE START";
+    public static final String GENERATE_START = "GENERATE START"; //$NON-NLS-1$
 
-    public static final String GENERATE_END = "GENERATE END";
+    public static final String GENERATE_END = "GENERATE END"; //$NON-NLS-1$
 
-    public static final String GENERATE_TEST = "test";
+    public static final String GENERATE_TEST = "test"; //$NON-NLS-1$
 
 }

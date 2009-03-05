@@ -127,7 +127,7 @@ public class PerformancePreferencePage extends FieldEditorPreferencePage impleme
                 getFieldEditorParent()));
 
         BooleanFieldEditor booleanFieldEditor = new BooleanFieldEditor(ITalendCorePrefConstants.DOC_GENERATION, Messages
-                .getString("PerformancePreferencePage.autoUpdateDoc"), getFieldEditorParent());
+                .getString("PerformancePreferencePage.autoUpdateDoc"), getFieldEditorParent()); //$NON-NLS-1$
         addField(booleanFieldEditor);
         booleanFieldEditor.setEnabled(isDocumentationPluginLoaded, getFieldEditorParent());
         dbConnTimeoutActive = new CheckBoxFieldEditor(ITalendCorePrefConstants.DB_CONNECTION_TIMEOUT_ACTIVED, Messages

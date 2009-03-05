@@ -119,7 +119,7 @@ public abstract class BusinessItemShapeEditPart extends ShapeNodeEditPart {
                         } else {
                             img = CoreImageProvider.getImage(type);
                         }
-                        label = new Label(talendItem.getLabel() + " (" + provider.getColumnText(assignment, 0) + ")", img);
+                        label = new Label(talendItem.getLabel() + " (" + provider.getColumnText(assignment, 0) + ")", img); //$NON-NLS-1$ //$NON-NLS-2$
                         labels.add(label);
                     } else {
                         MetadataTable table = MetadataTool.getMetadataTableFromRepository(talendItem.getId());
@@ -127,18 +127,18 @@ public abstract class BusinessItemShapeEditPart extends ShapeNodeEditPart {
                         if (table != null) {
                             img = ImageDescriptor.createFromFile(ECoreImage.class, ECoreImage.METADATA_TABLE_ICON.getPath())
                                     .createImage();
-                            label = new Label(talendItem.getLabel() + " (" + provider.getColumnText(assignment, 0) + ")", img);
+                            label = new Label(talendItem.getLabel() + " (" + provider.getColumnText(assignment, 0) + ")", img); //$NON-NLS-1$ //$NON-NLS-2$
                             labels.add(label);
                         } else if (query != null) {
                             img = ImageDescriptor.createFromFile(ECoreImage.class, ECoreImage.METADATA_QUERY_ICON.getPath())
                                     .createImage();
-                            label = new Label(talendItem.getLabel() + " (" + provider.getColumnText(assignment, 0) + ")", img);
+                            label = new Label(talendItem.getLabel() + " (" + provider.getColumnText(assignment, 0) + ")", img); //$NON-NLS-1$ //$NON-NLS-2$
                             labels.add(label);
                         } else {
                             img = (Image) provider.getImage(assignment);
                             img = new OverlayImage(img, ImageProvider.getImageDesc(ECoreImage.DELETED_OVERLAY),
                                     EPosition.BOTTOM_RIGHT).createImage();
-                            String text = provider.getText(assignment) + " (" + provider.getColumnText(assignment, 0) + ")";
+                            String text = provider.getText(assignment) + " (" + provider.getColumnText(assignment, 0) + ")"; //$NON-NLS-1$ //$NON-NLS-2$
                             label = new Label(text, img);
                             labels.add(label);
 

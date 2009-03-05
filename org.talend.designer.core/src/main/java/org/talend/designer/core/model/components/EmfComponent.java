@@ -1606,7 +1606,7 @@ public class EmfComponent implements IComponent {
                     break;
                 case CHECK:
                 case RADIO:
-                    if (item.getVALUE() == null || item.getVALUE().equals("")) {
+                    if (item.getVALUE() == null || item.getVALUE().equals("")) { //$NON-NLS-1$
                         newParam.setValue(Boolean.FALSE);
                     } else {
                         newParam.setValue(new Boolean(item.getVALUE()));
@@ -1620,8 +1620,8 @@ public class EmfComponent implements IComponent {
                     break;
                 default: // TEXT by default
                     newParam.setField(EParameterFieldType.TEXT);
-                    if (item.getVALUE() == null || item.getVALUE().equals("")) {
-                        newParam.setValue("");
+                    if (item.getVALUE() == null || item.getVALUE().equals("")) { //$NON-NLS-1$
+                        newParam.setValue(""); //$NON-NLS-1$
                     } else {
                         newParam.setValue(item.getVALUE());
                     }

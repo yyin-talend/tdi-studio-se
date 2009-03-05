@@ -55,7 +55,7 @@ public class FOXMain {
      * @return
      */
     public void createUI(Composite parent) {
-        if (!connector.getComponent().getName().equals("tWriteXMLField")) {
+        if (!connector.getComponent().getName().equals("tWriteXMLField")) { //$NON-NLS-1$
             IConnection inConn = null;
             for (IConnection conn : connector.getIncomingConnections()) {
                 if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))

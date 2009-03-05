@@ -472,7 +472,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                     this.selectedPrimary = true;
                     this.cleaned = force;
                     IRepositoryObject object = retrieveBusiness(activeEditor);
-                    String title = object.getLabel() + " " + object.getVersion();
+                    String title = object.getLabel() + " " + object.getVersion(); //$NON-NLS-1$
                     Object type = object.getType();
                     setElement(activeEditor, type + SEPARATOR + title, null);
                     return;
@@ -484,7 +484,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
             this.selectedPrimary = true;
             this.cleaned = force;
             IRepositoryObject object = retrieveBusiness(activeEditor);
-            String title = object.getLabel() + " " + object.getVersion();
+            String title = object.getLabel() + " " + object.getVersion(); //$NON-NLS-1$
             Object type = object.getType();
             setElement(obj, type + SEPARATOR + title, null);
             return;

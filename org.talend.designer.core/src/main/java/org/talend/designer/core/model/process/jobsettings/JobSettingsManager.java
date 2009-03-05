@@ -176,7 +176,7 @@ public class JobSettingsManager {
             // zywang added to fix feature 5545
             param = new ElementParameter(process);
             param.setName(EParameterName.ICONSELECTION.getName());
-            param.setValue("");
+            param.setValue(""); //$NON-NLS-1$
             param.setDisplayName(EParameterName.ICONSELECTION.getDisplayName());
             param.setField(EParameterFieldType.ICON_SELECTION);
             param.setCategory(EComponentCategory.EXTRA);

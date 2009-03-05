@@ -84,18 +84,18 @@ public class TestComponentsAction extends Action {
     /**
      * 
      */
-    private static final String EXECUTION_OK = "##EXECUTION_OK##";
+    private static final String EXECUTION_OK = "##EXECUTION_OK##"; //$NON-NLS-1$
 
     private static Logger log = Logger.getLogger(TestComponentsAction.class);
 
-    static final String PLUGIN_LOCATION = "org.talend.designer.components.localprovider.test";
+    static final String PLUGIN_LOCATION = "org.talend.designer.components.localprovider.test"; //$NON-NLS-1$
 
     private static java.util.Properties properties = new java.util.Properties();
 
     public TestComponentsAction() {
         super();
-        this.setId("testComponents");
-        this.setActionDefinitionId("testComponents");
+        this.setId("testComponents"); //$NON-NLS-1$
+        this.setActionDefinitionId("testComponents"); //$NON-NLS-1$
         loadProperties();
     }
 
@@ -105,13 +105,13 @@ public class TestComponentsAction extends Action {
     }
 
     public void initialize() {
-        Job job = new Job("Component Test") {
+        Job job = new Job("Component Test") { //$NON-NLS-1$
 
             protected IStatus run(IProgressMonitor monitor) {
                 try {
 
                     // IProgressMonitor monitorWrap = new CodeGeneratorProgressMonitor(monitor);
-                    monitor.beginTask("Component Test Running", 1100);
+                    monitor.beginTask("Component Test Running", 1100); //$NON-NLS-1$
                     IComponentsFactory componentsFactory = ComponentsFactoryProvider.getInstance();
                     List<IComponent> components = componentsFactory.getComponents();
                     monitor.worked(100);
@@ -130,12 +130,12 @@ public class TestComponentsAction extends Action {
                         // System.out.println(templateFile + " " + templateFile.exists());
                         if (templateFile.exists()) {
                             File[] fileArray = getFile(templateFile, codeLanguage);
-                            generateCode(fileArray, templateURI.replace("\\", "/"));
+                            generateCode(fileArray, templateURI.replace("\\", "/")); //$NON-NLS-1$ //$NON-NLS-2$
                         }
                         monitor.worked(1 * 1000 / taskTotal);
                     }
                 } catch (Exception e) {
-                    log.error("Exception during test Initialization", e);
+                    log.error("Exception during test Initialization", e); //$NON-NLS-1$
                 }
                 monitor.done();
                 return Status.OK_STATUS;
@@ -150,12 +150,12 @@ public class TestComponentsAction extends Action {
 
         URL url = null;
         try {
-            url = FileLocator.toFileURL(FileLocator.find(b, new Path("resources"), null));
+            url = FileLocator.toFileURL(FileLocator.find(b, new Path("resources"), null)); //$NON-NLS-1$
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        File propertyFile = new File(url.getPath() + "/Test.properties");
+        File propertyFile = new File(url.getPath() + "/Test.properties"); //$NON-NLS-1$
         try {
             properties.load(new FileInputStream(propertyFile));
         } catch (FileNotFoundException e) {
@@ -168,7 +168,7 @@ public class TestComponentsAction extends Action {
     }
 
     private String getPath() {
-        IPath filePath = new Path("components");
+        IPath filePath = new Path("components"); //$NON-NLS-1$
         Bundle b = Platform.getBundle(TestComponentsPlugin.PLUGINCOMPONENTID);
         String dir = null;
         try {
@@ -189,7 +189,7 @@ public class TestComponentsAction extends Action {
 
                 public boolean accept(File file) {
                     boolean result = false;
-                    if (file.getName().toLowerCase().endsWith("java.item")) {
+                    if (file.getName().toLowerCase().endsWith("java.item")) { //$NON-NLS-1$
                         result = true;
                         return result;
                     }
@@ -201,7 +201,7 @@ public class TestComponentsAction extends Action {
 
                 public boolean accept(File file) {
                     boolean result = false;
-                    if (file.getName().toLowerCase().endsWith("perl.item")) {
+                    if (file.getName().toLowerCase().endsWith("perl.item")) { //$NON-NLS-1$
                         result = true;
                         return result;
                     }
@@ -236,21 +236,21 @@ public class TestComponentsAction extends Action {
                         .getDefaultContext());
                 try {
                     // generate
-                    log.info(TestParameter.GENERATE_START + " : " + file.getName());
+                    log.info(TestParameter.GENERATE_START + " : " + file.getName()); //$NON-NLS-1$
                     // processor.generateCode(process.getContextManager().getDefaultContext(), false, false, true);
                     processor.generateCode(false, false, true);
 
-                    log.info(TestParameter.GENERATE_END + " : " + file.getName());
+                    log.info(TestParameter.GENERATE_END + " : " + file.getName()); //$NON-NLS-1$
                     // run
-                    log.info(TestParameter.RUN_START + " : " + file.getName());
+                    log.info(TestParameter.RUN_START + " : " + file.getName()); //$NON-NLS-1$
                     java.lang.Process runningProcess = processor.run(IProcessor.NO_STATISTICS, IProcessor.NO_TRACES,
                             null);
                     StringBuffer errBuff = new StringBuffer();
                     if (isRunOK(runningProcess, errBuff)) {
-                        log.info(TestParameter.RUN_SUCCESS + " : " + file.getName());
+                        log.info(TestParameter.RUN_SUCCESS + " : " + file.getName()); //$NON-NLS-1$
                     } else {
                         // 2 possibilities : OK not found / error stream
-                        log.error(TestParameter.RUN_FAIL + " : " + file.getName(), new Exception(errBuff.toString()));
+                        log.error(TestParameter.RUN_FAIL + " : " + file.getName(), new Exception(errBuff.toString())); //$NON-NLS-1$
 
                     }
 
@@ -279,7 +279,7 @@ public class TestComponentsAction extends Action {
 
             }
             if (!retValue) {
-                errBuff.append(EXECUTION_OK + "not found").append("\n");
+                errBuff.append(EXECUTION_OK + "not found").append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
             }
 
             while ((s = errIs.readLine()) != null) {
@@ -335,7 +335,7 @@ public class TestComponentsAction extends Action {
 
     private String getTemppath() {
         IPreferenceStore prefStore = CorePlugin.getDefault().getPreferenceStore();
-        return prefStore.getString(ITalendCorePrefConstants.FILE_PATH_TEMP).replace("\\", "/");
+        return prefStore.getString(ITalendCorePrefConstants.FILE_PATH_TEMP).replace("\\", "/"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
 }

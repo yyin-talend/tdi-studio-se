@@ -156,7 +156,7 @@ public class CategoryComposite extends Composite {
 
             public void dragStart(DragSourceEvent event) {
                 // CLabel functionLabel = getSource(event);
-                if (functionList.getSelection().equals(""))
+                if (functionList.getSelection().equals("")) //$NON-NLS-1$
                     event.doit = false;
             }
 

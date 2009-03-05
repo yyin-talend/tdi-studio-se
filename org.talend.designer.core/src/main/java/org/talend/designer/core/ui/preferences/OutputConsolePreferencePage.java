@@ -57,7 +57,7 @@ public class OutputConsolePreferencePage extends AbstractPreferencePage {
         gridData.grabExcessHorizontalSpace = true;
         gridData.horizontalSpan = 3;
         composite.setLayoutData(gridData);
-        group.setText(Messages.getString("OutputConsolePreferencePage.outputConsole"));
+        group.setText(Messages.getString("OutputConsolePreferencePage.outputConsole")); //$NON-NLS-1$
 
         addFontAndColorFields(composite);
 

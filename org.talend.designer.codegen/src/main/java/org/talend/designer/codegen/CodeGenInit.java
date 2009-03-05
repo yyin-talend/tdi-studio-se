@@ -53,7 +53,7 @@ public class CodeGenInit implements IApplication {
     public Object start(IApplicationContext context) throws Exception {
         Timer.getTimer("CodeGenInit").start(); //$NON-NLS-1$
         String[] args = (String[]) context.getArguments().get(IApplicationContext.APPLICATION_ARGS);
-        if (ArrayUtils.contains(args, "-headless")) {
+        if (ArrayUtils.contains(args, "-headless")) { //$NON-NLS-1$
             CommonsPlugin.setHeadless(true);
         }
         initLocalRepository();
@@ -133,7 +133,7 @@ public class CodeGenInit implements IApplication {
     }
 
     private String getProjectName(ECodeLanguage language) {
-        return "codegen_" + language.getName() + "_temp_project"; //$NON-NLS-1$
+        return "codegen_" + language.getName() + "_temp_project"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     private Project getProject(ECodeLanguage language) throws PersistenceException, BusinessException {

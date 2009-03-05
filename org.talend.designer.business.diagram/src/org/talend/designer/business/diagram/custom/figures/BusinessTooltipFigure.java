@@ -23,6 +23,7 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
+import org.talend.designer.business.diagram.i18n.Messages;
 
 /**
  * DOC Administrator class global comment. Detailled comment
@@ -42,7 +43,7 @@ public class BusinessTooltipFigure extends Figure {
     public void buildFigures(List<Label> labels) {
         if (labels != null) {
             removeAll();
-            Label label = new Label(labels.size() + " assigned Metadata");
+            Label label = new Label(Messages.getString("BusinessTooltipFigure.assignedMeta", labels.size())); //$NON-NLS-1$
             String fontName = JFaceResources.getDefaultFont().getFontData()[0].getName();
             if (label.getFont() != null) {
                 fontName = label.getFont().getFontData()[0].getName();

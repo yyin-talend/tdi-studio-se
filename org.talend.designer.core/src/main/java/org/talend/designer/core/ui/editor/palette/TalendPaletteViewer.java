@@ -211,7 +211,7 @@ public class TalendPaletteViewer extends PaletteViewer {
         text.addFocusListener(new FocusListener() {
 
             public void focusGained(FocusEvent e) {
-                text.setText("");
+                text.setText(""); //$NON-NLS-1$
             }
 
             public void focusLost(FocusEvent e) {

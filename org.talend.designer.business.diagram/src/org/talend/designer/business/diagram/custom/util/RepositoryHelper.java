@@ -64,12 +64,12 @@ public class RepositoryHelper {
 
                 result = (TalendItem) BusinessFactory.eINSTANCE.create(getEClass(nodeType));
                 result.setRepository(repository);
-                if ("METADATA_CON_TABLE".equals(repositoryObject.getType().name())) {
+                if ("METADATA_CON_TABLE".equals(repositoryObject.getType().name())) { //$NON-NLS-1$
                     Property property = ((MetadataTableRepositoryObject) repositoryObject).getProperty();
-                    result.setId(property.getId() + " - " + repositoryObject.getLabel());
-                } else if ("METADATA_CON_QUERY".equals(repositoryObject.getType().name())) {
+                    result.setId(property.getId() + " - " + repositoryObject.getLabel()); //$NON-NLS-1$
+                } else if ("METADATA_CON_QUERY".equals(repositoryObject.getType().name())) { //$NON-NLS-1$
                     Property property = ((QueryRepositoryObject) repositoryObject).getProperty();
-                    result.setId(property.getId() + " - " + repositoryObject.getLabel());
+                    result.setId(property.getId() + " - " + repositoryObject.getLabel()); //$NON-NLS-1$
                 } else {
                     result.setId(repositoryObject.getId());
                 }

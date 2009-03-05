@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.core.model.process.IContext;
+import org.talend.designer.core.i18n.Messages;
 
 /**
  * DOC hyWang class global comment. Detailled comment
@@ -85,7 +86,7 @@ public class OpenContextChooseComboDialog extends Dialog {
         basicComp.setSize(200, 200);
 
         Label label = new Label(basicComp, SWT.NONE);
-        label.setText("CONTEXT:");
+        label.setText(Messages.getString("OpenContextChooseComboDialog.context")); //$NON-NLS-1$
 
         contextCombo = new Combo(basicComp, SWT.DROP_DOWN | SWT.READ_ONLY);
 

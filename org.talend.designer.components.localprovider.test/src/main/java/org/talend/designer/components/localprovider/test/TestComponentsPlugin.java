@@ -12,9 +12,9 @@ import org.talend.designer.core.IDesignerCoreService;
 public class TestComponentsPlugin extends AbstractUIPlugin {
 
     // The plug-in ID
-    public static final String PLUGIN_ID = "org.talend.designer.components.localprovider.test";
+    public static final String PLUGIN_ID = "org.talend.designer.components.localprovider.test"; //$NON-NLS-1$
 
-    public static final String PLUGINCOMPONENTID = "org.talend.designer.components.localprovider";
+    public static final String PLUGINCOMPONENTID = "org.talend.designer.components.localprovider"; //$NON-NLS-1$
 
     // The shared instance
     private static TestComponentsPlugin plugin;

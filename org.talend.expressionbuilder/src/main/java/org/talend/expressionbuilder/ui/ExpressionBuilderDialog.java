@@ -346,8 +346,8 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
     @Override
     protected void okPressed() {
         String expression = null;
-        String sub = nodeStyle.substring(nodeStyle.indexOf("-") + 2, nodeStyle.lastIndexOf("-") - 1);
-        if (sub.equals("tRowGenerator")) {
+        String sub = nodeStyle.substring(nodeStyle.indexOf("-") + 2, nodeStyle.lastIndexOf("-") - 1); //$NON-NLS-1$ //$NON-NLS-2$
+        if (sub.equals("tRowGenerator")) { //$NON-NLS-1$
             expression = expressionComposite.getReplaceExpression();
         } else {
             expression = expressionComposite.getExpression();

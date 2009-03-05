@@ -53,7 +53,7 @@ public class JobSettingProjectSettingPage extends ProjectSettingPage {
         gridData.grabExcessHorizontalSpace = true;
         gridData.horizontalSpan = 3;
         composite.setLayoutData(gridData);
-        group.setText("Implicit Context Load");
+        group.setText(Messages.getString("JobSettingProjectSettingPage.implictLabel")); //$NON-NLS-1$
 
         implicitBtn = new Button(composite, SWT.CHECK);
         implicitBtn.setText(Messages.getString("JobSettingProjectSettingPage.UseProjectsetting")); //$NON-NLS-1$
@@ -80,7 +80,7 @@ public class JobSettingProjectSettingPage extends ProjectSettingPage {
         gridData.grabExcessHorizontalSpace = true;
         gridData.horizontalSpan = 3;
         composite.setLayoutData(gridData);
-        group.setText("Stats and logs");
+        group.setText(Messages.getString("JobSettingProjectSettingPage.statAndLog")); //$NON-NLS-1$
 
         statBtn = new Button(composite, SWT.CHECK);
         statBtn.setText(Messages.getString("JobSettingProjectSettingPage.UseProjectsetting")); //$NON-NLS-1$

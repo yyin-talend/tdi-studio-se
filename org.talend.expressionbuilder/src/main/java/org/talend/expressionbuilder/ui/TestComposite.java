@@ -161,8 +161,8 @@ public class TestComposite extends Composite {
                         nameList.add(((Variable) item.getData()).getName());
                     }
                     if (nameList.contains(value)) {
-                        MessageDialog.openError(getShell(), Messages.getString("TestComposite.error"), Messages
-                                .getString("TestComposite.message"));
+                        MessageDialog.openError(getShell(), Messages.getString("TestComposite.error"), Messages //$NON-NLS-1$
+                                .getString("TestComposite.message")); //$NON-NLS-1$
                         return;
                     } else {
                         var.setName((String) value);
