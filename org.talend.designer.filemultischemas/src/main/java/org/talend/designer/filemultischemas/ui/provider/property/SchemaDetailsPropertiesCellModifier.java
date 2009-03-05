@@ -12,11 +12,14 @@
 // ============================================================================
 package org.talend.designer.filemultischemas.ui.provider.property;
 
+import java.util.List;
+
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.TreeItem;
 import org.talend.core.model.metadata.MultiSchemasUtil;
 import org.talend.designer.filemultischemas.data.EPropertyName;
 import org.talend.designer.filemultischemas.data.MultiMetadataColumn;
+import org.talend.designer.filemultischemas.data.SchemasKeyData;
 import org.talend.designer.filemultischemas.managers.UIManager;
 import org.talend.designer.filemultischemas.ui.provider.SchemaDetailsCellModifier;
 
@@ -36,6 +39,20 @@ public class SchemaDetailsPropertiesCellModifier extends SchemaDetailsCellModifi
      */
     public boolean canModify(Object element, String property) {
         if (element instanceof MultiMetadataColumn) {
+            MultiMetadataColumn column = (MultiMetadataColumn) element;
+            SchemasKeyData container = column.getContainer();
+            if (container == null) {
+                return false;
+            }
+            List<MultiMetadataColumn> metadataColumnsInModel = container.getMetadataColumnsInModel();
+            /*
+             * ingore record type(first column);
+             * 
+             * if existed key column, should not edit other key.
+             */
+            if (metadataColumnsInModel.indexOf(column) < 1 || UIManager.existedKeyColumn(metadataColumnsInModel, column)) {
+                return false;
+            }
             if (!EPropertyName.TAGLEVEL.name().equals(property)) {
                 return true;
             }
@@ -59,12 +76,14 @@ public class SchemaDetailsPropertiesCellModifier extends SchemaDetailsCellModifi
                 // } else {
                 // return "";
                 // }
+            } else if (EPropertyName.KEY.name().equals(property)) {
+                return column.isKey();
             } else if (EPropertyName.TYPE.name().equals(property)) {
                 return MultiSchemasUtil.getTalendTypeIndex(column.getTalendType());
             } else if (EPropertyName.LENGTH.name().equals(property)) {
                 return MultiSchemasUtil.getAndCheckIntgerValue(column.getLength());
-            } else if (EPropertyName.CARD.name().equals(property)) {
-                return MultiSchemasUtil.validateValue(column.getCard());
+                // } else if (EPropertyName.CARD.name().equals(property)) {
+                // return MultiSchemasUtil.validateValue(column.getCard());
             } else if (EPropertyName.PATTERN.name().equals(property)) {
                 return MultiSchemasUtil.validateValue(column.getPattern());
             }
@@ -89,6 +108,8 @@ public class SchemaDetailsPropertiesCellModifier extends SchemaDetailsCellModifi
                     }
                 } else if (EPropertyName.TAGLEVEL.name().equals(property)) {
                     // column.setTagLevel(Integer.parseInt((String) value));
+                } else if (EPropertyName.KEY.name().equals(property)) {
+                    column.setKey((Boolean) value);
                 } else if (EPropertyName.TYPE.name().equals(property)) {
                     final String talendType = MultiSchemasUtil.getTalendTypeByIndex((Integer) value);
                     if (talendType != null) {
@@ -102,8 +123,8 @@ public class SchemaDetailsPropertiesCellModifier extends SchemaDetailsCellModifi
                     } else {
                         column.setLength(null);
                     }
-                } else if (EPropertyName.CARD.name().equals(property)) {
-                    column.setCard((String) value);
+                    // } else if (EPropertyName.CARD.name().equals(property)) {
+                    // column.setCard((String) value);
                 } else if (EPropertyName.PATTERN.name().equals(property)) {
                     column.setPattern((String) value);
                 }

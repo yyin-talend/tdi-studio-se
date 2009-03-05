@@ -14,7 +14,6 @@ package org.talend.designer.filemultischemas.data;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
-import org.talend.core.model.utils.TalendTextUtils;
 
 /**
  * cLi class global comment. Detailled comment
@@ -23,19 +22,13 @@ public class ExternalMultiSchemasUIProperties {
 
     public static final String NUMBER_PATTERN = "[0-9]*"; //$NON-NLS-1$
 
-    public static final int SEPERATOR_TEXT_WIDTH = 50;
-
     public static final String[] FILE_EXTENSIONS = new String[] { "*.txt", "*.*" }; //$NON-NLS-1$  //$NON-NLS-2$
 
-    private static int[] ALL_SASHFORM_WEIGHTS = new int[] { 5, 3 };
+    private static int[] ALL_SASHFORM_WEIGHTS = new int[] { 2, 1 };
 
     private static int[] HEADER_SASHFORM_WEIGHTS = new int[] { 3, 1 };
 
     public static final int SASHFORM_WIDTH = 3;
-
-    public static final String DEFAULT_FIELD_SEPERATOR = TalendTextUtils.addQuotes(";"); //$NON-NLS-1$
-
-    public static final String DEFAULT_ROW_SEPERATOR = TalendTextUtils.addQuotes("\\n"); //$NON-NLS-1$
 
     public static final String FETCH_LABEL = "Fetch Codes";
 

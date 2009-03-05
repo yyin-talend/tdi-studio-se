@@ -18,12 +18,12 @@ package org.talend.designer.filemultischemas.data;
 public enum EPropertyName {
     NAME("Name"),
     TAGLEVEL("TagLevel"),
-    // KEY("Key"),
+    KEY("Key"),
     TYPE("Type"),
     // NULL("Null"),
     LENGTH("Length"),
     // PRECISION("Precision"),
-    CARD("Card"),
+    // CARD("Card"),
     PATTERN("Pattern"),
 
     ;

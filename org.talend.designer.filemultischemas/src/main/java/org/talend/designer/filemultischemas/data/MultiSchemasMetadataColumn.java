@@ -23,7 +23,7 @@ public class MultiSchemasMetadataColumn extends MetadataColumn {
 
     private String data;
 
-    private String card;
+    // private String card;
 
     public Integer getTagLevel() {
         if (parent != null) {
@@ -32,13 +32,13 @@ public class MultiSchemasMetadataColumn extends MetadataColumn {
         return 0;
     }
 
-    public String getCard() {
-        return this.card;
-    }
-
-    public void setCard(String card) {
-        this.card = card;
-    }
+    // public String getCard() {
+    // return this.card;
+    // }
+    //
+    // public void setCard(String card) {
+    // this.card = card;
+    // }
 
     public String getData() {
         return this.data;

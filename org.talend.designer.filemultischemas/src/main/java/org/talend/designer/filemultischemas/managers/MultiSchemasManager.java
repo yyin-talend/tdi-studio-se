@@ -28,6 +28,8 @@ import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
+import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
 import org.talend.core.model.metadata.types.JavaDataTypeHelper;
 import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.metadata.types.PerlDataTypeHelper;
@@ -62,9 +64,16 @@ public class MultiSchemasManager {
 
     private UIManager uiManager;
 
+    private DelimitedFileConnection recordConnection;
+
     public MultiSchemasManager(MultiSchemasComponent connector) {
         super();
         this.connector = connector;
+        recordConnection = ConnectionFactory.eINSTANCE.createDelimitedFileConnection();
+    }
+
+    public DelimitedFileConnection getRecordConnection() {
+        return this.recordConnection;
     }
 
     public UIManager getUIManager() {
@@ -80,6 +89,10 @@ public class MultiSchemasManager {
 
     public ECodeLanguage getLanguage() {
         return this.language;
+    }
+
+    public boolean isReadOnly() {
+        return getMultiSchemasComponent().getProcess().isReadOnly();
     }
 
     public void executeCommand(Command cmd) {
@@ -178,11 +191,11 @@ public class MultiSchemasManager {
     private SchemasKeyData findSchemasKeyData(SchemasKeyData schemaKeyData, String key) {
         key = key.trim();
         if (schemaKeyData != null || !"".equals(key)) { //$NON-NLS-1$
-            if (schemaKeyData.getKeyName().equals(key)) {
+            if (schemaKeyData.getRecordType().equals(key)) {
                 return schemaKeyData;
             }
             for (SchemasKeyData child : schemaKeyData.getChildren()) {
-                if (child.getKeyName().equals(key)) {
+                if (child.getRecordType().equals(key)) {
                     return child;
                 }
                 SchemasKeyData foundData = findSchemasKeyData(child, key);
@@ -363,10 +376,9 @@ public class MultiSchemasManager {
      * cLi Comment method "saveProperties".
      * 
      */
-    public void savePropertiesToComponent(SchemasKeyData data, String filePath, String rowSeperator, String fieldSeperator) {
+    public void savePropertiesToComponent(SchemasKeyData data, DelimitedFileConnection connection) {
         if (data != null) {
-            ChangeMultiSchemasCommand cmd = new ChangeMultiSchemasCommand(getMultiSchemasComponent(), data, filePath,
-                    fieldSeperator, rowSeperator);
+            ChangeMultiSchemasCommand cmd = new ChangeMultiSchemasCommand(getMultiSchemasComponent(), data, connection);
             executeCommand(cmd);
         }
     }
@@ -393,12 +405,12 @@ public class MultiSchemasManager {
 
     private void retrieveRelativeParent(SchemasKeyData rootData, List<Map<String, String>> schemasValues) {
         for (Map<String, String> line : schemasValues) {
-            String code = line.get(IMultiSchemaConstant.CODE);
+            String code = line.get(IMultiSchemaConstant.RECORD);
             if (code != null) {
                 code = TalendTextUtils.removeQuotes(code);
                 SchemasKeyData currentData = findKeyData(rootData, code);
                 if (currentData != null) {
-                    String codeParent = line.get(IMultiSchemaConstant.CODE_PARENT);
+                    String codeParent = line.get(IMultiSchemaConstant.PARENT_RECORD);
                     if (codeParent != null) {
                         codeParent = TalendTextUtils.removeQuotes(codeParent);
                     }
@@ -408,6 +420,11 @@ public class MultiSchemasManager {
                         SchemasKeyData parentData = findKeyData(rootData, codeParent.trim());
                         if (parentData != null) {
                             parentData.addChild(currentData);
+                            // set the added column, last column.
+                            List<MultiMetadataColumn> metadataColumns = currentData.getMetadataColumns();
+                            MultiMetadataColumn multiMetadataColumn = metadataColumns.get(metadataColumns.size() - 1);
+                            metadataColumns.remove(multiMetadataColumn);
+                            currentData.setAddedColumn(multiMetadataColumn);
                         }
                     }
                 }
@@ -420,7 +437,7 @@ public class MultiSchemasManager {
             return null;
         }
         for (SchemasKeyData child : parent.getChildren()) {
-            if (key.equals(child.getKeyName())) {
+            if (key.equals(child.getRecordType())) {
                 return child;
             }
             SchemasKeyData keydata = findKeyData(child, key);
@@ -434,7 +451,7 @@ public class MultiSchemasManager {
     private void createSimpleDatas(SchemasKeyData rootData, List<Map<String, String>> schemasValues) {
 
         for (Map<String, String> line : schemasValues) {
-            String code = line.get(IMultiSchemaConstant.CODE);
+            String code = line.get(IMultiSchemaConstant.RECORD);
             if (code != null) {
                 code = TalendTextUtils.removeQuotes(code);
                 SchemasKeyData data = new SchemasKeyData(code);
@@ -447,6 +464,33 @@ public class MultiSchemasManager {
                     }
                     rootData.addChild(data);
                 }
+                String text = line.get(IMultiSchemaConstant.KEY_COLUMN_INDEX);
+                if (text == null) {
+                    text = ""; //$NON-NLS-1$
+                }
+                final String keyColumnIndex = TalendTextUtils.removeQuotes(text);
+                String[] keys = keyColumnIndex.split(","); //$NON-NLS-1$
+                for (String name : keys) {
+                    try {
+                        List<MultiMetadataColumn> metadataColumns = data.getMetadataColumns();
+                        int index = Integer.parseInt(name);
+                        for (int i = 0; i < metadataColumns.size(); i++) {
+                            MultiMetadataColumn multiMetadataColumn = metadataColumns.get(i);
+                            if (index == i) {
+                                multiMetadataColumn.setKey(true);
+                            } else {
+                                multiMetadataColumn.setKey(false);
+                            }
+                        }
+                    } catch (NumberFormatException e) {
+                        //
+                    }
+                }
+                String card = line.get(IMultiSchemaConstant.CARDINALITY);
+                if (card == null) {
+                    card = TalendTextUtils.addQuotes(""); //$NON-NLS-1$
+                }
+                data.setCard(card);
             }
         }
     }
@@ -455,7 +499,7 @@ public class MultiSchemasManager {
         //
         for (IMetadataColumn column : metadataTable.getListColumns()) {
 
-            MultiMetadataColumn multiColumn = new MultiMetadataColumn(data.getKeyName());
+            MultiMetadataColumn multiColumn = new MultiMetadataColumn(data.getRecordType());
             multiColumn.setContainer(data);
             data.getMetadataColumns().add(multiColumn);
 

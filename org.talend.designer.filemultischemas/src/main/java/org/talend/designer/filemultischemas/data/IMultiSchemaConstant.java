@@ -19,9 +19,13 @@ import org.talend.core.model.metadata.IEbcdicConstant;
  */
 public interface IMultiSchemaConstant {
 
-    public static final String CODE = IEbcdicConstant.FIELD_CODE;
-
-    public static final String CODE_PARENT = "CODE_PARENT"; //$NON-NLS-1$
-
     public static final String SCHEMA = IEbcdicConstant.FIELD_SCHEMA;
+
+    public static final String RECORD = "RECORD"; //$NON-NLS-1$
+
+    public static final String PARENT_RECORD = "PARENT_RECORD"; //$NON-NLS-1$
+
+    public static final String KEY_COLUMN_INDEX = "KEY_COLUMN_INDEX"; //$NON-NLS-1$
+
+    public static final String CARDINALITY = "CARDINALITY"; //$NON-NLS-1$
 }

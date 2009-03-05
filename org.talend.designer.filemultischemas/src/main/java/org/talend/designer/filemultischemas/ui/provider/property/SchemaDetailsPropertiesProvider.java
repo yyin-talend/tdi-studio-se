@@ -21,6 +21,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.talend.designer.filemultischemas.data.MultiMetadataColumn;
 import org.talend.designer.filemultischemas.data.MultiSchemasMetadataColumn;
+import org.talend.designer.filemultischemas.data.SchemasKeyData;
 import org.talend.designer.filemultischemas.ui.provider.SchemaDetailsProvider;
 
 /**
@@ -106,16 +107,26 @@ public class SchemaDetailsPropertiesProvider extends SchemaDetailsProvider {
                 MultiMetadataColumn multiMetadataColumn = (MultiMetadataColumn) element;
                 return validateValue(multiMetadataColumn.getContainerTagLevel());
             }
+        } else if (columnIndex == 2) { // key
+            if (element instanceof MultiMetadataColumn) {
+                MultiMetadataColumn multiMetadataColumn = (MultiMetadataColumn) element;
+                // first column(record type)
+                SchemasKeyData container = multiMetadataColumn.getContainer();
+                if (container != null && container.getMetadataColumnsInModel().indexOf(multiMetadataColumn) == 0) {
+                    return null;
+                }
+                return validateValue(multiMetadataColumn.isKey());
+            }
         } else {
             if (element instanceof MultiSchemasMetadataColumn) {
                 MultiSchemasMetadataColumn column = (MultiSchemasMetadataColumn) element;
                 switch (columnIndex) {
-                case 2: // type
+                case 3: // type
                     return getTypeLabel(column.getTalendType());
-                case 3: // length
+                case 4: // length
                     return validateValue(column.getLength());
-                case 4: // card
-                    return column.getCard();
+                    // case 4: // card
+                    // return column.getCard();
                 case 5: // pattern
                     return column.getPattern();
                 }

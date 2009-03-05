@@ -25,23 +25,23 @@ import org.talend.core.model.metadata.types.PerlDataTypeHelper;
  */
 public class MultiMetadataColumn extends MultiSchemasMetadataColumn {
 
-    private String key;
+    private String recordType;
 
     private SchemasKeyData container;
 
     private List<MultiSchemasMetadataColumn> dataColumns = new ArrayList<MultiSchemasMetadataColumn>();
 
-    public MultiMetadataColumn(String key) {
+    public MultiMetadataColumn(String recordType) {
         super();
-        this.key = key;
+        this.recordType = recordType;
     }
 
-    public String getKeyName() {
-        return this.key;
+    public String getRecordType() {
+        return this.recordType;
     }
 
-    public void setKeyName(String key) {
-        this.key = key;
+    public void setRecordType(String recordType) {
+        this.recordType = recordType;
     }
 
     public void addDataColumns(MultiSchemasMetadataColumn column) {

@@ -75,7 +75,7 @@ public class SchemasTreeLabelProvider implements ILabelProvider {
      */
     public String getText(Object element) {
         if (element instanceof SchemasKeyData) {
-            return ((SchemasKeyData) element).getKeyName();
+            return ((SchemasKeyData) element).getRecordType();
         }
         return null;
     }

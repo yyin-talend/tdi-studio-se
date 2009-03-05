@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.designer.filemultischemas.ui.provider.column;
 
+import java.util.List;
+
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
@@ -27,6 +29,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
@@ -104,7 +107,8 @@ public class SchemaDetailsColumnMouseAdapter extends MouseAdapter {
             return;
         }
         ColumnLineData lineData = (ColumnLineData) data;
-        final MultiMetadataColumn multiMetadataColumn = lineData.getKeyData().getMetadataColumns().get(getColumnIndex() - 1);
+        List<MultiMetadataColumn> metadataColumnsInModel = lineData.getKeyData().getMetadataColumnsInModel();
+        final MultiMetadataColumn multiMetadataColumn = metadataColumnsInModel.get(getColumnIndex() - 1);
         Control newEditor = null;
         final EPropertyName property = lineData.getProperty();
         if (UIManager.isFirstForColumnModel(property)) {
@@ -118,9 +122,20 @@ public class SchemaDetailsColumnMouseAdapter extends MouseAdapter {
                 newEditor = createComboControl(item, multiMetadataColumn);
                 break;
             case LENGTH:
-            case CARD:
+                // case CARD:
             case PATTERN:
                 newEditor = createTextControl(item, property, multiMetadataColumn);
+                break;
+            case KEY:
+                /*
+                 * ingore record type(first column);
+                 * 
+                 * if existed key column, should not edit other key.
+                 */
+                if (getColumnIndex() == 1 || UIManager.existedKeyColumn(metadataColumnsInModel, multiMetadataColumn)) {
+                    break;
+                }
+                newEditor = createCheckBoxControl(item, property, multiMetadataColumn);
                 break;
             }
         }
@@ -172,9 +187,9 @@ public class SchemaDetailsColumnMouseAdapter extends MouseAdapter {
             case LENGTH:
                 newEditor.setText(MultiSchemasUtil.getAndCheckIntgerValue(multiMetadataColumn.getLength()));
                 break;
-            case CARD:
-                newEditor.setText(MultiSchemasUtil.validateValue(multiMetadataColumn.getCard()));
-                break;
+            // case CARD:
+            // newEditor.setText(MultiSchemasUtil.validateValue(multiMetadataColumn.getCard()));
+            // break;
             case PATTERN:
                 newEditor.setText(MultiSchemasUtil.validateValue(multiMetadataColumn.getPattern()));
                 break;
@@ -210,9 +225,9 @@ public class SchemaDetailsColumnMouseAdapter extends MouseAdapter {
                             multiMetadataColumn.setLength(null);
                         }
                         break;
-                    case CARD:
-                        multiMetadataColumn.setCard(value);
-                        break;
+                    // case CARD:
+                    // multiMetadataColumn.setCard(value);
+                    // break;
                     case PATTERN:
                         multiMetadataColumn.setPattern(value);
                         break;
@@ -222,6 +237,23 @@ public class SchemaDetailsColumnMouseAdapter extends MouseAdapter {
             }
         });
         newEditor.selectAll();
+        return newEditor;
+    }
+
+    private Control createCheckBoxControl(final TreeItem item, final EPropertyName pName,
+            final MultiMetadataColumn multiMetadataColumn) {
+        final Button newEditor = new Button(getTree(), SWT.CHECK);
+        newEditor.setSelection(multiMetadataColumn.isKey());
+
+        newEditor.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                multiMetadataColumn.setKey(newEditor.getSelection());
+                getSchemaDetailsViewer().update(item.getData(), null);
+            }
+
+        });
         return newEditor;
     }
 }

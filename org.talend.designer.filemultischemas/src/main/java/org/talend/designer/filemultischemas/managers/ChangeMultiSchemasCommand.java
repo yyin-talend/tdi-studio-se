@@ -22,6 +22,7 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.MultiSchemasUtil;
+import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
@@ -46,24 +47,28 @@ public class ChangeMultiSchemasCommand extends Command {
 
     private Object oldFieldSeperator, newFieldSeperator;
 
+    private Object oldEncoding, newEncoding;
+
     private List<Map<String, String>> oldSchemasListMap, newSchemasListMap;
 
     private List<IMetadataTable> oldMetadataTable, newMetadataTable;
 
-    public ChangeMultiSchemasCommand(INode node, SchemasKeyData rootSchemaData, String newFilePath, String newFieldSeperator,
-            String newRowSeperator) {
+    private DelimitedFileConnection fakeConnection;
+
+    public ChangeMultiSchemasCommand(INode node, SchemasKeyData rootSchemaData, DelimitedFileConnection fakeConnection) {
         super();
         this.node = node;
         this.rootSchemaData = rootSchemaData;
-        this.newFilePath = newFilePath;
-        this.newFieldSeperator = newFieldSeperator;
-        this.newRowSeperator = newRowSeperator;
-
+        this.fakeConnection = fakeConnection;
         initNew();
         initOld();
     }
 
     private void initNew() {
+        this.newFieldSeperator = fakeConnection.getFieldSeparatorValue();
+        this.newRowSeperator = fakeConnection.getRowSeparatorValue();
+        this.newEncoding = fakeConnection.getEncoding();
+        this.newFilePath = fakeConnection.getFilePath();
         // map
         this.newSchemasListMap = new ArrayList<Map<String, String>>();
         // metadata table
@@ -79,19 +84,36 @@ public class ChangeMultiSchemasCommand extends Command {
         if (keyData.getParent() != null) { // not root
             //
             Map<String, String> map = new HashMap<String, String>();
-            final String key = keyData.getKeyName();
+            final String key = keyData.getRecordType();
             map.put(IMultiSchemaConstant.SCHEMA, key);
-            map.put(IMultiSchemaConstant.CODE, TalendTextUtils.addQuotes(key));
-            map.put(IMultiSchemaConstant.CODE_PARENT, TalendTextUtils.addQuotes(keyData.getParent().getKeyName()));
+            map.put(IMultiSchemaConstant.RECORD, TalendTextUtils.addQuotes(key));
+            map.put(IMultiSchemaConstant.PARENT_RECORD, TalendTextUtils.addQuotes(keyData.getParent().getRecordType()));
+            map.put(IMultiSchemaConstant.CARDINALITY, keyData.getCard());
             newValueList.add(map);
             //
-            String uniqueConnName = node.getProcess().generateUniqueConnectionName(MultiSchemasUtil.getConnectionBaseName(key));
+            String connectionBaseName = MetadataTool.validateColumnName(MultiSchemasUtil.getConnectionBaseName(key));
+            String uniqueConnName = node.getProcess().generateUniqueConnectionName(connectionBaseName);
             MetadataTable table = new MetadataTable();
             table.setLabel(key);
             table.setTableName(uniqueConnName);
-            for (MultiMetadataColumn column : keyData.getMetadataColumns()) {
+
+            String keyIndex = ""; //$NON-NLS-1$
+            boolean first = true;
+            List<MultiMetadataColumn> metadataColumnsInModel = keyData.getMetadataColumnsInModel();
+
+            for (int i = 0; i < metadataColumnsInModel.size(); i++) {
+                MultiMetadataColumn column = metadataColumnsInModel.get(i);
                 table.getListColumns().add(column.clone(true));
+                if (column.isKey()) {
+                    if (first) {
+                        keyIndex += i;
+                    } else {
+                        keyIndex += "," + i; //$NON-NLS-1$
+                    }
+                    first = false;
+                }
             }
+            map.put(IMultiSchemaConstant.KEY_COLUMN_INDEX, TalendTextUtils.addQuotes(keyIndex));
             newTables.add(table);
 
         }
@@ -107,6 +129,10 @@ public class ChangeMultiSchemasCommand extends Command {
         IElementParameter elementParameter = this.node.getElementParameter(EParameterName.FILENAME.getName());
         if (elementParameter != null) {
             this.oldFilePath = elementParameter.getValue();
+        }
+        elementParameter = this.node.getElementParameter(EParameterName.ENCODING_TYPE.getName());
+        if (elementParameter != null) {
+            this.oldEncoding = elementParameter.getValue();
         }
         elementParameter = this.node.getElementParameter(EParameterName.ROWSEPARATOR.getName());
         if (elementParameter != null) {
@@ -170,7 +196,16 @@ public class ChangeMultiSchemasCommand extends Command {
             }
             elementParameter.setValue(value);
         }
-
+        elementParameter = this.node.getElementParameter(EParameterName.ENCODING_TYPE.getName());
+        if (elementParameter != null) {
+            Object value = null;
+            if (undo) {
+                value = this.oldEncoding;
+            } else {
+                value = this.newEncoding;
+            }
+            elementParameter.setValue(value);
+        }
         elementParameter = this.node.getElementParameter(EParameterName.ROWSEPARATOR.getName());
         if (elementParameter != null) {
             Object value = null;

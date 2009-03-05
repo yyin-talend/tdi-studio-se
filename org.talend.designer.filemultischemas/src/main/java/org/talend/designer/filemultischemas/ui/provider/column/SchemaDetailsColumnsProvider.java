@@ -80,11 +80,11 @@ public class SchemaDetailsColumnsProvider extends SchemaDetailsProvider {
                 if (UIManager.isFirstForColumnModel(property)) { // first column name
                     return EPropertyName.NAME.getName(); //$NON-NLS-1$
                 } else if (property == EPropertyName.NAME) { // for data.
-                    return "";
+                    return ""; //$NON-NLS-1$
                 }
                 return property.getName();
             }
-            List<MultiMetadataColumn> columnsData = lineData.getKeyData().getMetadataColumns();
+            List<MultiMetadataColumn> columnsData = lineData.getKeyData().getMetadataColumnsInModel();
             if (columnsData.size() >= columnIndex) {
                 MultiMetadataColumn columnData = columnsData.get(columnIndex - 1);
                 if (columnData != null) {
@@ -105,8 +105,11 @@ public class SchemaDetailsColumnsProvider extends SchemaDetailsProvider {
                             return validateValue(columnData.getContainerTagLevel());
                         }
                         break;
-                    // case KEY:
-                    // return validateValue(columnData.isKey());
+                    case KEY:
+                        if (columnIndex == 1) { // the first record type column.
+                            return null;
+                        }
+                        return validateValue(columnData.isKey());
                     case TYPE:
                         return getTypeLabel(columnData.getTalendType());
                         // case NULL:
@@ -115,8 +118,8 @@ public class SchemaDetailsColumnsProvider extends SchemaDetailsProvider {
                         return validateValue(columnData.getLength());
                         // case PRECISION:
                         // return validateValue(columnData.getPrecision());
-                    case CARD:
-                        return columnData.getCard();
+                        // case CARD:
+                        // return columnData.getCard();
                     case PATTERN:
                         return columnData.getPattern();
                     default:

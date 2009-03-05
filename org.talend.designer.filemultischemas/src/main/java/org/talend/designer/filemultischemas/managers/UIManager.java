@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
@@ -35,6 +36,7 @@ import org.talend.designer.filemultischemas.ui.provider.SchemaDetailsProvider;
 import org.talend.designer.filemultischemas.ui.provider.column.ColumnLineData;
 import org.talend.designer.filemultischemas.ui.provider.column.SchemaDetailsColumnMouseAdapter;
 import org.talend.designer.filemultischemas.ui.provider.column.SchemaDetailsColumnsProvider;
+import org.talend.designer.filemultischemas.ui.provider.property.SchemaDetailsCheckBoxCellEditor;
 import org.talend.designer.filemultischemas.ui.provider.property.SchemaDetailsPropertiesCellModifier;
 import org.talend.designer.filemultischemas.ui.provider.property.SchemaDetailsPropertiesProvider;
 import org.talend.designer.filemultischemas.ui.provider.property.SchemaDetailsTextCellEditor;
@@ -88,6 +90,7 @@ public class UIManager {
             columnTreeEditor.dispose();
             final Control editor = columnTreeEditor.getEditor();
             if (editor != null && !editor.isDisposed()) {
+                editor.setVisible(false);
                 editor.dispose();
             }
             columnTreeEditor = null;
@@ -115,12 +118,14 @@ public class UIManager {
                 case NAME:
                 case LENGTH:
                 case TAGLEVEL:
-                case CARD:
+                    // case CARD:
                 case PATTERN:
                     cellEditor = new SchemaDetailsTextCellEditor(schemaDetailsViewer, pName);
                     break;
-                // case KEY:
-                // break;
+                case KEY:
+                    pColumn.setToolTipText("Only one column can be set as key.");
+                    cellEditor = new SchemaDetailsCheckBoxCellEditor(tree);
+                    break;
                 // case NULL:
                 // break;
                 case TYPE:
@@ -183,7 +188,7 @@ public class UIManager {
 
         SchemasKeyData schemasData = (SchemasKeyData) element;
 
-        final List<MultiMetadataColumn> metadataColumns = schemasData.getMetadataColumns();
+        final List<MultiMetadataColumn> metadataColumns = schemasData.getMetadataColumnsInModel();
 
         if (model) {
             schemaDetailsViewer.setInput(metadataColumns);
@@ -251,6 +256,20 @@ public class UIManager {
         }
     }
 
+    public static boolean existedKeyColumn(List<MultiMetadataColumn> columns, MultiMetadataColumn currentColumn) {
+        if (columns != null) {
+            for (MultiMetadataColumn col : columns) {
+                if (currentColumn == col) {
+                    continue;
+                }
+                if (col.isKey()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public static boolean checkSchemaDetailsValue(TreeViewer schemaDetailsViewer, MultiMetadataColumn multiMetadataColumn,
             EPropertyName property, Object input) {
         return validSchemaDetailsColumns(schemaDetailsViewer, multiMetadataColumn, property, input) == null;
@@ -269,7 +288,7 @@ public class UIManager {
                     final Object firstElement = selection.getFirstElement();
                     if (firstElement != null && firstElement instanceof ColumnLineData) {
                         ColumnLineData lineData = (ColumnLineData) firstElement;
-                        for (MultiMetadataColumn column : lineData.getKeyData().getMetadataColumns()) {
+                        for (MultiMetadataColumn column : lineData.getKeyData().getMetadataColumnsInModel()) {
                             if (multiMetadataColumn != column && value.equals(column.getLabel())) {
                                 mess = existedMessage;
                                 break;
@@ -325,4 +344,86 @@ public class UIManager {
     public static boolean isFirstForColumnModel(EPropertyName property) {
         return property == null;
     }
+
+    public boolean enableMovedRecord(TreeViewer schemaTreeViewer, boolean left) {
+        if (schemaTreeViewer == null) {
+            return false;
+        }
+        ISelection selection = schemaTreeViewer.getSelection();
+        if (selection instanceof IStructuredSelection) {
+            IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+            if (structuredSelection.size() == 1) {
+                Object element = structuredSelection.getFirstElement();
+                if (element instanceof SchemasKeyData) {
+                    SchemasKeyData data = (SchemasKeyData) element;
+                    SchemasKeyData parent = data.getParent();
+                    int index = parent.getChildren().indexOf(data);
+                    if (left) {
+                        SchemasKeyData grandfather = parent.getParent();
+                        if (grandfather == null) { // in root.
+                            return false;
+                        }
+                        if (index != parent.getChildren().size() - 1) { // not the end of children.
+                            return false;
+                        }
+                    } else {
+                        if (index == 0) { // in first of children.
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public void moveRecord(TreeViewer schemaTreeViewer, boolean left) {
+        if (schemaTreeViewer == null) {
+            return;
+        }
+        ISelection selection = schemaTreeViewer.getSelection();
+        if (selection instanceof IStructuredSelection) {
+            Object element = ((IStructuredSelection) selection).getFirstElement();
+            if (element instanceof SchemasKeyData) {
+                SchemasKeyData data = (SchemasKeyData) element;
+                SchemasKeyData parent = data.getParent();
+                if (left) {
+                    SchemasKeyData grandfather = parent.getParent();
+                    if (grandfather != null) { // not in root.
+                        List<SchemasKeyData> children = grandfather.getChildren();
+                        int index = -1;
+                        for (int i = 0; i < children.size(); i++) {
+                            if (children.get(i) == parent) {
+                                index = i;
+                                break;
+                            }
+                        }
+                        if (index > -1) {
+                            int index2 = index + 1;
+                            if (index2 > children.size()) {
+                                grandfather.addChild(data);
+                            } else {
+                                grandfather.addChild(index2, data);
+                            }
+                        }
+                    }
+                } else {
+                    SchemasKeyData sibling = null;
+                    for (SchemasKeyData skd : parent.getChildren()) {
+                        if (skd == data) {
+                            break;
+                        } else {
+                            sibling = skd;
+                        }
+                    }
+                    if (sibling != null) {
+                        sibling.addChild(data);
+                    }
+                }
+                schemaTreeViewer.refresh();
+            }
+        }
+    }
+
 }

@@ -15,6 +15,10 @@ package org.talend.designer.filemultischemas.data;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.talend.commons.utils.data.list.UniqueStringGenerator;
+import org.talend.core.model.metadata.types.JavaTypesManager;
+import org.talend.core.model.utils.TalendTextUtils;
+
 /**
  * cLi class global comment. Detailled comment
  * 
@@ -24,21 +28,27 @@ public class SchemasKeyData {
 
     private SchemasKeyData parent;
 
-    private String keyName;
+    private String recordType;
 
     private List<SchemasKeyData> children = new ArrayList<SchemasKeyData>();
 
     private List<MultiSchemaRowData> rowsData = new ArrayList<MultiSchemaRowData>();
 
-    private List<MultiMetadataColumn> metadataColumns = new ArrayList<MultiMetadataColumn>();;
+    private List<MultiMetadataColumn> metadataColumns = new ArrayList<MultiMetadataColumn>();
 
-    public SchemasKeyData(String key) {
+    private MultiMetadataColumn addedColumn;;
+
+    private static final String defaultCard = TalendTextUtils.addQuotes(""); //$NON-NLS-1$
+
+    private String card = defaultCard;
+
+    public SchemasKeyData(String recordType) {
         super();
-        this.keyName = key;
+        this.recordType = recordType;
     }
 
-    public String getKeyName() {
-        return this.keyName;
+    public String getRecordType() {
+        return this.recordType;
     }
 
     public void setParent(SchemasKeyData parent) {
@@ -47,6 +57,17 @@ public class SchemasKeyData {
 
     public SchemasKeyData getParent() {
         return this.parent;
+    }
+
+    public String getCard() {
+        if (this.getTagLevel() == 0) { // if no parent, will be no card.
+            return defaultCard;
+        }
+        return this.card;
+    }
+
+    public void setCard(String card) {
+        this.card = card;
     }
 
     public void addRowsData(MultiSchemaRowData rowData) {
@@ -61,6 +82,10 @@ public class SchemasKeyData {
     }
 
     public void addChild(SchemasKeyData child) {
+        addChild(-1, child); // add in to end
+    }
+
+    public void addChild(int index, SchemasKeyData child) {
         if (child != null && child != this) {
             // have contain in current
             if (getChildren().contains(child)) {
@@ -77,7 +102,11 @@ public class SchemasKeyData {
 
             }
             // add to current
-            getChildren().add(child);
+            if (index == -1 || index > getChildren().size()) {
+                getChildren().add(child);
+            } else {
+                getChildren().add(index, child);
+            }
             child.setParent(this);
         }
     }
@@ -129,4 +158,56 @@ public class SchemasKeyData {
         }
     }
 
+    public List<MultiMetadataColumn> getMetadataColumnsInModel() {
+        List<MultiMetadataColumn> modelColumns = new ArrayList<MultiMetadataColumn>(getMetadataColumns());
+        generateAddedColumn();
+        if (getTagLevel() > 0 && addedColumn != null) {
+            modelColumns.add(addedColumn);
+        }
+        return modelColumns;
+    }
+
+    public MultiMetadataColumn getAddedColumn() {
+        generateAddedColumn();
+        return this.addedColumn;
+    }
+
+    public void setAddedColumn(MultiMetadataColumn addedColumn) {
+        this.addedColumn = addedColumn;
+    }
+
+    public void generateAddedColumn() {
+        String baseName = null;
+        boolean needed = false;
+        if (this.addedColumn != null) {
+            // check name unique
+
+            for (MultiMetadataColumn col : this.getMetadataColumns()) {
+                if (col.getLabel().equals(this.addedColumn.getLabel())) {
+                    needed = true;
+                    baseName = this.addedColumn.getLabel();
+                    break;
+                }
+            }
+        } else {
+            needed = true;
+            // default
+            baseName = ExternalMultiSchemasUIProperties.DEFAULT_COLUMN_NAME;
+            this.addedColumn = new MultiMetadataColumn("Test"); //$NON-NLS-1$
+            this.addedColumn.setContainer(this);
+            this.addedColumn.setTalendType(JavaTypesManager.STRING.getId());
+        }
+        if (needed) {
+            UniqueStringGenerator<MultiMetadataColumn> generator = new UniqueStringGenerator<MultiMetadataColumn>(baseName, this
+                    .getMetadataColumns()) {
+
+                @Override
+                protected String getBeanString(MultiMetadataColumn bean) {
+                    return bean.getLabel();
+                }
+
+            };
+            this.addedColumn.setLabel(generator.getUniqueString());
+        }
+    }
 }

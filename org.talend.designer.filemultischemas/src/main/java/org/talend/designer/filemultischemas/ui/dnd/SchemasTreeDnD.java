@@ -28,6 +28,8 @@ import org.talend.designer.filemultischemas.data.SchemasKeyData;
 
 /**
  * cLi class global comment. Detailled comment
+ * 
+ * @deprecated can't support dnd yet, have changed.
  */
 public class SchemasTreeDnD {
 

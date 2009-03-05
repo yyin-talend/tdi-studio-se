@@ -14,6 +14,8 @@ package org.talend.designer.filemultischemas.ui;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
@@ -22,17 +24,21 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
@@ -44,6 +50,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
@@ -54,11 +61,22 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.internal.IWorkbenchGraphicConstants;
 import org.eclipse.ui.internal.WorkbenchImages;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.ui.image.EImage;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.formtools.Form;
+import org.talend.commons.ui.swt.formtools.LabelledCombo;
 import org.talend.commons.ui.swt.formtools.LabelledFileField;
 import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.commons.ui.utils.PathUtils;
 import org.talend.core.CorePlugin;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
+import org.talend.core.model.metadata.EMetadataEncoding;
+import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
+import org.talend.core.model.metadata.builder.connection.Escape;
+import org.talend.core.model.metadata.builder.connection.FieldSeparator;
+import org.talend.core.model.metadata.builder.connection.FileFormat;
+import org.talend.core.model.metadata.builder.connection.RowSeparator;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.utils.CsvArray;
@@ -69,7 +87,6 @@ import org.talend.designer.filemultischemas.data.SchemasKeyData;
 import org.talend.designer.filemultischemas.managers.MultiSchemasManager;
 import org.talend.designer.filemultischemas.managers.UIManager;
 import org.talend.designer.filemultischemas.ui.dialog.MultiSchemaEventListener;
-import org.talend.designer.filemultischemas.ui.dnd.SchemasTreeDnD;
 import org.talend.designer.filemultischemas.ui.preview.MultiSchemasShadowProcessPreview;
 import org.talend.designer.filemultischemas.ui.preview.MultiSchemasUIThreadProcessor;
 import org.talend.designer.filemultischemas.ui.provider.SchemasTreeContentProvider;
@@ -77,6 +94,7 @@ import org.talend.designer.filemultischemas.ui.provider.SchemasTreeLabelProvider
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.preview.ProcessDescription;
 import org.talend.repository.ui.swt.preview.ShadowProcessPreview;
+import org.talend.repository.ui.utils.ShadowProcessHelper;
 
 /**
  * cLi class global comment. Detailled comment
@@ -85,6 +103,14 @@ public class MultiSchemasUI {
 
     protected int maximumRowsToPreview = CorePlugin.getDefault().getPreferenceStore().getInt(
             ITalendCorePrefConstants.PREVIEW_LIMIT);
+
+    private static final String EMPTY_VALUE = Messages.getString("FileStep2.empty"); //$NON-NLS-1$
+
+    private static final String[] TEXT_ENCLOSURE_DATA = { EMPTY_VALUE,
+            TalendTextUtils.addQuotes("\""), TalendTextUtils.addQuotes("\'"), TalendTextUtils.addQuotes("\\\\") }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+    private static final String[] ESCAPE_CHAR_DATA = { EMPTY_VALUE,
+            TalendTextUtils.addQuotes("\""), TalendTextUtils.addQuotes("\'"), TalendTextUtils.addQuotes("\\\\") }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
     private MultiSchemasManager multiSchemaManager;
 
@@ -103,13 +129,27 @@ public class MultiSchemasUI {
 
     private LabelledFileField fileField;
 
+    private LabelledCombo encodingCombo;
+
+    private LabelledCombo fieldSeparatorCombo;
+
+    private LabelledCombo rowSeparatorCombo;
+
     private LabelledText rowSeparatorText;
 
     private LabelledText fieldSeparatorText;
 
+    private LabelledText cardText;
+
+    private Button csvRadio, delimitedRadio;
+
+    private LabelledCombo escapeCharCombo, textEnclosureCombo;
+
+    private Label escapeCharFlag, textEnclosureFlag;
+
     private Button previewBtn;
 
-    private Button fetchBtn;
+    private Button fetchBtn, leftBtn, rightBtn;
 
     private TreeViewer schemaTreeViewer;
 
@@ -145,6 +185,10 @@ public class MultiSchemasUI {
         this.processor = new MultiSchemasUIThreadProcessor(this);
     }
 
+    private DelimitedFileConnection getConnection() {
+        return multiSchemaManager.getRecordConnection();
+    }
+
     /**
      * Sets the listener.
      * 
@@ -175,7 +219,7 @@ public class MultiSchemasUI {
 
         allContentForm = new SashForm(composite, SWT.NONE);
         formData = new FormData();
-        formData.top = new FormAttachment(fileGroup, 10);
+        formData.top = new FormAttachment(fileGroup, 5);
         formData.left = new FormAttachment(0, 5);
         formData.right = new FormAttachment(100, -5);
         formData.bottom = new FormAttachment(100, -5);
@@ -186,7 +230,8 @@ public class MultiSchemasUI {
         // listener
         addFieldListeners();
         addButtonListeners();
-
+        addFieldsListenersGroupFileSettings();
+        addFieldsListenersGroupsEscapeChar();
         // preview
         refreshPreview();
         checkDialog();
@@ -209,9 +254,76 @@ public class MultiSchemasUI {
     }
 
     private void initFieldValues() {
-        fileField.setText(getMultiSchemaManager().getParameterValue(EParameterName.FILENAME));
-        rowSeparatorText.setText(getMultiSchemaManager().getParameterValue(EParameterName.ROWSEPARATOR));
-        fieldSeparatorText.setText(getMultiSchemaManager().getParameterValue(EParameterName.FIELDSEPARATOR));
+        String filePath = getMultiSchemaManager().getParameterValue(EParameterName.FILENAME);
+        getConnection().setFilePath(TalendTextUtils.removeQuotes(filePath));
+        getConnection().setRowSeparatorValue(getMultiSchemaManager().getParameterValue(EParameterName.ROWSEPARATOR));
+        getConnection().setFieldSeparatorValue(getMultiSchemaManager().getParameterValue(EParameterName.FIELDSEPARATOR));
+        getConnection().setEncoding(getMultiSchemaManager().getParameterValue(EParameterName.ENCODING_TYPE));
+
+        getConnection().setCsvOption(false);
+        getConnection().setEscapeType(Escape.DELIMITED_LITERAL);
+
+        fileField.setText(TalendTextUtils.addQuotes(getConnection().getFilePath()));
+
+        getConnection().setFieldSeparatorType(getFieldSeparatorFromString(getConnection().getFieldSeparatorValue()));
+        fieldSeparatorCombo.setText(getConnection().getFieldSeparatorType().getName());
+        fieldSeparatorText.setText(getConnection().getFieldSeparatorValue());
+        fieldSeparatorText.setEditable(false);
+
+        getConnection().setRowSeparatorType(getRowSeparatorFromString(getConnection().getRowSeparatorValue()));
+        rowSeparatorCombo.setText(getConnection().getRowSeparatorType().getLiteral());
+        rowSeparatorText.setText(getConnection().getRowSeparatorValue());
+        rowSeparatorText.setEditable(false);
+
+        fieldSeparatorManager();
+        rowSeparatorManager();
+        encodingCombo.setText(getConnection().getEncoding());
+
+        // Fields to the Group Escape Char Settings
+        textEnclosureCombo.select(0);
+        escapeCharCombo.select(0);
+
+        if (Escape.DELIMITED_LITERAL.equals(getConnection().getEscapeType())) {
+            csvRadio.setSelection(false);
+            delimitedRadio.setSelection(true);
+            textEnclosureCombo.setEnabled(false);
+            escapeCharCombo.setEnabled(false);
+        }
+        if (Escape.CSV_LITERAL.equals(getConnection().getEscapeType())) {
+            csvRadio.setSelection(true);
+            delimitedRadio.setSelection(false);
+        }
+
+        String s = getConnection().getEscapeChar();
+        if (!(s == null) && !s.equals("") && !s.equals(EMPTY_VALUE)) { //$NON-NLS-1$
+            escapeCharCombo.setText(s);
+        }
+        s = getConnection().getTextEnclosure();
+        if (!(s == null) && !s.equals("") && !s.equals(EMPTY_VALUE)) { //$NON-NLS-1$
+            textEnclosureCombo.setText(s);
+        }
+
+        // clearSelection of the selected combo
+        encodingCombo.clearSelection();
+        fieldSeparatorCombo.clearSelection();
+        rowSeparatorCombo.clearSelection();
+        escapeCharCombo.clearSelection();
+        textEnclosureCombo.clearSelection();
+
+    }
+
+    private void adapteReadOnly() {
+        fileField.setReadOnly(isReadOnly());
+        fieldSeparatorCombo.setReadOnly(isReadOnly());
+        fieldSeparatorText.setEditable(!isReadOnly());
+        rowSeparatorCombo.setReadOnly(isReadOnly());
+        rowSeparatorText.setEditable(!isReadOnly());
+        encodingCombo.setReadOnly(isReadOnly());
+        csvRadio.setEnabled(!isReadOnly());
+        delimitedRadio.setEnabled(!isReadOnly());
+        leftBtn.setEnabled(!isReadOnly());
+        rightBtn.setEnabled(!isReadOnly());
+        cardText.setEditable(!isReadOnly());
     }
 
     private void createFileGroup(Composite fileGroup) {
@@ -228,22 +340,330 @@ public class MultiSchemasUI {
             }
 
         };
-        // fileField.getTextControl().setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
+        Composite settings = new Composite(fileGroup, SWT.NONE);
+        GridData layoutData = new GridData(GridData.FILL_HORIZONTAL);
+        layoutData.horizontalSpan = 3;
+        settings.setLayoutData(layoutData);
+        settings.setLayout(new GridLayout(2, false));
 
-        GridData layoutData;
-        rowSeparatorText = new LabelledText(fileGroup, Messages.getString("FileStep2.rowSeparator"), 2);
-        layoutData = new GridData();
-        layoutData.horizontalSpan = 2;
-        layoutData.widthHint = ExternalMultiSchemasUIProperties.SEPERATOR_TEXT_WIDTH;
-        rowSeparatorText.setLayoutData(layoutData);
-        rowSeparatorText.setText(ExternalMultiSchemasUIProperties.DEFAULT_ROW_SEPERATOR);
+        addGroupMultiSchemaSettings(settings);
+        addGroupEscapeChar(settings);
 
-        fieldSeparatorText = new LabelledText(fileGroup, Messages.getString("FileStep2.fieldSeparator"), 2);
-        layoutData = new GridData();
-        layoutData.horizontalSpan = 2;
-        layoutData.widthHint = ExternalMultiSchemasUIProperties.SEPERATOR_TEXT_WIDTH;
-        fieldSeparatorText.setLayoutData(layoutData);
-        fieldSeparatorText.setText(ExternalMultiSchemasUIProperties.DEFAULT_FIELD_SEPERATOR);
+    }
+
+    private void addGroupMultiSchemaSettings(final Composite mainComposite) {
+        Group group = Form.createGroup(mainComposite, 4, Messages.getString("FileStep2.groupDelimitedFileSettings"), 100); //$NON-NLS-1$
+
+        EMetadataEncoding[] values = EMetadataEncoding.values();
+        String[] encodingData = new String[values.length];
+        for (int j = 0; j < values.length; j++) {
+            encodingData[j] = values[j].getName();
+        }
+
+        encodingCombo = new LabelledCombo(group, Messages.getString("FileStep2.encoding"), Messages //$NON-NLS-1$
+                .getString("FileStep2.encodingTip"), encodingData, 3, true, SWT.NONE); //$NON-NLS-1$
+
+        // Field Separator Combo & Text
+        String[] fieldSeparatorData = getFieldSeparatorStyleSupportByLanguage();
+
+        fieldSeparatorCombo = new LabelledCombo(group, Messages.getString("FileStep2.fieldSeparator"), Messages //$NON-NLS-1$
+                .getString("FileStep2.fieldSeparatorDelimitedTip"), fieldSeparatorData, 1, true, SWT.READ_ONLY); //$NON-NLS-1$
+
+        fieldSeparatorText = new LabelledText(group, "", 1, true, SWT.RIGHT); //$NON-NLS-1$
+
+        // Dimension of columb of Separator Text
+        GridData gridData = new GridData(SWT.FILL, SWT.BOTTOM, true, false);
+        gridData.minimumWidth = 80;
+        fieldSeparatorText.setLayoutData(gridData);
+
+        // Row Separator Combo & Text
+        String[] rowSeparatorData = { RowSeparator.STANDART_EOL_LITERAL.getLiteral(),
+                RowSeparator.CUSTOM_STRING_LITERAL.getLiteral() };
+        rowSeparatorCombo = new LabelledCombo(group, Messages.getString("FileStep2.rowSeparator"), Messages //$NON-NLS-1$
+                .getString("FileStep2.rowSeparatorTip"), rowSeparatorData, 1, true, SWT.READ_ONLY); //$NON-NLS-1$
+        rowSeparatorText = new LabelledText(group, "", 1, true, SWT.RIGHT); //$NON-NLS-1$
+    }
+
+    private String[] getFieldSeparatorStyleSupportByLanguage() {
+        ECodeLanguage language = LanguageManager.getCurrentLanguage();
+        String[] styles = { FieldSeparator.SEMICOLON_LITERAL.getName(), FieldSeparator.COMMA_LITERAL.getName(),
+                FieldSeparator.TABULATION_LITERAL.getName(), FieldSeparator.SPACE_LITERAL.getName(),
+                FieldSeparator.ALT_65_LITERAL.getName(), FieldSeparator.CUSTOM_ANSI_LITERAL.getName(),
+                FieldSeparator.CUSTOM_UTF8_LITERAL.getName(), FieldSeparator.CUSTOM_REG_EXP_LITERAL.getName() };
+        switch (language) {
+        case JAVA:
+            String[] javaStyles = new String[styles.length - 1];
+            System.arraycopy(styles, 0, javaStyles, 0, javaStyles.length);
+            return javaStyles;
+        default: // PERL
+            return styles;
+        }
+    }
+
+    /**
+     * rowSeparator : Adapt Custom Label and set the field Text.
+     */
+    protected void rowSeparatorManager() {
+        RowSeparator separator = RowSeparator.getByName(rowSeparatorCombo.getText());
+        getConnection().setRowSeparatorType(separator);
+
+        if (rowSeparatorCombo.getSelectionIndex() == 1) {
+            // Adapt Custom Label
+            rowSeparatorText.setLabelText(rowSeparatorCombo.getText());
+            rowSeparatorText.setEditable(true);
+            // rowSeparatorText.forceFocus();
+        } else {
+            // set the Flag width the char value of the Combo
+            // { "Standard EOL", "Custom String" };
+            if (rowSeparatorCombo.getSelectionIndex() == 0) {
+                if (getConnection().getFormat().toString().equals(FileFormat.MAC_LITERAL.getName())) {
+                    rowSeparatorText.setText(TalendTextUtils.QUOTATION_MARK + "\\r" + TalendTextUtils.QUOTATION_MARK); //$NON-NLS-1$
+                } else {
+                    rowSeparatorText.setText(TalendTextUtils.QUOTATION_MARK + "\\n" + TalendTextUtils.QUOTATION_MARK); //$NON-NLS-1$
+                }
+            }
+            // Init Custom Label
+            rowSeparatorText.setLabelText(Messages.getString("FileStep2.correspondingCharacter")); //$NON-NLS-1$
+            getConnection().setRowSeparatorValue(rowSeparatorText.getText());
+            rowSeparatorText.setEditable(true);
+        }
+    }
+
+    private RowSeparator getRowSeparatorFromString(String separator) {
+        if (separator == null || !separator.equals(TalendTextUtils.addQuotes("\\n"))) {
+            return RowSeparator.CUSTOM_STRING_LITERAL;
+        }
+        return RowSeparator.STANDART_EOL_LITERAL;
+    }
+
+    /**
+     * fieldSeparator : Adapt Custom Label and set the field Text.
+     */
+    protected void fieldSeparatorManager() {
+        FieldSeparator seperator = FieldSeparator.getByName(fieldSeparatorCombo.getText());
+        getConnection().setFieldSeparatorType(seperator);
+
+        if (fieldSeparatorCombo.getSelectionIndex() >= 5) {
+            // Adapt Custom Label
+            fieldSeparatorText.setLabelText(fieldSeparatorCombo.getText());
+            fieldSeparatorText.setEditable(true);
+            fieldSeparatorText.setText(getConnection().getFieldSeparatorValue());
+            fieldSeparatorText.forceFocus();
+        } else {
+            // set the Flag width the char value of the Combo
+            // { "Tabulation", "Semicolon", "Comma", "Space", "''(Alt 65, #A4)", "Custom ANSI", "Custom UTF8",
+            switch (fieldSeparatorCombo.getSelectionIndex()) {
+            case 0:
+                fieldSeparatorText.setText(TalendTextUtils.addQuotes(";")); //$NON-NLS-1$
+                break;
+            case 1:
+                fieldSeparatorText.setText(TalendTextUtils.addQuotes(",")); //$NON-NLS-1$
+                break;
+            case 2:
+                fieldSeparatorText.setText(TalendTextUtils.addQuotes("\\t")); //$NON-NLS-1$
+                break;
+            case 3:
+                fieldSeparatorText.setText(TalendTextUtils.addQuotes(" ")); //$NON-NLS-1$
+                break;
+            case 4:
+                fieldSeparatorText.setText(TalendTextUtils.addQuotes("''")); //$NON-NLS-1$
+                break;
+            default:
+                break;
+            }
+
+            // Init Custom Label
+            getConnection().setFieldSeparatorValue(fieldSeparatorText.getText());
+            fieldSeparatorText.setLabelText(Messages.getString("FileStep2.correspondingCharacter")); //$NON-NLS-1$
+            fieldSeparatorText.setEditable(true);
+        }
+    }
+
+    private FieldSeparator getFieldSeparatorFromString(String separator) {
+        if (separator == null) {
+            return FieldSeparator.SEMICOLON_LITERAL;
+        }
+        if (separator.equals(TalendTextUtils.addQuotes(";"))) {
+            return FieldSeparator.SEMICOLON_LITERAL;
+        } else if (separator.equals(TalendTextUtils.addQuotes(","))) {
+            return FieldSeparator.COMMA_LITERAL;
+        } else if (separator.equals(TalendTextUtils.addQuotes("\\t"))) {
+            return FieldSeparator.TABULATION_LITERAL;
+        } else if (separator.equals(TalendTextUtils.addQuotes(" "))) {
+            return FieldSeparator.SPACE_LITERAL;
+        } else if (separator.equals(TalendTextUtils.addQuotes("''"))) {
+            return FieldSeparator.ALT_65_LITERAL;
+        }
+        return FieldSeparator.CUSTOM_UTF8_LITERAL;
+    }
+
+    private void addFieldsListenersGroupFileSettings() {
+        // Event encodingCombo
+        encodingCombo.addModifyListener(new ModifyListener() {
+
+            public void modifyText(final ModifyEvent e) {
+                getConnection().setEncoding(encodingCombo.getText());
+                checkFieldsValue();
+            }
+        });
+
+        // Separator Combo (field and row)
+        fieldSeparatorCombo.addModifyListener(new ModifyListener() {
+
+            public void modifyText(final ModifyEvent e) {
+                // Label Custom of fieldSeparatorText
+                fieldSeparatorManager();
+            }
+        });
+        rowSeparatorCombo.addModifyListener(new ModifyListener() {
+
+            public void modifyText(final ModifyEvent e) {
+                // Label Custom of rowSeparatorText
+                rowSeparatorManager();
+            }
+        });
+
+        // Separator Text (field and row)
+        fieldSeparatorText.addModifyListener(new ModifyListener() {
+
+            public void modifyText(final ModifyEvent e) {
+                getConnection().setFieldSeparatorValue(fieldSeparatorText.getText());
+                checkFieldsValue();
+            }
+        });
+
+        rowSeparatorText.addModifyListener(new ModifyListener() {
+
+            public void modifyText(final ModifyEvent e) {
+                getConnection().setRowSeparatorValue(rowSeparatorText.getText());
+                checkFieldsValue();
+            }
+        });
+        cardText.addModifyListener(new ModifyListener() {
+
+            public void modifyText(ModifyEvent e) {
+                IStructuredSelection selection = (IStructuredSelection) schemaTreeViewer.getSelection();
+                Object element = selection.getFirstElement();
+                if (element != null && (element instanceof SchemasKeyData)) {
+                    ((SchemasKeyData) element).setCard(cardText.getText());
+                }
+
+            }
+
+        });
+    }
+
+    private void addFieldsListenersGroupsEscapeChar() {
+        // Radio csvRadio/delimitedRadio : Event modify
+        ArrayList<Button> radio2Control = new ArrayList<Button>();
+        radio2Control.add(csvRadio);
+        radio2Control.add(delimitedRadio);
+
+        Iterator<Button> iButton;
+        Button button;
+
+        for (iButton = radio2Control.iterator(); iButton.hasNext();) {
+            button = iButton.next();
+            // RADIO ONLY
+            button.addSelectionListener(new SelectionListener() {
+
+                String escapeCharComboOldValue = ""; //$NON-NLS-1$
+
+                String textEnclosureComboOldValue = ""; //$NON-NLS-1$
+
+                public void widgetDefaultSelected(SelectionEvent e) {
+                }
+
+                public void widgetSelected(SelectionEvent e) {
+                    Boolean b = !(csvRadio.getSelection());
+                    getConnection().setEscapeType(b ? Escape.DELIMITED_LITERAL : Escape.CSV_LITERAL);
+                    textEnclosureCombo.setEnabled(!b);
+                    escapeCharCombo.setEnabled(!b);
+                    if (b) {
+                        escapeCharComboOldValue = escapeCharCombo.getText();
+                        textEnclosureComboOldValue = textEnclosureCombo.getText();
+                        textEnclosureCombo.select(0);
+                        escapeCharCombo.select(0);
+                        textEnclosureFlag.setText(" "); //$NON-NLS-1$
+                        escapeCharFlag.setText(" "); //$NON-NLS-1$
+                        checkFieldsValue();
+                    } else {
+                        // select the old value to the two fields
+                        if ((!"".equals(escapeCharComboOldValue)) && (!escapeCharComboOldValue.equals(EMPTY_VALUE))) { //$NON-NLS-1$
+                            escapeCharCombo.setText(escapeCharComboOldValue);
+                            escapeCharFlag.setText(escapeCharCombo.getText());
+                        }
+                        if ((!"".equals(textEnclosureComboOldValue)) && (!textEnclosureComboOldValue.equals(EMPTY_VALUE))) { //$NON-NLS-1$
+                            textEnclosureCombo.setText(textEnclosureComboOldValue);
+                            textEnclosureFlag.setText(textEnclosureCombo.getText());
+                        }
+                    }
+                }
+            });
+        }
+
+        // Escape Char Combo
+        escapeCharCombo.addModifyListener(new ModifyListener() {
+
+            public void modifyText(final ModifyEvent e) {
+                if (escapeCharCombo.getText() != null && !("").equals(escapeCharCombo.getText()) //$NON-NLS-1$
+                        && !(EMPTY_VALUE).equals(escapeCharCombo.getText())) {
+                    getConnection().setEscapeChar(escapeCharCombo.getText());
+                } else {
+                    getConnection().setEscapeChar(null);
+                }
+                checkFieldsValue();
+            }
+        });
+        textEnclosureCombo.addModifyListener(new ModifyListener() {
+
+            public void modifyText(final ModifyEvent e) {
+                if (textEnclosureCombo.getText() != null && !("").equals(textEnclosureCombo.getText()) //$NON-NLS-1$
+                        && !(EMPTY_VALUE).equals(textEnclosureCombo.getText())) {
+                    getConnection().setTextEnclosure(textEnclosureCombo.getText());
+                } else {
+                    getConnection().setTextEnclosure(null);
+                }
+                checkFieldsValue();
+            }
+        });
+    }
+
+    private void addGroupEscapeChar(final Composite mainComposite) {
+
+        // Composite Escape Char
+        Group group = Form.createGroup(mainComposite, 3, Messages.getString("FileStep2.groupEscapeCharSettings"), 100); //$NON-NLS-1$
+
+        // CSV or Positionel Radio
+        csvRadio = new Button(group, SWT.RADIO);
+        csvRadio.addSelectionListener(new SelectionAdapter() {
+
+            public void widgetSelected(SelectionEvent e) {
+                getConnection().setCsvOption(csvRadio.getSelection());
+                if (csvRadio.getSelection()) {
+                    getConnection().setSplitRecord(false);
+                }
+            }
+        });
+        csvRadio.setText(Messages.getString("FileStep2.csv")); //$NON-NLS-1$
+        delimitedRadio = new Button(group, SWT.RADIO);
+        delimitedRadio.setText(Messages.getString("FileStep2.delimited")); //$NON-NLS-1$
+        GridData gridData = new GridData(SWT.FILL, SWT.BOTTOM, true, false);
+        gridData.horizontalSpan = 2;
+        delimitedRadio.setLayoutData(gridData);
+        getConnection().setCsvOption(false);
+        delimitedRadio.setSelection(true);
+        // escape Char Combo
+        escapeCharCombo = new LabelledCombo(group, Messages.getString("FileStep2.escapeChar"), Messages //$NON-NLS-1$
+                .getString("FileStep2.escapeCharTip"), ESCAPE_CHAR_DATA, 1, false, SWT.READ_ONLY); //$NON-NLS-1$
+        escapeCharFlag = new Label(group, SWT.NONE);
+        escapeCharFlag.setText("    "); //$NON-NLS-1$
+        // Text Enclosure Combo
+        textEnclosureCombo = new LabelledCombo(group, Messages.getString("FileStep2.textEnclosure"), Messages //$NON-NLS-1$
+                .getString("FileStep2.textEnclosureTip"), TEXT_ENCLOSURE_DATA, 1, false, SWT.READ_ONLY); //$NON-NLS-1$
+        textEnclosureFlag = new Label(group, SWT.NONE);
+        textEnclosureFlag.setText("    "); //$NON-NLS-1$
+
     }
 
     private void createViewers(SashForm allContentForm) {
@@ -261,7 +681,10 @@ public class MultiSchemasUI {
     private void creatButtom(SashForm allContentForm) {
         //
         Composite composite = new Composite(allContentForm, SWT.NONE);
-        composite.setLayout(new GridLayout(2, false));
+        GridLayout layout = new GridLayout(2, false);
+        layout.marginWidth = 2;
+        layout.marginHeight = 0;
+        composite.setLayout(layout);
 
         schemaDetailsViewer = new TreeViewer(composite, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
         final Tree tree = schemaDetailsViewer.getTree();
@@ -269,11 +692,31 @@ public class MultiSchemasUI {
         tree.setLinesVisible(true);
         tree.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        final ToolBar menuBar = new ToolBar(composite, SWT.FLAT | SWT.NO_BACKGROUND);
-        GridDataFactory.swtDefaults().align(SWT.RIGHT, SWT.TOP).applyTo(menuBar);
-        createMenuBar(menuBar);
+        createCardComposite(composite);
 
         getUIManager().changeSchemasDetailView(schemaDetailsViewer, getSchemaDetailModel());
+    }
+
+    private void createCardComposite(Composite parent) {
+
+        Composite cardComposite = new Composite(parent, SWT.NONE);
+        GridLayout layout = new GridLayout(2, false);
+        layout.marginWidth = 0;
+        layout.marginHeight = 0;
+        cardComposite.setLayout(layout);
+        GridData layoutData = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
+        cardComposite.setLayoutData(layoutData);
+
+        final ToolBar menuBar = new ToolBar(cardComposite, SWT.FLAT | SWT.NO_BACKGROUND);
+        GridDataFactory.swtDefaults().align(SWT.LEFT, SWT.TOP).span(2, 1).applyTo(menuBar);
+        createMenuBar(menuBar);
+
+        cardText = new LabelledText(cardComposite, "Cardinality");
+        layoutData = new GridData();
+        layoutData.minimumWidth = 90;
+        layoutData.widthHint = 90;
+        cardText.getTextControl().setLayoutData(layoutData);
+        cardText.setEnabled(false);
     }
 
     @SuppressWarnings("restriction")
@@ -338,9 +781,11 @@ public class MultiSchemasUI {
     private void createHeaderStatus(Composite headerComposite) {
         Composite previewComposite = new Composite(headerComposite, SWT.NONE);
         GridData layoutData = new GridData(GridData.FILL_HORIZONTAL);
-        layoutData.verticalIndent = 10;
+        layoutData.verticalIndent = 3;
         previewComposite.setLayoutData(layoutData);
-        previewComposite.setLayout(new GridLayout(2, false));
+        GridLayout layout = new GridLayout(2, false);
+        layout.verticalSpacing = 2;
+        previewComposite.setLayout(layout);
 
         previewBtn = new Button(previewComposite, SWT.PUSH);
         previewBtn.setText(ExternalMultiSchemasUIProperties.PREVIEW_STRING);
@@ -380,46 +825,99 @@ public class MultiSchemasUI {
         schemaTreeViewer = new TreeViewer(struComp, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
         schemaTreeViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        SchemasTreeDnD dnd = new SchemasTreeDnD(schemaTreeViewer);
-        dnd.addDragAndDrop();
+        // SchemasTreeDnD dnd = new SchemasTreeDnD(schemaTreeViewer);
+        // dnd.addDragAndDrop();
 
         schemaTreeViewer.setContentProvider(new SchemasTreeContentProvider());
         schemaTreeViewer.setLabelProvider(new SchemasTreeLabelProvider());
-        schemaTreeViewer.setSorter(new ViewerSorter() {
-
-            @SuppressWarnings("unchecked")
-            @Override
-            public int compare(Viewer viewer, Object e1, Object e2) {
-                if (e1 instanceof SchemasKeyData && e2 instanceof SchemasKeyData) {
-                    return getComparator().compare(((SchemasKeyData) e1).getKeyName(), ((SchemasKeyData) e2).getKeyName());
-                }
-                return super.compare(viewer, e1, e2);
-            }
-
-        });
+        // schemaTreeViewer.setSorter(new ViewerSorter() {
+        //
+        // @SuppressWarnings("unchecked")
+        // @Override
+        // public int compare(Viewer viewer, Object e1, Object e2) {
+        // if (e1 instanceof SchemasKeyData && e2 instanceof SchemasKeyData) {
+        // return getComparator().compare(((SchemasKeyData) e1).getKeyName(), ((SchemasKeyData) e2).getKeyName());
+        // }
+        // return super.compare(viewer, e1, e2);
+        // }
+        //
+        // });
         schemaTreeViewer.setColumnProperties(ExternalMultiSchemasUIProperties.SCHEMAS_TREE_COLUMN_PROPERTY);
 
+        Composite operation = new Composite(struComp, SWT.NONE);
+        operation.setLayout(new GridLayout(2, false));
+        operation.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
+
+        leftBtn = new Button(operation, SWT.PUSH);
+        leftBtn.setToolTipText("Left");
+        leftBtn.setImage(ImageProvider.getImage(EImage.LEFT_ICON));
+        leftBtn.setEnabled(false);
+
+        rightBtn = new Button(operation, SWT.PUSH);
+        rightBtn.setToolTipText("Right");
+        rightBtn.setImage(ImageProvider.getImage(EImage.RIGHT_ICON));
+        rightBtn.setEnabled(false);
     }
 
     private void addFieldListeners() {
-        ModifyListener modifyListener = new ModifyListener() {
+        fileField.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
+                getConnection().setFilePath(TalendTextUtils.removeQuotes(fileField.getText()));
                 previewBtn.setEnabled(checkFieldsValue());
                 clearPreview();
-                // clearSchemaTree();
-                // clearSchemaDetail();
-                // setFetchButtonStatus(false);
+
             }
-        };
-        fileField.addModifyListener(modifyListener);
-        rowSeparatorText.addModifyListener(modifyListener);
-        fieldSeparatorText.addModifyListener(modifyListener);
+        });
+        rowSeparatorText.addModifyListener(new ModifyListener() {
+
+            public void modifyText(ModifyEvent e) {
+                getConnection().setRowSeparatorValue(rowSeparatorText.getText());
+                previewBtn.setEnabled(checkFieldsValue());
+                clearPreview();
+
+            }
+        });
+        fieldSeparatorText.addModifyListener(new ModifyListener() {
+
+            public void modifyText(ModifyEvent e) {
+                getConnection().setFieldSeparatorValue(fieldSeparatorText.getText());
+                previewBtn.setEnabled(checkFieldsValue());
+                clearPreview();
+
+            }
+        });
 
         schemaTreeViewer.getTree().addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent e) {
                 getUIManager().refreshSchemasDetailView(schemaTreeViewer, schemaDetailsViewer, getSchemaDetailModel());
+            }
+        });
+        schemaTreeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+
+            public void selectionChanged(SelectionChangedEvent event) {
+                if (isReadOnly()) {
+                    leftBtn.setEnabled(false);
+                    rightBtn.setEnabled(false);
+                } else {
+                    leftBtn.setEnabled(getUIManager().enableMovedRecord(schemaTreeViewer, true));
+                    rightBtn.setEnabled(getUIManager().enableMovedRecord(schemaTreeViewer, false));
+                }
+                IStructuredSelection selection = (IStructuredSelection) schemaTreeViewer.getSelection();
+                Object element = selection.getFirstElement();
+                if (element != null && (element instanceof SchemasKeyData)) {
+                    cardText.setText(((SchemasKeyData) element).getCard());
+                    cardText.setEnabled(true);
+                } else {
+                    cardText.setEnabled(false);
+                }
+            }
+        });
+        schemaTreeViewer.getTree().addKeyListener(new KeyAdapter() {
+
+            public void keyReleased(KeyEvent e) {
+                //
             }
         });
     }
@@ -439,6 +937,20 @@ public class MultiSchemasUI {
             @Override
             public void widgetSelected(final SelectionEvent e) {
                 fetchCodes();
+            }
+        });
+        leftBtn.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(final SelectionEvent e) {
+                getUIManager().moveRecord(schemaTreeViewer, true);
+            }
+        });
+        rightBtn.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(final SelectionEvent e) {
+                getUIManager().moveRecord(schemaTreeViewer, false);
             }
         });
     }
@@ -519,15 +1031,15 @@ public class MultiSchemasUI {
     }
 
     private String getFile() {
-        return this.multiSchemaManager.getOriginalValue(this.fileField.getText());
+        return this.multiSchemaManager.getOriginalValue(this.getConnection().getFilePath());
     }
 
     private String getRowSeperator() {
-        return this.multiSchemaManager.getOriginalValue(this.rowSeparatorText.getText());
+        return this.multiSchemaManager.getOriginalValue(this.getConnection().getRowSeparatorValue());
     }
 
     private String getFieldSeperator() {
-        return this.multiSchemaManager.getOriginalValue(this.fieldSeparatorText.getText());
+        return this.multiSchemaManager.getOriginalValue(this.getConnection().getFieldSeparatorValue());
     }
 
     private boolean checkString(String value) {
@@ -552,19 +1064,21 @@ public class MultiSchemasUI {
             previewInformationLabel.setText(Messages.getString("FileStep2.settingsIncomplete")); //$NON-NLS-1$ //$NON-NLS-2$
             return false;
         }
+        // escape Char Combo
+        if (escapeCharCombo.getText() == "") { //$NON-NLS-1$
+            previewInformationLabel.setText(Messages.getString("FileStep2.escapeCharAlert")); //$NON-NLS-1$
+            return false;
+        }
+        if (textEnclosureCombo.getText() == "") { //$NON-NLS-1$
+            previewInformationLabel.setText(Messages.getString("FileStep2.textEnclosureAlert")); //$NON-NLS-1$
+            return false;
+        }
         previewInformationLabel.setText(""); //$NON-NLS-1$
         return true;
     }
 
     public ProcessDescription getProcessDescription() {
-        ProcessDescription processDescription = new ProcessDescription();
-
-        processDescription.setFilepath(getFile());
-        processDescription.setRowSeparator(getRowSeperator());
-        processDescription.setFieldSeparator(getFieldSeperator());
-        processDescription.setPattern(processDescription.getFieldSeparator());
-
-        processDescription.setEncoding(TalendTextUtils.addQuotes("UTF-8"));
+        ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(getConnection());
 
         processDescription.setHeaderRow(-1);
         processDescription.setFooterRow(0);
@@ -645,6 +1159,10 @@ public class MultiSchemasUI {
         }
     }
 
+    boolean isReadOnly() {
+        return getMultiSchemaManager().isReadOnly();
+    }
+
     public boolean canFinished() {
         final Object input = schemaTreeViewer.getInput();
         if (input != null && input instanceof SchemasKeyData) {
@@ -662,8 +1180,7 @@ public class MultiSchemasUI {
     public void saveProperties() {
         final Object input = schemaTreeViewer.getInput();
         if (input != null) {
-            getMultiSchemaManager().savePropertiesToComponent((SchemasKeyData) input, getFile(), getRowSeperator(),
-                    getFieldSeperator());
+            getMultiSchemaManager().savePropertiesToComponent((SchemasKeyData) input, getConnection());
         }
     }
 
