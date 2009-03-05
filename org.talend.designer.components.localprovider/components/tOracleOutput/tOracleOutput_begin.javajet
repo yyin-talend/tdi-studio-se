@@ -39,6 +39,10 @@ String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 String tableSchema = ElementParameterParser.getValue(node,"__TABLESCHEMA__");
 boolean convertToUppercase = ElementParameterParser.getValue(node, "__CONVERT_COLUMN_TABLE_TO_UPPERCASE__").equals("true");
 boolean isEnableDebug = ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__").equals("true");
+String useBatchSize = ElementParameterParser.getValue(node,"__USE_BATCH_SIZE__");
+String batchSize=ElementParameterParser.getValue(node,"__BATCH_SIZE__");
+
+
 %>
 
 <%
@@ -155,6 +159,15 @@ if(!useExistingConn.equals("true")) {
         int commitCounter_<%=cid%> = 0;        
         <%
     }
+}
+
+if (useBatchSize.equals("true")) {
+    if(!batchSize.equals("")&&!batchSize.equals("0")) {
+%>
+   int batchSize_<%=cid%> = <%=batchSize%>;
+   int batchSizeCounter_<%=cid%>=0;
+<%   
+   }
 }
 %> 
 

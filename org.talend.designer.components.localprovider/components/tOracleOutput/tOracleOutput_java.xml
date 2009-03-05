@@ -323,6 +323,26 @@
 	  NUM_ROW="150">
 	  <DEFAULT>false</DEFAULT>
 	</PARAMETER>            
+  	<PARAMETER 
+  	  NAME="USE_BATCH_SIZE" 
+  	  FIELD="CHECK"
+	  NUM_ROW="160"
+	  SHOW_IF=" (DATA_ACTION == 'INSERT') OR (DATA_ACTION == 'UPDATE') OR (DATA_ACTION == 'DELETE')"
+	  >
+	  <DEFAULT>false</DEFAULT>
+	</PARAMETER>            
+
+  	<PARAMETER 
+  	  NAME="BATCH_SIZE" 
+  	  FIELD="TEXT"
+	  NUM_ROW="160"
+	  SHOW_IF="USE_BATCH_SIZE == 'true'"
+	  >
+	  <DEFAULT></DEFAULT>
+	</PARAMETER>            
+
+	
+	
   </ADVANCED_PARAMETERS>
  
   <CODEGENERATION>
