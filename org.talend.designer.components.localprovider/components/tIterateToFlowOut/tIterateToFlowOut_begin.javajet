@@ -1,13 +1,14 @@
 <%@ jet 
 imports="
-    org.talend.core.model.process.INode 
-    org.talend.core.model.metadata.IMetadataTable
-    org.talend.core.model.metadata.IMetadataColumn
-    org.talend.core.model.process.IConnection
-    org.talend.core.model.process.ElementParameterParser
-    org.talend.designer.codegen.config.CodeGeneratorArgument
     java.util.List
     java.util.Map
+    
+    org.talend.core.model.process.EConnectionType
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.INode
+    org.talend.core.model.process.IProcess
+    org.talend.designer.codegen.config.CodeGeneratorArgument
 "
 %>
 
@@ -15,6 +16,16 @@ imports="
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
+
+IProcess currentProcess = node.getProcess();
+
+boolean isInThread = false;
+
+List< ? extends IConnection> connsInIterate = node.getIncomingConnections(EConnectionType.ITERATE);
+if(connsInIterate != null && connsInIterate.size() > 0){
+	IConnection conn = connsInIterate.get(0);
+	isInThread = "true".equals(ElementParameterParser.getValue(conn, "__ENABLE_PARALLEL__")); 
+}
 
 String destination = ElementParameterParser.getValue(
     node,
@@ -35,11 +46,25 @@ struct_<%=cid%>.<%=mappingColumn.get("SCHEMA_COLUMN")%>  = <%=mappingColumn.get(
 <%
 }
 %>
-if(globalMap.containsKey("<%=destination %>")){
-	java.util.List<OnSubjobOkStruct<%=destination%>> list_<%=cid%> = (java.util.List<OnSubjobOkStruct<%=destination%>>)globalMap.get("<%=destination %>"); 
-	list_<%=cid%>.add(struct_<%=cid%>);
-}else{
-	java.util.List<OnSubjobOkStruct<%=destination%>> list_<%=cid%> = new java.util.ArrayList<OnSubjobOkStruct<%=destination%>>();
-	list_<%=cid%>.add(struct_<%=cid%>);
-	globalMap.put("<%=destination %>",list_<%=cid%>);
+
+<%if(isInThread){//tIterateToFlow is a little special, it link with OnSubJobOK in virtual level, so, in Multi-Thread, there should be synchronized.%>
+synchronized(obj){
+    if(<%=currentProcess.getName() %>.this.globalMap.containsKey("<%=destination %>")){
+    	java.util.List<OnSubjobOkStruct<%=destination%>> list_<%=cid%> = (java.util.List<OnSubjobOkStruct<%=destination%>>)<%=currentProcess.getName() %>.this.globalMap.get("<%=destination %>"); 
+    	list_<%=cid%>.add(struct_<%=cid%>);
+    }else{
+    	java.util.List<OnSubjobOkStruct<%=destination%>> list_<%=cid%> = java.util.Collections.synchronizedList(new java.util.ArrayList<OnSubjobOkStruct<%=destination%>>());
+    	list_<%=cid%>.add(struct_<%=cid%>);
+    	<%=currentProcess.getName() %>.this.globalMap.put("<%=destination %>",list_<%=cid%>);
+    }
 }
+<%}else{%>
+    if(globalMap.containsKey("<%=destination %>")){
+    	java.util.List<OnSubjobOkStruct<%=destination%>> list_<%=cid%> = (java.util.List<OnSubjobOkStruct<%=destination%>>)globalMap.get("<%=destination %>"); 
+    	list_<%=cid%>.add(struct_<%=cid%>);
+    }else{
+    	java.util.List<OnSubjobOkStruct<%=destination%>> list_<%=cid%> = new java.util.ArrayList<OnSubjobOkStruct<%=destination%>>();
+    	list_<%=cid%>.add(struct_<%=cid%>);
+    	globalMap.put("<%=destination %>",list_<%=cid%>);
+    }
+<%}%>
