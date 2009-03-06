@@ -9,6 +9,7 @@
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.core.model.metadata.types.JavaTypesManager
 		org.talend.core.model.metadata.types.JavaType
+		org.talend.core.model.utils.TalendTextUtils
 		java.util.List
 		java.util.Map
 	" 
@@ -18,201 +19,508 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
-if (conns!=null && conns.size()>0) {
-	String filename = ElementParameterParser.getValue(node,"__FILENAME__");
-    String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
-    String rowSeparator = ElementParameterParser.getValue(node,"__ROWSEPARATOR__");
-    String fieldSeparator = ElementParameterParser.getValue(node,"__FIELDSEPARATOR__");
-    String header = ElementParameterParser.getValue(node, "__HEADER__");
-    if(header.equals("")){
-    	header="0";
-    }
-    String footer = ElementParameterParser.getValue(node, "__FOOTER__");
-    if(footer.equals("")){
-    	footer="0";
-    }
-    String isTrimAllStr = ElementParameterParser.getValue(node,"__TRIMALL__");
-	boolean isTrimAll = (isTrimAllStr!=null&&!isTrimAllStr.equals(""))?isTrimAllStr.equals("true"):true;
-	
-	String loopOnSchemaStr = ElementParameterParser.getValue(node,"__LOOP_SCHEMA__");
-	boolean loopOnSchema = (loopOnSchemaStr!=null&&!loopOnSchemaStr.equals(""))?loopOnSchemaStr.equals("true"):true;
-		
-    List<String> connections = new java.util.ArrayList<String>();
-    Map<String, List<IMetadataColumn>> connectionMap = new java.util.HashMap<String, List<IMetadataColumn>>();
+boolean hasDataLink = false;
+if(conns!=null){
+	for(int i=0;i<conns.size();i++){
+		IConnection connTemp = conns.get(i);
+	    if (connTemp.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+	   		hasDataLink = true;
+	   		break;
+	    }
+	}
+}
+List<Map<String, String>> schemas_o = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__SCHEMAS__");
+List<Map<String, String>> schemas = new java.util.ArrayList<Map<String, String>>();
+for(Map<String, String> schema_o : schemas_o){
+	Map<String, String> schema = new java.util.HashMap<String, String>();
+	schemas.add(schema);
+	schema.put("SCHEMA", TalendTextUtils.removeQuotes(schema_o.get("SCHEMA")));
+	schema.put("RECORD", schema_o.get("RECORD"));
+	schema.put("PARENT_RECORD", schema_o.get("PARENT_RECORD"));
+	schema.put("KEY_COLUMN_INDEX", TalendTextUtils.removeQuotes(schema_o.get("KEY_COLUMN_INDEX")));
+	schema.put("CARDINALITY", TalendTextUtils.removeQuotes(schema_o.get("CARDINALITY")));
+}
+
+String filename_o = ElementParameterParser.getValue(node,"__FILENAME__");
+String filename = filename_o;
+String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
+String rowSeparator = ElementParameterParser.getValue(node,"__ROWSEPARATOR__");
+String fieldSeparator = ElementParameterParser.getValue(node,"__FIELDSEPARATOR__");
+
+if (hasDataLink) {//FIM_000
+////////////////////////
+if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {//FIM_0000
+	List<String> connections = new java.util.ArrayList<String>();
+    Map<String, List<IMetadataColumn>> connectionMapColumnList = new java.util.HashMap<String, List<IMetadataColumn>>();
+    Map<String, String> schemaConnectionMap = new java.util.HashMap<String, String>();
+    
     for(int i=0;i<conns.size();i++){
     	IConnection connTemp = conns.get(i);
     	if (connTemp.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
     		IMetadataTable tempMetadataTable = connTemp.getMetadataTable();
-    		List<IMetadataColumn> listColumns = tempMetadataTable.getListColumns();
-    		connections.add(connTemp.getName());
-    		connectionMap.put(connTemp.getName(), listColumns);
-    	}
-    }
-	if(connections.size() > 0){
-		//////////
-%>
-org.talend.fileprocess.FileInputDelimited fid_<%=cid %> = new org.talend.fileprocess.FileInputDelimited(<%=filename %>,<%=encoding %>,<%=fieldSeparator %>,<%=rowSeparator %>, true, <%=header %>,<%=footer %>,-1, -1, false);
-String temp_<%=cid %> = null;
-<%
-	if(!loopOnSchema){
-%>
-while (fid_<%=cid %>.nextRecord()) {
-<%
-		for(String conName : connections){
-%>	<%=conName %> = null;
-<%
-		}
-%>
-	while(true){
-		int lastIndex_<%=cid %> = 0;
-		for(int i=0; i<32; i++){//assume 32 is them maximun of schema columns
-			if(!fid_<%=cid %>.get(i).equals("")){
-				lastIndex_<%=cid %> = i;
-			}
-		}
-<%
-		for(String conName : connections){
-			List<IMetadataColumn> listColumns = connectionMap.get(conName);
-%>
-		try{
-			<%=conName %> = new <%=conName %>Struct();
-<%
-			if(listColumns.size() == 0){
-%>
-			if(lastIndex_<%=cid %> > 0){
-				throw new Exception();
-			}
-<%
-			}
-			for (int valueN=0; valueN<listColumns.size(); valueN++) {
-				IMetadataColumn column = listColumns.get(valueN);
-				String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-				JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-				String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();%><%
-				if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){%>
-if(fid_<%=cid %>.get(<%=valueN%>) == ""){
-	if(<%=valueN%> > lastIndex_<%=cid %>){
-		throw new Exception();
-	}else{
-		<%=conName %>.<%=column.getLabel() %> = fid_<%=cid %>.get(<%=valueN%>)<%=isTrimAll ? ".trim()":"" %>;
-	}
-}else{
-	<%=conName %>.<%=column.getLabel() %> = fid_<%=cid %>.get(<%=valueN%>)<%=isTrimAll ? ".trim()":"" %>;
-}
-<%
-				}else{ 
-%>
-if(<%=valueN%> > lastIndex_<%=cid %>){
-		throw new Exception();
-}
-temp_<%=cid %> = fid_<%=cid %>.get(<%=valueN%>)<%=isTrimAll ? ".trim()":"" %>;
-<%
-					if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
-					} else if(javaType == JavaTypesManager.BYTE_ARRAY){ 
-%><%=conName %>.<%=column.getLabel() %> = temp_<%=cid %>.getBytes(<%=encoding%>);
-<%
-					}else if(javaType == JavaTypesManager.DATE) { 
-%><%=conName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_<%=cid %>, <%= patternValue %>);
-<%
-					} else { 
-%><%=conName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(temp_<%=cid %>);
-<%
-					}
+    		for(Map<String, String> schema : schemas){
+				if(tempMetadataTable.getTableName().startsWith("row_"  + schema.get("SCHEMA"))){//??
+					schemaConnectionMap.put(schema.get("SCHEMA"), tempMetadataTable.getTableName());
+					break;
 				}
 			}
-%>		}catch(Exception e){
-    		<%=conName %> = null;
-		}
-		if(<%=conName %> != null){
-			break;
-		}
-<%
-		}
-%>
-		break;
+    		List<IMetadataColumn> listColumns = tempMetadataTable.getListColumns();
+    		connections.add(connTemp.getName());
+    		connectionMapColumnList.put(connTemp.getName(), listColumns);
+    	}
 	}
-
-<%
-	}else{
+	
+	for(int i=0; i<schemas.size();i++){//FIM_001
+		Map<String, String> schema = schemas.get(i);
+		String schemaName = schema.get("SCHEMA");
+		for(int j=0; j<schemas.size();j++){
+			if(i == j){
+				continue;
+			}
+			Map<String, String> schema2 = schemas.get(j);
+			if(schema.get("RECORD").equals(schema2.get("PARENT_RECORD"))){//has child node
+				String keyIndex = schema.get("KEY_COLUMN_INDEX");
+				if(keyIndex.equals("")){//no key __________PROBLEM_2_________
 %>
-java.util.Set<String> processedSet_<%=cid %> = new java.util.HashSet<String>();
+int <%=schemaName %>_key = 0;
+<%
+				}else{
+%>
+String <%=schemaName %>_key = "";
+<%
+				}
+				break;
+			}
+		}
+		if(!schema.get("PARENT_RECORD").equals("\"\"")){//has parent node
+			String cardString = schema.get("CARDINALITY");
+			String lowBound = String.valueOf(0);
+			String highBound = String.valueOf(Integer.MAX_VALUE);
+			//way to parse the cardinality string.............__________PROBLEM_3_________
+			if(cardString.equals("")){
+				//do nothing
+			}else if(cardString.contains(",")){
+				String[] cards = cardString.split(",");
+				lowBound = cards[0];
+				highBound = cards[1];
+			}else{
+				lowBound = cardString;
+				highBound = cardString;
+			}
+%>
+int <%=schemaName %>_count = <%=lowBound %>;
+final int <%=schemaName %>_lowBound = <%=lowBound %>;
+final int <%=schemaName %>_highBound = <%=highBound %>;
+<%
+		}
+	}//FIM_001
+%>
+org.talend.fileprocess.FileInputDelimited fid_<%=cid %> = new org.talend.fileprocess.FileInputDelimited(<%=filename %>,<%=encoding %>,<%=fieldSeparator %>,<%=rowSeparator %>, true, 0, 0,-1, -1, false);
+String temp_<%=cid %> = null;
 while (fid_<%=cid %>.nextRecord()) {
 <%
-		for(String conName : connections){
-%>	<%=conName %> = null;
+	for(String conName : connections){
+%>
+	<%=conName %> = null;
+<%
+	}
+	for(int i=0; i<schemas.size();i++){//FIM_002
+		Map<String, String> schema = schemas.get(i);
+		String record = schema.get("RECORD");
+%>
+	<%=(i==0) ? "" : "else " %>if(fid_<%=cid %>.get(0).equals(<%=record %>)){//\\//\\
+<%
+		String schemaName = schema.get("SCHEMA");
+		for(int j=0; j<schemas.size();j++){
+			if(i == j){
+				continue;
+			}
+			Map<String, String> schema2 = schemas.get(j);
+			if(schema.get("RECORD").equals(schema2.get("PARENT_RECORD"))){//FIM_003
+			//get child node
+				String keyIndex = schema.get("KEY_COLUMN_INDEX");
+				if(keyIndex.equals("")){//no key ??? 
+%>
+		<%=schemaName %>_key++;
+<%
+				}else{
+%>
+		<%=schemaName %>_key = fid_<%=cid %>.get(<%=keyIndex%>);
+<%
+				}
+				String schemaNameChild = schema2.get("SCHEMA");
+				String cardinality = schema2.get("CARDINALITY");
+				String childRecord = schema2.get("RECORD");
+%>
+		if((<%=schemaNameChild %>_count < <%=schemaNameChild %>_lowBound) || (<%=schemaNameChild %>_count > <%=schemaNameChild %>_highBound)){
+			throw new Exception("Data error in file: The cardinality for " + <%=childRecord %> + " is <%=cardinality %>, but we have found " + <%=schemaNameChild %>_count + ".");//thow exception............
+		}
+		<%=schemaNameChild %>_count = 0;
+<%
+			}//FIM_003
+		}
+		if(!schema.get("PARENT_RECORD").equals("\"\"")){//has parent node
+			String cardinality = schema.get("CARDINALITY");
+%>
+		<%=schemaName %>_count++;
+		if((<%=schemaName %>_count < <%=schemaName %>_lowBound) || (<%=schemaName %>_count > <%=schemaName %>_highBound)){
+			throw new Exception("Data error in file: The cardinality for " + <%=record %> + " is <%=cardinality %>, but we have found " + <%=schemaName %>_count + ".");//thow exception............
+		}
 <%
 		}
+		String connection = schemaConnectionMap.get(schemaName);
+		if(connection != null){//FIM_004 has connection......
 %>
-	while(true){
+		<%=connection %> = new <%=connection %>Struct();
 <%
-		for(int i=0; i < connections.size(); i++){
-			String conName = connections.get(i);
-			List<IMetadataColumn> listColumns = connectionMap.get(conName);
-%>
-		if(!processedSet_<%=cid %>.contains("<%=conName %>")){
-			processedSet_<%=cid %>.add("<%=conName %>");
-			<%=conName %> = new <%=conName %>Struct();
-<%	
-			int sizeListColumns = listColumns.size();
-			for (int valueN=0; valueN < sizeListColumns; valueN++) {
+			String parentRecord = schema.get("PARENT_RECORD");
+			String parentSchema = null;
+			for(int j=0; j<schemas.size();j++){
+				if(i == j){
+					continue;
+				}
+				Map<String, String> schema2 = schemas.get(j);
+				if(schema2.get("RECORD").equals(parentRecord)){//has child node
+					parentSchema = schema2.get("SCHEMA");
+					break;
+				}
+			}
+			
+			List<IMetadataColumn> listColumns = connectionMapColumnList.get(connection);
+			//
+			for (int valueN=0; valueN < listColumns.size(); valueN++) {//FIM_005
 				IMetadataColumn column = listColumns.get(valueN);
 				String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 				JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-				String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();%><%
-				if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){%>
-			<%=conName %>.<%=column.getLabel() %> = fid_<%=cid %>.get(<%=valueN%>)<%=isTrimAll ? ".trim()":"" %>;
-<%
-				}else{ 
+				String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+				if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){//FIM_006
+					if(valueN + 1 == listColumns.size() && parentSchema != null){
 %>
-			temp_<%=cid %> = fid_<%=cid %>.get(<%=valueN%>)<%=isTrimAll ? ".trim()":"" %>;
-			if(temp_<%=cid %>.length() > 0) {
+		<%=connection %>.<%=column.getLabel() %> = String.valueOf(<%=parentSchema %>_key);
+<%
+					}else{
+%>
+		<%=connection %>.<%=column.getLabel() %> = fid_<%=cid %>.get(<%=valueN%>);
+<%
+					}
+				}else{ //FIM_006
+					if(valueN + 1 == listColumns.size() && parentSchema != null){
+%>
+		temp_<%=cid %> = String.valueOf(<%=parentSchema %>_key);
+<%
+					}else{
+%>
+		temp_<%=cid %> = fid_<%=cid %>.get(<%=valueN%>);
+<%
+					}
+%>
+		if(temp_<%=cid %>.length() > 0) {
 <%
 					if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
 					} else if(javaType == JavaTypesManager.BYTE_ARRAY){ 
 %>
-				<%=conName %>.<%=column.getLabel() %> = temp_<%=cid %>.getBytes(<%=encoding%>);
+			<%=connection %>.<%=column.getLabel() %> = temp_<%=cid %>.getBytes(<%=encoding%>);
 <%
 					}else if(javaType == JavaTypesManager.DATE) { 
-%>				<%=conName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_<%=cid %>, <%= patternValue %>);
+%>			<%=connection %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_<%=cid %>, <%= patternValue %>);
 <%
 					} else { 
 %>
-				<%=conName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(temp_<%=cid %>);
+			<%=connection %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(temp_<%=cid %>);
 <%
 					}
 %>
-			} else {						
+		} else {						
 <%
 					String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
 					if(defaultValue == null) {
 %>
-				throw new RuntimeException("Value is empty for column : '<%= column.getLabel() %>' in '<%=conName %>' connection, value is invalid or this column should be nullable or have a default value.");
+			throw new RuntimeException("Value is empty for column : '<%= column.getLabel() %>' in '<%=connection %>' connection, value is invalid or this column should be nullable or have a default value.");
 <%
 					} else {
-%>				<%=conName %>.<%=column.getLabel() %> = <%=defaultValue %>;
+%>			<%=connection %>.<%=column.getLabel() %> = <%=defaultValue %>;
 <%
 					}
-%>}
+%>		}
 <%
-}
-%><%
-				}
-				if(i==connections.size()-1){
+				} //FIM_006
+			}//FIM_005
+			//
+		}//FIM_004
 %>
-		processedSet_<%=cid %>.clear();
+	}//\\//\\
+<%
+	}//FIN_002
+	
+}else{//FIM_0000
+//CVS OPTION
+	String delim1 = fieldSeparator;     	
+    String rowSeparator1 = rowSeparator;
+    	
+    String escapeChar1 = ElementParameterParser.getValue(node, "__ESCAPE_CHAR__");
+    if(escapeChar1.equals("")){
+    	escapeChar1 = "\"\"";
+    }
+    String escapeChar = escapeChar1.substring(1,escapeChar1.length()-1);
+    if(escapeChar.equals("'")){
+    	escapeChar = "\\'";
+    }
+    String textEnclosure1 = ElementParameterParser.getValue(node, "__TEXT_ENCLOSURE__");
+    if(textEnclosure1.equals("")){
+    	textEnclosure1 = "\"\"";
+    }
+    String textEnclosure = textEnclosure1.substring(1,textEnclosure1.length()-1);
+    if ("".equals(textEnclosure)) textEnclosure = "\0";
+    if(textEnclosure.equals("'")){
+    	textEnclosure = "\\'";
+    }
+    	
+	List<String> connections = new java.util.ArrayList<String>();
+    Map<String, List<IMetadataColumn>> connectionMapColumnList = new java.util.HashMap<String, List<IMetadataColumn>>();
+    Map<String, String> schemaConnectionMap = new java.util.HashMap<String, String>();
+    
+    for(int i=0;i<conns.size();i++){
+    	IConnection connTemp = conns.get(i);
+    	if (connTemp.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+    		IMetadataTable tempMetadataTable = connTemp.getMetadataTable();
+    		for(Map<String, String> schema : schemas){
+				if(tempMetadataTable.getTableName().startsWith("row_"  + schema.get("SCHEMA"))){//??
+					schemaConnectionMap.put(schema.get("SCHEMA"), tempMetadataTable.getTableName());
+					break;
+				}
+			}
+    		List<IMetadataColumn> listColumns = tempMetadataTable.getListColumns();
+    		connections.add(connTemp.getName());
+    		connectionMapColumnList.put(connTemp.getName(), listColumns);
+    	}
+	}
+	
+	for(int i=0; i<schemas.size();i++){//FIM_001
+		Map<String, String> schema = schemas.get(i);
+		String schemaName = schema.get("SCHEMA");
+		for(int j=0; j<schemas.size();j++){
+			if(i == j){
+				continue;
+			}
+			Map<String, String> schema2 = schemas.get(j);
+			if(schema.get("RECORD").equals(schema2.get("PARENT_RECORD"))){//has child node
+				String keyIndex = schema.get("KEY_COLUMN_INDEX");
+				if(keyIndex.equals("")){//no key __________PROBLEM_2_________
+%>
+int <%=schemaName %>_key = 0;
+<%
+				}else{
+%>
+String <%=schemaName %>_key = "";
 <%
 				}
-				%>
-			break;
+				break;
+			}
+		}
+		if(!schema.get("PARENT_RECORD").equals("\"\"")){//has parent node
+			String cardString = schema.get("CARDINALITY");
+			String lowBound = String.valueOf(0);
+			String highBound = String.valueOf(Integer.MAX_VALUE);
+			//way to parse the cardinality string.............__________PROBLEM_3_________
+			if(cardString.equals("")){
+				//do nothing
+			}else if(cardString.contains(",")){
+				String[] cards = cardString.split(",");
+				lowBound = cards[0];
+				highBound = cards[1];
+			}else{
+				lowBound = cardString;
+				highBound = cardString;
+			}
+%>
+int <%=schemaName %>_count = <%=lowBound %>;
+final int <%=schemaName %>_lowBound = <%=lowBound %>;
+final int <%=schemaName %>_highBound = <%=highBound %>;
+<%
+		}
+	}//FIM_001
+%>
+char fieldSeparator_<%=cid %>[] = null;
+		
+//support passing value (property: Field Separator) by 'context.fs' or 'globalMap.get("fs")'. 
+if ( ((String)<%=delim1%>).length() > 0 ){
+	fieldSeparator_<%=cid %> = ((String)<%=delim1%>).toCharArray();
+}else {			
+	throw new IllegalArgumentException("Field Separator must be assigned a char."); 
+}
+		
+char rowSeparator_<%=cid %>[] = null;
+		
+//support passing value (property: Row Separator) by 'context.rs' or 'globalMap.get("rs")'. 
+if ( ((String)<%=rowSeparator1%>).length() > 0 ){
+	rowSeparator_<%=cid %> = ((String)<%=rowSeparator1%>).toCharArray();
+}else {
+	throw new IllegalArgumentException("Row Separator must be assigned a char."); 
+}
+		
+		
+com.csvreader.CsvReader csvReader<%=cid %>=new com.csvreader.CsvReader(new java.io.BufferedReader(new java.io.InputStreamReader( new java.io.FileInputStream(<%=filename %>),<%=encoding %>)), fieldSeparator_<%=cid %>[0]);
+                
+if ( (rowSeparator_<%=cid %>[0] != '\n') && (rowSeparator_<%=cid %>[0] != '\r') )
+	csvReader<%=cid %>.setRecordDelimiter(rowSeparator_<%=cid %>[0]);
+        	
+csvReader<%=cid %>.setTextQualifier('<%=textEnclosure %>');
+
+<%
+	if(escapeChar.equals("\\\\")){
+        %>
+csvReader<%=cid %>.setEscapeMode(com.csvreader.CsvReader.ESCAPE_MODE_BACKSLASH);
+<%
+	}else if(escapeChar.equals(textEnclosure)){
+        %>
+csvReader<%=cid %>.setEscapeMode(com.csvreader.CsvReader.ESCAPE_MODE_DOUBLED);
+<%
+	}else{
+        %>
+//?????doesn't work for other escapeChar
+<%
+	}
+        %>       
+
+String[] row<%=cid %>=null;
+        
+while ( csvReader<%=cid %>.readRecord() ) { 
+        
+	row<%=cid %>=csvReader<%=cid %>.getValues();
+<%
+	for(String conName : connections){
+%>
+	<%=conName %> = null;
+<%
+	}
+	for(int i=0; i<schemas.size();i++){//FIM_002
+		Map<String, String> schema = schemas.get(i);
+		String record = schema.get("RECORD");
+%>
+	<%=(i==0) ? "" : "else " %>if((row<%=cid %>.length = 0) ? ("".equals(<%=record %>)) : (row<%=cid %>[0].equals(<%=record %>))){//\\//\\
+<%
+		String schemaName = schema.get("SCHEMA");
+		for(int j=0; j<schemas.size();j++){
+			if(i == j){
+				continue;
+			}
+			Map<String, String> schema2 = schemas.get(j);
+			if(schema.get("RECORD").equals(schema2.get("PARENT_RECORD"))){//FIM_003
+			//get child node
+				String keyIndex = schema.get("KEY_COLUMN_INDEX");
+				if(keyIndex.equals("")){//no key ??? 
+%>
+		<%=schemaName %>_key++;
+<%
+				}else{
+%>
+		<%=schemaName %>_key = (row<%=cid %>.length <= <%=keyIndex%>) ? "" : row<%=cid %>[<%=keyIndex %>];
+<%
+				}
+				String schemaNameChild = schema2.get("SCHEMA");
+				String cardinality = schema2.get("CARDINALITY");
+				String childRecord = schema2.get("RECORD");
+%>
+		if((<%=schemaNameChild %>_count < <%=schemaNameChild %>_lowBound) || (<%=schemaNameChild %>_count > <%=schemaNameChild %>_highBound)){
+			throw new Exception("Data error in file: The cardinality for " + <%=childRecord %> + " is <%=cardinality %>, but we have found " + <%=schemaNameChild %>_count + ".");//thow exception............
+		}
+		<%=schemaNameChild %>_count = 0;
+<%
+			}//FIM_003
+		}
+		if(!schema.get("PARENT_RECORD").equals("\"\"")){//has parent node
+			String cardinality = schema.get("CARDINALITY");
+%>
+		<%=schemaName %>_count++;
+		if((<%=schemaName %>_count < <%=schemaName %>_lowBound) || (<%=schemaName %>_count > <%=schemaName %>_highBound)){
+			throw new Exception("Data error in file: The cardinality for " + <%=record %> + " is <%=cardinality %>, but we have found " + <%=schemaName %>_count + ".");//thow exception............
 		}
 <%
 		}
+		String connection = schemaConnectionMap.get(schemaName);
+		if(connection != null){//FIM_004 has connection......
 %>
-		break;
-	}
+		<%=connection %> = new <%=connection %>Struct();
 <%
-	}
-	}
+			String parentRecord = schema.get("PARENT_RECORD");
+			String parentSchema = null;
+			for(int j=0; j<schemas.size();j++){
+				if(i == j){
+					continue;
+				}
+				Map<String, String> schema2 = schemas.get(j);
+				if(schema2.get("RECORD").equals(parentRecord)){//has child node
+					parentSchema = schema2.get("SCHEMA");
+					break;
+				}
+			}
+			
+			List<IMetadataColumn> listColumns = connectionMapColumnList.get(connection);
+			//
+			for (int valueN=0; valueN < listColumns.size(); valueN++) {//FIM_005
+				IMetadataColumn column = listColumns.get(valueN);
+				String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+				JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+				String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+				if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){//FIM_006
+					if(valueN + 1 == listColumns.size() && parentSchema != null){
+%>
+		<%=connection %>.<%=column.getLabel() %> = String.valueOf(<%=parentSchema %>_key);
+<%
+					}else{
+%>
+		<%=connection %>.<%=column.getLabel() %> = (row<%=cid %>.length <= <%=valueN %>) ? "" : row<%=cid %>[<%=valueN %>];
+<%
+					}
+				}else{ //FIM_006
+					if(valueN + 1 == listColumns.size() && parentSchema != null){
+%>
+		temp_<%=cid %> = String.valueOf(<%=parentSchema %>_key);
+<%
+					}else{
+%>
+		temp_<%=cid %> = (row<%=cid %>.length <= <%=valueN %>) ? "" : row<%=cid %>[<%=valueN %>];
+<%
+					}
+%>
+		if(temp_<%=cid %>.length() > 0) {
+<%
+					if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
+					} else if(javaType == JavaTypesManager.BYTE_ARRAY){ 
+%>
+			<%=connection %>.<%=column.getLabel() %> = temp_<%=cid %>.getBytes(<%=encoding%>);
+<%
+					}else if(javaType == JavaTypesManager.DATE) { 
+%>			<%=connection %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_<%=cid %>, <%= patternValue %>);
+<%
+					} else { 
+%>
+			<%=connection %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(temp_<%=cid %>);
+<%
+					}
+%>
+		} else {						
+<%
+					String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
+					if(defaultValue == null) {
+%>
+			throw new RuntimeException("Value is empty for column : '<%= column.getLabel() %>' in '<%=connection %>' connection, value is invalid or this column should be nullable or have a default value.");
+<%
+					} else {
+%>			<%=connection %>.<%=column.getLabel() %> = <%=defaultValue %>;
+<%
+					}
+%>		}
+<%
+				} //FIM_006
+			}//FIM_005
+			//
+		}//FIM_004
+%>
+	}//\\//\\
+<%
+	}//FIN_002
 }
-//End all
+}//FIM_000
+////////////////////////
 %>
