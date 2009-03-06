@@ -17,6 +17,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.gmf.runtime.diagram.ui.editparts.DiagramEditPart;
 import org.eclipse.gmf.runtime.diagram.ui.editparts.NoteEditPart;
+import org.eclipse.gmf.runtime.diagram.ui.internal.editparts.NoteAttachmentEditPart;
 import org.eclipse.gmf.runtime.notation.Node;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
@@ -83,7 +84,7 @@ public class DiagramModelService implements IDiagramModelService {
             return BusinessType.PROCESS;
         } else if (part instanceof BusinessItemShapeEditPart) {
             return BusinessType.SHAP;
-        } else if (part instanceof BaseBusinessItemRelationShipEditPart) {
+        } else if (part instanceof BaseBusinessItemRelationShipEditPart || part instanceof NoteAttachmentEditPart) {
             return BusinessType.CONNECTION;
         } else if (part instanceof NoteEditPart) {
             return BusinessType.NOTE;

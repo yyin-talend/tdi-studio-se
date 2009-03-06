@@ -18,6 +18,7 @@ import org.eclipse.gmf.runtime.diagram.ui.editparts.CompartmentEditPart;
 import org.eclipse.gmf.runtime.diagram.ui.editparts.DiagramEditPart;
 import org.eclipse.gmf.runtime.diagram.ui.editparts.DiagramRootEditPart;
 import org.eclipse.gmf.runtime.diagram.ui.editparts.NoteEditPart;
+import org.eclipse.gmf.runtime.diagram.ui.internal.editparts.NoteAttachmentEditPart;
 import org.eclipse.gmf.runtime.diagram.ui.parts.IDiagramGraphicalViewer;
 import org.eclipse.gmf.runtime.diagram.ui.resources.editor.ide.document.StorageDiagramDocumentProvider;
 import org.eclipse.gmf.runtime.diagram.ui.resources.editor.ide.editor.FileDiagramEditor;
@@ -261,7 +262,7 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
         } else {
 
             if (firstElement instanceof BusinessItemShapeEditPart || firstElement instanceof BaseBusinessItemRelationShipEditPart
-                    || firstElement instanceof NoteEditPart) {
+                    || firstElement instanceof NoteEditPart || firstElement instanceof NoteAttachmentEditPart) {
 
                 view.refresh(false, firstElement);
             } else if (firstElement instanceof BusinessProcessEditPart || firstElement instanceof CompartmentEditPart) {
