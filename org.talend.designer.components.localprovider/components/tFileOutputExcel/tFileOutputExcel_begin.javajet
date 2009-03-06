@@ -97,8 +97,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		int[] fitWidth_<%=cid %> = new int[<%=columns.size()%>];
 		java.util.Arrays.fill(fitWidth_<%=cid %>,2);
 		
+<%if(font !=null && font.length()!=0){%>
+		
 		jxl.write.WritableFont wf_<%=cid%> = new jxl.write.WritableFont(jxl.write.WritableFont.<%=font%>, 10, jxl.write.WritableFont.NO_BOLD, false);
         jxl.write.WritableCellFormat format_<%=cid%>  = new jxl.write.WritableCellFormat(wf_<%=cid%>); 
+<%}else{%>
+		jxl.write.WritableCellFormat format_<%=cid%>  = new jxl.write.WritableCellFormat();
+<%}%>
+
 <%
     	for (int i = 0; i < columns.size(); i++) {
     		IMetadataColumn column = columns.get(i);
