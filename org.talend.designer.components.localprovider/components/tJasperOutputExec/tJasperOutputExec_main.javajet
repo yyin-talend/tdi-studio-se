@@ -25,7 +25,7 @@ String recordDelimiter = ElementParameterParser.getValue(node, "__RECORD_DELIMIT
             digester_<%=cid%>);
     net.sf.jasperreports.engine.design.JasperDesign jasperDesign_<%=cid%> = xmlLoader_<%=cid%>
             .loadXML(new java.io.FileInputStream(<%=filename%>));
-    jasperDesign_tJasperOutputExec_1.setLanguage(net.sf.jasperreports.engine.design.JasperDesign.LANGUAGE_JAVA);
+    jasperDesign_<%=cid%>.setLanguage(net.sf.jasperreports.engine.design.JasperDesign.LANGUAGE_JAVA);
     net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(jasperDesign_<%=cid%>, jasperFile_<%=cid%>);
 
     java.util.Map<String, Object> hm_<%=cid%> = new java.util.HashMap<String, Object>();
