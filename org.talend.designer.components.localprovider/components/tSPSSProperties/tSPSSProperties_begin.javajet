@@ -1,0 +1,64 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.process.IConnectionCategory
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.metadata.types.JavaTypesManager
+    org.talend.core.model.metadata.types.JavaType
+    java.util.List
+    java.util.ArrayList
+    java.util.Map
+"
+%>
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+String filename = ElementParameterParser.getValue(node, "__FILENAME__");
+
+String outputConnName = null;
+List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
+if (conns!=null) {
+	if (conns.size()>0) {
+		for (int i=0;i<conns.size();i++) {
+			IConnection connTemp = conns.get(i);
+			if (connTemp.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+				outputConnName = connTemp.getName();
+				break;
+			}
+		}
+	}
+}
+%>
+boolean <%=cid%>_bIsValidFile=false;
+<%
+if (outputConnName != null){
+%>
+	
+
+	java.io.File <%=cid%>_file = new java.io.File(<%=filename%>);
+	<%=outputConnName%> = new <%=outputConnName%>Struct();
+	if(<%=cid%>_file.exists() && <%=filename%>.toLowerCase().contains("sav")){
+		org.talend.jspss.spss <%=cid%>_sp = new org.talend.jspss.spss();
+		org.talend.jspss.spssfile <%=cid%>_sf = <%=cid%>_sp.openFile(<%=filename%>);
+		<%=outputConnName%>.abs_path=<%=cid%>_file.getAbsolutePath();
+		<%=outputConnName%>.dirname=<%=cid%>_file.getParent();
+		<%=outputConnName%>.basename=<%=cid%>_file.getName();
+		<%=outputConnName%>.system_info=<%=cid%>_sf.getSystemInfo();
+		<%=outputConnName%>.system_id=<%=cid%>_sf.getSystemID();
+		<%=outputConnName%>.file_date_time=<%=cid%>_sf.getFileDateTime();
+		<%=outputConnName%>.weight_variable=<%=cid%>_sf.getCaseWeightVariable();
+		<%=outputConnName%>.is_compressed=<%=cid%>_sf.getIsCompressed();
+		<%=outputConnName%>.variable_sets=<%=cid%>_sf.getVariableSets();
+		<%=outputConnName%>.number_of_variables=(long)<%=cid%>_sf.getNumberOfVariables();
+		<%=outputConnName%>.number_of_cases=(long)<%=cid%>_sf.getNumberOfCases();
+		<%=cid%>_bIsValidFile=true;		
+	
+<%
+}
+%>
+

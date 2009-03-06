@@ -1,0 +1,72 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.process.IConnectionCategory
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.metadata.types.JavaTypesManager
+    org.talend.core.model.metadata.types.JavaType
+    java.util.List
+    java.util.ArrayList
+    java.util.Map
+"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+String outputConnName = null;
+List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
+if (conns!=null) {
+	if (conns.size()>0) {
+		for (int i=0;i<conns.size();i++) {
+			IConnection connTemp = conns.get(i);
+			if (connTemp.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+				outputConnName = connTemp.getName();
+				break;
+			}
+		}
+	}
+}
+IConnection outConn = null;
+List< ? extends IConnection> outConns = node.getOutgoingConnections();
+if(outConns!=null){
+	outConn = outConns.get(0);
+}
+if(outConn!=null){
+	int i=0;
+	IMetadataTable outputMetadataTable = outConn.getMetadataTable();
+%>
+		<%=cid%>_sr = <%=cid%>_sf.readLine();
+<%
+		for (IMetadataColumn outputCol : outputMetadataTable.getListColumns()) {
+			String typeToGenerate = JavaTypesManager.getTypeToGenerate(outputCol.getTalendType(), outputCol.isNullable());
+	    		String typeName = JavaTypesManager.getTypeToGenerate(outputCol.getTalendType(), false);
+	    		JavaType javaType = JavaTypesManager.getJavaTypeFromId(outputCol.getTalendType());
+    			String patternValue = outputCol.getPattern() == null || outputCol.getPattern().trim().length() == 0 ? null : outputCol.getPattern();
+			if(javaType == JavaTypesManager.STRING) {
+%>
+				<%=outputConnName%>.<%=outputCol.getLabel()%> = <%=cid%>_sr.getStringAtPos(<%=i%>);
+<%			
+			} else if(javaType == JavaTypesManager.DATE) {
+%>	
+				<%=outputConnName%>.<%=outputCol.getLabel()%> = <%=cid%>_sr.getDateAtPos(<%=i%>);
+<%
+	    		} else if(JavaTypesManager.isNumberType(javaType, outputCol.isNullable())) { 
+%>
+				<%=outputConnName%>.<%=outputCol.getLabel()%> = <%=cid%>_sr.getDoubleAtPos(<%=i%>);
+<%
+			}
+			i++;
+		}
+%>
+		//System.out.println(<%=cid%>_sr.getValuesAsString());
+		nb_line_<%=cid%> ++;
+<%
+}
+%>
