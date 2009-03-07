@@ -16,14 +16,13 @@ imports="
         String encoding = ElementParameterParser.getValue(node,"__ENCODING__");       
         boolean isAppend = ElementParameterParser.getValue(node,"__APPEND__").equals("true");
 %>
-  <%if(ElementParameterParser.getValue(node,"__CREATE__").equals("true")){%>
+
+java.io.File file_<%=cid %> = new java.io.File(<%=filename %>); 
+
+<%if(ElementParameterParser.getValue(node,"__CREATE__").equals("true")){%>
 //create directory only if not exists
-		 String fileNewName_<%=cid%> = <%=filename%>;
-		 java.io.File createFile<%=cid%> = new java.io.File(fileNewName_<%=cid%>);
-		 if(!createFile<%=cid%>.exists()){
-		 	(new java.io.File(fileNewName_<%=cid%>.substring(0,fileNewName_<%=cid%>.lastIndexOf("/")))).mkdirs();
-		 }
-  <%}%>	
+file_<%=cid %>.getParentFile().mkdirs();
+<%}%>	
 		    class Util_<%=cid %>
             {
                 public void breakString( StringBuilder pw, String value, int max) {
@@ -53,11 +52,15 @@ imports="
 		final String changetype_<%=cid %> = "changetype: ";
 		final int wrap_<%=cid %> = <%=wrap %>;
 <%if(!isAppend){%>
-       	java.io.PrintWriter pw_<%=cid %> = new java.io.PrintWriter(new java.io.File(<%=filename %>),<%= encoding%>);
+       	java.io.PrintWriter pw_<%=cid %> = new java.io.PrintWriter(file_<%=cid %>, <%= encoding%>);
 <%}else{%>
 		java.io.PrintWriter pw_<%=cid %> = new java.io.PrintWriter
 										(new java.io.BufferedWriter
 										(new java.io.OutputStreamWriter
 										(new java.io.FileOutputStream
-										(new java.io.File(<%=filename %>),true),<%= encoding%>)),false);
+										(file_<%=cid %>,true),<%= encoding%>)),false);
 <%}%>
+
+if(file_<%=cid %>.length()==0){
+	pw_<%=cid %>.write("version: 1\n");
+}

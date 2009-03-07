@@ -10,6 +10,7 @@
 		org.talend.core.model.metadata.types.JavaTypesManager
 		org.talend.core.model.metadata.types.JavaType
 		java.util.List
+		java.util.Map
 	"
 %>
 <%
@@ -22,9 +23,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     if (metadata!=null) {
         String cid = node.getUniqueName();
         String changetype = ElementParameterParser.getValue(node, "__CHANGETYPE__");
-		String changes = ElementParameterParser.getValue(node, "__CHANGES__");
         boolean flushOnRow = ElementParameterParser.getValue(node, "__FLUSHONROW__").equals("true");		
         String flushMod = ElementParameterParser.getValue(node, "__FLUSHONROW_NUM__");
+        
+        List<Map<String, String>> multiValueColumns = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__MULTIVALUECOLUMNS__");
+        List<Map<String, String>> modifyColumns = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__MODIFYCONFIG__");
 %>
 		//////////////////////////
 <%
@@ -34,9 +37,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %> 
 		StringBuilder sb_<%=cid %> = new StringBuilder();		   		
 <%		
+    			boolean generateOneAlready = false; //only for Modify append the char '-'
     			List<IMetadataColumn> columns = metadata.getListColumns();
     			int sizeColumns = columns.size();
-    			for (int i = 0; i < sizeColumns; i++) {
+    			for (int i = 0; i < sizeColumns; i++) {    				
     				IMetadataColumn column = columns.get(i);
 					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 					boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType( javaType, column.isNullable());					
@@ -81,24 +85,77 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	if(i==0) {
 %>		
 		util_<%=cid %>.breakString(sb_<%=cid %>, dn_<%=cid %> + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
+<%if("delete".equals(changetype) || "add".equals(changetype)){%>		
         util_<%=cid %>.breakString(sb_<%=cid %>, changetype_<%=cid %> + "<%=changetype %>", wrap_<%=cid %>);
+<%}%>
+  
 <%
+	continue;
  } 
 %>						
 <% if ("delete".equals(changetype)) { break; } %>
-<% if ("modify".equals(changetype)) {   %>
-    	util_<%=cid %>.breakString(sb_<%=cid %>, "<%=changes %>: " + "<%=column.getLabel() %>", wrap_<%=cid %>);
-    	util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
-<%	if(i != sizeColumns - 1) {  %>
-		sb_<%=cid %>.append("-\n");	
-<%
-}
+<% if ("modify".equals(changetype)) {
+		String operation = null;
+		boolean isMultiValue = false;   
+		String separator = null;
+		for(Map<String, String> line:modifyColumns){// search in the configuration table
+				String columnName = line.get("SCHEMA_COLUMN");				
+				if(column.getLabel().equals(columnName)){
+					operation = line.get("OPERATION");					
+					isMultiValue = "true".equals(line.get("ISMULTIVALUE"));
+					separator = line.get("SEPARATOR");										
+					break;
+				}
+		}	
 %>
+
+<%if(!"none".equals(operation)){%>
+    <%	if(generateOneAlready) {  %>
+    		sb_<%=cid %>.append("-\n");	
+    <%
+    } 
+    %>
+    util_<%=cid %>.breakString(sb_<%=cid %>, changetype_<%=cid %> + "<%=changetype %>", wrap_<%=cid %>); 
+	util_<%=cid %>.breakString(sb_<%=cid %>, "<%=operation %>: " + "<%=column.getLabel() %>", wrap_<%=cid %>);
+	<%if(isMultiValue){%>		
+		String[] values_<%=column.getLabel() %>_<%=cid %> = value_<%=column.getLabel() %>_<%=cid %>.split(<%=separator %>);
+		for(String item_<%=cid %> : values_<%=column.getLabel() %>_<%=cid %>){
+			util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + item_<%=cid %>, wrap_<%=cid %>);
+		}				
+	<%}else{%>
+		util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>); 
+	<%}%>
+	
+	<%
+	if(!generateOneAlready){
+		generateOneAlready = true;
+	}
+	%>	   	
+<%}%>   	
+
 <%
 }// here end the if modify
 %>
-<% if ("add".equals(changetype)) {   %>
+<% if ("add".equals(changetype) || "none".equals(changetype)) {   
+		boolean isMultiValue = false;
+		String separator = null;
+		for(Map<String, String> line:multiValueColumns){// search in the configuration table
+				String columnName = line.get("SCHEMA_COLUMN");				
+				if(column.getLabel().equals(columnName)){
+					isMultiValue = "true".equals(line.get("ISMULTIVALUE"));
+					separator = line.get("SEPARATOR");										
+					break;
+				}
+		}
+%>
+	<%if(isMultiValue){%>
+		String[] values_<%=column.getLabel() %>_<%=cid %> = value_<%=column.getLabel() %>_<%=cid %>.split(<%=separator %>);
+		for(String item_<%=cid %> : values_<%=column.getLabel() %>_<%=cid %>){
+			util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + item_<%=cid %>, wrap_<%=cid %>);
+		}				
+	<%}else{%>
 		util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
+	<%}%>
 <%
 }
 %>	
