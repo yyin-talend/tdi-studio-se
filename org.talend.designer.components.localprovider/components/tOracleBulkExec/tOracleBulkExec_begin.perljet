@@ -57,15 +57,57 @@ for ( my $i = 0 ;$i < $nb_fields ; $i++ ) {
     push @$<%=cid %>_cols, $sth_<%=cid %>->{NAME}->[$i];
 }
 
+my %column_info_of_<%=cid%> = ();
 
-my $control_PAR_<%=cid %> = sprintf("LOAD DATA \nCHARACTERSET %s\nINTO TABLE %s \n%s\nFIELDS TERMINATED BY \'%s\' OPTIONALLY ENCLOSED BY \'%s\'\n",
-        <%=encoding %>,
-        <%=table %>,
-        <%=data_action %>,
-        <%=fields_terminated_by %>,
-        <%=fields_enclosed_by %>,
-    );
-$control_PAR_<%=cid %> .= sprintf('( %s )', join(', ', @$<%=cid %>_cols )) ;
+$query = '
+SELECT
+    column_name,
+    data_type,
+    data_length,
+    data_precision,
+    data_scale
+  FROM sys.all_tab_columns
+  WHERE owner = ?
+    AND table_name = ?
+';
+
+$sth_<%=cid %> = $dbh_<%=cid %>->prepare($query)
+  or die '[<%=cid%>] cannot prepare "'.<%=table%>.'" columns detail'."\n";
+
+$sth_<%=cid %>->execute(uc(<%=dbuser%>), uc(<%=table%>))
+  or die '[<%=cid%>] cannot execute "'.<%=table%>.'" columns detail'."\n";
+
+while ($row = $sth_<%=cid %>->fetchrow_hashref()) {
+  $column_info_of_<%=cid%>{$row->{COLUMN_NAME}} = $row;
+}
+
+my $control_PAR_<%=cid %> = sprintf(
+    "LOAD DATA 
+CHARACTERSET %s
+INTO TABLE %s 
+%s
+FIELDS TERMINATED BY \'%s\' OPTIONALLY ENCLOSED BY \'%s\'
+",
+    <%=encoding %>,
+    <%=table %>,
+    <%=data_action %>,
+    <%=fields_terminated_by %>,
+    <%=fields_enclosed_by %>,
+);
+
+$control_PAR_<%=cid %> .= sprintf(
+    '( %s )',
+    join(
+        ', ',
+        map {
+            $o = $_;
+            if ($column_info_of_<%=cid%>{$_}{DATA_TYPE} =~ m/CHAR/) {
+                $o.= ' CHAR('.$column_info_of_<%=cid%>{$_}{DATA_LENGTH}.')';
+            }
+            $o;
+        } @$<%=cid %>_cols
+    )
+);
 
 my $control_FH_<%=cid %> = new FileHandle;
 
