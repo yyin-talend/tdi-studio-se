@@ -331,7 +331,13 @@ if(protocol.equals("smb")){ //1%>
 		password_<%=cid %> =null;
 		
 	}
+	<%
+	if(directory.endsWith("/")==true){
+	%>
     String destFilePath_<%=cid %>=<%=directory %>+fileName_<%=cid %>;
+    <%}else{%>
+    String destFilePath_<%=cid %>=<%=directory %> + "/" +fileName_<%=cid %>;
+    <%}%>
     
     SambaProtoClient_<%=cid %> spc_<%=cid %>=new SambaProtoClient_<%=cid %>();
     spc_<%=cid %>.copySMBFile(<%=domain %>, username_<%=cid %>, password_<%=cid %>, srcurl_<%=cid %>, destFilePath_<%=cid %>);
