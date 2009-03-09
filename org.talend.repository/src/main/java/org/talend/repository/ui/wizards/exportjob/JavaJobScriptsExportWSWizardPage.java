@@ -56,6 +56,8 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
     public static final String EXPORTTYPE_WSZIP = "Axis WebService (ZIP)"; //$NON-NLS-1$
 
+    public static final String EXPORTTYPE_JBOSSESB = "Job Service (ESB)"; //$NON-NLS-1$
+
     public static final String EXPORTTYPE_JBI = "JBI (JSR 208)"; //$NON-NLS-1$
 
     protected Combo exportTypeCombo;
@@ -181,6 +183,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         exportTypeCombo.add(EXPORTTYPE_POJO);
         exportTypeCombo.add(EXPORTTYPE_WSWAR);
         exportTypeCombo.add(EXPORTTYPE_WSZIP);
+        exportTypeCombo.add(EXPORTTYPE_JBOSSESB);
         // exportTypeCombo.add("JBI (JSR 208)");
 
         exportTypeCombo.setText(getCurrentExportType());
@@ -252,8 +255,12 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
     protected String getOutputSuffix() {
         if (getCurrentExportType().equals(EXPORTTYPE_WSWAR)) {
             return ".war"; //$NON-NLS-1$
-        } else {
+        } else if (getCurrentExportType().equals(EXPORTTYPE_WSZIP)) {
             return ".zip"; //$NON-NLS-1$
+        } else if (getCurrentExportType().equals(EXPORTTYPE_JBOSSESB)) {
+            return ".esb"; //$NON-NLS-1$ 
+        } else {
+            return ".zip";
         }
     }
 
@@ -585,6 +592,21 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             axisLibButton.setSelection(true);
             contextButton.setEnabled(false);
             contextButton.setSelection(true);
+        } else if (exportTypeCombo.getText().equals(EXPORTTYPE_JBOSSESB)) {
+            webXMLButton.setEnabled(false);
+            webXMLButton.setSelection(true);
+            configFileButton.setEnabled(false);
+            configFileButton.setSelection(true);
+            wsddButton.setEnabled(false);
+            wsddButton.setSelection(true);
+            wsdlButton.setEnabled(false);
+            wsdlButton.setSelection(true);
+            sourceButton.setEnabled(true);
+            sourceButton.setSelection(false);
+            axisLibButton.setEnabled(false);
+            axisLibButton.setSelection(true);
+            contextButton.setEnabled(true);
+            contextButton.setSelection(true);
         }
     }
 
@@ -613,7 +635,8 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
      */
     @Override
     public void setTopFolder(List<ExportFileResource> resourcesToExport, String topFolder) {
-        if (exportTypeCombo.getText().equals(EXPORTTYPE_WSWAR) || exportTypeCombo.getText().equals(EXPORTTYPE_WSZIP)) {
+        if (exportTypeCombo.getText().equals(EXPORTTYPE_WSWAR) || exportTypeCombo.getText().equals(EXPORTTYPE_WSZIP)
+                || exportTypeCombo.getText().equals(EXPORTTYPE_JBOSSESB)) {
             return;
         }
         for (ExportFileResource fileResource : resourcesToExport) {

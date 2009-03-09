@@ -1,0 +1,5 @@
+<jbossesb-deployment>
+  <depends>jboss.esb.quickstart.destination:service=Queue,name=quickstart_helloworld_action_Request</depends>
+  <depends>jboss.esb.quickstart.destination:service=Queue,name=quickstart_helloworld_action_Response</depends>
+</jbossesb-deployment>
+

@@ -53,6 +53,8 @@ public class JobScriptsManagerFactory {
                 manager = new JobJavaScriptsWSManager();
             } else if (exportType.endsWith(JavaJobScriptsExportWSWizardPage.EXPORTTYPE_WSZIP)) {
                 manager = new JobJavaScriptsWSManager();
+            } else if (exportType.endsWith(JavaJobScriptsExportWSWizardPage.EXPORTTYPE_JBOSSESB)) {
+                manager = new JobJavaScriptESBManager();
             }
 
         } else if (language == ECodeLanguage.PERL) {
