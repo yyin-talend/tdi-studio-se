@@ -332,7 +332,7 @@ if(protocol.equals("smb")){ //1%>
 		
 	}
 	<%
-	if(directory.endsWith("/")==true){
+	if (directory.replaceAll("\"", "").endsWith("/") == true) {
 	%>
     String destFilePath_<%=cid %>=<%=directory %>+fileName_<%=cid %>;
     <%}else{%>
