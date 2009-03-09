@@ -19,6 +19,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -85,6 +86,7 @@ import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.action.SaveJobBeforeRunAction;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.connections.ConnectionTrace;
+import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.runprocess.IProcessMessage;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.JobErrorsChecker;
@@ -174,6 +176,8 @@ public class ProcessComposite extends Composite {
     private ToolBar toolBar;
 
     private ToolItem itemDropDown;
+
+    private HashMap<String, IProcessMessage> errorMessMap = new HashMap<String, IProcessMessage>();
 
     /**
      * DOC chuger ProcessComposite2 constructor comment.
@@ -287,6 +291,7 @@ public class ProcessComposite extends Composite {
                     menu.setVisible(true);
                 } else {
                     ToolItem item = (ToolItem) event.widget;
+                    errorMessMap.clear();
                     if (item.getText().equals(" Debug")) {//$NON-NLS-1$
                         debug();
                     } else
@@ -1208,6 +1213,8 @@ public class ProcessComposite extends Composite {
         String propName = evt.getPropertyName();
         if (ProcessMessageManager.PROP_MESSAGE_ADD.equals(propName)
                 || ProcessMessageManager.PROP_DEBUG_MESSAGE_ADD.equals(propName)) {
+            IProcessMessage psMess = (IProcessMessage) evt.getNewValue();
+            getAllErrorMess(psMess);
             appendToConsole((IProcessMessage) evt.getNewValue());
         } else if (ProcessMessageManager.PROP_MESSAGE_CLEAR.equals(propName)) {
             getDisplay().asyncExec(new Runnable() {
@@ -1285,4 +1292,50 @@ public class ProcessComposite extends Composite {
     public void setDebugEnabled(boolean enabled) {
         debugMenuItem.setEnabled(enabled);
     }
+
+    public void getAllErrorMess(IProcessMessage psMess) {
+        if (psMess.getType().equals(MsgType.STD_ERR)) {
+            String mess = psMess.getContent();
+            String firstline = mess.split("\n")[0];
+            String[] allwords = firstline.split("\\s");
+            String componentName = allwords[allwords.length - 1];
+            errorMessMap.put(componentName, psMess);
+            refreshNode();
+        }
+
+    }
+
+    public void refreshNode() {
+        Display.getDefault().asyncExec(new Runnable() {
+
+            public void run() {
+                org.talend.core.model.process.IProcess process = processContext.getProcess();
+                List<INode> nodeList = (List<INode>) process.getGraphicalNodes();
+                for (INode inode : nodeList) {
+                    String key = inode.getUniqueName();
+                    if (errorMessMap.get(key) != null) {
+                        if (inode instanceof Node) {
+                            Node node = (Node) inode;
+                            node.setErrorFlag(true);
+                            node.setErrorInfo(errorMessMap.get(key));
+                            node.getNodeError().updateState("UPDATE_STATUS", true);
+                            node.setErrorInfoChange("ERRORINFO", true);
+                        }
+                    } else {
+                        if (inode instanceof Node) {
+                            Node node = (Node) inode;
+                            node.setErrorFlag(false);
+                            node.setErrorInfo(null);
+                            node.getNodeError().updateState("UPDATE_STATUS", false);
+                            node.setErrorInfoChange("ERRORINFO", false);
+
+                        }
+                    }
+                }
+
+            }
+
+        });
+    }
+
 }

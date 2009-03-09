@@ -82,6 +82,7 @@ import org.talend.designer.core.ui.editor.properties.controllers.ColumnListContr
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.core.utils.UpgradeElementHelper;
+import org.talend.designer.runprocess.IProcessMessage;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ExternalNodesFactory;
 
@@ -137,6 +138,8 @@ public class Node extends Element implements INode {
 
     private NodeLabel nodeLabel;
 
+    private NodeError nodeError;
+
     private List<IMetadataTable> metadataList;
 
     protected List<? extends INodeReturn> listReturn;
@@ -191,6 +194,26 @@ public class Node extends Element implements INode {
 
     private boolean showHint;
 
+    private boolean errorFlag;
+
+    private IProcessMessage errorInfo;
+
+    public boolean isErrorFlag() {
+        return this.errorFlag;
+    }
+
+    public void setErrorFlag(boolean errorFlag) {
+        this.errorFlag = errorFlag;
+    }
+
+    public IProcessMessage getErrorInfo() {
+        return this.errorInfo;
+    }
+
+    public void setErrorInfo(IProcessMessage errorInfo) {
+        this.errorInfo = errorInfo;
+    }
+
     /**
      * This constructor is called when the node is created from the palette the unique name will be determined with the
      * number of components of this type.
@@ -228,6 +251,10 @@ public class Node extends Element implements INode {
         showHint = store.getBoolean(TalendDesignerPrefConstants.DEFAULT_HINT_USED);
         if (nodeLabel == null) {
             nodeLabel = new NodeLabel(label, this);
+        }
+
+        if (nodeError == null) {
+            nodeError = new NodeError(this);
         }
 
         listConnector = this.component.createConnectors(this);
@@ -537,6 +564,7 @@ public class Node extends Element implements INode {
         }
         this.location = location;
         nodeLabel.setLocation(location);
+        nodeError.setLocation(location);
         firePropertyChange(LOCATION, null, location);
     }
 
@@ -691,6 +719,10 @@ public class Node extends Element implements INode {
      */
     public NodeLabel getNodeLabel() {
         return nodeLabel;
+    }
+
+    public NodeError getNodeError() {
+        return nodeError;
     }
 
     /**
@@ -1072,6 +1104,7 @@ public class Node extends Element implements INode {
         if (id.equals(EParameterName.INFORMATION.getName())) {
             firePropertyChange(UPDATE_STATUS, null, new Integer(this.currentStatus));
         }
+
         updateVisibleData();
 
         if (id.equals("WAIT_FOR") && this.getComponent().getName().equals("tParallelize")) { //$NON-NLS-1$ //$NON-NLS-2$
@@ -1081,6 +1114,12 @@ public class Node extends Element implements INode {
             }
         }
 
+    }
+
+    public void setErrorInfoChange(final String id, Object value) {
+        if (id.equals("ERRORINFO")) {
+            firePropertyChange(UPDATE_STATUS, null, null);
+        }
     }
 
     public List<IMetadataTable> getMetadataList() {
@@ -1191,6 +1230,7 @@ public class Node extends Element implements INode {
     public void setActivate(final boolean activate) {
         this.activate = activate;
         nodeLabel.setActivate(activate);
+        nodeError.setActivate(activate);
         List<Connection> connectionsOutputs = (List<Connection>) this.getOutgoingConnections();
         List<Connection> connectionsInputs = (List<Connection>) this.getIncomingConnections();
 

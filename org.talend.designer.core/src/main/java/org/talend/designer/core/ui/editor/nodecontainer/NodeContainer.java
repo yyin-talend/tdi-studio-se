@@ -25,6 +25,7 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.process.Element;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.editor.nodes.NodeError;
 import org.talend.designer.core.ui.editor.nodes.NodeLabel;
 import org.talend.designer.core.ui.editor.nodes.NodePerformance;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
@@ -40,6 +41,8 @@ public class NodeContainer extends Element {
     private Node node;
 
     private NodeLabel nodeLabel;
+
+    private NodeError nodeError;
 
     protected List<Element> elements = new ArrayList<Element>();
 
@@ -71,8 +74,10 @@ public class NodeContainer extends Element {
         this.node = node;
         node.setNodeContainer(this);
         this.nodeLabel = node.getNodeLabel();
+        this.nodeError = node.getNodeError();
         elements.add(node);
         elements.add(nodeLabel);
+        elements.add(nodeError);
         nodePerformance = new NodePerformance(this);
         elements.add(nodePerformance);
 
@@ -92,7 +97,7 @@ public class NodeContainer extends Element {
 
     private Rectangle prepareStatus(Point nodeLocation, Dimension nodeSize) {
         Rectangle statusRectangle = new Rectangle();
-        Rectangle breakpointRectangle, warningRectangle, errorRectangle, infoRectangle, parallelLocationRectangle;
+        Rectangle breakpointRectangle, warningRectangle, errorRectangle, infoRectangle, trianRectangle, parallelLocationRectangle;
 
         breakpointLocation.x = nodeLocation.x - breakpointSize.width;
         breakpointLocation.y = nodeLocation.y - breakpointSize.height;
@@ -129,6 +134,7 @@ public class NodeContainer extends Element {
 
         Dimension nodeSize;
         Dimension labelSize;
+        Dimension errorNodeSize;
         nodeSize = node.getSize();
         Rectangle nodeRectangle = new Rectangle(nodeLocation, nodeSize);
 
@@ -145,13 +151,19 @@ public class NodeContainer extends Element {
         labelLocation.translate(textOffset);
         Rectangle labelRectangle = new Rectangle(labelLocation, labelSize);
 
+        Point errorLocation = nodeError.getLocation().getCopy();
+        errorNodeSize = nodeError.getErrorSize();
+        Rectangle errorNodeRectangle = new Rectangle(errorLocation, new Dimension(60, 60));
+
         Dimension perfSize = nodePerformance.getSize();
         Point perfLocation = nodePerformance.getLocation();
 
         Rectangle perfRectangle = new Rectangle(perfLocation, perfSize);
 
         Rectangle finalRect;
-        finalRect = nodeRectangle.getUnion(labelRectangle).getUnion(perfRectangle).getUnion(statusRectangle);
+        finalRect = nodeRectangle.getUnion(labelRectangle).getUnion(errorNodeRectangle).getUnion(perfRectangle).getUnion(
+                statusRectangle);
+
         return finalRect;
     }
 
@@ -179,6 +191,14 @@ public class NodeContainer extends Element {
 
     public void setNodeLabel(NodeLabel nodeLabel) {
         this.nodeLabel = nodeLabel;
+    }
+
+    public NodeError getNodeError() {
+        return this.nodeError;
+    }
+
+    public void setNodeError(NodeError nodeError) {
+        this.nodeError = nodeError;
     }
 
     public List getElements() {

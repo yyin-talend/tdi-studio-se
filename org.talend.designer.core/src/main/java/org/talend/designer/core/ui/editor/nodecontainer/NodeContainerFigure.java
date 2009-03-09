@@ -19,6 +19,12 @@ import org.eclipse.draw2d.FreeformLayout;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.ImageFigure;
 import org.eclipse.draw2d.Label;
+import org.eclipse.draw2d.RoundedRectangle;
+import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
@@ -57,11 +63,24 @@ public class NodeContainerFigure extends Figure {
 
     private LabelCenter parallelFigure;
 
+    private RoundedRectangle rectFig;
+
     public NodeContainerFigure(NodeContainer nodeContainer) {
         this.nodeContainer = nodeContainer;
         this.setLayoutManager(new FreeformLayout());
         // this.setOpaque(true);
         // this.setBackgroundColor(new Color(null, new RGB(200, 100, 200)));
+        rectFig = new RoundedRectangle() {
+
+            @Override
+            protected void fillShape(Graphics graphics) {
+                graphics.setLineWidth(4);
+                graphics.drawRoundRectangle(getBounds(), corner.width, corner.height);
+            }
+
+        };
+        rectFig.setBackgroundColor(null);
+        this.add(rectFig);
 
         breakpointFigure = new ImageFigure();
         breakpointFigure.setImage(ImageProvider.getImage(CorePlugin.getImageDescriptor(BREAKPOINT_IMAGE)));
@@ -92,6 +111,8 @@ public class NodeContainerFigure extends Figure {
         }
 
         htmlStatusHint = new SimpleHtmlFigure();
+
+        initializeNodeContainer(nodeContainer.getNodeContainerRectangle());
     }
 
     /**
@@ -113,6 +134,10 @@ public class NodeContainerFigure extends Figure {
         parallelFigure.setVisible(visible);
         parallelFigure.setSize(parallelFigure.getPreferredSize());
         this.add(parallelFigure);
+    }
+
+    public void updateErrorFlag(boolean flag) {
+        rectFig.setVisible(flag);
     }
 
     public void updateStatus(int status, boolean showInfoFlag) {
@@ -230,4 +255,13 @@ public class NodeContainerFigure extends Figure {
     public void setAlpha(int alpha) {
         this.alpha = alpha;
     }
+
+    public void initializeNodeContainer(Rectangle rectangle) {
+        Point location = this.getLocation();
+        rectFig.setLocation(new Point(location.x, location.y));
+        rectFig.setSize(new Dimension(rectangle.width, rectangle.height));
+        rectFig.setForegroundColor(new Color(Display.getDefault(), new RGB(255, 102, 102)));
+        rectFig.setVisible(false);
+    }
+
 }

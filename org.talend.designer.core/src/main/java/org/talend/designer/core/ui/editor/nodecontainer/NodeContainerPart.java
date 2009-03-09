@@ -125,12 +125,17 @@ public class NodeContainerPart extends AbstractGraphicalEditPart implements Prop
 
         if (changeEvent.getPropertyName().equals(Node.UPDATE_STATUS)) {
             Node node = ((NodeContainer) getModel()).getNode();
+
+            ((NodeContainerFigure) this.getFigure()).updateErrorFlag(node.isErrorFlag());
             IElementParameter param = node.getElementParameter(EParameterName.INFORMATION.getName());
             if (param != null) {
                 boolean showInfoFlag = Boolean.TRUE.equals(param.getValue());
-                Integer status = (Integer) changeEvent.getNewValue();
-
-                ((NodeContainerFigure) this.getFigure()).updateStatus(status, showInfoFlag);
+                if (changeEvent.getNewValue() instanceof Integer) {
+                    Integer status = (Integer) changeEvent.getNewValue();
+                    if (status != null) {
+                        ((NodeContainerFigure) this.getFigure()).updateStatus(status, showInfoFlag);
+                    }
+                }
                 refreshVisuals();
             }
         }

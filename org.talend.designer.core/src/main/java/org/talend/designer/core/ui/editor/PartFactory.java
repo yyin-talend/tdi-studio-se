@@ -27,6 +27,8 @@ import org.talend.designer.core.ui.editor.connections.MonitorConnectionLabelPart
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.editor.nodes.NodeError;
+import org.talend.designer.core.ui.editor.nodes.NodeErrorEditPart;
 import org.talend.designer.core.ui.editor.nodes.NodeLabel;
 import org.talend.designer.core.ui.editor.nodes.NodeLabelEditPart;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
@@ -79,6 +81,8 @@ public class PartFactory implements EditPartFactory {
             part = new NodePerformanceEditPart();
         } else if (model instanceof Note) {
             part = new NoteEditPart();
+        } else if (model instanceof NodeError) {
+            part = new NodeErrorEditPart();
         } else {
             return null;
         }

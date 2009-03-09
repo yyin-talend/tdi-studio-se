@@ -66,13 +66,13 @@ public class ToolbarOutputZone extends ToolbarZone {
         addOutputItem = new ToolItem(getToolBarActions(), SWT.PUSH);
         addOutputItem.setEnabled(!getMapperManager().componentIsReadOnly());
         addOutputItem.setToolTipText(Messages.getString("ToolbarOutputZone.widgetTooltip.addOutputTable")); //$NON-NLS-1$
-        addOutputItem.setImage(org.talend.commons.ui.image.ImageProvider
-                .getImage(org.talend.commons.ui.image.ImageProvider.getImageDesc(EImage.ADD_ICON)));
+        addOutputItem.setImage(org.talend.commons.ui.image.ImageProvider.getImage(org.talend.commons.ui.image.ImageProvider
+                .getImageDesc(EImage.ADD_ICON)));
 
         removeOutputItem = new ToolItem(getToolBarActions(), SWT.PUSH);
         removeOutputItem.setEnabled(false);
-        removeOutputItem.setImage(org.talend.commons.ui.image.ImageProvider
-                .getImage(org.talend.commons.ui.image.ImageProvider.getImageDesc(EImage.MINUS_ICON)));
+        removeOutputItem.setImage(org.talend.commons.ui.image.ImageProvider.getImage(org.talend.commons.ui.image.ImageProvider
+                .getImageDesc(EImage.MINUS_ICON)));
         removeOutputItem.setToolTipText(Messages.getString("ToolbarOutputZone.widgetTooltip.removeOutputTable")); //$NON-NLS-1$
 
         addCommonsComponents();
