@@ -1,0 +1,202 @@
+<%@ jet 
+imports="
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.INode
+		org.talend.core.model.process.ElementParameterParser  
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.IMetadataColumn
+		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.types.JavaType 
+        org.talend.core.model.metadata.MappingTypeRetriever
+        org.talend.core.model.metadata.MetadataTalendType        
+		java.util.List
+		java.util.ArrayList
+		java.util.Map
+		java.util.HashMap
+		java.util.LinkedList
+" 
+skeleton="../templates/db_output_bulk.skeleton"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+String action = ElementParameterParser.getValue(node, "__DATA_ACTION__");
+String field_separator = ElementParameterParser.getValue(node, "__FIELDS_TERMINATED_BY__");
+String file = ElementParameterParser.getValue(node, "__DATA__");
+
+String host = ElementParameterParser.getValue(node, "__HOST__");
+String port = ElementParameterParser.getValue(node, "__PORT__");
+String db = ElementParameterParser.getValue(node, "__DBNAME__");
+String dbschema = ElementParameterParser.getValue(node, "__TABLESCHEMA__");
+String user = ElementParameterParser.getValue(node, "__USER__");
+String pas = ElementParameterParser.getValue(node, "__PASS__");
+String table = ElementParameterParser.getValue(node, "__TABLE__");
+String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");	
+String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");		
+String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
+
+boolean useExistingConnection = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__").equals("true");
+
+List<IMetadataColumn> columnList = getColumnList(node);
+List<Column> stmtStructure = null;
+if(columnList != null && columnList.size() > 0) {
+	stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, null);        
+}
+
+    if(useExistingConnection) {
+    	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+    	String conn = "conn_" + connection;
+    	String schema = "tableschema_" + connection;
+        %>
+        java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
+        String schema_<%=cid%> = (String)globalMap.get("<%=schema %>");
+        <%
+    } else { 
+        %>
+	    java.lang.Class.forName("com.ibm.db2.jcc.DB2Driver");    
+    	String url_<%=cid %> = "jdbc:db2://" + <%=host%> + ":" + <%=port%> + "/" + <%=db%>;    
+    	String dbUser_<%=cid %> = <%=user%>;    
+    	String dbPwd_<%=cid %> = <%=pas%>;
+    	String schema_<%=cid%> = <%=dbschema%>;    
+    	java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+    	<%
+    }
+%>
+		String tableName_<%=cid%> = null;
+		if(schema_<%=cid%> == null || schema_<%=cid%>.trim().length() == 0) {
+    		tableName_<%=cid%> = <%=table%>;
+		} else {
+    		tableName_<%=cid%> = schema_<%=cid%> + "." + <%=table%>;
+		}
+		
+		String fileName_<%=cid%> = <%=file%>;
+		
+<%
+if(columnList != null && columnList.size() > 0) {
+	Manager manager = getManager(dbmsId, cid);        
+    if(!tableAction.equals("NONE")) {        
+        if(tableAction.equals("DROP_CREATE")) {
+            %>
+            java.sql.Statement stmtDrop_<%=cid%> = conn_<%=cid%>.createStatement();
+            stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
+            java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
+            stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
+            stmtCreate_<%=cid%>.close();
+            <%
+        } else if(tableAction.equals("CREATE")) {
+            %>
+            java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
+            stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
+            stmtCreate_<%=cid%>.close();
+            <%
+        } else if(tableAction.equals("CREATE_IF_NOT_EXISTS") || tableAction.equals("DROP_IF_EXISTS_AND_CREATE")) {
+            %>
+            java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
+            java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
+            boolean whetherExist_<%=cid%> = false;
+            while(rsTable_<%=cid%>.next()) {
+                String table_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_NAME");
+                if(table_<%=cid%>.equalsIgnoreCase(<%=table%>)) {
+                    whetherExist_<%=cid%> = true;
+                    break;
+                }
+            }
+//          rsTable_<%=cid%>.close();
+            <%
+            if(tableAction.equals("CREATE_IF_NOT_EXISTS")) {
+                %>
+                if(!whetherExist_<%=cid%>) {
+                    java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
+                    stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
+                    stmtCreate_<%=cid%>.close();            
+                }                
+                <%
+            } else {
+                %>
+                if(whetherExist_<%=cid%>) {
+                    java.sql.Statement stmtDrop_<%=cid%> = conn_<%=cid%>.createStatement();
+                    stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
+                    stmtDrop_<%=cid%>.close();
+                }
+                java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
+                stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
+                stmtCreate_<%=cid%>.close();
+            <%
+            }
+        } else if(tableAction.equals("CLEAR")) {
+            %>
+            java.sql.Statement stmtClear_<%=cid%> = conn_<%=cid%>.createStatement();
+            stmtClear_<%=cid%>.executeUpdate("<%=manager.getDeleteTableSQL()%>");
+            stmtClear_<%=cid%>.close();
+           <%
+        }
+    }
+    
+	////////////////////////////////////////////    
+    if(action.equals("INSERT") || action.equals("REPLACE")) {
+    
+        %>
+        String action_<%=cid%> = "<%=action%>";
+        java.sql.CallableStatement callStmt_<%=cid%> = null;
+        String sql_<%=cid%> = "CALL SYSPROC.ADMIN_CMD(?)";
+        String param_<%=cid%> = "LOAD FROM "+ fileName_<%=cid%> + " OF DEL MODIFIED BY COLDEL"+ <%=field_separator%> + action_<%=cid%> +" INTO "  + tableName_<%=cid%> ;     			
+        callStmt_<%=cid%> = conn_<%=cid%>.prepareCall(sql_<%=cid%>);
+        callStmt_<%=cid%>.setString(1, param_<%=cid%>);
+        callStmt_<%=cid%>.execute();        
+        callStmt_<%=cid%>.close();
+        <%
+    } 
+    else if(action.equals("UPDATE")) {
+        if(columnList != null && columnList.size() > 0) {
+            int keyCount = 0;
+            for(IMetadataColumn column : columnList) {
+                if(column.isKey()) {
+                    keyCount++;
+                }
+            }
+            %>
+            /*
+            int keyCount_<%=cid%> = <%=keyCount%>;
+            if(keyCount_<%=cid%> == 0) {
+                throw new RuntimeException("For bulk update, Schema must have a key at least."); 
+            }
+            String tmpTableName_<%=cid%> = tableName_<%=cid%>;
+            tableName_<%=cid%> = "tmp_<%=cid%>" + "_" + pid; 
+            java.sql.Statement stmtCreateTmp_<%=cid%> = conn_<%=cid%>.createStatement();
+            stmtCreateTmp_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
+            stmtCreateTmp_<%=cid%>.close();
+            
+            
+        	java.sql.CallableStatement callStmt_<%=cid%> = null;
+        	String sql_<%=cid%> = "CALL SYSPROC.ADMIN_CMD(?)";
+        	String param_<%=cid%> = "LOAD FROM "+ fileName_<%=cid%> + " OF DEL MODIFIED BY COLDEL<%=field_separator%>" +" INSERT INTO "  + tableName_<%=cid%> ;        			
+        	callStmt_<%=cid%> = conn_<%=cid%>.prepareCall(sql_<%=cid%>);
+        	callStmt_<%=cid%>.setString(1, param_<%=cid%>);
+        	callStmt_<%=cid%>.execute();        
+        	callStmt_<%=cid%>.close();            
+                    			
+            tableName_<%=cid%> = tmpTableName_<%=cid%>;
+            tmpTableName_<%=cid%> = "tmp_<%=cid%>"+ "_" + pid;             
+            java.sql.Statement stmtUpdateBulk_<%=cid%> = conn_<%=cid%>.createStatement();
+            stmtUpdateBulk_<%=cid%>.executeUpdate("<%=manager.getUpdateBulkSQL(columnList)%>");
+            stmtUpdateBulk_<%=cid%>.close();            
+            tableName_<%=cid%> = "tmp_<%=cid%>" + "_" + pid;
+            java.sql.Statement stmtTmpDrop_<%=cid%> = conn_<%=cid%>.createStatement();
+            stmtTmpDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
+            stmtTmpDrop_<%=cid%>.close();
+            */
+            <%
+        }
+    }    
+    /////////////////////////////////////////
+} 		
+%>
+
+
+
+
+
+
