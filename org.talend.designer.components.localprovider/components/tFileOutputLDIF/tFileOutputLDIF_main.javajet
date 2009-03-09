@@ -35,11 +35,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	for (IConnection conn : conns) {
     		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {    		
 %> 
-		StringBuilder sb_<%=cid %> = new StringBuilder();		   		
+		StringBuilder sb_<%=cid %> = new StringBuilder();
+		boolean needSeparator_<%=cid %> = false;
+		boolean canOutput_<%=cid %> = false;				   		
 <%		
     			boolean generateOneAlready = false; //only for Modify append the char '-'
     			List<IMetadataColumn> columns = metadata.getListColumns();
     			int sizeColumns = columns.size();
+    			boolean firstLoop = true;
     			for (int i = 0; i < sizeColumns; i++) {    				
     				IMetadataColumn column = columns.get(i);
 					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
@@ -49,7 +52,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%					
 					if(!isPrimitive) {
 %>   				
-	    if(<%=conn.getName() %>.<%=column.getLabel() %> != null) {
+	    if(<%=conn.getName() %>.<%=column.getLabel() %> != null && !<%=conn.getName() %>.<%=column.getLabel() %>.equals("")) {
 <%
 } 
 %>
@@ -74,13 +77,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%				
 }					
 %>
-<%
-	if(!isPrimitive) {
-%>
-	    }
-<%					
-	} 
-%>
 <% 
 	if(i==0) {
 %>		
@@ -88,12 +84,37 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%if(!"none".equals(changetype)){%>		
         util_<%=cid %>.breakString(sb_<%=cid %>, changetype_<%=cid %> + "<%=changetype %>", wrap_<%=cid %>);
 <%}%>
-  
+
+<%if("delete".equals(changetype)){%>
+	canOutput_<%=cid %> = true;        
+<%}%> 
+
+<%
+	if(!isPrimitive) {
+%>
+	    }
+<%					
+	} 
+%>   
 <%
 	continue;
  } 
 %>						
-<% if ("delete".equals(changetype)) { break; } %>
+<% if ("delete".equals(changetype)) {
+	if(firstLoop){
+	%>
+<%
+	if(!isPrimitive) {
+%>
+	    }
+<%					
+	} 
+%> 		
+	<%	
+	}
+	firstLoop = false; 
+	break; 
+} %>
 <% if ("modify".equals(changetype)) {
 		String operation = null;
 		boolean isMultiValue = false;   
@@ -110,11 +131,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 
 <%if(!"none".equals(operation)){%>
-    <%	if(generateOneAlready) {  %>
-    		sb_<%=cid %>.append("-\n");	
-    <%
-    } 
-    %>     
+	if(needSeparator_<%=cid %>){
+		sb_<%=cid %>.append("-\n");
+	}  
 	util_<%=cid %>.breakString(sb_<%=cid %>, "<%=operation %>: " + "<%=column.getLabel() %>", wrap_<%=cid %>);
 	<%if(isMultiValue){%>		
 		String[] values_<%=column.getLabel() %>_<%=cid %> = value_<%=column.getLabel() %>_<%=cid %>.split(<%=separator %>);
@@ -125,12 +144,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>); 
 	<%}%>
 	
-	<%
-	if(!generateOneAlready){
-		generateOneAlready = true;
-	}
-	%>	   	
-<%}%>   	
+	needSeparator_<%=cid %> = true;
+	canOutput_<%=cid %> = true;   	
+<%}%>
 
 <%
 }// here end the if modify
@@ -155,21 +171,31 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	<%}else{%>
 		util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
 	<%}%>
+	canOutput_<%=cid %> = true;
 <%
 }// here end the if add
 %>
 <% if ("modrdn".equals(changetype)) {
 %>
 		util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
+		canOutput_<%=cid %> = true;
 <%
 }// here end the if modrdn
 %>
-  				
+
+<%
+	if(!isPrimitive) {
+%>
+	    }
+<%					
+	} 
+%>   				
 <% 
 }//here end the last for, the List "columns"
 %>						
 		sb_<%=cid %>.append('\n');		
 		
+	if(canOutput_<%=cid %>){		
 		pw_<%=cid %>.write(sb_<%=cid %>.toString());
 		<% if(flushOnRow) { %>
             if(nb_line_<%=cid %>%<%=flushMod %> == 0) {		
@@ -180,6 +206,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		%> 		
 		
     	nb_line_<%=cid %>++;
+    }	
 <%
 	}
 }//here end the first for, the List "conns"
