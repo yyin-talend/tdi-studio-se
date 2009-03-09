@@ -1534,7 +1534,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
         private boolean createConnection = false;
 
-        private static final int DEFAULT_MOVE_OFFSET = 2;
+        private static final int DEFAULT_MOVE_OFFSET = GRID_SIZE;
 
         private Point startPoint = null;
 
