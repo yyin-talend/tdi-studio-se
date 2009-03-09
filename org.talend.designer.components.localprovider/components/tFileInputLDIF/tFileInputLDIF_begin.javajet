@@ -189,6 +189,24 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					}                
                 }                
                 break;
+                
+			case netscape.ldap.util.LDIFContent.MODDN_CONTENT:
+				netscape.ldap.util.LDIFModDNContent moddnContent_<%=cid %> = (netscape.ldap.util.LDIFModDNContent) content_<%=cid %>;
+                for (int i_<%=cid %> = 0; i_<%=cid %> < filters_<%=cid %>.length; i_<%=cid %>++) {
+					if("dn".equalsIgnoreCase(filters_<%=cid %>[i_<%=cid %>])){
+						results_<%=cid %>[i_<%=cid %>] = record_<%=cid %>.getDN();						
+					}else if("changetype".equalsIgnoreCase(filters_<%=cid %>[i_<%=cid %>])){
+						results_<%=cid %>[i_<%=cid %>] = "modrdn";
+					}else if("newrdn".equalsIgnoreCase(filters_<%=cid %>[i_<%=cid %>])){
+						results_<%=cid %>[i_<%=cid %>] = moddnContent_<%=cid %>.getRDN();
+					}else if("deleteoldrdn".equalsIgnoreCase(filters_<%=cid %>[i_<%=cid %>])){
+						results_<%=cid %>[i_<%=cid %>] = Boolean.toString(moddnContent_<%=cid %>.getDeleteOldRDN());
+					}else if("newsuperior".equalsIgnoreCase(filters_<%=cid %>[i_<%=cid %>])){
+						results_<%=cid %>[i_<%=cid %>] = moddnContent_<%=cid %>.getNewParent();
+					}					                
+                }
+				break;
+			default:                
             }
             nb_line_<%=cid %>++;
             

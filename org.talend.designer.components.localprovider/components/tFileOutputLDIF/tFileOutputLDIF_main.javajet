@@ -156,9 +156,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
 	<%}%>
 <%
-}
-%>	
-
+}// here end the if add
+%>
+<% if ("modrdn".equals(changetype)) {
+%>
+		util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
+<%
+}// here end the if modrdn
+%>
   				
 <% 
 }//here end the last for, the List "columns"

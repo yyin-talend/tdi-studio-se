@@ -36,6 +36,7 @@
 				<ITEM NAME="ADD" VALUE="add" />
 				<ITEM NAME="MODIFY" VALUE="modify" />
 				<ITEM NAME="DELETE" VALUE="delete" />
+				<ITEM NAME="MODRDN" VALUE="modrdn" />
 				<ITEM NAME="NONE" VALUE="none" />
 			</ITEMS>
 		</PARAMETER>
@@ -64,8 +65,17 @@
 
 		<PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="50">
 			<TABLE>
-				<COLUMN NAME="dn" TYPE="id_String" LENGTH="255" READONLY="true" />
+				<COLUMN KEY="true" LENGTH="255" NAME="dn" TYPE="id_String" NULLABLE="false" READONLY="true" />
 			</TABLE>
+			<TABLE IF="CHANGETYPE=='MODRDN'">
+				<COLUMN KEY="true" LENGTH="255" NAME="dn" TYPE="id_String" NULLABLE="false" READONLY="true" />
+				<COLUMN KEY="false" LENGTH="255" NAME="newrdn" TYPE="id_String" NULLABLE="false" READONLY="true" />
+				<COLUMN KEY="false" LENGTH="1" NAME="deleteoldrdn" TYPE="id_String" NULLABLE="false"  READONLY="true" />
+				<COLUMN KEY="false" LENGTH="255" NAME="newsuperior" TYPE="id_String" NULLABLE="false" READONLY="false" />
+			</TABLE>
+			<TABLE IF="CHANGETYPE=='DELETE'">
+				<COLUMN KEY="true" LENGTH="255" NAME="dn" TYPE="id_String" NULLABLE="false" READONLY="true" />
+			</TABLE>						
 		</PARAMETER>
 		
 		<PARAMETER NAME="APPEND" FIELD="CHECK" REQUIRED="true"
