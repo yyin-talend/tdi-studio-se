@@ -98,6 +98,7 @@ GetOptions(
         'trace_port=i',
         'client_host=s',
         'watch',
+        'pid=s',
         'father_pid=s',
         'root_pid=s',
         'context_param=s%',
@@ -118,7 +119,10 @@ StartTrace($opt{trace_port}, $clientHost) if defined $opt{trace_port};
 our %_context;
 our %_globals;
 
-$_globals{pid} = getRandomString(6, ['a'..'z', 'A'..'Z', 0..9]);
+$_globals{pid} = defined $opt{pid}
+    ? $opt{pid}
+    : getRandomString(6, ['a'..'z', 'A'..'Z', 0..9])
+;
 
 $_globals{father_pid} = defined $opt{father_pid}
     ? $opt{father_pid}
