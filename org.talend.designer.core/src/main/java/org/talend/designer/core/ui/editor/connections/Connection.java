@@ -647,6 +647,16 @@ public class Connection extends Element implements IConnection, IPerformance {
 
     }
 
+    int order = -1;
+
+    public int getOrder() {
+        return this.order;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
+    }
+
     /**
      * Disconnect the connection This function is used before delete or reconnect a connection.
      */

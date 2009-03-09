@@ -916,6 +916,15 @@ public class Node extends Element implements INode {
      * @param connection
      */
     public void addOutput(final IConnection conn) {
+        // add the connection on the position of the order before delete the connection
+        if (conn instanceof Connection) {
+            int order = ((Connection) conn).getOrder();
+            if (order != -1) {
+                outputs.add(order, conn);
+                fireStructureChange(OUTPUTS, conn);
+                return;
+            }
+        }
         this.outputs.add(conn);
         fireStructureChange(OUTPUTS, conn);
     }
@@ -1002,8 +1011,24 @@ public class Node extends Element implements INode {
      * @param connection
      */
     public void removeOutput(final IConnection connection) {
+        // remember the order of the connection in outputs before delete
+        if (connection instanceof Connection) {
+            int order = getOrder(connection);
+            if (order != -1) {
+                ((Connection) connection).setOrder(order);
+            }
+        }
         this.outputs.remove(connection);
         fireStructureChange(OUTPUTS, connection);
+    }
+
+    private int getOrder(IConnection connection) {
+        for (int i = 0; i < outputs.size(); i++) {
+            if (connection == outputs.get(i)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     /*
