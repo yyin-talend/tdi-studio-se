@@ -26,7 +26,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
     	String dieOnErrorStr = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 		boolean dieOnError = (dieOnErrorStr!=null&&!dieOnErrorStr.equals(""))?dieOnErrorStr.equals("true"):false;               
-        List<IMetadataColumn> listColumns = metadata.getListColumns();         
+        List<IMetadataColumn> listColumns = metadata.getListColumns();
+        
+        String addprefixStr = ElementParameterParser.getValue(node, "__ADDPREFIX__");
+        boolean addprefix = (addprefixStr!=null&&!addprefixStr.equals(""))?addprefixStr.equals("true"):false;
 %>
 ///////////////////////////////////
         netscape.ldap.util.LDIF ldif_<%=cid %> = new netscape.ldap.util.LDIF(<%=filename %>);
@@ -50,13 +53,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             results_<%=cid %> = new String[<%=listColumns.size() %>];
             
             netscape.ldap.util.LDIFContent content_<%=cid %> = record_<%=cid %>.getContent();
+			netscape.ldap.LDAPAttribute[] attributes_<%=cid %> = null;
 			
             switch (content_<%=cid %>.getType()) {
             
             case netscape.ldap.util.LDIFContent.ATTRIBUTE_CONTENT:
             
                 netscape.ldap.util.LDIFAttributeContent attrContent_<%=cid %> = (netscape.ldap.util.LDIFAttributeContent) content_<%=cid %>;
-                netscape.ldap.LDAPAttribute[] attributes_<%=cid %> = attrContent_<%=cid %>.getAttributes();
+                attributes_<%=cid %> = attrContent_<%=cid %>.getAttributes();
                 
                 for (int i_<%=cid %> = 0; i_<%=cid %> < filters_<%=cid %>.length; i_<%=cid %>++) {
                 
@@ -64,13 +68,19 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                     
                         netscape.ldap.LDAPAttribute attribute_<%=cid %> = attributes_<%=cid %>[j_<%=cid %>];
                         
-                        if (filters_<%=cid %>[i_<%=cid %>].equalsIgnoreCase(attribute_<%=cid %>.getName())) {
-                        
-                            java.util.Enumeration values_<%=cid %> = attribute_<%=cid %>.getStringValues();
+						if("dn".equalsIgnoreCase(filters_<%=cid %>[i_<%=cid %>])){
+							results_<%=cid %>[i_<%=cid %>] = record_<%=cid %>.getDN();
+							
+						}else{
+						
+                            if (filters_<%=cid %>[i_<%=cid %>].equalsIgnoreCase(attribute_<%=cid %>.getName())) {
                             
-                            while (values_<%=cid %>.hasMoreElements()) {
-                                String value_<%=cid %> = (String) values_<%=cid %>.nextElement();
-                                results_<%=cid %>[i_<%=cid %>] = results_<%=cid %>[i_<%=cid %>] == null ? value_<%=cid %> : results_<%=cid %>[i_<%=cid %>] + "," + value_<%=cid %>;
+                                java.util.Enumeration values_<%=cid %> = attribute_<%=cid %>.getStringValues();
+                                
+                                while (values_<%=cid %>.hasMoreElements()) {
+                                    String value_<%=cid %> = (String) values_<%=cid %>.nextElement();
+                                    results_<%=cid %>[i_<%=cid %>] = results_<%=cid %>[i_<%=cid %>] == null ? value_<%=cid %> : results_<%=cid %>[i_<%=cid %>] + "," + value_<%=cid %>;
+                                }
                             }
                         }
                     }
@@ -80,15 +90,104 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 break;
 
             case netscape.ldap.util.LDIFContent.ADD_CONTENT:
-                // LDIFAddContent addContent = (LDIFAddContent) content;
+            
+                netscape.ldap.util.LDIFAddContent addContent_<%=cid %> = (netscape.ldap.util.LDIFAddContent) content_<%=cid %>;
+                attributes_<%=cid %> = addContent_<%=cid %>.getAttributes();
+                
+                for (int i_<%=cid %> = 0; i_<%=cid %> < filters_<%=cid %>.length; i_<%=cid %>++) {
+                
+                    for (int j_<%=cid %> = 0; j_<%=cid %> < attributes_<%=cid %>.length; j_<%=cid %>++) {
+                    
+                        netscape.ldap.LDAPAttribute attribute_<%=cid %> = attributes_<%=cid %>[j_<%=cid %>];
+                        
+						if("dn".equalsIgnoreCase(filters_<%=cid %>[i_<%=cid %>])){
+							results_<%=cid %>[i_<%=cid %>] = record_<%=cid %>.getDN();
+							
+						}else if("changetype".equalsIgnoreCase(filters_<%=cid %>[i_<%=cid %>])){
+							results_<%=cid %>[i_<%=cid %>] = "add";
+							
+						}else{
+						
+                            if (filters_<%=cid %>[i_<%=cid %>].equalsIgnoreCase(attribute_<%=cid %>.getName())) {
+                            
+                                java.util.Enumeration values_<%=cid %> = attribute_<%=cid %>.getStringValues();
+                                
+                                while (values_<%=cid %>.hasMoreElements()) {
+                                    String value_<%=cid %> = (String) values_<%=cid %>.nextElement();
+                                    results_<%=cid %>[i_<%=cid %>] = results_<%=cid %>[i_<%=cid %>] == null ? value_<%=cid %> : results_<%=cid %>[i_<%=cid %>] + "," + value_<%=cid %>;
+                                }
+                            }
+                        }
+                    }
+
+                }                
                 break;
                 
             case netscape.ldap.util.LDIFContent.MODIFICATION_CONTENT:
-                // LDIFModifyContent modifyContent = (LDIFModifyContent) content;
+
+					netscape.ldap.util.LDIFModifyContent modifyContent_<%=cid %> = (netscape.ldap.util.LDIFModifyContent) content_<%=cid %>;
+					netscape.ldap.LDAPModification[] modifications_<%=cid %> = modifyContent_<%=cid %>.getModifications();
+
+					for (int i_<%=cid %> = 0; i_<%=cid %> < filters_<%=cid %>.length; i_<%=cid %>++) {
+
+						for (netscape.ldap.LDAPModification modification_<%=cid %> : modifications_<%=cid %>) {
+							netscape.ldap.LDAPAttribute attribute_<%=cid %> = modification_<%=cid %>.getAttribute();
+
+							if ("dn".equalsIgnoreCase(filters_<%=cid %>[i_<%=cid %>])) {
+								results_<%=cid %>[i_<%=cid %>] = record_<%=cid %>.getDN();
+
+							} else if ("changetype".equalsIgnoreCase(filters_<%=cid %>[i_<%=cid %>])) {
+								results_<%=cid %>[i_<%=cid %>] = "modify";
+
+							} else {
+
+								if (filters_<%=cid %>[i_<%=cid %>].equalsIgnoreCase(attribute_<%=cid %>.getName())) {
+
+								<%if(addprefix){%>									
+									int op_<%=cid %> = modification_<%=cid %>.getOp();
+									switch(op_<%=cid %>){
+										case netscape.ldap.LDAPModification.ADD: 
+											results_<%=cid %>[i_<%=cid %>] = "add";
+											break;
+										case netscape.ldap.LDAPModification.DELETE: 
+											results_<%=cid %>[i_<%=cid %>] = "delete";
+											break;
+										case netscape.ldap.LDAPModification.REPLACE:
+											results_<%=cid %>[i_<%=cid %>] = "replace";
+											break;
+										default:
+											results_<%=cid %>[i_<%=cid %>] = "";
+									}
+								<%}%>									
+
+									java.util.Enumeration values_<%=cid %> = attribute_<%=cid %>.getStringValues();
+									
+									boolean firstLoop_<%=cid %> = true;
+									while (values_<%=cid %>.hasMoreElements()) {
+										String value_<%=cid %> = (String) values_<%=cid %>.nextElement();																				
+										if(firstLoop_<%=cid %>){
+											results_<%=cid %>[i_<%=cid %>] = results_<%=cid %>[i_<%=cid %>] == null ? value_<%=cid %> : results_<%=cid %>[i_<%=cid %>] + ":" + value_<%=cid %>;
+										}else{
+											results_<%=cid %>[i_<%=cid %>] = results_<%=cid %>[i_<%=cid %>] + "," + value_<%=cid %>;
+										}
+										firstLoop_<%=cid %> = false;										
+									}
+								}
+							}
+
+						}
+					}                
                 break;
                 
             case netscape.ldap.util.LDIFContent.DELETE_CONTENT:
-                // LDIFDeleteContent deleteContent = (LDIFDeleteContent) content;
+                //netscape.ldap.util.LDIFDeleteContent deleteContent_<%=cid %> = (netscape.ldap.util.LDIFDeleteContent) content_<%=cid %>;
+                for (int i_<%=cid %> = 0; i_<%=cid %> < filters_<%=cid %>.length; i_<%=cid %>++) {
+					if("dn".equalsIgnoreCase(filters_<%=cid %>[i_<%=cid %>])){
+						results_<%=cid %>[i_<%=cid %>] = record_<%=cid %>.getDN();						
+					}else if("changetype".equalsIgnoreCase(filters_<%=cid %>[i_<%=cid %>])){
+						results_<%=cid %>[i_<%=cid %>] = "delete";
+					}                
+                }                
                 break;
             }
             nb_line_<%=cid %>++;

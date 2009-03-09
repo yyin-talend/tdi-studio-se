@@ -45,12 +45,20 @@
     </PARAMETER>
 
     <PARAMETER
-      NAME="DIE_ON_ERROR"
+      NAME="ADDPREFIX"
       FIELD="CHECK"
       NUM_ROW="3"
     >
       <DEFAULT>false</DEFAULT>
-    </PARAMETER>  
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="DIE_ON_ERROR"
+      FIELD="CHECK"
+      NUM_ROW="4"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>       
 
     <PARAMETER
       NAME="SCHEMA"
