@@ -5,8 +5,7 @@ Bundle-SymbolicName: org.talend.designer.spss;singleton:=true
 Bundle-Version: 1.0.0
 Eclipse-LazyStart: true
 Bundle-Activator: org.talend.designer.spss.spssPlugin
-Require-Bundle: org.talend.libraries.logging,
- org.eclipse.ui,
+Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.talend.core,
  org.talend.commons,
@@ -24,7 +23,8 @@ Require-Bundle: org.talend.libraries.logging,
  org.talend.designer.codegen,
  org.talend.commons.ui,
  org.eclipse.ui.views.properties.tabbed,
- org.talend.designer.core
+ org.talend.designer.core,
+ org.apache.log4j
 Bundle-ClassPath: JSPSS.jar,
  .
 
