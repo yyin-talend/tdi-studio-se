@@ -51,14 +51,14 @@ if (metadatas != null && metadatas.size() > 0) {
     for (Map<String, String> columnOption: columnOptions) {
         if (columnOption.get("REPLACE").equals("true")) {
             String columnName = metadata.getListColumns().get(column_num).getLabel();
-            %>
-            String inputFlow<%=columnName%> = <%=main%>.<%=columnName%>;
+%>
+            String inputFlow_<%=cid%>_<%=columnName%> = <%=main%>.<%=columnName%>;
             for(Object o:replace_<%=cid%>.keySet()){
                 String search<%=cid%> = (String)o;
                 String replace<%=cid%> = replace_<%=cid%>.get(o);
-                inputFlow<%=columnName%> = inputFlow<%=columnName%>.replaceAll(<%if(columnOption.get("CASE_INSENSITIVE").equals("true")) {%>"(?i)" + <%}%>search<%=cid%>,replace<%=cid%>);
+                inputFlow_<%=cid%>_<%=columnName%> = inputFlow_<%=cid%>_<%=columnName%>.replaceAll(<%if(columnOption.get("CASE_INSENSITIVE").equals("true")) {%>"(?i)" + <%}%>search<%=cid%>,replace<%=cid%>);
             }
-            <%
+<%
         }
         column_num++;
     }
@@ -70,10 +70,10 @@ if (metadatas != null && metadatas.size() > 0) {
         for(Map<String,String> columnOption: columnOptions){
             if (columnOption.get("REPLACE").equals("true")){
                 String columnname = connection.getTarget().getMetadataList().get(0).getListColumns().get(outColumn_num).getLabel();
-                %>
-                <%=main%>.<%=columnname%> = inputFlow<%=columnname%>;
+%>
+                <%=main%>.<%=columnname%> = inputFlow_<%=cid%>_<%=columnname%>;
         
-                <%
+<%
             }
             outColumn_num ++;
        }
