@@ -50,6 +50,11 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
 
     public static final String EXPORT_METHOD = "runJob"; //$NON-NLS-1$
 
+    private static List<String> axisLib = new ArrayList<String>();
+    static {
+        axisLib.add("jbossesb-listener.jar"); //$NON-NLS-1$
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -130,18 +135,13 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
         List<URL> userRoutineList = getUserRoutine(true);
         libResource.addResources(userRoutineList);
 
-        // copy jbossesb-listener.jar
-        String serverConfigFile = getTmpFolder() + PATH_SEPARATOR + "jbossesb-listener.jar"; //$NON-NLS-1$
-        ArrayList<URL> urlList = new ArrayList<URL>();
-        try {
-            urlList.add(new File(serverConfigFile).toURL());
-        } catch (MalformedURLException e) {
-            ExceptionHandler.process(e);
-        }
-        libResource.addResources(urlList);
+        // Gets axis libraries
+        List<URL> axisLibList = getLib(axisLib, true);
+        libResource.addResources(axisLibList);
+
         // copy jbm-queue-service.xml
-        serverConfigFile = getTmpFolder() + PATH_SEPARATOR + "jbm-queue-service.xml"; //$NON-NLS-1$
-        urlList = new ArrayList<URL>();
+        String serverConfigFile = getTmpFolder() + PATH_SEPARATOR + "jbm-queue-service.xml"; //$NON-NLS-1$
+        ArrayList<URL> urlList = new ArrayList<URL>();
         try {
             urlList.add(new File(serverConfigFile).toURL());
         } catch (MalformedURLException e) {
@@ -196,10 +196,10 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
             targetFileName = getTmpFolder() + PATH_SEPARATOR + "jboss-esb.xml"; //$NON-NLS-1$
             FilesUtils.copyFile(new File(sourceFileName), new File(targetFileName));
 
-            sourceFileName = FileLocator.toFileURL(FileLocator.find(b, new Path("resources/jbossesb-listener.jar"), null)) //$NON-NLS-1$
-                    .getFile();
-            targetFileName = getTmpFolder() + PATH_SEPARATOR + "jbossesb-listener.jar"; //$NON-NLS-1$
-            FilesUtils.copyFile(new File(sourceFileName), new File(targetFileName));
+            //            sourceFileName = FileLocator.toFileURL(FileLocator.find(b, new Path("resources/jbossesb-listener.jar"), null)) //$NON-NLS-1$
+            // .getFile();
+            //            targetFileName = getTmpFolder() + PATH_SEPARATOR + "jbossesb-listener.jar"; //$NON-NLS-1$
+            // FilesUtils.copyFile(new File(sourceFileName), new File(targetFileName));
         } catch (IOException e) {
             ExceptionHandler.process(e);
         }

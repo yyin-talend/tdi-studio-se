@@ -90,7 +90,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                 selectedJobVersion = this.getSelectedJobVersion();
             }
             if (progressMonitor != null) {
-                progressMonitor.subTask(Messages.getString("JobJavaScriptsManager.exportJob") + process[i].getNode().getObject().getLabel() + "_" + selectedJobVersion); //$NON-NLS-1$ //$NON-NLS-2$
+                progressMonitor
+                        .subTask(Messages.getString("JobJavaScriptsManager.exportJob") + process[i].getNode().getObject().getLabel() + "_" + selectedJobVersion); //$NON-NLS-1$ //$NON-NLS-2$
             }
             String libPath = calculateLibraryPathFromDirectory(process[i].getDirectoryName());
             // use character @ as temporary classpath separator, this one will be replaced during the export.
@@ -676,4 +677,40 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     protected String getCorrespondingProjectName(Item item) {
         return JavaResourcesHelper.getProjectFolderName(item);
     }
+
+    protected List<URL> getLib(List<String> libs, Boolean needLib) {
+        List<URL> list = new ArrayList<URL>();
+        if (!needLib) {
+            return list;
+        }
+
+        try {
+            ILibrariesService librariesService = CorePlugin.getDefault().getLibrariesService();
+            String path = librariesService.getLibrariesPath();
+            // Gets all the jar files
+            File file = new File(path);
+            File[] files = file.listFiles(new FilenameFilter() {
+
+                public boolean accept(File dir, String name) {
+                    return name.toLowerCase().endsWith(".jar") || name.toLowerCase().endsWith(".properties") //$NON-NLS-1$ //$NON-NLS-2$
+                            || name.toLowerCase().endsWith(".zip") ? true : false; //$NON-NLS-1$
+                }
+            });
+
+            for (int i = 0; i < files.length; i++) {
+                File tempFile = files[i];
+                try {
+                    if (libs.contains(tempFile.getName())) {
+                        list.add(tempFile.toURL());
+                    }
+                } catch (MalformedURLException e) {
+                    ExceptionHandler.process(e);
+                }
+            }
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+        return list;
+    }
+
 }

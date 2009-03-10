@@ -18,7 +18,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
@@ -51,8 +50,6 @@ import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.io.FilesUtils;
-import org.talend.core.CorePlugin;
-import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.designer.runprocess.IProcessor;
@@ -183,7 +180,7 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
         libResource.addResources(userRoutineList);
 
         // Gets axis libraries
-        List<URL> axisLibList = getAxisLib(BooleanUtils.isTrue(exportChoice.get(ExportChoice.needAXISLIB)));
+        List<URL> axisLibList = getLib(axisLib, BooleanUtils.isTrue(exportChoice.get(ExportChoice.needAXISLIB)));
         libResource.addResources(axisLibList);
 
         // check the list avoid duplication
@@ -234,41 +231,6 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
             String version) {
         String jobName = processItem.getProperty().getLabel();
         addContextScripts(processItem, jobName, version, contextResource, needContext);
-    }
-
-    protected List<URL> getAxisLib(Boolean needAxisLib) {
-        List<URL> list = new ArrayList<URL>();
-        if (!needAxisLib) {
-            return list;
-        }
-
-        try {
-            ILibrariesService librariesService = CorePlugin.getDefault().getLibrariesService();
-            String path = librariesService.getLibrariesPath();
-            // Gets all the jar files
-            File file = new File(path);
-            File[] files = file.listFiles(new FilenameFilter() {
-
-                public boolean accept(File dir, String name) {
-                    return name.toLowerCase().endsWith(".jar") || name.toLowerCase().endsWith(".properties") //$NON-NLS-1$ //$NON-NLS-2$
-                            || name.toLowerCase().endsWith(".zip") ? true : false; //$NON-NLS-1$
-                }
-            });
-
-            for (int i = 0; i < files.length; i++) {
-                File tempFile = files[i];
-                try {
-                    if (axisLib.contains(tempFile.getName())) {
-                        list.add(tempFile.toURL());
-                    }
-                } catch (MalformedURLException e) {
-                    ExceptionHandler.process(e);
-                }
-            }
-        } catch (Exception e) {
-            ExceptionHandler.process(e);
-        }
-        return list;
     }
 
     /**
