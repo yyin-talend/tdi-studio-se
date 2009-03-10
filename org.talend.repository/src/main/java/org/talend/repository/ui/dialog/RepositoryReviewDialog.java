@@ -170,8 +170,11 @@ public class RepositoryReviewDialog extends Dialog {
     protected void configureShell(Shell shell) {
         super.configureShell(shell);
         // Set the title bar text and the size
-        shell.setText(Messages.getString("RepositoryReviewDialog.repositoryContent")); //$NON-NLS-1$
-        // shell.setSize(500, 400);
+        if (typeProcessor.getDialogTitle() == null) {
+            shell.setText(Messages.getString("RepositoryReviewDialog.repositoryContent")); //$NON-NLS-1$
+        } else {
+            shell.setText(typeProcessor.getDialogTitle());
+        }
     }
 
     /*
@@ -488,6 +491,7 @@ interface ITypeProcessor {
 
     ViewerFilter makeFilter();
 
+    String getDialogTitle();
 }
 
 /**
@@ -560,6 +564,15 @@ class JobTypeProcessor implements ITypeProcessor {
                 return true;
             }
         };
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.dialog.ITypeProcessor#getDialogTitle()
+     */
+    public String getDialogTitle() {
+        return Messages.getString("OpenJobSelectionDialog.findJob");
     }
 }
 
@@ -798,6 +811,16 @@ class RepositoryTypeProcessor implements ITypeProcessor {
             }
         };
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.dialog.ITypeProcessor#getDialogTitle()
+     */
+    public String getDialogTitle() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }
 
 /**
@@ -956,6 +979,16 @@ class SchemaTypeProcessor implements ITypeProcessor {
             }
         };
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.dialog.ITypeProcessor#getDialogTitle()
+     */
+    public String getDialogTitle() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }
 
 /**
@@ -1022,6 +1055,16 @@ class SAPFunctionProcessor implements ITypeProcessor {
         };
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.dialog.ITypeProcessor#getDialogTitle()
+     */
+    public String getDialogTitle() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }
 
 /**
@@ -1083,6 +1126,16 @@ class ContextTypeProcessor implements ITypeProcessor {
                 return true;
             }
         };
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.dialog.ITypeProcessor#getDialogTitle()
+     */
+    public String getDialogTitle() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }
@@ -1150,6 +1203,16 @@ class QueryTypeProcessor implements ITypeProcessor {
                 return true;
             }
         };
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.dialog.ITypeProcessor#getDialogTitle()
+     */
+    public String getDialogTitle() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }
