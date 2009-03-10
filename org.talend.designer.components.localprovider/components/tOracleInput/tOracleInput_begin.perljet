@@ -117,7 +117,7 @@ my $<%=dbh%> = DBI->connect(
     <%=dbuser %>,
     <%=dbpass %>,
 )
-    or die "can't connect to database";
+    or die "[<%=cid%>] can't connect to database, ".$DBI::errstr;
 
 <%
         }
@@ -128,10 +128,11 @@ my $query;
 
 $sth_<%=cid %> = $<%=dbh%>->prepare(
     <%=query%>
-);
+)
+    or die "[<%=cid%>] can't prepare input query, ".$DBI::errstr;
 
 $sth_<%=cid %>->execute()
-    or die "can't execute input query";
+    or die "[<%=cid%>] can't execute input query, ".$DBI::errstr;
 
 if ($_context{StoreSQLQuery}) {
     $_globals{<%=cid %>}{QUERY} = $desc_<%=cid %>{query};
