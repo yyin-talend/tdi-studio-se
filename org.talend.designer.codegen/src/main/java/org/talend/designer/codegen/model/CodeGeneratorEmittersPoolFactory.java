@@ -205,8 +205,13 @@ public final class CodeGeneratorEmittersPoolFactory {
                     project.build(IncrementalProjectBuilder.AUTO_BUILD, null);
                 } catch (CoreException e) {
                     ExceptionHandler.process(e);
+                } finally {
+                    try {
+                        ResourcesPlugin.getWorkspace().save(true, new NullProgressMonitor());
+                    } catch (CoreException e) {
+                        ExceptionHandler.process(e);
+                    }
                 }
-
             }
             if (jetFilesCompileFail.size() > 0) {
                 StringBuilder message = new StringBuilder();
