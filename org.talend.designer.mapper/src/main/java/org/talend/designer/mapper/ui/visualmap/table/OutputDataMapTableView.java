@@ -134,7 +134,7 @@ public class OutputDataMapTableView extends DataMapTableView {
      * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#initTableConstraints()
      */
     @Override
-    protected void initTableFilters() {
+    protected void initExtraTable() {
         createFiltersTable();
 
         List<FilterTableEntry> entries = ((OutputTable) getDataMapTable()).getFilterEntries();
@@ -146,9 +146,6 @@ public class OutputDataMapTableView extends DataMapTableView {
         tableViewerCreatorForFilters.init(entries);
         updateGridDataHeightForTableConstraints();
 
-        if (WindowSystem.isGTK()) {
-            tableViewerCreatorForFilters.layout();
-        }
     }
 
     /*

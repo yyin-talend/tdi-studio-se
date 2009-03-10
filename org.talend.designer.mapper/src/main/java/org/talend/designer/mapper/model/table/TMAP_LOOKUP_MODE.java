@@ -12,8 +12,6 @@
 // ============================================================================
 package org.talend.designer.mapper.model.table;
 
-import org.talend.designer.components.commons.AdvancedLookup.MATCHING_MODE;
-
 /**
  * 
  * Lookup types.
@@ -21,18 +19,23 @@ import org.talend.designer.components.commons.AdvancedLookup.MATCHING_MODE;
  * $Id$
  * 
  */
-public enum TMAP_MATCHING_MODE implements IUIMatchingMode {
-    ALL_ROWS(MATCHING_MODE.ALL_ROWS, "All rows", "Matches with all lookup's rows"), //$NON-NLS-1$ //$NON-NLS-2$
-    UNIQUE_MATCH(MATCHING_MODE.UNIQUE_MATCH, "Unique match", "Matches only with only one lookup's row"), //$NON-NLS-1$ //$NON-NLS-2$
-    FIRST_MATCH(MATCHING_MODE.FIRST_MATCH, "First match", "Matches only with the first matching loaded lookup's row"), //$NON-NLS-1$ //$NON-NLS-2$
-    LAST_MATCH(MATCHING_MODE.LAST_MATCH, "Last match", "Matches only with the last matching loaded lookup's row"), //$NON-NLS-1$ //$NON-NLS-2$
-    ALL_MATCHES(MATCHING_MODE.ALL_MATCHES, "All matches", "Matches with all the matching lookup's row"), ; //$NON-NLS-1$ //$NON-NLS-2$
+public enum TMAP_LOOKUP_MODE implements IUILookupMode {
+    LOAD_ONCE(LOOKUP_MODE.LOAD_ONCE, "Load once", //$NON-NLS-1$
+              "Load once the lookup at subjob start"//$NON-NLS-1$
+    ),
+    LOAD_ONCE_AND_EDIT(LOOKUP_MODE.LOAD_ONCE_AND_EDIT, "Load once and update", //$NON-NLS-1$
+                       "Load once at subjob start and add/update the lookup during the process"), //$NON-NLS-1$
+    RELOAD(LOOKUP_MODE.RELOAD, "Reload at each row", //$NON-NLS-1$ 
+           "Reload the lookup at each row"), //$NON-NLS-1$ 
+    CACHE_OR_RELOAD(LOOKUP_MODE.CACHE_OR_RELOAD, "Reload at each row (cache)",//$NON-NLS-1$
+                    "At each row, get result from the cache or reload the lookup"), //$NON-NLS-1$
+    ;
 
     private String label;
 
-    private String tooltipText;
+    private LOOKUP_MODE multipleMatchingMode;
 
-    private MATCHING_MODE multipleMatchingMode;
+    private String tooltipText;
 
     /**
      * 
@@ -40,10 +43,11 @@ public enum TMAP_MATCHING_MODE implements IUIMatchingMode {
      * 
      * @param label
      */
-    TMAP_MATCHING_MODE(MATCHING_MODE multipleMatchingMode, String label, String tooltipText) {
+    TMAP_LOOKUP_MODE(LOOKUP_MODE multipleMatchingMode, String label, String tooltipText) {
         this.label = label;
         this.multipleMatchingMode = multipleMatchingMode;
         this.tooltipText = tooltipText;
+
     }
 
     /**
@@ -60,18 +64,18 @@ public enum TMAP_MATCHING_MODE implements IUIMatchingMode {
      * 
      * @return the multipleMatchingMode
      */
-    public MATCHING_MODE getMultipleMatchingMode() {
+    public LOOKUP_MODE getLookupMode() {
         return this.multipleMatchingMode;
     }
 
     public String getTooltipText() {
-        return tooltipText;
+        return this.tooltipText;
     }
 
-    public static IUIMatchingMode parse(String matchingMode) {
-        TMAP_MATCHING_MODE multipleMatchingMode = null;
-        TMAP_MATCHING_MODE[] tmapMultipleMatchingModes = values();
-        for (TMAP_MATCHING_MODE tmapMultipleMatchingMode : tmapMultipleMatchingModes) {
+    public static IUILookupMode parse(String matchingMode) {
+        TMAP_LOOKUP_MODE multipleMatchingMode = null;
+        TMAP_LOOKUP_MODE[] tmapMultipleMatchingModes = values();
+        for (TMAP_LOOKUP_MODE tmapMultipleMatchingMode : tmapMultipleMatchingModes) {
             if (tmapMultipleMatchingMode.toString().equals(matchingMode)) {
                 multipleMatchingMode = tmapMultipleMatchingMode;
                 break;

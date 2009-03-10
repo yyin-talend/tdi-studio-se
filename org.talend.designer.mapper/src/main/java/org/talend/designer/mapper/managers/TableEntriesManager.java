@@ -20,15 +20,16 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
-import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.extended.table.IExtendedControlEventType;
 import org.talend.designer.abstractmap.model.table.IDataMapTable;
 import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.mapper.i18n.Messages;
+import org.talend.designer.mapper.model.table.InputTable;
 import org.talend.designer.mapper.model.table.OutputTable;
 import org.talend.designer.mapper.model.tableentry.ExpressionFilterEntry;
 import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
+import org.talend.designer.mapper.model.tableentry.GlobalMapEntry;
 import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
 import org.talend.designer.mapper.ui.visualmap.TableEntryProperties;
 import org.talend.designer.mapper.ui.visualmap.table.DataMapTableView;
@@ -128,6 +129,12 @@ public class TableEntriesManager {
             } else {
                 ((OutputTable) dataMapTable).addFilterEntry((FilterTableEntry) dataMapTableEntry, index);
             }
+        } else if (dataMapTableEntry instanceof GlobalMapEntry) {
+            if (index == null) {
+                ((InputTable) dataMapTable).addGlobalMapEntry((GlobalMapEntry) dataMapTableEntry);
+            } else {
+                ((InputTable) dataMapTable).addGlobalMapEntry((GlobalMapEntry) dataMapTableEntry, index);
+            }
         } else {
             String exceptionMessage = Messages.getString(
                     "TableEntriesManager.exceptionMessage.typeIsNotValid", dataMapTableEntry //$NON-NLS-1$
@@ -156,6 +163,10 @@ public class TableEntriesManager {
             IDataMapTable dataMapTable = dataMapTableEntry.getParent();
             if (dataMapTableEntry instanceof IColumnEntry) {
                 dataMapTableEntry.getParent().removeColumnEntry((IColumnEntry) dataMapTableEntry);
+            } else if (dataMapTableEntry instanceof GlobalMapEntry) {
+                if (dataMapTable instanceof OutputTable) {
+                    ((InputTable) dataMapTable).removeGlobalMapEntry((GlobalMapEntry) dataMapTableEntry);
+                }
             } else if (dataMapTableEntry instanceof FilterTableEntry) {
                 if (dataMapTable instanceof OutputTable) {
                     ((OutputTable) dataMapTable).removeFilterEntry((FilterTableEntry) dataMapTableEntry);
@@ -204,6 +215,8 @@ public class TableEntriesManager {
             tableItems = dataMapTableView.getTableViewerCreatorForColumns().getTable().getItems();
         } else if (dataMapTableEntry instanceof FilterTableEntry) {
             tableItems = dataMapTableView.getTableViewerCreatorForFilters().getTable().getItems();
+        } else if (dataMapTableEntry instanceof GlobalMapEntry) {
+            tableItems = dataMapTableView.getTableViewerCreatorForGlobalMap().getTable().getItems();
         } else if (dataMapTableEntry instanceof ExpressionFilterEntry) {
             return null;
         } else {

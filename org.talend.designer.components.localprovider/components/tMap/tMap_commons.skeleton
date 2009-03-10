@@ -74,6 +74,25 @@ public class CLASS {
 	
 	}
 
+	public INode searchSubProcessStartNode(IConnection connection) {
+       	INode source = connection.getSource();
+    	//System.out.println(" source=" +  source);
+    	INode subprocessStartNode = null;
+    	if(source != null) {
+			String searchedComponentName = source.getUniqueName();
+        	//System.out.println(" searchedComponentName=" +  searchedComponentName);
+			List<? extends INode> generatedNodes = source.getProcess().getGeneratingNodes();
+			for(INode loopNode : generatedNodes) {
+				if(loopNode.getUniqueName().equals(searchedComponentName)) {
+					subprocessStartNode = loopNode.getSubProcessStartNode(false);
+		        	//System.out.println(" subprocessStartNode=" +  subprocessStartNode.getUniqueName());
+				}
+			}
+		}
+	
+		return subprocessStartNode;
+	}
+
     public String generate(Object argument) {
 
     }

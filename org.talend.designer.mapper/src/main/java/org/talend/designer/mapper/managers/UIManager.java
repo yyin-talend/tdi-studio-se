@@ -89,6 +89,7 @@ import org.talend.designer.mapper.model.table.OutputTable;
 import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
 import org.talend.designer.mapper.model.tableentry.ExpressionFilterEntry;
 import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
+import org.talend.designer.mapper.model.tableentry.GlobalMapEntry;
 import org.talend.designer.mapper.model.tableentry.InputColumnTableEntry;
 import org.talend.designer.mapper.model.tableentry.OutputColumnTableEntry;
 import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
@@ -676,7 +677,7 @@ public class UIManager extends AbstractUIManager {
         for (OutputTable outputTable : currentOutputTablesList) {
             currentTables.add(outputTable.getName());
         }
-        
+
         ExternalMapperData originalExternalData = (ExternalMapperData) mapperManager.getOriginalExternalData();
 
         List<ExternalMapperTable> originalOutputTables = originalExternalData.getOutputTables();
@@ -684,7 +685,7 @@ public class UIManager extends AbstractUIManager {
         for (ExternalMapperTable outputTable : originalOutputTables) {
             originalTableNames.add(outputTable.getName());
         }
-        
+
         for (String currentTable : currentTables) {
             if (!originalTableNames.contains(currentTable)) {
                 process.removeUniqueConnectionName(currentTable);
@@ -795,6 +796,7 @@ public class UIManager extends AbstractUIManager {
         TableViewerCreator<ITableEntry> currentTableViewer = null;
 
         boolean isFilterTableSelected = false;
+        boolean isGlobalMapTableSelected = false;
 
         if (!selectAllTableLinks) {
             ITableEntry firstEntry = selectedTableEntries.get(0);
@@ -802,6 +804,9 @@ public class UIManager extends AbstractUIManager {
                 if (firstEntry instanceof FilterTableEntry) {
                     isFilterTableSelected = true;
                     currentTableViewer = dataMapTableView.getTableViewerCreatorForFilters();
+                } else if (firstEntry instanceof GlobalMapEntry) {
+                    isGlobalMapTableSelected = true;
+                    currentTableViewer = dataMapTableView.getTableViewerCreatorForGlobalMap();
                 } else {
                     currentTableViewer = dataMapTableView.getTableViewerCreatorForColumns();
                 }
@@ -820,6 +825,9 @@ public class UIManager extends AbstractUIManager {
                         .getExpressionFilter());
             }
             hashSelectedMetadataTableEntries.addAll(dataMapTableView.getTableViewerCreatorForColumns().getInputList());
+            if (currentZone == Zone.INPUTS) {
+                hashSelectedMetadataTableEntries.addAll(dataMapTableView.getTableViewerCreatorForGlobalMap().getInputList());
+            }
             if (currentZone == Zone.OUTPUTS) {
                 hashSelectedMetadataTableEntries.addAll(dataMapTableView.getTableViewerCreatorForFilters().getInputList());
             }
@@ -865,6 +873,8 @@ public class UIManager extends AbstractUIManager {
                 } else if (viewToDeselectEntries == dataMapTableView && tableTypeHasChanged) {
                     if (isFilterTableSelected) {
                         viewToDeselectEntries.unselectAllColumnEntries();
+                    } else if (isGlobalMapTableSelected) {
+                        viewToDeselectEntries.unselectAllGlobalMapEntries();
                     } else {
                         viewToDeselectEntries.unselectAllConstraintEntries();
                     }
@@ -883,6 +893,10 @@ public class UIManager extends AbstractUIManager {
             allEntriesOfCurrentTableView.addAll(dataMapTableView.getTableViewerCreatorForColumns().getInputList());
             if (selectAllTableLinks && currentZone == Zone.OUTPUTS) {
                 allEntriesOfCurrentTableView.addAll(dataMapTableView.getTableViewerCreatorForFilters().getInputList());
+            }
+//            if (selectAllTableLinks && currentZone == Zone.INPUTS) {
+            if (currentZone == Zone.INPUTS) {
+                allEntriesOfCurrentTableView.addAll(dataMapTableView.getTableViewerCreatorForGlobalMap().getInputList());
             }
         }
         int lstSize = allEntriesOfCurrentTableView.size();
@@ -973,7 +987,7 @@ public class UIManager extends AbstractUIManager {
         Display display = dataMapTableView.getDisplay();
         Point returnedPoint = new Point(0, 0);
         TableEntryProperties tableEntryProperties = null;
-        if (tableEntry instanceof IColumnEntry || tableEntry instanceof FilterTableEntry) {
+        if (tableEntry instanceof IColumnEntry || tableEntry instanceof FilterTableEntry || tableEntry instanceof GlobalMapEntry) {
             tableEntryProperties = mapperManager.getTableEntryProperties(tableEntry);
             returnedPoint = tableEntryProperties.position;
             if (forceRecalculate || returnedPoint == null) {
@@ -995,6 +1009,8 @@ public class UIManager extends AbstractUIManager {
             StyledText expressionFilterText = dataMapTableView.getExpressionFilterText();
             Point point = new Point(-dataMapTableView.getBorderWidth(), 16);
             pointFromTableViewOrigin = display.map(expressionFilterText, dataMapTableView, point);
+        } else {
+            throw new IllegalStateException("Case not found");
         }
 
         if (pointFromTableViewOrigin.y > tableViewBounds.height - TableEntriesManager.HEIGHT_REACTION) {
@@ -1069,9 +1085,17 @@ public class UIManager extends AbstractUIManager {
     public void parseAllExpressions(DataMapTableView dataMapTableView, boolean newLinksMustHaveSelectedState) {
         List<IColumnEntry> columnsEntriesList = dataMapTableView.getDataMapTable().getColumnEntries();
         parseAllExpressions(columnsEntriesList, newLinksMustHaveSelectedState);
+
         if (mapperManager.isAdvancedMap()
                 && (dataMapTableView.getZone() == Zone.INPUTS || dataMapTableView.getZone() == Zone.OUTPUTS)) {
             AbstractInOutTable table = (AbstractInOutTable) dataMapTableView.getDataMapTable();
+            if (dataMapTableView.getZone() == Zone.INPUTS) {
+                InputTable inputTable = (InputTable) table;
+                List<GlobalMapEntry> globalMapEntries = inputTable.getGlobalMapEntries();
+                if (globalMapEntries != null && !inputTable.isMainConnection()) {
+                    parseAllExpressions(globalMapEntries, newLinksMustHaveSelectedState);
+                }
+            }
             if (table.isActivateExpressionFilter()) {
                 ExpressionFilterEntry expressionFilter = table.getExpressionFilter();
                 parseExpression(expressionFilter.getExpression(), expressionFilter, newLinksMustHaveSelectedState, false, false);
@@ -1954,7 +1978,8 @@ public class UIManager extends AbstractUIManager {
                 return true;
             }
         } else if (entrySource instanceof InputColumnTableEntry
-                && (entryTarget instanceof InputColumnTableEntry && entrySource.getParent() != entryTarget.getParent() || entryTarget instanceof ExpressionFilterEntry
+                && (entryTarget instanceof InputColumnTableEntry && entrySource.getParent() != entryTarget.getParent()
+                        || entryTarget instanceof ExpressionFilterEntry || entryTarget instanceof GlobalMapEntry
                         && entryTarget.getParent() instanceof InputTable)) {
             List<InputTable> inputTables = mapperManager.getInputTables();
             int indexTableSource = inputTables.indexOf(entrySource.getParent());
@@ -2004,6 +2029,11 @@ public class UIManager extends AbstractUIManager {
             TableViewerCreator tableViewerCreatorForColumns = dataMapTableView.getTableViewerCreatorForColumns();
             if (tableViewerCreatorForColumns != exceptThisTableViewerCreator) {
                 applyActivatedCellEditors(tableViewerCreatorForColumns);
+            }
+            
+            TableViewerCreator tableViewerCreatorForGlobalMap = dataMapTableView.getTableViewerCreatorForGlobalMap();
+            if(tableViewerCreatorForGlobalMap != null && tableViewerCreatorForGlobalMap != exceptThisTableViewerCreator) {
+                applyActivatedCellEditors(tableViewerCreatorForGlobalMap);
             }
 
         }

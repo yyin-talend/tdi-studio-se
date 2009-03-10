@@ -12,34 +12,64 @@
 // ============================================================================
 package org.talend.designer.mapper.ui.visualmap.table;
 
+import java.util.List;
+
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.swt.widgets.ToolTip;
+import org.talend.commons.ui.image.EImage;
+import org.talend.commons.ui.image.ImageProvider;
+import org.talend.commons.ui.swt.advanced.dataeditor.commands.ExtendedTableRemoveCommand;
+import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.CELL_EDITOR_STATE;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
+import org.talend.commons.ui.swt.tableviewer.behavior.DefaultHeaderColumnSelectionListener;
+import org.talend.commons.ui.swt.tableviewer.behavior.DefaultTableLabelProvider;
 import org.talend.commons.ui.swt.tableviewer.behavior.IColumnImageProvider;
+import org.talend.commons.ui.swt.tableviewer.behavior.ITableCellValueModifiedListener;
+import org.talend.commons.ui.swt.tableviewer.behavior.TableCellValueModifiedEvent;
+import org.talend.commons.ui.swt.tableviewer.celleditor.DialogErrorForCellEditorListener;
 import org.talend.commons.ui.swt.tableviewer.celleditor.ExtendedTextCellEditor;
+import org.talend.commons.ui.swt.tableviewer.data.ModifiedObjectInfo;
+import org.talend.commons.ui.swt.tableviewer.tableeditor.ButtonPushImageTableEditorContent;
 import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
+import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.mapper.i18n.Messages;
-import org.talend.designer.mapper.language.LanguageProvider;
-import org.talend.designer.mapper.language.perl.PerlLanguage;
 import org.talend.designer.mapper.managers.MapperManager;
-import org.talend.designer.mapper.model.table.AbstractInOutTable;
-import org.talend.designer.mapper.model.table.ILookupType;
+import org.talend.designer.mapper.managers.UIManager;
+import org.talend.designer.mapper.model.table.IUILookupMode;
+import org.talend.designer.mapper.model.table.IUIMatchingMode;
 import org.talend.designer.mapper.model.table.InputTable;
+import org.talend.designer.mapper.model.table.TMAP_LOOKUP_MODE;
 import org.talend.designer.mapper.model.table.TMAP_MATCHING_MODE;
+import org.talend.designer.mapper.model.tableentry.GlobalMapEntry;
 import org.talend.designer.mapper.model.tableentry.InputColumnTableEntry;
+import org.talend.designer.mapper.ui.dnd.DragNDrop;
 import org.talend.designer.mapper.ui.image.ImageInfo;
 import org.talend.designer.mapper.ui.image.ImageProviderMapper;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
@@ -52,11 +82,15 @@ import org.talend.designer.mapper.ui.visualmap.zone.Zone;
  */
 public class InputDataMapTableView extends DataMapTableView {
 
-    private ToolItem dropDownItem;
+    private ToolItem dropDownMatchingModeItem;
 
-    private Menu menu = null;
+    private ToolItem dropDownLookupModeItem;
 
-    private ILookupType previousMultipleModeSelected = getInputTable().getMatchingMode() != null
+    private Menu menuMatchingMode = null;
+
+    private Menu menuLookupMode = null;
+
+    private IUIMatchingMode previousMultipleModeSelected = getInputTable().getMatchingMode() != null
             && getInputTable().getMatchingMode() != TMAP_MATCHING_MODE.ALL_ROWS ? getInputTable().getMatchingMode()
             : TMAP_MATCHING_MODE.UNIQUE_MATCH;
 
@@ -171,8 +205,23 @@ public class InputDataMapTableView extends DataMapTableView {
      * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#initTableConstraints()
      */
     @Override
-    protected void initTableFilters() {
-        // nothing
+    protected void initExtraTable() {
+
+        createGlobalMapTable();
+
+        List<GlobalMapEntry> entries = ((InputTable) getDataMapTable()).getGlobalMapEntries();
+
+        // correct partially layout problem with GTK when cell editor value is
+        // applied
+        tableViewerCreatorForGlobalMap.setAdjustWidthValue(WindowSystem.isGTK() ? -20 : ADJUST_WIDTH_VALUE);
+
+        tableViewerCreatorForGlobalMap.init(entries);
+        updateGridDataHeightForTableGlobalMap();
+        //
+        // if (WindowSystem.isGTK()) {
+        // tableViewerCreatorForGlobalMap.layout();
+        // }
+
     }
 
     /*
@@ -187,66 +236,21 @@ public class InputDataMapTableView extends DataMapTableView {
 
             if (mapperManager.isAdvancedMap()) {
 
-                // DROP DOWN
-                dropDownItem = new ToolItem(toolBarActions, SWT.DROP_DOWN | SWT.BORDER);
-                dropDownItem.setEnabled(!mapperManager.componentIsReadOnly());
-                refreshLabelForLookupTypeDropDown();
-                dropDownItem.addSelectionListener(new DropDownSelectionListener());
-                realToolbarSize.x += 70;
+                if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
+                    // LOOKUP MODE
+                    dropDownLookupModeItem = new ToolItem(toolBarActions, SWT.DROP_DOWN | SWT.BORDER);
+                    dropDownLookupModeItem.setEnabled(!mapperManager.componentIsReadOnly());
+                    refreshLabelForLookupModeDropDown();
+                    dropDownLookupModeItem.addSelectionListener(new DropDownLookupModeSelectionListener());
+                    realToolbarSize.x += 70;
+                }
 
-                // // UNIQUE_MATCH button
-                // uniqueCheck = new ToolItem(toolBarActions, SWT.CHECK);
-                // uniqueCheck.setEnabled(!mapperManager.componentIsReadOnly());
-                // realToolbarSize.x += 70;
-                // uniqueCheck.setToolTipText(Messages
-                // .getString("InputDataMapTableView.widgetTooltip.uniqueLookupTooltip"));
-                // //$NON-NLS-1$
-                // boolean isUniqueLookup = getInputTable().isUniqueMatch();
-                // // Image image = ImageProviderMapper.getImage(isUniqueLookup
-                // ? ImageInfo.CHECKED_ICON :
-                // // ImageInfo.UNCHECKED_ICON);
-                // Image image = ImageProviderMapper.getImage(isUniqueLookup ?
-                // ImageInfo.CHECKED_ICON
-                // : ImageInfo.UNCHECKED_ICON);
-                // if (WindowSystem.isGTK()) {
-                // uniqueCheck.setImage(image);
-                // uniqueCheck.setHotImage(image);
-                // } else {
-                // uniqueCheck.setImage(ImageProviderMapper.getImage(ImageInfo.UNCHECKED_ICON));
-                // uniqueCheck.setHotImage(image);
-                // }
-                // uniqueCheck.setSelection(isUniqueLookup);
-                // uniqueCheck.setText(Messages.getString("InputDataMapTableView.widgetTooltip.uniqueLabel"));
-                // //$NON-NLS-1$
-                //
-                // uniqueCheck.addSelectionListener(new SelectionListener() {
-                //
-                // public void widgetDefaultSelected(SelectionEvent e) {
-                // }
-                //
-                // public void widgetSelected(SelectionEvent e) {
-                // Image image = null;
-                // if (uniqueCheck.getSelection()) {
-                // getInputTable().setUniqueMatch(true);
-                // dropDownItem.setEnabled(false);
-                // dropDownItem.setText(TMAP_MULTIPLE_MATCHING_MODE.LAST_MATCH.getLabel());
-                // image = ImageProviderMapper.getImage(ImageInfo.CHECKED_ICON);
-                // } else {
-                // getInputTable().setUniqueMatch(false);
-                // dropDownItem.setText(getInputTable().getMultipleMatchingMode().getLabel());
-                // dropDownItem.setEnabled(true);
-                // image =
-                // ImageProviderMapper.getImage(ImageInfo.UNCHECKED_ICON);
-                // }
-                // if (WindowSystem.isGTK()) {
-                // uniqueCheck.setImage(image);
-                // uniqueCheck.setHotImage(image);
-                // } else {
-                // uniqueCheck.setHotImage(image);
-                // }
-                // }
-                //
-                // });
+                // MATCHING MODE
+                dropDownMatchingModeItem = new ToolItem(toolBarActions, SWT.DROP_DOWN | SWT.BORDER);
+                dropDownMatchingModeItem.setEnabled(!mapperManager.componentIsReadOnly());
+                refreshLabelForMatchingModeDropDown();
+                dropDownMatchingModeItem.addSelectionListener(new DropDownMatchingModeSelectionListener());
+                realToolbarSize.x += 70;
             }
 
             // Inner join button
@@ -255,9 +259,6 @@ public class InputDataMapTableView extends DataMapTableView {
             realToolbarSize.x += 70;
             innerJoinCheck.setToolTipText(Messages.getString("InputDataMapTableView.widgetTooltip.rejectMainRow")); //$NON-NLS-1$
             boolean isInnerJoin = getInputTable().isInnerJoin();
-            // Image image = ImageProviderMapper.getImage(isInnerJoin ?
-            // ImageInfo.CHECKED_ICON :
-            // ImageInfo.UNCHECKED_ICON);
             Image image = ImageProviderMapper.getImage(isInnerJoin ? ImageInfo.CHECKED_ICON : ImageInfo.UNCHECKED_ICON);
             if (WindowSystem.isGTK()) {
                 innerJoinCheck.setImage(image);
@@ -358,24 +359,37 @@ public class InputDataMapTableView extends DataMapTableView {
     /**
      * Listens to widgetSelected() events on SWT.DROP_DOWN type ToolItems and opens/closes a menu when appropriate.
      */
-    class DropDownSelectionListener implements SelectionListener {
+    class DropDownMatchingModeSelectionListener implements SelectionListener {
 
         private boolean visible;
 
         public void widgetSelected(SelectionEvent event) {
             // Create the menu if it has not already been created
-            if (menu == null) {
+            if (menuMatchingMode == null) {
                 // Lazy create the menu.
-                menu = new Menu(getShell());
+                menuMatchingMode = new Menu(getShell(), SWT.POP_UP);
 
-                ILookupType[] availableJoins = TMAP_MATCHING_MODE.values();
+                IUIMatchingMode[] availableJoins = TMAP_MATCHING_MODE.values();
 
                 for (int i = 0; i < availableJoins.length; ++i) {
                     final String text = availableJoins[i].getLabel();
                     if (text.length() != 0) {
-                        MenuItem menuItem = new MenuItem(menu, SWT.NONE);
+
+                        MenuItem menuItem = new MenuItem(menuMatchingMode, SWT.NONE);
                         menuItem.setData(availableJoins[i]);
                         menuItem.setText(text);
+
+                        final ToolTip tip = new ToolTip(getShell(), SWT.BALLOON | SWT.ICON_INFORMATION);
+                        tip.setMessage("Balloon Message Goes Here!");
+                        tip.setText("Balloon Title goes here.");
+
+                        menuItem.addListener(SWT.MouseHover, new Listener() {
+
+                            public void handleEvent(Event e) {
+                                tip.setVisible(true);
+                            }
+                        });
+
                         enableMenuItemMatchingMode(menuItem);
                         if (availableJoins[i] == getInputTable().getMatchingMode()) {
                             menuItem.setImage(ImageProviderMapper.getImage(ImageInfo.CHECKED_ICON));
@@ -390,16 +404,116 @@ public class InputDataMapTableView extends DataMapTableView {
                             @Override
                             public void widgetSelected(SelectionEvent e) {
                                 MenuItem menuItem = (MenuItem) e.widget;
-                                selectMenuItem(menuItem);
-                                ILookupType lookupType = (ILookupType) menuItem.getData();
+                                selectMatchingModeItem(menuItem);
+                                IUIMatchingMode lookupType = (IUIMatchingMode) menuItem.getData();
                                 getInputTable().setMatchingMode(lookupType);
-                                setMenuVisible(false);
-                                refreshLabelForLookupTypeDropDown();
+                                setMenuMatchingModeVisible(false);
+                                refreshLabelForMatchingModeDropDown();
                             }
 
                         });
                     } else {
-                        new MenuItem(menu, SWT.SEPARATOR);
+                        new MenuItem(menuMatchingMode, SWT.SEPARATOR);
+                    }
+                }
+            }
+
+            /**
+             * A selection event will be fired when a drop down tool item is selected in the main area and in the drop
+             * down arrow. Examine the event detail to determine where the widget was selected.
+             */
+
+            /*
+             * The drop down arrow was selected.
+             */
+            if (visible) {
+                // Hide the menu to give the Arrow the appearance of being a
+                // toggle button.
+                setMenuMatchingModeVisible(false);
+            } else {
+                // Position the menu below and vertically aligned with the the
+                // drop down tool button.
+                final ToolItem toolItem = (ToolItem) event.widget;
+                final ToolBar toolBar = toolItem.getParent();
+
+                Rectangle toolItemBounds = toolItem.getBounds();
+                Point point = toolBar.toDisplay(new Point(toolItemBounds.x, toolItemBounds.y));
+                menuMatchingMode.setLocation(point.x, point.y + toolItemBounds.height);
+                MenuItem[] menuItems = menuMatchingMode.getItems();
+                for (int i = 0; i < menuItems.length; i++) {
+                    MenuItem menuItem = menuItems[i];
+                    enableMenuItemMatchingMode(menuItem);
+                }
+                setMenuMatchingModeVisible(true);
+            }
+        }
+
+        private void setMenuMatchingModeVisible(boolean visible) {
+            menuMatchingMode.setVisible(visible);
+            this.visible = visible;
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
+         */
+        public void widgetDefaultSelected(SelectionEvent e) {
+            System.out.println("widgetDefaultSelected"); //$NON-NLS-1$
+        }
+    }
+
+    /**
+     * Listens to widgetSelected() events on SWT.DROP_DOWN type ToolItems and opens/closes a menu when appropriate.
+     */
+    class DropDownLookupModeSelectionListener implements SelectionListener {
+
+        private boolean visible;
+
+        public void widgetSelected(SelectionEvent event) {
+            // Create the menu if it has not already been created
+            if (menuLookupMode == null) {
+                // Lazy create the menu.
+                menuLookupMode = new Menu(getShell());
+
+                // IUILookupMode[] availableJoins = TMAP_LOOKUP_MODE.values();
+                IUILookupMode[] availableJoins = { TMAP_LOOKUP_MODE.LOAD_ONCE, TMAP_LOOKUP_MODE.RELOAD, };
+
+                for (int i = 0; i < availableJoins.length; ++i) {
+                    final String text = availableJoins[i].getLabel();
+                    if (text.length() != 0) {
+                        MenuItem menuItem = new MenuItem(menuLookupMode, SWT.NONE);
+                        menuItem.setData(availableJoins[i]);
+                        menuItem.setText(text);
+                        // enableMenuItemMatchingMode(menuItem);
+                        if (availableJoins[i] == getInputTable().getLookupMode()) {
+                            menuItem.setImage(ImageProviderMapper.getImage(ImageInfo.CHECKED_ICON));
+                        }
+
+                        /*
+                         * Add a menu selection listener so that the menu is hidden when the user selects an item from
+                         * the drop down menu.
+                         */
+                        menuItem.addSelectionListener(new SelectionAdapter() {
+
+                            @Override
+                            public void widgetSelected(SelectionEvent e) {
+                                MenuItem menuItem = (MenuItem) e.widget;
+                                selectLookupModeItem(menuItem);
+                                IUILookupMode lookupType = (IUILookupMode) menuItem.getData();
+                                getInputTable().setLookupMode(lookupType);
+                                if (lookupType == TMAP_LOOKUP_MODE.RELOAD || lookupType == TMAP_LOOKUP_MODE.CACHE_OR_RELOAD) {
+                                    showTableGlobalMap(true);
+                                } else {
+                                    showTableGlobalMap(false);
+                                }
+                                setMenuVisible(false);
+                                refreshLabelForLookupModeDropDown();
+                            }
+
+                        });
+                    } else {
+                        new MenuItem(menuLookupMode, SWT.SEPARATOR);
                     }
                 }
             }
@@ -424,18 +538,18 @@ public class InputDataMapTableView extends DataMapTableView {
 
                 Rectangle toolItemBounds = toolItem.getBounds();
                 Point point = toolBar.toDisplay(new Point(toolItemBounds.x, toolItemBounds.y));
-                menu.setLocation(point.x, point.y + toolItemBounds.height);
-                MenuItem[] menuItems = menu.getItems();
+                menuLookupMode.setLocation(point.x, point.y + toolItemBounds.height);
+                MenuItem[] menuItems = menuLookupMode.getItems();
                 for (int i = 0; i < menuItems.length; i++) {
                     MenuItem menuItem = menuItems[i];
-                    enableMenuItemMatchingMode(menuItem);
+                    enableMenuItemLoookupMode(menuItem);
                 }
                 setMenuVisible(true);
             }
         }
 
         private void setMenuVisible(boolean visible) {
-            menu.setVisible(visible);
+            menuLookupMode.setVisible(visible);
             this.visible = visible;
         }
 
@@ -459,8 +573,8 @@ public class InputDataMapTableView extends DataMapTableView {
         return !getInputTable().isMainConnection() && mapperManager.isAdvancedMap();
     }
 
-    public void refreshLabelForLookupTypeDropDown() {
-        ILookupType matchingMode = getInputTable().getMatchingMode();
+    public void refreshLabelForMatchingModeDropDown() {
+        IUIMatchingMode matchingMode = getInputTable().getMatchingMode();
         if (matchingMode == TMAP_MATCHING_MODE.ALL_ROWS) {
             if (innerJoinCheck != null) {
                 innerJoinCheck.setEnabled(false);
@@ -476,9 +590,24 @@ public class InputDataMapTableView extends DataMapTableView {
             updateViewAfterChangeInnerJoinCheck();
         }
 
-        String text = matchingMode.getLabel();
-        dropDownItem.setText(text);
-        dropDownItem.setToolTipText(text);
+        dropDownMatchingModeItem.setText(matchingMode.getLabel());
+        dropDownMatchingModeItem.setToolTipText(matchingMode.getLabel());
+
+        Point sizeToolBar = toolBarActions.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+        GridData gridData = (GridData) toolBarActions.getLayoutData();
+        if (gridData != null) {
+            gridData.widthHint = sizeToolBar.x;
+            // gridData.widthHint -= 60;
+            toolBarActions.getParent().layout();
+        }
+
+    }
+
+    public void refreshLabelForLookupModeDropDown() {
+        IUILookupMode lookupMode = getInputTable().getLookupMode();
+
+        dropDownLookupModeItem.setText(lookupMode.getLabel());
+        dropDownLookupModeItem.setToolTipText(lookupMode.getTooltipText());
 
         Point sizeToolBar = toolBarActions.computeSize(SWT.DEFAULT, SWT.DEFAULT);
         GridData gridData = (GridData) toolBarActions.getLayoutData();
@@ -502,25 +631,25 @@ public class InputDataMapTableView extends DataMapTableView {
             boolean stateAtLeastOneHashKey = mapperManager.isTableHasAtLeastOneHashKey(getInputTable());
             if (forceEvaluation || previousStateAtLeastOneHashKey != stateAtLeastOneHashKey) {
                 if (stateAtLeastOneHashKey) {
-                    dropDownItem.setText(previousMultipleModeSelected.getLabel());
-                    dropDownItem.setToolTipText(previousMultipleModeSelected.getLabel());
+                    dropDownMatchingModeItem.setText(previousMultipleModeSelected.getLabel());
+                    dropDownMatchingModeItem.setToolTipText(previousMultipleModeSelected.getLabel());
                     getInputTable().setMatchingMode(previousMultipleModeSelected);
-                    selectMenuItem(previousMultipleModeSelected);
+                    selectMatchingModeMenuItem(previousMultipleModeSelected);
                     getInputTable().setInnerJoin(previousInnerJoinSelection);
                     innerJoinCheck.setEnabled(true);
                     updateViewAfterChangeInnerJoinCheck();
                 } else {
-                    dropDownItem.setText(TMAP_MATCHING_MODE.ALL_ROWS.getLabel());
-                    dropDownItem.setToolTipText(TMAP_MATCHING_MODE.ALL_ROWS.getLabel());
+                    dropDownMatchingModeItem.setText(TMAP_MATCHING_MODE.ALL_ROWS.getLabel());
+                    dropDownMatchingModeItem.setToolTipText(TMAP_MATCHING_MODE.ALL_ROWS.getLabel());
                     getInputTable().setMatchingMode(TMAP_MATCHING_MODE.ALL_ROWS);
-                    selectMenuItem(TMAP_MATCHING_MODE.ALL_ROWS);
+                    selectMatchingModeMenuItem(TMAP_MATCHING_MODE.ALL_ROWS);
                     getInputTable().setInnerJoin(false);
                     innerJoinCheck.setEnabled(false);
                 }
 
                 previousStateAtLeastOneHashKey = stateAtLeastOneHashKey;
             }
-            refreshLabelForLookupTypeDropDown();
+            refreshLabelForMatchingModeDropDown();
 
         }
 
@@ -553,12 +682,43 @@ public class InputDataMapTableView extends DataMapTableView {
      * @param menuItem
      */
     private void enableMenuItemMatchingMode(MenuItem menuItem) {
-        ILookupType lookupType = (ILookupType) menuItem.getData();
-        if (lookupType == TMAP_MATCHING_MODE.ALL_ROWS && getInputTable().getMatchingMode() != TMAP_MATCHING_MODE.ALL_ROWS
-                || lookupType != TMAP_MATCHING_MODE.ALL_ROWS && getInputTable().getMatchingMode() == TMAP_MATCHING_MODE.ALL_ROWS) {
+        IUIMatchingMode matchingMode = (IUIMatchingMode) menuItem.getData();
+        if (matchingMode == TMAP_MATCHING_MODE.ALL_ROWS && getInputTable().getMatchingMode() != TMAP_MATCHING_MODE.ALL_ROWS
+                || matchingMode != TMAP_MATCHING_MODE.ALL_ROWS
+                && getInputTable().getMatchingMode() == TMAP_MATCHING_MODE.ALL_ROWS) {
             menuItem.setEnabled(false);
         } else {
             menuItem.setEnabled(true);
+        }
+    }
+
+    /**
+     * DOC amaumont Comment method "enableMenuItemMatchingMode".
+     * 
+     * @param availableJoins
+     * @param i
+     * @param menuItem
+     */
+    private void enableMenuItemLoookupMode(MenuItem menuItem) {
+        // IUILookupMode lookupMode = (IUILookupMode) menuItem.getData();
+        menuItem.setEnabled(true);
+    }
+
+    /**
+     * DOC amaumont Comment method "selectMenuItem".
+     * 
+     * @param menuItem
+     */
+    private void selectMatchingModeItem(MenuItem menuItem) {
+        if (menuMatchingMode != null) {
+            MenuItem[] menuItems = menuMatchingMode.getItems();
+            for (int j = 0; j < menuItems.length; j++) {
+                menuItems[j].setImage(null);
+            }
+            menuItem.setImage(ImageProviderMapper.getImage(ImageInfo.CHECKED_ICON));
+
+            TMAP_MATCHING_MODE matchingMode = (TMAP_MATCHING_MODE) menuItem.getData();
+            enableDisablePersistentMode(matchingMode);
         }
     }
 
@@ -567,16 +727,15 @@ public class InputDataMapTableView extends DataMapTableView {
      * 
      * @param menuItem
      */
-    private void selectMenuItem(MenuItem menuItem) {
-        if (menu != null) {
-            MenuItem[] menuItems = menu.getItems();
+    private void selectLookupModeItem(MenuItem menuItem) {
+        if (menuLookupMode != null) {
+            MenuItem[] menuItems = menuLookupMode.getItems();
             for (int j = 0; j < menuItems.length; j++) {
                 menuItems[j].setImage(null);
             }
             menuItem.setImage(ImageProviderMapper.getImage(ImageInfo.CHECKED_ICON));
 
-            TMAP_MATCHING_MODE matchingMode = (TMAP_MATCHING_MODE) menuItem.getData();
-            enableDisablePersistentMode(matchingMode);
+            // TMAP_LOOKUP_MODE matchingMode = (TMAP_LOOKUP_MODE) menuItem.getData();
         }
     }
 
@@ -611,12 +770,29 @@ public class InputDataMapTableView extends DataMapTableView {
      * 
      * @param menuItem
      */
-    private void selectMenuItem(ILookupType lookupType) {
-        if (menu != null) {
-            MenuItem[] menuItems = menu.getItems();
+    private void selectMatchingModeMenuItem(IUIMatchingMode lookupType) {
+        if (menuMatchingMode != null) {
+            MenuItem[] menuItems = menuMatchingMode.getItems();
             for (int j = 0; j < menuItems.length; j++) {
                 if (menuItems[j].getData() == lookupType) {
-                    selectMenuItem(menuItems[j]);
+                    selectMatchingModeItem(menuItems[j]);
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * DOC amaumont Comment method "selectMenuItem".
+     * 
+     * @param menuItem
+     */
+    private void selectLookupModeMenuItem(IUIMatchingMode lookupType) {
+        if (menuLookupMode != null) {
+            MenuItem[] menuItems = menuLookupMode.getItems();
+            for (int j = 0; j < menuItems.length; j++) {
+                if (menuItems[j].getData() == lookupType) {
+                    selectMatchingModeItem(menuItems[j]);
                     break;
                 }
             }
@@ -648,6 +824,215 @@ public class InputDataMapTableView extends DataMapTableView {
             }
         }
 
+    }
+
+    protected void createGlobalMapTable() {
+
+        this.extendedTableViewerForGlobalMap = new AbstractExtendedTableViewer<GlobalMapEntry>(
+                ((InputTable) abstractDataMapTable).getTableGlobalMapEntriesModel(), centerComposite) {
+
+            @Override
+            protected void createColumns(TableViewerCreator<GlobalMapEntry> tableViewerCreator, Table table) {
+                createGlobalMapColumns(tableViewerCreator);
+            }
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see
+             * org.talend.commons.ui.swt.extended.macrotable.AbstractExtendedTableViewer#setTableViewerCreatorOptions
+             * (org.talend.commons.ui.swt.tableviewer.TableViewerCreator)
+             */
+            @Override
+            protected void setTableViewerCreatorOptions(TableViewerCreator<GlobalMapEntry> newTableViewerCreator) {
+                super.setTableViewerCreatorOptions(newTableViewerCreator);
+                newTableViewerCreator.setColumnsResizableByDefault(true);
+                newTableViewerCreator.setBorderVisible(false);
+                newTableViewerCreator.setLayoutMode(LAYOUT_MODE.FILL_HORIZONTAL);
+                newTableViewerCreator.setKeyboardManagementForCellEdition(true);
+                newTableViewerCreator.setHorizontalScroll(false);
+                newTableViewerCreator.setVerticalScroll(false);
+                // tableViewerCreatorForColumns.setUseCustomItemColoring(this.getDataMapTable()
+                // instanceof
+                // AbstractInOutTable);
+                newTableViewerCreator.setFirstColumnMasked(true);
+
+            }
+
+        };
+        tableViewerCreatorForGlobalMap = this.extendedTableViewerForGlobalMap.getTableViewerCreator();
+        this.extendedTableViewerForGlobalMap.setCommandStack(mapperManager.getCommandStack());
+
+        tableForGlobalMap = tableViewerCreatorForGlobalMap.getTable();
+        tableForGlobalMapGridData = new GridData(GridData.FILL_HORIZONTAL);
+        tableForGlobalMap.setLayoutData(tableForGlobalMapGridData);
+
+        boolean tableGlobalMapVisible = false;
+        if (abstractDataMapTable instanceof InputTable) {
+            IUILookupMode lookupMode = ((InputTable) abstractDataMapTable).getLookupMode();
+            tableGlobalMapVisible = lookupMode == TMAP_LOOKUP_MODE.RELOAD || lookupMode == TMAP_LOOKUP_MODE.CACHE_OR_RELOAD;
+        }
+
+        tableForGlobalMapGridData.exclude = !tableGlobalMapVisible;
+        tableForGlobalMap.setVisible(tableGlobalMapVisible);
+
+        if (!mapperManager.componentIsReadOnly()) {
+            new DragNDrop(mapperManager, tableForGlobalMap, false, true);
+        }
+
+        tableViewerCreatorForGlobalMap.addCellValueModifiedListener(new ITableCellValueModifiedListener() {
+
+            public void cellValueModified(TableCellValueModifiedEvent e) {
+                unselectAllEntriesIfErrorDetected(e);
+            }
+        });
+
+        final TableViewer tableViewer = tableViewerCreatorForGlobalMap.getTableViewer();
+
+        tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+
+            public void selectionChanged(SelectionChangedEvent event) {
+                ISelection selection = event.getSelection();
+                selectThisDataMapTableView();
+                UIManager uiManager = mapperManager.getUiManager();
+                uiManager.selectLinks(InputDataMapTableView.this, uiManager.extractSelectedTableEntries(selection), false, false);
+            }
+
+        });
+
+        tableForGlobalMap.addListener(SWT.KeyDown, new Listener() {
+
+            public void handleEvent(Event event) {
+                processEnterKeyDown(tableViewerCreatorForGlobalMap, event);
+            }
+
+        });
+
+        tableViewerCreatorForGlobalMap.setLabelProvider(new DefaultTableLabelProvider(tableViewerCreatorForGlobalMap) {
+
+            @Override
+            public Color getBackground(Object element, int columnIndex) {
+                return getBackgroundCellColor(tableViewerCreator, element, columnIndex);
+            }
+
+            @Override
+            public Color getForeground(Object element, int columnIndex) {
+                return getForegroundCellColor(tableViewerCreator, element, columnIndex);
+            }
+
+        });
+
+        initShowMessageErrorListener(tableForGlobalMap);
+    }
+
+    public void createGlobalMapColumns(final TableViewerCreator<GlobalMapEntry> tableViewerCreatorForGlobalMap) {
+        TableViewerCreatorColumn<GlobalMapEntry, String> column = new TableViewerCreatorColumn<GlobalMapEntry, String>(
+                tableViewerCreatorForGlobalMap);
+        //        column.setTitle(Messages.getString("InputDataMapTableView.columnTitle.globalMapVar")); //$NON-NLS-1$
+        column.setTitle("Expr."); //$NON-NLS-1$
+        column.setId(DataMapTableView.ID_EXPRESSION_COLUMN);
+        final ExtendedTextCellEditor expressionCellEditor = createExpressionCellEditor(tableViewerCreatorForGlobalMap, column,
+                new Zone[] { Zone.INPUTS }, false);
+        column.setBeanPropertyAccessors(new IBeanPropertyAccessors<GlobalMapEntry, String>() {
+
+            public String get(GlobalMapEntry bean) {
+                return bean.getExpression();
+            }
+
+            public void set(GlobalMapEntry bean, String value) {
+                bean.setExpression(value);
+                mapperManager.getProblemsManager().checkProblemsForTableEntry(bean, true);
+            }
+
+        });
+        column.setModifiable(true);
+        column.setDefaultInternalValue(""); //$NON-NLS-1$
+        column.setWeight(COLUMN_EXPRESSION_SIZE_WEIGHT);
+        column.setMoveable(false);
+        column.setResizable(true);
+
+        column = new TableViewerCreatorColumn<GlobalMapEntry, String>(tableViewerCreatorForGlobalMap);
+        column.setTitle("globalMap Key");
+        column.setId(DataMapTableView.ID_NAME_COLUMN);
+        column.setModifiable(true);
+        column.setBeanPropertyAccessors(new IBeanPropertyAccessors<GlobalMapEntry, String>() {
+
+            public String get(GlobalMapEntry bean) {
+                return bean.getName();
+            }
+
+            public void set(GlobalMapEntry bean, String value) {
+                bean.setName(value);
+            }
+
+        });
+        column.setWeight(COLUMN_NAME_SIZE_WEIGHT);
+        final TextCellEditor cellEditor = new TextCellEditor(tableViewerCreatorForGlobalMap.getTable());
+        column.setCellEditor(cellEditor);
+
+        // Column with remove button
+        column = new TableViewerCreatorColumn(tableViewerCreatorForGlobalMap);
+        column.setTitle(""); //$NON-NLS-1$
+        column.setDefaultDisplayedValue(""); //$NON-NLS-1$
+        column.setToolTipHeader("Add new globalMap variable"); //$NON-NLS-1$
+        // column.setWeight(10);
+        column.setWidth(25);
+        column.setMoveable(false);
+        column.setResizable(true);
+        column.setImageHeader(org.talend.commons.ui.image.ImageProvider.getImage(org.talend.commons.ui.image.ImageProvider
+                .getImageDesc(EImage.ADD_ICON)));
+        column.setTableColumnSelectionListener(new DefaultHeaderColumnSelectionListener(column, tableViewerCreatorForGlobalMap) {
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+             */
+            public void widgetSelected(SelectionEvent arg0) {
+
+                getInputTable().addGlobalMapEntry(new GlobalMapEntry(getInputTable(), "\"myKey\"", ""));
+
+                updateGridDataHeightForTableGlobalMap();
+                resizeAtExpandedSize();
+
+            }
+
+        });
+        ButtonPushImageTableEditorContent buttonImage = new ButtonPushImageTableEditorContent() {
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see
+             * org.talend.commons.ui.swt.tableviewer.tableeditor.ButtonImageTableEditorContent#selectionEvent(org.talend
+             * .commons.ui.swt.tableviewer.TableViewerCreatorColumn, java.lang.Object)
+             */
+            @Override
+            protected void selectionEvent(TableViewerCreatorColumn column, Object bean) {
+                ExtendedTableRemoveCommand removeCommand = new ExtendedTableRemoveCommand(bean, extendedTableViewerForGlobalMap
+                        .getExtendedTableModel());
+                mapperManager.removeTableEntry((ITableEntry) bean);
+                mapperManager.executeCommand(removeCommand);
+                tableViewerCreatorForGlobalMap.getTableViewer().refresh();
+                List list = tableViewerCreatorForGlobalMap.getInputList();
+                updateGridDataHeightForTableGlobalMap();
+                resizeAtExpandedSize();
+            }
+
+        };
+        buttonImage.setImage(ImageProvider.getImage(EImage.MINUS_ICON));
+        column.setTableEditorContent(buttonImage);
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#unselectAllGlobalMapEntries()
+     */
+    @Override
+    public void unselectAllGlobalMapEntries() {
+        tableViewerCreatorForGlobalMap.getSelectionHelper().deselectAll();
     }
 
 }

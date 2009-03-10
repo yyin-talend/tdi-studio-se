@@ -77,6 +77,9 @@ public class TableManager {
         if (view.getTableViewerCreatorForFilters() != null) {
             swtTableToView.put(view.getTableViewerCreatorForFilters().getTable(), view);
         }
+        if (view.getTableViewerCreatorForGlobalMap() != null) {
+            swtTableToView.put(view.getTableViewerCreatorForGlobalMap().getTable(), view);
+        }
         abstractDataMapTableToView.put(tableData, view);
     }
 

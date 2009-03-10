@@ -16,8 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
-import org.talend.core.language.ECodeLanguage;
-import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EParameterFieldType;

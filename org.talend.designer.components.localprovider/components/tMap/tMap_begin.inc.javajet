@@ -138,11 +138,11 @@
 				%>
 				.clone()
 				<%}%>;
-	<%
-	
-} else {
-
-	%>
+			<%
+			
+			} else {
+			
+			%>
 
 	org.talend.designer.components.commons.AdvancedMemoryLookup<<%=tableName%>Struct> tHash_Lookup_<%=tableName%> = 
 		(org.talend.designer.components.commons.AdvancedMemoryLookup<<%=tableName%>Struct>) 

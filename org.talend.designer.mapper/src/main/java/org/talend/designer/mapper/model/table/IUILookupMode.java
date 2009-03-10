@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.designer.mapper.model.table;
 
-import org.talend.designer.components.commons.AdvancedLookup.MATCHING_MODE;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -20,9 +19,11 @@ import org.talend.designer.components.commons.AdvancedLookup.MATCHING_MODE;
  * $Id$
  * 
  */
-public interface ILookupType {
+public interface IUILookupMode {
 
     public String getLabel();
 
-    public MATCHING_MODE getMultipleMatchingMode();
+    public String getTooltipText();
+    
+    public LOOKUP_MODE getLookupMode();
 }

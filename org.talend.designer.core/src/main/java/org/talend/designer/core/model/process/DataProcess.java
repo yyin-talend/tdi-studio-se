@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.axis.tools.ant.wsdl.Mapper;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IMultipleComponentConnection;
@@ -740,6 +741,15 @@ public class DataProcess {
         for (IConnection connection : graphicalNode.getOutgoingConnections()) {
             if (connection.isActivate() && connection.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_HASH)) {
 
+                boolean runAfter = true;
+                INode target = connection.getTarget();
+                if (target != null) {
+                    IExternalNode externalNode = target.getExternalNode();
+                    if (externalNode != null) {
+                        runAfter = externalNode.isRunRefSubProcessAtStart(connection.getUniqueName());
+                    }
+                }
+
                 INode refSource = buildCheckMap.get(graphicalNode);
 
                 if (refSource.getComponent().isHashComponent()) {
@@ -762,29 +772,33 @@ public class DataProcess {
                 // continue;
                 // }
 
-                // create a link before between the two subprocess
-                DataConnection dataConnec = new DataConnection();
-                dataConnec.setActivate(connection.isActivate());
-                dataConnec.setLineStyle(EConnectionType.RUN_AFTER);
-                dataConnec.setTraceConnection(connection.isTraceConnection());
-                dataConnec.setTracesCondition(connection.getTracesCondition());
-                dataConnec.setEnabledTraceColumns(connection.getEnabledTraceColumns());
-                // dataConnec.setLineStyle(EConnectionType.THEN_RUN);
-                if (!subDataNodeStartSource.getMetadataList().isEmpty()) {
-                    dataConnec.setMetadataTable(subDataNodeStartSource.getMetadataList().get(0));
-                }
-                dataConnec.setName("after_" + subDataNodeStartSource.getUniqueName()); //$NON-NLS-1$
-                // dataConnec.setConnectorName(EConnectionType.THEN_RUN.getName());
-                dataConnec.setConnectorName(EConnectionType.RUN_AFTER.getName());
-                dataConnec.setSource(subDataNodeStartSource);
-                // dataConnec.setSource(subDataNodeStartTarget);
-                dataConnec.setTarget(subDataNodeStartTarget);
-                // dataConnec.setTarget(subDataNodeStartSource);
-
                 List<IConnection> outgoingConnections = (List<IConnection>) subDataNodeStartSource.getOutgoingConnections();
-                outgoingConnections.add(dataConnec);
                 List<IConnection> incomingConnections = (List<IConnection>) subDataNodeStartTarget.getIncomingConnections();
-                incomingConnections.add(dataConnec);
+                DataConnection dataConnec = null;
+                
+                if (runAfter) {
+                    // create a link before between the two subprocess
+                    dataConnec = new DataConnection();
+                    dataConnec.setActivate(connection.isActivate());
+                    dataConnec.setLineStyle(EConnectionType.RUN_AFTER);
+                    dataConnec.setTraceConnection(connection.isTraceConnection());
+                    dataConnec.setTracesCondition(connection.getTracesCondition());
+                    dataConnec.setEnabledTraceColumns(connection.getEnabledTraceColumns());
+                    // dataConnec.setLineStyle(EConnectionType.THEN_RUN);
+                    if (!subDataNodeStartSource.getMetadataList().isEmpty()) {
+                        dataConnec.setMetadataTable(subDataNodeStartSource.getMetadataList().get(0));
+                    }
+                    dataConnec.setName("after_" + subDataNodeStartSource.getUniqueName()); //$NON-NLS-1$
+                    // dataConnec.setConnectorName(EConnectionType.THEN_RUN.getName());
+                    dataConnec.setConnectorName(EConnectionType.RUN_AFTER.getName());
+                    dataConnec.setSource(subDataNodeStartSource);
+                    // dataConnec.setSource(subDataNodeStartTarget);
+                    dataConnec.setTarget(subDataNodeStartTarget);
+                    // dataConnec.setTarget(subDataNodeStartSource);
+
+                    outgoingConnections.add(dataConnec);
+                    incomingConnections.add(dataConnec);
+                }
 
                 // add a new hash node
                 // (to replace by a Node maybe that will take the informations of an IComponent)

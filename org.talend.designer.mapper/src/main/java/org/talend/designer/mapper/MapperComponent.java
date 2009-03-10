@@ -49,6 +49,7 @@ import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.IHashConfiguration;
 import org.talend.core.model.process.IHashableColumn;
 import org.talend.core.model.process.IHashableInputConnections;
+import org.talend.core.model.process.ILookupMode;
 import org.talend.core.model.process.IMatchingMode;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.temp.ECodePart;
@@ -62,6 +63,8 @@ import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.language.generation.GenerationManager;
 import org.talend.designer.mapper.language.generation.GenerationManagerFactory;
+import org.talend.designer.mapper.model.table.LOOKUP_MODE;
+import org.talend.designer.mapper.model.table.TMAP_LOOKUP_MODE;
 import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
 import org.talend.designer.mapper.utils.DataMapExpressionParser;
 import org.talend.designer.mapper.utils.MapperHelper;
@@ -558,6 +561,11 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
                     matchingMode = MATCHING_MODE.UNIQUE_MATCH;
                 }
 
+                ILookupMode lookupMode = LOOKUP_MODE.parse(inputTable.getLookupMode());
+                if (lookupMode == null) {
+                    lookupMode = LOOKUP_MODE.LOAD_ONCE;
+                }
+
                 IElementParameter tempFolderElem = getElementParameter("TEMPORARY_DATA_DIRECTORY"); //$NON-NLS-1$
                 String tempFolder = null;
                 if (tempFolderElem != null) {
@@ -641,6 +649,28 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
 
         }
         return false;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.AbstractExternalNode#isRunRefSubProcessAtStart(java.lang.String)
+     */
+    @Override
+    public boolean isRunRefSubProcessAtStart(String connectionName) {
+        if (externalData != null) {
+            List<ExternalMapperTable> tables = new ArrayList<ExternalMapperTable>(externalData.getInputTables());
+            for (ExternalMapperTable table : tables) {
+                if (table.getName().equals(connectionName)) {
+                    String lookupMode = table.getLookupMode();
+                    if (TMAP_LOOKUP_MODE.RELOAD.name().equals(lookupMode)
+                            || TMAP_LOOKUP_MODE.CACHE_OR_RELOAD.name().equals(lookupMode)) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 
 }

@@ -58,11 +58,13 @@ import org.talend.designer.mapper.model.table.VarsTable;
 import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
 import org.talend.designer.mapper.model.tableentry.ExpressionFilterEntry;
 import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
+import org.talend.designer.mapper.model.tableentry.GlobalMapEntry;
 import org.talend.designer.mapper.model.tableentry.InputColumnTableEntry;
 import org.talend.designer.mapper.model.tableentry.OutputColumnTableEntry;
 import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
 import org.talend.designer.mapper.model.tableentry.VarTableEntry;
 import org.talend.designer.mapper.ui.automap.AutoMapper;
+import org.talend.designer.mapper.ui.commands.AddGlobalMapEntryCommand;
 import org.talend.designer.mapper.ui.commands.AddVarEntryCommand;
 import org.talend.designer.mapper.ui.visualmap.TableEntryProperties;
 import org.talend.designer.mapper.ui.visualmap.table.DataMapTableView;
@@ -456,6 +458,29 @@ public class MapperManager extends AbstractMapperManager {
 
         AddVarEntryCommand varEntryCommand = new AddVarEntryCommand(tableEntriesManager, dataMapTableEntry, index);
         executeCommand(varEntryCommand);
+
+        return dataMapTableEntry;
+    }
+
+    /**
+     * 
+     * @param dataMapTableView
+     * @param index
+     * @param type TODO
+     * @param metadataColumn, can be null if added in VarsTable
+     */
+    public GlobalMapEntry addNewGlobalMapEntry(DataMapTableView dataMapTableView, ITableEntry tableEntrySource, Integer index) {
+        IDataMapTable abstractDataMapTable = dataMapTableView.getDataMapTable();
+        GlobalMapEntry dataMapTableEntry = null;
+        if (dataMapTableView.getZone() == Zone.INPUTS) {
+            dataMapTableEntry = new GlobalMapEntry(abstractDataMapTable, "\"" + tableEntrySource.getParentName() + "."
+                    + tableEntrySource.getName() + "\"", null);
+        } else {
+            throw new IllegalArgumentException(Messages.getString("MapperManager.exceptionMessage.useOtherSignature")); //$NON-NLS-1$
+        }
+
+        AddGlobalMapEntryCommand command = new AddGlobalMapEntryCommand(tableEntriesManager, dataMapTableEntry, index);
+        executeCommand(command);
 
         return dataMapTableEntry;
     }

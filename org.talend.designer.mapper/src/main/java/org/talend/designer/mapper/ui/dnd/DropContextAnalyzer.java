@@ -134,7 +134,8 @@ public class DropContextAnalyzer {
         isInputToInput = false;
         mapOneToOneAuthorized = true;
 
-        if (targetIsExpressionFilterText() || (targetTableIsFiltersTable() || draggedData.getTransferableEntryList().size() <= 1)) {
+        if (targetIsExpressionFilterText()
+                || (targetTableIsFiltersTable() || targetTableIsGlobalMapTable() || draggedData.getTransferableEntryList().size() <= 1)) {
             mapOneToOneAuthorized = false;
         }
 
@@ -241,10 +242,19 @@ public class DropContextAnalyzer {
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     private void analyzeCursorOverExpressionCell() {
+        boolean targetTableIsGlobalMapTable = targetTableIsGlobalMapTable(dataMapTableViewTarget);
+
         DataMapTableView dataMapTableView = mapperManager.retrieveDataMapTableView(currentTableTarget);
-        TableViewerCreator tableViewerCreatorForColumns = dataMapTableView.getTableViewerCreatorForColumns();
+
+        TableViewerCreator tableViewerCreator = null;
+        if (targetTableIsGlobalMapTable) {
+            tableViewerCreator = dataMapTableView.getTableViewerCreatorForGlobalMap();
+        } else {
+            tableViewerCreator = dataMapTableView.getTableViewerCreatorForColumns();
+        }
+
         Point pointCursor = currentTableTarget.toControl(event.x, event.y);
-        if (tableViewerCreatorForColumns.getTable() != currentTableTarget) {
+        if (tableViewerCreator.getTable() != currentTableTarget) {
             isCursorOverExpressionCell = false;
             return;
         }
@@ -271,7 +281,7 @@ public class DropContextAnalyzer {
             width += widthColumn;
         }
 
-        List<TableViewerCreatorColumn> viewerColumns = tableViewerCreatorForColumns.getColumns();
+        List<TableViewerCreatorColumn> viewerColumns = tableViewerCreator.getColumns();
         TableViewerCreatorColumn viewerColumn = viewerColumns.get(currentColumnIndex);
         if (DataMapTableView.ID_EXPRESSION_COLUMN.equals(viewerColumn.getId())) {
             isCursorOverExpressionCell = true;
@@ -284,6 +294,7 @@ public class DropContextAnalyzer {
     private void analyzeForFeedback() {
         int dropFeedback = DND.FEEDBACK_SCROLL;
         boolean targetTableIsConstraintsTable = targetTableIsFiltersTable(dataMapTableViewTarget);
+        boolean targetTableIsGlobalMapTable = targetTableIsGlobalMapTable(dataMapTableViewTarget);
 
         if (isDropValid) {
 
@@ -293,15 +304,16 @@ public class DropContextAnalyzer {
                 overwriteExpression = false;
             }
 
-            if (zoneSource == Zone.INPUTS && zoneTarget == Zone.INPUTS) {
-                dropFeedback |= DND.FEEDBACK_SELECT;
+            if (zoneSource == Zone.INPUTS && zoneTarget == Zone.INPUTS && !targetTableIsGlobalMapTable) {
                 mapOneToOneMode = false;
                 insertionEntryMode = false;
+                dropFeedback |= DND.FEEDBACK_SELECT;
             } else if (targetTableIsConstraintsTable) {
                 mapOneToOneMode = false;
                 insertionEntryMode = false;
                 dropFeedback |= DND.FEEDBACK_SELECT;
-            } else if (zoneSource == Zone.INPUTS && zoneTarget == Zone.VARS || zoneSource == Zone.INPUTS
+            } else if (zoneSource == Zone.INPUTS && zoneTarget == Zone.INPUTS && targetTableIsGlobalMapTable
+                    || zoneSource == Zone.INPUTS && zoneTarget == Zone.VARS || zoneSource == Zone.INPUTS
                     && zoneTarget == Zone.OUTPUTS || zoneSource == Zone.VARS && zoneTarget == Zone.VARS
                     || zoneSource == Zone.VARS && zoneTarget == Zone.OUTPUTS || zoneSource == Zone.OUTPUTS
                     && zoneTarget == Zone.OUTPUTS) {
@@ -324,6 +336,9 @@ public class DropContextAnalyzer {
                 insertionEntryMode = true;
             }
         }
+        
+//        System.out.println("insertionEntryMode="+insertionEntryMode);
+        
         feedback = dropFeedback;
     }
 
@@ -349,6 +364,17 @@ public class DropContextAnalyzer {
 
     public boolean targetTableIsFiltersTable() {
         return targetTableIsFiltersTable(dataMapTableViewTarget);
+    }
+
+    private boolean targetTableIsGlobalMapTable(DataMapTableView target) {
+        if (target.getZone() != Zone.INPUTS) {
+            return false;
+        }
+        return currentTableTarget == target.getTableViewerCreatorForGlobalMap().getTable();
+    }
+
+    public boolean targetTableIsGlobalMapTable() {
+        return targetTableIsGlobalMapTable(dataMapTableViewTarget);
     }
 
     public boolean targetIsExpressionFilterText() {

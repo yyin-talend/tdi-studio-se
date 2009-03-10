@@ -13,20 +13,14 @@
 package org.talend.designer.mapper.managers;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import org.talend.designer.abstractmap.managers.ILinkManager;
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.abstractmap.ui.visualmap.link.IMapperLink;
-import org.talend.designer.abstractmap.ui.visualmap.link.LinkState;
 import org.talend.designer.mapper.model.table.InputTable;
 import org.talend.designer.mapper.model.tableentry.ExpressionFilterEntry;
+import org.talend.designer.mapper.model.tableentry.GlobalMapEntry;
 import org.talend.designer.mapper.model.tableentry.InputColumnTableEntry;
 import org.talend.designer.mapper.model.tableentry.VarTableEntry;
 
@@ -53,7 +47,9 @@ public class LinkManager extends org.talend.designer.abstractmap.managers.LinkMa
 
         if (hasSameZone) {
             boolean isInputTarget = targetEntry instanceof InputColumnTableEntry
-                    || targetEntry instanceof ExpressionFilterEntry && targetEntry.getParent() instanceof InputTable;
+                    || targetEntry instanceof ExpressionFilterEntry
+                    || targetEntry instanceof GlobalMapEntry
+                    && targetEntry.getParent() instanceof InputTable;
             boolean isVarTarget = targetEntry instanceof VarTableEntry;
 
             List<List<IMapperLink>> leveledLinks = null;

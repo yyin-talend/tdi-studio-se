@@ -33,6 +33,7 @@ import org.eclipse.swt.events.ShellListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
@@ -362,14 +363,26 @@ public class MapperUI {
                 : ExternalMapperUiProperties.DEFAULT_WEIGHTS_DATAS_FLOW_SASH_FORM);
 
         int[] weightsMainSashForm = uiProperties.getWeightsMainSashForm();
-        mainSashForm.setWeights(weightsMainSashForm.length != 0 ? weightsMainSashForm
-                : ExternalMapperUiProperties.DEFAULT_WEIGHTS_MAIN_SASH_FORM);
+        weightsMainSashForm = weightsMainSashForm.length != 0 ? weightsMainSashForm
+                : ExternalMapperUiProperties.DEFAULT_WEIGHTS_MAIN_SASH_FORM;
+        mainSashForm.setWeights(weightsMainSashForm);
 
         new FooterComposite(this.mapperUIParent, SWT.NONE, mapperManager);
 
         selectFirstInOutTablesView();
         updateBackgroundEnabled = true;
         updateBackground(true, false);
+
+//        List<DataMapTableView> inputsTablesView = uiManager.getInputsTablesView();
+//        for (DataMapTableView table : inputsTablesView) {
+//            
+//            table.showTableGlobalMap(false);
+//            table.showTableGlobalMap(true);
+//            
+////            table.updateGridDataHeightForTableGlobalMap();
+////            table.resizeAtExpandedSize();
+//        }
+
 
     }
 

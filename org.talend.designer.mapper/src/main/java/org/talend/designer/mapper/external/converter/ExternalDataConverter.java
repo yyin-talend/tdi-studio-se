@@ -37,6 +37,7 @@ import org.talend.designer.mapper.model.table.OutputTable;
 import org.talend.designer.mapper.model.table.VarsTable;
 import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
 import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
+import org.talend.designer.mapper.model.tableentry.GlobalMapEntry;
 import org.talend.designer.mapper.model.tableentry.VarTableEntry;
 import org.talend.designer.mapper.ui.visualmap.table.InputDataMapTableView;
 
@@ -279,6 +280,21 @@ public class ExternalDataConverter {
             matchingMode = table.getMatchingMode().toString();
         }
         externalMapperTable.setMatchingMode(matchingMode);
+        String lookupMode = null;
+        if (table.getLookupMode() != null) {
+            lookupMode = table.getLookupMode().toString();
+        }
+        externalMapperTable.setLookupMode(lookupMode);
+        
+        ArrayList<ExternalMapperTableEntry> globalMapEntries = new ArrayList<ExternalMapperTableEntry>();
+        for (GlobalMapEntry constraintTableEntry : table.getGlobalMapEntries()) {
+            ExternalMapperTableEntry externalMapperTableEntry = new ExternalMapperTableEntry();
+            externalMapperTableEntry.setExpression(constraintTableEntry.getExpression());
+            externalMapperTableEntry.setName(constraintTableEntry.getName());
+            globalMapEntries.add(externalMapperTableEntry);
+        }
+        externalMapperTable.setGlobalMapKeysValues(globalMapEntries);
+        
         fillExternalTableWithCommonsData(table, externalMapperTable);
         inputTables.add(externalMapperTable);
     }

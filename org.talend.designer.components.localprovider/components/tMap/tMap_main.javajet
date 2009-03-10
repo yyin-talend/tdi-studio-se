@@ -33,10 +33,16 @@
 	org.talend.core.model.process.BlockCode
 	org.talend.core.model.process.IMatchingMode
 	org.talend.core.model.process.INode
+    org.talend.core.model.process.ElementParameterParser
 	" 
+
+	skeleton="tMap_commons.skeleton"
+
 %>
 
 <%@ include file="tMap_main.inc.javajet" %>
+
+
 
 
 

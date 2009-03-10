@@ -34,7 +34,7 @@
 	org.talend.core.model.process.IMatchingMode
 	org.talend.core.model.process.INode
 	" 
-
+	skeleton="tMap_commons.skeleton"
 
 %>
 <%
@@ -721,6 +721,40 @@
 			  					<%
 			  					} // T_TM_M_171
 			  					%>
+			  					
+			  					<%
+			  					INode lookupSubProcessStartNode = searchSubProcessStartNode(connection);
+			  					String lookupSubProcessStartNodeName = lookupSubProcessStartNode.getUniqueName();
+			  					String lookupMode = externalTable.getLookupMode();
+			  					boolean isReloadLookup = 
+			  						   org.talend.designer.mapper.model.table.LOOKUP_MODE.RELOAD.name().equals(lookupMode) 
+			  						|| org.talend.designer.mapper.model.table.LOOKUP_MODE.CACHE_OR_RELOAD.name().equals(lookupMode)
+			  						;
+								
+								
+								if(isReloadLookup) {
+								%>
+									<%
+									List<ExternalMapperTableEntry> globalMapEntries = externalTable.getGlobalMapKeysValues();
+									if(globalMapEntries != null) {
+										for(ExternalMapperTableEntry entry : globalMapEntries) {
+										%>
+											globalMap.put(<%= entry.getName()%>, <%= entry.getExpression() %>);
+										<%
+										}
+									}
+									%>
+								
+									<%= lookupSubProcessStartNodeName %>Process(globalMap);
+									
+										tHash_Lookup_<%=tableName%> = 
+										(org.talend.designer.components.commons.AdvancedMemoryLookup<<%=tableName%>Struct>) 
+										((org.talend.designer.components.commons.AdvancedMemoryLookup<<%=tableName%>Struct>) 
+											globalMap.get( "tHash_Lookup_<%=tableName%>" ));
+									
+								<%
+								}
+								%>
 	  					
 		  							tHash_Lookup_<%= tableName %>.lookup( <%= tableName %>HashKey );
 

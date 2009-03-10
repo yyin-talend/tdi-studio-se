@@ -113,10 +113,12 @@ import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.UIManager;
 import org.talend.designer.mapper.model.table.AbstractInOutTable;
+import org.talend.designer.mapper.model.table.InputTable;
 import org.talend.designer.mapper.model.table.OutputTable;
 import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
 import org.talend.designer.mapper.model.tableentry.ExpressionFilterEntry;
 import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
+import org.talend.designer.mapper.model.tableentry.GlobalMapEntry;
 import org.talend.designer.mapper.model.tableentry.VarTableEntry;
 import org.talend.designer.mapper.ui.color.ColorInfo;
 import org.talend.designer.mapper.ui.color.ColorProviderMapper;
@@ -166,7 +168,11 @@ public abstract class DataMapTableView extends Composite {
 
     protected TableViewerCreator tableViewerCreatorForFilters;
 
+    protected TableViewerCreator tableViewerCreatorForGlobalMap;
+
     protected Table tableForConstraints;
+
+    protected Table tableForGlobalMap;
 
     private boolean executeSelectionEvent = true;
 
@@ -196,6 +202,8 @@ public abstract class DataMapTableView extends Composite {
 
     protected AbstractExtendedTableViewer<FilterTableEntry> extendedTableViewerForFilters;
 
+    protected AbstractExtendedTableViewer<GlobalMapEntry> extendedTableViewerForGlobalMap;
+
     private static Image imageKey;
 
     private static Image imageEmpty;
@@ -221,6 +229,8 @@ public abstract class DataMapTableView extends Composite {
     public static final String COLUMN_NAME = "Column"; //$NON-NLS-1$
 
     protected GridData tableForConstraintsGridData;
+
+    protected GridData tableForGlobalMapGridData;
 
     private ExpressionProposalProvider expressionProposalProviderForExpressionFilter;
 
@@ -379,9 +389,9 @@ public abstract class DataMapTableView extends Composite {
 
         if (mapperManager.isAdvancedMap() && this instanceof OutputDataMapTableView) {
             createExpressionFilter();
-            initTableFilters();
+            initExtraTable();
         } else {
-            initTableFilters();
+            initExtraTable();
         }
 
         createContent();
@@ -592,6 +602,32 @@ public abstract class DataMapTableView extends Composite {
 
         });
 
+        if (abstractDataMapTable instanceof InputTable) {
+            InputTable inputTable = (InputTable) abstractDataMapTable;
+            inputTable.getTableGlobalMapEntriesModel().addAfterOperationListListener(
+                    new IListenableListListener<GlobalMapEntry>() {
+
+                        public void handleEvent(ListenableListEvent<GlobalMapEntry> event) {
+
+                            if (DataMapTableView.this.canBeResizedAtPreferedSize()) {
+                                resizeAtExpandedSize();
+                            }
+
+                        }
+
+                    });
+            inputTable.getTableGlobalMapEntriesModel().addModifiedBeanListener(new IModifiedBeanListener<GlobalMapEntry>() {
+
+                public void handleEvent(ModifiedBeanEvent<GlobalMapEntry> event) {
+
+                    TableViewerCreator tableViewerCreator = tableViewerCreatorForGlobalMap;
+                    ITableEntry tableEntry = event.bean;
+
+                    parseExpression(event, tableViewerCreator, tableEntry);
+                }
+
+            });
+        }
         if (abstractDataMapTable instanceof OutputTable) {
             OutputTable outputTable = (OutputTable) abstractDataMapTable;
             outputTable.getTableFiltersEntriesModel().addAfterOperationListListener(
@@ -694,7 +730,7 @@ public abstract class DataMapTableView extends Composite {
     /**
      * DOC amaumont Comment method "initTableConstraints".
      */
-    protected abstract void initTableFilters();
+    protected abstract void initExtraTable();
 
     /**
      * DOC amaumont Comment method "addListeners".
@@ -919,6 +955,25 @@ public abstract class DataMapTableView extends Composite {
     }
 
     /**
+     * DOC amaumont Comment method "showTableConstraints".
+     */
+    public void showTableGlobalMap(boolean visible) {
+
+        if (visible) {
+            tableForGlobalMapGridData.exclude = false;
+            tableForGlobalMap.setVisible(true);
+            if (WindowSystem.isGTK()) {
+                updateGridDataHeightForTableGlobalMap();
+            }
+        } else {
+            tableForGlobalMapGridData.exclude = true;
+            tableForGlobalMap.setVisible(false);
+        }
+        tableViewerCreatorForGlobalMap.getTableViewer().refresh();
+        resizeAtExpandedSize();
+    }
+
+    /**
      * DOC amaumont Comment method "onSelectDataMapTableView".
      */
     protected void onSelectDataMapTableView() {
@@ -936,6 +991,10 @@ public abstract class DataMapTableView extends Composite {
 
     public TableViewerCreator getTableViewerCreatorForFilters() {
         return this.tableViewerCreatorForFilters;
+    }
+
+    public TableViewerCreator getTableViewerCreatorForGlobalMap() {
+        return this.tableViewerCreatorForGlobalMap;
     }
 
     public Point convertToParentOrigin(Composite child, Point point) {
@@ -1665,6 +1724,28 @@ public abstract class DataMapTableView extends Composite {
         int moreSpace = WindowSystem.isGTK() ? tableForConstraints.getItemHeight() : 0;
         tableForConstraintsGridData.heightHint = ((OutputTable) abstractDataMapTable).getFilterEntries().size()
                 * tableForConstraints.getItemHeight() + tableForConstraints.getItemHeight() / 2 + moreSpace;
+
+        if (WindowSystem.isGTK()) {
+            tableViewerCreatorForFilters.layout();
+        }
+
+    }
+
+    /**
+     * DOC amaumont Comment method "updateGridDataHeightForTableConstraints".
+     */
+    public void updateGridDataHeightForTableGlobalMap() {
+
+        int moreSpace = WindowSystem.isGTK() ? tableForGlobalMap.getItemHeight() : 0;
+        // int moreSpace = 0;
+        int size = ((InputTable) abstractDataMapTable).getGlobalMapEntries().size();
+        tableForGlobalMapGridData.heightHint = size * (tableForGlobalMap.getItemHeight() + tableForGlobalMap.getItemHeight() / 2)
+                + moreSpace;
+
+        if (WindowSystem.isGTK()) {
+            tableViewerCreatorForGlobalMap.layout();
+        }
+
     }
 
     /**
@@ -1679,6 +1760,13 @@ public abstract class DataMapTableView extends Composite {
      * DOC amaumont Comment method "unselectAllConstraintEntries".
      */
     public void unselectAllConstraintEntries() {
+        // nothing by default, override if necessary
+    }
+
+    /**
+     * DOC amaumont Comment method "unselectAllGlobalMapEntries".
+     */
+    public void unselectAllGlobalMapEntries() {
         // nothing by default, override if necessary
     }
 

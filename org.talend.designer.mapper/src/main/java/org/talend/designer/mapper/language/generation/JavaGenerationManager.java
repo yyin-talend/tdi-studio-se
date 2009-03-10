@@ -129,8 +129,20 @@ public class JavaGenerationManager extends GenerationManager {
      * 
      */
     public enum PROBLEM_KEY_FIELD {
-        METADATA_COLUMN,
-        FILTER,
+        GLOBAL_MAP("globalMap variable"),
+        METADATA_COLUMN("column"),
+        FILTER("filter"),
+        ;
+        
+        private String label;
+
+        private PROBLEM_KEY_FIELD(String label) {
+            this.label = label;
+        }
+        
+        public String getLabel() {
+            return label;
+        }
     }
 
 }

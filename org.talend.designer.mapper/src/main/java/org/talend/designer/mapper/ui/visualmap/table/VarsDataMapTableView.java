@@ -291,7 +291,7 @@ public class VarsDataMapTableView extends DataMapTableView {
      * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#initTableConstraints()
      */
     @Override
-    protected void initTableFilters() {
+    protected void initExtraTable() {
         // no table constraint
     }
 

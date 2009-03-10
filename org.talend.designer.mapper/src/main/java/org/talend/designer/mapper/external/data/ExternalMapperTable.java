@@ -29,10 +29,16 @@ public class ExternalMapperTable implements Serializable, Cloneable {
      */
     private static final long serialVersionUID = 8768004929161302382L;
 
+    /**
+     * <code>constraintTableEntries</code> has been replaced by expressionFilter since 2.1.0 r4515
+     * <code>constraintTableEntries</code> can't be removed to keep  the ascendant compatibility.
+     */
     private List<ExternalMapperTableEntry> constraintTableEntries;
 
     private List<ExternalMapperTableEntry> metadataTableEntries;
 
+    private List<ExternalMapperTableEntry> globalMapKeysValues;
+    
     private String name;
 
     private boolean minimized;
@@ -55,6 +61,8 @@ public class ExternalMapperTable implements Serializable, Cloneable {
 
     private String matchingMode;
 
+    private String lookupMode;
+    
     /**
      * Used only for lookup inputs. Reject main row if this lookup row doesn't exist.
      */
@@ -89,10 +97,40 @@ public class ExternalMapperTable implements Serializable, Cloneable {
         this.metadataTableEntries = tableEntries;
     }
 
+    /**
+     * Getter for globalMapKeyValues.
+     * @return the globalMapKeyValues
+     */
+    public List<ExternalMapperTableEntry> getGlobalMapKeysValues() {
+        return globalMapKeysValues;
+    }
+    
+    /**
+     * Sets the globalMapKeyValues.
+     * @param globalMapKeyValues the globalMapKeyValues to set
+     */
+    public void setGlobalMapKeysValues(List<ExternalMapperTableEntry> globalMapKeyValues) {
+        this.globalMapKeysValues = globalMapKeyValues;
+    }
+
+    /**
+     * 
+     * DOC amaumont Comment method "getConstraintTableEntries".
+     * <code>constraintTableEntries</code> has been replaced by expressionFilter since 2.1.0 r4515
+     * <code>constraintTableEntries</code> can't be removed to keep  the ascendant compatibility.
+     * @return
+     */
     public List<ExternalMapperTableEntry> getConstraintTableEntries() {
         return this.constraintTableEntries;
     }
 
+    /**
+     * 
+     * DOC amaumont Comment method "setConstraintTableEntries".
+     * <code>constraintTableEntries</code> has been replaced by expressionFilter since 2.1.0 r4515
+     * <code>constraintTableEntries</code> can't be removed to keep  the ascendant compatibility.
+     * @param constraintTableEntries
+     */
     public void setConstraintTableEntries(List<ExternalMapperTableEntry> constraintTableEntries) {
         this.constraintTableEntries = constraintTableEntries;
     }
@@ -206,6 +244,22 @@ public class ExternalMapperTable implements Serializable, Cloneable {
     }
 
     /**
+     * Getter for lookupMode.
+     * @return the lookupMode
+     */
+    public String getLookupMode() {
+        return lookupMode;
+    }
+    
+    /**
+     * Sets the lookupMode.
+     * @param lookupMode the lookupMode to set
+     */
+    public void setLookupMode(String lookupMode) {
+        this.lookupMode = lookupMode;
+    }
+
+    /**
      * Getter for tableSizeState.
      * 
      * @return the tableSizeState
@@ -265,6 +319,7 @@ public class ExternalMapperTable implements Serializable, Cloneable {
         result = prime * result + (this.innerJoin ? 1231 : 1237);
         result = prime * result + (this.persistent ? 1231 : 1237);
         result = prime * result + ((this.matchingMode == null) ? 0 : this.matchingMode.hashCode());
+        result = prime * result + ((this.lookupMode == null) ? 0 : this.lookupMode.hashCode());
         result = prime * result + ((this.metadataTableEntries == null) ? 0 : this.metadataTableEntries.hashCode());
         result = prime * result + (this.minimized ? 1231 : 1237);
         result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
@@ -306,6 +361,11 @@ public class ExternalMapperTable implements Serializable, Cloneable {
             if (other.matchingMode != null)
                 return false;
         } else if (!this.matchingMode.equals(other.matchingMode))
+            return false;
+        if (this.lookupMode == null) {
+            if (other.lookupMode != null)
+                return false;
+        } else if (!this.lookupMode.equals(other.lookupMode))
             return false;
         if (this.metadataTableEntries == null) {
             if (other.metadataTableEntries != null)

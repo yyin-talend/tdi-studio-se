@@ -12,6 +12,12 @@
 // ============================================================================
 package org.talend.designer.mapper.model.table;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
@@ -19,9 +25,13 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.designer.mapper.external.connection.IOConnection;
 import org.talend.designer.mapper.external.data.ExternalMapperTable;
+import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
+import org.talend.designer.mapper.model.tableentry.GlobalMapEntry;
+import org.talend.designer.mapper.model.tableentry.GlobalMapEntry;
 import org.talend.designer.mapper.model.tableentry.InputColumnTableEntry;
+import org.talend.designer.mapper.model.tableentry.VarTableEntry;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -37,9 +47,15 @@ public class InputTable extends AbstractInOutTable {
     private boolean innerJoin; // else outer join
 
     private boolean persistent;
-    
-    private ILookupType matchingMode = TMAP_MATCHING_MODE.UNIQUE_MATCH;
-    
+
+    private IUIMatchingMode matchingMode = TMAP_MATCHING_MODE.UNIQUE_MATCH;
+
+    private IUILookupMode lookupMode;
+
+    protected List<GlobalMapEntry> globalMapEntries = new ArrayList<GlobalMapEntry>(0);
+
+    private ExtendedTableModel<GlobalMapEntry> tableGlobalMapEntriesModel;
+
     /**
      * DOC amaumont InputTable constructor comment.
      * 
@@ -51,12 +67,17 @@ public class InputTable extends AbstractInOutTable {
      */
     public InputTable(MapperManager mapperManager, IOConnection connection, String name) {
         super(mapperManager, connection, name);
+        this.tableGlobalMapEntriesModel = new ExtendedTableModel<GlobalMapEntry>(
+                name + " : model for globalMap variables", globalMapEntries); //$NON-NLS-1$
+
     }
 
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.mapper.model.table.AbstractInOutTable#initFromExternalData(org.talend.designer.mapper.external.data.ExternalMapperTable)
+     * @see
+     * org.talend.designer.mapper.model.table.AbstractInOutTable#initFromExternalData(org.talend.designer.mapper.external
+     * .data.ExternalMapperTable)
      */
     @Override
     public void initFromExternalData(ExternalMapperTable externalMapperTable) {
@@ -72,13 +93,59 @@ public class InputTable extends AbstractInOutTable {
                     matchingMode = TMAP_MATCHING_MODE.ALL_ROWS;
                 }
             }
+            this.lookupMode = TMAP_LOOKUP_MODE.parse(externalMapperTable.getLookupMode());
+            if (lookupMode == null) {
+                lookupMode = TMAP_LOOKUP_MODE.LOAD_ONCE;
+            }
+
+            List<ExternalMapperTableEntry> globalMapEntries = externalMapperTable.getGlobalMapKeysValues();
+            if (globalMapEntries != null) {
+                for (ExternalMapperTableEntry externalMapperTableEntry : globalMapEntries) {
+                    GlobalMapEntry entry = new GlobalMapEntry(this, externalMapperTableEntry.getName(),
+                            externalMapperTableEntry.getExpression());//, externalMapperTableEntry.getType());
+                    // if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
+                    // varTableEntry.setNullable(externalMapperTableEntry.isNullable());
+                    // }
+                    addGlobalMapEntry(entry);
+                }
+            }
+
         }
     }
+
+    
+    public void addGlobalMapEntry(GlobalMapEntry entry) {
+        this.tableGlobalMapEntriesModel.add(entry);
+    }
+
+    public void addGlobalMapEntry(GlobalMapEntry entry, Integer index) {
+        this.tableGlobalMapEntriesModel.add(entry, index);
+    }
+
+    public void removeGlobalMapEntry(GlobalMapEntry entry) {
+        this.tableGlobalMapEntriesModel.remove(entry);
+    }
+
+    public List<GlobalMapEntry> getGlobalMapEntries() {
+        return this.tableGlobalMapEntriesModel.getBeansList();
+    }
+
+    /**
+     * Getter for tableFiltersEntriesModel.
+     * 
+     * @return the tableFiltersEntriesModel
+     */
+    public ExtendedTableModel<GlobalMapEntry> getTableGlobalMapEntriesModel() {
+        return this.tableGlobalMapEntriesModel;
+    }
+
 
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.mapper.model.table.DataMapTable#getNewTableEntry(org.talend.core.model.metadata.IMetadataColumn)
+     * @see
+     * org.talend.designer.mapper.model.table.DataMapTable#getNewTableEntry(org.talend.core.model.metadata.IMetadataColumn
+     * )
      */
     @Override
     protected AbstractInOutTableEntry getNewTableEntry(IMetadataColumn column) {
@@ -112,11 +179,10 @@ public class InputTable extends AbstractInOutTable {
         this.innerJoin = innerJoin;
     }
 
-    
     public boolean isPersistent() {
         return persistent;
     }
-    
+
     public void setPersistent(boolean persistent) {
         this.persistent = persistent;
     }
@@ -156,19 +222,33 @@ public class InputTable extends AbstractInOutTable {
 
     /**
      * Getter for lookupType.
+     * 
      * @return the lookupType
      */
-    public ILookupType getMatchingMode() {
+    public IUIMatchingMode getMatchingMode() {
         return this.matchingMode;
     }
 
-    
     /**
      * Sets the lookupType.
+     * 
      * @param lookupType the lookupType to set
      */
-    public void setMatchingMode(ILookupType lookupType) {
+    public void setMatchingMode(IUIMatchingMode lookupType) {
         this.matchingMode = lookupType;
+    }
+
+    /**
+     * Sets the lookupMode.
+     * 
+     * @param lookupMode the lookupType to set
+     */
+    public void setLookupMode(IUILookupMode lookupMode) {
+        this.lookupMode = lookupMode;
+    }
+
+    public IUILookupMode getLookupMode() {
+        return lookupMode;
     }
 
 }

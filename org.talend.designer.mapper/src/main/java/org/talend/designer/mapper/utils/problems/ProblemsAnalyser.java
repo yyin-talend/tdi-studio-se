@@ -32,6 +32,7 @@ import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.language.ILanguage;
 import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.language.generation.JavaGenerationManager;
+import org.talend.designer.mapper.language.generation.JavaGenerationManager.PROBLEM_KEY_FIELD;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.model.table.InputTable;
 import org.talend.designer.mapper.model.tableentry.InputColumnTableEntry;
@@ -64,8 +65,7 @@ public class ProblemsAnalyser {
 
             List<ExternalMapperTable> extInputTables = new ArrayList<ExternalMapperTable>(externalData.getInputTables());
             List<ExternalMapperTable> extVarTables = new ArrayList<ExternalMapperTable>(externalData.getVarsTables());
-            List<ExternalMapperTable> extOutputTables = new ArrayList<ExternalMapperTable>(externalData
-                    .getOutputTables());
+            List<ExternalMapperTable> extOutputTables = new ArrayList<ExternalMapperTable>(externalData.getOutputTables());
             // loop on all tables
 
             ICodeProblemsChecker codeChecker = LanguageProvider.getCurrentLanguage().getCodeChecker();
@@ -111,8 +111,7 @@ public class ProblemsAnalyser {
             } else if (!outputTable.isRejectInnerJoin()) {
                 if (outputTable.getExpressionFilter() != null && outputTable.isActivateExpressionFilter()
                         && !outputTable.getExpressionFilter().trim().equals("") //$NON-NLS-1$
-                        || outputTable.getConstraintTableEntries() != null
-                        && outputTable.getConstraintTableEntries().size() > 0) {
+                        || outputTable.getConstraintTableEntries() != null && outputTable.getConstraintTableEntries().size() > 0) {
                     normalTablesWithFilter.add(outputTable);
                 } else {
                     normalTables.add(outputTable);
@@ -161,8 +160,7 @@ public class ProblemsAnalyser {
                     addProblem(new Problem(null, Messages.getString("Problem.warning.setExpressionKey", //$NON-NLS-1$
                             new Object[] { table.getName() }), ProblemStatus.WARNING));
                 } else {
-                    addProblem(new Problem(
-                            null,
+                    addProblem(new Problem(null,
                             "The lookup table '" + table.getName() + "' should have at least one expression key filled. ", //$NON-NLS-1$ //$NON-NLS-2$
                             ProblemStatus.WARNING));
                 }
@@ -223,28 +221,15 @@ public class ProblemsAnalyser {
             List<ExternalMapperTableEntry> metadataTableEntries = table.getMetadataTableEntries();
             // loop on all entries of current table
             if (metadataTableEntries != null) {
-                for (ExternalMapperTableEntry entry : metadataTableEntries) {
-                    List<Problem> problems = null;
-                    if (keyLanguageCheckerIsUsed) {
-                        String key = mapperManager.buildProblemKey(
-                                JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN, table.getName(), entry
-                                        .getName());
-                        problems = codeChecker.getProblemsFromKey(key);
-                    } else {
-                        problems = checkCodeProblems(entry.getExpression());
-                    }
-                    if (problems != null) {
-                        String location = currentLanguage.getLocation(table.getName(), entry.getName());
-                        String prefix = "Expression of " + location + " is invalid : "; //$NON-NLS-1$ //$NON-NLS-2$
-                        for (Problem problem : problems) {
-                            if (!problem.getDescription().startsWith(prefix)) {
-                                String description = prefix + problem.getDescription() + "."; //$NON-NLS-1$
-                                problem.setDescription(description);
-                            }
-                            addProblem(problem);
-                        }
-                    }
-                } // for (ExternalMapperTableEntry entry : metadataTableEntries) {
+                checkExpressionSyntaxProblems(codeChecker, currentLanguage, keyLanguageCheckerIsUsed, table,
+                        metadataTableEntries, JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN);
+            }
+
+            List<ExternalMapperTableEntry> globalMapKeysValues = table.getGlobalMapKeysValues();
+            // loop on all entries of current table
+            if (globalMapKeysValues != null) {
+                checkExpressionSyntaxProblems(codeChecker, currentLanguage, keyLanguageCheckerIsUsed, table, globalMapKeysValues,
+                        JavaGenerationManager.PROBLEM_KEY_FIELD.GLOBAL_MAP);
             }
 
             if (table.getConstraintTableEntries() != null || table.isActivateExpressionFilter()
@@ -265,6 +250,31 @@ public class ProblemsAnalyser {
         } // for (ExternalMapperTable table : tables) {
     }
 
+    private void checkExpressionSyntaxProblems(ICodeProblemsChecker codeChecker, ILanguage currentLanguage,
+            boolean keyLanguageCheckerIsUsed, ExternalMapperTable table, List<ExternalMapperTableEntry> entries,
+            PROBLEM_KEY_FIELD problemKeyField) {
+        for (ExternalMapperTableEntry entry : entries) {
+            List<Problem> problems = null;
+            if (keyLanguageCheckerIsUsed) {
+                String key = mapperManager.buildProblemKey(problemKeyField, table.getName(), entry.getName());
+                problems = codeChecker.getProblemsFromKey(key);
+            } else {
+                problems = checkCodeProblems(entry.getExpression());
+            }
+            if (problems != null) {
+                String location = currentLanguage.getLocation(table.getName(), entry.getName());
+                String prefix = "Expression of " + problemKeyField.getLabel() + " " + location + " is invalid : "; //$NON-NLS-1$ //$NON-NLS-2$  //$NON-NLS-3$
+                for (Problem problem : problems) {
+                    if (!problem.getDescription().startsWith(prefix)) {
+                        String description = prefix + problem.getDescription() + "."; //$NON-NLS-1$
+                        problem.setDescription(description);
+                    }
+                    addProblem(problem);
+                }
+            }
+        } // for (ExternalMapperTableEntry entry : metadataTableEntries) {
+    }
+
     /**
      * DOC amaumont Comment method "checkFilterEntry".
      * 
@@ -274,8 +284,8 @@ public class ProblemsAnalyser {
      * @param prefix
      * @param entry
      */
-    private void checkFilterEntry(ICodeProblemsChecker codeChecker, boolean keyIsUsed, ExternalMapperTable table,
-            String prefix, String expression) {
+    private void checkFilterEntry(ICodeProblemsChecker codeChecker, boolean keyIsUsed, ExternalMapperTable table, String prefix,
+            String expression) {
         List<Problem> problems = null;
         if (keyIsUsed) {
             problems = codeChecker.getProblemsFromKey(mapperManager.buildProblemKey(

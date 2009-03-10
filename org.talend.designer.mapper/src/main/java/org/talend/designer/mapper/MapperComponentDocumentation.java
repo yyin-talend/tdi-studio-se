@@ -172,16 +172,24 @@ public class MapperComponentDocumentation implements IComponentDocumentation {
             tableElement = mapperTableElement.addElement("table"); //$NON-NLS-1$
             generateTableSummaryInfo(mapperTableElement, tableElement, table);
 
+            List<ExternalMapperTableEntry> globalMapKeysValuesEntries = table.getGlobalMapKeysValues();
+            if (!HTMLDocUtils.checkList(globalMapKeysValuesEntries)) {
+                continue;
+            }
+            Element globalMapKeysValuesElement = tableElement.addElement("globalMapKeysValues"); //$NON-NLS-1$
+            for (ExternalMapperTableEntry entry : globalMapKeysValuesEntries) {
+                generateTablesEntriesInfo(globalMapKeysValuesElement, entry);
+            }
+
             List<ExternalMapperTableEntry> metadataTableEntries = table.getMetadataTableEntries();
             if (!HTMLDocUtils.checkList(metadataTableEntries)) {
                 continue;
             }
-
             Element metadataTableEntriesElement = tableElement.addElement("metadataTableEntries"); //$NON-NLS-1$
             for (ExternalMapperTableEntry entry : metadataTableEntries) {
                 generateTablesEntriesInfo(metadataTableEntriesElement, entry);
             }
-
+            
             List<ExternalMapperTableEntry> constraintTableEntries = table.getConstraintTableEntries();
             if (!HTMLDocUtils.checkList(constraintTableEntries)) {
                 continue;
@@ -223,6 +231,7 @@ public class MapperComponentDocumentation implements IComponentDocumentation {
 
         tableElement.addAttribute("name", table.getName()); //$NON-NLS-1$
         tableElement.addAttribute("matching-mode", table.getMatchingMode()); //$NON-NLS-1$
+        tableElement.addAttribute("lookup-mode", table.getLookupMode()); //$NON-NLS-1$
         tableElement.addAttribute("isMinimized", String.valueOf(table.isMinimized())); //$NON-NLS-1$
         tableElement.addAttribute("isReject", String.valueOf(table.isReject())); //$NON-NLS-1$
         tableElement.addAttribute("isRejectInnerJoin", String.valueOf(table.isRejectInnerJoin())); //$NON-NLS-1$
