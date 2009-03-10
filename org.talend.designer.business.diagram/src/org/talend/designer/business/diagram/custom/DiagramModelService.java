@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.business.diagram.custom;
 
+import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
@@ -25,11 +26,14 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.PlatformUI;
+import org.talend.core.model.business.BusinessAlignment;
 import org.talend.core.model.business.BusinessType;
 import org.talend.designer.business.diagram.custom.actions.CreateDiagramAction;
+import org.talend.designer.business.diagram.custom.commands.ChangeBusinessItemAlignmentCommand;
 import org.talend.designer.business.diagram.custom.edit.parts.BaseBusinessItemRelationShipEditPart;
 import org.talend.designer.business.diagram.custom.edit.parts.BusinessItemShapeEditPart;
 import org.talend.designer.business.diagram.custom.properties.RepositoryFactoryProxyLabelProvider;
+import org.talend.designer.business.model.business.BusinessItem;
 import org.talend.designer.business.model.business.diagram.edit.parts.BusinessProcessEditPart;
 import org.talend.designer.business.model.business.diagram.part.BusinessDiagramEditor;
 import org.talend.designer.business.model.business.provider.BusinessItemProviderAdapterFactory;
@@ -114,5 +118,42 @@ public class DiagramModelService implements IDiagramModelService {
             return ((BusinessDiagramEditor) editor).getSelection();
         }
         return null;
+    }
+
+    public void setBusinessItemAlignment(BusinessAlignment alignment, BusinessAlignment alignmentGroup, Object part) {
+
+        if (part instanceof BusinessItemShapeEditPart) {
+            BusinessItem item = (BusinessItem) ((Node) ((BusinessItemShapeEditPart) part).getModel()).getElement();
+            ChangeBusinessItemAlignmentCommand command = new ChangeBusinessItemAlignmentCommand(item, alignment, alignmentGroup);
+            try {
+                command.execute(null, null);
+            } catch (ExecutionException e) {
+            }
+            ((BusinessItemShapeEditPart) part).refreshVisuals();
+
+        }
+    }
+
+    public String getBusinessItemAlignment(Object part, BusinessAlignment alignmentGroup) {
+        if (part instanceof BusinessItemShapeEditPart) {
+            BusinessItem item = (BusinessItem) ((Node) ((BusinessItemShapeEditPart) part).getModel()).getElement();
+            if (BusinessAlignment.HORIZONTAL.equals(alignmentGroup)) {
+                return item.getHAlignment();
+            } else if (BusinessAlignment.VERTICAL.equals(alignmentGroup)) {
+                return item.getVAlignment();
+            }
+        }
+        return null;
+    }
+
+    public void setBusinessItemsAlignment(BusinessAlignment alignment, BusinessAlignment alignmentGroup, Object part) {
+        if (part instanceof BusinessProcessEditPart) {
+            BusinessProcessEditPart processPart = (BusinessProcessEditPart) part;
+            for (Object object : processPart.getChildren()) {
+                if (object instanceof BusinessItemShapeEditPart) {
+                    setBusinessItemAlignment(alignment, alignmentGroup, object);
+                }
+            }
+        }
     }
 }

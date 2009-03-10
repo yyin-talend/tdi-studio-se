@@ -31,6 +31,8 @@ public class BusinessItemShapeFigure extends DefaultSizeNodeFigure {
 
     private boolean drawFrame;
 
+    private IFigure nameFigure;
+
     protected LineBorder border = new LineBorder() {
 
         @Override
@@ -82,4 +84,13 @@ public class BusinessItemShapeFigure extends DefaultSizeNodeFigure {
     public void setDrawFrame(boolean drawFrame) {
         this.drawFrame = drawFrame;
     }
+
+    public IFigure getNameFigure() {
+        return this.nameFigure;
+    }
+
+    public void setNameFigure(IFigure nameFigure) {
+        this.nameFigure = nameFigure;
+    }
+
 }

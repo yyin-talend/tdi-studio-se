@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.draw2d.Label;
+import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.ENamedElement;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -37,6 +38,7 @@ import org.talend.commons.ui.image.OverlayImage.EPosition;
 import org.talend.commons.utils.image.ImageUtils;
 import org.talend.commons.utils.image.ImageUtils.ICON_SIZE;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.business.BusinessAlignment;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.Query;
@@ -47,6 +49,8 @@ import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.business.diagram.custom.edit.policies.BusinessItemDragDropEditPolicy;
+import org.talend.designer.business.diagram.custom.figures.BusinessItemNameFigure;
+import org.talend.designer.business.diagram.custom.figures.BusinessItemShapeFigure;
 import org.talend.designer.business.diagram.custom.figures.BusinessTooltipFigure;
 import org.talend.designer.business.model.business.BusinessAssignment;
 import org.talend.designer.business.model.business.BusinessItem;
@@ -198,9 +202,42 @@ public abstract class BusinessItemShapeEditPart extends ShapeNodeEditPart {
     }
 
     @Override
-    protected void refreshVisuals() {
+    public void refreshVisuals() {
         super.refreshVisuals();
-        getTooltipFigure(getNodeFigure());
+        NodeFigure nodeFigure = getNodeFigure();
+        for (Object obj : nodeFigure.getChildren()) {
+            if (obj instanceof BusinessItemShapeFigure) {
+                BusinessItemShapeFigure shapFigure = (BusinessItemShapeFigure) obj;
+                for (Object figure : shapFigure.getChildren()) {
+                    if (figure instanceof BusinessItemNameFigure) {
+                        BusinessItemNameFigure nameFigure = (BusinessItemNameFigure) figure;
+                        BusinessItem item = (BusinessItem) ((Node) getModel()).getElement();
+                        if (BusinessAlignment.HCENTRE.toString().equals(item.getHAlignment())) {
+                            if (BusinessAlignment.TOP.toString().equals(item.getVAlignment())) {
+                                nameFigure.setAlignment(PositionConstants.TOP);
+                            } else if (BusinessAlignment.BOTTOM.toString().equals(item.getVAlignment())) {
+                                nameFigure.setAlignment(PositionConstants.BOTTOM);
+                            } else {
+                                nameFigure.setAlignment(PositionConstants.CENTER);
+                            }
+                        } else if (BusinessAlignment.VCENTRE.toString().equals(item.getVAlignment())) {
+                            if (BusinessAlignment.LEFT.toString().equals(item.getHAlignment())) {
+                                nameFigure.setAlignment(PositionConstants.LEFT);
+                            } else if (BusinessAlignment.RIGHT.toString().equals(item.getHAlignment())) {
+                                nameFigure.setAlignment(PositionConstants.RIGHT);
+                            } else {
+                                nameFigure.setAlignment(PositionConstants.CENTER);
+                            }
+                        } else {
+                            nameFigure.setAlignment(getPosition(item.getHAlignment(), BusinessAlignment.HORIZONTAL, item)
+                                    | getPosition(item.getVAlignment(), BusinessAlignment.VERTICAL, item));
+                        }
+
+                    }
+                }
+            }
+        }
+        getTooltipFigure(nodeFigure);
     }
 
     protected void setDefaultColor(Object model, RGB color) {
@@ -213,5 +250,52 @@ public abstract class BusinessItemShapeEditPart extends ShapeNodeEditPart {
         }
         ((BusinessProcessEditPart) getParent()).setLastAddedItem(null);
 
+    }
+
+    private int getPosition(String alignment, BusinessAlignment alignmentGroup, BusinessItem item) {
+        BusinessAlignment position = getAlignment(alignment);
+        if (position == null) {
+            if (BusinessAlignment.HORIZONTAL.equals(alignmentGroup)) {
+                return PositionConstants.LEFT;
+            }
+            if (BusinessAlignment.VERTICAL.equals(alignmentGroup)) {
+                return PositionConstants.TOP;
+            }
+
+        }
+        switch (position) {
+        case LEFT:
+            return PositionConstants.LEFT;
+
+        case RIGHT:
+            return PositionConstants.RIGHT;
+
+        case HCENTRE:
+            return PositionConstants.LEFT_CENTER_RIGHT | PositionConstants.TOP;
+
+        case TOP:
+            return PositionConstants.TOP;
+
+        case BOTTOM:
+            return PositionConstants.BOTTOM;
+
+        case VCENTRE:
+            return PositionConstants.TOP_MIDDLE_BOTTOM | PositionConstants.LEFT;
+
+        }
+        return 0;
+    }
+
+    private BusinessAlignment getAlignment(String alignment) {
+        BusinessAlignment[] alignments = BusinessAlignment.values();
+        BusinessAlignment position = null;
+        for (int i = 0; i < alignments.length; i++) {
+            if (alignments[i].toString().equalsIgnoreCase(alignment)) {
+                position = alignments[i];
+                return position;
+            }
+
+        }
+        return position;
     }
 }

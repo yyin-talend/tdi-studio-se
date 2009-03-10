@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.core.ui.action;
 
+import org.eclipse.gmf.runtime.diagram.ui.editparts.CompartmentEditPart;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
@@ -23,6 +24,7 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.business.BusinessType;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.designer.business.diagram.custom.IDiagramModelService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.views.jobsettings.JobSettingsView;
 
@@ -53,16 +55,20 @@ public class ShowJobSettingsViewAction extends Action {
         try {
             page.showView(getViewId());
             JobSettingsView view = (JobSettingsView) page.findView(getViewId());
-            ISelection selection = CorePlugin.getDefault().getDiagramModelService().getBusinessEditorSelection(
-                    page.getActiveEditor());
+            IDiagramModelService service = CorePlugin.getDefault().getDiagramModelService();
+            ISelection selection = service.getBusinessEditorSelection(page.getActiveEditor());
             if (selection instanceof IStructuredSelection) {
-                Object obj = ((IStructuredSelection) selection).getFirstElement();
-                if (obj != null) {
-                    if (BusinessType.PROCESS.equals(CorePlugin.getDefault().getDiagramModelService().getBusinessModelType(obj))) {
-                        view.refresh();
-                    } else {
-                        view.refresh(false, obj);
+                Object firstElement = ((IStructuredSelection) selection).getFirstElement();
+                if (firstElement != null) {
+                    BusinessType type = service.getBusinessModelType(firstElement);
+                    if (type == BusinessType.CONNECTION || type == BusinessType.NOTE || type == BusinessType.SHAP) {
+
+                        view.refresh(false, firstElement);
+                    } else if (type == BusinessType.PROCESS || firstElement instanceof CompartmentEditPart) {
+                        view.refresh(false, PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                                .getActiveEditor());
                     }
+
                 }
             }
 

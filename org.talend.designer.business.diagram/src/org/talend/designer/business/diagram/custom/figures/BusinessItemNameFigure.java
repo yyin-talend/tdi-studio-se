@@ -28,4 +28,5 @@ public class BusinessItemNameFigure extends WrapLabel {
     public BusinessItemNameFigure() {
         setTextWrap(true);
     }
+
 }
