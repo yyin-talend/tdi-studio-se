@@ -119,13 +119,16 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
     public void createControl(Composite parent) {
 
         initializeDialogUnits(parent);
-
+        GridLayout layout = new GridLayout();
+        layout.verticalSpacing = 0;
+        layout.marginHeight = 0;
+        layout.marginBottom = 0;
         pageComposite = new Composite(parent, SWT.NULL);
-        pageComposite.setLayout(new GridLayout());
+        pageComposite.setLayout(layout);
         pageComposite.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL | GridData.HORIZONTAL_ALIGN_FILL));
         pageComposite.setFont(parent.getFont());
 
-        GridLayout layout = new GridLayout();
+        layout = new GridLayout();
         destinationNameFieldComposite = new Composite(pageComposite, SWT.NONE);
         GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL);
         destinationNameFieldComposite.setLayoutData(gridData);
@@ -137,7 +140,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         destinationNameFieldInnerComposite.setLayout(layout);
 
         createDestinationGroup(destinationNameFieldInnerComposite);
-
+        createExportTree(pageComposite);
         if (!isMultiNodes()) {
             createJobVersionGroup(pageComposite);
         }

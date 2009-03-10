@@ -132,6 +132,10 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     boolean ok;
 
+    private IStructuredSelection selection;
+
+    private ExportTreeViewer treeViewer;
+
     /**
      * Create an instance of this class.
      * 
@@ -139,9 +143,17 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      */
     public JobScriptsExportWizardPage(String name, IStructuredSelection selection) {
         super(name, null);
+        this.selection = selection;
         manager = createJobScriptsManager();
-
         nodes = (RepositoryNode[]) selection.toList().toArray(new RepositoryNode[selection.size()]);
+        setNodes(nodes);
+    }
+
+    protected RepositoryNode[] getCheckNodes() {
+        return treeViewer.getCheckNodes();
+    }
+
+    private void setNodes(RepositoryNode[] nodes) {
 
         List<ExportFileResource> list = new ArrayList<ExportFileResource>();
         int nodeSize = nodes.length;
@@ -164,9 +176,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                 }
             }
         }
-
         process = list.toArray(new ExportFileResource[list.size()]);
-
     }
 
     private void addTreeNode(RepositoryNode node, String path, List<ExportFileResource> list) {
@@ -282,17 +292,17 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     public void createControl(Composite parent) {
 
         initializeDialogUnits(parent);
-
+        GridLayout layout = new GridLayout();
+        layout.verticalSpacing = 0;
+        layout.marginHeight = 0;
+        layout.marginBottom = 0;
         Composite composite = new Composite(parent, SWT.NULL);
-        composite.setLayout(new GridLayout());
+        composite.setLayout(layout);
         composite.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL | GridData.HORIZONTAL_ALIGN_FILL));
         composite.setFont(parent.getFont());
 
-        // createResourcesGroup(composite);
-        // createButtonsGroup(composite);
-
         createDestinationGroup(composite);
-
+        createExportTree(composite);
         if (!isMultiNodes) {
             createJobVersionGroup(composite);
         }
@@ -310,6 +320,11 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         setControl(composite);
         giveFocusToDestination();
 
+    }
+
+    protected void createExportTree(Composite parent) {
+        treeViewer = new ExportTreeViewer(selection);
+        treeViewer.createItemList(parent);
     }
 
     /**
@@ -602,6 +617,10 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      * @returns boolean
      */
     public boolean finish() {
+        // achen added
+        if (getCheckNodes() != null) {
+            setNodes(getCheckNodes());
+        }
         manager = createJobScriptsManager();
         manager.setMultiNodes(isMultiNodes());
         // achen modify to fix bug 0006222
