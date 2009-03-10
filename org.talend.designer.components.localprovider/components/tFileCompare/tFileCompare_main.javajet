@@ -19,6 +19,7 @@ String differMessage = ElementParameterParser.getValue(node, "__DIFFER_MESSAGE__
 String noDifferMessage = ElementParameterParser.getValue(node, "__NO_DIFFER_MESSAGE__");
 String fileRef = ElementParameterParser.getValue(node, "__FILE_REF__");
 String cmpMode = ElementParameterParser.getValue(node, "__COMPARISON_MODE__");
+String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
 %>
 
 boolean result_<%=cid%> = true;
@@ -41,8 +42,8 @@ if (result_<%=cid%>)
 	if(cmpMode.equals("TEXT_CMP"))
 	{
 		%>
-		java.io.BufferedReader file_<%=cid%> = new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(<%=file%>)));
-		java.io.BufferedReader fileRef_<%=cid%> = new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(<%=fileRef%>)));
+		java.io.BufferedReader file_<%=cid%> = new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(<%=file%>),<%=encoding %>));
+		java.io.BufferedReader fileRef_<%=cid%> = new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(<%=fileRef%>),<%=encoding %>));
 		String content_<%=cid%> = null,contentRef_<%=cid%> = null;
 		while((content_<%=cid%> = file_<%=cid%>.readLine()) != null && (contentRef_<%=cid%> = fileRef_<%=cid%>.readLine()) != null)
 		{
