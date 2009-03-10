@@ -93,7 +93,7 @@
 				}
     		}
 			if (conns!=null && conns.size()>0) {
-				List<String> connections = new java.util.ArrayList<String>();
+				List<IConnection> connections = new java.util.ArrayList<IConnection>();
 				Map<String, List<IMetadataColumn>> connectionMapColumnList = new java.util.HashMap<String, List<IMetadataColumn>>();
 				Map<String, String> connectionMapRecordType = new java.util.HashMap<String, String>();
 				for(int i=0;i<conns.size();i++){
@@ -101,15 +101,15 @@
 		            if (connTemp.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 		               IMetadataTable tempMetadataTable = connTemp.getMetadataTable();
 		               List<IMetadataColumn> listColumns = tempMetadataTable.getListColumns();
-		               connections.add(connTemp.getName());
+		               connections.add(connTemp);
 		               connectionMapColumnList.put(connTemp.getName(), listColumns);
 					}
 				}
 				List<Map<String, String>> schemas = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__SCHEMAS__");
-				for(String connection : connections){
+				for(IConnection connection : connections){
 		            for(Map<String, String> schemaMap : schemas){
-		               if(schemaMap.get("SCHEMA").equals(connection)){
-		                   connectionMapRecordType.put(connection, schemaMap.get("CODE"));
+		               if(schemaMap.get("SCHEMA").equals(connection.getMetadataTable().getLabel())){
+		                   connectionMapRecordType.put(connection.getName(), schemaMap.get("CODE"));
 		                   break;
 		               } else {
 		                   continue;
