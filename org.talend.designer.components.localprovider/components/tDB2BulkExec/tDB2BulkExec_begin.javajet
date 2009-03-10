@@ -38,6 +38,11 @@ String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
 String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");		
 String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
 
+String dateformat = ElementParameterParser.getValue(node, "__DATE_FORMAT__");
+String timeformat = ElementParameterParser.getValue(node, "__TIME_FORMAT__");
+String timestampformat = ElementParameterParser.getValue(node, "__TIMESTAMP_FORMAT__");
+
+
 boolean useExistingConnection = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__").equals("true");
 
 List<IMetadataColumn> columnList = getColumnList(node);
@@ -142,7 +147,7 @@ if(columnList != null && columnList.size() > 0) {
         String action_<%=cid%> = "<%=action%>";
         java.sql.CallableStatement callStmt_<%=cid%> = null;
         String sql_<%=cid%> = "CALL SYSPROC.ADMIN_CMD(?)";
-        String param_<%=cid%> = "LOAD FROM "+ fileName_<%=cid%> + " OF DEL MODIFIED BY COLDEL"+ <%=field_separator%> + " " + action_<%=cid%> +" INTO "  + tableName_<%=cid%> ;     			
+        String param_<%=cid%> = "LOAD FROM "+ fileName_<%=cid%> + " OF DEL MODIFIED BY COLDEL"+ <%=field_separator%> + " dateformat=\""+ <%=dateformat%>+ "\" timeformat=\"" + <%=timeformat%>+ "\" timestampformat=\""+<%=timestampformat%> +"\"" + action_<%=cid%> +" INTO "  + tableName_<%=cid%> ;     			
         callStmt_<%=cid%> = conn_<%=cid%>.prepareCall(sql_<%=cid%>);
         callStmt_<%=cid%>.setString(1, param_<%=cid%>);
         callStmt_<%=cid%>.execute();        
@@ -165,12 +170,15 @@ if(columnList != null && columnList.size() > 0) {
             String tmpTableName_<%=cid%> = tableName_<%=cid%>;
             tableName_<%=cid%> = "tmp_<%=cid%>" + "_" + pid; 
             java.sql.Statement stmtCreateTmp_<%=cid%> = conn_<%=cid%>.createStatement();
+            
+
+            
             stmtCreateTmp_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
             stmtCreateTmp_<%=cid%>.close();
                         
         	java.sql.CallableStatement callStmt_<%=cid%> = null;
         	String sql_<%=cid%> = "CALL SYSPROC.ADMIN_CMD(?)";
-        	String param_<%=cid%> = "LOAD FROM "+ fileName_<%=cid%> + " OF DEL MODIFIED BY COLDEL" + <%=field_separator%> + " INSERT INTO "  + tableName_<%=cid%> ;        			
+        	String param_<%=cid%> = "LOAD FROM "+ fileName_<%=cid%> + " OF DEL MODIFIED BY COLDEL" + <%=field_separator%> + " dateformat=\""+<%=dateformat%>+"\" timeformat=\"" +<%=timeformat%>+ "\" timestampformat=\"" + <%=timestampformat%>+"\"" + " INSERT INTO "  + tableName_<%=cid%> ;        			
         	
         	callStmt_<%=cid%> = conn_<%=cid%>.prepareCall(sql_<%=cid%>);
         	callStmt_<%=cid%>.setString(1, param_<%=cid%>);
@@ -180,7 +188,7 @@ if(columnList != null && columnList.size() > 0) {
             tableName_<%=cid%> = tmpTableName_<%=cid%>;
             tmpTableName_<%=cid%> = "tmp_<%=cid%>"+ "_" + pid;             
             java.sql.Statement stmtUpdateBulk_<%=cid%> = conn_<%=cid%>.createStatement();
-            
+                        
             stmtUpdateBulk_<%=cid%>.executeUpdate("<%=manager.getUpdateBulkSQL(columnList)%>");
             stmtUpdateBulk_<%=cid%>.close();           
             
