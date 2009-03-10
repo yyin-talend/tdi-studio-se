@@ -283,7 +283,7 @@ if(protocol.equals("smb")){ //1%>
  
     class SambaProtoClient_<%=cid %>{
       
-      private void copySMBFile(String domain, String username, String password, String srcURL, String destFilePath) {
+      private void copySMBFile(String domain, String username, String password, String srcURL, String dirFilePath, String destFilePath) {
         try {
            
 
@@ -294,7 +294,8 @@ if(protocol.equals("smb")){ //1%>
 
             jcifs.smb.SmbFileInputStream in = new jcifs.smb.SmbFileInputStream(sf);
 
-            java.io.File destFile = new java.io.File(destFilePath);
+            java.io.File destFile = new java.io.File(dirFilePath,destFilePath);
+            destFile.getParentFile().mkdirs();
             java.io.OutputStream out = new java.io.FileOutputStream(destFile);
 
             byte[] buf = new byte[1024];
@@ -331,16 +332,9 @@ if(protocol.equals("smb")){ //1%>
 		password_<%=cid %> =null;
 		
 	}
-	<%
-	if (directory.replaceAll("\"", "").endsWith("/") == true) {
-	%>
-    String destFilePath_<%=cid %>=<%=directory %>+fileName_<%=cid %>;
-    <%}else{%>
-    String destFilePath_<%=cid %>=<%=directory %> + "/" +fileName_<%=cid %>;
-    <%}%>
-    
+	 
     SambaProtoClient_<%=cid %> spc_<%=cid %>=new SambaProtoClient_<%=cid %>();
-    spc_<%=cid %>.copySMBFile(<%=domain %>, username_<%=cid %>, password_<%=cid %>, srcurl_<%=cid %>, destFilePath_<%=cid %>);
+    spc_<%=cid %>.copySMBFile(<%=domain %>, username_<%=cid %>, password_<%=cid %>, srcurl_<%=cid %>, <%=directory %>, fileName_<%=cid %>);
 
 
 <%
