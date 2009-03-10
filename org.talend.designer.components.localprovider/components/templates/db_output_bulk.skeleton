@@ -422,6 +422,7 @@ public class CLASS {
             }
             return updateBulkSQL.toString() + updateSetStmt.toString() + updateWhereStmt.toString();
         }
+
         public List<Column> createColumnList(List<IMetadataColumn> columnList, List<Map<String, String>> addCols) {
             List<Column> stmtStructure = new ArrayList<Column>();
             for(IMetadataColumn column : columnList) {
@@ -885,6 +886,63 @@ public class CLASS {
         protected String getRProtectedChar() {
             return "";
         }        
+        
+        public String getUpdateBulkSQL(List<IMetadataColumn> columnList) {
+            // try to build a sql like 
+            // update customers a 
+            // set (city_name,customer_type)=(select b.city_name,b.customer_type 
+            //        from tmp_cust_city b 
+            //        where b.customer_id=a.customer_id) // wheresub
+            //        where exists (select 1 
+            //        from tmp_cust_city b
+            //        where b.customer_id=a.customer_id
+            //        )
+            StringBuilder updateBulkSQL = new StringBuilder();
+            StringBuilder updateSetStmt = new StringBuilder();
+            StringBuilder updateSetSelectStmt= new StringBuilder();           
+            StringBuilder updateWhereSubStmt = new StringBuilder();
+            StringBuilder updateWhereMainStmt = new StringBuilder();
+            String keySeparator = null;
+            String updateSeparator = null;
+            
+            boolean firstKeyColumn = true;
+            boolean firstUpdateColumn = true;
+            updateBulkSQL.append("UPDATE " + getLProtectedChar() + "\" +  tableName_" + cid + " + \"" + getRProtectedChar() );
+            for(IMetadataColumn column : columnList) {
+                if(column.isKey()) {
+                    if(firstKeyColumn) {
+                        keySeparator = "";
+                        firstKeyColumn = false;
+                        updateWhereSubStmt.append(" WHERE \" + \"");
+                        updateWhereMainStmt.append(" WHERE EXISTS ( SELECT 1 FROM " + getLProtectedChar() + "\" + tmpTableName_" + cid + " + \"" + getRProtectedChar() );
+                    }else {
+                        keySeparator = " AND ";
+                    }
+                    updateWhereSubStmt.append(keySeparator);                    
+                    updateWhereSubStmt.append(getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar() + "." + getLProtectedChar() + "\" + \"" + column.getLabel() + "\" + \"" + getRProtectedChar() + " = " + getLProtectedChar() + "\" + tmpTableName_" + cid + " + \"" + getRProtectedChar() + "." + getLProtectedChar() + "\" + \"" + column.getLabel() + "\" + \"" + getRProtectedChar());                        
+
+                }else {
+                    if(firstUpdateColumn) {
+                        updateSeparator = "";
+                        firstUpdateColumn = false;
+                        updateSetStmt.append(" SET \" + \" ( ");
+                        updateSetSelectStmt.append(" = (SELECT ");
+                    } else {
+                        updateSeparator = ", ";
+                    }
+                    updateSetStmt.append(updateSeparator);
+                    updateSetStmt.append(getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar() + "." + getLProtectedChar() + "\" + \"" + column.getLabel() + "\" + \"" + getRProtectedChar());
+                    updateSetSelectStmt.append(updateSeparator);
+                    updateSetSelectStmt.append(getLProtectedChar() + "\" + tmpTableName_" + cid + " + \"" + getRProtectedChar() + "." + getLProtectedChar() + "\" + \"" + column.getLabel() + "\" + \"" + getRProtectedChar()) ;
+                }
+            }
+            updateSetStmt.append(" )");
+            updateSetSelectStmt.append(" FROM " + getLProtectedChar() + "\" + tmpTableName_" + cid + " + \"" + getRProtectedChar());
+            updateWhereSubStmt.append(")");
+            
+            return updateBulkSQL.append(updateSetStmt).append(updateSetSelectStmt).append(updateWhereSubStmt).append(updateWhereMainStmt).append(updateWhereSubStmt).toString();
+        }
+        
     }
     
     public class FirebirdManager extends Manager {
@@ -1622,4 +1680,6 @@ public class CLASS {
     public String generate(Object argument) {
 
     }
+    
+    
 }

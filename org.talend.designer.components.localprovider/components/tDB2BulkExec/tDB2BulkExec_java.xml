@@ -174,8 +174,9 @@
       NUM_ROW="40"
     >
       <ITEMS DEFAULT="INSERT">
-        <ITEM NAME="INSERT"     VALUE="INSERT" />
-        <ITEM NAME="REPLACE"     VALUE="REPLACE"/>
+        <ITEM NAME="INSERT"    VALUE="INSERT" />
+        <ITEM NAME="REPLACE"   VALUE="REPLACE"/>
+        <ITEM NAME="UPDATE"    VALUE="UPDATE"/>
       </ITEMS>
     </PARAMETER>
     
