@@ -69,20 +69,31 @@
      			}
      		<%}%>
      		<%if(overwrite.equals("size_differ")){%>
-     			if((ftp<%=cid%>.exists(map<%=cid %>.get(key<%=cid %>))))
-				{
+     			if((ftp<%=cid%>.exists(map<%=cid %>.get(key<%=cid %>)))){
 					com.enterprisedt.net.ftp.FTPFile ftpnewNamefile<%=cid%>=ftp<%=cid%>.fileDetails(map<%=cid %>.get(key<%=cid %>));
 					com.enterprisedt.net.ftp.FTPFile ftporigNamefile<%=cid%>=ftp<%=cid%>.fileDetails(key<%=cid %>);
 					long newNameSize<%=cid%>=ftpnewNamefile<%=cid%>.size();
 					long origNameSize<%=cid%>=ftporigNamefile<%=cid%>.size();
 					if(!(newNameSize<%=cid%>==origNameSize<%=cid%>))
 					{
-						ftp<%=cid %>.rename(key<%=cid %>, map<%=cid %>.get(key<%=cid %>));
-						globalMap.put("<%=cid %>_CURRENT_STATUS", "File rename OK.");
-						nb_file_<%=cid%>++;
+		     			String fromFile = key<%=cid %>;
+		     			String toFile = map<%=cid %>.get(key<%=cid %>);
+						if(ftp<%=cid%>.exists(fromFile)){
+		     		    	if(ftp<%=cid%>.exists(toFile + ".tmp")){
+		     		    		ftp<%=cid%>.delete(toFile + ".tmp");
+		     		    	}
+		     		    	if(ftp<%=cid%>.exists(toFile)){
+				     			ftp<%=cid %>.rename(toFile, toFile + ".tmp");
+		     		    	}
+			     			ftp<%=cid %>.rename(fromFile, toFile);
+			     			if(ftp<%=cid%>.exists(toFile + ".tmp")){
+				     			ftp<%=cid%>.delete(toFile + ".tmp");
+			     			}
+			     			globalMap.put("<%=cid %>_CURRENT_STATUS", "File rename OK.");
+			     			nb_file_<%=cid%>++;
+		     			}
 					}
-				}else
-				{
+				}else{
 					ftp<%=cid %>.rename(key<%=cid %>, map<%=cid %>.get(key<%=cid %>));
 					globalMap.put("<%=cid %>_CURRENT_STATUS", "File rename OK.");
 					nb_file_<%=cid%>++;
