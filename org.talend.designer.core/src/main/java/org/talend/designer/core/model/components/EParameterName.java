@@ -73,6 +73,10 @@ public enum EParameterName {
     COMP_DEFAULT_FILE_DIR("COMP_DEFAULT_FILE_DIR"), //$NON-NLS-1$  Hidden parameter so no translation needed
     REPOSITORY_ALLOW_AUTO_SWITCH("REPOSITORY_ALLOW_AUTO_SWITCH"), //$NON-NLS-1$  Hidden parameter so no translation needed
     ENCODING_TYPE(Messages.getString("EParameterName.encodingType")), //$NON-NLS-1$
+    ENCODING(Messages.getString("EParameterName.encoding")), //$NON-NLS-1$
+    CSV_OPTION(Messages.getString("EParameterName.csvOption")), //$NON-NLS-1$
+    ESCAPE_CHAR(Messages.getString("EParameterName.escapeChar")), //$NON-NLS-1$
+    TEXT_ENCLOSURE(Messages.getString("EParameterName.textEnclosure")), //$NON-NLS-1$
     COMPONENT_LIST(Messages.getString("EParameterName.componentList")), //$NON-NLS-1$
     MAPPING_TYPE(Messages.getString("EParameterName.mapping")), //$NON-NLS-1$
     DUMMY("DUMMY"), //$NON-NLS-1$ Hidden parameter so no translation needed

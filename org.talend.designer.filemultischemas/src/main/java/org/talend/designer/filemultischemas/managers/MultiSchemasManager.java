@@ -12,7 +12,10 @@
 // ============================================================================
 package org.talend.designer.filemultischemas.managers;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -21,6 +24,7 @@ import java.util.Set;
 
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.data.list.UniqueStringGenerator;
 import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
@@ -52,6 +56,8 @@ import org.talend.designer.filemultischemas.data.MultiSchemasMetadataColumn;
 import org.talend.designer.filemultischemas.data.SchemasKeyData;
 import org.talend.fileprocess.FileInputDelimited;
 import org.talend.repository.preview.ProcessDescription;
+
+import com.csvreader.CsvReader;
 
 /**
  * cLi class global comment. Detailled comment
@@ -163,6 +169,8 @@ public class MultiSchemasManager {
             SchemasKeyData schemaData = findSchemasKeyData(rootSchemasKeyData, key);
             if (schemaData == null) {
                 schemaData = new SchemasKeyData(key);
+                schemaData.setUniqueRecord(generateUniqueRecordName(null, rootSchemasKeyData));
+
                 rootSchemasKeyData.addChild(schemaData);
             }
             //
@@ -176,6 +184,39 @@ public class MultiSchemasManager {
             createPropertiesColumns(schemaData);
         }
         return rootSchemasKeyData;
+    }
+
+    /**
+     * 
+     * cli Comment method "generateUniqueRecordName".
+     * 
+     */
+    private String generateUniqueRecordName(String baseName, SchemasKeyData root) {
+        if (baseName == null) {
+            baseName = ""; //$NON-NLS-1$
+        }
+
+        char firstChar = 'A';
+        final String firstName = baseName + String.valueOf(firstChar);
+        String uniqueName = firstName;
+
+        while (existRecord(root, uniqueName)) {
+            firstChar++;
+            if (firstChar > 'Z') {
+                return generateUniqueRecordName(firstName, root);
+            }
+            uniqueName = baseName + String.valueOf(firstChar);
+        }
+        return uniqueName;
+    }
+
+    private boolean existRecord(SchemasKeyData root, String name) {
+        for (SchemasKeyData data : root.getChildren()) {
+            if (data.getUniqueRecord().equals(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private String precessString(String str) {
@@ -460,6 +501,7 @@ public class MultiSchemasManager {
                     final IMetadataTable metadataTable = MetadataTool.getMetadataTableFromNode(getMultiSchemasComponent(),
                             schemaName);
                     if (metadataTable != null) {
+                        data.setUniqueRecord(schemaName);
                         createMultiSchemasColumns(data, metadataTable.clone(true));
                     }
                     rootData.addChild(data);
@@ -559,7 +601,6 @@ public class MultiSchemasManager {
         if (processDesc == null || !checked) {
             return null;
         }
-        CsvArray csvArray = new CsvArray();
 
         final String filePath = TalendTextUtils.removeQuotes(processDesc.getFilepath());
         final String encoding = TalendTextUtils.removeQuotes(processDesc.getEncoding());
@@ -568,7 +609,87 @@ public class MultiSchemasManager {
         final String rowSeparator = TalendTextUtils.trimParameter(processDesc.getRowSeparator());
 
         final boolean needSkpipEmptyRecord = true;
-        final boolean splitRecord = false;
+        final boolean splitRecord = processDesc.isSplitRecord();
+        if (processDesc.isCSVOption()) {
+            return retrieveCsvArrayByCSVOption(filePath, encoding, fieldSeparator, rowSeparator, needSkpipEmptyRecord,
+                    splitRecord);
+        } else {
+            return retrieveCsvArrayByDelimited(filePath, encoding, fieldSeparator, rowSeparator, needSkpipEmptyRecord,
+                    splitRecord);
+        }
+    }
+
+    public CsvArray retrieveCsvArrayByCSVOption(final String filePath, final String encoding, final String fieldSeparator,
+            final String rowSeparator, final boolean needSkpipEmptyRecord, final boolean splitRecord) {
+        CsvArray csvArray = new CsvArray();
+        CsvReader multiSchameCsvReader = null;
+        try {
+            // read max columns
+            multiSchameCsvReader = getCSVReader(filePath, encoding, fieldSeparator, rowSeparator, needSkpipEmptyRecord);
+            int columsNum = -1;
+            while (multiSchameCsvReader.readRecord()) {
+                String[] values = multiSchameCsvReader.getValues();
+                if (columsNum < values.length) {
+                    columsNum = values.length;
+                }
+            }
+            multiSchameCsvReader.close();
+            if (columsNum < 0) {
+                return null;
+            }
+            // read data
+            Set<String> uniqueKey = new HashSet<String>();
+            String currentRowKey = ""; //$NON-NLS-1$
+
+            multiSchameCsvReader = getCSVReader(filePath, encoding, fieldSeparator, rowSeparator, needSkpipEmptyRecord);
+            while (multiSchameCsvReader.readRecord()) {
+                String[] values = multiSchameCsvReader.getValues();
+                if (values == null || values.length < 1) {
+                    continue;
+                }
+                final String first = values[0];
+                if ("".equals(first.trim())) { // must be contain first //$NON-NLS-1$
+                    continue;
+                }
+                currentRowKey = first.toLowerCase();
+                if (uniqueKey.contains(currentRowKey)) { // existed.
+                    continue;
+                }
+                uniqueKey.add(currentRowKey);
+                csvArray.add(values);
+            }
+        } catch (IOException e) {
+            ExceptionHandler.process(e);
+            return null;
+        } finally {
+            if (multiSchameCsvReader != null) {
+                multiSchameCsvReader.close();
+            }
+        }
+
+        return csvArray;
+    }
+
+    private CsvReader getCSVReader(final String filePath, final String encoding, final String fieldSeparator,
+            final String rowSeparator, final boolean needSkpipEmptyRecord) throws IOException {
+        CsvReader csvReadertFileInputDelimited;
+        csvReadertFileInputDelimited = new CsvReader(new BufferedReader(new InputStreamReader(new FileInputStream(filePath),
+                encoding)), fieldSeparator.charAt(0));
+
+        csvReadertFileInputDelimited.setRecordDelimiter(rowSeparator.charAt(0));
+        csvReadertFileInputDelimited.setSkipEmptyRecords(needSkpipEmptyRecord);
+        csvReadertFileInputDelimited.setTextQualifier('"');// PTODO
+        csvReadertFileInputDelimited.setEscapeMode(CsvReader.ESCAPE_MODE_DOUBLED);// PTODO
+
+        return csvReadertFileInputDelimited;
+    }
+
+    /**
+     * cli Comment method "retrieveCsvArrayByDelimited".
+     */
+    private CsvArray retrieveCsvArrayByDelimited(final String filePath, final String encoding, final String fieldSeparator,
+            final String rowSeparator, final boolean needSkpipEmptyRecord, final boolean splitRecord) {
+        CsvArray csvArray = new CsvArray();
         FileInputDelimited fileInputDelimited = null;
         try {
             fileInputDelimited = new FileInputDelimited(filePath, encoding, fieldSeparator, rowSeparator, needSkpipEmptyRecord,
@@ -602,6 +723,7 @@ public class MultiSchemasManager {
                 csvArray.add(lineDatas);
             }
         } catch (IOException e) {
+            ExceptionHandler.process(e);
             return null;
         } finally {
             if (fileInputDelimited != null) {

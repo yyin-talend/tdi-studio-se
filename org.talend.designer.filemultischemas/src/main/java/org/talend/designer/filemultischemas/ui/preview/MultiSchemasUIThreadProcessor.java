@@ -58,8 +58,12 @@ public class MultiSchemasUIThreadProcessor extends SWTUIThreadProcessor {
     public void nonUIProcessInThread() {
         // get the XmlArray width an adapt ProcessDescription
         try {
+            if (processDescription.isCSVOption()) {
+                csvArray = ShadowProcessHelper.getCsvArray(processDescription, "FILE_CSV", true); //$NON-NLS-1$
+            } else {
+                csvArray = ShadowProcessHelper.getCsvArray(processDescription, "FILE_DELIMITED", true); //$NON-NLS-1$
 
-            csvArray = ShadowProcessHelper.getCsvArray(processDescription, "FILE_DELIMITED", true); //$NON-NLS-1$
+            }
             if (csvArray == null) {
                 previewInformationLabelMsg = Messages.getString("FileStep2.previewFailure"); //$NON-NLS-1$ //$NON-NLS-2$
             } else {

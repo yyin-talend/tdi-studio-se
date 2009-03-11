@@ -258,10 +258,17 @@ public class MultiSchemasUI {
         getConnection().setFilePath(TalendTextUtils.removeQuotes(filePath));
         getConnection().setRowSeparatorValue(getMultiSchemaManager().getParameterValue(EParameterName.ROWSEPARATOR));
         getConnection().setFieldSeparatorValue(getMultiSchemaManager().getParameterValue(EParameterName.FIELDSEPARATOR));
-        getConnection().setEncoding(getMultiSchemaManager().getParameterValue(EParameterName.ENCODING_TYPE));
+        String encoding = getMultiSchemaManager().getParameterValue(EParameterName.ENCODING);
+        getConnection().setEncoding(TalendTextUtils.removeQuotes(encoding));
 
-        getConnection().setCsvOption(false);
-        getConnection().setEscapeType(Escape.DELIMITED_LITERAL);
+        getConnection().setCsvOption((Boolean) getMultiSchemaManager().getParameterObjectValue(EParameterName.CSV_OPTION));
+        if (getConnection().isCsvOption()) {
+            getConnection().setEscapeType(Escape.CSV_LITERAL);
+        } else {
+            getConnection().setEscapeType(Escape.DELIMITED_LITERAL);
+        }
+        getConnection().setTextEnclosure(getMultiSchemaManager().getParameterValue(EParameterName.TEXT_ENCLOSURE));
+        getConnection().setEscapeChar(getMultiSchemaManager().getParameterValue(EParameterName.ESCAPE_CHAR));
 
         fileField.setText(TalendTextUtils.addQuotes(getConnection().getFilePath()));
 
@@ -866,7 +873,7 @@ public class MultiSchemasUI {
                 getConnection().setFilePath(TalendTextUtils.removeQuotes(fileField.getText()));
                 previewBtn.setEnabled(checkFieldsValue());
                 clearPreview();
-
+                refreshPreview();
             }
         });
         rowSeparatorText.addModifyListener(new ModifyListener() {
@@ -1083,6 +1090,8 @@ public class MultiSchemasUI {
         processDescription.setHeaderRow(-1);
         processDescription.setFooterRow(0);
         processDescription.setLimitRows(maximumRowsToPreview);
+        processDescription.setSplitRecord(getConnection().isSplitRecord());
+        processDescription.setCSVOption(getConnection().isCsvOption());
 
         return processDescription;
     }

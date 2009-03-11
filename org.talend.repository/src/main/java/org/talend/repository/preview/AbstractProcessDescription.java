@@ -67,6 +67,8 @@ public abstract class AbstractProcessDescription implements IProcessDescription 
 
     private boolean splitRecord;
 
+    private boolean isCSVOption;
+
     /**
      * Getter for escapeCharacter.
      * 
@@ -371,6 +373,14 @@ public abstract class AbstractProcessDescription implements IProcessDescription 
      */
     public void setSplitRecord(boolean splitRecord) {
         this.splitRecord = splitRecord;
+    }
+
+    public boolean isCSVOption() {
+        return this.isCSVOption;
+    }
+
+    public void setCSVOption(boolean isCSVOption) {
+        this.isCSVOption = isCSVOption;
     }
 
 }

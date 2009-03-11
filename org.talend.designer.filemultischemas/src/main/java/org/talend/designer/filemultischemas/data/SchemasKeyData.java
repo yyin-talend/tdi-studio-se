@@ -30,6 +30,8 @@ public class SchemasKeyData {
 
     private String recordType;
 
+    private String uniqueRecord;
+
     private List<SchemasKeyData> children = new ArrayList<SchemasKeyData>();
 
     private List<MultiSchemaRowData> rowsData = new ArrayList<MultiSchemaRowData>();
@@ -49,6 +51,14 @@ public class SchemasKeyData {
 
     public String getRecordType() {
         return this.recordType;
+    }
+
+    public String getUniqueRecord() {
+        return this.uniqueRecord;
+    }
+
+    public void setUniqueRecord(String uniqueRecord) {
+        this.uniqueRecord = uniqueRecord;
     }
 
     public void setParent(SchemasKeyData parent) {

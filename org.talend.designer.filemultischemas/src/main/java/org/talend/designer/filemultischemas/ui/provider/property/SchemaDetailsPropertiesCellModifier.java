@@ -50,7 +50,8 @@ public class SchemaDetailsPropertiesCellModifier extends SchemaDetailsCellModifi
              * 
              * if existed key column, should not edit other key.
              */
-            if (metadataColumnsInModel.indexOf(column) < 1 || UIManager.existedKeyColumn(metadataColumnsInModel, column)) {
+            if (EPropertyName.KEY.name().equals(property)
+                    && (metadataColumnsInModel.indexOf(column) < 1 || UIManager.existedKeyColumn(metadataColumnsInModel, column))) {
                 return false;
             }
             if (!EPropertyName.TAGLEVEL.name().equals(property)) {

@@ -13,6 +13,7 @@
 package org.talend.designer.filemultischemas.managers;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +50,14 @@ public class ChangeMultiSchemasCommand extends Command {
 
     private Object oldEncoding, newEncoding;
 
+    private Object oldEncodingType, newEncodingType;
+
+    private Object oldTextEnclosure, newTextEnclosure;
+
+    private Object oldEscapeChar, newEscapeChar;
+
+    private boolean oldCsvOption, newCsvOption;
+
     private List<Map<String, String>> oldSchemasListMap, newSchemasListMap;
 
     private List<IMetadataTable> oldMetadataTable, newMetadataTable;
@@ -67,8 +76,25 @@ public class ChangeMultiSchemasCommand extends Command {
     private void initNew() {
         this.newFieldSeperator = fakeConnection.getFieldSeparatorValue();
         this.newRowSeperator = fakeConnection.getRowSeparatorValue();
-        this.newEncoding = fakeConnection.getEncoding();
-        this.newFilePath = fakeConnection.getFilePath();
+        this.newEncoding = TalendTextUtils.addQuotes(fakeConnection.getEncoding());
+
+        IElementParameter encodingType = node.getElementParameter(EParameterName.ENCODING_TYPE.getName());
+        if (encodingType != null) {
+            String[] codes = encodingType.getListItemsDisplayCodeName();
+            if (codes != null) {
+                List<String> list = Arrays.asList(codes);
+                if (list.indexOf(fakeConnection.getEncoding()) > -1) {
+                    this.newEncodingType = fakeConnection.getEncoding();
+                } else {
+                    this.newEncodingType = list.get(list.size() - 1); // custom
+                }
+            }
+        }
+
+        this.newFilePath = TalendTextUtils.addQuotes(fakeConnection.getFilePath());
+        this.newTextEnclosure = fakeConnection.getTextEnclosure();
+        this.newEscapeChar = fakeConnection.getEscapeChar();
+        this.newCsvOption = fakeConnection.isCsvOption();
         // map
         this.newSchemasListMap = new ArrayList<Map<String, String>>();
         // metadata table
@@ -84,10 +110,10 @@ public class ChangeMultiSchemasCommand extends Command {
         if (keyData.getParent() != null) { // not root
             //
             Map<String, String> map = new HashMap<String, String>();
-            final String key = keyData.getRecordType();
+            final String key = keyData.getUniqueRecord();
             map.put(IMultiSchemaConstant.SCHEMA, key);
             map.put(IMultiSchemaConstant.RECORD, TalendTextUtils.addQuotes(key));
-            map.put(IMultiSchemaConstant.PARENT_RECORD, TalendTextUtils.addQuotes(keyData.getParent().getRecordType()));
+            map.put(IMultiSchemaConstant.PARENT_RECORD, TalendTextUtils.addQuotes(keyData.getParent().getUniqueRecord()));
             map.put(IMultiSchemaConstant.CARDINALITY, keyData.getCard());
             newValueList.add(map);
             //
@@ -132,6 +158,10 @@ public class ChangeMultiSchemasCommand extends Command {
         }
         elementParameter = this.node.getElementParameter(EParameterName.ENCODING_TYPE.getName());
         if (elementParameter != null) {
+            this.oldEncodingType = elementParameter.getValue();
+        }
+        elementParameter = this.node.getElementParameter(EParameterName.ENCODING.getName());
+        if (elementParameter != null) {
             this.oldEncoding = elementParameter.getValue();
         }
         elementParameter = this.node.getElementParameter(EParameterName.ROWSEPARATOR.getName());
@@ -141,6 +171,18 @@ public class ChangeMultiSchemasCommand extends Command {
         elementParameter = this.node.getElementParameter(EParameterName.FIELDSEPARATOR.getName());
         if (elementParameter != null) {
             this.oldFieldSeperator = elementParameter.getValue();
+        }
+        elementParameter = this.node.getElementParameter(EParameterName.TEXT_ENCLOSURE.getName());
+        if (elementParameter != null) {
+            this.oldTextEnclosure = elementParameter.getValue();
+        }
+        elementParameter = this.node.getElementParameter(EParameterName.ESCAPE_CHAR.getName());
+        if (elementParameter != null) {
+            this.oldEscapeChar = elementParameter.getValue();
+        }
+        elementParameter = this.node.getElementParameter(EParameterName.CSV_OPTION.getName());
+        if (elementParameter != null) {
+            this.oldCsvOption = (Boolean) elementParameter.getValue();
         }
         // schema table
         elementParameter = this.node.getElementParameter(EParameterName.SCHEMAS.getName());
@@ -183,50 +225,33 @@ public class ChangeMultiSchemasCommand extends Command {
 
     }
 
+    private void setParameterValues(EParameterName paramName, Object oldValue, Object newValue, boolean undo) {
+        IElementParameter elementParameter = null;
+
+        elementParameter = this.node.getElementParameter(paramName.getName());
+        if (elementParameter != null) {
+            Object value = null;
+            if (undo) {
+                value = oldValue;
+            } else {
+                value = newValue;
+            }
+            elementParameter.setValue(value);
+        }
+    }
+
     private void setParameterValues(boolean undo) {
         IElementParameter elementParameter = null;
 
-        elementParameter = this.node.getElementParameter(EParameterName.FILENAME.getName());
-        if (elementParameter != null) {
-            Object value = null;
-            if (undo) {
-                value = this.oldFilePath;
-            } else {
-                value = this.newFilePath;
-            }
-            elementParameter.setValue(value);
-        }
-        elementParameter = this.node.getElementParameter(EParameterName.ENCODING_TYPE.getName());
-        if (elementParameter != null) {
-            Object value = null;
-            if (undo) {
-                value = this.oldEncoding;
-            } else {
-                value = this.newEncoding;
-            }
-            elementParameter.setValue(value);
-        }
-        elementParameter = this.node.getElementParameter(EParameterName.ROWSEPARATOR.getName());
-        if (elementParameter != null) {
-            Object value = null;
-            if (undo) {
-                value = this.oldRowSeperator;
-            } else {
-                value = this.newRowSeperator;
-            }
-            elementParameter.setValue(value);
-        }
+        setParameterValues(EParameterName.FILENAME, this.oldFilePath, this.newFilePath, undo);
+        setParameterValues(EParameterName.ENCODING_TYPE, this.oldEncodingType, this.newEncodingType, undo);
+        setParameterValues(EParameterName.ENCODING, this.oldEncoding, this.newEncoding, undo);
+        setParameterValues(EParameterName.ROWSEPARATOR, this.oldRowSeperator, this.newRowSeperator, undo);
+        setParameterValues(EParameterName.FIELDSEPARATOR, this.oldFieldSeperator, this.newFieldSeperator, undo);
+        setParameterValues(EParameterName.TEXT_ENCLOSURE, this.oldTextEnclosure, this.newTextEnclosure, undo);
+        setParameterValues(EParameterName.ESCAPE_CHAR, this.oldEscapeChar, this.newEscapeChar, undo);
+        setParameterValues(EParameterName.CSV_OPTION, this.oldCsvOption, this.newCsvOption, undo);
 
-        elementParameter = this.node.getElementParameter(EParameterName.FIELDSEPARATOR.getName());
-        if (elementParameter != null) {
-            Object value = null;
-            if (undo) {
-                value = this.oldFieldSeperator;
-            } else {
-                value = this.newFieldSeperator;
-            }
-            elementParameter.setValue(value);
-        }
         // PTODO need check again.
         elementParameter = this.node.getElementParameter(EParameterName.SCHEMAS.getName());
 

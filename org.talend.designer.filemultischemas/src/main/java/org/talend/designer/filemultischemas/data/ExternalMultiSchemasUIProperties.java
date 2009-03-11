@@ -32,7 +32,7 @@ public class ExternalMultiSchemasUIProperties {
 
     public static final String FETCH_LABEL = "Fetch Codes";
 
-    public static final String FILE_LABEL = "Sample file";
+    public static final String FILE_LABEL = "File name";
 
     public static final String OUTPUT_LABEL = "Output";
 
