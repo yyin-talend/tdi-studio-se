@@ -43,7 +43,8 @@ if(useProxy){
 
 <%
 if ("CustomModule".equals(modulename)) {
-	modulename = customModulename; 
+	//modulename = customModulename; 
+	modulename = customModulename.replaceAll("\"","");
 }
 
 String upsertkey = ElementParameterParser.getValue(node, "__UPSERT_KEY_COLUMN__");
