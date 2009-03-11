@@ -62,8 +62,13 @@
    String errorMessage_<%=cid %>="";
 
   <%=outconnName %>=null;
+<%
+	if(rejectConnName != null){
+%>
   <%=rejectConnName %>=null;
-       
+<%
+	}
+%>      
   boolean isPassed_<%=cid %>=true;
   boolean hasException_<%=cid %>=false;
   
