@@ -530,67 +530,63 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
         }
         final String tmpMemoSql = this.memoSQL;
         final DatabaseConnection connt = sqlManager.createConnection(connParameters);
-        //
-        final ProgressMonitorDialog pmd = new ProgressMonitorDialog(this.composite.getShell());
+
+        IMetadataConnection iMetadataConnection = null;
+        boolean isStatus = false;
         try {
-            pmd.run(true, true, new IRunnableWithProgress() {
+            if (connt != null) {
+                iMetadataConnection = ConvertionHelper.convert(connt);
+                isStatus = checkConnection(iMetadataConnection);
+            }
 
-                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                    Display.getDefault().asyncExec(new Runnable() {
+            if (isStatus) {
+                info = new DbInfo(iMetadataConnection.getDbType(), iMetadataConnection.getUsername(), iMetadataConnection
+                        .getPassword(), iMetadataConnection.getDbVersionString(), iMetadataConnection.getUrl());
+                final Property property = (Property) GuessSchemaProcess.getNewmockProperty();
+                List<IContext> allcontexts = inputNode.getProcess().getContextManager().getListContext();
 
-                        public void run() {
-                            IMetadataConnection iMetadataConnection = null;
-                            boolean isStatus = false;
+                OpenContextChooseComboDialog dialog = new OpenContextChooseComboDialog(parentShell, allcontexts);
+                dialog.create();
+                dialog.getShell().setText(CONTEXT_CHOOSE_DIALOG_TITLE);
+                IContext selectContext = null;
+                // job only have defoult context,or the query isn't context mode
+                if (allcontexts.size() == 1 || TalendTextUtils.isCommonString(tmpMemoSql)) {
+                    selectContext = inputNode.getProcess().getContextManager().getDefaultContext();
+                } else if (Window.OK == dialog.open()) {
+                    selectContext = dialog.getSelectedContext();
+                }
+                final IContext context = selectContext;
+                if (context != null) {
+                    //
+                    final ProgressMonitorDialog pmd = new ProgressMonitorDialog(this.composite.getShell());
 
-                            if (connt != null) {
-                                iMetadataConnection = ConvertionHelper.convert(connt);
-                                isStatus = checkConnection(iMetadataConnection);
-                            }
+                    pmd.run(true, true, new IRunnableWithProgress() {
 
-                            if (isStatus) {
-                                info = new DbInfo(iMetadataConnection.getDbType(), iMetadataConnection.getUsername(),
-                                        iMetadataConnection.getPassword(), iMetadataConnection.getDbVersionString(),
-                                        iMetadataConnection.getUrl());
-                                Property property = (Property) GuessSchemaProcess.getNewmockProperty();
-                                List<IContext> allcontexts = inputNode.getProcess().getContextManager().getListContext();
+                        public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                            Display.getDefault().asyncExec(new Runnable() {
 
-                                OpenContextChooseComboDialog dialog = new OpenContextChooseComboDialog(parentShell, allcontexts);
-                                dialog.create();
-                                dialog.getShell().setText(CONTEXT_CHOOSE_DIALOG_TITLE);
-                                IContext selectContext = null;
-                                // job only have defoult context,or the query isn't context mode
-                                if (allcontexts.size() == 1 || TalendTextUtils.isCommonString(tmpMemoSql)) {
-                                    selectContext = inputNode.getProcess().getContextManager().getDefaultContext();
-                                } else if (Window.OK == dialog.open()) {
-                                    selectContext = dialog.getSelectedContext();
+                                public void run() {
+                                    runShadowProcess(property, inputNode, context, switchParam);
                                 }
-
-                                if (selectContext != null) {
-                                    runShadowProcess(property, inputNode, selectContext, switchParam);
-                                }
-                            } else {
-                                Display.getDefault().asyncExec(new Runnable() {
-
-                                    public void run() {
-                                        String pid = SqlBuilderPlugin.PLUGIN_ID;
-                                        String mainMsg = Messages.getString("GuessSchemaController.connectionFailed"); //$NON-NLS-1$
-                                        ErrorDialogWithDetailAreaAndContinueButton dialog = new ErrorDialogWithDetailAreaAndContinueButton(
-                                                composite.getShell(), pid, mainMsg, connParameters.getConnectionComment());
-                                        if (dialog.getCodeOfButton() == Window.OK) {
-                                            openParamemerDialog(composite.getShell(), part.getTalendEditor().getProcess()
-                                                    .getContextManager());
-                                        }
-                                    }
-                                });
-                            }
-
+                            });
                         }
 
                     });
                 }
+            } else {
+                Display.getDefault().asyncExec(new Runnable() {
 
-            });
-
+                    public void run() {
+                        String pid = SqlBuilderPlugin.PLUGIN_ID;
+                        String mainMsg = Messages.getString("GuessSchemaController.connectionFailed"); //$NON-NLS-1$
+                        ErrorDialogWithDetailAreaAndContinueButton dialog = new ErrorDialogWithDetailAreaAndContinueButton(
+                                composite.getShell(), pid, mainMsg, connParameters.getConnectionComment());
+                        if (dialog.getCodeOfButton() == Window.OK) {
+                            openParamemerDialog(composite.getShell(), part.getTalendEditor().getProcess().getContextManager());
+                        }
+                    }
+                });
+            }
         } catch (Exception e) {
             ExceptionHandler.process(e);
         }
