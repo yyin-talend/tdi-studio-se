@@ -448,7 +448,12 @@
                   
             } else if (connectionType == EConnectionType.FLOW_REF) { // T_TM_M_249
 
-
+				String lookupMode = externalTable.getLookupMode();
+				boolean isCacheOrReloadLookupMode = org.talend.designer.mapper.model.table.LOOKUP_MODE.CACHE_OR_RELOAD.name().equals(lookupMode);
+				boolean isOneOfReloadLookupMode = 
+					   isCacheOrReloadLookupMode ||
+					   org.talend.designer.mapper.model.table.LOOKUP_MODE.RELOAD.name().equals(lookupMode) 
+					;
 
                 IMetadataTable metadataTable = connection.getMetadataTable();
                 if (externalTable != null) { // T_TM_M_250
@@ -493,7 +498,14 @@
 				%>				
 				SortableRow_<%= currentJoinedTableNames %> rsc_<%= currentJoinedTableNames %>;
 			
-				tHash_Lookup_<%= tableName %>.initGet();
+				<%
+				if(!isOneOfReloadLookupMode) {
+				%>
+					tHash_Lookup_<%= tableName %>.initGet();
+				<%
+				}
+				%>
+				
 
 				fsi_<%= currentJoinedTableNames %>.initGet();
 
@@ -610,8 +622,6 @@
  					)
  				) { // T_TM_M_296
 
-
-
                      %>
                             
  					    boolean forceLoop<%= tableName %> = false;
@@ -725,16 +735,22 @@
 			  					<%
 			  					INode lookupSubProcessStartNode = searchSubProcessStartNode(connection);
 			  					String lookupSubProcessStartNodeName = lookupSubProcessStartNode.getUniqueName();
-			  					String lookupMode = externalTable.getLookupMode();
-			  					boolean isReloadLookup = 
-			  						   org.talend.designer.mapper.model.table.LOOKUP_MODE.RELOAD.name().equals(lookupMode) 
-			  						|| org.talend.designer.mapper.model.table.LOOKUP_MODE.CACHE_OR_RELOAD.name().equals(lookupMode)
-			  						;
 								
-								
-								if(isReloadLookup) {
-								%>
+								if(isOneOfReloadLookupMode) { // T_TM_M_354
+									if(isCacheOrReloadLookupMode) { // T_TM_M_355
+									%>
+
+			  							tHash_Lookup_Cache_<%= tableName %>.lookup( <%= tableName %>HashKey );
+			  							if(tHash_Lookup_Cache_<%= tableName %>.hasNext()) { // G_TM_M_835
+			  								tHash_Lookup_Real_<%= tableName %> = tHash_Lookup_<%= tableName %>;
+			  								tHash_Lookup_<%= tableName %> = tHash_Lookup_Cache_<%= tableName %>;
+			  							} // G_TM_M_834
+										else { // G_TM_M_835
+			  								tHash_Lookup_<%= tableName %> = tHash_Lookup_Real_<%= tableName %>;
+
 									<%
+									}
+									
 									List<ExternalMapperTableEntry> globalMapEntries = externalTable.getGlobalMapKeysValues();
 									if(globalMapEntries != null) {
 										for(ExternalMapperTableEntry entry : globalMapEntries) {
@@ -747,16 +763,52 @@
 								
 									<%= lookupSubProcessStartNodeName %>Process(globalMap);
 									
+									<%
+								    
+								    boolean isAllRows = "ALL_ROWS".equals(externalTable.getMatchingMode());
+								    
+								    if(externalTable.isPersistent()) {
+								    %>
+										tHash_Lookup_<%=tableName%> = 
+											(org.talend.designer.components.persistent.Persistent<%= isAllRows ? "" : "Sorted" %>LookupManager<<%=tableName%>Struct>) 
+												((org.talend.designer.components.persistent.Persistent<%= isAllRows ? "" : "Sorted" %>LookupManager<<%=tableName%>Struct>) 
+													 globalMap.get( "tHash_Lookup_<%=tableName%>" ));
+									<%
+								    } else {
+								    %>
 										tHash_Lookup_<%=tableName%> = 
 										(org.talend.designer.components.commons.AdvancedMemoryLookup<<%=tableName%>Struct>) 
 										((org.talend.designer.components.commons.AdvancedMemoryLookup<<%=tableName%>Struct>) 
 											globalMap.get( "tHash_Lookup_<%=tableName%>" ));
+									<%
+								    }
+								    %>
+								
+									tHash_Lookup_<%= tableName %>.initGet();
+								
+									tHash_Lookup_<%= tableName %>.lookup( <%= tableName %>HashKey );
+										
+									<%	
+									if(isCacheOrReloadLookupMode) { // T_TM_M_359
+									%>
+
+										} // G_TM_M_835
+										
+									<%	
+									} // T_TM_M_359
+									%>
 									
+										
 								<%
-								}
+								} // T_TM_M_354
+								else { // T_TM_M_357
 								%>
 	  					
 		  							tHash_Lookup_<%= tableName %>.lookup( <%= tableName %>HashKey );
+
+	  							<%
+	  							}
+	  							%>
 
 	  							<%
 	  							if(hasPrimitiveKey) { // T_TM_M_172
@@ -857,7 +909,7 @@
                     		  	 
 							<% } // T 60 %>   
                     		  	 
-							<%= tableName %>Struct fromLookup_<%= tableName %> = null;
+	       		  	    	<%= tableName %>Struct fromLookup_<%= tableName %> = null;
 							<%= tableName %> = <%= tableName %>Default;
 										 
 							<% 
@@ -895,6 +947,19 @@
 							if(fromLookup_<%= tableName %> != null) {
 								<%= tableName %> = fromLookup_<%= tableName %>;
 							}
+							
+							<%	
+							if(isCacheOrReloadLookupMode) { // T_TM_M_360
+							%>
+
+								if(tHash_Lookup_Cache_<%=tableName%> != tHash_Lookup_<%= tableName %>) {
+									tHash_Lookup_Cache_<%=tableName%>.put(<%= tableName %>);
+								}
+								
+							<%	
+							} // T_TM_M_360
+							%>
+							
 			  							
 							<%
 							if(
@@ -1584,4 +1649,4 @@ if(!isVirtualOut) { // T_TM_M_320
 %>
 
 
-	
+

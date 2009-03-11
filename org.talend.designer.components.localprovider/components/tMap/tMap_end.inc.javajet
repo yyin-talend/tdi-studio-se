@@ -111,10 +111,27 @@
 	            if(connection == null) {
 	            	continue;
 	            }
+
+				String lookupMode = inputTable.getLookupMode();
+				boolean isCacheOrReload = org.talend.designer.mapper.model.table.LOOKUP_MODE.CACHE_OR_RELOAD.name().equals(lookupMode);
+
 				if(!hasIterate) {
 				%>
 					tHash_Lookup_<%=tableName%>.endGet();
 					globalMap.remove( "tHash_Lookup_<%=tableName%>" );
+
+					<%					
+					if(isCacheOrReload) {
+					%>
+
+						tHash_Lookup_Cache_<%=tableName%>.endGet();
+						tHash_Lookup_Cache_<%=tableName%> = null;
+						tHash_Lookup_Real_<%=tableName%> = null;
+
+					<%					
+					}
+					%>
+					
 				<%
 				}
 	        }

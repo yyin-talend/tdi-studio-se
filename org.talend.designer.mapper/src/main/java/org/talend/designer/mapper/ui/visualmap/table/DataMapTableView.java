@@ -71,6 +71,7 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.swt.colorstyledtext.UnnotifiableColorStyledText;
 import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
+import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.commons.ui.swt.proposal.ContentProposalAdapterExtended;
 import org.talend.commons.ui.swt.proposal.ExtendedTextCellEditorWithProposal;
 import org.talend.commons.ui.swt.proposal.ProposalUtils;
@@ -964,10 +965,31 @@ public abstract class DataMapTableView extends Composite {
             tableForGlobalMap.setVisible(true);
             if (WindowSystem.isGTK()) {
                 updateGridDataHeightForTableGlobalMap();
+                tableViewerCreatorForGlobalMap.refreshTableEditorControls();
             }
+
+            InputTable inputTable = (InputTable) getDataMapTable();
+            ExtendedTableModel<GlobalMapEntry> tableGlobalMapEntriesModel = inputTable.getTableGlobalMapEntriesModel();
+            if (tableGlobalMapEntriesModel != null) {
+                List<GlobalMapEntry> beansList = tableGlobalMapEntriesModel.getBeansList();
+                for (GlobalMapEntry globalMapEntry : beansList) {
+                    mapperManager.getUiManager().parseExpression(globalMapEntry.getExpression(), globalMapEntry, false, false,
+                            false);
+                }
+            }
+
         } else {
             tableForGlobalMapGridData.exclude = true;
             tableForGlobalMap.setVisible(false);
+
+            InputTable inputTable = (InputTable) getDataMapTable();
+            ExtendedTableModel<GlobalMapEntry> tableGlobalMapEntriesModel = inputTable.getTableGlobalMapEntriesModel();
+            if (tableGlobalMapEntriesModel != null) {
+                List<GlobalMapEntry> beansList = tableGlobalMapEntriesModel.getBeansList();
+                for (GlobalMapEntry globalMapEntry : beansList) {
+                    mapperManager.removeLinksOf(globalMapEntry);
+                }
+            }
         }
         tableViewerCreatorForGlobalMap.getTableViewer().refresh();
         resizeAtExpandedSize();

@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.designer.mapper.model.table;
 
+import org.talend.designer.mapper.ui.image.ImageInfo;
+
 /**
  * 
  * Lookup types.
@@ -22,20 +24,34 @@ package org.talend.designer.mapper.model.table;
 public enum TMAP_LOOKUP_MODE implements IUILookupMode {
     LOAD_ONCE(LOOKUP_MODE.LOAD_ONCE, "Load once", //$NON-NLS-1$
               "Load once the lookup at subjob start"//$NON-NLS-1$
-    ),
+              ,
+              ImageInfo.ARROW_RIGHT),
     LOAD_ONCE_AND_EDIT(LOOKUP_MODE.LOAD_ONCE_AND_EDIT, "Load once and update", //$NON-NLS-1$
-                       "Load once at subjob start and add/update the lookup during the process"), //$NON-NLS-1$
+                       "Load once at subjob start and add/update the lookup during the process", ImageInfo.ARROW_RIGHT_EDIT), //$NON-NLS-1$
     RELOAD(LOOKUP_MODE.RELOAD, "Reload at each row", //$NON-NLS-1$ 
-           "Reload the lookup at each row"), //$NON-NLS-1$ 
+           "Reload the lookup at each row", ImageInfo.REFRESH), //$NON-NLS-1$ 
     CACHE_OR_RELOAD(LOOKUP_MODE.CACHE_OR_RELOAD, "Reload at each row (cache)",//$NON-NLS-1$
-                    "At each row, get result from the cache or reload the lookup"), //$NON-NLS-1$
+                    "At each row, get result from the cache or reload the lookup", ImageInfo.REFRESH), //$NON-NLS-1$
     ;
 
     private String label;
 
+    private MENU_TYPE menuType;
+
+    /**
+     * Getter for menuType.
+     * 
+     * @return the menuType
+     */
+    public MENU_TYPE getMenuType() {
+        return menuType;
+    }
+
     private LOOKUP_MODE multipleMatchingMode;
 
     private String tooltipText;
+
+    private ImageInfo imageInfo;
 
     /**
      * 
@@ -43,11 +59,12 @@ public enum TMAP_LOOKUP_MODE implements IUILookupMode {
      * 
      * @param label
      */
-    TMAP_LOOKUP_MODE(LOOKUP_MODE multipleMatchingMode, String label, String tooltipText) {
+    TMAP_LOOKUP_MODE(LOOKUP_MODE multipleMatchingMode, String label, String tooltipText, ImageInfo imageInfo) {
         this.label = label;
         this.multipleMatchingMode = multipleMatchingMode;
         this.tooltipText = tooltipText;
-
+        this.imageInfo = imageInfo;
+        this.menuType = MENU_TYPE.ITEM;
     }
 
     /**
@@ -57,6 +74,15 @@ public enum TMAP_LOOKUP_MODE implements IUILookupMode {
      */
     public String getLabel() {
         return this.label;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.mapper.model.table.IUITest#getImageInfo()
+     */
+    public ImageInfo getImageInfo() {
+        return imageInfo;
     }
 
     /**

@@ -24,6 +24,7 @@
         <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{OrderedBeanLookupMatchAll.java"/>
         <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.thash.io{IMapHashFile.java"/>
         <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{DataContainer.java"/>
+        <javaElement handleIdentifier="=org.talend.core/src\/main\/java&lt;org.talend.core.model.process{ILookupMode.java"/>
         <javaElement handleIdentifier="=org.talend.core/src\/main\/java&lt;org.talend.core.model.process{IMatchingMode.java"/>
         <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{MemoryHelper.java"/>
         <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{PersistentSortedLookupManager.java"/>

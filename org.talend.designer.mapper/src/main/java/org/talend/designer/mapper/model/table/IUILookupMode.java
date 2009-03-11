@@ -13,17 +13,14 @@
 package org.talend.designer.mapper.model.table;
 
 
+
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
  * 
  * $Id$
  * 
  */
-public interface IUILookupMode {
+public interface IUILookupMode extends IUITest {
 
-    public String getLabel();
-
-    public String getTooltipText();
-    
     public LOOKUP_MODE getLookupMode();
 }

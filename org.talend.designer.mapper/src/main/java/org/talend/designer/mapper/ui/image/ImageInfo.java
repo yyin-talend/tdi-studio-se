@@ -29,6 +29,14 @@ public enum ImageInfo {
     ADD_FILTER_ICON("/icons/addfilter.png"), //$NON-NLS-1$
     ACTIVATE_FILTER_ICON("/icons/addfilter.png"), //$NON-NLS-1$
     ACTIVATE_PERSISTENT_ICON("/icons/drive.png"), //$NON-NLS-1$
+    TOOL("/icons/tool.png"), //$NON-NLS-1$
+    ARROW_RIGHT("/icons/arrow_right.png"), //$NON-NLS-1$
+    ARROW_RIGHT_EDIT("/icons/arrow_right_edit.png"), //$NON-NLS-1$
+    REFRESH("/icons/arrow_refresh.png"), //$NON-NLS-1$
+    FIRST_MATCH("/icons/first_match.png"), //$NON-NLS-1$
+    UNIQUE_MATCH("/icons/last_match.png"), //$NON-NLS-1$
+    LAST_MATCH("/icons/last_match.png"), //$NON-NLS-1$
+    ALL_MATCHES("/icons/all_matches.png"), //$NON-NLS-1$
     REJECT_FILTER_ICON("/icons/rejectfilter.png"), //$NON-NLS-1$
     REJECT_LOOKUP_ICON("/icons/rejectlookup.png"), //$NON-NLS-1$
     LOOKUP_KEY_ICON("/icons/lookup_key16.png"), //$NON-NLS-1$

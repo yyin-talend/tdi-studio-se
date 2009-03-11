@@ -12,16 +12,20 @@
 // ============================================================================
 package org.talend.designer.mapper.model.table;
 
-import org.talend.designer.components.commons.AdvancedLookup.MATCHING_MODE;
+import org.talend.designer.mapper.ui.image.ImageInfo;
 
 /**
- * DOC amaumont class global comment. Detailled comment <br/>
  * 
- * $Id$
- * 
+ * DOC amaumont  class global comment. Detailled comment
  */
-public interface IUIMatchingMode extends IUITest {
+public interface IUITest {
 
-    public MATCHING_MODE getMatchingMode();
-    
+    public String getLabel();
+
+    public MENU_TYPE getMenuType();
+
+    public String getTooltipText();
+
+    public ImageInfo getImageInfo();
+
 }

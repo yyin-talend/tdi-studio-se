@@ -358,6 +358,14 @@ public class AdvancedMemoryLookup<V> implements IMemoryLookup<V, V>, Cloneable {
         }
     }
 
+    /**
+     * Getter for matchingMode.
+     * @return the matchingMode
+     */
+    public MATCHING_MODE getMatchingMode() {
+        return matchingMode;
+    }
+
     @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
