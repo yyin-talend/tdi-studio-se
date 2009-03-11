@@ -341,10 +341,10 @@ public class TalendJetEmitter extends JETEmitter {
                                 + (CodeGenPlugin.getPlugin().getString("jet.mark.file.line", new Object[] { //$NON-NLS-1$
                                         targetFile.getLocation(), marker.getAttribute(IMarker.LINE_NUMBER) })));
                         log.error(jetEmitter.templateURI.substring(jetEmitter.templateURI.lastIndexOf("/") + 1) //$NON-NLS-1$
-                                + Messages.getString("TalendJetEmitter.compileFail") //$NON-NLS-1$
-                                + marker.getAttribute(IMarker.MESSAGE)
-                                + (CodeGenPlugin.getPlugin().getString("jet.mark.file.line", new Object[] { //$NON-NLS-1$
-                                        targetFile.getLocation(), marker.getAttribute(IMarker.LINE_NUMBER) })));
+                                + Messages.getString("TalendJetEmitter.compileFail", //$NON-NLS-1$
+                                        marker.getAttribute(IMarker.MESSAGE), (CodeGenPlugin.getPlugin().getString(
+                                                "jet.mark.file.line", new Object[] { //$NON-NLS-1$
+                                                targetFile.getLocation(), marker.getAttribute(IMarker.LINE_NUMBER) }))));
                     }
                 }
 

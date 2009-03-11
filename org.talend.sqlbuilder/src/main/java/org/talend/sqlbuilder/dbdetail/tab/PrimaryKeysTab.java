@@ -57,11 +57,11 @@ public class PrimaryKeysTab extends AbstractDataSetTab {
             // For synonym table, should get the corresponding table name .
             if (ti.getType().equals("SYNONYM")) { //$NON-NLS-1$
 
-                String realTableName = ExtractMetaDataFromDataBase.getTableNameBySynonym(treeNode
-                        .getInteractiveConnection().getConnection(), ti.getSimpleName());
+                String realTableName = ExtractMetaDataFromDataBase.getTableNameBySynonym(treeNode.getInteractiveConnection()
+                        .getConnection(), ti.getSimpleName());
 
-                resultSet = treeNode.getMetaData().getJDBCMetaData().getPrimaryKeys(ti.getCatalogName(),
-                        ti.getSchemaName(), realTableName);
+                resultSet = treeNode.getMetaData().getJDBCMetaData().getPrimaryKeys(ti.getCatalogName(), ti.getSchemaName(),
+                        realTableName);
 
             } else {
                 resultSet = node.getSession().getMetaData().getPrimaryKeys((tableNode.getTableInfo()));
@@ -76,6 +76,6 @@ public class PrimaryKeysTab extends AbstractDataSetTab {
     }
 
     public String getStatusMessage() {
-        return Messages.getString("DatabaseDetailView.Tab.ColumnInfo.status") + " " + getNode().getQualifiedName(); //$NON-NLS-1$ //$NON-NLS-2$
+        return Messages.getString("DatabaseDetailView.Tab.ColumnInfo.status", getNode().getQualifiedName()); //$NON-NLS-1$ //$NON-NLS-2$
     }
 }

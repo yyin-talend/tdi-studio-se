@@ -188,7 +188,8 @@ public final class CodeGeneratorEmittersPoolFactory {
 
                     });
                 }
-                log.debug(Messages.getString("CodeGeneratorEmittersPoolFactory.componentCompiled") + (System.currentTimeMillis() - startTime)); //$NON-NLS-1$
+                log.debug(Messages.getString(
+                        "CodeGeneratorEmittersPoolFactory.componentCompiled", (System.currentTimeMillis() - startTime))); //$NON-NLS-1$
                 initialized = true;
 
                 // remove compilations markers

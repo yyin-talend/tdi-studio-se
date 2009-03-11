@@ -174,6 +174,7 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
                             }
                         }
                         BabiliTool.storeBabiliTranslation(info.getKey(), pluginId, info.getLabel());
+
                     }
                     if (monitor.isCanceled()) {
                         try {
@@ -204,11 +205,9 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
             Display.getDefault().asyncExec(new Runnable() {
 
                 public void run() {
-                    MessageDialog
-                            .openInformation(
-                                    Display.getDefault().getActiveShell(),
-                                    Messages.getString("I18nPreferencePage.title"), //$NON-NLS-1$
-                                    Messages.getString("I18nPreferencePage.completeInfo")); //$NON-NLS-1$
+                    MessageDialog.openInformation(Display.getDefault().getActiveShell(), Messages
+                            .getString("I18nPreferencePage.title"), //$NON-NLS-1$
+                            Messages.getString("I18nPreferencePage.completeInfo")); //$NON-NLS-1$
                 }
             });
         }

@@ -93,11 +93,11 @@ public class CodeGenInit implements IApplication {
     }
 
     private void init(ECodeLanguage language) throws Exception, InterruptedException {
-        info(Messages.getString("CodeGenInit.createProject") + language.getName()); //$NON-NLS-1$
+        info(Messages.getString("CodeGenInit.createProject", language.getName())); //$NON-NLS-1$
         createAndLogonProject(language);
         info(Messages.getString("CodeGenInit.initTemplate")); //$NON-NLS-1$
         new CodeGeneratorManager().initTemplate();
-        info(Messages.getString("CodeGenInit.deleteProject") + language); //$NON-NLS-1$
+        info(Messages.getString("CodeGenInit.deleteProject", language)); //$NON-NLS-1$
         deleteProject(language);
     }
 

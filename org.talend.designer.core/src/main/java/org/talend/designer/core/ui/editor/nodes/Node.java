@@ -1648,7 +1648,7 @@ public class Node extends Element implements INode {
                 if (param.getField().equals(EParameterFieldType.TABLE)) {
                     List<Map<String, String>> tableValues = (List<Map<String, String>>) param.getValue();
                     if (tableValues.size() == 0) {
-                        String errorMessage = Messages.getString("Node.needOneValue") + param.getDisplayName(); //$NON-NLS-1$
+                        String errorMessage = Messages.getString("Node.needOneValue", param.getDisplayName()); //$NON-NLS-1$
                         Problems.add(ProblemStatus.ERROR, this, errorMessage);
                     }
                 }
