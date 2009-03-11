@@ -17,11 +17,11 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
-import org.talend.commons.exception.ExceptionHandler;
+import org.eclipse.ui.progress.UIJob;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
@@ -59,6 +59,7 @@ import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.utils.ConnectionContextHelper;
+import org.talend.repository.ui.utils.DataStringConnection;
 import org.talend.repository.ui.utils.ManagerConnection;
 import org.talend.repository.ui.wizards.metadata.connection.files.salesforce.SalesforceSchemaTableWizard;
 import org.talend.repository.ui.wizards.metadata.connection.genericshema.GenericSchemaTableWizard;
@@ -703,52 +704,58 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
 
     private void openDatabaseTableWizard(final DatabaseConnectionItem item, final MetadataTable metadataTable,
             final boolean forceReadOnly, final RepositoryNode node, final boolean creation) {
-        Job job = new Job(Messages.getString("CreateTableAction.action.createTitle")) { //$NON-NLS-1$
+        UIJob job = new UIJob(Messages.getString("CreateTableAction.action.createTitle")) { //$NON-NLS-1$
 
-            /*
-             * (non-Javadoc)
-             * 
-             * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
-             */
             @Override
-            protected IStatus run(IProgressMonitor monitor) {
+            public IStatus runInUIThread(IProgressMonitor monitor) {
 
                 monitor.beginTask(Messages.getString("CreateTableAction.action.createTitle"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
 
                 if (!monitor.isCanceled()) {
-                    try {
-                        Display.getDefault().syncExec(new Runnable() {
+                    final ManagerConnection managerConnection = new ManagerConnection();
 
-                            public void run() {
-                                final ManagerConnection managerConnection = new ManagerConnection();
+                    IMetadataConnection metadataConnection = ConvertionHelper.convert((DatabaseConnection) item.getConnection());
+                    DataStringConnection dataString = new DataStringConnection();
+                    // modified by wzhang. reset the url.
+                    metadataConnection.setUrl(dataString.getString(dataString.getDBTypes()
+                            .indexOf(metadataConnection.getDbType()), metadataConnection.getServerName(), metadataConnection
+                            .getUsername(), metadataConnection.getPassword(), metadataConnection.getPort(), metadataConnection
+                            .getDatabase(), metadataConnection.getFileFieldName(), metadataConnection.getDataSourceName(),
+                            metadataConnection.getDbRootPath(), metadataConnection.getAdditionalParams()));
 
-                                IMetadataConnection metadataConnection = ConvertionHelper.convert((DatabaseConnection) item
-                                        .getConnection());
+                    final boolean skipStep = checkConnectStatus(managerConnection, metadataConnection);
+                    // if (skipStep) {
+                    // MessageDialog.openError(null, "Connection error", managerConnection.getMessageException());
+                    // }
+                    DatabaseTableWizard databaseTableWizard = new DatabaseTableWizard(PlatformUI.getWorkbench(), creation, item,
+                            metadataTable, getExistingNames(), forceReadOnly, managerConnection, metadataConnection);
+                    databaseTableWizard.setSkipStep(skipStep);
+                    databaseTableWizard.setRepositoryObject(node.getObject());
+                    UIJob uijob = new UIJob("") { //$NON-NLS-1$
 
-                                final boolean skipStep = checkConnectStatus(managerConnection, metadataConnection);
-                                DatabaseTableWizard databaseTableWizard = new DatabaseTableWizard(PlatformUI.getWorkbench(),
-                                        creation, item, metadataTable, getExistingNames(), forceReadOnly, managerConnection,
-                                        metadataConnection);
-                                databaseTableWizard.setSkipStep(skipStep);
-                                databaseTableWizard.setRepositoryObject(node.getObject());
-
-                                WizardDialog wizardDialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-                                        .getShell(), databaseTableWizard);
-                                wizardDialog.setBlockOnOpen(true);
-                                handleWizard(node, wizardDialog);
+                        // modified by wzhang. when connection failed,error message display.
+                        public IStatus runInUIThread(IProgressMonitor monitor) {
+                            if (!managerConnection.getIsValide()) {
+                                MessageDialog.openError(null, Messages.getString("AbstractCreateTableAction.connError"), //$NON-NLS-1$
+                                        Messages.getString("AbstractCreateTableAction.errorMessage")); //$NON-NLS-1$
                             }
-                        });
-                    } catch (Exception e) {
-                        ExceptionHandler.process(e);
-                    }
+                            return Status.OK_STATUS;
+                        }
+
+                    };
+                    WizardDialog wizardDialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                            databaseTableWizard);
+                    wizardDialog.setBlockOnOpen(true);
+                    uijob.schedule(1300);
+                    handleWizard(node, wizardDialog);
                 }
                 monitor.done();
                 return Status.OK_STATUS;
             };
         };
-
         job.setUser(true);
         job.schedule();
+
     }
 
     public boolean checkConnectStatus(ManagerConnection managerConnection, IMetadataConnection metadataConnection) {
