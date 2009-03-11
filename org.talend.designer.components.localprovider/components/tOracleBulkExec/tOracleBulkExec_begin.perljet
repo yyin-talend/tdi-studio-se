@@ -123,11 +123,11 @@ if ( -e join('.', <%=filename %>, 'bad' ) ){
 }
 
 my $command = sprintf(
-        "sqlldr %s/%s@%s DATA=%s, CONTROL=%s, BAD=%s, DISCARD=%s, LOG=%s ",
+        'sqlldr %s/%s@%s DATA="%s", CONTROL="%s", BAD="%s", DISCARD="%s", LOG="%s" ',
         <%=dbuser %>,
         <%=dbpass %>,
         <%=servicename %>,
-        "<%=filename %>",
+        <%=filename %>,
         join('.', <%=filename %>, 'ctl'),
         join('.', <%=filename %>, 'bad'),
         join('.', <%=filename %>, 'dis'),
