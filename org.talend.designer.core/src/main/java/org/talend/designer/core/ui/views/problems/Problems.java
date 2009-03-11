@@ -472,13 +472,19 @@ public class Problems {
     public static void computePropertyMaxInformationLevel(Property property) {
         EList<Information> informations = property.getInformations();
         InformationLevel maxLevel = null;
-        for (Information information : informations) {
+        for (int i = 0; i < informations.size(); i++) {
+            Information information = informations.get(i);
+            if (i == 0) {
+                maxLevel = information.getLevel();
+                continue;
+            }
             int value = information.getLevel().getValue();
             if (maxLevel == null || value > maxLevel.getValue()) {
                 maxLevel = information.getLevel();
             }
         }
-        property.setMaxInformationLevel(maxLevel);
+        if (maxLevel != null)
+            property.setMaxInformationLevel(maxLevel);
     }
 
     private static String getFileName(IFile file) {

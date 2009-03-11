@@ -15,6 +15,8 @@ package org.talend.designer.core.ui.editor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.internal.ui.JavaPlugin;
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jdt.internal.ui.javaeditor.JavaSourceViewer;
@@ -30,6 +32,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.SystemException;
 import org.talend.core.CorePlugin;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.Information;
 import org.talend.core.model.properties.InformationLevel;
@@ -112,19 +116,31 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
                     // }
                     // doSave(null);
                     placeCursorToSelection();
-
                     Property property = process.getProperty();
 
                     ITalendSynchronizer synchronizer = CorePlugin.getDefault().getCodeGeneratorService()
                             .createRoutineSynchronizer();
 
                     try {
+                        // try {
+                        // ResourcesPlugin.getWorkspace().getRoot().refreshLocal(IResource.DEPTH_INFINITE, null);
+                        // } catch (CoreException e) {
+                        // ExceptionHandler.process(e);
+                        // }
+                        if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
+                            try {
+                                CorePlugin.getDefault().getRunProcessService().getJavaProject().getProject().build(
+                                        IncrementalProjectBuilder.AUTO_BUILD, null);
+                            } catch (CoreException e) {
+                                ExceptionHandler.process(e);
+                            }
+                        }
                         List<Information> informations = Problems.addRoutineFile(synchronizer.getFile(property.getItem()),
                                 property);
 
                         // save error status
                         property.getInformations().clear();
-                        property.getInformations().addAll(collectOnlyErrors(informations));
+                        property.getInformations().addAll(informations);
                         Problems.computePropertyMaxInformationLevel(property);
                     } catch (SystemException e) {
                         ExceptionHandler.process(e);
