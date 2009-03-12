@@ -40,14 +40,14 @@ public class ExternalMultiSchemasUIProperties {
 
     public static final String PREVIEW_STRING = PREVIEW_LABEL + "..."; //$NON-NLS-1$
 
-    public static final String[] SCHEMAS_TREE_COLUMN_PROPERTY = new String[] { "KEY" }; //$NON-NLS-1$
+    public static final String[] SCHEMAS_TREE_COLUMN_PROPERTY = new String[] { "KEY", "RECORD" }; //$NON-NLS-1$
 
     public static final int DIALOG_STYLE = SWT.APPLICATION_MODAL | SWT.BORDER | SWT.RESIZE | SWT.CLOSE | SWT.MIN | SWT.MAX
             | SWT.TITLE;
 
     public static final String DEFAULT_COLUMN_NAME = "Column"; //$NON-NLS-1$
 
-    private static Rectangle boundsMapper = new Rectangle(50, 50, 700, 620);
+    private static Rectangle boundsMapper = new Rectangle(50, 50, 700, 750);
 
     private static boolean shellMaximized = false;
 

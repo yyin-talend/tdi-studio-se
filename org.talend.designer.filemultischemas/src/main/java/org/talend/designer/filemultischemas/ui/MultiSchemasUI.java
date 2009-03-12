@@ -57,6 +57,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.internal.IWorkbenchGraphicConstants;
 import org.eclipse.ui.internal.WorkbenchImages;
@@ -829,14 +830,18 @@ public class MultiSchemasUI {
         fetchBtn.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
 
         //
-        schemaTreeViewer = new TreeViewer(struComp, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
-        schemaTreeViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
+        schemaTreeViewer = new TreeViewer(struComp, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
+        Tree tree = schemaTreeViewer.getTree();
+        tree.setLayoutData(new GridData(GridData.FILL_BOTH));
+        tree.setHeaderVisible(true);
+        tree.setLinesVisible(true);
 
         // SchemasTreeDnD dnd = new SchemasTreeDnD(schemaTreeViewer);
         // dnd.addDragAndDrop();
 
         schemaTreeViewer.setContentProvider(new SchemasTreeContentProvider());
         schemaTreeViewer.setLabelProvider(new SchemasTreeLabelProvider());
+
         // schemaTreeViewer.setSorter(new ViewerSorter() {
         //
         // @SuppressWarnings("unchecked")
@@ -849,6 +854,16 @@ public class MultiSchemasUI {
         // }
         //
         // });
+        TreeColumn column = new TreeColumn(tree, SWT.LEFT);
+        column.setWidth(55);
+        column.setText("Schema");//$NON-NLS-1$
+        column.setResizable(true);
+
+        column = new TreeColumn(tree, SWT.LEFT);
+        column.setWidth(100);
+        column.setText("Record");
+        column.setResizable(true);
+
         schemaTreeViewer.setColumnProperties(ExternalMultiSchemasUIProperties.SCHEMAS_TREE_COLUMN_PROPERTY);
 
         Composite operation = new Composite(struComp, SWT.NONE);

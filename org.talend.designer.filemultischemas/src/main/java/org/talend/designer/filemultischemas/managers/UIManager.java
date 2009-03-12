@@ -422,6 +422,7 @@ public class UIManager {
                     }
                 }
                 schemaTreeViewer.refresh();
+                schemaTreeViewer.getTree().getColumn(0).pack();
             }
         }
     }

@@ -12,15 +12,15 @@
 // ============================================================================
 package org.talend.designer.filemultischemas.ui.provider;
 
-import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.talend.designer.filemultischemas.data.SchemasKeyData;
 
 /**
  * cLi class global comment. Detailled comment
  */
-public class SchemasTreeLabelProvider implements ILabelProvider {
+public class SchemasTreeLabelProvider implements ITableLabelProvider {
 
     /*
      * (non-Javadoc)
@@ -62,22 +62,39 @@ public class SchemasTreeLabelProvider implements ILabelProvider {
     /*
      * (non-Javadoc)
      * 
-     * @see org.eclipse.jface.viewers.ILabelProvider#getImage(java.lang.Object)
+     * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
      */
-    public Image getImage(Object element) {
+    public Image getColumnImage(Object element, int columnIndex) {
         return null;
     }
 
     /*
      * (non-Javadoc)
      * 
-     * @see org.eclipse.jface.viewers.ILabelProvider#getText(java.lang.Object)
+     * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int)
      */
-    public String getText(Object element) {
+    public String getColumnText(Object element, int columnIndex) {
         if (element instanceof SchemasKeyData) {
-            return ((SchemasKeyData) element).getUniqueRecord();
+            SchemasKeyData data = (SchemasKeyData) element;
+            switch (columnIndex) {
+            case 0:
+                return data.getUniqueRecord();
+            case 1:
+                return data.getRecordType();
+            }
         }
         return null;
     }
 
+    private String generateLine(SchemasKeyData data) {
+        int tagLevel = data.getTagLevel();
+        if (tagLevel < 1) {
+            return ""; //$NON-NLS-1$
+        }
+        String base = ""; //$NON-NLS-1$
+        for (int i = 0; i < tagLevel; i++) {
+            base += "_"; //$NON-NLS-1$
+        }
+        return base;
+    }
 }
