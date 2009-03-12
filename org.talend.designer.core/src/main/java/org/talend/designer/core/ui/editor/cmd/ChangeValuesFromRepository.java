@@ -331,11 +331,11 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                     repositoryTable = item.getProperty().getId() + " - " + getFirstRepositoryTable(item); //$NON-NLS-1$
                                     repositorySchemaTypeParameter.setValue(repositoryTable);
                                 }
-                                if (UpdateRepositoryUtils.getMetadataTablesFromItem(item).size() == 1) {
+                                if (UpdateRepositoryUtils.getMetadataTablesFromItem(item) != null
+                                        && UpdateRepositoryUtils.getMetadataTablesFromItem(item).size() == 1) {
                                     if (!"".equals(repositoryTable)) { //$NON-NLS-1$
                                         param.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()).setValue(
                                                 EmfComponent.REPOSITORY);
-
                                         IMetadataTable table = MetadataTool.getMetadataFromRepository(repositoryTable);
                                         // repositoryTableMap.get(repositoryTable);
                                         if (table != null) {
