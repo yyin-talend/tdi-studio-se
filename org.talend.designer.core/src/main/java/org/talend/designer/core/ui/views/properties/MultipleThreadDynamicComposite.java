@@ -39,7 +39,6 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.commons.utils.threading.ExecutionLimiter;
-import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
@@ -77,7 +76,6 @@ import org.talend.designer.core.ui.ActiveProcessTracker;
 import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
-import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
 import org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController;
 import org.talend.designer.core.ui.editor.properties.controllers.GroupController;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
@@ -346,9 +344,6 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
         int maxRow;
         boolean isCompute = false;
 
-        Map<String, Integer> groupPosition = new HashMap<String, Integer>();
-        List<? extends IElementParameter> listParam = elem.getElementParametersWithChildrens();
-
         if (!forceRedraw) {
             boolean needRedraw = isNeedRedraw();
             if (!needRedraw) {
@@ -369,6 +364,8 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
         hashCurControls = new DualHashBidiMap();
 
         maxRow = 0;
+        List<? extends IElementParameter> listParam = elem.getElementParametersWithChildrens();
+        Map<String, Integer> groupPosition = new HashMap<String, Integer>();
         for (int i = 0; i < listParam.size(); i++) {
             if (listParam.get(i).getCategory() == section) {
                 if (listParam.get(i).getNumRow() > maxRow && listParam.get(i).isShow(listParam)) {
@@ -414,7 +411,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
             additionalHeightSize = estimatePropertyHeightSize(maxRow, listParam);
         }
 
-        long lastTime = TimeMeasure.timeSinceBegin("DC:refresh:" + getCurrentComponent()); //$NON-NLS-1$
+        //long lastTime = TimeMeasure.timeSinceBegin("DC:refresh:" + getCurrentComponent()); //$NON-NLS-1$
         for (int curRow = 1; curRow <= maxRow; curRow++) {
             maxRowSize = 0;
             nbInRow = 0;
@@ -481,11 +478,11 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                                 }
                             }
 
-                            lastTime = TimeMeasure.timeSinceBegin("DC:refresh:" + getCurrentComponent()) - lastTime; //$NON-NLS-1$
-                            if (DynamicTabbedPropertySection.DEBUG_TIME) {
-                                System.out.println("DC;create:" + curParam.getField().getName() + ";" + getCurrentComponent() //$NON-NLS-1$ //$NON-NLS-2$
-                                        + ";" + lastTime); //$NON-NLS-1$
-                            }
+                            //                            lastTime = TimeMeasure.timeSinceBegin("DC:refresh:" + getCurrentComponent()) - lastTime; //$NON-NLS-1$
+                            // if (DynamicTabbedPropertySection.DEBUG_TIME) {
+                            //                                System.out.println("DC;create:" + curParam.getField().getName() + ";" + getCurrentComponent() //$NON-NLS-1$ //$NON-NLS-2$
+                            //                                        + ";" + lastTime); //$NON-NLS-1$
+                            // }
 
                             // System.out.println("param:" + curParam.getName()
                             // + " - curRowSize:" + curRowSize);
@@ -690,9 +687,9 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
     }
 
     private void operationInThread() {
-        TimeMeasure.display = false;
-        TimeMeasure.measureActive = true;
-        TimeMeasure.begin("DC:refresh:" + getCurrentComponent()); //$NON-NLS-1$
+        // TimeMeasure.display = false;
+        // TimeMeasure.measureActive = true;
+        //        TimeMeasure.begin("DC:refresh:" + getCurrentComponent()); //$NON-NLS-1$
 
         if (elem == null) {
             return;
@@ -755,6 +752,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                     try {
                         removeListener(SWT.Resize, resizeListener);
                         getParent().layout();
+
                         composite.pack();
                         propertyResized = false;
                         addListener(SWT.Resize, resizeListener);
@@ -765,11 +763,11 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
 
         }
         checkErrorsWhenViewRefreshed = false;
-        long time = TimeMeasure.timeSinceBegin("DC:refresh:" + getCurrentComponent()); //$NON-NLS-1$
-        TimeMeasure.end("DC:refresh:" + getCurrentComponent()); //$NON-NLS-1$
-        if (DynamicTabbedPropertySection.DEBUG_TIME) {
-            System.out.println("DC;total;" + getCurrentComponent() + ";" + time); //$NON-NLS-1$ //$NON-NLS-2$
-        }
+        //        long time = TimeMeasure.timeSinceBegin("DC:refresh:" + getCurrentComponent()); //$NON-NLS-1$
+        //        TimeMeasure.end("DC:refresh:" + getCurrentComponent()); //$NON-NLS-1$
+        // if (DynamicTabbedPropertySection.DEBUG_TIME) {
+        //            System.out.println("DC;total;" + getCurrentComponent() + ";" + time); //$NON-NLS-1$ //$NON-NLS-2$
+        // }
 
         isRefreshing = false;
     }

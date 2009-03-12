@@ -33,25 +33,24 @@ import org.talend.designer.core.ui.editor.properties.controllers.generator.ICont
  */
 public class DynamicPropertyGenerator {
 
-    private static DynamicPropertyGenerator instance = null;
+    // private static DynamicPropertyGenerator instance = null;
 
     private boolean initialized = false;
 
-    private Map<EParameterFieldType, AbstractElementPropertySectionController> dtpControls;
+    IExtensionRegistry registry = Platform.getExtensionRegistry();
+
+    IConfigurationElement[] extensionElements = registry.getConfigurationElementsFor("org.talend.designer.core.generators"); //$NON-NLS-1$
+
+    private Map<EParameterFieldType, AbstractElementPropertySectionController> dtpControls = new HashMap<EParameterFieldType, AbstractElementPropertySectionController>();
 
     /**
      * DOC yzhang Comment method "initController".
      */
     public void initController(IDynamicProperty dp) {
         if (!initialized) {
-            dtpControls = new HashMap<EParameterFieldType, AbstractElementPropertySectionController>();
-            IExtensionRegistry registry = Platform.getExtensionRegistry();
-            IConfigurationElement[] extensionElements = registry
-                    .getConfigurationElementsFor("org.talend.designer.core.generators"); //$NON-NLS-1$
 
             for (int i = 0; i < extensionElements.length; i++) {
                 IConfigurationElement element = extensionElements[i];
-
                 try {
                     String controllerName = element.getAttribute("mapping"); //$NON-NLS-1$
                     EParameterFieldType key = EParameterFieldType.getFieldTypeByName(controllerName);
@@ -102,7 +101,7 @@ public class DynamicPropertyGenerator {
                 controller.dispose();
             }
             dtpControls.clear();
-            dtpControls = null;
+            // dtpControls = null;
         }
     }
 
