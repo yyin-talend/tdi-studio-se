@@ -648,6 +648,7 @@ public class LoginComposite extends Composite {
     public RepositoryContext getRepositoryContext() {
         RepositoryContext repositoryContext = new RepositoryContext();
         repositoryContext.setUser(getUser());
+        repositoryContext.setClearPassword(passwordText.getText());
         repositoryContext.setProject(getProject());
         repositoryContext.setFields(getConnection().getDynamicFields());
         return repositoryContext;
