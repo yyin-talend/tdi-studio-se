@@ -1776,6 +1776,7 @@ public abstract class DataMapTableView extends Composite {
     public void unselectAllEntries() {
         unselectAllColumnEntries();
         unselectAllConstraintEntries();
+        unselectAllGlobalMapEntries();
     }
 
     /**

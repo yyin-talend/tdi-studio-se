@@ -28,9 +28,9 @@ import org.talend.designer.abstractmap.ui.visualmap.link.ILinkState;
 import org.talend.designer.abstractmap.ui.visualmap.link.IMapperLink;
 import org.talend.designer.abstractmap.ui.visualmap.link.LinkState;
 import org.talend.designer.abstractmap.ui.visualmap.link.PointLinkDescriptor;
-import org.talend.designer.mapper.managers.UIManager;
 import org.talend.designer.mapper.model.tableentry.ExpressionFilterEntry;
 import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
+import org.talend.designer.mapper.model.tableentry.GlobalMapEntry;
 import org.talend.designer.mapper.ui.color.ColorInfo;
 import org.talend.designer.mapper.ui.color.ColorProviderMapper;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
@@ -67,6 +67,10 @@ public class StyleLinkFactory {
 
     private LINK_STYLE linkStyle;
 
+    private IStyleLink selectedSameZoneGlobalMapStyle;
+
+    private IStyleLink unselectedSameZoneGlobalMapStyle;
+
     /**
      * DOC amaumont LinkFactory constructor comment.
      */
@@ -88,6 +92,9 @@ public class StyleLinkFactory {
         selectedZoneToZoneFilterStyle = getSelectedZoneToZoneFilterStyle();
         unselectedZoneToZoneFilterStyle = getUnselectedZoneToZoneFilterStyle();
 
+        selectedSameZoneGlobalMapStyle = getSelectedSameZoneGlobalMapStyle();
+        unselectedSameZoneGlobalMapStyle = getUnselectedSameZoneGlobalMapStyle();
+        
         selectedSameZoneFilterStyle = getSelectedSameZoneFilterStyle();
         unselectedSameZoneFilterStyle = getUnselectedSameZoneFilterStyle();
 
@@ -129,6 +136,11 @@ public class StyleLinkFactory {
             targetIsConstraint = true;
         }
 
+        boolean targetIsGlobalMap = false;
+        if (targetTableEntry instanceof GlobalMapEntry) {
+            targetIsGlobalMap = true;
+        }
+        
         IStyleLink style = null;
         if (pointLinkDescriptorSource.getZone() != pointLinkDescriptorTarget.getZone()) {
             if (linkState == LinkState.SELECTED) {
@@ -149,12 +161,16 @@ public class StyleLinkFactory {
             if (linkState == LinkState.SELECTED) {
                 if (pointLinkDescriptorTarget.getTableEntry() instanceof ExpressionFilterEntry) {
                     style = selectedSameZoneFilterStyle;
+                } else if(pointLinkDescriptorTarget.getTableEntry() instanceof GlobalMapEntry) {
+                    style = selectedSameZoneGlobalMapStyle;
                 } else {
                     style = selectedSameInputZoneStyle;
                 }
             } else if (linkState == LinkState.UNSELECTED) {
                 if (pointLinkDescriptorTarget.getTableEntry() instanceof ExpressionFilterEntry) {
                     style = unselectedSameZoneFilterStyle;
+                } else if(pointLinkDescriptorTarget.getTableEntry() instanceof GlobalMapEntry) {
+                    style = unselectedSameZoneGlobalMapStyle;
                 } else {
                     style = unselectedSameInputZoneStyle;
                 }
@@ -295,6 +311,30 @@ public class StyleLinkFactory {
         return style;
     }
 
+    
+    /**
+     * DOC amaumont Comment method "getSelectedFilterStyle".
+     * 
+     * @return
+     */
+    private IStyleLink getSelectedSameZoneGlobalMapStyle() {
+        IStyleLink style = getSelectedSameInputZoneStyle();
+        style.setForegroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_SELECTED_GLOBALMAP_LINK));
+        return style;
+    }
+    
+    /**
+     * DOC amaumont Comment method "getSelectedFilterStyle".
+     * 
+     * @return
+     */
+    private IStyleLink getUnselectedSameZoneGlobalMapStyle() {
+        IStyleLink style = getSelectedSameInputZoneStyle();
+        style.setForegroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_UNSELECTED_GLOBALMAP_LINK));
+        return style;
+    }
+
+    
     /**
      * DOC amaumont Comment method "getNotSelectedSameZoneStyle".
      * 

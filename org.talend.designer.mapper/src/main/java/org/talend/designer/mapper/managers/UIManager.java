@@ -62,7 +62,6 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.editor.MetadataTableEditor;
-import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.ui.metadata.editor.AbstractMetadataTableEditorView;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
@@ -98,6 +97,8 @@ import org.talend.designer.mapper.ui.MapperUI;
 import org.talend.designer.mapper.ui.commands.DataMapTableViewSelectedCommand;
 import org.talend.designer.mapper.ui.dnd.DraggingInfosPopup;
 import org.talend.designer.mapper.ui.dnd.DropTargetOperationListener;
+import org.talend.designer.mapper.ui.footer.StatusBar;
+import org.talend.designer.mapper.ui.footer.StatusBar.STATUS;
 import org.talend.designer.mapper.ui.tabs.TabFolderEditors;
 import org.talend.designer.mapper.ui.visualmap.TableEntryProperties;
 import org.talend.designer.mapper.ui.visualmap.link.Link;
@@ -152,6 +153,8 @@ public class UIManager extends AbstractUIManager {
     private Zone previousSelectedZone;
 
     private boolean previousSelectedTableIsConstraint;
+
+    private boolean previousSelectedTableIsGlobalMap;
 
     int currentDragDetail;
 
@@ -841,7 +844,8 @@ public class UIManager extends AbstractUIManager {
         boolean zoneHasChanged = (previousSelectedZone == Zone.INPUTS || previousSelectedZone == Zone.VARS)
                 && currentZone == Zone.OUTPUTS || (currentZone == Zone.INPUTS || currentZone == Zone.VARS)
                 && previousSelectedZone == Zone.OUTPUTS;
-        boolean tableTypeHasChanged = previousSelectedTableIsConstraint != isFilterTableSelected && currentZone == Zone.OUTPUTS;
+        boolean tableTypeHasChanged = previousSelectedTableIsConstraint != isFilterTableSelected && currentZone == Zone.OUTPUTS
+                || previousSelectedTableIsGlobalMap != isGlobalMapTableSelected && currentZone == Zone.INPUTS;
         boolean resetHighlightObjectsForOtherTables = !uiManager.isDragging()
                 && (!uiManager.isCtrlPressed() && !uiManager.isShiftPressed() || zoneHasChanged);
         if (resetHighlightObjectsForOtherTables || forceResetHighlightLinksForOtherTables) {
@@ -873,9 +877,12 @@ public class UIManager extends AbstractUIManager {
                 } else if (viewToDeselectEntries == dataMapTableView && tableTypeHasChanged) {
                     if (isFilterTableSelected) {
                         viewToDeselectEntries.unselectAllColumnEntries();
-                    } else if (isGlobalMapTableSelected) {
                         viewToDeselectEntries.unselectAllGlobalMapEntries();
+                    } else if (isGlobalMapTableSelected) {
+                        viewToDeselectEntries.unselectAllColumnEntries();
+                        viewToDeselectEntries.unselectAllConstraintEntries();
                     } else {
+                        viewToDeselectEntries.unselectAllGlobalMapEntries();
                         viewToDeselectEntries.unselectAllConstraintEntries();
                     }
                 }
@@ -894,7 +901,7 @@ public class UIManager extends AbstractUIManager {
             if (selectAllTableLinks && currentZone == Zone.OUTPUTS) {
                 allEntriesOfCurrentTableView.addAll(dataMapTableView.getTableViewerCreatorForFilters().getInputList());
             }
-//            if (selectAllTableLinks && currentZone == Zone.INPUTS) {
+            // if (selectAllTableLinks && currentZone == Zone.INPUTS) {
             if (currentZone == Zone.INPUTS) {
                 allEntriesOfCurrentTableView.addAll(dataMapTableView.getTableViewerCreatorForGlobalMap().getInputList());
             }
@@ -943,6 +950,7 @@ public class UIManager extends AbstractUIManager {
 
         previousSelectedZone = dataMapTableView.getZone();
         previousSelectedTableIsConstraint = isFilterTableSelected;
+        previousSelectedTableIsGlobalMap = isGlobalMapTableSelected;
     }
 
     public void unselectAllInputMetaDataEntries() {
@@ -2030,14 +2038,21 @@ public class UIManager extends AbstractUIManager {
             if (tableViewerCreatorForColumns != exceptThisTableViewerCreator) {
                 applyActivatedCellEditors(tableViewerCreatorForColumns);
             }
-            
+
             TableViewerCreator tableViewerCreatorForGlobalMap = dataMapTableView.getTableViewerCreatorForGlobalMap();
-            if(tableViewerCreatorForGlobalMap != null && tableViewerCreatorForGlobalMap != exceptThisTableViewerCreator) {
+            if (tableViewerCreatorForGlobalMap != null && tableViewerCreatorForGlobalMap != exceptThisTableViewerCreator) {
                 applyActivatedCellEditors(tableViewerCreatorForGlobalMap);
             }
 
         }
 
+    }
+
+    public void setStatusBarValues(STATUS status, String text) {
+        StatusBar statusBar = mapperUI.getStatusBar();
+        if (statusBar != null) {
+            statusBar.setValues(status, text);
+        }
     }
 
 }

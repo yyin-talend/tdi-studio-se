@@ -14,32 +14,30 @@ package org.talend.designer.mapper.ui.visualmap.table;
 
 import java.util.List;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ArmEvent;
+import org.eclipse.swt.events.ArmListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
-import org.eclipse.swt.widgets.ToolTip;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.advanced.dataeditor.commands.ExtendedTableRemoveCommand;
@@ -47,6 +45,7 @@ import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.SHOW_ROW_SELECTION;
 import org.talend.commons.ui.swt.tableviewer.behavior.DefaultHeaderColumnSelectionListener;
 import org.talend.commons.ui.swt.tableviewer.behavior.DefaultTableLabelProvider;
 import org.talend.commons.ui.swt.tableviewer.behavior.IColumnImageProvider;
@@ -59,25 +58,24 @@ import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.commons.utils.image.ImageUtils;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.process.ILookupMode;
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.UIManager;
 import org.talend.designer.mapper.model.table.IUILookupMode;
 import org.talend.designer.mapper.model.table.IUIMatchingMode;
-import org.talend.designer.mapper.model.table.IUITest;
+import org.talend.designer.mapper.model.table.IUIMenuOption;
 import org.talend.designer.mapper.model.table.InputTable;
-import org.talend.designer.mapper.model.table.MENU_TYPE;
-import org.talend.designer.mapper.model.table.MenuSeparator;
 import org.talend.designer.mapper.model.table.TMAP_LOOKUP_MODE;
 import org.talend.designer.mapper.model.table.TMAP_MATCHING_MODE;
 import org.talend.designer.mapper.model.tableentry.GlobalMapEntry;
 import org.talend.designer.mapper.model.tableentry.InputColumnTableEntry;
 import org.talend.designer.mapper.ui.dnd.DragNDrop;
+import org.talend.designer.mapper.ui.footer.StatusBar.STATUS;
 import org.talend.designer.mapper.ui.image.ImageInfo;
 import org.talend.designer.mapper.ui.image.ImageProviderMapper;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
-import org.xhtmlrenderer.render.MarkerData.ImageMarker;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -95,7 +93,7 @@ public class InputDataMapTableView extends DataMapTableView {
 
     private Menu menuLookupMode = null;
 
-    private IUIMatchingMode previousMultipleModeSelected = getInputTable().getMatchingMode() != null
+    private IUIMatchingMode previousMatchingModeSelected = getInputTable().getMatchingMode() != null
             && getInputTable().getMatchingMode() != TMAP_MATCHING_MODE.ALL_ROWS ? getInputTable().getMatchingMode()
             : TMAP_MATCHING_MODE.UNIQUE_MATCH;
 
@@ -105,7 +103,11 @@ public class InputDataMapTableView extends DataMapTableView {
 
     private boolean previousInnerJoinSelection;
 
-    private static boolean replaceLabelsByImages = false;
+    private static boolean replaceLabelsByImagesForLookupMode = true;
+
+    private static boolean useImagesForMatching = true;
+
+    private static boolean useTextForMatching = true;
 
     public InputDataMapTableView(Composite parent, int style, InputTable inputTable, MapperManager mapperManager) {
         super(parent, style, inputTable, mapperManager);
@@ -132,8 +134,6 @@ public class InputDataMapTableView extends DataMapTableView {
     protected boolean previousStatePersistentCheckFilter;
 
     protected boolean previousValidPersistentMode;
-
-    public Menu menuTest;
 
     /*
      * (non-Javadoc)
@@ -240,22 +240,8 @@ public class InputDataMapTableView extends DataMapTableView {
      */
     @Override
     protected boolean addToolItems() {
+
         Point realToolbarSize = getRealToolbarSize();
-
-        if (getInputTable().isMainConnection()) {
-
-            // addImage();
-            //
-            // Image toolImage = ImageProviderMapper.getImage(ImageInfo.TOOL);
-            // ToolItem dropDownTestItem = new ToolItem(toolBarActions, SWT.DROP_DOWN | SWT.BORDER);
-            // dropDownTestItem.addSelectionListener(new DropDownTestSelectionListener());
-            // dropDownTestItem.setImage(toolImage);
-            // // realToolbarSize.x += 70;
-            //
-            // ToolItem storeOnDisk = new ToolItem(toolBarActions, SWT.CHECK);
-            // storeOnDisk.setImage(ImageProviderMapper.getImage(ImageInfo.ACTIVATE_PERSISTENT_ICON));
-
-        }
 
         if (!getInputTable().isMainConnection()) {
 
@@ -363,30 +349,6 @@ public class InputDataMapTableView extends DataMapTableView {
         return true;
     }
 
-    private void addImage() {
-        ToolItem lookupMode = new ToolItem(toolBarActions, SWT.SEPARATOR);
-        Image image = ImageProviderMapper.getImage(ImageInfo.REFRESH);
-        Rectangle bounds = image.getBounds();
-        lookupMode.setWidth(bounds.width);
-        Label label = new Label(toolBarActions, SWT.NONE);
-        label.setImage(image);
-        label.setToolTipText(TMAP_LOOKUP_MODE.RELOAD.getTooltipText());
-        lookupMode.setImage(image);
-        lookupMode.setHotImage(image);
-        lookupMode.setControl(label);
-
-        ToolItem matchingMode = new ToolItem(toolBarActions, SWT.SEPARATOR);
-        Image matchingImage = ImageProviderMapper.getImage(ImageInfo.LAST_MATCH);
-        Rectangle matchingBounds = matchingImage.getBounds();
-        matchingMode.setWidth(matchingBounds.width);
-        Label matchingLabel = new Label(toolBarActions, SWT.NONE);
-        matchingLabel.setImage(matchingImage);
-        matchingLabel.setToolTipText(TMAP_MATCHING_MODE.LAST_MATCH.getTooltipText());
-        matchingMode.setImage(matchingImage);
-        matchingMode.setHotImage(matchingImage);
-        matchingMode.setControl(matchingLabel);
-    }
-
     /*
      * (non-Javadoc)
      * 
@@ -416,8 +378,6 @@ public class InputDataMapTableView extends DataMapTableView {
      */
     class DropDownMatchingModeSelectionListener implements SelectionListener {
 
-        private boolean visible;
-
         public void widgetSelected(SelectionEvent event) {
             // Create the menu if it has not already been created
             if (menuMatchingMode == null) {
@@ -435,16 +395,7 @@ public class InputDataMapTableView extends DataMapTableView {
                         menuItem.setData(matchingMode);
                         menuItem.setText(text);
 
-                        final ToolTip tip = new ToolTip(getShell(), SWT.BALLOON | SWT.ICON_INFORMATION);
-                        tip.setMessage("Balloon Message Goes Here!");
-                        tip.setText("Balloon Title goes here.");
-
-                        menuItem.addListener(SWT.MouseHover, new Listener() {
-
-                            public void handleEvent(Event e) {
-                                tip.setVisible(true);
-                            }
-                        });
+                        addMenuItemListener(menuItem);
 
                         enableMenuItemMatchingMode(menuItem);
 
@@ -460,11 +411,18 @@ public class InputDataMapTableView extends DataMapTableView {
                             @Override
                             public void widgetSelected(SelectionEvent e) {
                                 MenuItem menuItem = (MenuItem) e.widget;
-                                selectMatchingModeItem(menuItem);
-                                IUIMatchingMode lookupType = (IUIMatchingMode) menuItem.getData();
-                                getInputTable().setMatchingMode(lookupType);
+                                IUIMatchingMode matchingMode = (IUIMatchingMode) menuItem.getData();
+
+                                IUILookupMode lookupMode = getInputTable().getLookupMode();
+
+                                boolean invalidState = lookupMode == TMAP_LOOKUP_MODE.CACHE_OR_RELOAD
+                                        && matchingMode == TMAP_MATCHING_MODE.ALL_ROWS;
                                 setMenuMatchingModeVisible(false);
-                                refreshLabelForMatchingModeDropDown();
+                                if (!invalidState) {
+                                    selectMatchingModeItem(menuItem);
+                                    getInputTable().setMatchingMode(matchingMode);
+                                    refreshLabelForMatchingModeDropDown();
+                                }
                             }
 
                         });
@@ -479,16 +437,6 @@ public class InputDataMapTableView extends DataMapTableView {
              * down arrow. Examine the event detail to determine where the widget was selected.
              */
 
-            /*
-             * The drop down arrow was selected.
-             */
-            // if (visible) {
-            // Hide the menu to give the Arrow the appearance of being a
-            // toggle button.
-            // setMenuMatchingModeVisible(false);
-            // } else {
-            // Position the menu below and vertically aligned with the the
-            // drop down tool button.
             final ToolItem toolItem = (ToolItem) event.widget;
             final ToolBar toolBar = toolItem.getParent();
 
@@ -501,12 +449,10 @@ public class InputDataMapTableView extends DataMapTableView {
                 enableMenuItemMatchingMode(menuItem);
             }
             setMenuMatchingModeVisible(true);
-            // }
         }
 
         private void setMenuMatchingModeVisible(boolean visible) {
             menuMatchingMode.setVisible(visible);
-            this.visible = visible;
         }
 
         /*
@@ -547,6 +493,8 @@ public class InputDataMapTableView extends DataMapTableView {
                         boolean selected = lookupMode == getInputTable().getLookupMode();
                         changeMenuItem(lookupMode.getImageInfo(), menuItem, selected);
 
+                        addMenuItemListener(menuItem);
+
                         /*
                          * Add a menu selection listener so that the menu is hidden when the user selects an item from
                          * the drop down menu.
@@ -566,6 +514,7 @@ public class InputDataMapTableView extends DataMapTableView {
                                 }
                                 setMenuVisible(false);
                                 refreshLabelForLookupModeDropDown();
+                                checkChangementsAfterEntryModifiedOrAdded(true);
                             }
 
                         });
@@ -580,16 +529,6 @@ public class InputDataMapTableView extends DataMapTableView {
              * down arrow. Examine the event detail to determine where the widget was selected.
              */
 
-            /*
-             * The drop down arrow was selected.
-             */
-            // if (visible) {
-            // // Hide the menu to give the Arrow the appearance of being a
-            // // toggle button.
-            // setMenuVisible(false);
-            // } else {
-            // Position the menu below and vertically aligned with the the
-            // drop down tool button.
             final ToolItem toolItem = (ToolItem) event.widget;
             final ToolBar toolBar = toolItem.getParent();
 
@@ -602,7 +541,6 @@ public class InputDataMapTableView extends DataMapTableView {
                 enableMenuItemLoookupMode(menuItem);
             }
             setMenuVisible(true);
-            // }
         }
 
         private void setMenuVisible(boolean visible) {
@@ -620,116 +558,11 @@ public class InputDataMapTableView extends DataMapTableView {
         }
     }
 
-    /**
-     * Listens to widgetSelected() events on SWT.DROP_DOWN type ToolItems and opens/closes a menu when appropriate.
-     */
-    class DropDownTestSelectionListener implements SelectionListener {
-
-        private boolean visible;
-
-        public void widgetSelected(SelectionEvent event) {
-            // Create the menu if it has not already been created
-            if (menuTest == null) {
-                // Lazy create the menu.
-                menuTest = new Menu(getShell());
-
-                // IUILookupMode[] availableJoins = TMAP_LOOKUP_MODE.values();
-
-                TMAP_LOOKUP_MODE[] valuesLookupMode = TMAP_LOOKUP_MODE.values();
-                TMAP_MATCHING_MODE[] valuesMatchingMode = TMAP_MATCHING_MODE.values();
-                IUITest[] availableJoins = (IUITest[]) ArrayUtils.addAll(new IUITest[0], valuesLookupMode);
-                availableJoins = (IUITest[]) ArrayUtils.add(availableJoins, new MenuSeparator());
-                availableJoins = (IUITest[]) ArrayUtils.addAll(availableJoins, valuesMatchingMode);
-
-                for (int i = 0; i < availableJoins.length; ++i) {
-                    IUITest item = availableJoins[i];
-
-                    MENU_TYPE menuType = item.getMenuType();
-                    if (menuType == MENU_TYPE.SEPARATOR) {
-                        new MenuItem(menuTest, SWT.SEPARATOR);
-                    } else if (menuType == MENU_TYPE.ITEM) {
-                        final String text = item.getLabel();
-                        if (text.length() != 0) {
-                            MenuItem menuItem = new MenuItem(menuTest, SWT.NONE);
-                            menuItem.setData(item);
-                            menuItem.setText(text);
-                            // enableMenuItemMatchingMode(menuItem);
-                            // if (availableJoins[i] == getInputTable().getLookupMode()) {
-                            if (availableJoins[i] == TMAP_LOOKUP_MODE.LOAD_ONCE_AND_EDIT) {
-                                menuItem.setImage(ImageProviderMapper.getImage(ImageInfo.CHECKED_ICON));
-                            }
-                            if (availableJoins[i] == getInputTable().getMatchingMode()) {
-                                menuItem.setImage(ImageProviderMapper.getImage(ImageInfo.CHECKED_ICON));
-                            }
-
-                            /*
-                             * Add a menu selection listener so that the menu is hidden when the user selects an item
-                             * from the drop down menu.
-                             */
-                            menuItem.addSelectionListener(new SelectionAdapter() {
-
-                                @Override
-                                public void widgetSelected(SelectionEvent e) {
-                                    MenuItem menuItem = (MenuItem) e.widget;
-                                    selectLookupModeItem(menuItem);
-
-                                    setMenuVisible(false);
-                                }
-
-                            });
-                        } else {
-                        }
-                    }
-                }
-            }
-
-            /**
-             * A selection event will be fired when a drop down tool item is selected in the main area and in the drop
-             * down arrow. Examine the event detail to determine where the widget was selected.
-             */
-
-            /*
-             * The drop down arrow was selected.
-             */
-            // if (visible) {
-            // // Hide the menu to give the Arrow the appearance of being a
-            // // toggle button.
-            // setMenuVisible(false);
-            // } else {
-            // Position the menu below and vertically aligned with the the
-            // drop down tool button.
-            final ToolItem toolItem = (ToolItem) event.widget;
-            final ToolBar toolBar = toolItem.getParent();
-
-            Rectangle toolItemBounds = toolItem.getBounds();
-            Point point = toolBar.toDisplay(new Point(toolItemBounds.x, toolItemBounds.y));
-            menuTest.setLocation(point.x, point.y + toolItemBounds.height);
-            MenuItem[] menuItems = menuTest.getItems();
-            for (int i = 0; i < menuItems.length; i++) {
-                MenuItem menuItem = menuItems[i];
-                enableMenuItemLoookupMode(menuItem);
-            }
-            setMenuVisible(true);
-            // }
-        }
-
-        private void setMenuVisible(boolean visible) {
-            menuTest.setVisible(visible);
-            this.visible = visible;
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
-         */
-        public void widgetDefaultSelected(SelectionEvent e) {
-            System.out.println("widgetDefaultSelected"); //$NON-NLS-1$
-        }
-    }
-
     private void changeMenuItem(ImageInfo imageInfo, MenuItem menuItem, boolean selected) {
-        if (replaceLabelsByImages) {
+
+        boolean isMatchingMode = menuItem.getData() instanceof IUIMatchingMode;
+
+        if (replaceLabelsByImagesForLookupMode || isMatchingMode && useImagesForMatching) {
             if (selected) {
                 menuItem.setImage(ImageProviderMapper.getImage(imageInfo));
             } else {
@@ -738,7 +571,7 @@ public class InputDataMapTableView extends DataMapTableView {
                 menuItem.setImage(modifiedImage);
             }
         } else {
-            if(selected) {
+            if (selected) {
                 menuItem.setImage(ImageProviderMapper.getImage(ImageInfo.CHECKED_ICON));
             } else {
                 menuItem.setImage(null);
@@ -764,7 +597,7 @@ public class InputDataMapTableView extends DataMapTableView {
                 innerJoinCheck.setEnabled(false);
             }
         } else {
-            previousMultipleModeSelected = matchingMode;
+            previousMatchingModeSelected = matchingMode;
             previousInnerJoinSelection = getInputTable().isInnerJoin();
             if (innerJoinCheck != null) {
                 innerJoinCheck.setEnabled(true);
@@ -774,14 +607,23 @@ public class InputDataMapTableView extends DataMapTableView {
             updateViewAfterChangeInnerJoinCheck();
         }
 
-        if (replaceLabelsByImages) {
+        if (useImagesForMatching) {
             dropDownMatchingModeItem.setImage(ImageProviderMapper.getImage(matchingMode.getImageInfo()));
-        } else {
+        }
+
+        if (useTextForMatching) {
             dropDownMatchingModeItem.setText(matchingMode.getLabel());
+        } else {
+            dropDownMatchingModeItem.setText("");
         }
 
         dropDownMatchingModeItem.setToolTipText(matchingMode.getLabel());
 
+        layoutToolBar();
+
+    }
+
+    private void layoutToolBar() {
         Point sizeToolBar = toolBarActions.computeSize(SWT.DEFAULT, SWT.DEFAULT);
         GridData gridData = (GridData) toolBarActions.getLayoutData();
         if (gridData != null) {
@@ -789,14 +631,14 @@ public class InputDataMapTableView extends DataMapTableView {
             // gridData.widthHint -= 60;
             toolBarActions.getParent().layout();
         }
-
     }
 
     public void refreshLabelForLookupModeDropDown() {
         IUILookupMode lookupMode = getInputTable().getLookupMode();
 
-        if (replaceLabelsByImages) {
+        if (replaceLabelsByImagesForLookupMode) {
             dropDownLookupModeItem.setImage(ImageProviderMapper.getImage(lookupMode.getImageInfo()));
+            dropDownLookupModeItem.setText("");
         } else {
             dropDownLookupModeItem.setText(lookupMode.getLabel());
         }
@@ -811,13 +653,7 @@ public class InputDataMapTableView extends DataMapTableView {
         // }
         // }
 
-        Point sizeToolBar = toolBarActions.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-        GridData gridData = (GridData) toolBarActions.getLayoutData();
-        if (gridData != null) {
-            gridData.widthHint = sizeToolBar.x;
-            // gridData.widthHint -= 60;
-            toolBarActions.getParent().layout();
-        }
+        layoutToolBar();
 
     }
 
@@ -833,37 +669,56 @@ public class InputDataMapTableView extends DataMapTableView {
             boolean stateAtLeastOneHashKey = mapperManager.isTableHasAtLeastOneHashKey(getInputTable());
             if (forceEvaluation || previousStateAtLeastOneHashKey != stateAtLeastOneHashKey) {
                 if (stateAtLeastOneHashKey) {
-                    if (replaceLabelsByImages) {
-                        dropDownMatchingModeItem.setImage(ImageProviderMapper.getImage(previousMultipleModeSelected
+                    if (useImagesForMatching) {
+                        dropDownMatchingModeItem.setImage(ImageProviderMapper.getImage(previousMatchingModeSelected
                                 .getImageInfo()));
-                    } else {
-                        dropDownMatchingModeItem.setText(previousMultipleModeSelected.getLabel());
                     }
-                    dropDownMatchingModeItem.setToolTipText(previousMultipleModeSelected.getLabel());
-                    getInputTable().setMatchingMode(previousMultipleModeSelected);
-                    selectMatchingModeMenuItem(previousMultipleModeSelected);
+                    if (useTextForMatching) {
+                        dropDownMatchingModeItem.setText(previousMatchingModeSelected.getLabel());
+                    } else {
+                        dropDownMatchingModeItem.setText("");
+                    }
+                    dropDownMatchingModeItem.setToolTipText(previousMatchingModeSelected.getLabel());
+                    getInputTable().setMatchingMode(previousMatchingModeSelected);
+                    selectMatchingModeMenuItem(previousMatchingModeSelected);
                     getInputTable().setInnerJoin(previousInnerJoinSelection);
                     innerJoinCheck.setEnabled(true);
                     updateViewAfterChangeInnerJoinCheck();
                 } else {
 
                     TMAP_MATCHING_MODE matchingMode = TMAP_MATCHING_MODE.ALL_ROWS;
-                    if (replaceLabelsByImages) {
-                        dropDownMatchingModeItem.setImage(ImageProviderMapper.getImage(matchingMode.getImageInfo()));
+
+                    if (getInputTable().getLookupMode() == TMAP_LOOKUP_MODE.CACHE_OR_RELOAD) {
+                        String errorMessage = "Invalid configuration, choose an other lookup mode or set an expression into the column key into the lookup \""
+                                + getInputTable().getName() + "\"";
+                        mapperManager.getUiManager().setStatusBarValues(STATUS.ERROR, errorMessage);
+                        dropDownMatchingModeItem.setText("<Invalid>");
+                        if (useImagesForMatching) {
+                            dropDownMatchingModeItem.setImage(ImageProviderMapper.getImage(matchingMode.getImageInfo()));
+                        }
+                        dropDownMatchingModeItem.setToolTipText(errorMessage);
                     } else {
-                        dropDownMatchingModeItem.setText(matchingMode.getLabel());
+                        mapperManager.getUiManager().setStatusBarValues(STATUS.EMPTY, null);
+                        if (useImagesForMatching) {
+                            dropDownMatchingModeItem.setImage(ImageProviderMapper.getImage(matchingMode.getImageInfo()));
+                        }
+                        if (useTextForMatching) {
+                            dropDownMatchingModeItem.setText(matchingMode.getLabel());
+                        } else {
+                            dropDownMatchingModeItem.setText("");
+                        }
+                        dropDownMatchingModeItem.setToolTipText(matchingMode.getLabel());
+                        selectMatchingModeMenuItem(matchingMode);
                     }
-                    dropDownMatchingModeItem.setText(TMAP_MATCHING_MODE.ALL_ROWS.getLabel());
-                    dropDownMatchingModeItem.setToolTipText(TMAP_MATCHING_MODE.ALL_ROWS.getLabel());
-                    getInputTable().setMatchingMode(TMAP_MATCHING_MODE.ALL_ROWS);
-                    selectMatchingModeMenuItem(TMAP_MATCHING_MODE.ALL_ROWS);
+                    getInputTable().setMatchingMode(matchingMode);
+
                     getInputTable().setInnerJoin(false);
                     innerJoinCheck.setEnabled(false);
                 }
 
                 previousStateAtLeastOneHashKey = stateAtLeastOneHashKey;
             }
-            refreshLabelForMatchingModeDropDown();
+            layoutToolBar();
 
         }
 
@@ -1000,23 +855,6 @@ public class InputDataMapTableView extends DataMapTableView {
         }
     }
 
-    /**
-     * DOC amaumont Comment method "selectMenuItem".
-     * 
-     * @param menuItem
-     */
-    private void selectLookupModeMenuItem(IUIMatchingMode lookupType) {
-        if (menuLookupMode != null) {
-            MenuItem[] menuItems = menuLookupMode.getItems();
-            for (int j = 0; j < menuItems.length; j++) {
-                if (menuItems[j].getData() == lookupType) {
-                    selectMatchingModeItem(menuItems[j]);
-                    break;
-                }
-            }
-        }
-    }
-
     /*
      * (non-Javadoc)
      * 
@@ -1065,6 +903,7 @@ public class InputDataMapTableView extends DataMapTableView {
             protected void setTableViewerCreatorOptions(TableViewerCreator<GlobalMapEntry> newTableViewerCreator) {
                 super.setTableViewerCreatorOptions(newTableViewerCreator);
                 newTableViewerCreator.setColumnsResizableByDefault(true);
+                newTableViewerCreator.setShowLineSelection(SHOW_ROW_SELECTION.HIDE);
                 newTableViewerCreator.setBorderVisible(false);
                 newTableViewerCreator.setLayoutMode(LAYOUT_MODE.FILL_HORIZONTAL);
                 newTableViewerCreator.setKeyboardManagementForCellEdition(true);
@@ -1251,6 +1090,24 @@ public class InputDataMapTableView extends DataMapTableView {
     @Override
     public void unselectAllGlobalMapEntries() {
         tableViewerCreatorForGlobalMap.getSelectionHelper().deselectAll();
+    }
+
+    private void addMenuItemListener(final MenuItem menuItem) {
+
+        menuItem.addArmListener(new ArmListener() {
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.swt.events.ArmListener#widgetArmed(org.eclipse.swt.events.ArmEvent)
+             */
+            public void widgetArmed(ArmEvent e) {
+                IUIMenuOption data = (IUIMenuOption) menuItem.getData();
+                mapperManager.getUiManager().setStatusBarValues(STATUS.INFO, data.getTooltipText());
+            }
+
+        });
+
     }
 
 }

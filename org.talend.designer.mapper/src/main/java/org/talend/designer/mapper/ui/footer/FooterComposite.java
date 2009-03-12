@@ -53,6 +53,8 @@ public class FooterComposite extends Composite {
 
     private MapperManager mapperManager;
 
+    private StatusBar statusBar;
+
     /**
      * DOC amaumont FooterComposite constructor comment.
      * 
@@ -89,6 +91,8 @@ public class FooterComposite extends Composite {
             }
         }
 
+        statusBar = new StatusBar(this, SWT.NONE);
+        
         Button okButton = new Button(this, SWT.NONE);
         okButton.setEnabled(!mapperManager.componentIsReadOnly());
         okButton.setText(Messages.getString("FooterComposite.button.OK")); //$NON-NLS-1$
@@ -179,6 +183,10 @@ public class FooterComposite extends Composite {
     private void helpPressed() {
         OpenPerlHelpAction perlHelpAction = new OpenPerlHelpAction();
         perlHelpAction.run();
+    }
+
+    public StatusBar getStatusBar() {
+        return statusBar;
     }
 
 }

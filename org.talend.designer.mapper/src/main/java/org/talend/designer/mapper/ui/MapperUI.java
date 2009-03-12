@@ -33,7 +33,6 @@ import org.eclipse.swt.events.ShellListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
@@ -43,6 +42,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
@@ -73,6 +73,7 @@ import org.talend.designer.mapper.ui.dnd.DropTargetOperationListener;
 import org.talend.designer.mapper.ui.event.MouseMoveScrollZoneHelper;
 import org.talend.designer.mapper.ui.font.FontProviderMapper;
 import org.talend.designer.mapper.ui.footer.FooterComposite;
+import org.talend.designer.mapper.ui.footer.StatusBar;
 import org.talend.designer.mapper.ui.image.ImageProviderMapper;
 import org.talend.designer.mapper.ui.tabs.TabFolderEditors;
 import org.talend.designer.mapper.ui.visualmap.table.DataMapTableView;
@@ -175,6 +176,8 @@ public class MapperUI {
     private Shell shell;
 
     private boolean updateBackgroundEnabled;
+
+    private FooterComposite footerComposite;
 
     public MapperUI(Composite parent, MapperManager mapperManager) {
         super();
@@ -367,7 +370,7 @@ public class MapperUI {
                 : ExternalMapperUiProperties.DEFAULT_WEIGHTS_MAIN_SASH_FORM;
         mainSashForm.setWeights(weightsMainSashForm);
 
-        new FooterComposite(this.mapperUIParent, SWT.NONE, mapperManager);
+        footerComposite = new FooterComposite(this.mapperUIParent, SWT.NONE, mapperManager);
 
         selectFirstInOutTablesView();
         updateBackgroundEnabled = true;
@@ -1020,4 +1023,17 @@ public class MapperUI {
         return this.shell;
     }
 
+    /**
+     * 
+     * DOC amaumont Comment method "getStatusBarLabel".
+     * @return null if label is not created
+     */
+    public StatusBar getStatusBar() {
+        if(footerComposite != null) {
+            return footerComposite.getStatusBar();
+        } else {
+            return null;
+        }
+    }
+    
 }

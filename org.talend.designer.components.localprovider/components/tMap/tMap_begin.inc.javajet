@@ -161,24 +161,21 @@ for (int i = 1; i < lstSizeInputs; i++) {
 					<%}%>;
 					
 					
-		<%
-		
-		String matchingModeStr = inputTable.getMatchingMode();
-		
-		if(isCacheOrReloadLookupMode) {
-		%>
-		
-			org.talend.designer.components.commons.AdvancedMemoryLookup<<%=tableName%>Struct> tHash_Lookup_Cache_<%=tableName%> = 
-				org.talend.designer.components.commons.AdvancedMemoryLookup.
-					<<%=tableName%>Struct>getLookup(org.talend.designer.components.commons.AdvancedLookup.MATCHING_MODE.<%= matchingModeStr %>);
-		
-			org.talend.designer.components.commons.AdvancedMemoryLookup<<%=tableName%>Struct> tHash_Lookup_Real_<%=tableName%> = null;
-		
-		<%}%>
-		
 	<%
 	}
 
+	String matchingModeStr = inputTable.getMatchingMode();
+	
+	if(isCacheOrReloadLookupMode) {
+	%>
+	
+		org.talend.designer.components.commons.AdvancedMemoryLookup<<%=tableName%>Struct> tHash_Lookup_Cache_<%=tableName%> = 
+			org.talend.designer.components.commons.AdvancedMemoryLookup.
+				<<%=tableName%>Struct>getLookup(org.talend.designer.components.commons.AdvancedLookup.MATCHING_MODE.<%= matchingModeStr %>);
+	
+		org.talend.designer.components.commons.AdvancedMemoryLookup<<%=tableName%>Struct> tHash_Lookup_Real_<%=tableName%> = null;
+	
+	<%}
 
 	if(isAllRows && !isOneOfReloadLookupMode) {
 	%>

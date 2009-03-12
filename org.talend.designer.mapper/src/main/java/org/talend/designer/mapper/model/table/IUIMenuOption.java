@@ -18,7 +18,7 @@ import org.talend.designer.mapper.ui.image.ImageInfo;
  * 
  * DOC amaumont  class global comment. Detailled comment
  */
-public interface IUITest {
+public interface IUIMenuOption {
 
     public String getLabel();
 

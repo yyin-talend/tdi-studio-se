@@ -742,11 +742,11 @@
 
 			  							tHash_Lookup_Cache_<%= tableName %>.lookup( <%= tableName %>HashKey );
 			  							if(tHash_Lookup_Cache_<%= tableName %>.hasNext()) { // G_TM_M_835
-			  								tHash_Lookup_Real_<%= tableName %> = tHash_Lookup_<%= tableName %>;
-			  								tHash_Lookup_<%= tableName %> = tHash_Lookup_Cache_<%= tableName %>;
+			  							
+		  									tHash_Lookup_<%= tableName %> = tHash_Lookup_Cache_<%= tableName %>;
+			  								
 			  							} // G_TM_M_834
 										else { // G_TM_M_835
-			  								tHash_Lookup_<%= tableName %> = tHash_Lookup_Real_<%= tableName %>;
 
 									<%
 									}

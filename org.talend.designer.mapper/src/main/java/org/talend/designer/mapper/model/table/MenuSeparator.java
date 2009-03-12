@@ -18,7 +18,7 @@ import org.talend.designer.mapper.ui.image.ImageInfo;
  * 
  * DOC amaumont  class global comment. Detailled comment
  */
-public class MenuSeparator implements IUITest{
+public class MenuSeparator implements IUIMenuOption{
 
     /* (non-Javadoc)
      * @see org.talend.designer.mapper.model.table.IUITest#getLabel()

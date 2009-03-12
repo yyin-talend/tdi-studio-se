@@ -20,7 +20,7 @@ package org.talend.designer.mapper.model.table;
  * $Id$
  * 
  */
-public interface IUILookupMode extends IUITest {
+public interface IUILookupMode extends IUIMenuOption {
 
     public LOOKUP_MODE getLookupMode();
 }

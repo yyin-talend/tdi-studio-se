@@ -40,8 +40,10 @@ public enum ColorInfo {
     COLOR_UNSELECTED_LOOKUP_LINKS(200, 186, 225), // pastel violet
 
     COLOR_SELECTED_FILTER_LINK(255, 150, 20), // orange
-    // COLOR_UNSELECTED_FILTER_LINK(255, 190, 150), // light orange
     COLOR_UNSELECTED_FILTER_LINK(255, 200, 70), // light gray
+
+    COLOR_SELECTED_GLOBALMAP_LINK(71, 40, 210), // bleu sombre
+    COLOR_UNSELECTED_GLOBALMAP_LINK(111, 186, 225), // bleu 
 
     COLOR_HIGHLIGHTED_TEXT_ROW(240, 240, 240), // light gray
 

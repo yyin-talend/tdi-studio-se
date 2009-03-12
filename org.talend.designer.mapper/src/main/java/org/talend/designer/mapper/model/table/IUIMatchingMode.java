@@ -20,7 +20,7 @@ import org.talend.designer.components.commons.AdvancedLookup.MATCHING_MODE;
  * $Id$
  * 
  */
-public interface IUIMatchingMode extends IUITest {
+public interface IUIMatchingMode extends IUIMenuOption {
 
     public MATCHING_MODE getMatchingMode();
     
