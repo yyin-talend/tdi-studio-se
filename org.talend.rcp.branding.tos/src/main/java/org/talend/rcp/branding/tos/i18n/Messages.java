@@ -43,7 +43,7 @@ public class Messages extends MessagesCore {
      * @see MessagesCore#getString(String, ResourceBundle)
      */
     public static String getString(String key) {
-        return getString(key, resourceBundle);
+        return getString(key, PLUGIN_ID, resourceBundle);
     }
 
     /**

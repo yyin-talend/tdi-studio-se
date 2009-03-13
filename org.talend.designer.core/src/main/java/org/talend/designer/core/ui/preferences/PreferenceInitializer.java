@@ -108,7 +108,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
         // add by wzhang.set select language
         String languageType = Locale.getDefault().getLanguage();
-        DesignerPlugin.getDefault().getPreferenceStore().setDefault(ITalendCorePrefConstants.LANGUAGE_SELECTOR, languageType);
+        DesignerPlugin.getDefault().getPreferenceStore().setValue(ITalendCorePrefConstants.LANGUAGE_SELECTOR, languageType);
 
         if (!CommonsPlugin.isHeadless()) {
             Font font = new Font(Display.getDefault(), "courier", 10, SWT.NONE); //$NON-NLS-1$

@@ -153,6 +153,7 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
      */
     public void runProgressMonitorDialog(final boolean validated) {
         updateCompleted = false;
+        BabiliTool.clear();
         ProgressMonitorDialog progressDialog = new ProgressMonitorDialog(getFieldEditorParent().getShell());
         IRunnableWithProgress runnable = new IRunnableWithProgress() {
 
@@ -166,16 +167,26 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
                     for (BabiliInfo info : bList) {
                         // store to memory
                         String pluginId = info.getFilepath();
-                        int pos = pluginId.indexOf("/"); //$NON-NLS-1$
-                        if (pos != -1) {
-                            pluginId = pluginId.substring(0, pos);
-                            if (pluginId.endsWith(".nl")) { //$NON-NLS-1$
-                                pluginId = pluginId.replace(".nl", ""); //$NON-NLS-1$ //$NON-NLS-2$
+                        // for components
+                        if (pluginId.startsWith("components/")) { //$NON-NLS-1$
+                            String regexp = "((\\w)+)_messages(_.+?)?\\.properties"; //$NON-NLS-1$
+                            Pattern p = Pattern.compile(regexp);
+                            Matcher m = p.matcher(pluginId);
+                            if (m.find()) {
+                                pluginId = m.group(1);
+                            }
+                        } else {
+                            int pos = pluginId.indexOf("/"); //$NON-NLS-1$
+                            if (pos != -1) {
+                                pluginId = pluginId.substring(0, pos);
+                                if (pluginId.endsWith(".nl")) { //$NON-NLS-1$
+                                    pluginId = pluginId.replace(".nl", ""); //$NON-NLS-1$ //$NON-NLS-2$
+                                }
                             }
                         }
                         BabiliTool.storeBabiliTranslation(info.getKey(), pluginId, info.getLabel());
-
                     }
+
                     if (monitor.isCanceled()) {
                         try {
                             throw new InterruptedException(Messages.getString("I18nPreferencePage.operationCancelled")); //$NON-NLS-1$
