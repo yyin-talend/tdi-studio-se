@@ -38,16 +38,19 @@ if(useTNSFile) {
         globalMap.put("port_" + "<%=cid%>", connObject_<%=cid%>.getPort());
         if(connObject_<%=cid%>.getSid() != null) {
             globalMap.put("dbname_" + "<%=cid%>", connObject_<%=cid%>.getSid());
+            globalMap.put("connectionType_" + "<%=cid%>", "ORACLE_SID");
         } else {
             globalMap.put("dbname_" + "<%=cid%>", connObject_<%=cid%>.getServiceName());
+            globalMap.put("connectionType_" + "<%=cid%>", "ORACLE_SERVICE_NAME");
         }
     }
     <%
 } else {
-    String connectionType = ElementParameterParser.getValue(node, "__CONNECTION_TYPE__");
+    String connectionType = ElementParameterParser.getValue(node, "__CONNECTION_TYPE__");    
     if(connectionType.equals("ORACLE_SID")) {
         %>
         String url_<%=cid %> = "jdbc:oracle:thin:@" + <%=dbhost%> + ":" + <%=dbport%> + ":" + <%=dbname%>;
+        
         <%
     } else if(connectionType.equals("ORACLE_SERVICE_NAME")) {
         %>
@@ -59,6 +62,8 @@ if(useTNSFile) {
         <%
     }
     %>
+    globalMap.put("connectionType_" + "<%=cid%>", "<%=connectionType%>");
+    
     String dbUser_<%=cid %> = <%=dbuser%>;
     String dbPwd_<%=cid %> = <%=dbpass%>;
     java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>, dbUser_<%=cid%>, dbPwd_<%=cid%>);
