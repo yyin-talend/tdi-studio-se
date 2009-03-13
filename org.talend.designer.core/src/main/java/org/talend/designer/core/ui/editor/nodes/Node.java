@@ -36,6 +36,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
@@ -47,6 +48,7 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.process.BlockCode;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
@@ -70,6 +72,7 @@ import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
+import org.talend.designer.core.model.components.NodeReturn;
 import org.talend.designer.core.ui.ActiveProcessTracker;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
@@ -525,7 +528,152 @@ public class Node extends Element implements INode {
     }
 
     public List<? extends INodeReturn> getReturns() {
-        return this.listReturn;
+        List<INodeReturn> allReturns = new ArrayList<INodeReturn>();
+
+        if (this.component.getName().equals("tSetGlobalVar")) {
+            getSetGlobalVarReturns(allReturns);
+        }
+        if (this.component.getName().equals("tFlowToIterate")) {
+            getFlowToIterateReturns(allReturns);
+        }
+
+        allReturns.addAll(listReturn);
+        return allReturns;
+    }
+
+    // gcui:if in the job have tSetGlobalVar component.This method will set it variables to be global variables.
+    private void getSetGlobalVarReturns(List<INodeReturn> allReturns) {
+
+        IElementParameter varParam = this.getElementParameter(EParameterName.VARIABLES.getName());
+        List<Map<String, String>> globalNode = (List<Map<String, String>>) varParam.getValue();
+        String[] codeName = varParam.getListItemsDisplayCodeName();
+        if (globalNode != null && codeName != null && codeName.length > 1) {
+            for (Map<String, String> line : globalNode) {
+
+                INodeReturn globalVarReturn = new NodeReturn() {
+
+                    @Override
+                    public String getVarName() {
+                        String varName = super.getVarName();
+                        switch (LanguageManager.getCurrentLanguage()) {
+                        case PERL:
+                            varName = varName.replace(UNIQUE_NAME, ""); //$NON-NLS-1$
+                            break;
+                        case JAVA:
+                            varName = varName.replace(UNIQUE_NAME + "_", ""); //$NON-NLS-1$ //$NON-NLS-2$
+                        }
+                        return varName;
+                    }
+
+                };
+                final String key = line.get(codeName[0]);
+                final String value = line.get(codeName[1]);
+
+                String varName = TalendTextUtils.removeQuotes(key);
+                globalVarReturn.setName(varName);
+                globalVarReturn.setVarName(varName);
+                globalVarReturn.setType(JavaTypesManager.STRING.getId());
+                globalVarReturn.setDisplayName(value);
+                globalVarReturn.setAvailability("AFTER");
+
+                allReturns.add(globalVarReturn);
+            }
+        }
+    }
+
+    // gcui:if in the job have tFlowToIterate component.This method will set it variables to be global variables.
+    private void getFlowToIterateReturns(List<INodeReturn> allReturns) {
+
+        List<? extends IConnection> inMainConns = this.getIncomingConnections();
+        String inputRowName = null;
+        IConnection inMainConn = null;
+        if (inMainConns != null && !inMainConns.isEmpty()) {
+            inMainConn = inMainConns.get(0);
+            inputRowName = inMainConn.getName();
+            boolean useDefault = ElementParameterParser.getValue(this, "__DEFAULT_MAP__").equals("true");
+            final String showInputRowName = inputRowName;
+            if (useDefault) {
+                IMetadataTable metadata = inMainConn.getMetadataTable();
+                List<IMetadataColumn> listColumns = metadata.getListColumns();
+
+                for (int i = 0; i < listColumns.size(); i++) {
+
+                    INodeReturn flowToIterateReturn = new NodeReturn() {
+
+                        @Override
+                        public String getVarName() {
+                            String varName = super.getVarName();
+                            switch (LanguageManager.getCurrentLanguage()) {
+                            case PERL:
+                                varName = varName.replace(UNIQUE_NAME, showInputRowName + "."); //$NON-NLS-1$
+                                break;
+                            case JAVA:
+                                varName = varName.replace(UNIQUE_NAME + "_", showInputRowName + "."); //$NON-NLS-1$ //$NON-NLS-2$
+                            }
+                            return varName;
+                        }
+
+                    };
+                    IMetadataColumn column = listColumns.get(i);
+                    String columnLabel = column.getLabel();
+                    String columnType = column.getTalendType();
+                    flowToIterateReturn.setName(columnLabel);
+                    flowToIterateReturn.setDisplayName(columnLabel);
+                    flowToIterateReturn.setType(columnType);
+                    flowToIterateReturn.setVarName(columnLabel);
+                    flowToIterateReturn.setAvailability("AFTER");
+
+                    allReturns.add(flowToIterateReturn);
+                }
+            } else {
+                List<Map<String, String>> map = (List<Map<String, String>>) ElementParameterParser
+                        .getObjectValue(this, "__MAP__");
+                IMetadataTable metadata = inMainConn.getMetadataTable();
+                List<IMetadataColumn> listColumns = metadata.getListColumns();
+
+                for (int i = 0; i < map.size(); i++) {
+                    Map<String, String> line = map.get(i);
+                    String keyName = TalendTextUtils.removeQuotes(line.get("KEY"));
+
+                    INodeReturn flowToIterateReturn = new NodeReturn() {
+
+                        @Override
+                        public String getVarName() {
+                            String varName = super.getVarName();
+                            switch (LanguageManager.getCurrentLanguage()) {
+                            case PERL:
+                                varName = varName.replace(UNIQUE_NAME, ""); //$NON-NLS-1$
+                                break;
+                            case JAVA:
+                                varName = varName.replace(UNIQUE_NAME + "_", ""); //$NON-NLS-1$ //$NON-NLS-2$
+                            }
+                            return varName;
+                        }
+                    };
+
+                    String cueeName = line.get("VALUE");
+                    for (int j = 0; j < listColumns.size(); j++) {
+                        String columnName = listColumns.get(j).getLabel();
+                        if (columnName.equals(cueeName)) {
+                            String columnType = listColumns.get(j).getTalendType();
+                            flowToIterateReturn.setType(columnType);
+                        }
+
+                    }
+
+                    flowToIterateReturn.setName(keyName);
+                    flowToIterateReturn.setDisplayName(keyName);
+                    flowToIterateReturn.setVarName(keyName);
+                    flowToIterateReturn.setAvailability("AFTER");
+
+                    allReturns.add(flowToIterateReturn);
+
+                }
+
+            }
+
+        }
+
     }
 
     /**

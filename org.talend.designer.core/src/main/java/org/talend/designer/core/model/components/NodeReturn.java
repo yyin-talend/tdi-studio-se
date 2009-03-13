@@ -35,6 +35,8 @@ public class NodeReturn implements INodeReturn {
 
     private String varName;
 
+    protected final static String UNIQUE_NAME = "__UNIQUE_NAME__"; //$NON-NLS-1$
+
     /*
      * 
      * (non-Javadoc)
@@ -62,11 +64,11 @@ public class NodeReturn implements INodeReturn {
     public String getVarName() {
         switch (LanguageManager.getCurrentLanguage()) {
         case PERL:
-            return "$_globals{__UNIQUE_NAME__}{" + varName + "}"; //$NON-NLS-1$ //$NON-NLS-2$
+            return "$_globals{" + UNIQUE_NAME + "}{" + varName + "}"; //$NON-NLS-1$ //$NON-NLS-2$
         case JAVA:
-            return "((" + getDisplayType() + ")globalMap.get(\"__UNIQUE_NAME___" + name + "\"))"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            return "((" + getDisplayType() + ")globalMap.get(\"" + UNIQUE_NAME + "_" + name + "\"))"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         default:
-            return "$_globals{__UNIQUE_NAME__}{" + varName + "}"; //$NON-NLS-1$ //$NON-NLS-2$
+            return "$_globals{" + UNIQUE_NAME + "}{" + varName + "}"; //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 

@@ -114,6 +114,7 @@ public enum EParameterName {
     TRACES_CONNECTION_ENABLE(Messages.getString("EParameterName.TracesConnection")), //$NON-NLS-1$
     TRACES_CONNECTION_FILTER("Filter the traces"), //$NON-NLS-1$ Hidden parameter so no translation needed
     TRACES_SHOW_ENABLE("Traces show"), //$NON-NLS-1$ Hidden parameter so no translation needed
+    VARIABLES("VARIABLES"),
     /**
      * For stats & logs parameters.
      */
