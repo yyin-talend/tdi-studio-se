@@ -59,7 +59,7 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {//FI
     	if (connTemp.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
     		IMetadataTable tempMetadataTable = connTemp.getMetadataTable();
     		for(Map<String, String> schema : schemas){
-				if(tempMetadataTable.getTableName().startsWith("row_"  + schema.get("SCHEMA"))){//??
+				if(tempMetadataTable.getLabel().equals(schema.get("SCHEMA"))){
 					schemaConnectionMap.put(schema.get("SCHEMA"), tempMetadataTable.getTableName());
 					break;
 				}
@@ -82,11 +82,11 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {//FI
 				String keyIndex = schema.get("KEY_COLUMN_INDEX");
 				if(keyIndex.equals("")){//no key __________PROBLEM_2_________
 %>
-int <%=schemaName %>_key = 0;
+int key_<%=schemaName %>_<%=cid %> = 0;
 <%
 				}else{
 %>
-String <%=schemaName %>_key = "";
+String key_<%=schemaName %>_<%=cid %> = "";
 <%
 				}
 				break;
@@ -128,7 +128,7 @@ while (fid_<%=cid %>.nextRecord()) {
 		Map<String, String> schema = schemas.get(i);
 		String record = schema.get("RECORD");
 %>
-	<%=(i==0) ? "" : "else " %>if(fid_<%=cid %>.get(0).equals(<%=record %>)){//\\//\\
+	<%=(i==0) ? "" : "else " %>if(fid_<%=cid %>.get(0).equals(<%=record %>)){
 <%
 		String schemaName = schema.get("SCHEMA");
 		for(int j=0; j<schemas.size();j++){
@@ -141,11 +141,11 @@ while (fid_<%=cid %>.nextRecord()) {
 				String keyIndex = schema.get("KEY_COLUMN_INDEX");
 				if(keyIndex.equals("")){//no key ??? 
 %>
-		<%=schemaName %>_key++;
+		key_<%=schemaName %>_<%=cid %>++;
 <%
 				}else{
 %>
-		<%=schemaName %>_key = fid_<%=cid %>.get(<%=keyIndex%>);
+		key_<%=schemaName %>_<%=cid %> = fid_<%=cid %>.get(<%=keyIndex%>);
 <%
 				}
 				String schemaNameChild = schema2.get("SCHEMA");
@@ -196,7 +196,7 @@ while (fid_<%=cid %>.nextRecord()) {
 				if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){//FIM_006
 					if(valueN + 1 == listColumns.size() && parentSchema != null){
 %>
-		<%=connection %>.<%=column.getLabel() %> = String.valueOf(<%=parentSchema %>_key);
+		<%=connection %>.<%=column.getLabel() %> = String.valueOf(key_<%=parentSchema %>_<%=cid %>);
 <%
 					}else{
 %>
@@ -206,7 +206,7 @@ while (fid_<%=cid %>.nextRecord()) {
 				}else{ //FIM_006
 					if(valueN + 1 == listColumns.size() && parentSchema != null){
 %>
-		temp_<%=cid %> = String.valueOf(<%=parentSchema %>_key);
+		temp_<%=cid %> = String.valueOf(key_<%=parentSchema %>_<%=cid %>);
 <%
 					}else{
 %>
@@ -248,7 +248,7 @@ while (fid_<%=cid %>.nextRecord()) {
 			//
 		}//FIM_004
 %>
-	}//\\//\\
+	}
 <%
 	}//FIN_002
 	
@@ -284,7 +284,7 @@ while (fid_<%=cid %>.nextRecord()) {
     	if (connTemp.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
     		IMetadataTable tempMetadataTable = connTemp.getMetadataTable();
     		for(Map<String, String> schema : schemas){
-				if(tempMetadataTable.getTableName().startsWith("row_"  + schema.get("SCHEMA"))){//??
+				if(tempMetadataTable.getLabel().equals(schema.get("SCHEMA"))){
 					schemaConnectionMap.put(schema.get("SCHEMA"), tempMetadataTable.getTableName());
 					break;
 				}
@@ -307,11 +307,11 @@ while (fid_<%=cid %>.nextRecord()) {
 				String keyIndex = schema.get("KEY_COLUMN_INDEX");
 				if(keyIndex.equals("")){//no key __________PROBLEM_2_________
 %>
-int <%=schemaName %>_key = 0;
+int key_<%=schemaName %>_<%=cid %> = 0;
 <%
 				}else{
 %>
-String <%=schemaName %>_key = "";
+String key_<%=schemaName %>_<%=cid %> = "";
 <%
 				}
 				break;
@@ -383,6 +383,8 @@ csvReader<%=cid %>.setEscapeMode(com.csvreader.CsvReader.ESCAPE_MODE_DOUBLED);
         %>       
 
 String[] row<%=cid %>=null;
+  
+String temp_<%=cid %> = null;
         
 while ( csvReader<%=cid %>.readRecord() ) { 
         
@@ -397,7 +399,7 @@ while ( csvReader<%=cid %>.readRecord() ) {
 		Map<String, String> schema = schemas.get(i);
 		String record = schema.get("RECORD");
 %>
-	<%=(i==0) ? "" : "else " %>if((row<%=cid %>.length = 0) ? ("".equals(<%=record %>)) : (row<%=cid %>[0].equals(<%=record %>))){//\\//\\
+	<%=(i==0) ? "" : "else " %>if((row<%=cid %>.length == 0) ? ("".equals(<%=record %>)) : (row<%=cid %>[0].equals(<%=record %>))){
 <%
 		String schemaName = schema.get("SCHEMA");
 		for(int j=0; j<schemas.size();j++){
@@ -410,11 +412,11 @@ while ( csvReader<%=cid %>.readRecord() ) {
 				String keyIndex = schema.get("KEY_COLUMN_INDEX");
 				if(keyIndex.equals("")){//no key ??? 
 %>
-		<%=schemaName %>_key++;
+		key_<%=schemaName %>_<%=cid %>++;
 <%
 				}else{
 %>
-		<%=schemaName %>_key = (row<%=cid %>.length <= <%=keyIndex%>) ? "" : row<%=cid %>[<%=keyIndex %>];
+		key_<%=schemaName %>_<%=cid %> = (row<%=cid %>.length <= <%=keyIndex%>) ? "" : row<%=cid %>[<%=keyIndex %>];
 <%
 				}
 				String schemaNameChild = schema2.get("SCHEMA");
@@ -465,7 +467,7 @@ while ( csvReader<%=cid %>.readRecord() ) {
 				if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){//FIM_006
 					if(valueN + 1 == listColumns.size() && parentSchema != null){
 %>
-		<%=connection %>.<%=column.getLabel() %> = String.valueOf(<%=parentSchema %>_key);
+		<%=connection %>.<%=column.getLabel() %> = String.valueOf(key_<%=parentSchema %>_<%=cid %>);
 <%
 					}else{
 %>
@@ -475,7 +477,7 @@ while ( csvReader<%=cid %>.readRecord() ) {
 				}else{ //FIM_006
 					if(valueN + 1 == listColumns.size() && parentSchema != null){
 %>
-		temp_<%=cid %> = String.valueOf(<%=parentSchema %>_key);
+		temp_<%=cid %> = String.valueOf(key_<%=parentSchema %>_<%=cid %>);
 <%
 					}else{
 %>
@@ -517,7 +519,7 @@ while ( csvReader<%=cid %>.readRecord() ) {
 			//
 		}//FIM_004
 %>
-	}//\\//\\
+	}
 <%
 	}//FIN_002
 }
