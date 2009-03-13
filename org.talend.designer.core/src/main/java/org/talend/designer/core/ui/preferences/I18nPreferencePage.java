@@ -53,7 +53,6 @@ import org.talend.core.CorePlugin;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.prefs.ui.CorePreferencePage;
 import org.talend.core.prefs.ui.OneLineComboFieldEditor;
-import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 
 /**
@@ -80,7 +79,7 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
         super(GRID);
 
         // Set the preference store for the preference page.
-        IPreferenceStore store = DesignerPlugin.getDefault().getPreferenceStore();
+        IPreferenceStore store = CorePlugin.getDefault().getPreferenceStore();
         setPreferenceStore(store);
     }
 
@@ -233,7 +232,7 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
     public boolean performOk() {
         boolean ok = super.performOk();
         saveLanguageType();
-        DesignerPlugin.getDefault().savePluginPreferences();
+        CorePlugin.getDefault().savePluginPreferences();
         return ok;
     }
 
@@ -253,7 +252,8 @@ public class I18nPreferencePage extends FieldEditorPreferencePage implements IWo
             fin = new FileInputStream(iniFile);
             p.load(fin);
 
-            String languageType = getPreferenceStore().getString(ITalendCorePrefConstants.LANGUAGE_SELECTOR);
+            String languageType = CorePlugin.getDefault().getPluginPreferences().getString(
+                    ITalendCorePrefConstants.LANGUAGE_SELECTOR);
 
             if (languageType.equals(p.getProperty(EclipseStarter.PROP_NL))) {
                 return;
