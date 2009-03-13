@@ -9,6 +9,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.talend.xml.sax.function.inter.Function;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -102,6 +103,20 @@ public class SAXLooper {
     private void initLoopEntry() {
         Map<String, LoopEntry> entryMap = new HashMap<String, LoopEntry>();
 
+        FunctionRegister funcRegister = new FunctionRegister();// list of all the functions
+        Function function = null;
+        // function is in looppath
+        if (this.loopPath.indexOf("/*[") >= 0 && this.loopPath.indexOf(")]") >= 0) {
+            if (nodePaths.length > 0) {
+                String strTmp = loopPath.substring(loopPath.lastIndexOf("/"));
+                String strFuncName = strTmp.substring(strTmp.indexOf("*[") + 2, strTmp.indexOf("("));
+
+                if (funcRegister.isFuncRegistered(strFuncName)) {
+                    function = funcRegister.getFunction(strFuncName);
+                }
+            }
+            loopPath = loopPath.substring(0, loopPath.lastIndexOf("/"));
+        }
         // parse the node path to loopEntry
         for (String column : nodePaths) {
             String resultCol = this.loopPath;
@@ -114,7 +129,22 @@ public class SAXLooper {
                 } else if (tmp.equals(".")) {
                     tmpLoopPath = resultCol;
                 } else {
-                    resultCol += "/" + tmp;
+
+                    if (tmp.indexOf("*[") >= 0 && tmp.indexOf(")]") >= 0) {// has funcion in column
+                        resultCol = resultCol.substring(0, resultCol.lastIndexOf("/"));
+                        tmpLoopPath = resultCol;// find the function node
+
+                        // get the function name
+                        String strFuncName = tmp.substring(tmp.indexOf("*[") + 2, tmp.indexOf("("));
+
+                        if (funcRegister.isFuncRegistered(strFuncName)) {
+                            function = funcRegister.getFunction(strFuncName);
+                        }
+
+                    } else {
+                        resultCol += "/" + tmp;
+                    }
+
                 }
             }
             if (tmpLoopPath == null) {
@@ -123,7 +153,15 @@ public class SAXLooper {
             if (!entryMap.containsKey(tmpLoopPath)) {
                 entryMap.put(tmpLoopPath, new LoopEntry(tmpLoopPath));
             }
-            entryMap.get(tmpLoopPath).addPath(resultCol, column);
+
+            if (function == null) {
+                entryMap.get(tmpLoopPath).addPath(resultCol, column);
+            } else {// add the exist function to the loopentry
+                entryMap.get(tmpLoopPath).addPath(column, column);
+                entryMap.get(tmpLoopPath).addFunction(column, function);
+                function = null;
+            }
+
         }
 
         // set sub entry
@@ -140,6 +178,7 @@ public class SAXLooper {
                     } else {
                         tmpentry.setSubLoop(entryMap.get(path));
                         tmpentry = entryMap.get(path);
+
                     }
                 }
             }
@@ -159,9 +198,16 @@ public class SAXLooper {
             long startall = Runtime.getRuntime().maxMemory();
             long timeStart = System.currentTimeMillis();
 
-            String file = "./src/org/talend/xml/sax/SAXLoopTest.xml";
-            String loopPath = "/areas/*";// "/areas/area/street/home";
-            String[] pathList = new String[] { "." };// new String[] { "@number", "owner",
+            String file = "./src/org/talend/xml/sax/in.xml";
+            String loopPath = "/row/subrow/*[name()]";
+            String[] pathList = new String[] { ".", "." + "/@xsi:nil" };
+
+            // String file = "./src/org/talend/xml/sax/in1.xml";
+            // String loopPath = "/schools/school/class/student";// "/areas/area/street/home";
+            // String[] pathList = new String[] { "../../@school_name", "../@class_name", "@stu_no", "name", "name" +
+            // "/@xsi:nil",
+            // "age", "age" + "/@xsi:nil", "sex", "sex" + "/@xsi:nil", "/*[name()]" };// new String[] { "@number",
+            // "owner",
             // "house", "../../@city", "../@name",
             // "../@id",
             // "../length","../../../@provite" };

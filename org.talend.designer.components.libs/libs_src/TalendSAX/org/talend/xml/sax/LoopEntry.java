@@ -13,7 +13,11 @@
 package org.talend.xml.sax;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.talend.xml.sax.function.inter.Function;
 
 /**
  * This is the result class.
@@ -106,4 +110,41 @@ public class LoopEntry {
     public List<String[]> getRows() {
         return this.rows;
     }
+
+    private Map<String, Function> listFuncs = new HashMap<String, Function>();
+
+    private List<Map<String, String>> results = new ArrayList<Map<String, String>>();
+
+    public void addFunction(String originalPath, Function func) {
+        listFuncs.put(originalPath, func);
+    }
+
+    public Map<String, Function> getFunctions() {
+        return listFuncs;
+    }
+
+    public boolean hasFunctions() {
+        return listFuncs.size() > 0;
+    }
+
+    /**
+     * run all the exist functions in the loop
+     * 
+     * @author wliu
+     * @param args
+     */
+    public void execFunctions(List<Map<String, Object>> args) {
+        for (String funcName : listFuncs.keySet()) {
+            listFuncs.get(funcName).call(args);
+            Map<String, String> map = new HashMap<String, String>();
+            map.put("name", funcName);
+            map.put("value", listFuncs.get(funcName).getResult());
+            results.add(map);
+        }
+    }
+
+    public List<Map<String, String>> getFunctionResults() {
+        return results;
+    }
+
 }

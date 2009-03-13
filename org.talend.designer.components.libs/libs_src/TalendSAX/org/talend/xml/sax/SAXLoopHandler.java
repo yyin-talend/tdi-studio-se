@@ -13,7 +13,9 @@
 package org.talend.xml.sax;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -51,6 +53,8 @@ public class SAXLoopHandler extends DefaultHandler {
     private int indexOfColumn = 0;
 
     private LoopEntry entry;
+
+    List<Map<String, Object>> listArgs = new ArrayList<Map<String, Object>>();
 
     public SAXLoopHandler(LoopEntry entry) {
         this.entry = entry;
@@ -153,6 +157,17 @@ public class SAXLoopHandler extends DefaultHandler {
                     }
                 }
             }
+            // loop has function, then add the attribute to the args
+            if (this.entry.hasFunctions()) {
+
+                Map<String, Object> map = new HashMap<String, Object>();
+                map.put("loopPath", loopPath);
+                map.put("column", currentPath);
+                map.put("value", attributes);
+                listArgs.add(map);
+
+            }
+
         }
     }
 
@@ -179,6 +194,17 @@ public class SAXLoopHandler extends DefaultHandler {
                         currentRow[indexOfColumn] += text;
                     }
                 }
+                /**
+                 * when the loop has functions, add the value of the element to the args
+                 */
+                if (this.entry.hasFunctions()) {
+                    Map<String, Object> map = new HashMap<String, Object>();
+                    map.put("loopPath", loopPath);
+                    map.put("column", currentPath);
+                    map.put("value", text);
+                    listArgs.add(map);
+                }
+
             }
         }
     }
@@ -201,6 +227,26 @@ public class SAXLoopHandler extends DefaultHandler {
 
         if (currentPath.equals(loopPath)) {
             isLooping = false;
+
+            /**
+             * put the the result of the fuctions to the column
+             */
+            if (this.entry.hasFunctions()) {
+                entry.execFunctions(listArgs);
+
+                List<Map<String, String>> results = entry.getFunctionResults();
+                for (int i = 0; i < results.size(); i++) {
+                    Map<String, String> map = results.get(i);
+                    String strKey = map.get("name");
+                    int index = this.loopCols.indexOf(strKey);
+                    if (index >= 0 && currentRowHaveValue[index] == false) {
+                        currentRow[index] = map.get("value");
+                        currentRowHaveValue[index] = true;
+                    }
+                }
+
+            }
+
             // for (String value : currentRow) {
             // System.out.print("|" + value);
             // }
