@@ -181,11 +181,14 @@ public class ShadowProcessPreview {
         for (int i = 0; i < table.getColumnCount(); i++) {
             table.getColumn(i).pack();
         }
-
         // scroll to show the first col and first row
-        table.showItem(table.getItem(0));
-        if (table.getColumns() != null && table.getColumns().length > 0) {
-            table.showColumn(table.getColumn(0));
+
+        // see the note"17172" of the feature "6296",qli comment.
+        if (table.getItemCount() > 0) {
+            table.showItem(table.getItem(0));
+            if (table.getColumns() != null && table.getColumns().length > 0) {
+                table.showColumn(table.getColumn(0));
+            }
         }
     }
 
