@@ -69,6 +69,10 @@ final Process ps_<%=cid %> = runtime_<%=cid %>.exec(<%=command %>,env_<%=cid %>,
 <%  }else{%>
 final Process ps_<%=cid %> = runtime_<%=cid %>.exec(<%=command %>,env_<%=cid %>);
 <%  }%>
+
+globalMap.remove("<%=cid %>_OUTPUT");
+globalMap.remove("<%=cid %>_ERROROUTPUT");
+
 Thread normal_<%=cid %> = new Thread() {
 	public void run() {
 		try {
@@ -132,20 +136,20 @@ Thread error_<%=cid %> = new Thread() {
 <%
 	} else if (errorOuput.equals("RETRIEVE_OUTPUT")) {
 %>
-					if (globalMap.get("<%=cid %>_OUTPUT") != null) {
-						globalMap.put("<%=cid %>_OUTPUT", (String)globalMap.get("<%=cid %>_OUTPUT")+"\n"+line);
+					if (globalMap.get("<%=cid %>_ERROROUTPUT") != null) {
+						globalMap.put("<%=cid %>_ERROROUTPUT", (String)globalMap.get("<%=cid %>_ERROROUTPUT")+"\n"+line);
 					} else {
-						globalMap.put("<%=cid %>_OUTPUT", line);
+						globalMap.put("<%=cid %>_ERROROUTPUT", line);
 					}
 <%
-	}else if(outputAction.equals("OUTPUT_TO_CONSOLE_AND_RETRIVE_OUTPUT")){
+	}else if(errorOuput.equals("OUTPUT_TO_CONSOLE_AND_RETRIVE_OUTPUT")){
 %>
-        System.out.println(line);
+        System.err.println(line);
         
-        	if (globalMap.get("<%=cid %>_OUTPUT") != null) {
-						globalMap.put("<%=cid %>_OUTPUT", (String)globalMap.get("<%=cid %>_OUTPUT")+"\n"+line);
+        	if (globalMap.get("<%=cid %>_ERROROUTPUT") != null) {
+						globalMap.put("<%=cid %>_ERROROUTPUT", (String)globalMap.get("<%=cid %>_ERROROUTPUT")+"\n"+line);
 					} else {
-						globalMap.put("<%=cid %>_OUTPUT", line);
+						globalMap.put("<%=cid %>_ERROROUTPUT", line);
 					}
 					
     	 
