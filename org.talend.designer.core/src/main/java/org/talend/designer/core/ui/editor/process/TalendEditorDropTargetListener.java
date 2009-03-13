@@ -110,7 +110,24 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
         setTransfer(LocalSelectionTransfer.getTransfer());
     }
 
-    public boolean isEnabled(DropTargetEvent event) {
+    public boolean isEnabled(DropTargetEvent e) {
+        Object obj = getSelection().getFirstElement();
+        if (obj instanceof RepositoryNode) {
+            RepositoryNode sourceNode = (RepositoryNode) obj;
+            RepositoryNode parent = sourceNode.getParent().getParent();
+            if (parent.getLabel().startsWith("CDC")) {
+                if (sourceNode.getObject().getProperty().getItem() instanceof ConnectionItem) {
+                    ConnectionItem originalConnectionItem = (ConnectionItem) sourceNode.getObject().getProperty().getItem();
+                    if (originalConnectionItem.getConnection() instanceof DatabaseConnection) {
+
+                        CDCConnection cdcConn = ((DatabaseConnection) originalConnectionItem.getConnection()).getCdcConns();
+                        if (cdcConn != null) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
         return !this.editor.getProcess().isReadOnly();
     }
 
