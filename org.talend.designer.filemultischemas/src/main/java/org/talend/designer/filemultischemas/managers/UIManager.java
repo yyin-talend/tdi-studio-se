@@ -422,9 +422,15 @@ public class UIManager {
                     }
                 }
                 schemaTreeViewer.refresh();
-                schemaTreeViewer.getTree().getColumn(0).pack();
             }
         }
+    }
+
+    public void packSchemaTreeFirstColumn(TreeViewer schemaTreeViewer) {
+        if (schemaTreeViewer == null) {
+            return;
+        }
+        schemaTreeViewer.getTree().getColumn(0).pack();
     }
 
 }

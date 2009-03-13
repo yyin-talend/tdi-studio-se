@@ -24,9 +24,12 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITreeViewerListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
@@ -244,6 +247,7 @@ public class MultiSchemasUI {
         SchemasKeyData rootData = this.getMultiSchemaManager().retrievePropertiesFromNode();
         schemaTreeViewer.setInput(rootData);
         schemaTreeViewer.refresh();
+        getUIManager().packSchemaTreeFirstColumn(schemaTreeViewer);
     }
 
     protected MultiSchemasComponent getMultiSchemasComponent() {
@@ -835,7 +839,7 @@ public class MultiSchemasUI {
         tree.setLayoutData(new GridData(GridData.FILL_BOTH));
         tree.setHeaderVisible(true);
         tree.setLinesVisible(true);
-
+        schemaTreeViewer.setAutoExpandLevel(AbstractTreeViewer.ALL_LEVELS);
         // SchemasTreeDnD dnd = new SchemasTreeDnD(schemaTreeViewer);
         // dnd.addDragAndDrop();
 
@@ -928,18 +932,34 @@ public class MultiSchemasUI {
                 }
                 IStructuredSelection selection = (IStructuredSelection) schemaTreeViewer.getSelection();
                 Object element = selection.getFirstElement();
-                if (element != null && (element instanceof SchemasKeyData)) {
+                if (element != null && (element instanceof SchemasKeyData) && ((SchemasKeyData) element).getTagLevel() > 0) {
                     cardText.setText(((SchemasKeyData) element).getCard());
                     cardText.setEnabled(true);
                 } else {
+                    cardText.setText(""); //$NON-NLS-1$
                     cardText.setEnabled(false);
                 }
             }
         });
         schemaTreeViewer.getTree().addKeyListener(new KeyAdapter() {
 
+            @Override
+            public void keyPressed(KeyEvent e) {
+                //
+            }
+
             public void keyReleased(KeyEvent e) {
                 //
+            }
+        });
+        schemaTreeViewer.addTreeListener(new ITreeViewerListener() {
+
+            public void treeCollapsed(TreeExpansionEvent event) {
+                // getUIManager().packSchemaTreeFirstColumn(schemaTreeViewer);
+            }
+
+            public void treeExpanded(TreeExpansionEvent event) {
+                // getUIManager().packSchemaTreeFirstColumn(schemaTreeViewer);
             }
         });
     }
@@ -966,6 +986,7 @@ public class MultiSchemasUI {
             @Override
             public void widgetSelected(final SelectionEvent e) {
                 getUIManager().moveRecord(schemaTreeViewer, true);
+                getUIManager().packSchemaTreeFirstColumn(schemaTreeViewer);
             }
         });
         rightBtn.addSelectionListener(new SelectionAdapter() {
@@ -973,6 +994,7 @@ public class MultiSchemasUI {
             @Override
             public void widgetSelected(final SelectionEvent e) {
                 getUIManager().moveRecord(schemaTreeViewer, false);
+                getUIManager().packSchemaTreeFirstColumn(schemaTreeViewer);
             }
         });
     }
@@ -999,6 +1021,7 @@ public class MultiSchemasUI {
 
                             schemasModel = getMultiSchemaManager().createSchemasTree(uniqueCsvArray);
                             schemaTreeViewer.setInput(schemasModel);
+                            getUIManager().packSchemaTreeFirstColumn(schemaTreeViewer);
                             clearSchemaDetail();
                             checkDialog();
                         }

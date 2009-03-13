@@ -63,6 +63,23 @@ public class SchemaDetailsColumnsProvider extends SchemaDetailsProvider {
      * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
      */
     public Image getColumnImage(Object element, int columnIndex) {
+        if (element instanceof ColumnLineData) {
+            ColumnLineData lineData = (ColumnLineData) element;
+
+            final EPropertyName property = lineData.getProperty();
+
+            List<MultiMetadataColumn> columnsData = lineData.getKeyData().getMetadataColumnsInModel();
+            if (columnsData.size() >= columnIndex && columnIndex > 1) {
+                MultiMetadataColumn columnData = columnsData.get(columnIndex - 1);
+                if (columnData != null && property == EPropertyName.KEY) {
+                    if (columnData.isKey()) {
+                        // return ImageProvider.getImage(EImage.CHECKED_ICON);
+                    } else {
+                        // return ImageProvider.getImage(EImage.UNCHECKED_ICON);
+                    }
+                }
+            }
+        }
         return null;
     }
 

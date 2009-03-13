@@ -110,17 +110,19 @@ public class ChangeMultiSchemasCommand extends Command {
         if (keyData.getParent() != null) { // not root
             //
             Map<String, String> map = new HashMap<String, String>();
-            final String key = keyData.getUniqueRecord();
-            map.put(IMultiSchemaConstant.SCHEMA, key);
-            map.put(IMultiSchemaConstant.RECORD, TalendTextUtils.addQuotes(key));
-            map.put(IMultiSchemaConstant.PARENT_RECORD, TalendTextUtils.addQuotes(keyData.getParent().getUniqueRecord()));
+            final String uniqueRecord = keyData.getUniqueRecord();
+            final String recordType = keyData.getRecordType();
+
+            map.put(IMultiSchemaConstant.SCHEMA, uniqueRecord);
+            map.put(IMultiSchemaConstant.RECORD, TalendTextUtils.addQuotes(recordType));
+            map.put(IMultiSchemaConstant.PARENT_RECORD, TalendTextUtils.addQuotes(keyData.getParent().getRecordType()));
             map.put(IMultiSchemaConstant.CARDINALITY, keyData.getCard());
             newValueList.add(map);
             //
-            String connectionBaseName = MetadataTool.validateColumnName(MultiSchemasUtil.getConnectionBaseName(key));
+            String connectionBaseName = MetadataTool.validateColumnName(MultiSchemasUtil.getConnectionBaseName(uniqueRecord));
             String uniqueConnName = node.getProcess().generateUniqueConnectionName(connectionBaseName);
             MetadataTable table = new MetadataTable();
-            table.setLabel(key);
+            table.setLabel(uniqueRecord);
             table.setTableName(uniqueConnName);
 
             String keyIndex = ""; //$NON-NLS-1$
