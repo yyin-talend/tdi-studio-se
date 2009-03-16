@@ -839,7 +839,7 @@ public class CLASS {
             } else {
                 replaceStr = "String.valueOf(" + incomingConnName + "." + column.getName() + ")";
             }
-            return stmt + cid + ".replaceFirst(\"\\\\?\", " + replaceStr + ")";    
+            return stmt + cid + ".replaceFirst(\"\\\\?\", " + incomingConnName + "." + column.getName() +"== null ?  \"null\" :" + replaceStr + ")";    
         }
     }
     
