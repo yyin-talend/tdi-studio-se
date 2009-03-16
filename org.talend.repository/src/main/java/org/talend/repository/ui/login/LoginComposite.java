@@ -60,6 +60,7 @@ import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.utils.PasswordHelper;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.ConnectionBean;
@@ -67,6 +68,7 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.User;
 import org.talend.core.prefs.PreferenceManipulator;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -214,8 +216,17 @@ public class LoginComposite extends Composite {
         checkGrid.verticalSpan = 1;
         manageConnectionsButton.setLayoutData(checkGrid);
 
+        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+        boolean usesMailCheck = brandingService.getBrandingConfiguration().isUseMailLoginCheck();
+        Label userLabel;
+        if (usesMailCheck) {
+            toolkit.createLabel(groupConnection, Messages.getString("connections.form.field.username")); //$NON-NLS-1$
+        } else {
+            toolkit.createLabel(groupConnection, Messages.getString("connections.form.field.usernameNoMail")); //$NON-NLS-1$
+        }
         // Username:
-        toolkit.createLabel(groupConnection, Messages.getString("connections.form.field.username")); //$NON-NLS-1$
+
         user = toolkit.createText(groupConnection, "", SWT.BORDER); //$NON-NLS-1$
         GridData userGrid2 = new GridData(GridData.FILL_HORIZONTAL);
         userGrid2.horizontalSpan = 2;
@@ -881,6 +892,9 @@ public class LoginComposite extends Composite {
     private boolean validateFields() {
         String errorMsg = null;
         boolean valid = true;
+        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+        boolean usesMailCheck = brandingService.getBrandingConfiguration().isUseMailLoginCheck();
         boolean serverIsLocal = !isAuthenticationNeeded();
         if (valid && getConnection() == null) {
             valid = false;
@@ -891,7 +905,7 @@ public class LoginComposite extends Composite {
         } else if (valid && !serverIsLocal && user.getText().length() == 0) {
             valid = false;
             errorMsg = Messages.getString("LoginComposite.usernameEmpty"); //$NON-NLS-1$
-        } else if (valid && !Pattern.matches(RepositoryConstants.MAIL_PATTERN, getUser().getLogin())) {
+        } else if (valid && usesMailCheck && !Pattern.matches(RepositoryConstants.MAIL_PATTERN, getUser().getLogin())) {
             valid = false;
             errorMsg = Messages.getString("LoginComposite.usernameMail"); //$NON-NLS-1$
         }
