@@ -836,10 +836,20 @@ public class CLASS {
                 replaceStr = "\"'\" + " + incomingConnName + "." + column.getName() + " + \"'\"";
             } else if(generatedType.equals("java.util.Date")) {
                 replaceStr = "\"'\" + new java.text.SimpleDateFormat(" + column.getColumn().getPattern() + ").format(" + incomingConnName + "." + column.getName() + ") + \"'\"";
+                
             } else {
                 replaceStr = "String.valueOf(" + incomingConnName + "." + column.getName() + ")";
             }
-            return stmt + cid + ".replaceFirst(\"\\\\?\", " + incomingConnName + "." + column.getName() +"== null ?  \"null\" :" + replaceStr + ")";    
+            
+            
+            if (generatedType.equals("int") || generatedType.equals("float") || generatedType.equals("double") ||generatedType.equals("long") 
+                    || generatedType.equals("short") || generatedType.equals("boolean") || generatedType.equals("byte") || generatedType.equals("char")) {
+                return stmt + cid + ".replaceFirst(\"\\\\?\", " +  replaceStr + ")";
+            }else {
+                return stmt + cid + ".replaceFirst(\"\\\\?\", " + incomingConnName + "." + column.getName() +"== null ?  \"null\" :" + replaceStr + ")";
+            }
+            
+                
         }
     }
     
