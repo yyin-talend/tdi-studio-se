@@ -169,11 +169,11 @@ public class FilterTraceColumnAction extends SelectionAction {
 
             TableColumn tableColumn = new TableColumn(tab, SWT.NONE);
             tableColumn.setText(Messages.getString("FilterTraceColumnAction.Column")); //$NON-NLS-1$
-            tableColumn.setWidth(80);
+            tableColumn.setWidth(100);
 
-            tableColumn = new TableColumn(tab, SWT.NONE);
-            tableColumn.setText(Messages.getString("FilterTraceColumnAction.Condition")); //$NON-NLS-1$
-            tableColumn.setWidth(200);
+            // tableColumn = new TableColumn(tab, SWT.NONE);
+            // tableColumn.setText(Messages.getString("FilterTraceColumnAction.Condition")); //$NON-NLS-1$
+            // tableColumn.setWidth(200);
 
             tab.setHeaderVisible(true);
             tab.setLinesVisible(true);
@@ -184,8 +184,8 @@ public class FilterTraceColumnAction extends SelectionAction {
             GridData gridData = new GridData(GridData.FILL_BOTH);
             gridData.heightHint = 150;
             gridData.minimumHeight = 150;
-            gridData.widthHint = 280;
-            gridData.minimumWidth = 280;
+            gridData.widthHint = 180;
+            gridData.minimumWidth = 180;
             tab.setLayoutData(gridData);
 
             checkAll.addSelectionListener(new SelectionAdapter() {
