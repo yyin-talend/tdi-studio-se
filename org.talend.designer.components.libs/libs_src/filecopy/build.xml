@@ -7,7 +7,7 @@
 
 	<!-- modification 1: config -->
 	<property name="jar.name" value="filecopy.jar" />
-	<property name="component.home" value="tFileCopy" />
+	<property name="component.name" value="tFileCopy" />
 	<property name="author.name" value="wyang" />
 	
 	<!-- modification 2: compile classpath -->
@@ -33,7 +33,7 @@
 	<target name="process" description="prepare a temp dir">
 		<antcall target="prepare" />
 		<antcall target="compile" />
-				
+		<antcall target="clean" />			
 	</target>
 
 	<target name="prepare" description="prepare a temp dir">
