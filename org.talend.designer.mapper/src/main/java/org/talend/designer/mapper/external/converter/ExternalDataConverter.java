@@ -39,6 +39,7 @@ import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
 import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
 import org.talend.designer.mapper.model.tableentry.GlobalMapEntry;
 import org.talend.designer.mapper.model.tableentry.VarTableEntry;
+import org.talend.designer.mapper.ui.visualmap.table.DataMapTableView;
 import org.talend.designer.mapper.ui.visualmap.table.InputDataMapTableView;
 
 /**
@@ -285,7 +286,7 @@ public class ExternalDataConverter {
             lookupMode = table.getLookupMode().toString();
         }
         externalMapperTable.setLookupMode(lookupMode);
-        
+
         ArrayList<ExternalMapperTableEntry> globalMapEntries = new ArrayList<ExternalMapperTableEntry>();
         for (GlobalMapEntry constraintTableEntry : table.getGlobalMapEntries()) {
             ExternalMapperTableEntry externalMapperTableEntry = new ExternalMapperTableEntry();
@@ -294,7 +295,7 @@ public class ExternalDataConverter {
             globalMapEntries.add(externalMapperTableEntry);
         }
         externalMapperTable.setGlobalMapKeysValues(globalMapEntries);
-        
+
         fillExternalTableWithCommonsData(table, externalMapperTable);
         inputTables.add(externalMapperTable);
     }
@@ -323,9 +324,8 @@ public class ExternalDataConverter {
         externalMapperTable.setRejectInnerJoin(table.isRejectInnerJoin());
         externalMapperTable.setActivateExpressionFilter(table.isActivateExpressionFilter());
         externalMapperTable.setExpressionFilter(table.getExpressionFilter() != null
-                && table.getExpressionFilter().getExpression() != null
-                && table.getExpressionFilter().getExpression().equals(InputDataMapTableView.DEFAULT_EXPRESSION_FILTER) ? null
-                : table.getExpressionFilter().getExpression());
+                && DataMapTableView.isFilterEqualsToDefault(table.getExpressionFilter().getExpression()) ? null : table
+                .getExpressionFilter().getExpression());
         if (mapperManager.isAdvancedMap()) {
             externalMapperTable.setConstraintTableEntries(null);
         } else {

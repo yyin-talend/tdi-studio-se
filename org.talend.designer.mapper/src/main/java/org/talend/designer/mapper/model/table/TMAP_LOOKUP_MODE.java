@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.mapper.model.table;
 
+import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.ui.image.ImageInfo;
 
 /**
@@ -22,16 +23,18 @@ import org.talend.designer.mapper.ui.image.ImageInfo;
  * 
  */
 public enum TMAP_LOOKUP_MODE implements IUILookupMode {
-    LOAD_ONCE(LOOKUP_MODE.LOAD_ONCE, "Load once", //$NON-NLS-1$
-              "Load once the lookup at subjob start"//$NON-NLS-1$
-              ,
-              ImageInfo.ARROW_RIGHT),
-    LOAD_ONCE_AND_EDIT(LOOKUP_MODE.LOAD_ONCE_AND_EDIT, "Load once and update", //$NON-NLS-1$
-                       "Load once at subjob start and add/update the lookup during the process", ImageInfo.ARROW_RIGHT_EDIT), //$NON-NLS-1$
-    RELOAD(LOOKUP_MODE.RELOAD, "Reload at each row", //$NON-NLS-1$ 
-           "Reload the lookup at each row", ImageInfo.REFRESH), //$NON-NLS-1$ 
-    CACHE_OR_RELOAD(LOOKUP_MODE.CACHE_OR_RELOAD, "Reload at each row (cache)",//$NON-NLS-1$
-                    "At each row, get result from the cache or reload the lookup", ImageInfo.REFRESH), //$NON-NLS-1$
+    LOAD_ONCE(LOOKUP_MODE.LOAD_ONCE, "TMAP_LOOKUP_MODE.LOAD_ONCE.label", //$NON-NLS-1$
+              "TMAP_LOOKUP_MODE.LOAD_ONCE.tooltip"//$NON-NLS-1$
+              , ImageInfo.ARROW_RIGHT),
+              
+    LOAD_ONCE_AND_UPDATE(LOOKUP_MODE.LOAD_ONCE_AND_UPDATE, "TMAP_LOOKUP_MODE.LOAD_ONCE_AND_UPDATE.label", //$NON-NLS-1$
+                       "TMAP_LOOKUP_MODE.LOAD_ONCE_AND_UPDATE.tooltip", ImageInfo.ARROW_RIGHT_EDIT), //$NON-NLS-1$
+                       
+    RELOAD(LOOKUP_MODE.RELOAD, "TMAP_LOOKUP_MODE.RELOAD.label", //$NON-NLS-1$ 
+           "TMAP_LOOKUP_MODE.RELOAD.tooltip", ImageInfo.REFRESH), //$NON-NLS-1$
+           
+    CACHE_OR_RELOAD(LOOKUP_MODE.CACHE_OR_RELOAD, "TMAP_LOOKUP_MODE.CACHE_OR_RELOAD.label",//$NON-NLS-1$
+                    "TMAP_LOOKUP_MODE.CACHE_OR_RELOAD.tooltip", ImageInfo.REFRESH), //$NON-NLS-1$
     ;
 
     private String label;
@@ -57,12 +60,12 @@ public enum TMAP_LOOKUP_MODE implements IUILookupMode {
      * 
      * DOC amaumont LOOKUP_TYPE constructor comment.
      * 
-     * @param label
+     * @param labelKey
      */
-    TMAP_LOOKUP_MODE(LOOKUP_MODE multipleMatchingMode, String label, String tooltipText, ImageInfo imageInfo) {
-        this.label = label;
+    TMAP_LOOKUP_MODE(LOOKUP_MODE multipleMatchingMode, String labelKey, String tooltipKey, ImageInfo imageInfo) {
         this.multipleMatchingMode = multipleMatchingMode;
-        this.tooltipText = tooltipText;
+        this.label = Messages.getString(labelKey);
+        this.tooltipText = Messages.getString(tooltipKey);
         this.imageInfo = imageInfo;
         this.menuType = MENU_TYPE.ITEM;
     }

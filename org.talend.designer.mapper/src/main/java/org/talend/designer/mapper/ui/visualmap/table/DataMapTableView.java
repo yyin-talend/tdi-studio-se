@@ -237,8 +237,12 @@ public abstract class DataMapTableView extends Composite {
 
     private UnnotifiableColorStyledText expressionFilterText;
 
-    public static final String DEFAULT_EXPRESSION_FILTER = "<Type your filter expression>"; //$NON-NLS-1$
+    public static final String DEFAULT_EXPRESSION_FILTER = "<Type your filter expression>"; //$NON-NLS-1$ // DO NOT TRANSLATE IT !
 
+    public static final String DEFAULT_POST_MATCHING_EXPRESSION_FILTER = Messages.getString("DataMapTableView.defaultPostMatchingFilterExpression"); //$NON-NLS-1$
+    
+    public static final String DEFAULT_OUT_EXPRESSION_FILTER = Messages.getString("DataMapTableView.defaultOutputFilterExpression"); //$NON-NLS-1$
+    
     private static final String EXPRESSION_FILTER_ENTRY = "EXPRESSION_FILTER_ENTRY"; //$NON-NLS-1$
 
     private String previousTextForExpressionFilter;
@@ -389,7 +393,7 @@ public abstract class DataMapTableView extends Composite {
         centerComposite.setLayout(centerLayout);
 
         if (mapperManager.isAdvancedMap() && this instanceof OutputDataMapTableView) {
-            createExpressionFilter();
+            createExpressionFilter(DEFAULT_OUT_EXPRESSION_FILTER);
             initExtraTable();
         } else {
             initExtraTable();
@@ -2008,8 +2012,9 @@ public abstract class DataMapTableView extends Composite {
 
     /**
      * DOC amaumont Comment method "createExpressionFilter".
+     * @param defaultValue TODO
      */
-    protected void createExpressionFilter() {
+    protected void createExpressionFilter(final String defaultText) {
         if (mapperManager.isAdvancedMap() && getDataMapTable() instanceof AbstractInOutTable) {
 
             final AbstractInOutTable table = (AbstractInOutTable) getDataMapTable();
@@ -2028,7 +2033,6 @@ public abstract class DataMapTableView extends Composite {
             gridData.widthHint = 50;
             expressionFilterText.setLayoutData(gridData);
 
-            final String defaultText = DEFAULT_EXPRESSION_FILTER;
             String expressionFilter = table.getExpressionFilter().getExpression();
             if (expressionFilter != null && !"".equals(expressionFilter.trim())) { //$NON-NLS-1$
                 expressionFilterText.setText(expressionFilter);
@@ -2274,7 +2278,7 @@ public abstract class DataMapTableView extends Composite {
     public void checkProblemsForExpressionFilter(boolean forceRecompile, boolean colorAllowed) {
         if (this.getDataMapTable() instanceof AbstractInOutTable) {
             AbstractInOutTable table = (AbstractInOutTable) this.getDataMapTable();
-            if (table.isActivateExpressionFilter() && !DEFAULT_EXPRESSION_FILTER.equals(expressionFilterText.getText())) {
+            if (table.isActivateExpressionFilter() && !isFilterEqualsToDefault(expressionFilterText.getText())) {
                 String nextText = expressionFilterText.getText();
                 if (nextText != null && previousTextForExpressionFilter != null
                         && !nextText.trim().equals(previousTextForExpressionFilter.trim()) || forceRecompile) {
@@ -2419,7 +2423,7 @@ public abstract class DataMapTableView extends Composite {
      */
     private void setExpressionFilterFromStyledText(final AbstractInOutTable table, Control text) {
         String currentContent = ControlUtils.getText(text);
-        if (DEFAULT_EXPRESSION_FILTER.equals(currentContent)) {
+        if (isFilterEqualsToDefault(currentContent)) {
             table.getExpressionFilter().setExpression(null);
         } else {
             table.getExpressionFilter().setExpression(currentContent);
@@ -2526,7 +2530,7 @@ public abstract class DataMapTableView extends Composite {
          */
         public void modifyText(ExtendedModifyEvent event) {
             // if (modifyListenerAllowed) {
-            if (DEFAULT_EXPRESSION_FILTER.equals(ControlUtils.getText(textWidget))) {
+            if (isFilterEqualsToDefault(ControlUtils.getText(textWidget))) {
                 textTarget.setTextWithoutNotifyListeners(""); //$NON-NLS-1$
             } else {
                 textTarget.setTextWithoutNotifyListeners(ControlUtils.getText(textWidget));
@@ -2537,6 +2541,13 @@ public abstract class DataMapTableView extends Composite {
 
     }
 
+    public static boolean isFilterEqualsToDefault(String value) {
+        if(DEFAULT_POST_MATCHING_EXPRESSION_FILTER.equals(value) || DEFAULT_OUT_EXPRESSION_FILTER.equals(value) || DEFAULT_EXPRESSION_FILTER.equals(value)) {
+            return true;
+        }
+        return false;
+    }
+    
     /**
      * 
      * DOC amaumont InputDataMapTableView class global comment. Detailled comment <br/>

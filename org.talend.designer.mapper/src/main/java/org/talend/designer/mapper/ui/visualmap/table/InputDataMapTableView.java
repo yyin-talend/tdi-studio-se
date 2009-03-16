@@ -123,7 +123,7 @@ public class InputDataMapTableView extends DataMapTableView {
     protected void createContent() {
         createTableForColumns();
 
-        createExpressionFilter();
+        createExpressionFilter(DEFAULT_POST_MATCHING_EXPRESSION_FILTER);
 
     }
 
@@ -818,7 +818,7 @@ public class InputDataMapTableView extends DataMapTableView {
             getInputTable().setPersistent(previousValidPersistentMode);
             switch (lookupMode) {
             case LOAD_ONCE:
-            case LOAD_ONCE_AND_EDIT:
+            case LOAD_ONCE_AND_UPDATE:
             case RELOAD:
                 activatePersistentCheck.setEnabled(true);
                 getInputTable().setPersistent(previousValidPersistentMode);
@@ -1031,7 +1031,7 @@ public class InputDataMapTableView extends DataMapTableView {
         column = new TableViewerCreatorColumn(tableViewerCreatorForGlobalMap);
         column.setTitle(""); //$NON-NLS-1$
         column.setDefaultDisplayedValue(""); //$NON-NLS-1$
-        column.setToolTipHeader("Add new globalMap variable"); //$NON-NLS-1$
+        column.setToolTipHeader(Messages.getString("InputDataMapTableView.addNewGlobalMapVar.tooltip")); //$NON-NLS-1$
         // column.setWeight(10);
         column.setWidth(25);
         column.setMoveable(false);

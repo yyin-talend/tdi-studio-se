@@ -21,7 +21,7 @@ import org.talend.core.model.process.ILookupMode;
  */
 public enum LOOKUP_MODE implements ILookupMode {
     LOAD_ONCE,
-    LOAD_ONCE_AND_EDIT,
+    LOAD_ONCE_AND_UPDATE,
     RELOAD,
     CACHE_OR_RELOAD,
     ;
