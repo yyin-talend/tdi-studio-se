@@ -1679,7 +1679,9 @@ public class EmfComponent implements IComponent {
     }
 
     public String getTranslatedName() {
-        return getTranslatedValue(PROP_NAME);
+        // temporary fix, don't use the translated name.
+        return file.getParentFile().getName();
+        // return getTranslatedValue(PROP_NAME);
     }
 
     public String getLongName() {
