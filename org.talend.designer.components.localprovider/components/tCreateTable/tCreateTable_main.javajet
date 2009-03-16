@@ -91,7 +91,11 @@ abstract class  Manager {
             } else {
                 dataType = metadataColumn.getType();
             }
-            createTableSQL.append(dataType);
+            if ("mysql_id".equalsIgnoreCase(getDBMSId()) && dataType.endsWith("UNSIGNED") ) {
+            	createTableSQL.append(dataType.substring(0,dataType.indexOf("UNSIGNED"))) ; 
+            }else {
+            	createTableSQL.append(dataType);
+            }            
             Integer length = metadataColumn.getLength() == null ? 0 : metadataColumn.getLength();
             Integer precision = metadataColumn.getPrecision() == null ? 0 : metadataColumn.getPrecision();
             boolean lengthIgnored = mappingType.isLengthIgnored(getDBMSId(), dataType);
@@ -135,6 +139,9 @@ abstract class  Manager {
                     createTableSQL.append(comma + precision);
                 }
                 createTableSQL.append(suffix);
+                if("mysql_id".equalsIgnoreCase(getDBMSId()) && dataType.endsWith("UNSIGNED")) {
+                    createTableSQL.append("UNSIGNED");
+                }                
             }
             createTableSQL.append(getDefaultValueSQL(metadataColumn.getDefault()));            
             createTableSQL.append(setNullable(metadataColumn.isNullable()));            

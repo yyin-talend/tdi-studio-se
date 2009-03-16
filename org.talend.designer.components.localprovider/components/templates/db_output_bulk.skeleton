@@ -292,7 +292,11 @@ public class CLASS {
                         } else {
                             dataType = column.getColumn().getType();
                         }
-                        createSQL.append(dataType);
+                        if ("mysql_id".equalsIgnoreCase(getDBMSId()) && dataType.endsWith("UNSIGNED")) {                            
+                            createSQL.append(dataType.substring(0,dataType.indexOf("UNSIGNED"))) ;                            
+                        }else {                            
+                            createSQL.append(dataType);
+                        }
                         Integer length = column.getColumn().getLength() == null ? 0 : column.getColumn().getLength();
                         Integer precision = column.getColumn().getPrecision() == null ? 0 : column.getColumn().getPrecision();
                         boolean lengthIgnored = mappingType.isLengthIgnored(getDBMSId(), dataType);
@@ -336,6 +340,9 @@ public class CLASS {
                                 createSQL.append(comma + precision);
                             }
                             createSQL.append(suffix);
+                            if("mysql_id".equalsIgnoreCase(getDBMSId()) && dataType.endsWith("UNSIGNED")) {
+                                createSQL.append("UNSIGNED");
+                            }
                         }
                         if(column.isAutoIncrement()) {
                             createSQL.append(getAutoIncrement(column.getStartValue(), column.getStep()));
