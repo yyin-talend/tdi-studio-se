@@ -133,7 +133,7 @@ public class ConnectionTraceFigure extends Figure {
             outlineFigure.add(titleFigure);
 
             ImageFigure figure = new ImageFigure(getTraceConnectionImage(flag));
-            outlineFigure.add(figure);
+            // outlineFigure.add(figure);
 
             outlineFigure.add(titleFigureSe);
 
@@ -285,22 +285,24 @@ public class ConnectionTraceFigure extends Figure {
             setVisible(true);
 
         } else {
+            setPreferredSize(0, 0);
+            setVisible(false);
 
-            if (traceFlag) {
-                Image enableImage = getTraceConnectionImage(flag);
-
-                setPreferredSize(enableImage.getImageData().width, enableImage.getImageData().height);
-
-                this.getChildren().clear();
-                ImageFigure figure = new ImageFigure(enableImage);
-                add(figure);
-
-                setVisible(true);
-            } else {
-                setPreferredSize(0, 0);
-                setVisible(false);
-            }
-            tooltip = null;
+            // if (traceFlag) {
+            // Image enableImage = getTraceConnectionImage(flag);
+            //
+            // setPreferredSize(enableImage.getImageData().width, enableImage.getImageData().height);
+            //
+            // this.getChildren().clear();
+            // ImageFigure figure = new ImageFigure(enableImage);
+            // add(figure);
+            //
+            // setVisible(true);
+            // } else {
+            // setPreferredSize(0, 0);
+            // setVisible(false);
+            // }
+            // tooltip = null;
 
         }
         if (tooltip != null) {

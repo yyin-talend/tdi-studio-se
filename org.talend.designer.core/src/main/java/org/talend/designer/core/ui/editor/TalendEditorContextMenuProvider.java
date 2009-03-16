@@ -39,7 +39,6 @@ import org.talend.designer.core.ui.action.BringToFrontAction;
 import org.talend.designer.core.ui.action.ConnectionCreateAction;
 import org.talend.designer.core.ui.action.ConnectionSetAsMainRef;
 import org.talend.designer.core.ui.action.DisplaySubjobAction;
-import org.talend.designer.core.ui.action.FilterTraceColumnAction;
 import org.talend.designer.core.ui.action.GEFCopyAction;
 import org.talend.designer.core.ui.action.GEFPasteAction;
 import org.talend.designer.core.ui.action.ModifyMergeOrderAction;
@@ -50,8 +49,6 @@ import org.talend.designer.core.ui.action.SearchComponentAction;
 import org.talend.designer.core.ui.action.SendBackwardAction;
 import org.talend.designer.core.ui.action.SendToBackAction;
 import org.talend.designer.core.ui.action.ShowComponentSettingViewerAction;
-import org.talend.designer.core.ui.action.TraceDisableAction;
-import org.talend.designer.core.ui.action.TraceEnableAction;
 import org.talend.designer.core.ui.hierarchy.OpenJobHierarchyAction;
 
 /**
@@ -305,23 +302,23 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
                 menu.appendToGroup(GROUP_OTHER, action);
             }
 
-            action = new TraceEnableAction(part);
-            ((SelectionAction) action).update();
-            if (action.isEnabled()) {
-                menu.appendToGroup(GROUP_OTHER, action);
-            }
-
-            action = new TraceDisableAction(part);
-            ((SelectionAction) action).update();
-            if (action.isEnabled()) {
-                menu.appendToGroup(GROUP_OTHER, action);
-            }
-
-            action = new FilterTraceColumnAction(part);
-            ((SelectionAction) action).update();
-            if (action.isEnabled()) {
-                menu.appendToGroup(GROUP_OTHER, action);
-            }
+            // action = new TraceEnableAction(part);
+            // ((SelectionAction) action).update();
+            // if (action.isEnabled()) {
+            // menu.appendToGroup(GROUP_OTHER, action);
+            // }
+            //
+            // action = new TraceDisableAction(part);
+            // ((SelectionAction) action).update();
+            // if (action.isEnabled()) {
+            // menu.appendToGroup(GROUP_OTHER, action);
+            // }
+            //
+            // action = new FilterTraceColumnAction(part);
+            // ((SelectionAction) action).update();
+            // if (action.isEnabled()) {
+            // menu.appendToGroup(GROUP_OTHER, action);
+            // }
 
             action = new OpenJobHierarchyAction(part);
             ((SelectionAction) action).update();
