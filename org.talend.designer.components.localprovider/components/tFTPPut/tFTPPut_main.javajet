@@ -51,7 +51,7 @@
 	                }
 	            });
         	} 
-	    	if(listings<%=cid %> != null){
+	    	if(listings<%=cid %> != null && listings<%=cid %>.length > 0){
 	    		for (int m<%=cid %> = 0; m<%=cid %> < listings<%=cid %>.length; m<%=cid %>++){ 
 	     			if (listings<%=cid %>[m<%=cid %>].getName().matches(mask<%=cid %>)){     
 	      				
@@ -89,6 +89,8 @@
 						nb_file_<%=cid%>++;
 	      			}
 	    		}
+	    	}else{
+	    		System.err.println("No match file exist!");
 	    	}
 	    	
 	    	//do rename
@@ -149,7 +151,7 @@
 				}
 			}
 			
-	    	if(listings<%=cid %> != null){
+	    	if(listings<%=cid %> != null && listings<%=cid %>.length > 0){
 	    		for (int m<%=cid %> = 0; m<%=cid %> < listings<%=cid %>.length; m<%=cid %>++){ 
 		     		try{
 		      			if (listings<%=cid %>[m<%=cid %>].getName().matches(mask<%=cid %>)){   
@@ -224,7 +226,9 @@
 	  					throw e;
 		      		}
 	    		}
-	    	}   
+	    	}else{
+	    		System.err.println("No match file exist!");
+	    	}
 	    	
 	    	//do rename
 	    	if(map<%=cid %>.get(key<%=cid %>) != ""){
