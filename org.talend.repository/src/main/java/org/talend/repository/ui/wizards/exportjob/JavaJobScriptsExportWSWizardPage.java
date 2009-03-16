@@ -20,6 +20,7 @@ import java.util.Map;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -120,10 +121,10 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
         initializeDialogUnits(parent);
         GridLayout layout = new GridLayout();
-        layout.verticalSpacing = 0;
-        layout.marginHeight = 0;
-        layout.marginBottom = 0;
-        pageComposite = new Composite(parent, SWT.NULL);
+
+        SashForm sash = createExportTree(parent);
+
+        pageComposite = new Group(sash, 0);
         pageComposite.setLayout(layout);
         pageComposite.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL | GridData.HORIZONTAL_ALIGN_FILL));
         pageComposite.setFont(parent.getFont());
@@ -140,7 +141,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         destinationNameFieldInnerComposite.setLayout(layout);
 
         createDestinationGroup(destinationNameFieldInnerComposite);
-        createExportTree(pageComposite);
+        // createExportTree(pageComposite);
         if (!isMultiNodes()) {
             createJobVersionGroup(pageComposite);
         }
@@ -155,7 +156,8 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         setPageComplete(determinePageCompletion());
         setErrorMessage(null); // should not initially have error message
 
-        setControl(pageComposite);
+        setControl(sash);
+        sash.setWeights(new int[] { 0, 1, 23 });
         giveFocusToDestination();
 
     }

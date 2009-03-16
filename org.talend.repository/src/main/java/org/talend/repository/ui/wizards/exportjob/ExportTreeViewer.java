@@ -25,8 +25,11 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -59,8 +62,60 @@ public class ExportTreeViewer {
 
     private IStructuredSelection selection;
 
+    private SashForm sash;
+
+    private Button moveButton;
+
     public ExportTreeViewer(IStructuredSelection selection) {
         this.selection = selection;
+    }
+
+    public SashForm createContents(Composite parent) {
+        // Splitter
+        final GridData data = new GridData();
+        data.heightHint = 600;
+        data.widthHint = 600;
+        sash = new SashForm(parent, SWT.HORIZONTAL | SWT.SMOOTH);
+        sash.setLayoutData(data);
+
+        GridLayout layout = new GridLayout();
+        sash.setLayout(layout);
+        // create tree
+        createItemList(sash);
+        // create button
+        Composite buttonComposite = new Composite(sash, SWT.ERROR);
+        buttonComposite.setLayout(new GridLayout());
+
+        moveButton = new Button(buttonComposite, SWT.PUSH);
+        moveButton.setText(">>"); //$NON-NLS-1$
+        moveButton.setToolTipText("Show job tree"); //$NON-NLS-1$
+
+        final GridData layoutData = new GridData();
+        layoutData.verticalAlignment = GridData.CENTER;
+        layoutData.horizontalAlignment = GridData.CENTER;
+        layoutData.grabExcessHorizontalSpace = true;
+        layoutData.grabExcessVerticalSpace = true;
+        layoutData.widthHint = 30;
+        moveButton.setLayoutData(layoutData);
+
+        // add listner
+        moveButton.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(final SelectionEvent e) {
+                if (moveButton.getText().equals("<<")) { //$NON-NLS-1$
+                    sash.setWeights(new int[] { 0, 1, 23 });
+                    moveButton.setText(">>"); //$NON-NLS-1$
+                    moveButton.setToolTipText("Show job tree"); //$NON-NLS-1$
+                } else if (moveButton.getText().equals(">>")) { //$NON-NLS-1$
+                    sash.setWeights(new int[] { 10, 1, 15 });
+                    moveButton.setText("<<"); //$NON-NLS-1$
+                    moveButton.setToolTipText("Hide job tree");//$NON-NLS-1$
+                }
+            }
+        });
+
+        return sash;
     }
 
     /**

@@ -33,6 +33,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -292,17 +293,18 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     public void createControl(Composite parent) {
 
         initializeDialogUnits(parent);
+        SashForm sash = createExportTree(parent);
+
         GridLayout layout = new GridLayout();
         layout.verticalSpacing = 0;
-        layout.marginHeight = 0;
+        layout.marginHeight = 5;
         layout.marginBottom = 0;
-        Composite composite = new Composite(parent, SWT.NULL);
+        Composite composite = new Composite(sash, SWT.BORDER);
         composite.setLayout(layout);
         composite.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL | GridData.HORIZONTAL_ALIGN_FILL));
         composite.setFont(parent.getFont());
 
         createDestinationGroup(composite);
-        createExportTree(composite);
         if (!isMultiNodes) {
             createJobVersionGroup(composite);
         }
@@ -317,14 +319,15 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         setPageComplete(determinePageCompletion());
         setErrorMessage(null); // should not initially have error message
 
-        setControl(composite);
+        setControl(sash);
+        sash.setWeights(new int[] { 0, 2, 23 });
         giveFocusToDestination();
 
     }
 
-    protected void createExportTree(Composite parent) {
+    protected SashForm createExportTree(Composite parent) {
         treeViewer = new ExportTreeViewer(selection);
-        treeViewer.createItemList(parent);
+        return treeViewer.createContents(parent);
     }
 
     /**
