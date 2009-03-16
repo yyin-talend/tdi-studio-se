@@ -24,6 +24,8 @@ String xmlFile = ElementParameterParser.getValue(node, "__XML_FILE__");
 String xslFile = ElementParameterParser.getValue(node, "__XSLT_FILE__");
 String outputFile = ElementParameterParser.getValue(node, "__OUTPUT_FILE__");
 %>
+	
+	System.setProperty("javax.xml.transform.TransformerFactory", "net.sf.saxon.TransformerFactoryImpl");
 
 	java.io.File xsltFile<%=cid%> = new java.io.File(<%=xslFile%>);
 	javax.xml.transform.stream.StreamSource styleSource<%=cid%> = new javax.xml.transform.stream.StreamSource(xsltFile<%=cid%>);
