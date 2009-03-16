@@ -43,6 +43,7 @@ import org.eclipse.ui.dialogs.ListDialog;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IEbcdicConstant;
@@ -65,6 +66,7 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.RepositoryObject;
+import org.talend.core.ui.ICDCProviderService;
 import org.talend.core.ui.metadata.command.RepositoryChangeMetadataForEBCDICCommand;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
@@ -111,22 +113,17 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
     }
 
     public boolean isEnabled(DropTargetEvent e) {
-        Object obj = getSelection().getFirstElement();
-        if (obj instanceof RepositoryNode) {
-            RepositoryNode sourceNode = (RepositoryNode) obj;
-            RepositoryNode parent = sourceNode.getParent().getParent();
-            if (parent.getLabel().startsWith("CDC")) {
-                if (sourceNode.getObject().getProperty().getItem() instanceof ConnectionItem) {
-                    ConnectionItem originalConnectionItem = (ConnectionItem) sourceNode.getObject().getProperty().getItem();
-                    if (originalConnectionItem.getConnection() instanceof DatabaseConnection) {
-
-                        CDCConnection cdcConn = ((DatabaseConnection) originalConnectionItem.getConnection()).getCdcConns();
-                        if (cdcConn != null) {
-                            return false;
-                        }
-                    }
+        if (PluginChecker.isCDCPluginLoaded()) {
+            ICDCProviderService service = (ICDCProviderService) GlobalServiceRegister.getDefault().getService(
+                    ICDCProviderService.class);
+            Object obj = getSelection().getFirstElement();
+            if (obj instanceof RepositoryNode) {
+                RepositoryNode sourceNode = (RepositoryNode) obj;
+                if (service != null && (service.isSubscriberTableNode(sourceNode) || service.isSystemSubscriberTable(sourceNode))) {
+                    return false;
                 }
             }
+
         }
         return !this.editor.getProcess().isReadOnly();
     }
