@@ -77,9 +77,6 @@ $current_key_<%=cid%> = join(
 
 my @output_<%=cid%> = ();
 
-printf("previous key : %s\n", $previous_key_<%=cid%>);
-printf("current key  : %s\n", $current_key_<%=cid%>);
-
 if (defined $previous_key_<%=cid%>
     and $current_key_<%=cid%> ne $previous_key_<%=cid%>) {
 
