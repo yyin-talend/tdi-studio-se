@@ -586,6 +586,7 @@ Thread error_<%=cid %> = new Thread() {
 		   String line = "";
 		   try {
 			   while((line = reader.readLine()) != null) {
+			   	  globalMap.put("<%=cid%>_SQLLOAD_ERROR", "true");	
 			       <%
 				   if (outputAction.equals("OUTPUT_TO_CONSOLE")) {
 				       %>
@@ -613,9 +614,14 @@ process_<%=cid %>.waitFor();
 
 int exitCode_<%=cid%> = process_<%=cid %>.exitValue();
 
+
 normal_<%=cid %>.interrupt();
 
 error_<%=cid %>.interrupt();
+
+if ("true".equals((String)globalMap.get("<%=cid%>_SQLLOAD_ERROR"))) {
+	throw new TalendException(new Exception() , "<%=cid%>" , globalMap);
+} 
 	
 java.io.BufferedReader lr_<%=cid %> = new java.io.BufferedReader(new java.io.FileReader(logf_<%=cid %>));
 int nb_line_data_<%=cid %> = 0;
