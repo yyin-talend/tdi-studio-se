@@ -713,14 +713,13 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                     public void run() {
                         if (elem != null) {
                             addComponents(forceRedraw);
+                            elem.setPropertyValue(updataComponentParamName, new Boolean(false));
+                            forceRedraw = false;
                         }
                     }
                 });
-
-                elem.setPropertyValue(updataComponentParamName, new Boolean(false));
             }
         }
-        forceRedraw = false;
 
         for (int i = 0; i < listParam.size(); i++) {
             if (listParam.get(i).getCategory() == section) {
@@ -762,6 +761,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
             });
 
         }
+
         checkErrorsWhenViewRefreshed = false;
         //        long time = TimeMeasure.timeSinceBegin("DC:refresh:" + getCurrentComponent()); //$NON-NLS-1$
         //        TimeMeasure.end("DC:refresh:" + getCurrentComponent()); //$NON-NLS-1$
