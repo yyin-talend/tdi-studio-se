@@ -53,6 +53,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FormAttachment;
@@ -191,6 +192,19 @@ public class ProcessComposite extends Composite {
     }
 
     /**
+     * DOC qli Comment method "initGraphicComponents".
+     * 
+     * @param text
+     * 
+     */
+    private Point computeSize(String text) {
+        GC gc = new GC(itemDropDown.getDisplay());
+        final Point p = gc.textExtent(text);
+        gc.dispose();
+        return p;
+    }
+
+    /**
      * DOC amaumont Comment method "initGraphicComponents".
      * 
      * @param parent
@@ -292,7 +306,7 @@ public class ProcessComposite extends Composite {
                 } else {
                     ToolItem item = (ToolItem) event.widget;
                     errorMessMap.clear();
-                    if (item.getText().equals(" Debug")) {//$NON-NLS-1$
+                    if (item.equals(debugMenuItem)) {
                         debug();
                     } else
                         execButtonPressed();
@@ -336,8 +350,11 @@ public class ProcessComposite extends Composite {
         });
         toolBar.setEnabled(false);
         FormData formData = new FormData();
+        // see the feature 6366,qli comment.
+        // make a judge when the text change in diffrent languages.
+        Point size = computeSize(itemDropDown.getText());
         formData.left = new FormAttachment(0);
-        formData.right = new FormAttachment(0, BUTTON_SIZE);
+        formData.right = new FormAttachment(0, size.x + 50);
         toolBar.setLayoutData(formData);
 
         killBtn = new Button(execHeader, SWT.PUSH);
@@ -349,7 +366,7 @@ public class ProcessComposite extends Composite {
         formData = new FormData();
         formData.top = new FormAttachment(toolBar, 0, SWT.TOP);
         formData.left = new FormAttachment(toolBar, 0, SWT.RIGHT);
-        formData.right = new FormAttachment(toolBar, BUTTON_SIZE, SWT.RIGHT);
+        formData.right = new FormAttachment(toolBar, itemDropDown.getWidth(), SWT.RIGHT);
         formData.height = 30;
         killBtn.setLayoutData(formData);
 
