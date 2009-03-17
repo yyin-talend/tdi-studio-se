@@ -10,7 +10,125 @@ imports="
     java.util.Map
 "
 %>
+class ReplaceUtil {
 
+    public String[] split(String src, String separtor) {
+        java.util.List<String> list = new java.util.ArrayList<String>();
+        int beginIndex = 0, endIndex = 0;
+        while (endIndex != -1) {
+            endIndex = src.indexOf(separtor, beginIndex);
+            if (endIndex != -1) {
+                list.add(src.substring(beginIndex, endIndex));
+            } else {
+                list.add(src.substring(src.lastIndexOf(separtor) + separtor.length(), src.length()));
+            }
+            beginIndex = endIndex + separtor.length();
+        }
+        String[] strs = new String[list.size()];
+        java.util.Iterator<String> it = list.iterator();
+        int i = 0;
+        while (it.hasNext()) {
+            strs[i] = it.next();
+            i++;
+        }
+        return strs;
+    }
+
+    public String replaceAll(String src, String target, String replacement, boolean caseSensitive, boolean wholeWord) {
+        if (caseSensitive) {
+            if (wholeWord) {
+                String str = src.replace(target, target);
+                String[] srcs = this.split(src, target);
+                int fromIndex = 0, beginIndex = 0, endIndex = 0;
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < srcs.length; i++) {
+                    endIndex = src.indexOf(target, fromIndex);
+                    if (endIndex != -1) {
+                        sb.append(src.substring(beginIndex, endIndex));
+                        beginIndex = endIndex + target.length();
+                        fromIndex = beginIndex;
+                        if (endIndex == 0) {
+                            if (src.charAt(endIndex + target.length()) == ' ') {
+                                sb.append(replacement);
+                            } else {
+                                sb.append(src.substring(endIndex, endIndex + target.length()));
+                            }
+                        } else if (fromIndex < src.length()) {
+                            if (src.charAt(endIndex + target.length()) == ' ' && src.charAt(endIndex - 1) == ' ') {
+                                sb.append(replacement);
+                            } else {
+                                sb.append(src.substring(endIndex, endIndex + target.length()));
+                            }
+                        } else {
+                            if (src.charAt(endIndex - 1) == ' ') {
+                                sb.append(replacement);
+                            } else {
+                                sb.append(src.substring(endIndex, endIndex + target.length()));
+                            }
+                        }
+                    } else {
+                        sb.append(src.substring(beginIndex, src.length()));
+                    }
+                }
+                return sb.toString();
+            } else {
+                return src.replace(target, replacement);
+            }
+        } else {
+            String srcLC = src.toLowerCase();
+            String targetLC = target.toLowerCase();
+            String str = srcLC.replace(targetLC, target);
+            String[] srcLCs = this.split(srcLC, target.toLowerCase());
+            int fromIndex = 0, beginIndex = 0, endIndex = 0;
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < srcLCs.length; i++) {
+                endIndex = str.indexOf(target, fromIndex);
+                if (wholeWord) {
+                    if (endIndex != -1) {
+                        sb.append(src.substring(beginIndex, endIndex));
+                        beginIndex = endIndex + target.length();
+                        fromIndex = beginIndex;
+                        if (endIndex == 0 && fromIndex == str.length()) {
+                            sb.append(replacement);
+                        } else if (endIndex == 0) {
+                            if (str.charAt(endIndex + target.length()) == ' ') {
+                                sb.append(replacement);
+                            } else {
+                                sb.append(src.substring(endIndex, endIndex + target.length()));
+                            }
+                        } else if (fromIndex < str.length()) {
+                            if (str.charAt(endIndex + target.length()) == ' ' && str.charAt(endIndex - 1) == ' ') {
+                                sb.append(replacement);
+                            } else {
+                                sb.append(src.substring(endIndex, endIndex + target.length()));
+                            }
+                        } else {
+                            if (str.charAt(endIndex - 1) == ' ') {
+                                sb.append(replacement);
+                            } else {
+                                sb.append(src.substring(endIndex, endIndex + target.length()));
+                            }
+                        }
+                    } else {
+                        sb.append(src.substring(beginIndex, str.length()));
+                    }
+                } else {
+                    if (endIndex != -1) {
+                        sb.append(src.substring(beginIndex, endIndex));
+                        beginIndex = endIndex + target.length();
+                        fromIndex = beginIndex;
+                        if (fromIndex <= str.length()) {
+                            sb.append(replacement);
+                        }
+                    } else {
+                        sb.append(src.substring(beginIndex, str.length()));
+                    }
+                }
+            }
+            return sb.toString();
+        }
+    }
+}
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
@@ -44,14 +162,11 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
                 String replaceStr = substitution.get("REPLACE_STRING");
                 if(replaceStr != null && !replaceStr.equals("")) {
                     String searchStr = substitution.get("SEARCH_PATTERN");
-                    if(substitution.get("CASE_SENSITIVE").equals("false")) {
-                        searchStr = "\"(?i)\" + " + searchStr;
-                    }
-                    if(substitution.get("WHOLE_WORD").equals("true")) {
-                        searchStr = "\"^\" + " + searchStr + " + \"$\"";
-                    }
+                    String caseSensitive = substitution.get("CASE_SENSITIVE");
+                    String wholeWord = substitution.get("WHOLE_WORD");
 %>
-                    <%=incomingConnName%>.<%=substitution.get("INPUT_COLUMN")%> = StringUtils.replaceAll(<%=incomingConnName%>.<%=substitution.get("INPUT_COLUMN")%>, <%=searchStr%>, <%=replaceStr%>);                    
+                    
+                    <%=incomingConnName%>.<%=substitution.get("INPUT_COLUMN")%> = new ReplaceUtil().replaceAll(<%=incomingConnName%>.<%=substitution.get("INPUT_COLUMN")%>, <%=searchStr%>, <%=replaceStr%>,"<%=caseSensitive%>".equals("true")?true:false,"<%=wholeWord%>".equals("true")?true:false);
 <%
                 }
             }
