@@ -136,11 +136,14 @@ public class DiagramModelService implements IDiagramModelService {
 
     public String getBusinessItemAlignment(Object part, BusinessAlignment alignmentGroup) {
         if (part instanceof BusinessItemShapeEditPart) {
-            BusinessItem item = (BusinessItem) ((Node) ((BusinessItemShapeEditPart) part).getModel()).getElement();
-            if (BusinessAlignment.HORIZONTAL.equals(alignmentGroup)) {
-                return item.getHAlignment();
-            } else if (BusinessAlignment.VERTICAL.equals(alignmentGroup)) {
-                return item.getVAlignment();
+            EObject object = ((Node) ((BusinessItemShapeEditPart) part).getModel()).getElement();
+            if (object instanceof BusinessItem) {
+                BusinessItem item = (BusinessItem) object;
+                if (BusinessAlignment.HORIZONTAL.equals(alignmentGroup)) {
+                    return item.getHAlignment();
+                } else if (BusinessAlignment.VERTICAL.equals(alignmentGroup)) {
+                    return item.getVAlignment();
+                }
             }
         }
         return null;

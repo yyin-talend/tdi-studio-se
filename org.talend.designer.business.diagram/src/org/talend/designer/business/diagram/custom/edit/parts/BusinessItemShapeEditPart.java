@@ -19,6 +19,7 @@ import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.ENamedElement;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.gmf.runtime.diagram.ui.editparts.ShapeNodeEditPart;
 import org.eclipse.gmf.runtime.diagram.ui.editpolicies.EditPolicyRoles;
@@ -31,6 +32,7 @@ import org.eclipse.gmf.runtime.notation.View;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.image.OverlayImage;
@@ -100,98 +102,106 @@ public abstract class BusinessItemShapeEditPart extends ShapeNodeEditPart {
      * @param figure
      */
     private void getTooltipFigure(NodeFigure figure) {
-        List assignements = ((BusinessItem) ((Node) getModel()).getElement()).getAssignments();
-        BusinessItemProviderAdapterFactory adapterFactory = new BusinessItemProviderAdapterFactory();
-        BusinessAssignmentItemProvider provider = (BusinessAssignmentItemProvider) adapterFactory
-                .createBusinessAssignmentAdapter();
-        Image img = null;
-        Label label = null;
-        List<Label> labels = new ArrayList();
-        try {
-            for (Object assignment : assignements) {
-                if (assignment instanceof BusinessAssignment) {
-                    TalendItem talendItem = ((BusinessAssignment) assignment).getTalendItem();
-                    IRepositoryObject obj = CorePlugin.getDefault().getProxyRepositoryFactory()
-                            .getLastVersion(talendItem.getId());
-                    if (obj != null) {
-                        ERepositoryObjectType type = obj.getType();
-                        Item item = obj.getProperty().getItem();
-                        if (item instanceof JobletProcessItem) {
-                            JobletProcessItem jobletItem = (JobletProcessItem) item;
-                            Image jobletCustomIcon = RepositoryLabelProvider.getJobletCustomIcon(jobletItem.getProperty());
-                            if (jobletCustomIcon != null) {
-                                img = ImageUtils.scale(jobletCustomIcon, ICON_SIZE.ICON_16);
-                            }
+        EObject element = ((Node) getModel()).getElement();
+        if (element instanceof BusinessItem) {
+            List assignements = ((BusinessItem) element).getAssignments();
+            BusinessItemProviderAdapterFactory adapterFactory = new BusinessItemProviderAdapterFactory();
+            BusinessAssignmentItemProvider provider = (BusinessAssignmentItemProvider) adapterFactory
+                    .createBusinessAssignmentAdapter();
+            Image img = null;
+            Label label = null;
+            List<Label> labels = new ArrayList();
+            try {
+                for (Object assignment : assignements) {
+                    if (assignment instanceof BusinessAssignment) {
+                        TalendItem talendItem = ((BusinessAssignment) assignment).getTalendItem();
+                        if (talendItem != null) {
+                            IRepositoryObject obj = CorePlugin.getDefault().getProxyRepositoryFactory().getLastVersion(
+                                    talendItem.getId());
+                            if (obj != null) {
+                                ERepositoryObjectType type = obj.getType();
+                                Item item = obj.getProperty().getItem();
+                                if (item instanceof JobletProcessItem) {
+                                    JobletProcessItem jobletItem = (JobletProcessItem) item;
+                                    Image jobletCustomIcon = RepositoryLabelProvider
+                                            .getJobletCustomIcon(jobletItem.getProperty());
+                                    if (jobletCustomIcon != null) {
+                                        img = ImageUtils.scale(jobletCustomIcon, ICON_SIZE.ICON_16);
+                                    }
 
-                        } else {
-                            img = CoreImageProvider.getImage(type);
-                        }
-                        label = new Label(talendItem.getLabel() + " (" + provider.getColumnText(assignment, 0) + ")", img); //$NON-NLS-1$ //$NON-NLS-2$
-                        labels.add(label);
-                    } else {
+                                } else {
+                                    img = CoreImageProvider.getImage(type);
+                                }
+                                label = new Label(talendItem.getLabel() + " (" + provider.getColumnText(assignment, 0) + ")", img); //$NON-NLS-1$ //$NON-NLS-2$
+                                labels.add(label);
+                            } else {
 
-                        MetadataTable table = MetadataTool.getMetadataTableFromRepository(talendItem.getId());
-                        Query query = MetadataTool.getQueryFromRepository(talendItem.getId());
-                        if (table != null) {
-                            img = ImageDescriptor.createFromFile(ECoreImage.class, ECoreImage.METADATA_TABLE_ICON.getPath())
-                                    .createImage();
-                            label = new Label(talendItem.getLabel() + " (" + provider.getColumnText(assignment, 0) + ")", img); //$NON-NLS-1$ //$NON-NLS-2$
-                            labels.add(label);
-                        } else if (query != null) {
-                            img = ImageDescriptor.createFromFile(ECoreImage.class, ECoreImage.METADATA_QUERY_ICON.getPath())
-                                    .createImage();
-                            label = new Label(talendItem.getLabel() + " (" + provider.getColumnText(assignment, 0) + ")", img); //$NON-NLS-1$ //$NON-NLS-2$
-                            labels.add(label);
-                        } else if (talendItem instanceof SQLPattern) {
-
-                            List<IRepositoryObject> list = ProxyRepositoryFactory.getInstance().getAll(
-                                    ERepositoryObjectType.SQLPATTERNS);
-                            for (IRepositoryObject object : list) {
-                                if (talendItem.getLabel().equals(object.getLabel())) {
+                                MetadataTable table = MetadataTool.getMetadataTableFromRepository(talendItem.getId());
+                                Query query = MetadataTool.getQueryFromRepository(talendItem.getId());
+                                if (table != null) {
                                     img = ImageDescriptor.createFromFile(ECoreImage.class,
-                                            ECoreImage.METADATA_SQLPATTERN_ICON.getPath()).createImage();
-                                    label = new Label(talendItem.getLabel() + " (" + provider.getColumnText(assignment, 0) + ")",
-                                            img);
+                                            ECoreImage.METADATA_TABLE_ICON.getPath()).createImage();
+                                    label = new Label(
+                                            talendItem.getLabel() + " (" + provider.getColumnText(assignment, 0) + ")", img); //$NON-NLS-1$ //$NON-NLS-2$
                                     labels.add(label);
-                                }
-                            }
-
-                        } else if (talendItem instanceof Routine) {
-                            List<IRepositoryObject> list = ProxyRepositoryFactory.getInstance().getAll(
-                                    ERepositoryObjectType.ROUTINES);
-                            for (IRepositoryObject object : list) {
-                                if (talendItem.getLabel().equals(object.getLabel())) {
-                                    img = ImageDescriptor.createFromFile(ECoreImage.class, ECoreImage.ROUTINE_ICON.getPath())
-                                            .createImage();
-                                    label = new Label(talendItem.getLabel() + " (" + provider.getColumnText(assignment, 0) + ")",
-                                            img);
+                                } else if (query != null) {
+                                    img = ImageDescriptor.createFromFile(ECoreImage.class,
+                                            ECoreImage.METADATA_QUERY_ICON.getPath()).createImage();
+                                    label = new Label(
+                                            talendItem.getLabel() + " (" + provider.getColumnText(assignment, 0) + ")", img); //$NON-NLS-1$ //$NON-NLS-2$
                                     labels.add(label);
-                                }
-                            }
-                        } else {
-                            img = (Image) provider.getImage(assignment);
-                            img = new OverlayImage(img, ImageProvider.getImageDesc(ECoreImage.DELETED_OVERLAY),
-                                    EPosition.BOTTOM_RIGHT).createImage();
-                            String text = provider.getText(assignment) + " (" + provider.getColumnText(assignment, 0) + ")"; //$NON-NLS-1$ //$NON-NLS-2$
-                            label = new Label(text, img);
-                            labels.add(label);
+                                } else if (talendItem instanceof SQLPattern) {
 
+                                    List<IRepositoryObject> list = ProxyRepositoryFactory.getInstance().getAll(
+                                            ERepositoryObjectType.SQLPATTERNS);
+                                    for (IRepositoryObject object : list) {
+                                        if (talendItem.getLabel().equals(object.getLabel())) {
+                                            img = ImageDescriptor.createFromFile(ECoreImage.class,
+                                                    ECoreImage.METADATA_SQLPATTERN_ICON.getPath()).createImage();
+                                            label = new Label(talendItem.getLabel() + " ("
+                                                    + provider.getColumnText(assignment, 0) + ")", img);
+                                            labels.add(label);
+                                        }
+                                    }
+
+                                } else if (talendItem instanceof Routine) {
+                                    List<IRepositoryObject> list = ProxyRepositoryFactory.getInstance().getAll(
+                                            ERepositoryObjectType.ROUTINES);
+                                    for (IRepositoryObject object : list) {
+                                        if (talendItem.getLabel().equals(object.getLabel())) {
+                                            img = ImageDescriptor.createFromFile(ECoreImage.class,
+                                                    ECoreImage.ROUTINE_ICON.getPath()).createImage();
+                                            label = new Label(talendItem.getLabel() + " ("
+                                                    + provider.getColumnText(assignment, 0) + ")", img);
+                                            labels.add(label);
+                                        }
+                                    }
+                                } else {
+                                    img = (Image) provider.getImage(assignment);
+                                    img = new OverlayImage(img, ImageProvider.getImageDesc(ECoreImage.DELETED_OVERLAY),
+                                            EPosition.BOTTOM_RIGHT).createImage();
+                                    String text = provider.getText(assignment)
+                                            + " (" + provider.getColumnText(assignment, 0) + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+                                    label = new Label(text, img);
+                                    labels.add(label);
+
+                                }
+
+                            }
                         }
-
                     }
-                }
 
-            }
-            if (labels.size() > 0) {
-                if (tooltipFigure == null) {
-                    tooltipFigure = new BusinessTooltipFigure();
                 }
-                tooltipFigure.buildFigures(labels);
-                figure.setToolTip(tooltipFigure);
+                if (labels.size() > 0) {
+                    if (tooltipFigure == null) {
+                        tooltipFigure = new BusinessTooltipFigure();
+                    }
+                    tooltipFigure.buildFigures(labels);
+                    figure.setToolTip(tooltipFigure);
+                }
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
             }
-        } catch (PersistenceException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         }
     }
 
@@ -211,28 +221,31 @@ public abstract class BusinessItemShapeEditPart extends ShapeNodeEditPart {
                 for (Object figure : shapFigure.getChildren()) {
                     if (figure instanceof BusinessItemNameFigure) {
                         BusinessItemNameFigure nameFigure = (BusinessItemNameFigure) figure;
-                        BusinessItem item = (BusinessItem) ((Node) getModel()).getElement();
-                        if (BusinessAlignment.HCENTRE.toString().equals(item.getHAlignment())) {
-                            if (BusinessAlignment.TOP.toString().equals(item.getVAlignment())) {
-                                nameFigure.setAlignment(PositionConstants.TOP);
-                            } else if (BusinessAlignment.BOTTOM.toString().equals(item.getVAlignment())) {
-                                nameFigure.setAlignment(PositionConstants.BOTTOM);
+                        EObject object = ((Node) getModel()).getElement();
+                        if (object instanceof BusinessItem) {
+                            BusinessItem item = (BusinessItem) object;
+                            if (BusinessAlignment.HCENTRE.toString().equals(item.getHAlignment())) {
+                                if (BusinessAlignment.TOP.toString().equals(item.getVAlignment())) {
+                                    nameFigure.setAlignment(PositionConstants.TOP);
+                                } else if (BusinessAlignment.BOTTOM.toString().equals(item.getVAlignment())) {
+                                    nameFigure.setAlignment(PositionConstants.BOTTOM);
+                                } else {
+                                    nameFigure.setAlignment(PositionConstants.CENTER);
+                                }
+                            } else if (BusinessAlignment.VCENTRE.toString().equals(item.getVAlignment())) {
+                                if (BusinessAlignment.LEFT.toString().equals(item.getHAlignment())) {
+                                    nameFigure.setAlignment(PositionConstants.LEFT);
+                                } else if (BusinessAlignment.RIGHT.toString().equals(item.getHAlignment())) {
+                                    nameFigure.setAlignment(PositionConstants.RIGHT);
+                                } else {
+                                    nameFigure.setAlignment(PositionConstants.CENTER);
+                                }
                             } else {
-                                nameFigure.setAlignment(PositionConstants.CENTER);
+                                nameFigure.setAlignment(getPosition(item.getHAlignment(), BusinessAlignment.HORIZONTAL, item)
+                                        | getPosition(item.getVAlignment(), BusinessAlignment.VERTICAL, item));
                             }
-                        } else if (BusinessAlignment.VCENTRE.toString().equals(item.getVAlignment())) {
-                            if (BusinessAlignment.LEFT.toString().equals(item.getHAlignment())) {
-                                nameFigure.setAlignment(PositionConstants.LEFT);
-                            } else if (BusinessAlignment.RIGHT.toString().equals(item.getHAlignment())) {
-                                nameFigure.setAlignment(PositionConstants.RIGHT);
-                            } else {
-                                nameFigure.setAlignment(PositionConstants.CENTER);
-                            }
-                        } else {
-                            nameFigure.setAlignment(getPosition(item.getHAlignment(), BusinessAlignment.HORIZONTAL, item)
-                                    | getPosition(item.getVAlignment(), BusinessAlignment.VERTICAL, item));
-                        }
 
+                        }
                     }
                 }
             }

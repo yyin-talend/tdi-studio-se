@@ -240,7 +240,7 @@
          </ViewId>
       </GlobalActionHandlerProvider>
       <GlobalActionHandlerProvider
-            class="org.eclipse.gmf.runtime.diagram.ui.render.providers.DiagramUIRenderGlobalActionHandlerProvider"
+            class="org.talend.designer.business.model.business.diagram.providers.ClipboardActionHandlerProvider"
             id="BusinessRender">
          <Priority name="Lowest"/>
          <ViewId id="org.talend.designer.business.model.business.diagram.part.BusinessDiagramEditorID">
