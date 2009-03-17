@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Spss Plug-in
 Bundle-SymbolicName: org.talend.designer.spss;singleton:=true
-Bundle-Version: 1.0.0
+Bundle-Version: 2.2.0.qualifier
 Eclipse-LazyStart: true
 Bundle-Activator: org.talend.designer.spss.spssPlugin
 Require-Bundle: org.eclipse.ui,

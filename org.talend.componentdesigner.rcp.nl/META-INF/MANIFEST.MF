@@ -3,4 +3,4 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Nl Fragment
 Bundle-SymbolicName: org.talend.componentdesigner.rcp.nl
 Bundle-Version: 2.2.0.qualifier
-Fragment-Host: org.talend.componentdesigner.rcp;bundle-version="2.3.0"
+Fragment-Host: org.talend.componentdesigner.rcp
