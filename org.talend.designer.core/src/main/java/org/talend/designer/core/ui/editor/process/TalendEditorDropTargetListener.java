@@ -462,6 +462,16 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 }
 
             }
+            // fore EBCDIC, by cli
+            if (selectedNode.getObjectType() == ERepositoryObjectType.METADATA_FILE_EBCDIC
+                    && PluginChecker.isEBCDICPluginLoaded()) {
+                for (MetadataTable table : (List<MetadataTable>) originalConnection.getTables()) {
+                    Command ebcdicCmd = new RepositoryChangeMetadataForEBCDICCommand(node, IEbcdicConstant.TABLE_SCHEMAS, table
+                            .getLabel(), ConvertionHelper.convert(table));
+                    list.add(ebcdicCmd);
+                }
+            }
+
             IElementParameter propertyParam = node.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
             if (propertyParam != null) {
                 propertyParam.getChildParameters().get(EParameterName.PROPERTY_TYPE.getName()).setValue(EmfComponent.REPOSITORY);
