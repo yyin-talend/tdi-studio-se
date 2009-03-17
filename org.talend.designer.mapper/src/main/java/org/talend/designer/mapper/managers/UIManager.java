@@ -1446,7 +1446,7 @@ public class UIManager extends AbstractUIManager {
      */
     public String openNewOutputCreationDialog() {
         final IProcess process = mapperManager.getAbstractMapComponent().getProcess();
-        String outputName = process.generateUniqueConnectionName("newOutput"); //$NON-NLS-1$
+        String outputName = process.generateUniqueConnectionName("out"); //$NON-NLS-1$
         InputDialog id = new InputDialog(getMapperContainer().getShell(), Messages.getString("UIManager.addNewOutputTable"), //$NON-NLS-1$
                 Messages.getString("UIManager.typeTableName"), outputName, new IInputValidator() { //$NON-NLS-1$
 
