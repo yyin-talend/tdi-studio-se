@@ -74,7 +74,7 @@ my %desc_<%=cid%> = (
 );
 
 
-my @book_worksheets_<%=cid%>;
+our @book_worksheets_<%=cid%>;
 
 my $oExcel_<%=cid%> = Spreadsheet::ParseExcel->new(
     CellHandler => \&CellHandler_<%=cid%>,
