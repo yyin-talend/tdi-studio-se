@@ -71,7 +71,7 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-
+    
     <PARAMETER
       NAME="ACTION_ON"
       FIELD="CLOSED_LIST"
@@ -110,6 +110,16 @@
 	</PARAMETER>
 	
   </PARAMETERS>
+  
+  <ADVANCED_PARAMETERS>
+  	 <PARAMETER
+      NAME="WAIT_RELEASE"
+      FIELD="CHECK"
+      NUM_ROW="5"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+  </ADVANCED_PARAMETERS>
 
   <CODEGENERATION/>
 
