@@ -16,8 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
-import org.talend.core.language.ECodeLanguage;
-import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
@@ -29,9 +27,7 @@ import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
 import org.talend.designer.mapper.model.tableentry.GlobalMapEntry;
-import org.talend.designer.mapper.model.tableentry.GlobalMapEntry;
 import org.talend.designer.mapper.model.tableentry.InputColumnTableEntry;
-import org.talend.designer.mapper.model.tableentry.VarTableEntry;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -50,7 +46,7 @@ public class InputTable extends AbstractInOutTable {
 
     private IUIMatchingMode matchingMode = TMAP_MATCHING_MODE.UNIQUE_MATCH;
 
-    private IUILookupMode lookupMode;
+    private IUILookupMode lookupMode = TMAP_LOOKUP_MODE.LOAD_ONCE;
 
     protected List<GlobalMapEntry> globalMapEntries = new ArrayList<GlobalMapEntry>(0);
 
