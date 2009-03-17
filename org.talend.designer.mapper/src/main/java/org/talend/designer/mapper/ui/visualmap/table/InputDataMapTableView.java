@@ -58,7 +58,6 @@ import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.commons.utils.image.ImageUtils;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
-import org.talend.core.model.process.ILookupMode;
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.managers.MapperManager;
@@ -317,7 +316,7 @@ public class InputDataMapTableView extends DataMapTableView {
                         .getString("InputDataMapTableView.buttonTooltip.activatePersistentCheck")); //$NON-NLS-1$
                 activatePersistentCheck.setImage(ImageProviderMapper.getImage(ImageInfo.ACTIVATE_PERSISTENT_ICON));
 
-                previousValidPersistentMode = lookupMode != TMAP_LOOKUP_MODE.CACHE_OR_RELOAD;
+                previousValidPersistentMode = lookupMode != TMAP_LOOKUP_MODE.CACHE_OR_RELOAD && table.isPersistent();
 
                 // /////////////////////////////////////////////////////////////////
                 if (activatePersistentCheck != null) {
