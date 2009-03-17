@@ -250,9 +250,11 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
         data.horizontalSpan = 4;
         advanceSeparatorCheckbox.setLayoutData(data);
 
-        thousandSeparaotrText = new LabelledText(compositeFileDelimitor, Messages.getString("ExcelFileStep2Form.thousandsSeparator"), 3); //$NON-NLS-1$
+        thousandSeparaotrText = new LabelledText(compositeFileDelimitor, Messages
+                .getString("ExcelFileStep2Form.thousandsSeparator"), 3); //$NON-NLS-1$
 
-        decimalSeparatorText = new LabelledText(compositeFileDelimitor, Messages.getString("ExcelFileStep2Form.decimalSeparator"), 3); //$NON-NLS-1$
+        decimalSeparatorText = new LabelledText(compositeFileDelimitor,
+                Messages.getString("ExcelFileStep2Form.decimalSeparator"), 3); //$NON-NLS-1$
 
         // Only visible if current project is not perl project
         advanceSeparatorCheckbox.setVisible(!isPerlProject());
@@ -863,12 +865,11 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
         } else {
             last = getIntFromString(lastColumnText.getText());
         }
-
-        if (last <= first || last <= 0 || first <= 0) {
+        // see the bug 5446,qli comment.
+        if (last < first || last <= 0 || first <= 0) {
             updateStatus(IStatus.ERROR, "Last column or First column parameter error"); //$NON-NLS-1$
             return false;
         }
-
         if (originSchemaColumns.size() < last) {
             updateStatus(IStatus.ERROR, "Last column parameter error. Bigger than schmea columns size"); //$NON-NLS-1$
             return false;
