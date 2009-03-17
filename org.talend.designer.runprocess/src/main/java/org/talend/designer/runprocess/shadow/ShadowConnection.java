@@ -17,7 +17,6 @@ import java.util.List;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.AbstractConnection;
 import org.talend.core.model.process.EConnectionType;
-import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 
 /**
@@ -106,5 +105,15 @@ public class ShadowConnection extends AbstractConnection {
 
     public String getUniqueName() {
         return getName();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.AbstractConnection#getConnectorName()
+     */
+    @Override
+    public String getConnectorName() {
+        return EConnectionType.FLOW_MAIN.getName();
     }
 }
