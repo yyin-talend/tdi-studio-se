@@ -91,9 +91,9 @@ public class LoginComposite extends Composite {
 
     private static int horizontalMerge = 145;
 
-    private static final int HORIZONTAL_SPACE_BUTTONS = 10;
+    private static final int HORIZONTAL_SPACE_BUTTONS = 0;
 
-    private static final int VERTICAL_SPACE = 5;
+    private static final int VERTICAL_SPACE = 0;
 
     private static final int HORIZONTAL_SPACE = 5;
 
@@ -204,7 +204,7 @@ public class LoginComposite extends Composite {
 
         connectionsViewer = new ComboViewer(groupConnection, SWT.BORDER | SWT.READ_ONLY);
         GridData conGrid = new GridData(GridData.FILL_HORIZONTAL);
-        conGrid.horizontalSpan = 1;
+        conGrid.horizontalSpan = 0;
         connectionsViewer.getControl().setLayoutData(conGrid);
         connectionsViewer.setContentProvider(new ArrayContentProvider());
         connectionsViewer.setLabelProvider(new ConnectionLabelProvider());
@@ -275,11 +275,7 @@ public class LoginComposite extends Composite {
         fillProjectsBtn.setLayoutData(data);
 
         projectViewer = new ComboViewer(group, SWT.BORDER | SWT.READ_ONLY);
-        data = new FormData();
-        data.left = new FormAttachment(0, horizontalMerge + 2);
-        data.right = new FormAttachment(fillProjectsBtn, -HORIZONTAL_SPACE);
-        data.bottom = new FormAttachment(fillProjectsBtn, 0, SWT.CENTER);
-        projectViewer.getControl().setLayoutData(data);
+
         projectViewer.setContentProvider(new ArrayContentProvider());
         projectViewer.setLabelProvider(new ProjectLabelProvider());
 
@@ -289,9 +285,15 @@ public class LoginComposite extends Composite {
         data.bottom = new FormAttachment(projectViewer.getControl(), 0, SWT.CENTER);
         existingLabel.setLayoutData(data);
 
+        data = new FormData();
+        data.left = new FormAttachment(existingLabel, HORIZONTAL_SPACE);
+        data.right = new FormAttachment(fillProjectsBtn, -HORIZONTAL_SPACE);
+        data.bottom = new FormAttachment(fillProjectsBtn, 0, SWT.CENTER);
+        projectViewer.getControl().setLayoutData(data);
+
         manageProjectLabel1 = toolkit.createLabel(group, Messages.getString("LoginComposite.manageProjectPre")); //$NON-NLS-1$
         FormData formData = new FormData();
-        formData.right = new FormAttachment(existingLabel, 0, SWT.RIGHT);
+        formData.right = new FormAttachment(existingLabel, 0, SWT.CENTER);
         formData.top = new FormAttachment(existingLabel, 40);
         manageProjectLabel1.setLayoutData(formData);
 

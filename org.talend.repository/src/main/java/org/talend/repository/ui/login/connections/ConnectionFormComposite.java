@@ -30,9 +30,6 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -45,9 +42,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.talend.commons.ui.swt.formtools.LabelText;
 import org.talend.commons.ui.swt.formtools.LabelledCombo;
-import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.general.ConnectionBean;
-import org.talend.core.ui.branding.IBrandingService;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.DynamicButtonBean;
 import org.talend.repository.model.DynamicChoiceBean;
@@ -105,7 +100,6 @@ public class ConnectionFormComposite extends Composite {
 
         toolkit = new FormToolkit(this.getDisplay());
         ScrolledForm form = toolkit.createScrolledForm(this);
-        // Form form = toolkit.createForm(this);
         Composite formBody = form.getBody();
 
         GridLayout layout = new GridLayout();
@@ -114,93 +108,71 @@ public class ConnectionFormComposite extends Composite {
         setLayout(layout);
         form.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        FormLayout formLayout = new FormLayout();
-        formBody.setLayout(formLayout);
+        GridLayout lay = new GridLayout();
+        lay.numColumns = 3;
+        formBody.setLayout(lay);
 
         // Use by all widgets:
-        FormData data;
+        GridData data1;
 
         // Repository
+        Label repositoryLabel = toolkit.createLabel(formBody, Messages.getString("connections.form.field.repository")); //$NON-NLS-1$
+        data1 = new GridData();
+        data1.horizontalSpan = 1;
+        repositoryLabel.setLayoutData(data1);
+
         repositoryCombo = new ComboViewer(formBody, SWT.BORDER | SWT.READ_ONLY);
         repositoryCombo.setContentProvider(new ArrayContentProvider());
         repositoryCombo.setLabelProvider(new RepositoryFactoryLabelProvider());
-        data = new FormData();
-        data.left = new FormAttachment(0, ConnectionsDialog.STANDARD_LABEL_WIDTH);
-        data.right = new FormAttachment(100, -ConnectionsDialog.HSPACE);
-        data.top = new FormAttachment(0, ConnectionsDialog.VSPACE);
-        repositoryCombo.getControl().setLayoutData(data);
-
-        Label repositoryLabel = toolkit.createLabel(formBody, Messages.getString("connections.form.field.repository")); //$NON-NLS-1$
-        data = new FormData();
-        data.left = new FormAttachment(0, ConnectionsDialog.HSPACE);
-        data.bottom = new FormAttachment(repositoryCombo.getControl(), 0, SWT.BOTTOM);
-        repositoryLabel.setLayoutData(data);
+        data1 = new GridData(GridData.FILL_HORIZONTAL);
+        data1.horizontalSpan = 2;
+        repositoryCombo.getControl().setLayoutData(data1);
 
         // Name
-        nameText = toolkit.createText(formBody, "", SWT.BORDER); //$NON-NLS-1$
-        data = new FormData();
-        data.left = new FormAttachment(0, ConnectionsDialog.STANDARD_LABEL_WIDTH);
-        data.right = new FormAttachment(100, -ConnectionsDialog.HSPACE);
-        data.top = new FormAttachment(repositoryCombo.getControl(), ConnectionsDialog.VSPACE);
-        nameText.setLayoutData(data);
-
         Label nameLabel = toolkit.createLabel(formBody, Messages.getString("connections.form.field.name")); //$NON-NLS-1$
-        data = new FormData();
-        data.left = new FormAttachment(0, ConnectionsDialog.HSPACE);
-        data.bottom = new FormAttachment(nameText, 0, SWT.BOTTOM);
-        nameLabel.setLayoutData(data);
+        data1 = new GridData();
+        data1.horizontalSpan = 1;
+        nameLabel.setLayoutData(data1);
+
+        nameText = toolkit.createText(formBody, "", SWT.BORDER); //$NON-NLS-1$
+        data1 = new GridData(GridData.FILL_HORIZONTAL);
+        data1.horizontalSpan = 2;
+        nameText.setLayoutData(data1);
 
         // Comment
-        descriptionText = toolkit.createText(formBody, "", SWT.BORDER); //$NON-NLS-1$
-        data = new FormData();
-        data.left = new FormAttachment(0, ConnectionsDialog.STANDARD_LABEL_WIDTH);
-        data.right = new FormAttachment(100, -ConnectionsDialog.HSPACE);
-        data.top = new FormAttachment(nameText, ConnectionsDialog.VSPACE);
-        descriptionText.setLayoutData(data);
-
         Label descriptionLabel = toolkit.createLabel(formBody, Messages.getString("connections.form.field.description")); //$NON-NLS-1$
-        data = new FormData();
-        data.left = new FormAttachment(0, ConnectionsDialog.HSPACE);
-        data.bottom = new FormAttachment(descriptionText, 0, SWT.BOTTOM);
-        descriptionLabel.setLayoutData(data);
+        data1 = new GridData();
+        data1.horizontalSpan = 1;
+        descriptionLabel.setLayoutData(data1);
+
+        descriptionText = toolkit.createText(formBody, "", SWT.BORDER); //$NON-NLS-1$
+        data1 = new GridData(GridData.FILL_HORIZONTAL);
+        data1.horizontalSpan = 2;
+        descriptionText.setLayoutData(data1);
 
         // User
+        Label userLabel = toolkit.createLabel(formBody, Messages.getString("connections.form.field.username")); //$NON-NLS-1$
+        data1 = new GridData();
+        data1.horizontalSpan = 1;
+        userLabel.setLayoutData(data1);
+
         userText = toolkit.createText(formBody, "", SWT.BORDER); //$NON-NLS-1$
-        data = new FormData();
-        data.left = new FormAttachment(0, ConnectionsDialog.STANDARD_LABEL_WIDTH);
-        data.right = new FormAttachment(100, -ConnectionsDialog.HSPACE);
-        data.top = new FormAttachment(descriptionText, ConnectionsDialog.VSPACE);
-        userText.setLayoutData(data);
-
-        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
-                IBrandingService.class);
-        boolean usesMailCheck = brandingService.getBrandingConfiguration().isUseMailLoginCheck();
-        Label userLabel;
-        if (usesMailCheck) {
-            userLabel = toolkit.createLabel(formBody, Messages.getString("connections.form.field.username")); //$NON-NLS-1$
-        } else {
-            userLabel = toolkit.createLabel(formBody, Messages.getString("connections.form.field.usernameNoMail")); //$NON-NLS-1$
-        }
-
-        data = new FormData();
-        data.left = new FormAttachment(0, ConnectionsDialog.HSPACE);
-        data.bottom = new FormAttachment(userText, 0, SWT.BOTTOM);
-        userLabel.setLayoutData(data);
+        data1 = new GridData(GridData.FILL_HORIZONTAL);
+        data1.horizontalSpan = 2;
+        userText.setLayoutData(data1);
 
         // Password
-        passwordText = toolkit.createText(formBody, "", SWT.PASSWORD | SWT.BORDER); //$NON-NLS-1$
-        data = new FormData();
-        data.left = new FormAttachment(0, ConnectionsDialog.STANDARD_LABEL_WIDTH);
-        data.right = new FormAttachment(100, -ConnectionsDialog.HSPACE);
-        data.top = new FormAttachment(userText, ConnectionsDialog.VSPACE);
-        passwordText.setLayoutData(data);
-
         Label passwordLabel = toolkit.createLabel(formBody, Messages.getString("connections.form.field.password")); //$NON-NLS-1$
-        data = new FormData();
-        data.left = new FormAttachment(0, ConnectionsDialog.HSPACE);
-        data.bottom = new FormAttachment(passwordText, 0, SWT.BOTTOM);
-        passwordLabel.setLayoutData(data);
+        data1 = new GridData();
+        data1.horizontalSpan = 1;
+        passwordLabel.setLayoutData(data1);
 
+        passwordText = toolkit.createText(formBody, "", SWT.PASSWORD | SWT.BORDER); //$NON-NLS-1$
+        data1 = new GridData(GridData.FILL_HORIZONTAL);
+        data1.horizontalSpan = 2;
+        passwordText.setLayoutData(data1);
+
+        GridData data;
         List<IRepositoryFactory> availableRepositories = getUsableRepositoryProvider();
         for (IRepositoryFactory current : availableRepositories) {
             Map<String, LabelText> list = new HashMap<String, LabelText>();
@@ -214,22 +186,19 @@ public class ConnectionFormComposite extends Composite {
             Control baseControl = passwordLabel;
 
             for (final DynamicChoiceBean currentChoiceBean : current.getChoices()) {
+                Label label = toolkit.createLabel(formBody, currentChoiceBean.getName());
+                data = new GridData();
+                data.horizontalSpan = 1;
+                label.setLayoutData(data);
+
                 Combo combo = new Combo(formBody, SWT.BORDER | SWT.READ_ONLY);
-                for (String label : currentChoiceBean.getChoices().values()) {
-                    combo.add(label);
+                for (String label1 : currentChoiceBean.getChoices().values()) {
+                    combo.add(label1);
                 }
 
-                data = new FormData();
-                data.left = new FormAttachment(0, ConnectionsDialog.STANDARD_LABEL_WIDTH);
-                data.right = new FormAttachment(100, -ConnectionsDialog.HSPACE);
-                data.top = new FormAttachment(baseControl, ConnectionsDialog.VSPACE);
+                data = new GridData(GridData.FILL_HORIZONTAL);
+                data.horizontalSpan = 2;
                 combo.setLayoutData(data);
-
-                Label label = toolkit.createLabel(formBody, currentChoiceBean.getName());
-                data = new FormData();
-                data.left = new FormAttachment(0, ConnectionsDialog.HSPACE);
-                data.bottom = new FormAttachment(combo, 0, SWT.BOTTOM);
-                label.setLayoutData(data);
 
                 baseControl = combo;
 
@@ -241,18 +210,16 @@ public class ConnectionFormComposite extends Composite {
                 if (currentField.isPassword()) {
                     textStyle = textStyle | SWT.PASSWORD;
                 }
-                Text text = toolkit.createText(formBody, "", textStyle); //$NON-NLS-1$
-                data = new FormData();
-                data.left = new FormAttachment(0, ConnectionsDialog.STANDARD_LABEL_WIDTH);
-                data.right = new FormAttachment(100, -ConnectionsDialog.HSPACE);
-                data.top = new FormAttachment(baseControl, ConnectionsDialog.VSPACE);
-                text.setLayoutData(data);
-
                 Label label = toolkit.createLabel(formBody, currentField.getName());
-                data = new FormData();
-                data.left = new FormAttachment(0, ConnectionsDialog.HSPACE);
-                data.bottom = new FormAttachment(text, 0, SWT.BOTTOM);
+                data = new GridData();
+                data.horizontalSpan = 1;
                 label.setLayoutData(data);
+
+                Text text = toolkit.createText(formBody, "", textStyle); //$NON-NLS-1$
+
+                data = new GridData(GridData.FILL_HORIZONTAL);
+                data.horizontalSpan = 2;
+                text.setLayoutData(data);
 
                 baseControl = text;
 
@@ -264,14 +231,18 @@ public class ConnectionFormComposite extends Composite {
             }
 
             for (final DynamicButtonBean currentButtonBean : current.getButtons()) {
+                Label label = toolkit.createLabel(formBody, "");
+                label.setVisible(false);
+                data = new GridData();
+                data.horizontalSpan = 1;
+                label.setLayoutData(data);
+
                 Button button = new Button(formBody, SWT.PUSH);
                 button.setText(currentButtonBean.getName());
                 button.addSelectionListener(new DelegateSelectionListener(currentButtonBean));
 
-                data = new FormData();
-                data.left = new FormAttachment(0, ConnectionsDialog.STANDARD_LABEL_WIDTH);
-                data.right = new FormAttachment(100, -ConnectionsDialog.HSPACE);
-                data.top = new FormAttachment(baseControl, ConnectionsDialog.VSPACE);
+                data = new GridData(GridData.FILL_HORIZONTAL);
+                data.horizontalSpan = 2;
                 button.setLayoutData(data);
 
                 baseControl = button;
@@ -294,9 +265,6 @@ public class ConnectionFormComposite extends Composite {
     private boolean validateFields() {
         String errorMsg = null;
         boolean valid = true;
-        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
-                IBrandingService.class);
-        boolean usesMailCheck = brandingService.getBrandingConfiguration().isUseMailLoginCheck();
         if (valid && getRepository() == null) {
             valid = false;
             errorMsg = Messages.getString("connections.form.emptyField.repository"); //$NON-NLS-1$
@@ -306,7 +274,7 @@ public class ConnectionFormComposite extends Composite {
         } else if (valid && getUser().length() == 0) {
             valid = false;
             errorMsg = Messages.getString("connections.form.emptyField.username"); //$NON-NLS-1$
-        } else if (valid && usesMailCheck && !Pattern.matches(RepositoryConstants.MAIL_PATTERN, getUser())) {
+        } else if (valid && !Pattern.matches(RepositoryConstants.MAIL_PATTERN, getUser())) {
             valid = false;
             errorMsg = Messages.getString("connections.form.malformedField.username"); //$NON-NLS-1$
         } else {
