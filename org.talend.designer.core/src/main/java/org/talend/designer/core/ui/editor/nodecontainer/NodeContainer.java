@@ -28,6 +28,7 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodeError;
 import org.talend.designer.core.ui.editor.nodes.NodeLabel;
 import org.talend.designer.core.ui.editor.nodes.NodePerformance;
+import org.talend.designer.core.ui.editor.nodes.NodeProgressBar;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
 
 /**
@@ -43,6 +44,8 @@ public class NodeContainer extends Element {
     private NodeLabel nodeLabel;
 
     private NodeError nodeError;
+
+    private NodeProgressBar nodeProgressBar;
 
     protected List<Element> elements = new ArrayList<Element>();
 
@@ -75,9 +78,13 @@ public class NodeContainer extends Element {
         node.setNodeContainer(this);
         this.nodeLabel = node.getNodeLabel();
         this.nodeError = node.getNodeError();
+        this.nodeProgressBar = node.getNodeProgressBar();
         elements.add(node);
         elements.add(nodeLabel);
         elements.add(nodeError);
+        if (node.getComponent().getFamily().equals("File Scale")) {
+            elements.add(nodeProgressBar);
+        }
         nodePerformance = new NodePerformance(this);
         elements.add(nodePerformance);
 
@@ -135,6 +142,7 @@ public class NodeContainer extends Element {
         Dimension nodeSize;
         Dimension labelSize;
         Dimension errorNodeSize;
+        Dimension progressNodeSize;
         nodeSize = node.getSize();
         Rectangle nodeRectangle = new Rectangle(nodeLocation, nodeSize);
 
@@ -155,6 +163,10 @@ public class NodeContainer extends Element {
         errorNodeSize = nodeError.getErrorSize();
         Rectangle errorNodeRectangle = new Rectangle(errorLocation, new Dimension(60, 60));
 
+        Point progressLocation = nodeProgressBar.getLocation().getCopy();
+        progressNodeSize = nodeProgressBar.getProgressSize();
+        Rectangle progressNodeRectangle = new Rectangle(progressLocation, new Dimension(80, 80));
+
         Dimension perfSize = nodePerformance.getSize();
         Point perfLocation = nodePerformance.getLocation();
 
@@ -163,6 +175,9 @@ public class NodeContainer extends Element {
         Rectangle finalRect;
         finalRect = nodeRectangle.getUnion(labelRectangle).getUnion(errorNodeRectangle).getUnion(perfRectangle).getUnion(
                 statusRectangle);
+        if (node.getComponent().getFamily().equals("File Scale")) {
+            finalRect = finalRect.getUnion(progressNodeRectangle);
+        }
 
         return finalRect;
     }
@@ -199,6 +214,14 @@ public class NodeContainer extends Element {
 
     public void setNodeError(NodeError nodeError) {
         this.nodeError = nodeError;
+    }
+
+    public NodeProgressBar getNodeProgressBar() {
+        return this.nodeProgressBar;
+    }
+
+    public void setNodeProgressBar(NodeProgressBar nodeProgressBar) {
+        this.nodeProgressBar = nodeProgressBar;
     }
 
     public List getElements() {

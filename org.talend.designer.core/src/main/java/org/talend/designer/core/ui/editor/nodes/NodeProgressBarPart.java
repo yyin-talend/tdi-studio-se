@@ -26,18 +26,16 @@ import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
-import org.eclipse.swt.widgets.Shell;
 import org.talend.designer.core.model.components.EParameterName;
-import org.talend.designer.core.ui.dialog.mergeorder.ErrorMessageDialog;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
 
 /**
- * DOC hwang class global comment. Detailled comment
+ * DOC Administrator class global comment. Detailled comment
  */
-public class NodeErrorEditPart extends AbstractGraphicalEditPart implements PropertyChangeListener {
+public class NodeProgressBarPart extends AbstractGraphicalEditPart implements PropertyChangeListener {
 
     /*
      * (non-Javadoc)
@@ -48,7 +46,7 @@ public class NodeErrorEditPart extends AbstractGraphicalEditPart implements Prop
     public void activate() {
         if (!isActive()) {
             super.activate();
-            ((NodeError) getModel()).addPropertyChangeListener(this);
+            ((NodeProgressBar) getModel()).addPropertyChangeListener(this);
         }
     }
 
@@ -71,7 +69,7 @@ public class NodeErrorEditPart extends AbstractGraphicalEditPart implements Prop
     public void deactivate() {
         if (isActive()) {
             super.deactivate();
-            ((NodeError) getModel()).removePropertyChangeListener(this);
+            ((NodeProgressBar) getModel()).removePropertyChangeListener(this);
         }
     }
 
@@ -82,16 +80,17 @@ public class NodeErrorEditPart extends AbstractGraphicalEditPart implements Prop
      */
     @Override
     public IFigure createFigure() {
-        NodeErrorFigure errorFig = new NodeErrorFigure();
+        Node node = ((NodeContainer) ((NodeContainerPart) getParent()).getModel()).getNode();
+        NodeProgressBarFigure progressFig = new NodeProgressBarFigure(node);
 
-        if (((NodeError) getModel()).isActivate()) {
-            (errorFig).setAlpha(-1);
+        if (((NodeProgressBar) getModel()).isActivate()) {
+            (progressFig).setAlpha(-1);
         } else {
-            (errorFig).setAlpha(NodeError.ALPHA_VALUE);
+            (progressFig).setAlpha(NodeProgressBar.ALPHA_VALUE);
         }
-        ((NodeError) getModel()).setErrorSize(errorFig.getSize());
+        ((NodeProgressBar) getModel()).setProgressSize(progressFig.getSize());
 
-        return errorFig;
+        return progressFig;
     }
 
     /*
@@ -101,26 +100,31 @@ public class NodeErrorEditPart extends AbstractGraphicalEditPart implements Prop
      */
     public void propertyChange(final PropertyChangeEvent evt) {
         String request = evt.getPropertyName();
+        Double extent = new Double(0);
+        if (evt.getNewValue() instanceof Double) {
+            extent = (Double) evt.getNewValue();
+        }
+
         if (request.equals("UPDATE_STATUS")) {
-            NodeErrorFigure figure = (NodeErrorFigure) this.getFigure();
+            NodeProgressBarFigure figure = (NodeProgressBarFigure) this.getFigure();
             Node node = ((NodeContainer) ((NodeContainerPart) getParent()).getModel()).getNode();
-            figure.updateVisible(node.isErrorFlag());
-            ((NodeError) getModel()).setErrorSize((figure).getSize());
+            figure.updateVisible(true);
+            figure.setProgressData(extent.intValue());
             refreshVisuals();
         }
 
-        if (request.equals(NodeError.LOCATION)) { //$NON-NLS-1$
+        if (request.equals(NodeProgressBar.LOCATION)) { //$NON-NLS-1$
             refreshVisuals();
             getParent().refresh();
         }
         if (request.equals(EParameterName.ACTIVATE.getName())) {
-            if (((NodeError) getModel()).isActivate()) {
-                ((NodeErrorFigure) figure).setAlpha(-1);
-                ((NodeErrorFigure) figure).repaint();
+            if (((NodeProgressBar) getModel()).isActivate()) {
+                ((NodeProgressBarFigure) figure).setAlpha(-1);
+                ((NodeProgressBarFigure) figure).repaint();
                 refreshVisuals();
             } else {
-                ((NodeErrorFigure) figure).setAlpha(Node.ALPHA_VALUE);
-                ((NodeErrorFigure) figure).repaint();
+                ((NodeProgressBarFigure) figure).setAlpha(Node.ALPHA_VALUE);
+                ((NodeProgressBarFigure) figure).repaint();
                 refreshVisuals();
             }
         }
@@ -164,11 +168,13 @@ public class NodeErrorEditPart extends AbstractGraphicalEditPart implements Prop
     protected void refreshVisuals() {
         Node node = ((NodeContainer) ((NodeContainerPart) getParent()).getModel()).getNode();
         NodeLabel nodeLabel = node.getNodeLabel();
-        NodeErrorFigure errorFig = (NodeErrorFigure) this.getFigure();
+        NodeProgressBarFigure progressFig = (NodeProgressBarFigure) this.getFigure();
+
         Point loc = node.getLocation().getCopy();
-        Dimension size = errorFig.getSize();
+        NodeError nodeError = node.getNodeError();
+        Dimension size = progressFig.getSize();
         loc.x = loc.x + (node.getSize().width - size.width) / 2;
-        loc.y = loc.y + node.getSize().height + (nodeLabel.getLabelSize().height);
+        loc.y = loc.y + node.getSize().height + nodeLabel.getLabelSize().height + nodeError.getErrorSize().height;
         Rectangle rectangle = new Rectangle(loc, size);
         ((GraphicalEditPart) getParent()).setLayoutConstraint(this, getFigure(), rectangle);
 
@@ -179,19 +185,18 @@ public class NodeErrorEditPart extends AbstractGraphicalEditPart implements Prop
      * 
      * @see org.eclipse.gef.editparts.AbstractEditPart#performRequest(org.eclipse.gef.Request)
      */
-    @Override
-    public void performRequest(final Request request) {
-        if (request.getType().equals("open")) {
-            Node node = ((NodeContainer) ((NodeContainerPart) getParent()).getModel()).getNode();
-            if (node.isErrorFlag()) {
-                Shell shell = getViewer().getControl().getShell();
-
-                ErrorMessageDialog dialog = new ErrorMessageDialog(new Shell(shell), node);
-                dialog.open();
-            }
-        }
-    }
-
+    // @Override
+    // public void performRequest(final Request request) {
+    // if (request.getType().equals("open")) {
+    // Node node = ((NodeContainer) ((NodeContainerPart) getParent()).getModel()).getNode();
+    // if (node.isErrorFlag()) {
+    // Shell shell = getViewer().getControl().getShell();
+    //
+    // ErrorMessageDialog dialog = new ErrorMessageDialog(new Shell(shell), node);
+    // dialog.open();
+    // }
+    // }
+    // }
     /*
      * (non-Javadoc)
      * 
@@ -216,7 +221,7 @@ public class NodeErrorEditPart extends AbstractGraphicalEditPart implements Prop
 
     @Override
     public boolean isSelectable() {
-        return (!((NodeError) getModel()).getNode().isReadOnly()) || (this.getViewer().getSelection().isEmpty());
+        return (!((NodeProgressBar) getModel()).getNode().isReadOnly()) || (this.getViewer().getSelection().isEmpty());
     }
 
 }

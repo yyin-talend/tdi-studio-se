@@ -143,6 +143,8 @@ public class Node extends Element implements INode {
 
     private NodeError nodeError;
 
+    private NodeProgressBar nodeProgressBar;
+
     private List<IMetadataTable> metadataList;
 
     protected List<? extends INodeReturn> listReturn;
@@ -258,6 +260,10 @@ public class Node extends Element implements INode {
 
         if (nodeError == null) {
             nodeError = new NodeError(this);
+        }
+
+        if (nodeProgressBar == null) {
+            nodeProgressBar = new NodeProgressBar(this);
         }
 
         listConnector = this.component.createConnectors(this);
@@ -713,6 +719,7 @@ public class Node extends Element implements INode {
         this.location = location;
         nodeLabel.setLocation(location);
         nodeError.setLocation(location);
+        nodeProgressBar.setLocation(location);
         firePropertyChange(LOCATION, null, location);
     }
 
@@ -871,6 +878,10 @@ public class Node extends Element implements INode {
 
     public NodeError getNodeError() {
         return nodeError;
+    }
+
+    public NodeProgressBar getNodeProgressBar() {
+        return this.nodeProgressBar;
     }
 
     /**
@@ -1404,6 +1415,7 @@ public class Node extends Element implements INode {
         this.activate = activate;
         nodeLabel.setActivate(activate);
         nodeError.setActivate(activate);
+        nodeProgressBar.setActivate(activate);
         List<Connection> connectionsOutputs = (List<Connection>) this.getOutgoingConnections();
         List<Connection> connectionsInputs = (List<Connection>) this.getIncomingConnections();
 

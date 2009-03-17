@@ -34,6 +34,8 @@ import org.talend.designer.core.ui.editor.nodes.NodeLabelEditPart;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.nodes.NodePerformance;
 import org.talend.designer.core.ui.editor.nodes.NodePerformanceEditPart;
+import org.talend.designer.core.ui.editor.nodes.NodeProgressBar;
+import org.talend.designer.core.ui.editor.nodes.NodeProgressBarPart;
 import org.talend.designer.core.ui.editor.notes.Note;
 import org.talend.designer.core.ui.editor.notes.NoteEditPart;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -83,6 +85,8 @@ public class PartFactory implements EditPartFactory {
             part = new NoteEditPart();
         } else if (model instanceof NodeError) {
             part = new NodeErrorEditPart();
+        } else if (model instanceof NodeProgressBar) {
+            part = new NodeProgressBarPart();
         } else {
             return null;
         }

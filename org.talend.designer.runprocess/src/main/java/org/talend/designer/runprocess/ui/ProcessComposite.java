@@ -178,6 +178,8 @@ public class ProcessComposite extends Composite {
 
     private ToolItem itemDropDown;
 
+    private Double extend = new Double(0);
+
     private HashMap<String, IProcessMessage> errorMessMap = new HashMap<String, IProcessMessage>();
 
     /**
@@ -1317,12 +1319,12 @@ public class ProcessComposite extends Composite {
             String[] allwords = firstline.split("\\s");
             String componentName = allwords[allwords.length - 1];
             errorMessMap.put(componentName, psMess);
-            refreshNode();
-        }
 
+        }
+        refreshNode(psMess);
     }
 
-    public void refreshNode() {
+    public void refreshNode(final IProcessMessage psMess) {
         Display.getDefault().asyncExec(new Runnable() {
 
             public void run() {
@@ -1332,10 +1334,14 @@ public class ProcessComposite extends Composite {
                     String key = inode.getUniqueName();
                     if (errorMessMap.get(key) != null) {
                         if (inode instanceof Node) {
+                            IProcessMessage messPro = errorMessMap.get(key);
                             Node node = (Node) inode;
                             node.setErrorFlag(true);
-                            node.setErrorInfo(errorMessMap.get(key));
+                            node.setErrorInfo(messPro);
                             node.getNodeError().updateState("UPDATE_STATUS", true);
+                            if (node.getComponent().getFamily().equals("File Scale")) {
+                                refreshProgress(psMess, node, key);
+                            }
                             node.setErrorInfoChange("ERRORINFO", true);
                         }
                     } else {
@@ -1344,15 +1350,36 @@ public class ProcessComposite extends Composite {
                             node.setErrorFlag(false);
                             node.setErrorInfo(null);
                             node.getNodeError().updateState("UPDATE_STATUS", false);
-                            node.setErrorInfoChange("ERRORINFO", false);
+                            if (node.getComponent().getFamily().equals("File Scale")) {
+                                refreshProgress(psMess, node, key);
+                            }
 
+                            node.setErrorInfoChange("ERRORINFO", false);
                         }
                     }
                 }
-
             }
 
         });
+    }
+
+    public void refreshProgress(IProcessMessage psMess, Node node, String key) {
+        String mess = "";
+        String uniqueName = "";
+        int firIndex = psMess.getContent().indexOf("$");
+        int secIndex = psMess.getContent().indexOf("%");
+        if ((firIndex >= 0) && secIndex > firIndex) {
+            uniqueName = psMess.getContent().substring(0, firIndex);
+            mess = psMess.getContent().substring(firIndex + 1, secIndex);
+        }
+        Double extentPro = new Double(0);
+        if ((!"".equals(mess)) && mess != null) {
+            extentPro = Math.floor(Double.parseDouble(mess) / 10) + 1;
+        }
+        if (((extend != extentPro) && uniqueName.equals(key)) || ((extend != extentPro) && (extentPro == 0))) {
+            node.getNodeProgressBar().updateState("UPDATE_STATUS", new Double(extentPro));
+            extend = extentPro;
+        }
     }
 
 }
