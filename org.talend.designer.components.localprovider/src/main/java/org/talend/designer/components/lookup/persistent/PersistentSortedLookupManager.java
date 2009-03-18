@@ -201,7 +201,7 @@ public class PersistentSortedLookupManager<B extends IPersistableComparableLooku
     }
 
     public void initGet() throws IOException {
-//        previousResultRetrieved = false;
+        previousResultRetrieved = false;
         this.lookupKey = rowCreator.createRowInstance();
         lookupList = (ILookupManagerUnit<B>[]) new ILookupManagerUnit[fileIndex];
         for (int i = 0; i < fileIndex; i++) {
