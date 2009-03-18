@@ -76,6 +76,9 @@ public class ElementParameter implements IElementParameter {
 
     private boolean basedOnSubjobStarts = false;
 
+    // achen add
+    private boolean basedOnInputSchema = false;
+
     private int nbLines = NB_LINES_DEFAULT, numRow = 0; // Default values
 
     private String repositoryValue;
@@ -114,6 +117,14 @@ public class ElementParameter implements IElementParameter {
 
     public ElementParameter(final IElement element) {
         this.element = element;
+    }
+
+    public boolean isBasedOnInputSchema() {
+        return this.basedOnInputSchema;
+    }
+
+    public void setBasedOnInputSchema(boolean basedOnInputSchema) {
+        this.basedOnInputSchema = basedOnInputSchema;
     }
 
     /*

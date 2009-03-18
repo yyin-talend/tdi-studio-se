@@ -44,6 +44,7 @@ import org.talend.core.model.components.IMultipleComponentItem;
 import org.talend.core.model.components.IMultipleComponentManager;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.general.ILibrariesService;
+import org.talend.core.model.metadata.IEbcdicConstant;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
@@ -83,6 +84,7 @@ import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.NodeQueryCheckUtil;
 import org.talend.designer.core.ui.editor.properties.controllers.ColumnListController;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
+import org.talend.designer.core.ui.projectsetting.ElementParameter2ParameterType;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.core.utils.UpgradeElementHelper;
 import org.talend.designer.runprocess.IProcessMessage;
@@ -1044,7 +1046,7 @@ public class Node extends Element implements INode {
         IElementParameter schemaParamTarget = paramTarget.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName());
         IElementParameter param = getSchemaParameterFromConnector(connector);
 
-        ChangeMetadataCommand cmc = new ChangeMetadataCommand(this, param, null, tableTarget);
+        ChangeMetadataCommand cmc = new ChangeMetadataCommand(nodeTarget, param, null, tableTarget);
         CommandStack cmdStack = getCommandStack();
         if (cmdStack != null) {
             cmdStack.execute(cmc);
@@ -1058,12 +1060,14 @@ public class Node extends Element implements INode {
              */
             param.getChildParameters().get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName()).setValue(
                     repositorySchemaParamTarget.getValue());
-            this.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.REPOSITORY);
+            nodeTarget.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.REPOSITORY);
         }
     }
 
     private CommandStack getCommandStack() {
         CommandStack cmdStack = null;
+        if (process.getEditor() == null)
+            return null;
         AbstractTalendEditor talendEditor = process.getEditor().getTalendEditor();
         cmdStack = (CommandStack) talendEditor.getAdapter(CommandStack.class);
         return cmdStack;
@@ -1085,7 +1089,38 @@ public class Node extends Element implements INode {
             }
         }
         this.outputs.add(conn);
+        // achen add to fix 6601 add schema when connection
+        Node target = (Node) conn.getTarget();
+        if (isBasedOnInputSchemas(target)) {
+            IElementParameter elementParameter = target.getElementParameter(EParameterName.SCHEMAS.getName());
+            List<Map<String, String>> vlist = (List<Map<String, String>>) elementParameter.getValue();
+
+            IMetadataTable table = conn.getMetadataTable();
+            table.setTableName(conn.getName());
+            String label = table.getTableName();
+            IMetadataTable metadataTable = MetadataTool.getMetadataTableFromNode(target, label);
+            if (metadataTable == null) {
+                table.setLabel(label);
+                target.metadataList.add(table);
+                Map<String, String> map = new HashMap<String, String>();
+                map.put(IEbcdicConstant.FIELD_SCHEMA, label);
+                // map.put(EParameterName.CONNECTION.getName(), conn.getName());
+                vlist.add(map);
+            }
+        }
         fireStructureChange(OUTPUTS, conn);
+    }
+
+    public boolean isBasedOnInputSchemas(Node target) {
+        Object isBaseonInputSchema = ElementParameter2ParameterType.getParameterValue(target,
+                EParameterName.BASED_ON_INPUT_SCHEMAS.getName());
+        if (isBaseonInputSchema != null) {
+            // if base on input schema,add node's schema to target's metatlist.
+            if (Boolean.valueOf(isBaseonInputSchema.toString())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -1154,7 +1189,33 @@ public class Node extends Element implements INode {
                 }
             }
         }
+        removeTargetMetaData(connection);
         fireStructureChange(INPUTS, connection);
+    }
+
+    /**
+     * 
+     * only invoked when target node basedOnInputSchemas.
+     * 
+     * @param connection
+     */
+    private void removeTargetMetaData(IConnection connection) {
+        // achen add to fix 6601 remove the schema when delete the connection
+        Node target = (Node) connection.getTarget();
+        if (isBasedOnInputSchemas(target)) {
+            IElementParameter elementParameter = target.getElementParameter(EParameterName.SCHEMAS.getName());
+            List<Map<String, String>> vlist = (List<Map<String, String>>) elementParameter.getValue();
+
+            IMetadataTable table = connection.getMetadataTable();
+            String label = table.getTableName();
+            IMetadataTable metadataTable = MetadataTool.getMetadataTableFromNode(target, label);
+            if (metadataTable != null) {
+                target.metadataList.remove(metadataTable);
+                int pos = getIndex(vlist, label);
+                if (pos != -1)
+                    vlist.remove(pos);
+            }
+        }
     }
 
     /**
@@ -1178,7 +1239,19 @@ public class Node extends Element implements INode {
             }
         }
         this.outputs.remove(connection);
+        removeTargetMetaData(connection);
         fireStructureChange(OUTPUTS, connection);
+    }
+
+    private int getIndex(List<Map<String, String>> vlist, String label) {
+        int i = 0;
+        for (Map<String, String> map : vlist) {
+            if (map.get(IEbcdicConstant.FIELD_SCHEMA).equals(label)) {
+                return i;
+            }
+            i++;
+        }
+        return -1;
     }
 
     private int getOrder(IConnection connection) {

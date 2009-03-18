@@ -1277,6 +1277,18 @@ public class EmfComponent implements IComponent {
 
             if (xmlParam.getITEMS() != null) {
                 addItemsPropertyParameters(xmlParam.getNAME(), xmlParam.getITEMS(), param, type, node);
+                // achen add one parameter BASED_ON_INPUT_SCHEMAS
+                ITEMSType items = xmlParam.getITEMS();
+                if (items.isSetBASEDONINPUTSCHEMAS()) {
+                    ElementParameter newParam = new ElementParameter(node);
+                    newParam.setName(EParameterName.BASED_ON_INPUT_SCHEMAS.getName()); //$NON-NLS-1$
+                    newParam.setDisplayName(EParameterName.BASED_ON_INPUT_SCHEMAS.getDisplayName()); //$NON-NLS-1$
+                    newParam.setField(EParameterFieldType.TEXT);
+                    newParam.setCategory(EComponentCategory.BASIC);
+                    newParam.setShow(false);
+                    newParam.setValue(String.valueOf(items.isBASEDONINPUTSCHEMAS())); //$NON-NLS-1$  
+                    listParam.add(newParam);
+                }
             }
             if (advanced) {
                 param.setCategory(EComponentCategory.ADVANCED);

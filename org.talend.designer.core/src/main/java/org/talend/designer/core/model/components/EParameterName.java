@@ -229,7 +229,10 @@ public enum EParameterName {
 
     // use project setting
     IMPLICITCONTEXT_USE_PROJECT_SETTINGS(Messages.getString("Extra.UseProjectSettings")), //$NON-NLS-1$
-    STATANDLOG_USE_PROJECT_SETTINGS(Messages.getString("StatsAndLogs.UseProjectSettings")); //$NON-NLS-1$
+    STATANDLOG_USE_PROJECT_SETTINGS(Messages.getString("StatsAndLogs.UseProjectSettings")), //$NON-NLS-1$
+
+    // BASED_ON_INPUT_SCHEMAS
+    BASED_ON_INPUT_SCHEMAS("BASED_ON_INPUT_SCHEMAS");
 
     private String displayName;
 
