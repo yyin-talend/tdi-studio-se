@@ -109,4 +109,19 @@ public class DesignerUtilities {
 
         return process[0];
     }
+
+    public static String getParameterVar(EParameterName param) {
+        if (param == null) {
+            return null;
+        }
+        return getParameterVar(param.getName());
+    }
+
+    public static String getParameterVar(String paramName) {
+        if (paramName == null) {
+            paramName = ""; //$NON-NLS-1$
+        }
+        String underLine = "__";//$NON-NLS-1$
+        return underLine + paramName + underLine;
+    }
 }

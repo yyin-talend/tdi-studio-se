@@ -32,6 +32,7 @@ public class TalendPaletteViewerProvider extends PaletteViewerProvider {
         pViewer.createControl(parent);
         // configurePaletteViewer(pViewer);
         pViewer.setContextMenu(new TalendPaletteContextMenuProvider(pViewer));
+        pViewer.addDragSourceListener(new TalendPaletteDragSourceListener(pViewer));
         hookPaletteViewer(pViewer);
         return pViewer;
     }

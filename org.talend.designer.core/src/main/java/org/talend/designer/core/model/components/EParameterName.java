@@ -62,6 +62,7 @@ public enum EParameterName {
     ICONSELECTION("Icon(32x32)"), //$NON-NLS-1$
     PROCESS_TYPE(Messages.getString("EParameterName.generateCode")), //$NON-NLS-1$
     PROCESS_TYPE_PROCESS(Messages.getString("EParameterName.process")), //$NON-NLS-1$
+    PROCESS(Messages.getString("EParameterName.process")), //$NON-NLS-1$
     PROCESS_TYPE_VERSION(Messages.getString("EParameterName.Version")), //$NON-NLS-1$
     PROCESS_TYPE_CONTEXT(Messages.getString("EParameterName.context")), //$NON-NLS-1$
     PREVIEW(Messages.getString("EParameterName.preview")), //$NON-NLS-1$
@@ -81,6 +82,7 @@ public enum EParameterName {
     MAPPING_TYPE(Messages.getString("EParameterName.mapping")), //$NON-NLS-1$
     DUMMY("DUMMY"), //$NON-NLS-1$ Hidden parameter so no translation needed
     DBTABLE(Messages.getString("EParameterName.TableName")), //$NON-NLS-1$
+    TABLE(Messages.getString("EParameterName.TableName")), //$NON-NLS-1$
     QUERY_CONDITION("Query Condition"), //$NON-NLS-1$
     MODULE_LIST(Messages.getString("EParameterName.ModuleList")), //$NON-NLS-1$
     CURRENT_OS(Messages.getString("EParameterName.CurrentOS")), //$NON-NLS-1$

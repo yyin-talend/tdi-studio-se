@@ -24,6 +24,7 @@ import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.process.IContext;
@@ -155,7 +156,19 @@ public class GuessSchemaProcess {
         codeEnd = "nbRows++;\r\n" + "    if (nbRows > " + maximumRowsToPreview + ") break;\r\n" + "}\r\n" + "stm.close();\r\n" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
                 + "conn.close();\r\n" + "csvWriter.close();\r\n"; //$NON-NLS-1$ //$NON-NLS-2$
 
-        Node flexNode = new Node(ComponentsFactoryProvider.getInstance().get("tJavaFlex"), process); //$NON-NLS-1$
+        IComponent component = null;
+        switch (LanguageManager.getCurrentLanguage()) {
+        case JAVA:
+            component = ComponentsFactoryProvider.getInstance().get("tJavaFlex");
+            break;
+        case PERL:
+        default:
+            component = ComponentsFactoryProvider.getInstance().get("tPerlFlex");
+            break;
+
+        }
+
+        Node flexNode = new Node(component, process); //$NON-NLS-1$
         flexNode.setPropertyValue("CODE_START", codeStart); //$NON-NLS-1$
         flexNode.setPropertyValue("CODE_MAIN", codeMain); //$NON-NLS-1$
         flexNode.setPropertyValue("CODE_END", codeEnd); //$NON-NLS-1$

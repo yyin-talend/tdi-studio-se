@@ -24,9 +24,15 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.draw2d.geometry.Translatable;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.EditPart;
+import org.eclipse.gef.Request;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.dnd.TemplateTransferDropTargetListener;
+import org.eclipse.gef.palette.ToolEntry;
+import org.eclipse.gef.requests.CreateRequest;
+import org.eclipse.gef.requests.CreationFactory;
+import org.eclipse.gef.tools.CreationTool;
+import org.eclipse.gef.ui.palette.editparts.PaletteEditPart;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -84,6 +90,7 @@ import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
+import org.talend.designer.core.utils.DesignerUtilities;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -100,6 +107,8 @@ import org.talend.repository.model.RepositoryNode.EProperties;
 public class TalendEditorDropTargetListener extends TemplateTransferDropTargetListener {
 
     private AbstractTalendEditor editor;
+
+    private boolean fromPalette; // only for palette dnd, feature 6457
 
     /**
      * TalendEditorDropTargetListener constructor comment.
@@ -161,6 +170,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 getCurrentEvent().detail = DND.DROP_NONE;
             }
         }
+
     }
 
     public void dragOver(DropTargetEvent event) {
@@ -177,6 +187,37 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 event.detail = DND.DROP_NONE;
             }
         }
+    }
+
+    @Override
+    protected Request createTargetRequest() {
+        fromPalette = false;
+        CreateRequest request = new CreateRequest();
+        CreationFactory factory = getFactory(LocalSelectionTransfer.getTransfer().getSelection());
+        if (factory != null) {
+            fromPalette = true;
+            request.setFactory(factory);
+            return request;
+        }
+        return super.createTargetRequest();
+    }
+
+    @Override
+    protected CreationFactory getFactory(Object template) {
+        CreationFactory factory = super.getFactory(template);
+        if (factory == null) { // for palette dnd, feature 6457
+            if (template != null && template instanceof IStructuredSelection) {
+                Object element = ((IStructuredSelection) template).getFirstElement();
+                if (element != null && element instanceof PaletteEditPart) {
+                    Object model = ((PaletteEditPart) element).getModel();
+                    if (model != null && model instanceof ToolEntry) {
+                        return (CreationFactory) ((ToolEntry) model).getToolProperty(CreationTool.PROPERTY_CREATION_FACTORY);
+                    }
+
+                }
+            }
+        }
+        return factory;
     }
 
     /*
@@ -199,6 +240,18 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
         // iei
         // EditPart ep = getTargetEditPart();
 
+        if (fromPalette && getTargetRequest() instanceof CreateRequest && getTargetEditPart() instanceof ProcessPart) {
+            // for palette dnd, feature 6457
+            Object newObject = ((CreateRequest) getTargetRequest()).getNewObject();
+            if (newObject != null) {
+                Command command = getCommand();
+                if (command != null) {
+                    execCommandStack(command);
+                }
+            }
+            return;
+        }
+        //
         if (!(getTargetEditPart() instanceof NodeContainerPart)) {
 
             try {
@@ -213,7 +266,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             createProperty(getSelection().getFirstElement(), getTargetEditPart());
             createChildJob(getSelection().getFirstElement(), getTargetEditPart());
         }
-
+        this.eraseTargetFeedback();
     }
 
     /**
@@ -386,13 +439,18 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 RepositoryNode repositoryNode = null;
                 repositoryNode = (RepositoryNode) getSelection().getFirstElement();
                 // dnd a table
+                IElementParameter dbTableParam = node.getElementParameterFromField(EParameterFieldType.DBTABLE);
+                boolean hasDbTableField = dbTableParam != null;
+
                 if (repositoryNode.getObjectType() == ERepositoryObjectType.METADATA_CON_TABLE
                         && repositoryNode.getObject() != null
-                        && repositoryNode.getObject().getProperty().getItem() instanceof DatabaseConnectionItem) {
-                    LabelValue = "__TABLE__"; //$NON-NLS-1$
+                        && repositoryNode.getObject().getProperty().getItem() instanceof DatabaseConnectionItem
+                        && hasDbTableField) {
+                    LabelValue = DesignerUtilities.getParameterVar(dbTableParam.getName());
                 } else if (repositoryNode.getObjectType() == ERepositoryObjectType.PROCESS) { // dnd a job
-                    LabelValue = "__PROCESS__"; //$NON-NLS-1$
-                } else if (CorePlugin.getDefault().getDesignerCoreService().getPreferenceStore("defaultLabel").equals( //$NON-NLS-1$
+                    LabelValue = DesignerUtilities.getParameterVar(EParameterName.PROCESS);
+                } else if (CorePlugin.getDefault().getDesignerCoreService().getPreferenceStore(
+                        TalendDesignerPrefConstants.DEFAULT_LABEL).equals( //$NON-NLS-1$
                         node.getPropertyValue(EParameterName.LABEL.getName()))) {// dnd a default
                     LabelValue = selectedNode.getObject().getLabel();
                 }
