@@ -40,7 +40,6 @@ import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
 import org.talend.designer.mapper.model.tableentry.GlobalMapEntry;
 import org.talend.designer.mapper.model.tableentry.VarTableEntry;
 import org.talend.designer.mapper.ui.visualmap.table.DataMapTableView;
-import org.talend.designer.mapper.ui.visualmap.table.InputDataMapTableView;
 
 /**
  * Convert external data to internal data and conversely.

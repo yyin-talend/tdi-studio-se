@@ -13,7 +13,8 @@ Require-Bundle: org.eclipse.ui,
  org.talend.core,
  org.eclipse.gmf.runtime.common.ui,
  org.talend.commons.ui,
- org.apache.log4j;bundle-version="1.2.13"
+ org.apache.log4j;bundle-version="1.2.13",
+ org.talend.librariesmanager;bundle-version="2.2.0"
 Eclipse-LazyStart: true
 Bundle-Vendor: .Talend SA.
-Export-Package: org.talend.designer.components.commons
+Export-Package: org.talend.designer.components.lookup.common

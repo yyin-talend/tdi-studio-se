@@ -69,7 +69,7 @@ public class ComponentsFactory implements IComponentsFactory {
 
     private static final String SKELETON_SUFFIX = ".skeleton"; //$NON-NLS-1$
 
-    private static final String INCLUDEFILEINJET_SUFFIX = ".inc.javajet"; //$NON-NLS-1$
+    private static final String INCLUDEFILEINJET_SUFFIX = ".inc.javajet2"; //$NON-NLS-1$
 
     public ComponentsFactory() {
         if (!INCLUDEFILEINJET_SUFFIX.equals(".inc.javajet")) { //$NON-NLS-1$

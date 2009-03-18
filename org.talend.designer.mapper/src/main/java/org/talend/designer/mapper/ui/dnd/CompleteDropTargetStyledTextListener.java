@@ -12,41 +12,21 @@
 // ============================================================================
 package org.talend.designer.mapper.ui.dnd;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang.ArrayUtils;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableItem;
-import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.utils.ControlUtils;
-import org.talend.commons.ui.utils.TableUtils;
-import org.talend.commons.ui.ws.WindowSystem;
-import org.talend.core.model.metadata.IMetadataColumn;
-import org.talend.core.model.metadata.MetadataColumn;
-import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
-import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.mapper.language.ILanguage;
 import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.UIManager;
 import org.talend.designer.mapper.model.table.AbstractInOutTable;
-import org.talend.designer.mapper.model.table.InputTable;
-import org.talend.designer.mapper.model.table.VarsTable;
-import org.talend.designer.mapper.model.tableentry.InputColumnTableEntry;
-import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
-import org.talend.designer.mapper.model.tableentry.VarTableEntry;
 import org.talend.designer.mapper.ui.visualmap.table.DataMapTableView;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
-import org.talend.designer.mapper.ui.visualmap.zone.scrollable.TablesZoneView;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>

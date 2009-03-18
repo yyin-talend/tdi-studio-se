@@ -10,18 +10,22 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.mapper.model.table;
-
-import org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE;
+package org.talend.designer.components.thash.io.hashimpl;
 
 /**
- * DOC amaumont class global comment. Detailled comment <br/>
  * 
- * $Id$
- * 
+ * Data container.
  */
-public interface IUIMatchingMode extends IUIMenuOption {
+class DataContainer {
 
-    public MATCHING_MODE getMatchingMode();
-    
+    long cursorPosition;
+
+    Object object;
+
+    byte[] data;
+
+    public void reset() {
+        object = null;
+        data = null;
+    }
 }

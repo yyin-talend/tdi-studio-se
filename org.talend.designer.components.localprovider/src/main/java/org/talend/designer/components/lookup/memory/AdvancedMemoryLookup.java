@@ -10,24 +10,24 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.components.commons;
+package org.talend.designer.components.lookup.memory;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import org.apache.commons.collections.list.GrowthList;
 import org.talend.commons.utils.data.map.MultiLazyValuesMap;
-import org.talend.core.model.process.IMatchingMode;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
  * 
  * @param <V> value
  */
-public class AdvancedLookup<V> {
+public class AdvancedMemoryLookup<V> implements IMemoryLookup<V, V>, Cloneable {
 
     private MultiLazyValuesMap mapOfCol;
 
@@ -55,31 +55,11 @@ public class AdvancedLookup<V> {
 
     private static final int ONE = 1;
 
-    /**
-     * 
-     * DOC amaumont AdvancedLookup class global comment. Detailled comment <br/>
-     * 
-     */
-    public enum MATCHING_MODE implements IMatchingMode {
-        ALL_ROWS,
-        ALL_MATCHES,
-        FIRST_MATCH,
-        LAST_MATCH,
-        UNIQUE_MATCH, ;
+    int currentIndex = 0;
 
-        public static MATCHING_MODE parse(String matchingMode) {
-            MATCHING_MODE multipleMatchingModeResult = null;
-            MATCHING_MODE[] multipleMatchingModes = values();
-            for (MATCHING_MODE multipleMatchingMode : multipleMatchingModes) {
-                if (multipleMatchingMode.toString().equals(matchingMode)) {
-                    multipleMatchingModeResult = multipleMatchingMode;
-                    break;
-                }
-            }
-            return multipleMatchingModeResult;
-        }
+    private int sizeResultList;
 
-    }
+    private boolean hasResult;
 
     /**
      * 
@@ -93,11 +73,11 @@ public class AdvancedLookup<V> {
      * @param keepAllValues keep all identical values (with same key values) in each list of each key
      * @param countValuesForEachKey force internal count of values
      */
-    public AdvancedLookup(MATCHING_MODE matchingMode, boolean keepAllValues, boolean countValuesForEachKey) {
+    public AdvancedMemoryLookup(MATCHING_MODE matchingMode, boolean keepAllValues, boolean countValuesForEachKey) {
         super();
         this.keepAllValues = keepAllValues;
         this.matchingMode = matchingMode == null ? MATCHING_MODE.UNIQUE_MATCH : matchingMode;
-        this.countValuesForEachKey = countValuesForEachKey || this.matchingMode == MATCHING_MODE.UNIQUE_MATCH;
+        this.countValuesForEachKey = countValuesForEachKey; // || this.matchingMode == MATCHING_MODE.UNIQUE_MATCH;
         if (matchingMode != MATCHING_MODE.ALL_ROWS) {
             if (matchingMode == MATCHING_MODE.UNIQUE_MATCH && !keepAllValues) {
                 uniqueHash = new HashMap<V, V>();
@@ -116,12 +96,12 @@ public class AdvancedLookup<V> {
         }
     }
 
-    public AdvancedLookup() {
-        // TODO Auto-generated constructor stub
+    public AdvancedMemoryLookup() {
+
     }
 
-    public static <V> AdvancedLookup<V> getLookup(MATCHING_MODE matchingMode) {
-        return new AdvancedLookup<V>(matchingMode, false, false);
+    public static <V> AdvancedMemoryLookup<V> getLookup(MATCHING_MODE matchingMode) {
+        return new AdvancedMemoryLookup<V>(matchingMode, false, false);
     }
 
     public Object[] getResultArray() {
@@ -147,41 +127,16 @@ public class AdvancedLookup<V> {
         return objectResult;
     }
 
-    public void get(V key) {
-        if (matchingMode == MATCHING_MODE.UNIQUE_MATCH) {
-            listResult = null;
-            objectResult = uniqueHash.get(key);
-        } else {
-            if (matchingMode != MATCHING_MODE.ALL_ROWS && key != null) {
-                Object v = mapOfCol.get(key);
-                if (v instanceof List) {
-                    List<V> localList = (List<V>) v;
-                    if (matchingMode == MATCHING_MODE.ALL_MATCHES) {
-                        listResult = localList;
-                        objectResult = null;
-                    } else if (matchingMode == MATCHING_MODE.FIRST_MATCH) {
-                        objectResult = localList.get(ZERO);
-                    } else if (matchingMode == MATCHING_MODE.LAST_MATCH) {
-                        listResult = null;
-                        objectResult = localList.get(localList.size() - ONE);
-                    }
-                } else {
-                    objectResult = (V) v;
-                    listResult = null;
-                }
-            } else {
-                listResult = list;
-                objectResult = null;
-            }
-        }
-    }
-
     public boolean resultIsObject() {
         return objectResult != null;
     }
 
     public boolean resultIsList() {
         return listResult != null;
+    }
+
+    public void initPut() {
+
     }
 
     public V put(V value) {
@@ -203,6 +158,76 @@ public class AdvancedLookup<V> {
             }
         }
         return null;
+    }
+
+    public void endPut() {
+
+    }
+
+    public void initGet() {
+
+    }
+
+    public void lookup(V key) {
+        if (matchingMode == MATCHING_MODE.UNIQUE_MATCH) {
+            listResult = null;
+            objectResult = uniqueHash.get(key);
+        } else {
+            if (matchingMode != MATCHING_MODE.ALL_ROWS && key != null) {
+                Object v = mapOfCol.get(key);
+                if (v instanceof List) {
+                    List<V> localList = (List<V>) v;
+                    if (matchingMode == MATCHING_MODE.ALL_MATCHES) {
+                        listResult = localList;
+                        currentIndex = 0;
+                        sizeResultList = localList.size();
+                        objectResult = null;
+                    } else if (matchingMode == MATCHING_MODE.FIRST_MATCH) {
+                        objectResult = localList.get(ZERO);
+                    } else if (matchingMode == MATCHING_MODE.LAST_MATCH) {
+                        hasResult = false;
+                        listResult = null;
+                        objectResult = localList.get(localList.size() - ONE);
+                    }
+                } else {
+                    hasResult = false;
+                    objectResult = (V) v;
+                    listResult = null;
+                }
+            } else {
+                hasResult = false;
+                listResult = list;
+                currentIndex = 0;
+                sizeResultList = list.size();
+                objectResult = null;
+            }
+        }
+    }
+
+    public boolean hasNext() {
+        if (objectResult != null) {
+            return true;
+        } else if (listResult != null && currentIndex != sizeResultList) {
+            return true;
+        }
+        return false;
+    }
+
+    public V next() {
+        if (objectResult != null) {
+            hasResult = true;
+            V object = objectResult;
+            objectResult = null;
+            return object;
+        } else if (listResult != null) {
+            hasResult = true;
+            return listResult.get(currentIndex++);
+        }
+        throw new NoSuchElementException();
+    }
+
+    public void endGet() {
+        clear();
     }
 
     /**
@@ -247,7 +272,7 @@ public class AdvancedLookup<V> {
      * @return
      */
     public boolean hasResult() {
-        return resultIsObject() || resultIsList();
+        return hasResult;
     }
 
     /**
@@ -330,6 +355,19 @@ public class AdvancedLookup<V> {
                 return ZERO;
             }
         }
+    }
+
+    /**
+     * Getter for matchingMode.
+     * @return the matchingMode
+     */
+    public MATCHING_MODE getMatchingMode() {
+        return matchingMode;
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 
 }

@@ -770,15 +770,15 @@
 								    if(externalTable.isPersistent()) {
 								    %>
 										tHash_Lookup_<%=tableName%> = 
-											(org.talend.designer.components.persistent.Persistent<%= isAllRows ? "" : "Sorted" %>LookupManager<<%=tableName%>Struct>) 
-												((org.talend.designer.components.persistent.Persistent<%= isAllRows ? "" : "Sorted" %>LookupManager<<%=tableName%>Struct>) 
+											(org.talend.designer.components.lookup.persistent.Persistent<%= isAllRows ? "" : "Sorted" %>LookupManager<<%=tableName%>Struct>) 
+												((org.talend.designer.components.lookup.persistent.Persistent<%= isAllRows ? "" : "Sorted" %>LookupManager<<%=tableName%>Struct>) 
 													 globalMap.get( "tHash_Lookup_<%=tableName%>" ));
 									<%
 								    } else {
 								    %>
 										tHash_Lookup_<%=tableName%> = 
-										(org.talend.designer.components.commons.AdvancedMemoryLookup<<%=tableName%>Struct>) 
-										((org.talend.designer.components.commons.AdvancedMemoryLookup<<%=tableName%>Struct>) 
+										(org.talend.designer.components.lookup.memory.AdvancedMemoryLookup<<%=tableName%>Struct>) 
+										((org.talend.designer.components.lookup.memory.AdvancedMemoryLookup<<%=tableName%>Struct>) 
 											globalMap.get( "tHash_Lookup_<%=tableName%>" ));
 									<%
 								    }

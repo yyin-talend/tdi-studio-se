@@ -10,18 +10,34 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.mapper.model.table;
 
-import org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE;
+package org.talend.designer.components.lookup.memory;
+
+import org.talend.designer.components.lookup.common.ICommonLookup;
+
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
  * 
- * $Id$
- * 
+ * @param <K> K
+ * @param <V> V
  */
-public interface IUIMatchingMode extends IUIMenuOption {
+public interface IMemoryLookup<K, V> extends ICommonLookup {
 
-    public MATCHING_MODE getMatchingMode();
-    
+    public void initPut();
+
+    public V put(V bean);
+
+    public void endPut();
+
+    public void initGet();
+
+    public void lookup(K key);
+
+    public boolean hasNext();
+
+    public V next();
+
+    public void endGet();
+
 }

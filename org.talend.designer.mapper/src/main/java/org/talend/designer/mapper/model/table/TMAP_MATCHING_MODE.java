@@ -12,7 +12,7 @@
 // ============================================================================
 package org.talend.designer.mapper.model.table;
 
-import org.talend.designer.components.commons.AdvancedLookup.MATCHING_MODE;
+import org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE;
 import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.ui.image.ImageInfo;
 
@@ -34,7 +34,7 @@ public enum TMAP_MATCHING_MODE implements IUIMatchingMode {
                 MATCHING_MODE.FIRST_MATCH,
                 "TMAP_MATCHING_MODE.FIRST_MATCH.label", //$NON-NLS-1$
                 "TMAP_MATCHING_MODE.FIRST_MATCH.tooltip", ImageInfo.FIRST_MATCH), //$NON-NLS-1$
-    LAST_MATCH(
+    LAST_MATCH(/* @deprecated: replaced by UNIQUE_MATCH */
                MATCHING_MODE.LAST_MATCH,
                "TMAP_MATCHING_MODE.LAST_MATCH.label", //$NON-NLS-1$
                "TMAP_MATCHING_MODE.LAST_MATCH.tooltip", ImageInfo.LAST_MATCH), //$NON-NLS-1$

@@ -10,33 +10,19 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
+package org.talend.designer.components.lookup.persistent;
 
-package org.talend.designer.components.commons;
-
-import java.io.IOException;
+import routines.system.IPersistableComparableLookupRow;
 
 /**
- * DOC amaumont class global comment. Detailled comment <br/>
  * 
- * @param <K> K
- * @param <V> V
+ * Abstract class for persistent lookup ("Store on disk"). 
+ * @param <B> bean
  */
-public interface IMemoryLookup<K, V> {
+public class AbstractPersistentLookup<B extends IPersistableComparableLookupRow<B>> {
 
-    public void initPut();
-
-    public V put(V bean);
-
-    public void endPut();
-
-    public void initGet();
-
-    public void lookup(K key);
-
-    public boolean hasNext();
-
-    public V next();
-
-    public void endGet();
+    public AbstractPersistentLookup() {
+        super();
+    }
 
 }

@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.talend.commons.utils.generation.CodeGenerationUtils;
-import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
 import org.talend.designer.mapper.language.ILanguage;

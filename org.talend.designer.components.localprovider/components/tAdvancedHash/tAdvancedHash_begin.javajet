@@ -68,14 +68,14 @@
 					
 					
 			   %>
-			   		org.talend.designer.components.commons.AdvancedLookup.MATCHING_MODE matchingModeEnum_<%=connectionName%> = 
-			   			org.talend.designer.components.commons.AdvancedLookup.MATCHING_MODE.<%= matchingModeStr %>;
+			   		org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE matchingModeEnum_<%=connectionName%> = 
+			   			org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE.<%= matchingModeStr %>;
 			   
 			   <%
 				if(hashConfiguration != null && hashConfiguration.isPersistent()) {
 				%>
-					org.talend.designer.components.persistent.Persistent<%= isAllRows ? "" : "Sorted" %>LookupManager<<%=connectionName%>Struct> tHash_Lookup_<%=connectionName%> = 
-	   					new org.talend.designer.components.persistent.Persistent<%= isAllRows ? "" : "Sorted" %>LookupManager<<%=connectionName%>Struct>(matchingModeEnum_<%=connectionName%>, <%= tempFolder %> + "/"+ jobName +"_tMapData_" + pid +"_Lookup_<%=connectionName%>_"
+					org.talend.designer.components.lookup.persistent.Persistent<%= isAllRows ? "" : "Sorted" %>LookupManager<<%=connectionName%>Struct> tHash_Lookup_<%=connectionName%> = 
+	   					new org.talend.designer.components.lookup.persistent.Persistent<%= isAllRows ? "" : "Sorted" %>LookupManager<<%=connectionName%>Struct>(matchingModeEnum_<%=connectionName%>, <%= tempFolder %> + "/"+ jobName +"_tMapData_" + pid +"_Lookup_<%=connectionName%>_"
 	   					, new org.talend.designer.components.persistent.IRowCreator() {
 	   						public <%=connectionName%>Struct createRowInstance() {
 	   							return new <%=connectionName%>Struct();
@@ -92,8 +92,8 @@
 	   			<%	
 	   			} else {
 	   			%>
-	   				org.talend.designer.components.commons.AdvancedMemoryLookup<<%=connectionName%>Struct> tHash_Lookup_<%=connectionName%> = 
-	   					org.talend.designer.components.commons.AdvancedMemoryLookup.
+	   				org.talend.designer.components.lookup.memory.AdvancedMemoryLookup<<%=connectionName%>Struct> tHash_Lookup_<%=connectionName%> = 
+	   					org.talend.designer.components.lookup.memory.AdvancedMemoryLookup.
 	   						<<%=connectionName%>Struct>getLookup(matchingModeEnum_<%=connectionName%>);
 
 		   	   	   globalMap.put("tHash_Lookup_<%=connectionName%>", tHash_Lookup_<%=connectionName%>);

@@ -10,18 +10,33 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.mapper.model.table;
+package org.talend.designer.components.lookup.persistent;
 
-import org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE;
+import java.io.IOException;
+
+import routines.system.IPersistableRow;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
  * 
- * $Id$
- * 
+ * @param <R> R as row/bean
  */
-public interface IUIMatchingMode extends IUIMenuOption {
+public interface IPersistentRowManager<R extends IPersistableRow> {
 
-    public MATCHING_MODE getMatchingMode();
-    
+    public void initPut();
+
+    public void put(R row) throws IOException;
+
+    public void endPut() throws IOException;
+
+    public void initGet() throws IOException;
+
+    public boolean hasNext() throws IOException;
+
+    public R next() throws IOException;
+
+    public void endGet() throws IOException;
+
+    public R getNextFreeRow();
+
 }
