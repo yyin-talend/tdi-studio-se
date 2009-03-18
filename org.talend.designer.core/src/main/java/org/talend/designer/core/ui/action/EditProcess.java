@@ -36,6 +36,7 @@ import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.runprocess.ItemCacheManager;
@@ -110,8 +111,8 @@ public class EditProcess extends AContextualAction {
             if (editorPart == null) {
                 fileEditorInput.setView(getViewPart());
                 fileEditorInput.setRepositoryNode(node);
-                /* MultiPageTalendEditor openEditor = (MultiPageTalendEditor) */page.openEditor(fileEditorInput,
-                        MultiPageTalendEditor.ID, true);
+                editorPart = page.openEditor(fileEditorInput, MultiPageTalendEditor.ID, true);
+                /* MultiPageTalendEditor openEditor = (MultiPageTalendEditor) */
                 // List<AbstractProcessProvider> findAllProcessProviders =
                 // AbstractProcessProvider.findAllProcessProviders();
                 // boolean isImport = false;
@@ -131,6 +132,10 @@ public class EditProcess extends AContextualAction {
             } else {
                 ((MultiPageTalendEditor) editorPart).setReadOnly(fileEditorInput.setForceReadOnly(false));
                 page.activate(editorPart);
+            }
+            // see the bug 6585,qli comment.
+            if (editorPart instanceof AbstractMultiPageTalendEditor) {
+                ((AbstractMultiPageTalendEditor) editorPart).updateTitleImage();
             }
             refresh(obj);
         } catch (PartInitException e) {
