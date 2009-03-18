@@ -108,9 +108,9 @@ String key_<%=schemaName %>_<%=cid %> = "";
 				highBound = cardString;
 			}
 %>
-int <%=schemaName %>_count = <%=lowBound %>;
-final int <%=schemaName %>_lowBound = <%=lowBound %>;
-final int <%=schemaName %>_highBound = <%=highBound %>;
+int count_<%=schemaName %>_<%=cid %> = <%=lowBound %>;
+final int lowBound_<%=schemaName %>_<%=cid %> = <%=lowBound %>;
+final int highBound_<%=schemaName %>_<%=cid %> = <%=highBound %>;
 <%
 		}
 	}//FIM_001
@@ -131,6 +131,7 @@ while (fid_<%=cid %>.nextRecord()) {
 	<%=(i==0) ? "" : "else " %>if(fid_<%=cid %>.get(0).equals(<%=record %>)){
 <%
 		String schemaName = schema.get("SCHEMA");
+		boolean keyUpdated = false;
 		for(int j=0; j<schemas.size();j++){
 			if(i == j){
 				continue;
@@ -138,33 +139,36 @@ while (fid_<%=cid %>.nextRecord()) {
 			Map<String, String> schema2 = schemas.get(j);
 			if(schema.get("RECORD").equals(schema2.get("PARENT_RECORD"))){//FIM_003
 			//get child node
-				String keyIndex = schema.get("KEY_COLUMN_INDEX");
-				if(keyIndex.equals("")){//no key ??? 
+				if(!keyUpdated){//FIM_003_1
+					keyUpdated = true;
+					String keyIndex = schema.get("KEY_COLUMN_INDEX");
+					if(keyIndex.equals("")){//no key ??? 
 %>
 		key_<%=schemaName %>_<%=cid %>++;
 <%
-				}else{
+					}else{
 %>
 		key_<%=schemaName %>_<%=cid %> = fid_<%=cid %>.get(<%=keyIndex%>);
 <%
-				}
+					}
+				}//FIM_003_1
 				String schemaNameChild = schema2.get("SCHEMA");
 				String cardinality = schema2.get("CARDINALITY");
 				String childRecord = schema2.get("RECORD");
 %>
-		if((<%=schemaNameChild %>_count < <%=schemaNameChild %>_lowBound) || (<%=schemaNameChild %>_count > <%=schemaNameChild %>_highBound)){
-			throw new Exception("Data error in file: The cardinality for " + <%=childRecord %> + " is <%=cardinality %>, but we have found " + <%=schemaNameChild %>_count + ".");//thow exception............
+		if((count_<%=schemaNameChild %>_<%=cid %> < lowBound_<%=schemaNameChild %>_<%=cid %>) || (count_<%=schemaNameChild %>_<%=cid %> > highBound_<%=schemaNameChild %>_<%=cid %>)){
+			throw new Exception("Data error in file: The cardinality for " + <%=childRecord %> + " is <%=cardinality %>, but we have found " + count_<%=schemaNameChild %>_<%=cid %> + ".");//thow exception............
 		}
-		<%=schemaNameChild %>_count = 0;
+		count_<%=schemaNameChild %>_<%=cid %> = 0;
 <%
 			}//FIM_003
 		}
 		if(!schema.get("PARENT_RECORD").equals("\"\"")){//has parent node
 			String cardinality = schema.get("CARDINALITY");
 %>
-		<%=schemaName %>_count++;
-		if((<%=schemaName %>_count < <%=schemaName %>_lowBound) || (<%=schemaName %>_count > <%=schemaName %>_highBound)){
-			throw new Exception("Data error in file: The cardinality for " + <%=record %> + " is <%=cardinality %>, but we have found " + <%=schemaName %>_count + ".");//thow exception............
+		count_<%=schemaName %>_<%=cid %>++;
+		if((count_<%=schemaName %>_<%=cid %> < lowBound_<%=schemaName %>_<%=cid %>) || (count_<%=schemaName %>_<%=cid %> > highBound_<%=schemaName %>_<%=cid %>)){
+			throw new Exception("Data error in file: The cardinality for " + <%=record %> + " is <%=cardinality %>, but we have found " + count_<%=schemaName %>_<%=cid %> + ".");//thow exception............
 		}
 <%
 		}
@@ -333,9 +337,9 @@ String key_<%=schemaName %>_<%=cid %> = "";
 				highBound = cardString;
 			}
 %>
-int <%=schemaName %>_count = <%=lowBound %>;
-final int <%=schemaName %>_lowBound = <%=lowBound %>;
-final int <%=schemaName %>_highBound = <%=highBound %>;
+int count_<%=schemaName %>_<%=cid %> = <%=lowBound %>;
+final int lowBound_<%=schemaName %>_<%=cid %> = <%=lowBound %>;
+final int highBound_<%=schemaName %>_<%=cid %> = <%=highBound %>;
 <%
 		}
 	}//FIM_001
@@ -402,6 +406,7 @@ while ( csvReader<%=cid %>.readRecord() ) {
 	<%=(i==0) ? "" : "else " %>if((row<%=cid %>.length == 0) ? ("".equals(<%=record %>)) : (row<%=cid %>[0].equals(<%=record %>))){
 <%
 		String schemaName = schema.get("SCHEMA");
+		boolean keyUpdated = false;
 		for(int j=0; j<schemas.size();j++){
 			if(i == j){
 				continue;
@@ -409,8 +414,10 @@ while ( csvReader<%=cid %>.readRecord() ) {
 			Map<String, String> schema2 = schemas.get(j);
 			if(schema.get("RECORD").equals(schema2.get("PARENT_RECORD"))){//FIM_003
 			//get child node
-				String keyIndex = schema.get("KEY_COLUMN_INDEX");
-				if(keyIndex.equals("")){//no key ??? 
+				if(!keyUpdated){//FIM_003_1
+					keyUpdated = true;
+					String keyIndex = schema.get("KEY_COLUMN_INDEX");
+					if(keyIndex.equals("")){//no key ??? 
 %>
 		key_<%=schemaName %>_<%=cid %>++;
 <%
@@ -418,24 +425,25 @@ while ( csvReader<%=cid %>.readRecord() ) {
 %>
 		key_<%=schemaName %>_<%=cid %> = (row<%=cid %>.length <= <%=keyIndex%>) ? "" : row<%=cid %>[<%=keyIndex %>];
 <%
-				}
+					}
+				}//FIM_003_1
 				String schemaNameChild = schema2.get("SCHEMA");
 				String cardinality = schema2.get("CARDINALITY");
 				String childRecord = schema2.get("RECORD");
 %>
-		if((<%=schemaNameChild %>_count < <%=schemaNameChild %>_lowBound) || (<%=schemaNameChild %>_count > <%=schemaNameChild %>_highBound)){
-			throw new Exception("Data error in file: The cardinality for " + <%=childRecord %> + " is <%=cardinality %>, but we have found " + <%=schemaNameChild %>_count + ".");//thow exception............
+		if((count_<%=schemaNameChild %>_<%=cid %> < lowBound_<%=schemaNameChild %>_<%=cid %>) || (count_<%=schemaNameChild %>_<%=cid %> > highBound_<%=schemaNameChild %>_<%=cid %>)){
+			throw new Exception("Data error in file: The cardinality for " + <%=childRecord %> + " is <%=cardinality %>, but we have found " + count_<%=schemaNameChild %>_<%=cid %> + ".");//thow exception............
 		}
-		<%=schemaNameChild %>_count = 0;
+		count_<%=schemaNameChild %>_<%=cid %> = 0;
 <%
 			}//FIM_003
 		}
 		if(!schema.get("PARENT_RECORD").equals("\"\"")){//has parent node
 			String cardinality = schema.get("CARDINALITY");
 %>
-		<%=schemaName %>_count++;
-		if((<%=schemaName %>_count < <%=schemaName %>_lowBound) || (<%=schemaName %>_count > <%=schemaName %>_highBound)){
-			throw new Exception("Data error in file: The cardinality for " + <%=record %> + " is <%=cardinality %>, but we have found " + <%=schemaName %>_count + ".");//thow exception............
+		count_<%=schemaName %>_<%=cid %>++;
+		if((count_<%=schemaName %>_<%=cid %> < lowBound_<%=schemaName %>_<%=cid %>) || (count_<%=schemaName %>_<%=cid %> > highBound_<%=schemaName %>_<%=cid %>)){
+			throw new Exception("Data error in file: The cardinality for " + <%=record %> + " is <%=cardinality %>, but we have found " + count_<%=schemaName %>_<%=cid %> + ".");//thow exception............
 		}
 <%
 		}
