@@ -28,6 +28,9 @@ String dbencoding = ElementParameterParser.getValue(node, "__ENCODING__");
 String dbquery = ElementParameterParser.getValue(node, "__QUERY__");
 dbquery = dbquery.replaceAll("\n"," ");
 dbquery = dbquery.replaceAll("\r"," ");
+String useCursor= ElementParameterParser.getValue(node, "__USE_CURSOR__");
+String cursorSize= ElementParameterParser.getValue(node, "__CURSOR_SIZE__");
+
 boolean whetherTrimAllCol = ElementParameterParser.getValue(node, "__TRIM_ALL_COLUMN__").equals("true");
 List<Map<String, String>> trimColumnList = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__TRIM_COLUMN__");
 
@@ -57,6 +60,14 @@ if (metadata != null) {
 	    }
 	%>	
 	java.sql.Statement statement_<%=cid%> = connection_<%=cid%>.createStatement();
+    <%
+    if(useCursor.equals("true")) {
+    %>
+        statement_<%=cid%>.setFetchSize(<%=cursorSize %>);
+    <%
+    }
+    %>	
+	
 	java.sql.ResultSet resultSet_<%=cid%> = statement_<%=cid%>.executeQuery(<%=dbquery%>);
 	java.sql.ResultSetMetaData resultSetMetadata_<%=cid%> = resultSet_<%=cid%>.getMetaData();
 	int columnsCount_<%=cid%> = resultSetMetadata_<%=cid%>.getColumnCount();
