@@ -141,17 +141,19 @@ public class JavaProcessUtil {
 
         if (curParam.getName().equals("DB_VERSION")) { //$NON-NLS-1$
             String jdbcName = (String) curParam.getValue();
-            if (jdbcName.contains("11g")) { //$NON-NLS-1$
-                if (System.getProperty("java.version").startsWith("1.6")) { //$NON-NLS-1$ //$NON-NLS-2$
-                    jdbcName = jdbcName.replace('5', '6');
-                } else {
-                    jdbcName = jdbcName.replace('6', '5');
+            if (jdbcName != null) {
+                if (jdbcName.contains("11g")) { //$NON-NLS-1$
+                    if (System.getProperty("java.version").startsWith("1.6")) { //$NON-NLS-1$ //$NON-NLS-2$
+                        jdbcName = jdbcName.replace('5', '6');
+                    } else {
+                        jdbcName = jdbcName.replace('6', '5');
+                    }
                 }
-            }
 
-            if (flag == true) {
-                neededLibraries.add((jdbcName).replaceAll(TalendTextUtils.QUOTATION_MARK, "").replaceAll( //$NON-NLS-1$
-                        TalendTextUtils.SINGLE_QUOTE, ""));//$NON-NLS-1$
+                if (flag == true) {
+                    neededLibraries.add((jdbcName).replaceAll(TalendTextUtils.QUOTATION_MARK, "").replaceAll( //$NON-NLS-1$
+                            TalendTextUtils.SINGLE_QUOTE, ""));//$NON-NLS-1$
+                }
             }
         }
 

@@ -56,6 +56,10 @@ public class StatsAndLogsConstants {
 
     private static final String TERADATA = "TERADATA"; //$NON-NLS-1$
 
+    public static final String[] DB_OUTPUT_COMPONENTS = new String[] {
+            "tDBOutput", "tMysqlOutput", "tMSSqlOutput", ORACLE_WITH_SID_CONN_TYPE, ORACLE_WITH_SERVICE_CONN_TYPE,//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            "tPostgresqlOutput", "tDB2Output", "tSybaseOutput", "tIngresOutput", "tInterbaseOutput", "tSQLiteOutput", "tFirebirdOutput", "tInformixOutput", "tAccessOutput", "tTeradataOutput" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$
+
     private static final String[] PERL_DISPLAY_DBNAMES = new String[] {
             "Generic ODBC", "MySQL", "Microsoft SQL Server (Odbc driver)", "Oracle with SID", "Oracle with service name", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
             "PostgreSQL", "IBM DB2", "Sybase", "Ingres", "Interbase", "SQLite", "FireBird", "Informix", "Access", "Teradata" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$ 

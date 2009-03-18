@@ -205,6 +205,17 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
         newParam.setField(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 
+        // This parameter is use for Connection Component
+        newParam = new ElementParameter(node);
+        newParam.setName("USE_EXISTING_CONNECTION"); //$NON-NLS-1$
+        newParam.setField(EParameterFieldType.CHECK);
+        elemParamList.add(newParam);
+
+        newParam = new ElementParameter(node);
+        newParam.setName("CONNECTION"); //$NON-NLS-1$
+        newParam.setField(EParameterFieldType.TEXT);
+        elemParamList.add(newParam);
+
         // This parameter is use for Oracle component
         newParam = new ElementParameter(node);
         newParam.setName("CONNECTION_TYPE"); //$NON-NLS-1$
@@ -277,8 +288,9 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
         newParam = new ElementParameter(node);
         newParam.setName("COMMIT_EVERY"); //$NON-NLS-1$
         newParam.setField(EParameterFieldType.TEXT);
-        newParam.setValue("100"); //$NON-NLS-1$
+        newParam.setValue("1"); //$NON-NLS-1$
         elemParamList.add(newParam);
+
     }
 
     protected void addFileOutputParameters(List<IElementParameter> elemParamList, INode node) {
@@ -317,6 +329,7 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
         newParam.setField(EParameterFieldType.TEXT);
         newParam.setValue(TalendTextUtils.addQuotes("ISO-8859-15")); //$NON-NLS-1$
         elemParamList.add(newParam);
+
     }
 
     protected void loadMultipleComponentManager() {
@@ -363,6 +376,9 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
             }
 
             if (useDb) {
+                multipleComponentManager.addParam("self.USE_EXISTING_CONNECTION", "DB.USE_EXISTING_CONNECTION"); //$NON-NLS-1$ //$NON-NLS-2$
+                multipleComponentManager.addParam("self.CONNECTION", "DB.CONNECTION"); //$NON-NLS-1$ //$NON-NLS-2$
+                multipleComponentManager.addParam("self.COMMIT_EVERY", "DB.COMMIT_EVERY"); //$NON-NLS-1$ //$NON-NLS-2$
                 multipleComponentManager.addParam("self.HOST", "DB.HOST"); //$NON-NLS-1$ //$NON-NLS-2$
                 multipleComponentManager.addParam("self.HOST", "DB.SERVER"); //$NON-NLS-1$ //$NON-NLS-2$
                 multipleComponentManager.addParam("self.HOST", "DB.DSN"); //$NON-NLS-1$ //$NON-NLS-2$
