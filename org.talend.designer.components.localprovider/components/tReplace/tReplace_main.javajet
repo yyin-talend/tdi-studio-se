@@ -10,6 +10,16 @@ imports="
     java.util.Map
 "
 %>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+String incomingConnName = null;
+boolean supportRegex = ElementParameterParser.getValue(node,"__SUPPORT_REGEX__").equals("true");
+List<? extends IConnection> inConns = node.getIncomingConnections();
+if(!supportRegex){
+%>
 class ReplaceUtil {
 
     public String[] split(String src, String separtor) {
@@ -35,6 +45,20 @@ class ReplaceUtil {
     }
 
     public String replaceAll(String src, String target, String replacement, boolean caseSensitive, boolean wholeWord) {
+    	replacement = replacement == null ? "" : replacement;
+        if(src == null || src == ""){
+        	if(target == null || target == ""){
+        		return replacement;
+        	}else{
+	        	src = new String("");
+        	}
+        }
+        if(target == null || target == ""){
+        	return src;
+        }
+        if(src.length() < target.length()){
+        	return src;
+        }
         if (caseSensitive) {
             if (wholeWord) {
                 String str = src.replace(target, target);
@@ -50,13 +74,13 @@ class ReplaceUtil {
                          if (endIndex == 0 && fromIndex == str.length()) {
                             sb.append(replacement);
                         } else if (endIndex == 0) {
-                            if (src.charAt(endIndex + target.length() - 1) == ' ') {
+                            if (src.charAt(endIndex + target.length()) == ' ') {
                                 sb.append(replacement);
                             } else {
                                 sb.append(src.substring(endIndex, endIndex + target.length()));
                             }
                         } else if (fromIndex < src.length()) {
-                            if (src.charAt(endIndex + target.length() - 1) == ' ' && src.charAt(endIndex - 1) == ' ') {
+                            if (src.charAt(endIndex + target.length()) == ' ' && src.charAt(endIndex - 1) == ' ') {
                                 sb.append(replacement);
                             } else {
                                 sb.append(src.substring(endIndex, endIndex + target.length()));
@@ -132,11 +156,7 @@ class ReplaceUtil {
     }
 }
 <%
-CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-INode node = (INode)codeGenArgument.getArgument();
-String cid = node.getUniqueName();
-String incomingConnName = null;
-List<? extends IConnection> inConns = node.getIncomingConnections();
+}
 if(inConns != null && inConns.size() > 0) {
     IConnection inConn = inConns.get(0);
     incomingConnName = inConn.getName();
@@ -164,17 +184,28 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
                 String replaceStr = substitution.get("REPLACE_STRING");
                 if(replaceStr != null && !replaceStr.equals("")) {
                     String searchStr = substitution.get("SEARCH_PATTERN");
-                    String caseSensitive = substitution.get("CASE_SENSITIVE");
-                    String wholeWord = substitution.get("WHOLE_WORD");
-%>
-                    
-                    <%=incomingConnName%>.<%=substitution.get("INPUT_COLUMN")%> = new ReplaceUtil().replaceAll(<%=incomingConnName%>.<%=substitution.get("INPUT_COLUMN")%>, <%=searchStr%>, <%=replaceStr%>,"<%=caseSensitive%>".equals("true")?true:false,"<%=wholeWord%>".equals("true")?true:false);
+                    if(!supportRegex){
+                    	String caseSensitive = substitution.get("CASE_SENSITIVE"); 
+	                    String wholeWord = substitution.get("WHOLE_WORD"); 
+%> 
+						<%=incomingConnName%>.<%=substitution.get("INPUT_COLUMN")%> = new ReplaceUtil().replaceAll(<%=incomingConnName%>.<%=substitution.get("INPUT_COLUMN")%>, <%=searchStr%>, <%=replaceStr%>,"<%=caseSensitive%>".equals("true")?true:false,"<%=wholeWord%>".equals("true")?true:false);
+<%						 
+                    }else{
+                    	if(substitution.get("CASE_SENSITIVE").equals("false")) {
+	 	                	searchStr = "\"(?i)\" + " + searchStr;
+	 	                }
+	 	                if(substitution.get("WHOLE_WORD").equals("true")) {
+	 	                    searchStr = "\"^\" + " + searchStr + " + \"$\"";
+	 	                }
+	 	%> 
+	 	                    <%=incomingConnName%>.<%=substitution.get("INPUT_COLUMN")%> = StringUtils.replaceAll(<%=incomingConnName%>.<%=substitution.get("INPUT_COLUMN")%>, <%=searchStr%>, <%=replaceStr%>); 
 <%
+                    }
                 }
             }
-            %>
+%>
             nb_line_ok_<%=cid%>++;
-            <%
+<%
         }
     }
     
