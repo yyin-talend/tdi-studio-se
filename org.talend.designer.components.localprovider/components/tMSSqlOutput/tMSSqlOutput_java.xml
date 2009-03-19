@@ -6,6 +6,10 @@
 		<SIGNATURE />
 	</HEADER>
 
+  <FAMILIES>
+    <FAMILY>Databases/MS SQL Server</FAMILY>
+  </FAMILIES>
+
 	<DOCUMENTATION>
 		<URL />
 	</DOCUMENTATION>

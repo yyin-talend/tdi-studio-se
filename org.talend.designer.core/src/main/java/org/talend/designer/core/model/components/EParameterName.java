@@ -57,7 +57,6 @@ public enum EParameterName {
     REPOSITORY_PROPERTY_TYPE("Repository"), //$NON-NLS-1$  Hidden parameter so no translation needed
     CONDITION(Messages.getString("EParameterName.condition")), //$NON-NLS-1$
     COMPONENT_NAME(Messages.getString("EParameterName.componentName")), //$NON-NLS-1$
-    TRANSLATED_COMPONENT_NAME("Translated Component Name"), //$NON-NLS-1$  Hidden parameter so no translation needed
     UPDATE_COMPONENTS("Update components"), //$NON-NLS-1$  Hidden parameter so no translation needed
     ICONSELECTION("Icon(32x32)"), //$NON-NLS-1$
     PROCESS_TYPE(Messages.getString("EParameterName.generateCode")), //$NON-NLS-1$

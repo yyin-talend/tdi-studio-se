@@ -13,6 +13,10 @@
     <SIGNATURE></SIGNATURE>
   </HEADER>
 
+  <FAMILIES>
+    <FAMILY>Processing</FAMILY>
+  </FAMILIES>
+
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>

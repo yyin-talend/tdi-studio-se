@@ -13,6 +13,10 @@
     <SIGNATURE/>
   </HEADER>
 
+  <FAMILIES>
+    <FAMILY>ELT/Teradata</FAMILY>
+  </FAMILIES>
+
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>

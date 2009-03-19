@@ -219,6 +219,13 @@ public class EmfComponent implements IComponent {
 
                 checkAvailableCodeParts();
 
+                if (compType.getFAMILIES() == null) {
+                    throw new Exception("FAMILIES definition missing in the component"); //$NON-NLS-1$
+                }
+                if (compType.getFAMILIES().getFAMILY().isEmpty()) {
+                    throw new Exception("FAMILIES definition is empty in the component"); //$NON-NLS-1$
+                }
+
                 isLoaded = true;
             } catch (Exception e) {
                 isLoaded = false;
@@ -602,7 +609,7 @@ public class EmfComponent implements IComponent {
 
         FORMATType formatTypeInXML = compType.getHEADER().getFORMAT();
 
-        String formatId = getNodeFormatIdWithoutFormatType(node.getLabel(), getFamily());
+        String formatId = getNodeFormatIdWithoutFormatType(node.getLabel(), getOriginalFamilyName());
 
         param = new ElementParameter(node);
         param.setName(EParameterName.LABEL.getName());
@@ -702,17 +709,6 @@ public class EmfComponent implements IComponent {
         listParam.add(param);
 
         param = new ElementParameter(node);
-        param.setName(EParameterName.TRANSLATED_COMPONENT_NAME.getName());
-        param.setValue(getTranslatedName());
-        param.setDisplayName(EParameterName.TRANSLATED_COMPONENT_NAME.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
-        param.setCategory(EComponentCategory.ADVANCED);
-        param.setNumRow(1);
-        param.setReadOnly(true);
-        param.setShow(false);
-        listParam.add(param);
-
-        param = new ElementParameter(node);
         param.setName(EParameterName.VERSION.getName());
         param.setValue(compType.getHEADER().getVERSION() + " (" + compType.getHEADER().getSTATUS() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
         //$NON-NLS-1$ //$NON-NLS-2$
@@ -727,7 +723,7 @@ public class EmfComponent implements IComponent {
 
         param = new ElementParameter(node);
         param.setName(EParameterName.FAMILY.getName());
-        param.setValue(getFamily());
+        param.setValue(getOriginalFamilyName());
         param.setDisplayName(EParameterName.FAMILY.getDisplayName());
         param.setField(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.ADVANCED);
@@ -948,7 +944,7 @@ public class EmfComponent implements IComponent {
             if (context == null) {
                 // by default the schema will be set to the "FLOW" connector.
                 context = EConnectionType.FLOW_MAIN.getName();
-                if (getFamily().startsWith("ELT")) { //$NON-NLS-1$
+                if (getOriginalFamilyName().startsWith("ELT")) { //$NON-NLS-1$
                     context = EConnectionType.TABLE.getName();
                 }
             }
@@ -1215,7 +1211,7 @@ public class EmfComponent implements IComponent {
                     // by default the schema will be set to the "FLOW"
                     // connector.
                     param.setContext(EConnectionType.FLOW_MAIN.getName());
-                    if (getFamily().startsWith("ELT")) { //$NON-NLS-1$
+                    if (getOriginalFamilyName().startsWith("ELT")) { //$NON-NLS-1$
                         param.setContext(EConnectionType.TABLE.getName());
                     }
                 }
@@ -1673,8 +1669,31 @@ public class EmfComponent implements IComponent {
         }
     }
 
-    public String getFamily() {
-        return getTranslatedValue(PROP_FAMILY);
+    public String getOriginalFamilyName() {
+        String originalFamilyName = "";
+
+        int nbTotal = compType.getFAMILIES().getFAMILY().size();
+        int nb = 0;
+        for (Object objFam : compType.getFAMILIES().getFAMILY()) {
+            String curFamily = (String) objFam;
+            originalFamilyName += curFamily;
+            nb++;
+            if (nbTotal != nb) {
+                originalFamilyName += "|";
+            }
+        }
+
+        return originalFamilyName;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#getTranslatedFamilyName()
+     */
+    public String getTranslatedFamilyName() {
+        // TODO Change to have translation name
+        return getOriginalFamilyName();
     }
 
     /*
@@ -1688,12 +1707,6 @@ public class EmfComponent implements IComponent {
 
     public String getName() {
         return file.getParentFile().getName();
-    }
-
-    public String getTranslatedName() {
-        // temporary fix, don't use the translated name.
-        return file.getParentFile().getName();
-        // return getTranslatedValue(PROP_NAME);
     }
 
     public String getLongName() {
@@ -2380,5 +2393,4 @@ public class EmfComponent implements IComponent {
     public boolean canParallelize() {
         return compType.getHEADER().isPARALLELIZE();
     }
-
 }

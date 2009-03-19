@@ -15,6 +15,11 @@
     <SIGNATURE></SIGNATURE>
   </HEADER>
 
+  <FAMILIES>
+    <FAMILY>System</FAMILY>
+    <FAMILY>Processing</FAMILY>
+  </FAMILIES>
+
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>

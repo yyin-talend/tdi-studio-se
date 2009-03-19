@@ -196,7 +196,11 @@ public class JobContextLoadComponent implements IComponent {
         return this.getClass().getName();
     }
 
-    public String getFamily() {
+    public String getOriginalFamilyName() {
+        return "Virtual"; //$NON-NLS-1$
+    }
+
+    public String getTranslatedFamilyName() {
         return "Virtual"; //$NON-NLS-1$
     }
 

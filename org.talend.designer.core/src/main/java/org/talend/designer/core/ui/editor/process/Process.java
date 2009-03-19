@@ -2538,7 +2538,7 @@ public class Process extends Element implements IProcess2 {
                     matchingNodes.add(node);
                 } else if (componentName.startsWith("FAMILY:")) { //$NON-NLS-1$
                     String familly = componentName.substring("FAMILY:".length()); //$NON-NLS-1$
-                    if (node.getComponent().getFamily().startsWith(familly)) {
+                    if (node.getComponent().getOriginalFamilyName().startsWith(familly)) {
                         matchingNodes.add(node);
                     }
                 } else if (componentName.startsWith("REGEXP:")) { //$NON-NLS-1$

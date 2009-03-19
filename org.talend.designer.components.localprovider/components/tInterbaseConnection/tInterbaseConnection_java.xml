@@ -13,6 +13,11 @@
  	  >
  	    <SIGNATURE/>
  	  </HEADER>
+
+  <FAMILIES>
+    <FAMILY>Databases/Interbase</FAMILY>
+    <FAMILY>ELT/Connections</FAMILY>
+  </FAMILIES>
  	
  	  <DOCUMENTATION>
  	    <URL/>

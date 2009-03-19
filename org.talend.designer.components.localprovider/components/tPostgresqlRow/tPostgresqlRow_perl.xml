@@ -12,6 +12,10 @@
     <SIGNATURE/>
   </HEADER>
 
+  <FAMILIES>
+    <FAMILY>Databases/PostgreSQL</FAMILY>
+  </FAMILIES>
+
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>

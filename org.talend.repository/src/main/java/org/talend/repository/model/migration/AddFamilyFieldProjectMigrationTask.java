@@ -69,7 +69,7 @@ public class AddFamilyFieldProjectMigrationTask extends AbstractProjectMigration
         list.clear();
 
         for (IComponent component : components) {
-            String[] families = component.getFamily().split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
+            String[] families = component.getOriginalFamilyName().split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
             for (String family : families) {
                 ComponentSetting setting = PropertiesFactory.eINSTANCE.createComponentSetting();
                 setting.setFamily(family);

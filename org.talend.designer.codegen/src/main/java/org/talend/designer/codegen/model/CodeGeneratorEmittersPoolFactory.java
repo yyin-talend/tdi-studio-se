@@ -316,9 +316,9 @@ public final class CodeGeneratorEmittersPoolFactory {
                 jetBean.addClassPath(pluginDependency.toUpperCase().replaceAll("\\.", "_") + "_LIBRARIES", pluginDependency); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             }
 
-            String familyName = component.getFamily();
+            String familyName = component.getOriginalFamilyName();
             if (familyName.contains("|")) { //$NON-NLS-1$
-                familyName = component.getFamily().substring(0, component.getFamily().indexOf("|")); //$NON-NLS-1$
+                familyName = component.getOriginalFamilyName().substring(0, component.getOriginalFamilyName().indexOf("|")); //$NON-NLS-1$
             }
             jetBean.setFamily(StringUtils.removeSpecialCharsForPackage(familyName.toLowerCase()));
 

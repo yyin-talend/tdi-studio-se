@@ -13,6 +13,10 @@
     <SIGNATURE/>
   </HEADER>
 
+  <FAMILIES>
+    <FAMILY>Databases/DB Generic</FAMILY>
+  </FAMILIES>
+
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>

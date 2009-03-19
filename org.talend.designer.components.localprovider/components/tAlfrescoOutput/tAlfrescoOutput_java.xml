@@ -5,6 +5,10 @@
 		STARTABLE="false" EXTENSION="org.talend.designer.alfrescooutput">
 		<SIGNATURE></SIGNATURE>
 	</HEADER>
+
+  <FAMILIES>
+    <FAMILY>Business/Alfresco</FAMILY>
+  </FAMILIES>
 	<DOCUMENTATION>
 		<URL />
 	</DOCUMENTATION>

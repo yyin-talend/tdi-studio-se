@@ -5,6 +5,10 @@
 		STARTABLE="true" VISIBLE="false" HASH_COMPONENT="true">
 		<SIGNATURE />
 	</HEADER>
+
+  <FAMILIES>
+    <FAMILY>Technical</FAMILY>
+  </FAMILIES>
 	<DOCUMENTATION>
 		<URL />
 	</DOCUMENTATION>

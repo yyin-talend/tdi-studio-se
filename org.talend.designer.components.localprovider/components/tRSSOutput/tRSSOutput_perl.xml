@@ -14,6 +14,10 @@
     <SIGNATURE />
   </HEADER>
 
+  <FAMILIES>
+    <FAMILY>Internet</FAMILY>
+  </FAMILIES>
+
   <DOCUMENTATION>
     <URL />
   </DOCUMENTATION>

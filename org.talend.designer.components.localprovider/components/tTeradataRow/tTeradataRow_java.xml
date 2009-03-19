@@ -15,6 +15,10 @@
     <SIGNATURE/>
   </HEADER>
 
+  <FAMILIES>
+    <FAMILY>Databases/Teradata</FAMILY>
+  </FAMILIES>
+
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>

@@ -15,6 +15,11 @@
     <SIGNATURE/>
   </HEADER>
 
+  <FAMILIES>
+    <FAMILY>Databases/MS SQL Server</FAMILY>
+    <FAMILY>Business Intelligence/DB SCD</FAMILY>
+  </FAMILIES>
+
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>

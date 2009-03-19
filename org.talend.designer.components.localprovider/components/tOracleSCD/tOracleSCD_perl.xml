@@ -14,6 +14,11 @@
     <SIGNATURE/>
   </HEADER>
 
+  <FAMILIES>
+    <FAMILY>Databases/Oracle</FAMILY>
+    <FAMILY>Business Intelligence/DB SCD</FAMILY>
+  </FAMILIES>
+
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>

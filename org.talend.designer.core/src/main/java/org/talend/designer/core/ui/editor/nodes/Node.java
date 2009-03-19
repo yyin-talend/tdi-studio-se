@@ -247,7 +247,7 @@ public class Node extends Element implements INode {
 
     private void init(IComponent newComponent) {
         this.component = newComponent;
-        this.label = component.getTranslatedName();
+        this.label = component.getName();
         this.componentName = this.label;
 
         IPreferenceStore store = DesignerPlugin.getDefault().getPreferenceStore();
@@ -2473,7 +2473,11 @@ public class Node extends Element implements INode {
     }
 
     public boolean isELTComponent() {
-        return getComponent().getFamily().startsWith("ELT"); //$NON-NLS-1$
+        return getComponent().getOriginalFamilyName().startsWith("ELT"); //$NON-NLS-1$
+    }
+
+    public boolean isFileScaleComponent() {
+        return getComponent().getOriginalFamilyName().equals("File Scale"); //$NON-NLS-1$
     }
 
     /*

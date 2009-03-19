@@ -15,6 +15,10 @@
     <SIGNATURE />
   </HEADER>
 
+  <FAMILIES>
+    <FAMILY>Data Quality</FAMILY>
+  </FAMILIES>
+
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>

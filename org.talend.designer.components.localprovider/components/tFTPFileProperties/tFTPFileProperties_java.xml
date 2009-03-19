@@ -4,6 +4,10 @@
 		STARTABLE="true">
 		<SIGNATURE />
 	</HEADER>
+
+  <FAMILIES>
+    <FAMILY>Internet/FTP</FAMILY>
+  </FAMILIES>
 	<DOCUMENTATION>
 		<URL />
 	</DOCUMENTATION>

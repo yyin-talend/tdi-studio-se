@@ -13,6 +13,10 @@
   >
     <SIGNATURE/>
   </HEADER>
+
+  <FAMILIES>
+    <FAMILY>Business Intelligence/OLAP Cube</FAMILY>
+  </FAMILIES>
  
   <DOCUMENTATION>
     <URL/>

@@ -1339,7 +1339,7 @@ public class ProcessComposite extends Composite {
                             node.setErrorFlag(true);
                             node.setErrorInfo(messPro);
                             node.getNodeError().updateState("UPDATE_STATUS", true);
-                            if (node.getComponent().getFamily().equals("File Scale")) {
+                            if (node.isFileScaleComponent()) {
                                 refreshProgress(psMess, node, key);
                             }
                             node.setErrorInfoChange("ERRORINFO", true);
@@ -1350,7 +1350,7 @@ public class ProcessComposite extends Composite {
                             node.setErrorFlag(false);
                             node.setErrorInfo(null);
                             node.getNodeError().updateState("UPDATE_STATUS", false);
-                            if (node.getComponent().getFamily().equals("File Scale")) {
+                            if (node.isFileScaleComponent()) {
                                 refreshProgress(psMess, node, key);
                             }
 

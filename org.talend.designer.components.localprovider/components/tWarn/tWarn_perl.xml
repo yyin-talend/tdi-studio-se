@@ -5,6 +5,10 @@
 		<SIGNATURE></SIGNATURE>
 	</HEADER>
 
+  <FAMILIES>
+    <FAMILY>Logs &amp; Errors</FAMILY>
+  </FAMILIES>
+
 	<DOCUMENTATION>
 		<URL />
 	</DOCUMENTATION>

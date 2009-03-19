@@ -5,6 +5,10 @@
         <SIGNATURE />
     </HEADER>
 
+  <FAMILIES>
+    <FAMILY>Databases/Sybase</FAMILY>
+  </FAMILIES>
+
     <DOCUMENTATION>
         <URL />
     </DOCUMENTATION>

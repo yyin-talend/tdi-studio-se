@@ -90,7 +90,7 @@ public final class TalendEditorPaletteFactory {
         Collections.sort(componentList, new Comparator<IComponent>() {
 
             public int compare(IComponent component1, IComponent component2) {
-                return component1.getTranslatedName().compareTo(component2.getTranslatedName());
+                return component1.getName().compareTo(component2.getName());
             }
 
         });
@@ -107,7 +107,7 @@ public final class TalendEditorPaletteFactory {
             // }
 
             if (xmlComponent.isLoaded()) {
-                family = xmlComponent.getFamily();
+                family = xmlComponent.getTranslatedFamilyName();
                 String[] strings = family.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
                 for (int j = 0; j < strings.length; j++) {
                     if (!needHiddenComponent && !xmlComponent.isVisible(strings[j])) {
@@ -139,7 +139,7 @@ public final class TalendEditorPaletteFactory {
             if (xmlComponent.isTechnical()) {
                 continue;
             }
-            family = xmlComponent.getFamily();
+            family = xmlComponent.getTranslatedFamilyName();
             if (filter != null) {
                 String regex = getFilterRegex();
                 needAddNote = "Note".toLowerCase().matches(regex); //$NON-NLS-1$
@@ -167,7 +167,7 @@ public final class TalendEditorPaletteFactory {
             if (filter != null) {
 
                 String regex = getFilterRegex();
-                if (!xmlComponent.getTranslatedName().toLowerCase().matches(regex)
+                if (!xmlComponent.getName().toLowerCase().matches(regex)
                         && !xmlComponent.getLongName().toLowerCase().matches(regex)) {
                     continue;
                 }
@@ -178,7 +178,7 @@ public final class TalendEditorPaletteFactory {
             }
 
             if (xmlComponent.isLoaded()) {
-                name = xmlComponent.getTranslatedName();
+                name = xmlComponent.getName();
                 longName = xmlComponent.getLongName();
 
                 ImageDescriptor imageSmall = xmlComponent.getIcon16();
@@ -250,7 +250,7 @@ public final class TalendEditorPaletteFactory {
         Collections.sort(componentList, new Comparator<IComponent>() {
 
             public int compare(IComponent component1, IComponent component2) {
-                return component1.getTranslatedName().compareTo(component2.getTranslatedName());
+                return component1.getName().compareTo(component2.getName());
             }
 
         });
@@ -267,7 +267,7 @@ public final class TalendEditorPaletteFactory {
             // }
 
             if (xmlComponent.isLoaded()) {
-                family = xmlComponent.getFamily();
+                family = xmlComponent.getTranslatedFamilyName();
                 String[] strings = family.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
                 for (int j = 0; j < strings.length; j++) {
                     if (!needHiddenComponent && !xmlComponent.isVisible(strings[j])) {
@@ -303,7 +303,7 @@ public final class TalendEditorPaletteFactory {
             if (xmlComponent.isTechnical()) {
                 continue;
             }
-            family = xmlComponent.getFamily();
+            family = xmlComponent.getTranslatedFamilyName();
 
             if (filter != null) {
                 String regex = getFilterRegex();
@@ -332,7 +332,7 @@ public final class TalendEditorPaletteFactory {
 
             if (filter != null) {
                 String regex = getFilterRegex();
-                if (!xmlComponent.getTranslatedName().toLowerCase().matches(regex)
+                if (!xmlComponent.getName().toLowerCase().matches(regex)
                         && !xmlComponent.getLongName().toLowerCase().matches(regex)) {
                     continue;
                 }
@@ -342,7 +342,7 @@ public final class TalendEditorPaletteFactory {
                 continue;
             }
 
-            family = xmlComponent.getFamily();//
+            family = xmlComponent.getTranslatedFamilyName();
             String[] keys = family.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
             for (int j = 0; j < keys.length; j++) {
 
@@ -355,7 +355,7 @@ public final class TalendEditorPaletteFactory {
             }//
 
             if (xmlComponent.isLoaded()) {
-                name = xmlComponent.getTranslatedName();
+                name = xmlComponent.getName();
                 longName = xmlComponent.getLongName();
 
                 ImageDescriptor imageSmall = xmlComponent.getIcon16();

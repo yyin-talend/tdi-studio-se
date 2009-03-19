@@ -12,6 +12,11 @@
   >
     <SIGNATURE />
   </HEADER>
+
+  <FAMILIES>
+    <FAMILY>Databases/MySQL</FAMILY>
+    <FAMILY>Business Intelligence/DB SCD</FAMILY>
+  </FAMILIES>
   
   <DOCUMENTATION>
     <URL />

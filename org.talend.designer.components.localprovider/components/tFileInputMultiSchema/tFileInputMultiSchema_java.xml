@@ -7,6 +7,10 @@
 		<SIGNATURE />
 	</HEADER>
 
+  <FAMILIES>
+    <FAMILY>File/Input</FAMILY>
+  </FAMILIES>
+
 	<DOCUMENTATION>
 		<URL />
 	</DOCUMENTATION>

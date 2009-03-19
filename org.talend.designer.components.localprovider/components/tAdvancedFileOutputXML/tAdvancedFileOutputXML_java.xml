@@ -5,6 +5,11 @@
 		STARTABLE="false" EXTENSION="org.talend.designer.fileoutputxml">
 		<SIGNATURE></SIGNATURE>
 	</HEADER>
+
+  <FAMILIES>
+    <FAMILY>File/Output</FAMILY>
+    <FAMILY>XML</FAMILY>
+  </FAMILIES>
 	<DOCUMENTATION>
 		<URL />
 	</DOCUMENTATION>

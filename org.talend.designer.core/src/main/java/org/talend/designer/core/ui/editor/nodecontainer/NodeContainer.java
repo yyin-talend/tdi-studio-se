@@ -82,7 +82,7 @@ public class NodeContainer extends Element {
         elements.add(node);
         elements.add(nodeLabel);
         elements.add(nodeError);
-        if (node.getComponent().getFamily().equals("File Scale")) {
+        if (node.isFileScaleComponent()) {
             elements.add(nodeProgressBar);
         }
         nodePerformance = new NodePerformance(this);
@@ -175,7 +175,7 @@ public class NodeContainer extends Element {
         Rectangle finalRect;
         finalRect = nodeRectangle.getUnion(labelRectangle).getUnion(errorNodeRectangle).getUnion(perfRectangle).getUnion(
                 statusRectangle);
-        if (node.getComponent().getFamily().equals("File Scale")) {
+        if (node.isFileScaleComponent()) {
             finalRect = finalRect.getUnion(progressNodeRectangle);
         }
 

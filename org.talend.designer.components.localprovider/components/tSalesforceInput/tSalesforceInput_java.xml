@@ -6,6 +6,10 @@
 		<SIGNATURE />
 	</HEADER>
 
+  <FAMILIES>
+    <FAMILY>Business/Salesforce</FAMILY>
+  </FAMILIES>
+
 	<DOCUMENTATION>
 		<URL />
 	</DOCUMENTATION>

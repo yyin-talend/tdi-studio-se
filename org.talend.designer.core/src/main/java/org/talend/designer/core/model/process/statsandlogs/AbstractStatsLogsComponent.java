@@ -67,7 +67,11 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
     }
 
     // no use for virtual component
-    public String getFamily() {
+    public String getOriginalFamilyName() {
+        return "Virtual"; //$NON-NLS-1$
+    }
+
+    public String getTranslatedFamilyName() {
         return "Virtual"; //$NON-NLS-1$
     }
 

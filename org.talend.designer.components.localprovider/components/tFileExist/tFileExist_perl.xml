@@ -12,6 +12,10 @@
     <SIGNATURE></SIGNATURE>
   </HEADER>
 
+  <FAMILIES>
+    <FAMILY>File/Management</FAMILY>
+  </FAMILIES>
+
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>

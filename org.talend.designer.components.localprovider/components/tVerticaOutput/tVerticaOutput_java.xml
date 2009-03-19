@@ -5,6 +5,10 @@
 		<SIGNATURE />
 	</HEADER>
 
+  <FAMILIES>
+    <FAMILY>Databases/Vertica</FAMILY>
+  </FAMILIES>
+
 	<DOCUMENTATION>
 		<URL />
 	</DOCUMENTATION>
