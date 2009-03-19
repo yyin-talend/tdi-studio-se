@@ -188,7 +188,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         exportTypeCombo.add(EXPORTTYPE_POJO);
         exportTypeCombo.add(EXPORTTYPE_WSWAR);
         exportTypeCombo.add(EXPORTTYPE_WSZIP);
-        // exportTypeCombo.add(EXPORTTYPE_JBOSSESB);
+        exportTypeCombo.add(EXPORTTYPE_JBOSSESB);
         // exportTypeCombo.add("JBI (JSR 208)");
 
         exportTypeCombo.setText(getCurrentExportType());
