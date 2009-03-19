@@ -47,14 +47,16 @@ class ReplaceUtil {
                         sb.append(src.substring(beginIndex, endIndex));
                         beginIndex = endIndex + target.length();
                         fromIndex = beginIndex;
-                        if (endIndex == 0) {
-                            if (src.charAt(endIndex + target.length()) == ' ') {
+                         if (endIndex == 0 && fromIndex == str.length()) {
+                            sb.append(replacement);
+                        } else if (endIndex == 0) {
+                            if (src.charAt(endIndex + target.length() - 1) == ' ') {
                                 sb.append(replacement);
                             } else {
                                 sb.append(src.substring(endIndex, endIndex + target.length()));
                             }
                         } else if (fromIndex < src.length()) {
-                            if (src.charAt(endIndex + target.length()) == ' ' && src.charAt(endIndex - 1) == ' ') {
+                            if (src.charAt(endIndex + target.length() - 1) == ' ' && src.charAt(endIndex - 1) == ' ') {
                                 sb.append(replacement);
                             } else {
                                 sb.append(src.substring(endIndex, endIndex + target.length()));
