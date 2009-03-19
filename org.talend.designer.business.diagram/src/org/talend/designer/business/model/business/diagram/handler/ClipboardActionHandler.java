@@ -13,6 +13,7 @@
 package org.talend.designer.business.model.business.diagram.handler;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,7 @@ import org.eclipse.gmf.runtime.notation.Diagram;
 import org.eclipse.gmf.runtime.notation.Node;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IWorkbenchPart;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.designer.business.diagram.custom.commands.GmfPastCommand;
@@ -43,6 +45,7 @@ import org.talend.designer.business.model.business.BusinessAssignment;
 import org.talend.designer.business.model.business.BusinessItem;
 import org.talend.designer.business.model.business.BusinessProcess;
 import org.talend.designer.business.model.business.TalendItem;
+import org.talend.designer.business.model.business.diagram.edit.parts.BusinessProcessEditPart;
 
 /**
  * wchen class global comment. Detailled comment
@@ -89,17 +92,23 @@ public class ClipboardActionHandler extends DiagramGlobalActionHandler {
             PasteViewRequest pasteReq = createPasteViewRequest();
             CommandStack cs = diagramPart.getDiagramEditDomain().getDiagramCommandStack();
 
-            Object[] objects = ((IStructuredSelection) cntxt.getSelection()).toArray();
+            IStructuredSelection selection = (IStructuredSelection) cntxt.getSelection();
+            if (!(selection.getFirstElement() instanceof BusinessProcessEditPart)) {
 
+                selection = new StructuredSelection(diagramPart.getDiagramEditPart());
+            }
+
+            Object[] objects = selection.toArray();
+            Collection returnValues = null;
             if (objects.length == 1) {
-
                 Command paste = ((EditPart) objects[0]).getCommand(pasteReq);
                 if (paste != null) {
 
                     cs.execute(paste);
                     diagramPart.getDiagramEditPart().getFigure().invalidate();
                     diagramPart.getDiagramEditPart().getFigure().validate();
-                    selectAddedObject(diagramPart.getDiagramGraphicalViewer(), DiagramCommandStack.getReturnValues(paste));
+                    returnValues = DiagramCommandStack.getReturnValues(paste);
+                    // selectAddedObject(diagramPart.getDiagramGraphicalViewer(), returnValues);
 
                 }
             }
@@ -123,6 +132,9 @@ public class ClipboardActionHandler extends DiagramGlobalActionHandler {
                     ExceptionHandler.process(e);
                 }
 
+            }
+            if (returnValues != null) {
+                selectAddedObject(diagramPart.getDiagramGraphicalViewer(), returnValues);
             }
             return null;
         }
@@ -175,10 +187,11 @@ public class ClipboardActionHandler extends DiagramGlobalActionHandler {
 
     @Override
     protected boolean canCut(IGlobalActionContext cntxt) {
-        String actionId = cntxt.getActionId();
-        if (actionId.equals(GlobalActionId.CUT)) {
-            return true;
+        List elements = getSelectedViews(cntxt.getSelection());
+        if (elements.isEmpty()) {
+            return false;
         }
-        return false;
+
+        return true;
     }
 }
