@@ -90,6 +90,13 @@ public class BusinessAppearanceComposite extends AbstractTabComposite {
             }
                 break;
             case NOTE:
+                selection = new StructuredSelection(CorePlugin.getDefault().getDiagramModelService().getBusinessEditorProcess());
+                DiagramAppearanceSection notediagramAppearance = new DiagramAppearanceSection();
+                notediagramAppearance.setInput(getEditor(), selection);
+                notediagramAppearance.createControls(composite, null);
+
+                notediagramAppearance.refresh();
+                break;
             case PROCESS:
                 selection = new StructuredSelection(CorePlugin.getDefault().getDiagramModelService().getBusinessEditorProcess());
                 DiagramAppearanceSection diagramAppearance = new DiagramAppearanceSection();
