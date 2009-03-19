@@ -108,6 +108,16 @@
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
+	
+    <PARAMETER
+      NAME="IS_USE_SYS_CONNECTION"
+	  FIELD="CHECK"
+      NUM_ROW="20"
+      REQUIRED="false"
+    >      
+    </PARAMETER>
+	
+	
 
    </PARAMETERS>
 
