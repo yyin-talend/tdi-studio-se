@@ -4,8 +4,10 @@ import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.draw2d.Border;
 import org.eclipse.draw2d.DelegatingLayout;
 import org.eclipse.draw2d.FreeformLayer;
+import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LayeredPane;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.impl.AdapterImpl;
@@ -41,6 +43,7 @@ import org.talend.designer.business.diagram.custom.actions.DiagramResourceManage
 import org.talend.designer.business.diagram.custom.dnd.BusinessDiagramDropTargetListener;
 import org.talend.designer.business.diagram.custom.edit.parts.BaseBusinessItemRelationShipEditPart;
 import org.talend.designer.business.diagram.custom.edit.parts.BusinessItemShapeEditPart;
+import org.talend.designer.business.diagram.custom.figures.BusinessItemShapeFigure;
 import org.talend.designer.business.model.business.diagram.edit.parts.BusinessEditPartFactory;
 import org.talend.designer.business.model.business.diagram.edit.parts.BusinessProcessEditPart;
 import org.talend.designer.business.model.business.diagram.providers.BusinessDiagramActionProvider;
@@ -257,6 +260,34 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
             return;
         }
 
+        // for Find Assignment
+        if (((IStructuredSelection) selection).size() > 0) {
+            DiagramEditPart diagramEditPart = this.getDiagramEditPart();
+            if (diagramEditPart instanceof BusinessProcessEditPart) {
+                BusinessProcessEditPart processPart = (BusinessProcessEditPart) diagramEditPart;
+                for (Object object : processPart.getChildren()) {
+                    if (object instanceof BusinessItemShapeEditPart) {
+                        BusinessItemShapeEditPart shapEditPart = (BusinessItemShapeEditPart) object;
+                        IFigure figure = shapEditPart.getFigure();
+                        for (Object child : figure.getChildren()) {
+                            if (child instanceof BusinessItemShapeFigure) {
+                                BusinessItemShapeFigure shapFigure = (BusinessItemShapeFigure) child;
+                                Border border = shapFigure.getBorder();
+                                if (border != null) {
+                                    shapFigure.setDrawFrame(false);
+                                    shapFigure.revalidate();
+                                    shapFigure.repaint();
+                                }
+
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+
+        // to refresh the jobsettings view
         if (((IStructuredSelection) selection).size() > 1) {
             view.cleanDisplay();
         } else {
@@ -266,10 +297,12 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
 
                 view.refresh(false, firstElement);
             } else if (firstElement instanceof BusinessProcessEditPart || firstElement instanceof CompartmentEditPart) {
+
                 view.refresh(false, this);
             }
 
         }
+
     }
 
     public ISelection getSelection() {
