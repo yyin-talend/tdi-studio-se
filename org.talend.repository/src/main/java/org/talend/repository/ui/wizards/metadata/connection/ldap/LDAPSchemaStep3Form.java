@@ -26,6 +26,7 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -373,6 +374,13 @@ public class LDAPSchemaStep3Form extends AbstractLDAPSchemaStepForm implements I
      * 
      * addGroupAttributes.
      */
+    /**
+     * DOC Administrator Comment method "addGroupAttributes".
+     * 
+     * @param mainComposite
+     * @param width
+     * @param height
+     */
     private void addGroupAttributes(final Composite mainComposite, final int width, final int height) {
         // Group Schema Viewer
         Group group = Form.createGroup(mainComposite, 1, "List attributes of LDAP Schema", height); //$NON-NLS-1$
@@ -414,6 +422,45 @@ public class LDAPSchemaStep3Form extends AbstractLDAPSchemaStepForm implements I
             }
 
         };
+
+        // see the feature 6651,qli comment.
+        Composite buttonComposite = new Composite(group, SWT.NONE);
+        RowLayout buttonLayout = new RowLayout();
+        buttonComposite.setLayout(buttonLayout);
+        // select all
+        final Button selectAllButton = new Button(buttonComposite, SWT.NONE);
+        selectAllButton.setText(Messages.getString("LDAPSchemaStep3Form.selectAllText")); //$NON-NLS-1$
+        selectAllButton.setToolTipText(Messages.getString("LDAPSchemaStep3Form.selectAllTipText")); //$NON-NLS-1$
+        selectAllButton.addSelectionListener(new SelectionAdapter() {
+
+            public void widgetSelected(final SelectionEvent e) {
+                TableItem[] tableItems = tableEditorView.getTable().getItems();
+                if (tableItems != null && tableItems.length > 0) {
+                    for (TableItem item : tableItems) {
+                        item.setChecked(true);
+                        getConnection().getValue().add(item.getText());
+                        checkFieldsValue();
+                    }
+                }
+            }
+        });
+        // select none
+        final Button selectNoneButton = new Button(buttonComposite, SWT.NONE);
+        selectNoneButton.setText(Messages.getString("LDAPSchemaStep3Form.selectNoneText")); //$NON-NLS-1$
+        selectNoneButton.setToolTipText(Messages.getString("LDAPSchemaStep3Form.selectNoneTipText")); //$NON-NLS-1$
+        selectNoneButton.addSelectionListener(new SelectionAdapter() {
+
+            public void widgetSelected(final SelectionEvent e) {
+                TableItem[] tableItems = tableEditorView.getTable().getItems();
+                if (tableItems != null && tableItems.length > 0) {
+                    for (TableItem item : tableItems) {
+                        item.setChecked(false);
+                        getConnection().getValue().remove(item.getText());
+                        checkFieldsValue();
+                    }
+                }
+            }
+        });
     }
 
     /**
