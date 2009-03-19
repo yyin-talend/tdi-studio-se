@@ -19,6 +19,7 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryContentProvider;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -76,6 +77,7 @@ import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.views.jobsettings.tabs.AbstractTabComposite;
 import org.talend.designer.core.utils.EmfPropertyHelper;
 import org.talend.designer.core.utils.KeyHelper;
+import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
@@ -222,16 +224,19 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
                 if (businessAssignment != null) {
                     repositoryNode = createRepositoryNode(businessAssignment);
                     if (repositoryNode != null) {
-                        List<ITreeContextualAction> contextualsActions = ActionsHelper.getRepositoryContextualsActions();
-                        for (ITreeContextualAction action : contextualsActions) {
-                            if (action.isReadAction() || action.isEditAction() || action.isPropertiesAction()) {
-                                action.init(null, new StructuredSelection(repositoryNode));
-                                if (action.isVisible() && action.isEnabled() && action.isDoubleClickAction()) {
-                                    action.run();
-                                    return;
-                                }
-                            }
-                        }
+                        // List<ITreeContextualAction> contextualsActions =
+                        // ActionsHelper.getRepositoryContextualsActions();
+                        // for (ITreeContextualAction action : contextualsActions) {
+                        // if (action.isReadAction() || action.isEditAction() || action.isPropertiesAction()) {
+                        // action.init(null, new StructuredSelection(repositoryNode));
+                        // if (action.isVisible() && action.isEnabled() && action.isDoubleClickAction()) {
+                        // action.run();
+                        // return;
+                        // }
+                        // }
+                        // }
+                        Action action = CorePlugin.getDefault().getRepositoryService().getRepositoryViewDoubleClickAction();
+                        action.run();
                     }
                 }
             }
@@ -246,8 +251,13 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
                 BusinessAssignment businessAssignment = getBusinessAssignment(event.getSelection());
                 if (businessAssignment != null) {
                     RepositoryNode rootRepositoryNode = getRepositoryView().getRoot();
-
-                    selectChild(businessAssignment.getTalendItem(), rootRepositoryNode);
+                    TalendItem item = businessAssignment.getTalendItem();
+                    //
+                    if (item instanceof Routine && rootRepositoryNode instanceof ProjectRepositoryNode) {
+                        RepositoryNodeUtilities.expandParentNode(getRepositoryView(),
+                                ((ProjectRepositoryNode) rootRepositoryNode).getCodeNode());
+                    }
+                    selectChild(item, rootRepositoryNode);
                 }
             }
 
@@ -261,75 +271,54 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
                     if (lastVersion != null) {
                         curNode = RepositoryNodeUtilities.getRepositoryNode(lastVersion);
                         select(viewer, curNode);
+                    } else if (item instanceof TableMetadata) {
+                        MetadataTable table = MetadataTool.getMetadataTableFromRepository(item.getId());
+                        if (table != null) {
+                            String id = item.getId().split(" - ")[0];
+
+                            RepositoryNode node = RepositoryNodeUtilities.getMetadataTableFromConnection(item.getId());
+
+                            IRepositoryView view = getRepositoryView();
+                            RepositoryNodeUtilities.expandParentNode(view, node);
+                            select(viewer, node);
+
+                        }
+                    } else if (item instanceof Query) {
+                        org.talend.core.model.metadata.builder.connection.Query query = MetadataTool.getQueryFromRepository(item
+                                .getId());
+                        if (query != null) {
+                            String id = item.getId().split(" - ")[0];
+                            IRepositoryView view = getRepositoryView();
+                            RepositoryNode node = RepositoryNodeUtilities.getQueryFromConnection(item.getId());
+                            RepositoryNodeUtilities.expandParentNode(view, node);
+                            select(viewer, node);
+                        }
+
                     } else {
 
-                        for (RepositoryNode repositoryNode : rootRepositoryNode.getChildren()) {
-
+                        for (RepositoryNode rNode : rootRepositoryNode.getChildren()) {
+                            if ("Routines".equals(rNode.getLabel())) {
+                                rNode.getChildren();
+                            }
                             if (item instanceof SQLPattern
-                                    && repositoryNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.SQLPATTERNS) {
-                                if (repositoryNode.getType() == ENodeType.REPOSITORY_ELEMENT) {
-                                    SQLPatternItem sqlItem = (SQLPatternItem) repositoryNode.getObject().getProperty().getItem();
-                                    if (sqlItem.isSystem() && item.getLabel().equals(repositoryNode.getObject().getLabel())) {
-                                        select(viewer, repositoryNode);
+                                    && rNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.SQLPATTERNS) {
+                                if (rNode.getType() == ENodeType.REPOSITORY_ELEMENT) {
+                                    SQLPatternItem sqlItem = (SQLPatternItem) rNode.getObject().getProperty().getItem();
+                                    if (sqlItem.isSystem() && item.getLabel().equals(rNode.getObject().getLabel())) {
+                                        select(viewer, rNode);
                                     }
                                 } else {
-                                    selectChild(item, repositoryNode);
+                                    selectChild(item, rNode);
                                 }
                             } else if (item instanceof Routine
-                                    && repositoryNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.ROUTINES) {
-                                if (repositoryNode.getType() == ENodeType.REPOSITORY_ELEMENT) {
-                                    RoutineItem sqlItem = (RoutineItem) repositoryNode.getObject().getProperty().getItem();
-                                    if (sqlItem.isBuiltIn() && item.getLabel().equals(repositoryNode.getObject().getLabel())) {
-                                        select(viewer, repositoryNode);
+                                    && rNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.ROUTINES) {
+                                if (rNode.getType() == ENodeType.REPOSITORY_ELEMENT) {
+                                    RoutineItem sqlItem = (RoutineItem) rNode.getObject().getProperty().getItem();
+                                    if (sqlItem.isBuiltIn() && item.getLabel().equals(rNode.getObject().getLabel())) {
+                                        select(viewer, rNode);
                                     }
                                 } else {
-                                    selectChild(item, repositoryNode);
-                                }
-                            } else if (item instanceof TableMetadata) {
-                                MetadataTable table = MetadataTool.getMetadataTableFromRepository(item.getId());
-                                if (table != null) {
-                                    String id = item.getId().split(" - ")[0];
-                                    if (repositoryNode.getId() != null && repositoryNode.getId().equals(id)) {
-                                        if (ERepositoryObjectType.METADATA_CONNECTIONS == repositoryNode
-                                                .getProperties(EProperties.CONTENT_TYPE)) {
-                                            for (RepositoryNode node : repositoryNode.getChildren()) {
-                                                for (RepositoryNode metadata : node.getChildren()) {
-                                                    if (item.getLabel().equals(metadata.getProperties(EProperties.LABEL))) {
-                                                        select(viewer, metadata);
-                                                    }
-                                                }
-                                            }
-                                        } else {
-                                            for (RepositoryNode node : repositoryNode.getChildren()) {
-                                                if (item.getLabel().equals(node.getProperties(EProperties.LABEL))) {
-                                                    select(viewer, node);
-                                                }
-                                            }
-                                        }
-                                    } else {
-                                        selectChild(item, repositoryNode);
-                                    }
-
-                                }
-                            } else if (item instanceof Query) {
-                                org.talend.core.model.metadata.builder.connection.Query query = MetadataTool
-                                        .getQueryFromRepository(item.getId());
-                                if (query != null) {
-                                    String id = item.getId().split(" - ")[0];
-                                    if (repositoryNode.getId() != null && repositoryNode.getId().equals(id)) {
-                                        for (RepositoryNode node : repositoryNode.getChildren()) {
-                                            if ("Queries".equals(node.getLabel())) {
-                                                for (RepositoryNode querie : node.getChildren()) {
-                                                    if (item.getLabel().equals(querie.getProperties(EProperties.LABEL))) {
-                                                        select(viewer, querie);
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    } else {
-                                        selectChild(item, repositoryNode);
-                                    }
-
+                                    selectChild(item, rNode);
                                 }
                             }
 
@@ -429,7 +418,7 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
             } else if (item instanceof TableMetadata) {
                 MetadataTable table = MetadataTool.getMetadataTableFromRepository(item.getId());
                 if (table != null) {
-                    return RepositoryNodeUtilities.getSchemeFromConnection(item.getId());
+                    return RepositoryNodeUtilities.getMetadataTableFromConnection(item.getId());
                 }
 
             } else if (item instanceof Query) {

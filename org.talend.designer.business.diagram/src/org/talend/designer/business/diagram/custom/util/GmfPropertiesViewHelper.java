@@ -14,9 +14,8 @@ package org.talend.designer.business.diagram.custom.util;
 
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartViewer;
-import org.eclipse.gmf.runtime.common.ui.util.WorkbenchPartActivator;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IViewPart;
+import org.talend.designer.core.ui.action.ShowJobSettingsViewAction;
 
 /**
  */
@@ -27,9 +26,12 @@ public class GmfPropertiesViewHelper {
 
             public void run() {
                 // show properties view
-                IViewPart viewPart = WorkbenchPartActivator.showPropertySheet();
+                // IViewPart viewPart = WorkbenchPartActivator.showPropertySheet();
 
                 // select target Edit Part to activate the view with the good input
+
+                ShowJobSettingsViewAction action = new ShowJobSettingsViewAction();
+                action.run();
                 viewer.deselectAll();
                 viewer.select(targetEditPart);
                 viewer.getControl().forceFocus();

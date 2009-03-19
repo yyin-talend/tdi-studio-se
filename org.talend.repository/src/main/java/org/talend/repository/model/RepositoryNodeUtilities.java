@@ -19,11 +19,14 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredViewer;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.RepositoryPlugin;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.views.IRepositoryView;
@@ -231,18 +234,20 @@ public class RepositoryNodeUtilities {
             return;
         }
         final ERepositoryObjectType rootContextType = rootNode.getContentType();
+        final ERepositoryObjectType curType = curNode.getType();
+
         // for referenced project
         if (rootContextType == ERepositoryObjectType.REFERENCED_PROJECTS || rootNode.getType() == ENodeType.REFERENCED_PROJECT) {
             expandParentNode(view, rootNode);
         }
         if (rootContextType != null) {
-            final ERepositoryObjectType curType = curNode.getType();
+
             ERepositoryObjectType tmpType = null;
             switch (curType) {
-            // case METADATA_CON_TABLE:
-            // case METADATA_CON_VIEW:
-            // case METADATA_CON_SYNONYM:
-            // case METADATA_CON_QUERY:
+            case METADATA_CON_TABLE:
+            case METADATA_CON_VIEW:
+            case METADATA_CON_SYNONYM:
+            case METADATA_CON_QUERY:
             case METADATA_CONNECTIONS:
             case METADATA_FILE_DELIMITED:
             case METADATA_FILE_POSITIONAL:
@@ -258,16 +263,16 @@ public class RepositoryNodeUtilities {
             case METADATA_SAPCONNECTIONS:
                 tmpType = ERepositoryObjectType.METADATA;
                 break;
-            // case ROUTINES:
-            // case SNIPPETS:
-            // tmpType = ERepositoryObjectType.ROUTINES;
-            // break;
-            // case DOCUMENTATION:
-            // case JOB_DOC:
-            // case JOBLET_DOC:
-            // tmpType = ERepositoryObjectType.DOCUMENTATION;
-            // //
-            // break;
+            case ROUTINES:
+            case SNIPPETS:
+                tmpType = ERepositoryObjectType.ROUTINES;
+                break;
+            case DOCUMENTATION:
+            case JOB_DOC:
+            case JOBLET_DOC:
+                tmpType = ERepositoryObjectType.DOCUMENTATION;
+                //
+                break;
             default:
             }
 
@@ -295,6 +300,23 @@ public class RepositoryNodeUtilities {
         }
         expandParentNode(view, node.getParent());
         view.expand(node, true);
+        // for db
+        StructuredViewer viewer = view.getViewer();
+        if (viewer instanceof TreeViewer) {
+            TreeViewer treeViewer = (TreeViewer) viewer;
+            ERepositoryObjectType objectType = node.getObjectType();
+            if (objectType != null) {
+                switch (objectType) {
+                case METADATA_CONNECTIONS:
+                    treeViewer.expandToLevel(node, TreeViewer.ALL_LEVELS);
+                    break;
+                case ROUTINES:
+                    treeViewer.expandToLevel(node, 2);
+                    break;
+                }
+            }
+        }
+
     }
 
     private static boolean isRepositoryFolder(RepositoryNode node) {
@@ -308,7 +330,7 @@ public class RepositoryNodeUtilities {
         return false;
     }
 
-    public static RepositoryNode getSchemeFromConnection(String schemaValue) {
+    public static RepositoryNode getMetadataTableFromConnection(String schemaValue) {
         String[] values = schemaValue.split(" - "); //$NON-NLS-1$
         String repositoryID = values[0];
         String tableName = values[1];
@@ -341,7 +363,7 @@ public class RepositoryNodeUtilities {
         ERepositoryObjectType type = connection.getObject().getType();
         if (repType == ERepositoryObjectType.METADATA_CON_QUERY) {
             for (RepositoryNode node : connection.getChildren()) {
-                if ("Queries".equals(node.getLabel())) {
+                if (Messages.getString("RepositoryContentProvider.repositoryLabel.Queries").equals(node.getLabel())) {
                     for (RepositoryNode query : node.getChildren()) {
                         if (tableName.equals(query.getProperties(EProperties.LABEL))) {
                             return query;
@@ -351,13 +373,25 @@ public class RepositoryNodeUtilities {
             }
         } else {
             if (type == ERepositoryObjectType.METADATA_CONNECTIONS) {
-                connection = connection.getChildren().get(0);
-            }
-            for (RepositoryNode node : connection.getChildren()) {
-                if (node.getObject().getLabel().equals(tableName)) {
-                    return node;
+                for (RepositoryNode child : connection.getChildren()) {
+                    if (Messages.getString("RepositoryContentProvider.repositoryLabel.Queries").equals(child.getLabel())) {
+                        continue;
+                    }
+                    for (RepositoryNode node : child.getChildren()) {
+                        if (tableName.equals(node.getProperties(EProperties.LABEL))) {
+                            return node;
+                        }
+                    }
                 }
+            } else {
+                for (RepositoryNode child : connection.getChildren()) {
+                    if (tableName.equals(child.getProperties(EProperties.LABEL))) {
+                        return child;
+                    }
+                }
+
             }
+
         }
         return null;
     }

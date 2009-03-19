@@ -43,6 +43,7 @@
       <Action
             class="org.talend.repository.ui.actions.metadata.ReadTableAction"
             id="org.talend.repository.actions.readtable"
+            isReadAction="true"
             level="18"
             name="Metadata/Read table"/>
       <Action

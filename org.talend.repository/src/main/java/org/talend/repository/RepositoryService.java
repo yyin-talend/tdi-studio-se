@@ -17,6 +17,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -393,7 +394,7 @@ public class RepositoryService implements IRepositoryService {
     }
 
     public void openEditSchemaWizard(String value) {
-        final RepositoryNode realNode = RepositoryNodeUtilities.getSchemeFromConnection(value);
+        final RepositoryNode realNode = RepositoryNodeUtilities.getMetadataTableFromConnection(value);
         if (realNode != null) {
             AbstractCreateTableAction action = new CreateTableAction() {
 
@@ -529,5 +530,23 @@ public class RepositoryService implements IRepositoryService {
     public String getDatabaseStringURL(DatabaseConnection conn) {
         DataStringConnection dataStrConn = new DataStringConnection();
         return dataStrConn.getUrlConnectionStr(conn);
+    }
+
+    public Action getRepositoryViewDoubleClickAction() {
+        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        if (page != null) {
+            IViewPart view = page.findView(RepositoryView.ID);
+            if (view == null) {
+                try {
+                    view = page.showView(RepositoryView.ID);
+                } catch (Exception e) {
+                    ExceptionHandler.process(e);
+                }
+            }
+            RepositoryView repositoryView = (RepositoryView) view;
+
+            return repositoryView.getDoubleClickAction();
+        }
+        return null;
     }
 }

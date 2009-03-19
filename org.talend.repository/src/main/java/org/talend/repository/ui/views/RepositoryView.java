@@ -761,4 +761,8 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
             DeleteAction.getInstance().init(getViewer(), (IStructuredSelection) getViewer().getSelection());
         }
     }
+
+    public Action getDoubleClickAction() {
+        return this.doubleClickAction;
+    }
 }
