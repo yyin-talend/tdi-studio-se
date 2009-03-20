@@ -17,11 +17,23 @@ String dbhost = ElementParameterParser.getValue(node, "__HOST__");
 String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
 String dbuser = ElementParameterParser.getValue(node, "__USER__");
 String dbpass = ElementParameterParser.getValue(node, "__PASS__");
+String javaDbDriver = "org.firebirdsql.jdbc.FBDriver" ;
+boolean isUseSysConnection = ElementParameterParser.getValue(node, "__IS_USE_SYS_CONNECTION__").equals("true");
 %>
 String url_<%=cid %> = "jdbc:firebirdsql:" + <%=dbhost%> + ":" + <%=dbname%>;
 String dbUser_<%=cid %> = <%=dbuser%>;
 String dbPwd_<%=cid %> = <%=dbpass%>;
-java.lang.Class.forName("org.firebirdsql.jdbc.FBDriver");
-java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>, dbUser_<%=cid%>, dbPwd_<%=cid%>);
+
+java.sql.Connection conn_<%=cid%> = null;
+<%if(isUseSysConnection){
+%>
+	conn_<%=cid%> = SystemDBConnection.getDBConnection("<%=javaDbDriver%>",url_<%=cid%>,dbUser_<%=cid %> , dbPwd_<%=cid%>);
+<%
+}else {
+%>
+	java.lang.Class.forName("org.firebirdsql.jdbc.FBDriver");
+	conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>, dbUser_<%=cid%>, dbPwd_<%=cid%>);
+<%
+}%> 
 conn_<%=cid%>.setAutoCommit(false);
 globalMap.put("conn_" + "<%=cid%>",conn_<%=cid%>);

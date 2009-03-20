@@ -9,17 +9,19 @@ imports="
 <%
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
-	
+	String javaDbDriver   = "com.ibm.as400.access.AS400JDBCDriver";
     String cid = node.getUniqueName();
     String dbhost = ElementParameterParser.getValue(node, "__HOST__");
     String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
     String dbname= ElementParameterParser.getValue(node, "__DBNAME__");
     String dbuser= ElementParameterParser.getValue(node, "__USER__");
     String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
+    boolean isUseSysConnection = ElementParameterParser.getValue(node, "__IS_USE_SYS_CONNECTION__").equals("true");
 %>
 int nb_line_<%=cid%> = 0;
 
-java.lang.Class.forName("com.ibm.as400.access.AS400JDBCDriver");
+
+java.lang.Class.forName("<%=javaDbDriver%>");
 <%
 if(dbproperties == null || dbproperties.equals("\"\"") || dbproperties.equals("")) {
  %>   
@@ -33,7 +35,22 @@ String dbUser_<%=cid %> = <%=dbuser%>;
 
 String dbPwd_<%=cid %> = <%=dbpwd%>;
 
-java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+
+java.sql.Connection conn_<%=cid%> = null ;
+
+<%if(isUseSysConnection){
+%>
+	conn_<%=cid%> = SystemDBConnection.getDBConnection("<%=javaDbDriver%>",url_<%=cid%>,dbUser_<%=cid %> , dbPwd_<%=cid%>);
+<%
+}else {
+%>
+	conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+<%
+}%> 
+
+
+
+
 
 conn_<%=cid%>.setAutoCommit(false);
 

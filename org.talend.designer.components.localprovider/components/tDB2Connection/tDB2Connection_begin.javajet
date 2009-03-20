@@ -19,22 +19,32 @@ imports="
     String dbuser = ElementParameterParser.getValue(node, "__USER__");
     String dbpass = ElementParameterParser.getValue(node, "__PASS__");
     String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
+    String javaDbDriver ="com.ibm.db2.jcc.DB2Driver";
+    boolean isUseSysConnection = ElementParameterParser.getValue(node, "__IS_USE_SYS_CONNECTION__").equals("true");
 %>
-java.lang.Class.forName("com.ibm.db2.jcc.DB2Driver");
-
 String url_<%=cid %> = "jdbc:db2://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
 
 String userName_<%=cid%> = <%=dbuser%>;
 
 String password_<%=cid%> = <%=dbpass%>;
 
-java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>,userName_<%=cid%>,password_<%=cid%>);
+java.sql.Connection conn_<%=cid%> = null; 
+
+<%if(isUseSysConnection){
+%>
+	conn_<%=cid%> = SystemDBConnection.getDBConnection("<%=javaDbDriver%>",url_<%=cid%>,userName_<%=cid%> , password_<%=cid%>);
+<%
+}else {
+%>
+	java.lang.Class.forName("<%=javaDbDriver%>");
+	conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>,userName_<%=cid%>,password_<%=cid%>);
+<%
+}%> 
 
 conn_<%=cid%>.setAutoCommit(false);
 
 globalMap.put("conn_<%=cid%>", conn_<%=cid%>);
 globalMap.put("tableschema_<%=cid%>", <%=tableschema%>);
-
 globalMap.put("host_<%=cid%>", <%=dbhost%>);
 globalMap.put("dbname_<%=cid%>", <%=dbname%>);
 globalMap.put("port_<%=cid%>", <%=dbport%>);

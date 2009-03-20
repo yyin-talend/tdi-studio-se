@@ -51,6 +51,16 @@
     >    
        <DEFAULT>""</DEFAULT>
     </PARAMETER>
+	
+	<PARAMETER
+      NAME="IS_USE_SYS_CONNECTION"
+	  FIELD="CHECK"
+      NUM_ROW="10"
+      REQUIRED="false"
+    >      
+    </PARAMETER>
+	
+	
    </PARAMETERS>
 
    <CODEGENERATION>

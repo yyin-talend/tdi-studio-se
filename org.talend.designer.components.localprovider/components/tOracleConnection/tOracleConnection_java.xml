@@ -67,7 +67,9 @@
 	</PARAMETER>
 
 	<PARAMETER NAME="USE_TNS_FILE" FIELD="CHECK"
-		NUM_ROW="28">
+		NUM_ROW="28"
+		SHOW_IF="IS_USE_SYS_CONNECTION =='false'"
+		>
 		<DEFAULT>false</DEFAULT>
 	</PARAMETER>
 
@@ -75,7 +77,7 @@
       NAME="TNS_FILE"
       FIELD="FILE"
       NUM_ROW="29"
-      SHOW_IF="USE_TNS_FILE == 'true'"
+      SHOW_IF="(USE_TNS_FILE == 'true') AND (IS_USE_SYS_CONNECTION =='false') "
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>	
@@ -169,6 +171,15 @@
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
+
+	<PARAMETER
+      NAME="IS_USE_SYS_CONNECTION"
+	  FIELD="CHECK"
+      NUM_ROW="90"
+      REQUIRED="false"
+    >      
+    </PARAMETER>
+
 
    </PARAMETERS>
 

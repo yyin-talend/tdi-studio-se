@@ -100,6 +100,15 @@
     >
       <DEFAULT>"masterkey"</DEFAULT>
     </PARAMETER>
+	
+	<PARAMETER
+      NAME="IS_USE_SYS_CONNECTION"
+	  FIELD="CHECK"
+      NUM_ROW="60"
+      REQUIRED="false"
+    >      
+    </PARAMETER>
+
         
    </PARAMETERS>
 

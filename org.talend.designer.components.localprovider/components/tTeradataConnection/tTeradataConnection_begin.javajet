@@ -16,8 +16,10 @@ imports="
     String dbuser = ElementParameterParser.getValue(node, "__USER__");
     String dbpass = ElementParameterParser.getValue(node, "__PASS__");
     String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
+    String javaDbDriver="com.ncr.teradata.TeraDriver";
+    boolean isUseSysConnection = ElementParameterParser.getValue(node, "__IS_USE_SYS_CONNECTION__").equals("true");
 %>
-java.lang.Class.forName("com.ncr.teradata.TeraDriver");
+
 
 String url_<%=cid %> = "jdbc:teradata://" + <%=dbhost%> + "/" + <%=dbname%>;
 
@@ -25,8 +27,18 @@ String dbUser_<%=cid %> = <%=dbuser%>;
 
 String dbPwd_<%=cid %> = <%=dbpass%>;
 
-java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+java.sql.Connection conn_<%=cid%> = null; 
 
+<%if(isUseSysConnection){
+%>
+	conn_<%=cid%> = SystemDBConnection.getDBConnection("<%=javaDbDriver%>",url_<%=cid%>,dbUser_<%=cid %> , dbPwd_<%=cid%>);
+<%
+}else {
+%>
+	java.lang.Class.forName("<%=javaDbDriver%>");
+	conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+<%
+}%> 
 conn_<%=cid%>.setAutoCommit(false);
 
 globalMap.put("conn_" + "<%=cid%>",conn_<%=cid%>);

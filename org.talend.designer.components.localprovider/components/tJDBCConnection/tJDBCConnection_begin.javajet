@@ -14,8 +14,10 @@ imports="
     String jdbcUrl = ElementParameterParser.getValue(node, "__URL__");
     String dbuser = ElementParameterParser.getValue(node, "__USER__");
     String dbpwd = ElementParameterParser.getValue(node, "__PASS__");
-    String dbencoding = ElementParameterParser.getValue(node, "__ENCODING__");
-%>java.lang.Class.forName(<%=driverClass %>);
+    String dbencoding = ElementParameterParser.getValue(node, "__ENCODING__");    
+    boolean isUseSysConnection = ElementParameterParser.getValue(node, "__IS_USE_SYS_CONNECTION__").equals("true");
+    
+%>
 
 String connString_<%=cid %> = <%=jdbcUrl %>;
 
@@ -23,7 +25,17 @@ String userName_<%=cid %> = <%=dbuser %>;
 
 String password_<%=cid %> = <%=dbpwd %>;
 
-java.sql.Connection conn_<%=cid %> = java.sql.DriverManager.getConnection(connString_<%=cid %>, userName_<%=cid %>, password_<%=cid %>);
+java.sql.Connection conn_<%=cid %> = null;
+<%if(isUseSysConnection){
+%>
+	conn_<%=cid%> = SystemDBConnection.getDBConnection(<%=driverClass%>,connString_<%=cid %>,userName_<%=cid %> , password_<%=cid %>);
+<%
+}else {
+%>
+	java.lang.Class.forName(<%=driverClass %>);
+	conn_<%=cid%> = java.sql.DriverManager.getConnection(connString_<%=cid %>, userName_<%=cid %>, password_<%=cid %>);
+<%
+}%> 
 
 conn_<%=cid%>.setAutoCommit(false);
 

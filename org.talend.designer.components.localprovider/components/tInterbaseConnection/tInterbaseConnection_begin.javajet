@@ -11,14 +11,15 @@
  	    INode node = (INode)codeGenArgument.getArgument();
  	       
  	    String cid = node.getUniqueName();
- 	        String javaDbDriver = "interbase.interclient.Driver";
+ 	    String javaDbDriver = "interbase.interclient.Driver";
  	    String dbhost = ElementParameterParser.getValue(node, "__HOST__");
  	    String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
  	    String dbuser = ElementParameterParser.getValue(node, "__USER__");
  	    String dbpass = ElementParameterParser.getValue(node, "__PASS__");
  	    String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
- 	%>
- 	java.lang.Class.forName("<%=javaDbDriver %>");
+ 	    boolean isUseSysConnection = ElementParameterParser.getValue(node, "__IS_USE_SYS_CONNECTION__").equals("true");
+ 	    
+ 	%> 	
  	
  	String url_<%=cid %> = "jdbc:interbase://"+<%=dbhost%>+"/"+<%=dbname%>;
  	
@@ -26,7 +27,20 @@
  	
  	String dbPwd_<%=cid %> = <%=dbpass%>;
  	
- 	java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+ 	java.sql.Connection conn_<%=cid%> = null;
+ 	
+ 	<%if(isUseSysConnection){
+	%>
+		conn_<%=cid%> = SystemDBConnection.getDBConnection("<%=javaDbDriver%>",url_<%=cid%>,dbUser_<%=cid %> , dbPwd_<%=cid%>);
+	<%
+	}else {
+	%>
+		java.lang.Class.forName("<%=javaDbDriver %>");
+		conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+	<%
+	}%> 
+ 	
+ 	
  	
  	conn_<%=cid%>.setAutoCommit(false);
  	

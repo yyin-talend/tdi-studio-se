@@ -11,9 +11,20 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
+boolean isUseSysConnection = ElementParameterParser.getValue(node, "__IS_USE_SYS_CONNECTION__").equals("true");
+String javaDbDriver = "org.sqlite.JDBC";
 %>
 String url_<%=cid %> = "jdbc:sqlite:" + "/" + <%= dbname%>.toLowerCase();
-java.lang.Class.forName("org.sqlite.JDBC");
-java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>);
+java.sql.Connection conn_<%=cid%> = null;
+<%if(isUseSysConnection){
+%>
+	conn_<%=cid%> = SystemDBConnection.getDBConnection("<%=javaDbDriver%>",url_<%=cid%>,null,null);
+<%
+}else {
+%>
+	java.lang.Class.forName("<%=javaDbDriver%>");
+	conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>);
+<%
+}%> 
 conn_<%=cid%>.setAutoCommit(false);
 globalMap.put("conn_" + "<%=cid%>", conn_<%=cid%>);
