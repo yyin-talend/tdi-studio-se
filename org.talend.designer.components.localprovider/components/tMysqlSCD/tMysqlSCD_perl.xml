@@ -16,7 +16,7 @@
 
   <FAMILIES>
     <FAMILY>Databases/MySQL</FAMILY>
-    <FAMILY>Business Intelligence/DB SCD</FAMILY>
+    <FAMILY>Business_Intelligence/DB_SCD</FAMILY>
   </FAMILIES>
   
   <DOCUMENTATION>

@@ -15,7 +15,7 @@ COMPATIBILITY="ALL"
   </HEADER>
 
   <FAMILIES>
-    <FAMILY>Logs &amp; Errors</FAMILY>
+    <FAMILY>Logs_Errors</FAMILY>
   </FAMILIES>
 
   <DOCUMENTATION>
