@@ -1016,7 +1016,7 @@ public class DataProcess {
             // if end of the loop or need new FSScale, need to copy all links
             for (IConnection connection : dataNode.getIncomingConnections()) {
                 if (connection.isActivate()) {
-                    if (loopEnd || !connection.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
+                    if (!connection.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
                         ((List<IConnection>) fsNode.getIncomingConnections()).add(connection);
                         ((DataConnection) connection).setTarget(fsNode);
                     }
