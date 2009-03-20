@@ -30,16 +30,16 @@ try {
     binding_<%=cid%> = (com.sforce.soap.partner.SoapBindingStub) new com.sforce.soap.partner.SforceServiceLocator().getSoap(new java.net.URL(<%=endPoint%>));
     loginResult_<%=cid%> = binding_<%=cid%>.login(<%=username%>, <%=password%>);
     binding_<%=cid%>._setProperty(com.sforce.soap.partner.SoapBindingStub.ENDPOINT_ADDRESS_PROPERTY, loginResult_<%=cid%>.getServerUrl());
-} catch (javax.xml.rpc.ServiceException ex) {
-    System.out.println("ERROR: createing binding to soap service, error was: \n" + ex.getMessage());
+} catch (javax.xml.rpc.ServiceException e) {
+    throw(e);
 } catch (com.sforce.soap.partner.fault.UnexpectedErrorFault e) {
-    System.out.println("error: " + e.getMessage());
+    throw(e);
 } catch (com.sforce.soap.partner.fault.InvalidIdFault e) {
-    System.out.println("error: " + e.getMessage());
+    throw(e);
 } catch (com.sforce.soap.partner.fault.LoginFault e) {
-    System.out.println("error: " + e.getMessage());
+    throw(e);
 } catch (java.rmi.RemoteException e) {
-    System.out.println("error: " + e.getMessage());
+    throw(e);
 }
 com.sforce.soap.partner.SessionHeader sh_<%=cid%> = new com.sforce.soap.partner.SessionHeader();
 sh_<%=cid%>.setSessionId(loginResult_<%=cid%>.getSessionId());
