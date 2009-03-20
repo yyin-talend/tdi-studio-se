@@ -305,6 +305,14 @@ public class StatsAndLogsManager {
                         ((List<IConnection>) dataNode.getIncomingConnections()).add(dataConnec);
 
                         setConnectionParameter(connectionNode, process, connectionUID, dataNode, nodeList);
+                        if (connectionComponentName.contains("Oracle")) {
+                            if (connectionNode.getElementParameter(EParameterName.CONNECTION_TYPE.getName()) != null) {
+                                connectionNode.getElementParameter(EParameterName.CONNECTION_TYPE.getName())
+                                        .setValue(dbComponent);
+                            }
+                        }
+                        connectionNode.setProcess(process);
+                        nodeList.add(connectionNode);
                     }
                 }
             }
@@ -344,9 +352,6 @@ public class StatsAndLogsManager {
             connectionNode.getElementParameter(EParameterName.PASS.getName()).setValue(
                     process.getElementParameter(EParameterName.PASS.getName()).getValue());
         }
-
-        connectionNode.setProcess(process);
-        nodeList.add(connectionNode);
 
         dataNode.getElementParameter("USE_EXISTING_CONNECTION").setValue(Boolean.TRUE);//$NON-NLS-1$
         dataNode.getElementParameter("CONNECTION").setValue(connectionUID);//$NON-NLS-1$
