@@ -272,6 +272,12 @@ public class ConnectionManager {
             return false;
         }
 
+        if (newTarget.isFileScaleComponent()) {
+            if (newlineStyle.hasConnectionCategory(IConnectionCategory.FLOW) && !connectorName.equals("FSCOMBINE")) { //$NON-NLS-1$
+                return false;
+            }
+        }
+
         // Modify Connection Type depending old and new target.
         if (newlineStyle.hasConnectionCategory(IConnectionCategory.FLOW)) {
             // if the connection type is not the default one, then we don't change automatically.

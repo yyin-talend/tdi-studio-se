@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.BidiMap;
+import org.apache.commons.collections.bidimap.DualHashBidiMap;
 import org.apache.commons.lang.ArrayUtils;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.components.IComponent;
@@ -70,6 +72,8 @@ public class DataProcess {
 
     private Map<INode, INode> buildCheckMap = null;
 
+    private BidiMap buildGraphicalMap = null;
+
     private List<Node> checkRefList = null;
 
     private Map<INode, INode> checkMultipleMap = null;
@@ -92,6 +96,7 @@ public class DataProcess {
         checkMultipleMap = new HashMap<INode, INode>();
         dataNodeList = new ArrayList<INode>();
         checkFileScaleMap = new HashMap<INode, INode>();
+        buildGraphicalMap = new DualHashBidiMap();
     }
 
     private void copyElementParametersValue(IElement sourceElement, IElement targetElement) {
@@ -947,6 +952,7 @@ public class DataProcess {
                 || (!ArrayUtils.contains(fsNodeNeedReplace, currentComponent.getComponent().getName()));
         NodeProgressBar progressBar = null;
         DataNode fsNode = null, oldFsNode = null;
+        List<IConnection> connectionsToAdd = new ArrayList<IConnection>();
         while (!loopEnd) {
             List<IConnection> flowConnections = (List<IConnection>) NodeUtil.getOutgoingConnections(currentComponent,
                     IConnectionCategory.FLOW);
@@ -971,16 +977,22 @@ public class DataProcess {
                 }
                 oldFsNode = fsNode;
             }
+            Node originalGraphicNode = null;
+            if (buildGraphicalMap.getKey(currentComponent) != null) {
+                originalGraphicNode = (Node) buildGraphicalMap.getKey(currentComponent);
+            }
 
             // add the fs component if this one is not already added to the list.
             if (fsNode == null || needCreateTFSNode) {
-                progressBar = currentComponent.getNodeProgressBar();
-                progressBar.getIncludedNodesInProgress().clear();
+                if (originalGraphicNode != null) {
+                    progressBar = originalGraphicNode.getNodeProgressBar();
+                    progressBar.getIncludedNodesInProgress().clear();
+                }
                 // Create the new FS component
                 IComponent component = ComponentsFactoryProvider.getInstance().get(FSNODE_COMPONENT_NAME);
                 fsNode = new DataNode(component, currentComponent.getUniqueName());
                 fsNode.setActivate(currentComponent.isActivate());
-                fsNode.setStart(currentComponent.isStart() || needCreateTFSNode);
+                fsNode.setStart(currentComponent.isStart());
                 fsNode.setDesignSubjobStartNode(currentComponent.getDesignSubjobStartNode());
                 IMetadataTable newMetadata = currentComponent.getMetadataList().get(0).clone();
                 newMetadata.setTableName(currentComponent.getUniqueName());
@@ -994,7 +1006,10 @@ public class DataProcess {
                 fsNode.setOutgoingConnections(outgoingConnections);
                 dataNodeList.add(fsNode);
             }
-            progressBar.getIncludedNodesInProgress().add(currentComponent);
+            if (progressBar != null && originalGraphicNode != null) {
+                progressBar.getIncludedNodesInProgress().add(originalGraphicNode);
+            }
+
             copyElementParametersValue(dataNode, fsNode);
 
             if (flowConnections.isEmpty() || buildCheckMap.get(flowConnections.get(0).getTarget()) == null) {
@@ -1024,6 +1039,7 @@ public class DataProcess {
                     if (needCreateTFSNode) {
                         // replug between different tFSNodes.
                         ((List<IConnection>) fsNode.getIncomingConnections()).add(connection);
+                        ((List<IConnection>) oldFsNode.getOutgoingConnections()).add(0, connection);
                         ((DataConnection) connection).setTarget(fsNode);
                         ((DataConnection) connection).setSource(oldFsNode);
                         ((DataConnection) connection).setLineStyle(EConnectionType.ON_SUBJOB_OK);
@@ -1152,6 +1168,7 @@ public class DataProcess {
         checkRefList = null;
         checkMultipleMap = null;
         buildCheckMap = null;
+        buildGraphicalMap = null;
     }
 
     /**
@@ -1262,8 +1279,8 @@ public class DataProcess {
 
     @SuppressWarnings("unchecked")
     public INode buildNodeFromNode(final Node graphicalNode, final Process process) {
-        if (buildCheckMap.containsKey(graphicalNode)) {
-            return buildCheckMap.get(graphicalNode);
+        if (buildGraphicalMap.containsKey(graphicalNode)) {
+            return (Node) buildGraphicalMap.get(graphicalNode);
         }
 
         Node newGraphicalNode = new Node(graphicalNode.getComponent(), process);
@@ -1276,7 +1293,7 @@ public class DataProcess {
         newGraphicalNode.setDummy(graphicalNode.isDummy());
 
         process.addNodeContainer(new NodeContainer(newGraphicalNode));
-        buildCheckMap.put(graphicalNode, newGraphicalNode);
+        buildGraphicalMap.put(graphicalNode, newGraphicalNode);
 
         // List<Connection> outgoingConnections = new ArrayList<Connection>();
         // List<Connection> incomingConnections = new ArrayList<Connection>();
@@ -1318,6 +1335,7 @@ public class DataProcess {
         if (graphicalNodeList.size() == 0) {
             return Collections.emptyList();
         }
+        buildGraphicalMap.clear();
 
         duplicatedProcess = new Process(process.getProperty());
         duplicatedProcess.setDuplicate(true);
@@ -1340,7 +1358,7 @@ public class DataProcess {
         // Connection.setInputId(int id)
         for (Node oldNode : graphicalNodeList) {
             if (oldNode.getComponent().useMerge()) {
-                INode newNode = buildCheckMap.get(oldNode);
+                INode newNode = (Node) buildGraphicalMap.get(oldNode);
                 adjustMergeOrderForDuplicateNode(oldNode, newNode);
             }
         }
@@ -1348,7 +1366,7 @@ public class DataProcess {
         List<Node> newBuildNodeList = new ArrayList<Node>();
 
         for (INode gnode : graphicalNodeList) {
-            INode newNode = buildCheckMap.get(gnode);
+            INode newNode = (Node) buildGraphicalMap.get(gnode);
             if (newNode != null) {
                 newBuildNodeList.add((Node) newNode);
             }
@@ -1361,7 +1379,6 @@ public class DataProcess {
         }
         duplicatedProcess.setActivate(true);
         duplicatedProcess.checkStartNodes();
-        buildCheckMap.clear();
         return newBuildNodeList;
     }
 
