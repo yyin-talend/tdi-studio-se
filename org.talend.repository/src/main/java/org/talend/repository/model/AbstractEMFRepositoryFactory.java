@@ -512,8 +512,10 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
                     for (ElementParameterType elementParam : elementParameter) {
                         if (elementParam.getField().equals(EParameterFieldType.MODULE_LIST.getName())) {
                             String uniquename = ElementParameterParser.getUNIQUENAME(node);
-                            ModuleNeeded toAdd = new ModuleNeeded(Messages.getString("AbstractEMFRepositoryFactory.job") + item.getProperty().getLabel(), //$NON-NLS-1$
-                                    elementParam.getValue(), Messages.getString("AbstractEMFRepositoryFactory.requiredComponent") + uniquename + ".", true); //$NON-NLS-1$ //$NON-NLS-2$
+                            ModuleNeeded toAdd = new ModuleNeeded(
+                                    Messages.getString("AbstractEMFRepositoryFactory.job") + item.getProperty().getLabel(), //$NON-NLS-1$
+                                    elementParam.getValue(),
+                                    Messages.getString("AbstractEMFRepositoryFactory.requiredComponent") + uniquename + ".", true); //$NON-NLS-1$ //$NON-NLS-2$
                             importNeedsList.add(toAdd);
                         }
                     }

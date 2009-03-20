@@ -81,7 +81,11 @@ public class CopyAction extends AContextualAction {
         if (ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
             canWork = false;
         }
-
+        // cannot copy for refProject
+        // if (node.getObject() != null
+        // && ProxyRepositoryFactory.getInstance().getStatus(node.getObject()) == ERepositoryStatus.READ_ONLY) {
+        // canWork = false;
+        // }
         for (Object obj : ((StructuredSelection) selection).toArray()) {
             if (canWork) {
                 RepositoryNode sourceNode = (RepositoryNode) obj;

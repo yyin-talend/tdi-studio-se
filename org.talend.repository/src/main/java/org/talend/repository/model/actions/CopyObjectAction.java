@@ -58,13 +58,18 @@ public class CopyObjectAction {
         // Cannot move logically deleted objects :
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         try {
-            if (objectToCopy.getId() == null) {
+            if (objectToCopy != null && objectToCopy.getId() == null) {
                 return false;
             }
+            // Cannot copy for refProject
+            // if (objectToCopy != null && factory.getStatus(objectToCopy) == ERepositoryStatus.READ_ONLY) {
+            // return false;
+            // }
             objectToCopy = factory.getLastVersion(objectToCopy.getId());
             if (objectToCopy == null || factory.getStatus(objectToCopy) == ERepositoryStatus.DELETED) {
                 return false;
             }
+
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);
             return false;
@@ -112,6 +117,10 @@ public class CopyObjectAction {
         if (sourceNode.getType().equals(ENodeType.REPOSITORY_ELEMENT)) {
             // Source is an repository element :
             Item originalItem = sourceNode.getObject().getProperty().getItem();
+            IRepositoryObject lastVersion = factory.getLastVersion(originalItem.getProperty().getId());
+            if (lastVersion != null) {
+                Item item = lastVersion.getProperty().getItem();
+            }
             factory.copy(originalItem, path);
         }
     }

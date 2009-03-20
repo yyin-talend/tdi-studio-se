@@ -26,9 +26,14 @@ import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.ERepositoryStatus;
+import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.model.actions.CopyObjectAction;
 
@@ -91,11 +96,22 @@ public class PasteAction extends AContextualAction {
         }
         RepositoryNode target = (RepositoryNode) selection.getFirstElement();
         TreeSelection selectionInClipboard = (TreeSelection) LocalSelectionTransfer.getTransfer().getSelection();
+        IProxyRepositoryFactory proxyFactory = ProxyRepositoryFactory.getInstance();
+        IRepositoryObject object = target.getObject();
 
         if (target.getContentType() == ERepositoryObjectType.JOBS || target.getContentType() == ERepositoryObjectType.JOBLETS
                 || target.getContentType() == ERepositoryObjectType.GENERATED
                 || target.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.JOB_DOC
-                || target.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.JOBLET_DOC) {
+                || target.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.JOBLET_DOC
+                || target.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.REFERENCED_PROJECTS) {
+            visible = false;
+            enabled = false;
+        } else if (object != null) {
+            if (target != null && proxyFactory.getStatus(object) == ERepositoryStatus.READ_ONLY) {
+                enabled = false;
+                visible = false;
+            }
+        } else if (isReferencedProject(target)) {
             visible = false;
             enabled = false;
         } else if (selectionInClipboard != null) {
@@ -119,6 +135,18 @@ public class PasteAction extends AContextualAction {
         setEnabled(enabled);
     }
 
+    public boolean isReferencedProject(RepositoryNode node) {
+        if (node.getType() == ENodeType.REFERENCED_PROJECT) {
+            return true;
+        } else if (node.getParent() != null) {
+            node = node.getParent();
+            if (isReferencedProject(node)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private boolean visible;
 
     /**
@@ -138,4 +166,5 @@ public class PasteAction extends AContextualAction {
     public void setVisible(boolean visible) {
         this.visible = visible;
     }
+
 }

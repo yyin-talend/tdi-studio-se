@@ -61,9 +61,9 @@ public class UpdateDocumentationAction extends AContextualAction {
         if (canWork) {
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             RepositoryNode node = (RepositoryNode) selection.getFirstElement();
-            canWork = node.getType() == ENodeType.REPOSITORY_ELEMENT
-                    && node.getObject().getType() == ERepositoryObjectType.DOCUMENTATION
-                    && factory.isPotentiallyEditable(node.getObject());
+            canWork = (node.getType() == ENodeType.REPOSITORY_ELEMENT
+                    && node.getObject().getType() == ERepositoryObjectType.DOCUMENTATION && factory.isPotentiallyEditable(node
+                    .getObject()));
         }
         setEnabled(canWork);
     }
