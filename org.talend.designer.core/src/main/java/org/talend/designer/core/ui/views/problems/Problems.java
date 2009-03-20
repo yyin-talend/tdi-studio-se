@@ -491,11 +491,11 @@ public class Problems {
                             continue;
                         }
                     }
-                    add(status, marker, routineFileName, message, lineNr, uniName, start, end, type);
+                    if (uniName != null) {
+                        add(status, marker, routineFileName, message, lineNr, uniName, start, end, type);
+                    }
                 }
-
             }
-
         } catch (org.eclipse.core.runtime.CoreException e) {
             ExceptionHandler.process(e);
         }
@@ -526,8 +526,11 @@ public class Problems {
                 maxLevel = information.getLevel();
             }
         }
-        if (maxLevel != null)
+        if (maxLevel != null) {
             property.setMaxInformationLevel(maxLevel);
+        } else {
+            property.setMaxInformationLevel(InformationLevel.DEBUG_LITERAL);
+        }
     }
 
     private static String getFileName(IFile file) {
@@ -603,9 +606,18 @@ public class Problems {
         String[][] s = null;
 
         s = getConFromLineNum(path, lineNum);
+        int first = 0;
+        int second = 0;
+        if (s != null) {
+            if (s[0][0] != null) {
+                first = Integer.parseInt(s[0][0]);
+            }
+            if (s[1][0] != null) {
+                second = Integer.parseInt(s[1][0]);
 
-        int first = Integer.parseInt(s[0][0]);
-        int second = Integer.parseInt(s[1][0]);
+            }
+        }
+
         if (lineNum > first && lineNum < second && s != null) {
             int index1 = s[1][1].indexOf("[");
             int index2 = s[1][1].indexOf("]");

@@ -15,6 +15,8 @@ package org.talend.designer.core.ui.editor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -28,6 +30,8 @@ import org.epic.perleditor.editors.PerlEditor;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.SystemException;
 import org.talend.core.CorePlugin;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.Information;
 import org.talend.core.model.properties.InformationLevel;
@@ -104,15 +108,17 @@ public class TalendPerlEditor extends PerlEditor implements ISyntaxCheckableEdit
                 ITalendSynchronizer synchronizer = CorePlugin.getDefault().getCodeGeneratorService().createRoutineSynchronizer();
 
                 try {
-                    // shouldn't add the following code in perl.
-                    // if (LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL) {
-                    // try {
-                    // CorePlugin.getDefault().getRunProcessService().getJavaProject().getProject().build(
-                    // IncrementalProjectBuilder.AUTO_BUILD, null);
-                    // } catch (CoreException e) {
-                    // ExceptionHandler.process(e);
-                    // }
-                    // }
+
+                    if (LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL) {
+                        try {
+                            CorePlugin.getDefault().getRunProcessService().getProject(ECodeLanguage.PERL).getProject().build(
+                                    IncrementalProjectBuilder.AUTO_BUILD, null);
+
+                        } catch (CoreException e) {
+                            ExceptionHandler.process(e);
+                        }
+                    }
+
                     List<Information> informations = Problems.addRoutineFile(synchronizer.getFile(property.getItem()), property);
 
                     // save error status
