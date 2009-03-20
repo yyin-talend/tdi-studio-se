@@ -308,7 +308,7 @@ public class ProcessComposite extends Composite {
                 } else {
                     ToolItem item = (ToolItem) event.widget;
                     errorMessMap.clear();
-                    if (item.equals(debugMenuItem)) {
+                    if (item.getText().equals(debugMenuItem.getText())) {
                         debug();
                     } else
                         execButtonPressed();
