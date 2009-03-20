@@ -25,6 +25,8 @@ import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
 import org.talend.designer.fileoutputxml.i18n.Messages;
 import org.talend.designer.fileoutputxml.managers.FOXManager;
+import org.talend.designer.fileoutputxml.managers.MultiFOXManager;
+import org.talend.designer.fileoutputxml.ui.FOXMultiSchemaUI;
 import org.talend.designer.fileoutputxml.ui.FOXUI;
 
 /**
@@ -45,7 +47,12 @@ public class FOXMain {
 
     public FOXMain(FileOutputXMLComponent connector) {
         this.connector = connector;
-        this.foxManager = new FOXManager(connector);
+        // add by wzhang. for component tFileOutputXMLMultiSchema
+        if (connector.istFileOutputXMLMultiSchema()) {
+            this.foxManager = new MultiFOXManager(connector);
+        } else {
+            this.foxManager = new FOXManager(connector);
+        }
     }
 
     /**
@@ -55,7 +62,7 @@ public class FOXMain {
      * @return
      */
     public void createUI(Composite parent) {
-        if (!connector.getComponent().getName().equals("tWriteXMLField")) { //$NON-NLS-1$
+        if (!connector.istWriteXMLField()) { //$NON-NLS-1$
             IConnection inConn = null;
             for (IConnection conn : connector.getIncomingConnections()) {
                 if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))
@@ -77,7 +84,12 @@ public class FOXMain {
                 }
             }
         }
-        generatorUI = new FOXUI(parent, foxManager);
+        // add by wzhang. for component tFileOutputXMLMultiSchema
+        if (connector.istFileOutputXMLMultiSchema()) {
+            generatorUI = new FOXMultiSchemaUI(parent, foxManager);
+        } else {
+            generatorUI = new FOXUI(parent, foxManager);
+        }
         generatorUI.init();
     }
 

@@ -173,10 +173,10 @@ public class Schema2XMLLinker extends TableToTreeLinker<Object, Object> {
 
                     TreeItem treeItem = allItems.get(i);
                     FOXTreeNode node = (FOXTreeNode) treeItem.getData();
-                    if (node.getColumnLabel() == null || node.getColumnLabel().equals("")) { //$NON-NLS-1$
+                    if (node.getColumn() == null) { //$NON-NLS-1$
                         continue;
                     }
-                    createLoopLinks(node.getColumnLabel(), treeItem, monitorWrap);
+                    createLoopLinks(node.getColumn().getLabel(), treeItem, monitorWrap);
 
                     monitorWrap.worked(1);
                 }

@@ -176,22 +176,28 @@ public class FileOutputXMLComponent extends AbstractExternalNode {
         List<Map<String, String>> listLoop = (List<Map<String, String>>) this.getElementParameter(LOOP).getValue();
         boolean flagLoop = false;
 
+        // add by wzhang. column show with schema name added for mutiSchema
+        String schemaId = "";
+        if (istFileOutputXMLMultiSchema()) {
+            schemaId = dataComponent.getConnection().getMetadataTable().getLabel() + ":";
+        }
+
         for (ColumnNameChanged col : dataComponent.getColumnNameChanged()) {
             for (Map<String, String> map : listRoot) {
-                if (map.get(COLUMN).equals(col.getOldName())) {
-                    map.put(COLUMN, col.getNewName());
+                if (map.get(COLUMN).equals(schemaId + col.getOldName())) {
+                    map.put(COLUMN, schemaId + col.getNewName());
                     flagRoot = true;
                 }
             }
             for (Map<String, String> map : listGroup) {
-                if (map.get(COLUMN).equals(col.getOldName())) {
-                    map.put(COLUMN, col.getNewName());
+                if (map.get(COLUMN).equals(schemaId + col.getOldName())) {
+                    map.put(COLUMN, schemaId + col.getNewName());
                     flagGroup = true;
                 }
             }
             for (Map<String, String> map : listLoop) {
-                if (map.get(COLUMN).equals(col.getOldName())) {
-                    map.put(COLUMN, col.getNewName());
+                if (map.get(COLUMN).equals(schemaId + col.getOldName())) {
+                    map.put(COLUMN, schemaId + col.getNewName());
                     flagLoop = true;
                 }
             }
@@ -219,6 +225,11 @@ public class FileOutputXMLComponent extends AbstractExternalNode {
         List<Map<String, String>> listLoop = (List<Map<String, String>>) this.getElementParameter(LOOP).getValue();
         boolean flagLoop = false;
 
+        // add by wzhang. column show with schema name added for mutiSchema
+        String schemaId = "";
+        if (istFileOutputXMLMultiSchema()) {
+            return;
+        }
         for (ColumnNameChanged col : dataComponent.getColumnNameChanged()) {
             for (Map<String, String> map : listRoot) {
                 if (map.get(COLUMN).equals(col.getOldName())) {
@@ -254,7 +265,7 @@ public class FileOutputXMLComponent extends AbstractExternalNode {
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public boolean setTableElementParameter(List<Map<String, String>> epsl, String paraName) {
         List<IElementParameter> eps = (List<IElementParameter>) this.getElementParameters();
-        boolean result = false;
+        boolean result = true;
         for (int i = 0; i < eps.size(); i++) {
             IElementParameter parameter = eps.get(i);
             if (parameter.getField() == EParameterFieldType.TABLE && parameter.getName().equals(paraName)) {
@@ -264,30 +275,30 @@ public class FileOutputXMLComponent extends AbstractExternalNode {
                     newMap.putAll(map);
                     newValues.add(newMap);
                 }
-                List<Map<String, String>> oldValues = (List<Map<String, String>>) parameter.getValue();
-
-                if (oldValues.size() != newValues.size()) {
-                    result = true;
-                } else {
-                    for (int k = 0; k < oldValues.size(); k++) {
-                        if (!oldValues.get(k).get(COLUMN).equals(newValues.get(k).get(COLUMN))) {
-                            result = true;
-                            break;
-                        }
-                        if (!oldValues.get(k).get(ATTRIBUTE).equals(newValues.get(k).get(ATTRIBUTE))) {
-                            result = true;
-                            break;
-                        }
-                        if (!oldValues.get(k).get(PATH).equals(newValues.get(k).get(PATH))) {
-                            result = true;
-                            break;
-                        }
-                        if (!oldValues.get(k).get(VALUE).equals(newValues.get(k).get(VALUE))) {
-                            result = true;
-                            break;
-                        }
-                    }
-                }
+                // List<Map<String, String>> oldValues = (List<Map<String, String>>) parameter.getValue();
+                //
+                // if (oldValues.size() != newValues.size()) {
+                // result = true;
+                // } else {
+                // for (int k = 0; k < oldValues.size(); k++) {
+                // if (!oldValues.get(k).get(COLUMN).equals(newValues.get(k).get(COLUMN))) {
+                // result = true;
+                // break;
+                // }
+                // if (!oldValues.get(k).get(ATTRIBUTE).equals(newValues.get(k).get(ATTRIBUTE))) {
+                // result = true;
+                // break;
+                // }
+                // if (!oldValues.get(k).get(PATH).equals(newValues.get(k).get(PATH))) {
+                // result = true;
+                // break;
+                // }
+                // if (!oldValues.get(k).get(VALUE).equals(newValues.get(k).get(VALUE))) {
+                // result = true;
+                // break;
+                // }
+                // }
+                // }
 
                 if (result) {
                     parameter.setValue(newValues);
@@ -336,6 +347,26 @@ public class FileOutputXMLComponent extends AbstractExternalNode {
 
     public void renameOutputConnection(String oldName, String newName) {
 
+    }
+
+    /**
+     * 
+     * wzhang Comment method "istWriteXMLField".
+     * 
+     * @return
+     */
+    public boolean istWriteXMLField() {
+        return getComponent().getName().equals("tWriteXMLField");
+    }
+
+    /**
+     * 
+     * wzhang Comment method "istFileOutputXMLMultiSchema".
+     * 
+     * @return
+     */
+    public boolean istFileOutputXMLMultiSchema() {
+        return getComponent().getName().equals("tFileOutputXMLMultiSchema");
     }
 
     /**

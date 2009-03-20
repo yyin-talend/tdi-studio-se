@@ -22,6 +22,8 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.IConnectionCategory;
+import org.talend.core.model.utils.NodeUtil;
 import org.talend.designer.fileoutputxml.FileOutputXMLComponent;
 import org.talend.designer.fileoutputxml.data.Attribute;
 import org.talend.designer.fileoutputxml.data.Element;
@@ -35,11 +37,36 @@ import org.talend.designer.fileoutputxml.util.TreeUtil;
  */
 public class FOXManager {
 
-    private FileOutputXMLComponent foxComponent;
+    protected FileOutputXMLComponent foxComponent;
 
-    private UIManager uiManager;
+    protected UIManager uiManager;
 
-    private List<FOXTreeNode> treeData;
+    protected List<FOXTreeNode> treeData;
+
+    // add by wzhang. for multifoxmanager to record all schema
+    protected Map<String, List<FOXTreeNode>> contents = new HashMap<String, List<FOXTreeNode>>();
+
+    protected String currentSchema;
+
+    /**
+     * 
+     * wzhang Comment method "getCurrentSchema".
+     * 
+     * @return
+     */
+    public String getCurrentSchema() {
+        return this.currentSchema;
+    }
+
+    /**
+     * 
+     * wzhang Comment method "setCurrentSchema".
+     * 
+     * @param currentSchema
+     */
+    public void setCurrentSchema(String currentSchema) {
+        this.currentSchema = currentSchema;
+    }
 
     /**
      * constructor.
@@ -224,6 +251,9 @@ public class FOXManager {
     }
 
     public List<Map<String, String>> getLoopTable() {
+        if (currentSchema != null) {
+            treeData = contents.get(currentSchema);
+        }
         List<Map<String, String>> result = new ArrayList<Map<String, String>>();
         Element loopNode = (Element) TreeUtil.getLoopNode(this.treeData.get(0));
         if (loopNode != null) {
@@ -234,6 +264,9 @@ public class FOXManager {
     }
 
     public List<Map<String, String>> getGroupTable() {
+        if (currentSchema != null) {
+            treeData = contents.get(currentSchema);
+        }
         List<Map<String, String>> result = new ArrayList<Map<String, String>>();
         Element groupNode = (Element) TreeUtil.getGroupNode(this.treeData.get(0));
         if (groupNode != null) {
@@ -244,6 +277,9 @@ public class FOXManager {
     }
 
     public List<Map<String, String>> getRootTable() {
+        if (currentSchema != null) {
+            treeData = contents.get(currentSchema);
+        }
         List<Map<String, String>> result = new ArrayList<Map<String, String>>();
         FOXTreeNode rootNode = treeData.get(0);
         if (rootNode != null) {
@@ -299,18 +335,31 @@ public class FOXManager {
     }
 
     public List<FOXTreeNode> getTreeData() {
+
+        if (currentSchema != null) {
+            treeData = contents.get(currentSchema);
+        }
         return treeData;
     }
 
     public List<IMetadataColumn> getSchemaData() {
+        if (foxComponent.getMetadataTable().getListColumns().size() == 0) {
+            List<? extends IConnection> incomingConnections = NodeUtil.getIncomingConnections(this.getFoxComponent(),
+                    IConnectionCategory.FLOW);
+            if (incomingConnections.size() > 0) {
+                return incomingConnections.get(0).getMetadataTable().getListColumns();
+            }
+        }
+
         return foxComponent.getMetadataTable().getListColumns();
     }
 
     public void setTreeData(List<FOXTreeNode> treeData) {
         this.treeData = treeData;
+        contents.put(currentSchema, treeData);
     }
 
-    private FOXTreeNode addElement(FOXTreeNode current, String currentPath, String newPath) {
+    protected FOXTreeNode addElement(FOXTreeNode current, String currentPath, String newPath) {
         String name = newPath.substring(newPath.lastIndexOf("/") + 1); //$NON-NLS-1$
         String parentPath = newPath.substring(0, newPath.lastIndexOf("/")); //$NON-NLS-1$
         FOXTreeNode temp = new Element(name);
@@ -335,7 +384,8 @@ public class FOXManager {
             for (int i = 0; i < nods.length - (parentLevel + 1); i++) {
                 parent = parent.getParent();
             }
-            parent.addChild(temp);
+            if (parent != null)
+                parent.addChild(temp);
         }
 
         return temp;

@@ -2287,6 +2287,9 @@ public class Node extends Element implements INode {
                     }
                 }
             }
+            // add by wzhang. the schema of tFileOutputXMLMultiSchema can be different.
+            if ("tFileOutputXMLMultiSchema".equals(component.getName())) //$NON-NLS-1$
+                return;
 
             if (inputs.size() > 1) {
                 IMetadataTable firstSchema = inputs.get(0).getMetadataTable();
@@ -2301,6 +2304,7 @@ public class Node extends Element implements INode {
                         break;
                     }
                 }
+
                 if (!isSame) {
                     String warningMessage = Messages.getString("Node.schemaNotSame", getUniqueName()); //$NON-NLS-1$
                     Problems.add(ProblemStatus.WARNING, this, warningMessage);

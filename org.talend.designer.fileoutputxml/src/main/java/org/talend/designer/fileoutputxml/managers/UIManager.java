@@ -31,11 +31,11 @@ import org.talend.designer.fileoutputxml.ui.FOXUI;
  */
 public class UIManager {
 
-    private FOXUI foxUI;
+    protected FOXUI foxUI;
 
     private int uiResponse = SWT.NONE;
 
-    private FOXManager foxManager;
+    protected FOXManager foxManager;
 
     /**
      * UIManager constructor .
@@ -147,7 +147,7 @@ public class UIManager {
         this.foxUI.redrawLinkers();
     }
 
-    private void getMappableNode(Element node, List<FOXTreeNode> mappableNodes) {
+    protected void getMappableNode(Element node, List<FOXTreeNode> mappableNodes) {
         if (node.getElementChildren().size() == 0) {
             if (node.getColumn() == null) {
                 mappableNodes.add(node);

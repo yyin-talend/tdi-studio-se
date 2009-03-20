@@ -48,6 +48,8 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.IConnectionCategory;
+import org.talend.core.model.utils.NodeUtil;
 import org.talend.designer.fileoutputxml.FileOutputXMLComponent;
 import org.talend.designer.fileoutputxml.action.CreateAttributeAction;
 import org.talend.designer.fileoutputxml.action.CreateElementAction;
@@ -76,17 +78,17 @@ import org.talend.designer.fileoutputxml.util.StringUtil;
  */
 public class FOXUI {
 
-    private FOXManager foxManager;
+    protected FOXManager foxManager;
 
     private Composite foxUIParent;
 
-    private FileOutputXMLComponent externalNode;
+    protected FileOutputXMLComponent externalNode;
 
     private SashForm xmlToSchemaSash;
 
-    private TableViewer schemaViewer;
+    protected TableViewer schemaViewer;
 
-    private TreeViewer xmlViewer;
+    protected TreeViewer xmlViewer;
 
     private HeaderComposite header;
 
@@ -166,6 +168,31 @@ public class FOXUI {
     }
 
     /**
+     * 
+     * wzhang Comment method "createCombo".
+     * 
+     * @param mainComposite
+     */
+    protected void createCombo(Composite mainComposite) {
+
+    }
+
+    /**
+     * 
+     * wzhang Comment method "getConnection".
+     * 
+     * @return
+     */
+    public IConnection getConnection() {
+        List<? extends IConnection> incomingConnections = NodeUtil.getIncomingConnections(foxManager.getFoxComponent(),
+                IConnectionCategory.FLOW);
+        if (incomingConnections.size() > 0) {
+            return incomingConnections.get(0);
+        }
+        return null;
+    }
+
+    /**
      * DOC ke Comment method "initLinker".
      * 
      * @param node
@@ -175,7 +202,8 @@ public class FOXUI {
         IMetadataColumn column = ((FOXTreeNode) node.getData()).getColumn();
         if (column != null) {
             for (int i = 0; i < tableItems.length; i++) {
-                if (tableItems[i].getData().equals(column)) {
+                IMetadataColumn mColumn = (IMetadataColumn) tableItems[i].getData();
+                if (mColumn.getLabel().equals(column.getLabel())) {
                     linker.addLoopLink(tableItems[i], tableItems[i].getData(), xmlViewer.getTree(), (FOXTreeNode) node.getData());
                     break;
                 }
@@ -201,12 +229,13 @@ public class FOXUI {
     }
 
     public void refreshXMLViewer(FOXTreeNode targetNode) {
-        this.xmlViewer.refresh(targetNode);
+        xmlViewer.getTree().setData("row", foxManager.getCurrentSchema());
+        this.xmlViewer.refresh();
     }
 
     protected void initSchemaTable() {
-        if (!externalNode.getComponent().getName().equals("tWriteXMLField")) { //$NON-NLS-1$
-            IMetadataTable metadataTable = this.externalNode.getMetadataTable();
+        if (!externalNode.istWriteXMLField()) { //$NON-NLS-1$
+            IMetadataTable metadataTable = this.externalNode.getMetadataList().get(0);
             if (metadataTable != null) {
                 List<IMetadataColumn> columnList = metadataTable.getListColumns();
                 schemaViewer.setInput(columnList);
@@ -329,6 +358,7 @@ public class FOXUI {
             }
 
         });
+        refreshXMLViewer(null);
     }
 
     /**
@@ -377,6 +407,8 @@ public class FOXUI {
     private void addSchemaViewer(final Composite mainComposite, final int width, final int height) {
         // Group Schema Viewer
         final Group group = Form.createGroup(mainComposite, 1, Messages.getString("FOXUI.19"), height); //$NON-NLS-1$
+        // add by wzhang. add a combo for tFileOutputXMLMultiSchema.
+        createCombo(group);
         schemaViewer = new TableViewer(group);
 
         // schemaViewer.set

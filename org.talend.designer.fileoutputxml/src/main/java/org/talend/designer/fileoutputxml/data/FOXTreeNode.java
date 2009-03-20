@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.talend.core.model.metadata.IMetadataColumn;
+import org.talend.core.model.metadata.IMetadataTable;
 
 /**
  * DOC bqian class global comment. Detailled comment <br/>
@@ -25,7 +26,11 @@ import org.talend.core.model.metadata.IMetadataColumn;
  */
 public abstract class FOXTreeNode {
 
+    private IMetadataTable table = null;
+
     private IMetadataColumn column = null;
+
+    private String row = null;
 
     private String label;
 
@@ -92,8 +97,14 @@ public abstract class FOXTreeNode {
      */
     public String getColumnLabel() {
         if (column == null) {
+            if (getRow() != null) {
+                return getRow();
+            }
             return ""; //$NON-NLS-1$
         } else {
+            if (getRow() != null) {
+                return getRow() + ":" + this.column.getLabel();
+            }
             return this.column.getLabel();
         }
     }
@@ -225,6 +236,46 @@ public abstract class FOXTreeNode {
      */
     public void setMain(boolean isMainNode) {
         this.isMainNode = isMainNode;
+    }
+
+    /**
+     * 
+     * wzhang Comment method "getTable".
+     * 
+     * @return
+     */
+    public IMetadataTable getTable() {
+        return this.table;
+    }
+
+    /**
+     * 
+     * wzhang Comment method "setTable".
+     * 
+     * @param table
+     */
+    public void setTable(IMetadataTable table) {
+        this.table = table;
+    }
+
+    /**
+     * 
+     * wzhang Comment method "getRow".
+     * 
+     * @return
+     */
+    public String getRow() {
+        return this.row;
+    }
+
+    /**
+     * 
+     * wzhang Comment method "setRow".
+     * 
+     * @param row
+     */
+    public void setRow(String row) {
+        this.row = row;
     }
 
 }

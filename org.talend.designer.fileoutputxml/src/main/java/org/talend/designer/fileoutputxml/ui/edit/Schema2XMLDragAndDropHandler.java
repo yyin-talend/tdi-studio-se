@@ -87,8 +87,7 @@ public class Schema2XMLDragAndDropHandler {
             dragSource.dispose();
         }
 
-        dragSource = new DragSource(linker.getSource(), DND.DROP_DEFAULT | DND.DROP_MOVE | DND.DROP_COPY
-                | DND.DROP_LINK);
+        dragSource = new DragSource(linker.getSource(), DND.DROP_DEFAULT | DND.DROP_MOVE | DND.DROP_COPY | DND.DROP_LINK);
         dragSource.setTransfer(new Transfer[] { LocalDataTransfer.getInstance() });
 
         DragSourceListener sourceListener = new TreeDragSourceListener();
@@ -104,8 +103,7 @@ public class Schema2XMLDragAndDropHandler {
         if (loopDropTarget != null) {
             loopDropTarget.dispose();
         }
-        loopDropTarget = new DropTarget(linker.getTarget(), DND.DROP_DEFAULT | DND.DROP_MOVE | DND.DROP_COPY
-                | DND.DROP_LINK);
+        loopDropTarget = new DropTarget(linker.getTarget(), DND.DROP_DEFAULT | DND.DROP_MOVE | DND.DROP_COPY | DND.DROP_LINK);
         loopDropTarget.setTransfer(new Transfer[] { LocalDataTransfer.getInstance() });
         DropTargetListener targetListener = new TableDropTargetListener();
         loopDropTarget.addDropListener(targetListener);
@@ -220,8 +218,7 @@ public class Schema2XMLDragAndDropHandler {
             Control control = dropTarget.getControl();
             TreeItem item = (TreeItem) event.item;
             Rectangle rec = display.map(control, null, item.getBounds(1));
-            if ((event.x >= rec.x) && (event.y >= rec.y) && ((event.x - rec.x) <= rec.width)
-                    && ((event.y - rec.y) <= rec.height)) {
+            if ((event.x >= rec.x) && (event.y >= rec.y) && ((event.x - rec.x) <= rec.width) && ((event.y - rec.y) <= rec.height)) {
                 return true;
             }
             return false;
@@ -241,6 +238,8 @@ public class Schema2XMLDragAndDropHandler {
             }
 
             Control control = dropTarget.getControl();
+            //add by wzhang. get current row.
+            String row = (String) control.getData("row");
             LocalDraggedData draggedData = LocalDataTransfer.getInstance().getDraggedData();
 
             List<Object> dragdedData = draggedData.getTransferableEntryList();
@@ -332,7 +331,12 @@ public class Schema2XMLDragAndDropHandler {
                     }
                 }
 
-                linker.getXMLViewer().refresh(targetNode);
+                if (row != null) {
+                    targetNode.setRow(row);
+                    FOXTreeNode root = (FOXTreeNode) linker.getXMLViewer().getTree().getItem(0).getData();
+                    setTreeNodeRow(root, row);
+                }
+                linker.getXMLViewer().refresh();
                 linker.getXMLViewer().expandAll();
 
                 Display display = linker.getSource().getDisplay();
@@ -343,7 +347,46 @@ public class Schema2XMLDragAndDropHandler {
 
                 linker.getSource().getShell().setCursor(null);
             }
+            if (row != null) {
+                targetNode.setRow(row);
+                FOXTreeNode root = (FOXTreeNode) linker.getXMLViewer().getTree().getItem(0).getData();
+                setTreeNodeRow(root, row);
+            }
+            linker.getXMLViewer().refresh();
+            linker.getXMLViewer().expandAll();
+
             linker.updateLinksStyleAndControlsSelection(control);
+        }
+
+        // reset all the treenode add row to relative column
+        // private void resetTree(FOXTreeNode root, String row) {
+        // root.getChildren();
+        // for (TreeItem item : items) {
+        // setTreeNodeRow(item, row);
+        // }
+        // }
+        
+        // reset all the treeNode add row to relative column
+        private void setTreeNodeRow(FOXTreeNode root, String row) {
+            if (root == null)
+                return;
+            root.setRow(row);
+            if (root instanceof Element) {
+                Element element = (Element) root;
+                List<FOXTreeNode> children = element.getElementChildren();
+                for (FOXTreeNode child : children) {
+                    setTreeNodeRow(child, row);
+                }
+                children = element.getNameSpaceChildren();
+                for (FOXTreeNode child : children) {
+                    setTreeNodeRow(child, row);
+                }
+            }
+            List<FOXTreeNode> children = root.getChildren();
+            for (FOXTreeNode child : children) {
+                setTreeNodeRow(child, row);
+            }
+
         }
     }
 }
