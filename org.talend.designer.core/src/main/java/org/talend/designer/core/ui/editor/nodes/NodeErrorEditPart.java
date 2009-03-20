@@ -101,7 +101,7 @@ public class NodeErrorEditPart extends AbstractGraphicalEditPart implements Prop
      */
     public void propertyChange(final PropertyChangeEvent evt) {
         String request = evt.getPropertyName();
-        if (request.equals("UPDATE_STATUS")) {
+        if (request.equals("UPDATE_STATUS")) { //$NON-NLS-1$
             NodeErrorFigure figure = (NodeErrorFigure) this.getFigure();
             Node node = ((NodeContainer) ((NodeContainerPart) getParent()).getModel()).getNode();
             figure.updateVisible(node.isErrorFlag());
@@ -181,7 +181,7 @@ public class NodeErrorEditPart extends AbstractGraphicalEditPart implements Prop
      */
     @Override
     public void performRequest(final Request request) {
-        if (request.getType().equals("open")) {
+        if (request.getType().equals("open")) { //$NON-NLS-1$
             Node node = ((NodeContainer) ((NodeContainerPart) getParent()).getModel()).getNode();
             if (node.isErrorFlag()) {
                 Shell shell = getViewer().getControl().getShell();

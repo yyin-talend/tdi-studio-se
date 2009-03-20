@@ -148,7 +148,7 @@ public class StatsAndLogsManager {
                     commitNode.setSubProcessStart(true);
                     commitNode.setActivate(true);
                     commitNode.getElementParameter(EParameterName.CONNECTION.getName()).setValue(connectionUID);
-                    commitNode.getElementParameter("CLOSE").setValue(Boolean.FALSE);
+                    commitNode.getElementParameter("CLOSE").setValue(Boolean.FALSE); //$NON-NLS-1$
                     commitNode.setProcess(process);
                     nodeList.add(commitNode);
                 }
@@ -265,7 +265,7 @@ public class StatsAndLogsManager {
             dataConnec.setActivate(true);
             dataConnec.setLineStyle(EConnectionType.ON_SUBJOB_OK);
             dataConnec.setTraceConnection(false);
-            dataConnec.setName("onOk_" + dataNode.getUniqueName() + "_" + commitNode.getUniqueName());
+            dataConnec.setName("onOk_" + dataNode.getUniqueName() + "_" + commitNode.getUniqueName()); //$NON-NLS-1$ //$NON-NLS-2$
             // dataConnec.setName(refSource.getUniqueName() + "_to_hash_" + connection.getName());
             dataConnec.setSource(dataNode);
             dataConnec.setTarget(commitNode);
@@ -280,11 +280,11 @@ public class StatsAndLogsManager {
                 String connectionComponentName = null;
                 if (OracleComponentHelper.filterOracleConnectionType(
                         (String) process.getElementParameter(EParameterName.DB_TYPE.getName()).getValue()).equals(dbComponent)) {//$NON-NLS-1$
-                    if (dbComponent.endsWith("Output")) {
-                        String substring = dbComponent.substring(0, dbComponent.lastIndexOf("Output"));
-                        connectionComponentName = substring + "Connection";
+                    if (dbComponent.endsWith("Output")) { //$NON-NLS-1$
+                        String substring = dbComponent.substring(0, dbComponent.lastIndexOf("Output")); //$NON-NLS-1$
+                        connectionComponentName = substring + "Connection"; //$NON-NLS-1$
                     } else {
-                        connectionComponentName = "tOracleConnection";
+                        connectionComponentName = "tOracleConnection"; //$NON-NLS-1$
                     }
                     component = ComponentsFactoryProvider.getInstance().get(connectionComponentName);
                     if (component != null) {
@@ -297,7 +297,7 @@ public class StatsAndLogsManager {
                         dataConnec.setActivate(true);
                         dataConnec.setLineStyle(EConnectionType.ON_SUBJOB_OK);
                         dataConnec.setTraceConnection(false);
-                        dataConnec.setName("onOk_" + dataNode.getUniqueName() + "_" + connectionNode.getUniqueName());
+                        dataConnec.setName("onOk_" + dataNode.getUniqueName() + "_" + connectionNode.getUniqueName()); //$NON-NLS-1$ //$NON-NLS-2$
                         dataConnec.setSource(dataNode);
                         dataConnec.setTarget(commitNode);
                         dataConnec.setConnectorName(EConnectionType.ON_SUBJOB_OK.getName());

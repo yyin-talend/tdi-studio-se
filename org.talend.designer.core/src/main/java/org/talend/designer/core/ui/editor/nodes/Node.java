@@ -538,10 +538,10 @@ public class Node extends Element implements INode {
     public List<? extends INodeReturn> getReturns() {
         List<INodeReturn> allReturns = new ArrayList<INodeReturn>();
 
-        if (this.component.getName().equals("tSetGlobalVar")) {
+        if (this.component.getName().equals("tSetGlobalVar")) { //$NON-NLS-1$
             getSetGlobalVarReturns(allReturns);
         }
-        if (this.component.getName().equals("tFlowToIterate")) {
+        if (this.component.getName().equals("tFlowToIterate")) { //$NON-NLS-1$
             getFlowToIterateReturns(allReturns);
         }
 
@@ -582,7 +582,7 @@ public class Node extends Element implements INode {
                 globalVarReturn.setVarName(varName);
                 globalVarReturn.setType(JavaTypesManager.STRING.getId());
                 globalVarReturn.setDisplayName(value);
-                globalVarReturn.setAvailability("AFTER");
+                globalVarReturn.setAvailability("AFTER"); //$NON-NLS-1$
 
                 allReturns.add(globalVarReturn);
             }
@@ -598,7 +598,7 @@ public class Node extends Element implements INode {
         if (inMainConns != null && !inMainConns.isEmpty()) {
             inMainConn = inMainConns.get(0);
             inputRowName = inMainConn.getName();
-            boolean useDefault = ElementParameterParser.getValue(this, "__DEFAULT_MAP__").equals("true");
+            boolean useDefault = ElementParameterParser.getValue(this, "__DEFAULT_MAP__").equals("true"); //$NON-NLS-1$ //$NON-NLS-2$
             final String showInputRowName = inputRowName;
             if (useDefault) {
                 IMetadataTable metadata = inMainConn.getMetadataTable();
@@ -629,19 +629,19 @@ public class Node extends Element implements INode {
                     flowToIterateReturn.setDisplayName(columnLabel);
                     flowToIterateReturn.setType(columnType);
                     flowToIterateReturn.setVarName(columnLabel);
-                    flowToIterateReturn.setAvailability("AFTER");
+                    flowToIterateReturn.setAvailability("AFTER"); //$NON-NLS-1$
 
                     allReturns.add(flowToIterateReturn);
                 }
             } else {
                 List<Map<String, String>> map = (List<Map<String, String>>) ElementParameterParser
-                        .getObjectValue(this, "__MAP__");
+                        .getObjectValue(this, "__MAP__"); //$NON-NLS-1$
                 IMetadataTable metadata = inMainConn.getMetadataTable();
                 List<IMetadataColumn> listColumns = metadata.getListColumns();
 
                 for (int i = 0; i < map.size(); i++) {
                     Map<String, String> line = map.get(i);
-                    String keyName = TalendTextUtils.removeQuotes(line.get("KEY"));
+                    String keyName = TalendTextUtils.removeQuotes(line.get("KEY")); //$NON-NLS-1$
 
                     INodeReturn flowToIterateReturn = new NodeReturn() {
 
@@ -659,7 +659,7 @@ public class Node extends Element implements INode {
                         }
                     };
 
-                    String cueeName = line.get("VALUE");
+                    String cueeName = line.get("VALUE"); //$NON-NLS-1$
                     for (int j = 0; j < listColumns.size(); j++) {
                         String columnName = listColumns.get(j).getLabel();
                         if (columnName.equals(cueeName)) {
@@ -672,7 +672,7 @@ public class Node extends Element implements INode {
                     flowToIterateReturn.setName(keyName);
                     flowToIterateReturn.setDisplayName(keyName);
                     flowToIterateReturn.setVarName(keyName);
-                    flowToIterateReturn.setAvailability("AFTER");
+                    flowToIterateReturn.setAvailability("AFTER"); //$NON-NLS-1$
 
                     allReturns.add(flowToIterateReturn);
 
@@ -1374,7 +1374,7 @@ public class Node extends Element implements INode {
     }
 
     public void setErrorInfoChange(final String id, Object value) {
-        if (id.equals("ERRORINFO")) {
+        if (id.equals("ERRORINFO")) { //$NON-NLS-1$
             firePropertyChange(UPDATE_STATUS, null, null);
         }
     }

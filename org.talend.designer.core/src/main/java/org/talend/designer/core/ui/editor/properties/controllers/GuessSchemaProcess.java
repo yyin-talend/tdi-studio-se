@@ -159,11 +159,11 @@ public class GuessSchemaProcess {
         IComponent component = null;
         switch (LanguageManager.getCurrentLanguage()) {
         case JAVA:
-            component = ComponentsFactoryProvider.getInstance().get("tJavaFlex");
+            component = ComponentsFactoryProvider.getInstance().get("tJavaFlex"); //$NON-NLS-1$
             break;
         case PERL:
         default:
-            component = ComponentsFactoryProvider.getInstance().get("tPerlFlex");
+            component = ComponentsFactoryProvider.getInstance().get("tPerlFlex"); //$NON-NLS-1$
             break;
 
         }

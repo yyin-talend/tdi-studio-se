@@ -632,6 +632,9 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             if (isVirtualNode(node)) {
                 nodeName += "_" + node.getComponent().getMultipleComponentManagers().get(0).getInput().getName(); //$NON-NLS-1$
             }
+            if (node.isFileScaleComponent()) {
+                nodeName += "_fsNode"; //$NON-NLS-1$
+            }
         }
         return nodeName;
     }

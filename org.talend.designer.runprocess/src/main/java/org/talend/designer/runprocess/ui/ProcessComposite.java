@@ -1315,8 +1315,8 @@ public class ProcessComposite extends Composite {
     public void getAllErrorMess(IProcessMessage psMess) {
         if (psMess.getType().equals(MsgType.STD_ERR)) {
             String mess = psMess.getContent();
-            String firstline = mess.split("\n")[0];
-            String[] allwords = firstline.split("\\s");
+            String firstline = mess.split("\n")[0]; //$NON-NLS-1$
+            String[] allwords = firstline.split("\\s"); //$NON-NLS-1$
             String componentName = allwords[allwords.length - 1];
             errorMessMap.put(componentName, psMess);
 
@@ -1331,30 +1331,30 @@ public class ProcessComposite extends Composite {
                 org.talend.core.model.process.IProcess process = processContext.getProcess();
                 List<INode> nodeList = (List<INode>) process.getGraphicalNodes();
                 for (INode inode : nodeList) {
-                    String key = inode.getUniqueName();
-                    if (errorMessMap.get(key) != null) {
+                    String nodeUniqueName = inode.getUniqueName();
+                    if (errorMessMap.get(nodeUniqueName) != null) {
                         if (inode instanceof Node) {
-                            IProcessMessage messPro = errorMessMap.get(key);
+                            IProcessMessage messPro = errorMessMap.get(nodeUniqueName);
                             Node node = (Node) inode;
                             node.setErrorFlag(true);
                             node.setErrorInfo(messPro);
-                            node.getNodeError().updateState("UPDATE_STATUS", true);
+                            node.getNodeError().updateState("UPDATE_STATUS", true); //$NON-NLS-1$
                             if (node.isFileScaleComponent()) {
-                                refreshProgress(psMess, node, key);
+                                refreshProgress(psMess, node, nodeUniqueName);
                             }
-                            node.setErrorInfoChange("ERRORINFO", true);
+                            node.setErrorInfoChange("ERRORINFO", true); //$NON-NLS-1$
                         }
                     } else {
                         if (inode instanceof Node) {
                             Node node = (Node) inode;
                             node.setErrorFlag(false);
                             node.setErrorInfo(null);
-                            node.getNodeError().updateState("UPDATE_STATUS", false);
+                            node.getNodeError().updateState("UPDATE_STATUS", false); //$NON-NLS-1$
                             if (node.isFileScaleComponent()) {
-                                refreshProgress(psMess, node, key);
+                                refreshProgress(psMess, node, nodeUniqueName);
                             }
 
-                            node.setErrorInfoChange("ERRORINFO", false);
+                            node.setErrorInfoChange("ERRORINFO", false); //$NON-NLS-1$
                         }
                     }
                 }
@@ -1363,21 +1363,21 @@ public class ProcessComposite extends Composite {
         });
     }
 
-    public void refreshProgress(IProcessMessage psMess, Node node, String key) {
-        String mess = "";
-        String uniqueName = "";
-        int firIndex = psMess.getContent().indexOf("$");
-        int secIndex = psMess.getContent().indexOf("%");
+    public void refreshProgress(IProcessMessage psMess, Node node, String nodeUniqueName) {
+        String mess = ""; //$NON-NLS-1$
+        String uniqueName = ""; //$NON-NLS-1$
+        int firIndex = psMess.getContent().indexOf("$"); //$NON-NLS-1$
+        int secIndex = psMess.getContent().indexOf("%"); //$NON-NLS-1$
         if ((firIndex >= 0) && secIndex > firIndex) {
             uniqueName = psMess.getContent().substring(0, firIndex);
             mess = psMess.getContent().substring(firIndex + 1, secIndex);
         }
         Double extentPro = new Double(0);
-        if ((!"".equals(mess)) && mess != null) {
+        if ((!"".equals(mess)) && mess != null) { //$NON-NLS-1$
             extentPro = Math.floor(Double.parseDouble(mess) / 10) + 1;
         }
-        if (((extend != extentPro) && uniqueName.equals(key)) || ((extend != extentPro) && (extentPro == 0))) {
-            node.getNodeProgressBar().updateState("UPDATE_STATUS", new Double(extentPro));
+        if (((extend != extentPro) && nodeUniqueName.equals(uniqueName)) || ((extend != extentPro) && (extentPro == 0))) {
+            node.getNodeProgressBar().updateState("UPDATE_STATUS", new Double(extentPro)); //$NON-NLS-1$
             extend = extentPro;
         }
     }

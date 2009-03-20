@@ -115,7 +115,7 @@ public enum EParameterName {
     TRACES_CONNECTION_ENABLE(Messages.getString("EParameterName.TracesConnection")), //$NON-NLS-1$
     TRACES_CONNECTION_FILTER("Filter the traces"), //$NON-NLS-1$ Hidden parameter so no translation needed
     TRACES_SHOW_ENABLE("Traces show"), //$NON-NLS-1$ Hidden parameter so no translation needed
-    VARIABLES("VARIABLES"),
+    VARIABLES("VARIABLES"), //$NON-NLS-1$
     /**
      * For stats & logs parameters.
      */
@@ -233,7 +233,7 @@ public enum EParameterName {
     STATANDLOG_USE_PROJECT_SETTINGS(Messages.getString("StatsAndLogs.UseProjectSettings")), //$NON-NLS-1$
 
     // BASED_ON_INPUT_SCHEMAS
-    BASED_ON_INPUT_SCHEMAS("BASED_ON_INPUT_SCHEMAS");
+    BASED_ON_INPUT_SCHEMAS("BASED_ON_INPUT_SCHEMAS"); //$NON-NLS-1$
 
     private String displayName;
 

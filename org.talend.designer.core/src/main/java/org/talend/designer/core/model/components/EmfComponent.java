@@ -1670,7 +1670,7 @@ public class EmfComponent implements IComponent {
     }
 
     public String getOriginalFamilyName() {
-        String originalFamilyName = "";
+        String originalFamilyName = ""; //$NON-NLS-1$
 
         int nbTotal = compType.getFAMILIES().getFAMILY().size();
         int nb = 0;
@@ -1679,7 +1679,7 @@ public class EmfComponent implements IComponent {
             originalFamilyName += curFamily;
             nb++;
             if (nbTotal != nb) {
-                originalFamilyName += "|";
+                originalFamilyName += "|"; //$NON-NLS-1$
             }
         }
 

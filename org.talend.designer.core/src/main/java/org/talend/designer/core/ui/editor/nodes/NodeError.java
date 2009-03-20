@@ -196,7 +196,7 @@ public class NodeError extends Element {
 
     public void updateState(final String id, Object value) {
         // if (id.equals("UPDATE_STATUS")) {
-        firePropertyChange("UPDATE_STATUS", null, null);
+        firePropertyChange("UPDATE_STATUS", null, null); //$NON-NLS-1$
         // }
     }
 

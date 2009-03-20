@@ -64,11 +64,11 @@ public class NodeReturn implements INodeReturn {
     public String getVarName() {
         switch (LanguageManager.getCurrentLanguage()) {
         case PERL:
-            return "$_globals{" + UNIQUE_NAME + "}{" + varName + "}"; //$NON-NLS-1$ //$NON-NLS-2$
+            return "$_globals{" + UNIQUE_NAME + "}{" + varName + "}"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         case JAVA:
-            return "((" + getDisplayType() + ")globalMap.get(\"" + UNIQUE_NAME + "_" + name + "\"))"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            return "((" + getDisplayType() + ")globalMap.get(\"" + UNIQUE_NAME + "_" + name + "\"))"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         default:
-            return "$_globals{" + UNIQUE_NAME + "}{" + varName + "}"; //$NON-NLS-1$ //$NON-NLS-2$
+            return "$_globals{" + UNIQUE_NAME + "}{" + varName + "}"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
     }
 

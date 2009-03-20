@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.axis.tools.ant.wsdl.Mapper;
+import org.apache.commons.lang.ArrayUtils;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IMultipleComponentConnection;
@@ -42,6 +42,7 @@ import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.utils.NodeUtil;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
@@ -49,6 +50,7 @@ import org.talend.designer.core.model.process.jobsettings.JobSettingsManager;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.editor.nodes.NodeProgressBar;
 import org.talend.designer.core.ui.editor.nodes.Node.Data;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.repository.model.ComponentsFactoryProvider;
@@ -64,11 +66,15 @@ public class DataProcess {
 
     private static final String HASH_COMPONENT_NAME = "tHash"; //$NON-NLS-1$
 
+    private static final String FSNODE_COMPONENT_NAME = "tFSNode"; //$NON-NLS-1$
+
     private Map<INode, INode> buildCheckMap = null;
 
     private List<Node> checkRefList = null;
 
     private Map<INode, INode> checkMultipleMap = null;
+
+    private Map<INode, INode> checkFileScaleMap = null;
 
     private List<INode> dataNodeList;
 
@@ -85,6 +91,7 @@ public class DataProcess {
         checkRefList = new ArrayList<Node>();
         checkMultipleMap = new HashMap<INode, INode>();
         dataNodeList = new ArrayList<INode>();
+        checkFileScaleMap = new HashMap<INode, INode>();
     }
 
     private void copyElementParametersValue(IElement sourceElement, IElement targetElement) {
@@ -533,8 +540,6 @@ public class DataProcess {
                 continue;
             }
 
-            // DataNode curNode = new DataNode(component, uniqueName);
-
             AbstractNode curNode;
             if (graphicalNode.getExternalNode() == null) {
                 curNode = new DataNode(component, uniqueName);
@@ -546,7 +551,6 @@ public class DataProcess {
                     ((IExternalNode) curNode).setExternalData(externalData);
                 }
                 curNode.setStart(graphicalNode.isStart());
-                // curNode.setMetadataList(graphicalNode.getMetadataList());
                 curNode.setPluginFullName(graphicalNode.getPluginFullName());
                 curNode.setElementParameters(graphicalNode.getComponent().createElementParameters(curNode));
                 curNode.setListConnector(((Node) graphicalNode).getListConnector());
@@ -775,7 +779,7 @@ public class DataProcess {
                 List<IConnection> outgoingConnections = (List<IConnection>) subDataNodeStartSource.getOutgoingConnections();
                 List<IConnection> incomingConnections = (List<IConnection>) subDataNodeStartTarget.getIncomingConnections();
                 DataConnection dataConnec = null;
-                
+
                 if (runAfter) {
                     // create a link before between the two subprocess
                     dataConnec = new DataConnection();
@@ -845,7 +849,6 @@ public class DataProcess {
                 dataConnec.setTracesCondition(connection.getTracesCondition());
                 dataConnec.setEnabledTraceColumns(connection.getEnabledTraceColumns());
                 dataConnec.setName(connection.getName());
-                // dataConnec.setName(refSource.getUniqueName() + "_to_hash_" + connection.getName());
                 dataConnec.setSource(refSource);
                 dataConnec.setTarget(hashNode);
                 dataConnec.setConnectorName(connection.getConnectorName());
@@ -919,7 +922,127 @@ public class DataProcess {
                 replaceMultipleComponents(connection.getTarget());
             }
         }
-        // return dataNode;
+    }
+
+    private void replaceFileScalesComponents(INode graphicalNode) {
+        if (checkFileScaleMap.containsKey(graphicalNode)) {
+            // return checkMultipleMap.get(graphicalNode);
+            return;
+        }
+        // if the original component is in dummy state, no need to replace it
+        if ((graphicalNode instanceof Node) && ((Node) graphicalNode).isDummy() && !graphicalNode.isActivate()) {
+            return;
+        }
+
+        String[] fsNodeNeedReplace = new String[] { "tFSFilterRow", "tFSFilterColumns", "tFSSort", "tFSUniq", "tFSTransform" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+
+        Node currentComponent = (Node) graphicalNode;
+        AbstractNode dataNode;
+
+        dataNode = (AbstractNode) buildCheckMap.get(graphicalNode);
+        checkFileScaleMap.put(graphicalNode, dataNode);
+        boolean needCreateTFSNode = false;
+        boolean loopEnd = dataNode == null
+                || (!ArrayUtils.contains(fsNodeNeedReplace, currentComponent.getComponent().getName()));
+        NodeProgressBar progressBar = null;
+        DataNode fsNode = null, oldFsNode = null;
+        while (!loopEnd) {
+            List<IConnection> flowConnections = (List<IConnection>) NodeUtil.getOutgoingConnections(currentComponent,
+                    IConnectionCategory.FLOW);
+            // remove the current FS component from the list
+            dataNodeList.remove(dataNode);
+            buildCheckMap.remove(currentComponent);
+            if (fsNode != null) {
+                // check if use the same files, to see if must create a new tFSNode or not.
+                IElementParameter fsNodeParam = fsNode.getElementParameter("INPUT_FILENAME"); //$NON-NLS-1$
+                IElementParameter param = dataNode.getElementParameter("INPUT_FILENAME"); //$NON-NLS-1$
+                if (param != null) {
+                    if (!param.getValue().equals(fsNodeParam.getValue())) {
+                        needCreateTFSNode = true;
+                    }
+                }
+                fsNodeParam = fsNode.getElementParameter("OUTPUT_FILENAME"); //$NON-NLS-1$
+                param = dataNode.getElementParameter("OUTPUT_FILENAME"); //$NON-NLS-1$
+                if (param != null) {
+                    if (!param.getValue().equals(fsNodeParam.getValue())) {
+                        needCreateTFSNode = true;
+                    }
+                }
+                oldFsNode = fsNode;
+            }
+
+            // add the fs component if this one is not already added to the list.
+            if (fsNode == null || needCreateTFSNode) {
+                progressBar = currentComponent.getNodeProgressBar();
+                progressBar.getIncludedNodesInProgress().clear();
+                // Create the new FS component
+                IComponent component = ComponentsFactoryProvider.getInstance().get(FSNODE_COMPONENT_NAME);
+                fsNode = new DataNode(component, currentComponent.getUniqueName());
+                fsNode.setActivate(currentComponent.isActivate());
+                fsNode.setStart(currentComponent.isStart() || needCreateTFSNode);
+                fsNode.setDesignSubjobStartNode(currentComponent.getDesignSubjobStartNode());
+                IMetadataTable newMetadata = currentComponent.getMetadataList().get(0).clone();
+                newMetadata.setTableName(currentComponent.getUniqueName());
+                fsNode.getMetadataList().remove(0);
+                fsNode.getMetadataList().add(newMetadata);
+                fsNode.setSubProcessStart(currentComponent.isSubProcessStart() || needCreateTFSNode);
+                fsNode.setProcess(currentComponent.getProcess());
+                List<IConnection> outgoingConnections = new ArrayList<IConnection>();
+                List<IConnection> incomingConnections = new ArrayList<IConnection>();
+                fsNode.setIncomingConnections(incomingConnections);
+                fsNode.setOutgoingConnections(outgoingConnections);
+                dataNodeList.add(fsNode);
+            }
+            progressBar.getIncludedNodesInProgress().add(currentComponent);
+            copyElementParametersValue(dataNode, fsNode);
+
+            if (flowConnections.isEmpty() || buildCheckMap.get(flowConnections.get(0).getTarget()) == null) {
+                loopEnd = true;
+            } else {
+                loopEnd = !ArrayUtils.contains(fsNodeNeedReplace, currentComponent.getComponent().getName());
+            }
+
+            // replug each non-flow output connection, to the FSNode.
+            // if end of the loop or need new FSScale, need to copy all links
+            for (IConnection connection : dataNode.getOutgoingConnections()) {
+                if (connection.isActivate()) {
+                    if (loopEnd || !connection.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
+                        ((List<IConnection>) fsNode.getOutgoingConnections()).add(connection);
+                        ((DataConnection) connection).setSource(fsNode);
+                    }
+                }
+            }
+            // replug each non-flow input connection, to the FSNode.
+            // if end of the loop or need new FSScale, need to copy all links
+            for (IConnection connection : dataNode.getIncomingConnections()) {
+                if (connection.isActivate()) {
+                    if (loopEnd || !connection.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
+                        ((List<IConnection>) fsNode.getIncomingConnections()).add(connection);
+                        ((DataConnection) connection).setTarget(fsNode);
+                    }
+                    if (needCreateTFSNode) {
+                        // replug between different tFSNodes.
+                        ((List<IConnection>) fsNode.getIncomingConnections()).add(connection);
+                        ((DataConnection) connection).setTarget(fsNode);
+                        ((DataConnection) connection).setSource(oldFsNode);
+                        ((DataConnection) connection).setLineStyle(EConnectionType.ON_SUBJOB_OK);
+                        ((DataConnection) connection).setConnectorName(EConnectionType.ON_SUBJOB_OK.getName());
+                    }
+                }
+            }
+
+            if (!flowConnections.isEmpty()) {
+                // initialize with next component for next loop
+                currentComponent = (Node) flowConnections.get(0).getTarget();
+                dataNode = (AbstractNode) buildCheckMap.get(currentComponent);
+                needCreateTFSNode = false;
+            }
+        }
+        for (IConnection connection : currentComponent.getOutgoingConnections()) {
+            if (connection.isActivate()) {
+                replaceFileScalesComponents(connection.getTarget());
+            }
+        }
     }
 
     public void buildFromGraphicalProcess(List<Node> graphicalNodeList) {
@@ -966,12 +1089,20 @@ public class DataProcess {
                 checkFlowRefLink(node);
             }
         }
+
         for (Node node : newGraphicalNodeList) {
             checkUseParallelize(node);
         }
+
         for (Node node : newGraphicalNodeList) {
             if (node.isSubProcessStart() && node.isActivate()) {
                 replaceMultipleComponents(node);
+            }
+        }
+
+        for (Node node : newGraphicalNodeList) {
+            if (node.isSubProcessStart() && node.isActivate()) {
+                replaceFileScalesComponents(node);
             }
         }
 

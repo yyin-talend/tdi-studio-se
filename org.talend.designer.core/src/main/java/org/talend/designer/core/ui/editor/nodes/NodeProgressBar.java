@@ -12,7 +12,9 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.nodes;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
@@ -41,6 +43,8 @@ public class NodeProgressBar extends Element {
 
     protected Point location = new Point(0, 0);
 
+    private Set<Node> includedNodesInProgress = null;
+
     // true if this node is activated.
     private boolean activate = true;
 
@@ -52,6 +56,8 @@ public class NodeProgressBar extends Element {
      */
     public NodeProgressBar(Node nodeParent) {
         this.node = nodeParent;
+        // filled only when build the data process
+        includedNodesInProgress = new HashSet<Node>();
     }
 
     /**
@@ -192,9 +198,26 @@ public class NodeProgressBar extends Element {
 
     public void updateState(final String id, Object value) {
         this.getNode().getUniqueName();
+
+        for (Node node : getIncludedNodesInProgress()) {
+            // avoid to update itself to avoid loops
+            if (!node.equals(getNode())) {
+                node.getNodeProgressBar().updateState(id, value);
+            }
+        }
         // if (id.equals("UPDATE_STATUS")) {
-        firePropertyChange("UPDATE_STATUS", null, value);
+        firePropertyChange("UPDATE_STATUS", null, value); //$NON-NLS-1$
         // }
+    }
+
+    /**
+     * Getter for includedNodesInProgress.
+     * 
+     * @return the includedNodesInProgress
+     */
+    public Set<Node> getIncludedNodesInProgress() {
+        // filled only when build the data process
+        return this.includedNodesInProgress;
     }
 
 }
