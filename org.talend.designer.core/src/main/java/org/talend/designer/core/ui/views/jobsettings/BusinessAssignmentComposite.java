@@ -297,9 +297,6 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
                     } else {
 
                         for (RepositoryNode rNode : rootRepositoryNode.getChildren()) {
-                            if ("Routines".equals(rNode.getLabel())) {
-                                rNode.getChildren();
-                            }
                             if (item instanceof SQLPattern
                                     && rNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.SQLPATTERNS) {
                                 if (rNode.getType() == ENodeType.REPOSITORY_ELEMENT) {
