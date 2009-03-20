@@ -934,7 +934,8 @@ public class DataProcess {
             return;
         }
 
-        String[] fsNodeNeedReplace = new String[] { "tFSFilterRow", "tFSFilterColumns", "tFSSort", "tFSUniq", "tFSTransform" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+        String[] fsNodeNeedReplace = new String[] {
+                "tFSFilterRow", "tFSFilterColumns", "tFSSort", "tFSUniq", "tFSTransform", "tFSCheck", "tFSGeneric" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 
         Node currentComponent = (Node) graphicalNode;
         AbstractNode dataNode;
