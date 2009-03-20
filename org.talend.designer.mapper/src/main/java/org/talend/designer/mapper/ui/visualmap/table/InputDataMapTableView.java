@@ -14,6 +14,7 @@ package org.talend.designer.mapper.ui.visualmap.table;
 
 import java.util.List;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -388,6 +389,11 @@ public class InputDataMapTableView extends DataMapTableView {
                 for (int i = 0; i < availableJoins.length; ++i) {
                     IUIMatchingMode matchingMode = availableJoins[i];
                     final String text = matchingMode.getLabel();
+
+                    if (matchingMode == TMAP_MATCHING_MODE.LAST_MATCH) {
+                        continue;
+                    }
+
                     if (text.length() != 0) {
 
                         MenuItem menuItem = new MenuItem(menuMatchingMode, SWT.NONE);
@@ -902,7 +908,7 @@ public class InputDataMapTableView extends DataMapTableView {
             protected void setTableViewerCreatorOptions(TableViewerCreator<GlobalMapEntry> newTableViewerCreator) {
                 super.setTableViewerCreatorOptions(newTableViewerCreator);
                 newTableViewerCreator.setColumnsResizableByDefault(true);
-                newTableViewerCreator.setShowLineSelection(SHOW_ROW_SELECTION.HIDE);
+                newTableViewerCreator.setShowLineSelection(SHOW_ROW_SELECTION.FULL);
                 newTableViewerCreator.setBorderVisible(false);
                 newTableViewerCreator.setLayoutMode(LAYOUT_MODE.FILL_HORIZONTAL);
                 newTableViewerCreator.setKeyboardManagementForCellEdition(true);
@@ -1065,14 +1071,23 @@ public class InputDataMapTableView extends DataMapTableView {
              */
             @Override
             protected void selectionEvent(TableViewerCreatorColumn column, Object bean) {
-                ExtendedTableRemoveCommand removeCommand = new ExtendedTableRemoveCommand(bean, extendedTableViewerForGlobalMap
-                        .getExtendedTableModel());
-                mapperManager.removeTableEntry((ITableEntry) bean);
-                mapperManager.executeCommand(removeCommand);
-                tableViewerCreatorForGlobalMap.getTableViewer().refresh();
-                List list = tableViewerCreatorForGlobalMap.getInputList();
-                updateGridDataHeightForTableGlobalMap();
-                resizeAtExpandedSize();
+
+                ITableEntry tableEntry = (ITableEntry) bean;
+
+                boolean removeEntry = MessageDialog.openConfirm(getShell(), Messages
+                        .getString("InputDataMapTableView.removeGlobalMapVar.Title"), //$NON-NLS-1$
+                        Messages.getString("InputDataMapTableView.removeGlobalMapVar.Message", tableEntry.getName())); //$NON-NLS-1$
+                if (removeEntry) {
+                    ExtendedTableRemoveCommand removeCommand = new ExtendedTableRemoveCommand(bean,
+                            extendedTableViewerForGlobalMap.getExtendedTableModel());
+                    mapperManager.removeTableEntry((ITableEntry) bean);
+                    mapperManager.executeCommand(removeCommand);
+                    tableViewerCreatorForGlobalMap.getTableViewer().refresh();
+                    List list = tableViewerCreatorForGlobalMap.getInputList();
+                    updateGridDataHeightForTableGlobalMap();
+                    resizeAtExpandedSize();
+                }
+
             }
 
         };

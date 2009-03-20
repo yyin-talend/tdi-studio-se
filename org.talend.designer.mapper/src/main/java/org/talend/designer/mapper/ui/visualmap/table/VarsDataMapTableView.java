@@ -37,6 +37,7 @@ import org.talend.commons.ui.swt.tableviewer.data.ModifiedObjectInfo;
 import org.talend.commons.ui.swt.tableviewer.selection.ILineSelectionListener;
 import org.talend.commons.ui.swt.tableviewer.selection.LineSelectionEvent;
 import org.talend.commons.ui.swt.tableviewer.tableeditor.CheckboxTableEditorContent;
+import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
@@ -226,7 +227,7 @@ public class VarsDataMapTableView extends DataMapTableView {
 
             });
             column.setModifiable(!mapperManager.componentIsReadOnly());
-            column.setWidth(12);
+            column.setWidth(WindowSystem.isWIN32() ? 12 : 20);
             column.setDisplayedValue(""); //$NON-NLS-1$
             column.setResizable(false);
             CheckboxTableEditorContent checkboxTableEditorContent = new CheckboxTableEditorContent();

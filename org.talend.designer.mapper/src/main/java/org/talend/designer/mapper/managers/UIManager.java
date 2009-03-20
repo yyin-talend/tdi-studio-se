@@ -231,7 +231,7 @@ public class UIManager extends AbstractUIManager {
             final TableViewerCreator dataMapTVCreator = dataMapTableView.getTableViewerCreatorForColumns();
             final TableViewer dataMapTableViewer = dataMapTableView.getTableViewerCreatorForColumns().getTableViewer();
             if (currentMetadataTableEditor == null || currentMetadataTableEditor != null
-                    && !currentMetadataTableEditor.getMetadataTable().equals(abstractDataMapTable.getMetadataTable())) {
+                    && currentMetadataTableEditor.getMetadataTable() != abstractDataMapTable.getMetadataTable()) {
 
                 if (useNewCommand) {
                     DataMapTableViewSelectedCommand command = new DataMapTableViewSelectedCommand(this,
