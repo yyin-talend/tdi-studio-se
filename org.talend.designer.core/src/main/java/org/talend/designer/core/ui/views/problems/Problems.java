@@ -12,6 +12,11 @@
 // ============================================================================
 package org.talend.designer.core.ui.views.problems;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -174,8 +179,9 @@ public class Problems {
     }
 
     public static void add(ProblemStatus status, IMarker marker, String javaUnitName, String markerErrorMessage, Integer lineN,
-            Integer charStart, Integer charEnd, ProblemType type) {
-        Problem problem = new TalendProblem(status, javaUnitName, marker, markerErrorMessage, lineN, charStart, charEnd, type);
+            String uniName, Integer charStart, Integer charEnd, ProblemType type) {
+        Problem problem = new TalendProblem(status, javaUnitName, marker, markerErrorMessage, lineN, uniName, charStart, charEnd,
+                type);
         add(problem);
     }
 
@@ -187,6 +193,40 @@ public class Problems {
 
     public static void add(Problem problem) {
         problemList.add(problem);
+
+        List<INode> nodeList = null;
+        for (IProcess process : openJobs) {
+            if (((Process) process).isActivate()) {
+                nodeList = (List<INode>) ((Process) process).getGraphicalNodes();
+                for (INode inode : nodeList) {
+                    if (inode instanceof Node) {
+                        Node node = (Node) inode;
+                        if (node.isActivate()) {
+                            if (problem.getStatus().equals(ProblemStatus.ERROR)) {
+                                if (problem instanceof TalendProblem) {
+                                    TalendProblem tProblem = (TalendProblem) problem;
+                                    if (tProblem.getUnitName().equals(node.getUniqueName())) {
+                                        node.setErrorFlag(true);
+                                        node.setErrorInfo(null);
+                                        node.getNodeError().updateState("UPDATE_STATUS", false);
+                                        node.setErrorInfoChange("ERRORINFO", true);
+                                    } else {
+                                        node.setErrorFlag(false);
+                                        node.setErrorInfo(null);
+                                        node.getNodeError().updateState("UPDATE_STATUS", false);
+                                        node.setErrorInfoChange("ERRORINFO", false);
+                                    }
+
+                                }
+                            } else {
+                                node.setErrorFlag(false);
+                                node.setErrorInfoChange("ERRORINFO", false);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public static List<String> getStatusList(ProblemStatus status, Element element) {
@@ -398,6 +438,7 @@ public class Problems {
         }
 
         String routineFileName = null;
+        String uniName = null;
         if (property == null) {
             routineFileName = getFileName(file);
         } else {
@@ -425,6 +466,8 @@ public class Problems {
                 case IMarker.SEVERITY_ERROR:
                     status = ProblemStatus.ERROR;
                     information.setLevel(InformationLevel.ERROR_LITERAL);
+                    String path = file.getLocation().toString();
+                    uniName = getNodeUniName(path, lineNr);
                     break;
                 // case IMarker.SEVERITY_WARNING:
                 // status = ProblemStatus.WARNING;
@@ -448,7 +491,7 @@ public class Problems {
                             continue;
                         }
                     }
-                    add(status, marker, routineFileName, message, lineNr, start, end, type);
+                    add(status, marker, routineFileName, message, lineNr, uniName, start, end, type);
                 }
 
             }
@@ -498,6 +541,85 @@ public class Problems {
         }
         fileName = fileName.substring(0, fileName.lastIndexOf(ext) - 1);
         return fileName;
+    }
+
+    private static String[][] getConFromLineNum(String path, int lineNum) {
+        String start = "*";
+        String endhead = "start";
+        String endfoot = "stop";
+        String[][] result = new String[2][2];
+        File file = new File(path);
+        FileReader fread = null;
+        try {
+            fread = new FileReader(file);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        BufferedReader br = new BufferedReader(fread);
+        int point = 0; // 初始文件 指针
+        String str = null; // 存放 从文件中读的一行 的内容
+        String strtmp = null; // 将文件中的一行 去掉 头 ，尾 的空格
+        int tmp = 0;
+        int min = lineNum;
+        try {
+            while ((str = br.readLine()) != null) {
+                point++;
+                strtmp = str.trim();
+                if (point < lineNum) {
+                    if (strtmp.startsWith(start) && strtmp.endsWith(endhead)) {
+                        tmp = lineNum - point;
+                        if (tmp < min) {
+                            min = tmp;
+                            result[0][0] = String.valueOf(point);
+                            result[0][1] = str;
+                        }
+                    }
+
+                } else if (point > lineNum) {
+                    if (strtmp.startsWith(start) && strtmp.endsWith(endfoot)) {
+                        result[1][0] = String.valueOf(point);
+                        result[1][1] = str;
+                        break;
+                    }
+                } else {
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                br.close();
+                fread.close();
+                file = null;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return result;
+    }
+
+    private static String getNodeUniName(String path, int lineNum) {
+        String uniName = null;
+        String[][] s = null;
+
+        s = getConFromLineNum(path, lineNum);
+
+        int first = Integer.parseInt(s[0][0]);
+        int second = Integer.parseInt(s[1][0]);
+        if (lineNum > first && lineNum < second && s != null) {
+            int index1 = s[1][1].indexOf("[");
+            int index2 = s[1][1].indexOf("]");
+            if (index1 > 0 && index2 > index1) {
+                String nodeAllName = s[1][1].substring(index1, index2);
+                int index3 = nodeAllName.indexOf(" ");
+                if (index3 > 0) {
+                    uniName = nodeAllName.substring(1, index3);
+                }
+
+            }
+
+        }
+        return uniName;
     }
 
 }

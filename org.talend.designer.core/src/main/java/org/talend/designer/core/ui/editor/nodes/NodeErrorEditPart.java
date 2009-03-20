@@ -104,7 +104,7 @@ public class NodeErrorEditPart extends AbstractGraphicalEditPart implements Prop
         if (request.equals("UPDATE_STATUS")) { //$NON-NLS-1$
             NodeErrorFigure figure = (NodeErrorFigure) this.getFigure();
             Node node = ((NodeContainer) ((NodeContainerPart) getParent()).getModel()).getNode();
-            figure.updateVisible(node.isErrorFlag());
+            figure.updateVisible(node.isErrorFlag(), node.getErrorInfo());
             ((NodeError) getModel()).setErrorSize((figure).getSize());
             refreshVisuals();
         }

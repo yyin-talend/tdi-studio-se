@@ -70,6 +70,7 @@ public class NodeContainerFigure extends Figure {
         this.setLayoutManager(new FreeformLayout());
         // this.setOpaque(true);
         // this.setBackgroundColor(new Color(null, new RGB(200, 100, 200)));
+
         rectFig = new RoundedRectangle() {
 
             @Override
@@ -80,7 +81,7 @@ public class NodeContainerFigure extends Figure {
 
         };
         rectFig.setBackgroundColor(null);
-        this.add(rectFig);
+        this.add(rectFig, null, 0);
 
         breakpointFigure = new ImageFigure();
         breakpointFigure.setImage(ImageProvider.getImage(CorePlugin.getImageDescriptor(BREAKPOINT_IMAGE)));

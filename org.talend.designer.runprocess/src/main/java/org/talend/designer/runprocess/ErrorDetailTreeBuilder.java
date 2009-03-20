@@ -47,10 +47,12 @@ public class ErrorDetailTreeBuilder {
             if (error instanceof TalendProblem) {
                 TalendProblem talendProblem = (TalendProblem) error;
                 String job = talendProblem.getJavaUnitName();
+
                 if (!jobNames.contains(job)) {
                     continue;
                 }
                 String componentName = GENERAL_ERROR;
+                // System.out.println("tp----" + talendProblem.getElement().getClass());
                 JobErrorEntry jobEntry = getJobEntry(job);
                 jobEntry.addItem(componentName, talendProblem);
 
