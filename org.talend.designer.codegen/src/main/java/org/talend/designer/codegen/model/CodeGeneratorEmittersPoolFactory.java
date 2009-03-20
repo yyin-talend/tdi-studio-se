@@ -546,7 +546,12 @@ public final class CodeGeneratorEmittersPoolFactory {
             currentClassLoader = unit.getClassLoader();
             theClassLoader = new URLClassLoader(new URL[] { url }, unit.getClassLoader());
         }
-        Class theClass = theClassLoader.loadClass(unit.getClassName());
+        Class theClass;
+        try {
+            theClass = theClassLoader.loadClass(unit.getClassName());
+        } catch (Error e) {
+            throw new ClassNotFoundException(e.getMessage(), e);
+        }
         Method[] methods = theClass.getDeclaredMethods();
         for (int i = 0; i < methods.length; ++i) {
             if (methods[i].getName().equals(methodName)) {
