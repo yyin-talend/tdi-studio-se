@@ -36,6 +36,7 @@
     boolean append = ElementParameterParser.getValue(node, "__APPEND__").equals("true");
 		
 	String cid = node.getUniqueName();
+    String connectMode = ElementParameterParser.getValue(node,"__CONNECT_MODE__");		
 %>
 	int nb_file_<%=cid%> = 0;
 	
@@ -353,6 +354,17 @@ try{
 	ftp_<%=cid %> = new com.enterprisedt.net.ftp.FTPClient();
 	ftp_<%=cid %>.setRemoteHost(<%=host %>);
 	ftp_<%=cid %>.setRemotePort(<%=port %>);
+<%
+	if(connectMode.equals("ACTIVE")){
+%>
+		ftp_<%=cid %>.setConnectMode(com.enterprisedt.net.ftp.FTPConnectMode.ACTIVE);
+<%
+	}else{
+%>
+		ftp_<%=cid %>.setConnectMode(com.enterprisedt.net.ftp.FTPConnectMode.PASV);
+<%
+	}
+%>		
 	ftp_<%=cid %>.connect();
 	ftp_<%=cid %>.login(<%=user %>, <%=pass %>);  
 	<%} %>	 

@@ -34,6 +34,7 @@
 	String authMethod = ElementParameterParser.getValue(node,"__AUTH_METHOD__");
 	String privateKey = ElementParameterParser.getValue(node,"__PRIVATEKEY__");
 	String passPhrase = ElementParameterParser.getValue(node,"__PASSPHRASE__");		
+    String connectMode = ElementParameterParser.getValue(node,"__CONNECT_MODE__");		
 %>
 
 <%
@@ -128,6 +129,17 @@ if(useProxy){
 		ftp<%=cid %> = new com.enterprisedt.net.ftp.FTPClient();
 		ftp<%=cid %>.setRemoteHost(<%=host %>);
 		ftp<%=cid %>.setRemotePort(<%=port %>);
+<%
+	if(connectMode.equals("ACTIVE")){
+%>
+		ftp<%=cid %>.setConnectMode(com.enterprisedt.net.ftp.FTPConnectMode.ACTIVE);
+<%
+	}else{
+%>
+		ftp<%=cid %>.setConnectMode(com.enterprisedt.net.ftp.FTPConnectMode.PASV);
+<%
+	}
+%>			
 		ftp<%=cid %>.connect();	
     	ftp<%=cid %>.login(<%=username %>, <%=password %>);
 		<%} %>	

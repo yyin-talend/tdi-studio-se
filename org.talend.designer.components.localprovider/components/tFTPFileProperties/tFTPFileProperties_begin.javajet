@@ -38,6 +38,7 @@ String proxyHost = ElementParameterParser.getValue(node,"__PROXY_HOST__");
 String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
 String proxyUser = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
 String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
+String connectMode = ElementParameterParser.getValue(node,"__CONNECT_MODE__");	
 
 String outputConnName = null;
 List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
@@ -154,6 +155,17 @@ if(useProxy){
 	ftp_<%=cid %> = new com.enterprisedt.net.ftp.FTPClient();
 	ftp_<%=cid %>.setRemoteHost(<%=host %>);
 	ftp_<%=cid %>.setRemotePort(<%=port %>);
+<%
+	if(connectMode.equals("ACTIVE")){
+%>
+		ftp<%=cid %>.setConnectMode(com.enterprisedt.net.ftp.FTPConnectMode.ACTIVE);
+<%
+	}else{
+%>
+		ftp<%=cid %>.setConnectMode(com.enterprisedt.net.ftp.FTPConnectMode.PASV);
+<%
+	}
+%>	
 	ftp_<%=cid %>.connect();
 	ftp_<%=cid %>.login(<%=username %>, <%=password %>);
 	<%} %>	
