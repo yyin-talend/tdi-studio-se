@@ -114,6 +114,7 @@ public class NodeContainerFigure extends Figure {
         htmlStatusHint = new SimpleHtmlFigure();
 
         initializeNodeContainer(nodeContainer.getNodeContainerRectangle());
+        rectFig.setVisible(false);
     }
 
     /**
@@ -262,7 +263,6 @@ public class NodeContainerFigure extends Figure {
         rectFig.setLocation(new Point(location.x, location.y));
         rectFig.setSize(new Dimension(rectangle.width, rectangle.height));
         rectFig.setForegroundColor(new Color(Display.getDefault(), new RGB(255, 102, 102)));
-        rectFig.setVisible(false);
     }
 
 }

@@ -32,12 +32,6 @@ public class NodeProgressBarFigure extends Figure {
 
     private int alpha = -1;
 
-    // private static int contentPro = 0;
-
-    // private static final int MAX_VARIABLE_WIDTH = 30;
-    //
-    // private static final int MAX_VARIABLE_HEIGHT = 16;
-
     int widthFi;
 
     int heightFi;
@@ -48,18 +42,6 @@ public class NodeProgressBarFigure extends Figure {
         ToolbarLayout layout = new ToolbarLayout();
         setLayoutManager(layout);
         this.node = node;
-        // progressFig = new ImageFigure();
-        // Image image = ImageProvider.getImage(ECoreImage.PROGRESSBAR);
-        // progressFig.setImage(image);
-        // progressFig.setVisible(true);
-        // widthFi = image.getImageData().width;
-        // heightFi = image.getImageData().height;
-        //
-        // progressFig.setPreferredSize(widthFi, heightFi);
-        // progressFig.setSize(progressFig.getPreferredSize());
-        // this.setSize(progressFig.getSize());
-        //
-        // this.add(progressFig);
 
     }
 
@@ -79,14 +61,6 @@ public class NodeProgressBarFigure extends Figure {
     public void setAlpha(int alpha) {
         this.alpha = alpha;
     }
-
-    // private void initProgressBar() {
-    // proBar = new ProgressBar(group1, SWT.BORDER | SWT.HORIZONTAL | SWT.SMOOTH);
-    // proBar.setSize(30, 16);
-    // proBar.setMinimum(0);
-    // proBar.setMaximum(100);
-    // proBar.setForeground(new Color(display, 90, 160, 200));
-    // }
 
     public void setProgressData(int extent) {
         // contentPro = extent;

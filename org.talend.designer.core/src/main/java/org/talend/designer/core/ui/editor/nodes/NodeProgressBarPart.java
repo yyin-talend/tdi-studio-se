@@ -110,6 +110,7 @@ public class NodeProgressBarPart extends AbstractGraphicalEditPart implements Pr
             Node node = ((NodeContainer) ((NodeContainerPart) getParent()).getModel()).getNode();
             figure.updateVisible(true);
             figure.setProgressData(extent.intValue());
+            ((NodeProgressBar) getModel()).setProgressSize((figure).getSize());
             refreshVisuals();
         }
 
@@ -146,7 +147,7 @@ public class NodeProgressBarPart extends AbstractGraphicalEditPart implements Pr
      */
     @Override
     public void createEditPolicies() {
-        // installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new NodeTextEditPolicy());
+
     }
 
     /*
@@ -180,23 +181,6 @@ public class NodeProgressBarPart extends AbstractGraphicalEditPart implements Pr
 
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.gef.editparts.AbstractEditPart#performRequest(org.eclipse.gef.Request)
-     */
-    // @Override
-    // public void performRequest(final Request request) {
-    // if (request.getType().equals("open")) {
-    // Node node = ((NodeContainer) ((NodeContainerPart) getParent()).getModel()).getNode();
-    // if (node.isErrorFlag()) {
-    // Shell shell = getViewer().getControl().getShell();
-    //
-    // ErrorMessageDialog dialog = new ErrorMessageDialog(new Shell(shell), node);
-    // dialog.open();
-    // }
-    // }
-    // }
     /*
      * (non-Javadoc)
      * 

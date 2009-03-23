@@ -173,12 +173,12 @@ public class NodeContainer extends Element {
         Rectangle perfRectangle = new Rectangle(perfLocation, perfSize);
 
         Rectangle finalRect;
-        finalRect = nodeRectangle.getUnion(labelRectangle).getUnion(errorNodeRectangle).getUnion(perfRectangle).getUnion(
-                statusRectangle);
-        if (node.isFileScaleComponent()) {
-            finalRect = finalRect.getUnion(progressNodeRectangle);
-        }
+        finalRect = nodeRectangle.getUnion(labelRectangle).getUnion(perfRectangle).getUnion(statusRectangle);
 
+        finalRect.height += errorNodeSize.height;// .getUnion(errorNodeRectangle)
+        if (node.isFileScaleComponent()) {
+            finalRect.height += progressNodeSize.height;// finalRect = finalRect.getUnion(progressNodeRectangle);
+        }
         return finalRect;
     }
 

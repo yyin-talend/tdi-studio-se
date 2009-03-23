@@ -208,19 +208,19 @@ public class Problems {
                                     if (tProblem.getUnitName().equals(node.getUniqueName())) {
                                         node.setErrorFlag(true);
                                         node.setErrorInfo(null);
-                                        node.getNodeError().updateState("UPDATE_STATUS", false);
-                                        node.setErrorInfoChange("ERRORINFO", true);
+                                        node.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
+                                        node.setErrorInfoChange("ERRORINFO", true);//$NON-NLS-1$
                                     } else {
                                         node.setErrorFlag(false);
                                         node.setErrorInfo(null);
-                                        node.getNodeError().updateState("UPDATE_STATUS", false);
-                                        node.setErrorInfoChange("ERRORINFO", false);
+                                        node.getNodeError().updateState("UPDATE_STATUS", false);//$NON-NLS-1$
+                                        node.setErrorInfoChange("ERRORINFO", false);//$NON-NLS-1$
                                     }
 
                                 }
                             } else {
                                 node.setErrorFlag(false);
-                                node.setErrorInfoChange("ERRORINFO", false);
+                                node.setErrorInfoChange("ERRORINFO", false);//$NON-NLS-1$
                             }
                         }
                     }
@@ -547,9 +547,9 @@ public class Problems {
     }
 
     private static String[][] getConFromLineNum(String path, int lineNum) {
-        String start = "*";
-        String endhead = "start";
-        String endfoot = "stop";
+        String start = "*";//$NON-NLS-1$
+        String endhead = "start";//$NON-NLS-1$
+        String endfoot = "stop";//$NON-NLS-1$
         String[][] result = new String[2][2];
         File file = new File(path);
         FileReader fread = null;
@@ -559,9 +559,9 @@ public class Problems {
             e.printStackTrace();
         }
         BufferedReader br = new BufferedReader(fread);
-        int point = 0; // 初始文件 指针
-        String str = null; // 存放 从文件中读的一行 的内容
-        String strtmp = null; // 将文件中的一行 去掉 头 ，尾 的空格
+        int point = 0;
+        String str = null;
+        String strtmp = null;
         int tmp = 0;
         int min = lineNum;
         try {
@@ -619,11 +619,11 @@ public class Problems {
         }
 
         if (lineNum > first && lineNum < second && s != null) {
-            int index1 = s[1][1].indexOf("[");
-            int index2 = s[1][1].indexOf("]");
+            int index1 = s[1][1].indexOf("[");//$NON-NLS-1$
+            int index2 = s[1][1].indexOf("]");//$NON-NLS-1$
             if (index1 > 0 && index2 > index1) {
                 String nodeAllName = s[1][1].substring(index1, index2);
-                int index3 = nodeAllName.indexOf(" ");
+                int index3 = nodeAllName.indexOf(" ");//$NON-NLS-1$
                 if (index3 > 0) {
                     uniName = nodeAllName.substring(1, index3);
                 }

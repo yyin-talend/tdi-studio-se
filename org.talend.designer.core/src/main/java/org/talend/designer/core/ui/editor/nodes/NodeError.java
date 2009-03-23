@@ -27,17 +27,7 @@ public class NodeError extends Element {
 
     public static final String LOCATION = "nodeLabelLocation"; //$NON-NLS-1$
 
-    public static final String OFFSET_CHANGE = "offsetChange"; //$NON-NLS-1$
-
     private static final long serialVersionUID = 1L;
-
-    private static final int MAX_DISTANCE = 50;
-
-    private static final int STANDARD_LABEL_HEIGHT = 13;
-
-    private Point offset = new Point();
-
-    private Point textOffset = new Point();
 
     private Dimension errorSize = new Dimension();
 
@@ -79,44 +69,6 @@ public class NodeError extends Element {
      */
     public Point getLocation() {
         return location;
-    }
-
-    /**
-     * Set the offset for the label. The offset is linked to the location of the label.
-     * 
-     * @param offset
-     */
-    public void setOffset(Point offset) {
-        this.offset.x = offset.x;
-        this.offset.y = offset.y;
-        firePropertyChange(OFFSET_CHANGE, null, null); //$NON-NLS-1$
-    }
-
-    /**
-     * Gives the offset of the label.
-     * 
-     * @return
-     */
-    public Point getOffset() {
-        return offset;
-    }
-
-    /**
-     * This offset will change when the text is too long, then the label will be always centered with the node.
-     * 
-     * @param textOffset
-     */
-    public void setTextOffset(Point textOffset) {
-        this.textOffset = textOffset;
-    }
-
-    /**
-     * Gives the offset dependings on the text lenght.
-     * 
-     * @return
-     */
-    public Point getTextOffset() {
-        return textOffset;
     }
 
     /**
