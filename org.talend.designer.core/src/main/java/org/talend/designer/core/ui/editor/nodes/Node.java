@@ -1882,11 +1882,11 @@ public class Node extends Element implements INode {
                 if (param.getField().equals(EParameterFieldType.TABLE)) {
                     List<Map<String, String>> tableValues = (List<Map<String, String>>) param.getValue();
                     // add by wzhang. all schemas need loop element.
-                    if ("tFileOutputXMLMultiSchema".equalsIgnoreCase(component.getName())) {
+                    if ("tFileOutputXMLMultiSchema".equalsIgnoreCase(component.getName())) { //$NON-NLS-1$
                         List<? extends IConnection> incomingConnections = NodeUtil.getIncomingConnections(externalNode,
                                 IConnectionCategory.FLOW);
                         if (tableValues.size() != incomingConnections.size()) {
-                            String errorMessage = Messages.getString("Node.eachRowNeedOneValue", param.getDisplayName()); //$NON-NLS-1$
+                            String errorMessage = Messages.getString("Node.eachRowNeedLoop", param.getDisplayName()); //$NON-NLS-1$
                             Problems.add(ProblemStatus.ERROR, this, errorMessage);
                         }
                     } else {
@@ -1904,11 +1904,11 @@ public class Node extends Element implements INode {
                 case TABLE:
                     List<Map<String, String>> tableValues = (List<Map<String, String>>) param.getValue();
                     // add by wzhang. all schemas need loop element.
-                    if ("tFileOutputXMLMultiSchema".equalsIgnoreCase(component.getName())) {
+                    if ("tFileOutputXMLMultiSchema".equalsIgnoreCase(component.getName())) { //$NON-NLS-1$
                         List<? extends IConnection> incomingConnections = NodeUtil.getIncomingConnections(externalNode,
                                 IConnectionCategory.FLOW);
                         if (tableValues.size() != incomingConnections.size()) {
-                            String errorMessage = Messages.getString("Node.eachRowNeedOneValue", param.getDisplayName()); //$NON-NLS-1$
+                            String errorMessage = Messages.getString("Node.eachRowNeedLoop", param.getDisplayName()); //$NON-NLS-1$
                             Problems.add(ProblemStatus.ERROR, this, errorMessage);
                         }
                     } else {
