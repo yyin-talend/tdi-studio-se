@@ -11,14 +11,16 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
-boolean isUseSysConnection = ElementParameterParser.getValue(node, "__IS_USE_SYS_CONNECTION__").equals("true");
+boolean isUseSharedConnection = ElementParameterParser.getValue(node, "__USE_SHARED_CONNECTION__").equals("true");
+String sharedConnectionName = ElementParameterParser.getValue(node, "__SHARED_CONNECTION_NAME__");
 String javaDbDriver = "org.sqlite.JDBC";
 %>
 String url_<%=cid %> = "jdbc:sqlite:" + "/" + <%= dbname%>.toLowerCase();
 java.sql.Connection conn_<%=cid%> = null;
-<%if(isUseSysConnection){
+<%if(isUseSharedConnection){
 %>
-	conn_<%=cid%> = SystemDBConnection.getDBConnection("<%=javaDbDriver%>",url_<%=cid%>,null,null);
+	String sharedConnectionName_<%=cid%> = <%=sharedConnectionName%>;
+	conn_<%=cid%> = SharedDBConnection.getDBConnection("<%=javaDbDriver%>",url_<%=cid%>,null,null,sharedConnectionName_<%=cid%>);
 <%
 }else {
 %>

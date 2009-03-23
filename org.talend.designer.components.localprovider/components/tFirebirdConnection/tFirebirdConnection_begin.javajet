@@ -18,16 +18,19 @@ String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
 String dbuser = ElementParameterParser.getValue(node, "__USER__");
 String dbpass = ElementParameterParser.getValue(node, "__PASS__");
 String javaDbDriver = "org.firebirdsql.jdbc.FBDriver" ;
-boolean isUseSysConnection = ElementParameterParser.getValue(node, "__IS_USE_SYS_CONNECTION__").equals("true");
+boolean isUseSharedConnection = ElementParameterParser.getValue(node, "__USE_SHARED_CONNECTION__").equals("true");
+String sharedConnectionName = ElementParameterParser.getValue(node, "__SHARED_CONNECTION_NAME__");
+
 %>
 String url_<%=cid %> = "jdbc:firebirdsql:" + <%=dbhost%> + ":" + <%=dbname%>;
 String dbUser_<%=cid %> = <%=dbuser%>;
 String dbPwd_<%=cid %> = <%=dbpass%>;
 
 java.sql.Connection conn_<%=cid%> = null;
-<%if(isUseSysConnection){
+<%if(isUseSharedConnection){
 %>
-	conn_<%=cid%> = SystemDBConnection.getDBConnection("<%=javaDbDriver%>",url_<%=cid%>,dbUser_<%=cid %> , dbPwd_<%=cid%>);
+	String sharedConnectionName_<%=cid%> = <%=sharedConnectionName%>;
+	conn_<%=cid%> = SharedDBConnection.getDBConnection("<%=javaDbDriver%>",url_<%=cid%>,dbUser_<%=cid %> , dbPwd_<%=cid%> , sharedConnectionName_<%=cid%>);
 <%
 }else {
 %>

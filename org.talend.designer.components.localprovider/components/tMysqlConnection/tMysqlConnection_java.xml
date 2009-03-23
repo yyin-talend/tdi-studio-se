@@ -114,12 +114,22 @@
       <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
 	
-    <PARAMETER
-      NAME="IS_USE_SYS_CONNECTION"
+	<PARAMETER
+      NAME="USE_SHARED_CONNECTION"
 	  FIELD="CHECK"
       NUM_ROW="20"
       REQUIRED="false"
     >      
+    </PARAMETER>
+	
+	<PARAMETER
+      NAME="SHARED_CONNECTION_NAME"
+	  FIELD="TEXT"
+      NUM_ROW="20"
+      REQUIRED="false"
+	  SHOW_IF="USE_SHARED_CONNECTION == 'true'"
+    >      
+	<DEFAULT>""</DEFAULT>
     </PARAMETER>
 	
 	

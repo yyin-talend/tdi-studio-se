@@ -20,7 +20,9 @@ imports="
     String dbpass = ElementParameterParser.getValue(node, "__PASS__");
     String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
     String javaDbDriver ="com.ibm.db2.jcc.DB2Driver";
-    boolean isUseSysConnection = ElementParameterParser.getValue(node, "__IS_USE_SYS_CONNECTION__").equals("true");
+	boolean isUseSharedConnection = ElementParameterParser.getValue(node, "__USE_SHARED_CONNECTION__").equals("true");
+	String sharedConnectionName = ElementParameterParser.getValue(node, "__SHARED_CONNECTION_NAME__");
+    
 %>
 String url_<%=cid %> = "jdbc:db2://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
 
@@ -30,9 +32,10 @@ String password_<%=cid%> = <%=dbpass%>;
 
 java.sql.Connection conn_<%=cid%> = null; 
 
-<%if(isUseSysConnection){
+<%if(isUseSharedConnection){
 %>
-	conn_<%=cid%> = SystemDBConnection.getDBConnection("<%=javaDbDriver%>",url_<%=cid%>,userName_<%=cid%> , password_<%=cid%>);
+	String sharedConnectionName_<%=cid%> = <%=sharedConnectionName%>;
+	conn_<%=cid%> = SharedDBConnection.getDBConnection("<%=javaDbDriver%>",url_<%=cid%>,userName_<%=cid%> , password_<%=cid%> ,sharedConnectionName_<%=cid%>);
 <%
 }else {
 %>

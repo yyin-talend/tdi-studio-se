@@ -14,8 +14,9 @@ imports="
     String jdbcUrl = ElementParameterParser.getValue(node, "__URL__");
     String dbuser = ElementParameterParser.getValue(node, "__USER__");
     String dbpwd = ElementParameterParser.getValue(node, "__PASS__");
-    String dbencoding = ElementParameterParser.getValue(node, "__ENCODING__");    
-    boolean isUseSysConnection = ElementParameterParser.getValue(node, "__IS_USE_SYS_CONNECTION__").equals("true");
+    String dbencoding = ElementParameterParser.getValue(node, "__ENCODING__");
+	boolean isUseSharedConnection = ElementParameterParser.getValue(node, "__USE_SHARED_CONNECTION__").equals("true");
+	String sharedConnectionName = ElementParameterParser.getValue(node, "__SHARED_CONNECTION_NAME__");
     
 %>
 
@@ -26,9 +27,10 @@ String userName_<%=cid %> = <%=dbuser %>;
 String password_<%=cid %> = <%=dbpwd %>;
 
 java.sql.Connection conn_<%=cid %> = null;
-<%if(isUseSysConnection){
+<%if(isUseSharedConnection){
 %>
-	conn_<%=cid%> = SystemDBConnection.getDBConnection(<%=driverClass%>,connString_<%=cid %>,userName_<%=cid %> , password_<%=cid %>);
+	String sharedConnectionName_<%=cid%> = <%=sharedConnectionName%>;
+	conn_<%=cid%> = SharedDBConnection.getDBConnection(<%=driverClass%>,connString_<%=cid %>,userName_<%=cid %> , password_<%=cid %> ,sharedConnectionName_<%=cid%>);
 <%
 }else {
 %>

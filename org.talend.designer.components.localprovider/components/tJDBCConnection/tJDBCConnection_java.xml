@@ -103,13 +103,22 @@
     </PARAMETER>
 	
 	<PARAMETER
-      NAME="IS_USE_SYS_CONNECTION"
+      NAME="USE_SHARED_CONNECTION"
 	  FIELD="CHECK"
       NUM_ROW="10"
       REQUIRED="false"
     >      
     </PARAMETER>
-
+	
+	<PARAMETER
+      NAME="SHARED_CONNECTION_NAME"
+	  FIELD="TEXT"
+      NUM_ROW="10"
+      REQUIRED="false"
+	  SHOW_IF="USE_SHARED_CONNECTION == 'true'"
+    >      
+	<DEFAULT>""</DEFAULT>
+    </PARAMETER>
 
    </PARAMETERS>
 

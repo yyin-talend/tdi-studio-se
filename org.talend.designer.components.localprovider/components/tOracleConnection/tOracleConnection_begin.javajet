@@ -21,7 +21,8 @@ imports="
     String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
     boolean useTNSFile = ElementParameterParser.getValue(node, "__USE_TNS_FILE__").equals("true");
     String tnsFile = ElementParameterParser.getValue(node, "__TNS_FILE__");
-    boolean isUseSysConnection = ElementParameterParser.getValue(node, "__IS_USE_SYS_CONNECTION__").equals("true");
+    boolean isUseSharedConnection = ElementParameterParser.getValue(node, "__USE_SHARED_CONNECTION__").equals("true");
+    String sharedConnectionName = ElementParameterParser.getValue(node, "__SHARED_CONNECTION_NAME__");
 %>
 java.lang.Class.forName("<%=javaDbDriver %>");
 java.sql.Connection conn_<%=cid%> = null;
@@ -69,13 +70,14 @@ if(useTNSFile) {
     String dbUser_<%=cid %> = <%=dbuser%>;
     String dbPwd_<%=cid %> = <%=dbpass%>;
     
-    <%if(isUseSysConnection){
+    <%if(isUseSharedConnection){
 	%>
-		conn_<%=cid%> = SystemDBConnection.getDBConnection("<%=javaDbDriver%>",url_<%=cid%>,dbUser_<%=cid %> , dbPwd_<%=cid%>);
+		String sharedConnectionName_<%=cid%> = <%=sharedConnectionName%>;
+		conn_<%=cid%> = SharedDBConnection.getDBConnection("<%=javaDbDriver%>",url_<%=cid%>,dbUser_<%=cid %> , dbPwd_<%=cid%> ,sharedConnectionName_<%=cid%>);
 	<%
 	}else {
     %>
-		conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>, dbUser_<%=cid%>, dbPwd_<%=cid%>);
+		conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>, dbUser_<%=cid%>, dbPwd_<%=cid%> );
 	<% 
     }%> 
     
