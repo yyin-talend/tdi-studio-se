@@ -279,8 +279,18 @@ public class StatsAndLogsManager {
                         connectionNode.setStart(true);
                         connectionNode.setSubProcessStart(true);
                         connectionNode.setActivate(true);
+                        // check if shared parameter exist, if yes, use it ONLY when use the project settings.
+                        // name for shared connection can be always the same, as we use only when project settings is
+                        // activated.
+                        if (connectionNode.getElementParameter("USE_SHARED_CONNECTION").getName() != null) {//$NON-NLS-1$
+                            if ((Boolean) process.getElementParameter(EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName())
+                                    .getValue()) {
+                                connectionNode.getElementParameter("USE_SHARED_CONNECTION").setValue(Boolean.TRUE);//$NON-NLS-1$
+                                connectionNode.getElementParameter("SHARED_CONNECTION_NAME").setValue("\"STATSLOGS_CONNECTION\"");//$NON-NLS-1$//$NON-NLS-1$
+                            }
+                        }
                         setConnectionParameter(connectionNode, process, connectionUID, dataNode, nodeList);
-                        if (connectionComponentName.contains("Oracle")) {
+                        if (connectionComponentName.contains("Oracle")) {//$NON-NLS-1$
                             if (connectionNode.getElementParameter(EParameterName.CONNECTION_TYPE.getName()) != null) {
                                 connectionNode.getElementParameter(EParameterName.CONNECTION_TYPE.getName())
                                         .setValue(dbComponent);
@@ -346,10 +356,12 @@ public class StatsAndLogsManager {
             connectionNode.getElementParameter(EParameterName.USER.getName()).setValue(
                     process.getElementParameter(EParameterName.USER.getName()).getValue());
         }
+
         if (connectionNode.getElementParameter(EParameterName.PASS.getName()) != null) {
             connectionNode.getElementParameter(EParameterName.PASS.getName()).setValue(
                     process.getElementParameter(EParameterName.PASS.getName()).getValue());
         }
+
     }
 
     private static DataNode createLogsNode(boolean useFile, boolean console, String dbOutput) {
