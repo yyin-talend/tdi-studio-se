@@ -16,6 +16,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.talend.core.CorePlugin;
+import org.talend.core.PluginChecker;
 import org.talend.core.model.repository.IRepositoryPrefConstants;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.repository.ui.views.IRepositoryView;
@@ -61,10 +62,11 @@ public class MergeReferenceProjectAction extends AContextualAction {
     }
 
     public void init(TreeViewer viewer, IStructuredSelection selection) {
-        visible = selection.isEmpty();
-        if (selection.isEmpty()) {
-            setChecked(preferenceStore.getBoolean(IRepositoryPrefConstants.MERGE_REFERENCE_PROJECT));
-            return;
+        if (PluginChecker.isRefProjectLoaded()) {
+            visible = selection.isEmpty();
+            if (selection.isEmpty()) {
+                setChecked(preferenceStore.getBoolean(IRepositoryPrefConstants.MERGE_REFERENCE_PROJECT));
+            }
         }
     }
 
