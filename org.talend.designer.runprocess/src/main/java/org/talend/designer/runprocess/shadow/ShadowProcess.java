@@ -88,7 +88,7 @@ public class ShadowProcess<T extends IProcessDescription> {
 
     private T description;
 
-    private IPath inPath;
+    private String inPath;
 
     private IPath outPath;
 
@@ -106,8 +106,8 @@ public class ShadowProcess<T extends IProcessDescription> {
         String filePath = description.getFilepath();
 
         if (filePath != null) {
-            this.inPath = new Path(filePath);
-            this.outPath = buildTempCSVFilename(this.inPath);
+            this.inPath = filePath;
+            this.outPath = buildTempCSVFilename(new Path(filePath));
         } else if (type.name().equals("LDAP_SCHEMA")) { //$NON-NLS-1$
             IPath tempPath = Path.fromOSString(CorePlugin.getDefault().getPreferenceStore().getString(
                     ITalendCorePrefConstants.FILE_PATH_TEMP));
@@ -139,30 +139,25 @@ public class ShadowProcess<T extends IProcessDescription> {
         case FILE_DELIMITED:
 
         case FILE_CSV:
-            FileInputDelimitedNode inDelimitedNode = new FileInputDelimitedNode(PathUtils.getPortablePath(inPath.toOSString()),
-                    description //$NON-NLS-1$ //$NON-NLS-2$
-                            .getRowSeparator(), description.getFieldSeparator(), description.getLimitRows(), description
-                            .getHeaderRow(), description.getFooterRow(), description.getEscapeCharacter(), description
-                            .getTextEnclosure(), description.getRemoveEmptyRowsToSkip(), description.isSplitRecord(), description
-                            .getEncoding(), type);
+            FileInputDelimitedNode inDelimitedNode = new FileInputDelimitedNode(inPath, description //$NON-NLS-1$ //$NON-NLS-2$
+                    .getRowSeparator(), description.getFieldSeparator(), description.getLimitRows(), description.getHeaderRow(),
+                    description.getFooterRow(), description.getEscapeCharacter(), description.getTextEnclosure(), description
+                            .getRemoveEmptyRowsToSkip(), description.isSplitRecord(), description.getEncoding(), type);
             ps = new FileinToDelimitedProcess<FileInputDelimitedNode>(inDelimitedNode, outNode);
             break;
 
         case FILE_POSITIONAL:
-            FileInputPositionalNode inPositionalNode = new FileInputPositionalNode(
-                    PathUtils.getPortablePath(inPath.toOSString()), //$NON-NLS-1$ //$NON-NLS-2$
-                    description.getRowSeparator(), description.getPattern(), description.getHeaderRow(), description
-                            .getFooterRow(), description.getLimitRows(), description.getRemoveEmptyRowsToSkip(), description
-                            .getEncoding());
+            FileInputPositionalNode inPositionalNode = new FileInputPositionalNode(inPath, description.getRowSeparator(),
+                    description.getPattern(), description.getHeaderRow(), description.getFooterRow(), description.getLimitRows(),
+                    description.getRemoveEmptyRowsToSkip(), description.getEncoding());
             outNode.setColumnNumber(inPositionalNode.getColumnNumber());
             ps = new FileinToDelimitedProcess<FileInputPositionalNode>(inPositionalNode, outNode);
             break;
 
         case FILE_REGEXP:
-            FileInputRegExpNode inRegExpNode = new FileInputRegExpNode(PathUtils.getPortablePath(inPath.toOSString()),
-                    description //$NON-NLS-1$ //$NON-NLS-2$
-                            .getRowSeparator(), description.getPattern(), description.getLimitRows(), description.getHeaderRow(),
-                    description.getFooterRow(), description.getRemoveEmptyRowsToSkip(), description.getEncoding());
+            FileInputRegExpNode inRegExpNode = new FileInputRegExpNode(inPath, description.getRowSeparator(), description
+                    .getPattern(), description.getLimitRows(), description.getHeaderRow(), description.getFooterRow(),
+                    description.getRemoveEmptyRowsToSkip(), description.getEncoding());
             ps = new FileinToDelimitedProcess<FileInputRegExpNode>(inRegExpNode, outNode);
             break;
         case FILE_XML:
@@ -173,9 +168,8 @@ public class ShadowProcess<T extends IProcessDescription> {
                 map.put("SCHEMA_COLUMN", "row" + i); //$NON-NLS-1$ //$NON-NLS-2$
                 newmappings.add(map);
             }
-            FileInputXmlNode inXmlNode = new FileInputXmlNode(PathUtils.getPortablePath(inPath.toOSString()), description
-                    .getLoopQuery(), //$NON-NLS-1$ //$NON-NLS-2$
-                    description.getMapping(), description.getLoopLimit(), description.getEncoding());
+            FileInputXmlNode inXmlNode = new FileInputXmlNode(inPath, description.getLoopQuery(), description.getMapping(),
+                    description.getLoopLimit(), description.getEncoding());
             ps = new FileinToDelimitedProcess<FileInputXmlNode>(inXmlNode, outNode);
             break;
         case FILE_EXCEL:
@@ -183,7 +177,8 @@ public class ShadowProcess<T extends IProcessDescription> {
 
             ExcelSchemaBean excelBean = description.getExcelSchemaBean();
 
-            excelNode = new FileInputExcelNode(PathUtils.getPortablePath(inPath.toOSString()), description.getSchema(),
+            excelNode = new FileInputExcelNode(inPath,
+                    description.getSchema(),
                     description.getEncoding() == null ? TalendTextUtils.addQuotes("ISO-8859-1") : description.getEncoding(), //$NON-NLS-1$
                     Integer.toString(description.getLimitRows()), Integer.toString(description.getHeaderRow()), Integer
                             .toString(description.getFooterRow()), Boolean.toString(description.getRemoveEmptyRowsToSkip()),
@@ -197,8 +192,7 @@ public class ShadowProcess<T extends IProcessDescription> {
             outNode = new FileOutputDelimitedForLDIF(TalendTextUtils.addQuotes("" //$NON-NLS-1$
                     + PathUtils.getPortablePath(outPath.toOSString())), description.getEncoding());
 
-            FileInputLdifNode inLdifNode = new FileInputLdifNode(PathUtils.getPortablePath(inPath.toOSString()), description
-                    .getSchema(), description.getEncoding()); //$NON-NLS-1$ //$NON-NLS-2$
+            FileInputLdifNode inLdifNode = new FileInputLdifNode(inPath, description.getSchema(), description.getEncoding()); //$NON-NLS-1$ //$NON-NLS-2$
             outNode.setMetadataList(inLdifNode.getMetadataList());
             ps = new FileinToDelimitedProcess<FileInputLdifNode>(inLdifNode, outNode);
             break;
