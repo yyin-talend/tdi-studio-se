@@ -87,11 +87,6 @@
          version="0.0.0"
          search-location="self"/>
 
-   <includes
-         id="org.talend.nls_feature"
-         version="0.0.0"
-         search-location="self"/>
-
    <plugin
          id="org.talend.rcp.branding.tos"
          download-size="0"
