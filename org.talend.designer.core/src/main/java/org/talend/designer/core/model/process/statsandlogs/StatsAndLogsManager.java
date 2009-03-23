@@ -260,19 +260,6 @@ public class StatsAndLogsManager {
         if (connectionNode != null) {
             dataNode.getElementParameter("USE_EXISTING_CONNECTION").setValue(Boolean.TRUE);//$NON-NLS-1$
             dataNode.getElementParameter("CONNECTION").setValue(connectionUID);//$NON-NLS-1$
-
-            DataConnection dataConnec = new DataConnection();
-            dataConnec.setActivate(true);
-            dataConnec.setLineStyle(EConnectionType.ON_SUBJOB_OK);
-            dataConnec.setTraceConnection(false);
-            dataConnec.setName("onOk_" + dataNode.getUniqueName() + "_" + commitNode.getUniqueName()); //$NON-NLS-1$ //$NON-NLS-2$
-            // dataConnec.setName(refSource.getUniqueName() + "_to_hash_" + connection.getName());
-            dataConnec.setSource(dataNode);
-            dataConnec.setTarget(commitNode);
-            dataConnec.setConnectorName(EConnectionType.ON_SUBJOB_OK.getName());
-            ((List<IConnection>) dataNode.getOutgoingConnections()).add(dataConnec);
-            ((List<IConnection>) commitNode.getIncomingConnections()).add(dataConnec);
-
         } else {
             IComponent component = null;
             String[] javaDbComponents = StatsAndLogsConstants.DB_OUTPUT_COMPONENTS;
@@ -292,18 +279,6 @@ public class StatsAndLogsManager {
                         connectionNode.setStart(true);
                         connectionNode.setSubProcessStart(true);
                         connectionNode.setActivate(true);
-
-                        DataConnection dataConnec = new DataConnection();
-                        dataConnec.setActivate(true);
-                        dataConnec.setLineStyle(EConnectionType.ON_SUBJOB_OK);
-                        dataConnec.setTraceConnection(false);
-                        dataConnec.setName("onOk_" + dataNode.getUniqueName() + "_" + connectionNode.getUniqueName()); //$NON-NLS-1$ //$NON-NLS-2$
-                        dataConnec.setSource(dataNode);
-                        dataConnec.setTarget(commitNode);
-                        dataConnec.setConnectorName(EConnectionType.ON_SUBJOB_OK.getName());
-                        ((List<IConnection>) connectionNode.getOutgoingConnections()).add(dataConnec);
-                        ((List<IConnection>) dataNode.getIncomingConnections()).add(dataConnec);
-
                         setConnectionParameter(connectionNode, process, connectionUID, dataNode, nodeList);
                         if (connectionComponentName.contains("Oracle")) {
                             if (connectionNode.getElementParameter(EParameterName.CONNECTION_TYPE.getName()) != null) {
@@ -313,11 +288,34 @@ public class StatsAndLogsManager {
                         }
                         connectionNode.setProcess(process);
                         nodeList.add(connectionNode);
+
+                        dataNode.getElementParameter("USE_EXISTING_CONNECTION").setValue(Boolean.TRUE);//$NON-NLS-1$
+                        dataNode.getElementParameter("CONNECTION").setValue(connectionUID);//$NON-NLS-1$
+
+                        DataConnection dataConnec = createDataConnection(dataNode, connectionNode);
+                        ((List<IConnection>) connectionNode.getOutgoingConnections()).add(dataConnec);
+                        ((List<IConnection>) dataNode.getIncomingConnections()).add(dataConnec);
                     }
                 }
             }
         }
+        DataConnection dataConnec = createDataConnection(dataNode, commitNode);
+        ((List<IConnection>) dataNode.getOutgoingConnections()).add(dataConnec);
+        ((List<IConnection>) commitNode.getIncomingConnections()).add(dataConnec);
         return connectionNode;
+    }
+
+    private static DataConnection createDataConnection(DataNode dataNode, DataNode commitNode) {
+        DataConnection dataConnec = new DataConnection();
+        dataConnec.setActivate(true);
+        dataConnec.setLineStyle(EConnectionType.ON_SUBJOB_OK);
+        dataConnec.setTraceConnection(false);
+        dataConnec.setName("onOk_" + dataNode.getUniqueName() + "_" + commitNode.getUniqueName()); //$NON-NLS-1$ //$NON-NLS-2$
+        // dataConnec.setName(refSource.getUniqueName() + "_to_hash_" + connection.getName());
+        dataConnec.setSource(dataNode);
+        dataConnec.setTarget(commitNode);
+        dataConnec.setConnectorName(EConnectionType.ON_SUBJOB_OK.getName());
+        return dataConnec;
     }
 
     private static void setConnectionParameter(DataNode connectionNode, Process process, String connectionUID, DataNode dataNode,
@@ -352,9 +350,6 @@ public class StatsAndLogsManager {
             connectionNode.getElementParameter(EParameterName.PASS.getName()).setValue(
                     process.getElementParameter(EParameterName.PASS.getName()).getValue());
         }
-
-        dataNode.getElementParameter("USE_EXISTING_CONNECTION").setValue(Boolean.TRUE);//$NON-NLS-1$
-        dataNode.getElementParameter("CONNECTION").setValue(connectionUID);//$NON-NLS-1$
     }
 
     private static DataNode createLogsNode(boolean useFile, boolean console, String dbOutput) {
