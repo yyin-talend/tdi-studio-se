@@ -37,7 +37,10 @@ imports="
 	String authen =ElementParameterParser.getValue(node, "__AUTHENTIFICATION__");
 	String user =ElementParameterParser.getValue(node, "__USER__");
 	String passwd =ElementParameterParser.getValue(node, "__PASSWD__");
-	boolean dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__").equals("true");
+	boolean dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__").equals("true");	
+	
+	boolean paging =ElementParameterParser.getValue(node, "__ISPAGING__").equals("true");	
+	String pageSize =ElementParameterParser.getValue(node, "__PAGESIZE__");
 %>
 	int <%=cid%>_NB_LINE = 0;
 	java.util.Hashtable env_<%=cid%> = new java.util.Hashtable();
@@ -52,7 +55,7 @@ imports="
 <%
 	}else{
 %>
-	env_<%=cid%>.put(javax.naming.Context.PROVIDER_URL, "ldap://"+<%=host%>+":"+<%=port%>+"/"+<%=baseDN%>);
+	env_<%=cid%>.put(javax.naming.Context.PROVIDER_URL, "ldap://"+<%=host%>+":"+<%=port%>);
 <%
 	}
     if(authen.equals("true")){
@@ -101,6 +104,7 @@ imports="
 %>    
     });
     searchCtls_<%=cid%>.setTimeLimit(<%=timeout%>*1000);
+    searchCtls_<%=cid%>.setCountLimit(<%=limit %>);
 <%
 					if(baseDN == null || baseDN.length()<=2){
 %>
@@ -117,20 +121,27 @@ imports="
                     && (aNaming_<%=cid%>.get().toString().length() > 0) && (Character
                     .isIdentifierIgnorable(aNaming_<%=cid%>.get().toString().charAt(0))))) ? ""
                     : aNaming_<%=cid%>.get().toString();
-	
-    javax.naming.NamingEnumeration answer_<%=cid%> = ctx_<%=cid%>.search(searchBase, <%=filter%>, searchCtls_<%=cid%>);
 <%
 					}else{
 %>
-	javax.naming.NamingEnumeration answer_<%=cid%> = ctx_<%=cid%>.search("", <%=filter%>, searchCtls_<%=cid%>);
+		String searchBase = <%=baseDN %>;
 <%
 					}
 %>
-	int entryCount_<%=cid%> = 0;
+
+<%if(paging){%>
+    // Set the page size and initialize the cookie that we pass back in subsequent pages
+    int pageSize_<%=cid%> = <%=pageSize %>;
+    byte[] cookie_<%=cid%> = null;
+    // Request the paged results control
+    javax.naming.ldap.Control[] ctls_<%=cid%> = new javax.naming.ldap.Control[] { new javax.naming.ldap.PagedResultsControl(pageSize_<%=cid%>, true) };
+    ctx_<%=cid%>.setRequestControls(ctls_<%=cid%>);
+    
+do {
+<%}%>
+
+    javax.naming.NamingEnumeration answer_<%=cid%> = ctx_<%=cid%>.search(searchBase, <%=filter%>, searchCtls_<%=cid%>);
     while (answer_<%=cid%> .hasMoreElements()) {//a
-    	if(entryCount_<%=cid%> >= <%=limit%>){
-    		break;
-    	}
 <%
 	List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
 
@@ -185,7 +196,6 @@ imports="
                     if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//3
                         %>          
         if (attrs_<%=cid%> != null) {//b
-        	entryCount_<%=cid%>++;
 <%
 					for(IMetadataColumn column:columnList){//5		
 %>        	
