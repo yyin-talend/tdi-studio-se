@@ -66,12 +66,12 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 	
 				if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { // start 1
 %>					
-					java.util.List<com.sforce.soap.partner.sobject.SObject> list = sfMgr_<%=cid%>.query(<%=sql%>);
+					java.util.List<com.sforce.soap.partner.sobject.SObject> list_<%=cid%> = sfMgr_<%=cid%>.query(<%=sql%>);
 					
-					for (com.sforce.soap.partner.sobject.SObject sobj : list){
+					for (com.sforce.soap.partner.sobject.SObject sobj_<%=cid%> : list_<%=cid%>){
 						nb_line_<%=cid%> ++;
-						org.apache.axis.message.MessageElement[] fields = sobj.get_any();
-						int len = fields.length;
+						org.apache.axis.message.MessageElement[] fields_<%=cid%> = sobj_<%=cid%>.get_any();
+						int len_<%=cid%> = fields_<%=cid%>.length;
 <%
 						for( int i = 0; i < columnList.size(); i++) {
 						
@@ -83,11 +83,11 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 							
 							String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
 %>						
-							if (<%=i %> < len && fields[<%=i%>].getValue() != null){
+							if (<%=i %> < len_<%=cid%> && fields_<%=cid%>[<%=i%>].getValue() != null){
 <%
 								if (javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) { // String or Object
 %>
-									<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = fields[<%=i%>].getValue();
+									<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = fields_<%=cid%>[<%=i%>].getValue();
 <%
 								} else if(javaType == JavaTypesManager.DATE) { // Date
 %>
@@ -95,11 +95,11 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 <%
 								} else if(javaType == JavaTypesManager.BYTE_ARRAY) { // byte[]
 %>
-									<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = fields[<%=i%>].getValue().getBytes();
+									<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = fields_<%=cid%>[<%=i%>].getValue().getBytes();
 <%
 								} else  { // other
 %>						
-									<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = ParserUtils.parseTo_<%= typeToGenerate %>(fields[<%=i%>].getValue());
+									<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = ParserUtils.parseTo_<%= typeToGenerate %>(fields_<%=cid%>[<%=i%>].getValue());
 <%
 								}
 %>			
