@@ -45,7 +45,7 @@ public class PerformancePreferencePage extends FieldEditorPreferencePage impleme
 
     private CheckBoxFieldEditor deletingRefreshEditor;
 
-    private CheckBoxFieldEditor mergingReferenceProject;
+    // private CheckBoxFieldEditor mergingReferenceProject;
 
     private CheckBoxFieldEditor dbConnTimeoutActive;
 
@@ -96,13 +96,13 @@ public class PerformancePreferencePage extends FieldEditorPreferencePage impleme
                 childGroup);
         GridDataFactory.swtDefaults().indent(10, 0).applyTo(deletingRefreshEditor.getButton());
 
-        if (PluginChecker.isRefProjectLoaded()) {
-            mergingReferenceProject = new CheckBoxFieldEditor(IRepositoryPrefConstants.MERGE_REFERENCE_PROJECT, Messages
-                    .getString("PerformancePreferencePage.RepositoryPreferencePage.ReferenceProjectMerged"), //$NON-NLS-1$
-                    comp);
-            GridDataFactory.swtDefaults().indent(10, 0).applyTo(mergingReferenceProject.getButton());
-            addField(mergingReferenceProject);
-        }
+        // if (PluginChecker.isRefProjectLoaded()) {
+        // mergingReferenceProject = new CheckBoxFieldEditor(IRepositoryPrefConstants.MERGE_REFERENCE_PROJECT, Messages
+        //                    .getString("PerformancePreferencePage.RepositoryPreferencePage.ReferenceProjectMerged"), //$NON-NLS-1$
+        // comp);
+        // GridDataFactory.swtDefaults().indent(10, 0).applyTo(mergingReferenceProject.getButton());
+        // addField(mergingReferenceProject);
+        // }
         addField(manuallyRefreshEditor);
         addField(creatingRefreshEditor);
         addField(savingRefreshEditor);

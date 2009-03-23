@@ -281,6 +281,11 @@
              level="20"
              name="View Impact">
        </Action>
+       <Action
+             class="org.talend.repository.ui.actions.MergeReferenceProjectAction"
+             id="org.talend.repository.ui.actions.MergeReferenceProjectAction"             
+             name="Merge reference project">
+       </Action>       
    </extension>
    <extension
          point="org.eclipse.ui.views.properties.tabbed.propertyContributor">

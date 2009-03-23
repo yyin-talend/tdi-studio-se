@@ -59,6 +59,12 @@
       </page>
       <page
             category="org.talend.core.prefs"
+            class="org.talend.designer.core.ui.preferences.RepositoryPreferencePage"
+            id="org.talend.designer.core.ui.preferences.RepositoryPreferencePage"
+            name="%Repository">
+      </page>      
+      <page
+            category="org.talend.core.prefs"
             class="org.talend.designer.core.ui.preferences.SpecificSettingPreferencePage"
             id="org.talend.designer.core.ui.preferences.SpecificSettingPreferencePage"
             name="Specific Setting">
