@@ -64,7 +64,7 @@ public class SalesforceModuleParseAPI {
     /**
      * DOC YeXiaowei Comment method "login".
      */
-    public void login(String endPoint, String username, String password) throws Exception {
+    public SoapBindingStub login(String endPoint, String username, String password) throws Exception {
         if (endPoint == null) {
             throw new RemoteException(Messages.getString("SalesforceModuleParseAPI.URLInvalid")); //$NON-NLS-1$
         }
@@ -77,7 +77,7 @@ public class SalesforceModuleParseAPI {
                 doLogin(endPoint, username, password);
             } else {
                 if (isLogin()) {
-                    return;
+                    return binding;
                 }
             }
         } else {
@@ -87,28 +87,10 @@ public class SalesforceModuleParseAPI {
         this.name = username;
         this.pwd = password;
         this.url = endPoint;
-    }
-
-    protected SoapBindingStub couldLogin(String endPoint, String userName, String pwd) throws RemoteException, ServiceException,
-            MalformedURLException {
-
-        URL soapAddress = new java.net.URL(endPoint);
-        binding = (SoapBindingStub) new SforceServiceLocator().getSoap(soapAddress);
-
-        loginResult = binding.login(userName, pwd);
-        setLogin(true);
-
-        binding._setProperty(SoapBindingStub.ENDPOINT_ADDRESS_PROPERTY, loginResult.getServerUrl());
-
-        SessionHeader sh = new SessionHeader();
-
-        sh.setSessionId(loginResult.getSessionId());
-        String sforceURI = new SforceServiceLocator().getServiceName().getNamespaceURI();
-        binding.setHeader(sforceURI, "SessionHeader", sh); //$NON-NLS-1$
         return binding;
     }
 
-    protected void doLogin(String endPoint, String userName, String pwd) throws RemoteException, ServiceException,
+    protected SoapBindingStub doLogin(String endPoint, String userName, String pwd) throws RemoteException, ServiceException,
             MalformedURLException {
 
         URL soapAddress = new java.net.URL(endPoint);
@@ -132,7 +114,7 @@ public class SalesforceModuleParseAPI {
         // add the header to the binding stub
         String sforceURI = new SforceServiceLocator().getServiceName().getNamespaceURI();
         binding.setHeader(sforceURI, "SessionHeader", sh); //$NON-NLS-1$
-        return;
+        return binding;
     }
 
     private void doGetAccounts() {

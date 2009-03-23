@@ -13,6 +13,7 @@
 package org.talend.repository.ui.swt.utils;
 
 import java.lang.reflect.InvocationTargetException;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +41,10 @@ import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.wizards.metadata.connection.files.salesforce.SalesforceModuleParseAPI;
 
+import com.sforce.soap.enterprise.DescribeGlobalResult;
+import com.sforce.soap.enterprise.SoapBindingStub;
+import com.sforce.soap.enterprise.fault.UnexpectedErrorFault;
+
 /**
  * DOC YeXiaowei class global comment. Detailled comment <br/>
  * 
@@ -58,6 +63,8 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
     private SalesforceModuleParseAPI salesforceAPI = null;
 
     private IMetadataContextModeManager contextModeManager;
+
+    private SoapBindingStub binding = null;
 
     public static final String TSALESFORCE_INPUT_URL = "https://www.salesforce.com/services/Soap/u/10.0"; //$NON-NLS-1$
 
@@ -153,7 +160,7 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
                             IProgressMonitor.UNKNOWN);
 
                     try {
-                        salesforceAPI.login(endPoint, user, pass);
+                        binding = salesforceAPI.login(endPoint, user, pass);
                     } catch (Throwable e) {
                         ExceptionHandler.process(e);
                     }
@@ -178,7 +185,7 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
     protected boolean toCheckSalesfoceLogin(final String endPoint, final String username, final String password) {
         salesforceAPI.setLogin(false);
         try {
-            salesforceAPI.login(endPoint, username, password);
+            binding = salesforceAPI.login(endPoint, username, password);
             salesforceAPI.setLogin(true);
         } catch (Throwable e) {
             ExceptionHandler.process(e);
@@ -208,7 +215,7 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
                     }
 
                     try {
-                        salesforceAPI.login(endPoint, username, password);
+                        binding = salesforceAPI.login(endPoint, username, password);
                         salesforceAPI.setLogin(true);
 
                     } catch (Throwable e) {
@@ -236,6 +243,13 @@ public abstract class AbstractSalesforceStepForm extends AbstractForm {
             new ErrorDialogWidthDetailArea(getShell(), PID, mainMsg, error);
         }
         return salesforceAPI.isLogin();
+    }
+
+    protected DescribeGlobalResult describeGlobal() throws UnexpectedErrorFault, RemoteException {
+        if (salesforceAPI.isLogin()) {
+            return binding.describeGlobal();
+        }
+        return null;
     }
 
     private IMetadataTable getMetadataTableFromConfigFile(String moduleName) {

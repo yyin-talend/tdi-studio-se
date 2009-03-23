@@ -487,6 +487,7 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
         bean.setPassword(originalValueConnection.getPassword());
         bean.setModuleName(originalValueConnection.getModuleName());
         bean.setQueryCondition(originalValueConnection.getQueryCondition());
+        bean.setUseCustomModule(originalValueConnection.isUseCustomModuleName());
 
         processDescription.setSalesforceSchemaBean(bean);
 

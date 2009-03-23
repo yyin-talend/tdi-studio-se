@@ -14,6 +14,7 @@ package org.talend.repository.ui.wizards.metadata.connection.files.salesforce;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -45,7 +46,6 @@ import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.swt.utils.AbstractSalesforceStepForm;
 
 import com.sforce.soap.enterprise.DescribeGlobalResult;
-import com.sforce.soap.enterprise.SoapBindingStub;
 
 /**
  * DOC YeXiaowei class global comment. Detailled comment <br/>
@@ -58,8 +58,6 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
     private String username = null;
 
     private String pwd = null;
-
-    private SoapBindingStub binding = null;
 
     private LabelledText webServiceUrlText = null;
 
@@ -325,15 +323,6 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
         if (endPoint.equals(TSALESFORCE_INPUT_URL)) {
             endPoint = DEFAULT_WEB_SERVICE_URL;
         }
-
-        SalesforceModuleParseAPI salesforceModuleParseAPI = new SalesforceModuleParseAPI();
-
-        try {
-            binding = salesforceModuleParseAPI.couldLogin(endPoint, username, pwd);
-        } catch (Exception e) {
-
-            e.printStackTrace();
-        }
     }
 
     private void connectFromCustomModuleName() {
@@ -354,20 +343,12 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
                 monitorWrap.worked(50);
 
                 try {
-                    describeGlobalResult = binding.describeGlobal();
+                    describeGlobalResult = describeGlobal();
                     types = describeGlobalResult.getTypes();
                     customModuleCombo.removeAll();
                     for (int i = 0; i < types.length; i++) {
-                        boolean is = false;
-
-                        for (int j = 0; j < modulename.length; j++) {
-
-                            if (types[i].equals(modulename[j])) {
-                                is = true;
-                            }
-                        }
-                        if (!is) {
-                            setCustomModuleCombo(types[i]);
+                        if (!ArrayUtils.contains(modulename, types[i])) {
+                            customModuleCombo.add(types[i]);
                         }
                     }
                     monitorWrap.done();
