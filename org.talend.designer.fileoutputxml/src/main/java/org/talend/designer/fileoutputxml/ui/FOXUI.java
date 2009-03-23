@@ -229,6 +229,11 @@ public class FOXUI {
     }
 
     public void refreshXMLViewer(FOXTreeNode targetNode) {
+        if (this.foxManager.isNoLoopInComponent()) {
+            header.updateStatus(Messages.getString("FOXUI.NoLoop")); //$NON-NLS-1$
+        } else {
+            updateStatus(null);
+        }
         xmlViewer.getTree().setData("row", foxManager.getCurrentSchema());
         this.xmlViewer.refresh();
     }

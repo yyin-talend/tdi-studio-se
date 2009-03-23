@@ -67,6 +67,7 @@ import org.talend.core.model.process.INodeReturn;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
+import org.talend.core.model.utils.NodeUtil;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.core.DesignerPlugin;
@@ -1880,9 +1881,19 @@ public class Node extends Element implements INode {
             if (param.isRequired() && !param.isShow(getElementParameters()) && this.externalNode != null) {
                 if (param.getField().equals(EParameterFieldType.TABLE)) {
                     List<Map<String, String>> tableValues = (List<Map<String, String>>) param.getValue();
-                    if (tableValues.size() == 0) {
-                        String errorMessage = Messages.getString("Node.needOneValue", param.getDisplayName()); //$NON-NLS-1$
-                        Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                    // add by wzhang. all schemas need loop element.
+                    if ("tFileOutputXMLMultiSchema".equalsIgnoreCase(component.getName())) {
+                        List<? extends IConnection> incomingConnections = NodeUtil.getIncomingConnections(externalNode,
+                                IConnectionCategory.FLOW);
+                        if (tableValues.size() != incomingConnections.size()) {
+                            String errorMessage = Messages.getString("Node.eachRowNeedOneValue", param.getDisplayName()); //$NON-NLS-1$
+                            Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                        }
+                    } else {
+                        if (tableValues.size() == 0) {
+                            String errorMessage = Messages.getString("Node.needOneValue", param.getDisplayName()); //$NON-NLS-1$
+                            Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                        }
                     }
                 }
             }
@@ -1892,9 +1903,19 @@ public class Node extends Element implements INode {
                 switch (fieldType) {
                 case TABLE:
                     List<Map<String, String>> tableValues = (List<Map<String, String>>) param.getValue();
-                    if (tableValues.size() == 0) {
-                        String errorMessage = Messages.getString("Node.needOneValue", param.getDisplayName()); //$NON-NLS-1$
-                        Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                    // add by wzhang. all schemas need loop element.
+                    if ("tFileOutputXMLMultiSchema".equalsIgnoreCase(component.getName())) {
+                        List<? extends IConnection> incomingConnections = NodeUtil.getIncomingConnections(externalNode,
+                                IConnectionCategory.FLOW);
+                        if (tableValues.size() != incomingConnections.size()) {
+                            String errorMessage = Messages.getString("Node.eachRowNeedOneValue", param.getDisplayName()); //$NON-NLS-1$
+                            Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                        }
+                    } else {
+                        if (tableValues.size() == 0) {
+                            String errorMessage = Messages.getString("Node.needOneValue", param.getDisplayName()); //$NON-NLS-1$
+                            Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                        }
                     }
                     break;
                 case CHECK:

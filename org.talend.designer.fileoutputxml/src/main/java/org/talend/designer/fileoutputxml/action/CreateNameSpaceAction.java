@@ -87,8 +87,10 @@ public class CreateNameSpaceAction extends SelectionProviderAction {
             }
         }
         FOXTreeNode child = new NameSpaceNode(label);
+        // add by wzhang. set the row name
+        child.setRow(foxui.getFoxManager().getCurrentSchema());
         node.addChild(child);
-        this.xmlViewer.refresh(node);
+        this.xmlViewer.refresh();
         xmlViewer.expandAll();
         foxui.redrawLinkers();
     }
@@ -96,7 +98,8 @@ public class CreateNameSpaceAction extends SelectionProviderAction {
     /*
      * (non-Javadoc)
      * 
-     * @see org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse.jface.viewers.IStructuredSelection)
+     * @see
+     * org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse.jface.viewers.IStructuredSelection)
      */
     @Override
     public void selectionChanged(IStructuredSelection selection) {

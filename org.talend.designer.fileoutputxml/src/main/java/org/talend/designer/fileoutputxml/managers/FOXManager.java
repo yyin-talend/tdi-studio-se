@@ -88,7 +88,18 @@ public class FOXManager {
 
     public boolean isNoLoopInComponent() {
         List<Map<String, String>> loopTable = (List<Map<String, String>>) foxComponent.getTableList(FileOutputXMLComponent.LOOP);
-        return loopTable.size() <= 0;
+        if (currentSchema == null)
+            return loopTable.size() <= 0;
+           // modified by wzhang,for multiple schema
+        List<Map<String, String>> newList = new ArrayList<Map<String, String>>();
+        for (Map<String, String> loopMap : loopTable) {
+            String columnName = loopMap.get(FileOutputXMLComponent.COLUMN);
+            if (columnName == null || columnName.length() == 0 || !columnName.startsWith(currentSchema)) {
+                continue;
+            }
+            newList.add(loopMap);
+        }
+        return newList.size() <= 0;
     }
 
     /**
