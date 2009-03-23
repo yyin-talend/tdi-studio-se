@@ -127,7 +127,7 @@
       NAME="USE_SHARED_CONNECTION"
 	  FIELD="CHECK"
       NUM_ROW="10"
-      REQUIRED="false"
+      REQUIRED="true"
     >      
     </PARAMETER>
 	
@@ -135,10 +135,10 @@
       NAME="SHARED_CONNECTION_NAME"
 	  FIELD="TEXT"
       NUM_ROW="10"
-      REQUIRED="false"
+      REQUIRED="true"
 	  SHOW_IF="USE_SHARED_CONNECTION == 'true'"
     >      
-	<DEFAULT>""</DEFAULT>
+	<DEFAULT></DEFAULT>
     </PARAMETER>
 
 
