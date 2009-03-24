@@ -12,6 +12,9 @@
 // ============================================================================
 package org.talend.designer.core.ui.views.jobsettings;
 
+import java.util.Iterator;
+
+import org.eclipse.gmf.runtime.diagram.ui.editparts.IGraphicalEditPart;
 import org.eclipse.gmf.runtime.diagram.ui.properties.sections.appearance.ConnectionAppearancePropertySection;
 import org.eclipse.gmf.runtime.diagram.ui.properties.sections.appearance.DiagramColorsAndFontsPropertySection;
 import org.eclipse.gmf.runtime.diagram.ui.properties.sections.appearance.ShapeColorsAndFontsPropertySection;
@@ -90,11 +93,11 @@ public class BusinessAppearanceComposite extends AbstractTabComposite {
             }
                 break;
             case NOTE:
-                selection = new StructuredSelection(CorePlugin.getDefault().getDiagramModelService().getBusinessEditorProcess());
-                DiagramAppearanceSection notediagramAppearance = new DiagramAppearanceSection();
+                // selection = new
+                // StructuredSelection(CorePlugin.getDefault().getDiagramModelService().getBusinessEditorProcess());
+                NoteAppearanceSection notediagramAppearance = new NoteAppearanceSection();
                 notediagramAppearance.setInput(getEditor(), selection);
                 notediagramAppearance.createControls(composite, null);
-
                 notediagramAppearance.refresh();
                 break;
             case PROCESS:
@@ -107,6 +110,7 @@ public class BusinessAppearanceComposite extends AbstractTabComposite {
                 createTextAlignmentGroup(composite);
 
             }
+            // for NamedEditPart
         } else {
             selection = new StructuredSelection(CorePlugin.getDefault().getDiagramModelService().getBusinessEditorProcess());
             DiagramAppearanceSection diagramAppearance = new DiagramAppearanceSection();
@@ -127,12 +131,31 @@ public class BusinessAppearanceComposite extends AbstractTabComposite {
 
     }
 
+    private class NoteAppearanceSection extends DiagramColorsAndFontsPropertySection {
+
+        @Override
+        public TabbedPropertySheetWidgetFactory getWidgetFactory() {
+            return widgetFactory;
+        }
+
+        @Override
+        public IGraphicalEditPart getSingleInput() {
+            return (IGraphicalEditPart) getPrimarySelection();
+        }
+
+        @Override
+        protected Iterator getInputIterator() {
+            return getInput().iterator();
+        }
+    }
+
     private class DiagramAppearanceSection extends DiagramColorsAndFontsPropertySection {
 
         @Override
         public TabbedPropertySheetWidgetFactory getWidgetFactory() {
             return widgetFactory;
         }
+
     }
 
     private class ShapAppearance extends ShapeColorsAndFontsPropertySection {
