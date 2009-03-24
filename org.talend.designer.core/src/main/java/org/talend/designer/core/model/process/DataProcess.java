@@ -15,6 +15,7 @@ package org.talend.designer.core.model.process;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -1425,18 +1426,26 @@ public class DataProcess {
         if (newtUnite == null) {
             return;
         }
-        List<? extends IConnection> incomingConnectionsOld = oldtUnite.getIncomingConnections();
-        List<? extends IConnection> incomingConnectionsNew = newtUnite.getIncomingConnections();
-        for (int i = 0; i < incomingConnectionsOld.size(); i++) {
-            IConnection connOld = incomingConnectionsOld.get(i);
-            for (int j = 0; j < incomingConnectionsNew.size(); j++) {
-                IConnection connNew = incomingConnectionsNew.get(j);
+        List<IConnection> incomingConnectionsOld = (List<IConnection>) oldtUnite.getIncomingConnections();
+        List<IConnection> incomingConnectionsNew = (List<IConnection>) newtUnite.getIncomingConnections();
+
+        Iterator<IConnection> iteratorOld = incomingConnectionsOld.iterator();
+        int i = 0;
+        while (iteratorOld.hasNext()) {
+            IConnection connOld = iteratorOld.next();
+            Iterator<IConnection> iteratorNew = incomingConnectionsNew.iterator();
+            int j = 0;
+            while (iteratorNew.hasNext()) {
+                IConnection connNew = iteratorNew.next();
                 if (connNew.getName().equals(connOld.getName()) && i != j) {
-                    Collections.swap(incomingConnectionsNew, i, j);
+                    if (incomingConnectionsNew.size() > i) {
+                        Collections.swap(incomingConnectionsNew, i, j);
+                    }
                     break;
                 }
+                j++;
             }
+            i++;
         }
     }
-
 }
