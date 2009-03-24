@@ -85,12 +85,4 @@ public class BusinessItemShapeFigure extends DefaultSizeNodeFigure {
         this.drawFrame = drawFrame;
     }
 
-    public IFigure getNameFigure() {
-        return this.nameFigure;
-    }
-
-    public void setNameFigure(IFigure nameFigure) {
-        this.nameFigure = nameFigure;
-    }
-
 }

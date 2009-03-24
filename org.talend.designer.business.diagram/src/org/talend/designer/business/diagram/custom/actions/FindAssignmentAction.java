@@ -46,6 +46,8 @@ import org.talend.repository.ui.actions.AContextualAction;
  */
 public class FindAssignmentAction extends AContextualAction {
 
+    private static List<BusinessItemShapeFigure> repaintedFigures = new ArrayList<BusinessItemShapeFigure>();
+
     public FindAssignmentAction() {
         super();
         this.setImageDescriptor(ImageProvider.getImageDesc(EImage.IMPORT_ICON));
@@ -62,6 +64,12 @@ public class FindAssignmentAction extends AContextualAction {
         RepositoryNode repositoryNode = (RepositoryNode) getFirstSelectedObject();
 
         IEditorPart activeEditor = getActiveEditor();
+        // remove frames draw last time
+        for (BusinessItemShapeFigure shapFigure : repaintedFigures) {
+            shapFigure.setDrawFrame(false);
+            shapFigure.revalidate();
+            shapFigure.repaint();
+        }
 
         if (activeEditor instanceof BusinessDiagramEditor) {
             BusinessDiagramEditor businessDiagramEditor = (BusinessDiagramEditor) activeEditor;
@@ -107,6 +115,7 @@ public class FindAssignmentAction extends AContextualAction {
                             shapFigure.setDrawFrame(true);
                             shapFigure.revalidate();
                             shapFigure.repaint();
+                            repaintedFigures.add(shapFigure);
                         }
                     }
 

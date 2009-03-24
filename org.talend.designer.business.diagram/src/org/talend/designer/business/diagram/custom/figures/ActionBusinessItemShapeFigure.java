@@ -31,7 +31,7 @@ public class ActionBusinessItemShapeFigure extends BusinessItemShapeFigure {
     @Override
     protected void paintFigure(Graphics graphics) {
         if (getDrawFrame()) {
-            setDefaultSize(60, 60);
+            // setDefaultSize(60, 60);
             setBorder(border);
             drawFigure(getSmallBounds(), graphics);
         } else {
