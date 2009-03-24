@@ -34,6 +34,8 @@ public class SetGroupAction extends SelectionProviderAction {
 
     private FOXUI foxui;
 
+    private Boolean value;
+
     /**
      * CreateNode constructor comment.
      * 
@@ -44,6 +46,13 @@ public class SetGroupAction extends SelectionProviderAction {
         super(xmlViewer, text);
         this.xmlViewer = xmlViewer;
         this.foxui = foxui;
+    }
+
+    public SetGroupAction(TreeViewer xmlViewer, FOXUI foxui, String text, Boolean value) {
+        super(xmlViewer, text);
+        this.xmlViewer = xmlViewer;
+        this.foxui = foxui;
+        this.value = value;
     }
 
     /*
@@ -78,7 +87,7 @@ public class SetGroupAction extends SelectionProviderAction {
             this.setEnabled(false);
             return;
         }
-        if ((node instanceof Attribute) || node.hasLink()) {
+        if (((node instanceof Attribute) || node.hasLink()) && this.value) {
             this.setEnabled(true);
             return;
         }
