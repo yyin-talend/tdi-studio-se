@@ -356,7 +356,7 @@ public class ProcessComposite extends Composite {
         // make a judge when the text change in diffrent languages.
         Point size = computeSize(itemDropDown.getText());
         formData.left = new FormAttachment(0);
-        formData.right = new FormAttachment(0, size.x + 50);
+        formData.right = new FormAttachment(0, size.x + 55);
         toolBar.setLayoutData(formData);
 
         killBtn = new Button(execHeader, SWT.PUSH);
