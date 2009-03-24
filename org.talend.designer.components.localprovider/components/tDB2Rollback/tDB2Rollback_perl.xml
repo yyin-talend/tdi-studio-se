@@ -35,7 +35,7 @@
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
-      FILTER="tDB2Connection"
+      FILTER="REGEXP:^t(DB2|Perl)*Connection$"
       NUM_ROW="10"
     />
   </PARAMETERS>

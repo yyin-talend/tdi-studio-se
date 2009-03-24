@@ -27,7 +27,7 @@
         <PARAMETER 
             NAME="CONNECTION" 
             FIELD="COMPONENT_LIST"
-            FILTER="tSybaseConnection" NUM_ROW="10" 
+            FILTER="REGEXP:^t(Sybase|Perl)*Connection$" NUM_ROW="10" 
         />
     </PARAMETERS>
 

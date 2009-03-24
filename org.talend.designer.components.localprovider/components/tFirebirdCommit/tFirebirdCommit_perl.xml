@@ -25,7 +25,7 @@
 
 	<PARAMETERS>
             <PARAMETER NAME="CONNECTION" FIELD="COMPONENT_LIST"
-                FILTER="tFirebirdConnection" NUM_ROW="10" />
+                FILTER="REGEXP:^t(Firebird|Perl)*Connection$" NUM_ROW="10" />
 	</PARAMETERS>
 
 	<CODEGENERATION />

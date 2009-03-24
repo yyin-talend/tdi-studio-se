@@ -52,7 +52,7 @@
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
-      FILTER="tSybaseConnection"
+      FILTER="REGEXP:^t(Sybase|Perl)*Connection$"
       NUM_ROW="2"
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
     />

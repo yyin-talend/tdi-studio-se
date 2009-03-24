@@ -51,7 +51,7 @@
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
-      FILTER="tMysqlConnection"
+      FILTER="REGEXP:^t(Mysql|Perl)*Connection$"
       NUM_ROW="21"
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
     />

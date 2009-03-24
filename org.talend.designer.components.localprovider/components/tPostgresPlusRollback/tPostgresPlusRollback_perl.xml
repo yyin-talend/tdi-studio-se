@@ -35,7 +35,7 @@
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
-      FILTER="tPostgresPlusConnection"
+      FILTER="REGEXP:^t(PostgresPlus|Perl)*Connection$"
       NUM_ROW="1"
     />
   </PARAMETERS>
