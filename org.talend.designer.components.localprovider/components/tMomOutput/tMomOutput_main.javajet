@@ -18,6 +18,8 @@ class="MomInput"
 	String cid = node.getUniqueName();
 	String serverType=ElementParameterParser.getValue(node, "__SERVER__");
 	String useMsgId=ElementParameterParser.getValue(node, "__IS_USE_MESSAGE_ID__");
+	boolean useMQFormat = ElementParameterParser.getValue(node, "__USE_FORMAT__").equals("true");
+	String wsMQFormat = ElementParameterParser.getValue(node, "__WS_MQ_FORMAT__");
 	
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -76,6 +78,11 @@ class="MomInput"
 				}else{//server judgement   /***WebSphere MQ*****/
 %>
 	com.ibm.mq.MQMessage message_<%=cid%> = new com.ibm.mq.MQMessage();
+	<% if(useMQFormat) {
+	%>
+	message_<%=cid%>.format = <%=wsMQFormat%>;
+	<%
+	}%>	
 <%
 					if(useMsgId.equals("true")){
 %>

@@ -140,6 +140,28 @@
 	</PARAMETER>
   </PARAMETERS>
 
+  <ADVANCED_PARAMETERS>
+  	<PARAMETER
+      NAME="USE_FORMAT"
+      FIELD="CHECK"
+      NUM_ROW="5"
+      REQUIRED="true"
+	  SHOW_IF="(SERVER == 'WEBSPHERE')"
+    >
+      <DEFAULT>"false"</DEFAULT>
+    </PARAMETER>
+	
+  	<PARAMETER
+      NAME="WS_MQ_FORMAT"
+      FIELD="TEXT"
+      NUM_ROW="5"
+      REQUIRED="true"
+	  SHOW_IF="((SERVER == 'WEBSPHERE') AND (USE_FORMAT == 'true'))"
+    >
+      <DEFAULT>"MQSTR"</DEFAULT>
+    </PARAMETER>
+</ADVANCED_PARAMETERS>
+
   <CODEGENERATION>
    <IMPORTS>
        <IMPORT NAME="JNP-CLIENT" MODULE="jnp-client.jar" REQUIRED="true" />
