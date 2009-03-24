@@ -63,6 +63,9 @@ public class ComponentsFactory implements IComponentsFactory {
 
     private static Map<String, IComponent> componentsCache = new HashMap<String, IComponent>();
 
+    // keep a list of the current provider for the selected component, to have the family translation
+    private static Map<IComponent, AbstractComponentsProvider> componentToProviderMap;
+
     // 1. only the in the directory /components ,not including /resource
     // 2. include the skeleton files and external include files
     private static List<String> skeletonList = null;
@@ -86,6 +89,8 @@ public class ComponentsFactory implements IComponentsFactory {
         long startTime = System.currentTimeMillis();
         componentList = new ArrayList<IComponent>();
         skeletonList = new ArrayList<String>();
+
+        componentToProviderMap = new HashMap<IComponent, AbstractComponentsProvider>();
 
         XsdValidationCacheManager.getInstance().load();
 
@@ -118,7 +123,7 @@ public class ComponentsFactory implements IComponentsFactory {
             try {
                 componentsProvider.preComponentsLoad();
                 if (componentsProvider.getInstallationFolder().exists()) {
-                    loadComponentsFromFolder(componentsProvider.getComponentsLocation());
+                    loadComponentsFromFolder(componentsProvider.getComponentsLocation(), componentsProvider);
                 }
             } catch (IOException e) {
                 ExceptionHandler.process(e);
@@ -141,7 +146,7 @@ public class ComponentsFactory implements IComponentsFactory {
         AbstractProcessProvider.loadComponentsFromProviders();
     }
 
-    private void loadComponentsFromFolder(String pathSource) {
+    private void loadComponentsFromFolder(String pathSource, AbstractComponentsProvider... provider) {
         TimeMeasure.begin("ComponentsFactory.loadComponentsFromFolder"); //$NON-NLS-1$
 
         TimeMeasure.begin("ComponentsFactory.loadComponentsFromFolder.checkFiles"); //$NON-NLS-1$
@@ -218,6 +223,9 @@ public class ComponentsFactory implements IComponentsFactory {
                     }
 
                     EmfComponent currentComp = new EmfComponent(xmlMainFile, pathSource);
+                    if (provider.length == 1) {
+                        componentToProviderMap.put(currentComp, provider[0]);
+                    }
 
                     if (availableComponents != null && !ArrayUtils.contains(availableComponents, currentComp.getName())) {
                         continue;
@@ -389,5 +397,27 @@ public class ComponentsFactory implements IComponentsFactory {
     public void reset() {
         componentList = null;
         skeletonList = null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponentsFactory#getFamilyTranslation(IComponent component,
+     * java.lang.String)
+     */
+    public String getFamilyTranslation(IComponent component, String text) {
+        String translated = Messages.getString(text);
+
+        // if text translated is not in local provider, look into other providers.
+        if (translated.startsWith("!!")) {
+            if (componentToProviderMap.containsKey(component)) {
+                String translatedFromProvider = componentToProviderMap.get(component).getFamilyTranslation(text);
+                if (translatedFromProvider != null) {
+                    translated = translatedFromProvider;
+                }
+            }
+        }
+
+        return translated;
     }
 }

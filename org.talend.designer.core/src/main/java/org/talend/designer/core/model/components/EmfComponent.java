@@ -1692,8 +1692,37 @@ public class EmfComponent implements IComponent {
      * @see org.talend.core.model.components.IComponent#getTranslatedFamilyName()
      */
     public String getTranslatedFamilyName() {
-        // TODO Change to have translation name
-        return getOriginalFamilyName();
+        String translatedFamilyName = ""; //$NON-NLS-1$
+
+        IComponentsFactory factory = ComponentsFactoryProvider.getInstance();
+
+        int nbTotal = compType.getFAMILIES().getFAMILY().size();
+        int nb = 0;
+        for (Object objFam : compType.getFAMILIES().getFAMILY()) {
+
+            String curFamily = (String) objFam;
+            String[] namesToTranslate = curFamily.split("/"); //$NON-NLS-1$
+            int nbSubTotal = namesToTranslate.length;
+            int nbSub = 0;
+            for (String toTranslate : namesToTranslate) {
+                String translated = factory.getFamilyTranslation(this, "FAMILY." + toTranslate.replace(" ", "_")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                if (translated.startsWith("!!")) { //$NON-NLS-1$
+                    // no key to translate, so use original
+                    translatedFamilyName += toTranslate;
+                } else {
+                    translatedFamilyName += translated;
+                }
+                nbSub++;
+                if (nbSubTotal != nbSub) {
+                    translatedFamilyName += "/"; //$NON-NLS-1$
+                }
+            }
+            nb++;
+            if (nbTotal != nb) {
+                translatedFamilyName += "|"; //$NON-NLS-1$
+            }
+        }
+        return translatedFamilyName;
     }
 
     /*
