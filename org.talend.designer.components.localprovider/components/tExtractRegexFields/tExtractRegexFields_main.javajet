@@ -68,6 +68,7 @@ if(outConn!=null && inConn!=null){
 	IMetadataTable inputMetadataTable = inConn.getMetadataTable();
 	for (IMetadataColumn outputCol : outputMetadataTable.getListColumns()) {
 		if(outputCol.getLabel().equals(field)){
+			newColumnList.add(outputCol);
 			continue;
 		}
 		boolean isOirginalColumn = false;
@@ -86,7 +87,6 @@ if(outConn!=null && inConn!=null){
 	}
 }
 %>
-
 String temp_<%=cid%> = null;
 <%
 if(!dieOnError.equals("true")){
