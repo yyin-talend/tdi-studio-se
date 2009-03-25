@@ -454,34 +454,36 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
                                 precisionValue = lengthValue - positionDecimal;
                             }
                         } else {
-                            if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
-                                if (CorePlugin.getDefault().getPreferenceStore().getString(
-                                        MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE) != null
-                                        && !CorePlugin.getDefault().getPreferenceStore().getString(
-                                                MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE).equals("")) { //$NON-NLS-1$
-                                    globalType = CorePlugin.getDefault().getPreferenceStore().getString(
-                                            MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE);
+                            if (globalType == null) {
+                                if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
                                     if (CorePlugin.getDefault().getPreferenceStore().getString(
-                                            MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH) != null
+                                            MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE) != null
                                             && !CorePlugin.getDefault().getPreferenceStore().getString(
-                                                    MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH).equals("")) { //$NON-NLS-1$
-                                        lengthValue = Integer.parseInt(CorePlugin.getDefault().getPreferenceStore().getString(
-                                                MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH));
+                                                    MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE).equals("")) { //$NON-NLS-1$
+                                        globalType = CorePlugin.getDefault().getPreferenceStore().getString(
+                                                MetadataTypeLengthConstants.VALUE_DEFAULT_TYPE);
+                                        if (CorePlugin.getDefault().getPreferenceStore().getString(
+                                                MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH) != null
+                                                && !CorePlugin.getDefault().getPreferenceStore().getString(
+                                                        MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH).equals("")) { //$NON-NLS-1$
+                                            lengthValue = Integer.parseInt(CorePlugin.getDefault().getPreferenceStore()
+                                                    .getString(MetadataTypeLengthConstants.VALUE_DEFAULT_LENGTH));
+                                        }
                                     }
-                                }
-                            } else {
-                                if (CorePlugin.getDefault().getPreferenceStore().getString(
-                                        MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_TYPE) != null
-                                        && !CorePlugin.getDefault().getPreferenceStore().getString(
-                                                MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_TYPE).equals("")) { //$NON-NLS-1$
-                                    globalType = CorePlugin.getDefault().getPreferenceStore().getString(
-                                            MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_TYPE);
+                                } else {
                                     if (CorePlugin.getDefault().getPreferenceStore().getString(
-                                            MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_LENGTH) != null
+                                            MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_TYPE) != null
                                             && !CorePlugin.getDefault().getPreferenceStore().getString(
-                                                    MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_LENGTH).equals("")) { //$NON-NLS-1$
-                                        lengthValue = Integer.parseInt(CorePlugin.getDefault().getPreferenceStore().getString(
-                                                MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_LENGTH));
+                                                    MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_TYPE).equals("")) { //$NON-NLS-1$
+                                        globalType = CorePlugin.getDefault().getPreferenceStore().getString(
+                                                MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_TYPE);
+                                        if (CorePlugin.getDefault().getPreferenceStore().getString(
+                                                MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_LENGTH) != null
+                                                && !CorePlugin.getDefault().getPreferenceStore().getString(
+                                                        MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_LENGTH).equals("")) { //$NON-NLS-1$
+                                            lengthValue = Integer.parseInt(CorePlugin.getDefault().getPreferenceStore()
+                                                    .getString(MetadataTypeLengthConstants.PERL_VALUE_DEFAULT_LENGTH));
+                                        }
                                     }
                                 }
                             }
