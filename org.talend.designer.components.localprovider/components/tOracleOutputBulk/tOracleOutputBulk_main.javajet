@@ -56,16 +56,34 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     				<%
     				String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
     				if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {
-%>
+%>					
 								FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%= pattern %>)
 <%				
-					}  else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
+					}  else if(JavaTypesManager.isNumberType(javaType, column.isNullable())) { 					
+							if (advancedSeparator) {
+								if (javaType == JavaTypesManager.BIGDECIMAL) {
+								%>
+									FormatterUtils.format_Number(String.valueOf(<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel()+".toPlainString()" : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP).toPlainString()" %>) , <%= thousandsSeparator %>, <%= decimalSeparator %>) 
+								<%
+								} else {
+								%>
+									FormatterUtils.format_Number(String.valueOf( (new BigDecimal(<%=conn.getName() %>.<%=column.getLabel() %>).toPlainString()) ), <%= thousandsSeparator %>, <%= decimalSeparator %>)
+								<%
+								}							
+							} else {
+								if (javaType == JavaTypesManager.BIGDECIMAL) {
+								%>
+			                 		<%=conn.getName() %>.<%=column.getLabel() %>.toPlainString()					
+								<%
+								} else {
+								%>
+	                   				(new BigDecimal(<%=conn.getName() %>.<%=column.getLabel() %>).toPlainString())
+								<%
+								}
+							}
+							
 							%>
-        							<% if(javaType == JavaTypesManager.BIGDECIMAL) {%>
-        							FormatterUtils.format_Number(String.valueOf(<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>), <%= thousandsSeparator %>, <%= decimalSeparator %>)					
-        							<% } else { %>
-        							FormatterUtils.format_Number(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>), <%= thousandsSeparator %>, <%= decimalSeparator %>)						
-        							<% } %>
+
 							<%
 					}else if(javaType == JavaTypesManager.STRING) {
 %>
