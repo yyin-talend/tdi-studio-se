@@ -37,6 +37,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             digester_<%=cid%>);
     net.sf.jasperreports.engine.design.JasperDesign jasperDesign_<%=cid%> = xmlLoader_<%=cid%>
             .loadXML(new java.io.FileInputStream(<%=filename%>));
+    jasperDesign_<%=cid%>.setLanguage(net.sf.jasperreports.engine.design.JasperDesign.LANGUAGE_JAVA);
     net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(jasperDesign_<%=cid%>, jasperFile_<%=cid%>);
 
     java.util.Map<String, Object> hm_<%=cid%> = new java.util.HashMap<String, Object>();
@@ -46,7 +47,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             new java.io.File(tempFile_<%=cid%>));
 
     ds_<%=cid%>.setFieldDelimiter(',');
-    ds_<%=cid%>.setRecordDelimiter("\n");
+    ds_<%=cid%>.setRecordDelimiter("\r\n");
     ds_<%=cid%>.setUseFirstRowAsHeader(true);
     net.sf.jasperreports.engine.JasperPrint print_<%=cid%> = net.sf.jasperreports.engine.JasperFillManager.fillReport(
             jasperFile_<%=cid%>, hm_<%=cid%>, ds_<%=cid%>);
