@@ -202,7 +202,10 @@ if(columnList != null && columnList.size() > 0) {
     		}else{
     			flag = true;
     		}
-    		columns += column.getOriginalDbColumnName();
+    		
+    		
+    		columns += "\\\"" + column.getOriginalDbColumnName() + "\\\"";
+    		
     		
     		if(column.getType().equals("DATE") && useDatePattern.equals("true")){//date
     			String pattn = column.getPattern();
