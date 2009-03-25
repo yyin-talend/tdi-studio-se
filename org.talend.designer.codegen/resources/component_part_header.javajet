@@ -91,6 +91,7 @@ start_Hash.put("<%=node.getUniqueName() %>", System.currentTimeMillis());
 		}
 	}
 	if(codePart.equals(ECodePart.MAIN)) {
+		List<INode> meterCatchers = (List<INode>)node.getProcess().getNodesOfType("tFlowMeterCatcher");	
 	    if ((node.getProcess().getNodesOfType("tFlowMeter").size() > 0))
 	    {
         	for(IConnection temp_conn : node.getIncomingConnections(EConnectionType.FLOW_MAIN))
@@ -99,7 +100,15 @@ start_Hash.put("<%=node.getUniqueName() %>", System.currentTimeMillis());
         	    if(temp_conn.isUseByMetter())
         	    { 	    	
 %>
-   MetterCatcherUtils.addLineToRow("<%=name_conn%>_count");
+    <%
+            if (meterCatchers != null) {
+        		for (INode meterCatcher : meterCatchers) {
+    %>
+    	<%=meterCatcher.getUniqueName() %>.addLineToRow("<%=name_conn%>_count");
+    <%
+        		}
+        	}
+    %> 
 <%
 				}
 			}
@@ -110,7 +119,15 @@ start_Hash.put("<%=node.getUniqueName() %>", System.currentTimeMillis());
         	    if(name_conn == incomingName && temp_conn.isUseByMetter())
         	    { 	    	
 %>
-   MetterCatcherUtils.addLineToRow("<%=name_conn%>_count");
+    <%
+            if (meterCatchers != null) {
+        		for (INode meterCatcher : meterCatchers) {
+    %>
+    	<%=meterCatcher.getUniqueName() %>.addLineToRow("<%=name_conn%>_count");
+    <%
+        		}
+        	}
+    %> 
 <%
 				}
 			}			
