@@ -124,7 +124,7 @@ public class ConnectionCreateAction extends SelectionAction {
                     // }
                     // }
                     // if (!jobletOk) {
-                    // return false;
+                    return false;
                     // }
                 }
             }
