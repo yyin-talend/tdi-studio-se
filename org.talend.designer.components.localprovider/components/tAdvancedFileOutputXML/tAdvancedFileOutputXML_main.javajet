@@ -589,7 +589,7 @@ if(groupTable.size()>0){					//init the generate tool.
     currentRowCount_<%=cid %>++;
     if(currentRowCount_<%=cid %> == <%= splitEvery%>){
     	needRoot_<%=cid%>  = true;
-    	fileName_<%=cid%> = file_<%=cid%> + currentFileCount_<%=cid %> + ".xml";
+    	fileName_<%=cid%> = file_<%=cid%> + currentFileCount_<%=cid %> + suffix_<%=cid %>;
         currentRowCount_<%=cid %> = 0;
         currentFileCount_<%=cid %>++;
     	groupbyList_<%=cid%>.clear();
@@ -877,7 +877,7 @@ else if(mode.equals("Null")){
     currentRowCount_<%=cid %>++;
     if(currentRowCount_<%=cid %> == <%= splitEvery%>){
     	needRoot_<%=cid%>  = true;
-    	fileName_<%=cid%> = file_<%=cid%> + currentFileCount_<%=cid %> + ".xml";
+    	fileName_<%=cid%> = file_<%=cid%> + currentFileCount_<%=cid %> + suffix_<%=cid %>;
         currentRowCount_<%=cid %> = 0;
         currentFileCount_<%=cid %>++;
     	groupbyList_<%=cid%>.clear();
@@ -921,7 +921,7 @@ else if(mode.equals("Null")){
     	startTabs_<%=cid%> = new String[endTabStrs_<%=cid%>.size()];
     	
 		out_<%=cid%>.close();
-		out_<%=cid%> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(new java.io.FileOutputStream(file_<%=cid%> + currentFileCount_<%=cid %> + ".xml"), <%=encoding%>));
+		out_<%=cid%> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(new java.io.FileOutputStream(file_<%=cid%> + currentFileCount_<%=cid %> + suffix_<%=cid %>), <%=encoding%>));
         out_<%=cid%>.write("<?xml version=\"1.0\" encoding=\""+<%=encoding%>+"\"?>");
         out_<%=cid%>.newLine();
 	}

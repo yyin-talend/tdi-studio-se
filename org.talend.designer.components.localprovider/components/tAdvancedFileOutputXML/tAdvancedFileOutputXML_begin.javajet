@@ -71,7 +71,9 @@ if(!createFile<%=cid%>.exists()){
 %>
 int currentRowCount_<%=cid%> = 0;
 int currentFileCount_<%=cid%> = 0;
-fileName_<%=cid%> = file_<%=cid%>+"0.xml";
+String file_<%=cid%> = fileName_<%=cid%>.substring(0,fileName_<%=cid%>.lastIndexOf("."));
+String suffix_<%=cid %> = fileName_<%=cid %>.substring(fileName_<%=cid%>.lastIndexOf("."));
+fileName_<%=cid%> = file_<%=cid%>+"0" + suffix_<%=cid %>;
 <%
 				}
 %>
