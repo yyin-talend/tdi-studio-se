@@ -111,9 +111,16 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     		JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
     		if (javaType == JavaTypesManager.DATE){
     			String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
-    			if(pattern != null && pattern.trim().length() != 0){%>
-    	final jxl.write.WritableCellFormat cell_format_<%=column.getLabel() %>_<%= cid%>=new jxl.write.WritableCellFormat(wf_<%=cid%> ,new jxl.write.DateFormat(<%=pattern %>));
+    			if(pattern != null && pattern.trim().length() != 0){
+    				if(font !=null && font.length()!=0){
+%>
+    					final jxl.write.WritableCellFormat cell_format_<%=column.getLabel() %>_<%= cid%>=new jxl.write.WritableCellFormat(wf_<%=cid%> ,new jxl.write.DateFormat(<%=pattern %>));
 <%
+					}else{
+%>					
+						final jxl.write.WritableCellFormat cell_format_<%=column.getLabel() %>_<%= cid%>=new jxl.write.WritableCellFormat(new jxl.write.DateFormat(<%=pattern %>));
+<%	
+					}
 				}else{
 %>
 		if(true){
