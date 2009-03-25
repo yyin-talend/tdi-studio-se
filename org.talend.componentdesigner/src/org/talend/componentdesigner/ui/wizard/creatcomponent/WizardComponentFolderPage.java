@@ -39,8 +39,6 @@ import org.talend.componentdesigner.model.enumtype.LanguageType;
  */
 public class WizardComponentFolderPage extends AbstractComponentPage {
 
-    private Text componentFamily;
-
     private Text componentLongName;
 
     private Button useJavaLangButton;
@@ -87,20 +85,7 @@ public class WizardComponentFolderPage extends AbstractComponentPage {
                     componentPref.setLongName(componentLongName.getText());
                 }
 
-            });
-            componentFamily.addModifyListener(new ModifyListener() {
-
-                /*
-                 * (non-Javadoc)
-                 * 
-                 * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
-                 */
-                public void modifyText(ModifyEvent e) {
-                    setPageComplete(validatePage());
-                    componentPref.setFamily(componentFamily.getText());
-                }
-
-            });
+            });    
             this.setPageComplete(validatePage());
         } else {
             this.componentFolderText.setText(componentPref.getName());
@@ -157,11 +142,6 @@ public class WizardComponentFolderPage extends AbstractComponentPage {
         longNameLabel.setText(Messages.getString("WizardComponentFolderPage.LongName")); //$NON-NLS-1$
         componentLongName = new Text(optionsGroup, SWT.MULTI | SWT.WRAP | SWT.BORDER | SWT.LEFT);
         componentLongName.setLayoutData(new GridData(225, 60));
-
-        Label familyLabel = new Label(optionsGroup, SWT.NONE);
-        familyLabel.setText(Messages.getString("WizardComponentFolderPage.Family")); //$NON-NLS-1$
-        componentFamily = new Text(optionsGroup, SWT.BORDER | SWT.LEFT);
-        componentFamily.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         // create the language selection check button
         Label availability = new Label(optionsGroup, SWT.LEFT);
@@ -220,13 +200,6 @@ public class WizardComponentFolderPage extends AbstractComponentPage {
             }
         }
 
-        if (this.componentFamily.isEnabled()) {
-            String family = componentFamily.getText();
-            if (family.equals(PluginConstant.EMPTY_STRING)) {
-                setErrorMessage(Messages.getString("WizardComponentFolderPage.ErrMSG5")); //$NON-NLS-1$
-                return false;
-            }
-        }
         setErrorMessage(null);
         return true;
     }
@@ -239,16 +212,6 @@ public class WizardComponentFolderPage extends AbstractComponentPage {
     public String getComponentFolderName() {
         return componentFolderText.getText();
     }
-
-    /**
-     * Getter for componentFamily.
-     * 
-     * @return the componentFamily
-     */
-    public Text getComponentFamily() {
-        return componentFamily;
-    }
-
     /**
      * Getter for componentLongName.
      * 

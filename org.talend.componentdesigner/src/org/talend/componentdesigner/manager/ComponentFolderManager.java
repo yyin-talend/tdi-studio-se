@@ -98,9 +98,7 @@ public class ComponentFolderManager {
         IFile f = creatEmptyFile(fileName);
 
         // add property for NAME, LONG NAME AND FAMILY
-        properties.setProperty("NAME", componentPref.getName()); //$NON-NLS-1$
         properties.setProperty("LONG_NAME", componentPref.getLongName()); //$NON-NLS-1$
-        properties.setProperty("FAMILY", componentPref.getFamily()); //$NON-NLS-1$
 
         // add property for HELP
         properties.setProperty("HELP", "org.talend.help." + componentPref.getName()); //$NON-NLS-1$ //$NON-NLS-2$

@@ -43,8 +43,6 @@ public class ComponentPref {
 
     private String longName;
 
-    private String family;
-
     private LanguageType languageType;
 
     private List<ResourceLanguageType> resourceLanguageTypes;
@@ -97,24 +95,6 @@ public class ComponentPref {
      */
     public void setLongName(String longName) {
         this.longName = longName;
-    }
-
-    /**
-     * Getter for family.
-     * 
-     * @return the family
-     */
-    public String getFamily() {
-        return family;
-    }
-
-    /**
-     * Sets the family.
-     * 
-     * @param family the family to set
-     */
-    public void setFamily(String family) {
-        this.family = family;
     }
 
     /**
