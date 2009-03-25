@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Display;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.IConstants;
 import org.talend.sqlbuilder.Messages;
@@ -148,7 +149,8 @@ public class ExecSQLAction extends AbstractEditorAction {
         try {
             runNode = nodeManager.getSessionTreeNode(node);
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
             MessageDialog.openError(null, Messages.getString("AbstractSQLExecution.Executing.Error"), e.getMessage()); //$NON-NLS-1$
             SqlBuilderPlugin.log(Messages.getString("ExecSQLAction.logMessageGetSessionTreeNodeFail"), e); //$NON-NLS-1$
             return;
@@ -175,7 +177,8 @@ public class ExecSQLAction extends AbstractEditorAction {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
             SqlBuilderPlugin.log(Messages.getString("ExecSQLAction.logMessageErrorCreatingSqlTab"), e); //$NON-NLS-1$
         }
     }

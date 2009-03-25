@@ -61,7 +61,8 @@ public class ScdComponentDocumentation implements IComponentDocumentation {
         try {
             xslFileUrl = FileLocator.toFileURL(FileLocator.find(b, new Path("resources/tScd.xsl"), null)); //$NON-NLS-1$
         } catch (IOException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
 
         String xslFilePath = xslFileUrl.getPath();

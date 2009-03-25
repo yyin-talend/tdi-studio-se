@@ -38,6 +38,7 @@ import org.eclipse.ui.contexts.IContextActivation;
 import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.workbench.extensions.ExtensionImplementationProvider;
 import org.talend.commons.utils.workbench.extensions.ExtensionPointLimiterImpl;
 import org.talend.commons.utils.workbench.extensions.IExtensionPointLimiter;
@@ -290,7 +291,8 @@ public class ProcessView extends ViewPart {
                 page.showView("org.talend.designer.runprocess.ui.views.processview"); //$NON-NLS-1$
             } catch (PartInitException e) {
                 // TODO Auto-generated catch block
-                e.printStackTrace();
+                // e.printStackTrace();
+                ExceptionHandler.process(e);
             }
 
             if (processComposite.hasProcess() && !processComposite.getProcess().disableRunJobView()) {

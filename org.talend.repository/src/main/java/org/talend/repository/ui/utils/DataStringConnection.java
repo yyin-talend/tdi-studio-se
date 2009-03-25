@@ -21,6 +21,7 @@ import org.apache.oro.text.regex.MatchResult;
 import org.apache.oro.text.regex.Pattern;
 import org.apache.oro.text.regex.Perl5Compiler;
 import org.apache.oro.text.regex.Perl5Matcher;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
@@ -352,7 +353,8 @@ public class DataStringConnection {
             }
 
         } catch (MalformedPatternException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
         return s;
     }

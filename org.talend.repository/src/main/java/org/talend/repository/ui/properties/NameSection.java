@@ -157,7 +157,8 @@ public class NameSection extends AbstractSection {
                         RepositoryView view = (RepositoryView) getActivePage().findView(RepositoryView.VIEW_ID);
                         view.refresh();
                     } catch (PersistenceException e) {
-                        e.printStackTrace();
+                        // e.printStackTrace();
+                        ExceptionHandler.process(e);
                         return;
                     }
                 }

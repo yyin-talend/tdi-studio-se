@@ -23,6 +23,7 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.RuntimeExceptionHandler;
 import org.talend.core.model.context.JobContextParameter;
 import org.talend.core.model.process.IContext;
@@ -123,7 +124,8 @@ public class ExpressionTestMain {
                         }
                     });
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    // e.printStackTrace();
+                    ExceptionHandler.process(e);
                 }
 
             }

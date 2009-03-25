@@ -14,12 +14,12 @@ package org.talend.designer.runprocess.shadow;
 
 import junit.framework.TestCase;
 
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.Project;
-import org.talend.designer.runprocess.ProcessorException;
 
 /**
  * DOC chuger class global comment. Detailled comment <br/>
@@ -84,7 +84,8 @@ public class ShadowProcessTest extends TestCase {
         } catch (Exception pe) {
             System.out.println("Be carefull of preferences : PERL interpreter."); //$NON-NLS-1$
 
-            pe.printStackTrace();
+            // pe.printStackTrace();
+            ExceptionHandler.process(pe);
             fail(pe.getMessage());
         }
     }

@@ -14,6 +14,7 @@ package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.sql.Connection;
 
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.metadata.builder.database.EDatabaseDriver4Version;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 
@@ -113,7 +114,8 @@ public class DbInfo {
         try {
             conn = ExtractMetaDataUtils.connect(dbType, url, username, pwd, driverClassName, driverJarPath, dbVersion);
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
     }
 

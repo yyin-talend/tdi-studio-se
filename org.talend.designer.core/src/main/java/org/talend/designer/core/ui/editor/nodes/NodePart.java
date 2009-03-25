@@ -39,6 +39,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
@@ -470,7 +471,8 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                         // page.showView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
                         page.showView(ComponentSettingsView.ID);
                     } catch (PartInitException e) {
-                        e.printStackTrace();
+                        // e.printStackTrace();
+                        ExceptionHandler.process(e);
                     }
                 }
             }

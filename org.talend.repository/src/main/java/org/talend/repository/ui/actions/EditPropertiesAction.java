@@ -207,11 +207,13 @@ public class EditPropertiesAction extends AContextualAction {
                 IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
                 repFactory.save(item);
             } catch (Exception e) {
-                e.printStackTrace();
+                // e.printStackTrace();
+                ExceptionHandler.process(e);
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
     }
 

@@ -21,6 +21,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.business.BusinessType;
 import org.talend.core.ui.images.ECoreImage;
@@ -73,7 +74,8 @@ public class ShowJobSettingsViewAction extends Action {
             }
 
         } catch (PartInitException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
 
     }

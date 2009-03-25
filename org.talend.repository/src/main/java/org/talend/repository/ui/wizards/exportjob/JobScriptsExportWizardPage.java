@@ -735,7 +735,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                 exporter.exportSpecifiedResources();
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
-                e.printStackTrace();
+                // e.printStackTrace();
+                ExceptionHandler.process(e);
             }
         }
         // path can like name/name
@@ -849,7 +850,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             exporterOperation = new FileSystemExporterFullPath(resourcesToExport, currentUnzipFile);
         } catch (IOException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
         return exporterOperation;
     }

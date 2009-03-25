@@ -22,9 +22,9 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.properties.SpagoBiServer;
 import org.talend.spagic.engines.client.Activator;
-import org.talend.spagic.engines.client.i18n.Messages;
 
 /**
  * Preference for the SpagoBiServer values.
@@ -68,7 +68,8 @@ public class SpagicPreferencePage extends FieldEditorPreferencePage implements I
     protected void createFieldEditors() {
         parent = getFieldEditorParent();
 
-        spagicCheckButton = new CheckBoxFieldEditor(SpagicPreferenceInitializer.SPAGIC_STATUS, "Enable/Disable Deploy on Spagic", parent); //$NON-NLS-1$
+        spagicCheckButton = new CheckBoxFieldEditor(SpagicPreferenceInitializer.SPAGIC_STATUS,
+                "Enable/Disable Deploy on Spagic", parent); //$NON-NLS-1$
         editor = new SpagicServerEditor(SpagoBiServer.SPAGOBI_SERVER, "Spagic server", parent); //$NON-NLS-1$
         addField(editor);
 
@@ -81,8 +82,7 @@ public class SpagicPreferencePage extends FieldEditorPreferencePage implements I
 
             public void widgetSelected(SelectionEvent e) {
                 IPreferenceStore preferenceStore = getPreferenceStore();
-                preferenceStore.setValue(SpagicPreferenceInitializer.SPAGIC_STATUS, ((Button) e.getSource())
-                        .getSelection());
+                preferenceStore.setValue(SpagicPreferenceInitializer.SPAGIC_STATUS, ((Button) e.getSource()).getSelection());
                 updateEnableStateFromDisplay();
             }
         };
@@ -109,7 +109,8 @@ public class SpagicPreferencePage extends FieldEditorPreferencePage implements I
         try {
             super.initialize();
         } catch (RuntimeException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
             setErrorMessage(e.getMessage());
             log.error(e);
         }

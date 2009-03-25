@@ -43,21 +43,20 @@ public class DbMapComponentDocumentation implements IComponentDocumentation {
      */
     public URL getHTMLFile() {
 
-        String xmlFilepath = this.tempFolderPath + File.separatorChar + this.componentName
-                + IHTMLDocConstants.XML_FILE_SUFFIX;
+        String xmlFilepath = this.tempFolderPath + File.separatorChar + this.componentName + IHTMLDocConstants.XML_FILE_SUFFIX;
 
-        String htmlFilePath = this.tempFolderPath + File.separatorChar + this.componentName
-                + IHTMLDocConstants.HTML_FILE_SUFFIX;
+        String htmlFilePath = this.tempFolderPath + File.separatorChar + this.componentName + IHTMLDocConstants.HTML_FILE_SUFFIX;
 
         final Bundle b = Platform.getBundle(DbMapActivator.PLUGIN_ID);
 
         URL xslFileUrl = null;
         try {
-            xslFileUrl = FileLocator.toFileURL(FileLocator.find(b, new Path(
-                    IHTMLDocConstants.MAPPERCOMPONENT_XSL_FILE_PATH), null));
+            xslFileUrl = FileLocator.toFileURL(FileLocator.find(b, new Path(IHTMLDocConstants.MAPPERCOMPONENT_XSL_FILE_PATH),
+                    null));
         } catch (IOException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
 
         String xslFilePath = xslFileUrl.getPath();
@@ -129,8 +128,7 @@ public class DbMapComponentDocumentation implements IComponentDocumentation {
      * 
      * @param mapperTableType
      */
-    private void handleMapperTablesInfo(List<ExternalDbMapTable> inputTables, Element externalNodeElement,
-            String mapperTableType) {
+    private void handleMapperTablesInfo(List<ExternalDbMapTable> inputTables, Element externalNodeElement, String mapperTableType) {
         List<ExternalDbMapTable> tables = inputTables;
         if (!HTMLDocUtils.checkList(tables)) {
             return;
@@ -145,8 +143,7 @@ public class DbMapComponentDocumentation implements IComponentDocumentation {
      * @param tables
      * @param mapperTableType
      */
-    private void generateMapperTablesInfo(Element externalNodeElement, List<ExternalDbMapTable> tables,
-            String mapperTableType) {
+    private void generateMapperTablesInfo(Element externalNodeElement, List<ExternalDbMapTable> tables, String mapperTableType) {
         Element mapperTableElement = externalNodeElement.addElement("mapperTable"); //$NON-NLS-1$
         mapperTableElement.addAttribute("type", HTMLDocUtils.checkString(mapperTableType)); //$NON-NLS-1$
         Element tableElement = null;

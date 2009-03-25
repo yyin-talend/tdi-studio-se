@@ -26,6 +26,7 @@ import javax.naming.ldap.InitialLdapContext;
 import org.apache.directory.studio.ldapbrowser.core.model.schema.ObjectClassDescription;
 import org.apache.directory.studio.ldapbrowser.core.model.schema.Schema;
 import org.eclipse.emf.common.util.EList;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.core.ldap.AdvancedSocketFactory;
 import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
@@ -49,9 +50,9 @@ public class LDAPConnectionUtils {
     private static final String CONTEXT_FACTORY = "com.sun.jndi.ldap.LdapCtxFactory"; //$NON-NLS-1$
 
     private static InitialLdapContext ctx = null;
-    
-    //Used for customed schema attributes.
-    private static  List<String> allAttributes;
+
+    // Used for customed schema attributes.
+    private static List<String> allAttributes;
 
     /**
      * Comment method "getAttributes".
@@ -130,13 +131,12 @@ public class LDAPConnectionUtils {
         }
 
         Schema defaultSchema = new Schema().DEFAULT_SCHEMA;
-     
 
         Set<String> attributeSet = new TreeSet<String>();
 
         for (String objectClassName : allObjectClassList) {
             ObjectClassDescription objectClassDescription = defaultSchema.getObjectClassDescription(objectClassName);
-            
+
             String[] mustAttributeTypeDescriptionNames = objectClassDescription.getMustAttributeTypeDescriptionNames();
             String[] mayAttributeTypeDescriptionNames = objectClassDescription.getMayAttributeTypeDescriptionNames();
 
@@ -147,13 +147,11 @@ public class LDAPConnectionUtils {
                 attributeSet.add(string2);
             }
         }
-        
-        for(String attribute: allAttributes)
-        {
-           if(!attributeSet.contains(attribute))
-           {
-               attributeSet.add(attribute);
-           }
+
+        for (String attribute : allAttributes) {
+            if (!attributeSet.contains(attribute)) {
+                attributeSet.add(attribute);
+            }
         }
 
         Object[] array = (Object[]) attributeSet.toArray();
@@ -175,9 +173,9 @@ public class LDAPConnectionUtils {
      */
     private static List<String> getAttributeList(String searchFilter, javax.naming.directory.SearchControls searchCtls,
             String searchBase) throws NamingException {
-        
+
         allAttributes = new ArrayList<String>();
-        
+
         List<String> objectClassList = new ArrayList<String>();
         javax.naming.NamingEnumeration answer = ctx.search(searchBase, searchFilter, searchCtls);
 
@@ -199,8 +197,7 @@ public class LDAPConnectionUtils {
                                 objectClassList.add(next);
                             }
                         }
-                    }else
-                    {
+                    } else {
                         allAttributes.add(id);
                     }
                 }
@@ -319,6 +316,7 @@ public class LDAPConnectionUtils {
             return true;
         } catch (Exception e) {
             // e.printStackTrace();
+            ExceptionHandler.process(e);
             return false;
         }
     }

@@ -633,7 +633,8 @@ public class SQLBuilderRepositoryNodeManager {
             encryptedPassword = PasswordEncryptUtil.encryptPassword(parameters.getPassword());
             connection.setPassword(encryptedPassword);
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
 
         connection.setSID(parameters.getDbName());

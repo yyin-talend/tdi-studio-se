@@ -26,6 +26,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
+import org.talend.commons.exception.ExceptionHandler;
+
 /**
  * DOC aiming class global comment. Detailled comment
  */
@@ -172,7 +174,8 @@ public class ZipToFile {
             unZipFile("C:\\new.jar", "c:/unzipf/"); //$NON-NLS-1$ //$NON-NLS-2$
         } catch (Exception e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
     }
 }

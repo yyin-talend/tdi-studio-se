@@ -18,6 +18,7 @@ import java.net.URL;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
@@ -73,8 +74,8 @@ public class GenerateSpagoBIXML {
     private void createSpagoBIXML() {
         if (file != null) {
             try {
-                Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(
-                        Context.REPOSITORY_CONTEXT_KEY)).getProject();
+                Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                        .getProject();
                 final DocumentBuilderFactory fabrique = DocumentBuilderFactory.newInstance();
                 fabrique.setValidating(true);
                 final DocumentBuilder analyseur = fabrique.newDocumentBuilder();
@@ -125,7 +126,8 @@ public class GenerateSpagoBIXML {
                 serializer.serialize(document);
 
             } catch (Exception e) {
-                e.printStackTrace();
+                // e.printStackTrace();
+                ExceptionHandler.process(e);
             }
         }
 

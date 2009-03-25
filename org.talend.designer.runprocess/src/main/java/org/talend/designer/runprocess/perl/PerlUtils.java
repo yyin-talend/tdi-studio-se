@@ -43,6 +43,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.osgi.framework.Bundle;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.general.ILibrariesService;
@@ -148,7 +149,8 @@ public final class PerlUtils {
                 StreamResult result = new StreamResult(out);
                 transformer.transform(source, result);
             } catch (TransformerException te) {
-                te.printStackTrace();
+                // te.printStackTrace();
+                ExceptionHandler.process(te);
 
             } finally {
                 out.close();

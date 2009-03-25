@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
@@ -98,8 +99,8 @@ public class RestoreAction extends AContextualAction {
                     types.add(nodeType);
                     RepositoryManager.refreshDeletedNode(types);
                 } catch (Exception e) {
-                    // ExceptionHandler.process(e);
-                    e.printStackTrace();
+                    ExceptionHandler.process(e);
+                    // e.printStackTrace();
                 }
             }
         }

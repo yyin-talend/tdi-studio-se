@@ -51,7 +51,8 @@ public class FileCopy {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            org.talend.componentdesigner.exception.ExceptionHandler.process(e);
         }
     }
 
@@ -84,7 +85,8 @@ public class FileCopy {
                 source.delete();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            org.talend.componentdesigner.exception.ExceptionHandler.process(e);
         } finally {
 
             if (in != null) {
@@ -142,7 +144,7 @@ public class FileCopy {
                         output.write(sb.toString().getBytes());
 
                     }
-                    
+
                     byte[] b = new byte[1024];
                     int len;
 
@@ -159,7 +161,8 @@ public class FileCopy {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            org.talend.componentdesigner.exception.ExceptionHandler.process(e);
 
         }
     }

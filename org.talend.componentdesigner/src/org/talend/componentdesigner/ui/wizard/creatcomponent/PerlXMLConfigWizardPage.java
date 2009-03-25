@@ -61,7 +61,8 @@ public class PerlXMLConfigWizardPage extends AbstractXMLConfigPage {
                 url = FileLocator.toFileURL(ComponentDesigenerPlugin.getDefault().getBundle().getResource(
                         "/data/sampleperlcomponent.xml")); //$NON-NLS-1$
             } catch (IOException e) {
-                e.printStackTrace();
+                // e.printStackTrace();
+                org.talend.componentdesigner.exception.ExceptionHandler.process(e);
             }
             perlXMLFileName = url.getFile();
         }

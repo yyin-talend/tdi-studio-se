@@ -24,6 +24,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.actions.ITreeContextualAction;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.CDCConnection;
@@ -208,7 +209,8 @@ public class RepositoryDoubleClickAction extends Action {
         try {
             page.showView("org.talend.repository.views.repository"); //$NON-NLS-1$
         } catch (PartInitException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
         // ----------------
     }

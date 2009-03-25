@@ -34,6 +34,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IGotoMarker;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.properties.BusinessProcessItem;
 import org.talend.core.model.properties.Item;
@@ -156,7 +157,8 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
             try {
                 ProxyRepositoryFactory.getInstance().save(businessProcessItem);
             } catch (PersistenceException e) {
-                e.printStackTrace();
+                // e.printStackTrace();
+                ExceptionHandler.process(e);
             }
             propertyIsDirty = false;
             firePropertyChange(IEditorPart.PROP_DIRTY);
@@ -194,7 +196,8 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
             repFactory.unlock(repositoryEditorInput.getItem());
         } catch (PersistenceException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
         RepositoryNode repositoryNode = repositoryEditorInput.getRepositoryNode();
         if (repositoryNode != null) {

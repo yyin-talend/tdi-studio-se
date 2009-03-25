@@ -120,6 +120,7 @@ import org.eclipse.ui.part.PageBook;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.utils.workbench.preferences.GlobalConstant;
 import org.talend.core.CorePlugin;
@@ -693,7 +694,8 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
             monitor.worked(10);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
             monitor.setCanceled(true);
         } finally {
             monitor.done();
@@ -1266,7 +1268,8 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                     process.saveXmlFile();
                     // file.refreshLocal(IResource.DEPTH_ONE, monitor);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    // e.printStackTrace();
+                    ExceptionHandler.process(e);
                 }
             }
         };
@@ -1278,7 +1281,8 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
             setDirty(false);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
     }
 

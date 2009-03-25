@@ -50,6 +50,7 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.SelectionProviderAction;
 import org.eclipse.ui.part.ViewPart;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
@@ -236,7 +237,9 @@ public class SchedulerView extends ViewPart {
         /*
          * (non-Javadoc)
          * 
-         * @see org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse.jface.viewers.IStructuredSelection)
+         * @see
+         * org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse.jface.viewers.IStructuredSelection
+         * )
          */
         @Override
         public void selectionChanged(IStructuredSelection selection) {
@@ -273,7 +276,9 @@ public class SchedulerView extends ViewPart {
         /*
          * (non-Javadoc)
          * 
-         * @see org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse.jface.viewers.IStructuredSelection)
+         * @see
+         * org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse.jface.viewers.IStructuredSelection
+         * )
          */
         @Override
         public void selectionChanged(IStructuredSelection selection) {
@@ -378,7 +383,8 @@ public class SchedulerView extends ViewPart {
             print2File(pw, tasks);
         } catch (Exception e) {
             // todo
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         } finally {
             if (pw != null) {
                 try {
@@ -427,7 +433,8 @@ public class SchedulerView extends ViewPart {
             }
         } catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
 
     }

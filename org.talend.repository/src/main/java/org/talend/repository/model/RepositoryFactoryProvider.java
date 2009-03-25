@@ -18,6 +18,7 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.swt.events.SelectionListener;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.workbench.extensions.ExtensionImplementationProvider;
 import org.talend.commons.utils.workbench.extensions.ExtensionPointLimiterImpl;
 import org.talend.commons.utils.workbench.extensions.IExtensionPointLimiter;
@@ -81,7 +82,8 @@ public class RepositoryFactoryProvider {
 
                     list.add(currentAction);
                 } catch (CoreException e) {
-                    e.printStackTrace();
+                    // e.printStackTrace();
+                    ExceptionHandler.process(e);
                 }
             }
         }

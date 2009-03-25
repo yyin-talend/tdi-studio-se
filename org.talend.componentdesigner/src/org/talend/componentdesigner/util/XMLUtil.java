@@ -31,74 +31,78 @@ import org.dom4j.io.XMLWriter;
 import org.w3c.dom.Document;
 
 /**
- * DOC rli  class global comment. Detailled comment
+ * DOC rli class global comment. Detailled comment
  */
 public class XMLUtil {
-	
-	/**
-	 * save the xml file.
-	 * @param fileName
-	 */
-	public static void toSave(String fileName, Document document, String enCode) {
-		try {
-			TransformerFactory tf = TransformerFactory.newInstance();
-			Transformer transformer = tf.newTransformer();
-			DOMSource source = new DOMSource(document);
-			transformer.setOutputProperty(OutputKeys.ENCODING, enCode);
-			transformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
-			PrintWriter pw = new PrintWriter(new FileOutputStream(fileName));
-			StreamResult result = new StreamResult(pw);
-			transformer.transform(source, result);
-		} catch (TransformerException mye) {
-			mye.printStackTrace();
-		} catch (IOException exp) {
-			exp.printStackTrace();
-		}
-	}
 
-	
-	/**
-	 * format the exist xml file.
-	 * @param filename
-	 * @return
-	 */
-	public static int formatXMLFile(String filename, String enCode) {
+    /**
+     * save the xml file.
+     * 
+     * @param fileName
+     */
+    public static void toSave(String fileName, Document document, String enCode) {
+        try {
+            TransformerFactory tf = TransformerFactory.newInstance();
+            Transformer transformer = tf.newTransformer();
+            DOMSource source = new DOMSource(document);
+            transformer.setOutputProperty(OutputKeys.ENCODING, enCode);
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
+            PrintWriter pw = new PrintWriter(new FileOutputStream(fileName));
+            StreamResult result = new StreamResult(pw);
+            transformer.transform(source, result);
+        } catch (TransformerException mye) {
+            // mye.printStackTrace();
+            org.talend.componentdesigner.exception.ExceptionHandler.process(mye);
+        } catch (IOException exp) {
+            // exp.printStackTrace();
+            org.talend.componentdesigner.exception.ExceptionHandler.process(exp);
+        }
+    }
 
-		int returnValue = 0;
+    /**
+     * format the exist xml file.
+     * 
+     * @param filename
+     * @return
+     */
+    public static int formatXMLFile(String filename, String enCode) {
 
-		try {
+        int returnValue = 0;
 
-			SAXReader saxReader = new SAXReader();
+        try {
 
-			org.dom4j.Document document = saxReader.read(new File(filename));
+            SAXReader saxReader = new SAXReader();
 
-			XMLWriter writer = null;
+            org.dom4j.Document document = saxReader.read(new File(filename));
 
-			/** format the output like the webBrowser*/
+            XMLWriter writer = null;
 
-			OutputFormat format = OutputFormat.createPrettyPrint();
+            /** format the output like the webBrowser */
 
-			/** give the xml encoding */
+            OutputFormat format = OutputFormat.createPrettyPrint();
 
-			format.setEncoding(enCode);
+            /** give the xml encoding */
 
-			writer = new XMLWriter(new FileWriter(new File(filename)), format);
+            format.setEncoding(enCode);
 
-			writer.write(document);
+            writer = new XMLWriter(new FileWriter(new File(filename)), format);
 
-			writer.close();
+            writer.write(document);
 
-			/** succes will retun 1 */
+            writer.close();
 
-			returnValue = 1;
+            /** succes will retun 1 */
 
-		} catch (Exception ex) {
+            returnValue = 1;
 
-			ex.printStackTrace();
+        } catch (Exception ex) {
 
-		}
+            // ex.printStackTrace();
+            org.talend.componentdesigner.exception.ExceptionHandler.process(ex);
 
-		return returnValue;
+        }
 
-	}
+        return returnValue;
+
+    }
 }

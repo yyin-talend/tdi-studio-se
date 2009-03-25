@@ -16,14 +16,14 @@ import java.io.File;
 import java.net.URL;
 import java.util.List;
 
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.properties.ProcessItem;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
  * 
  */
-public class JobJavaScriptsManager extends
-        org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsManager {
+public class JobJavaScriptsManager extends org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsManager {
 
     @Override
     protected List<URL> getLauncher(boolean needLauncher, ProcessItem process, String contextName, String environment,
@@ -33,13 +33,14 @@ public class JobJavaScriptsManager extends
         if (!fileTemp.exists()) {
             fileTemp.mkdir();
         }
-        List<URL> toReturn = super.getLauncher(needLauncher, process, contextName, environment, statisticPort,
-                tracePort, codeOptions);
+        List<URL> toReturn = super.getLauncher(needLauncher, process, contextName, environment, statisticPort, tracePort,
+                codeOptions);
         // File spagobi = new File(tmpFold + "/" + "spagobi.xml");
         try {
             toReturn.add(new GenerateSpagoBIXML(fileTemp, process, contextName).getResult());
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
         return toReturn;
     }

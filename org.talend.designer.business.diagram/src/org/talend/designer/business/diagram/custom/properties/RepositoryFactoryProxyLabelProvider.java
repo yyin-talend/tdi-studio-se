@@ -6,6 +6,7 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.swt.graphics.Image;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.image.OverlayImage;
@@ -77,7 +78,8 @@ public class RepositoryFactoryProxyLabelProvider extends AdapterFactoryLabelProv
                 }
             }
         } catch (PersistenceException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
         return image;
     }
@@ -130,7 +132,8 @@ public class RepositoryFactoryProxyLabelProvider extends AdapterFactoryLabelProv
                 }
             }
         } catch (PersistenceException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
         if (columnIndex == 1) {
 

@@ -438,7 +438,8 @@ public class ImportComponentDialog extends Dialog {
             try {
                 selectedProject.refreshLocal(2, null);
             } catch (CoreException e) {
-                e.printStackTrace();
+                // e.printStackTrace();
+                org.talend.componentdesigner.exception.ExceptionHandler.process(e);
             }
 
             MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), Messages

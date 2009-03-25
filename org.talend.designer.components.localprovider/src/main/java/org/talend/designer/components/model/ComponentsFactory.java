@@ -283,7 +283,8 @@ public class ComponentsFactory implements IComponentsFactory {
             URL fileUrl = FileLocator.toFileURL(url);
             file = new File(fileUrl.getPath());
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
 
         return file;

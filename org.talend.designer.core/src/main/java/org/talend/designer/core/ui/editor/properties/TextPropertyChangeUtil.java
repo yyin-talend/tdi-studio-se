@@ -18,6 +18,7 @@ import java.util.Map;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.swt.widgets.Display;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.core.model.process.Element;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
@@ -131,7 +132,8 @@ public class TextPropertyChangeUtil {
                 }
                 currentDisplay.asyncExec(applyProperty);
             } catch (Throwable t) {
-                t.printStackTrace();
+                // t.printStackTrace();
+                ExceptionHandler.process(t);
             }
             // TimeMeasure.end("run()");
         }

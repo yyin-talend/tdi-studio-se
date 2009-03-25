@@ -72,7 +72,8 @@ public class RowGeneratorComponentDocumentation implements IComponentDocumentati
                     .toFileURL(FileLocator.find(b, new Path(IHTMLDocConstants.TROWGENERATOR_XSL_FILE_PATH), null));
         } catch (IOException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
 
         String xslFilePath = xslFileUrl.getPath();
@@ -133,7 +134,7 @@ public class RowGeneratorComponentDocumentation implements IComponentDocumentati
     }
 
     /**
-     *  Administrator Comment method "generateColumnInfo".
+     * Administrator Comment method "generateColumnInfo".
      * 
      * @param externalNodeElement
      */

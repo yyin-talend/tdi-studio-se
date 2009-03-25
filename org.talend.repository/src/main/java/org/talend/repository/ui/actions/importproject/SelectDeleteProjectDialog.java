@@ -40,6 +40,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ContainerCheckedTreeViewer;
 import org.eclipse.ui.dialogs.SelectionDialog;
 import org.eclipse.ui.model.WorkbenchContentProvider;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.core.CorePlugin;
@@ -302,7 +303,8 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
             }
         } catch (CoreException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
     }
 

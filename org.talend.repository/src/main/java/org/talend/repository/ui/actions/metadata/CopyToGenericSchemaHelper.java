@@ -15,6 +15,7 @@ package org.talend.repository.ui.actions.metadata;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.emf.common.util.EList;
 import org.talend.commons.exception.BusinessException;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
@@ -146,7 +147,8 @@ public class CopyToGenericSchemaHelper {
             try {
                 setPropNewName(connectionProperty);
             } catch (BusinessException e) {
-                e.printStackTrace();
+                // e.printStackTrace();
+                ExceptionHandler.process(e);
             }
 
         repositoryFactory.create(connectionItem, targetPath);

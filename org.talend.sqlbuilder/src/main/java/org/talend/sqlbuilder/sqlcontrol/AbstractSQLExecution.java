@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.ProgressBar;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
@@ -78,7 +79,8 @@ public abstract class AbstractSQLExecution {
 
                         clearCanvas();
                         if (!(e instanceof InterruptedException)) {
-                            e.printStackTrace();
+                            // e.printStackTrace();
+                            ExceptionHandler.process(e);
                             MessageDialog.openError(null, Messages.getString("AbstractSQLExecution.Executing.Error"), //$NON-NLS-1$
                                     e.getMessage());
                         }

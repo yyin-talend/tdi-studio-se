@@ -52,8 +52,10 @@ public class ComponentDesigenerPlugin extends AbstractUIPlugin {
         try {
             prop.load(ComponentDesigenerPlugin.class.getResourceAsStream("log4j.properties")); //$NON-NLS-1$
         } catch (IOException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            org.talend.componentdesigner.exception.ExceptionHandler.process(e);
         }
+
         PropertyConfigurator.configure(prop);
     }
 

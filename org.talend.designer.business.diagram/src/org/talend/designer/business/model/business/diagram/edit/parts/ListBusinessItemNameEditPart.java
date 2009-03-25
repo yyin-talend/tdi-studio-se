@@ -46,6 +46,7 @@ import org.eclipse.swt.accessibility.AccessibleEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.designer.business.diagram.custom.figures.BusinessItemNameFigure;
 import org.talend.designer.business.model.business.diagram.edit.policies.BusinessTextSelectionEditPolicy;
 import org.talend.designer.business.model.business.diagram.providers.BusinessElementTypes;
@@ -257,7 +258,8 @@ public class ListBusinessItemNameEditPart extends CompartmentEditPart implements
                                 });
                         return valid.getCode() == ParserEditStatus.EDITABLE ? null : valid.getMessage();
                     } catch (InterruptedException ie) {
-                        ie.printStackTrace();
+                        // ie.printStackTrace();
+                        ExceptionHandler.process(ie);
                     }
                 }
 
@@ -373,7 +375,8 @@ public class ListBusinessItemNameEditPart extends CompartmentEditPart implements
                 }
             });
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
     }
 
@@ -427,8 +430,7 @@ public class ListBusinessItemNameEditPart extends CompartmentEditPart implements
     protected void refreshFont() {
         FontStyle style = (FontStyle) getFontStyleOwnerView().getStyle(NotationPackage.eINSTANCE.getFontStyle());
         if (style != null) {
-            FontData fontData = new FontData(style.getFontName(), style.getFontHeight(), (style.isBold() ? SWT.BOLD
-                    : SWT.NORMAL)
+            FontData fontData = new FontData(style.getFontName(), style.getFontHeight(), (style.isBold() ? SWT.BOLD : SWT.NORMAL)
                     | (style.isItalic() ? SWT.ITALIC : SWT.NORMAL));
             setFont(fontData);
         }

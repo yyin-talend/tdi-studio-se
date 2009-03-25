@@ -192,6 +192,7 @@ public class Schema2XMLLinker extends TableToTreeLinker<Object, Object> {
             ExceptionHandler.process(e);
         } catch (InterruptedException e) {
             // Nothing to do
+            ExceptionHandler.process(e);
         }
 
     }

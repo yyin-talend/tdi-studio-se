@@ -339,7 +339,8 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                             Messages.getString("GuessSchemaController.connectionError"), strExcepton); //$NON-NLS-1$
                 }
             });
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
 
     }

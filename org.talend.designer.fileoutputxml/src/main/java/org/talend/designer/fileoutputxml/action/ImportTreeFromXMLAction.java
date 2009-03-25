@@ -21,6 +21,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.ui.actions.SelectionProviderAction;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.designer.fileoutputxml.data.Attribute;
 import org.talend.designer.fileoutputxml.data.Element;
 import org.talend.designer.fileoutputxml.data.FOXTreeNode;
@@ -74,7 +75,8 @@ public class ImportTreeFromXMLAction extends SelectionProviderAction {
             root.setParent(null);
             list.add(root);
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
         return list;
     }
@@ -123,7 +125,8 @@ public class ImportTreeFromXMLAction extends SelectionProviderAction {
     /*
      * (non-Javadoc)
      * 
-     * @see org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse.jface.viewers.IStructuredSelection)
+     * @see
+     * org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse.jface.viewers.IStructuredSelection)
      */
     @Override
     public void selectionChanged(IStructuredSelection selection) {

@@ -37,6 +37,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
@@ -151,7 +152,8 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         try {
             folder.refreshLocal(1, null);
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
 
     }
@@ -167,7 +169,8 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
             try {
                 folder.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
             } catch (Exception e) {
-                e.printStackTrace();
+                // e.printStackTrace();
+                ExceptionHandler.process(e);
             }
         }
     }

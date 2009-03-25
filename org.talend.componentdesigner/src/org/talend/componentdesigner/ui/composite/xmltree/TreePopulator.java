@@ -54,7 +54,8 @@ public class TreePopulator {
         try {
             inputStream = new FileInputStream(filePath);
         } catch (IOException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
         // availableXmlTree.removeAll();
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();

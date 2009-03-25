@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.Status;
@@ -87,7 +88,7 @@ public class PurposeStatusSection extends AbstractSection {
         data.right = new FormAttachment(statusText, -ITabbedPropertyConstants.HSPACE);
         data.top = new FormAttachment(statusText, 0, SWT.CENTER);
         statusLabel.setLayoutData(data);
-        
+
         addFocusListenerToChildren(composite);
     }
 
@@ -99,7 +100,8 @@ public class PurposeStatusSection extends AbstractSection {
             List<Status> status = property == null ? new ArrayList<Status>() : statusHelper.getStatusList(property);
             statusText.setItems(toArray(status));
         } catch (PersistenceException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
     }
 

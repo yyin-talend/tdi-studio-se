@@ -228,21 +228,19 @@ public final class UpdateContextReferenceHelper {
                 itemParameterType.setPrompt(parameter.getPrompt());
                 itemParameterType.setPromptNeeded(parameter.isPromptNeeded());
                 itemParameterType.setType(parameter.getType());
-                if (PasswordEncryptUtil.isPasswordType(itemParameterType
-						.getType())) {
-					// see 0000949: Encryption of DB passwords in XMI
-					// repository files
-					try {
-						String password = PasswordEncryptUtil
-								.encryptPassword(parameter.getValue());
-						itemParameterType.setValue(password);
-					} catch (Exception e) {
-						ExceptionHandler.process(e);
-					}
+                if (PasswordEncryptUtil.isPasswordType(itemParameterType.getType())) {
+                    // see 0000949: Encryption of DB passwords in XMI
+                    // repository files
+                    try {
+                        String password = PasswordEncryptUtil.encryptPassword(parameter.getValue());
+                        itemParameterType.setValue(password);
+                    } catch (Exception e) {
+                        ExceptionHandler.process(e);
+                    }
 
-				} else {
-					itemParameterType.setValue(parameter.getValue());
-				}
+                } else {
+                    itemParameterType.setValue(parameter.getValue());
+                }
                 return true;
 
             }
@@ -323,7 +321,8 @@ public final class UpdateContextReferenceHelper {
                 }
             }
         } catch (PersistenceException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
 
     }

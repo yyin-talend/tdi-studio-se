@@ -77,14 +77,14 @@ public class CopyFromPaletteActionProvider extends CommonActionProvider {
             try {
                 url = FileLocator.toFileURL(url);
             } catch (IOException e) {
-                e.printStackTrace();
+                // e.printStackTrace();
+                org.talend.componentdesigner.exception.ExceptionHandler.process(e);
             }
             String path = url.getFile();
             // path = "";
 
-            ImportComponentDialog dialog = new ImportComponentDialog(PlatformUI.getWorkbench()
-                    .getActiveWorkbenchWindow().getShell(),
-                    Messages.getString("CopyFromPaletteActionProvider.Label2"), null, path, selectedProject); //$NON-NLS-1$
+            ImportComponentDialog dialog = new ImportComponentDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                    .getShell(), Messages.getString("CopyFromPaletteActionProvider.Label2"), null, path, selectedProject); //$NON-NLS-1$
             dialog.open();
         }
     }

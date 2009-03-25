@@ -22,6 +22,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.properties.SpagoBiServer;
 import org.talend.sbi.engines.client.Activator;
 import org.talend.sbi.engines.client.i18n.Messages;
@@ -83,8 +84,7 @@ public class SpagoBiPreferencePage extends FieldEditorPreferencePage implements 
 
             public void widgetSelected(SelectionEvent e) {
                 IPreferenceStore preferenceStore = getPreferenceStore();
-                preferenceStore.setValue(SpagoPreferenceInitializer.SPAGO_STATUS, ((Button) e.getSource())
-                        .getSelection());
+                preferenceStore.setValue(SpagoPreferenceInitializer.SPAGO_STATUS, ((Button) e.getSource()).getSelection());
                 updateEnableStateFromDisplay();
             }
         };
@@ -108,7 +108,8 @@ public class SpagoBiPreferencePage extends FieldEditorPreferencePage implements 
         try {
             super.initialize();
         } catch (RuntimeException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
             setErrorMessage(e.getMessage());
             log.error(e);
         }

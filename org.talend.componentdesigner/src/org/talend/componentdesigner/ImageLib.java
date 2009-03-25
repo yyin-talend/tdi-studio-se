@@ -32,17 +32,17 @@ public class ImageLib {
     private static ImageRegistry imageRegistry;
 
     private static URL iconURL;
-    
+
     public static final String COMPONENT_DEFAULT = "defaultcomponent_icon32.png"; //$NON-NLS-1$
-    
+
     public static final String COPYCOMPONENT_ACTION = "copycomponent_action.gif"; //$NON-NLS-1$
-    
+
     public static final String EDITCOMPONENT_ACTION = "editcomponent_action.gif"; //$NON-NLS-1$
-    
+
     public static final String NEWCOMPONENT_WIZARD = "newcomponent_wiz.png"; //$NON-NLS-1$
-    
+
     public static final String JAR_OBJ = "jar_obj.gif"; //$NON-NLS-1$
-    
+
     public static final String PM_OBJ = "pm_obj.gif"; //$NON-NLS-1$
 
     /**
@@ -105,28 +105,28 @@ public class ImageLib {
         try {
             return new URL(installURL, "icons/"); //$NON-NLS-1$
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            org.talend.componentdesigner.exception.ExceptionHandler.process(e);
             return null;
         }
     }
-    
+
     public static InputStream getImageInputStream(String imageName) {
-    	InputStream inputStream = null;
-		try {
-			inputStream = ComponentDesigenerPlugin.getDefault().getBundle()
-					.getEntry("/icons/" + imageName).openStream(); //$NON-NLS-1$
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return inputStream;
-	}
+        InputStream inputStream = null;
+        try {
+            inputStream = ComponentDesigenerPlugin.getDefault().getBundle().getEntry("/icons/" + imageName).openStream(); //$NON-NLS-1$
+        } catch (IOException e) {
+            // e.printStackTrace();
+            org.talend.componentdesigner.exception.ExceptionHandler.process(e);
+        }
+        return inputStream;
+    }
 
     /**
-	 * store the image with special name(the name with suffix,such as
-	 * "sample.gif").
-	 * 
-	 * @param iconName
-	 */
+     * store the image with special name(the name with suffix,such as "sample.gif").
+     * 
+     * @param iconName
+     */
     public static void addImage(String iconName) {
         try {
             ImageDescriptor descriptor = ImageDescriptor.createFromURL(new URL(iconURL, iconName));

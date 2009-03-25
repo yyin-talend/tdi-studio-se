@@ -141,7 +141,8 @@ public class ExportProjectsAsAction extends Action implements IWorkbenchWindowAc
                         WorkspaceUndoUtil.getUIInfoAdapter(window.getShell()));
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
     }
 
@@ -181,7 +182,8 @@ public class ExportProjectsAsAction extends Action implements IWorkbenchWindowAc
         try {
             PlatformUI.getWorkbench().getActiveWorkbenchWindow().run(true, true, op);
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
     }
 
@@ -204,7 +206,8 @@ public class ExportProjectsAsAction extends Action implements IWorkbenchWindowAc
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
 
         return map;
@@ -267,7 +270,8 @@ public class ExportProjectsAsAction extends Action implements IWorkbenchWindowAc
             routines = factory.getRoutineFromProject(project);
         } catch (PersistenceException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
         return routines;
 

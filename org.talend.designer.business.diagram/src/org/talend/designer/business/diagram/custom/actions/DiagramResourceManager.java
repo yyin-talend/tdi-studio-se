@@ -29,6 +29,7 @@ import org.eclipse.gmf.runtime.notation.Diagram;
 import org.eclipse.gmf.runtime.notation.NotationPackage;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPage;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.properties.BusinessProcessItem;
 import org.talend.designer.business.model.business.BusinessPackage;
 import org.talend.designer.business.model.business.BusinessProcess;
@@ -66,8 +67,8 @@ public class DiagramResourceManager {
         String diagramKind = BusinessProcessEditPart.MODEL_ID;
         Shell shell = page.getWorkbenchWindow().getShell();
 
-        IFile file = BusinessDiagramEditorUtil.createNewDiagramFile(fileCreator, containerFullPath, fileName,
-                initialContents, diagramKind, shell, progressMonitor);
+        IFile file = BusinessDiagramEditorUtil.createNewDiagramFile(fileCreator, containerFullPath, fileName, initialContents,
+                diagramKind, shell, progressMonitor);
 
         return file;
     }
@@ -75,10 +76,9 @@ public class DiagramResourceManager {
     public void updateFromResource(BusinessProcessItem businessProcessItem, IFile file) {
         Resource resource = createResource(file);
 
-        BusinessProcess semantic = (BusinessProcess) EcoreUtil.getObjectByType(resource.getContents(),
-                BusinessPackage.eINSTANCE.getBusinessProcess());
-        Diagram notation = (Diagram) EcoreUtil.getObjectByType(resource.getContents(), NotationPackage.eINSTANCE
-                .getDiagram());
+        BusinessProcess semantic = (BusinessProcess) EcoreUtil.getObjectByType(resource.getContents(), BusinessPackage.eINSTANCE
+                .getBusinessProcess());
+        Diagram notation = (Diagram) EcoreUtil.getObjectByType(resource.getContents(), NotationPackage.eINSTANCE.getDiagram());
 
         businessProcessItem.setSemantic(semantic);
         businessProcessItem.setNotation(notation);
@@ -97,7 +97,8 @@ public class DiagramResourceManager {
         try {
             resource.save(null);
         } catch (IOException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
     }
 

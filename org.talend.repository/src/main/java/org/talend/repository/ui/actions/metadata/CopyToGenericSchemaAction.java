@@ -15,6 +15,7 @@ package org.talend.repository.ui.actions.metadata;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
@@ -114,7 +115,8 @@ public class CopyToGenericSchemaAction extends AContextualAction {
                         .getObject(), new Path("")); //$NON-NLS-1$
                 RepositoryManager.refreshCreatedNode(ERepositoryObjectType.METADATA_GENERIC_SCHEMA);
             } catch (PersistenceException e) {
-                e.printStackTrace();
+                // e.printStackTrace();
+                ExceptionHandler.process(e);
             }
         }
     }

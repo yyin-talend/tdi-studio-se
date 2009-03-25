@@ -20,6 +20,7 @@ import netscape.ldap.util.LDIFAttributeContent;
 import netscape.ldap.util.LDIFContent;
 import netscape.ldap.util.LDIFRecord;
 
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.metadata.IMetadataTable;
 
 /**
@@ -58,6 +59,7 @@ public class FileInputLdifNode extends FileInputNode {
             this.setColumnNumber(columnCount);
         } catch (IOException e) {
             // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
 
         String[] paramNames = new String[] { "FILENAME", "ENCODING" }; //$NON-NLS-1$ //$NON-NLS-2$

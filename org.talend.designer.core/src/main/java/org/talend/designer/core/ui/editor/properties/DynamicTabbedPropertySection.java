@@ -215,7 +215,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
                 }
             }
         } catch (PersistenceException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
 
         List<String> tempFolderList = new ArrayList<String>();

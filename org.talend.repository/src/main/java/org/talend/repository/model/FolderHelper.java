@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.model.properties.FolderItem;
 import org.talend.core.model.properties.FolderType;
@@ -225,7 +226,8 @@ public abstract class FolderHelper {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
         return null;
     }

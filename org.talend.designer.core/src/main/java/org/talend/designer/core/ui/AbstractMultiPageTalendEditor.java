@@ -263,9 +263,11 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                 property.eAdapters().add(dirtyListener);
                 repFactory.lock(currentProcess);
             } catch (PersistenceException e) {
-                e.printStackTrace();
+                // e.printStackTrace();
+                ExceptionHandler.process(e);
             } catch (BusinessException e) {
                 // Nothing to do
+                ExceptionHandler.process(e);
             }
         } else {
             setReadOnly(true);
@@ -416,7 +418,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             setPageText(index, "Designer"); //$NON-NLS-1$
             designerEditor.setParent(this);
         } catch (PartInitException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
     }
 
@@ -448,7 +451,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                 setPageText(index, "Code"); //$NON-NLS-1$
 
             } catch (PartInitException pie) {
-                pie.printStackTrace();
+                // pie.printStackTrace();
+                ExceptionHandler.process(pie);
             }
         }
 
@@ -536,7 +540,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                 UpdateRunJobComponentContextHelper.updateOpenedJobRunJobComponentReference(processes, nameMap, jobId,
                         curContextVars);
             } catch (PersistenceException e) {
-                e.printStackTrace();
+                // e.printStackTrace();
+                ExceptionHandler.process(e);
             }
             nameMap.clear();
             manager.setModified(false);
@@ -889,7 +894,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             repFactory.unlock(designerEditor.getProperty().getItem());
         } catch (PersistenceException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
 
         // IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);

@@ -116,8 +116,7 @@ public class CreateComponentWizard extends BasicNewResourceWizard {
         if (currentPage.getName().equals(PERLWIZARD)) {
             return true;
         }
-        if (currentPage.getName().equals(JAVAWIZARD)
-                && (componentPref.getLanguageType() == LanguageType.JAVALANGUAGETYPE)) {
+        if (currentPage.getName().equals(JAVAWIZARD) && (componentPref.getLanguageType() == LanguageType.JAVALANGUAGETYPE)) {
             return true;
         }
         return false;
@@ -152,11 +151,14 @@ public class CreateComponentWizard extends BasicNewResourceWizard {
                     PluginConstant.COMPONENT_PROJECT));
             ComponentPrefCollection.getInstance().save(componentPref);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            org.talend.componentdesigner.exception.ExceptionHandler.process(e);
         } catch (CoreException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            org.talend.componentdesigner.exception.ExceptionHandler.process(e);
         } catch (IOException ioe) {
-            ioe.printStackTrace();
+            // ioe.printStackTrace();
+            org.talend.componentdesigner.exception.ExceptionHandler.process(ioe);
         }
         return true;
     }

@@ -22,6 +22,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Display;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
@@ -120,7 +121,8 @@ public class DeleteTableAction extends AContextualAction {
 
                         RepositoryManager.refreshDeletedNode(types);
                     } catch (PersistenceException e) {
-                        e.printStackTrace();
+                        // e.printStackTrace();
+                        ExceptionHandler.process(e);
                     }
                 }
             }
@@ -200,7 +202,8 @@ public class DeleteTableAction extends AContextualAction {
                     isLocked = !repFactory.isPotentiallyEditable(repObj);
                     isDeleted = DeletionHelper.isDeleted(node);
                 } catch (PersistenceException e) {
-                    e.printStackTrace();
+                    // e.printStackTrace();
+                    ExceptionHandler.process(e);
                 }
                 if (isLocked) {
                     canWork = false;

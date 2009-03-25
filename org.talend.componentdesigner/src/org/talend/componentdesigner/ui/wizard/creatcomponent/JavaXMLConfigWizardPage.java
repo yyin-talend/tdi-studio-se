@@ -63,7 +63,8 @@ public class JavaXMLConfigWizardPage extends AbstractXMLConfigPage {
                 url = FileLocator.toFileURL(ComponentDesigenerPlugin.getDefault().getBundle().getResource(
                         "/data/samplejavacomponent.xml")); //$NON-NLS-1$
             } catch (IOException e) {
-                e.printStackTrace();
+                // e.printStackTrace();
+                org.talend.componentdesigner.exception.ExceptionHandler.process(e);
             }
             javaXMLFileName = url.getFile();
         }

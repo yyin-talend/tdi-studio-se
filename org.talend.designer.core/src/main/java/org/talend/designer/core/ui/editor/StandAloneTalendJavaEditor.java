@@ -179,7 +179,8 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
             item = (FileItem) property.getItem();
             repFactory.unlock(item);
         } catch (PersistenceException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
         RepositoryNode repositoryNode = rEditorInput.getRepositoryNode();
         if (repositoryNode != null) {
@@ -216,7 +217,8 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
             startRefreshJob(repFactory);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
 
     }

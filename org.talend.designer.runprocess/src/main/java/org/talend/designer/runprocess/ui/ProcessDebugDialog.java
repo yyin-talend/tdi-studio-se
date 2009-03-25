@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
 import org.talend.designer.runprocess.IProcessor;
@@ -144,9 +145,11 @@ public class ProcessDebugDialog extends Dialog {
                 progressService.runInUI(PlatformUI.getWorkbench().getProgressService(), worker, ResourcesPlugin.getWorkspace()
                         .getRoot());
             } catch (InvocationTargetException e) {
-                e.printStackTrace();
+                // e.printStackTrace();
+                ExceptionHandler.process(e);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                // e.printStackTrace();
+                ExceptionHandler.process(e);
             }
 
         }

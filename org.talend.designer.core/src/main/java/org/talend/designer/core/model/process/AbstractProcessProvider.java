@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.gef.palette.PaletteEntry;
 import org.eclipse.swt.graphics.Image;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
@@ -53,7 +54,8 @@ public abstract class AbstractProcessProvider {
                             .createExecutableExtension(ATTR_CLASS);
                     return createExecutableExtension;
                 } catch (CoreException ex) {
-                    ex.printStackTrace();
+                    // ex.printStackTrace();
+                    ExceptionHandler.process(ex);
                 }
             }
         }
@@ -69,7 +71,8 @@ public abstract class AbstractProcessProvider {
                         .createExecutableExtension(ATTR_CLASS);
                 processProviders.add(createExecutableExtension);
             } catch (CoreException ex) {
-                ex.printStackTrace();
+                // ex.printStackTrace();
+                ExceptionHandler.process(ex);
             }
         }
         return processProviders;

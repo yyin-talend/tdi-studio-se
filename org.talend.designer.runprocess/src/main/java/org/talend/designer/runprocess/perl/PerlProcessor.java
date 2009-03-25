@@ -300,7 +300,8 @@ public class PerlProcessor extends Processor {
         try {
             lineNumbers = PerlProcessor.getLineNumbers(codeFile, new String[] { nodeName });
         } catch (CoreException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
         if (lineNumbers.length > 0) {
             return lineNumbers[0];

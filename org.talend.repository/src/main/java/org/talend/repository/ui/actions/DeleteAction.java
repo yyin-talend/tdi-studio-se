@@ -35,6 +35,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.talend.commons.exception.BusinessException;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.EImage;
@@ -173,7 +174,8 @@ public class DeleteAction extends AContextualAction {
                         }
                         factory.deleteFolder(objectType, path);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        // e.printStackTrace();
+                        ExceptionHandler.process(e);
                     }
                     monitor.done();
                 }
@@ -181,7 +183,8 @@ public class DeleteAction extends AContextualAction {
             };
             PlatformUI.getWorkbench().getProgressService().run(true, true, op);
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
     }
 
@@ -271,7 +274,8 @@ public class DeleteAction extends AContextualAction {
                     }
                 } catch (PersistenceException e) {
                     // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    // e.printStackTrace();
+                    ExceptionHandler.process(e);
                 }
                 EList nodesList = null;
                 for (IRepositoryObject process : processList) {

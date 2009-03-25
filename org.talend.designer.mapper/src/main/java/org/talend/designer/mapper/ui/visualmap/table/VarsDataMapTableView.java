@@ -23,6 +23,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.ToolItem;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.advanced.dataeditor.commands.ExtendedTableMoveCommand;
@@ -172,10 +173,12 @@ public class VarsDataMapTableView extends DataMapTableView {
                 arrayTalendTypes = MetadataTalendType.getTalendTypesLabels();
             } catch (NoClassDefFoundError e) {
                 // shouln't be happend
-                e.printStackTrace();
+                // e.printStackTrace();
+                ExceptionHandler.process(e);
             } catch (ExceptionInInitializerError e) {
                 // shouln't be happend
-                e.printStackTrace();
+                // e.printStackTrace();
+                ExceptionHandler.process(e);
             }
 
             IBeanPropertyAccessors<VarTableEntry, Boolean> nullableAccessors = new IBeanPropertyAccessors<VarTableEntry, Boolean>() {

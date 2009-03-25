@@ -25,6 +25,7 @@ import jxl.read.biff.BiffException;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.talend.commons.exception.ExceptionHandler;
 
 /**
  * DOC yexiaowei class global comment. Detailled comment
@@ -134,9 +135,11 @@ public class ExcelReader {
             Assert.assertEquals(7, res.size());
 
         } catch (BiffException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         } catch (IOException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
     }
 

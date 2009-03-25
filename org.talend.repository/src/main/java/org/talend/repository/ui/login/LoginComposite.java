@@ -55,6 +55,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.talend.commons.exception.BusinessException;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
@@ -799,7 +800,8 @@ public class LoginComposite extends Composite {
         try {
             toReturn.setPassword(PasswordHelper.encryptPasswd(passwordText.getText()));
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
         return toReturn;
     }

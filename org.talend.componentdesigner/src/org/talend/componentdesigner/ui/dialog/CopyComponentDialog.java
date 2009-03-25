@@ -48,9 +48,11 @@ public class CopyComponentDialog extends InputDialog {
             new ComponentFolderManager().copyComponent(ResourcesPlugin.getWorkspace().getRoot().getProject(
                     PluginConstant.COMPONENT_PROJECT), path, this.getValue());
         } catch (CoreException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            org.talend.componentdesigner.exception.ExceptionHandler.process(e);
         } catch (IOException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            org.talend.componentdesigner.exception.ExceptionHandler.process(e);
         }
     }
 

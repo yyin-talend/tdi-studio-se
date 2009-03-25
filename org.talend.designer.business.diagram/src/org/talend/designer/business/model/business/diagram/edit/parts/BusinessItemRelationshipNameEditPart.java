@@ -42,6 +42,7 @@ import org.eclipse.swt.accessibility.AccessibleEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.designer.business.model.business.diagram.edit.policies.BusinessTextSelectionEditPolicy;
 import org.talend.designer.business.model.business.diagram.part.BusinessVisualIDRegistry;
 import org.talend.designer.business.model.business.diagram.providers.BusinessElementTypes;
@@ -80,8 +81,8 @@ public class BusinessItemRelationshipNameEditPart extends LabelEditPart implemen
      * @generated
      */
     static {
-        registerSnapBackPosition(BusinessVisualIDRegistry.getType(BusinessItemRelationshipNameEditPart.VISUAL_ID),
-                new Point(0, 40));
+        registerSnapBackPosition(BusinessVisualIDRegistry.getType(BusinessItemRelationshipNameEditPart.VISUAL_ID), new Point(0,
+                40));
     }
 
     /**
@@ -252,7 +253,8 @@ public class BusinessItemRelationshipNameEditPart extends LabelEditPart implemen
                                 });
                         return valid.getCode() == ParserEditStatus.EDITABLE ? null : valid.getMessage();
                     } catch (InterruptedException ie) {
-                        ie.printStackTrace();
+                        // ie.printStackTrace();
+                        ExceptionHandler.process(ie);
                     }
                 }
 
@@ -368,7 +370,8 @@ public class BusinessItemRelationshipNameEditPart extends LabelEditPart implemen
                 }
             });
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
     }
 
@@ -422,8 +425,7 @@ public class BusinessItemRelationshipNameEditPart extends LabelEditPart implemen
     protected void refreshFont() {
         FontStyle style = (FontStyle) getFontStyleOwnerView().getStyle(NotationPackage.eINSTANCE.getFontStyle());
         if (style != null) {
-            FontData fontData = new FontData(style.getFontName(), style.getFontHeight(), (style.isBold() ? SWT.BOLD
-                    : SWT.NORMAL)
+            FontData fontData = new FontData(style.getFontName(), style.getFontHeight(), (style.isBold() ? SWT.BOLD : SWT.NORMAL)
                     | (style.isItalic() ? SWT.ITALIC : SWT.NORMAL));
             setFont(fontData);
         }

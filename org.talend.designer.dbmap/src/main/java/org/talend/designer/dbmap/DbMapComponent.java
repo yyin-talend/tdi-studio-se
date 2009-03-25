@@ -119,7 +119,8 @@ public class DbMapComponent extends AbstractMapComponent {
                 }
             } catch (Throwable e) {
                 if (MapperMain.isStandAloneMode()) {
-                    e.printStackTrace();
+                    // e.printStackTrace();
+                    ExceptionHandler.process(e);
                 } else {
                     ExceptionHandler.process(e);
                 }

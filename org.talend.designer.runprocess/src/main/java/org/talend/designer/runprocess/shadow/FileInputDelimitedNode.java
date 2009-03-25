@@ -24,6 +24,7 @@ import java.io.UnsupportedEncodingException;
 
 import org.apache.log4j.Level;
 import org.eclipse.core.runtime.Path;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.StringUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -76,7 +77,8 @@ public class FileInputDelimitedNode extends FileInputNode {
                                     .loadConvert(rowSep, languageName)), true, spitRecord, headerRows, limitRows);
 
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    // e.printStackTrace();
+                    ExceptionHandler.process(e);
                 }
                 if (max > 0) {
                     this.setColumnNumber(max);
@@ -127,10 +129,13 @@ public class FileInputDelimitedNode extends FileInputNode {
                     }
                 } catch (UnsupportedEncodingException e) {
                     // e.printStackTrace();
+                    ExceptionHandler.process(e);
                 } catch (FileNotFoundException e) {
                     // e.printStackTrace();
+                    ExceptionHandler.process(e);
                 } catch (IOException e) {
                     // e.printStackTrace();
+                    ExceptionHandler.process(e);
                 } finally {
                     if (cr != null) {
                         cr.close();
@@ -218,10 +223,12 @@ public class FileInputDelimitedNode extends FileInputNode {
             str = reader.readLine();
         } catch (IOException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         } catch (ProcessorException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
         return Integer.parseInt(str);
     }

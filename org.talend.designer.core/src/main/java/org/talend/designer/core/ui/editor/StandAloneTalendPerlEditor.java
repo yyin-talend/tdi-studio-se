@@ -128,7 +128,8 @@ public class StandAloneTalendPerlEditor extends PerlEditor implements IUIRefresh
             item = (RoutineItem) property.getItem();
             repFactory.unlock(item);
         } catch (PersistenceException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
         RepositoryNode repositoryNode = rEditorInput.getRepositoryNode();
         if (repositoryNode != null) {
@@ -170,7 +171,8 @@ public class StandAloneTalendPerlEditor extends PerlEditor implements IUIRefresh
             }
             startRefreshJob(repFactory);
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
     }
 

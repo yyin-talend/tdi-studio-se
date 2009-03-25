@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 import org.talend.commons.exception.BusinessException;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.io.IOUtils;
 import org.talend.commons.xml.XSDValidator;
 import org.talend.core.model.ModelPlugin;
@@ -53,7 +54,8 @@ public class ComponentFileChecker {
             currentCRC = IOUtils.computeCRC(new FileInputStream(xmlMainFile));
         } catch (FileNotFoundException e) {
             // ignore here, only print
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
 
         if (xsdValidationCacheManager.needCheck(xmlMainFile, currentCRC)) {

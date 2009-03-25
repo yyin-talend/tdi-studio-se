@@ -120,7 +120,8 @@ public class ComponentFolderManager {
             inputStream = new ByteArrayInputStream(propertiesOutputStream.toByteArray());
             f.setContents(inputStream, true, false, null);
         } catch (IOException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            org.talend.componentdesigner.exception.ExceptionHandler.process(e);
         } finally {
             try {
                 if (propertiesOutputStream != null) {
@@ -130,7 +131,8 @@ public class ComponentFolderManager {
                     inputStream.close();
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                // e.printStackTrace();
+                org.talend.componentdesigner.exception.ExceptionHandler.process(e);
             }
         }
     }
@@ -295,7 +297,8 @@ public class ComponentFolderManager {
             templateFileStream = ComponentDesigenerPlugin.getDefault().getBundle().getEntry("/data/template.javajet") //$NON-NLS-1$
                     .openStream();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            org.talend.componentdesigner.exception.ExceptionHandler.process(e);
         }
         // .getResourceAsStream("template.javajet");
         copyFileFromSrc(templateFileStream, fileName);
@@ -399,7 +402,8 @@ public class ComponentFolderManager {
         try {
             transformer = tf.newTransformer();
         } catch (TransformerConfigurationException e1) {
-            e1.printStackTrace();
+            // e1.printStackTrace();
+            org.talend.componentdesigner.exception.ExceptionHandler.process(e1);
         }
         DOMSource source = new DOMSource(document);
         transformer.setOutputProperty(OutputKeys.ENCODING, enCode);
@@ -411,12 +415,14 @@ public class ComponentFolderManager {
         try {
             transformer.transform(source, result);
         } catch (TransformerException e1) {
-            e1.printStackTrace();
+            // e1.printStackTrace();
+            org.talend.componentdesigner.exception.ExceptionHandler.process(e1);
         }
         try {
             sw.flush();
         } catch (IOException e1) {
-            e1.printStackTrace();
+            // e1.printStackTrace();
+            org.talend.componentdesigner.exception.ExceptionHandler.process(e1);
         } finally {
             if (pw != null) {
                 pw.close();
@@ -431,7 +437,8 @@ public class ComponentFolderManager {
         try {
             dom4jDocument = saxReader.read(new ByteArrayInputStream(byteArray));
         } catch (DocumentException e1) {
-            e1.printStackTrace();
+            // e1.printStackTrace();
+            org.talend.componentdesigner.exception.ExceptionHandler.process(e1);
         }
 
         /** format the output like the webBrowser */
@@ -447,20 +454,23 @@ public class ComponentFolderManager {
         try {
             writer = new XMLWriter(sw, format);
         } catch (UnsupportedEncodingException e1) {
-            e1.printStackTrace();
+            // e1.printStackTrace();
+            org.talend.componentdesigner.exception.ExceptionHandler.process(e1);
         }
 
         try {
             writer.write(dom4jDocument);
             writer.flush();
         } catch (IOException e1) {
-            e1.printStackTrace();
+            // e1.printStackTrace();
+            org.talend.componentdesigner.exception.ExceptionHandler.process(e1);
         } finally {
             if (writer != null) {
                 try {
                     writer.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    // e.printStackTrace();
+                    org.talend.componentdesigner.exception.ExceptionHandler.process(e);
                 }
             }
         }

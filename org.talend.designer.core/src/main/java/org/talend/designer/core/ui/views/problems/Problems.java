@@ -556,7 +556,8 @@ public class Problems {
         try {
             fread = new FileReader(file);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
         BufferedReader br = new BufferedReader(fread);
         int point = 0;
@@ -588,14 +589,16 @@ public class Problems {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         } finally {
             try {
                 br.close();
                 fread.close();
                 file = null;
             } catch (IOException e) {
-                e.printStackTrace();
+                // e.printStackTrace();
+                ExceptionHandler.process(e);
             }
         }
         return result;

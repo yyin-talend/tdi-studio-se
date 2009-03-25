@@ -33,7 +33,8 @@ public class ATreeNodeUtil {
             String fileAbsolutePath = url.getFile();
             rootTreeNode = SchemaPopulationUtil.getSchemaTree(fileAbsolutePath, true, 10);
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            org.talend.componentdesigner.exception.ExceptionHandler.process(e);
         }
     }
 
@@ -41,8 +42,8 @@ public class ATreeNodeUtil {
         String[] nodeNameSeq = xPath.split("/"); //$NON-NLS-1$
 
         ATreeNode resultNode = rootTreeNode;
-        
-        //root node is COMPONENT in our model.
+
+        // root node is COMPONENT in our model.
         for (int i = 1; i < nodeNameSeq.length; i++) {
             String nodeName = nodeNameSeq[i];
             resultNode = findTreeNode(nodeName, resultNode);

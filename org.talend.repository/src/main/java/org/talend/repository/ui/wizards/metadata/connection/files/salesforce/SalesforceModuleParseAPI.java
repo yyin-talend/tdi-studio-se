@@ -20,6 +20,7 @@ import java.util.List;
 
 import javax.xml.rpc.ServiceException;
 
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.repository.i18n.Messages;
 
@@ -133,7 +134,8 @@ public class SalesforceModuleParseAPI {
             System.out.println(uef.getExceptionMessage() + "\n\n"); //$NON-NLS-1$
             return;
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
             System.out.println("\n\n"); //$NON-NLS-1$
             return;
         }

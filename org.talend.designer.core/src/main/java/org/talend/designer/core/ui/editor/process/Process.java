@@ -50,6 +50,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.emf.EmfHelper;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.context.ContextUtils;
@@ -2084,7 +2085,8 @@ public class Process extends Element implements IProcess2 {
             }
         } catch (IOException e) {
             // TODO SML Auto-generated catch block
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         } finally {
             try {
                 xmlStream.close();
@@ -2618,7 +2620,8 @@ public class Process extends Element implements IProcess2 {
             }
         } catch (PersistenceException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
 
         return item;

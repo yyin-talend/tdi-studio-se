@@ -38,6 +38,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.advanced.composite.FilteredCheckboxTree;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -184,7 +185,8 @@ public class ExportTreeViewer {
                 try {
                     exportItemsTreeViewer.init(repositoryView.getViewSite());
                 } catch (PartInitException e) {
-                    e.printStackTrace();
+                    // e.printStackTrace();
+                    ExceptionHandler.process(e);
                 }
                 exportItemsTreeViewer.createPartControl(parent);
 

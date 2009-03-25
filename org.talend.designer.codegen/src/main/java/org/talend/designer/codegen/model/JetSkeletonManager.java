@@ -39,6 +39,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.osgi.framework.Bundle;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.io.IOUtils;
 import org.talend.core.model.components.ComponentCompilations;
 import org.talend.core.model.components.IComponentsFactory;
@@ -85,8 +86,8 @@ public final class JetSkeletonManager {
         try {
             deserializeAlreadyChecked();
         } catch (Exception e) {
-            IStatus status = new Status(IStatus.WARNING, CodeGeneratorActivator.PLUGIN_ID,
-                    Messages.getString("JetSkeletonManager.unableLoad"), e); //$NON-NLS-1$
+            IStatus status = new Status(IStatus.WARNING, CodeGeneratorActivator.PLUGIN_ID, Messages
+                    .getString("JetSkeletonManager.unableLoad"), e); //$NON-NLS-1$
             CodeGeneratorActivator.getDefault().getLog().log(status);
         }
     }
@@ -95,8 +96,8 @@ public final class JetSkeletonManager {
         try {
             serializeAlreadyChecked();
         } catch (Exception e) {
-            IStatus status = new Status(IStatus.WARNING, CodeGeneratorActivator.PLUGIN_ID,
-                    Messages.getString("JetSkeletonManager.unableSave"), e); //$NON-NLS-1$
+            IStatus status = new Status(IStatus.WARNING, CodeGeneratorActivator.PLUGIN_ID, Messages
+                    .getString("JetSkeletonManager.unableSave"), e); //$NON-NLS-1$
             CodeGeneratorActivator.getDefault().getLog().log(status);
         }
     }
@@ -108,7 +109,8 @@ public final class JetSkeletonManager {
             currentCRC = IOUtils.computeCRC(new FileInputStream(file));
         } catch (FileNotFoundException e) {
             // ignore here, only print
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
         if (forceSkeletonAlreadyChecked) {
 
@@ -219,8 +221,8 @@ public final class JetSkeletonManager {
                     // System.out.println("need check:" + jetSkeleton);
                 }
             } catch (Exception e) {
-                IStatus status = new Status(IStatus.WARNING, CodeGeneratorActivator.PLUGIN_ID,
-                        Messages.getString("JetSkeletonManager.updateProblem"), e); //$NON-NLS-1$
+                IStatus status = new Status(IStatus.WARNING, CodeGeneratorActivator.PLUGIN_ID, Messages
+                        .getString("JetSkeletonManager.updateProblem"), e); //$NON-NLS-1$
                 CodeGeneratorActivator.getDefault().getLog().log(status);
                 localInstance.save();
                 return true;
@@ -257,7 +259,8 @@ public final class JetSkeletonManager {
         try {
             resourcesUrl = FileLocator.toFileURL(FileLocator.find(b, new Path(TemplateUtil.RESOURCES_DIRECTORY), null));
         } catch (IOException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
         if (resourcesUrl != null) {
             File resourcesDir = new File(resourcesUrl.getFile());

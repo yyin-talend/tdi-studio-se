@@ -324,7 +324,8 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
 
                 } catch (PersistenceException e) {
                     // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    // e.printStackTrace();
+                    ExceptionHandler.process(e);
                 }
 
             }

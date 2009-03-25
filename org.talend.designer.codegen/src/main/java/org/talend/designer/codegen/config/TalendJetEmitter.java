@@ -54,6 +54,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.designer.codegen.i18n.Messages;
 
 /**
@@ -312,7 +313,8 @@ public class TalendJetEmitter extends JETEmitter {
                         try {
                             ((IFolder) sourceContainer).create(true, true, new SubProgressMonitor(subProgressMonitor, 1));
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            // e.printStackTrace();
+                            ExceptionHandler.process(e);
                         }
                     }
                 }

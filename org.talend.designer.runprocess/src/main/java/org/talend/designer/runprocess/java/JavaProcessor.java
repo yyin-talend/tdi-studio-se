@@ -553,7 +553,8 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
             lineNumbers = JavaProcessor.getLineNumbers(codeFile, new String[] { nodeName });
         } catch (CoreException e) {
             lineNumbers = new int[] { 0 };
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
         if (lineNumbers.length > 0) {
             return lineNumbers[0];

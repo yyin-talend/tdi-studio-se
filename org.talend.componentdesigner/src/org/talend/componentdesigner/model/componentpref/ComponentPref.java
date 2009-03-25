@@ -233,7 +233,8 @@ public class ComponentPref {
             handleLibEntries(internalFields, toReturn);
 
         } catch (ArrayIndexOutOfBoundsException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            org.talend.componentdesigner.exception.ExceptionHandler.process(e);
         }
         return toReturn;
     }
@@ -250,8 +251,7 @@ public class ComponentPref {
             if (Boolean.valueOf(isExternal)) {
                 obj = new Path(location);
             } else {
-                obj = ResourcesPlugin.getWorkspace().getRoot().getProject(PluginConstant.COMPONENT_PROJECT).findMember(
-                        location);
+                obj = ResourcesPlugin.getWorkspace().getRoot().getProject(PluginConstant.COMPONENT_PROJECT).findMember(location);
             }
             if (libName.matches("(?i).*\\.(jar)\\b")) { //$NON-NLS-1$
                 libArrays[j] = new JarLibEntry(obj);

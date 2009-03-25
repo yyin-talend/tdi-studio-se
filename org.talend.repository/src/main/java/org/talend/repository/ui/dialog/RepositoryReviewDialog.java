@@ -40,6 +40,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.PartInitException;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
@@ -204,7 +205,8 @@ public class RepositoryReviewDialog extends Dialog {
         try {
             repositoryView.init(view.getViewSite());
         } catch (PartInitException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
 
         repositoryView.createPartControl(viewContainer);

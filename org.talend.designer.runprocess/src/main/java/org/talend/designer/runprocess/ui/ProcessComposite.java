@@ -1108,9 +1108,11 @@ public class ProcessComposite extends Composite {
                 progressService.runInUI(PlatformUI.getWorkbench().getProgressService(), worker, ResourcesPlugin.getWorkspace()
                         .getRoot());
             } catch (InvocationTargetException e) {
-                e.printStackTrace();
+                // e.printStackTrace();
+                ExceptionHandler.process(e);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                // e.printStackTrace();
+                ExceptionHandler.process(e);
             }
         }
 
@@ -1147,7 +1149,8 @@ public class ProcessComposite extends Composite {
                                                 processContext.addDebugResultToConsole(new ProcessMessage(MsgType.CORE_OUT,
                                                         byeMsg));
                                             } catch (DebugException e) {
-                                                e.printStackTrace();
+                                                // e.printStackTrace();
+                                                ExceptionHandler.process(e);
                                             }
                                             processContext.setRunning(false);
                                         }
@@ -1205,7 +1208,8 @@ public class ProcessComposite extends Composite {
                         try {
                             Thread.sleep(2000);
                         } catch (InterruptedException e) {
-                            e.printStackTrace();
+                            // e.printStackTrace();
+                            ExceptionHandler.process(e);
                         }
                     }
                 }

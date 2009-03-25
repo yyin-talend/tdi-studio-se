@@ -26,6 +26,7 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
@@ -143,7 +144,8 @@ public class CreateProcess extends AContextualAction {
                 ProjectSettingManager.defaultUseProjectSetting(fileEditorInput.getLoadedProcess());
             } catch (PartInitException e) {
                 // TODO Auto-generated catch block
-                e.printStackTrace();
+                // e.printStackTrace();
+                ExceptionHandler.process(e);
             } catch (PersistenceException e) {
                 MessageBoxExceptionHandler.process(e);
             }

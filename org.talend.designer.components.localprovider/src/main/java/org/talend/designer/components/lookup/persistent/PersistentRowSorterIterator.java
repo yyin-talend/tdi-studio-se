@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.designer.components.persistent.utils.FileUtils;
 
 import routines.system.IPersistableRow;
@@ -386,7 +387,8 @@ public abstract class PersistentRowSorterIterator<V extends IPersistableRow> imp
                 try {
                     diss[i].close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    // e.printStackTrace();
+                    ExceptionHandler.process(e);
                 }
             }
         }

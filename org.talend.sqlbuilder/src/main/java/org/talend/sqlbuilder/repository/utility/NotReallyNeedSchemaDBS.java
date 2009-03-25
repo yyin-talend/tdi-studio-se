@@ -15,6 +15,7 @@ package org.talend.sqlbuilder.repository.utility;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.database.EDatabaseTypeName;
 
 /**
@@ -33,7 +34,8 @@ public class NotReallyNeedSchemaDBS {
             needSchemaDBNames.add(EDatabaseTypeName.ORACLEFORSID.getProduct());
             needSchemaDBNames.add(EDatabaseTypeName.ORACLESN.getProduct());
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
     }
 

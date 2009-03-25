@@ -585,7 +585,8 @@ public class RunProcessContext {
                 debugProcess.terminate();
             } catch (DebugException e) {
                 // TODO Auto-generated catch block
-                e.printStackTrace();
+                // e.printStackTrace();
+                ExceptionHandler.process(e);
             }
         }
         return exitCode;
@@ -822,7 +823,8 @@ public class RunProcessContext {
                             serverSock.close();
                         }
                     } catch (IOException e1) {
-                        e1.printStackTrace();
+                        // e1.printStackTrace();
+                        ExceptionHandler.process(e1);
                     }
                 }
             } while (processSocket == null && !stopThread);
@@ -946,14 +948,16 @@ public class RunProcessContext {
                             serverSock.close();
                         }
                     } catch (IOException e1) {
-                        e1.printStackTrace();
+                        // e1.printStackTrace();
+                        ExceptionHandler.process(e1);
                     } finally {
                         try {
                             if (serverSock != null) {
                                 serverSock.close();
                             }
                         } catch (IOException e1) {
-                            e1.printStackTrace();
+                            // e1.printStackTrace();
+                            ExceptionHandler.process(e1);
                         }
                     }
                     stopThread |= !isRunning();

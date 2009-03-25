@@ -90,7 +90,8 @@ public class SnippetParser {
             } catch (IllegalStateException ex) {
                 // appendReplacement() called without a prior successful call to find()
             } catch (IllegalArgumentException ex) {
-                ex.printStackTrace();
+                // ex.printStackTrace();
+                ExceptionHandler.process(ex);
             } catch (IndexOutOfBoundsException ex) {
                 // Non-existent backreference used the replacement text
             }

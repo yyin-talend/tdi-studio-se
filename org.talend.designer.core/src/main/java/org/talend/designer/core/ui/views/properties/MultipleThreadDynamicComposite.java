@@ -680,6 +680,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                     operationInThread();
                 } catch (Exception e) {
                     // e.printStackTrace();
+                    ExceptionHandler.process(e);
                 }
             }
         };

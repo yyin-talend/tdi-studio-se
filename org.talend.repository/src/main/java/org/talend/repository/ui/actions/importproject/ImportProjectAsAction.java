@@ -18,6 +18,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.general.Project;
@@ -94,7 +95,8 @@ public final class ImportProjectAsAction extends Action {
                 libJavaFolder.delete(true, null);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
     }
 

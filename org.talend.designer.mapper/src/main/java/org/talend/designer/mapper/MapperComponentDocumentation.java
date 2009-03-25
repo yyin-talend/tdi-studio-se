@@ -61,21 +61,19 @@ public class MapperComponentDocumentation implements IComponentDocumentation {
      */
     public URL getHTMLFile() {
 
-        String xmlFilepath = this.tempFolderPath + File.separatorChar + this.componentName
-                + IHTMLDocConstants.XML_FILE_SUFFIX;
+        String xmlFilepath = this.tempFolderPath + File.separatorChar + this.componentName + IHTMLDocConstants.XML_FILE_SUFFIX;
 
-        String htmlFilePath = this.tempFolderPath + File.separatorChar + this.componentName
-                + IHTMLDocConstants.HTML_FILE_SUFFIX;
+        String htmlFilePath = this.tempFolderPath + File.separatorChar + this.componentName + IHTMLDocConstants.HTML_FILE_SUFFIX;
 
         final Bundle b = Platform.getBundle(Activator.PLUGIN_ID);
 
         URL xslFileUrl = null;
         try {
-            xslFileUrl = FileLocator.toFileURL(FileLocator
-                    .find(b, new Path(IHTMLDocConstants.TMAP_XSL_FILE_PATH), null));
+            xslFileUrl = FileLocator.toFileURL(FileLocator.find(b, new Path(IHTMLDocConstants.TMAP_XSL_FILE_PATH), null));
         } catch (IOException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
         }
 
         String xslFilePath = xslFileUrl.getPath();
@@ -147,8 +145,7 @@ public class MapperComponentDocumentation implements IComponentDocumentation {
      * 
      * @param mapperTableType
      */
-    private void handleMapperTablesInfo(List<ExternalMapperTable> inputTables, Element externalNodeElement,
-            String mapperTableType) {
+    private void handleMapperTablesInfo(List<ExternalMapperTable> inputTables, Element externalNodeElement, String mapperTableType) {
         List<ExternalMapperTable> tables = inputTables;
         if (!HTMLDocUtils.checkList(tables)) {
             return;
@@ -163,8 +160,7 @@ public class MapperComponentDocumentation implements IComponentDocumentation {
      * @param tables
      * @param mapperTableType
      */
-    private void generateMapperTablesInfo(Element externalNodeElement, List<ExternalMapperTable> tables,
-            String mapperTableType) {
+    private void generateMapperTablesInfo(Element externalNodeElement, List<ExternalMapperTable> tables, String mapperTableType) {
         Element mapperTableElement = externalNodeElement.addElement("mapperTable"); //$NON-NLS-1$
         mapperTableElement.addAttribute("type", HTMLDocUtils.checkString(mapperTableType)); //$NON-NLS-1$
         Element tableElement = null;
@@ -189,7 +185,7 @@ public class MapperComponentDocumentation implements IComponentDocumentation {
             for (ExternalMapperTableEntry entry : metadataTableEntries) {
                 generateTablesEntriesInfo(metadataTableEntriesElement, entry);
             }
-            
+
             List<ExternalMapperTableEntry> constraintTableEntries = table.getConstraintTableEntries();
             if (!HTMLDocUtils.checkList(constraintTableEntries)) {
                 continue;

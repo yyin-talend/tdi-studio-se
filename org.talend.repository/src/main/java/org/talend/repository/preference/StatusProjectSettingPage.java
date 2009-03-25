@@ -18,6 +18,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.core.model.properties.Status;
@@ -71,7 +72,8 @@ public class StatusProjectSettingPage extends FieldEditorPreferencePage implemen
         try {
             super.initialize();
         } catch (RuntimeException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            ExceptionHandler.process(e);
             setErrorMessage(e.getMessage());
             log.error(e);
         }
