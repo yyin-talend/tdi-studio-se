@@ -49,7 +49,6 @@ boolean needRoot_<%=cid%>  = false;
 boolean	needRoot_<%=cid%> = true;
 <%}%>
 String fileName_<%=cid%> = <%=fileName%>;
-String file_<%=cid%> = fileName_<%=cid%>.substring(0,fileName_<%=cid%>.lastIndexOf(".xml"));
 <%
 				if(ElementParameterParser.getValue(node,"__CREATE__").equals("true")){
 %>
