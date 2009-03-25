@@ -22,6 +22,8 @@ import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.IWorkbenchPart;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.PluginChecker;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
@@ -29,6 +31,7 @@ import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.ui.IJobletProviderService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.connections.Connection;
@@ -111,7 +114,18 @@ public class ConnectionCreateAction extends SelectionAction {
             if (connecType.hasConnectionCategory(IConnectionCategory.EXECUTION_ORDER)) {
                 if (!(Boolean) node.getPropertyValue(EParameterName.STARTABLE.getName())
                         || (!node.getProcessStartNode(false).equals(node))) {
-                    return false;
+                    // boolean jobletOk = false;
+                    // if (PluginChecker.isJobLetPluginLoaded()) {
+                    // IJobletProviderService service = (IJobletProviderService)
+                    // GlobalServiceRegister.getDefault().getService(
+                    // IJobletProviderService.class);
+                    // if (service != null && service.isJobletComponent(node)) {
+                    // jobletOk = true;
+                    // }
+                    // }
+                    // if (!jobletOk) {
+                    // return false;
+                    // }
                 }
             }
             menuList = new ArrayList<String>();
@@ -275,6 +289,15 @@ public class ConnectionCreateAction extends SelectionAction {
             for (INodeConnector connector : nodeConnectorList) {
                 if ((connector.getMaxLinkOutput() != -1) && (connector.getCurLinkNbOutput() >= connector.getMaxLinkOutput())) {
                     toRemove.add(connector);
+                } else {
+                    if (PluginChecker.isJobLetPluginLoaded()) {
+                        IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                                IJobletProviderService.class);
+                        if (service != null && service.isJobletComponent(node)
+                                && !service.isBuiltTriggerConnector(node, connector)) {
+                            toRemove.add(connector);
+                        }
+                    }
                 }
             }
             nodeConnectorList.removeAll(toRemove);

@@ -34,7 +34,6 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IPerformance;
 import org.talend.core.model.process.IProcess;
-import org.talend.core.model.process.IProcess2;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -313,8 +312,9 @@ public class Connection extends Element implements IConnection, IPerformance {
             }
         }
         setPropertyValue(EParameterName.TRACES_CONNECTION_FILTER.getName(), values);
-
-        this.trace.setPropertyValue(EParameterName.TRACES_SHOW_ENABLE.getName(), checkTraceShowEnable());
+        if (trace != null) {
+            this.trace.setPropertyValue(EParameterName.TRACES_SHOW_ENABLE.getName(), checkTraceShowEnable());
+        }
     }
 
     public boolean checkTraceShowEnable() {
@@ -1110,8 +1110,11 @@ public class Connection extends Element implements IConnection, IPerformance {
     private void setProcessStates() {
         IProcess process = this.getSource().getProcess();
         process.setNeedRegenerateCode(true); // generate code again.
-        if (process instanceof IProcess2) {
-            ((IProcess2) process).setProcessModified(true); // generate data node again.
+        if (process instanceof Process) {
+            Process process2 = (Process) process;
+            if (!process2.isDuplicate()) {
+                process2.setProcessModified(true); // generate data node again.
+            }
         }
     }
 

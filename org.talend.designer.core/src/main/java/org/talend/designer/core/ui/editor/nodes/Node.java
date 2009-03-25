@@ -36,6 +36,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.PluginChecker;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
@@ -70,6 +72,7 @@ import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.core.model.utils.NodeUtil;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.core.ui.IJobletProviderService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -1084,7 +1087,11 @@ public class Node extends Element implements INode {
         if (conn instanceof Connection) {
             int order = ((Connection) conn).getOrder();
             if (order != -1) {
-                outputs.add(order, conn);
+                if (order > outputs.size()) {
+                    outputs.add(conn);
+                } else {
+                    outputs.add(order, conn);
+                }
                 fireStructureChange(OUTPUTS, conn);
                 return;
             }
@@ -2058,6 +2065,14 @@ public class Node extends Element implements INode {
     }
 
     public void checkLinks() {
+        boolean isJoblet = false;
+        if (PluginChecker.isJobLetPluginLoaded()) {
+            IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                    IJobletProviderService.class);
+            if (service != null && service.isJobletComponent(this)) {
+                isJoblet = true;
+            }
+        }
         // check not startable components not linked
         if (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName())) {
             if ((getCurrentActiveLinksNbInput(EConnectionType.FLOW_MAIN) == 0)
@@ -2085,34 +2100,37 @@ public class Node extends Element implements INode {
             }
         }
 
-        // Check if there's an output run after / before on a component that is
-        // not a sub process start
-        if (!isSubProcessStart() || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
-            if ((getCurrentActiveLinksNbOutput(EConnectionType.ON_SUBJOB_OK) > 0)
-                    || getCurrentActiveLinksNbOutput(EConnectionType.ON_SUBJOB_ERROR) > 0) {
-                String errorMessage = Messages.getString("Node.errorMessage1"); //$NON-NLS-1$
-                Problems.add(ProblemStatus.ERROR, this, errorMessage);
+        if (!isJoblet) {
+            // Check if there's an output run after / before on a component that is
+            // not a sub process start
+            if (!isSubProcessStart() || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
+                if ((getCurrentActiveLinksNbOutput(EConnectionType.ON_SUBJOB_OK) > 0)
+                        || getCurrentActiveLinksNbOutput(EConnectionType.ON_SUBJOB_ERROR) > 0) {
+
+                    String errorMessage = Messages.getString("Node.errorMessage1"); //$NON-NLS-1$
+                    Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                }
+            }
+
+            // if (isSubProcessStart() && process.getMergelinkOrder(this) > 1) {
+            // String errorMessage = "A component that is not a sub process start can not have any link run after / run
+            // before in output.";
+            // Problems.add(ProblemStatus.ERROR, this, errorMessage);
+            // }
+
+            // Check if there's an input run after / before on a component that is
+            // not a sub process start
+            if ((!isELTComponent() && !isSubProcessStart()) || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
+                if ((getCurrentActiveLinksNbInput(EConnectionType.ON_SUBJOB_OK) > 0)
+                        || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF) > 0)
+                        || (getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_OK) > 0)
+                        || (getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_ERROR) > 0)) {
+
+                    String errorMessage = Messages.getString("Node.errorMessage2"); //$NON-NLS-1$
+                    Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                }
             }
         }
-
-        // if (isSubProcessStart() && process.getMergelinkOrder(this) > 1) {
-        // String errorMessage = "A component that is not a sub process start can not have any link run after / run
-        // before in output.";
-        // Problems.add(ProblemStatus.ERROR, this, errorMessage);
-        // }
-
-        // Check if there's an input run after / before on a component that is
-        // not a sub process start
-        if ((!isELTComponent() && !isSubProcessStart()) || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
-            if ((getCurrentActiveLinksNbInput(EConnectionType.ON_SUBJOB_OK) > 0)
-                    || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF) > 0)
-                    || (getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_OK) > 0)
-                    || (getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_ERROR) > 0)) {
-                String errorMessage = Messages.getString("Node.errorMessage2"); //$NON-NLS-1$
-                Problems.add(ProblemStatus.ERROR, this, errorMessage);
-            }
-        }
-
         for (INodeConnector nodeConnector : listConnector) {
             if (!nodeConnector.getDefaultConnectionType().hasConnectionCategory(IConnectionCategory.USE_HASH)
                     && nodeConnector.getDefaultConnectionType() != EConnectionType.FLOW_MERGE) {
@@ -2137,6 +2155,14 @@ public class Node extends Element implements INode {
                     if (curLinkOut > nbMaxOut) {
                         String errorMessage = Messages.getString("Node.tooMuchTypeOutput", typeName); //$NON-NLS-1$
                         Problems.add(ProblemStatus.WARNING, this, errorMessage);
+                    }
+                }
+                // ingore input warning
+                if (PluginChecker.isJobLetPluginLoaded()) {
+                    IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                            IJobletProviderService.class);
+                    if (service != null && service.isJobletComponent(this)) {
+                        continue;
                     }
                 }
 
@@ -2726,7 +2752,13 @@ public class Node extends Element implements INode {
             }
 
         }
-
+        if (PluginChecker.isJobLetPluginLoaded()) {
+            IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                    IJobletProviderService.class);
+            if (service != null && service.isJobletComponent(this)) {
+                service.reloadJobletProcess(this);
+            }
+        }
         reloadingComponent = false;
     }
 

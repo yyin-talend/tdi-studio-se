@@ -39,12 +39,15 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.PluginChecker;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.properties.tab.IDynamicProperty;
+import org.talend.core.ui.IJobletProviderService;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
@@ -81,9 +84,11 @@ public class ComponentListController extends AbstractElementPropertySectionContr
                     if (!isDisposed && (!elem.getPropertyValue(name).equals(((CCombo) ctrl).getText()))) {
 
                         String value = new String(""); //$NON-NLS-1$
-                        for (int i = 0; i < elem.getElementParameters().size(); i++) {
-                            IElementParameter param = elem.getElementParameters().get(i);
-                            if (param.getName().equals(name)) {
+                        List<? extends IElementParameter> elementParametersWithChildrens = elem
+                                .getElementParametersWithChildrens();
+                        for (int i = 0; i < elementParametersWithChildrens.size(); i++) {
+                            IElementParameter param = elementParametersWithChildrens.get(i);
+                            if (getParameterName(param).equals(name)) {
                                 for (int j = 0; j < param.getListItemsValue().length; j++) {
                                     if (((CCombo) ctrl).getText().equals(param.getListItemsDisplayName()[j])) {
                                         value = (String) param.getListItemsValue()[j];
@@ -110,7 +115,12 @@ public class ComponentListController extends AbstractElementPropertySectionContr
     @Override
     public Control createControl(Composite subComposite, IElementParameter param, int numInRow, int nbInRow, int top,
             Control lastControl) {
-        param.setDisplayName(EParameterName.COMPONENT_LIST.getDisplayName());
+        this.curParameter = param;
+        boolean isJobletOk = false;
+        IJobletProviderService service = getJobletProviderService(param);
+        if (service == null) { // not joblet
+            param.setDisplayName(EParameterName.COMPONENT_LIST.getDisplayName());
+        }
         DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, cbCtrl);
         if (param.isRequired()) {
             FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
@@ -167,8 +177,7 @@ public class ComponentListController extends AbstractElementPropertySectionContr
         Point initialSize = dField.getLayoutControl().computeSize(SWT.DEFAULT, SWT.DEFAULT);
 
         // **********************
-        hashCurControls.put(param.getName(), combo);
-
+        hashCurControls.put(getParameterName(param), combo);
         refresh(param, false);
 
         dynamicProperty.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
@@ -229,8 +238,15 @@ public class ComponentListController extends AbstractElementPropertySectionContr
     public static void updateComponentList(Element elem, IElementParameter param) {
         if (elem instanceof Node) {
             Node currentNode = (Node) elem;
-            List<INode> nodeList = (List<INode>) ((Node) elem).getProcess().getNodesOfType(param.getFilter());
 
+            List<INode> nodeList = null;
+
+            IJobletProviderService jobletService = getJobletProviderService(param);
+            if (jobletService != null) {
+                nodeList = jobletService.getConnNodesForInputTrigger(currentNode, param);
+            } else {
+                nodeList = (List<INode>) ((Node) elem).getProcess().getNodesOfType(param.getFilter());
+            }
             List<String> componentDisplayNames = new ArrayList<String>();
             List<String> componentUniqueNames = new ArrayList<String>();
             for (INode node : nodeList) {
@@ -265,20 +281,31 @@ public class ComponentListController extends AbstractElementPropertySectionContr
             param.setListItemsValue(componentValueList);
 
             Object value = param.getValue();
-            if (!componentUniqueNames.contains(value) && (componentUniqueNames.size() > 0)) {
-                if (value == null || value.equals("")) { //$NON-NLS-1$
-                    elem.setPropertyValue(param.getName(), componentValueList[0]);
-                    if (elem instanceof Node) {
-                        ((IProcess2) ((Node) elem).getProcess()).setProcessModified(true);
-                    } else if (elem instanceof Connection) {
-                        ((IProcess2) ((Connection) elem).getSource().getProcess()).setProcessModified(true);
+            if (!componentUniqueNames.contains(value)) {
+                String newValue = null;
+                if ((componentUniqueNames.size() > 0)) {
+                    if (value == null || value.equals("")) { //$NON-NLS-1$
+                        elem.setPropertyValue(getParameterName(param), componentValueList[0]);
+                        if (elem instanceof Node) {
+                            Node node = (Node) elem;
+                            node.checkAndRefreshNode();
+                            ((IProcess2) node.getProcess()).setProcessModified(true);
+                        } else if (elem instanceof Connection) {
+                            ((IProcess2) ((Connection) elem).getSource().getProcess()).setProcessModified(true);
+                        }
+                    } else {
+                        newValue = componentValueList[0];
+
                     }
-                } else {
+                } else { // removed the old value.
+                    newValue = "";//$NON-NLS-1$
+                }
+                if (newValue != null) {
                     IEditorPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
                     if (part instanceof AbstractMultiPageTalendEditor) {
                         AbstractTalendEditor te = ((AbstractMultiPageTalendEditor) part).getTalendEditor();
                         CommandStack cmdStack = (CommandStack) te.getAdapter(CommandStack.class);
-                        cmdStack.execute(new PropertyChangeCommand(elem, param.getName(), componentValueList[0]));
+                        cmdStack.execute(new PropertyChangeCommand(elem, getParameterName(param), newValue));
                     }
                 }
             }
@@ -296,7 +323,7 @@ public class ComponentListController extends AbstractElementPropertySectionContr
 
     @Override
     public void refresh(IElementParameter param, boolean check) {
-        CCombo combo = (CCombo) hashCurControls.get(param.getName());
+        CCombo combo = (CCombo) hashCurControls.get(getParameterName(param));
         if (combo == null || combo.isDisposed()) {
             return;
         }
@@ -319,11 +346,32 @@ public class ComponentListController extends AbstractElementPropertySectionContr
         combo.setItems(curComponentNameList);
         if (!listContainValue) {
             if (curComponentNameList.length > 0) {
-                elem.setPropertyValue(param.getName(), curComponentValueList[0]);
+                elem.setPropertyValue(getParameterName(param), curComponentValueList[0]);
                 combo.setText(curComponentNameList[0]);
             }
         } else {
             combo.setText(curComponentNameList[numValue]);
+        }
+    }
+
+    private static IJobletProviderService getJobletProviderService(IElementParameter param) {
+        if (PluginChecker.isJobLetPluginLoaded()) {
+            IJobletProviderService jobletService = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                    IJobletProviderService.class);
+            if (param != null && param.getElement() instanceof INode
+                    && jobletService.isJobletComponent((INode) param.getElement()) && param.getParentParameter() != null) {
+                return jobletService;
+            }
+        }
+        return null;
+    }
+
+    private static String getParameterName(IElementParameter param) {
+        IJobletProviderService service = getJobletProviderService(param);
+        if (service != null) { // is joblet node
+            return param.getParentParameter().getName() + ":" + param.getName(); //$NON-NLS-1$
+        } else {
+            return param.getName();
         }
     }
 

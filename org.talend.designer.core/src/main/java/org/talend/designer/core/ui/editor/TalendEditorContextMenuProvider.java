@@ -204,11 +204,8 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
                 }
             }
 
-            action = new ConnectionCreateAction(part, EConnectionType.ITERATE);
-            ((ConnectionCreateAction) action).update();
-            if (action.isEnabled()) {
-                subMenu.add(action);
-            }
+            retrieveConnectors(subMenu, EConnectionType.ITERATE);
+
             subMenu = new MenuManager("Link"); //$NON-NLS-1$
             menu.appendToGroup(GROUP_CONNECTIONS, subMenu);
             action = new ConnectionCreateAction(part, EConnectionType.TABLE);
@@ -231,51 +228,23 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
              * action).update(); if (action.isEnabled()) { subMenu.add(action); }
              */
 
-            action = new ConnectionCreateAction(part, EConnectionType.ON_SUBJOB_OK);
-            ((ConnectionCreateAction) action).update();
-            if (action.isEnabled()) {
-                subMenu.add(action);
-            }
+            retrieveConnectors(subMenu, EConnectionType.ON_SUBJOB_OK);
 
-            action = new ConnectionCreateAction(part, EConnectionType.ON_SUBJOB_ERROR);
-            ((ConnectionCreateAction) action).update();
-            if (action.isEnabled()) {
-                subMenu.add(action);
-            }
+            retrieveConnectors(subMenu, EConnectionType.ON_SUBJOB_ERROR);
 
             subMenu.add(new Separator());
 
-            action = new ConnectionCreateAction(part, EConnectionType.SYNCHRONIZE);
-            ((ConnectionCreateAction) action).update();
-            if (action.isEnabled()) {
-                subMenu.add(action);
-            }
+            retrieveConnectors(subMenu, EConnectionType.SYNCHRONIZE);
 
-            action = new ConnectionCreateAction(part, EConnectionType.PARALLELIZE);
-            ((ConnectionCreateAction) action).update();
-            if (action.isEnabled()) {
-                subMenu.add(action);
-            }
+            retrieveConnectors(subMenu, EConnectionType.PARALLELIZE);
 
             subMenu.add(new Separator());
 
-            action = new ConnectionCreateAction(part, EConnectionType.RUN_IF);
-            ((ConnectionCreateAction) action).update();
-            if (action.isEnabled()) {
-                subMenu.add(action);
-            }
+            retrieveConnectors(subMenu, EConnectionType.RUN_IF);
 
-            action = new ConnectionCreateAction(part, EConnectionType.ON_COMPONENT_OK);
-            ((ConnectionCreateAction) action).update();
-            if (action.isEnabled()) {
-                subMenu.add(action);
-            }
+            retrieveConnectors(subMenu, EConnectionType.ON_COMPONENT_OK);
 
-            action = new ConnectionCreateAction(part, EConnectionType.ON_COMPONENT_ERROR);
-            ((ConnectionCreateAction) action).update();
-            if (action.isEnabled()) {
-                subMenu.add(action);
-            }
+            retrieveConnectors(subMenu, EConnectionType.ON_COMPONENT_ERROR);
 
             action = new NodeBreakpointAction(part);
             ((NodeBreakpointAction) action).update();
@@ -356,6 +325,22 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
                 selectionAction.update();
                 if (selectionAction.isEnabled()) {
                     menu.appendToGroup(GEFActionConstants.GROUP_VIEW, selectionAction);
+                }
+            }
+        }
+    }
+
+    private void retrieveConnectors(MenuManager subMenu, EConnectionType connType) {
+        if (connType != null) {
+            ConnectionCreateAction action = new ConnectionCreateAction(part, connType);
+            action.update();
+            List<INodeConnector> connectors = action.getConnectors();
+            for (INodeConnector connector : connectors) {
+                action = new ConnectionCreateAction(part, connector);
+                action.update();
+                if (action.isEnabled()) {
+                    action.setText(connector.getMenuName());
+                    subMenu.add(action);
                 }
             }
         }

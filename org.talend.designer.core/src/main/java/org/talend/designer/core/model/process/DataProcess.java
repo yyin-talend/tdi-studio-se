@@ -174,7 +174,7 @@ public class DataProcess {
         }
         dataNode.setDesignSubjobStartNode(graphicalNode.getDesignSubjobStartNode());
 
-        dataNodeList.add(dataNode);
+        addDataNode(dataNode);
         buildCheckMap.put(graphicalNode, dataNode);
 
         List<IConnection> outgoingConnections = new ArrayList<IConnection>();
@@ -317,7 +317,7 @@ public class DataProcess {
         dataConnec.setTarget(meterNode);
         ((List<IConnection>) meterNode.getIncomingConnections()).add(dataConnec);
         ((List<IConnection>) sourceNode.getOutgoingConnections()).add(dataConnec);
-        dataNodeList.add(meterNode);
+        addDataNode(meterNode);
 
         // from vFlowMeter node to next node.
         dataConnec = new DataConnection();
@@ -623,7 +623,7 @@ public class DataProcess {
             curNode.setOutgoingConnections(outgoingConnections);
             curNode.setProcess(graphicalNode.getProcess());
             curNode.setVirtualGenerateNode(true);
-            dataNodeList.add(curNode);
+            addDataNode(curNode);
             itemsMap.put(curItem, curNode);
         }
     }
@@ -844,7 +844,7 @@ public class DataProcess {
                 hashNode.setIncomingConnections(incomingConnections);
                 hashNode.setOutgoingConnections(outgoingConnections);
 
-                dataNodeList.add(hashNode);
+                addDataNode(hashNode);
 
                 // create a link flow_main between the node that had ref and the hash file
                 dataConnec = new DataConnection();
@@ -1005,7 +1005,7 @@ public class DataProcess {
                 List<IConnection> incomingConnections = new ArrayList<IConnection>();
                 fsNode.setIncomingConnections(incomingConnections);
                 fsNode.setOutgoingConnections(outgoingConnections);
-                dataNodeList.add(fsNode);
+                addDataNode(fsNode);
             }
             if (progressBar != null && originalGraphicNode != null) {
                 progressBar.getIncludedNodesInProgress().add(originalGraphicNode);
@@ -1077,7 +1077,7 @@ public class DataProcess {
             List<DataNode> contextLoadNodes = JobSettingsManager.createExtraContextLoadNodes(duplicatedProcess);
             for (DataNode node : contextLoadNodes) {
                 buildCheckMap.put(node, node);
-                dataNodeList.add(node);
+                addDataNode(node);
                 replaceMultipleComponents(node);
             }
         }
@@ -1153,7 +1153,7 @@ public class DataProcess {
 
             for (DataNode node : statsAndLogsNodeList) {
                 buildCheckMap.put(node, node);
-                dataNodeList.add(node);
+                addDataNode(node);
                 replaceMultipleComponents(node);
             }
         }
@@ -1274,8 +1274,8 @@ public class DataProcess {
         outgoingConnections.add(dataConnec);
         ((List<DataConnection>) refNode.getIncomingConnections()).add(dataConnec);
 
-        dataNodeList.add(asyncInNode);
-        dataNodeList.add(asyncOutNode);
+        addDataNode(asyncInNode);
+        addDataNode(asyncOutNode);
     }
 
     @SuppressWarnings("unchecked")
@@ -1397,6 +1397,22 @@ public class DataProcess {
                     .getPluginFullName());
             if (processProvider != null) {
                 processProvider.rebuildGraphicProcessFromNode(node, graphicalNodeList);
+            }
+        }
+    }
+
+    private void addDataNode(INode dataNode) {
+        if (dataNode != null) {
+            String addedUniqueName = dataNode.getUniqueName();
+            boolean found = false;
+            for (INode node : getNodeList()) {
+                String uniqueName = node.getUniqueName();
+                if (addedUniqueName.equals(uniqueName)) {
+                    found = true;
+                }
+            }
+            if (!found) {
+                getNodeList().add(dataNode);
             }
         }
     }

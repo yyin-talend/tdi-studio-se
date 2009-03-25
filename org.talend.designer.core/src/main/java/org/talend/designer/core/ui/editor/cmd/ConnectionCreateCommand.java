@@ -17,6 +17,8 @@ import java.util.List;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.PluginChecker;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.process.EConnectionType;
@@ -24,6 +26,7 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.ui.IJobletProviderService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.process.ConnectionManager;
 import org.talend.designer.core.ui.editor.connections.Connection;
@@ -203,7 +206,19 @@ public class ConnectionCreateCommand extends Command {
         creatingConnection = false;
         ((Process) source.getProcess()).checkStartNodes();
         source.checkAndRefreshNode();
-        target.checkAndRefreshNode();
+        boolean isJoblet = false;
+        if (PluginChecker.isJobLetPluginLoaded()) {
+            IJobletProviderService jobletService = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                    IJobletProviderService.class);
+            if (jobletService != null && jobletService.isJobletComponent(target)) {
+                jobletService.upateJobletComonentList(target);
+                isJoblet = true;
+            }
+        }
+        if (!isJoblet) {
+            target.checkAndRefreshNode();
+        }
+
     }
 
     public void undo() {

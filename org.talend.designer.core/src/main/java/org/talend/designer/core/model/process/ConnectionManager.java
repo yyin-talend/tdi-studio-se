@@ -18,11 +18,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.PluginChecker;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.process.INodeConnector;
+import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.utils.KeywordsValidator;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.connections.Connection;
@@ -113,16 +117,26 @@ public class ConnectionManager {
                 return false;
             }
         }
-
         if (connType.hasConnectionCategory(IConnectionCategory.DEPENDENCY)) {
             if (!(Boolean) target.getPropertyValue(EParameterName.STARTABLE.getName())) {
                 return false;
             }
-            if (!target.isELTComponent() && !target.isSubProcessStart()) {
+            boolean isJoblet = false;
+            if (PluginChecker.isJobLetPluginLoaded()) {
+                IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                        IJobletProviderService.class);
+                if (service != null) {
+                    if (service.isJobletComponent(target)) {
+                        List<INodeConnector> freeTriggerBuiltConnectors = service.getFreeTriggerBuiltConnectors(target, connType,
+                                true);
+                        isJoblet = !freeTriggerBuiltConnectors.isEmpty();
+                    }
+                }
+            }
+            if (!isJoblet && !target.isELTComponent() && !target.isSubProcessStart()) {
                 return false;
             }
         }
-
         connections = (List<Connection>) target.getIncomingConnections();
         for (int i = 0; i < connections.size(); i++) {
             if (connType.equals(EConnectionType.TABLE)) {
@@ -261,6 +275,15 @@ public class ConnectionManager {
         if (source.equals(newTarget)) {
             return false;
         }
+        if (PluginChecker.isJobLetPluginLoaded()) {
+            IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                    IJobletProviderService.class);
+            if (service != null) {
+                if (service.isTriggerNode(newTarget) && !service.canConnectTriggerNode(newTarget, lineStyle)) {
+                    return false;
+                }
+            }
+        }
         INode processStartNode = source.getProcessStartNode(true);
         // if the target is the start of the (source) process, then can't connect.
         if (processStartNode.equals(newTarget)) {
@@ -300,10 +323,21 @@ public class ConnectionManager {
                 newlineStyle = EConnectionType.FLOW_MERGE;
             }
         }
-
-        int maxInput = newTarget.getConnectorFromType(newlineStyle).getMaxLinkInput();
-        if (maxInput != -1 && (newTarget.getConnectorFromType(newlineStyle).getCurLinkNbInput() >= maxInput)) {
-            return false;
+        boolean isJobletOk = false;
+        if (PluginChecker.isJobLetPluginLoaded()) {
+            IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                    IJobletProviderService.class);
+            if (service != null && service.isJobletComponent(newTarget)) {
+                List<INodeConnector> inputConnector = service.getFreeTriggerBuiltConnectors(newTarget, lineStyle, true);
+                isJobletOk = !inputConnector.isEmpty();
+            }
+        }
+        if (!isJobletOk) {
+            INodeConnector connectorFromType = newTarget.getConnectorFromType(newlineStyle);
+            int maxInput = connectorFromType.getMaxLinkInput();
+            if (maxInput != -1 && (connectorFromType.getCurLinkNbInput() >= maxInput)) {
+                return false;
+            }
         }
         if (!canConnect(source, newTarget, lineStyle, connectionName)) {
             return false;
