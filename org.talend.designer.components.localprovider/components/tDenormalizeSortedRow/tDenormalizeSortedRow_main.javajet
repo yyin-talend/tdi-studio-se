@@ -33,7 +33,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			}
 		}
     if (metadata != null && inMetadata != null) { 
-		List<IMetadataColumn> columns = inMetadata.getListColumns();
+		List<IMetadataColumn> columns = metadata.getListColumns();
     	Map<String, String> typesMap = new HashMap<String, String>();
     	Map<String, String> patternsMap = new HashMap<String, String>();
     	for(IMetadataColumn column : columns){

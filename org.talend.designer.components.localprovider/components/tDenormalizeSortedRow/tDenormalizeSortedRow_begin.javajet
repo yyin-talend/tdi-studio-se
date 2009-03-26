@@ -34,7 +34,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		}
 	}
     if (metadata != null && inMetadata != null) { 
-    	List<IMetadataColumn> inColumns = inMetadata.getListColumns();
+    	List<IMetadataColumn> inColumns = metadata.getListColumns();
     	Map<String, String> typesMap = new HashMap<String, String>();
     	for(IMetadataColumn column : inColumns){
     		String type = JavaTypesManager.getTypeToGenerate(column.getTalendType(), true);
