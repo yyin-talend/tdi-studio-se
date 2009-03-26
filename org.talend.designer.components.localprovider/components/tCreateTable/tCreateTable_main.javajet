@@ -103,6 +103,8 @@ abstract class  Manager {
             String prefix = "";
             String suffix = "";
             String comma = "";
+            
+            
             if(mappingType.isPreBeforeLength(getDBMSId(),dataType)) {
                 if(!precisionIgnored) {
                     prefix = "(";
@@ -122,10 +124,13 @@ abstract class  Manager {
                 }
                 createTableSQL.append(suffix);
             } else {
-                if(!lengthIgnored) {
-                    prefix = "(";
-                    suffix = ") ";
-                    createTableSQL.append(prefix + length);
+                if(!lengthIgnored) {                
+                	if (("postgres_id".equalsIgnoreCase(getDBMSId()) || "postgresplus_id".equalsIgnoreCase(getDBMSId()) ) && metadataColumn.getLength() == null) {
+                	}else {
+	                    prefix = "(";
+	                    suffix = ") ";
+	                    createTableSQL.append(prefix + length);                	                	
+                	}
                 }
                 if(!precisionIgnored) {
                     prefix = (prefix.equals("") ? "(" : prefix);
@@ -138,7 +143,12 @@ abstract class  Manager {
                     }
                     createTableSQL.append(comma + precision);
                 }
-                createTableSQL.append(suffix);
+                
+                if (("postgres_id".equalsIgnoreCase(getDBMSId()) || "postgresplus_id".equalsIgnoreCase(getDBMSId()) ) && metadataColumn.getLength() == null) {                	
+                } else {
+                	createTableSQL.append(suffix);
+                }
+                
                 if("mysql_id".equalsIgnoreCase(getDBMSId()) && dataType.endsWith("UNSIGNED")) {
                     createTableSQL.append("UNSIGNED");
                 }                
