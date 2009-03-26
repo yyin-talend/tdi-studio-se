@@ -49,6 +49,7 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.utils.NodeUtil;
 import org.talend.designer.fileoutputxml.FileOutputXMLComponent;
 import org.talend.designer.fileoutputxml.action.CreateAttributeAction;
@@ -159,11 +160,12 @@ public class FOXUI {
         new FooterComposite(mainComposite, SWT.NONE, foxManager);
         Tree xmlTree = xmlViewer.getTree();
 
-        TreeItem root = xmlTree.getItem(0);
+        if (xmlTree.getItems().length > 0) {
+            TreeItem root = xmlTree.getItem(0);
+            TableItem[] tableItems = schemaViewer.getTable().getItems();
 
-        TableItem[] tableItems = schemaViewer.getTable().getItems();
-
-        initLinker(root, tableItems);
+            initLinker(root, tableItems);
+        }
 
     }
 
@@ -392,8 +394,11 @@ public class FOXUI {
     }
 
     private boolean getValue() {
-        return (Boolean) externalNode.getElementParameter("MERGE").getValue();//$NON-NLS-1$
-
+        IElementParameter elementParameter = externalNode.getElementParameter("MERGE");//$NON-NLS-1$
+        if (elementParameter != null) {
+            return (Boolean) elementParameter.getValue();
+        }
+        return false;
     }
 
     private void createAction() {
